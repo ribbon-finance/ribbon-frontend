@@ -1,14 +1,8 @@
 import web3 from "./web3";
-import { AbiItem } from "web3-utils";
 import addresses from "../../../protocol/addresses.json";
-import dojimaInstrument from "../../../protocol/DojimaInstrument.json";
+import { DojimaInstrumentContract } from "../../../protocol/codegen/dojima_instrument";
 
-const instrumentAddress = addresses.contracts.dojimaInstrument;
-
-const contracts = {
-  instrument: new web3.eth.Contract(
-    dojimaInstrument.abi as AbiItem,
-    instrumentAddress
-  ),
-};
-export default contracts;
+export const dojimaInstrument = new DojimaInstrumentContract(
+  addresses.contracts.dojimaInstrument,
+  web3.currentProvider
+);
