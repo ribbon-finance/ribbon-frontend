@@ -1,0 +1,22 @@
+{
+  "accounts": {
+    "admin": "0xbE4f6D7255D21F06a4e5F856a13f9d271575AD94",
+    "owner": "0xe41f1D600c85B2D0fF8C99959B1613Fea04846b7"
+  },
+  "contracts": {
+    "dataProvider": "0x3e85c772cdcd3861Acdd7cd1e66B92502126Efc4",
+    "liquidatorProxy": "0x5c12B718f26e59d01197349170c51f33e73FD9bb",
+    "adminUpgradeabilityProxy": "0x04180b5BC1f7b1C1FDC6Edbe548Ec82cB3119A1c",
+    "dojimaFactory": "0xea72de845D45eC6F1A573E1bf431909D0b0e678F",
+    "dojimaInstrument": "0x5c4e7A405E613f0245B307E8d545C2f735A3E03C"
+  },
+  "assets": {
+    "dai": "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa",
+    "link": "0xa36085f69e2889c224210f603d836748e7dc0088",
+    "eth": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+  },
+  "feeds": {
+    "dai/eth": "0x22B58f1EbEDfCA50feF632bD73368b2FdA96D541",
+    "link/eth": "0xa36085f69e2889c224210f603d836748e7dc0088"
+  }
+}
