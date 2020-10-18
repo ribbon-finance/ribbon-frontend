@@ -1,6 +1,7 @@
 import React from "react";
 import { Row, Col } from "antd";
 import VaultStatus from "../components/VaultStatus";
+import VaultActions from "../components/VaultActions";
 
 const VaultManagement = () => {
   return (
@@ -9,7 +10,7 @@ const VaultManagement = () => {
         <VaultStatus></VaultStatus>
       </Col>
       <Col span={8}>
-        <div>test</div>
+        <VaultActions></VaultActions>
       </Col>
     </Row>
   );
