@@ -15,12 +15,14 @@ export const getContracts = (web3) => {
 export const useContracts = () => {
   const { web3 } = useContext(Web3Context);
   const [contracts, setContracts] = useState(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     if (web3 !== null) {
       setContracts(getContracts(web3));
+      setLoaded(true);
     }
   }, [web3]);
 
-  return contracts;
+  return { contracts, loaded };
 };

@@ -1,18 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import Web3 from "web3";
-import { Space, InputNumber, Button } from "antd";
+import { InputNumber, Button } from "antd";
 import { useContracts } from "../utils/contracts";
+import { useAssets } from "../utils/useAssets";
 
 const VaultActions = () => {
-  const contracts = useContracts();
+  const { contracts, loaded: loadedContracts } = useContracts();
+  const assets = useAssets();
   const [instrument, setInstrument] = useState(null);
   const [depositAmount, setDepositAmount] = useState(0);
+  const [collateralAsset, setCollateralAsset] = useState("");
+  const [targetAsset, setTargetAsset] = useState("");
 
   useEffect(() => {
-    if (contracts !== null && contracts.dojimaInstrument) {
-      setInstrument(instrument);
+    if (loadedContracts) {
+      setInstrument(contracts.dojimaInstrument);
     }
-  }, [contracts]);
+  }, [contracts, loadedContracts]);
+
+  useEffect(() => {
+    if (instrument !== null) {
+      (async () => {
+        const collateralAddress = await instrument.methods
+          .collateralAsset()
+          .call();
+        setCollateralAsset(assets.get(collateralAddress).toUpperCase());
+
+        const targetAddress = await instrument.methods.targetAsset().call();
+        setTargetAsset(assets.get(targetAddress).toUpperCase());
+      })();
+    }
+  }, [instrument]);
 
   return (
     <div>
@@ -21,7 +39,7 @@ const VaultActions = () => {
         <InputNumber
           defaultValue={depositAmount}
           formatter={(value) =>
-            `${value} ETH`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            `${value} ${collateralAsset}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
           }
           parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
           onChange={setDepositAmount}

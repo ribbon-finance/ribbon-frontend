@@ -4,13 +4,13 @@ import { Space } from "antd";
 import { useContracts } from "../utils/contracts";
 
 const VaultStatus = () => {
-  const contracts = useContracts();
+  const { contracts, loaded: loadedContracts } = useContracts();
   const [colRatio, setColRatio] = useState(0.0);
   const [instrumentName, setInstrumentName] = useState("");
   const [expiry, setExpiry] = useState("");
 
   useEffect(() => {
-    if (contracts !== null && contracts.dojimaInstrument) {
+    if (loadedContracts) {
       (async () => {
         const { dojimaInstrument } = contracts;
 
