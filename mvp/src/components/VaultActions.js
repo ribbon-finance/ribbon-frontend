@@ -6,17 +6,26 @@ import { useAssets } from "../utils/useAssets";
 
 const VaultActions = () => {
   const { contracts, loaded: loadedContracts } = useContracts();
-  const assets = useAssets();
   const [instrument, setInstrument] = useState(null);
-  const [depositAmount, setDepositAmount] = useState(0);
-  const [collateralAsset, setCollateralAsset] = useState("");
-  const [targetAsset, setTargetAsset] = useState("");
 
   useEffect(() => {
     if (loadedContracts) {
       setInstrument(contracts.dojimaInstrument);
     }
   }, [contracts, loadedContracts]);
+
+  return <ActionsPanel type="deposit" instrument={instrument}></ActionsPanel>;
+};
+
+export default VaultActions;
+
+const ActionsPanel = ({ type, instrument }) => {
+  const assets = useAssets();
+  const [depositAmount, setDepositAmount] = useState(0);
+  const [collateralAsset, setCollateralAsset] = useState("");
+  const [targetAsset, setTargetAsset] = useState("");
+  const actionTitle =
+    type.slice(0, 1).toUpperCase() + type.slice(1, type.length);
 
   useEffect(() => {
     if (instrument !== null) {
@@ -34,7 +43,7 @@ const VaultActions = () => {
 
   return (
     <div>
-      Deposit
+      {actionTitle}
       <div>
         <InputNumber
           defaultValue={depositAmount}
@@ -44,9 +53,8 @@ const VaultActions = () => {
           parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
           onChange={setDepositAmount}
         />
-        <Button type="primary">Deposit</Button>
+        <Button type="primary">{actionTitle}</Button>
       </div>
     </div>
   );
 };
-export default VaultActions;
