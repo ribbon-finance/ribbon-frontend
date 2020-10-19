@@ -4,16 +4,17 @@
     "owner": "0xe41f1D600c85B2D0fF8C99959B1613Fea04846b7"
   },
   "contracts": {
-    "dataProvider": "0x3e85c772cdcd3861Acdd7cd1e66B92502126Efc4",
-    "liquidatorProxy": "0x5c12B718f26e59d01197349170c51f33e73FD9bb",
-    "adminUpgradeabilityProxy": "0x04180b5BC1f7b1C1FDC6Edbe548Ec82cB3119A1c",
-    "dojimaFactory": "0xea72de845D45eC6F1A573E1bf431909D0b0e678F",
-    "dojimaInstrument": "0x1fee9141Df621aE25b74Bc824571b1F54E8E3147"
+    "dataProvider": "0xEBAf849E952e81890D160cA73A73D053BdC04413",
+    "liquidatorProxy": "0xE4E69481B0e5dc983746823332788A30ceBc1f2B",
+    "adminUpgradeabilityProxy": "0x93318F678d020C1195aa7CB2B01eC5452D3bf3dd",
+    "dojimaFactory": "0x3e39453AE60C7B64a9392bB8e31557fF4863c2Ea",
+    "dojimaInstrument": "0xA808FBE44B0607ceEd089AD2f4928fc0410F884a"
   },
   "assets": {
     "dai": "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa",
     "link": "0xa36085f69e2889c224210f603d836748e7dc0088",
-    "eth": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+    "eth": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    "weth": "0xd0A1E359811322d97991E03f863a0C30C2cF029C"
   },
   "feeds": {
     "dai/eth": "0x22B58f1EbEDfCA50feF632bD73368b2FdA96D541",
