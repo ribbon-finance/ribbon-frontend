@@ -99,6 +99,7 @@ const ActionsPanel = ({ type, instrument }) => {
       <div>
         <InputNumber
           defaultValue={inputAmount}
+          step={0.0001}
           formatter={(value) =>
             `${value} ${collateralAsset}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
           }
