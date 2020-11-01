@@ -1,4 +1,5 @@
 export type Instrument = {
+  symbol: string;
   apy: number;
   strike: number;
   yield: number;

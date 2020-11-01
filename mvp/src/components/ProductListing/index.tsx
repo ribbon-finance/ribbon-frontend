@@ -38,6 +38,15 @@ const CurrencyPairContainer = styled.div`
   margin-bottom: 15px;
 `;
 
+const InstrumentsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 42px;
+`;
+
 type Props = {
   product: Product;
 };
@@ -65,7 +74,7 @@ const ProductListing: React.FC<Props> = ({ product }) => {
         <TermDiv>
           <PrimaryText>
             If {targetCurrency} settles below the strike, you earn yield in{" "}
-            {targetCurrency} terms. You win either way.
+            {targetCurrency} terms.
           </PrimaryText>
         </TermDiv>
         <TermDiv>
@@ -78,6 +87,15 @@ const ProductListing: React.FC<Props> = ({ product }) => {
           <EiterWayText>You win either way.</EiterWayText>
         </EitherWayDiv>
       </ProductTerms>
+
+      <InstrumentsContainer>
+        {product.instruments.map((instrument) => (
+          <InstrumentItem
+            key={instrument.symbol}
+            instrument={instrument}
+          ></InstrumentItem>
+        ))}
+      </InstrumentsContainer>
     </ProductContainer>
   );
 };
