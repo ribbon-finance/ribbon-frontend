@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { PrimaryText, SecondaryText } from "../../designSystem";
 import { Instrument } from "../../models";
@@ -62,13 +63,13 @@ const BuyProductButton = styled.button`
   background: #2d9cdb;
   border: 0;
   border-radius: 20px;
+  cursor: pointer;
 `;
 
 const ButtonText = styled(SecondaryText)`
   font-size: 18px;
   line-height: 21px;
   text-align: center;
-  cursor: pointer;
 `;
 
 type Props = {
@@ -103,7 +104,12 @@ const InstrumentItem: React.FC<Props> = ({ instrument }) => {
       </DetailContainer>
 
       <BuyProductButton>
-        <ButtonText>Buy Product</ButtonText>
+        <Link
+          style={{ textDecoration: "none" }}
+          to={"/instrument/" + instrument.symbol}
+        >
+          <ButtonText>Buy Product</ButtonText>
+        </Link>
       </BuyProductButton>
     </InstrumentContainer>
   );
