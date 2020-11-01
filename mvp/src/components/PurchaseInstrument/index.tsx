@@ -15,8 +15,8 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
   const res = useInstrument(instrumentSymbol);
   let comp;
 
-  switch (res.found) {
-    case true:
+  switch (res.state) {
+    case "success":
       comp = (
         <PurchaseInstrument
           instrument={res.instrument}
@@ -24,8 +24,11 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
         ></PurchaseInstrument>
       );
       break;
-    case false:
+    case "notFound":
       comp = <Content404></Content404>;
+      break;
+    case "loading":
+      comp = <div style={{ textAlign: "center" }}>Loading...</div>;
       break;
   }
   return comp;
