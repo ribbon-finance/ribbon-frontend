@@ -2,7 +2,7 @@ import { Product } from "./models";
 
 export const products: Product[] = [
   {
-    productTitle: "Twin Yield ETH-USDC",
+    name: "Twin Yield ETH-USDC",
     targetCurrency: "ETH",
     paymentCurrency: "USDC",
     expiryTimestamp: 1604275200,

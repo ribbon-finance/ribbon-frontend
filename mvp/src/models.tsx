@@ -6,7 +6,7 @@ export type Instrument = {
 };
 
 export type Product = {
-  productTitle: string;
+  name: string;
   targetCurrency: string;
   paymentCurrency: string;
   expiryTimestamp: number;
