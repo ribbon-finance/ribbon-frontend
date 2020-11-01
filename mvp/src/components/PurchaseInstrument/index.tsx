@@ -1,15 +1,48 @@
 import React from "react";
 import { useParams } from "react-router-dom";
+import { useInstrument } from "../../hooks/useInstrument";
+import { Instrument, Product } from "../../models";
+import Content404 from "../Content404";
 
-type Props = {};
+type PurchaseInstrumentWrapperProps = {};
 
 interface ParamTypes {
   instrumentSymbol: string;
 }
 
-const PurchaseInstrument: React.FC<Props> = () => {
+const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () => {
   const { instrumentSymbol } = useParams<ParamTypes>();
-  return <div>{instrumentSymbol}</div>;
+  const res = useInstrument(instrumentSymbol);
+  let comp;
+
+  switch (res.found) {
+    case true:
+      comp = (
+        <PurchaseInstrument
+          instrument={res.instrument}
+          product={res.product}
+        ></PurchaseInstrument>
+      );
+      break;
+    case false:
+      comp = <Content404></Content404>;
+      break;
+  }
+  return comp;
 };
 
-export default PurchaseInstrument;
+type Props = {
+  product: Product;
+  instrument: Instrument;
+};
+
+const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
+  return (
+    <div>
+      {product.name}
+      {instrument.symbol}
+    </div>
+  );
+};
+
+export default PurchaseInstrumentWrapper;
