@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { PrimaryText, Title } from "../../designSystem";
 import CurrencyPair from "../../designSystem/CurrencyPair";
 import { Product } from "../../models";
+import moment from "moment";
 
 const ProductContainer = styled.div`
   display: flex;
@@ -42,6 +43,8 @@ type Props = {
 
 const ProductListing: React.FC<Props> = ({ product }) => {
   const { targetCurrency, paymentCurrency } = product;
+  const expiryDateTime = moment.unix(product.expiryTimestamp);
+  const expiresIn = expiryDateTime.from(moment());
 
   return (
     <ProductContainer>
@@ -56,7 +59,7 @@ const ProductListing: React.FC<Props> = ({ product }) => {
 
       <ProductTerms>
         <ExpiryTerms>
-          <PrimaryText>Expires in:</PrimaryText>
+          <PrimaryText>Expires in: {expiresIn}</PrimaryText>
         </ExpiryTerms>
         <TermDiv>
           <PrimaryText>
