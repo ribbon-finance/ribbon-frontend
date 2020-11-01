@@ -1,7 +1,8 @@
 import React from "react";
+import styled from "styled-components";
 import images from "../img/currencyIcons";
 import ethereumAccountImage from "../img/ethAccount.svg";
-import styled from "styled-components";
+import { BaseText, SecondaryText } from "./DesignSystem";
 
 const { ETH } = images;
 
@@ -16,19 +17,53 @@ const HeaderContainer = styled.div`
 
 const HeaderLeft = styled.div`
   display: flex;
+  align-items: center;
+  margin-left: 16px;
 `;
 
 const HeaderRight = styled.div``;
 
+const ETHPriceContainer = styled.div`
+  margin-left: 8px;
+`;
+
+const ETHPrice = styled(BaseText)`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 19px;
+`;
+
 const CurrencyIcon = styled.img`
   width: 24px;
   height: 24px;
+  margin-left: 8px;
 `;
 
 const AccountPill = styled.div`
   display: flex;
   flex-direction: row;
-  border-radius: 2px;
+  background: #bcbcbc;
+  border-radius: 10px;
+`;
+
+const AccountPillText = styled(SecondaryText)`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 19px;
+`;
+
+const AccountPillBalance = styled.div`
+  background: #bcbcbc;
+  padding: 5px 7px;
+  border-radius: 10px;
+`;
+
+const AccountPillAddress = styled.div`
+  background: #636363;
+  padding: 5px 7px;
+  border-radius: 10px;
 `;
 
 const Header = () => {
@@ -37,14 +72,20 @@ const Header = () => {
       <HeaderContainer>
         <HeaderLeft>
           <CurrencyIcon src={ETH} alt="ETH"></CurrencyIcon>
-          <div>$399.20</div>
+          <ETHPriceContainer>
+            <ETHPrice>$399.20</ETHPrice>
+          </ETHPriceContainer>
         </HeaderLeft>
 
         <HeaderRight>
           <AccountPill>
-            <div>0.5083 ETH</div>
-            <div>0x573B...c65F</div>
-            <img src={ethereumAccountImage} alt="Account" />
+            <AccountPillBalance>
+              <AccountPillText>0.5083 ETH</AccountPillText>
+            </AccountPillBalance>
+            <AccountPillAddress>
+              <AccountPillText>0x573B...c65F</AccountPillText>
+              <img src={ethereumAccountImage} alt="Account" />
+            </AccountPillAddress>
           </AccountPill>
         </HeaderRight>
       </HeaderContainer>

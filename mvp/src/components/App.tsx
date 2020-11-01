@@ -1,11 +1,16 @@
 import React from "react";
+import styled from "styled-components";
 import Header from "./Header";
+
+const AppContainer = styled.div`
+  padding: 23px 30px;
+`;
 
 function App() {
   return (
-    <div className="App">
+    <AppContainer className="App">
       <Header />
-    </div>
+    </AppContainer>
   );
 }
 
