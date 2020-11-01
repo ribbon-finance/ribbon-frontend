@@ -86,6 +86,7 @@ const ProductListing: React.FC<Props> = ({ product }) => {
         {product.instruments.map((instrument) => (
           <InstrumentItem
             key={instrument.symbol}
+            product={product}
             instrument={instrument}
           ></InstrumentItem>
         ))}

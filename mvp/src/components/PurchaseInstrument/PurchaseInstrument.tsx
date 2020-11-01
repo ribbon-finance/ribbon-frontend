@@ -7,6 +7,7 @@ import {
   Title
 } from "../../designSystem";
 import CurrencyPair from "../../designSystem/CurrencyPair";
+import { calculateYield } from "../../utils";
 
 type Props = {
   product: Product;
