@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "styled-components";
+import moment from "moment";
 import { PrimaryText, Title } from "../../designSystem";
 import CurrencyPair from "../../designSystem/CurrencyPair";
 import { Product } from "../../models";
-import moment from "moment";
+import InstrumentItem from "./InstrumentItem";
 
 const ProductContainer = styled.div`
   display: flex;
