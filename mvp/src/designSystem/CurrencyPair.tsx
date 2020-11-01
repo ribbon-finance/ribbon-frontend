@@ -15,9 +15,15 @@ const CurrencyIcon = styled.img`
   height: 66px;
 `;
 
-const CurrencyIconLeft = styled(CurrencyIcon)``;
+const CurrencyIconLeft = styled(CurrencyIcon)`
+  position: absolute;
+  left: calc(50% - 58px);
+`;
 
-const CurrencyIconRight = styled(CurrencyIcon)``;
+const CurrencyIconRight = styled(CurrencyIcon)`
+  position: absolute;
+  right: calc(50% - 58px);
+`;
 
 type CurrencyPairProps = {
   targetCurrency: string;
