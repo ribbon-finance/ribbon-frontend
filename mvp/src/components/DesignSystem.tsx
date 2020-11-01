@@ -15,3 +15,13 @@ export const PrimaryText = styled(BaseText)`
 export const SecondaryText = styled(BaseText)`
   color: white;
 `;
+
+export const Title = styled(BaseText)`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 48px;
+  line-height: 56px;
+  text-align: center;
+
+  color: #000000;
+`;
