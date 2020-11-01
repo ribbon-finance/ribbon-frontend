@@ -61,9 +61,16 @@ const AccountPillBalance = styled.div`
 `;
 
 const AccountPillAddress = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: #636363;
   padding: 5px 7px;
   border-radius: 10px;
+`;
+
+const AddressIcon = styled.img`
+  margin-left: 2px;
 `;
 
 const Header = () => {
@@ -84,7 +91,7 @@ const Header = () => {
             </AccountPillBalance>
             <AccountPillAddress>
               <AccountPillText>0x573B...c65F</AccountPillText>
-              <img src={ethereumAccountImage} alt="Account" />
+              <AddressIcon src={ethereumAccountImage} alt="Account" />
             </AccountPillAddress>
           </AccountPill>
         </HeaderRight>
