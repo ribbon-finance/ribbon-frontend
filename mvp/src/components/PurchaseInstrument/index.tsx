@@ -1,8 +1,8 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { useInstrument } from "../../hooks/useInstrument";
-import { Instrument, Product } from "../../models";
 import Content404 from "../Content404";
+import PurchaseInstrument from "./PurchaseInstrument";
 
 type PurchaseInstrumentWrapperProps = {};
 
@@ -32,20 +32,6 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
       break;
   }
   return comp;
-};
-
-type Props = {
-  product: Product;
-  instrument: Instrument;
-};
-
-const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
-  return (
-    <div>
-      {product.name}
-      {instrument.symbol}
-    </div>
-  );
 };
 
 export default PurchaseInstrumentWrapper;
