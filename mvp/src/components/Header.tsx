@@ -2,9 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import images from "../img/currencyIcons";
 import ethereumAccountImage from "../img/ethAccount.svg";
-import { BaseText, SecondaryText } from "./DesignSystem";
+import { BaseText, SecondaryText } from "../designSystem";
 
-const { ETH } = images;
+const { ETH: ETHIcon } = images;
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -71,7 +71,7 @@ const Header = () => {
     <header>
       <HeaderContainer>
         <HeaderLeft>
-          <CurrencyIcon src={ETH} alt="ETH"></CurrencyIcon>
+          <CurrencyIcon src={ETHIcon} alt="ETH"></CurrencyIcon>
           <ETHPriceContainer>
             <ETHPrice>$399.20</ETHPrice>
           </ETHPriceContainer>

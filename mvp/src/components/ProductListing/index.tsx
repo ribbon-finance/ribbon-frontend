@@ -1,23 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-import { PrimaryText, Title } from "../DesignSystem";
+import { PrimaryText, Title } from "../../designSystem";
+import CurrencyPair from "../../designSystem/CurrencyPair";
 import { Product } from "../../models";
-import currencyIcons from "../../img/currencyIcons";
 
 const ProductContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-`;
-
-const CurrencyPair = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
-const CurrencyIcon = styled.img`
-  width: 66px;
-  height: 66px;
 `;
 
 const ProductTerms = styled.div`
@@ -41,6 +31,11 @@ const EiterWayText = styled(PrimaryText)`
   font-weight: bold;
 `;
 
+const CurrencyPairContainer = styled.div`
+  margin-top: 12px;
+  margin-bottom: 15px;
+`;
+
 type Props = {
   product: Product;
 };
@@ -52,16 +47,12 @@ const ProductListing: React.FC<Props> = ({ product }) => {
     <ProductContainer>
       <Title>{product.name}</Title>
 
-      <CurrencyPair>
-        <CurrencyIcon
-          src={currencyIcons[targetCurrency]}
-          alt={targetCurrency}
-        ></CurrencyIcon>
-        <CurrencyIcon
-          src={currencyIcons[paymentCurrency]}
-          alt={paymentCurrency}
-        ></CurrencyIcon>
-      </CurrencyPair>
+      <CurrencyPairContainer>
+        <CurrencyPair
+          targetCurrency={targetCurrency}
+          paymentCurrency={paymentCurrency}
+        ></CurrencyPair>
+      </CurrencyPairContainer>
 
       <ProductTerms>
         <ExpiryTerms>
