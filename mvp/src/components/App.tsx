@@ -1,8 +1,11 @@
 import React from "react";
 import styled from "styled-components";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Header from "./Header";
 import ProductListing from "./ProductListing";
+import PurchaseInstrument from "./PurchaseInstrument";
 import { products } from "../mockData";
+import Content404 from "./Content404";
 
 const AppContainer = styled.div`
   padding: 23px 30px;
@@ -12,12 +15,24 @@ const MainContent = styled.div``;
 
 function App() {
   return (
-    <AppContainer className="App">
-      <Header />
-      <MainContent>
-        <ProductListing product={products[0]}></ProductListing>
-      </MainContent>
-    </AppContainer>
+    <Router>
+      <AppContainer className="App">
+        <Header />
+        <MainContent>
+          <Switch>
+            <Route exact path="/">
+              <ProductListing product={products[0]}></ProductListing>
+            </Route>
+            <Route exact path="/instrument/:instrumentSymbol">
+              <PurchaseInstrument></PurchaseInstrument>
+            </Route>
+            <Route path="*">
+              <Content404></Content404>
+            </Route>
+          </Switch>
+        </MainContent>
+      </AppContainer>
+    </Router>
   );
 }
 

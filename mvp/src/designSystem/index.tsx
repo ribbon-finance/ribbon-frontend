@@ -25,3 +25,14 @@ export const Title = styled(BaseText)`
 
   color: #000000;
 `;
+
+export const ProductContainer = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+`;
+
+export const CurrencyPairContainer = styled.div`
+  margin-top: 12px;
+  margin-bottom: 15px;
+`;

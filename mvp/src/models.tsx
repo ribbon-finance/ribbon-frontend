@@ -1,8 +1,8 @@
 export type Instrument = {
   symbol: string;
-  apy: number;
-  strike: number;
-  yield: number;
+  strikePrice: number;
+  balancerPool: string;
+  instrumentSpotPrice: number;
   expiryTimestamp: number;
 };
 

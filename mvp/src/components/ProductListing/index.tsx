@@ -1,16 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 import moment from "moment";
-import { PrimaryText, Title } from "../../designSystem";
+import {
+  CurrencyPairContainer,
+  PrimaryText,
+  ProductContainer,
+  Title
+} from "../../designSystem";
 import CurrencyPair from "../../designSystem/CurrencyPair";
 import { Product } from "../../models";
 import InstrumentItem from "./InstrumentItem";
-
-const ProductContainer = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-`;
 
 const ProductTerms = styled.div`
   text-align: center;
@@ -31,11 +30,6 @@ const EitherWayDiv = styled.div`
 
 const EiterWayText = styled(PrimaryText)`
   font-weight: bold;
-`;
-
-const CurrencyPairContainer = styled.div`
-  margin-top: 12px;
-  margin-bottom: 15px;
 `;
 
 const InstrumentsContainer = styled.div`
@@ -92,6 +86,7 @@ const ProductListing: React.FC<Props> = ({ product }) => {
         {product.instruments.map((instrument) => (
           <InstrumentItem
             key={instrument.symbol}
+            product={product}
             instrument={instrument}
           ></InstrumentItem>
         ))}

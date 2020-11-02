@@ -9,17 +9,17 @@ export const products: Product[] = [
     instruments: [
       {
         symbol: "TY-ETHUSDC-390-03112020",
-        apy: 15.29,
-        strike: 390,
-        yield: 0.04,
-        expiryTimestamp: 1604361600
+        instrumentSpotPrice: 380,
+        strikePrice: 390,
+        expiryTimestamp: 1604361600,
+        balancerPool: "0x75286e183D923a5F52F52be205e358c5C9101b09"
       },
       {
         symbol: "TY-ETHUSDC-400-03112020",
-        apy: 55.74,
-        strike: 400,
-        yield: 0.15,
-        expiryTimestamp: 1604361600
+        instrumentSpotPrice: 390,
+        strikePrice: 400,
+        expiryTimestamp: 1604361600,
+        balancerPool: "0x75286e183D923a5F52F52be205e358c5C9101b09"
       }
     ]
   }

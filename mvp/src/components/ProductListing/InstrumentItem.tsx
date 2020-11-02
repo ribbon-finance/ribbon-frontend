@@ -1,7 +1,10 @@
+import moment from "moment";
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { PrimaryText, SecondaryText } from "../../designSystem";
-import { Instrument } from "../../models";
+import { Instrument, Product } from "../../models";
+import { calculateYield, convertToAPY } from "../../utils";
 
 const InstrumentContainer = styled.div`
   display: flex;
@@ -62,23 +65,39 @@ const BuyProductButton = styled.button`
   background: #2d9cdb;
   border: 0;
   border-radius: 20px;
+  cursor: pointer;
 `;
 
 const ButtonText = styled(SecondaryText)`
   font-size: 18px;
   line-height: 21px;
   text-align: center;
-  cursor: pointer;
 `;
 
 type Props = {
   instrument: Instrument;
+  product: Product;
 };
 
-const InstrumentItem: React.FC<Props> = ({ instrument }) => {
+const InstrumentItem: React.FC<Props> = ({ instrument, product }) => {
+  // calculate with 1 dToken
+  const yields = calculateYield(
+    instrument.instrumentSpotPrice,
+    instrument,
+    product
+  );
+  const largestYield = yields.reduce((y1, y2) =>
+    y1.percentage > y2.percentage ? y1 : y2
+  );
+  const apyRate = convertToAPY(
+    largestYield.percentage,
+    moment().valueOf(),
+    instrument.expiryTimestamp
+  ).toFixed(3);
+
   const details = [
-    { property: "Strike", value: "$" + instrument.strike },
-    { property: "Yield", value: instrument.yield + "%" },
+    { property: "Strike", value: "$" + instrument.strikePrice },
+    { property: "Yield", value: largestYield.percentage.toFixed(3) + "%" },
     {
       property: "Expiry",
       value: new Date(instrument.expiryTimestamp * 1000).toLocaleDateString()
@@ -88,7 +107,7 @@ const InstrumentItem: React.FC<Props> = ({ instrument }) => {
   return (
     <InstrumentContainer>
       <TitleContainer>
-        <InstrumentTitle>{instrument.apy}%</InstrumentTitle>
+        <InstrumentTitle>{apyRate}%</InstrumentTitle>
         <InstrumentAPYSubtitle>APY</InstrumentAPYSubtitle>
       </TitleContainer>
 
@@ -103,7 +122,12 @@ const InstrumentItem: React.FC<Props> = ({ instrument }) => {
       </DetailContainer>
 
       <BuyProductButton>
-        <ButtonText>Buy Product</ButtonText>
+        <Link
+          style={{ textDecoration: "none" }}
+          to={"/instrument/" + instrument.symbol}
+        >
+          <ButtonText>Buy Product</ButtonText>
+        </Link>
       </BuyProductButton>
     </InstrumentContainer>
   );
