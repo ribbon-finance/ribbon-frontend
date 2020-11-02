@@ -8,6 +8,8 @@ import {
 import CurrencyPair from "../../designSystem/CurrencyPair";
 import styled from "styled-components";
 import SettlementCalculator from "./SettlementCalculator";
+import PayoffChart from "./PayoffChart";
+import { calculateYield, transposeYieldByCurrency } from "../../utils";
 
 type Props = {
   product: Product;
@@ -23,6 +25,25 @@ const SettlementContainer = styled.div`
 
 const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
   const { targetCurrency, paymentCurrency } = product;
+
+  const payoffAlgo = (inputPrice: number): number => {
+    const allYields = calculateYield(1000, instrument, product, inputPrice);
+    const yieldsByCurrency = transposeYieldByCurrency(allYields);
+
+    const settlePastStrike = inputPrice >= instrument.strikePrice;
+
+    const payoffYield = settlePastStrike
+      ? yieldsByCurrency.get(product.paymentCurrency)
+      : yieldsByCurrency.get(product.targetCurrency);
+
+    if (payoffYield && payoffYield.amount) {
+      const payoffAmount = settlePastStrike
+        ? payoffYield.amount
+        : payoffYield.amount * inputPrice;
+      return payoffAmount;
+    }
+    return 0;
+  };
 
   return (
     <ProductContainer>
@@ -41,6 +62,14 @@ const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
           instrument={instrument}
         ></SettlementCalculator>
       </SettlementContainer>
+
+      <PayoffChart
+        minPrice={0}
+        strikePrice={390}
+        maxPrice={400}
+        stepSize={100}
+        payoffAlgo={payoffAlgo}
+      ></PayoffChart>
     </ProductContainer>
   );
 };
