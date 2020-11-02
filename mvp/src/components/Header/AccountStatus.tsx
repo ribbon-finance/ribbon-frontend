@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ethers from "ethers";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
@@ -52,12 +52,18 @@ const AccountStatus: React.FC<Props> = () => {
   const { activate: activateWeb3, library, active, account } = useWeb3React();
   const hasAccount = active && account;
 
-  const injectedConnector = new InjectedConnector({
-    supportedChainIds: [1, 3, 4, 5, 42]
-  });
-  const handleConnect = () => {
-    activateWeb3(injectedConnector);
-  };
+  const handleConnect = useCallback(async () => {
+    const injectedConnector = new InjectedConnector({
+      supportedChainIds: [1, 3, 4, 5, 42]
+    });
+    await activateWeb3(injectedConnector);
+  }, [activateWeb3]);
+
+  useEffect(() => {
+    (async () => {
+      await handleConnect();
+    })();
+  }, [handleConnect]);
 
   useEffect(() => {
     if (library && account) {
@@ -70,9 +76,7 @@ const AccountStatus: React.FC<Props> = () => {
         setBalance(etherBal);
       })();
     }
-  }, [library, account]);
-
-  console.log(balance);
+  }, [handleConnect, library, account]);
 
   return (
     <AccountPill role="button" onClick={handleConnect}>
