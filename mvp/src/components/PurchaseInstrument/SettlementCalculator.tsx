@@ -3,7 +3,10 @@ import styled from "styled-components";
 import { PrimaryText } from "../../designSystem";
 import { Product, Instrument } from "../../models";
 import currencyIcons from "../../img/currencyIcons";
-import { calculateYield, transposeYieldByCurrency } from "../../utils";
+import {
+  calculateYield,
+  transposeYieldByCurrency
+} from "../../utils/yieldMath";
 import DualButton from "./DualButton";
 
 const Layout = styled.div`

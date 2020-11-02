@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Button, PrimaryText, SecondaryText } from "../../designSystem";
 import { Instrument, Product } from "../../models";
-import { calculateYield, convertToAPY } from "../../utils";
+import { calculateYield, convertToAPY } from "../../utils/yieldMath";
 
 const InstrumentContainer = styled.div`
   display: flex;
