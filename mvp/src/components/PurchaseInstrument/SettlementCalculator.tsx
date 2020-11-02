@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode } from "react";
 import styled from "styled-components";
 import { PrimaryText } from "../../designSystem";
 import { Product, Instrument } from "../../models";
@@ -81,12 +81,18 @@ const TargetCurrencyIcon = styled.img`
 type Props = {
   product: Product;
   instrument: Instrument;
+  purchaseAmount: number;
+  amountInput: ReactNode;
 };
 
-const SettlementCalculator: React.FC<Props> = ({ product, instrument }) => {
+const SettlementCalculator: React.FC<Props> = ({
+  product,
+  instrument,
+  purchaseAmount,
+  amountInput
+}) => {
   const { targetCurrency, paymentCurrency } = product;
-  const [amount, setAmount] = useState(0.0);
-  const yields = calculateYield(amount, instrument, product);
+  const yields = calculateYield(purchaseAmount, instrument, product);
   const yieldsByCurrency = transposeYieldByCurrency(yields);
   const targetYield = yieldsByCurrency.get(product.targetCurrency);
   const paymentYield = yieldsByCurrency.get(product.paymentCurrency);
@@ -96,11 +102,8 @@ const SettlementCalculator: React.FC<Props> = ({ product, instrument }) => {
       <CalculatorDiv>
         <SettlementTitle>Settlement Calculator</SettlementTitle>
         <CalculatorPanel>
-          <AmountInput
-            paymentCurrency={product.paymentCurrency}
-            maxAmount={1000} /* Just hardcode this for now */
-            onChange={(amount) => setAmount(amount)}
-          ></AmountInput>
+          {amountInput}
+
           <ExpectedPayoffRowWithLine>
             <ExpectedPayoffText>
               <ExpectedPayoffStatement>
@@ -110,8 +113,13 @@ const SettlementCalculator: React.FC<Props> = ({ product, instrument }) => {
             </ExpectedPayoffText>
             <ExpectedPayoffText style={{ marginTop: 16 }}>
               <ExpectedPayoffTarget>
-                {targetYield && amount ? targetYield.amount.toFixed(3) : 0} ETH
-                ({targetYield && amount ? targetYield.percentage.toFixed(2) : 0}
+                {targetYield && purchaseAmount
+                  ? targetYield.amount.toFixed(3)
+                  : 0}{" "}
+                ETH (
+                {targetYield && purchaseAmount
+                  ? targetYield.percentage.toFixed(2)
+                  : 0}
                 % yield in {targetCurrency})
               </ExpectedPayoffTarget>
               <TargetCurrencyIcon
@@ -130,9 +138,11 @@ const SettlementCalculator: React.FC<Props> = ({ product, instrument }) => {
             </ExpectedPayoffText>
             <ExpectedPayoffText style={{ marginTop: 16 }}>
               <ExpectedPayoffPayment>
-                {paymentYield && amount ? paymentYield.amount.toFixed(3) : 0}{" "}
+                {paymentYield && purchaseAmount
+                  ? paymentYield.amount.toFixed(3)
+                  : 0}{" "}
                 {paymentCurrency} (
-                {paymentYield && amount
+                {paymentYield && purchaseAmount
                   ? paymentYield.percentage.toFixed(2)
                   : 0}
                 % yield in {paymentCurrency})
