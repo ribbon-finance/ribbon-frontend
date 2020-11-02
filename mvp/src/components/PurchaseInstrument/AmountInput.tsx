@@ -113,7 +113,12 @@ const AmountInput: React.FC<AmountInputProps> = ({
       ></StyledInput>
 
       <InputAccessories>
-        <MaxButton onClick={() => setInputText(maxAmount.toFixed(3))}>
+        <MaxButton
+          onClick={() => {
+            setInputText(maxAmount.toFixed(3));
+            onChange(maxAmount);
+          }}
+        >
           <MaxButtonText>MAX</MaxButtonText>
         </MaxButton>
 
