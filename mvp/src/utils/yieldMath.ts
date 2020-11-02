@@ -1,4 +1,4 @@
-import { Product, Instrument } from "./models";
+import { Product, Instrument } from "../models";
 
 type YieldNumber = {
   amount: number;
