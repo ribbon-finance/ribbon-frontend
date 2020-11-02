@@ -14,7 +14,7 @@ const ButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 45%;
+  width: 46%;
 `;
 
 const ActionButton = styled(Button)`
