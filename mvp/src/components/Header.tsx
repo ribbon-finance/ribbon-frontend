@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useWeb3React } from "@web3-react/core";
 import images from "../img/currencyIcons";
 import ethereumAccountImage from "../img/ethAccount.svg";
 import { BaseText, SecondaryText } from "../designSystem";
@@ -44,7 +45,7 @@ const AccountPill = styled.div`
   display: flex;
   flex-direction: row;
   background: #bcbcbc;
-  border-radius: 10px;
+  border-radius: 15px;
 `;
 
 const AccountPillText = styled(SecondaryText)`
@@ -56,8 +57,8 @@ const AccountPillText = styled(SecondaryText)`
 
 const AccountPillBalance = styled.div`
   background: #bcbcbc;
-  padding: 5px 7px;
-  border-radius: 10px;
+  padding: 10px 15px;
+  border-radius: 15px;
 `;
 
 const AccountPillAddress = styled.div`
@@ -65,8 +66,8 @@ const AccountPillAddress = styled.div`
   align-items: center;
   justify-content: center;
   background: #636363;
-  padding: 5px 7px;
-  border-radius: 10px;
+  padding: 10px 15px;
+  border-radius: 15px;
 `;
 
 const AddressIcon = styled.img`
