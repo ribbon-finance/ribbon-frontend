@@ -9,7 +9,10 @@ import CurrencyPair from "../../designSystem/CurrencyPair";
 import styled from "styled-components";
 import SettlementCalculator from "./SettlementCalculator";
 import PayoffChart from "./PayoffChart";
-import { calculateYield, transposeYieldByCurrency } from "../../utils";
+import {
+  calculateYield,
+  transposeYieldByCurrency
+} from "../../utils/yieldMath";
 import AmountInput from "./AmountInput";
 
 type Props = {
