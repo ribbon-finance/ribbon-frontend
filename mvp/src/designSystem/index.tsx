@@ -36,3 +36,11 @@ export const CurrencyPairContainer = styled.div`
   margin-top: 12px;
   margin-bottom: 15px;
 `;
+
+export const Button = styled.button`
+  border: none;
+  cursor: pointer;
+  outline: none;
+  box-shadow: none;
+  text-align: center;
+`;
