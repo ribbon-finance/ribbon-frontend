@@ -35,7 +35,12 @@ const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
 
   const payoffAlgo = useCallback(
     (inputPrice: number): number => {
-      const allYields = calculateYield(1000, instrument, product, inputPrice);
+      const allYields = calculateYield(
+        purchaseAmount,
+        instrument,
+        product,
+        inputPrice
+      );
       const yieldsByCurrency = transposeYieldByCurrency(allYields);
 
       const settlePastStrike = inputPrice >= instrument.strikePrice;
@@ -52,7 +57,7 @@ const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
       }
       return 0;
     },
-    [product, instrument]
+    [purchaseAmount, product, instrument]
   );
 
   const amountInput = useMemo(
@@ -89,7 +94,7 @@ const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
 
         <PayoffChart
           minPrice={0}
-          strikePrice={390}
+          strikePrice={instrument.strikePrice}
           maxPrice={400}
           stepSize={100}
           payoffAlgo={payoffAlgo}

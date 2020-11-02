@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Line } from "react-chartjs-2";
 import styled from "styled-components";
 
@@ -63,22 +63,25 @@ const PayoffChart: React.FC<Props> = ({
   stepSize,
   payoffAlgo
 }) => {
-  let labelNumbers = [];
-  let curPrice = minPrice;
+  const [labels, data] = useMemo(() => {
+    let labelNumbers = [];
+    let curPrice = minPrice;
 
-  while (curPrice <= maxPrice) {
-    labelNumbers.push(curPrice);
-    curPrice += stepSize;
-  }
-  const nearestStep = strikePrice - (strikePrice % stepSize);
-  labelNumbers.splice(labelNumbers.indexOf(nearestStep) + 1, 0, strikePrice);
+    while (curPrice <= maxPrice) {
+      labelNumbers.push(curPrice);
+      curPrice += stepSize;
+    }
+    const nearestStep = strikePrice - (strikePrice % stepSize);
+    labelNumbers.splice(labelNumbers.indexOf(nearestStep) + 1, 0, strikePrice);
 
-  const data = labelNumbers.map((price) => {
-    const payoff = payoffAlgo(price);
-    return payoff === -Infinity ? 0 : payoff;
-  });
+    const data = labelNumbers.map((price) => {
+      const payoff = payoffAlgo(price);
+      return payoff === -Infinity ? 0 : payoff;
+    });
 
-  const labels = labelNumbers.map((label) => label.toString());
+    const labels = labelNumbers.map((label) => label.toString());
+    return [labels, data];
+  }, [minPrice, maxPrice, strikePrice, stepSize, payoffAlgo]);
 
   const chartData = {
     labels,
