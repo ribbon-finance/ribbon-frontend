@@ -7,11 +7,16 @@ import AmountInput from "./AmountInput";
 import { calculateYield, transposeYieldByCurrency } from "../../utils";
 import DualButton from "./DualButton";
 
+const Layout = styled.div`
+  display: flex;
+  flex: 45%;
+  justify-content: flex-end;
+`;
+
 const CalculatorDiv = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-top: 81px;
 `;
 
 const SettlementTitle = styled(PrimaryText)`
@@ -87,52 +92,57 @@ const SettlementCalculator: React.FC<Props> = ({ product, instrument }) => {
   const paymentYield = yieldsByCurrency.get(product.paymentCurrency);
 
   return (
-    <CalculatorDiv>
-      <SettlementTitle>Settlement Calculator</SettlementTitle>
-      <CalculatorPanel>
-        <AmountInput
-          paymentCurrency={product.paymentCurrency}
-          maxAmount={1000} /* Just hardcode this for now */
-          onChange={(amount) => setAmount(amount)}
-        ></AmountInput>
-        <ExpectedPayoffRowWithLine>
-          <ExpectedPayoffText>
-            <ExpectedPayoffStatement>
-              If price of ETH is {"<"} ${instrument.strikePrice} at expiry,
-              receive:
-            </ExpectedPayoffStatement>
-          </ExpectedPayoffText>
-          <ExpectedPayoffText style={{ marginTop: 16 }}>
-            <ExpectedPayoffTarget>
-              {targetYield && amount ? targetYield.amount.toFixed(3) : 0} ETH (
-              {targetYield && amount ? targetYield.percentage.toFixed(2) : 0}%
-              yield in {targetCurrency})
-            </ExpectedPayoffTarget>
-            <TargetCurrencyIcon
-              src={currencyIcons[targetCurrency]}
-              alt={targetCurrency}
-            />
-          </ExpectedPayoffText>
-        </ExpectedPayoffRowWithLine>
+    <Layout>
+      <CalculatorDiv>
+        <SettlementTitle>Settlement Calculator</SettlementTitle>
+        <CalculatorPanel>
+          <AmountInput
+            paymentCurrency={product.paymentCurrency}
+            maxAmount={1000} /* Just hardcode this for now */
+            onChange={(amount) => setAmount(amount)}
+          ></AmountInput>
+          <ExpectedPayoffRowWithLine>
+            <ExpectedPayoffText>
+              <ExpectedPayoffStatement>
+                If price of ETH is {"<"} ${instrument.strikePrice} at expiry,
+                receive:
+              </ExpectedPayoffStatement>
+            </ExpectedPayoffText>
+            <ExpectedPayoffText style={{ marginTop: 16 }}>
+              <ExpectedPayoffTarget>
+                {targetYield && amount ? targetYield.amount.toFixed(3) : 0} ETH
+                ({targetYield && amount ? targetYield.percentage.toFixed(2) : 0}
+                % yield in {targetCurrency})
+              </ExpectedPayoffTarget>
+              <TargetCurrencyIcon
+                src={currencyIcons[targetCurrency]}
+                alt={targetCurrency}
+              />
+            </ExpectedPayoffText>
+          </ExpectedPayoffRowWithLine>
 
-        <ExpectedPayoffRow style={{ marginBottom: 25 }}>
-          <ExpectedPayoffText>
-            <ExpectedPayoffStatement>
-              If price of ETH is ≥ ${instrument.strikePrice} at expiry, receive:
-            </ExpectedPayoffStatement>
-          </ExpectedPayoffText>
-          <ExpectedPayoffText style={{ marginTop: 16 }}>
-            <ExpectedPayoffPayment>
-              {paymentYield && amount ? paymentYield.amount.toFixed(3) : 0}{" "}
-              {paymentCurrency} (
-              {paymentYield && amount ? paymentYield.percentage.toFixed(2) : 0}%
-              yield in {paymentCurrency})
-            </ExpectedPayoffPayment>
-          </ExpectedPayoffText>
-        </ExpectedPayoffRow>
-        <DualButton paymentCurrency={paymentCurrency}></DualButton>
-      </CalculatorPanel>
-    </CalculatorDiv>
+          <ExpectedPayoffRow style={{ marginBottom: 25 }}>
+            <ExpectedPayoffText>
+              <ExpectedPayoffStatement>
+                If price of ETH is ≥ ${instrument.strikePrice} at expiry,
+                receive:
+              </ExpectedPayoffStatement>
+            </ExpectedPayoffText>
+            <ExpectedPayoffText style={{ marginTop: 16 }}>
+              <ExpectedPayoffPayment>
+                {paymentYield && amount ? paymentYield.amount.toFixed(3) : 0}{" "}
+                {paymentCurrency} (
+                {paymentYield && amount
+                  ? paymentYield.percentage.toFixed(2)
+                  : 0}
+                % yield in {paymentCurrency})
+              </ExpectedPayoffPayment>
+            </ExpectedPayoffText>
+          </ExpectedPayoffRow>
+          <DualButton paymentCurrency={paymentCurrency}></DualButton>
+        </CalculatorPanel>
+      </CalculatorDiv>
+    </Layout>
   );
 };
 

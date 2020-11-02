@@ -1,5 +1,13 @@
 import React from "react";
 import { Line } from "react-chartjs-2";
+import styled from "styled-components";
+
+const defaultLabelOptions = {
+  display: true,
+  fontStyle: "bold",
+  fontFamily: "Roboto",
+  fontColor: "#000000"
+};
 
 const options = {
   legend: {
@@ -9,7 +17,7 @@ const options = {
     yAxes: [
       {
         scaleLabel: {
-          display: true,
+          ...defaultLabelOptions,
           labelString: "Return in USD"
         },
         ticks: {
@@ -20,13 +28,25 @@ const options = {
     xAxes: [
       {
         scaleLabel: {
-          display: true,
+          ...defaultLabelOptions,
           labelString: "Settlement Price"
         }
       }
     ]
   }
 };
+
+const Layout = styled.div`
+  display: flex;
+  flex: 45%;
+  justify-content: flex-start;
+  padding-top: 40px; ;
+`;
+
+const ChartContainer = styled.div`
+  width: 30vw;
+  height: 20vh;
+`;
 
 type Props = {
   minPrice: number;
@@ -75,9 +95,11 @@ const PayoffChart: React.FC<Props> = ({
   };
 
   return (
-    <div>
-      <Line data={chartData} options={options}></Line>
-    </div>
+    <Layout>
+      <ChartContainer>
+        <Line data={chartData} options={options}></Line>
+      </ChartContainer>
+    </Layout>
   );
 };
 

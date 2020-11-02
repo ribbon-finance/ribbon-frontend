@@ -21,6 +21,11 @@ const SettlementContainer = styled.div`
   flex-direction: row;
   width: 100%;
   justify-content: center;
+  padding-top: 81px;
+`;
+
+const Spacer = styled.div`
+  flex: 2.5%;
 `;
 
 const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
@@ -61,15 +66,17 @@ const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
           product={product}
           instrument={instrument}
         ></SettlementCalculator>
-      </SettlementContainer>
 
-      <PayoffChart
-        minPrice={0}
-        strikePrice={390}
-        maxPrice={400}
-        stepSize={100}
-        payoffAlgo={payoffAlgo}
-      ></PayoffChart>
+        <Spacer></Spacer>
+
+        <PayoffChart
+          minPrice={0}
+          strikePrice={390}
+          maxPrice={400}
+          stepSize={100}
+          payoffAlgo={payoffAlgo}
+        ></PayoffChart>
+      </SettlementContainer>
     </ProductContainer>
   );
 };
