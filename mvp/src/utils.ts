@@ -63,5 +63,5 @@ export const convertToAPY = (
   const period = periodEnd - periodStart; // get period in seconds
   const ONE_YEAR_IN_SECOND = 31540000; // 1 year has this number of seconds
   const periods = ONE_YEAR_IN_SECOND / period;
-  return Math.pow(1 + yieldPercent / 100, periods - 1);
+  return Math.pow(1 + yieldPercent / 100, periods - 1) * 100;
 };
