@@ -1,8 +1,20 @@
 import { Product, Instrument } from "./models";
 
+type YieldNumber = {
+  amount: number;
+  percentage: number;
+};
 type Yield = {
   currencySymbol: string;
-  percentage: number;
+} & YieldNumber;
+
+export const transposeYieldByCurrency = (yields: Yield[]) => {
+  const keyVals = yields.map((y): [string, YieldNumber] => [
+    y.currencySymbol,
+    { amount: y.amount, percentage: y.percentage }
+  ]);
+
+  return new Map(keyVals);
 };
 
 export const calculateYield = (
@@ -24,10 +36,12 @@ export const calculateYield = (
   return [
     {
       currencySymbol: product.paymentCurrency,
+      amount: dTokenAmount,
       percentage: paymentYield
     },
     {
       currencySymbol: product.targetCurrency,
+      amount: settlementAmount,
       percentage: targetYield
     }
   ];

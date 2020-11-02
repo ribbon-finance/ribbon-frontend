@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { PrimaryText, SecondaryText } from "../../designSystem";
 import currencyIcons from "../../img/currencyIcons";
+import "./AmountInput.css";
 
 const maxButtonMarginLeft = 2;
 const maxButtonWidth = 40;
@@ -81,6 +82,8 @@ const AmountInput: React.FC<AmountInputProps> = ({
   paymentCurrency,
   onChange
 }) => {
+  const [inputText, setInputText] = useState("");
+
   const parseInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     return parseFloat(e.target.value);
   };
@@ -89,8 +92,19 @@ const AmountInput: React.FC<AmountInputProps> = ({
     <InputDiv>
       <StyledInput
         placeholder="0.0"
-        type="text"
-        onChange={(e) => onChange(parseInput(e))}
+        type="number"
+        min="0"
+        step="0.0001"
+        value={inputText}
+        onKeyDown={(e) => {
+          if (e.key === "-") {
+            e.preventDefault();
+          }
+        }}
+        onChange={(e) => {
+          setInputText(e.target.value);
+          onChange(parseInput(e));
+        }}
       ></StyledInput>
 
       <InputAccessories>

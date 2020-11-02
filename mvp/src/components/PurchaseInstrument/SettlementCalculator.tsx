@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { PrimaryText } from "../../designSystem";
 import { Product, Instrument } from "../../models";
 import currencyIcons from "../../img/currencyIcons";
 import AmountInput from "./AmountInput";
+import { calculateYield, transposeYieldByCurrency } from "../../utils";
 
 const CalculatorDiv = styled.div`
   display: flex;
@@ -77,13 +78,19 @@ type Props = {
 };
 
 const SettlementCalculator: React.FC<Props> = ({ product, instrument }) => {
+  const [amount, setAmount] = useState(0.0);
+  const yields = calculateYield(amount, instrument, product);
+  const yieldsByCurrency = transposeYieldByCurrency(yields);
+  const targetYield = yieldsByCurrency.get(product.targetCurrency);
+  const paymentYield = yieldsByCurrency.get(product.paymentCurrency);
+
   return (
     <CalculatorDiv>
       <SettlementTitle>Settlement Calculator</SettlementTitle>
       <CalculatorPanel>
         <AmountInput
           paymentCurrency={product.paymentCurrency}
-          onChange={(val) => console.log(val)}
+          onChange={(amount) => setAmount(amount)}
         ></AmountInput>
         <ExpectedPayoffRowWithLine>
           <ExpectedPayoffText>
@@ -94,7 +101,10 @@ const SettlementCalculator: React.FC<Props> = ({ product, instrument }) => {
           </ExpectedPayoffText>
           <ExpectedPayoffText style={{ marginTop: 16 }}>
             <ExpectedPayoffTarget>
-              1.00 ETH (0.52% yield in {product.targetCurrency})
+              {targetYield && amount ? targetYield.percentage.toFixed(3) : 0}{" "}
+              ETH (
+              {targetYield && amount ? targetYield.percentage.toFixed(3) : 0}%
+              yield in {product.targetCurrency})
             </ExpectedPayoffTarget>
             <TargetCurrencyIcon
               src={currencyIcons[product.targetCurrency]}
