@@ -91,7 +91,12 @@ const SettlementCalculator: React.FC<Props> = ({
   amountInput
 }) => {
   const { targetCurrency, paymentCurrency } = product;
-  const yields = calculateYield(purchaseAmount, instrument, product);
+  const yields = calculateYield(
+    purchaseAmount,
+    instrument,
+    product,
+    instrument.targetSpotPrice
+  );
   const yieldsByCurrency = transposeYieldByCurrency(yields);
   const targetYield = yieldsByCurrency.get(product.targetCurrency);
   const paymentYield = yieldsByCurrency.get(product.paymentCurrency);

@@ -82,7 +82,8 @@ const InstrumentItem: React.FC<Props> = ({ instrument, product }) => {
   const yields = calculateYield(
     instrument.instrumentSpotPrice,
     instrument,
-    product
+    product,
+    instrument.targetSpotPrice
   );
   const largestYield = yields.reduce((y1, y2) =>
     y1.percentage > y2.percentage ? y1 : y2

@@ -21,10 +21,9 @@ export const calculateYield = (
   paymentTokenAmount: number,
   instrument: Instrument,
   product: Product,
-  targetSpotPrice = 0
+  targetSpotPrice: number
 ): Yield[] => {
   const { strikePrice, instrumentSpotPrice } = instrument;
-  targetSpotPrice = targetSpotPrice && instrument.targetSpotPrice;
 
   // target yield, when settlePrice < strikePrice
   const strikeAmount = paymentTokenAmount / strikePrice;
