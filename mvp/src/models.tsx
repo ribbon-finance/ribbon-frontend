@@ -3,6 +3,7 @@ export type Instrument = {
   strikePrice: number;
   balancerPool: string;
   instrumentSpotPrice: number;
+  targetSpotPrice: number;
   expiryTimestamp: number;
 };
 

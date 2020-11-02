@@ -22,26 +22,28 @@ export const calculateYield = (
   instrument: Instrument,
   product: Product
 ): Yield[] => {
-  const { strikePrice, instrumentSpotPrice } = instrument;
+  const { targetSpotPrice, strikePrice, instrumentSpotPrice } = instrument;
 
   // target yield, when settlePrice < strikePrice
   const strikeAmount = paymentTokenAmount / strikePrice;
   const dTokenAmount = paymentTokenAmount / instrumentSpotPrice;
-  const targetYield = (dTokenAmount / strikeAmount - 1) * 100;
+
+  const instrumentSpotInTargetCurrency = instrumentSpotPrice / targetSpotPrice;
+  const targetYield = (1 - instrumentSpotInTargetCurrency) * 100;
 
   // payment yield, when settlePrice >= strikePrice
   const settlementAmount = dTokenAmount * strikePrice;
-  const paymentYield = (settlementAmount / paymentTokenAmount - 1) * 100;
+  const paymentYield = (strikePrice / instrumentSpotPrice - 1) * 100;
 
   return [
     {
       currencySymbol: product.paymentCurrency,
-      amount: dTokenAmount,
+      amount: settlementAmount,
       percentage: paymentYield
     },
     {
       currencySymbol: product.targetCurrency,
-      amount: settlementAmount,
+      amount: strikeAmount,
       percentage: targetYield
     }
   ];

@@ -51,6 +51,8 @@ const MaxButton = styled.button`
   text-align: center;
   border: none;
   cursor: pointer;
+  outline: none;
+  box-shadow: none;
 `;
 
 const MaxButtonText = styled(SecondaryText)`
@@ -111,7 +113,12 @@ const AmountInput: React.FC<AmountInputProps> = ({
       ></StyledInput>
 
       <InputAccessories>
-        <MaxButton onClick={() => setInputText(maxAmount.toString())}>
+        <MaxButton
+          onClick={() => {
+            setInputText(maxAmount.toFixed(3));
+            onChange(maxAmount);
+          }}
+        >
           <MaxButtonText>MAX</MaxButtonText>
         </MaxButton>
 
