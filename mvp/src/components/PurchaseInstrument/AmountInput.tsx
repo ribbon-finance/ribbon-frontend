@@ -51,6 +51,8 @@ const MaxButton = styled.button`
   text-align: center;
   border: none;
   cursor: pointer;
+  outline: none;
+  box-shadow: none;
 `;
 
 const MaxButtonText = styled(SecondaryText)`
