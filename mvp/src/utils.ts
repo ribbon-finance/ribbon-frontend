@@ -33,6 +33,12 @@ export const calculateYield = (
   ];
 };
 
+/**
+ * Based on this https://www.investopedia.com/terms/a/apy.asp
+ * @param yieldPercent
+ * @param periodStart
+ * @param periodEnd
+ */
 export const convertToAPY = (
   yieldPercent: number,
   periodStart: number,

@@ -2,17 +2,23 @@ import React from "react";
 import { Instrument, Product } from "../../models";
 import {
   CurrencyPairContainer,
-  PrimaryText,
   ProductContainer,
   Title
 } from "../../designSystem";
 import CurrencyPair from "../../designSystem/CurrencyPair";
-import { calculateYield } from "../../utils";
+import styled from "styled-components";
+import SettlementCalculator from "./SettlementCalculator";
 
 type Props = {
   product: Product;
   instrument: Instrument;
 };
+
+const SettlementContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+`;
 
 const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
   const { targetCurrency, paymentCurrency } = product;
@@ -27,6 +33,13 @@ const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
           paymentCurrency={paymentCurrency}
         ></CurrencyPair>
       </CurrencyPairContainer>
+
+      <SettlementContainer>
+        <SettlementCalculator
+          product={product}
+          instrument={instrument}
+        ></SettlementCalculator>
+      </SettlementContainer>
     </ProductContainer>
   );
 };
