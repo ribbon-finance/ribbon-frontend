@@ -4,9 +4,11 @@ import styled from "styled-components";
 import Jazzicon from "@metamask/jazzicon";
 
 const StyledIdenticonContainer = styled.div`
-  height: 1rem;
-  width: 1rem;
-  border-radius: 1.125rem;
+  display: flex;
+  align-items: center;
+  height: 1.2rem;
+  width: 1.2rem;
+  border-radius: 1.25rem;
   background-color: ${({ theme }) => theme.bg4};
 `;
 

@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import ethers from "ethers";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
+import { InjectedConnector } from "@web3-react/injected-connector";
 import ethereumAccountImage from "../../img/ethAccount.svg";
 import { SecondaryText } from "../../designSystem";
 import AccountIcon from "./AccountIcon";
@@ -10,6 +12,7 @@ const AccountPill = styled.div`
   flex-direction: row;
   background: #bcbcbc;
   border-radius: 15px;
+  cursor: pointer;
 `;
 
 const AccountPillText = styled(SecondaryText)`
@@ -34,8 +37,8 @@ const AccountPillAddress = styled.div`
   border-radius: 15px;
 `;
 
-const AddressIcon = styled.img`
-  margin-left: 2px;
+const IconSpan = styled.span`
+  margin-left: 6px;
 `;
 
 type Props = {};
@@ -45,18 +48,46 @@ const truncateAddress = (address: string) => {
 };
 
 const AccountStatus: React.FC<Props> = () => {
-  const { active, account } = useWeb3React();
+  const [balance, setBalance] = useState("0");
+  const { activate: activateWeb3, library, active, account } = useWeb3React();
+  const hasAccount = active && account;
+
+  const injectedConnector = new InjectedConnector({
+    supportedChainIds: [1, 3, 4, 5, 42]
+  });
+  const handleConnect = () => {
+    activateWeb3(injectedConnector);
+  };
+
+  useEffect(() => {
+    if (library && account) {
+      (async () => {
+        const bal = await library.getBalance(account);
+        const isZero = bal.eq("0");
+        const etherBal = isZero
+          ? "0"
+          : parseFloat(ethers.utils.formatEther(bal)).toFixed(3);
+        setBalance(etherBal);
+      })();
+    }
+  }, [library, account]);
+
+  console.log(balance);
 
   return (
-    <AccountPill onClick={() => {}}>
-      <AccountPillBalance>
-        <AccountPillText>0.5083 ETH</AccountPillText>
-      </AccountPillBalance>
+    <AccountPill role="button" onClick={handleConnect}>
+      {hasAccount && (
+        <AccountPillBalance>
+          <AccountPillText>{balance} ETH</AccountPillText>
+        </AccountPillBalance>
+      )}
       <AccountPillAddress>
         <AccountPillText>
-          {active && account ? truncateAddress(account) : "Not Connected"}
+          {active && account ? truncateAddress(account) : "Connect to a wallet"}
         </AccountPillText>
-        <AccountIcon></AccountIcon>
+        <IconSpan>
+          <AccountIcon></AccountIcon>
+        </IconSpan>
       </AccountPillAddress>
     </AccountPill>
   );
