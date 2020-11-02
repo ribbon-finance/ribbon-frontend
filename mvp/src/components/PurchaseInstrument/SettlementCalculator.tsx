@@ -146,7 +146,7 @@ const SettlementCalculator: React.FC<Props> = ({
             <ExpectedPayoffText style={{ marginTop: 16 }}>
               <ExpectedPayoffPayment>
                 {paymentYield && purchaseAmount
-                  ? paymentYield.amount.toFixed(3)
+                  ? paymentYield.amount.toFixed(2)
                   : 0}{" "}
                 {paymentCurrency} (
                 {paymentYield && purchaseAmount
