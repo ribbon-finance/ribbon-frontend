@@ -18,6 +18,7 @@ const SettlementContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
+  justify-content: center;
 `;
 
 const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
