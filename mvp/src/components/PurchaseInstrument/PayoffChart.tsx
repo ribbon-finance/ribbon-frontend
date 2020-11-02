@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Line } from "react-chartjs-2";
 import styled from "styled-components";
 
@@ -53,6 +53,7 @@ type Props = {
   maxPrice: number;
   strikePrice: number;
   stepSize: number;
+  renderDelay?: number;
   payoffAlgo: (inputPrice: number) => number;
 };
 
@@ -61,9 +62,13 @@ const PayoffChart: React.FC<Props> = ({
   maxPrice,
   strikePrice,
   stepSize,
-  payoffAlgo
+  payoffAlgo,
+  renderDelay = 300 //ms
 }) => {
-  const [labels, data] = useMemo(() => {
+  const [labels, setLabels] = useState<string[]>([]);
+  const [data, setData] = useState<number[]>([]);
+
+  const [memoizedLabels, memoizedData] = useMemo(() => {
     let labelNumbers = [];
     let curPrice = minPrice;
 
@@ -82,6 +87,14 @@ const PayoffChart: React.FC<Props> = ({
     const labels = labelNumbers.map((label) => label.toString());
     return [labels, data];
   }, [minPrice, maxPrice, strikePrice, stepSize, payoffAlgo]);
+
+  // add a delay for every re-render
+  useEffect(() => {
+    setTimeout(() => {
+      setLabels(memoizedLabels);
+      setData(memoizedData);
+    }, renderDelay);
+  }, [memoizedLabels, memoizedData, renderDelay, payoffAlgo]);
 
   const chartData = {
     labels,

@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { PrimaryText } from "../../designSystem";
 import { Product, Instrument } from "../../models";
 import currencyIcons from "../../img/currencyIcons";
-import AmountInput from "./AmountInput";
 import { calculateYield, transposeYieldByCurrency } from "../../utils";
 import DualButton from "./DualButton";
 
