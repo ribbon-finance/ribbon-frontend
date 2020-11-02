@@ -10,7 +10,7 @@ export const products: Product[] = [
       {
         symbol: "TY-ETHUSDC-390-03112020",
         instrumentSpotPrice: 380,
-        targetSpotPrice: 388,
+        targetSpotPrice: 399.2,
         strikePrice: 390,
         expiryTimestamp: 1604361600,
         balancerPool: "0x75286e183D923a5F52F52be205e358c5C9101b09"
@@ -18,7 +18,7 @@ export const products: Product[] = [
       {
         symbol: "TY-ETHUSDC-400-03112020",
         instrumentSpotPrice: 390,
-        targetSpotPrice: 388,
+        targetSpotPrice: 399.2,
         strikePrice: 400,
         expiryTimestamp: 1604361600,
         balancerPool: "0x75286e183D923a5F52F52be205e358c5C9101b09"
