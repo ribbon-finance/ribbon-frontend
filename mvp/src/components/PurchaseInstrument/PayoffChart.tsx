@@ -9,9 +9,28 @@ const defaultLabelOptions = {
   fontColor: "#000000"
 };
 
+type ToolTipItem = {
+  yLabel: number;
+  xLabel: number;
+  datasetIndex: number;
+};
+
 const options = {
   legend: {
     display: false
+  },
+  tooltips: {
+    callbacks: {
+      title: (tooltips: ToolTipItem[]) => {
+        if (tooltips.length >= 1) {
+          return `If it settles at $${tooltips[0].xLabel}`;
+        }
+        return "";
+      },
+      label: (tooltipItem: ToolTipItem, _data: ToolTipItem[]) => {
+        return "Return: $" + tooltipItem.yLabel.toFixed(2);
+      }
+    }
   },
   scales: {
     yAxes: [
@@ -21,7 +40,9 @@ const options = {
           labelString: "Return in USD"
         },
         ticks: {
-          beginAtZero: true
+          beginAtZero: true,
+          callback: (value: number, _index: number, _values: number[]) =>
+            "$" + value
         }
       }
     ],
@@ -65,26 +86,25 @@ const PayoffChart: React.FC<Props> = ({
   payoffAlgo,
   renderDelay = 300 //ms
 }) => {
-  const [labels, setLabels] = useState<string[]>([]);
+  const [labels, setLabels] = useState<number[]>([]);
   const [data, setData] = useState<number[]>([]);
 
   const [memoizedLabels, memoizedData] = useMemo(() => {
-    let labelNumbers = [];
+    let labels = [];
     let curPrice = minPrice;
 
     while (curPrice <= maxPrice) {
-      labelNumbers.push(curPrice);
+      labels.push(curPrice);
       curPrice += stepSize;
     }
     const nearestStep = strikePrice - (strikePrice % stepSize);
-    labelNumbers.splice(labelNumbers.indexOf(nearestStep) + 1, 0, strikePrice);
+    labels.splice(labels.indexOf(nearestStep) + 1, 0, strikePrice);
 
-    const data = labelNumbers.map((price) => {
+    const data = labels.map((price) => {
       const payoff = payoffAlgo(price);
       return payoff === -Infinity ? 0 : payoff;
     });
 
-    const labels = labelNumbers.map((label) => label.toString());
     return [labels, data];
   }, [minPrice, maxPrice, strikePrice, stepSize, payoffAlgo]);
 
