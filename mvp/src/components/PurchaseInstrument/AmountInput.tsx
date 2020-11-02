@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { PrimaryText, SecondaryText } from "../../designSystem";
+import { Button, PrimaryText, SecondaryText } from "../../designSystem";
 import currencyIcons from "../../img/currencyIcons";
 import "./AmountInput.css";
 
@@ -42,17 +42,12 @@ const StyledInput = styled.input`
   border: none;
 `;
 
-const MaxButton = styled.button`
+const MaxButton = styled(Button)`
   background: #c4c4c4;
   border-radius: 10px;
   width: ${maxButtonWidth}px;
   height: 22px;
   margin-left: ${maxButtonMarginLeft}px;
-  text-align: center;
-  border: none;
-  cursor: pointer;
-  outline: none;
-  box-shadow: none;
 `;
 
 const MaxButtonText = styled(SecondaryText)`

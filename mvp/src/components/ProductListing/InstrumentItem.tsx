@@ -2,7 +2,7 @@ import moment from "moment";
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { PrimaryText, SecondaryText } from "../../designSystem";
+import { Button, PrimaryText, SecondaryText } from "../../designSystem";
 import { Instrument, Product } from "../../models";
 import { calculateYield, convertToAPY } from "../../utils";
 
@@ -58,14 +58,12 @@ const InstrumentDetailProperty = styled(InstrumentDetailText)`
   font-weight: bold;
 `;
 
-const BuyProductButton = styled.button`
+const BuyProductButton = styled(Button)`
   justify-self: center;
   width: 142px;
   height: 36px;
   background: #2d9cdb;
-  border: 0;
   border-radius: 20px;
-  cursor: pointer;
 `;
 
 const ButtonText = styled(SecondaryText)`

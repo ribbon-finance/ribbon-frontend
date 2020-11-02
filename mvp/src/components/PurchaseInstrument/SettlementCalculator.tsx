@@ -5,6 +5,7 @@ import { Product, Instrument } from "../../models";
 import currencyIcons from "../../img/currencyIcons";
 import AmountInput from "./AmountInput";
 import { calculateYield, transposeYieldByCurrency } from "../../utils";
+import DualButton from "./DualButton";
 
 const CalculatorDiv = styled.div`
   display: flex;
@@ -114,7 +115,7 @@ const SettlementCalculator: React.FC<Props> = ({ product, instrument }) => {
           </ExpectedPayoffText>
         </ExpectedPayoffRowWithLine>
 
-        <ExpectedPayoffRow>
+        <ExpectedPayoffRow style={{ marginBottom: 25 }}>
           <ExpectedPayoffText>
             <ExpectedPayoffStatement>
               If price of ETH is ≥ ${instrument.strikePrice} at expiry, receive:
@@ -129,6 +130,7 @@ const SettlementCalculator: React.FC<Props> = ({ product, instrument }) => {
             </ExpectedPayoffPayment>
           </ExpectedPayoffText>
         </ExpectedPayoffRow>
+        <DualButton paymentCurrency={paymentCurrency}></DualButton>
       </CalculatorPanel>
     </CalculatorDiv>
   );
