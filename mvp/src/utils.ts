@@ -20,9 +20,10 @@ export const transposeYieldByCurrency = (yields: Yield[]) => {
 export const calculateYield = (
   paymentTokenAmount: number,
   instrument: Instrument,
-  product: Product
+  product: Product,
+  targetSpotPrice: number
 ): Yield[] => {
-  const { targetSpotPrice, strikePrice, instrumentSpotPrice } = instrument;
+  const { strikePrice, instrumentSpotPrice } = instrument;
 
   // target yield, when settlePrice < strikePrice
   const strikeAmount = paymentTokenAmount / strikePrice;
