@@ -91,6 +91,7 @@ const SettlementCalculator: React.FC<Props> = ({ product, instrument }) => {
       <CalculatorPanel>
         <AmountInput
           paymentCurrency={product.paymentCurrency}
+          maxAmount={1000} /* Just hardcode this for now */
           onChange={(amount) => setAmount(amount)}
         ></AmountInput>
         <ExpectedPayoffRowWithLine>

@@ -50,6 +50,7 @@ const MaxButton = styled.button`
   margin-left: ${maxButtonMarginLeft}px;
   text-align: center;
   border: none;
+  cursor: pointer;
 `;
 
 const MaxButtonText = styled(SecondaryText)`
@@ -75,11 +76,13 @@ const AmountText = styled(PrimaryText)`
 
 type AmountInputProps = {
   paymentCurrency: string;
+  maxAmount: number;
   onChange: (value: number) => void;
 };
 
 const AmountInput: React.FC<AmountInputProps> = ({
   paymentCurrency,
+  maxAmount,
   onChange
 }) => {
   const [inputText, setInputText] = useState("");
@@ -108,7 +111,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
       ></StyledInput>
 
       <InputAccessories>
-        <MaxButton>
+        <MaxButton onClick={() => setInputText(maxAmount.toString())}>
           <MaxButtonText>MAX</MaxButtonText>
         </MaxButton>
 
