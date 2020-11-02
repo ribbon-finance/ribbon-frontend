@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Instrument, Product } from "../../models";
 import {
   CurrencyPairContainer,
@@ -31,24 +31,27 @@ const Spacer = styled.div`
 const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
   const { targetCurrency, paymentCurrency } = product;
 
-  const payoffAlgo = (inputPrice: number): number => {
-    const allYields = calculateYield(1000, instrument, product, inputPrice);
-    const yieldsByCurrency = transposeYieldByCurrency(allYields);
+  const payoffAlgo = useCallback(
+    (inputPrice: number): number => {
+      const allYields = calculateYield(1000, instrument, product, inputPrice);
+      const yieldsByCurrency = transposeYieldByCurrency(allYields);
 
-    const settlePastStrike = inputPrice >= instrument.strikePrice;
+      const settlePastStrike = inputPrice >= instrument.strikePrice;
 
-    const payoffYield = settlePastStrike
-      ? yieldsByCurrency.get(product.paymentCurrency)
-      : yieldsByCurrency.get(product.targetCurrency);
+      const payoffYield = settlePastStrike
+        ? yieldsByCurrency.get(product.paymentCurrency)
+        : yieldsByCurrency.get(product.targetCurrency);
 
-    if (payoffYield && payoffYield.amount) {
-      const payoffAmount = settlePastStrike
-        ? payoffYield.amount
-        : payoffYield.amount * inputPrice;
-      return payoffAmount;
-    }
-    return 0;
-  };
+      if (payoffYield && payoffYield.amount) {
+        const payoffAmount = settlePastStrike
+          ? payoffYield.amount
+          : payoffYield.amount * inputPrice;
+        return payoffAmount;
+      }
+      return 0;
+    },
+    [product, instrument]
+  );
 
   return (
     <ProductContainer>
