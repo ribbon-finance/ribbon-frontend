@@ -36,12 +36,12 @@ export const calculateYield = (
   return [
     {
       currencySymbol: product.paymentCurrency,
-      amount: dTokenAmount,
+      amount: settlementAmount,
       percentage: paymentYield
     },
     {
       currencySymbol: product.targetCurrency,
-      amount: settlementAmount,
+      amount: strikeAmount,
       percentage: targetYield
     }
   ];
