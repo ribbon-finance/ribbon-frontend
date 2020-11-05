@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@0x/assert": "^3.0.17",
+    "@0x/base-contract": "^6.2.11",
+    "@0x/json-schemas": "^5.3.3",
+    "@0x/web3-wrapper": "^7.2.8",
     "@metamask/jazzicon": "^2.0.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -32,7 +36,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "codegen": "npx abi-gen --abis src/constants/InstrumentInterface.json --out src/codegen"
+    "codegen": "npx abi-gen --abis src/constants/InstrumentInterface.json --out src/codegen --backend ethers --template src/codegenTemplates/contract.handlebars --partials 'src/codegenTemplates/partials/*.handlebars'"
   },
   "eslintConfig": {
     "extends": [
