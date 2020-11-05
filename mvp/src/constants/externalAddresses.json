@@ -1,0 +1,19 @@
+{
+  "kovan": {
+    "feeds": {
+      "dai/eth": "0x22B58f1EbEDfCA50feF632bD73368b2FdA96D541",
+      "eth/usd": "0x9326BFA02ADD2366b30bacB125260Af641031331",
+      "link/eth": "0xa36085f69e2889c224210f603d836748e7dc0088"
+    },
+    "assets": {
+      "dai": "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa",
+      "link": "0xa36085f69e2889c224210f603d836748e7dc0088",
+      "eth": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "weth": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
+      "usdc": "0xdCFaB8057d08634279f8201b55d311c2a67897D2"
+    },
+    "balancerFactory": "0x8f7F78080219d4066A8036ccD30D588B416a40DB"
+  }
+}
+
+
