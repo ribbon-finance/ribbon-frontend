@@ -10,29 +10,23 @@ import {
     {{#if events~}}SubscriptionManager,{{/if~}}
     PromiseWithTransactionHash,
     methodAbiToFunctionSignature,
-    linkLibrariesInBytecode,
 } from '@0x/base-contract';
 import { schemas } from '@0x/json-schemas';
 import {
     BlockParam,
-    BlockParamLiteral,
     BlockRange,
     CallData,
     ContractAbi,
-    ContractArtifact,
     DecodedLogArgs,{{#if events}}
     LogWithDecodedArgs,{{/if}}
     MethodAbi,
     TransactionReceiptWithDecodedLogs,
     TxData,
-    TxDataPayable,
     SupportedProvider,
 } from 'ethereum-types';
-import { BigNumber, classUtils, hexUtils, logUtils, providerUtils } from '@0x/utils';
-import { EventCallback, IndexedFilterValues, SimpleContractArtifact } from '@0x/types';
-import { Web3Wrapper } from '@0x/web3-wrapper';
+import { BigNumber, classUtils } from '@0x/utils';
+import { EventCallback, IndexedFilterValues } from '@0x/types';
 import { assert } from '@0x/assert';
-import * as ethers from 'ethers';
 // tslint:enable:no-unused-variable
 
 

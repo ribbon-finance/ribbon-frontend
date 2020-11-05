@@ -1,15 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import moment from "moment";
 import {
   CurrencyPairContainer,
   PrimaryText,
   ProductContainer,
-  Title
+  Title,
 } from "../../designSystem";
 import CurrencyPair from "../../designSystem/CurrencyPair";
 import { Product } from "../../models";
 import InstrumentItem from "./InstrumentItem";
+import { TwinYieldContract } from "../../codegen/twin_yield";
+import deployedInstruments from "../../constants/instruments.json";
+import { useWeb3React } from "@web3-react/core";
 
 const ProductTerms = styled.div`
   text-align: center;
@@ -49,6 +52,18 @@ const ProductListing: React.FC<Props> = ({ product }) => {
   const { targetCurrency, paymentCurrency } = product;
   const expiryDateTime = moment.unix(product.expiryTimestamp);
   const expiresIn = expiryDateTime.from(moment());
+  const { active, library } = useWeb3React();
+  const instrument = new TwinYieldContract(
+    deployedInstruments.kovan[0].address,
+    library
+  );
+
+  useEffect(() => {
+    (async function () {
+      const name = await instrument.name();
+      console.log(name);
+    })();
+  });
 
   return (
     <ProductContainer>

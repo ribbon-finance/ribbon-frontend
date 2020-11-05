@@ -36,7 +36,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "codegen": "npx abi-gen --abis src/constants/InstrumentInterface.json --out src/codegen --backend ethers --template src/codegenTemplates/contract.handlebars --partials 'src/codegenTemplates/partials/*.handlebars'"
+    "codegen": "npx abi-gen --abis src/constants/TwinYield.json --out src/codegen --backend ethers --template src/codegenTemplates/contract.handlebars --partials 'src/codegenTemplates/partials/*.handlebars'"
   },
   "eslintConfig": {
     "extends": [
