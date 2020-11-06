@@ -5,11 +5,12 @@ import {
   CurrencyPairContainer,
   PrimaryText,
   ProductContainer,
-  Title
+  Title,
 } from "../../designSystem";
 import CurrencyPair from "../../designSystem/CurrencyPair";
-import { Product } from "../../models";
+import { Instrument, Product } from "../../models";
 import InstrumentItem from "./InstrumentItem";
+import { useInstruments } from "../../hooks/useInstruments";
 
 const ProductTerms = styled.div`
   text-align: center;
@@ -49,6 +50,17 @@ const ProductListing: React.FC<Props> = ({ product }) => {
   const { targetCurrency, paymentCurrency } = product;
   const expiryDateTime = moment.unix(product.expiryTimestamp);
   const expiresIn = expiryDateTime.from(moment());
+  const res = useInstruments();
+  let instruments: Instrument[] = [];
+
+  switch (res.status) {
+    case "loading":
+    case "error":
+      break;
+    case "success":
+      instruments = res.instruments;
+      break;
+  }
 
   return (
     <ProductContainer>
@@ -83,7 +95,7 @@ const ProductListing: React.FC<Props> = ({ product }) => {
       </ProductTerms>
 
       <InstrumentsContainer>
-        {product.instruments.map((instrument) => (
+        {instruments.map((instrument) => (
           <InstrumentItem
             key={instrument.symbol}
             product={product}

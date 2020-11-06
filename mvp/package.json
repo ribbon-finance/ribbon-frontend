@@ -31,7 +31,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "codegen": "npx typechain --target=ethers-v5 --outDir src/codegen src/constants/TwinYield.json"
   },
   "eslintConfig": {
     "extends": [
@@ -50,5 +51,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@typechain/ethers-v5": "^3.0.0",
+    "typechain": "^4.0.0"
   }
 }
