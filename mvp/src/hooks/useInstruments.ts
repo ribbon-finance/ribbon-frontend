@@ -70,13 +70,6 @@ export const useInstrument = (
   const [loaded, setLoaded] = useState(false);
   const [instrumentData, setInstrumentData] = useState<Instrument | null>(null);
 
-  if (!addresses.includes(instrumentAddress)) {
-    return {
-      status: "error",
-      message: `No instrument found at ${instrumentAddress}`,
-    };
-  }
-
   useEffect(() => {
     if (library) {
       (async function () {
@@ -88,7 +81,14 @@ export const useInstrument = (
         setInstrumentData(data);
       })();
     }
-  }, [library]);
+  }, [instrumentAddress, library]);
+
+  if (!addresses.includes(instrumentAddress)) {
+    return {
+      status: "error",
+      message: `No instrument found at ${instrumentAddress}`,
+    };
+  }
 
   switch (loaded) {
     case true:
@@ -109,7 +109,7 @@ const fetchInstrumentData = async (
   const instrumentData = {
     symbol: await instrument.symbol(),
     strikePrice,
-    expiryTimestamp: (await instrument.strikePrice()).toNumber(),
+    expiryTimestamp: (await instrument.expiry()).toNumber(),
     balancerPool: "0x",
     instrumentSpotPrice: strikePrice - 10,
     targetSpotPrice: strikePrice - 5,

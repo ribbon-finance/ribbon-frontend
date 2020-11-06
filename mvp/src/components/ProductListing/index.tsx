@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import moment from "moment";
 import {
@@ -8,11 +8,9 @@ import {
   Title,
 } from "../../designSystem";
 import CurrencyPair from "../../designSystem/CurrencyPair";
-import { Product } from "../../models";
+import { Instrument, Product } from "../../models";
 import InstrumentItem from "./InstrumentItem";
-import { TwinYieldFactory } from "../../codegen";
-import deployedInstruments from "../../constants/instruments.json";
-import { useWeb3React } from "@web3-react/core";
+import { useInstruments } from "../../hooks/useInstruments";
 
 const ProductTerms = styled.div`
   text-align: center;
@@ -52,18 +50,17 @@ const ProductListing: React.FC<Props> = ({ product }) => {
   const { targetCurrency, paymentCurrency } = product;
   const expiryDateTime = moment.unix(product.expiryTimestamp);
   const expiresIn = expiryDateTime.from(moment());
-  const { active, library } = useWeb3React();
+  const res = useInstruments();
+  let instruments: Instrument[] = [];
 
-  useEffect(() => {
-    if (library) {
-      const signer = library.getSigner();
-      const factory = new TwinYieldFactory(signer);
-      const instrument = factory.attach(deployedInstruments.kovan[0].address);
-      (async function () {
-        console.log(await instrument.name());
-      })();
-    }
-  }, [library]);
+  switch (res.status) {
+    case "loading":
+    case "error":
+      break;
+    case "success":
+      instruments = res.instruments;
+      break;
+  }
 
   return (
     <ProductContainer>
@@ -98,7 +95,7 @@ const ProductListing: React.FC<Props> = ({ product }) => {
       </ProductTerms>
 
       <InstrumentsContainer>
-        {product.instruments.map((instrument) => (
+        {instruments.map((instrument) => (
           <InstrumentItem
             key={instrument.symbol}
             product={product}
