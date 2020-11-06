@@ -22,9 +22,10 @@ export const useInstruments = (
   | { status: "success"; instruments: Instrument[] }
   | { status: "loading" } => {
   const { library } = useWeb3React();
-  const addresses = useMemo(() => getDeployedInstrumentAddresses(network), [
-    network,
-  ]);
+  const addresses = useMemo(
+    () => getDeployedInstruments(network).map((ins) => ins.address),
+    [network]
+  );
   const [loaded, setLoaded] = useState(false);
   const [instrumentData, setInstrumentData] = useState<Instrument[]>([]);
 
@@ -57,36 +58,40 @@ export const useInstruments = (
 };
 
 export const useInstrument = (
-  instrumentAddress: string,
+  instrumentSymbol: string,
   network = "kovan"
 ):
   | { status: "error"; message: string }
   | { status: "success"; instrument: Instrument }
   | { status: "loading" } => {
   const { library } = useWeb3React();
-  const addresses = useMemo(() => getDeployedInstrumentAddresses(network), [
+  const deployedInstruments = useMemo(() => getDeployedInstruments(network), [
     network,
   ]);
   const [loaded, setLoaded] = useState(false);
   const [instrumentData, setInstrumentData] = useState<Instrument | null>(null);
 
+  const deployedInstrument = deployedInstruments.find(
+    (ins) => ins.instrumentSymbol === instrumentSymbol
+  );
+
   useEffect(() => {
-    if (library) {
+    if (library && deployedInstrument) {
       (async function () {
         const signer = library.getSigner();
         const factory = new TwinYieldFactory(signer);
-        const instrument = factory.attach(instrumentAddress);
+        const instrument = factory.attach(deployedInstrument.address);
         const data = await fetchInstrumentData(instrument);
         setLoaded(true);
         setInstrumentData(data);
       })();
     }
-  }, [instrumentAddress, library]);
+  }, [deployedInstrument, instrumentSymbol, library]);
 
-  if (!addresses.includes(instrumentAddress)) {
+  if (!deployedInstrument) {
     return {
       status: "error",
-      message: `No instrument found at ${instrumentAddress}`,
+      message: `No instrument found at ${instrumentSymbol}`,
     };
   }
 
@@ -117,11 +122,10 @@ const fetchInstrumentData = async (
   return instrumentData;
 };
 
-const getDeployedInstrumentAddresses = (network: string) => {
+const getDeployedInstruments = (network: string) => {
   let instrumentsByNetwork: DeployedInstrumentByNetwork = deployedInstruments;
   if (instrumentsByNetwork[network]) {
-    const deployedInstruments = instrumentsByNetwork[network];
-    return deployedInstruments.map((instrument) => instrument.address);
+    return instrumentsByNetwork[network];
   }
   return [];
 };
