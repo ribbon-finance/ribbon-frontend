@@ -10,7 +10,7 @@ import {
 import CurrencyPair from "../../designSystem/CurrencyPair";
 import { Product } from "../../models";
 import InstrumentItem from "./InstrumentItem";
-import { TwinYieldContract } from "../../codegen/twin_yield";
+import { TwinYieldFactory } from "../../codegen";
 import deployedInstruments from "../../constants/instruments.json";
 import { useWeb3React } from "@web3-react/core";
 
@@ -53,17 +53,17 @@ const ProductListing: React.FC<Props> = ({ product }) => {
   const expiryDateTime = moment.unix(product.expiryTimestamp);
   const expiresIn = expiryDateTime.from(moment());
   const { active, library } = useWeb3React();
-  const instrument = new TwinYieldContract(
-    deployedInstruments.kovan[0].address,
-    library
-  );
 
   useEffect(() => {
-    (async function () {
-      const name = await instrument.name();
-      console.log(name);
-    })();
-  });
+    if (library) {
+      const signer = library.getSigner();
+      const factory = new TwinYieldFactory(signer);
+      const instrument = factory.attach(deployedInstruments.kovan[0].address);
+      (async function () {
+        console.log(await instrument.name());
+      })();
+    }
+  }, [library]);
 
   return (
     <ProductContainer>
