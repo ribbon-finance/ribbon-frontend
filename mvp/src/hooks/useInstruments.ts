@@ -17,18 +17,14 @@ type DeployedInstrumentByNetwork = {
 
 export const useInstruments = (
   network = "kovan"
-): { loaded: boolean; instruments: Instrument[] } => {
+):
+  | { status: "error"; message: string }
+  | { status: "success"; instruments: Instrument[] }
+  | { status: "loading" } => {
   const { library } = useWeb3React();
-
-  const addresses = useMemo(() => {
-    let instrumentsByNetwork: DeployedInstrumentByNetwork = deployedInstruments;
-    if (instrumentsByNetwork[network]) {
-      const deployedInstruments = instrumentsByNetwork[network];
-      return deployedInstruments.map((instrument) => instrument.address);
-    }
-    return [];
-  }, [network]);
-
+  const addresses = useMemo(() => getDeployedInstrumentAddresses(network), [
+    network,
+  ]);
   const [loaded, setLoaded] = useState(false);
   const [instrumentData, setInstrumentData] = useState<Instrument[]>([]);
 
@@ -49,10 +45,61 @@ export const useInstruments = (
     }
   }, [addresses, library]);
 
-  return { loaded, instruments: instrumentData };
+  switch (loaded) {
+    case true:
+      if (instrumentData !== null) {
+        return { status: "success", instruments: instrumentData };
+      }
+      return { status: "error", message: "Failed to load instrument" };
+    case false:
+      return { status: "loading" };
+  }
 };
 
-export const useInstrument = () => {};
+export const useInstrument = (
+  instrumentAddress: string,
+  network = "kovan"
+):
+  | { status: "error"; message: string }
+  | { status: "success"; instrument: Instrument }
+  | { status: "loading" } => {
+  const { library } = useWeb3React();
+  const addresses = useMemo(() => getDeployedInstrumentAddresses(network), [
+    network,
+  ]);
+  const [loaded, setLoaded] = useState(false);
+  const [instrumentData, setInstrumentData] = useState<Instrument | null>(null);
+
+  if (!addresses.includes(instrumentAddress)) {
+    return {
+      status: "error",
+      message: `No instrument found at ${instrumentAddress}`,
+    };
+  }
+
+  useEffect(() => {
+    if (library) {
+      (async function () {
+        const signer = library.getSigner();
+        const factory = new TwinYieldFactory(signer);
+        const instrument = factory.attach(instrumentAddress);
+        const data = await fetchInstrumentData(instrument);
+        setLoaded(true);
+        setInstrumentData(data);
+      })();
+    }
+  }, [library]);
+
+  switch (loaded) {
+    case true:
+      if (instrumentData !== null) {
+        return { status: "success", instrument: instrumentData };
+      }
+      return { status: "error", message: "Failed to load instrument" };
+    case false:
+      return { status: "loading" };
+  }
+};
 
 const fetchInstrumentData = async (
   instrument: TwinYield
@@ -68,4 +115,13 @@ const fetchInstrumentData = async (
     targetSpotPrice: strikePrice - 5,
   };
   return instrumentData;
+};
+
+const getDeployedInstrumentAddresses = (network: string) => {
+  let instrumentsByNetwork: DeployedInstrumentByNetwork = deployedInstruments;
+  if (instrumentsByNetwork[network]) {
+    const deployedInstruments = instrumentsByNetwork[network];
+    return deployedInstruments.map((instrument) => instrument.address);
+  }
+  return [];
 };
