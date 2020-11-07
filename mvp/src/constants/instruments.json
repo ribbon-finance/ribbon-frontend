@@ -1,22 +1,16 @@
 {
 	"kovan": [
 		{
-			"txhash": "0x0c3c10f07461b1300f0bc02c4af6619faa9285831a9ddc659753b2b8d793a6e2",
-			"expiry": 1605307742,
-			"instrumentSymbol": "TY-ETHUSDC-450-11132020",
-			"address": "0xaA9E0Ed8fC621817aDc8EABe7b6B0261ab8dD1A3"
-		},
-		{
-			"txhash": "0x20e2d159691f1cda1d37790c2a0824b48b957d027fa5ab48d77854fd787beba8",
-			"expiry": 1605307287,
-			"instrumentSymbol": "TY-ETHUSDC-440-11132020",
-			"address": "0x695e9b292E5aa34fdfF244859952Fdc347F95197"
-		},
-		{
-			"txhash": "0x7dab9c2c25baec489712a2be5dea6bdefc4b91d95e70744b8139cf356d100765",
+			"txhash": "0x9102ca067616433875444399071b96cba4e236990289fe8941cd8fd67bf6bd0f",
 			"expiry": 1605225600,
 			"instrumentSymbol": "TY-ETHUSDC-440-11132020",
-			"address": "0x75a39F3F5990949fe76475c71c8cf5Ebb33bCe2D"
+			"address": "0x7ce4e667b1caF03b8c85133C8c18d8111a7bD384"
+		},
+		{
+			"txhash": "0xdbd7b1b998472dac5c7b1b647cb33cbbeea6ca1b4129ae85100f7267a8781d5f",
+			"expiry": 1605225600,
+			"instrumentSymbol": "TY-ETHUSDC-450-11132020",
+			"address": "0x05eef1265cD77AD3D7288246547a4A3ffdF4FbFd"
 		}
 	],
 	"development": []
