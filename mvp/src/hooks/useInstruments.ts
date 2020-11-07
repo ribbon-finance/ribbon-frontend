@@ -1,8 +1,10 @@
 import { Instrument } from "./../models";
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useMemo, useState } from "react";
-import { TwinYield, TwinYieldFactory } from "../codegen";
+import { DataProviderFactory, TwinYield, TwinYieldFactory } from "../codegen";
 import deployedInstruments from "../constants/instruments.json";
+import { BPoolFactory } from "../codegen/BPoolFactory";
+import { ethers } from "ethers";
 
 type DeployedInstrument = {
   txhash: string;
@@ -37,7 +39,7 @@ export const useInstruments = (
 
       (async function () {
         const promises = instruments.map((instrument) =>
-          fetchInstrumentData(instrument)
+          fetchInstrumentData(library, instrument)
         );
         const instrumentData = await Promise.all(promises);
         setLoaded(true);
@@ -81,7 +83,7 @@ export const useInstrument = (
         const signer = library.getSigner();
         const factory = new TwinYieldFactory(signer);
         const instrument = factory.attach(deployedInstrument.address);
-        const data = await fetchInstrumentData(instrument);
+        const data = await fetchInstrumentData(library, instrument);
         setLoaded(true);
         setInstrumentData(data);
       })();
@@ -107,18 +109,39 @@ export const useInstrument = (
 };
 
 const fetchInstrumentData = async (
+  library: any,
   instrument: TwinYield
 ): Promise<Instrument> => {
   const strikePrice = (await instrument.strikePrice()).toNumber();
+  const signer = library.getSigner();
+  const paymentToken = await instrument.paymentToken();
+  const dTokenAddress = await instrument.dToken();
+  const poolAddress = await instrument.balancerPool();
+  const dataProviderAddress = await instrument.dataProvider();
+
+  const balancerPool = BPoolFactory.connect(poolAddress, signer);
+  const dataProvider = new DataProviderFactory(signer).attach(
+    dataProviderAddress
+  );
+
+  const WAD = ethers.BigNumber.from(10).pow("18");
+  const targetPrice = await dataProvider.getPrice(paymentToken);
+  const targetSpotPrice = parseInt(targetPrice.toString());
+  const instrumentSpotPrice = parseInt(
+    (
+      await balancerPool.getSpotPriceSansFee(paymentToken, dTokenAddress)
+    ).toString()
+  );
 
   const instrumentData = {
     symbol: await instrument.symbol(),
     strikePrice,
     expiryTimestamp: (await instrument.expiry()).toNumber(),
-    balancerPool: "0x",
-    instrumentSpotPrice: strikePrice - 10,
-    targetSpotPrice: strikePrice - 5,
+    balancerPool: poolAddress,
+    instrumentSpotPrice,
+    targetSpotPrice,
   };
+  console.log(instrumentData);
   return instrumentData;
 };
 
