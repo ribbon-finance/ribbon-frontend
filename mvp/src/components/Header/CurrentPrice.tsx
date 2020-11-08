@@ -45,7 +45,7 @@ const CurrentPrice = () => {
     if (library) {
       fetchPrice();
     }
-  }, [library]);
+  }, [fetchPrice, library]);
 
   return (
     <>
