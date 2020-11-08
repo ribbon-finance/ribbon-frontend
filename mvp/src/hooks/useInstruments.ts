@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import { DataProviderFactory, TwinYield, TwinYieldFactory } from "../codegen";
 import deployedInstruments from "../constants/instruments.json";
 import { BPoolFactory } from "../codegen/BPoolFactory";
-import { ethers } from "ethers";
 import { etherToDecimals } from "../utils/math";
 
 type DeployedInstrument = {
@@ -142,7 +141,6 @@ const fetchInstrumentData = async (
 
     const signer = library.getSigner();
     const paymentToken = await instrument.paymentToken();
-    const targetAsset = await instrument.targetAsset();
     const dTokenAddress = await instrument.dToken();
     const poolAddress = await instrument.balancerPool();
     const dataProviderAddress = await instrument.dataProvider();
@@ -153,7 +151,7 @@ const fetchInstrumentData = async (
     );
 
     const targetSpotPrice = etherToDecimals(
-      await dataProvider.getPrice(targetAsset)
+      await dataProvider.getPrice(paymentToken)
     );
     const instrumentSpotPrice = etherToDecimals(
       await balancerPool.getSpotPriceSansFee(paymentToken, dTokenAddress)
