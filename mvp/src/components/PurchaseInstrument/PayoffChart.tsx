@@ -116,23 +116,23 @@ const PayoffChart: React.FC<Props> = ({
     }, renderDelay);
   }, [memoizedLabels, memoizedData, renderDelay, payoffAlgo]);
 
-  const chartData = {
-    labels,
-    datasets: [
-      {
-        lineTension: 0,
-        label: "Return",
-        data,
-        fill: false,
-        backgroundColor: "#689BFF",
-        borderColor: "#689BFF",
-      },
-    ],
-  };
-  const chart = useMemo(
-    () => <Line data={chartData} options={options}></Line>,
-    [chartData, options]
-  );
+  const chart = useMemo(() => {
+    const chartData = {
+      labels,
+      datasets: [
+        {
+          lineTension: 0,
+          label: "Return",
+          data,
+          fill: false,
+          backgroundColor: "#689BFF",
+          borderColor: "#689BFF",
+        },
+      ],
+    };
+
+    return <Line data={chartData} options={options}></Line>;
+  }, [labels, data]);
 
   return (
     <Layout>
