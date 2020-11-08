@@ -78,7 +78,7 @@ type DualButtonProps = {
 
 const MAX_UINT256 = ethers.BigNumber.from("2").pow("256").sub("1");
 
-type Step = { onClick: () => void; children: string };
+type Step = { onClick: () => void; buttonText: string };
 
 const DualButton: React.FC<DualButtonProps> = ({
   instrument,
@@ -99,7 +99,10 @@ const DualButton: React.FC<DualButtonProps> = ({
   }, [library, instrument.balancerPool]);
 
   const handleApprove = useCallback(async () => {
-    await paymentERC20.approve(instrument.balancerPool, MAX_UINT256);
+    const receipt = await paymentERC20.approve(
+      instrument.balancerPool,
+      MAX_UINT256
+    );
   }, [paymentERC20, instrument.balancerPool]);
 
   const handlePurchase = useCallback(async () => {
@@ -132,25 +135,24 @@ const DualButton: React.FC<DualButtonProps> = ({
   const steps: Step[] = [
     {
       onClick: handleApprove,
-      children: `Approve ${paymentCurrencySymbol}`,
+      buttonText: `Approve ${paymentCurrencySymbol}`,
     },
     {
       onClick: handlePurchase,
-      children: `Purchase ${paymentCurrencySymbol}`,
+      buttonText: `Purchase ${paymentCurrencySymbol}`,
     },
   ];
 
   return (
     <ButtonsContainer>
       {steps.map((step, index) => (
-        <StepComponent
+        <MemoizedStepComponent
           key={index}
           active={index === currentStep}
           onClick={index === currentStep ? step.onClick : () => {}}
           stepNumber={index + 1}
-        >
-          {step.children}
-        </StepComponent>
+          buttonText={step.buttonText}
+        ></MemoizedStepComponent>
       ))}
     </ButtonsContainer>
   );
@@ -160,19 +162,22 @@ const StepComponent: React.FC<{
   onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   active: boolean;
   stepNumber: number;
-  children: ReactNode;
-}> = ({ onClick, active, children, stepNumber }) => {
+  buttonText: string;
+}> = ({ onClick, active, buttonText, stepNumber }) => {
   const Button = active ? ActiveButton : DisabledButton;
   const Text = active ? ButtonText : DisabledButtonText;
+  const Circle = active ? ActiveCircleStep : DisabledCircleStep;
 
   return (
     <ButtonContainer>
       <Button onClick={onClick}>
-        <Text>{children}</Text>
+        <Text>{buttonText}</Text>
       </Button>
-      <ActiveCircleStep>{stepNumber}</ActiveCircleStep>
+      <Circle>{stepNumber}</Circle>
     </ButtonContainer>
   );
 };
+
+const MemoizedStepComponent = React.memo(StepComponent);
 
 export default DualButton;
