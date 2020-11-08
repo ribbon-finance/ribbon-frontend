@@ -32,7 +32,7 @@ interface TwinYieldInterface extends ethers.utils.Interface {
     "dataProvider()": FunctionFragment;
     "expired()": FunctionFragment;
     "expiry()": FunctionFragment;
-    "finalizePool()": FunctionFragment;
+    "finalizePool(uint256,uint256)": FunctionFragment;
     "getColPrice()": FunctionFragment;
     "getTargetPrice()": FunctionFragment;
     "getVault(address)": FunctionFragment;
@@ -90,7 +90,7 @@ interface TwinYieldInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "expiry", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "finalizePool",
-    values?: undefined
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getColPrice",
@@ -442,9 +442,17 @@ export class TwinYield extends Contract {
       0: BigNumber;
     }>;
 
-    finalizePool(overrides?: Overrides): Promise<ContractTransaction>;
+    finalizePool(
+      _initDTokenAmount: BigNumberish,
+      _initPaymentTokenAmount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    "finalizePool()"(overrides?: Overrides): Promise<ContractTransaction>;
+    "finalizePool(uint256,uint256)"(
+      _initDTokenAmount: BigNumberish,
+      _initPaymentTokenAmount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     /**
      * Gets the price of collateral asset
@@ -899,9 +907,17 @@ export class TwinYield extends Contract {
 
   "expiry()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  finalizePool(overrides?: Overrides): Promise<ContractTransaction>;
+  finalizePool(
+    _initDTokenAmount: BigNumberish,
+    _initPaymentTokenAmount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  "finalizePool()"(overrides?: Overrides): Promise<ContractTransaction>;
+  "finalizePool(uint256,uint256)"(
+    _initDTokenAmount: BigNumberish,
+    _initPaymentTokenAmount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   /**
    * Gets the price of collateral asset
@@ -1274,9 +1290,17 @@ export class TwinYield extends Contract {
 
     "expiry()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    finalizePool(overrides?: CallOverrides): Promise<void>;
+    finalizePool(
+      _initDTokenAmount: BigNumberish,
+      _initPaymentTokenAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    "finalizePool()"(overrides?: CallOverrides): Promise<void>;
+    "finalizePool(uint256,uint256)"(
+      _initDTokenAmount: BigNumberish,
+      _initPaymentTokenAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     /**
      * Gets the price of collateral asset
@@ -1696,9 +1720,17 @@ export class TwinYield extends Contract {
 
     "expiry()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    finalizePool(overrides?: Overrides): Promise<BigNumber>;
+    finalizePool(
+      _initDTokenAmount: BigNumberish,
+      _initPaymentTokenAmount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    "finalizePool()"(overrides?: Overrides): Promise<BigNumber>;
+    "finalizePool(uint256,uint256)"(
+      _initDTokenAmount: BigNumberish,
+      _initPaymentTokenAmount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     /**
      * Gets the price of collateral asset
@@ -2054,9 +2086,17 @@ export class TwinYield extends Contract {
 
     "expiry()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    finalizePool(overrides?: Overrides): Promise<PopulatedTransaction>;
+    finalizePool(
+      _initDTokenAmount: BigNumberish,
+      _initPaymentTokenAmount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
-    "finalizePool()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+    "finalizePool(uint256,uint256)"(
+      _initDTokenAmount: BigNumberish,
+      _initPaymentTokenAmount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
     /**
      * Gets the price of collateral asset
