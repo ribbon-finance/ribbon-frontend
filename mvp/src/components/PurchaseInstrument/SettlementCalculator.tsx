@@ -7,7 +7,6 @@ import {
   calculateYield,
   transposeYieldByCurrency,
 } from "../../utils/yieldMath";
-import DualButton from "./DualButton";
 
 const Layout = styled.div`
   display: flex;
@@ -85,6 +84,7 @@ type Props = {
   instrument: Instrument;
   purchaseAmount: number;
   amountInput: ReactNode;
+  dualButton: ReactNode;
 };
 
 const SettlementCalculator: React.FC<Props> = ({
@@ -92,6 +92,7 @@ const SettlementCalculator: React.FC<Props> = ({
   instrument,
   purchaseAmount,
   amountInput,
+  dualButton,
 }) => {
   const { targetCurrency, paymentCurrency } = product;
   const yields = useMemo(
@@ -160,10 +161,7 @@ const SettlementCalculator: React.FC<Props> = ({
               </ExpectedPayoffPayment>
             </ExpectedPayoffText>
           </ExpectedPayoffRow>
-          <DualButton
-            instrument={instrument}
-            paymentCurrencySymbol={product.paymentCurrency}
-          ></DualButton>
+          {dualButton}
         </CalculatorPanel>
       </CalculatorDiv>
     </Layout>

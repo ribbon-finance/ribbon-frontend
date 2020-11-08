@@ -1,8 +1,11 @@
+import { BigNumber } from "ethers";
+
 export type Instrument = {
   symbol: string;
   strikePrice: number;
   balancerPool: string;
-  instrumentSpotPrice: number;
+  instrumentSpotPrice: BigNumber;
+  swapFee: BigNumber;
   targetSpotPrice: number;
   expiryTimestamp: number;
   dTokenAddress: string;

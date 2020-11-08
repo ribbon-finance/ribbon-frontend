@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Instrument, Product } from "../../models";
 import {
   CurrencyPairContainer,
@@ -14,6 +14,10 @@ import {
   transposeYieldByCurrency,
 } from "../../utils/yieldMath";
 import AmountInput from "./AmountInput";
+import DualButton from "./DualButton";
+import { BPoolFactory } from "../../codegen/BPoolFactory";
+import { BigNumber, ethers } from "ethers";
+import { useWeb3React } from "@web3-react/core";
 
 type Props = {
   product: Product;
@@ -35,6 +39,9 @@ const Spacer = styled.div`
 const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
   const { targetCurrency, paymentCurrency } = product;
   const [purchaseAmount, setPurchaseAmount] = useState(0.0);
+  const [instrumentSpotPrice, setInstrumentSpotPrice] = useState<BigNumber>(
+    ethers.BigNumber.from("0")
+  );
 
   const payoffAlgo = useCallback(
     (inputPrice: number): number => {
@@ -74,6 +81,17 @@ const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
     [product, instrument.paymentCurrencyAddress]
   );
 
+  const dualButton = useMemo(
+    () => (
+      <DualButton
+        instrument={instrument}
+        paymentCurrencySymbol={product.paymentCurrency}
+        purchaseAmount={purchaseAmount}
+      ></DualButton>
+    ),
+    [instrument, product.paymentCurrency, purchaseAmount]
+  );
+
   return (
     <ProductContainer>
       <Title>{product.name}</Title>
@@ -91,6 +109,7 @@ const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
           instrument={instrument}
           purchaseAmount={purchaseAmount}
           amountInput={amountInput}
+          dualButton={dualButton}
         ></SettlementCalculator>
 
         <Spacer></Spacer>

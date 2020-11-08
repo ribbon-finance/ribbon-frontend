@@ -153,9 +153,11 @@ const fetchInstrumentData = async (
     const targetSpotPrice = etherToDecimals(
       await dataProvider.getPrice(paymentToken)
     );
-    const instrumentSpotPrice = etherToDecimals(
-      await balancerPool.getSpotPriceSansFee(paymentToken, dTokenAddress)
+    const instrumentSpotPrice = await balancerPool.getSpotPriceSansFee(
+      paymentToken,
+      dTokenAddress
     );
+    const swapFee = await balancerPool.getSwapFee();
 
     const instrumentData = {
       symbol: await instrument.symbol(),
@@ -163,6 +165,7 @@ const fetchInstrumentData = async (
       expiryTimestamp: (await instrument.expiry()).toNumber(),
       balancerPool: poolAddress,
       instrumentSpotPrice,
+      swapFee,
       targetSpotPrice,
       dTokenAddress,
       paymentCurrencyAddress: paymentToken,

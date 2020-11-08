@@ -73,6 +73,7 @@ const DisabledCircleStep = styled(CircleStep)`
 type DualButtonProps = {
   instrument: Instrument;
   paymentCurrencySymbol: string;
+  purchaseAmount: number;
 };
 
 const MAX_UINT256 = ethers.BigNumber.from("2").pow("256").sub("1");
@@ -80,6 +81,7 @@ const MAX_UINT256 = ethers.BigNumber.from("2").pow("256").sub("1");
 const DualButton: React.FC<DualButtonProps> = ({
   instrument,
   paymentCurrencySymbol,
+  purchaseAmount,
 }) => {
   const { library } = useWeb3React();
 
@@ -97,9 +99,24 @@ const DualButton: React.FC<DualButtonProps> = ({
     await paymentERC20.approve(instrument.balancerPool, MAX_UINT256);
   }, [paymentERC20, instrument.balancerPool]);
 
+  const purchaseAmountEther = ethers.utils.parseEther(
+    purchaseAmount.toString()
+  );
+  const spotPlusFees = instrument.instrumentSpotPrice.mul(
+    ethers.BigNumber.from("1").add(instrument.swapFee)
+  );
+  const maxSlippage = ethers.utils.parseEther("0.0001");
+  const spotWithMaxSlippage = spotPlusFees.mul(maxSlippage);
+  const minTokenOut = purchaseAmountEther.mul(spotWithMaxSlippage);
+
   const handlePurchase = useCallback(async () => {
-    // await balancerPool.swapExactAmountIn(
-    // )
+    await balancerPool.swapExactAmountIn(
+      instrument.paymentCurrencyAddress,
+      purchaseAmountEther,
+      instrument.dTokenAddress,
+      minTokenOut,
+      spotWithMaxSlippage
+    );
   }, []);
 
   return (
