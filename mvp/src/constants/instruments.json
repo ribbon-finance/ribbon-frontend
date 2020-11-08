@@ -1,16 +1,16 @@
 {
 	"kovan": [
 		{
-			"txhash": "0x9102ca067616433875444399071b96cba4e236990289fe8941cd8fd67bf6bd0f",
+			"txhash": "0x9825057f1bfb73e4b83e123dad53e5cc73218287748c49c204c81fc726367d8f",
 			"expiry": 1605225600,
-			"instrumentSymbol": "TY-ETHUSDC-440-11132020",
-			"address": "0x7ce4e667b1caF03b8c85133C8c18d8111a7bD384"
+			"instrumentSymbol": "TY-ETHUSDC-430-11132020",
+			"address": "0xa59D72143e4519b1D137efb615EB08Edff626fe7"
 		},
 		{
-			"txhash": "0xdbd7b1b998472dac5c7b1b647cb33cbbeea6ca1b4129ae85100f7267a8781d5f",
+			"txhash": "0xedb25dddb1c52fdb29589024408a3fa024fab65b44a5590c162b0ab931b94766",
 			"expiry": 1605225600,
-			"instrumentSymbol": "TY-ETHUSDC-450-11132020",
-			"address": "0x05eef1265cD77AD3D7288246547a4A3ffdF4FbFd"
+			"instrumentSymbol": "TY-ETHUSDC-440-11132020",
+			"address": "0x8f45a268B1bF9079BB8fDe3B4c120Bf2dc04cC85"
 		}
 	],
 	"development": []

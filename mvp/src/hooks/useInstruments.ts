@@ -5,6 +5,7 @@ import { DataProviderFactory, TwinYield, TwinYieldFactory } from "../codegen";
 import deployedInstruments from "../constants/instruments.json";
 import { BPoolFactory } from "../codegen/BPoolFactory";
 import { ethers } from "ethers";
+import { etherToDecimals } from "../utils/math";
 
 type DeployedInstrument = {
   txhash: string;
@@ -137,11 +138,11 @@ const fetchInstrumentData = async (
   { success: true; instrument: Instrument } | { success: false; error: Error }
 > => {
   try {
-    const strikePrice = Math.round(
-      (await instrument.strikePrice()).toNumber() / 10 ** 7
-    );
+    const strikePrice = etherToDecimals(await instrument.strikePrice());
+
     const signer = library.getSigner();
     const paymentToken = await instrument.paymentToken();
+    const targetAsset = await instrument.targetAsset();
     const dTokenAddress = await instrument.dToken();
     const poolAddress = await instrument.balancerPool();
     const dataProviderAddress = await instrument.dataProvider();
@@ -151,23 +152,12 @@ const fetchInstrumentData = async (
       dataProviderAddress
     );
 
-    const unscaledInverseSpotPrice = await dataProvider.getPrice(paymentToken);
-    const inverseSpotPrice =
-      unscaledInverseSpotPrice
-        .div(ethers.BigNumber.from(10).pow("10"))
-        .toNumber() /
-      10 ** 8;
-    const targetSpotPrice = 1 / inverseSpotPrice;
-
-    const unscaledInstrumentSpotPrice = await balancerPool.getSpotPriceSansFee(
-      paymentToken,
-      dTokenAddress
+    const targetSpotPrice = etherToDecimals(
+      await dataProvider.getPrice(targetAsset)
     );
-    const instrumentSpotPrice =
-      unscaledInstrumentSpotPrice
-        .div(ethers.BigNumber.from(10).pow("10"))
-        .toNumber() /
-      10 ** 8;
+    const instrumentSpotPrice = etherToDecimals(
+      await balancerPool.getSpotPriceSansFee(paymentToken, dTokenAddress)
+    );
 
     const instrumentData = {
       symbol: await instrument.symbol(),

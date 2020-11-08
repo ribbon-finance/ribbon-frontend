@@ -64,7 +64,6 @@ const ProductListing: React.FC<Props> = ({ product }) => {
       instruments = res.instruments;
       break;
   }
-  console.log(instruments);
 
   return (
     <ProductContainer>
@@ -99,7 +98,7 @@ const ProductListing: React.FC<Props> = ({ product }) => {
       </ProductTerms>
 
       <InstrumentsContainer>
-        {!instruments ? errorMessage : null}
+        {res.status === "error" ? errorMessage : null}
         {instruments.map((instrument) => (
           <InstrumentItem
             key={instrument.symbol}
