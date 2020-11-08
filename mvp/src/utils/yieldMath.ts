@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 import { Product, Instrument } from "../models";
 import { etherToDecimals } from "./math";
 

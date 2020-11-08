@@ -1,6 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
-import React, { useCallback, useMemo } from "react";
+import React, { ReactNode, useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { BPoolFactory } from "../../codegen/BPoolFactory";
 import { IERC20Factory } from "../../codegen/IERC20Factory";
@@ -30,11 +30,11 @@ const ActionButton = styled(Button)`
   margin-bottom: 16px;
 `;
 
-const ApproveButton = styled(ActionButton)`
+const ActiveButton = styled(ActionButton)`
   background: #2d9cdb;
 `;
 
-const PurchaseButton = styled(ActionButton)`
+const DisabledButton = styled(ActionButton)`
   background: #848484;
 `;
 
@@ -78,12 +78,15 @@ type DualButtonProps = {
 
 const MAX_UINT256 = ethers.BigNumber.from("2").pow("256").sub("1");
 
+type Step = { onClick: () => void; children: string };
+
 const DualButton: React.FC<DualButtonProps> = ({
   instrument,
   paymentCurrencySymbol,
   purchaseAmount,
 }) => {
   const { library } = useWeb3React();
+  const [currentStep, setCurrentStep] = useState(0);
 
   const paymentERC20 = useMemo(() => {
     const signer = library.getSigner();
@@ -99,17 +102,17 @@ const DualButton: React.FC<DualButtonProps> = ({
     await paymentERC20.approve(instrument.balancerPool, MAX_UINT256);
   }, [paymentERC20, instrument.balancerPool]);
 
-  const purchaseAmountEther = ethers.utils.parseEther(
-    purchaseAmount.toString()
-  );
-  const spotPlusFees = instrument.instrumentSpotPrice.mul(
-    ethers.BigNumber.from("1").add(instrument.swapFee)
-  );
-  const maxSlippage = ethers.utils.parseEther("0.0001");
-  const spotWithMaxSlippage = spotPlusFees.mul(maxSlippage);
-  const minTokenOut = purchaseAmountEther.mul(spotWithMaxSlippage);
-
   const handlePurchase = useCallback(async () => {
+    const purchaseAmountEther = ethers.utils.parseEther(
+      purchaseAmount.toString()
+    );
+    const spotPlusFees = instrument.instrumentSpotPrice.mul(
+      ethers.BigNumber.from("1").add(instrument.swapFee)
+    );
+    const maxSlippage = ethers.utils.parseEther("0.0001");
+    const spotWithMaxSlippage = spotPlusFees.mul(maxSlippage);
+    const minTokenOut = purchaseAmountEther.mul(spotWithMaxSlippage);
+
     await balancerPool.swapExactAmountIn(
       instrument.paymentCurrencyAddress,
       purchaseAmountEther,
@@ -117,24 +120,58 @@ const DualButton: React.FC<DualButtonProps> = ({
       minTokenOut,
       spotWithMaxSlippage
     );
-  }, []);
+  }, [
+    balancerPool,
+    instrument.paymentCurrencyAddress,
+    instrument.dTokenAddress,
+    purchaseAmount,
+    instrument.swapFee,
+    instrument.instrumentSpotPrice,
+  ]);
+
+  const steps: Step[] = [
+    {
+      onClick: handleApprove,
+      children: `Approve ${paymentCurrencySymbol}`,
+    },
+    {
+      onClick: handlePurchase,
+      children: `Purchase ${paymentCurrencySymbol}`,
+    },
+  ];
 
   return (
     <ButtonsContainer>
-      <ButtonContainer>
-        <ApproveButton onClick={handleApprove}>
-          <ButtonText>Approve {paymentCurrencySymbol}</ButtonText>
-        </ApproveButton>
-        <ActiveCircleStep>1</ActiveCircleStep>
-      </ButtonContainer>
-
-      <ButtonContainer>
-        <PurchaseButton onClick={handlePurchase}>
-          <DisabledButtonText>Purchase</DisabledButtonText>
-        </PurchaseButton>
-        <DisabledCircleStep>2</DisabledCircleStep>
-      </ButtonContainer>
+      {steps.map((step, index) => (
+        <StepComponent
+          key={index}
+          active={index === currentStep}
+          onClick={index === currentStep ? step.onClick : () => {}}
+          stepNumber={index + 1}
+        >
+          {step.children}
+        </StepComponent>
+      ))}
     </ButtonsContainer>
+  );
+};
+
+const StepComponent: React.FC<{
+  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  active: boolean;
+  stepNumber: number;
+  children: ReactNode;
+}> = ({ onClick, active, children, stepNumber }) => {
+  const Button = active ? ActiveButton : DisabledButton;
+  const Text = active ? ButtonText : DisabledButtonText;
+
+  return (
+    <ButtonContainer>
+      <Button onClick={onClick}>
+        <Text>{children}</Text>
+      </Button>
+      <ActiveCircleStep>{stepNumber}</ActiveCircleStep>
+    </ButtonContainer>
   );
 };
 
