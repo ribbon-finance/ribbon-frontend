@@ -164,6 +164,8 @@ const fetchInstrumentData = async (
       balancerPool: poolAddress,
       instrumentSpotPrice,
       targetSpotPrice,
+      dTokenAddress,
+      paymentCurrencyAddress: paymentToken,
     };
     return { success: true, instrument: instrumentData };
   } catch (e) {

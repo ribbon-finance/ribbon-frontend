@@ -156,7 +156,10 @@ const SettlementCalculator: React.FC<Props> = ({
               </ExpectedPayoffPayment>
             </ExpectedPayoffText>
           </ExpectedPayoffRow>
-          <DualButton paymentCurrency={paymentCurrency}></DualButton>
+          <DualButton
+            instrument={instrument}
+            paymentCurrencySymbol={product.paymentCurrency}
+          ></DualButton>
         </CalculatorPanel>
       </CalculatorDiv>
     </Layout>
