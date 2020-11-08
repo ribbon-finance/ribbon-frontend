@@ -1,6 +1,10 @@
-import React from "react";
+import { useWeb3React } from "@web3-react/core";
+import { ethers } from "ethers";
+import React, { useCallback } from "react";
 import styled from "styled-components";
+import { IERC20Factory } from "../../codegen/IERC20Factory";
 import { Button, SecondaryText } from "../../designSystem";
+import { Instrument } from "../../models";
 
 const ButtonsContainer = styled.div`
   display: flex;
@@ -66,15 +70,32 @@ const DisabledCircleStep = styled(CircleStep)`
 `;
 
 type DualButtonProps = {
-  paymentCurrency: string;
+  instrument: Instrument;
+  paymentCurrencySymbol: string;
 };
 
-const DualButton: React.FC<DualButtonProps> = ({ paymentCurrency }) => {
+const DualButton: React.FC<DualButtonProps> = ({
+  instrument,
+  paymentCurrencySymbol,
+}) => {
+  const { library } = useWeb3React();
+
+  const handleApprove = useCallback(async () => {
+    const signer = library.getSigner();
+    const paymentERC20 = IERC20Factory.connect(
+      instrument.paymentCurrencyAddress,
+      signer
+    );
+    const MAX_UINT256 = ethers.BigNumber.from("2").pow("256").sub("1");
+
+    await paymentERC20.approve(instrument.balancerPool, MAX_UINT256);
+  }, [library, instrument.paymentCurrencyAddress, instrument.balancerPool]);
+
   return (
     <ButtonsContainer>
       <ButtonContainer>
-        <ApproveButton>
-          <ButtonText>Approve {paymentCurrency}</ButtonText>
+        <ApproveButton onClick={handleApprove}>
+          <ButtonText>Approve {paymentCurrencySymbol}</ButtonText>
         </ApproveButton>
         <ActiveCircleStep>1</ActiveCircleStep>
       </ButtonContainer>

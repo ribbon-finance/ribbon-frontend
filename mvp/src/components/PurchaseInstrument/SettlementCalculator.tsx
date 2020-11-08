@@ -5,7 +5,7 @@ import { Product, Instrument } from "../../models";
 import currencyIcons from "../../img/currencyIcons";
 import {
   calculateYield,
-  transposeYieldByCurrency
+  transposeYieldByCurrency,
 } from "../../utils/yieldMath";
 import DualButton from "./DualButton";
 
@@ -91,7 +91,7 @@ const SettlementCalculator: React.FC<Props> = ({
   product,
   instrument,
   purchaseAmount,
-  amountInput
+  amountInput,
 }) => {
   const { targetCurrency, paymentCurrency } = product;
   const yields = calculateYield(
@@ -121,7 +121,7 @@ const SettlementCalculator: React.FC<Props> = ({
             <ExpectedPayoffText style={{ marginTop: 16 }}>
               <ExpectedPayoffTarget>
                 {targetYield && purchaseAmount
-                  ? targetYield.amount.toFixed(3)
+                  ? targetYield.amount.toFixed(4)
                   : 0}{" "}
                 ETH (
                 {targetYield && purchaseAmount
@@ -156,7 +156,10 @@ const SettlementCalculator: React.FC<Props> = ({
               </ExpectedPayoffPayment>
             </ExpectedPayoffText>
           </ExpectedPayoffRow>
-          <DualButton paymentCurrency={paymentCurrency}></DualButton>
+          <DualButton
+            instrument={instrument}
+            paymentCurrencySymbol={product.paymentCurrency}
+          ></DualButton>
         </CalculatorPanel>
       </CalculatorDiv>
     </Layout>

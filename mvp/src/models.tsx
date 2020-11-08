@@ -5,6 +5,8 @@ export type Instrument = {
   instrumentSpotPrice: number;
   targetSpotPrice: number;
   expiryTimestamp: number;
+  dTokenAddress: string;
+  paymentCurrencyAddress: string;
 };
 
 export type Product = {

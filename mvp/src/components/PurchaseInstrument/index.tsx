@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useInstrument } from "../../hooks/useInstruments";
 import Content404 from "../Content404";
 import PurchaseInstrument from "./PurchaseInstrument";
+import { products } from "../../mockData";
 
 type PurchaseInstrumentWrapperProps = {};
 
@@ -20,13 +21,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
       comp = (
         <PurchaseInstrument
           instrument={res.instrument}
-          product={{
-            name: "Twin Yield ETH-USDC",
-            targetCurrency: "ETH",
-            paymentCurrency: "USDC",
-            expiryTimestamp: 1604361600,
-            instruments: [],
-          }}
+          product={products[0]}
         ></PurchaseInstrument>
       );
       break;
