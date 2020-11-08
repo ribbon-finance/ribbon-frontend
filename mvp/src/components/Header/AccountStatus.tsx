@@ -63,6 +63,15 @@ const AccountStatus: React.FC<Props> = () => {
     await activateWeb3(injectedConnector);
   }, [injectedConnector, activateWeb3]);
 
+  const fetchAndSetBalance = useCallback(async () => {
+    const bal = await library.getBalance(account);
+    const isZero = bal.eq("0");
+    const etherBal = isZero
+      ? "0"
+      : parseFloat(ethers.utils.formatEther(bal)).toFixed(3);
+    setBalance(etherBal);
+  }, [library, account]);
+
   useEffect(() => {
     (async () => {
       await handleConnect();
@@ -71,16 +80,9 @@ const AccountStatus: React.FC<Props> = () => {
 
   useEffect(() => {
     if (library && account) {
-      (async () => {
-        const bal = await library.getBalance(account);
-        const isZero = bal.eq("0");
-        const etherBal = isZero
-          ? "0"
-          : parseFloat(ethers.utils.formatEther(bal)).toFixed(3);
-        setBalance(etherBal);
-      })();
+      fetchAndSetBalance();
     }
-  }, [handleConnect, library, account]);
+  }, [library, account, fetchAndSetBalance]);
 
   return (
     <AccountPill role="button" onClick={handleConnect}>
