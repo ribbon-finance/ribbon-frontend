@@ -1,6 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
-import React, { ReactNode, useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { BPoolFactory } from "../../codegen/BPoolFactory";
 import { IERC20Factory } from "../../codegen/IERC20Factory";
@@ -35,6 +35,7 @@ const ActiveButton = styled(ActionButton)`
 `;
 
 const DisabledButton = styled(ActionButton)`
+  cursor: auto;
   background: #848484;
 `;
 
@@ -87,6 +88,7 @@ const DualButton: React.FC<DualButtonProps> = ({
 }) => {
   const { library } = useWeb3React();
   const [currentStep, setCurrentStep] = useState(0);
+  const [approveLoading, setApproveLoading] = useState(false);
 
   const paymentERC20 = useMemo(() => {
     const signer = library.getSigner();
@@ -99,10 +101,19 @@ const DualButton: React.FC<DualButtonProps> = ({
   }, [library, instrument.balancerPool]);
 
   const handleApprove = useCallback(async () => {
-    const receipt = await paymentERC20.approve(
-      instrument.balancerPool,
-      MAX_UINT256
-    );
+    setApproveLoading(true);
+    try {
+      const receipt = await paymentERC20.approve(
+        instrument.balancerPool,
+        MAX_UINT256
+      );
+      const tx = await receipt.wait(1);
+      setApproveLoading(false);
+      setCurrentStep(1);
+      console.log(tx);
+    } catch (e) {
+      setApproveLoading(false);
+    }
   }, [paymentERC20, instrument.balancerPool]);
 
   const handlePurchase = useCallback(async () => {
@@ -135,7 +146,9 @@ const DualButton: React.FC<DualButtonProps> = ({
   const steps: Step[] = [
     {
       onClick: handleApprove,
-      buttonText: `Approve ${paymentCurrencySymbol}`,
+      buttonText: approveLoading
+        ? "Approving..."
+        : `Approve ${paymentCurrencySymbol}`,
     },
     {
       onClick: handlePurchase,
@@ -148,8 +161,10 @@ const DualButton: React.FC<DualButtonProps> = ({
       {steps.map((step, index) => (
         <MemoizedStepComponent
           key={index}
-          active={index === currentStep}
-          onClick={index === currentStep ? step.onClick : () => {}}
+          active={Boolean(purchaseAmount) && index === currentStep}
+          onClick={
+            purchaseAmount && index === currentStep ? step.onClick : () => {}
+          }
           stepNumber={index + 1}
           buttonText={step.buttonText}
         ></MemoizedStepComponent>
