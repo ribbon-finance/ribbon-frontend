@@ -81,7 +81,6 @@ const DualButton: React.FC<DualButtonProps> = ({
   const { library } = useWeb3React();
 
   const handleApprove = useCallback(async () => {
-    console.log("pass");
     const signer = library.getSigner();
     const paymentERC20 = IERC20Factory.connect(
       instrument.paymentCurrencyAddress,
