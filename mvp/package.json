@@ -32,7 +32,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "codegen": "npx typechain --target=ethers-v5 --outDir src/codegen src/constants/TwinYield.json"
+    "codegen": "npx typechain --target=ethers-v5 --outDir src/codegen 'src/constants/abis/*.json'"
   },
   "eslintConfig": {
     "extends": [

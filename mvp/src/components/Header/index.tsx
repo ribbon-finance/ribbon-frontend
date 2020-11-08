@@ -1,10 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import images from "../../img/currencyIcons";
-import { BaseText } from "../../designSystem";
 import AccountStatus from "./AccountStatus";
-
-const { ETH: ETHIcon } = images;
+import CurrentPrice from "./CurrentPrice";
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -23,32 +20,12 @@ const HeaderLeft = styled.div`
 
 const HeaderRight = styled.div``;
 
-const ETHPriceContainer = styled.div`
-  margin-left: 8px;
-`;
-
-const ETHPrice = styled(BaseText)`
-  font-style: normal;
-  font-weight: bold;
-  font-size: 16px;
-  line-height: 19px;
-`;
-
-const CurrencyIcon = styled.img`
-  width: 24px;
-  height: 24px;
-  margin-left: 8px;
-`;
-
 const Header = () => {
   return (
     <header>
       <HeaderContainer>
         <HeaderLeft>
-          <CurrencyIcon src={ETHIcon} alt="ETH"></CurrencyIcon>
-          <ETHPriceContainer>
-            <ETHPrice>$399.20</ETHPrice>
-          </ETHPriceContainer>
+          <CurrentPrice></CurrentPrice>
         </HeaderLeft>
 
         <HeaderRight>

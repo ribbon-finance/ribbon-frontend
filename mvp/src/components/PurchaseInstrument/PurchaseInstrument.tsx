@@ -3,7 +3,7 @@ import { Instrument, Product } from "../../models";
 import {
   CurrencyPairContainer,
   ProductContainer,
-  Title
+  Title,
 } from "../../designSystem";
 import CurrencyPair from "../../designSystem/CurrencyPair";
 import styled from "styled-components";
@@ -11,7 +11,7 @@ import SettlementCalculator from "./SettlementCalculator";
 import PayoffChart from "./PayoffChart";
 import {
   calculateYield,
-  transposeYieldByCurrency
+  transposeYieldByCurrency,
 } from "../../utils/yieldMath";
 import AmountInput from "./AmountInput";
 
@@ -98,7 +98,7 @@ const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
         <PayoffChart
           minPrice={0}
           strikePrice={instrument.strikePrice}
-          maxPrice={400}
+          maxPrice={500}
           stepSize={100}
           payoffAlgo={payoffAlgo}
         ></PayoffChart>

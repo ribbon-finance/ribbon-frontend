@@ -52,10 +52,13 @@ const ProductListing: React.FC<Props> = ({ product }) => {
   const expiresIn = expiryDateTime.from(moment());
   const res = useInstruments();
   let instruments: Instrument[] = [];
+  let errorMessage = "Loading...";
 
   switch (res.status) {
     case "loading":
+      break;
     case "error":
+      errorMessage = "Failed to load instruments.";
       break;
     case "success":
       instruments = res.instruments;
@@ -95,6 +98,7 @@ const ProductListing: React.FC<Props> = ({ product }) => {
       </ProductTerms>
 
       <InstrumentsContainer>
+        {res.status === "error" ? errorMessage : null}
         {instruments.map((instrument) => (
           <InstrumentItem
             key={instrument.symbol}

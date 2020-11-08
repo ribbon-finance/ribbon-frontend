@@ -1,8 +1,10 @@
 import { Instrument } from "./../models";
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useMemo, useState } from "react";
-import { TwinYield, TwinYieldFactory } from "../codegen";
+import { DataProviderFactory, TwinYield, TwinYieldFactory } from "../codegen";
 import deployedInstruments from "../constants/instruments.json";
+import { BPoolFactory } from "../codegen/BPoolFactory";
+import { etherToDecimals } from "../utils/math";
 
 type DeployedInstrument = {
   txhash: string;
@@ -26,7 +28,7 @@ export const useInstruments = (
     () => getDeployedInstruments(network).map((ins) => ins.address),
     [network]
   );
-  const [loaded, setLoaded] = useState(false);
+  const [status, setStatus] = useState("loading");
   const [instrumentData, setInstrumentData] = useState<Instrument[]>([]);
 
   useEffect(() => {
@@ -37,23 +39,37 @@ export const useInstruments = (
 
       (async function () {
         const promises = instruments.map((instrument) =>
-          fetchInstrumentData(instrument)
+          fetchInstrumentData(library, instrument)
         );
-        const instrumentData = await Promise.all(promises);
-        setLoaded(true);
-        setInstrumentData(instrumentData);
+        const responses = await Promise.all(promises);
+        const hasError = responses.some((ins) => !ins.success);
+
+        if (hasError) {
+          setStatus("error");
+        } else {
+          setStatus("success");
+          let instrumentsArr: Instrument[] = [];
+          responses.forEach(
+            (ins) => ins.success && instrumentsArr.push(ins.instrument)
+          );
+          setInstrumentData(instrumentsArr);
+        }
       })();
     }
   }, [addresses, library]);
 
-  switch (loaded) {
-    case true:
+  switch (status) {
+    case "success":
       if (instrumentData !== null) {
         return { status: "success", instruments: instrumentData };
       }
       return { status: "error", message: "Failed to load instrument" };
-    case false:
+    case "loading":
       return { status: "loading" };
+    case "error":
+      return { status: "error", message: "Failed to load instrument" };
+    default:
+      return { status: "error", message: "Failed to load instrument" };
   }
 };
 
@@ -68,7 +84,7 @@ export const useInstrument = (
   const deployedInstruments = useMemo(() => getDeployedInstruments(network), [
     network,
   ]);
-  const [loaded, setLoaded] = useState(false);
+  const [status, setStatus] = useState("loading");
   const [instrumentData, setInstrumentData] = useState<Instrument | null>(null);
 
   const deployedInstrument = deployedInstruments.find(
@@ -81,9 +97,13 @@ export const useInstrument = (
         const signer = library.getSigner();
         const factory = new TwinYieldFactory(signer);
         const instrument = factory.attach(deployedInstrument.address);
-        const data = await fetchInstrumentData(instrument);
-        setLoaded(true);
-        setInstrumentData(data);
+        const res = await fetchInstrumentData(library, instrument);
+        if (res.success) {
+          setStatus("success");
+          setInstrumentData(res.instrument);
+        } else {
+          setStatus("error");
+        }
       })();
     }
   }, [deployedInstrument, instrumentSymbol, library]);
@@ -95,31 +115,60 @@ export const useInstrument = (
     };
   }
 
-  switch (loaded) {
-    case true:
+  switch (status) {
+    case "success":
       if (instrumentData !== null) {
         return { status: "success", instrument: instrumentData };
       }
       return { status: "error", message: "Failed to load instrument" };
-    case false:
+    case "loading":
       return { status: "loading" };
+    case "error":
+      return { status: "error", message: "Failed to load instrument" };
+    default:
+      return { status: "error", message: "Failed to load instrument" };
   }
 };
 
 const fetchInstrumentData = async (
+  library: any,
   instrument: TwinYield
-): Promise<Instrument> => {
-  const strikePrice = (await instrument.strikePrice()).toNumber();
+): Promise<
+  { success: true; instrument: Instrument } | { success: false; error: Error }
+> => {
+  try {
+    const strikePrice = etherToDecimals(await instrument.strikePrice());
 
-  const instrumentData = {
-    symbol: await instrument.symbol(),
-    strikePrice,
-    expiryTimestamp: (await instrument.expiry()).toNumber(),
-    balancerPool: "0x",
-    instrumentSpotPrice: strikePrice - 10,
-    targetSpotPrice: strikePrice - 5,
-  };
-  return instrumentData;
+    const signer = library.getSigner();
+    const paymentToken = await instrument.paymentToken();
+    const dTokenAddress = await instrument.dToken();
+    const poolAddress = await instrument.balancerPool();
+    const dataProviderAddress = await instrument.dataProvider();
+
+    const balancerPool = BPoolFactory.connect(poolAddress, signer);
+    const dataProvider = new DataProviderFactory(signer).attach(
+      dataProviderAddress
+    );
+
+    const targetSpotPrice = etherToDecimals(
+      await dataProvider.getPrice(paymentToken)
+    );
+    const instrumentSpotPrice = etherToDecimals(
+      await balancerPool.getSpotPriceSansFee(paymentToken, dTokenAddress)
+    );
+
+    const instrumentData = {
+      symbol: await instrument.symbol(),
+      strikePrice,
+      expiryTimestamp: (await instrument.expiry()).toNumber(),
+      balancerPool: poolAddress,
+      instrumentSpotPrice,
+      targetSpotPrice,
+    };
+    return { success: true, instrument: instrumentData };
+  } catch (e) {
+    return { success: false, error: e };
+  }
 };
 
 const getDeployedInstruments = (network: string) => {

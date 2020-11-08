@@ -1,9 +1,9 @@
 {
 	"kovan": {
-		"DataProvider": "0x610a4d76bda85fdf698EFf4773E0d1c1834845ba",
-		"LiquidatorProxy": "0x5D6Ec79B4099786301a2D8C5037C03486C770626",
-		"DojimaFactory": "0xf0a71166662d1b168f6C5f3144D8232b19151557",
-		"TwinYieldLogic": "0x4a8D2bC7D67b15761a24dE5A480AC5a7453dcef8"
+		"DataProvider": "0x7B469EdB7D5364FEB85b58eCbe20666B6A2aE7b0",
+		"LiquidatorProxy": "0x30A6aFA8bEa7fc0A1cd4dC929226999ca6359681",
+		"DojimaFactory": "0x907a0B9cc4b624779E319bE4ff86279337678D80",
+		"TwinYieldLogic": "0x8628653e28f25afE72062DdD8842cbc813904418"
 	},
 	"development": {
 		"DataProvider": "0xA586074FA4Fe3E546A132a16238abe37951D41fE",
