@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useMemo } from "react";
 import styled from "styled-components";
 import { PrimaryText } from "../../designSystem";
 import { Product, Instrument } from "../../models";
@@ -94,11 +94,15 @@ const SettlementCalculator: React.FC<Props> = ({
   amountInput,
 }) => {
   const { targetCurrency, paymentCurrency } = product;
-  const yields = calculateYield(
-    purchaseAmount,
-    instrument,
-    product,
-    instrument.targetSpotPrice
+  const yields = useMemo(
+    () =>
+      calculateYield(
+        purchaseAmount,
+        instrument,
+        product,
+        instrument.targetSpotPrice
+      ),
+    [purchaseAmount, instrument, product]
   );
   const yieldsByCurrency = transposeYieldByCurrency(yields);
   const targetYield = yieldsByCurrency.get(product.targetCurrency);

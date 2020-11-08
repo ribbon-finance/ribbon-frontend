@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import { useWeb3React } from "@web3-react/core";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
+import { IERC20Factory } from "../../codegen/IERC20Factory";
 import { Button, PrimaryText, SecondaryText } from "../../designSystem";
 import currencyIcons from "../../img/currencyIcons";
+import { etherToDecimals } from "../../utils/math";
 import "./AmountInput.css";
 
 const maxButtonMarginLeft = 2;
@@ -72,21 +75,38 @@ const AmountText = styled(PrimaryText)`
 `;
 
 type AmountInputProps = {
-  paymentCurrency: string;
-  maxAmount: number;
+  paymentCurrencyAddress: string;
+  paymentCurrencySymbol: string;
   onChange: (value: number) => void;
 };
 
 const AmountInput: React.FC<AmountInputProps> = ({
-  paymentCurrency,
-  maxAmount,
-  onChange
+  paymentCurrencyAddress,
+  paymentCurrencySymbol,
+  onChange,
 }) => {
   const [inputText, setInputText] = useState("");
+  const { library, account } = useWeb3React();
 
   const parseInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     return parseFloat(e.target.value);
   };
+
+  const handleMaxButton = useCallback(async () => {
+    if (library && account) {
+      const paymentERC20 = IERC20Factory.connect(
+        paymentCurrencyAddress,
+        library.getSigner()
+      );
+      const paymentBalance = await paymentERC20.balanceOf(account);
+      const balanceDecimals = etherToDecimals(paymentBalance);
+      setInputText(balanceDecimals.toFixed(4));
+      onChange(balanceDecimals);
+    } else {
+      setInputText("");
+      onChange(0.0);
+    }
+  }, [onChange, paymentCurrencyAddress, account, library]);
 
   return (
     <InputDiv>
@@ -108,21 +128,16 @@ const AmountInput: React.FC<AmountInputProps> = ({
       ></StyledInput>
 
       <InputAccessories>
-        <MaxButton
-          onClick={() => {
-            setInputText(maxAmount.toFixed(3));
-            onChange(maxAmount);
-          }}
-        >
+        <MaxButton onClick={handleMaxButton}>
           <MaxButtonText>MAX</MaxButtonText>
         </MaxButton>
 
         <PaymentCurrencyIcon
-          src={currencyIcons[paymentCurrency]}
-          alt={paymentCurrency}
+          src={currencyIcons[paymentCurrencySymbol]}
+          alt={paymentCurrencySymbol}
         ></PaymentCurrencyIcon>
 
-        <AmountText>{paymentCurrency}</AmountText>
+        <AmountText>{paymentCurrencySymbol}</AmountText>
       </InputAccessories>
     </InputDiv>
   );
