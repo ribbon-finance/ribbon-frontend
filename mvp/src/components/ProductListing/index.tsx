@@ -78,7 +78,7 @@ const ProductListing: React.FC<Props> = ({ product }) => {
 
       <ProductTerms>
         <ExpiryTerms>
-          <PrimaryText>Expires in: {expiresIn}</PrimaryText>
+          <PrimaryText>Expires: {expiresIn}</PrimaryText>
         </ExpiryTerms>
         <TermDiv>
           <PrimaryText>

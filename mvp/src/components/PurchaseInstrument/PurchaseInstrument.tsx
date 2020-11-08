@@ -66,12 +66,12 @@ const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
   const amountInput = useMemo(
     () => (
       <AmountInput
-        paymentCurrency={product.paymentCurrency}
-        maxAmount={1000} /* Just hardcode this for now */
+        paymentCurrencyAddress={instrument.paymentCurrencyAddress}
+        paymentCurrencySymbol={product.paymentCurrency}
         onChange={(amount) => setPurchaseAmount(amount)}
       ></AmountInput>
     ),
-    [product]
+    [product, instrument.paymentCurrencyAddress]
   );
 
   return (
