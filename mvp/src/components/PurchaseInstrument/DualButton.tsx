@@ -1,7 +1,8 @@
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
+import { BPoolFactory } from "../../codegen/BPoolFactory";
 import { IERC20Factory } from "../../codegen/IERC20Factory";
 import { Button, SecondaryText } from "../../designSystem";
 import { Instrument } from "../../models";
@@ -74,22 +75,32 @@ type DualButtonProps = {
   paymentCurrencySymbol: string;
 };
 
+const MAX_UINT256 = ethers.BigNumber.from("2").pow("256").sub("1");
+
 const DualButton: React.FC<DualButtonProps> = ({
   instrument,
   paymentCurrencySymbol,
 }) => {
   const { library } = useWeb3React();
 
-  const handleApprove = useCallback(async () => {
+  const paymentERC20 = useMemo(() => {
     const signer = library.getSigner();
-    const paymentERC20 = IERC20Factory.connect(
-      instrument.paymentCurrencyAddress,
-      signer
-    );
-    const MAX_UINT256 = ethers.BigNumber.from("2").pow("256").sub("1");
+    return IERC20Factory.connect(instrument.paymentCurrencyAddress, signer);
+  }, [library, instrument.paymentCurrencyAddress]);
 
+  const balancerPool = useMemo(() => {
+    const signer = library.getSigner();
+    return BPoolFactory.connect(instrument.balancerPool, signer);
+  }, [library, instrument.balancerPool]);
+
+  const handleApprove = useCallback(async () => {
     await paymentERC20.approve(instrument.balancerPool, MAX_UINT256);
-  }, [library, instrument.paymentCurrencyAddress, instrument.balancerPool]);
+  }, [paymentERC20, instrument.balancerPool]);
+
+  const handlePurchase = useCallback(async () => {
+    // await balancerPool.swapExactAmountIn(
+    // )
+  }, []);
 
   return (
     <ButtonsContainer>
@@ -101,7 +112,7 @@ const DualButton: React.FC<DualButtonProps> = ({
       </ButtonContainer>
 
       <ButtonContainer>
-        <PurchaseButton>
+        <PurchaseButton onClick={handlePurchase}>
           <DisabledButtonText>Purchase</DisabledButtonText>
         </PurchaseButton>
         <DisabledCircleStep>2</DisabledCircleStep>
