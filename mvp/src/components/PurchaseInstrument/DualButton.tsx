@@ -1,12 +1,12 @@
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { BPoolFactory } from "../../codegen/BPoolFactory";
 import { IERC20Factory } from "../../codegen/IERC20Factory";
 import { Button, SecondaryText } from "../../designSystem";
 import { Instrument } from "../../models";
-import { wmul } from "../../utils/math";
+import { canSwapTokens } from "../../utils/balancer";
 
 const ButtonsContainer = styled.div`
   display: flex;
@@ -87,7 +87,7 @@ const DualButton: React.FC<DualButtonProps> = ({
   paymentCurrencySymbol,
   purchaseAmount,
 }) => {
-  const { library } = useWeb3React();
+  const { library, account } = useWeb3React();
   const [currentStep, setCurrentStep] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
   const [approveLoading, setApproveLoading] = useState(false);
@@ -102,6 +102,30 @@ const DualButton: React.FC<DualButtonProps> = ({
     const signer = library.getSigner();
     return BPoolFactory.connect(instrument.balancerPool, signer);
   }, [library, instrument.balancerPool]);
+
+  const purchaseAmountEther = ethers.utils.parseEther(
+    purchaseAmount.toString()
+  );
+
+  useEffect(() => {
+    if (library && account) {
+      (async () => {
+        const allowance = await paymentERC20.allowance(
+          account,
+          instrument.balancerPool
+        );
+        if (allowance.gt(ethers.utils.parseEther(purchaseAmount.toString()))) {
+          setCurrentStep(1);
+        }
+      })();
+    }
+  }, [
+    library,
+    account,
+    paymentERC20,
+    instrument.balancerPool,
+    purchaseAmountEther,
+  ]);
 
   const handleApprove = useCallback(async () => {
     setApproveLoading(true);
@@ -124,66 +148,47 @@ const DualButton: React.FC<DualButtonProps> = ({
   const handlePurchase = useCallback(async () => {
     setPurchaseLoading(true);
 
-    const purchaseAmountEther = ethers.utils.parseEther(
-      purchaseAmount.toString()
-    );
-    const spotPlusFees = wmul(
-      instrument.instrumentSpotPrice,
-      ethers.utils.parseEther("1").add(instrument.swapFee)
-    );
-    const maxSlippage = ethers.utils.parseEther("0.001");
-    const spotWithMaxSlippage = wmul(spotPlusFees, maxSlippage);
-    const minTokenOut = wmul(purchaseAmountEther, spotWithMaxSlippage);
-
-    const dTokenBalance = await balancerPool.getBalance(
-      instrument.dTokenAddress
-    );
-    const paymentBalance = await balancerPool.getBalance(
-      instrument.paymentCurrencyAddress
-    );
-
-    const tokenOut = await balancerPool.calcOutGivenIn(
-      dTokenBalance,
-      ethers.utils.parseEther("1"),
-      paymentBalance,
-      ethers.utils.parseEther("1"),
+    const res = await canSwapTokens(
+      balancerPool,
       purchaseAmountEther,
-      instrument.swapFee
+      instrument
     );
 
-    if (tokenOut.gte(minTokenOut)) {
-      setErrorMessage(
-        "Pool does not have sufficient liquidity for this purchase."
-      );
+    if (!res.success) {
+      console.error(res.error);
+      setErrorMessage(res.error.message);
       setPurchaseLoading(false);
       return;
     }
 
+    const { minTokenOut, maxPrice } = res;
     try {
+      console.log(
+        `Purchasing ${ethers.utils.formatEther(
+          purchaseAmountEther
+        )}\nMin token out: ${ethers.utils.formatEther(
+          minTokenOut
+        )}\nMax price: ${ethers.utils.formatEther(maxPrice)}`
+      );
+
       const receipt = await balancerPool.swapExactAmountIn(
         instrument.paymentCurrencyAddress,
         purchaseAmountEther,
         instrument.dTokenAddress,
         minTokenOut,
-        spotWithMaxSlippage
+        maxPrice
       );
 
       await receipt.wait(1);
       setPurchaseLoading(false);
     } catch (e) {
+      console.error(e);
       setErrorMessage("Purchase failed.");
       setPurchaseLoading(false);
     }
-  }, [
-    balancerPool,
-    instrument.paymentCurrencyAddress,
-    instrument.dTokenAddress,
-    purchaseAmount,
-    instrument.swapFee,
-    instrument.instrumentSpotPrice,
-  ]);
+  }, [balancerPool, instrument, purchaseAmountEther]);
 
-  const steps: Step[] = [
+  let steps: Step[] = [
     {
       onClick: handleApprove,
       buttonText: approveLoading

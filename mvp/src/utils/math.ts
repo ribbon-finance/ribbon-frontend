@@ -6,7 +6,7 @@ export const etherToDecimals = (etherVal: BigNumber) => {
   return scaled.toNumber() / 10 ** 2;
 };
 
-const WAD = ethers.utils.parseEther("1");
+export const WAD = ethers.utils.parseEther("1");
 
 export const wmul = (x: BigNumber, y: BigNumber) => {
   return x
