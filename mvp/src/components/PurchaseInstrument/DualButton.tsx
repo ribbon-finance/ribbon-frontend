@@ -114,7 +114,7 @@ const DualButton: React.FC<DualButtonProps> = ({
           account,
           instrument.balancerPool
         );
-        if (allowance.gt(ethers.utils.parseEther(purchaseAmount.toString()))) {
+        if (allowance.gt(purchaseAmountEther)) {
           setCurrentStep(1);
         }
       })();
