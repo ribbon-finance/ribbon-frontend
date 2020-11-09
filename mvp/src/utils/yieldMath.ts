@@ -1,4 +1,5 @@
 import { Product, Instrument } from "../models";
+import { etherToDecimals } from "./math";
 
 type YieldNumber = {
   amount: number;
@@ -11,7 +12,7 @@ type Yield = {
 export const transposeYieldByCurrency = (yields: Yield[]) => {
   const keyVals = yields.map((y): [string, YieldNumber] => [
     y.currencySymbol,
-    { amount: y.amount, percentage: y.percentage }
+    { amount: y.amount, percentage: y.percentage },
   ]);
 
   return new Map(keyVals);
@@ -25,28 +26,30 @@ export const calculateYield = (
 ): Yield[] => {
   const { strikePrice, instrumentSpotPrice } = instrument;
 
+  const spotPrice = etherToDecimals(instrumentSpotPrice);
+
   // target yield, when settlePrice < strikePrice
   const strikeAmount = paymentTokenAmount / strikePrice;
-  const dTokenAmount = paymentTokenAmount / instrumentSpotPrice;
+  const dTokenAmount = paymentTokenAmount / spotPrice;
 
-  const instrumentSpotInTargetCurrency = instrumentSpotPrice / targetSpotPrice;
+  const instrumentSpotInTargetCurrency = spotPrice / targetSpotPrice;
   const targetYield = (1 - instrumentSpotInTargetCurrency) * 100;
 
   // payment yield, when settlePrice >= strikePrice
   const settlementAmount = dTokenAmount * strikePrice;
-  const paymentYield = (strikePrice / instrumentSpotPrice - 1) * 100;
+  const paymentYield = (strikePrice / spotPrice - 1) * 100;
 
   return [
     {
       currencySymbol: product.paymentCurrency,
       amount: settlementAmount,
-      percentage: paymentYield
+      percentage: paymentYield,
     },
     {
       currencySymbol: product.targetCurrency,
       amount: strikeAmount,
-      percentage: targetYield
-    }
+      percentage: targetYield,
+    },
   ];
 };
 

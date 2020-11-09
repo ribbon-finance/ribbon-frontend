@@ -6,7 +6,7 @@ const defaultLabelOptions = {
   display: true,
   fontStyle: "bold",
   fontFamily: "Roboto",
-  fontColor: "#000000"
+  fontColor: "#000000",
 };
 
 type ToolTipItem = {
@@ -17,7 +17,7 @@ type ToolTipItem = {
 
 const options = {
   legend: {
-    display: false
+    display: false,
   },
   tooltips: {
     callbacks: {
@@ -29,32 +29,32 @@ const options = {
       },
       label: (tooltipItem: ToolTipItem, _data: ToolTipItem[]) => {
         return "Return: $" + tooltipItem.yLabel.toFixed(2);
-      }
-    }
+      },
+    },
   },
   scales: {
     yAxes: [
       {
         scaleLabel: {
           ...defaultLabelOptions,
-          labelString: "Return in USD"
+          labelString: "Return in USD",
         },
         ticks: {
           beginAtZero: true,
           callback: (value: number, _index: number, _values: number[]) =>
-            "$" + value
-        }
-      }
+            "$" + value,
+        },
+      },
     ],
     xAxes: [
       {
         scaleLabel: {
           ...defaultLabelOptions,
-          labelString: "Settlement Price"
-        }
-      }
-    ]
-  }
+          labelString: "Settlement Price",
+        },
+      },
+    ],
+  },
 };
 
 const Layout = styled.div`
@@ -84,7 +84,7 @@ const PayoffChart: React.FC<Props> = ({
   strikePrice,
   stepSize,
   payoffAlgo,
-  renderDelay = 300 //ms
+  renderDelay = 300, //ms
 }) => {
   const [labels, setLabels] = useState<number[]>([]);
   const [data, setData] = useState<number[]>([]);
@@ -116,25 +116,27 @@ const PayoffChart: React.FC<Props> = ({
     }, renderDelay);
   }, [memoizedLabels, memoizedData, renderDelay, payoffAlgo]);
 
-  const chartData = {
-    labels,
-    datasets: [
-      {
-        lineTension: 0,
-        label: "Return",
-        data,
-        fill: false,
-        backgroundColor: "#689BFF",
-        borderColor: "#689BFF"
-      }
-    ]
-  };
+  const chart = useMemo(() => {
+    const chartData = {
+      labels,
+      datasets: [
+        {
+          lineTension: 0,
+          label: "Return",
+          data,
+          fill: false,
+          backgroundColor: "#689BFF",
+          borderColor: "#689BFF",
+        },
+      ],
+    };
+
+    return <Line data={chartData} options={options}></Line>;
+  }, [labels, data]);
 
   return (
     <Layout>
-      <ChartContainer>
-        <Line data={chartData} options={options}></Line>
-      </ChartContainer>
+      <ChartContainer>{chart}</ChartContainer>
     </Layout>
   );
 };

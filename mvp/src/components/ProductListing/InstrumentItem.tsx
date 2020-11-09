@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Button, PrimaryText, SecondaryText } from "../../designSystem";
 import { Instrument, Product } from "../../models";
+import { etherToDecimals } from "../../utils/math";
 import { calculateYield, convertToAPY } from "../../utils/yieldMath";
 
 const InstrumentContainer = styled.div`
@@ -80,7 +81,7 @@ type Props = {
 const InstrumentItem: React.FC<Props> = ({ instrument, product }) => {
   // calculate with 1 dToken
   const yields = calculateYield(
-    instrument.instrumentSpotPrice,
+    etherToDecimals(instrument.instrumentSpotPrice),
     instrument,
     product,
     instrument.targetSpotPrice
@@ -99,8 +100,8 @@ const InstrumentItem: React.FC<Props> = ({ instrument, product }) => {
     { property: "Yield", value: largestYield.percentage.toFixed(3) + "%" },
     {
       property: "Expiry",
-      value: new Date(instrument.expiryTimestamp * 1000).toLocaleDateString()
-    }
+      value: new Date(instrument.expiryTimestamp * 1000).toLocaleDateString(),
+    },
   ];
 
   return (
@@ -139,7 +140,7 @@ type InstrumentDetailProps = {
 
 const InstrumentDetail: React.FC<InstrumentDetailProps> = ({
   property,
-  value
+  value,
 }) => {
   return (
     <InstrumentDetailRow>

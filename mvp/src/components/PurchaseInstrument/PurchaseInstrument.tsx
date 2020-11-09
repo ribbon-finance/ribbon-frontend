@@ -14,6 +14,7 @@ import {
   transposeYieldByCurrency,
 } from "../../utils/yieldMath";
 import AmountInput from "./AmountInput";
+import DualButton from "./DualButton";
 
 type Props = {
   product: Product;
@@ -74,6 +75,17 @@ const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
     [product, instrument.paymentCurrencyAddress]
   );
 
+  const dualButton = useMemo(
+    () => (
+      <DualButton
+        instrument={instrument}
+        paymentCurrencySymbol={product.paymentCurrency}
+        purchaseAmount={purchaseAmount}
+      ></DualButton>
+    ),
+    [instrument, product.paymentCurrency, purchaseAmount]
+  );
+
   return (
     <ProductContainer>
       <Title>{product.name}</Title>
@@ -91,6 +103,7 @@ const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
           instrument={instrument}
           purchaseAmount={purchaseAmount}
           amountInput={amountInput}
+          dualButton={dualButton}
         ></SettlementCalculator>
 
         <Spacer></Spacer>
