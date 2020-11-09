@@ -6,6 +6,7 @@ import { BPoolFactory } from "../../codegen/BPoolFactory";
 import { IERC20Factory } from "../../codegen/IERC20Factory";
 import { Button, SecondaryText } from "../../designSystem";
 import { Instrument } from "../../models";
+import { wmul } from "../../utils/math";
 
 const ButtonsContainer = styled.div`
   display: flex;
@@ -88,7 +89,9 @@ const DualButton: React.FC<DualButtonProps> = ({
 }) => {
   const { library } = useWeb3React();
   const [currentStep, setCurrentStep] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
   const [approveLoading, setApproveLoading] = useState(false);
+  const [purchaseLoading, setPurchaseLoading] = useState(false);
 
   const paymentERC20 = useMemo(() => {
     const signer = library.getSigner();
@@ -109,31 +112,68 @@ const DualButton: React.FC<DualButtonProps> = ({
       );
       const tx = await receipt.wait(1);
       setApproveLoading(false);
+      setErrorMessage("");
       setCurrentStep(1);
       console.log(tx);
     } catch (e) {
+      setErrorMessage("Approval failed.");
       setApproveLoading(false);
     }
   }, [paymentERC20, instrument.balancerPool]);
 
   const handlePurchase = useCallback(async () => {
+    setPurchaseLoading(true);
+
     const purchaseAmountEther = ethers.utils.parseEther(
       purchaseAmount.toString()
     );
-    const spotPlusFees = instrument.instrumentSpotPrice.mul(
-      ethers.BigNumber.from("1").add(instrument.swapFee)
+    const spotPlusFees = wmul(
+      instrument.instrumentSpotPrice,
+      ethers.utils.parseEther("1").add(instrument.swapFee)
     );
-    const maxSlippage = ethers.utils.parseEther("0.0001");
-    const spotWithMaxSlippage = spotPlusFees.mul(maxSlippage);
-    const minTokenOut = purchaseAmountEther.mul(spotWithMaxSlippage);
+    const maxSlippage = ethers.utils.parseEther("0.001");
+    const spotWithMaxSlippage = wmul(spotPlusFees, maxSlippage);
+    const minTokenOut = wmul(purchaseAmountEther, spotWithMaxSlippage);
 
-    await balancerPool.swapExactAmountIn(
-      instrument.paymentCurrencyAddress,
-      purchaseAmountEther,
-      instrument.dTokenAddress,
-      minTokenOut,
-      spotWithMaxSlippage
+    const dTokenBalance = await balancerPool.getBalance(
+      instrument.dTokenAddress
     );
+    const paymentBalance = await balancerPool.getBalance(
+      instrument.paymentCurrencyAddress
+    );
+
+    const tokenOut = await balancerPool.calcOutGivenIn(
+      dTokenBalance,
+      ethers.utils.parseEther("1"),
+      paymentBalance,
+      ethers.utils.parseEther("1"),
+      purchaseAmountEther,
+      instrument.swapFee
+    );
+
+    if (tokenOut.gte(minTokenOut)) {
+      setErrorMessage(
+        "Pool does not have sufficient liquidity for this purchase."
+      );
+      setPurchaseLoading(false);
+      return;
+    }
+
+    try {
+      const receipt = await balancerPool.swapExactAmountIn(
+        instrument.paymentCurrencyAddress,
+        purchaseAmountEther,
+        instrument.dTokenAddress,
+        minTokenOut,
+        spotWithMaxSlippage
+      );
+
+      await receipt.wait(1);
+      setPurchaseLoading(false);
+    } catch (e) {
+      setErrorMessage("Purchase failed.");
+      setPurchaseLoading(false);
+    }
   }, [
     balancerPool,
     instrument.paymentCurrencyAddress,
@@ -152,24 +192,29 @@ const DualButton: React.FC<DualButtonProps> = ({
     },
     {
       onClick: handlePurchase,
-      buttonText: `Purchase ${paymentCurrencySymbol}`,
+      buttonText: purchaseLoading
+        ? "Purchasing..."
+        : `Purchase ${paymentCurrencySymbol}`,
     },
   ];
 
   return (
-    <ButtonsContainer>
-      {steps.map((step, index) => (
-        <MemoizedStepComponent
-          key={index}
-          active={Boolean(purchaseAmount) && index === currentStep}
-          onClick={
-            purchaseAmount && index === currentStep ? step.onClick : () => {}
-          }
-          stepNumber={index + 1}
-          buttonText={step.buttonText}
-        ></MemoizedStepComponent>
-      ))}
-    </ButtonsContainer>
+    <div>
+      <ButtonsContainer>
+        {steps.map((step, index) => (
+          <MemoizedStepComponent
+            key={index}
+            active={Boolean(purchaseAmount) && index === currentStep}
+            onClick={
+              purchaseAmount && index === currentStep ? step.onClick : () => {}
+            }
+            stepNumber={index + 1}
+            buttonText={step.buttonText}
+          ></MemoizedStepComponent>
+        ))}
+      </ButtonsContainer>
+      <span>{errorMessage}</span>
+    </div>
   );
 };
 
