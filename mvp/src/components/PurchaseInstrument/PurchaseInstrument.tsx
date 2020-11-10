@@ -111,7 +111,7 @@ const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
         <PayoffChart
           minPrice={0}
           strikePrice={instrument.strikePrice}
-          maxPrice={500}
+          maxPrice={600}
           stepSize={100}
           payoffAlgo={payoffAlgo}
         ></PayoffChart>

@@ -86,6 +86,12 @@ const InstrumentItem: React.FC<Props> = ({ instrument, product }) => {
     product,
     instrument.targetSpotPrice
   );
+  console.log([
+    etherToDecimals(instrument.instrumentSpotPrice),
+    instrument,
+    product,
+    instrument.targetSpotPrice,
+  ]);
   const largestYield = yields.reduce((y1, y2) =>
     y1.percentage > y2.percentage ? y1 : y2
   );

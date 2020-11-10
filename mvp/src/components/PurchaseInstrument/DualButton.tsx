@@ -104,7 +104,7 @@ const DualButton: React.FC<DualButtonProps> = ({
   }, [library, instrument.balancerPool]);
 
   const purchaseAmountEther = ethers.utils.parseEther(
-    purchaseAmount.toString()
+    purchaseAmount ? purchaseAmount.toString() : "0"
   );
 
   useEffect(() => {
