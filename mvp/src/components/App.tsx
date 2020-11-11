@@ -22,28 +22,28 @@ const InjectedWeb3Provider = createWeb3ReactRoot("metamask");
 
 function App() {
   return (
-    <InjectedWeb3Provider getLibrary={getMetamaskLibrary}>
-      <InfuraWeb3Provider getLibrary={getInfuraLibrary}>
-        <Router>
-          <AppContainer className="App">
-            <Header />
-            <MainContent>
-              <Switch>
-                <Route exact path="/">
-                  <ProductListing product={products[0]}></ProductListing>
-                </Route>
-                <Route exact path="/instrument/:instrumentSymbol">
-                  <PurchaseInstrument></PurchaseInstrument>
-                </Route>
-                <Route path="*">
-                  <Content404></Content404>
-                </Route>
-              </Switch>
-            </MainContent>
-          </AppContainer>
-        </Router>
-      </InfuraWeb3Provider>
-    </InjectedWeb3Provider>
+    // <InjectedWeb3Provider getLibrary={getMetamaskLibrary}>
+    <InfuraWeb3Provider getLibrary={getInfuraLibrary}>
+      <Router>
+        <AppContainer className="App">
+          <Header />
+          <MainContent>
+            <Switch>
+              <Route exact path="/">
+                <ProductListing product={products[0]}></ProductListing>
+              </Route>
+              <Route exact path="/instrument/:instrumentSymbol">
+                <PurchaseInstrument></PurchaseInstrument>
+              </Route>
+              <Route path="*">
+                <Content404></Content404>
+              </Route>
+            </Switch>
+          </MainContent>
+        </AppContainer>
+      </Router>
+    </InfuraWeb3Provider>
+    // </InjectedWeb3Provider>
   );
 }
 

@@ -49,7 +49,7 @@ type Props = {
 };
 
 const ProductListing: React.FC<Props> = ({ product }) => {
-  const { targetCurrency, paymentCurrency } = product;
+  const { targetCurrency } = product;
   const expiryDateTime = moment.unix(product.expiryTimestamp);
   const expiresIn = expiryDateTime.from(moment());
   const { activate } = useWeb3React("infura");
@@ -58,16 +58,16 @@ const ProductListing: React.FC<Props> = ({ product }) => {
     setTimeout(async () => {
       const network = new NetworkConnector({
         urls: {
-          42: "https://kovan.infura.io/v3/d43d838246464b5690f8b10337b446d7",
+          42: "https://kovan.infura.io/v3/60ab76e16df54c808e50a79975b4779f",
         },
         defaultChainId: 42,
       });
       try {
-        await activate(network);
+        activate(network);
       } catch (e) {
         console.error(e);
       }
-    }, 5000);
+    }, 2000);
   }, [activate]);
 
   const res = useInstruments();
@@ -108,8 +108,8 @@ const ProductListing: React.FC<Props> = ({ product }) => {
         </TermDiv>
         <TermDiv>
           <PrimaryText>
-            If {targetCurrency} settles above the strike, you earn yield in{" "}
-            USD terms.
+            If {targetCurrency} settles above the strike, you earn yield in USD
+            terms.
           </PrimaryText>
         </TermDiv>
         <EitherWayDiv>
