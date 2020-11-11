@@ -153,7 +153,7 @@ const SettlementCalculator: React.FC<Props> = ({
                 {paymentYield && purchaseAmount
                   ? paymentYield.amount.toFixed(2)
                   : 0}{" "}
-                USD (
+                USD of ETH (
                 {paymentYield && purchaseAmount
                   ? paymentYield.percentage.toFixed(2)
                   : 0}

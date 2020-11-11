@@ -41,7 +41,7 @@ const CurrencyPair: React.FC<CurrencyPairProps> = ({
         alt={targetCurrency}
       ></CurrencyIconLeft>
       <CurrencyIconRight
-        src={currencyIcons[paymentCurrency]}
+        src={currencyIcons['USD']}
         alt={paymentCurrency}
       ></CurrencyIconRight>
     </CurrencyPairContainer>
