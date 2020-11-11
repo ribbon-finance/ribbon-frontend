@@ -107,7 +107,7 @@ const SettlementCalculator: React.FC<Props> = ({
   );
   const yieldsByCurrency = transposeYieldByCurrency(yields);
   const targetYield = yieldsByCurrency.get(product.targetCurrency);
-  const paymentYield = yieldsByCurrency.get(product.paymentCurrency);
+  const paymentYield = yieldsByCurrency.get("USD");
 
   return (
     <Layout>

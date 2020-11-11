@@ -15,6 +15,7 @@ import {
 } from "../../utils/yieldMath";
 import AmountInput from "./AmountInput";
 import DualButton from "./DualButton";
+import { etherToDecimals } from "../../utils/math";
 
 type Props = {
   product: Product;
@@ -43,7 +44,7 @@ const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
         purchaseAmount,
         instrument,
         product,
-        inputPrice
+        instrument.targetSpotPrice
       );
       const yieldsByCurrency = transposeYieldByCurrency(allYields);
 
@@ -55,7 +56,8 @@ const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
 
       if (payoffYield && payoffYield.amount) {
         const payoffAmount = settlePastStrike
-          ? payoffYield.amount
+          ? (purchaseAmount / etherToDecimals(instrument.instrumentSpotPrice)) *
+            instrument.strikePrice
           : payoffYield.amount * inputPrice;
         return payoffAmount;
       }

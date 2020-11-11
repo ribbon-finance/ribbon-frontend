@@ -27,23 +27,28 @@ export const calculateYield = (
   const { strikePrice, instrumentSpotPrice } = instrument;
 
   const spotPriceInPaymentCurrency = etherToDecimals(instrumentSpotPrice);
-  const spotPriceInUSD = spotPriceInPaymentCurrency * targetSpotPrice;
 
   // target yield, when settlePrice < strikePrice
-  const strikeAmount = paymentTokenAmount / strikePrice;
-  const dTokenAmount = paymentTokenAmount / spotPriceInUSD;
-  console.log(spotPriceInPaymentCurrency);
+  const strikeAmount = paymentTokenAmount / spotPriceInPaymentCurrency;
 
   const targetYield = (1 - spotPriceInPaymentCurrency) * 100;
 
   // payment yield, when settlePrice >= strikePrice
-  const settlementAmount = dTokenAmount * strikePrice;
-  const paymentYield = (strikePrice / spotPriceInUSD - 1) * 100;
+  const originalInvestment =
+    paymentTokenAmount / etherToDecimals(instrumentSpotPrice);
+
+  // const investmentUSD = originalInvestment * targetSpotPrice;
+  const investmentUSD = paymentTokenAmount * targetSpotPrice;
+  const paymentAmount = originalInvestment * strikePrice;
+  const paymentYield = ((paymentAmount - investmentUSD) / investmentUSD) * 100;
+  // const paymentYield = (strikePrice / spotPriceInUSD - 1) * 100;
+
+  console.log(`investmentUSD ${investmentUSD}, paymentAmount ${paymentAmount}`);
 
   return [
     {
-      currencySymbol: product.paymentCurrency,
-      amount: settlementAmount,
+      currencySymbol: "USD",
+      amount: paymentAmount,
       percentage: paymentYield,
     },
     {
