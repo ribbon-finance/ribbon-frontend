@@ -153,11 +153,11 @@ const SettlementCalculator: React.FC<Props> = ({
                 {paymentYield && purchaseAmount
                   ? paymentYield.amount.toFixed(2)
                   : 0}{" "}
-                {paymentCurrency} (
+                USD (
                 {paymentYield && purchaseAmount
                   ? paymentYield.percentage.toFixed(2)
                   : 0}
-                % yield in {paymentCurrency})
+                % yield in USD)
               </ExpectedPayoffPayment>
             </ExpectedPayoffText>
           </ExpectedPayoffRow>
