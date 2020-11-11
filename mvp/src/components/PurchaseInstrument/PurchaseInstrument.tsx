@@ -35,7 +35,7 @@ const Spacer = styled.div`
 `;
 
 const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
-  const { targetCurrency, paymentCurrency } = product;
+  const { targetCurrency } = product;
   const [purchaseAmount, setPurchaseAmount] = useState(0.0);
 
   const payoffAlgo = useCallback(

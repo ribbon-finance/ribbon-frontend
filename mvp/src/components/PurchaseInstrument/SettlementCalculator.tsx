@@ -94,7 +94,7 @@ const SettlementCalculator: React.FC<Props> = ({
   amountInput,
   dualButton,
 }) => {
-  const { targetCurrency, paymentCurrency } = product;
+  const { targetCurrency } = product;
   const yields = useMemo(
     () =>
       calculateYield(
