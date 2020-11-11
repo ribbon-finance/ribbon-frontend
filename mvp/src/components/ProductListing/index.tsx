@@ -89,7 +89,7 @@ const ProductListing: React.FC<Props> = ({ product }) => {
         <TermDiv>
           <PrimaryText>
             If {targetCurrency} settles above the strike, you earn yield in{" "}
-            {paymentCurrency} terms.
+            USD terms.
           </PrimaryText>
         </TermDiv>
         <EitherWayDiv>
