@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import moment from "moment";
 import {
@@ -11,6 +11,8 @@ import CurrencyPair from "../../designSystem/CurrencyPair";
 import { Instrument, Product } from "../../models";
 import InstrumentItem from "./InstrumentItem";
 import { useInstruments } from "../../hooks/useInstruments";
+import { NetworkConnector } from "@web3-react/network-connector";
+import { useWeb3React } from "@web3-react/core";
 
 const ProductTerms = styled.div`
   text-align: center;
@@ -50,6 +52,24 @@ const ProductListing: React.FC<Props> = ({ product }) => {
   const { targetCurrency, paymentCurrency } = product;
   const expiryDateTime = moment.unix(product.expiryTimestamp);
   const expiresIn = expiryDateTime.from(moment());
+  const { activate } = useWeb3React("infura");
+
+  useEffect(() => {
+    setTimeout(async () => {
+      const network = new NetworkConnector({
+        urls: {
+          42: "https://kovan.infura.io/v3/d43d838246464b5690f8b10337b446d7",
+        },
+        defaultChainId: 42,
+      });
+      try {
+        await activate(network);
+      } catch (e) {
+        console.error(e);
+      }
+    }, 5000);
+  }, [activate]);
+
   const res = useInstruments();
   let instruments: Instrument[] = [];
   let errorMessage = "Loading...";

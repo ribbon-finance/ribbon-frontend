@@ -2,7 +2,6 @@ import { Instrument } from "./../models";
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useMemo, useState } from "react";
 import { DataProviderFactory, TwinYield, TwinYieldFactory } from "../codegen";
-import externalAddresses from "../constants/externalAddresses.json";
 import deployedInstruments from "../constants/instruments.json";
 import { BPoolFactory } from "../codegen/BPoolFactory";
 import { etherToDecimals } from "../utils/math";
@@ -24,7 +23,7 @@ export const useInstruments = (
   | { status: "error"; message: string }
   | { status: "success"; instruments: Instrument[] }
   | { status: "loading" } => {
-  const { library } = useWeb3React();
+  const { library } = useWeb3React("infura");
   const addresses = useMemo(
     () => getDeployedInstruments(network).map((ins) => ins.address),
     [network]
@@ -81,7 +80,7 @@ export const useInstrument = (
   | { status: "error"; message: string }
   | { status: "success"; instrument: Instrument }
   | { status: "loading" } => {
-  const { library } = useWeb3React();
+  const { library } = useWeb3React("infura");
   const deployedInstruments = useMemo(() => getDeployedInstruments(network), [
     network,
   ]);

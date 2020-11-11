@@ -87,7 +87,7 @@ const DualButton: React.FC<DualButtonProps> = ({
   paymentCurrencySymbol,
   purchaseAmount,
 }) => {
-  const { library, account } = useWeb3React();
+  const { library, account } = useWeb3React("metamask");
   const [currentStep, setCurrentStep] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
   const [approveLoading, setApproveLoading] = useState(false);
@@ -134,11 +134,10 @@ const DualButton: React.FC<DualButtonProps> = ({
         instrument.balancerPool,
         MAX_UINT256
       );
-      const tx = await receipt.wait(1);
+      await receipt.wait(1);
       setApproveLoading(false);
       setErrorMessage("");
       setCurrentStep(1);
-      console.log(tx);
     } catch (e) {
       setErrorMessage("Approval failed.");
       setApproveLoading(false);

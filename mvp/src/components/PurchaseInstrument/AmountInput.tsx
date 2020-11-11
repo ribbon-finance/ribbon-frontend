@@ -86,7 +86,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
   onChange,
 }) => {
   const [inputText, setInputText] = useState("");
-  const { library, account } = useWeb3React();
+  const { library, account } = useWeb3React("metamask");
 
   const parseInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     return parseFloat(e.target.value);

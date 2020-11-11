@@ -48,7 +48,9 @@ const truncateAddress = (address: string) => {
 
 const AccountStatus: React.FC<Props> = () => {
   const [balance, setBalance] = useState("0");
-  const { activate: activateWeb3, library, active, account } = useWeb3React();
+  const { activate: activateWeb3, library, active, account } = useWeb3React(
+    "metamask"
+  );
   const hasAccount = active && account;
 
   const injectedConnector = useMemo(
@@ -72,11 +74,11 @@ const AccountStatus: React.FC<Props> = () => {
     setBalance(etherBal);
   }, [library, account]);
 
-  useEffect(() => {
-    (async () => {
-      await handleConnect();
-    })();
-  }, [handleConnect]);
+  // useEffect(() => {
+  //   (async () => {
+  //     await handleConnect();
+  //   })();
+  // }, [handleConnect]);
 
   useEffect(() => {
     if (library && account) {

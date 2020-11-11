@@ -14,7 +14,7 @@ const StyledIdenticonContainer = styled.div`
 
 export default function AccountIcon() {
   const ref = useRef<HTMLDivElement>();
-  const { active, account } = useWeb3React();
+  const { active, account } = useWeb3React("metamask");
 
   const icon: HTMLElement | null = useMemo<HTMLElement | null>(() => {
     if (!account) return null;

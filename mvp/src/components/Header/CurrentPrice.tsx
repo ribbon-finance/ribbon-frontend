@@ -28,7 +28,7 @@ const CurrencyIcon = styled.img`
 `;
 
 const CurrentPrice = () => {
-  const { library } = useWeb3React();
+  const { library } = useWeb3React("infura");
   const [price, setPrice] = useState(0);
 
   const fetchPrice = useCallback(async () => {
