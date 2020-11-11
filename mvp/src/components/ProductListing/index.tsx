@@ -72,7 +72,7 @@ const ProductListing: React.FC<Props> = ({ product }) => {
       <CurrencyPairContainer>
         <CurrencyPair
           targetCurrency={targetCurrency}
-          paymentCurrency={paymentCurrency}
+          paymentCurrency={"USDC"}
         ></CurrencyPair>
       </CurrencyPairContainer>
 

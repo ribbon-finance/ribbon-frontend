@@ -95,7 +95,7 @@ const PurchaseInstrument: React.FC<Props> = ({ product, instrument }) => {
       <CurrencyPairContainer>
         <CurrencyPair
           targetCurrency={targetCurrency}
-          paymentCurrency={paymentCurrency}
+          paymentCurrency={"USDC"}
         ></CurrencyPair>
       </CurrencyPairContainer>
 
