@@ -2,6 +2,7 @@ import { Instrument } from "./../models";
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useMemo, useState } from "react";
 import { DataProviderFactory, TwinYield, TwinYieldFactory } from "../codegen";
+import externalAddresses from "../constants/externalAddresses.json";
 import deployedInstruments from "../constants/instruments.json";
 import { BPoolFactory } from "../codegen/BPoolFactory";
 import { etherToDecimals } from "../utils/math";

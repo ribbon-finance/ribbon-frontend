@@ -5,7 +5,7 @@ export const products: Product[] = [
   {
     name: "Twin Yield ETH-USD",
     targetCurrency: "ETH",
-    paymentCurrency: "DAI",
+    paymentCurrency: "ETH",
     expiryTimestamp: instruments.kovan[0].expiry,
     instruments: [],
   },
