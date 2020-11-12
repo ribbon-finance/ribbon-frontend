@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import AccountStatus from "./AccountStatus";
 import CurrentPrice from "./CurrentPrice";
+import NetworkStatus from "./NetworkStatus";
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -18,6 +19,8 @@ const HeaderLeft = styled.div`
   margin-left: 16px;
 `;
 
+const HeaderMiddle = styled.div``;
+
 const HeaderRight = styled.div``;
 
 const Header = () => {
@@ -27,6 +30,10 @@ const Header = () => {
         <HeaderLeft>
           <CurrentPrice></CurrentPrice>
         </HeaderLeft>
+
+        <HeaderMiddle>
+          <NetworkStatus></NetworkStatus>
+        </HeaderMiddle>
 
         <HeaderRight>
           <AccountStatus></AccountStatus>
