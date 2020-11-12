@@ -193,13 +193,13 @@ const DualButton: React.FC<DualButtonProps> = ({
       onClick: handleApprove,
       buttonText: approveLoading
         ? "Approving..."
-        : `Approve ${paymentCurrencySymbol}`,
+        : `Approve WETH`,
     },
     {
       onClick: handlePurchase,
       buttonText: purchaseLoading
         ? "Purchasing..."
-        : `Purchase ${paymentCurrencySymbol}`,
+        : `Purchase WETH`,
     },
   ];
 
