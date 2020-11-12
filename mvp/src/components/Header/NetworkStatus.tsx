@@ -9,6 +9,7 @@ const Warning = styled.div`
   background: #FF0000;
   padding: 10px 15px;
   border-radius: 15px;
+  margin-left: 60px;
 `;
 
 const WarningText = styled.div`
