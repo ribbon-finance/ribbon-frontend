@@ -18,7 +18,7 @@ const WarningText = styled.div`
 const NetworkStatus = () => {
   const {chainId} = useWeb3React();
 
-  if (chainId != 42) {
+  if (chainId !== 42) {
     return (
         <Warning>
             <WarningText>
