@@ -64,6 +64,7 @@ const DualButton: React.FC<DualButtonProps> = ({
 }) => {
   const { library } = useWeb3React();
   const [errorMessage, setErrorMessage] = useState("");
+  const [purchaseTxhash, setPurchaseTxhash] = useState("");
   const [purchaseLoading, setPurchaseLoading] = useState(false);
 
   const instrumentContract = useMemo(() => {
@@ -113,7 +114,10 @@ const DualButton: React.FC<DualButtonProps> = ({
         { value: purchaseAmountEther }
       );
 
+      setPurchaseTxhash(receipt.hash);
+
       await receipt.wait(1);
+
       setPurchaseLoading(false);
     } catch (e) {
       console.error(e);
@@ -148,6 +152,17 @@ const DualButton: React.FC<DualButtonProps> = ({
         ))}
       </ButtonsContainer>
       <span>{errorMessage}</span>
+      {purchaseTxhash && (
+        <a
+          target="_blank"
+          rel="noreferrer"
+          href={`https://kovan.etherscan.io/tx/${purchaseTxhash}`}
+        >
+          {purchaseTxhash.slice(0, 6) +
+            "…" +
+            purchaseTxhash.slice(purchaseTxhash.length - 4)}
+        </a>
+      )}
     </div>
   );
 };
