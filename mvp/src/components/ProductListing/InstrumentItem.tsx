@@ -127,14 +127,14 @@ const InstrumentItem: React.FC<Props> = ({ instrument, product }) => {
         ))}
       </DetailContainer>
 
-      <BuyProductButton>
-        <Link
-          style={{ textDecoration: "none" }}
-          to={"/instrument/" + instrument.symbol}
-        >
+      <Link
+        style={{ textDecoration: "none" }}
+        to={"/instrument/" + instrument.symbol}
+      >
+        <BuyProductButton>
           <ButtonText>See Product</ButtonText>
-        </Link>
-      </BuyProductButton>
+        </BuyProductButton>
+      </Link>
     </InstrumentContainer>
   );
 };
