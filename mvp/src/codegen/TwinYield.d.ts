@@ -14,6 +14,7 @@ import {
   Contract,
   ContractTransaction,
   Overrides,
+  PayableOverrides,
   CallOverrides,
 } from "@ethersproject/contracts";
 import { BytesLike } from "@ethersproject/bytes";
@@ -46,7 +47,7 @@ interface TwinYieldInterface extends ethers.utils.Interface {
     "symbol()": FunctionFragment;
     "targetAsset()": FunctionFragment;
     "vaults(address)": FunctionFragment;
-    "initialize(address,address,string,string,uint256,uint256,uint256,address,address,address,address,address)": FunctionFragment;
+    "initialize(address,address,address,address)": FunctionFragment;
     "deposit(uint256)": FunctionFragment;
     "mint(uint256)": FunctionFragment;
     "depositAndMint(uint256,uint256)": FunctionFragment;
@@ -55,6 +56,7 @@ interface TwinYieldInterface extends ethers.utils.Interface {
     "settle()": FunctionFragment;
     "redeem(uint256)": FunctionFragment;
     "withdrawAfterExpiry()": FunctionFragment;
+    "buyFromPool(uint256,uint256,uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -131,20 +133,7 @@ interface TwinYieldInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "vaults", values: [string]): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [
-      string,
-      string,
-      string,
-      string,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      string,
-      string,
-      string,
-      string,
-      string
-    ]
+    values: [string, string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "deposit",
@@ -171,6 +160,10 @@ interface TwinYieldInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "withdrawAfterExpiry",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "buyFromPool",
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
 
   decodeFunctionResult(
@@ -258,6 +251,10 @@ interface TwinYieldInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "redeem", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "withdrawAfterExpiry",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "buyFromPool",
     data: BytesLike
   ): Result;
 
@@ -666,6 +663,20 @@ export class TwinYield extends Contract {
       1: BigNumber;
     }>;
 
+    /**
+     * Initializes the contract with params and creates a new pool, with address(this) as the pool's controller.
+     * @param bFactory is the address of the Balancer Core Factory
+     * @param dToken is the address of the instrument dToken
+     * @param paymentToken is the address of the paymentToken (the token sellers get when selling dToken)
+     */
+    "initialize(address,address,address,address)"(
+      owner: string,
+      bFactory: string,
+      dToken: string,
+      paymentToken: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     "initialize(address,address,string,string,uint256,uint256,uint256,address,address,address,address,address)"(
       _owner: string,
       _dataProvider: string,
@@ -683,26 +694,12 @@ export class TwinYield extends Contract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Initializes the contract with params and creates a new pool, with address(this) as the pool's controller.
-     * @param bFactory is the address of the Balancer Core Factory
-     * @param dToken is the address of the instrument dToken
-     * @param paymentToken is the address of the paymentToken (the token sellers get when selling dToken)
-     */
-    "initialize(address,address,address,address)"(
-      owner: string,
-      bFactory: string,
-      dToken: string,
-      paymentToken: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    /**
      * Deposits collateral into the system. Calls the `depositInteral` function
      * @param _amount is amount of collateral to deposit
      */
     deposit(
       _amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     /**
@@ -711,7 +708,7 @@ export class TwinYield extends Contract {
      */
     "deposit(uint256)"(
       _amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     /**
@@ -740,7 +737,7 @@ export class TwinYield extends Contract {
     depositAndMint(
       _collateral: BigNumberish,
       _dToken: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     /**
@@ -751,7 +748,7 @@ export class TwinYield extends Contract {
     "depositAndMint(uint256,uint256)"(
       _collateral: BigNumberish,
       _dToken: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     /**
@@ -764,7 +761,7 @@ export class TwinYield extends Contract {
       _collateral: BigNumberish,
       _dToken: BigNumberish,
       _maxSlippage: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     /**
@@ -777,7 +774,7 @@ export class TwinYield extends Contract {
       _collateral: BigNumberish,
       _dToken: BigNumberish,
       _maxSlippage: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     /**
@@ -840,6 +837,32 @@ export class TwinYield extends Contract {
      */
     "withdrawAfterExpiry()"(
       overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Pass-through that enables users to buy from the pool with ETH
+     * @param _maxPrice is the max price before and after swap
+     * @param _minAmountOut is the min amount of dTokens output from swap
+     * @param _paymentAmount is the amount of paymentTokens used to purchase dTokens
+     */
+    buyFromPool(
+      _paymentAmount: BigNumberish,
+      _minAmountOut: BigNumberish,
+      _maxPrice: BigNumberish,
+      overrides?: PayableOverrides
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Pass-through that enables users to buy from the pool with ETH
+     * @param _maxPrice is the max price before and after swap
+     * @param _minAmountOut is the min amount of dTokens output from swap
+     * @param _paymentAmount is the amount of paymentTokens used to purchase dTokens
+     */
+    "buyFromPool(uint256,uint256,uint256)"(
+      _paymentAmount: BigNumberish,
+      _minAmountOut: BigNumberish,
+      _maxPrice: BigNumberish,
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
   };
 
@@ -1051,6 +1074,20 @@ export class TwinYield extends Contract {
     1: BigNumber;
   }>;
 
+  /**
+   * Initializes the contract with params and creates a new pool, with address(this) as the pool's controller.
+   * @param bFactory is the address of the Balancer Core Factory
+   * @param dToken is the address of the instrument dToken
+   * @param paymentToken is the address of the paymentToken (the token sellers get when selling dToken)
+   */
+  "initialize(address,address,address,address)"(
+    owner: string,
+    bFactory: string,
+    dToken: string,
+    paymentToken: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   "initialize(address,address,string,string,uint256,uint256,uint256,address,address,address,address,address)"(
     _owner: string,
     _dataProvider: string,
@@ -1068,26 +1105,12 @@ export class TwinYield extends Contract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Initializes the contract with params and creates a new pool, with address(this) as the pool's controller.
-   * @param bFactory is the address of the Balancer Core Factory
-   * @param dToken is the address of the instrument dToken
-   * @param paymentToken is the address of the paymentToken (the token sellers get when selling dToken)
-   */
-  "initialize(address,address,address,address)"(
-    owner: string,
-    bFactory: string,
-    dToken: string,
-    paymentToken: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  /**
    * Deposits collateral into the system. Calls the `depositInteral` function
    * @param _amount is amount of collateral to deposit
    */
   deposit(
     _amount: BigNumberish,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   /**
@@ -1096,7 +1119,7 @@ export class TwinYield extends Contract {
    */
   "deposit(uint256)"(
     _amount: BigNumberish,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   /**
@@ -1125,7 +1148,7 @@ export class TwinYield extends Contract {
   depositAndMint(
     _collateral: BigNumberish,
     _dToken: BigNumberish,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   /**
@@ -1136,7 +1159,7 @@ export class TwinYield extends Contract {
   "depositAndMint(uint256,uint256)"(
     _collateral: BigNumberish,
     _dToken: BigNumberish,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   /**
@@ -1149,7 +1172,7 @@ export class TwinYield extends Contract {
     _collateral: BigNumberish,
     _dToken: BigNumberish,
     _maxSlippage: BigNumberish,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   /**
@@ -1162,7 +1185,7 @@ export class TwinYield extends Contract {
     _collateral: BigNumberish,
     _dToken: BigNumberish,
     _maxSlippage: BigNumberish,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   /**
@@ -1224,6 +1247,32 @@ export class TwinYield extends Contract {
    * Withdraws collateral after instrument is expired
    */
   "withdrawAfterExpiry()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+  /**
+   * Pass-through that enables users to buy from the pool with ETH
+   * @param _maxPrice is the max price before and after swap
+   * @param _minAmountOut is the min amount of dTokens output from swap
+   * @param _paymentAmount is the amount of paymentTokens used to purchase dTokens
+   */
+  buyFromPool(
+    _paymentAmount: BigNumberish,
+    _minAmountOut: BigNumberish,
+    _maxPrice: BigNumberish,
+    overrides?: PayableOverrides
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Pass-through that enables users to buy from the pool with ETH
+   * @param _maxPrice is the max price before and after swap
+   * @param _minAmountOut is the min amount of dTokens output from swap
+   * @param _paymentAmount is the amount of paymentTokens used to purchase dTokens
+   */
+  "buyFromPool(uint256,uint256,uint256)"(
+    _paymentAmount: BigNumberish,
+    _minAmountOut: BigNumberish,
+    _maxPrice: BigNumberish,
+    overrides?: PayableOverrides
+  ): Promise<ContractTransaction>;
 
   callStatic: {
     /**
@@ -1444,6 +1493,20 @@ export class TwinYield extends Contract {
       1: BigNumber;
     }>;
 
+    /**
+     * Initializes the contract with params and creates a new pool, with address(this) as the pool's controller.
+     * @param bFactory is the address of the Balancer Core Factory
+     * @param dToken is the address of the instrument dToken
+     * @param paymentToken is the address of the paymentToken (the token sellers get when selling dToken)
+     */
+    "initialize(address,address,address,address)"(
+      owner: string,
+      bFactory: string,
+      dToken: string,
+      paymentToken: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     "initialize(address,address,string,string,uint256,uint256,uint256,address,address,address,address,address)"(
       _owner: string,
       _dataProvider: string,
@@ -1457,20 +1520,6 @@ export class TwinYield extends Contract {
       _paymentToken: string,
       _liquidatorProxy: string,
       _balancerFactory: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    /**
-     * Initializes the contract with params and creates a new pool, with address(this) as the pool's controller.
-     * @param bFactory is the address of the Balancer Core Factory
-     * @param dToken is the address of the instrument dToken
-     * @param paymentToken is the address of the paymentToken (the token sellers get when selling dToken)
-     */
-    "initialize(address,address,address,address)"(
-      owner: string,
-      bFactory: string,
-      dToken: string,
-      paymentToken: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1611,6 +1660,42 @@ export class TwinYield extends Contract {
      * Withdraws collateral after instrument is expired
      */
     "withdrawAfterExpiry()"(overrides?: CallOverrides): Promise<void>;
+
+    /**
+     * Pass-through that enables users to buy from the pool with ETH
+     * @param _maxPrice is the max price before and after swap
+     * @param _minAmountOut is the min amount of dTokens output from swap
+     * @param _paymentAmount is the amount of paymentTokens used to purchase dTokens
+     */
+    buyFromPool(
+      _paymentAmount: BigNumberish,
+      _minAmountOut: BigNumberish,
+      _maxPrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      tokenAmountOut: BigNumber;
+      spotPriceAfter: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
+
+    /**
+     * Pass-through that enables users to buy from the pool with ETH
+     * @param _maxPrice is the max price before and after swap
+     * @param _minAmountOut is the min amount of dTokens output from swap
+     * @param _paymentAmount is the amount of paymentTokens used to purchase dTokens
+     */
+    "buyFromPool(uint256,uint256,uint256)"(
+      _paymentAmount: BigNumberish,
+      _minAmountOut: BigNumberish,
+      _maxPrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      tokenAmountOut: BigNumber;
+      spotPriceAfter: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
   };
 
   filters: {
@@ -1838,6 +1923,20 @@ export class TwinYield extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    /**
+     * Initializes the contract with params and creates a new pool, with address(this) as the pool's controller.
+     * @param bFactory is the address of the Balancer Core Factory
+     * @param dToken is the address of the instrument dToken
+     * @param paymentToken is the address of the paymentToken (the token sellers get when selling dToken)
+     */
+    "initialize(address,address,address,address)"(
+      owner: string,
+      bFactory: string,
+      dToken: string,
+      paymentToken: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     "initialize(address,address,string,string,uint256,uint256,uint256,address,address,address,address,address)"(
       _owner: string,
       _dataProvider: string,
@@ -1855,24 +1954,13 @@ export class TwinYield extends Contract {
     ): Promise<BigNumber>;
 
     /**
-     * Initializes the contract with params and creates a new pool, with address(this) as the pool's controller.
-     * @param bFactory is the address of the Balancer Core Factory
-     * @param dToken is the address of the instrument dToken
-     * @param paymentToken is the address of the paymentToken (the token sellers get when selling dToken)
-     */
-    "initialize(address,address,address,address)"(
-      owner: string,
-      bFactory: string,
-      dToken: string,
-      paymentToken: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    /**
      * Deposits collateral into the system. Calls the `depositInteral` function
      * @param _amount is amount of collateral to deposit
      */
-    deposit(_amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
+    deposit(
+      _amount: BigNumberish,
+      overrides?: PayableOverrides
+    ): Promise<BigNumber>;
 
     /**
      * Deposits collateral into the system. Calls the `depositInteral` function
@@ -1880,7 +1968,7 @@ export class TwinYield extends Contract {
      */
     "deposit(uint256)"(
       _amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     /**
@@ -1906,7 +1994,7 @@ export class TwinYield extends Contract {
     depositAndMint(
       _collateral: BigNumberish,
       _dToken: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     /**
@@ -1917,7 +2005,7 @@ export class TwinYield extends Contract {
     "depositAndMint(uint256,uint256)"(
       _collateral: BigNumberish,
       _dToken: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     /**
@@ -1930,7 +2018,7 @@ export class TwinYield extends Contract {
       _collateral: BigNumberish,
       _dToken: BigNumberish,
       _maxSlippage: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     /**
@@ -1943,7 +2031,7 @@ export class TwinYield extends Contract {
       _collateral: BigNumberish,
       _dToken: BigNumberish,
       _maxSlippage: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     /**
@@ -2005,6 +2093,32 @@ export class TwinYield extends Contract {
      * Withdraws collateral after instrument is expired
      */
     "withdrawAfterExpiry()"(overrides?: Overrides): Promise<BigNumber>;
+
+    /**
+     * Pass-through that enables users to buy from the pool with ETH
+     * @param _maxPrice is the max price before and after swap
+     * @param _minAmountOut is the min amount of dTokens output from swap
+     * @param _paymentAmount is the amount of paymentTokens used to purchase dTokens
+     */
+    buyFromPool(
+      _paymentAmount: BigNumberish,
+      _minAmountOut: BigNumberish,
+      _maxPrice: BigNumberish,
+      overrides?: PayableOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Pass-through that enables users to buy from the pool with ETH
+     * @param _maxPrice is the max price before and after swap
+     * @param _minAmountOut is the min amount of dTokens output from swap
+     * @param _paymentAmount is the amount of paymentTokens used to purchase dTokens
+     */
+    "buyFromPool(uint256,uint256,uint256)"(
+      _paymentAmount: BigNumberish,
+      _minAmountOut: BigNumberish,
+      _maxPrice: BigNumberish,
+      overrides?: PayableOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -2214,6 +2328,20 @@ export class TwinYield extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Initializes the contract with params and creates a new pool, with address(this) as the pool's controller.
+     * @param bFactory is the address of the Balancer Core Factory
+     * @param dToken is the address of the instrument dToken
+     * @param paymentToken is the address of the paymentToken (the token sellers get when selling dToken)
+     */
+    "initialize(address,address,address,address)"(
+      owner: string,
+      bFactory: string,
+      dToken: string,
+      paymentToken: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     "initialize(address,address,string,string,uint256,uint256,uint256,address,address,address,address,address)"(
       _owner: string,
       _dataProvider: string,
@@ -2231,26 +2359,12 @@ export class TwinYield extends Contract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Initializes the contract with params and creates a new pool, with address(this) as the pool's controller.
-     * @param bFactory is the address of the Balancer Core Factory
-     * @param dToken is the address of the instrument dToken
-     * @param paymentToken is the address of the paymentToken (the token sellers get when selling dToken)
-     */
-    "initialize(address,address,address,address)"(
-      owner: string,
-      bFactory: string,
-      dToken: string,
-      paymentToken: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
      * Deposits collateral into the system. Calls the `depositInteral` function
      * @param _amount is amount of collateral to deposit
      */
     deposit(
       _amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2259,7 +2373,7 @@ export class TwinYield extends Contract {
      */
     "deposit(uint256)"(
       _amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2288,7 +2402,7 @@ export class TwinYield extends Contract {
     depositAndMint(
       _collateral: BigNumberish,
       _dToken: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2299,7 +2413,7 @@ export class TwinYield extends Contract {
     "depositAndMint(uint256,uint256)"(
       _collateral: BigNumberish,
       _dToken: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2312,7 +2426,7 @@ export class TwinYield extends Contract {
       _collateral: BigNumberish,
       _dToken: BigNumberish,
       _maxSlippage: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2325,7 +2439,7 @@ export class TwinYield extends Contract {
       _collateral: BigNumberish,
       _dToken: BigNumberish,
       _maxSlippage: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -2388,6 +2502,32 @@ export class TwinYield extends Contract {
      */
     "withdrawAfterExpiry()"(
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Pass-through that enables users to buy from the pool with ETH
+     * @param _maxPrice is the max price before and after swap
+     * @param _minAmountOut is the min amount of dTokens output from swap
+     * @param _paymentAmount is the amount of paymentTokens used to purchase dTokens
+     */
+    buyFromPool(
+      _paymentAmount: BigNumberish,
+      _minAmountOut: BigNumberish,
+      _maxPrice: BigNumberish,
+      overrides?: PayableOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Pass-through that enables users to buy from the pool with ETH
+     * @param _maxPrice is the max price before and after swap
+     * @param _minAmountOut is the min amount of dTokens output from swap
+     * @param _paymentAmount is the amount of paymentTokens used to purchase dTokens
+     */
+    "buyFromPool(uint256,uint256,uint256)"(
+      _paymentAmount: BigNumberish,
+      _minAmountOut: BigNumberish,
+      _maxPrice: BigNumberish,
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

@@ -159,12 +159,18 @@ export class DataProvider extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    /**
+     * WETH address getter
+     */
     weth(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
+    /**
+     * WETH address getter
+     */
     "weth()"(
       overrides?: CallOverrides
     ): Promise<{
@@ -279,8 +285,14 @@ export class DataProvider extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  /**
+   * WETH address getter
+   */
   weth(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * WETH address getter
+   */
   "weth()"(overrides?: CallOverrides): Promise<string>;
 
   /**
@@ -375,8 +387,14 @@ export class DataProvider extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    /**
+     * WETH address getter
+     */
     weth(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * WETH address getter
+     */
     "weth()"(overrides?: CallOverrides): Promise<string>;
 
     /**
@@ -485,8 +503,14 @@ export class DataProvider extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    /**
+     * WETH address getter
+     */
     weth(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * WETH address getter
+     */
     "weth()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
@@ -588,8 +612,14 @@ export class DataProvider extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * WETH address getter
+     */
     weth(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * WETH address getter
+     */
     "weth()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
