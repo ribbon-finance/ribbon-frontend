@@ -3,7 +3,7 @@ import { BPool } from "../codegen/BPool";
 import { Instrument } from "../models";
 import { WAD, wmul, wdiv } from "./math";
 
-const MAX_SLIPPAGE = WAD.add(ethers.utils.parseEther("0.0005"));
+const MAX_SLIPPAGE = WAD.add(ethers.utils.parseEther("0.05"));
 
 enum ERROR_CODE {
   ERR_BAD_LIMIT_PRICE = 1,
