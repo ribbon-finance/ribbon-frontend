@@ -47,7 +47,7 @@ type Props = {
 };
 
 const ProductListing: React.FC<Props> = ({ product }) => {
-  const { targetCurrency, paymentCurrency } = product;
+  const { targetCurrency } = product;
   const expiryDateTime = moment.unix(product.expiryTimestamp);
   const expiresIn = expiryDateTime.from(moment());
   const res = useInstruments();
@@ -88,8 +88,8 @@ const ProductListing: React.FC<Props> = ({ product }) => {
         </TermDiv>
         <TermDiv>
           <PrimaryText>
-            If {targetCurrency} settles above the strike, you earn yield in{" "}
-            USD terms.
+            If {targetCurrency} settles above the strike, you earn yield in USD
+            terms.
           </PrimaryText>
         </TermDiv>
         <EitherWayDiv>

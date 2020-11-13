@@ -1,9 +1,9 @@
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
+import { TwinYieldFactory } from "../../codegen";
 import { BPoolFactory } from "../../codegen/BPoolFactory";
-import { IERC20Factory } from "../../codegen/IERC20Factory";
 import { Button, SecondaryText } from "../../designSystem";
 import { Instrument } from "../../models";
 import { canSwapTokens } from "../../utils/balancer";
@@ -51,52 +51,26 @@ const DisabledButtonText = styled(ButtonText)`
   color: #b8b8b8;
 `;
 
-const CircleStep = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  font-size: 10px;
-  line-height: 12px;
-  color: white;
-  font-weight: bold;
-`;
-
-const ActiveCircleStep = styled(CircleStep)`
-  background: #2d9cdb;
-`;
-
-const DisabledCircleStep = styled(CircleStep)`
-  background: #c4c4c4;
-`;
-
 type DualButtonProps = {
   instrument: Instrument;
-  paymentCurrencySymbol: string;
   purchaseAmount: number;
 };
-
-const MAX_UINT256 = ethers.BigNumber.from("2").pow("256").sub("1");
 
 type Step = { onClick: () => void; buttonText: string };
 
 const DualButton: React.FC<DualButtonProps> = ({
   instrument,
-  paymentCurrencySymbol,
   purchaseAmount,
 }) => {
-  const { library, account } = useWeb3React();
-  const [currentStep, setCurrentStep] = useState(0);
+  const { library } = useWeb3React();
   const [errorMessage, setErrorMessage] = useState("");
-  const [approveLoading, setApproveLoading] = useState(false);
+  const [purchaseTxhash, setPurchaseTxhash] = useState("");
   const [purchaseLoading, setPurchaseLoading] = useState(false);
 
-  const paymentERC20 = useMemo(() => {
+  const instrumentContract = useMemo(() => {
     const signer = library.getSigner();
-    return IERC20Factory.connect(instrument.paymentCurrencyAddress, signer);
-  }, [library, instrument.paymentCurrencyAddress]);
+    return TwinYieldFactory.connect(instrument.instrumentAddress, signer);
+  }, [library, instrument.instrumentAddress]);
 
   const balancerPool = useMemo(() => {
     const signer = library.getSigner();
@@ -106,44 +80,6 @@ const DualButton: React.FC<DualButtonProps> = ({
   const purchaseAmountEther = ethers.utils.parseEther(
     purchaseAmount ? purchaseAmount.toString() : "0"
   );
-
-  useEffect(() => {
-    if (library && account) {
-      (async () => {
-        const allowance = await paymentERC20.allowance(
-          account,
-          instrument.balancerPool
-        );
-        if (allowance.gt(purchaseAmountEther)) {
-          setCurrentStep(1);
-        }
-      })();
-    }
-  }, [
-    library,
-    account,
-    paymentERC20,
-    instrument.balancerPool,
-    purchaseAmountEther,
-  ]);
-
-  const handleApprove = useCallback(async () => {
-    setApproveLoading(true);
-    try {
-      const receipt = await paymentERC20.approve(
-        instrument.balancerPool,
-        MAX_UINT256
-      );
-      const tx = await receipt.wait(1);
-      setApproveLoading(false);
-      setErrorMessage("");
-      setCurrentStep(1);
-      console.log(tx);
-    } catch (e) {
-      setErrorMessage("Approval failed.");
-      setApproveLoading(false);
-    }
-  }, [paymentERC20, instrument.balancerPool]);
 
   const handlePurchase = useCallback(async () => {
     setPurchaseLoading(true);
@@ -171,35 +107,35 @@ const DualButton: React.FC<DualButtonProps> = ({
         )}\nMax price: ${ethers.utils.formatEther(maxPrice)}`
       );
 
-      const receipt = await balancerPool.swapExactAmountIn(
-        instrument.paymentCurrencyAddress,
+      const receipt = await instrumentContract.buyFromPool(
         purchaseAmountEther,
-        instrument.dTokenAddress,
         minTokenOut,
-        maxPrice
+        maxPrice,
+        { value: purchaseAmountEther }
       );
 
+      setPurchaseTxhash(receipt.hash);
+
       await receipt.wait(1);
+
       setPurchaseLoading(false);
     } catch (e) {
       console.error(e);
       setErrorMessage("Purchase failed.");
       setPurchaseLoading(false);
     }
-  }, [balancerPool, instrument, purchaseAmountEther]);
+  }, [instrumentContract, balancerPool, instrument, purchaseAmountEther]);
 
   let steps: Step[] = [
-    {
-      onClick: handleApprove,
-      buttonText: approveLoading
-        ? "Approving..."
-        : `Approve WETH`,
-    },
+    // {
+    //   onClick: handleApprove,
+    //   buttonText: approveLoading
+    //     ? "Approving..."
+    //     : `Approve WETH`,
+    // },
     {
       onClick: handlePurchase,
-      buttonText: purchaseLoading
-        ? "Purchasing..."
-        : `Purchase WETH`,
+      buttonText: purchaseLoading ? "Purchasing..." : `Purchase`,
     },
   ];
 
@@ -209,16 +145,24 @@ const DualButton: React.FC<DualButtonProps> = ({
         {steps.map((step, index) => (
           <MemoizedStepComponent
             key={index}
-            active={Boolean(purchaseAmount) && index === currentStep}
-            onClick={
-              purchaseAmount && index === currentStep ? step.onClick : () => {}
-            }
-            stepNumber={index + 1}
+            active={Boolean(purchaseAmount)}
+            onClick={purchaseAmount ? step.onClick : () => {}}
             buttonText={step.buttonText}
           ></MemoizedStepComponent>
         ))}
       </ButtonsContainer>
       <span>{errorMessage}</span>
+      {purchaseTxhash && (
+        <a
+          target="_blank"
+          rel="noreferrer"
+          href={`https://kovan.etherscan.io/tx/${purchaseTxhash}`}
+        >
+          {purchaseTxhash.slice(0, 6) +
+            "…" +
+            purchaseTxhash.slice(purchaseTxhash.length - 4)}
+        </a>
+      )}
     </div>
   );
 };
@@ -226,19 +170,17 @@ const DualButton: React.FC<DualButtonProps> = ({
 const StepComponent: React.FC<{
   onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   active: boolean;
-  stepNumber: number;
   buttonText: string;
-}> = ({ onClick, active, buttonText, stepNumber }) => {
+}> = ({ onClick, active, buttonText }) => {
   const Button = active ? ActiveButton : DisabledButton;
   const Text = active ? ButtonText : DisabledButtonText;
-  const Circle = active ? ActiveCircleStep : DisabledCircleStep;
+  // const Circle = active ? ActiveCircleStep : DisabledCircleStep;
 
   return (
     <ButtonContainer>
       <Button onClick={onClick}>
         <Text>{buttonText}</Text>
       </Button>
-      <Circle>{stepNumber}</Circle>
     </ButtonContainer>
   );
 };

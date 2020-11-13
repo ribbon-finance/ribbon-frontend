@@ -2,6 +2,7 @@ import { BigNumber } from "ethers";
 
 export type Instrument = {
   symbol: string;
+  instrumentAddress: string;
   strikePrice: number;
   balancerPool: string;
   instrumentSpotPrice: BigNumber;

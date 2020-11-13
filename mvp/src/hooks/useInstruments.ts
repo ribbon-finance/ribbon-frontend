@@ -2,7 +2,6 @@ import { Instrument } from "./../models";
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useMemo, useState } from "react";
 import { DataProviderFactory, TwinYield, TwinYieldFactory } from "../codegen";
-import externalAddresses from "../constants/externalAddresses.json";
 import deployedInstruments from "../constants/instruments.json";
 import { BPoolFactory } from "../codegen/BPoolFactory";
 import { etherToDecimals } from "../utils/math";
@@ -161,6 +160,7 @@ const fetchInstrumentData = async (
     const swapFee = await balancerPool.getSwapFee();
 
     const instrumentData = {
+      instrumentAddress: instrument.address,
       symbol: await instrument.symbol(),
       strikePrice,
       expiryTimestamp: (await instrument.expiry()).toNumber(),

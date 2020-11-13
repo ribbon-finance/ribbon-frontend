@@ -43,8 +43,6 @@ export const calculateYield = (
   const paymentYield = ((paymentAmount - investmentUSD) / investmentUSD) * 100;
   // const paymentYield = (strikePrice / spotPriceInUSD - 1) * 100;
 
-  console.log(`investmentUSD ${investmentUSD}, paymentAmount ${paymentAmount}`);
-
   return [
     {
       currencySymbol: "USD",
