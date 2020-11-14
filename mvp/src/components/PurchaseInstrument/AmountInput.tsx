@@ -1,7 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import React, { useCallback, useState } from "react";
 import styled from "styled-components";
-import { IERC20Factory } from "../../codegen/IERC20Factory";
 import { Button, PrimaryText, SecondaryText } from "../../designSystem";
 import currencyIcons from "../../img/currencyIcons";
 import { etherToDecimals } from "../../utils/math";
@@ -94,11 +93,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
 
   const handleMaxButton = useCallback(async () => {
     if (library && account) {
-      const paymentERC20 = IERC20Factory.connect(
-        paymentCurrencyAddress,
-        library.getSigner()
-      );
-      const paymentBalance = await paymentERC20.balanceOf(account);
+      const paymentBalance = await library.getBalance(account);
       const balanceDecimals = etherToDecimals(paymentBalance);
       setInputText(balanceDecimals.toFixed(4));
       onChange(balanceDecimals);
@@ -106,7 +101,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
       setInputText("");
       onChange(0.0);
     }
-  }, [onChange, paymentCurrencyAddress, account, library]);
+  }, [onChange, account, library]);
 
   return (
     <InputDiv>

@@ -114,6 +114,7 @@ const DualButton: React.FC<DualButtonProps> = ({
         { value: purchaseAmountEther }
       );
 
+      setErrorMessage("");
       setPurchaseTxhash(receipt.hash);
 
       await receipt.wait(1);
