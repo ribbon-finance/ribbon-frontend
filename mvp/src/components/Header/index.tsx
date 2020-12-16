@@ -2,13 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import AccountStatus from "./AccountStatus";
 import CurrentPrice from "./CurrentPrice";
-import NetworkStatus from "./NetworkStatus";
+import Logo from "./Logo";
 
 const HeaderContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
   width: 100%;
   height: 5em;
 `;
@@ -16,7 +16,6 @@ const HeaderContainer = styled.div`
 const HeaderLeft = styled.div`
   display: flex;
   align-items: center;
-  margin-left: 16px;
 `;
 
 const HeaderMiddle = styled.div``;
@@ -32,7 +31,7 @@ const Header = () => {
         </HeaderLeft>
 
         <HeaderMiddle>
-          <NetworkStatus></NetworkStatus>
+          <Logo></Logo>
         </HeaderMiddle>
 
         <HeaderRight>
