@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Row, Col } from 'antd';
+import { Row, Col } from "antd";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Web3ReactProvider } from "@web3-react/core";
 // import your favorite web3 convenience library here
@@ -8,7 +8,6 @@ import { Web3ReactProvider } from "@web3-react/core";
 import Header from "./Header";
 import Dashboard from "./Dashboard";
 import ProductListing from "./ProductListing";
-import PurchaseInstrument from "./PurchaseInstrument";
 import { products } from "../mockData";
 import Content404 from "./Content404";
 import getLibrary from "../utils/getLibrary";
@@ -26,17 +25,15 @@ function App() {
           <MainContent>
             <Row align="middle">
               <Col span={12} offset={6}>
-              <Switch>
-                <Route exact path="/">
-                  <Dashboard></Dashboard>
-                </Route>
-                <Route exact path="/instrument/:instrumentSymbol">
-                  <PurchaseInstrument></PurchaseInstrument>
-                </Route>
-                <Route path="*">
-                  <Content404></Content404>
-                </Route>
-              </Switch>
+                <Switch>
+                  <Route exact path="/">
+                    <Dashboard></Dashboard>
+                    <ProductListing product={products[0]}></ProductListing>
+                  </Route>
+                  <Route path="*">
+                    <Content404></Content404>
+                  </Route>
+                </Switch>
               </Col>
             </Row>
           </MainContent>

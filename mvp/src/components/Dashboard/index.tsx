@@ -7,6 +7,7 @@ import Positions from "./Positions";
 
 const DashboardContainer = styled.div`
   padding-top: 30px;
+  padding-bottom: 50px;
 `;
 
 const DashboardTitleContainer = styled.div`

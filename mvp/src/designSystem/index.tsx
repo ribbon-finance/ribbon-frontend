@@ -9,8 +9,7 @@ export const PrimaryText = styled(BaseText)`
   font-family: Helvetica;
   font-style: normal;
   font-weight: normal;
-  font-size: 20px;
-  line-height: 23px;
+  font-size: 16px;
 `;
 
 export const SecondaryText = styled(BaseText)`

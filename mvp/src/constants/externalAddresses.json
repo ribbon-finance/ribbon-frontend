@@ -13,7 +13,10 @@
       "usdc": "0x2F375e94FC336Cdec2Dc0cCB5277FE59CBf1cAe5"
     },
     "balancerFactory": "0x8f7F78080219d4066A8036ccD30D588B416a40DB"
+  },
+  "mainnet": {
+    "feeds": {
+      "eth/usd": "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419"
+    }
   }
 }
-
-
