@@ -24,12 +24,12 @@ export type OldProduct = {
 export type Straddle = {
   currency: string;
   expiryTimestamp: number;
-  callPremium: number;
-  callStrikePrice: number;
+  callPremium: string;
+  callStrikePrice: string;
   callVenue: string;
   callPositionID: string | null;
-  putPremium: number;
-  putStrikePrice: number;
+  putPremium: string;
+  putStrikePrice: string;
   putVenue: string;
   putPositionID: string | null;
 };

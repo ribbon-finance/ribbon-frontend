@@ -32,8 +32,6 @@ export const useEthPrice = () => {
 
     const ethPriceRaw = await chainlinkAggregator.latestAnswer();
     const ethPrice = toFiat(ethPriceRaw);
-    console.log(ethPrice);
-
     setPrice(ethPrice);
   }, [library]);
 
