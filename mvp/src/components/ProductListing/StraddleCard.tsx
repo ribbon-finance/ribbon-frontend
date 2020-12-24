@@ -35,6 +35,10 @@ export const StyledStraddleCard = styled(StyledCard)`
   width: 100%;
 `;
 
+export const CardDescriptionContainer = styled.div`
+  padding-bottom: 20px;
+`;
+
 function computeStraddleValue(
   callPremium: string,
   putPremium: string,
@@ -68,6 +72,10 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
     ethPrice
   );
 
+  const timestamp = new Date(
+    straddle.expiryTimestamp * 1000
+  ).toLocaleDateString();
+
   return (
     <StyledStraddleCard
       bordered={false}
@@ -82,20 +90,24 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
       <Row justify="center">
         <Subtitle>Cost to purchase</Subtitle>
       </Row>
-      <Row>
-        <Description>
-          Expiry: <br></br>
-          <DescriptionBold>{straddle.expiryTimestamp}</DescriptionBold>
-        </Description>
-      </Row>
-      <Row>
-        <Description>
-          Breakeven: <br></br>
-          <DescriptionBold>
-            ≤ ${lowerBreakeven} or ≥ ${upperBreakeven}
-          </DescriptionBold>
-        </Description>
-      </Row>
+
+      <CardDescriptionContainer>
+        <Row>
+          <Description>
+            Expiry: <br></br>
+            <DescriptionBold>{timestamp}</DescriptionBold>
+          </Description>
+        </Row>
+        <Row>
+          <Description>
+            Breakeven: <br></br>
+            <DescriptionBold>
+              ≤ ${lowerBreakeven} or ≥ ${upperBreakeven}
+            </DescriptionBold>
+          </Description>
+        </Row>
+      </CardDescriptionContainer>
+
       <Row justify="center">
         <Button type="primary" shape="round">
           <DescriptionBold>See Product</DescriptionBold>
