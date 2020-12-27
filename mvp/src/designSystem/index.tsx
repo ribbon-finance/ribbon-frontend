@@ -1,15 +1,15 @@
 import styled from "styled-components";
+import { Card } from "antd";
 
 export const BaseText = styled.span`
-  font-family: "Roboto", sans-serif;
+  font-family: "Helvetica", sans-serif;
 `;
 
 export const PrimaryText = styled(BaseText)`
-  font-family: Roboto;
+  font-family: Helvetica;
   font-style: normal;
   font-weight: normal;
-  font-size: 20px;
-  line-height: 23px;
+  font-size: 16px;
 `;
 
 export const SecondaryText = styled(BaseText)`
@@ -19,7 +19,7 @@ export const SecondaryText = styled(BaseText)`
 export const Title = styled(BaseText)`
   font-style: normal;
   font-weight: bold;
-  font-size: 48px;
+  font-size: 30px;
   line-height: 56px;
   text-align: center;
 
@@ -43,4 +43,10 @@ export const Button = styled.button`
   outline: none;
   box-shadow: none;
   text-align: center;
+`;
+
+export const StyledCard = styled(Card)`
+  box-shadow: 0 8px 24px 0 rgba(112, 144, 176, 0.15);
+  border-radius: 10px;
+  width: 90%;
 `;

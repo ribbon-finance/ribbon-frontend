@@ -1,21 +1,23 @@
 import React from "react";
 import styled from "styled-components";
+import { Row, Col } from "antd";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Web3ReactProvider } from "@web3-react/core";
 // import your favorite web3 convenience library here
 
 import Header from "./Header";
+import Dashboard from "./Dashboard";
 import ProductListing from "./ProductListing";
-import PurchaseInstrument from "./PurchaseInstrument";
+import Product from "./Product";
 import { products } from "../mockData";
 import Content404 from "./Content404";
 import getLibrary from "../utils/getLibrary";
 
-const AppContainer = styled.div`
-  padding: 23px 30px;
-`;
+const AppContainer = styled.div``;
 
-const MainContent = styled.div``;
+const MainContent = styled.div`
+  padding-top: 30px;
+`;
 
 function App() {
   return (
@@ -24,17 +26,22 @@ function App() {
         <AppContainer className="App">
           <Header />
           <MainContent>
-            <Switch>
-              <Route exact path="/">
-                <ProductListing product={products[0]}></ProductListing>
-              </Route>
-              <Route exact path="/instrument/:instrumentSymbol">
-                <PurchaseInstrument></PurchaseInstrument>
-              </Route>
-              <Route path="*">
-                <Content404></Content404>
-              </Route>
-            </Switch>
+            <Row align="middle">
+              <Col span={12} offset={6}>
+                <Switch>
+                  <Route exact path="/">
+                    <Dashboard></Dashboard>
+                    <ProductListing product={products[0]}></ProductListing>
+                  </Route>
+                  <Route exact path="/instrument/:instrumentSymbol">
+                    <Product></Product>
+                  </Route>
+                  <Route path="*">
+                    <Content404></Content404>
+                  </Route>
+                </Switch>
+              </Col>
+            </Row>
           </MainContent>
         </AppContainer>
       </Router>

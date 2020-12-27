@@ -2,9 +2,8 @@ import { useWeb3React } from "@web3-react/core";
 import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import { Button, PrimaryText, SecondaryText } from "../../designSystem";
-import currencyIcons from "../../img/currencyIcons";
+import { Input } from "antd";
 import { etherToDecimals } from "../../utils/math";
-import "./AmountInput.css";
 
 const maxButtonMarginLeft = 2;
 const maxButtonWidth = 40;
@@ -12,6 +11,12 @@ const iconMarginLeft = 7;
 const iconWidth = 23;
 const amountTextMarginLeft = 7;
 const amountTextPredictedWidth = 75;
+
+const InputNumberStyled = styled(Input)`
+  background-color: white;
+  border-radius: 10px;
+  width: 98%;
+`;
 
 const InputDiv = styled.div`
   display: flex;
@@ -74,16 +79,10 @@ const AmountText = styled(PrimaryText)`
 `;
 
 type AmountInputProps = {
-  paymentCurrencyAddress: string;
-  paymentCurrencySymbol: string;
   onChange: (value: number) => void;
 };
 
-const AmountInput: React.FC<AmountInputProps> = ({
-  paymentCurrencyAddress,
-  paymentCurrencySymbol,
-  onChange,
-}) => {
+const AmountInput: React.FC<AmountInputProps> = ({ onChange }) => {
   const [inputText, setInputText] = useState("");
   const { library, account } = useWeb3React();
 
@@ -91,25 +90,13 @@ const AmountInput: React.FC<AmountInputProps> = ({
     return parseFloat(e.target.value);
   };
 
-  const handleMaxButton = useCallback(async () => {
-    if (library && account) {
-      const paymentBalance = await library.getBalance(account);
-      const balanceDecimals = etherToDecimals(paymentBalance);
-      setInputText(balanceDecimals.toFixed(4));
-      onChange(balanceDecimals);
-    } else {
-      setInputText("");
-      onChange(0.0);
-    }
-  }, [onChange, account, library]);
-
   return (
     <InputDiv>
-      <StyledInput
-        placeholder="0.0"
+      <InputNumberStyled
+        placeholder="0.0 contracts"
         type="number"
         min="0"
-        step="0.0001"
+        step="0.1"
         value={inputText}
         onKeyDown={(e) => {
           if (e.key === "-") {
@@ -120,20 +107,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
           setInputText(e.target.value);
           onChange(parseInput(e));
         }}
-      ></StyledInput>
-
-      <InputAccessories>
-        <MaxButton onClick={handleMaxButton}>
-          <MaxButtonText>MAX</MaxButtonText>
-        </MaxButton>
-
-        <PaymentCurrencyIcon
-          src={currencyIcons[paymentCurrencySymbol]}
-          alt={paymentCurrencySymbol}
-        ></PaymentCurrencyIcon>
-
-        <AmountText>{paymentCurrencySymbol}</AmountText>
-      </InputAccessories>
+      ></InputNumberStyled>
     </InputDiv>
   );
 };

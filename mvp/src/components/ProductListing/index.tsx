@@ -1,112 +1,66 @@
 import React from "react";
 import styled from "styled-components";
+import { Row, Col } from "antd";
 import moment from "moment";
-import {
-  CurrencyPairContainer,
-  PrimaryText,
-  ProductContainer,
-  Title,
-} from "../../designSystem";
-import CurrencyPair from "../../designSystem/CurrencyPair";
-import { Instrument, Product } from "../../models";
-import InstrumentItem from "./InstrumentItem";
-import { useInstruments } from "../../hooks/useInstruments";
+import { Title, PrimaryText } from "../../designSystem";
+import { Product } from "../../models";
+import StraddleCard from "./StraddleCard";
 
-const ProductTerms = styled.div`
-  text-align: center;
+const ProductContainer = styled.div`
+  padding-bottom: 50px;
 `;
 
-const ExpiryTerms = styled.div`
-  margin-top: 15px;
-  margin-bottom: 35px;
+const ProductTitleContainer = styled.div`
+  padding-bottom: 10px;
 `;
 
-const TermDiv = styled.div`
-  margin-bottom: 8px;
-`;
-
-const EitherWayDiv = styled.div`
-  margin-top: 30px;
-`;
-
-const EiterWayText = styled(PrimaryText)`
-  font-weight: bold;
-`;
-
-const InstrumentsContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  margin-top: 42px;
+const ProductDescriptionContainer = styled.div`
+  padding-bottom: 30px;
 `;
 
 type Props = {
   product: Product;
 };
 
-const ProductListing: React.FC<Props> = ({ product }) => {
-  const { targetCurrency } = product;
-  const expiryDateTime = moment.unix(product.expiryTimestamp);
-  const expiresIn = expiryDateTime.from(moment());
-  const res = useInstruments();
-  let instruments: Instrument[] = [];
-  let errorMessage = "Loading...";
-
-  switch (res.status) {
-    case "loading":
-      break;
-    case "error":
-      errorMessage = "Failed to load instruments.";
-      break;
-    case "success":
-      instruments = res.instruments;
+const productDescription = (name: string) => {
+  var description;
+  switch (name) {
+    case "ETH Straddle":
+      description = (
+        <PrimaryText>
+          Bet that ETH will be volatile over some period of time. <br></br>The
+          further ETH moves from today’s price, the more money you stand to
+          make.
+        </PrimaryText>
+      );
       break;
   }
 
+  return description;
+};
+
+const ProductListing: React.FC<Props> = ({ product }) => {
   return (
     <ProductContainer>
-      <Title>{product.name}</Title>
+      <ProductTitleContainer>
+        <Title>{product.name}</Title>
+      </ProductTitleContainer>
 
-      <CurrencyPairContainer>
-        <CurrencyPair
-          targetCurrency={targetCurrency}
-          paymentCurrency={"USDC"}
-        ></CurrencyPair>
-      </CurrencyPairContainer>
+      <ProductDescriptionContainer>
+        {productDescription(product.name)}
+      </ProductDescriptionContainer>
 
-      <ProductTerms>
-        <ExpiryTerms>
-          <PrimaryText>Expires: {expiresIn}</PrimaryText>
-        </ExpiryTerms>
-        <TermDiv>
-          <PrimaryText>
-            If {targetCurrency} settles below the strike, you earn yield in{" "}
-            {targetCurrency} terms.
-          </PrimaryText>
-        </TermDiv>
-        <TermDiv>
-          <PrimaryText>
-            If {targetCurrency} settles above the strike, you earn yield in USD
-            terms.
-          </PrimaryText>
-        </TermDiv>
-        <EitherWayDiv>
-          <EiterWayText>You win either way.</EiterWayText>
-        </EitherWayDiv>
-      </ProductTerms>
-
-      <InstrumentsContainer>
-        {res.status === "error" ? errorMessage : null}
-        {instruments.map((instrument) => (
-          <InstrumentItem
-            key={instrument.symbol}
-            product={product}
-            instrument={instrument}
-          ></InstrumentItem>
-        ))}
-      </InstrumentsContainer>
+      <Row justify="space-between">
+        <Col span={6}>
+          <StraddleCard straddle={product.instruments[0]}></StraddleCard>
+        </Col>
+        <Col span={6}>
+          <StraddleCard straddle={product.instruments[0]}></StraddleCard>
+        </Col>
+        <Col span={6}>
+          <StraddleCard straddle={product.instruments[0]}></StraddleCard>
+        </Col>
+      </Row>
     </ProductContainer>
   );
 };

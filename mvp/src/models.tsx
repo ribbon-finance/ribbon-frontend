@@ -13,10 +13,30 @@ export type Instrument = {
   paymentCurrencyAddress: string;
 };
 
-export type Product = {
+export type OldProduct = {
   name: string;
   targetCurrency: string;
   paymentCurrency: string;
   expiryTimestamp: number;
   instruments: Instrument[];
+};
+
+export type Straddle = {
+  symbol: string;
+  currency: string;
+  expiryTimestamp: number;
+  callPremium: string;
+  callStrikePrice: string;
+  callVenue: string;
+  callPositionID: string | null;
+  putPremium: string;
+  putStrikePrice: string;
+  putVenue: string;
+  putPositionID: string | null;
+};
+
+export type Product = {
+  name: string;
+  productType: string;
+  instruments: Straddle[];
 };

@@ -54,7 +54,7 @@ const AccountStatus: React.FC<Props> = () => {
   const injectedConnector = useMemo(
     () =>
       new InjectedConnector({
-        supportedChainIds: [42],
+        supportedChainIds: [42, 1],
       }),
     []
   );

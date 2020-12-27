@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import images from "../../img/currencyIcons";
 import { BaseText } from "../../designSystem";
+import { useEthPrice } from "../../hooks/marketPrice";
+
 import { useWeb3React } from "@web3-react/core";
 import { DataProviderFactory } from "../../codegen";
 import deployments from "../../constants/deployments.json";
@@ -28,30 +30,11 @@ const CurrencyIcon = styled.img`
 `;
 
 const CurrentPrice = () => {
-  const { library } = useWeb3React();
-  const [price, setPrice] = useState(0);
-
-  const fetchPrice = useCallback(async () => {
-    const signer = library.getSigner();
-    const dai = externalAddresses.kovan.assets.dai;
-    const dataProvider = new DataProviderFactory(signer).attach(
-      deployments.kovan.DataProvider
-    );
-    const ethPrice = etherToDecimals(await dataProvider.getPrice(dai));
-    setPrice(ethPrice);
-  }, [library]);
-
-  useEffect(() => {
-    if (library) {
-      fetchPrice();
-    }
-  }, [fetchPrice, library]);
-
   return (
     <>
       <CurrencyIcon src={ETHIcon} alt="ETH"></CurrencyIcon>
       <ETHPriceContainer>
-        <ETHPrice>${price.toFixed(2)}</ETHPrice>
+        <ETHPrice>${useEthPrice()}</ETHPrice>
       </ETHPriceContainer>
     </>
   );
