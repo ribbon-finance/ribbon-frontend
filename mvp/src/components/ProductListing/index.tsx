@@ -29,7 +29,8 @@ const productDescription = (name: string) => {
       description = (
         <PrimaryText>
           Bet that ETH will be volatile over some period of time. <br></br>The
-          more ETH moves from today’s price, the more money you make.
+          further ETH moves from today’s price, the more money you stand to
+          make.
         </PrimaryText>
       );
       break;

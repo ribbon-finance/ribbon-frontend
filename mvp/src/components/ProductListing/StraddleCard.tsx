@@ -1,9 +1,9 @@
 import React from "react";
-import { BigNumber, ethers } from "ethers";
 import { StyledCard } from "../../designSystem/index";
 import styled from "styled-components";
 import { Row, Button } from "antd";
 import { Straddle } from "../../models";
+import { computeStraddleValue, computeBreakeven } from "../../utils/straddle";
 import { useEthPrice } from "../../hooks/marketPrice";
 
 export const Title = styled.div`
@@ -38,27 +38,6 @@ export const StyledStraddleCard = styled(StyledCard)`
 export const CardDescriptionContainer = styled.div`
   padding-bottom: 20px;
 `;
-
-function computeStraddleValue(
-  callPremium: string,
-  putPremium: string,
-  ethPrice: number
-): [string, string] {
-  const call = BigNumber.from(callPremium);
-  const put = BigNumber.from(putPremium);
-  const straddleCost = parseFloat(ethers.utils.formatEther(call.add(put)));
-  return [(straddleCost * ethPrice).toFixed(2), straddleCost.toFixed(3)];
-}
-
-function computeBreakeven(
-  straddleUSD: string,
-  ethUSD: number
-): [string, string] {
-  const straddle = parseFloat(straddleUSD);
-  const lower = (ethUSD - straddle).toFixed(2);
-  const upper = (ethUSD + straddle).toFixed(2);
-  return [lower, upper];
-}
 
 const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
   const ethPrice = useEthPrice();
@@ -109,7 +88,11 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
       </CardDescriptionContainer>
 
       <Row justify="center">
-        <Button type="primary" shape="round">
+        <Button
+          type="primary"
+          shape="round"
+          href={"/instrument/" + straddle.symbol}
+        >
           <DescriptionBold>See Product</DescriptionBold>
         </Button>
       </Row>

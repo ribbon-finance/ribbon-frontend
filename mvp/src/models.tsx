@@ -22,6 +22,7 @@ export type OldProduct = {
 };
 
 export type Straddle = {
+  symbol: string;
   currency: string;
   expiryTimestamp: number;
   callPremium: string;

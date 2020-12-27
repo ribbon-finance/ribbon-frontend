@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^4.3.0",
     "@craco/craco": "^6.0.0",
     "@metamask/jazzicon": "^2.0.0",
     "@testing-library/jest-dom": "^5.11.4",

@@ -1,6 +1,7 @@
 import { Product, Straddle } from "./models";
 
 const straddle1: Straddle = {
+  symbol: "ETH-VOL-251220",
   currency: "0x0000000000000000000000000000000000000000",
   expiryTimestamp: 1608883200,
   callPremium: "22636934749846005",

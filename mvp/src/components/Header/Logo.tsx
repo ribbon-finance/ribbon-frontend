@@ -7,7 +7,9 @@ const LogoContainer = styled.div``;
 const Logo = () => {
   return (
     <LogoContainer>
-      <img src={Icon}></img>
+      <a href="/">
+        <img src={Icon}></img>
+      </a>
     </LogoContainer>
   );
 };

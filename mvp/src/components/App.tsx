@@ -8,13 +8,16 @@ import { Web3ReactProvider } from "@web3-react/core";
 import Header from "./Header";
 import Dashboard from "./Dashboard";
 import ProductListing from "./ProductListing";
+import Product from "./Product";
 import { products } from "../mockData";
 import Content404 from "./Content404";
 import getLibrary from "../utils/getLibrary";
 
 const AppContainer = styled.div``;
 
-const MainContent = styled.div``;
+const MainContent = styled.div`
+  padding-top: 30px;
+`;
 
 function App() {
   return (
@@ -29,6 +32,9 @@ function App() {
                   <Route exact path="/">
                     <Dashboard></Dashboard>
                     <ProductListing product={products[0]}></ProductListing>
+                  </Route>
+                  <Route exact path="/instrument/:instrumentSymbol">
+                    <Product></Product>
                   </Route>
                   <Route path="*">
                     <Content404></Content404>
