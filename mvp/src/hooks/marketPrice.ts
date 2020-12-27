@@ -33,7 +33,7 @@ export const useEthPrice = () => {
     const ethPriceRaw = await chainlinkAggregator.latestAnswer();
     const ethPrice = toFiat(ethPriceRaw);
     setPrice(ethPrice);
-  }, [library]);
+  }, [library, chainId]);
 
   useEffect(() => {
     if (library) {
