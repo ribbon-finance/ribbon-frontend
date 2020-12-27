@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { Row, Col } from "antd";
-import moment from "moment";
 import { Title, PrimaryText } from "../../designSystem";
 import { Product } from "../../models";
 import StraddleCard from "./StraddleCard";

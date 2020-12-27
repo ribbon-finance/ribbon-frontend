@@ -1,9 +1,8 @@
 import { useWeb3React } from "@web3-react/core";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Button, PrimaryText, SecondaryText } from "../../designSystem";
 import { Input } from "antd";
-import { etherToDecimals } from "../../utils/math";
 
 const maxButtonMarginLeft = 2;
 const maxButtonWidth = 40;

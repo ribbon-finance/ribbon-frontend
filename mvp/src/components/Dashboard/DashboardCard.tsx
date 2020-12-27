@@ -1,7 +1,7 @@
 import React from "react";
-import { StyledCard, Title } from "../../designSystem/index";
+import { StyledCard } from "../../designSystem/index";
 import styled from "styled-components";
-import { Card, Col, Row } from "antd";
+import { Col, Row } from "antd";
 import icons from "../../img/icons";
 
 export const CardTitle = styled.div`
@@ -34,7 +34,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({ value, text, icon }) => {
           <CardSubtitle>{text}</CardSubtitle>
         </Col>
         <Col span={4}>
-          <img src={icons[icon]}></img>
+          <img src={icons[icon]} alt=""></img>
         </Col>
       </Row>
     </StyledCard>

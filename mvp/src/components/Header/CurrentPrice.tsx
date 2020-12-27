@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import images from "../../img/currencyIcons";
 import { BaseText } from "../../designSystem";
