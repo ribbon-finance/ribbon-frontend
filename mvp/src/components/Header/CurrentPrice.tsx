@@ -4,12 +4,6 @@ import images from "../../img/currencyIcons";
 import { BaseText } from "../../designSystem";
 import { useEthPrice } from "../../hooks/marketPrice";
 
-import { useWeb3React } from "@web3-react/core";
-import { DataProviderFactory } from "../../codegen";
-import deployments from "../../constants/deployments.json";
-import externalAddresses from "../../constants/externalAddresses.json";
-import { etherToDecimals } from "../../utils/math";
-
 const { ETH: ETHIcon } = images;
 
 const ETHPriceContainer = styled.div`
