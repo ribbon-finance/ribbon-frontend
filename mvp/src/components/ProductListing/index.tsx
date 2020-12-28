@@ -29,7 +29,8 @@ const productDescription = (name: string) => {
         <PrimaryText>
           Bet that ETH will be volatile over some period of time. <br></br>The
           further ETH moves from today’s price, the more money you stand to
-          make.
+          make.<br></br>Doji offers 3 different products, each with a different
+          expiry.
         </PrimaryText>
       );
       break;

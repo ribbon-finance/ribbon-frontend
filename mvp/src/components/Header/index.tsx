@@ -19,22 +19,36 @@ const Header = () => {
   return (
     <HeaderContainer>
       <Row align="middle">
-        <Col span={6} offset={3}>
+        <Col
+          md={{ span: 8 }}
+          lg={{ span: 8 }}
+          xl={{ span: 8 }}
+          xxl={{ span: 6, offset: 3 }}
+        >
           <Content>
             <CurrentPrice></CurrentPrice>
           </Content>
         </Col>
-        <Col span={6}>
+        <Col
+          md={{ span: 8 }}
+          lg={{ span: 8 }}
+          xl={{ span: 8 }}
+          xxl={{ span: 6 }}
+        >
           <Content>
             <Logo></Logo>
           </Content>
         </Col>
-        <Col span={6}>
+        <Col
+          md={{ span: 8 }}
+          lg={{ span: 8 }}
+          xl={{ span: 8 }}
+          xxl={{ span: 6 }}
+        >
           <Content>
             <AccountStatus></AccountStatus>
           </Content>
         </Col>
-        <Col span={3}></Col>
       </Row>
     </HeaderContainer>
   );
