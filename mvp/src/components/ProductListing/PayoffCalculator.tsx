@@ -1,70 +1,16 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Input, Row, Col } from "antd";
-import { computeBreakeven } from "../../utils/straddle";
-
-const Profit = styled.span`
-  font-size: 18px;
-  font-weight: bold;
-`;
-
-const ProfitPositive = styled(Profit)`
-  color: #06c018;
-`;
-
-const ProfitNegative = styled(Profit)`
-  color: #c01515;
-`;
+import {
+  computeBreakeven,
+  computeDefaultPrice,
+  computeGains,
+  formatProfit,
+} from "../../utils/straddle";
 
 type Props = {
   ethPrice: number;
   straddlePrice: string;
-};
-
-const computeDefaultPrice = (upperBreakeven: string, buffer: number) => {
-  const defaultPrice = parseFloat(upperBreakeven) * buffer;
-  return Math.round(defaultPrice);
-};
-
-const computeGains = (
-  currentAssetPrice: number,
-  futureAssetPrice: number,
-  instrumentPrice: number
-): [string, string, boolean] => {
-  if (isNaN(futureAssetPrice)) {
-    return ["0.00", "0.0", true];
-  }
-
-  const dollarProfit = futureAssetPrice - currentAssetPrice - instrumentPrice;
-  const percentProfit = (dollarProfit / instrumentPrice) * 100;
-  if (dollarProfit >= 0) {
-    return [dollarProfit.toFixed(2), percentProfit.toFixed(1), true];
-  } else {
-    return [dollarProfit.toFixed(2), percentProfit.toFixed(1), false];
-  }
-};
-
-const formatProfit = (
-  dollarProfit: string,
-  percentProfit: string,
-  profitPositive: boolean
-) => {
-  if (dollarProfit == "0.00") {
-    return <Profit>$0.00 (+0%)</Profit>;
-  }
-  if (profitPositive) {
-    return (
-      <ProfitPositive>
-        ${dollarProfit} (+{percentProfit}%)
-      </ProfitPositive>
-    );
-  } else {
-    return (
-      <ProfitNegative>
-        ${dollarProfit} ({percentProfit}%)
-      </ProfitNegative>
-    );
-  }
 };
 
 const PayoffCalculator: React.FC<Props> = ({ ethPrice, straddlePrice }) => {

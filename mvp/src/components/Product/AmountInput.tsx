@@ -28,55 +28,6 @@ const InputDiv = styled.div`
   padding-right: 7px;
 `;
 
-const InputAccessories = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
-
-const StyledInput = styled.input`
-  background: #f7f7f7;
-  width: calc(
-    100% - ${maxButtonMarginLeft}px - ${maxButtonWidth}px - ${iconMarginLeft}px -
-      ${iconWidth}px - ${amountTextMarginLeft}px - ${amountTextPredictedWidth}px
-  );
-  padding: 8px 11px;
-  font-weight: bold;
-  font-size: 24px;
-  line-height: 28px;
-  border-radius: 5px;
-  border: none;
-`;
-
-const MaxButton = styled(Button)`
-  background: #c4c4c4;
-  border-radius: 10px;
-  width: ${maxButtonWidth}px;
-  height: 22px;
-  margin-left: ${maxButtonMarginLeft}px;
-`;
-
-const MaxButtonText = styled(SecondaryText)`
-  font-weight: bold;
-  font-size: 12px;
-  line-height: 14px;
-`;
-
-const PaymentCurrencyIcon = styled.img`
-  margin-left: ${iconMarginLeft}px;
-  width: ${iconWidth}px;
-  height: 23px;
-`;
-
-const AmountText = styled(PrimaryText)`
-  margin-left: ${amountTextMarginLeft}px;
-  font-weight: bold;
-  font-size: 15px;
-  line-height: 23px;
-  text-align: center;
-  color: #000000;
-`;
-
 type AmountInputProps = {
   onChange: (value: number) => void;
 };

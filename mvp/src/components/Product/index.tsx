@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
-import { Button, Row, Col, Input, Form } from "antd";
+import { Button, Row, Col, Statistic } from "antd";
 import { useParams } from "react-router-dom";
 import {
   DollarCircleOutlined,
@@ -12,8 +12,8 @@ import { Title, PrimaryText, StyledCard } from "../../designSystem";
 import { products } from "../../mockData";
 import { computeStraddleValue, computeBreakeven } from "../../utils/straddle";
 import { useEthPrice } from "../../hooks/marketPrice";
-import { PositionCalculator } from "./PositionCalculator";
 import AmountInput from "./AmountInput";
+import PayoffCalculator from "./PayoffCalculator";
 
 const ProductTitleContainer = styled.div`
   padding-top: 10px;
@@ -21,12 +21,11 @@ const ProductTitleContainer = styled.div`
 `;
 
 const ProductDescriptionContainer = styled.div`
-  padding-bottom: 30px;
+  padding-bottom: 20px;
 `;
 
-const SupplementaryInfoContainer = styled.div`
-  padding-top: 30px;
-  padding-bottom: 30px;
+const PositionSize = styled.div`
+  padding-bottom: 20px;
 `;
 
 const ButtonStyled = styled(Button)`
@@ -48,6 +47,16 @@ type PurchaseInstrumentWrapperProps = {};
 interface ParamTypes {
   instrumentSymbol: string;
 }
+
+const StyledStatistic = (title: string, value: string) => {
+  return (
+    <Statistic
+      valueStyle={{ fontSize: 15, fontWeight: "bold", paddingBottom: "15px" }}
+      title={title}
+      value={value}
+    />
+  );
+};
 
 const DescriptionCard = (text: string, icon: string) => {
   let useIcon;
@@ -81,8 +90,14 @@ const productDescription = (name: string) => {
     case "ETH Straddle":
       description = (
         <PrimaryText>
-          Bet on ETH volatility. If the price of ETH is <b>lower or higher</b>{" "}
-          than the breakeven prices, you will make a profit.
+          <p>
+            Bet on ETH volatility. If the price of ETH is <b>lower or higher</b>{" "}
+            than the breakeven prices, you will make a profit.
+          </p>
+          <p>
+            To construct this product, Doji combines multiple options into a
+            structured product on-chain. Learn more about how this product works
+          </p>
         </PrimaryText>
       );
       break;
@@ -123,52 +138,59 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
       </ProductTitleContainer>
 
       <Row>
-        <Col span={16}>
+        <Col>
           <ProductDescriptionContainer>
             {productDescription(product.name)}
           </ProductDescriptionContainer>
 
-          <Row align="middle">
-            <Col span={18}>
-              <AmountInput
-                onChange={(amount) => setPurchaseAmount(amount)}
-              ></AmountInput>{" "}
+          <PositionSize>
+            <Row align="middle">
+              <Col span={5}>
+                <PrimaryText>
+                  <b>Position Size:</b>
+                </PrimaryText>
+              </Col>
+              <Col span={15}>
+                <AmountInput
+                  onChange={(amount) => setPurchaseAmount(amount)}
+                ></AmountInput>{" "}
+              </Col>
+              <Col span={4}>
+                <ButtonStyled
+                  type="primary"
+                  shape="round"
+                  href={"/instrument/" + straddle.symbol}
+                >
+                  <b>Buy Now</b>
+                </ButtonStyled>
+              </Col>
+            </Row>
+          </PositionSize>
+
+          <Row>
+            <Col span={14}>
+              <StyledCard style={{ height: "100%" }}>
+                <Row>{StyledStatistic("Expiry", "21/12/2020")}</Row>
+                <Row>{StyledStatistic("Total Cost", "$300 (0.2 ETH)")}</Row>
+                <Row>
+                  <Col span={12}>
+                    {StyledStatistic("Breakeven Price", "$<500 or >$600")}
+                  </Col>
+                  <Col span={12}>
+                    {StyledStatistic("To Breakeven", "+5.2%")}
+                  </Col>
+                </Row>
+              </StyledCard>
             </Col>
-            <Col span={6}>
-              <ButtonStyled
-                type="primary"
-                shape="round"
-                href={"/instrument/" + straddle.symbol}
-              >
-                <b>Review Order</b>
-              </ButtonStyled>
+            <Col span={10}>
+              <StyledCard style={{ height: "100%" }}>
+                <PayoffCalculator
+                  ethPrice={100}
+                  straddlePrice={"100"}
+                ></PayoffCalculator>
+              </StyledCard>
             </Col>
           </Row>
-
-          <SupplementaryInfoContainer>
-            <Row>
-              <Col span={11}>
-                {DescriptionCard(
-                  `Cost per contract: $${straddleUSD}`,
-                  "dollar"
-                )}
-              </Col>
-              <Col span={12} offset={1}>
-                {DescriptionCard(`Expiry: ${expiryTimestamp}`, "clock")}
-              </Col>
-            </Row>
-            <Row>
-              <Col span={24}>
-                {DescriptionCard(
-                  `Breakeven Price: ≤ $${lowerBreakeven} or ≥ $${upperBreakeven}`,
-                  "breakeven"
-                )}
-              </Col>
-            </Row>
-          </SupplementaryInfoContainer>
-        </Col>
-        <Col span={7} offset={1}>
-          <PositionCalculator></PositionCalculator>
         </Col>
       </Row>
     </div>
