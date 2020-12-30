@@ -109,7 +109,11 @@ const productDescription = (name: string) => {
 const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () => {
   const [purchaseAmount, setPurchaseAmount] = useState(0.0);
 
-  console.log(setPurchaseAmount);
+  const updatePurchaseAmount = (amount: number) => {
+    setPurchaseAmount(amount);
+  };
+
+  console.log(purchaseAmount);
 
   const { instrumentSymbol } = useParams<ParamTypes>();
   const ethPrice = useEthPrice();
@@ -152,8 +156,9 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
               </Col>
               <Col span={15}>
                 <AmountInput
-                  onChange={(amount) => setPurchaseAmount(amount)}
-                ></AmountInput>{" "}
+                  purchaseAmount={purchaseAmount}
+                  onChange={updatePurchaseAmount}
+                ></AmountInput>
               </Col>
               <Col span={4}>
                 <ButtonStyled
