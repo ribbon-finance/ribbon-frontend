@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Card } from "antd";
+import { Card, Input } from "antd";
 
 export const BaseText = styled.span`
   font-family: "Helvetica", sans-serif;
@@ -49,4 +49,11 @@ export const StyledCard = styled(Card)`
   box-shadow: 0 8px 24px 0 rgba(112, 144, 176, 0.15);
   border-radius: 10px;
   width: 90%;
+`;
+
+export const InputNumberStyled = styled(Input)`
+  background-color: white;
+  border-radius: 5px;
+  width: 80%;
+  margin-bottom: 15px;
 `;

@@ -9,14 +9,8 @@ const InputNumberStyled = styled(Input)`
 `;
 
 const InputDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  background: #f7f7f7;
   border-radius: 5px;
   width: 100%;
-  padding-right: 7px;
 `;
 
 function AmountInput(props: any) {
