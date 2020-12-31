@@ -58,6 +58,33 @@ export const computeGains = (
   }
 };
 
+export const computeGainsAmount = (
+  currentAssetPrice: number,
+  futureAssetPrice: number,
+  instrumentPrice: number,
+  amount: number
+): [string, string, boolean] => {
+  if (isNaN(futureAssetPrice)) {
+    return ["0.00", "0.0", true];
+  }
+
+  const dollarProfit =
+    (futureAssetPrice - currentAssetPrice - instrumentPrice) * amount;
+
+  let percentProfit: number = 0;
+  if (amount == 0) {
+    percentProfit = (dollarProfit / instrumentPrice) * 100;
+  } else {
+    percentProfit = (dollarProfit / instrumentPrice / amount) * 100;
+  }
+
+  if (dollarProfit >= 0) {
+    return [dollarProfit.toFixed(2), percentProfit.toFixed(1), true];
+  } else {
+    return [dollarProfit.toFixed(2), percentProfit.toFixed(1), false];
+  }
+};
+
 export const formatProfit = (
   dollarProfit: string,
   percentProfit: string,
@@ -79,4 +106,13 @@ export const formatProfit = (
       </ProfitNegative>
     );
   }
+};
+
+export const computeBreakevenPercent = (
+  straddleUSD: string,
+  ethUSD: number
+): string => {
+  const straddle = parseFloat(straddleUSD);
+  const upper = ((ethUSD + straddle) / ethUSD) * 100 - 100;
+  return upper.toFixed(1);
 };

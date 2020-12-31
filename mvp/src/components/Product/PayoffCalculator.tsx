@@ -4,14 +4,9 @@ import { Input, Row, Col, Statistic } from "antd";
 import {
   computeBreakeven,
   computeDefaultPrice,
-  computeGains,
+  computeGainsAmount,
   formatProfit,
 } from "../../utils/straddle";
-
-type Props = {
-  ethPrice: number;
-  straddlePrice: string;
-};
 
 const CardTitle = styled(Row)`
   font-weight: bold;
@@ -33,7 +28,17 @@ const InputNumberStyled = styled(Input)`
   margin-bottom: 15px;
 `;
 
-const PayoffCalculator: React.FC<Props> = ({ ethPrice, straddlePrice }) => {
+type Props = {
+  ethPrice: number;
+  straddlePrice: string;
+  amount: number;
+};
+
+const PayoffCalculator: React.FC<Props> = ({
+  ethPrice,
+  straddlePrice,
+  amount,
+}) => {
   const [inputText, setInputText] = useState("");
   const [lowerBreakeven, upperBreakeven] = computeBreakeven(
     straddlePrice,
@@ -41,10 +46,11 @@ const PayoffCalculator: React.FC<Props> = ({ ethPrice, straddlePrice }) => {
   );
 
   const defaultPrice = computeDefaultPrice(upperBreakeven, 1.0);
-  const [dollarProfit, percentProfit, profitPositive] = computeGains(
+  const [dollarProfit, percentProfit, profitPositive] = computeGainsAmount(
     ethPrice,
     parseFloat(inputText),
-    parseFloat(straddlePrice)
+    parseFloat(straddlePrice),
+    amount
   );
 
   return (
