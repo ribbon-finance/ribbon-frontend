@@ -27,7 +27,12 @@ function App() {
           <Header />
           <MainContent>
             <Row align="middle">
-              <Col span={12} offset={6}>
+              <Col
+                md={{ span: 18, offset: 3 }}
+                lg={{ span: 18, offset: 3 }}
+                xl={{ span: 18, offset: 3 }}
+                xxl={{ span: 12, offset: 6 }}
+              >
                 <Switch>
                   <Route exact path="/">
                     <Dashboard></Dashboard>
