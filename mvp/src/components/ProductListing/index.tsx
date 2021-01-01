@@ -27,10 +27,10 @@ const productDescription = (name: string) => {
     case "ETH Straddle":
       description = (
         <PrimaryText>
-          Bet that ETH will be volatile over some period of time. <br></br>The
-          further ETH moves from today’s price, the more money you stand to
-          make.<br></br>Doji offers 3 different products, each with a different
-          expiry.
+          Bet that ETH will be increasingly volatile over some period of time.{" "}
+          <br></br>The greater ETH moves from today’s price in either direction,
+          the more money you will make.<br></br>The further out the expiry is,
+          the greater the ETH price will need to move to breakeven.
         </PrimaryText>
       );
       break;
@@ -43,7 +43,9 @@ const ProductListing: React.FC<Props> = ({ product }) => {
   return (
     <ProductContainer>
       <ProductTitleContainer>
-        <Title>{product.name}</Title>
+        <Title>
+          {product.name} {product.emoji}
+        </Title>
       </ProductTitleContainer>
 
       <ProductDescriptionContainer>
