@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Button, Row, Col } from "antd";
+import { Row, Col } from "antd";
 import { useParams } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Title, PrimaryText, StyledCard } from "../../designSystem";
@@ -10,6 +10,8 @@ import { useEthPrice } from "../../hooks/marketPrice";
 import AmountInput from "./AmountInput";
 import PayoffCalculator from "./PayoffCalculator";
 import ProductInfo from "./ProductInfo";
+import PurchaseButton from "./PurchaseButton";
+import { timeToExpiry } from "../../utils/time";
 
 const ProductTitleContainer = styled.div`
   padding-top: 10px;
@@ -22,11 +24,6 @@ const ProductDescriptionContainer = styled.div`
 
 const PositionSize = styled.div`
   padding-bottom: 20px;
-`;
-
-const ButtonStyled = styled(Button)`
-  height: 100%;
-  border-radius: 10px;
 `;
 
 type PurchaseInstrumentWrapperProps = {};
@@ -64,8 +61,6 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
     setPurchaseAmount(amount);
   };
 
-  console.log(purchaseAmount);
-
   const { instrumentSymbol } = useParams<ParamTypes>();
   const ethPrice = useEthPrice();
   const product = products[0];
@@ -75,6 +70,16 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
     straddle.putPremium,
     ethPrice
   );
+
+  const expiryTimestamp = new Date(
+    straddle.expiryTimestamp * 1000
+  ).toLocaleDateString();
+
+  const expiry = `${expiryTimestamp} (${timeToExpiry(
+    expiryTimestamp
+  )} remaining)`;
+
+  const totalCostETH = (parseFloat(straddleETH) * purchaseAmount).toFixed(3);
 
   return (
     <div>
@@ -104,13 +109,11 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
                 ></AmountInput>
               </Col>
               <Col span={4}>
-                <ButtonStyled
-                  type="primary"
-                  shape="round"
-                  href={"/instrument/" + straddle.symbol}
-                >
-                  <b>Buy Now</b>
-                </ButtonStyled>
+                <PurchaseButton
+                  purchaseAmount={purchaseAmount}
+                  straddleETH={totalCostETH}
+                  expiry={expiry}
+                ></PurchaseButton>
               </Col>
             </Row>
           </PositionSize>
