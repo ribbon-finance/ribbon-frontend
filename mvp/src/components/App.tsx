@@ -7,6 +7,7 @@ import { Web3ReactProvider } from "@web3-react/core";
 
 import Header from "./Header";
 import Dashboard from "./Dashboard";
+import Banner from "./Banner";
 import ProductListing from "./ProductListing";
 import Product from "./Product";
 import { products } from "../mockData";
@@ -35,7 +36,8 @@ function App() {
               >
                 <Switch>
                   <Route exact path="/">
-                    <Dashboard></Dashboard>
+                    {/* <Dashboard></Dashboard> */}
+                    <Banner></Banner>
                     <ProductListing product={products[0]}></ProductListing>
                   </Route>
                   <Route exact path="/instrument/:instrumentSymbol">

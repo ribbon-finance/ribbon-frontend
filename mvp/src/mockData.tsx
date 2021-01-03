@@ -3,7 +3,7 @@ import { Product, Straddle } from "./models";
 const straddle1: Straddle = {
   symbol: "ETH-VOL-251220",
   currency: "0x0000000000000000000000000000000000000000",
-  expiryTimestamp: 1608883200,
+  expiryTimestamp: 1612051200,
   callPremium: "22636934749846005",
   callStrikePrice: "500000000000000000000",
   callVenue: "OPYN_V1",
@@ -17,7 +17,7 @@ const straddle1: Straddle = {
 export const products: Product[] = [
   {
     name: "ETH Straddle",
-    productType: "Straddle",
+    emoji: "📉📈",
     instruments: [straddle1],
   },
 ];

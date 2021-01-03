@@ -37,6 +37,6 @@ export type Straddle = {
 
 export type Product = {
   name: string;
-  productType: string;
+  emoji: string;
   instruments: Straddle[];
 };

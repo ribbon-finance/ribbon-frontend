@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import styled from "styled-components";
-import { Input, Row, Col } from "antd";
+import { Row } from "antd";
 import {
   computeBreakeven,
   computeDefaultPrice,
   computeGains,
   formatProfit,
 } from "../../utils/straddle";
+import { InputNumberStyled } from "../../designSystem";
 
 type Props = {
   ethPrice: number;
@@ -29,26 +29,25 @@ const PayoffCalculator: React.FC<Props> = ({ ethPrice, straddlePrice }) => {
 
   return (
     <div>
+      <Row>If the price of ETH is:</Row>
       <Row align="middle">
-        <Col span={14}>If the price of ETH is:</Col>
-        <Col span={8}>
-          <Input
-            prefix="$"
-            placeholder={defaultPrice.toString()}
-            type="number"
-            min="0"
-            step="1"
-            value={inputText}
-            onKeyDown={(e) => {
-              if (e.key === "-") {
-                e.preventDefault();
-              }
-            }}
-            onChange={(e) => {
-              setInputText(e.target.value);
-            }}
-          />
-        </Col>
+        <InputNumberStyled
+          prefix="$"
+          suffix="per ETH"
+          placeholder={defaultPrice.toString()}
+          type="number"
+          min="0"
+          step="1"
+          value={inputText}
+          onKeyDown={(e) => {
+            if (e.key === "-") {
+              e.preventDefault();
+            }
+          }}
+          onChange={(e) => {
+            setInputText(e.target.value);
+          }}
+        />
       </Row>
 
       <div style={{ paddingTop: 10 }}>Estimated Profit</div>

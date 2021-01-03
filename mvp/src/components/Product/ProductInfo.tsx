@@ -8,6 +8,7 @@ import {
 } from "../../utils/straddle";
 import { useEthPrice } from "../../hooks/marketPrice";
 import { Straddle } from "../../models";
+import { timeToExpiry } from "../../utils/time";
 
 const StyledStatistic = (title: string, value: string) => {
   return (
@@ -40,12 +41,16 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
     straddle.expiryTimestamp * 1000
   ).toLocaleDateString();
 
+  const expiry = `${expiryTimestamp} (${timeToExpiry(
+    expiryTimestamp
+  )} remaining)`;
+
   const totalCostUSD = (parseFloat(straddleUSD) * amount).toFixed(2);
   const totalCostETH = (parseFloat(straddleETH) * amount).toFixed(2);
 
   return (
     <StyledCard style={{ height: "100%" }}>
-      <Row>{StyledStatistic("Expiry", expiryTimestamp)}</Row>
+      <Row>{StyledStatistic("Expiry", expiry)}</Row>
       <Row>
         {StyledStatistic(
           "Total Cost",

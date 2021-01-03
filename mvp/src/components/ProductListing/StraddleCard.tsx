@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Row, Button, Tooltip } from "antd";
 import { Straddle } from "../../models";
 import { computeStraddleValue, computeBreakeven } from "../../utils/straddle";
+import { timeToExpiry } from "../../utils/time";
 import { useEthPrice } from "../../hooks/marketPrice";
 import PayoffCalculator from "./PayoffCalculator";
 import { InfoCircleOutlined } from "@ant-design/icons";
@@ -69,6 +70,8 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
     straddle.expiryTimestamp * 1000
   ).toLocaleDateString();
 
+  const expiry = timeToExpiry(timestamp);
+
   return (
     <StyledStraddleCard
       bordered={false}
@@ -88,7 +91,9 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
         <Row>
           <Description>
             Expiry: <br></br>
-            <DescriptionBold>{timestamp}</DescriptionBold>
+            <DescriptionBold>
+              {timestamp} ({expiry} remaining)
+            </DescriptionBold>
           </Description>
         </Row>
 
