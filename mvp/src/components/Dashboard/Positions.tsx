@@ -3,11 +3,13 @@ import DashboardCard from "./DashboardCard";
 
 const Positions = () => {
   return (
-    <DashboardCard
-      value={"3"}
-      text={"Active Positions"}
-      icon={"Equalizer"}
-    ></DashboardCard>
+    <a href="/portfolio">
+      <DashboardCard
+        value={"3"}
+        text={"Active Positions"}
+        icon={"Equalizer"}
+      ></DashboardCard>
+    </a>
   );
 };
 

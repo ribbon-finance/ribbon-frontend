@@ -37,8 +37,8 @@ function App() {
               >
                 <Switch>
                   <Route exact path="/">
+                    <Banner></Banner>
                     <Dashboard></Dashboard>
-                    {/* <Banner></Banner> */}
                     <ProductListing product={products[0]}></ProductListing>
                   </Route>
                   <Route exact path="/instrument/:instrumentSymbol">
