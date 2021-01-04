@@ -49,7 +49,13 @@ export const computeGains = (
     return ["0.00", "0.0", true];
   }
 
-  const dollarProfit = futureAssetPrice - currentAssetPrice - instrumentPrice;
+  let dollarProfit = 0;
+  if (futureAssetPrice - currentAssetPrice > 0) {
+    dollarProfit = futureAssetPrice - currentAssetPrice - instrumentPrice;
+  } else {
+    dollarProfit = currentAssetPrice - futureAssetPrice - instrumentPrice;
+  }
+
   const percentProfit = (dollarProfit / instrumentPrice) * 100;
   if (dollarProfit >= 0) {
     return [dollarProfit.toFixed(2), percentProfit.toFixed(1), true];
@@ -68,8 +74,14 @@ export const computeGainsAmount = (
     return ["0.00", "0.0", true];
   }
 
-  const dollarProfit =
-    (futureAssetPrice - currentAssetPrice - instrumentPrice) * amount;
+  let dollarProfit = 0;
+  if (futureAssetPrice - currentAssetPrice > 0) {
+    dollarProfit =
+      (futureAssetPrice - currentAssetPrice - instrumentPrice) * amount;
+  } else {
+    dollarProfit =
+      (currentAssetPrice - futureAssetPrice - instrumentPrice) * amount;
+  }
 
   let percentProfit: number = 0;
   if (amount == 0) {
