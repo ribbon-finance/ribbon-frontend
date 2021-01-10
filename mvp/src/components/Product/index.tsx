@@ -43,7 +43,7 @@ const productDescription = (name: string) => {
             than the breakeven prices, you will make a profit.
           </p>
           <p>
-            To construct this product, Doji combines multiple options into a
+            To construct this product, Ribbon combines multiple options into a
             structured product on-chain. Learn more about how this product works
           </p>
         </PrimaryText>

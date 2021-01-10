@@ -18,7 +18,7 @@ import getLibrary from "../utils/getLibrary";
 const AppContainer = styled.div``;
 
 const MainContent = styled.div`
-  padding-top: 30px;
+  padding-top: 20px;
 `;
 
 function App() {

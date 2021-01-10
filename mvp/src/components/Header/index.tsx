@@ -5,10 +5,7 @@ import AccountStatus from "./AccountStatus";
 import CurrentPrice from "./CurrentPrice";
 import Logo from "./Logo";
 
-const HeaderContainer = styled.div`
-  padding-top: 30px;
-  padding-bottom: 30px;
-`;
+const HeaderContainer = styled.div``;
 
 const Content = styled.div`
   display: flex;
