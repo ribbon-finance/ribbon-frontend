@@ -34,7 +34,7 @@ const StyledButton = styled(Button)`
 const Banner = () => {
   return (
     <BannerContainer>
-      <Title>DŌJI is a protocol for on-chain structured products. </Title>
+      <Title>Ribbon is a protocol for on-chain structured products. </Title>
       <Subtitle>
         The first product lets you bet on ETH volatility.<br></br>
         <a
