@@ -116,3 +116,5 @@ dist
 .pnp.*
 
 .vscode
+
+build/
