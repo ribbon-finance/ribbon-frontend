@@ -1,40 +1,37 @@
 import { NowRequest, NowResponse } from "@vercel/node";
-import { BigNumber } from "ethers";
+import { TradeRequest } from "../src/api/types";
+import { getBestTrade } from "../src/api/sor";
 
-type VenueName = "HEGIC" | "OPYN_GAMMA";
+export default async (request: NowRequest, response: NowResponse) => {
+  const { expiry, buyAmount } = request.query;
 
-type OptionType = 1 | 2;
+  try {
+    validateRequest(request, response);
+  } catch (e) {
+    console.error(e);
+    return;
+  }
 
-type TradeRequest = {
-  expiry: number;
-  spotPrice: number;
-  buyAmount: number;
+  const tradeRequest: TradeRequest = {
+    expiry: parseInt(expiry as string),
+    spotPrice: 100,
+    buyAmount: parseFloat(buyAmount as string),
+  };
+
+  const tradeResponse = await getBestTrade(tradeRequest);
+
+  response.status(200).json(tradeResponse);
+
+  return;
 };
 
-type Trade = {
-  venues: VenueName[];
-  optionTypes: OptionType[];
-  amounts: BigNumber[];
-  strikePrices: BigNumber[];
-  buyData: string[];
-  gasPrice: BigNumber[];
-  value: BigNumber;
-};
+function validateRequest(request: NowRequest, response: NowResponse) {
+  const { expiry, buyAmount } = request.query;
+  const valid =
+    !isNaN(parseInt(expiry as string)) && !isNaN(parseInt(buyAmount as string));
 
-// export default (request: NowRequest, response: NowResponse) => {
-//   const { expiry, buyAmount } = request.query;
-
-//   const tradeRequest = {
-//     expiry: parseInt(expiry as string),
-//     spotPrice: 100,
-//     buyAmount: parseFloat(buyAmount as string),
-//   };
-
-//   response.status(200).send(`Hello ${name}!`);
-// };
-
-export default (request: NowRequest, response: NowResponse) => {
-  response.status(200).send(`Hello world!`);
-};
-
-function getBestTrade(tradeRequest: TradeRequest) {}
+  if (!valid) {
+    response.status(400).send("Invalid request");
+    throw new Error("Invalid request");
+  }
+}
