@@ -118,3 +118,5 @@ dist
 .vscode
 
 build/
+
+.vercel
