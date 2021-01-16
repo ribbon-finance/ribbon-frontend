@@ -5,9 +5,8 @@ export type VenueName = "HEGIC" | "OPYN_GAMMA";
 export type OptionType = 1 | 2;
 
 export type TradeRequest = {
-  expiry: number;
   spotPrice: number;
-  buyAmount: number;
+  buyAmount: string;
 };
 
 export type TradeResponse = {

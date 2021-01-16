@@ -26,6 +26,10 @@ interface IAggregatedOptionsInstrumentInterface extends ethers.utils.Interface {
     "cost(string[],uint8[],uint256[],uint256[])": FunctionFragment;
     "buyInstrument(string[],uint8[],uint256[],uint256[],bytes[])": FunctionFragment;
     "exercisePosition(uint256)": FunctionFragment;
+    "underlying()": FunctionFragment;
+    "strikeAsset()": FunctionFragment;
+    "collateralAsset()": FunctionFragment;
+    "expiry()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -46,6 +50,19 @@ interface IAggregatedOptionsInstrumentInterface extends ethers.utils.Interface {
     functionFragment: "exercisePosition",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "underlying",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "strikeAsset",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "collateralAsset",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "expiry", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "cost", data: BytesLike): Result;
   decodeFunctionResult(
@@ -56,6 +73,16 @@ interface IAggregatedOptionsInstrumentInterface extends ethers.utils.Interface {
     functionFragment: "exercisePosition",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "underlying", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "strikeAsset",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "collateralAsset",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "expiry", data: BytesLike): Result;
 
   events: {};
 }
@@ -121,6 +148,22 @@ export class IAggregatedOptionsInstrument extends Contract {
       positionID: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    underlying(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "underlying()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+    strikeAsset(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "strikeAsset()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+    collateralAsset(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "collateralAsset()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+    expiry(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "expiry()"(overrides?: Overrides): Promise<ContractTransaction>;
   };
 
   cost(
@@ -167,6 +210,22 @@ export class IAggregatedOptionsInstrument extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  underlying(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "underlying()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+  strikeAsset(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "strikeAsset()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+  collateralAsset(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "collateralAsset()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+  expiry(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "expiry()"(overrides?: Overrides): Promise<ContractTransaction>;
+
   callStatic: {
     cost(
       venues: string[],
@@ -211,6 +270,22 @@ export class IAggregatedOptionsInstrument extends Contract {
       positionID: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    underlying(overrides?: CallOverrides): Promise<string>;
+
+    "underlying()"(overrides?: CallOverrides): Promise<string>;
+
+    strikeAsset(overrides?: CallOverrides): Promise<string>;
+
+    "strikeAsset()"(overrides?: CallOverrides): Promise<string>;
+
+    collateralAsset(overrides?: CallOverrides): Promise<string>;
+
+    "collateralAsset()"(overrides?: CallOverrides): Promise<string>;
+
+    expiry(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "expiry()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {};
@@ -259,6 +334,22 @@ export class IAggregatedOptionsInstrument extends Contract {
       positionID: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    underlying(overrides?: Overrides): Promise<BigNumber>;
+
+    "underlying()"(overrides?: Overrides): Promise<BigNumber>;
+
+    strikeAsset(overrides?: Overrides): Promise<BigNumber>;
+
+    "strikeAsset()"(overrides?: Overrides): Promise<BigNumber>;
+
+    collateralAsset(overrides?: Overrides): Promise<BigNumber>;
+
+    "collateralAsset()"(overrides?: Overrides): Promise<BigNumber>;
+
+    expiry(overrides?: Overrides): Promise<BigNumber>;
+
+    "expiry()"(overrides?: Overrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -305,5 +396,21 @@ export class IAggregatedOptionsInstrument extends Contract {
       positionID: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
+
+    underlying(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "underlying()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    strikeAsset(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "strikeAsset()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    collateralAsset(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "collateralAsset()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    expiry(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "expiry()"(overrides?: Overrides): Promise<PopulatedTransaction>;
   };
 }

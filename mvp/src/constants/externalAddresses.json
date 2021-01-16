@@ -15,6 +15,12 @@
     "balancerFactory": "0x8f7F78080219d4066A8036ccD30D588B416a40DB"
   },
   "mainnet": {
+    "multicall": "0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441",
+    "feeds": {
+      "dai/eth": "0x22B58f1EbEDfCA50feF632bD73368b2FdA96D541",
+      "eth/usd": "0x9326BFA02ADD2366b30bacB125260Af641031331",
+      "link/eth": "0xa36085f69e2889c224210f603d836748e7dc0088"
+    },
     "assets": {
       "eth": "0x0000000000000000000000000000000000000000",
       "weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
