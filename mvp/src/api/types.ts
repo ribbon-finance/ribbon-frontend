@@ -17,7 +17,8 @@ export type TradeResponse = {
   strikePrices: string[];
   buyData: string[];
   gasPrice: string;
-  value: string;
+  totalPremium: string;
+  premiums: string[];
 };
 
 export type ZeroExApiResponse = {

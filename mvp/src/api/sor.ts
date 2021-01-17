@@ -94,10 +94,17 @@ export async function getBestTrade(
     bestPriceQuote.call.gasPrice.toNumber()
   ).toString();
 
+  const premiums = [
+    bestPriceQuote.put.premium.toString(),
+    bestPriceQuote.call.premium.toString(),
+  ];
   const totalCost = bestPriceQuote.put.premium.add(bestPriceQuote.call.premium);
 
   // for the value we need to add a 2% margin just in case
-  const value = wmul(totalCost, ethers.utils.parseEther("1.02")).toString();
+  const totalPremium = wmul(
+    totalCost,
+    ethers.utils.parseEther("1.02")
+  ).toString();
 
   return {
     venues,
@@ -106,7 +113,8 @@ export async function getBestTrade(
     strikePrices,
     buyData,
     gasPrice,
-    value,
+    totalPremium,
+    premiums,
   };
 }
 
