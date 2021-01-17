@@ -7,6 +7,7 @@ export type OptionType = 1 | 2;
 export type TradeRequest = {
   spotPrice: string;
   buyAmount: string;
+  instrument: string;
 };
 
 export type TradeResponse = {

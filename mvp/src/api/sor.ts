@@ -1,12 +1,6 @@
 import { BigNumber, ethers } from "ethers";
-import {
-  ZeroExApiResponse,
-  TradeRequest,
-  TradeResponse,
-  OptionType,
-} from "./types";
+import { ZeroExApiResponse, TradeRequest, TradeResponse } from "./types";
 import axios from "axios";
-import { IAggregatedOptionsInstrumentFactory } from "../codegen/IAggregatedOptionsInstrumentFactory";
 import getProvider from "./getProvider";
 import { wmul } from "../utils/math";
 import externalAddresses from "../constants/externalAddresses.json";
@@ -18,10 +12,6 @@ import { IProtocolAdapterFactory } from "../codegen/IProtocolAdapterFactory";
 const provider = getProvider();
 const abiCoder = new ethers.utils.AbiCoder();
 
-const instrument = IAggregatedOptionsInstrumentFactory.connect(
-  instrumentAddresses.mainnet[0].address,
-  provider
-);
 const multicall = MulticallFactory.connect(
   externalAddresses.mainnet.multicall,
   provider
@@ -33,18 +23,27 @@ const HEGIC_PROTOCOL = "HEGIC";
 const HEGIC_ADAPTER = deployments.mainnet.HegicAdapterLogic;
 const GAMMA_ADAPTER = deployments.mainnet.GammaAdapterLogic;
 const adapterAddresses = [HEGIC_ADAPTER, GAMMA_ADAPTER];
+const ETH_ADDRESS = "0x0000000000000000000000000000000000000000";
+const USDC_ADDRESS = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
 
 export async function getBestTrade(
   tradeRequest: TradeRequest
 ): Promise<TradeResponse> {
-  const { spotPrice, buyAmount } = tradeRequest;
+  const { spotPrice, buyAmount, instrument: instrumentAddress } = tradeRequest;
 
-  console.log(
-    await getPrices(
-      BigNumber.from(spotPrice.toString()),
-      BigNumber.from(buyAmount.toString())
-    )
+  const instrumentDetails = instrumentAddresses.mainnet.find(
+    (i) => i.address === instrumentAddress
   );
+  if (!instrumentDetails) {
+    throw new Error("Instrument not found");
+  }
+
+  const prices = await getPrices(
+    instrumentAddress,
+    BigNumber.from(spotPrice.toString()),
+    BigNumber.from(buyAmount.toString())
+  );
+  console.log(prices);
 
   return {
     venues: [],
@@ -67,43 +66,54 @@ type ContractOptionTerms = {
 };
 
 type PriceQuote = {
-  optionType: number;
-  cost: BigNumber;
+  premium: BigNumber;
+  strikePrice: BigNumber;
   exists: boolean;
 };
 
-async function getPrices(spotPrice: BigNumber, buyAmount: BigNumber) {
+type CallPutPriceQuotes = {
+  call: PriceQuote;
+  put: PriceQuote;
+};
+
+async function getPrices(
+  instrument: string,
+  spotPrice: BigNumber,
+  buyAmount: BigNumber
+): Promise<CallPutPriceQuotes[]> {
   const promises = adapterAddresses.map(async (adapterAddress) => {
     if (adapterAddress === GAMMA_ADAPTER) {
-      const otokenMatches = getNearestOtoken(spotPrice);
-
-      return {
-        call:
-          otokenMatches.call &&
-          (await get0xQuote(otokenMatches.call.address, buyAmount)),
-        put:
-          otokenMatches.put &&
-          (await get0xQuote(otokenMatches.put.address, buyAmount)),
-      };
+      return await get0xPrices(spotPrice, buyAmount);
     }
+
+    return await getPriceFromContract(
+      instrument,
+      adapterAddress,
+      spotPrice,
+      buyAmount
+    );
   });
   const res = await Promise.all(promises);
   return res;
 }
 
 async function getPriceFromContract(
+  instrument: string,
   adapterAddress: string,
-  optionTermsFromContract: ContractOptionTerms,
-  strikePrice: BigNumber,
+  spotPrice: BigNumber,
   amount: BigNumber
-): Promise<PriceQuote[]> {
+): Promise<CallPutPriceQuotes> {
+  const optionTermsFromContract = getOptionTerms(instrument);
+  const optionTypes = [PUT_OPTION, CALL_OPTION];
   const adapter = IProtocolAdapterFactory.connect(adapterAddress, provider);
 
-  const optionTypes = [PUT_OPTION, CALL_OPTION];
+  // just hardcode the bounds to be +-5%
+  const callStrikePrice = wmul(spotPrice, ethers.utils.parseEther("1.05"));
+  const putStrikePrice = wmul(spotPrice, ethers.utils.parseEther("0.95"));
 
   const optionTerms = optionTypes.map((optionType) => ({
     ...optionTermsFromContract,
-    strikePrice,
+    strikePrice: optionType === CALL_OPTION ? callStrikePrice : putStrikePrice,
     optionType,
   }));
 
@@ -114,17 +124,53 @@ async function getPriceFromContract(
       amount,
     ]),
   }));
-  const response = await multicall.aggregate(calls);
+  const { returnData } = await multicall.aggregate(calls);
 
-  return response.returnData.map((data, i) => ({
-    optionType: optionTypes[i],
-    cost: BigNumber.from(abiCoder.decode(["uint256"], data).toString()),
-    exists: true,
-  }));
+  const callPremium = BigNumber.from(
+    abiCoder.decode(["uint256"], returnData[0]).toString()
+  );
+  const putPremium = BigNumber.from(
+    abiCoder.decode(["uint256"], returnData[1]).toString()
+  );
+
+  return {
+    call: {
+      strikePrice: callStrikePrice,
+      premium: callPremium,
+      exists: !callPremium.isZero(),
+    },
+    put: {
+      strikePrice: putStrikePrice,
+      premium: putPremium,
+      exists: !putPremium.isZero(),
+    },
+  };
 }
 
 type OtokenMatch = { address: string; strikePrice: BigNumber };
 type OtokenMatches = { call: OtokenMatch | null; put: OtokenMatch | null };
+
+async function get0xPrices(spotPrice: BigNumber, buyAmount: BigNumber) {
+  const otokenMatches = getNearestOtoken(spotPrice);
+  const zero = BigNumber.from("0");
+
+  return {
+    call: {
+      strikePrice: otokenMatches.call ? otokenMatches.call.strikePrice : zero,
+      premium: otokenMatches.call
+        ? await get0xQuote(otokenMatches.call.address, buyAmount)
+        : zero,
+      exists: Boolean(otokenMatches.call),
+    },
+    put: {
+      strikePrice: otokenMatches.put ? otokenMatches.put.strikePrice : zero,
+      premium: otokenMatches.put
+        ? await get0xQuote(otokenMatches.put.address, buyAmount)
+        : zero,
+      exists: Boolean(otokenMatches.put),
+    },
+  };
+}
 
 function getNearestOtoken(spotPrice: BigNumber): OtokenMatches {
   const scalingFactor = BigNumber.from("10").pow(BigNumber.from("10"));
@@ -134,7 +180,7 @@ function getNearestOtoken(spotPrice: BigNumber): OtokenMatches {
   }));
 
   // min-max bounds are 10% from the spot price
-  const minStrikePrice = wmul(spotPrice, ethers.utils.parseEther("0.7"));
+  const minStrikePrice = wmul(spotPrice, ethers.utils.parseEther("0.9"));
   const maxStrikePrice = wmul(spotPrice, ethers.utils.parseEther("1.3"));
 
   const callOtokens = otokens.filter(
@@ -186,28 +232,18 @@ function getNearestOtoken(spotPrice: BigNumber): OtokenMatches {
   return addresses;
 }
 
-async function getOptionTerms(): Promise<ContractOptionTerms> {
-  const types = ["address", "address", "address", "uint256"];
-
-  const data = [
-    instrument.interface.encodeFunctionData("underlying"),
-    instrument.interface.encodeFunctionData("strikeAsset"),
-    instrument.interface.encodeFunctionData("collateralAsset"),
-    instrument.interface.encodeFunctionData("expiry"),
-  ];
-
-  const calls = data.map((d) => ({ target: instrument.address, callData: d }));
-  const returnData = await multicall.aggregate(calls);
-
-  const args = returnData.returnData.map((r, i) =>
-    abiCoder.decode([types[i]], r)
+function getOptionTerms(instrumentAddress: string): ContractOptionTerms {
+  const instrumentDetails = instrumentAddresses.mainnet.find(
+    (i) => i.address === instrumentAddress
   );
-
+  if (!instrumentDetails) {
+    throw new Error(`Instrument with address ${instrumentAddress} not found`);
+  }
   return {
-    underlying: args[0].toString(),
-    strikeAsset: args[1].toString(),
-    collateralAsset: args[2].toString(),
-    expiry: BigNumber.from(args[3].toString()),
+    underlying: ETH_ADDRESS,
+    collateralAsset: ETH_ADDRESS,
+    strikeAsset: USDC_ADDRESS,
+    expiry: BigNumber.from(instrumentDetails.expiry),
   };
 }
 
