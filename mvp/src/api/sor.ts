@@ -72,20 +72,23 @@ type PriceQuote = {
   exists: boolean;
 };
 
-async function getPrices(spotPrice: BigNumber, amount: BigNumber) {
-  // const optionTerms = await getOptionTerms();
-
-  const promises = adapterAddresses.map((adapterAddress) => {
+async function getPrices(spotPrice: BigNumber, buyAmount: BigNumber) {
+  const promises = adapterAddresses.map(async (adapterAddress) => {
     if (adapterAddress === GAMMA_ADAPTER) {
       const otokenMatches = getNearestOtoken(spotPrice);
-      console.log(otokenMatches);
 
-      // await get0xQuote(otokenMatches.call, BigNumber.from("0"));
-      return;
+      return {
+        call:
+          otokenMatches.call &&
+          (await get0xQuote(otokenMatches.call.address, buyAmount)),
+        put:
+          otokenMatches.put &&
+          (await get0xQuote(otokenMatches.put.address, buyAmount)),
+      };
     }
-    // return getPriceFromContract(adapterAddress, optionTerms, spotPrice, amount);
   });
-  return await Promise.all(promises);
+  const res = await Promise.all(promises);
+  return res;
 }
 
 async function getPriceFromContract(
@@ -209,6 +212,9 @@ async function getOptionTerms(): Promise<ContractOptionTerms> {
 }
 
 async function get0xQuote(otokenAddress: string, buyAmount: BigNumber) {
+  const scalingFactor = BigNumber.from("10").pow(BigNumber.from("10"));
+  buyAmount = buyAmount.div(scalingFactor);
+
   const data: Record<string, string> = {
     buyToken: otokenAddress,
     sellToken: "USDC",
@@ -227,9 +233,9 @@ async function get0xQuote(otokenAddress: string, buyAmount: BigNumber) {
 }
 
 function calculateZeroExOrderCost(apiResponse: ZeroExApiResponse) {
-  const decimals = 6; //just scale for USDC amounts for now
+  const decimals = 6; // just scale decimals for USDC amounts for now, because USDC is the purchase token
 
-  const scaledSellAmount = parseInt(apiResponse.sellAmount) / decimals;
+  const scaledSellAmount = parseInt(apiResponse.sellAmount) / 10 ** decimals;
   const totalETH =
     scaledSellAmount / parseFloat(apiResponse.sellTokenToEthRate);
 
