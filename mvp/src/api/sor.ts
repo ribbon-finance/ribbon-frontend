@@ -17,6 +17,9 @@ const multicall = MulticallFactory.connect(
   provider
 );
 
+// this is used to initiate the provider connection so we have faster speeds for subsequent calls
+multicall.aggregate([]);
+
 const PUT_OPTION = 1;
 const CALL_OPTION = 2;
 const HEGIC_PROTOCOL = "HEGIC";
@@ -135,7 +138,9 @@ async function getPriceFromContract(
       amount,
     ]),
   }));
+  console.time("multicall.aggregate");
   const { returnData } = await multicall.aggregate(calls);
+  console.timeEnd("multicall.aggregate");
 
   const callPremium = BigNumber.from(
     abiCoder.decode(["uint256"], returnData[0]).toString()
