@@ -20,9 +20,11 @@ const multicall = MulticallFactory.connect(
 const PUT_OPTION = 1;
 const CALL_OPTION = 2;
 const HEGIC_PROTOCOL = "HEGIC";
+const GAMMA_PROTOCOL = "HEGIC";
 const HEGIC_ADAPTER = deployments.mainnet.HegicAdapterLogic;
 const GAMMA_ADAPTER = deployments.mainnet.GammaAdapterLogic;
-const adapterAddresses = [HEGIC_ADAPTER, GAMMA_ADAPTER];
+const ADAPTER_ADDRESSES = [GAMMA_ADAPTER, HEGIC_ADAPTER];
+const VENUE_NAMES = [GAMMA_PROTOCOL, HEGIC_PROTOCOL];
 const ETH_ADDRESS = "0x0000000000000000000000000000000000000000";
 const USDC_ADDRESS = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
 
@@ -37,6 +39,7 @@ export async function getBestTrade(
   if (!instrumentDetails) {
     throw new Error("Instrument not found");
   }
+  console.time("getPrices");
 
   const prices = await getPrices(
     instrumentAddress,
@@ -44,6 +47,7 @@ export async function getBestTrade(
     BigNumber.from(buyAmount.toString())
   );
   console.log(prices);
+  console.timeEnd("getPrices");
 
   return {
     venues: [],
@@ -68,6 +72,8 @@ type ContractOptionTerms = {
 type PriceQuote = {
   premium: BigNumber;
   strikePrice: BigNumber;
+  data: string;
+  gasPrice: BigNumber;
   exists: boolean;
 };
 
@@ -81,17 +87,22 @@ async function getPrices(
   spotPrice: BigNumber,
   buyAmount: BigNumber
 ): Promise<CallPutPriceQuotes[]> {
-  const promises = adapterAddresses.map(async (adapterAddress) => {
-    if (adapterAddress === GAMMA_ADAPTER) {
-      return await get0xPrices(spotPrice, buyAmount);
-    }
+  const promises = ADAPTER_ADDRESSES.map(async (adapterAddress) => {
+    let priceQuotes;
+    console.time(adapterAddress);
 
-    return await getPriceFromContract(
-      instrument,
-      adapterAddress,
-      spotPrice,
-      buyAmount
-    );
+    if (adapterAddress === GAMMA_ADAPTER) {
+      priceQuotes = await get0xPrices(spotPrice, buyAmount);
+    } else {
+      priceQuotes = await getPriceFromContract(
+        instrument,
+        adapterAddress,
+        spotPrice,
+        buyAmount
+      );
+    }
+    console.timeEnd(adapterAddress);
+    return priceQuotes;
   });
   const res = await Promise.all(promises);
   return res;
@@ -137,16 +148,25 @@ async function getPriceFromContract(
     call: {
       strikePrice: callStrikePrice,
       premium: callPremium,
+      data: "0x",
+      gasPrice: BigNumber.from("0"),
       exists: !callPremium.isZero(),
     },
     put: {
       strikePrice: putStrikePrice,
       premium: putPremium,
+      data: "0x",
+      gasPrice: BigNumber.from("0"),
       exists: !putPremium.isZero(),
     },
   };
 }
 
+type OtokenDetails = {
+  address: string;
+  strikePrice: BigNumber;
+  isPut: boolean;
+};
 type OtokenMatch = { address: string; strikePrice: BigNumber };
 type OtokenMatches = { call: OtokenMatch | null; put: OtokenMatch | null };
 
@@ -154,21 +174,45 @@ async function get0xPrices(spotPrice: BigNumber, buyAmount: BigNumber) {
   const otokenMatches = getNearestOtoken(spotPrice);
   const zero = BigNumber.from("0");
 
+  const emptyPriceQuote = {
+    strikePrice: zero,
+    premium: zero,
+    data: "0x",
+    gasPrice: BigNumber.from("0"),
+    exists: false,
+  };
+
+  const callResponse =
+    otokenMatches.call &&
+    (await get0xQuote(otokenMatches.call.address, buyAmount));
+
+  const putResponse =
+    otokenMatches.put &&
+    (await get0xQuote(otokenMatches.put.address, buyAmount));
+
   return {
-    call: {
-      strikePrice: otokenMatches.call ? otokenMatches.call.strikePrice : zero,
-      premium: otokenMatches.call
-        ? await get0xQuote(otokenMatches.call.address, buyAmount)
-        : zero,
-      exists: Boolean(otokenMatches.call),
-    },
-    put: {
-      strikePrice: otokenMatches.put ? otokenMatches.put.strikePrice : zero,
-      premium: otokenMatches.put
-        ? await get0xQuote(otokenMatches.put.address, buyAmount)
-        : zero,
-      exists: Boolean(otokenMatches.put),
-    },
+    call: otokenMatches.call
+      ? {
+          strikePrice: otokenMatches.call.strikePrice,
+          premium: callResponse ? callResponse.premium : zero,
+          data: callResponse ? callResponse.apiResponse.data : "0x",
+          gasPrice: callResponse
+            ? BigNumber.from(callResponse.apiResponse.gasPrice)
+            : zero,
+          exists: Boolean(otokenMatches.call),
+        }
+      : emptyPriceQuote,
+    put: otokenMatches.put
+      ? {
+          strikePrice: otokenMatches.put.strikePrice,
+          premium: putResponse ? putResponse.premium : zero,
+          data: putResponse ? putResponse.apiResponse.data : "0x",
+          gasPrice: putResponse
+            ? BigNumber.from(putResponse.apiResponse.gasPrice)
+            : zero,
+          exists: Boolean(otokenMatches.put),
+        }
+      : emptyPriceQuote,
   };
 }
 
@@ -181,7 +225,7 @@ function getNearestOtoken(spotPrice: BigNumber): OtokenMatches {
 
   // min-max bounds are 10% from the spot price
   const minStrikePrice = wmul(spotPrice, ethers.utils.parseEther("0.9"));
-  const maxStrikePrice = wmul(spotPrice, ethers.utils.parseEther("1.3"));
+  const maxStrikePrice = wmul(spotPrice, ethers.utils.parseEther("1.1"));
 
   const callOtokens = otokens.filter(
     (otoken) =>
@@ -201,7 +245,7 @@ function getNearestOtoken(spotPrice: BigNumber): OtokenMatches {
     put: null,
   };
 
-  const minDiffOtoken = (otokens) => {
+  const minDiffOtoken = (otokens: OtokenDetails[]) => {
     const strikePrices = otokens.map((otoken) => otoken.strikePrice);
     const priceDiff = strikePrices.map((p) => spotPrice.sub(p).abs());
     // 2^256-1
@@ -247,7 +291,10 @@ function getOptionTerms(instrumentAddress: string): ContractOptionTerms {
   };
 }
 
-async function get0xQuote(otokenAddress: string, buyAmount: BigNumber) {
+async function get0xQuote(
+  otokenAddress: string,
+  buyAmount: BigNumber
+): Promise<{ premium: BigNumber; apiResponse: ZeroExApiResponse }> {
   const scalingFactor = BigNumber.from("10").pow(BigNumber.from("10"));
   buyAmount = buyAmount.div(scalingFactor);
 
@@ -261,7 +308,10 @@ async function get0xQuote(otokenAddress: string, buyAmount: BigNumber) {
 
   try {
     const response = await axios.get(url);
-    return calculateZeroExOrderCost(response.data);
+    return {
+      premium: calculateZeroExOrderCost(response.data),
+      apiResponse: response.data,
+    };
   } catch (e) {
     console.log(e);
     throw e;
