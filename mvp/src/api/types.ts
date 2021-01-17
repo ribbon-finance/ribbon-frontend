@@ -11,12 +11,12 @@ export type TradeRequest = {
 };
 
 export type TradeResponse = {
-  venues: VenueName[];
+  venues: string[];
   optionTypes: OptionType[];
   amounts: string[];
   strikePrices: string[];
   buyData: string[];
-  gasPrice: string[];
+  gasPrice: string;
   value: string;
 };
 

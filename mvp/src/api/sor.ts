@@ -20,16 +20,44 @@ const multicall = MulticallFactory.connect(
 // this is used to initiate the provider connection so we have faster speeds for subsequent calls
 multicall.aggregate([]);
 
+// 2^256-1
+const MAX_UINT256 = BigNumber.from("2")
+  .pow(BigNumber.from("256"))
+  .sub(BigNumber.from("1"));
+
 const PUT_OPTION = 1;
 const CALL_OPTION = 2;
 const HEGIC_PROTOCOL = "HEGIC";
-const GAMMA_PROTOCOL = "HEGIC";
+const GAMMA_PROTOCOL = "OPYN_GAMMA";
 const HEGIC_ADAPTER = deployments.mainnet.HegicAdapterLogic;
 const GAMMA_ADAPTER = deployments.mainnet.GammaAdapterLogic;
 const ADAPTER_ADDRESSES = [GAMMA_ADAPTER, HEGIC_ADAPTER];
 const VENUE_NAMES = [GAMMA_PROTOCOL, HEGIC_PROTOCOL];
 const ETH_ADDRESS = "0x0000000000000000000000000000000000000000";
 const USDC_ADDRESS = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+
+const ZERO_EX_API_URI = "https://api.0x.org/swap/v1/quote";
+
+type ContractOptionTerms = {
+  underlying: string;
+  strikeAsset: string;
+  collateralAsset: string;
+  expiry: BigNumber;
+};
+
+type PriceQuote = {
+  premium: BigNumber;
+  strikePrice: BigNumber;
+  data: string;
+  gasPrice: BigNumber;
+  exists: boolean;
+  venueName: string;
+};
+
+type CallPutPriceQuotes = {
+  call: PriceQuote;
+  put: PriceQuote;
+};
 
 export async function getBestTrade(
   tradeRequest: TradeRequest
@@ -49,71 +77,100 @@ export async function getBestTrade(
     BigNumber.from(spotPrice.toString()),
     BigNumber.from(buyAmount.toString())
   );
-  console.log(prices);
+  const bestPriceQuote = getBestPrice(prices);
   console.timeEnd("getPrices");
 
+  // now we have to transpose the PriceQuote object into arrays
+  const venues = [bestPriceQuote.put.venueName, bestPriceQuote.call.venueName];
+  const amounts = [buyAmount, buyAmount];
+  const strikePrices = [
+    bestPriceQuote.put.strikePrice.toString(),
+    bestPriceQuote.call.strikePrice.toString(),
+  ];
+  const buyData = [bestPriceQuote.put.data, bestPriceQuote.call.data];
+
+  const gasPrice = Math.max(
+    bestPriceQuote.put.gasPrice.toNumber(),
+    bestPriceQuote.call.gasPrice.toNumber()
+  ).toString();
+
   return {
-    venues: [],
-    optionTypes: [],
-    amounts: [],
-    strikePrices: [],
-    buyData: [],
-    gasPrice: [],
+    venues,
+    optionTypes: [PUT_OPTION, CALL_OPTION],
+    amounts,
+    strikePrices,
+    buyData,
+    gasPrice,
     value: BigNumber.from("0").toString(),
   };
 }
-
-const ZERO_EX_API_URI = "https://api.0x.org/swap/v1/quote";
-
-type ContractOptionTerms = {
-  underlying: string;
-  strikeAsset: string;
-  collateralAsset: string;
-  expiry: BigNumber;
-};
-
-type PriceQuote = {
-  premium: BigNumber;
-  strikePrice: BigNumber;
-  data: string;
-  gasPrice: BigNumber;
-  exists: boolean;
-};
-
-type CallPutPriceQuotes = {
-  call: PriceQuote;
-  put: PriceQuote;
-};
 
 async function getPrices(
   instrument: string,
   spotPrice: BigNumber,
   buyAmount: BigNumber
 ): Promise<CallPutPriceQuotes[]> {
-  const promises = ADAPTER_ADDRESSES.map(async (adapterAddress) => {
-    let priceQuotes;
-    console.time(adapterAddress);
+  const promises = ADAPTER_ADDRESSES.map(
+    async (adapterAddress, adapterIndex) => {
+      let priceQuotes;
 
-    if (adapterAddress === GAMMA_ADAPTER) {
-      priceQuotes = await get0xPrices(spotPrice, buyAmount);
-    } else {
-      priceQuotes = await getPriceFromContract(
-        instrument,
-        adapterAddress,
-        spotPrice,
-        buyAmount
-      );
+      if (adapterAddress === GAMMA_ADAPTER) {
+        priceQuotes = await get0xPrices(spotPrice, buyAmount);
+      } else {
+        priceQuotes = await getPriceFromContract(
+          instrument,
+          adapterAddress,
+          VENUE_NAMES[adapterIndex],
+          spotPrice,
+          buyAmount
+        );
+      }
+      return { ...priceQuotes };
     }
-    console.timeEnd(adapterAddress);
-    return priceQuotes;
-  });
+  );
   const res = await Promise.all(promises);
   return res;
+}
+
+function getBestPrice(
+  callPutPriceQuotes: CallPutPriceQuotes[]
+): CallPutPriceQuotes {
+  const callPriceQuotes = callPutPriceQuotes.map((q) => q.call);
+  const putPriceQuotes = callPutPriceQuotes.map((q) => q.put);
+
+  const getBestPriceQuote = (priceQuotes: PriceQuote[]) => {
+    priceQuotes = priceQuotes.filter((q) => q.exists);
+    if (!priceQuotes.length) {
+      throw new Error("No found price quotes");
+    }
+
+    let minIndex = 0;
+
+    if (priceQuotes.length > 1) {
+      const premiums = priceQuotes.map((q) => q.premium);
+      let minPremium = MAX_UINT256;
+
+      premiums.forEach((premium, index) => {
+        if (premium.lt(minPremium)) {
+          minPremium = premium;
+          minIndex = index;
+        }
+      });
+    }
+
+    return priceQuotes[minIndex];
+  };
+
+  return {
+    call: getBestPriceQuote(callPriceQuotes),
+    put: getBestPriceQuote(putPriceQuotes),
+  };
 }
 
 async function getPriceFromContract(
   instrument: string,
   adapterAddress: string,
+  venueName: string,
   spotPrice: BigNumber,
   amount: BigNumber
 ): Promise<CallPutPriceQuotes> {
@@ -138,9 +195,7 @@ async function getPriceFromContract(
       amount,
     ]),
   }));
-  console.time("multicall.aggregate");
   const { returnData } = await multicall.aggregate(calls);
-  console.timeEnd("multicall.aggregate");
 
   const callPremium = BigNumber.from(
     abiCoder.decode(["uint256"], returnData[0]).toString()
@@ -156,6 +211,7 @@ async function getPriceFromContract(
       data: "0x",
       gasPrice: BigNumber.from("0"),
       exists: !callPremium.isZero(),
+      venueName,
     },
     put: {
       strikePrice: putStrikePrice,
@@ -163,6 +219,7 @@ async function getPriceFromContract(
       data: "0x",
       gasPrice: BigNumber.from("0"),
       exists: !putPremium.isZero(),
+      venueName,
     },
   };
 }
@@ -170,6 +227,7 @@ async function getPriceFromContract(
 type OtokenDetails = {
   address: string;
   strikePrice: BigNumber;
+  expiry: number;
   isPut: boolean;
 };
 type OtokenMatch = { address: string; strikePrice: BigNumber };
@@ -185,6 +243,7 @@ async function get0xPrices(spotPrice: BigNumber, buyAmount: BigNumber) {
     data: "0x",
     gasPrice: BigNumber.from("0"),
     exists: false,
+    venueName: GAMMA_PROTOCOL,
   };
 
   const callResponse =
@@ -205,6 +264,7 @@ async function get0xPrices(spotPrice: BigNumber, buyAmount: BigNumber) {
             ? BigNumber.from(callResponse.apiResponse.gasPrice)
             : zero,
           exists: Boolean(otokenMatches.call),
+          venueName: GAMMA_PROTOCOL,
         }
       : emptyPriceQuote,
     put: otokenMatches.put
@@ -216,6 +276,7 @@ async function get0xPrices(spotPrice: BigNumber, buyAmount: BigNumber) {
             ? BigNumber.from(putResponse.apiResponse.gasPrice)
             : zero,
           exists: Boolean(otokenMatches.put),
+          venueName: GAMMA_PROTOCOL,
         }
       : emptyPriceQuote,
   };
@@ -223,13 +284,18 @@ async function get0xPrices(spotPrice: BigNumber, buyAmount: BigNumber) {
 
 function getNearestOtoken(spotPrice: BigNumber): OtokenMatches {
   const scalingFactor = BigNumber.from("10").pow(BigNumber.from("10"));
-  const otokens = externalAddresses.mainnet.otokens.map((otoken) => ({
+  let otokens = externalAddresses.mainnet.otokens.map((otoken) => ({
     ...otoken,
+    expiry: parseInt(otoken.expiry),
     strikePrice: BigNumber.from(otoken.strikePrice).mul(scalingFactor),
   }));
+  const nowTimestamp = Math.floor(Date.now() / 1000);
+
+  // filter just in case
+  otokens = otokens.filter((otoken) => otoken.expiry > nowTimestamp);
 
   // min-max bounds are 10% from the spot price
-  const minStrikePrice = wmul(spotPrice, ethers.utils.parseEther("0.95"));
+  const minStrikePrice = wmul(spotPrice, ethers.utils.parseEther("0.55"));
   const maxStrikePrice = wmul(spotPrice, ethers.utils.parseEther("1.05"));
 
   const callOtokens = otokens.filter(
@@ -253,10 +319,8 @@ function getNearestOtoken(spotPrice: BigNumber): OtokenMatches {
   const minDiffOtoken = (otokens: OtokenDetails[]) => {
     const strikePrices = otokens.map((otoken) => otoken.strikePrice);
     const priceDiff = strikePrices.map((p) => spotPrice.sub(p).abs());
-    // 2^256-1
-    let minPrice = BigNumber.from("2")
-      .pow(BigNumber.from("256"))
-      .sub(BigNumber.from("1"));
+
+    let minPrice = MAX_UINT256;
     let minIndex = 0;
 
     priceDiff.forEach((diff: BigNumber, index: number) => {
