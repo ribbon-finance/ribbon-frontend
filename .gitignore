@@ -116,3 +116,7 @@ dist
 .pnp.*
 
 .vscode
+
+build/
+
+.vercel

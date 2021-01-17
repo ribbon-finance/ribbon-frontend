@@ -24,20 +24,12 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "purchaseAmount",
-        type: "uint256",
-      },
-    ],
-    name: "getBestTrade",
-    outputs: [
-      {
         internalType: "string[]",
         name: "venues",
         type: "string[]",
       },
       {
-        internalType: "uint8[]",
+        internalType: "enum OptionType[]",
         name: "optionTypes",
         type: "uint8[]",
       },
@@ -48,8 +40,16 @@ const _abi = [
       },
       {
         internalType: "uint256[]",
-        name: "premiums",
+        name: "strikePrices",
         type: "uint256[]",
+      },
+    ],
+    name: "cost",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -72,6 +72,16 @@ const _abi = [
         name: "amounts",
         type: "uint256[]",
       },
+      {
+        internalType: "uint256[]",
+        name: "strikePrices",
+        type: "uint256[]",
+      },
+      {
+        internalType: "bytes[]",
+        name: "buyData",
+        type: "bytes[]",
+      },
     ],
     name: "buyInstrument",
     outputs: [
@@ -92,11 +102,63 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "exercise",
+    name: "exercisePosition",
     outputs: [
       {
         internalType: "uint256",
         name: "profit",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "underlying",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "strikeAsset",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "collateralAsset",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "expiry",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
         type: "uint256",
       },
     ],

@@ -23,33 +23,66 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface IAggregatedOptionsInstrumentInterface extends ethers.utils.Interface {
   functions: {
-    "getBestTrade(uint256)": FunctionFragment;
-    "buyInstrument(string[],uint8[],uint256[])": FunctionFragment;
-    "exercise(uint256)": FunctionFragment;
+    "cost(string[],uint8[],uint256[],uint256[])": FunctionFragment;
+    "buyInstrument(string[],uint8[],uint256[],uint256[],bytes[])": FunctionFragment;
+    "exercisePosition(uint256)": FunctionFragment;
+    "underlying()": FunctionFragment;
+    "strikeAsset()": FunctionFragment;
+    "collateralAsset()": FunctionFragment;
+    "expiry()": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "getBestTrade",
-    values: [BigNumberish]
+    functionFragment: "cost",
+    values: [string[], BigNumberish[], BigNumberish[], BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "buyInstrument",
-    values: [string[], BigNumberish[], BigNumberish[]]
+    values: [
+      string[],
+      BigNumberish[],
+      BigNumberish[],
+      BigNumberish[],
+      BytesLike[]
+    ]
   ): string;
   encodeFunctionData(
-    functionFragment: "exercise",
+    functionFragment: "exercisePosition",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "underlying",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "strikeAsset",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "collateralAsset",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "expiry", values?: undefined): string;
 
-  decodeFunctionResult(
-    functionFragment: "getBestTrade",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "cost", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "buyInstrument",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "exercise", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "exercisePosition",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "underlying", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "strikeAsset",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "collateralAsset",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "expiry", data: BytesLike): Result;
 
   events: {};
 }
@@ -68,175 +101,209 @@ export class IAggregatedOptionsInstrument extends Contract {
   interface: IAggregatedOptionsInstrumentInterface;
 
   functions: {
-    getBestTrade(
-      purchaseAmount: BigNumberish,
+    cost(
+      venues: string[],
+      optionTypes: BigNumberish[],
+      amounts: BigNumberish[],
+      strikePrices: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<{
-      venues: string[];
-      optionTypes: number[];
-      amounts: BigNumber[];
-      premiums: BigNumber[];
-      0: string[];
-      1: number[];
-      2: BigNumber[];
-      3: BigNumber[];
+      0: BigNumber;
     }>;
 
-    "getBestTrade(uint256)"(
-      purchaseAmount: BigNumberish,
+    "cost(string[],uint8[],uint256[],uint256[])"(
+      venues: string[],
+      optionTypes: BigNumberish[],
+      amounts: BigNumberish[],
+      strikePrices: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<{
-      venues: string[];
-      optionTypes: number[];
-      amounts: BigNumber[];
-      premiums: BigNumber[];
-      0: string[];
-      1: number[];
-      2: BigNumber[];
-      3: BigNumber[];
+      0: BigNumber;
     }>;
 
     buyInstrument(
       venues: string[],
       optionTypes: BigNumberish[],
       amounts: BigNumberish[],
+      strikePrices: BigNumberish[],
+      buyData: BytesLike[],
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
-    "buyInstrument(string[],uint8[],uint256[])"(
+    "buyInstrument(string[],uint8[],uint256[],uint256[],bytes[])"(
       venues: string[],
       optionTypes: BigNumberish[],
       amounts: BigNumberish[],
+      strikePrices: BigNumberish[],
+      buyData: BytesLike[],
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
-    exercise(
+    exercisePosition(
       positionID: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "exercise(uint256)"(
+    "exercisePosition(uint256)"(
       positionID: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    underlying(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "underlying()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+    strikeAsset(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "strikeAsset()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+    collateralAsset(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "collateralAsset()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+    expiry(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "expiry()"(overrides?: Overrides): Promise<ContractTransaction>;
   };
 
-  getBestTrade(
-    purchaseAmount: BigNumberish,
+  cost(
+    venues: string[],
+    optionTypes: BigNumberish[],
+    amounts: BigNumberish[],
+    strikePrices: BigNumberish[],
     overrides?: CallOverrides
-  ): Promise<{
-    venues: string[];
-    optionTypes: number[];
-    amounts: BigNumber[];
-    premiums: BigNumber[];
-    0: string[];
-    1: number[];
-    2: BigNumber[];
-    3: BigNumber[];
-  }>;
+  ): Promise<BigNumber>;
 
-  "getBestTrade(uint256)"(
-    purchaseAmount: BigNumberish,
+  "cost(string[],uint8[],uint256[],uint256[])"(
+    venues: string[],
+    optionTypes: BigNumberish[],
+    amounts: BigNumberish[],
+    strikePrices: BigNumberish[],
     overrides?: CallOverrides
-  ): Promise<{
-    venues: string[];
-    optionTypes: number[];
-    amounts: BigNumber[];
-    premiums: BigNumber[];
-    0: string[];
-    1: number[];
-    2: BigNumber[];
-    3: BigNumber[];
-  }>;
+  ): Promise<BigNumber>;
 
   buyInstrument(
     venues: string[],
     optionTypes: BigNumberish[],
     amounts: BigNumberish[],
+    strikePrices: BigNumberish[],
+    buyData: BytesLike[],
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
-  "buyInstrument(string[],uint8[],uint256[])"(
+  "buyInstrument(string[],uint8[],uint256[],uint256[],bytes[])"(
     venues: string[],
     optionTypes: BigNumberish[],
     amounts: BigNumberish[],
+    strikePrices: BigNumberish[],
+    buyData: BytesLike[],
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
-  exercise(
+  exercisePosition(
     positionID: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "exercise(uint256)"(
+  "exercisePosition(uint256)"(
     positionID: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  underlying(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "underlying()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+  strikeAsset(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "strikeAsset()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+  collateralAsset(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "collateralAsset()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+  expiry(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "expiry()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   callStatic: {
-    getBestTrade(
-      purchaseAmount: BigNumberish,
+    cost(
+      venues: string[],
+      optionTypes: BigNumberish[],
+      amounts: BigNumberish[],
+      strikePrices: BigNumberish[],
       overrides?: CallOverrides
-    ): Promise<{
-      venues: string[];
-      optionTypes: number[];
-      amounts: BigNumber[];
-      premiums: BigNumber[];
-      0: string[];
-      1: number[];
-      2: BigNumber[];
-      3: BigNumber[];
-    }>;
+    ): Promise<BigNumber>;
 
-    "getBestTrade(uint256)"(
-      purchaseAmount: BigNumberish,
+    "cost(string[],uint8[],uint256[],uint256[])"(
+      venues: string[],
+      optionTypes: BigNumberish[],
+      amounts: BigNumberish[],
+      strikePrices: BigNumberish[],
       overrides?: CallOverrides
-    ): Promise<{
-      venues: string[];
-      optionTypes: number[];
-      amounts: BigNumber[];
-      premiums: BigNumber[];
-      0: string[];
-      1: number[];
-      2: BigNumber[];
-      3: BigNumber[];
-    }>;
+    ): Promise<BigNumber>;
 
     buyInstrument(
       venues: string[],
       optionTypes: BigNumberish[],
       amounts: BigNumberish[],
+      strikePrices: BigNumberish[],
+      buyData: BytesLike[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "buyInstrument(string[],uint8[],uint256[])"(
+    "buyInstrument(string[],uint8[],uint256[],uint256[],bytes[])"(
       venues: string[],
       optionTypes: BigNumberish[],
       amounts: BigNumberish[],
+      strikePrices: BigNumberish[],
+      buyData: BytesLike[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    exercise(
+    exercisePosition(
       positionID: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "exercise(uint256)"(
+    "exercisePosition(uint256)"(
       positionID: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    underlying(overrides?: CallOverrides): Promise<string>;
+
+    "underlying()"(overrides?: CallOverrides): Promise<string>;
+
+    strikeAsset(overrides?: CallOverrides): Promise<string>;
+
+    "strikeAsset()"(overrides?: CallOverrides): Promise<string>;
+
+    collateralAsset(overrides?: CallOverrides): Promise<string>;
+
+    "collateralAsset()"(overrides?: CallOverrides): Promise<string>;
+
+    expiry(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "expiry()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {};
 
   estimateGas: {
-    getBestTrade(
-      purchaseAmount: BigNumberish,
+    cost(
+      venues: string[],
+      optionTypes: BigNumberish[],
+      amounts: BigNumberish[],
+      strikePrices: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "getBestTrade(uint256)"(
-      purchaseAmount: BigNumberish,
+    "cost(string[],uint8[],uint256[],uint256[])"(
+      venues: string[],
+      optionTypes: BigNumberish[],
+      amounts: BigNumberish[],
+      strikePrices: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -244,35 +311,61 @@ export class IAggregatedOptionsInstrument extends Contract {
       venues: string[],
       optionTypes: BigNumberish[],
       amounts: BigNumberish[],
+      strikePrices: BigNumberish[],
+      buyData: BytesLike[],
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
-    "buyInstrument(string[],uint8[],uint256[])"(
+    "buyInstrument(string[],uint8[],uint256[],uint256[],bytes[])"(
       venues: string[],
       optionTypes: BigNumberish[],
       amounts: BigNumberish[],
+      strikePrices: BigNumberish[],
+      buyData: BytesLike[],
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
-    exercise(
+    exercisePosition(
       positionID: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "exercise(uint256)"(
+    "exercisePosition(uint256)"(
       positionID: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    underlying(overrides?: Overrides): Promise<BigNumber>;
+
+    "underlying()"(overrides?: Overrides): Promise<BigNumber>;
+
+    strikeAsset(overrides?: Overrides): Promise<BigNumber>;
+
+    "strikeAsset()"(overrides?: Overrides): Promise<BigNumber>;
+
+    collateralAsset(overrides?: Overrides): Promise<BigNumber>;
+
+    "collateralAsset()"(overrides?: Overrides): Promise<BigNumber>;
+
+    expiry(overrides?: Overrides): Promise<BigNumber>;
+
+    "expiry()"(overrides?: Overrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    getBestTrade(
-      purchaseAmount: BigNumberish,
+    cost(
+      venues: string[],
+      optionTypes: BigNumberish[],
+      amounts: BigNumberish[],
+      strikePrices: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "getBestTrade(uint256)"(
-      purchaseAmount: BigNumberish,
+    "cost(string[],uint8[],uint256[],uint256[])"(
+      venues: string[],
+      optionTypes: BigNumberish[],
+      amounts: BigNumberish[],
+      strikePrices: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -280,24 +373,44 @@ export class IAggregatedOptionsInstrument extends Contract {
       venues: string[],
       optionTypes: BigNumberish[],
       amounts: BigNumberish[],
+      strikePrices: BigNumberish[],
+      buyData: BytesLike[],
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
-    "buyInstrument(string[],uint8[],uint256[])"(
+    "buyInstrument(string[],uint8[],uint256[],uint256[],bytes[])"(
       venues: string[],
       optionTypes: BigNumberish[],
       amounts: BigNumberish[],
+      strikePrices: BigNumberish[],
+      buyData: BytesLike[],
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
-    exercise(
+    exercisePosition(
       positionID: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "exercise(uint256)"(
+    "exercisePosition(uint256)"(
       positionID: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
+
+    underlying(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "underlying()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    strikeAsset(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "strikeAsset()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    collateralAsset(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "collateralAsset()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    expiry(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "expiry()"(overrides?: Overrides): Promise<PopulatedTransaction>;
   };
 }

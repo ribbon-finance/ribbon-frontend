@@ -1,0 +1,4538 @@
+{
+  "contractName": "IProtocolAdapter",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "caller",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "options",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "optionID",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "exerciseProfit",
+          "type": "uint256"
+        }
+      ],
+      "name": "Exercised",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "caller",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "string",
+          "name": "protocolName",
+          "type": "string"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "underlying",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "strikeAsset",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "expiry",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "strikePrice",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum OptionType",
+          "name": "optionType",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "premium",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "optionID",
+          "type": "uint256"
+        }
+      ],
+      "name": "Purchased",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "protocolName",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "nonFungible",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "purchaseMethod",
+      "outputs": [
+        {
+          "internalType": "enum PurchaseMethod",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "isEuropean",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "underlying",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "strikeAsset",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "collateralAsset",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "expiry",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "strikePrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum OptionType",
+              "name": "optionType",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct OptionTerms",
+          "name": "optionTerms",
+          "type": "tuple"
+        }
+      ],
+      "name": "optionsExist",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "underlying",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "strikeAsset",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "collateralAsset",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "expiry",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "strikePrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum OptionType",
+              "name": "optionType",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct OptionTerms",
+          "name": "optionTerms",
+          "type": "tuple"
+        }
+      ],
+      "name": "getOptionsAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "underlying",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "strikeAsset",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "collateralAsset",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "expiry",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "strikePrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum OptionType",
+              "name": "optionType",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct OptionTerms",
+          "name": "optionTerms",
+          "type": "tuple"
+        },
+        {
+          "internalType": "uint256",
+          "name": "purchaseAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "premium",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "cost",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "options",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "optionID",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "exerciseProfit",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "profit",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "underlying",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "strikeAsset",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "collateralAsset",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "expiry",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "strikePrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum OptionType",
+              "name": "optionType",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct OptionTerms",
+          "name": "optionTerms",
+          "type": "tuple"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "purchase",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "optionID",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "options",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "optionID",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        }
+      ],
+      "name": "exercise",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.6.8+commit.0bbfe453\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"caller\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"options\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"optionID\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"exerciseProfit\",\"type\":\"uint256\"}],\"name\":\"Exercised\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"caller\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"string\",\"name\":\"protocolName\",\"type\":\"string\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"underlying\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"strikeAsset\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"expiry\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"strikePrice\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enum OptionType\",\"name\":\"optionType\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"premium\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"optionID\",\"type\":\"uint256\"}],\"name\":\"Purchased\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"options\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"optionID\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"}],\"name\":\"exercise\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"options\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"optionID\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"exerciseProfit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"profit\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"underlying\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"strikeAsset\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"collateralAsset\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"expiry\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"strikePrice\",\"type\":\"uint256\"},{\"internalType\":\"enum OptionType\",\"name\":\"optionType\",\"type\":\"uint8\"}],\"internalType\":\"struct OptionTerms\",\"name\":\"optionTerms\",\"type\":\"tuple\"}],\"name\":\"getOptionsAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"isEuropean\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"nonFungible\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"underlying\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"strikeAsset\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"collateralAsset\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"expiry\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"strikePrice\",\"type\":\"uint256\"},{\"internalType\":\"enum OptionType\",\"name\":\"optionType\",\"type\":\"uint8\"}],\"internalType\":\"struct OptionTerms\",\"name\":\"optionTerms\",\"type\":\"tuple\"}],\"name\":\"optionsExist\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"underlying\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"strikeAsset\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"collateralAsset\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"expiry\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"strikePrice\",\"type\":\"uint256\"},{\"internalType\":\"enum OptionType\",\"name\":\"optionType\",\"type\":\"uint8\"}],\"internalType\":\"struct OptionTerms\",\"name\":\"optionTerms\",\"type\":\"tuple\"},{\"internalType\":\"uint256\",\"name\":\"purchaseAmount\",\"type\":\"uint256\"}],\"name\":\"premium\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"cost\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"protocolName\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"underlying\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"strikeAsset\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"collateralAsset\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"expiry\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"strikePrice\",\"type\":\"uint256\"},{\"internalType\":\"enum OptionType\",\"name\":\"optionType\",\"type\":\"uint8\"}],\"internalType\":\"struct OptionTerms\",\"name\":\"optionTerms\",\"type\":\"tuple\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"purchase\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"optionID\",\"type\":\"uint256\"}],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"purchaseMethod\",\"outputs\":[{\"internalType\":\"enum PurchaseMethod\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{\"exercise(address,uint256,uint256,address)\":{\"params\":{\"amount\":\"is the amount of tokens or options contract to exercise. Only relevant for fungle protocols like Opyn\",\"optionID\":\"is the ID of the option position in non fungible protocols like Hegic.\",\"options\":\"is the address of the options contract\",\"recipient\":\"is the account that receives the exercised profits. This is needed since the adapter holds all the positions and the msg.sender is an instrument contract.\"}},\"exerciseProfit(address,uint256,uint256)\":{\"params\":{\"amount\":\"is the amount of tokens or options contract to exercise. Only relevant for fungle protocols like Opyn\",\"optionID\":\"is the ID of the option position in non fungible protocols like Hegic.\",\"options\":\"is the address of the options contract\"}},\"getOptionsAddress((address,address,address,uint256,uint256,uint8))\":{\"params\":{\"optionTerms\":\"is the terms of the option contract\"}},\"optionsExist((address,address,address,uint256,uint256,uint8))\":{\"params\":{\"optionTerms\":\"is the terms of the option contract\"}},\"premium((address,address,address,uint256,uint256,uint8),uint256)\":{\"params\":{\"optionTerms\":\"is the terms of the option contract\",\"purchaseAmount\":\"is the number of options purchased\"}},\"purchase((address,address,address,uint256,uint256,uint8),uint256)\":{\"params\":{\"amount\":\"is the purchase amount in Wad units (10**18)\",\"optionTerms\":\"is the terms of the option contract\"}}}},\"userdoc\":{\"methods\":{\"exercise(address,uint256,uint256,address)\":{\"notice\":\"Exercises the options contract.\"},\"exerciseProfit(address,uint256,uint256)\":{\"notice\":\"Amount of profit made from exercising an option contract (current price - strike price). 0 if exercising out-the-money.\"},\"getOptionsAddress((address,address,address,uint256,uint256,uint8))\":{\"notice\":\"Get the options contract's address based on the passed parameters\"},\"isEuropean()\":{\"notice\":\"Returns true if the options protocol is European style options, ie only exercising after expiry\"},\"nonFungible()\":{\"notice\":\"Boolean flag to indicate whether to use option IDs or not. Fungible protocols normally use tokens to represent option contracts.\"},\"optionsExist((address,address,address,uint256,uint256,uint8))\":{\"notice\":\"Check if an options contract exist based on the passed parameters.\"},\"premium((address,address,address,uint256,uint256,uint8),uint256)\":{\"notice\":\"Gets the premium to buy `purchaseAmount` of the option contract in ETH terms.\"},\"protocolName()\":{\"notice\":\"Name of the adapter. E.g. \\\"HEGIC\\\", \\\"OPYN_V1\\\". Used as index key for adapter addresses\"},\"purchase((address,address,address,uint256,uint256,uint8),uint256)\":{\"notice\":\"Purchases the options contract.\"},\"purchaseMethod()\":{\"notice\":\"Returns the purchase method used to purchase options\"}}}},\"settings\":{\"compilationTarget\":{\"/Users/kenchan/Desktop/structured-products/contracts/adapters/IProtocolAdapter.sol\":\"IProtocolAdapter\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/kenchan/Desktop/structured-products/contracts/adapters/IProtocolAdapter.sol\":{\"keccak256\":\"0xf4796d76e02d88f9f0914410d4575d7b38fed69ec4ea86746794bca0f8a5b3ca\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://fb5f2ceb7e93ad3482535dcd6b9b4d5a40d2ed7656439efe9b78e1bf159801a9\",\"dweb:/ipfs/QmcpEELLVyWc7iUCXYTLoQb2eTJZriUFVZ1rxcYKEQSXAS\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity >=0.6.0;\npragma experimental ABIEncoderV2;\n\nenum OptionType {Invalid, Put, Call}\n\nenum PurchaseMethod {Invalid, Contract, ZeroEx}\n\n/**\n * @notice Terms of an options contract\n * @param underlying is the underlying asset of the options. E.g. For ETH $800 CALL, ETH is the underlying.\n * @param strikeAsset is the asset used to denote the asset paid out when exercising the option. E.g. For ETH $800 CALL, USDC is the underlying.\n * @param expiry is the expiry of the option contract. Users can only exercise after expiry in Europeans.\n * @param strikePrice is the strike price of an optio contract. E.g. For ETH $800 CALL, 800*10**18 is the USDC.\n * @param optionType is the type of option, can only be OptionType.Call or OptionType.Put\n */\nstruct OptionTerms {\n    address underlying;\n    address strikeAsset;\n    address collateralAsset;\n    uint256 expiry;\n    uint256 strikePrice;\n    OptionType optionType;\n}\n\nstruct ZeroExOrder {\n    address exchangeAddress;\n    address buyTokenAddress;\n    address sellTokenAddress;\n    address allowanceTarget;\n    uint256 protocolFee;\n    uint256 makerAssetAmount;\n    uint256 takerAssetAmount;\n    bytes swapData;\n}\n\ninterface IProtocolAdapter {\n    /**\n     * @notice Emitted when a new option contract is purchased\n     */\n    event Purchased(\n        address indexed caller,\n        string indexed protocolName,\n        address indexed underlying,\n        address strikeAsset,\n        uint256 expiry,\n        uint256 strikePrice,\n        OptionType optionType,\n        uint256 amount,\n        uint256 premium,\n        uint256 optionID\n    );\n\n    /**\n     * @notice Emitted when an option contract is exercised\n     */\n    event Exercised(\n        address indexed caller,\n        address indexed options,\n        uint256 indexed optionID,\n        uint256 amount,\n        uint256 exerciseProfit\n    );\n\n    /**\n     * @notice Name of the adapter. E.g. \"HEGIC\", \"OPYN_V1\". Used as index key for adapter addresses\n     */\n    function protocolName() external pure returns (string memory);\n\n    /**\n     * @notice Boolean flag to indicate whether to use option IDs or not.\n     * Fungible protocols normally use tokens to represent option contracts.\n     */\n    function nonFungible() external pure returns (bool);\n\n    /**\n     * @notice Returns the purchase method used to purchase options\n     */\n    function purchaseMethod() external pure returns (PurchaseMethod);\n\n    /**\n     * @notice Returns true if the options protocol is European style options, ie only exercising after expiry\n     */\n    function isEuropean() external pure returns (bool);\n\n    /**\n     * @notice Check if an options contract exist based on the passed parameters.\n     * @param optionTerms is the terms of the option contract\n     */\n    function optionsExist(OptionTerms calldata optionTerms)\n        external\n        view\n        returns (bool);\n\n    /**\n     * @notice Get the options contract's address based on the passed parameters\n     * @param optionTerms is the terms of the option contract\n     */\n    function getOptionsAddress(OptionTerms calldata optionTerms)\n        external\n        view\n        returns (address);\n\n    /**\n     * @notice Gets the premium to buy `purchaseAmount` of the option contract in ETH terms.\n     * @param optionTerms is the terms of the option contract\n     * @param purchaseAmount is the number of options purchased\n     */\n    function premium(OptionTerms calldata optionTerms, uint256 purchaseAmount)\n        external\n        view\n        returns (uint256 cost);\n\n    /**\n     * @notice Amount of profit made from exercising an option contract (current price - strike price). 0 if exercising out-the-money.\n     * @param options is the address of the options contract\n     * @param optionID is the ID of the option position in non fungible protocols like Hegic.\n     * @param amount is the amount of tokens or options contract to exercise. Only relevant for fungle protocols like Opyn\n     */\n    function exerciseProfit(\n        address options,\n        uint256 optionID,\n        uint256 amount\n    ) external view returns (uint256 profit);\n\n    /**\n     * @notice Purchases the options contract.\n     * @param optionTerms is the terms of the option contract\n     * @param amount is the purchase amount in Wad units (10**18)\n     */\n    function purchase(OptionTerms calldata optionTerms, uint256 amount)\n        external\n        payable\n        returns (uint256 optionID);\n\n    /**\n     * @notice Exercises the options contract.\n     * @param options is the address of the options contract\n     * @param optionID is the ID of the option position in non fungible protocols like Hegic.\n     * @param amount is the amount of tokens or options contract to exercise. Only relevant for fungle protocols like Opyn\n     * @param recipient is the account that receives the exercised profits. This is needed since the adapter holds all the positions and the msg.sender is an instrument contract.\n     */\n    function exercise(\n        address options,\n        uint256 optionID,\n        uint256 amount,\n        address recipient\n    ) external payable;\n}\n",
+  "sourcePath": "/Users/kenchan/Desktop/structured-products/contracts/adapters/IProtocolAdapter.sol",
+  "ast": {
+    "absolutePath": "/Users/kenchan/Desktop/structured-products/contracts/adapters/IProtocolAdapter.sol",
+    "exportedSymbols": {
+      "IProtocolAdapter": [
+        1961
+      ],
+      "OptionTerms": [
+        1823
+      ],
+      "OptionType": [
+        1806
+      ],
+      "PurchaseMethod": [
+        1810
+      ],
+      "ZeroExOrder": [
+        1840
+      ]
+    },
+    "id": 1962,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1801,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.6",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:24:5"
+      },
+      {
+        "id": 1802,
+        "literals": [
+          "experimental",
+          "ABIEncoderV2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "57:33:5"
+      },
+      {
+        "canonicalName": "OptionType",
+        "id": 1806,
+        "members": [
+          {
+            "id": 1803,
+            "name": "Invalid",
+            "nodeType": "EnumValue",
+            "src": "109:7:5"
+          },
+          {
+            "id": 1804,
+            "name": "Put",
+            "nodeType": "EnumValue",
+            "src": "118:3:5"
+          },
+          {
+            "id": 1805,
+            "name": "Call",
+            "nodeType": "EnumValue",
+            "src": "123:4:5"
+          }
+        ],
+        "name": "OptionType",
+        "nodeType": "EnumDefinition",
+        "src": "92:36:5"
+      },
+      {
+        "canonicalName": "PurchaseMethod",
+        "id": 1810,
+        "members": [
+          {
+            "id": 1807,
+            "name": "Invalid",
+            "nodeType": "EnumValue",
+            "src": "151:7:5"
+          },
+          {
+            "id": 1808,
+            "name": "Contract",
+            "nodeType": "EnumValue",
+            "src": "160:8:5"
+          },
+          {
+            "id": 1809,
+            "name": "ZeroEx",
+            "nodeType": "EnumValue",
+            "src": "170:6:5"
+          }
+        ],
+        "name": "PurchaseMethod",
+        "nodeType": "EnumDefinition",
+        "src": "130:47:5"
+      },
+      {
+        "canonicalName": "OptionTerms",
+        "id": 1823,
+        "members": [
+          {
+            "constant": false,
+            "id": 1812,
+            "mutability": "mutable",
+            "name": "underlying",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1823,
+            "src": "813:18:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1811,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "813:7:5",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1814,
+            "mutability": "mutable",
+            "name": "strikeAsset",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1823,
+            "src": "837:19:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1813,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "837:7:5",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1816,
+            "mutability": "mutable",
+            "name": "collateralAsset",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1823,
+            "src": "862:23:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1815,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "862:7:5",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1818,
+            "mutability": "mutable",
+            "name": "expiry",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1823,
+            "src": "891:14:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 1817,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "891:7:5",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1820,
+            "mutability": "mutable",
+            "name": "strikePrice",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1823,
+            "src": "911:19:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 1819,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "911:7:5",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1822,
+            "mutability": "mutable",
+            "name": "optionType",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1823,
+            "src": "936:21:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_enum$_OptionType_$1806",
+              "typeString": "enum OptionType"
+            },
+            "typeName": {
+              "contractScope": null,
+              "id": 1821,
+              "name": "OptionType",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 1806,
+              "src": "936:10:5",
+              "typeDescriptions": {
+                "typeIdentifier": "t_enum$_OptionType_$1806",
+                "typeString": "enum OptionType"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          }
+        ],
+        "name": "OptionTerms",
+        "nodeType": "StructDefinition",
+        "scope": 1962,
+        "src": "788:172:5",
+        "visibility": "public"
+      },
+      {
+        "canonicalName": "ZeroExOrder",
+        "id": 1840,
+        "members": [
+          {
+            "constant": false,
+            "id": 1825,
+            "mutability": "mutable",
+            "name": "exchangeAddress",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1840,
+            "src": "987:23:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1824,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "987:7:5",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1827,
+            "mutability": "mutable",
+            "name": "buyTokenAddress",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1840,
+            "src": "1016:23:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1826,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "1016:7:5",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1829,
+            "mutability": "mutable",
+            "name": "sellTokenAddress",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1840,
+            "src": "1045:24:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1828,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "1045:7:5",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1831,
+            "mutability": "mutable",
+            "name": "allowanceTarget",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1840,
+            "src": "1075:23:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1830,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "1075:7:5",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1833,
+            "mutability": "mutable",
+            "name": "protocolFee",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1840,
+            "src": "1104:19:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 1832,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "1104:7:5",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1835,
+            "mutability": "mutable",
+            "name": "makerAssetAmount",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1840,
+            "src": "1129:24:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 1834,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "1129:7:5",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1837,
+            "mutability": "mutable",
+            "name": "takerAssetAmount",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1840,
+            "src": "1159:24:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 1836,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "1159:7:5",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1839,
+            "mutability": "mutable",
+            "name": "swapData",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1840,
+            "src": "1189:14:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_bytes_storage_ptr",
+              "typeString": "bytes"
+            },
+            "typeName": {
+              "id": 1838,
+              "name": "bytes",
+              "nodeType": "ElementaryTypeName",
+              "src": "1189:5:5",
+              "typeDescriptions": {
+                "typeIdentifier": "t_bytes_storage_ptr",
+                "typeString": "bytes"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          }
+        ],
+        "name": "ZeroExOrder",
+        "nodeType": "StructDefinition",
+        "scope": 1962,
+        "src": "962:244:5",
+        "visibility": "public"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 1961,
+        "linearizedBaseContracts": [
+          1961
+        ],
+        "name": "IProtocolAdapter",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "anonymous": false,
+            "documentation": {
+              "id": 1841,
+              "nodeType": "StructuredDocumentation",
+              "src": "1241:74:5",
+              "text": "@notice Emitted when a new option contract is purchased"
+            },
+            "id": 1863,
+            "name": "Purchased",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 1862,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1843,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "caller",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1345:22:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1842,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1345:7:5",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1845,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "protocolName",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1377:27:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 1844,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1377:6:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1847,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "underlying",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1414:26:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1846,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1414:7:5",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1849,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "strikeAsset",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1450:19:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1848,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1450:7:5",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1851,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "expiry",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1479:14:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1850,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1479:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1853,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "strikePrice",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1503:19:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1852,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1503:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1855,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "optionType",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1532:21:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_OptionType_$1806",
+                    "typeString": "enum OptionType"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 1854,
+                    "name": "OptionType",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 1806,
+                    "src": "1532:10:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_OptionType_$1806",
+                      "typeString": "enum OptionType"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1857,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1563:14:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1856,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1563:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1859,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "premium",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1587:15:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1858,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1587:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1861,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "optionID",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1612:16:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1860,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1612:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1335:299:5"
+            },
+            "src": "1320:315:5"
+          },
+          {
+            "anonymous": false,
+            "documentation": {
+              "id": 1864,
+              "nodeType": "StructuredDocumentation",
+              "src": "1641:71:5",
+              "text": "@notice Emitted when an option contract is exercised"
+            },
+            "id": 1876,
+            "name": "Exercised",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 1875,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1866,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "caller",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1876,
+                  "src": "1742:22:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1865,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1742:7:5",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1868,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "options",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1876,
+                  "src": "1774:23:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1867,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1774:7:5",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1870,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "optionID",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1876,
+                  "src": "1807:24:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1869,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1807:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1872,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1876,
+                  "src": "1841:14:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1871,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1841:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1874,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "exerciseProfit",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1876,
+                  "src": "1865:22:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1873,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1865:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1732:161:5"
+            },
+            "src": "1717:177:5"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1877,
+              "nodeType": "StructuredDocumentation",
+              "src": "1900:112:5",
+              "text": "@notice Name of the adapter. E.g. \"HEGIC\", \"OPYN_V1\". Used as index key for adapter addresses"
+            },
+            "functionSelector": "e567e869",
+            "id": 1882,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "protocolName",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1878,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2038:2:5"
+            },
+            "returnParameters": {
+              "id": 1881,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1880,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1882,
+                  "src": "2064:13:5",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 1879,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2064:6:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2063:15:5"
+            },
+            "scope": 1961,
+            "src": "2017:62:5",
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1883,
+              "nodeType": "StructuredDocumentation",
+              "src": "2085:162:5",
+              "text": "@notice Boolean flag to indicate whether to use option IDs or not.\nFungible protocols normally use tokens to represent option contracts."
+            },
+            "functionSelector": "bce3393f",
+            "id": 1888,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "nonFungible",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1884,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2272:2:5"
+            },
+            "returnParameters": {
+              "id": 1887,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1886,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1888,
+                  "src": "2298:4:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 1885,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2298:4:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2297:6:5"
+            },
+            "scope": 1961,
+            "src": "2252:52:5",
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1889,
+              "nodeType": "StructuredDocumentation",
+              "src": "2310:79:5",
+              "text": "@notice Returns the purchase method used to purchase options"
+            },
+            "functionSelector": "c2d8506b",
+            "id": 1894,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "purchaseMethod",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1890,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2417:2:5"
+            },
+            "returnParameters": {
+              "id": 1893,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1892,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1894,
+                  "src": "2443:14:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_PurchaseMethod_$1810",
+                    "typeString": "enum PurchaseMethod"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 1891,
+                    "name": "PurchaseMethod",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 1810,
+                    "src": "2443:14:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_PurchaseMethod_$1810",
+                      "typeString": "enum PurchaseMethod"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2442:16:5"
+            },
+            "scope": 1961,
+            "src": "2394:65:5",
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1895,
+              "nodeType": "StructuredDocumentation",
+              "src": "2465:122:5",
+              "text": "@notice Returns true if the options protocol is European style options, ie only exercising after expiry"
+            },
+            "functionSelector": "850c71ad",
+            "id": 1900,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isEuropean",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1896,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2611:2:5"
+            },
+            "returnParameters": {
+              "id": 1899,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1898,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1900,
+                  "src": "2637:4:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 1897,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2637:4:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2636:6:5"
+            },
+            "scope": 1961,
+            "src": "2592:51:5",
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1901,
+              "nodeType": "StructuredDocumentation",
+              "src": "2649:155:5",
+              "text": "@notice Check if an options contract exist based on the passed parameters.\n@param optionTerms is the terms of the option contract"
+            },
+            "functionSelector": "b7c0d502",
+            "id": 1908,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "optionsExist",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1904,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1903,
+                  "mutability": "mutable",
+                  "name": "optionTerms",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1908,
+                  "src": "2831:32:5",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_OptionTerms_$1823_calldata_ptr",
+                    "typeString": "struct OptionTerms"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 1902,
+                    "name": "OptionTerms",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 1823,
+                    "src": "2831:11:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_OptionTerms_$1823_storage_ptr",
+                      "typeString": "struct OptionTerms"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2830:34:5"
+            },
+            "returnParameters": {
+              "id": 1907,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1906,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1908,
+                  "src": "2912:4:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 1905,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2912:4:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2911:6:5"
+            },
+            "scope": 1961,
+            "src": "2809:109:5",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1909,
+              "nodeType": "StructuredDocumentation",
+              "src": "2924:154:5",
+              "text": "@notice Get the options contract's address based on the passed parameters\n@param optionTerms is the terms of the option contract"
+            },
+            "functionSelector": "26d04ca6",
+            "id": 1916,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getOptionsAddress",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1912,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1911,
+                  "mutability": "mutable",
+                  "name": "optionTerms",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1916,
+                  "src": "3110:32:5",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_OptionTerms_$1823_calldata_ptr",
+                    "typeString": "struct OptionTerms"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 1910,
+                    "name": "OptionTerms",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 1823,
+                    "src": "3110:11:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_OptionTerms_$1823_storage_ptr",
+                      "typeString": "struct OptionTerms"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3109:34:5"
+            },
+            "returnParameters": {
+              "id": 1915,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1914,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1916,
+                  "src": "3191:7:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1913,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3191:7:5",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3190:9:5"
+            },
+            "scope": 1961,
+            "src": "3083:117:5",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1917,
+              "nodeType": "StructuredDocumentation",
+              "src": "3206:230:5",
+              "text": "@notice Gets the premium to buy `purchaseAmount` of the option contract in ETH terms.\n@param optionTerms is the terms of the option contract\n@param purchaseAmount is the number of options purchased"
+            },
+            "functionSelector": "d3cd7a74",
+            "id": 1926,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "premium",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1922,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1919,
+                  "mutability": "mutable",
+                  "name": "optionTerms",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1926,
+                  "src": "3458:32:5",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_OptionTerms_$1823_calldata_ptr",
+                    "typeString": "struct OptionTerms"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 1918,
+                    "name": "OptionTerms",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 1823,
+                    "src": "3458:11:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_OptionTerms_$1823_storage_ptr",
+                      "typeString": "struct OptionTerms"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1921,
+                  "mutability": "mutable",
+                  "name": "purchaseAmount",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1926,
+                  "src": "3492:22:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1920,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3492:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3457:58:5"
+            },
+            "returnParameters": {
+              "id": 1925,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1924,
+                  "mutability": "mutable",
+                  "name": "cost",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1926,
+                  "src": "3563:12:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1923,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3563:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3562:14:5"
+            },
+            "scope": 1961,
+            "src": "3441:136:5",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1927,
+              "nodeType": "StructuredDocumentation",
+              "src": "3583:424:5",
+              "text": "@notice Amount of profit made from exercising an option contract (current price - strike price). 0 if exercising out-the-money.\n@param options is the address of the options contract\n@param optionID is the ID of the option position in non fungible protocols like Hegic.\n@param amount is the amount of tokens or options contract to exercise. Only relevant for fungle protocols like Opyn"
+            },
+            "functionSelector": "d460094d",
+            "id": 1938,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "exerciseProfit",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1934,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1929,
+                  "mutability": "mutable",
+                  "name": "options",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1938,
+                  "src": "4045:15:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1928,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4045:7:5",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1931,
+                  "mutability": "mutable",
+                  "name": "optionID",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1938,
+                  "src": "4070:16:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1930,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4070:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1933,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1938,
+                  "src": "4096:14:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1932,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4096:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4035:81:5"
+            },
+            "returnParameters": {
+              "id": 1937,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1936,
+                  "mutability": "mutable",
+                  "name": "profit",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1938,
+                  "src": "4140:14:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1935,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4140:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4139:16:5"
+            },
+            "scope": 1961,
+            "src": "4012:144:5",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1939,
+              "nodeType": "StructuredDocumentation",
+              "src": "4162:186:5",
+              "text": "@notice Purchases the options contract.\n@param optionTerms is the terms of the option contract\n@param amount is the purchase amount in Wad units (10**18)"
+            },
+            "functionSelector": "3018e4ae",
+            "id": 1948,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "purchase",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1944,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1941,
+                  "mutability": "mutable",
+                  "name": "optionTerms",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1948,
+                  "src": "4371:32:5",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_OptionTerms_$1823_calldata_ptr",
+                    "typeString": "struct OptionTerms"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 1940,
+                    "name": "OptionTerms",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 1823,
+                    "src": "4371:11:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_OptionTerms_$1823_storage_ptr",
+                      "typeString": "struct OptionTerms"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1943,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1948,
+                  "src": "4405:14:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1942,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4405:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4370:50:5"
+            },
+            "returnParameters": {
+              "id": 1947,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1946,
+                  "mutability": "mutable",
+                  "name": "optionID",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1948,
+                  "src": "4471:16:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1945,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4471:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4470:18:5"
+            },
+            "scope": 1961,
+            "src": "4353:136:5",
+            "stateMutability": "payable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1949,
+              "nodeType": "StructuredDocumentation",
+              "src": "4495:515:5",
+              "text": "@notice Exercises the options contract.\n@param options is the address of the options contract\n@param optionID is the ID of the option position in non fungible protocols like Hegic.\n@param amount is the amount of tokens or options contract to exercise. Only relevant for fungle protocols like Opyn\n@param recipient is the account that receives the exercised profits. This is needed since the adapter holds all the positions and the msg.sender is an instrument contract."
+            },
+            "functionSelector": "1984a805",
+            "id": 1960,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "exercise",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1958,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1951,
+                  "mutability": "mutable",
+                  "name": "options",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1960,
+                  "src": "5042:15:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1950,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5042:7:5",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1953,
+                  "mutability": "mutable",
+                  "name": "optionID",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1960,
+                  "src": "5067:16:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1952,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5067:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1955,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1960,
+                  "src": "5093:14:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1954,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5093:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1957,
+                  "mutability": "mutable",
+                  "name": "recipient",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1960,
+                  "src": "5117:17:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1956,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5117:7:5",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "5032:108:5"
+            },
+            "returnParameters": {
+              "id": 1959,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "5157:0:5"
+            },
+            "scope": 1961,
+            "src": "5015:143:5",
+            "stateMutability": "payable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 1962,
+        "src": "1208:3952:5"
+      }
+    ],
+    "src": "32:5129:5"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/kenchan/Desktop/structured-products/contracts/adapters/IProtocolAdapter.sol",
+    "exportedSymbols": {
+      "IProtocolAdapter": [
+        1961
+      ],
+      "OptionTerms": [
+        1823
+      ],
+      "OptionType": [
+        1806
+      ],
+      "PurchaseMethod": [
+        1810
+      ],
+      "ZeroExOrder": [
+        1840
+      ]
+    },
+    "id": 1962,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1801,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.6",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:24:5"
+      },
+      {
+        "id": 1802,
+        "literals": [
+          "experimental",
+          "ABIEncoderV2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "57:33:5"
+      },
+      {
+        "canonicalName": "OptionType",
+        "id": 1806,
+        "members": [
+          {
+            "id": 1803,
+            "name": "Invalid",
+            "nodeType": "EnumValue",
+            "src": "109:7:5"
+          },
+          {
+            "id": 1804,
+            "name": "Put",
+            "nodeType": "EnumValue",
+            "src": "118:3:5"
+          },
+          {
+            "id": 1805,
+            "name": "Call",
+            "nodeType": "EnumValue",
+            "src": "123:4:5"
+          }
+        ],
+        "name": "OptionType",
+        "nodeType": "EnumDefinition",
+        "src": "92:36:5"
+      },
+      {
+        "canonicalName": "PurchaseMethod",
+        "id": 1810,
+        "members": [
+          {
+            "id": 1807,
+            "name": "Invalid",
+            "nodeType": "EnumValue",
+            "src": "151:7:5"
+          },
+          {
+            "id": 1808,
+            "name": "Contract",
+            "nodeType": "EnumValue",
+            "src": "160:8:5"
+          },
+          {
+            "id": 1809,
+            "name": "ZeroEx",
+            "nodeType": "EnumValue",
+            "src": "170:6:5"
+          }
+        ],
+        "name": "PurchaseMethod",
+        "nodeType": "EnumDefinition",
+        "src": "130:47:5"
+      },
+      {
+        "canonicalName": "OptionTerms",
+        "id": 1823,
+        "members": [
+          {
+            "constant": false,
+            "id": 1812,
+            "mutability": "mutable",
+            "name": "underlying",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1823,
+            "src": "813:18:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1811,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "813:7:5",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1814,
+            "mutability": "mutable",
+            "name": "strikeAsset",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1823,
+            "src": "837:19:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1813,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "837:7:5",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1816,
+            "mutability": "mutable",
+            "name": "collateralAsset",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1823,
+            "src": "862:23:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1815,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "862:7:5",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1818,
+            "mutability": "mutable",
+            "name": "expiry",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1823,
+            "src": "891:14:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 1817,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "891:7:5",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1820,
+            "mutability": "mutable",
+            "name": "strikePrice",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1823,
+            "src": "911:19:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 1819,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "911:7:5",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1822,
+            "mutability": "mutable",
+            "name": "optionType",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1823,
+            "src": "936:21:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_enum$_OptionType_$1806",
+              "typeString": "enum OptionType"
+            },
+            "typeName": {
+              "contractScope": null,
+              "id": 1821,
+              "name": "OptionType",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 1806,
+              "src": "936:10:5",
+              "typeDescriptions": {
+                "typeIdentifier": "t_enum$_OptionType_$1806",
+                "typeString": "enum OptionType"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          }
+        ],
+        "name": "OptionTerms",
+        "nodeType": "StructDefinition",
+        "scope": 1962,
+        "src": "788:172:5",
+        "visibility": "public"
+      },
+      {
+        "canonicalName": "ZeroExOrder",
+        "id": 1840,
+        "members": [
+          {
+            "constant": false,
+            "id": 1825,
+            "mutability": "mutable",
+            "name": "exchangeAddress",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1840,
+            "src": "987:23:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1824,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "987:7:5",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1827,
+            "mutability": "mutable",
+            "name": "buyTokenAddress",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1840,
+            "src": "1016:23:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1826,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "1016:7:5",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1829,
+            "mutability": "mutable",
+            "name": "sellTokenAddress",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1840,
+            "src": "1045:24:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1828,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "1045:7:5",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1831,
+            "mutability": "mutable",
+            "name": "allowanceTarget",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1840,
+            "src": "1075:23:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1830,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "1075:7:5",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1833,
+            "mutability": "mutable",
+            "name": "protocolFee",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1840,
+            "src": "1104:19:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 1832,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "1104:7:5",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1835,
+            "mutability": "mutable",
+            "name": "makerAssetAmount",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1840,
+            "src": "1129:24:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 1834,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "1129:7:5",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1837,
+            "mutability": "mutable",
+            "name": "takerAssetAmount",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1840,
+            "src": "1159:24:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 1836,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "1159:7:5",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1839,
+            "mutability": "mutable",
+            "name": "swapData",
+            "nodeType": "VariableDeclaration",
+            "overrides": null,
+            "scope": 1840,
+            "src": "1189:14:5",
+            "stateVariable": false,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_bytes_storage_ptr",
+              "typeString": "bytes"
+            },
+            "typeName": {
+              "id": 1838,
+              "name": "bytes",
+              "nodeType": "ElementaryTypeName",
+              "src": "1189:5:5",
+              "typeDescriptions": {
+                "typeIdentifier": "t_bytes_storage_ptr",
+                "typeString": "bytes"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          }
+        ],
+        "name": "ZeroExOrder",
+        "nodeType": "StructDefinition",
+        "scope": 1962,
+        "src": "962:244:5",
+        "visibility": "public"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 1961,
+        "linearizedBaseContracts": [
+          1961
+        ],
+        "name": "IProtocolAdapter",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "anonymous": false,
+            "documentation": {
+              "id": 1841,
+              "nodeType": "StructuredDocumentation",
+              "src": "1241:74:5",
+              "text": "@notice Emitted when a new option contract is purchased"
+            },
+            "id": 1863,
+            "name": "Purchased",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 1862,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1843,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "caller",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1345:22:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1842,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1345:7:5",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1845,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "protocolName",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1377:27:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 1844,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1377:6:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1847,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "underlying",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1414:26:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1846,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1414:7:5",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1849,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "strikeAsset",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1450:19:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1848,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1450:7:5",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1851,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "expiry",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1479:14:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1850,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1479:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1853,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "strikePrice",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1503:19:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1852,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1503:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1855,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "optionType",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1532:21:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_OptionType_$1806",
+                    "typeString": "enum OptionType"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 1854,
+                    "name": "OptionType",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 1806,
+                    "src": "1532:10:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_OptionType_$1806",
+                      "typeString": "enum OptionType"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1857,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1563:14:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1856,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1563:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1859,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "premium",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1587:15:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1858,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1587:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1861,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "optionID",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1863,
+                  "src": "1612:16:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1860,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1612:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1335:299:5"
+            },
+            "src": "1320:315:5"
+          },
+          {
+            "anonymous": false,
+            "documentation": {
+              "id": 1864,
+              "nodeType": "StructuredDocumentation",
+              "src": "1641:71:5",
+              "text": "@notice Emitted when an option contract is exercised"
+            },
+            "id": 1876,
+            "name": "Exercised",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 1875,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1866,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "caller",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1876,
+                  "src": "1742:22:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1865,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1742:7:5",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1868,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "options",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1876,
+                  "src": "1774:23:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1867,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1774:7:5",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1870,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "optionID",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1876,
+                  "src": "1807:24:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1869,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1807:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1872,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1876,
+                  "src": "1841:14:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1871,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1841:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1874,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "exerciseProfit",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1876,
+                  "src": "1865:22:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1873,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1865:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1732:161:5"
+            },
+            "src": "1717:177:5"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1877,
+              "nodeType": "StructuredDocumentation",
+              "src": "1900:112:5",
+              "text": "@notice Name of the adapter. E.g. \"HEGIC\", \"OPYN_V1\". Used as index key for adapter addresses"
+            },
+            "functionSelector": "e567e869",
+            "id": 1882,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "protocolName",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1878,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2038:2:5"
+            },
+            "returnParameters": {
+              "id": 1881,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1880,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1882,
+                  "src": "2064:13:5",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 1879,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2064:6:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2063:15:5"
+            },
+            "scope": 1961,
+            "src": "2017:62:5",
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1883,
+              "nodeType": "StructuredDocumentation",
+              "src": "2085:162:5",
+              "text": "@notice Boolean flag to indicate whether to use option IDs or not.\nFungible protocols normally use tokens to represent option contracts."
+            },
+            "functionSelector": "bce3393f",
+            "id": 1888,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "nonFungible",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1884,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2272:2:5"
+            },
+            "returnParameters": {
+              "id": 1887,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1886,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1888,
+                  "src": "2298:4:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 1885,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2298:4:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2297:6:5"
+            },
+            "scope": 1961,
+            "src": "2252:52:5",
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1889,
+              "nodeType": "StructuredDocumentation",
+              "src": "2310:79:5",
+              "text": "@notice Returns the purchase method used to purchase options"
+            },
+            "functionSelector": "c2d8506b",
+            "id": 1894,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "purchaseMethod",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1890,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2417:2:5"
+            },
+            "returnParameters": {
+              "id": 1893,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1892,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1894,
+                  "src": "2443:14:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_PurchaseMethod_$1810",
+                    "typeString": "enum PurchaseMethod"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 1891,
+                    "name": "PurchaseMethod",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 1810,
+                    "src": "2443:14:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_PurchaseMethod_$1810",
+                      "typeString": "enum PurchaseMethod"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2442:16:5"
+            },
+            "scope": 1961,
+            "src": "2394:65:5",
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1895,
+              "nodeType": "StructuredDocumentation",
+              "src": "2465:122:5",
+              "text": "@notice Returns true if the options protocol is European style options, ie only exercising after expiry"
+            },
+            "functionSelector": "850c71ad",
+            "id": 1900,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isEuropean",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1896,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2611:2:5"
+            },
+            "returnParameters": {
+              "id": 1899,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1898,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1900,
+                  "src": "2637:4:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 1897,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2637:4:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2636:6:5"
+            },
+            "scope": 1961,
+            "src": "2592:51:5",
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1901,
+              "nodeType": "StructuredDocumentation",
+              "src": "2649:155:5",
+              "text": "@notice Check if an options contract exist based on the passed parameters.\n@param optionTerms is the terms of the option contract"
+            },
+            "functionSelector": "b7c0d502",
+            "id": 1908,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "optionsExist",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1904,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1903,
+                  "mutability": "mutable",
+                  "name": "optionTerms",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1908,
+                  "src": "2831:32:5",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_OptionTerms_$1823_calldata_ptr",
+                    "typeString": "struct OptionTerms"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 1902,
+                    "name": "OptionTerms",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 1823,
+                    "src": "2831:11:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_OptionTerms_$1823_storage_ptr",
+                      "typeString": "struct OptionTerms"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2830:34:5"
+            },
+            "returnParameters": {
+              "id": 1907,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1906,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1908,
+                  "src": "2912:4:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 1905,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2912:4:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2911:6:5"
+            },
+            "scope": 1961,
+            "src": "2809:109:5",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1909,
+              "nodeType": "StructuredDocumentation",
+              "src": "2924:154:5",
+              "text": "@notice Get the options contract's address based on the passed parameters\n@param optionTerms is the terms of the option contract"
+            },
+            "functionSelector": "26d04ca6",
+            "id": 1916,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getOptionsAddress",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1912,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1911,
+                  "mutability": "mutable",
+                  "name": "optionTerms",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1916,
+                  "src": "3110:32:5",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_OptionTerms_$1823_calldata_ptr",
+                    "typeString": "struct OptionTerms"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 1910,
+                    "name": "OptionTerms",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 1823,
+                    "src": "3110:11:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_OptionTerms_$1823_storage_ptr",
+                      "typeString": "struct OptionTerms"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3109:34:5"
+            },
+            "returnParameters": {
+              "id": 1915,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1914,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1916,
+                  "src": "3191:7:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1913,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3191:7:5",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3190:9:5"
+            },
+            "scope": 1961,
+            "src": "3083:117:5",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1917,
+              "nodeType": "StructuredDocumentation",
+              "src": "3206:230:5",
+              "text": "@notice Gets the premium to buy `purchaseAmount` of the option contract in ETH terms.\n@param optionTerms is the terms of the option contract\n@param purchaseAmount is the number of options purchased"
+            },
+            "functionSelector": "d3cd7a74",
+            "id": 1926,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "premium",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1922,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1919,
+                  "mutability": "mutable",
+                  "name": "optionTerms",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1926,
+                  "src": "3458:32:5",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_OptionTerms_$1823_calldata_ptr",
+                    "typeString": "struct OptionTerms"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 1918,
+                    "name": "OptionTerms",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 1823,
+                    "src": "3458:11:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_OptionTerms_$1823_storage_ptr",
+                      "typeString": "struct OptionTerms"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1921,
+                  "mutability": "mutable",
+                  "name": "purchaseAmount",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1926,
+                  "src": "3492:22:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1920,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3492:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3457:58:5"
+            },
+            "returnParameters": {
+              "id": 1925,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1924,
+                  "mutability": "mutable",
+                  "name": "cost",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1926,
+                  "src": "3563:12:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1923,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3563:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3562:14:5"
+            },
+            "scope": 1961,
+            "src": "3441:136:5",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1927,
+              "nodeType": "StructuredDocumentation",
+              "src": "3583:424:5",
+              "text": "@notice Amount of profit made from exercising an option contract (current price - strike price). 0 if exercising out-the-money.\n@param options is the address of the options contract\n@param optionID is the ID of the option position in non fungible protocols like Hegic.\n@param amount is the amount of tokens or options contract to exercise. Only relevant for fungle protocols like Opyn"
+            },
+            "functionSelector": "d460094d",
+            "id": 1938,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "exerciseProfit",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1934,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1929,
+                  "mutability": "mutable",
+                  "name": "options",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1938,
+                  "src": "4045:15:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1928,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4045:7:5",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1931,
+                  "mutability": "mutable",
+                  "name": "optionID",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1938,
+                  "src": "4070:16:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1930,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4070:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1933,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1938,
+                  "src": "4096:14:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1932,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4096:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4035:81:5"
+            },
+            "returnParameters": {
+              "id": 1937,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1936,
+                  "mutability": "mutable",
+                  "name": "profit",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1938,
+                  "src": "4140:14:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1935,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4140:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4139:16:5"
+            },
+            "scope": 1961,
+            "src": "4012:144:5",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1939,
+              "nodeType": "StructuredDocumentation",
+              "src": "4162:186:5",
+              "text": "@notice Purchases the options contract.\n@param optionTerms is the terms of the option contract\n@param amount is the purchase amount in Wad units (10**18)"
+            },
+            "functionSelector": "3018e4ae",
+            "id": 1948,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "purchase",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1944,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1941,
+                  "mutability": "mutable",
+                  "name": "optionTerms",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1948,
+                  "src": "4371:32:5",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_OptionTerms_$1823_calldata_ptr",
+                    "typeString": "struct OptionTerms"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 1940,
+                    "name": "OptionTerms",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 1823,
+                    "src": "4371:11:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_OptionTerms_$1823_storage_ptr",
+                      "typeString": "struct OptionTerms"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1943,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1948,
+                  "src": "4405:14:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1942,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4405:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4370:50:5"
+            },
+            "returnParameters": {
+              "id": 1947,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1946,
+                  "mutability": "mutable",
+                  "name": "optionID",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1948,
+                  "src": "4471:16:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1945,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4471:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4470:18:5"
+            },
+            "scope": 1961,
+            "src": "4353:136:5",
+            "stateMutability": "payable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 1949,
+              "nodeType": "StructuredDocumentation",
+              "src": "4495:515:5",
+              "text": "@notice Exercises the options contract.\n@param options is the address of the options contract\n@param optionID is the ID of the option position in non fungible protocols like Hegic.\n@param amount is the amount of tokens or options contract to exercise. Only relevant for fungle protocols like Opyn\n@param recipient is the account that receives the exercised profits. This is needed since the adapter holds all the positions and the msg.sender is an instrument contract."
+            },
+            "functionSelector": "1984a805",
+            "id": 1960,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "exercise",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 1958,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1951,
+                  "mutability": "mutable",
+                  "name": "options",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1960,
+                  "src": "5042:15:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1950,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5042:7:5",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1953,
+                  "mutability": "mutable",
+                  "name": "optionID",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1960,
+                  "src": "5067:16:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1952,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5067:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1955,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1960,
+                  "src": "5093:14:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1954,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5093:7:5",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1957,
+                  "mutability": "mutable",
+                  "name": "recipient",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 1960,
+                  "src": "5117:17:5",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1956,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "5117:7:5",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "5032:108:5"
+            },
+            "returnParameters": {
+              "id": 1959,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "5157:0:5"
+            },
+            "scope": 1961,
+            "src": "5015:143:5",
+            "stateMutability": "payable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 1962,
+        "src": "1208:3952:5"
+      }
+    ],
+    "src": "32:5129:5"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.6.8+commit.0bbfe453.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.2.5",
+  "updatedAt": "2021-01-13T10:41:29.097Z",
+  "devdoc": {
+    "methods": {
+      "exercise(address,uint256,uint256,address)": {
+        "params": {
+          "amount": "is the amount of tokens or options contract to exercise. Only relevant for fungle protocols like Opyn",
+          "optionID": "is the ID of the option position in non fungible protocols like Hegic.",
+          "options": "is the address of the options contract",
+          "recipient": "is the account that receives the exercised profits. This is needed since the adapter holds all the positions and the msg.sender is an instrument contract."
+        }
+      },
+      "exerciseProfit(address,uint256,uint256)": {
+        "params": {
+          "amount": "is the amount of tokens or options contract to exercise. Only relevant for fungle protocols like Opyn",
+          "optionID": "is the ID of the option position in non fungible protocols like Hegic.",
+          "options": "is the address of the options contract"
+        }
+      },
+      "getOptionsAddress((address,address,address,uint256,uint256,uint8))": {
+        "params": {
+          "optionTerms": "is the terms of the option contract"
+        }
+      },
+      "optionsExist((address,address,address,uint256,uint256,uint8))": {
+        "params": {
+          "optionTerms": "is the terms of the option contract"
+        }
+      },
+      "premium((address,address,address,uint256,uint256,uint8),uint256)": {
+        "params": {
+          "optionTerms": "is the terms of the option contract",
+          "purchaseAmount": "is the number of options purchased"
+        }
+      },
+      "purchase((address,address,address,uint256,uint256,uint8),uint256)": {
+        "params": {
+          "amount": "is the purchase amount in Wad units (10**18)",
+          "optionTerms": "is the terms of the option contract"
+        }
+      }
+    }
+  },
+  "userdoc": {
+    "methods": {
+      "exercise(address,uint256,uint256,address)": {
+        "notice": "Exercises the options contract."
+      },
+      "exerciseProfit(address,uint256,uint256)": {
+        "notice": "Amount of profit made from exercising an option contract (current price - strike price). 0 if exercising out-the-money."
+      },
+      "getOptionsAddress((address,address,address,uint256,uint256,uint8))": {
+        "notice": "Get the options contract's address based on the passed parameters"
+      },
+      "isEuropean()": {
+        "notice": "Returns true if the options protocol is European style options, ie only exercising after expiry"
+      },
+      "nonFungible()": {
+        "notice": "Boolean flag to indicate whether to use option IDs or not. Fungible protocols normally use tokens to represent option contracts."
+      },
+      "optionsExist((address,address,address,uint256,uint256,uint8))": {
+        "notice": "Check if an options contract exist based on the passed parameters."
+      },
+      "premium((address,address,address,uint256,uint256,uint8),uint256)": {
+        "notice": "Gets the premium to buy `purchaseAmount` of the option contract in ETH terms."
+      },
+      "protocolName()": {
+        "notice": "Name of the adapter. E.g. \"HEGIC\", \"OPYN_V1\". Used as index key for adapter addresses"
+      },
+      "purchase((address,address,address,uint256,uint256,uint8),uint256)": {
+        "notice": "Purchases the options contract."
+      },
+      "purchaseMethod()": {
+        "notice": "Returns the purchase method used to purchase options"
+      }
+    }
+  }
+}

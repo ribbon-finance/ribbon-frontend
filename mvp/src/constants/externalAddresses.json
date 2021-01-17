@@ -1,22 +1,131 @@
 {
-  "kovan": {
-    "feeds": {
-      "dai/eth": "0x22B58f1EbEDfCA50feF632bD73368b2FdA96D541",
-      "eth/usd": "0x9326BFA02ADD2366b30bacB125260Af641031331",
-      "link/eth": "0xa36085f69e2889c224210f603d836748e7dc0088"
-    },
-    "assets": {
-      "dai": "0x1528F3FCc26d13F7079325Fb78D9442607781c8C",
-      "link": "0xa36085f69e2889c224210f603d836748e7dc0088",
-      "eth": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-      "weth": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
-      "usdc": "0x2F375e94FC336Cdec2Dc0cCB5277FE59CBf1cAe5"
-    },
-    "balancerFactory": "0x8f7F78080219d4066A8036ccD30D588B416a40DB"
-  },
-  "mainnet": {
-    "feeds": {
-      "eth/usd": "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419"
-    }
-  }
+	"kovan": {
+		"feeds": {
+			"dai/eth": "0x22B58f1EbEDfCA50feF632bD73368b2FdA96D541",
+			"eth/usd": "0x9326BFA02ADD2366b30bacB125260Af641031331",
+			"link/eth": "0xa36085f69e2889c224210f603d836748e7dc0088"
+		},
+		"assets": {
+			"dai": "0x1528F3FCc26d13F7079325Fb78D9442607781c8C",
+			"link": "0xa36085f69e2889c224210f603d836748e7dc0088",
+			"eth": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+			"weth": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
+			"usdc": "0x2F375e94FC336Cdec2Dc0cCB5277FE59CBf1cAe5"
+		},
+		"balancerFactory": "0x8f7F78080219d4066A8036ccD30D588B416a40DB"
+	},
+	"mainnet": {
+		"otokens": [
+			{
+				"address": "0x13b4c024597717ec18807c3ad01e18628267ec70",
+				"strikePrice": "80000000000",
+				"expiry": "1611907200",
+				"isPut": false
+			},
+			{
+				"address": "0x3b23b8d07b4ab1d82a4341d5b6c6edb982e783f0",
+				"strikePrice": "64000000000",
+				"expiry": "1611907200",
+				"isPut": true
+			},
+			{
+				"address": "0x3cf86d40988309af3b90c14544e1bb0673bfd439",
+				"strikePrice": "96000000000",
+				"expiry": "1614326400",
+				"isPut": false
+			},
+			{
+				"address": "0x3f23419f3a0f0564484067b3970dc72b87e82cb2",
+				"strikePrice": "160000000000",
+				"expiry": "1611907200",
+				"isPut": false
+			},
+			{
+				"address": "0x40d28c6f57a1adfbe49ddd911555df18fff85cd2",
+				"strikePrice": "56000000000",
+				"expiry": "1611907200",
+				"isPut": true
+			},
+			{
+				"address": "0x60ad22806b89dd17b2ecfe220c3712a2c86dfffe",
+				"strikePrice": "80000000000",
+				"expiry": "1614326400",
+				"isPut": false
+			},
+			{
+				"address": "0x75fa51d3a52c07bfe7c3f4f47c5c4991622268f2",
+				"strikePrice": "64000000000",
+				"expiry": "1614326400",
+				"isPut": true
+			},
+			{
+				"address": "0x77d7e314f82e49a4faff5cc1d2ed0bc7a7c1b1f0",
+				"strikePrice": "80000000000",
+				"expiry": "1611907200",
+				"isPut": true
+			},
+			{
+				"address": "0x78a36417c9f3814ae1b4367d03bff6ac6fd631fb",
+				"strikePrice": "96000000000",
+				"expiry": "1611907200",
+				"isPut": false
+			},
+			{
+				"address": "0x83316d7b395d10e778924990815bfa1ddd327e52",
+				"strikePrice": "76000000000",
+				"expiry": "1611907200",
+				"isPut": false
+			},
+			{
+				"address": "0x9539803b8e570f8eafd8f7f806d05cbcbd3f8c8f",
+				"strikePrice": "88000000000",
+				"expiry": "1611907200",
+				"isPut": false
+			},
+			{
+				"address": "0x969b7ee06d6fa13fdd5da22c2b75adf861d9fc34",
+				"strikePrice": "80000000000",
+				"expiry": "1614326400",
+				"isPut": true
+			},
+			{
+				"address": "0x9d3129befdaac4ab2d6939dd1054a64df7d84a11",
+				"strikePrice": "128000000000",
+				"expiry": "1614326400",
+				"isPut": false
+			},
+			{
+				"address": "0xcdaaf722453c371352cc05414a7098afb117d09d",
+				"strikePrice": "128000000000",
+				"expiry": "1611907200",
+				"isPut": false
+			},
+			{
+				"address": "0xf020af8211f5e4a9642a2a2774f7afc654d885bf",
+				"strikePrice": "192000000000",
+				"expiry": "1614326400",
+				"isPut": false
+			}
+		],
+		"multicall": "0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441",
+		"feeds": {
+			"dai/eth": "0x22B58f1EbEDfCA50feF632bD73368b2FdA96D541",
+			"eth/usd": "0x9326BFA02ADD2366b30bacB125260Af641031331",
+			"link/eth": "0xa36085f69e2889c224210f603d836748e7dc0088"
+		},
+		"assets": {
+			"eth": "0x0000000000000000000000000000000000000000",
+			"weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+			"wbtc": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+			"usdc": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+		}
+	},
+	"mainnet-sim": {
+		"assets": {
+			"eth": "0x0000000000000000000000000000000000000000",
+			"weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+			"wbtc": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+			"usdc": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+		}
+	}
 }

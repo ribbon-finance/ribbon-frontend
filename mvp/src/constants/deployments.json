@@ -10,5 +10,27 @@
 		"LiquidatorProxy": "0x970e8f18ebfEa0B08810f33a5A40438b9530FBCF",
 		"DojimaFactory": "0xaf5C4C6C7920B4883bC6252e9d9B8fE27187Cf68",
 		"TwinYieldLogic": "0xEC5d4F247aF81A843612eb1371CBCfa88b762119"
+	},
+	"mainnet": {
+		"RibbonFactoryLogic": "0x97317051D83E1e382709f1f2dF603778e6dfc7e7",
+		"RibbonFactory": "0xA8C1D9796D9f2A630DE86f73DD2015f775B49676",
+		"RibbonVolatilityLogic": "0x02A1eF02E13C15601Db6ba4554fDd131Ad04cAca",
+		"GammaAdapterLogic": "0xc118f8eCa4703311f79666d0Acb7E497FA8f1F7d",
+		"HegicAdapterLogic": "0x820051c6c10CcA4b3f72d6dAbC257f9E66D5c6EF",
+		"ProtocolAdapterLib": "0xBc5B97b7C187f61ae96B8B9b035d72570C6aC2eA"
+	},
+	"mainnet-fork": {
+		"RibbonFactory": "0xA8C1D9796D9f2A630DE86f73DD2015f775B49676",
+		"RibbonVolatilityLogic": "0x02A1eF02E13C15601Db6ba4554fDd131Ad04cAca",
+		"HegicAdapterLogic": "0x820051c6c10CcA4b3f72d6dAbC257f9E66D5c6EF",
+		"GammaAdapterLogic": "0xc118f8eCa4703311f79666d0Acb7E497FA8f1F7d",
+		"RibbonFactoryLogic": "0x97317051D83E1e382709f1f2dF603778e6dfc7e7"
+	},
+	"mainnet-sim": {
+		"RibbonFactory": "0xA8C1D9796D9f2A630DE86f73DD2015f775B49676",
+		"RibbonVolatilityLogic": "0x02A1eF02E13C15601Db6ba4554fDd131Ad04cAca",
+		"HegicAdapterLogic": "0x820051c6c10CcA4b3f72d6dAbC257f9E66D5c6EF",
+		"GammaAdapterLogic": "0xc118f8eCa4703311f79666d0Acb7E497FA8f1F7d",
+		"RibbonFactoryLogic": "0x97317051D83E1e382709f1f2dF603778e6dfc7e7"
 	}
 }
