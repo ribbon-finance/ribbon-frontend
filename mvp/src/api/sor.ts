@@ -120,7 +120,7 @@ async function getPrices(
       let priceQuotes;
 
       if (adapterAddress === GAMMA_ADAPTER) {
-        priceQuotes = await get0xPrices(spotPrice, buyAmount);
+        priceQuotes = await get0xPrices(instrument, spotPrice, buyAmount);
       } else {
         priceQuotes = await getPriceFromContract(
           instrument,
@@ -238,8 +238,17 @@ type OtokenDetails = {
 type OtokenMatch = { address: string; strikePrice: BigNumber };
 type OtokenMatches = { call: OtokenMatch | null; put: OtokenMatch | null };
 
-async function get0xPrices(spotPrice: BigNumber, buyAmount: BigNumber) {
-  const otokenMatches = getNearestOtoken(spotPrice);
+async function get0xPrices(
+  instrumentAddress: string,
+  spotPrice: BigNumber,
+  buyAmount: BigNumber
+) {
+  const optionTerms = getOptionTerms(instrumentAddress);
+
+  const otokenMatches = getNearestOtoken(
+    optionTerms.expiry.toNumber(),
+    spotPrice
+  );
   const zero = BigNumber.from("0");
 
   const emptyPriceQuote = {
@@ -287,17 +296,16 @@ async function get0xPrices(spotPrice: BigNumber, buyAmount: BigNumber) {
   };
 }
 
-function getNearestOtoken(spotPrice: BigNumber): OtokenMatches {
+function getNearestOtoken(expiry: number, spotPrice: BigNumber): OtokenMatches {
   const scalingFactor = BigNumber.from("10").pow(BigNumber.from("10"));
   let otokens = externalAddresses.mainnet.otokens.map((otoken) => ({
     ...otoken,
     expiry: parseInt(otoken.expiry),
     strikePrice: BigNumber.from(otoken.strikePrice).mul(scalingFactor),
   }));
-  const nowTimestamp = Math.floor(Date.now() / 1000);
 
   // filter just in case
-  otokens = otokens.filter((otoken) => otoken.expiry > nowTimestamp);
+  otokens = otokens.filter((otoken) => otoken.expiry === expiry);
 
   // min-max bounds are 10% from the spot price
   const minStrikePrice = wmul(spotPrice, ethers.utils.parseEther("0.95"));
