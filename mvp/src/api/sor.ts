@@ -8,6 +8,7 @@ import {
 import axios from "axios";
 import { IAggregatedOptionsInstrumentFactory } from "../codegen/IAggregatedOptionsInstrumentFactory";
 import getProvider from "./getProvider";
+import { wmul } from "../utils/math";
 import externalAddresses from "../constants/externalAddresses.json";
 import deployments from "../constants/deployments.json";
 import instrumentAddresses from "../constants/instruments.json";
@@ -71,20 +72,18 @@ type PriceQuote = {
   exists: boolean;
 };
 
-async function getPrices(strikePrice: BigNumber, amount: BigNumber) {
-  const optionTerms = await getOptionTerms();
+async function getPrices(spotPrice: BigNumber, amount: BigNumber) {
+  // const optionTerms = await getOptionTerms();
 
   const promises = adapterAddresses.map((adapterAddress) => {
     if (adapterAddress === GAMMA_ADAPTER) {
+      const otokenMatches = getNearestOtoken(spotPrice);
+      console.log(otokenMatches);
+
+      // await get0xQuote(otokenMatches.call, BigNumber.from("0"));
       return;
-      // return get0xQuote("", BigNumber.from("0"));
     }
-    return getPriceFromContract(
-      adapterAddress,
-      optionTerms,
-      strikePrice,
-      amount
-    );
+    // return getPriceFromContract(adapterAddress, optionTerms, spotPrice, amount);
   });
   return await Promise.all(promises);
 }
@@ -121,6 +120,69 @@ async function getPriceFromContract(
   }));
 }
 
+type OtokenMatch = { address: string; strikePrice: BigNumber };
+type OtokenMatches = { call: OtokenMatch | null; put: OtokenMatch | null };
+
+function getNearestOtoken(spotPrice: BigNumber): OtokenMatches {
+  const scalingFactor = BigNumber.from("10").pow(BigNumber.from("10"));
+  const otokens = externalAddresses.mainnet.otokens.map((otoken) => ({
+    ...otoken,
+    strikePrice: BigNumber.from(otoken.strikePrice).mul(scalingFactor),
+  }));
+
+  // min-max bounds are 10% from the spot price
+  const minStrikePrice = wmul(spotPrice, ethers.utils.parseEther("0.7"));
+  const maxStrikePrice = wmul(spotPrice, ethers.utils.parseEther("1.3"));
+
+  const callOtokens = otokens.filter(
+    (otoken) =>
+      !otoken.isPut &&
+      otoken.strikePrice.gt(spotPrice) &&
+      otoken.strikePrice.lt(maxStrikePrice)
+  );
+  const putOtokens = otokens.filter(
+    (otoken) =>
+      otoken.isPut &&
+      otoken.strikePrice.lt(spotPrice) &&
+      otoken.strikePrice.gt(minStrikePrice)
+  );
+
+  let addresses: OtokenMatches = {
+    call: null,
+    put: null,
+  };
+
+  const minDiffOtoken = (otokens) => {
+    const strikePrices = otokens.map((otoken) => otoken.strikePrice);
+    const priceDiff = strikePrices.map((p) => spotPrice.sub(p).abs());
+    // 2^256-1
+    let minPrice = BigNumber.from("2")
+      .pow(BigNumber.from("256"))
+      .sub(BigNumber.from("1"));
+    let minIndex = 0;
+
+    priceDiff.forEach((diff: BigNumber, index: number) => {
+      if (diff.lt(minPrice)) {
+        minPrice = diff;
+        minIndex = index;
+      }
+    });
+    return {
+      address: ethers.utils.getAddress(otokens[minIndex].address),
+      strikePrice: otokens[minIndex].strikePrice,
+    };
+  };
+
+  if (callOtokens.length) {
+    addresses.call = minDiffOtoken(callOtokens);
+  }
+  if (putOtokens.length) {
+    addresses.put = minDiffOtoken(putOtokens);
+  }
+
+  return addresses;
+}
+
 async function getOptionTerms(): Promise<ContractOptionTerms> {
   const types = ["address", "address", "address", "uint256"];
 
@@ -144,27 +206,6 @@ async function getOptionTerms(): Promise<ContractOptionTerms> {
     collateralAsset: args[2].toString(),
     expiry: BigNumber.from(args[3].toString()),
   };
-}
-
-async function get0xPrices(
-  adapterAddress: string,
-  optionTerms: ContractOptionTerms,
-  strikePrice: BigNumber
-) {
-  const adapter = IProtocolAdapterFactory.connect(adapterAddress, provider);
-
-  const calls = [PUT_OPTION, CALL_OPTION].map((optionType) => {
-    const terms = { ...optionTerms, strikePrice, optionType };
-    return {
-      target: adapterAddress,
-      callData: adapter.interface.encodeFunctionData("getOptionsAddress", [
-        terms,
-      ]),
-    };
-  });
-
-  const response = await multicall.aggregate(calls);
-  response;
 }
 
 async function get0xQuote(otokenAddress: string, buyAmount: BigNumber) {
