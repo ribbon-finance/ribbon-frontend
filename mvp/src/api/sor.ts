@@ -229,8 +229,8 @@ function getNearestOtoken(spotPrice: BigNumber): OtokenMatches {
   }));
 
   // min-max bounds are 10% from the spot price
-  const minStrikePrice = wmul(spotPrice, ethers.utils.parseEther("0.9"));
-  const maxStrikePrice = wmul(spotPrice, ethers.utils.parseEther("1.1"));
+  const minStrikePrice = wmul(spotPrice, ethers.utils.parseEther("0.95"));
+  const maxStrikePrice = wmul(spotPrice, ethers.utils.parseEther("1.05"));
 
   const callOtokens = otokens.filter(
     (otoken) =>
