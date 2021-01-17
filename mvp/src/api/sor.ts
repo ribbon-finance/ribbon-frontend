@@ -1,5 +1,10 @@
 import { BigNumber, ethers } from "ethers";
-import { TradeRequest, TradeResponse } from "./types";
+import {
+  ZeroExApiResponse,
+  TradeRequest,
+  TradeResponse,
+  OptionType,
+} from "./types";
 import axios from "axios";
 import { IAggregatedOptionsInstrumentFactory } from "../codegen/IAggregatedOptionsInstrumentFactory";
 import getProvider from "./getProvider";
@@ -8,13 +13,16 @@ import deployments from "../constants/deployments.json";
 import instrumentAddresses from "../constants/instruments.json";
 import { MulticallFactory } from "../codegen/MulticallFactory";
 import { IProtocolAdapterFactory } from "../codegen/IProtocolAdapterFactory";
-import { AbiCoder } from "ethers/lib/utils";
 
 const provider = getProvider();
 const abiCoder = new ethers.utils.AbiCoder();
 
 const instrument = IAggregatedOptionsInstrumentFactory.connect(
   instrumentAddresses.mainnet[0].address,
+  provider
+);
+const multicall = MulticallFactory.connect(
+  externalAddresses.mainnet.multicall,
   provider
 );
 
@@ -28,13 +36,12 @@ const adapterAddresses = [HEGIC_ADAPTER, GAMMA_ADAPTER];
 export async function getBestTrade(
   tradeRequest: TradeRequest
 ): Promise<TradeResponse> {
-  // const otokenAddress = "0x78A36417C9f3814AE1B4367D03bfF6AC6fd631FB";
-  // const apiResponse = await get0xQuote(otokenAddress, BigNumber.from("100000"));
+  const { spotPrice, buyAmount } = tradeRequest;
 
   console.log(
     await getPrices(
-      ethers.utils.parseUnits("1100", "ether"),
-      BigNumber.from(tradeRequest.buyAmount.toString())
+      BigNumber.from(spotPrice.toString()),
+      BigNumber.from(buyAmount.toString())
     )
   );
 
@@ -51,31 +58,48 @@ export async function getBestTrade(
 
 const ZERO_EX_API_URI = "https://api.0x.org/swap/v1/quote";
 
+type ContractOptionTerms = {
+  underlying: string;
+  strikeAsset: string;
+  collateralAsset: string;
+  expiry: BigNumber;
+};
+
+type PriceQuote = {
+  optionType: number;
+  cost: BigNumber;
+  exists: boolean;
+};
+
 async function getPrices(strikePrice: BigNumber, amount: BigNumber) {
+  const optionTerms = await getOptionTerms();
+
   const promises = adapterAddresses.map((adapterAddress) => {
     if (adapterAddress === GAMMA_ADAPTER) {
       return;
       // return get0xQuote("", BigNumber.from("0"));
     }
-    return getPriceFromContract(adapterAddress, strikePrice, amount);
+    return getPriceFromContract(
+      adapterAddress,
+      optionTerms,
+      strikePrice,
+      amount
+    );
   });
   return await Promise.all(promises);
 }
 
 async function getPriceFromContract(
   adapterAddress: string,
+  optionTermsFromContract: ContractOptionTerms,
   strikePrice: BigNumber,
   amount: BigNumber
-): Promise<BigNumber[]> {
+): Promise<PriceQuote[]> {
   const adapter = IProtocolAdapterFactory.connect(adapterAddress, provider);
-  const optionTermsFromContract = await getOptionTerms();
 
-  const multicall = MulticallFactory.connect(
-    externalAddresses.mainnet.multicall,
-    provider
-  );
+  const optionTypes = [PUT_OPTION, CALL_OPTION];
 
-  const optionTerms = [PUT_OPTION, CALL_OPTION].map((optionType) => ({
+  const optionTerms = optionTypes.map((optionType) => ({
     ...optionTermsFromContract,
     strikePrice,
     optionType,
@@ -90,27 +114,23 @@ async function getPriceFromContract(
   }));
   const response = await multicall.aggregate(calls);
 
-  return response.returnData.map((data) =>
-    BigNumber.from(abiCoder.decode(["uint256"], data).toString())
-  );
+  return response.returnData.map((data, i) => ({
+    optionType: optionTypes[i],
+    cost: BigNumber.from(abiCoder.decode(["uint256"], data).toString()),
+    exists: true,
+  }));
 }
 
-async function getOptionTerms() {
-  const multicall = MulticallFactory.connect(
-    externalAddresses.mainnet.multicall,
-    provider
-  );
-
+async function getOptionTerms(): Promise<ContractOptionTerms> {
   const types = ["address", "address", "address", "uint256"];
-  const functionNames = [
-    "underlying",
-    "strikeAsset",
-    "collateralAsset",
-    "expiry",
+
+  const data = [
+    instrument.interface.encodeFunctionData("underlying"),
+    instrument.interface.encodeFunctionData("strikeAsset"),
+    instrument.interface.encodeFunctionData("collateralAsset"),
+    instrument.interface.encodeFunctionData("expiry"),
   ];
-  const data = functionNames.map((f) =>
-    instrument.interface.encodeFunctionData(f)
-  );
+
   const calls = data.map((d) => ({ target: instrument.address, callData: d }));
   const returnData = await multicall.aggregate(calls);
 
@@ -126,6 +146,27 @@ async function getOptionTerms() {
   };
 }
 
+async function get0xPrices(
+  adapterAddress: string,
+  optionTerms: ContractOptionTerms,
+  strikePrice: BigNumber
+) {
+  const adapter = IProtocolAdapterFactory.connect(adapterAddress, provider);
+
+  const calls = [PUT_OPTION, CALL_OPTION].map((optionType) => {
+    const terms = { ...optionTerms, strikePrice, optionType };
+    return {
+      target: adapterAddress,
+      callData: adapter.interface.encodeFunctionData("getOptionsAddress", [
+        terms,
+      ]),
+    };
+  });
+
+  const response = await multicall.aggregate(calls);
+  response;
+}
+
 async function get0xQuote(otokenAddress: string, buyAmount: BigNumber) {
   const data: Record<string, string> = {
     buyToken: otokenAddress,
@@ -137,9 +178,21 @@ async function get0xQuote(otokenAddress: string, buyAmount: BigNumber) {
 
   try {
     const response = await axios.get(url);
-    return response.data;
+    return calculateZeroExOrderCost(response.data);
   } catch (e) {
     console.log(e);
     throw e;
   }
+}
+
+function calculateZeroExOrderCost(apiResponse: ZeroExApiResponse) {
+  const decimals = 6; //just scale for USDC amounts for now
+
+  const scaledSellAmount = parseInt(apiResponse.sellAmount) / decimals;
+  const totalETH =
+    scaledSellAmount / parseFloat(apiResponse.sellTokenToEthRate);
+
+  return ethers.utils
+    .parseUnits(totalETH.toPrecision(6), "ether")
+    .add(BigNumber.from(apiResponse.value));
 }

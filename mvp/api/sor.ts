@@ -3,7 +3,7 @@ import { TradeRequest } from "../src/api/types";
 import { getBestTrade } from "../src/api/sor";
 
 export default async (request: NowRequest, response: NowResponse) => {
-  const { buyAmount } = request.query;
+  const { buyAmount, spotPrice } = request.query;
 
   try {
     validateRequest(request, response);
@@ -13,7 +13,7 @@ export default async (request: NowRequest, response: NowResponse) => {
   }
 
   const tradeRequest: TradeRequest = {
-    spotPrice: 100,
+    spotPrice: spotPrice as string,
     buyAmount: buyAmount as string,
   };
 
@@ -25,8 +25,10 @@ export default async (request: NowRequest, response: NowResponse) => {
 };
 
 function validateRequest(request: NowRequest, response: NowResponse) {
-  const { buyAmount } = request.query;
-  const valid = !isNaN(parseInt(buyAmount as string));
+  const { spotPrice, buyAmount } = request.query;
+  const valid =
+    !isNaN(parseInt(buyAmount as string)) &&
+    !isNaN(parseInt(spotPrice as string));
 
   if (!valid) {
     response.status(400).send("Invalid request");
