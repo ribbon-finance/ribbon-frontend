@@ -18,9 +18,11 @@ const ProductDescriptionContainer = styled.div`
   padding-bottom: 30px;
 `;
 
-const productDescription = (name: string) => {
-  var description;
-  switch (name) {
+const ProductDescription: React.FC<{ productName: string }> = ({
+  productName,
+}) => {
+  let description = null;
+  switch (productName) {
     case "ETH Straddle":
       description = (
         <PrimaryText>
@@ -48,7 +50,7 @@ const ProductListing: React.FC = () => {
       </ProductTitleContainer>
 
       <ProductDescriptionContainer>
-        {productDescription(product.name)}
+        <ProductDescription productName={product.name}></ProductDescription>
       </ProductDescriptionContainer>
 
       <Row justify="space-between">
