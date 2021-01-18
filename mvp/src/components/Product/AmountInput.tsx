@@ -15,7 +15,7 @@ const InputDiv = styled.div`
 
 function AmountInput(props: any) {
   function handleChange(event: any) {
-    if (event.target.value == "") {
+    if (event.target.value === "") {
       event.target.value = 0;
     }
     props.onChange(event.target.value);

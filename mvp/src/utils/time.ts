@@ -20,7 +20,7 @@ export const timeToExpiry = (expiry: string) => {
 export const formatTimeToExpiry = (dateTime: any) => {
   if (dateTime.days < 0) {
     return "Expired";
-  } else if (dateTime.days == 0) {
+  } else if (dateTime.days === 0) {
     return `${dateTime.hours} hours`;
   } else {
     return `${dateTime.days}d ${dateTime.hours}h`;

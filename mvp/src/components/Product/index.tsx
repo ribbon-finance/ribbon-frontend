@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Row, Col } from "antd";
-import { useParams } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Title, PrimaryText, StyledCard } from "../../designSystem";
 import { products } from "../../mockData";
@@ -28,9 +27,9 @@ const PositionSize = styled.div`
 
 type PurchaseInstrumentWrapperProps = {};
 
-interface ParamTypes {
-  instrumentSymbol: string;
-}
+// interface ParamTypes {
+//   instrumentSymbol: string;
+// }
 
 const productDescription = (name: string) => {
   var description;
@@ -61,7 +60,6 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
     setPurchaseAmount(amount);
   };
 
-  const { instrumentSymbol } = useParams<ParamTypes>();
   const ethPrice = useEthPrice();
   const product = products[0];
   const straddle = product.instruments[0];
