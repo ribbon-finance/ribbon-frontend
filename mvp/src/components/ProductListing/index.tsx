@@ -51,13 +51,16 @@ const ProductListing: React.FC = () => {
         {productDescription(product.name)}
       </ProductDescriptionContainer>
 
-      {product.instruments.map((instrument) => (
-        <Row justify="space-between">
-          <Col span={6}>
+      <Row justify="space-between">
+        {product.instruments.map((instrument) => (
+          <Col
+            key={instrument.address}
+            span={18 / Math.floor(product.instruments.length)}
+          >
             <StraddleCard straddle={instrument}></StraddleCard>
           </Col>
-        </Row>
-      ))}
+        ))}
+      </Row>
     </ProductContainer>
   );
 };

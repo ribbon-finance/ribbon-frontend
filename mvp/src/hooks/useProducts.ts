@@ -5,6 +5,8 @@ import instrumentAddresses from "../constants/instruments.json";
 import { useWeb3React } from "@web3-react/core";
 import { useCallback, useEffect, useState } from "react";
 import { IAggregatedOptionsInstrumentFactory } from "../codegen/IAggregatedOptionsInstrumentFactory";
+import { ethers } from "ethers";
+const abiCoder = new ethers.utils.AbiCoder();
 
 export const useProducts = (): Product[] => {
   const { library } = useWeb3React();
@@ -32,21 +34,27 @@ export const useProducts = (): Product[] => {
     });
 
     const response = await multicall.aggregate(calls);
-    console.log(response);
 
-    const instruments = instrumentAddresses.mainnet.map((instrumentDetails) => {
-      const {
-        address,
-        instrumentSymbol: symbol,
-        expiry: expiryTimestamp,
-      } = instrumentDetails;
+    const instruments = instrumentAddresses.mainnet.map(
+      (instrumentDetails, index) => {
+        const {
+          address,
+          instrumentSymbol: symbol,
+          expiry: expiryTimestamp,
+        } = instrumentDetails;
 
-      return {
-        address,
-        symbol,
-        expiryTimestamp: parseInt(expiryTimestamp),
-      };
-    });
+        const underlying = abiCoder
+          .decode(["uint256"], response.returnData[index])
+          .toString();
+
+        return {
+          address,
+          symbol,
+          underlying,
+          expiryTimestamp: parseInt(expiryTimestamp),
+        };
+      }
+    );
 
     setInstruments(instruments);
   }, [library, instrumentDetails]);
@@ -68,18 +76,18 @@ export const useProducts = (): Product[] => {
 
 export const useDefaultProduct = (): Product => useProducts()[0];
 
-const straddle1: Straddle = {
-  address: "0x0000000000000000000000000000000000000000",
-  symbol: "ETH-VOL-251220",
-  // currency: "0x0000000000000000000000000000000000000000",
-  expiryTimestamp: 1612051200,
-  // totalPremium: "22636934749846005",
-  // callPremium: "22636934749846005",
-  // callStrikePrice: "500000000000000000000",
-  // callVenue: "OPYN_V1",
-  // callPositionID: null,
-  // putPremium: "22636934749846005",
-  // putStrikePrice: "500000000000000000000",
-  // putVenue: "HEGIC",
-  // putPositionID: "0",
-};
+// const straddle1: Straddle = {
+//   address: "0x0000000000000000000000000000000000000000",
+//   symbol: "ETH-VOL-251220",
+//   // currency: "0x0000000000000000000000000000000000000000",
+//   expiryTimestamp: 1612051200,
+//   // totalPremium: "22636934749846005",
+//   // callPremium: "22636934749846005",
+//   // callStrikePrice: "500000000000000000000",
+//   // callVenue: "OPYN_V1",
+//   // callPositionID: null,
+//   // putPremium: "22636934749846005",
+//   // putStrikePrice: "500000000000000000000",
+//   // putVenue: "HEGIC",
+//   // putPositionID: "0",
+// };

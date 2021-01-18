@@ -24,7 +24,7 @@ export type OldProduct = {
 export type Straddle = {
   address: string;
   symbol: string;
-  // currency: string;
+  underlying: string;
   expiryTimestamp: number;
 };
 
