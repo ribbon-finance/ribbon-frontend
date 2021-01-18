@@ -3,16 +3,18 @@ import axios from "axios";
 import { Straddle, StraddleTrade, TradeResponse } from "../models";
 import { useCallback, useEffect, useState } from "react";
 
+const zero = BigNumber.from("0");
+
 const emptyTrade = {
   venues: [],
   amounts: [],
-  totalPremium: BigNumber.from("0"),
-  callPremium: BigNumber.from("0"),
-  callStrikePrice: BigNumber.from("0"),
-  putPremium: BigNumber.from("0"),
-  putStrikePrice: BigNumber.from("0"),
+  totalPremium: zero,
+  callPremium: zero,
+  callStrikePrice: zero,
+  putPremium: zero,
+  putStrikePrice: zero,
   buyData: [],
-  gasPrice: BigNumber.from("0"),
+  gasPrice: zero,
 };
 
 const SOR_API_URL = "/api/sor";
@@ -49,7 +51,7 @@ export const useStraddleTrade = (
   }, [instrumentAddress, buyAmount, buyAmount]);
 
   useEffect(() => {
-    if (!buyAmount.isZero()) {
+    if (!buyAmount.isZero() && spotPrice > 0) {
       getBestTrade();
     }
   }, [buyAmount]);
@@ -68,16 +70,24 @@ const convertTradeResponseToStraddleTrade = (
     strikePrices,
     buyData,
     gasPrice,
+    optionTypes,
   } = response;
+
+  const putIndex = optionTypes.findIndex((o) => o === 1);
+  const callIndex = optionTypes.findIndex((o) => o === 2);
+  const putExists = putIndex !== -1;
+  const callExists = callIndex !== -1;
 
   return {
     venues,
     totalPremium: BigNumber.from(totalPremium),
     amounts: amounts.map((a) => BigNumber.from(a)),
-    callPremium: BigNumber.from("22636934749846005"),
-    callStrikePrice: BigNumber.from("500000000000000000000"),
-    putPremium: BigNumber.from("22636934749846005"),
-    putStrikePrice: BigNumber.from("500000000000000000000"),
+    callPremium: callExists ? BigNumber.from(premiums[callIndex]) : zero,
+    callStrikePrice: callExists
+      ? BigNumber.from(strikePrices[callIndex])
+      : zero,
+    putPremium: putExists ? BigNumber.from(premiums[putIndex]) : zero,
+    putStrikePrice: putExists ? BigNumber.from(strikePrices[putIndex]) : zero,
     buyData,
     gasPrice: BigNumber.from(gasPrice),
   };

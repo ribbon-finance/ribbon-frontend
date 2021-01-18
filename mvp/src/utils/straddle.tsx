@@ -15,13 +15,10 @@ const ProfitNegative = styled(Profit)`
 `;
 
 export const computeStraddleValue = (
-  callPremium: string,
-  putPremium: string,
+  totalPremium: BigNumber,
   ethPrice: number
 ): [string, string] => {
-  const call = BigNumber.from(callPremium);
-  const put = BigNumber.from(putPremium);
-  const straddleCost = parseFloat(ethers.utils.formatEther(call.add(put)));
+  const straddleCost = parseFloat(ethers.utils.formatEther(totalPremium));
   return [(straddleCost * ethPrice).toFixed(2), straddleCost.toFixed(3)];
 };
 

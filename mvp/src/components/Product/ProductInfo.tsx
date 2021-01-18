@@ -29,15 +29,14 @@ type Props = {
 
 const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
   const ethPrice = useETHPriceInUSD();
-  const { callPremium, putPremium } = useStraddleTrade(
+  const { totalPremium } = useStraddleTrade(
     straddle.address,
     ethPrice,
     BigNumber.from(amount.toString())
   );
 
   const [straddleUSD, straddleETH] = computeStraddleValue(
-    callPremium.toString(),
-    putPremium.toString(),
+    totalPremium,
     ethPrice
   );
   const [lowerBreakeven, upperBreakeven] = computeBreakeven(

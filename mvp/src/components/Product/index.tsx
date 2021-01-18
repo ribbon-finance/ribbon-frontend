@@ -65,14 +65,13 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
   const ethPrice = useETHPriceInUSD();
   const product = useDefaultProduct();
   const straddle = product.instruments[0];
-  const { callPremium, putPremium } = useStraddleTrade(
+  const { totalPremium } = useStraddleTrade(
     straddle.address,
     ethPrice,
     BigNumber.from(purchaseAmount.toString())
   );
   const [straddleUSD, straddleETH] = computeStraddleValue(
-    callPremium.toString(),
-    putPremium.toString(),
+    totalPremium,
     ethPrice
   );
 

@@ -58,14 +58,13 @@ const breakevenTooltipText = (
 
 const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
   const ethPrice = useETHPriceInUSD();
-  const { callPremium, putPremium } = useStraddleTrade(
+  const { totalPremium } = useStraddleTrade(
     straddle.address,
     ethPrice,
     ethers.utils.parseEther("1")
   );
   const [straddleUSD, straddleETH] = computeStraddleValue(
-    callPremium.toString(),
-    putPremium.toString(),
+    totalPremium,
     ethPrice
   );
   const [lowerBreakeven, upperBreakeven] = computeBreakeven(
