@@ -6,7 +6,7 @@ import {
   computeBreakeven,
   computeBreakevenPercent,
 } from "../../utils/straddle";
-import { useEthPrice } from "../../hooks/marketPrice";
+import { useEthPrice } from "../../hooks/useEthPrice";
 import { Straddle } from "../../models";
 import { timeToExpiry } from "../../utils/time";
 import { useStraddleTrade } from "../../hooks/useStraddleTrade";

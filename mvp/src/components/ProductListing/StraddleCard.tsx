@@ -5,7 +5,7 @@ import { Row, Button, Tooltip } from "antd";
 import { Straddle } from "../../models";
 import { computeStraddleValue, computeBreakeven } from "../../utils/straddle";
 import { timeToExpiry } from "../../utils/time";
-import { useEthPrice } from "../../hooks/marketPrice";
+import { useEthPrice } from "../../hooks/useEthPrice";
 import PayoffCalculator from "./PayoffCalculator";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { ethers } from "ethers";

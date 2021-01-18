@@ -4,7 +4,7 @@ import { Row, Col } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Title, PrimaryText, StyledCard } from "../../designSystem";
 import { computeStraddleValue } from "../../utils/straddle";
-import { useEthPrice } from "../../hooks/marketPrice";
+import { useEthPrice } from "../../hooks/useEthPrice";
 import AmountInput from "./AmountInput";
 import PayoffCalculator from "./PayoffCalculator";
 import ProductInfo from "./ProductInfo";

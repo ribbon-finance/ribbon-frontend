@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import images from "../../img/currencyIcons";
 import { BaseText } from "../../designSystem";
-import { useEthPrice } from "../../hooks/marketPrice";
+import { useEthPrice } from "../../hooks/useEthPrice";
 
 const { ETH: ETHIcon } = images;
 

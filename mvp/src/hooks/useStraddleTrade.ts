@@ -1,6 +1,12 @@
 import { BigNumber } from "ethers";
+import axios from "axios";
 
-export const useStraddleTrade = (expiry: number, buyAmount: BigNumber) => {
+export const useStraddleTrade = (
+  // instrumentAddress: string,
+  // spotPrice: BigNumber,
+  expiry: number,
+  buyAmount: BigNumber
+) => {
   return {
     venues: [],
     amounts: [],
