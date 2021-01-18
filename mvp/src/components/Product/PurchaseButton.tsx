@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Modal, Button, Statistic, Row } from "antd";
-import { Straddle } from "../../models";
 
 const ButtonStyled = styled(Button)`
   height: 100%;
@@ -25,7 +24,7 @@ const StyledStatistic = (title: string, value: string) => {
 };
 
 const EnableButton = (showModal: any, purchaseAmount: number) => {
-  if (purchaseAmount == 0) {
+  if (purchaseAmount === 0) {
     return (
       <ButtonStyled type="primary" shape="round" onClick={showModal} disabled>
         <b>Buy Now</b>

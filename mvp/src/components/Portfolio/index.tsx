@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { Title } from "../../designSystem";
-import BannerColorful from "../../img/BannerColorful.png";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import ActivePositions from "./ActivePositions";
 import PastPositions from "./PastPositions";

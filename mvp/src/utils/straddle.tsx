@@ -84,7 +84,7 @@ export const computeGainsAmount = (
   }
 
   let percentProfit: number = 0;
-  if (amount == 0) {
+  if (amount === 0) {
     percentProfit = (dollarProfit / instrumentPrice) * 100;
   } else {
     percentProfit = (dollarProfit / instrumentPrice / amount) * 100;
@@ -102,7 +102,7 @@ export const formatProfit = (
   percentProfit: string,
   profitPositive: boolean
 ) => {
-  if (dollarProfit == "0.00") {
+  if (dollarProfit === "0.00") {
     return <Profit>$0.00 (+0%)</Profit>;
   }
   if (profitPositive) {

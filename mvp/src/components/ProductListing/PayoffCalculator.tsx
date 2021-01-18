@@ -15,7 +15,7 @@ type Props = {
 
 const PayoffCalculator: React.FC<Props> = ({ ethPrice, straddlePrice }) => {
   const [inputText, setInputText] = useState("");
-  const [lowerBreakeven, upperBreakeven] = computeBreakeven(
+  const [, upperBreakeven] = computeBreakeven(
     straddlePrice,
     ethPrice
   );

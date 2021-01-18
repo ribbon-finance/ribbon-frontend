@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Input, Row, Col, Statistic } from "antd";
+import { Input, Row} from "antd";
 import {
   computeBreakeven,
   computeDefaultPrice,
@@ -40,7 +40,7 @@ const PayoffCalculator: React.FC<Props> = ({
   amount,
 }) => {
   const [inputText, setInputText] = useState("");
-  const [lowerBreakeven, upperBreakeven] = computeBreakeven(
+  const [, upperBreakeven] = computeBreakeven(
     straddlePrice,
     ethPrice
   );
