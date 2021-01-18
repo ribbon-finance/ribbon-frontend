@@ -110,7 +110,7 @@
 		"multicall": "0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441",
 		"feeds": {
 			"dai/eth": "0x22B58f1EbEDfCA50feF632bD73368b2FdA96D541",
-			"eth/usd": "0x9326BFA02ADD2366b30bacB125260Af641031331",
+			"eth/usd": "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419",
 			"link/eth": "0xa36085f69e2889c224210f603d836748e7dc0088"
 		},
 		"assets": {
