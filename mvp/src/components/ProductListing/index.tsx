@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { Row, Col } from "antd";
 import { Title, PrimaryText } from "../../designSystem";
-import { Product } from "../../models";
 import StraddleCard from "./StraddleCard";
 import { useDefaultProduct } from "../../hooks/useProducts";
 

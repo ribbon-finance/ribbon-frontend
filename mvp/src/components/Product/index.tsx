@@ -4,7 +4,7 @@ import { Row, Col } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Title, PrimaryText, StyledCard } from "../../designSystem";
 import { computeStraddleValue } from "../../utils/straddle";
-import { useEthPrice } from "../../hooks/useEthPrice";
+import { useETHPriceInUSD } from "../../hooks/useEthPrice";
 import AmountInput from "./AmountInput";
 import PayoffCalculator from "./PayoffCalculator";
 import ProductInfo from "./ProductInfo";
@@ -62,11 +62,12 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
     setPurchaseAmount(amount);
   };
 
-  const ethPrice = useEthPrice();
+  const ethPrice = useETHPriceInUSD();
   const product = useDefaultProduct();
   const straddle = product.instruments[0];
   const { callPremium, putPremium } = useStraddleTrade(
-    straddle.expiryTimestamp,
+    straddle.address,
+    ethPrice,
     BigNumber.from(purchaseAmount.toString())
   );
   const [straddleUSD, straddleETH] = computeStraddleValue(

@@ -45,3 +45,14 @@ export type Product = {
   emoji: string;
   instruments: Straddle[];
 };
+
+export type TradeResponse = {
+  venues: string[];
+  optionTypes: number[];
+  amounts: string[];
+  strikePrices: string[];
+  buyData: string[];
+  gasPrice: string;
+  totalPremium: string;
+  premiums: string[];
+};

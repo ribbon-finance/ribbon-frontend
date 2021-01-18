@@ -5,7 +5,7 @@ import { Row, Button, Tooltip } from "antd";
 import { Straddle } from "../../models";
 import { computeStraddleValue, computeBreakeven } from "../../utils/straddle";
 import { timeToExpiry } from "../../utils/time";
-import { useEthPrice } from "../../hooks/useEthPrice";
+import { useETHPriceInUSD } from "../../hooks/useEthPrice";
 import PayoffCalculator from "./PayoffCalculator";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { ethers } from "ethers";
@@ -57,9 +57,10 @@ const breakevenTooltipText = (
 };
 
 const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
-  const ethPrice = useEthPrice();
+  const ethPrice = useETHPriceInUSD();
   const { callPremium, putPremium } = useStraddleTrade(
-    straddle.expiryTimestamp,
+    straddle.address,
+    ethPrice,
     ethers.utils.parseEther("1")
   );
   const [straddleUSD, straddleETH] = computeStraddleValue(

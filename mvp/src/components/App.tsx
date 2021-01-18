@@ -13,7 +13,6 @@ import ProductListing from "./ProductListing";
 import Product from "./Product";
 import Content404 from "./Content404";
 import getLibrary from "../utils/getLibrary";
-import { useDefaultProduct } from "../hooks/useProducts";
 
 const AppContainer = styled.div``;
 

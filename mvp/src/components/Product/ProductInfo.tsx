@@ -6,7 +6,7 @@ import {
   computeBreakeven,
   computeBreakevenPercent,
 } from "../../utils/straddle";
-import { useEthPrice } from "../../hooks/useEthPrice";
+import { useETHPriceInUSD } from "../../hooks/useEthPrice";
 import { Straddle } from "../../models";
 import { timeToExpiry } from "../../utils/time";
 import { useStraddleTrade } from "../../hooks/useStraddleTrade";
@@ -28,9 +28,10 @@ type Props = {
 };
 
 const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
-  const ethPrice = useEthPrice();
+  const ethPrice = useETHPriceInUSD();
   const { callPremium, putPremium } = useStraddleTrade(
-    straddle.expiryTimestamp,
+    straddle.address,
+    ethPrice,
     BigNumber.from(amount.toString())
   );
 
