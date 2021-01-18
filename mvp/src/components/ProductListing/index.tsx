@@ -4,6 +4,7 @@ import { Row, Col } from "antd";
 import { Title, PrimaryText } from "../../designSystem";
 import { Product } from "../../models";
 import StraddleCard from "./StraddleCard";
+import { useDefaultProduct } from "../../hooks/useProducts";
 
 const ProductContainer = styled.div`
   padding-bottom: 50px;
@@ -16,10 +17,6 @@ const ProductTitleContainer = styled.div`
 const ProductDescriptionContainer = styled.div`
   padding-bottom: 30px;
 `;
-
-type Props = {
-  product: Product;
-};
 
 const productDescription = (name: string) => {
   var description;
@@ -39,7 +36,9 @@ const productDescription = (name: string) => {
   return description;
 };
 
-const ProductListing: React.FC<Props> = ({ product }) => {
+const ProductListing: React.FC = () => {
+  const product = useDefaultProduct();
+
   return (
     <ProductContainer>
       <ProductTitleContainer>
@@ -52,17 +51,13 @@ const ProductListing: React.FC<Props> = ({ product }) => {
         {productDescription(product.name)}
       </ProductDescriptionContainer>
 
-      <Row justify="space-between">
-        <Col span={6}>
-          <StraddleCard straddle={product.instruments[0]}></StraddleCard>
-        </Col>
-        <Col span={6}>
-          <StraddleCard straddle={product.instruments[0]}></StraddleCard>
-        </Col>
-        <Col span={6}>
-          <StraddleCard straddle={product.instruments[0]}></StraddleCard>
-        </Col>
-      </Row>
+      {product.instruments.map((instrument) => (
+        <Row justify="space-between">
+          <Col span={6}>
+            <StraddleCard straddle={instrument}></StraddleCard>
+          </Col>
+        </Row>
+      ))}
     </ProductContainer>
   );
 };

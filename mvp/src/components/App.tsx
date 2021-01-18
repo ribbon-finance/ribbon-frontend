@@ -22,7 +22,6 @@ const MainContent = styled.div`
 `;
 
 function App() {
-  const product = useDefaultProduct();
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <Router>
@@ -40,7 +39,7 @@ function App() {
                   <Route exact path="/">
                     <Banner></Banner>
                     <Dashboard></Dashboard>
-                    <ProductListing product={product}></ProductListing>
+                    <ProductListing></ProductListing>
                   </Route>
                   <Route exact path="/instrument/:instrumentSymbol">
                     <Product></Product>
