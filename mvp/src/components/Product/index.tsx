@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { Row, Col } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Title, PrimaryText, StyledCard } from "../../designSystem";
-import { products } from "../../mockData";
 import { computeStraddleValue } from "../../utils/straddle";
 import { useEthPrice } from "../../hooks/marketPrice";
 import AmountInput from "./AmountInput";
@@ -11,6 +10,9 @@ import PayoffCalculator from "./PayoffCalculator";
 import ProductInfo from "./ProductInfo";
 import PurchaseButton from "./PurchaseButton";
 import { timeToExpiry } from "../../utils/time";
+import { useDefaultProduct } from "../../hooks/useProducts";
+import { useStraddleTrade } from "../../hooks/useStraddleTrade";
+import { BigNumber } from "ethers";
 
 const ProductTitleContainer = styled.div`
   padding-top: 10px;
@@ -61,11 +63,15 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
   };
 
   const ethPrice = useEthPrice();
-  const product = products[0];
+  const product = useDefaultProduct();
   const straddle = product.instruments[0];
+  const { callPremium, putPremium } = useStraddleTrade(
+    straddle.expiryTimestamp,
+    BigNumber.from(purchaseAmount.toString())
+  );
   const [straddleUSD, straddleETH] = computeStraddleValue(
-    straddle.callPremium,
-    straddle.putPremium,
+    callPremium.toString(),
+    putPremium.toString(),
     ethPrice
   );
 

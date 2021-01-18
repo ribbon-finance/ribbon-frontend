@@ -9,6 +9,8 @@ import {
 import { useEthPrice } from "../../hooks/marketPrice";
 import { Straddle } from "../../models";
 import { timeToExpiry } from "../../utils/time";
+import { useStraddleTrade } from "../../hooks/useStraddleTrade";
+import { BigNumber } from "ethers";
 
 const StyledStatistic = (title: string, value: string) => {
   return (
@@ -27,10 +29,14 @@ type Props = {
 
 const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
   const ethPrice = useEthPrice();
+  const { callPremium, putPremium } = useStraddleTrade(
+    straddle.expiryTimestamp,
+    BigNumber.from(amount.toString())
+  );
 
   const [straddleUSD, straddleETH] = computeStraddleValue(
-    straddle.callPremium,
-    straddle.putPremium,
+    callPremium.toString(),
+    putPremium.toString(),
     ethPrice
   );
   const [lowerBreakeven, upperBreakeven] = computeBreakeven(

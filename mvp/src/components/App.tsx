@@ -11,9 +11,9 @@ import Banner from "./Banner";
 import Portfolio from "./Portfolio";
 import ProductListing from "./ProductListing";
 import Product from "./Product";
-import { products } from "../mockData";
 import Content404 from "./Content404";
 import getLibrary from "../utils/getLibrary";
+import { useDefaultProduct } from "../hooks/useProducts";
 
 const AppContainer = styled.div``;
 
@@ -22,6 +22,7 @@ const MainContent = styled.div`
 `;
 
 function App() {
+  const product = useDefaultProduct();
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <Router>
@@ -39,7 +40,7 @@ function App() {
                   <Route exact path="/">
                     <Banner></Banner>
                     <Dashboard></Dashboard>
-                    <ProductListing product={products[0]}></ProductListing>
+                    <ProductListing product={product}></ProductListing>
                   </Route>
                   <Route exact path="/instrument/:instrumentSymbol">
                     <Product></Product>

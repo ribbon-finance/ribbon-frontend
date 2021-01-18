@@ -22,17 +22,22 @@ export type OldProduct = {
 };
 
 export type Straddle = {
+  address: string;
   symbol: string;
-  currency: string;
+  // currency: string;
   expiryTimestamp: number;
-  callPremium: string;
-  callStrikePrice: string;
-  callVenue: string;
-  callPositionID: string | null;
-  putPremium: string;
-  putStrikePrice: string;
-  putVenue: string;
-  putPositionID: string | null;
+};
+
+export type StraddleTrade = {
+  venues: string[];
+  amounts: BigNumber[];
+  totalPremium: BigNumber;
+  callPremium: BigNumber;
+  callStrikePrice: BigNumber;
+  putPremium: BigNumber;
+  putStrikePrice: BigNumber;
+  buyData: string[];
+  gasPrice: BigNumber;
 };
 
 export type Product = {
