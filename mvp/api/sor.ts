@@ -21,6 +21,7 @@ export default async (request: NowRequest, response: NowResponse) => {
 
   const tradeResponse = await getBestTrade(tradeRequest);
 
+  response.setHeader("Cache-Control", "max-age=100, immutable");
   response.status(200).json(tradeResponse);
 
   return;
