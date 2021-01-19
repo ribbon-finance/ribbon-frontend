@@ -12,7 +12,7 @@ import PurchaseButton from "./PurchaseButton";
 import { timeToExpiry } from "../../utils/time";
 import { useDefaultProduct, useInstrument } from "../../hooks/useProducts";
 import { useStraddleTrade } from "../../hooks/useStraddleTrade";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { useParams } from "react-router-dom";
 
 const ProductTitleContainer = styled.div`

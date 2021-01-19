@@ -10,7 +10,7 @@ import { useETHPriceInUSD } from "../../hooks/useEthPrice";
 import { BasicStraddle } from "../../models";
 import { timeToExpiry } from "../../utils/time";
 import { useStraddleTrade } from "../../hooks/useStraddleTrade";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 
 const StyledStatistic = (title: string, value: string) => {
   return (

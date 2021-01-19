@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { MulticallFactory } from "../codegen/MulticallFactory";
-import { BasicStraddle, Instrument, Product, Straddle } from "../models";
+import { BasicStraddle, Product, Straddle } from "../models";
 import externalAddresses from "../constants/externalAddresses.json";
 import instrumentAddresses from "../constants/instruments.json";
 import { useWeb3React } from "@web3-react/core";
