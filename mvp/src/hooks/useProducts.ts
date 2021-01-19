@@ -1,11 +1,11 @@
+import { ethers } from "ethers";
 import { MulticallFactory } from "../codegen/MulticallFactory";
-import { Product, Straddle } from "../models";
+import { BasicStraddle, Instrument, Product, Straddle } from "../models";
 import externalAddresses from "../constants/externalAddresses.json";
 import instrumentAddresses from "../constants/instruments.json";
 import { useWeb3React } from "@web3-react/core";
 import { useCallback, useEffect, useState } from "react";
 import { IAggregatedOptionsInstrumentFactory } from "../codegen/IAggregatedOptionsInstrumentFactory";
-import { ethers } from "ethers";
 const abiCoder = new ethers.utils.AbiCoder();
 
 export const useProducts = (): Product[] => {
@@ -76,18 +76,60 @@ export const useProducts = (): Product[] => {
 
 export const useDefaultProduct = (): Product => useProducts()[0];
 
-// const straddle1: Straddle = {
-//   address: "0x0000000000000000000000000000000000000000",
-//   symbol: "ETH-VOL-251220",
-//   // currency: "0x0000000000000000000000000000000000000000",
-//   expiryTimestamp: 1612051200,
-//   // totalPremium: "22636934749846005",
-//   // callPremium: "22636934749846005",
-//   // callStrikePrice: "500000000000000000000",
-//   // callVenue: "OPYN_V1",
-//   // callPositionID: null,
-//   // putPremium: "22636934749846005",
-//   // putStrikePrice: "500000000000000000000",
-//   // putVenue: "HEGIC",
-//   // putPositionID: "0",
-// };
+type InstrumentResponse = BasicStraddle | Straddle | null;
+
+export const useInstrument = (instrumentSymbol: string) => {
+  const instrumentDetails = instrumentAddresses.mainnet.find(
+    (a) => a.instrumentSymbol === instrumentSymbol
+  );
+
+  const { library } = useWeb3React();
+  const [instrument, setInstrument] = useState<InstrumentResponse>(null);
+
+  const fetchInstrumentDetail = useCallback(async () => {
+    if (!instrumentDetails) {
+      return;
+    }
+    const signer = library.getSigner();
+
+    const instrument = IAggregatedOptionsInstrumentFactory.connect(
+      instrumentDetails.address,
+      signer
+    );
+
+    const underlying = (await instrument.underlying()).toString();
+
+    const {
+      address,
+      instrumentSymbol: symbol,
+      expiry: expiryTimestamp,
+    } = instrumentDetails;
+
+    setInstrument({
+      address,
+      symbol,
+      underlying,
+      expiryTimestamp: parseInt(expiryTimestamp),
+    });
+  }, [library, instrumentDetails]);
+
+  useEffect(() => {
+    if (library && instrumentDetails) {
+      fetchInstrumentDetail();
+    } else if (instrumentDetails) {
+      const {
+        address,
+        expiry: expiryTimestamp,
+        instrumentSymbol: symbol,
+      } = instrumentDetails;
+
+      setInstrument({
+        address,
+        expiryTimestamp: parseInt(expiryTimestamp),
+        symbol,
+      });
+    }
+  }, [library, instrumentDetails, fetchInstrumentDetail]);
+
+  return instrument;
+};

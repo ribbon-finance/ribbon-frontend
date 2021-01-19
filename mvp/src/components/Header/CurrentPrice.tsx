@@ -28,7 +28,7 @@ const CurrentPrice = () => {
     <>
       <CurrencyIcon src={ETHIcon} alt="ETH"></CurrencyIcon>
       <ETHPriceContainer>
-        <ETHPrice>${useETHPriceInUSD()}</ETHPrice>
+        <ETHPrice>${useETHPriceInUSD().toFixed(2)}</ETHPrice>
       </ETHPriceContainer>
     </>
   );

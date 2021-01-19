@@ -21,11 +21,14 @@ export type OldProduct = {
   instruments: Instrument[];
 };
 
-export type Straddle = {
+export type BasicStraddle = {
   address: string;
   symbol: string;
-  underlying: string;
   expiryTimestamp: number;
+};
+
+export type Straddle = BasicStraddle & {
+  underlying: string;
 };
 
 export type StraddleTrade = {

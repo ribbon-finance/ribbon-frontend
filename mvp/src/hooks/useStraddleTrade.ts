@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import axios from "axios";
-import { Straddle, StraddleTrade, TradeResponse } from "../models";
+import { StraddleTrade, TradeResponse } from "../models";
 import { useCallback, useEffect, useState } from "react";
 
 const zero = BigNumber.from("0");
@@ -38,8 +38,10 @@ export const useStraddleTrade = (
       spotPrice: spotPriceInWei.toString(),
       buyAmount: buyAmount.toString(),
     };
+    console.log(data);
     const query = new URLSearchParams(data).toString();
     const url = `${SOR_API_URL}?${query}`;
+    console.log(url);
 
     try {
       const response = await axios.get(url);
@@ -48,13 +50,13 @@ export const useStraddleTrade = (
     } catch (e) {
       throw e;
     }
-  }, [instrumentAddress, buyAmount, buyAmount]);
+  }, [instrumentAddress, buyAmount, spotPrice]);
 
   useEffect(() => {
     if (!buyAmount.isZero() && spotPrice > 0) {
       getBestTrade();
     }
-  }, [buyAmount]);
+  }, [buyAmount, getBestTrade, spotPrice]);
 
   return trade;
 };

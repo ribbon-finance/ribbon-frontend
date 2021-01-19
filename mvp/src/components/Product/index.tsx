@@ -10,9 +10,10 @@ import PayoffCalculator from "./PayoffCalculator";
 import ProductInfo from "./ProductInfo";
 import PurchaseButton from "./PurchaseButton";
 import { timeToExpiry } from "../../utils/time";
-import { useDefaultProduct } from "../../hooks/useProducts";
+import { useDefaultProduct, useInstrument } from "../../hooks/useProducts";
 import { useStraddleTrade } from "../../hooks/useStraddleTrade";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
+import { useParams } from "react-router-dom";
 
 const ProductTitleContainer = styled.div`
   padding-top: 10px;
@@ -29,9 +30,9 @@ const PositionSize = styled.div`
 
 type PurchaseInstrumentWrapperProps = {};
 
-// interface ParamTypes {
-//   instrumentSymbol: string;
-// }
+interface ParamTypes {
+  instrumentSymbol: string;
+}
 
 const productDescription = (name: string) => {
   var description;
@@ -56,20 +57,29 @@ const productDescription = (name: string) => {
 };
 
 const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () => {
+  const { instrumentSymbol } = useParams<ParamTypes>();
+
   const [purchaseAmount, setPurchaseAmount] = useState(0.0);
 
   const updatePurchaseAmount = (amount: number) => {
     setPurchaseAmount(amount);
   };
-
   const ethPrice = useETHPriceInUSD();
   const product = useDefaultProduct();
-  const straddle = product.instruments[0];
+  const purchaseAmountWei = ethers.utils.parseEther(purchaseAmount.toString());
+  const straddle = useInstrument(instrumentSymbol);
+
+  console.log(purchaseAmountWei.toString());
+
+  // const straddle = product.instruments[0];
   const { totalPremium } = useStraddleTrade(
-    straddle.address,
+    straddle ? straddle.address : "",
     ethPrice,
-    BigNumber.from(purchaseAmount.toString())
+    purchaseAmountWei
   );
+
+  if (straddle === null) return null;
+
   const [straddleUSD, straddleETH] = computeStraddleValue(
     totalPremium,
     ethPrice

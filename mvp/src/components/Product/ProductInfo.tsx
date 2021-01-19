@@ -7,10 +7,10 @@ import {
   computeBreakevenPercent,
 } from "../../utils/straddle";
 import { useETHPriceInUSD } from "../../hooks/useEthPrice";
-import { Straddle } from "../../models";
+import { BasicStraddle } from "../../models";
 import { timeToExpiry } from "../../utils/time";
 import { useStraddleTrade } from "../../hooks/useStraddleTrade";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
 const StyledStatistic = (title: string, value: string) => {
   return (
@@ -23,7 +23,7 @@ const StyledStatistic = (title: string, value: string) => {
 };
 
 type Props = {
-  straddle: Straddle;
+  straddle: BasicStraddle;
   amount: number;
 };
 
@@ -32,7 +32,7 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
   const { totalPremium } = useStraddleTrade(
     straddle.address,
     ethPrice,
-    BigNumber.from(amount.toString())
+    ethers.utils.parseEther(amount.toString())
   );
 
   const [straddleUSD, straddleETH] = computeStraddleValue(
