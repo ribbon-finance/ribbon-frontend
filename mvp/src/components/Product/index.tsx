@@ -69,10 +69,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
   const purchaseAmountWei = ethers.utils.parseEther(purchaseAmount.toString());
   const straddle = useInstrument(instrumentSymbol);
 
-  console.log(purchaseAmountWei.toString());
-
-  // const straddle = product.instruments[0];
-  const { totalPremium } = useStraddleTrade(
+  const { totalPremium, callStrikePrice, putStrikePrice } = useStraddleTrade(
     straddle ? straddle.address : "",
     ethPrice,
     purchaseAmountWei
@@ -90,7 +87,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
   ).toLocaleDateString();
 
   const expiry = `${expiryTimestamp} (${timeToExpiry(
-    expiryTimestamp
+    straddle.expiryTimestamp
   )} remaining)`;
 
   const totalCostETH = (parseFloat(straddleETH) * purchaseAmount).toFixed(3);
@@ -142,6 +139,8 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
               <StyledCard style={{ height: "100%" }}>
                 <PayoffCalculator
                   ethPrice={ethPrice}
+                  callStrikePrice={callStrikePrice}
+                  putStrikePrice={putStrikePrice}
                   straddlePrice={straddleUSD}
                   amount={purchaseAmount}
                 ></PayoffCalculator>

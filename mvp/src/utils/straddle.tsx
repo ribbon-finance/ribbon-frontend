@@ -24,16 +24,21 @@ export const computeStraddleValue = (
 
 export const computeBreakeven = (
   straddleUSD: string,
-  ethUSD: number
-): [string, string] => {
+  callStrikePrice: BigNumber,
+  putStrikePrice: BigNumber
+): [number, number] => {
+  const scaleFactor = BigNumber.from("10").pow(BigNumber.from("16"));
   const straddle = parseFloat(straddleUSD);
-  const lower = (ethUSD - straddle).toFixed(2);
-  const upper = (ethUSD + straddle).toFixed(2);
+  const putStrikeNum = putStrikePrice.div(scaleFactor).toNumber() / 100;
+  const callStrikeNum = callStrikePrice.div(scaleFactor).toNumber() / 100;
+
+  const lower = putStrikeNum - straddle;
+  const upper = callStrikeNum + straddle;
   return [lower, upper];
 };
 
-export const computeDefaultPrice = (upperBreakeven: string, buffer: number) => {
-  const defaultPrice = parseFloat(upperBreakeven) * buffer;
+export const computeDefaultPrice = (upperBreakeven: number, buffer: number) => {
+  const defaultPrice = upperBreakeven * buffer;
   return Math.round(defaultPrice);
 };
 
@@ -119,9 +124,29 @@ export const formatProfit = (
 
 export const computeBreakevenPercent = (
   straddleUSD: string,
+  callStrikePrice: BigNumber,
+  putStrikePrice: BigNumber,
   ethUSD: number
-): string => {
+) => {
+  const [lower, upper] = computeBreakeven(
+    straddleUSD,
+    callStrikePrice,
+    putStrikePrice
+  );
+
   const straddle = parseFloat(straddleUSD);
-  const upper = ((ethUSD + straddle) / ethUSD) * 100 - 100;
-  return upper.toFixed(1);
+  const upperBreakeven = ((upper + straddle) / ethUSD) * 100 - 100;
+  const lowerBreakeven = ((lower - straddle) / ethUSD) * 100 - 100;
+
+  const minBreakeven = Math.min(upperBreakeven, lowerBreakeven);
+  return minBreakeven.toFixed(1);
 };
+
+// export const computeBreakevenPercent = (
+//   straddleUSD: string,
+//   ethUSD: number
+// ): string => {
+//   const straddle = parseFloat(straddleUSD);
+//   const upper = ((ethUSD + straddle) / ethUSD) * 100 - 100;
+//   return upper.toFixed(1);
+// };

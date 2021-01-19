@@ -58,7 +58,7 @@ const breakevenTooltipText = (
 
 const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
   const ethPrice = useETHPriceInUSD();
-  const { totalPremium } = useStraddleTrade(
+  const { totalPremium, callStrikePrice, putStrikePrice } = useStraddleTrade(
     straddle.address,
     ethPrice,
     ethers.utils.parseEther("1")
@@ -69,14 +69,15 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
   );
   const [lowerBreakeven, upperBreakeven] = computeBreakeven(
     straddleUSD,
-    ethPrice
+    callStrikePrice,
+    putStrikePrice
   );
 
   const timestamp = new Date(
     straddle.expiryTimestamp * 1000
   ).toLocaleDateString();
 
-  const expiry = timeToExpiry(timestamp);
+  const expiry = timeToExpiry(straddle.expiryTimestamp);
 
   return (
     <StyledStraddleCard
@@ -106,10 +107,13 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
         <Description>
           Breakeven: <br></br>
           <DescriptionBold>
-            ≤ ${lowerBreakeven} or ≥ ${upperBreakeven}
+            ≤ ${lowerBreakeven.toFixed(2)} or ≥ ${upperBreakeven.toFixed(2)}
             <TooltipContainer>
               <Tooltip
-                title={breakevenTooltipText(lowerBreakeven, upperBreakeven)}
+                title={breakevenTooltipText(
+                  lowerBreakeven.toFixed(2),
+                  upperBreakeven.toFixed(2)
+                )}
               >
                 <InfoCircleOutlined />
               </Tooltip>
@@ -120,6 +124,8 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
         <Description>
           <PayoffCalculator
             ethPrice={ethPrice}
+            callStrikePrice={callStrikePrice}
+            putStrikePrice={putStrikePrice}
             straddlePrice={straddleUSD}
           ></PayoffCalculator>
         </Description>

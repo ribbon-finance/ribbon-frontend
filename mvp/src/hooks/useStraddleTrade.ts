@@ -1,7 +1,7 @@
 import { BigNumber } from "ethers";
 import axios from "axios";
 import { StraddleTrade, TradeResponse } from "../models";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDebounceCallback } from "@react-hook/debounce";
 
 const zero = BigNumber.from("0");

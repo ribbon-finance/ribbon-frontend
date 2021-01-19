@@ -392,6 +392,7 @@ async function get0xQuote(
     buyToken: otokenAddress,
     sellToken: "USDC",
     buyAmount: buyAmount.toString(),
+    gas: "600000",
   };
   const query = new URLSearchParams(data).toString();
   const url = `${ZERO_EX_API_URI}?${query}`;

@@ -29,7 +29,7 @@ type Props = {
 
 const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
   const ethPrice = useETHPriceInUSD();
-  const { totalPremium } = useStraddleTrade(
+  const { totalPremium, callStrikePrice, putStrikePrice } = useStraddleTrade(
     straddle.address,
     ethPrice,
     ethers.utils.parseEther(amount.toString())
@@ -41,6 +41,14 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
   );
   const [lowerBreakeven, upperBreakeven] = computeBreakeven(
     straddleUSD,
+    callStrikePrice,
+    putStrikePrice
+  );
+
+  const breakevenPercent = computeBreakevenPercent(
+    straddleUSD,
+    callStrikePrice,
+    putStrikePrice,
     ethPrice
   );
   const expiryTimestamp = new Date(
@@ -48,7 +56,7 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
   ).toLocaleDateString();
 
   const expiry = `${expiryTimestamp} (${timeToExpiry(
-    expiryTimestamp
+    straddle.expiryTimestamp
   )} remaining)`;
 
   const totalCostUSD = (parseFloat(straddleUSD) * amount).toFixed(2);
@@ -67,14 +75,11 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
         <Col span={12}>
           {StyledStatistic(
             "Breakeven Price",
-            `≤ $${lowerBreakeven} or ≥ $${upperBreakeven}`
+            `≤ $${lowerBreakeven.toFixed(2)} or ≥ $${upperBreakeven.toFixed(2)}`
           )}
         </Col>
         <Col span={12}>
-          {StyledStatistic(
-            "To Breakeven",
-            `(±${computeBreakevenPercent(straddleUSD, ethPrice)}%)`
-          )}
+          {StyledStatistic("To Breakeven", `(±${breakevenPercent}%)`)}
         </Col>
       </Row>
     </StyledCard>

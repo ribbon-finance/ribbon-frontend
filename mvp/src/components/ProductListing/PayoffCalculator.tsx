@@ -7,17 +7,26 @@ import {
   formatProfit,
 } from "../../utils/straddle";
 import { InputNumberStyled } from "../../designSystem";
+import { BigNumber } from "ethers";
 
 type Props = {
   ethPrice: number;
+  callStrikePrice: BigNumber;
+  putStrikePrice: BigNumber;
   straddlePrice: string;
 };
 
-const PayoffCalculator: React.FC<Props> = ({ ethPrice, straddlePrice }) => {
+const PayoffCalculator: React.FC<Props> = ({
+  ethPrice,
+  callStrikePrice,
+  putStrikePrice,
+  straddlePrice,
+}) => {
   const [inputText, setInputText] = useState("");
   const [, upperBreakeven] = computeBreakeven(
     straddlePrice,
-    ethPrice
+    callStrikePrice,
+    putStrikePrice
   );
 
   const defaultPrice = computeDefaultPrice(upperBreakeven, 1.0);
