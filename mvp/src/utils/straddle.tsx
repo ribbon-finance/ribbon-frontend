@@ -136,7 +136,7 @@ export const computeBreakevenPercent = (
 
   const straddle = parseFloat(straddleUSD);
   const upperBreakeven = ((upper + straddle) / ethUSD) * 100 - 100;
-  const lowerBreakeven = ((lower - straddle) / ethUSD) * 100 - 100;
+  const lowerBreakeven = ((lower - straddle) / ethUSD) * 100;
 
   const minBreakeven = Math.min(upperBreakeven, lowerBreakeven);
   return minBreakeven.toFixed(1);
