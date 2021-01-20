@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Row, Col, Button, Modal } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
@@ -100,33 +100,43 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
     },
     [setPurchaseAmount]
   );
-  const handlePurchase = useCallback(async () => {
-    if (library && straddle && gasPrice !== 0) {
-      const signer = library.getSigner();
-      const instrument = IAggregatedOptionsInstrumentFactory.connect(
-        straddle.address,
-        signer
-      );
-      await instrument.buyInstrument(
-        venues,
-        optionTypes,
-        amounts,
-        strikePrices,
-        buyData,
-        { value: totalPremium, gasPrice, gasLimit: 1200000 }
-      );
-    }
-  }, [
-    library,
-    straddle,
-    amounts,
-    buyData,
-    venues,
-    gasPrice,
-    totalPremium,
-    optionTypes,
-    strikePrices,
-  ]);
+  const handlePurchase = useCallback(
+    async (setIsWaitingForConfirmation: () => void) => {
+      if (library && straddle && gasPrice !== 0) {
+        try {
+          const signer = library.getSigner();
+          const instrument = IAggregatedOptionsInstrumentFactory.connect(
+            straddle.address,
+            signer
+          );
+          const receipt = await instrument.buyInstrument(
+            venues,
+            optionTypes,
+            amounts,
+            strikePrices,
+            buyData,
+            { value: totalPremium, gasPrice, gasLimit: 1200000 }
+          );
+          setIsWaitingForConfirmation();
+
+          await receipt.wait(1);
+        } catch (e) {
+          setIsModalVisible(false);
+        }
+      }
+    },
+    [
+      library,
+      straddle,
+      amounts,
+      buyData,
+      venues,
+      gasPrice,
+      totalPremium,
+      optionTypes,
+      strikePrices,
+    ]
+  );
 
   if (straddle === null) return null;
 
@@ -218,7 +228,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
 type PurchaseModalProps = {
   isVisible: boolean;
   loading: boolean;
-  onPurchase: () => void;
+  onPurchase: (setWaitingForConfirmation: () => void) => void;
   onClose: () => void;
   purchaseAmount: number;
   straddleETH: string;
@@ -235,11 +245,30 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
   expiry,
 }) => {
   const [isPending, setPending] = useState(false);
+  const [isWaitingForConfirmation, setIsWaitingForConfirmation] = useState(
+    false
+  );
 
   const handleOk = () => {
     setPending(true);
-    onPurchase();
+    onPurchase(() => setIsWaitingForConfirmation(true));
   };
+
+  let buttonText;
+  if (isPending && !isWaitingForConfirmation) {
+    buttonText = "Purchasing...";
+  } else if (isPending && isWaitingForConfirmation) {
+    buttonText = "Waiting for 1 confirmation...";
+  } else {
+    buttonText = "Purchase";
+  }
+
+  useEffect(() => {
+    if (!isVisible) {
+      setPending(false);
+      setIsWaitingForConfirmation(false);
+    }
+  }, [isVisible, setPending, setIsWaitingForConfirmation]);
 
   return (
     <Modal
@@ -249,7 +278,11 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
       width={300}
       title={"Confirm Purchase"}
       footer={[
-        <Button key="back" onClick={onClose}>
+        <Button
+          key="back"
+          disabled={isWaitingForConfirmation}
+          onClick={onClose}
+        >
           Cancel
         </Button>,
         <Button
@@ -259,7 +292,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
           loading={isPending}
           onClick={handleOk}
         >
-          Purchase
+          {buttonText}
         </Button>,
       ]}
     >
