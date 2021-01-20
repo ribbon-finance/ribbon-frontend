@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Row, Col } from "antd";
+import { Row, Col, Button, Modal } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Title, PrimaryText, StyledCard } from "../../designSystem";
 import { computeStraddleValue } from "../../utils/straddle";
@@ -14,6 +14,7 @@ import { useDefaultProduct, useInstrument } from "../../hooks/useProducts";
 import { useStraddleTrade } from "../../hooks/useStraddleTrade";
 import { ethers } from "ethers";
 import { useParams } from "react-router-dom";
+import StyledStatistic from "../../designSystem/StyledStatistic";
 
 const ProductTitleContainer = styled.div`
   padding-top: 10px;
@@ -58,8 +59,10 @@ const productDescription = (name: string) => {
 
 const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () => {
   const { instrumentSymbol } = useParams<ParamTypes>();
-
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [purchaseAmount, setPurchaseAmount] = useState(0.0);
+
+  const handleCloseModal = () => setIsModalVisible(false);
 
   const updatePurchaseAmount = (amount: number) => {
     setPurchaseAmount(amount);
@@ -94,6 +97,14 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
 
   return (
     <div>
+      <PurchaseModal
+        isVisible={isModalVisible}
+        onClose={handleCloseModal}
+        purchaseAmount={purchaseAmount}
+        straddleETH={totalCostETH}
+        expiry={expiry}
+      ></PurchaseModal>
+
       <a href="/">
         <ArrowLeftOutlined />
       </a>
@@ -121,9 +132,8 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
               </Col>
               <Col span={4}>
                 <PurchaseButton
+                  onClick={() => setIsModalVisible(true)}
                   purchaseAmount={purchaseAmount}
-                  straddleETH={totalCostETH}
-                  expiry={expiry}
                 ></PurchaseButton>
               </Col>
             </Row>
@@ -150,6 +160,73 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
         </Col>
       </Row>
     </div>
+  );
+};
+
+type PurchaseModalProps = {
+  isVisible: boolean;
+  onClose: () => void;
+  purchaseAmount: number;
+  straddleETH: string;
+  expiry: string;
+};
+
+const PurchaseModal: React.FC<PurchaseModalProps> = ({
+  isVisible,
+  onClose,
+  purchaseAmount,
+  straddleETH,
+  expiry,
+}) => {
+  const [isPending, setPending] = useState(false);
+
+  const handleOk = () => {
+    setPending(true);
+  };
+
+  return (
+    <Modal
+      visible={isVisible}
+      onOk={handleOk}
+      onCancel={onClose}
+      width={300}
+      title={"Confirm Purchase"}
+      footer={[
+        <Button key="back" onClick={onClose}>
+          Cancel
+        </Button>,
+        <Button
+          key="submit"
+          type="primary"
+          loading={isPending}
+          onClick={handleOk}
+        >
+          Purchase
+        </Button>,
+      ]}
+    >
+      <Row>
+        <StyledStatistic
+          title="I am purchasing"
+          value={`${purchaseAmount} contracts`}
+        ></StyledStatistic>
+      </Row>
+      <Row>
+        <StyledStatistic
+          title="This will cost"
+          value={
+            parseFloat(straddleETH) ? `${straddleETH} ETH` : "Computing cost..."
+          }
+        ></StyledStatistic>
+      </Row>
+
+      <Row>
+        <StyledStatistic
+          title="The contracts will expire by"
+          value={expiry.toString()}
+        ></StyledStatistic>
+      </Row>
+    </Modal>
   );
 };
 
