@@ -1,5 +1,6 @@
 import { BigNumber, ethers } from "ethers";
 import styled from "styled-components";
+import { wadToUSD } from "./math";
 
 const Profit = styled.span`
   font-size: 18px;
@@ -15,28 +16,30 @@ const ProfitNegative = styled(Profit)`
 `;
 
 export const computeStraddleValue = (
-  callPremium: string,
-  putPremium: string,
+  totalPremium: BigNumber,
   ethPrice: number
 ): [string, string] => {
-  const call = BigNumber.from(callPremium);
-  const put = BigNumber.from(putPremium);
-  const straddleCost = parseFloat(ethers.utils.formatEther(call.add(put)));
+  const straddleCost = parseFloat(ethers.utils.formatEther(totalPremium));
   return [(straddleCost * ethPrice).toFixed(2), straddleCost.toFixed(3)];
 };
 
 export const computeBreakeven = (
   straddleUSD: string,
-  ethUSD: number
-): [string, string] => {
+  callStrikePrice: BigNumber,
+  putStrikePrice: BigNumber
+): [number, number] => {
+  const scaleFactor = BigNumber.from("10").pow(BigNumber.from("16"));
   const straddle = parseFloat(straddleUSD);
-  const lower = (ethUSD - straddle).toFixed(2);
-  const upper = (ethUSD + straddle).toFixed(2);
+  const putStrikeNum = putStrikePrice.div(scaleFactor).toNumber() / 100;
+  const callStrikeNum = callStrikePrice.div(scaleFactor).toNumber() / 100;
+
+  const lower = putStrikeNum - straddle;
+  const upper = callStrikeNum + straddle;
   return [lower, upper];
 };
 
-export const computeDefaultPrice = (upperBreakeven: string, buffer: number) => {
-  const defaultPrice = parseFloat(upperBreakeven) * buffer;
+export const computeDefaultPrice = (upperBreakeven: number, buffer: number) => {
+  const defaultPrice = upperBreakeven * buffer;
   return Math.round(defaultPrice);
 };
 
@@ -67,6 +70,8 @@ export const computeGains = (
 export const computeGainsAmount = (
   currentAssetPrice: number,
   futureAssetPrice: number,
+  callStrikePrice: BigNumber,
+  putStrikePrice: BigNumber,
   instrumentPrice: number,
   amount: number
 ): [string, string, boolean] => {
@@ -74,10 +79,17 @@ export const computeGainsAmount = (
     return ["0.00", "0.0", true];
   }
 
+  const callStrikeNum = wadToUSD(callStrikePrice);
+  const putStrikeNum = wadToUSD(putStrikePrice);
+
   let dollarProfit = 0;
-  if (futureAssetPrice - currentAssetPrice > 0) {
+  console.log(callStrikeNum);
+
+  if (futureAssetPrice > callStrikeNum) {
     dollarProfit =
-      (futureAssetPrice - currentAssetPrice - instrumentPrice) * amount;
+      (futureAssetPrice - callStrikeNum - instrumentPrice) * amount;
+  } else if (futureAssetPrice < putStrikeNum) {
+    dollarProfit = (putStrikeNum - futureAssetPrice - instrumentPrice) * amount;
   } else {
     dollarProfit =
       (currentAssetPrice - futureAssetPrice - instrumentPrice) * amount;
@@ -122,9 +134,29 @@ export const formatProfit = (
 
 export const computeBreakevenPercent = (
   straddleUSD: string,
+  callStrikePrice: BigNumber,
+  putStrikePrice: BigNumber,
   ethUSD: number
-): string => {
+) => {
+  const [lower, upper] = computeBreakeven(
+    straddleUSD,
+    callStrikePrice,
+    putStrikePrice
+  );
+
   const straddle = parseFloat(straddleUSD);
-  const upper = ((ethUSD + straddle) / ethUSD) * 100 - 100;
-  return upper.toFixed(1);
+  const upperBreakeven = ((upper + straddle) / ethUSD) * 100 - 100;
+  const lowerBreakeven = ((lower - straddle) / ethUSD) * 100;
+
+  const minBreakeven = Math.min(upperBreakeven, lowerBreakeven);
+  return minBreakeven.toFixed(1);
 };
+
+// export const computeBreakevenPercent = (
+//   straddleUSD: string,
+//   ethUSD: number
+// ): string => {
+//   const straddle = parseFloat(straddleUSD);
+//   const upper = ((ethUSD + straddle) / ethUSD) * 100 - 100;
+//   return upper.toFixed(1);
+// };

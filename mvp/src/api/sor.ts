@@ -193,7 +193,7 @@ async function getPriceFromContract(
 
   // just hardcode the bounds to be +-5%
   const callStrikePrice = wmul(spotPrice, ethers.utils.parseEther("1.05"));
-  const putStrikePrice = wmul(spotPrice, ethers.utils.parseEther("0.95"));
+  const putStrikePrice = wmul(spotPrice, ethers.utils.parseEther("0.65"));
 
   const optionTerms = optionTypes.map((optionType) => ({
     ...optionTermsFromContract,
@@ -316,7 +316,7 @@ function getNearestOtoken(expiry: number, spotPrice: BigNumber): OtokenMatches {
   otokens = otokens.filter((otoken) => otoken.expiry === expiry);
 
   // min-max bounds are 10% from the spot price
-  const minStrikePrice = wmul(spotPrice, ethers.utils.parseEther("0.95"));
+  const minStrikePrice = wmul(spotPrice, ethers.utils.parseEther("0.15"));
   const maxStrikePrice = wmul(spotPrice, ethers.utils.parseEther("1.05"));
 
   const callOtokens = otokens.filter(
@@ -392,6 +392,7 @@ async function get0xQuote(
     buyToken: otokenAddress,
     sellToken: "USDC",
     buyAmount: buyAmount.toString(),
+    gas: "600000",
   };
   const query = new URLSearchParams(data).toString();
   const url = `${ZERO_EX_API_URI}?${query}`;

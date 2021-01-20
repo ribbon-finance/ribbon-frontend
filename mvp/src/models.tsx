@@ -21,22 +21,41 @@ export type OldProduct = {
   instruments: Instrument[];
 };
 
-export type Straddle = {
+export type BasicStraddle = {
+  address: string;
   symbol: string;
-  currency: string;
   expiryTimestamp: number;
-  callPremium: string;
-  callStrikePrice: string;
-  callVenue: string;
-  callPositionID: string | null;
-  putPremium: string;
-  putStrikePrice: string;
-  putVenue: string;
-  putPositionID: string | null;
+};
+
+export type Straddle = BasicStraddle & {
+  underlying: string;
+};
+
+export type StraddleTrade = {
+  venues: string[];
+  amounts: BigNumber[];
+  totalPremium: BigNumber;
+  callPremium: BigNumber;
+  callStrikePrice: BigNumber;
+  putPremium: BigNumber;
+  putStrikePrice: BigNumber;
+  buyData: string[];
+  gasPrice: BigNumber;
 };
 
 export type Product = {
   name: string;
   emoji: string;
   instruments: Straddle[];
+};
+
+export type TradeResponse = {
+  venues: string[];
+  optionTypes: number[];
+  amounts: string[];
+  strikePrices: string[];
+  buyData: string[];
+  gasPrice: string;
+  totalPremium: string;
+  premiums: string[];
 };

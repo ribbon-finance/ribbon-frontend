@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import images from "../../img/currencyIcons";
 import { BaseText } from "../../designSystem";
-import { useEthPrice } from "../../hooks/marketPrice";
+import { useETHPriceInUSD } from "../../hooks/useEthPrice";
 
 const { ETH: ETHIcon } = images;
 
@@ -28,7 +28,7 @@ const CurrentPrice = () => {
     <>
       <CurrencyIcon src={ETHIcon} alt="ETH"></CurrencyIcon>
       <ETHPriceContainer>
-        <ETHPrice>${useEthPrice()}</ETHPrice>
+        <ETHPrice>${useETHPriceInUSD().toFixed(2)}</ETHPrice>
       </ETHPriceContainer>
     </>
   );

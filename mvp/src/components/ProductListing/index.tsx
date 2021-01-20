@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { Row, Col } from "antd";
 import { Title, PrimaryText } from "../../designSystem";
-import { Product } from "../../models";
 import StraddleCard from "./StraddleCard";
+import { useDefaultProduct } from "../../hooks/useProducts";
 
 const ProductContainer = styled.div`
   padding-bottom: 50px;
@@ -17,13 +17,11 @@ const ProductDescriptionContainer = styled.div`
   padding-bottom: 30px;
 `;
 
-type Props = {
-  product: Product;
-};
-
-const productDescription = (name: string) => {
-  var description;
-  switch (name) {
+const ProductDescription: React.FC<{ productName: string }> = ({
+  productName,
+}) => {
+  let description = null;
+  switch (productName) {
     case "ETH Straddle":
       description = (
         <PrimaryText>
@@ -39,7 +37,9 @@ const productDescription = (name: string) => {
   return description;
 };
 
-const ProductListing: React.FC<Props> = ({ product }) => {
+const ProductListing: React.FC = () => {
+  const product = useDefaultProduct();
+
   return (
     <ProductContainer>
       <ProductTitleContainer>
@@ -49,19 +49,18 @@ const ProductListing: React.FC<Props> = ({ product }) => {
       </ProductTitleContainer>
 
       <ProductDescriptionContainer>
-        {productDescription(product.name)}
+        <ProductDescription productName={product.name}></ProductDescription>
       </ProductDescriptionContainer>
 
       <Row justify="space-between">
-        <Col span={6}>
-          <StraddleCard straddle={product.instruments[0]}></StraddleCard>
-        </Col>
-        <Col span={6}>
-          <StraddleCard straddle={product.instruments[0]}></StraddleCard>
-        </Col>
-        <Col span={6}>
-          <StraddleCard straddle={product.instruments[0]}></StraddleCard>
-        </Col>
+        {product.instruments.map((instrument) => (
+          <Col
+            key={instrument.address}
+            span={18 / Math.floor(product.instruments.length)}
+          >
+            <StraddleCard straddle={instrument}></StraddleCard>
+          </Col>
+        ))}
       </Row>
     </ProductContainer>
   );

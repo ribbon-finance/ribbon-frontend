@@ -3,14 +3,17 @@ import styled from "styled-components";
 import { Row, Col } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Title, PrimaryText, StyledCard } from "../../designSystem";
-import { products } from "../../mockData";
 import { computeStraddleValue } from "../../utils/straddle";
-import { useEthPrice } from "../../hooks/marketPrice";
+import { useETHPriceInUSD } from "../../hooks/useEthPrice";
 import AmountInput from "./AmountInput";
 import PayoffCalculator from "./PayoffCalculator";
 import ProductInfo from "./ProductInfo";
 import PurchaseButton from "./PurchaseButton";
 import { timeToExpiry } from "../../utils/time";
+import { useDefaultProduct, useInstrument } from "../../hooks/useProducts";
+import { useStraddleTrade } from "../../hooks/useStraddleTrade";
+import { ethers } from "ethers";
+import { useParams } from "react-router-dom";
 
 const ProductTitleContainer = styled.div`
   padding-top: 10px;
@@ -27,9 +30,9 @@ const PositionSize = styled.div`
 
 type PurchaseInstrumentWrapperProps = {};
 
-// interface ParamTypes {
-//   instrumentSymbol: string;
-// }
+interface ParamTypes {
+  instrumentSymbol: string;
+}
 
 const productDescription = (name: string) => {
   var description;
@@ -54,18 +57,28 @@ const productDescription = (name: string) => {
 };
 
 const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () => {
+  const { instrumentSymbol } = useParams<ParamTypes>();
+
   const [purchaseAmount, setPurchaseAmount] = useState(0.0);
 
   const updatePurchaseAmount = (amount: number) => {
     setPurchaseAmount(amount);
   };
+  const ethPrice = useETHPriceInUSD();
+  const product = useDefaultProduct();
+  const purchaseAmountWei = ethers.utils.parseEther(purchaseAmount.toString());
+  const straddle = useInstrument(instrumentSymbol);
 
-  const ethPrice = useEthPrice();
-  const product = products[0];
-  const straddle = product.instruments[0];
+  const { totalPremium, callStrikePrice, putStrikePrice } = useStraddleTrade(
+    straddle ? straddle.address : "",
+    ethPrice,
+    purchaseAmountWei
+  );
+
+  if (straddle === null) return null;
+
   const [straddleUSD, straddleETH] = computeStraddleValue(
-    straddle.callPremium,
-    straddle.putPremium,
+    totalPremium,
     ethPrice
   );
 
@@ -74,7 +87,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
   ).toLocaleDateString();
 
   const expiry = `${expiryTimestamp} (${timeToExpiry(
-    expiryTimestamp
+    straddle.expiryTimestamp
   )} remaining)`;
 
   const totalCostETH = (parseFloat(straddleETH) * purchaseAmount).toFixed(3);
@@ -126,6 +139,8 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
               <StyledCard style={{ height: "100%" }}>
                 <PayoffCalculator
                   ethPrice={ethPrice}
+                  callStrikePrice={callStrikePrice}
+                  putStrikePrice={putStrikePrice}
                   straddlePrice={straddleUSD}
                   amount={purchaseAmount}
                 ></PayoffCalculator>

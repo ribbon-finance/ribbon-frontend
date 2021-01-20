@@ -11,7 +11,6 @@ import Banner from "./Banner";
 import Portfolio from "./Portfolio";
 import ProductListing from "./ProductListing";
 import Product from "./Product";
-import { products } from "../mockData";
 import Content404 from "./Content404";
 import getLibrary from "../utils/getLibrary";
 
@@ -39,7 +38,7 @@ function App() {
                   <Route exact path="/">
                     <Banner></Banner>
                     <Dashboard></Dashboard>
-                    <ProductListing product={products[0]}></ProductListing>
+                    <ProductListing></ProductListing>
                   </Route>
                   <Route exact path="/instrument/:instrumentSymbol">
                     <Product></Product>

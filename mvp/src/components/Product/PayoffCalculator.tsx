@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Input, Row} from "antd";
+import { Input, Row } from "antd";
 import {
   computeBreakeven,
   computeDefaultPrice,
   computeGainsAmount,
   formatProfit,
 } from "../../utils/straddle";
+import { BigNumber } from "ethers";
 
 const CardTitle = styled(Row)`
   font-weight: bold;
@@ -31,24 +32,31 @@ const InputNumberStyled = styled(Input)`
 type Props = {
   ethPrice: number;
   straddlePrice: string;
+  callStrikePrice: BigNumber;
+  putStrikePrice: BigNumber;
   amount: number;
 };
 
 const PayoffCalculator: React.FC<Props> = ({
   ethPrice,
   straddlePrice,
+  callStrikePrice,
+  putStrikePrice,
   amount,
 }) => {
   const [inputText, setInputText] = useState("");
   const [, upperBreakeven] = computeBreakeven(
     straddlePrice,
-    ethPrice
+    callStrikePrice,
+    putStrikePrice
   );
 
   const defaultPrice = computeDefaultPrice(upperBreakeven, 1.0);
   const [dollarProfit, percentProfit, profitPositive] = computeGainsAmount(
     ethPrice,
     parseFloat(inputText),
+    callStrikePrice,
+    putStrikePrice,
     parseFloat(straddlePrice),
     amount
   );

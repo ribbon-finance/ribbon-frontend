@@ -6,9 +6,11 @@ import {
   computeBreakeven,
   computeBreakevenPercent,
 } from "../../utils/straddle";
-import { useEthPrice } from "../../hooks/marketPrice";
-import { Straddle } from "../../models";
+import { useETHPriceInUSD } from "../../hooks/useEthPrice";
+import { BasicStraddle } from "../../models";
 import { timeToExpiry } from "../../utils/time";
+import { useStraddleTrade } from "../../hooks/useStraddleTrade";
+import { ethers } from "ethers";
 
 const StyledStatistic = (title: string, value: string) => {
   return (
@@ -21,53 +23,82 @@ const StyledStatistic = (title: string, value: string) => {
 };
 
 type Props = {
-  straddle: Straddle;
+  straddle: BasicStraddle;
   amount: number;
 };
 
 const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
-  const ethPrice = useEthPrice();
+  const ethPrice = useETHPriceInUSD();
+  const {
+    loading: loadingTrade,
+    error: loadTradeError,
+    totalPremium,
+    callStrikePrice,
+    putStrikePrice,
+  } = useStraddleTrade(
+    straddle.address,
+    ethPrice,
+    ethers.utils.parseEther(amount.toString())
+  );
 
   const [straddleUSD, straddleETH] = computeStraddleValue(
-    straddle.callPremium,
-    straddle.putPremium,
+    totalPremium,
     ethPrice
   );
   const [lowerBreakeven, upperBreakeven] = computeBreakeven(
     straddleUSD,
-    ethPrice
+    callStrikePrice,
+    putStrikePrice
   );
+
+  const breakevenPercent =
+    !totalPremium.isZero() &&
+    computeBreakevenPercent(
+      straddleUSD,
+      callStrikePrice,
+      putStrikePrice,
+      ethPrice
+    );
+
   const expiryTimestamp = new Date(
     straddle.expiryTimestamp * 1000
   ).toLocaleDateString();
 
   const expiry = `${expiryTimestamp} (${timeToExpiry(
-    expiryTimestamp
+    straddle.expiryTimestamp
   )} remaining)`;
 
   const totalCostUSD = (parseFloat(straddleUSD) * amount).toFixed(2);
   const totalCostETH = (parseFloat(straddleETH) * amount).toFixed(2);
 
+  let costStr;
+  if (loadingTrade) {
+    costStr = "Computing cost...";
+  } else if (loadTradeError) {
+    costStr = "Error loading cost. Try again.";
+  } else {
+    costStr = `$${totalCostUSD} (${totalCostETH} ETH)`;
+  }
+
   return (
     <StyledCard style={{ height: "100%" }}>
       <Row>{StyledStatistic("Expiry", expiry)}</Row>
-      <Row>
-        {StyledStatistic(
-          "Total Cost",
-          `$${totalCostUSD} (${totalCostETH} ETH)`
-        )}
-      </Row>
+      <Row>{StyledStatistic("Total Cost", costStr)}</Row>
       <Row>
         <Col span={12}>
           {StyledStatistic(
             "Breakeven Price",
-            `≤ $${lowerBreakeven} or ≥ $${upperBreakeven}`
+            breakevenPercent
+              ? `≤ $${lowerBreakeven.toFixed(2)} or ≥ $${upperBreakeven.toFixed(
+                  2
+                )}`
+              : "-"
           )}
         </Col>
         <Col span={12}>
           {StyledStatistic(
             "To Breakeven",
-            `(±${computeBreakevenPercent(straddleUSD, ethPrice)}%)`
+            breakevenPercent ? `(±${breakevenPercent}%)` : "-"
           )}
         </Col>
       </Row>

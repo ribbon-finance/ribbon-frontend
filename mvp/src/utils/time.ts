@@ -1,10 +1,10 @@
-export const timeToExpiry = (expiry: string) => {
-  const now = new Date();
-  const total = Date.parse(expiry) - now.valueOf();
-  const seconds = Math.floor((total / 1000) % 60);
-  const minutes = Math.floor((total / 1000 / 60) % 60);
-  const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
-  const days = Math.floor(total / (1000 * 60 * 60 * 24));
+export const timeToExpiry = (expiryTimestamp: number) => {
+  const nowTimestamp = Math.floor(Date.now() / 1000);
+  const total = expiryTimestamp - nowTimestamp;
+  const seconds = Math.floor(total % 60);
+  const minutes = Math.floor((total / 60) % 60);
+  const hours = Math.floor((total / (60 * 60)) % 24);
+  const days = Math.floor(total / (60 * 60 * 24));
 
   const res = {
     total,

@@ -149,21 +149,53 @@ export class IAggregatedOptionsInstrument extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    underlying(overrides?: Overrides): Promise<ContractTransaction>;
+    underlying(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
-    "underlying()"(overrides?: Overrides): Promise<ContractTransaction>;
+    "underlying()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
-    strikeAsset(overrides?: Overrides): Promise<ContractTransaction>;
+    strikeAsset(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
-    "strikeAsset()"(overrides?: Overrides): Promise<ContractTransaction>;
+    "strikeAsset()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
-    collateralAsset(overrides?: Overrides): Promise<ContractTransaction>;
+    collateralAsset(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
-    "collateralAsset()"(overrides?: Overrides): Promise<ContractTransaction>;
+    "collateralAsset()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
-    expiry(overrides?: Overrides): Promise<ContractTransaction>;
+    expiry(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
 
-    "expiry()"(overrides?: Overrides): Promise<ContractTransaction>;
+    "expiry()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
   };
 
   cost(
@@ -210,21 +242,21 @@ export class IAggregatedOptionsInstrument extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  underlying(overrides?: Overrides): Promise<ContractTransaction>;
+  underlying(overrides?: CallOverrides): Promise<string>;
 
-  "underlying()"(overrides?: Overrides): Promise<ContractTransaction>;
+  "underlying()"(overrides?: CallOverrides): Promise<string>;
 
-  strikeAsset(overrides?: Overrides): Promise<ContractTransaction>;
+  strikeAsset(overrides?: CallOverrides): Promise<string>;
 
-  "strikeAsset()"(overrides?: Overrides): Promise<ContractTransaction>;
+  "strikeAsset()"(overrides?: CallOverrides): Promise<string>;
 
-  collateralAsset(overrides?: Overrides): Promise<ContractTransaction>;
+  collateralAsset(overrides?: CallOverrides): Promise<string>;
 
-  "collateralAsset()"(overrides?: Overrides): Promise<ContractTransaction>;
+  "collateralAsset()"(overrides?: CallOverrides): Promise<string>;
 
-  expiry(overrides?: Overrides): Promise<ContractTransaction>;
+  expiry(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "expiry()"(overrides?: Overrides): Promise<ContractTransaction>;
+  "expiry()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
     cost(
@@ -335,21 +367,21 @@ export class IAggregatedOptionsInstrument extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    underlying(overrides?: Overrides): Promise<BigNumber>;
+    underlying(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "underlying()"(overrides?: Overrides): Promise<BigNumber>;
+    "underlying()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    strikeAsset(overrides?: Overrides): Promise<BigNumber>;
+    strikeAsset(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "strikeAsset()"(overrides?: Overrides): Promise<BigNumber>;
+    "strikeAsset()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    collateralAsset(overrides?: Overrides): Promise<BigNumber>;
+    collateralAsset(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "collateralAsset()"(overrides?: Overrides): Promise<BigNumber>;
+    "collateralAsset()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    expiry(overrides?: Overrides): Promise<BigNumber>;
+    expiry(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "expiry()"(overrides?: Overrides): Promise<BigNumber>;
+    "expiry()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -397,20 +429,22 @@ export class IAggregatedOptionsInstrument extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    underlying(overrides?: Overrides): Promise<PopulatedTransaction>;
+    underlying(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "underlying()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+    "underlying()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    strikeAsset(overrides?: Overrides): Promise<PopulatedTransaction>;
+    strikeAsset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "strikeAsset()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+    "strikeAsset()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    collateralAsset(overrides?: Overrides): Promise<PopulatedTransaction>;
+    collateralAsset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "collateralAsset()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+    "collateralAsset()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    expiry(overrides?: Overrides): Promise<PopulatedTransaction>;
+    expiry(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "expiry()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+    "expiry()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }
