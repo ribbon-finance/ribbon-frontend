@@ -21,6 +21,7 @@
     "@web3-react/injected-connector": "^6.0.7",
     "antd": "^4.9.4",
     "axios": "^0.21.1",
+    "axios-retry": "^3.1.9",
     "chart.js": "^2.9.4",
     "craco-less": "^1.17.1",
     "ethers": "^5.0.19",

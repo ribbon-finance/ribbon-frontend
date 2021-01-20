@@ -1,8 +1,11 @@
 import { BigNumber } from "ethers";
 import axios from "axios";
+import axiosRetry from "axios-retry";
 import { StraddleTrade, TradeResponse } from "../models";
 import { useEffect, useState } from "react";
 import { useDebounceCallback } from "@react-hook/debounce";
+
+axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
 
 const zero = BigNumber.from("0");
 
@@ -22,7 +25,10 @@ const SOR_API_URL = "/api/sor";
 
 const scaleFactor = BigNumber.from("10").pow(BigNumber.from("16"));
 
-type StraddleTradeResponse = StraddleTrade & { loading: boolean };
+type StraddleTradeResponse = StraddleTrade & {
+  loading: boolean;
+  error: Error | null;
+};
 
 export const useStraddleTrade = (
   instrumentAddress: string,
@@ -32,6 +38,7 @@ export const useStraddleTrade = (
   const [trade, setTrade] = useState<StraddleTradeResponse>({
     ...emptyTrade,
     loading: false,
+    error: null,
   });
 
   const buyAmountString = buyAmount.toString();
@@ -54,9 +61,9 @@ export const useStraddleTrade = (
       try {
         const response = await axios.get(url);
         const trade = convertTradeResponseToStraddleTrade(response.data);
-        setTrade({ ...trade, loading: false });
+        setTrade({ ...trade, loading: false, error: null });
       } catch (e) {
-        setTrade({ ...emptyTrade, loading: false });
+        setTrade({ ...emptyTrade, loading: false, error: e });
         throw e;
       }
     },

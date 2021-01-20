@@ -31,6 +31,7 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
   const ethPrice = useETHPriceInUSD();
   const {
     loading: loadingTrade,
+    error: loadTradeError,
     totalPremium,
     callStrikePrice,
     putStrikePrice,
@@ -70,17 +71,19 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
   const totalCostUSD = (parseFloat(straddleUSD) * amount).toFixed(2);
   const totalCostETH = (parseFloat(straddleETH) * amount).toFixed(2);
 
+  let costStr;
+  if (loadingTrade) {
+    costStr = "Computing cost...";
+  } else if (loadTradeError) {
+    costStr = "Error loading cost. Try again.";
+  } else {
+    costStr = `$${totalCostUSD} (${totalCostETH} ETH)`;
+  }
+
   return (
     <StyledCard style={{ height: "100%" }}>
       <Row>{StyledStatistic("Expiry", expiry)}</Row>
-      <Row>
-        {StyledStatistic(
-          "Total Cost",
-          loadingTrade
-            ? "Computing cost..."
-            : `$${totalCostUSD} (${totalCostETH} ETH)`
-        )}
-      </Row>
+      <Row>{StyledStatistic("Total Cost", costStr)}</Row>
       <Row>
         <Col span={12}>
           {StyledStatistic(
