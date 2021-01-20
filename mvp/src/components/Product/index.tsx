@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import { Row, Col, Button, Modal } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
@@ -15,6 +15,9 @@ import { useStraddleTrade } from "../../hooks/useStraddleTrade";
 import { ethers } from "ethers";
 import { useParams } from "react-router-dom";
 import StyledStatistic from "../../designSystem/StyledStatistic";
+import { useWeb3React } from "@web3-react/core";
+import { IAggregatedOptionsInstrumentFactory } from "../../codegen/IAggregatedOptionsInstrumentFactory";
+import { CALL_OPTION_TYPE, PUT_OPTION_TYPE } from "../../models";
 
 const ProductTitleContainer = styled.div`
   padding-top: 10px;
@@ -62,21 +65,73 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [purchaseAmount, setPurchaseAmount] = useState(0.0);
 
-  const handleCloseModal = () => setIsModalVisible(false);
-
-  const updatePurchaseAmount = (amount: number) => {
-    setPurchaseAmount(amount);
-  };
+  const { library, account } = useWeb3React();
   const ethPrice = useETHPriceInUSD();
   const product = useDefaultProduct();
   const purchaseAmountWei = ethers.utils.parseEther(purchaseAmount.toString());
   const straddle = useInstrument(instrumentSymbol);
 
-  const { totalPremium, callStrikePrice, putStrikePrice } = useStraddleTrade(
+  const {
+    totalPremium,
+    callStrikePrice,
+    putStrikePrice,
+    venues,
+    amounts,
+    buyData,
+    gasPrice,
+  } = useStraddleTrade(
     straddle ? straddle.address : "",
     ethPrice,
     purchaseAmountWei
   );
+
+  const handleCloseModal = useCallback(() => setIsModalVisible(false), [
+    setIsModalVisible,
+  ]);
+  const updatePurchaseAmount = useCallback(
+    (amount: number) => {
+      setPurchaseAmount(amount);
+    },
+    [setPurchaseAmount]
+  );
+  const handlePurchase = useCallback(async () => {
+    if (library && straddle) {
+      const signer = library.getSigner();
+      const instrument = IAggregatedOptionsInstrumentFactory.connect(
+        straddle.address,
+        signer
+      );
+      const optionTypes = [PUT_OPTION_TYPE, CALL_OPTION_TYPE];
+      const strikePrices = [putStrikePrice, callStrikePrice];
+      console.log([
+        venues,
+        optionTypes,
+        amounts,
+        strikePrices,
+        buyData,
+        { value: totalPremium, gasPrice },
+      ]);
+      await instrument.buyInstrument(
+        venues,
+        optionTypes,
+        amounts,
+        strikePrices,
+        buyData,
+        { value: totalPremium, gasPrice }
+      );
+    }
+  }, [
+    library,
+    account,
+    straddle,
+    amounts,
+    buyData,
+    callStrikePrice,
+    putStrikePrice,
+    venues,
+    gasPrice,
+    totalPremium,
+  ]);
 
   if (straddle === null) return null;
 
@@ -99,6 +154,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
     <div>
       <PurchaseModal
         isVisible={isModalVisible}
+        onPurchase={handlePurchase}
         onClose={handleCloseModal}
         purchaseAmount={purchaseAmount}
         straddleETH={totalCostETH}
@@ -165,6 +221,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
 
 type PurchaseModalProps = {
   isVisible: boolean;
+  onPurchase: () => void;
   onClose: () => void;
   purchaseAmount: number;
   straddleETH: string;
@@ -173,6 +230,7 @@ type PurchaseModalProps = {
 
 const PurchaseModal: React.FC<PurchaseModalProps> = ({
   isVisible,
+  onPurchase,
   onClose,
   purchaseAmount,
   straddleETH,
@@ -182,6 +240,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
 
   const handleOk = () => {
     setPending(true);
+    onPurchase();
   };
 
   return (
