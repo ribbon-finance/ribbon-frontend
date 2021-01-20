@@ -1,5 +1,6 @@
 import { BigNumber, ethers } from "ethers";
 import styled from "styled-components";
+import { wadToUSD } from "./math";
 
 const Profit = styled.span`
   font-size: 18px;
@@ -69,6 +70,8 @@ export const computeGains = (
 export const computeGainsAmount = (
   currentAssetPrice: number,
   futureAssetPrice: number,
+  callStrikePrice: BigNumber,
+  putStrikePrice: BigNumber,
   instrumentPrice: number,
   amount: number
 ): [string, string, boolean] => {
@@ -76,10 +79,17 @@ export const computeGainsAmount = (
     return ["0.00", "0.0", true];
   }
 
+  const callStrikeNum = wadToUSD(callStrikePrice);
+  const putStrikeNum = wadToUSD(putStrikePrice);
+
   let dollarProfit = 0;
-  if (futureAssetPrice - currentAssetPrice > 0) {
+  console.log(callStrikeNum);
+
+  if (futureAssetPrice > callStrikeNum) {
     dollarProfit =
-      (futureAssetPrice - currentAssetPrice - instrumentPrice) * amount;
+      (futureAssetPrice - callStrikeNum - instrumentPrice) * amount;
+  } else if (futureAssetPrice < putStrikeNum) {
+    dollarProfit = (putStrikeNum - futureAssetPrice - instrumentPrice) * amount;
   } else {
     dollarProfit =
       (currentAssetPrice - futureAssetPrice - instrumentPrice) * amount;

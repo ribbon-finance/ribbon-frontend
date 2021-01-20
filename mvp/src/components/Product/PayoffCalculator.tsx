@@ -55,6 +55,8 @@ const PayoffCalculator: React.FC<Props> = ({
   const [dollarProfit, percentProfit, profitPositive] = computeGainsAmount(
     ethPrice,
     parseFloat(inputText),
+    callStrikePrice,
+    putStrikePrice,
     parseFloat(straddlePrice),
     amount
   );
