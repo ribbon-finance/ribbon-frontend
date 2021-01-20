@@ -120,6 +120,8 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
           setIsWaitingForConfirmation();
 
           await receipt.wait(1);
+
+          setIsModalVisible(false);
         } catch (e) {
           setIsModalVisible(false);
         }
@@ -228,7 +230,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
 type PurchaseModalProps = {
   isVisible: boolean;
   loading: boolean;
-  onPurchase: (setWaitingForConfirmation: () => void) => void;
+  onPurchase: (setWaitingForConfirmation: () => void) => Promise<void>;
   onClose: () => void;
   purchaseAmount: number;
   straddleETH: string;
@@ -249,9 +251,11 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
     false
   );
 
-  const handleOk = () => {
+  const handleOk = async () => {
     setPending(true);
-    onPurchase(() => setIsWaitingForConfirmation(true));
+    await onPurchase(() => setIsWaitingForConfirmation(true));
+    setPending(false);
+    setIsWaitingForConfirmation(false);
   };
 
   let buttonText;
@@ -278,13 +282,15 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
       width={300}
       title={"Confirm Purchase"}
       footer={[
-        <Button
-          key="back"
-          disabled={isWaitingForConfirmation}
-          onClick={onClose}
-        >
-          Cancel
-        </Button>,
+        !isWaitingForConfirmation && (
+          <Button
+            key="back"
+            disabled={isWaitingForConfirmation}
+            onClick={onClose}
+          >
+            Cancel
+          </Button>
+        ),
         <Button
           disabled={loading}
           key="submit"
@@ -294,7 +300,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
         >
           {buttonText}
         </Button>,
-      ]}
+      ].filter(Boolean)}
     >
       <Row>
         <StyledStatistic
