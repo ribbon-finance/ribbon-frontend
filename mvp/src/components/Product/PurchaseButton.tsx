@@ -23,7 +23,15 @@ const StyledStatistic = (title: string, value: string) => {
   );
 };
 
-const EnableButton = (showModal: any, purchaseAmount: number) => {
+type EnableButtonProps = {
+  showModal: () => void;
+  purchaseAmount: number;
+};
+
+const EnableButton: React.FC<EnableButtonProps> = ({
+  showModal,
+  purchaseAmount,
+}) => {
   if (purchaseAmount === 0) {
     return (
       <ButtonStyled type="primary" shape="round" onClick={showModal} disabled>
@@ -61,7 +69,10 @@ const PurchaseButton: React.FC<Props> = ({
 
   return (
     <div>
-      {EnableButton(showModal, purchaseAmount)}
+      <EnableButton
+        showModal={showModal}
+        purchaseAmount={purchaseAmount}
+      ></EnableButton>
       <Modal
         visible={isModalVisible}
         onOk={handleOk}
