@@ -19,6 +19,8 @@ const emptyTrade = {
   putStrikePrice: zero,
   buyData: [],
   gasPrice: zero,
+  strikePrices: [],
+  optionTypes: [],
 };
 
 const SOR_API_URL = "/api/sor";
@@ -109,6 +111,8 @@ const convertTradeResponseToStraddleTrade = (
       : zero,
     putPremium: putExists ? BigNumber.from(premiums[putIndex]) : zero,
     putStrikePrice: putExists ? BigNumber.from(strikePrices[putIndex]) : zero,
+    strikePrices: strikePrices.map((s) => BigNumber.from(s)),
+    optionTypes,
     buyData,
     gasPrice: BigNumber.from(gasPrice),
   };

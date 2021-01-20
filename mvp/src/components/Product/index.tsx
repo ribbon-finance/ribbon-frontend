@@ -17,7 +17,7 @@ import { useParams } from "react-router-dom";
 import StyledStatistic from "../../designSystem/StyledStatistic";
 import { useWeb3React } from "@web3-react/core";
 import { IAggregatedOptionsInstrumentFactory } from "../../codegen/IAggregatedOptionsInstrumentFactory";
-import { CALL_OPTION_TYPE, PUT_OPTION_TYPE } from "../../models";
+import useGasPrice from "../../hooks/useGasPrice";
 
 const ProductTitleContainer = styled.div`
   padding-top: 10px;
@@ -65,25 +65,31 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [purchaseAmount, setPurchaseAmount] = useState(0.0);
 
-  const { library, account } = useWeb3React();
+  const currentGasPrice = useGasPrice();
+  const { library } = useWeb3React();
   const ethPrice = useETHPriceInUSD();
   const product = useDefaultProduct();
   const purchaseAmountWei = ethers.utils.parseEther(purchaseAmount.toString());
   const straddle = useInstrument(instrumentSymbol);
 
   const {
+    loading: loadingTrade,
     totalPremium,
     callStrikePrice,
     putStrikePrice,
+    strikePrices,
+    optionTypes,
     venues,
     amounts,
     buyData,
-    gasPrice,
+    gasPrice: recommendedGasPrice,
   } = useStraddleTrade(
     straddle ? straddle.address : "",
     ethPrice,
     purchaseAmountWei
   );
+
+  const gasPrice = recommendedGasPrice.toNumber() || currentGasPrice;
 
   const handleCloseModal = useCallback(() => setIsModalVisible(false), [
     setIsModalVisible,
@@ -95,42 +101,31 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
     [setPurchaseAmount]
   );
   const handlePurchase = useCallback(async () => {
-    if (library && straddle) {
+    if (library && straddle && gasPrice !== 0) {
       const signer = library.getSigner();
       const instrument = IAggregatedOptionsInstrumentFactory.connect(
         straddle.address,
         signer
       );
-      const optionTypes = [PUT_OPTION_TYPE, CALL_OPTION_TYPE];
-      const strikePrices = [putStrikePrice, callStrikePrice];
-      console.log([
-        venues,
-        optionTypes,
-        amounts,
-        strikePrices,
-        buyData,
-        { value: totalPremium, gasPrice },
-      ]);
       await instrument.buyInstrument(
         venues,
         optionTypes,
         amounts,
         strikePrices,
         buyData,
-        { value: totalPremium, gasPrice }
+        { value: totalPremium, gasPrice, gasLimit: 1200000 }
       );
     }
   }, [
     library,
-    account,
     straddle,
     amounts,
     buyData,
-    callStrikePrice,
-    putStrikePrice,
     venues,
     gasPrice,
     totalPremium,
+    optionTypes,
+    strikePrices,
   ]);
 
   if (straddle === null) return null;
@@ -153,6 +148,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
   return (
     <div>
       <PurchaseModal
+        loading={loadingTrade}
         isVisible={isModalVisible}
         onPurchase={handlePurchase}
         onClose={handleCloseModal}
@@ -221,6 +217,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
 
 type PurchaseModalProps = {
   isVisible: boolean;
+  loading: boolean;
   onPurchase: () => void;
   onClose: () => void;
   purchaseAmount: number;
@@ -232,6 +229,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
   isVisible,
   onPurchase,
   onClose,
+  loading,
   purchaseAmount,
   straddleETH,
   expiry,
@@ -255,6 +253,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
           Cancel
         </Button>,
         <Button
+          disabled={loading}
           key="submit"
           type="primary"
           loading={isPending}
@@ -273,9 +272,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
       <Row>
         <StyledStatistic
           title="This will cost"
-          value={
-            parseFloat(straddleETH) ? `${straddleETH} ETH` : "Computing cost..."
-          }
+          value={loading ? "Computing cost..." : `${straddleETH} ETH`}
         ></StyledStatistic>
       </Row>
 

@@ -44,6 +44,8 @@ export type StraddleTrade = {
   putStrikePrice: BigNumber;
   buyData: string[];
   gasPrice: BigNumber;
+  strikePrices: BigNumber[];
+  optionTypes: number[];
 };
 
 export type Product = {
