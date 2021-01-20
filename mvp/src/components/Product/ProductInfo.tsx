@@ -29,7 +29,12 @@ type Props = {
 
 const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
   const ethPrice = useETHPriceInUSD();
-  const { totalPremium, callStrikePrice, putStrikePrice } = useStraddleTrade(
+  const {
+    loading: loadingTrade,
+    totalPremium,
+    callStrikePrice,
+    putStrikePrice,
+  } = useStraddleTrade(
     straddle.address,
     ethPrice,
     ethers.utils.parseEther(amount.toString())
@@ -44,7 +49,6 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
     callStrikePrice,
     putStrikePrice
   );
-  const breakevenComputed = lowerBreakeven && upperBreakeven;
 
   const breakevenPercent =
     !totalPremium.isZero() &&
@@ -72,7 +76,9 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
       <Row>
         {StyledStatistic(
           "Total Cost",
-          `$${totalCostUSD} (${totalCostETH} ETH)`
+          loadingTrade
+            ? "Computing cost..."
+            : `$${totalCostUSD} (${totalCostETH} ETH)`
         )}
       </Row>
       <Row>

@@ -22,17 +22,23 @@ const SOR_API_URL = "/api/sor";
 
 const scaleFactor = BigNumber.from("10").pow(BigNumber.from("16"));
 
+type StraddleTradeResponse = StraddleTrade & { loading: boolean };
+
 export const useStraddleTrade = (
   instrumentAddress: string,
   spotPrice: number,
   buyAmount: BigNumber
-): StraddleTrade => {
-  const [trade, setTrade] = useState<StraddleTrade>(emptyTrade);
+): StraddleTradeResponse => {
+  const [trade, setTrade] = useState<StraddleTradeResponse>({
+    ...emptyTrade,
+    loading: false,
+  });
 
   const buyAmountString = buyAmount.toString();
 
   const getBestTrade = useDebounceCallback(
     async () => {
+      setTrade({ ...trade, loading: true });
       const spotPriceInWei = BigNumber.from(
         Math.ceil(spotPrice * 100).toString()
       ).mul(scaleFactor);
@@ -48,8 +54,9 @@ export const useStraddleTrade = (
       try {
         const response = await axios.get(url);
         const trade = convertTradeResponseToStraddleTrade(response.data);
-        setTrade(trade);
+        setTrade({ ...trade, loading: false });
       } catch (e) {
+        setTrade({ ...emptyTrade, loading: false });
         throw e;
       }
     },
