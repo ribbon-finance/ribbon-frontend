@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { Modal, Button, Statistic, Row } from "antd";
+import { Button } from "antd";
 
 const ButtonStyled = styled(Button)`
   height: 100%;
@@ -8,86 +8,41 @@ const ButtonStyled = styled(Button)`
 `;
 
 type Props = {
+  onClick: () => void;
   purchaseAmount: number;
-  straddleETH: string;
-  expiry: string;
 };
 
-const StyledStatistic = (title: string, value: string) => {
-  return (
-    <Statistic
-      valueStyle={{ fontSize: 15, fontWeight: "bold", paddingBottom: "15px" }}
-      title={title}
-      value={value}
-    />
-  );
+type EnableButtonProps = {
+  onClick: () => void;
+  purchaseAmount: number;
 };
 
-const EnableButton = (showModal: any, purchaseAmount: number) => {
+const EnableButton: React.FC<EnableButtonProps> = ({
+  onClick,
+  purchaseAmount,
+}) => {
   if (purchaseAmount === 0) {
     return (
-      <ButtonStyled type="primary" shape="round" onClick={showModal} disabled>
+      <ButtonStyled type="primary" shape="round" onClick={onClick} disabled>
         <b>Buy Now</b>
       </ButtonStyled>
     );
   } else {
     return (
-      <ButtonStyled type="primary" shape="round" onClick={showModal}>
+      <ButtonStyled type="primary" shape="round" onClick={onClick}>
         <b>Buy Now</b>
       </ButtonStyled>
     );
   }
 };
 
-const PurchaseButton: React.FC<Props> = ({
-  purchaseAmount,
-  straddleETH,
-  expiry,
-}) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isPending, setPending] = useState(false);
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    setPending(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
+const PurchaseButton: React.FC<Props> = ({ onClick, purchaseAmount }) => {
   return (
     <div>
-      {EnableButton(showModal, purchaseAmount)}
-      <Modal
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        width={300}
-        title={"Confirm Purchase"}
-        footer={[
-          <Button key="back" onClick={handleCancel}>
-            Cancel
-          </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            loading={isPending}
-            onClick={handleOk}
-          >
-            Purchase
-          </Button>,
-        ]}
-      >
-        <Row>
-          {StyledStatistic("I am purchasing", `${purchaseAmount} contracts`)}
-        </Row>
-        <Row>{StyledStatistic("This will cost", `${straddleETH} ETH`)}</Row>
-        <Row>{StyledStatistic("The contracts will expire by", expiry)}</Row>
-      </Modal>
+      <EnableButton
+        onClick={onClick}
+        purchaseAmount={purchaseAmount}
+      ></EnableButton>
     </div>
   );
 };

@@ -31,6 +31,9 @@ export type Straddle = BasicStraddle & {
   underlying: string;
 };
 
+export const PUT_OPTION_TYPE = 1;
+export const CALL_OPTION_TYPE = 2;
+
 export type StraddleTrade = {
   venues: string[];
   amounts: BigNumber[];
@@ -41,6 +44,8 @@ export type StraddleTrade = {
   putStrikePrice: BigNumber;
   buyData: string[];
   gasPrice: BigNumber;
+  strikePrices: BigNumber[];
+  optionTypes: number[];
 };
 
 export type Product = {

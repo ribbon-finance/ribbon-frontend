@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import { Row, Col } from "antd";
+import { Row, Col, Button, Modal } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Title, PrimaryText, StyledCard } from "../../designSystem";
 import { computeStraddleValue } from "../../utils/straddle";
@@ -14,6 +14,10 @@ import { useDefaultProduct, useInstrument } from "../../hooks/useProducts";
 import { useStraddleTrade } from "../../hooks/useStraddleTrade";
 import { ethers } from "ethers";
 import { useParams } from "react-router-dom";
+import StyledStatistic from "../../designSystem/StyledStatistic";
+import { useWeb3React } from "@web3-react/core";
+import { IAggregatedOptionsInstrumentFactory } from "../../codegen/IAggregatedOptionsInstrumentFactory";
+import useGasPrice from "../../hooks/useGasPrice";
 
 const ProductTitleContainer = styled.div`
   padding-top: 10px;
@@ -58,21 +62,82 @@ const productDescription = (name: string) => {
 
 const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () => {
   const { instrumentSymbol } = useParams<ParamTypes>();
-
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [purchaseAmount, setPurchaseAmount] = useState(0.0);
 
-  const updatePurchaseAmount = (amount: number) => {
-    setPurchaseAmount(amount);
-  };
+  const currentGasPrice = useGasPrice();
+  const { library } = useWeb3React();
   const ethPrice = useETHPriceInUSD();
   const product = useDefaultProduct();
   const purchaseAmountWei = ethers.utils.parseEther(purchaseAmount.toString());
   const straddle = useInstrument(instrumentSymbol);
 
-  const { totalPremium, callStrikePrice, putStrikePrice } = useStraddleTrade(
+  const {
+    loading: loadingTrade,
+    totalPremium,
+    callStrikePrice,
+    putStrikePrice,
+    strikePrices,
+    optionTypes,
+    venues,
+    amounts,
+    buyData,
+    gasPrice: recommendedGasPrice,
+  } = useStraddleTrade(
     straddle ? straddle.address : "",
     ethPrice,
     purchaseAmountWei
+  );
+
+  const gasPrice = recommendedGasPrice.toNumber() || currentGasPrice;
+
+  const handleCloseModal = useCallback(() => setIsModalVisible(false), [
+    setIsModalVisible,
+  ]);
+  const updatePurchaseAmount = useCallback(
+    (amount: number) => {
+      setPurchaseAmount(amount);
+    },
+    [setPurchaseAmount]
+  );
+  const handlePurchase = useCallback(
+    async (setIsWaitingForConfirmation: () => void) => {
+      if (library && straddle && gasPrice !== 0) {
+        try {
+          const signer = library.getSigner();
+          const instrument = IAggregatedOptionsInstrumentFactory.connect(
+            straddle.address,
+            signer
+          );
+          const receipt = await instrument.buyInstrument(
+            venues,
+            optionTypes,
+            amounts,
+            strikePrices,
+            buyData,
+            { value: totalPremium, gasPrice, gasLimit: 1200000 }
+          );
+          setIsWaitingForConfirmation();
+
+          await receipt.wait(1);
+
+          setIsModalVisible(false);
+        } catch (e) {
+          setIsModalVisible(false);
+        }
+      }
+    },
+    [
+      library,
+      straddle,
+      amounts,
+      buyData,
+      venues,
+      gasPrice,
+      totalPremium,
+      optionTypes,
+      strikePrices,
+    ]
   );
 
   if (straddle === null) return null;
@@ -94,6 +159,16 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
 
   return (
     <div>
+      <PurchaseModal
+        loading={loadingTrade}
+        isVisible={isModalVisible}
+        onPurchase={handlePurchase}
+        onClose={handleCloseModal}
+        purchaseAmount={purchaseAmount}
+        straddleETH={totalCostETH}
+        expiry={expiry}
+      ></PurchaseModal>
+
       <a href="/">
         <ArrowLeftOutlined />
       </a>
@@ -121,9 +196,8 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
               </Col>
               <Col span={4}>
                 <PurchaseButton
+                  onClick={() => setIsModalVisible(true)}
                   purchaseAmount={purchaseAmount}
-                  straddleETH={totalCostETH}
-                  expiry={expiry}
                 ></PurchaseButton>
               </Col>
             </Row>
@@ -150,6 +224,104 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
         </Col>
       </Row>
     </div>
+  );
+};
+
+type PurchaseModalProps = {
+  isVisible: boolean;
+  loading: boolean;
+  onPurchase: (setWaitingForConfirmation: () => void) => Promise<void>;
+  onClose: () => void;
+  purchaseAmount: number;
+  straddleETH: string;
+  expiry: string;
+};
+
+const PurchaseModal: React.FC<PurchaseModalProps> = ({
+  isVisible,
+  onPurchase,
+  onClose,
+  loading,
+  purchaseAmount,
+  straddleETH,
+  expiry,
+}) => {
+  const [isPending, setPending] = useState(false);
+  const [isWaitingForConfirmation, setIsWaitingForConfirmation] = useState(
+    false
+  );
+
+  const handleOk = async () => {
+    setPending(true);
+    await onPurchase(() => setIsWaitingForConfirmation(true));
+    setPending(false);
+    setIsWaitingForConfirmation(false);
+  };
+
+  let buttonText;
+  if (isPending && !isWaitingForConfirmation) {
+    buttonText = "Purchasing...";
+  } else if (isPending && isWaitingForConfirmation) {
+    buttonText = "Waiting for 1 confirmation...";
+  } else {
+    buttonText = "Purchase";
+  }
+
+  useEffect(() => {
+    if (!isVisible) {
+      setPending(false);
+      setIsWaitingForConfirmation(false);
+    }
+  }, [isVisible, setPending, setIsWaitingForConfirmation]);
+
+  return (
+    <Modal
+      visible={isVisible}
+      onOk={handleOk}
+      onCancel={onClose}
+      width={300}
+      title={"Confirm Purchase"}
+      footer={[
+        !isWaitingForConfirmation && (
+          <Button
+            key="back"
+            disabled={isWaitingForConfirmation}
+            onClick={onClose}
+          >
+            Cancel
+          </Button>
+        ),
+        <Button
+          disabled={loading}
+          key="submit"
+          type="primary"
+          loading={isPending}
+          onClick={handleOk}
+        >
+          {buttonText}
+        </Button>,
+      ].filter(Boolean)}
+    >
+      <Row>
+        <StyledStatistic
+          title="I am purchasing"
+          value={`${purchaseAmount} contracts`}
+        ></StyledStatistic>
+      </Row>
+      <Row>
+        <StyledStatistic
+          title="This will cost"
+          value={loading ? "Computing cost..." : `${straddleETH} ETH`}
+        ></StyledStatistic>
+      </Row>
+
+      <Row>
+        <StyledStatistic
+          title="The contracts will expire by"
+          value={expiry.toString()}
+        ></StyledStatistic>
+      </Row>
+    </Modal>
   );
 };
 
