@@ -66,6 +66,8 @@ export type TradeResponse = {
 };
 
 export type InstrumentPosition = {
+  instrumentAddress: string;
+  expiry: number;
   exercised: boolean;
   optionTypes: number[];
   optionIDs: number[];

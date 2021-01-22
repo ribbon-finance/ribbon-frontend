@@ -133,3 +133,8 @@ export const useInstrument = (instrumentSymbol: string) => {
 
   return instrument;
 };
+
+export const useInstrumentAddresses = () => {
+  const addresses = instrumentAddresses.mainnet.map((i) => i.address);
+  return addresses;
+};

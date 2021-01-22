@@ -6,7 +6,9 @@ import {
   InstrumentPosition,
   PUT_OPTION_TYPE,
 } from "../../models";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
+import { useInstrumentAddresses } from "../../hooks/useProducts";
+import { timeToExpiry } from "../../utils/time";
 
 const ActivePositions = () => {
   const columns = useMemo(
@@ -35,8 +37,14 @@ const ActivePositions = () => {
     []
   );
 
-  const positions = usePositions("0xE273FA3dFFc415e7472F2D5477C987dcAF2e9263");
-  const dataSource = positions.map(positionToDataSource);
+  const instrumentAddresses = useInstrumentAddresses();
+  const positions = usePositions(instrumentAddresses);
+  const sortedPositions = positions.sort((a, b) => {
+    if (a.expiry > b.expiry) return -1;
+    if (a.expiry < b.expiry) return 1;
+    return 0;
+  });
+  const dataSource = sortedPositions.map(positionToDataSource);
 
   return <Table dataSource={dataSource} columns={columns} />;
 };
@@ -57,11 +65,21 @@ const positionToDataSource = (position: InstrumentPosition, index: number) => {
   const putStrikePrice = parseInt(
     ethers.utils.formatEther(position.strikePrices[putIndex])
   );
+  const nowTimestamp = Math.floor(Date.now() / 1000);
+  const hasExpired = nowTimestamp >= position.expiry;
+  const expiryDate = new Date(position.expiry * 1000).toLocaleDateString();
+
+  let expiry;
+  if (hasExpired) {
+    expiry = `${expiryDate} (Expired)`;
+  } else {
+    expiry = `${expiryDate} (${timeToExpiry(position.expiry)} remaining)`;
+  }
 
   return {
-    number: index.toString(),
+    number: (index + 1).toString(),
     name: `ETH Straddle $${putStrikePrice}/$${callStrikePrice}`,
-    expiry: "12",
+    expiry,
     pnl: "$102",
   };
 };
