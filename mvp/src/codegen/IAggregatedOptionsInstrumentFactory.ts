@@ -165,4 +165,55 @@ const _abi = [
     stateMutability: "view",
     type: "function",
   },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "getInstrumentPositions",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "bool",
+            name: "exercised",
+            type: "bool",
+          },
+          {
+            internalType: "enum OptionType[]",
+            name: "optionTypes",
+            type: "uint8[]",
+          },
+          {
+            internalType: "uint32[]",
+            name: "optionIDs",
+            type: "uint32[]",
+          },
+          {
+            internalType: "uint256[]",
+            name: "amounts",
+            type: "uint256[]",
+          },
+          {
+            internalType: "uint256[]",
+            name: "strikePrices",
+            type: "uint256[]",
+          },
+          {
+            internalType: "string[]",
+            name: "venues",
+            type: "string[]",
+          },
+        ],
+        internalType: "struct InstrumentPosition[]",
+        name: "positions",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
 ];

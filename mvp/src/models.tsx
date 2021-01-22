@@ -64,3 +64,12 @@ export type TradeResponse = {
   totalPremium: string;
   premiums: string[];
 };
+
+export type InstrumentPosition = {
+  exercised: boolean;
+  optionTypes: number[];
+  optionIDs: number[];
+  amounts: BigNumber[];
+  strikePrices: BigNumber[];
+  venues: string[];
+};
