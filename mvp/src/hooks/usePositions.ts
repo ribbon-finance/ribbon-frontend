@@ -2,11 +2,17 @@ import { useWeb3React } from "@web3-react/core";
 import { useCallback, useEffect, useState } from "react";
 import { IAggregatedOptionsInstrumentFactory } from "../codegen/IAggregatedOptionsInstrumentFactory";
 import { MulticallFactory } from "../codegen/MulticallFactory";
-import { InstrumentPosition } from "../models";
+import {
+  CALL_OPTION_TYPE,
+  InstrumentPosition,
+  PUT_OPTION_TYPE,
+} from "../models";
 import externalAddresses from "../constants/externalAddresses.json";
 import instrumentDetails from "../constants/instruments.json";
 import { AbiCoder } from "ethers/lib/utils";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
+import { useETHPrice } from "./useEthPrice";
+import { wmul } from "../utils/math";
 
 const abiCoder = new AbiCoder();
 
@@ -22,6 +28,8 @@ type DecodedInstrumentPosition = [
 const usePositions = (instrumentAddresses: string[]) => {
   const { library, account } = useWeb3React();
   const [positions, setPositions] = useState<InstrumentPosition[]>([]);
+  const ethPrice = useETHPrice();
+  const ethPriceStr = ethPrice.toString();
 
   const fetchPositions = useCallback(async () => {
     if (library && account) {
@@ -68,6 +76,16 @@ const usePositions = (instrumentAddresses: string[]) => {
               strikePrices,
               venues,
             ] = result;
+            const scaleEthPrice = BigNumber.from("10").pow(
+              BigNumber.from("10")
+            );
+            const pnl = calculatePNL(
+              ethPrice.mul(scaleEthPrice),
+              optionTypes,
+              strikePrices,
+              amounts
+            );
+            // console.log(pnl.toString());
 
             return {
               exercised,
@@ -78,6 +96,7 @@ const usePositions = (instrumentAddresses: string[]) => {
               venues,
               instrumentAddress,
               expiry,
+              pnl,
             };
           });
         }
@@ -85,15 +104,16 @@ const usePositions = (instrumentAddresses: string[]) => {
       const flattenedPositions = positionsOnContract.reduce((a, b) =>
         a.concat(b)
       );
+
       setPositions(flattenedPositions);
     }
-  }, [library, account]);
+  }, [library, account, ethPriceStr]);
 
   useEffect(() => {
-    if (library && account) {
+    if (library && account && ethPriceStr !== "0") {
       fetchPositions();
     }
-  }, [library, account]);
+  }, [library, account, ethPriceStr]);
 
   return positions;
 };
@@ -107,6 +127,36 @@ const getInstrumentExpiry = (instrumentAddress: string) => {
     throw new Error("Instrument not found");
   }
   return details.expiry;
+};
+
+const pnlScaleDown = BigNumber.from("10").pow("18");
+
+const calculatePNL = (
+  assetPrice: BigNumber,
+  optionTypes: number[],
+  strikePrices: BigNumber[],
+  amounts: BigNumber[]
+): BigNumber => {
+  const callIndex = optionTypes.findIndex(
+    (optionType) => optionType === CALL_OPTION_TYPE
+  );
+  const putIndex = optionTypes.findIndex(
+    (optionType) => optionType === PUT_OPTION_TYPE
+  );
+  if (callIndex === -1 || putIndex === -1) {
+    throw new Error("No call or put option found");
+  }
+
+  const callStrikePrice = strikePrices[callIndex];
+  const putStrikePrice = strikePrices[putIndex];
+
+  if (assetPrice.lt(putStrikePrice)) {
+    return wmul(putStrikePrice.sub(assetPrice), amounts[putIndex]);
+  } else if (assetPrice.gt(callStrikePrice)) {
+    console.log(amounts[callIndex].toString());
+    return wmul(assetPrice.sub(callStrikePrice), amounts[callIndex]);
+  }
+  return BigNumber.from("0");
 };
 
 export default usePositions;

@@ -50,20 +50,21 @@ const ActivePositions = () => {
 };
 
 const positionToDataSource = (position: InstrumentPosition, index: number) => {
-  const callIndex = position.optionTypes.findIndex(
+  const { optionTypes, strikePrices, pnl } = position;
+  const callIndex = optionTypes.findIndex(
     (optionType) => optionType === CALL_OPTION_TYPE
   );
-  const putIndex = position.optionTypes.findIndex(
+  const putIndex = optionTypes.findIndex(
     (optionType) => optionType === PUT_OPTION_TYPE
   );
   if (callIndex === -1 || putIndex === -1) {
     throw new Error("No call or put option found");
   }
   const callStrikePrice = parseInt(
-    ethers.utils.formatEther(position.strikePrices[callIndex])
+    ethers.utils.formatEther(strikePrices[callIndex])
   );
   const putStrikePrice = parseInt(
-    ethers.utils.formatEther(position.strikePrices[putIndex])
+    ethers.utils.formatEther(strikePrices[putIndex])
   );
   const nowTimestamp = Math.floor(Date.now() / 1000);
   const hasExpired = nowTimestamp >= position.expiry;
@@ -76,11 +77,13 @@ const positionToDataSource = (position: InstrumentPosition, index: number) => {
     expiry = `${expiryDate} (${timeToExpiry(position.expiry)} remaining)`;
   }
 
+  const pnlUSD = parseFloat(ethers.utils.formatEther(pnl)).toFixed(2);
+
   return {
     number: (index + 1).toString(),
     name: `ETH Straddle $${putStrikePrice}/$${callStrikePrice}`,
     expiry,
-    pnl: "$102",
+    pnl: `$${pnlUSD}`,
   };
 };
 

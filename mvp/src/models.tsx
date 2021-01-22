@@ -74,4 +74,5 @@ export type InstrumentPosition = {
   amounts: BigNumber[];
   strikePrices: BigNumber[];
   venues: string[];
+  pnl: BigNumber;
 };
