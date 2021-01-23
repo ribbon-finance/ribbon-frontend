@@ -66,6 +66,7 @@ export type TradeResponse = {
 };
 
 export type InstrumentPosition = {
+  positionID: number;
   instrumentAddress: string;
   expiry: number;
   exercised: boolean;

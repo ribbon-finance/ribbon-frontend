@@ -10,7 +10,7 @@ import {
 import externalAddresses from "../constants/externalAddresses.json";
 import instrumentDetails from "../constants/instruments.json";
 import { AbiCoder } from "ethers/lib/utils";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 import { useETHPrice } from "./useEthPrice";
 import { wmul } from "../utils/math";
 
@@ -67,38 +67,40 @@ const usePositions = (instrumentAddresses: string[]) => {
           const instrumentAddress = instrumentAddresses[index];
           const expiry = getInstrumentExpiry(instrumentAddress);
 
-          return resultArray[0].map((result: DecodedInstrumentPosition) => {
-            const [
-              exercised,
-              optionTypes,
-              optionIDs,
-              amounts,
-              strikePrices,
-              venues,
-            ] = result;
-            const scaleEthPrice = BigNumber.from("10").pow(
-              BigNumber.from("10")
-            );
-            const pnl = calculatePNL(
-              ethPrice.mul(scaleEthPrice),
-              optionTypes,
-              strikePrices,
-              amounts
-            );
-            // console.log(pnl.toString());
+          return resultArray[0].map(
+            (result: DecodedInstrumentPosition, positionID: number) => {
+              const [
+                exercised,
+                optionTypes,
+                optionIDs,
+                amounts,
+                strikePrices,
+                venues,
+              ] = result;
+              const scaleEthPrice = BigNumber.from("10").pow(
+                BigNumber.from("10")
+              );
+              const pnl = calculatePNL(
+                BigNumber.from(ethPriceStr).mul(scaleEthPrice),
+                optionTypes,
+                strikePrices,
+                amounts
+              );
 
-            return {
-              exercised,
-              optionTypes,
-              optionIDs,
-              amounts,
-              strikePrices,
-              venues,
-              instrumentAddress,
-              expiry,
-              pnl,
-            };
-          });
+              return {
+                positionID,
+                exercised,
+                optionTypes,
+                optionIDs,
+                amounts,
+                strikePrices,
+                venues,
+                instrumentAddress,
+                expiry,
+                pnl,
+              };
+            }
+          );
         }
       );
       const flattenedPositions = positionsOnContract.reduce((a, b) =>
@@ -113,7 +115,7 @@ const usePositions = (instrumentAddresses: string[]) => {
     if (library && account && ethPriceStr !== "0") {
       fetchPositions();
     }
-  }, [library, account, ethPriceStr]);
+  }, [library, account, ethPriceStr, fetchPositions]);
 
   return positions;
 };
@@ -128,8 +130,6 @@ const getInstrumentExpiry = (instrumentAddress: string) => {
   }
   return details.expiry;
 };
-
-const pnlScaleDown = BigNumber.from("10").pow("18");
 
 const calculatePNL = (
   assetPrice: BigNumber,

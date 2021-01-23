@@ -1,16 +1,19 @@
 import React, { useMemo } from "react";
 import { Table } from "antd";
-import usePositions from "../../hooks/usePositions";
 import {
   CALL_OPTION_TYPE,
   InstrumentPosition,
   PUT_OPTION_TYPE,
 } from "../../models";
 import { ethers } from "ethers";
-import { useInstrumentAddresses } from "../../hooks/useProducts";
 import { timeToExpiry } from "../../utils/time";
 
-const ActivePositions = () => {
+type Props = {
+  positions: InstrumentPosition[];
+  isPastPositions: boolean;
+};
+
+const PositionsTable: React.FC<Props> = ({ positions, isPastPositions }) => {
   const columns = useMemo(
     () => [
       {
@@ -29,23 +32,15 @@ const ActivePositions = () => {
         key: "expiry",
       },
       {
-        title: "PNL",
+        title: isPastPositions ? "Realized Profit" : "PNL",
         dataIndex: "pnl",
         key: "pnl",
       },
     ],
-    []
+    [isPastPositions]
   );
 
-  const instrumentAddresses = useInstrumentAddresses();
-  const positions = usePositions(instrumentAddresses);
-  const sortedPositions = positions.sort((a, b) => {
-    if (a.expiry > b.expiry) return -1;
-    if (a.expiry < b.expiry) return 1;
-    return 0;
-  });
-  const dataSource = sortedPositions.map(positionToDataSource);
-
+  const dataSource = positions.map(positionToDataSource);
   return <Table dataSource={dataSource} columns={columns} />;
 };
 
@@ -80,6 +75,7 @@ const positionToDataSource = (position: InstrumentPosition, index: number) => {
   const pnlUSD = parseFloat(ethers.utils.formatEther(pnl)).toFixed(2);
 
   return {
+    key: `${position.instrumentAddress}:${position.positionID}`,
     number: (index + 1).toString(),
     name: `ETH Straddle $${putStrikePrice}/$${callStrikePrice}`,
     expiry,
@@ -87,4 +83,4 @@ const positionToDataSource = (position: InstrumentPosition, index: number) => {
   };
 };
 
-export default ActivePositions;
+export default PositionsTable;
