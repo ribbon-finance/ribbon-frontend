@@ -153,7 +153,6 @@ const calculatePNL = (
   if (assetPrice.lt(putStrikePrice)) {
     return wmul(putStrikePrice.sub(assetPrice), amounts[putIndex]);
   } else if (assetPrice.gt(callStrikePrice)) {
-    console.log(amounts[callIndex].toString());
     return wmul(assetPrice.sub(callStrikePrice), amounts[callIndex]);
   }
   return BigNumber.from("0");
