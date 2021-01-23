@@ -30,6 +30,7 @@ interface IAggregatedOptionsInstrumentInterface extends ethers.utils.Interface {
     "strikeAsset()": FunctionFragment;
     "collateralAsset()": FunctionFragment;
     "expiry()": FunctionFragment;
+    "getInstrumentPositions(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -63,6 +64,10 @@ interface IAggregatedOptionsInstrumentInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "expiry", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "getInstrumentPositions",
+    values: [string]
+  ): string;
 
   decodeFunctionResult(functionFragment: "cost", data: BytesLike): Result;
   decodeFunctionResult(
@@ -83,6 +88,10 @@ interface IAggregatedOptionsInstrumentInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "expiry", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getInstrumentPositions",
+    data: BytesLike
+  ): Result;
 
   events: {};
 }
@@ -196,6 +205,74 @@ export class IAggregatedOptionsInstrument extends Contract {
     ): Promise<{
       0: BigNumber;
     }>;
+
+    getInstrumentPositions(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      positions: {
+        exercised: boolean;
+        optionTypes: number[];
+        optionIDs: number[];
+        amounts: BigNumber[];
+        strikePrices: BigNumber[];
+        venues: string[];
+        0: boolean;
+        1: number[];
+        2: number[];
+        3: BigNumber[];
+        4: BigNumber[];
+        5: string[];
+      }[];
+      0: {
+        exercised: boolean;
+        optionTypes: number[];
+        optionIDs: number[];
+        amounts: BigNumber[];
+        strikePrices: BigNumber[];
+        venues: string[];
+        0: boolean;
+        1: number[];
+        2: number[];
+        3: BigNumber[];
+        4: BigNumber[];
+        5: string[];
+      }[];
+    }>;
+
+    "getInstrumentPositions(address)"(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      positions: {
+        exercised: boolean;
+        optionTypes: number[];
+        optionIDs: number[];
+        amounts: BigNumber[];
+        strikePrices: BigNumber[];
+        venues: string[];
+        0: boolean;
+        1: number[];
+        2: number[];
+        3: BigNumber[];
+        4: BigNumber[];
+        5: string[];
+      }[];
+      0: {
+        exercised: boolean;
+        optionTypes: number[];
+        optionIDs: number[];
+        amounts: BigNumber[];
+        strikePrices: BigNumber[];
+        venues: string[];
+        0: boolean;
+        1: number[];
+        2: number[];
+        3: BigNumber[];
+        4: BigNumber[];
+        5: string[];
+      }[];
+    }>;
   };
 
   cost(
@@ -258,6 +335,46 @@ export class IAggregatedOptionsInstrument extends Contract {
 
   "expiry()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+  getInstrumentPositions(
+    account: string,
+    overrides?: CallOverrides
+  ): Promise<
+    {
+      exercised: boolean;
+      optionTypes: number[];
+      optionIDs: number[];
+      amounts: BigNumber[];
+      strikePrices: BigNumber[];
+      venues: string[];
+      0: boolean;
+      1: number[];
+      2: number[];
+      3: BigNumber[];
+      4: BigNumber[];
+      5: string[];
+    }[]
+  >;
+
+  "getInstrumentPositions(address)"(
+    account: string,
+    overrides?: CallOverrides
+  ): Promise<
+    {
+      exercised: boolean;
+      optionTypes: number[];
+      optionIDs: number[];
+      amounts: BigNumber[];
+      strikePrices: BigNumber[];
+      venues: string[];
+      0: boolean;
+      1: number[];
+      2: number[];
+      3: BigNumber[];
+      4: BigNumber[];
+      5: string[];
+    }[]
+  >;
+
   callStatic: {
     cost(
       venues: string[],
@@ -318,6 +435,46 @@ export class IAggregatedOptionsInstrument extends Contract {
     expiry(overrides?: CallOverrides): Promise<BigNumber>;
 
     "expiry()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getInstrumentPositions(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<
+      {
+        exercised: boolean;
+        optionTypes: number[];
+        optionIDs: number[];
+        amounts: BigNumber[];
+        strikePrices: BigNumber[];
+        venues: string[];
+        0: boolean;
+        1: number[];
+        2: number[];
+        3: BigNumber[];
+        4: BigNumber[];
+        5: string[];
+      }[]
+    >;
+
+    "getInstrumentPositions(address)"(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<
+      {
+        exercised: boolean;
+        optionTypes: number[];
+        optionIDs: number[];
+        amounts: BigNumber[];
+        strikePrices: BigNumber[];
+        venues: string[];
+        0: boolean;
+        1: number[];
+        2: number[];
+        3: BigNumber[];
+        4: BigNumber[];
+        5: string[];
+      }[]
+    >;
   };
 
   filters: {};
@@ -382,6 +539,16 @@ export class IAggregatedOptionsInstrument extends Contract {
     expiry(overrides?: CallOverrides): Promise<BigNumber>;
 
     "expiry()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getInstrumentPositions(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getInstrumentPositions(address)"(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -446,5 +613,15 @@ export class IAggregatedOptionsInstrument extends Contract {
     expiry(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "expiry()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getInstrumentPositions(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getInstrumentPositions(address)"(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
   };
 }
