@@ -1,11 +1,11 @@
 import React from "react";
 import DashboardCard from "./DashboardCard";
 
-const Positions = () => {
+const Positions: React.FC<{ numPositions: number }> = ({ numPositions }) => {
   return (
     <a href="/portfolio">
       <DashboardCard
-        value={"3"}
+        value={numPositions.toString()}
         text={"Active Positions"}
         icon={"Equalizer"}
       ></DashboardCard>

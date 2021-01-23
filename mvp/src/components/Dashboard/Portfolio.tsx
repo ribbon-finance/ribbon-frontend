@@ -1,10 +1,14 @@
 import React from "react";
 import DashboardCard from "./DashboardCard";
 
-const Portfolio = () => {
+type Props = {
+  portfolioValue: number;
+};
+
+const Portfolio: React.FC<Props> = ({ portfolioValue }) => {
   return (
     <DashboardCard
-      value={"$100"}
+      value={`$${portfolioValue.toFixed(2)}`}
       text={"Portfolio Value"}
       icon={"TrendingUp"}
     ></DashboardCard>
