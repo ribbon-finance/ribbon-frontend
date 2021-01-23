@@ -27,12 +27,14 @@ type DecodedInstrumentPosition = [
 
 const usePositions = (instrumentAddresses: string[]) => {
   const { library, account } = useWeb3React();
+  const [loading, setLoading] = useState<boolean>(false);
   const [positions, setPositions] = useState<InstrumentPosition[]>([]);
   const ethPrice = useETHPrice();
   const ethPriceStr = ethPrice.toString();
 
   const fetchPositions = useCallback(async () => {
     if (library && account) {
+      setLoading(true);
       const signer = library.getSigner();
 
       const multicall = MulticallFactory.connect(
@@ -108,6 +110,7 @@ const usePositions = (instrumentAddresses: string[]) => {
       );
 
       setPositions(flattenedPositions);
+      setLoading(false);
     }
   }, [library, account, ethPriceStr]);
 
@@ -117,7 +120,7 @@ const usePositions = (instrumentAddresses: string[]) => {
     }
   }, [library, account, ethPriceStr, fetchPositions]);
 
-  return positions;
+  return { loading, positions };
 };
 
 const getInstrumentExpiry = (instrumentAddress: string) => {

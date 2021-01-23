@@ -11,9 +11,14 @@ import { timeToExpiry } from "../../utils/time";
 type Props = {
   positions: InstrumentPosition[];
   isPastPositions: boolean;
+  loading: boolean;
 };
 
-const PositionsTable: React.FC<Props> = ({ positions, isPastPositions }) => {
+const PositionsTable: React.FC<Props> = ({
+  positions,
+  isPastPositions,
+  loading,
+}) => {
   const columns = useMemo(
     () => [
       {
@@ -36,15 +41,26 @@ const PositionsTable: React.FC<Props> = ({ positions, isPastPositions }) => {
         dataIndex: "pnl",
         key: "pnl",
       },
+      {
+        title: "",
+        dataIndex: "exerciseButton",
+        key: "exerciseButton",
+      },
     ],
     [isPastPositions]
   );
 
-  const dataSource = positions.map(positionToDataSource);
-  return <Table dataSource={dataSource} columns={columns} />;
+  const dataSource = positions.map((pos, index) =>
+    positionToDataSource(pos, index, isPastPositions)
+  );
+  return <Table loading={loading} dataSource={dataSource} columns={columns} />;
 };
 
-const positionToDataSource = (position: InstrumentPosition, index: number) => {
+const positionToDataSource = (
+  position: InstrumentPosition,
+  index: number,
+  isPastPositions: boolean
+) => {
   const { optionTypes, strikePrices, pnl } = position;
   const callIndex = optionTypes.findIndex(
     (optionType) => optionType === CALL_OPTION_TYPE
@@ -74,13 +90,15 @@ const positionToDataSource = (position: InstrumentPosition, index: number) => {
 
   const pnlUSD = parseFloat(ethers.utils.formatEther(pnl)).toFixed(2);
 
-  return {
+  let data = {
     key: `${position.instrumentAddress}:${position.positionID}`,
     number: (index + 1).toString(),
     name: `ETH Straddle $${putStrikePrice}/$${callStrikePrice}`,
     expiry,
     pnl: `$${pnlUSD}`,
+    exerciseButton: null,
   };
+  return data;
 };
 
 export default PositionsTable;
