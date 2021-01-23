@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Table } from "antd";
+import { Button, Table } from "antd";
 import {
   CALL_OPTION_TYPE,
   InstrumentPosition,
@@ -19,41 +19,67 @@ const PositionsTable: React.FC<Props> = ({
   isPastPositions,
   loading,
 }) => {
-  const columns = useMemo(
-    () => [
-      {
-        title: "#",
-        dataIndex: "number",
-        key: "number",
-      },
-      {
-        title: "Product Name",
-        dataIndex: "name",
-        key: "name",
-      },
-      {
-        title: "Expiry Date",
-        dataIndex: "expiry",
-        key: "expiry",
-      },
-      {
-        title: isPastPositions ? "Realized Profit" : "PNL",
-        dataIndex: "pnl",
-        key: "pnl",
-      },
-      {
-        title: "",
-        dataIndex: "exerciseButton",
-        key: "exerciseButton",
-      },
-    ],
-    [isPastPositions]
-  );
+  const activeColumns = [
+    {
+      title: "#",
+      dataIndex: "number",
+      key: "number",
+    },
+    {
+      title: "Product Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Expiry Date",
+      dataIndex: "expiry",
+      key: "expiry",
+    },
+    {
+      title: "PNL",
+      dataIndex: "pnl",
+      key: "pnl",
+    },
+    {
+      title: "",
+      dataIndex: "exerciseButton",
+      key: "exerciseButton",
+    },
+  ];
+
+  const pastColumns = [
+    {
+      title: "#",
+      dataIndex: "number",
+      key: "number",
+    },
+    {
+      title: "Product Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Expiry Date",
+      dataIndex: "expiry",
+      key: "expiry",
+    },
+    {
+      title: "Realized Profit",
+      dataIndex: "pnl",
+      key: "pnl",
+    },
+  ];
 
   const dataSource = positions.map((pos, index) =>
     positionToDataSource(pos, index, isPastPositions)
   );
-  return <Table loading={loading} dataSource={dataSource} columns={columns} />;
+  return (
+    <Table
+      loading={loading}
+      dataSource={dataSource}
+      columns={isPastPositions ? pastColumns : activeColumns}
+    />
+  );
 };
 
 const positionToDataSource = (
@@ -96,7 +122,7 @@ const positionToDataSource = (
     name: `ETH Straddle $${putStrikePrice}/$${callStrikePrice}`,
     expiry,
     pnl: `$${pnlUSD}`,
-    exerciseButton: null,
+    exerciseButton: !isPastPositions && <Button>Exercise</Button>,
   };
   return data;
 };
