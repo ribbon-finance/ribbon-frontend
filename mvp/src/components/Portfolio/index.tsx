@@ -13,7 +13,9 @@ const ProductTitleContainer = styled.div`
 
 const Portfolio = () => {
   const instrumentAddresses = useInstrumentAddresses();
-  const positions = usePositions(instrumentAddresses);
+  const { loading: loadingPositions, positions } = usePositions(
+    instrumentAddresses
+  );
   const sortedPositions = positions.sort((a, b) => {
     if (a.expiry > b.expiry) return -1;
     if (a.expiry < b.expiry) return 1;
@@ -36,11 +38,19 @@ const Portfolio = () => {
       <ProductTitleContainer>
         <Title>Active Positions</Title>
       </ProductTitleContainer>
-      <PositionsTable positions={activePositions} isPastPositions={false} />
+      <PositionsTable
+        loading={loadingPositions}
+        positions={activePositions}
+        isPastPositions={false}
+      />
       <ProductTitleContainer>
         <Title>Past Positions</Title>
       </ProductTitleContainer>
-      <PositionsTable positions={pastPositions} isPastPositions />
+      <PositionsTable
+        loading={loadingPositions}
+        positions={pastPositions}
+        isPastPositions
+      />
     </div>
   );
 };
