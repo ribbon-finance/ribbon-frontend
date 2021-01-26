@@ -1,7 +1,7 @@
 import React from "react";
 import { StyledCard } from "../../designSystem/index";
 import styled from "styled-components";
-import { Row, Button, Tooltip } from "antd";
+import { Row, Button, Tooltip, Skeleton } from "antd";
 import { Straddle } from "../../models";
 import { computeStraddleValue, computeBreakeven } from "../../utils/straddle";
 import { timeToExpiry } from "../../utils/time";
@@ -58,7 +58,12 @@ const breakevenTooltipText = (
 
 const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
   const ethPrice = useETHPriceInUSD();
-  const { totalPremium, callStrikePrice, putStrikePrice } = useStraddleTrade(
+  const {
+    loading: loadingTrade,
+    totalPremium,
+    callStrikePrice,
+    putStrikePrice,
+  } = useStraddleTrade(
     straddle.address,
     ethPrice,
     ethers.utils.parseEther("1")
@@ -78,6 +83,10 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
   ).toLocaleDateString();
 
   const expiry = timeToExpiry(straddle.expiryTimestamp);
+
+  if (loadingTrade) {
+    return <Skeleton></Skeleton>;
+  }
 
   return (
     <StyledStraddleCard

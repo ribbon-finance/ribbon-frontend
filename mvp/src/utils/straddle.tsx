@@ -43,30 +43,6 @@ export const computeDefaultPrice = (upperBreakeven: number, buffer: number) => {
   return Math.round(defaultPrice);
 };
 
-export const computeGains = (
-  currentAssetPrice: number,
-  futureAssetPrice: number,
-  instrumentPrice: number
-): [string, string, boolean] => {
-  if (isNaN(futureAssetPrice)) {
-    return ["0.00", "0.0", true];
-  }
-
-  let dollarProfit = 0;
-  if (futureAssetPrice - currentAssetPrice > 0) {
-    dollarProfit = futureAssetPrice - currentAssetPrice - instrumentPrice;
-  } else {
-    dollarProfit = currentAssetPrice - futureAssetPrice - instrumentPrice;
-  }
-
-  const percentProfit = (dollarProfit / instrumentPrice) * 100;
-  if (dollarProfit >= 0) {
-    return [dollarProfit.toFixed(2), percentProfit.toFixed(1), true];
-  } else {
-    return [dollarProfit.toFixed(2), percentProfit.toFixed(1), false];
-  }
-};
-
 export const computeGainsAmount = (
   currentAssetPrice: number,
   futureAssetPrice: number,
@@ -83,7 +59,6 @@ export const computeGainsAmount = (
   const putStrikeNum = wadToUSD(putStrikePrice);
 
   let dollarProfit = 0;
-  console.log(callStrikeNum);
 
   if (futureAssetPrice > callStrikeNum) {
     dollarProfit =

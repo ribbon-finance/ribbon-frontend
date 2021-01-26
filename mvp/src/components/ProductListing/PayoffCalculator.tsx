@@ -3,7 +3,7 @@ import { Row } from "antd";
 import {
   computeBreakeven,
   computeDefaultPrice,
-  computeGains,
+  computeGainsAmount,
   formatProfit,
 } from "../../utils/straddle";
 import { InputNumberStyled } from "../../designSystem";
@@ -30,10 +30,13 @@ const PayoffCalculator: React.FC<Props> = ({
   );
 
   const defaultPrice = computeDefaultPrice(upperBreakeven, 1.0);
-  const [dollarProfit, percentProfit, profitPositive] = computeGains(
+  const [dollarProfit, percentProfit, profitPositive] = computeGainsAmount(
     ethPrice,
     parseFloat(inputText),
-    parseFloat(straddlePrice)
+    callStrikePrice,
+    putStrikePrice,
+    parseFloat(straddlePrice),
+    1
   );
 
   return (

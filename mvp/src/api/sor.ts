@@ -20,6 +20,12 @@ const multicall = MulticallFactory.connect(
 // this is used to initiate the provider connection so we have faster speeds for subsequent calls
 multicall.aggregate([]);
 
+const GAMMA_MIN_STRIKE = ethers.utils.parseEther("0.65");
+const GAMMA_MAX_STRIKE = ethers.utils.parseEther("1.05");
+
+const HEGIC_MIN_STRIKE = ethers.utils.parseEther("0.95");
+const HEGIC_MAX_STRIKE = ethers.utils.parseEther("1.05");
+
 // 2^256-1
 const MAX_UINT256 = BigNumber.from("2")
   .pow(BigNumber.from("256"))
@@ -192,8 +198,8 @@ async function getPriceFromContract(
   const adapter = IProtocolAdapterFactory.connect(adapterAddress, provider);
 
   // just hardcode the bounds to be +-5%
-  const callStrikePrice = wmul(spotPrice, ethers.utils.parseEther("1.05"));
-  const putStrikePrice = wmul(spotPrice, ethers.utils.parseEther("0.65"));
+  const putStrikePrice = wmul(spotPrice, HEGIC_MIN_STRIKE);
+  const callStrikePrice = wmul(spotPrice, HEGIC_MAX_STRIKE);
 
   const optionTerms = optionTypes.map((optionType) => ({
     ...optionTermsFromContract,
@@ -276,9 +282,15 @@ async function get0xPrices(
     otokenMatches.put &&
     (await get0xQuote(otokenMatches.put.address, buyAmount));
 
-  return {
-    call: otokenMatches.call
-      ? {
+  let callPriceQuote = emptyPriceQuote;
+  let putPriceQuote = emptyPriceQuote;
+
+  if (otokenMatches.call !== null && callResponse !== null) {
+    switch (callResponse.error) {
+      case true:
+        break;
+      case false:
+        callPriceQuote = {
           strikePrice: otokenMatches.call.strikePrice,
           premium: callResponse ? callResponse.premium : zero,
           data: callResponse ? callResponse.apiResponse.data : "0x",
@@ -287,10 +299,18 @@ async function get0xPrices(
             : zero,
           exists: Boolean(otokenMatches.call),
           venueName: GAMMA_PROTOCOL,
-        }
-      : emptyPriceQuote,
-    put: otokenMatches.put
-      ? {
+        };
+        break;
+      default:
+        break;
+    }
+  }
+  if (otokenMatches.put !== null && putResponse !== null) {
+    switch (putResponse.error) {
+      case true:
+        break;
+      case false:
+        putPriceQuote = {
           strikePrice: otokenMatches.put.strikePrice,
           premium: putResponse ? putResponse.premium : zero,
           data: putResponse ? putResponse.apiResponse.data : "0x",
@@ -299,8 +319,16 @@ async function get0xPrices(
             : zero,
           exists: Boolean(otokenMatches.put),
           venueName: GAMMA_PROTOCOL,
-        }
-      : emptyPriceQuote,
+        };
+        break;
+      default:
+        break;
+    }
+  }
+
+  return {
+    call: callPriceQuote,
+    put: putPriceQuote,
   };
 }
 
@@ -316,8 +344,8 @@ function getNearestOtoken(expiry: number, spotPrice: BigNumber): OtokenMatches {
   otokens = otokens.filter((otoken) => otoken.expiry === expiry);
 
   // min-max bounds are 10% from the spot price
-  const minStrikePrice = wmul(spotPrice, ethers.utils.parseEther("0.15"));
-  const maxStrikePrice = wmul(spotPrice, ethers.utils.parseEther("1.05"));
+  const minStrikePrice = wmul(spotPrice, GAMMA_MIN_STRIKE);
+  const maxStrikePrice = wmul(spotPrice, GAMMA_MAX_STRIKE);
 
   const callOtokens = otokens.filter(
     (otoken) =>
@@ -384,7 +412,10 @@ function getOptionTerms(instrumentAddress: string): ContractOptionTerms {
 async function get0xQuote(
   otokenAddress: string,
   buyAmount: BigNumber
-): Promise<{ premium: BigNumber; apiResponse: ZeroExApiResponse }> {
+): Promise<
+  | { premium: BigNumber; apiResponse: ZeroExApiResponse; error: false }
+  | { error: true }
+> {
   const scalingFactor = BigNumber.from("10").pow(BigNumber.from("10"));
   buyAmount = buyAmount.div(scalingFactor);
 
@@ -402,10 +433,11 @@ async function get0xQuote(
     return {
       premium: calculateZeroExOrderCost(response.data),
       apiResponse: response.data,
+      error: false,
     };
   } catch (e) {
-    console.log(e);
-    throw e;
+    console.error(e);
+    return { error: true };
   }
 }
 
