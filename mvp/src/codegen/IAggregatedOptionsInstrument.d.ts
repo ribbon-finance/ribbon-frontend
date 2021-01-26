@@ -24,6 +24,8 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface IAggregatedOptionsInstrumentInterface extends ethers.utils.Interface {
   functions: {
     "cost(string[],uint8[],uint256[],uint256[])": FunctionFragment;
+    "exerciseProfit(address,uint256)": FunctionFragment;
+    "canExercise(address,uint256)": FunctionFragment;
     "buyInstrument(string[],uint8[],uint256[],uint256[],bytes[])": FunctionFragment;
     "exercisePosition(uint256)": FunctionFragment;
     "underlying()": FunctionFragment;
@@ -36,6 +38,14 @@ interface IAggregatedOptionsInstrumentInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "cost",
     values: [string[], BigNumberish[], BigNumberish[], BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "exerciseProfit",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "canExercise",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "buyInstrument",
@@ -70,6 +80,14 @@ interface IAggregatedOptionsInstrumentInterface extends ethers.utils.Interface {
   ): string;
 
   decodeFunctionResult(functionFragment: "cost", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "exerciseProfit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "canExercise",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "buyInstrument",
     data: BytesLike
@@ -128,6 +146,38 @@ export class IAggregatedOptionsInstrument extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
+    }>;
+
+    exerciseProfit(
+      account: string,
+      positionID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "exerciseProfit(address,uint256)"(
+      account: string,
+      positionID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    canExercise(
+      account: string,
+      positionID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "canExercise(address,uint256)"(
+      account: string,
+      positionID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
     }>;
 
     buyInstrument(
@@ -291,6 +341,30 @@ export class IAggregatedOptionsInstrument extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  exerciseProfit(
+    account: string,
+    positionID: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "exerciseProfit(address,uint256)"(
+    account: string,
+    positionID: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  canExercise(
+    account: string,
+    positionID: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  "canExercise(address,uint256)"(
+    account: string,
+    positionID: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   buyInstrument(
     venues: string[],
     optionTypes: BigNumberish[],
@@ -391,6 +465,30 @@ export class IAggregatedOptionsInstrument extends Contract {
       strikePrices: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    exerciseProfit(
+      account: string,
+      positionID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "exerciseProfit(address,uint256)"(
+      account: string,
+      positionID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    canExercise(
+      account: string,
+      positionID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "canExercise(address,uint256)"(
+      account: string,
+      positionID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     buyInstrument(
       venues: string[],
@@ -496,6 +594,30 @@ export class IAggregatedOptionsInstrument extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    exerciseProfit(
+      account: string,
+      positionID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "exerciseProfit(address,uint256)"(
+      account: string,
+      positionID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    canExercise(
+      account: string,
+      positionID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "canExercise(address,uint256)"(
+      account: string,
+      positionID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     buyInstrument(
       venues: string[],
       optionTypes: BigNumberish[],
@@ -565,6 +687,30 @@ export class IAggregatedOptionsInstrument extends Contract {
       optionTypes: BigNumberish[],
       amounts: BigNumberish[],
       strikePrices: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    exerciseProfit(
+      account: string,
+      positionID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "exerciseProfit(address,uint256)"(
+      account: string,
+      positionID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    canExercise(
+      account: string,
+      positionID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "canExercise(address,uint256)"(
+      account: string,
+      positionID: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

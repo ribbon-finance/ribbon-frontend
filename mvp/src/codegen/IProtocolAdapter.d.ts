@@ -25,11 +25,11 @@ interface IProtocolAdapterInterface extends ethers.utils.Interface {
     "protocolName()": FunctionFragment;
     "nonFungible()": FunctionFragment;
     "purchaseMethod()": FunctionFragment;
-    "isEuropean()": FunctionFragment;
     "optionsExist(tuple)": FunctionFragment;
     "getOptionsAddress(tuple)": FunctionFragment;
     "premium(tuple,uint256)": FunctionFragment;
     "exerciseProfit(address,uint256,uint256)": FunctionFragment;
+    "canExercise(address,uint256,uint256)": FunctionFragment;
     "purchase(tuple,uint256)": FunctionFragment;
     "exercise(address,uint256,uint256,address)": FunctionFragment;
   };
@@ -44,10 +44,6 @@ interface IProtocolAdapterInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "purchaseMethod",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isEuropean",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -95,6 +91,10 @@ interface IProtocolAdapterInterface extends ethers.utils.Interface {
     values: [string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "canExercise",
+    values: [string, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "purchase",
     values: [
       {
@@ -125,7 +125,6 @@ interface IProtocolAdapterInterface extends ethers.utils.Interface {
     functionFragment: "purchaseMethod",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "isEuropean", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "optionsExist",
     data: BytesLike
@@ -137,6 +136,10 @@ interface IProtocolAdapterInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "premium", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "exerciseProfit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "canExercise",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "purchase", data: BytesLike): Result;
@@ -217,24 +220,6 @@ export class IProtocolAdapter extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: number;
-    }>;
-
-    /**
-     * Returns true if the options protocol is European style options, ie only exercising after expiry
-     */
-    isEuropean(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
-
-    /**
-     * Returns true if the options protocol is European style options, ie only exercising after expiry
-     */
-    "isEuropean()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
     }>;
 
     optionsExist(
@@ -357,6 +342,24 @@ export class IProtocolAdapter extends Contract {
       0: BigNumber;
     }>;
 
+    canExercise(
+      options: string,
+      optionID: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "canExercise(address,uint256,uint256)"(
+      options: string,
+      optionID: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
     purchase(
       optionTerms: {
         underlying: string;
@@ -443,16 +446,6 @@ export class IProtocolAdapter extends Contract {
    * Returns the purchase method used to purchase options
    */
   "purchaseMethod()"(overrides?: CallOverrides): Promise<number>;
-
-  /**
-   * Returns true if the options protocol is European style options, ie only exercising after expiry
-   */
-  isEuropean(overrides?: CallOverrides): Promise<boolean>;
-
-  /**
-   * Returns true if the options protocol is European style options, ie only exercising after expiry
-   */
-  "isEuropean()"(overrides?: CallOverrides): Promise<boolean>;
 
   optionsExist(
     optionTerms: {
@@ -554,6 +547,20 @@ export class IProtocolAdapter extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  canExercise(
+    options: string,
+    optionID: BigNumberish,
+    amount: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  "canExercise(address,uint256,uint256)"(
+    options: string,
+    optionID: BigNumberish,
+    amount: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   purchase(
     optionTerms: {
       underlying: string;
@@ -640,16 +647,6 @@ export class IProtocolAdapter extends Contract {
      * Returns the purchase method used to purchase options
      */
     "purchaseMethod()"(overrides?: CallOverrides): Promise<number>;
-
-    /**
-     * Returns true if the options protocol is European style options, ie only exercising after expiry
-     */
-    isEuropean(overrides?: CallOverrides): Promise<boolean>;
-
-    /**
-     * Returns true if the options protocol is European style options, ie only exercising after expiry
-     */
-    "isEuropean()"(overrides?: CallOverrides): Promise<boolean>;
 
     optionsExist(
       optionTerms: {
@@ -750,6 +747,20 @@ export class IProtocolAdapter extends Contract {
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    canExercise(
+      options: string,
+      optionID: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "canExercise(address,uint256,uint256)"(
+      options: string,
+      optionID: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     purchase(
       optionTerms: {
@@ -862,16 +873,6 @@ export class IProtocolAdapter extends Contract {
      */
     "purchaseMethod()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    /**
-     * Returns true if the options protocol is European style options, ie only exercising after expiry
-     */
-    isEuropean(overrides?: CallOverrides): Promise<BigNumber>;
-
-    /**
-     * Returns true if the options protocol is European style options, ie only exercising after expiry
-     */
-    "isEuropean()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     optionsExist(
       optionTerms: {
         underlying: string;
@@ -966,6 +967,20 @@ export class IProtocolAdapter extends Contract {
      * @param options is the address of the options contract
      */
     "exerciseProfit(address,uint256,uint256)"(
+      options: string,
+      optionID: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    canExercise(
+      options: string,
+      optionID: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "canExercise(address,uint256,uint256)"(
       options: string,
       optionID: BigNumberish,
       amount: BigNumberish,
@@ -1062,16 +1077,6 @@ export class IProtocolAdapter extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    /**
-     * Returns true if the options protocol is European style options, ie only exercising after expiry
-     */
-    isEuropean(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    /**
-     * Returns true if the options protocol is European style options, ie only exercising after expiry
-     */
-    "isEuropean()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     optionsExist(
       optionTerms: {
         underlying: string;
@@ -1166,6 +1171,20 @@ export class IProtocolAdapter extends Contract {
      * @param options is the address of the options contract
      */
     "exerciseProfit(address,uint256,uint256)"(
+      options: string,
+      optionID: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    canExercise(
+      options: string,
+      optionID: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "canExercise(address,uint256,uint256)"(
       options: string,
       optionID: BigNumberish,
       amount: BigNumberish,

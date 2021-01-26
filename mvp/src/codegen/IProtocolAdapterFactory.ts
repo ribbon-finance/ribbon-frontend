@@ -161,19 +161,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "isEuropean",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "pure",
-    type: "function",
-  },
-  {
     inputs: [
       {
         components: [
@@ -355,6 +342,35 @@ const _abi = [
         internalType: "uint256",
         name: "profit",
         type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "options",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "optionID",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "canExercise",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
       },
     ],
     stateMutability: "view",
