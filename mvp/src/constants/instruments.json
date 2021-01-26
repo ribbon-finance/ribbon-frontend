@@ -17,16 +17,16 @@
 	],
 	"mainnet": [
 		{
-			"txhash": "0x7d847e45c5b4ed9d16d1839baaf682da959f57340b2809ec444855250ef1b763",
-			"expiry": "1611907200",
-			"instrumentSymbol": "ETHVOL-29JAN2021",
-			"address": "0xE273FA3dFFc415e7472F2D5477C987dcAF2e9263"
+			"txhash": "0xd595a0c787477f5c8dd04e271070ed212cb276c66c01f32d366dca1d82e9dcf0",
+			"expiry": "1614326400",
+			"instrumentSymbol": "ETHVOL-26FEB2021",
+			"address": "0xce797549a7025561aE60569F68419f016e97D8c5"
 		},
 		{
-			"txhash": "0x018bc40658ee6860829e8dca38c216bf61e2e5264a98db9107ab6e70a61ef15b",
-			"expiry": "1610697600",
-			"instrumentSymbol": "ETHVOL-JAN152021",
-			"address": "0xEee23Aa18414245cF24D041F9Cb30c92e93f02eC"
+			"txhash": "0xce666fae504b526ab55586097077951ac1f914cb09913d3660acfcd8ef405aae",
+			"expiry": "1612512000",
+			"instrumentSymbol": "ETHVOL-05FEB2021",
+			"address": "0x5ED32Cce0EcBd7E6e538231d6A3dc28A699A1501"
 		}
 	]
 }

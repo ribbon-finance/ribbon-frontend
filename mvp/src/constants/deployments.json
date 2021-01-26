@@ -12,25 +12,27 @@
 		"TwinYieldLogic": "0xEC5d4F247aF81A843612eb1371CBCfa88b762119"
 	},
 	"mainnet": {
-		"RibbonFactoryLogic": "0x97317051D83E1e382709f1f2dF603778e6dfc7e7",
-		"RibbonFactory": "0xA8C1D9796D9f2A630DE86f73DD2015f775B49676",
-		"RibbonVolatilityLogic": "0x02A1eF02E13C15601Db6ba4554fDd131Ad04cAca",
-		"GammaAdapterLogic": "0xc118f8eCa4703311f79666d0Acb7E497FA8f1F7d",
-		"HegicAdapterLogic": "0x820051c6c10CcA4b3f72d6dAbC257f9E66D5c6EF",
-		"ProtocolAdapterLib": "0xBc5B97b7C187f61ae96B8B9b035d72570C6aC2eA"
+		"RibbonFactoryLogic": "0x84a5A8c504eC7f9Add6771459c5Dfc8475138c33",
+		"RibbonFactory": "0x863dd8Ea9B7472c54CdE1F0e2D5B2bCC8CBf0Cd1",
+		"RibbonVolatilityLogic": "0xa72Cc5f8fE3cc806DbE2896f353630d6FD4e368F",
+		"GammaAdapterLogic": "0x9D5d1ef12c04c83f37b889Bdc495C9e2be43CbBC",
+		"HegicAdapterLogic": "0x622b5fb73babd7308468E9212340ff5A89984132",
+		"ProtocolAdapterLib": "0xFf51CA3Ba8cB5d289deb56dfcBA50C7cC100d949"
 	},
 	"mainnet-fork": {
-		"RibbonFactory": "0xA8C1D9796D9f2A630DE86f73DD2015f775B49676",
-		"RibbonVolatilityLogic": "0x02A1eF02E13C15601Db6ba4554fDd131Ad04cAca",
-		"HegicAdapterLogic": "0x820051c6c10CcA4b3f72d6dAbC257f9E66D5c6EF",
-		"GammaAdapterLogic": "0xc118f8eCa4703311f79666d0Acb7E497FA8f1F7d",
-		"RibbonFactoryLogic": "0x97317051D83E1e382709f1f2dF603778e6dfc7e7"
+		"RibbonFactory": "0x863dd8Ea9B7472c54CdE1F0e2D5B2bCC8CBf0Cd1",
+		"RibbonVolatilityLogic": "0xa72Cc5f8fE3cc806DbE2896f353630d6FD4e368F",
+		"HegicAdapterLogic": "0x622b5fb73babd7308468E9212340ff5A89984132",
+		"GammaAdapterLogic": "0x9D5d1ef12c04c83f37b889Bdc495C9e2be43CbBC",
+		"RibbonFactoryLogic": "0x84a5A8c504eC7f9Add6771459c5Dfc8475138c33",
+		"ProtocolAdapterLib": "0xFf51CA3Ba8cB5d289deb56dfcBA50C7cC100d949"
 	},
 	"mainnet-sim": {
-		"RibbonFactory": "0xA8C1D9796D9f2A630DE86f73DD2015f775B49676",
-		"RibbonVolatilityLogic": "0x02A1eF02E13C15601Db6ba4554fDd131Ad04cAca",
-		"HegicAdapterLogic": "0x820051c6c10CcA4b3f72d6dAbC257f9E66D5c6EF",
-		"GammaAdapterLogic": "0xc118f8eCa4703311f79666d0Acb7E497FA8f1F7d",
-		"RibbonFactoryLogic": "0x97317051D83E1e382709f1f2dF603778e6dfc7e7"
+		"RibbonFactory": "0x863dd8Ea9B7472c54CdE1F0e2D5B2bCC8CBf0Cd1",
+		"RibbonVolatilityLogic": "0xa72Cc5f8fE3cc806DbE2896f353630d6FD4e368F",
+		"HegicAdapterLogic": "0x622b5fb73babd7308468E9212340ff5A89984132",
+		"GammaAdapterLogic": "0x9D5d1ef12c04c83f37b889Bdc495C9e2be43CbBC",
+		"RibbonFactoryLogic": "0x84a5A8c504eC7f9Add6771459c5Dfc8475138c33",
+		"ProtocolAdapterLib": "0xFf51CA3Ba8cB5d289deb56dfcBA50C7cC100d949"
 	}
 }
