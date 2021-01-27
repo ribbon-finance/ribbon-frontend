@@ -1,13 +1,15 @@
 import axios from "axios";
 import { BigNumber, ethers } from "ethers";
 import { wmul } from "../utils/math";
-import { ZeroExApiResponse } from "./types";
+import { CallPutPriceQuotes, ZeroExApiResponse } from "./types";
 import externalAddresses from "../constants/externalAddresses.json";
 import { GAMMA_PROTOCOL, getOptionTerms, MAX_UINT256 } from "./utils";
 
 const GAMMA_MIN_STRIKE = ethers.utils.parseEther("0.15");
 const GAMMA_MAX_STRIKE = ethers.utils.parseEther("1.95");
 const ZERO_EX_API_URI = "https://api.0x.org/swap/v1/quote";
+
+const abiCoder = new ethers.utils.AbiCoder();
 
 type OtokenDetails = {
   address: string;
@@ -22,7 +24,7 @@ export async function get0xPrices(
   instrumentAddress: string,
   spotPrice: BigNumber,
   buyAmount: BigNumber
-) {
+): Promise<CallPutPriceQuotes> {
   const optionTerms = getOptionTerms(instrumentAddress);
 
   const otokenMatches = getNearestOtoken(
@@ -59,7 +61,9 @@ export async function get0xPrices(
         callPriceQuote = {
           strikePrice: otokenMatches.call.strikePrice,
           premium: callResponse ? callResponse.premium : zero,
-          data: callResponse ? callResponse.apiResponse.data : "0x",
+          data: callResponse
+            ? serializeZeroExOrder(callResponse.apiResponse)
+            : "0x",
           gasPrice: callResponse
             ? BigNumber.from(callResponse.apiResponse.gasPrice)
             : zero,
@@ -79,7 +83,9 @@ export async function get0xPrices(
         putPriceQuote = {
           strikePrice: otokenMatches.put.strikePrice,
           premium: putResponse ? putResponse.premium : zero,
-          data: putResponse ? putResponse.apiResponse.data : "0x",
+          data: putResponse
+            ? serializeZeroExOrder(putResponse.apiResponse)
+            : "0x",
           gasPrice: putResponse
             ? BigNumber.from(putResponse.apiResponse.gasPrice)
             : zero,
@@ -100,6 +106,18 @@ export async function get0xPrices(
 
 function getNearestOtoken(expiry: number, spotPrice: BigNumber): OtokenMatches {
   const scalingFactor = BigNumber.from("10").pow(BigNumber.from("10"));
+
+  // return {
+  //   call: {
+  //     address: "0x78a36417c9f3814ae1b4367d03bff6ac6fd631fb",
+  //     strikePrice: BigNumber.from("96000000000").mul(scalingFactor),
+  //   },
+  //   put: {
+  //     address: "0x77d7e314f82e49a4faff5cc1d2ed0bc7a7c1b1f0",
+  //     strikePrice: BigNumber.from("80000000000").mul(scalingFactor),
+  //   },
+  // };
+
   let otokens = externalAddresses.mainnet.otokens.map((otoken) => ({
     ...otoken,
     expiry: parseInt(otoken.expiry),
@@ -192,36 +210,25 @@ async function get0xQuote(
   }
 }
 
-// function serializeZeroExOrder(apiResponse: ZeroExApiResponse) {
-//   return web3.eth.abi.encodeParameters(
-//     [
-//       {
-//         ZeroExOrder: {
-//           exchangeAddress: "address",
-//           buyTokenAddress: "address",
-//           sellTokenAddress: "address",
-//           allowanceTarget: "address",
-//           protocolFee: "uint256",
-//           makerAssetAmount: "uint256",
-//           takerAssetAmount: "uint256",
-//           swapData: "bytes",
-//         },
-//       },
-//     ],
-//     [
-//       {
-//         exchangeAddress: apiResponse.to,
-//         buyTokenAddress: apiResponse.buyTokenAddress,
-//         sellTokenAddress: apiResponse.sellTokenAddress,
-//         allowanceTarget: "0xdef1c0ded9bec7f1a1670819833240f027b25eff",
-//         protocolFee: apiResponse.protocolFee,
-//         makerAssetAmount: apiResponse.buyAmount,
-//         takerAssetAmount: apiResponse.sellAmount,
-//         swapData: apiResponse.data,
-//       },
-//     ]
-//   );
-// }
+function serializeZeroExOrder(apiResponse: ZeroExApiResponse) {
+  const types = [
+    "(address,address,address,address,uint256,uint256,uint256,bytes)",
+  ];
+  const args = [
+    [
+      apiResponse.to,
+      apiResponse.buyTokenAddress,
+      apiResponse.sellTokenAddress,
+      "0xdef1c0ded9bec7f1a1670819833240f027b25eff",
+      apiResponse.value,
+      apiResponse.buyAmount,
+      apiResponse.sellAmount,
+      apiResponse.data,
+    ],
+  ];
+  const data = abiCoder.encode(types, args);
+  return data;
+}
 
 function calculateZeroExOrderCost(apiResponse: ZeroExApiResponse) {
   const decimals = 6; // just scale decimals for USDC amounts for now, because USDC is the purchase token

@@ -39,3 +39,17 @@ export type ContractOptionTerms = {
   collateralAsset: string;
   expiry: BigNumber;
 };
+
+export type PriceQuote = {
+  premium: BigNumber;
+  strikePrice: BigNumber;
+  data: string;
+  gasPrice: BigNumber;
+  exists: boolean;
+  venueName: string;
+};
+
+export type CallPutPriceQuotes = {
+  call: PriceQuote;
+  put: PriceQuote;
+};

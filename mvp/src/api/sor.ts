@@ -1,5 +1,10 @@
 import { BigNumber, ethers } from "ethers";
-import { TradeRequest, TradeResponse } from "./types";
+import {
+  TradeRequest,
+  TradeResponse,
+  CallPutPriceQuotes,
+  PriceQuote,
+} from "./types";
 import getProvider from "./getProvider";
 import { wmul } from "../utils/math";
 import externalAddresses from "../constants/externalAddresses.json";
@@ -11,7 +16,6 @@ import {
   CALL_OPTION,
   GAMMA_PROTOCOL,
   getOptionTerms,
-  HEGIC_PROTOCOL,
   MAX_UINT256,
   PUT_OPTION,
 } from "./utils";
@@ -33,24 +37,10 @@ const HEGIC_MAX_STRIKE = ethers.utils.parseEther("1");
 
 const HEGIC_ADAPTER = deployments.mainnet.HegicAdapterLogic;
 const GAMMA_ADAPTER = deployments.mainnet.GammaAdapterLogic;
-const ADAPTER_ADDRESSES = [GAMMA_ADAPTER, HEGIC_ADAPTER];
-const VENUE_NAMES = [GAMMA_PROTOCOL, HEGIC_PROTOCOL];
-// const ADAPTER_ADDRESSES = [GAMMA_ADAPTER];
-// const VENUE_NAMES = [GAMMA_PROTOCOL];
-
-type PriceQuote = {
-  premium: BigNumber;
-  strikePrice: BigNumber;
-  data: string;
-  gasPrice: BigNumber;
-  exists: boolean;
-  venueName: string;
-};
-
-type CallPutPriceQuotes = {
-  call: PriceQuote;
-  put: PriceQuote;
-};
+// const ADAPTER_ADDRESSES = [GAMMA_ADAPTER, HEGIC_ADAPTER];
+// const VENUE_NAMES = [GAMMA_PROTOCOL, HEGIC_PROTOCOL];
+const ADAPTER_ADDRESSES = [GAMMA_ADAPTER];
+const VENUE_NAMES = [GAMMA_PROTOCOL];
 
 export async function getBestTrade(
   tradeRequest: TradeRequest
