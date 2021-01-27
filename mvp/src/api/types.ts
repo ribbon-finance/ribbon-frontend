@@ -32,3 +32,10 @@ export type ZeroExApiResponse = {
   sellAmount: string;
   sellTokenToEthRate: string;
 };
+
+export type ContractOptionTerms = {
+  underlying: string;
+  strikeAsset: string;
+  collateralAsset: string;
+  expiry: BigNumber;
+};
