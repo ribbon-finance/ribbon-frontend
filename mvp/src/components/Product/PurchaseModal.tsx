@@ -118,13 +118,13 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
 
       <Row>
         <StyledStatistic
-          title="The strike prices are"
+          title="The underlying options are"
           value={
             loading
               ? "Finding the best trade for you..."
-              : `$${toUSD(putStrikePrice)} PUT on ${venueKeyToName(
+              : `$${toUSD(putStrikePrice)} PUT from ${venueKeyToName(
                   putVenue
-                )}, $${toUSD(callStrikePrice)} CALL on ${venueKeyToName(
+                )}, $${toUSD(callStrikePrice)} CALL from ${venueKeyToName(
                   callVenue
                 )}`
           }

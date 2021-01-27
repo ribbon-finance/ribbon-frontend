@@ -23,8 +23,8 @@ multicall.aggregate([]);
 const GAMMA_MIN_STRIKE = ethers.utils.parseEther("0.15");
 const GAMMA_MAX_STRIKE = ethers.utils.parseEther("1.95");
 
-const HEGIC_MIN_STRIKE = ethers.utils.parseEther("0.95");
-const HEGIC_MAX_STRIKE = ethers.utils.parseEther("1.05");
+const HEGIC_MIN_STRIKE = ethers.utils.parseEther("1");
+const HEGIC_MAX_STRIKE = ethers.utils.parseEther("1");
 
 // 2^256-1
 const MAX_UINT256 = BigNumber.from("2")

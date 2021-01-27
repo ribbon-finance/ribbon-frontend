@@ -78,4 +78,5 @@ export type InstrumentPosition = {
   strikePrices: BigNumber[];
   venues: string[];
   pnl: BigNumber;
+  canExercise: boolean;
 };

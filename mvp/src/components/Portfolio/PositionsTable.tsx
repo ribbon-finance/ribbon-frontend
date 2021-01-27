@@ -78,6 +78,7 @@ const PositionsTable: React.FC<PositionsTableProps> = ({
     exercisingPosition,
     setExercisingPosition,
   ] = useState<InstrumentPosition | null>(null);
+  console.log(positions);
 
   const { library } = useWeb3React();
 
@@ -133,7 +134,7 @@ const positionToDataSource = (
   isPastPositions: boolean,
   onExercise: (position: InstrumentPosition) => void
 ) => {
-  const { optionTypes, strikePrices, pnl } = position;
+  const { optionTypes, strikePrices, pnl, canExercise } = position;
   const callIndex = optionTypes.findIndex(
     (optionType) => optionType === CALL_OPTION_TYPE
   );
@@ -161,7 +162,7 @@ const positionToDataSource = (
   }
 
   const pnlUSD = parseFloat(ethers.utils.formatEther(pnl)).toFixed(2);
-  const showExerciseButton = !isPastPositions && !pnl.isZero();
+  const showExerciseButton = !isPastPositions && canExercise;
   const exerciseButton = (
     <Button onClick={() => onExercise(position)}>Exercise</Button>
   );
