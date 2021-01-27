@@ -69,7 +69,9 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
   )} remaining)`;
 
   const totalCostUSD = (parseFloat(straddleUSD) * amount).toFixed(2);
-  const totalCostETH = (parseFloat(straddleETH) * amount).toFixed(2);
+  const totalCostETH = ethers.utils.formatEther(
+    ethers.utils.parseEther((parseFloat(straddleETH) * amount).toFixed(8))
+  );
 
   let costStr;
   if (loadingTrade) {

@@ -36,6 +36,8 @@ export const CALL_OPTION_TYPE = 2;
 
 export type StraddleTrade = {
   venues: string[];
+  callVenue: string;
+  putVenue: string;
   amounts: BigNumber[];
   totalPremium: BigNumber;
   callPremium: BigNumber;

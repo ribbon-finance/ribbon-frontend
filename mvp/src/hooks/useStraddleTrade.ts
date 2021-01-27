@@ -11,6 +11,8 @@ const zero = BigNumber.from("0");
 
 const emptyTrade = {
   venues: [],
+  callVenue: "",
+  putVenue: "",
   amounts: [],
   totalPremium: zero,
   callPremium: zero,
@@ -63,6 +65,7 @@ export const useStraddleTrade = (
       try {
         const response = await axios.get(url);
         const trade = convertTradeResponseToStraddleTrade(response.data);
+        console.log(trade);
         setTrade({ ...trade, loading: false, error: null });
       } catch (e) {
         setTrade({ ...emptyTrade, loading: false, error: e });
@@ -103,6 +106,8 @@ const convertTradeResponseToStraddleTrade = (
 
   return {
     venues,
+    callVenue: callExists ? venues[callIndex] : "",
+    putVenue: putExists ? venues[putIndex] : "",
     totalPremium: BigNumber.from(totalPremium),
     amounts: amounts.map((a) => BigNumber.from(a)),
     callPremium: callExists ? BigNumber.from(premiums[callIndex]) : zero,
