@@ -32,3 +32,24 @@ export type ZeroExApiResponse = {
   sellAmount: string;
   sellTokenToEthRate: string;
 };
+
+export type ContractOptionTerms = {
+  underlying: string;
+  strikeAsset: string;
+  collateralAsset: string;
+  expiry: BigNumber;
+};
+
+export type PriceQuote = {
+  premium: BigNumber;
+  strikePrice: BigNumber;
+  data: string;
+  gasPrice: BigNumber;
+  exists: boolean;
+  venueName: string;
+};
+
+export type CallPutPriceQuotes = {
+  call: PriceQuote;
+  put: PriceQuote;
+};

@@ -1,6 +1,10 @@
 import { BigNumber, ethers } from "ethers";
-import { ZeroExApiResponse, TradeRequest, TradeResponse } from "./types";
-import axios from "axios";
+import {
+  TradeRequest,
+  TradeResponse,
+  CallPutPriceQuotes,
+  PriceQuote,
+} from "./types";
 import getProvider from "./getProvider";
 import { wmul } from "../utils/math";
 import externalAddresses from "../constants/externalAddresses.json";
@@ -8,6 +12,15 @@ import deployments from "../constants/deployments.json";
 import instrumentAddresses from "../constants/instruments.json";
 import { MulticallFactory } from "../codegen/MulticallFactory";
 import { IProtocolAdapterFactory } from "../codegen/IProtocolAdapterFactory";
+import {
+  CALL_OPTION,
+  GAMMA_PROTOCOL,
+  getOptionTerms,
+  HEGIC_PROTOCOL,
+  MAX_UINT256,
+  PUT_OPTION,
+} from "./utils";
+import { get0xPrices } from "./opyn";
 
 const provider = getProvider();
 const abiCoder = new ethers.utils.AbiCoder();
@@ -20,52 +33,15 @@ const multicall = MulticallFactory.connect(
 // this is used to initiate the provider connection so we have faster speeds for subsequent calls
 multicall.aggregate([]);
 
-const GAMMA_MIN_STRIKE = ethers.utils.parseEther("0.15");
-const GAMMA_MAX_STRIKE = ethers.utils.parseEther("1.95");
-
 const HEGIC_MIN_STRIKE = ethers.utils.parseEther("1");
 const HEGIC_MAX_STRIKE = ethers.utils.parseEther("1");
 
-// 2^256-1
-const MAX_UINT256 = BigNumber.from("2")
-  .pow(BigNumber.from("256"))
-  .sub(BigNumber.from("1"));
-
-const PUT_OPTION = 1;
-const CALL_OPTION = 2;
-const HEGIC_PROTOCOL = "HEGIC";
-const GAMMA_PROTOCOL = "OPYN_GAMMA";
 const HEGIC_ADAPTER = deployments.mainnet.HegicAdapterLogic;
 const GAMMA_ADAPTER = deployments.mainnet.GammaAdapterLogic;
 const ADAPTER_ADDRESSES = [GAMMA_ADAPTER, HEGIC_ADAPTER];
 const VENUE_NAMES = [GAMMA_PROTOCOL, HEGIC_PROTOCOL];
 // const ADAPTER_ADDRESSES = [GAMMA_ADAPTER];
 // const VENUE_NAMES = [GAMMA_PROTOCOL];
-const ETH_ADDRESS = "0x0000000000000000000000000000000000000000";
-const USDC_ADDRESS = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
-
-const ZERO_EX_API_URI = "https://api.0x.org/swap/v1/quote";
-
-type ContractOptionTerms = {
-  underlying: string;
-  strikeAsset: string;
-  collateralAsset: string;
-  expiry: BigNumber;
-};
-
-type PriceQuote = {
-  premium: BigNumber;
-  strikePrice: BigNumber;
-  data: string;
-  gasPrice: BigNumber;
-  exists: boolean;
-  venueName: string;
-};
-
-type CallPutPriceQuotes = {
-  call: PriceQuote;
-  put: PriceQuote;
-};
 
 export async function getBestTrade(
   tradeRequest: TradeRequest
@@ -85,7 +61,6 @@ export async function getBestTrade(
     BigNumber.from(spotPrice.toString()),
     BigNumber.from(buyAmount.toString())
   );
-  console.log(prices);
   const bestPriceQuote = getBestPrice(prices);
   console.timeEnd("getPrices");
 
@@ -244,214 +219,4 @@ async function getPriceFromContract(
       venueName,
     },
   };
-}
-
-type OtokenDetails = {
-  address: string;
-  strikePrice: BigNumber;
-  expiry: number;
-  isPut: boolean;
-};
-type OtokenMatch = { address: string; strikePrice: BigNumber };
-type OtokenMatches = { call: OtokenMatch | null; put: OtokenMatch | null };
-
-async function get0xPrices(
-  instrumentAddress: string,
-  spotPrice: BigNumber,
-  buyAmount: BigNumber
-) {
-  const optionTerms = getOptionTerms(instrumentAddress);
-
-  const otokenMatches = getNearestOtoken(
-    optionTerms.expiry.toNumber(),
-    spotPrice
-  );
-  const zero = BigNumber.from("0");
-
-  const emptyPriceQuote = {
-    strikePrice: zero,
-    premium: zero,
-    data: "0x",
-    gasPrice: BigNumber.from("0"),
-    exists: false,
-    venueName: GAMMA_PROTOCOL,
-  };
-
-  const callResponse =
-    otokenMatches.call &&
-    (await get0xQuote(otokenMatches.call.address, buyAmount));
-
-  const putResponse =
-    otokenMatches.put &&
-    (await get0xQuote(otokenMatches.put.address, buyAmount));
-
-  let callPriceQuote = emptyPriceQuote;
-  let putPriceQuote = emptyPriceQuote;
-
-  if (otokenMatches.call !== null && callResponse !== null) {
-    switch (callResponse.error) {
-      case true:
-        break;
-      case false:
-        callPriceQuote = {
-          strikePrice: otokenMatches.call.strikePrice,
-          premium: callResponse ? callResponse.premium : zero,
-          data: callResponse ? callResponse.apiResponse.data : "0x",
-          gasPrice: callResponse
-            ? BigNumber.from(callResponse.apiResponse.gasPrice)
-            : zero,
-          exists: Boolean(otokenMatches.call),
-          venueName: GAMMA_PROTOCOL,
-        };
-        break;
-      default:
-        break;
-    }
-  }
-  if (otokenMatches.put !== null && putResponse !== null) {
-    switch (putResponse.error) {
-      case true:
-        break;
-      case false:
-        putPriceQuote = {
-          strikePrice: otokenMatches.put.strikePrice,
-          premium: putResponse ? putResponse.premium : zero,
-          data: putResponse ? putResponse.apiResponse.data : "0x",
-          gasPrice: putResponse
-            ? BigNumber.from(putResponse.apiResponse.gasPrice)
-            : zero,
-          exists: Boolean(otokenMatches.put),
-          venueName: GAMMA_PROTOCOL,
-        };
-        break;
-      default:
-        break;
-    }
-  }
-
-  return {
-    call: callPriceQuote,
-    put: putPriceQuote,
-  };
-}
-
-function getNearestOtoken(expiry: number, spotPrice: BigNumber): OtokenMatches {
-  const scalingFactor = BigNumber.from("10").pow(BigNumber.from("10"));
-  let otokens = externalAddresses.mainnet.otokens.map((otoken) => ({
-    ...otoken,
-    expiry: parseInt(otoken.expiry),
-    strikePrice: BigNumber.from(otoken.strikePrice).mul(scalingFactor),
-  }));
-
-  // filter just in case
-  otokens = otokens.filter((otoken) => otoken.expiry === expiry);
-
-  // min-max bounds are 10% from the spot price
-  const minStrikePrice = wmul(spotPrice, GAMMA_MIN_STRIKE);
-  const maxStrikePrice = wmul(spotPrice, GAMMA_MAX_STRIKE);
-
-  const callOtokens = otokens.filter(
-    (otoken) =>
-      !otoken.isPut &&
-      otoken.strikePrice.gt(spotPrice) &&
-      otoken.strikePrice.lt(maxStrikePrice)
-  );
-  const putOtokens = otokens.filter(
-    (otoken) =>
-      otoken.isPut &&
-      otoken.strikePrice.lt(spotPrice) &&
-      otoken.strikePrice.gt(minStrikePrice)
-  );
-
-  let addresses: OtokenMatches = {
-    call: null,
-    put: null,
-  };
-
-  const minDiffOtoken = (otokens: OtokenDetails[]) => {
-    const strikePrices = otokens.map((otoken) => otoken.strikePrice);
-    const priceDiff = strikePrices.map((p) => spotPrice.sub(p).abs());
-
-    let minPrice = MAX_UINT256;
-    let minIndex = 0;
-
-    priceDiff.forEach((diff: BigNumber, index: number) => {
-      if (diff.lt(minPrice)) {
-        minPrice = diff;
-        minIndex = index;
-      }
-    });
-    return {
-      address: ethers.utils.getAddress(otokens[minIndex].address),
-      strikePrice: otokens[minIndex].strikePrice,
-    };
-  };
-
-  if (callOtokens.length) {
-    addresses.call = minDiffOtoken(callOtokens);
-  }
-  if (putOtokens.length) {
-    addresses.put = minDiffOtoken(putOtokens);
-  }
-
-  return addresses;
-}
-
-function getOptionTerms(instrumentAddress: string): ContractOptionTerms {
-  const instrumentDetails = instrumentAddresses.mainnet.find(
-    (i) => i.address === instrumentAddress
-  );
-  if (!instrumentDetails) {
-    throw new Error(`Instrument with address ${instrumentAddress} not found`);
-  }
-  return {
-    underlying: ETH_ADDRESS,
-    collateralAsset: ETH_ADDRESS,
-    strikeAsset: USDC_ADDRESS,
-    expiry: BigNumber.from(instrumentDetails.expiry),
-  };
-}
-
-async function get0xQuote(
-  otokenAddress: string,
-  buyAmount: BigNumber
-): Promise<
-  | { premium: BigNumber; apiResponse: ZeroExApiResponse; error: false }
-  | { error: true }
-> {
-  const scalingFactor = BigNumber.from("10").pow(BigNumber.from("10"));
-  buyAmount = buyAmount.div(scalingFactor);
-
-  const data: Record<string, string> = {
-    buyToken: otokenAddress,
-    sellToken: "USDC",
-    buyAmount: buyAmount.toString(),
-    gas: "600000",
-  };
-  const query = new URLSearchParams(data).toString();
-  const url = `${ZERO_EX_API_URI}?${query}`;
-
-  try {
-    const response = await axios.get(url);
-    return {
-      premium: calculateZeroExOrderCost(response.data),
-      apiResponse: response.data,
-      error: false,
-    };
-  } catch (e) {
-    console.error(e);
-    return { error: true };
-  }
-}
-
-function calculateZeroExOrderCost(apiResponse: ZeroExApiResponse) {
-  const decimals = 6; // just scale decimals for USDC amounts for now, because USDC is the purchase token
-
-  const scaledSellAmount = parseInt(apiResponse.sellAmount) / 10 ** decimals;
-  const totalETH =
-    scaledSellAmount / parseFloat(apiResponse.sellTokenToEthRate);
-
-  return ethers.utils
-    .parseUnits(totalETH.toFixed(6), "ether")
-    .add(BigNumber.from(apiResponse.value));
 }

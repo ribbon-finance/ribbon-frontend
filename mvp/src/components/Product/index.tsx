@@ -111,13 +111,19 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
             straddle.address,
             signer
           );
+          const useHigherGasLimit = venues.includes("OPYN_GAMMA");
+
           const receipt = await instrument.buyInstrument(
             venues,
             optionTypes,
             amounts,
             strikePrices,
             buyData,
-            { value: totalPremium, gasPrice, gasLimit: 1200000 }
+            {
+              value: totalPremium,
+              gasPrice,
+              gasLimit: useHigherGasLimit ? 1700000 : 1200000,
+            }
           );
           setIsWaitingForConfirmation();
 

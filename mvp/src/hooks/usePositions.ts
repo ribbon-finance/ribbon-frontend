@@ -40,6 +40,7 @@ const usePositions = (instrumentAddresses: string[]) => {
         const positions = await fetchAllInstrumentPositions(
           signer,
           account,
+          BigNumber.from(ethPriceStr),
           instrumentAddresses
         );
 
@@ -75,6 +76,7 @@ const usePositions = (instrumentAddresses: string[]) => {
 const fetchAllInstrumentPositions = async (
   signer: Signer,
   account: string,
+  assetPrice: BigNumber,
   instrumentAddresses: string[]
 ) => {
   const multicall = MulticallFactory.connect(
@@ -119,6 +121,12 @@ const fetchAllInstrumentPositions = async (
             strikePrices,
             venues,
           ] = result;
+          const pnl = calculatePNL(
+            assetPrice,
+            optionTypes,
+            strikePrices,
+            amounts
+          );
 
           return {
             positionID,
@@ -130,7 +138,7 @@ const fetchAllInstrumentPositions = async (
             venues,
             instrumentAddress,
             expiry,
-            pnl: 0,
+            pnl,
             canExercise: false,
           };
         }
@@ -212,7 +220,6 @@ const fetchExerciseProfit = async (
     )[0];
     return {
       ...position,
-      pnl: exerciseProfit,
       exerciseProfit,
     };
   });
