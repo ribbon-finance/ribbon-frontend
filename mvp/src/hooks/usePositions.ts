@@ -43,13 +43,19 @@ const usePositions = (instrumentAddresses: string[]) => {
           instrumentAddresses
         );
 
-        const positionsWithCanExercise = await updatePositionsCanExercise(
+        const positionsWithCanExercise = await fetchCanExercise(
           signer,
           account,
           positions
         );
 
-        setPositions(positionsWithCanExercise);
+        const positionsWithProfit = await fetchExerciseProfit(
+          signer,
+          account,
+          positionsWithCanExercise
+        );
+
+        setPositions(positionsWithProfit);
         setLoading(false);
       }
     } catch (e) {
@@ -135,7 +141,7 @@ const fetchAllInstrumentPositions = async (
   return flattenedPositions;
 };
 
-const updatePositionsCanExercise = async (
+const fetchCanExercise = async (
   signer: Signer,
   account: string,
   positions: InstrumentPosition[]
@@ -169,6 +175,45 @@ const updatePositionsCanExercise = async (
     return {
       ...position,
       canExercise,
+    };
+  });
+};
+
+const fetchExerciseProfit = async (
+  signer: Signer,
+  account: string,
+  positions: InstrumentPosition[]
+) => {
+  const multicall = MulticallFactory.connect(
+    externalAddresses.mainnet.multicall,
+    signer
+  );
+
+  const exerciseProfitCalls = positions.map((position) => {
+    const instrument = IAggregatedOptionsInstrumentFactory.connect(
+      position.instrumentAddress,
+      signer
+    );
+    const callData = instrument.interface.encodeFunctionData("exerciseProfit", [
+      account,
+      position.positionID,
+    ]);
+    return {
+      target: position.instrumentAddress,
+      callData,
+    };
+  });
+  const exerciseProfitResponse = await multicall.aggregate(exerciseProfitCalls);
+
+  return positions.map((position, index) => {
+    const exerciseProfit = abiCoder.decode(
+      ["uint256"],
+      exerciseProfitResponse.returnData[index]
+    )[0];
+    return {
+      ...position,
+      pnl: exerciseProfit,
+      exerciseProfit,
     };
   });
 };

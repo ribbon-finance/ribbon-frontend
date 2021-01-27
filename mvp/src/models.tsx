@@ -79,4 +79,5 @@ export type InstrumentPosition = {
   venues: string[];
   pnl: BigNumber;
   canExercise: boolean;
+  exerciseProfit: BigNumber;
 };

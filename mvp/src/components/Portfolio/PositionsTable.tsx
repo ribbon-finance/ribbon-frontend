@@ -78,7 +78,6 @@ const PositionsTable: React.FC<PositionsTableProps> = ({
     exercisingPosition,
     setExercisingPosition,
   ] = useState<InstrumentPosition | null>(null);
-  console.log(positions);
 
   const { library } = useWeb3React();
 
