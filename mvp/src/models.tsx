@@ -36,6 +36,8 @@ export const CALL_OPTION_TYPE = 2;
 
 export type StraddleTrade = {
   venues: string[];
+  callVenue: string;
+  putVenue: string;
   amounts: BigNumber[];
   totalPremium: BigNumber;
   callPremium: BigNumber;
@@ -76,4 +78,6 @@ export type InstrumentPosition = {
   strikePrices: BigNumber[];
   venues: string[];
   pnl: BigNumber;
+  canExercise: boolean;
+  exerciseProfit: BigNumber;
 };

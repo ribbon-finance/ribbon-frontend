@@ -8,3 +8,12 @@ export const sumPortfolioValue = (positions: InstrumentPosition[]) => {
   );
   return parseFloat(ethers.utils.formatEther(positionSum));
 };
+
+export const venueKeyToName = (venueKey: string) => {
+  const dict: Record<string, string> = {
+    OPYN_GAMMA: "Opyn V2",
+    HEGIC: "Hegic",
+    "": "Unknown",
+  };
+  return dict[venueKey];
+};

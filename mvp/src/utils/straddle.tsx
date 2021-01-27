@@ -20,7 +20,7 @@ export const computeStraddleValue = (
   ethPrice: number
 ): [string, string] => {
   const straddleCost = parseFloat(ethers.utils.formatEther(totalPremium));
-  return [(straddleCost * ethPrice).toFixed(2), straddleCost.toFixed(3)];
+  return [(straddleCost * ethPrice).toFixed(2), straddleCost.toFixed(6)];
 };
 
 export const computeBreakeven = (

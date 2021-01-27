@@ -20,11 +20,11 @@ const multicall = MulticallFactory.connect(
 // this is used to initiate the provider connection so we have faster speeds for subsequent calls
 multicall.aggregate([]);
 
-const GAMMA_MIN_STRIKE = ethers.utils.parseEther("0.65");
-const GAMMA_MAX_STRIKE = ethers.utils.parseEther("1.05");
+const GAMMA_MIN_STRIKE = ethers.utils.parseEther("0.15");
+const GAMMA_MAX_STRIKE = ethers.utils.parseEther("1.95");
 
-const HEGIC_MIN_STRIKE = ethers.utils.parseEther("0.95");
-const HEGIC_MAX_STRIKE = ethers.utils.parseEther("1.05");
+const HEGIC_MIN_STRIKE = ethers.utils.parseEther("1");
+const HEGIC_MAX_STRIKE = ethers.utils.parseEther("1");
 
 // 2^256-1
 const MAX_UINT256 = BigNumber.from("2")
@@ -39,6 +39,8 @@ const HEGIC_ADAPTER = deployments.mainnet.HegicAdapterLogic;
 const GAMMA_ADAPTER = deployments.mainnet.GammaAdapterLogic;
 const ADAPTER_ADDRESSES = [GAMMA_ADAPTER, HEGIC_ADAPTER];
 const VENUE_NAMES = [GAMMA_PROTOCOL, HEGIC_PROTOCOL];
+// const ADAPTER_ADDRESSES = [GAMMA_ADAPTER];
+// const VENUE_NAMES = [GAMMA_PROTOCOL];
 const ETH_ADDRESS = "0x0000000000000000000000000000000000000000";
 const USDC_ADDRESS = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
 
@@ -83,6 +85,7 @@ export async function getBestTrade(
     BigNumber.from(spotPrice.toString()),
     BigNumber.from(buyAmount.toString())
   );
+  console.log(prices);
   const bestPriceQuote = getBestPrice(prices);
   console.timeEnd("getPrices");
 
@@ -449,6 +452,6 @@ function calculateZeroExOrderCost(apiResponse: ZeroExApiResponse) {
     scaledSellAmount / parseFloat(apiResponse.sellTokenToEthRate);
 
   return ethers.utils
-    .parseUnits(totalETH.toPrecision(6), "ether")
+    .parseUnits(totalETH.toFixed(6), "ether")
     .add(BigNumber.from(apiResponse.value));
 }

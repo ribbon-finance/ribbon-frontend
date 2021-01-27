@@ -23,6 +23,8 @@ const Dashboard = () => {
   );
   const portfolioValue = sumPortfolioValue(positions);
 
+  if (!positions.length) return null;
+
   return (
     <DashboardContainer>
       <DashboardTitleContainer>

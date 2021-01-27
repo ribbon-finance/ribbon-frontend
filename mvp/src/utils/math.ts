@@ -12,6 +12,17 @@ export const toFiat = (etherVal: BigNumber) => {
   return scaled.toNumber() / 10 ** 2;
 };
 
+export const toSignificantDecimals = (
+  wad: BigNumber,
+  decimals: number
+): string => {
+  return ethers.utils.formatEther(
+    ethers.utils.parseEther(
+      parseFloat(ethers.utils.formatEther(wad)).toFixed(decimals)
+    )
+  );
+};
+
 export const wadToUSD = (wadVal: BigNumber) => {
   const scaleFactor = ethers.BigNumber.from(10).pow(
     ethers.BigNumber.from("16")

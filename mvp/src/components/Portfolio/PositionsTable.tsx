@@ -11,6 +11,8 @@ import { timeToExpiry } from "../../utils/time";
 import StyledStatistic from "../../designSystem/StyledStatistic";
 import { useWeb3React } from "@web3-react/core";
 import { IAggregatedOptionsInstrumentFactory } from "../../codegen/IAggregatedOptionsInstrumentFactory";
+import { toSignificantDecimals } from "../../utils/math";
+import ExerciseModal from "./ExerciseModal";
 
 type PositionsTableProps = {
   positions: InstrumentPosition[];
@@ -133,7 +135,7 @@ const positionToDataSource = (
   isPastPositions: boolean,
   onExercise: (position: InstrumentPosition) => void
 ) => {
-  const { optionTypes, strikePrices, pnl } = position;
+  const { optionTypes, strikePrices, pnl, canExercise } = position;
   const callIndex = optionTypes.findIndex(
     (optionType) => optionType === CALL_OPTION_TYPE
   );
@@ -161,7 +163,7 @@ const positionToDataSource = (
   }
 
   const pnlUSD = parseFloat(ethers.utils.formatEther(pnl)).toFixed(2);
-  const showExerciseButton = !isPastPositions && !pnl.isZero();
+  const showExerciseButton = !isPastPositions && canExercise;
   const exerciseButton = (
     <Button onClick={() => onExercise(position)}>Exercise</Button>
   );
@@ -175,45 +177,6 @@ const positionToDataSource = (
     exerciseButton: showExerciseButton && exerciseButton,
   };
   return data;
-};
-
-type ExerciseModalProps = {
-  position: InstrumentPosition;
-  onClose: () => void;
-  onExercise: () => Promise<void>;
-};
-
-const ExerciseModal: React.FC<ExerciseModalProps> = ({
-  position,
-  onExercise,
-  onClose,
-}) => {
-  const { pnl, amounts } = position;
-  const pnlUSD = parseFloat(ethers.utils.formatEther(pnl)).toFixed(2);
-  const numContracts = ethers.utils.formatEther(amounts[0]); // we assume that we only take 2 options positions
-
-  return (
-    <Modal
-      visible={true}
-      onOk={onExercise}
-      onCancel={onClose}
-      width={300}
-      title="Confirm Exercise"
-    >
-      <Row>
-        <StyledStatistic
-          title="I am exercising"
-          value={`${numContracts} contracts`}
-        ></StyledStatistic>
-      </Row>
-      <Row>
-        <StyledStatistic
-          title="This will be a profit of"
-          value={`$${pnlUSD}`}
-        ></StyledStatistic>
-      </Row>
-    </Modal>
-  );
 };
 
 export default PositionsTable;

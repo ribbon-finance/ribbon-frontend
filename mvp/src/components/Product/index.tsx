@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
-import { Row, Col, Button, Modal } from "antd";
+import { Row, Col } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Title, PrimaryText, StyledCard } from "../../designSystem";
 import { computeStraddleValue } from "../../utils/straddle";
@@ -14,10 +14,10 @@ import { useDefaultProduct, useInstrument } from "../../hooks/useProducts";
 import { useStraddleTrade } from "../../hooks/useStraddleTrade";
 import { ethers } from "ethers";
 import { useParams } from "react-router-dom";
-import StyledStatistic from "../../designSystem/StyledStatistic";
 import { useWeb3React } from "@web3-react/core";
 import { IAggregatedOptionsInstrumentFactory } from "../../codegen/IAggregatedOptionsInstrumentFactory";
 import useGasPrice from "../../hooks/useGasPrice";
+import PurchaseModal from "./PurchaseModal";
 
 const ProductTitleContainer = styled.div`
   padding-top: 10px;
@@ -75,6 +75,8 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
   const {
     loading: loadingTrade,
     totalPremium,
+    callVenue,
+    putVenue,
     callStrikePrice,
     putStrikePrice,
     strikePrices,
@@ -155,8 +157,6 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
     straddle.expiryTimestamp
   )} remaining)`;
 
-  const totalCostETH = (parseFloat(straddleETH) * purchaseAmount).toFixed(3);
-
   return (
     <div>
       <PurchaseModal
@@ -165,8 +165,12 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
         onPurchase={handlePurchase}
         onClose={handleCloseModal}
         purchaseAmount={purchaseAmount}
-        straddleETH={totalCostETH}
+        straddleETH={straddleETH}
         expiry={expiry}
+        callStrikePrice={callStrikePrice}
+        putStrikePrice={putStrikePrice}
+        callVenue={callVenue}
+        putVenue={putVenue}
       ></PurchaseModal>
 
       <a href="/">
@@ -226,103 +230,4 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
     </div>
   );
 };
-
-type PurchaseModalProps = {
-  isVisible: boolean;
-  loading: boolean;
-  onPurchase: (setWaitingForConfirmation: () => void) => Promise<void>;
-  onClose: () => void;
-  purchaseAmount: number;
-  straddleETH: string;
-  expiry: string;
-};
-
-const PurchaseModal: React.FC<PurchaseModalProps> = ({
-  isVisible,
-  onPurchase,
-  onClose,
-  loading,
-  purchaseAmount,
-  straddleETH,
-  expiry,
-}) => {
-  const [isPending, setPending] = useState(false);
-  const [isWaitingForConfirmation, setIsWaitingForConfirmation] = useState(
-    false
-  );
-
-  const handleOk = async () => {
-    setPending(true);
-    await onPurchase(() => setIsWaitingForConfirmation(true));
-    setPending(false);
-    setIsWaitingForConfirmation(false);
-  };
-
-  let buttonText;
-  if (isPending && !isWaitingForConfirmation) {
-    buttonText = "Purchasing...";
-  } else if (isPending && isWaitingForConfirmation) {
-    buttonText = "Waiting for 1 confirmation...";
-  } else {
-    buttonText = "Purchase";
-  }
-
-  useEffect(() => {
-    if (!isVisible) {
-      setPending(false);
-      setIsWaitingForConfirmation(false);
-    }
-  }, [isVisible, setPending, setIsWaitingForConfirmation]);
-
-  return (
-    <Modal
-      visible={isVisible}
-      onOk={handleOk}
-      onCancel={onClose}
-      width={300}
-      title={"Confirm Purchase"}
-      footer={[
-        !isWaitingForConfirmation && (
-          <Button
-            key="back"
-            disabled={isWaitingForConfirmation}
-            onClick={onClose}
-          >
-            Cancel
-          </Button>
-        ),
-        <Button
-          disabled={loading}
-          key="submit"
-          type="primary"
-          loading={isPending}
-          onClick={handleOk}
-        >
-          {buttonText}
-        </Button>,
-      ].filter(Boolean)}
-    >
-      <Row>
-        <StyledStatistic
-          title="I am purchasing"
-          value={`${purchaseAmount} contracts`}
-        ></StyledStatistic>
-      </Row>
-      <Row>
-        <StyledStatistic
-          title="This will cost"
-          value={loading ? "Computing cost..." : `${straddleETH} ETH`}
-        ></StyledStatistic>
-      </Row>
-
-      <Row>
-        <StyledStatistic
-          title="The contracts will expire by"
-          value={expiry.toString()}
-        ></StyledStatistic>
-      </Row>
-    </Modal>
-  );
-};
-
 export default PurchaseInstrumentWrapper;
