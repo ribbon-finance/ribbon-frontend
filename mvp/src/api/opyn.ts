@@ -4,6 +4,7 @@ import { wmul } from "../utils/math";
 import { CallPutPriceQuotes, ZeroExApiResponse } from "./types";
 import externalAddresses from "../constants/externalAddresses.json";
 import { GAMMA_PROTOCOL, getOptionTerms, MAX_UINT256 } from "./utils";
+import { getFastGasPrice } from "./gasPrice";
 
 const GAMMA_MIN_STRIKE = ethers.utils.parseEther("0.15");
 const GAMMA_MAX_STRIKE = ethers.utils.parseEther("1.95");
@@ -42,13 +43,20 @@ export async function get0xPrices(
     venueName: GAMMA_PROTOCOL,
   };
 
-  const callResponse =
-    otokenMatches.call &&
-    (await get0xQuote(otokenMatches.call.address, buyAmount));
+  const gasPrice = await getFastGasPrice();
 
-  const putResponse =
+  const callPromise =
+    otokenMatches.call &&
+    get0xQuote(otokenMatches.call.address, buyAmount, gasPrice);
+
+  const putPromise =
     otokenMatches.put &&
-    (await get0xQuote(otokenMatches.put.address, buyAmount));
+    get0xQuote(otokenMatches.put.address, buyAmount, gasPrice);
+
+  const promises = [callPromise, putPromise];
+  const responses = await Promise.all(promises);
+  const callResponse = responses[0];
+  const putResponse = responses[1];
 
   let callPriceQuote = emptyPriceQuote;
   let putPriceQuote = emptyPriceQuote;
@@ -180,7 +188,8 @@ function getNearestOtoken(expiry: number, spotPrice: BigNumber): OtokenMatches {
 
 async function get0xQuote(
   otokenAddress: string,
-  buyAmount: BigNumber
+  buyAmount: BigNumber,
+  gasPrice: number
 ): Promise<
   | { premium: BigNumber; apiResponse: ZeroExApiResponse; error: false }
   | { error: true }
@@ -192,7 +201,8 @@ async function get0xQuote(
     buyToken: otokenAddress,
     sellToken: "USDC",
     buyAmount: buyAmount.toString(),
-    gas: "600000",
+    gas: "800000",
+    gasPrice: gasPrice.toString(),
   };
   const query = new URLSearchParams(data).toString();
   const url = `${ZERO_EX_API_URI}?${query}`;
