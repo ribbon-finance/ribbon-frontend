@@ -8,7 +8,7 @@ const Logo = () => {
   return (
     <LogoContainer>
       <a href="/">
-        <img src={Ribbon} alt="" width="120"></img>
+        <img src={Ribbon} alt="" height="80"></img>
       </a>
     </LogoContainer>
   );

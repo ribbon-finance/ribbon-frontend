@@ -2,13 +2,20 @@ import styled from "styled-components";
 import { Card, Input } from "antd";
 
 export const BaseText = styled.span`
-  font-family: "Helvetica", sans-serif;
+  font-family: "Montserrat", sans-serif;
 `;
 
 export const PrimaryText = styled(BaseText)`
-  font-family: Helvetica;
+  font-family: Montserrat;
   font-style: normal;
   font-weight: normal;
+  font-size: 16px;
+`;
+
+export const PrimaryMedium = styled(BaseText)`
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 600;
   font-size: 16px;
 `;
 
