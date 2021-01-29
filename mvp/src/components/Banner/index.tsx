@@ -18,6 +18,7 @@ const PreTitle = styled.p`
 const Title = styled.p`
   font-weight: bold;
   font-size: 70px;
+  margin-top: -20px;
   margin-bottom: 0px;
 `;
 
