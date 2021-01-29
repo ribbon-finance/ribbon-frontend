@@ -33,8 +33,8 @@ const multicall = MulticallFactory.connect(
 // this is used to initiate the provider connection so we have faster speeds for subsequent calls
 multicall.aggregate([]);
 
-const HEGIC_MIN_STRIKE = ethers.utils.parseEther("1");
-const HEGIC_MAX_STRIKE = ethers.utils.parseEther("1");
+const HEGIC_MIN_STRIKE = ethers.utils.parseEther("0.95");
+const HEGIC_MAX_STRIKE = ethers.utils.parseEther("1.05");
 
 const HEGIC_ADAPTER = deployments.mainnet.HegicAdapterLogic;
 const GAMMA_ADAPTER = deployments.mainnet.GammaAdapterLogic;

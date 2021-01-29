@@ -1,16 +1,17 @@
 import axios from "axios";
+import { Agent as HttpsAgent } from "https";
 import { BigNumber, ethers } from "ethers";
 import { wmul } from "../utils/math";
 import { CallPutPriceQuotes, ZeroExApiResponse } from "./types";
 import externalAddresses from "../constants/externalAddresses.json";
 import { GAMMA_PROTOCOL, getOptionTerms, MAX_UINT256 } from "./utils";
-import { getFastGasPrice } from "./gasPrice";
 
-const GAMMA_MIN_STRIKE = ethers.utils.parseEther("0.15");
-const GAMMA_MAX_STRIKE = ethers.utils.parseEther("1.95");
+const GAMMA_MIN_STRIKE = ethers.utils.parseEther("0.65");
+const GAMMA_MAX_STRIKE = ethers.utils.parseEther("1.05");
 const ZERO_EX_API_URI = "https://api.0x.org/swap/v1/quote";
 
 const abiCoder = new ethers.utils.AbiCoder();
+const httpsAgent = new HttpsAgent({ keepAlive: true });
 
 type OtokenDetails = {
   address: string;
@@ -43,20 +44,19 @@ export async function get0xPrices(
     venueName: GAMMA_PROTOCOL,
   };
 
-  const gasPrice = await getFastGasPrice();
-
-  const callPromise =
+  const callResponse =
     otokenMatches.call &&
-    get0xQuote(otokenMatches.call.address, buyAmount, gasPrice);
+    (await get0xQuote(otokenMatches.call.address, buyAmount, null));
 
-  const putPromise =
+  const putResponse =
     otokenMatches.put &&
-    get0xQuote(otokenMatches.put.address, buyAmount, gasPrice);
-
-  const promises = [callPromise, putPromise];
-  const responses = await Promise.all(promises);
-  const callResponse = responses[0];
-  const putResponse = responses[1];
+    (await get0xQuote(
+      otokenMatches.put.address,
+      buyAmount,
+      callResponse !== null && !callResponse.error
+        ? parseInt(callResponse.apiResponse.gasPrice)
+        : null
+    ));
 
   let callPriceQuote = emptyPriceQuote;
   let putPriceQuote = emptyPriceQuote;
@@ -189,7 +189,7 @@ function getNearestOtoken(expiry: number, spotPrice: BigNumber): OtokenMatches {
 async function get0xQuote(
   otokenAddress: string,
   buyAmount: BigNumber,
-  gasPrice: number
+  gasPrice: number | null
 ): Promise<
   | { premium: BigNumber; apiResponse: ZeroExApiResponse; error: false }
   | { error: true }
@@ -202,20 +202,20 @@ async function get0xQuote(
     sellToken: "USDC",
     buyAmount: buyAmount.toString(),
     gas: "800000",
-    gasPrice: gasPrice.toString(),
+    ...(gasPrice !== null ? { gasPrice: gasPrice.toString() } : {}),
   };
+
   const query = new URLSearchParams(data).toString();
   const url = `${ZERO_EX_API_URI}?${query}`;
 
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(url, { httpsAgent });
     return {
       premium: calculateZeroExOrderCost(response.data),
       apiResponse: response.data,
       error: false,
     };
   } catch (e) {
-    console.error(e);
     return { error: true };
   }
 }
