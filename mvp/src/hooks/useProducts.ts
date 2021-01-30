@@ -35,8 +35,11 @@ export const useProducts = (): Product[] => {
 
     const response = await multicall.aggregate(calls);
 
-    const instruments = instrumentAddresses.mainnet.map(
-      (instrumentDetails, index) => {
+    const nowTimestamp = Math.floor(Date.now() / 1000);
+
+    const instruments = instrumentAddresses.mainnet
+      .filter((details) => parseInt(details.expiry) > nowTimestamp)
+      .map((instrumentDetails, index) => {
         const {
           address,
           instrumentSymbol: symbol,
@@ -53,8 +56,7 @@ export const useProducts = (): Product[] => {
           underlying,
           expiryTimestamp: parseInt(expiryTimestamp),
         };
-      }
-    );
+      });
 
     setInstruments(instruments);
   }, [library, instrumentDetails]);
