@@ -159,7 +159,10 @@ const positionToDataSource = (
     expiry = `${expiryDate} (${timeToExpiry(position.expiry)} remaining)`;
   }
 
-  const pnlUSD = parseFloat(ethers.utils.formatEther(pnl)).toFixed(2);
+  const pnlUSD =
+    (pnl.isNegative() ? "-" : "") +
+    "$" +
+    parseFloat(ethers.utils.formatEther(pnl.abs())).toFixed(2);
   const showExerciseButton = !isPastPositions && canExercise;
   const exerciseButton = (
     <Button onClick={() => onExercise(position)}>Exercise</Button>
@@ -170,7 +173,7 @@ const positionToDataSource = (
     number: (index + 1).toString(),
     name: `ETH Straddle $${putStrikePrice}/$${callStrikePrice}`,
     expiry,
-    pnl: `$${pnlUSD}`,
+    pnl: pnlUSD,
     exerciseButton: showExerciseButton && exerciseButton,
   };
   return data;
