@@ -2,37 +2,19 @@ import { useWeb3React } from "@web3-react/core";
 import { useCallback, useEffect, useState } from "react";
 import { IAggregatedOptionsInstrumentFactory } from "../codegen/IAggregatedOptionsInstrumentFactory";
 import { MulticallFactory } from "../codegen/MulticallFactory";
-import {
-  CALL_OPTION_TYPE,
-  InstrumentPosition,
-  PositionsQuery,
-  PUT_OPTION_TYPE,
-} from "../models";
+import { InstrumentPosition, PositionsQuery } from "../models";
 import externalAddresses from "../constants/externalAddresses.json";
 import instrumentDetails from "../constants/instruments.json";
 import { AbiCoder } from "ethers/lib/utils";
 import { BigNumber, ethers, Signer } from "ethers";
-import { useETHPrice } from "./useEthPrice";
-import { wmul } from "../utils/math";
 import axios from "axios";
 
 const abiCoder = new AbiCoder();
-
-type DecodedInstrumentPosition = [
-  exercised: boolean,
-  optionTypes: number[],
-  optionIDs: number[],
-  amounts: BigNumber[],
-  strikePrices: BigNumber[],
-  venues: string[]
-];
 
 const usePositions = () => {
   const { library, account } = useWeb3React();
   const [loading, setLoading] = useState<boolean>(true);
   const [positions, setPositions] = useState<InstrumentPosition[]>([]);
-  const ethPrice = useETHPrice();
-  const ethPriceStr = ethPrice.toString();
 
   const fetchPositions = useCallback(async () => {
     try {
@@ -64,7 +46,7 @@ const usePositions = () => {
       console.error(e);
       setLoading(false);
     }
-  }, [library, account, ethPriceStr]);
+  }, [library, account]);
 
   useEffect(() => {
     if (library && account) {
@@ -217,33 +199,6 @@ const getInstrumentExpiry = (instrumentAddress: string): number => {
     throw new Error("Instrument not found");
   }
   return parseInt(details.expiry);
-};
-
-const calculatePNL = (
-  assetPrice: BigNumber,
-  optionTypes: number[],
-  strikePrices: BigNumber[],
-  amounts: BigNumber[]
-): BigNumber => {
-  const callIndex = optionTypes.findIndex(
-    (optionType) => optionType === CALL_OPTION_TYPE
-  );
-  const putIndex = optionTypes.findIndex(
-    (optionType) => optionType === PUT_OPTION_TYPE
-  );
-  if (callIndex === -1 || putIndex === -1) {
-    throw new Error("No call or put option found");
-  }
-
-  const callStrikePrice = strikePrices[callIndex];
-  const putStrikePrice = strikePrices[putIndex];
-
-  if (assetPrice.lt(putStrikePrice)) {
-    return wmul(putStrikePrice.sub(assetPrice), amounts[putIndex]);
-  } else if (assetPrice.gt(callStrikePrice)) {
-    return wmul(assetPrice.sub(callStrikePrice), amounts[callIndex]);
-  }
-  return BigNumber.from("0");
 };
 
 export default usePositions;

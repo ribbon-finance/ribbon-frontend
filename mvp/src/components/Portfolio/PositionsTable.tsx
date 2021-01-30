@@ -1,17 +1,14 @@
 import React, { useCallback, useState } from "react";
-import { Button, Modal, Row, Table } from "antd";
+import { Button, Table } from "antd";
 import {
   CALL_OPTION_TYPE,
-  Instrument,
   InstrumentPosition,
   PUT_OPTION_TYPE,
 } from "../../models";
 import { ethers } from "ethers";
 import { timeToExpiry } from "../../utils/time";
-import StyledStatistic from "../../designSystem/StyledStatistic";
 import { useWeb3React } from "@web3-react/core";
 import { IAggregatedOptionsInstrumentFactory } from "../../codegen/IAggregatedOptionsInstrumentFactory";
-import { toSignificantDecimals } from "../../utils/math";
 import ExerciseModal from "./ExerciseModal";
 
 type PositionsTableProps = {

@@ -4,7 +4,6 @@ import { Row, Col, Skeleton } from "antd";
 import { Title } from "../../designSystem";
 import Positions from "./Positions";
 import usePositions from "../../hooks/usePositions";
-import { useInstrumentAddresses } from "../../hooks/useProducts";
 
 const DashboardContainer = styled.div`
   padding-bottom: 50px;
@@ -15,7 +14,6 @@ const DashboardTitleContainer = styled.div`
 `;
 
 const Dashboard = () => {
-  const instrumentAddresses = useInstrumentAddresses();
   const { loading: loadingPositions, positions } = usePositions();
 
   return (
