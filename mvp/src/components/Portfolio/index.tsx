@@ -13,9 +13,7 @@ const ProductTitleContainer = styled.div`
 
 const Portfolio = () => {
   const instrumentAddresses = useInstrumentAddresses();
-  const { loading: loadingPositions, positions } = usePositions(
-    instrumentAddresses
-  );
+  const { loading: loadingPositions, positions } = usePositions();
   const sortedPositions = positions.sort((a, b) => {
     if (a.expiry > b.expiry) return -1;
     if (a.expiry < b.expiry) return 1;

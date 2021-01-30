@@ -67,13 +67,23 @@ export type TradeResponse = {
   premiums: string[];
 };
 
+export type PositionsQuery = {
+  id: string;
+  instrumentAddress: string;
+  cost: string;
+  exercised: boolean;
+  amounts: string[];
+  optionTypes: number[];
+  venues: string[];
+  strikePrices: string[];
+};
+
 export type InstrumentPosition = {
   positionID: number;
   instrumentAddress: string;
   expiry: number;
   exercised: boolean;
   optionTypes: number[];
-  optionIDs: number[];
   amounts: BigNumber[];
   strikePrices: BigNumber[];
   venues: string[];
