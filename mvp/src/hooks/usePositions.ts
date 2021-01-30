@@ -2,47 +2,30 @@ import { useWeb3React } from "@web3-react/core";
 import { useCallback, useEffect, useState } from "react";
 import { IAggregatedOptionsInstrumentFactory } from "../codegen/IAggregatedOptionsInstrumentFactory";
 import { MulticallFactory } from "../codegen/MulticallFactory";
-import {
-  CALL_OPTION_TYPE,
-  InstrumentPosition,
-  PUT_OPTION_TYPE,
-} from "../models";
+import { InstrumentPosition, PositionsQuery } from "../models";
 import externalAddresses from "../constants/externalAddresses.json";
 import instrumentDetails from "../constants/instruments.json";
 import { AbiCoder } from "ethers/lib/utils";
-import { BigNumber, Signer } from "ethers";
-import { useETHPrice } from "./useEthPrice";
-import { wmul } from "../utils/math";
+import { BigNumber, ethers, Signer } from "ethers";
+import axios from "axios";
 
 const abiCoder = new AbiCoder();
 
-type DecodedInstrumentPosition = [
-  exercised: boolean,
-  optionTypes: number[],
-  optionIDs: number[],
-  amounts: BigNumber[],
-  strikePrices: BigNumber[],
-  venues: string[]
-];
-
-const usePositions = (instrumentAddresses: string[]) => {
+const usePositions = () => {
   const { library, account } = useWeb3React();
   const [loading, setLoading] = useState<boolean>(true);
   const [positions, setPositions] = useState<InstrumentPosition[]>([]);
-  const ethPrice = useETHPrice();
-  const ethPriceStr = ethPrice.toString();
 
   const fetchPositions = useCallback(async () => {
     try {
       if (library && account) {
-        const signer = library.getSigner();
-
-        const positions = await fetchAllInstrumentPositions(
-          signer,
+        // const instrumentPositions = await fetchInstrumentPositionsFromSubgraph(account, 10, 0);
+        const positions = await fetchInstrumentPositionsFromSubgraph(
           account,
-          BigNumber.from(ethPriceStr),
-          instrumentAddresses
+          100,
+          0
         );
+        const signer = library.getSigner();
 
         const positionsWithCanExercise = await fetchCanExercise(
           signer,
@@ -60,93 +43,81 @@ const usePositions = (instrumentAddresses: string[]) => {
         setLoading(false);
       }
     } catch (e) {
+      console.error(e);
       setLoading(false);
     }
-  }, [library, account, ethPriceStr]);
+  }, [library, account]);
 
   useEffect(() => {
-    if (library && account && ethPriceStr !== "0") {
+    if (library && account) {
       fetchPositions();
     }
-  }, [library, account, ethPriceStr, fetchPositions]);
+  }, [library, account, fetchPositions]);
 
-  return { loading, positions };
+  const nowTimestamp = Math.floor(Date.now() / 1000);
+  const activePositions = positions.filter(
+    (p) => (p.expiry > nowTimestamp || p.canExercise) && !p.exercised
+  );
+  const numOfActivePositions = activePositions.length;
+
+  return { loading, positions, numOfActivePositions };
 };
 
-const fetchAllInstrumentPositions = async (
-  signer: Signer,
+const SUBGRAPH_URL =
+  "https://api.thegraph.com/subgraphs/name/kenchangh/ribbon-finance";
+
+const fetchInstrumentPositionsFromSubgraph = async (
   account: string,
-  assetPrice: BigNumber,
-  instrumentAddresses: string[]
-) => {
-  const multicall = MulticallFactory.connect(
-    externalAddresses.mainnet.multicall,
-    signer
-  );
-
-  const calls = instrumentAddresses.map((instrumentAddress) => {
-    const instrument = IAggregatedOptionsInstrumentFactory.connect(
-      instrumentAddress,
-      signer
-    );
-    const callData = instrument.interface.encodeFunctionData(
-      "getInstrumentPositions",
-      [account]
-    );
-
-    return {
-      target: instrumentAddress,
-      callData,
-    };
-  });
-
-  const response = await multicall.aggregate(calls);
-
-  const positionsOnContract: InstrumentPosition[][] = response.returnData.map(
-    (data, index) => {
-      const resultArray = abiCoder.decode(
-        ["(bool,uint8[],uint32[],uint256[],uint256[],string[])[]"],
-        data
-      );
-      const instrumentAddress = instrumentAddresses[index];
-      const expiry = getInstrumentExpiry(instrumentAddress);
-
-      return resultArray[0].map(
-        (result: DecodedInstrumentPosition, positionID: number) => {
-          const [
-            exercised,
-            optionTypes,
-            optionIDs,
-            amounts,
-            strikePrices,
-            venues,
-          ] = result;
-          const pnl = calculatePNL(
-            assetPrice,
-            optionTypes,
-            strikePrices,
-            amounts
-          );
-
-          return {
-            positionID,
-            exercised,
-            optionTypes,
-            optionIDs,
-            amounts,
-            strikePrices,
-            venues,
-            instrumentAddress,
-            expiry,
-            pnl,
-            canExercise: false,
-          };
+  pageSize: number,
+  pageNumber: number
+): Promise<InstrumentPosition[]> => {
+  const skip = Math.floor(pageSize * pageNumber);
+  const response = await axios.post(
+    SUBGRAPH_URL,
+    {
+      query: `
+      {
+        instrumentPositions(first: ${pageSize}, skip: ${skip}, where: {account: "${account}"}) {
+          id
+          instrumentAddress
+          cost
+          exercised
+          amounts
+          optionTypes
+          venues
+          strikePrices
         }
-      );
+      }
+      `,
+      variables: null,
+    },
+    {
+      headers: {
+        Accept: "application/json",
+      },
     }
   );
-  const flattenedPositions = positionsOnContract.reduce((a, b) => a.concat(b));
-  return flattenedPositions;
+  const positions: PositionsQuery[] = response.data.data.instrumentPositions;
+  return positions.map((pos) => {
+    const positionID = parseInt(pos.id.split("-")[2]);
+    const instrumentAddress = ethers.utils.getAddress(pos.instrumentAddress);
+    const pnl = BigNumber.from(pos.cost).mul(BigNumber.from("-1"));
+    const expiry = getInstrumentExpiry(instrumentAddress);
+
+    return {
+      positionID,
+      instrumentAddress,
+      pnl,
+      canExercise: false,
+      exerciseProfit: BigNumber.from("0"),
+      exercised: pos.exercised,
+      expiry,
+      amounts: pos.amounts.map((amount) => BigNumber.from(amount)),
+      strikePrices: pos.strikePrices.map((price) => BigNumber.from(price)),
+      optionTypes: pos.optionTypes,
+      venues: pos.venues,
+    };
+  });
 };
 
 const fetchCanExercise = async (
@@ -214,18 +185,20 @@ const fetchExerciseProfit = async (
   const exerciseProfitResponse = await multicall.aggregate(exerciseProfitCalls);
 
   return positions.map((position, index) => {
+    const { pnl } = position;
     const exerciseProfit = abiCoder.decode(
       ["uint256"],
       exerciseProfitResponse.returnData[index]
     )[0];
     return {
       ...position,
+      pnl: pnl.add(position.exerciseProfit),
       exerciseProfit,
     };
   });
 };
 
-const getInstrumentExpiry = (instrumentAddress: string) => {
+const getInstrumentExpiry = (instrumentAddress: string): number => {
   const mainnetInstrumentDetails = instrumentDetails.mainnet;
   const details = mainnetInstrumentDetails.find(
     (d) => d.address === instrumentAddress
@@ -233,34 +206,7 @@ const getInstrumentExpiry = (instrumentAddress: string) => {
   if (!details) {
     throw new Error("Instrument not found");
   }
-  return details.expiry;
-};
-
-const calculatePNL = (
-  assetPrice: BigNumber,
-  optionTypes: number[],
-  strikePrices: BigNumber[],
-  amounts: BigNumber[]
-): BigNumber => {
-  const callIndex = optionTypes.findIndex(
-    (optionType) => optionType === CALL_OPTION_TYPE
-  );
-  const putIndex = optionTypes.findIndex(
-    (optionType) => optionType === PUT_OPTION_TYPE
-  );
-  if (callIndex === -1 || putIndex === -1) {
-    throw new Error("No call or put option found");
-  }
-
-  const callStrikePrice = strikePrices[callIndex];
-  const putStrikePrice = strikePrices[putIndex];
-
-  if (assetPrice.lt(putStrikePrice)) {
-    return wmul(putStrikePrice.sub(assetPrice), amounts[putIndex]);
-  } else if (assetPrice.gt(callStrikePrice)) {
-    return wmul(assetPrice.sub(callStrikePrice), amounts[callIndex]);
-  }
-  return BigNumber.from("0");
+  return parseInt(details.expiry);
 };
 
 export default usePositions;

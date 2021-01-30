@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { Title } from "../../designSystem";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { useInstrumentAddresses } from "../../hooks/useProducts";
 import usePositions from "../../hooks/usePositions";
 import PositionsTable from "./PositionsTable";
 
@@ -12,10 +11,7 @@ const ProductTitleContainer = styled.div`
 `;
 
 const Portfolio = () => {
-  const instrumentAddresses = useInstrumentAddresses();
-  const { loading: loadingPositions, positions } = usePositions(
-    instrumentAddresses
-  );
+  const { loading: loadingPositions, positions } = usePositions();
   const sortedPositions = positions.sort((a, b) => {
     if (a.expiry > b.expiry) return -1;
     if (a.expiry < b.expiry) return 1;
@@ -24,7 +20,7 @@ const Portfolio = () => {
 
   const nowTimestamp = Math.floor(Date.now() / 1000);
   const activePositions = sortedPositions.filter(
-    (p) => p.expiry > nowTimestamp && !p.exercised
+    (p) => (p.expiry > nowTimestamp || p.canExercise) && !p.exercised
   );
   const pastPositions = sortedPositions.filter(
     (p) => p.expiry <= nowTimestamp || p.exercised

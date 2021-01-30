@@ -1,18 +1,17 @@
 import React, { useCallback, useState } from "react";
-import { Button, Modal, Row, Table } from "antd";
+import { Button, Table } from "antd";
 import {
   CALL_OPTION_TYPE,
-  Instrument,
   InstrumentPosition,
   PUT_OPTION_TYPE,
 } from "../../models";
 import { ethers } from "ethers";
 import { timeToExpiry } from "../../utils/time";
-import StyledStatistic from "../../designSystem/StyledStatistic";
 import { useWeb3React } from "@web3-react/core";
 import { IAggregatedOptionsInstrumentFactory } from "../../codegen/IAggregatedOptionsInstrumentFactory";
-import { toSignificantDecimals } from "../../utils/math";
 import ExerciseModal from "./ExerciseModal";
+import { useETHPriceInUSD } from "../../hooks/useEthPrice";
+import { formatProfitsInUSD } from "../../utils/math";
 
 type PositionsTableProps = {
   positions: InstrumentPosition[];
@@ -82,6 +81,7 @@ const PositionsTable: React.FC<PositionsTableProps> = ({
   ] = useState<InstrumentPosition | null>(null);
 
   const { library } = useWeb3React();
+  const ethPriceUSD = useETHPriceInUSD();
 
   const handleOpenExerciseModal = useCallback(
     (position: InstrumentPosition) => {
@@ -103,13 +103,23 @@ const PositionsTable: React.FC<PositionsTableProps> = ({
           exercisingPosition.instrumentAddress,
           signer
         );
-        await instrument.exercisePosition(exercisingPosition.positionID);
+        const receipt = await instrument.exercisePosition(
+          exercisingPosition.positionID
+        );
+        await receipt.wait(1);
+        setExercisingPosition(null);
       } catch (e) {}
     }
   }, [library, exercisingPosition]);
 
   const dataSource = positions.map((pos, index) =>
-    positionToDataSource(pos, index, isPastPositions, handleOpenExerciseModal)
+    positionToDataSource(
+      pos,
+      index,
+      isPastPositions,
+      handleOpenExerciseModal,
+      ethPriceUSD
+    )
   );
   return (
     <>
@@ -133,7 +143,8 @@ const positionToDataSource = (
   position: InstrumentPosition,
   index: number,
   isPastPositions: boolean,
-  onExercise: (position: InstrumentPosition) => void
+  onExercise: (position: InstrumentPosition) => void,
+  ethPriceUSD: number
 ) => {
   const { optionTypes, strikePrices, pnl, canExercise } = position;
   const callIndex = optionTypes.findIndex(
@@ -162,7 +173,8 @@ const positionToDataSource = (
     expiry = `${expiryDate} (${timeToExpiry(position.expiry)} remaining)`;
   }
 
-  const pnlUSD = parseFloat(ethers.utils.formatEther(pnl)).toFixed(2);
+  const pnlUSD = formatProfitsInUSD(pnl, ethPriceUSD);
+
   const showExerciseButton = !isPastPositions && canExercise;
   const exerciseButton = (
     <Button onClick={() => onExercise(position)}>Exercise</Button>
@@ -173,7 +185,7 @@ const positionToDataSource = (
     number: (index + 1).toString(),
     name: `ETH Straddle $${putStrikePrice}/$${callStrikePrice}`,
     expiry,
-    pnl: `$${pnlUSD}`,
+    pnl: pnlUSD,
     exerciseButton: showExerciseButton && exerciseButton,
   };
   return data;

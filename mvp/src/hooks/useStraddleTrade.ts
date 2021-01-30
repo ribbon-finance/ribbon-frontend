@@ -5,7 +5,7 @@ import { StraddleTrade, TradeResponse } from "../models";
 import { useEffect, useState } from "react";
 import { useDebounceCallback } from "@react-hook/debounce";
 
-axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
+axiosRetry(axios, { retries: 2, retryDelay: axiosRetry.exponentialDelay });
 
 const zero = BigNumber.from("0");
 

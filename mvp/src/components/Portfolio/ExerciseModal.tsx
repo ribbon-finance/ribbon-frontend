@@ -3,8 +3,9 @@ import Modal from "antd/lib/modal/Modal";
 import { ethers } from "ethers";
 import React, { useState } from "react";
 import StyledStatistic from "../../designSystem/StyledStatistic";
+import { useETHPriceInUSD } from "../../hooks/useEthPrice";
 import { InstrumentPosition } from "../../models";
-import { toSignificantDecimals } from "../../utils/math";
+import { formatProfitsInUSD, toSignificantDecimals } from "../../utils/math";
 
 type ExerciseModalProps = {
   position: InstrumentPosition;
@@ -18,8 +19,10 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
   onClose,
 }) => {
   const [isExercising, setIsExercising] = useState(false);
+  const ethPriceUSD = useETHPriceInUSD();
   const { pnl, amounts } = position;
-  const pnlUSD = parseFloat(ethers.utils.formatEther(pnl)).toFixed(2);
+  const pnlUSD = formatProfitsInUSD(pnl, ethPriceUSD);
+
   const pnlETH = toSignificantDecimals(pnl, 8);
   const numContracts = ethers.utils.formatEther(amounts[0]); // we assume that we only take 2 options positions
 
@@ -59,8 +62,8 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
       </Row>
       <Row>
         <StyledStatistic
-          title="This will be a profit of"
-          value={`$${pnlUSD} (${pnlETH} ETH)`}
+          title={`This will be a ${pnl.isNegative() ? "loss" : "profit"} of`}
+          value={`${pnlUSD} (${pnlETH} ETH)`}
         ></StyledStatistic>
       </Row>
     </Modal>
