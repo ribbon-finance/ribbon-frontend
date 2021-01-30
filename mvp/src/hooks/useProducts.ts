@@ -70,7 +70,7 @@ export const useProducts = (): Product[] => {
   return [
     {
       name: "ETH Straddle",
-      emoji: "📉📈",
+      emoji: "",
       instruments,
     },
   ];

@@ -2,8 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { Row, Col, Card } from "antd";
 import { LineChartOutlined } from "@ant-design/icons";
+import { BaseText } from "../../designSystem";
 
-export const StyledCard = styled(Card)`
+const StyledCard = styled(Card)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -32,6 +33,17 @@ const CardLineChart = styled(LineChartOutlined)`
   height: 100%;
 `;
 
+const CardText = styled(BaseText)`
+  font-weight: bold;
+  font-size: 12px;
+`;
+
+const StyledCardParams = {
+  width: "100%",
+  paddingTop: "12px",
+  paddingBottom: "12px",
+};
+
 type Props = {
   text: string;
   icon: string;
@@ -46,10 +58,10 @@ function iconPicker(icon: string) {
 
 const CategoryCard: React.FC<Props> = ({ text, icon }) => {
   return (
-    <StyledCard bodyStyle={{ width: "100%" }} hoverable>
+    <StyledCard bodyStyle={StyledCardParams} hoverable>
       <SplitRow align="middle">
         <AlignLeftCol span={16}>
-          <span>{text}</span>
+          <CardText>{text}</CardText>
         </AlignLeftCol>
         <AlignRightCol span={8}>
           <CardLineChart />
