@@ -3,7 +3,7 @@ import Modal from "antd/lib/modal/Modal";
 import { ethers } from "ethers";
 import React, { useState } from "react";
 import StyledStatistic from "../../designSystem/StyledStatistic";
-import { useETHPrice, useETHPriceInUSD } from "../../hooks/useEthPrice";
+import { useETHPriceInUSD } from "../../hooks/useEthPrice";
 import { InstrumentPosition } from "../../models";
 import { formatProfitsInUSD, toSignificantDecimals } from "../../utils/math";
 

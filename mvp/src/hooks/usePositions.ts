@@ -54,7 +54,13 @@ const usePositions = () => {
     }
   }, [library, account, fetchPositions]);
 
-  return { loading, positions };
+  const nowTimestamp = Math.floor(Date.now() / 1000);
+  const activePositions = positions.filter(
+    (p) => (p.expiry > nowTimestamp || p.canExercise) && !p.exercised
+  );
+  const numOfActivePositions = activePositions.length;
+
+  return { loading, positions, numOfActivePositions };
 };
 
 const SUBGRAPH_URL =

@@ -14,7 +14,7 @@ const DashboardTitleContainer = styled.div`
 `;
 
 const Dashboard = () => {
-  const { loading: loadingPositions, positions } = usePositions();
+  const { loading: loadingPositions, numOfActivePositions } = usePositions();
 
   return (
     <DashboardContainer>
@@ -26,7 +26,7 @@ const Dashboard = () => {
       ) : (
         <Row align="middle">
           <Col span={12}>
-            <Positions numPositions={positions.length}></Positions>
+            <Positions numPositions={numOfActivePositions}></Positions>
           </Col>
         </Row>
       )}
