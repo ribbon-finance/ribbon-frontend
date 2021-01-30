@@ -21,7 +21,20 @@ export default async (request: NowRequest, response: NowResponse) => {
 
   const tradeResponse = await getBestTrade(tradeRequest);
 
-  response.setHeader("Cache-Control", "max-age=100, immutable");
+  // We use a static 1*10**18 buyAmount to query for the prices on the front page
+  // if the buyAmount == 1*10**18 just return a longer cache age
+  let freshWindow = 100;
+  if (buyAmount === "1000000000000000000") {
+    freshWindow = 3600;
+  }
+
+  const expiry = new Date(Date.now() + freshWindow * 1000).toUTCString();
+
+  response.setHeader(
+    "Cache-Control",
+    `max-age=0, s-maxage=100, public, immutable, stale-while-revalidate`
+  );
+  response.setHeader("Expires", expiry);
   response.status(200).json(tradeResponse);
 
   return;

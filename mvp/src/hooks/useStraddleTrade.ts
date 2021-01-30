@@ -41,7 +41,7 @@ export const useStraddleTrade = (
 ): StraddleTradeResponse => {
   const [trade, setTrade] = useState<StraddleTradeResponse>({
     ...emptyTrade,
-    loading: false,
+    loading: true,
     error: null,
   });
 
