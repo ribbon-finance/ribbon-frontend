@@ -21,9 +21,6 @@ const Dashboard = () => {
   const { loading: loadingPositions, positions } = usePositions(
     instrumentAddresses
   );
-  const portfolioValue = sumPortfolioValue(positions);
-
-  if (!positions.length) return null;
 
   return (
     <DashboardContainer>
@@ -34,9 +31,6 @@ const Dashboard = () => {
         <Skeleton></Skeleton>
       ) : (
         <Row align="middle">
-          <Col span={12}>
-            <Portfolio portfolioValue={portfolioValue}></Portfolio>
-          </Col>
           <Col span={12}>
             <Positions numPositions={positions.length}></Positions>
           </Col>
