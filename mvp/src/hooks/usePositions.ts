@@ -19,7 +19,6 @@ const usePositions = () => {
   const fetchPositions = useCallback(async () => {
     try {
       if (library && account) {
-        // const instrumentPositions = await fetchInstrumentPositionsFromSubgraph(account, 10, 0);
         const positions = await fetchInstrumentPositionsFromSubgraph(
           account,
           100,

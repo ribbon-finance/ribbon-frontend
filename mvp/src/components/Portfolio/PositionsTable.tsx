@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from "react";
+import styled from "styled-components";
 import { Button, Table } from "antd";
 import {
   CALL_OPTION_TYPE,
@@ -18,6 +19,10 @@ type PositionsTableProps = {
   isPastPositions: boolean;
   loading: boolean;
 };
+
+const StyledTable = styled(Table)`
+  margin-bottom: 30px;
+`;
 
 const activeColumns = [
   {
@@ -123,10 +128,11 @@ const PositionsTable: React.FC<PositionsTableProps> = ({
   );
   return (
     <>
-      <Table
+      <StyledTable
         loading={loading}
         dataSource={dataSource}
         columns={isPastPositions ? pastColumns : activeColumns}
+        pagination={{ hideOnSinglePage: true, pageSize: 5 }}
       />
       {!isPastPositions && exercisingPosition ? (
         <ExerciseModal
