@@ -20,7 +20,7 @@ const Portfolio = () => {
 
   const nowTimestamp = Math.floor(Date.now() / 1000);
   const activePositions = sortedPositions.filter(
-    (p) => p.expiry > nowTimestamp && !p.exercised
+    (p) => (p.expiry > nowTimestamp || p.canExercise) && !p.exercised
   );
   const pastPositions = sortedPositions.filter(
     (p) => p.expiry <= nowTimestamp || p.exercised

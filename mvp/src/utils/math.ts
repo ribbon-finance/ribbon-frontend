@@ -23,6 +23,15 @@ export const toSignificantDecimals = (
   );
 };
 
+export const formatProfitsInUSD = (
+  num: BigNumber,
+  ethPrice: number
+): string => {
+  const pnlUSD = parseFloat(ethers.utils.formatEther(num.abs())) * ethPrice;
+
+  return (num.isNegative() ? "-" : "") + "$" + pnlUSD.toFixed(2);
+};
+
 export const wadToUSD = (wadVal: BigNumber) => {
   const scaleFactor = ethers.BigNumber.from(10).pow(
     ethers.BigNumber.from("16")

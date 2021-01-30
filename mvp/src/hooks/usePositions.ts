@@ -179,12 +179,14 @@ const fetchExerciseProfit = async (
   const exerciseProfitResponse = await multicall.aggregate(exerciseProfitCalls);
 
   return positions.map((position, index) => {
+    const { pnl } = position;
     const exerciseProfit = abiCoder.decode(
       ["uint256"],
       exerciseProfitResponse.returnData[index]
     )[0];
     return {
       ...position,
+      pnl: pnl.add(position.exerciseProfit),
       exerciseProfit,
     };
   });

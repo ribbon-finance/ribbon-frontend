@@ -10,6 +10,8 @@ import { timeToExpiry } from "../../utils/time";
 import { useWeb3React } from "@web3-react/core";
 import { IAggregatedOptionsInstrumentFactory } from "../../codegen/IAggregatedOptionsInstrumentFactory";
 import ExerciseModal from "./ExerciseModal";
+import { useETHPriceInUSD } from "../../hooks/useEthPrice";
+import { formatProfitsInUSD } from "../../utils/math";
 
 type PositionsTableProps = {
   positions: InstrumentPosition[];
@@ -79,6 +81,7 @@ const PositionsTable: React.FC<PositionsTableProps> = ({
   ] = useState<InstrumentPosition | null>(null);
 
   const { library } = useWeb3React();
+  const ethPriceUSD = useETHPriceInUSD();
 
   const handleOpenExerciseModal = useCallback(
     (position: InstrumentPosition) => {
@@ -100,13 +103,23 @@ const PositionsTable: React.FC<PositionsTableProps> = ({
           exercisingPosition.instrumentAddress,
           signer
         );
-        await instrument.exercisePosition(exercisingPosition.positionID);
+        const receipt = await instrument.exercisePosition(
+          exercisingPosition.positionID
+        );
+        await receipt.wait(1);
+        setExercisingPosition(null);
       } catch (e) {}
     }
   }, [library, exercisingPosition]);
 
   const dataSource = positions.map((pos, index) =>
-    positionToDataSource(pos, index, isPastPositions, handleOpenExerciseModal)
+    positionToDataSource(
+      pos,
+      index,
+      isPastPositions,
+      handleOpenExerciseModal,
+      ethPriceUSD
+    )
   );
   return (
     <>
@@ -130,7 +143,8 @@ const positionToDataSource = (
   position: InstrumentPosition,
   index: number,
   isPastPositions: boolean,
-  onExercise: (position: InstrumentPosition) => void
+  onExercise: (position: InstrumentPosition) => void,
+  ethPriceUSD: number
 ) => {
   const { optionTypes, strikePrices, pnl, canExercise } = position;
   const callIndex = optionTypes.findIndex(
@@ -159,10 +173,8 @@ const positionToDataSource = (
     expiry = `${expiryDate} (${timeToExpiry(position.expiry)} remaining)`;
   }
 
-  const pnlUSD =
-    (pnl.isNegative() ? "-" : "") +
-    "$" +
-    parseFloat(ethers.utils.formatEther(pnl.abs())).toFixed(2);
+  const pnlUSD = formatProfitsInUSD(pnl, ethPriceUSD);
+
   const showExerciseButton = !isPastPositions && canExercise;
   const exerciseButton = (
     <Button onClick={() => onExercise(position)}>Exercise</Button>
