@@ -76,6 +76,7 @@ export type PositionsQuery = {
   optionTypes: number[];
   venues: string[];
   strikePrices: string[];
+  exerciseProfit: string;
 };
 
 export type InstrumentPosition = {

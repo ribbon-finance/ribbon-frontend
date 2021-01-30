@@ -86,6 +86,7 @@ const fetchInstrumentPositionsFromSubgraph = async (
           optionTypes
           venues
           strikePrices
+          exerciseProfit
         }
       }
       `,
@@ -98,18 +99,20 @@ const fetchInstrumentPositionsFromSubgraph = async (
     }
   );
   const positions: PositionsQuery[] = response.data.data.instrumentPositions;
+
   return positions.map((pos) => {
     const positionID = parseInt(pos.id.split("-")[2]);
     const instrumentAddress = ethers.utils.getAddress(pos.instrumentAddress);
     const pnl = BigNumber.from(pos.cost).mul(BigNumber.from("-1"));
     const expiry = getInstrumentExpiry(instrumentAddress);
+    const exerciseProfit = BigNumber.from(pos.exerciseProfit);
 
     return {
       positionID,
       instrumentAddress,
       pnl,
       canExercise: false,
-      exerciseProfit: BigNumber.from("0"),
+      exerciseProfit,
       exercised: pos.exercised,
       expiry,
       amounts: pos.amounts.map((amount) => BigNumber.from(amount)),
@@ -163,12 +166,16 @@ const fetchExerciseProfit = async (
   account: string,
   positions: InstrumentPosition[]
 ) => {
+  const unexercisedPositions = positions.filter(
+    (position) => position.canExercise && !position.exercised
+  );
+
   const multicall = MulticallFactory.connect(
     externalAddresses.mainnet.multicall,
     signer
   );
 
-  const exerciseProfitCalls = positions.map((position) => {
+  const exerciseProfitCalls = unexercisedPositions.map((position) => {
     const instrument = IAggregatedOptionsInstrumentFactory.connect(
       position.instrumentAddress,
       signer
@@ -184,15 +191,22 @@ const fetchExerciseProfit = async (
   });
   const exerciseProfitResponse = await multicall.aggregate(exerciseProfitCalls);
 
-  return positions.map((position, index) => {
-    const { pnl } = position;
-    const exerciseProfit = abiCoder.decode(
-      ["uint256"],
-      exerciseProfitResponse.returnData[index]
-    )[0];
+  const exerciseProfitMap: Map<string, BigNumber> = new Map(
+    exerciseProfitResponse.returnData.map((r, index) => [
+      `${positions[index].instrumentAddress}-${account}-${positions[index].positionID}`,
+      abiCoder.decode(["uint256"], r)[0],
+    ])
+  );
+
+  return positions.map((position) => {
+    const { pnl, instrumentAddress, positionID } = position;
+    const positionKey = `${instrumentAddress}-${account}-${positionID}`;
+    const exerciseProfit =
+      exerciseProfitMap.get(positionKey) || position.exerciseProfit;
+
     return {
       ...position,
-      pnl: pnl.add(position.exerciseProfit),
+      pnl: pnl.add(exerciseProfit),
       exerciseProfit,
     };
   });
