@@ -14,8 +14,7 @@ const StyledCard = styled(Card)`
 `;
 const SplitRow = styled(Row)`
   display: flex;
-  justify-content: space-between;
-  width: 100%;
+  justify-content: space-around;
 `;
 const StyledCol = styled(Col)`
   display: flex;

@@ -80,11 +80,11 @@ const ProductListing: React.FC = () => {
 
       <AssetPrice />
 
-      <Row justify="space-between">
+      <Row justify="center" align="top">
         {product.instruments.map((instrument) => (
           <Col
             key={instrument.address}
-            span={18 / Math.floor(product.instruments.length)}
+            span={24 / Math.floor(product.instruments.length)}
           >
             <StraddleCard straddle={instrument}></StraddleCard>
           </Col>

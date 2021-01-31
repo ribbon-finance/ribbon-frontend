@@ -66,7 +66,7 @@ const TooltipContainer = styled.span`
 `;
 
 const StyledStraddleCard = styled(StyledCard)`
-  width: 125%;
+  width: 90%;
 `;
 
 const CardDescriptionContainer = styled.div`
@@ -124,35 +124,37 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
   }
 
   return (
-    <StyledStraddleCard
-      bordered={false}
-      bodyStyle={{ paddingTop: 20, paddingBottom: 20 }}
-    >
-      <Row justify="start" align="middle">
-        <CardIcon />
-        <Title>{timestamp}</Title>
-      </Row>
+    <div>
+      <StyledStraddleCard
+        bordered={false}
+        bodyStyle={{ paddingTop: 20, paddingBottom: 20 }}
+      >
+        <Row justify="start" align="middle">
+          <CardIcon />
+          <Title>{timestamp}</Title>
+        </Row>
 
-      <CardDescriptionContainer>
-        <DescriptionTitle>Eth Price</DescriptionTitle>
-        <PayoffCalculator
-          ethPrice={ethPrice}
-          callStrikePrice={callStrikePrice}
-          putStrikePrice={putStrikePrice}
-          straddlePrice={straddleUSD}
-        />
-      </CardDescriptionContainer>
+        <CardDescriptionContainer>
+          <DescriptionTitle>Eth Price</DescriptionTitle>
+          <PayoffCalculator
+            ethPrice={ethPrice}
+            callStrikePrice={callStrikePrice}
+            putStrikePrice={putStrikePrice}
+            straddlePrice={straddleUSD}
+          />
+        </CardDescriptionContainer>
 
-      <Row justify="center">
-        <StyledButton
-          size="large"
-          type="primary"
-          href={"/instrument/" + straddle.symbol}
-        >
-          <ButtonText>Buy</ButtonText>
-        </StyledButton>
-      </Row>
-    </StyledStraddleCard>
+        <Row justify="center">
+          <StyledButton
+            size="large"
+            type="primary"
+            href={"/instrument/" + straddle.symbol}
+          >
+            <ButtonText>Buy</ButtonText>
+          </StyledButton>
+        </Row>
+      </StyledStraddleCard>
+    </div>
   );
 };
 
