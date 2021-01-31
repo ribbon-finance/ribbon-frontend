@@ -65,10 +65,6 @@ const TooltipContainer = styled.span`
   font-weight: bold;
 `;
 
-const StyledStraddleCard = styled(StyledCard)`
-  width: 90%;
-`;
-
 const CardDescriptionContainer = styled.div`
   padding-top: 20px;
   padding-bottom: 20px;
@@ -124,37 +120,35 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
   }
 
   return (
-    <div>
-      <StyledStraddleCard
-        bordered={false}
-        bodyStyle={{ paddingTop: 20, paddingBottom: 20 }}
-      >
-        <Row justify="start" align="middle">
-          <CardIcon />
-          <Title>{timestamp}</Title>
-        </Row>
+    <StyledCard
+      bordered={false}
+      bodyStyle={{ paddingTop: 20, paddingBottom: 20 }}
+    >
+      <Row justify="start" align="middle">
+        <CardIcon />
+        <Title>{timestamp}</Title>
+      </Row>
 
-        <CardDescriptionContainer>
-          <DescriptionTitle>Eth Price</DescriptionTitle>
-          <PayoffCalculator
-            ethPrice={ethPrice}
-            callStrikePrice={callStrikePrice}
-            putStrikePrice={putStrikePrice}
-            straddlePrice={straddleUSD}
-          />
-        </CardDescriptionContainer>
+      <CardDescriptionContainer>
+        <DescriptionTitle>Eth Price</DescriptionTitle>
+        <PayoffCalculator
+          ethPrice={ethPrice}
+          callStrikePrice={callStrikePrice}
+          putStrikePrice={putStrikePrice}
+          straddlePrice={straddleUSD}
+        />
+      </CardDescriptionContainer>
 
-        <Row justify="center">
-          <StyledButton
-            size="large"
-            type="primary"
-            href={"/instrument/" + straddle.symbol}
-          >
-            <ButtonText>Buy</ButtonText>
-          </StyledButton>
-        </Row>
-      </StyledStraddleCard>
-    </div>
+      <Row justify="center">
+        <StyledButton
+          size="large"
+          type="primary"
+          href={"/instrument/" + straddle.symbol}
+        >
+          <ButtonText>Buy</ButtonText>
+        </StyledButton>
+      </Row>
+    </StyledCard>
   );
 };
 

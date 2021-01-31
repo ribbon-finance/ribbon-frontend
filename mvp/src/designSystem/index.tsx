@@ -55,7 +55,6 @@ export const Button = styled.button`
 export const StyledCard = styled(Card)`
   box-shadow: 0 8px 24px 0 rgba(112, 144, 176, 0.15);
   border-radius: 10px;
-  width: 90%;
 `;
 
 export const InputNumberStyled = styled(Input)`
