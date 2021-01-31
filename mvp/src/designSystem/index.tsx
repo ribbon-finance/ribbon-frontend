@@ -59,8 +59,10 @@ export const StyledCard = styled(Card)`
 `;
 
 export const InputNumberStyled = styled(Input)`
-  background-color: white;
-  border-radius: 5px;
-  width: 80%;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
+  border: none;
+  width: 100%;
   margin-bottom: 15px;
+  height: 40px;
 `;

@@ -3,8 +3,13 @@ import styled from "styled-components";
 import { wadToUSD } from "./math";
 
 const Profit = styled.span`
-  font-size: 18px;
+  font-family: Montserrat;
+  font-size: 16px;
+  font-style: normal;
   font-weight: bold;
+  line-height: 24px;
+  letter-spacing: 0px;
+  text-align: left;
 `;
 
 const ProfitPositive = styled(Profit)`

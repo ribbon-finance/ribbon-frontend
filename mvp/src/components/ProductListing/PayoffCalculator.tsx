@@ -8,6 +8,7 @@ import {
 } from "../../utils/straddle";
 import { InputNumberStyled } from "../../designSystem";
 import { BigNumber } from "ethers";
+import styled from "styled-components";
 
 type Props = {
   ethPrice: number;
@@ -16,6 +17,51 @@ type Props = {
   straddlePrice: string;
 };
 
+const DescriptionTitle = styled.p`
+  font-family: Montserrat;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: 1.5px;
+  text-align: left;
+  text-transform: uppercase;
+  color: #999999;
+  padding-top: 20px;
+`;
+
+const Description = styled.p`
+  font-family: Montserrat;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: 1.5px;
+  text-align: left;
+  color: #999999;
+`;
+
+const DescriptionData = styled.span`
+  font-family: Montserrat;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: 1.5px;
+  text-align: left;
+  color: black;
+`;
+
+const DescriptionDataPrimary = styled.span`
+  font-family: Montserrat;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0px;
+  text-align: left;
+`;
+
 const PayoffCalculator: React.FC<Props> = ({
   ethPrice,
   callStrikePrice,
@@ -23,7 +69,7 @@ const PayoffCalculator: React.FC<Props> = ({
   straddlePrice,
 }) => {
   const [inputText, setInputText] = useState("");
-  const [, upperBreakeven] = computeBreakeven(
+  const [lowerBreakeven, upperBreakeven] = computeBreakeven(
     straddlePrice,
     callStrikePrice,
     putStrikePrice
@@ -41,7 +87,6 @@ const PayoffCalculator: React.FC<Props> = ({
 
   return (
     <div>
-      <Row>If the price of ETH is:</Row>
       <Row align="middle">
         <InputNumberStyled
           prefix="$"
@@ -61,9 +106,15 @@ const PayoffCalculator: React.FC<Props> = ({
           }}
         />
       </Row>
-
-      <div style={{ paddingTop: 10 }}>Estimated Profit</div>
-      <div>{formatProfit(dollarProfit, percentProfit, profitPositive)}</div>
+      <Description>
+        Breakeven Price: ≤
+        <DescriptionData>${lowerBreakeven.toFixed(2)}</DescriptionData> or ≥
+        <DescriptionData>${upperBreakeven.toFixed(2)}</DescriptionData>
+      </Description>
+      <DescriptionTitle>Estimated Profit</DescriptionTitle>
+      {formatProfit(dollarProfit, percentProfit, profitPositive)}
+      <DescriptionTitle>Cost</DescriptionTitle>
+      <DescriptionDataPrimary>${straddlePrice}</DescriptionDataPrimary>
     </div>
   );
 };
