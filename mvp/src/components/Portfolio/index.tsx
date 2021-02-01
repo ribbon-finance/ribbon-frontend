@@ -4,6 +4,7 @@ import { Title } from "../../designSystem";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import usePositions from "../../hooks/usePositions";
 import PositionsTable from "./PositionsTable";
+import { Link } from "react-router-dom";
 
 const ProductTitleContainer = styled.div`
   padding-top: 10px;
@@ -28,9 +29,9 @@ const Portfolio = () => {
 
   return (
     <div>
-      <a href="/">
+      <Link to="/">
         <ArrowLeftOutlined />
-      </a>
+      </Link>
       <ProductTitleContainer>
         <Title>Active Positions</Title>
       </ProductTitleContainer>

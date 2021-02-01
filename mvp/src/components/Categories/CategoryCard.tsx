@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { Row, Col, Card } from "antd";
 import { LineChartOutlined } from "@ant-design/icons";
 import { BaseText } from "../../designSystem";
+import { CATEGORIES } from "../../constants/copy";
+import { useHistory, useRouteMatch } from "react-router-dom";
 
 const StyledCard = styled(Card)`
   display: flex;
@@ -11,6 +13,10 @@ const StyledCard = styled(Card)`
   border-radius: 10px;
   background-color: #f5f5f5;
   width: 22%;
+  -moz-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  -webkit-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
 `;
 const SplitRow = styled(Row)`
   display: flex;
@@ -44,8 +50,7 @@ const StyledCardParams = {
 };
 
 type Props = {
-  text: string;
-  icon: string;
+  categoryID: string;
 };
 
 function iconPicker(icon: string) {
@@ -55,18 +60,57 @@ function iconPicker(icon: string) {
   }
 }
 
-const CategoryCard: React.FC<Props> = ({ text, icon }) => {
+const CategoryCard: React.FC<Props> = ({ categoryID }) => {
+  const matchHomePage = useRouteMatch({
+    path: "/",
+    exact: true,
+  });
+
+  const matchProductPage = useRouteMatch({
+    path: `/product/${categoryID}`,
+    exact: true,
+  });
+
+  const history = useHistory();
+
+  const handleClick = () => {
+    if (categoryID === "volatility") {
+      history.push("/");
+    } else {
+      history.push(`/product/${categoryID}`);
+    }
+  };
+
+  const categoryCopy = CATEGORIES[categoryID];
+
+  const ActiveCard = styled(StyledCard)`
+    background-color: ${categoryCopy.cardColor};
+    color: ${categoryCopy.cardTextColor || "#ffffff"};
+  `;
+
+  const InactiveCard = styled(StyledCard)`
+    &:hover {
+      background-color: ${categoryCopy.cardColor};
+      color: ${categoryCopy.cardTextColor || "#ffffff"};
+    }
+  `;
+
+  const matchCard =
+    (matchHomePage && categoryID === "volatility") || matchProductPage;
+
+  const CardComponent = matchCard ? ActiveCard : InactiveCard;
+
   return (
-    <StyledCard bodyStyle={StyledCardParams} hoverable>
+    <CardComponent onClick={handleClick} bodyStyle={StyledCardParams} hoverable>
       <SplitRow align="middle">
         <AlignLeftCol span={16}>
-          <CardText>{text}</CardText>
+          <CardText>{categoryCopy.cardTitle}</CardText>
         </AlignLeftCol>
         <AlignRightCol span={8}>
           <CardLineChart />
         </AlignRightCol>
       </SplitRow>
-    </StyledCard>
+    </CardComponent>
   );
 };
 

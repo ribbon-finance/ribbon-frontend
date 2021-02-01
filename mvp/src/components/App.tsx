@@ -6,14 +6,11 @@ import { Web3ReactProvider } from "@web3-react/core";
 // import your favorite web3 convenience library here
 
 import Header from "./Header";
-import Dashboard from "./Dashboard";
-import Banner from "./Banner";
 import Portfolio from "./Portfolio";
-import ProductListing from "./ProductListing";
 import Product from "./Product";
-import Categories from "./Categories";
 import Content404 from "./Content404";
 import getLibrary from "../utils/getLibrary";
+import HomePage from "./HomePage";
 
 const AppContainer = styled.div``;
 
@@ -36,11 +33,13 @@ function App() {
                 xxl={{ span: 12, offset: 6 }}
               >
                 <Switch>
-                  <Route exact path="/">
-                    <Banner></Banner>
-                    <Categories />
-                    <Dashboard />
-                    <ProductListing />
+                  <Route path="/">
+                    <Route path="/" exact>
+                      <HomePage></HomePage>
+                    </Route>
+                    <Route path="/product/:categoryID">
+                      <HomePage></HomePage>
+                    </Route>
                   </Route>
                   <Route exact path="/instrument/:instrumentSymbol">
                     <Product></Product>

@@ -4,6 +4,7 @@ import { Row, Col } from "antd";
 import AccountStatus from "./AccountStatus";
 import Logo from "./Logo";
 import { PrimaryMedium } from "../../designSystem";
+import { Link } from "react-router-dom";
 
 const HeaderContainer = styled.div``;
 
@@ -23,9 +24,9 @@ type NavLinkProps = {
 };
 
 const NavLink = ({ link, text }: NavLinkProps) => (
-  <a href={link}>
+  <Link to={link}>
     <PrimaryMedium>{text}</PrimaryMedium>
-  </a>
+  </Link>
 );
 
 const Header = () => {

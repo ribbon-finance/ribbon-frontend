@@ -27,10 +27,10 @@ const Categories = () => {
         <Title>Explore Ribbon</Title>
       </div>
       <Row justify="space-around">
-        <CategoryCard text="Volatility" icon="lineChart" />
-        <CategoryCard text="Enhanced Yields" icon="lineChart" />
-        <CategoryCard text="Principal Protection" icon="lineChart" />
-        <CategoryCard text="Accumulation" icon="lineChart" />
+        <CategoryCard categoryID="volatility" />
+        <CategoryCard categoryID="enhanced-yields" />
+        <CategoryCard categoryID="principal-protection" />
+        <CategoryCard categoryID="accumulation" />
       </Row>
     </CategoryContainer>
   );
