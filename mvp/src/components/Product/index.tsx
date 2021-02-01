@@ -13,7 +13,7 @@ import { timeToExpiry } from "../../utils/time";
 import { useDefaultProduct, useInstrument } from "../../hooks/useProducts";
 import { useStraddleTrade } from "../../hooks/useStraddleTrade";
 import { ethers } from "ethers";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useWeb3React } from "@web3-react/core";
 import { IAggregatedOptionsInstrumentFactory } from "../../codegen/IAggregatedOptionsInstrumentFactory";
 import useGasPrice from "../../hooks/useGasPrice";
@@ -179,9 +179,9 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
         putVenue={putVenue}
       ></PurchaseModal>
 
-      <a href="/">
+      <Link to="/">
         <ArrowLeftOutlined />
-      </a>
+      </Link>
       <ProductTitleContainer>
         <Title>{product.name}</Title>
       </ProductTitleContainer>

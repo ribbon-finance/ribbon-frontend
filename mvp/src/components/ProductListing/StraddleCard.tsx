@@ -11,6 +11,7 @@ import CardIcon from "./CardIcon";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { ethers } from "ethers";
 import { useStraddleTrade } from "../../hooks/useStraddleTrade";
+import { Link } from "react-router-dom";
 
 const Title = styled.div`
   font-family: Montserrat;
@@ -140,13 +141,11 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
       </CardDescriptionContainer>
 
       <Row justify="center">
-        <StyledButton
-          size="large"
-          type="primary"
-          href={"/instrument/" + straddle.symbol}
-        >
-          <ButtonText>Buy</ButtonText>
-        </StyledButton>
+        <Link to={"/instrument/" + straddle.symbol}>
+          <StyledButton size="large" type="primary">
+            <ButtonText>Buy</ButtonText>
+          </StyledButton>
+        </Link>
       </Row>
     </StyledCard>
   );

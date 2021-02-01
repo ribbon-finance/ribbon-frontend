@@ -1,15 +1,16 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import DashboardCard from "./DashboardCard";
 
 const Positions: React.FC<{ numPositions: number }> = ({ numPositions }) => {
   return (
-    <a href="/portfolio">
+    <Link to="/portfolio">
       <DashboardCard
         value={numPositions.toString()}
-        text={"Active Positions"}
+        text={"Active Position" + (numPositions > 1 ? "s" : "")}
         icon={"Equalizer"}
       ></DashboardCard>
-    </a>
+    </Link>
   );
 };
 
