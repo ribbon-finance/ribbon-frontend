@@ -4,6 +4,7 @@ import { Row, Col, Card } from "antd";
 import { LineChartOutlined } from "@ant-design/icons";
 import { BaseText } from "../../designSystem";
 import { CATEGORIES } from "../../constants/copy";
+import { useHistory, useRouteMatch } from "react-router-dom";
 
 const StyledCard = styled(Card)`
   display: flex;
@@ -60,17 +61,47 @@ function iconPicker(icon: string) {
 }
 
 const CategoryCard: React.FC<Props> = ({ categoryID }) => {
+  const matchHomePage = useRouteMatch({
+    path: "/",
+    exact: true,
+  });
+
+  const matchProductPage = useRouteMatch({
+    path: `/product/${categoryID}`,
+    exact: true,
+  });
+
+  const history = useHistory();
+
+  const handleClick = () => {
+    if (categoryID === "volatility") {
+      history.push("/");
+    } else {
+      history.push(`/product/${categoryID}`);
+    }
+  };
+
   const categoryCopy = CATEGORIES[categoryID];
 
-  const AnimatedCard = styled(StyledCard)`
+  const ActiveCard = styled(StyledCard)`
+    background-color: ${categoryCopy.cardColor};
+    color: ${categoryCopy.cardTextColor || "#ffffff"};
+  `;
+
+  const InactiveCard = styled(StyledCard)`
     &:hover {
       background-color: ${categoryCopy.cardColor};
       color: ${categoryCopy.cardTextColor || "#ffffff"};
     }
   `;
 
+  const matchCard =
+    (matchHomePage && categoryID === "volatility") || matchProductPage;
+
+  const CardComponent = matchCard ? ActiveCard : InactiveCard;
+
   return (
-    <AnimatedCard bodyStyle={StyledCardParams} hoverable>
+    <CardComponent onClick={handleClick} bodyStyle={StyledCardParams} hoverable>
       <SplitRow align="middle">
         <AlignLeftCol span={16}>
           <CardText>{categoryCopy.cardTitle}</CardText>
@@ -79,7 +110,7 @@ const CategoryCard: React.FC<Props> = ({ categoryID }) => {
           <CardLineChart />
         </AlignRightCol>
       </SplitRow>
-    </AnimatedCard>
+    </CardComponent>
   );
 };
 
