@@ -11,6 +11,10 @@ const StyledCard = styled(Card)`
   border-radius: 10px;
   background-color: #f5f5f5;
   width: 22%;
+  -moz-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  -webkit-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
 `;
 const SplitRow = styled(Row)`
   display: flex;
@@ -45,6 +49,7 @@ const StyledCardParams = {
 
 type Props = {
   text: string;
+  color: string;
   icon: string;
 };
 
@@ -55,9 +60,16 @@ function iconPicker(icon: string) {
   }
 }
 
-const CategoryCard: React.FC<Props> = ({ text, icon }) => {
+const CategoryCard: React.FC<Props> = ({ text, color, icon }) => {
+  const AnimatedCard = styled(StyledCard)`
+    &:hover {
+      background-color: ${color};
+      color: #ffffff;
+    }
+  `;
+
   return (
-    <StyledCard bodyStyle={StyledCardParams} hoverable>
+    <AnimatedCard bodyStyle={StyledCardParams} hoverable>
       <SplitRow align="middle">
         <AlignLeftCol span={16}>
           <CardText>{text}</CardText>
@@ -66,7 +78,7 @@ const CategoryCard: React.FC<Props> = ({ text, icon }) => {
           <CardLineChart />
         </AlignRightCol>
       </SplitRow>
-    </StyledCard>
+    </AnimatedCard>
   );
 };
 
