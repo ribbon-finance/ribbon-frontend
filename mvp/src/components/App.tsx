@@ -11,6 +11,7 @@ import Banner from "./Banner";
 import Portfolio from "./Portfolio";
 import ProductListing from "./ProductListing";
 import Product from "./Product";
+import Categories from "./Categories";
 import Content404 from "./Content404";
 import getLibrary from "../utils/getLibrary";
 
@@ -37,8 +38,9 @@ function App() {
                 <Switch>
                   <Route exact path="/">
                     <Banner></Banner>
-                    <Dashboard></Dashboard>
-                    <ProductListing></ProductListing>
+                    <Categories />
+                    <Dashboard />
+                    <ProductListing />
                   </Route>
                   <Route exact path="/instrument/:instrumentSymbol">
                     <Product></Product>
@@ -51,6 +53,7 @@ function App() {
                   </Route>
                 </Switch>
               </Col>
+              <Col span={3}></Col>
             </Row>
           </MainContent>
         </AppContainer>

@@ -1,21 +1,47 @@
 import React from "react";
 import styled from "styled-components";
 import { Row, Col } from "antd";
-import { Title, PrimaryText } from "../../designSystem";
+import { BaseText } from "../../designSystem";
 import StraddleCard from "./StraddleCard";
+import AssetPrice from "./AssetPrice";
+import images from "../../img/currencyIcons";
 import { useDefaultProduct } from "../../hooks/useProducts";
 
 const ProductContainer = styled.div`
+  padding-top: 30px;
   padding-bottom: 50px;
 `;
 
 const ProductTitleContainer = styled.div`
+  text-align: center;
   padding-bottom: 10px;
 `;
 
 const ProductDescriptionContainer = styled.div`
-  padding-bottom: 30px;
+  text-align: center;
+  padding-bottom: 20px;
 `;
+
+const IconContainer = styled.div`
+  padding-bottom: 10px;
+`;
+
+const CurrencyIcon = styled.img`
+  width: 30px;
+  height: 30px;
+`;
+
+const ProductTitle = styled(BaseText)`
+  font-size: 16px;
+  font-weight: 600;
+`;
+
+const ProductSubtitle = styled(BaseText)`
+  font-size: 16px;
+  color: #5c5c5c;
+`;
+
+const { ETH: ETHIcon } = images;
 
 const ProductDescription: React.FC<{ productName: string }> = ({
   productName,
@@ -24,12 +50,11 @@ const ProductDescription: React.FC<{ productName: string }> = ({
   switch (productName) {
     case "ETH Straddle":
       description = (
-        <PrimaryText>
-          Bet that ETH will be increasingly volatile over some period of time.{" "}
-          <br></br>The greater ETH moves from today’s price in either direction,
-          the more money you will make.<br></br>The further out the expiry is,
-          the greater the ETH price will need to move to breakeven.
-        </PrimaryText>
+        <ProductSubtitle>
+          Bet that ETH will be volatile over some period of time - the more ETH
+          <br />
+          moves from today’s price, the more money you make.
+        </ProductSubtitle>
       );
       break;
   }
@@ -43,20 +68,23 @@ const ProductListing: React.FC = () => {
   return (
     <ProductContainer>
       <ProductTitleContainer>
-        <Title>
-          {product.name} {product.emoji}
-        </Title>
+        <IconContainer>
+          <CurrencyIcon src={ETHIcon} alt="ETH"></CurrencyIcon>
+        </IconContainer>
+        <ProductTitle>{product.name}</ProductTitle>
       </ProductTitleContainer>
 
       <ProductDescriptionContainer>
         <ProductDescription productName={product.name}></ProductDescription>
       </ProductDescriptionContainer>
 
-      <Row justify="space-between">
+      <AssetPrice />
+
+      <Row justify="space-between" align="top">
         {product.instruments.map((instrument) => (
           <Col
             key={instrument.address}
-            span={18 / Math.floor(product.instruments.length)}
+            span={21 / Math.floor(product.instruments.length)}
           >
             <StraddleCard straddle={instrument}></StraddleCard>
           </Col>

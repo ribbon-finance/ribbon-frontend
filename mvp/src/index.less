@@ -3,13 +3,40 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Montserrat", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+p {
+  font-family: "Montserrat", sans-serif;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+input.ant-input {
+  background: rgba(0, 0, 0, 0);
+}
+
+.ant-input-suffix,
+.ant-input-prefix {
+  font-family: Montserrat;
+  font-size: 12sepx;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0px;
+  text-align: center;
+  color: #969696;
+}
+
+.ant-btn.ant-btn-primary,
+.ant-btn-primary {
+  &:hover {
+    background-color: #393939 !important;
+    border-color: #393939 !important;
+  }
 }

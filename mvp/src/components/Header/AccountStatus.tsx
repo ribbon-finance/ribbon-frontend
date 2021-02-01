@@ -16,8 +16,8 @@ const AccountPill = styled.div`
 
 const AccountPillText = styled(SecondaryText)`
   font-style: normal;
-  font-weight: bold;
-  font-size: 16px;
+  font-weight: 600;
+  font-size: 14px;
   line-height: 19px;
 `;
 

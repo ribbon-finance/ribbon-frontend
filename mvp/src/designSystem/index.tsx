@@ -2,13 +2,20 @@ import styled from "styled-components";
 import { Card, Input } from "antd";
 
 export const BaseText = styled.span`
-  font-family: "Helvetica", sans-serif;
+  font-family: "Montserrat", sans-serif;
 `;
 
 export const PrimaryText = styled(BaseText)`
-  font-family: Helvetica;
+  font-family: Montserrat;
   font-style: normal;
   font-weight: normal;
+  font-size: 16px;
+`;
+
+export const PrimaryMedium = styled(BaseText)`
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 600;
   font-size: 16px;
 `;
 
@@ -48,12 +55,13 @@ export const Button = styled.button`
 export const StyledCard = styled(Card)`
   box-shadow: 0 8px 24px 0 rgba(112, 144, 176, 0.15);
   border-radius: 10px;
-  width: 90%;
 `;
 
 export const InputNumberStyled = styled(Input)`
-  background-color: white;
-  border-radius: 5px;
-  width: 80%;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
+  border: none;
+  width: 100%;
   margin-bottom: 15px;
+  height: 40px;
 `;

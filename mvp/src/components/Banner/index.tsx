@@ -1,54 +1,71 @@
 import React from "react";
 import styled from "styled-components";
-import BannerColorful from "../../img/BannerColorful.png";
-import { Row, Button } from "antd";
+import { Col, Button } from "antd";
+import { ArrowDownOutlined } from "@ant-design/icons";
 
 const BannerContainer = styled.div`
-  height: 250px;
-  width: 100%;
-  background: url("${BannerColorful}") no-repeat;
-  background-size: 100%;
+  padding-bottom: 20px;
+  text-align: center;
+`;
+
+const PreTitle = styled.p`
+  color: #858585;
+  font-family: "IBM Plex Mono", monospace;
+  padding-top: 20px;
+  font-size: 12px;
 `;
 
 const Title = styled.p`
-  color: white;
   font-weight: bold;
-  padding-top: 30px;
-  text-align: center;
-  font-size: 28px;
-  margin-bottom: 10px;
+  font-size: 70px;
+  margin-top: -20px;
+  margin-bottom: 0px;
 `;
 
 const Subtitle = styled.p`
-  color: white;
-  font-weight: bold;
-  text-align: center;
-  font-size: 18px;
+  font-size: 16px;
 `;
 
-const StyledButton = styled(Button)`
-  padding-left: 40px;
-  padding-right: 40px;
-`;
+const ArrowDown = () => {
+  return (
+    <svg
+      width="48"
+      height="48"
+      viewBox="0 0 64 64"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect width="64" height="64" rx="32" fill="black" />
+      <path
+        d="M32 25V39"
+        stroke="white"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M39 32L32 39L25 32"
+        stroke="white"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+};
 
 const Banner = () => {
   return (
     <BannerContainer>
-      <Title>Ribbon is a protocol for on-chain structured products. </Title>
-      <Subtitle>
-        The first product lets you bet on ETH volatility.<br></br>
-        <a
-          href="https://twitter.com/juliankoh"
-          style={{ color: "white", textDecoration: "underline" }}
-        >
-          New products dropping soon
-        </a>
-      </Subtitle>
-      <Row justify="center">
-        <StyledButton type="primary" danger shape="round">
-          <b>Learn how it works</b>
-        </StyledButton>
-      </Row>
+      <PreTitle>WELCOME TO RIBBON FINANCE</PreTitle>
+      <Title>Invest Like A Pro.</Title>
+      <Col span={18} offset={3}>
+        <Subtitle>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam,
+          purus sit amet luctus venenatis, lectus
+        </Subtitle>
+      </Col>
+      <ArrowDown />
     </BannerContainer>
   );
 };

@@ -1,52 +1,79 @@
 import React from "react";
 import { StyledCard } from "../../designSystem/index";
 import styled from "styled-components";
-import { Row, Button, Tooltip, Skeleton } from "antd";
+import { Row, Button, Skeleton } from "antd";
 import { Straddle } from "../../models";
 import { computeStraddleValue, computeBreakeven } from "../../utils/straddle";
 import { timeToExpiry } from "../../utils/time";
 import { useETHPriceInUSD } from "../../hooks/useEthPrice";
 import PayoffCalculator from "./PayoffCalculator";
+import CardIcon from "./CardIcon";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { ethers } from "ethers";
 import { useStraddleTrade } from "../../hooks/useStraddleTrade";
 
-export const Title = styled.div`
+const Title = styled.div`
+  font-family: Montserrat;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0px;
+  text-align: left;
+  padding-left: 10px;
+`;
+
+const DescriptionTitle = styled.p`
+  font-family: Montserrat;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: 1.5px;
+  text-align: left;
+  text-transform: uppercase;
+  color: #999999;
+`;
+
+const Description = styled.p`
+  font-family: Montserrat;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: 1.5px;
+  text-align: left;
+  color: #999999;
+`;
+
+const DescriptionBold = styled.span`
   font-weight: bold;
-  font-size: 30px;
 `;
 
-export const TitleAlt = styled.div`
-  font-weight: bold;
-  font-size: 14px;
-  color: #a7a7a7;
-  line-height: 1;
+const ButtonText = styled.span`
+  font-family: Montserrat;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0px;
+  text-align: center;
 `;
 
-export const Subtitle = styled.div`
-  font-size: 14px;
-`;
-
-export const Description = styled.div`
-  font-size: 14px;
-  padding-top: 20px;
-`;
-
-export const DescriptionBold = styled.span`
-  font-weight: bold;
-`;
-
-export const TooltipContainer = styled.span`
+const TooltipContainer = styled.span`
   padding-left: 10px;
   font-weight: bold;
 `;
 
-export const StyledStraddleCard = styled(StyledCard)`
-  width: 125%;
+const CardDescriptionContainer = styled.div`
+  padding-top: 20px;
+  padding-bottom: 20px;
 `;
 
-export const CardDescriptionContainer = styled.div`
-  padding-bottom: 20px;
+const StyledButton = styled(Button)`
+  background-color: black;
+  width: 100%;
+  border-radius: 8px;
 `;
 
 const breakevenTooltipText = (
@@ -80,7 +107,11 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
 
   const timestamp = new Date(
     straddle.expiryTimestamp * 1000
-  ).toLocaleDateString();
+  ).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   const expiry = timeToExpiry(straddle.expiryTimestamp);
 
@@ -89,67 +120,35 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
   }
 
   return (
-    <StyledStraddleCard
+    <StyledCard
       bordered={false}
       bodyStyle={{ paddingTop: 20, paddingBottom: 20 }}
     >
-      <Row justify="center">
-        <Title>${straddleUSD}</Title>
-      </Row>
-      <Row justify="center">
-        <TitleAlt>{straddleETH} ETH</TitleAlt>
-      </Row>
-      <Row justify="center">
-        <Subtitle>Cost to purchase</Subtitle>
+      <Row justify="start" align="middle">
+        <CardIcon />
+        <Title>{timestamp}</Title>
       </Row>
 
       <CardDescriptionContainer>
-        <Row>
-          <Description>
-            Expiry: <br></br>
-            <DescriptionBold>
-              {timestamp} ({expiry} remaining)
-            </DescriptionBold>
-          </Description>
-        </Row>
-
-        <Description>
-          Breakeven: <br></br>
-          <DescriptionBold>
-            ≤ ${lowerBreakeven.toFixed(2)} or ≥ ${upperBreakeven.toFixed(2)}
-            <TooltipContainer>
-              <Tooltip
-                title={breakevenTooltipText(
-                  lowerBreakeven.toFixed(2),
-                  upperBreakeven.toFixed(2)
-                )}
-              >
-                <InfoCircleOutlined />
-              </Tooltip>
-            </TooltipContainer>
-          </DescriptionBold>
-        </Description>
-
-        <Description>
-          <PayoffCalculator
-            ethPrice={ethPrice}
-            callStrikePrice={callStrikePrice}
-            putStrikePrice={putStrikePrice}
-            straddlePrice={straddleUSD}
-          ></PayoffCalculator>
-        </Description>
+        <DescriptionTitle>Eth Price</DescriptionTitle>
+        <PayoffCalculator
+          ethPrice={ethPrice}
+          callStrikePrice={callStrikePrice}
+          putStrikePrice={putStrikePrice}
+          straddlePrice={straddleUSD}
+        />
       </CardDescriptionContainer>
 
       <Row justify="center">
-        <Button
+        <StyledButton
+          size="large"
           type="primary"
-          shape="round"
           href={"/instrument/" + straddle.symbol}
         >
-          <DescriptionBold>Buy Product</DescriptionBold>
-        </Button>
+          <ButtonText>Buy</ButtonText>
+        </StyledButton>
       </Row>
-    </StyledStraddleCard>
+    </StyledCard>
   );
 };
 
