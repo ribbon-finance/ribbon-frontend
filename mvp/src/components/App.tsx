@@ -14,6 +14,7 @@ import Product from "./Product";
 import Categories from "./Categories";
 import Content404 from "./Content404";
 import getLibrary from "../utils/getLibrary";
+import ProductDescription from "./ProductDescription";
 
 const AppContainer = styled.div``;
 
@@ -44,6 +45,9 @@ function App() {
                   </Route>
                   <Route exact path="/instrument/:instrumentSymbol">
                     <Product></Product>
+                  </Route>
+                  <Route exact path="/product/:productName">
+                    <ProductDescription></ProductDescription>
                   </Route>
                   <Route exact path="/portfolio">
                     <Portfolio></Portfolio>

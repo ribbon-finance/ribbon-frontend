@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Row, Col, Card } from "antd";
 import { LineChartOutlined } from "@ant-design/icons";
 import { BaseText } from "../../designSystem";
+import { CATEGORIES } from "../../constants/copy";
 
 const StyledCard = styled(Card)`
   display: flex;
@@ -48,9 +49,7 @@ const StyledCardParams = {
 };
 
 type Props = {
-  text: string;
-  color: string;
-  icon: string;
+  categoryID: string;
 };
 
 function iconPicker(icon: string) {
@@ -60,11 +59,13 @@ function iconPicker(icon: string) {
   }
 }
 
-const CategoryCard: React.FC<Props> = ({ text, color, icon }) => {
+const CategoryCard: React.FC<Props> = ({ categoryID }) => {
+  const categoryCopy = CATEGORIES[categoryID];
+
   const AnimatedCard = styled(StyledCard)`
     &:hover {
-      background-color: ${color};
-      color: #ffffff;
+      background-color: ${categoryCopy.cardColor};
+      color: ${categoryCopy.cardTextColor || "#ffffff"};
     }
   `;
 
@@ -72,7 +73,7 @@ const CategoryCard: React.FC<Props> = ({ text, color, icon }) => {
     <AnimatedCard bodyStyle={StyledCardParams} hoverable>
       <SplitRow align="middle">
         <AlignLeftCol span={16}>
-          <CardText>{text}</CardText>
+          <CardText>{categoryCopy.cardTitle}</CardText>
         </AlignLeftCol>
         <AlignRightCol span={8}>
           <CardLineChart />
