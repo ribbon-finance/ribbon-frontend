@@ -190,42 +190,48 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
       <StatisticRow>
         <StyledStatistic
           title="Underlying options"
-          hideValue={true}
-          value=""
+          hideValue={!loading}
+          value="Finding the best price..."
           suffix={
-            <FlexDiv>
-              <UnderlyingContainer>
-                <IconContainer>
-                  <ProtocolIcon
-                    src={protocolIcons[callVenue]}
-                    alt={venueKeyToName(callVenue)}
-                  />
-                </IconContainer>
-                <UnderlyingTermsContainer>
-                  <UnderlyingTitle>{venueKeyToName(callVenue)}</UnderlyingTitle>
-                  <UnderlyingStrike>
-                    ${toUSD(callStrikePrice)} Call
-                  </UnderlyingStrike>
-                </UnderlyingTermsContainer>
-              </UnderlyingContainer>
+            !loading && (
+              <FlexDiv>
+                <UnderlyingContainer>
+                  <IconContainer>
+                    <ProtocolIcon
+                      src={protocolIcons[callVenue]}
+                      alt={venueKeyToName(callVenue)}
+                    />
+                  </IconContainer>
+                  <UnderlyingTermsContainer>
+                    <UnderlyingTitle>
+                      {venueKeyToName(callVenue)}
+                    </UnderlyingTitle>
+                    <UnderlyingStrike>
+                      ${toUSD(callStrikePrice)} Call
+                    </UnderlyingStrike>
+                  </UnderlyingTermsContainer>
+                </UnderlyingContainer>
 
-              <PlusIcon>+</PlusIcon>
+                <PlusIcon>+</PlusIcon>
 
-              <UnderlyingContainer>
-                <IconContainer>
-                  <ProtocolIcon
-                    src={protocolIcons[callVenue]}
-                    alt={venueKeyToName(callVenue)}
-                  />
-                </IconContainer>
-                <UnderlyingTermsContainer>
-                  <UnderlyingTitle>{venueKeyToName(callVenue)}</UnderlyingTitle>
-                  <UnderlyingStrike>
-                    ${toUSD(callStrikePrice)} Put
-                  </UnderlyingStrike>
-                </UnderlyingTermsContainer>
-              </UnderlyingContainer>
-            </FlexDiv>
+                <UnderlyingContainer>
+                  <IconContainer>
+                    <ProtocolIcon
+                      src={protocolIcons[callVenue]}
+                      alt={venueKeyToName(callVenue)}
+                    />
+                  </IconContainer>
+                  <UnderlyingTermsContainer>
+                    <UnderlyingTitle>
+                      {venueKeyToName(callVenue)}
+                    </UnderlyingTitle>
+                    <UnderlyingStrike>
+                      ${toUSD(callStrikePrice)} Put
+                    </UnderlyingStrike>
+                  </UnderlyingTermsContainer>
+                </UnderlyingContainer>
+              </FlexDiv>
+            )
           }
         ></StyledStatistic>
       </StatisticRow>
