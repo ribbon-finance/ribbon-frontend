@@ -5,12 +5,14 @@ import AccountStatus from "./AccountStatus";
 import Logo from "./Logo";
 import { PrimaryMedium } from "../../designSystem";
 import { Link } from "react-router-dom";
+import usePositions from "../../hooks/usePositions";
 
 const HeaderContainer = styled.div``;
 
 const Content = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
 
 const Navigation = styled.div`
@@ -30,6 +32,8 @@ const NavLink = ({ link, text }: NavLinkProps) => (
 );
 
 const Header = () => {
+  const { loading: loadingPositions, numOfActivePositions } = usePositions();
+
   return (
     <HeaderContainer>
       <Row align="middle">
@@ -47,6 +51,12 @@ const Header = () => {
         </Col>
         <Col span={8} offset={2}>
           <Content>
+            <NavLink
+              link="/portfolio"
+              text={`Positions${
+                loadingPositions ? "" : ` (${numOfActivePositions})`
+              }`}
+            />
             <AccountStatus></AccountStatus>
           </Content>
         </Col>

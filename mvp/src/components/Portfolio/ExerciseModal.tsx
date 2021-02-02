@@ -2,7 +2,7 @@ import { Button, Row } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import { ethers } from "ethers";
 import React, { useState } from "react";
-import StyledStatistic from "../../designSystem/StyledStatistic";
+import { ModalButton, StyledStatistic } from "../../designSystem/Modal";
 import { useETHPriceInUSD } from "../../hooks/useEthPrice";
 import { InstrumentPosition } from "../../models";
 import { formatProfitsInUSD, toSignificantDecimals } from "../../utils/math";
@@ -39,11 +39,9 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
       onCancel={onClose}
       width={300}
       title="Confirm Exercise"
+      bodyStyle={{ paddingBottom: 0 }}
       footer={[
-        <Button key="back" disabled={isExercising} onClick={onClose}>
-          Cancel
-        </Button>,
-        <Button
+        <ModalButton
           disabled={isExercising}
           key="submit"
           type="primary"
@@ -51,7 +49,7 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
           onClick={handleExercise}
         >
           {isExercising ? "Exercising..." : "Exercise"}
-        </Button>,
+        </ModalButton>,
       ]}
     >
       <Row>

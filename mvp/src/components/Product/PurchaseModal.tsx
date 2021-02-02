@@ -1,27 +1,16 @@
-import { Button, Modal, Row } from "antd";
+import { Modal } from "antd";
 import { BigNumber, ethers } from "ethers";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { PrimaryMedium, PrimaryText } from "../../designSystem";
-import StyledStatistic from "../../designSystem/StyledStatistic";
+import {
+  ModalButton,
+  StatisticRow,
+  StyledStatistic,
+} from "../../designSystem/Modal";
 import protocolIcons from "../../img/protocolIcons";
 import { venueKeyToName } from "../../utils/positions";
-
-const StatisticRow = styled(Row)`
-  margin-bottom: 20px;
-`;
-
-const BuyButton = styled(Button)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 30px;
-  border-radius: 8px;
-  width: 100%;
-  font-size: 24px;
-  font-family: "Montserrat";
-`;
 
 const ProtocolIcon = styled.img`
   width: 50px;
@@ -154,10 +143,10 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
       onCancel={onClose}
       width={380}
       title="ETH Strangle"
-      closable={false}
+      closable={true}
       bodyStyle={{ paddingBottom: 0 }}
       footer={[
-        <BuyButton
+        <ModalButton
           disabled={loading}
           key="submit"
           type="primary"
@@ -165,7 +154,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
           onClick={handleOk}
         >
           {buttonText}
-        </BuyButton>,
+        </ModalButton>,
       ]}
     >
       <StatisticRow>
@@ -217,16 +206,16 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
                 <UnderlyingContainer>
                   <IconContainer>
                     <ProtocolIcon
-                      src={protocolIcons[callVenue]}
-                      alt={venueKeyToName(callVenue)}
+                      src={protocolIcons[putVenue]}
+                      alt={venueKeyToName(putVenue)}
                     />
                   </IconContainer>
                   <UnderlyingTermsContainer>
                     <UnderlyingTitle>
-                      {venueKeyToName(callVenue)}
+                      {venueKeyToName(putVenue)}
                     </UnderlyingTitle>
                     <UnderlyingStrike>
-                      ${toUSD(callStrikePrice)} Put
+                      ${toUSD(putStrikePrice)} Put
                     </UnderlyingStrike>
                   </UnderlyingTermsContainer>
                 </UnderlyingContainer>

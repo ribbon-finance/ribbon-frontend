@@ -12,6 +12,7 @@ const AccountPill = styled.div`
   background: #bcbcbc;
   border-radius: 15px;
   cursor: pointer;
+  margin-left: 30px;
 `;
 
 const AccountPillText = styled(SecondaryText)`
