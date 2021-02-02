@@ -2,11 +2,15 @@ import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import { Row, Col } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { Title, PrimaryText, StyledCard } from "../../designSystem";
+import {
+  BaseText,
+  PrimaryText,
+  StyledCard,
+  SecondaryFont,
+} from "../../designSystem";
 import { computeStraddleValue } from "../../utils/straddle";
 import { useETHPriceInUSD } from "../../hooks/useEthPrice";
 import AmountInput from "./AmountInput";
-import PayoffCalculator from "./PayoffCalculator";
 import ProductInfo from "./ProductInfo";
 import PurchaseButton from "./PurchaseButton";
 import { timeToExpiry } from "../../utils/time";
@@ -19,6 +23,10 @@ import { IAggregatedOptionsInstrumentFactory } from "../../codegen/IAggregatedOp
 import useGasPrice from "../../hooks/useGasPrice";
 import PurchaseModal from "./PurchaseModal";
 
+const CategoryContainer = styled.div`
+  padding-top: 30px;
+`;
+
 const ProductTitleContainer = styled.div`
   padding-top: 10px;
   padding-bottom: 10px;
@@ -28,8 +36,41 @@ const ProductDescriptionContainer = styled.div`
   padding-bottom: 20px;
 `;
 
-const PositionSize = styled.div`
-  padding-bottom: 20px;
+const CheckoutTitle = styled(BaseText)`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  color: #000000;
+`;
+
+const Title = styled(BaseText)`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 44px;
+  line-height: 64px;
+  color: #000000;
+`;
+
+const CategoryTag = styled(SecondaryFont)`
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 8px 20px 8px 20px;
+  border-radius: 100px;
+  background: #2300f9;
+`;
+
+const DescriptionTitle = styled.p`
+  font-family: Montserrat;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: 1.5px;
+  text-align: left;
+  text-transform: uppercase;
+  color: #999999;
 `;
 
 type PurchaseInstrumentWrapperProps = {};
@@ -44,14 +85,8 @@ const productDescription = (name: string) => {
     case "ETH Straddle":
       description = (
         <PrimaryText>
-          <p>
-            Bet on ETH volatility. If the price of ETH is <b>lower or higher</b>{" "}
-            than the breakeven prices, you will make a profit.
-          </p>
-          <p>
-            To construct this product, Ribbon combines multiple options into a
-            structured product on-chain. Learn more about how this product works
-          </p>
+          Bet that ETH will be volatile over some period of time - the more ETH
+          moves from today’s price, the more money you make.
         </PrimaryText>
       );
       break;
@@ -187,50 +222,33 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
       </ProductTitleContainer>
 
       <Row>
-        <Col>
+        <Col span={14}>
+          <ProductTitleContainer>
+            <Title>{product.name}</Title>
+          </ProductTitleContainer>
+
           <ProductDescriptionContainer>
             {productDescription(product.name)}
           </ProductDescriptionContainer>
-          <PositionSize>
-            <Row align="middle">
-              <Col span={5}>
-                <PrimaryText>
-                  <b>Position Size:</b>
-                </PrimaryText>
-              </Col>
-              <Col span={15}>
-                <AmountInput
-                  purchaseAmount={purchaseAmount}
-                  onChange={updatePurchaseAmount}
-                ></AmountInput>
-              </Col>
-              <Col span={4}>
-                <PurchaseButton
-                  onClick={() => setIsModalVisible(true)}
-                  purchaseAmount={purchaseAmount}
-                ></PurchaseButton>
-              </Col>
-            </Row>
-          </PositionSize>
-          <Row>
-            <Col span={14}>
-              <ProductInfo
-                straddle={straddle}
-                amount={purchaseAmount}
-              ></ProductInfo>
-            </Col>
-            <Col span={10}>
-              <StyledCard style={{ height: "100%" }}>
-                <PayoffCalculator
-                  ethPrice={ethPrice}
-                  callStrikePrice={callStrikePrice}
-                  putStrikePrice={putStrikePrice}
-                  straddlePrice={straddleUSD}
-                  amount={purchaseAmount}
-                ></PayoffCalculator>
-              </StyledCard>
-            </Col>
-          </Row>
+
+          <ProductInfo
+            straddle={straddle}
+            amount={purchaseAmount}
+          ></ProductInfo>
+        </Col>
+        <Col span={9} offset={1}>
+          <StyledCard title="Buy ETH Strangle">
+            <DescriptionTitle>No. of contracts</DescriptionTitle>
+            <AmountInput
+              purchaseAmount={purchaseAmount}
+              onChange={updatePurchaseAmount}
+            ></AmountInput>
+
+            <PurchaseButton
+              onClick={() => setIsModalVisible(true)}
+              purchaseAmount={purchaseAmount}
+            ></PurchaseButton>
+          </StyledCard>
         </Col>
       </Row>
     </div>

@@ -5,6 +5,10 @@ export const BaseText = styled.span`
   font-family: "Montserrat", sans-serif;
 `;
 
+export const SecondaryFont = styled.span`
+  font-family: "IBM Plex Mono", monospace;
+`;
+
 export const PrimaryText = styled(BaseText)`
   font-family: Montserrat;
   font-style: normal;
@@ -29,7 +33,6 @@ export const Title = styled(BaseText)`
   font-size: 30px;
   line-height: 56px;
   text-align: center;
-
   color: #000000;
 `;
 
