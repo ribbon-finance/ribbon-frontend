@@ -3,12 +3,10 @@ import { StyledCard } from "../../designSystem/index";
 import styled from "styled-components";
 import { Row, Button, Skeleton } from "antd";
 import { Straddle } from "../../models";
-import { computeStraddleValue, computeBreakeven } from "../../utils/straddle";
-import { timeToExpiry } from "../../utils/time";
+import { computeStraddleValue } from "../../utils/straddle";
 import { useETHPriceInUSD } from "../../hooks/useEthPrice";
 import PayoffCalculator from "./PayoffCalculator";
 import CardIcon from "./CardIcon";
-import { InfoCircleOutlined } from "@ant-design/icons";
 import { ethers } from "ethers";
 import { useStraddleTrade } from "../../hooks/useStraddleTrade";
 import { Link } from "react-router-dom";
@@ -36,21 +34,6 @@ const DescriptionTitle = styled.p`
   color: #999999;
 `;
 
-const Description = styled.p`
-  font-family: Montserrat;
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 12px;
-  letter-spacing: 1.5px;
-  text-align: left;
-  color: #999999;
-`;
-
-const DescriptionBold = styled.span`
-  font-weight: bold;
-`;
-
 const ButtonText = styled.span`
   font-family: Montserrat;
   font-size: 16px;
@@ -59,11 +42,6 @@ const ButtonText = styled.span`
   line-height: 24px;
   letter-spacing: 0px;
   text-align: center;
-`;
-
-const TooltipContainer = styled.span`
-  padding-left: 10px;
-  font-weight: bold;
 `;
 
 const CardDescriptionContainer = styled.div`
@@ -77,13 +55,6 @@ const StyledButton = styled(Button)`
   border-radius: 8px;
 `;
 
-const breakevenTooltipText = (
-  lowerBreakeven: string,
-  upperBreakeven: string
-) => {
-  return `You make $1 per contract for every dollar that ETH is less than $${lowerBreakeven} or greater than $${upperBreakeven}. If ETH is between this range at expiry, the product expires worthless.`;
-};
-
 const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
   const ethPrice = useETHPriceInUSD();
   const {
@@ -96,15 +67,7 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
     ethPrice,
     ethers.utils.parseEther("1")
   );
-  const [straddleUSD, straddleETH] = computeStraddleValue(
-    totalPremium,
-    ethPrice
-  );
-  const [lowerBreakeven, upperBreakeven] = computeBreakeven(
-    straddleUSD,
-    callStrikePrice,
-    putStrikePrice
-  );
+  const [straddleUSD] = computeStraddleValue(totalPremium, ethPrice);
 
   const timestamp = new Date(
     straddle.expiryTimestamp * 1000
@@ -113,8 +76,6 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
     month: "long",
     day: "numeric",
   });
-
-  const expiry = timeToExpiry(straddle.expiryTimestamp);
 
   if (loadingTrade) {
     return <Skeleton></Skeleton>;

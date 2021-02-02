@@ -1,6 +1,7 @@
 import React from "react";
-import { Row, Col, Statistic } from "antd";
-import { StyledCard } from "../../designSystem";
+import styled from "styled-components";
+import { Row, Col, Statistic, Divider } from "antd";
+import { BaseText, StyledCard } from "../../designSystem";
 import {
   computeStraddleValue,
   computeBreakeven,
@@ -11,6 +12,47 @@ import { BasicStraddle } from "../../models";
 import { timeToExpiry } from "../../utils/time";
 import { useStraddleTrade } from "../../hooks/useStraddleTrade";
 import { ethers } from "ethers";
+import PayoffCalculator from "./PayoffCalculator";
+
+const DescriptionTitle = styled.p`
+  font-family: Montserrat;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: 1.5px;
+  text-align: left;
+  text-transform: uppercase;
+  color: #999999;
+`;
+
+const DescriptionData = styled.p`
+  font-family: Montserrat;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0px;
+  text-align: left;
+`;
+
+const DescriptionContainer = styled.div`
+  padding-top: 10px;
+  padding-bottom: 10px;
+`;
+
+const Title = styled(BaseText)`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  color: #000000;
+`;
+
+const CustomStyledCard = styled(StyledCard)`
+  background: #fafafa;
+  border-radius: 4px;
+  border: 0px;
+`;
 
 const StyledStatistic = (title: string, value: string) => {
   return (
@@ -60,13 +102,13 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
       ethPrice
     );
 
-  const expiryTimestamp = new Date(
+  const timestamp = new Date(
     straddle.expiryTimestamp * 1000
-  ).toLocaleDateString();
-
-  const expiry = `${expiryTimestamp} (${timeToExpiry(
-    straddle.expiryTimestamp
-  )} remaining)`;
+  ).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   const totalCostUSD = (parseFloat(straddleUSD) * amount).toFixed(2);
   const totalCostETH = ethers.utils.formatEther(
@@ -83,28 +125,52 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
   }
 
   return (
-    <StyledCard style={{ height: "100%" }}>
-      <Row>{StyledStatistic("Expiry", expiry)}</Row>
-      <Row>{StyledStatistic("Total Cost", costStr)}</Row>
-      <Row>
-        <Col span={12}>
-          {StyledStatistic(
-            "Breakeven Price",
-            breakevenPercent
-              ? `≤ $${lowerBreakeven.toFixed(2)} or ≥ $${upperBreakeven.toFixed(
-                  2
-                )}`
-              : "-"
-          )}
-        </Col>
-        <Col span={12}>
-          {StyledStatistic(
-            "To Breakeven",
-            breakevenPercent ? `(±${breakevenPercent}%)` : "-"
-          )}
-        </Col>
-      </Row>
-    </StyledCard>
+    <>
+      <DescriptionContainer>
+        <DescriptionTitle>Expiry</DescriptionTitle>
+        <DescriptionData>{timestamp}</DescriptionData>
+      </DescriptionContainer>
+
+      <DescriptionContainer>
+        <DescriptionTitle>Total Cost</DescriptionTitle>
+        <DescriptionData>{costStr}</DescriptionData>
+      </DescriptionContainer>
+
+      <CustomStyledCard>
+        <Title>Profitability Calculator</Title>
+        <Divider />
+
+        <DescriptionTitle>Current ETH Price</DescriptionTitle>
+        <DescriptionData>${ethPrice}</DescriptionData>
+
+        <PayoffCalculator
+          ethPrice={ethPrice}
+          callStrikePrice={callStrikePrice}
+          putStrikePrice={putStrikePrice}
+          straddlePrice={straddleUSD}
+          amount={amount}
+        ></PayoffCalculator>
+
+        {/* <Row>
+          <Col span={12}>
+            {StyledStatistic(
+              "Breakeven Price",
+              breakevenPercent
+                ? `≤ $${lowerBreakeven.toFixed(
+                    2
+                  )} or ≥ $${upperBreakeven.toFixed(2)}`
+                : "-"
+            )}
+          </Col>
+          <Col span={12}>
+            {StyledStatistic(
+              "To Breakeven",
+              breakevenPercent ? `(±${breakevenPercent}%)` : "-"
+            )}
+          </Col>
+        </Row> */}
+      </CustomStyledCard>
+    </>
   );
 };
 

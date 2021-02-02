@@ -1,8 +1,85 @@
 import { Button, Modal, Row } from "antd";
 import { BigNumber, ethers } from "ethers";
+import moment from "moment";
 import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { PrimaryMedium, PrimaryText } from "../../designSystem";
 import StyledStatistic from "../../designSystem/StyledStatistic";
+import protocolIcons from "../../img/protocolIcons";
 import { venueKeyToName } from "../../utils/positions";
+
+const StatisticRow = styled(Row)`
+  margin-bottom: 20px;
+`;
+
+const BuyButton = styled(Button)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  border-radius: 8px;
+  width: 100%;
+  font-size: 24px;
+  font-family: "Montserrat";
+`;
+
+const ProtocolIcon = styled.img`
+  width: 50px;
+  height: 50px;
+`;
+
+const IconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  background: rgba(0, 0, 0, 0.08);
+  box-shadow: 1px 2px 24px rgba(0, 0, 0, 0.08);
+`;
+
+const UnderlyingContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const UnderlyingTermsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 7px;
+`;
+
+const UnderlyingTitle = styled(PrimaryMedium)`
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  margin-bottom: 4px;
+`;
+
+const UnderlyingStrike = styled(PrimaryText)`
+  font-size: 12px;
+  line-height: 12px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.48);
+`;
+
+const FlexDiv = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const PlusIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 20px;
+  margin-right: 20px;
+  font-family: "Montserrat";
+  font-size: 20px;
+  font-weight: 500;
+`;
 
 type PurchaseModalProps = {
   isVisible: boolean;
@@ -11,7 +88,7 @@ type PurchaseModalProps = {
   onClose: () => void;
   purchaseAmount: number;
   straddleETH: string;
-  expiry: string;
+  expiry: Date;
   callStrikePrice: BigNumber;
   putStrikePrice: BigNumber;
   callVenue: string;
@@ -49,7 +126,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
   } else if (isPending && isWaitingForConfirmation) {
     buttonText = "Waiting for 1 confirmation...";
   } else {
-    buttonText = "Purchase";
+    buttonText = "Buy";
   }
 
   useEffect(() => {
@@ -60,7 +137,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
   }, [isVisible, setPending, setIsWaitingForConfirmation]);
 
   const toUSD = (bn: BigNumber) =>
-    Math.floor(parseFloat(ethers.utils.formatEther(bn)));
+    Math.floor(parseFloat(ethers.utils.formatEther(bn))).toLocaleString();
 
   const totalCostETH = ethers.utils.formatEther(
     ethers.utils.parseEther(
@@ -68,24 +145,19 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
     )
   );
 
+  const formattedExpiry = moment(expiry).format("MMM D, YYYY");
+
   return (
     <Modal
       visible={isVisible}
       onOk={handleOk}
       onCancel={onClose}
-      width={300}
-      title={"Confirm Purchase"}
+      width={380}
+      title="ETH Strangle"
+      closable={false}
+      bodyStyle={{ paddingBottom: 0 }}
       footer={[
-        !isWaitingForConfirmation && (
-          <Button
-            key="back"
-            disabled={isWaitingForConfirmation}
-            onClick={onClose}
-          >
-            Cancel
-          </Button>
-        ),
-        <Button
+        <BuyButton
           disabled={loading}
           key="submit"
           type="primary"
@@ -93,43 +165,70 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
           onClick={handleOk}
         >
           {buttonText}
-        </Button>,
-      ].filter(Boolean)}
+        </BuyButton>,
+      ]}
     >
-      <Row>
+      <StatisticRow>
         <StyledStatistic
-          title="I am purchasing"
+          title="Contract expiry"
+          value={formattedExpiry}
+        ></StyledStatistic>
+      </StatisticRow>
+      <StatisticRow>
+        <StyledStatistic
+          title="No. of contracts"
           value={`${purchaseAmount} contracts`}
         ></StyledStatistic>
-      </Row>
-      <Row>
+      </StatisticRow>
+      <StatisticRow>
         <StyledStatistic
-          title="This will cost"
+          title="Total Cost"
           value={loading ? "Computing cost..." : `${totalCostETH} ETH`}
         ></StyledStatistic>
-      </Row>
+      </StatisticRow>
 
-      <Row>
+      <StatisticRow>
         <StyledStatistic
-          title="The contracts will expire by"
-          value={expiry.toString()}
-        ></StyledStatistic>
-      </Row>
+          title="Underlying options"
+          hideValue={true}
+          value=""
+          suffix={
+            <FlexDiv>
+              <UnderlyingContainer>
+                <IconContainer>
+                  <ProtocolIcon
+                    src={protocolIcons[callVenue]}
+                    alt={venueKeyToName(callVenue)}
+                  />
+                </IconContainer>
+                <UnderlyingTermsContainer>
+                  <UnderlyingTitle>{venueKeyToName(callVenue)}</UnderlyingTitle>
+                  <UnderlyingStrike>
+                    ${toUSD(callStrikePrice)} Call
+                  </UnderlyingStrike>
+                </UnderlyingTermsContainer>
+              </UnderlyingContainer>
 
-      <Row>
-        <StyledStatistic
-          title="The underlying options are"
-          value={
-            loading
-              ? "Finding the best trade for you..."
-              : `$${toUSD(putStrikePrice)} PUT from ${venueKeyToName(
-                  putVenue
-                )}, $${toUSD(callStrikePrice)} CALL from ${venueKeyToName(
-                  callVenue
-                )}`
+              <PlusIcon>+</PlusIcon>
+
+              <UnderlyingContainer>
+                <IconContainer>
+                  <ProtocolIcon
+                    src={protocolIcons[callVenue]}
+                    alt={venueKeyToName(callVenue)}
+                  />
+                </IconContainer>
+                <UnderlyingTermsContainer>
+                  <UnderlyingTitle>{venueKeyToName(callVenue)}</UnderlyingTitle>
+                  <UnderlyingStrike>
+                    ${toUSD(callStrikePrice)} Put
+                  </UnderlyingStrike>
+                </UnderlyingTermsContainer>
+              </UnderlyingContainer>
+            </FlexDiv>
           }
         ></StyledStatistic>
-      </Row>
+      </StatisticRow>
     </Modal>
   );
 };

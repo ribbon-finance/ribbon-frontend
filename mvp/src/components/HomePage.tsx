@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams, useRouteMatch } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
 import Banner from "./Banner";
 import Categories from "./Categories";
 import ProductDescription from "./ProductDescription";

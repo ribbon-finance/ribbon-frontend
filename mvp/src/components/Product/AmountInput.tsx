@@ -3,9 +3,10 @@ import styled from "styled-components";
 import { Input } from "antd";
 
 const InputNumberStyled = styled(Input)`
-  background-color: white;
-  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
   width: 98%;
+  height: 60px;
 `;
 
 const InputDiv = styled.div`
@@ -24,10 +25,11 @@ function AmountInput(props: any) {
   return (
     <InputDiv>
       <InputNumberStyled
-        placeholder="0.0 contracts"
+        placeholder="0.0"
         type="number"
         min="0"
         step="0.1"
+        size="large"
         value={props.value}
         onKeyDown={(e) => {
           if (e.key === "-") {

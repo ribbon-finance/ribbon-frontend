@@ -9,11 +9,6 @@ import {
 } from "../../utils/straddle";
 import { BigNumber } from "ethers";
 
-const CardTitle = styled(Row)`
-  font-weight: bold;
-  font-size: 18px;
-`;
-
 const StatisticTitle = styled.p`
   padding-top: 10px;
   margin-bottom: 0px;
@@ -22,11 +17,34 @@ const StatisticTitle = styled.p`
   color: rgba(0, 0, 0, 0.45);
 `;
 
+const DescriptionContainer = styled.div`
+  padding-top: 10px;
+`;
+
 const InputNumberStyled = styled(Input)`
   background-color: white;
   border-radius: 10px;
   width: 80%;
   margin-bottom: 15px;
+`;
+
+const DescriptionTitle = styled.p`
+  font-family: Montserrat;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: 1.5px;
+  text-align: left;
+  text-transform: uppercase;
+  color: #999999;
+`;
+
+const CustomInputStyled = styled(InputNumberStyled)`
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 8px;
+  border: 0px;
+  height: 40px;
 `;
 
 type Props = {
@@ -63,9 +81,10 @@ const PayoffCalculator: React.FC<Props> = ({
 
   return (
     <div>
-      <CardTitle>Profitability Calculator</CardTitle>
-      <StatisticTitle>Target Price:</StatisticTitle>
-      <InputNumberStyled
+      <DescriptionContainer>
+        <DescriptionTitle>Expected Future ETH Price</DescriptionTitle>
+      </DescriptionContainer>
+      <CustomInputStyled
         prefix="$"
         suffix="per ETH"
         placeholder={defaultPrice.toString()}
@@ -83,8 +102,10 @@ const PayoffCalculator: React.FC<Props> = ({
         }}
       />
 
-      <StatisticTitle>Estimated Profit:</StatisticTitle>
-      <div>{formatProfit(dollarProfit, percentProfit, profitPositive)}</div>
+      <DescriptionContainer>
+        <DescriptionTitle>Estimated Profit</DescriptionTitle>
+      </DescriptionContainer>
+      {formatProfit(dollarProfit, percentProfit, profitPositive)}
     </div>
   );
 };
