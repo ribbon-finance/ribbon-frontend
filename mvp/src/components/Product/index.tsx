@@ -190,13 +190,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
     ethPrice
   );
 
-  const expiryTimestamp = new Date(
-    straddle.expiryTimestamp * 1000
-  ).toLocaleDateString();
-
-  const expiry = `${expiryTimestamp} (${timeToExpiry(
-    straddle.expiryTimestamp
-  )} remaining)`;
+  const expiryTimestamp = new Date(straddle.expiryTimestamp * 1000);
 
   return (
     <div>
@@ -207,7 +201,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
         onClose={handleCloseModal}
         purchaseAmount={purchaseAmount}
         straddleETH={straddleETH}
-        expiry={expiry}
+        expiry={expiryTimestamp}
         callStrikePrice={callStrikePrice}
         putStrikePrice={putStrikePrice}
         callVenue={callVenue}
