@@ -217,10 +217,6 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
 
       <Row>
         <Col span={14}>
-          <ProductTitleContainer>
-            <Title>{product.name}</Title>
-          </ProductTitleContainer>
-
           <ProductDescriptionContainer>
             {productDescription(product.name)}
           </ProductDescriptionContainer>
