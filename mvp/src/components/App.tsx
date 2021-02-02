@@ -33,13 +33,11 @@ function App() {
                 xxl={{ span: 12, offset: 6 }}
               >
                 <Switch>
-                  <Route path="/">
-                    <Route path="/" exact>
-                      <HomePage></HomePage>
-                    </Route>
-                    <Route path="/product/:categoryID">
-                      <HomePage></HomePage>
-                    </Route>
+                  <Route path="/" exact>
+                    <HomePage></HomePage>
+                  </Route>
+                  <Route path="/product/:categoryID">
+                    <HomePage></HomePage>
                   </Route>
                   <Route exact path="/instrument/:instrumentSymbol">
                     <Product></Product>
