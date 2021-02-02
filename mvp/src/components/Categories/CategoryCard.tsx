@@ -53,13 +53,6 @@ type Props = {
   categoryID: string;
 };
 
-function iconPicker(icon: string) {
-  switch (icon) {
-    case "lineChart":
-      return <LineChartOutlined style={{ fontSize: 20, height: "100%" }} />;
-  }
-}
-
 const CategoryCard: React.FC<Props> = ({ categoryID }) => {
   const matchHomePage = useRouteMatch({
     path: "/",

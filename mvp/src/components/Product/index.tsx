@@ -2,18 +2,12 @@ import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import { Row, Col } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import {
-  BaseText,
-  PrimaryText,
-  StyledCard,
-  SecondaryFont,
-} from "../../designSystem";
+import { BaseText, PrimaryText, StyledCard } from "../../designSystem";
 import { computeStraddleValue } from "../../utils/straddle";
 import { useETHPriceInUSD } from "../../hooks/useEthPrice";
 import AmountInput from "./AmountInput";
 import ProductInfo from "./ProductInfo";
 import PurchaseButton from "./PurchaseButton";
-import { timeToExpiry } from "../../utils/time";
 import { useDefaultProduct, useInstrument } from "../../hooks/useProducts";
 import { useStraddleTrade } from "../../hooks/useStraddleTrade";
 import { ethers } from "ethers";
@@ -22,10 +16,6 @@ import { useWeb3React } from "@web3-react/core";
 import { IAggregatedOptionsInstrumentFactory } from "../../codegen/IAggregatedOptionsInstrumentFactory";
 import useGasPrice from "../../hooks/useGasPrice";
 import PurchaseModal from "./PurchaseModal";
-
-const CategoryContainer = styled.div`
-  padding-top: 30px;
-`;
 
 const ProductTitleContainer = styled.div`
   padding-top: 10px;
@@ -36,29 +26,12 @@ const ProductDescriptionContainer = styled.div`
   padding-bottom: 20px;
 `;
 
-const CheckoutTitle = styled(BaseText)`
-  font-style: normal;
-  font-weight: bold;
-  font-size: 16px;
-  color: #000000;
-`;
-
 const Title = styled(BaseText)`
   font-style: normal;
   font-weight: bold;
   font-size: 44px;
   line-height: 64px;
   color: #000000;
-`;
-
-const CategoryTag = styled(SecondaryFont)`
-  color: white;
-  font-size: 12px;
-  font-weight: bold;
-  text-transform: uppercase;
-  padding: 8px 20px 8px 20px;
-  border-radius: 100px;
-  background: #2300f9;
 `;
 
 const DescriptionTitle = styled.p`
@@ -185,10 +158,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
 
   if (straddle === null) return null;
 
-  const [straddleUSD, straddleETH] = computeStraddleValue(
-    totalPremium,
-    ethPrice
-  );
+  const [, straddleETH] = computeStraddleValue(totalPremium, ethPrice);
 
   const expiryTimestamp = new Date(straddle.expiryTimestamp * 1000);
 
