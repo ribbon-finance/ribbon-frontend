@@ -97,6 +97,9 @@ export const formatProfit = (
   if (dollarProfit === "0.00") {
     return <Profit>$0.00 (+0%)</Profit>;
   }
+  if (percentProfit === "Infinity") {
+    return <Profit>Calculating profits...</Profit>;
+  }
   const dollarProfitNum = parseFloat(dollarProfit);
   const isPositive = dollarProfitNum > 0;
 

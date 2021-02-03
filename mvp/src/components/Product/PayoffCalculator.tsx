@@ -9,6 +9,8 @@ import {
 } from "../../utils/straddle";
 import { BigNumber } from "ethers";
 import { PrimaryText } from "../../designSystem";
+import LeftOutlined from "@ant-design/icons/lib/icons/LeftOutlined";
+import RightOutlined from "@ant-design/icons/lib/icons/RightOutlined";
 
 const StatisticTitle = styled.p`
   padding-top: 10px;
@@ -59,25 +61,56 @@ const BarContainer = styled.div`
   flex-direction: row;
 `;
 
+const greenBarWidth = "160px";
+const redBarWidth = "100px";
+const barHeight = "8px";
+const barBorderRadius = "4px";
+
 const GreenBar = styled.div`
   background: #0dc599;
-  width: 160px;
-  height: 8px;
+  width: ${greenBarWidth};
+  height: ${barHeight};
 `;
 
 const GreenBarLeft = styled(GreenBar)`
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
+  border-top-left-radius: ${barBorderRadius};
+  border-bottom-left-radius: ${barBorderRadius};
 `;
 const GreenBarRight = styled(GreenBar)`
-  border-top-right-radius: 4px;
-  border-bottom-right-radius: 4px;
+  border-top-right-radius: ${barBorderRadius};
+  border-bottom-right-radius: ${barBorderRadius};
 `;
 
 const RedBar = styled.div`
   background: #f43469;
-  width: 100px;
-  height: 8px;
+  width: ${redBarWidth};
+  height: ${barHeight};
+`;
+
+const PayoffPrice = styled(PrimaryText)`
+  color: #000000;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 12px;
+  margin: 0 8px;
+`;
+
+const PayoffPriceContainerTop = styled.div`
+  margin-bottom: 16px;
+  margin-left: calc(${greenBarWidth} + ${redBarWidth} / 2);
+`;
+
+const PayoffPriceContainerBottom = styled.div`
+  margin-top: 16px;
+  margin-left: calc(${greenBarWidth} - 85px);
+`;
+
+const LeftArrow = styled(LeftOutlined)`
+  color: #0dc599;
+`;
+
+const RightArrow = styled(RightOutlined)`
+  color: #0dc599;
 `;
 
 type Props = {
@@ -156,18 +189,41 @@ const PayoffCalculator: React.FC<Props> = ({
           <DescriptionTitle>Profitability Conditions</DescriptionTitle>
         </DescriptionContainer>
         <div>
-          <div>
-            <PrimaryText>{upperBreakevenStr}</PrimaryText>
-          </div>
+          <PayoffPriceContainerTop>
+            <PayoffPrice>${upperBreakevenStr}</PayoffPrice>
+            <PayoffArrows direction="right"></PayoffArrows>
+          </PayoffPriceContainerTop>
           <BarContainer>
             <GreenBarLeft></GreenBarLeft>
             <RedBar></RedBar>
             <GreenBarRight></GreenBarRight>
           </BarContainer>
-          <div>{lowerBreakevenStr}</div>
+          <PayoffPriceContainerBottom>
+            <PayoffArrows direction="left"></PayoffArrows>
+            <PayoffPrice>${lowerBreakevenStr}</PayoffPrice>
+          </PayoffPriceContainerBottom>
         </div>
       </Row>
     </div>
+  );
+};
+
+const PayoffArrows: React.FC<{ direction: "left" | "right" }> = ({
+  direction,
+}) => {
+  const ArrowComponent = (direction === "left"
+    ? LeftArrow
+    : RightArrow) as React.ElementType;
+
+  let opacities = ["0.2", "0.48", "1"];
+  opacities = direction === "left" ? opacities.reverse() : opacities;
+
+  return (
+    <>
+      {opacities.map((opacity) => (
+        <ArrowComponent key={opacity} style={{ opacity }} />
+      ))}
+    </>
   );
 };
 

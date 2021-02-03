@@ -65,7 +65,6 @@ export const useStraddleTrade = (
       try {
         const response = await axios.get(url);
         const trade = convertTradeResponseToStraddleTrade(response.data);
-        console.log(trade);
         setTrade({ ...trade, loading: false, error: null });
       } catch (e) {
         setTrade({ ...emptyTrade, loading: false, error: e });
