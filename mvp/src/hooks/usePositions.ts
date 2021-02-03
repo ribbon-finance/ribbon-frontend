@@ -12,7 +12,7 @@ import axios from "axios";
 const abiCoder = new AbiCoder();
 
 const usePositions = () => {
-  const { library, account } = useWeb3React();
+  const { library, account } = useWeb3React("injected");
   const [loading, setLoading] = useState<boolean>(true);
   const [positions, setPositions] = useState<InstrumentPosition[]>([]);
 

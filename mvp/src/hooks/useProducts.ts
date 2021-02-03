@@ -14,17 +14,15 @@ export const useProducts = (): Product[] => {
   const instrumentDetails = instrumentAddresses.mainnet;
 
   const fetchInstrumentDetailsFromContract = useCallback(async () => {
-    const signer = library.getSigner();
-
     const multicall = MulticallFactory.connect(
       externalAddresses.mainnet.multicall,
-      signer
+      library
     );
 
     const calls = instrumentDetails.map((detail) => {
       const instrument = IAggregatedOptionsInstrumentFactory.connect(
         detail.address,
-        signer
+        library
       );
 
       return {
@@ -85,18 +83,17 @@ export const useInstrument = (instrumentSymbol: string) => {
     (a) => a.instrumentSymbol === instrumentSymbol
   );
 
-  const { library } = useWeb3React();
+  const { library } = useWeb3React("injected");
   const [instrument, setInstrument] = useState<InstrumentResponse>(null);
 
   const fetchInstrumentDetail = useCallback(async () => {
     if (!instrumentDetails) {
       return;
     }
-    const signer = library.getSigner();
 
     const instrument = IAggregatedOptionsInstrumentFactory.connect(
       instrumentDetails.address,
-      signer
+      library
     );
 
     const underlying = (await instrument.underlying()).toString();

@@ -29,10 +29,9 @@ export const useETHPrice = () => {
   const [price, setPrice] = useState(BigNumber.from("0"));
 
   const fetchPrice = useCallback(async () => {
-    const signer = library.getSigner();
     const chainlinkAggregator = ChainlinkAggregatorFactory.connect(
       chainIdToFeed(chainId, "eth/usd"),
-      signer
+      library
     );
 
     const ethPriceRaw = await chainlinkAggregator.latestAnswer();
