@@ -74,12 +74,6 @@ const AccountStatus: React.FC<Props> = () => {
   }, [library, account]);
 
   useEffect(() => {
-    (async () => {
-      await handleConnect();
-    })();
-  }, [handleConnect]);
-
-  useEffect(() => {
     if (library && account) {
       fetchAndSetBalance();
     }

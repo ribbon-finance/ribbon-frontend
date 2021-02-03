@@ -6,29 +6,29 @@ const Warning = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #FF0000;
+  background: #ff0000;
   padding: 10px 15px;
   border-radius: 15px;
   margin-left: 60px;
 `;
 
 const WarningText = styled.div`
-    color: white;
+  color: white;
 `;
 
 const NetworkStatus = () => {
-  const {chainId} = useWeb3React();
+  const { chainId } = useWeb3React();
 
   if (chainId !== 42) {
     return (
-        <Warning>
-            <WarningText>
-                Warning: This application only works on the Kovan testnet.
-            </WarningText>
-        </Warning>
-      );
+      <Warning>
+        <WarningText>
+          Warning: This application only works on the Kovan testnet.
+        </WarningText>
+      </Warning>
+    );
   } else {
-      return (<></>);
+    return <></>;
   }
 };
 

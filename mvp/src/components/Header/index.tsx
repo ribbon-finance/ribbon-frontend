@@ -6,6 +6,7 @@ import Logo from "./Logo";
 import { PrimaryMedium } from "../../designSystem";
 import { Link } from "react-router-dom";
 import usePositions from "../../hooks/usePositions";
+import { useWeb3React } from "@web3-react/core";
 
 const HeaderContainer = styled.div``;
 
@@ -33,6 +34,20 @@ const NavLink = ({ link, text }: NavLinkProps) => (
 
 const Header = () => {
   const { loading: loadingPositions, numOfActivePositions } = usePositions();
+  const { active } = useWeb3React();
+  let positionsNav;
+  if (active) {
+    positionsNav = (
+      <NavLink
+        link="/portfolio"
+        text={`Positions${
+          loadingPositions ? "" : ` (${numOfActivePositions})`
+        }`}
+      />
+    );
+  } else {
+    positionsNav = null;
+  }
 
   return (
     <HeaderContainer>
@@ -51,12 +66,7 @@ const Header = () => {
         </Col>
         <Col span={8} offset={2}>
           <Content>
-            <NavLink
-              link="/portfolio"
-              text={`Positions${
-                loadingPositions ? "" : ` (${numOfActivePositions})`
-              }`}
-            />
+            {positionsNav}
             <AccountStatus></AccountStatus>
           </Content>
         </Col>

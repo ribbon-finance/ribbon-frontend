@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
 import { ChainlinkAggregatorFactory } from "../codegen/ChainlinkAggregatorFactory";
 import { toFiat } from "../utils/math";
 import externalAddresses from "../constants/externalAddresses.json";
 import { BigNumber } from "ethers";
+import { useWeb3Context } from "./web3Context";
 
 function chainIdToFeed(chainId: number | undefined, feed: string): string {
   let feeds: any;
@@ -25,25 +25,28 @@ export const useETHPriceInUSD = () => {
 };
 
 export const useETHPrice = () => {
-  const { chainId, library } = useWeb3React();
+  const { provider } = useWeb3Context();
   const [price, setPrice] = useState(BigNumber.from("0"));
 
   const fetchPrice = useCallback(async () => {
-    const signer = library.getSigner();
-    const chainlinkAggregator = ChainlinkAggregatorFactory.connect(
-      chainIdToFeed(chainId, "eth/usd"),
-      signer
-    );
+    if (provider) {
+      const { chainId } = await provider.getNetwork();
 
-    const ethPriceRaw = await chainlinkAggregator.latestAnswer();
-    setPrice(ethPriceRaw);
-  }, [library, chainId]);
+      const chainlinkAggregator = ChainlinkAggregatorFactory.connect(
+        chainIdToFeed(chainId, "eth/usd"),
+        provider
+      );
+
+      const ethPriceRaw = await chainlinkAggregator.latestAnswer();
+      setPrice(ethPriceRaw);
+    }
+  }, [provider]);
 
   useEffect(() => {
-    if (library) {
+    if (provider) {
       fetchPrice();
     }
-  }, [fetchPrice, library]);
+  }, [fetchPrice, provider]);
 
   return price;
 };

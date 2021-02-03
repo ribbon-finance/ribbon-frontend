@@ -74,7 +74,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
   const [purchaseAmount, setPurchaseAmount] = useState(0.0);
 
   const currentGasPrice = useGasPrice();
-  const { library } = useWeb3React();
+  const { library, active } = useWeb3React();
   const ethPrice = useETHPriceInUSD();
   const product = useDefaultProduct();
   const purchaseAmountWei = ethers.utils.parseEther(purchaseAmount.toString());
@@ -112,7 +112,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
   );
   const handlePurchase = useCallback(
     async (setIsWaitingForConfirmation: () => void) => {
-      if (library && straddle && gasPrice !== 0) {
+      if (library && active && straddle && gasPrice !== 0) {
         try {
           const signer = library.getSigner();
           const instrument = IAggregatedOptionsInstrumentFactory.connect(
@@ -145,6 +145,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
     },
     [
       library,
+      active,
       straddle,
       amounts,
       buyData,
