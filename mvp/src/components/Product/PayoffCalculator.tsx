@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Input, Row } from "antd";
+import { Input } from "antd";
 import {
   computeBreakeven,
   computeDefaultPrice,
@@ -8,6 +8,7 @@ import {
   formatProfit,
 } from "../../utils/straddle";
 import { BigNumber } from "ethers";
+import { PrimaryText } from "../../designSystem";
 
 const StatisticTitle = styled.p`
   padding-top: 10px;
@@ -47,6 +48,38 @@ const CustomInputStyled = styled(InputNumberStyled)`
   height: 40px;
 `;
 
+const Row = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+`;
+
+const BarContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const GreenBar = styled.div`
+  background: #0dc599;
+  width: 160px;
+  height: 8px;
+`;
+
+const GreenBarLeft = styled(GreenBar)`
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+`;
+const GreenBarRight = styled(GreenBar)`
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+`;
+
+const RedBar = styled.div`
+  background: #f43469;
+  width: 100px;
+  height: 8px;
+`;
+
 type Props = {
   ethPrice: number;
   straddlePrice: string;
@@ -63,7 +96,7 @@ const PayoffCalculator: React.FC<Props> = ({
   amount,
 }) => {
   const [inputText, setInputText] = useState("");
-  const [, upperBreakeven] = computeBreakeven(
+  const [lowerBreakeven, upperBreakeven] = computeBreakeven(
     straddlePrice,
     callStrikePrice,
     putStrikePrice
@@ -78,6 +111,15 @@ const PayoffCalculator: React.FC<Props> = ({
     parseFloat(straddlePrice),
     amount
   );
+
+  const upperBreakevenStr = upperBreakeven.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  const lowerBreakevenStr = lowerBreakeven.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 
   return (
     <div>
@@ -102,10 +144,29 @@ const PayoffCalculator: React.FC<Props> = ({
         }}
       />
 
-      <DescriptionContainer>
-        <DescriptionTitle>Estimated Profit</DescriptionTitle>
-      </DescriptionContainer>
-      {formatProfit(dollarProfit, percentProfit, profitPositive)}
+      <Row>
+        <DescriptionContainer>
+          <DescriptionTitle>Estimated Profit</DescriptionTitle>
+        </DescriptionContainer>
+        {formatProfit(dollarProfit, percentProfit, profitPositive)}
+      </Row>
+
+      <Row>
+        <DescriptionContainer>
+          <DescriptionTitle>Profitability Conditions</DescriptionTitle>
+        </DescriptionContainer>
+        <div>
+          <div>
+            <PrimaryText>{upperBreakevenStr}</PrimaryText>
+          </div>
+          <BarContainer>
+            <GreenBarLeft></GreenBarLeft>
+            <RedBar></RedBar>
+            <GreenBarRight></GreenBarRight>
+          </BarContainer>
+          <div>{lowerBreakevenStr}</div>
+        </div>
+      </Row>
     </div>
   );
 };

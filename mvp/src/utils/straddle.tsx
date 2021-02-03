@@ -97,19 +97,16 @@ export const formatProfit = (
   if (dollarProfit === "0.00") {
     return <Profit>$0.00 (+0%)</Profit>;
   }
-  if (profitPositive) {
-    return (
-      <ProfitPositive>
-        ${dollarProfit} (+{percentProfit}%)
-      </ProfitPositive>
-    );
-  } else {
-    return (
-      <ProfitNegative>
-        ${dollarProfit} ({percentProfit}%)
-      </ProfitNegative>
-    );
-  }
+  const dollarProfitNum = parseFloat(dollarProfit);
+  const isPositive = dollarProfitNum > 0;
+
+  const Component = profitPositive ? ProfitPositive : ProfitNegative;
+
+  return (
+    <Component>
+      {isPositive ? "" : "-"}${Math.abs(dollarProfitNum)} ({percentProfit}%)
+    </Component>
+  );
 };
 
 export const computeBreakevenPercent = (

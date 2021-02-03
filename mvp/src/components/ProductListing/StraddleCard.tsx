@@ -102,7 +102,7 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
       </CardDescriptionContainer>
 
       <Row justify="center">
-        <Link to={"/instrument/" + straddle.symbol}>
+        <Link style={{ width: "100%" }} to={"/instrument/" + straddle.symbol}>
           <StyledButton size="large" type="primary">
             <ButtonText>Buy</ButtonText>
           </StyledButton>

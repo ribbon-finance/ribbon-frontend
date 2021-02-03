@@ -1,18 +1,14 @@
 import React from "react";
 import styled from "styled-components";
-import { Row, Col, Statistic, Divider } from "antd";
+import { Divider } from "antd";
 import { BaseText, StyledCard } from "../../designSystem";
-import {
-  computeStraddleValue,
-  computeBreakeven,
-  computeBreakevenPercent,
-} from "../../utils/straddle";
+import { computeStraddleValue } from "../../utils/straddle";
 import { useETHPriceInUSD } from "../../hooks/useEthPrice";
 import { BasicStraddle } from "../../models";
-import { timeToExpiry } from "../../utils/time";
 import { useStraddleTrade } from "../../hooks/useStraddleTrade";
 import { ethers } from "ethers";
 import PayoffCalculator from "./PayoffCalculator";
+import currencyIcons from "../../img/currencyIcons";
 
 const DescriptionTitle = styled.p`
   font-family: Montserrat;
@@ -54,15 +50,15 @@ const CustomStyledCard = styled(StyledCard)`
   border: 0px;
 `;
 
-const StyledStatistic = (title: string, value: string) => {
-  return (
-    <Statistic
-      valueStyle={{ fontSize: 15, fontWeight: "bold", paddingBottom: "15px" }}
-      title={title}
-      value={value}
-    />
-  );
-};
+const ETHIcon = styled.img`
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+`;
+
+const PriceContainer = styled.div`
+  display: flex;
+`;
 
 type Props = {
   straddle: BasicStraddle;
@@ -87,20 +83,6 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
     totalPremium,
     ethPrice
   );
-  const [lowerBreakeven, upperBreakeven] = computeBreakeven(
-    straddleUSD,
-    callStrikePrice,
-    putStrikePrice
-  );
-
-  const breakevenPercent =
-    !totalPremium.isZero() &&
-    computeBreakevenPercent(
-      straddleUSD,
-      callStrikePrice,
-      putStrikePrice,
-      ethPrice
-    );
 
   const timestamp = new Date(
     straddle.expiryTimestamp * 1000
@@ -116,8 +98,10 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
   );
 
   let costStr;
-  if (loadingTrade) {
+  if (loadingTrade && !totalPremium.isZero()) {
     costStr = "Computing cost...";
+  } else if (loadingTrade && totalPremium.isZero()) {
+    costStr = `$0.00 (0.0 ETH)`;
   } else if (loadTradeError) {
     costStr = "Error loading cost. Try again.";
   } else {
@@ -141,7 +125,10 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
         <Divider />
 
         <DescriptionTitle>Current ETH Price</DescriptionTitle>
-        <DescriptionData>${ethPrice}</DescriptionData>
+        <PriceContainer>
+          <ETHIcon src={currencyIcons.ETH} alt="ETH" />
+          <DescriptionData>${ethPrice}</DescriptionData>
+        </PriceContainer>
 
         <PayoffCalculator
           ethPrice={ethPrice}
@@ -150,25 +137,6 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
           straddlePrice={straddleUSD}
           amount={amount}
         ></PayoffCalculator>
-
-        {/* <Row>
-          <Col span={12}>
-            {StyledStatistic(
-              "Breakeven Price",
-              breakevenPercent
-                ? `≤ $${lowerBreakeven.toFixed(
-                    2
-                  )} or ≥ $${upperBreakeven.toFixed(2)}`
-                : "-"
-            )}
-          </Col>
-          <Col span={12}>
-            {StyledStatistic(
-              "To Breakeven",
-              breakevenPercent ? `(±${breakevenPercent}%)` : "-"
-            )}
-          </Col>
-        </Row> */}
       </CustomStyledCard>
     </>
   );
