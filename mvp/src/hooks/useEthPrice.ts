@@ -34,8 +34,9 @@ export const useETHPrice = () => {
       library
     );
 
-    const ethPriceRaw = await chainlinkAggregator.latestAnswer();
-    setPrice(ethPriceRaw);
+    // const ethPriceRaw = await chainlinkAggregator.latestAnswer();
+    // setPrice(ethPriceRaw);
+    setPrice(BigNumber.from("0"));
   }, [library, chainId]);
 
   useEffect(() => {

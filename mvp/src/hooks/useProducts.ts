@@ -1,11 +1,9 @@
 import { ethers } from "ethers";
-import { MulticallFactory } from "../codegen/MulticallFactory";
 import { BasicStraddle, Product, Straddle } from "../models";
-import externalAddresses from "../constants/externalAddresses.json";
 import instrumentAddresses from "../constants/instruments.json";
 import { useWeb3React } from "@web3-react/core";
 import { useCallback, useEffect, useState } from "react";
-import { IAggregatedOptionsInstrumentFactory } from "../codegen/IAggregatedOptionsInstrumentFactory";
+import { ASSET_ADDRESSES } from "../constants/addresses";
 const abiCoder = new ethers.utils.AbiCoder();
 
 export const useProducts = (): Product[] => {
@@ -14,39 +12,17 @@ export const useProducts = (): Product[] => {
   const instrumentDetails = instrumentAddresses.mainnet;
 
   const fetchInstrumentDetailsFromContract = useCallback(async () => {
-    const multicall = MulticallFactory.connect(
-      externalAddresses.mainnet.multicall,
-      library
-    );
-
-    const calls = instrumentDetails.map((detail) => {
-      const instrument = IAggregatedOptionsInstrumentFactory.connect(
-        detail.address,
-        library
-      );
-
-      return {
-        target: detail.address,
-        callData: instrument.interface.encodeFunctionData("underlying"),
-      };
-    });
-
-    const response = await multicall.aggregate(calls);
-
     const nowTimestamp = Math.floor(Date.now() / 1000);
 
     const instruments = instrumentAddresses.mainnet
       .filter((details) => parseInt(details.expiry) > nowTimestamp)
-      .map((instrumentDetails, index) => {
+      .map((instrumentDetails) => {
         const {
           address,
           instrumentSymbol: symbol,
           expiry: expiryTimestamp,
         } = instrumentDetails;
-
-        const underlying = abiCoder
-          .decode(["uint256"], response.returnData[index])
-          .toString();
+        const underlying = ASSET_ADDRESSES.ETH;
 
         return {
           address,
@@ -91,13 +67,7 @@ export const useInstrument = (instrumentSymbol: string) => {
       return;
     }
 
-    const instrument = IAggregatedOptionsInstrumentFactory.connect(
-      instrumentDetails.address,
-      library
-    );
-
-    const underlying = (await instrument.underlying()).toString();
-
+    const underlying = ASSET_ADDRESSES.ETH;
     const {
       address,
       instrumentSymbol: symbol,
