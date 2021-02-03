@@ -2,8 +2,7 @@ import React, { StrictMode } from "react";
 import styled from "styled-components";
 import { Row, Col } from "antd";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { createWeb3ReactRoot, Web3ReactProvider } from "@web3-react/core";
-// import your favorite web3 convenience library here
+import { Web3ReactProvider } from "@web3-react/core";
 
 import Header from "./Header";
 import Portfolio from "./Portfolio";
