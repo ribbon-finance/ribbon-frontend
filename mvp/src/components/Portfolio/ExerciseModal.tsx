@@ -1,4 +1,4 @@
-import { Button, Row } from "antd";
+import { Row } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import { ethers } from "ethers";
 import React, { useState } from "react";

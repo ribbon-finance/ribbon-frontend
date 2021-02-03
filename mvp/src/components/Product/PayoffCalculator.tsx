@@ -12,14 +12,6 @@ import { PrimaryText } from "../../designSystem";
 import LeftOutlined from "@ant-design/icons/lib/icons/LeftOutlined";
 import RightOutlined from "@ant-design/icons/lib/icons/RightOutlined";
 
-const StatisticTitle = styled.p`
-  padding-top: 10px;
-  margin-bottom: 0px;
-  padding-bottom: 10px;
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.45);
-`;
-
 const DescriptionContainer = styled.div`
   padding-top: 10px;
 `;

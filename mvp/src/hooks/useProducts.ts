@@ -1,8 +1,6 @@
-import { BasicStraddle, Product, Straddle } from "../models";
 import instrumentAddresses from "../constants/instruments.json";
-import { useWeb3React } from "@web3-react/core";
-import { useCallback, useEffect, useState } from "react";
 import { ASSET_ADDRESSES } from "../constants/addresses";
+import { Product } from "../models";
 
 export const useProducts = (): Product[] => {
   const nowTimestamp = Math.floor(Date.now() / 1000);
