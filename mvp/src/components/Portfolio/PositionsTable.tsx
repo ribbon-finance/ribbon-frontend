@@ -85,7 +85,7 @@ const PositionsTable: React.FC<PositionsTableProps> = ({
     setExercisingPosition,
   ] = useState<InstrumentPosition | null>(null);
 
-  const { library } = useWeb3React("injected");
+  const { library } = useWeb3React();
   const ethPriceUSD = useETHPriceInUSD();
 
   const handleOpenExerciseModal = useCallback(

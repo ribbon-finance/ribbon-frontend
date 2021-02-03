@@ -2,7 +2,7 @@ import React, { StrictMode } from "react";
 import styled from "styled-components";
 import { Row, Col } from "antd";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { createWeb3ReactRoot } from "@web3-react/core";
+import { createWeb3ReactRoot, Web3ReactProvider } from "@web3-react/core";
 // import your favorite web3 convenience library here
 
 import Header from "./Header";
@@ -20,15 +20,13 @@ const MainContent = styled.div`
 `;
 
 function App() {
-  const Web3ReactInjected = createWeb3ReactRoot("injected");
-
   return (
     <Web3ContextProvider>
-      <Web3ReactInjected getLibrary={getLibrary}>
+      <Web3ReactProvider getLibrary={getLibrary}>
         <StrictMode>
           <AppRoot></AppRoot>
         </StrictMode>
-      </Web3ReactInjected>
+      </Web3ReactProvider>
     </Web3ContextProvider>
   );
 }

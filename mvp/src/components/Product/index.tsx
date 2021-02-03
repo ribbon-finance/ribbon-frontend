@@ -74,7 +74,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
   const [purchaseAmount, setPurchaseAmount] = useState(0.0);
 
   const currentGasPrice = useGasPrice();
-  const { library, active } = useWeb3React("injected");
+  const { library, active } = useWeb3React();
   const ethPrice = useETHPriceInUSD();
   const product = useDefaultProduct();
   const purchaseAmountWei = ethers.utils.parseEther(purchaseAmount.toString());

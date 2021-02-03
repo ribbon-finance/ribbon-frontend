@@ -49,9 +49,7 @@ const truncateAddress = (address: string) => {
 
 const AccountStatus: React.FC<Props> = () => {
   const [balance, setBalance] = useState("0");
-  const { activate: activateWeb3, library, active, account } = useWeb3React(
-    "injected"
-  );
+  const { activate: activateWeb3, library, active, account } = useWeb3React();
   const hasAccount = active && account;
 
   const injectedConnector = useMemo(
