@@ -27,11 +27,15 @@ const BoldText = styled(MainText)`
 `;
 
 const AssetPrice = () => {
+  // assumes ETH price won't be zero :)
+  const ethPrice = useETHPriceInUSD();
   return (
     <AssetPriceContainer>
       <ETHPriceContainer>
         <MainText>ETH Price: </MainText>
-        <BoldText>${useETHPriceInUSD().toFixed(2)}</BoldText>
+        <BoldText>
+          {ethPrice > 0 ? `$${ethPrice.toFixed(2)}` : "Loading..."}
+        </BoldText>
       </ETHPriceContainer>
     </AssetPriceContainer>
   );

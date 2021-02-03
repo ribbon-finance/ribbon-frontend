@@ -1,12 +1,8 @@
-import React, { StrictMode, useCallback, useEffect, useMemo } from "react";
+import React, { StrictMode } from "react";
 import styled from "styled-components";
 import { Row, Col } from "antd";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import {
-  createWeb3ReactRoot,
-  useWeb3React,
-  Web3ReactProvider,
-} from "@web3-react/core";
+import { createWeb3ReactRoot } from "@web3-react/core";
 // import your favorite web3 convenience library here
 
 import Header from "./Header";
@@ -14,8 +10,8 @@ import Portfolio from "./Portfolio";
 import Product from "./Product";
 import Content404 from "./Content404";
 import HomePage from "./HomePage";
-import { NetworkConnector } from "@web3-react/network-connector";
-import { getDefaultLibrary, getInfuraLibrary } from "../utils/getLibrary";
+import { getDefaultLibrary } from "../utils/getLibrary";
+import { Web3ContextProvider } from "../hooks/web3Context";
 
 const AppContainer = styled.div``;
 
@@ -27,36 +23,17 @@ function App() {
   const Web3ReactInjected = createWeb3ReactRoot("injected");
 
   return (
-    <Web3ReactProvider getLibrary={getInfuraLibrary}>
+    <Web3ContextProvider>
       <Web3ReactInjected getLibrary={getDefaultLibrary}>
         <StrictMode>
           <AppRoot></AppRoot>
         </StrictMode>
       </Web3ReactInjected>
-    </Web3ReactProvider>
+    </Web3ContextProvider>
   );
 }
 
 function AppRoot() {
-  const { activate } = useWeb3React();
-
-  const networkConnector = useMemo(() => {
-    return new NetworkConnector({
-      urls: { 1: process.env.REACT_APP_MAINNET_URI as string },
-      defaultChainId: 1,
-    });
-  }, []);
-
-  const handleConnectRoot = useCallback(async () => {
-    await activate(networkConnector);
-  }, [networkConnector, activate]);
-
-  useEffect(() => {
-    (async () => {
-      await handleConnectRoot();
-    })();
-  }, [handleConnectRoot]);
-
   return (
     <Router>
       <AppContainer className="App">
