@@ -10,7 +10,7 @@ import Portfolio from "./Portfolio";
 import Product from "./Product";
 import Content404 from "./Content404";
 import HomePage from "./HomePage";
-import { getDefaultLibrary } from "../utils/getLibrary";
+import { getLibrary } from "../utils/getLibrary";
 import { Web3ContextProvider } from "../hooks/web3Context";
 
 const AppContainer = styled.div``;
@@ -24,7 +24,7 @@ function App() {
 
   return (
     <Web3ContextProvider>
-      <Web3ReactInjected getLibrary={getDefaultLibrary}>
+      <Web3ReactInjected getLibrary={getLibrary}>
         <StrictMode>
           <AppRoot></AppRoot>
         </StrictMode>
