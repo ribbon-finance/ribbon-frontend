@@ -61,8 +61,9 @@ const Banner = () => {
       <Title>Invest Like A Pro.</Title>
       <Col span={18} offset={3}>
         <Subtitle>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam,
-          purus sit amet luctus venenatis, lectus
+          Level-up your trading with crypto structured products.
+          <br></br>Combine options, futures, and fixed income to improve your
+          portfolio's risk-return profile.
         </Subtitle>
       </Col>
       <ArrowDown />

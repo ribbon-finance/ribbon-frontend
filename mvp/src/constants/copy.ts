@@ -11,7 +11,7 @@ export const CATEGORIES: Record<string, Record<string, string>> = {
     cardTitle: "Enhanced Yields",
     icon: "lineChart",
     description:
-      "Enhance your yields by selling options, collateralized by interest-bearing assets. Stack your yields with option premiums + interest. ",
+      "Enhance your yields by selling options, collateralized by interest-bearing assets. Use leverage to futher enhance the yields to tripit-digit APYs.",
   },
   "principal-protection": {
     cardColor: "#B1C9B6",
