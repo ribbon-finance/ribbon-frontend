@@ -98,10 +98,10 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
   );
 
   let costStr;
-  if (loadingTrade && !totalPremium.isZero()) {
+  if (loadingTrade && amount > 0) {
     costStr = "Computing cost...";
-  } else if (loadingTrade && totalPremium.isZero()) {
-    costStr = `$0.00 (0.0 ETH)`;
+  } else if (loadingTrade) {
+    costStr = "$0.00 (0.00 ETH)";
   } else if (loadTradeError) {
     costStr = "Error loading cost. Try again.";
   } else {
