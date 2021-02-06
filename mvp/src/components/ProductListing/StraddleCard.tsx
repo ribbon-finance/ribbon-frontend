@@ -77,10 +77,6 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
     day: "numeric",
   });
 
-  if (loadingTrade) {
-    return <Skeleton></Skeleton>;
-  }
-
   return (
     <StyledCard
       bordered={false}
