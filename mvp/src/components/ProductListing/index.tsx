@@ -48,7 +48,7 @@ const ProductDescription: React.FC<{ productName: string }> = ({
 }) => {
   let description = null;
   switch (productName) {
-    case "ETH Straddle":
+    case "ETH Strangle":
       description = (
         <ProductSubtitle>
           Bet that ETH will be volatile over some period of time - the more ETH
