@@ -11,6 +11,7 @@ import Content404 from "./Content404";
 import HomePage from "./HomePage";
 import { getLibrary } from "../utils/getLibrary";
 import { Web3ContextProvider } from "../hooks/web3Context";
+import useEagerConnect from "../hooks/useEagerConnect";
 
 const AppContainer = styled.div``;
 
@@ -31,6 +32,8 @@ function App() {
 }
 
 function AppRoot() {
+  useEagerConnect();
+
   return (
     <Router>
       <AppContainer className="App">
