@@ -1,17 +1,29 @@
 import React from "react";
 import styled from "styled-components";
-import { Title } from "../../designSystem";
+import { PrimaryMedium, Title } from "../../designSystem";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import usePositions from "../../hooks/usePositions";
 import PositionsTable from "./PositionsTable";
 import { Link } from "react-router-dom";
+import { useWeb3React } from "@web3-react/core";
 
 const ProductTitleContainer = styled.div`
   padding-top: 10px;
   padding-bottom: 10px;
 `;
 
+const ConnectToWallet = styled.div`
+  margin-top: 20px;
+  margin-left: 30px;
+`;
+
+const ConnectToWalletText = styled(PrimaryMedium)`
+  font-size: 20px;
+`;
+
 const Portfolio = () => {
+  const { active } = useWeb3React();
+
   const { loading: loadingPositions, positions } = usePositions();
   const sortedPositions = positions.sort((a, b) => {
     if (a.expiry > b.expiry) return -1;
@@ -32,22 +44,32 @@ const Portfolio = () => {
       <Link to="/">
         <ArrowLeftOutlined />
       </Link>
-      <ProductTitleContainer>
-        <Title>Active Positions</Title>
-      </ProductTitleContainer>
-      <PositionsTable
-        loading={loadingPositions}
-        positions={activePositions}
-        isPastPositions={false}
-      />
-      <ProductTitleContainer>
-        <Title>Past Positions</Title>
-      </ProductTitleContainer>
-      <PositionsTable
-        loading={loadingPositions}
-        positions={pastPositions}
-        isPastPositions
-      />
+      {!active ? (
+        <ConnectToWallet>
+          <ConnectToWalletText>
+            Please connect to Metamask to access your positions.
+          </ConnectToWalletText>
+        </ConnectToWallet>
+      ) : (
+        <>
+          <ProductTitleContainer>
+            <Title>Active Positions</Title>
+          </ProductTitleContainer>
+          <PositionsTable
+            loading={loadingPositions}
+            positions={activePositions}
+            isPastPositions={false}
+          />
+          <ProductTitleContainer>
+            <Title>Past Positions</Title>
+          </ProductTitleContainer>
+          <PositionsTable
+            loading={loadingPositions}
+            positions={pastPositions}
+            isPastPositions
+          />
+        </>
+      )}
     </div>
   );
 };
