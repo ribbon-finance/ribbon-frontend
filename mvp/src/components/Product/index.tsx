@@ -124,13 +124,12 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
           const receipt = await instrument.buyInstrument(
             venues,
             optionTypes,
-            amounts,
+            amounts[0],
             strikePrices,
             buyData,
             {
               value: totalPremium,
               gasPrice,
-              gasLimit: useHigherGasLimit ? 1700000 : 1200000,
             }
           );
           setIsWaitingForConfirmation();

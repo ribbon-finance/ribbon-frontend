@@ -5,6 +5,7 @@ import { useWeb3React } from "@web3-react/core";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { SecondaryText } from "../../designSystem";
 import AccountIcon from "./AccountIcon";
+import { injectedConnector } from "../../utils/connectors";
 
 const AccountPill = styled.div`
   display: flex;
@@ -51,14 +52,6 @@ const AccountStatus: React.FC<Props> = () => {
   const [balance, setBalance] = useState("0");
   const { activate: activateWeb3, library, active, account } = useWeb3React();
   const hasAccount = active && account;
-
-  const injectedConnector = useMemo(
-    () =>
-      new InjectedConnector({
-        supportedChainIds: [42, 1],
-      }),
-    []
-  );
 
   const handleConnect = useCallback(async () => {
     await activateWeb3(injectedConnector);

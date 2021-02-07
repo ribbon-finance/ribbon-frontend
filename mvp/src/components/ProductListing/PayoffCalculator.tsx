@@ -71,6 +71,7 @@ const PayoffCalculator: React.FC<Props> = ({
   const [inputText, setInputText] = useState("");
   const [lowerBreakeven, upperBreakeven] = computeBreakeven(
     straddlePrice,
+    parseFloat(inputText) || 0,
     callStrikePrice,
     putStrikePrice
   );
