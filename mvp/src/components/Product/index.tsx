@@ -55,7 +55,7 @@ interface ParamTypes {
 const productDescription = (name: string) => {
   var description;
   switch (name) {
-    case "ETH Straddle":
+    case "ETH Strangle":
       description = (
         <PrimaryText>
           Bet that ETH will be volatile over some period of time - the more ETH
