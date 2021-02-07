@@ -119,7 +119,6 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
             straddle.address,
             signer
           );
-          const useHigherGasLimit = venues.includes("OPYN_GAMMA");
 
           const receipt = await instrument.buyInstrument(
             venues,

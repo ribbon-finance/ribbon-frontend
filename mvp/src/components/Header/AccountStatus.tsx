@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
-import { InjectedConnector } from "@web3-react/injected-connector";
 import { SecondaryText } from "../../designSystem";
 import AccountIcon from "./AccountIcon";
 import { injectedConnector } from "../../utils/connectors";
@@ -55,7 +54,7 @@ const AccountStatus: React.FC<Props> = () => {
 
   const handleConnect = useCallback(async () => {
     await activateWeb3(injectedConnector);
-  }, [injectedConnector, activateWeb3]);
+  }, [activateWeb3]);
 
   const fetchAndSetBalance = useCallback(async () => {
     const bal = await library.getBalance(account);
