@@ -1,7 +1,7 @@
 import React from "react";
 import { StyledCard } from "../../designSystem/index";
 import styled from "styled-components";
-import { Row, Button, Skeleton } from "antd";
+import { Row, Button } from "antd";
 import { Straddle } from "../../models";
 import { computeStraddleValue } from "../../utils/straddle";
 import { useETHPriceInUSD } from "../../hooks/useEthPrice";
@@ -57,12 +57,7 @@ const StyledButton = styled(Button)`
 
 const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
   const ethPrice = useETHPriceInUSD();
-  const {
-    loading: loadingTrade,
-    totalPremium,
-    callStrikePrice,
-    putStrikePrice,
-  } = useStraddleTrade(
+  const { totalPremium, callStrikePrice, putStrikePrice } = useStraddleTrade(
     straddle.address,
     ethPrice,
     ethers.utils.parseEther("1")
@@ -76,10 +71,6 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
     month: "long",
     day: "numeric",
   });
-
-  if (loadingTrade) {
-    return <Skeleton></Skeleton>;
-  }
 
   return (
     <StyledCard

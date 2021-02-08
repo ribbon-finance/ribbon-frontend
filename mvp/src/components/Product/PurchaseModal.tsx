@@ -1,3 +1,4 @@
+import { useWeb3React } from "@web3-react/core";
 import { Modal } from "antd";
 import { BigNumber, ethers } from "ethers";
 import moment from "moment";
@@ -10,6 +11,7 @@ import {
   StyledStatistic,
 } from "../../designSystem/Modal";
 import protocolIcons from "../../img/protocolIcons";
+import { injectedConnector } from "../../utils/connectors";
 import { venueKeyToName } from "../../utils/positions";
 
 const ProtocolIcon = styled.img`
@@ -101,8 +103,14 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
   const [isWaitingForConfirmation, setIsWaitingForConfirmation] = useState(
     false
   );
+  const { active, activate } = useWeb3React();
 
   const handleOk = async () => {
+    if (!active) {
+      await activate(injectedConnector);
+      return;
+    }
+
     setPending(true);
     await onPurchase(() => setIsWaitingForConfirmation(true));
     setPending(false);
@@ -110,10 +118,12 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
   };
 
   let buttonText;
-  if (isPending && !isWaitingForConfirmation) {
+  if (!active) {
+    buttonText = "Connect to Metamask";
+  } else if (isPending && !isWaitingForConfirmation) {
     buttonText = "Purchasing...";
   } else if (isPending && isWaitingForConfirmation) {
-    buttonText = "Waiting for 1 confirmation...";
+    buttonText = "Waiting 1 confirmation...";
   } else {
     buttonText = "Buy";
   }

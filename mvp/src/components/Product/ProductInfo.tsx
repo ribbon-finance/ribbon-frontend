@@ -92,11 +92,6 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
     day: "numeric",
   });
 
-  const totalCostUSD = (parseFloat(straddleUSD) * amount).toFixed(2);
-  const totalCostETH = ethers.utils.formatEther(
-    ethers.utils.parseEther((parseFloat(straddleETH) * amount).toFixed(8))
-  );
-
   let costStr;
   if (loadingTrade && amount > 0) {
     costStr = "Computing cost...";
@@ -105,7 +100,7 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
   } else if (loadTradeError) {
     costStr = "Error loading cost. Try again.";
   } else {
-    costStr = `$${totalCostUSD} (${totalCostETH} ETH)`;
+    costStr = `$${straddleUSD} (${straddleETH} ETH)`;
   }
 
   return (

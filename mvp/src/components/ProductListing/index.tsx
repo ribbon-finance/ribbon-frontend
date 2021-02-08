@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Row, Col } from "antd";
+import { Skeleton, Row, Col } from "antd";
 import { BaseText } from "../../designSystem";
 import StraddleCard from "./StraddleCard";
 import AssetPrice from "./AssetPrice";
@@ -48,7 +48,7 @@ const ProductDescription: React.FC<{ productName: string }> = ({
 }) => {
   let description = null;
   switch (productName) {
-    case "ETH Straddle":
+    case "ETH Strangle":
       description = (
         <ProductSubtitle>
           Bet that ETH will be volatile over some period of time - the more ETH
@@ -64,6 +64,13 @@ const ProductDescription: React.FC<{ productName: string }> = ({
 
 const ProductListing: React.FC = () => {
   const product = useDefaultProduct();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 300);
+  }, []);
 
   return (
     <ProductContainer>
@@ -80,16 +87,20 @@ const ProductListing: React.FC = () => {
 
       <AssetPrice />
 
-      <Row justify="space-between" align="top">
-        {product.instruments.map((instrument) => (
-          <Col
-            key={instrument.address}
-            span={21 / Math.floor(product.instruments.length)}
-          >
-            <StraddleCard straddle={instrument}></StraddleCard>
-          </Col>
-        ))}
-      </Row>
+      {loading ? (
+        <Skeleton></Skeleton>
+      ) : (
+        <Row justify="space-between" align="top">
+          {product.instruments.map((instrument) => (
+            <Col
+              key={instrument.address}
+              span={21 / Math.floor(product.instruments.length)}
+            >
+              <StraddleCard straddle={instrument}></StraddleCard>
+            </Col>
+          ))}
+        </Row>
+      )}
     </ProductContainer>
   );
 };

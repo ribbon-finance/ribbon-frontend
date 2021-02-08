@@ -55,7 +55,7 @@ interface ParamTypes {
 const productDescription = (name: string) => {
   var description;
   switch (name) {
-    case "ETH Straddle":
+    case "ETH Strangle":
       description = (
         <PrimaryText>
           Bet that ETH will be volatile over some period of time - the more ETH
@@ -124,13 +124,13 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
           const receipt = await instrument.buyInstrument(
             venues,
             optionTypes,
-            amounts,
+            amounts[0],
             strikePrices,
             buyData,
             {
               value: totalPremium,
               gasPrice,
-              gasLimit: useHigherGasLimit ? 1700000 : 1200000,
+              gasLimit: useHigherGasLimit ? 1400000 : 1200000,
             }
           );
           setIsWaitingForConfirmation();

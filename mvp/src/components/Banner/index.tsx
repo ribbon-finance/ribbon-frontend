@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Col, Button } from "antd";
-import { ArrowDownOutlined } from "@ant-design/icons";
+import { Col } from "antd";
 
 const BannerContainer = styled.div`
   padding-bottom: 20px;

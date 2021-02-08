@@ -25,6 +25,7 @@ interface IRibbonFactoryInterface extends ethers.utils.Interface {
     "isInstrument(address)": FunctionFragment;
     "getAdapter(string)": FunctionFragment;
     "getAdapters()": FunctionFragment;
+    "burnGasTokens()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -36,6 +37,10 @@ interface IRibbonFactoryInterface extends ethers.utils.Interface {
     functionFragment: "getAdapters",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "burnGasTokens",
+    values?: undefined
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "isInstrument",
@@ -44,6 +49,10 @@ interface IRibbonFactoryInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "getAdapter", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getAdapters",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "burnGasTokens",
     data: BytesLike
   ): Result;
 
@@ -101,6 +110,10 @@ export class IRibbonFactory extends Contract {
       adaptersArray: string[];
       0: string[];
     }>;
+
+    burnGasTokens(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "burnGasTokens()"(overrides?: Overrides): Promise<ContractTransaction>;
   };
 
   isInstrument(
@@ -123,6 +136,10 @@ export class IRibbonFactory extends Contract {
   getAdapters(overrides?: CallOverrides): Promise<string[]>;
 
   "getAdapters()"(overrides?: CallOverrides): Promise<string[]>;
+
+  burnGasTokens(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "burnGasTokens()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   callStatic: {
     isInstrument(
@@ -148,6 +165,10 @@ export class IRibbonFactory extends Contract {
     getAdapters(overrides?: CallOverrides): Promise<string[]>;
 
     "getAdapters()"(overrides?: CallOverrides): Promise<string[]>;
+
+    burnGasTokens(overrides?: CallOverrides): Promise<void>;
+
+    "burnGasTokens()"(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {};
@@ -173,6 +194,10 @@ export class IRibbonFactory extends Contract {
     getAdapters(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getAdapters()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    burnGasTokens(overrides?: Overrides): Promise<BigNumber>;
+
+    "burnGasTokens()"(overrides?: Overrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -199,5 +224,9 @@ export class IRibbonFactory extends Contract {
     getAdapters(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getAdapters()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    burnGasTokens(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "burnGasTokens()"(overrides?: Overrides): Promise<PopulatedTransaction>;
   };
 }

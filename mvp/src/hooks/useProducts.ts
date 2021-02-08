@@ -25,7 +25,7 @@ export const useProducts = (): Product[] => {
 
   return [
     {
-      name: "ETH Straddle",
+      name: "ETH Strangle",
       emoji: "",
       instruments,
     },

@@ -71,6 +71,7 @@ const PayoffCalculator: React.FC<Props> = ({
   const [inputText, setInputText] = useState("");
   const [lowerBreakeven, upperBreakeven] = computeBreakeven(
     straddlePrice,
+    1,
     callStrikePrice,
     putStrikePrice
   );
@@ -114,7 +115,9 @@ const PayoffCalculator: React.FC<Props> = ({
       <DescriptionTitle>Estimated Profit</DescriptionTitle>
       {formatProfit(dollarProfit, percentProfit, profitPositive)}
       <DescriptionTitle>Cost</DescriptionTitle>
-      <DescriptionDataPrimary>${straddlePrice}</DescriptionDataPrimary>
+      <DescriptionDataPrimary>
+        {straddlePrice === "0.00" ? "Loading cost..." : `$${straddlePrice}`}
+      </DescriptionDataPrimary>
     </div>
   );
 };
