@@ -90,11 +90,12 @@ const ProductListing: React.FC = () => {
       {loading ? (
         <Skeleton></Skeleton>
       ) : (
-        <Row justify="space-between" align="top">
+        <Row justify="center" align="top">
           {product.instruments.map((instrument) => (
             <Col
               key={instrument.address}
               span={21 / Math.floor(product.instruments.length)}
+              style={{ marginLeft: 50, marginRight: 50 }}
             >
               <StraddleCard straddle={instrument}></StraddleCard>
             </Col>
