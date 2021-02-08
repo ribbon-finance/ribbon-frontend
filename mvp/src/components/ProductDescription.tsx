@@ -67,6 +67,7 @@ const ProductDescription = () => {
       </IconContainer>
       <FormContainer>
         <EmailForm
+          type="email"
           placeholder="Enter your email"
           onSearch={() => {}}
           enterButton="Submit"
