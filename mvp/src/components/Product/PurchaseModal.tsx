@@ -123,7 +123,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
   } else if (isPending && !isWaitingForConfirmation) {
     buttonText = "Purchasing...";
   } else if (isPending && isWaitingForConfirmation) {
-    buttonText = "Waiting for 1 confirmation...";
+    buttonText = "Waiting 1 confirmation...";
   } else {
     buttonText = "Buy";
   }

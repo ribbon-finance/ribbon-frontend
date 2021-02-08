@@ -124,7 +124,7 @@ const PayoffCalculator: React.FC<Props> = ({
 
   const [lowerBreakeven, upperBreakeven] = computeBreakeven(
     straddlePrice,
-    parseFloat(inputText) || 0,
+    amount,
     callStrikePrice,
     putStrikePrice
   );
