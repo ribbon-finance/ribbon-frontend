@@ -114,29 +114,31 @@ input.ant-input {
   }
 }
 
-.ant-input {
-  font-family: "Montserrat";
-  height: 50px;
-  border-top-left-radius: 12px;
-  border-bottom-left-radius: 12px;
-
-  &::placeholder {
-    color: rgba(0, 0, 0, 0.8);
-  }
-
-  &-search-button {
+.product-description {
+  .ant-input {
+    font-family: "Montserrat";
     height: 50px;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+
+    &::placeholder {
+      color: rgba(0, 0, 0, 0.8);
+    }
+
+    &-search-button {
+      height: 50px;
+    }
   }
-}
 
-.ant-input-search
-  > .ant-input-group
-  > .ant-input-group-addon:last-child
-  .ant-input-search-button {
-  border-top-right-radius: 12px;
-  border-bottom-right-radius: 12px;
-}
+  .ant-input-search
+    > .ant-input-group
+    > .ant-input-group-addon:last-child
+    .ant-input-search-button {
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
 
-input.ant-input {
-  background: rgba(0, 0, 0, 0.04);
+  input.ant-input {
+    background: rgba(0, 0, 0, 0.04);
+  }
 }

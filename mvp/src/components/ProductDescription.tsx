@@ -58,7 +58,7 @@ const ProductDescription = () => {
   `;
 
   return (
-    <DescriptionContainer>
+    <DescriptionContainer className="product-description">
       <TitleDiv>
         <Title>Coming Soon</Title>
       </TitleDiv>
