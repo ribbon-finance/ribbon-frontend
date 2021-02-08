@@ -39,8 +39,8 @@ export const computeBreakeven = (
   const putStrikeNum = putStrikePrice.div(scaleFactor).toNumber() / 100;
   const callStrikeNum = callStrikePrice.div(scaleFactor).toNumber() / 100;
 
-  const lower = Math.max(putStrikeNum - straddle, 0);
-  const upper = callStrikeNum + straddle;
+  const lower = Math.max(putStrikeNum - straddle / amount, 0);
+  const upper = callStrikeNum + straddle / amount;
   return [lower, upper];
 };
 
