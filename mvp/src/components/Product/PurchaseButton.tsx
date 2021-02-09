@@ -9,6 +9,10 @@ const StyledButton = styled(Button)`
   border-radius: 8px;
   padding-top: 12px;
   padding-bottom: 12px;
+
+  &[disabled]:hover {
+    background-color: #f5f5f5 !important;
+  }
 `;
 
 const ButtonText = styled.span`
@@ -26,37 +30,18 @@ type Props = {
   purchaseAmount: number;
 };
 
-type EnableButtonProps = {
-  onClick: () => void;
-  purchaseAmount: number;
-};
-
-const EnableButton: React.FC<EnableButtonProps> = ({
-  onClick,
-  purchaseAmount,
-}) => {
-  if (purchaseAmount === 0) {
-    return (
-      <StyledButton size="large" type="primary" onClick={onClick} disabled>
-        <ButtonText>Preview Buy</ButtonText>
-      </StyledButton>
-    );
-  } else {
-    return (
-      <StyledButton size="large" type="primary" onClick={onClick}>
-        <ButtonText>Preview Buy</ButtonText>
-      </StyledButton>
-    );
-  }
-};
-
 const PurchaseButton: React.FC<Props> = ({ onClick, purchaseAmount }) => {
+  console.log(purchaseAmount, typeof purchaseAmount);
   return (
     <div style={{ paddingTop: "30px" }}>
-      <EnableButton
+      <StyledButton
+        size="large"
+        type="primary"
         onClick={onClick}
-        purchaseAmount={purchaseAmount}
-      ></EnableButton>
+        disabled={purchaseAmount === 0}
+      >
+        <ButtonText>Preview Buy</ButtonText>
+      </StyledButton>
     </div>
   );
 };

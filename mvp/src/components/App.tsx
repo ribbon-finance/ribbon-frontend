@@ -1,12 +1,7 @@
 import React, { StrictMode } from "react";
 import styled from "styled-components";
 import { Row, Col } from "antd";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  useRouteMatch,
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Web3ReactProvider } from "@web3-react/core";
 
 import Header from "./Header";

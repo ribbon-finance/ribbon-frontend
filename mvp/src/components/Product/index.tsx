@@ -105,8 +105,8 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
     setIsModalVisible,
   ]);
   const updatePurchaseAmount = useCallback(
-    (amount: number) => {
-      setPurchaseAmount(amount);
+    (amount: string) => {
+      setPurchaseAmount(parseFloat(amount));
     },
     [setPurchaseAmount]
   );
