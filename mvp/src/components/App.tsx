@@ -13,6 +13,7 @@ import { getLibrary } from "../utils/getLibrary";
 import { Web3ContextProvider } from "../hooks/web3Context";
 import useEagerConnect from "../hooks/useEagerConnect";
 import useInactiveListener from "../hooks/useInactiveListener";
+import Footer from "./Footer";
 
 const AppContainer = styled.div``;
 
@@ -69,6 +70,7 @@ function AppRoot() {
             <Col span={3}></Col>
           </Row>
         </MainContent>
+        <Footer></Footer>
       </AppContainer>
     </Router>
   );
