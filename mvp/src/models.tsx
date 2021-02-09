@@ -72,7 +72,7 @@ export type PositionsQuery = {
   instrumentAddress: string;
   cost: string;
   exercised: boolean;
-  amounts: string[];
+  amount: string;
   optionTypes: number[];
   venues: string[];
   strikePrices: string[];
@@ -85,7 +85,7 @@ export type InstrumentPosition = {
   expiry: number;
   exercised: boolean;
   optionTypes: number[];
-  amounts: BigNumber[];
+  amount: BigNumber;
   strikePrices: BigNumber[];
   venues: string[];
   pnl: BigNumber;

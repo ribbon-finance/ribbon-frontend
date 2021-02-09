@@ -5,6 +5,7 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { PrimaryMedium, PrimaryText } from "../../designSystem";
+import ChiToken from "../../img/chi.png";
 import {
   ModalButton,
   StatisticRow,
@@ -187,6 +188,35 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
       </StatisticRow>
 
       <StatisticRow>
+        <StyledStatistic
+          title="Gas savings"
+          hideValue={true}
+          value=""
+          suffix={
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <span>
+                <img
+                  style={{ width: 25, height: 25, marginRight: 4 }}
+                  src={ChiToken}
+                  alt="Chi Token"
+                ></img>
+              </span>
+              <span style={{ fontSize: 12 }}>
+                We are subsidizing 50% of your gas fees with Chi.
+              </span>
+            </div>
+          }
+        ></StyledStatistic>
+      </StatisticRow>
+
+      <StatisticRow style={{ marginBottom: 0 }}>
         <StyledStatistic
           title="Underlying options"
           hideValue={!loading}

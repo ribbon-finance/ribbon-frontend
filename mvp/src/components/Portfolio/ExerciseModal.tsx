@@ -20,11 +20,11 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
 }) => {
   const [isExercising, setIsExercising] = useState(false);
   const ethPriceUSD = useETHPriceInUSD();
-  const { pnl, amounts } = position;
+  const { pnl, amount } = position;
   const pnlUSD = formatProfitsInUSD(pnl, ethPriceUSD);
 
   const pnlETH = toSignificantDecimals(pnl, 8);
-  const numContracts = ethers.utils.formatEther(amounts[0]); // we assume that we only take 2 options positions
+  const numContracts = ethers.utils.formatEther(amount); // we assume that we only take 2 options positions
 
   const handleExercise = async () => {
     setIsExercising(true);

@@ -14,6 +14,7 @@ import { Web3ContextProvider } from "../hooks/web3Context";
 import useEagerConnect from "../hooks/useEagerConnect";
 import useInactiveListener from "../hooks/useInactiveListener";
 import Footer from "./Footer";
+import Disclaimer from "./Disclaimer";
 
 const AppContainer = styled.div``;
 
@@ -40,6 +41,7 @@ function AppRoot() {
   return (
     <Router>
       <AppContainer className="App">
+        <Disclaimer></Disclaimer>
         <Header />
         <MainContent>
           <Row align="middle">

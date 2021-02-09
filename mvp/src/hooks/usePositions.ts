@@ -81,7 +81,7 @@ const fetchInstrumentPositionsFromSubgraph = async (
           instrumentAddress
           cost
           exercised
-          amounts
+          amount
           optionTypes
           venues
           strikePrices
@@ -114,7 +114,7 @@ const fetchInstrumentPositionsFromSubgraph = async (
       exerciseProfit,
       exercised: pos.exercised,
       expiry,
-      amounts: pos.amounts.map((amount) => BigNumber.from(amount)),
+      amount: BigNumber.from(pos.amount),
       strikePrices: pos.strikePrices.map((price) => BigNumber.from(price)),
       optionTypes: pos.optionTypes,
       venues: pos.venues,
