@@ -16,7 +16,6 @@ const EmailCaptureForm: React.FC<{ theme: "light" | "dark" }> = ({ theme }) => {
     <MailchimpSubscribe
       url={url}
       render={({ subscribe, status }) => {
-        console.log(status);
         let buttonMsg;
         switch (status) {
           case "error":
