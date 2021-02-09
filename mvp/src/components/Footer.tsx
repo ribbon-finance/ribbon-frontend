@@ -1,7 +1,12 @@
-import { BankOutlined, BlockOutlined } from "@ant-design/icons";
-import { Button, Col, Layout } from "antd";
+import {
+  BankOutlined,
+  BlockOutlined,
+  GithubOutlined,
+  TwitterOutlined,
+} from "@ant-design/icons";
+import { Button, Col, Layout, Row } from "antd";
 import React from "react";
-import { useRouteMatch } from "react-router-dom";
+import { Link, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { PrimaryMedium, PrimaryText, SecondaryText } from "../designSystem";
 import EmailCaptureForm from "./EmailCaptureForm";
@@ -61,7 +66,6 @@ const EmailCaptureSubtitle = styled(SecondaryText)`
   line-height: 24px;
   text-align: center;
   margin-bottom: 24px;
-
   color: rgba(255, 255, 255, 0.8);
 `;
 
@@ -70,6 +74,43 @@ const EmailCaptureIcon = styled(BlockOutlined)`
   font-size: 50px;
   color: #f9457a;
 `;
+
+const FooterLinks = styled(Row)`
+  background-color: #000000;
+  padding: 40px 15%;
+`;
+
+const NavLink = styled(Link)`
+  color: rgba(255, 255, 255, 0.9);
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  margin: 0 20px;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.6);
+  }
+`;
+
+const FooterLeft = styled(Col)`
+  display: flex;
+  align-items: center;
+`;
+
+const FooterRight = styled(Col)`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+`;
+
+const iconStyles = {
+  color: "white",
+  fontSize: 30,
+  marginLeft: 12,
+  marginRight: 12,
+};
 
 const Footer = () => {
   const matchHome = useRouteMatch({
@@ -112,6 +153,28 @@ const Footer = () => {
 
         <EmailCaptureForm theme="dark"></EmailCaptureForm>
       </EmailCaptureContainer>
+
+      <FooterLinks>
+        <FooterLeft span="12">
+          <NavLink to="/faq">FAQs</NavLink>
+          <NavLink to="/faq">Company</NavLink>
+          <NavLink to="/faq">Blog</NavLink>
+        </FooterLeft>
+        <FooterRight span="12">
+          <a href="https://twitter.com/RibbonFinance">
+            <TwitterOutlined style={iconStyles} />
+          </a>
+          <a href="https://discord.com">
+            <i style={iconStyles} className="fab fa-discord"></i>
+          </a>
+          <a href="https://discord.com">
+            <i style={iconStyles} className="fab fa-telegram-plane"></i>
+          </a>
+          <a href="https://discord.com">
+            <GithubOutlined style={iconStyles} />
+          </a>
+        </FooterRight>
+      </FooterLinks>
     </AntFooter>
   );
 };
