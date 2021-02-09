@@ -170,7 +170,7 @@ const Footer = () => {
           <a href="https://discord.com">
             <i style={iconStyles} className="fab fa-telegram-plane"></i>
           </a>
-          <a href="https://discord.com">
+          <a href="https://github.com/ribbon-finance">
             <GithubOutlined style={iconStyles} />
           </a>
         </FooterRight>
