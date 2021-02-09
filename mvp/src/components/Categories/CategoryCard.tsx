@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { Row, Col, Card } from "antd";
-import { LineChartOutlined } from "@ant-design/icons";
 import { BaseText } from "../../designSystem";
 import { CATEGORIES } from "../../constants/copy";
 import { useHistory, useRouteMatch } from "react-router-dom";
@@ -32,10 +31,6 @@ const AlignLeftCol = styled(StyledCol)`
 `;
 const AlignRightCol = styled(StyledCol)`
   justify-content: flex-end;
-`;
-const CardLineChart = styled(LineChartOutlined)`
-  font-size: 20px;
-  height: 100%;
 `;
 
 const CardText = styled(BaseText)`
@@ -93,6 +88,11 @@ const CategoryCard: React.FC<Props> = ({ categoryID }) => {
 
   const CardComponent = matchCard ? ActiveCard : InactiveCard;
 
+  const Icon = styled(categoryCopy.icon)`
+    font-size: 20px;
+    height: 100%;
+  `;
+
   return (
     <CardComponent onClick={handleClick} bodyStyle={StyledCardParams} hoverable>
       <SplitRow align="middle">
@@ -100,7 +100,7 @@ const CategoryCard: React.FC<Props> = ({ categoryID }) => {
           <CardText>{categoryCopy.cardTitle}</CardText>
         </AlignLeftCol>
         <AlignRightCol span={8}>
-          <CardLineChart />
+          <Icon></Icon>
         </AlignRightCol>
       </SplitRow>
     </CardComponent>

@@ -113,3 +113,72 @@ input.ant-input {
     border-top: none;
   }
 }
+
+.email-capture {
+  .ant-input {
+    font-family: "Montserrat";
+    height: 50px;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+
+    &-search-button {
+      height: 50px;
+    }
+  }
+
+  .ant-input-search
+    > .ant-input-group
+    > .ant-input-group-addon:last-child
+    .ant-input-search-button {
+    font-family: "Montserrat";
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    padding: 12px 30px;
+  }
+
+  &-light {
+    input.ant-input {
+      &::placeholder {
+        color: rgba(0, 0, 0, 0.8);
+      }
+
+      background: rgba(0, 0, 0, 0.04);
+    }
+  }
+
+  &-dark {
+    .ant-input-search
+      > .ant-input-group
+      > .ant-input-group-addon:last-child
+      .ant-input-search-button {
+      background-color: white;
+      color: #000000;
+
+      &:hover {
+        background-color: #484848;
+      }
+    }
+
+    input.ant-input {
+      color: white;
+
+      &:active,
+      &:focus {
+        border-color: white;
+      }
+    }
+
+    .ant-input-group-addon {
+      background-color: transparent;
+    }
+  }
+}
+
+.ant-layout {
+  &-footer {
+    padding: 24px 0;
+  }
+}

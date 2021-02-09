@@ -1,7 +1,12 @@
 import React, { StrictMode } from "react";
 import styled from "styled-components";
 import { Row, Col } from "antd";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useRouteMatch,
+} from "react-router-dom";
 import { Web3ReactProvider } from "@web3-react/core";
 
 import Header from "./Header";
@@ -13,6 +18,7 @@ import { getLibrary } from "../utils/getLibrary";
 import { Web3ContextProvider } from "../hooks/web3Context";
 import useEagerConnect from "../hooks/useEagerConnect";
 import useInactiveListener from "../hooks/useInactiveListener";
+import Footer from "./Footer";
 
 const AppContainer = styled.div``;
 
@@ -69,6 +75,7 @@ function AppRoot() {
             <Col span={3}></Col>
           </Row>
         </MainContent>
+        <Footer></Footer>
       </AppContainer>
     </Router>
   );
