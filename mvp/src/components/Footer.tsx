@@ -126,7 +126,7 @@ const Footer = () => {
   }
 
   return (
-    <AntFooter style={{ paddingBottom: 0 }}>
+    <AntFooter style={{ marginTop: matchHome ? 40 : 0, paddingBottom: 0 }}>
       <EducationalContainer>
         <Col span="12">
           <EducationalTitle>Lorem Ipsum</EducationalTitle>

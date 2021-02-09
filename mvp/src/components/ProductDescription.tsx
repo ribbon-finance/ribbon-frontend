@@ -10,7 +10,7 @@ const DescriptionContainer = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 70px;
-  margin-bottom: 200px;
+  margin-bottom: 100px;
 `;
 
 const TitleDiv = styled.div`
