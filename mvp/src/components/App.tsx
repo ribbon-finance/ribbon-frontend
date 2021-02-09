@@ -19,6 +19,7 @@ const AppContainer = styled.div``;
 
 const MainContent = styled.div`
   padding-top: 20px;
+  padding-bottom: 160px;
 `;
 
 function App() {

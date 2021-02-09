@@ -114,16 +114,12 @@ input.ant-input {
   }
 }
 
-.product-description {
+.email-capture {
   .ant-input {
     font-family: "Montserrat";
     height: 50px;
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;
-
-    &::placeholder {
-      color: rgba(0, 0, 0, 0.8);
-    }
 
     &-search-button {
       height: 50px;
@@ -134,12 +130,33 @@ input.ant-input {
     > .ant-input-group
     > .ant-input-group-addon:last-child
     .ant-input-search-button {
+    font-family: "Montserrat";
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
     border-top-right-radius: 12px;
     border-bottom-right-radius: 12px;
+    padding: 12px 30px;
   }
 
-  input.ant-input {
-    background: rgba(0, 0, 0, 0.04);
+  &-light {
+    input.ant-input {
+      &::placeholder {
+        color: rgba(0, 0, 0, 0.8);
+      }
+
+      background: rgba(0, 0, 0, 0.04);
+    }
+  }
+
+  &-dark {
+    .ant-input-search
+      > .ant-input-group
+      > .ant-input-group-addon:last-child
+      .ant-input-search-button {
+      background-color: white;
+      color: #000000;
+    }
   }
 }
 

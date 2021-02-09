@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Row, Col, Card } from "antd";
 import { BaseText } from "../../designSystem";

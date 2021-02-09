@@ -1,9 +1,10 @@
-import { BankOutlined } from "@ant-design/icons";
+import { BankOutlined, BlockOutlined } from "@ant-design/icons";
 import { Button, Col, Layout } from "antd";
 import React from "react";
 import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import { PrimaryMedium, PrimaryText } from "../designSystem";
+import { PrimaryMedium, PrimaryText, SecondaryText } from "../designSystem";
+import EmailCaptureForm from "./EmailCaptureForm";
 
 const { Footer: AntFooter } = Layout;
 
@@ -35,8 +36,39 @@ const LearnMoreButton = styled(Button)`
 
 const EmailCaptureContainer = styled.div`
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 100%;
+  padding: 64px 0;
   background-color: #000000;
+`;
+
+const EmailCaptureTitle = styled(SecondaryText)`
+  margin-bottom: 16px;
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 28px;
+`;
+
+const EmailCaptureSubtitle = styled(SecondaryText)`
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  margin-bottom: 24px;
+
+  color: rgba(255, 255, 255, 0.8);
+`;
+
+const EmailCaptureIcon = styled(BlockOutlined)`
+  margin-bottom: 24px;
+  font-size: 50px;
+  color: #f9457a;
 `;
 
 const Footer = () => {
@@ -53,7 +85,7 @@ const Footer = () => {
   }
 
   return (
-    <AntFooter>
+    <AntFooter style={{ paddingBottom: 0 }}>
       <EducationalContainer>
         <Col span="12">
           <EducationalTitle>Lorem Ipsum</EducationalTitle>
@@ -70,7 +102,16 @@ const Footer = () => {
         </Col>
       </EducationalContainer>
 
-      <EmailCaptureContainer>Lorem Ipsum dolor</EmailCaptureContainer>
+      <EmailCaptureContainer>
+        <EmailCaptureIcon></EmailCaptureIcon>
+
+        <EmailCaptureTitle>Lorem Ipsum dolor</EmailCaptureTitle>
+        <EmailCaptureSubtitle>
+          Lorem ipsum dolor sit amet consectetur adipiscing elit, sed do
+        </EmailCaptureSubtitle>
+
+        <EmailCaptureForm theme="dark"></EmailCaptureForm>
+      </EmailCaptureContainer>
     </AntFooter>
   );
 };

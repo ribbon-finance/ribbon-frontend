@@ -1,10 +1,9 @@
-import { Input } from "antd";
+import React from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { CATEGORIES } from "../constants/copy";
 import { PrimaryMedium, PrimaryText } from "../designSystem";
-
-const { Search } = Input;
+import EmailCaptureForm from "./EmailCaptureForm";
 
 const DescriptionContainer = styled.div`
   display: flex;
@@ -42,11 +41,6 @@ const IconContainer = styled.div`
 
 const FormContainer = styled.div``;
 
-const EmailForm = styled(Search)`
-  width: 440px;
-  height: 64px;
-`;
-
 const ProductDescription = () => {
   const { categoryID } = useParams<{ categoryID: string }>();
   const category = CATEGORIES[categoryID];
@@ -67,12 +61,7 @@ const ProductDescription = () => {
         <Icon></Icon>
       </IconContainer>
       <FormContainer>
-        <EmailForm
-          type="email"
-          placeholder="Enter your email"
-          onSearch={() => {}}
-          enterButton="Submit"
-        />
+        <EmailCaptureForm theme="light"></EmailCaptureForm>
       </FormContainer>
     </DescriptionContainer>
   );
