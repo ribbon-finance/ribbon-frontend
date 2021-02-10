@@ -44,12 +44,12 @@ function AppRoot() {
         <Disclaimer></Disclaimer>
         <Header />
         <MainContent>
-          <Row align="middle">
+          <Row justify="center" align="middle">
             <Col
-              md={{ span: 18, offset: 3 }}
-              lg={{ span: 18, offset: 3 }}
-              xl={{ span: 18, offset: 3 }}
-              xxl={{ span: 12, offset: 6 }}
+              md={{ span: 18 }}
+              lg={{ span: 18 }}
+              xl={{ span: 18 }}
+              xxl={{ span: 14 }}
             >
               <Switch>
                 <Route path="/" exact>
@@ -69,7 +69,6 @@ function AppRoot() {
                 </Route>
               </Switch>
             </Col>
-            <Col span={3}></Col>
           </Row>
         </MainContent>
         <Footer></Footer>
