@@ -60,7 +60,7 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
   const { totalPremium, callStrikePrice, putStrikePrice } = useStraddleTrade(
     straddle.address,
     ethPrice,
-    ethers.utils.parseEther("1")
+    ethers.utils.parseEther("0.1")
   );
   const [straddleUSD] = computeStraddleValue(totalPremium, ethPrice);
 
@@ -83,7 +83,7 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
       </Row>
 
       <CardDescriptionContainer>
-        <DescriptionTitle>Eth Price</DescriptionTitle>
+        <DescriptionTitle>EXPECTED FUTURE ETH PRICE</DescriptionTitle>
         <PayoffCalculator
           ethPrice={ethPrice}
           callStrikePrice={callStrikePrice}

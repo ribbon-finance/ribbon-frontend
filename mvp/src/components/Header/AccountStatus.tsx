@@ -5,6 +5,7 @@ import { useWeb3React } from "@web3-react/core";
 import { SecondaryText } from "../../designSystem";
 import AccountIcon from "./AccountIcon";
 import { injectedConnector } from "../../utils/connectors";
+import { addConnectEvent } from "../../utils/google";
 
 const AccountPill = styled.div`
   display: flex;
@@ -67,6 +68,7 @@ const AccountStatus: React.FC<Props> = () => {
 
   useEffect(() => {
     if (library && account) {
+      addConnectEvent("header", account);
       fetchAndSetBalance();
     }
   }, [library, account, fetchAndSetBalance]);

@@ -14,6 +14,8 @@ import {
 import protocolIcons from "../../img/protocolIcons";
 import { injectedConnector } from "../../utils/connectors";
 import { venueKeyToName } from "../../utils/positions";
+import { addConnectEvent } from "../../utils/google";
+import { toSignificantDecimals } from "../../utils/math";
 
 const ProtocolIcon = styled.img`
   width: 50px;
@@ -46,7 +48,6 @@ const UnderlyingTitle = styled(PrimaryMedium)`
   font-weight: 600;
   font-size: 16px;
   line-height: 24px;
-  margin-bottom: 4px;
 `;
 
 const UnderlyingStrike = styled(PrimaryText)`
@@ -54,6 +55,7 @@ const UnderlyingStrike = styled(PrimaryText)`
   line-height: 12px;
   font-weight: 500;
   color: rgba(0, 0, 0, 0.48);
+  margin-top: 4px;
 `;
 
 const FlexDiv = styled.div`
@@ -85,6 +87,8 @@ type PurchaseModalProps = {
   putStrikePrice: BigNumber;
   callVenue: string;
   putVenue: string;
+  callPremium: BigNumber;
+  putPremium: BigNumber;
 };
 
 const PurchaseModal: React.FC<PurchaseModalProps> = ({
@@ -98,13 +102,15 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
   putStrikePrice,
   callVenue,
   putVenue,
+  callPremium,
+  putPremium,
   expiry,
 }) => {
   const [isPending, setPending] = useState(false);
   const [isWaitingForConfirmation, setIsWaitingForConfirmation] = useState(
     false
   );
-  const { active, activate } = useWeb3React();
+  const { active, activate, account } = useWeb3React();
 
   const handleOk = async () => {
     if (!active) {
@@ -130,6 +136,12 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
   }
 
   useEffect(() => {
+    if (account) {
+      addConnectEvent("purchaseModal", account);
+    }
+  }, [account]);
+
+  useEffect(() => {
     if (!isVisible) {
       setPending(false);
       setIsWaitingForConfirmation(false);
@@ -152,7 +164,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
       visible={isVisible}
       onOk={handleOk}
       onCancel={onClose}
-      width={380}
+      width={420.69}
       title="ETH Strangle"
       closable={true}
       bodyStyle={{ paddingBottom: 0 }}
@@ -177,7 +189,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
       <StatisticRow>
         <StyledStatistic
           title="No. of contracts"
-          value={`${purchaseAmount} contracts`}
+          value={`${purchaseAmount} contract${purchaseAmount === 1 ? "" : "s"}`}
         ></StyledStatistic>
       </StatisticRow>
       <StatisticRow>
@@ -203,13 +215,14 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
             >
               <span>
                 <img
-                  style={{ width: 25, height: 25, marginRight: 4 }}
+                  style={{ width: 25, height: 25, marginRight: 8 }}
                   src={ChiToken}
                   alt="Chi Token"
                 ></img>
               </span>
-              <span style={{ fontSize: 12 }}>
-                We are subsidizing 50% of your gas fees with Chi.
+              <span style={{ fontSize: 12, lineHeight: 1.3 }}>
+                We are subsidizing your gas fees with Chi token. The gas fee
+                that appears in your Metamask prompt will be refunded up to 50%.
               </span>
             </div>
           }
@@ -238,6 +251,9 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
                     <UnderlyingStrike>
                       ${toUSD(callStrikePrice)} Call
                     </UnderlyingStrike>
+                    <UnderlyingStrike>
+                      Cost: {toSignificantDecimals(callPremium, 4)} ETH
+                    </UnderlyingStrike>
                   </UnderlyingTermsContainer>
                 </UnderlyingContainer>
 
@@ -256,6 +272,9 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
                     </UnderlyingTitle>
                     <UnderlyingStrike>
                       ${toUSD(putStrikePrice)} Put
+                    </UnderlyingStrike>
+                    <UnderlyingStrike>
+                      Cost: {toSignificantDecimals(putPremium, 4)} ETH
                     </UnderlyingStrike>
                   </UnderlyingTermsContainer>
                 </UnderlyingContainer>

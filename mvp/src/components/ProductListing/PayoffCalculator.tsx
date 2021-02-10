@@ -114,7 +114,7 @@ const PayoffCalculator: React.FC<Props> = ({
       </Description>
       <DescriptionTitle>Estimated Profit</DescriptionTitle>
       {formatProfit(dollarProfit, percentProfit, profitPositive)}
-      <DescriptionTitle>Cost</DescriptionTitle>
+      <DescriptionTitle>Cost for 0.1 contracts</DescriptionTitle>
       <DescriptionDataPrimary>
         {straddlePrice === "0.00" ? "Loading cost..." : `$${straddlePrice}`}
       </DescriptionDataPrimary>

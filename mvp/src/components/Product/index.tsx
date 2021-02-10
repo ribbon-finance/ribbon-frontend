@@ -11,7 +11,7 @@ import PurchaseButton from "./PurchaseButton";
 import { useDefaultProduct, useInstrument } from "../../hooks/useProducts";
 import { useStraddleTrade } from "../../hooks/useStraddleTrade";
 import { ethers } from "ethers";
-import { Link, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { useWeb3React } from "@web3-react/core";
 import { IAggregatedOptionsInstrumentFactory } from "../../codegen/IAggregatedOptionsInstrumentFactory";
 import useGasPrice from "../../hooks/useGasPrice";
@@ -79,10 +79,13 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
   const product = useDefaultProduct();
   const purchaseAmountWei = ethers.utils.parseEther(purchaseAmount.toString());
   const straddle = useInstrument(instrumentSymbol);
+  const history = useHistory();
 
   const {
     loading: loadingTrade,
     totalPremium,
+    callPremium,
+    putPremium,
     callVenue,
     putVenue,
     callStrikePrice,
@@ -138,6 +141,8 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
           await receipt.wait(1);
 
           setIsModalVisible(false);
+
+          history.push("/portfolio");
         } catch (e) {
           setIsModalVisible(false);
         }
@@ -178,6 +183,8 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
         putStrikePrice={putStrikePrice}
         callVenue={callVenue}
         putVenue={putVenue}
+        callPremium={callPremium}
+        putPremium={putPremium}
       ></PurchaseModal>
 
       <Link to="/">
@@ -206,6 +213,9 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
               onChange={updatePurchaseAmount}
             ></AmountInput>
 
+            <DescriptionTitle style={{ marginTop: 10 }}>
+              You can buy less than 1 contract.
+            </DescriptionTitle>
             <PurchaseButton
               onClick={() => setIsModalVisible(true)}
               purchaseAmount={purchaseAmount}

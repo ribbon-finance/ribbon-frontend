@@ -51,7 +51,7 @@ const Header = () => {
 
   return (
     <HeaderContainer>
-      <Row align="middle">
+      <Row justify="space-between" align="middle">
         <Col span={6}>
           <Content>
             <Logo></Logo>
@@ -59,12 +59,11 @@ const Header = () => {
         </Col>
         <Col span={5} offset={3}>
           <Navigation>
-            <NavLink link="/" text="About" />
             <NavLink link="/" text="FAQ" />
             <NavLink link="/" text="Blog" />
           </Navigation>
         </Col>
-        <Col span={8} offset={2}>
+        <Col span={8} offset={1}>
           <Content>
             {positionsNav}
             <AccountStatus></AccountStatus>
