@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { injectedConnector } from "../utils/connectors";
 
 const useEagerConnect = () => {
-  const { activate, active } = useWeb3React();
+  const { activate, active, account } = useWeb3React();
 
   const [tried, setTried] = useState(false);
 
