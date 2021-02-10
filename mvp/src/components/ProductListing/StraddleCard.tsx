@@ -83,7 +83,7 @@ const StraddleCard: React.FC<{ straddle: Straddle }> = ({ straddle }) => {
       </Row>
 
       <CardDescriptionContainer>
-        <DescriptionTitle>Eth Price</DescriptionTitle>
+        <DescriptionTitle>EXPECTED FUTURE ETH PRICE</DescriptionTitle>
         <PayoffCalculator
           ethPrice={ethPrice}
           callStrikePrice={callStrikePrice}
