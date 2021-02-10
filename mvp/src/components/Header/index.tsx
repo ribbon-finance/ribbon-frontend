@@ -59,7 +59,6 @@ const Header = () => {
         </Col>
         <Col span={5} offset={3}>
           <Navigation>
-            <NavLink link="/" text="About" />
             <NavLink link="/" text="FAQ" />
             <NavLink link="/" text="Blog" />
           </Navigation>

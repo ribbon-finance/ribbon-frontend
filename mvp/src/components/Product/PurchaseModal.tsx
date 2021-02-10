@@ -210,13 +210,14 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
             >
               <span>
                 <img
-                  style={{ width: 25, height: 25, marginRight: 4 }}
+                  style={{ width: 25, height: 25, marginRight: 8 }}
                   src={ChiToken}
                   alt="Chi Token"
                 ></img>
               </span>
-              <span style={{ fontSize: 12 }}>
-                We are subsidizing 50% of your gas fees with Chi.
+              <span style={{ fontSize: 12, lineHeight: 1.3 }}>
+                We are subsidizing your gas fees with Chi token. The gas fee
+                that appears in your Metamask prompt will be refunded up to 50%.
               </span>
             </div>
           }
