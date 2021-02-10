@@ -7,6 +7,11 @@ export const useProducts = (): Product[] => {
 
   const instruments = instrumentAddresses.mainnet
     .filter((details) => parseInt(details.expiry) > nowTimestamp)
+    .sort((detailA, detailB) => {
+      if (detailA.expiry > detailB.expiry) return 1;
+      if (detailA.expiry < detailB.expiry) return -1;
+      return 0;
+    })
     .map((instrumentDetails) => {
       const {
         address,
