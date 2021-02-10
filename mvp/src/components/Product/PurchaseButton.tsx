@@ -9,10 +9,6 @@ const StyledButton = styled(Button)`
   border-radius: 8px;
   padding-top: 12px;
   padding-bottom: 12px;
-
-  &[disabled]:hover {
-    background-color: #f5f5f5 !important;
-  }
 `;
 
 const ButtonText = styled.span`
