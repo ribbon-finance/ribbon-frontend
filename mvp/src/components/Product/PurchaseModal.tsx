@@ -15,6 +15,7 @@ import protocolIcons from "../../img/protocolIcons";
 import { injectedConnector } from "../../utils/connectors";
 import { venueKeyToName } from "../../utils/positions";
 import { addConnectEvent } from "../../utils/google";
+import { toSignificantDecimals } from "../../utils/math";
 
 const ProtocolIcon = styled.img`
   width: 50px;
@@ -47,7 +48,6 @@ const UnderlyingTitle = styled(PrimaryMedium)`
   font-weight: 600;
   font-size: 16px;
   line-height: 24px;
-  margin-bottom: 4px;
 `;
 
 const UnderlyingStrike = styled(PrimaryText)`
@@ -55,6 +55,7 @@ const UnderlyingStrike = styled(PrimaryText)`
   line-height: 12px;
   font-weight: 500;
   color: rgba(0, 0, 0, 0.48);
+  margin-top: 4px;
 `;
 
 const FlexDiv = styled.div`
@@ -86,6 +87,8 @@ type PurchaseModalProps = {
   putStrikePrice: BigNumber;
   callVenue: string;
   putVenue: string;
+  callPremium: BigNumber;
+  putPremium: BigNumber;
 };
 
 const PurchaseModal: React.FC<PurchaseModalProps> = ({
@@ -99,6 +102,8 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
   putStrikePrice,
   callVenue,
   putVenue,
+  callPremium,
+  putPremium,
   expiry,
 }) => {
   const [isPending, setPending] = useState(false);
@@ -159,7 +164,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
       visible={isVisible}
       onOk={handleOk}
       onCancel={onClose}
-      width={380}
+      width={420.69}
       title="ETH Strangle"
       closable={true}
       bodyStyle={{ paddingBottom: 0 }}
@@ -184,7 +189,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
       <StatisticRow>
         <StyledStatistic
           title="No. of contracts"
-          value={`${purchaseAmount} contracts`}
+          value={`${purchaseAmount} contract${purchaseAmount === 1 ? "" : "s"}`}
         ></StyledStatistic>
       </StatisticRow>
       <StatisticRow>
@@ -246,6 +251,9 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
                     <UnderlyingStrike>
                       ${toUSD(callStrikePrice)} Call
                     </UnderlyingStrike>
+                    <UnderlyingStrike>
+                      Cost: {toSignificantDecimals(callPremium, 4)} ETH
+                    </UnderlyingStrike>
                   </UnderlyingTermsContainer>
                 </UnderlyingContainer>
 
@@ -264,6 +272,9 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
                     </UnderlyingTitle>
                     <UnderlyingStrike>
                       ${toUSD(putStrikePrice)} Put
+                    </UnderlyingStrike>
+                    <UnderlyingStrike>
+                      Cost: {toSignificantDecimals(putPremium, 4)} ETH
                     </UnderlyingStrike>
                   </UnderlyingTermsContainer>
                 </UnderlyingContainer>

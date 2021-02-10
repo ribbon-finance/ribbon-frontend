@@ -83,6 +83,8 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
   const {
     loading: loadingTrade,
     totalPremium,
+    callPremium,
+    putPremium,
     callVenue,
     putVenue,
     callStrikePrice,
@@ -177,6 +179,8 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
         putStrikePrice={putStrikePrice}
         callVenue={callVenue}
         putVenue={putVenue}
+        callPremium={callPremium}
+        putPremium={putPremium}
       ></PurchaseModal>
 
       <Link to="/">
