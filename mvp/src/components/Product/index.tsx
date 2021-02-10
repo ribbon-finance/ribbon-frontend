@@ -159,6 +159,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
       totalPremium,
       optionTypes,
       strikePrices,
+      history,
     ]
   );
 
