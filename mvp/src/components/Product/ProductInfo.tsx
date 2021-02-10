@@ -94,7 +94,7 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
 
   let costStr;
   if (loadingTrade && amount > 0) {
-    costStr = "Computing cost...";
+    costStr = "Computing cost... Reload the page if this takes too long.";
   } else if (loadingTrade) {
     costStr = "$0.00 (0.00 ETH)";
   } else if (loadTradeError) {
