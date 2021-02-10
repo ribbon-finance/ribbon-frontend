@@ -14,6 +14,7 @@ import {
 import protocolIcons from "../../img/protocolIcons";
 import { injectedConnector } from "../../utils/connectors";
 import { venueKeyToName } from "../../utils/positions";
+import { addConnectEvent } from "../../utils/google";
 
 const ProtocolIcon = styled.img`
   width: 50px;
@@ -104,7 +105,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
   const [isWaitingForConfirmation, setIsWaitingForConfirmation] = useState(
     false
   );
-  const { active, activate } = useWeb3React();
+  const { active, activate, account } = useWeb3React();
 
   const handleOk = async () => {
     if (!active) {
@@ -128,6 +129,12 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
   } else {
     buttonText = "Buy";
   }
+
+  useEffect(() => {
+    if (account) {
+      addConnectEvent("purchaseModal", account);
+    }
+  }, [account]);
 
   useEffect(() => {
     if (!isVisible) {
