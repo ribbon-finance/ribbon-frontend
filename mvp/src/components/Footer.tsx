@@ -80,7 +80,7 @@ const FooterLinks = styled(Row)`
   padding: 40px 15%;
 `;
 
-const NavLink = styled(Link)`
+const NavAnchor = styled.a`
   color: rgba(255, 255, 255, 0.9);
   font-family: Montserrat;
   font-style: normal;
@@ -156,19 +156,16 @@ const Footer = () => {
 
       <FooterLinks>
         <FooterLeft span="12">
-          <NavLink to="/faq">FAQs</NavLink>
-          <NavLink to="/faq">Company</NavLink>
-          <NavLink to="/faq">Blog</NavLink>
+          <NavAnchor href="/faq">FAQs</NavAnchor>
+          <NavAnchor href="/company">Company</NavAnchor>
+          <NavAnchor href="https://medium.com/@ribbonfinance">Blog</NavAnchor>
         </FooterLeft>
         <FooterRight span="12">
           <a href="https://twitter.com/RibbonFinance">
             <TwitterOutlined style={iconStyles} />
           </a>
-          <a href="https://discord.com">
+          <a href="https://discord.gg/85gcVafPyN">
             <i style={iconStyles} className="fab fa-discord"></i>
-          </a>
-          <a href="https://discord.com">
-            <i style={iconStyles} className="fab fa-telegram-plane"></i>
           </a>
           <a href="https://github.com/ribbon-finance">
             <GithubOutlined style={iconStyles} />
