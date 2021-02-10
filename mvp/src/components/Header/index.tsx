@@ -51,7 +51,7 @@ const Header = () => {
 
   return (
     <HeaderContainer>
-      <Row align="middle">
+      <Row justify="space-between" align="middle">
         <Col span={6}>
           <Content>
             <Logo></Logo>
@@ -64,7 +64,7 @@ const Header = () => {
             <NavLink link="/" text="Blog" />
           </Navigation>
         </Col>
-        <Col span={8} offset={2}>
+        <Col span={8} offset={1}>
           <Content>
             {positionsNav}
             <AccountStatus></AccountStatus>
