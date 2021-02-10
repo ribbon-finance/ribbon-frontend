@@ -15,6 +15,7 @@ import useEagerConnect from "../hooks/useEagerConnect";
 import useInactiveListener from "../hooks/useInactiveListener";
 import Footer from "./Footer";
 import Disclaimer from "./Disclaimer";
+import { ETHPriceProvider } from "../hooks/useEthPrice";
 
 const AppContainer = styled.div``;
 
@@ -27,7 +28,9 @@ function App() {
     <Web3ContextProvider>
       <Web3ReactProvider getLibrary={getLibrary}>
         <StrictMode>
-          <AppRoot></AppRoot>
+          <ETHPriceProvider>
+            <AppRoot></AppRoot>
+          </ETHPriceProvider>
         </StrictMode>
       </Web3ReactProvider>
     </Web3ContextProvider>

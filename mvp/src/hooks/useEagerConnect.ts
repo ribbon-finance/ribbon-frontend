@@ -24,7 +24,7 @@ const useEagerConnect = () => {
     if (!tried && active) {
       setTried(true);
     }
-  }, [tried, active, activate]);
+  }, [tried, active, activate, account]);
 
   return tried;
 };
