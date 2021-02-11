@@ -19,7 +19,7 @@ const TitleDiv = styled.div`
 `;
 
 const Title = styled(PrimaryMedium)`
-  font-size: 22px;
+  font-size: 16px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   font-style: normal;

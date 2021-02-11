@@ -4,7 +4,7 @@ import { Col } from "antd";
 
 const BannerContainer = styled.div`
   padding-top: 80px;
-  padding-bottom: 80px;
+  padding-bottom: 60px;
   text-align: center;
 `;
 

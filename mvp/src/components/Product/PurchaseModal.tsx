@@ -45,7 +45,7 @@ const UnderlyingTermsContainer = styled.div`
 `;
 
 const UnderlyingTitle = styled(PrimaryMedium)`
-  font-weight: 600;
+  font-weight: 500;
   font-size: 16px;
   line-height: 24px;
 `;

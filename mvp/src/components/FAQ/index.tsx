@@ -12,7 +12,7 @@ const H2 = styled(PrimaryMedium)`
 
 const QuestionText = styled.p`
   margin-bottom: 0.5em;
-  font-weight: 600;
+  font-weight: 500;
 `;
 
 const AnswerText = styled.p`

@@ -33,7 +33,7 @@ const CurrencyIcon = styled.img`
 
 const ProductTitle = styled(BaseText)`
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
 `;
 
 const ProductSubtitle = styled(BaseText)`
