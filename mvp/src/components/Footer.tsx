@@ -1,43 +1,13 @@
-import {
-  BankOutlined,
-  BlockOutlined,
-  GithubOutlined,
-  TwitterOutlined,
-} from "@ant-design/icons";
-import { Button, Col, Layout, Row } from "antd";
+import { GithubOutlined, TwitterOutlined } from "@ant-design/icons";
+import { Col, Layout, Row } from "antd";
 import React from "react";
 import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import { PrimaryMedium, PrimaryText, SecondaryText } from "../designSystem";
+import { SecondaryText } from "../designSystem";
 import EmailCaptureForm from "./EmailCaptureForm";
+import RibbonLogo from "../img/RibbonLogo.svg";
 
 const { Footer: AntFooter } = Layout;
-
-const EducationalContainer = styled.div`
-  display: flex;
-  width: 100%;
-  padding: 100px 25%;
-  background-color: rgba(0, 0, 0, 0.01);
-`;
-
-const EducationalTitle = styled(PrimaryMedium)`
-  font-size: 32px;
-  line-height: 40px;
-`;
-
-const EducationSubtitle = styled(PrimaryText)`
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 24px;
-`;
-
-const LearnMoreButton = styled(Button)`
-  font-family: "Montserrat";
-  width: 160px;
-  height: 48px;
-  border-radius: 8px;
-`;
 
 const EmailCaptureContainer = styled.div`
   display: flex;
@@ -69,9 +39,10 @@ const EmailCaptureSubtitle = styled(SecondaryText)`
   color: rgba(255, 255, 255, 0.8);
 `;
 
-const EmailCaptureIcon = styled(BlockOutlined)`
+const EmailCaptureIcon = styled.img`
+  height: 60px;
+  width: 60px;
   margin-bottom: 24px;
-  font-size: 50px;
   color: #f9457a;
 `;
 
@@ -113,14 +84,6 @@ const iconStyles = {
 };
 
 const Footer = () => {
-  const matchHome = useRouteMatch({
-    path: "/",
-    exact: true,
-  });
-  const matchProduct = useRouteMatch({
-    path: "/product",
-  });
-
   return (
     <AntFooter
       style={{
@@ -130,11 +93,14 @@ const Footer = () => {
       }}
     >
       <EmailCaptureContainer>
-        <EmailCaptureIcon></EmailCaptureIcon>
+        <EmailCaptureIcon
+          src={RibbonLogo}
+          alt="Ribbon Finance"
+        ></EmailCaptureIcon>
 
-        <EmailCaptureTitle>Lorem Ipsum dolor</EmailCaptureTitle>
+        <EmailCaptureTitle>Stay up to date with Ribbon</EmailCaptureTitle>
         <EmailCaptureSubtitle>
-          Lorem ipsum dolor sit amet consectetur adipiscing elit, sed do
+          Subscribe to updates with your email address
         </EmailCaptureSubtitle>
 
         <EmailCaptureForm theme="dark"></EmailCaptureForm>
