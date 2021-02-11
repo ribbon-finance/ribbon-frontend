@@ -136,7 +136,7 @@ const Footer = () => {
             </EducationSubtitle>
           </div>
 
-          <LearnMoreButton type="primary">Learn More</LearnMoreButton>
+          {/* <LearnMoreButton type="primary">Learn More</LearnMoreButton> */}
         </Col>
         <Col span="12">
           <BankOutlined style={{ fontSize: 100 }}></BankOutlined>
