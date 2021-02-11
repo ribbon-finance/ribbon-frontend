@@ -33,15 +33,14 @@ export const CATEGORIES: Record<string, CategoryCopy> = {
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras consequat vestibulum lacus, id vulputate dolor venenatis vel. Donec sit amet libero tempus, ultricies ante quis, pharetra nisi. Nulla sed pharetra tortor. Nunc pulvinar erat ultrices nisl porttitor tristique ut consectetur urna. Ut maximus, dui non finibus bibendum, magna diam pellentesque neque, quis tincidunt leo tortor ut purus. Duis sed rutrum dolor. Nullam in justo at lacus dignissim varius a vitae felis. Nunc malesuada dapibus diam vitae viverra. Donec rutrum velit nec aliquet euismod. Quisque pulvinar, tortor sed elementum faucibus, orci ligula convallis orci, eget placerat mi libero sollicitudin lorem.",
   },
   "principal-protection": {
-    cardColor: "#B1C9B6",
-    cardTextColor: "inherit",
+    cardColor: "#5DD776",
     cardTitle: "Principal Protection",
     icon: BankOutlined,
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras consequat vestibulum lacus, id vulputate dolor venenatis vel. Donec sit amet libero tempus, ultricies ante quis, pharetra nisi. Nulla sed pharetra tortor. Nunc pulvinar erat ultrices nisl porttitor tristique ut consectetur urna. Ut maximus, dui non finibus bibendum, magna diam pellentesque neque, quis tincidunt leo tortor ut purus. Duis sed rutrum dolor. Nullam in justo at lacus dignissim varius a vitae felis. Nunc malesuada dapibus diam vitae viverra. Donec rutrum velit nec aliquet euismod. Quisque pulvinar, tortor sed elementum faucibus, orci ligula convallis orci, eget placerat mi libero sollicitudin lorem.",
   },
   accumulation: {
-    cardColor: "#5AB1DA",
+    cardColor: "#44ADDE",
     cardTitle: "Accumulation",
     icon: BlockOutlined,
     description:

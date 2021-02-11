@@ -7,13 +7,6 @@ const BannerContainer = styled.div`
   text-align: center;
 `;
 
-const PreTitle = styled.p`
-  color: #858585;
-  font-family: "IBM Plex Mono", monospace;
-  padding-top: 20px;
-  font-size: 12px;
-`;
-
 const Title = styled.p`
   font-weight: bold;
   font-size: 70px;
@@ -56,7 +49,6 @@ const ArrowDown = () => {
 const Banner = () => {
   return (
     <BannerContainer>
-      <PreTitle>WELCOME TO RIBBON FINANCE</PreTitle>
       <Title>Invest Like A Pro.</Title>
       <Col span={18} offset={3}>
         <Subtitle>

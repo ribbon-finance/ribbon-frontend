@@ -20,6 +20,16 @@ const Title = styled.div`
   letter-spacing: 0px;
   text-align: left;
   padding-left: 10px;
+
+  @media (max-width: 1100px) {
+    font-size: 16px;
+  }
+  @media (max-width: 990px) {
+    font-size: 13px;
+  }
+  @media (max-width: 880px) {
+    font-size: 11px;
+  }
 `;
 
 const DescriptionTitle = styled.p`

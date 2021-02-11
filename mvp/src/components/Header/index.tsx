@@ -18,7 +18,7 @@ const Content = styled.div`
 
 const Navigation = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
 `;
 
 type NavLinkProps = {
@@ -26,11 +26,9 @@ type NavLinkProps = {
   text: string;
 };
 
-const NavLink = ({ link, text }: NavLinkProps) => (
-  <Link to={link}>
-    <PrimaryMedium>{text}</PrimaryMedium>
-  </Link>
-);
+const LinkText = styled(PrimaryMedium)`
+  font-weight: 500;
+`;
 
 const Header = () => {
   const { loading: loadingPositions, numOfActivePositions } = usePositions();
@@ -38,12 +36,11 @@ const Header = () => {
   let positionsNav;
   if (active) {
     positionsNav = (
-      <NavLink
-        link="/portfolio"
-        text={`Positions${
+      <Link to="/portfolio">
+        <LinkText>{`Positions${
           loadingPositions ? "" : ` (${numOfActivePositions})`
-        }`}
-      />
+        }`}</LinkText>
+      </Link>
     );
   } else {
     positionsNav = null;
@@ -59,8 +56,15 @@ const Header = () => {
         </Col>
         <Col span={5} offset={3}>
           <Navigation>
-            <NavLink link="/" text="FAQ" />
-            <NavLink link="/" text="Blog" />
+            <Link to="/faq" style={{ marginLeft: 30, marginRight: 30 }}>
+              <LinkText>FAQ</LinkText>
+            </Link>
+            <a
+              style={{ marginLeft: 30, marginRight: 30 }}
+              href="https://medium.com/@ribbonfinance"
+            >
+              <LinkText>Blog</LinkText>
+            </a>
           </Navigation>
         </Col>
         <Col span={8} offset={1}>

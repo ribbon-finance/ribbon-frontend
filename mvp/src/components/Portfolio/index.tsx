@@ -21,6 +21,10 @@ const ConnectToWalletText = styled(PrimaryMedium)`
   font-size: 20px;
 `;
 
+const TableTitle = styled(Title)`
+  font-weight: 500;
+`;
+
 const Portfolio = () => {
   const { active } = useWeb3React();
 
@@ -53,7 +57,7 @@ const Portfolio = () => {
       ) : (
         <>
           <ProductTitleContainer>
-            <Title>Active Positions</Title>
+            <TableTitle>Active Positions</TableTitle>
           </ProductTitleContainer>
           <PositionsTable
             loading={loadingPositions}
@@ -61,7 +65,7 @@ const Portfolio = () => {
             isPastPositions={false}
           />
           <ProductTitleContainer>
-            <Title>Past Positions</Title>
+            <TableTitle>Past Positions</TableTitle>
           </ProductTitleContainer>
           <PositionsTable
             loading={loadingPositions}

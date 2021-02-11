@@ -31,11 +31,8 @@ const Description = styled(PrimaryText)`
   font-weight: normal;
   font-size: 16px;
   line-height: 24px;
-`;
-
-const IconContainer = styled.div`
   text-align: center;
-  margin-top: 64px;
+  width: 560px;
   margin-bottom: 64px;
 `;
 
@@ -45,11 +42,6 @@ const ProductDescription = () => {
   const { categoryID } = useParams<{ categoryID: string }>();
   const category = CATEGORIES[categoryID];
   const copy = category.description;
-  const color = category.cardColor;
-  const Icon = styled(category.icon)`
-    font-size: 60px;
-    color: ${color};
-  `;
 
   return (
     <DescriptionContainer className="product-description">
@@ -57,9 +49,6 @@ const ProductDescription = () => {
         <Title>Coming Soon</Title>
       </TitleDiv>
       <Description>{copy}</Description>
-      <IconContainer>
-        <Icon></Icon>
-      </IconContainer>
       <FormContainer>
         <EmailCaptureForm theme="light"></EmailCaptureForm>
       </FormContainer>

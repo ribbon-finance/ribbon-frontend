@@ -25,7 +25,7 @@ function AmountInput(props: any) {
   return (
     <InputDiv>
       <InputNumberStyled
-        placeholder="0.0"
+        placeholder="0.1"
         type="number"
         min="0"
         step="0.1"

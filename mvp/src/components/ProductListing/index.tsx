@@ -41,6 +41,28 @@ const ProductSubtitle = styled(BaseText)`
   color: #5c5c5c;
 `;
 
+const CardRow = styled(Row)`
+  display: flex;
+  justify-content: space-between;
+  align-items: top;
+
+  @media (min-width: 1800px) {
+    justify-content: center;
+  }
+`;
+
+const CardCol = styled(Col)`
+  @media (min-width: 1600px) and (max-width: 1800px) {
+    display: block;
+    flex: 0 0 30%;
+    max-width: 30%;
+  }
+  @media (min-width: 1800px) {
+    margin-left: 40px;
+    margin-right: 40px;
+  }
+`;
+
 const { ETH: ETHIcon } = images;
 
 const ProductDescription: React.FC<{ productName: string }> = ({
@@ -72,6 +94,8 @@ const ProductListing: React.FC = () => {
     }, 300);
   }, []);
 
+  const normalCardSpan = 21 / Math.floor(product.instruments.length);
+
   return (
     <ProductContainer>
       <ProductTitleContainer>
@@ -90,17 +114,19 @@ const ProductListing: React.FC = () => {
       {loading ? (
         <Skeleton></Skeleton>
       ) : (
-        <Row justify="space-between" align="top">
+        <CardRow>
           {product.instruments.map((instrument) => (
-            <Col
+            <CardCol
               key={instrument.address}
-              span={21 / Math.floor(product.instruments.length)}
-              // style={{ marginLeft: 10, marginRight: 10 }}
+              md={{ span: normalCardSpan }}
+              lg={{ span: normalCardSpan }}
+              xl={{ span: normalCardSpan }}
+              xxl={{ span: normalCardSpan - 2 }}
             >
               <StraddleCard straddle={instrument}></StraddleCard>
-            </Col>
+            </CardCol>
           ))}
-        </Row>
+        </CardRow>
       )}
     </ProductContainer>
   );
