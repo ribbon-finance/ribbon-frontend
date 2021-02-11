@@ -10,6 +10,13 @@ const Profit = styled.span`
   line-height: 24px;
   letter-spacing: 0px;
   text-align: left;
+
+  @media (max-width: 1100px) {
+    font-size: 14px;
+  }
+  @media (max-width: 990px) {
+    font-size: 12px;
+  }
 `;
 
 const ProfitPositive = styled(Profit)`

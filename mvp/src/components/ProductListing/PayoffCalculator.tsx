@@ -39,6 +39,11 @@ const Description = styled.p`
   letter-spacing: 1.5px;
   text-align: left;
   color: #999999;
+
+  @media (max-width: 1200px) {
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 const DescriptionData = styled.span`
@@ -108,9 +113,11 @@ const PayoffCalculator: React.FC<Props> = ({
         />
       </Row>
       <Description>
-        Breakeven Price: ≤
-        <DescriptionData>${lowerBreakeven.toFixed(2)}</DescriptionData> or ≥
-        <DescriptionData>${upperBreakeven.toFixed(2)}</DescriptionData>
+        <span>Breakeven Price:</span>
+        <span>
+          ≤<DescriptionData>${lowerBreakeven.toFixed(2)}</DescriptionData> or ≥
+          <DescriptionData>${upperBreakeven.toFixed(2)}</DescriptionData>
+        </span>
       </Description>
       <DescriptionTitle>Estimated Profit</DescriptionTitle>
       {formatProfit(dollarProfit, percentProfit, profitPositive)}
