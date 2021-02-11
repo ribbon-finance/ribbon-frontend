@@ -1,7 +1,6 @@
 import { GithubOutlined, TwitterOutlined } from "@ant-design/icons";
 import { Col, Layout, Row } from "antd";
 import React from "react";
-import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { SecondaryText } from "../designSystem";
 import EmailCaptureForm from "./EmailCaptureForm";
