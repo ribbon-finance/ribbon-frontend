@@ -46,8 +46,8 @@ const Header = () => {
   return (
     <HeaderContainer>
       <Row justify="space-between" align="middle">
-        <Col span={6}>
-          <Content>
+        <Col span={5} offset={1}>
+          <Content style={{ justifyContent: "flex-start" }}>
             <Logo></Logo>
           </Content>
         </Col>
@@ -64,12 +64,13 @@ const Header = () => {
             </a>
           </Navigation>
         </Col>
-        <Col span={8} offset={1}>
-          <Content>
+        <Col span={8}>
+          <Content style={{ justifyContent: "flex-end" }}>
             {positionsNav}
             <AccountStatus></AccountStatus>
           </Content>
         </Col>
+        <Col span={1}></Col>
       </Row>
     </HeaderContainer>
   );
