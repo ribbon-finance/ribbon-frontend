@@ -36,7 +36,7 @@ const Description = styled.p`
   font-style: normal;
   font-weight: 500;
   line-height: 12px;
-  letter-spacing: 1.5px;
+  letter-spacing: 0.5px;
   text-align: left;
   color: #999999;
 
@@ -113,7 +113,7 @@ const PayoffCalculator: React.FC<Props> = ({
         />
       </Row>
       <Description>
-        <span>Breakeven Price:</span>
+        <span>Breakeven Price: </span>
         <span>
           ≤<DescriptionData>${lowerBreakeven.toFixed(2)}</DescriptionData> or ≥
           <DescriptionData>${upperBreakeven.toFixed(2)}</DescriptionData>

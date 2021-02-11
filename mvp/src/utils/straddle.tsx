@@ -20,7 +20,7 @@ const Profit = styled.span`
 `;
 
 const ProfitPositive = styled(Profit)`
-  color: #06c018;
+  color: #0dc599;
 `;
 
 const ProfitNegative = styled(Profit)`

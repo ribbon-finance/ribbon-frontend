@@ -6,7 +6,7 @@ import {
 } from "@ant-design/icons";
 import { Button, Col, Layout, Row } from "antd";
 import React from "react";
-import { Link, useRouteMatch } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { PrimaryMedium, PrimaryText, SecondaryText } from "../designSystem";
 import EmailCaptureForm from "./EmailCaptureForm";

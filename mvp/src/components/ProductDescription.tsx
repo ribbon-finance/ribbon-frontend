@@ -42,7 +42,6 @@ const ProductDescription = () => {
   const { categoryID } = useParams<{ categoryID: string }>();
   const category = CATEGORIES[categoryID];
   const copy = category.description;
-  const color = category.cardColor;
 
   return (
     <DescriptionContainer className="product-description">
