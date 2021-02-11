@@ -28,7 +28,7 @@ const LinkText = styled(PrimaryMedium)`
 `;
 
 const LogoName = styled(PrimaryMedium)`
-  font-family: Montserrat;
+  font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: 600;
   font-size: 16px;

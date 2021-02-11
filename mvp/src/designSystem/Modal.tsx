@@ -14,7 +14,7 @@ export const ModalButton = styled(Button)`
   border-radius: 8px;
   width: 100%;
   font-size: 24px;
-  font-family: "Montserrat";
+  font-family: "Inter", sans-serif;
 `;
 
 type StyledStatisticProps = {

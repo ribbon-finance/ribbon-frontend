@@ -35,7 +35,7 @@ const Title = styled(BaseText)`
 `;
 
 const DescriptionTitle = styled.p`
-  font-family: Montserrat;
+  font-family: "Inter", sans-serif;
   font-size: 10px;
   font-style: normal;
   font-weight: 500;

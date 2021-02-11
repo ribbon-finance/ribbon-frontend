@@ -3,7 +3,8 @@ import styled from "styled-components";
 import { Col } from "antd";
 
 const BannerContainer = styled.div`
-  padding-bottom: 20px;
+  padding-top: 80px;
+  padding-bottom: 80px;
   text-align: center;
 `;
 

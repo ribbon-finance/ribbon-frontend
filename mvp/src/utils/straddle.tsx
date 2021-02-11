@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { wadToUSD } from "./math";
 
 const Profit = styled.span`
-  font-family: Montserrat;
+  font-family: "Inter", sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: bold;

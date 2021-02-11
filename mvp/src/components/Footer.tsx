@@ -21,7 +21,7 @@ const EmailCaptureContainer = styled.div`
 
 const EmailCaptureTitle = styled(SecondaryText)`
   margin-bottom: 16px;
-  font-family: Montserrat;
+  font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 22px;
@@ -29,7 +29,7 @@ const EmailCaptureTitle = styled(SecondaryText)`
 `;
 
 const EmailCaptureSubtitle = styled(SecondaryText)`
-  font-family: Montserrat;
+  font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
@@ -53,7 +53,7 @@ const FooterLinks = styled(Row)`
 
 const NavAnchor = styled.a`
   color: rgba(255, 255, 255, 0.9);
-  font-family: Montserrat;
+  font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 16px;

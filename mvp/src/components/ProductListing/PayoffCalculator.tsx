@@ -18,7 +18,7 @@ type Props = {
 };
 
 const DescriptionTitle = styled.p`
-  font-family: Montserrat;
+  font-family: "Inter", sans-serif;
   font-size: 10px;
   font-style: normal;
   font-weight: 500;
@@ -30,35 +30,8 @@ const DescriptionTitle = styled.p`
   padding-top: 20px;
 `;
 
-const Description = styled.p`
-  font-family: Montserrat;
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 12px;
-  letter-spacing: 0.5px;
-  text-align: left;
-  color: #999999;
-
-  @media (max-width: 1200px) {
-    display: flex;
-    flex-direction: column;
-  }
-`;
-
-const DescriptionData = styled.span`
-  font-family: Montserrat;
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 12px;
-  letter-spacing: 1.5px;
-  text-align: left;
-  color: black;
-`;
-
 const DescriptionDataPrimary = styled.span`
-  font-family: Montserrat;
+  font-family: "Inter", sans-serif;
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
@@ -74,7 +47,7 @@ const PayoffCalculator: React.FC<Props> = ({
   straddlePrice,
 }) => {
   const [inputText, setInputText] = useState("");
-  const [lowerBreakeven, upperBreakeven] = computeBreakeven(
+  const [, upperBreakeven] = computeBreakeven(
     straddlePrice,
     1,
     callStrikePrice,
@@ -112,13 +85,7 @@ const PayoffCalculator: React.FC<Props> = ({
           }}
         />
       </Row>
-      <Description>
-        <span>Breakeven Price: </span>
-        <span>
-          ≤<DescriptionData>${lowerBreakeven.toFixed(2)}</DescriptionData> or ≥
-          <DescriptionData>${upperBreakeven.toFixed(2)}</DescriptionData>
-        </span>
-      </Description>
+
       <DescriptionTitle>Estimated Profit</DescriptionTitle>
       {formatProfit(dollarProfit, percentProfit, profitPositive)}
       <DescriptionTitle>Cost for 0.1 contracts</DescriptionTitle>

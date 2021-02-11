@@ -70,7 +70,7 @@ const PlusIcon = styled.div`
   justify-content: center;
   margin-left: 20px;
   margin-right: 20px;
-  font-family: "Montserrat";
+  font-family: "Inter", sans-serif;
   font-size: 20px;
   font-weight: 500;
 `;

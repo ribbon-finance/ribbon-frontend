@@ -10,14 +10,14 @@ export const SecondaryFont = styled.span`
 `;
 
 export const PrimaryText = styled(BaseText)`
-  font-family: Montserrat;
+  font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
 `;
 
 export const PrimaryMedium = styled(BaseText)`
-  font-family: Montserrat;
+  font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: 600;
   font-size: 16px;

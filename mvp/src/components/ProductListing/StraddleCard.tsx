@@ -12,7 +12,7 @@ import { useStraddleTrade } from "../../hooks/useStraddleTrade";
 import { Link } from "react-router-dom";
 
 const Title = styled.div`
-  font-family: Montserrat;
+  font-family: "Inter", sans-serif;
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
@@ -33,7 +33,7 @@ const Title = styled.div`
 `;
 
 const DescriptionTitle = styled.p`
-  font-family: Montserrat;
+  font-family: "Inter", sans-serif;
   font-size: 10px;
   font-style: normal;
   font-weight: 500;
@@ -45,7 +45,7 @@ const DescriptionTitle = styled.p`
 `;
 
 const ButtonText = styled.span`
-  font-family: Montserrat;
+  font-family: "Inter", sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 600;
