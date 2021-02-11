@@ -129,24 +129,6 @@ const Footer = () => {
         paddingBottom: 0,
       }}
     >
-      {!matchHome && !matchProduct ? null : (
-        <EducationalContainer>
-          <Col span="12">
-            <EducationalTitle>Lorem Ipsum</EducationalTitle>
-            <div style={{ marginTop: 16, marginBottom: 24 }}>
-              <EducationSubtitle>
-                Lorem ipsum dolor sit amet consectetur adipiscing elit, sed do
-              </EducationSubtitle>
-            </div>
-
-            {/* <LearnMoreButton type="primary">Learn More</LearnMoreButton> */}
-          </Col>
-          <Col span="12">
-            <BankOutlined style={{ fontSize: 100 }}></BankOutlined>
-          </Col>
-        </EducationalContainer>
-      )}
-
       <EmailCaptureContainer>
         <EmailCaptureIcon></EmailCaptureIcon>
 
@@ -157,7 +139,6 @@ const Footer = () => {
 
         <EmailCaptureForm theme="dark"></EmailCaptureForm>
       </EmailCaptureContainer>
-
       <FooterLinks>
         <FooterLeft span="12">
           <NavAnchor href="/faq">FAQs</NavAnchor>

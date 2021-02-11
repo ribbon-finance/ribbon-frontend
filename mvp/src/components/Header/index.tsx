@@ -8,7 +8,9 @@ import { Link } from "react-router-dom";
 import usePositions from "../../hooks/usePositions";
 import { useWeb3React } from "@web3-react/core";
 
-const HeaderContainer = styled.div``;
+const HeaderContainer = styled.div`
+  margin-top: 20px;
+`;
 
 const Content = styled.div`
   display: flex;
@@ -20,11 +22,6 @@ const Navigation = styled.div`
   display: flex;
   justify-content: center;
 `;
-
-type NavLinkProps = {
-  link: string;
-  text: string;
-};
 
 const LinkText = styled(PrimaryMedium)`
   font-weight: 500;
