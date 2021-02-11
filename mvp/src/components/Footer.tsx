@@ -113,14 +113,6 @@ const iconStyles = {
 };
 
 const Footer = () => {
-  const matchHome = useRouteMatch({
-    path: "/",
-    exact: true,
-  });
-  const matchProduct = useRouteMatch({
-    path: "/product",
-  });
-
   return (
     <AntFooter
       style={{
