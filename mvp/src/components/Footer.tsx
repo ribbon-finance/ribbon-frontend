@@ -107,7 +107,6 @@ const Footer = () => {
       <FooterLinks>
         <FooterLeft span="12">
           <NavAnchor href="/faq">FAQs</NavAnchor>
-          <NavAnchor href="/company">Company</NavAnchor>
           <NavAnchor href="https://medium.com/@ribbonfinance">Blog</NavAnchor>
         </FooterLeft>
         <FooterRight span="12">
