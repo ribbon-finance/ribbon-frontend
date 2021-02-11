@@ -26,9 +26,9 @@ const Logo = () => {
             alt="Ribbon Finance"
             style={{ height: 48, width: 48 }}
           ></img>
+          <LogoName>RIBBON</LogoName>
         </Link>
       </LogoContainer>
-      <LogoName>RIBBON</LogoName>
     </>
   );
 };
