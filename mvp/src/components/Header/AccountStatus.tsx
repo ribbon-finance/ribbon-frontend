@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ethers } from "ethers";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { SecondaryText } from "../../designSystem";
 import AccountIcon from "./AccountIcon";
 import { injectedConnector } from "../../utils/connectors";
 import { addConnectEvent } from "../../utils/google";
+import { toSignificantDecimals } from "../../utils/math";
 
 const AccountPill = styled.div`
   display: flex;
@@ -33,7 +33,7 @@ const AccountPillAddress = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #636363;
+  background: rgba(0, 0, 0);
   padding: 10px 15px;
   border-radius: 15px;
 `;
@@ -60,9 +60,7 @@ const AccountStatus: React.FC<Props> = () => {
   const fetchAndSetBalance = useCallback(async () => {
     const bal = await library.getBalance(account);
     const isZero = bal.eq("0");
-    const etherBal = isZero
-      ? "0"
-      : parseFloat(ethers.utils.formatEther(bal)).toFixed(3);
+    const etherBal = isZero ? "0" : toSignificantDecimals(bal, 4);
     setBalance(etherBal);
   }, [library, account]);
 
