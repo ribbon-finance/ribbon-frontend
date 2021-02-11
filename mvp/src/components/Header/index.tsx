@@ -27,16 +27,6 @@ const LinkText = styled(PrimaryMedium)`
   font-weight: 500;
 `;
 
-const LogoName = styled(PrimaryMedium)`
-  font-family: "Inter", sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 24px;
-  margin-left: 8px;
-  letter-spacing: 1.5px;
-`;
-
 const Header = () => {
   const { loading: loadingPositions, numOfActivePositions } = usePositions();
   const { active } = useWeb3React();
@@ -59,7 +49,6 @@ const Header = () => {
         <Col span={6}>
           <Content>
             <Logo></Logo>
-            <LogoName>RIBBON</LogoName>
           </Content>
         </Col>
         <Col span={5} offset={3}>
