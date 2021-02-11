@@ -121,27 +121,31 @@ const Footer = () => {
     path: "/product",
   });
 
-  if (!matchHome && !matchProduct) {
-    return null;
-  }
-
   return (
-    <AntFooter style={{ marginTop: matchHome ? 40 : 0, paddingBottom: 0 }}>
-      <EducationalContainer>
-        <Col span="12">
-          <EducationalTitle>Lorem Ipsum</EducationalTitle>
-          <div style={{ marginTop: 16, marginBottom: 24 }}>
-            <EducationSubtitle>
-              Lorem ipsum dolor sit amet consectetur adipiscing elit, sed do
-            </EducationSubtitle>
-          </div>
+    <AntFooter
+      style={{
+        backgroundColor: "inherit",
+        marginTop: 60,
+        paddingBottom: 0,
+      }}
+    >
+      {!matchHome && !matchProduct ? null : (
+        <EducationalContainer>
+          <Col span="12">
+            <EducationalTitle>Lorem Ipsum</EducationalTitle>
+            <div style={{ marginTop: 16, marginBottom: 24 }}>
+              <EducationSubtitle>
+                Lorem ipsum dolor sit amet consectetur adipiscing elit, sed do
+              </EducationSubtitle>
+            </div>
 
-          {/* <LearnMoreButton type="primary">Learn More</LearnMoreButton> */}
-        </Col>
-        <Col span="12">
-          <BankOutlined style={{ fontSize: 100 }}></BankOutlined>
-        </Col>
-      </EducationalContainer>
+            {/* <LearnMoreButton type="primary">Learn More</LearnMoreButton> */}
+          </Col>
+          <Col span="12">
+            <BankOutlined style={{ fontSize: 100 }}></BankOutlined>
+          </Col>
+        </EducationalContainer>
+      )}
 
       <EmailCaptureContainer>
         <EmailCaptureIcon></EmailCaptureIcon>
