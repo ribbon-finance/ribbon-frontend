@@ -26,9 +26,13 @@ type NavLinkProps = {
   text: string;
 };
 
+const LinkText = styled(PrimaryMedium)`
+  font-weight: 500;
+`;
+
 const NavLink = ({ link, text }: NavLinkProps) => (
   <Link to={link}>
-    <PrimaryMedium>{text}</PrimaryMedium>
+    <LinkText>{text}</LinkText>
   </Link>
 );
 
@@ -60,7 +64,9 @@ const Header = () => {
         <Col span={5} offset={3}>
           <Navigation>
             <NavLink link="/" text="FAQ" />
-            <NavLink link="/" text="Blog" />
+            <a href="https://medium.com/@ribbonfinance">
+              <LinkText>Blog</LinkText>
+            </a>
           </Navigation>
         </Col>
         <Col span={8} offset={1}>
