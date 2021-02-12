@@ -217,7 +217,9 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
               onChange={updatePurchaseAmount}
             ></AmountInput>
 
-            <DescriptionTitle style={{ marginTop: 10 }}>
+            <DescriptionTitle
+              style={{ marginTop: 10, fontSize: 12, textTransform: "inherit" }}
+            >
               You can buy less than 1 contract.
             </DescriptionTitle>
             <PurchaseButton
