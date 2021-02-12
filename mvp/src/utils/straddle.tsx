@@ -6,7 +6,7 @@ const Profit = styled.span`
   font-family: "Inter", sans-serif;
   font-size: 16px;
   font-style: normal;
-  font-weight: bold;
+  font-weight: 500;
   line-height: 24px;
   letter-spacing: 0px;
   text-align: left;

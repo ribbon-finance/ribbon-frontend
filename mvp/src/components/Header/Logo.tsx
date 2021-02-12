@@ -9,7 +9,7 @@ const LogoContainer = styled.div``;
 const LogoName = styled(PrimaryMedium)`
   font-family: "Montserrat", sans-serif;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 16px;
   line-height: 24px;
   margin-left: 8px;
