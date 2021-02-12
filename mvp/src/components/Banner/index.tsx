@@ -50,7 +50,7 @@ const ArrowDown = () => {
 const Banner = () => {
   return (
     <BannerContainer>
-      <Title>Invest Like A Pro.</Title>
+      <Title>Invest Like A Pro. </Title>
       <Col span={18} offset={3}>
         <Subtitle>
           Combine options, futures, and fixed income to improve your portfolio's
