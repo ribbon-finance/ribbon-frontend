@@ -46,6 +46,13 @@ const DescriptionTitle = styled.p`
   color: #999999;
 `;
 
+const WarningText = styled.p`
+  font-size: 12px;
+  font-style: normal;
+  text-align: left;
+  color: #999999;
+`;
+
 type PurchaseInstrumentWrapperProps = {};
 
 interface ParamTypes {
@@ -217,11 +224,9 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
               onChange={updatePurchaseAmount}
             ></AmountInput>
 
-            <DescriptionTitle
-              style={{ marginTop: 10, fontSize: 12, textTransform: "inherit" }}
-            >
+            <WarningText style={{ marginTop: 10 }}>
               You can buy less than 1 contract.
-            </DescriptionTitle>
+            </WarningText>
             <PurchaseButton
               onClick={() => setIsModalVisible(true)}
               purchaseAmount={purchaseAmount}

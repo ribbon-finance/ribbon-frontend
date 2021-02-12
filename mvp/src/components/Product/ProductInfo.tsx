@@ -39,12 +39,13 @@ const DescriptionContainer = styled.div`
 
 const Title = styled(BaseText)`
   font-style: normal;
-  font-weight: bold;
+  font-weight: 500;
   font-size: 18px;
   color: #000000;
 `;
 
 const CustomStyledCard = styled(StyledCard)`
+  box-shadow: 0 0 0 0;
   background: #fafafa;
   border-radius: 4px;
   border: 0px;
