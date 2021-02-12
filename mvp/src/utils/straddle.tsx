@@ -73,21 +73,23 @@ export const computeGainsAmount = (
 
   let dollarProfit = 0;
 
-  if (futureAssetPrice > callStrikeNum) {
+  const instrumentPricePerContract = instrumentPrice / amount;
+
+  if (futureAssetPrice > callStrikeNum + instrumentPricePerContract) {
     dollarProfit =
-      (futureAssetPrice - callStrikeNum - instrumentPrice) * amount;
-  } else if (futureAssetPrice < putStrikeNum) {
-    dollarProfit = (putStrikeNum - futureAssetPrice - instrumentPrice) * amount;
+      (futureAssetPrice - callStrikeNum - instrumentPricePerContract) * amount;
+  } else if (futureAssetPrice < putStrikeNum - instrumentPricePerContract) {
+    dollarProfit =
+      (putStrikeNum - futureAssetPrice - instrumentPricePerContract) * amount;
   } else {
-    dollarProfit =
-      (currentAssetPrice - futureAssetPrice - instrumentPrice) * amount;
+    dollarProfit = -instrumentPrice;
   }
 
   let percentProfit: number = 0;
   if (amount === 0) {
     percentProfit = (dollarProfit / instrumentPrice) * 100;
   } else {
-    percentProfit = (dollarProfit / instrumentPrice / amount) * 100;
+    percentProfit = (dollarProfit / instrumentPrice) * 100;
   }
 
   if (dollarProfit >= 0) {

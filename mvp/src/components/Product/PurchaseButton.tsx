@@ -27,7 +27,6 @@ type Props = {
 };
 
 const PurchaseButton: React.FC<Props> = ({ onClick, purchaseAmount }) => {
-  console.log(purchaseAmount, typeof purchaseAmount);
   return (
     <div style={{ paddingTop: "30px" }}>
       <StyledButton
