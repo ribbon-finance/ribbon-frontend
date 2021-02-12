@@ -4,7 +4,7 @@ import { Col } from "antd";
 
 const BannerContainer = styled.div`
   padding-top: 80px;
-  padding-bottom: 80px;
+  padding-bottom: 60px;
   text-align: center;
 `;
 
@@ -53,9 +53,8 @@ const Banner = () => {
       <Title>Invest Like A Pro.</Title>
       <Col span={18} offset={3}>
         <Subtitle>
-          Level-up your trading with crypto structured products.
-          <br></br>Combine options, futures, and fixed income to improve your
-          portfolio's risk-return profile.
+          Combine options, futures, and fixed income to improve your portfolio's
+          risk-return profile.
         </Subtitle>
       </Col>
       <ArrowDown />
