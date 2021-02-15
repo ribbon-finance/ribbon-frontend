@@ -17,12 +17,6 @@
 	],
 	"mainnet": [
 		{
-			"txhash": "0x28a5326cf93b73e289e754d5c98e0ab5c2a644d1789a818912fec35cabe4888c",
-			"expiry": "1616745600",
-			"instrumentSymbol": "ETHVOL-26MAR2021",
-			"address": "0xD13D279073DBDdeD368D822FAb8a59604f86CA51"
-		},
-		{
 			"txhash": "0x9ceebee63b7334e9fbbf83f5b390b449ce7a8fdbd47257037cb60e99d6ab9cb6",
 			"expiry": "1615507200",
 			"instrumentSymbol": "ETHVOL-12MAR2021",

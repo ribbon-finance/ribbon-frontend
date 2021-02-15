@@ -43,7 +43,7 @@ const ProductSubtitle = styled(BaseText)`
 
 const CardRow = styled(Row)`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: top;
 
   @media (min-width: 1800px) {
@@ -52,6 +52,9 @@ const CardRow = styled(Row)`
 `;
 
 const CardCol = styled(Col)`
+  margin-left: 40px;
+  margin-right: 40px;
+
   @media (min-width: 1600px) and (max-width: 1800px) {
     display: block;
     flex: 0 0 30%;
