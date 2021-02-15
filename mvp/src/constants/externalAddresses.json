@@ -47,6 +47,12 @@
 				"isPut": true
 			},
 			{
+				"address": "0x464fa0f4f8a92b1e72ebce8f0547c270244aee6a",
+				"strikePrice": "144000000000",
+				"expiry": "1616745600",
+				"isPut": true
+			},
+			{
 				"address": "0x58cea0b182381cde8c38cb16bf7f8260cba9997f",
 				"strikePrice": "80000000000",
 				"expiry": "1616745600",
@@ -86,6 +92,12 @@
 				"address": "0x721ab71cc2f586fe2e6e0aa289dd0cdb69cae597",
 				"strikePrice": "144000000000",
 				"expiry": "1613721600",
+				"isPut": true
+			},
+			{
+				"address": "0x7431b39b4bbb0a7af88dba1c5a7c3c6895cce2db",
+				"strikePrice": "152000000000",
+				"expiry": "1614326400",
 				"isPut": true
 			},
 			{
