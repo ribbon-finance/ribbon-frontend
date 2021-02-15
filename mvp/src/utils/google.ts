@@ -11,5 +11,6 @@ export const addAnalyticsEvent = (
 };
 
 export const addConnectEvent = (label: string, account: string) => {
+  account = account.replace("0x", "");
   addAnalyticsEvent("connectAccount", label, account);
 };
