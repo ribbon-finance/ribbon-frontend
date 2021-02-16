@@ -17,6 +17,10 @@ const EmailCaptureContainer = styled.div`
   width: 100%;
   padding: 64px 0;
   background-color: #000000;
+
+  @media (max-width: 500px) {
+    padding 30px 15%;
+  }
 `;
 
 const EmailCaptureTitle = styled(SecondaryText)`
@@ -26,6 +30,7 @@ const EmailCaptureTitle = styled(SecondaryText)`
   font-weight: 500;
   font-size: 22px;
   line-height: 28px;
+  text-align: center;
 `;
 
 const EmailCaptureSubtitle = styled(SecondaryText)`
@@ -99,6 +104,7 @@ const Footer = () => {
         backgroundColor: "inherit",
         marginTop: 60,
         paddingBottom: 0,
+        ...(isMobile ? { marginTop: 0 } : {}),
       }}
     >
       <EmailCaptureContainer>
