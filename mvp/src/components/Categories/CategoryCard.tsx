@@ -22,6 +22,8 @@ const SplitRow = styled(Row)`
   justify-content: space-around;
 
   @media (max-width: 500px) {
+    padding-left: 5px;
+    padding-right: 5px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
