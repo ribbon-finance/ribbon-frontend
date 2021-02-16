@@ -152,9 +152,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
     Math.floor(parseFloat(ethers.utils.formatEther(bn))).toLocaleString();
 
   const totalCostETH = ethers.utils.formatEther(
-    ethers.utils.parseEther(
-      (parseFloat(straddleETH) * purchaseAmount).toFixed(8)
-    )
+    ethers.utils.parseEther(parseFloat(straddleETH).toFixed(8))
   );
 
   const formattedExpiry = moment(expiry).format("MMM D, YYYY");

@@ -216,7 +216,7 @@ async function get0xQuote(
       error: false,
     };
   } catch (e) {
-    console.error(e)
+    console.error(e.response.data);
     return { error: true };
   }
 }
