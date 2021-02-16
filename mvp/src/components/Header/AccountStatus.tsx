@@ -8,7 +8,7 @@ import { addConnectEvent } from "../../utils/google";
 import { toSignificantDecimals } from "../../utils/math";
 
 const pillPaddingVertical = "10px";
-const pillPaddingVerticalMobile = "2px";
+const pillPaddingVerticalMobile = "8px";
 const pillPaddingHorizontal = "15px";
 const pillPaddingHorizontalMobile = "15px";
 

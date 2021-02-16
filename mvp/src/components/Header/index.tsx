@@ -11,6 +11,7 @@ import { isMobile } from "react-device-detect";
 
 const HeaderContainer = styled.div`
   margin-top: 20px;
+  padding: 0 5%;
 `;
 
 const Content = styled.div`
@@ -47,12 +48,12 @@ const Header = () => {
   return (
     <HeaderContainer>
       <Row justify="space-between" align="middle">
-        <Col span={5} offset={1}>
+        <Col md={{ span: 11, offset: 1 }} xxl={{ span: 5, offset: 1 }}>
           <Content style={{ justifyContent: "flex-start" }}>
             <Logo></Logo>
           </Content>
         </Col>
-        <Col span={5} offset={3}>
+        <Col md={{ span: 0 }} xxl={{ span: 5, offset: 3 }}>
           {isMobile ? null : (
             <Navigation>
               <Link to="/faq" style={{ marginLeft: 30, marginRight: 30 }}>
@@ -67,13 +68,13 @@ const Header = () => {
             </Navigation>
           )}
         </Col>
-        <Col span={8}>
+        <Col md={{ span: 12 }} xxl={{ span: 8 }}>
           <Content style={{ justifyContent: "flex-end" }}>
             {positionsNav}
             <AccountStatus></AccountStatus>
           </Content>
         </Col>
-        <Col span={1}></Col>
+        <Col md={{ span: 0 }} xxl={{ span: 1 }}></Col>
       </Row>
     </HeaderContainer>
   );
