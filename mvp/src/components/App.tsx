@@ -25,9 +25,6 @@ const MainContent = styled.div`
 `;
 
 function App() {
-  // if (isMobile) {
-  //   return <UseDesktopNotice></UseDesktopNotice>;
-  // }
   return (
     <Web3ContextProvider>
       <Web3ReactProvider getLibrary={getLibrary}>
