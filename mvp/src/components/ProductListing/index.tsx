@@ -10,6 +10,11 @@ import { useDefaultProduct } from "../../hooks/useProducts";
 const ProductContainer = styled.div`
   padding-top: 30px;
   padding-bottom: 50px;
+
+  @media (max-width: 500px) {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 `;
 
 const ProductTitleContainer = styled.div`
@@ -46,6 +51,10 @@ const CardRow = styled(Row)`
   justify-content: center;
   align-items: top;
 
+  @media (max-width: 500px) {
+    flex-direction: column;
+  }
+
   @media (min-width: 1800px) {
     justify-content: center;
   }
@@ -54,6 +63,10 @@ const CardRow = styled(Row)`
 const CardCol = styled(Col)`
   margin-left: 40px;
   margin-right: 40px;
+
+  @media (max-width: 500px) {
+    margin-bottom: 30px;
+  }
 
   @media (min-width: 1600px) and (max-width: 1800px) {
     display: block;

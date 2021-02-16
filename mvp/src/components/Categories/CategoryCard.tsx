@@ -20,6 +20,14 @@ const StyledCard = styled(Card)`
 const SplitRow = styled(Row)`
   display: flex;
   justify-content: space-around;
+
+  @media (max-width: 500px) {
+    padding-left: 5px;
+    padding-right: 5px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 const StyledCol = styled(Col)`
   display: flex;
@@ -28,14 +36,29 @@ const StyledCol = styled(Col)`
 const AlignLeftCol = styled(StyledCol)`
   text-align: left;
   justify-content: flex-start;
+
+  @media (max-width: 500px) {
+    width: 100%;
+    text-align: right;
+    justify-content: center;
+    margin-bottom: 6px;
+  }
 `;
 const AlignRightCol = styled(StyledCol)`
   justify-content: flex-end;
+
+  @media (max-width: 500px) {
+    justify-content: center;
+  }
 `;
 
 const CardText = styled(BaseText)`
+  text-align: center;
   font-weight: bold;
   font-size: 12px;
+  @media (max-width: 500px) {
+    font-size: 11px;
+  }
 `;
 
 const StyledCardParams = {

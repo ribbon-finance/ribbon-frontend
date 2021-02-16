@@ -17,6 +17,32 @@ import { IAggregatedOptionsInstrumentFactory } from "../../codegen/IAggregatedOp
 import useGasPrice from "../../hooks/useGasPrice";
 import PurchaseModal from "./PurchaseModal";
 
+const ParentContainer = styled.div`
+  @media (max-width: 500px) {
+    margin-bottom: 60px;
+  }
+`;
+
+const ProductHeader = styled.div`
+  @media (max-width: 500px) {
+    padding: 0 5%;
+  }
+`;
+
+const StyledRow = styled(Row)`
+  @media (max-width: 500px) {
+    flex-direction: column;
+  }
+`;
+
+const ContentContainer = styled(Col)`
+  @media (max-width: 500px) {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding: 0 5%;
+  }
+`;
+
 const ProductTitleContainer = styled.div`
   padding-top: 10px;
   padding-bottom: 10px;
@@ -32,6 +58,10 @@ const Title = styled(BaseText)`
   font-size: 44px;
   line-height: 64px;
   color: #000000;
+
+  @media (max-width: 500px) {
+    font-size: 28px;
+  }
 `;
 
 const DescriptionTitle = styled.p`
@@ -181,7 +211,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
   const expiryTimestamp = new Date(straddle.expiryTimestamp * 1000);
 
   return (
-    <div>
+    <ParentContainer>
       <PurchaseModal
         loading={loadingTrade}
         isVisible={isModalVisible}
@@ -198,15 +228,17 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
         putPremium={putPremium}
       ></PurchaseModal>
 
-      <Link to="/">
-        <ArrowLeftOutlined />
-      </Link>
-      <ProductTitleContainer>
-        <Title>{product.name}</Title>
-      </ProductTitleContainer>
+      <ProductHeader>
+        <Link to="/">
+          <ArrowLeftOutlined />
+        </Link>
+        <ProductTitleContainer>
+          <Title>{product.name}</Title>
+        </ProductTitleContainer>
+      </ProductHeader>
 
-      <Row>
-        <Col span={14}>
+      <StyledRow>
+        <ContentContainer span={14}>
           <ProductDescriptionContainer>
             {productDescription(product.name)}
           </ProductDescriptionContainer>
@@ -215,8 +247,8 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
             straddle={straddle}
             amount={purchaseAmount}
           ></ProductInfo>
-        </Col>
-        <Col span={9} offset={1}>
+        </ContentContainer>
+        <ContentContainer span={9} offset={1}>
           <StyledCard title="Buy ETH Strangle">
             <DescriptionTitle>No. of contracts</DescriptionTitle>
             <AmountInput
@@ -232,9 +264,9 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
               purchaseAmount={purchaseAmount}
             ></PurchaseButton>
           </StyledCard>
-        </Col>
-      </Row>
-    </div>
+        </ContentContainer>
+      </StyledRow>
+    </ParentContainer>
   );
 };
 export default PurchaseInstrumentWrapper;

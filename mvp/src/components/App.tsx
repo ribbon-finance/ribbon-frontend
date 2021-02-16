@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { Row, Col } from "antd";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Web3ReactProvider } from "@web3-react/core";
-import { isMobile } from "react-device-detect";
 
 import Header from "./Header";
 import Portfolio from "./Portfolio";
@@ -17,7 +16,6 @@ import useInactiveListener from "../hooks/useInactiveListener";
 import Footer from "./Footer";
 import Disclaimer from "./Disclaimer";
 import { ETHPriceProvider } from "../hooks/useEthPrice";
-import UseDesktopNotice from "./UseDesktopNotice";
 import FAQPage from "./FAQ";
 
 const AppContainer = styled.div``;
@@ -27,9 +25,6 @@ const MainContent = styled.div`
 `;
 
 function App() {
-  if (isMobile) {
-    return <UseDesktopNotice></UseDesktopNotice>;
-  }
   return (
     <Web3ContextProvider>
       <Web3ReactProvider getLibrary={getLibrary}>

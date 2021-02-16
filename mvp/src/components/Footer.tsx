@@ -2,6 +2,7 @@ import { GithubOutlined, TwitterOutlined } from "@ant-design/icons";
 import { Col, Layout, Row } from "antd";
 import React from "react";
 import styled from "styled-components";
+import { isMobile } from "react-device-detect";
 import { SecondaryText } from "../designSystem";
 import EmailCaptureForm from "./EmailCaptureForm";
 import RibbonLogo from "../img/RibbonLogo.svg";
@@ -16,6 +17,10 @@ const EmailCaptureContainer = styled.div`
   width: 100%;
   padding: 64px 0;
   background-color: #000000;
+
+  @media (max-width: 500px) {
+    padding 30px 15%;
+  }
 `;
 
 const EmailCaptureTitle = styled(SecondaryText)`
@@ -25,6 +30,7 @@ const EmailCaptureTitle = styled(SecondaryText)`
   font-weight: 500;
   font-size: 22px;
   line-height: 28px;
+  text-align: center;
 `;
 
 const EmailCaptureSubtitle = styled(SecondaryText)`
@@ -48,6 +54,10 @@ const EmailCaptureIcon = styled.img`
 const FooterLinks = styled(Row)`
   background-color: #000000;
   padding: 40px 15%;
+
+  @media (max-width: 500px) {
+    padding: 30px 5%;
+  }
 `;
 
 const NavAnchor = styled.a`
@@ -67,6 +77,10 @@ const NavAnchor = styled.a`
 const FooterLeft = styled(Col)`
   display: flex;
   align-items: center;
+
+  @media (max-width: 500px) {
+    justify-content: flex-start;
+  }
 `;
 
 const FooterRight = styled(Col)`
@@ -80,6 +94,7 @@ const iconStyles = {
   fontSize: 30,
   marginLeft: 12,
   marginRight: 12,
+  ...(isMobile ? { marginLeft: 8, marginRight: 8 } : {}),
 };
 
 const Footer = () => {
@@ -89,6 +104,7 @@ const Footer = () => {
         backgroundColor: "inherit",
         marginTop: 60,
         paddingBottom: 0,
+        ...(isMobile ? { marginTop: 0 } : {}),
       }}
     >
       <EmailCaptureContainer>

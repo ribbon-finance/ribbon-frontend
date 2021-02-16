@@ -89,12 +89,20 @@ const PayoffPrice = styled(PrimaryText)`
 
 const PayoffPriceContainerTop = styled.div`
   margin-bottom: 16px;
-  margin-left: calc(${greenBarWidth} + ${redBarWidth} / 2);
+  margin-left: calc(${greenBarWidth} + ${redBarWidth} / 2 + 20px);
+
+  @media (max-width: 500px) {
+    margin-left: calc(${greenBarWidth} + ${redBarWidth} / 2 - 60px);
+  }
 `;
 
 const PayoffPriceContainerBottom = styled.div`
   margin-top: 16px;
   margin-left: calc(${greenBarWidth} - 85px);
+
+  @media (max-width: 500px) {
+    margin-left: calc(${greenBarWidth} - 120px);
+  }
 `;
 
 const LeftArrow = styled(LeftOutlined)`

@@ -90,6 +90,10 @@ input.ant-input {
 }
 
 .ant-modal {
+  @media (max-width: 500px) {
+    top: 10px;
+  }
+
   &-close {
     color: white;
     top: 15px;
@@ -148,6 +152,10 @@ input.ant-input {
     border-top-right-radius: 12px;
     border-bottom-right-radius: 12px;
     padding: 12px 30px;
+
+    @media (max-width: 500px) {
+      padding: 12px 15px;
+    }
   }
 
   &-light {
@@ -193,5 +201,9 @@ input.ant-input {
 .ant-layout {
   &-footer {
     padding: 24px 0;
+
+    @media (max-width: 500px) {
+      padding: 0 0;
+    }
   }
 }

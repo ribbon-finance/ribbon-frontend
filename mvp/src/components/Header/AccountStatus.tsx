@@ -7,6 +7,11 @@ import { injectedConnector } from "../../utils/connectors";
 import { addConnectEvent } from "../../utils/google";
 import { toSignificantDecimals } from "../../utils/math";
 
+const pillPaddingVertical = "10px";
+const pillPaddingVerticalMobile = "8px";
+const pillPaddingHorizontal = "15px";
+const pillPaddingHorizontalMobile = "15px";
+
 const AccountPill = styled.div`
   display: flex;
   flex-direction: row;
@@ -25,8 +30,14 @@ const AccountPillText = styled(SecondaryText)`
 
 const AccountPillBalance = styled.div`
   background: #bcbcbc;
-  padding: 10px 15px;
-  border-radius: 15px;
+  padding: ${pillPaddingVertical} ${pillPaddingHorizontal};
+  border-radius: ${pillPaddingHorizontal};
+
+  @media (max-width: 500px) {
+    padding: ${pillPaddingVerticalMobile} ${pillPaddingHorizontalMobile};
+    border-radius: ${pillPaddingHorizontalMobile};
+    text-align: center;
+  }
 `;
 
 const AccountPillAddress = styled.div`
@@ -34,8 +45,13 @@ const AccountPillAddress = styled.div`
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0);
-  padding: 10px 15px;
-  border-radius: 15px;
+  padding: ${pillPaddingVertical} ${pillPaddingHorizontal};
+  border-radius: ${pillPaddingHorizontal};
+
+  @media (max-width: 500px) {
+    padding: ${pillPaddingVerticalMobile} ${pillPaddingHorizontalMobile};
+    border-radius: ${pillPaddingHorizontalMobile};
+  }
 `;
 
 const IconSpan = styled.span`

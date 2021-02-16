@@ -7,6 +7,9 @@ import PositionsTable from "./PositionsTable";
 import { Link } from "react-router-dom";
 import { useWeb3React } from "@web3-react/core";
 
+const PortfolioContainer = styled.div`
+  margin: 30px 5%;
+`;
 const ProductTitleContainer = styled.div`
   padding-top: 10px;
   padding-bottom: 10px;
@@ -44,7 +47,7 @@ const Portfolio = () => {
   );
 
   return (
-    <div>
+    <PortfolioContainer>
       <Link to="/">
         <ArrowLeftOutlined />
       </Link>
@@ -74,7 +77,7 @@ const Portfolio = () => {
           />
         </>
       )}
-    </div>
+    </PortfolioContainer>
   );
 };
 

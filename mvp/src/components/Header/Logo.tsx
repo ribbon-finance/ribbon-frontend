@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { isMobile } from "react-device-detect";
 import { PrimaryMedium } from "../../designSystem";
 import Ribbon from "../../img/RibbonLogo.svg";
 
@@ -26,7 +27,7 @@ const Logo = () => {
             alt="Ribbon Finance"
             style={{ height: 48, width: 48 }}
           ></img>
-          <LogoName>RIBBON</LogoName>
+          {isMobile ? null : <LogoName>RIBBON</LogoName>}
         </Link>
       </LogoContainer>
     </>
