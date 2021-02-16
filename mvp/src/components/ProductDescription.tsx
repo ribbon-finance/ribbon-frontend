@@ -15,7 +15,8 @@ const DescriptionContainer = styled.div`
   @media (max-width: 500px) {
     padding-left: 20px;
     padding-right: 20px;
-    margin-bottom: 0px;
+    margin-top: 40px;
+    margin-bottom: 60px;
   }
 `;
 
@@ -39,6 +40,10 @@ const Description = styled(PrimaryText)`
   line-height: 24px;
   text-align: center;
   margin-bottom: 64px;
+
+  @media (max-width: 500px) {
+    margin-bottom: 30px;
+  }
 `;
 
 const FormContainer = styled.div``;
