@@ -40,8 +40,10 @@ const Description = styled(PrimaryText)`
   line-height: 24px;
   text-align: center;
   margin-bottom: 64px;
+  max-width: 600px;
 
   @media (max-width: 500px) {
+    max-width: 100%;
     margin-bottom: 30px;
   }
 `;
