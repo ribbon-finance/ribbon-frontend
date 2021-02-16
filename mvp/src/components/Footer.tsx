@@ -2,6 +2,7 @@ import { GithubOutlined, TwitterOutlined } from "@ant-design/icons";
 import { Col, Layout, Row } from "antd";
 import React from "react";
 import styled from "styled-components";
+import { isMobile } from "react-device-detect";
 import { SecondaryText } from "../designSystem";
 import EmailCaptureForm from "./EmailCaptureForm";
 import RibbonLogo from "../img/RibbonLogo.svg";
@@ -48,6 +49,10 @@ const EmailCaptureIcon = styled.img`
 const FooterLinks = styled(Row)`
   background-color: #000000;
   padding: 40px 15%;
+
+  @media (max-width: 500px) {
+    padding: 30px 5%;
+  }
 `;
 
 const NavAnchor = styled.a`
@@ -67,6 +72,10 @@ const NavAnchor = styled.a`
 const FooterLeft = styled(Col)`
   display: flex;
   align-items: center;
+
+  @media (max-width: 500px) {
+    justify-content: flex-start;
+  }
 `;
 
 const FooterRight = styled(Col)`
@@ -80,6 +89,7 @@ const iconStyles = {
   fontSize: 30,
   marginLeft: 12,
   marginRight: 12,
+  ...(isMobile ? { marginLeft: 8, marginRight: 8 } : {}),
 };
 
 const Footer = () => {

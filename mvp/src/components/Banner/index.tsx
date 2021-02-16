@@ -6,6 +6,10 @@ const BannerContainer = styled.div`
   padding-top: 80px;
   padding-bottom: 60px;
   text-align: center;
+
+  @media (max-width: 500px) {
+    padding-bottom: 30px;
+  }
 `;
 
 const Title = styled.p`
@@ -13,10 +17,18 @@ const Title = styled.p`
   font-size: 70px;
   margin-top: -20px;
   margin-bottom: 0px;
+
+  @media (max-width: 500px) {
+    font-size: 35px;
+  }
 `;
 
 const Subtitle = styled.p`
   font-size: 16px;
+
+  @media (max-width: 500px) {
+    font-size: 14px;
+  }
 `;
 
 const ArrowDown = () => {

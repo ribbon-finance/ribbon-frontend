@@ -9,6 +9,10 @@ const url =
 const EmailForm = styled(Search)`
   width: 440px;
   height: 64px;
+
+  @media (max-width: 500px) {
+    width: 300px;
+  }
 `;
 
 const EmailCaptureForm: React.FC<{ theme: "light" | "dark" }> = ({ theme }) => {

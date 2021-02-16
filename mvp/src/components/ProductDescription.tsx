@@ -11,6 +11,12 @@ const DescriptionContainer = styled.div`
   align-items: center;
   margin-top: 70px;
   margin-bottom: 100px;
+
+  @media (max-width: 500px) {
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-bottom: 0px;
+  }
 `;
 
 const TitleDiv = styled.div`
@@ -32,7 +38,6 @@ const Description = styled(PrimaryText)`
   font-size: 16px;
   line-height: 24px;
   text-align: center;
-  width: 560px;
   margin-bottom: 64px;
 `;
 

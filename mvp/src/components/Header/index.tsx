@@ -7,6 +7,7 @@ import { PrimaryMedium } from "../../designSystem";
 import { Link } from "react-router-dom";
 import usePositions from "../../hooks/usePositions";
 import { useWeb3React } from "@web3-react/core";
+import { isMobile } from "react-device-detect";
 
 const HeaderContainer = styled.div`
   margin-top: 20px;
@@ -31,7 +32,7 @@ const Header = () => {
   const { loading: loadingPositions, numOfActivePositions } = usePositions();
   const { active } = useWeb3React();
   let positionsNav;
-  if (active) {
+  if (active && !isMobile) {
     positionsNav = (
       <Link to="/portfolio">
         <LinkText>{`Positions${
@@ -52,17 +53,19 @@ const Header = () => {
           </Content>
         </Col>
         <Col span={5} offset={3}>
-          <Navigation>
-            <Link to="/faq" style={{ marginLeft: 30, marginRight: 30 }}>
-              <LinkText>FAQ</LinkText>
-            </Link>
-            <a
-              style={{ marginLeft: 30, marginRight: 30 }}
-              href="https://medium.com/@ribbonfinance"
-            >
-              <LinkText>Blog</LinkText>
-            </a>
-          </Navigation>
+          {isMobile ? null : (
+            <Navigation>
+              <Link to="/faq" style={{ marginLeft: 30, marginRight: 30 }}>
+                <LinkText>FAQ</LinkText>
+              </Link>
+              <a
+                style={{ marginLeft: 30, marginRight: 30 }}
+                href="https://medium.com/@ribbonfinance"
+              >
+                <LinkText>Blog</LinkText>
+              </a>
+            </Navigation>
+          )}
         </Col>
         <Col span={8}>
           <Content style={{ justifyContent: "flex-end" }}>
