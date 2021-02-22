@@ -116,24 +116,13 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
         <DescriptionData>{costStr}</DescriptionData>
       </DescriptionContainer>
 
-      <CustomStyledCard>
-        <Title>Profitability Calculator</Title>
-        <Divider />
-
+      <DescriptionContainer>
         <DescriptionTitle>Current ETH Price</DescriptionTitle>
         <PriceContainer>
           <ETHIcon src={currencyIcons.ETH} alt="ETH" />
           <DescriptionData>${ethPrice}</DescriptionData>
         </PriceContainer>
-
-        <PayoffCalculator
-          ethPrice={ethPrice}
-          callStrikePrice={callStrikePrice}
-          putStrikePrice={putStrikePrice}
-          straddlePrice={straddleUSD}
-          amount={amount}
-        ></PayoffCalculator>
-      </CustomStyledCard>
+      </DescriptionContainer>
     </>
   );
 };
