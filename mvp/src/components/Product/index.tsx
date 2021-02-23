@@ -271,6 +271,8 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
           <ProductInfo
             straddle={straddle}
             amount={purchaseAmount}
+            callVenue={callVenue}
+            putVenue={putVenue}
           ></ProductInfo>
         </ContentContainer>
         <ContentContainer span={11} offset={1}>

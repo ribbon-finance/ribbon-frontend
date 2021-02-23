@@ -64,9 +64,16 @@ const PriceContainer = styled.div`
 type Props = {
   straddle: BasicStraddle;
   amount: number;
+  callVenue: string;
+  putVenue: string;
 };
 
-const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
+const ProductInfo: React.FC<Props> = ({
+  straddle,
+  amount,
+  callVenue,
+  putVenue,
+}) => {
   const ethPrice = useETHPriceInUSD();
   const {
     loading: loadingTrade,
@@ -122,6 +129,62 @@ const ProductInfo: React.FC<Props> = ({ straddle, amount }) => {
           <ETHIcon src={currencyIcons.ETH} alt="ETH" />
           <DescriptionData>${ethPrice}</DescriptionData>
         </PriceContainer>
+      </DescriptionContainer>
+
+      <DescriptionContainer>
+        <DescriptionTitle>Underlying Options</DescriptionTitle>
+        <StyledStatistic
+          title="Underlying options"
+          hideValue={!loading}
+          value="Finding the best price..."
+          suffix={
+            !loading && (
+              <FlexDiv>
+                <UnderlyingContainer>
+                  <IconContainer>
+                    <ProtocolIcon
+                      src={protocolIcons[callVenue]}
+                      alt={venueKeyToName(callVenue)}
+                    />
+                  </IconContainer>
+                  <UnderlyingTermsContainer>
+                    <UnderlyingTitle>
+                      {venueKeyToName(callVenue)}
+                    </UnderlyingTitle>
+                    <UnderlyingStrike>
+                      ${toUSD(callStrikePrice)} Call
+                    </UnderlyingStrike>
+                    <UnderlyingStrike>
+                      Cost: {toSignificantDecimals(callPremium, 4)} ETH
+                    </UnderlyingStrike>
+                  </UnderlyingTermsContainer>
+                </UnderlyingContainer>
+
+                <PlusIcon>+</PlusIcon>
+
+                <UnderlyingContainer>
+                  <IconContainer>
+                    <ProtocolIcon
+                      src={protocolIcons[putVenue]}
+                      alt={venueKeyToName(putVenue)}
+                    />
+                  </IconContainer>
+                  <UnderlyingTermsContainer>
+                    <UnderlyingTitle>
+                      {venueKeyToName(putVenue)}
+                    </UnderlyingTitle>
+                    <UnderlyingStrike>
+                      ${toUSD(putStrikePrice)} Put
+                    </UnderlyingStrike>
+                    <UnderlyingStrike>
+                      Cost: {toSignificantDecimals(putPremium, 4)} ETH
+                    </UnderlyingStrike>
+                  </UnderlyingTermsContainer>
+                </UnderlyingContainer>
+              </FlexDiv>
+            )
+          }
+        ></StyledStatistic>
       </DescriptionContainer>
     </>
   );
