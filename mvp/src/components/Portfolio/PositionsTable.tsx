@@ -12,7 +12,7 @@ import { useWeb3React } from "@web3-react/core";
 import { IAggregatedOptionsInstrumentFactory } from "../../codegen/IAggregatedOptionsInstrumentFactory";
 import ExerciseModal from "./ExerciseModal";
 import { useETHPriceInUSD } from "../../hooks/useEthPrice";
-import { formatProfitsInUSD } from "../../utils/math";
+import { formatProfitsInETH } from "../../utils/math";
 
 type PositionsTableProps = {
   positions: InstrumentPosition[];
@@ -179,7 +179,7 @@ const positionToDataSource = (
     expiry = `${expiryDate} (${timeToExpiry(position.expiry)} remaining)`;
   }
 
-  const pnlUSD = formatProfitsInUSD(pnl, ethPriceUSD);
+  const pnlUSD = formatProfitsInETH(pnl);
 
   const showExerciseButton = !isPastPositions && canExercise;
   const exerciseButton = (

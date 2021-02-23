@@ -32,6 +32,12 @@ export const formatProfitsInUSD = (
   return (num.isNegative() ? "-" : "") + "$" + pnlUSD.toFixed(2);
 };
 
+export const formatProfitsInETH = (num: BigNumber): string => {
+  const pnlUSD = parseFloat(ethers.utils.formatEther(num.abs()));
+
+  return (num.isNegative() ? "-" : "") + pnlUSD.toFixed(3) + " ETH";
+};
+
 export const wadToUSD = (wadVal: BigNumber) => {
   const scaleFactor = ethers.BigNumber.from(10).pow(
     ethers.BigNumber.from("16")
