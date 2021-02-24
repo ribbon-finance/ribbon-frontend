@@ -57,3 +57,12 @@ export const wdiv = (x: BigNumber, y: BigNumber) => {
 
 export const toUSD = (bn: BigNumber) =>
   Math.floor(parseFloat(ethers.utils.formatEther(bn))).toLocaleString();
+
+export const toETH = (bn: BigNumber) =>
+  parseFloat(ethers.utils.formatEther(bn)).toFixed(4);
+
+export const ethToUSD = (num: BigNumber, ethPrice: number): string => {
+  const pnlUSD = parseFloat(ethers.utils.formatEther(num)) * ethPrice;
+
+  return "$" + pnlUSD.toFixed(2);
+};
