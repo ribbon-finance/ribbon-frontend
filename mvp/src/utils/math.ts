@@ -54,3 +54,6 @@ export const wdiv = (x: BigNumber, y: BigNumber) => {
     .add(y.div(ethers.BigNumber.from("2")))
     .div(y);
 };
+
+export const toUSD = (bn: BigNumber) =>
+  Math.floor(parseFloat(ethers.utils.formatEther(bn))).toLocaleString();

@@ -15,7 +15,7 @@ import protocolIcons from "../../img/protocolIcons";
 import { injectedConnector } from "../../utils/connectors";
 import { venueKeyToName } from "../../utils/positions";
 import { addConnectEvent } from "../../utils/google";
-import { toSignificantDecimals } from "../../utils/math";
+import { toSignificantDecimals, toUSD } from "../../utils/math";
 
 const ProtocolIcon = styled.img`
   width: 50px;
@@ -147,9 +147,6 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
       setIsWaitingForConfirmation(false);
     }
   }, [isVisible, setPending, setIsWaitingForConfirmation]);
-
-  const toUSD = (bn: BigNumber) =>
-    Math.floor(parseFloat(ethers.utils.formatEther(bn))).toLocaleString();
 
   const totalCostETH = ethers.utils.formatEther(
     ethers.utils.parseEther(parseFloat(straddleETH).toFixed(8))

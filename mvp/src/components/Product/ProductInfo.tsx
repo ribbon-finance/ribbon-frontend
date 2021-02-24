@@ -1,14 +1,16 @@
 import React from "react";
 import styled from "styled-components";
-import { Divider } from "antd";
+import { Row } from "antd";
 import { BaseText, StyledCard } from "../../designSystem";
 import { computeStraddleValue } from "../../utils/straddle";
 import { useETHPriceInUSD } from "../../hooks/useEthPrice";
 import { BasicStraddle } from "../../models";
 import { useStraddleTrade } from "../../hooks/useStraddleTrade";
 import { ethers } from "ethers";
-import PayoffCalculator from "./PayoffCalculator";
 import currencyIcons from "../../img/currencyIcons";
+import protocolIcons from "../../img/protocolIcons";
+import { venueKeyToName } from "../../utils/positions";
+import { toUSD } from "../../utils/math";
 
 const DescriptionTitle = styled.p`
   font-family: "Inter", sans-serif;
@@ -61,12 +63,112 @@ const PriceContainer = styled.div`
   display: flex;
 `;
 
+const ProtocolIcon = styled.img`
+  width: 50px;
+  height: 50px;
+`;
+
+const IconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  background: #ffffff;
+  box-shadow: 1px 2px 24px rgba(0, 0, 0, 0.08);
+  margin-right: 20px;
+`;
+
+const PlusBlockContainer = styled.div`
+  width: 320px;
+  margin-left: 5%;
+`;
+
+const PlusContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 25px;
+  background: #ffffff;
+  box-shadow: 1px 2px 24px rgba(0, 0, 0, 0.08);
+  margin-right: 20px;
+`;
+
+const OptionBlockContainer = styled.div`
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  border-radius: 8px;
+  background: #fafafa;
+  width: 320px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+`;
+
+const OptionTitle = styled.p`
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 0px;
+`;
+
+const OptionSubTitle = styled.p`
+  font-size: 12px;
+  color: #828282;
+  margin-bottom: 0px;
+`;
+
 type Props = {
   straddle: BasicStraddle;
   amount: number;
   callVenue: string;
   putVenue: string;
 };
+
+const UnderlyingOptionBlock = (
+  putVenue: string,
+  callVenue: string,
+  putStrikePrice: string,
+  callStrikePrice: string
+) => (
+  <>
+    <OptionBlockContainer>
+      <Row align="middle">
+        <IconContainer>
+          <ProtocolIcon
+            src={protocolIcons[putVenue]}
+            alt={venueKeyToName(putVenue)}
+          />
+        </IconContainer>
+        <div>
+          <OptionTitle>{putStrikePrice} Put</OptionTitle>
+          <OptionSubTitle>{venueKeyToName(putVenue)}</OptionSubTitle>
+        </div>
+      </Row>
+    </OptionBlockContainer>
+
+    <PlusBlockContainer>
+      <PlusContainer>+</PlusContainer>
+    </PlusBlockContainer>
+
+    <OptionBlockContainer>
+      <Row align="middle">
+        <IconContainer>
+          <ProtocolIcon
+            src={protocolIcons[callVenue]}
+            alt={venueKeyToName(callVenue)}
+          />
+        </IconContainer>
+        <div>
+          <OptionTitle>{callStrikePrice} Call</OptionTitle>
+          <OptionSubTitle>{venueKeyToName(callVenue)}</OptionSubTitle>
+        </div>
+      </Row>
+    </OptionBlockContainer>
+  </>
+);
 
 const ProductInfo: React.FC<Props> = ({
   straddle,
@@ -101,6 +203,8 @@ const ProductInfo: React.FC<Props> = ({
   });
 
   let costStr;
+  let optionsStr;
+  optionsStr = "-";
   if (loadingTrade && amount > 0) {
     costStr = "Computing cost... Reload the page if this takes too long.";
   } else if (loadingTrade) {
@@ -109,7 +213,25 @@ const ProductInfo: React.FC<Props> = ({
     costStr = "Error loading cost. Try again.";
   } else {
     costStr = `$${straddleUSD} (${straddleETH} ETH)`;
+    optionsStr = UnderlyingOptionBlock(
+      putVenue,
+      callVenue,
+      `$${toUSD(putStrikePrice)}`,
+      `$${toUSD(callStrikePrice)}`
+    );
   }
+
+  // let optionsStr;
+  // if (loadingTrade) {
+  //   optionsStr = "-";
+  // } else {
+  //   optionsStr = UnderlyingOptionBlock(
+  //     putVenue,
+  //     callVenue,
+  //     `$${toUSD(putStrikePrice)}`,
+  //     `$${toUSD(callStrikePrice)}`
+  //   );
+  // }
 
   return (
     <>
@@ -133,58 +255,7 @@ const ProductInfo: React.FC<Props> = ({
 
       <DescriptionContainer>
         <DescriptionTitle>Underlying Options</DescriptionTitle>
-        <StyledStatistic
-          title="Underlying options"
-          hideValue={!loading}
-          value="Finding the best price..."
-          suffix={
-            !loading && (
-              <FlexDiv>
-                <UnderlyingContainer>
-                  <IconContainer>
-                    <ProtocolIcon
-                      src={protocolIcons[callVenue]}
-                      alt={venueKeyToName(callVenue)}
-                    />
-                  </IconContainer>
-                  <UnderlyingTermsContainer>
-                    <UnderlyingTitle>
-                      {venueKeyToName(callVenue)}
-                    </UnderlyingTitle>
-                    <UnderlyingStrike>
-                      ${toUSD(callStrikePrice)} Call
-                    </UnderlyingStrike>
-                    <UnderlyingStrike>
-                      Cost: {toSignificantDecimals(callPremium, 4)} ETH
-                    </UnderlyingStrike>
-                  </UnderlyingTermsContainer>
-                </UnderlyingContainer>
-
-                <PlusIcon>+</PlusIcon>
-
-                <UnderlyingContainer>
-                  <IconContainer>
-                    <ProtocolIcon
-                      src={protocolIcons[putVenue]}
-                      alt={venueKeyToName(putVenue)}
-                    />
-                  </IconContainer>
-                  <UnderlyingTermsContainer>
-                    <UnderlyingTitle>
-                      {venueKeyToName(putVenue)}
-                    </UnderlyingTitle>
-                    <UnderlyingStrike>
-                      ${toUSD(putStrikePrice)} Put
-                    </UnderlyingStrike>
-                    <UnderlyingStrike>
-                      Cost: {toSignificantDecimals(putPremium, 4)} ETH
-                    </UnderlyingStrike>
-                  </UnderlyingTermsContainer>
-                </UnderlyingContainer>
-              </FlexDiv>
-            )
-          }
-        ></StyledStatistic>
+        <DescriptionData>{optionsStr}</DescriptionData>
       </DescriptionContainer>
     </>
   );
