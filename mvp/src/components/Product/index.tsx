@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import { Row, Col } from "antd";
+import { Row, Col, Divider } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { BaseText, PrimaryText, StyledCard } from "../../designSystem";
 import { computeStraddleValue } from "../../utils/straddle";
@@ -16,6 +16,7 @@ import { useWeb3React } from "@web3-react/core";
 import { IAggregatedOptionsInstrumentFactory } from "../../codegen/IAggregatedOptionsInstrumentFactory";
 import useGasPrice from "../../hooks/useGasPrice";
 import PurchaseModal from "./PurchaseModal";
+import PayoffCalculator from "./PayoffCalculator";
 
 const ParentContainer = styled.div`
   @media (max-width: 500px) {
@@ -81,6 +82,27 @@ const WarningText = styled.p`
   font-style: normal;
   text-align: left;
   color: #999999;
+`;
+
+const CustomStyledCard = styled(StyledCard)`
+  box-shadow: 8px 16px 40px rgba(172, 172, 172, 0.24);
+  border-radius: 10px;
+  z-index: 1;
+`;
+
+const CustomStyledCardDark = styled(StyledCard)`
+  box-shadow: 0 0 0 0;
+  background: #f8f8f8;
+  border-radius: 10px;
+  border: 0px;
+  z-index: 0;
+`;
+
+const ProfitabilityTitle = styled(BaseText)`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  color: #000000;
 `;
 
 type PurchaseInstrumentWrapperProps = {};
@@ -206,7 +228,10 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
 
   if (straddle === null) return null;
 
-  const [, straddleETH] = computeStraddleValue(totalPremium, ethPrice);
+  const [straddleUSD, straddleETH] = computeStraddleValue(
+    totalPremium,
+    ethPrice
+  );
 
   const expiryTimestamp = new Date(straddle.expiryTimestamp * 1000);
 
@@ -238,7 +263,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
       </ProductHeader>
 
       <StyledRow>
-        <ContentContainer span={14}>
+        <ContentContainer span={12}>
           <ProductDescriptionContainer>
             {productDescription(product.name)}
           </ProductDescriptionContainer>
@@ -246,10 +271,12 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
           <ProductInfo
             straddle={straddle}
             amount={purchaseAmount}
+            callVenue={callVenue}
+            putVenue={putVenue}
           ></ProductInfo>
         </ContentContainer>
-        <ContentContainer span={9} offset={1}>
-          <StyledCard title="Buy ETH Strangle">
+        <ContentContainer span={11} offset={1}>
+          <CustomStyledCard title="Buy ETH Strangle">
             <DescriptionTitle>No. of contracts</DescriptionTitle>
             <AmountInput
               purchaseAmount={purchaseAmount}
@@ -263,7 +290,22 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
               onClick={() => setIsModalVisible(true)}
               purchaseAmount={purchaseAmount}
             ></PurchaseButton>
-          </StyledCard>
+          </CustomStyledCard>
+          <CustomStyledCardDark>
+            <ProfitabilityTitle>Profitability Calculator</ProfitabilityTitle>
+            <WarningText style={{ marginTop: 5 }}>
+              Enter your ETH price prediction to calculate your estimated
+              profit.
+            </WarningText>
+
+            <PayoffCalculator
+              ethPrice={ethPrice}
+              callStrikePrice={callStrikePrice}
+              putStrikePrice={putStrikePrice}
+              straddlePrice={straddleUSD}
+              amount={purchaseAmount}
+            ></PayoffCalculator>
+          </CustomStyledCardDark>
         </ContentContainer>
       </StyledRow>
     </ParentContainer>
