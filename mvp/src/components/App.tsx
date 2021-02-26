@@ -17,6 +17,7 @@ import Footer from "./Footer";
 import Disclaimer from "./Disclaimer";
 import { ETHPriceProvider } from "../hooks/useEthPrice";
 import FAQPage from "./FAQ";
+import PrivacyPage from "./Privacy";
 
 const AppContainer = styled.div``;
 
@@ -70,6 +71,12 @@ function AppRoot() {
                 </Route>
                 <Route exact path="/faq">
                   <FAQPage></FAQPage>
+                </Route>
+                <Route exact path="/terms">
+                  <FAQPage></FAQPage>
+                </Route>
+                <Route exact path="/privacy">
+                  <PrivacyPage></PrivacyPage>
                 </Route>
                 <Route path="*">
                   <Content404></Content404>
