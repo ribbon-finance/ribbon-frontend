@@ -124,6 +124,8 @@ const Footer = () => {
         <FooterLeft span="12">
           <NavAnchor href="/faq">FAQs</NavAnchor>
           <NavAnchor href="https://medium.com/@ribbonfinance">Blog</NavAnchor>
+          <NavAnchor href="/terms">Terms</NavAnchor>
+          <NavAnchor href="/privacy">Policy</NavAnchor>
         </FooterLeft>
         <FooterRight span="12">
           <a href="https://twitter.com/RibbonFinance">
