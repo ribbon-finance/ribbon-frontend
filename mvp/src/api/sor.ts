@@ -38,10 +38,10 @@ const HEGIC_MAX_STRIKE = ethers.utils.parseEther("1.05");
 
 const HEGIC_ADAPTER = deployments.mainnet.HegicAdapterLogic;
 const GAMMA_ADAPTER = deployments.mainnet.GammaAdapterLogic;
-const ADAPTER_ADDRESSES = [GAMMA_ADAPTER, HEGIC_ADAPTER];
-const VENUE_NAMES = [GAMMA_PROTOCOL, HEGIC_PROTOCOL];
-// const ADAPTER_ADDRESSES = [GAMMA_ADAPTER];
-// const VENUE_NAMES = [GAMMA_PROTOCOL];
+const ADAPTER_ADDRESSES = [GAMMA_ADAPTER];
+const VENUE_NAMES = [GAMMA_PROTOCOL];
+// const ADAPTER_ADDRESSES = [GAMMA_ADAPTER, HEGIC_ADAPTER];
+// const VENUE_NAMES = [GAMMA_PROTOCOL, HEGIC_PROTOCOL];
 
 export async function getBestTrade(
   tradeRequest: TradeRequest

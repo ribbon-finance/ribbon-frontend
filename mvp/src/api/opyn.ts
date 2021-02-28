@@ -6,8 +6,8 @@ import { CallPutPriceQuotes, ZeroExApiResponse } from "./types";
 import externalAddresses from "../constants/externalAddresses.json";
 import { GAMMA_PROTOCOL, getOptionTerms, MAX_UINT256 } from "./utils";
 
-const GAMMA_MIN_STRIKE = ethers.utils.parseEther("0.65");
-const GAMMA_MAX_STRIKE = ethers.utils.parseEther("1.05");
+const GAMMA_MIN_STRIKE = ethers.utils.parseEther("0.0001");
+const GAMMA_MAX_STRIKE = ethers.utils.parseEther("5");
 const ZERO_EX_API_URI = "https://api.0x.org/swap/v1/quote";
 
 const abiCoder = new ethers.utils.AbiCoder();
@@ -43,6 +43,9 @@ export async function get0xPrices(
     exists: false,
     venueName: GAMMA_PROTOCOL,
   };
+
+  console.log(otokenMatches.call);
+  console.log(otokenMatches.put);
 
   const callResponse =
     otokenMatches.call &&
@@ -207,6 +210,7 @@ async function get0xQuote(
 
   const query = new URLSearchParams(data).toString();
   const url = `${ZERO_EX_API_URI}?${query}`;
+  console.log(url);
 
   try {
     const response = await axios.get(url, { httpsAgent });
@@ -216,7 +220,7 @@ async function get0xQuote(
       error: false,
     };
   } catch (e) {
-    console.error(e.response.data);
+    // console.error(e.response.data);
     return { error: true };
   }
 }

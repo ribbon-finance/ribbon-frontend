@@ -17,9 +17,9 @@
 	"mainnet": {
 		"otokens": [
 			{
-				"address": "0x02c0c88112383ec98cbad38ad7a15af86e87d992",
-				"strikePrice": "216000000000",
-				"expiry": "1613721600",
+				"address": "0x14f673debac4001591c61891f84f86a538ad2537",
+				"strikePrice": "212000000000",
+				"expiry": "1615536000",
 				"isPut": false
 			},
 			{
@@ -32,6 +32,12 @@
 				"address": "0x32a752748d035e471150fa6f6775ebdd305b13ec",
 				"strikePrice": "112000000000",
 				"expiry": "1614326400",
+				"isPut": true
+			},
+			{
+				"address": "0x3955164931ebb01d6228e4de5f8d247d7a35316d",
+				"strikePrice": "168000000000",
+				"expiry": "1615536000",
 				"isPut": true
 			},
 			{
@@ -53,6 +59,12 @@
 				"isPut": true
 			},
 			{
+				"address": "0x58b869f42240e94d1fddd867b3a599bebeaac600",
+				"strikePrice": "240000000000",
+				"expiry": "1615536000",
+				"isPut": false
+			},
+			{
 				"address": "0x58cea0b182381cde8c38cb16bf7f8260cba9997f",
 				"strikePrice": "80000000000",
 				"expiry": "1616745600",
@@ -65,34 +77,16 @@
 				"isPut": false
 			},
 			{
-				"address": "0x5f911d7fc6be1270c223beeaa57a02f7b2950dd3",
-				"strikePrice": "192000000000",
-				"expiry": "1613721600",
-				"isPut": false
-			},
-			{
 				"address": "0x60ad22806b89dd17b2ecfe220c3712a2c86dfffe",
 				"strikePrice": "80000000000",
 				"expiry": "1614326400",
 				"isPut": false
 			},
 			{
-				"address": "0x651087b9fdc7852b086ebca65f26274ca32c5c3e",
-				"strikePrice": "128000000000",
-				"expiry": "1613721600",
-				"isPut": true
-			},
-			{
 				"address": "0x6933eb5986cfae7b63f38b0bd6cd94e8e463e7d0",
 				"strikePrice": "160000000000",
 				"expiry": "1616745600",
 				"isPut": false
-			},
-			{
-				"address": "0x721ab71cc2f586fe2e6e0aa289dd0cdb69cae597",
-				"strikePrice": "144000000000",
-				"expiry": "1613721600",
-				"isPut": true
 			},
 			{
 				"address": "0x7431b39b4bbb0a7af88dba1c5a7c3c6895cce2db",
@@ -137,10 +131,10 @@
 				"isPut": false
 			},
 			{
-				"address": "0xd75f4cb00d5fe63f16a1dc7a06303b8de65083fa",
-				"strikePrice": "168000000000",
-				"expiry": "1613721600",
-				"isPut": false
+				"address": "0xcf16d3fc24b152b4371042c890eb3e35a2b2bd7e",
+				"strikePrice": "180000000000",
+				"expiry": "1615536000",
+				"isPut": true
 			},
 			{
 				"address": "0xf020af8211f5e4a9642a2a2774f7afc654d885bf",
