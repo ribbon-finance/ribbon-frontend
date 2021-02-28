@@ -283,8 +283,12 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
               onChange={updatePurchaseAmount}
             ></AmountInput>
 
-            <WarningText style={{ marginTop: 10 }}>
+            {/* <WarningText style={{ marginTop: 10 }}>
               You can buy less than 1 contract.
+            </WarningText> */}
+            <WarningText style={{ marginTop: 10 }}>
+              ETH Strangle purchases are disabled now due to lack of liquidity
+              in underlying options.
             </WarningText>
             <PurchaseButton
               onClick={() => setIsModalVisible(true)}
