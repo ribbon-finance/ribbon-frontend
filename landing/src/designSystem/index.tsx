@@ -10,6 +10,9 @@ export const SecondaryFont = styled.span`
 
 export const PrimaryText = styled(BaseText)`
   font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
 `;
 
 export const PrimaryMedium = styled(BaseText)`
@@ -24,12 +27,12 @@ export const SecondaryText = styled(BaseText)`
 `;
 
 export const Title = styled(BaseText)`
+  font-family: Orbitron;
   font-style: normal;
-  font-weight: bold;
-  font-size: 30px;
-  line-height: 56px;
-  text-align: center;
-  color: #000000;
+  font-weight: normal;
+  font-size: 64px;
+  color: #ffffff;
+  line-height: 80px;
 `;
 
 export const ProductContainer = styled.div`
@@ -49,4 +52,8 @@ export const Button = styled.button`
   outline: none;
   box-shadow: none;
   text-align: center;
+  padding: 14px;
+  background: #ffffff;
+  border-radius: 8px;
+  pointer-events: auto;
 `;

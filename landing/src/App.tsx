@@ -1,4 +1,5 @@
 import Header from "./components/Header";
+import Hero from "./components/Hero";
 import styled from "styled-components";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
@@ -12,6 +13,7 @@ function App() {
     <div>
       <Router>
         <Header />
+        <Hero />
       </Router>
     </div>
   );
