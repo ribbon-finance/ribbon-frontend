@@ -2,6 +2,7 @@ import Header from "./components/Header";
 import Hero from "./components/Hero";
 import ProductCarousel from "./components/ProductCarousel";
 import Mission from "./components/Mission";
+import Investors from "./components/Investors";
 
 import styled from "styled-components";
 
@@ -21,6 +22,7 @@ function App() {
         <MainContent>
           <ProductCarousel />
           <Mission />
+          <Investors />
         </MainContent>
       </Router>
     </div>
