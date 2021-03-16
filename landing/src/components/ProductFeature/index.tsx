@@ -13,6 +13,7 @@ const MainContainer = styled(Container)`
 const ProductFeatureTitle = styled(Title)`
   font-size: 64px;
   line-height: 80px;
+  text-align: center;
 `;
 
 const ProductFeatureRow = styled(Row)`
