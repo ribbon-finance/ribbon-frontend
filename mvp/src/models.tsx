@@ -34,6 +34,14 @@ export type Straddle = BasicStraddle & {
 export const PUT_OPTION_TYPE = 1;
 export const CALL_OPTION_TYPE = 2;
 
+export const HEGIC_VENUE = 1;
+export const OPYN_VENUE = 2;
+
+export const VENUE_MAP: Record<string, number> = {
+  HEGIC: HEGIC_VENUE,
+  OPYN_GAMMA: OPYN_VENUE,
+};
+
 export type StraddleTrade = {
   venues: string[];
   callVenue: string;
@@ -48,6 +56,8 @@ export type StraddleTrade = {
   gasPrice: BigNumber;
   strikePrices: BigNumber[];
   optionTypes: number[];
+  callIndex: number;
+  putIndex: number;
 };
 
 export type Product = {
@@ -65,6 +75,8 @@ export type TradeResponse = {
   gasPrice: string;
   totalPremium: string;
   premiums: string[];
+  callIndex: number;
+  putIndex: number;
 };
 
 export type PositionsQuery = {

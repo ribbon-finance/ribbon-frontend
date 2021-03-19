@@ -19,6 +19,8 @@ export type TradeResponse = {
   gasPrice: string;
   totalPremium: string;
   premiums: string[];
+  callIndex: number;
+  putIndex: number;
 };
 
 export type ZeroExApiResponse = {

@@ -100,6 +100,8 @@ export async function getBestTrade(
     gasPrice,
     totalPremium,
     premiums,
+    putIndex: 0,
+    callIndex: 1,
   };
 }
 
