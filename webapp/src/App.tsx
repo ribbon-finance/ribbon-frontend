@@ -7,7 +7,6 @@ function App() {
     <Router>
       <div>
         <Header />
-        <div style={{height: '100px'}}></div>
       </div>
     </Router>
   );
