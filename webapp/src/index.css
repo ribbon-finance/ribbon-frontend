@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'VCR';
+  src: local('VCR'), url(./assets/fonts/VCR_OSD_MONO.ttf) format('truetype');
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,6 +10,15 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  background-image: url('./assets/img/noise.png');
+  background-color: #1C1A19;
+}
+
+@media screen and (max-width: 700px) {
+  body {
+    background-image: none;
+  }
 }
 
 code {
