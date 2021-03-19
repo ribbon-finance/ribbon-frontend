@@ -194,7 +194,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
         ></StyledStatistic>
       </StatisticRow>
 
-      <StatisticRow>
+      {/* <StatisticRow>
         <StyledStatistic
           title="Gas savings"
           hideValue={true}
@@ -222,7 +222,7 @@ const PurchaseModal: React.FC<PurchaseModalProps> = ({
             </div>
           }
         ></StyledStatistic>
-      </StatisticRow>
+      </StatisticRow> */}
 
       <StatisticRow style={{ marginBottom: 0 }}>
         <StyledStatistic
