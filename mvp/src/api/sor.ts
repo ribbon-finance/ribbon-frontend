@@ -22,6 +22,7 @@ import {
 } from "./utils";
 import { get0xPrices } from "./opyn";
 
+const { constants } = ethers;
 const provider = getProvider();
 const abiCoder = new ethers.utils.AbiCoder();
 
@@ -183,6 +184,7 @@ async function getPriceFromContract(
     ...optionTermsFromContract,
     strikePrice: optionType === CALL_OPTION ? callStrikePrice : putStrikePrice,
     optionType,
+    paymentToken: constants.AddressZero,
   }));
 
   const calls = optionTerms.map((optionTerm) => ({
