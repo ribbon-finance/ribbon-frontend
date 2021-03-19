@@ -24,40 +24,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "string[]",
-        name: "venues",
-        type: "string[]",
-      },
-      {
-        internalType: "enum OptionType[]",
-        name: "optionTypes",
-        type: "uint8[]",
-      },
-      {
-        internalType: "uint256[]",
-        name: "amounts",
-        type: "uint256[]",
-      },
-      {
-        internalType: "uint256[]",
-        name: "strikePrices",
-        type: "uint256[]",
-      },
-    ],
-    name: "cost",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "address",
         name: "account",
         type: "address",
@@ -106,29 +72,61 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "string[]",
-        name: "venues",
-        type: "string[]",
-      },
-      {
-        internalType: "enum OptionType[]",
-        name: "optionTypes",
-        type: "uint8[]",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256[]",
-        name: "strikePrices",
-        type: "uint256[]",
-      },
-      {
-        internalType: "bytes[]",
-        name: "buyData",
-        type: "bytes[]",
+        components: [
+          {
+            internalType: "uint8",
+            name: "callVenue",
+            type: "uint8",
+          },
+          {
+            internalType: "uint8",
+            name: "putVenue",
+            type: "uint8",
+          },
+          {
+            internalType: "address",
+            name: "paymentToken",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "callStrikePrice",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "putStrikePrice",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "callMaxCost",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "putMaxCost",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "callBuyData",
+            type: "bytes",
+          },
+          {
+            internalType: "bytes",
+            name: "putBuyData",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct IAggregatedOptionsInstrument.BuyInstrumentParams",
+        name: "params",
+        type: "tuple",
       },
     ],
     name: "buyInstrument",

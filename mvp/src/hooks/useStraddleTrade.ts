@@ -23,6 +23,8 @@ const emptyTrade = {
   gasPrice: zero,
   strikePrices: [],
   optionTypes: [],
+  callIndex: 0,
+  putIndex: 0,
 };
 
 const SOR_API_URL = "/api/sor";
@@ -96,28 +98,25 @@ const convertTradeResponseToStraddleTrade = (
     buyData,
     gasPrice,
     optionTypes,
+    callIndex,
+    putIndex,
   } = response;
-
-  const putIndex = optionTypes.findIndex((o) => o === 1);
-  const callIndex = optionTypes.findIndex((o) => o === 2);
-  const putExists = putIndex !== -1;
-  const callExists = callIndex !== -1;
 
   return {
     venues,
-    callVenue: callExists ? venues[callIndex] : "",
-    putVenue: putExists ? venues[putIndex] : "",
+    callVenue: venues[callIndex],
+    putVenue: venues[putIndex],
     totalPremium: BigNumber.from(totalPremium),
     amounts: amounts.map((a) => BigNumber.from(a)),
-    callPremium: callExists ? BigNumber.from(premiums[callIndex]) : zero,
-    callStrikePrice: callExists
-      ? BigNumber.from(strikePrices[callIndex])
-      : zero,
-    putPremium: putExists ? BigNumber.from(premiums[putIndex]) : zero,
-    putStrikePrice: putExists ? BigNumber.from(strikePrices[putIndex]) : zero,
+    callPremium: BigNumber.from(premiums[callIndex]),
+    callStrikePrice: BigNumber.from(strikePrices[callIndex]),
+    putPremium: BigNumber.from(premiums[putIndex]),
+    putStrikePrice: BigNumber.from(strikePrices[putIndex]),
     strikePrices: strikePrices.map((s) => BigNumber.from(s)),
     optionTypes,
     buyData,
     gasPrice: BigNumber.from(gasPrice),
+    callIndex,
+    putIndex,
   };
 };

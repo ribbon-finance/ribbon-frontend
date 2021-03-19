@@ -13,6 +13,7 @@ import {
 import {
   Contract,
   ContractTransaction,
+  Overrides,
   PayableOverrides,
   CallOverrides,
 } from "@ethersproject/contracts";
@@ -30,8 +31,10 @@ interface IProtocolAdapterInterface extends ethers.utils.Interface {
     "premium(tuple,uint256)": FunctionFragment;
     "exerciseProfit(address,uint256,uint256)": FunctionFragment;
     "canExercise(address,uint256,uint256)": FunctionFragment;
-    "purchase(tuple,uint256)": FunctionFragment;
+    "purchase(tuple,uint256,uint256)": FunctionFragment;
     "exercise(address,uint256,uint256,address)": FunctionFragment;
+    "createShort(tuple,uint256)": FunctionFragment;
+    "closeShort()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -56,6 +59,7 @@ interface IProtocolAdapterInterface extends ethers.utils.Interface {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       }
     ]
   ): string;
@@ -69,6 +73,7 @@ interface IProtocolAdapterInterface extends ethers.utils.Interface {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       }
     ]
   ): string;
@@ -82,6 +87,7 @@ interface IProtocolAdapterInterface extends ethers.utils.Interface {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       BigNumberish
     ]
@@ -104,13 +110,34 @@ interface IProtocolAdapterInterface extends ethers.utils.Interface {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
+      BigNumberish,
       BigNumberish
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "exercise",
     values: [string, BigNumberish, BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "createShort",
+    values: [
+      {
+        underlying: string;
+        strikeAsset: string;
+        collateralAsset: string;
+        expiry: BigNumberish;
+        strikePrice: BigNumberish;
+        optionType: BigNumberish;
+        paymentToken: string;
+      },
+      BigNumberish
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "closeShort",
+    values?: undefined
   ): string;
 
   decodeFunctionResult(
@@ -144,10 +171,15 @@ interface IProtocolAdapterInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "purchase", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "exercise", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "createShort",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "closeShort", data: BytesLike): Result;
 
   events: {
     "Exercised(address,address,uint256,uint256,uint256)": EventFragment;
-    "Purchased(address,string,address,address,uint256,uint256,uint8,uint256,uint256,uint256)": EventFragment;
+    "Purchased(address,string,address,uint256,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Exercised"): EventFragment;
@@ -230,6 +262,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       overrides?: CallOverrides
     ): Promise<{
@@ -244,6 +277,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       overrides?: CallOverrides
     ): Promise<{
@@ -258,6 +292,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       overrides?: CallOverrides
     ): Promise<{
@@ -272,6 +307,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       overrides?: CallOverrides
     ): Promise<{
@@ -286,6 +322,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       purchaseAmount: BigNumberish,
       overrides?: CallOverrides
@@ -302,6 +339,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       purchaseAmount: BigNumberish,
       overrides?: CallOverrides
@@ -368,12 +406,14 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       amount: BigNumberish,
+      maxCost: BigNumberish,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
-    "purchase(tuple,uint256)"(
+    "purchase(tuple,uint256,uint256)"(
       optionTerms: {
         underlying: string;
         strikeAsset: string;
@@ -381,8 +421,10 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       amount: BigNumberish,
+      maxCost: BigNumberish,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
@@ -415,6 +457,44 @@ export class IProtocolAdapter extends Contract {
       recipient: string,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
+
+    createShort(
+      optionTerms: {
+        underlying: string;
+        strikeAsset: string;
+        collateralAsset: string;
+        expiry: BigNumberish;
+        strikePrice: BigNumberish;
+        optionType: BigNumberish;
+        paymentToken: string;
+      },
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "createShort(tuple,uint256)"(
+      optionTerms: {
+        underlying: string;
+        strikeAsset: string;
+        collateralAsset: string;
+        expiry: BigNumberish;
+        strikePrice: BigNumberish;
+        optionType: BigNumberish;
+        paymentToken: string;
+      },
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Closes an existing short position. In the future, we may want to open this up to specifying a particular short position to close.
+     */
+    closeShort(overrides?: Overrides): Promise<ContractTransaction>;
+
+    /**
+     * Closes an existing short position. In the future, we may want to open this up to specifying a particular short position to close.
+     */
+    "closeShort()"(overrides?: Overrides): Promise<ContractTransaction>;
   };
 
   /**
@@ -455,6 +535,7 @@ export class IProtocolAdapter extends Contract {
       expiry: BigNumberish;
       strikePrice: BigNumberish;
       optionType: BigNumberish;
+      paymentToken: string;
     },
     overrides?: CallOverrides
   ): Promise<boolean>;
@@ -467,6 +548,7 @@ export class IProtocolAdapter extends Contract {
       expiry: BigNumberish;
       strikePrice: BigNumberish;
       optionType: BigNumberish;
+      paymentToken: string;
     },
     overrides?: CallOverrides
   ): Promise<boolean>;
@@ -479,6 +561,7 @@ export class IProtocolAdapter extends Contract {
       expiry: BigNumberish;
       strikePrice: BigNumberish;
       optionType: BigNumberish;
+      paymentToken: string;
     },
     overrides?: CallOverrides
   ): Promise<string>;
@@ -491,6 +574,7 @@ export class IProtocolAdapter extends Contract {
       expiry: BigNumberish;
       strikePrice: BigNumberish;
       optionType: BigNumberish;
+      paymentToken: string;
     },
     overrides?: CallOverrides
   ): Promise<string>;
@@ -503,6 +587,7 @@ export class IProtocolAdapter extends Contract {
       expiry: BigNumberish;
       strikePrice: BigNumberish;
       optionType: BigNumberish;
+      paymentToken: string;
     },
     purchaseAmount: BigNumberish,
     overrides?: CallOverrides
@@ -516,6 +601,7 @@ export class IProtocolAdapter extends Contract {
       expiry: BigNumberish;
       strikePrice: BigNumberish;
       optionType: BigNumberish;
+      paymentToken: string;
     },
     purchaseAmount: BigNumberish,
     overrides?: CallOverrides
@@ -569,12 +655,14 @@ export class IProtocolAdapter extends Contract {
       expiry: BigNumberish;
       strikePrice: BigNumberish;
       optionType: BigNumberish;
+      paymentToken: string;
     },
     amount: BigNumberish,
+    maxCost: BigNumberish,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
-  "purchase(tuple,uint256)"(
+  "purchase(tuple,uint256,uint256)"(
     optionTerms: {
       underlying: string;
       strikeAsset: string;
@@ -582,8 +670,10 @@ export class IProtocolAdapter extends Contract {
       expiry: BigNumberish;
       strikePrice: BigNumberish;
       optionType: BigNumberish;
+      paymentToken: string;
     },
     amount: BigNumberish,
+    maxCost: BigNumberish,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
@@ -616,6 +706,44 @@ export class IProtocolAdapter extends Contract {
     recipient: string,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
+
+  createShort(
+    optionTerms: {
+      underlying: string;
+      strikeAsset: string;
+      collateralAsset: string;
+      expiry: BigNumberish;
+      strikePrice: BigNumberish;
+      optionType: BigNumberish;
+      paymentToken: string;
+    },
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "createShort(tuple,uint256)"(
+    optionTerms: {
+      underlying: string;
+      strikeAsset: string;
+      collateralAsset: string;
+      expiry: BigNumberish;
+      strikePrice: BigNumberish;
+      optionType: BigNumberish;
+      paymentToken: string;
+    },
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Closes an existing short position. In the future, we may want to open this up to specifying a particular short position to close.
+   */
+  closeShort(overrides?: Overrides): Promise<ContractTransaction>;
+
+  /**
+   * Closes an existing short position. In the future, we may want to open this up to specifying a particular short position to close.
+   */
+  "closeShort()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   callStatic: {
     /**
@@ -656,6 +784,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -668,6 +797,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -680,6 +810,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       overrides?: CallOverrides
     ): Promise<string>;
@@ -692,6 +823,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       overrides?: CallOverrides
     ): Promise<string>;
@@ -704,6 +836,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       purchaseAmount: BigNumberish,
       overrides?: CallOverrides
@@ -717,6 +850,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       purchaseAmount: BigNumberish,
       overrides?: CallOverrides
@@ -770,12 +904,14 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       amount: BigNumberish,
+      maxCost: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "purchase(tuple,uint256)"(
+    "purchase(tuple,uint256,uint256)"(
       optionTerms: {
         underlying: string;
         strikeAsset: string;
@@ -783,8 +919,10 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       amount: BigNumberish,
+      maxCost: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -817,6 +955,44 @@ export class IProtocolAdapter extends Contract {
       recipient: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    createShort(
+      optionTerms: {
+        underlying: string;
+        strikeAsset: string;
+        collateralAsset: string;
+        expiry: BigNumberish;
+        strikePrice: BigNumberish;
+        optionType: BigNumberish;
+        paymentToken: string;
+      },
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "createShort(tuple,uint256)"(
+      optionTerms: {
+        underlying: string;
+        strikeAsset: string;
+        collateralAsset: string;
+        expiry: BigNumberish;
+        strikePrice: BigNumberish;
+        optionType: BigNumberish;
+        paymentToken: string;
+      },
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Closes an existing short position. In the future, we may want to open this up to specifying a particular short position to close.
+     */
+    closeShort(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Closes an existing short position. In the future, we may want to open this up to specifying a particular short position to close.
+     */
+    "closeShort()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {
@@ -832,12 +1008,7 @@ export class IProtocolAdapter extends Contract {
       caller: string | null,
       protocolName: string | null,
       underlying: string | null,
-      strikeAsset: null,
-      expiry: null,
-      strikePrice: null,
-      optionType: null,
       amount: null,
-      premium: null,
       optionID: null
     ): EventFilter;
   };
@@ -881,6 +1052,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -893,6 +1065,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -905,6 +1078,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -917,6 +1091,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -929,6 +1104,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       purchaseAmount: BigNumberish,
       overrides?: CallOverrides
@@ -942,6 +1118,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       purchaseAmount: BigNumberish,
       overrides?: CallOverrides
@@ -995,12 +1172,14 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       amount: BigNumberish,
+      maxCost: BigNumberish,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
-    "purchase(tuple,uint256)"(
+    "purchase(tuple,uint256,uint256)"(
       optionTerms: {
         underlying: string;
         strikeAsset: string;
@@ -1008,8 +1187,10 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       amount: BigNumberish,
+      maxCost: BigNumberish,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
@@ -1042,6 +1223,44 @@ export class IProtocolAdapter extends Contract {
       recipient: string,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
+
+    createShort(
+      optionTerms: {
+        underlying: string;
+        strikeAsset: string;
+        collateralAsset: string;
+        expiry: BigNumberish;
+        strikePrice: BigNumberish;
+        optionType: BigNumberish;
+        paymentToken: string;
+      },
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "createShort(tuple,uint256)"(
+      optionTerms: {
+        underlying: string;
+        strikeAsset: string;
+        collateralAsset: string;
+        expiry: BigNumberish;
+        strikePrice: BigNumberish;
+        optionType: BigNumberish;
+        paymentToken: string;
+      },
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Closes an existing short position. In the future, we may want to open this up to specifying a particular short position to close.
+     */
+    closeShort(overrides?: Overrides): Promise<BigNumber>;
+
+    /**
+     * Closes an existing short position. In the future, we may want to open this up to specifying a particular short position to close.
+     */
+    "closeShort()"(overrides?: Overrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -1085,6 +1304,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1097,6 +1317,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1109,6 +1330,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1121,6 +1343,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1133,6 +1356,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       purchaseAmount: BigNumberish,
       overrides?: CallOverrides
@@ -1146,6 +1370,7 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       purchaseAmount: BigNumberish,
       overrides?: CallOverrides
@@ -1199,12 +1424,14 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       amount: BigNumberish,
+      maxCost: BigNumberish,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
-    "purchase(tuple,uint256)"(
+    "purchase(tuple,uint256,uint256)"(
       optionTerms: {
         underlying: string;
         strikeAsset: string;
@@ -1212,8 +1439,10 @@ export class IProtocolAdapter extends Contract {
         expiry: BigNumberish;
         strikePrice: BigNumberish;
         optionType: BigNumberish;
+        paymentToken: string;
       },
       amount: BigNumberish,
+      maxCost: BigNumberish,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1246,5 +1475,43 @@ export class IProtocolAdapter extends Contract {
       recipient: string,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
+
+    createShort(
+      optionTerms: {
+        underlying: string;
+        strikeAsset: string;
+        collateralAsset: string;
+        expiry: BigNumberish;
+        strikePrice: BigNumberish;
+        optionType: BigNumberish;
+        paymentToken: string;
+      },
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "createShort(tuple,uint256)"(
+      optionTerms: {
+        underlying: string;
+        strikeAsset: string;
+        collateralAsset: string;
+        expiry: BigNumberish;
+        strikePrice: BigNumberish;
+        optionType: BigNumberish;
+        paymentToken: string;
+      },
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Closes an existing short position. In the future, we may want to open this up to specifying a particular short position to close.
+     */
+    closeShort(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Closes an existing short position. In the future, we may want to open this up to specifying a particular short position to close.
+     */
+    "closeShort()"(overrides?: Overrides): Promise<PopulatedTransaction>;
   };
 }

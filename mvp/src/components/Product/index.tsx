@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import { Row, Col, Divider } from "antd";
+import { Row, Col } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { BaseText, PrimaryText, StyledCard } from "../../designSystem";
 import { computeStraddleValue } from "../../utils/straddle";
@@ -17,6 +17,9 @@ import { IAggregatedOptionsInstrumentFactory } from "../../codegen/IAggregatedOp
 import useGasPrice from "../../hooks/useGasPrice";
 import PurchaseModal from "./PurchaseModal";
 import PayoffCalculator from "./PayoffCalculator";
+import { VENUE_MAP } from "../../models";
+
+const { constants } = ethers;
 
 const ParentContainer = styled.div`
   @media (max-width: 500px) {
@@ -154,16 +157,19 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
     callStrikePrice,
     putStrikePrice,
     strikePrices,
-    optionTypes,
     venues,
     amounts,
     buyData,
+    callIndex,
+    putIndex,
     gasPrice: recommendedGasPrice,
   } = useStraddleTrade(
     straddle ? straddle.address : "",
     ethPrice,
     purchaseAmountWei
   );
+  const callPremiumStr = callPremium.toString();
+  const putPremiumStr = putPremium.toString();
 
   const gasPrice = recommendedGasPrice.toNumber() || currentGasPrice;
 
@@ -187,18 +193,24 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
           );
           const useHigherGasLimit = venues.includes("OPYN_GAMMA");
 
-          const receipt = await instrument.buyInstrument(
-            venues,
-            optionTypes,
-            amounts[0],
-            strikePrices,
-            buyData,
-            {
-              value: totalPremium,
-              gasPrice,
-              gasLimit: useHigherGasLimit ? 1400000 : 1200000,
-            }
-          );
+          const params = {
+            callVenue: VENUE_MAP[venues[callIndex]],
+            putVenue: VENUE_MAP[venues[putIndex]],
+            paymentToken: constants.AddressZero,
+            callStrikePrice: strikePrices[callIndex],
+            putStrikePrice: strikePrices[putIndex],
+            amount: amounts[0],
+            callMaxCost: callPremiumStr,
+            putMaxCost: putPremiumStr,
+            callBuyData: buyData[callIndex],
+            putBuyData: buyData[putIndex],
+          };
+
+          const receipt = await instrument.buyInstrument(params, {
+            value: totalPremium,
+            gasPrice,
+            gasLimit: useHigherGasLimit ? 1400000 : 1200000,
+          });
           setIsWaitingForConfirmation();
 
           await receipt.wait(1);
@@ -220,9 +232,12 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
       venues,
       gasPrice,
       totalPremium,
-      optionTypes,
       strikePrices,
       history,
+      callIndex,
+      putIndex,
+      callPremiumStr,
+      putPremiumStr,
     ]
   );
 
@@ -283,13 +298,13 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
               onChange={updatePurchaseAmount}
             ></AmountInput>
 
-            {/* <WarningText style={{ marginTop: 10 }}>
-              You can buy less than 1 contract.
-            </WarningText> */}
             <WarningText style={{ marginTop: 10 }}>
+              You can buy less than 1 contract.
+            </WarningText>
+            {/* <WarningText style={{ marginTop: 10 }}>
               ETH Strangle purchases are disabled now due to lack of liquidity
               in underlying options.
-            </WarningText>
+            </WarningText> */}
             <PurchaseButton
               onClick={() => setIsModalVisible(true)}
               purchaseAmount={purchaseAmount}

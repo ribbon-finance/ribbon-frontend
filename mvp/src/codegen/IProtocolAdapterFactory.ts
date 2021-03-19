@@ -77,38 +77,8 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: "address",
-        name: "strikeAsset",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "expiry",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "strikePrice",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "enum OptionType",
-        name: "optionType",
-        type: "uint8",
-      },
-      {
-        indexed: false,
         internalType: "uint256",
         name: "amount",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "premium",
         type: "uint256",
       },
       {
@@ -152,7 +122,7 @@ const _abi = [
     name: "purchaseMethod",
     outputs: [
       {
-        internalType: "enum PurchaseMethod",
+        internalType: "enum ProtocolAdapterTypes.PurchaseMethod",
         name: "",
         type: "uint8",
       },
@@ -190,12 +160,17 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "enum OptionType",
+            internalType: "enum ProtocolAdapterTypes.OptionType",
             name: "optionType",
             type: "uint8",
           },
+          {
+            internalType: "address",
+            name: "paymentToken",
+            type: "address",
+          },
         ],
-        internalType: "struct OptionTerms",
+        internalType: "struct ProtocolAdapterTypes.OptionTerms",
         name: "optionTerms",
         type: "tuple",
       },
@@ -241,12 +216,17 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "enum OptionType",
+            internalType: "enum ProtocolAdapterTypes.OptionType",
             name: "optionType",
             type: "uint8",
           },
+          {
+            internalType: "address",
+            name: "paymentToken",
+            type: "address",
+          },
         ],
-        internalType: "struct OptionTerms",
+        internalType: "struct ProtocolAdapterTypes.OptionTerms",
         name: "optionTerms",
         type: "tuple",
       },
@@ -292,12 +272,17 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "enum OptionType",
+            internalType: "enum ProtocolAdapterTypes.OptionType",
             name: "optionType",
             type: "uint8",
           },
+          {
+            internalType: "address",
+            name: "paymentToken",
+            type: "address",
+          },
         ],
-        internalType: "struct OptionTerms",
+        internalType: "struct ProtocolAdapterTypes.OptionTerms",
         name: "optionTerms",
         type: "tuple",
       },
@@ -406,18 +391,28 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "enum OptionType",
+            internalType: "enum ProtocolAdapterTypes.OptionType",
             name: "optionType",
             type: "uint8",
           },
+          {
+            internalType: "address",
+            name: "paymentToken",
+            type: "address",
+          },
         ],
-        internalType: "struct OptionTerms",
+        internalType: "struct ProtocolAdapterTypes.OptionTerms",
         name: "optionTerms",
         type: "tuple",
       },
       {
         internalType: "uint256",
         name: "amount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "maxCost",
         type: "uint256",
       },
     ],
@@ -458,6 +453,80 @@ const _abi = [
     name: "exercise",
     outputs: [],
     stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "underlying",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "strikeAsset",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "collateralAsset",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "expiry",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "strikePrice",
+            type: "uint256",
+          },
+          {
+            internalType: "enum ProtocolAdapterTypes.OptionType",
+            name: "optionType",
+            type: "uint8",
+          },
+          {
+            internalType: "address",
+            name: "paymentToken",
+            type: "address",
+          },
+        ],
+        internalType: "struct ProtocolAdapterTypes.OptionTerms",
+        name: "optionTerms",
+        type: "tuple",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "createShort",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "closeShort",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];

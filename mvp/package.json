@@ -44,7 +44,7 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "codegen": "npx typechain --target=ethers-v5 --outDir src/codegen 'src/constants/abis/\\*.json' && echo 'export {};' >> src/codegen/index.ts"
+    "codegen": "npx typechain --target=ethers-v5 --outDir src/codegen 'src/constants/abis/*.json' && echo 'export {};' >> src/codegen/index.ts"
   },
   "eslintConfig": {
     "extends": [

@@ -23,10 +23,9 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface IAggregatedOptionsInstrumentInterface extends ethers.utils.Interface {
   functions: {
-    "cost(string[],uint8[],uint256[],uint256[])": FunctionFragment;
     "exerciseProfit(address,uint256)": FunctionFragment;
     "canExercise(address,uint256)": FunctionFragment;
-    "buyInstrument(string[],uint8[],uint256,uint256[],bytes[])": FunctionFragment;
+    "buyInstrument(tuple)": FunctionFragment;
     "exercisePosition(uint256)": FunctionFragment;
     "underlying()": FunctionFragment;
     "strikeAsset()": FunctionFragment;
@@ -35,10 +34,6 @@ interface IAggregatedOptionsInstrumentInterface extends ethers.utils.Interface {
     "getInstrumentPositions(address)": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "cost",
-    values: [string[], BigNumberish[], BigNumberish[], BigNumberish[]]
-  ): string;
   encodeFunctionData(
     functionFragment: "exerciseProfit",
     values: [string, BigNumberish]
@@ -50,11 +45,18 @@ interface IAggregatedOptionsInstrumentInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "buyInstrument",
     values: [
-      string[],
-      BigNumberish[],
-      BigNumberish,
-      BigNumberish[],
-      BytesLike[]
+      {
+        callVenue: BigNumberish;
+        putVenue: BigNumberish;
+        paymentToken: string;
+        callStrikePrice: BigNumberish;
+        putStrikePrice: BigNumberish;
+        amount: BigNumberish;
+        callMaxCost: BigNumberish;
+        putMaxCost: BigNumberish;
+        callBuyData: BytesLike;
+        putBuyData: BytesLike;
+      }
     ]
   ): string;
   encodeFunctionData(
@@ -79,7 +81,6 @@ interface IAggregatedOptionsInstrumentInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
 
-  decodeFunctionResult(functionFragment: "cost", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "exerciseProfit",
     data: BytesLike
@@ -128,26 +129,6 @@ export class IAggregatedOptionsInstrument extends Contract {
   interface: IAggregatedOptionsInstrumentInterface;
 
   functions: {
-    cost(
-      venues: string[],
-      optionTypes: BigNumberish[],
-      amounts: BigNumberish[],
-      strikePrices: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "cost(string[],uint8[],uint256[],uint256[])"(
-      venues: string[],
-      optionTypes: BigNumberish[],
-      amounts: BigNumberish[],
-      strikePrices: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
     exerciseProfit(
       account: string,
       positionID: BigNumberish,
@@ -181,20 +162,34 @@ export class IAggregatedOptionsInstrument extends Contract {
     }>;
 
     buyInstrument(
-      venues: string[],
-      optionTypes: BigNumberish[],
-      amount: BigNumberish,
-      strikePrices: BigNumberish[],
-      buyData: BytesLike[],
+      params: {
+        callVenue: BigNumberish;
+        putVenue: BigNumberish;
+        paymentToken: string;
+        callStrikePrice: BigNumberish;
+        putStrikePrice: BigNumberish;
+        amount: BigNumberish;
+        callMaxCost: BigNumberish;
+        putMaxCost: BigNumberish;
+        callBuyData: BytesLike;
+        putBuyData: BytesLike;
+      },
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
-    "buyInstrument(string[],uint8[],uint256,uint256[],bytes[])"(
-      venues: string[],
-      optionTypes: BigNumberish[],
-      amount: BigNumberish,
-      strikePrices: BigNumberish[],
-      buyData: BytesLike[],
+    "buyInstrument(tuple)"(
+      params: {
+        callVenue: BigNumberish;
+        putVenue: BigNumberish;
+        paymentToken: string;
+        callStrikePrice: BigNumberish;
+        putStrikePrice: BigNumberish;
+        amount: BigNumberish;
+        callMaxCost: BigNumberish;
+        putMaxCost: BigNumberish;
+        callBuyData: BytesLike;
+        putBuyData: BytesLike;
+      },
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
@@ -341,22 +336,6 @@ export class IAggregatedOptionsInstrument extends Contract {
     }>;
   };
 
-  cost(
-    venues: string[],
-    optionTypes: BigNumberish[],
-    amounts: BigNumberish[],
-    strikePrices: BigNumberish[],
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "cost(string[],uint8[],uint256[],uint256[])"(
-    venues: string[],
-    optionTypes: BigNumberish[],
-    amounts: BigNumberish[],
-    strikePrices: BigNumberish[],
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   exerciseProfit(
     account: string,
     positionID: BigNumberish,
@@ -382,20 +361,34 @@ export class IAggregatedOptionsInstrument extends Contract {
   ): Promise<boolean>;
 
   buyInstrument(
-    venues: string[],
-    optionTypes: BigNumberish[],
-    amount: BigNumberish,
-    strikePrices: BigNumberish[],
-    buyData: BytesLike[],
+    params: {
+      callVenue: BigNumberish;
+      putVenue: BigNumberish;
+      paymentToken: string;
+      callStrikePrice: BigNumberish;
+      putStrikePrice: BigNumberish;
+      amount: BigNumberish;
+      callMaxCost: BigNumberish;
+      putMaxCost: BigNumberish;
+      callBuyData: BytesLike;
+      putBuyData: BytesLike;
+    },
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
-  "buyInstrument(string[],uint8[],uint256,uint256[],bytes[])"(
-    venues: string[],
-    optionTypes: BigNumberish[],
-    amount: BigNumberish,
-    strikePrices: BigNumberish[],
-    buyData: BytesLike[],
+  "buyInstrument(tuple)"(
+    params: {
+      callVenue: BigNumberish;
+      putVenue: BigNumberish;
+      paymentToken: string;
+      callStrikePrice: BigNumberish;
+      putStrikePrice: BigNumberish;
+      amount: BigNumberish;
+      callMaxCost: BigNumberish;
+      putMaxCost: BigNumberish;
+      callBuyData: BytesLike;
+      putBuyData: BytesLike;
+    },
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
@@ -474,22 +467,6 @@ export class IAggregatedOptionsInstrument extends Contract {
   >;
 
   callStatic: {
-    cost(
-      venues: string[],
-      optionTypes: BigNumberish[],
-      amounts: BigNumberish[],
-      strikePrices: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "cost(string[],uint8[],uint256[],uint256[])"(
-      venues: string[],
-      optionTypes: BigNumberish[],
-      amounts: BigNumberish[],
-      strikePrices: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     exerciseProfit(
       account: string,
       positionID: BigNumberish,
@@ -515,20 +492,34 @@ export class IAggregatedOptionsInstrument extends Contract {
     ): Promise<boolean>;
 
     buyInstrument(
-      venues: string[],
-      optionTypes: BigNumberish[],
-      amount: BigNumberish,
-      strikePrices: BigNumberish[],
-      buyData: BytesLike[],
+      params: {
+        callVenue: BigNumberish;
+        putVenue: BigNumberish;
+        paymentToken: string;
+        callStrikePrice: BigNumberish;
+        putStrikePrice: BigNumberish;
+        amount: BigNumberish;
+        callMaxCost: BigNumberish;
+        putMaxCost: BigNumberish;
+        callBuyData: BytesLike;
+        putBuyData: BytesLike;
+      },
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "buyInstrument(string[],uint8[],uint256,uint256[],bytes[])"(
-      venues: string[],
-      optionTypes: BigNumberish[],
-      amount: BigNumberish,
-      strikePrices: BigNumberish[],
-      buyData: BytesLike[],
+    "buyInstrument(tuple)"(
+      params: {
+        callVenue: BigNumberish;
+        putVenue: BigNumberish;
+        paymentToken: string;
+        callStrikePrice: BigNumberish;
+        putStrikePrice: BigNumberish;
+        amount: BigNumberish;
+        callMaxCost: BigNumberish;
+        putMaxCost: BigNumberish;
+        callBuyData: BytesLike;
+        putBuyData: BytesLike;
+      },
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -610,22 +601,6 @@ export class IAggregatedOptionsInstrument extends Contract {
   filters: {};
 
   estimateGas: {
-    cost(
-      venues: string[],
-      optionTypes: BigNumberish[],
-      amounts: BigNumberish[],
-      strikePrices: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "cost(string[],uint8[],uint256[],uint256[])"(
-      venues: string[],
-      optionTypes: BigNumberish[],
-      amounts: BigNumberish[],
-      strikePrices: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     exerciseProfit(
       account: string,
       positionID: BigNumberish,
@@ -651,20 +626,34 @@ export class IAggregatedOptionsInstrument extends Contract {
     ): Promise<BigNumber>;
 
     buyInstrument(
-      venues: string[],
-      optionTypes: BigNumberish[],
-      amount: BigNumberish,
-      strikePrices: BigNumberish[],
-      buyData: BytesLike[],
+      params: {
+        callVenue: BigNumberish;
+        putVenue: BigNumberish;
+        paymentToken: string;
+        callStrikePrice: BigNumberish;
+        putStrikePrice: BigNumberish;
+        amount: BigNumberish;
+        callMaxCost: BigNumberish;
+        putMaxCost: BigNumberish;
+        callBuyData: BytesLike;
+        putBuyData: BytesLike;
+      },
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
-    "buyInstrument(string[],uint8[],uint256,uint256[],bytes[])"(
-      venues: string[],
-      optionTypes: BigNumberish[],
-      amount: BigNumberish,
-      strikePrices: BigNumberish[],
-      buyData: BytesLike[],
+    "buyInstrument(tuple)"(
+      params: {
+        callVenue: BigNumberish;
+        putVenue: BigNumberish;
+        paymentToken: string;
+        callStrikePrice: BigNumberish;
+        putStrikePrice: BigNumberish;
+        amount: BigNumberish;
+        callMaxCost: BigNumberish;
+        putMaxCost: BigNumberish;
+        callBuyData: BytesLike;
+        putBuyData: BytesLike;
+      },
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
@@ -706,22 +695,6 @@ export class IAggregatedOptionsInstrument extends Contract {
   };
 
   populateTransaction: {
-    cost(
-      venues: string[],
-      optionTypes: BigNumberish[],
-      amounts: BigNumberish[],
-      strikePrices: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "cost(string[],uint8[],uint256[],uint256[])"(
-      venues: string[],
-      optionTypes: BigNumberish[],
-      amounts: BigNumberish[],
-      strikePrices: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     exerciseProfit(
       account: string,
       positionID: BigNumberish,
@@ -747,20 +720,34 @@ export class IAggregatedOptionsInstrument extends Contract {
     ): Promise<PopulatedTransaction>;
 
     buyInstrument(
-      venues: string[],
-      optionTypes: BigNumberish[],
-      amount: BigNumberish,
-      strikePrices: BigNumberish[],
-      buyData: BytesLike[],
+      params: {
+        callVenue: BigNumberish;
+        putVenue: BigNumberish;
+        paymentToken: string;
+        callStrikePrice: BigNumberish;
+        putStrikePrice: BigNumberish;
+        amount: BigNumberish;
+        callMaxCost: BigNumberish;
+        putMaxCost: BigNumberish;
+        callBuyData: BytesLike;
+        putBuyData: BytesLike;
+      },
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
-    "buyInstrument(string[],uint8[],uint256,uint256[],bytes[])"(
-      venues: string[],
-      optionTypes: BigNumberish[],
-      amount: BigNumberish,
-      strikePrices: BigNumberish[],
-      buyData: BytesLike[],
+    "buyInstrument(tuple)"(
+      params: {
+        callVenue: BigNumberish;
+        putVenue: BigNumberish;
+        paymentToken: string;
+        callStrikePrice: BigNumberish;
+        putStrikePrice: BigNumberish;
+        amount: BigNumberish;
+        callMaxCost: BigNumberish;
+        putMaxCost: BigNumberish;
+        callBuyData: BytesLike;
+        putBuyData: BytesLike;
+      },
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
