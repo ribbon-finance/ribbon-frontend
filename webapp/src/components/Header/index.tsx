@@ -1,65 +1,91 @@
+import Logo from "./Logo";
+import colors from "../../designSystem/colors";
+
 import styled from "styled-components";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-// import Logo from "./Logo";
 import { Link } from "react-router-dom";
-// import { BaseText, Button } from "../../designSystem";
+import { BaseText } from "../../designSystem";
 
 const HeaderContainer = styled.div`
-  padding-top: 15px;
-  padding-bottom: 15px;
-  background: #0b0d14;
+	border-bottom: 1px solid ${colors.border};
 `;
 
-// const LinkText = styled(BaseText)`
-//   font-weight: 500;
-//   font-size: 16px;
-//   margin-left: 30px;
-//   margin-right: 30px;
-//   color: white;
-// `;
+const LinkText = styled(BaseText)`
+	font-family: VCR;
+  font-weight: 500;
+  font-size: 16px;
+  color: white;
+`;
 
-// const ButtonText = styled(BaseText)`
-//   font-weight: 600;
-//   font-size: 14px;
-//   color: white;
-// `;
+const VerticalSeparator = styled.div`
+	border-left: 1px solid ${colors.border};
+`
 
-// const AppButton = styled(Button)`
-//   padding-top: 8px;
-//   padding-left: 15px;
-//   padding-right: 15px;
-//   padding-bottom: 8px;
-//   border: 2px solid #ffffff;
-//   border-radius: 8px;
-//   background: transparent;
-// `;
+const NavItem = styled.div`
+	padding: 28px;
+	opacity: 0.48;
+`;
+
+const WalletContainer = styled(VerticalSeparator)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+	padding: 28px;
+`
+
+const Indicator = styled.div`
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background-color: white;
+  margin-right: 8px;
+  overflow: hidden;
+`;
 
 const Header = () => {
+  const renderLinkItem = (title: string, to: string, isSelected: boolean) => {
+    const itemStyle = {
+      opacity: isSelected ? 1 : 0.48
+    }
+    return (
+      <Link to={to}>
+        <NavItem style={itemStyle}>
+          <LinkText>{title}</LinkText>
+        </NavItem>
+      </Link>
+    )
+  }
+
+  // TODO: - Change color if wallet is connected
+  const walletConnected = true
+  const indicatorColor = walletConnected ? colors.green : 'red'
+
   return (
     <HeaderContainer className="container-fluid">
-      <Row className="d-flex align-items-center">
-        <Col md={{ span: 1, offset: 1 }}>
-          {/* <Logo></Logo> */}
-        </Col>
+      <Row className="d-flex align-items-center justify-content-between">
+
+        {/* LOGO */}
+        <div style={{ paddingLeft: '40px' }}>
+          <Logo></Logo>
+        </div>
+
+        {/* LINKS */}
         <Col md={8} className="d-flex justify-content-center">
-          {/* <Link to="/company">
-            <LinkText>Company</LinkText>
-          </Link>
-          <Link to="/faq">
-            <LinkText>FAQ</LinkText>
-          </Link>
-          <a href="https://medium.com/@ribbonfinance">
-            <LinkText>Blog</LinkText>
-          </a> */}
+          <VerticalSeparator />
+          {renderLinkItem('PRODUCTS', '/', true)}
+          <VerticalSeparator />
+          {renderLinkItem('POSITIONS', '/', false)}
+          <VerticalSeparator />
+          {renderLinkItem('ABOUT', '/', false)}
+          <VerticalSeparator />
         </Col>
-        <Col md={2} className="d-flex justify-content-center">
-          <a href="https://medium.com/@ribbonfinance">
-            {/* <AppButton>
-              <ButtonText>Use App</ButtonText>
-            </AppButton> */}
-          </a>
-        </Col>
+
+        {/* WALLET */}
+        <WalletContainer>
+          <Indicator style={{ backgroundColor: indicatorColor }} />
+          <LinkText>0x573B...	C65F</LinkText>
+        </WalletContainer>
       </Row>
     </HeaderContainer>
   );
