@@ -29,7 +29,7 @@ const _abi = [
         type: "string[]",
       },
       {
-        internalType: "enum OptionType[]",
+        internalType: "enum ProtocolAdapterTypes.OptionType[]",
         name: "optionTypes",
         type: "uint8[]",
       },
@@ -111,7 +111,7 @@ const _abi = [
         type: "string[]",
       },
       {
-        internalType: "enum OptionType[]",
+        internalType: "enum ProtocolAdapterTypes.OptionType[]",
         name: "optionTypes",
         type: "uint8[]",
       },
