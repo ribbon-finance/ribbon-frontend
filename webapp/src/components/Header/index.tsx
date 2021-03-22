@@ -1,14 +1,13 @@
+import { useState } from "react";
+import styled from "styled-components";
+
 import Logo from "./Logo";
 import colors from "../../designSystem/colors";
 import { mobileWidth } from "../../designSystem/sizes";
-import { BaseText, BaseLink } from "../../designSystem";
-import Indicator from "../Indicator/Indicator";
+import { PrimaryText, BaseLink } from "../../designSystem";
 import MenuButton from "./MenuButton";
 import { NavItemProps, MobileOverlayMenuProps } from "./types";
-
-import styled from "styled-components";
-
-import { useState } from "react";
+import AccountStatus from "./AccountStatus";
 
 const HEADER_HEIGHT = 80;
 
@@ -28,19 +27,13 @@ const HeaderContainer = styled.div`
   }
 `;
 
-const LinkText = styled(BaseText)`
-  font-family: VCR;
-  font-weight: 500;
-  font-size: 16px;
-  color: white;
-
-  @media (max-width: ${mobileWidth}px) {
-    font-size: 24px;
-  }
+const NavLinkText = styled(PrimaryText)`
+  letter-spacing: 1.5px;
 `;
 
 const LogoContainer = styled.div`
   padding-left: 40px;
+  z-index: 1000;
 
   @media (max-width: ${mobileWidth}px) {
     padding-left: 0;
@@ -63,27 +56,12 @@ const LinksContainer = styled.div`
   display: flex;
 `;
 
-const VerticalSeparator = styled.div`
-  border-left: 1px solid ${colors.border};
-`;
-
 const NavItem = styled.div<NavItemProps>`
   padding: 28px;
   opacity: ${(props) => (props.isSelected ? "1" : "0.48")};
 
   &:hover {
     opacity: ${(props) => (props.isSelected ? "0.85" : "1")};
-  }
-`;
-
-const WalletContainer = styled(VerticalSeparator)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 28px;
-
-  @media (max-width: ${mobileWidth}px) {
-    display: none;
   }
 `;
 
@@ -127,14 +105,11 @@ const Header = () => {
     return (
       <BaseLink to={to}>
         <NavItem isSelected={isSelected}>
-          <LinkText>{title}</LinkText>
+          <NavLinkText>{title}</NavLinkText>
         </NavItem>
       </BaseLink>
     );
   };
-
-  // TODO: - Change to actual wallet status
-  const walletConnected = true;
 
   return (
     <HeaderContainer className="d-flex align-items-center justify-content-between">
@@ -146,21 +121,13 @@ const Header = () => {
       {/* LINKS */}
       <HeaderAbsoluteContainer>
         <LinksContainer>
-          <VerticalSeparator />
           {renderLinkItem("PRODUCTS", "/", true)}
-          <VerticalSeparator />
           {renderLinkItem("POSITIONS", "/", false)}
-          <VerticalSeparator />
           {renderLinkItem("ABOUT", "/", false)}
-          <VerticalSeparator />
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
-      {/* WALLET */}
-      <WalletContainer>
-        <Indicator connected={walletConnected} />
-        <LinkText>0x573B... C65F</LinkText>
-      </WalletContainer>
+      <AccountStatus />
 
       {/* MOBILE MENU */}
       <MobileOnly>

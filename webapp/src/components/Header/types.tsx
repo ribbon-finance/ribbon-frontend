@@ -5,3 +5,7 @@ export interface NavItemProps {
 export interface MobileOverlayMenuProps {
   isMenuOpen: boolean;
 }
+
+export interface WalletStatusProps {
+  connected: boolean;
+}
