@@ -13,7 +13,8 @@ const HEADER_HEIGHT = 80;
 
 const HeaderContainer = styled.div`
   height: ${HEADER_HEIGHT}px;
-	border-bottom: 1px solid ${colors.border};
+  border-bottom: 1px solid ${colors.border};
+  position: relative;
 
   @media (max-width: ${mobileWidth}px) {
     padding: 16px 24px;
@@ -22,12 +23,12 @@ const HeaderContainer = styled.div`
     left: 0;
     right: 0;
     border-bottom: none;
-    background-color: ${colors.background}
+    background-color: ${colors.background};
   }
 `;
 
 const LinkText = styled(BaseText)`
-	font-family: VCR;
+  font-family: VCR;
   font-weight: 500;
   font-size: 16px;
   color: white;
@@ -35,7 +36,7 @@ const LinkText = styled(BaseText)`
   @media (max-width: ${mobileWidth}px) {
     font-size: 24px;
   }
-`
+`;
 
 const LogoContainer = styled.div`
   padding-left: 40px;
@@ -43,40 +44,51 @@ const LogoContainer = styled.div`
   @media (max-width: ${mobileWidth}px) {
     padding-left: 0;
   }
-`
-const LinksContainer = styled.div`
+`;
+
+const HeaderAbsoluteContainer = styled.div`
+  position: absolute;
   display: flex;
-  
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+
   @media (max-width: ${mobileWidth}px) {
     display: none;
   }
-`
+`;
+
+const LinksContainer = styled.div`
+  display: flex;
+`;
 
 const VerticalSeparator = styled.div`
-	border-left: 1px solid ${colors.border};
-`
+  border-left: 1px solid ${colors.border};
+`;
 
 const NavItem = styled.div`
-	padding: 28px;
-	opacity: 0.48;
-`
+  padding: 28px;
+  opacity: 0.48;
+`;
 
 const WalletContainer = styled(VerticalSeparator)`
   display: flex;
   justify-content: center;
   align-items: center;
-	padding: 28px;
+  padding: 28px;
 
   @media (max-width: ${mobileWidth}px) {
     display: none;
   }
-`
+`;
 
 const MobileOnly = styled.div`
-  @media (min-width: ${mobileWidth}px) {
-    display: none;
+  display: none;
+
+  @media (max-width: ${mobileWidth}px) {
+    display: flex;
   }
-`
+`;
 
 const MobileOverlayMenu = styled.div`
   position: fixed;
@@ -87,38 +99,38 @@ const MobileOverlayMenu = styled.div`
   z-index: -1;
   backdrop-filter: blur(80px);
   transition: 0.1s all ease-in;
-`
+`;
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const onToggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen)
-  }
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   const renderLinkItem = (title: string, to: string, isSelected: boolean) => {
     const itemStyle = {
-      opacity: isSelected ? 1 : 0.48
-    }
+      opacity: isSelected ? 1 : 0.48,
+    };
     return (
       <Link to={to}>
         <NavItem style={itemStyle}>
           <LinkText>{title}</LinkText>
         </NavItem>
       </Link>
-    )
-  }
+    );
+  };
 
   // TODO: - Change to actual wallet status
-  const walletConnected = true
+  const walletConnected = true;
   const mobileOverlayStyle: React.CSSProperties = isMenuOpen
     ? {
-      opacity: 1
-    }
+        opacity: 1,
+      }
     : {
-      visibility: 'hidden',
-      opacity: 0
-    }
+        visibility: "hidden",
+        opacity: 0,
+      };
 
   return (
     <HeaderContainer className="d-flex align-items-center justify-content-between">
@@ -128,33 +140,35 @@ const Header = () => {
       </LogoContainer>
 
       {/* LINKS */}
-      <LinksContainer>
-        <VerticalSeparator />
-        {renderLinkItem('PRODUCTS', '/', true)}
-        <VerticalSeparator />
-        {renderLinkItem('POSITIONS', '/', false)}
-        <VerticalSeparator />
-        {renderLinkItem('ABOUT', '/', false)}
-        <VerticalSeparator />
-      </LinksContainer>
+      <HeaderAbsoluteContainer>
+        <LinksContainer>
+          <VerticalSeparator />
+          {renderLinkItem("PRODUCTS", "/", true)}
+          <VerticalSeparator />
+          {renderLinkItem("POSITIONS", "/", false)}
+          <VerticalSeparator />
+          {renderLinkItem("ABOUT", "/", false)}
+          <VerticalSeparator />
+        </LinksContainer>
+      </HeaderAbsoluteContainer>
 
       {/* WALLET */}
       <WalletContainer>
         <Indicator connected={walletConnected} />
-        <LinkText>0x573B...	C65F</LinkText>
+        <LinkText>0x573B... C65F</LinkText>
       </WalletContainer>
 
       {/* MOBILE MENU */}
       <MobileOnly>
         <MenuButton onToggle={onToggleMenu} isOpen={isMenuOpen} />
         <MobileOverlayMenu
-          onClick={() => console.log('oopsie do')}
+          onClick={() => console.log("oopsie do")}
           className="d-flex flex-column align-items-center justify-content-center"
           style={mobileOverlayStyle}
         >
-          {renderLinkItem('PRODUCTS', '/', true)}
-          {renderLinkItem('POSITIONS', '/', false)}
-          {renderLinkItem('ABOUT', '/', false)}
+          {renderLinkItem("PRODUCTS", "/", true)}
+          {renderLinkItem("POSITIONS", "/", false)}
+          {renderLinkItem("ABOUT", "/", false)}
         </MobileOverlayMenu>
       </MobileOnly>
     </HeaderContainer>
