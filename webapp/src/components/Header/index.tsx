@@ -1,12 +1,13 @@
 import Logo from "./Logo";
 import colors from "../../designSystem/colors";
 import { mobileWidth } from "../../designSystem/sizes";
-import { BaseText } from "../../designSystem";
+import { BaseText, BaseLink } from "../../designSystem";
 import Indicator from "../Indicator/Indicator";
 import MenuButton from "./MenuButton";
+import { NavItemProps, MobileOverlayMenuProps } from "./types";
 
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+
 import { useState } from "react";
 
 const HEADER_HEIGHT = 80;
@@ -66,9 +67,13 @@ const VerticalSeparator = styled.div`
   border-left: 1px solid ${colors.border};
 `;
 
-const NavItem = styled.div`
+const NavItem = styled.div<NavItemProps>`
   padding: 28px;
-  opacity: 0.48;
+  opacity: ${(props) => (props.isSelected ? "1" : "0.48")};
+
+  &:hover {
+    opacity: ${(props) => (props.isSelected ? "0.85" : "1")};
+  }
 `;
 
 const WalletContainer = styled(VerticalSeparator)`
@@ -90,7 +95,7 @@ const MobileOnly = styled.div`
   }
 `;
 
-const MobileOverlayMenu = styled.div`
+const MobileOverlayMenu = styled.div<MobileOverlayMenuProps>`
   position: fixed;
   top: 0;
   left: 0;
@@ -99,6 +104,16 @@ const MobileOverlayMenu = styled.div`
   z-index: -1;
   backdrop-filter: blur(80px);
   transition: 0.1s all ease-in;
+
+  ${(props) =>
+    props.isMenuOpen
+      ? `
+    opacity: 1;
+  `
+      : `
+    opacity: 0;
+    visibility: hidden;
+  `}
 `;
 
 const Header = () => {
@@ -109,28 +124,17 @@ const Header = () => {
   };
 
   const renderLinkItem = (title: string, to: string, isSelected: boolean) => {
-    const itemStyle = {
-      opacity: isSelected ? 1 : 0.48,
-    };
     return (
-      <Link to={to}>
-        <NavItem style={itemStyle}>
+      <BaseLink to={to}>
+        <NavItem isSelected={isSelected}>
           <LinkText>{title}</LinkText>
         </NavItem>
-      </Link>
+      </BaseLink>
     );
   };
 
   // TODO: - Change to actual wallet status
   const walletConnected = true;
-  const mobileOverlayStyle: React.CSSProperties = isMenuOpen
-    ? {
-        opacity: 1,
-      }
-    : {
-        visibility: "hidden",
-        opacity: 0,
-      };
 
   return (
     <HeaderContainer className="d-flex align-items-center justify-content-between">
@@ -164,7 +168,7 @@ const Header = () => {
         <MobileOverlayMenu
           onClick={() => console.log("oopsie do")}
           className="d-flex flex-column align-items-center justify-content-center"
-          style={mobileOverlayStyle}
+          isMenuOpen={isMenuOpen}
         >
           {renderLinkItem("PRODUCTS", "/", true)}
           {renderLinkItem("POSITIONS", "/", false)}
