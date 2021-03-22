@@ -1,14 +1,12 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
-import { useWeb3React } from "@web3-react/core";
 
 import Indicator from "../Indicator/Indicator";
 import { mobileWidth } from "../../designSystem/sizes";
 import { PrimaryText, BaseButton } from "../../designSystem";
-import { injectedConnector } from "../../utils/connectors";
-import { addConnectEvent } from "../../utils/analytics";
 import colors from "../../designSystem/colors";
 import { WalletStatusProps } from "./types";
+import { useWeb3Modal } from "../../hooks/useWeb3Modal";
 
 const WalletContainer = styled.div`
   display: flex;
@@ -43,24 +41,23 @@ const truncateAddress = (address: string) => {
 };
 
 const AccountStatus: React.FC<Props> = () => {
-  const { activate: activateWeb3, library, active, account } = useWeb3React();
+  const { accounts, onConnect, onReset } = useWeb3Modal();
+  const active = !!accounts.length;
 
   const handleConnect = useCallback(async () => {
-    await activateWeb3(injectedConnector);
-  }, [activateWeb3]);
-
-  useEffect(() => {
-    if (library && account) {
-      addConnectEvent("header", account);
+    if (active) {
+      onReset();
     }
-  }, [library, account]);
+
+    onConnect();
+  }, [active, onConnect, onReset]);
 
   const renderButtonContent = () =>
-    active && account ? (
+    false ? (
       <>
         <Indicator connected={active} />
         <WalletButtonText connected={active}>
-          {truncateAddress(account)}
+          {truncateAddress(accounts[0])}
         </WalletButtonText>
       </>
     ) : (
