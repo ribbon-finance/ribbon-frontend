@@ -166,7 +166,6 @@ const Header = () => {
       <MobileOnly>
         <MenuButton onToggle={onToggleMenu} isOpen={isMenuOpen} />
         <MobileOverlayMenu
-          onClick={() => console.log("oopsie do")}
           className="d-flex flex-column align-items-center justify-content-center"
           isMenuOpen={isMenuOpen}
         >
