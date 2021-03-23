@@ -1,12 +1,13 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Line } from "react-chartjs-2";
-import Chart from "chart.js";
 import moment from "moment";
 import { ChartOptions } from "chart.js";
+import { request } from "https";
 
 const options = {
   title: { display: false },
   legend: { display: false },
+  layout: { padding: { top: 20, bottom: 20 } },
   scales: {
     yAxes: [
       {
@@ -17,9 +18,10 @@ const options = {
   },
   hover: { animationDuration: 0, intersect: false },
   tooltips: {
-    enabled: true,
+    enabled: false,
     intersect: false,
     mode: "nearest",
+    custom: (tooltipModel: any) => {},
   },
   onHover: (_: any, elements: any) => {
     if (elements && elements.length) {
@@ -29,6 +31,10 @@ const options = {
       const x = chartElem._view.x;
       const topY = chart.scales["y-axis-0"].top;
       const bottomY = chart.scales["y-axis-0"].bottom;
+
+      // set state
+      // setPerformance(dataset[chartElem._index]);
+      // setDate(labels[chartElem._index]);
 
       ctx.save();
       ctx.beginPath();
@@ -52,6 +58,66 @@ const PerformanceChart: React.FC<{
   gradientStartColor = "rgba(121, 255, 203, 0.24)",
   gradientStopColor = "rgba(121, 255, 203, 0)",
 }) => {
+  const dataset = [3, 5, 2, 3, 5, 4, 3, 1, 4, 5, 7, 8.5, 8, 7.5];
+  const now = moment(new Date());
+  const labels = dataset.map((_, index) =>
+    now.add(index, "days").utc().toDate()
+  );
+  const [performance, setPerformance] = useState<number>(
+    dataset[dataset.length - 1]
+  );
+  const [date, setDate] = useState<Date>(labels[labels.length - 1]);
+
+  const setStates = useCallback((index) => {
+    // set state
+    setPerformance(dataset[index]);
+    setDate(labels[index]);
+  }, []);
+
+  const options = useMemo(
+    () => ({
+      title: { display: false },
+      legend: { display: false },
+      layout: { padding: { top: 20, bottom: 20 } },
+      scales: {
+        yAxes: [
+          {
+            display: false,
+          },
+        ],
+        xAxes: [{ display: false }],
+      },
+      hover: { animationDuration: 0, intersect: false },
+      tooltips: {
+        enabled: false,
+        intersect: false,
+        mode: "nearest",
+        custom: (tooltipModel: any) => {},
+      },
+      onHover: (_: any, elements: any) => {
+        if (elements && elements.length) {
+          const chartElem = elements[0];
+          const chart = chartElem._chart;
+          const ctx = chart.ctx;
+          const x = chartElem._view.x;
+          const topY = chart.scales["y-axis-0"].top;
+          const bottomY = chart.scales["y-axis-0"].bottom;
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.setLineDash([5, 5]);
+          ctx.moveTo(x, topY);
+          ctx.lineTo(x, bottomY);
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = "#ffffff";
+          ctx.stroke();
+          ctx.restore();
+        }
+      },
+    }),
+    []
+  );
+
   const getData = useCallback(
     (canvas: any) => {
       const ctx = canvas.getContext("2d");
@@ -59,13 +125,8 @@ const PerformanceChart: React.FC<{
       gradient.addColorStop(0, gradientStartColor);
       gradient.addColorStop(1, gradientStopColor);
 
-      const dataset = [3, 5, 2, 3, 5, 4, 3, 1, 4, 5, 7, 8.5, 8, 7.5];
-      const now = moment(new Date());
-
       return {
-        labels: dataset.map((_, index) =>
-          now.add(index, "days").utc().toDate()
-        ),
+        labels,
         datasets: [
           {
             data: dataset,
@@ -92,7 +153,13 @@ const PerformanceChart: React.FC<{
 
   return (
     <div>
-      <Line data={getData} options={options as ChartOptions}></Line>
+      <Line
+        data={getData}
+        options={options as ChartOptions}
+        getElementAtEvent={(dataset) => {
+          console.log(dataset);
+        }}
+      ></Line>
     </div>
   );
 };
