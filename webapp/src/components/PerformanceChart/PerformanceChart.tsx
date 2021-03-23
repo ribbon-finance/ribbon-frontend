@@ -23,7 +23,12 @@ const PerformanceChart: React.FC = () => {
   );
   const labels = useMemo(() => {
     const now = moment(new Date());
-    return dataset.map((_, index) => now.add(index, "days").utc().toDate());
+    return dataset.map((_, index) =>
+      now
+        .add(index * 7, "days")
+        .utc()
+        .toDate()
+    );
   }, [dataset]);
 
   // states
