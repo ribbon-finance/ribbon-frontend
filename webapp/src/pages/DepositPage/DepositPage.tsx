@@ -54,7 +54,7 @@ const HeroSection = () => {
     <HeroContainer className="position-relative py-6">
       <div className="container">
         <div className="row mx-lg-n1">
-          <div className="col-xl-6">
+          <div style={{ zIndex: 1 }} className="col-xl-6">
             <div className="d-flex flex-row my-3">
               <AttributePill className="mr-2 text-uppercase">
                 Theta Vault
@@ -70,7 +70,7 @@ const HeroSection = () => {
           </div>
 
           <div
-            style={{ top: 0, height: 475 }}
+            style={{ zIndex: 0, top: 0, height: 475 }}
             className="position-absolute offset-xl-5"
           >
             <img src={Theta} alt="Theta Vault" />
