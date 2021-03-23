@@ -15,28 +15,54 @@ const DateTooltip = styled(SecondaryText)`
   line-height: 16px;
 `;
 
+interface DateFilterProps {
+  active: boolean;
+}
+
+const DateFilter = styled(Title)<DateFilterProps>`
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  color: ${(props) => (props.active ? "#FFFFFF" : "rgba(255, 255, 255, 0.4)")};
+`;
+
 const PerformanceChart: React.FC = () => {
   // data
-  const dataset = useMemo(
+  const originalDataset = useMemo(
     () => [3, 5, 2, 3, 5, 4, 3, 1, 4, 5, 7, 8.5, 8, 7.5],
     []
   );
-  const labels = useMemo(() => {
+  const originalLabels = useMemo(() => {
     const now = moment(new Date());
-    return dataset.map((_, index) =>
-      now
-        .add(index * 7, "days")
-        .utc()
-        .toDate()
-    );
-  }, [dataset]);
+    return originalDataset
+      .map((_, index) =>
+        now
+          .subtract(index * 7, "days")
+          .utc()
+          .toDate()
+      )
+      .reverse();
+  }, [originalDataset]);
 
   // states
-  const [performance, setPerformance] = useState<number>(
-    dataset[dataset.length - 1]
-  );
   const [date, setDate] = useState<Date | null>(null);
-  const [datePosition, setDatePosition] = useState<number>(0);
+  const [datePosition, setDatePosition] = useState(0);
+  const [monthFilter, setMonthFilter] = useState(true);
+  const [performance, setPerformance] = useState<number>(
+    originalDataset[originalDataset.length - 1]
+  );
+
+  const aMonthFromNow = moment(new Date()).subtract(1, "months");
+  const dataset = monthFilter
+    ? originalDataset.filter((_, index) => {
+        return moment(originalLabels[index]).isAfter(aMonthFromNow);
+      })
+    : originalDataset;
+
+  const labels = monthFilter
+    ? originalLabels.filter((date) => {
+        return moment(date).isAfter(aMonthFromNow);
+      })
+    : originalLabels;
 
   // formatted data
   const perfStr = `${performance.toFixed(2)}%`;
@@ -69,9 +95,26 @@ const PerformanceChart: React.FC = () => {
 
   return (
     <div>
-      <div>
-        <SecondaryText className="d-block">Yield (APY)</SecondaryText>
-        <APYNumber>{perfStr}</APYNumber>
+      <div className="d-flex align-items-center justify-content-between mb-3">
+        <div>
+          <SecondaryText className="d-block">Yield (APY)</SecondaryText>
+          <APYNumber>{perfStr}</APYNumber>
+        </div>
+        <div>
+          <DateFilter
+            active={monthFilter}
+            className="mr-3"
+            onClick={() => setMonthFilter(true)}
+          >
+            1m
+          </DateFilter>
+          <DateFilter
+            active={!monthFilter}
+            onClick={() => setMonthFilter(false)}
+          >
+            All
+          </DateFilter>
+        </div>
       </div>
       <div>{chart}</div>
       <DateTooltip
