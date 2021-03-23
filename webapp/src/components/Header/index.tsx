@@ -8,6 +8,7 @@ import { PrimaryText, BaseLink } from "../../designSystem";
 import MenuButton from "./MenuButton";
 import { NavItemProps, MobileOverlayMenuProps } from "./types";
 import AccountStatus from "./AccountStatus";
+import theme from "../../designSystem/theme";
 
 const HEADER_HEIGHT = 80;
 
@@ -61,7 +62,7 @@ const NavItem = styled.div<NavItemProps>`
   opacity: ${(props) => (props.isSelected ? "1" : "0.48")};
 
   &:hover {
-    opacity: ${(props) => (props.isSelected ? "0.85" : "1")};
+    opacity: ${(props) => (props.isSelected ? theme.hover.opacity : "1")};
   }
 `;
 

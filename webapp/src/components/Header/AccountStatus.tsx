@@ -1,14 +1,15 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 
 import Indicator from "../Indicator/Indicator";
 import { mobileWidth } from "../../designSystem/sizes";
 import { PrimaryText, BaseButton } from "../../designSystem";
-import { injectedConnector } from "../../utils/connectors";
 import { addConnectEvent } from "../../utils/analytics";
 import colors from "../../designSystem/colors";
 import { WalletStatusProps } from "./types";
+import WalletConnectModal from "../Wallet/WalletConnectModal";
+import theme from "../../designSystem/theme";
 
 const WalletContainer = styled.div`
   display: flex;
@@ -26,6 +27,10 @@ const WalletButton = styled(BaseButton)<WalletStatusProps>`
   background-color: ${(props) =>
     props.connected ? colors.backgroundDarker : `${colors.green}14`};
   align-items: center;
+
+  &:hover {
+    opacity: ${theme.hover.opacity};
+  }
 `;
 
 const WalletButtonText = styled(PrimaryText)<WalletStatusProps>`
@@ -43,8 +48,8 @@ const truncateAddress = (address: string) => {
 };
 
 const AccountStatus: React.FC<Props> = () => {
+  const [showConnectModal, setShowConnectModal] = useState(false);
   const {
-    activate: activateWeb3,
     deactivate: deactivateWeb3,
     library,
     active,
@@ -54,10 +59,11 @@ const AccountStatus: React.FC<Props> = () => {
   const handleConnect = useCallback(async () => {
     if (active) {
       deactivateWeb3();
+      return;
     }
 
-    await activateWeb3(injectedConnector);
-  }, [activateWeb3, deactivateWeb3, active]);
+    setShowConnectModal(true);
+  }, [active, deactivateWeb3]);
 
   useEffect(() => {
     if (library && account) {
@@ -78,11 +84,18 @@ const AccountStatus: React.FC<Props> = () => {
     );
 
   return (
-    <WalletContainer>
-      <WalletButton connected={active} role="button" onClick={handleConnect}>
-        {renderButtonContent()}
-      </WalletButton>
-    </WalletContainer>
+    <>
+      <WalletContainer>
+        <WalletButton connected={active} role="button" onClick={handleConnect}>
+          {renderButtonContent()}
+        </WalletButton>
+      </WalletContainer>
+
+      <WalletConnectModal
+        show={showConnectModal}
+        onClose={() => setShowConnectModal(false)}
+      />
+    </>
   );
 };
 export default AccountStatus;
