@@ -135,10 +135,13 @@ const Chart: React.FC<{
           ctx.stroke();
           ctx.restore();
 
-          onHover({
-            xData: labels[chartElem._index],
-            yData: dataset[chartElem._index],
-            xPosition: x,
+          // set data only after repainting for better fps
+          requestAnimationFrame(() => {
+            onHover({
+              xData: labels[chartElem._index],
+              yData: dataset[chartElem._index],
+              xPosition: x,
+            });
           });
         }
       },
