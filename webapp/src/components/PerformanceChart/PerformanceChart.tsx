@@ -75,6 +75,7 @@ const PerformanceChart: React.FC = () => {
         setDate(hoverInfo.xData);
         setDatePosition(hoverInfo.xPosition);
       } else {
+        setPerformance(originalDataset[originalDataset.length - 1]);
         setDate(null);
         setDatePosition(0);
       }
