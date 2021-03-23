@@ -1,6 +1,7 @@
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import React from "react";
 import Header from "./components/Header";
-
-import { BrowserRouter as Router } from "react-router-dom";
+import DepositPage from "./pages/DepositPage/DepositPage";
 
 function App() {
   return (
@@ -8,6 +9,11 @@ function App() {
       <div>
         <Header />
       </div>
+      <Switch>
+        <Route path="/theta/deposit">
+          <DepositPage></DepositPage>
+        </Route>
+      </Switch>
     </Router>
   );
 }
