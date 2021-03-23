@@ -49,15 +49,7 @@ const options = {
   },
 };
 
-const PerformanceChart: React.FC<{
-  borderColor?: string;
-  gradientStartColor?: string;
-  gradientStopColor?: string;
-}> = ({
-  borderColor = "#16CEB9",
-  gradientStartColor = "rgba(121, 255, 203, 0.24)",
-  gradientStopColor = "rgba(121, 255, 203, 0)",
-}) => {
+const PerformanceChart: React.FC = () => {
   const dataset = [3, 5, 2, 3, 5, 4, 3, 1, 4, 5, 7, 8.5, 8, 7.5];
   const now = moment(new Date());
   const labels = dataset.map((_, index) =>
@@ -68,12 +60,38 @@ const PerformanceChart: React.FC<{
   );
   const [date, setDate] = useState<Date>(labels[labels.length - 1]);
 
-  const setStates = useCallback((index) => {
-    // set state
-    setPerformance(dataset[index]);
-    setDate(labels[index]);
-  }, []);
+  const chart = useMemo(
+    () => (
+      <Chart
+        dataset={dataset}
+        labels={labels}
+        setPerformance={setPerformance}
+        setDate={setDate}
+      ></Chart>
+    ),
+    []
+  );
 
+  return <div>{chart}</div>;
+};
+
+const Chart: React.FC<{
+  dataset: number[];
+  labels: Date[];
+  setPerformance: (performance: number) => void;
+  setDate: (date: Date) => void;
+  borderColor?: string;
+  gradientStartColor?: string;
+  gradientStopColor?: string;
+}> = ({
+  dataset,
+  labels,
+  setPerformance,
+  setDate,
+  borderColor = "#16CEB9",
+  gradientStartColor = "rgba(121, 255, 203, 0.24)",
+  gradientStopColor = "rgba(121, 255, 203, 0)",
+}) => {
   const options = useMemo(
     () => ({
       title: { display: false },
@@ -112,10 +130,13 @@ const PerformanceChart: React.FC<{
           ctx.strokeStyle = "#ffffff";
           ctx.stroke();
           ctx.restore();
+
+          setPerformance(dataset[chartElem._index]);
+          setDate(labels[chartElem._index]);
         }
       },
     }),
-    []
+    [setPerformance, setDate]
   );
 
   const getData = useCallback(
@@ -151,16 +172,7 @@ const PerformanceChart: React.FC<{
     [borderColor, gradientStartColor, gradientStopColor]
   );
 
-  return (
-    <div>
-      <Line
-        data={getData}
-        options={options as ChartOptions}
-        getElementAtEvent={(dataset) => {
-          console.log(dataset);
-        }}
-      ></Line>
-    </div>
-  );
+  return <Line data={getData} options={options as ChartOptions}></Line>;
 };
+
 export default PerformanceChart;
