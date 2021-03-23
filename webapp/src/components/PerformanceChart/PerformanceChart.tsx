@@ -1,18 +1,40 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
+import styled from "styled-components";
 import { Line } from "react-chartjs-2";
 import moment from "moment";
 import { ChartOptions } from "chart.js";
+import { SecondaryText, Title } from "../../designSystem";
+
+const APYNumber = styled(Title)`
+  font-size: 28px;
+  line-height: 36px;
+`;
+
+const DateTooltip = styled(SecondaryText)`
+  font-size: 12px;
+  line-height: 16px;
+`;
 
 const PerformanceChart: React.FC = () => {
-  const dataset = [3, 5, 2, 3, 5, 4, 3, 1, 4, 5, 7, 8.5, 8, 7.5];
-  const now = moment(new Date());
-  const labels = dataset.map((_, index) =>
-    now.add(index, "days").utc().toDate()
+  // data
+  const dataset = useMemo(
+    () => [3, 5, 2, 3, 5, 4, 3, 1, 4, 5, 7, 8.5, 8, 7.5],
+    []
   );
+  const labels = useMemo(() => {
+    const now = moment(new Date());
+    return dataset.map((_, index) => now.add(index, "days").utc().toDate());
+  }, []);
+
+  // states
   const [performance, setPerformance] = useState<number>(
     dataset[dataset.length - 1]
   );
-  const [date, setDate] = useState<Date>(labels[labels.length - 1]);
+  const [date, setDate] = useState<Date | null>(null);
+
+  // formatted data
+  const perfStr = `${performance.toFixed(2)}%`;
+  const dateStr = moment(date || new Date()).format("ddd, MMMM wo");
 
   const chart = useMemo(
     () => (
@@ -23,10 +45,21 @@ const PerformanceChart: React.FC = () => {
         setDate={setDate}
       ></Chart>
     ),
-    []
+    [dataset, labels]
   );
 
-  return <div>{chart}</div>;
+  return (
+    <div>
+      <div>
+        <SecondaryText className="d-block">Yield (APY)</SecondaryText>
+        <APYNumber>{perfStr}</APYNumber>
+      </div>
+      <div>{chart}</div>
+      <div>
+        <DateTooltip>{date === null ? "" : dateStr}</DateTooltip>
+      </div>
+    </div>
+  );
 };
 
 const Chart: React.FC<{
@@ -46,8 +79,8 @@ const Chart: React.FC<{
   gradientStartColor = "rgba(121, 255, 203, 0.24)",
   gradientStopColor = "rgba(121, 255, 203, 0)",
 }) => {
-  const options = useMemo(
-    () => ({
+  const options = useMemo(() => {
+    return {
       title: { display: false },
       legend: { display: false },
       layout: { padding: { top: 20, bottom: 20 } },
@@ -64,7 +97,6 @@ const Chart: React.FC<{
         enabled: false,
         intersect: false,
         mode: "nearest",
-        custom: (tooltipModel: any) => {},
       },
       onHover: (_: any, elements: any) => {
         if (elements && elements.length) {
@@ -89,9 +121,8 @@ const Chart: React.FC<{
           setDate(labels[chartElem._index]);
         }
       },
-    }),
-    [setPerformance, setDate]
-  );
+    };
+  }, [dataset, labels, setPerformance, setDate]);
 
   const getData = useCallback(
     (canvas: any) => {
@@ -123,7 +154,7 @@ const Chart: React.FC<{
         ],
       };
     },
-    [borderColor, gradientStartColor, gradientStopColor]
+    [dataset, labels, borderColor, gradientStartColor, gradientStopColor]
   );
 
   return <Line data={getData} options={options as ChartOptions}></Line>;
