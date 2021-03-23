@@ -3,21 +3,21 @@ import styled from "styled-components";
 
 import Logo from "./Logo";
 import colors from "../../designSystem/colors";
-import { mobileWidth } from "../../designSystem/sizes";
+import sizes from "../../designSystem/sizes";
 import { PrimaryText, BaseLink } from "../../designSystem";
 import MenuButton from "./MenuButton";
-import { NavItemProps, MobileOverlayMenuProps } from "./types";
-import AccountStatus from "./AccountStatus";
+import { NavItemProps, MobileMenuOpenProps } from "./types";
+import AccountStatus from "../Wallet/AccountStatus";
 import theme from "../../designSystem/theme";
 
 const HEADER_HEIGHT = 80;
 
-const HeaderContainer = styled.div`
+const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${HEADER_HEIGHT}px;
   border-bottom: 1px solid ${colors.border};
   position: relative;
 
-  @media (max-width: ${mobileWidth}px) {
+  @media (max-width: ${sizes.md}px) {
     padding: 16px 24px;
     position: sticky;
     top: 0;
@@ -26,17 +26,23 @@ const HeaderContainer = styled.div`
     border-bottom: none;
     background-color: ${colors.background};
   }
+
+  z-index: ${(props) => (props.isMenuOpen ? 1 : `unset`)};
 `;
 
 const NavLinkText = styled(PrimaryText)`
   letter-spacing: 1.5px;
+
+  @media (max-width: ${sizes.md}px) {
+    font-size: 24px;
+  }
 `;
 
 const LogoContainer = styled.div`
   padding-left: 40px;
   z-index: 1000;
 
-  @media (max-width: ${mobileWidth}px) {
+  @media (max-width: ${sizes.md}px) {
     padding-left: 0;
   }
 `;
@@ -48,7 +54,7 @@ const HeaderAbsoluteContainer = styled.div`
   width: 100%;
   justify-content: center;
 
-  @media (max-width: ${mobileWidth}px) {
+  @media (max-width: ${sizes.md}px) {
     display: none;
   }
 `;
@@ -69,19 +75,19 @@ const NavItem = styled.div<NavItemProps>`
 const MobileOnly = styled.div`
   display: none;
 
-  @media (max-width: ${mobileWidth}px) {
+  @media (max-width: ${sizes.md}px) {
     display: flex;
   }
 `;
 
-const MobileOverlayMenu = styled.div<MobileOverlayMenuProps>`
+const MobileOverlayMenu = styled.div<MobileMenuOpenProps>`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   height: 100vh;
   z-index: -1;
-  backdrop-filter: blur(80px);
+  backdrop-filter: blur(5px);
   transition: 0.1s all ease-in;
 
   ${(props) =>
@@ -113,7 +119,10 @@ const Header = () => {
   };
 
   return (
-    <HeaderContainer className="d-flex align-items-center justify-content-between">
+    <HeaderContainer
+      isMenuOpen={isMenuOpen}
+      className="d-flex align-items-center justify-content-between"
+    >
       {/* LOGO */}
       <LogoContainer>
         <Logo></Logo>
@@ -128,7 +137,7 @@ const Header = () => {
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
-      <AccountStatus />
+      <AccountStatus variant="desktop" />
 
       {/* MOBILE MENU */}
       <MobileOnly>

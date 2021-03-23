@@ -19,10 +19,7 @@ const useTextAnimation = (
     return () => {
       clearInterval(timeInterval);
     };
-
-    // Disable to ensure only run once
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [texts, interval]);
 
   return currentText;
 };

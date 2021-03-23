@@ -3,7 +3,6 @@ import { Modal as BootstrapModal } from "react-bootstrap";
 
 import Link from "../components/Common/Link";
 import colors from "./colors";
-import { mobileWidth } from "./sizes";
 import theme from "./theme";
 
 export const BaseText = styled.span`
@@ -11,10 +10,6 @@ export const BaseText = styled.span`
   font-family: "Inter", sans-serif;
   font-size: 16px;
   color: white;
-
-  @media (max-width: ${mobileWidth}px) {
-    font-size: 24px;
-  }
 `;
 
 export const PrimaryText = styled(BaseText)`

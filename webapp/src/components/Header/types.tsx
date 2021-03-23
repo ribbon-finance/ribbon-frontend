@@ -2,10 +2,6 @@ export interface NavItemProps {
   isSelected: boolean;
 }
 
-export interface MobileOverlayMenuProps {
+export interface MobileMenuOpenProps {
   isMenuOpen: boolean;
-}
-
-export interface WalletStatusProps {
-  connected: boolean;
 }
