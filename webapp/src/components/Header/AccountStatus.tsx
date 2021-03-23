@@ -43,11 +43,21 @@ const truncateAddress = (address: string) => {
 };
 
 const AccountStatus: React.FC<Props> = () => {
-  const { activate: activateWeb3, library, active, account } = useWeb3React();
+  const {
+    activate: activateWeb3,
+    deactivate: deactivateWeb3,
+    library,
+    active,
+    account,
+  } = useWeb3React();
 
   const handleConnect = useCallback(async () => {
+    if (active) {
+      deactivateWeb3();
+    }
+
     await activateWeb3(injectedConnector);
-  }, [activateWeb3]);
+  }, [activateWeb3, deactivateWeb3, active]);
 
   useEffect(() => {
     if (library && account) {
