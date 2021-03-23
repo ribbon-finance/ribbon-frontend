@@ -12,3 +12,19 @@ export const BaseLink = styled(Link)`
     text-decoration: none;
   }
 `;
+
+export const Title = styled.span`
+  color: ${colors.primaryText};
+  font-family: VCR;
+  font-style: normal;
+  font-weight: normal;
+`;
+
+export const SecondaryText = styled.span`
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(255, 255, 255, 0.48);
+`;
