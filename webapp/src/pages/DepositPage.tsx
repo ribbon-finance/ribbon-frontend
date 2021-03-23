@@ -3,15 +3,13 @@ import styled from "styled-components";
 import { SecondaryText, Title } from "../designSystem";
 import colors from "../designSystem/colors";
 
-const PageContainer = styled.div``;
-
-const HeroContainer = styled.div``;
-
-const BodyContainer = styled.div``;
-
-const PerfContainer = styled.div``;
-
-const ActionsContainer = styled.div``;
+const PageContainer = styled.div`
+  background: linear-gradient(
+    96.84deg,
+    rgba(252, 10, 84, 0.16) 1.04%,
+    rgba(252, 10, 84, 0.0256) 98.99%
+  );
+`;
 
 const HeroText = styled(Title)`
   font-size: 80px;
@@ -34,10 +32,34 @@ const AttributePill = styled.div`
   text-transform: uppercase;
 `;
 
+const BackgroundBar = styled.div`
+  height: 16px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+`;
+
+const ForegroundBar = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 16px;
+  background: #ffffff;
+  border-radius: 4px;
+  width: 100%;
+`;
+
+const DepositStat = styled(Title)`
+  font-size: 14px;
+  line-height: 20px;
+`;
+
 const DepositPage = () => {
   return (
-    <PageContainer className="container px-lg-1">
-      <HeroSection></HeroSection>
+    <PageContainer className="py-6">
+      <div className="container px-lg-1">
+        <HeroSection></HeroSection>
+      </div>
     </PageContainer>
   );
 };
@@ -57,10 +79,39 @@ const HeroSection = () => {
           <HeroText>T-100-E</HeroText>
         </div>
 
-        <div className="d-flex flex-row justify-content-between">
-          <SecondaryText>Total Deposits</SecondaryText>
-          <Title>215 ETH</Title>
-        </div>
+        <DepositCapBar totalDeposit={215} limit={500}></DepositCapBar>
+      </div>
+    </div>
+  );
+};
+
+const DepositCapBar: React.FC<{ totalDeposit: number; limit: number }> = ({
+  totalDeposit,
+  limit,
+}) => {
+  let percent = totalDeposit / limit;
+  if (percent < 0) {
+    percent = 0;
+  } else if (percent > 1) {
+    percent = 1;
+  }
+  percent *= 100;
+
+  return (
+    <div>
+      <div className="d-flex flex-row justify-content-between">
+        <SecondaryText>Total Deposits</SecondaryText>
+        <DepositStat>{totalDeposit} ETH</DepositStat>
+      </div>
+
+      <div className="d-flex flex-row position-relative my-3">
+        <BackgroundBar></BackgroundBar>
+        <ForegroundBar style={{ width: `${percent}%` }}></ForegroundBar>
+      </div>
+
+      <div className="d-flex flex-row justify-content-between">
+        <SecondaryText>Limit</SecondaryText>
+        <DepositStat>{limit} ETH</DepositStat>
       </div>
     </div>
   );
