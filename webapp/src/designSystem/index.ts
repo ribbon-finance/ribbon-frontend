@@ -18,6 +18,7 @@ export const Title = styled.span`
   font-family: VCR;
   font-style: normal;
   font-weight: normal;
+  text-transform: uppercase;
 `;
 
 export const SecondaryText = styled.span`
