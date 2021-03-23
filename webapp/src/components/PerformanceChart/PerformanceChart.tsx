@@ -1,6 +1,8 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Line } from "react-chartjs-2";
+import Chart from "chart.js";
 import moment from "moment";
+import { ChartOptions } from "chart.js";
 
 const options = {
   title: { display: false },
@@ -13,10 +15,31 @@ const options = {
     ],
     xAxes: [{ display: false }],
   },
+  hover: { animationDuration: 0, intersect: false },
   tooltips: {
     enabled: true,
     intersect: false,
     mode: "nearest",
+  },
+  onHover: (_: any, elements: any) => {
+    if (elements && elements.length) {
+      const chartElem = elements[0];
+      const chart = chartElem._chart;
+      const ctx = chart.ctx;
+      const x = chartElem._view.x;
+      const topY = chart.scales["y-axis-0"].top;
+      const bottomY = chart.scales["y-axis-0"].bottom;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.setLineDash([5, 5]);
+      ctx.moveTo(x, topY);
+      ctx.lineTo(x, bottomY);
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "#ffffff";
+      ctx.stroke();
+      ctx.restore();
+    }
   },
 };
 
@@ -47,7 +70,15 @@ const PerformanceChart: React.FC<{
           {
             data: dataset,
             type: "line",
-            pointRadius: 0,
+            pointRadius: 8,
+            pointBorderWidth: 1,
+            pointHoverRadius: 8,
+            pointHoverBorderWidth: 1,
+            pointHitRadius: 20,
+            pointBackgroundColor: "rgba(121, 255, 203, 0)",
+            pointBorderColor: "rgba(121, 255, 203, 0)",
+            pointHoverBackgroundColor: "rgba(121, 255, 203, 1)",
+            pointHoverBorderColor: "rgba(121, 255, 203, 1)",
             tension: 0,
             fill: "start",
             borderColor,
@@ -61,7 +92,7 @@ const PerformanceChart: React.FC<{
 
   return (
     <div>
-      <Line data={getData} options={options}></Line>
+      <Line data={getData} options={options as ChartOptions}></Line>
     </div>
   );
 };
