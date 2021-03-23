@@ -87,7 +87,7 @@ const MobileOverlayMenu = styled.div<MobileMenuOpenProps>`
   right: 0;
   height: 100vh;
   z-index: -1;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(20px);
   transition: 0.1s all ease-in;
 
   ${(props) =>
