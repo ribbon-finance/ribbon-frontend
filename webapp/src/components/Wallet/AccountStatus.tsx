@@ -14,6 +14,8 @@ import {
 } from "./types";
 import WalletConnectModal from "./WalletConnectModal";
 import theme from "../../designSystem/theme";
+import { MobileOverlayMenu } from "../Common/MobileOverlayMenu";
+import MenuButton from "../Header/MenuButton";
 
 const WalletContainer = styled.div<AccountStatusVariantProps>`
   justify-content: center;
@@ -77,6 +79,49 @@ const WalletButtonText = styled(PrimaryText)<WalletStatusProps>`
   }}
 `;
 
+const WalletMobileOverlayMenu = styled(
+  MobileOverlayMenu
+)<AccountStatusVariantProps>`
+  display: none;
+
+  ${(props) => {
+    switch (props.variant) {
+      case "mobile":
+        return `
+        @media (max-width: ${sizes.lg}px) {
+          display: flex;
+          z-index: ${props.isMenuOpen ? 1 : -1};
+        }
+        `;
+      case "desktop":
+        return ``;
+    }
+  }}
+`;
+
+const MenuItem = styled.div`
+  padding: 28px;
+  opacity: 1;
+
+  &:hover {
+    opacity: ${theme.hover.opacity};
+  }
+`;
+
+const MenuItemText = styled(PrimaryText)`
+  @media (max-width: ${sizes.md}px) {
+    font-size: 24px;
+  }
+`;
+
+const MenuCloseItem = styled(MenuItem)`
+  position: absolute;
+  bottom: 50px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
 interface AccountStatusProps {
   variant: "desktop" | "mobile";
 }
@@ -86,22 +131,27 @@ const truncateAddress = (address: string) => {
 };
 
 const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
-  const [showConnectModal, setShowConnectModal] = useState(false);
   const {
     deactivate: deactivateWeb3,
     library,
     active,
     account,
   } = useWeb3React();
+  const [showConnectModal, setShowConnectModal] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const handleConnect = useCallback(async () => {
+  const handleButtonClick = useCallback(async () => {
     if (active) {
-      deactivateWeb3();
+      setIsMenuOpen(true);
       return;
     }
 
     setShowConnectModal(true);
-  }, [active, deactivateWeb3]);
+  }, [active]);
+
+  const handleDisconnect = useCallback(async () => {
+    deactivateWeb3();
+  }, [deactivateWeb3]);
 
   useEffect(() => {
     if (library && account) {
@@ -121,6 +171,14 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
       <WalletButtonText connected={active}>CONNECT WALLET</WalletButtonText>
     );
 
+  const renderMenuItem = (title: string, onClick?: () => void) => {
+    return (
+      <MenuItem onClick={onClick} role="button">
+        <MenuItemText>{title}</MenuItemText>
+      </MenuItem>
+    );
+  };
+
   return (
     <>
       <WalletContainer variant={variant}>
@@ -128,11 +186,26 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
           variant={variant}
           connected={active}
           role="button"
-          onClick={handleConnect}
+          onClick={handleButtonClick}
         >
           {renderButtonContent()}
         </WalletButton>
       </WalletContainer>
+
+      <WalletMobileOverlayMenu
+        className="flex-column align-items-center justify-content-center"
+        isMenuOpen={isMenuOpen}
+        onClick={() => setIsMenuOpen(false)}
+        variant={variant}
+      >
+        {renderMenuItem("CHANGE WALLET")}
+        {renderMenuItem("COPY ADDRESS")}
+        {renderMenuItem("OPEN IN ETHERSCAN")}
+        {renderMenuItem("DISCONNECT", handleDisconnect)}
+        <MenuCloseItem role="button">
+          <MenuButton isOpen={true} onToggle={() => setIsMenuOpen(false)} />
+        </MenuCloseItem>
+      </WalletMobileOverlayMenu>
 
       <WalletConnectModal
         show={showConnectModal}

@@ -9,6 +9,7 @@ import MenuButton from "./MenuButton";
 import { NavItemProps, MobileMenuOpenProps } from "./types";
 import AccountStatus from "../Wallet/AccountStatus";
 import theme from "../../designSystem/theme";
+import { MobileOverlayMenu } from "../Common/MobileOverlayMenu";
 
 const HEADER_HEIGHT = 80;
 
@@ -80,27 +81,6 @@ const MobileOnly = styled.div`
   }
 `;
 
-const MobileOverlayMenu = styled.div<MobileMenuOpenProps>`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 100vh;
-  z-index: -1;
-  backdrop-filter: blur(20px);
-  transition: 0.1s all ease-in;
-
-  ${(props) =>
-    props.isMenuOpen
-      ? `
-    opacity: 1;
-  `
-      : `
-    opacity: 0;
-    visibility: hidden;
-  `}
-`;
-
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -143,7 +123,7 @@ const Header = () => {
       <MobileOnly>
         <MenuButton onToggle={onToggleMenu} isOpen={isMenuOpen} />
         <MobileOverlayMenu
-          className="d-flex flex-column align-items-center justify-content-center"
+          className="flex-column align-items-center justify-content-center"
           isMenuOpen={isMenuOpen}
         >
           {renderLinkItem("PRODUCTS", "/", true)}
