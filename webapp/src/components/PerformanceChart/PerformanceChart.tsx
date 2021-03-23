@@ -39,9 +39,14 @@ const PerformanceChart: React.FC = () => {
 
   const handleChartHover = useCallback(
     (hoverInfo: HoverInfo) => {
-      setPerformance(hoverInfo.yData);
-      setDate(hoverInfo.xData);
-      setDatePosition(hoverInfo.xPosition);
+      if (hoverInfo.focused) {
+        setPerformance(hoverInfo.yData);
+        setDate(hoverInfo.xData);
+        setDatePosition(hoverInfo.xPosition);
+      } else {
+        setDate(null);
+        setDatePosition(0);
+      }
     },
     [setPerformance, setDate]
   );
@@ -76,11 +81,14 @@ const PerformanceChart: React.FC = () => {
   );
 };
 
-interface HoverInfo {
-  xData: Date;
-  yData: number;
-  xPosition: number;
-}
+type HoverInfo =
+  | {
+      focused: true;
+      xData: Date;
+      yData: number;
+      xPosition: number;
+    }
+  | { focused: false };
 
 const Chart: React.FC<{
   dataset: number[];
@@ -135,14 +143,14 @@ const Chart: React.FC<{
           ctx.stroke();
           ctx.restore();
 
-          // set data only after repainting for better fps
-          requestAnimationFrame(() => {
-            onHover({
-              xData: labels[chartElem._index],
-              yData: dataset[chartElem._index],
-              xPosition: x,
-            });
+          onHover({
+            focused: true,
+            xData: labels[chartElem._index],
+            yData: dataset[chartElem._index],
+            xPosition: x,
           });
+        } else {
+          onHover({ focused: false });
         }
       },
     };
