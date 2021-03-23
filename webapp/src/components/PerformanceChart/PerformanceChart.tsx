@@ -36,13 +36,20 @@ const PerformanceChart: React.FC = () => {
   const perfStr = `${performance.toFixed(2)}%`;
   const dateStr = moment(date || new Date()).format("ddd, MMMM wo");
 
+  const handleChartHover = useCallback(
+    (hoverInfo: HoverInfo) => {
+      setPerformance(hoverInfo.yData);
+      setDate(hoverInfo.xData);
+    },
+    [setPerformance, setDate]
+  );
+
   const chart = useMemo(
     () => (
       <Chart
         dataset={dataset}
         labels={labels}
-        setPerformance={setPerformance}
-        setDate={setDate}
+        onHover={handleChartHover}
       ></Chart>
     ),
     [dataset, labels]
@@ -62,19 +69,23 @@ const PerformanceChart: React.FC = () => {
   );
 };
 
+interface HoverInfo {
+  xData: Date;
+  yData: number;
+  xPosition: number;
+}
+
 const Chart: React.FC<{
   dataset: number[];
   labels: Date[];
-  setPerformance: (performance: number) => void;
-  setDate: (date: Date) => void;
+  onHover: (hoverInfo: HoverInfo) => void;
   borderColor?: string;
   gradientStartColor?: string;
   gradientStopColor?: string;
 }> = ({
   dataset,
   labels,
-  setPerformance,
-  setDate,
+  onHover,
   borderColor = "#16CEB9",
   gradientStartColor = "rgba(121, 255, 203, 0.24)",
   gradientStopColor = "rgba(121, 255, 203, 0)",
@@ -117,12 +128,15 @@ const Chart: React.FC<{
           ctx.stroke();
           ctx.restore();
 
-          setPerformance(dataset[chartElem._index]);
-          setDate(labels[chartElem._index]);
+          onHover({
+            xData: labels[chartElem._index],
+            yData: dataset[chartElem._index],
+            xPosition: x,
+          });
         }
       },
     };
-  }, [dataset, labels, setPerformance, setDate]);
+  }, [dataset, labels, onHover]);
 
   const getData = useCallback(
     (canvas: any) => {
