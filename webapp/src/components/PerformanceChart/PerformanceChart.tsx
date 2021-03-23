@@ -166,6 +166,7 @@ const Chart: React.FC<{
         ],
         xAxes: [{ display: false }],
       },
+      animation: { duration: 0 },
       hover: { animationDuration: 0, intersect: false },
       tooltips: {
         enabled: false,
