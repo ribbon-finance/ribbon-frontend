@@ -2,52 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Line } from "react-chartjs-2";
 import moment from "moment";
 import { ChartOptions } from "chart.js";
-import { request } from "https";
-
-const options = {
-  title: { display: false },
-  legend: { display: false },
-  layout: { padding: { top: 20, bottom: 20 } },
-  scales: {
-    yAxes: [
-      {
-        display: false,
-      },
-    ],
-    xAxes: [{ display: false }],
-  },
-  hover: { animationDuration: 0, intersect: false },
-  tooltips: {
-    enabled: false,
-    intersect: false,
-    mode: "nearest",
-    custom: (tooltipModel: any) => {},
-  },
-  onHover: (_: any, elements: any) => {
-    if (elements && elements.length) {
-      const chartElem = elements[0];
-      const chart = chartElem._chart;
-      const ctx = chart.ctx;
-      const x = chartElem._view.x;
-      const topY = chart.scales["y-axis-0"].top;
-      const bottomY = chart.scales["y-axis-0"].bottom;
-
-      // set state
-      // setPerformance(dataset[chartElem._index]);
-      // setDate(labels[chartElem._index]);
-
-      ctx.save();
-      ctx.beginPath();
-      ctx.setLineDash([5, 5]);
-      ctx.moveTo(x, topY);
-      ctx.lineTo(x, bottomY);
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = "#ffffff";
-      ctx.stroke();
-      ctx.restore();
-    }
-  },
-};
 
 const PerformanceChart: React.FC = () => {
   const dataset = [3, 5, 2, 3, 5, 4, 3, 1, 4, 5, 7, 8.5, 8, 7.5];
