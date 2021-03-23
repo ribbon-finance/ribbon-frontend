@@ -24,13 +24,14 @@ const PerformanceChart: React.FC = () => {
   const labels = useMemo(() => {
     const now = moment(new Date());
     return dataset.map((_, index) => now.add(index, "days").utc().toDate());
-  }, []);
+  }, [dataset]);
 
   // states
   const [performance, setPerformance] = useState<number>(
     dataset[dataset.length - 1]
   );
   const [date, setDate] = useState<Date | null>(null);
+  const [datePosition, setDatePosition] = useState<number>(0);
 
   // formatted data
   const perfStr = `${performance.toFixed(2)}%`;
@@ -40,6 +41,7 @@ const PerformanceChart: React.FC = () => {
     (hoverInfo: HoverInfo) => {
       setPerformance(hoverInfo.yData);
       setDate(hoverInfo.xData);
+      setDatePosition(hoverInfo.xPosition);
     },
     [setPerformance, setDate]
   );
@@ -52,7 +54,7 @@ const PerformanceChart: React.FC = () => {
         onHover={handleChartHover}
       ></Chart>
     ),
-    [dataset, labels]
+    [dataset, labels, handleChartHover]
   );
 
   return (
@@ -62,9 +64,14 @@ const PerformanceChart: React.FC = () => {
         <APYNumber>{perfStr}</APYNumber>
       </div>
       <div>{chart}</div>
-      <div>
-        <DateTooltip>{date === null ? "" : dateStr}</DateTooltip>
-      </div>
+      <DateTooltip
+        className="position-absolute"
+        style={{
+          left: datePosition - 20,
+        }}
+      >
+        {date === null ? "" : dateStr}
+      </DateTooltip>
     </div>
   );
 };
