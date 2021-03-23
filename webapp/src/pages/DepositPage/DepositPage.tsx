@@ -39,7 +39,7 @@ const DepositPage = () => {
     <div>
       <HeroSection></HeroSection>
 
-      <div className="container">
+      <div className="container py-6">
         <div className="row mx-lg-n1">
           <PerformanceSection></PerformanceSection>
         </div>

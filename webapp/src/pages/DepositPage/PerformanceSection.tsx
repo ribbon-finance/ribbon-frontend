@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { SecondaryText, Title } from "../../designSystem";
+import { PrimaryText, SecondaryText, Title } from "../../designSystem";
 
 const Paragraph = styled.div`
   margin-bottom: 64px;
@@ -16,6 +16,11 @@ const ParagraphText = styled(SecondaryText)`
   color: rgba(255, 255, 255, 0.8);
   font-size: 14px;
   line-height: 24px;
+`;
+
+const LinkIcon = styled.i`
+  width: 24px;
+  height: 24px;
 `;
 
 const PerformanceSection = () => {
@@ -53,6 +58,11 @@ const PerformanceSection = () => {
           Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam,
           purus sit amet luctus venenatis, lectus magna.
         </ParagraphText>
+
+        <PrimaryText className="d-block mt-3">
+          <span className="mr-2">Read More</span>
+          <LinkIcon className="fas fa-external-link-alt"></LinkIcon>
+        </PrimaryText>
       </Paragraph>
     </div>
   );

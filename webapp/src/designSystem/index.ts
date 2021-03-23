@@ -21,6 +21,14 @@ export const Title = styled.span`
   text-transform: uppercase;
 `;
 
+export const PrimaryText = styled(BaseText)`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #ffffff;
+`;
+
 export const SecondaryText = styled.span`
   font-family: "Inter", sans-serif;
   font-style: normal;
