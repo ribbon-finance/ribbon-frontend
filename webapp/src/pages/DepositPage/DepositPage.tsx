@@ -4,6 +4,7 @@ import { Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import DepositCapBar from "./DepositCapBar";
 import PerformanceSection from "./PerformanceSection";
+import Theta from "../../assets/img/theta.svg";
 
 const HeroContainer = styled.div`
   background: linear-gradient(
@@ -50,7 +51,7 @@ const DepositPage = () => {
 
 const HeroSection = () => {
   return (
-    <HeroContainer className="py-6">
+    <HeroContainer className="position-relative py-6">
       <div className="container">
         <div className="row mx-lg-n1">
           <div className="col-xl-6">
@@ -66,6 +67,13 @@ const HeroSection = () => {
             </div>
 
             <DepositCapBar totalDeposit={215} limit={500}></DepositCapBar>
+          </div>
+
+          <div
+            style={{ top: 0, height: 475 }}
+            className="position-absolute offset-xl-5"
+          >
+            <img src={Theta} alt="Theta Vault" />
           </div>
         </div>
       </div>
