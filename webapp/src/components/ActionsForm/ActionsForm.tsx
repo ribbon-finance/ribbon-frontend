@@ -5,6 +5,7 @@ import { ethers } from "ethers";
 import { Title } from "../../designSystem";
 import WalletConnectModal from "../Wallet/WalletConnectModal";
 import { formatSignificantDecimals } from "../../utils/math";
+import YourPosition from "./YourPosition";
 
 const { formatEther } = ethers.utils;
 
@@ -191,61 +192,65 @@ const ActionsForm = () => {
   }
 
   return (
-    <FormContainer>
-      <WalletConnectModal
-        show={showConnectModal}
-        onClose={() => setShowConnectModal(false)}
-      />
-      <div
-        style={{ justifyContent: "space-evenly" }}
-        className="d-flex flex-row align-items-center"
-      >
-        <FormTitleDiv
-          left
-          active={isDeposit}
-          onClick={() => setIsDeposit(DEPOSIT_TAB)}
+    <div>
+      <FormContainer>
+        <WalletConnectModal
+          show={showConnectModal}
+          onClose={() => setShowConnectModal(false)}
+        />
+        <div
+          style={{ justifyContent: "space-evenly" }}
+          className="d-flex flex-row align-items-center"
         >
-          <FormTitle active={DEPOSIT_TAB}>Deposit</FormTitle>
-        </FormTitleDiv>
-        <FormTitleDiv
-          left={false}
-          active={!isDeposit}
-          onClick={switchToTab(WITHDRAWAL_TAB)}
-        >
-          <FormTitle active={WITHDRAWAL_TAB}>Withdraw</FormTitle>
-        </FormTitleDiv>
-      </div>
-      <ContentContainer className="px-4 py-4">
-        <InputGuide>AMOUNT (ETH)</InputGuide>
-        <FormInputContainer className="position-relative mt-2 mb-5 px-1">
-          <FormInput
-            type="number"
-            className="form-control"
-            aria-label="ETH"
-            placeholder="0"
-            value={inputAmount}
-            onChange={(e) => setInputAmount(e.target.value)}
-          />
-          <MaxAccessory onClick={handleClickMax}>MAX</MaxAccessory>
-        </FormInputContainer>
-
-        {connected ? (
-          <ActionButton type="button" className="btn py-3 mb-4">
-            {isDeposit ? "Deposit ETH" : "Withdraw ETH"}
-          </ActionButton>
-        ) : (
-          <ConnectWalletButton
-            onClick={() => setShowConnectModal(true)}
-            type="button"
-            className="btn py-3 mb-4"
+          <FormTitleDiv
+            left
+            active={isDeposit}
+            onClick={() => setIsDeposit(DEPOSIT_TAB)}
           >
-            Connect Wallet
-          </ConnectWalletButton>
-        )}
+            <FormTitle active={DEPOSIT_TAB}>Deposit</FormTitle>
+          </FormTitleDiv>
+          <FormTitleDiv
+            left={false}
+            active={!isDeposit}
+            onClick={switchToTab(WITHDRAWAL_TAB)}
+          >
+            <FormTitle active={WITHDRAWAL_TAB}>Withdraw</FormTitle>
+          </FormTitleDiv>
+        </div>
+        <ContentContainer className="px-4 py-4">
+          <InputGuide>AMOUNT (ETH)</InputGuide>
+          <FormInputContainer className="position-relative mt-2 mb-5 px-1">
+            <FormInput
+              type="number"
+              className="form-control"
+              aria-label="ETH"
+              placeholder="0"
+              value={inputAmount}
+              onChange={(e) => setInputAmount(e.target.value)}
+            />
+            <MaxAccessory onClick={handleClickMax}>MAX</MaxAccessory>
+          </FormInputContainer>
 
-        <WalletBalance active={connected}>{walletText}</WalletBalance>
-      </ContentContainer>
-    </FormContainer>
+          {connected ? (
+            <ActionButton type="button" className="btn py-3 mb-4">
+              {isDeposit ? "Deposit ETH" : "Withdraw ETH"}
+            </ActionButton>
+          ) : (
+            <ConnectWalletButton
+              onClick={() => setShowConnectModal(true)}
+              type="button"
+              className="btn py-3 mb-4"
+            >
+              Connect Wallet
+            </ConnectWalletButton>
+          )}
+
+          <WalletBalance active={connected}>{walletText}</WalletBalance>
+        </ContentContainer>
+      </FormContainer>
+
+      {connected && <YourPosition></YourPosition>}
+    </div>
   );
 };
 
