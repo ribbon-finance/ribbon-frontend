@@ -96,8 +96,6 @@ const WalletDesktopMenu = styled.div<MenuStateProps>`
           width: fit-content;
           background-color: ${colors.backgroundDarker};
           border-radius: ${theme.border.radius};
-          padding-left: 16px;
-          padding-right: 38px;
         `
       : `
           display: none;
@@ -129,11 +127,22 @@ const WalletMobileOverlayMenu = styled(
 `;
 
 const MenuItem = styled.div`
-  margin: 16px 0px;
+  padding: 8px 16px;
+  padding-right: 38px;
   opacity: 1;
 
+  &:first-child {
+    padding-top: 16px;
+  }
+
+  &:last-child {
+    padding-bottom: 16px;
+  }
+
   &:hover {
-    opacity: ${theme.hover.opacity};
+    span {
+      color: ${colors.primaryText};
+    }
   }
 
   @media (max-width: ${sizes.md}px) {
@@ -143,6 +152,7 @@ const MenuItem = styled.div`
 `;
 
 const MenuItemText = styled(Title)`
+  color: ${colors.primaryText}A3;
   white-space: nowrap;
   @media (max-width: ${sizes.md}px) {
     font-size: 24px;
