@@ -5,6 +5,11 @@ import moment from "moment";
 import { ChartOptions } from "chart.js";
 import { SecondaryText, Title } from "../../designSystem";
 
+const PerformanceChartContainer = styled.div`
+  border: 1px solid #2b2b2b;
+  border-radius: 4px;
+`;
+
 const APYNumber = styled(Title)`
   font-size: 28px;
   line-height: 36px;
@@ -95,8 +100,8 @@ const PerformanceChart: React.FC = () => {
   );
 
   return (
-    <div>
-      <div className="d-flex align-items-center justify-content-between mb-3">
+    <PerformanceChartContainer className="pt-4 pb-5">
+      <div className="d-flex align-items-center justify-content-between mb-3 px-4">
         <div>
           <SecondaryText className="d-block">Yield (APY)</SecondaryText>
           <APYNumber>{perfStr}</APYNumber>
@@ -122,12 +127,12 @@ const PerformanceChart: React.FC = () => {
         className="position-absolute"
         style={{
           whiteSpace: "nowrap",
-          left: datePosition - 20,
+          left: datePosition - 15,
         }}
       >
         {date === null ? "" : dateStr}
       </DateTooltip>
-    </div>
+    </PerformanceChartContainer>
   );
 };
 
