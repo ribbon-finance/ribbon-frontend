@@ -77,7 +77,7 @@ const HeroSection = () => {
               overflow: "hidden",
               width: "100%",
             }}
-            className="position-absolute offset-xl-5"
+            className="position-absolute offset-xl-6"
           >
             <img src={Theta} alt="Theta Vault" />
           </div>
