@@ -86,7 +86,7 @@ const PerformanceChart: React.FC = () => {
         setDatePosition(0);
       }
     },
-    [setPerformance, setDate]
+    [originalDataset, setPerformance, setDate]
   );
 
   const chart = useMemo(
@@ -251,7 +251,14 @@ const Chart: React.FC<{
         ],
       };
     },
-    [dataset, labels, borderColor, gradientStartColor, gradientStopColor]
+    [
+      dataset,
+      labels,
+      borderColor,
+      gradientStartColor,
+      gradientStopColor,
+      pointBackgroundColor,
+    ]
   );
 
   return <Line data={getData} options={options as ChartOptions}></Line>;
