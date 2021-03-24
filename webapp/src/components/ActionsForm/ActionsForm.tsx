@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Title } from "../../designSystem";
+import WalletConnectModal from "../Wallet/WalletConnectModal";
 
 const FormContainer = styled.div`
   font-family: VCR;
@@ -107,9 +108,14 @@ const WalletBalance = styled.div<{ active: boolean }>`
 const ActionsForm = () => {
   const [isDeposit, setIsDeposit] = useState(true);
   const [inputAmount, setInputAmount] = useState("");
+  const [showConnectModal, setShowConnectModal] = useState(false);
 
   return (
     <FormContainer>
+      <WalletConnectModal
+        show={showConnectModal}
+        onClose={() => setShowConnectModal(false)}
+      />
       <div
         style={{ justifyContent: "space-evenly" }}
         className="d-flex flex-row align-items-center"
@@ -143,7 +149,11 @@ const ActionsForm = () => {
           <MaxAccessory>MAX</MaxAccessory>
         </div>
 
-        <ConnectWalletButton type="button" className="btn py-3 mb-4">
+        <ConnectWalletButton
+          onClick={() => setShowConnectModal(true)}
+          type="button"
+          className="btn py-3 mb-4"
+        >
           Connect Wallet
         </ConnectWalletButton>
 
