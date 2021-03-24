@@ -121,6 +121,7 @@ const PerformanceChart: React.FC = () => {
       <DateTooltip
         className="position-absolute"
         style={{
+          whiteSpace: "nowrap",
           left: datePosition - 20,
         }}
       >
