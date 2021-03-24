@@ -11,6 +11,7 @@ import {
   WalletStatusProps,
   AccountStatusVariantProps,
   WalletButtonProps,
+  MenuStateProps,
 } from "./types";
 import WalletConnectModal from "./WalletConnectModal";
 import theme from "../../designSystem/theme";
@@ -80,9 +81,10 @@ const WalletButtonText = styled(Title)<WalletStatusProps>`
   }}
 `;
 
-interface MenuStateProps {
-  isMenuOpen: boolean;
-}
+const WalletButtonArrow = styled.i<MenuStateProps>`
+  transition: 0.2s all ease-out;
+  transform: ${(props) => (props.isMenuOpen ? "rotate(-180deg)" : "none")};
+`;
 
 const WalletDesktopMenu = styled.div<MenuStateProps>`
   ${(props) =>
@@ -135,6 +137,7 @@ const MenuItem = styled.div`
   }
 
   @media (max-width: ${sizes.md}px) {
+    margin: unset;
     padding: 28px;
   }
 `;
@@ -184,7 +187,11 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
       <>
         <Indicator connected={active} />
         <WalletButtonText connected={active}>
-          {truncateAddress(account)} <i className="fas fa-chevron-down" />
+          {truncateAddress(account)}{" "}
+          <WalletButtonArrow
+            className="fas fa-chevron-down"
+            isMenuOpen={isMenuOpen}
+          />
         </WalletButtonText>
       </>
     ) : (
