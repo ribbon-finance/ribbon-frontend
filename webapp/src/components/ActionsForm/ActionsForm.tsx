@@ -90,16 +90,17 @@ const ConnectWalletButton = styled.button`
   }
 `;
 
-const WalletBalance = styled.div`
+const WalletBalance = styled.div<{ active: boolean }>`
   width: 100%;
   text-align: center;
   font-size: 14px;
   line-height: 20px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.16);
+  color: ${(props) => (props.active ? "#FFFFFF" : "rgba(255, 255, 255, 0.16)")};
 `;
 
 const ActionsForm = () => {
+  const [isDeposit, setIsDeposit] = useState(true);
   const [inputAmount, setInputAmount] = useState("");
 
   return (
@@ -108,11 +109,11 @@ const ActionsForm = () => {
         style={{ justifyContent: "space-evenly" }}
         className="d-flex flex-row align-items-center"
       >
-        <FormTitleDiv active>
-          <FormTitle active>Deposit</FormTitle>
+        <FormTitleDiv active={isDeposit} onClick={() => setIsDeposit(true)}>
+          <FormTitle active={isDeposit}>Deposit</FormTitle>
         </FormTitleDiv>
-        <FormTitleDiv active={false}>
-          <FormTitle active={false}>Withdraw</FormTitle>
+        <FormTitleDiv active={!isDeposit} onClick={() => setIsDeposit(false)}>
+          <FormTitle active={!isDeposit}>Withdraw</FormTitle>
         </FormTitleDiv>
       </div>
       <ContentContainer className="px-4 py-4">
@@ -133,7 +134,9 @@ const ActionsForm = () => {
           Connect Wallet
         </ConnectWalletButton>
 
-        <WalletBalance>Wallet Balance: ---</WalletBalance>
+        <WalletBalance active={false}>
+          {isDeposit ? "Wallet Balance: ---" : "Your Position: ---"}
+        </WalletBalance>
       </ContentContainer>
     </FormContainer>
   );
