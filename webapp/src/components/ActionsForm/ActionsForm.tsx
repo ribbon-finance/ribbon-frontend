@@ -11,12 +11,17 @@ const FormContainer = styled.div`
   border-radius: 8px;
 `;
 
-const FormTitleDiv = styled.div<{ active: boolean }>`
+const FormTitleDiv = styled.div<{ left: boolean; active: boolean }>`
   width: 100%;
   padding: 24px 60px;
   background-color: ${(props) =>
     props.active ? "#151413" : "rgba(255, 255, 255, 0.04)"};
   cursor: pointer;
+
+  ${(props) =>
+    props.left
+      ? "border-top-left-radius: 8px;"
+      : "border-top-right-radius: 8px;"}
 `;
 
 const FormTitle = styled(Title)<{ active: boolean }>`
@@ -109,10 +114,18 @@ const ActionsForm = () => {
         style={{ justifyContent: "space-evenly" }}
         className="d-flex flex-row align-items-center"
       >
-        <FormTitleDiv active={isDeposit} onClick={() => setIsDeposit(true)}>
+        <FormTitleDiv
+          left
+          active={isDeposit}
+          onClick={() => setIsDeposit(true)}
+        >
           <FormTitle active={isDeposit}>Deposit</FormTitle>
         </FormTitleDiv>
-        <FormTitleDiv active={!isDeposit} onClick={() => setIsDeposit(false)}>
+        <FormTitleDiv
+          left={false}
+          active={!isDeposit}
+          onClick={() => setIsDeposit(false)}
+        >
           <FormTitle active={!isDeposit}>Withdraw</FormTitle>
         </FormTitleDiv>
       </div>
