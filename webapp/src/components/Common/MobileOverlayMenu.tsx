@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 
-interface MobileOverlayMenuProps {
+interface MenuStateProps {
   isMenuOpen: boolean;
 }
 
-export const MobileOverlayContainer = styled.div<MobileOverlayMenuProps>`
+export const MobileOverlayContainer = styled.div<MenuStateProps>`
   position: fixed;
   top: 0;
   left: 0;
@@ -27,9 +27,18 @@ export const MobileOverlayContainer = styled.div<MobileOverlayMenuProps>`
   `}
 `;
 
-const MobileOverlayMenu: React.FC<
-  MobileOverlayMenuProps & React.HTMLAttributes<HTMLDivElement>
-> = ({ isMenuOpen, children, ...props }) => {
+type MobileOverlayMenuProps = MenuStateProps &
+  React.HTMLAttributes<HTMLDivElement> & {
+    onOverlayClick?: (event: React.MouseEvent) => void;
+  };
+
+const MobileOverlayMenu: React.FC<MobileOverlayMenuProps> = ({
+  isMenuOpen,
+  children,
+  onClick,
+  onOverlayClick,
+  ...props
+}) => {
   useEffect(() => {
     if (isMenuOpen) {
       document.querySelector("body")!.style.overflow = "hidden";
@@ -40,8 +49,17 @@ const MobileOverlayMenu: React.FC<
   }, [isMenuOpen]);
 
   return (
-    <MobileOverlayContainer isMenuOpen={isMenuOpen} {...props}>
-      {children}
+    <MobileOverlayContainer
+      isMenuOpen={isMenuOpen}
+      onClick={(event) => {
+        onClick && onClick(event);
+        onOverlayClick && onOverlayClick(event);
+      }}
+      {...props}
+    >
+      {React.Children.map(children, (child) => {
+        return <div onClick={(e) => e.stopPropagation()}>{child}</div>;
+      })}
     </MobileOverlayContainer>
   );
 };

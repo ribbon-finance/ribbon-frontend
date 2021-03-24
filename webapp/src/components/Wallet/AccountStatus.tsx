@@ -117,6 +117,7 @@ const MenuItemText = styled(Title)`
 const MenuCloseItem = styled(MenuItem)`
   position: absolute;
   bottom: 50px;
+  left: 0;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -151,6 +152,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
 
   const handleDisconnect = useCallback(async () => {
     deactivateWeb3();
+    onCloseMenu();
   }, [deactivateWeb3]);
 
   useEffect(() => {
@@ -179,6 +181,10 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
     );
   };
 
+  const onCloseMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <>
       <WalletContainer variant={variant}>
@@ -195,15 +201,15 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
       <WalletMobileOverlayMenu
         className="flex-column align-items-center justify-content-center"
         isMenuOpen={isMenuOpen}
-        onClick={() => setIsMenuOpen(false)}
+        onOverlayClick={onCloseMenu}
         variant={variant}
       >
         {renderMenuItem("CHANGE WALLET")}
         {renderMenuItem("COPY ADDRESS")}
         {renderMenuItem("OPEN IN ETHERSCAN")}
         {renderMenuItem("DISCONNECT", handleDisconnect)}
-        <MenuCloseItem role="button">
-          <MenuButton isOpen={true} onToggle={() => setIsMenuOpen(false)} />
+        <MenuCloseItem role="button" onClick={onCloseMenu}>
+          <MenuButton isOpen={true} onToggle={onCloseMenu} />
         </MenuCloseItem>
       </WalletMobileOverlayMenu>
 
