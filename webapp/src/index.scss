@@ -58,6 +58,8 @@ body {
 
   background-image: url("./assets/img/noise.png");
   background-color: #1c1a19;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
 }
 
 @media screen and (max-width: 768px) {
