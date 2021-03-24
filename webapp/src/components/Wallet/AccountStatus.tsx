@@ -216,6 +216,10 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
     );
   };
 
+  const onToggleMenu = useCallback(() => {
+    setIsMenuOpen((open) => !open);
+  }, []);
+
   const handleButtonClick = useCallback(async () => {
     if (active) {
       onToggleMenu();
@@ -223,20 +227,16 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
     }
 
     setShowConnectModal(true);
-  }, [active]);
+  }, [active, onToggleMenu]);
+
+  const onCloseMenu = useCallback(() => {
+    setIsMenuOpen(false);
+  }, []);
 
   const handleDisconnect = useCallback(async () => {
     deactivateWeb3();
     onCloseMenu();
-  }, [deactivateWeb3]);
-
-  const onToggleMenu = () => {
-    setIsMenuOpen((open) => !open);
-  };
-
-  const onCloseMenu = () => {
-    setIsMenuOpen(false);
-  };
+  }, [deactivateWeb3, onCloseMenu]);
 
   return (
     <>
