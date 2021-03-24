@@ -16,6 +16,7 @@ const FormTitleDiv = styled.div<{ active: boolean }>`
   padding: 24px 60px;
   background-color: ${(props) =>
     props.active ? "#151413" : "rgba(255, 255, 255, 0.04)"};
+  cursor: pointer;
 `;
 
 const FormTitle = styled(Title)<{ active: boolean }>`
@@ -46,12 +47,60 @@ const FormInput = styled.input`
   border-radius: 4px;
   font-size: 48px;
   line-height: 64px;
-  color: rgba(255, 255, 255, 0.64);
+  color: #ffffff;
   border: none;
+
+  &:focus {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.04);
+    border: none;
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    border: rgba(255, 255, 255, 0);
+  }
+`;
+
+const MaxAccessory = styled.div`
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  right: 0;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 8px;
+  height: 32px;
+  font-size: 11px;
+  line-height: 16px;
+  text-align: center;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+`;
+
+const ConnectWalletButton = styled.button`
+  width: 100%;
+  background: rgba(22, 206, 185, 0.08);
+  border-radius: 8px;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  text-transform: uppercase;
+  color: #16ceb9;
+
+  &:hover {
+    color: #16ceb9;
+  }
+`;
+
+const WalletBalance = styled.div`
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  line-height: 20px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.16);
 `;
 
 const ActionsForm = () => {
-  const [inputAmount, setInputAmount] = useState(0);
+  const [inputAmount, setInputAmount] = useState("");
 
   return (
     <FormContainer>
@@ -68,13 +117,23 @@ const ActionsForm = () => {
       </div>
       <ContentContainer className="px-4 py-4">
         <InputGuide>AMOUNT (ETH)</InputGuide>
-        <FormInput
-          type="text"
-          className="form-control mt-2 px-4 py-3"
-          aria-label="ETH"
-          placeholder="0"
-          value={inputAmount}
-        />
+        <div className="position-relative mb-5">
+          <FormInput
+            type="number"
+            className="form-control mt-2 px-4 py-3"
+            aria-label="ETH"
+            placeholder="0"
+            value={inputAmount}
+            onChange={(e) => setInputAmount(e.target.value)}
+          />
+          <MaxAccessory>MAX</MaxAccessory>
+        </div>
+
+        <ConnectWalletButton type="button" className="btn py-3 mb-4">
+          Connect Wallet
+        </ConnectWalletButton>
+
+        <WalletBalance>Wallet Balance: ---</WalletBalance>
       </ContentContainer>
     </FormContainer>
   );
