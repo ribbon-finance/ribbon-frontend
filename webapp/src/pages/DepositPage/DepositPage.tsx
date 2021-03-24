@@ -71,7 +71,7 @@ const HeroSection = () => {
 
           <div
             style={{ zIndex: 0, top: 0, height: 475 }}
-            className="position-absolute offset-xl-5"
+            className="position-absolute offset-xl-6"
           >
             <img src={Theta} alt="Theta Vault" />
           </div>

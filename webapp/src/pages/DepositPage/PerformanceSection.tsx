@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import PerformanceChart from "../../components/PerformanceChart/PerformanceChart";
 import { PrimaryText, SecondaryText, Title } from "../../designSystem";
 
 const Paragraph = styled.div`
@@ -28,6 +29,7 @@ const PerformanceSection = () => {
     <div className="col-lg-6">
       <Paragraph>
         <ParagraphHeading>Vault Performance</ParagraphHeading>
+        <PerformanceChart></PerformanceChart>
       </Paragraph>
 
       <Paragraph>
