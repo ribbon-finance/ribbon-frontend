@@ -4,9 +4,10 @@ import { Line } from "react-chartjs-2";
 import moment from "moment";
 import { ChartOptions } from "chart.js";
 import { SecondaryText, Title } from "../../designSystem";
+import colors from "../../designSystem/colors";
 
 const PerformanceChartContainer = styled.div`
-  border: 1px solid #2b2b2b;
+  border: 1px solid ${colors.border};
   border-radius: 4px;
 `;
 
@@ -152,6 +153,7 @@ const Chart: React.FC<{
   borderColor?: string;
   gradientStartColor?: string;
   gradientStopColor?: string;
+  pointBackgroundColor?: string;
 }> = ({
   dataset,
   labels,
@@ -159,6 +161,7 @@ const Chart: React.FC<{
   borderColor = "#16CEB9",
   gradientStartColor = "rgba(121, 255, 203, 0.24)",
   gradientStopColor = "rgba(121, 255, 203, 0)",
+  pointBackgroundColor = "rgba(121, 255, 203, 1)",
 }) => {
   const options = useMemo(() => {
     return {
@@ -236,10 +239,10 @@ const Chart: React.FC<{
             pointHoverRadius: 8,
             pointHoverBorderWidth: 1,
             pointHitRadius: 20,
-            pointBackgroundColor: "rgba(121, 255, 203, 0)",
-            pointBorderColor: "rgba(121, 255, 203, 0)",
-            pointHoverBackgroundColor: "rgba(121, 255, 203, 1)",
-            pointHoverBorderColor: "rgba(121, 255, 203, 1)",
+            pointBackgroundColor: "rgba(0, 0, 0, 0)",
+            pointBorderColor: "rgba(0, 0, 0, 0)",
+            pointHoverBackgroundColor: pointBackgroundColor,
+            pointHoverBorderColor: pointBackgroundColor,
             tension: 0,
             fill: "start",
             borderColor,
