@@ -32,7 +32,7 @@ const DateFilter = styled(Title)<DateFilterProps>`
 `;
 
 const PerformanceChart: React.FC = () => {
-  // data
+  // mocked data for now
   const originalDataset = useMemo(
     () => [3, 5, 2, 3, 5, 4, 3, 1, 4, 5, 7, 8.5, 8, 7.5],
     []
