@@ -149,18 +149,18 @@ const ActionsForm = () => {
 
   const connected = Boolean(active && account);
 
-  const getAndSetBalance = useCallback(async () => {
+  const getAndSetBalance = async () => {
     if (account) {
       const bal = await library.getBalance(account);
       setUserBalance(bal.toString());
     }
-  }, [library, account]);
+  };
 
-  const handleClickMax = useCallback(() => {
+  const handleClickMax = () => {
     if (connected && userBalance) {
       setInputAmount(formatEther(userBalance));
     }
-  }, [setInputAmount, connected, userBalance]);
+  };
 
   const switchToTab = (isDeposit: boolean) => {
     return () => {
