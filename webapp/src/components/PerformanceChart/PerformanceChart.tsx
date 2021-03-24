@@ -124,15 +124,17 @@ const PerformanceChart: React.FC = () => {
         </div>
       </div>
       <div>{chart}</div>
-      <DateTooltip
-        className="position-absolute"
-        style={{
-          whiteSpace: "nowrap",
-          left: datePosition - 15,
-        }}
-      >
-        {date === null ? "" : dateStr}
-      </DateTooltip>
+      {date !== null ? (
+        <DateTooltip
+          className="position-absolute"
+          style={{
+            whiteSpace: "nowrap",
+            left: datePosition - 15,
+          }}
+        >
+          {dateStr}
+        </DateTooltip>
+      ) : null}
     </PerformanceChartContainer>
   );
 };
