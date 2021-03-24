@@ -180,6 +180,9 @@ const Chart: React.FC<{
           const chartElem = elements[0];
           const chart = chartElem._chart;
           const ctx = chart.ctx;
+
+          // draw line behind dot
+          ctx.globalCompositeOperation = "destination-over";
           const x = chartElem._view.x;
           const topY = chart.scales["y-axis-0"].top;
           const bottomY = chart.scales["y-axis-0"].bottom;
@@ -193,6 +196,9 @@ const Chart: React.FC<{
           ctx.strokeStyle = "#ffffff";
           ctx.stroke();
           ctx.restore();
+
+          // now we have to revert to the dot drawing above everything
+          ctx.globalCompositeOperation = "source-over";
 
           onHover({
             focused: true,
