@@ -149,12 +149,12 @@ const ActionsForm = () => {
 
   const connected = Boolean(active && account);
 
-  const getAndSetBalance = async () => {
+  const getAndSetBalance = useCallback(async () => {
     if (account) {
       const bal = await library.getBalance(account);
       setUserBalance(bal.toString());
     }
-  };
+  }, [library, account]);
 
   const handleClickMax = () => {
     if (connected && userBalance) {
