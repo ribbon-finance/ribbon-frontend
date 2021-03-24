@@ -125,6 +125,7 @@ const Header = () => {
         <MobileOverlayMenu
           className="flex-column align-items-center justify-content-center"
           isMenuOpen={isMenuOpen}
+          onOverlayClick={onToggleMenu}
         >
           {renderLinkItem("PRODUCTS", "/", true)}
           {renderLinkItem("POSITIONS", "/", false)}

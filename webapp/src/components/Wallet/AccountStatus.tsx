@@ -11,6 +11,7 @@ import {
   WalletStatusProps,
   AccountStatusVariantProps,
   WalletButtonProps,
+  MenuStateProps,
 } from "./types";
 import WalletConnectModal from "./WalletConnectModal";
 import theme from "../../designSystem/theme";
@@ -28,6 +29,7 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
         display: flex;
         padding-right: 40px;
         z-index: 1000;
+        position: relative;
 
         @media (max-width: ${sizes.lg}px) {
           display: none;
@@ -79,6 +81,31 @@ const WalletButtonText = styled(Title)<WalletStatusProps>`
   }}
 `;
 
+const WalletButtonArrow = styled.i<MenuStateProps>`
+  transition: 0.2s all ease-out;
+  transform: ${(props) => (props.isMenuOpen ? "rotate(-180deg)" : "none")};
+`;
+
+const WalletDesktopMenu = styled.div<MenuStateProps>`
+  ${(props) =>
+    props.isMenuOpen
+      ? `
+          position: absolute;
+          right: 40px;
+          top: 64px;
+          width: fit-content;
+          background-color: ${colors.backgroundDarker};
+          border-radius: ${theme.border.radius};
+        `
+      : `
+          display: none;
+        `}
+
+  @media (max-width: ${sizes.md}px) {
+    display: none;
+  }
+`;
+
 const WalletMobileOverlayMenu = styled(
   MobileOverlayMenu
 )<AccountStatusVariantProps>`
@@ -88,10 +115,10 @@ const WalletMobileOverlayMenu = styled(
     switch (props.variant) {
       case "mobile":
         return `
-        @media (max-width: ${sizes.lg}px) {
-          display: flex;
-          z-index: ${props.isMenuOpen ? 50 : -1};
-        }
+          @media (max-width: ${sizes.lg}px) {
+            display: flex;
+            z-index: ${props.isMenuOpen ? 50 : -1};
+          }
         `;
       case "desktop":
         return ``;
@@ -100,15 +127,33 @@ const WalletMobileOverlayMenu = styled(
 `;
 
 const MenuItem = styled.div`
-  padding: 28px;
+  padding: 8px 16px;
+  padding-right: 38px;
   opacity: 1;
 
+  &:first-child {
+    padding-top: 16px;
+  }
+
+  &:last-child {
+    padding-bottom: 16px;
+  }
+
   &:hover {
-    opacity: ${theme.hover.opacity};
+    span {
+      color: ${colors.primaryText};
+    }
+  }
+
+  @media (max-width: ${sizes.md}px) {
+    margin: unset;
+    padding: 28px;
   }
 `;
 
 const MenuItemText = styled(Title)`
+  color: ${colors.primaryText}A3;
+  white-space: nowrap;
   @media (max-width: ${sizes.md}px) {
     font-size: 24px;
   }
@@ -117,6 +162,7 @@ const MenuItemText = styled(Title)`
 const MenuCloseItem = styled(MenuItem)`
   position: absolute;
   bottom: 50px;
+  left: 0;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -140,19 +186,6 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const handleButtonClick = useCallback(async () => {
-    if (active) {
-      setIsMenuOpen(true);
-      return;
-    }
-
-    setShowConnectModal(true);
-  }, [active]);
-
-  const handleDisconnect = useCallback(async () => {
-    deactivateWeb3();
-  }, [deactivateWeb3]);
-
   useEffect(() => {
     if (library && account) {
       addConnectEvent("header", account);
@@ -164,7 +197,11 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
       <>
         <Indicator connected={active} />
         <WalletButtonText connected={active}>
-          {truncateAddress(account)}
+          {truncateAddress(account)}{" "}
+          <WalletButtonArrow
+            className="fas fa-chevron-down"
+            isMenuOpen={isMenuOpen}
+          />
         </WalletButtonText>
       </>
     ) : (
@@ -179,6 +216,28 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
     );
   };
 
+  const onToggleMenu = useCallback(() => {
+    setIsMenuOpen((open) => !open);
+  }, []);
+
+  const handleButtonClick = useCallback(async () => {
+    if (active) {
+      onToggleMenu();
+      return;
+    }
+
+    setShowConnectModal(true);
+  }, [active, onToggleMenu]);
+
+  const onCloseMenu = useCallback(() => {
+    setIsMenuOpen(false);
+  }, []);
+
+  const handleDisconnect = useCallback(async () => {
+    deactivateWeb3();
+    onCloseMenu();
+  }, [deactivateWeb3, onCloseMenu]);
+
   return (
     <>
       <WalletContainer variant={variant}>
@@ -190,20 +249,26 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
         >
           {renderButtonContent()}
         </WalletButton>
+        <WalletDesktopMenu isMenuOpen={isMenuOpen}>
+          {renderMenuItem("CHANGE WALLET")}
+          {renderMenuItem("COPY ADDRESS")}
+          {renderMenuItem("OPEN IN ETHERSCAN")}
+          {renderMenuItem("DISCONNECT", handleDisconnect)}
+        </WalletDesktopMenu>
       </WalletContainer>
 
       <WalletMobileOverlayMenu
         className="flex-column align-items-center justify-content-center"
         isMenuOpen={isMenuOpen}
-        onClick={() => setIsMenuOpen(false)}
+        onOverlayClick={onCloseMenu}
         variant={variant}
       >
         {renderMenuItem("CHANGE WALLET")}
         {renderMenuItem("COPY ADDRESS")}
         {renderMenuItem("OPEN IN ETHERSCAN")}
         {renderMenuItem("DISCONNECT", handleDisconnect)}
-        <MenuCloseItem role="button">
-          <MenuButton isOpen={true} onToggle={() => setIsMenuOpen(false)} />
+        <MenuCloseItem role="button" onClick={onCloseMenu}>
+          <MenuButton isOpen={true} onToggle={onCloseMenu} />
         </MenuCloseItem>
       </WalletMobileOverlayMenu>
 
