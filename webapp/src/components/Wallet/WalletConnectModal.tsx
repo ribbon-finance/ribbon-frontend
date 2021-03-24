@@ -9,7 +9,7 @@ import {
   BaseModal,
   BaseModalHeader,
   BaseText,
-  PrimaryText,
+  Title,
 } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
@@ -59,7 +59,7 @@ const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
   }}
 `;
 
-const ConnectorButtonText = styled(PrimaryText)`
+const ConnectorButtonText = styled(Title)`
   margin-left: 16px;
 `;
 
@@ -89,12 +89,10 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
     connectingConnector,
     setConnectingConnector,
   ] = useState<connectorType>();
-  const initializingText = useTextAnimation([
-    "INITIALIZING",
-    "INITIALIZING .",
-    "INITIALIZING ..",
-    "INITIALIZING ...",
-  ]);
+  const initializingText = useTextAnimation(
+    ["INITIALIZING", "INITIALIZING .", "INITIALIZING ..", "INITIALIZING ..."],
+    250
+  );
 
   const handleMetamaskConnect = useCallback(async () => {
     setConnectingConnector("metamask");
@@ -127,7 +125,7 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
   return (
     <BaseModal show={show} onHide={onClose} centered>
       <BaseModalHeader closeButton>
-        <PrimaryText>CONNECT WALLET</PrimaryText>
+        <Title>CONNECT WALLET</Title>
       </BaseModalHeader>
       <Modal.Body>
         <ConnectorButton

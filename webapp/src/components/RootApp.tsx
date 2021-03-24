@@ -1,23 +1,25 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import useEagerConnect from "../hooks/useEagerConnect";
 
 import Header from "./Header";
 import Homepage from "./Homepage";
+import DepositPage from "../pages/DepositPage/DepositPage";
+import useEagerConnect from "../hooks/useEagerConnect";
 
 const RootApp = () => {
   useEagerConnect();
 
   return (
     <Router>
-      <div>
-        <Header />
-        <Switch>
-          <Route path="/" exact>
-            <Homepage />
-          </Route>
-        </Switch>
-      </div>
+      <Header />
+      <Switch>
+        <Route path="/" exact>
+          <Homepage />
+        </Route>
+        <Route path="/theta/deposit">
+          <DepositPage></DepositPage>
+        </Route>
+      </Switch>
     </Router>
   );
 };

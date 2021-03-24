@@ -1,10 +1,11 @@
+import React, { useEffect } from "react";
 import styled from "styled-components";
 
 interface MobileOverlayMenuProps {
   isMenuOpen: boolean;
 }
 
-export const MobileOverlayMenu = styled.div<MobileOverlayMenuProps>`
+export const MobileOverlayContainer = styled.div<MobileOverlayMenuProps>`
   position: fixed;
   top: 0;
   left: 0;
@@ -25,3 +26,24 @@ export const MobileOverlayMenu = styled.div<MobileOverlayMenuProps>`
     visibility: hidden;
   `}
 `;
+
+const MobileOverlayMenu: React.FC<
+  MobileOverlayMenuProps & React.HTMLAttributes<HTMLDivElement>
+> = ({ isMenuOpen, children, ...props }) => {
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.querySelector("body")!.style.overflow = "hidden";
+      return;
+    }
+
+    document.querySelector("body")!.style.removeProperty("overflow");
+  }, [isMenuOpen]);
+
+  return (
+    <MobileOverlayContainer isMenuOpen={isMenuOpen} {...props}>
+      {children}
+    </MobileOverlayContainer>
+  );
+};
+
+export default MobileOverlayMenu;

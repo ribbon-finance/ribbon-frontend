@@ -3,7 +3,9 @@ const colors = {
   backgroundDarker: "#08090E",
   border: "#2B2B2B",
   text: "#ACACAB",
+  primaryText: "#FFFFFF",
   green: "#16CEB9",
+  pillBackground: "#151413",
   products: {
     yield: "#FF385C",
     volatility: "#FF9000",

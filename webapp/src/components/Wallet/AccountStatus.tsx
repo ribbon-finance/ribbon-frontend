@@ -4,7 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 
 import Indicator from "../Indicator/Indicator";
 import sizes from "../../designSystem/sizes";
-import { PrimaryText, BaseButton } from "../../designSystem";
+import { Title, BaseButton } from "../../designSystem";
 import { addConnectEvent } from "../../utils/analytics";
 import colors from "../../designSystem/colors";
 import {
@@ -14,7 +14,7 @@ import {
 } from "./types";
 import WalletConnectModal from "./WalletConnectModal";
 import theme from "../../designSystem/theme";
-import { MobileOverlayMenu } from "../Common/MobileOverlayMenu";
+import MobileOverlayMenu from "../Common/MobileOverlayMenu";
 import MenuButton from "../Header/MenuButton";
 
 const WalletContainer = styled.div<AccountStatusVariantProps>`
@@ -71,7 +71,7 @@ const WalletButton = styled(BaseButton)<WalletButtonProps>`
   }}
 `;
 
-const WalletButtonText = styled(PrimaryText)<WalletStatusProps>`
+const WalletButtonText = styled(Title)<WalletStatusProps>`
   ${(props) => {
     if (props.connected) return null;
 
@@ -90,7 +90,7 @@ const WalletMobileOverlayMenu = styled(
         return `
         @media (max-width: ${sizes.lg}px) {
           display: flex;
-          z-index: ${props.isMenuOpen ? 1 : -1};
+          z-index: ${props.isMenuOpen ? 50 : -1};
         }
         `;
       case "desktop":
@@ -108,7 +108,7 @@ const MenuItem = styled.div`
   }
 `;
 
-const MenuItemText = styled(PrimaryText)`
+const MenuItemText = styled(Title)`
   @media (max-width: ${sizes.md}px) {
     font-size: 24px;
   }

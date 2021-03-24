@@ -4,12 +4,12 @@ import styled from "styled-components";
 import Logo from "./Logo";
 import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";
-import { PrimaryText, BaseLink } from "../../designSystem";
+import { Title, BaseLink } from "../../designSystem";
 import MenuButton from "./MenuButton";
 import { NavItemProps, MobileMenuOpenProps } from "./types";
 import AccountStatus from "../Wallet/AccountStatus";
 import theme from "../../designSystem/theme";
-import { MobileOverlayMenu } from "../Common/MobileOverlayMenu";
+import MobileOverlayMenu from "../Common/MobileOverlayMenu";
 
 const HEADER_HEIGHT = 80;
 
@@ -28,10 +28,10 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
     background-color: ${colors.background};
   }
 
-  z-index: ${(props) => (props.isMenuOpen ? 1 : `unset`)};
+  z-index: ${(props) => (props.isMenuOpen ? 50 : 10)};
 `;
 
-const NavLinkText = styled(PrimaryText)`
+const NavLinkText = styled(Title)`
   letter-spacing: 1.5px;
 
   @media (max-width: ${sizes.md}px) {

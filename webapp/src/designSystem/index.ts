@@ -12,11 +12,6 @@ export const BaseText = styled.span`
   color: white;
 `;
 
-export const PrimaryText = styled(BaseText)`
-  font-family: VCR;
-  font-weight: 500;
-`;
-
 export const BaseLink = styled(Link)`
   &:hover {
     text-decoration: none;
@@ -52,4 +47,29 @@ export const BaseModalHeader = styled(BootstrapModal.Header)`
 
 export const BaseModalFooter = styled(BootstrapModal.Footer)`
   border-top: unset;
+`;
+
+export const Title = styled.span`
+  color: ${colors.primaryText};
+  font-family: VCR;
+  font-style: normal;
+  font-weight: normal;
+  text-transform: uppercase;
+`;
+
+export const PrimaryText = styled(BaseText)`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: ${colors.primaryText};
+`;
+
+export const SecondaryText = styled.span`
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(255, 255, 255, 0.48);
 `;
