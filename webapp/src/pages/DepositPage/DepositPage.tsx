@@ -5,6 +5,7 @@ import colors from "../../designSystem/colors";
 import DepositCapBar from "./DepositCapBar";
 import PerformanceSection from "./PerformanceSection";
 import Theta from "../../assets/img/theta.svg";
+import ActionsForm from "../../components/ActionsForm/ActionsForm";
 
 const HeroContainer = styled.div`
   background: linear-gradient(
@@ -51,6 +52,10 @@ const DepositPage = () => {
       <div className="container py-6">
         <div className="row mx-lg-n1">
           <PerformanceSection></PerformanceSection>
+
+          <div className="col-xl-5 offset-xl-1">
+            <ActionsForm></ActionsForm>
+          </div>
         </div>
       </div>
     </div>
