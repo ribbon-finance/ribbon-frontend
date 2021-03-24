@@ -1,20 +1,16 @@
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import React from "react";
-import Header from "./components/Header";
-import DepositPage from "./pages/DepositPage/DepositPage";
+import { Web3ReactProvider } from "@web3-react/core";
+
+import RootApp from "./components/RootApp";
+import { Web3ContextProvider } from "./hooks/web3Context";
+import { getLibrary } from "./utils/getLibrary";
 
 function App() {
   return (
-    <Router>
-      <div>
-        <Header />
-      </div>
-      <Switch>
-        <Route path="/theta/deposit">
-          <DepositPage></DepositPage>
-        </Route>
-      </Switch>
-    </Router>
+    <Web3ContextProvider>
+      <Web3ReactProvider getLibrary={getLibrary}>
+        <RootApp />
+      </Web3ReactProvider>
+    </Web3ContextProvider>
   );
 }
 
