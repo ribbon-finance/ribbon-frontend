@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
+import { useWeb3React } from "@web3-react/core";
+import { ethers } from "ethers";
 import { Title } from "../../designSystem";
 import WalletConnectModal from "../Wallet/WalletConnectModal";
+import { formatSignificantDecimals } from "../../utils/math";
+
+const { formatEther } = ethers.utils;
 
 const FormContainer = styled.div`
   font-family: VCR;
@@ -47,18 +52,25 @@ const ContentContainer = styled.div`
   background: #1c1a19;
 `;
 
-const FormInput = styled.input`
+const FormInputContainer = styled.div`
+  width: 100%;
   height: 80px;
   background: rgba(255, 255, 255, 0.04);
   border-radius: 4px;
+`;
+
+const FormInput = styled.input`
+  width: 80%;
+  height: 100%;
   font-size: 48px;
   line-height: 64px;
   color: #ffffff;
   border: none;
+  background: none;
 
   &:focus {
     color: #ffffff;
-    background: rgba(255, 255, 255, 0.04);
+    background: none;
     border: none;
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
     border: rgba(255, 255, 255, 0);
@@ -81,14 +93,33 @@ const MaxAccessory = styled.div`
   cursor: pointer;
 `;
 
-const ConnectWalletButton = styled.button`
+const BottomButton = styled.button`
   width: 100%;
-  background: rgba(22, 206, 185, 0.08);
-  border-radius: 8px;
+  border-radius: 4px;
   font-size: 16px;
   line-height: 24px;
   text-align: center;
   text-transform: uppercase;
+  outline: none !important;
+
+  &:active,
+  &:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+`;
+
+const ActionButton = styled(BottomButton)`
+  background: #fc0a54;
+  color: #ffffff;
+
+  &:hover {
+    color: #ffffff;
+  }
+`;
+
+const ConnectWalletButton = styled(BottomButton)`
+  background: rgba(22, 206, 185, 0.08);
   color: #16ceb9;
 
   &:hover {
@@ -106,9 +137,58 @@ const WalletBalance = styled.div<{ active: boolean }>`
 `;
 
 const ActionsForm = () => {
+  const DEPOSIT_TAB = true;
+  const WITHDRAWAL_TAB = false;
+
   const [isDeposit, setIsDeposit] = useState(true);
   const [inputAmount, setInputAmount] = useState("");
   const [showConnectModal, setShowConnectModal] = useState(false);
+  const [userBalance, setUserBalance] = useState(""); // store balances in string
+  const { library, active, account } = useWeb3React();
+
+  const connected = Boolean(active && account);
+
+  const getAndSetBalance = useCallback(async () => {
+    if (account) {
+      const bal = await library.getBalance(account);
+      setUserBalance(bal.toString());
+    }
+  }, [library, account]);
+
+  const handleClickMax = useCallback(() => {
+    if (connected && userBalance) {
+      setInputAmount(formatEther(userBalance));
+    }
+  }, [setInputAmount, connected, userBalance]);
+
+  const switchToTab = (isDeposit: boolean) => {
+    return () => {
+      setIsDeposit(isDeposit);
+      setInputAmount("");
+    };
+  };
+
+  useEffect(() => {
+    if (account) {
+      getAndSetBalance();
+    }
+  }, [account, getAndSetBalance]);
+
+  let walletText = "";
+
+  if (isDeposit) {
+    const position =
+      account && userBalance
+        ? formatSignificantDecimals(formatEther(userBalance))
+        : "---";
+    walletText = `Wallet Balance: ${position} ETH`;
+  } else {
+    const position =
+      account && userBalance
+        ? formatSignificantDecimals(formatEther(userBalance))
+        : "---";
+    walletText = `Your Position: ${position} ETH`;
+  }
 
   return (
     <FormContainer>
@@ -123,43 +203,47 @@ const ActionsForm = () => {
         <FormTitleDiv
           left
           active={isDeposit}
-          onClick={() => setIsDeposit(true)}
+          onClick={() => setIsDeposit(DEPOSIT_TAB)}
         >
-          <FormTitle active={isDeposit}>Deposit</FormTitle>
+          <FormTitle active={DEPOSIT_TAB}>Deposit</FormTitle>
         </FormTitleDiv>
         <FormTitleDiv
           left={false}
           active={!isDeposit}
-          onClick={() => setIsDeposit(false)}
+          onClick={switchToTab(WITHDRAWAL_TAB)}
         >
-          <FormTitle active={!isDeposit}>Withdraw</FormTitle>
+          <FormTitle active={WITHDRAWAL_TAB}>Withdraw</FormTitle>
         </FormTitleDiv>
       </div>
       <ContentContainer className="px-4 py-4">
         <InputGuide>AMOUNT (ETH)</InputGuide>
-        <div className="position-relative mb-5">
+        <FormInputContainer className="position-relative mt-2 mb-5 px-1">
           <FormInput
             type="number"
-            className="form-control mt-2 px-4 py-3"
+            className="form-control"
             aria-label="ETH"
             placeholder="0"
             value={inputAmount}
             onChange={(e) => setInputAmount(e.target.value)}
           />
-          <MaxAccessory>MAX</MaxAccessory>
-        </div>
+          <MaxAccessory onClick={handleClickMax}>MAX</MaxAccessory>
+        </FormInputContainer>
 
-        <ConnectWalletButton
-          onClick={() => setShowConnectModal(true)}
-          type="button"
-          className="btn py-3 mb-4"
-        >
-          Connect Wallet
-        </ConnectWalletButton>
+        {connected ? (
+          <ActionButton type="button" className="btn py-3 mb-4">
+            {isDeposit ? "Deposit ETH" : "Withdraw ETH"}
+          </ActionButton>
+        ) : (
+          <ConnectWalletButton
+            onClick={() => setShowConnectModal(true)}
+            type="button"
+            className="btn py-3 mb-4"
+          >
+            Connect Wallet
+          </ConnectWalletButton>
+        )}
 
-        <WalletBalance active={false}>
-          {isDeposit ? "Wallet Balance: ---" : "Your Position: ---"}
-        </WalletBalance>
+        <WalletBalance active={connected}>{walletText}</WalletBalance>
       </ContentContainer>
     </FormContainer>
   );
