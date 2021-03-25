@@ -132,7 +132,7 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
     }
   }, [library, account, onClose]);
 
-  const renderStatus = useCallback(
+  const getConnectorStatus = useCallback(
     (connectorType: connectorType) => {
       // If connected, check if current button is connected
       if (active) {
@@ -158,41 +158,31 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
     [active, connector, connectingConnector]
   );
 
-  const renderConnectorIcon = useCallback((type: connectorType) => {
+  const renderConnectorIcon = (type: connectorType) => {
     switch (type) {
       case "metamask":
         return <MetamaskIcon height={40} width={40} />;
       case "walletConnect":
         return <WalletConnectIcon height={40} width={40} />;
     }
-  }, []);
+  };
 
-  const renderConnectorButton = useCallback(
-    (type: connectorType, title: string) => (
-      <ConnectorButton
-        role="button"
-        onClick={() => handleConnect(type)}
-        status={renderStatus(type)}
-      >
-        {renderConnectorIcon(type)}
-        <ConnectorButtonText>
-          {connectingConnector === type ? initializingText : title}
-        </ConnectorButtonText>
-        {renderStatus(type) === "connected" && (
-          <IndicatorContainer>
-            <Indicator connected={active} />
-          </IndicatorContainer>
-        )}
-      </ConnectorButton>
-    ),
-    [
-      handleConnect,
-      connectingConnector,
-      initializingText,
-      renderStatus,
-      renderConnectorIcon,
-      active,
-    ]
+  const renderConnectorButton = (type: connectorType, title: string) => (
+    <ConnectorButton
+      role="button"
+      onClick={() => handleConnect(type)}
+      status={getConnectorStatus(type)}
+    >
+      {renderConnectorIcon(type)}
+      <ConnectorButtonText>
+        {connectingConnector === type ? initializingText : title}
+      </ConnectorButtonText>
+      {getConnectorStatus(type) === "connected" && (
+        <IndicatorContainer>
+          <Indicator connected={active} />
+        </IndicatorContainer>
+      )}
+    </ConnectorButton>
   );
 
   return (
