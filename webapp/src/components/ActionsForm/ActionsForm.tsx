@@ -20,7 +20,7 @@ const FormContainer = styled.div`
 
 const FormTitleDiv = styled.div<{ left: boolean; active: boolean }>`
   width: 100%;
-  padding: 24px 60px;
+  padding: 24px 0;
   background-color: ${(props) =>
     props.active ? "#151413" : "rgba(255, 255, 255, 0.04)"};
   cursor: pointer;

@@ -26,7 +26,7 @@ const LinkIcon = styled.i`
 
 const PerformanceSection = () => {
   return (
-    <div className="col-lg-6">
+    <div className="col-lg-7">
       <Paragraph>
         <ParagraphHeading>Vault Performance</ParagraphHeading>
         <PerformanceChart></PerformanceChart>

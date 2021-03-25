@@ -101,7 +101,7 @@ const PerformanceChart: React.FC = () => {
   );
 
   return (
-    <PerformanceChartContainer className="pt-4 pb-5">
+    <PerformanceChartContainer className="pt-4" style={{ paddingBottom: 40 }}>
       <div className="d-flex align-items-center justify-content-between mb-3 px-4">
         <div>
           <SecondaryText className="d-block">Yield (APY)</SecondaryText>
@@ -123,7 +123,9 @@ const PerformanceChart: React.FC = () => {
           </DateFilter>
         </div>
       </div>
-      <div>{chart}</div>
+      <div style={{ position: "relative", height: "224px", width: "100%" }}>
+        {chart}
+      </div>
       {date !== null ? (
         <DateTooltip
           className="position-absolute"
@@ -167,6 +169,7 @@ const Chart: React.FC<{
 }) => {
   const options = useMemo(() => {
     return {
+      maintainAspectRatio: false,
       title: { display: false },
       legend: { display: false },
       layout: { padding: { top: 20, bottom: 20 } },
