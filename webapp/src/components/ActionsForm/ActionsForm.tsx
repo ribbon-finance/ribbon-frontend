@@ -215,7 +215,7 @@ const ActionsForm = () => {
         <ActionModal
           actionType={isDeposit ? ACTIONS.deposit : ACTIONS.withdraw}
           show={showActionModal}
-          onClose={() => {}}
+          onClose={() => setShowActionModal(false)}
         ></ActionModal>
         <div
           style={{ justifyContent: "space-evenly" }}
