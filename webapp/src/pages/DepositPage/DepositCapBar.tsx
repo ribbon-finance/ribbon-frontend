@@ -2,10 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { SecondaryText, Title } from "../../designSystem";
 
-const DepositCapBarContainer = styled.div`
-  width: 100%;
-`;
-
 const BackgroundBar = styled.div`
   height: 16px;
   width: 100%;
@@ -41,7 +37,7 @@ const DepositCapBar: React.FC<{ totalDeposit: number; limit: number }> = ({
   percent *= 100;
 
   return (
-    <DepositCapBarContainer>
+    <div className="w-100">
       <div className="d-flex flex-row justify-content-between">
         <SecondaryText>Total Deposits</SecondaryText>
         <DepositStat>{totalDeposit} ETH</DepositStat>
@@ -56,7 +52,7 @@ const DepositCapBar: React.FC<{ totalDeposit: number; limit: number }> = ({
         <SecondaryText>Limit</SecondaryText>
         <DepositStat>{limit} ETH</DepositStat>
       </div>
-    </DepositCapBarContainer>
+    </div>
   );
 };
 export default DepositCapBar;

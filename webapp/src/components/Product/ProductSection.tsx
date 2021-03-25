@@ -117,7 +117,7 @@ const ProductContentArrowIcon = styled.i`
   color: white;
 `;
 
-const SplashImgContianer = styled.div`
+const SplashImgContainer = styled.div`
   position: absolute;
   top: 24px;
   right: 0;
@@ -203,7 +203,7 @@ const Products = () => {
       {/* Product Content */}
       <ProductContentContainer className="justify-content-center">
         <ProductContent lg={7}>{renderProduct()}</ProductContent>
-        <SplashImgContianer>{renderProductSplash()}</SplashImgContianer>
+        <SplashImgContainer>{renderProductSplash()}</SplashImgContainer>
       </ProductContentContainer>
     </ProductSectionContainer>
   );
