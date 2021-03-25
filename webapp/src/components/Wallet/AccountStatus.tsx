@@ -237,6 +237,11 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
     setIsMenuOpen(false);
   }, []);
 
+  const handleChangeWallet = useCallback(() => {
+    setShowConnectModal(true);
+    onCloseMenu();
+  }, [onCloseMenu]);
+
   const handleCopyAddress = useCallback(() => {
     if (account) {
       copyTextToClipboard(account);
@@ -256,6 +261,10 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
     deactivateWeb3();
     onCloseMenu();
   }, [deactivateWeb3, onCloseMenu]);
+
+  const onCloseConnectionModal = useCallback(() => {
+    setShowConnectModal(false);
+  }, []);
 
   const renderButtonContent = () =>
     active && account ? (
@@ -298,7 +307,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
           {renderButtonContent()}
         </WalletButton>
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>
-          {renderMenuItem("CHANGE WALLET")}
+          {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
           {renderMenuItem("COPY ADDRESS", handleCopyAddress)}
           {renderMenuItem("OPEN IN ETHERSCAN", handleOpenEtherscan)}
           {renderMenuItem("DISCONNECT", handleDisconnect)}
@@ -311,7 +320,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
         onOverlayClick={onCloseMenu}
         variant={variant}
       >
-        {renderMenuItem("CHANGE WALLET")}
+        {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
         {renderMenuItem("COPY ADDRESS", handleCopyAddress)}
         {renderMenuItem("OPEN IN ETHERSCAN", handleOpenEtherscan)}
         {renderMenuItem("DISCONNECT", handleDisconnect)}
@@ -322,7 +331,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
 
       <WalletConnectModal
         show={showConnectModal}
-        onClose={() => setShowConnectModal(false)}
+        onClose={onCloseConnectionModal}
       />
     </>
   );
