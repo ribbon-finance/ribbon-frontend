@@ -4,8 +4,8 @@ import { Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import DepositCapBar from "./DepositCapBar";
 import PerformanceSection from "./PerformanceSection";
-import Theta from "../../assets/img/theta.svg";
 import ActionsForm from "../../components/ActionsForm/ActionsForm";
+import Theta from "../../components/Product/Splash/Theta";
 
 const HeroContainer = styled.div`
   background: linear-gradient(
@@ -83,7 +83,7 @@ const HeroSection = () => {
           </div>
 
           <SplashImage className="position-absolute offset-xl-6">
-            <img src={Theta} alt="Theta Vault" />
+            <Theta viewBox="0 120 523.74982 523.74988" />
           </SplashImage>
         </div>
       </div>
