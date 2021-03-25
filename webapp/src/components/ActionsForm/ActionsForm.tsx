@@ -228,7 +228,9 @@ const ActionsForm = () => {
               value={inputAmount}
               onChange={(e) => setInputAmount(e.target.value)}
             />
-            <MaxAccessory onClick={handleClickMax}>MAX</MaxAccessory>
+            {connected && (
+              <MaxAccessory onClick={handleClickMax}>MAX</MaxAccessory>
+            )}
           </FormInputContainer>
 
           {connected ? (
