@@ -191,6 +191,17 @@ const ActionsForm = () => {
     walletText = `Your Position: ${position} ETH`;
   }
 
+  let actionButtonText = "";
+  if (isDeposit && inputAmount) {
+    actionButtonText = "Preview Deposit";
+  } else if (isDeposit) {
+    actionButtonText = "Deposit ETH";
+  } else if (!isDeposit && inputAmount) {
+    actionButtonText = "Preview Deposit";
+  } else {
+    actionButtonText = "Withdraw ETH";
+  }
+
   return (
     <div>
       <FormContainer>
@@ -235,7 +246,7 @@ const ActionsForm = () => {
 
           {connected ? (
             <ActionButton type="button" className="btn py-3 mb-4">
-              {isDeposit ? "Deposit ETH" : "Withdraw ETH"}
+              {actionButtonText}
             </ActionButton>
           ) : (
             <ConnectWalletButton
