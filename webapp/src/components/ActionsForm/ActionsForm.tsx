@@ -201,7 +201,7 @@ const ActionsForm = () => {
   } else if (isDeposit) {
     actionButtonText = "Deposit ETH";
   } else if (!isDeposit && inputAmount) {
-    actionButtonText = "Preview Deposit";
+    actionButtonText = "Preview Withdrawal";
   } else {
     actionButtonText = "Withdraw ETH";
   }

@@ -56,10 +56,25 @@ const ActionModal: React.FC<{
   const isDeposit = actionType === ACTIONS.deposit;
   const actionWord = isDeposit ? "Deposit" : "Withdrawal";
 
+  let detailValue = "";
+
+  switch (actionParams.action) {
+    case ACTIONS.deposit:
+      detailValue = actionParams.yield.toString();
+      break;
+    case ACTIONS.withdraw:
+      detailValue = actionParams.withdrawalFee.toString();
+      break;
+    default:
+      break;
+  }
+
   const detailRows: { key: string; value: string }[] = [
     { key: "Product", value: "T-100-e" },
     { key: "Product Type", value: "Theta Vault" },
-    { key: "Approx. APY", value: "30% APY" },
+    isDeposit
+      ? { key: "Approx. APY", value: `${detailValue}% APY` }
+      : { key: "Withdrawal Fee", value: `${detailValue}%` },
   ];
 
   const originalAmount = formatSignificantDecimals(formatEther(positionAmount));
