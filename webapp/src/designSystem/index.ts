@@ -57,6 +57,15 @@ export const Title = styled.span`
   text-transform: uppercase;
 `;
 
+export const Subtitle = styled.span`
+  color: ${colors.primaryText};
+  font-family: VCR;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+`;
+
 export const PrimaryText = styled(BaseText)`
   font-style: normal;
   font-weight: 500;

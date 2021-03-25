@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { Container } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
 
 import { BaseButton, SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
+import YieldCard from "./Product/YieldCard";
 import { ProductType, ProductTabProps, ArrowButtonProps } from "./types";
+import Theta from "./Splash/Theta";
 
-const ProductsContainer = styled(Container)`
+const HeaderContainer = styled.div`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -65,8 +67,11 @@ const ProductTabButtonText = styled(SecondaryText)<ProductTabProps>`
   }};
 `;
 
-const ProductContent = styled.div`
+const ProductContentContainer = styled(Row)`
   position: relative;
+`;
+
+const ProductContent = styled(Col)`
   width: 100%;
   display: flex;
   margin-top: 40px;
@@ -97,6 +102,15 @@ const ProductContentArrowIcon = styled.i`
   color: white;
 `;
 
+const SplashImgContianer = styled.div`
+  position: absolute;
+  top: 24px;
+  right: 0;
+  width: 100%;
+  overflow: hidden;
+  z-index: -1;
+`;
+
 const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState<ProductType>("yield");
 
@@ -115,24 +129,62 @@ const Products = () => {
     </ProductTabButton>
   );
 
+  const renderProduct = () => {
+    switch (selectedProduct) {
+      case "yield":
+        return <YieldCard />;
+    }
+
+    return <></>;
+  };
+
+  const renderProductSplash = () => {
+    switch (selectedProduct) {
+      case "yield":
+        return (
+          <SplashImgContianer>
+            <Theta
+              width="100%"
+              height="auto"
+              viewBox="0 0 550.74982 523.74988"
+            />
+          </SplashImgContianer>
+        );
+    }
+
+    return <></>;
+  };
+
   return (
-    <ProductsContainer>
-      <SectionTitle>PRODUCTS</SectionTitle>
-      <ProductTabContainer>
-        {renderProductTabButton("Yield", "yield")}
-        {renderProductTabButton("Volatility", "volatility")}
-        {renderProductTabButton("Principal Protection", "principalProtection")}
-        {renderProductTabButton("Capital Accumulation", "capitalAccumulation")}
-      </ProductTabContainer>
-      <ProductContent>
-        <ProductContentArrowButton role="button" direction="left">
-          <ProductContentArrowIcon className="fas fa-arrow-left" />
-        </ProductContentArrowButton>
-        <ProductContentArrowButton role="button" direction="right">
-          <ProductContentArrowIcon className="fas fa-arrow-right" />
-        </ProductContentArrowButton>
-      </ProductContent>
-    </ProductsContainer>
+    <Container>
+      <HeaderContainer>
+        <SectionTitle>PRODUCTS</SectionTitle>
+        <ProductTabContainer>
+          {renderProductTabButton("Yield", "yield")}
+          {renderProductTabButton("Volatility", "volatility")}
+          {renderProductTabButton(
+            "Principal Protection",
+            "principalProtection"
+          )}
+          {renderProductTabButton(
+            "Capital Accumulation",
+            "capitalAccumulation"
+          )}
+        </ProductTabContainer>
+      </HeaderContainer>
+      <ProductContentContainer className="justify-content-center">
+        <ProductContent lg={7}>
+          <ProductContentArrowButton role="button" direction="left">
+            <ProductContentArrowIcon className="fas fa-arrow-left" />
+          </ProductContentArrowButton>
+          {renderProduct()}
+          <ProductContentArrowButton role="button" direction="right">
+            <ProductContentArrowIcon className="fas fa-arrow-right" />
+          </ProductContentArrowButton>
+        </ProductContent>
+        {renderProductSplash()}
+      </ProductContentContainer>
+    </Container>
   );
 };
 

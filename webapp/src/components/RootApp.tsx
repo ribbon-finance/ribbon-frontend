@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import Header from "./Header/Header";
-import Homepage from "./Homepage/Homepage";
+import Homepage from "../pages/Home/Homepage";
 import DepositPage from "../pages/DepositPage/DepositPage";
 import useEagerConnect from "../hooks/useEagerConnect";
 
