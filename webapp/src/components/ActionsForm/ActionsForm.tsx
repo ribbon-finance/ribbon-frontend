@@ -6,6 +6,8 @@ import { Title } from "../../designSystem";
 import WalletConnectModal from "../Wallet/WalletConnectModal";
 import { formatSignificantDecimals } from "../../utils/math";
 import YourPosition from "./YourPosition";
+import ActionModal from "../ActionModal/ActionModal";
+import { ACTIONS } from "../ActionModal/types";
 
 const { formatEther } = ethers.utils;
 
@@ -144,6 +146,7 @@ const ActionsForm = () => {
   const [isDeposit, setIsDeposit] = useState(true);
   const [inputAmount, setInputAmount] = useState("");
   const [showConnectModal, setShowConnectModal] = useState(false);
+  const [showActionModal, setShowActionModal] = useState(false);
   const [userBalance, setUserBalance] = useState(""); // store balances in string
   const { library, active, account } = useWeb3React();
 
@@ -209,6 +212,11 @@ const ActionsForm = () => {
           show={showConnectModal}
           onClose={() => setShowConnectModal(false)}
         />
+        <ActionModal
+          actionType={isDeposit ? ACTIONS.deposit : ACTIONS.withdraw}
+          show={showActionModal}
+          onClose={() => {}}
+        ></ActionModal>
         <div
           style={{ justifyContent: "space-evenly" }}
           className="d-flex flex-row align-items-center"
@@ -245,7 +253,11 @@ const ActionsForm = () => {
           </FormInputContainer>
 
           {connected ? (
-            <ActionButton type="button" className="btn py-3 mb-4">
+            <ActionButton
+              onClick={() => setShowActionModal(true)}
+              type="button"
+              className="btn py-3 mb-4"
+            >
               {actionButtonText}
             </ActionButton>
           ) : (
