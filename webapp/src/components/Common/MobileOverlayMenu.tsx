@@ -6,7 +6,7 @@ interface MenuStateProps {
 }
 
 export const MobileOverlayContainer = styled.div<MenuStateProps>`
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -41,11 +41,15 @@ const MobileOverlayMenu: React.FC<MobileOverlayMenuProps> = ({
 }) => {
   useEffect(() => {
     if (isMenuOpen) {
-      document.querySelector("body")!.style.overflow = "hidden";
+      (document.querySelector(
+        "div#appRoot"
+      )! as HTMLDivElement).style.overflow = "hidden";
       return;
     }
 
-    document.querySelector("body")!.style.removeProperty("overflow");
+    (document.querySelector(
+      "div#appRoot"
+    )! as HTMLDivElement).style.removeProperty("overflow");
   }, [isMenuOpen]);
 
   return (

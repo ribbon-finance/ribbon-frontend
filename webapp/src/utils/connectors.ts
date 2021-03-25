@@ -5,10 +5,6 @@ export const injectedConnector = new InjectedConnector({
   supportedChainIds: [1, 42],
 });
 
-export const walletConnectConnector = new WalletConnectConnector({
-  rpc: { 1: process.env.REACT_APP_INFURA_URI || "" },
-});
-
 /**
  * A bug causes wallet connect connector to stuck forever upon second invoke
  * Possibly workaround as getting new connector after every connect
@@ -16,6 +12,6 @@ export const walletConnectConnector = new WalletConnectConnector({
  */
 export const getWalletConnectConnector = () => {
   return new WalletConnectConnector({
-    rpc: { 1: process.env.REACT_APP_INFURA_URI || "" },
+    rpc: { 1: process.env.REACT_APP_MAINNET_URI || "" },
   });
 };

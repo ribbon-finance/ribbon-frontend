@@ -37,7 +37,7 @@ const DepositCapBar: React.FC<{ totalDeposit: number; limit: number }> = ({
   percent *= 100;
 
   return (
-    <div>
+    <div className="w-100">
       <div className="d-flex flex-row justify-content-between">
         <SecondaryText>Total Deposits</SecondaryText>
         <DepositStat>{totalDeposit} ETH</DepositStat>

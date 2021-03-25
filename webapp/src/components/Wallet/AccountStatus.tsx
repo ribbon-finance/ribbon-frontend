@@ -149,6 +149,11 @@ const MenuItem = styled.div`
     margin: unset;
     padding: 28px;
   }
+
+  @media (max-width: ${sizes.md}px) {
+    margin: unset;
+    padding: 28px;
+  }
 `;
 
 const MenuItemText = styled(Title)`
