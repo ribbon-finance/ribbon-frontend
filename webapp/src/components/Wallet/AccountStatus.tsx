@@ -17,6 +17,18 @@ import WalletConnectModal from "./WalletConnectModal";
 import theme from "../../designSystem/theme";
 import MobileOverlayMenu from "../Common/MobileOverlayMenu";
 import MenuButton from "../Header/MenuButton";
+import { copyTextToClipboard } from "../../utils/text";
+import { Alert } from "react-bootstrap";
+import { setTimeout } from "timers";
+
+const AlertFloatingContainer = styled.div`
+  display: flex;
+  position: absolute;
+  width: 100%;
+  justify-content: center;
+  top: 24px;
+  z-index: 100;
+`;
 
 const WalletContainer = styled.div<AccountStatusVariantProps>`
   justify-content: center;
@@ -190,12 +202,69 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   } = useWeb3React();
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   useEffect(() => {
     if (library && account) {
       addConnectEvent("header", account);
     }
   }, [library, account]);
+
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => {
+        setShowToast(false);
+      }, 1500);
+      return clearTimeout(timer);
+    }
+  }, [showToast]);
+
+  const onToggleMenu = useCallback(() => {
+    setIsMenuOpen((open) => !open);
+  }, []);
+
+  const handleButtonClick = useCallback(async () => {
+    if (active) {
+      onToggleMenu();
+      return;
+    }
+
+    setShowConnectModal(true);
+  }, [active, onToggleMenu]);
+
+  const onCloseMenu = useCallback(() => {
+    setIsMenuOpen(false);
+  }, []);
+
+  const handleChangeWallet = useCallback(() => {
+    setShowConnectModal(true);
+    onCloseMenu();
+  }, [onCloseMenu]);
+
+  const handleCopyAddress = useCallback(() => {
+    if (account) {
+      copyTextToClipboard(account);
+      setToastMessage(`Address copied!`);
+      setShowToast(true);
+    }
+    onCloseMenu();
+  }, [onCloseMenu, account]);
+
+  const handleOpenEtherscan = useCallback(() => {
+    if (account) {
+      window.open(`https://etherscan.io/address/${account}`);
+    }
+  }, [account]);
+
+  const handleDisconnect = useCallback(async () => {
+    deactivateWeb3();
+    onCloseMenu();
+  }, [deactivateWeb3, onCloseMenu]);
+
+  const onCloseConnectionModal = useCallback(() => {
+    setShowConnectModal(false);
+  }, []);
 
   const renderButtonContent = () =>
     active && account ? (
@@ -221,30 +290,13 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
     );
   };
 
-  const onToggleMenu = useCallback(() => {
-    setIsMenuOpen((open) => !open);
-  }, []);
-
-  const handleButtonClick = useCallback(async () => {
-    if (active) {
-      onToggleMenu();
-      return;
-    }
-
-    setShowConnectModal(true);
-  }, [active, onToggleMenu]);
-
-  const onCloseMenu = useCallback(() => {
-    setIsMenuOpen(false);
-  }, []);
-
-  const handleDisconnect = useCallback(async () => {
-    deactivateWeb3();
-    onCloseMenu();
-  }, [deactivateWeb3, onCloseMenu]);
-
   return (
     <>
+      <AlertFloatingContainer>
+        <Alert show={showToast} variant="success">
+          {toastMessage}
+        </Alert>
+      </AlertFloatingContainer>
       <WalletContainer variant={variant}>
         <WalletButton
           variant={variant}
@@ -255,9 +307,9 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
           {renderButtonContent()}
         </WalletButton>
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>
-          {renderMenuItem("CHANGE WALLET")}
-          {renderMenuItem("COPY ADDRESS")}
-          {renderMenuItem("OPEN IN ETHERSCAN")}
+          {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
+          {renderMenuItem("COPY ADDRESS", handleCopyAddress)}
+          {renderMenuItem("OPEN IN ETHERSCAN", handleOpenEtherscan)}
           {renderMenuItem("DISCONNECT", handleDisconnect)}
         </WalletDesktopMenu>
       </WalletContainer>
@@ -268,9 +320,9 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
         onOverlayClick={onCloseMenu}
         variant={variant}
       >
-        {renderMenuItem("CHANGE WALLET")}
-        {renderMenuItem("COPY ADDRESS")}
-        {renderMenuItem("OPEN IN ETHERSCAN")}
+        {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
+        {renderMenuItem("COPY ADDRESS", handleCopyAddress)}
+        {renderMenuItem("OPEN IN ETHERSCAN", handleOpenEtherscan)}
         {renderMenuItem("DISCONNECT", handleDisconnect)}
         <MenuCloseItem role="button" onClick={onCloseMenu}>
           <MenuButton isOpen={true} onToggle={onCloseMenu} />
@@ -279,7 +331,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
 
       <WalletConnectModal
         show={showConnectModal}
-        onClose={() => setShowConnectModal(false)}
+        onClose={onCloseConnectionModal}
       />
     </>
   );

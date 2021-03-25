@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { useWeb3React } from "@web3-react/core";
 import styled from "styled-components";
+import { InjectedConnector } from "@web3-react/injected-connector";
+import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
 import {
   BaseButton,
@@ -20,6 +22,7 @@ import {
 import { MetamaskIcon, WalletConnectIcon } from "../../utils/icon";
 import { ConnectorButtonProps, connectorType } from "./types";
 import useTextAnimation from "../../hooks/useTextAnimation";
+import Indicator from "../Indicator/Indicator";
 
 interface WalletConnectModalProps {
   show: boolean;
@@ -37,6 +40,10 @@ const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
 
   ${(props) => {
     switch (props.status) {
+      case "connected":
+        return `
+          border: ${theme.border.width} ${theme.border.style} ${colors.green};
+        `;
       case "neglected":
         return `
           opacity: 0.24;
@@ -57,6 +64,10 @@ const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
         return ``;
     }
   }}
+`;
+
+const IndicatorContainer = styled.div`
+  margin-left: auto;
 `;
 
 const ConnectorButtonText = styled(Title)`
@@ -84,7 +95,13 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
   show,
   onClose,
 }) => {
-  const { activate: activateWeb3, library, account } = useWeb3React();
+  const {
+    connector,
+    activate: activateWeb3,
+    library,
+    account,
+    active,
+  } = useWeb3React();
   const [
     connectingConnector,
     setConnectingConnector,
@@ -94,17 +111,20 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
     250
   );
 
-  const handleMetamaskConnect = useCallback(async () => {
-    setConnectingConnector("metamask");
-    await activateWeb3(injectedConnector);
-    setConnectingConnector(undefined);
-  }, [activateWeb3]);
-
-  const handleWalletconnectConnect = useCallback(async () => {
-    setConnectingConnector("walletConnect");
-    await activateWeb3(getWalletConnectConnector());
-    setConnectingConnector(undefined);
-  }, [activateWeb3]);
+  const handleConnect = useCallback(
+    async (type: connectorType) => {
+      setConnectingConnector(type);
+      switch (type) {
+        case "metamask":
+          await activateWeb3(injectedConnector);
+          break;
+        case "walletConnect":
+          await activateWeb3(getWalletConnectConnector());
+      }
+      setConnectingConnector(undefined);
+    },
+    [activateWeb3]
+  );
 
   useEffect(() => {
     if (library && account) {
@@ -112,15 +132,58 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
     }
   }, [library, account, onClose]);
 
-  const renderStatus = (connector?: connectorType) => {
-    switch (connectingConnector) {
-      case undefined:
-        return "normal";
-      case connector:
-        return "initializing";
+  const getConnectorStatus = useCallback(
+    (connectorType: connectorType) => {
+      // If connected, check if current button is connected
+      if (active) {
+        switch (connectorType) {
+          case "metamask":
+            if (connector instanceof InjectedConnector) return "connected";
+            break;
+          case "walletConnect":
+            if (connector instanceof WalletConnectConnector) return "connected";
+            break;
+        }
+      }
+
+      // Check initializing status
+      switch (connectingConnector) {
+        case undefined:
+          return "normal";
+        case connectorType:
+          return "initializing";
+      }
+      return "neglected";
+    },
+    [active, connector, connectingConnector]
+  );
+
+  const renderConnectorIcon = (type: connectorType) => {
+    switch (type) {
+      case "metamask":
+        return <MetamaskIcon height={40} width={40} />;
+      case "walletConnect":
+        return <WalletConnectIcon height={40} width={40} />;
     }
-    return "neglected";
   };
+
+  const renderConnectorButton = (type: connectorType, title: string) => (
+    <ConnectorButton
+      role="button"
+      onClick={() => handleConnect(type)}
+      status={getConnectorStatus(type)}
+    >
+      {renderConnectorIcon(type)}
+      <ConnectorButtonText>
+        {connectingConnector === type ? initializingText : title}
+      </ConnectorButtonText>
+      {getConnectorStatus(type) === "connected" && (
+        <IndicatorContainer>
+          <Indicator connected={active} />
+        </IndicatorContainer>
+      )}
+    </ConnectorButton>
+  );
 
   return (
     <BaseModal show={show} onHide={onClose} centered>
@@ -128,28 +191,8 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
         <Title>CONNECT WALLET</Title>
       </BaseModalHeader>
       <Modal.Body>
-        <ConnectorButton
-          role="button"
-          onClick={handleMetamaskConnect}
-          status={renderStatus("metamask")}
-        >
-          <MetamaskIcon height={40} width={40} />
-          <ConnectorButtonText>
-            {connectingConnector === "metamask" ? initializingText : "METAMASK"}
-          </ConnectorButtonText>
-        </ConnectorButton>
-        <ConnectorButton
-          role="button"
-          onClick={handleWalletconnectConnect}
-          status={renderStatus("walletConnect")}
-        >
-          <WalletConnectIcon height={40} width={40} />
-          <ConnectorButtonText>
-            {connectingConnector === "walletConnect"
-              ? initializingText
-              : "WALLET CONNECT"}
-          </ConnectorButtonText>
-        </ConnectorButton>
+        {renderConnectorButton("metamask", "METAMASK")}
+        {renderConnectorButton("walletConnect", "WALLET CONNECT")}
         <LearnMoreLink
           to="https://ethereum.org/en/wallets/"
           target="_blank"
