@@ -5,6 +5,7 @@ import colors from "../../designSystem/colors";
 import DepositCapBar from "./DepositCapBar";
 import PerformanceSection from "./PerformanceSection";
 import Theta from "../../assets/img/theta.svg";
+import ActionsForm from "../../components/ActionsForm/ActionsForm";
 
 const HeroContainer = styled.div`
   background: linear-gradient(
@@ -35,6 +36,14 @@ const AttributePill = styled.div`
   text-transform: uppercase;
 `;
 
+const SplashImage = styled.div`
+  z-index: 0;
+  top: 0;
+  right: 0;
+  width: 600;
+  overflow: hidden;
+`;
+
 const DepositPage = () => {
   return (
     <div>
@@ -43,6 +52,10 @@ const DepositPage = () => {
       <div className="container py-6">
         <div className="row mx-lg-n1">
           <PerformanceSection></PerformanceSection>
+
+          <div className="col-xl-5 offset-xl-1">
+            <ActionsForm></ActionsForm>
+          </div>
         </div>
       </div>
     </div>
@@ -69,18 +82,9 @@ const HeroSection = () => {
             <DepositCapBar totalDeposit={215} limit={500}></DepositCapBar>
           </div>
 
-          <div
-            style={{
-              zIndex: 0,
-              top: 0,
-              height: 475,
-              overflow: "hidden",
-              width: "100%",
-            }}
-            className="position-absolute offset-xl-6"
-          >
+          <SplashImage className="position-absolute offset-xl-6">
             <img src={Theta} alt="Theta Vault" />
-          </div>
+          </SplashImage>
         </div>
       </div>
     </HeroContainer>

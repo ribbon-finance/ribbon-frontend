@@ -55,18 +55,50 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  background-image: url("./assets/img/noise.png");
-  background-color: #1c1a19;
-}
-
-@media screen and (max-width: 768px) {
-  body {
-    background-image: none;
-  }
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+$placeholder-color: rgba(255, 255, 255, 0.64);
+
+::-webkit-input-placeholder {
+  /* WebKit, Blink, Edge */
+  color: $placeholder-color;
+}
+:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: $placeholder-color;
+  opacity: 1;
+}
+::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: $placeholder-color;
+  opacity: 1;
+}
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: $placeholder-color;
+}
+::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: $placeholder-color;
+}
+
+::placeholder {
+  /* Most modern browsers support this now. */
+  color: $placeholder-color;
 }
