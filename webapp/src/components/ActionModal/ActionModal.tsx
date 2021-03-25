@@ -1,11 +1,23 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
+import { BigNumber, ethers } from "ethers";
 
-import { BaseModal, BaseModalHeader, Title } from "../../designSystem";
-import { ACTIONS, ActionType } from "./types";
+import {
+  BaseModal,
+  BaseModalHeader,
+  SecondaryText,
+  Subtitle,
+  Title,
+} from "../../designSystem";
+import { ActionParams, ACTIONS, ActionType } from "./types";
+import { formatSignificantDecimals } from "../../utils/math";
+import colors from "../../designSystem/colors";
+
+const { formatEther } = ethers.utils;
 
 const ActionModalHeader = styled(BaseModalHeader)`
+  background: #151413;
   justify-content: center;
 `;
 
@@ -19,12 +31,43 @@ const CloseButton = styled.i`
   paddingright: 20px;
 `;
 
+const AmountText = styled(Title)`
+  font-size: 48px;
+  line-height: 64px;
+`;
+
+const CurrencyText = styled(AmountText)`
+  color: rgba(255, 255, 255, 0.48);
+`;
+
+const Arrow = styled.i`
+  font-size: 12px;
+  color: ${colors.primaryButton};
+`;
+
 const ActionModal: React.FC<{
   actionType: ActionType;
   show: boolean;
   onClose: () => void;
-}> = ({ actionType, show, onClose }) => {
-  const actionWord = actionType === ACTIONS.deposit ? "Deposit" : "Withdrawal";
+  amount: BigNumber;
+  positionAmount: BigNumber;
+  actionParams: ActionParams;
+}> = ({ actionType, show, onClose, amount, positionAmount, actionParams }) => {
+  const isDeposit = actionType === ACTIONS.deposit;
+  const actionWord = isDeposit ? "Deposit" : "Withdrawal";
+
+  const detailRows: { key: string; value: string }[] = [
+    { key: "Product", value: "T-100-e" },
+    { key: "Product Type", value: "Theta Vault" },
+    { key: "Approx. APY", value: "30% APY" },
+  ];
+
+  const originalAmount = formatSignificantDecimals(formatEther(positionAmount));
+  const newAmount = formatSignificantDecimals(
+    formatEther(
+      isDeposit ? positionAmount.add(amount) : positionAmount.sub(amount)
+    )
+  );
 
   return (
     <BaseModal show={show} onHide={onClose} centered>
@@ -37,7 +80,36 @@ const ActionModal: React.FC<{
           style={{}}
         ></CloseButton>
       </ActionModalHeader>
-      <Modal.Body></Modal.Body>
+
+      <Modal.Body className="d-flex flex-column align-items-center">
+        <Subtitle className="d-block text-uppercase" style={{ opacity: 0.4 }}>
+          {actionWord} Amount
+        </Subtitle>
+
+        <div>
+          <AmountText>
+            {formatSignificantDecimals(formatEther(amount), 4)}
+          </AmountText>
+          <CurrencyText> ETH</CurrencyText>
+        </div>
+
+        <div className="w-100 mt-4 px-3">
+          {detailRows.map((detail) => (
+            <div className="d-flex flex-row justify-content-between mb-4">
+              <SecondaryText>{detail.key}</SecondaryText>
+              <Title className="text-right">{detail.value}</Title>
+            </div>
+          ))}
+          <div className="d-flex flex-row justify-content-between mb-4">
+            <SecondaryText>Your Position</SecondaryText>
+            <Title className="d-flex align-items-center text-right">
+              {originalAmount} ETH{" "}
+              <Arrow className="fas fa-arrow-right mx-2"></Arrow> {newAmount}{" "}
+              ETH
+            </Title>
+          </div>
+        </div>
+      </Modal.Body>
     </BaseModal>
   );
 };

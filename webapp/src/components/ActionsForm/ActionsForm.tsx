@@ -1,15 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { Title } from "../../designSystem";
 import WalletConnectModal from "../Wallet/WalletConnectModal";
 import { formatSignificantDecimals } from "../../utils/math";
 import YourPosition from "./YourPosition";
 import ActionModal from "../ActionModal/ActionModal";
 import { ACTIONS } from "../ActionModal/types";
+import colors from "../../designSystem/colors";
 
-const { formatEther } = ethers.utils;
+const { parseEther, formatEther } = ethers.utils;
 
 const FormContainer = styled.div`
   font-family: VCR;
@@ -113,7 +114,7 @@ const BottomButton = styled.button`
 `;
 
 const ActionButton = styled(BottomButton)`
-  background: #fc0a54;
+  background: ${colors.primaryButton};
   color: #ffffff;
 
   &:hover {
@@ -215,6 +216,16 @@ const ActionsForm = () => {
         <ActionModal
           actionType={isDeposit ? ACTIONS.deposit : ACTIONS.withdraw}
           show={showActionModal}
+          amount={inputAmount ? parseEther(inputAmount) : BigNumber.from("0")}
+          positionAmount={BigNumber.from("0")}
+          actionParams={
+            isDeposit
+              ? { action: ACTIONS.deposit, yield: 30 }
+              : {
+                  action: ACTIONS.withdraw,
+                  withdrawalFee: 0.5,
+                }
+          }
           onClose={() => setShowActionModal(false)}
         ></ActionModal>
         <div
@@ -254,7 +265,9 @@ const ActionsForm = () => {
 
           {connected ? (
             <ActionButton
-              onClick={() => setShowActionModal(true)}
+              onClick={() =>
+                inputAmount && connected && setShowActionModal(true)
+              }
               type="button"
               className="btn py-3 mb-4"
             >

@@ -7,6 +7,7 @@ const colors = {
   green: "#16CEB9",
   pillBackground: "#151413",
   tagBackground: "#1D222D",
+  primaryButton: "#fc0a54",
   products: {
     yield: "#FF385C",
     volatility: "#FF9000",
