@@ -142,8 +142,8 @@ const ActionModal: React.FC<{
           </div>
         </div>
 
-        <ActionButton type="button" className="btn py-3 mb-4">
-          Withdraw Now
+        <ActionButton type="button" className="btn py-3 my-3">
+          {isDeposit ? "Deposit" : "Withdraw"} Now
         </ActionButton>
       </Modal.Body>
     </BaseModal>
