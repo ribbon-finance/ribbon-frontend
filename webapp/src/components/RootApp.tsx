@@ -6,6 +6,7 @@ import Header from "./Header/Header";
 import Homepage from "./Homepage/Homepage";
 import DepositPage from "../pages/DepositPage/DepositPage";
 import useEagerConnect from "../hooks/useEagerConnect";
+import sizes from "../designSystem/sizes";
 
 const Root = styled.div`
   position: fixed;
@@ -19,7 +20,7 @@ const Root = styled.div`
   -webkit-backdrop-filter: blur(3px);
   backdrop-filter: blur(3px);
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: ${sizes.md}px) {
     body {
       background-image: none;
     }
