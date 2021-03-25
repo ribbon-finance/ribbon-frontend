@@ -246,6 +246,12 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
     onCloseMenu();
   }, [onCloseMenu, account]);
 
+  const handleOpenEtherscan = useCallback(() => {
+    if (account) {
+      window.open(`https://etherscan.io/address/${account}`);
+    }
+  }, [account]);
+
   const handleDisconnect = useCallback(async () => {
     deactivateWeb3();
     onCloseMenu();
@@ -294,7 +300,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>
           {renderMenuItem("CHANGE WALLET")}
           {renderMenuItem("COPY ADDRESS", handleCopyAddress)}
-          {renderMenuItem("OPEN IN ETHERSCAN")}
+          {renderMenuItem("OPEN IN ETHERSCAN", handleOpenEtherscan)}
           {renderMenuItem("DISCONNECT", handleDisconnect)}
         </WalletDesktopMenu>
       </WalletContainer>
@@ -307,7 +313,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
       >
         {renderMenuItem("CHANGE WALLET")}
         {renderMenuItem("COPY ADDRESS", handleCopyAddress)}
-        {renderMenuItem("OPEN IN ETHERSCAN")}
+        {renderMenuItem("OPEN IN ETHERSCAN", handleOpenEtherscan)}
         {renderMenuItem("DISCONNECT", handleDisconnect)}
         <MenuCloseItem role="button" onClick={onCloseMenu}>
           <MenuButton isOpen={true} onToggle={onCloseMenu} />
