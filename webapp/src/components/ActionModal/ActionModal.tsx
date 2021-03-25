@@ -46,22 +46,6 @@ const Arrow = styled.i`
   color: ${colors.primaryButton};
 `;
 
-const BottomButton = styled.button`
-  width: 100%;
-  border-radius: 4px;
-  font-size: 16px;
-  line-height: 24px;
-  text-align: center;
-  text-transform: uppercase;
-  outline: none !important;
-
-  &:active,
-  &:focus {
-    outline: none !important;
-    box-shadow: none !important;
-  }
-`;
-
 const ActionModal: React.FC<{
   actionType: ActionType;
   show: boolean;

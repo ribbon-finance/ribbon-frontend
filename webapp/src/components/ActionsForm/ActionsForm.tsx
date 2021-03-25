@@ -8,7 +8,6 @@ import { formatSignificantDecimals } from "../../utils/math";
 import YourPosition from "./YourPosition";
 import ActionModal from "../ActionModal/ActionModal";
 import { ACTIONS } from "../ActionModal/types";
-import colors from "../../designSystem/colors";
 import { ActionButton, ConnectWalletButton } from "../Common/buttons";
 
 const { parseEther, formatEther } = ethers.utils;
