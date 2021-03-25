@@ -13,6 +13,7 @@ import {
 import { ActionParams, ACTIONS, ActionType } from "./types";
 import { formatSignificantDecimals } from "../../utils/math";
 import colors from "../../designSystem/colors";
+import { ActionButton } from "../Common/buttons";
 
 const { formatEther } = ethers.utils;
 
@@ -43,6 +44,22 @@ const CurrencyText = styled(AmountText)`
 const Arrow = styled.i`
   font-size: 12px;
   color: ${colors.primaryButton};
+`;
+
+const BottomButton = styled.button`
+  width: 100%;
+  border-radius: 4px;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  text-transform: uppercase;
+  outline: none !important;
+
+  &:active,
+  &:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
 `;
 
 const ActionModal: React.FC<{
@@ -124,6 +141,10 @@ const ActionModal: React.FC<{
             </Title>
           </div>
         </div>
+
+        <ActionButton type="button" className="btn py-3 mb-4">
+          Withdraw Now
+        </ActionButton>
       </Modal.Body>
     </BaseModal>
   );

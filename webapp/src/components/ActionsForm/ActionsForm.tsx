@@ -9,6 +9,7 @@ import YourPosition from "./YourPosition";
 import ActionModal from "../ActionModal/ActionModal";
 import { ACTIONS } from "../ActionModal/types";
 import colors from "../../designSystem/colors";
+import { ActionButton, ConnectWalletButton } from "../Common/buttons";
 
 const { parseEther, formatEther } = ethers.utils;
 
@@ -95,40 +96,6 @@ const MaxAccessory = styled.div`
   text-align: center;
   letter-spacing: 1.5px;
   cursor: pointer;
-`;
-
-const BottomButton = styled.button`
-  width: 100%;
-  border-radius: 4px;
-  font-size: 16px;
-  line-height: 24px;
-  text-align: center;
-  text-transform: uppercase;
-  outline: none !important;
-
-  &:active,
-  &:focus {
-    outline: none !important;
-    box-shadow: none !important;
-  }
-`;
-
-const ActionButton = styled(BottomButton)`
-  background: ${colors.primaryButton};
-  color: #ffffff;
-
-  &:hover {
-    color: #ffffff;
-  }
-`;
-
-const ConnectWalletButton = styled(BottomButton)`
-  background: rgba(22, 206, 185, 0.08);
-  color: #16ceb9;
-
-  &:hover {
-    color: #16ceb9;
-  }
 `;
 
 const WalletBalance = styled.div<{ active: boolean }>`
