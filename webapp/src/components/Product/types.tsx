@@ -4,6 +4,10 @@ export type ProductType =
   | "principalProtection"
   | "capitalAccumulation";
 
+export interface ProductSectionContainerProps {
+  height?: number;
+}
+
 export interface ProductTabProps {
   selected: boolean;
   type: ProductType;

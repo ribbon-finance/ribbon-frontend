@@ -6,11 +6,23 @@ import { BaseButton, SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 import YieldCard from "./Product/YieldCard";
-import { ProductType, ProductTabProps, ArrowButtonProps } from "./types";
+import {
+  ProductType,
+  ProductTabProps,
+  ArrowButtonProps,
+  ProductSectionContainerProps,
+} from "./types";
 import Theta from "./Splash/Theta";
 import Volatility from "./Splash/Volatility";
 import PrincipalProtection from "./Splash/PrincipalProtection";
 import CapitalAccumulation from "./Splash/CapitalAccumulation";
+import useScreenSize from "../../hooks/useScreenSize";
+
+const ProductSectionContainer = styled(Container)<ProductSectionContainerProps>`
+  height: ${(props) =>
+    props.height ? `calc(${props.height}px - 81px)` : `calc(100vh - 81px)`};
+  overflow: hidden;
+`;
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -117,6 +129,7 @@ const SplashImgContianer = styled.div`
 
 const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState<ProductType>("yield");
+  const { height } = useScreenSize();
 
   const renderProductTabButton = (title: string, type: ProductType) => (
     <ProductTabButton
@@ -169,7 +182,7 @@ const Products = () => {
   };
 
   return (
-    <Container>
+    <ProductSectionContainer height={height}>
       {/* Title and product tab */}
       <HeaderContainer>
         <SectionTitle>PRODUCTS</SectionTitle>
@@ -192,7 +205,7 @@ const Products = () => {
         <ProductContent lg={7}>{renderProduct()}</ProductContent>
         <SplashImgContianer>{renderProductSplash()}</SplashImgContianer>
       </ProductContentContainer>
-    </Container>
+    </ProductSectionContainer>
   );
 };
 
