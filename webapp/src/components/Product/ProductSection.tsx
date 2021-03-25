@@ -8,6 +8,9 @@ import theme from "../../designSystem/theme";
 import YieldCard from "./Product/YieldCard";
 import { ProductType, ProductTabProps, ArrowButtonProps } from "./types";
 import Theta from "./Splash/Theta";
+import Volatility from "./Splash/Volatility";
+import PrincipalProtection from "./Splash/PrincipalProtection";
+import CapitalAccumulation from "./Splash/CapitalAccumulation";
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -109,6 +112,7 @@ const SplashImgContianer = styled.div`
   width: 100%;
   overflow: hidden;
   z-index: -1;
+  text-align: center;
 `;
 
 const Products = () => {
@@ -132,7 +136,17 @@ const Products = () => {
   const renderProduct = () => {
     switch (selectedProduct) {
       case "yield":
-        return <YieldCard />;
+        return (
+          <>
+            <ProductContentArrowButton role="button" direction="left">
+              <ProductContentArrowIcon className="fas fa-arrow-left" />
+            </ProductContentArrowButton>
+            <YieldCard />
+            <ProductContentArrowButton role="button" direction="right">
+              <ProductContentArrowIcon className="fas fa-arrow-right" />
+            </ProductContentArrowButton>
+          </>
+        );
     }
 
     return <></>;
@@ -142,21 +156,21 @@ const Products = () => {
     switch (selectedProduct) {
       case "yield":
         return (
-          <SplashImgContianer>
-            <Theta
-              width="100%"
-              height="auto"
-              viewBox="0 0 550.74982 523.74988"
-            />
-          </SplashImgContianer>
+          <Theta width="100%" height="auto" viewBox="0 0 550.74982 523.74988" />
         );
-    }
 
-    return <></>;
+      case "volatility":
+        return <Volatility width="35%" height="auto" />;
+      case "principalProtection":
+        return <PrincipalProtection width="70%" height="auto" />;
+      case "capitalAccumulation":
+        return <CapitalAccumulation width="50%" height="auto" />;
+    }
   };
 
   return (
     <Container>
+      {/* Title and product tab */}
       <HeaderContainer>
         <SectionTitle>PRODUCTS</SectionTitle>
         <ProductTabContainer>
@@ -172,17 +186,11 @@ const Products = () => {
           )}
         </ProductTabContainer>
       </HeaderContainer>
+
+      {/* Product Content */}
       <ProductContentContainer className="justify-content-center">
-        <ProductContent lg={7}>
-          <ProductContentArrowButton role="button" direction="left">
-            <ProductContentArrowIcon className="fas fa-arrow-left" />
-          </ProductContentArrowButton>
-          {renderProduct()}
-          <ProductContentArrowButton role="button" direction="right">
-            <ProductContentArrowIcon className="fas fa-arrow-right" />
-          </ProductContentArrowButton>
-        </ProductContent>
-        {renderProductSplash()}
+        <ProductContent lg={7}>{renderProduct()}</ProductContent>
+        <SplashImgContianer>{renderProductSplash()}</SplashImgContianer>
       </ProductContentContainer>
     </Container>
   );
