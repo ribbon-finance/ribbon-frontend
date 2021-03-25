@@ -1,13 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { Title } from "../../designSystem";
 import WalletConnectModal from "../Wallet/WalletConnectModal";
 import { formatSignificantDecimals } from "../../utils/math";
 import YourPosition from "./YourPosition";
+import ActionModal from "../ActionModal/ActionModal";
+import { ACTIONS } from "../ActionModal/types";
+import { ActionButton, ConnectWalletButton } from "../Common/buttons";
 
-const { formatEther } = ethers.utils;
+const { parseEther, formatEther } = ethers.utils;
 
 const FormContainer = styled.div`
   font-family: VCR;
@@ -20,7 +23,7 @@ const FormContainer = styled.div`
 
 const FormTitleDiv = styled.div<{ left: boolean; active: boolean }>`
   width: 100%;
-  padding: 24px 60px;
+  padding: 24px 0;
   background-color: ${(props) =>
     props.active ? "#151413" : "rgba(255, 255, 255, 0.04)"};
   cursor: pointer;
@@ -94,40 +97,6 @@ const MaxAccessory = styled.div`
   cursor: pointer;
 `;
 
-const BottomButton = styled.button`
-  width: 100%;
-  border-radius: 4px;
-  font-size: 16px;
-  line-height: 24px;
-  text-align: center;
-  text-transform: uppercase;
-  outline: none !important;
-
-  &:active,
-  &:focus {
-    outline: none !important;
-    box-shadow: none !important;
-  }
-`;
-
-const ActionButton = styled(BottomButton)`
-  background: #fc0a54;
-  color: #ffffff;
-
-  &:hover {
-    color: #ffffff;
-  }
-`;
-
-const ConnectWalletButton = styled(BottomButton)`
-  background: rgba(22, 206, 185, 0.08);
-  color: #16ceb9;
-
-  &:hover {
-    color: #16ceb9;
-  }
-`;
-
 const WalletBalance = styled.div<{ active: boolean }>`
   width: 100%;
   text-align: center;
@@ -144,6 +113,7 @@ const ActionsForm = () => {
   const [isDeposit, setIsDeposit] = useState(true);
   const [inputAmount, setInputAmount] = useState("");
   const [showConnectModal, setShowConnectModal] = useState(false);
+  const [showActionModal, setShowActionModal] = useState(false);
   const [userBalance, setUserBalance] = useState(""); // store balances in string
   const { library, active, account } = useWeb3React();
 
@@ -191,6 +161,17 @@ const ActionsForm = () => {
     walletText = `Your Position: ${position} ETH`;
   }
 
+  let actionButtonText = "";
+  if (isDeposit && inputAmount) {
+    actionButtonText = "Preview Deposit";
+  } else if (isDeposit) {
+    actionButtonText = "Deposit ETH";
+  } else if (!isDeposit && inputAmount) {
+    actionButtonText = "Preview Withdrawal";
+  } else {
+    actionButtonText = "Withdraw ETH";
+  }
+
   return (
     <div>
       <FormContainer>
@@ -198,6 +179,21 @@ const ActionsForm = () => {
           show={showConnectModal}
           onClose={() => setShowConnectModal(false)}
         />
+        <ActionModal
+          actionType={isDeposit ? ACTIONS.deposit : ACTIONS.withdraw}
+          show={showActionModal}
+          amount={inputAmount ? parseEther(inputAmount) : BigNumber.from("0")}
+          positionAmount={BigNumber.from("0")}
+          actionParams={
+            isDeposit
+              ? { action: ACTIONS.deposit, yield: 30 }
+              : {
+                  action: ACTIONS.withdraw,
+                  withdrawalFee: 0.5,
+                }
+          }
+          onClose={() => setShowActionModal(false)}
+        ></ActionModal>
         <div
           style={{ justifyContent: "space-evenly" }}
           className="d-flex flex-row align-items-center"
@@ -228,12 +224,20 @@ const ActionsForm = () => {
               value={inputAmount}
               onChange={(e) => setInputAmount(e.target.value)}
             />
-            <MaxAccessory onClick={handleClickMax}>MAX</MaxAccessory>
+            {connected && (
+              <MaxAccessory onClick={handleClickMax}>MAX</MaxAccessory>
+            )}
           </FormInputContainer>
 
           {connected ? (
-            <ActionButton type="button" className="btn py-3 mb-4">
-              {isDeposit ? "Deposit ETH" : "Withdraw ETH"}
+            <ActionButton
+              onClick={() =>
+                inputAmount && connected && setShowActionModal(true)
+              }
+              type="button"
+              className="btn py-3 mb-4"
+            >
+              {actionButtonText}
             </ActionButton>
           ) : (
             <ConnectWalletButton

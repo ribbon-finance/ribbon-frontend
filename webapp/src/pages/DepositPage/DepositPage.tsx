@@ -53,7 +53,7 @@ const DepositPage = () => {
         <div className="row mx-lg-n1">
           <PerformanceSection></PerformanceSection>
 
-          <div className="col-xl-5 offset-xl-1">
+          <div className="col-xl-4 offset-xl-1">
             <ActionsForm></ActionsForm>
           </div>
         </div>
