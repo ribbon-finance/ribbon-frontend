@@ -17,3 +17,7 @@ export interface ConnectorButtonProps {
 export interface MenuStateProps {
   isMenuOpen: boolean;
 }
+
+export interface WalletCopyIconProps {
+  state: "visible" | "hiding" | "hidden";
+}
