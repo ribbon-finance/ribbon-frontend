@@ -18,6 +18,7 @@ import {
   ProductTabProps,
   ArrowButtonProps,
   ProductSectionContainerProps,
+  DynamicMarginProps,
 } from "./types";
 import Volatility from "./Splash/Volatility";
 import PrincipalProtection from "./Splash/PrincipalProtection";
@@ -26,7 +27,7 @@ import useScreenSize from "../../hooks/useScreenSize";
 import useElementSize from "../../hooks/useElementSize";
 
 const ProductSectionContainer = styled(Container)<ProductSectionContainerProps>`
-  min-height: ${(props) =>
+  height: ${(props) =>
     props.height ? `calc(${props.height}px - 81px)` : `calc(100vh - 81px)`};
   overflow: hidden;
   display: flex;
@@ -39,16 +40,23 @@ const ProductContainerBody = styled.div`
   flex: 1;
 `;
 
-const HeaderContainer = styled.div`
+const HeaderContainer = styled.div<DynamicMarginProps>`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  padding-top: 40px;
+  ${(props) => {
+    if (props.empty <= 0) return null;
+
+    return `
+      margin-top: calc(${props.empty}px * 0.15);
+    `;
+  }}
 `;
 
 const ProductTabContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 24px;
   padding: 8px;
   background-color: ${colors.backgroundDarker};
   border-radius: ${theme.border.radius};
@@ -99,15 +107,21 @@ const ProductTabButtonText = styled(SecondaryText)<ProductTabProps>`
   }};
 `;
 
-const ProductContentContainer = styled(Row)`
+const ProductContentContainer = styled(Row)<DynamicMarginProps>`
   position: relative;
-  padding-bottom: 24px;
+  padding: 40px 0px;
+  ${(props) => {
+    if (props.empty <= 0) return null;
+
+    return `
+      margin-top: calc(${props.empty}px * 0.15);
+    `;
+  }}
 `;
 
 const ProductContent = styled(Col)`
   width: 100%;
   display: flex;
-  margin-top: 40px;
   justify-content: center;
   align-items: center;
 `;
@@ -178,6 +192,7 @@ const Products = () => {
   const [activeButtonAnimate, setActiveButtonAnimate] = useState<
     object | boolean
   >(false);
+  const empty = height - headerHeight - contentHeight - 81;
 
   useEffect(() => {
     const currentTab = tabRefs[selectedProduct].current;
@@ -250,13 +265,13 @@ const Products = () => {
   return (
     <ProductSectionContainer
       height={Math.max(
-        height || 0,
+        height,
         headerHeight && contentHeight ? headerHeight + contentHeight + 81 : 0
       )}
     >
-      <ProductContainerBody ref={contentRef}>
+      <ProductContainerBody>
         {/* Title and product tab */}
-        <HeaderContainer>
+        <HeaderContainer ref={headerRef} empty={empty}>
           <ProductTabContainer>
             {productTabs.map((tab) =>
               renderProductTabButton(tab.title, tab.name)
@@ -275,7 +290,11 @@ const Products = () => {
         </HeaderContainer>
 
         {/* Product Content */}
-        <ProductContentContainer className="justify-content-center">
+        <ProductContentContainer
+          className="justify-content-center"
+          ref={contentRef}
+          empty={empty}
+        >
           <ProductContent lg={7}>{renderProduct()}</ProductContent>
           <SplashImgContainer>{renderProductSplash()}</SplashImgContainer>
         </ProductContentContainer>

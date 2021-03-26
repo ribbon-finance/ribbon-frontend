@@ -4,6 +4,10 @@ export type ProductType =
   | "principalProtection"
   | "capitalAccumulation";
 
+export interface DynamicMarginProps {
+  empty: number;
+}
+
 export interface ProductSectionContainerProps {
   height?: number;
 }
