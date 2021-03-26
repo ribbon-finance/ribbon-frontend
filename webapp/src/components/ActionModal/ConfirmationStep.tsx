@@ -12,7 +12,7 @@ const BottomText = styled.div`
 const ConfirmationStep = () => {
   return (
     <>
-      <Theta className="my-5" style={{ height: 230 }}></Theta>
+      <Theta className="w-100 my-5"></Theta>
       <BottomText className="mb-2">
         Confirm this transaction in your wallet
       </BottomText>

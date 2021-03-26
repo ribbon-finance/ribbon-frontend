@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import styled from "styled-components";
 import colors from "../../designSystem/colors";
 
@@ -18,7 +19,7 @@ export const Button = styled.button`
   }
 `;
 
-export const ActionButton = styled(Button)`
+export const BaseActionButton = styled(Button)`
   background: ${colors.primaryButton};
   color: #ffffff;
 
@@ -26,6 +27,44 @@ export const ActionButton = styled(Button)`
     color: #ffffff;
   }
 `;
+
+const InternalButtonLink = styled.a`
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    text-decoration: none;
+    color: inherit;
+  }
+`;
+
+interface ActionButtonProps {
+  className?: string;
+  link?: string;
+  onClick?: () => void;
+  children: ReactNode;
+}
+
+export const ActionButton: React.FC<ActionButtonProps> = ({
+  onClick,
+  link,
+  className,
+  children,
+}) => {
+  return (
+    <BaseActionButton
+      onClick={onClick}
+      type="button"
+      className={`btn ${className}`}
+    >
+      {link !== "" ? (
+        <InternalButtonLink href={link}>{children}</InternalButtonLink>
+      ) : (
+        children
+      )}
+    </BaseActionButton>
+  );
+};
 
 export const ConnectWalletButton = styled(Button)`
   background: rgba(22, 206, 185, 0.08);

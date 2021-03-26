@@ -244,8 +244,7 @@ const ActionsForm = () => {
               onClick={() =>
                 inputAmount && connected && setShowActionModal(true)
               }
-              type="button"
-              className="btn py-3 mb-4"
+              className="py-3 mb-4"
             >
               {actionButtonText}
             </ActionButton>

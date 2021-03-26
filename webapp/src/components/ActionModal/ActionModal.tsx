@@ -21,20 +21,25 @@ const ModalTitle = styled(Title)`
   text-align: center;
 `;
 
+const ModalBody = styled(Modal.Body)`
+  min-height: 450px;
+  max-height: 450px;
+`;
+
 const CloseButton = styled.i`
   flex: 0;
   paddingright: 20px;
 `;
 
-type PreviewStep = 0;
-type ConfirmationStep = 1;
-type SubmittedStep = 2;
-type Steps = PreviewStep | ConfirmationStep | SubmittedStep;
+type PreviewStepType = 0;
+type ConfirmationStepType = 1;
+type SubmittedStepType = 2;
+type Steps = PreviewStepType | ConfirmationStepType | SubmittedStepType;
 
 const STEPS: {
-  previewStep: PreviewStep;
-  confirmationStep: ConfirmationStep;
-  submittedStep: SubmittedStep;
+  previewStep: PreviewStepType;
+  confirmationStep: ConfirmationStepType;
+  submittedStep: SubmittedStepType;
 } = {
   previewStep: 0,
   confirmationStep: 1,
@@ -49,7 +54,8 @@ const ActionModal: React.FC<{
   positionAmount: BigNumber;
   actionParams: ActionParams;
 }> = ({ actionType, show, onClose, amount, positionAmount, actionParams }) => {
-  const [step, setStep] = useState<Steps>(STEPS.previewStep);
+  const [step, setStep] = useState<Steps>(STEPS.submittedStep);
+  const [txhash, setTxhash] = useState("");
 
   // Whenever the `show` variable is toggled, we need to reset the step back to 0
   useEffect(() => {
@@ -66,7 +72,13 @@ const ActionModal: React.FC<{
   const handleClickActionButton = async () => {
     if (vault !== null) {
       setStep(STEPS.confirmationStep);
-      const res = await vault.depositETH({ value: amount });
+      try {
+        const res = await vault.depositETH({ value: amount });
+        setTxhash(res.hash);
+        setStep(STEPS.submittedStep);
+      } catch (_) {
+        onClose();
+      }
     }
   };
 
@@ -87,7 +99,7 @@ const ActionModal: React.FC<{
       ></PreviewStep>
     ),
     1: <ConfirmationStep></ConfirmationStep>,
-    2: <SubmittedStep></SubmittedStep>,
+    2: <SubmittedStep txhash={txhash}></SubmittedStep>,
   };
 
   return (
@@ -101,9 +113,9 @@ const ActionModal: React.FC<{
         ></CloseButton>
       </ActionModalHeader>
 
-      <Modal.Body className="d-flex flex-column align-items-center">
+      <ModalBody className="d-flex flex-column align-items-center justify-items-center">
         {stepComponents[step]}
-      </Modal.Body>
+      </ModalBody>
     </BaseModal>
   );
 };

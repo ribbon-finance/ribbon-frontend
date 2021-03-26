@@ -71,41 +71,43 @@ const PreviewStep: React.FC<PreviewStepProps> = ({
 
   return (
     <>
-      <Subtitle className="d-block text-uppercase" style={{ opacity: 0.4 }}>
-        {actionWord} Amount
-      </Subtitle>
+      <div
+        style={{ flex: 1 }}
+        className="d-flex w-100 flex-column align-items-center"
+      >
+        <Subtitle className="d-block text-uppercase" style={{ opacity: 0.4 }}>
+          {actionWord} Amount
+        </Subtitle>
 
-      <div>
-        <AmountText>
-          {formatSignificantDecimals(formatEther(amount), 4)}
-        </AmountText>
-        <CurrencyText> ETH</CurrencyText>
-      </div>
+        <div>
+          <AmountText>
+            {formatSignificantDecimals(formatEther(amount), 4)}
+          </AmountText>
+          <CurrencyText> ETH</CurrencyText>
+        </div>
 
-      <div className="w-100 mt-4 px-3">
-        {detailRows.map((detail, index) => (
-          <div
-            key={index}
-            className="d-flex flex-row justify-content-between mb-4"
-          >
-            <SecondaryText>{detail.key}</SecondaryText>
-            <Title className="text-right">{detail.value}</Title>
+        <div className="w-100 mt-4">
+          {detailRows.map((detail, index) => (
+            <div
+              key={index}
+              className="d-flex flex-row justify-content-between mb-4"
+            >
+              <SecondaryText>{detail.key}</SecondaryText>
+              <Title className="text-right">{detail.value}</Title>
+            </div>
+          ))}
+          <div className="d-flex flex-row justify-content-between mb-4">
+            <SecondaryText>Your Position</SecondaryText>
+            <Title className="d-flex align-items-center text-right">
+              {originalAmount} ETH{" "}
+              <Arrow className="fas fa-arrow-right mx-2"></Arrow> {newAmount}{" "}
+              ETH
+            </Title>
           </div>
-        ))}
-        <div className="d-flex flex-row justify-content-between mb-4">
-          <SecondaryText>Your Position</SecondaryText>
-          <Title className="d-flex align-items-center text-right">
-            {originalAmount} ETH{" "}
-            <Arrow className="fas fa-arrow-right mx-2"></Arrow> {newAmount} ETH
-          </Title>
         </div>
       </div>
 
-      <ActionButton
-        onClick={onClickActionButton}
-        type="button"
-        className="btn py-3 my-3"
-      >
+      <ActionButton onClick={onClickActionButton} className="btn py-3 my-3">
         {isDeposit ? "Deposit" : "Withdraw"} Now
       </ActionButton>
     </>
