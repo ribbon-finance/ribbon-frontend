@@ -78,6 +78,13 @@ const WalletButton = styled(BaseButton)<WalletButtonProps>`
 `;
 
 const WalletButtonText = styled(Title)<WalletStatusProps>`
+  font-size: 14px;
+  line-height: 20px;
+
+  @media (max-width: ${sizes.lg}px) {
+    font-size: 16px;
+  }
+
   ${(props) => {
     if (props.connected) return null;
 
@@ -165,6 +172,9 @@ const MenuItem = styled.div`
 const MenuItemText = styled(Title)`
   color: ${colors.primaryText}A3;
   white-space: nowrap;
+  font-size: 14px;
+  line-height: 20px;
+
   @media (max-width: ${sizes.md}px) {
     font-size: 24px;
   }

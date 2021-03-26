@@ -31,14 +31,6 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
   z-index: ${(props) => (props.isMenuOpen ? 50 : 10)};
 `;
 
-const NavLinkText = styled(Title)`
-  letter-spacing: 1.5px;
-
-  @media (max-width: ${sizes.md}px) {
-    font-size: 24px;
-  }
-`;
-
 const LogoContainer = styled.div`
   padding-left: 40px;
   z-index: 1000;
@@ -70,6 +62,16 @@ const NavItem = styled.div<NavItemProps>`
 
   &:hover {
     opacity: ${(props) => (props.isSelected ? theme.hover.opacity : "1")};
+  }
+`;
+
+const NavLinkText = styled(Title)`
+  letter-spacing: 1.5px;
+  font-size: 14px;
+  line-height: 20px;
+
+  @media (max-width: ${sizes.md}px) {
+    font-size: 24px;
   }
 `;
 
