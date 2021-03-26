@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
+import { setTimeout } from "timers";
 
 import Indicator from "../Indicator/Indicator";
 import sizes from "../../designSystem/sizes";
@@ -12,23 +13,14 @@ import {
   AccountStatusVariantProps,
   WalletButtonProps,
   MenuStateProps,
+  WalletCopyIconProps,
 } from "./types";
 import WalletConnectModal from "./WalletConnectModal";
 import theme from "../../designSystem/theme";
 import MobileOverlayMenu from "../Common/MobileOverlayMenu";
 import MenuButton from "../Header/MenuButton";
 import { copyTextToClipboard } from "../../utils/text";
-import { Alert } from "react-bootstrap";
-import { setTimeout } from "timers";
-
-const AlertFloatingContainer = styled.div`
-  display: flex;
-  position: absolute;
-  width: 100%;
-  justify-content: center;
-  top: 24px;
-  z-index: 100;
-`;
+import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 
 const WalletContainer = styled.div<AccountStatusVariantProps>`
   justify-content: center;
@@ -86,6 +78,13 @@ const WalletButton = styled(BaseButton)<WalletButtonProps>`
 `;
 
 const WalletButtonText = styled(Title)<WalletStatusProps>`
+  font-size: 14px;
+  line-height: 20px;
+
+  @media (max-width: ${sizes.lg}px) {
+    font-size: 16px;
+  }
+
   ${(props) => {
     if (props.connected) return null;
 
@@ -142,6 +141,8 @@ const MenuItem = styled.div`
   padding: 8px 16px;
   padding-right: 38px;
   opacity: 1;
+  display: flex;
+  align-items: center;
 
   &:first-child {
     padding-top: 16px;
@@ -171,9 +172,38 @@ const MenuItem = styled.div`
 const MenuItemText = styled(Title)`
   color: ${colors.primaryText}A3;
   white-space: nowrap;
+  font-size: 14px;
+  line-height: 20px;
+
   @media (max-width: ${sizes.md}px) {
     font-size: 24px;
   }
+`;
+
+const WalletCopyIcon = styled.i<WalletCopyIconProps>`
+  color: white;
+  margin-left: 8px;
+  transition: 0.1s all ease-out;
+
+  ${(props) => {
+    switch (props.state) {
+      case "visible":
+        return `
+          opacity: 1;
+        `;
+      case "hiding":
+        return `
+          opacity: 0;
+        `;
+      case "hidden":
+        return `
+          visibility: hidden;
+          height: 0;
+          width: 0;
+          opacity: 0;
+        `;
+    }
+  }}
 `;
 
 const MenuCloseItem = styled(MenuItem)`
@@ -202,8 +232,15 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   } = useWeb3React();
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
+  const [copied, setCopied] = useState<"visible" | "hiding" | "hidden">(
+    "hidden"
+  );
+
+  // Track clicked area outside of desktop menu
+  const desktopMenuRef = useRef(null);
+  useOutsideAlerter(desktopMenuRef, () => {
+    if (variant === "desktop" && isMenuOpen) onCloseMenu();
+  });
 
   useEffect(() => {
     if (library && account) {
@@ -212,13 +249,22 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   }, [library, account]);
 
   useEffect(() => {
-    if (showToast) {
-      const timer = setTimeout(() => {
-        setShowToast(false);
-      }, 1500);
-      return clearTimeout(timer);
+    let timer;
+
+    switch (copied) {
+      case "visible":
+        timer = setTimeout(() => {
+          setCopied("hiding");
+        }, 800);
+        break;
+      case "hiding":
+        timer = setTimeout(() => {
+          setCopied("hidden");
+        }, 200);
     }
-  }, [showToast]);
+
+    if (timer) clearTimeout(timer);
+  }, [copied]);
 
   const onToggleMenu = useCallback(() => {
     setIsMenuOpen((open) => !open);
@@ -245,11 +291,9 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   const handleCopyAddress = useCallback(() => {
     if (account) {
       copyTextToClipboard(account);
-      setToastMessage(`Address copied!`);
-      setShowToast(true);
+      setCopied("visible");
     }
-    onCloseMenu();
-  }, [onCloseMenu, account]);
+  }, [account]);
 
   const handleOpenEtherscan = useCallback(() => {
     if (account) {
@@ -282,22 +326,27 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
       <WalletButtonText connected={active}>CONNECT WALLET</WalletButtonText>
     );
 
-  const renderMenuItem = (title: string, onClick?: () => void) => {
+  const renderMenuItem = (
+    title: string,
+    onClick?: () => void,
+    extra?: React.ReactNode
+  ) => {
     return (
       <MenuItem onClick={onClick} role="button">
         <MenuItemText>{title}</MenuItemText>
+        {extra}
       </MenuItem>
     );
   };
 
+  const renderCopiedButton = () => {
+    return <WalletCopyIcon className="far fa-clone" state={copied} />;
+  };
+
   return (
     <>
-      <AlertFloatingContainer>
-        <Alert show={showToast} variant="success">
-          {toastMessage}
-        </Alert>
-      </AlertFloatingContainer>
-      <WalletContainer variant={variant}>
+      {/* Main Button and Desktop Menu */}
+      <WalletContainer variant={variant} ref={desktopMenuRef}>
         <WalletButton
           variant={variant}
           connected={active}
@@ -308,12 +357,17 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
         </WalletButton>
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>
           {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
-          {renderMenuItem("COPY ADDRESS", handleCopyAddress)}
+          {renderMenuItem(
+            "COPY ADDRESS",
+            handleCopyAddress,
+            renderCopiedButton()
+          )}
           {renderMenuItem("OPEN IN ETHERSCAN", handleOpenEtherscan)}
           {renderMenuItem("DISCONNECT", handleDisconnect)}
         </WalletDesktopMenu>
       </WalletContainer>
 
+      {/* Mobile Menu */}
       <WalletMobileOverlayMenu
         className="flex-column align-items-center justify-content-center"
         isMenuOpen={isMenuOpen}
@@ -321,7 +375,11 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
         variant={variant}
       >
         {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
-        {renderMenuItem("COPY ADDRESS", handleCopyAddress)}
+        {renderMenuItem(
+          "COPY ADDRESS",
+          handleCopyAddress,
+          renderCopiedButton()
+        )}
         {renderMenuItem("OPEN IN ETHERSCAN", handleOpenEtherscan)}
         {renderMenuItem("DISCONNECT", handleDisconnect)}
         <MenuCloseItem role="button" onClick={onCloseMenu}>
