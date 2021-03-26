@@ -1431,7 +1431,7 @@
   dependencies:
     "@ethersproject/logger" "^5.0.8"
 
-"@ethersproject/providers@5.0.24":
+"@ethersproject/providers@5.0.24", "@ethersproject/providers@^5.0.10":
   version "5.0.24"
   resolved "https://registry.yarnpkg.com/@ethersproject/providers/-/providers-5.0.24.tgz#4c638a029482d052faa18364b5e0e2d3ddd9c0cb"
   integrity sha512-M4Iw1r4gGJkt7ZUa++iREuviKL/DIpmIMsaUlVlXtV+ZrUXeN8xQ3zOTrbz7R4h9W9oljBZM7i4D3Kn1krJ30A==
@@ -5890,6 +5890,14 @@ ethereum-cryptography@^0.1.3:
     secp256k1 "^4.0.1"
     setimmediate "^1.0.5"
 
+ethereum-multicall@2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/ethereum-multicall/-/ethereum-multicall-2.0.2.tgz#7daec5d1960cfcde878734599b7349fa37e10292"
+  integrity sha512-8vZkoj7iOrQ3iTVMPhFcrc7abUFVCpdcrnAI1PCfhUtaF/JCZVQktHGjTRqDBayHQIwKd5YUF7Ht+3YG1tOxpA==
+  dependencies:
+    "@ethersproject/providers" "^5.0.10"
+    ethers "^5.0.15"
+
 "ethereumjs-abi@git+https://github.com/ethereumjs/ethereumjs-abi.git":
   version "0.6.8"
   resolved "git+https://github.com/ethereumjs/ethereumjs-abi.git#1a27c59c15ab1e95ee8e5c4ed6ad814c49cc439e"
@@ -5992,7 +6000,7 @@ ethereumjs-vm@^2.3.4:
     rustbn.js "~0.2.0"
     safe-buffer "^5.1.1"
 
-ethers@^5.0.32:
+ethers@^5.0.15, ethers@^5.0.32:
   version "5.0.32"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.0.32.tgz#f009970be31d96a589bf0ce597a39c10c7e297a6"
   integrity sha512-rORfGWR0HsA4pjKMMcWZorw12DHsXqfIAuPVHJsXt+vI24jvXcVqx+rLsSvgOoLdaCMdxiN5qlIq2+4axKG31g==

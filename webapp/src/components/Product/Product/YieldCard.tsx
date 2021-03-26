@@ -77,7 +77,7 @@ const YieldCard = () => {
       </ProductDescription>
       <ExpectedYieldTitle>EXPECTED YIELD (APY)</ExpectedYieldTitle>
       <YieldText>30%</YieldText>
-      <DepositCapBar totalDeposit={215} limit={500} />
+      <DepositCapBar loading={false} totalDeposit={215} limit={500} />
     </ProductCard>
   );
 };

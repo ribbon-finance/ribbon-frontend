@@ -24,11 +24,12 @@ const DepositStat = styled(Title)`
   line-height: 20px;
 `;
 
-const DepositCapBar: React.FC<{ totalDeposit: number; limit: number }> = ({
-  totalDeposit,
-  limit,
-}) => {
-  let percent = totalDeposit / limit;
+const DepositCapBar: React.FC<{
+  loading: boolean;
+  totalDeposit: number;
+  limit: number;
+}> = ({ loading, totalDeposit, limit }) => {
+  let percent = totalDeposit / (limit > 0 ? limit : 1);
   if (percent < 0) {
     percent = 0;
   } else if (percent > 1) {
@@ -40,7 +41,9 @@ const DepositCapBar: React.FC<{ totalDeposit: number; limit: number }> = ({
     <div className="w-100">
       <div className="d-flex flex-row justify-content-between">
         <SecondaryText>Total Deposits</SecondaryText>
-        <DepositStat>{totalDeposit} ETH</DepositStat>
+        <DepositStat>
+          {loading ? "Loading..." : `${totalDeposit} ETH`}
+        </DepositStat>
       </div>
 
       <div className="d-flex flex-row position-relative my-3">
@@ -50,7 +53,7 @@ const DepositCapBar: React.FC<{ totalDeposit: number; limit: number }> = ({
 
       <div className="d-flex flex-row justify-content-between">
         <SecondaryText>Limit</SecondaryText>
-        <DepositStat>{limit} ETH</DepositStat>
+        <DepositStat>{loading ? "Loading..." : `${limit} ETH`}</DepositStat>
       </div>
     </div>
   );

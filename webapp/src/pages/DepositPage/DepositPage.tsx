@@ -1,4 +1,5 @@
-import React from "react";
+import React, { ReactNode } from "react";
+import { ethers, BigNumber } from "ethers";
 import styled from "styled-components";
 import { Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
@@ -6,6 +7,10 @@ import DepositCapBar from "./DepositCapBar";
 import PerformanceSection from "./PerformanceSection";
 import ActionsForm from "../../components/ActionsForm/ActionsForm";
 import Theta from "../../components/Product/Splash/Theta";
+import useVaultData from "../../hooks/useVaultData";
+import { formatSignificantDecimals } from "../../utils/math";
+
+const { formatEther } = ethers.utils;
 
 const HeroContainer = styled.div`
   background: linear-gradient(
@@ -45,9 +50,45 @@ const SplashImage = styled.div`
 `;
 
 const DepositPage = () => {
+  const response = useVaultData();
+  let loadingDepositLimit = true;
+  let depositLimit = BigNumber.from("0");
+  let totalDeposit = BigNumber.from("0");
+
+  switch (response.status) {
+    case "loading":
+      loadingDepositLimit = true;
+      break;
+    case "loaded_unconnected":
+      loadingDepositLimit = false;
+      depositLimit = response.data.vaultLimit;
+      totalDeposit = response.data.deposits;
+      break;
+    case "loaded_connected":
+      loadingDepositLimit = false;
+      break;
+    default:
+      loadingDepositLimit = true;
+  }
+
+  const totalDepositStr = loadingDepositLimit
+    ? 0
+    : parseFloat(formatSignificantDecimals(formatEther(totalDeposit)));
+  const depositLimitStr = loadingDepositLimit
+    ? 1
+    : parseFloat(formatSignificantDecimals(formatEther(depositLimit)));
+
+  const depositCapBar = (
+    <DepositCapBar
+      loading={loadingDepositLimit}
+      totalDeposit={totalDepositStr}
+      limit={depositLimitStr}
+    ></DepositCapBar>
+  );
+
   return (
     <div>
-      <HeroSection></HeroSection>
+      <HeroSection depositCapBar={depositCapBar}></HeroSection>
 
       <div className="container py-6">
         <div className="row mx-lg-n1">
@@ -62,7 +103,9 @@ const DepositPage = () => {
   );
 };
 
-const HeroSection = () => {
+const HeroSection: React.FC<{ depositCapBar: ReactNode }> = ({
+  depositCapBar,
+}) => {
   return (
     <HeroContainer className="position-relative py-6">
       <div className="container">
@@ -79,7 +122,7 @@ const HeroSection = () => {
               <HeroText>T-100-E</HeroText>
             </div>
 
-            <DepositCapBar totalDeposit={215} limit={500}></DepositCapBar>
+            {depositCapBar}
           </div>
 
           <SplashImage className="position-absolute offset-xl-6">
