@@ -14,6 +14,7 @@ import { ActionParams, ACTIONS, ActionType } from "./types";
 import { formatSignificantDecimals } from "../../utils/math";
 import colors from "../../designSystem/colors";
 import { ActionButton } from "../Common/buttons";
+import useVault from "../../hooks/useVault";
 
 const { formatEther } = ethers.utils;
 
@@ -54,6 +55,7 @@ const ActionModal: React.FC<{
   positionAmount: BigNumber;
   actionParams: ActionParams;
 }> = ({ actionType, show, onClose, amount, positionAmount, actionParams }) => {
+  const vault = useVault();
   const isDeposit = actionType === ACTIONS.deposit;
   const actionWord = isDeposit ? "Deposit" : "Withdrawal";
 
@@ -69,6 +71,12 @@ const ActionModal: React.FC<{
     default:
       break;
   }
+
+  const handleClickActionButton = async () => {
+    if (vault !== null) {
+      await vault.depositETH({ value: amount });
+    }
+  };
 
   const detailRows: { key: string; value: string }[] = [
     { key: "Product", value: "T-100-e" },
@@ -126,7 +134,11 @@ const ActionModal: React.FC<{
           </div>
         </div>
 
-        <ActionButton type="button" className="btn py-3 my-3">
+        <ActionButton
+          onClick={handleClickActionButton}
+          type="button"
+          className="btn py-3 my-3"
+        >
           {isDeposit ? "Deposit" : "Withdraw"} Now
         </ActionButton>
       </Modal.Body>
