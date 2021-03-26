@@ -118,8 +118,11 @@ const ActionModal: React.FC<{
         </div>
 
         <div className="w-100 mt-4 px-3">
-          {detailRows.map((detail) => (
-            <div className="d-flex flex-row justify-content-between mb-4">
+          {detailRows.map((detail, index) => (
+            <div
+              key={index}
+              className="d-flex flex-row justify-content-between mb-4"
+            >
               <SecondaryText>{detail.key}</SecondaryText>
               <Title className="text-right">{detail.value}</Title>
             </div>

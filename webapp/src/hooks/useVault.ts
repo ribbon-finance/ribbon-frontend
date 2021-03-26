@@ -2,7 +2,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 import { RibbonCoveredCall, RibbonCoveredCall__factory } from "../codegen";
 import deployments from "../constants/deployments.json";
-import { NETWORK_NAMES } from "../constants/networks";
+import { NETWORK_NAMES } from "../constants/constants";
 
 const useVault = () => {
   const { chainId, library, active } = useWeb3React();
