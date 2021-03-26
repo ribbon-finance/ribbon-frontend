@@ -6,8 +6,8 @@ const CapitalAccumulation: React.FC<SVGProps> = (props) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="438.79239"
-      height="519.18396"
+      // width="438.79239"
+      // height="519.18396"
       viewBox="0 0 438.79239 519.18396"
       fill="none"
       version="1.1"

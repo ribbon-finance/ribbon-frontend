@@ -6,8 +6,8 @@ const Theta: React.FC<SVGProps> = (props) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="523.74982"
-      height="523.74988"
+      //   width="523.74982"
+      //   height="523.74988"
       viewBox="0 0 523.74982 523.74988"
       fill="none"
       version="1.1"

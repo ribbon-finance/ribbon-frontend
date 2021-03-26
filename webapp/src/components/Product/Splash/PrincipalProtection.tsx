@@ -6,8 +6,8 @@ const PrincipalProtection: React.FC<SVGProps> = (props) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="396.02661"
-      height="346.54568"
+      //   width="396.02661"
+      //   height="346.54568"
       viewBox="0 0 396.02661 346.54568"
       fill="none"
       version="1.1"

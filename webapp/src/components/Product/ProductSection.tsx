@@ -9,7 +9,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
 import { Frame } from "framer";
 
-import { BaseButton, SecondaryText } from "../../designSystem";
+import { BaseButton, SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 import YieldCard from "./Product/YieldCard";
@@ -25,6 +25,7 @@ import PrincipalProtection from "./Splash/PrincipalProtection";
 import CapitalAccumulation from "./Splash/CapitalAccumulation";
 import useScreenSize from "../../hooks/useScreenSize";
 import useElementSize from "../../hooks/useElementSize";
+import Theta from "./Splash/Theta";
 
 const ProductSectionContainer = styled(Container)<ProductSectionContainerProps>`
   height: ${(props) =>
@@ -149,14 +150,17 @@ const ProductContentArrowIcon = styled.i`
   color: white;
 `;
 
-const SplashImgContainer = styled.div`
+const ComingSoonContainer = styled.div`
   position: absolute;
-  top: 24px;
-  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
   width: 100%;
-  overflow: hidden;
-  z-index: -1;
-  text-align: center;
+`;
+
+const ComingSoonText = styled(Title)`
+  font-size: 80px;
 `;
 
 const productTabs: Array<{ name: ProductType; title: string }> = [
@@ -183,8 +187,12 @@ const Products = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [selectedProduct, setSelectedProduct] = useState<ProductType>("yield");
   const { height } = useScreenSize();
-  const { height: headerHeight } = useElementSize(headerRef);
-  const { height: contentHeight } = useElementSize(contentRef);
+  const { height: headerHeight } = useElementSize(headerRef, {
+    mutationObserver: false,
+  });
+  const { height: contentHeight } = useElementSize(contentRef, {
+    mutationObserver: false,
+  });
   const tabRefs = productTabs.reduce<any>((acc, tab) => {
     acc[tab.name] = createRef();
     return acc;
@@ -232,6 +240,17 @@ const Products = () => {
     [selectedProduct]
   );
 
+  const renderSplashFromType = useCallback(() => {
+    switch (selectedProduct) {
+      case "volatility":
+        return <Volatility width="35%" opacity="0.4" />;
+      case "principalProtection":
+        return <PrincipalProtection width="70%" opacity="0.4" />;
+      case "capitalAccumulation":
+        return <CapitalAccumulation width="50%" opacity="0.4" />;
+    }
+  }, [selectedProduct]);
+
   const renderProduct = useCallback(() => {
     switch (selectedProduct) {
       case "yield":
@@ -246,21 +265,19 @@ const Products = () => {
             </ProductContentArrowButton>
           </>
         );
-    }
-
-    return <></>;
-  }, [selectedProduct]);
-
-  const renderProductSplash = useCallback(() => {
-    switch (selectedProduct) {
       case "volatility":
-        return <Volatility width="35%" height="auto" />;
       case "principalProtection":
-        return <PrincipalProtection width="70%" height="auto" />;
       case "capitalAccumulation":
-        return <CapitalAccumulation width="50%" height="auto" />;
+        return (
+          <>
+            {renderSplashFromType()}
+            <ComingSoonContainer>
+              <ComingSoonText>COMING SOON</ComingSoonText>
+            </ComingSoonContainer>
+          </>
+        );
     }
-  }, [selectedProduct]);
+  }, [selectedProduct, renderSplashFromType]);
 
   return (
     <ProductSectionContainer
@@ -296,7 +313,7 @@ const Products = () => {
           empty={empty}
         >
           <ProductContent lg={7}>{renderProduct()}</ProductContent>
-          <SplashImgContainer>{renderProductSplash()}</SplashImgContainer>
+          {/* <SplashImgContainer>{renderProductSplash()}</SplashImgContainer> */}
         </ProductContentContainer>
       </ProductContainerBody>
     </ProductSectionContainer>
