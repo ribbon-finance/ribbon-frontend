@@ -25,7 +25,6 @@ import PrincipalProtection from "./Splash/PrincipalProtection";
 import CapitalAccumulation from "./Splash/CapitalAccumulation";
 import useScreenSize from "../../hooks/useScreenSize";
 import useElementSize from "../../hooks/useElementSize";
-import Theta from "./Splash/Theta";
 
 const ProductSectionContainer = styled(Container)<ProductSectionContainerProps>`
   height: ${(props) =>
