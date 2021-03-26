@@ -6,8 +6,8 @@ const Volatility: React.FC<SVGProps> = (props) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="218.80614"
-      height="403.62421"
+      // width="218.80614"
+      // height="403.62421"
       viewBox="0 0 218.80614 403.62421"
       fill="none"
       version="1.1"
