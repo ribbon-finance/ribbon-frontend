@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useCallback, useRef } from "react";
 import styled from "styled-components";
 import colors from "../../designSystem/colors";
 
@@ -46,19 +46,37 @@ interface ActionButtonProps {
 }
 
 export const ActionButton: React.FC<ActionButtonProps> = ({
-  onClick,
-  link,
-  className,
+  onClick = () => {},
+  link = "",
+  className = "",
   children,
 }) => {
+  const hasLink = link !== "";
+  const linkRef = useRef<HTMLAnchorElement | null>(null);
+
+  const openLink = useCallback(() => {
+    if (linkRef !== null && linkRef.current !== null) {
+      linkRef.current.click();
+    }
+  }, []);
+
+  const handleClick = hasLink ? openLink : onClick;
+
   return (
     <BaseActionButton
-      onClick={onClick}
+      onClick={handleClick}
       type="button"
       className={`btn ${className}`}
     >
       {link !== "" ? (
-        <InternalButtonLink href={link}>{children}</InternalButtonLink>
+        <InternalButtonLink
+          ref={linkRef}
+          href={link}
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          {children}
+        </InternalButtonLink>
       ) : (
         children
       )}
