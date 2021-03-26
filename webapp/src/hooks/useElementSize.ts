@@ -1,18 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
+import { MutableRefObject, useCallback, useEffect, useState } from "react";
 
-const useScreenSize = () => {
+const useElementSize = (ref: MutableRefObject<HTMLElement | null>) => {
   const [height, setHeight] = useState<number>();
   const [width, setWidth] = useState<number>();
 
   const updateWidth = useCallback(() => {
-    setWidth(Math.max(window.innerWidth, document.documentElement.clientWidth));
-  }, []);
+    if (ref.current) setWidth(ref.current.clientWidth);
+  }, [ref]);
 
   const updateHeight = useCallback(() => {
-    setHeight(
-      Math.max(window.innerHeight, document.documentElement.clientHeight)
-    );
-  }, []);
+    if (ref.current) setHeight(ref.current.clientHeight);
+  }, [ref]);
 
   useEffect(() => {
     updateWidth();
@@ -27,4 +25,4 @@ const useScreenSize = () => {
   return { height, width };
 };
 
-export default useScreenSize;
+export default useElementSize;
