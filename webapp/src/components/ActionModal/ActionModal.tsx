@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { BigNumber } from "ethers";
@@ -8,6 +8,8 @@ import { ActionParams, ACTIONS, ActionType } from "./types";
 
 import useVault from "../../hooks/useVault";
 import PreviewStep from "./PreviewStep";
+import ConfirmationStep from "./ConfirmationStep";
+import SubmittedStep from "./SubmittedStep";
 
 const ActionModalHeader = styled(BaseModalHeader)`
   background: #151413;
@@ -49,6 +51,14 @@ const ActionModal: React.FC<{
 }> = ({ actionType, show, onClose, amount, positionAmount, actionParams }) => {
   const [step, setStep] = useState<Steps>(STEPS.previewStep);
 
+  // Whenever the `show` variable is toggled, we need to reset the step back to 0
+  useEffect(() => {
+    // small timeout so it doesn't flicker
+    setTimeout(() => {
+      setStep(STEPS.previewStep);
+    }, 500);
+  }, [show, setStep]);
+
   const actionWord = actionType === ACTIONS.deposit ? "Deposit" : "Withdrawal";
 
   const vault = useVault();
@@ -66,36 +76,19 @@ const ActionModal: React.FC<{
     2: "Transaction Submitted",
   };
 
-  let stepComponent;
-
-  switch (step) {
-    case STEPS.previewStep:
-      stepComponent = (
-        <PreviewStep
-          actionType={actionType}
-          amount={amount}
-          positionAmount={positionAmount}
-          actionParams={actionParams}
-          onClickActionButton={handleClickActionButton}
-        ></PreviewStep>
-      );
-      break;
-
-    case STEPS.confirmationStep:
-      stepComponent = <div>test</div>;
-      break;
-
-    default:
-      stepComponent = (
-        <PreviewStep
-          actionType={actionType}
-          amount={amount}
-          positionAmount={positionAmount}
-          actionParams={actionParams}
-          onClickActionButton={handleClickActionButton}
-        ></PreviewStep>
-      );
-  }
+  const stepComponents = {
+    0: (
+      <PreviewStep
+        actionType={actionType}
+        amount={amount}
+        positionAmount={positionAmount}
+        actionParams={actionParams}
+        onClickActionButton={handleClickActionButton}
+      ></PreviewStep>
+    ),
+    1: <ConfirmationStep></ConfirmationStep>,
+    2: <SubmittedStep></SubmittedStep>,
+  };
 
   return (
     <BaseModal show={show} onHide={onClose} centered>
@@ -109,7 +102,7 @@ const ActionModal: React.FC<{
       </ActionModalHeader>
 
       <Modal.Body className="d-flex flex-column align-items-center">
-        {stepComponent}
+        {stepComponents[step]}
       </Modal.Body>
     </BaseModal>
   );
