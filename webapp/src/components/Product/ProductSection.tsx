@@ -1,8 +1,15 @@
-import React, { useState } from "react";
+import React, {
+  createRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
+import { Frame } from "framer";
 
-import { BaseButton, SecondaryText, Title } from "../../designSystem";
+import { BaseButton, SecondaryText } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 import YieldCard from "./Product/YieldCard";
@@ -12,16 +19,24 @@ import {
   ArrowButtonProps,
   ProductSectionContainerProps,
 } from "./types";
-import Theta from "./Splash/Theta";
 import Volatility from "./Splash/Volatility";
 import PrincipalProtection from "./Splash/PrincipalProtection";
 import CapitalAccumulation from "./Splash/CapitalAccumulation";
 import useScreenSize from "../../hooks/useScreenSize";
+import useElementSize from "../../hooks/useElementSize";
 
 const ProductSectionContainer = styled(Container)<ProductSectionContainerProps>`
-  height: ${(props) =>
+  min-height: ${(props) =>
     props.height ? `calc(${props.height}px - 81px)` : `calc(100vh - 81px)`};
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ProductContainerBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 `;
 
 const HeaderContainer = styled.div`
@@ -30,37 +45,39 @@ const HeaderContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const SectionTitle = styled(Title)`
-  margin-top: 48px;
-  font-size: 24px;
-`;
-
 const ProductTabContainer = styled.div`
-  width: 100%;
   display: flex;
   justify-content: center;
   margin-top: 24px;
+  padding: 8px;
+  background-color: ${colors.backgroundDarker};
+  border-radius: ${theme.border.radius};
+  position: relative;
 `;
 
 const ProductTabButton = styled(BaseButton)<ProductTabProps>`
   padding: 12px 16px;
-  background-color: ${(props) => {
-    if (!props.selected) {
-      return colors.background;
-    }
+  margin-right: 4px;
+  z-index: 1;
 
-    return colors.products[props.type];
-  }};
-  margin: 0px 8px;
-
-  ${(props) =>
-    props.selected
-      ? null
-      : `border: ${theme.border.width} ${theme.border.style} ${colors.border};`}
+  &:nth-last-child(2) {
+    margin-right: 0px;
+  }
 
   &:hover {
     span {
-      color: white;
+      color: ${(props) => {
+        switch (props.type) {
+          case "yield":
+          case "capitalAccumulation":
+            return props.selected
+              ? `${colors.primaryText}A3`
+              : colors.primaryText;
+          case "volatility":
+          case "principalProtection":
+            return props.selected ? `#000000A3` : colors.primaryText;
+        }
+      }};
     }
   }
 `;
@@ -84,6 +101,7 @@ const ProductTabButtonText = styled(SecondaryText)<ProductTabProps>`
 
 const ProductContentContainer = styled(Row)`
   position: relative;
+  padding-bottom: 24px;
 `;
 
 const ProductContent = styled(Col)`
@@ -127,26 +145,79 @@ const SplashImgContainer = styled.div`
   text-align: center;
 `;
 
+const productTabs: Array<{ name: ProductType; title: string }> = [
+  {
+    name: "yield",
+    title: "Yield",
+  },
+  {
+    name: "volatility",
+    title: "Volatility",
+  },
+  {
+    name: "principalProtection",
+    title: "Principal Protection",
+  },
+  {
+    name: "capitalAccumulation",
+    title: "Capital Accumulation",
+  },
+];
+
 const Products = () => {
+  const headerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const [selectedProduct, setSelectedProduct] = useState<ProductType>("yield");
   const { height } = useScreenSize();
+  const { height: headerHeight } = useElementSize(headerRef);
+  const { height: contentHeight } = useElementSize(contentRef);
+  const tabRefs = productTabs.reduce<any>((acc, tab) => {
+    acc[tab.name] = createRef();
+    return acc;
+  }, {});
+  const [activeButtonAnimate, setActiveButtonAnimate] = useState<
+    object | boolean
+  >(false);
 
-  const renderProductTabButton = (title: string, type: ProductType) => (
-    <ProductTabButton
-      selected={selectedProduct === type}
-      type={type}
-      role="button"
-      onClick={() => {
-        setSelectedProduct(type);
-      }}
-    >
-      <ProductTabButtonText selected={selectedProduct === type} type={type}>
-        {title}
-      </ProductTabButtonText>
-    </ProductTabButton>
+  useEffect(() => {
+    const currentTab = tabRefs[selectedProduct].current;
+
+    if (!currentTab) {
+      return;
+    }
+
+    setActiveButtonAnimate({
+      backgroundColor: colors.products[selectedProduct],
+      left: currentTab.offsetLeft,
+      top: currentTab.offsetTop,
+      height: currentTab.clientHeight,
+      width: currentTab.clientWidth,
+      radius: 8,
+    });
+  }, [selectedProduct, tabRefs]);
+
+  const renderProductTabButton = useCallback(
+    (title: string, type: ProductType) => (
+      <ProductTabButton
+        selected={selectedProduct === type}
+        type={type}
+        role="button"
+        onClick={() => {
+          setSelectedProduct(type);
+        }}
+        ref={tabRefs[type]}
+      >
+        <ProductTabButtonText selected={selectedProduct === type} type={type}>
+          {title}
+        </ProductTabButtonText>
+      </ProductTabButton>
+    ),
+    // tabRefs should not be deps as they are being set here as well
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedProduct]
   );
 
-  const renderProduct = () => {
+  const renderProduct = useCallback(() => {
     switch (selectedProduct) {
       case "yield":
         return (
@@ -163,15 +234,10 @@ const Products = () => {
     }
 
     return <></>;
-  };
+  }, [selectedProduct]);
 
-  const renderProductSplash = () => {
+  const renderProductSplash = useCallback(() => {
     switch (selectedProduct) {
-      case "yield":
-        return (
-          <Theta width="100%" height="auto" viewBox="0 0 550.74982 523.74988" />
-        );
-
       case "volatility":
         return <Volatility width="35%" height="auto" />;
       case "principalProtection":
@@ -179,32 +245,41 @@ const Products = () => {
       case "capitalAccumulation":
         return <CapitalAccumulation width="50%" height="auto" />;
     }
-  };
+  }, [selectedProduct]);
 
   return (
-    <ProductSectionContainer height={height}>
-      {/* Title and product tab */}
-      <HeaderContainer>
-        <SectionTitle>PRODUCTS</SectionTitle>
-        <ProductTabContainer>
-          {renderProductTabButton("Yield", "yield")}
-          {renderProductTabButton("Volatility", "volatility")}
-          {renderProductTabButton(
-            "Principal Protection",
-            "principalProtection"
-          )}
-          {renderProductTabButton(
-            "Capital Accumulation",
-            "capitalAccumulation"
-          )}
-        </ProductTabContainer>
-      </HeaderContainer>
+    <ProductSectionContainer
+      height={Math.max(
+        height || 0,
+        headerHeight && contentHeight ? headerHeight + contentHeight + 81 : 0
+      )}
+    >
+      <ProductContainerBody ref={contentRef}>
+        {/* Title and product tab */}
+        <HeaderContainer>
+          <ProductTabContainer>
+            {productTabs.map((tab) =>
+              renderProductTabButton(tab.title, tab.name)
+            )}
+            <Frame
+              transition={{ type: "keyframes", ease: "easeOut" }}
+              height={0}
+              width={0}
+              top={8}
+              left={8}
+              color={colors.products.yield}
+              radius={8}
+              animate={activeButtonAnimate}
+            />
+          </ProductTabContainer>
+        </HeaderContainer>
 
-      {/* Product Content */}
-      <ProductContentContainer className="justify-content-center">
-        <ProductContent lg={7}>{renderProduct()}</ProductContent>
-        <SplashImgContainer>{renderProductSplash()}</SplashImgContainer>
-      </ProductContentContainer>
+        {/* Product Content */}
+        <ProductContentContainer className="justify-content-center">
+          <ProductContent lg={7}>{renderProduct()}</ProductContent>
+          <SplashImgContainer>{renderProductSplash()}</SplashImgContainer>
+        </ProductContentContainer>
+      </ProductContainerBody>
     </ProductSectionContainer>
   );
 };
