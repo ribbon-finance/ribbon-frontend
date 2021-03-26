@@ -10,14 +10,12 @@ import {
 import colors from "../../../designSystem/colors";
 import theme from "../../../designSystem/theme";
 import DepositCapBar from "../../../pages/DepositPage/DepositCapBar";
-import noiseImg from "../../../assets/img/noise.png";
 
 const ProductCard = styled.div`
   display: flex;
   flex: 1;
   flex-wrap: wrap;
   background-color: ${colors.background};
-  background-image: url(${noiseImg});
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
   padding: 16px 24px 24px 16px;
