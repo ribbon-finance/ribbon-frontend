@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
+import { setTimeout } from "timers";
 
 import Indicator from "../Indicator/Indicator";
 import sizes from "../../designSystem/sizes";
@@ -19,7 +20,7 @@ import theme from "../../designSystem/theme";
 import MobileOverlayMenu from "../Common/MobileOverlayMenu";
 import MenuButton from "../Header/MenuButton";
 import { copyTextToClipboard } from "../../utils/text";
-import { setTimeout } from "timers";
+import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 
 const WalletContainer = styled.div<AccountStatusVariantProps>`
   justify-content: center;
@@ -225,6 +226,12 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
     "hidden"
   );
 
+  // Track clicked area outside of desktop menu
+  const desktopMenuRef = useRef(null);
+  useOutsideAlerter(desktopMenuRef, () => {
+    if (variant === "desktop" && isMenuOpen) onCloseMenu();
+  });
+
   useEffect(() => {
     if (library && account) {
       addConnectEvent("header", account);
@@ -328,7 +335,8 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
 
   return (
     <>
-      <WalletContainer variant={variant}>
+      {/* Main Button and Desktop Menu */}
+      <WalletContainer variant={variant} ref={desktopMenuRef}>
         <WalletButton
           variant={variant}
           connected={active}
@@ -349,6 +357,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
         </WalletDesktopMenu>
       </WalletContainer>
 
+      {/* Mobile Menu */}
       <WalletMobileOverlayMenu
         className="flex-column align-items-center justify-content-center"
         isMenuOpen={isMenuOpen}
