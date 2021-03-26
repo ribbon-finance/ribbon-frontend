@@ -65,6 +65,14 @@ const ActionModal: React.FC<{
     }, 500);
   }, [show, setStep]);
 
+  // Whenever the `show` variable is toggled, we need to reset the step back to 0
+  useEffect(() => {
+    // small timeout so it doesn't flicker
+    setTimeout(() => {
+      setStep(STEPS.previewStep);
+    }, 500);
+  }, [show, setStep]);
+
   const actionWord = actionType === ACTIONS.deposit ? "Deposit" : "Withdrawal";
 
   const vault = useVault();
