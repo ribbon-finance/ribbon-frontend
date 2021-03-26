@@ -47,9 +47,10 @@ const useVaultData: UseVaultData = () => {
       const [capReturn, totalBalanceReturn] = vaultCalls.callsReturnContext;
 
       const data = {
-        deposits: totalBalanceReturn.returnValues[0],
-        vaultLimit: capReturn.returnValues[0],
+        deposits: BigNumber.from(totalBalanceReturn.returnValues[0]),
+        vaultLimit: BigNumber.from(capReturn.returnValues[0]),
       };
+      console.log(data.deposits.toString(), data.vaultLimit.toString());
 
       if (!walletConnected) {
         setResponse({

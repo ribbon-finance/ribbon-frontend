@@ -60,12 +60,10 @@ const DepositPage = () => {
       loadingDepositLimit = true;
       break;
     case "loaded_unconnected":
+    case "loaded_connected":
       loadingDepositLimit = false;
       depositLimit = response.data.vaultLimit;
       totalDeposit = response.data.deposits;
-      break;
-    case "loaded_connected":
-      loadingDepositLimit = false;
       break;
     default:
       loadingDepositLimit = true;
