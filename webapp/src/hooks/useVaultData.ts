@@ -1,4 +1,8 @@
-import { Multicall } from "ethereum-multicall";
+import {
+  Multicall,
+  ContractCallContext,
+  ContractCallResults,
+} from "ethereum-multicall";
 import { BigNumber } from "ethers";
 import { useWeb3Context } from "./web3Context";
 import deployments from "../constants/deployments.json";
@@ -8,10 +12,16 @@ import { getDefaultNetworkName } from "../utils/env";
 import { VaultDataResponse } from "../pages/DepositPage/types";
 import { useWeb3React } from "@web3-react/core";
 
+type ContractCallRequest = {
+  reference: string;
+  methodName: string;
+  methodParameters: string[];
+};
+
 type UseVaultData = () => VaultDataResponse;
 
 const useVaultData: UseVaultData = () => {
-  const { active: walletConnected } = useWeb3React();
+  const { active: walletConnected, account } = useWeb3React();
   const { provider: ethersProvider } = useWeb3Context();
   const [response, setResponse] = useState<VaultDataResponse>({
     status: "loading",
@@ -26,31 +36,47 @@ const useVaultData: UseVaultData = () => {
     if (ethersProvider) {
       const multicall = new Multicall({ ethersProvider });
 
+      const unconnectedCalls: ContractCallRequest[] = [
+        { reference: "cap", methodName: "cap", methodParameters: [] },
+        {
+          reference: "totalBalance",
+          methodName: "totalBalance",
+          methodParameters: [],
+        },
+      ];
+
+      const connectedCalls: ContractCallRequest[] =
+        account !== undefined && account !== null
+          ? [
+              {
+                reference: "shareBalance",
+                methodName: "balanceOf",
+                methodParameters: [account],
+              },
+            ]
+          : [];
+
       const contractCallContext = [
         {
           reference: "vaultCalls",
           contractAddress: vaultAddress,
           abi: RibbonCoveredCallABI,
-          calls: [
-            { reference: "cap", methodName: "cap", methodParameters: [] },
-            {
-              reference: "totalBalance",
-              methodName: "totalBalance",
-              methodParameters: [],
-            },
-          ],
+          calls: unconnectedCalls.concat(connectedCalls),
         },
       ];
 
       const results = await multicall.call(contractCallContext);
       const { vaultCalls } = results.results;
-      const [capReturn, totalBalanceReturn] = vaultCalls.callsReturnContext;
+      const [
+        capReturn,
+        totalBalanceReturn,
+        shareBalanceReturn,
+      ] = vaultCalls.callsReturnContext;
 
       const data = {
         deposits: BigNumber.from(totalBalanceReturn.returnValues[0]),
         vaultLimit: BigNumber.from(capReturn.returnValues[0]),
       };
-      console.log(data.deposits.toString(), data.vaultLimit.toString());
 
       if (!walletConnected) {
         setResponse({
@@ -64,7 +90,7 @@ const useVaultData: UseVaultData = () => {
         status: "loaded_connected",
         data: {
           ...data,
-          shareBalance: BigNumber.from("0"),
+          shareBalance: BigNumber.from(shareBalanceReturn.returnValues[0]),
           assetBalance: BigNumber.from("0"),
         },
       });
