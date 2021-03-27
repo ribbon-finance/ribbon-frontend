@@ -6,11 +6,11 @@
     "TwinYieldLogic": "0x9CaD2350135b27D86785b3c9c9E7532eC7C61532",
     "RibbonFactoryLogic": "0x0B7D191C7bE317D585C6E58a88AB99784AFd4020",
     "RibbonFactory": "0x5A53a1C73a8e7e91291817B2D04B4d8468DE172d",
-    "ProtocolAdapterLib": "0xc5ee72E531224A39cd8fA97Ab2FE30e6C9324c93",
+    "ProtocolAdapterLib": "0x604f75736F0Bde0C843c9bB6Ff29069c68bC583f",
     "RibbonVolatilityLogic": "0xd38baB7A38F2af45C9e42e9079193332e69d34a0",
     "HegicAdapterLogic": "0x66E2A3d8BD9991AFE001cB299c9B8992baDf1D48",
     "GammaAdapterLogic": "0x738FB02C2514Eb567bE105a5f77774435a0e03e7",
-    "RibbonETHCoveredCallLogic": "0x280D6f5B60Fce9C23461f51B16e5326AF57bAE76",
+    "RibbonETHCoveredCallLogic": "0x4C2Cb8f53E8AA5397270d5E233B72CcCF4f2B99f",
     "RibbonETHCoveredCall": "0x88729C2FFEE36Ec3b154750c28828ACC3956BdfE"
   },
   "development": {

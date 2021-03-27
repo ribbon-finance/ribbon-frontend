@@ -30,6 +30,7 @@ interface RibbonCoveredCallInterface extends ethers.utils.Interface {
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "asset()": FunctionFragment;
+    "assetAmountToShares(uint256)": FunctionFragment;
     "assetBalance()": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "cap()": FunctionFragment;
@@ -93,6 +94,10 @@ interface RibbonCoveredCallInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "asset", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "assetAmountToShares",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "assetBalance",
     values?: undefined
@@ -252,6 +257,10 @@ interface RibbonCoveredCallInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "asset", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "assetAmountToShares",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "assetBalance",
     data: BytesLike
@@ -486,6 +495,16 @@ export class RibbonCoveredCall extends Contract {
     asset(overrides?: CallOverrides): Promise<[string]>;
 
     "asset()"(overrides?: CallOverrides): Promise<[string]>;
+
+    assetAmountToShares(
+      assetAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    "assetAmountToShares(uint256)"(
+      assetAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     assetBalance(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -863,6 +882,16 @@ export class RibbonCoveredCall extends Contract {
 
   "asset()"(overrides?: CallOverrides): Promise<string>;
 
+  assetAmountToShares(
+    assetAmount: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "assetAmountToShares(uint256)"(
+    assetAmount: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   assetBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
   "assetBalance()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1232,6 +1261,16 @@ export class RibbonCoveredCall extends Contract {
     asset(overrides?: CallOverrides): Promise<string>;
 
     "asset()"(overrides?: CallOverrides): Promise<string>;
+
+    assetAmountToShares(
+      assetAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "assetAmountToShares(uint256)"(
+      assetAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     assetBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1661,6 +1700,16 @@ export class RibbonCoveredCall extends Contract {
 
     "asset()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    assetAmountToShares(
+      assetAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "assetAmountToShares(uint256)"(
+      assetAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     assetBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
     "assetBalance()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2027,6 +2076,16 @@ export class RibbonCoveredCall extends Contract {
     asset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "asset()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    assetAmountToShares(
+      assetAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "assetAmountToShares(uint256)"(
+      assetAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     assetBalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
