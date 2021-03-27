@@ -6,7 +6,7 @@ import { Subtitle, SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import { ActionButton } from "../Common/buttons";
 import { ActionParams, ActionType, ACTIONS } from "./types";
-import { formatSignificantDecimals } from "../../utils/math";
+import { formatBigNumber, formatSignificantDecimals } from "../../utils/math";
 const { formatEther } = ethers.utils;
 
 const AmountText = styled(Title)`
@@ -20,7 +20,7 @@ const CurrencyText = styled(AmountText)`
 
 const Arrow = styled.i`
   font-size: 12px;
-  color: ${colors.primaryButton};
+  color: ${colors.buttons.primary};
 `;
 
 interface PreviewStepProps {
@@ -63,11 +63,13 @@ const PreviewStep: React.FC<PreviewStepProps> = ({
   ];
 
   const originalAmount = formatSignificantDecimals(formatEther(positionAmount));
-  const newAmount = formatSignificantDecimals(
-    formatEther(
-      isDeposit ? positionAmount.add(amount) : positionAmount.sub(amount)
-    )
-  );
+  let newAmount = isDeposit
+    ? positionAmount.add(amount)
+    : positionAmount.sub(amount);
+
+  newAmount = newAmount.isNegative() ? BigNumber.from("0") : newAmount;
+
+  const newAmountStr = formatBigNumber(newAmount);
 
   return (
     <>
@@ -100,7 +102,7 @@ const PreviewStep: React.FC<PreviewStepProps> = ({
             <SecondaryText>Your Position</SecondaryText>
             <Title className="d-flex align-items-center text-right">
               {originalAmount} ETH{" "}
-              <Arrow className="fas fa-arrow-right mx-2"></Arrow> {newAmount}{" "}
+              <Arrow className="fas fa-arrow-right mx-2"></Arrow> {newAmountStr}{" "}
               ETH
             </Title>
           </div>

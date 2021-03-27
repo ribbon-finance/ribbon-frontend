@@ -27,6 +27,7 @@ const useVaultData: UseVaultData = () => {
           connectedPromises = [
             vault.accountVaultBalance(account),
             library.getBalance(account),
+            vault.maxWithdrawAmount(account),
           ];
         }
         const promises = unconnectedPromises.concat(connectedPromises);
@@ -43,6 +44,7 @@ const useVaultData: UseVaultData = () => {
             ...data,
             vaultBalanceInAsset: BigNumber.from("0"),
             userAssetBalance: BigNumber.from("0"),
+            maxWithdrawAmount: BigNumber.from("0"),
           });
 
           return;
@@ -53,6 +55,7 @@ const useVaultData: UseVaultData = () => {
           ...data,
           vaultBalanceInAsset: responses[2],
           userAssetBalance: responses[3],
+          maxWithdrawAmount: responses[4],
         });
       }
     }
