@@ -1,3 +1,4 @@
+import { ReactNode, useCallback, useRef } from "react";
 import styled from "styled-components";
 import colors from "../../designSystem/colors";
 
@@ -18,7 +19,7 @@ export const Button = styled.button`
   }
 `;
 
-export const ActionButton = styled(Button)`
+export const BaseActionButton = styled(Button)`
   background: ${colors.primaryButton};
   color: #ffffff;
 
@@ -26,6 +27,62 @@ export const ActionButton = styled(Button)`
     color: #ffffff;
   }
 `;
+
+const InternalButtonLink = styled.a`
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    text-decoration: none;
+    color: inherit;
+  }
+`;
+
+interface ActionButtonProps {
+  className?: string;
+  link?: string;
+  onClick?: () => void;
+  children: ReactNode;
+}
+
+export const ActionButton: React.FC<ActionButtonProps> = ({
+  onClick = () => {},
+  link = "",
+  className = "",
+  children,
+}) => {
+  const hasLink = link !== "";
+  const linkRef = useRef<HTMLAnchorElement | null>(null);
+
+  const openLink = useCallback(() => {
+    if (linkRef !== null && linkRef.current !== null) {
+      linkRef.current.click();
+    }
+  }, []);
+
+  const handleClick = hasLink ? openLink : onClick;
+
+  return (
+    <BaseActionButton
+      onClick={handleClick}
+      type="button"
+      className={`btn ${className}`}
+    >
+      {link !== "" ? (
+        <InternalButtonLink
+          ref={linkRef}
+          href={link}
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          {children}
+        </InternalButtonLink>
+      ) : (
+        children
+      )}
+    </BaseActionButton>
+  );
+};
 
 export const ConnectWalletButton = styled(Button)`
   background: rgba(22, 206, 185, 0.08);

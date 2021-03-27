@@ -15,6 +15,7 @@
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/walletconnect-connector": "^6.1.9",
+    "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "chart.js": "^2.9.4",
     "craco-less": "^1.17.1",
@@ -35,7 +36,8 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "codegen": "typechain --target=ethers-v5 --outDir src/codegen 'src/constants/abis/*.json' && echo 'export {};' >> src/codegen/index.ts"
   },
   "eslintConfig": {
     "extends": [
@@ -56,8 +58,10 @@
     ]
   },
   "devDependencies": {
+    "@typechain/ethers-v5": "^6.0.5",
     "@types/chart.js": "^2.9.31",
     "@types/react-router-dom": "^5.1.7",
-    "@types/styled-components": "^5.1.9"
+    "@types/styled-components": "^5.1.9",
+    "typechain": "^4.0.3"
   }
 }

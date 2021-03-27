@@ -9,6 +9,8 @@ import YourPosition from "./YourPosition";
 import ActionModal from "../ActionModal/ActionModal";
 import { ACTIONS } from "../ActionModal/types";
 import { ActionButton, ConnectWalletButton } from "../Common/buttons";
+import { GAS_LIMITS } from "../../constants/constants";
+import useGasPrice from "../../hooks/useGasPrice";
 
 const { parseEther, formatEther } = ethers.utils;
 
@@ -116,6 +118,7 @@ const ActionsForm = () => {
   const [showActionModal, setShowActionModal] = useState(false);
   const [userBalance, setUserBalance] = useState(""); // store balances in string
   const { library, active, account } = useWeb3React();
+  const gasPrice = useGasPrice();
 
   const connected = Boolean(active && account);
 
@@ -127,8 +130,15 @@ const ActionsForm = () => {
   }, [library, account]);
 
   const handleClickMax = () => {
-    if (connected && userBalance) {
-      setInputAmount(formatEther(userBalance));
+    if (connected && userBalance && gasPrice.fetched) {
+      const gasLimit = isDeposit
+        ? GAS_LIMITS.depositETH
+        : GAS_LIMITS.withdrawETH;
+      const gasFee = BigNumber.from(gasLimit.toString()).mul(gasPrice.fast);
+      const total = BigNumber.from(userBalance);
+      const maxAmount = total.sub(gasFee).toString();
+
+      setInputAmount(formatEther(maxAmount));
     }
   };
 
@@ -234,8 +244,7 @@ const ActionsForm = () => {
               onClick={() =>
                 inputAmount && connected && setShowActionModal(true)
               }
-              type="button"
-              className="btn py-3 mb-4"
+              className="py-3 mb-4"
             >
               {actionButtonText}
             </ActionButton>
