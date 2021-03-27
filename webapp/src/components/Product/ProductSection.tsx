@@ -221,6 +221,7 @@ const Products = () => {
   const renderProductTabButton = useCallback(
     (title: string, type: ProductType) => (
       <ProductTabButton
+        key={title}
         selected={selectedProduct === type}
         type={type}
         role="button"

@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { ethers, BigNumber } from "ethers";
+import { ethers } from "ethers";
 import styled from "styled-components";
 import { Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
@@ -50,8 +50,7 @@ const SplashImage = styled.div`
 `;
 
 const DepositPage = () => {
-  const { status, data } = useVaultData();
-  const { deposits, vaultLimit, shareBalance } = data;
+  const { status, deposits, vaultLimit } = useVaultData();
   const isLoading = status === "loading";
 
   const totalDepositStr = isLoading

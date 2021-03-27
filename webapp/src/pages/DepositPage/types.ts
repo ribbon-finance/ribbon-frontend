@@ -16,5 +16,4 @@ export type DataResponseStatus = "loading" | "success";
 
 export type VaultDataResponse = {
   status: DataResponseStatus;
-  data: ConnectedVaultData;
-};
+} & ConnectedVaultData;

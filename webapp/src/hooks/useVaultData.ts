@@ -1,16 +1,13 @@
-import {
-  Multicall,
-  ContractCallContext,
-  ContractCallResults,
-} from "ethereum-multicall";
+import { Multicall } from "ethereum-multicall";
 import { BigNumber } from "ethers";
 import { useWeb3Context } from "./web3Context";
 import deployments from "../constants/deployments.json";
 import RibbonCoveredCallABI from "../constants/abis/RibbonCoveredCall.json";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { getDefaultNetworkName } from "../utils/env";
 import { VaultDataResponse } from "../pages/DepositPage/types";
 import { useWeb3React } from "@web3-react/core";
+import { createGlobalState } from "react-hooks-global-state";
 
 type ContractCallRequest = {
   reference: string;
@@ -20,17 +17,22 @@ type ContractCallRequest = {
 
 type UseVaultData = () => VaultDataResponse;
 
+const initialState: { vaultData: VaultDataResponse } = {
+  vaultData: {
+    status: "loading",
+    deposits: BigNumber.from("0"),
+    vaultLimit: BigNumber.from("0"),
+    shareBalance: BigNumber.from("0"),
+  },
+};
+
+const { useGlobalState } = createGlobalState(initialState);
+
 const useVaultData: UseVaultData = () => {
   const { active: walletConnected, account } = useWeb3React();
   const { provider: ethersProvider } = useWeb3Context();
-  const [response, setResponse] = useState<VaultDataResponse>({
-    status: "loading",
-    data: {
-      deposits: BigNumber.from("0"),
-      vaultLimit: BigNumber.from("0"),
-      shareBalance: BigNumber.from("0"),
-    },
-  });
+
+  const [response, setResponse] = useGlobalState("vaultData");
 
   const doMulticall = useCallback(async () => {
     const networkName = getDefaultNetworkName();
@@ -86,10 +88,8 @@ const useVaultData: UseVaultData = () => {
       if (!walletConnected) {
         setResponse({
           status: "success",
-          data: {
-            ...data,
-            shareBalance: BigNumber.from("0"),
-          },
+          ...data,
+          shareBalance: BigNumber.from("0"),
         });
 
         return;
@@ -97,13 +97,11 @@ const useVaultData: UseVaultData = () => {
 
       setResponse({
         status: "success",
-        data: {
-          ...data,
-          shareBalance: BigNumber.from(shareBalanceReturn.returnValues[0]),
-        },
+        ...data,
+        shareBalance: BigNumber.from(shareBalanceReturn.returnValues[0]),
       });
     }
-  }, [ethersProvider, walletConnected]);
+  }, [account, setResponse, ethersProvider, walletConnected]);
 
   useEffect(() => {
     doMulticall();
