@@ -1,4 +1,4 @@
-import { constants, BigNumber } from "ethers";
+import { BigNumber } from "ethers";
 import { useWeb3Context } from "./web3Context";
 import { useCallback, useEffect } from "react";
 import { VaultDataResponse } from "../store/types";
