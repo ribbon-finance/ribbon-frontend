@@ -21,8 +21,8 @@ const HeroContainer = styled.div`
 `;
 
 const HeroText = styled(Title)`
-  font-size: 80px;
-  line-height: 80px;
+  font-size: 72px;
+  line-height: 72px;
 `;
 
 const AttributePill = styled.div`
@@ -72,7 +72,7 @@ const DepositPage = () => {
     <div>
       <HeroSection depositCapBar={depositCapBar}></HeroSection>
 
-      <div className="container py-6">
+      <div className="container py-5">
         <div className="row mx-lg-n1">
           <PerformanceSection></PerformanceSection>
 
@@ -89,7 +89,7 @@ const HeroSection: React.FC<{ depositCapBar: ReactNode }> = ({
   depositCapBar,
 }) => {
   return (
-    <HeroContainer className="position-relative py-6">
+    <HeroContainer className="position-relative py-5">
       <div className="container">
         <div className="row mx-lg-n1">
           <div style={{ zIndex: 1 }} className="col-xl-6">

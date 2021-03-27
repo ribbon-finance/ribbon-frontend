@@ -69,7 +69,7 @@ const FormInputContainer = styled.div`
 const FormInput = styled.input`
   width: 80%;
   height: 100%;
-  font-size: 48px;
+  font-size: 40px;
   line-height: 64px;
   color: #ffffff;
   border: none;
