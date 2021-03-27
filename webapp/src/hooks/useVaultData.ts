@@ -5,9 +5,9 @@ import deployments from "../constants/deployments.json";
 import RibbonCoveredCallABI from "../constants/abis/RibbonCoveredCall.json";
 import { useCallback, useEffect } from "react";
 import { getDefaultNetworkName } from "../utils/env";
-import { VaultDataResponse } from "../pages/DepositPage/types";
+import { VaultDataResponse } from "../store/types";
 import { useWeb3React } from "@web3-react/core";
-import { createGlobalState } from "react-hooks-global-state";
+import { useGlobalState } from "../store/store";
 
 type ContractCallRequest = {
   reference: string;
@@ -16,17 +16,6 @@ type ContractCallRequest = {
 };
 
 type UseVaultData = () => VaultDataResponse;
-
-const initialState: { vaultData: VaultDataResponse } = {
-  vaultData: {
-    status: "loading",
-    deposits: BigNumber.from("0"),
-    vaultLimit: BigNumber.from("0"),
-    shareBalance: BigNumber.from("0"),
-  },
-};
-
-const { useGlobalState } = createGlobalState(initialState);
 
 const useVaultData: UseVaultData = () => {
   const { active: walletConnected, account } = useWeb3React();
@@ -56,8 +45,8 @@ const useVaultData: UseVaultData = () => {
         account !== undefined && account !== null
           ? [
               {
-                reference: "shareBalance",
-                methodName: "balanceOf",
+                reference: "accountVaultBalance",
+                methodName: "accountVaultBalance",
                 methodParameters: [account],
               },
             ]
@@ -77,7 +66,7 @@ const useVaultData: UseVaultData = () => {
       const [
         capReturn,
         totalBalanceReturn,
-        shareBalanceReturn,
+        accountBalanceReturn,
       ] = vaultCalls.callsReturnContext;
 
       const data = {
@@ -89,7 +78,7 @@ const useVaultData: UseVaultData = () => {
         setResponse({
           status: "success",
           ...data,
-          shareBalance: BigNumber.from("0"),
+          vaultBalanceInAsset: BigNumber.from("0"),
         });
 
         return;
@@ -98,7 +87,9 @@ const useVaultData: UseVaultData = () => {
       setResponse({
         status: "success",
         ...data,
-        shareBalance: BigNumber.from(shareBalanceReturn.returnValues[0]),
+        vaultBalanceInAsset: BigNumber.from(
+          accountBalanceReturn.returnValues[0]
+        ),
       });
     }
   }, [account, setResponse, ethersProvider, walletConnected]);

@@ -6,7 +6,7 @@ export interface UnconnectedVaultData {
 }
 
 export interface UserSpecificData {
-  shareBalance: BigNumber;
+  vaultBalanceInAsset: BigNumber;
   // assetBalance: BigNumber;
 }
 
