@@ -19,11 +19,17 @@ const useVaultData: UseVaultData = () => {
       const vault = getVault(chainId, library);
 
       if (vault) {
-        const promises = [
-          vault.totalBalance(),
-          vault.cap(),
-          vault.accountVaultBalance(account || constants.AddressZero),
-        ];
+        const unconnectedPromises = [vault.totalBalance(), vault.cap()];
+
+        let connectedPromises: Promise<BigNumber>[] = [];
+
+        if (walletConnected && account) {
+          connectedPromises = [
+            vault.accountVaultBalance(account),
+            library.getBalance(account),
+          ];
+        }
+        const promises = unconnectedPromises.concat(connectedPromises);
         const responses = await Promise.all(promises);
 
         const data = {
@@ -36,6 +42,7 @@ const useVaultData: UseVaultData = () => {
             status: "success",
             ...data,
             vaultBalanceInAsset: BigNumber.from("0"),
+            userAssetBalance: BigNumber.from("0"),
           });
 
           return;
@@ -45,6 +52,7 @@ const useVaultData: UseVaultData = () => {
           status: "success",
           ...data,
           vaultBalanceInAsset: responses[2],
+          userAssetBalance: responses[3],
         });
       }
     }

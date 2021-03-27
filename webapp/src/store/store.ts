@@ -15,6 +15,7 @@ export const initialState: GlobalStore = {
     deposits: BigNumber.from("0"),
     vaultLimit: BigNumber.from("0"),
     vaultBalanceInAsset: BigNumber.from("0"),
+    userAssetBalance: BigNumber.from("0"),
   },
   prices: {
     WETH: 0.0,
