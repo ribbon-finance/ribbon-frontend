@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useHistory } from "react-router-dom";
 
 import {
   BaseButton,
@@ -20,6 +21,7 @@ const ProductCard = styled.div`
   border-radius: ${theme.border.radius};
   padding: 16px 24px 24px 16px;
   box-shadow: 4px 8px 80px rgba(255, 56, 92, 0.16);
+  cursor: pointer;
 `;
 
 const ProductTagContainer = styled.div`
@@ -64,8 +66,10 @@ const YieldCard = () => {
     </ProductTag>
   );
 
+  const history = useHistory();
+
   return (
-    <ProductCard>
+    <ProductCard onClick={() => history.push("/theta-vault")}>
       <ProductTagContainer>
         {renderTag("THETA VAULT")}
         {renderTag("ETH")}

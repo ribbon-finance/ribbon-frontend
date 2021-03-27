@@ -30,7 +30,7 @@ const RootApp = () => {
           <Route path="/" exact>
             <Homepage />
           </Route>
-          <Route path="/theta/deposit">
+          <Route path="/theta-vault">
             <DepositPage></DepositPage>
           </Route>
         </Switch>
