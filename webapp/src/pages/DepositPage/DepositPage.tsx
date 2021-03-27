@@ -50,39 +50,20 @@ const SplashImage = styled.div`
 `;
 
 const DepositPage = () => {
-  const response = useVaultData();
-  let loadingDepositLimit = true;
-  let depositLimit = BigNumber.from("0");
-  let totalDeposit = BigNumber.from("0");
+  const { status, data } = useVaultData();
+  const { deposits, vaultLimit, shareBalance } = data;
+  const isLoading = status === "loading";
 
-  switch (response.status) {
-    case "loading":
-      loadingDepositLimit = true;
-      break;
-    case "loaded_unconnected":
-      loadingDepositLimit = false;
-      depositLimit = response.data.vaultLimit;
-      totalDeposit = response.data.deposits;
-      break;
-    case "loaded_connected":
-      loadingDepositLimit = false;
-      depositLimit = response.data.vaultLimit;
-      totalDeposit = response.data.deposits;
-      break;
-    default:
-      loadingDepositLimit = true;
-  }
-
-  const totalDepositStr = loadingDepositLimit
+  const totalDepositStr = isLoading
     ? 0
-    : parseFloat(formatSignificantDecimals(formatEther(totalDeposit)));
-  const depositLimitStr = loadingDepositLimit
+    : parseFloat(formatSignificantDecimals(formatEther(deposits)));
+  const depositLimitStr = isLoading
     ? 1
-    : parseFloat(formatSignificantDecimals(formatEther(depositLimit)));
+    : parseFloat(formatSignificantDecimals(formatEther(vaultLimit)));
 
   const depositCapBar = (
     <DepositCapBar
-      loading={loadingDepositLimit}
+      loading={isLoading}
       totalDeposit={totalDepositStr}
       limit={depositLimitStr}
     ></DepositCapBar>

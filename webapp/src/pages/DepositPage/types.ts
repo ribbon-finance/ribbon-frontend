@@ -7,18 +7,14 @@ export interface UnconnectedVaultData {
 
 export interface UserSpecificData {
   shareBalance: BigNumber;
-  assetBalance: BigNumber;
+  // assetBalance: BigNumber;
 }
 
 export type ConnectedVaultData = UnconnectedVaultData & UserSpecificData;
 
-export type VaultDataResponse =
-  | { status: "loading" }
-  | {
-      status: "loaded_unconnected";
-      data: UnconnectedVaultData;
-    }
-  | {
-      status: "loaded_connected";
-      data: ConnectedVaultData;
-    };
+export type DataResponseStatus = "loading" | "success";
+
+export type VaultDataResponse = {
+  status: DataResponseStatus;
+  data: ConnectedVaultData;
+};

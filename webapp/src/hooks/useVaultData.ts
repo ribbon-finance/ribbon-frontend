@@ -25,6 +25,11 @@ const useVaultData: UseVaultData = () => {
   const { provider: ethersProvider } = useWeb3Context();
   const [response, setResponse] = useState<VaultDataResponse>({
     status: "loading",
+    data: {
+      deposits: BigNumber.from("0"),
+      vaultLimit: BigNumber.from("0"),
+      shareBalance: BigNumber.from("0"),
+    },
   });
 
   const doMulticall = useCallback(async () => {
@@ -80,18 +85,21 @@ const useVaultData: UseVaultData = () => {
 
       if (!walletConnected) {
         setResponse({
-          status: "loaded_unconnected",
-          data,
+          status: "success",
+          data: {
+            ...data,
+            shareBalance: BigNumber.from("0"),
+          },
         });
+
         return;
       }
 
       setResponse({
-        status: "loaded_connected",
+        status: "success",
         data: {
           ...data,
           shareBalance: BigNumber.from(shareBalanceReturn.returnValues[0]),
-          assetBalance: BigNumber.from("0"),
         },
       });
     }
