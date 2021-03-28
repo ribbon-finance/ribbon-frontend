@@ -87,6 +87,10 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
 const ErrorButtonStyled = styled(Button)`
   background: ${colors.buttons.error};
   color: ${colors.primaryText};
+
+  &:hover {
+    color: ${colors.primaryText};
+  }
 `;
 
 export const ErrorButton: React.FC<{

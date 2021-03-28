@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
@@ -196,6 +196,7 @@ const ActionsForm = () => {
       ) {
         setIsDeposit(switchingToDepositTab);
         setInputAmount("");
+        setError("none");
       }
     };
   };
