@@ -249,7 +249,7 @@ const ActionsForm = () => {
         <ConnectWalletButton
           onClick={() => setShowConnectModal(true)}
           type="button"
-          className="py-3 mb-4"
+          className="btn py-3 mb-4"
         >
           Connect Wallet
         </ConnectWalletButton>
