@@ -31,32 +31,37 @@ const useVaultData: UseVaultData = () => {
           ];
         }
         const promises = unconnectedPromises.concat(connectedPromises);
-        const responses = await Promise.all(promises);
 
-        const data = {
-          deposits: responses[0],
-          vaultLimit: responses[1],
-        };
+        try {
+          const responses = await Promise.all(promises);
 
-        if (!walletConnected) {
+          const data = {
+            deposits: responses[0],
+            vaultLimit: responses[1],
+          };
+
+          if (!walletConnected) {
+            setResponse({
+              status: "success",
+              ...data,
+              vaultBalanceInAsset: BigNumber.from("0"),
+              userAssetBalance: BigNumber.from("0"),
+              maxWithdrawAmount: BigNumber.from("0"),
+            });
+
+            return;
+          }
+
           setResponse({
             status: "success",
             ...data,
-            vaultBalanceInAsset: BigNumber.from("0"),
-            userAssetBalance: BigNumber.from("0"),
-            maxWithdrawAmount: BigNumber.from("0"),
+            vaultBalanceInAsset: responses[2],
+            userAssetBalance: responses[3],
+            maxWithdrawAmount: responses[4],
           });
-
-          return;
+        } catch (e) {
+          console.error(e);
         }
-
-        setResponse({
-          status: "success",
-          ...data,
-          vaultBalanceInAsset: responses[2],
-          userAssetBalance: responses[3],
-          maxWithdrawAmount: responses[4],
-        });
       }
     }
   }, [account, setResponse, ethersProvider, walletConnected, chainId, library]);
