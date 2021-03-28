@@ -10,7 +10,7 @@ import { formatSignificantDecimals } from "../../utils/math";
 const { formatEther } = ethers.utils;
 
 const AmountText = styled(Title)`
-  font-size: 48px;
+  font-size: 40px;
   line-height: 64px;
 `;
 

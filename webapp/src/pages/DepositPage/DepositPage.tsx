@@ -1,4 +1,5 @@
-import React from "react";
+import React, { ReactNode } from "react";
+import { ethers } from "ethers";
 import styled from "styled-components";
 import { Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
@@ -6,6 +7,10 @@ import DepositCapBar from "./DepositCapBar";
 import PerformanceSection from "./PerformanceSection";
 import ActionsForm from "../../components/ActionsForm/ActionsForm";
 import Theta from "../../components/Product/Splash/Theta";
+import useVaultData from "../../hooks/useVaultData";
+import { formatSignificantDecimals } from "../../utils/math";
+
+const { formatEther } = ethers.utils;
 
 const HeroContainer = styled.div`
   background: linear-gradient(
@@ -16,8 +21,8 @@ const HeroContainer = styled.div`
 `;
 
 const HeroText = styled(Title)`
-  font-size: 80px;
-  line-height: 80px;
+  font-size: 72px;
+  line-height: 72px;
 `;
 
 const AttributePill = styled.div`
@@ -45,11 +50,29 @@ const SplashImage = styled.div`
 `;
 
 const DepositPage = () => {
+  const { status, deposits, vaultLimit } = useVaultData();
+  const isLoading = status === "loading";
+
+  const totalDepositStr = isLoading
+    ? 0
+    : parseFloat(formatSignificantDecimals(formatEther(deposits)));
+  const depositLimitStr = isLoading
+    ? 1
+    : parseFloat(formatSignificantDecimals(formatEther(vaultLimit)));
+
+  const depositCapBar = (
+    <DepositCapBar
+      loading={isLoading}
+      totalDeposit={totalDepositStr}
+      limit={depositLimitStr}
+    ></DepositCapBar>
+  );
+
   return (
     <div>
-      <HeroSection></HeroSection>
+      <HeroSection depositCapBar={depositCapBar}></HeroSection>
 
-      <div className="container py-6">
+      <div className="container py-5">
         <div className="row mx-lg-n1">
           <PerformanceSection></PerformanceSection>
 
@@ -62,9 +85,11 @@ const DepositPage = () => {
   );
 };
 
-const HeroSection = () => {
+const HeroSection: React.FC<{ depositCapBar: ReactNode }> = ({
+  depositCapBar,
+}) => {
   return (
-    <HeroContainer className="position-relative py-6">
+    <HeroContainer className="position-relative py-5">
       <div className="container">
         <div className="row mx-lg-n1">
           <div style={{ zIndex: 1 }} className="col-xl-6">
@@ -79,7 +104,7 @@ const HeroSection = () => {
               <HeroText>T-100-E</HeroText>
             </div>
 
-            <DepositCapBar totalDeposit={215} limit={500}></DepositCapBar>
+            {depositCapBar}
           </div>
 
           <SplashImage className="position-absolute offset-xl-6">

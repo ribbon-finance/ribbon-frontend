@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import { useHistory } from "react-router-dom";
+import { ethers } from "ethers";
 
 import {
   BaseButton,
@@ -10,6 +12,10 @@ import {
 import colors from "../../../designSystem/colors";
 import theme from "../../../designSystem/theme";
 import DepositCapBar from "../../../pages/DepositPage/DepositCapBar";
+import useVaultData from "../../../hooks/useVaultData";
+import { formatSignificantDecimals } from "../../../utils/math";
+
+const { formatEther } = ethers.utils;
 
 const ProductCard = styled.div`
   display: flex;
@@ -20,6 +26,7 @@ const ProductCard = styled.div`
   border-radius: ${theme.border.radius};
   padding: 16px 24px 24px 16px;
   box-shadow: 4px 8px 80px rgba(255, 56, 92, 0.16);
+  cursor: pointer;
 `;
 
 const ProductTagContainer = styled.div`
@@ -58,6 +65,17 @@ const YieldText = styled(Title)`
 `;
 
 const YieldCard = () => {
+  const history = useHistory();
+  const { status, deposits, vaultLimit } = useVaultData();
+  const isLoading = status === "loading";
+
+  const totalDepositStr = isLoading
+    ? 0
+    : parseFloat(formatSignificantDecimals(formatEther(deposits)));
+  const depositLimitStr = isLoading
+    ? 1
+    : parseFloat(formatSignificantDecimals(formatEther(vaultLimit)));
+
   const renderTag = (name: string) => (
     <ProductTag>
       <Subtitle>{name}</Subtitle>
@@ -65,7 +83,7 @@ const YieldCard = () => {
   );
 
   return (
-    <ProductCard>
+    <ProductCard onClick={() => history.push("/theta-vault")}>
       <ProductTagContainer>
         {renderTag("THETA VAULT")}
         {renderTag("ETH")}
@@ -77,7 +95,11 @@ const YieldCard = () => {
       </ProductDescription>
       <ExpectedYieldTitle>EXPECTED YIELD (APY)</ExpectedYieldTitle>
       <YieldText>30%</YieldText>
-      <DepositCapBar totalDeposit={215} limit={500} />
+      <DepositCapBar
+        loading={isLoading}
+        totalDeposit={totalDepositStr}
+        limit={depositLimitStr}
+      />
     </ProductCard>
   );
 };

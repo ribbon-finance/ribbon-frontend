@@ -18,7 +18,8 @@
 		"gammaMarginPool": "0x8c7C60d766951c5C570bBb7065C993070061b795",
 		"balancerFactory": "0x8f7F78080219d4066A8036ccD30D588B416a40DB",
 		"uniswapV2Router": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
-		"zeroExExchangeV3": "0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97"
+		"zeroExExchangeV3": "0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97",
+		"multicall": "0x2cc8688c5f75e365aaeeb4ea8d6a480405a48d2a"
 	},
 	"mainnet": {
 		"otokens": [

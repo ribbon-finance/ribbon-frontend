@@ -15,7 +15,7 @@ const ParagraphHeading = styled(Title)`
 
 const ParagraphText = styled(SecondaryText)`
   color: rgba(255, 255, 255, 0.8);
-  font-size: 14px;
+  font-size: 16px;
   line-height: 24px;
 `;
 
@@ -28,11 +28,6 @@ const PerformanceSection = () => {
   return (
     <div className="col-lg-7">
       <Paragraph>
-        <ParagraphHeading>Vault Performance</ParagraphHeading>
-        <PerformanceChart></PerformanceChart>
-      </Paragraph>
-
-      <Paragraph>
         <ParagraphHeading>Vault Strategy</ParagraphHeading>
         <ParagraphText>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam,
@@ -44,6 +39,11 @@ const PerformanceSection = () => {
           massa vitae tortor condimentum lacinia quis vel eros donec ac odio
           tempor orci dapibus ultrices in iaculis nunc sed augue lacus.
         </ParagraphText>
+      </Paragraph>
+
+      <Paragraph>
+        <ParagraphHeading>Vault Performance</ParagraphHeading>
+        <PerformanceChart></PerformanceChart>
       </Paragraph>
 
       <Paragraph>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
@@ -11,6 +11,7 @@ import { ACTIONS } from "../ActionModal/types";
 import { ActionButton, ConnectWalletButton } from "../Common/buttons";
 import { GAS_LIMITS } from "../../constants/constants";
 import useGasPrice from "../../hooks/useGasPrice";
+import useVaultData from "../../hooks/useVaultData";
 
 const { parseEther, formatEther } = ethers.utils;
 
@@ -68,7 +69,7 @@ const FormInputContainer = styled.div`
 const FormInput = styled.input`
   width: 80%;
   height: 100%;
-  font-size: 48px;
+  font-size: 40px;
   line-height: 64px;
   color: #ffffff;
   border: none;
@@ -112,33 +113,35 @@ const ActionsForm = () => {
   const DEPOSIT_TAB = true;
   const WITHDRAWAL_TAB = false;
 
+  const { status, userAssetBalance, vaultBalanceInAsset } = useVaultData();
+  const isLoadingData = status === "loading";
   const [isDeposit, setIsDeposit] = useState(true);
   const [inputAmount, setInputAmount] = useState("");
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [showActionModal, setShowActionModal] = useState(false);
-  const [userBalance, setUserBalance] = useState(""); // store balances in string
-  const { library, active, account } = useWeb3React();
+  const { active, account } = useWeb3React();
   const gasPrice = useGasPrice();
 
   const connected = Boolean(active && account);
 
-  const getAndSetBalance = useCallback(async () => {
-    if (account) {
-      const bal = await library.getBalance(account);
-      setUserBalance(bal.toString());
-    }
-  }, [library, account]);
-
   const handleClickMax = () => {
-    if (connected && userBalance && gasPrice.fetched) {
+    if (
+      !isLoadingData &&
+      connected &&
+      userAssetBalance.isZero() &&
+      gasPrice.fetched
+    ) {
       const gasLimit = isDeposit
         ? GAS_LIMITS.depositETH
         : GAS_LIMITS.withdrawETH;
       const gasFee = BigNumber.from(gasLimit.toString()).mul(gasPrice.fast);
-      const total = BigNumber.from(userBalance);
-      const maxAmount = total.sub(gasFee).toString();
+      const total = BigNumber.from(userAssetBalance);
+      const maxAmount = total.sub(gasFee);
+      const actualMaxAmount = maxAmount.isNegative()
+        ? BigNumber.from("0")
+        : maxAmount;
 
-      setInputAmount(formatEther(maxAmount));
+      setInputAmount(formatEther(actualMaxAmount));
     }
   };
 
@@ -149,24 +152,18 @@ const ActionsForm = () => {
     };
   };
 
-  useEffect(() => {
-    if (account) {
-      getAndSetBalance();
-    }
-  }, [account, getAndSetBalance]);
-
   let walletText = "";
 
   if (isDeposit) {
     const position =
-      account && userBalance
-        ? formatSignificantDecimals(formatEther(userBalance))
+      account && !isLoadingData && userAssetBalance
+        ? formatSignificantDecimals(formatEther(userAssetBalance))
         : "---";
     walletText = `Wallet Balance: ${position} ETH`;
   } else {
     const position =
-      account && userBalance
-        ? formatSignificantDecimals(formatEther(userBalance))
+      account && !isLoadingData && userAssetBalance
+        ? formatSignificantDecimals(formatEther(vaultBalanceInAsset))
         : "---";
     walletText = `Your Position: ${position} ETH`;
   }
