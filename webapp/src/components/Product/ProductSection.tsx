@@ -17,7 +17,6 @@ import {
   ProductType,
   ProductTabProps,
   ArrowButtonProps,
-  ProductSectionContainerProps,
   DynamicMarginProps,
 } from "./types";
 import Volatility from "./Splash/Volatility";
@@ -26,10 +25,7 @@ import CapitalAccumulation from "./Splash/CapitalAccumulation";
 import useScreenSize from "../../hooks/useScreenSize";
 import useElementSize from "../../hooks/useElementSize";
 
-const ProductSectionContainer = styled(Container)<ProductSectionContainerProps>`
-  height: ${(props) =>
-    props.height ? `calc(${props.height}px - 81px)` : `calc(100vh - 81px)`};
-  overflow: hidden;
+const ProductSectionContainer = styled(Container)`
   display: flex;
   flex-direction: column;
 `;
@@ -43,7 +39,6 @@ const ProductContainerBody = styled.div`
 const HeaderContainer = styled.div<DynamicMarginProps>`
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
   padding-top: 40px;
   ${(props) => {
     if (props.empty <= 0) return null;
@@ -68,7 +63,7 @@ const ProductTabButton = styled(BaseButton)<ProductTabProps>`
   margin-right: 4px;
   z-index: 1;
 
-  &:nth-last-child(2) {
+  &:last-child {
     margin-right: 0px;
   }
 
@@ -221,6 +216,7 @@ const Products = () => {
   const renderProductTabButton = useCallback(
     (title: string, type: ProductType) => (
       <ProductTabButton
+        key={title}
         selected={selectedProduct === type}
         type={type}
         role="button"
@@ -242,11 +238,11 @@ const Products = () => {
   const renderSplashFromType = useCallback(() => {
     switch (selectedProduct) {
       case "volatility":
-        return <Volatility width="35%" opacity="0.4" />;
+        return <Volatility height="50vmin" opacity="0.4" />;
       case "principalProtection":
-        return <PrincipalProtection width="70%" opacity="0.4" />;
+        return <PrincipalProtection height="50vmin" opacity="0.4" />;
       case "capitalAccumulation":
-        return <CapitalAccumulation width="50%" opacity="0.4" />;
+        return <CapitalAccumulation height="50vmin" opacity="0.4" />;
     }
   }, [selectedProduct]);
 
@@ -279,19 +275,11 @@ const Products = () => {
   }, [selectedProduct, renderSplashFromType]);
 
   return (
-    <ProductSectionContainer
-      height={Math.max(
-        height,
-        headerHeight && contentHeight ? headerHeight + contentHeight + 81 : 0
-      )}
-    >
+    <ProductSectionContainer>
       <ProductContainerBody>
         {/* Title and product tab */}
         <HeaderContainer ref={headerRef} empty={empty}>
           <ProductTabContainer>
-            {productTabs.map((tab) =>
-              renderProductTabButton(tab.title, tab.name)
-            )}
             <Frame
               transition={{ type: "keyframes", ease: "easeOut" }}
               height={0}
@@ -302,6 +290,9 @@ const Products = () => {
               radius={8}
               animate={activeButtonAnimate}
             />
+            {productTabs.map((tab) =>
+              renderProductTabButton(tab.title, tab.name)
+            )}
           </ProductTabContainer>
         </HeaderContainer>
 
@@ -312,7 +303,6 @@ const Products = () => {
           empty={empty}
         >
           <ProductContent lg={7}>{renderProduct()}</ProductContent>
-          {/* <SplashImgContainer>{renderProductSplash()}</SplashImgContainer> */}
         </ProductContentContainer>
       </ProductContainerBody>
     </ProductSectionContainer>
