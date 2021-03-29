@@ -3,3 +3,10 @@
     width: 400px;
   }
 }
+
+.action-modal {
+  &-backdrop {
+    background: rgba(0, 0, 0, 0.24);
+    backdrop-filter: blur(80px);
+  }
+}

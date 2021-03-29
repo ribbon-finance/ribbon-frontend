@@ -12,6 +12,8 @@ import ConfirmationStep from "./ConfirmationStep";
 import SubmittedStep from "./SubmittedStep";
 
 const ActionModalHeader = styled(BaseModalHeader)`
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
   background: #151413;
   justify-content: center;
 `;
@@ -121,7 +123,12 @@ const ActionModal: React.FC<{
   };
 
   return (
-    <BaseModal show={show} onHide={onClose} centered>
+    <BaseModal
+      show={show}
+      onHide={onClose}
+      centered
+      backdropClassName="action-modal-backdrop"
+    >
       <ActionModalHeader closeButton={false}>
         <ModalTitle>{titles[step]}</ModalTitle>
 
