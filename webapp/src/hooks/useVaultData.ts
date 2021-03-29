@@ -5,6 +5,7 @@ import { VaultDataResponse } from "../store/types";
 import { useWeb3React } from "@web3-react/core";
 import { useGlobalState } from "../store/store";
 import { getVault } from "./useVault";
+import { getDefaultChainID } from "../utils/env";
 
 type UseVaultData = () => VaultDataResponse;
 
@@ -15,45 +16,64 @@ const useVaultData: UseVaultData = () => {
   const [response, setResponse] = useGlobalState("vaultData");
 
   const doMulticall = useCallback(async () => {
-    if (ethersProvider && chainId && library) {
-      const vault = getVault(chainId, library);
+    if (ethersProvider) {
+      const providerVault = getVault(
+        getDefaultChainID(),
+        ethersProvider,
+        false
+      );
 
-      if (vault) {
-        const unconnectedPromises = [vault.totalBalance(), vault.cap()];
+      if (providerVault) {
+        const unconnectedPromises = [
+          providerVault.totalBalance(),
+          providerVault.cap(),
+        ];
 
         let connectedPromises: Promise<BigNumber>[] = [];
 
-        if (walletConnected && account) {
-          connectedPromises = [
-            vault.accountVaultBalance(account),
-            library.getBalance(account),
-          ];
+        if (walletConnected && account && chainId) {
+          const signerVault = getVault(chainId, library);
+
+          if (signerVault) {
+            connectedPromises = [
+              signerVault.accountVaultBalance(account),
+              library.getBalance(account),
+              signerVault.maxWithdrawAmount(account),
+            ];
+          }
         }
         const promises = unconnectedPromises.concat(connectedPromises);
-        const responses = await Promise.all(promises);
 
-        const data = {
-          deposits: responses[0],
-          vaultLimit: responses[1],
-        };
+        try {
+          const responses = await Promise.all(promises);
 
-        if (!walletConnected) {
+          const data = {
+            deposits: responses[0],
+            vaultLimit: responses[1],
+          };
+
+          if (!walletConnected) {
+            setResponse({
+              status: "success",
+              ...data,
+              vaultBalanceInAsset: BigNumber.from("0"),
+              userAssetBalance: BigNumber.from("0"),
+              maxWithdrawAmount: BigNumber.from("0"),
+            });
+
+            return;
+          }
+
           setResponse({
             status: "success",
             ...data,
-            vaultBalanceInAsset: BigNumber.from("0"),
-            userAssetBalance: BigNumber.from("0"),
+            vaultBalanceInAsset: responses[2],
+            userAssetBalance: responses[3],
+            maxWithdrawAmount: responses[4],
           });
-
-          return;
+        } catch (e) {
+          console.error(e);
         }
-
-        setResponse({
-          status: "success",
-          ...data,
-          vaultBalanceInAsset: responses[2],
-          userAssetBalance: responses[3],
-        });
       }
     }
   }, [account, setResponse, ethersProvider, walletConnected, chainId, library]);

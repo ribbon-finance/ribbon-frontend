@@ -56,6 +56,13 @@ const ActionModal: React.FC<{
 }> = ({ actionType, show, onClose, amount, positionAmount, actionParams }) => {
   const [step, setStep] = useState<Steps>(STEPS.submittedStep);
   const [txhash, setTxhash] = useState("");
+  const vault = useVault();
+
+  // We need to pre-fetch the number of shares that the user wants to withdraw
+  const [shares, setShares] = useState<BigNumber>(BigNumber.from("0"));
+
+  const isDeposit = actionType === ACTIONS.deposit;
+  const actionWord = isDeposit ? "Deposit" : "Withdrawal";
 
   // Whenever the `show` variable is toggled, we need to reset the step back to 0
   useEffect(() => {
@@ -65,17 +72,28 @@ const ActionModal: React.FC<{
     }, 500);
   }, [show, setStep]);
 
-  const actionWord = actionType === ACTIONS.deposit ? "Deposit" : "Withdrawal";
-
-  const vault = useVault();
+  useEffect(() => {
+    if (vault) {
+      (async () => {
+        const shares = await vault.assetAmountToShares(amount);
+        setShares(shares);
+      })();
+    }
+  }, [amount, vault]);
 
   const handleClickActionButton = async () => {
     if (vault !== null) {
       setStep(STEPS.confirmationStep);
       try {
-        const res = await vault.depositETH({ value: amount });
-        setTxhash(res.hash);
-        setStep(STEPS.submittedStep);
+        if (isDeposit) {
+          const res = await vault.depositETH({ value: amount });
+          setTxhash(res.hash);
+          setStep(STEPS.submittedStep);
+        } else {
+          const res = await vault.withdrawETH(shares);
+          setTxhash(res.hash);
+          setStep(STEPS.submittedStep);
+        }
       } catch (_) {
         onClose();
       }

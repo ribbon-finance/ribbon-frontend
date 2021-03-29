@@ -8,10 +8,15 @@ import { formatSignificantDecimals } from "../../utils/math";
 import YourPosition from "./YourPosition";
 import ActionModal from "../ActionModal/ActionModal";
 import { ACTIONS } from "../ActionModal/types";
-import { ActionButton, ConnectWalletButton } from "../Common/buttons";
+import {
+  ActionButton,
+  ConnectWalletButton,
+  ErrorButton,
+} from "../Common/buttons";
 import { GAS_LIMITS } from "../../constants/constants";
 import useGasPrice from "../../hooks/useGasPrice";
 import useVaultData from "../../hooks/useVaultData";
+import useVault from "../../hooks/useVault";
 
 const { parseEther, formatEther } = ethers.utils;
 
@@ -109,46 +114,90 @@ const WalletBalance = styled.div<{ active: boolean }>`
   color: ${(props) => (props.active ? "#FFFFFF" : "rgba(255, 255, 255, 0.16)")};
 `;
 
+type ValidationErrors = "none" | "insufficient_balance";
+
 const ActionsForm = () => {
   const DEPOSIT_TAB = true;
   const WITHDRAWAL_TAB = false;
 
-  const { status, userAssetBalance, vaultBalanceInAsset } = useVaultData();
+  const vault = useVault();
+  const {
+    status,
+    userAssetBalance,
+    vaultBalanceInAsset,
+    maxWithdrawAmount,
+  } = useVaultData();
+
   const isLoadingData = status === "loading";
   const [isDeposit, setIsDeposit] = useState(true);
   const [inputAmount, setInputAmount] = useState("");
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [showActionModal, setShowActionModal] = useState(false);
+  const [error, setError] = useState<ValidationErrors>("none");
   const { active, account } = useWeb3React();
   const gasPrice = useGasPrice();
 
   const connected = Boolean(active && account);
 
-  const handleClickMax = () => {
-    if (
-      !isLoadingData &&
-      connected &&
-      userAssetBalance.isZero() &&
-      gasPrice.fetched
-    ) {
-      const gasLimit = isDeposit
-        ? GAS_LIMITS.depositETH
-        : GAS_LIMITS.withdrawETH;
-      const gasFee = BigNumber.from(gasLimit.toString()).mul(gasPrice.fast);
-      const total = BigNumber.from(userAssetBalance);
-      const maxAmount = total.sub(gasFee);
-      const actualMaxAmount = maxAmount.isNegative()
-        ? BigNumber.from("0")
-        : maxAmount;
+  const handleClickMax = async () => {
+    if (!isLoadingData && connected && vault && account) {
+      if (isDeposit && gasPrice.fetched) {
+        const gasLimit = isDeposit
+          ? GAS_LIMITS.depositETH
+          : GAS_LIMITS.withdrawETH;
+        const gasFee = BigNumber.from(gasLimit.toString()).mul(gasPrice.fast);
+        const total = BigNumber.from(userAssetBalance);
+        const maxAmount = total.sub(gasFee);
+        const actualMaxAmount = maxAmount.isNegative()
+          ? BigNumber.from("0")
+          : maxAmount;
 
-      setInputAmount(formatEther(actualMaxAmount));
+        setInputAmount(formatEther(actualMaxAmount));
+      }
+      // Withdraw flow
+      else {
+        setInputAmount(formatEther(maxWithdrawAmount));
+      }
     }
   };
 
-  const switchToTab = (isDeposit: boolean) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawInput = e.target.value;
+    setInputAmount(rawInput); // Let's flush out the input changes first.
+
+    // Make sure we schedule the error updates after the input updates
+    requestAnimationFrame(() => {
+      if (rawInput) {
+        const amount = parseEther(rawInput);
+
+        if (!isLoadingData && connected) {
+          if (isDeposit && amount.gt(userAssetBalance)) {
+            setError("insufficient_balance");
+          } else if (!isDeposit && amount.gt(maxWithdrawAmount)) {
+            setError("insufficient_balance");
+          } else {
+            // if nothing was hit, we reset to no error
+            setError("none");
+          }
+        }
+      } else {
+        // If we do not have any input, we can safely assume there is no error
+        setError("none");
+      }
+    });
+  };
+
+  const switchToTab = (switchingToDepositTab: boolean) => {
+    // Resets the input amount if switching to a different tab
     return () => {
-      setIsDeposit(isDeposit);
-      setInputAmount("");
+      if (
+        (isDeposit && !switchingToDepositTab) ||
+        (!isDeposit && switchingToDepositTab)
+      ) {
+        setIsDeposit(switchingToDepositTab);
+        setInputAmount("");
+        setError("none");
+      }
     };
   };
 
@@ -179,6 +228,35 @@ const ActionsForm = () => {
     actionButtonText = "Withdraw ETH";
   }
 
+  let button;
+
+  if (error === "insufficient_balance") {
+    button = (
+      <ErrorButton className="py-3 mb-4">Insufficient Balance</ErrorButton>
+    );
+  } else {
+    if (connected) {
+      button = (
+        <ActionButton
+          onClick={() => inputAmount && connected && setShowActionModal(true)}
+          className="py-3 mb-4"
+        >
+          {actionButtonText}
+        </ActionButton>
+      );
+    } else {
+      button = (
+        <ConnectWalletButton
+          onClick={() => setShowConnectModal(true)}
+          type="button"
+          className="btn py-3 mb-4"
+        >
+          Connect Wallet
+        </ConnectWalletButton>
+      );
+    }
+  }
+
   return (
     <div>
       <FormContainer>
@@ -190,7 +268,7 @@ const ActionsForm = () => {
           actionType={isDeposit ? ACTIONS.deposit : ACTIONS.withdraw}
           show={showActionModal}
           amount={inputAmount ? parseEther(inputAmount) : BigNumber.from("0")}
-          positionAmount={BigNumber.from("0")}
+          positionAmount={vaultBalanceInAsset}
           actionParams={
             isDeposit
               ? { action: ACTIONS.deposit, yield: 30 }
@@ -208,7 +286,7 @@ const ActionsForm = () => {
           <FormTitleDiv
             left
             active={isDeposit}
-            onClick={() => setIsDeposit(DEPOSIT_TAB)}
+            onClick={switchToTab(DEPOSIT_TAB)}
           >
             <FormTitle active={DEPOSIT_TAB}>Deposit</FormTitle>
           </FormTitleDiv>
@@ -229,31 +307,14 @@ const ActionsForm = () => {
               aria-label="ETH"
               placeholder="0"
               value={inputAmount}
-              onChange={(e) => setInputAmount(e.target.value)}
+              onChange={handleChange}
             />
             {connected && (
               <MaxAccessory onClick={handleClickMax}>MAX</MaxAccessory>
             )}
           </FormInputContainer>
 
-          {connected ? (
-            <ActionButton
-              onClick={() =>
-                inputAmount && connected && setShowActionModal(true)
-              }
-              className="py-3 mb-4"
-            >
-              {actionButtonText}
-            </ActionButton>
-          ) : (
-            <ConnectWalletButton
-              onClick={() => setShowConnectModal(true)}
-              type="button"
-              className="btn py-3 mb-4"
-            >
-              Connect Wallet
-            </ConnectWalletButton>
-          )}
+          {button}
 
           <WalletBalance active={connected}>{walletText}</WalletBalance>
         </ContentContainer>

@@ -7,3 +7,5 @@ export const getNodeURI = () =>
 
 export const getDefaultNetworkName = () =>
   isDevelopment() ? "kovan" : "mainnet";
+
+export const getDefaultChainID = () => 42;

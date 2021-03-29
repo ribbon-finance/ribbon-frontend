@@ -7,12 +7,17 @@ const colors = {
   green: "#16CEB9",
   pillBackground: "#151413",
   tagBackground: "#1D222D",
-  primaryButton: "#fc0a54",
   products: {
     yield: "#FF385C",
     volatility: "#FF9000",
     principalProtection: "#79FFCB",
     capitalAccumulation: "#729DED",
+  },
+  buttons: {
+    primary: "#fc0a54",
+    error: "rgba(252, 10, 84, 0.16)",
+    secondaryBackground: "rgba(22, 206, 185, 0.08)",
+    secondaryText: "#16ceb9",
   },
 };
 

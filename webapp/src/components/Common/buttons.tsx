@@ -20,11 +20,11 @@ export const Button = styled.button`
 `;
 
 export const BaseActionButton = styled(Button)`
-  background: ${colors.primaryButton};
-  color: #ffffff;
+  background: ${colors.buttons.primary};
+  color: ${colors.primaryText};
 
   &:hover {
-    color: #ffffff;
+    color: ${colors.primaryText};
   }
 `;
 
@@ -84,11 +84,31 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   );
 };
 
-export const ConnectWalletButton = styled(Button)`
-  background: rgba(22, 206, 185, 0.08);
-  color: #16ceb9;
+const ErrorButtonStyled = styled(Button)`
+  background: ${colors.buttons.error};
+  color: ${colors.primaryText};
 
   &:hover {
-    color: #16ceb9;
+    color: ${colors.primaryText};
+  }
+`;
+
+export const ErrorButton: React.FC<{
+  className: string;
+  children: ReactNode;
+}> = ({ className, children }) => {
+  return (
+    <ErrorButtonStyled type="button" className={`btn ${className}`}>
+      {children}
+    </ErrorButtonStyled>
+  );
+};
+
+export const ConnectWalletButton = styled(Button)`
+  background: ${colors.buttons.secondaryBackground};
+  color: ${colors.buttons.secondaryText};
+
+  &:hover {
+    color: ${colors.buttons.secondaryText};
   }
 `;
