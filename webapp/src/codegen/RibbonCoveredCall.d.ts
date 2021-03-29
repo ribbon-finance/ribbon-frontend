@@ -25,6 +25,7 @@ interface RibbonCoveredCallInterface extends ethers.utils.Interface {
     "SWAP_CONTRACT()": FunctionFragment;
     "USDC()": FunctionFragment;
     "WETH()": FunctionFragment;
+    "accountVaultBalance(address)": FunctionFragment;
     "adapter()": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
@@ -78,6 +79,10 @@ interface RibbonCoveredCallInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "USDC", values?: undefined): string;
   encodeFunctionData(functionFragment: "WETH", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "accountVaultBalance",
+    values: [string]
+  ): string;
   encodeFunctionData(functionFragment: "adapter", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "allowance",
@@ -239,6 +244,10 @@ interface RibbonCoveredCallInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "USDC", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "WETH", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "accountVaultBalance",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "adapter", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
@@ -435,6 +444,16 @@ export class RibbonCoveredCall extends Contract {
     WETH(overrides?: CallOverrides): Promise<[string]>;
 
     "WETH()"(overrides?: CallOverrides): Promise<[string]>;
+
+    accountVaultBalance(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    "accountVaultBalance(address)"(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     adapter(overrides?: CallOverrides): Promise<[string]>;
 
@@ -802,6 +821,16 @@ export class RibbonCoveredCall extends Contract {
 
   "WETH()"(overrides?: CallOverrides): Promise<string>;
 
+  accountVaultBalance(
+    account: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "accountVaultBalance(address)"(
+    account: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   adapter(overrides?: CallOverrides): Promise<string>;
 
   "adapter()"(overrides?: CallOverrides): Promise<string>;
@@ -1161,6 +1190,16 @@ export class RibbonCoveredCall extends Contract {
     WETH(overrides?: CallOverrides): Promise<string>;
 
     "WETH()"(overrides?: CallOverrides): Promise<string>;
+
+    accountVaultBalance(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "accountVaultBalance(address)"(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     adapter(overrides?: CallOverrides): Promise<string>;
 
@@ -1580,6 +1619,16 @@ export class RibbonCoveredCall extends Contract {
 
     "WETH()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    accountVaultBalance(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "accountVaultBalance(address)"(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     adapter(overrides?: CallOverrides): Promise<BigNumber>;
 
     "adapter()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1936,6 +1985,16 @@ export class RibbonCoveredCall extends Contract {
     WETH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "WETH()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    accountVaultBalance(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "accountVaultBalance(address)"(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     adapter(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

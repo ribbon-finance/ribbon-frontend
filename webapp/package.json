@@ -26,6 +26,7 @@
     "react-bootstrap": "^1.5.2",
     "react-chartjs-2": "^2.11.1",
     "react-dom": "^17.0.1",
+    "react-hooks-global-state": "^1.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "styled-components": "^5.2.1",
@@ -37,7 +38,7 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "codegen": "typechain --target=ethers-v5 --outDir src/codegen 'src/constants/abis/*.json' && echo 'export {};' >> src/codegen/index.ts"
+    "codegen": "typechain --target=ethers-v5 --outDir src/codegen 'src/constants/abis/*.json'"
   },
   "eslintConfig": {
     "extends": [
