@@ -10,6 +10,7 @@ import {
   SecondaryText,
 } from "../../../designSystem";
 import colors from "../../../designSystem/colors";
+import sizes from "../../../designSystem/sizes";
 import theme from "../../../designSystem/theme";
 import DepositCapBar from "../../../pages/DepositPage/DepositCapBar";
 import useVaultData from "../../../hooks/useVaultData";
@@ -26,6 +27,11 @@ const ProductCard = styled.div`
   border-radius: ${theme.border.radius};
   padding: 16px 24px 24px 16px;
   box-shadow: 4px 8px 80px rgba(255, 56, 92, 0.16);
+  margin: 0 64px;
+
+  @media (max-width: ${sizes.md}px) {
+    margin: 0 40px;
+  }
   cursor: pointer;
 `;
 

@@ -17,19 +17,18 @@ import {
   ProductType,
   ProductTabProps,
   ArrowButtonProps,
-  ProductSectionContainerProps,
   DynamicMarginProps,
+  HeaderScrollIndicatorProps,
 } from "./types";
 import Volatility from "./Splash/Volatility";
 import PrincipalProtection from "./Splash/PrincipalProtection";
 import CapitalAccumulation from "./Splash/CapitalAccumulation";
 import useScreenSize from "../../hooks/useScreenSize";
 import useElementSize from "../../hooks/useElementSize";
+import useElementScroll from "../../hooks/useElementScroll";
+import sizes from "../../designSystem/sizes";
 
-const ProductSectionContainer = styled(Container)<ProductSectionContainerProps>`
-  height: ${(props) =>
-    props.height ? `calc(${props.height}px - 81px)` : `calc(100vh - 81px)`};
-  overflow: hidden;
+const ProductSectionContainer = styled(Container)`
   display: flex;
   flex-direction: column;
 `;
@@ -44,7 +43,6 @@ const HeaderContainer = styled.div<DynamicMarginProps>`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  padding-top: 40px;
   ${(props) => {
     if (props.empty <= 0) return null;
 
@@ -52,15 +50,56 @@ const HeaderContainer = styled.div<DynamicMarginProps>`
       margin-top: calc(${props.empty}px * 0.15);
     `;
   }}
+
+  @media (max-width: ${sizes.md}px) {
+    margin-top: 0px;
+  }
+`;
+
+const ProductTitle = styled(Title)`
+  display: none;
+  font-size: 24px;
+  text-align: center;
+  margin-top: 16px;
+
+  @media (max-width: ${sizes.md}px) {
+    display: block;
+  }
+`;
+
+const ProductTabScrollContainer = styled.div`
+  position: relative;
+  width: 100%;
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: ${sizes.md}px) {
+    margin-top: 24px;
+  }
 `;
 
 const ProductTabContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  padding: 8px;
   background-color: ${colors.backgroundDarker};
   border-radius: ${theme.border.radius};
   position: relative;
+
+  @media (max-width: ${sizes.md}px) {
+    justify-content: unset;
+    flex-wrap: nowrap;
+    overflow-y: scroll;
+  }
+`;
+
+const ProductActiveButton = styled(Frame)`
+  border-radius: ${theme.border.radius} !important;
+`;
+
+const ProductTabButtons = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding: 8px;
+  width: fit-content;
 `;
 
 const ProductTabButton = styled(BaseButton)<ProductTabProps>`
@@ -68,7 +107,7 @@ const ProductTabButton = styled(BaseButton)<ProductTabProps>`
   margin-right: 4px;
   z-index: 1;
 
-  &:nth-last-child(2) {
+  &:last-child {
     margin-right: 0px;
   }
 
@@ -91,6 +130,7 @@ const ProductTabButton = styled(BaseButton)<ProductTabProps>`
 `;
 
 const ProductTabButtonText = styled(SecondaryText)<ProductTabProps>`
+  white-space: nowrap;
   color: ${(props) => {
     if (!props.selected) {
       return `${colors.primaryText}A3`;
@@ -107,6 +147,47 @@ const ProductTabButtonText = styled(SecondaryText)<ProductTabProps>`
   }};
 `;
 
+const HeaderScrollIndicator = styled.div<HeaderScrollIndicatorProps>`
+  display: flex;
+  ${(props) =>
+    props.show
+      ? `
+          opacity: 1;
+        `
+      : `
+          opacity: 0;
+          visibility: hidden;
+        `}
+  position: absolute;
+  height: 60px;
+  width: 48px;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(270deg, #08090e 40.63%, rgba(8, 9, 14, 0) 100%);
+  border-radius: ${theme.border.radius};
+  z-index: 2;
+  transition: 0.2s all ease-out;
+  top: 0;
+
+  ${(props) => {
+    switch (props.direction) {
+      case "left":
+        return `
+          left: 0;
+          transform: rotate(-180deg);
+        `;
+      case "right":
+        return `
+          right: 0;
+        `;
+    }
+  }}
+`;
+
+const IndicatorIcon = styled.i`
+  color: white;
+`;
+
 const ProductContentContainer = styled(Row)<DynamicMarginProps>`
   position: relative;
   padding: 40px 0px;
@@ -117,6 +198,10 @@ const ProductContentContainer = styled(Row)<DynamicMarginProps>`
       margin-top: calc(${props.empty}px * 0.15);
     `;
   }}
+
+  @media (max-width: ${sizes.md}px) {
+    margin-top: 0px;
+  }
 `;
 
 const ProductContent = styled(Col)`
@@ -135,7 +220,6 @@ const ProductContentArrowButton = styled(BaseButton)<ArrowButtonProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-${(props) => (props.direction === "left" ? "right" : "left")}: 64px;
 
   &:hover {
     i {
@@ -143,6 +227,9 @@ const ProductContentArrowButton = styled(BaseButton)<ArrowButtonProps>`
     }
   }
 
+  @media (max-width: ${sizes.md}px) {
+    display: none;
+  }
 `;
 
 const ProductContentArrowIcon = styled.i`
@@ -160,6 +247,7 @@ const ComingSoonContainer = styled.div`
 
 const ComingSoonText = styled(Title)`
   font-size: 80px;
+  text-align: center;
 `;
 
 const productTabs: Array<{ name: ProductType; title: string }> = [
@@ -184,7 +272,17 @@ const productTabs: Array<{ name: ProductType; title: string }> = [
 const Products = () => {
   const headerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const tabContainerRef = useRef<HTMLDivElement>(null);
+  const tabRefs = productTabs.reduce<any>((acc, tab) => {
+    acc[tab.name] = createRef();
+    return acc;
+  }, {});
+
   const [selectedProduct, setSelectedProduct] = useState<ProductType>("yield");
+  const [activeButtonAnimate, setActiveButtonAnimate] = useState<
+    object | boolean
+  >(false);
+
   const { height } = useScreenSize();
   const { height: headerHeight } = useElementSize(headerRef, {
     mutationObserver: false,
@@ -192,13 +290,7 @@ const Products = () => {
   const { height: contentHeight } = useElementSize(contentRef, {
     mutationObserver: false,
   });
-  const tabRefs = productTabs.reduce<any>((acc, tab) => {
-    acc[tab.name] = createRef();
-    return acc;
-  }, {});
-  const [activeButtonAnimate, setActiveButtonAnimate] = useState<
-    object | boolean
-  >(false);
+  const { scrollY } = useElementScroll(tabContainerRef);
   const empty = height - headerHeight - contentHeight - 81;
 
   useEffect(() => {
@@ -243,11 +335,11 @@ const Products = () => {
   const renderSplashFromType = useCallback(() => {
     switch (selectedProduct) {
       case "volatility":
-        return <Volatility width="35%" opacity="0.4" />;
+        return <Volatility height="50vh" opacity="0.4" />;
       case "principalProtection":
-        return <PrincipalProtection width="70%" opacity="0.4" />;
+        return <PrincipalProtection height="50vh" opacity="0.4" />;
       case "capitalAccumulation":
-        return <CapitalAccumulation width="50%" opacity="0.4" />;
+        return <CapitalAccumulation height="50vh" opacity="0.4" />;
     }
   }, [selectedProduct]);
 
@@ -280,30 +372,40 @@ const Products = () => {
   }, [selectedProduct, renderSplashFromType]);
 
   return (
-    <ProductSectionContainer
-      height={Math.max(
-        height,
-        headerHeight && contentHeight ? headerHeight + contentHeight + 81 : 0
-      )}
-    >
+    <ProductSectionContainer>
       <ProductContainerBody>
-        {/* Title and product tab */}
+        {/* Title and Product tab */}
         <HeaderContainer ref={headerRef} empty={empty}>
-          <ProductTabContainer>
-            {productTabs.map((tab) =>
-              renderProductTabButton(tab.title, tab.name)
-            )}
-            <Frame
-              transition={{ type: "keyframes", ease: "easeOut" }}
-              height={0}
-              width={0}
-              top={8}
-              left={8}
-              color={colors.products.yield}
-              radius={8}
-              animate={activeButtonAnimate}
-            />
-          </ProductTabContainer>
+          <ProductTitle>PRODUCT</ProductTitle>
+          <ProductTabScrollContainer>
+            <ProductTabContainer ref={tabContainerRef}>
+              {/** Active Button Background */}
+              <ProductActiveButton
+                transition={{ type: "keyframes", ease: "easeOut" }}
+                height={0}
+                width={0}
+                top={8}
+                left={8}
+                color={colors.products.yield}
+                animate={activeButtonAnimate}
+              />
+
+              {/** Tab Button */}
+              <ProductTabButtons>
+                {productTabs.map((tab) =>
+                  renderProductTabButton(tab.title, tab.name)
+                )}
+              </ProductTabButtons>
+            </ProductTabContainer>
+
+            {/** Scroll Indicator */}
+            <HeaderScrollIndicator direction="left" show={scrollY.left > 0}>
+              <IndicatorIcon className="fas fa-chevron-right" />
+            </HeaderScrollIndicator>
+            <HeaderScrollIndicator direction="right" show={scrollY.right > 0}>
+              <IndicatorIcon className="fas fa-chevron-right" />
+            </HeaderScrollIndicator>
+          </ProductTabScrollContainer>
         </HeaderContainer>
 
         {/* Product Content */}
@@ -313,7 +415,6 @@ const Products = () => {
           empty={empty}
         >
           <ProductContent lg={7}>{renderProduct()}</ProductContent>
-          {/* <SplashImgContainer>{renderProductSplash()}</SplashImgContainer> */}
         </ProductContentContainer>
       </ProductContainerBody>
     </ProductSectionContainer>

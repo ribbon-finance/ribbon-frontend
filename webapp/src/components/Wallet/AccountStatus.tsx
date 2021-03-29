@@ -46,8 +46,8 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
           @media (max-width: ${sizes.lg}px) {
             display: flex;
             width: 90%;
-            position: absolute;
-            bottom: 52px;
+            position: sticky;
+            bottom: 5vh;
             left: 5%;
           }
         `;
@@ -232,7 +232,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   } = useWeb3React();
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [copied, setCopied] = useState<"visible" | "hiding" | "hidden">(
+  const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
     "hidden"
   );
 
@@ -251,20 +251,20 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   useEffect(() => {
     let timer;
 
-    switch (copied) {
+    switch (copyState) {
       case "visible":
         timer = setTimeout(() => {
-          setCopied("hiding");
+          setCopyState("hiding");
         }, 800);
         break;
       case "hiding":
         timer = setTimeout(() => {
-          setCopied("hidden");
+          setCopyState("hidden");
         }, 200);
     }
 
     if (timer) clearTimeout(timer);
-  }, [copied]);
+  }, [copyState]);
 
   const onToggleMenu = useCallback(() => {
     setIsMenuOpen((open) => !open);
@@ -291,7 +291,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   const handleCopyAddress = useCallback(() => {
     if (account) {
       copyTextToClipboard(account);
-      setCopied("visible");
+      setCopyState("visible");
     }
   }, [account]);
 
@@ -340,7 +340,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   };
 
   const renderCopiedButton = () => {
-    return <WalletCopyIcon className="far fa-clone" state={copied} />;
+    return <WalletCopyIcon className="far fa-clone" state={copyState} />;
   };
 
   return (
@@ -358,7 +358,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>
           {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
           {renderMenuItem(
-            "COPY ADDRESS",
+            copyState === "hidden" ? "COPY ADDRESS" : "ADDRESS COPIED",
             handleCopyAddress,
             renderCopiedButton()
           )}
@@ -376,7 +376,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
       >
         {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
         {renderMenuItem(
-          "COPY ADDRESS",
+          copyState === "hidden" ? "COPY ADDRESS" : "ADDRESS COPIED",
           handleCopyAddress,
           renderCopiedButton()
         )}
