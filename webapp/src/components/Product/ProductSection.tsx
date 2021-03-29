@@ -368,7 +368,10 @@ const Products = () => {
             <ProductTabContainer ref={tabContainerRef}>
               {/** Active Button Background */}
               <ProductActiveButton
-                transition={{ type: "keyframes", ease: "easeOut" }}
+                transition={{
+                  type: "keyframes",
+                  ease: "easeOut",
+                }}
                 height={0}
                 width={0}
                 top={8}

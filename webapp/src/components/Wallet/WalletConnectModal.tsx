@@ -108,7 +108,8 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
   ] = useState<connectorType>();
   const initializingText = useTextAnimation(
     ["INITIALIZING", "INITIALIZING .", "INITIALIZING ..", "INITIALIZING ..."],
-    250
+    250,
+    !!connectingConnector
   );
 
   const handleConnect = useCallback(
@@ -158,31 +159,41 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
     [active, connector, connectingConnector]
   );
 
-  const renderConnectorIcon = (type: connectorType) => {
+  const renderConnectorIcon = useCallback((type: connectorType) => {
     switch (type) {
       case "metamask":
         return <MetamaskIcon height={40} width={40} />;
       case "walletConnect":
         return <WalletConnectIcon height={40} width={40} />;
     }
-  };
+  }, []);
 
-  const renderConnectorButton = (type: connectorType, title: string) => (
-    <ConnectorButton
-      role="button"
-      onClick={() => handleConnect(type)}
-      status={getConnectorStatus(type)}
-    >
-      {renderConnectorIcon(type)}
-      <ConnectorButtonText>
-        {connectingConnector === type ? initializingText : title}
-      </ConnectorButtonText>
-      {getConnectorStatus(type) === "connected" && (
-        <IndicatorContainer>
-          <Indicator connected={active} />
-        </IndicatorContainer>
-      )}
-    </ConnectorButton>
+  const renderConnectorButton = useCallback(
+    (type: connectorType, title: string) => (
+      <ConnectorButton
+        role="button"
+        onClick={() => handleConnect(type)}
+        status={getConnectorStatus(type)}
+      >
+        {renderConnectorIcon(type)}
+        <ConnectorButtonText>
+          {connectingConnector === type ? initializingText : title}
+        </ConnectorButtonText>
+        {getConnectorStatus(type) === "connected" && (
+          <IndicatorContainer>
+            <Indicator connected={active} />
+          </IndicatorContainer>
+        )}
+      </ConnectorButton>
+    ),
+    [
+      active,
+      connectingConnector,
+      getConnectorStatus,
+      initializingText,
+      renderConnectorIcon,
+      handleConnect,
+    ]
   );
 
   return (
