@@ -16,3 +16,8 @@ export interface ProductTabProps {
 export interface ArrowButtonProps {
   direction: "left" | "right";
 }
+
+export interface HeaderScrollIndicatorProps {
+  direction: "left" | "right";
+  show: boolean;
+}
