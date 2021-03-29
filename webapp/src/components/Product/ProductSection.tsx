@@ -45,12 +45,10 @@ const HeaderContainer = styled.div<DynamicMarginProps>`
   flex-wrap: wrap;
   ${(props) => {
     if (props.empty <= 0) return null;
-
     return `
       margin-top: calc(${props.empty}px * 0.15);
     `;
   }}
-
   @media (max-width: ${sizes.md}px) {
     margin-top: 0px;
   }
@@ -61,7 +59,6 @@ const ProductTitle = styled(Title)`
   font-size: 24px;
   text-align: center;
   margin-top: 16px;
-
   @media (max-width: ${sizes.md}px) {
     display: block;
   }
@@ -73,7 +70,6 @@ const ProductTabScrollContainer = styled.div`
   margin-top: 40px;
   display: flex;
   justify-content: center;
-
   @media (max-width: ${sizes.md}px) {
     margin-top: 24px;
   }
@@ -83,7 +79,6 @@ const ProductTabContainer = styled.div`
   background-color: ${colors.backgroundDarker};
   border-radius: ${theme.border.radius};
   position: relative;
-
   @media (max-width: ${sizes.md}px) {
     justify-content: unset;
     flex-wrap: nowrap;
@@ -106,11 +101,9 @@ const ProductTabButton = styled(BaseButton)<ProductTabProps>`
   padding: 12px 16px;
   margin-right: 4px;
   z-index: 1;
-
   &:last-child {
     margin-right: 0px;
   }
-
   &:hover {
     span {
       color: ${(props) => {
@@ -135,7 +128,6 @@ const ProductTabButtonText = styled(SecondaryText)<ProductTabProps>`
     if (!props.selected) {
       return `${colors.primaryText}A3`;
     }
-
     switch (props.type) {
       case "yield":
       case "capitalAccumulation":
@@ -168,7 +160,6 @@ const HeaderScrollIndicator = styled.div<HeaderScrollIndicatorProps>`
   z-index: 2;
   transition: 0.2s all ease-out;
   top: 0;
-
   ${(props) => {
     switch (props.direction) {
       case "left":
@@ -193,12 +184,10 @@ const ProductContentContainer = styled(Row)<DynamicMarginProps>`
   padding: 40px 0px;
   ${(props) => {
     if (props.empty <= 0) return null;
-
     return `
       margin-top: calc(${props.empty}px * 0.15);
     `;
   }}
-
   @media (max-width: ${sizes.md}px) {
     margin-top: 0px;
   }
@@ -220,13 +209,11 @@ const ProductContentArrowButton = styled(BaseButton)<ArrowButtonProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-
   &:hover {
     i {
       opacity: ${theme.hover.opacity};
     }
   }
-
   @media (max-width: ${sizes.md}px) {
     display: none;
   }
