@@ -6,6 +6,7 @@ import Header from "./Header/Header";
 import Homepage from "../pages/Home/Homepage";
 import DepositPage from "../pages/DepositPage/DepositPage";
 import useEagerConnect from "../hooks/useEagerConnect";
+import PortfolioPage from "../pages/Portfolio/PortfolioPage";
 
 const Root = styled.div`
   position: fixed;
@@ -32,6 +33,9 @@ const RootApp = () => {
           </Route>
           <Route path="/theta-vault">
             <DepositPage />
+          </Route>
+          <Route path="/portfolio">
+            <PortfolioPage />
           </Route>
         </Switch>
       </Router>
