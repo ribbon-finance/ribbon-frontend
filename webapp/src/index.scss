@@ -105,3 +105,10 @@ $placeholder-color: rgba(255, 255, 255, 0.64);
   /* Most modern browsers support this now. */
   color: $placeholder-color;
 }
+
+@media (max-width: 480px) {
+  .container {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}

@@ -9,6 +9,7 @@ import ActionsForm from "../../components/ActionsForm/ActionsForm";
 import Theta from "../../components/Product/Splash/Theta";
 import useVaultData from "../../hooks/useVaultData";
 import { formatSignificantDecimals } from "../../utils/math";
+import AccountStatus from "../../components/Wallet/AccountStatus";
 
 const { formatEther } = ethers.utils;
 
@@ -69,7 +70,7 @@ const DepositPage = () => {
   );
 
   return (
-    <div>
+    <>
       <HeroSection depositCapBar={depositCapBar}></HeroSection>
 
       <div className="container py-5">
@@ -81,7 +82,9 @@ const DepositPage = () => {
           </div>
         </div>
       </div>
-    </div>
+
+      <AccountStatus variant="mobile" />
+    </>
   );
 };
 
