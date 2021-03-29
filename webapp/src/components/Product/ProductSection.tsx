@@ -91,10 +91,15 @@ const ProductTabContainer = styled.div`
   }
 `;
 
+const ProductActiveButton = styled(Frame)`
+  border-radius: ${theme.border.radius} !important;
+`;
+
 const ProductTabButtons = styled.div`
   display: flex;
   flex-direction: row;
   padding: 8px;
+  width: fit-content;
 `;
 
 const ProductTabButton = styled(BaseButton)<ProductTabProps>`
@@ -375,14 +380,13 @@ const Products = () => {
           <ProductTabScrollContainer>
             <ProductTabContainer ref={tabContainerRef}>
               {/** Active Button Background */}
-              <Frame
+              <ProductActiveButton
                 transition={{ type: "keyframes", ease: "easeOut" }}
                 height={0}
                 width={0}
                 top={8}
                 left={8}
                 color={colors.products.yield}
-                radius={8}
                 animate={activeButtonAnimate}
               />
 
