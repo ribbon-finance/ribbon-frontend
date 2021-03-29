@@ -18,12 +18,15 @@ import {
   ProductTabProps,
   ArrowButtonProps,
   DynamicMarginProps,
+  HeaderScrollIndicatorProps,
 } from "./types";
 import Volatility from "./Splash/Volatility";
 import PrincipalProtection from "./Splash/PrincipalProtection";
 import CapitalAccumulation from "./Splash/CapitalAccumulation";
 import useScreenSize from "../../hooks/useScreenSize";
 import useElementSize from "../../hooks/useElementSize";
+import useElementScroll from "../../hooks/useElementScroll";
+import sizes from "../../designSystem/sizes";
 
 const ProductSectionContainer = styled(Container)`
   display: flex;
@@ -40,6 +43,7 @@ const HeaderContainer = styled.div<DynamicMarginProps>`
   display: flex;
   justify-content: center;
   padding-top: 40px;
+  position: relative;
   ${(props) => {
     if (props.empty <= 0) return null;
 
@@ -52,10 +56,21 @@ const HeaderContainer = styled.div<DynamicMarginProps>`
 const ProductTabContainer = styled.div`
   display: flex;
   justify-content: center;
-  padding: 8px;
   background-color: ${colors.backgroundDarker};
   border-radius: ${theme.border.radius};
   position: relative;
+
+  @media (max-width: ${sizes.md}px) {
+    justify-content: unset;
+    flex-wrap: nowrap;
+    overflow-y: scroll;
+  }
+`;
+
+const ProductTabButtons = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding: 8px;
 `;
 
 const ProductTabButton = styled(BaseButton)<ProductTabProps>`
@@ -86,6 +101,7 @@ const ProductTabButton = styled(BaseButton)<ProductTabProps>`
 `;
 
 const ProductTabButtonText = styled(SecondaryText)<ProductTabProps>`
+  white-space: nowrap;
   color: ${(props) => {
     if (!props.selected) {
       return `${colors.primaryText}A3`;
@@ -100,6 +116,46 @@ const ProductTabButtonText = styled(SecondaryText)<ProductTabProps>`
         return "black";
     }
   }};
+`;
+
+const HeaderScrollIndicator = styled.div<HeaderScrollIndicatorProps>`
+  display: flex;
+  ${(props) =>
+    props.show
+      ? `
+          opacity: 1;
+        `
+      : `
+          opacity: 0;
+          visibility: hidden;
+        `}
+  position: absolute;
+  height: 60px;
+  width: 48px;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(270deg, #08090e 40.63%, rgba(8, 9, 14, 0) 100%);
+  border-radius: ${theme.border.radius};
+  z-index: 2;
+  transition: 0.2s all ease-out;
+
+  ${(props) => {
+    switch (props.direction) {
+      case "left":
+        return `
+          left: 0;
+          transform: rotate(-180deg);
+        `;
+      case "right":
+        return `
+          right: 0;
+        `;
+    }
+  }}
+`;
+
+const IndicatorIcon = styled.i`
+  color: white;
 `;
 
 const ProductContentContainer = styled(Row)<DynamicMarginProps>`
@@ -138,6 +194,9 @@ const ProductContentArrowButton = styled(BaseButton)<ArrowButtonProps>`
     }
   }
 
+  @media (max-width: ${sizes.md}px) {
+    display: none;
+  }
 `;
 
 const ProductContentArrowIcon = styled.i`
@@ -179,7 +238,17 @@ const productTabs: Array<{ name: ProductType; title: string }> = [
 const Products = () => {
   const headerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const tabContainerRef = useRef<HTMLDivElement>(null);
+  const tabRefs = productTabs.reduce<any>((acc, tab) => {
+    acc[tab.name] = createRef();
+    return acc;
+  }, {});
+
   const [selectedProduct, setSelectedProduct] = useState<ProductType>("yield");
+  const [activeButtonAnimate, setActiveButtonAnimate] = useState<
+    object | boolean
+  >(false);
+
   const { height } = useScreenSize();
   const { height: headerHeight } = useElementSize(headerRef, {
     mutationObserver: false,
@@ -187,13 +256,7 @@ const Products = () => {
   const { height: contentHeight } = useElementSize(contentRef, {
     mutationObserver: false,
   });
-  const tabRefs = productTabs.reduce<any>((acc, tab) => {
-    acc[tab.name] = createRef();
-    return acc;
-  }, {});
-  const [activeButtonAnimate, setActiveButtonAnimate] = useState<
-    object | boolean
-  >(false);
+  const { scrollY } = useElementScroll(tabContainerRef);
   const empty = height - headerHeight - contentHeight - 81;
 
   useEffect(() => {
@@ -279,7 +342,8 @@ const Products = () => {
       <ProductContainerBody>
         {/* Title and product tab */}
         <HeaderContainer ref={headerRef} empty={empty}>
-          <ProductTabContainer>
+          <ProductTabContainer ref={tabContainerRef}>
+            {/** Active Button Background */}
             <Frame
               transition={{ type: "keyframes", ease: "easeOut" }}
               height={0}
@@ -290,10 +354,22 @@ const Products = () => {
               radius={8}
               animate={activeButtonAnimate}
             />
-            {productTabs.map((tab) =>
-              renderProductTabButton(tab.title, tab.name)
-            )}
+
+            {/** Tab Button */}
+            <ProductTabButtons>
+              {productTabs.map((tab) =>
+                renderProductTabButton(tab.title, tab.name)
+              )}
+            </ProductTabButtons>
           </ProductTabContainer>
+
+          {/** Scroll Indicator */}
+          <HeaderScrollIndicator direction="left" show={scrollY.left > 0}>
+            <IndicatorIcon className="fas fa-chevron-right" />
+          </HeaderScrollIndicator>
+          <HeaderScrollIndicator direction="right" show={scrollY.right > 0}>
+            <IndicatorIcon className="fas fa-chevron-right" />
+          </HeaderScrollIndicator>
         </HeaderContainer>
 
         {/* Product Content */}
