@@ -46,11 +46,11 @@ const PerformanceSection = () => {
           strategy. Put simply, the vault sells <i>potential upside</i> in
           exchange for high yield.
           <p />
-          The vault writes out-of-the-money call options on ETH on a weekly
-          basis and sells them to market makers. In exchange, the vault
-          depositors earn yield from the premiums that the market makers pay for
-          these options. The vault repeats this on a weekly basis and reinvests
-          the premiums, effectively compounding the yields over time.
+          The vault generates yield by writing out-of-the-money call options on
+          ETH on a weekly basis and selling the options to market makers in
+          exchange for premiums. The vault repeats this process on a weekly
+          basis and reinvests the premiums, effectively compounding the yields
+          for depositors over time.
           <p />
           The vault has a <b>manager</b> who selects the strike prices for the
           call options that the vault writes. This manager is responsible for
