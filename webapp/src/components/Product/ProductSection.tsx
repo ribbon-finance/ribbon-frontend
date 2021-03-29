@@ -42,8 +42,7 @@ const ProductContainerBody = styled.div`
 const HeaderContainer = styled.div<DynamicMarginProps>`
   display: flex;
   justify-content: center;
-  padding-top: 40px;
-  position: relative;
+  flex-wrap: wrap;
   ${(props) => {
     if (props.empty <= 0) return null;
 
@@ -51,11 +50,36 @@ const HeaderContainer = styled.div<DynamicMarginProps>`
       margin-top: calc(${props.empty}px * 0.15);
     `;
   }}
+
+  @media (max-width: ${sizes.md}px) {
+    margin-top: 0px;
+  }
+`;
+
+const ProductTitle = styled(Title)`
+  display: none;
+  font-size: 24px;
+  text-align: center;
+  margin-top: 16px;
+
+  @media (max-width: ${sizes.md}px) {
+    display: block;
+  }
+`;
+
+const ProductTabScrollContainer = styled.div`
+  position: relative;
+  width: 100%;
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: ${sizes.md}px) {
+    margin-top: 24px;
+  }
 `;
 
 const ProductTabContainer = styled.div`
-  display: flex;
-  justify-content: center;
   background-color: ${colors.backgroundDarker};
   border-radius: ${theme.border.radius};
   position: relative;
@@ -138,6 +162,7 @@ const HeaderScrollIndicator = styled.div<HeaderScrollIndicatorProps>`
   border-radius: ${theme.border.radius};
   z-index: 2;
   transition: 0.2s all ease-out;
+  top: 0;
 
   ${(props) => {
     switch (props.direction) {
@@ -168,6 +193,10 @@ const ProductContentContainer = styled(Row)<DynamicMarginProps>`
       margin-top: calc(${props.empty}px * 0.15);
     `;
   }}
+
+  @media (max-width: ${sizes.md}px) {
+    margin-top: 0px;
+  }
 `;
 
 const ProductContent = styled(Col)`
@@ -186,7 +215,6 @@ const ProductContentArrowButton = styled(BaseButton)<ArrowButtonProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-${(props) => (props.direction === "left" ? "right" : "left")}: 64px;
 
   &:hover {
     i {
@@ -214,6 +242,7 @@ const ComingSoonContainer = styled.div`
 
 const ComingSoonText = styled(Title)`
   font-size: 80px;
+  text-align: center;
 `;
 
 const productTabs: Array<{ name: ProductType; title: string }> = [
@@ -301,11 +330,11 @@ const Products = () => {
   const renderSplashFromType = useCallback(() => {
     switch (selectedProduct) {
       case "volatility":
-        return <Volatility height="50vmin" opacity="0.4" />;
+        return <Volatility height="50vh" opacity="0.4" />;
       case "principalProtection":
-        return <PrincipalProtection height="50vmin" opacity="0.4" />;
+        return <PrincipalProtection height="50vh" opacity="0.4" />;
       case "capitalAccumulation":
-        return <CapitalAccumulation height="50vmin" opacity="0.4" />;
+        return <CapitalAccumulation height="50vh" opacity="0.4" />;
     }
   }, [selectedProduct]);
 
@@ -340,36 +369,39 @@ const Products = () => {
   return (
     <ProductSectionContainer>
       <ProductContainerBody>
-        {/* Title and product tab */}
+        {/* Title and Product tab */}
         <HeaderContainer ref={headerRef} empty={empty}>
-          <ProductTabContainer ref={tabContainerRef}>
-            {/** Active Button Background */}
-            <Frame
-              transition={{ type: "keyframes", ease: "easeOut" }}
-              height={0}
-              width={0}
-              top={8}
-              left={8}
-              color={colors.products.yield}
-              radius={8}
-              animate={activeButtonAnimate}
-            />
+          <ProductTitle>PRODUCT</ProductTitle>
+          <ProductTabScrollContainer>
+            <ProductTabContainer ref={tabContainerRef}>
+              {/** Active Button Background */}
+              <Frame
+                transition={{ type: "keyframes", ease: "easeOut" }}
+                height={0}
+                width={0}
+                top={8}
+                left={8}
+                color={colors.products.yield}
+                radius={8}
+                animate={activeButtonAnimate}
+              />
 
-            {/** Tab Button */}
-            <ProductTabButtons>
-              {productTabs.map((tab) =>
-                renderProductTabButton(tab.title, tab.name)
-              )}
-            </ProductTabButtons>
-          </ProductTabContainer>
+              {/** Tab Button */}
+              <ProductTabButtons>
+                {productTabs.map((tab) =>
+                  renderProductTabButton(tab.title, tab.name)
+                )}
+              </ProductTabButtons>
+            </ProductTabContainer>
 
-          {/** Scroll Indicator */}
-          <HeaderScrollIndicator direction="left" show={scrollY.left > 0}>
-            <IndicatorIcon className="fas fa-chevron-right" />
-          </HeaderScrollIndicator>
-          <HeaderScrollIndicator direction="right" show={scrollY.right > 0}>
-            <IndicatorIcon className="fas fa-chevron-right" />
-          </HeaderScrollIndicator>
+            {/** Scroll Indicator */}
+            <HeaderScrollIndicator direction="left" show={scrollY.left > 0}>
+              <IndicatorIcon className="fas fa-chevron-right" />
+            </HeaderScrollIndicator>
+            <HeaderScrollIndicator direction="right" show={scrollY.right > 0}>
+              <IndicatorIcon className="fas fa-chevron-right" />
+            </HeaderScrollIndicator>
+          </ProductTabScrollContainer>
         </HeaderContainer>
 
         {/* Product Content */}
