@@ -386,7 +386,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
         >
           {renderButtonContent()}
         </WalletButton>
-        <InvestButton>Invest</InvestButton>
+        {showInvestButton && <InvestButton>Invest</InvestButton>}
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>
           {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
           {renderMenuItem(
