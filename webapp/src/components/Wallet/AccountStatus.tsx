@@ -27,6 +27,8 @@ import { ActionButton } from "../Common/buttons";
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
 const investButtonWidth = 30;
+const investButtonMarginLeft =
+  100 - walletButtonMarginLeft * 2 - walletButtonWidth - investButtonWidth;
 
 const WalletContainer = styled.div<AccountStatusVariantProps>`
   justify-content: center;
@@ -53,7 +55,7 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
             display: flex;
             align-items: unset;
             padding-top: 16px;
-            width: 90%;
+            width: 100%;
           }
         `;
     }
@@ -110,11 +112,7 @@ const WalletButtonArrow = styled.i<MenuStateProps>`
 `;
 
 const InvestButton = styled(ActionButton)`
-  margin-left: ${100 -
-  walletButtonMarginLeft -
-  walletButtonWidth -
-  investButtonWidth -
-  walletButtonMarginLeft}%;
+  margin-left: ${investButtonMarginLeft}%;
   width: ${investButtonWidth}%;
   height: 48px;
   border-radius: 8px;

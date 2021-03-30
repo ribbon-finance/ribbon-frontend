@@ -1,4 +1,5 @@
 import React from "react";
+import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 
 import sizes from "../../designSystem/sizes";
@@ -31,6 +32,8 @@ const MobileFooterOffsetContainer = styled.div`
 
 const Footer = () => {
   const { height: screenHeight } = useScreenSize();
+  const matchProductPage = useRouteMatch({ path: "/theta-vault", exact: true });
+
   return (
     <>
       <FooterContianer screenHeight={screenHeight}>
@@ -38,7 +41,10 @@ const Footer = () => {
         <DesktopFooter />
 
         {/** Mobile */}
-        <AccountStatus variant="mobile" />
+        <AccountStatus
+          variant="mobile"
+          showInvestButton={Boolean(matchProductPage)}
+        />
       </FooterContianer>
       <MobileFooterOffsetContainer />
     </>

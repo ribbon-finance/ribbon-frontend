@@ -89,8 +89,6 @@ const DepositPage = () => {
           </DesktopActionsFormContainer>
         </div>
       </div>
-
-      <AccountStatus variant="mobile" showInvestButton />
     </>
   );
 };
