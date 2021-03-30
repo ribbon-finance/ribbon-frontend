@@ -4,8 +4,6 @@ import styled from "styled-components";
 import { Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import DepositCapBar from "./DepositCapBar";
-import PerformanceSection from "./PerformanceSection";
-import ActionsForm from "../../components/ActionsForm/ActionsForm";
 import Theta from "../../components/Product/Splash/Theta";
 import useVaultData from "../../hooks/useVaultData";
 import { formatSignificantDecimals } from "../../utils/math";
@@ -74,11 +72,7 @@ const DepositPage = () => {
 
       <div className="container py-5">
         <div className="row mx-lg-n1">
-          <PerformanceSection></PerformanceSection>
-
-          <div className="col-xl-4 offset-xl-1">
-            <ActionsForm></ActionsForm>
-          </div>
+          <div className="col-xl-4 offset-xl-1"></div>
         </div>
       </div>
     </div>
