@@ -7,7 +7,7 @@ import WalletConnectModal from "../Wallet/WalletConnectModal";
 import { formatSignificantDecimals } from "../../utils/math";
 import YourPosition from "./YourPosition";
 import ActionModal from "../ActionModal/ActionModal";
-import { ACTIONS } from "../ActionModal/types";
+import { ActionModalContentProps, ACTIONS } from "../ActionModal/types";
 import {
   ActionButton,
   ConnectWalletButton,
@@ -17,6 +17,7 @@ import { GAS_LIMITS } from "../../constants/constants";
 import useGasPrice from "../../hooks/useGasPrice";
 import useVaultData from "../../hooks/useVaultData";
 import useVault from "../../hooks/useVault";
+import ActionSteps from "../ActionModal/ActionSteps";
 
 const { parseEther, formatEther } = ethers.utils;
 
@@ -192,6 +193,14 @@ const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
     });
   };
 
+  const handleClickActionButton = () => {
+    isDesktop && inputAmount && connected && setShowActionModal(true);
+  };
+
+  const onCloseActionsModal = () => {
+    setShowActionModal(false);
+  };
+
   const switchToTab = (switchingToDepositTab: boolean) => {
     // Resets the input amount if switching to a different tab
     return () => {
@@ -242,10 +251,7 @@ const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
   } else {
     if (connected) {
       button = (
-        <ActionButton
-          onClick={() => inputAmount && connected && setShowActionModal(true)}
-          className="py-3 mb-4"
-        >
+        <ActionButton onClick={handleClickActionButton} className="py-3 mb-4">
           {actionButtonText}
         </ActionButton>
       );
@@ -262,6 +268,25 @@ const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
     }
   }
 
+  const stepsHOC = (props: ActionModalContentProps) => (
+    <ActionSteps
+      actionType={isDeposit ? ACTIONS.deposit : ACTIONS.withdraw}
+      show={showActionModal}
+      amount={inputAmount ? parseEther(inputAmount) : BigNumber.from("0")}
+      positionAmount={vaultBalanceInAsset}
+      actionParams={
+        isDeposit
+          ? { action: ACTIONS.deposit, yield: 30 }
+          : {
+              action: ACTIONS.withdraw,
+              withdrawalFee: 0.5,
+            }
+      }
+      onClose={onCloseActionsModal}
+      onChangeTitle={props.onChangeTitle}
+    ></ActionSteps>
+  );
+
   return (
     <div>
       <FormContainer>
@@ -270,19 +295,9 @@ const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
           onClose={() => setShowConnectModal(false)}
         />
         <ActionModal
-          actionType={isDeposit ? ACTIONS.deposit : ACTIONS.withdraw}
           show={showActionModal}
-          amount={inputAmount ? parseEther(inputAmount) : BigNumber.from("0")}
-          positionAmount={vaultBalanceInAsset}
-          actionParams={
-            isDeposit
-              ? { action: ACTIONS.deposit, yield: 30 }
-              : {
-                  action: ACTIONS.withdraw,
-                  withdrawalFee: 0.5,
-                }
-          }
-          onClose={() => setShowActionModal(false)}
+          onClose={onCloseActionsModal}
+          ModalContent={stepsHOC}
         ></ActionModal>
         <div
           style={{ justifyContent: "space-evenly" }}

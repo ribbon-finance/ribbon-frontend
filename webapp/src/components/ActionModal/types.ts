@@ -17,3 +17,9 @@ export type WithdrawParams = {
   withdrawalFee: number;
 };
 export type ActionParams = DepositParams | WithdrawParams;
+
+export interface ActionModalContentProps {
+  onChangeTitle: (title: string) => void;
+}
+
+export type ActionModalContent = React.FC<ActionModalContentProps>;
