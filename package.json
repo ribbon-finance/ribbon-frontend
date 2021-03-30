@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "@rooks/use-mutation-observer": "^4.10.0",
-    "@web3-react/core": "^6.1.9",
-    "ethers": "^5.0.32",
-    "framer": "^1.2.29",
-    "react-hooks-global-state": "^1.0.1"
-  }
-}
