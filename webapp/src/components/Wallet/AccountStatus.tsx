@@ -87,6 +87,10 @@ const WalletButtonText = styled(Title)<WalletStatusProps>`
     font-size: 16px;
   }
 
+  @media (max-width: 350px) {
+    font-size: 13px;
+  }
+
   ${(props) => {
     if (props.connected) return null;
 
@@ -217,6 +221,7 @@ const MenuCloseItem = styled(MenuItem)`
 interface AccountStatusProps {
   variant: "desktop" | "mobile";
   showInvestButton?: boolean;
+  onClickInvest?: () => void;
 }
 
 const truncateAddress = (address: string) => {
@@ -226,6 +231,7 @@ const truncateAddress = (address: string) => {
 const AccountStatus: React.FC<AccountStatusProps> = ({
   variant,
   showInvestButton,
+  onClickInvest = () => {},
 }) => {
   const {
     connector,
