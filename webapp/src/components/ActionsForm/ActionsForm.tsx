@@ -116,7 +116,11 @@ const WalletBalance = styled.div<{ active: boolean }>`
 
 type ValidationErrors = "none" | "insufficient_balance";
 
-const ActionsForm = () => {
+interface ActionsFormProps {
+  onDeposit: () => void;
+}
+
+const ActionsForm: React.FC<ActionsFormProps> = ({ onDeposit }) => {
   const DEPOSIT_TAB = true;
   const WITHDRAWAL_TAB = false;
 

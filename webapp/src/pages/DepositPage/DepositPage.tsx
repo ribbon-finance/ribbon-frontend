@@ -84,8 +84,8 @@ const DepositPage = () => {
         <div className="row mx-lg-n1">
           <PerformanceSection></PerformanceSection>
 
-          <DesktopActionsFormContainer className="col-xl-4 offset-xl-1">
-            <ActionsForm></ActionsForm>
+          <DesktopActionsFormContainer className="col-xl-4 offset-xl-1 col-md-6">
+            <ActionsForm onDeposit={() => {}}></ActionsForm>
           </DesktopActionsFormContainer>
         </div>
       </div>

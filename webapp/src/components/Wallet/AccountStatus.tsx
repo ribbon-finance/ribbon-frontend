@@ -22,6 +22,7 @@ import MenuButton from "../Header/MenuButton";
 import { copyTextToClipboard } from "../../utils/text";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
+import { ActionButton } from "../Common/buttons";
 
 const WalletContainer = styled.div<AccountStatusVariantProps>`
   justify-content: center;
@@ -48,7 +49,7 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
             display: flex;
             align-items: unset;
             padding-top: 16px;
-            width: ${props.showInvestButton ? "55%" : "90%"};
+            width: 90%;
           }
         `;
     }
@@ -69,9 +70,10 @@ const WalletButton = styled(BaseButton)<WalletButtonProps>`
     switch (props.variant) {
       case "mobile":
         return `
-        width: 100%;
+        height: 48px;
         justify-content: center;
         padding: 14px 16px;
+        width: ${props.showInvestButton ? "57.5%" : "90%"};
       `;
       case "desktop":
         return ``;
@@ -101,6 +103,13 @@ const WalletButtonText = styled(Title)<WalletStatusProps>`
 const WalletButtonArrow = styled.i<MenuStateProps>`
   transition: 0.2s all ease-out;
   transform: ${(props) => (props.isMenuOpen ? "rotate(-180deg)" : "none")};
+`;
+
+const InvestButton = styled(ActionButton)`
+  margin-left: 10%;
+  width: 27.5%;
+  height: 48px;
+  border-radius: 8px;
 `;
 
 const WalletDesktopMenu = styled.div<MenuStateProps>`
@@ -359,19 +368,17 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   return (
     <>
       {/* Main Button and Desktop Menu */}
-      <WalletContainer
-        variant={variant}
-        showInvestButton={showInvestButton}
-        ref={desktopMenuRef}
-      >
+      <WalletContainer variant={variant} ref={desktopMenuRef}>
         <WalletButton
           variant={variant}
+          showInvestButton={showInvestButton}
           connected={active}
           role="button"
           onClick={handleButtonClick}
         >
           {renderButtonContent()}
         </WalletButton>
+        <InvestButton>Invest</InvestButton>
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>
           {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
           {renderMenuItem(

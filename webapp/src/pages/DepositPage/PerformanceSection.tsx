@@ -56,7 +56,7 @@ const Container = styled.div`
 
 const PerformanceSection = () => {
   return (
-    <Container className="col-lg-7">
+    <Container className="col-xl-7 col-md-6">
       <Paragraph>
         <ParagraphHeading>Vault Strategy</ParagraphHeading>
         <ParagraphText>
