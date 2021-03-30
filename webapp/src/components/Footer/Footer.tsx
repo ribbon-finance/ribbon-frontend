@@ -13,7 +13,7 @@ const FooterContianer = styled.div`
   display: flex;
   justify-content: center;
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.md}px) {
     height: 104px;
   }
 `;
@@ -21,7 +21,7 @@ const FooterContianer = styled.div`
 const FooterOffsetContainer = styled.div`
   height: 52px;
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.md}px) {
     height: 104px;
   }
 `;
