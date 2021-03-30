@@ -24,20 +24,38 @@ const LinkIcon = styled.i`
   height: 24px;
 `;
 
+const Link = styled.a`
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: underline;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.8);
+  }
+`;
+
 const PerformanceSection = () => {
   return (
     <div className="col-lg-7">
       <Paragraph>
         <ParagraphHeading>Vault Strategy</ParagraphHeading>
         <ParagraphText>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam,
-          purus sit amet luctus venenatis, lectus magna fringilla urna,
-          porttitor rhoncus dolor purus non enim praesent elementum facilisis
-          leo, vel fringilla est ullamcorper eget nulla facilisi etiam dignissim
-          diam quis enim lobortis scelerisque fermentum dui faucibus in ornare
-          quam viverra orci sagittis eu volutpat odio facilisis mauris sit amet
-          massa vitae tortor condimentum lacinia quis vel eros donec ac odio
-          tempor orci dapibus ultrices in iaculis nunc sed augue lacus.
+          This vault earns yield on ETH through running an automated{" "}
+          <Link href="https://www.investopedia.com/terms/c/coveredcall.asp">
+            covered call
+          </Link>{" "}
+          strategy. Put simply, the vault sells <i>potential upside</i> in
+          exchange for high yield.
+          <p />
+          The vault generates yield by writing out-of-the-money call options on
+          ETH on a weekly basis and selling the options to market makers in
+          exchange for premiums. The vault repeats this process on a weekly
+          basis and reinvests the premiums, effectively compounding the yields
+          for depositors over time.
+          <p />
+          The vault has a <b>manager</b> who selects the strike prices for the
+          call options that the vault writes. This manager is responsible for
+          making the best tradeoff between yield vs risk of the call options
+          getting exercised.
         </ParagraphText>
       </Paragraph>
 
@@ -49,21 +67,26 @@ const PerformanceSection = () => {
       <Paragraph>
         <ParagraphHeading>Withdrawal Fee - 0.5%</ParagraphHeading>
         <ParagraphText>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam,
-          purus sit amet luctus venenatis, lectus magna.
+          Withdrawing from the vault has a fixed withdrawal fee of 0.5%. This is
+          to encourage longer-term depositors.
         </ParagraphText>
       </Paragraph>
 
       <Paragraph>
         <ParagraphHeading>Risk</ParagraphHeading>
         <ParagraphText>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam,
-          purus sit amet luctus venenatis, lectus magna.
+          The primary risk for running this covered call strategy is that
+          depositors could potentially give up upside in exchange for guaranteed
+          yield. This only happens when the call options get exercised, which
+          should happen less than 3% of the time. In such a situation,
+          depositors can still expect to be up significantly in USD terms.
         </ParagraphText>
 
         <PrimaryText className="d-block mt-3">
-          <span className="mr-2">Read More</span>
-          <LinkIcon className="fas fa-external-link-alt"></LinkIcon>
+          <Link href="https://ribbonfinance.medium.com/theta-vault-backtest-results-6e8c59adf38c">
+            <span className="mr-2">Read More</span>
+            <LinkIcon className="fas fa-external-link-alt"></LinkIcon>
+          </Link>
         </PrimaryText>
       </Paragraph>
     </div>
