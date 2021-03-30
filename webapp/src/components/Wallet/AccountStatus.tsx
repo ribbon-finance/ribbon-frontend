@@ -21,6 +21,7 @@ import MobileOverlayMenu from "../Common/MobileOverlayMenu";
 import MenuButton from "../Header/MenuButton";
 import { copyTextToClipboard } from "../../utils/text";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
+import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
 const WalletContainer = styled.div<AccountStatusVariantProps>`
   justify-content: center;
@@ -223,6 +224,7 @@ const truncateAddress = (address: string) => {
 
 const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   const {
+    connector,
     deactivate: deactivateWeb3,
     library,
     active,
@@ -300,9 +302,12 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   }, [account]);
 
   const handleDisconnect = useCallback(async () => {
+    if (connector instanceof WalletConnectConnector) {
+      connector.close();
+    }
     deactivateWeb3();
     onCloseMenu();
-  }, [deactivateWeb3, onCloseMenu]);
+  }, [deactivateWeb3, onCloseMenu, connector]);
 
   const onCloseConnectionModal = useCallback(() => {
     setShowConnectModal(false);

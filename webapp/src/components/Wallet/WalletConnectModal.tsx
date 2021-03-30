@@ -115,6 +115,12 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
   const handleConnect = useCallback(
     async (type: connectorType) => {
       setConnectingConnector(type);
+
+      // Disconnect wallet if currently connected already
+      if (active && connector instanceof WalletConnectConnector)
+        await connector.close();
+
+      // Connect wallet
       switch (type) {
         case "metamask":
           await activateWeb3(injectedConnector);
@@ -124,7 +130,7 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
       }
       setConnectingConnector(undefined);
     },
-    [activateWeb3]
+    [activateWeb3, connector, active]
   );
 
   useEffect(() => {
