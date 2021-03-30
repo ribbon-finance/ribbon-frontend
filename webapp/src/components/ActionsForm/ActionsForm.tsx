@@ -117,12 +117,13 @@ const WalletBalance = styled.div<{ active: boolean }>`
 type ValidationErrors = "none" | "insufficient_balance";
 
 interface ActionsFormProps {
-  onDeposit: () => void;
+  variant: "desktop" | "mobile";
 }
 
-const ActionsForm: React.FC<ActionsFormProps> = ({ onDeposit }) => {
+const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
   const DEPOSIT_TAB = true;
   const WITHDRAWAL_TAB = false;
+  const isDesktop = variant === "desktop";
 
   const vault = useVault();
   const {
@@ -324,7 +325,7 @@ const ActionsForm: React.FC<ActionsFormProps> = ({ onDeposit }) => {
         </ContentContainer>
       </FormContainer>
 
-      {connected && <YourPosition></YourPosition>}
+      {connected && isDesktop && <YourPosition></YourPosition>}
     </div>
   );
 };

@@ -9,7 +9,6 @@ import ActionsForm from "../../components/ActionsForm/ActionsForm";
 import Theta from "../../components/Product/Splash/Theta";
 import useVaultData from "../../hooks/useVaultData";
 import { formatSignificantDecimals } from "../../utils/math";
-import AccountStatus from "../../components/Wallet/AccountStatus";
 import sizes from "../../designSystem/sizes";
 
 const { formatEther } = ethers.utils;
@@ -85,7 +84,7 @@ const DepositPage = () => {
           <PerformanceSection></PerformanceSection>
 
           <DesktopActionsFormContainer className="col-xl-4 offset-xl-1 col-md-6">
-            <ActionsForm onDeposit={() => {}}></ActionsForm>
+            <ActionsForm variant="desktop"></ActionsForm>
           </DesktopActionsFormContainer>
         </div>
       </div>

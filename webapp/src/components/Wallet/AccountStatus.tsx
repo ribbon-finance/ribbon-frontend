@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { setTimeout } from "timers";
@@ -23,6 +29,7 @@ import { copyTextToClipboard } from "../../utils/text";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { ActionButton } from "../Common/buttons";
+import ActionsFormModal from "../ActionsFormModal/ActionsFormModal";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -236,7 +243,6 @@ const MenuCloseItem = styled(MenuItem)`
 interface AccountStatusProps {
   variant: "desktop" | "mobile";
   showInvestButton?: boolean;
-  onClickInvest?: () => void;
 }
 
 const truncateAddress = (address: string) => {
@@ -246,7 +252,6 @@ const truncateAddress = (address: string) => {
 const AccountStatus: React.FC<AccountStatusProps> = ({
   variant,
   showInvestButton,
-  onClickInvest = () => {},
 }) => {
   const {
     connector,
@@ -256,6 +261,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     account,
   } = useWeb3React();
   const [showConnectModal, setShowConnectModal] = useState(false);
+  const [showActionFormModal, setShowActionFormModal] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
     "hidden"
@@ -338,6 +344,14 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     setShowConnectModal(false);
   }, []);
 
+  const onCloseActionsModal = useCallback(() => {
+    setShowActionFormModal(false);
+  }, [setShowActionFormModal]);
+
+  const handleInvestButtonClick = () => {
+    setShowActionFormModal(true);
+  };
+
   const renderButtonContent = () =>
     active && account ? (
       <>
@@ -371,6 +385,16 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     return <WalletCopyIcon className="far fa-clone" state={copyState} />;
   };
 
+  const formModal = useMemo(
+    () => (
+      <ActionsFormModal
+        show={showActionFormModal}
+        onClose={onCloseActionsModal}
+      ></ActionsFormModal>
+    ),
+    [showActionFormModal, onCloseActionsModal]
+  );
+
   return (
     <>
       {/* Main Button and Desktop Menu */}
@@ -384,7 +408,9 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
         >
           {renderButtonContent()}
         </WalletButton>
-        {showInvestButton && <InvestButton>Invest</InvestButton>}
+        {showInvestButton && (
+          <InvestButton onClick={handleInvestButtonClick}>Invest</InvestButton>
+        )}
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>
           {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
           {renderMenuItem(
@@ -422,6 +448,8 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
         show={showConnectModal}
         onClose={onCloseConnectionModal}
       />
+
+      {formModal}
     </>
   );
 };
