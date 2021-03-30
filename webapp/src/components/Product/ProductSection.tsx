@@ -16,7 +16,6 @@ import YieldCard from "./Product/YieldCard";
 import {
   ProductType,
   ProductTabProps,
-  ArrowButtonProps,
   DynamicMarginProps,
   HeaderScrollIndicatorProps,
 } from "./types";
@@ -45,12 +44,10 @@ const HeaderContainer = styled.div<DynamicMarginProps>`
   flex-wrap: wrap;
   ${(props) => {
     if (props.empty <= 0) return null;
-
     return `
       margin-top: calc(${props.empty}px * 0.15);
     `;
   }}
-
   @media (max-width: ${sizes.md}px) {
     margin-top: 0px;
   }
@@ -61,7 +58,6 @@ const ProductTitle = styled(Title)`
   font-size: 24px;
   text-align: center;
   margin-top: 16px;
-
   @media (max-width: ${sizes.md}px) {
     display: block;
   }
@@ -73,7 +69,6 @@ const ProductTabScrollContainer = styled.div`
   margin-top: 40px;
   display: flex;
   justify-content: center;
-
   @media (max-width: ${sizes.md}px) {
     margin-top: 24px;
   }
@@ -83,7 +78,6 @@ const ProductTabContainer = styled.div`
   background-color: ${colors.backgroundDarker};
   border-radius: ${theme.border.radius};
   position: relative;
-
   @media (max-width: ${sizes.md}px) {
     justify-content: unset;
     flex-wrap: nowrap;
@@ -106,11 +100,9 @@ const ProductTabButton = styled(BaseButton)<ProductTabProps>`
   padding: 12px 16px;
   margin-right: 4px;
   z-index: 1;
-
   &:last-child {
     margin-right: 0px;
   }
-
   &:hover {
     span {
       color: ${(props) => {
@@ -131,11 +123,12 @@ const ProductTabButton = styled(BaseButton)<ProductTabProps>`
 
 const ProductTabButtonText = styled(SecondaryText)<ProductTabProps>`
   white-space: nowrap;
+  font-family: VCR;
+  text-transform: uppercase;
   color: ${(props) => {
     if (!props.selected) {
       return `${colors.primaryText}A3`;
     }
-
     switch (props.type) {
       case "yield":
       case "capitalAccumulation":
@@ -168,7 +161,6 @@ const HeaderScrollIndicator = styled.div<HeaderScrollIndicatorProps>`
   z-index: 2;
   transition: 0.2s all ease-out;
   top: 0;
-
   ${(props) => {
     switch (props.direction) {
       case "left":
@@ -193,12 +185,10 @@ const ProductContentContainer = styled(Row)<DynamicMarginProps>`
   padding: 40px 0px;
   ${(props) => {
     if (props.empty <= 0) return null;
-
     return `
       margin-top: calc(${props.empty}px * 0.15);
     `;
   }}
-
   @media (max-width: ${sizes.md}px) {
     margin-top: 0px;
   }
@@ -209,31 +199,6 @@ const ProductContent = styled(Col)`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-const ProductContentArrowButton = styled(BaseButton)<ArrowButtonProps>`
-  height: 64px;
-  width: 64px;
-  border-radius: 108px;
-  background-color: ${colors.backgroundDarker};
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    i {
-      opacity: ${theme.hover.opacity};
-    }
-  }
-
-  @media (max-width: ${sizes.md}px) {
-    display: none;
-  }
-`;
-
-const ProductContentArrowIcon = styled.i`
-  color: white;
 `;
 
 const ComingSoonContainer = styled.div`
@@ -291,7 +256,8 @@ const Products = () => {
     mutationObserver: false,
   });
   const { scrollY } = useElementScroll(tabContainerRef);
-  const empty = height - headerHeight - contentHeight - 81;
+  // Minus header and footer to determine the empty space available for offset
+  const empty = height - headerHeight - contentHeight - 81 - 52;
 
   useEffect(() => {
     const currentTab = tabRefs[selectedProduct].current;
@@ -346,17 +312,7 @@ const Products = () => {
   const renderProduct = useCallback(() => {
     switch (selectedProduct) {
       case "yield":
-        return (
-          <>
-            <ProductContentArrowButton role="button" direction="left">
-              <ProductContentArrowIcon className="fas fa-arrow-left" />
-            </ProductContentArrowButton>
-            <YieldCard />
-            <ProductContentArrowButton role="button" direction="right">
-              <ProductContentArrowIcon className="fas fa-arrow-right" />
-            </ProductContentArrowButton>
-          </>
-        );
+        return <YieldCard />;
       case "volatility":
       case "principalProtection":
       case "capitalAccumulation":
@@ -381,7 +337,10 @@ const Products = () => {
             <ProductTabContainer ref={tabContainerRef}>
               {/** Active Button Background */}
               <ProductActiveButton
-                transition={{ type: "keyframes", ease: "easeOut" }}
+                transition={{
+                  type: "keyframes",
+                  ease: "easeOut",
+                }}
                 height={0}
                 width={0}
                 top={8}
@@ -414,7 +373,7 @@ const Products = () => {
           ref={contentRef}
           empty={empty}
         >
-          <ProductContent lg={7}>{renderProduct()}</ProductContent>
+          <ProductContent>{renderProduct()}</ProductContent>
         </ProductContentContainer>
       </ProductContainerBody>
     </ProductSectionContainer>

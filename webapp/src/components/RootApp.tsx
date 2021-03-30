@@ -6,24 +6,22 @@ import Header from "./Header/Header";
 import Homepage from "../pages/Home/Homepage";
 import DepositPage from "../pages/DepositPage/DepositPage";
 import useEagerConnect from "../hooks/useEagerConnect";
+import PortfolioPage from "../pages/Portfolio/PortfolioPage";
+import Footer from "./Footer/Footer";
+import useScreenSize from "../hooks/useScreenSize";
 
-const Root = styled.div`
-  position: fixed;
-  overflow: auto;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
+const Root = styled.div<{ screenHeight: number }>`
   background-color: #1c1a19;
-  -webkit-backdrop-filter: blur(3px);
-  backdrop-filter: blur(3px);
+  min-height: ${(props) =>
+    props.screenHeight ? `${props.screenHeight}px` : `100vh`};
 `;
 
 const RootApp = () => {
   useEagerConnect();
+  const { height: screenHeight } = useScreenSize();
 
   return (
-    <Root id="appRoot">
+    <Root id="appRoot" screenHeight={screenHeight}>
       <Router>
         <Header />
         <Switch>
@@ -31,9 +29,13 @@ const RootApp = () => {
             <Homepage />
           </Route>
           <Route path="/theta-vault">
-            <DepositPage></DepositPage>
+            <DepositPage />
+          </Route>
+          <Route path="/portfolio">
+            <PortfolioPage />
           </Route>
         </Switch>
+        <Footer />
       </Router>
     </Root>
   );

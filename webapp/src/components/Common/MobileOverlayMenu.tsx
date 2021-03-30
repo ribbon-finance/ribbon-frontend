@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import useScreenSize from "../../hooks/useScreenSize";
 
@@ -13,16 +13,16 @@ interface ScreenHeightProps {
 type MobileOverlayContainerProps = MenuStateProps & ScreenHeightProps;
 
 export const MobileOverlayContainer = styled.div<MobileOverlayContainerProps>`
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   height: ${(props) => (props.height ? `${props.height}px` : `100vh`)};
-  z-index: -1;
+  z-index: ${(props) => (props.isMenuOpen ? 50 : -1)};
   transition: 0.1s all ease-in;
   display: flex;
 
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(40px);
   /**
    * Firefox desktop come with default flag to have backdrop-filter disabled
    * Firefox Android also currently has bug where backdrop-filter is not being applied
@@ -46,6 +46,8 @@ export const MobileOverlayContainer = styled.div<MobileOverlayContainerProps>`
 type MobileOverlayMenuProps = MenuStateProps &
   React.HTMLAttributes<HTMLDivElement> & {
     onOverlayClick?: (event: React.MouseEvent) => void;
+    mountRoot?: string;
+    boundingDivProps?: React.HTMLAttributes<HTMLDivElement>;
   };
 
 const MobileOverlayMenu: React.FC<MobileOverlayMenuProps> = ({
@@ -53,21 +55,28 @@ const MobileOverlayMenu: React.FC<MobileOverlayMenuProps> = ({
   children,
   onClick,
   onOverlayClick,
+  mountRoot,
+  boundingDivProps,
   ...props
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const { height } = useScreenSize();
 
   useEffect(() => {
-    if (isMenuOpen) {
-      (document.querySelector(
-        "div#appRoot"
-      )! as HTMLDivElement).style.overflow = "hidden";
+    if (!containerRef.current || !mountRoot) {
       return;
     }
 
-    (document.querySelector(
-      "div#appRoot"
-    )! as HTMLDivElement).style.removeProperty("overflow");
+    document.querySelector(mountRoot)!.appendChild(containerRef.current);
+  }, [containerRef, mountRoot]);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.querySelector("body")!.style.overflow = "hidden";
+      return;
+    }
+
+    document.querySelector("body")!.style.removeProperty("overflow");
   }, [isMenuOpen]);
 
   return (
@@ -78,10 +87,15 @@ const MobileOverlayMenu: React.FC<MobileOverlayMenuProps> = ({
         onClick && onClick(event);
         onOverlayClick && onOverlayClick(event);
       }}
+      ref={containerRef}
       {...props}
     >
       {React.Children.map(children, (child) => {
-        return <div onClick={(e) => e.stopPropagation()}>{child}</div>;
+        return (
+          <div onClick={(e) => e.stopPropagation()} {...boundingDivProps}>
+            {child}
+          </div>
+        );
       })}
     </MobileOverlayContainer>
   );

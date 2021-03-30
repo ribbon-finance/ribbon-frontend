@@ -19,8 +19,20 @@ const ForegroundBar = styled.div`
   width: 100%;
 `;
 
-const DepositStat = styled(Title)`
-  font-size: 14px;
+const DepositLabel = styled(SecondaryText)<{
+  config: {
+    fontSize: number;
+  };
+}>`
+  font-size: ${(props) => props.config.fontSize}px;
+`;
+
+const DepositStat = styled(Title)<{
+  config: {
+    fontSize: number;
+  };
+}>`
+  font-size: ${(props) => props.config.fontSize}px;
   line-height: 20px;
 `;
 
@@ -28,7 +40,24 @@ const DepositCapBar: React.FC<{
   loading: boolean;
   totalDeposit: number;
   limit: number;
-}> = ({ loading, totalDeposit, limit }) => {
+  copies?: {
+    totalDeposit: string;
+    limit: string;
+  };
+  labelConfig?: {
+    fontSize: number;
+  };
+  statsConfig?: {
+    fontSize: number;
+  };
+}> = ({
+  loading,
+  totalDeposit,
+  limit,
+  copies = { totalDeposit: "Total Deposits", limit: "Limit" },
+  labelConfig = { fontSize: 14 },
+  statsConfig = { fontSize: 14 },
+}) => {
   let percent = totalDeposit / (limit > 0 ? limit : 1);
   if (percent < 0) {
     percent = 0;
@@ -40,8 +69,8 @@ const DepositCapBar: React.FC<{
   return (
     <div className="w-100">
       <div className="d-flex flex-row justify-content-between">
-        <SecondaryText>Total Deposits</SecondaryText>
-        <DepositStat>
+        <DepositLabel config={labelConfig}>{copies.totalDeposit}</DepositLabel>
+        <DepositStat config={statsConfig}>
           {loading ? "Loading..." : `${totalDeposit} ETH`}
         </DepositStat>
       </div>
@@ -52,8 +81,10 @@ const DepositCapBar: React.FC<{
       </div>
 
       <div className="d-flex flex-row justify-content-between">
-        <SecondaryText>Limit</SecondaryText>
-        <DepositStat>{loading ? "Loading..." : `${limit} ETH`}</DepositStat>
+        <DepositLabel config={labelConfig}>{copies.limit}</DepositLabel>
+        <DepositStat config={statsConfig}>
+          {loading ? "Loading..." : `${limit} ETH`}
+        </DepositStat>
       </div>
     </div>
   );

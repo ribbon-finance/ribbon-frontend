@@ -108,12 +108,19 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
   ] = useState<connectorType>();
   const initializingText = useTextAnimation(
     ["INITIALIZING", "INITIALIZING .", "INITIALIZING ..", "INITIALIZING ..."],
-    250
+    250,
+    !!connectingConnector
   );
 
   const handleConnect = useCallback(
     async (type: connectorType) => {
       setConnectingConnector(type);
+
+      // Disconnect wallet if currently connected already
+      if (active && connector instanceof WalletConnectConnector)
+        await connector.close();
+
+      // Connect wallet
       switch (type) {
         case "metamask":
           await activateWeb3(injectedConnector);
@@ -123,7 +130,7 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
       }
       setConnectingConnector(undefined);
     },
-    [activateWeb3]
+    [activateWeb3, connector, active]
   );
 
   useEffect(() => {
@@ -158,31 +165,41 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
     [active, connector, connectingConnector]
   );
 
-  const renderConnectorIcon = (type: connectorType) => {
+  const renderConnectorIcon = useCallback((type: connectorType) => {
     switch (type) {
       case "metamask":
         return <MetamaskIcon height={40} width={40} />;
       case "walletConnect":
         return <WalletConnectIcon height={40} width={40} />;
     }
-  };
+  }, []);
 
-  const renderConnectorButton = (type: connectorType, title: string) => (
-    <ConnectorButton
-      role="button"
-      onClick={() => handleConnect(type)}
-      status={getConnectorStatus(type)}
-    >
-      {renderConnectorIcon(type)}
-      <ConnectorButtonText>
-        {connectingConnector === type ? initializingText : title}
-      </ConnectorButtonText>
-      {getConnectorStatus(type) === "connected" && (
-        <IndicatorContainer>
-          <Indicator connected={active} />
-        </IndicatorContainer>
-      )}
-    </ConnectorButton>
+  const renderConnectorButton = useCallback(
+    (type: connectorType, title: string) => (
+      <ConnectorButton
+        role="button"
+        onClick={() => handleConnect(type)}
+        status={getConnectorStatus(type)}
+      >
+        {renderConnectorIcon(type)}
+        <ConnectorButtonText>
+          {connectingConnector === type ? initializingText : title}
+        </ConnectorButtonText>
+        {getConnectorStatus(type) === "connected" && (
+          <IndicatorContainer>
+            <Indicator connected={active} />
+          </IndicatorContainer>
+        )}
+      </ConnectorButton>
+    ),
+    [
+      active,
+      connectingConnector,
+      getConnectorStatus,
+      initializingText,
+      renderConnectorIcon,
+      handleConnect,
+    ]
   );
 
   return (

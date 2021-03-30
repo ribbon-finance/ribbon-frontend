@@ -63,6 +63,10 @@ const NavItem = styled.div<NavItemProps>`
   &:hover {
     opacity: ${(props) => (props.isSelected ? theme.hover.opacity : "1")};
   }
+
+  @media (max-width: ${sizes.md}px) {
+    padding: 0px 0px 40px 48px;
+  }
 `;
 
 const NavLinkText = styled(Title)`
@@ -73,6 +77,20 @@ const NavLinkText = styled(Title)`
   @media (max-width: ${sizes.md}px) {
     font-size: 24px;
   }
+`;
+
+const SecondaryMobileNavItem = styled.div`
+  display: none;
+
+  @media (max-width: ${sizes.md}px) {
+    display: flex;
+    padding: 0px 0px 24px 48px;
+  }
+`;
+
+const SecondaryMobileNavLinktext = styled(Title)`
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.48);
 `;
 
 const MobileOnly = styled.div`
@@ -90,12 +108,28 @@ const Header = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const renderLinkItem = (title: string, to: string, isSelected: boolean) => {
+  const renderLinkItem = (
+    title: string,
+    to: string,
+    isSelected: boolean,
+    primary: boolean = true,
+    external: boolean = false
+  ) => {
     return (
-      <BaseLink to={to}>
-        <NavItem isSelected={isSelected}>
-          <NavLinkText>{title}</NavLinkText>
-        </NavItem>
+      <BaseLink
+        to={to}
+        target={external ? "_blank" : undefined}
+        rel={external ? "noreferrer noopener" : undefined}
+      >
+        {primary ? (
+          <NavItem isSelected={isSelected}>
+            <NavLinkText>{title}</NavLinkText>
+          </NavItem>
+        ) : (
+          <SecondaryMobileNavItem>
+            <SecondaryMobileNavLinktext>{title}</SecondaryMobileNavLinktext>
+          </SecondaryMobileNavItem>
+        )}
       </BaseLink>
     );
   };
@@ -114,8 +148,7 @@ const Header = () => {
       <HeaderAbsoluteContainer>
         <LinksContainer>
           {renderLinkItem("PRODUCTS", "/", true)}
-          {renderLinkItem("POSITIONS", "/", false)}
-          {renderLinkItem("ABOUT", "/", false)}
+          {renderLinkItem("PORTFOLIO", "/portfolio", false)}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
@@ -128,10 +161,45 @@ const Header = () => {
           className="flex-column align-items-center justify-content-center"
           isMenuOpen={isMenuOpen}
           onOverlayClick={onToggleMenu}
+          boundingDivProps={{
+            style: {
+              marginRight: "auto",
+            },
+          }}
         >
           {renderLinkItem("PRODUCTS", "/", true)}
-          {renderLinkItem("POSITIONS", "/", false)}
-          {renderLinkItem("ABOUT", "/", false)}
+          {renderLinkItem("PORTFOLIO", "/portfolio", false)}
+          {renderLinkItem(
+            "DISCORD",
+            "http://tiny.cc/ribbon-discord",
+            false,
+            false,
+            true
+          )}
+          {renderLinkItem(
+            "TWITTER",
+            "https://twitter.com/ribbonfinance",
+            false,
+            false,
+            true
+          )}
+          {renderLinkItem(
+            "GITHUB",
+            "https://github.com/ribbon-finance",
+            false,
+            false,
+            true
+          )}
+          {renderLinkItem("FAQS", "/faq", false, false)}
+          {renderLinkItem(
+            "BLOG",
+            "https://medium.com/@ribbonfinance",
+            false,
+            false,
+            true
+          )}
+          {renderLinkItem("TERMS", "/terms", false, false)}
+          {renderLinkItem("POLICY", "/policy", false, false)}
         </MobileOverlayMenu>
       </MobileOnly>
     </HeaderContainer>

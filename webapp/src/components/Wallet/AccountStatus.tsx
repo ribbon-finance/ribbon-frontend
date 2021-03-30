@@ -21,6 +21,7 @@ import MobileOverlayMenu from "../Common/MobileOverlayMenu";
 import MenuButton from "../Header/MenuButton";
 import { copyTextToClipboard } from "../../utils/text";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
+import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
 const WalletContainer = styled.div<AccountStatusVariantProps>`
   justify-content: center;
@@ -35,7 +36,7 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
         z-index: 1000;
         position: relative;
 
-        @media (max-width: ${sizes.lg}px) {
+        @media (max-width: ${sizes.md}px) {
           display: none;
         }
         `;
@@ -43,12 +44,11 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
         return `
           display: none;
 
-          @media (max-width: ${sizes.lg}px) {
+          @media (max-width: ${sizes.md}px) {
             display: flex;
             width: 90%;
-            position: sticky;
-            bottom: 5vh;
-            left: 5%;
+            align-items: unset;
+            padding-top: 16px;
           }
         `;
     }
@@ -59,6 +59,7 @@ const WalletButton = styled(BaseButton)<WalletButtonProps>`
   background-color: ${(props) =>
     props.connected ? colors.backgroundDarker : `${colors.green}14`};
   align-items: center;
+  height: fit-content;
 
   &:hover {
     opacity: ${theme.hover.opacity};
@@ -70,6 +71,7 @@ const WalletButton = styled(BaseButton)<WalletButtonProps>`
         return `
         width: 100%;
         justify-content: center;
+        padding: 14px 16px;
       `;
       case "desktop":
         return ``;
@@ -81,7 +83,7 @@ const WalletButtonText = styled(Title)<WalletStatusProps>`
   font-size: 14px;
   line-height: 20px;
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.md}px) {
     font-size: 16px;
   }
 
@@ -126,7 +128,7 @@ const WalletMobileOverlayMenu = styled(
     switch (props.variant) {
       case "mobile":
         return `
-          @media (max-width: ${sizes.lg}px) {
+          @media (max-width: ${sizes.md}px) {
             display: flex;
             z-index: ${props.isMenuOpen ? 50 : -1};
           }
@@ -160,12 +162,9 @@ const MenuItem = styled.div`
 
   @media (max-width: ${sizes.md}px) {
     margin: unset;
-    padding: 28px;
-  }
-
-  @media (max-width: ${sizes.md}px) {
-    margin: unset;
-    padding: 28px;
+    && {
+      padding: 28px;
+    }
   }
 `;
 
@@ -225,6 +224,7 @@ const truncateAddress = (address: string) => {
 
 const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   const {
+    connector,
     deactivate: deactivateWeb3,
     library,
     active,
@@ -302,9 +302,12 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   }, [account]);
 
   const handleDisconnect = useCallback(async () => {
+    if (connector instanceof WalletConnectConnector) {
+      connector.close();
+    }
     deactivateWeb3();
     onCloseMenu();
-  }, [deactivateWeb3, onCloseMenu]);
+  }, [deactivateWeb3, onCloseMenu, connector]);
 
   const onCloseConnectionModal = useCallback(() => {
     setShowConnectModal(false);
@@ -373,6 +376,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
         isMenuOpen={isMenuOpen}
         onOverlayClick={onCloseMenu}
         variant={variant}
+        mountRoot="div#root"
       >
         {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
         {renderMenuItem(
