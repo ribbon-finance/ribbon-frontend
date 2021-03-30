@@ -16,8 +16,8 @@ const ModalContainer = styled.div`
 `;
 
 const ModalHeader = styled.div`
-  margin-top: 28px;
-  margin-bottom: 50px;
+  position: absolute;
+  top: 28px;
   padding-left: 14px;
   padding-right: 14px;
 `;
@@ -26,6 +26,13 @@ const ArrowBack = styled.i`
   color: ${colors.primaryText};
   height: 14px;
   margin-right: 20px;
+`;
+
+const ModalBody = styled.div`
+  background: #1c1a19;
+  border: 1px solid #2b2b2b;
+  box-sizing: border-box;
+  border-radius: 8px;
 `;
 
 const ActionsFormModal: React.FC<ActionsFormModalProps> = ({
@@ -37,15 +44,18 @@ const ActionsFormModal: React.FC<ActionsFormModalProps> = ({
       isMenuOpen={show}
       onOverlayClick={() => {}}
       mountRoot="div#root"
+      boundingDivProps={{ style: { width: "100%" } }}
     >
-      <ModalContainer className="d-flex flex-column">
+      <ModalContainer className="d-flex flex-column h-100">
         <ModalHeader className="d-flex flex-row align-items-center">
           <div onClick={onClose}>
             <ArrowBack className="fas fa-arrow-left"></ArrowBack>
             <Title>Back</Title>
           </div>
         </ModalHeader>
-        <ActionsForm variant="mobile"></ActionsForm>
+        <div className="h-100">
+          <ActionsForm variant="mobile"></ActionsForm>
+        </div>
       </ModalContainer>
     </MobileOverlayMenu>
   );

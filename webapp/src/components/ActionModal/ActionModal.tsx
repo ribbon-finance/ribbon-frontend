@@ -3,8 +3,7 @@ import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 
 import { BaseModal, BaseModalHeader, Title } from "../../designSystem";
-import ActionSteps, { ActionStepsProps } from "./ActionSteps";
-import { ActionModalContent } from "./types";
+import { ActionModalContent, StepData } from "./types";
 
 const ActionModalHeader = styled(BaseModalHeader)`
   border-top-left-radius: 8px;
@@ -25,6 +24,7 @@ const ModalBody = styled(Modal.Body)`
 
 const CloseButton = styled.i`
   flex: 0;
+  cursor: pointer;
   paddingright: 20px;
 `;
 
@@ -40,6 +40,10 @@ const ActionModal: React.FC<ActionModalProps> = ({
   ModalContent,
 }) => {
   const [title, setTitle] = useState("");
+
+  const onChangeStep = (step: StepData) => {
+    setTitle(step.title);
+  };
 
   return (
     <BaseModal
@@ -58,7 +62,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
       </ActionModalHeader>
 
       <ModalBody className="d-flex flex-column align-items-center justify-items-center">
-        {<ModalContent onChangeTitle={setTitle}></ModalContent>}
+        {<ModalContent onChangeStep={onChangeStep}></ModalContent>}
       </ModalBody>
     </BaseModal>
   );

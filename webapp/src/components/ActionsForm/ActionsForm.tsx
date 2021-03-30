@@ -21,6 +21,17 @@ import ActionSteps from "../ActionModal/ActionSteps";
 
 const { parseEther, formatEther } = ethers.utils;
 
+const Container = styled.div<ActionsFormProps>`
+  ${(props) =>
+    props.variant === "mobile" &&
+    `
+    height: 100%;
+    display:flex;
+    align-items: center;
+    justify-content:center;
+  `}
+`;
+
 const FormContainer = styled.div`
   font-family: VCR;
   color: #f3f3f3;
@@ -139,6 +150,7 @@ const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
   const [inputAmount, setInputAmount] = useState("");
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [showActionModal, setShowActionModal] = useState(false);
+  const [showMobileSteps, setShowMobileSteps] = useState(false);
   const [error, setError] = useState<ValidationErrors>("none");
   const { active, account } = useWeb3React();
   const gasPrice = useGasPrice();
@@ -195,6 +207,7 @@ const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
 
   const handleClickActionButton = () => {
     isDesktop && inputAmount && connected && setShowActionModal(true);
+    !isDesktop && inputAmount && connected && setShowMobileSteps(true);
   };
 
   const onCloseActionsModal = () => {
@@ -268,10 +281,10 @@ const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
     }
   }
 
-  const stepsHOC = (props: ActionModalContentProps) => (
+  const ActionStepsHOC = (props: ActionModalContentProps) => (
     <ActionSteps
       actionType={isDeposit ? ACTIONS.deposit : ACTIONS.withdraw}
-      show={showActionModal}
+      show={isDesktop ? showActionModal : showMobileSteps}
       amount={inputAmount ? parseEther(inputAmount) : BigNumber.from("0")}
       positionAmount={vaultBalanceInAsset}
       actionParams={
@@ -283,67 +296,78 @@ const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
             }
       }
       onClose={onCloseActionsModal}
-      onChangeTitle={props.onChangeTitle}
+      onChangeStep={props.onChangeStep}
     ></ActionSteps>
   );
 
   return (
-    <div>
-      <FormContainer>
-        <WalletConnectModal
-          show={showConnectModal}
-          onClose={() => setShowConnectModal(false)}
-        />
-        {isDesktop && (
-          <ActionModal
-            show={showActionModal}
-            onClose={onCloseActionsModal}
-            ModalContent={stepsHOC}
-          ></ActionModal>
-        )}
-        <div
-          style={{ justifyContent: "space-evenly" }}
-          className="d-flex flex-row align-items-center"
-        >
-          <FormTitleDiv
-            left
-            active={isDeposit}
-            onClick={switchToTab(DEPOSIT_TAB)}
-          >
-            <FormTitle active={DEPOSIT_TAB}>Deposit</FormTitle>
-          </FormTitleDiv>
-          <FormTitleDiv
-            left={false}
-            active={!isDeposit}
-            onClick={switchToTab(WITHDRAWAL_TAB)}
-          >
-            <FormTitle active={WITHDRAWAL_TAB}>Withdraw</FormTitle>
-          </FormTitleDiv>
+    <Container variant={variant}>
+      {isDesktop && (
+        <ActionModal
+          show={showActionModal}
+          onClose={onCloseActionsModal}
+          ModalContent={ActionStepsHOC}
+        ></ActionModal>
+      )}
+
+      <WalletConnectModal
+        show={showConnectModal}
+        onClose={() => setShowConnectModal(false)}
+      />
+
+      {!isDesktop && showMobileSteps && (
+        <div className="d-flex align-items-center justify-content-center">
+          <ActionStepsHOC onChangeStep={() => {}}></ActionStepsHOC>
         </div>
-        <ContentContainer className="px-4 py-4">
-          <InputGuide>AMOUNT (ETH)</InputGuide>
-          <FormInputContainer className="position-relative mt-2 mb-5 px-1">
-            <FormInput
-              type="number"
-              className="form-control"
-              aria-label="ETH"
-              placeholder="0"
-              value={inputAmount}
-              onChange={handleChange}
-            />
-            {connected && (
-              <MaxAccessory onClick={handleClickMax}>MAX</MaxAccessory>
-            )}
-          </FormInputContainer>
+      )}
 
-          {button}
+      {!showMobileSteps && (
+        <FormContainer>
+          <div
+            style={{ justifyContent: "space-evenly" }}
+            className="d-flex flex-row align-items-center"
+          >
+            <FormTitleDiv
+              left
+              active={isDeposit}
+              onClick={switchToTab(DEPOSIT_TAB)}
+            >
+              <FormTitle active={DEPOSIT_TAB}>Deposit</FormTitle>
+            </FormTitleDiv>
+            <FormTitleDiv
+              left={false}
+              active={!isDeposit}
+              onClick={switchToTab(WITHDRAWAL_TAB)}
+            >
+              <FormTitle active={WITHDRAWAL_TAB}>Withdraw</FormTitle>
+            </FormTitleDiv>
+          </div>
 
-          <WalletBalance active={connected}>{walletText}</WalletBalance>
-        </ContentContainer>
-      </FormContainer>
+          <ContentContainer className="px-4 py-4">
+            <InputGuide>AMOUNT (ETH)</InputGuide>
+            <FormInputContainer className="position-relative mt-2 mb-5 px-1">
+              <FormInput
+                type="number"
+                className="form-control"
+                aria-label="ETH"
+                placeholder="0"
+                value={inputAmount}
+                onChange={handleChange}
+              />
+              {connected && (
+                <MaxAccessory onClick={handleClickMax}>MAX</MaxAccessory>
+              )}
+            </FormInputContainer>
+
+            {button}
+
+            <WalletBalance active={connected}>{walletText}</WalletBalance>
+          </ContentContainer>
+        </FormContainer>
+      )}
 
       {connected && isDesktop && <YourPosition></YourPosition>}
-    </div>
+    </Container>
   );
 };
 

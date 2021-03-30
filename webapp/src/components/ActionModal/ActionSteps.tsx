@@ -1,34 +1,26 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
 import { BigNumber } from "ethers";
 
-import { ActionParams, ACTIONS, ActionType } from "./types";
+import {
+  ActionParams,
+  ACTIONS,
+  ActionType,
+  MobileNavigationButtonTypes,
+  StepData,
+  Steps,
+  STEPS,
+} from "./types";
 
 import useVault from "../../hooks/useVault";
 import PreviewStep from "./PreviewStep";
 import ConfirmationStep from "./ConfirmationStep";
 import SubmittedStep from "./SubmittedStep";
 
-type PreviewStepType = 0;
-type ConfirmationStepType = 1;
-type SubmittedStepType = 2;
-type Steps = PreviewStepType | ConfirmationStepType | SubmittedStepType;
-
-const STEPS: {
-  previewStep: PreviewStepType;
-  confirmationStep: ConfirmationStepType;
-  submittedStep: SubmittedStepType;
-} = {
-  previewStep: 0,
-  confirmationStep: 1,
-  submittedStep: 2,
-};
-
 export interface ActionStepsProps {
   actionType: ActionType;
   show: boolean;
   onClose: () => void;
-  onChangeTitle: (title: string) => void;
+  onChangeStep: (stepData: StepData) => void;
   amount: BigNumber;
   positionAmount: BigNumber;
   actionParams: ActionParams;
@@ -38,7 +30,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   actionType,
   show,
   onClose,
-  onChangeTitle,
+  onChangeStep,
   amount,
   positionAmount,
   actionParams,
@@ -89,15 +81,25 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     }
   };
 
-  const titles = {
-    0: `${actionWord} Preview`,
-    1: "Confirm Transaction",
-    2: "Transaction Submitted",
-  };
-
   useEffect(() => {
-    onChangeTitle(titles[step]);
-  }, [step, onChangeTitle]);
+    const titles = {
+      [STEPS.previewStep]: `${actionWord} Preview`,
+      [STEPS.confirmationStep]: "Confirm Transaction",
+      [STEPS.submittedStep]: "Transaction Submitted",
+    };
+
+    const navigationButtons: Record<Steps, MobileNavigationButtonTypes> = {
+      [STEPS.previewStep]: "back",
+      [STEPS.confirmationStep]: "close",
+      [STEPS.submittedStep]: "close",
+    };
+
+    onChangeStep({
+      title: titles[step],
+      stepNum: step,
+      navigationButton: navigationButtons[step],
+    });
+  }, [step, onChangeStep, actionWord]);
 
   const stepComponents = {
     0: (
