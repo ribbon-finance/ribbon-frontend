@@ -14,6 +14,7 @@
     "@types/react-router-dom": "^5.1.7",
     "@types/styled-components": "^5.1.7",
     "@web3-react/core": "^6.1.9",
+    "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "ethers": "^5.1.0",
     "framer": "^1.2.29",
