@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
@@ -294,11 +294,13 @@ const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
           show={showConnectModal}
           onClose={() => setShowConnectModal(false)}
         />
-        <ActionModal
-          show={showActionModal}
-          onClose={onCloseActionsModal}
-          ModalContent={stepsHOC}
-        ></ActionModal>
+        {isDesktop && (
+          <ActionModal
+            show={showActionModal}
+            onClose={onCloseActionsModal}
+            ModalContent={stepsHOC}
+          ></ActionModal>
+        )}
         <div
           style={{ justifyContent: "space-evenly" }}
           className="d-flex flex-row align-items-center"
