@@ -278,7 +278,8 @@ const Products = () => {
     mutationObserver: false,
   });
   const { scrollY } = useElementScroll(tabContainerRef);
-  const empty = height - headerHeight - contentHeight - 81;
+  // Minus header and footer to determine the empty space available for offset
+  const empty = height - headerHeight - contentHeight - 81 - 52;
 
   useEffect(() => {
     const currentTab = tabRefs[selectedProduct].current;
@@ -404,7 +405,9 @@ const Products = () => {
           ref={contentRef}
           empty={empty}
         >
-          <ProductContent lg={7}>{renderProduct()}</ProductContent>
+          <ProductContent xs={12} sm={9} lg={7}>
+            {renderProduct()}
+          </ProductContent>
         </ProductContentContainer>
       </ProductContainerBody>
     </ProductSectionContainer>
