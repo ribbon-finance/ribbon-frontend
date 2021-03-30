@@ -114,8 +114,7 @@ const Header = () => {
       <HeaderAbsoluteContainer>
         <LinksContainer>
           {renderLinkItem("PRODUCTS", "/", true)}
-          {renderLinkItem("POSITIONS", "/", false)}
-          {renderLinkItem("ABOUT", "/", false)}
+          {renderLinkItem("PORTFOLIO", "/portfolio", false)}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
@@ -130,8 +129,7 @@ const Header = () => {
           onOverlayClick={onToggleMenu}
         >
           {renderLinkItem("PRODUCTS", "/", true)}
-          {renderLinkItem("POSITIONS", "/", false)}
-          {renderLinkItem("ABOUT", "/", false)}
+          {renderLinkItem("PORTFOLIO", "/portfolio", false)}
         </MobileOverlayMenu>
       </MobileOnly>
     </HeaderContainer>

@@ -46,9 +46,8 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
           @media (max-width: ${sizes.lg}px) {
             display: flex;
             width: 90%;
-            position: sticky;
-            bottom: 5vh;
-            left: 5%;
+            align-items: unset;
+            padding-top: 16px;
           }
         `;
     }
@@ -59,6 +58,7 @@ const WalletButton = styled(BaseButton)<WalletButtonProps>`
   background-color: ${(props) =>
     props.connected ? colors.backgroundDarker : `${colors.green}14`};
   align-items: center;
+  height: fit-content;
 
   &:hover {
     opacity: ${theme.hover.opacity};
@@ -70,6 +70,7 @@ const WalletButton = styled(BaseButton)<WalletButtonProps>`
         return `
         width: 100%;
         justify-content: center;
+        padding: 14px 16px;
       `;
       case "desktop":
         return ``;
@@ -160,12 +161,9 @@ const MenuItem = styled.div`
 
   @media (max-width: ${sizes.md}px) {
     margin: unset;
-    padding: 28px;
-  }
-
-  @media (max-width: ${sizes.md}px) {
-    margin: unset;
-    padding: 28px;
+    && {
+      padding: 28px;
+    }
   }
 `;
 
@@ -373,6 +371,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
         isMenuOpen={isMenuOpen}
         onOverlayClick={onCloseMenu}
         variant={variant}
+        mountRoot="div#root"
       >
         {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
         {renderMenuItem(
