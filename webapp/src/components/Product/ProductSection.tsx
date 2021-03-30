@@ -16,7 +16,6 @@ import YieldCard from "./Product/YieldCard";
 import {
   ProductType,
   ProductTabProps,
-  ArrowButtonProps,
   DynamicMarginProps,
   HeaderScrollIndicatorProps,
 } from "./types";
@@ -124,6 +123,8 @@ const ProductTabButton = styled(BaseButton)<ProductTabProps>`
 
 const ProductTabButtonText = styled(SecondaryText)<ProductTabProps>`
   white-space: nowrap;
+  font-family: VCR;
+  text-transform: uppercase;
   color: ${(props) => {
     if (!props.selected) {
       return `${colors.primaryText}A3`;
@@ -198,29 +199,6 @@ const ProductContent = styled(Col)`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-const ProductContentArrowButton = styled(BaseButton)<ArrowButtonProps>`
-  height: 64px;
-  width: 64px;
-  border-radius: 108px;
-  background-color: ${colors.backgroundDarker};
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  &:hover {
-    i {
-      opacity: ${theme.hover.opacity};
-    }
-  }
-  @media (max-width: ${sizes.md}px) {
-    display: none;
-  }
-`;
-
-const ProductContentArrowIcon = styled.i`
-  color: white;
 `;
 
 const ComingSoonContainer = styled.div`
@@ -334,17 +312,7 @@ const Products = () => {
   const renderProduct = useCallback(() => {
     switch (selectedProduct) {
       case "yield":
-        return (
-          <>
-            <ProductContentArrowButton role="button" direction="left">
-              <ProductContentArrowIcon className="fas fa-arrow-left" />
-            </ProductContentArrowButton>
-            <YieldCard />
-            <ProductContentArrowButton role="button" direction="right">
-              <ProductContentArrowIcon className="fas fa-arrow-right" />
-            </ProductContentArrowButton>
-          </>
-        );
+        return <YieldCard />;
       case "volatility":
       case "principalProtection":
       case "capitalAccumulation":
@@ -405,9 +373,7 @@ const Products = () => {
           ref={contentRef}
           empty={empty}
         >
-          <ProductContent xs={12} sm={9} lg={7}>
-            {renderProduct()}
-          </ProductContent>
+          <ProductContent>{renderProduct()}</ProductContent>
         </ProductContentContainer>
       </ProductContainerBody>
     </ProductSectionContainer>

@@ -28,11 +28,16 @@ const ProductCard = styled.div`
   padding: 16px 24px 24px 16px;
   box-shadow: 4px 8px 80px rgba(255, 56, 92, 0.16);
   margin: 0 64px;
+  transition: 0.25s box-shadow ease-out;
+  max-width: 343px;
+
+  &:hover {
+    box-shadow: rgb(255 56 92 / 24%) 4px 8px 120px;
+  }
 
   @media (max-width: ${sizes.md}px) {
     margin: 0 40px;
   }
-  cursor: pointer;
 `;
 
 const ProductTagContainer = styled.div`
@@ -42,7 +47,7 @@ const ProductTagContainer = styled.div`
 `;
 
 const ProductTag = styled(BaseButton)`
-  background: ${colors.tagBackground}CC;
+  background: ${colors.pillBackground};
   padding: 8px;
   margin-right: 4px;
   margin-bottom: 8px;
@@ -89,7 +94,7 @@ const YieldCard = () => {
   );
 
   return (
-    <ProductCard onClick={() => history.push("/theta-vault")}>
+    <ProductCard onClick={() => history.push("/theta-vault")} role="button">
       <ProductTagContainer>
         {renderTag("THETA VAULT")}
         {renderTag("ETH")}
@@ -105,6 +110,16 @@ const YieldCard = () => {
         loading={isLoading}
         totalDeposit={totalDepositStr}
         limit={depositLimitStr}
+        copies={{
+          totalDeposit: "Current Deposits",
+          limit: "Max Capacity",
+        }}
+        labelConfig={{
+          fontSize: 12,
+        }}
+        statsConfig={{
+          fontSize: 12,
+        }}
       />
     </ProductCard>
   );
