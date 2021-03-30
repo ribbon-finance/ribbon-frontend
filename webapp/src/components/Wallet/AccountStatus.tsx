@@ -24,6 +24,10 @@ import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { ActionButton } from "../Common/buttons";
 
+const walletButtonMarginLeft = 5;
+const walletButtonWidth = 55;
+const investButtonWidth = 30;
+
 const WalletContainer = styled.div<AccountStatusVariantProps>`
   justify-content: center;
   align-items: center;
@@ -73,7 +77,7 @@ const WalletButton = styled(BaseButton)<WalletButtonProps>`
         height: 48px;
         justify-content: center;
         padding: 14px 16px;
-        width: ${props.showInvestButton ? "57.5%" : "90%"};
+        width: ${props.showInvestButton ? `${walletButtonWidth}%` : "90%"};
       `;
       case "desktop":
         return ``;
@@ -106,8 +110,12 @@ const WalletButtonArrow = styled.i<MenuStateProps>`
 `;
 
 const InvestButton = styled(ActionButton)`
-  margin-left: 10%;
-  width: 27.5%;
+  margin-left: ${100 -
+  walletButtonMarginLeft -
+  walletButtonWidth -
+  investButtonWidth -
+  walletButtonMarginLeft}%;
+  width: ${investButtonWidth}%;
   height: 48px;
   border-radius: 8px;
 `;
