@@ -1,5 +1,6 @@
 export interface AccountStatusVariantProps {
   variant: "desktop" | "mobile";
+  showInvestButton?: boolean;
 }
 
 export interface WalletStatusProps {

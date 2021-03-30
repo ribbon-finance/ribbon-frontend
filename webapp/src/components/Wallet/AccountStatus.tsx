@@ -46,9 +46,9 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
 
           @media (max-width: ${sizes.md}px) {
             display: flex;
-            width: 90%;
             align-items: unset;
             padding-top: 16px;
+            width: ${props.showInvestButton ? "55%" : "90%"};
           }
         `;
     }
@@ -216,13 +216,17 @@ const MenuCloseItem = styled(MenuItem)`
 
 interface AccountStatusProps {
   variant: "desktop" | "mobile";
+  showInvestButton?: boolean;
 }
 
 const truncateAddress = (address: string) => {
   return address.slice(0, 6) + "..." + address.slice(address.length - 4);
 };
 
-const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
+const AccountStatus: React.FC<AccountStatusProps> = ({
+  variant,
+  showInvestButton,
+}) => {
   const {
     connector,
     deactivate: deactivateWeb3,
@@ -349,7 +353,11 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   return (
     <>
       {/* Main Button and Desktop Menu */}
-      <WalletContainer variant={variant} ref={desktopMenuRef}>
+      <WalletContainer
+        variant={variant}
+        showInvestButton={showInvestButton}
+        ref={desktopMenuRef}
+      >
         <WalletButton
           variant={variant}
           connected={active}
