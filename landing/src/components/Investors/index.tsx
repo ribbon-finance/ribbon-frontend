@@ -96,7 +96,7 @@ const Investors = () => {
           </Col>
           <Col xl={3} md={4} sm={12} xs={12}>
             <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorText>Joshua Lim</InvestorText>
+              <InvestorText>Kain Warwick</InvestorText>
             </InvestorCard>
           </Col>
           <Col xl={3} md={4} sm={12} xs={12}>

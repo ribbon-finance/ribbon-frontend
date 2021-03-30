@@ -27,12 +27,13 @@ export const SecondaryText = styled(BaseText)`
 `;
 
 export const Title = styled(BaseText)`
-  font-family: Orbitron;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-family: VCR OSD Mono;
   font-style: normal;
   font-weight: normal;
-  font-size: 64px;
-  color: #ffffff;
-  line-height: 80px;
+  font-size: 72px;
+  line-height: 72px;
 `;
 
 export const ProductContainer = styled.div`
@@ -52,8 +53,16 @@ export const Button = styled.button`
   outline: none;
   box-shadow: none;
   text-align: center;
-  padding: 14px;
-  background: #ffffff;
-  border-radius: 8px;
   pointer-events: auto;
+  border: 2px solid #ffffff;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background: transparent;
+  color: #ffffff;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 30px;
+  padding-right: 30px;
+  text-transform: uppercase;
+  font-family: VCR OSD Mono;
 `;

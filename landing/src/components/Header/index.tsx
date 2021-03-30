@@ -11,28 +11,38 @@ const HeaderContainer = styled.div`
   background: #0b0d14;
 `;
 
-const LinkText = styled(BaseText)`
-  font-weight: 500;
-  font-size: 16px;
+const LinkText = styled.span`
+  font-family: VCR OSD Mono;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 24px;
   margin-left: 30px;
   margin-right: 30px;
-  color: white;
+  text-transform: uppercase;
+
+  color: rgba(255, 255, 255, 0.48);
 `;
 
-const ButtonText = styled(BaseText)`
-  font-weight: 600;
+const ButtonText = styled.span`
+  font-family: VCR OSD Mono;
+  font-style: normal;
+  font-weight: normal;
   font-size: 14px;
-  color: white;
+  line-height: 24px;
+  text-align: center;
+  text-transform: capitalize;
+  color: #16ceb9;
 `;
 
 const AppButton = styled(Button)`
-  padding-top: 8px;
+  padding-top: 12px;
   padding-left: 15px;
   padding-right: 15px;
-  padding-bottom: 8px;
-  border: 2px solid #ffffff;
+  padding-bottom: 12px;
   border-radius: 8px;
-  background: transparent;
+  background: rgba(22, 206, 185, 0.08);
+  border: none;
 `;
 
 const Header = () => {
@@ -44,19 +54,19 @@ const Header = () => {
         </Col>
         <Col md={8} className="d-flex justify-content-center">
           <Link to="/company">
-            <LinkText>Company</LinkText>
-          </Link>
-          <Link to="/faq">
-            <LinkText>FAQ</LinkText>
+            <LinkText>About</LinkText>
           </Link>
           <a href="https://medium.com/@ribbonfinance">
             <LinkText>Blog</LinkText>
+          </a>
+          <a href="https://medium.com/@ribbonfinance">
+            <LinkText>Community</LinkText>
           </a>
         </Col>
         <Col md={2} className="d-flex justify-content-center">
           <a href="https://medium.com/@ribbonfinance">
             <AppButton>
-              <ButtonText>Use App</ButtonText>
+              <ButtonText>OPEN APP</ButtonText>
             </AppButton>
           </a>
         </Col>
