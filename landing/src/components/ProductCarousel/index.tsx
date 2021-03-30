@@ -4,7 +4,7 @@ import Col from "react-bootstrap/Col";
 import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { Title, BaseText, Button } from "../../designSystem";
-import Product from "./Product";
+import Products from "../Product/ProductSection";
 
 const ProductCarouselContainer = styled(Container)`
   padding-top: 80px;
@@ -21,7 +21,7 @@ const ProductCarousel = () => {
     <ProductCarouselContainer>
       <Row className="d-flex justify-content-center">
         <CarouselTitle>Our Products</CarouselTitle>
-        <Product />
+        <Products />
       </Row>
     </ProductCarouselContainer>
   );

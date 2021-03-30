@@ -23,8 +23,9 @@ const InvestorsTitle = styled(Title)`
 `;
 
 const InvestorCard = styled.div`
-  background: #201e1e;
+  background: #141415;
   border-radius: 8px;
+  border: 1px solid #2b2b2b;
   margin-bottom: 16px;
   height: 136px;
 `;

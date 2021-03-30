@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import theme from "./theme";
+import colors from "./colors";
 
 export const BaseText = styled.span`
   font-family: "Inter", sans-serif;
@@ -65,4 +67,19 @@ export const Button = styled.button`
   padding-right: 30px;
   text-transform: uppercase;
   font-family: VCR OSD Mono;
+`;
+
+export const BaseButton = styled.div`
+  display: flex;
+  border-radius: ${theme.border.radius};
+  padding: 12px 16px;
+`;
+
+export const Subtitle = styled.span`
+  color: ${colors.primaryText};
+  font-family: VCR;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  letter-spacing: 1.5px;
 `;
