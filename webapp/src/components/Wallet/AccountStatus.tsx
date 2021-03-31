@@ -29,7 +29,7 @@ import { copyTextToClipboard } from "../../utils/text";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { ActionButton } from "../Common/buttons";
-import ActionsFormModal from "../ActionModal/ActionModal";
+import ActionModal from "../ActionModal/ActionModal";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -261,7 +261,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     account,
   } = useWeb3React();
   const [showConnectModal, setShowConnectModal] = useState(false);
-  const [showActionFormModal, setShowActionFormModal] = useState(false);
+  const [showActionModal, setShowActionModal] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
     "hidden"
@@ -345,11 +345,11 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   }, []);
 
   const onCloseActionsModal = useCallback(() => {
-    setShowActionFormModal(false);
-  }, [setShowActionFormModal]);
+    setShowActionModal(false);
+  }, [setShowActionModal]);
 
   const handleInvestButtonClick = () => {
-    setShowActionFormModal(true);
+    setShowActionModal(true);
   };
 
   const renderButtonContent = () =>
@@ -387,13 +387,13 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
 
   const formModal = useMemo(
     () => (
-      <ActionsFormModal
+      <ActionModal
         variant="mobile"
-        show={showActionFormModal}
+        show={showActionModal}
         onClose={onCloseActionsModal}
-      ></ActionsFormModal>
+      ></ActionModal>
     ),
-    [showActionFormModal, onCloseActionsModal]
+    [showActionModal, onCloseActionsModal]
   );
 
   return (

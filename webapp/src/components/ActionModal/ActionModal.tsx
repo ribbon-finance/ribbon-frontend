@@ -56,6 +56,18 @@ const CloseButton = styled.i`
   right: ${modalPadding}px;
 `;
 
+const StepsContainer = styled.div<ModalProps>`
+  ${(props) =>
+    props.variant === "desktop" &&
+    `
+    position:absolute
+    width: 100%;
+    height: 100%;
+    `}
+  paddingLeft: ${modalPadding}px;
+  paddingright: ${modalPadding}px;
+`;
+
 interface ModalProps {
   variant: "desktop" | "mobile";
 }
@@ -113,27 +125,26 @@ const ActionModal: React.FC<ActionModalProps> = ({
           )}
         </ModalNavigation>
         <ModalBody variant={variant}>
-          <ModalTitle className="position-relative d-flex align-items-center justify-content-center">
-            <Title>{stepData.title}</Title>
-            <CloseButton
-              onClick={onClose}
-              className="fas fa-times align-self-center text-white"
-            ></CloseButton>
-          </ModalTitle>
+          {stepData.title !== "" && (
+            <ModalTitle className="position-relative d-flex align-items-center justify-content-center">
+              <Title>{stepData.title}</Title>
+              <CloseButton
+                onClick={onClose}
+                className="fas fa-times align-self-center text-white"
+              ></CloseButton>
+            </ModalTitle>
+          )}
 
           <ModalContent className="position-relative">
-            <ActionSteps
-              className="position-absolute w-100 h-100"
-              style={{
-                paddingLeft: modalPadding,
-                paddingRight: modalPadding,
-              }}
-              skipToPreview={isDesktop}
-              show={show}
-              onClose={onClose}
-              onChangeStep={onChangeStep}
-              previewStepProps={previewStepProps}
-            ></ActionSteps>
+            <StepsContainer variant={variant}>
+              <ActionSteps
+                skipToPreview={isDesktop}
+                show={show}
+                onClose={onClose}
+                onChangeStep={onChangeStep}
+                previewStepProps={previewStepProps}
+              ></ActionSteps>
+            </StepsContainer>
           </ModalContent>
         </ModalBody>
       </div>

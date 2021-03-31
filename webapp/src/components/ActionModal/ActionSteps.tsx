@@ -16,6 +16,8 @@ import useVault from "../../hooks/useVault";
 import PreviewStep from "./PreviewStep";
 import ConfirmationStep from "./ConfirmationStep";
 import SubmittedStep from "./SubmittedStep";
+import ActionsForm from "../ActionsForm/ActionsForm";
+import FormStep from "./FormStep";
 
 export interface ActionStepsProps {
   show: boolean;
@@ -36,13 +38,16 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   className = "",
   style = {},
 }) => {
-  const [step, setStep] = useState<Steps>(STEPS.previewStep);
+  const firstStep = skipToPreview ? STEPS.previewStep : STEPS.formStep;
+  const [step, setStep] = useState<Steps>(firstStep);
   const [txhash, setTxhash] = useState("");
   const vault = useVault();
 
-  const [actionType, setActionType] = useState<ActionType>(
-    skipToPreview && previewStepProps ? previewStepProps.actionType : "deposit"
-  );
+  if (!skipToPreview) {
+    console.log(skipToPreview, step);
+  }
+
+  const [actionType, setActionType] = useState<ActionType>("deposit");
   const [amount, setAmount] = useState<BigNumber>(BigNumber.from("0"));
   const [positionAmount, setPositionAmount] = useState<BigNumber>(
     BigNumber.from("0")
@@ -62,9 +67,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   useEffect(() => {
     // small timeout so it doesn't flicker
     setTimeout(() => {
-      setStep(STEPS.previewStep);
+      setStep(firstStep);
     }, 500);
-  }, [show, setStep]);
+  }, [show, firstStep, setStep]);
 
   const amountStr = amount.toString();
 
@@ -130,7 +135,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   }, [step, onChangeStep, actionWord]);
 
   const stepComponents = {
-    0: <div></div>,
+    0: !skipToPreview && <FormStep></FormStep>,
     1: (
       <PreviewStep
         {...(previewStepProps || {
