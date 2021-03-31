@@ -13,7 +13,7 @@ const useVaultData: UseVaultData = () => {
   const { chainId, library, active: walletConnected, account } = useWeb3React();
   const { provider: ethersProvider } = useWeb3Context();
 
-  const [response, setResponse] = useGlobalState<any>("vaultData");
+  const [response, setResponse] = useGlobalState("vaultData");
 
   const doMulticall = useCallback(async () => {
     if (ethersProvider) {

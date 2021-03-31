@@ -149,7 +149,7 @@ const Header = () => {
       <HeaderAbsoluteContainer>
         <LinksContainer>
           {renderLinkItem("PRODUCTS", "/", true)}
-          {/* {renderLinkItem("PORTFOLIO", "/portfolio", false)} */}
+          {renderLinkItem("PORTFOLIO", "/portfolio", false)}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
@@ -169,7 +169,7 @@ const Header = () => {
           }}
         >
           {renderLinkItem("PRODUCTS", "/", true)}
-          {/* {renderLinkItem("PORTFOLIO", "/portfolio", false)} */}
+          {renderLinkItem("PORTFOLIO", "/portfolio", false)}
           {renderLinkItem(
             "DISCORD",
             "http://tiny.cc/ribbon-discord",

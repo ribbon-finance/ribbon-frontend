@@ -1,6 +1,7 @@
 import { Web3ReactProvider } from "@web3-react/core";
 
 import RootApp from "./components/RootApp";
+import { ETHPriceProvider } from "./hooks/useEthPrice";
 import { Web3ContextProvider } from "./hooks/web3Context";
 import { getLibrary } from "./utils/getLibrary";
 
@@ -8,7 +9,9 @@ function App() {
   return (
     <Web3ContextProvider>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <RootApp />
+        <ETHPriceProvider>
+          <RootApp />
+        </ETHPriceProvider>
       </Web3ReactProvider>
     </Web3ContextProvider>
   );
