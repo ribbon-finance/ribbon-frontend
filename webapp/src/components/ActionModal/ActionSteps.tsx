@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useState } from "react";
+import React, { CSSProperties, useCallback, useEffect, useState } from "react";
 import { BigNumber } from "ethers";
 
 import {
@@ -16,7 +16,6 @@ import useVault from "../../hooks/useVault";
 import PreviewStep from "./PreviewStep";
 import ConfirmationStep from "./ConfirmationStep";
 import SubmittedStep from "./SubmittedStep";
-import ActionsForm from "../ActionsForm/ActionsForm";
 import FormStep from "./FormStep";
 
 export interface ActionStepsProps {
@@ -42,10 +41,6 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const [step, setStep] = useState<Steps>(firstStep);
   const [txhash, setTxhash] = useState("");
   const vault = useVault();
-
-  if (!skipToPreview) {
-    console.log(skipToPreview, step);
-  }
 
   const [actionType, setActionType] = useState<ActionType>("deposit");
   const [amount, setAmount] = useState<BigNumber>(BigNumber.from("0"));
@@ -93,6 +88,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   }, [amountStr, vault]);
 
   const handleClickConfirmButton = async () => {
+    // check legal state transition
+    if (step !== STEPS.previewStep) return;
+
     if (vault !== null) {
       setStep(STEPS.confirmationStep);
       try {
@@ -134,8 +132,16 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     });
   }, [step, onChangeStep, actionWord]);
 
+  const onSubmitForm = useCallback(() => {
+    // check that it's a legal state transition
+    // if not, just ignore
+    if (step !== STEPS.formStep) return;
+
+    setStep(STEPS.previewStep);
+  }, [step]);
+
   const stepComponents = {
-    0: !skipToPreview && <FormStep></FormStep>,
+    0: !skipToPreview && <FormStep onSubmit={onSubmitForm}></FormStep>,
     1: (
       <PreviewStep
         {...(previewStepProps || {
@@ -151,11 +157,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     3: <SubmittedStep txhash={txhash}></SubmittedStep>,
   };
 
-  return (
-    <div className={className} style={style}>
-      {stepComponents[step]}
-    </div>
-  );
+  return <>{stepComponents[step]}</>;
 };
 
 export default ActionSteps;

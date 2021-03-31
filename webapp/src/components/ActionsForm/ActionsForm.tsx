@@ -16,7 +16,7 @@ import { GAS_LIMITS } from "../../constants/constants";
 import useGasPrice from "../../hooks/useGasPrice";
 import useVaultData from "../../hooks/useVaultData";
 import useVault from "../../hooks/useVault";
-import { ACTIONS } from "../ActionModal/types";
+import { ACTIONS, PreviewStepProps } from "../ActionModal/types";
 
 const { parseEther, formatEther } = ethers.utils;
 
@@ -127,11 +127,18 @@ const WalletBalance = styled.div<{ active: boolean }>`
 
 type ValidationErrors = "none" | "insufficient_balance";
 
-interface ActionsFormProps {
+export interface FormStepProps {
+  onSubmit?: (previewStepProps: PreviewStepProps) => void;
+}
+
+interface ActionsFormProps extends FormStepProps {
   variant: "desktop" | "mobile";
 }
 
-const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
+const ActionsForm: React.FC<ActionsFormProps> = ({
+  variant,
+  onSubmit = () => {},
+}) => {
   const DEPOSIT_TAB = true;
   const WITHDRAWAL_TAB = false;
   const isDesktop = variant === "desktop";
@@ -202,9 +209,27 @@ const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
       }
     });
   };
+  const vaultBalanceStr = vaultBalanceInAsset.toString();
+
+  const previewStepProps = useMemo(() => {
+    const actionParams = isDeposit
+      ? { action: ACTIONS.deposit, yield: 30 }
+      : {
+          action: ACTIONS.withdraw,
+          withdrawalFee: 0.5,
+        };
+
+    return {
+      actionType: isDeposit ? ACTIONS.deposit : ACTIONS.withdraw,
+      amount: inputAmount ? parseEther(inputAmount) : BigNumber.from("0"),
+      positionAmount: BigNumber.from(vaultBalanceStr),
+      actionParams,
+    };
+  }, [isDeposit, inputAmount, vaultBalanceStr]);
 
   const handleClickActionButton = () => {
-    inputAmount && connected && setShowActionModal(true);
+    isDesktop && inputAmount && connected && setShowActionModal(true);
+    !isDesktop && inputAmount && connected && onSubmit(previewStepProps);
   };
 
   const onCloseActionsModal = () => {
@@ -278,30 +303,17 @@ const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
     }
   }
 
-  const vaultBalanceStr = vaultBalanceInAsset.toString();
-
-  const desktopActionModal = useMemo(() => {
-    const actionParams = isDeposit
-      ? { action: ACTIONS.deposit, yield: 30 }
-      : {
-          action: ACTIONS.withdraw,
-          withdrawalFee: 0.5,
-        };
-
-    return (
+  const desktopActionModal = useMemo(
+    () => (
       <ActionModal
         variant={"desktop"}
         show={showActionModal}
         onClose={onCloseActionsModal}
-        previewStepProps={{
-          actionType: isDeposit ? ACTIONS.deposit : ACTIONS.withdraw,
-          amount: inputAmount ? parseEther(inputAmount) : BigNumber.from("0"),
-          positionAmount: BigNumber.from(vaultBalanceStr),
-          actionParams,
-        }}
+        previewStepProps={previewStepProps}
       ></ActionModal>
-    );
-  }, [isDeposit, inputAmount, vaultBalanceStr, showActionModal]);
+    ),
+    [showActionModal, previewStepProps]
+  );
 
   return (
     <Container variant={variant}>

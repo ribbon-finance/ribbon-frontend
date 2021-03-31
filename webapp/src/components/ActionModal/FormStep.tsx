@@ -1,11 +1,11 @@
 import React from "react";
-import ActionsForm from "../ActionsForm/ActionsForm";
+import ActionsForm, { FormStepProps } from "../ActionsForm/ActionsForm";
 
-const FormStep = () => {
+const FormStep: React.FC<FormStepProps> = ({ onSubmit }) => {
   return (
     <>
       <div style={{ width: 343 }}>
-        <ActionsForm variant="mobile"></ActionsForm>
+        <ActionsForm variant="mobile" onSubmit={onSubmit}></ActionsForm>
       </div>
     </>
   );
