@@ -9,6 +9,7 @@ import ActionsForm from "../../components/ActionsForm/ActionsForm";
 import Theta from "../../components/Product/Splash/Theta";
 import useVaultData from "../../hooks/useVaultData";
 import { formatSignificantDecimals } from "../../utils/math";
+import sizes from "../../designSystem/sizes";
 
 const { formatEther } = ethers.utils;
 
@@ -49,6 +50,12 @@ const SplashImage = styled.div`
   overflow: hidden;
 `;
 
+const DesktopActionsFormContainer = styled.div`
+  @media (max-width: ${sizes.md}px) {
+    display: none;
+  }
+`;
+
 const DepositPage = () => {
   const { status, deposits, vaultLimit } = useVaultData();
   const isLoading = status === "loading";
@@ -69,19 +76,19 @@ const DepositPage = () => {
   );
 
   return (
-    <div>
+    <>
       <HeroSection depositCapBar={depositCapBar}></HeroSection>
 
       <div className="container py-5">
         <div className="row mx-lg-n1">
           <PerformanceSection></PerformanceSection>
 
-          <div className="col-xl-4 offset-xl-1">
-            <ActionsForm></ActionsForm>
-          </div>
+          <DesktopActionsFormContainer className="col-xl-4 offset-xl-1 col-md-6">
+            <ActionsForm variant="desktop"></ActionsForm>
+          </DesktopActionsFormContainer>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

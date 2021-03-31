@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import PerformanceChart from "../../components/PerformanceChart/PerformanceChart";
 import { PrimaryText, SecondaryText, Title } from "../../designSystem";
+import sizes from "../../designSystem/sizes";
 
 const Paragraph = styled.div`
   margin-bottom: 64px;
@@ -33,9 +34,29 @@ const Link = styled.a`
   }
 `;
 
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: ${sizes.md}px) {
+    & > div:nth-child(2) {
+      order: 1;
+    }
+    & > div:nth-child(1) {
+      order: 2;
+    }
+    & > div:nth-child(3) {
+      order: 3;
+    }
+    & > div:nth-child(4) {
+      order: 4;
+    }
+  }
+`;
+
 const PerformanceSection = () => {
   return (
-    <div className="col-lg-7">
+    <Container className="col-xl-7 col-md-6">
       <Paragraph>
         <ParagraphHeading>Vault Strategy</ParagraphHeading>
         <ParagraphText>
@@ -89,7 +110,7 @@ const PerformanceSection = () => {
           </Link>
         </PrimaryText>
       </Paragraph>
-    </div>
+    </Container>
   );
 };
 

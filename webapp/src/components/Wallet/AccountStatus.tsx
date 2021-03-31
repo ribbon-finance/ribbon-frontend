@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { setTimeout } from "timers";
@@ -22,6 +28,14 @@ import MenuButton from "../Header/MenuButton";
 import { copyTextToClipboard } from "../../utils/text";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
+import { ActionButton } from "../Common/buttons";
+import ActionModal from "../ActionModal/ActionModal";
+
+const walletButtonMarginLeft = 5;
+const walletButtonWidth = 55;
+const investButtonWidth = 30;
+const investButtonMarginLeft =
+  100 - walletButtonMarginLeft * 2 - walletButtonWidth - investButtonWidth;
 
 const WalletContainer = styled.div<AccountStatusVariantProps>`
   justify-content: center;
@@ -46,9 +60,9 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
 
           @media (max-width: ${sizes.md}px) {
             display: flex;
-            width: 90%;
             align-items: unset;
             padding-top: 16px;
+            width: 100%;
           }
         `;
     }
@@ -69,9 +83,10 @@ const WalletButton = styled(BaseButton)<WalletButtonProps>`
     switch (props.variant) {
       case "mobile":
         return `
-        width: 100%;
+        height: 48px;
         justify-content: center;
         padding: 14px 16px;
+        width: ${props.showInvestButton ? `${walletButtonWidth}%` : "90%"};
       `;
       case "desktop":
         return ``;
@@ -87,6 +102,10 @@ const WalletButtonText = styled(Title)<WalletStatusProps>`
     font-size: 16px;
   }
 
+  @media (max-width: 350px) {
+    font-size: 13px;
+  }
+
   ${(props) => {
     if (props.connected) return null;
 
@@ -97,6 +116,13 @@ const WalletButtonText = styled(Title)<WalletStatusProps>`
 const WalletButtonArrow = styled.i<MenuStateProps>`
   transition: 0.2s all ease-out;
   transform: ${(props) => (props.isMenuOpen ? "rotate(-180deg)" : "none")};
+`;
+
+const InvestButton = styled(ActionButton)`
+  margin-left: ${investButtonMarginLeft}%;
+  width: ${investButtonWidth}%;
+  height: 48px;
+  border-radius: 8px;
 `;
 
 const WalletDesktopMenu = styled.div<MenuStateProps>`
@@ -216,13 +242,17 @@ const MenuCloseItem = styled(MenuItem)`
 
 interface AccountStatusProps {
   variant: "desktop" | "mobile";
+  showInvestButton?: boolean;
 }
 
 const truncateAddress = (address: string) => {
   return address.slice(0, 6) + "..." + address.slice(address.length - 4);
 };
 
-const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
+const AccountStatus: React.FC<AccountStatusProps> = ({
+  variant,
+  showInvestButton,
+}) => {
   const {
     connector,
     deactivate: deactivateWeb3,
@@ -231,6 +261,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
     account,
   } = useWeb3React();
   const [showConnectModal, setShowConnectModal] = useState(false);
+  const [showActionModal, setShowActionModal] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
     "hidden"
@@ -313,6 +344,14 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
     setShowConnectModal(false);
   }, []);
 
+  const onCloseActionsModal = useCallback(() => {
+    setShowActionModal(false);
+  }, [setShowActionModal]);
+
+  const handleInvestButtonClick = () => {
+    setShowActionModal(true);
+  };
+
   const renderButtonContent = () =>
     active && account ? (
       <>
@@ -346,18 +385,33 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
     return <WalletCopyIcon className="far fa-clone" state={copyState} />;
   };
 
+  const formModal = useMemo(
+    () => (
+      <ActionModal
+        variant="mobile"
+        show={showActionModal}
+        onClose={onCloseActionsModal}
+      ></ActionModal>
+    ),
+    [showActionModal, onCloseActionsModal]
+  );
+
   return (
     <>
       {/* Main Button and Desktop Menu */}
       <WalletContainer variant={variant} ref={desktopMenuRef}>
         <WalletButton
           variant={variant}
+          showInvestButton={showInvestButton}
           connected={active}
           role="button"
           onClick={handleButtonClick}
         >
           {renderButtonContent()}
         </WalletButton>
+        {showInvestButton && (
+          <InvestButton onClick={handleInvestButtonClick}>Invest</InvestButton>
+        )}
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>
           {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
           {renderMenuItem(
@@ -395,6 +449,8 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
         show={showConnectModal}
         onClose={onCloseConnectionModal}
       />
+
+      {formModal}
     </>
   );
 };

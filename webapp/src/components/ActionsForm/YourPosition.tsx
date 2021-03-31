@@ -47,7 +47,7 @@ const YourPosition = () => {
           <Title>{isLoading ? "Loading" : `${positionAssetAmount} ETH`}</Title>
         </div>
         <div className="w-100 d-flex flex-row align-items-center justify-content-between ml-2 mt-1">
-          <ProfitText>+12.23%</ProfitText>
+          <ProfitText>+0.00%</ProfitText>
           <AmountText>${positionInUSD.toFixed(2)}</AmountText>
         </div>
       </div>

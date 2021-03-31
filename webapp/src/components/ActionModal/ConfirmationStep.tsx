@@ -15,10 +15,6 @@ const ThetaAnimation = keyframes`
   }
 `;
 
-const AnimatedTheta = styled(Theta)`
-  animation: ${ThetaAnimation} 800ms ease-in-out infinite;
-`;
-
 const BottomText = styled.div`
   font-size: 16px;
   line-height: 24px;
@@ -26,13 +22,22 @@ const BottomText = styled.div`
   color: rgba(255, 255, 255, 0.8);
 `;
 
+const Icon = styled(Theta)`
+  animation: ${ThetaAnimation} 800ms ease-in-out infinite;
+  margin-left: 15%;
+  margin-right: 15%;
+  width: 70%;
+`;
+
 const ConfirmationStep = () => {
   return (
     <>
-      <AnimatedTheta className="w-100 my-5" />
-      <BottomText className="mb-2">
-        Confirm this transaction in your wallet
-      </BottomText>
+      <div>
+        <Icon className="my-5"></Icon>
+        <BottomText className="mb-2">
+          Confirm this transaction in your wallet
+        </BottomText>
+      </div>
     </>
   );
 };

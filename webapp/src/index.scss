@@ -43,9 +43,6 @@
 @import "../node_modules/bootstrap/scss/utilities";
 @import "../node_modules/bootstrap/scss/print";
 
-// custom style files
-@import "./components/ActionModal/actionModal.scss";
-
 @font-face {
   font-family: "VCR";
   src: local("VCR"), url(./assets/fonts/VCR_OSD_MONO.ttf) format("truetype");
@@ -104,4 +101,11 @@ $placeholder-color: rgba(255, 255, 255, 0.64);
 ::placeholder {
   /* Most modern browsers support this now. */
   color: $placeholder-color;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
 }

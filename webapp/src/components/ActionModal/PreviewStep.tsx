@@ -5,7 +5,7 @@ import { BigNumber, ethers } from "ethers";
 import { Subtitle, SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import { ActionButton } from "../Common/buttons";
-import { ActionParams, ActionType, ACTIONS } from "./types";
+import { ACTIONS, PreviewStepProps } from "./types";
 import { formatBigNumber, formatSignificantDecimals } from "../../utils/math";
 const { formatEther } = ethers.utils;
 
@@ -23,20 +23,14 @@ const Arrow = styled.i`
   color: ${colors.buttons.primary};
 `;
 
-interface PreviewStepProps {
-  actionType: ActionType;
-  amount: BigNumber;
-  positionAmount: BigNumber;
-  actionParams: ActionParams;
-  onClickActionButton: () => Promise<void>;
-}
-
-const PreviewStep: React.FC<PreviewStepProps> = ({
+const PreviewStep: React.FC<
+  PreviewStepProps & { onClickConfirmButton: () => Promise<void> }
+> = ({
   actionType,
   amount,
   positionAmount,
+  onClickConfirmButton,
   actionParams,
-  onClickActionButton,
 }) => {
   const isDeposit = actionType === ACTIONS.deposit;
   const actionWord = isDeposit ? "Deposit" : "Withdrawal";
@@ -109,7 +103,7 @@ const PreviewStep: React.FC<PreviewStepProps> = ({
         </div>
       </div>
 
-      <ActionButton onClick={onClickActionButton} className="btn py-3 my-3">
+      <ActionButton onClick={onClickConfirmButton} className="btn py-3 my-3">
         {isDeposit ? "Deposit" : "Withdraw"} Now
       </ActionButton>
     </>
