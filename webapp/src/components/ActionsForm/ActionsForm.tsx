@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
@@ -7,7 +7,6 @@ import WalletConnectModal from "../Wallet/WalletConnectModal";
 import { formatSignificantDecimals } from "../../utils/math";
 import YourPosition from "./YourPosition";
 import ActionModal from "../ActionModal/ActionModal";
-import { ACTIONS } from "../ActionModal/types";
 import {
   ActionButton,
   ConnectWalletButton,
@@ -17,8 +16,20 @@ import { GAS_LIMITS } from "../../constants/constants";
 import useGasPrice from "../../hooks/useGasPrice";
 import useVaultData from "../../hooks/useVaultData";
 import useVault from "../../hooks/useVault";
+import { ACTIONS, PreviewStepProps } from "../ActionModal/types";
 
 const { parseEther, formatEther } = ethers.utils;
+
+const Container = styled.div<ActionsFormProps>`
+  ${(props) =>
+    props.variant === "mobile" &&
+    `
+    height: 100%;
+    display:flex;
+    align-items: center;
+    justify-content:center;
+  `}
+`;
 
 const FormContainer = styled.div`
   font-family: VCR;
@@ -33,7 +44,7 @@ const FormTitleDiv = styled.div<{ left: boolean; active: boolean }>`
   width: 100%;
   padding: 24px 0;
   background-color: ${(props) =>
-    props.active ? "#151413" : "rgba(255, 255, 255, 0.04)"};
+    props.active ? "#151413" : "rgb(28, 26, 25,0.95)"};
   cursor: pointer;
 
   ${(props) =>
@@ -62,6 +73,8 @@ const InputGuide = styled.div`
 
 const ContentContainer = styled.div`
   background: #1c1a19;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 `;
 
 const FormInputContainer = styled.div`
@@ -116,9 +129,21 @@ const WalletBalance = styled.div<{ active: boolean }>`
 
 type ValidationErrors = "none" | "insufficient_balance";
 
-const ActionsForm = () => {
+export interface FormStepProps {
+  onSubmit?: (previewStepProps: PreviewStepProps) => void;
+}
+
+interface ActionsFormProps extends FormStepProps {
+  variant: "desktop" | "mobile";
+}
+
+const ActionsForm: React.FC<ActionsFormProps> = ({
+  variant,
+  onSubmit = () => {},
+}) => {
   const DEPOSIT_TAB = true;
   const WITHDRAWAL_TAB = false;
+  const isDesktop = variant === "desktop";
 
   const vault = useVault();
   const {
@@ -186,6 +211,32 @@ const ActionsForm = () => {
       }
     });
   };
+  const vaultBalanceStr = vaultBalanceInAsset.toString();
+
+  const previewStepProps = useMemo(() => {
+    const actionParams = isDeposit
+      ? { action: ACTIONS.deposit, yield: 30 }
+      : {
+          action: ACTIONS.withdraw,
+          withdrawalFee: 0.5,
+        };
+
+    return {
+      actionType: isDeposit ? ACTIONS.deposit : ACTIONS.withdraw,
+      amount: inputAmount ? parseEther(inputAmount) : BigNumber.from("0"),
+      positionAmount: BigNumber.from(vaultBalanceStr),
+      actionParams,
+    };
+  }, [isDeposit, inputAmount, vaultBalanceStr]);
+
+  const handleClickActionButton = () => {
+    isDesktop && inputAmount && connected && setShowActionModal(true);
+    !isDesktop && inputAmount && connected && onSubmit(previewStepProps);
+  };
+
+  const onCloseActionsModal = () => {
+    setShowActionModal(false);
+  };
 
   const switchToTab = (switchingToDepositTab: boolean) => {
     // Resets the input amount if switching to a different tab
@@ -237,10 +288,7 @@ const ActionsForm = () => {
   } else {
     if (connected) {
       button = (
-        <ActionButton
-          onClick={() => inputAmount && connected && setShowActionModal(true)}
-          className="py-3 mb-4"
-        >
+        <ActionButton onClick={handleClickActionButton} className="py-3 mb-4">
           {actionButtonText}
         </ActionButton>
       );
@@ -257,28 +305,28 @@ const ActionsForm = () => {
     }
   }
 
+  const desktopActionModal = useMemo(
+    () => (
+      <ActionModal
+        variant={"desktop"}
+        show={showActionModal}
+        onClose={onCloseActionsModal}
+        previewStepProps={previewStepProps}
+      ></ActionModal>
+    ),
+    [showActionModal, previewStepProps]
+  );
+
   return (
-    <div>
+    <Container variant={variant}>
+      {isDesktop && desktopActionModal}
+
+      <WalletConnectModal
+        show={showConnectModal}
+        onClose={() => setShowConnectModal(false)}
+      />
+
       <FormContainer>
-        <WalletConnectModal
-          show={showConnectModal}
-          onClose={() => setShowConnectModal(false)}
-        />
-        <ActionModal
-          actionType={isDeposit ? ACTIONS.deposit : ACTIONS.withdraw}
-          show={showActionModal}
-          amount={inputAmount ? parseEther(inputAmount) : BigNumber.from("0")}
-          positionAmount={vaultBalanceInAsset}
-          actionParams={
-            isDeposit
-              ? { action: ACTIONS.deposit, yield: 30 }
-              : {
-                  action: ACTIONS.withdraw,
-                  withdrawalFee: 0.5,
-                }
-          }
-          onClose={() => setShowActionModal(false)}
-        ></ActionModal>
         <div
           style={{ justifyContent: "space-evenly" }}
           className="d-flex flex-row align-items-center"
@@ -298,6 +346,7 @@ const ActionsForm = () => {
             <FormTitle active={WITHDRAWAL_TAB}>Withdraw</FormTitle>
           </FormTitleDiv>
         </div>
+
         <ContentContainer className="px-4 py-4">
           <InputGuide>AMOUNT (ETH)</InputGuide>
           <FormInputContainer className="position-relative mt-2 mb-5 px-1">
@@ -320,8 +369,8 @@ const ActionsForm = () => {
         </ContentContainer>
       </FormContainer>
 
-      {connected && <YourPosition></YourPosition>}
-    </div>
+      {connected && isDesktop && <YourPosition></YourPosition>}
+    </Container>
   );
 };
 

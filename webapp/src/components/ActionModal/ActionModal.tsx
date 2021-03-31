@@ -1,140 +1,170 @@
-import React, { useEffect, useState } from "react";
-import { Modal } from "react-bootstrap";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
-import { BigNumber } from "ethers";
+import MobileOverlayMenu from "../Common/MobileOverlayMenu";
+import colors from "../../designSystem/colors";
+import { Title } from "../../designSystem";
+import ActionSteps from "./ActionSteps";
+import { PreviewStepProps, StepData, STEPS } from "./types";
 
-import { BaseModal, BaseModalHeader, Title } from "../../designSystem";
-import { ActionParams, ACTIONS, ActionType } from "./types";
+const ModalNavigation = styled.div`
+  position: absolute;
+  top: 28px;
+  left: 14px;
+`;
 
-import useVault from "../../hooks/useVault";
-import PreviewStep from "./PreviewStep";
-import ConfirmationStep from "./ConfirmationStep";
-import SubmittedStep from "./SubmittedStep";
+const ArrowBack = styled.i`
+  color: ${colors.primaryText};
+  height: 14px;
+  margin-right: 20px;
+`;
 
-const ActionModalHeader = styled(BaseModalHeader)`
+interface ModalBodyProps extends ModalProps {
+  isFormStep: boolean;
+}
+
+const ModalBody = styled.div<ModalBodyProps>`
+  background: #1c1a19;
+  border: 1px solid #2b2b2b;
+  box-sizing: border-box;
+  border-radius: 8px;
+  width: ${(props) => (props.variant === "desktop" ? "383px" : "100%")};
+  max-width: 450px;
+  min-height: 480px;
+  max-height: 480px;
+
+  ${(props) =>
+    props.variant === "mobile" &&
+    props.isFormStep &&
+    `
+  background: none;
+  border: none;
+  `}
+`;
+
+const modalPadding = 16;
+
+const ModalTitle = styled.div`
   background: #151413;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: ${modalPadding}px;
+  padding-right: ${modalPadding}px;
+  margin-bottom: 24px;
+`;
+
+const ModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-`;
-
-const ModalTitle = styled(Title)`
-  flex: 1;
-  text-align: center;
-`;
-
-const ModalBody = styled(Modal.Body)`
-  min-height: 450px;
-  max-height: 450px;
+  height: 100%;
 `;
 
 const CloseButton = styled.i`
-  flex: 0;
-  paddingright: 20px;
+  cursor: pointer;
+  position: absolute;
+  right: ${modalPadding}px;
 `;
 
-type PreviewStepType = 0;
-type ConfirmationStepType = 1;
-type SubmittedStepType = 2;
-type Steps = PreviewStepType | ConfirmationStepType | SubmittedStepType;
+const StepsContainer = styled.div<ModalProps>`
+  ${(props) =>
+    props.variant === "desktop" &&
+    `
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    `}
 
-const STEPS: {
-  previewStep: PreviewStepType;
-  confirmationStep: ConfirmationStepType;
-  submittedStep: SubmittedStepType;
-} = {
-  previewStep: 0,
-  confirmationStep: 1,
-  submittedStep: 2,
-};
+  padding-left: ${modalPadding}px;
+  padding-right: ${modalPadding}px;
+`;
 
-const ActionModal: React.FC<{
-  actionType: ActionType;
+interface ModalProps {
+  variant: "desktop" | "mobile";
+}
+
+interface ActionModalProps extends ModalProps {
   show: boolean;
   onClose: () => void;
-  amount: BigNumber;
-  positionAmount: BigNumber;
-  actionParams: ActionParams;
-}> = ({ actionType, show, onClose, amount, positionAmount, actionParams }) => {
-  const [step, setStep] = useState<Steps>(STEPS.submittedStep);
-  const [txhash, setTxhash] = useState("");
-  const vault = useVault();
+  previewStepProps?: PreviewStepProps;
+}
 
-  // We need to pre-fetch the number of shares that the user wants to withdraw
-  const [shares, setShares] = useState<BigNumber>(BigNumber.from("0"));
+const ActionModal: React.FC<ActionModalProps> = ({
+  show,
+  onClose,
+  variant,
+  previewStepProps,
+}) => {
+  const [stepData, setStepData] = useState<StepData>({
+    stepNum: 0,
+    title: "",
+    navigationButton: "back",
+  });
+  const isDesktop = variant === "desktop";
 
-  const isDeposit = actionType === ACTIONS.deposit;
-  const actionWord = isDeposit ? "Deposit" : "Withdrawal";
+  const onChangeStep = useCallback((stepData) => setStepData(stepData), [
+    setStepData,
+  ]);
 
-  // Whenever the `show` variable is toggled, we need to reset the step back to 0
-  useEffect(() => {
-    // small timeout so it doesn't flicker
-    setTimeout(() => {
-      setStep(STEPS.previewStep);
-    }, 500);
-  }, [show, setStep]);
-
-  useEffect(() => {
-    if (vault) {
-      (async () => {
-        const shares = await vault.assetAmountToShares(amount);
-        setShares(shares);
-      })();
-    }
-  }, [amount, vault]);
-
-  const handleClickActionButton = async () => {
-    if (vault !== null) {
-      setStep(STEPS.confirmationStep);
-      try {
-        if (isDeposit) {
-          const res = await vault.depositETH({ value: amount });
-          setTxhash(res.hash);
-          setStep(STEPS.submittedStep);
-        } else {
-          const res = await vault.withdrawETH(shares);
-          setTxhash(res.hash);
-          setStep(STEPS.submittedStep);
-        }
-      } catch (_) {
-        onClose();
-      }
-    }
-  };
-
-  const titles = {
-    0: `${actionWord} Preview`,
-    1: "Confirm Transaction",
-    2: "Transaction Submitted",
-  };
-
-  const stepComponents = {
-    0: (
-      <PreviewStep
-        actionType={actionType}
-        amount={amount}
-        positionAmount={positionAmount}
-        actionParams={actionParams}
-        onClickActionButton={handleClickActionButton}
-      ></PreviewStep>
-    ),
-    1: <ConfirmationStep></ConfirmationStep>,
-    2: <SubmittedStep txhash={txhash}></SubmittedStep>,
-  };
+  const onCloseOverlay = useCallback(() => onClose(), [onClose]);
 
   return (
-    <BaseModal show={show} onHide={onClose} centered>
-      <ActionModalHeader closeButton={false}>
-        <ModalTitle>{titles[step]}</ModalTitle>
+    <MobileOverlayMenu
+      isMenuOpen={show}
+      onOverlayClick={onCloseOverlay}
+      mountRoot="div#root"
+      boundingDivProps={{
+        style: {
+          display: "flex",
+          width: "100%",
+          height: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        // This helps the bounding div to bubble the event upwards
+        // to dismiss the modal
+        ...(isDesktop ? { onClick: () => {} } : {}),
+      }}
+    >
+      <div onClick={(e) => e.stopPropagation()}>
+        <ModalNavigation className="d-flex flex-row align-items-center">
+          {!isDesktop && (
+            <div onClick={onClose}>
+              <ArrowBack className="fas fa-arrow-left"></ArrowBack>
+              <Title>Back</Title>
+            </div>
+          )}
+        </ModalNavigation>
+        <ModalBody
+          isFormStep={stepData.stepNum === STEPS.formStep}
+          variant={variant}
+        >
+          {stepData.title !== "" && (
+            <ModalTitle className="position-relative d-flex align-items-center justify-content-center">
+              <Title>{stepData.title}</Title>
+              <CloseButton
+                onClick={onClose}
+                className="fas fa-times align-self-center text-white"
+              ></CloseButton>
+            </ModalTitle>
+          )}
 
-        <CloseButton
-          onClick={onClose}
-          className="fas fa-times align-self-center text-white"
-        ></CloseButton>
-      </ActionModalHeader>
-
-      <ModalBody className="d-flex flex-column align-items-center justify-items-center">
-        {stepComponents[step]}
-      </ModalBody>
-    </BaseModal>
+          <ModalContent className="position-relative">
+            <StepsContainer variant={variant}>
+              <ActionSteps
+                skipToPreview={isDesktop}
+                show={show}
+                onClose={onClose}
+                onChangeStep={onChangeStep}
+                previewStepProps={previewStepProps}
+              ></ActionSteps>
+            </StepsContainer>
+          </ModalContent>
+        </ModalBody>
+      </div>
+    </MobileOverlayMenu>
   );
 };
 

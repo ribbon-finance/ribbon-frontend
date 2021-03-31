@@ -9,6 +9,16 @@ const Submitted = styled.img`
   width: 100%;
 `;
 
+const Container = styled.div`
+  height: 370px;
+`;
+
+const LinkButton = styled(ActionButton)`
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+`;
+
 interface SubmittedStepProps {
   txhash: string;
 }
@@ -31,13 +41,15 @@ const SubmittedStep: React.FC<SubmittedStepProps> = ({ txhash }) => {
 
   return (
     <>
-      <div style={{ flex: 1 }} className="d-flex align-items-center">
-        <Submitted src={SubmittedIcon} alt="Transaction Submitted" />
-      </div>
+      <Container className="position-relative w-100 d-flex align-items-center justify-content-center">
+        <div style={{ marginTop: -80 }} className="d-flex align-items-center">
+          <Submitted src={SubmittedIcon} alt="Transaction Submitted" />
+        </div>
 
-      <ActionButton link={`https://${host}/tx/${txhash}`} className="py-3 my-3">
-        View on Etherscan
-      </ActionButton>
+        <LinkButton link={`https://${host}/tx/${txhash}`} className="py-3">
+          View on Etherscan
+        </LinkButton>
+      </Container>
     </>
   );
 };
