@@ -11,10 +11,8 @@ import AccountStatus from "../Wallet/AccountStatus";
 import theme from "../../designSystem/theme";
 import MobileOverlayMenu from "../Common/MobileOverlayMenu";
 
-const HEADER_HEIGHT = 80;
-
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
-  height: ${HEADER_HEIGHT}px;
+  height: ${theme.header.height}px;
   border-bottom: 1px solid ${colors.border};
   position: relative;
 
@@ -57,7 +55,10 @@ const LinksContainer = styled.div`
 `;
 
 const NavItem = styled.div<NavItemProps>`
-  padding: 28px;
+  display: flex;
+  align-items: center;
+  padding: 0px 28px;
+  height: 100%;
   opacity: ${(props) => (props.isSelected ? "1" : "0.48")};
 
   &:hover {
@@ -148,7 +149,7 @@ const Header = () => {
       <HeaderAbsoluteContainer>
         <LinksContainer>
           {renderLinkItem("PRODUCTS", "/", true)}
-          {renderLinkItem("PORTFOLIO", "/portfolio", false)}
+          {/* {renderLinkItem("PORTFOLIO", "/portfolio", false)} */}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
@@ -168,7 +169,7 @@ const Header = () => {
           }}
         >
           {renderLinkItem("PRODUCTS", "/", true)}
-          {renderLinkItem("PORTFOLIO", "/portfolio", false)}
+          {/* {renderLinkItem("PORTFOLIO", "/portfolio", false)} */}
           {renderLinkItem(
             "DISCORD",
             "http://tiny.cc/ribbon-discord",
@@ -190,7 +191,7 @@ const Header = () => {
             false,
             true
           )}
-          {renderLinkItem("FAQS", "/faq", false, false)}
+          {/* {renderLinkItem("FAQS", "/faq", false, false)} */}
           {renderLinkItem(
             "BLOG",
             "https://medium.com/@ribbonfinance",
@@ -198,7 +199,7 @@ const Header = () => {
             false,
             true
           )}
-          {renderLinkItem("TERMS", "/terms", false, false)}
+          {/* {renderLinkItem("TERMS", "/terms", false, false)} */}
           {renderLinkItem("POLICY", "/policy", false, false)}
         </MobileOverlayMenu>
       </MobileOnly>

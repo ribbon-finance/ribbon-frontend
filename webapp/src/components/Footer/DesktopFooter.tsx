@@ -59,9 +59,9 @@ const DesktopFooter = () => {
   return (
     <FooterContainer>
       <LeftContainer>
-        {renderLinkItem("FAQS", "/faq")}
+        {/* {renderLinkItem("FAQS", "/faq")} */}
         {renderLinkItem("BLOG", "https://medium.com/@ribbonfinance", true)}
-        {renderLinkItem("TERMS", "/terms")}
+        {/* {renderLinkItem("TERMS", "/terms")} */}
         {renderLinkItem("POLICY", "/policy")}
       </LeftContainer>
       <LinksContainer>
