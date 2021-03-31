@@ -7,30 +7,23 @@ import AccountStatus from "../Wallet/AccountStatus";
 import DesktopFooter from "./DesktopFooter";
 
 const FooterContianer = styled.div<{ screenHeight: number }>`
-  position: sticky;
-  top: ${(props) =>
-    props.screenHeight
-      ? `calc(${props.screenHeight}px - 52px)`
-      : `calc(100vh - 52px)`};
+  position: fixed;
+  bottom: 0px;
   height: 52px;
   width: 100%;
   display: flex;
   justify-content: center;
+  backdrop-filter: blur(40px);
 
   @media (max-width: ${sizes.md}px) {
-    position: fixed;
-    top: unset;
-    bottom: 0px;
     height: 104px;
-    backdrop-filter: blur(40px);
   }
 `;
 
 const MobileFooterOffsetContainer = styled.div`
-  display: none;
+  height: 52px;
 
   @media (max-width: ${sizes.md}px) {
-    display: block;
     height: 104px;
   }
 `;
