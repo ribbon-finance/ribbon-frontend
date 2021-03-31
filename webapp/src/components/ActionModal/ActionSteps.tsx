@@ -114,7 +114,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     const titles = {
       [STEPS.formStep]: "",
       [STEPS.previewStep]: `${actionWord} Preview`,
-      [STEPS.confirmationStep]: "Confirm Transaction",
+      [STEPS.confirmationStep]: `Confirm ${actionWord}`,
       [STEPS.submittedStep]: "Transaction Submitted",
     };
 
