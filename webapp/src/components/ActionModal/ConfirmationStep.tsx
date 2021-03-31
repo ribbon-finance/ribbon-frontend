@@ -9,13 +9,21 @@ const BottomText = styled.div`
   color: rgba(255, 255, 255, 0.8);
 `;
 
+const Icon = styled(Theta)`
+  margin-left: 15%;
+  margin-right: 15%;
+  width: 70%;
+`;
+
 const ConfirmationStep = () => {
   return (
     <>
-      <Theta className="w-100 my-5"></Theta>
-      <BottomText className="mb-2">
-        Confirm this transaction in your wallet
-      </BottomText>
+      <div>
+        <Icon className="my-5"></Icon>
+        <BottomText className="mb-2">
+          Confirm this transaction in your wallet
+        </BottomText>
+      </div>
     </>
   );
 };

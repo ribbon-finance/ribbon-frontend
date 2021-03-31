@@ -48,8 +48,6 @@ const ModalContent = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-  padding-left: ${modalPadding}px;
-  padding-right: ${modalPadding}px;
 `;
 
 const CloseButton = styled.i`
@@ -105,7 +103,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
         ...(isDesktop ? { onClick: () => {} } : {}),
       }}
     >
-      <>
+      <div onClick={(e) => e.stopPropagation()}>
         <ModalNavigation className="d-flex flex-row align-items-center">
           {!isDesktop && (
             <div onClick={onClose}>
@@ -123,9 +121,14 @@ const ActionModal: React.FC<ActionModalProps> = ({
             ></CloseButton>
           </ModalTitle>
 
-          <ModalContent>
+          <ModalContent className="position-relative">
             <ActionSteps
-              className="w-100"
+              className="position-absolute w-100 h-100"
+              style={{
+                paddingLeft: modalPadding,
+                paddingRight: modalPadding,
+                top: 0,
+              }}
               skipToPreview={isDesktop}
               show={show}
               onClose={onClose}
@@ -134,7 +137,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
             ></ActionSteps>
           </ModalContent>
         </ModalBody>
-      </>
+      </div>
     </MobileOverlayMenu>
   );
 };

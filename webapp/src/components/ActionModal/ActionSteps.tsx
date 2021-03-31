@@ -68,6 +68,16 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const amountStr = amount.toString();
 
+  // Update with previewStepProps
+  useEffect(() => {
+    if (previewStepProps) {
+      setActionType(previewStepProps.actionType);
+      setAmount(previewStepProps.amount);
+      setPositionAmount(previewStepProps.positionAmount);
+      setActionParams(previewStepProps.actionParams);
+    }
+  }, [previewStepProps]);
+
   useEffect(() => {
     if (vault) {
       (async () => {
@@ -90,7 +100,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
           setTxhash(res.hash);
           setStep(STEPS.submittedStep);
         }
-      } catch (_) {
+      } catch (e) {
+        console.error(e);
         onClose();
       }
     }
