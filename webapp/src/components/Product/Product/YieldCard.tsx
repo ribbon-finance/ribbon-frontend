@@ -32,7 +32,7 @@ const ProductCard = styled.div`
   max-width: 343px;
 
   &:hover {
-    box-shadow: rgb(255 56 92 / 24%) 4px 8px 120px;
+    box-shadow: rgba(255, 56, 92, 0.4) 4px 8px 120px;
   }
 
   @media (max-width: ${sizes.md}px) {
