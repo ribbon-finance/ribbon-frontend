@@ -1,6 +1,23 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+
 import Theta from "../Product/Splash/Theta";
+
+const ThetaAnimation = keyframes`
+  15% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.08;
+  }
+  85% {
+    opacity: 1;
+  }
+`;
+
+const AnimatedTheta = styled(Theta)`
+  animation: ${ThetaAnimation} 800ms ease-in-out infinite;
+`;
 
 const BottomText = styled.div`
   font-size: 16px;
@@ -12,7 +29,7 @@ const BottomText = styled.div`
 const ConfirmationStep = () => {
   return (
     <>
-      <Theta className="w-100 my-5"></Theta>
+      <AnimatedTheta className="w-100 my-5" />
       <BottomText className="mb-2">
         Confirm this transaction in your wallet
       </BottomText>

@@ -10,6 +10,7 @@ import useVault from "../../hooks/useVault";
 import PreviewStep from "./PreviewStep";
 import ConfirmationStep from "./ConfirmationStep";
 import SubmittedStep from "./SubmittedStep";
+import theme from "../../designSystem/theme";
 
 const ActionModalHeader = styled(BaseModalHeader)`
   background: #151413;
@@ -29,6 +30,10 @@ const ModalBody = styled(Modal.Body)`
 const CloseButton = styled.i`
   flex: 0;
   paddingright: 20px;
+
+  &:hover {
+    opacity: ${theme.hover.opacity};
+  }
 `;
 
 type PreviewStepType = 0;
@@ -128,6 +133,7 @@ const ActionModal: React.FC<{
         <CloseButton
           onClick={onClose}
           className="fas fa-times align-self-center text-white"
+          role="button"
         ></CloseButton>
       </ActionModalHeader>
 
