@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Container } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 
 import PortfolioHeader from "../../components/Portfolio/PortfolioHeader";
+import PortfolioPerformance from "../../components/Portfolio/PortfolioPerformance";
 import { currencies, CurrencyType } from "./types";
 
 const PortfolioPage = () => {
@@ -9,10 +10,17 @@ const PortfolioPage = () => {
 
   return (
     <Container>
-      <PortfolioHeader
-        currency={currency}
-        updateCurrency={(newCurrency: CurrencyType) => setCurrency(newCurrency)}
-      />
+      <Row className="justify-content-center">
+        <Col xs="7">
+          <PortfolioHeader
+            currency={currency}
+            updateCurrency={(newCurrency: CurrencyType) =>
+              setCurrency(newCurrency)
+            }
+          />
+          <PortfolioPerformance currency={currency} />
+        </Col>
+      </Row>
     </Container>
   );
 };

@@ -55,8 +55,8 @@ const DepositCapBar: React.FC<{
   totalDeposit,
   limit,
   copies = { totalDeposit: "Total Deposits", limit: "Limit" },
-  labelConfig = { fontSize: 14 },
-  statsConfig = { fontSize: 14 },
+  labelConfig = { fontSize: 16 },
+  statsConfig = { fontSize: 16 },
 }) => {
   let percent = totalDeposit / (limit > 0 ? limit : 1);
   if (percent < 0) {

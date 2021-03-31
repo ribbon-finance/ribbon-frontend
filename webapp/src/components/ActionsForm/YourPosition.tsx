@@ -14,6 +14,11 @@ const PositionsContainer = styled.div`
   border: 1px solid #2b2b2b;
   box-sizing: border-box;
   border-radius: 8px;
+  height: 76px;
+`;
+
+const PositionTitle = styled(Title)`
+  font-size: 14px;
 `;
 
 const ProfitText = styled.span`
@@ -38,13 +43,15 @@ const YourPosition = () => {
   const positionInUSD = parseFloat(positionAssetAmount) * ethusd;
 
   return (
-    <PositionsContainer className="d-flex flex-row justify-content-center mt-4 p-4">
+    <PositionsContainer className="d-flex flex-row justify-content-center align-items-center mt-4 px-4">
       <img style={{ width: 45 }} src={PositionIcon} alt="Positions" />
 
       <div className="w-100">
         <div className="w-100 d-flex flex-row align-items-center justify-content-between ml-2">
-          <Title>Your Position</Title>
-          <Title>{isLoading ? "Loading" : `${positionAssetAmount} ETH`}</Title>
+          <PositionTitle>Your Position</PositionTitle>
+          <PositionTitle>
+            {isLoading ? "Loading" : `${positionAssetAmount} ETH`}
+          </PositionTitle>
         </div>
         <div className="w-100 d-flex flex-row align-items-center justify-content-between ml-2 mt-1">
           <ProfitText>+0.00%</ProfitText>

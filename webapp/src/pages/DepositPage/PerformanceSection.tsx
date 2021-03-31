@@ -5,12 +5,13 @@ import { PrimaryText, SecondaryText, Title } from "../../designSystem";
 import sizes from "../../designSystem/sizes";
 
 const Paragraph = styled.div`
-  margin-bottom: 64px;
+  margin-bottom: 48px;
 `;
 
 const ParagraphHeading = styled(Title)`
   display: block;
-  font-size: 24px;
+  font-size: 18px;
+  line-height: 24px;
   margin-bottom: 16px;
 `;
 

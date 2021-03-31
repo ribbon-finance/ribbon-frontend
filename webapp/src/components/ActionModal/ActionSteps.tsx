@@ -158,10 +158,10 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
           actionParams,
         })}
         onClickConfirmButton={handleClickConfirmButton}
-      ></PreviewStep>
+      />
     ),
-    2: <ConfirmationStep></ConfirmationStep>,
-    3: <SubmittedStep txhash={txhash}></SubmittedStep>,
+    2: <ConfirmationStep />,
+    3: <SubmittedStep txhash={txhash} />,
   };
 
   return <>{stepComponents[step]}</>;

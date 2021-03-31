@@ -19,11 +19,13 @@ const HeroContainer = styled.div`
     rgba(252, 10, 84, 0.16) 1.04%,
     rgba(252, 10, 84, 0.0256) 98.99%
   );
+  padding: 40px 0;
 `;
 
 const HeroText = styled(Title)`
   font-size: 72px;
   line-height: 72px;
+  margin-bottom: 24px;
 `;
 
 const AttributePill = styled.div`
@@ -72,7 +74,11 @@ const DepositPage = () => {
       loading={isLoading}
       totalDeposit={totalDepositStr}
       limit={depositLimitStr}
-    ></DepositCapBar>
+      copies={{
+        totalDeposit: "Current Vault Deposits",
+        limit: "Max Vault Capacity",
+      }}
+    />
   );
 
   return (
@@ -84,7 +90,7 @@ const DepositPage = () => {
           <PerformanceSection></PerformanceSection>
 
           <DesktopActionsFormContainer className="col-xl-4 offset-xl-1 col-md-6">
-            <ActionsForm variant="desktop"></ActionsForm>
+            <ActionsForm variant="desktop" />
           </DesktopActionsFormContainer>
         </div>
       </div>
@@ -96,10 +102,10 @@ const HeroSection: React.FC<{ depositCapBar: ReactNode }> = ({
   depositCapBar,
 }) => {
   return (
-    <HeroContainer className="position-relative py-5">
+    <HeroContainer className="position-relative">
       <div className="container">
         <div className="row mx-lg-n1">
-          <div style={{ zIndex: 1 }} className="col-xl-6">
+          <div style={{ zIndex: 1 }} className="col-xl-6 d-flex flex-column">
             <div className="d-flex flex-row my-3">
               <AttributePill className="mr-2 text-uppercase">
                 Theta Vault
@@ -107,9 +113,7 @@ const HeroSection: React.FC<{ depositCapBar: ReactNode }> = ({
               <AttributePill className="ml-2 text-uppercase">ETH</AttributePill>
             </div>
 
-            <div className="mb-5">
-              <HeroText>T-100-E</HeroText>
-            </div>
+            <HeroText>T-100-E</HeroText>
 
             {depositCapBar}
           </div>

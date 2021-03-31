@@ -8,6 +8,7 @@ import {
   Title,
   Subtitle,
   SecondaryText,
+  BaseText,
 } from "../../../designSystem";
 import colors from "../../../designSystem/colors";
 import sizes from "../../../designSystem/sizes";
@@ -64,9 +65,11 @@ const ProductDescription = styled(SecondaryText)`
   margin-bottom: 24px;
 `;
 
-const ExpectedYieldTitle = styled(Subtitle)`
+const ExpectedYieldTitle = styled(BaseText)`
   color: ${colors.primaryText}A3;
   width: 100%;
+  font-size: 12px;
+  letter-spacing: 1.5px;
 `;
 
 const YieldText = styled(Title)`
