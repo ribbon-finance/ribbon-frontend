@@ -9,6 +9,7 @@ import useEagerConnect from "../hooks/useEagerConnect";
 import PortfolioPage from "../pages/Portfolio/PortfolioPage";
 import Footer from "./Footer/Footer";
 import useScreenSize from "../hooks/useScreenSize";
+import PolicyPage from "../pages/PolicyPage";
 
 const Root = styled.div<{ screenHeight: number }>`
   background-color: #1c1a19;
@@ -33,6 +34,9 @@ const RootApp = () => {
           </Route>
           <Route path="/portfolio">
             <PortfolioPage />
+          </Route>
+          <Route path="/policy">
+            <PolicyPage />
           </Route>
         </Switch>
         <Footer />

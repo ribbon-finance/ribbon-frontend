@@ -182,7 +182,7 @@ const IndicatorIcon = styled.i`
 
 const ProductContentContainer = styled(Row)<DynamicMarginProps>`
   position: relative;
-  padding: 40px 0px;
+  padding: 40px 0px 24px 0px;
   ${(props) => {
     if (props.empty <= 0) return null;
     return `
@@ -190,6 +190,7 @@ const ProductContentContainer = styled(Row)<DynamicMarginProps>`
     `;
   }}
   @media (max-width: ${sizes.md}px) {
+    padding: 40px 0px 0px 0px;
     margin-top: 0px;
   }
 `;
@@ -257,7 +258,12 @@ const Products = () => {
   });
   const { scrollY } = useElementScroll(tabContainerRef);
   // Minus header and footer to determine the empty space available for offset
-  const empty = height - headerHeight - contentHeight - 81 - 52;
+  const empty =
+    height -
+    headerHeight -
+    contentHeight -
+    theme.header.height -
+    theme.footer.desktop.height;
 
   useEffect(() => {
     const currentTab = tabRefs[selectedProduct].current;
