@@ -10,12 +10,18 @@ const ModalNavigation = styled.div`
   position: absolute;
   top: 28px;
   left: 14px;
+  width: calc(100% - 14px);
+  padding-right: 28px;
 `;
 
 const ArrowBack = styled.i`
   color: ${colors.primaryText};
   height: 14px;
   margin-right: 20px;
+`;
+
+const ModalNavigationCloseButton = styled.i`
+  margin-left: auto;
 `;
 
 interface ModalBodyProps extends ModalProps {
@@ -62,7 +68,7 @@ const ModalContent = styled.div`
   height: 100%;
 `;
 
-const CloseButton = styled.i`
+const ModalHeaderCloseButton = styled.i`
   cursor: pointer;
   position: absolute;
   right: ${modalPadding}px;
@@ -110,6 +116,44 @@ const ActionModal: React.FC<ActionModalProps> = ({
 
   const onCloseOverlay = useCallback(() => onClose(), [onClose]);
 
+  const renderModalNavigationItem = useCallback(() => {
+    if (isDesktop) {
+      return;
+    }
+
+    if (
+      stepData.stepNum === STEPS.confirmationStep ||
+      stepData.stepNum === STEPS.submittedStep
+    ) {
+      return (
+        <ModalNavigationCloseButton
+          onClick={onClose}
+          className="fas fa-times align-self-center text-white"
+        />
+      );
+    }
+
+    return (
+      <div onClick={onClose} role="button">
+        <ArrowBack className="fas fa-arrow-left"></ArrowBack>
+        <Title>Back</Title>
+      </div>
+    );
+  }, [isDesktop, onClose, stepData]);
+
+  const renderModalCloseButton = useCallback(() => {
+    if (!isDesktop && stepData.stepNum !== STEPS.previewStep) {
+      return;
+    }
+
+    return (
+      <ModalHeaderCloseButton
+        onClick={onClose}
+        className="fas fa-times align-self-center text-white"
+      />
+    );
+  }, [isDesktop, stepData, onClose]);
+
   return (
     <MobileOverlayMenu
       isMenuOpen={show}
@@ -130,12 +174,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
     >
       <div onClick={(e) => e.stopPropagation()}>
         <ModalNavigation className="d-flex flex-row align-items-center">
-          {!isDesktop && (
-            <div onClick={onClose}>
-              <ArrowBack className="fas fa-arrow-left"></ArrowBack>
-              <Title>Back</Title>
-            </div>
-          )}
+          {renderModalNavigationItem()}
         </ModalNavigation>
         <ModalBody
           isFormStep={stepData.stepNum === STEPS.formStep}
@@ -144,10 +183,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
           {stepData.title !== "" && (
             <ModalTitle className="position-relative d-flex align-items-center justify-content-center">
               <Title>{stepData.title}</Title>
-              <CloseButton
-                onClick={onClose}
-                className="fas fa-times align-self-center text-white"
-              ></CloseButton>
+              {renderModalCloseButton()}
             </ModalTitle>
           )}
 
