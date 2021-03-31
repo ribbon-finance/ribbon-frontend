@@ -155,13 +155,6 @@ const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
 
   const connected = Boolean(active && account);
 
-  const actionParams = isDeposit
-    ? { action: ACTIONS.deposit, yield: 30 }
-    : {
-        action: ACTIONS.withdraw,
-        withdrawalFee: 0.5,
-      };
-
   const handleClickMax = async () => {
     if (!isLoadingData && connected && vault && account) {
       if (isDeposit && gasPrice.fetched) {
@@ -287,8 +280,15 @@ const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
 
   const vaultBalanceStr = vaultBalanceInAsset.toString();
 
-  const desktopActionModal = useMemo(
-    () => (
+  const desktopActionModal = useMemo(() => {
+    const actionParams = isDeposit
+      ? { action: ACTIONS.deposit, yield: 30 }
+      : {
+          action: ACTIONS.withdraw,
+          withdrawalFee: 0.5,
+        };
+
+    return (
       <ActionModal
         variant={"desktop"}
         show={showActionModal}
@@ -300,9 +300,8 @@ const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
           actionParams,
         }}
       ></ActionModal>
-    ),
-    [isDeposit, inputAmount, vaultBalanceStr, actionParams, showActionModal]
-  );
+    );
+  }, [isDeposit, inputAmount, vaultBalanceStr, showActionModal]);
 
   return (
     <Container variant={variant}>

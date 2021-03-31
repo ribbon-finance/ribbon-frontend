@@ -66,14 +66,16 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     }, 500);
   }, [show, setStep]);
 
+  const amountStr = amount.toString();
+
   useEffect(() => {
     if (vault) {
       (async () => {
-        const shares = await vault.assetAmountToShares(amount);
+        const shares = await vault.assetAmountToShares(amountStr);
         setShares(shares);
       })();
     }
-  }, [amount, vault]);
+  }, [amountStr, vault]);
 
   const handleClickConfirmButton = async () => {
     if (vault !== null) {

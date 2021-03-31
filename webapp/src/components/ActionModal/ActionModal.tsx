@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import MobileOverlayMenu from "../Common/MobileOverlayMenu";
 import colors from "../../designSystem/colors";
@@ -25,9 +25,11 @@ const ModalBody = styled.div<ModalProps>`
   border-radius: 8px;
   width: ${(props) => (props.variant === "desktop" ? "383px" : "100%")};
   max-width: 450px;
-  min-height: 450px;
-  max-height: 450px;
+  min-height: 480px;
+  max-height: 480px;
 `;
+
+const modalPadding = 16;
 
 const ModalTitle = styled.div`
   background: #151413;
@@ -35,6 +37,9 @@ const ModalTitle = styled.div`
   border-top-right-radius: 8px;
   padding-top: 20px;
   padding-bottom: 20px;
+  padding-left: ${modalPadding}px;
+  padding-right: ${modalPadding}px;
+  margin-bottom: 24px;
 `;
 
 const ModalContent = styled.div`
@@ -43,17 +48,14 @@ const ModalContent = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-  padding-left: 16px;
-  padding-right: 16px;
+  padding-left: ${modalPadding}px;
+  padding-right: ${modalPadding}px;
 `;
 
 const CloseButton = styled.i`
-  flex: 0;
-  paddingright: 20px;
-`;
-
-const StyledActionSteps = styled(ActionSteps)`
-  width: 100%;
+  cursor: pointer;
+  position: absolute;
+  right: ${modalPadding}px;
 `;
 
 interface ModalProps {
@@ -79,10 +81,16 @@ const ActionModal: React.FC<ActionModalProps> = ({
   });
   const isDesktop = variant === "desktop";
 
+  const onChangeStep = useCallback((stepData) => setStepData(stepData), [
+    setStepData,
+  ]);
+
+  const onCloseOverlay = useCallback(() => onClose(), [onClose]);
+
   return (
     <MobileOverlayMenu
       isMenuOpen={show}
-      onOverlayClick={() => {}}
+      onOverlayClick={onCloseOverlay}
       mountRoot="div#root"
       boundingDivProps={{
         style: {
@@ -92,6 +100,9 @@ const ActionModal: React.FC<ActionModalProps> = ({
           alignItems: "center",
           justifyContent: "center",
         },
+        // This helps the bounding div to bubble the event upwards
+        // to dismiss the modal
+        ...(isDesktop ? { onClick: () => {} } : {}),
       }}
     >
       <>
@@ -104,8 +115,8 @@ const ActionModal: React.FC<ActionModalProps> = ({
           )}
         </ModalNavigation>
         <ModalBody variant={variant}>
-          <ModalTitle className="d-flex align-items-center justify-content-center">
-            <Title style={{ flex: 1 }}>{stepData.title}</Title>
+          <ModalTitle className="position-relative d-flex align-items-center justify-content-center">
+            <Title>{stepData.title}</Title>
             <CloseButton
               onClick={onClose}
               className="fas fa-times align-self-center text-white"
@@ -118,7 +129,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
               skipToPreview={isDesktop}
               show={show}
               onClose={onClose}
-              onChangeStep={(stepData) => setStepData(stepData)}
+              onChangeStep={onChangeStep}
               previewStepProps={previewStepProps}
             ></ActionSteps>
           </ModalContent>
