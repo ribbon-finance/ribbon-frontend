@@ -31,7 +31,7 @@ export const SecondaryText = styled(BaseText)`
 export const Title = styled(BaseText)`
   color: #ffffff;
   text-transform: uppercase;
-  font-family: VCR OSD Mono;
+  font-family: VCR;
   font-style: normal;
   font-weight: normal;
   font-size: 72px;
@@ -66,7 +66,7 @@ export const Button = styled.button`
   padding-left: 30px;
   padding-right: 30px;
   text-transform: uppercase;
-  font-family: VCR OSD Mono;
+  font-family: VCR;
 `;
 
 export const BaseButton = styled.div`

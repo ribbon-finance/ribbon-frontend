@@ -12,7 +12,7 @@ const HeaderContainer = styled.div`
 `;
 
 const LinkText = styled.span`
-  font-family: VCR OSD Mono;
+  font-family: VCR;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
@@ -25,7 +25,7 @@ const LinkText = styled.span`
 `;
 
 const ButtonText = styled.span`
-  font-family: VCR OSD Mono;
+  font-family: VCR;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
