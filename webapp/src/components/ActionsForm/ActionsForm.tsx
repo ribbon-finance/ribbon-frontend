@@ -124,7 +124,8 @@ const WalletBalance = styled.div<{ active: boolean }>`
   font-size: 14px;
   line-height: 20px;
   text-transform: uppercase;
-  color: ${(props) => (props.active ? "#FFFFFF" : "rgba(255, 255, 255, 0.16)")};
+  color: ${(props) =>
+    props.active ? "#FFFFFFA3" : "rgba(255, 255, 255, 0.16)"};
 `;
 
 type ValidationErrors = "none" | "insufficient_balance";
@@ -188,6 +189,13 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawInput = e.target.value;
+
+    // Do not allow user to enter smaller than 0
+    if (rawInput && parseFloat(rawInput) < 0) {
+      setInputAmount("");
+      return;
+    }
+
     setInputAmount(rawInput); // Let's flush out the input changes first.
 
     // Make sure we schedule the error updates after the input updates

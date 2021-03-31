@@ -11,6 +11,10 @@ const PerformanceChartContainer = styled.div`
   border-radius: 4px;
 `;
 
+const APYLabel = styled(SecondaryText)`
+  font-size: 12px;
+`;
+
 const APYNumber = styled(Title)`
   font-size: 28px;
   line-height: 36px;
@@ -26,6 +30,7 @@ interface DateFilterProps {
 }
 
 const DateFilter = styled(Title)<DateFilterProps>`
+  font-size: 12px;
   letter-spacing: 1.5px;
   cursor: pointer;
   color: ${(props) => (props.active ? "#FFFFFF" : "rgba(255, 255, 255, 0.4)")};
@@ -104,7 +109,7 @@ const PerformanceChart: React.FC = () => {
     <PerformanceChartContainer className="pt-4" style={{ paddingBottom: 40 }}>
       <div className="d-flex align-items-center justify-content-between mb-3 px-4">
         <div>
-          <SecondaryText className="d-block">Yield (APY)</SecondaryText>
+          <APYLabel className="d-block">Yield (APY)</APYLabel>
           <APYNumber>{perfStr}</APYNumber>
         </div>
         <div>
