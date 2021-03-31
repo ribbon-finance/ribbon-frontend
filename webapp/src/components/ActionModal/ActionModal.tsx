@@ -127,7 +127,6 @@ const ActionModal: React.FC<ActionModalProps> = ({
               style={{
                 paddingLeft: modalPadding,
                 paddingRight: modalPadding,
-                top: 0,
               }}
               skipToPreview={isDesktop}
               show={show}
