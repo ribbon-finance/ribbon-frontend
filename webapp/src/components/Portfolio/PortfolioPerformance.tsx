@@ -4,7 +4,7 @@ import { SecondaryText, Subtitle, Title } from "../../designSystem";
 
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
-import { useETHPriceInUSD } from "../../hooks/useEthPrice";
+import useAssetPrice from "../../hooks/useAssetPrice";
 import useVaultData from "../../hooks/useVaultData";
 import { CurrencyType } from "../../pages/Portfolio/types";
 import { ethToUSD, toETH } from "../../utils/math";
@@ -60,7 +60,7 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
   currency,
 }) => {
   const { status, vaultBalanceInAsset } = useVaultData();
-  const ethPrice = useETHPriceInUSD();
+  const ethPrice = useAssetPrice({ asset: "WETH" });
 
   const getDepositAmount = useCallback(() => {
     switch (currency) {
