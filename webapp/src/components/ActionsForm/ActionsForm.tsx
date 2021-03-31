@@ -7,7 +7,6 @@ import WalletConnectModal from "../Wallet/WalletConnectModal";
 import { formatSignificantDecimals } from "../../utils/math";
 import YourPosition from "./YourPosition";
 import ActionModal from "../ActionModal/ActionModal";
-import { ActionModalContentProps, ACTIONS } from "../ActionModal/types";
 import {
   ActionButton,
   ConnectWalletButton,
@@ -17,7 +16,7 @@ import { GAS_LIMITS } from "../../constants/constants";
 import useGasPrice from "../../hooks/useGasPrice";
 import useVaultData from "../../hooks/useVaultData";
 import useVault from "../../hooks/useVault";
-import ActionSteps from "../ActionModal/ActionSteps";
+import { ACTIONS } from "../ActionModal/types";
 
 const { parseEther, formatEther } = ethers.utils;
 
@@ -150,12 +149,18 @@ const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
   const [inputAmount, setInputAmount] = useState("");
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [showActionModal, setShowActionModal] = useState(false);
-  const [showMobileSteps, setShowMobileSteps] = useState(false);
   const [error, setError] = useState<ValidationErrors>("none");
   const { active, account } = useWeb3React();
   const gasPrice = useGasPrice();
 
   const connected = Boolean(active && account);
+
+  const actionParams = isDeposit
+    ? { action: ACTIONS.deposit, yield: 30 }
+    : {
+        action: ACTIONS.withdraw,
+        withdrawalFee: 0.5,
+      };
 
   const handleClickMax = async () => {
     if (!isLoadingData && connected && vault && account) {
@@ -206,8 +211,7 @@ const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
   };
 
   const handleClickActionButton = () => {
-    isDesktop && inputAmount && connected && setShowActionModal(true);
-    !isDesktop && inputAmount && connected && setShowMobileSteps(true);
+    inputAmount && connected && setShowActionModal(true);
   };
 
   const onCloseActionsModal = () => {
@@ -281,90 +285,76 @@ const ActionsForm: React.FC<ActionsFormProps> = ({ variant }) => {
     }
   }
 
-  const ActionStepsHOC = (props: ActionModalContentProps) => (
-    <ActionSteps
-      actionType={isDeposit ? ACTIONS.deposit : ACTIONS.withdraw}
-      show={isDesktop ? showActionModal : showMobileSteps}
-      amount={inputAmount ? parseEther(inputAmount) : BigNumber.from("0")}
-      positionAmount={vaultBalanceInAsset}
-      actionParams={
-        isDeposit
-          ? { action: ACTIONS.deposit, yield: 30 }
-          : {
-              action: ACTIONS.withdraw,
-              withdrawalFee: 0.5,
-            }
-      }
-      onClose={onCloseActionsModal}
-      onChangeStep={props.onChangeStep}
-    ></ActionSteps>
+  const vaultBalanceStr = vaultBalanceInAsset.toString();
+
+  const desktopActionModal = useMemo(
+    () => (
+      <ActionModal
+        variant={"desktop"}
+        show={showActionModal}
+        onClose={onCloseActionsModal}
+        previewStepProps={{
+          actionType: isDeposit ? ACTIONS.deposit : ACTIONS.withdraw,
+          amount: inputAmount ? parseEther(inputAmount) : BigNumber.from("0"),
+          positionAmount: BigNumber.from(vaultBalanceStr),
+          actionParams,
+        }}
+      ></ActionModal>
+    ),
+    [isDeposit, inputAmount, vaultBalanceStr, actionParams, showActionModal]
   );
 
   return (
     <Container variant={variant}>
-      {isDesktop && (
-        <ActionModal
-          show={showActionModal}
-          onClose={onCloseActionsModal}
-          ModalContent={ActionStepsHOC}
-        ></ActionModal>
-      )}
+      {isDesktop && desktopActionModal}
 
       <WalletConnectModal
         show={showConnectModal}
         onClose={() => setShowConnectModal(false)}
       />
 
-      {!isDesktop && showMobileSteps && (
-        <div className="d-flex align-items-center justify-content-center">
-          <ActionStepsHOC onChangeStep={() => {}}></ActionStepsHOC>
-        </div>
-      )}
-
-      {!showMobileSteps && (
-        <FormContainer>
-          <div
-            style={{ justifyContent: "space-evenly" }}
-            className="d-flex flex-row align-items-center"
+      <FormContainer>
+        <div
+          style={{ justifyContent: "space-evenly" }}
+          className="d-flex flex-row align-items-center"
+        >
+          <FormTitleDiv
+            left
+            active={isDeposit}
+            onClick={switchToTab(DEPOSIT_TAB)}
           >
-            <FormTitleDiv
-              left
-              active={isDeposit}
-              onClick={switchToTab(DEPOSIT_TAB)}
-            >
-              <FormTitle active={DEPOSIT_TAB}>Deposit</FormTitle>
-            </FormTitleDiv>
-            <FormTitleDiv
-              left={false}
-              active={!isDeposit}
-              onClick={switchToTab(WITHDRAWAL_TAB)}
-            >
-              <FormTitle active={WITHDRAWAL_TAB}>Withdraw</FormTitle>
-            </FormTitleDiv>
-          </div>
+            <FormTitle active={DEPOSIT_TAB}>Deposit</FormTitle>
+          </FormTitleDiv>
+          <FormTitleDiv
+            left={false}
+            active={!isDeposit}
+            onClick={switchToTab(WITHDRAWAL_TAB)}
+          >
+            <FormTitle active={WITHDRAWAL_TAB}>Withdraw</FormTitle>
+          </FormTitleDiv>
+        </div>
 
-          <ContentContainer className="px-4 py-4">
-            <InputGuide>AMOUNT (ETH)</InputGuide>
-            <FormInputContainer className="position-relative mt-2 mb-5 px-1">
-              <FormInput
-                type="number"
-                className="form-control"
-                aria-label="ETH"
-                placeholder="0"
-                value={inputAmount}
-                onChange={handleChange}
-              />
-              {connected && (
-                <MaxAccessory onClick={handleClickMax}>MAX</MaxAccessory>
-              )}
-            </FormInputContainer>
+        <ContentContainer className="px-4 py-4">
+          <InputGuide>AMOUNT (ETH)</InputGuide>
+          <FormInputContainer className="position-relative mt-2 mb-5 px-1">
+            <FormInput
+              type="number"
+              className="form-control"
+              aria-label="ETH"
+              placeholder="0"
+              value={inputAmount}
+              onChange={handleChange}
+            />
+            {connected && (
+              <MaxAccessory onClick={handleClickMax}>MAX</MaxAccessory>
+            )}
+          </FormInputContainer>
 
-            {button}
+          {button}
 
-            <WalletBalance active={connected}>{walletText}</WalletBalance>
-          </ContentContainer>
-        </FormContainer>
-      )}
+          <WalletBalance active={connected}>{walletText}</WalletBalance>
+        </ContentContainer>
+      </FormContainer>
 
       {connected && isDesktop && <YourPosition></YourPosition>}
     </Container>

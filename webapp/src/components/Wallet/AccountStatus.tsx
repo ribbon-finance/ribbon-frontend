@@ -29,7 +29,7 @@ import { copyTextToClipboard } from "../../utils/text";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { ActionButton } from "../Common/buttons";
-import ActionsFormModal from "../ActionsFormModal/ActionsFormModal";
+import ActionsFormModal from "../ActionModal/ActionModal";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -388,6 +388,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   const formModal = useMemo(
     () => (
       <ActionsFormModal
+        variant="mobile"
         show={showActionFormModal}
         onClose={onCloseActionsModal}
       ></ActionsFormModal>

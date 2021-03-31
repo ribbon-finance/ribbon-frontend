@@ -1,3 +1,5 @@
+import { BigNumber } from "ethers";
+
 export const ACTIONS: { deposit: DepositAction; withdraw: WithdrawAction } = {
   deposit: "deposit",
   withdraw: "withdraw",
@@ -28,19 +30,26 @@ export type ActionModalContent = React.FC<ActionModalContentProps>;
  * Steps
  */
 
-type PreviewStepType = 0;
-type ConfirmationStepType = 1;
-type SubmittedStepType = 2;
-export type Steps = PreviewStepType | ConfirmationStepType | SubmittedStepType;
+type FormStepType = 0;
+type PreviewStepType = 1;
+type ConfirmationStepType = 2;
+type SubmittedStepType = 3;
+export type Steps =
+  | FormStepType
+  | PreviewStepType
+  | ConfirmationStepType
+  | SubmittedStepType;
 
 export const STEPS: {
+  formStep: FormStepType;
   previewStep: PreviewStepType;
   confirmationStep: ConfirmationStepType;
   submittedStep: SubmittedStepType;
 } = {
-  previewStep: 0,
-  confirmationStep: 1,
-  submittedStep: 2,
+  formStep: 0,
+  previewStep: 1,
+  confirmationStep: 2,
+  submittedStep: 3,
 };
 
 export type MobileNavigationButtonTypes = "back" | "close";
@@ -49,4 +58,11 @@ export interface StepData {
   title: string;
   stepNum: Steps;
   navigationButton: MobileNavigationButtonTypes;
+}
+
+export interface PreviewStepProps {
+  actionType: ActionType;
+  amount: BigNumber;
+  positionAmount: BigNumber;
+  actionParams: ActionParams;
 }

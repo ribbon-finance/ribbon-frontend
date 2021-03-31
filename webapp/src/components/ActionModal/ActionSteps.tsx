@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { CSSProperties, useEffect, useState } from "react";
 import { BigNumber } from "ethers";
 
 import {
@@ -6,6 +6,7 @@ import {
   ACTIONS,
   ActionType,
   MobileNavigationButtonTypes,
+  PreviewStepProps,
   StepData,
   Steps,
   STEPS,
@@ -17,27 +18,39 @@ import ConfirmationStep from "./ConfirmationStep";
 import SubmittedStep from "./SubmittedStep";
 
 export interface ActionStepsProps {
-  actionType: ActionType;
   show: boolean;
   onClose: () => void;
   onChangeStep: (stepData: StepData) => void;
-  amount: BigNumber;
-  positionAmount: BigNumber;
-  actionParams: ActionParams;
+  skipToPreview?: boolean;
+  previewStepProps?: PreviewStepProps;
+  style?: CSSProperties;
+  className?: string;
 }
 
 const ActionSteps: React.FC<ActionStepsProps> = ({
-  actionType,
   show,
   onClose,
   onChangeStep,
-  amount,
-  positionAmount,
-  actionParams,
+  skipToPreview = false,
+  previewStepProps,
+  className = "",
+  style = {},
 }) => {
   const [step, setStep] = useState<Steps>(STEPS.previewStep);
   const [txhash, setTxhash] = useState("");
   const vault = useVault();
+
+  const [actionType, setActionType] = useState<ActionType>(
+    skipToPreview && previewStepProps ? previewStepProps.actionType : "deposit"
+  );
+  const [amount, setAmount] = useState<BigNumber>(BigNumber.from("0"));
+  const [positionAmount, setPositionAmount] = useState<BigNumber>(
+    BigNumber.from("0")
+  );
+  const [actionParams, setActionParams] = useState<ActionParams>({
+    action: "deposit",
+    yield: 0,
+  });
 
   // We need to pre-fetch the number of shares that the user wants to withdraw
   const [shares, setShares] = useState<BigNumber>(BigNumber.from("0"));
@@ -62,7 +75,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     }
   }, [amount, vault]);
 
-  const handleClickActionButton = async () => {
+  const handleClickConfirmButton = async () => {
     if (vault !== null) {
       setStep(STEPS.confirmationStep);
       try {
@@ -83,12 +96,14 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   useEffect(() => {
     const titles = {
+      [STEPS.formStep]: "",
       [STEPS.previewStep]: `${actionWord} Preview`,
       [STEPS.confirmationStep]: "Confirm Transaction",
       [STEPS.submittedStep]: "Transaction Submitted",
     };
 
     const navigationButtons: Record<Steps, MobileNavigationButtonTypes> = {
+      [STEPS.formStep]: "back",
       [STEPS.previewStep]: "back",
       [STEPS.confirmationStep]: "close",
       [STEPS.submittedStep]: "close",
@@ -102,20 +117,27 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   }, [step, onChangeStep, actionWord]);
 
   const stepComponents = {
-    0: (
+    0: <div></div>,
+    1: (
       <PreviewStep
-        actionType={actionType}
-        amount={amount}
-        positionAmount={positionAmount}
-        actionParams={actionParams}
-        onClickActionButton={handleClickActionButton}
+        {...(previewStepProps || {
+          actionType,
+          amount,
+          positionAmount,
+          actionParams,
+        })}
+        onClickConfirmButton={handleClickConfirmButton}
       ></PreviewStep>
     ),
-    1: <ConfirmationStep></ConfirmationStep>,
-    2: <SubmittedStep txhash={txhash}></SubmittedStep>,
+    2: <ConfirmationStep></ConfirmationStep>,
+    3: <SubmittedStep txhash={txhash}></SubmittedStep>,
   };
 
-  return <div>{stepComponents[step]}</div>;
+  return (
+    <div className={className} style={style}>
+      {stepComponents[step]}
+    </div>
+  );
 };
 
 export default ActionSteps;
