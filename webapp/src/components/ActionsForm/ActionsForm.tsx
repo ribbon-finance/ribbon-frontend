@@ -44,7 +44,7 @@ const FormTitleDiv = styled.div<{ left: boolean; active: boolean }>`
   width: 100%;
   padding: 24px 0;
   background-color: ${(props) =>
-    props.active ? "#151413" : "rgba(255, 255, 255, 0.04)"};
+    props.active ? "#151413" : "rgb(28, 26, 25,0.95)"};
   cursor: pointer;
 
   ${(props) =>
@@ -73,6 +73,8 @@ const InputGuide = styled.div`
 
 const ContentContainer = styled.div`
   background: #1c1a19;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 `;
 
 const FormInputContainer = styled.div`

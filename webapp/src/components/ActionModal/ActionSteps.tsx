@@ -67,6 +67,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   }, [show, firstStep, setStep]);
 
   const amountStr = amount.toString();
+  const sharesStr = shares.toString();
 
   // Update with previewStepProps
   useEffect(() => {
@@ -88,18 +89,17 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   }, [amountStr, vault]);
 
   const handleClickConfirmButton = async () => {
-    // check legal state transition
-    if (step !== STEPS.previewStep) return;
-
     if (vault !== null) {
+      // check illegal state transition
+      if (step !== STEPS.confirmationStep - 1) return;
       setStep(STEPS.confirmationStep);
       try {
         if (isDeposit) {
-          const res = await vault.depositETH({ value: amount });
+          const res = await vault.depositETH({ value: amountStr });
           setTxhash(res.hash);
           setStep(STEPS.submittedStep);
         } else {
-          const res = await vault.withdrawETH(shares);
+          const res = await vault.withdrawETH(sharesStr);
           setTxhash(res.hash);
           setStep(STEPS.submittedStep);
         }
@@ -132,13 +132,20 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     });
   }, [step, onChangeStep, actionWord]);
 
-  const onSubmitForm = useCallback(() => {
-    // check that it's a legal state transition
-    // if not, just ignore
-    if (step !== STEPS.formStep) return;
+  const onSubmitForm = useCallback(
+    (submittedFormProps) => {
+      // check that it's a legal state transition
+      // if not, just ignore
+      if (step !== STEPS.previewStep - 1) return;
+      setStep(STEPS.previewStep);
 
-    setStep(STEPS.previewStep);
-  }, [step]);
+      setActionType(submittedFormProps.actionType);
+      setAmount(submittedFormProps.amount);
+      setPositionAmount(submittedFormProps.positionAmount);
+      setActionParams(submittedFormProps.actionParams);
+    },
+    [step]
+  );
 
   const stepComponents = {
     0: !skipToPreview && <FormStep onSubmit={onSubmitForm}></FormStep>,

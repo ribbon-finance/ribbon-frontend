@@ -4,7 +4,7 @@ import MobileOverlayMenu from "../Common/MobileOverlayMenu";
 import colors from "../../designSystem/colors";
 import { Title } from "../../designSystem";
 import ActionSteps from "./ActionSteps";
-import { PreviewStepProps, StepData } from "./types";
+import { PreviewStepProps, StepData, STEPS } from "./types";
 
 const ModalNavigation = styled.div`
   position: absolute;
@@ -18,7 +18,11 @@ const ArrowBack = styled.i`
   margin-right: 20px;
 `;
 
-const ModalBody = styled.div<ModalProps>`
+interface ModalBodyProps extends ModalProps {
+  isFormStep: boolean;
+}
+
+const ModalBody = styled.div<ModalBodyProps>`
   background: #1c1a19;
   border: 1px solid #2b2b2b;
   box-sizing: border-box;
@@ -27,6 +31,14 @@ const ModalBody = styled.div<ModalProps>`
   max-width: 450px;
   min-height: 480px;
   max-height: 480px;
+
+  ${(props) =>
+    props.variant === "mobile" &&
+    props.isFormStep &&
+    `
+  background: none;
+  border: none;
+  `}
 `;
 
 const modalPadding = 16;
@@ -60,12 +72,13 @@ const StepsContainer = styled.div<ModalProps>`
   ${(props) =>
     props.variant === "desktop" &&
     `
-    position:absolute
+    position: absolute;
     width: 100%;
     height: 100%;
     `}
-  paddingLeft: ${modalPadding}px;
-  paddingright: ${modalPadding}px;
+
+  padding-left: ${modalPadding}px;
+  padding-right: ${modalPadding}px;
 `;
 
 interface ModalProps {
@@ -124,7 +137,10 @@ const ActionModal: React.FC<ActionModalProps> = ({
             </div>
           )}
         </ModalNavigation>
-        <ModalBody variant={variant}>
+        <ModalBody
+          isFormStep={stepData.stepNum === STEPS.formStep}
+          variant={variant}
+        >
           {stepData.title !== "" && (
             <ModalTitle className="position-relative d-flex align-items-center justify-content-center">
               <Title>{stepData.title}</Title>
