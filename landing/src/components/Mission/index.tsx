@@ -78,9 +78,10 @@ const Mission = () => {
         <Col md={6} sm={12} xs={12}>
           <MissionSubtitle>
             Ribbon uses financial engineering to create structured products that
-            deliver sustainable yield. The protocol allows developers to create
-            structured products through combining various DeFi derivatives.
-            Ribbon's first product focuses on automated options strategies.
+            deliver sustainable yield. Ribbon's first product focuses on yield
+            through automated options strategies. The protocol also allows
+            developers to create arbitrary structured products through combining
+            various DeFi derivatives.
           </MissionSubtitle>
         </Col>
       </MissionSubtitleRow>
