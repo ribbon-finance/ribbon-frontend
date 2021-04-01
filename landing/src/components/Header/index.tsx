@@ -162,8 +162,7 @@ const Header = () => {
             },
           }}
         >
-          {renderLinkItem("PRODUCTS", "/", true)}
-          {renderLinkItem("PORTFOLIO", "/portfolio", false)}
+          {renderLinkItem("START EARNING", "https://ribbon.finance", true)}
           {renderLinkItem(
             "DISCORD",
             "http://tiny.cc/ribbon-discord",
