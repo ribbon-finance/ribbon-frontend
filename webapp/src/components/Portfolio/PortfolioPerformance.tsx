@@ -21,6 +21,8 @@ const PerformanceContainer = styled.div`
 const PerformanceColumn = styled.div`
   width: 100%;
   border-bottom: ${theme.border.width} ${theme.border.style} ${colors.border};
+  display: flex;
+  flex-wrap: wrap;
 
   &:last-child {
     border-bottom: unset;
@@ -31,11 +33,23 @@ const DepositColumn = styled(PerformanceColumn)`
   padding: 16px;
 `;
 
-const ColumnLabel = styled(SecondaryText)`
-  font-size: 12px;
+const KPIColumn = styled.div`
+  width: 50%;
+  padding: 16px;
+  display: flex;
+  flex-wrap: wrap;
+
+  &:first-child {
+    border-right: ${theme.border.width} ${theme.border.style} ${colors.border};
+  }
 `;
 
-const DepositData = styled.div`
+const ColumnLabel = styled(SecondaryText)`
+  font-size: 12px;
+  width: 100%;
+`;
+
+const KPI = styled.div`
   display: flex;
   align-items: center;
 `;
@@ -50,6 +64,12 @@ const DepositCurrency = styled(Subtitle)`
   margin-left: 16px;
   color: rgba(255, 255, 255, 0.16);
   text-transform: uppercase;
+`;
+
+const DepositText = styled(Title)`
+  font-size: 18px;
+  line-height: 24px;
+  color: ${colors.green};
 `;
 
 interface PortfolioPerformanceProps {
@@ -76,10 +96,10 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
       status === "loading" ? (
         <></>
       ) : (
-        <DepositData>
+        <KPI>
           <DepositAmount>{getDepositAmount()}</DepositAmount>
           <DepositCurrency>{currency}</DepositCurrency>
-        </DepositData>
+        </KPI>
       ),
     [currency, status, getDepositAmount]
   );
@@ -90,6 +110,19 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
         <ColumnLabel>Deposits</ColumnLabel>
         {renderDepositData()}
       </DepositColumn>
+      <PerformanceColumn>
+        <KPIColumn>
+          <ColumnLabel>Yield Earned</ColumnLabel>
+          <KPI>
+            <DepositText>+10.12</DepositText>
+            <DepositCurrency>{currency}</DepositCurrency>
+          </KPI>
+        </KPIColumn>
+        <KPIColumn>
+          <ColumnLabel>ROI</ColumnLabel>
+          <DepositText>+35.42%</DepositText>
+        </KPIColumn>
+      </PerformanceColumn>
     </PerformanceContainer>
   );
 };
