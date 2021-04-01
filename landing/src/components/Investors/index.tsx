@@ -51,7 +51,7 @@ const Investors = () => {
   return (
     <MainContainer fluid>
       <Row className="d-flex justify-content-center">
-        <InvestorsTitle>Our Investors</InvestorsTitle>
+        <InvestorsTitle>Our Investors & Advisors</InvestorsTitle>
       </Row>
       <Container>
         <InvestorRow>
@@ -97,7 +97,7 @@ const Investors = () => {
           </Col>
           <Col xl={3} md={4} sm={12} xs={12}>
             <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorText>Kain Warwick</InvestorText>
+              <InvestorText>Stani Kulechov</InvestorText>
             </InvestorCard>
           </Col>
           <Col xl={3} md={4} sm={12} xs={12}>
@@ -112,7 +112,7 @@ const Investors = () => {
           </Col>
           <Col xl={3} md={4} sm={12} xs={12}>
             <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorText>Tony Sheng</InvestorText>
+              <InvestorText>Kain Warwick</InvestorText>
             </InvestorCard>
           </Col>
         </InvestorRow>

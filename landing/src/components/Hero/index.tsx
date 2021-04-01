@@ -23,10 +23,16 @@ const MainContainer = styled(Container)`
   height: 640px;
 `;
 
+const TitleAlt = styled(Title)`
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 2px white;
+`;
+
 const TextContainer = styled(Row)`
   pointer-events: none;
   height: 100%;
   align-items: center;
+  text-align: center;
 `;
 
 const SubtitleContainer = styled.div`
@@ -103,8 +109,10 @@ const Hero = () => {
         </BackgroundContainer>
       </Container>
       <TextContainer>
-        <Col md={{ span: 7, offset: 1 }}>
-          <Title>Sustainable Alpha For Everyone</Title>
+        <Col md={12}>
+          <Title>
+            Sustainable <TitleAlt>Alpha</TitleAlt> <br></br>For Everyone
+          </Title>
 
           <SubtitleContainer>
             <SubTitle>
@@ -114,11 +122,8 @@ const Hero = () => {
           </SubtitleContainer>
 
           <ButtonContainer>
-            <Button>OPEN APP</Button>
+            <Button>START EARNING</Button>
           </ButtonContainer>
-        </Col>
-        <Col md={{ span: 4 }}>
-          <img src={colToShape[col]} style={{ height: 300 }}></img>
         </Col>
       </TextContainer>
     </MainContainer>

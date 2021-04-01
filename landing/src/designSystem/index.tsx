@@ -34,8 +34,8 @@ export const Title = styled(BaseText)`
   font-family: VCR;
   font-style: normal;
   font-weight: normal;
-  font-size: 72px;
-  line-height: 72px;
+  font-size: 64px;
+  line-height: 64px;
 `;
 
 export const ProductContainer = styled.div`
