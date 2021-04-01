@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import theme from "./theme";
 import colors from "./colors";
+import Link from "../components/Common/Link";
 
 export const BaseText = styled.span`
   font-family: "Inter", sans-serif;
@@ -82,4 +83,10 @@ export const Subtitle = styled.span`
   font-weight: normal;
   font-size: 12px;
   letter-spacing: 1.5px;
+`;
+
+export const BaseLink = styled(Link)`
+  &:hover {
+    text-decoration: none;
+  }
 `;

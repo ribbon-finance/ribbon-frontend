@@ -5,30 +5,33 @@ import Mission from "./components/Mission";
 import Investors from "./components/Investors";
 import Footer from "./components/Footer";
 import { getLibrary } from "./utils/getLibrary";
+import Row from "react-bootstrap/Row";
 
 import { Web3ReactProvider } from "@web3-react/core";
 import styled from "styled-components";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-const MainContent = styled.div`
+const Body = styled.div`
   background-color: #1c1a19;
 `;
+
+const MainContent = styled.div``;
 
 function App() {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
-      <div>
+      <Body>
         <Router>
           <Header />
           <Hero />
-          <MainContent>
+          {/* <MainContent>
             <ProductCarousel />
             <Mission />
             <Investors />
           </MainContent>
-          <Footer />
+          <Footer /> */}
         </Router>
-      </div>
+      </Body>
     </Web3ReactProvider>
   );
 }

@@ -9,6 +9,7 @@ import ShapeB from "../../img/ShapeB.svg";
 import ShapeC from "../../img/ShapeC.svg";
 import ShapeD from "../../img/ShapeD.svg";
 import ShapeE from "../../img/ShapeE.svg";
+import sizes from "../../designSystem/sizes";
 
 const ColorColumn = styled(Col)<{
   activeColor: string;
@@ -20,19 +21,8 @@ const ColorColumn = styled(Col)<{
 `;
 
 const MainContainer = styled(Container)`
+  background-color: #1c1a19;
   height: 640px;
-`;
-
-const TitleAlt = styled(Title)`
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 2px white;
-`;
-
-const TextContainer = styled(Row)`
-  pointer-events: none;
-  height: 100%;
-  align-items: center;
-  text-align: center;
 `;
 
 const SubtitleContainer = styled.div`
@@ -43,16 +33,58 @@ const ButtonContainer = styled.div`
   margin-top: 30px;
 `;
 
+const SubTitle = styled(PrimaryText)`
+  color: #ffffff;
+`;
+
 const BackgroundContainer = styled(Row)`
   position: absolute;
   top: 0px;
   bottom: 0px;
   right: 0px;
   left: 0px;
+
+  @media (max-width: ${sizes.md}px) {
+    display: none;
+  }
 `;
 
-const SubTitle = styled(PrimaryText)`
-  color: #ffffff;
+const HeroContainer = styled(Container)`
+  position: relative;
+`;
+
+const TextContainer = styled(Row)`
+  pointer-events: none;
+  height: 100%;
+  align-items: center;
+  text-align: center;
+`;
+
+const TitleContainer = styled.div`
+  @media (max-width: ${sizes.md}px) {
+    display: none;
+  }
+`;
+
+const TitleContainerMobile = styled.div`
+  display: none;
+  @media (max-width: ${sizes.md}px) {
+    display: flex;
+  }
+`;
+
+const TitleSmall = styled(Title)`
+  font-size: 48px;
+`;
+
+const TitleAlt = styled(Title)`
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 2px white;
+`;
+
+const TitleAltSmall = styled(TitleSmall)`
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 2px white;
 `;
 
 const Hero = () => {
@@ -84,7 +116,7 @@ const Hero = () => {
 
   return (
     <MainContainer fluid>
-      <Container fluid style={{ position: "relative" }}>
+      <HeroContainer fluid style={{ position: "relative" }}>
         <BackgroundContainer>
           <ColorColumn
             passiveColor={PassiveColors[0]}
@@ -107,12 +139,21 @@ const Hero = () => {
             onMouseLeave={(e: any) => resetBackground(e, 3)}
           />
         </BackgroundContainer>
-      </Container>
-      <TextContainer>
-        <Col md={12}>
-          <Title>
-            Sustainable <TitleAlt>Alpha</TitleAlt> <br></br>For Everyone
-          </Title>
+      </HeroContainer>
+
+      <TextContainer fluid>
+        <Col>
+          <TitleContainer>
+            <Title>
+              Sustainable <TitleAlt>Alpha</TitleAlt> <br></br>For Everyone
+            </Title>
+          </TitleContainer>
+
+          <TitleContainerMobile>
+            <TitleSmall>
+              Sustainable <TitleAltSmall>Alpha</TitleAltSmall> For Everyone
+            </TitleSmall>
+          </TitleContainerMobile>
 
           <SubtitleContainer>
             <SubTitle>
@@ -120,7 +161,6 @@ const Hero = () => {
               products protocol.
             </SubTitle>
           </SubtitleContainer>
-
           <ButtonContainer>
             <Button>START EARNING</Button>
           </ButtonContainer>

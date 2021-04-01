@@ -56,10 +56,10 @@ const Mission = () => {
       <Row>
         <Col>
           <MissionText>Our Mission</MissionText>
-          <TrailImage src={Trail} />
+          {/* <TrailImage src={Trail} /> */}
         </Col>
       </Row>
-      <MissionTitleRow>
+      <MissionTitleRow fluid>
         <Col>
           <MissionTitle>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam
