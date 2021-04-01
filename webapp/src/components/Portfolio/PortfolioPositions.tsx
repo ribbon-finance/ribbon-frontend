@@ -2,17 +2,14 @@ import React, { useCallback } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import styled from "styled-components";
-import moment from "moment";
 
 import { SecondaryText, Subtitle, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 import useAssetPrice from "../../hooks/useAssetPrice";
 import useTextAnimation from "../../hooks/useTextAnimation";
-import useTransactions from "../../hooks/useTransactions";
 import { CurrencyType } from "../../pages/Portfolio/types";
 import { ethToUSD, toETH } from "../../utils/math";
-import { capitalize } from "../../utils/text";
 import useVaultData from "../../hooks/useVaultData";
 import { ProductType } from "../Product/types";
 
