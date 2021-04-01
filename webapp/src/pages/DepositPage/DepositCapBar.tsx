@@ -25,6 +25,7 @@ const DepositLabel = styled(SecondaryText)<{
   };
 }>`
   font-size: ${(props) => props.config.fontSize}px;
+  color: rgba(255, 255, 255, 0.64);
 `;
 
 const DepositStat = styled(Title)<{

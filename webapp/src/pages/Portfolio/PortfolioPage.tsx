@@ -3,6 +3,8 @@ import { Col, Container, Row } from "react-bootstrap";
 
 import PortfolioHeader from "../../components/Portfolio/PortfolioHeader";
 import PortfolioPerformance from "../../components/Portfolio/PortfolioPerformance";
+import PortfolioPositions from "../../components/Portfolio/PortfolioPositions";
+import PortfolioTransactions from "../../components/Portfolio/PortfolioTransactions";
 import { currencies, CurrencyType } from "./types";
 
 const PortfolioPage = () => {
@@ -19,6 +21,8 @@ const PortfolioPage = () => {
             }
           />
           <PortfolioPerformance currency={currency} />
+          <PortfolioPositions />
+          <PortfolioTransactions />
         </Col>
       </Row>
     </Container>
