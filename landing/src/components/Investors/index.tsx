@@ -51,7 +51,9 @@ const Investors = () => {
   return (
     <MainContainer fluid>
       <Row className="d-flex justify-content-center">
-        <InvestorsTitle>Our Investors & Advisors</InvestorsTitle>
+        <Col className="d-flex justify-content-center">
+          <InvestorsTitle>Our Investors & Advisors</InvestorsTitle>
+        </Col>
       </Row>
       <Container>
         <InvestorRow>
