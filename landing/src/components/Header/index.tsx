@@ -199,6 +199,7 @@ const Header = () => {
               marginRight: "auto",
             },
           }}
+          style={{ paddingTop: 40 }}
         >
           {renderLinkItem("START EARNING", "https://ribbon.finance", true)}
           {renderLinkItem(
