@@ -20,17 +20,9 @@ const MissionText = styled(BaseText)`
   color: #ff385c;
 `;
 
-const MissionTitle = styled(Title)`
-  font-size: 64px;
-  line-height: 80px;
-  text-transform: capitalize;
-  color: #ffffff;
-`;
-
 const MissionSubtitle = styled(BaseText)`
   font-size: 16px;
   line-height: 24px;
-  text-transform: capitalize;
   color: rgba(255, 255, 255, 0.8);
 `;
 
@@ -49,29 +41,22 @@ const PlaneImage = styled.img`
 
 const MissionTitleRow = styled(Row)`
   margin-top: 40px;
-
-  @media (max-width: ${sizes.md}px) {
-    display: none;
-  }
-`;
-
-const MissionTitleMobileContainer = styled(MissionTitleRow)`
-  display: none;
-
-  @media (max-width: ${sizes.md}px) {
-    display: flex;
-  }
 `;
 
 const MissionSubtitleRow = styled(Row)`
   margin-top: 40px;
 `;
 
-const MissionTitleMobile = styled(Title)`
-  font-size: 40px;
-  line-height: 48px;
-  text-transform: capitalize;
+const MissionTitle = styled(Title)`
+  font-size: 64px;
+  line-height: 64px;
+  text-transform: uppercase;
   color: #ffffff;
+
+  @media (max-width: ${sizes.md}px) {
+    font-size: 40px;
+    line-height: 40px;
+  }
 `;
 
 const Mission = () => {
@@ -85,29 +70,17 @@ const Mission = () => {
       </Row>
       <MissionTitleRow fluid>
         <Col>
-          <MissionTitle>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam
-          </MissionTitle>
+          <MissionTitle>Bringing Structured Products to DeFi</MissionTitle>
         </Col>
       </MissionTitleRow>
-
-      <MissionTitleMobileContainer>
-        <Col>
-          <MissionTitleMobile>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam
-          </MissionTitleMobile>
-        </Col>
-      </MissionTitleMobileContainer>
 
       <MissionSubtitleRow>
         <Col md={6} sm={12} xs={12}>
           <MissionSubtitle>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam,
-            purus sit amet luctus venenatis, lectus magna fringilla urna,
-            porttitor rhoncus dolor purus non enim praesent elementum facilisis
-            leo, vel fringilla est ullamcorper eget nulla facilisi etiam
-            dignissim diam quis enim lobortis scelerisque fermentum dui faucibus
-            in ornare.
+            Ribbon uses financial engineering to create structured products that
+            deliver sustainable yield. The protocol allows developers to create
+            structured products through combining various DeFi derivatives.
+            Ribbon's first product focuses on automated options strategies.
           </MissionSubtitle>
         </Col>
       </MissionSubtitleRow>
