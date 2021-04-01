@@ -21,6 +21,7 @@
     "craco-less": "^1.17.1",
     "ethers": "^5.0.32",
     "framer": "^1.2.28",
+    "moment": "^2.29.1",
     "node-sass": "^5.0.0",
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.2",

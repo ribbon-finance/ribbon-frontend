@@ -10,3 +10,7 @@ export const copyTextToClipboard = (text: string) => {
   document.execCommand("copy");
   textField.remove();
 };
+
+export const capitalize = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.substring(1);
+};
