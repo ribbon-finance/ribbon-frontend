@@ -35,7 +35,11 @@ const fetchTransactions = async (
   const response = await axios.post(getSubgraphqlURI(), {
     query: `
         {
-          vaultTransactions(where:{address:"${account}"}) {
+          vaultTransactions(
+            where:{address:"${account}"}, 
+            orderBy: timestamp, 
+            orderDirection: desc
+          ) {
             id
             type
             vault {
@@ -51,14 +55,10 @@ const fetchTransactions = async (
         `,
   });
 
-  return response.data.data.vaultTransactions
-    .map((transaction: any) => ({
-      amount: BigNumber.from(transaction.amount),
-      ...transaction,
-    }))
-    .sort(
-      (a: VaultTransaction, b: VaultTransaction) => b.timestamp - a.timestamp
-    );
+  return response.data.data.vaultTransactions.map((transaction: any) => ({
+    amount: BigNumber.from(transaction.amount),
+    ...transaction,
+  }));
 };
 
 export default useTransactions;

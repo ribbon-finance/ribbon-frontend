@@ -13,8 +13,10 @@ import useTransactions from "../../hooks/useTransactions";
 import { CurrencyType } from "../../pages/Portfolio/types";
 import { ethToUSD, toETH } from "../../utils/math";
 import { capitalize } from "../../utils/text";
+import useVaultData from "../../hooks/useVaultData";
+import { ProductType } from "../Product/types";
 
-const PortfolioTransactionsContainer = styled.div`
+const PortfolioPositionsContainer = styled.div`
   margin-top: 48px;
   display: flex;
   flex-wrap: wrap;
@@ -32,7 +34,7 @@ const SectionPlaceholderText = styled(SecondaryText)`
   line-height: 24px;
 `;
 
-const TransactionContainer = styled.div`
+const PositionContainer = styled.div`
   width: 100%;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
@@ -42,7 +44,7 @@ const TransactionContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const TransactionInfoRow = styled.div`
+const PositionInfoRow = styled.div`
   width: 100%;
   display: flex;
   margin-bottom: 4px;
@@ -52,108 +54,97 @@ const TransactionInfoRow = styled.div`
   }
 `;
 
-const TransactionInfoText = styled(SecondaryText)`
+const PositionSymbolTitle = styled(Title)<{ product: ProductType }>`
+  color: ${(props) => colors.products[props.product]};
+`;
+
+const PositionInfoText = styled(SecondaryText)`
   color: ${colors.primaryText}A3;
   font-size: 12px;
   line-height: 16px;
   font-weight: 400;
 `;
 
-const TransactionSecondaryInfoText = styled(Subtitle)`
+const PositionSecondaryInfoText = styled(Subtitle)`
   color: ${colors.primaryText}A3;
   letter-spacing: unset;
   line-height: 16px;
 `;
 
-const PortfolioTransactions = () => {
-  const { transactions, loading } = useTransactions();
+const PortfolioPositions = () => {
   const { active } = useWeb3React();
+  const { status, vaultBalanceInAsset } = useVaultData();
+  const isLoading = status === "loading";
   const animatedLoadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
-    loading
+    isLoading
   );
   const ethPrice = useAssetPrice({});
 
-  const renderTransactionAmountText = useCallback(
-    (
-      amount: BigNumber,
-      type: "deposit" | "withdraw",
-      currency: CurrencyType
-    ) => {
-      const prependSymbol = type === "deposit" ? "+" : "-";
-
+  const renderAmountText = useCallback(
+    (amount: BigNumber, currency: CurrencyType) => {
       switch (currency) {
         case "usd":
-          return `${prependSymbol}${ethToUSD(amount, ethPrice)}`;
+          return `${ethToUSD(amount, ethPrice)}`;
         case "eth":
-          return `${prependSymbol}${toETH(amount)} ETH`;
+          return `${toETH(amount)} ETH`;
       }
     },
     [ethPrice]
   );
 
-  const renderTransactions = useCallback(() => {
+  const renderPositions = useCallback(() => {
     if (!active) {
       return <SectionPlaceholderText>---</SectionPlaceholderText>;
     }
 
-    if (loading) {
+    if (isLoading) {
       return (
         <SectionPlaceholderText>{animatedLoadingText}</SectionPlaceholderText>
       );
     }
 
-    if (transactions.length <= 0) {
+    if (vaultBalanceInAsset.isZero()) {
       return (
         <SectionPlaceholderText>
-          You have no previous transactions on Ribbon
+          You have no outstanding positions
         </SectionPlaceholderText>
       );
     }
 
-    return transactions.map((transaction) => (
-      <TransactionContainer key={transaction.id}>
-        <TransactionInfoRow>
-          <Title className="flex-grow-1">{transaction.vault.symbol}</Title>
-          <Title>
-            {renderTransactionAmountText(
-              transaction.amount,
-              transaction.type,
-              "eth"
-            )}
-          </Title>
-        </TransactionInfoRow>
-        <TransactionInfoRow>
-          <TransactionInfoText className="flex-grow-1">
-            {`${transaction.type === "deposit" ? `↓` : `↑`} ${capitalize(
-              transaction.type
-            )} - ${moment(transaction.timestamp, "X").fromNow()}`}
-          </TransactionInfoText>
-          <TransactionSecondaryInfoText>
-            {renderTransactionAmountText(
-              transaction.amount,
-              transaction.type,
-              "usd"
-            )}
-          </TransactionSecondaryInfoText>
-        </TransactionInfoRow>
-      </TransactionContainer>
-    ));
+    return (
+      <PositionContainer>
+        <PositionInfoRow>
+          <PositionSymbolTitle product="yield" className="flex-grow-1">
+            T-100-E
+          </PositionSymbolTitle>
+          <Title>{renderAmountText(vaultBalanceInAsset, "eth")}</Title>
+        </PositionInfoRow>
+        <PositionInfoRow>
+          <PositionInfoText className="flex-grow-1">
+            Theta Vault - ETH
+          </PositionInfoText>
+          <PositionSecondaryInfoText>
+            {renderAmountText(vaultBalanceInAsset, "usd")}
+          </PositionSecondaryInfoText>
+        </PositionInfoRow>
+      </PositionContainer>
+    );
   }, [
     active,
-    transactions,
+    isLoading,
     animatedLoadingText,
-    loading,
-    renderTransactionAmountText,
+    vaultBalanceInAsset,
+    renderAmountText,
   ]);
 
   return (
-    <PortfolioTransactionsContainer>
-      <SectionTitle>Transactions</SectionTitle>
-      {renderTransactions()}
-    </PortfolioTransactionsContainer>
+    <PortfolioPositionsContainer>
+      <SectionTitle>Positions</SectionTitle>
+      {renderPositions()}
+    </PortfolioPositionsContainer>
   );
 };
 
-export default PortfolioTransactions;
+export default PortfolioPositions;
