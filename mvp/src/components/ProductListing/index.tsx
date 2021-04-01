@@ -57,6 +57,11 @@ const CardRow = styled(Row)`
 
   @media (min-width: 1800px) {
     justify-content: center;
+
+    & > div:nth-child(2) {
+      margin-left: 1%;
+      margin-right: 1%;
+    }
   }
 `;
 
@@ -71,8 +76,9 @@ const CardCol = styled(Col)`
   @media (min-width: 1600px) and (max-width: 1800px) {
     display: block;
     flex: 0 0 30%;
-    max-width: 30%;
+    max-width: 25%;
   }
+
   @media (min-width: 1800px) {
     margin-left: 40px;
     margin-right: 40px;
