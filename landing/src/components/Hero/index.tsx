@@ -23,6 +23,10 @@ const ColorColumn = styled(Col)<{
 const MainContainer = styled(Container)`
   background-color: #1c1a19;
   height: 640px;
+
+  @media (max-width: ${sizes.md}px) {
+    height: 540px;
+  }
 `;
 
 const SubtitleContainer = styled.div`
