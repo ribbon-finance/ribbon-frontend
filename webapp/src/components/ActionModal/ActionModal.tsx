@@ -5,6 +5,7 @@ import colors from "../../designSystem/colors";
 import { Title } from "../../designSystem";
 import ActionSteps from "./ActionSteps";
 import { PreviewStepProps, StepData, STEPS } from "./types";
+import sizes from "../../designSystem/sizes";
 
 const ModalNavigation = styled.div`
   position: absolute;
@@ -45,6 +46,11 @@ const ModalBody = styled.div<ModalBodyProps>`
   background: none;
   border: none;
   `}
+
+  @media (max-width: ${sizes.md}px) {
+    max-height: unset;
+    min-height: unset;
+  }
 `;
 
 const modalPadding = 16;
@@ -114,8 +120,6 @@ const ActionModal: React.FC<ActionModalProps> = ({
     setStepData,
   ]);
 
-  const onCloseOverlay = useCallback(() => onClose(), [onClose]);
-
   const renderModalNavigationItem = useCallback(() => {
     if (isDesktop) {
       return;
@@ -157,49 +161,42 @@ const ActionModal: React.FC<ActionModalProps> = ({
   return (
     <MobileOverlayMenu
       isMenuOpen={show}
-      onOverlayClick={onCloseOverlay}
+      onClick={onClose}
       mountRoot="div#root"
-      boundingDivProps={{
-        style: {
-          display: "flex",
-          width: "100%",
-          height: "100%",
-          alignItems: "center",
-          justifyContent: "center",
-        },
-        // This helps the bounding div to bubble the event upwards
-        // to dismiss the modal
-        ...(isDesktop ? { onClick: () => {} } : {}),
+      style={{
+        display: "flex",
+        width: "100%",
+        height: "100%",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
-      <div onClick={(e) => e.stopPropagation()}>
-        <ModalNavigation className="d-flex flex-row align-items-center">
-          {renderModalNavigationItem()}
-        </ModalNavigation>
-        <ModalBody
-          isFormStep={stepData.stepNum === STEPS.formStep}
-          variant={variant}
-        >
-          {stepData.title !== "" && (
-            <ModalTitle className="position-relative d-flex align-items-center justify-content-center">
-              <Title>{stepData.title}</Title>
-              {renderModalCloseButton()}
-            </ModalTitle>
-          )}
+      <ModalNavigation className="d-flex flex-row align-items-center">
+        {renderModalNavigationItem()}
+      </ModalNavigation>
+      <ModalBody
+        isFormStep={stepData.stepNum === STEPS.formStep}
+        variant={variant}
+      >
+        {stepData.title !== "" && (
+          <ModalTitle className="position-relative d-flex align-items-center justify-content-center">
+            <Title>{stepData.title}</Title>
+            {renderModalCloseButton()}
+          </ModalTitle>
+        )}
 
-          <ModalContent className="position-relative">
-            <StepsContainer variant={variant}>
-              <ActionSteps
-                skipToPreview={isDesktop}
-                show={show}
-                onClose={onClose}
-                onChangeStep={onChangeStep}
-                previewStepProps={previewStepProps}
-              ></ActionSteps>
-            </StepsContainer>
-          </ModalContent>
-        </ModalBody>
-      </div>
+        <ModalContent className="position-relative">
+          <StepsContainer variant={variant}>
+            <ActionSteps
+              skipToPreview={isDesktop}
+              show={show}
+              onClose={onClose}
+              onChangeStep={onChangeStep}
+              previewStepProps={previewStepProps}
+            ></ActionSteps>
+          </StepsContainer>
+        </ModalContent>
+      </ModalBody>
     </MobileOverlayMenu>
   );
 };

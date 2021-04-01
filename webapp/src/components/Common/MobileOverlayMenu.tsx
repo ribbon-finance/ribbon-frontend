@@ -45,7 +45,6 @@ export const MobileOverlayContainer = styled.div<MobileOverlayContainerProps>`
 
 type MobileOverlayMenuProps = MenuStateProps &
   React.HTMLAttributes<HTMLDivElement> & {
-    onOverlayClick?: (event: React.MouseEvent) => void;
     mountRoot?: string;
     boundingDivProps?: React.HTMLAttributes<HTMLDivElement>;
   };
@@ -54,7 +53,6 @@ const MobileOverlayMenu: React.FC<MobileOverlayMenuProps> = ({
   isMenuOpen,
   children,
   onClick,
-  onOverlayClick,
   mountRoot,
   boundingDivProps,
   ...props
@@ -85,7 +83,6 @@ const MobileOverlayMenu: React.FC<MobileOverlayMenuProps> = ({
       height={height}
       onClick={(event) => {
         onClick && onClick(event);
-        onOverlayClick && onOverlayClick(event);
       }}
       ref={containerRef}
       {...props}

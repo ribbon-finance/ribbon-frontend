@@ -428,7 +428,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
       <WalletMobileOverlayMenu
         className="flex-column align-items-center justify-content-center"
         isMenuOpen={isMenuOpen}
-        onOverlayClick={onCloseMenu}
+        onClick={onCloseMenu}
         variant={variant}
         mountRoot="div#root"
       >

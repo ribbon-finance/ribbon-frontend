@@ -20,6 +20,7 @@ const HeroContainer = styled.div`
     rgba(252, 10, 84, 0.0256) 98.99%
   );
   padding: 40px 0;
+  overflow: hidden;
 `;
 
 const HeroText = styled(Title)`
@@ -48,8 +49,11 @@ const SplashImage = styled.div`
   z-index: 0;
   top: 0;
   right: 0;
-  width: 600;
-  overflow: hidden;
+  width: 600px;
+
+  @media (max-width: ${sizes.xl}px) {
+    display: none;
+  }
 `;
 
 const DesktopActionsFormContainer = styled.div`

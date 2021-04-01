@@ -16,7 +16,8 @@ const ParagraphHeading = styled(Title)`
 `;
 
 const ParagraphText = styled(SecondaryText)`
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.64);
+  font-weight: 400;
   font-size: 16px;
   line-height: 24px;
 `;
@@ -105,7 +106,11 @@ const PerformanceSection = () => {
         </ParagraphText>
 
         <PrimaryText className="d-block mt-3">
-          <Link href="https://ribbonfinance.medium.com/theta-vault-backtest-results-6e8c59adf38c">
+          <Link
+            href="https://ribbonfinance.medium.com/theta-vault-backtest-results-6e8c59adf38c"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
             <span className="mr-2">Read More</span>
             <LinkIcon className="fas fa-external-link-alt"></LinkIcon>
           </Link>

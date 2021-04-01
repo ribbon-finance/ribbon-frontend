@@ -13,17 +13,14 @@ import MobileOverlayMenu from "../Common/MobileOverlayMenu";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
+  position: sticky;
+  top: 0;
   border-bottom: 1px solid ${colors.border};
-  position: relative;
+  background-color: ${colors.background};
 
   @media (max-width: ${sizes.md}px) {
     padding: 16px 24px;
-    position: sticky;
-    top: 0;
-    left: 0;
-    right: 0;
     border-bottom: none;
-    background-color: ${colors.background};
   }
 
   z-index: ${(props) => (props.isMenuOpen ? 50 : 10)};
@@ -161,7 +158,7 @@ const Header = () => {
         <MobileOverlayMenu
           className="flex-column align-items-center justify-content-center"
           isMenuOpen={isMenuOpen}
-          onOverlayClick={onToggleMenu}
+          onClick={onToggleMenu}
           boundingDivProps={{
             style: {
               marginRight: "auto",
