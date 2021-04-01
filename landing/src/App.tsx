@@ -24,12 +24,12 @@ function App() {
         <Router>
           <Header />
           <Hero />
-          {/* <MainContent>
+          <MainContent>
             <ProductCarousel />
             <Mission />
             <Investors />
           </MainContent>
-          <Footer /> */}
+          <Footer />
         </Router>
       </Body>
     </Web3ReactProvider>

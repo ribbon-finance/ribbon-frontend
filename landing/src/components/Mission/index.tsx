@@ -6,9 +6,10 @@ import { Title, PrimaryText, Button, BaseText } from "../../designSystem";
 import { Container } from "react-bootstrap";
 import Trail from "../../img/trail.svg";
 import Plane from "../../img/ShapePlane.svg";
+import sizes from "../../designSystem/sizes";
 
 const MainContainer = styled(Container)`
-  padding-bottom: 80px;
+  padding-bottom: 40px;
 `;
 
 const MissionText = styled(BaseText)`
@@ -35,6 +36,10 @@ const MissionSubtitle = styled(BaseText)`
 
 const TrailImage = styled.img`
   margin-left: 50px;
+
+  @media (max-width: ${sizes.md}px) {
+    display: none;
+  }
 `;
 
 const PlaneImage = styled.img`
@@ -44,10 +49,29 @@ const PlaneImage = styled.img`
 
 const MissionTitleRow = styled(Row)`
   margin-top: 40px;
+
+  @media (max-width: ${sizes.md}px) {
+    display: none;
+  }
+`;
+
+const MissionTitleMobileContainer = styled(MissionTitleRow)`
+  display: none;
+
+  @media (max-width: ${sizes.md}px) {
+    display: flex;
+  }
 `;
 
 const MissionSubtitleRow = styled(Row)`
   margin-top: 40px;
+`;
+
+const MissionTitleMobile = styled(Title)`
+  font-size: 40px;
+  line-height: 48px;
+  text-transform: capitalize;
+  color: #ffffff;
 `;
 
 const Mission = () => {
@@ -56,7 +80,7 @@ const Mission = () => {
       <Row>
         <Col>
           <MissionText>Our Mission</MissionText>
-          {/* <TrailImage src={Trail} /> */}
+          <TrailImage src={Trail} />
         </Col>
       </Row>
       <MissionTitleRow fluid>
@@ -66,6 +90,14 @@ const Mission = () => {
           </MissionTitle>
         </Col>
       </MissionTitleRow>
+
+      <MissionTitleMobileContainer>
+        <Col>
+          <MissionTitleMobile>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam
+          </MissionTitleMobile>
+        </Col>
+      </MissionTitleMobileContainer>
 
       <MissionSubtitleRow>
         <Col md={6} sm={12} xs={12}>
