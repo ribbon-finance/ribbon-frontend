@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Logo from "./Logo";
 import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";
-import { Title, BaseLink } from "../../designSystem";
+import { Title, BaseLink, Button } from "../../designSystem";
 import MenuButton from "./MenuButton";
 import { NavItemProps, MobileMenuOpenProps } from "./types";
 import theme from "../../designSystem/theme";
@@ -98,6 +98,36 @@ const MobileOnly = styled.div`
   }
 `;
 
+const ButtonText = styled.span`
+  font-family: VCR;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 24px;
+  text-align: center;
+  text-transform: capitalize;
+  color: #16ceb9;
+`;
+
+const AppButton = styled(Button)`
+  padding-top: 12px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 12px;
+  border-radius: 8px;
+  background: rgba(22, 206, 185, 0.08);
+  border: none;
+`;
+
+const ButtonContainer = styled.div`
+  z-index: 0;
+  margin-right: 30px;
+
+  @media (max-width: ${sizes.md}px) {
+    display: none;
+  }
+`;
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -140,14 +170,22 @@ const Header = () => {
       <LogoContainer>
         <Logo></Logo>
       </LogoContainer>
-
       {/* LINKS */}
       <HeaderAbsoluteContainer>
         <LinksContainer>
-          {renderLinkItem("PRODUCTS", "/", true)}
-          {renderLinkItem("PORTFOLIO", "/portfolio", false)}
+          {renderLinkItem("ABOUT", "/about", false)}
+          {renderLinkItem("COMMUNITY", "http://tiny.cc/ribbon-discord", false)}
+          {renderLinkItem("BLOG", "https://medium.com/@ribbonfinance", false)}
         </LinksContainer>
       </HeaderAbsoluteContainer>
+
+      <ButtonContainer>
+        <a href="https://ribbon.finance">
+          <AppButton>
+            <ButtonText>START EARNING</ButtonText>
+          </AppButton>
+        </a>
+      </ButtonContainer>
 
       {/* MOBILE MENU */}
       <MobileOnly>
