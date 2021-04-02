@@ -288,7 +288,7 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
         </KPIColumn>
         <KPIColumn>
           <ColumnLabel>ROI</ColumnLabel>
-          <DepositText>+{calculatedKPI.roi.toFixed(4)}%</DepositText>
+          <DepositText>+{calculatedKPI.roi.toFixed(2)}%</DepositText>
         </KPIColumn>
       </PerformanceColumn>
     </PerformanceContainer>
