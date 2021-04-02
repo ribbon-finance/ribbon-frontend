@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import PerformanceChart from "../../components/PerformanceChart/PerformanceChart";
+
 import { PrimaryText, SecondaryText, Title } from "../../designSystem";
 import sizes from "../../designSystem/sizes";
+import VaultPerformanceChart from "./VaultPerformanceChart";
 
 const Paragraph = styled.div`
   margin-bottom: 48px;
@@ -84,7 +85,7 @@ const PerformanceSection = () => {
 
       <Paragraph>
         <ParagraphHeading>Vault Performance</ParagraphHeading>
-        <PerformanceChart></PerformanceChart>
+        <VaultPerformanceChart />
       </Paragraph>
 
       <Paragraph>

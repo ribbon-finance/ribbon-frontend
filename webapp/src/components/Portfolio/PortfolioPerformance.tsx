@@ -8,6 +8,7 @@ import useAssetPrice from "../../hooks/useAssetPrice";
 import useVaultData from "../../hooks/useVaultData";
 import { CurrencyType } from "../../pages/Portfolio/types";
 import { ethToUSD, toETH } from "../../utils/math";
+import PerformanceChart from "../PerformanceChart/PerformanceChart";
 
 const PerformanceContainer = styled.div`
   display: flex;
@@ -30,6 +31,10 @@ const PerformanceColumn = styled.div`
 `;
 
 const DepositColumn = styled(PerformanceColumn)`
+  padding-bottom: 24px;
+`;
+
+const DepositChartExtra = styled.div`
   padding: 16px;
 `;
 
@@ -107,8 +112,17 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
   return (
     <PerformanceContainer>
       <DepositColumn>
-        <ColumnLabel>Deposits</ColumnLabel>
-        {renderDepositData()}
+        <PerformanceChart
+          dataset={[1, 2, 3]}
+          labels={[new Date(), new Date(), new Date()]}
+          onChartHover={() => {}}
+          extras={
+            <DepositChartExtra>
+              <ColumnLabel>Deposits</ColumnLabel>
+              {renderDepositData()}
+            </DepositChartExtra>
+          }
+        />
       </DepositColumn>
       <PerformanceColumn>
         <KPIColumn>
