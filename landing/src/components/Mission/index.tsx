@@ -5,9 +5,11 @@ import Col from "react-bootstrap/Col";
 import { Title, PrimaryText, Button, BaseText } from "../../designSystem";
 import { Container } from "react-bootstrap";
 import Trail from "../../img/trail.svg";
+import Plane from "../../img/ShapePlane.svg";
+import sizes from "../../designSystem/sizes";
 
 const MainContainer = styled(Container)`
-  padding-bottom: 80px;
+  padding-bottom: 40px;
 `;
 
 const MissionText = styled(BaseText)`
@@ -15,25 +17,26 @@ const MissionText = styled(BaseText)`
   line-height: 16px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: #ff9000;
-`;
-
-const MissionTitle = styled(Title)`
-  font-size: 64px;
-  line-height: 80px;
-  text-transform: capitalize;
-  color: #ffffff;
+  color: #ff385c;
 `;
 
 const MissionSubtitle = styled(BaseText)`
   font-size: 16px;
   line-height: 24px;
-  text-transform: capitalize;
   color: rgba(255, 255, 255, 0.8);
 `;
 
 const TrailImage = styled.img`
   margin-left: 50px;
+
+  @media (max-width: ${sizes.md}px) {
+    display: none;
+  }
+`;
+
+const PlaneImage = styled.img`
+  margin-top: 50px;
+  width: 100%;
 `;
 
 const MissionTitleRow = styled(Row)`
@@ -44,31 +47,50 @@ const MissionSubtitleRow = styled(Row)`
   margin-top: 40px;
 `;
 
+const MissionTitle = styled(Title)`
+  font-size: 64px;
+  line-height: 64px;
+  text-transform: uppercase;
+  color: #ffffff;
+
+  @media (max-width: ${sizes.md}px) {
+    font-size: 40px;
+    line-height: 40px;
+  }
+`;
+
 const Mission = () => {
   return (
     <MainContainer>
       <Row>
-        <MissionText>Our Mission</MissionText>
-        <TrailImage src={Trail} />
+        <Col>
+          <MissionText>Our Mission</MissionText>
+          <TrailImage src={Trail} />
+        </Col>
       </Row>
-      <MissionTitleRow>
-        <MissionTitle>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam
-        </MissionTitle>
+      <MissionTitleRow fluid>
+        <Col>
+          <MissionTitle>Bringing Structured Products to DeFi</MissionTitle>
+        </Col>
       </MissionTitleRow>
 
       <MissionSubtitleRow>
-        <Col md={{ offset: 6, span: 6 }} sm={12} xs={12}>
+        <Col md={6} sm={12} xs={12}>
           <MissionSubtitle>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam,
-            purus sit amet luctus venenatis, lectus magna fringilla urna,
-            porttitor rhoncus dolor purus non enim praesent elementum facilisis
-            leo, vel fringilla est ullamcorper eget nulla facilisi etiam
-            dignissim diam quis enim lobortis scelerisque fermentum dui faucibus
-            in ornare.
+            Ribbon uses financial engineering to create structured products that
+            deliver sustainable yield. Ribbon's first product focuses on yield
+            through automated options strategies. The protocol also allows
+            developers to create arbitrary structured products through combining
+            various DeFi derivatives.
           </MissionSubtitle>
         </Col>
       </MissionSubtitleRow>
+
+      <Row>
+        <Col>
+          <PlaneImage src={Plane} />
+        </Col>
+      </Row>
     </MainContainer>
   );
 };

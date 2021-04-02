@@ -23,8 +23,9 @@ const InvestorsTitle = styled(Title)`
 `;
 
 const InvestorCard = styled.div`
-  background: #201e1e;
+  background: #141415;
   border-radius: 8px;
+  border: 1px solid #2b2b2b;
   margin-bottom: 16px;
   height: 136px;
 `;
@@ -50,7 +51,9 @@ const Investors = () => {
   return (
     <MainContainer fluid>
       <Row className="d-flex justify-content-center">
-        <InvestorsTitle>Our Investors</InvestorsTitle>
+        <Col className="d-flex justify-content-center">
+          <InvestorsTitle>Our Investors & Advisors</InvestorsTitle>
+        </Col>
       </Row>
       <Container>
         <InvestorRow>
@@ -96,7 +99,7 @@ const Investors = () => {
           </Col>
           <Col xl={3} md={4} sm={12} xs={12}>
             <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorText>Joshua Lim</InvestorText>
+              <InvestorText>Stani Kulechov</InvestorText>
             </InvestorCard>
           </Col>
           <Col xl={3} md={4} sm={12} xs={12}>
@@ -111,7 +114,7 @@ const Investors = () => {
           </Col>
           <Col xl={3} md={4} sm={12} xs={12}>
             <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorText>Tony Sheng</InvestorText>
+              <InvestorText>Kain Warwick</InvestorText>
             </InvestorCard>
           </Col>
         </InvestorRow>

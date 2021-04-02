@@ -1,4 +1,7 @@
 import styled from "styled-components";
+import theme from "./theme";
+import colors from "./colors";
+import Link from "../components/Common/Link";
 
 export const BaseText = styled.span`
   font-family: "Inter", sans-serif;
@@ -27,12 +30,13 @@ export const SecondaryText = styled(BaseText)`
 `;
 
 export const Title = styled(BaseText)`
-  font-family: Orbitron;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-family: VCR;
   font-style: normal;
   font-weight: normal;
   font-size: 64px;
-  color: #ffffff;
-  line-height: 80px;
+  line-height: 64px;
 `;
 
 export const ProductContainer = styled.div`
@@ -52,8 +56,37 @@ export const Button = styled.button`
   outline: none;
   box-shadow: none;
   text-align: center;
-  padding: 14px;
-  background: #ffffff;
-  border-radius: 8px;
   pointer-events: auto;
+  border: 2px solid #ffffff;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background: transparent;
+  color: #ffffff;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 30px;
+  padding-right: 30px;
+  text-transform: uppercase;
+  font-family: VCR;
+`;
+
+export const BaseButton = styled.div`
+  display: flex;
+  border-radius: ${theme.border.radius};
+  padding: 12px 16px;
+`;
+
+export const Subtitle = styled.span`
+  color: ${colors.primaryText};
+  font-family: VCR;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+`;
+
+export const BaseLink = styled(Link)`
+  &:hover {
+    text-decoration: none;
+  }
 `;
