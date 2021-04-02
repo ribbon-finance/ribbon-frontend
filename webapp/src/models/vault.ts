@@ -27,5 +27,5 @@ export interface BalanceUpdate {
   account: string;
   timestamp: number;
   balance: BigNumber;
-  yieldEarned: number;
+  yieldEarned: BigNumber;
 }

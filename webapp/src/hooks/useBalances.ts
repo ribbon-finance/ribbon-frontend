@@ -63,6 +63,7 @@ const fetchBalances = async (
   return response.data.data.balanceUpdates.map((item: any) => ({
     ...item,
     balance: BigNumber.from(item.balance),
+    yieldEarned: BigNumber.from(item.yieldEarned),
   }));
 };
 
