@@ -1,14 +1,20 @@
-import React, { useCallback } from "react";
+import { useWeb3React } from "@web3-react/core";
+import { BigNumber, ethers } from "ethers";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { SecondaryText, Subtitle, Title } from "../../designSystem";
+import moment from "moment";
 
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 import useAssetPrice from "../../hooks/useAssetPrice";
-import useVaultData from "../../hooks/useVaultData";
+import useBalances from "../../hooks/useBalances";
+import useTextAnimation from "../../hooks/useTextAnimation";
 import { CurrencyType } from "../../pages/Portfolio/types";
 import { ethToUSD, toETH } from "../../utils/math";
 import PerformanceChart from "../PerformanceChart/PerformanceChart";
+import { HoverInfo } from "../PerformanceChart/types";
+import useVaultData from "../../hooks/useVaultData";
 
 const PerformanceContainer = styled.div`
   display: flex;
@@ -38,6 +44,22 @@ const DepositChartExtra = styled.div`
   padding: 16px;
 `;
 
+const DateFilters = styled.div`
+  margin-left: auto;
+`;
+
+const DateFilter = styled(Title)<{ active: boolean }>`
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  color: ${(props) => (props.active ? "#FFFFFF" : "rgba(255, 255, 255, 0.4)")};
+  margin-right: 24px;
+
+  &:last-child {
+    margin-right: unset;
+  }
+`;
+
 const KPIColumn = styled.div`
   width: 50%;
   padding: 16px;
@@ -59,9 +81,10 @@ const KPI = styled.div`
   align-items: center;
 `;
 
-const DepositAmount = styled(Title)`
+const DepositAmount = styled(Title)<{ active: boolean }>`
   font-size: 40px;
   line-height: 48px;
+  ${(props) => (!props.active ? `opacity: 0.16;` : null)}
 `;
 
 const DepositCurrency = styled(Subtitle)`
@@ -81,45 +104,119 @@ interface PortfolioPerformanceProps {
   currency: CurrencyType;
 }
 
+const dateFilterOptions = ["24h", "1w", "1m", "all"] as const;
+type dateFilterType = typeof dateFilterOptions[number];
+
 const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
   currency,
 }) => {
-  const { status, vaultBalanceInAsset } = useVaultData();
+  const { active } = useWeb3React();
+  const { vaultBalanceInAsset } = useVaultData();
   const ethPrice = useAssetPrice({ asset: "WETH" });
+  const [currentBalance, setCurrentBalance] = useState<BigNumber>(
+    BigNumber.from(0)
+  );
+  const [rangeFilter, setRangeFilter] = useState<dateFilterType>("1w");
+
+  const afterDate = useMemo(() => {
+    switch (rangeFilter) {
+      case "24h":
+        return moment().subtract(1, "days");
+      case "1w":
+        return moment().subtract(1, "weeks");
+      case "1m":
+        return moment().subtract(1, "months");
+    }
+  }, [rangeFilter]);
+
+  const { balances, loading } = useBalances(
+    undefined,
+    afterDate ? afterDate.unix() : undefined
+  );
+  const loadingText = useTextAnimation(
+    ["Loading", "Loading .", "Loading ..", "Loading ..."],
+    250,
+    loading
+  );
+
+  useEffect(() => {
+    setCurrentBalance(vaultBalanceInAsset);
+  }, [vaultBalanceInAsset, balances]);
 
   const getDepositAmount = useCallback(() => {
     switch (currency) {
       case "eth":
-        return toETH(vaultBalanceInAsset);
+        return toETH(currentBalance);
       case "usd":
-        return ethToUSD(vaultBalanceInAsset, ethPrice);
+        return ethToUSD(currentBalance, ethPrice);
     }
-  }, [currency, vaultBalanceInAsset, ethPrice]);
+  }, [currency, currentBalance, ethPrice]);
 
-  const renderDepositData = useCallback(
-    () =>
-      status === "loading" ? (
-        <></>
-      ) : (
+  const renderDepositData = useCallback(() => {
+    if (!active) {
+      return (
         <KPI>
-          <DepositAmount>{getDepositAmount()}</DepositAmount>
-          <DepositCurrency>{currency}</DepositCurrency>
+          <DepositAmount active={active}>---</DepositAmount>
         </KPI>
-      ),
-    [currency, status, getDepositAmount]
+      );
+    }
+
+    if (loading) {
+      return (
+        <KPI>
+          <DepositAmount active={active}>{loadingText}</DepositAmount>
+        </KPI>
+      );
+    }
+
+    return (
+      <KPI>
+        <DepositAmount active={active}>{getDepositAmount()}</DepositAmount>
+        <DepositCurrency>{currency}</DepositCurrency>
+      </KPI>
+    );
+  }, [active, currency, loadingText, loading, getDepositAmount]);
+
+  const handleChartHover = useCallback(
+    (hoverInfo: HoverInfo) => {
+      if (hoverInfo.focused) {
+        const currentBalanceItem = balances.find(
+          (balance) => balance.timestamp * 1000 === hoverInfo.xData.getTime()
+        );
+        setCurrentBalance(currentBalanceItem!.balance);
+        return;
+      }
+
+      setCurrentBalance(vaultBalanceInAsset);
+    },
+    [vaultBalanceInAsset, balances]
   );
 
   return (
     <PerformanceContainer>
       <DepositColumn>
         <PerformanceChart
-          dataset={[1, 2, 3]}
-          labels={[new Date(), new Date(), new Date()]}
-          onChartHover={() => {}}
+          dataset={balances.map((balance) =>
+            parseFloat(ethers.utils.formatEther(balance.balance))
+          )}
+          labels={balances.map((balance) => new Date(balance.timestamp * 1000))}
+          onChartHover={handleChartHover}
           extras={
             <DepositChartExtra>
               <ColumnLabel>Deposits</ColumnLabel>
-              {renderDepositData()}
+              <div className="d-flex align-items-center">
+                {renderDepositData()}
+                <DateFilters>
+                  {dateFilterOptions.map((currRange) => (
+                    <DateFilter
+                      active={rangeFilter === currRange}
+                      onClick={() => setRangeFilter(currRange)}
+                    >
+                      {currRange.toUpperCase()}
+                    </DateFilter>
+                  ))}
+                </DateFilters>
+              </div>
             </DepositChartExtra>
           }
         />
