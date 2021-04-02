@@ -95,10 +95,11 @@ const DepositCurrency = styled(Subtitle)`
   text-transform: uppercase;
 `;
 
-const DepositText = styled(Title)`
+const KPIText = styled(Title)<{ active: boolean }>`
   font-size: 18px;
   line-height: 24px;
-  color: ${colors.green};
+  color: ${(props) =>
+    props.active ? colors.green : "rgba(255, 255, 255, 0.4)"};
 `;
 
 interface PortfolioPerformanceProps {
@@ -241,13 +242,17 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
   }, [balances, hoveredBalanceUpdate]);
 
   const renderYieldEarnedText = useCallback(() => {
+    if (!active) {
+      return "---";
+    }
+
     switch (currency) {
       case "eth":
-        return toETH(calculatedKPI.yield);
+        return `+${toETH(calculatedKPI.yield)}`;
       case "usd":
-        return ethToUSD(calculatedKPI.yield, ethPrice);
+        return `+${ethToUSD(calculatedKPI.yield, ethPrice)}`;
     }
-  }, [calculatedKPI, currency, ethPrice]);
+  }, [active, calculatedKPI, currency, ethPrice]);
 
   return (
     <PerformanceContainer>
@@ -282,13 +287,15 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
         <KPIColumn>
           <ColumnLabel>Yield Earned</ColumnLabel>
           <KPI>
-            <DepositText>+{renderYieldEarnedText()}</DepositText>
-            <DepositCurrency>{currency}</DepositCurrency>
+            <KPIText active={active}>{renderYieldEarnedText()}</KPIText>
+            <DepositCurrency>{active ? currency : ""}</DepositCurrency>
           </KPI>
         </KPIColumn>
         <KPIColumn>
           <ColumnLabel>ROI</ColumnLabel>
-          <DepositText>+{calculatedKPI.roi.toFixed(2)}%</DepositText>
+          <KPIText active={active}>
+            {active ? `+${calculatedKPI.roi.toFixed(2)}%` : "---"}
+          </KPIText>
         </KPIColumn>
       </PerformanceColumn>
     </PerformanceContainer>
