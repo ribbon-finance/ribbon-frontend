@@ -57,6 +57,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+body :not(input):not(textarea):not([contenteditable="true"]) {
+  user-select: auto !important;
+  -webkit-user-select: auto !important;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;

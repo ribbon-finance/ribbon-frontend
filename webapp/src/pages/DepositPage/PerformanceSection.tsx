@@ -64,7 +64,11 @@ const PerformanceSection = () => {
         <ParagraphHeading>Vault Strategy</ParagraphHeading>
         <ParagraphText>
           This vault earns yield on ETH through running an automated{" "}
-          <Link href="https://www.investopedia.com/terms/c/coveredcall.asp">
+          <Link
+            href="https://www.investopedia.com/terms/c/coveredcall.asp"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
             covered call
           </Link>{" "}
           strategy. Put simply, the vault sells <i>potential upside</i> in
