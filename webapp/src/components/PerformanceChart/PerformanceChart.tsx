@@ -1,23 +1,14 @@
 import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { Line } from "react-chartjs-2";
-import moment from "moment";
 import { ChartOptions } from "chart.js";
-import { SecondaryText, Title } from "../../designSystem";
-import colors from "../../designSystem/colors";
+import moment from "moment";
+
+import { HoverInfo } from "./types";
+import { SecondaryText } from "../../designSystem";
 
 const PerformanceChartContainer = styled.div`
-  border: 1px solid ${colors.border};
-  border-radius: 4px;
-`;
-
-const APYLabel = styled(SecondaryText)`
-  font-size: 12px;
-`;
-
-const APYNumber = styled(Title)`
-  font-size: 28px;
-  line-height: 36px;
+  width: 100%;
 `;
 
 const DateTooltip = styled(SecondaryText)`
@@ -25,109 +16,49 @@ const DateTooltip = styled(SecondaryText)`
   line-height: 16px;
 `;
 
-interface DateFilterProps {
-  active: boolean;
+interface PerformanceChartProps {
+  dataset: number[];
+  labels: Date[];
+  extras?: React.ReactNode;
+  onChartHover: (hoverInfo: HoverInfo) => void;
 }
 
-const DateFilter = styled(Title)<DateFilterProps>`
-  font-size: 12px;
-  letter-spacing: 1.5px;
-  cursor: pointer;
-  color: ${(props) => (props.active ? "#FFFFFF" : "rgba(255, 255, 255, 0.4)")};
-`;
-
-const PerformanceChart: React.FC = () => {
-  // mocked data for now
-  const originalDataset = useMemo(
-    () => [3, 5, 2, 3, 5, 4, 3, 1, 4, 5, 7, 8.5, 8, 7.5],
-    []
-  );
-  const originalLabels = useMemo(() => {
-    const now = moment(new Date());
-    return originalDataset
-      .map((_, index) =>
-        now
-          .subtract(index * 7, "days")
-          .utc()
-          .toDate()
-      )
-      .reverse();
-  }, [originalDataset]);
-
-  // states
+const PerformanceChart: React.FC<PerformanceChartProps> = ({
+  dataset,
+  labels,
+  extras,
+  onChartHover,
+}) => {
   const [date, setDate] = useState<Date | null>(null);
   const [datePosition, setDatePosition] = useState(0);
-  const [monthFilter, setMonthFilter] = useState(true);
-  const [performance, setPerformance] = useState<number>(
-    originalDataset[originalDataset.length - 1]
-  );
 
-  const aMonthFromNow = moment(new Date()).subtract(1, "months");
-  const dataset = monthFilter
-    ? originalDataset.filter((_, index) => {
-        return moment(originalLabels[index]).isAfter(aMonthFromNow);
-      })
-    : originalDataset;
-
-  const labels = monthFilter
-    ? originalLabels.filter((date) => {
-        return moment(date).isAfter(aMonthFromNow);
-      })
-    : originalLabels;
-
-  // formatted data
-  const perfStr = `${performance.toFixed(2)}%`;
   const dateStr = moment(date || new Date()).format("ddd, MMMM wo");
 
   const handleChartHover = useCallback(
     (hoverInfo: HoverInfo) => {
       if (hoverInfo.focused) {
-        setPerformance(hoverInfo.yData);
         setDate(hoverInfo.xData);
         setDatePosition(hoverInfo.xPosition);
       } else {
-        setPerformance(originalDataset[originalDataset.length - 1]);
         setDate(null);
         setDatePosition(0);
       }
+
+      onChartHover && onChartHover(hoverInfo);
     },
-    [originalDataset, setPerformance, setDate]
+    [onChartHover]
   );
 
   const chart = useMemo(
     () => (
-      <Chart
-        dataset={dataset}
-        labels={labels}
-        onHover={handleChartHover}
-      ></Chart>
+      <Chart dataset={dataset} labels={labels} onHover={handleChartHover} />
     ),
     [dataset, labels, handleChartHover]
   );
 
   return (
-    <PerformanceChartContainer className="pt-4" style={{ paddingBottom: 40 }}>
-      <div className="d-flex align-items-center justify-content-between mb-3 px-4">
-        <div>
-          <APYLabel className="d-block">Yield (APY)</APYLabel>
-          <APYNumber>{perfStr}</APYNumber>
-        </div>
-        <div>
-          <DateFilter
-            active={monthFilter}
-            className="mr-3"
-            onClick={() => setMonthFilter(true)}
-          >
-            1m
-          </DateFilter>
-          <DateFilter
-            active={!monthFilter}
-            onClick={() => setMonthFilter(false)}
-          >
-            All
-          </DateFilter>
-        </div>
-      </div>
+    <PerformanceChartContainer>
+      {extras}
       <div style={{ position: "relative", height: "224px", width: "100%" }}>
         {chart}
       </div>
@@ -141,19 +72,10 @@ const PerformanceChart: React.FC = () => {
         >
           {dateStr}
         </DateTooltip>
-      ) : null}
+      ) : undefined}
     </PerformanceChartContainer>
   );
 };
-
-type HoverInfo =
-  | {
-      focused: true;
-      xData: Date;
-      yData: number;
-      xPosition: number;
-    }
-  | { focused: false };
 
 const Chart: React.FC<{
   dataset: number[];

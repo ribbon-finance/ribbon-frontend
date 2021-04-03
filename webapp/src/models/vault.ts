@@ -20,3 +20,12 @@ export interface VaultTransaction {
   amount: BigNumber;
   fee: number;
 }
+
+export interface BalanceUpdate {
+  id: string;
+  vault: Vault;
+  account: string;
+  timestamp: number;
+  balance: BigNumber;
+  yieldEarned: BigNumber;
+}

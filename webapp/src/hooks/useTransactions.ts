@@ -56,8 +56,8 @@ const fetchTransactions = async (
   });
 
   return response.data.data.vaultTransactions.map((transaction: any) => ({
-    amount: BigNumber.from(transaction.amount),
     ...transaction,
+    amount: BigNumber.from(transaction.amount),
   }));
 };
 

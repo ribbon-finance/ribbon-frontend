@@ -21,7 +21,7 @@ const PortfolioPage = () => {
             }
           />
           <PortfolioPerformance currency={currency} />
-          <PortfolioPositions />
+          <PortfolioPositions currency={currency} />
           <PortfolioTransactions />
         </Col>
       </Row>

@@ -1,6 +1,6 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useWeb3React } from "@web3-react/core";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import styled from "styled-components";
 
 import { SecondaryText, Subtitle, Title } from "../../designSystem";
@@ -12,6 +12,7 @@ import { CurrencyType } from "../../pages/Portfolio/types";
 import { ethToUSD, toETH } from "../../utils/math";
 import useVaultData from "../../hooks/useVaultData";
 import { ProductType } from "../Product/types";
+import useBalances from "../../hooks/useBalances";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 48px;
@@ -39,6 +40,7 @@ const PositionContainer = styled.div`
   padding: 16px;
   display: flex;
   flex-wrap: wrap;
+  position: relative;
 `;
 
 const PositionInfoRow = styled.div`
@@ -62,22 +64,92 @@ const PositionInfoText = styled(SecondaryText)`
   font-weight: 400;
 `;
 
-const PositionSecondaryInfoText = styled(Subtitle)`
-  color: ${colors.primaryText}A3;
+const PositionSecondaryInfoText = styled(Subtitle)<{ variant?: "green" }>`
   letter-spacing: unset;
   line-height: 16px;
+  ${(props) => {
+    switch (props.variant) {
+      case "green":
+        return `color: ${colors.green}`;
+      default:
+        return `color: ${colors.primaryText}A3;`;
+    }
+  }}
 `;
 
-const PortfolioPositions = () => {
+const KPIContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+`;
+
+const KPIDatas = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+`;
+
+interface PortfolioPositionsProps {
+  currency: CurrencyType;
+}
+
+const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
+  currency,
+}) => {
   const { active } = useWeb3React();
   const { status, vaultBalanceInAsset } = useVaultData();
-  const isLoading = status === "loading";
+  const { balances, loading: balancesLoading } = useBalances();
+  const isLoading = status === "loading" || balancesLoading;
   const animatedLoadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
     isLoading
   );
   const ethPrice = useAssetPrice({});
+
+  const calculatedKPI = useMemo(() => {
+    if (balances.length <= 0) {
+      return {
+        yield: BigNumber.from(0),
+        roi: 0,
+      };
+    }
+
+    let totalInvestment = BigNumber.from(0);
+    let yieldEarned = BigNumber.from(0);
+    let lastBalance = BigNumber.from(0);
+
+    for (let i = 0; i < balances.length; i++) {
+      const currentBalanceObj = balances[i];
+      totalInvestment = totalInvestment.add(
+        currentBalanceObj.balance
+          .sub(lastBalance)
+          .sub(currentBalanceObj.yieldEarned)
+      );
+      yieldEarned = yieldEarned.add(currentBalanceObj.yieldEarned);
+      lastBalance = currentBalanceObj.balance;
+    }
+
+    if (totalInvestment.lte(0)) {
+      return {
+        yield: BigNumber.from(0),
+        roi: 0,
+      };
+    }
+
+    return {
+      yield: yieldEarned,
+      roi:
+        (parseFloat(ethers.utils.formatEther(yieldEarned)) /
+          parseFloat(ethers.utils.formatEther(totalInvestment))) *
+        100,
+    };
+  }, [balances]);
 
   const renderAmountText = useCallback(
     (amount: BigNumber, currency: CurrencyType) => {
@@ -126,6 +198,14 @@ const PortfolioPositions = () => {
             {renderAmountText(vaultBalanceInAsset, "usd")}
           </PositionSecondaryInfoText>
         </PositionInfoRow>
+        <KPIContainer>
+          <KPIDatas>
+            <Title>+{renderAmountText(calculatedKPI.yield, currency)}</Title>
+            <PositionSecondaryInfoText variant="green">
+              +{calculatedKPI.roi.toFixed(2)}%
+            </PositionSecondaryInfoText>
+          </KPIDatas>
+        </KPIContainer>
       </PositionContainer>
     );
   }, [
@@ -134,6 +214,8 @@ const PortfolioPositions = () => {
     animatedLoadingText,
     vaultBalanceInAsset,
     renderAmountText,
+    calculatedKPI,
+    currency,
   ]);
 
   return (

@@ -74,7 +74,7 @@ const PortfolioHeader: React.FC<PortfolioHeaderProps> = ({
 
   const renderCurrencyButton = useCallback(
     (currency: CurrencyType) => (
-      <CurrencyButton ref={currencyRefs[currency]}>
+      <CurrencyButton ref={currencyRefs[currency]} key={currency}>
         <Subtitle>{currency.toUpperCase()}</Subtitle>
       </CurrencyButton>
     ),
