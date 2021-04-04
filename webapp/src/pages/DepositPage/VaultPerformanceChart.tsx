@@ -75,7 +75,7 @@ const VaultPerformanceChart: React.FC = () => {
 
   // formatted data
   const perfStr = yields.length
-    ? `${yields[chartIndex].toFixed(2)}%`
+    ? `${(yields[chartIndex] || 0.0).toFixed(2)}%`
     : "Loading";
 
   return (
