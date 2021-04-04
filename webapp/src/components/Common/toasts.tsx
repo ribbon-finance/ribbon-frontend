@@ -54,9 +54,7 @@ export const TxStatusToast = () => {
       (async () => {
         // we query from the tail of the pendingTransactions
         const tailTx = pendingTransactions[pendingTransactions.length - 1];
-        console.log("waiting");
         const receipt = await provider.waitForTransaction(tailTx.txhash, 1);
-        console.log("confirmed");
 
         setStatus(receipt.status ? "success" : "error");
         setCurrentTx(tailTx);
