@@ -17,6 +17,7 @@ const useVaultData: UseVaultData = () => {
 
   const doMulticall = useCallback(async () => {
     const envChainID = getDefaultChainID();
+    const zero = BigNumber.from("0");
 
     if (ethersProvider) {
       const providerVault = getVault(envChainID, ethersProvider, false);
@@ -29,17 +30,33 @@ const useVaultData: UseVaultData = () => {
 
         let connectedPromises: Promise<BigNumber>[] = [];
 
+        const defaultToValue = (
+          prevValue: BigNumber,
+          defaultValue: BigNumber
+        ) => {
+          return prevValue.isZero() ? defaultValue : prevValue;
+        };
+
         if (walletConnected && account && chainId) {
           if (chainId !== envChainID) {
-            setResponse({
+            setResponse((prevResponse) => ({
               status: "error",
               error: "wrong_network",
-              deposits: BigNumber.from("0"),
-              vaultLimit: BigNumber.from("0"),
-              vaultBalanceInAsset: BigNumber.from("0"),
-              userAssetBalance: BigNumber.from("0"),
-              maxWithdrawAmount: BigNumber.from("0"),
-            });
+              deposits: defaultToValue(zero, prevResponse.deposits),
+              vaultLimit: defaultToValue(zero, prevResponse.vaultLimit),
+              vaultBalanceInAsset: defaultToValue(
+                zero,
+                prevResponse.vaultBalanceInAsset
+              ),
+              userAssetBalance: defaultToValue(
+                zero,
+                prevResponse.userAssetBalance
+              ),
+              maxWithdrawAmount: defaultToValue(
+                zero,
+                prevResponse.maxWithdrawAmount
+              ),
+            }));
             return;
           }
 
@@ -58,32 +75,47 @@ const useVaultData: UseVaultData = () => {
         try {
           const responses = await Promise.all(promises);
 
-          const data = {
-            deposits: responses[0],
-            vaultLimit: responses[1],
-          };
-
           if (!walletConnected) {
-            setResponse({
+            setResponse((prevResponse) => ({
               status: "success",
               error: null,
-              ...data,
-              vaultBalanceInAsset: BigNumber.from("0"),
-              userAssetBalance: BigNumber.from("0"),
-              maxWithdrawAmount: BigNumber.from("0"),
-            });
+              deposits: defaultToValue(prevResponse.deposits, responses[0]),
+              vaultLimit: defaultToValue(prevResponse.vaultLimit, responses[1]),
+              vaultBalanceInAsset: defaultToValue(
+                prevResponse.vaultBalanceInAsset,
+                zero
+              ),
+              userAssetBalance: defaultToValue(
+                prevResponse.userAssetBalance,
+                zero
+              ),
+              maxWithdrawAmount: defaultToValue(
+                prevResponse.maxWithdrawAmount,
+                zero
+              ),
+            }));
 
             return;
           }
 
-          setResponse({
+          setResponse((prevResponse) => ({
             status: "success",
             error: null,
-            ...data,
-            vaultBalanceInAsset: responses[2],
-            userAssetBalance: responses[3],
-            maxWithdrawAmount: responses[4],
-          });
+            deposits: defaultToValue(prevResponse.deposits, responses[0]),
+            vaultLimit: defaultToValue(prevResponse.vaultLimit, responses[1]),
+            vaultBalanceInAsset: defaultToValue(
+              prevResponse.vaultBalanceInAsset,
+              responses[2]
+            ),
+            userAssetBalance: defaultToValue(
+              prevResponse.userAssetBalance,
+              responses[3]
+            ),
+            maxWithdrawAmount: defaultToValue(
+              prevResponse.maxWithdrawAmount,
+              responses[4]
+            ),
+          }));
         } catch (e) {
           console.error(e);
         }
