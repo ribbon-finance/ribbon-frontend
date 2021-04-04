@@ -88,6 +88,8 @@ export const TxStatusToast = () => {
       );
     }
 
+    const word = type === "deposit" ? "Deposit" : "Withdrawal";
+
     return (
       <Toast
         show={status === "success"}
@@ -95,7 +97,7 @@ export const TxStatusToast = () => {
         autohide
         delay={8000}
         type="success"
-        title={`${type} successful`}
+        title={`${word} successful`}
         subtitle={`${amountFormatted} ETH ${
           type === "deposit" ? "deposited into" : "withdrawn from"
         } T-100-E`}
