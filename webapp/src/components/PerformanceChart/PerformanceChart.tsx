@@ -31,7 +31,7 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
 }) => {
   const [date, setDate] = useState<Date | null>(null);
   const [datePosition, setDatePosition] = useState(0);
-  const [, setIndex] = useState(0);
+  const [index, setIndex] = useState(0);
 
   const dateStr = moment(date || new Date()).format("ddd, MMMM Do");
 
@@ -59,6 +59,13 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
     [dataset, labels, handleChartHover]
   );
 
+  let dateTooltipPosition = datePosition - 15;
+  if (index === 0) {
+    dateTooltipPosition = datePosition + 18;
+  } else if (index === dataset.length - 1) {
+    dateTooltipPosition = datePosition - 58;
+  }
+
   return (
     <PerformanceChartContainer>
       {extras}
@@ -70,7 +77,7 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
           className="position-absolute"
           style={{
             whiteSpace: "nowrap",
-            left: datePosition - 15,
+            left: dateTooltipPosition,
           }}
         >
           {dateStr}
