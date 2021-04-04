@@ -38,6 +38,7 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
   const handleChartHover = useCallback(
     (hoverInfo: HoverInfo) => {
       if (hoverInfo.focused) {
+        console.log(hoverInfo.xData);
         setDate(hoverInfo.xData);
         setDatePosition(hoverInfo.xPosition);
         setIndex(hoverInfo.index);

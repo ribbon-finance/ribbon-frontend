@@ -18,7 +18,7 @@ interface WeeklyPerformance {
 const useAirtableData = () => {
   const API_KEY = process.env.REACT_APP_AIRTABLE_API_KEY;
   const BASE_ID = process.env.REACT_APP_AIRTABLE_BASE_ID;
-  const API_URL = `https://api.airtable.com/v0/${BASE_ID}/table/`;
+  const API_URL = `https://api.airtable.com/v0/${BASE_ID}/table?sort%5B0%5D%5Bfield%5D=Timestamp&sort%5B0%5D%5Bdirection%5D=asc`;
 
   const [data, setData] = useState<AirtableData>({
     fetched: false,

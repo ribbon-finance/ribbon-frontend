@@ -39,7 +39,7 @@ const VaultPerformanceChart: React.FC = () => {
   const timestamps = airtableData.res.map((data) => new Date(data.timestamp));
 
   // states
-  const [monthFilter, setMonthFilter] = useState(true);
+  const [monthFilter, setMonthFilter] = useState(false);
   const [chartIndex, setChartIndex] = useState(0);
 
   const yieldLen = yields.length;
@@ -101,7 +101,7 @@ const VaultPerformanceChart: React.FC = () => {
                 1m
               </DateFilter> */}
               <DateFilter
-                active={monthFilter}
+                active={!monthFilter}
                 onClick={() => setMonthFilter(false)}
               >
                 All
