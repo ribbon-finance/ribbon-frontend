@@ -100,6 +100,7 @@ interface ModalProps {
 interface ActionModalProps extends ModalProps {
   show: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
   previewStepProps?: PreviewStepProps;
 }
 
@@ -108,11 +109,11 @@ const ActionModal: React.FC<ActionModalProps> = ({
   onClose,
   variant,
   previewStepProps,
+  onSuccess = () => {},
 }) => {
   const [stepData, setStepData] = useState<StepData>({
     stepNum: 0,
     title: "",
-    navigationButton: "back",
   });
   const isDesktop = variant === "desktop";
 
@@ -193,6 +194,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
               onClose={onClose}
               onChangeStep={onChangeStep}
               previewStepProps={previewStepProps}
+              onSuccess={onSuccess}
             ></ActionSteps>
           </StepsContainer>
         </ModalContent>
