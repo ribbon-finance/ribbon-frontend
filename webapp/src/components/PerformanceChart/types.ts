@@ -4,5 +4,6 @@ export type HoverInfo =
       xData: Date;
       yData: number;
       xPosition: number;
+      index: number;
     }
   | { focused: false };
