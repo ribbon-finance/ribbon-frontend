@@ -60,15 +60,24 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const isDeposit = actionType === ACTIONS.deposit;
   const actionWord = isDeposit ? "Deposit" : "Withdrawal";
 
-  const handleClose = useCallback(() => {
+  const cleanupEffects = useCallback(() => {
     setTxhash("");
 
     if (step === STEPS.submittedStep) {
       onSuccess();
     }
+  }, [step, onSuccess]);
 
+  const handleClose = useCallback(() => {
+    cleanupEffects();
     onClose();
-  }, [step, onClose, onSuccess]);
+  }, [onClose, cleanupEffects]);
+
+  useEffect(() => {
+    if (!show) {
+      cleanupEffects();
+    }
+  }, [show, cleanupEffects]);
 
   // Whenever the `show` variable is toggled, we need to reset the step back to 0
   useEffect(() => {

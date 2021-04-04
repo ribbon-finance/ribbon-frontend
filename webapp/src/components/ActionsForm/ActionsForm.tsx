@@ -260,11 +260,12 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
     !isDesktop && isInputNonZero && connected && onSubmit(previewStepProps);
   };
 
-  const onCloseActionsModal = () => {
+  const onCloseActionsModal = useCallback(() => {
     setShowActionModal(false);
-  };
+  }, []);
 
   const onSuccess = useCallback(() => {
+    setIsDeposit(true);
     setInputAmount("");
     setError("none");
   }, [setInputAmount, setError]);
@@ -366,7 +367,7 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
         onSuccess={onSuccess}
       ></ActionModal>
     ),
-    [showActionModal, previewStepProps, onSuccess]
+    [showActionModal, previewStepProps, onSuccess, onCloseActionsModal]
   );
 
   return (
