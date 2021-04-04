@@ -36,7 +36,9 @@ const AmountText = styled.span`
 `;
 
 const YourPosition = () => {
-  const { status, vaultBalanceInAsset } = useVaultData();
+  const { status, vaultBalanceInAsset } = useVaultData({
+    poll: true,
+  });
   const ethusd = useAssetPrice({ asset: "WETH" });
   const isLoading = status === "loading";
   const positionAssetAmount = formatBigNumber(vaultBalanceInAsset);
