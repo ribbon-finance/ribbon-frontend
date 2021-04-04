@@ -100,6 +100,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         },
       ]);
     }
+
+    return () => setTxhash("");
   }, [txhash, setPendingTransactions, isDeposit, amountStr]);
 
   const handleClickConfirmButton = async () => {

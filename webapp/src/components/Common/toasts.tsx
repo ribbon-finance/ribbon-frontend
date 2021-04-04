@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
 import useVaultData from "../../hooks/useVaultData";
 import { useWeb3Context } from "../../hooks/web3Context";
+import { PendingTransaction } from "../../store/types";
 import { getDefaultNetworkName } from "../../utils/env";
 import { formatBigNumber } from "../../utils/math";
 import { capitalize } from "../../utils/text";
@@ -45,6 +46,7 @@ export const TxStatusToast = () => {
   ] = usePendingTransactions();
 
   const [status, setStatus] = useState<TxStatuses>(null);
+  const [currentTx, setCurrentTx] = useState<PendingTransaction | null>(null);
   const { provider } = useWeb3Context();
 
   useEffect(() => {
@@ -52,9 +54,12 @@ export const TxStatusToast = () => {
       (async () => {
         // we query from the tail of the pendingTransactions
         const tailTx = pendingTransactions[pendingTransactions.length - 1];
+        console.log("waiting");
         const receipt = await provider.waitForTransaction(tailTx.txhash, 1);
+        console.log("confirmed");
 
         setStatus(receipt.status ? "success" : "error");
+        setCurrentTx(tailTx);
         setPendingTransactions((pendingTransactions) => {
           return pendingTransactions.filter(
             (tx) => tx.txhash !== tailTx.txhash
@@ -63,11 +68,10 @@ export const TxStatusToast = () => {
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pendingTransactions, setStatus]);
+  }, [pendingTransactions, setStatus, setCurrentTx]);
 
-  if (pendingTransactions.length) {
-    const pendingTx = pendingTransactions[0];
-    const { type, amount } = pendingTx;
+  if (status && currentTx) {
+    const { type, amount } = currentTx;
     const amountFormatted = formatBigNumber(BigNumber.from(amount));
 
     if (status === "error") {
@@ -76,6 +80,7 @@ export const TxStatusToast = () => {
           show={status === "error"}
           onClose={() => setStatus(null)}
           autohide
+          delay={8000}
           type="error"
           title={`${type} failed`}
           subtitle="Please resubmit transaction"
@@ -88,6 +93,7 @@ export const TxStatusToast = () => {
         show={status === "success"}
         onClose={() => setStatus(null)}
         autohide
+        delay={8000}
         type="success"
         title={`${type} successful`}
         subtitle={`${amountFormatted} ETH ${
