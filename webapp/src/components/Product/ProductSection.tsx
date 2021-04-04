@@ -26,8 +26,6 @@ import useScreenSize from "../../hooks/useScreenSize";
 import useElementSize from "../../hooks/useElementSize";
 import useElementScroll from "../../hooks/useElementScroll";
 import sizes from "../../designSystem/sizes";
-import useVaultData from "../../hooks/useVaultData";
-import WrongNetworkToast from "../Common/WrongNetworkToast";
 
 const ProductSectionContainer = styled(Container)`
   display: flex;
@@ -238,7 +236,6 @@ const productTabs: Array<{ name: ProductType; title: string }> = [
 ];
 
 const Products = () => {
-  const { status: vaultLoadingStatus, error } = useVaultData();
   const headerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const tabContainerRef = useRef<HTMLDivElement>(null);
@@ -338,7 +335,6 @@ const Products = () => {
 
   return (
     <ProductSectionContainer>
-      <WrongNetworkToast></WrongNetworkToast>
       <ProductContainerBody>
         {/* Title and Product tab */}
         <HeaderContainer ref={headerRef} empty={empty}>

@@ -81,14 +81,13 @@ interface ToastProps extends BootstrapToastProps, IconProps {
 
 const Toast: React.FC<ToastProps> = ({ type, title, subtitle, ...props }) => {
   const iconClassName = type === "success" ? "fas fa-check" : "fas fa-times";
-  const [show, setShow] = useState(true);
 
   const onClose = useCallback(() => {
-    setShow(false);
-  }, [setShow]);
+    props.onClose && props.onClose();
+  }, []);
 
   return (
-    <StyledToast show={show} onClose={onClose} {...props}>
+    <StyledToast show={Boolean(props.show)} onClose={onClose} {...props}>
       <Body>
         <IconCircle type={type}>
           <Icon type={type} className={iconClassName}></Icon>
