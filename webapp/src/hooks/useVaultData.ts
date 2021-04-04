@@ -16,12 +16,10 @@ const useVaultData: UseVaultData = () => {
   const [response, setResponse] = useGlobalState("vaultData");
 
   const doMulticall = useCallback(async () => {
+    const envChainID = getDefaultChainID();
+
     if (ethersProvider) {
-      const providerVault = getVault(
-        getDefaultChainID(),
-        ethersProvider,
-        false
-      );
+      const providerVault = getVault(envChainID, ethersProvider, false);
 
       if (providerVault) {
         const unconnectedPromises = [
@@ -32,6 +30,19 @@ const useVaultData: UseVaultData = () => {
         let connectedPromises: Promise<BigNumber>[] = [];
 
         if (walletConnected && account && chainId) {
+          if (chainId !== envChainID) {
+            setResponse({
+              status: "error",
+              error: "wrong_network",
+              deposits: BigNumber.from("0"),
+              vaultLimit: BigNumber.from("0"),
+              vaultBalanceInAsset: BigNumber.from("0"),
+              userAssetBalance: BigNumber.from("0"),
+              maxWithdrawAmount: BigNumber.from("0"),
+            });
+            return;
+          }
+
           const signerVault = getVault(chainId, library);
 
           if (signerVault) {
@@ -55,6 +66,7 @@ const useVaultData: UseVaultData = () => {
           if (!walletConnected) {
             setResponse({
               status: "success",
+              error: null,
               ...data,
               vaultBalanceInAsset: BigNumber.from("0"),
               userAssetBalance: BigNumber.from("0"),
@@ -66,6 +78,7 @@ const useVaultData: UseVaultData = () => {
 
           setResponse({
             status: "success",
+            error: null,
             ...data,
             vaultBalanceInAsset: responses[2],
             userAssetBalance: responses[3],

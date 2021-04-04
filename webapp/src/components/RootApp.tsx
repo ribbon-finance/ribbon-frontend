@@ -10,6 +10,7 @@ import PortfolioPage from "../pages/Portfolio/PortfolioPage";
 import Footer from "./Footer/Footer";
 import useScreenSize from "../hooks/useScreenSize";
 import PolicyPage from "../pages/PolicyPage";
+import { WrongNetworkToast, TxStatusToast } from "./Common/toasts";
 
 const Root = styled.div<{ screenHeight: number }>`
   background-color: #1c1a19;
@@ -23,6 +24,8 @@ const RootApp = () => {
 
   return (
     <Root id="appRoot" screenHeight={screenHeight}>
+      <WrongNetworkToast></WrongNetworkToast>
+      <TxStatusToast></TxStatusToast>
       <Router>
         <Header />
         <Switch>

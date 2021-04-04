@@ -1,4 +1,4 @@
-import React, { CSSProperties, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { BigNumber } from "ethers";
 
 import {
@@ -17,6 +17,7 @@ import PreviewStep from "./PreviewStep";
 import ConfirmationStep from "./ConfirmationStep";
 import SubmittedStep from "./SubmittedStep";
 import FormStep from "./FormStep";
+import usePendingTransactions from "../../hooks/usePendingTransactions";
 
 export interface ActionStepsProps {
   show: boolean;
@@ -24,8 +25,6 @@ export interface ActionStepsProps {
   onChangeStep: (stepData: StepData) => void;
   skipToPreview?: boolean;
   previewStepProps?: PreviewStepProps;
-  style?: CSSProperties;
-  className?: string;
 }
 
 const ActionSteps: React.FC<ActionStepsProps> = ({
@@ -34,13 +33,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   onChangeStep,
   skipToPreview = false,
   previewStepProps,
-  className = "",
-  style = {},
 }) => {
   const firstStep = skipToPreview ? STEPS.previewStep : STEPS.formStep;
   const [step, setStep] = useState<Steps>(firstStep);
   const [txhash, setTxhash] = useState("");
   const vault = useVault();
+  const [, setPendingTransactions] = usePendingTransactions();
 
   const [actionType, setActionType] = useState<ActionType>("deposit");
   const [amount, setAmount] = useState<BigNumber>(BigNumber.from("0"));
@@ -60,10 +58,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   // Whenever the `show` variable is toggled, we need to reset the step back to 0
   useEffect(() => {
-    // small timeout so it doesn't flicker
-    setTimeout(() => {
-      setStep(firstStep);
-    }, 500);
+    return () => {
+      // small timeout so it doesn't flicker
+      setTimeout(() => {
+        setStep(firstStep);
+      }, 500);
+    };
   }, [show, firstStep, setStep]);
 
   const amountStr = amount.toString();
@@ -87,6 +87,22 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       })();
     }
   }, [amountStr, vault]);
+
+  // append the txhash into the global store
+  useEffect(() => {
+    if (txhash !== "") {
+      setPendingTransactions((pendingTransactions) => [
+        ...pendingTransactions,
+        {
+          txhash,
+          type: isDeposit ? "deposit" : "withdraw",
+          amount: amountStr,
+        },
+      ]);
+    }
+
+    return () => setTxhash("");
+  }, [txhash, setPendingTransactions, isDeposit, amountStr]);
 
   const handleClickConfirmButton = async () => {
     if (vault !== null) {

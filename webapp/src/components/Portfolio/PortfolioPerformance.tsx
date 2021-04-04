@@ -271,6 +271,7 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
                 <DateFilters>
                   {dateFilterOptions.map((currRange) => (
                     <DateFilter
+                      key={currRange}
                       active={rangeFilter === currRange}
                       onClick={() => setRangeFilter(currRange)}
                     >

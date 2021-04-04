@@ -5,6 +5,7 @@ const colors = {
   text: "#ACACAB",
   primaryText: "#FFFFFF",
   green: "#16CEB9",
+  red: "#fc0a54",
   pillBackground: "#151413",
   tagBackground: "#1D222D",
   products: {
