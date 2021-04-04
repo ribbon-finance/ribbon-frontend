@@ -91,8 +91,8 @@ const useVaultData: UseVaultData = (params) => {
                 error: null,
                 deposits: defaultToValue(prevResponse.deposits, responses[0]),
                 vaultLimit: defaultToValue(
-                  prevResponse.vaultLimit,
-                  responses[1]
+                  responses[1],
+                  prevResponse.vaultLimit
                 ),
                 vaultBalanceInAsset: defaultToValue(
                   prevResponse.vaultBalanceInAsset,
@@ -115,19 +115,19 @@ const useVaultData: UseVaultData = (params) => {
             setResponse((prevResponse) => ({
               status: "success",
               error: null,
-              deposits: defaultToValue(prevResponse.deposits, responses[0]),
-              vaultLimit: defaultToValue(prevResponse.vaultLimit, responses[1]),
+              deposits: defaultToValue(responses[0], prevResponse.deposits),
+              vaultLimit: defaultToValue(responses[1], prevResponse.vaultLimit),
               vaultBalanceInAsset: defaultToValue(
-                prevResponse.vaultBalanceInAsset,
-                responses[2]
+                responses[2],
+                prevResponse.vaultBalanceInAsset
               ),
               userAssetBalance: defaultToValue(
-                prevResponse.userAssetBalance,
-                responses[3]
+                responses[3],
+                prevResponse.userAssetBalance
               ),
               maxWithdrawAmount: defaultToValue(
-                prevResponse.maxWithdrawAmount,
-                responses[4]
+                responses[4],
+                prevResponse.maxWithdrawAmount
               ),
             }));
         } catch (e) {
