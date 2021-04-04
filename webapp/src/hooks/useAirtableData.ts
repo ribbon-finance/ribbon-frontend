@@ -57,7 +57,7 @@ const useAirtableData = () => {
       fetched: true,
       res: formattedData,
     });
-  }, [API_URL]);
+  }, [API_URL, API_KEY]);
 
   useEffect(() => {
     fetchAirtableData();

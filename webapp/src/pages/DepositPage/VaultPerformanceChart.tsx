@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import moment from "moment";
 
 import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";

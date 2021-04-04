@@ -31,7 +31,7 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
 }) => {
   const [date, setDate] = useState<Date | null>(null);
   const [datePosition, setDatePosition] = useState(0);
-  const [index, setIndex] = useState(0);
+  const [, setIndex] = useState(0);
 
   const dateStr = moment(date || new Date()).format("ddd, MMMM Do");
 
