@@ -36,10 +36,6 @@ export const WrongNetworkToast = () => {
   );
 };
 
-interface TxToastProps {
-  type: "deposit" | "withdraw";
-}
-
 type TxStatuses = "success" | "error" | null;
 
 export const TxStatusToast = () => {
@@ -66,7 +62,8 @@ export const TxStatusToast = () => {
         });
       })();
     }
-  }, [provider, pendingTransactions, setStatus]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingTransactions, setStatus]);
 
   if (pendingTransactions.length) {
     const pendingTx = pendingTransactions[0];
