@@ -5,7 +5,6 @@ import {
   ActionParams,
   ACTIONS,
   ActionType,
-  MobileNavigationButtonTypes,
   PreviewStepProps,
   StepData,
   Steps,
@@ -23,6 +22,7 @@ export interface ActionStepsProps {
   show: boolean;
   onClose: () => void;
   onChangeStep: (stepData: StepData) => void;
+  onSuccess: () => void;
   skipToPreview?: boolean;
   previewStepProps?: PreviewStepProps;
 }
@@ -33,6 +33,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   onChangeStep,
   skipToPreview = false,
   previewStepProps,
+  onSuccess,
 }) => {
   const firstStep = skipToPreview ? STEPS.previewStep : STEPS.formStep;
   const [step, setStep] = useState<Steps>(firstStep);
@@ -61,8 +62,13 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const handleClose = useCallback(() => {
     setTxhash("");
+
+    if (step === STEPS.submittedStep) {
+      onSuccess();
+    }
+
     onClose();
-  }, [onClose]);
+  }, [step, onClose, onSuccess]);
 
   // Whenever the `show` variable is toggled, we need to reset the step back to 0
   useEffect(() => {
@@ -113,7 +119,6 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   useEffect(() => {
     // we check that the txhash has already been removed
     // so we can dismiss the modal
-    console.log(step, txhash, pendingTransactions);
     if (step === STEPS.submittedStep && txhash !== "") {
       const pendingTx = pendingTransactions.find((tx) => tx.txhash === txhash);
       if (!pendingTx) {
@@ -154,17 +159,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       [STEPS.submittedStep]: "Transaction Submitted",
     };
 
-    const navigationButtons: Record<Steps, MobileNavigationButtonTypes> = {
-      [STEPS.formStep]: "back",
-      [STEPS.previewStep]: "back",
-      [STEPS.confirmationStep]: "close",
-      [STEPS.submittedStep]: "close",
-    };
-
     onChangeStep({
       title: titles[step],
       stepNum: step,
-      navigationButton: navigationButtons[step],
     });
   }, [step, onChangeStep, actionWord]);
 

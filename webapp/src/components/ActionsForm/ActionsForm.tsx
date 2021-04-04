@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
@@ -264,6 +264,11 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
     setShowActionModal(false);
   };
 
+  const onSuccess = useCallback(() => {
+    setInputAmount("");
+    setError("none");
+  }, [setInputAmount, setError]);
+
   const switchToTab = (switchingToDepositTab: boolean) => {
     // Resets the input amount if switching to a different tab
     return () => {
@@ -358,9 +363,10 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
         show={showActionModal}
         onClose={onCloseActionsModal}
         previewStepProps={previewStepProps}
+        onSuccess={onSuccess}
       ></ActionModal>
     ),
-    [showActionModal, previewStepProps]
+    [showActionModal, previewStepProps, onSuccess]
   );
 
   return (
