@@ -431,6 +431,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
         onClick={onCloseMenu}
         variant={variant}
         mountRoot="div#root"
+        overflowOnOpen={false}
       >
         {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
         {renderMenuItem(

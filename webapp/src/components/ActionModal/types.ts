@@ -52,12 +52,9 @@ export const STEPS: {
   submittedStep: 3,
 };
 
-export type MobileNavigationButtonTypes = "back" | "close";
-
 export interface StepData {
   title: string;
   stepNum: Steps;
-  navigationButton: MobileNavigationButtonTypes;
 }
 
 export interface PreviewStepProps {

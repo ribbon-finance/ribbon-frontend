@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
@@ -7,16 +7,14 @@ import WalletConnectModal from "../Wallet/WalletConnectModal";
 import { formatSignificantDecimals } from "../../utils/math";
 import YourPosition from "./YourPosition";
 import ActionModal from "../ActionModal/ActionModal";
-import {
-  ActionButton,
-  ConnectWalletButton,
-  ErrorButton,
-} from "../Common/buttons";
+import { ActionButton, ConnectWalletButton } from "../Common/buttons";
 import { GAS_LIMITS } from "../../constants/constants";
 import useGasPrice from "../../hooks/useGasPrice";
 import useVaultData from "../../hooks/useVaultData";
 import useVault from "../../hooks/useVault";
 import { ACTIONS, PreviewStepProps } from "../ActionModal/types";
+import { isVaultFull } from "../../utils/vault";
+import colors from "../../designSystem/colors";
 
 const { parseEther, formatEther } = ethers.utils;
 
@@ -44,7 +42,7 @@ const FormTitleDiv = styled.div<{ left: boolean; active: boolean }>`
   width: 100%;
   padding: 24px 0;
   background-color: ${(props) =>
-    props.active ? "#151413" : "rgb(28, 26, 25,0.95)"};
+    props.active ? "#08090e" : "rgb(28, 26, 25,0.95)"};
   cursor: pointer;
 
   ${(props) =>
@@ -118,14 +116,26 @@ const MaxAccessory = styled.div`
   cursor: pointer;
 `;
 
-const WalletBalance = styled.div<{ active: boolean }>`
+type WalletBalanceStates = "active" | "inactive" | "error";
+
+const WalletBalance = styled.div<{ state: WalletBalanceStates }>`
   width: 100%;
   text-align: center;
   font-size: 14px;
   line-height: 20px;
   text-transform: uppercase;
-  color: ${(props) =>
-    props.active ? "#FFFFFFA3" : "rgba(255, 255, 255, 0.16)"};
+  color: ${(props) => {
+    switch (props.state) {
+      case "active":
+        return "#FFFFFFA3";
+      case "inactive":
+        return "rgba(255, 255, 255, 0.16)";
+      case "error":
+        return colors.red;
+      default:
+        return "rgba(255, 255, 255, 0.16)";
+    }
+  }};
 `;
 
 type ValidationErrors = "none" | "insufficient_balance";
@@ -142,28 +152,36 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
   variant,
   onSubmit = () => {},
 }) => {
+  // constants
   const DEPOSIT_TAB = true;
   const WITHDRAWAL_TAB = false;
   const isDesktop = variant === "desktop";
 
+  // network hooks
   const vault = useVault();
   const {
     status,
     userAssetBalance,
+    deposits,
+    vaultLimit,
     vaultBalanceInAsset,
     maxWithdrawAmount,
   } = useVaultData();
+  const gasPrice = useGasPrice();
+  const { active, account } = useWeb3React();
 
+  // state hooks
   const isLoadingData = status === "loading";
   const [isDeposit, setIsDeposit] = useState(true);
   const [inputAmount, setInputAmount] = useState("");
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [showActionModal, setShowActionModal] = useState(false);
   const [error, setError] = useState<ValidationErrors>("none");
-  const { active, account } = useWeb3React();
-  const gasPrice = useGasPrice();
 
+  // derived states
+  const vaultFull = isVaultFull(deposits, vaultLimit);
   const connected = Boolean(active && account);
+  const isInputNonZero = parseFloat(inputAmount) > 0;
 
   const handleClickMax = async () => {
     if (!isLoadingData && connected && vault && account) {
@@ -238,13 +256,19 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
   }, [isDeposit, inputAmount, vaultBalanceStr]);
 
   const handleClickActionButton = () => {
-    isDesktop && inputAmount && connected && setShowActionModal(true);
-    !isDesktop && inputAmount && connected && onSubmit(previewStepProps);
+    isDesktop && isInputNonZero && connected && setShowActionModal(true);
+    !isDesktop && isInputNonZero && connected && onSubmit(previewStepProps);
   };
 
-  const onCloseActionsModal = () => {
+  const onCloseActionsModal = useCallback(() => {
     setShowActionModal(false);
-  };
+  }, []);
+
+  const onSuccess = useCallback(() => {
+    setIsDeposit(true);
+    setInputAmount("");
+    setError("none");
+  }, [setInputAmount, setError]);
 
   const switchToTab = (switchingToDepositTab: boolean) => {
     // Resets the input amount if switching to a different tab
@@ -262,7 +286,9 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
 
   let walletText = "";
 
-  if (isDeposit) {
+  if (vaultFull) {
+    walletText = "The Vault is currently full";
+  } else if (isDeposit) {
     const position =
       account && !isLoadingData && userAssetBalance
         ? formatSignificantDecimals(formatEther(userAssetBalance))
@@ -276,41 +302,59 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
     walletText = `Your Position: ${position} ETH`;
   }
 
+  let disabled = true;
   let actionButtonText = "";
-  if (isDeposit && inputAmount) {
-    actionButtonText = "Preview Deposit";
+  if (error === "insufficient_balance") {
+    actionButtonText = "Insufficient Balance";
+    disabled = true;
+  } else if (isDeposit && isInputNonZero) {
+    if (vaultFull) {
+      actionButtonText = "Deposit ETH";
+      disabled = true;
+    } else {
+      actionButtonText = "Preview Deposit";
+      disabled = false;
+    }
   } else if (isDeposit) {
     actionButtonText = "Deposit ETH";
-  } else if (!isDeposit && inputAmount) {
+    disabled = true;
+  } else if (!isDeposit && isInputNonZero) {
     actionButtonText = "Preview Withdrawal";
+    disabled = false;
   } else {
     actionButtonText = "Withdraw ETH";
+    disabled = true;
+  }
+
+  let walletBalanceState: WalletBalanceStates = "inactive";
+  if (vaultFull) {
+    walletBalanceState = "error";
+  } else {
+    walletBalanceState = connected ? "active" : "inactive";
   }
 
   let button;
 
-  if (error === "insufficient_balance") {
+  if (connected) {
     button = (
-      <ErrorButton className="py-3 mb-4">Insufficient Balance</ErrorButton>
+      <ActionButton
+        disabled={disabled}
+        onClick={handleClickActionButton}
+        className="py-3 mb-4"
+      >
+        {actionButtonText}
+      </ActionButton>
     );
   } else {
-    if (connected) {
-      button = (
-        <ActionButton onClick={handleClickActionButton} className="py-3 mb-4">
-          {actionButtonText}
-        </ActionButton>
-      );
-    } else {
-      button = (
-        <ConnectWalletButton
-          onClick={() => setShowConnectModal(true)}
-          type="button"
-          className="btn py-3 mb-4"
-        >
-          Connect Wallet
-        </ConnectWalletButton>
-      );
-    }
+    button = (
+      <ConnectWalletButton
+        onClick={() => setShowConnectModal(true)}
+        type="button"
+        className="btn py-3 mb-4"
+      >
+        Connect Wallet
+      </ConnectWalletButton>
+    );
   }
 
   const desktopActionModal = useMemo(
@@ -320,9 +364,10 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
         show={showActionModal}
         onClose={onCloseActionsModal}
         previewStepProps={previewStepProps}
+        onSuccess={onSuccess}
       ></ActionModal>
     ),
-    [showActionModal, previewStepProps]
+    [showActionModal, previewStepProps, onSuccess, onCloseActionsModal]
   );
 
   return (
@@ -373,11 +418,13 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
 
           {button}
 
-          <WalletBalance active={connected}>{walletText}</WalletBalance>
+          <WalletBalance state={walletBalanceState}>{walletText}</WalletBalance>
         </ContentContainer>
       </FormContainer>
 
-      {connected && isDesktop && <YourPosition></YourPosition>}
+      {connected && isDesktop && (
+        <YourPosition className="mt-4 px-4"></YourPosition>
+      )}
     </Container>
   );
 };

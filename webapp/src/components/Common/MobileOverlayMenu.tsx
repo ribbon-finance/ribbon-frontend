@@ -47,6 +47,7 @@ type MobileOverlayMenuProps = MenuStateProps &
   React.HTMLAttributes<HTMLDivElement> & {
     mountRoot?: string;
     boundingDivProps?: React.HTMLAttributes<HTMLDivElement>;
+    overflowOnOpen?: boolean;
   };
 
 const MobileOverlayMenu: React.FC<MobileOverlayMenuProps> = ({
@@ -55,6 +56,7 @@ const MobileOverlayMenu: React.FC<MobileOverlayMenuProps> = ({
   onClick,
   mountRoot,
   boundingDivProps,
+  overflowOnOpen = true,
   ...props
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -69,13 +71,13 @@ const MobileOverlayMenu: React.FC<MobileOverlayMenuProps> = ({
   }, [containerRef, mountRoot]);
 
   useEffect(() => {
-    if (isMenuOpen) {
+    if (isMenuOpen && overflowOnOpen) {
       document.querySelector("body")!.style.overflow = "hidden";
       return;
     }
 
     document.querySelector("body")!.style.removeProperty("overflow");
-  }, [isMenuOpen]);
+  }, [isMenuOpen, overflowOnOpen]);
 
   return (
     <MobileOverlayContainer

@@ -35,15 +35,23 @@ const AmountText = styled.span`
   color: rgba(255, 255, 255, 0.64);
 `;
 
-const YourPosition = () => {
-  const { status, vaultBalanceInAsset } = useVaultData();
+interface YourPositionProps {
+  className?: string;
+}
+
+const YourPosition: React.FC<YourPositionProps> = ({ className }) => {
+  const { status, vaultBalanceInAsset } = useVaultData({
+    poll: true,
+  });
   const ethusd = useAssetPrice({ asset: "WETH" });
   const isLoading = status === "loading";
   const positionAssetAmount = formatBigNumber(vaultBalanceInAsset);
   const positionInUSD = parseFloat(positionAssetAmount) * ethusd;
 
   return (
-    <PositionsContainer className="d-flex flex-row justify-content-center align-items-center mt-4 px-4">
+    <PositionsContainer
+      className={`d-flex flex-row justify-content-center align-items-center ${className}`}
+    >
       <img style={{ width: 45 }} src={PositionIcon} alt="Positions" />
 
       <div className="w-100">
