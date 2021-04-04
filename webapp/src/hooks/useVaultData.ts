@@ -38,11 +38,18 @@ const useVaultData: UseVaultData = (params) => {
 
         let connectedPromises: Promise<BigNumber>[] = [];
 
-        const defaultToValue = (
+        const defaultToNextValue = (
           prevValue: BigNumber,
-          defaultValue: BigNumber
+          nextValue: BigNumber
         ) => {
-          return prevValue.isZero() ? defaultValue : prevValue;
+          return prevValue.isZero() ? nextValue : prevValue;
+        };
+
+        const defaultToPrevValue = (
+          prevValue: BigNumber,
+          nextValue: BigNumber
+        ) => {
+          return nextValue.isZero() ? prevValue : nextValue;
         };
 
         if (walletConnected && account && chainId) {
@@ -51,17 +58,17 @@ const useVaultData: UseVaultData = (params) => {
               setResponse((prevResponse) => ({
                 status: "error",
                 error: "wrong_network",
-                deposits: defaultToValue(zero, prevResponse.deposits),
-                vaultLimit: defaultToValue(zero, prevResponse.vaultLimit),
-                vaultBalanceInAsset: defaultToValue(
+                deposits: defaultToNextValue(zero, prevResponse.deposits),
+                vaultLimit: defaultToNextValue(zero, prevResponse.vaultLimit),
+                vaultBalanceInAsset: defaultToNextValue(
                   zero,
                   prevResponse.vaultBalanceInAsset
                 ),
-                userAssetBalance: defaultToValue(
+                userAssetBalance: defaultToNextValue(
                   zero,
                   prevResponse.userAssetBalance
                 ),
-                maxWithdrawAmount: defaultToValue(
+                maxWithdrawAmount: defaultToNextValue(
                   zero,
                   prevResponse.maxWithdrawAmount
                 ),
@@ -89,20 +96,23 @@ const useVaultData: UseVaultData = (params) => {
               setResponse((prevResponse) => ({
                 status: "success",
                 error: null,
-                deposits: defaultToValue(prevResponse.deposits, responses[0]),
-                vaultLimit: defaultToValue(
-                  responses[1],
-                  prevResponse.vaultLimit
+                deposits: defaultToPrevValue(
+                  prevResponse.deposits,
+                  responses[0]
                 ),
-                vaultBalanceInAsset: defaultToValue(
+                vaultLimit: defaultToPrevValue(
+                  prevResponse.vaultLimit,
+                  responses[1]
+                ),
+                vaultBalanceInAsset: defaultToPrevValue(
                   prevResponse.vaultBalanceInAsset,
                   zero
                 ),
-                userAssetBalance: defaultToValue(
+                userAssetBalance: defaultToPrevValue(
                   prevResponse.userAssetBalance,
                   zero
                 ),
-                maxWithdrawAmount: defaultToValue(
+                maxWithdrawAmount: defaultToPrevValue(
                   prevResponse.maxWithdrawAmount,
                   zero
                 ),
@@ -115,19 +125,22 @@ const useVaultData: UseVaultData = (params) => {
             setResponse((prevResponse) => ({
               status: "success",
               error: null,
-              deposits: defaultToValue(responses[0], prevResponse.deposits),
-              vaultLimit: defaultToValue(responses[1], prevResponse.vaultLimit),
-              vaultBalanceInAsset: defaultToValue(
-                responses[2],
-                prevResponse.vaultBalanceInAsset
+              deposits: defaultToPrevValue(prevResponse.deposits, responses[0]),
+              vaultLimit: defaultToPrevValue(
+                prevResponse.vaultLimit,
+                responses[1]
               ),
-              userAssetBalance: defaultToValue(
-                responses[3],
-                prevResponse.userAssetBalance
+              vaultBalanceInAsset: defaultToPrevValue(
+                prevResponse.vaultBalanceInAsset,
+                responses[2]
               ),
-              maxWithdrawAmount: defaultToValue(
-                responses[4],
-                prevResponse.maxWithdrawAmount
+              userAssetBalance: defaultToPrevValue(
+                prevResponse.userAssetBalance,
+                responses[3]
+              ),
+              maxWithdrawAmount: defaultToPrevValue(
+                prevResponse.maxWithdrawAmount,
+                responses[4]
               ),
             }));
         } catch (e) {
