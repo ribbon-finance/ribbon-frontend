@@ -14,7 +14,7 @@ type UseVaultData = (params?: {
 
 const useVaultData: UseVaultData = (params) => {
   const poll = false || Boolean(params && params.poll);
-  const pollingFrequency = (params && params.pollingFrequency) || 2000;
+  const pollingFrequency = (params && params.pollingFrequency) || 4000;
 
   const isMountedRef = useRef(true);
   const { chainId, library, active: walletConnected, account } = useWeb3React();
