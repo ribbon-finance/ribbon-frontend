@@ -21,3 +21,9 @@ export type VaultDataResponse = {
   status: DataResponseStatus;
   error: VaultDataErrors | null;
 } & ConnectedVaultData;
+
+export type PendingTransaction = {
+  txhash: string;
+  type: "deposit" | "withdraw";
+  amount: string;
+};

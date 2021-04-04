@@ -1,12 +1,13 @@
 import { BigNumber } from "ethers";
 import { createGlobalState } from "react-hooks-global-state";
-import { VaultDataResponse } from "./types";
+import { PendingTransaction, VaultDataResponse } from "./types";
 
 interface GlobalStore {
   vaultData: VaultDataResponse;
   prices: {
     WETH: number;
   };
+  pendingTransactions: PendingTransaction[];
 }
 
 export const initialState: GlobalStore = {
@@ -22,6 +23,7 @@ export const initialState: GlobalStore = {
   prices: {
     WETH: 0.0,
   },
+  pendingTransactions: [],
 };
 
 export const { useGlobalState } = createGlobalState(initialState);

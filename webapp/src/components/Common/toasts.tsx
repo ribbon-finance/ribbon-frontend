@@ -1,6 +1,10 @@
+import { BigNumber } from "ethers";
 import React, { useCallback, useEffect, useState } from "react";
+import usePendingTransactions from "../../hooks/usePendingTransactions";
 import useVaultData from "../../hooks/useVaultData";
+import { useWeb3Context } from "../../hooks/web3Context";
 import { getDefaultNetworkName } from "../../utils/env";
+import { formatBigNumber } from "../../utils/math";
 import { capitalize } from "../../utils/text";
 import Toast from "./BaseToast";
 
@@ -36,31 +40,64 @@ interface TxToastProps {
   type: "deposit" | "withdraw";
 }
 
-interface TxSuccessfulToastProps extends TxToastProps {
-  amountStr: string;
-}
+type TxStatuses = "success" | "error" | null;
 
-export const TxSuccessfulToast: React.FC<TxSuccessfulToastProps> = ({
-  type,
-  amountStr,
-}) => {
-  return (
-    <Toast
-      type="success"
-      title={`${type} successful`}
-      subtitle={`${amountStr} ETH ${
-        type === "deposit" ? "deposited into" : "withdrawn from"
-      } T-100-E`}
-    ></Toast>
-  );
-};
+export const TxStatusToast = () => {
+  const [
+    pendingTransactions,
+    setPendingTransactions,
+  ] = usePendingTransactions();
 
-export const TxFailedToast: React.FC<TxToastProps> = ({ type }) => {
-  return (
-    <Toast
-      type="success"
-      title={`${type} failed`}
-      subtitle="Please resubmit transaction"
-    ></Toast>
-  );
+  const [status, setStatus] = useState<TxStatuses>(null);
+  const { provider } = useWeb3Context();
+
+  useEffect(() => {
+    if (provider && pendingTransactions.length) {
+      (async () => {
+        // we query from the tail of the pendingTransactions
+        const tailTx = pendingTransactions[pendingTransactions.length - 1];
+        const receipt = await provider.waitForTransaction(tailTx.txhash, 1);
+
+        setStatus(receipt.status ? "success" : "error");
+        setPendingTransactions((pendingTransactions) => {
+          return pendingTransactions.filter(
+            (tx) => tx.txhash !== tailTx.txhash
+          );
+        });
+      })();
+    }
+  }, [provider, pendingTransactions, setStatus]);
+
+  if (pendingTransactions.length) {
+    const pendingTx = pendingTransactions[0];
+    const { type, amount } = pendingTx;
+    const amountFormatted = formatBigNumber(BigNumber.from(amount));
+
+    if (status === "error") {
+      return (
+        <Toast
+          show={status === "error"}
+          onClose={() => setStatus(null)}
+          autohide
+          type="error"
+          title={`${type} failed`}
+          subtitle="Please resubmit transaction"
+        ></Toast>
+      );
+    }
+
+    return (
+      <Toast
+        show={status === "success"}
+        onClose={() => setStatus(null)}
+        autohide
+        type="success"
+        title={`${type} successful`}
+        subtitle={`${amountFormatted} ETH ${
+          type === "deposit" ? "deposited into" : "withdrawn from"
+        } T-100-E`}
+      ></Toast>
+    );
+  }
+  return null;
 };
