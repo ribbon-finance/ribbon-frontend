@@ -17,7 +17,6 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
   top: 0;
   border-bottom: 1px solid ${colors.border};
   background: rgba(255, 255, 255, 0.01);
-  backdrop-filter: blur(80px);
 
   @media (max-width: ${sizes.md}px) {
     padding: 16px 24px;
@@ -25,6 +24,7 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
   }
 
   z-index: ${(props) => (props.isMenuOpen ? 50 : 10)};
+  backdrop-filter: ${(props) => (props.isMenuOpen ? "none" : "blur(80px)")};
 `;
 
 const LogoContainer = styled.div`
