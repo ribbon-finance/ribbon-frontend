@@ -31,17 +31,20 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
 }) => {
   const [date, setDate] = useState<Date | null>(null);
   const [datePosition, setDatePosition] = useState(0);
+  const [, setIndex] = useState(0);
 
-  const dateStr = moment(date || new Date()).format("ddd, MMMM wo");
+  const dateStr = moment(date || new Date()).format("ddd, MMMM Do");
 
   const handleChartHover = useCallback(
     (hoverInfo: HoverInfo) => {
       if (hoverInfo.focused) {
         setDate(hoverInfo.xData);
         setDatePosition(hoverInfo.xPosition);
+        setIndex(hoverInfo.index);
       } else {
         setDate(null);
         setDatePosition(0);
+        setIndex(0);
       }
 
       onChartHover && onChartHover(hoverInfo);
@@ -145,6 +148,7 @@ const Chart: React.FC<{
             xData: labels[chartElem._index],
             yData: dataset[chartElem._index],
             xPosition: x,
+            index: chartElem._index,
           });
         } else {
           onHover({ focused: false });

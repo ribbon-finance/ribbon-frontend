@@ -1,11 +1,11 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import moment from "moment";
 
 import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import PerformanceChart from "../../components/PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../../components/PerformanceChart/types";
+import useAirtableData from "../../hooks/useAirtableData";
 
 const VaultPerformacneChartContainer = styled.div`
   border: 1px solid ${colors.border};
@@ -33,55 +33,50 @@ const DateFilter = styled(Title)<DateFilterProps>`
 `;
 
 const VaultPerformanceChart: React.FC = () => {
-  // mocked data for now
-  const originalDataset = useMemo(
-    () => [3, 5, 2, 3, 5, 4, 3, 1, 4, 5, 7, 8.5, 8, 7.5],
-    []
-  );
-  const originalLabels = useMemo(() => {
-    const now = moment(new Date());
-    return originalDataset
-      .map((_, index) =>
-        now
-          .subtract(index * 7, "days")
-          .utc()
-          .toDate()
-      )
-      .reverse();
-  }, [originalDataset]);
+  const airtableData = useAirtableData();
+  const yields = airtableData.res.map((data) => data.cumYield);
+  const timestamps = airtableData.res.map((data) => new Date(data.timestamp));
 
   // states
-  const [monthFilter, setMonthFilter] = useState(true);
-  const [performance, setPerformance] = useState<number>(
-    originalDataset[originalDataset.length - 1]
-  );
+  const [monthFilter, setMonthFilter] = useState(false);
+  const [chartIndex, setChartIndex] = useState(0);
 
-  const aMonthFromNow = moment(new Date()).subtract(1, "months");
-  const dataset = monthFilter
-    ? originalDataset.filter((_, index) => {
-        return moment(originalLabels[index]).isAfter(aMonthFromNow);
-      })
-    : originalDataset;
+  const yieldLen = yields.length;
 
-  const labels = monthFilter
-    ? originalLabels.filter((date) => {
-        return moment(date).isAfter(aMonthFromNow);
-      })
-    : originalLabels;
+  useEffect(() => {
+    if (yieldLen) {
+      setChartIndex(yieldLen - 1);
+    }
+  }, [yieldLen]);
 
-  // formatted data
-  const perfStr = `${performance.toFixed(2)}%`;
+  // Comment out month changes while data is < 5 rows
+  // const aMonthFromNow = moment(new Date()).subtract(1, "months");
+  // const dataset = monthFilter
+  //   ? yields.filter((_, index) => {
+  //       return moment(timestamps[index]).isAfter(aMonthFromNow);
+  //     })
+  //   : yields;
+  // const labels = monthFilter
+  //   ? timestamps.filter((date) => {
+  //       return moment(date).isAfter(aMonthFromNow);
+  //     })
+  //   : timestamps;
 
   const handleChartHover = useCallback(
     (hoverInfo: HoverInfo) => {
       if (hoverInfo.focused) {
-        setPerformance(hoverInfo.yData);
+        setChartIndex(hoverInfo.index);
       } else {
-        setPerformance(originalDataset[originalDataset.length - 1]);
+        setChartIndex(yields.length - 1);
       }
     },
-    [originalDataset]
+    [yields]
   );
+
+  // formatted data
+  const perfStr = yields.length
+    ? `${yields[chartIndex].toFixed(2)}%`
+    : "Loading";
 
   return (
     <VaultPerformacneChartContainer
@@ -89,23 +84,23 @@ const VaultPerformanceChart: React.FC = () => {
       style={{ paddingBottom: 40 }}
     >
       <PerformanceChart
-        dataset={dataset}
-        labels={labels}
+        dataset={yields}
+        labels={timestamps}
         onChartHover={handleChartHover}
         extras={
           <div className="d-flex align-items-center justify-content-between mb-3 px-4">
             <div>
-              <APYLabel className="d-block">Yield (APY)</APYLabel>
+              <APYLabel className="d-block">Yield (Cumulative)</APYLabel>
               <APYNumber>{perfStr}</APYNumber>
             </div>
             <div>
-              <DateFilter
+              {/* <DateFilter
                 active={monthFilter}
                 className="mr-3"
                 onClick={() => setMonthFilter(true)}
               >
                 1m
-              </DateFilter>
+              </DateFilter> */}
               <DateFilter
                 active={!monthFilter}
                 onClick={() => setMonthFilter(false)}
