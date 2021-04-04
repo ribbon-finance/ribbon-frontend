@@ -19,10 +19,6 @@ export const Button = styled.button`
   }
 `;
 
-interface BaseActionButtonProps {
-  disabled: boolean;
-}
-
 export const BaseActionButton = styled(Button)`
   ${(props) =>
     props.disabled

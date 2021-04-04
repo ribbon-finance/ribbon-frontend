@@ -38,7 +38,10 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const [step, setStep] = useState<Steps>(firstStep);
   const [txhash, setTxhash] = useState("");
   const vault = useVault();
-  const [, setPendingTransactions] = usePendingTransactions();
+  const [
+    pendingTransactions,
+    setPendingTransactions,
+  ] = usePendingTransactions();
 
   const [actionType, setActionType] = useState<ActionType>("deposit");
   const [amount, setAmount] = useState<BigNumber>(BigNumber.from("0"));
@@ -55,6 +58,11 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const isDeposit = actionType === ACTIONS.deposit;
   const actionWord = isDeposit ? "Deposit" : "Withdrawal";
+
+  const handleClose = useCallback(() => {
+    setTxhash("");
+    onClose();
+  }, [onClose]);
 
   // Whenever the `show` variable is toggled, we need to reset the step back to 0
   useEffect(() => {
@@ -100,9 +108,21 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         },
       ]);
     }
-
-    return () => setTxhash("");
   }, [txhash, setPendingTransactions, isDeposit, amountStr]);
+
+  useEffect(() => {
+    // we check that the txhash has already been removed
+    // so we can dismiss the modal
+    console.log(step, txhash, pendingTransactions);
+    if (step === STEPS.submittedStep && txhash !== "") {
+      const pendingTx = pendingTransactions.find((tx) => tx.txhash === txhash);
+      if (!pendingTx) {
+        setTimeout(() => {
+          handleClose();
+        }, 300);
+      }
+    }
+  }, [step, pendingTransactions, txhash, handleClose]);
 
   const handleClickConfirmButton = async () => {
     if (vault !== null) {
@@ -121,7 +141,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         }
       } catch (e) {
         console.error(e);
-        onClose();
+        handleClose();
       }
     }
   };
