@@ -24,6 +24,9 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
   }
 
   z-index: ${(props) => (props.isMenuOpen ? 50 : 10)};
+
+  // The backdrop for the menu does not show up if we enable the backdrop-filter
+  // for the header nav. To get around that, just set 'none'
   backdrop-filter: ${(props) => (props.isMenuOpen ? "none" : "blur(80px)")};
 `;
 
