@@ -33,12 +33,11 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
   const [datePosition, setDatePosition] = useState(0);
   const [index, setIndex] = useState(0);
 
-  const dateStr = moment(date || new Date()).format("ddd, MMMM wo");
+  const dateStr = moment(date || new Date()).format("ddd, MMMM Do");
 
   const handleChartHover = useCallback(
     (hoverInfo: HoverInfo) => {
       if (hoverInfo.focused) {
-        console.log(hoverInfo.xData);
         setDate(hoverInfo.xData);
         setDatePosition(hoverInfo.xPosition);
         setIndex(hoverInfo.index);
