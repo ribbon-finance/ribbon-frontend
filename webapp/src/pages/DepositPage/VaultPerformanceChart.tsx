@@ -5,7 +5,7 @@ import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import PerformanceChart from "../../components/PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../../components/PerformanceChart/types";
-import useAirtableData from "../../hooks/useAirtableData";
+import { useHistoricalData } from "../../hooks/useAirtableData";
 
 const VaultPerformacneChartContainer = styled.div`
   border: 1px solid ${colors.border};
@@ -33,7 +33,7 @@ const DateFilter = styled(Title)<DateFilterProps>`
 `;
 
 const VaultPerformanceChart: React.FC = () => {
-  const airtableData = useAirtableData();
+  const airtableData = useHistoricalData();
   const yields = airtableData.res.map((data) => data.cumYield);
   const timestamps = airtableData.res.map((data) => new Date(data.timestamp));
 
