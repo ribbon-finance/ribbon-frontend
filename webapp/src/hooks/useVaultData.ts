@@ -148,8 +148,8 @@ const useVaultData: UseVaultData = (params) => {
     }
 
     return () => {
+      isMountedRef.current = false;
       if (pollInterval) {
-        isMountedRef.current = false;
         clearInterval(pollInterval);
       }
     };
