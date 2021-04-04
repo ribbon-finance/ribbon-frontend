@@ -422,7 +422,9 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
         </ContentContainer>
       </FormContainer>
 
-      {connected && isDesktop && <YourPosition></YourPosition>}
+      {connected && isDesktop && (
+        <YourPosition className="mt-4 px-4"></YourPosition>
+      )}
     </Container>
   );
 };

@@ -10,6 +10,8 @@ import Theta from "../../components/Product/Splash/Theta";
 import useVaultData from "../../hooks/useVaultData";
 import { formatSignificantDecimals } from "../../utils/math";
 import sizes from "../../designSystem/sizes";
+import YourPosition from "../../components/ActionsForm/YourPosition";
+import { useWeb3React } from "@web3-react/core";
 
 const { formatEther } = ethers.utils;
 
@@ -62,7 +64,23 @@ const DesktopActionsFormContainer = styled.div`
   }
 `;
 
+const MobilePositions = styled(YourPosition)`
+  @media (max-width: ${sizes.md}px) {
+    width: 100%;
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-top: -15px;
+    margin-bottom: 48px;
+    padding: 18px;
+  }
+
+  @media (min-width: ${sizes.md + 1}px) {
+    display: none !important;
+  }
+`;
+
 const DepositPage = () => {
+  const { account } = useWeb3React();
   const { status, deposits, vaultLimit } = useVaultData();
   const isLoading = status === "loading";
 
@@ -91,6 +109,8 @@ const DepositPage = () => {
 
       <div className="container py-5">
         <div className="row mx-lg-n1">
+          {account && <MobilePositions></MobilePositions>}
+
           <PerformanceSection></PerformanceSection>
 
           <DesktopActionsFormContainer className="col-xl-4 offset-xl-1 col-md-6">
