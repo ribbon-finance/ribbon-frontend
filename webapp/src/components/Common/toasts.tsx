@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import useVaultData from "../../hooks/useVaultData";
 import { getDefaultNetworkName } from "../../utils/env";
 import { capitalize } from "../../utils/text";
-import Toast from "./Toast";
+import Toast from "./BaseToast";
 
 export const WrongNetworkToast = () => {
   const [showToast, setShowToast] = useState(false);
@@ -15,7 +15,7 @@ export const WrongNetworkToast = () => {
       setShowToast(true);
       setShownOnce(true);
     }
-  }, [status, error, setShowToast, setShowToast, shownOnce]);
+  }, [status, error, setShowToast, shownOnce]);
 
   const onClose = useCallback(() => {
     setShowToast(false);

@@ -79,15 +79,31 @@ interface ToastProps extends BootstrapToastProps, IconProps {
   subtitle: string;
 }
 
-const Toast: React.FC<ToastProps> = ({ type, title, subtitle, ...props }) => {
+const BaseToast: React.FC<ToastProps> = ({
+  type,
+  title,
+  subtitle,
+  ...props
+}) => {
   const iconClassName = type === "success" ? "fas fa-check" : "fas fa-times";
 
+  // When the caller doesnt specify the `show` variable
+  // it means that the caller doesnt want to control the state of the Toast
+  // so we need to manage the `show` state internally
+  const [controlledShow, setControlledShow] = useState(true);
+  const { show, onClose: propsOnClose } = props;
+
   const onClose = useCallback(() => {
-    props.onClose && props.onClose();
-  }, []);
+    propsOnClose && propsOnClose();
+    !show && setControlledShow(false);
+  }, [propsOnClose, show]);
 
   return (
-    <StyledToast show={Boolean(props.show)} onClose={onClose} {...props}>
+    <StyledToast
+      show={Boolean(props.show) || controlledShow}
+      onClose={onClose}
+      {...props}
+    >
       <Body>
         <IconCircle type={type}>
           <Icon type={type} className={iconClassName}></Icon>
@@ -102,4 +118,4 @@ const Toast: React.FC<ToastProps> = ({ type, title, subtitle, ...props }) => {
   );
 };
 
-export default Toast;
+export default BaseToast;
