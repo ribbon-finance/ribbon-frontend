@@ -61,15 +61,21 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
 
   let dateTooltipPosition = datePosition - 15;
   if (index === 0) {
-    dateTooltipPosition = datePosition + 18;
+    dateTooltipPosition = datePosition + 10;
   } else if (index === dataset.length - 1) {
-    dateTooltipPosition = datePosition - 58;
+    dateTooltipPosition = datePosition - 50;
   }
 
   return (
     <PerformanceChartContainer>
       {extras}
-      <div style={{ position: "relative", height: "224px", width: "100%" }}>
+      <div
+        style={{
+          position: "relative",
+          height: "224px",
+          width: "100%",
+        }}
+      >
         {chart}
       </div>
       {date !== null ? (
@@ -109,7 +115,7 @@ const Chart: React.FC<{
       maintainAspectRatio: false,
       title: { display: false },
       legend: { display: false },
-      layout: { padding: { top: 20, bottom: 20 } },
+      layout: { padding: { top: 20, bottom: 20, left: 10, right: 10 } },
       scales: {
         yAxes: [
           {
@@ -130,6 +136,7 @@ const Chart: React.FC<{
           const chartElem = elements[0];
           const chart = chartElem._chart;
           const ctx = chart.ctx;
+          const chartIndex = chartElem._index;
 
           // draw line behind dot
           ctx.globalCompositeOperation = "destination-over";
@@ -152,10 +159,10 @@ const Chart: React.FC<{
 
           onHover({
             focused: true,
-            xData: labels[chartElem._index],
-            yData: dataset[chartElem._index],
+            xData: labels[chartIndex],
+            yData: dataset[chartIndex],
             xPosition: x,
-            index: chartElem._index,
+            index: chartIndex,
           });
         } else {
           onHover({ focused: false });
