@@ -23,11 +23,7 @@ import { MetamaskIcon, WalletConnectIcon } from "../../utils/icon";
 import { ConnectorButtonProps, connectorType } from "./types";
 import useTextAnimation from "../../hooks/useTextAnimation";
 import Indicator from "../Indicator/Indicator";
-
-interface WalletConnectModalProps {
-  show: boolean;
-  onClose: () => void;
-}
+import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 
 const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
   background-color: ${colors.backgroundDarker};
@@ -91,10 +87,7 @@ const LearnMoreArrow = styled(BaseText)`
   margin-left: 5px;
 `;
 
-const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
-  show,
-  onClose,
-}) => {
+const WalletConnectModal: React.FC = () => {
   const {
     connector,
     activate: activateWeb3,
@@ -111,6 +104,11 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
     250,
     !!connectingConnector
   );
+  const [show, setShow] = useConnectWalletModal();
+
+  const onClose = useCallback(() => {
+    setShow(false);
+  }, [setShow]);
 
   const handleConnect = useCallback(
     async (type: connectorType) => {

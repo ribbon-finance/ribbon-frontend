@@ -1,5 +1,5 @@
-import React from "react";
-import { useRouteMatch } from "react-router-dom";
+import React, { useMemo } from "react";
+import { useRouteMatch, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import sizes from "../../designSystem/sizes";
@@ -8,16 +8,36 @@ import useScreenSize from "../../hooks/useScreenSize";
 import AccountStatus from "../Wallet/AccountStatus";
 import DesktopFooter from "./DesktopFooter";
 
-const FooterContianer = styled.div<{ screenHeight: number }>`
-  position: fixed;
-  bottom: 0px;
+const FooterContainer = styled.div<{
+  screenHeight: number;
+  desktopVariant: "sticky" | "fixed";
+}>`
   height: ${theme.footer.desktop.height}px;
   width: 100%;
   display: flex;
   justify-content: center;
   backdrop-filter: blur(40px);
+  ${(props) => {
+    switch (props.desktopVariant) {
+      case "sticky":
+        return `
+          position: sticky;
+          top: calc(${
+            props.screenHeight ? `${props.screenHeight}px` : `100%`
+          } - ${theme.footer.desktop.height}px);
+        `;
+      case "fixed":
+        return `
+        position: fixed;
+        bottom: 0px;
+        `;
+    }
+  }}
 
   @media (max-width: ${sizes.md}px) {
+    position: fixed;
+    top: unset;
+    bottom: 0px;
     height: ${theme.footer.mobile.height}px;
   }
 `;
@@ -33,10 +53,23 @@ const MobileFooterOffsetContainer = styled.div`
 const Footer = () => {
   const { height: screenHeight } = useScreenSize();
   const matchProductPage = useRouteMatch({ path: "/theta-vault", exact: true });
+  const location = useLocation();
+
+  const desktopFooterVariant = useMemo(() => {
+    switch (location.pathname) {
+      case "/":
+        return "fixed";
+      default:
+        return "sticky";
+    }
+  }, [location]);
 
   return (
     <>
-      <FooterContianer screenHeight={screenHeight}>
+      <FooterContainer
+        screenHeight={screenHeight}
+        desktopVariant={desktopFooterVariant}
+      >
         {/** Desktop */}
         <DesktopFooter />
 
@@ -45,7 +78,7 @@ const Footer = () => {
           variant="mobile"
           showInvestButton={Boolean(matchProductPage)}
         />
-      </FooterContianer>
+      </FooterContainer>
       <MobileFooterOffsetContainer />
     </>
   );

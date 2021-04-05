@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { useWeb3React } from "@web3-react/core";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import styled from "styled-components";
 import moment from "moment";
 
@@ -11,7 +11,7 @@ import useAssetPrice from "../../hooks/useAssetPrice";
 import useTextAnimation from "../../hooks/useTextAnimation";
 import useTransactions from "../../hooks/useTransactions";
 import { CurrencyType } from "../../pages/Portfolio/types";
-import { ethToUSD, toETH } from "../../utils/math";
+import { ethToUSD, formatSignificantDecimals } from "../../utils/math";
 import { capitalize } from "../../utils/text";
 
 const PortfolioTransactionsContainer = styled.div`
@@ -65,15 +65,21 @@ const TransactionSecondaryInfoText = styled(Subtitle)`
   line-height: 16px;
 `;
 
-const PortfolioTransactions = () => {
+interface PortfolioTransactionsProps {
+  currency: CurrencyType;
+}
+
+const PortfolioTransactions: React.FC<PortfolioTransactionsProps> = ({
+  currency,
+}) => {
   const { transactions, loading } = useTransactions();
   const { active } = useWeb3React();
+  const { price: ethPrice, loading: ethPriceLoading } = useAssetPrice({});
   const animatedLoadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
-    loading
+    loading || ethPriceLoading
   );
-  const ethPrice = useAssetPrice({});
 
   const renderTransactionAmountText = useCallback(
     (
@@ -85,12 +91,16 @@ const PortfolioTransactions = () => {
 
       switch (currency) {
         case "usd":
-          return `${prependSymbol}${ethToUSD(amount, ethPrice)}`;
+          return ethPriceLoading
+            ? animatedLoadingText
+            : `${prependSymbol}${ethToUSD(amount, ethPrice)}`;
         case "eth":
-          return `${prependSymbol}${toETH(amount)} ETH`;
+          return `${prependSymbol}${formatSignificantDecimals(
+            ethers.utils.formatEther(amount)
+          )} ETH`;
       }
     },
-    [ethPrice]
+    [ethPrice, ethPriceLoading, animatedLoadingText]
   );
 
   const renderTransactions = useCallback(() => {
@@ -120,7 +130,7 @@ const PortfolioTransactions = () => {
             {renderTransactionAmountText(
               transaction.amount,
               transaction.type,
-              "eth"
+              currency
             )}
           </Title>
         </TransactionInfoRow>
@@ -134,7 +144,7 @@ const PortfolioTransactions = () => {
             {renderTransactionAmountText(
               transaction.amount,
               transaction.type,
-              "usd"
+              currency === "eth" ? "usd" : "eth"
             )}
           </TransactionSecondaryInfoText>
         </TransactionInfoRow>
@@ -146,6 +156,7 @@ const PortfolioTransactions = () => {
     animatedLoadingText,
     loading,
     renderTransactionAmountText,
+    currency,
   ]);
 
   return (

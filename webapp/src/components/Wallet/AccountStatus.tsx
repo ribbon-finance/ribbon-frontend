@@ -21,7 +21,6 @@ import {
   MenuStateProps,
   WalletCopyIconProps,
 } from "./types";
-import WalletConnectModal from "./WalletConnectModal";
 import theme from "../../designSystem/theme";
 import MobileOverlayMenu from "../Common/MobileOverlayMenu";
 import MenuButton from "../Header/MenuButton";
@@ -30,6 +29,7 @@ import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { ActionButton } from "../Common/buttons";
 import ActionModal from "../ActionModal/ActionModal";
+import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -260,7 +260,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     active,
     account,
   } = useWeb3React();
-  const [showConnectModal, setShowConnectModal] = useState(false);
+  const [, setShowConnectModal] = useConnectWalletModal();
   const [showActionModal, setShowActionModal] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
@@ -308,7 +308,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     }
 
     setShowConnectModal(true);
-  }, [active, onToggleMenu]);
+  }, [active, onToggleMenu, setShowConnectModal]);
 
   const onCloseMenu = useCallback(() => {
     setIsMenuOpen(false);
@@ -317,7 +317,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   const handleChangeWallet = useCallback(() => {
     setShowConnectModal(true);
     onCloseMenu();
-  }, [onCloseMenu]);
+  }, [onCloseMenu, setShowConnectModal]);
 
   const handleCopyAddress = useCallback(() => {
     if (account) {
@@ -339,10 +339,6 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     deactivateWeb3();
     onCloseMenu();
   }, [deactivateWeb3, onCloseMenu, connector]);
-
-  const onCloseConnectionModal = useCallback(() => {
-    setShowConnectModal(false);
-  }, []);
 
   const onCloseActionsModal = useCallback(() => {
     setShowActionModal(false);
@@ -445,11 +441,6 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
           <MenuButton isOpen={true} onToggle={onCloseMenu} />
         </MenuCloseItem>
       </WalletMobileOverlayMenu>
-
-      <WalletConnectModal
-        show={showConnectModal}
-        onClose={onCloseConnectionModal}
-      />
 
       {formModal}
     </>

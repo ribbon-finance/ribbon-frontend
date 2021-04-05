@@ -9,10 +9,11 @@ import theme from "../../designSystem/theme";
 import useAssetPrice from "../../hooks/useAssetPrice";
 import useTextAnimation from "../../hooks/useTextAnimation";
 import { CurrencyType } from "../../pages/Portfolio/types";
-import { ethToUSD, toETH } from "../../utils/math";
+import { ethToUSD, formatSignificantDecimals } from "../../utils/math";
 import useVaultData from "../../hooks/useVaultData";
 import { ProductType } from "../Product/types";
 import useBalances from "../../hooks/useBalances";
+import sizes from "../../designSystem/sizes";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 48px;
@@ -86,6 +87,10 @@ const KPIContainer = styled.div`
   width: 100%;
   height: 100%;
   padding: 16px;
+
+  @media (max-width: ${sizes.sm}px) {
+    display: none;
+  }
 `;
 
 const KPIDatas = styled.div`
@@ -105,12 +110,12 @@ const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
   const { status, vaultBalanceInAsset } = useVaultData();
   const { balances, loading: balancesLoading } = useBalances();
   const isLoading = status === "loading" || balancesLoading;
+  const { price: ethPrice, loading: ethPriceLoading } = useAssetPrice({});
   const animatedLoadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
-    isLoading
+    isLoading || ethPriceLoading
   );
-  const ethPrice = useAssetPrice({});
 
   const calculatedKPI = useMemo(() => {
     if (balances.length <= 0) {
@@ -155,15 +160,19 @@ const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
     (amount: BigNumber, currency: CurrencyType) => {
       switch (currency) {
         case "usd":
-          return `${ethToUSD(amount, ethPrice)}`;
+          return ethPriceLoading
+            ? animatedLoadingText
+            : `${ethToUSD(amount, ethPrice)}`;
         case "eth":
-          return `${toETH(amount)} ETH`;
+          return `${formatSignificantDecimals(
+            ethers.utils.formatEther(amount)
+          )} ETH`;
       }
     },
-    [ethPrice]
+    [ethPrice, animatedLoadingText, ethPriceLoading]
   );
 
-  const renderPositions = useCallback(() => {
+  const positions = useMemo(() => {
     if (!active) {
       return <SectionPlaceholderText>---</SectionPlaceholderText>;
     }
@@ -188,14 +197,17 @@ const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
           <PositionSymbolTitle product="yield" className="flex-grow-1">
             T-100-E
           </PositionSymbolTitle>
-          <Title>{renderAmountText(vaultBalanceInAsset, "eth")}</Title>
+          <Title>{renderAmountText(vaultBalanceInAsset, currency)}</Title>
         </PositionInfoRow>
         <PositionInfoRow>
           <PositionInfoText className="flex-grow-1">
             Theta Vault - ETH
           </PositionInfoText>
           <PositionSecondaryInfoText>
-            {renderAmountText(vaultBalanceInAsset, "usd")}
+            {renderAmountText(
+              vaultBalanceInAsset,
+              currency === "eth" ? "usd" : "eth"
+            )}
           </PositionSecondaryInfoText>
         </PositionInfoRow>
         <KPIContainer>
@@ -221,7 +233,7 @@ const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
   return (
     <PortfolioPositionsContainer>
       <SectionTitle>Positions</SectionTitle>
-      {renderPositions()}
+      {positions}
     </PortfolioPositionsContainer>
   );
 };

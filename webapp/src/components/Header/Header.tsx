@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { useRouteMatch } from "react-router-dom";
 
 import Logo from "./Logo";
 import colors from "../../designSystem/colors";
@@ -122,6 +123,9 @@ const Header = () => {
         to={to}
         target={external ? "_blank" : undefined}
         rel={external ? "noreferrer noopener" : undefined}
+        onClick={() => {
+          if (!external) setIsMenuOpen(false);
+        }}
       >
         {primary ? (
           <NavItem isSelected={isSelected}>
@@ -149,8 +153,16 @@ const Header = () => {
       {/* LINKS */}
       <HeaderAbsoluteContainer>
         <LinksContainer>
-          {renderLinkItem("PRODUCTS", "/", true)}
-          {renderLinkItem("PORTFOLIO", "/portfolio", false)}
+          {renderLinkItem(
+            "PRODUCTS",
+            "/",
+            Boolean(useRouteMatch({ path: "/", exact: true }))
+          )}
+          {renderLinkItem(
+            "PORTFOLIO",
+            "/portfolio",
+            Boolean(useRouteMatch({ path: "/portfolio", exact: true }))
+          )}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
@@ -169,8 +181,16 @@ const Header = () => {
             },
           }}
         >
-          {renderLinkItem("PRODUCTS", "/", true)}
-          {renderLinkItem("PORTFOLIO", "/portfolio", false)}
+          {renderLinkItem(
+            "PRODUCTS",
+            "/",
+            Boolean(useRouteMatch({ path: "/", exact: true }))
+          )}
+          {renderLinkItem(
+            "PORTFOLIO",
+            "/portfolio",
+            Boolean(useRouteMatch({ path: "/portfolio", exact: true }))
+          )}
           {renderLinkItem(
             "DISCORD",
             "http://tiny.cc/ribbon-discord",

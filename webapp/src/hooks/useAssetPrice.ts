@@ -1,47 +1,53 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useGlobalState } from "../store/store";
 
-interface APIResponse {
-  message: string;
-  result: {
-    ethbtc: string;
-    ethbtc_timestamp: string;
-    ethusd: string;
-    ethusd_timestamp: string;
-  };
-}
+type APIResponse = Record<string, { usd: number }>;
 
-const getETHPrice = async (): Promise<number> => {
-  const API_KEY = process.env.REACT_APP_ETHERSCAN_API_KEY;
-  const apiURL = `https://api.etherscan.io/api?module=stats&action=ethprice&apikey=${API_KEY}`;
+const getAssetPriceInUSD = async (currencyName: string): Promise<number> => {
+  const apiURL = `https://api.coingecko.com/api/v3/simple/price?ids=${currencyName}&vs_currencies=usd`;
 
   const response = await axios.get(apiURL);
   const data: APIResponse = response.data;
 
-  return parseFloat(data.result.ethusd);
+  if (data && data[currencyName]) {
+    return data[currencyName].usd;
+  }
+  return 0;
 };
 
 type Assets = "WETH";
 
-const useAssetPrice: (args: { asset?: Assets }) => number = ({
-  asset = "WETH",
-}) => {
+const COINGECKO_CURRENCIES = {
+  WETH: "ethereum",
+};
+
+// We need this global variable so we can prevent over-fetching
+let fetchedOnce = false;
+
+const useAssetPrice: (args: {
+  asset?: Assets;
+}) => { price: number; loading: boolean } = ({ asset = "WETH" }) => {
   const [prices, setPrices] = useGlobalState("prices");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      if (asset === "WETH") {
-        const price = await getETHPrice();
-        setPrices({
-          [asset]: price,
-        });
-      } else {
-        throw new Error(`Unknown asset ${asset}`);
-      }
-    })();
+    !fetchedOnce &&
+      (async () => {
+        if (asset === "WETH") {
+          fetchedOnce = true;
+          setLoading(true);
+          const price = await getAssetPriceInUSD(COINGECKO_CURRENCIES[asset]);
+          setPrices({
+            [asset]: price,
+          });
+          setLoading(false);
+        } else {
+          throw new Error(`Unknown asset ${asset}`);
+        }
+      })();
   }, [asset, setPrices]);
 
-  return prices[asset];
+  return { price: prices[asset], loading };
 };
 export default useAssetPrice;

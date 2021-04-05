@@ -13,7 +13,7 @@ const PortfolioPage = () => {
   return (
     <Container>
       <Row className="justify-content-center">
-        <Col xs="7">
+        <Col sm="11" md="9" lg="7">
           <PortfolioHeader
             currency={currency}
             updateCurrency={(newCurrency: CurrencyType) =>
@@ -22,7 +22,7 @@ const PortfolioPage = () => {
           />
           <PortfolioPerformance currency={currency} />
           <PortfolioPositions currency={currency} />
-          <PortfolioTransactions />
+          <PortfolioTransactions currency={currency} />
         </Col>
       </Row>
     </Container>
