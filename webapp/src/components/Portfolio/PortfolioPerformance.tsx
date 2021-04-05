@@ -195,7 +195,8 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
         return toETH(
           hoveredBalanceUpdate
             ? hoveredBalanceUpdate.balance
-            : vaultBalanceInAsset
+            : vaultBalanceInAsset,
+          2
         );
       case "usd":
         return ethToUSD(
@@ -295,7 +296,7 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
 
     switch (currency) {
       case "eth":
-        return `+${toETH(calculatedKPI.yield)}`;
+        return `+${toETH(calculatedKPI.yield, 2)}`;
       case "usd":
         return `+${ethToUSD(calculatedKPI.yield, ethPrice)}`;
     }

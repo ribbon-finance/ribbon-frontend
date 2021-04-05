@@ -87,7 +87,7 @@ const PortfolioTransactions = () => {
         case "usd":
           return `${prependSymbol}${ethToUSD(amount, ethPrice)}`;
         case "eth":
-          return `${prependSymbol}${toETH(amount)} ETH`;
+          return `${prependSymbol}${toETH(amount, 2)} ETH`;
       }
     },
     [ethPrice]

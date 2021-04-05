@@ -162,7 +162,7 @@ const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
         case "usd":
           return `${ethToUSD(amount, ethPrice)}`;
         case "eth":
-          return `${toETH(amount)} ETH`;
+          return `${toETH(amount, 2)} ETH`;
       }
     },
     [ethPrice]

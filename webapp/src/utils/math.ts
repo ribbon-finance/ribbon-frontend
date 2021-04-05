@@ -24,14 +24,18 @@ export const toFiat = (etherVal: BigNumber) => {
 export const toUSD = (bn: BigNumber) =>
   Math.floor(parseFloat(ethers.utils.formatEther(bn))).toLocaleString();
 
-export const toETH = (bn: BigNumber) =>
-  parseFloat(ethers.utils.formatEther(bn)).toFixed(4);
+export const toETH = (bn: BigNumber, precision: number = 4) =>
+  parseFloat(ethers.utils.formatEther(bn)).toFixed(precision);
 
-export const ethToUSD = (num: BigNumber | number, ethPrice: number): string => {
+export const ethToUSD = (
+  num: BigNumber | number,
+  ethPrice: number,
+  precision: number = 2
+): string => {
   const pnlUSD =
     num instanceof BigNumber
       ? parseFloat(ethers.utils.formatEther(num)) * ethPrice
       : num * ethPrice;
 
-  return "$" + pnlUSD.toFixed(2);
+  return "$" + pnlUSD.toFixed(precision);
 };
