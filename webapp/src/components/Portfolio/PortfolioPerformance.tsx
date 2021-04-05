@@ -129,11 +129,23 @@ const DepositCurrency = styled(Subtitle)`
   text-transform: uppercase;
 `;
 
-const KPIText = styled(Title)<{ active: boolean }>`
+const KPIText = styled(Title)<{ active: boolean; state?: "green" | "red" }>`
   font-size: 18px;
   line-height: 24px;
-  color: ${(props) =>
-    props.active ? colors.green : "rgba(255, 255, 255, 0.4)"};
+  color: ${(props) => {
+    if (!props.active) {
+      return "rgba(255, 255, 255, 0.4)";
+    }
+
+    switch (props.state) {
+      case "green":
+        return colors.green;
+      case "red":
+        return colors.red;
+      default:
+        return colors.primaryText;
+    }
+  }};
 `;
 
 interface PortfolioPerformanceProps {
@@ -312,17 +324,49 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
     [rangeFilter, renderDepositData]
   );
 
+  const processedGraphData = useMemo(() => {
+    if (balances.length > 2) {
+      return {
+        dataset: balances.map((balance) =>
+          parseFloat(ethers.utils.formatEther(balance.balance))
+        ),
+        labels: balances.map((balance) => new Date(balance.timestamp * 1000)),
+      };
+    }
+
+    if (balances.length === 1) {
+      return {
+        dataset: [
+          parseFloat(
+            ethers.utils.formatEther(
+              balances[0].balance.sub(balances[0].yieldEarned)
+            )
+          ),
+          parseFloat(ethers.utils.formatEther(balances[0].balance)),
+        ],
+        labels: [
+          afterDate?.toDate() || new Date(),
+          new Date(balances[0].timestamp * 1000),
+        ],
+      };
+    }
+
+    return {
+      dataset: [
+        parseFloat(ethers.utils.formatEther(vaultBalanceInAsset)),
+        parseFloat(ethers.utils.formatEther(vaultBalanceInAsset)),
+      ],
+      labels: [afterDate?.toDate() || new Date(), new Date()],
+    };
+  }, [balances, afterDate, vaultBalanceInAsset]);
+
   return (
     <PerformanceContainer>
       <DepositColumn>
         {active ? (
           <PerformanceChart
-            dataset={balances.map((balance) =>
-              parseFloat(ethers.utils.formatEther(balance.balance))
-            )}
-            labels={balances.map(
-              (balance) => new Date(balance.timestamp * 1000)
-            )}
+            dataset={processedGraphData.dataset}
+            labels={processedGraphData.labels}
             onChartHover={handleChartHover}
             extras={depositHeader}
           />
@@ -346,13 +390,21 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
         <KPIColumn>
           <ColumnLabel>Yield Earned</ColumnLabel>
           <KPI>
-            <KPIText active={active}>{renderYieldEarnedText()}</KPIText>
+            <KPIText
+              active={active}
+              state={calculatedKPI.yield.gt(0) ? "green" : undefined}
+            >
+              {renderYieldEarnedText()}
+            </KPIText>
             <DepositCurrency>{active ? currency : ""}</DepositCurrency>
           </KPI>
         </KPIColumn>
         <KPIColumn>
           <ColumnLabel>ROI</ColumnLabel>
-          <KPIText active={active}>
+          <KPIText
+            active={active}
+            state={calculatedKPI.roi > 0 ? "green" : undefined}
+          >
             {active ? `+${calculatedKPI.roi.toFixed(2)}%` : "---"}
           </KPIText>
         </KPIColumn>
