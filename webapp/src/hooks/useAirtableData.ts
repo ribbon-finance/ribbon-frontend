@@ -6,6 +6,11 @@ interface AirtableData {
   res: WeeklyPerformance[];
 }
 
+interface APYData {
+  fetched: boolean;
+  res: number;
+}
+
 interface WeeklyPerformance {
   apy: number;
   premiums: number;
@@ -15,9 +20,10 @@ interface WeeklyPerformance {
   cumYield: number;
 }
 
-const useAirtableData = () => {
-  const API_KEY = process.env.REACT_APP_AIRTABLE_API_KEY;
-  const BASE_ID = process.env.REACT_APP_AIRTABLE_BASE_ID;
+const API_KEY = process.env.REACT_APP_AIRTABLE_API_KEY;
+const BASE_ID = process.env.REACT_APP_AIRTABLE_BASE_ID;
+
+export const useHistoricalData = () => {
   const API_URL = `https://api.airtable.com/v0/${BASE_ID}/table?sort%5B0%5D%5Bfield%5D=Timestamp&sort%5B0%5D%5Bdirection%5D=asc`;
 
   const [data, setData] = useState<AirtableData>({
@@ -64,4 +70,33 @@ const useAirtableData = () => {
   }, [fetchAirtableData]);
   return data;
 };
-export default useAirtableData;
+
+export const useLatestAPY = () => {
+  const API_URL = `https://api.airtable.com/v0/${BASE_ID}/table?sort%5B0%5D%5Bfield%5D=Timestamp&sort%5B0%5D%5Bdirection%5D=desc&maxRecords=1`;
+
+  const [data, setData] = useState<APYData>({
+    fetched: false,
+    res: 0,
+  });
+
+  const fetchAirtableData = useCallback(async () => {
+    const response = await axios.get(API_URL, {
+      headers: {
+        Authorization: `Bearer ${API_KEY}`,
+      },
+    });
+
+    const data = response.data.records;
+    const latestAPY = data[0].fields.APY * 100;
+
+    setData({
+      fetched: true,
+      res: latestAPY,
+    });
+  }, [API_URL, API_KEY]);
+
+  useEffect(() => {
+    fetchAirtableData();
+  }, [fetchAirtableData]);
+  return data;
+};

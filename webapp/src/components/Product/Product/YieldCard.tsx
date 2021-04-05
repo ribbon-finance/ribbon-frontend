@@ -16,6 +16,7 @@ import theme from "../../../designSystem/theme";
 import DepositCapBar from "../../../pages/DepositPage/DepositCapBar";
 import useVaultData from "../../../hooks/useVaultData";
 import { formatSignificantDecimals } from "../../../utils/math";
+import { useLatestAPY } from "../../../hooks/useAirtableData";
 
 const { formatEther } = ethers.utils;
 
@@ -96,6 +97,10 @@ const YieldCard = () => {
     </ProductTag>
   );
 
+  const latestAPY = useLatestAPY();
+
+  const perfStr = latestAPY.res ? `${latestAPY.res.toFixed(2)}%` : "Loading";
+
   return (
     <ProductCard onClick={() => history.push("/theta-vault")} role="button">
       <ProductTagContainer>
@@ -107,8 +112,8 @@ const YieldCard = () => {
         Theta Vault is a yield-generating strategy on ETH. The vault runs an
         automated covered call strategy.
       </ProductDescription>
-      <ExpectedYieldTitle>EXPECTED YIELD (APY)</ExpectedYieldTitle>
-      <YieldText>30%</YieldText>
+      <ExpectedYieldTitle>CURRENT PROJECTED YIELD (APY)</ExpectedYieldTitle>
+      <YieldText>{perfStr}</YieldText>
       <DepositCapBar
         loading={isLoading}
         totalDeposit={totalDepositStr}

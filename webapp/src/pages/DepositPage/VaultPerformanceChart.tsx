@@ -5,11 +5,19 @@ import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import PerformanceChart from "../../components/PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../../components/PerformanceChart/types";
-import useAirtableData from "../../hooks/useAirtableData";
+import { useLatestAPY, useHistoricalData } from "../../hooks/useAirtableData";
 
 const VaultPerformacneChartContainer = styled.div`
   border: 1px solid ${colors.border};
-  border-radius: 4px;
+  border-radius: 4px 4px 0px 0px;
+`;
+
+const VaultPerformacneChartSecondaryContainer = styled.div`
+  padding-top: 20px;
+  border-bottom: 1px solid ${colors.border};
+  border-left: 1px solid ${colors.border};
+  border-right: 1px solid ${colors.border};
+  border-radius: 0px 0px 4px 4px;
 `;
 
 const APYLabel = styled(SecondaryText)`
@@ -19,6 +27,12 @@ const APYLabel = styled(SecondaryText)`
 const APYNumber = styled(Title)`
   font-size: 28px;
   line-height: 36px;
+`;
+
+const FutureAPYNumber = styled(Title)`
+  font-size: 28px;
+  line-height: 36px;
+  color: #16ceb9;
 `;
 
 interface DateFilterProps {
@@ -33,7 +47,7 @@ const DateFilter = styled(Title)<DateFilterProps>`
 `;
 
 const VaultPerformanceChart: React.FC = () => {
-  const airtableData = useAirtableData();
+  const airtableData = useHistoricalData();
   const yields = airtableData.res.map((data) => data.cumYield);
   const timestamps = airtableData.res.map((data) => new Date(data.timestamp));
 
@@ -78,40 +92,57 @@ const VaultPerformanceChart: React.FC = () => {
     ? `${(yields[chartIndex] || 0.0).toFixed(2)}%`
     : "Loading";
 
+  const latestAPY = useLatestAPY();
+  const projectedAPY = latestAPY.res
+    ? `+${latestAPY.res.toFixed(2)}%`
+    : "Loading";
+
   return (
-    <VaultPerformacneChartContainer
-      className="pt-4"
-      style={{ paddingBottom: 40 }}
-    >
-      <PerformanceChart
-        dataset={yields}
-        labels={timestamps}
-        onChartHover={handleChartHover}
-        extras={
-          <div className="d-flex align-items-center justify-content-between mb-3 px-4">
-            <div>
-              <APYLabel className="d-block">Yield (Cumulative)</APYLabel>
-              <APYNumber>{perfStr}</APYNumber>
-            </div>
-            <div>
-              {/* <DateFilter
+    <>
+      <VaultPerformacneChartContainer
+        className="pt-4"
+        style={{ paddingBottom: 30 }}
+      >
+        <PerformanceChart
+          dataset={yields}
+          labels={timestamps}
+          onChartHover={handleChartHover}
+          extras={
+            <div className="d-flex align-items-center justify-content-between mb-3 px-4">
+              <div>
+                <APYLabel className="d-block">Yield (Cumulative)</APYLabel>
+                <APYNumber>{perfStr}</APYNumber>
+              </div>
+              <div>
+                {/* <DateFilter
                 active={monthFilter}
                 className="mr-3"
                 onClick={() => setMonthFilter(true)}
               >
                 1m
               </DateFilter> */}
-              <DateFilter
-                active={!monthFilter}
-                onClick={() => setMonthFilter(false)}
-              >
-                All
-              </DateFilter>
+                <DateFilter
+                  active={!monthFilter}
+                  onClick={() => setMonthFilter(false)}
+                >
+                  All
+                </DateFilter>
+              </div>
             </div>
+          }
+        />
+      </VaultPerformacneChartContainer>
+      <VaultPerformacneChartSecondaryContainer>
+        <div className="d-flex align-items-center justify-content-between mb-3 px-4">
+          <div>
+            <APYLabel className="d-block">
+              Current Projected Yield (APY)
+            </APYLabel>
+            <FutureAPYNumber>{projectedAPY}</FutureAPYNumber>
           </div>
-        }
-      />
-    </VaultPerformacneChartContainer>
+        </div>
+      </VaultPerformacneChartSecondaryContainer>
+    </>
   );
 };
 
