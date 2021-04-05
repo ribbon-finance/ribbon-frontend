@@ -99,6 +99,8 @@ const YieldCard = () => {
 
   const latestAPY = useLatestAPY();
 
+  const perfStr = latestAPY.res ? `${latestAPY.res.toFixed(2)}%` : "Loading";
+
   return (
     <ProductCard onClick={() => history.push("/theta-vault")} role="button">
       <ProductTagContainer>
@@ -111,7 +113,7 @@ const YieldCard = () => {
         automated covered call strategy.
       </ProductDescription>
       <ExpectedYieldTitle>CURRENT PROJECTED YIELD (APY)</ExpectedYieldTitle>
-      <YieldText>{latestAPY.res.toFixed(2)}%</YieldText>
+      <YieldText>{perfStr}</YieldText>
       <DepositCapBar
         loading={isLoading}
         totalDeposit={totalDepositStr}
