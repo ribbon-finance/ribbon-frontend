@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useGlobalState } from "../store/store";
 
 interface APIResponse {
@@ -24,24 +24,27 @@ const getETHPrice = async (): Promise<number> => {
 
 type Assets = "WETH";
 
-const useAssetPrice: (args: { asset?: Assets }) => number = ({
-  asset = "WETH",
-}) => {
+const useAssetPrice: (args: {
+  asset?: Assets;
+}) => { price: number; loading: boolean } = ({ asset = "WETH" }) => {
   const [prices, setPrices] = useGlobalState("prices");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
       if (asset === "WETH") {
+        setLoading(true);
         const price = await getETHPrice();
         setPrices({
           [asset]: price,
         });
+        setLoading(false);
       } else {
         throw new Error(`Unknown asset ${asset}`);
       }
     })();
   }, [asset, setPrices]);
 
-  return prices[asset];
+  return { price: prices[asset], loading };
 };
 export default useAssetPrice;

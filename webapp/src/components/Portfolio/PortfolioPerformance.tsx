@@ -160,7 +160,14 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
 }) => {
   const { active } = useWeb3React();
   const { vaultBalanceInAsset } = useVaultData();
-  const ethPrice = useAssetPrice({ asset: "WETH" });
+  const { price: ethPrice, loading: ethPriceLoading } = useAssetPrice({
+    asset: "WETH",
+  });
+  const animatedLoadingText = useTextAnimation(
+    ["Loading", "Loading .", "Loading ..", "Loading ..."],
+    250,
+    ethPriceLoading
+  );
   const [
     hoveredBalanceUpdate,
     setHoveredBalanceUpdate,
@@ -199,14 +206,23 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
           2
         );
       case "usd":
-        return ethToUSD(
-          hoveredBalanceUpdate
-            ? hoveredBalanceUpdate.balance
-            : vaultBalanceInAsset,
-          ethPrice
-        );
+        return ethPriceLoading
+          ? animatedLoadingText
+          : ethToUSD(
+              hoveredBalanceUpdate
+                ? hoveredBalanceUpdate.balance
+                : vaultBalanceInAsset,
+              ethPrice
+            );
     }
-  }, [currency, ethPrice, hoveredBalanceUpdate, vaultBalanceInAsset]);
+  }, [
+    currency,
+    ethPrice,
+    hoveredBalanceUpdate,
+    vaultBalanceInAsset,
+    ethPriceLoading,
+    animatedLoadingText,
+  ]);
 
   const renderDepositData = useCallback(() => {
     if (!active) {

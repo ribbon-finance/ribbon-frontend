@@ -45,7 +45,7 @@ const YourPosition: React.FC<YourPositionProps> = ({ className }) => {
   const { status, vaultBalanceInAsset } = useVaultData({
     poll: true,
   });
-  const ethusd = useAssetPrice({ asset: "WETH" });
+  const { price: ethusd } = useAssetPrice({ asset: "WETH" });
   const isLoading = status === "loading";
   const positionAssetAmount = formatBigNumber(vaultBalanceInAsset);
   const positionInUSD = parseFloat(positionAssetAmount) * ethusd;

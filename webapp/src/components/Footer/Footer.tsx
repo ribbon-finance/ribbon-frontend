@@ -8,7 +8,7 @@ import useScreenSize from "../../hooks/useScreenSize";
 import AccountStatus from "../Wallet/AccountStatus";
 import DesktopFooter from "./DesktopFooter";
 
-const FooterContianer = styled.div<{
+const FooterContainer = styled.div<{
   screenHeight: number;
   desktopVariant: "sticky" | "fixed";
 }>`
@@ -66,7 +66,7 @@ const Footer = () => {
 
   return (
     <>
-      <FooterContianer
+      <FooterContainer
         screenHeight={screenHeight}
         desktopVariant={desktopFooterVariant}
       >
@@ -78,7 +78,7 @@ const Footer = () => {
           variant="mobile"
           showInvestButton={Boolean(matchProductPage)}
         />
-      </FooterContianer>
+      </FooterContainer>
       <MobileFooterOffsetContainer />
     </>
   );
