@@ -104,18 +104,9 @@ const useVaultData: UseVaultData = (params) => {
                   prevResponse.vaultLimit,
                   responses[1]
                 ),
-                vaultBalanceInAsset: defaultToPrevValue(
-                  prevResponse.vaultBalanceInAsset,
-                  zero
-                ),
-                userAssetBalance: defaultToPrevValue(
-                  prevResponse.userAssetBalance,
-                  zero
-                ),
-                maxWithdrawAmount: defaultToPrevValue(
-                  prevResponse.maxWithdrawAmount,
-                  zero
-                ),
+                vaultBalanceInAsset: prevResponse.vaultBalanceInAsset,
+                userAssetBalance: prevResponse.userAssetBalance,
+                maxWithdrawAmount: prevResponse.maxWithdrawAmount,
               }));
 
             return;
@@ -161,12 +152,17 @@ const useVaultData: UseVaultData = (params) => {
     }
 
     return () => {
-      isMountedRef.current = false;
       if (pollInterval) {
         clearInterval(pollInterval);
       }
     };
   }, [poll, pollingFrequency, doMulticall]);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   return response;
 };

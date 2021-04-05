@@ -9,7 +9,7 @@ import theme from "../../designSystem/theme";
 import useAssetPrice from "../../hooks/useAssetPrice";
 import useTextAnimation from "../../hooks/useTextAnimation";
 import { CurrencyType } from "../../pages/Portfolio/types";
-import { ethToUSD, formatSignificantDecimals, toETH } from "../../utils/math";
+import { ethToUSD, formatSignificantDecimals } from "../../utils/math";
 import useVaultData from "../../hooks/useVaultData";
 import { ProductType } from "../Product/types";
 import useBalances from "../../hooks/useBalances";
