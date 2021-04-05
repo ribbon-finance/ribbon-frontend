@@ -20,12 +20,21 @@ export const Button = styled.button`
 `;
 
 export const BaseActionButton = styled(Button)`
-  background: ${colors.buttons.primary};
-  color: ${colors.primaryText};
+  ${(props) =>
+    props.disabled
+      ? `background: ${colors.buttons.error};
+      color: ${colors.primaryText};
 
-  &:hover {
-    color: ${colors.primaryText};
-  }
+      &:hover {
+        color: ${colors.primaryText};
+      }`
+      : `
+      background: ${colors.buttons.primary};
+      color: ${colors.primaryText};
+
+      &:hover {
+        color: ${colors.primaryText};
+      }`}
 `;
 
 const InternalButtonLink = styled.a`
@@ -40,6 +49,7 @@ const InternalButtonLink = styled.a`
 
 interface ActionButtonProps {
   className?: string;
+  disabled?: boolean;
   link?: string;
   onClick?: () => void;
   children: ReactNode;
@@ -50,6 +60,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   link = "",
   className = "",
   children,
+  disabled = false,
 }) => {
   const hasLink = link !== "";
   const linkRef = useRef<HTMLAnchorElement | null>(null);
@@ -64,6 +75,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
 
   return (
     <BaseActionButton
+      disabled={disabled}
       onClick={handleClick}
       type="button"
       className={`btn ${className}`}
@@ -81,26 +93,6 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
         children
       )}
     </BaseActionButton>
-  );
-};
-
-const ErrorButtonStyled = styled(Button)`
-  background: ${colors.buttons.error};
-  color: ${colors.primaryText};
-
-  &:hover {
-    color: ${colors.primaryText};
-  }
-`;
-
-export const ErrorButton: React.FC<{
-  className: string;
-  children: ReactNode;
-}> = ({ className, children }) => {
-  return (
-    <ErrorButtonStyled type="button" className={`btn ${className}`}>
-      {children}
-    </ErrorButtonStyled>
   );
 };
 

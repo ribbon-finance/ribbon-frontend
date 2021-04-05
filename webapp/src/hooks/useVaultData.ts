@@ -1,15 +1,22 @@
 import { BigNumber } from "ethers";
 import { useWeb3Context } from "./web3Context";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { VaultDataResponse } from "../store/types";
 import { useWeb3React } from "@web3-react/core";
 import { useGlobalState } from "../store/store";
 import { getVault } from "./useVault";
 import { getDefaultChainID } from "../utils/env";
 
-type UseVaultData = () => VaultDataResponse;
+type UseVaultData = (params?: {
+  poll: boolean;
+  pollingFrequency?: number;
+}) => VaultDataResponse;
 
-const useVaultData: UseVaultData = () => {
+const useVaultData: UseVaultData = (params) => {
+  const poll = false || Boolean(params && params.poll);
+  const pollingFrequency = (params && params.pollingFrequency) || 4000;
+
+  const isMountedRef = useRef(true);
   const { chainId, library, active: walletConnected, account } = useWeb3React();
   const { provider: ethersProvider } = useWeb3Context();
 
@@ -17,6 +24,8 @@ const useVaultData: UseVaultData = () => {
 
   const doMulticall = useCallback(async () => {
     const envChainID = getDefaultChainID();
+    const zero = BigNumber.from("0");
+    const doSideEffect = isMountedRef.current;
 
     if (ethersProvider) {
       const providerVault = getVault(envChainID, ethersProvider, false);
@@ -29,17 +38,41 @@ const useVaultData: UseVaultData = () => {
 
         let connectedPromises: Promise<BigNumber>[] = [];
 
+        const defaultToNextValue = (
+          prevValue: BigNumber,
+          nextValue: BigNumber
+        ) => {
+          return prevValue.isZero() ? nextValue : prevValue;
+        };
+
+        const defaultToPrevValue = (
+          prevValue: BigNumber,
+          nextValue: BigNumber
+        ) => {
+          return nextValue.isZero() ? prevValue : nextValue;
+        };
+
         if (walletConnected && account && chainId) {
           if (chainId !== envChainID) {
-            setResponse({
-              status: "error",
-              error: "wrong_network",
-              deposits: BigNumber.from("0"),
-              vaultLimit: BigNumber.from("0"),
-              vaultBalanceInAsset: BigNumber.from("0"),
-              userAssetBalance: BigNumber.from("0"),
-              maxWithdrawAmount: BigNumber.from("0"),
-            });
+            doSideEffect &&
+              setResponse((prevResponse) => ({
+                status: "error",
+                error: "wrong_network",
+                deposits: defaultToNextValue(zero, prevResponse.deposits),
+                vaultLimit: defaultToNextValue(zero, prevResponse.vaultLimit),
+                vaultBalanceInAsset: defaultToNextValue(
+                  zero,
+                  prevResponse.vaultBalanceInAsset
+                ),
+                userAssetBalance: defaultToNextValue(
+                  zero,
+                  prevResponse.userAssetBalance
+                ),
+                maxWithdrawAmount: defaultToNextValue(
+                  zero,
+                  prevResponse.maxWithdrawAmount
+                ),
+              }));
             return;
           }
 
@@ -58,42 +91,82 @@ const useVaultData: UseVaultData = () => {
         try {
           const responses = await Promise.all(promises);
 
-          const data = {
-            deposits: responses[0],
-            vaultLimit: responses[1],
-          };
-
           if (!walletConnected) {
-            setResponse({
-              status: "success",
-              error: null,
-              ...data,
-              vaultBalanceInAsset: BigNumber.from("0"),
-              userAssetBalance: BigNumber.from("0"),
-              maxWithdrawAmount: BigNumber.from("0"),
-            });
+            doSideEffect &&
+              setResponse((prevResponse) => ({
+                status: "success",
+                error: null,
+                deposits: defaultToPrevValue(
+                  prevResponse.deposits,
+                  responses[0]
+                ),
+                vaultLimit: defaultToPrevValue(
+                  prevResponse.vaultLimit,
+                  responses[1]
+                ),
+                vaultBalanceInAsset: defaultToPrevValue(
+                  prevResponse.vaultBalanceInAsset,
+                  zero
+                ),
+                userAssetBalance: defaultToPrevValue(
+                  prevResponse.userAssetBalance,
+                  zero
+                ),
+                maxWithdrawAmount: defaultToPrevValue(
+                  prevResponse.maxWithdrawAmount,
+                  zero
+                ),
+              }));
 
             return;
           }
 
-          setResponse({
-            status: "success",
-            error: null,
-            ...data,
-            vaultBalanceInAsset: responses[2],
-            userAssetBalance: responses[3],
-            maxWithdrawAmount: responses[4],
-          });
+          doSideEffect &&
+            setResponse((prevResponse) => ({
+              status: "success",
+              error: null,
+              deposits: defaultToPrevValue(prevResponse.deposits, responses[0]),
+              vaultLimit: defaultToPrevValue(
+                prevResponse.vaultLimit,
+                responses[1]
+              ),
+              vaultBalanceInAsset: defaultToPrevValue(
+                prevResponse.vaultBalanceInAsset,
+                responses[2]
+              ),
+              userAssetBalance: defaultToPrevValue(
+                prevResponse.userAssetBalance,
+                responses[3]
+              ),
+              maxWithdrawAmount: defaultToPrevValue(
+                prevResponse.maxWithdrawAmount,
+                responses[4]
+              ),
+            }));
         } catch (e) {
           console.error(e);
         }
       }
     }
-  }, [account, setResponse, ethersProvider, walletConnected, chainId, library]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, setResponse, walletConnected, chainId, library]);
 
   useEffect(() => {
-    doMulticall();
-  }, [doMulticall, walletConnected]);
+    let pollInterval: NodeJS.Timeout | null = null;
+    if (poll) {
+      doMulticall();
+      pollInterval = setInterval(doMulticall, pollingFrequency);
+    } else {
+      doMulticall();
+    }
+
+    return () => {
+      isMountedRef.current = false;
+      if (pollInterval) {
+        clearInterval(pollInterval);
+      }
+    };
+  }, [poll, pollingFrequency, doMulticall]);
 
   return response;
 };

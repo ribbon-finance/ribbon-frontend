@@ -39,7 +39,7 @@ const PreviewStep: React.FC<
 
   switch (actionParams.action) {
     case ACTIONS.deposit:
-      detailValue = actionParams.yield.toString();
+      detailValue = actionParams.yield.toFixed(2);
       break;
     case ACTIONS.withdraw:
       detailValue = actionParams.withdrawalFee.toString();

@@ -5,7 +5,6 @@ import {
   ActionParams,
   ACTIONS,
   ActionType,
-  MobileNavigationButtonTypes,
   PreviewStepProps,
   StepData,
   Steps,
@@ -23,6 +22,7 @@ export interface ActionStepsProps {
   show: boolean;
   onClose: () => void;
   onChangeStep: (stepData: StepData) => void;
+  onSuccess: () => void;
   skipToPreview?: boolean;
   previewStepProps?: PreviewStepProps;
 }
@@ -33,12 +33,16 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   onChangeStep,
   skipToPreview = false,
   previewStepProps,
+  onSuccess,
 }) => {
   const firstStep = skipToPreview ? STEPS.previewStep : STEPS.formStep;
   const [step, setStep] = useState<Steps>(firstStep);
   const [txhash, setTxhash] = useState("");
   const vault = useVault();
-  const [, setPendingTransactions] = usePendingTransactions();
+  const [
+    pendingTransactions,
+    setPendingTransactions,
+  ] = usePendingTransactions();
 
   const [actionType, setActionType] = useState<ActionType>("deposit");
   const [amount, setAmount] = useState<BigNumber>(BigNumber.from("0"));
@@ -55,6 +59,25 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const isDeposit = actionType === ACTIONS.deposit;
   const actionWord = isDeposit ? "Deposit" : "Withdrawal";
+
+  const cleanupEffects = useCallback(() => {
+    setTxhash("");
+
+    if (step === STEPS.submittedStep) {
+      onSuccess();
+    }
+  }, [step, onSuccess]);
+
+  const handleClose = useCallback(() => {
+    cleanupEffects();
+    onClose();
+  }, [onClose, cleanupEffects]);
+
+  useEffect(() => {
+    if (!show) {
+      cleanupEffects();
+    }
+  }, [show, cleanupEffects]);
 
   // Whenever the `show` variable is toggled, we need to reset the step back to 0
   useEffect(() => {
@@ -100,9 +123,20 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         },
       ]);
     }
-
-    return () => setTxhash("");
   }, [txhash, setPendingTransactions, isDeposit, amountStr]);
+
+  useEffect(() => {
+    // we check that the txhash has already been removed
+    // so we can dismiss the modal
+    if (step === STEPS.submittedStep && txhash !== "") {
+      const pendingTx = pendingTransactions.find((tx) => tx.txhash === txhash);
+      if (!pendingTx) {
+        setTimeout(() => {
+          handleClose();
+        }, 300);
+      }
+    }
+  }, [step, pendingTransactions, txhash, handleClose]);
 
   const handleClickConfirmButton = async () => {
     if (vault !== null) {
@@ -121,7 +155,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         }
       } catch (e) {
         console.error(e);
-        onClose();
+        handleClose();
       }
     }
   };
@@ -134,17 +168,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       [STEPS.submittedStep]: "Transaction Submitted",
     };
 
-    const navigationButtons: Record<Steps, MobileNavigationButtonTypes> = {
-      [STEPS.formStep]: "back",
-      [STEPS.previewStep]: "back",
-      [STEPS.confirmationStep]: "close",
-      [STEPS.submittedStep]: "close",
-    };
-
     onChangeStep({
       title: titles[step],
       stepNum: step,
-      navigationButton: navigationButtons[step],
     });
   }, [step, onChangeStep, actionWord]);
 
