@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
+import { BigNumber, ethers } from "ethers";
 
 import PositionIcon from "../../assets/img/positionIcon.svg";
 import { Title } from "../../designSystem";
 import useAssetPrice from "../../hooks/useAssetPrice";
+import useBalances from "../../hooks/useBalances";
 import useVaultData from "../../hooks/useVaultData";
 import { formatBigNumber } from "../../utils/math";
 
@@ -41,6 +43,38 @@ const YourPosition = () => {
   const isLoading = status === "loading";
   const positionAssetAmount = formatBigNumber(vaultBalanceInAsset);
   const positionInUSD = parseFloat(positionAssetAmount) * ethusd;
+  const { balances } = useBalances();
+
+  const allTimeROI = useMemo(() => {
+    if (balances.length <= 0) {
+      return 0;
+    }
+
+    let totalInvestment = BigNumber.from(0);
+    let yieldEarned = BigNumber.from(0);
+    let lastBalance = BigNumber.from(0);
+
+    for (let i = 0; i < balances.length; i++) {
+      const currentBalanceObj = balances[i];
+      totalInvestment = totalInvestment.add(
+        currentBalanceObj.balance
+          .sub(lastBalance)
+          .sub(currentBalanceObj.yieldEarned)
+      );
+      yieldEarned = yieldEarned.add(currentBalanceObj.yieldEarned);
+      lastBalance = currentBalanceObj.balance;
+    }
+
+    if (totalInvestment.lte(0)) {
+      return 0;
+    }
+
+    return (
+      (parseFloat(ethers.utils.formatEther(yieldEarned)) /
+        parseFloat(ethers.utils.formatEther(totalInvestment))) *
+      100
+    );
+  }, [balances]);
 
   return (
     <PositionsContainer className="d-flex flex-row justify-content-center align-items-center mt-4 px-4">
@@ -54,7 +88,7 @@ const YourPosition = () => {
           </PositionTitle>
         </div>
         <div className="w-100 d-flex flex-row align-items-center justify-content-between ml-2 mt-1">
-          <ProfitText>+0.00%</ProfitText>
+          <ProfitText>+{allTimeROI.toFixed(4)}%</ProfitText>
           <AmountText>${positionInUSD.toFixed(2)}</AmountText>
         </div>
       </div>
