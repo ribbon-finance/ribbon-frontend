@@ -2,7 +2,12 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
-import { SecondaryText, Subtitle, Title } from "../../designSystem";
+import {
+  PrimaryText,
+  SecondaryText,
+  Subtitle,
+  Title,
+} from "../../designSystem";
 import moment from "moment";
 
 import colors from "../../designSystem/colors";
@@ -17,6 +22,7 @@ import { HoverInfo } from "../PerformanceChart/types";
 import useVaultData from "../../hooks/useVaultData";
 import { BalanceUpdate } from "../../models/vault";
 import sizes from "../../designSystem/sizes";
+import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 
 const PerformanceContainer = styled.div`
   display: flex;
@@ -40,9 +46,11 @@ const PerformanceColumn = styled.div`
 
 const DepositColumn = styled(PerformanceColumn)`
   padding-bottom: 24px;
+  position: relative;
 `;
 
 const DepositChartExtra = styled.div`
+  width: 100%;
   padding: 16px;
 `;
 
@@ -65,6 +73,16 @@ const DateFilter = styled(Title)<{ active: boolean }>`
   &:last-child {
     margin-right: unset;
   }
+`;
+
+const ChartConnectWalletContainer = styled.div`
+  width: 100%;
+  height: 224px;
+  border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
+`;
+
+const ConnectWalletButton = styled(PrimaryText)`
+  color: ${colors.green};
 `;
 
 const KPIColumn = styled.div`
@@ -135,7 +153,8 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
     hoveredBalanceUpdate,
     setHoveredBalanceUpdate,
   ] = useState<BalanceUpdate>();
-  const [rangeFilter, setRangeFilter] = useState<dateFilterType>("1w");
+  const [rangeFilter, setRangeFilter] = useState<dateFilterType>("1m");
+  const [, setShowConnectWalletModal] = useConnectWalletModal();
 
   const afterDate = useMemo(() => {
     switch (rangeFilter) {
@@ -270,35 +289,58 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
     }
   }, [active, calculatedKPI, currency, ethPrice]);
 
+  const depositHeader = useMemo(
+    () => (
+      <DepositChartExtra>
+        <ColumnLabel>Deposits</ColumnLabel>
+        <div className="d-flex align-items-center flex-wrap">
+          {renderDepositData()}
+          <DateFilters>
+            {dateFilterOptions.map((currRange) => (
+              <DateFilter
+                key={currRange}
+                active={rangeFilter === currRange}
+                onClick={() => setRangeFilter(currRange)}
+              >
+                {currRange.toUpperCase()}
+              </DateFilter>
+            ))}
+          </DateFilters>
+        </div>
+      </DepositChartExtra>
+    ),
+    [rangeFilter, renderDepositData]
+  );
+
   return (
     <PerformanceContainer>
       <DepositColumn>
-        <PerformanceChart
-          dataset={balances.map((balance) =>
-            parseFloat(ethers.utils.formatEther(balance.balance))
-          )}
-          labels={balances.map((balance) => new Date(balance.timestamp * 1000))}
-          onChartHover={handleChartHover}
-          extras={
-            <DepositChartExtra>
-              <ColumnLabel>Deposits</ColumnLabel>
-              <div className="d-flex align-items-center flex-wrap">
-                {renderDepositData()}
-                <DateFilters>
-                  {dateFilterOptions.map((currRange) => (
-                    <DateFilter
-                      key={currRange}
-                      active={rangeFilter === currRange}
-                      onClick={() => setRangeFilter(currRange)}
-                    >
-                      {currRange.toUpperCase()}
-                    </DateFilter>
-                  ))}
-                </DateFilters>
-              </div>
-            </DepositChartExtra>
-          }
-        />
+        {active ? (
+          <PerformanceChart
+            dataset={balances.map((balance) =>
+              parseFloat(ethers.utils.formatEther(balance.balance))
+            )}
+            labels={balances.map(
+              (balance) => new Date(balance.timestamp * 1000)
+            )}
+            onChartHover={handleChartHover}
+            extras={depositHeader}
+          />
+        ) : (
+          <>
+            {depositHeader}
+            <ChartConnectWalletContainer className="d-flex align-items-center justify-content-center">
+              <ConnectWalletButton
+                role="button"
+                onClick={() => {
+                  setShowConnectWalletModal(true);
+                }}
+              >
+                Connect your wallet
+              </ConnectWalletButton>
+            </ChartConnectWalletContainer>
+          </>
+        )}
       </DepositColumn>
       <PerformanceColumn>
         <KPIColumn>

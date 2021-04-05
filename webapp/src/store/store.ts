@@ -8,6 +8,7 @@ interface GlobalStore {
     WETH: number;
   };
   pendingTransactions: PendingTransaction[];
+  showConnectWallet: boolean;
 }
 
 export const initialState: GlobalStore = {
@@ -24,6 +25,7 @@ export const initialState: GlobalStore = {
     WETH: 0.0,
   },
   pendingTransactions: [],
+  showConnectWallet: false,
 };
 
 export const { useGlobalState } = createGlobalState(initialState);

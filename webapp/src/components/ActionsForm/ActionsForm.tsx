@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import { Title } from "../../designSystem";
-import WalletConnectModal from "../Wallet/WalletConnectModal";
 import { formatSignificantDecimals } from "../../utils/math";
 import YourPosition from "./YourPosition";
 import ActionModal from "../ActionModal/ActionModal";
@@ -17,6 +16,7 @@ import useGasPrice from "../../hooks/useGasPrice";
 import useVaultData from "../../hooks/useVaultData";
 import useVault from "../../hooks/useVault";
 import { ACTIONS, PreviewStepProps } from "../ActionModal/types";
+import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 
 const { parseEther, formatEther } = ethers.utils;
 
@@ -157,7 +157,7 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
   const isLoadingData = status === "loading";
   const [isDeposit, setIsDeposit] = useState(true);
   const [inputAmount, setInputAmount] = useState("");
-  const [showConnectModal, setShowConnectModal] = useState(false);
+  const [, setShowConnectModal] = useConnectWalletModal();
   const [showActionModal, setShowActionModal] = useState(false);
   const [error, setError] = useState<ValidationErrors>("none");
   const { active, account } = useWeb3React();
@@ -328,11 +328,6 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
   return (
     <Container variant={variant}>
       {isDesktop && desktopActionModal}
-
-      <WalletConnectModal
-        show={showConnectModal}
-        onClose={() => setShowConnectModal(false)}
-      />
 
       <FormContainer>
         <div

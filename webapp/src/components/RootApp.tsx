@@ -11,6 +11,7 @@ import Footer from "./Footer/Footer";
 import useScreenSize from "../hooks/useScreenSize";
 import PolicyPage from "../pages/PolicyPage";
 import { WrongNetworkToast, TxStatusToast } from "./Common/toasts";
+import WalletConnectModal from "./Wallet/WalletConnectModal";
 
 const Root = styled.div<{ screenHeight: number }>`
   background-color: #1c1a19;
@@ -26,6 +27,7 @@ const RootApp = () => {
     <Root id="appRoot" screenHeight={screenHeight}>
       <WrongNetworkToast></WrongNetworkToast>
       <TxStatusToast></TxStatusToast>
+      <WalletConnectModal />
       <Router>
         <Header />
         <Switch>
