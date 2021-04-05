@@ -17,6 +17,7 @@ import DepositCapBar from "../../../pages/DepositPage/DepositCapBar";
 import useVaultData from "../../../hooks/useVaultData";
 import { formatSignificantDecimals } from "../../../utils/math";
 import { useLatestAPY } from "../../../hooks/useAirtableData";
+import useTextAnimation from "../../../hooks/useTextAnimation";
 
 const { formatEther } = ethers.utils;
 
@@ -99,7 +100,12 @@ const YieldCard = () => {
 
   const latestAPY = useLatestAPY();
 
-  const perfStr = latestAPY.res ? `${latestAPY.res.toFixed(2)}%` : "Loading";
+  const loadingText = useTextAnimation(
+    ["Loading", "Loading .", "Loading ..", "Loading ..."],
+    250,
+    !latestAPY.fetched
+  );
+  const perfStr = latestAPY.res ? `${latestAPY.res.toFixed(2)}%` : loadingText;
 
   return (
     <ProductCard onClick={() => history.push("/theta-vault")} role="button">
