@@ -135,7 +135,9 @@ const VaultPerformanceChart: React.FC = () => {
       <VaultPerformacneChartSecondaryContainer>
         <div className="d-flex align-items-center justify-content-between mb-3 px-4">
           <div>
-            <APYLabel className="d-block">Expected Future APY</APYLabel>
+            <APYLabel className="d-block">
+              Current Projected Yield (APY)
+            </APYLabel>
             <FutureAPYNumber>{projectedAPY}</FutureAPYNumber>
           </div>
         </div>
