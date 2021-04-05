@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
+import { useGlobalState } from "../store/store";
 
 interface AirtableData {
   fetched: boolean;
@@ -63,7 +64,7 @@ export const useHistoricalData = () => {
       fetched: true,
       res: formattedData,
     });
-  }, [API_URL, API_KEY]);
+  }, [API_URL]);
 
   useEffect(() => {
     fetchAirtableData();
@@ -71,13 +72,15 @@ export const useHistoricalData = () => {
   return data;
 };
 
-export const useLatestAPY = () => {
-  const API_URL = `https://api.airtable.com/v0/${BASE_ID}/table?sort%5B0%5D%5Bfield%5D=Timestamp&sort%5B0%5D%5Bdirection%5D=desc&maxRecords=1`;
+type UseLatestAPY = () => APYData;
 
-  const [data, setData] = useState<APYData>({
-    fetched: false,
-    res: 0,
-  });
+// We need this global variable so we can prevent over-fetching
+let fetchedOnce = false;
+
+export const useLatestAPY: UseLatestAPY = () => {
+  const API_URL = `https://api.airtable.com/v0/${BASE_ID}/table?sort%5B0%5D%5Bfield%5D=Timestamp&sort%5B0%5D%5Bdirection%5D=desc&maxRecords=1`;
+  const [latestAPY, setLatestAPY] = useGlobalState("latestAPY");
+  const [fetched, setFetched] = useState(false);
 
   const fetchAirtableData = useCallback(async () => {
     const response = await axios.get(API_URL, {
@@ -89,14 +92,19 @@ export const useLatestAPY = () => {
     const data = response.data.records;
     const latestAPY = data[0].fields.APY * 100;
 
-    setData({
-      fetched: true,
-      res: latestAPY,
-    });
-  }, [API_URL, API_KEY]);
+    setFetched(true);
+    setLatestAPY(latestAPY);
+  }, [API_URL, setLatestAPY]);
 
   useEffect(() => {
-    fetchAirtableData();
-  }, [fetchAirtableData]);
-  return data;
+    if (!latestAPY && !fetchedOnce) {
+      fetchedOnce = true;
+      fetchAirtableData();
+    }
+  }, [fetchAirtableData, latestAPY]);
+
+  return {
+    fetched,
+    res: latestAPY,
+  };
 };

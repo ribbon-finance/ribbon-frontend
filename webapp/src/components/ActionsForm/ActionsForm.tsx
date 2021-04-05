@@ -15,6 +15,7 @@ import useVault from "../../hooks/useVault";
 import { ACTIONS, PreviewStepProps } from "../ActionModal/types";
 import { isVaultFull } from "../../utils/vault";
 import colors from "../../designSystem/colors";
+import { useLatestAPY } from "../../hooks/useAirtableData";
 
 const { parseEther, formatEther } = ethers.utils;
 
@@ -169,6 +170,7 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
   } = useVaultData();
   const gasPrice = useGasPrice();
   const { active, account } = useWeb3React();
+  const latestAPY = useLatestAPY();
 
   // state hooks
   const isLoadingData = status === "loading";
@@ -241,7 +243,7 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
 
   const previewStepProps = useMemo(() => {
     const actionParams = isDeposit
-      ? { action: ACTIONS.deposit, yield: 30 }
+      ? { action: ACTIONS.deposit, yield: latestAPY.res }
       : {
           action: ACTIONS.withdraw,
           withdrawalFee: 0.5,
@@ -253,7 +255,7 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
       positionAmount: BigNumber.from(vaultBalanceStr),
       actionParams,
     };
-  }, [isDeposit, inputAmount, vaultBalanceStr]);
+  }, [isDeposit, inputAmount, vaultBalanceStr, latestAPY.res]);
 
   const handleClickActionButton = () => {
     isDesktop && isInputNonZero && connected && setShowActionModal(true);
