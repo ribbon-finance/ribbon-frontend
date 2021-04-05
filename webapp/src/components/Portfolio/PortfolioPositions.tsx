@@ -193,14 +193,17 @@ const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
           <PositionSymbolTitle product="yield" className="flex-grow-1">
             T-100-E
           </PositionSymbolTitle>
-          <Title>{renderAmountText(vaultBalanceInAsset, "eth")}</Title>
+          <Title>{renderAmountText(vaultBalanceInAsset, currency)}</Title>
         </PositionInfoRow>
         <PositionInfoRow>
           <PositionInfoText className="flex-grow-1">
             Theta Vault - ETH
           </PositionInfoText>
           <PositionSecondaryInfoText>
-            {renderAmountText(vaultBalanceInAsset, "usd")}
+            {renderAmountText(
+              vaultBalanceInAsset,
+              currency === "eth" ? "usd" : "eth"
+            )}
           </PositionSecondaryInfoText>
         </PositionInfoRow>
         <KPIContainer>

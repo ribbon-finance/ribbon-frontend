@@ -65,7 +65,13 @@ const TransactionSecondaryInfoText = styled(Subtitle)`
   line-height: 16px;
 `;
 
-const PortfolioTransactions = () => {
+interface PortfolioTransactionsProps {
+  currency: CurrencyType;
+}
+
+const PortfolioTransactions: React.FC<PortfolioTransactionsProps> = ({
+  currency,
+}) => {
   const { transactions, loading } = useTransactions();
   const { active } = useWeb3React();
   const animatedLoadingText = useTextAnimation(
@@ -120,7 +126,7 @@ const PortfolioTransactions = () => {
             {renderTransactionAmountText(
               transaction.amount,
               transaction.type,
-              "eth"
+              currency
             )}
           </Title>
         </TransactionInfoRow>
@@ -134,7 +140,7 @@ const PortfolioTransactions = () => {
             {renderTransactionAmountText(
               transaction.amount,
               transaction.type,
-              "usd"
+              currency === "eth" ? "usd" : "eth"
             )}
           </TransactionSecondaryInfoText>
         </TransactionInfoRow>
@@ -146,6 +152,7 @@ const PortfolioTransactions = () => {
     animatedLoadingText,
     loading,
     renderTransactionAmountText,
+    currency,
   ]);
 
   return (
