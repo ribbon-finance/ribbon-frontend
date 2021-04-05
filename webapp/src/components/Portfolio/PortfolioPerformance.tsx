@@ -16,6 +16,7 @@ import PerformanceChart from "../PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../PerformanceChart/types";
 import useVaultData from "../../hooks/useVaultData";
 import { BalanceUpdate } from "../../models/vault";
+import sizes from "../../designSystem/sizes";
 
 const PerformanceContainer = styled.div`
   display: flex;
@@ -47,6 +48,11 @@ const DepositChartExtra = styled.div`
 
 const DateFilters = styled.div`
   margin-left: auto;
+
+  @media (max-width: ${sizes.sm}px) {
+    margin-top: 24px;
+    width: 100%;
+  }
 `;
 
 const DateFilter = styled(Title)<{ active: boolean }>`
@@ -69,6 +75,16 @@ const KPIColumn = styled.div`
 
   &:first-child {
     border-right: ${theme.border.width} ${theme.border.style} ${colors.border};
+  }
+
+  @media (max-width: ${sizes.sm}px) {
+    width: 100%;
+
+    &:first-child {
+      border-right: none;
+      border-bottom: ${theme.border.width} ${theme.border.style}
+        ${colors.border};
+    }
   }
 `;
 
@@ -266,7 +282,7 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
           extras={
             <DepositChartExtra>
               <ColumnLabel>Deposits</ColumnLabel>
-              <div className="d-flex align-items-center">
+              <div className="d-flex align-items-center flex-wrap">
                 {renderDepositData()}
                 <DateFilters>
                   {dateFilterOptions.map((currRange) => (

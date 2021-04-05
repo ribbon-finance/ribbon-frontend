@@ -13,6 +13,7 @@ import { ethToUSD, toETH } from "../../utils/math";
 import useVaultData from "../../hooks/useVaultData";
 import { ProductType } from "../Product/types";
 import useBalances from "../../hooks/useBalances";
+import sizes from "../../designSystem/sizes";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 48px;
@@ -86,6 +87,10 @@ const KPIContainer = styled.div`
   width: 100%;
   height: 100%;
   padding: 16px;
+
+  @media (max-width: ${sizes.sm}px) {
+    display: none;
+  }
 `;
 
 const KPIDatas = styled.div`
