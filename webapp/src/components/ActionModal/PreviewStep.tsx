@@ -95,13 +95,13 @@ const PreviewStep: React.FC<
           {detailRows.map((detail, index) => (
             <div
               key={index}
-              className="d-flex flex-row justify-content-between mb-4"
+              className="d-flex flex-row align-items-center justify-content-between mb-4"
             >
               <SecondaryText>{detail.key}</SecondaryText>
               <Title className="text-right">{detail.value}</Title>
             </div>
           ))}
-          <div className="d-flex flex-row justify-content-between mb-4">
+          <div className="d-flex flex-row align-items-center justify-content-between mb-4">
             <SecondaryText>Your Position</SecondaryText>
             <Title className="d-flex align-items-center text-right">
               {originalAmount} ETH{" "}
