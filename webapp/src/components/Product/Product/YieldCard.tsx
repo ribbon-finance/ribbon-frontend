@@ -61,7 +61,6 @@ const ProductCard = styled.div`
 const ProductTagContainer = styled.div`
   display: flex;
   flex-wrap: nowrap;
-  width: 100%;
 `;
 
 const ProductTag = styled(BaseButton)`
