@@ -1,6 +1,7 @@
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
-import { BigNumber, ethers } from "ethers";
+import { useCallback, useEffect } from "react";
+import { ethers } from "ethers";
+import { useGlobalState } from "../store/store";
 
 const { parseUnits } = ethers.utils;
 
@@ -14,39 +15,26 @@ interface APIResponse {
   };
 }
 
-interface GasPrices {
-  fetched: boolean;
-  safe: BigNumber;
-  fast: BigNumber;
-}
-
 let fetchedOnce = false;
 
 const useGasPrice = () => {
   const API_KEY = process.env.REACT_APP_ETHERSCAN_API_KEY;
   const API_URL = `https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=${API_KEY}`;
 
-  const [gasPrice, setGasPrice] = useState<GasPrices>({
-    fetched: false,
-    safe: BigNumber.from("0"),
-    fast: BigNumber.from("0"),
-  });
+  const [gasPrice, setGasPrice] = useGlobalState("gasPrice");
 
   const fetchGasPrice = useCallback(async () => {
     fetchedOnce = true;
     const response = await axios.get(API_URL);
     const data: APIResponse = response.data;
 
-    setGasPrice({
-      fetched: true,
-      safe: parseUnits(data.result.SafeGasPrice, "gwei"),
-      fast: parseUnits(data.result.FastGasPrice, "gwei"),
-    });
-  }, [API_URL]);
+    setGasPrice(parseUnits(data.result.FastGasPrice, "gwei").toString());
+  }, [API_URL, setGasPrice]);
 
   useEffect(() => {
     !fetchedOnce && fetchGasPrice();
   }, [fetchGasPrice]);
+
   return gasPrice;
 };
 export default useGasPrice;
