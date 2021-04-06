@@ -34,8 +34,23 @@ const ProductCard = styled.div`
   transition: 0.25s box-shadow ease-out;
   max-width: 343px;
 
+  @keyframes shimmerAnimation {
+    0% {
+      box-shadow: rgba(255, 56, 92, 0.4) 8px 8px 120px;
+    }
+    50% {
+      box-shadow: rgba(255, 56, 92, 0.16) 8px 8px 120px;
+    }
+    100% {
+      box-shadow: rgba(255, 56, 92, 0.4) 8px 8px 120px;
+    }
+  }
+
+  animation: shimmerAnimation 3s infinite;
+
   &:hover {
-    box-shadow: rgba(255, 56, 92, 0.4) 4px 8px 120px;
+    animation: none;
+    box-shadow: rgba(255, 56, 92, 0.4) 8px 8px 120px;
   }
 
   @media (max-width: ${sizes.md}px) {
