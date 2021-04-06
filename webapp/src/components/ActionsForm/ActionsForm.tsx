@@ -187,11 +187,13 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
 
   const handleClickMax = async () => {
     if (!isLoadingData && connected && vault && account) {
-      if (isDeposit && gasPrice.fetched) {
+      if (isDeposit && gasPrice !== "") {
         const gasLimit = isDeposit
           ? GAS_LIMITS.depositETH
           : GAS_LIMITS.withdrawETH;
-        const gasFee = BigNumber.from(gasLimit.toString()).mul(gasPrice.fast);
+        const gasFee = BigNumber.from(gasLimit.toString()).mul(
+          BigNumber.from(gasPrice)
+        );
         const total = BigNumber.from(userAssetBalance);
         const maxAmount = total.sub(gasFee);
         const actualMaxAmount = maxAmount.isNegative()

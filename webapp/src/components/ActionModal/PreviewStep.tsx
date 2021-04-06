@@ -6,8 +6,12 @@ import { Subtitle, SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import { ActionButton } from "../Common/buttons";
 import { ACTIONS, PreviewStepProps } from "./types";
-import { formatBigNumber, formatSignificantDecimals } from "../../utils/math";
-const { formatEther } = ethers.utils;
+import {
+  formatBigNumber,
+  formatSignificantDecimals,
+  wmul,
+} from "../../utils/math";
+const { parseEther, formatEther } = ethers.utils;
 
 const AmountText = styled(Title)`
   font-size: 40px;
@@ -56,14 +60,19 @@ const PreviewStep: React.FC<
       : { key: "Withdrawal Fee", value: `${detailValue}%` },
   ];
 
-  const originalAmount = formatSignificantDecimals(formatEther(positionAmount));
+  const originalAmount = formatSignificantDecimals(
+    formatEther(positionAmount),
+    5
+  );
+  // If it's a deposit, just add to the existing positionAmount
+  // If it's a withdrawal, subtract the amount and the fee, we can hardcode the fee for now
   let newAmount = isDeposit
     ? positionAmount.add(amount)
-    : positionAmount.sub(amount);
+    : positionAmount.sub(amount).sub(wmul(amount, parseEther("0.005")));
 
   newAmount = newAmount.isNegative() ? BigNumber.from("0") : newAmount;
 
-  const newAmountStr = formatBigNumber(newAmount);
+  const newAmountStr = formatBigNumber(newAmount, 5);
 
   return (
     <>
@@ -86,13 +95,13 @@ const PreviewStep: React.FC<
           {detailRows.map((detail, index) => (
             <div
               key={index}
-              className="d-flex flex-row justify-content-between mb-4"
+              className="d-flex flex-row align-items-center justify-content-between mb-4"
             >
               <SecondaryText>{detail.key}</SecondaryText>
               <Title className="text-right">{detail.value}</Title>
             </div>
           ))}
-          <div className="d-flex flex-row justify-content-between mb-4">
+          <div className="d-flex flex-row align-items-center justify-content-between mb-4">
             <SecondaryText>Your Position</SecondaryText>
             <Title className="d-flex align-items-center text-right">
               {originalAmount} ETH{" "}
