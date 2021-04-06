@@ -95,6 +95,27 @@ const YieldText = styled(Title)`
   margin-bottom: 24px;
 `;
 
+const TopContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const ArrowContainer = styled.div`
+  background: rgba(255, 255, 255, 0.04);
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const ArrowRight = styled.i`
+  color: white;
+`;
+
 const YieldCard = () => {
   const history = useHistory();
   const { status, deposits, vaultLimit } = useVaultData();
@@ -124,10 +145,17 @@ const YieldCard = () => {
 
   return (
     <ProductCard onClick={() => history.push("/theta-vault")} role="button">
-      <ProductTagContainer>
-        {renderTag("THETA VAULT")}
-        {renderTag("ETH")}
-      </ProductTagContainer>
+      <TopContainer>
+        <ProductTagContainer>
+          {renderTag("THETA VAULT")}
+          {renderTag("ETH")}
+        </ProductTagContainer>
+
+        <ArrowContainer>
+          <ArrowRight className="fas fa-arrow-right"></ArrowRight>
+        </ArrowContainer>
+      </TopContainer>
+
       <ProductTitle>T-100-E</ProductTitle>
       <ProductDescription>
         Theta Vault is a yield-generating strategy on ETH. The vault runs an
