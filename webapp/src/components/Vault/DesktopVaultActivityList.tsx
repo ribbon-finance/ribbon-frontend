@@ -1,6 +1,7 @@
 import React, { useCallback, useRef } from "react";
 import styled from "styled-components";
 import moment from "moment";
+import { ethers } from "ethers";
 
 import { getEtherscanURI } from "../../constants/constants";
 import { BaseLink, SecondaryText, Title } from "../../designSystem";
@@ -12,14 +13,13 @@ import {
   optionToUSD,
   formatSignificantDecimals,
 } from "../../utils/math";
-import { ethers } from "ethers";
 import useAssetPrice from "../../hooks/useAssetPrice";
 import useElementSize from "../../hooks/useElementSize";
 import sizes from "../../designSystem/sizes";
 import useScreenSize from "../../hooks/useScreenSize";
 import useTextAnimation from "../../hooks/useTextAnimation";
 
-const VaultActivityContainer = styled.div`
+const VaultActivityRow = styled.div`
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
@@ -27,6 +27,10 @@ const VaultActivityContainer = styled.div`
   border-radius: ${theme.border.radius};
   margin-bottom: 16px;
   padding: 16px;
+
+  &:nth-child(2) {
+    margin-top: 24px;
+  }
 `;
 
 const VaultActivityIcon = styled.div<{ type: VaultActivityType }>`
@@ -46,7 +50,7 @@ const VaultActivityIcon = styled.div<{ type: VaultActivityType }>`
 
 const VaultActivityHeader = styled.div`
   display: flex;
-  margin: 24px 0px;
+  margin-top: 24px;
   padding: 0px 16px;
 `;
 
@@ -148,11 +152,11 @@ const ExternalLink = styled.i`
   opacity: 0.48;
 `;
 
-interface VaultActivityListProps {
+interface DesktopVaultActivityListProps {
   activities: VaultActivity[];
 }
 
-const VaultActivityList: React.FC<VaultActivityListProps> = ({
+const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
   activities,
 }) => {
   const { price: ethPrice, loading: ethPriceLoading } = useAssetPrice({});
@@ -325,7 +329,7 @@ const VaultActivityList: React.FC<VaultActivityListProps> = ({
         </VaultActivityHeaderCol>
       </VaultActivityHeader>
       {activities.map((activity) => (
-        <VaultActivityContainer>
+        <VaultActivityRow>
           {/** Activity */}
           {renderVaultActivity(activity)}
 
@@ -339,10 +343,10 @@ const VaultActivityList: React.FC<VaultActivityListProps> = ({
               <ExternalLink className="fas fa-external-link-alt" />
             </VaultActivityExternalLinkContainer>
           </BaseLink>
-        </VaultActivityContainer>
+        </VaultActivityRow>
       ))}
     </div>
   );
 };
 
-export default VaultActivityList;
+export default DesktopVaultActivityList;

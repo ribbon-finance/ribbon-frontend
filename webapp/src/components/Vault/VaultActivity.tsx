@@ -3,7 +3,10 @@ import React, { useMemo, useState } from "react";
 import useVaultActivity from "../../hooks/useVaultActivity";
 import { ActivityFilter, activityFilters, SortBy, sortByList } from "./types";
 import VaultActivityHeader from "./VaultActivityHeader";
-import VaultActivityList from "./VaultActivityList";
+import DesktopVaultActivityList from "./DesktopVaultActivityList";
+import useScreenSize from "../../hooks/useScreenSize";
+import sizes from "../../designSystem/sizes";
+import MobileVaultActivityList from "./MobileVaultActivityList";
 
 const VaultActivity = () => {
   const { activities } = useVaultActivity("ETH-THETA");
@@ -11,6 +14,7 @@ const VaultActivity = () => {
     activityFilters[0]
   );
   const [sortBy, setSortBy] = useState<SortBy>(sortByList[0]);
+  const { width } = useScreenSize();
 
   const processedActivities = useMemo(() => {
     let filteredActivities = activities;
@@ -47,7 +51,11 @@ const VaultActivity = () => {
         sortBy={sortBy}
         setSortBy={setSortBy}
       />
-      <VaultActivityList activities={processedActivities} />
+      {width > sizes.md ? (
+        <DesktopVaultActivityList activities={processedActivities} />
+      ) : (
+        <MobileVaultActivityList activities={processedActivities} />
+      )}
     </>
   );
 };

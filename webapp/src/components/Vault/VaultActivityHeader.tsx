@@ -3,8 +3,10 @@ import styled from "styled-components";
 
 import { BaseButton, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
+import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
+import useScreenSize from "../../hooks/useScreenSize";
 import { capitalize } from "../../utils/text";
 import ButtonArrow from "../Common/ButtonArrow";
 import { SortBy, ActivityFilter, activityFilters, sortByList } from "./types";
@@ -12,10 +14,23 @@ import { SortBy, ActivityFilter, activityFilters, sortByList } from "./types";
 const Header = styled(Title)`
   font-size: 18px;
   margin-right: 8px;
+
+  @media (max-width: ${sizes.sm}px) {
+    width: 100%;
+  }
 `;
 
 const Filter = styled.div`
   position: relative;
+  margin-left: 16px;
+
+  @media (max-width: ${sizes.sm}px) {
+    margin-top: 24px;
+
+    &:nth-child(2) {
+      margin-left: 0px;
+    }
+  }
 `;
 
 const FilterButton = styled(BaseButton)`
@@ -23,7 +38,6 @@ const FilterButton = styled(BaseButton)`
   align-items: center;
   padding: 8px 12px;
   background-color: ${colors.backgroundDarker};
-  margin-left: 16px;
 
   &:hover {
     span {
@@ -38,12 +52,23 @@ const FilterButtonText = styled(Title)`
   text-transform: uppercase;
 `;
 
-const FilterDropdownMenu = styled.div<{ isOpen: boolean }>`
+const FilterDropdownMenu = styled.div<{
+  isOpen: boolean;
+  orientation?: "left" | "right";
+}>`
   ${(props) =>
     props.isOpen
       ? `
           position: absolute;
-          right: 0px;
+          ${(() => {
+            switch (props.orientation) {
+              case "left":
+                return `left: 0px;`;
+              case "right":
+              default:
+                return `right: 0px;`;
+            }
+          })()}
           top: 48px;
           width: fit-content;
           background-color: ${colors.backgroundDarker};
@@ -106,6 +131,7 @@ const VaultActivityHeader: React.FC<VaultActivityHeaderProps> = ({
   useOutsideAlerter(sortByFilterRef, () => {
     setSortByOpen(false);
   });
+  const { width } = useScreenSize();
 
   const renderMenuItem = useCallback(
     (title: string, onClick: () => void) => (
@@ -117,7 +143,7 @@ const VaultActivityHeader: React.FC<VaultActivityHeaderProps> = ({
   );
 
   return (
-    <div className="d-flex align-items-center">
+    <div className="d-flex align-items-center flex-wrap">
       <Header>Vault Activity</Header>
       <Filter ref={activityFilterRef}>
         <FilterButton
@@ -130,7 +156,10 @@ const VaultActivityHeader: React.FC<VaultActivityHeaderProps> = ({
             {activityFilter} <ButtonArrow isOpen={activityFilterOpen} />
           </FilterButtonText>
         </FilterButton>
-        <FilterDropdownMenu isOpen={activityFilterOpen}>
+        <FilterDropdownMenu
+          isOpen={activityFilterOpen}
+          orientation={width > sizes.sm ? "right" : "left"}
+        >
           {activityFilters.map((filterOption) =>
             renderMenuItem(capitalize(filterOption), () => {
               setActivityFilter(filterOption);
