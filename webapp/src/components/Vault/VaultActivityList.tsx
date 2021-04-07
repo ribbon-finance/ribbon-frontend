@@ -15,6 +15,8 @@ import {
 import { ethers } from "ethers";
 import useAssetPrice from "../../hooks/useAssetPrice";
 import useElementSize from "../../hooks/useElementSize";
+import sizes from "../../designSystem/sizes";
+import useScreenSize from "../../hooks/useScreenSize";
 
 const VaultActivityContainer = styled.div`
   display: flex;
@@ -41,16 +43,23 @@ const VaultActivityIcon = styled.div<{ type: VaultActivityType }>`
   }
 `;
 
+const VaultActivityHeader = styled.div`
+  display: flex;
+  margin: 24px 0px;
+  padding: 0px 16px;
+`;
+
 const VaultActivityCol = styled.div<{
   orientation?: "left" | "right";
   containerWidth?: number;
+  weight: number;
 }>`
   display: flex;
   flex-direction: column;
   width: ${(props) =>
     props.containerWidth
-      ? `calc((${props.containerWidth}px - 32px - 56px - 120px) * 0.25)`
-      : `20%`};
+      ? `calc((${props.containerWidth}px - 32px - 56px - 120px) * ${props.weight})`
+      : `${props.weight * 100}%`};
 
   text-align: ${(props) => {
     switch (props.orientation) {
@@ -61,6 +70,31 @@ const VaultActivityCol = styled.div<{
         return "left";
     }
   }};
+
+  @media (max-width: ${sizes.xl}px) {
+    width: ${(props) =>
+      props.containerWidth
+        ? `calc((${props.containerWidth}px - 32px - 56px - 72px) * ${props.weight})`
+        : `${props.weight * 100}%`};
+  }
+`;
+
+const VaultActivityHeaderCol = styled(VaultActivityCol)`
+  &:first-child {
+    width: ${(props) =>
+      props.containerWidth
+        ? `calc((${props.containerWidth}px - 32px - 56px - 120px) * ${props.weight} + 56px)`
+        : `${props.weight * 100}%`};
+  }
+
+  @media (max-width: ${sizes.xl}px) {
+    &:first-child {
+      width: ${(props) =>
+        props.containerWidth
+          ? `calc((${props.containerWidth}px - 32px - 56px - 72px) * ${props.weight} + 56px)`
+          : `${props.weight * 100}%`};
+    }
+  }
 `;
 
 const VaultPrimaryText = styled(Title)<{
@@ -102,6 +136,10 @@ const VaultActivityExternalLinkContainer = styled.div`
       opacity: 1;
     }
   }
+
+  @media (max-width: ${sizes.xl}px) {
+    margin: 0px 8px 0px 24px;
+  }
 `;
 
 const ExternalLink = styled.i`
@@ -119,6 +157,7 @@ const VaultActivityList: React.FC<VaultActivityListProps> = ({
   const { price: ethPrice, loading: ethPriceLoading } = useAssetPrice({});
   const containerRef = useRef<HTMLDivElement>(null);
   const { width } = useElementSize(containerRef);
+  const { width: screenWidth } = useScreenSize();
 
   const getVaultActivityExternalURL = useCallback((activity: VaultActivity) => {
     switch (activity.type) {
@@ -141,15 +180,17 @@ const VaultActivityList: React.FC<VaultActivityListProps> = ({
               </VaultActivityIcon>
 
               {/** Name and date */}
-              <VaultActivityCol containerWidth={width}>
-                <VaultPrimaryText>MINTED CONTRACTS</VaultPrimaryText>
+              <VaultActivityCol containerWidth={width} weight={0.25}>
+                <VaultPrimaryText>
+                  {screenWidth > sizes.lg ? "MINTED CONTRACTS" : "MINTED"}
+                </VaultPrimaryText>
                 <VaultSecondaryText>
                   {moment(activity.openedAt * 1000).fromNow()}
                 </VaultSecondaryText>
               </VaultActivityCol>
 
               {/** Option Details */}
-              <VaultActivityCol containerWidth={width}>
+              <VaultActivityCol containerWidth={width} weight={0.35}>
                 <VaultPrimaryText>
                   O-WETH {moment(activity.expiry, "X").format("M/DD")} CALL
                 </VaultPrimaryText>
@@ -159,7 +200,11 @@ const VaultActivityList: React.FC<VaultActivityListProps> = ({
               </VaultActivityCol>
 
               {/** Quantity */}
-              <VaultActivityCol orientation="right" containerWidth={width}>
+              <VaultActivityCol
+                orientation="right"
+                containerWidth={width}
+                weight={0.15}
+              >
                 <VaultPrimaryText>
                   {formatSignificantDecimals(
                     ethers.utils.formatEther(activity.depositAmount)
@@ -168,7 +213,11 @@ const VaultActivityList: React.FC<VaultActivityListProps> = ({
               </VaultActivityCol>
 
               {/** Yield */}
-              <VaultActivityCol orientation="right" containerWidth={width}>
+              <VaultActivityCol
+                orientation="right"
+                containerWidth={width}
+                weight={0.25}
+              >
                 <VaultPrimaryText>-</VaultPrimaryText>
                 <VaultSecondaryText>-</VaultSecondaryText>
               </VaultActivityCol>
@@ -183,15 +232,17 @@ const VaultActivityList: React.FC<VaultActivityListProps> = ({
               </VaultActivityIcon>
 
               {/** Name and date */}
-              <VaultActivityCol containerWidth={width}>
-                <VaultPrimaryText>SOLD CONTRACTS</VaultPrimaryText>
+              <VaultActivityCol containerWidth={width} weight={0.25}>
+                <VaultPrimaryText>
+                  {screenWidth > sizes.lg ? "SOLD CONTRACTS" : "SOLD"}
+                </VaultPrimaryText>
                 <VaultSecondaryText>
                   {moment(activity.timestamp * 1000).fromNow()}
                 </VaultSecondaryText>
               </VaultActivityCol>
 
               {/** Option Details */}
-              <VaultActivityCol containerWidth={width}>
+              <VaultActivityCol containerWidth={width} weight={0.35}>
                 <VaultPrimaryText>
                   O-WETH{" "}
                   {moment(activity.vaultShortPosition.expiry, "X").format(
@@ -205,7 +256,11 @@ const VaultActivityList: React.FC<VaultActivityListProps> = ({
               </VaultActivityCol>
 
               {/** Quantity */}
-              <VaultActivityCol orientation="right" containerWidth={width}>
+              <VaultActivityCol
+                orientation="right"
+                containerWidth={width}
+                weight={0.15}
+              >
                 <VaultPrimaryText>
                   {formatSignificantDecimals(
                     ethers.utils.formatEther(activity.sellAmount)
@@ -214,7 +269,11 @@ const VaultActivityList: React.FC<VaultActivityListProps> = ({
               </VaultActivityCol>
 
               {/** Yield */}
-              <VaultActivityCol orientation="right" containerWidth={width}>
+              <VaultActivityCol
+                orientation="right"
+                containerWidth={width}
+                weight={0.25}
+              >
                 <VaultPrimaryText variant="green">
                   +
                   {formatSignificantDecimals(
@@ -232,11 +291,33 @@ const VaultActivityList: React.FC<VaultActivityListProps> = ({
           );
       }
     },
-    [width, ethPrice, ethPriceLoading]
+    [width, ethPrice, ethPriceLoading, screenWidth]
   );
 
   return (
     <div className="d-flex flex-column" ref={containerRef}>
+      <VaultActivityHeader>
+        <VaultActivityHeaderCol weight={0.25} containerWidth={width}>
+          <SecondaryText>Action</SecondaryText>
+        </VaultActivityHeaderCol>
+        <VaultActivityHeaderCol weight={0.35} containerWidth={width}>
+          <SecondaryText>Contract</SecondaryText>
+        </VaultActivityHeaderCol>
+        <VaultActivityHeaderCol
+          weight={0.15}
+          containerWidth={width}
+          orientation="right"
+        >
+          <SecondaryText>Quantity</SecondaryText>
+        </VaultActivityHeaderCol>
+        <VaultActivityHeaderCol
+          weight={0.25}
+          containerWidth={width}
+          orientation="right"
+        >
+          <SecondaryText>Yield</SecondaryText>
+        </VaultActivityHeaderCol>
+      </VaultActivityHeader>
       {activities.map((activity) => (
         <VaultActivityContainer>
           {/** Activity */}
