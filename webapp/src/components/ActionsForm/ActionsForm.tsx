@@ -31,7 +31,7 @@ const Container = styled.div<ActionsFormProps>`
 `;
 
 const FormContainer = styled.div`
-  font-family: VCR;
+  font-family: VCR, sans-serif;
   color: #f3f3f3;
   width: 100%;
   border: 1px solid #2b2b2b;

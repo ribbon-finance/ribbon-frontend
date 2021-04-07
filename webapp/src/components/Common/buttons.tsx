@@ -3,7 +3,7 @@ import styled from "styled-components";
 import colors from "../../designSystem/colors";
 
 export const Button = styled.button`
-  font-family: VCR;
+  font-family: VCR, sans-serif;
   width: 100%;
   border-radius: 4px;
   font-size: 16px;

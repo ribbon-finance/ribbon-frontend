@@ -36,7 +36,7 @@ const AttributePill = styled.div`
   color: ${colors.primaryText};
   border-radius: 4px;
   padding: 16px;
-  font-family: VCR;
+  font-family: VCR, sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
