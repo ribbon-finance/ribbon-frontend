@@ -39,3 +39,6 @@ export const ethToUSD = (
 
   return "$" + pnlUSD.toFixed(precision);
 };
+
+export const optionToUSD = (bn: BigNumber): number =>
+  parseFloat(ethers.utils.formatUnits(bn, 8));

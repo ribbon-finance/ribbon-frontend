@@ -12,6 +12,7 @@ import { formatSignificantDecimals } from "../../utils/math";
 import sizes from "../../designSystem/sizes";
 import YourPosition from "../../components/ActionsForm/YourPosition";
 import { useWeb3React } from "@web3-react/core";
+import VaultActivity from "../../components/Vault/VaultActivity";
 
 const { formatEther } = ethers.utils;
 
@@ -117,6 +118,7 @@ const DepositPage = () => {
             <ActionsForm variant="desktop" />
           </DesktopActionsFormContainer>
         </div>
+        <VaultActivity />
       </div>
     </>
   );

@@ -10,6 +10,35 @@ export interface Vault {
   depositors: string[];
 }
 
+export interface VaultShortPosition {
+  id: string;
+  vault: Vault;
+  option: string;
+  depositAmount: BigNumber;
+  initiatedBy: string;
+  strikePrice: BigNumber;
+  expiry: number;
+  openedAt: number;
+  closedAt?: number;
+  premiumEarned: BigNumber;
+  openTxhash: string;
+  closeTxhash: string;
+  trades: VaultOptionTrade[];
+}
+
+export interface VaultOptionTrade {
+  id: string;
+  vault: Vault;
+  vaultShortPosition: VaultShortPosition;
+  buyer: string;
+  sellAmount: BigNumber;
+  premium: BigNumber;
+  optionToken: string;
+  premiumToken: string;
+  timestamp: number;
+  txhash: string;
+}
+
 export interface VaultTransaction {
   id: string;
   vault: Vault;
@@ -29,3 +58,13 @@ export interface BalanceUpdate {
   balance: BigNumber;
   yieldEarned: BigNumber;
 }
+
+export type VaultActivityType = "minting" | "sales";
+
+export interface VaultActivityMeta {
+  date: Date;
+}
+
+export type VaultActivity =
+  | (VaultShortPosition & VaultActivityMeta & { type: "minting" })
+  | (VaultOptionTrade & VaultActivityMeta & { type: "sales" });
