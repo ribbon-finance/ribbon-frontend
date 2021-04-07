@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import BootstrapToast from "react-bootstrap/Toast";
 import { ToastProps as BootstrapToastProps } from "react-bootstrap/Toast";
 import styled from "styled-components";
-import { SuccessIcon, CloseIcon } from "../../assets/icons/icons";
+import { SuccessIcon, CloseIcon, IconProps } from "../../assets/icons/icons";
 import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";
@@ -46,11 +46,11 @@ const Body = styled(BootstrapToast.Body)`
   }
 `;
 
-interface IconProps {
+interface StatusProps {
   type: "success" | "error";
 }
 
-const IconCircle = styled.div<IconProps>`
+const IconCircle = styled.div<StatusProps>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,16 +65,7 @@ const IconCircle = styled.div<IconProps>`
       : "rgba(22, 206, 185, 0.16)"};
 `;
 
-const StyledCloseIcon = styled(CloseIcon)<
-  React.HTMLAttributes<HTMLImageElement>
->`
-  cursor: pointer;
-  font-size: 17px;
-  color: white;
-  margin-right: 16px;
-`;
-
-interface ToastProps extends BootstrapToastProps, IconProps {
+interface ToastProps extends BootstrapToastProps, StatusProps {
   title: string;
   subtitle: string;
 }
@@ -115,7 +106,13 @@ const BaseToast: React.FC<ToastProps> = ({
           <Title>{title}</Title>
           <SecondaryText>{subtitle}</SecondaryText>
         </div>
-        <CloseIcon onClick={onClose}></CloseIcon>
+        <CloseIcon
+          containerStyle={{
+            cursor: "pointer",
+            marginRight: 16,
+          }}
+          onClick={onClose}
+        ></CloseIcon>
       </Body>
     </StyledToast>
   );
