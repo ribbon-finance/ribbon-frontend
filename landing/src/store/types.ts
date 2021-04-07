@@ -13,8 +13,17 @@ export interface UserSpecificData {
 
 export type ConnectedVaultData = UnconnectedVaultData & UserSpecificData;
 
-export type DataResponseStatus = "loading" | "success";
+export type DataResponseStatus = "loading" | "success" | "error";
+
+export type VaultDataErrors = "wrong_network";
 
 export type VaultDataResponse = {
   status: DataResponseStatus;
+  error: VaultDataErrors | null;
 } & ConnectedVaultData;
+
+export type PendingTransaction = {
+  txhash: string;
+  type: "deposit" | "withdraw";
+  amount: string;
+};

@@ -122,7 +122,6 @@ const ProductTabButton = styled(BaseButton)<ProductTabProps>`
 `;
 
 const ProductTabButtonText = styled(SecondaryText)<ProductTabProps>`
-  font-size: 14px;
   white-space: nowrap;
   font-family: VCR;
   text-transform: uppercase;
@@ -183,7 +182,7 @@ const IndicatorIcon = styled.i`
 
 const ProductContentContainer = styled(Row)<DynamicMarginProps>`
   position: relative;
-  padding: 40px 0px;
+  padding: 40px 0px 24px 0px;
   ${(props) => {
     if (props.empty <= 0) return null;
     return `
@@ -191,6 +190,7 @@ const ProductContentContainer = styled(Row)<DynamicMarginProps>`
     `;
   }}
   @media (max-width: ${sizes.md}px) {
+    padding: 40px 0px 0px 0px;
     margin-top: 0px;
   }
 `;
@@ -258,7 +258,12 @@ const Products = () => {
   });
   const { scrollY } = useElementScroll(tabContainerRef);
   // Minus header and footer to determine the empty space available for offset
-  const empty = height - headerHeight - contentHeight - 81 - 52;
+  const empty =
+    height -
+    headerHeight -
+    contentHeight -
+    theme.header.height -
+    theme.footer.desktop.height;
 
   useEffect(() => {
     const currentTab = tabRefs[selectedProduct].current;
@@ -302,11 +307,11 @@ const Products = () => {
   const renderSplashFromType = useCallback(() => {
     switch (selectedProduct) {
       case "volatility":
-        return <Volatility height="40vh" opacity="0.4" />;
+        return <Volatility height="50vh" opacity="0.4" />;
       case "principalProtection":
-        return <PrincipalProtection height="40vh" opacity="0.4" />;
+        return <PrincipalProtection height="50vh" opacity="0.4" />;
       case "capitalAccumulation":
-        return <CapitalAccumulation height="40vh" opacity="0.4" />;
+        return <CapitalAccumulation height="50vh" opacity="0.4" />;
     }
   }, [selectedProduct]);
 
@@ -333,6 +338,7 @@ const Products = () => {
       <ProductContainerBody>
         {/* Title and Product tab */}
         <HeaderContainer ref={headerRef} empty={empty}>
+          <ProductTitle>PRODUCT</ProductTitle>
           <ProductTabScrollContainer>
             <ProductTabContainer ref={tabContainerRef}>
               {/** Active Button Background */}

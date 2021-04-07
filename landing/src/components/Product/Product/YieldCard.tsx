@@ -8,6 +8,7 @@ import {
   Title,
   Subtitle,
   SecondaryText,
+  BaseText,
 } from "../../../designSystem";
 import colors from "../../../designSystem/colors";
 import sizes from "../../../designSystem/sizes";
@@ -15,6 +16,8 @@ import theme from "../../../designSystem/theme";
 import DepositCapBar from "../../../pages/DepositPage/DepositCapBar";
 import useVaultData from "../../../hooks/useVaultData";
 import { formatSignificantDecimals } from "../../../utils/math";
+import { useLatestAPY } from "../../../hooks/useAirtableData";
+import useTextAnimation from "../../../hooks/useTextAnimation";
 
 const { formatEther } = ethers.utils;
 
@@ -31,8 +34,23 @@ const ProductCard = styled.div`
   transition: 0.25s box-shadow ease-out;
   max-width: 343px;
 
+  @keyframes shimmerAnimation {
+    0% {
+      box-shadow: rgba(255, 56, 92, 0.4) 8px 8px 120px;
+    }
+    50% {
+      box-shadow: rgba(255, 56, 92, 0.16) 8px 8px 120px;
+    }
+    100% {
+      box-shadow: rgba(255, 56, 92, 0.4) 8px 8px 120px;
+    }
+  }
+
+  animation: shimmerAnimation 3s infinite;
+
   &:hover {
-    box-shadow: rgb(255 56 92 / 24%) 4px 8px 120px;
+    animation: none;
+    box-shadow: rgba(255, 56, 92, 0.4) 8px 8px 120px;
   }
 
   @media (max-width: ${sizes.md}px) {
@@ -43,7 +61,6 @@ const ProductCard = styled.div`
 const ProductTagContainer = styled.div`
   display: flex;
   flex-wrap: nowrap;
-  width: 100%;
 `;
 
 const ProductTag = styled(BaseButton)`
@@ -64,15 +81,43 @@ const ProductDescription = styled(SecondaryText)`
   margin-bottom: 24px;
 `;
 
-const ExpectedYieldTitle = styled(Subtitle)`
+const ExpectedYieldTitle = styled(BaseText)`
   color: ${colors.primaryText}A3;
   width: 100%;
+  font-size: 12px;
+  letter-spacing: 1.5px;
 `;
 
 const YieldText = styled(Title)`
   font-size: 32px;
   width: 100%;
   margin-bottom: 24px;
+`;
+
+const TopContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const ArrowContainer = styled.div`
+  background: rgba(255, 255, 255, 0.04);
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const ArrowRight = styled.i`
+  color: white;
+  -webkit-transform: rotate(315deg);
+  -moz-transform: rotate(315deg);
+  -ms-transform: rotate(315deg);
+  -o-transform: rotate(315deg);
+  transform: rotate(315deg);
 `;
 
 const YieldCard = () => {
@@ -93,19 +138,35 @@ const YieldCard = () => {
     </ProductTag>
   );
 
+  const latestAPY = useLatestAPY();
+
+  const loadingText = useTextAnimation(
+    ["Loading", "Loading .", "Loading ..", "Loading ..."],
+    250,
+    !latestAPY.fetched
+  );
+  const perfStr = latestAPY.res ? `${latestAPY.res.toFixed(2)}%` : loadingText;
+
   return (
     <ProductCard onClick={() => history.push("/theta-vault")} role="button">
-      <ProductTagContainer>
-        {renderTag("THETA VAULT")}
-        {renderTag("ETH")}
-      </ProductTagContainer>
+      <TopContainer>
+        <ProductTagContainer>
+          {renderTag("THETA VAULT")}
+          {renderTag("ETH")}
+        </ProductTagContainer>
+
+        <ArrowContainer>
+          <ArrowRight className="fas fa-arrow-right"></ArrowRight>
+        </ArrowContainer>
+      </TopContainer>
+
       <ProductTitle>T-100-E</ProductTitle>
       <ProductDescription>
         Theta Vault is a yield-generating strategy on ETH. The vault runs an
         automated covered call strategy.
       </ProductDescription>
-      <ExpectedYieldTitle>EXPECTED YIELD (APY)</ExpectedYieldTitle>
-      <YieldText>30%</YieldText>
+      <ExpectedYieldTitle>CURRENT PROJECTED YIELD (APY)</ExpectedYieldTitle>
+      <YieldText>{perfStr}</YieldText>
       <DepositCapBar
         loading={isLoading}
         totalDeposit={totalDepositStr}
