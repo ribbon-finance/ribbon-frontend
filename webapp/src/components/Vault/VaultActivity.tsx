@@ -6,7 +6,7 @@ import VaultActivityHeader from "./VaultActivityHeader";
 import VaultActivityList from "./VaultActivityList";
 
 const VaultActivity = () => {
-  const { activities, loading } = useVaultActivity("ETH-THETA");
+  const { activities } = useVaultActivity("ETH-THETA");
   const [activityFilter, setActivityFilter] = useState<ActivityFilter>(
     activityFilters[0]
   );

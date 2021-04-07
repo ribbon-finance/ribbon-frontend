@@ -17,6 +17,7 @@ import useAssetPrice from "../../hooks/useAssetPrice";
 import useElementSize from "../../hooks/useElementSize";
 import sizes from "../../designSystem/sizes";
 import useScreenSize from "../../hooks/useScreenSize";
+import useTextAnimation from "../../hooks/useTextAnimation";
 
 const VaultActivityContainer = styled.div`
   display: flex;
@@ -158,6 +159,11 @@ const VaultActivityList: React.FC<VaultActivityListProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const { width } = useElementSize(containerRef);
   const { width: screenWidth } = useScreenSize();
+  const loadingText = useTextAnimation(
+    ["Loading", "Loading .", "Loading ..", "Loading ..."],
+    250,
+    ethPriceLoading
+  );
 
   const getVaultActivityExternalURL = useCallback((activity: VaultActivity) => {
     switch (activity.type) {
@@ -283,7 +289,7 @@ const VaultActivityList: React.FC<VaultActivityListProps> = ({
                 </VaultPrimaryText>
                 <VaultSecondaryText fontFamily="VCR">
                   {ethPriceLoading
-                    ? "Loading ..."
+                    ? loadingText
                     : `+${ethToUSD(activity.premium, ethPrice)}`}
                 </VaultSecondaryText>
               </VaultActivityCol>
@@ -291,7 +297,7 @@ const VaultActivityList: React.FC<VaultActivityListProps> = ({
           );
       }
     },
-    [width, ethPrice, ethPriceLoading, screenWidth]
+    [width, ethPrice, ethPriceLoading, screenWidth, loadingText]
   );
 
   return (
