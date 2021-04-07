@@ -3,7 +3,6 @@ import styled from "styled-components";
 
 import { BaseButton, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
-import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import { capitalize } from "../../utils/text";
@@ -57,7 +56,7 @@ const FilterDropdownMenu = styled.div<{ isOpen: boolean }>`
 
 const MenuItem = styled.div`
   padding: 8px 16px;
-  padding-right: 38px;
+  padding-right: 66px;
   opacity: 1;
   display: flex;
   align-items: center;
@@ -75,13 +74,6 @@ const MenuItem = styled.div`
       color: ${colors.primaryText};
     }
   }
-
-  @media (max-width: ${sizes.md}px) {
-    margin: unset;
-    && {
-      padding: 28px;
-    }
-  }
 `;
 
 const MenuItemText = styled(Title)`
@@ -89,10 +81,6 @@ const MenuItemText = styled(Title)`
   white-space: nowrap;
   font-size: 14px;
   line-height: 20px;
-
-  @media (max-width: ${sizes.md}px) {
-    font-size: 24px;
-  }
 `;
 
 interface VaultActivityHeaderProps {
