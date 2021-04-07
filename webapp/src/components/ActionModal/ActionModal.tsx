@@ -6,6 +6,7 @@ import { Title } from "../../designSystem";
 import ActionSteps from "./ActionSteps";
 import { PreviewStepProps, StepData, STEPS } from "./types";
 import sizes from "../../designSystem/sizes";
+import { CloseIcon } from "../../assets/icons/icons";
 
 const ModalNavigation = styled.div`
   position: absolute;
@@ -21,7 +22,7 @@ const ArrowBack = styled.i`
   margin-right: 20px;
 `;
 
-const ModalNavigationCloseButton = styled.i`
+const ModalNavigationCloseButton = styled.span`
   margin-left: auto;
 `;
 
@@ -131,10 +132,9 @@ const ActionModal: React.FC<ActionModalProps> = ({
       stepData.stepNum === STEPS.submittedStep
     ) {
       return (
-        <ModalNavigationCloseButton
-          onClick={onClose}
-          className="fas fa-times align-self-center text-white"
-        />
+        <ModalNavigationCloseButton onClick={onClose}>
+          <CloseIcon></CloseIcon>
+        </ModalNavigationCloseButton>
       );
     }
 
@@ -152,10 +152,9 @@ const ActionModal: React.FC<ActionModalProps> = ({
     }
 
     return (
-      <ModalHeaderCloseButton
-        onClick={onClose}
-        className="fas fa-times align-self-center text-white"
-      />
+      <ModalHeaderCloseButton onClick={onClose}>
+        <CloseIcon></CloseIcon>
+      </ModalHeaderCloseButton>
     );
   }, [isDesktop, stepData, onClose]);
 

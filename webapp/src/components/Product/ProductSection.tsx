@@ -123,7 +123,7 @@ const ProductTabButton = styled(BaseButton)<ProductTabProps>`
 
 const ProductTabButtonText = styled(SecondaryText)<ProductTabProps>`
   white-space: nowrap;
-  font-family: VCR;
+  font-family: VCR, sans-serif;
   text-transform: uppercase;
   color: ${(props) => {
     if (!props.selected) {

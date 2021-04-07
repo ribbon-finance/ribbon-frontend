@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
@@ -31,7 +31,7 @@ const Container = styled.div<ActionsFormProps>`
 `;
 
 const FormContainer = styled.div`
-  font-family: VCR;
+  font-family: VCR, sans-serif;
   color: #f3f3f3;
   width: 100%;
   border: 1px solid #2b2b2b;
@@ -158,6 +158,9 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
   const WITHDRAWAL_TAB = false;
   const isDesktop = variant === "desktop";
 
+  // refs
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   // network hooks
   const vault = useVault();
   const {
@@ -267,6 +270,12 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
   const onCloseActionsModal = useCallback(() => {
     setShowActionModal(false);
   }, []);
+
+  const onInputWheel = () => {
+    if (inputRef.current) {
+      inputRef.current.blur();
+    }
+  };
 
   const onSuccess = useCallback(() => {
     setIsDeposit(true);
@@ -403,12 +412,14 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
           <InputGuide>AMOUNT (ETH)</InputGuide>
           <FormInputContainer className="position-relative mt-2 mb-5 px-1">
             <FormInput
+              ref={inputRef}
               type="number"
               className="form-control"
               aria-label="ETH"
               placeholder="0"
               value={inputAmount}
               onChange={handleChange}
+              onWheel={onInputWheel}
             />
             {connected && (
               <MaxAccessory onClick={handleClickMax}>MAX</MaxAccessory>

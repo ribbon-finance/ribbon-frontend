@@ -12,6 +12,7 @@ import { formatSignificantDecimals } from "../../utils/math";
 import sizes from "../../designSystem/sizes";
 import YourPosition from "../../components/ActionsForm/YourPosition";
 import { useWeb3React } from "@web3-react/core";
+import usePullUp from "../../hooks/usePullUp";
 
 const { formatEther } = ethers.utils;
 
@@ -36,7 +37,7 @@ const AttributePill = styled.div`
   color: ${colors.primaryText};
   border-radius: 4px;
   padding: 16px;
-  font-family: VCR;
+  font-family: VCR, sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -80,6 +81,7 @@ const MobilePositions = styled(YourPosition)`
 `;
 
 const DepositPage = () => {
+  usePullUp();
   const { account } = useWeb3React();
   const { status, deposits, vaultLimit } = useVaultData();
   const isLoading = status === "loading";

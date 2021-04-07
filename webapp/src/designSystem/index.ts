@@ -51,7 +51,7 @@ export const BaseModalFooter = styled(BootstrapModal.Footer)`
 
 export const Title = styled.span`
   color: ${colors.primaryText};
-  font-family: VCR;
+  font-family: VCR, sans-serif;
   font-style: normal;
   font-weight: normal;
   text-transform: uppercase;
@@ -59,7 +59,7 @@ export const Title = styled.span`
 
 export const Subtitle = styled.span`
   color: ${colors.primaryText};
-  font-family: VCR;
+  font-family: VCR, sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
