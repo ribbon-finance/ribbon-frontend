@@ -113,6 +113,11 @@ const ArrowContainer = styled.div`
 `;
 const ArrowRight = styled.i`
   color: white;
+  -webkit-transform: rotate(315deg);
+  -moz-transform: rotate(315deg);
+  -ms-transform: rotate(315deg);
+  -o-transform: rotate(315deg);
+  transform: rotate(315deg);
 `;
 
 const YieldCard = () => {
