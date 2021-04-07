@@ -85,7 +85,6 @@ const ExpectedYieldTitle = styled(BaseText)`
   color: ${colors.primaryText}A3;
   width: 100%;
   font-size: 12px;
-  letter-spacing: 1.5px;
 `;
 
 const YieldText = styled(Title)`
@@ -160,7 +159,7 @@ const YieldCard = () => {
         Theta Vault is a yield-generating strategy on ETH. The vault runs an
         automated covered call strategy.
       </ProductDescription>
-      <ExpectedYieldTitle>CURRENT PROJECTED YIELD (APY)</ExpectedYieldTitle>
+      <ExpectedYieldTitle>Current Projected Yield (APY)</ExpectedYieldTitle>
       <YieldText>{perfStr}</YieldText>
       <DepositCapBar
         loading={isLoading}

@@ -77,8 +77,6 @@ export const TxStatusToast = () => {
         <Toast
           show={status === "error"}
           onClose={() => setStatus(null)}
-          autohide
-          delay={8000}
           type="error"
           title={`${type} failed`}
           subtitle="Please resubmit transaction"
@@ -92,8 +90,6 @@ export const TxStatusToast = () => {
       <Toast
         show={status === "success"}
         onClose={() => setStatus(null)}
-        autohide
-        delay={8000}
         type="success"
         title={`${word} successful`}
         subtitle={`${amountFormatted} ETH ${
