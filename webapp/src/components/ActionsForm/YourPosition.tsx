@@ -10,7 +10,7 @@ import useVaultData from "../../hooks/useVaultData";
 import { formatBigNumber } from "../../utils/math";
 
 const PositionsContainer = styled.div`
-  font-family: VCR;
+  font-family: VCR, sans-serif;
   color: white;
   background: #1c1a19;
   border: 1px solid #2b2b2b;

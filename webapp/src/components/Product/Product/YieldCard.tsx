@@ -34,8 +34,23 @@ const ProductCard = styled.div`
   transition: 0.25s box-shadow ease-out;
   max-width: 343px;
 
+  @keyframes shimmerAnimation {
+    0% {
+      box-shadow: rgba(255, 56, 92, 0.4) 8px 8px 120px;
+    }
+    50% {
+      box-shadow: rgba(255, 56, 92, 0.16) 8px 8px 120px;
+    }
+    100% {
+      box-shadow: rgba(255, 56, 92, 0.4) 8px 8px 120px;
+    }
+  }
+
+  animation: shimmerAnimation 3s infinite;
+
   &:hover {
-    box-shadow: rgba(255, 56, 92, 0.4) 4px 8px 120px;
+    animation: none;
+    box-shadow: rgba(255, 56, 92, 0.4) 8px 8px 120px;
   }
 
   @media (max-width: ${sizes.md}px) {
@@ -46,7 +61,6 @@ const ProductCard = styled.div`
 const ProductTagContainer = styled.div`
   display: flex;
   flex-wrap: nowrap;
-  width: 100%;
 `;
 
 const ProductTag = styled(BaseButton)`
@@ -71,13 +85,33 @@ const ExpectedYieldTitle = styled(BaseText)`
   color: ${colors.primaryText}A3;
   width: 100%;
   font-size: 12px;
-  letter-spacing: 1.5px;
 `;
 
 const YieldText = styled(Title)`
   font-size: 32px;
   width: 100%;
   margin-bottom: 24px;
+`;
+
+const TopContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const ArrowContainer = styled.div`
+  background: rgba(255, 255, 255, 0.04);
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const ArrowRight = styled.i`
+  color: white;
 `;
 
 const YieldCard = () => {
@@ -109,16 +143,23 @@ const YieldCard = () => {
 
   return (
     <ProductCard onClick={() => history.push("/theta-vault")} role="button">
-      <ProductTagContainer>
-        {renderTag("THETA VAULT")}
-        {renderTag("ETH")}
-      </ProductTagContainer>
+      <TopContainer>
+        <ProductTagContainer>
+          {renderTag("THETA VAULT")}
+          {renderTag("ETH")}
+        </ProductTagContainer>
+
+        <ArrowContainer>
+          <ArrowRight className="fas fa-arrow-right"></ArrowRight>
+        </ArrowContainer>
+      </TopContainer>
+
       <ProductTitle>T-100-E</ProductTitle>
       <ProductDescription>
         Theta Vault is a yield-generating strategy on ETH. The vault runs an
         automated covered call strategy.
       </ProductDescription>
-      <ExpectedYieldTitle>CURRENT PROJECTED YIELD (APY)</ExpectedYieldTitle>
+      <ExpectedYieldTitle>Current Projected Yield (APY)</ExpectedYieldTitle>
       <YieldText>{perfStr}</YieldText>
       <DepositCapBar
         loading={isLoading}

@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import BootstrapToast from "react-bootstrap/Toast";
 import { ToastProps as BootstrapToastProps } from "react-bootstrap/Toast";
 import styled from "styled-components";
+import { SuccessIcon, CloseIcon, IconProps } from "../../assets/icons/icons";
 import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";
@@ -13,10 +14,11 @@ const StyledToast = styled(BootstrapToast)`
   z-index: 1000;
 
   @media (max-width: ${sizes.lg}px) {
+    width: 90%;
+    max-width: 90%;
     top: 70px;
-    left: 16px;
-    right: 16px;
-    width: 100%;
+    left: 5%;
+    right: 5%;
     height: 80px;
   }
 
@@ -39,14 +41,16 @@ const Body = styled(BootstrapToast.Body)`
 
   @media (max-width: ${sizes.lg}px) {
     width: 100%;
+    padding-left: 20px;
+    padding-right: 25px;
   }
 `;
 
-interface IconProps {
+interface StatusProps {
   type: "success" | "error";
 }
 
-const IconCircle = styled.div<IconProps>`
+const IconCircle = styled.div<StatusProps>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,20 +65,7 @@ const IconCircle = styled.div<IconProps>`
       : "rgba(22, 206, 185, 0.16)"};
 `;
 
-const Icon = styled.i<IconProps>`
-  font-size: 17px;
-
-  color: ${(props) => (props.type === "error" ? colors.red : colors.green)};
-`;
-
-const CloseIcon = styled.i`
-  cursor: pointer;
-  font-size: 17px;
-  color: white;
-  margin-right: 16px;
-`;
-
-interface ToastProps extends BootstrapToastProps, IconProps {
+interface ToastProps extends BootstrapToastProps, StatusProps {
   title: string;
   subtitle: string;
 }
@@ -85,7 +76,12 @@ const BaseToast: React.FC<ToastProps> = ({
   subtitle,
   ...props
 }) => {
-  const iconClassName = type === "success" ? "fas fa-check" : "fas fa-times";
+  const icon =
+    type === "success" ? (
+      <SuccessIcon color={colors.green}></SuccessIcon>
+    ) : (
+      <CloseIcon color={colors.red}></CloseIcon>
+    );
 
   // When the caller doesnt specify the `show` variable
   // it means that the caller doesnt want to control the state of the Toast
@@ -105,14 +101,18 @@ const BaseToast: React.FC<ToastProps> = ({
       {...props}
     >
       <Body>
-        <IconCircle type={type}>
-          <Icon type={type} className={iconClassName}></Icon>
-        </IconCircle>
+        <IconCircle type={type}>{icon}</IconCircle>
         <div style={{ flex: 1 }} className="d-flex flex-column">
           <Title>{title}</Title>
           <SecondaryText>{subtitle}</SecondaryText>
         </div>
-        <CloseIcon onClick={onClose} className="fas fa-times"></CloseIcon>
+        <CloseIcon
+          containerStyle={{
+            cursor: "pointer",
+            marginRight: 16,
+          }}
+          onClick={onClose}
+        ></CloseIcon>
       </Body>
     </StyledToast>
   );
