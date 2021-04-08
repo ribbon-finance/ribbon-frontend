@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import BootstrapToast from "react-bootstrap/Toast";
 import { ToastProps as BootstrapToastProps } from "react-bootstrap/Toast";
 import styled from "styled-components";
-import { SuccessIcon, CloseIcon, IconProps } from "../../assets/icons/icons";
+import { SuccessIcon, CloseIcon } from "../../assets/icons/icons";
 import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";
