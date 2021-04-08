@@ -9,7 +9,7 @@ import colors from "../../designSystem/colors";
 import { SecondaryText, Title } from "../../designSystem";
 import {
   formatSignificantDecimals,
-  optionToUSD,
+  formatOption,
   toETH,
 } from "../../utils/math";
 
@@ -76,7 +76,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
             <VaultSecondaryInfoText>
               O-WETH-
               {moment(activity.expiry, "X").format("DD-MMM-YY").toUpperCase()}-
-              {optionToUSD(activity.strikePrice)}C
+              {formatOption(activity.strikePrice)}C
             </VaultSecondaryInfoText>
             <VaultActivityInfoRow>
               <div className="d-flex flex-column">
@@ -97,7 +97,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
             <Title>
               SOLD{" "}
               {formatSignificantDecimals(
-                optionToUSD(activity.sellAmount).toFixed(6)
+                formatOption(activity.sellAmount).toFixed(6)
               )}{" "}
               CONTRACTS
             </Title>
@@ -106,7 +106,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
               {moment(activity.vaultShortPosition.expiry, "X")
                 .format("DD-MMM-YY")
                 .toUpperCase()}
-              -{optionToUSD(activity.vaultShortPosition.strikePrice)}C
+              -{formatOption(activity.vaultShortPosition.strikePrice)}C
             </VaultSecondaryInfoText>
             <VaultActivityInfoRow>
               <div className="d-flex flex-column">

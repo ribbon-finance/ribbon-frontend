@@ -10,7 +10,7 @@ import theme from "../../designSystem/theme";
 import { VaultActivity, VaultActivityType } from "../../models/vault";
 import {
   ethToUSD,
-  optionToUSD,
+  formatOption,
   formatSignificantDecimals,
 } from "../../utils/math";
 import useAssetPrice from "../../hooks/useAssetPrice";
@@ -206,7 +206,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                   O-WETH {moment(activity.expiry, "X").format("M/DD")} CALL
                 </VaultPrimaryText>
                 <VaultSecondaryText>
-                  Strike {optionToUSD(activity.strikePrice)}
+                  Strike {formatOption(activity.strikePrice)}
                 </VaultSecondaryText>
               </VaultActivityCol>
 
@@ -262,7 +262,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                   CALL
                 </VaultPrimaryText>
                 <VaultSecondaryText>
-                  Strike {optionToUSD(activity.vaultShortPosition.strikePrice)}
+                  Strike {formatOption(activity.vaultShortPosition.strikePrice)}
                 </VaultSecondaryText>
               </VaultActivityCol>
 
@@ -274,7 +274,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
               >
                 <VaultPrimaryText>
                   {formatSignificantDecimals(
-                    optionToUSD(activity.sellAmount).toFixed(6)
+                    formatOption(activity.sellAmount).toFixed(6)
                   )}
                 </VaultPrimaryText>
               </VaultActivityCol>
