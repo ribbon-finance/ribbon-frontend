@@ -125,7 +125,8 @@ const VaultSecondaryText = styled(SecondaryText)<{
   fontFamily?: string;
 }>`
   font-size: 12px;
-  ${(props) => (props.fontFamily ? `font-family: ${props.fontFamily};` : "")}
+  ${(props) =>
+    props.fontFamily ? `font-family: ${props.fontFamily}, sans-serif;` : ""}
 `;
 
 const VaultActivityExternalLinkContainer = styled.div`
@@ -273,7 +274,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
               >
                 <VaultPrimaryText>
                   {formatSignificantDecimals(
-                    ethers.utils.formatEther(activity.sellAmount)
+                    optionToUSD(activity.sellAmount).toFixed(6)
                   )}
                 </VaultPrimaryText>
               </VaultActivityCol>

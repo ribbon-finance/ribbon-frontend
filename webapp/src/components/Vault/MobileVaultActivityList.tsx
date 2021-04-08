@@ -95,7 +95,10 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
         return (
           <>
             <Title>
-              SOLD {formatSignificantDecimals(toETH(activity.sellAmount))}{" "}
+              SOLD{" "}
+              {formatSignificantDecimals(
+                optionToUSD(activity.sellAmount).toFixed(6)
+              )}{" "}
               CONTRACTS
             </Title>
             <VaultSecondaryInfoText>
