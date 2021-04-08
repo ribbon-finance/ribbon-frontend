@@ -180,7 +180,7 @@ const Header = () => {
       </HeaderAbsoluteContainer>
 
       <ButtonContainer>
-        <a href="https://ribbon.finance">
+        <a href="https://app.ribbon.finance">
           <AppButton>
             <ButtonText>START EARNING</ButtonText>
           </AppButton>
@@ -201,7 +201,7 @@ const Header = () => {
           }}
           style={{ paddingTop: 40 }}
         >
-          {renderLinkItem("START EARNING", "https://ribbon.finance", true)}
+          {renderLinkItem("START EARNING", "https://app.ribbon.finance", true)}
           {renderLinkItem(
             "DISCORD",
             "http://tiny.cc/ribbon-discord",

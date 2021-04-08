@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { useHistory } from "react-router-dom";
 import { ethers } from "ethers";
 
 import {
@@ -76,7 +75,6 @@ const YieldText = styled(Title)`
 `;
 
 const YieldCard = () => {
-  const history = useHistory();
   const { status, deposits, vaultLimit } = useVaultData();
   const isLoading = status === "loading";
 
@@ -94,7 +92,10 @@ const YieldCard = () => {
   );
 
   return (
-    <ProductCard onClick={() => history.push("/theta-vault")} role="button">
+    <ProductCard
+      onClick={() => window.location.replace("https://app.ribbon.finance")}
+      role="button"
+    >
       <ProductTagContainer>
         {renderTag("THETA VAULT")}
         {renderTag("ETH")}

@@ -27,7 +27,7 @@ function App() {
           <MainContent>
             <ProductCarousel />
             <Mission />
-            <Investors />
+            {/* <Investors /> */}
           </MainContent>
           <Footer />
         </Router>
