@@ -20,6 +20,10 @@ const colors = {
     secondaryBackground: "rgba(22, 206, 185, 0.08)",
     secondaryText: "#16ceb9",
   },
+  vaultActivity: {
+    sales: "#16ceb9",
+    minting: "#729ded",
+  },
 };
 
 export default colors;

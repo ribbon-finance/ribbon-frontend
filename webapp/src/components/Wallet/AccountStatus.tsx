@@ -30,6 +30,7 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { ActionButton } from "../Common/buttons";
 import ActionModal from "../ActionModal/ActionModal";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
+import ButtonArrow from "../Common/ButtonArrow";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -111,11 +112,6 @@ const WalletButtonText = styled(Title)<WalletStatusProps>`
 
     return `color: ${colors.green}`;
   }}
-`;
-
-const WalletButtonArrow = styled.i<MenuStateProps>`
-  transition: 0.2s all ease-out;
-  transform: ${(props) => (props.isMenuOpen ? "rotate(-180deg)" : "none")};
 `;
 
 const InvestButton = styled(ActionButton)`
@@ -353,11 +349,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
       <>
         <Indicator connected={active} />
         <WalletButtonText connected={active}>
-          {truncateAddress(account)}{" "}
-          <WalletButtonArrow
-            className="fas fa-chevron-down"
-            isMenuOpen={isMenuOpen}
-          />
+          {truncateAddress(account)} <ButtonArrow isOpen={isMenuOpen} />
         </WalletButtonText>
       </>
     ) : (

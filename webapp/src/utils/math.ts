@@ -40,6 +40,9 @@ export const ethToUSD = (
   return "$" + pnlUSD.toFixed(precision);
 };
 
+export const formatOption = (bn: BigNumber): number =>
+  parseFloat(ethers.utils.formatUnits(bn, 8));
+
 export const WAD = ethers.utils.parseEther("1");
 
 export const wmul = (x: BigNumber, y: BigNumber) => {
