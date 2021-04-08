@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { Title, PrimaryText, Button, BaseText } from "../../designSystem";
+import { Title } from "../../designSystem";
 import { Container } from "react-bootstrap";
 import Discord from "../../img/Footer/Discord.png";
 import Twitter from "../../img/Footer/Twitter.png";
@@ -12,10 +12,6 @@ import Terms from "../../img/Footer/Terms.png";
 import Policy from "../../img/Footer/Policy.png";
 import FAQ from "../../img/Footer/FAQ.png";
 import Other from "../../img/Footer/Other.png";
-
-const MainContainer = styled(Container)`
-  padding-bottom: 80px;
-`;
 
 const FooterCol = styled(Col)`
   padding: 0px !important;

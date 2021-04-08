@@ -4,11 +4,6 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Title, PrimaryText, Button } from "../../designSystem";
 import { Container } from "react-bootstrap";
-import ShapeA from "../../img/ShapeA.svg";
-import ShapeB from "../../img/ShapeB.svg";
-import ShapeC from "../../img/ShapeC.svg";
-import ShapeD from "../../img/ShapeD.svg";
-import ShapeE from "../../img/ShapeE.svg";
 import sizes from "../../designSystem/sizes";
 
 const ColorColumn = styled(Col)<{
@@ -92,8 +87,7 @@ const TitleAltSmall = styled(TitleSmall)`
 `;
 
 const Hero = () => {
-  const [col, setCol] = useState(0);
-  const colToShape = [ShapeA, ShapeB, ShapeC, ShapeD, ShapeE];
+  const [, setCol] = useState(0);
 
   enum PassiveColors {
     "#251F18",

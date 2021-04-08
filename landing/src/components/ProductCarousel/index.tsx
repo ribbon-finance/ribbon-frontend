@@ -1,9 +1,7 @@
 import styled from "styled-components";
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import { Container } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { Title, BaseText, Button } from "../../designSystem";
+import { Title } from "../../designSystem";
 import Products from "../Product/ProductSection";
 
 const ProductCarouselContainer = styled(Container)`
