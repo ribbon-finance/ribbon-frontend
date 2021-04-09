@@ -329,8 +329,8 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
           <SecondaryText>Yield</SecondaryText>
         </VaultActivityHeaderCol>
       </VaultActivityHeader>
-      {activities.map((activity) => (
-        <VaultActivityRow>
+      {activities.map((activity, index) => (
+        <VaultActivityRow key={index}>
           {/** Activity */}
           {renderVaultActivity(activity)}
 

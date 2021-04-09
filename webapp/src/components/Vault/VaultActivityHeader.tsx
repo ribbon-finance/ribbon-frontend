@@ -135,7 +135,7 @@ const VaultActivityHeader: React.FC<VaultActivityHeaderProps> = ({
 
   const renderMenuItem = useCallback(
     (title: string, onClick: () => void) => (
-      <MenuItem onClick={onClick} role="button">
+      <MenuItem onClick={onClick} role="button" key={title}>
         <MenuItemText>{title}</MenuItemText>
       </MenuItem>
     ),
