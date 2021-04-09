@@ -23,7 +23,6 @@ const HeroContainer = styled.div`
     rgba(252, 10, 84, 0.16) 1.04%,
     rgba(252, 10, 84, 0.0256) 98.99%
   );
-
   padding: 40px 0;
   overflow: hidden;
 `;
