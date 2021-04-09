@@ -35,7 +35,7 @@ const PurchaseButton: React.FC<Props> = ({ onClick, purchaseAmount }) => {
         size="large"
         type="primary"
         onClick={onClick}
-        disabled={purchaseAmount === 0}
+        disabled={true}
       >
         <ButtonText>Preview Buy</ButtonText>
       </StyledButton>

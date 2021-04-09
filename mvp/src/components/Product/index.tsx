@@ -299,7 +299,7 @@ const PurchaseInstrumentWrapper: React.FC<PurchaseInstrumentWrapperProps> = () =
             ></AmountInput>
 
             <WarningText style={{ marginTop: 10 }}>
-              You can buy less than 1 contract.
+              Buys are disabled due to lack of liquidity.
             </WarningText>
             {/* <WarningText style={{ marginTop: 10 }}>
               ETH Strangle purchases are disabled now due to lack of liquidity
