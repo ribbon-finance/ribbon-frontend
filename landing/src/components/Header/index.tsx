@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import Logo from "./Logo";
@@ -9,6 +9,7 @@ import MenuButton from "./MenuButton";
 import { NavItemProps, MobileMenuOpenProps } from "./types";
 import theme from "../../designSystem/theme";
 import MobileOverlayMenu from "../Common/MobileOverlayMenu";
+import AccountStatus from "./AccountStatus";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
@@ -173,6 +174,7 @@ const Header = () => {
       {/* LINKS */}
       <HeaderAbsoluteContainer>
         <LinksContainer>
+          <AccountStatus variant="desktop"></AccountStatus>
           {renderLinkItem("ABOUT", "/about", false)}
           {renderLinkItem("COMMUNITY", "http://tiny.cc/ribbon-discord", false)}
           {renderLinkItem("BLOG", "https://medium.com/@ribbonfinance", false)}

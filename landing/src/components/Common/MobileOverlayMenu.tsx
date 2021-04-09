@@ -21,6 +21,7 @@ export const MobileOverlayContainer = styled.div<MobileOverlayContainerProps>`
   z-index: ${(props) => (props.isMenuOpen ? 50 : -1)};
   transition: 0.1s all ease-in;
   display: flex;
+
   backdrop-filter: blur(40px);
   /**
    * Firefox desktop come with default flag to have backdrop-filter disabled
@@ -30,6 +31,7 @@ export const MobileOverlayContainer = styled.div<MobileOverlayContainerProps>`
   @-moz-document url-prefix() {
     background-color: rgba(0, 0, 0, 0.9);
   }
+
   ${(props) =>
     props.isMenuOpen
       ? `
@@ -45,6 +47,7 @@ type MobileOverlayMenuProps = MenuStateProps &
   React.HTMLAttributes<HTMLDivElement> & {
     mountRoot?: string;
     boundingDivProps?: React.HTMLAttributes<HTMLDivElement>;
+    overflowOnOpen?: boolean;
   };
 
 const MobileOverlayMenu: React.FC<MobileOverlayMenuProps> = ({
@@ -53,6 +56,7 @@ const MobileOverlayMenu: React.FC<MobileOverlayMenuProps> = ({
   onClick,
   mountRoot,
   boundingDivProps,
+  overflowOnOpen = true,
   ...props
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -67,13 +71,13 @@ const MobileOverlayMenu: React.FC<MobileOverlayMenuProps> = ({
   }, [containerRef, mountRoot]);
 
   useEffect(() => {
-    if (isMenuOpen) {
+    if (isMenuOpen && overflowOnOpen) {
       document.querySelector("body")!.style.overflow = "hidden";
       return;
     }
 
     document.querySelector("body")!.style.removeProperty("overflow");
-  }, [isMenuOpen]);
+  }, [isMenuOpen, overflowOnOpen]);
 
   return (
     <MobileOverlayContainer
