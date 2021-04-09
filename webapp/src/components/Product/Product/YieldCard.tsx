@@ -18,6 +18,12 @@ import useVaultData from "../../../hooks/useVaultData";
 import { formatSignificantDecimals } from "../../../utils/math";
 import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useTextAnimation from "../../../hooks/useTextAnimation";
+import {
+  VaultOptions,
+  VaultList,
+  VaultNameOptionMap,
+} from "../../../constants/constants";
+import { productCopies } from "./productCopies";
 
 const { formatEther } = ethers.utils;
 
@@ -112,11 +118,16 @@ const ArrowContainer = styled.div`
 `;
 const ArrowRight = styled.i`
   color: white;
+  transform: rotate(-45deg);
 `;
 
-const YieldCard = () => {
+interface YieldCardProps {
+  vault?: VaultOptions;
+}
+
+const YieldCard: React.FC<YieldCardProps> = ({ vault = VaultList[0] }) => {
   const history = useHistory();
-  const { status, deposits, vaultLimit } = useVaultData();
+  const { status, deposits, vaultLimit } = useVaultData(vault);
   const isLoading = status === "loading";
 
   const totalDepositStr = isLoading
@@ -127,7 +138,7 @@ const YieldCard = () => {
     : parseFloat(formatSignificantDecimals(formatEther(vaultLimit)));
 
   const renderTag = (name: string) => (
-    <ProductTag>
+    <ProductTag key={name}>
       <Subtitle>{name}</Subtitle>
     </ProductTag>
   );
@@ -142,11 +153,21 @@ const YieldCard = () => {
   const perfStr = latestAPY.res ? `${latestAPY.res.toFixed(2)}%` : loadingText;
 
   return (
-    <ProductCard onClick={() => history.push("/theta-vault")} role="button">
+    <ProductCard
+      onClick={() =>
+        history.push(
+          `/theta-vault/${
+            Object.keys(VaultNameOptionMap)[
+              Object.values(VaultNameOptionMap).indexOf(vault)
+            ]
+          }`
+        )
+      }
+      role="button"
+    >
       <TopContainer>
         <ProductTagContainer>
-          {renderTag("THETA VAULT")}
-          {renderTag("ETH")}
+          {productCopies[vault].tags.map((tag) => renderTag(tag))}
         </ProductTagContainer>
 
         <ArrowContainer>
@@ -154,10 +175,9 @@ const YieldCard = () => {
         </ArrowContainer>
       </TopContainer>
 
-      <ProductTitle>T-100-E</ProductTitle>
+      <ProductTitle>{productCopies[vault].title}</ProductTitle>
       <ProductDescription>
-        Theta Vault is a yield-generating strategy on ETH. The vault runs an
-        automated covered call strategy.
+        {productCopies[vault].description}
       </ProductDescription>
       <ExpectedYieldTitle>Current Projected Yield (APY)</ExpectedYieldTitle>
       <YieldText>{perfStr}</YieldText>

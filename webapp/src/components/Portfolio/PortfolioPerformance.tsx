@@ -23,6 +23,7 @@ import useVaultData from "../../hooks/useVaultData";
 import { BalanceUpdate } from "../../models/vault";
 import sizes from "../../designSystem/sizes";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
+import { VaultList } from "../../constants/constants";
 
 const PerformanceContainer = styled.div`
   display: flex;
@@ -159,7 +160,7 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
   currency,
 }) => {
   const { active } = useWeb3React();
-  const { vaultBalanceInAsset } = useVaultData();
+  const { vaultBalanceInAsset } = useVaultData(VaultList[0]); // TODO: Get all assets instead of a single vault
   const { price: ethPrice, loading: ethPriceLoading } = useAssetPrice({
     asset: "WETH",
   });

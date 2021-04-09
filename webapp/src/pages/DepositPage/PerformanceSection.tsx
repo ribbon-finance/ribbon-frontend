@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import { productCopies } from "../../components/Product/Product/productCopies";
+import { VaultOptions } from "../../constants/constants";
 
 import { PrimaryText, SecondaryText, Title } from "../../designSystem";
 import sizes from "../../designSystem/sizes";
@@ -57,34 +59,18 @@ const Container = styled.div`
   }
 `;
 
-const PerformanceSection = () => {
+interface PerformanceSectionProps {
+  vaultOption: VaultOptions;
+}
+
+const PerformanceSection: React.FC<PerformanceSectionProps> = ({
+  vaultOption,
+}) => {
   return (
     <Container className="col-xl-7 col-md-6">
       <Paragraph>
         <ParagraphHeading>Vault Strategy</ParagraphHeading>
-        <ParagraphText>
-          This vault earns yield on ETH through running an automated{" "}
-          <Link
-            href="https://www.investopedia.com/terms/c/coveredcall.asp"
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            covered call
-          </Link>{" "}
-          strategy. Put simply, the vault sells <i>potential upside</i> in
-          exchange for high yield.
-          <p />
-          The vault generates yield by writing out-of-the-money call options on
-          ETH on a weekly basis and selling the options to market makers in
-          exchange for premiums. The vault repeats this process on a weekly
-          basis and reinvests the premiums, effectively compounding the yields
-          for depositors over time.
-          <p />
-          The vault has a <b>manager</b> who selects the strike prices for the
-          call options that the vault writes. This manager is responsible for
-          making the best tradeoff between yield vs risk of the call options
-          getting exercised.
-        </ParagraphText>
+        <ParagraphText>{productCopies[vaultOption].strategy}</ParagraphText>
       </Paragraph>
 
       <Paragraph>

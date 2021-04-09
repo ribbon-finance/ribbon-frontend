@@ -1,10 +1,11 @@
 import React, { useMemo } from "react";
-import { useRouteMatch, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
 import useScreenSize from "../../hooks/useScreenSize";
+import useVaultOption from "../../hooks/useVaultOption";
 import AccountStatus from "../Wallet/AccountStatus";
 import DesktopFooter from "./DesktopFooter";
 
@@ -52,7 +53,7 @@ const MobileFooterOffsetContainer = styled.div`
 
 const Footer = () => {
   const { height: screenHeight } = useScreenSize();
-  const matchProductPage = useRouteMatch({ path: "/theta-vault", exact: true });
+  const vaultOption = useVaultOption();
   const location = useLocation();
 
   const desktopFooterVariant = useMemo(() => {
@@ -74,10 +75,7 @@ const Footer = () => {
         <DesktopFooter />
 
         {/** Mobile */}
-        <AccountStatus
-          variant="mobile"
-          showInvestButton={Boolean(matchProductPage)}
-        />
+        <AccountStatus variant="mobile" vaultOption={vaultOption} />
       </FooterContainer>
       <MobileFooterOffsetContainer />
     </>

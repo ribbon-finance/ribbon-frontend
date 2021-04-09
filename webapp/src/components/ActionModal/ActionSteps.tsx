@@ -17,8 +17,10 @@ import ConfirmationStep from "./ConfirmationStep";
 import SubmittedStep from "./SubmittedStep";
 import FormStep from "./FormStep";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
+import { VaultOptions } from "../../constants/constants";
 
 export interface ActionStepsProps {
+  vaultOption: VaultOptions;
   show: boolean;
   onClose: () => void;
   onChangeStep: (stepData: StepData) => void;
@@ -28,6 +30,7 @@ export interface ActionStepsProps {
 }
 
 const ActionSteps: React.FC<ActionStepsProps> = ({
+  vaultOption,
   show,
   onClose,
   onChangeStep,
@@ -38,7 +41,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const firstStep = skipToPreview ? STEPS.previewStep : STEPS.formStep;
   const [step, setStep] = useState<Steps>(firstStep);
   const [txhash, setTxhash] = useState("");
-  const vault = useVault();
+  const vault = useVault(vaultOption);
   const [
     pendingTransactions,
     setPendingTransactions,
@@ -190,7 +193,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   );
 
   const stepComponents = {
-    0: !skipToPreview && <FormStep onSubmit={onSubmitForm}></FormStep>,
+    0: !skipToPreview && (
+      <FormStep vaultOption={vaultOption} onSubmit={onSubmitForm}></FormStep>
+    ),
     1: (
       <PreviewStep
         {...(previewStepProps || {
