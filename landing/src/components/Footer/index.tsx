@@ -48,87 +48,101 @@ const Footer = () => {
     <Container fluid>
       <Row>
         <FooterCol md={3} sm={12} xs={12}>
-          <FooterSection
-            onMouseOver={(e: any) =>
-              changeBackground(e, Discord, "rgb(106,111,134,0.72)")
-            }
-            onMouseLeave={(e: any) => resetBackground(e)}
-            className="d-flex justify-content-center align-items-center"
-          >
-            <SectionText>Discord</SectionText>
-          </FooterSection>
+          <a href="https://discord.ribbon.finance">
+            <FooterSection
+              onMouseOver={(e: any) =>
+                changeBackground(e, Discord, "rgb(106,111,134,0.72)")
+              }
+              onMouseLeave={(e: any) => resetBackground(e)}
+              className="d-flex justify-content-center align-items-center"
+            >
+              <SectionText>Discord</SectionText>
+            </FooterSection>
+          </a>
         </FooterCol>
 
         <FooterCol md={3} sm={12} xs={12}>
-          <FooterSection
-            onMouseOver={(e: any) =>
-              changeBackground(e, Twitter, "rgb(114,157,237,0.72)")
-            }
-            onMouseLeave={(e: any) => resetBackground(e)}
-            className="d-flex justify-content-center align-items-center"
-          >
-            <SectionText>Twitter</SectionText>
-          </FooterSection>
+          <a href="https://twitter.com/ribbonfinance">
+            <FooterSection
+              onMouseOver={(e: any) =>
+                changeBackground(e, Twitter, "rgb(114,157,237,0.72)")
+              }
+              onMouseLeave={(e: any) => resetBackground(e)}
+              className="d-flex justify-content-center align-items-center"
+            >
+              <SectionText>Twitter</SectionText>
+            </FooterSection>
+          </a>
         </FooterCol>
 
         <FooterCol md={3} sm={12} xs={12}>
-          <FooterSection
-            onMouseOver={(e: any) =>
-              changeBackground(e, Github, "rgb(115,244,194,0.72)")
-            }
-            onMouseLeave={(e: any) => resetBackground(e)}
-            className="d-flex justify-content-center align-items-center"
-          >
-            <SectionText>Github</SectionText>
-          </FooterSection>
+          <a href="https://github.com/ribbon-finance">
+            <FooterSection
+              onMouseOver={(e: any) =>
+                changeBackground(e, Github, "rgb(115,244,194,0.72)")
+              }
+              onMouseLeave={(e: any) => resetBackground(e)}
+              className="d-flex justify-content-center align-items-center"
+            >
+              <SectionText>Github</SectionText>
+            </FooterSection>
+          </a>
         </FooterCol>
 
         <FooterCol md={3} sm={12} xs={12}>
-          <FooterSection
-            onMouseOver={(e: any) =>
-              changeBackground(e, Blog, "rgb(255,144,0,0.72)")
-            }
-            onMouseLeave={(e: any) => resetBackground(e)}
-            className="d-flex justify-content-center align-items-center"
-          >
-            <SectionText>Blog</SectionText>
-          </FooterSection>
+          <a href="https://ribbonfinance.medium.com">
+            <FooterSection
+              onMouseOver={(e: any) =>
+                changeBackground(e, Blog, "rgb(255,144,0,0.72)")
+              }
+              onMouseLeave={(e: any) => resetBackground(e)}
+              className="d-flex justify-content-center align-items-center"
+            >
+              <SectionText>Blog</SectionText>
+            </FooterSection>
+          </a>
         </FooterCol>
 
         <FooterCol md={3} sm={12} xs={12}>
-          <FooterSection
-            onMouseOver={(e: any) =>
-              changeBackground(e, Terms, "rgb(252,10,84,0.72)")
-            }
-            onMouseLeave={(e: any) => resetBackground(e)}
-            className="d-flex justify-content-center align-items-center"
-          >
-            <SectionText>Terms</SectionText>
-          </FooterSection>
+          <a href="/terms">
+            <FooterSection
+              onMouseOver={(e: any) =>
+                changeBackground(e, Terms, "rgb(252,10,84,0.72)")
+              }
+              onMouseLeave={(e: any) => resetBackground(e)}
+              className="d-flex justify-content-center align-items-center"
+            >
+              <SectionText>Terms</SectionText>
+            </FooterSection>
+          </a>
         </FooterCol>
 
         <FooterCol md={3} sm={12} xs={12}>
-          <FooterSection
-            onMouseOver={(e: any) =>
-              changeBackground(e, Policy, "rgb(58,65,97,0.72)")
-            }
-            onMouseLeave={(e: any) => resetBackground(e)}
-            className="d-flex justify-content-center align-items-center"
-          >
-            <SectionText>Policy</SectionText>
-          </FooterSection>
+          <a href="/policy">
+            <FooterSection
+              onMouseOver={(e: any) =>
+                changeBackground(e, Policy, "rgb(58,65,97,0.72)")
+              }
+              onMouseLeave={(e: any) => resetBackground(e)}
+              className="d-flex justify-content-center align-items-center"
+            >
+              <SectionText>Policy</SectionText>
+            </FooterSection>
+          </a>
         </FooterCol>
 
         <FooterCol md={3} sm={12} xs={12}>
-          <FooterSection
-            onMouseOver={(e: any) =>
-              changeBackground(e, FAQ, "rgb(101,138,209,0.72)")
-            }
-            onMouseLeave={(e: any) => resetBackground(e)}
-            className="d-flex justify-content-center align-items-center"
-          >
-            <SectionText>FAQs</SectionText>
-          </FooterSection>
+          <a href="/faq">
+            <FooterSection
+              onMouseOver={(e: any) =>
+                changeBackground(e, FAQ, "rgb(101,138,209,0.72)")
+              }
+              onMouseLeave={(e: any) => resetBackground(e)}
+              className="d-flex justify-content-center align-items-center"
+            >
+              <SectionText>FAQs</SectionText>
+            </FooterSection>
+          </a>
         </FooterCol>
 
         <FooterCol md={3} sm={12} xs={12}>
