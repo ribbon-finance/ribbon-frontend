@@ -8,12 +8,14 @@ export interface MobileMenuOpenProps {
 
 export interface AccountStatusVariantProps {
   variant: "desktop" | "mobile";
-  showInvestButton?: boolean;
 }
 
 export interface WalletStatusProps {}
 
-export type WalletButtonProps = AccountStatusVariantProps & WalletStatusProps;
+export type WalletButtonProps = AccountStatusVariantProps &
+  WalletStatusProps & {
+    isMenuOpen: boolean;
+  };
 
 export type connectorType = "metamask" | "walletConnect";
 

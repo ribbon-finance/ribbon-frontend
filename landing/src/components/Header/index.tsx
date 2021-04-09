@@ -9,7 +9,7 @@ import MenuButton from "./MenuButton";
 import { NavItemProps, MobileMenuOpenProps } from "./types";
 import theme from "../../designSystem/theme";
 import MobileOverlayMenu from "../Common/MobileOverlayMenu";
-import AccountStatus from "./AccountStatus";
+import ItemWithDropdown from "./ItemWithDropdown";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
@@ -174,10 +174,30 @@ const Header = () => {
       {/* LINKS */}
       <HeaderAbsoluteContainer>
         <LinksContainer>
-          <AccountStatus variant="desktop"></AccountStatus>
-          {renderLinkItem("ABOUT", "/about", false)}
-          {renderLinkItem("COMMUNITY", "http://tiny.cc/ribbon-discord", false)}
-          {renderLinkItem("BLOG", "https://medium.com/@ribbonfinance", false)}
+          <ItemWithDropdown
+            variant="desktop"
+            dropdownItems={[
+              { text: "Blog", link: "https://ribbonfinance.medium.com" },
+              { text: "FAQs", link: "https://ribbonfinance.medium.com" },
+              { text: "Terms", link: "https://ribbonfinance.medium.com" },
+              { text: "Policy", link: "https://ribbonfinance.medium.com" },
+            ]}
+          >
+            About
+          </ItemWithDropdown>
+
+          <ItemWithDropdown
+            variant="desktop"
+            dropdownItems={[
+              { text: "Discord", link: "https://discord.ribbon.finance" },
+              { text: "Twitter", link: "https://twitter.com/ribbonfinance" },
+              { text: "Github", link: "https://github.com/ribbon-finance" },
+            ]}
+          >
+            Community
+          </ItemWithDropdown>
+
+          {renderLinkItem("DOCS", "https://docs.ribbon.finance", false)}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 

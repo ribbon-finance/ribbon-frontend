@@ -1,30 +1,21 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { useWeb3React } from "@web3-react/core";
 import { setTimeout } from "timers";
 
 import sizes from "../../designSystem/sizes";
 import { Title, BaseButton } from "../../designSystem";
-import { addConnectEvent } from "../../utils/analytics";
 import colors from "../../designSystem/colors";
 import {
   WalletStatusProps,
   AccountStatusVariantProps,
   WalletButtonProps,
   MenuStateProps,
-  WalletCopyIconProps,
 } from "./types";
 import theme from "../../designSystem/theme";
 import MobileOverlayMenu from "../Common/MobileOverlayMenu";
-import MenuButton from "../Header/MenuButton";
+import MenuButton from "./MenuButton";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import ButtonArrow from "../Common/ButtonArrow";
-
-const walletButtonMarginLeft = 5;
-const walletButtonWidth = 55;
-const investButtonWidth = 30;
-const investButtonMarginLeft =
-  100 - walletButtonMarginLeft * 2 - walletButtonWidth - investButtonWidth;
 
 const WalletContainer = styled.div<AccountStatusVariantProps>`
   justify-content: center;
@@ -59,12 +50,12 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
 `;
 
 const WalletButton = styled(BaseButton)<WalletButtonProps>`
-  background-color: ${colors.backgroundDarker};
   align-items: center;
   height: fit-content;
+  opacity: ${(props) => (props.isMenuOpen ? "1" : "0.48")};
 
   &:hover {
-    opacity: ${theme.hover.opacity};
+    opacity: 1;
   }
 
   ${(props) => {
@@ -74,7 +65,6 @@ const WalletButton = styled(BaseButton)<WalletButtonProps>`
           height: 48px;
           justify-content: center;
           padding: 14px 16px;
-          width: ${props.showInvestButton ? `${walletButtonWidth}%` : "90%"};
         `;
       case "desktop":
         return ``;
@@ -141,6 +131,7 @@ const MenuItem = styled.div`
   opacity: 1;
   display: flex;
   align-items: center;
+  color: ${colors.primaryText};
 
   &:first-child {
     padding-top: 16px;
@@ -152,7 +143,7 @@ const MenuItem = styled.div`
 
   &:hover {
     span {
-      color: ${colors.primaryText};
+      // color: ${colors.primaryText};
     }
   }
 
@@ -173,32 +164,10 @@ const MenuItemText = styled(Title)`
   @media (max-width: ${sizes.md}px) {
     font-size: 24px;
   }
-`;
 
-const WalletCopyIcon = styled.i<WalletCopyIconProps>`
-  color: white;
-  margin-left: 8px;
-  transition: 0.1s all ease-out;
-
-  ${(props) => {
-    switch (props.state) {
-      case "visible":
-        return `
-            opacity: 1;
-          `;
-      case "hiding":
-        return `
-            opacity: 0;
-          `;
-      case "hidden":
-        return `
-            visibility: hidden;
-            height: 0;
-            width: 0;
-            opacity: 0;
-          `;
-    }
-  }}
+  &:hover {
+    color: ${colors.primaryText};
+  }
 `;
 
 const MenuCloseItem = styled(MenuItem)`
@@ -210,26 +179,21 @@ const MenuCloseItem = styled(MenuItem)`
   justify-content: center;
 `;
 
-interface AccountStatusProps {
-  variant: "desktop" | "mobile";
-  showInvestButton?: boolean;
+interface DropdownItem {
+  link: string;
+  text: string;
 }
 
-const truncateAddress = (address: string) => {
-  return address.slice(0, 6) + "..." + address.slice(address.length - 4);
-};
+interface ItemWithDropdownProps {
+  variant: "desktop" | "mobile";
+  dropdownItems: DropdownItem[];
+}
 
-const AccountStatus: React.FC<AccountStatusProps> = ({
+const ItemWithDropdown: React.FC<ItemWithDropdownProps> = ({
   variant,
-  showInvestButton,
+  children,
+  dropdownItems,
 }) => {
-  const {
-    connector,
-    deactivate: deactivateWeb3,
-    library,
-    active,
-    account,
-  } = useWeb3React();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
     "hidden"
@@ -267,24 +231,18 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     setIsMenuOpen(false);
   }, []);
 
-  const renderButtonContent = () => (
-    <>
-      <WalletButtonText>
-        test <ButtonArrow isOpen={isMenuOpen} />
-      </WalletButtonText>
-    </>
-  );
-
   const renderMenuItem = (
     title: string,
-    onClick?: () => void,
+    link: string,
     extra?: React.ReactNode
   ) => {
     return (
-      <MenuItem onClick={onClick} role="button">
-        <MenuItemText>{title}</MenuItemText>
-        {extra}
-      </MenuItem>
+      <a href={link} target="_blank" rel="noreferrer noopener">
+        <MenuItem role="button">
+          <MenuItemText>{title}</MenuItemText>
+          {extra}
+        </MenuItem>
+      </a>
     );
   };
 
@@ -292,11 +250,20 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     <>
       {/* Main Button and Desktop Menu */}
       <WalletContainer variant={variant} ref={desktopMenuRef}>
-        <WalletButton variant={variant} role="button" onClick={onToggleMenu}>
-          {renderButtonContent()}
+        <WalletButton
+          isMenuOpen={isMenuOpen}
+          variant={variant}
+          role="button"
+          onClick={onToggleMenu}
+        >
+          <>
+            <WalletButtonText>
+              {children} <ButtonArrow isOpen={isMenuOpen} />
+            </WalletButtonText>
+          </>
         </WalletButton>
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>
-          {renderMenuItem("CHANGE WALLET", () => {})}
+          {dropdownItems.map((item) => renderMenuItem(item.text, item.link))}
         </WalletDesktopMenu>
       </WalletContainer>
 
@@ -309,7 +276,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
         mountRoot="div#root"
         overflowOnOpen={false}
       >
-        {renderMenuItem("CHANGE WALLET", () => {})}
+        {dropdownItems.map((item) => renderMenuItem(item.text, item.link))}
 
         <MenuCloseItem role="button" onClick={onCloseMenu}>
           <MenuButton isOpen={true} onToggle={onCloseMenu} />
@@ -318,4 +285,4 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     </>
   );
 };
-export default AccountStatus;
+export default ItemWithDropdown;
