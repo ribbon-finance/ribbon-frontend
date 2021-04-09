@@ -59,13 +59,13 @@ const DesktopFooter = () => {
   return (
     <FooterContainer>
       <LeftContainer>
-        {/* {renderLinkItem("FAQS", "/faq")} */}
+        {renderLinkItem("FAQS", "https://ribbon.finance/faq")}
         {renderLinkItem("BLOG", "https://medium.com/@ribbonfinance", true)}
-        {/* {renderLinkItem("TERMS", "/terms")} */}
-        {renderLinkItem("POLICY", "/policy")}
+        {renderLinkItem("TERMS", "https://ribbon.finance/terms")}
+        {renderLinkItem("POLICY", "https://ribbon.finance/policy")}
       </LeftContainer>
       <LinksContainer>
-        {renderLinkItem("DISCORD", "http://tiny.cc/ribbon-discord", true)}
+        {renderLinkItem("DISCORD", "http://discord.ribbon.finance", true)}
         {renderLinkItem("TWITTER", "https://twitter.com/ribbonfinance", true)}
         {renderLinkItem("GITHUB", "https://github.com/ribbon-finance", true)}
       </LinksContainer>
