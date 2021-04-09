@@ -1,7 +1,6 @@
 import { useWeb3Context } from "./web3Context";
 import { useCallback, useEffect } from "react";
 import { VaultDataResponse } from "../store/types";
-import { useWeb3React } from "@web3-react/core";
 import { useGlobalState } from "../store/store";
 import { getVault } from "./useVault";
 import { getDefaultChainID } from "../utils/env";
@@ -9,7 +8,6 @@ import { getDefaultChainID } from "../utils/env";
 type UseVaultData = () => VaultDataResponse;
 
 const useVaultData: UseVaultData = () => {
-  const { chainId, library, active: walletConnected, account } = useWeb3React();
   const { provider: ethersProvider } = useWeb3Context();
 
   const [response, setResponse] = useGlobalState<any>("vaultData");
@@ -42,11 +40,11 @@ const useVaultData: UseVaultData = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, setResponse, walletConnected, chainId, library]);
+  }, [setResponse]);
 
   useEffect(() => {
     doMulticall();
-  }, [doMulticall, walletConnected]);
+  }, [doMulticall]);
 
   return response;
 };
