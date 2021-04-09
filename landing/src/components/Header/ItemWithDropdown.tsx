@@ -232,12 +232,13 @@ const ItemWithDropdown: React.FC<ItemWithDropdownProps> = ({
   }, []);
 
   const renderMenuItem = (
+    index: number,
     title: string,
     link: string,
     extra?: React.ReactNode
   ) => {
     return (
-      <a href={link} target="_blank" rel="noreferrer noopener">
+      <a key={index} href={link} target="_blank" rel="noreferrer noopener">
         <MenuItem role="button">
           <MenuItemText>{title}</MenuItemText>
           {extra}
@@ -263,7 +264,9 @@ const ItemWithDropdown: React.FC<ItemWithDropdownProps> = ({
           </>
         </WalletButton>
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>
-          {dropdownItems.map((item) => renderMenuItem(item.text, item.link))}
+          {dropdownItems.map((item, index) =>
+            renderMenuItem(index, item.text, item.link)
+          )}
         </WalletDesktopMenu>
       </WalletContainer>
 
@@ -276,7 +279,9 @@ const ItemWithDropdown: React.FC<ItemWithDropdownProps> = ({
         mountRoot="div#root"
         overflowOnOpen={false}
       >
-        {dropdownItems.map((item) => renderMenuItem(item.text, item.link))}
+        {dropdownItems.map((item, index) =>
+          renderMenuItem(index, item.text, item.link)
+        )}
 
         <MenuCloseItem role="button" onClick={onCloseMenu}>
           <MenuButton isOpen={true} onToggle={onCloseMenu} />

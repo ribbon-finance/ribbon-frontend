@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers";
 import { useWeb3Context } from "./web3Context";
 import { useCallback, useEffect } from "react";
 import { VaultDataResponse } from "../store/types";
@@ -29,54 +28,21 @@ const useVaultData: UseVaultData = () => {
           providerVault.cap(),
         ];
 
-        let connectedPromises: Promise<BigNumber>[] = [];
-
-        if (walletConnected && account && chainId) {
-          const signerVault = getVault(chainId, library);
-
-          if (signerVault) {
-            connectedPromises = [
-              signerVault.accountVaultBalance(account),
-              library.getBalance(account),
-              signerVault.maxWithdrawAmount(account),
-            ];
-          }
-        }
-        const promises = unconnectedPromises.concat(connectedPromises);
-
         try {
-          const responses = await Promise.all(promises);
-
-          const data = {
-            deposits: responses[0],
-            vaultLimit: responses[1],
-          };
-
-          if (!walletConnected) {
-            setResponse({
-              status: "success",
-              ...data,
-              vaultBalanceInAsset: BigNumber.from("0"),
-              userAssetBalance: BigNumber.from("0"),
-              maxWithdrawAmount: BigNumber.from("0"),
-            });
-
-            return;
-          }
+          const responses = await Promise.all(unconnectedPromises);
 
           setResponse({
             status: "success",
-            ...data,
-            vaultBalanceInAsset: responses[2],
-            userAssetBalance: responses[3],
-            maxWithdrawAmount: responses[4],
+            deposits: responses[0],
+            vaultLimit: responses[1],
           });
         } catch (e) {
           console.error(e);
         }
       }
     }
-  }, [account, setResponse, ethersProvider, walletConnected, chainId, library]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, setResponse, walletConnected, chainId, library]);
 
   useEffect(() => {
     doMulticall();
