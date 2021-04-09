@@ -8,6 +8,7 @@ import theme from "../../designSystem/theme";
 
 const FooterContainer = styled.div`
   display: flex;
+  height: 52px;
   width: 100%;
   flex-wrap: nowrap;
   border-top: ${theme.border.width} ${theme.border.style} ${colors.border};

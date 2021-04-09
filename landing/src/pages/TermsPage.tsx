@@ -4,10 +4,6 @@ import styled from "styled-components";
 import { Title } from "../designSystem";
 import usePullUp from "../hooks/usePullUp";
 
-const H1 = styled(Title)`
-  font-size: 50px;
-`;
-
 const H2 = styled(Title)`
   font-size: 30px;
 `;
@@ -21,10 +17,6 @@ const QuestionText = styled.p`
 const AnswerText = styled.p`
   color: white;
   margin-bottom: 2em;
-`;
-
-const Anchor = styled.a`
-  color: blue;
 `;
 
 const sections = [
