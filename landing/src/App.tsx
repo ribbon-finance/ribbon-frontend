@@ -2,14 +2,14 @@ import Header from "./components/Header";
 import Hero from "./components/Hero";
 import ProductCarousel from "./components/ProductCarousel";
 import Mission from "./components/Mission";
-import Investors from "./components/Investors";
 import Footer from "./components/Footer";
-import { getLibrary } from "./utils/getLibrary";
-import Row from "react-bootstrap/Row";
 
-import { Web3ReactProvider } from "@web3-react/core";
 import styled from "styled-components";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import React from "react";
+import Investors from "./components/Investors";
+import PolicyPage from "./pages/PolicyPage";
+import TermsPage from "./pages/TermsPage";
 
 const Body = styled.div`
   background-color: #1c1a19;
@@ -19,20 +19,32 @@ const MainContent = styled.div``;
 
 function App() {
   return (
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <Body>
-        <Router>
-          <Header />
-          <Hero />
-          <MainContent>
-            <ProductCarousel />
-            <Mission />
-            {/* <Investors /> */}
-          </MainContent>
-          <Footer />
-        </Router>
-      </Body>
-    </Web3ReactProvider>
+    <Body>
+      <Router>
+        <Header />
+
+        <Switch>
+          <Route path="/" exact>
+            <Hero />
+            <MainContent>
+              <ProductCarousel />
+              <Mission />
+              <Investors />
+            </MainContent>
+          </Route>
+
+          <Route path="/policy">
+            <PolicyPage></PolicyPage>
+          </Route>
+
+          <Route path="/terms">
+            <TermsPage></TermsPage>
+          </Route>
+        </Switch>
+
+        <Footer />
+      </Router>
+    </Body>
   );
 }
 

@@ -9,7 +9,6 @@ import useEagerConnect from "../hooks/useEagerConnect";
 import PortfolioPage from "../pages/Portfolio/PortfolioPage";
 import Footer from "./Footer/Footer";
 import useScreenSize from "../hooks/useScreenSize";
-import PolicyPage from "../pages/PolicyPage";
 import { WrongNetworkToast, TxStatusToast } from "./Common/toasts";
 import WalletConnectModal from "./Wallet/WalletConnectModal";
 
@@ -42,9 +41,6 @@ const RootApp = () => {
           </Route>
           <Route path="/portfolio">
             <PortfolioPage />
-          </Route>
-          <Route path="/policy">
-            <PolicyPage />
           </Route>
         </Switch>
         <Footer />

@@ -19,6 +19,7 @@ const SectionTitle = styled(Title)`
 `;
 
 const SectionQuestion = styled(PrimaryText)`
+  color: white;
   font-size: 16px;
   line-height: 24px;
   font-weight: 600;

@@ -14,6 +14,7 @@ import theme from "../../../designSystem/theme";
 import DepositCapBar from "../../../pages/DepositPage/DepositCapBar";
 import useVaultData from "../../../hooks/useVaultData";
 import { formatSignificantDecimals } from "../../../utils/math";
+import { useLatestAPY } from "../../../hooks/useAirtableData";
 
 const { formatEther } = ethers.utils;
 
@@ -76,6 +77,7 @@ const YieldText = styled(Title)`
 
 const YieldCard = () => {
   const { status, deposits, vaultLimit } = useVaultData();
+  const { fetched: fetchedAPY, res: latestAPY } = useLatestAPY();
   const isLoading = status === "loading";
 
   const totalDepositStr = isLoading
@@ -106,7 +108,9 @@ const YieldCard = () => {
         automated covered call strategy.
       </ProductDescription>
       <ExpectedYieldTitle>EXPECTED YIELD (APY)</ExpectedYieldTitle>
-      <YieldText>30%</YieldText>
+      <YieldText>
+        {fetchedAPY ? (latestAPY || 0.0).toFixed(2) + "%" : "Loading..."}
+      </YieldText>
       <DepositCapBar
         loading={isLoading}
         totalDeposit={totalDepositStr}

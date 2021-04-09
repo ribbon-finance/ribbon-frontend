@@ -5,16 +5,17 @@ export interface UnconnectedVaultData {
   vaultLimit: BigNumber;
 }
 
-export interface UserSpecificData {
-  vaultBalanceInAsset: BigNumber;
-  userAssetBalance: BigNumber;
-  maxWithdrawAmount: BigNumber;
-}
+export type DataResponseStatus = "loading" | "success" | "error";
 
-export type ConnectedVaultData = UnconnectedVaultData & UserSpecificData;
-
-export type DataResponseStatus = "loading" | "success";
+export type VaultDataErrors = "wrong_network";
 
 export type VaultDataResponse = {
   status: DataResponseStatus;
-} & ConnectedVaultData;
+  error: VaultDataErrors | null;
+} & UnconnectedVaultData;
+
+export type PendingTransaction = {
+  txhash: string;
+  type: "deposit" | "withdraw";
+  amount: string;
+};
