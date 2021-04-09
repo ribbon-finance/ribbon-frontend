@@ -7,7 +7,7 @@ import { formatSignificantDecimals } from "../../utils/math";
 import YourPosition from "./YourPosition";
 import ActionModal from "../ActionModal/ActionModal";
 import { ActionButton, ConnectWalletButton } from "../Common/buttons";
-import { GAS_LIMITS } from "../../constants/constants";
+import { GAS_LIMITS, VaultOptions } from "../../constants/constants";
 import useGasPrice from "../../hooks/useGasPrice";
 import useVaultData from "../../hooks/useVaultData";
 import useVault from "../../hooks/useVault";
@@ -19,7 +19,7 @@ import { useLatestAPY } from "../../hooks/useAirtableData";
 
 const { parseEther, formatEther } = ethers.utils;
 
-const Container = styled.div<ActionsFormProps>`
+const Container = styled.div<ActionFormVariantProps>`
   ${(props) =>
     props.variant === "mobile" &&
     `
@@ -43,7 +43,7 @@ const FormTitleDiv = styled.div<{ left: boolean; active: boolean }>`
   width: 100%;
   padding: 24px 0;
   background-color: ${(props) =>
-    props.active ? "#08090e" : "rgb(28, 26, 25,0.95)"};
+    props.active ? "rgb(28, 26, 25,0.95)" : "rgba(255,255,255,0.04)"};
   cursor: pointer;
 
   ${(props) =>
@@ -143,14 +143,16 @@ type ValidationErrors = "none" | "insufficient_balance";
 
 export interface FormStepProps {
   onSubmit?: (previewStepProps: PreviewStepProps) => void;
+  vaultOption: VaultOptions;
 }
 
-interface ActionsFormProps extends FormStepProps {
+interface ActionFormVariantProps {
   variant: "desktop" | "mobile";
 }
 
-const ActionsForm: React.FC<ActionsFormProps> = ({
+const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   variant,
+  vaultOption,
   onSubmit = () => {},
 }) => {
   // constants
@@ -162,7 +164,7 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   // network hooks
-  const vault = useVault();
+  const vault = useVault(vaultOption);
   const {
     status,
     userAssetBalance,
@@ -170,7 +172,7 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
     vaultLimit,
     vaultBalanceInAsset,
     maxWithdrawAmount,
-  } = useVaultData();
+  } = useVaultData(vaultOption);
   const gasPrice = useGasPrice();
   const { active, account } = useWeb3React();
   const latestAPY = useLatestAPY();
@@ -373,6 +375,7 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
   const desktopActionModal = useMemo(
     () => (
       <ActionModal
+        vaultOption={vaultOption}
         variant={"desktop"}
         show={showActionModal}
         onClose={onCloseActionsModal}
@@ -380,7 +383,13 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
         onSuccess={onSuccess}
       ></ActionModal>
     ),
-    [showActionModal, previewStepProps, onSuccess, onCloseActionsModal]
+    [
+      vaultOption,
+      showActionModal,
+      previewStepProps,
+      onSuccess,
+      onCloseActionsModal,
+    ]
   );
 
   return (
@@ -433,7 +442,7 @@ const ActionsForm: React.FC<ActionsFormProps> = ({
       </FormContainer>
 
       {connected && isDesktop && (
-        <YourPosition className="mt-4 px-4"></YourPosition>
+        <YourPosition vaultOption={vaultOption} className="mt-4 px-4" />
       )}
     </Container>
   );

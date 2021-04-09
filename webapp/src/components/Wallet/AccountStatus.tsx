@@ -31,6 +31,7 @@ import { ActionButton } from "../Common/buttons";
 import ActionModal from "../ActionModal/ActionModal";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import ButtonArrow from "../Common/ButtonArrow";
+import { VaultOptions } from "../../constants/constants";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -237,8 +238,8 @@ const MenuCloseItem = styled(MenuItem)`
 `;
 
 interface AccountStatusProps {
+  vaultOption?: VaultOptions;
   variant: "desktop" | "mobile";
-  showInvestButton?: boolean;
 }
 
 const truncateAddress = (address: string) => {
@@ -246,8 +247,8 @@ const truncateAddress = (address: string) => {
 };
 
 const AccountStatus: React.FC<AccountStatusProps> = ({
+  vaultOption,
   variant,
-  showInvestButton,
 }) => {
   const {
     connector,
@@ -374,14 +375,16 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   };
 
   const formModal = useMemo(
-    () => (
-      <ActionModal
-        variant="mobile"
-        show={showActionModal}
-        onClose={onCloseActionsModal}
-      ></ActionModal>
-    ),
-    [showActionModal, onCloseActionsModal]
+    () =>
+      vaultOption ? (
+        <ActionModal
+          vaultOption={vaultOption}
+          variant="mobile"
+          show={showActionModal}
+          onClose={onCloseActionsModal}
+        />
+      ) : null,
+    [vaultOption, showActionModal, onCloseActionsModal]
   );
 
   return (
@@ -390,14 +393,14 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
       <WalletContainer variant={variant} ref={desktopMenuRef}>
         <WalletButton
           variant={variant}
-          showInvestButton={showInvestButton}
+          showInvestButton={vaultOption !== undefined}
           connected={active}
           role="button"
           onClick={handleButtonClick}
         >
           {renderButtonContent()}
         </WalletButton>
-        {showInvestButton && (
+        {vaultOption && (
           <InvestButton onClick={handleInvestButtonClick}>Invest</InvestButton>
         )}
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>

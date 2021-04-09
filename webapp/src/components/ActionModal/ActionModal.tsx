@@ -7,6 +7,7 @@ import ActionSteps from "./ActionSteps";
 import { PreviewStepProps, StepData, STEPS } from "./types";
 import sizes from "../../designSystem/sizes";
 import { CloseIcon } from "../../assets/icons/icons";
+import { VaultOptions } from "../../constants/constants";
 
 const ModalNavigation = styled.div`
   position: absolute;
@@ -99,6 +100,7 @@ interface ModalProps {
 }
 
 interface ActionModalProps extends ModalProps {
+  vaultOption: VaultOptions;
   show: boolean;
   onClose: () => void;
   onSuccess?: () => void;
@@ -106,6 +108,7 @@ interface ActionModalProps extends ModalProps {
 }
 
 const ActionModal: React.FC<ActionModalProps> = ({
+  vaultOption,
   show,
   onClose,
   variant,
@@ -159,46 +162,50 @@ const ActionModal: React.FC<ActionModalProps> = ({
   }, [isDesktop, stepData, onClose]);
 
   return (
-    <MobileOverlayMenu
-      isMenuOpen={show}
-      onClick={onClose}
-      mountRoot="div#root"
-      style={{
-        display: "flex",
-        width: "100%",
-        height: "100%",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <ModalNavigation className="d-flex flex-row align-items-center">
-        {renderModalNavigationItem()}
-      </ModalNavigation>
-      <ModalBody
-        isFormStep={stepData.stepNum === STEPS.formStep}
-        variant={variant}
+    <div>
+      <MobileOverlayMenu
+        key={`actionModal-${vaultOption}`}
+        isMenuOpen={show}
+        onClick={onClose}
+        mountRoot="div#root"
+        style={{
+          display: "flex",
+          width: "100%",
+          height: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
       >
-        {stepData.title !== "" && (
-          <ModalTitle className="position-relative d-flex align-items-center justify-content-center">
-            <Title>{stepData.title}</Title>
-            {renderModalCloseButton()}
-          </ModalTitle>
-        )}
+        <ModalNavigation className="d-flex flex-row align-items-center">
+          {renderModalNavigationItem()}
+        </ModalNavigation>
+        <ModalBody
+          isFormStep={stepData.stepNum === STEPS.formStep}
+          variant={variant}
+        >
+          {stepData.title !== "" && (
+            <ModalTitle className="position-relative d-flex align-items-center justify-content-center">
+              <Title>{stepData.title}</Title>
+              {renderModalCloseButton()}
+            </ModalTitle>
+          )}
 
-        <ModalContent className="position-relative">
-          <StepsContainer variant={variant}>
-            <ActionSteps
-              skipToPreview={isDesktop}
-              show={show}
-              onClose={onClose}
-              onChangeStep={onChangeStep}
-              previewStepProps={previewStepProps}
-              onSuccess={onSuccess}
-            ></ActionSteps>
-          </StepsContainer>
-        </ModalContent>
-      </ModalBody>
-    </MobileOverlayMenu>
+          <ModalContent className="position-relative">
+            <StepsContainer variant={variant}>
+              <ActionSteps
+                vaultOption={vaultOption}
+                skipToPreview={isDesktop}
+                show={show}
+                onClose={onClose}
+                onChangeStep={onChangeStep}
+                previewStepProps={previewStepProps}
+                onSuccess={onSuccess}
+              ></ActionSteps>
+            </StepsContainer>
+          </ModalContent>
+        </ModalBody>
+      </MobileOverlayMenu>
+    </div>
   );
 };
 

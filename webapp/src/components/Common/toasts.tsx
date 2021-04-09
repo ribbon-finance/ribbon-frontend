@@ -1,5 +1,6 @@
 import { BigNumber } from "ethers";
 import React, { useCallback, useEffect, useState } from "react";
+import { VaultList } from "../../constants/constants";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
 import useVaultData from "../../hooks/useVaultData";
 import { useWeb3Context } from "../../hooks/web3Context";
@@ -12,7 +13,7 @@ import Toast from "./BaseToast";
 export const WrongNetworkToast = () => {
   const [showToast, setShowToast] = useState(false);
   const [shownOnce, setShownOnce] = useState(false);
-  const { status, error } = useVaultData();
+  const { status, error } = useVaultData(VaultList[0]);
   const networkName = capitalize(getDefaultNetworkName());
 
   useEffect(() => {

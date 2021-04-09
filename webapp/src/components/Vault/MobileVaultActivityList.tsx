@@ -131,8 +131,10 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
   }, []);
   return (
     <div className="d-flex flex-column">
-      {activities.map((activity) => (
-        <VaultActivityRow>{renderVaultActivity(activity)}</VaultActivityRow>
+      {activities.map((activity, index) => (
+        <VaultActivityRow key={index}>
+          {renderVaultActivity(activity)}
+        </VaultActivityRow>
       ))}
     </div>
   );

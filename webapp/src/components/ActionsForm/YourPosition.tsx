@@ -8,6 +8,7 @@ import useAssetPrice from "../../hooks/useAssetPrice";
 import useBalances from "../../hooks/useBalances";
 import useVaultData from "../../hooks/useVaultData";
 import { formatBigNumber } from "../../utils/math";
+import { VaultOptions } from "../../constants/constants";
 
 const PositionsContainer = styled.div`
   font-family: VCR, sans-serif;
@@ -38,11 +39,15 @@ const AmountText = styled.span`
 `;
 
 interface YourPositionProps {
+  vaultOption: VaultOptions;
   className?: string;
 }
 
-const YourPosition: React.FC<YourPositionProps> = ({ className }) => {
-  const { status, vaultBalanceInAsset } = useVaultData({
+const YourPosition: React.FC<YourPositionProps> = ({
+  vaultOption,
+  className,
+}) => {
+  const { status, vaultBalanceInAsset } = useVaultData(vaultOption, {
     poll: true,
   });
   const { price: ethusd } = useAssetPrice({ asset: "WETH" });

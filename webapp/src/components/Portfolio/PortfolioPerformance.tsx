@@ -23,6 +23,8 @@ import useVaultData from "../../hooks/useVaultData";
 import { BalanceUpdate } from "../../models/vault";
 import sizes from "../../designSystem/sizes";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
+import { VaultList, VaultOptions } from "../../constants/constants";
+import useVaultAccounts from "../../hooks/useVaultAccounts";
 
 const PerformanceContainer = styled.div`
   display: flex;
@@ -159,14 +161,16 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
   currency,
 }) => {
   const { active } = useWeb3React();
-  const { vaultBalanceInAsset } = useVaultData();
   const { price: ethPrice, loading: ethPriceLoading } = useAssetPrice({
     asset: "WETH",
   });
+  const { vaultAccounts, loading: vaultAccountLoading } = useVaultAccounts(
+    VaultList as [VaultOptions]
+  );
   const animatedLoadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
-    ethPriceLoading
+    ethPriceLoading || vaultAccountLoading
   );
   const [
     hoveredBalanceUpdate,
@@ -174,6 +178,21 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
   ] = useState<BalanceUpdate>();
   const [rangeFilter, setRangeFilter] = useState<dateFilterType>("1m");
   const [, setShowConnectWalletModal] = useConnectWalletModal();
+
+  const vaultBalanceInAsset = useMemo(() => {
+    let sum = BigNumber.from(0);
+
+    Object.keys(vaultAccounts).forEach((key) => {
+      const vaultAccount = vaultAccounts[key];
+      if (vaultAccount) {
+        sum = sum
+          .add(vaultAccount.totalDeposits)
+          .sub(vaultAccount.totalYieldEarned);
+      }
+    });
+
+    return sum;
+  }, [vaultAccounts]);
 
   const afterDate = useMemo(() => {
     switch (rangeFilter) {

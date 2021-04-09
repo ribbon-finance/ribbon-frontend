@@ -6,13 +6,17 @@ import { useWeb3React } from "@web3-react/core";
 import { useGlobalState } from "../store/store";
 import { getVault } from "./useVault";
 import { getDefaultChainID } from "../utils/env";
+import { VaultOptions } from "../constants/constants";
 
-type UseVaultData = (params?: {
-  poll: boolean;
-  pollingFrequency?: number;
-}) => VaultDataResponse;
+type UseVaultData = (
+  vault: VaultOptions,
+  params?: {
+    poll: boolean;
+    pollingFrequency?: number;
+  }
+) => VaultDataResponse;
 
-const useVaultData: UseVaultData = (params) => {
+const useVaultData: UseVaultData = (vault, params) => {
   const poll = false || Boolean(params && params.poll);
   const pollingFrequency = (params && params.pollingFrequency) || 4000;
 
@@ -28,7 +32,7 @@ const useVaultData: UseVaultData = (params) => {
     const doSideEffect = isMountedRef.current;
 
     if (ethersProvider) {
-      const providerVault = getVault(envChainID, ethersProvider, false);
+      const providerVault = getVault(ethersProvider, vault, false);
 
       if (providerVault) {
         const unconnectedPromises = [
@@ -76,7 +80,7 @@ const useVaultData: UseVaultData = (params) => {
             return;
           }
 
-          const signerVault = getVault(chainId, library);
+          const signerVault = getVault(library, vault);
 
           if (signerVault) {
             connectedPromises = [

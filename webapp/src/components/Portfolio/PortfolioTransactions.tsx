@@ -13,6 +13,7 @@ import useTransactions from "../../hooks/useTransactions";
 import { CurrencyType } from "../../pages/Portfolio/types";
 import { ethToUSD, formatSignificantDecimals } from "../../utils/math";
 import { capitalize } from "../../utils/text";
+import { VaultNameOptionMap, VaultOptions } from "../../constants/constants";
 
 const PortfolioTransactionsContainer = styled.div`
   margin-top: 48px;
@@ -125,7 +126,15 @@ const PortfolioTransactions: React.FC<PortfolioTransactionsProps> = ({
     return transactions.map((transaction) => (
       <TransactionContainer key={transaction.id}>
         <TransactionInfoRow>
-          <Title className="flex-grow-1">{transaction.vault.symbol}</Title>
+          <Title className="flex-grow-1">
+            {
+              Object.keys(VaultNameOptionMap)[
+                Object.values(VaultNameOptionMap).indexOf(
+                  transaction.vault.symbol as VaultOptions
+                )
+              ]
+            }
+          </Title>
           <Title>
             {renderTransactionAmountText(
               transaction.amount,

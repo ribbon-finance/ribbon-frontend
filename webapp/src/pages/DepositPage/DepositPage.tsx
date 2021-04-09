@@ -14,6 +14,9 @@ import YourPosition from "../../components/ActionsForm/YourPosition";
 import { useWeb3React } from "@web3-react/core";
 import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
+import { VaultList, VaultOptions } from "../../constants/constants";
+import { productCopies } from "../../components/Product/Product/productCopies";
+import useVaultOption from "../../hooks/useVaultOption";
 
 const { formatEther } = ethers.utils;
 
@@ -84,7 +87,8 @@ const MobilePositions = styled(YourPosition)`
 const DepositPage = () => {
   usePullUp();
   const { account } = useWeb3React();
-  const { status, deposits, vaultLimit } = useVaultData();
+  const vaultOption = useVaultOption() || VaultList[0];
+  const { status, deposits, vaultLimit } = useVaultData(vaultOption);
   const isLoading = status === "loading";
 
   const totalDepositStr = isLoading
@@ -108,40 +112,42 @@ const DepositPage = () => {
 
   return (
     <>
-      <HeroSection depositCapBar={depositCapBar}></HeroSection>
+      <HeroSection depositCapBar={depositCapBar} vaultOption={vaultOption} />
 
       <div className="container py-5">
         <div className="row mx-lg-n1">
-          {account && <MobilePositions></MobilePositions>}
+          {account && <MobilePositions vaultOption={vaultOption} />}
 
-          <PerformanceSection></PerformanceSection>
+          <PerformanceSection vaultOption={vaultOption} />
 
           <DesktopActionsFormContainer className="col-xl-4 offset-xl-1 col-md-6">
-            <ActionsForm variant="desktop" />
+            <ActionsForm vaultOption={vaultOption} variant="desktop" />
           </DesktopActionsFormContainer>
         </div>
-        <VaultActivity />
+        <VaultActivity vaultOption={vaultOption} />
       </div>
     </>
   );
 };
 
-const HeroSection: React.FC<{ depositCapBar: ReactNode }> = ({
-  depositCapBar,
-}) => {
+const HeroSection: React.FC<{
+  depositCapBar: ReactNode;
+  vaultOption: VaultOptions;
+}> = ({ depositCapBar, vaultOption }) => {
   return (
     <HeroContainer className="position-relative">
       <div className="container">
         <div className="row mx-lg-n1">
           <div style={{ zIndex: 1 }} className="col-xl-6 d-flex flex-column">
             <div className="d-flex flex-row my-3">
-              <AttributePill className="mr-2 text-uppercase">
-                Theta Vault
-              </AttributePill>
-              <AttributePill className="ml-2 text-uppercase">ETH</AttributePill>
+              {productCopies[vaultOption].tags.map((tag) => (
+                <AttributePill className="mr-2 text-uppercase" key={tag}>
+                  {tag}
+                </AttributePill>
+              ))}
             </div>
 
-            <HeroText>T-100-E</HeroText>
+            <HeroText>{productCopies[vaultOption].title}</HeroText>
 
             {depositCapBar}
           </div>

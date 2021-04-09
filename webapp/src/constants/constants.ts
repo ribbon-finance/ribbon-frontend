@@ -11,17 +11,24 @@ export const GAS_LIMITS = {
   withdrawETH: 100000,
 };
 
-export const getETHThetaVaultId = () =>
-  (isStaging()
+export const getETHThetaVaultId = () => {
+  return (isStaging()
     ? deployment.kovan.RibbonETHCoveredCall
     : deployment.mainnet.RibbonETHCoveredCall
   ).toLowerCase();
+};
 
-const VaultList = ["ETH-THETA"] as const;
+export const VaultList = ["rETH-THETA"] as const;
 export type VaultOptions = typeof VaultList[number];
 
 export const VaultAddressMap: { [vault in VaultOptions]: () => string } = {
-  "ETH-THETA": getETHThetaVaultId,
+  "rETH-THETA": getETHThetaVaultId,
+};
+
+export const VaultNamesList = ["T-100-E"] as const;
+export type VaultName = typeof VaultNamesList[number];
+export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
+  "T-100-E": "rETH-THETA",
 };
 
 export const getEtherscanURI = () =>

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import styled from "styled-components";
@@ -14,6 +14,12 @@ import useVaultData from "../../hooks/useVaultData";
 import { ProductType } from "../Product/types";
 import useBalances from "../../hooks/useBalances";
 import sizes from "../../designSystem/sizes";
+import {
+  VaultList,
+  VaultNameOptionMap,
+  VaultOptions,
+} from "../../constants/constants";
+import { productCopies } from "../Product/Product/productCopies";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 48px;
@@ -25,12 +31,12 @@ const SectionTitle = styled(Title)`
   width: 100%;
   font-size: 18px;
   line-height: 24px;
-  margin-bottom: 24px;
 `;
 
 const SectionPlaceholderText = styled(SecondaryText)`
   font-size: 16px;
   line-height: 24px;
+  margin-top: 24px;
 `;
 
 const PositionContainer = styled.div`
@@ -42,6 +48,7 @@ const PositionContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   position: relative;
+  margin-top: 24px;
 `;
 
 const PositionInfoRow = styled.div`
@@ -99,15 +106,20 @@ const KPIDatas = styled.div`
   align-items: flex-end;
 `;
 
-interface PortfolioPositionsProps {
+interface PortfolioPositionProps {
   currency: CurrencyType;
+  vaultOption: VaultOptions;
+  updateLoading: (vaultOption: VaultOptions, loading: boolean) => void;
+  updateEmpty: (vaultOption: VaultOptions, empty: boolean) => void;
 }
 
-const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
+const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   currency,
+  vaultOption,
+  updateLoading,
+  updateEmpty,
 }) => {
-  const { active } = useWeb3React();
-  const { status, vaultBalanceInAsset } = useVaultData();
+  const { status, vaultBalanceInAsset } = useVaultData(vaultOption);
   const { balances, loading: balancesLoading } = useBalances();
   const isLoading = status === "loading" || balancesLoading;
   const { price: ethPrice, loading: ethPriceLoading } = useAssetPrice({});
@@ -116,6 +128,14 @@ const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
     250,
     isLoading || ethPriceLoading
   );
+
+  useEffect(() => {
+    updateLoading(vaultOption, isLoading);
+  }, [isLoading, vaultOption, updateLoading]);
+
+  useEffect(() => {
+    updateEmpty(vaultOption, vaultBalanceInAsset.isZero());
+  }, [vaultOption, updateEmpty, vaultBalanceInAsset]);
 
   const calculatedKPI = useMemo(() => {
     if (balances.length <= 0) {
@@ -173,35 +193,29 @@ const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
   );
 
   const positions = useMemo(() => {
-    if (!active) {
-      return <SectionPlaceholderText>---</SectionPlaceholderText>;
-    }
-
     if (isLoading) {
-      return (
-        <SectionPlaceholderText>{animatedLoadingText}</SectionPlaceholderText>
-      );
+      return null;
     }
 
     if (vaultBalanceInAsset.isZero()) {
-      return (
-        <SectionPlaceholderText>
-          You have no outstanding positions
-        </SectionPlaceholderText>
-      );
+      return null;
     }
 
     return (
       <PositionContainer>
         <PositionInfoRow>
           <PositionSymbolTitle product="yield" className="flex-grow-1">
-            T-100-E
+            {
+              Object.keys(VaultNameOptionMap)[
+                Object.values(VaultNameOptionMap).indexOf(vaultOption)
+              ]
+            }
           </PositionSymbolTitle>
           <Title>{renderAmountText(vaultBalanceInAsset, currency)}</Title>
         </PositionInfoRow>
         <PositionInfoRow>
           <PositionInfoText className="flex-grow-1">
-            Theta Vault - ETH
+            {productCopies[vaultOption].subtitle}
           </PositionInfoText>
           <PositionSecondaryInfoText>
             {renderAmountText(
@@ -221,19 +235,84 @@ const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
       </PositionContainer>
     );
   }, [
-    active,
+    vaultOption,
     isLoading,
-    animatedLoadingText,
     vaultBalanceInAsset,
     renderAmountText,
     calculatedKPI,
     currency,
   ]);
 
+  return positions;
+};
+
+interface PortfolioPositionsProps {
+  currency: CurrencyType;
+}
+
+const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
+  currency,
+}) => {
+  const { active } = useWeb3React();
+  const [loading, setLoading] = useState<string[]>([]);
+  const [empty, setEmpty] = useState<string[]>([]);
+  const animatedLoadingText = useTextAnimation(
+    ["Loading", "Loading .", "Loading ..", "Loading ..."],
+    250,
+    loading.length > 0
+  );
+
+  const updateLoading = useCallback(
+    (vaultOption: VaultOptions, isLoading: boolean) => {
+      isLoading
+        ? setLoading((curr) => curr.concat(vaultOption))
+        : setLoading((curr) =>
+            curr.filter((optionName) => optionName !== vaultOption)
+          );
+    },
+    []
+  );
+
+  const updateEmpty = useCallback(
+    (vaultOption: VaultOptions, isEmpty: boolean) => {
+      isEmpty
+        ? setEmpty((curr) => curr.concat(vaultOption))
+        : setEmpty((curr) =>
+            curr.filter((optionName) => optionName !== vaultOption)
+          );
+    },
+    []
+  );
+
   return (
     <PortfolioPositionsContainer>
       <SectionTitle>Positions</SectionTitle>
-      {positions}
+      {active ? (
+        <>
+          {loading.length > 0 && (
+            <SectionPlaceholderText>
+              {animatedLoadingText}
+            </SectionPlaceholderText>
+          )}
+          {VaultList.map((vaultOption) => (
+            <PortfolioPosition
+              key={vaultOption}
+              currency={currency}
+              vaultOption={vaultOption}
+              updateLoading={updateLoading}
+              updateEmpty={updateEmpty}
+            />
+          ))}
+          {loading.length === 0 && empty.length > 0 && (
+            <SectionPlaceholderText>
+              You have no outstanding positions
+            </SectionPlaceholderText>
+          )}
+          {}
+        </>
+      ) : (
+        <SectionPlaceholderText>---</SectionPlaceholderText>
+      )}
     </PortfolioPositionsContainer>
   );
 };

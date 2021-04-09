@@ -12,6 +12,7 @@ import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 import { Title } from "../../designSystem";
 import useTextAnimation from "../../hooks/useTextAnimation";
+import { VaultOptions } from "../../constants/constants";
 
 const PaginationContainer = styled.div`
   display: flex;
@@ -54,8 +55,12 @@ const PaginationText = styled(Title)`
 
 const perPage = 10;
 
-const VaultActivity = () => {
-  const { activities, loading } = useVaultActivity("ETH-THETA");
+interface VaultActivityProps {
+  vaultOption: VaultOptions;
+}
+
+const VaultActivity: React.FC<VaultActivityProps> = ({ vaultOption }) => {
+  const { activities, loading } = useVaultActivity(vaultOption);
   const [activityFilter, setActivityFilter] = useState<ActivityFilter>(
     activityFilters[0]
   );

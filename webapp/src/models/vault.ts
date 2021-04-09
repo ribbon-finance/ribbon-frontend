@@ -10,6 +10,15 @@ export interface Vault {
   depositors: string[];
 }
 
+export interface VaultAccount {
+  id: string;
+  vault: Vault;
+  account: string;
+  updateCounter: number;
+  totalYieldEarned: BigNumber;
+  totalDeposits: BigNumber;
+}
+
 export interface VaultShortPosition {
   id: string;
   vault: Vault;
