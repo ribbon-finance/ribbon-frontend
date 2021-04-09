@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { Title, PrimaryText, Button, BaseText } from "../../designSystem";
+import { Title, BaseText } from "../../designSystem";
 import { Container } from "react-bootstrap";
 import DCP from "../../img/Investors/dcp.png";
 import Scalar from "../../img/Investors/scalar.png";
