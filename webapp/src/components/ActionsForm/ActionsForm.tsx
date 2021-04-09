@@ -43,7 +43,7 @@ const FormTitleDiv = styled.div<{ left: boolean; active: boolean }>`
   width: 100%;
   padding: 24px 0;
   background-color: ${(props) =>
-    props.active ? "#08090e" : "rgb(28, 26, 25,0.95)"};
+    props.active ? "rgb(28, 26, 25,0.95)" : "rgba(255,255,255,0.04)"};
   cursor: pointer;
 
   ${(props) =>
