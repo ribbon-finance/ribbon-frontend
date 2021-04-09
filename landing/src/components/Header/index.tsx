@@ -189,7 +189,7 @@ const Header = () => {
           <ItemWithDropdown
             variant="desktop"
             dropdownItems={[
-              { text: "Discord", link: "https://discord.ribbon.finance" },
+              { text: "Discord", link: "http://discord.ribbon.finance" },
               { text: "Twitter", link: "https://twitter.com/ribbonfinance" },
               { text: "Github", link: "https://github.com/ribbon-finance" },
             ]}

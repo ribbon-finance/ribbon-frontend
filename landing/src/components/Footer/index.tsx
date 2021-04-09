@@ -48,7 +48,7 @@ const Footer = () => {
     <Container fluid>
       <Row>
         <FooterCol md={3} sm={12} xs={12}>
-          <a href="https://discord.ribbon.finance">
+          <a href="http://discord.ribbon.finance">
             <FooterSection
               onMouseOver={(e: any) =>
                 changeBackground(e, Discord, "rgb(106,111,134,0.72)")
