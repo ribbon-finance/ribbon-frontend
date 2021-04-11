@@ -1,22 +1,40 @@
 import React from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
-import { Title } from "../designSystem";
-import usePullUp from "../hooks/usePullUp";
+import { PrimaryText, SecondaryText, Title } from "../designSystem";
 
-const H2 = styled(Title)`
-  font-size: 30px;
+const PolicyTitle = styled(Title)`
+  font-size: 24px;
+  line-height: 32px;
+  margin-top: 48px;
 `;
 
-const QuestionText = styled.p`
-  color: white;
-  margin-bottom: 0.5em;
+const SectionTitle = styled(Title)`
+  font-size: 18px;
+  line-height: 24px;
+  text-transform: uppercase;
+  margin-top: 48px;
+  margin-bottom: 24px;
+`;
+
+const SectionQuestion = styled.span`
+  font-style: normal;
   font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: white;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  margin-bottom: 16px;
 `;
 
-const AnswerText = styled.p`
-  color: white;
-  margin-bottom: 2em;
+const SectionAnswer = styled(SecondaryText)`
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.64);
+  margin-bottom: 24px;
 `;
 
 const sections = [
@@ -491,8 +509,6 @@ const sections = [
 ];
 
 const TermsPage = () => {
-  usePullUp();
-
   return (
     <Container>
       <Row className="justify-content-center">
@@ -504,25 +520,22 @@ const TermsPage = () => {
           xl={7}
           className="d-flex flex-column"
         >
-          {sections.map(({ sectionName, questions }) => {
-            return (
-              <>
-                <div style={{ marginTop: 50, marginBottom: 20 }}>
-                  <H2>{sectionName}</H2>
-                </div>
-
-                {questions.map(({ question, answer }) => (
-                  <div>
-                    <QuestionText>{question}</QuestionText>
-                    <AnswerText>{answer}</AnswerText>
-                  </div>
-                ))}
-              </>
-            );
-          })}
+          <PolicyTitle>Terms and Conditions</PolicyTitle>
+          {sections.map((section) => (
+            <>
+              <SectionTitle>{section.sectionName}</SectionTitle>
+              {section.questions.map((question) => (
+                <>
+                  <SectionQuestion>{question.question}</SectionQuestion>
+                  <SectionAnswer>{question.answer}</SectionAnswer>
+                </>
+              ))}
+            </>
+          ))}
         </Col>
       </Row>
     </Container>
   );
 };
+
 export default TermsPage;
