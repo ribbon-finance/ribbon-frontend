@@ -4,13 +4,13 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Title, BaseText } from "../../designSystem";
 import { Container } from "react-bootstrap";
-import DCP from "../../img/Investors/dcp.png";
-import Scalar from "../../img/Investors/scalar.png";
-import Nascent from "../../img/Investors/nascent.png";
-import Coinbase from "../../img/Investors/coinbase.png";
-import Consensys from "../../img/Investors/consensys.png";
-import FreeCo from "../../img/Investors/freeCo.png";
-import Divergence from "../../img/Investors/divergence.png";
+import DCP from "../../img/Investors/dcp.svg";
+import Scalar from "../../img/Investors/scalar.svg";
+import Nascent from "../../img/Investors/nascent.svg";
+import Coinbase from "../../img/Investors/coinbase.svg";
+import Consensys from "../../img/Investors/consensys.svg";
+import FreeCo from "../../img/Investors/freeCo.svg";
+import Divergence from "../../img/Investors/divergence.svg";
 
 const MainContainer = styled(Container)`
   padding-top: 80px;

@@ -57,6 +57,14 @@ const DesktopFooter = () => {
     []
   );
 
+  const mediaKit = (
+    <BaseLink to="/ribbon_media_kit.zip" target="_blank" download>
+      <LinkItem>
+        <LinkItemText>Media Kit</LinkItemText>
+      </LinkItem>
+    </BaseLink>
+  );
+
   return (
     <FooterContainer>
       <LeftContainer>
@@ -65,6 +73,7 @@ const DesktopFooter = () => {
         {renderLinkItem("TERMS", "/terms")}
         {renderLinkItem("POLICY", "/policy")}
         {renderLinkItem("DOCS", "https://docs.ribbon.finance")}
+        {mediaKit}
       </LeftContainer>
       <LinksContainer>
         {renderLinkItem("DISCORD", "http://discord.ribbon.finance", true)}
