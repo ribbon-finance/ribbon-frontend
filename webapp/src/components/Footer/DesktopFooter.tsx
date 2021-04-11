@@ -6,6 +6,8 @@ import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
 
+import { useRouteMatch } from "react-router-dom";
+
 const FooterContainer = styled.div`
   display: flex;
   width: 100%;
@@ -59,10 +61,22 @@ const DesktopFooter = () => {
   return (
     <FooterContainer>
       <LeftContainer>
-        {renderLinkItem("FAQS", "https://ribbon.finance/faq")}
+        {renderLinkItem(
+          "FAQ",
+          "/faq",
+          Boolean(useRouteMatch({ path: "/faq", exact: true }))
+        )}
         {renderLinkItem("BLOG", "https://medium.com/@ribbonfinance", true)}
-        {renderLinkItem("TERMS", "https://ribbon.finance/terms")}
-        {renderLinkItem("POLICY", "https://ribbon.finance/policy")}
+        {renderLinkItem(
+          "TERMS",
+          "/terms",
+          Boolean(useRouteMatch({ path: "/terms", exact: true }))
+        )}
+        {renderLinkItem(
+          "POLICY",
+          "/policy",
+          Boolean(useRouteMatch({ path: "/policy", exact: true }))
+        )}
       </LeftContainer>
       <LinksContainer>
         {renderLinkItem("DISCORD", "http://discord.ribbon.finance", true)}

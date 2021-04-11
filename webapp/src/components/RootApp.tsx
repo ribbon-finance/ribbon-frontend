@@ -4,6 +4,9 @@ import styled from "styled-components";
 
 import Header from "./Header/Header";
 import Homepage from "../pages/Home/Homepage";
+import PolicyPage from "../pages/PolicyPage";
+import TermsPage from "../pages/TermsPage";
+import FAQPage from "../pages/FAQ";
 import DepositPage from "../pages/DepositPage/DepositPage";
 import useEagerConnect from "../hooks/useEagerConnect";
 import PortfolioPage from "../pages/Portfolio/PortfolioPage";
@@ -41,6 +44,15 @@ const RootApp = () => {
           </Route>
           <Route path="/portfolio">
             <PortfolioPage />
+          </Route>
+          <Route path="/policy">
+            <PolicyPage />
+          </Route>
+          <Route path="/faq">
+            <FAQPage />
+          </Route>
+          <Route path="/terms">
+            <TermsPage />
           </Route>
         </Switch>
         <Footer />

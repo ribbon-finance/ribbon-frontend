@@ -96,16 +96,16 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           depositors can still expect to be up significantly in USD terms.
           <br />
           <br />
-          Ribbon's smart contracts are{" "}
+          The Theta Vault smart contracts have been{" "}
           <Link
             href="https://github.com/peckshield/publications/blob/master/audit_reports/PeckShield-Audit-Report-Ribbon-v1.0.pdf"
             target="_blank"
             rel="noreferrer noopener"
           >
             audited by Peckshield
-          </Link>
-          . Despite that, users are adviced to exercise caution and only risk
-          funds they can afford to lose.
+          </Link>{" "}
+          and are undergoing two more audits. Despite that, users are adviced to
+          exercise caution and only risk funds they can afford to lose.
         </ParagraphText>
 
         <PrimaryText className="d-block mt-3">
