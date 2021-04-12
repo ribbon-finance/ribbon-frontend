@@ -1,9 +1,11 @@
+import { isProduction } from "./env";
+
 export const addAnalyticsEvent = (
   eventName: string,
   category: string,
   label: string
 ) => {
-  if (!process.env.REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID) {
+  if (!isProduction()) {
     return;
   }
 
