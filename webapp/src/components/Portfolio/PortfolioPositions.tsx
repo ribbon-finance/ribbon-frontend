@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import styled from "styled-components";
@@ -10,9 +10,7 @@ import useAssetPrice from "../../hooks/useAssetPrice";
 import useTextAnimation from "../../hooks/useTextAnimation";
 import { CurrencyType } from "../../pages/Portfolio/types";
 import { ethToUSD, formatSignificantDecimals } from "../../utils/math";
-import useVaultData from "../../hooks/useVaultData";
 import { ProductType } from "../Product/types";
-import useBalances from "../../hooks/useBalances";
 import sizes from "../../designSystem/sizes";
 import {
   VaultList,
@@ -20,6 +18,8 @@ import {
   VaultOptions,
 } from "../../constants/constants";
 import { productCopies } from "../Product/Product/productCopies";
+import useVaultAccounts from "../../hooks/useVaultAccounts";
+import { VaultAccount } from "../../models/vault";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 48px;
@@ -104,77 +104,24 @@ const KPIDatas = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  justify-content: center;
 `;
 
 interface PortfolioPositionProps {
   currency: CurrencyType;
-  vaultOption: VaultOptions;
-  updateLoading: (vaultOption: VaultOptions, loading: boolean) => void;
-  updateEmpty: (vaultOption: VaultOptions, empty: boolean) => void;
+  vaultAccount: VaultAccount;
 }
 
 const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   currency,
-  vaultOption,
-  updateLoading,
-  updateEmpty,
+  vaultAccount,
 }) => {
-  const { status, vaultBalanceInAsset } = useVaultData(vaultOption);
-  const { balances, loading: balancesLoading } = useBalances();
-  const isLoading = status === "loading" || balancesLoading;
   const { price: ethPrice, loading: ethPriceLoading } = useAssetPrice({});
   const animatedLoadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
-    isLoading || ethPriceLoading
+    ethPriceLoading
   );
-
-  useEffect(() => {
-    updateLoading(vaultOption, isLoading);
-  }, [isLoading, vaultOption, updateLoading]);
-
-  useEffect(() => {
-    updateEmpty(vaultOption, vaultBalanceInAsset.isZero());
-  }, [vaultOption, updateEmpty, vaultBalanceInAsset]);
-
-  const calculatedKPI = useMemo(() => {
-    if (balances.length <= 0) {
-      return {
-        yield: BigNumber.from(0),
-        roi: 0,
-      };
-    }
-
-    let totalInvestment = BigNumber.from(0);
-    let yieldEarned = BigNumber.from(0);
-    let lastBalance = BigNumber.from(0);
-
-    for (let i = 0; i < balances.length; i++) {
-      const currentBalanceObj = balances[i];
-      totalInvestment = totalInvestment.add(
-        currentBalanceObj.balance
-          .sub(lastBalance)
-          .sub(currentBalanceObj.yieldEarned)
-      );
-      yieldEarned = yieldEarned.add(currentBalanceObj.yieldEarned);
-      lastBalance = currentBalanceObj.balance;
-    }
-
-    if (totalInvestment.lte(0)) {
-      return {
-        yield: BigNumber.from(0),
-        roi: 0,
-      };
-    }
-
-    return {
-      yield: yieldEarned,
-      roi:
-        (parseFloat(ethers.utils.formatEther(yieldEarned)) /
-          parseFloat(ethers.utils.formatEther(totalInvestment))) *
-        100,
-    };
-  }, [balances]);
 
   const renderAmountText = useCallback(
     (amount: BigNumber, currency: CurrencyType) => {
@@ -192,58 +139,56 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
     [ethPrice, animatedLoadingText, ethPriceLoading]
   );
 
-  const positions = useMemo(() => {
-    if (isLoading) {
-      return null;
-    }
+  const calculatedROI = useMemo(
+    () =>
+      (parseFloat(ethers.utils.formatEther(vaultAccount.totalYieldEarned)) /
+        parseFloat(ethers.utils.formatEther(vaultAccount.totalDeposits))) *
+      100,
+    [vaultAccount]
+  );
 
-    if (vaultBalanceInAsset.isZero()) {
-      return null;
-    }
-
-    return (
-      <PositionContainer>
-        <PositionInfoRow>
-          <PositionSymbolTitle product="yield" className="flex-grow-1">
-            {
-              Object.keys(VaultNameOptionMap)[
-                Object.values(VaultNameOptionMap).indexOf(vaultOption)
-              ]
-            }
-          </PositionSymbolTitle>
-          <Title>{renderAmountText(vaultBalanceInAsset, currency)}</Title>
-        </PositionInfoRow>
-        <PositionInfoRow>
-          <PositionInfoText className="flex-grow-1">
-            {productCopies[vaultOption].subtitle}
-          </PositionInfoText>
-          <PositionSecondaryInfoText>
-            {renderAmountText(
-              vaultBalanceInAsset,
-              currency === "eth" ? "usd" : "eth"
-            )}
+  return (
+    <PositionContainer>
+      <PositionInfoRow>
+        <PositionSymbolTitle product="yield" className="flex-grow-1">
+          {
+            Object.keys(VaultNameOptionMap)[
+              Object.values(VaultNameOptionMap).indexOf(
+                vaultAccount.vault.symbol
+              )
+            ]
+          }
+        </PositionSymbolTitle>
+        <Title>
+          {renderAmountText(
+            vaultAccount.totalDeposits.add(vaultAccount.totalYieldEarned),
+            currency
+          )}
+        </Title>
+      </PositionInfoRow>
+      <PositionInfoRow>
+        <PositionInfoText className="flex-grow-1">
+          {productCopies[vaultAccount.vault.symbol].subtitle}
+        </PositionInfoText>
+        <PositionSecondaryInfoText>
+          {renderAmountText(
+            vaultAccount.totalDeposits.add(vaultAccount.totalYieldEarned),
+            currency === "eth" ? "usd" : "eth"
+          )}
+        </PositionSecondaryInfoText>
+      </PositionInfoRow>
+      <KPIContainer>
+        <KPIDatas>
+          <Title>
+            +{renderAmountText(vaultAccount.totalYieldEarned, currency)}
+          </Title>
+          <PositionSecondaryInfoText variant="green">
+            +{calculatedROI.toFixed(2)}%
           </PositionSecondaryInfoText>
-        </PositionInfoRow>
-        <KPIContainer>
-          <KPIDatas>
-            <Title>+{renderAmountText(calculatedKPI.yield, currency)}</Title>
-            <PositionSecondaryInfoText variant="green">
-              +{calculatedKPI.roi.toFixed(2)}%
-            </PositionSecondaryInfoText>
-          </KPIDatas>
-        </KPIContainer>
-      </PositionContainer>
-    );
-  }, [
-    vaultOption,
-    isLoading,
-    vaultBalanceInAsset,
-    renderAmountText,
-    calculatedKPI,
-    currency,
-  ]);
-
-  return positions;
+        </KPIDatas>
+      </KPIContainer>
+    </PositionContainer>
+  );
 };
 
 interface PortfolioPositionsProps {
@@ -254,56 +199,41 @@ const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
   currency,
 }) => {
   const { active } = useWeb3React();
-  const [loading, setLoading] = useState<string[]>([]);
-  const [empty, setEmpty] = useState<string[]>([]);
+  const { vaultAccounts, loading } = useVaultAccounts(
+    VaultList as [VaultOptions]
+  );
   const animatedLoadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
-    loading.length > 0
+    loading
   );
 
-  const updateLoading = useCallback(
-    (vaultOption: VaultOptions, isLoading: boolean) => {
-      isLoading
-        ? setLoading((curr) => curr.concat(vaultOption))
-        : setLoading((curr) =>
-            curr.filter((optionName) => optionName !== vaultOption)
-          );
-    },
-    []
-  );
-
-  const updateEmpty = useCallback(
-    (vaultOption: VaultOptions, isEmpty: boolean) => {
-      isEmpty
-        ? setEmpty((curr) => curr.concat(vaultOption))
-        : setEmpty((curr) =>
-            curr.filter((optionName) => optionName !== vaultOption)
-          );
-    },
-    []
-  );
+  const filteredVaultAccounts = useMemo(() => {
+    return Object.fromEntries(
+      Object.keys(vaultAccounts)
+        .map((key) => [key, vaultAccounts[key]])
+        .filter((item) => item[1])
+    );
+  }, [vaultAccounts]);
 
   return (
     <PortfolioPositionsContainer>
       <SectionTitle>Positions</SectionTitle>
       {active ? (
         <>
-          {loading.length > 0 && (
+          {loading && (
             <SectionPlaceholderText>
               {animatedLoadingText}
             </SectionPlaceholderText>
           )}
-          {VaultList.map((vaultOption) => (
+          {Object.keys(filteredVaultAccounts).map((key) => (
             <PortfolioPosition
-              key={vaultOption}
+              key={key}
               currency={currency}
-              vaultOption={vaultOption}
-              updateLoading={updateLoading}
-              updateEmpty={updateEmpty}
+              vaultAccount={filteredVaultAccounts[key]}
             />
           ))}
-          {loading.length === 0 && empty.length > 0 && (
+          {!loading && Object.keys(filteredVaultAccounts).length <= 0 && (
             <SectionPlaceholderText>
               You have no outstanding positions
             </SectionPlaceholderText>

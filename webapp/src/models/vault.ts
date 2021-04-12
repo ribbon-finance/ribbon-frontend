@@ -1,9 +1,10 @@
 import { BigNumber } from "ethers";
+import { VaultOptions } from "../constants/constants";
 
 export interface Vault {
   id: string;
   name: string;
-  symbol: string;
+  symbol: VaultOptions;
   numDepositors: number;
   totalPremiumEarned: number;
   totalWithdrawalFee: number;

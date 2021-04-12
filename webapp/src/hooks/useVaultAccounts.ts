@@ -10,7 +10,7 @@ import { VaultAddressMap, VaultOptions } from "../constants/constants";
 const useVaultAccounts = (vaults: VaultOptions[]) => {
   const { account } = useWeb3React();
   const [vaultAccounts, setVaultAccounts] = useState<{
-    [key: string]: VaultAccount;
+    [key: string]: VaultAccount | undefined;
   }>({});
   const [loading, setLoading] = useState(false);
 
@@ -35,10 +35,7 @@ const useVaultAccounts = (vaults: VaultOptions[]) => {
   return { vaultAccounts, loading };
 };
 
-const fetchVaultAccounts = async (
-  vaults: VaultOptions[],
-  account: string
-): Promise<any> => {
+const fetchVaultAccounts = async (vaults: VaultOptions[], account: string) => {
   const response = await axios.post(getSubgraphqlURI(), {
     query: `
         {
@@ -49,6 +46,9 @@ const fetchVaultAccounts = async (
             ]()}-${account.toLowerCase()}") {
               totalDeposits
               totalYieldEarned
+              vault {
+                symbol
+              }
             }
           `
           )}
@@ -74,14 +74,6 @@ const fetchVaultAccounts = async (
       ];
     })
   );
-
-  // return vaults.map((vault) =>
-  //   response.data.data[vault.replace("-", "")].map((item: any) => ({
-  //     ...item,
-  //     totalDeposits: BigNumber.from(item.totalDeposits),
-  //     totalYieldEarned: BigNumber.from(item.totalYieldEarned),
-  //   }))
-  // );
 };
 
 export default useVaultAccounts;
