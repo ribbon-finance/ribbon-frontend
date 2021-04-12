@@ -155,7 +155,7 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault = VaultList[0] }) => {
   return (
     <ProductCard
       onClick={() =>
-        history.push(
+        window.open(
           `/theta-vault/${
             Object.keys(VaultNameOptionMap)[
               Object.values(VaultNameOptionMap).indexOf(vault)
