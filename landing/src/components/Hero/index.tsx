@@ -90,9 +90,6 @@ const Hero = () => {
   const [, setCol] = useState(0);
 
   enum PassiveColors {
-    "#251F18",
-    "#202320",
-    "#1F1F21",
     "#1C1A19",
   }
 
