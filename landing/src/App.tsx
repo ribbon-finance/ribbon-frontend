@@ -10,6 +10,7 @@ import React from "react";
 import Investors from "./components/Investors";
 import PolicyPage from "./pages/PolicyPage";
 import TermsPage from "./pages/TermsPage";
+import FAQPage from "./pages/FAQ";
 
 const Body = styled.div`
   background-color: #1c1a19;
@@ -39,6 +40,10 @@ function App() {
 
           <Route path="/terms">
             <TermsPage></TermsPage>
+          </Route>
+
+          <Route path="/faq">
+            <FAQPage></FAQPage>
           </Route>
         </Switch>
 

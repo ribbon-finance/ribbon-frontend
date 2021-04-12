@@ -90,9 +90,6 @@ const Hero = () => {
   const [, setCol] = useState(0);
 
   enum PassiveColors {
-    "#251F18",
-    "#202320",
-    "#1F1F21",
     "#1C1A19",
   }
 
@@ -122,19 +119,19 @@ const Hero = () => {
             onMouseLeave={(e: any) => resetBackground(e, 0)}
           />
           <ColorColumn
-            passiveColor={PassiveColors[1]}
+            passiveColor={PassiveColors[0]}
             onMouseOver={(e: any) => changeBackground(e, 1)}
-            onMouseLeave={(e: any) => resetBackground(e, 1)}
+            onMouseLeave={(e: any) => resetBackground(e, 0)}
           />
           <ColorColumn
-            passiveColor={PassiveColors[2]}
+            passiveColor={PassiveColors[0]}
             onMouseOver={(e: any) => changeBackground(e, 2)}
-            onMouseLeave={(e: any) => resetBackground(e, 2)}
+            onMouseLeave={(e: any) => resetBackground(e, 0)}
           />
           <ColorColumn
-            passiveColor={PassiveColors[3]}
+            passiveColor={PassiveColors[0]}
             onMouseOver={(e: any) => changeBackground(e, 3)}
-            onMouseLeave={(e: any) => resetBackground(e, 3)}
+            onMouseLeave={(e: any) => resetBackground(e, 0)}
           />
         </BackgroundContainer>
       </HeroContainer>

@@ -118,6 +118,10 @@ const AppButton = styled(Button)`
   border-radius: 8px;
   background: rgba(22, 206, 185, 0.08);
   border: none;
+
+  &:hover {
+    opacity: ${theme.hover.opacity};
+  }
 `;
 
 const ButtonContainer = styled.div`
@@ -178,9 +182,9 @@ const Header = () => {
             variant="desktop"
             dropdownItems={[
               { text: "Blog", link: "https://ribbonfinance.medium.com" },
-              { text: "FAQs", link: "https://ribbonfinance.medium.com" },
-              { text: "Terms", link: "https://ribbonfinance.medium.com" },
-              { text: "Policy", link: "https://ribbonfinance.medium.com" },
+              { text: "FAQs", link: "/faq" },
+              { text: "Terms", link: "/terms" },
+              { text: "Policy", link: "/policy" },
             ]}
           >
             About
@@ -224,6 +228,14 @@ const Header = () => {
           style={{ paddingTop: 40 }}
         >
           {renderLinkItem("START EARNING", "https://app.ribbon.finance", true)}
+          {renderLinkItem("FAQs", "/faq", false, false, true)}
+          {renderLinkItem(
+            "BLOG",
+            "http://tiny.cc/ribbon-discord",
+            false,
+            false,
+            true
+          )}
           {renderLinkItem(
             "DISCORD",
             "http://tiny.cc/ribbon-discord",
@@ -245,16 +257,8 @@ const Header = () => {
             false,
             true
           )}
-          {/* {renderLinkItem("FAQS", "/faq", false, false)} */}
-          {renderLinkItem(
-            "BLOG",
-            "https://medium.com/@ribbonfinance",
-            false,
-            false,
-            true
-          )}
-          {/* {renderLinkItem("TERMS", "/terms", false, false)} */}
-          {renderLinkItem("POLICY", "/policy", false, false)}
+          {renderLinkItem("POLICY", "/policy", false, false, true)}
+          {renderLinkItem("TERMS", "/terms", false, false, true)}
         </MobileOverlayMenu>
       </MobileOnly>
     </HeaderContainer>

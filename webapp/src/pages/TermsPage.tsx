@@ -17,12 +17,7 @@ const SectionTitle = styled(Title)`
   margin-bottom: 24px;
 `;
 
-const SectionQuestion = styled.span`
-  font-style: normal;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 24px;
-  color: white;
+const SectionQuestion = styled(PrimaryText)`
   font-size: 16px;
   line-height: 24px;
   font-weight: 600;

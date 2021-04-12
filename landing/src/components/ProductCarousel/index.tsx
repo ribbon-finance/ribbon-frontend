@@ -5,7 +5,7 @@ import { Title } from "../../designSystem";
 import Products from "../Product/ProductSection";
 
 const ProductCarouselContainer = styled(Container)`
-  padding-top: 80px;
+  padding-top: 160px;
   padding-bottom: 80px;
 `;
 

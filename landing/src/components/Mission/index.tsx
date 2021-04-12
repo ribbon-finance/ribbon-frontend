@@ -9,11 +9,13 @@ import Plane from "../../img/ShapePlane.svg";
 import sizes from "../../designSystem/sizes";
 
 const MainContainer = styled(Container)`
-  padding-bottom: 40px;
+  padding-top: 80px;
+  padding-bottom: 80px;
 `;
 
 const MissionText = styled(BaseText)`
-  font-size: 11px;
+  font-family: VCR;
+  font-size: 12px;
   line-height: 16px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
