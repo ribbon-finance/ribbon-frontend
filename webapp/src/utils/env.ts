@@ -7,6 +7,8 @@ export const isStaging = () =>
 // But we still need a switch to only show dev features locally
 export const isDevelopment = () => isStaging();
 
+export const isProduction = () => !isStaging() && !isDevelopment();
+
 export const getNodeURI = () =>
   isStaging()
     ? process.env.REACT_APP_TESTNET_URI
