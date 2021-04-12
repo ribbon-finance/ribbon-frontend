@@ -19,7 +19,6 @@ import { CurrencyType } from "../../pages/Portfolio/types";
 import { ethToUSD, toETH } from "../../utils/math";
 import PerformanceChart from "../PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../PerformanceChart/types";
-import useVaultData from "../../hooks/useVaultData";
 import { BalanceUpdate } from "../../models/vault";
 import sizes from "../../designSystem/sizes";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
