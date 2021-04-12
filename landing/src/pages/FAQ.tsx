@@ -1,7 +1,8 @@
 import React from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
-import { PrimaryText, SecondaryText, Title } from "../designSystem";
+import { SecondaryText, Title } from "../designSystem";
+import usePullUp from "../hooks/usePullUp";
 
 const FAQTitle = styled(Title)`
   font-size: 24px;
@@ -154,6 +155,8 @@ const sections = [
 ];
 
 const FAQPage = () => {
+  usePullUp();
+
   return (
     <Container>
       <Row className="justify-content-center">

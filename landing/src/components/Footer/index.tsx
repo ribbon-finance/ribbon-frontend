@@ -44,11 +44,7 @@ const LinkItemText = styled(Title)`
 const DesktopFooter = () => {
   const renderLinkItem = useCallback(
     (title: string, to: string, external: boolean = false) => (
-      <BaseLink
-        to={to}
-        target={external ? "_blank" : undefined}
-        rel={external ? "noreferrer noopener" : undefined}
-      >
+      <BaseLink to={to}>
         <LinkItem>
           <LinkItemText>{title}</LinkItemText>
         </LinkItem>

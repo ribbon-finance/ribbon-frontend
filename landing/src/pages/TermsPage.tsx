@@ -1,7 +1,7 @@
 import React from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
-import { PrimaryText, SecondaryText, Title } from "../designSystem";
+import { SecondaryText, Title } from "../designSystem";
 
 const PolicyTitle = styled(Title)`
   font-size: 24px;
