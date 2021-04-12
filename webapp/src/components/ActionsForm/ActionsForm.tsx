@@ -39,12 +39,31 @@ const FormContainer = styled.div`
   border-radius: 8px;
 `;
 
+const FormTitleContainer = styled.div`
+  justify-content: space-evenly;
+  position: relative;
+
+  &:before {
+    display: block;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    content: " ";
+    background-color: ${colors.background};
+    z-index: -1;
+  }
+`;
+
 const FormTitleDiv = styled.div<{ left: boolean; active: boolean }>`
   width: 100%;
   padding: 24px 0;
   background-color: ${(props) =>
     props.active ? "rgb(28, 26, 25,0.95)" : "rgba(255,255,255,0.04)"};
   cursor: pointer;
+
+  &:after {
+    background-color: white;
+  }
 
   ${(props) =>
     props.left
@@ -59,7 +78,7 @@ const FormTitle = styled(Title)<{ active: boolean }>`
   font-size: 16px;
   line-height: 24px;
   text-transform: uppercase;
-  color: ${(props) => (props.active ? "#f3f3f3" : "rgba(243, 243, 243, 0.64)")};
+  color: ${(props) => (props.active ? "#f3f3f3" : "rgba(255, 255, 255, 0.64)")};
 `;
 
 const InputGuide = styled.div`
@@ -397,25 +416,22 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
       {isDesktop && desktopActionModal}
 
       <FormContainer>
-        <div
-          style={{ justifyContent: "space-evenly" }}
-          className="d-flex flex-row align-items-center"
-        >
+        <FormTitleContainer className="d-flex flex-row align-items-center">
           <FormTitleDiv
             left
             active={isDeposit}
             onClick={switchToTab(DEPOSIT_TAB)}
           >
-            <FormTitle active={DEPOSIT_TAB}>Deposit</FormTitle>
+            <FormTitle active={isDeposit}>Deposit</FormTitle>
           </FormTitleDiv>
           <FormTitleDiv
             left={false}
             active={!isDeposit}
             onClick={switchToTab(WITHDRAWAL_TAB)}
           >
-            <FormTitle active={WITHDRAWAL_TAB}>Withdraw</FormTitle>
+            <FormTitle active={!isDeposit}>Withdraw</FormTitle>
           </FormTitleDiv>
-        </div>
+        </FormTitleContainer>
 
         <ContentContainer className="px-4 py-4">
           <InputGuide>AMOUNT (ETH)</InputGuide>

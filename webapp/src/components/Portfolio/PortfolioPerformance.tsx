@@ -178,19 +178,22 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
   const [rangeFilter, setRangeFilter] = useState<dateFilterType>("1m");
   const [, setShowConnectWalletModal] = useConnectWalletModal();
 
-  const vaultBalanceInAsset = useMemo(() => {
+  const {
+    sum: vaultBalanceInAsset,
+    sumYield: vaultYieldInAsset,
+  } = useMemo(() => {
     let sum = BigNumber.from(0);
+    let sumYield = BigNumber.from(0);
 
     Object.keys(vaultAccounts).forEach((key) => {
       const vaultAccount = vaultAccounts[key];
       if (vaultAccount) {
-        sum = sum
-          .add(vaultAccount.totalDeposits)
-          .sub(vaultAccount.totalYieldEarned);
+        sum = sum.add(vaultAccount.totalDeposits);
+        sumYield = sumYield.add(vaultAccount.totalYieldEarned);
       }
     });
 
-    return sum;
+    return { sum, sumYield };
   }, [vaultAccounts]);
 
   const afterDate = useMemo(() => {
@@ -214,33 +217,73 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
     loading
   );
 
+  const calculatedKPI = useMemo(() => {
+    if (balances.length <= 0) {
+      return {
+        yield: BigNumber.from(0),
+        roi: 0,
+        deposit: BigNumber.from(0),
+      };
+    }
+
+    if (!hoveredBalanceUpdate) {
+      return {
+        yield: vaultYieldInAsset,
+        roi:
+          (parseFloat(ethers.utils.formatEther(vaultYieldInAsset)) /
+            parseFloat(ethers.utils.formatEther(vaultBalanceInAsset))) *
+          100,
+        deposit: vaultBalanceInAsset,
+      };
+    }
+
+    let balancesToCalculate = balances.slice(
+      0,
+      balances.indexOf(hoveredBalanceUpdate) + 1
+    );
+    let totalInvestment = BigNumber.from(0);
+    let yieldEarned = BigNumber.from(0);
+    let lastBalance = BigNumber.from(0);
+
+    for (let i = 0; i < balancesToCalculate.length; i++) {
+      const currentBalanceObj = balancesToCalculate[i];
+      totalInvestment = totalInvestment.add(
+        currentBalanceObj.balance
+          .sub(lastBalance)
+          .sub(currentBalanceObj.yieldEarned)
+      );
+      yieldEarned = yieldEarned.add(currentBalanceObj.yieldEarned);
+      lastBalance = currentBalanceObj.balance;
+    }
+
+    if (totalInvestment.lte(0)) {
+      return {
+        yield: BigNumber.from(0),
+        roi: 0,
+        deposit: totalInvestment,
+      };
+    }
+
+    return {
+      yield: yieldEarned,
+      roi:
+        (parseFloat(ethers.utils.formatEther(yieldEarned)) /
+          parseFloat(ethers.utils.formatEther(totalInvestment))) *
+        100,
+      deposit: totalInvestment,
+    };
+  }, [balances, hoveredBalanceUpdate, vaultYieldInAsset, vaultBalanceInAsset]);
+
   const getDepositAmount = useCallback(() => {
     switch (currency) {
       case "eth":
-        return toETH(
-          hoveredBalanceUpdate
-            ? hoveredBalanceUpdate.balance
-            : vaultBalanceInAsset,
-          2
-        );
+        return toETH(calculatedKPI.deposit, 2);
       case "usd":
         return ethPriceLoading
           ? animatedLoadingText
-          : ethToUSD(
-              hoveredBalanceUpdate
-                ? hoveredBalanceUpdate.balance
-                : vaultBalanceInAsset,
-              ethPrice
-            );
+          : ethToUSD(calculatedKPI.deposit, ethPrice);
     }
-  }, [
-    currency,
-    ethPrice,
-    hoveredBalanceUpdate,
-    vaultBalanceInAsset,
-    ethPriceLoading,
-    animatedLoadingText,
-  ]);
+  }, [calculatedKPI, currency, ethPrice, ethPriceLoading, animatedLoadingText]);
 
   const renderDepositData = useCallback(() => {
     if (!active) {
@@ -280,48 +323,6 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
     },
     [balances]
   );
-
-  const calculatedKPI = useMemo(() => {
-    if (balances.length <= 0) {
-      return {
-        yield: BigNumber.from(0),
-        roi: 0,
-      };
-    }
-
-    let balancesToCalculate = hoveredBalanceUpdate
-      ? balances.slice(0, balances.indexOf(hoveredBalanceUpdate) + 1)
-      : balances;
-    let totalInvestment = BigNumber.from(0);
-    let yieldEarned = BigNumber.from(0);
-    let lastBalance = BigNumber.from(0);
-
-    for (let i = 0; i < balancesToCalculate.length; i++) {
-      const currentBalanceObj = balancesToCalculate[i];
-      totalInvestment = totalInvestment.add(
-        currentBalanceObj.balance
-          .sub(lastBalance)
-          .sub(currentBalanceObj.yieldEarned)
-      );
-      yieldEarned = yieldEarned.add(currentBalanceObj.yieldEarned);
-      lastBalance = currentBalanceObj.balance;
-    }
-
-    if (totalInvestment.lte(0)) {
-      return {
-        yield: BigNumber.from(0),
-        roi: 0,
-      };
-    }
-
-    return {
-      yield: yieldEarned,
-      roi:
-        (parseFloat(ethers.utils.formatEther(yieldEarned)) /
-          parseFloat(ethers.utils.formatEther(totalInvestment))) *
-        100,
-    };
-  }, [balances, hoveredBalanceUpdate]);
 
   const renderYieldEarnedText = useCallback(() => {
     if (!active) {
