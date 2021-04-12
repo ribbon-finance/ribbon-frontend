@@ -6,8 +6,6 @@ import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
 
-import { useRouteMatch } from "react-router-dom";
-
 const FooterContainer = styled.div`
   display: flex;
   width: 100%;
@@ -45,11 +43,7 @@ const LinkItemText = styled(Title)`
 const DesktopFooter = () => {
   const renderLinkItem = useCallback(
     (title: string, to: string, external: boolean = false) => (
-      <BaseLink
-        to={to}
-        target={external ? "_blank" : undefined}
-        rel={external ? "noreferrer noopener" : undefined}
-      >
+      <BaseLink to={to}>
         <LinkItem>
           <LinkItemText>{title}</LinkItemText>
         </LinkItem>
@@ -61,22 +55,10 @@ const DesktopFooter = () => {
   return (
     <FooterContainer>
       <LeftContainer>
-        {renderLinkItem(
-          "FAQ",
-          "/faq",
-          Boolean(useRouteMatch({ path: "/faq", exact: true }))
-        )}
+        {renderLinkItem("FAQ", "https://ribbon.finance/faq")}
         {renderLinkItem("BLOG", "https://medium.com/@ribbonfinance", true)}
-        {renderLinkItem(
-          "TERMS",
-          "/terms",
-          Boolean(useRouteMatch({ path: "/terms", exact: true }))
-        )}
-        {renderLinkItem(
-          "POLICY",
-          "/policy",
-          Boolean(useRouteMatch({ path: "/policy", exact: true }))
-        )}
+        {renderLinkItem("TERMS", "https://ribbon.finance/terms")}
+        {renderLinkItem("POLICY", "https://ribbon.finance/policy")}
       </LeftContainer>
       <LinksContainer>
         {renderLinkItem("DISCORD", "http://discord.ribbon.finance", true)}

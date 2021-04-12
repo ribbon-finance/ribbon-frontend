@@ -8,7 +8,6 @@ import DCP from "../../img/Investors/dcp.svg";
 import Scalar from "../../img/Investors/scalar.svg";
 import Nascent from "../../img/Investors/nascent.svg";
 import Coinbase from "../../img/Investors/coinbase.svg";
-import Consensys from "../../img/Investors/consensys.svg";
 import FreeCo from "../../img/Investors/freeCo.svg";
 import Divergence from "../../img/Investors/divergence.svg";
 
