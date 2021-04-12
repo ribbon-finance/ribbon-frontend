@@ -14,7 +14,7 @@ import Divergence from "../../img/Investors/divergence.svg";
 
 const MainContainer = styled(Container)`
   padding-top: 80px;
-  padding-bottom: 80px;
+  padding-bottom: 160px;
 `;
 
 const InvestorsTitle = styled(Title)`
@@ -27,7 +27,7 @@ const InvestorCard = styled.div`
   border-radius: 8px;
   border: 1px solid #2b2b2b;
   margin-bottom: 16px;
-  height: 136px;
+  height: 120px;
 `;
 
 const InvestorRow = styled(Row)`
@@ -38,8 +38,8 @@ const InvestorLogo = styled.img``;
 
 const InvestorText = styled(BaseText)`
   font-weight: 600;
-  font-size: 22px;
-  line-height: 29px;
+  font-size: 16px;
+  line-height: 24px;
   text-align: center;
   text-transform: capitalize;
   color: #ffffff;
