@@ -205,7 +205,8 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   const [error, setError] = useState<ValidationErrors>("none");
 
   // derived states
-  const vaultFull = isVaultFull(deposits, vaultLimit);
+  // const vaultFull = isVaultFull(deposits, vaultLimit);
+  const vaultFull = true;
   const connected = Boolean(active && account);
   const isInputNonZero = parseFloat(inputAmount) > 0;
 
