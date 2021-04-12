@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import { Col, Row } from "react-bootstrap";
 import styled from "styled-components";
 
 import { BaseLink, Title } from "../../designSystem";
@@ -36,6 +37,34 @@ const LinkItem = styled.div`
   }
 `;
 
+const MobileFooter = styled.div`
+  border-top: 1px solid #2b2b2b;
+
+  @media (min-width: ${sizes.sm}px) {
+    display: none;
+  }
+`;
+
+const MobileFooterRow = styled(Row)`
+  margin-right: 0;
+  margin-left: 0;
+`;
+
+const MobileFooterCol = styled(Col)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: ${sizes.sm}px) {
+    padding-top: 27px;
+    padding-bottom: 27px;
+  }
+
+  @media (min-width: ${sizes.lg}px) {
+    max-width: 50%;
+  }
+`;
+
 const LinkItemText = styled(Title)`
   font-size: 14px;
   line-height: 20px;
@@ -44,11 +73,13 @@ const LinkItemText = styled(Title)`
 const DesktopFooter = () => {
   const renderLinkItem = useCallback(
     (title: string, to: string, external: boolean = false) => (
-      <BaseLink to={to}>
-        <LinkItem>
-          <LinkItemText>{title}</LinkItemText>
-        </LinkItem>
-      </BaseLink>
+      <MobileFooterCol xs={6} md={1}>
+        <BaseLink to={to}>
+          <LinkItem>
+            <LinkItemText>{title}</LinkItemText>
+          </LinkItem>
+        </BaseLink>
+      </MobileFooterCol>
     ),
     []
   );
@@ -62,21 +93,42 @@ const DesktopFooter = () => {
   );
 
   return (
-    <FooterContainer>
-      <LeftContainer>
-        {renderLinkItem("FAQS", "/faq")}
-        {renderLinkItem("BLOG", "https://medium.com/@ribbonfinance", true)}
-        {renderLinkItem("TERMS", "/terms")}
-        {renderLinkItem("POLICY", "/policy")}
-        {renderLinkItem("DOCS", "https://docs.ribbon.finance")}
-        {mediaKit}
-      </LeftContainer>
-      <LinksContainer>
-        {renderLinkItem("DISCORD", "http://discord.ribbon.finance", true)}
-        {renderLinkItem("TWITTER", "https://twitter.com/ribbonfinance", true)}
-        {renderLinkItem("GITHUB", "https://github.com/ribbon-finance", true)}
-      </LinksContainer>
-    </FooterContainer>
+    <>
+      <FooterContainer>
+        <LeftContainer>
+          {renderLinkItem("FAQS", "/faq")}
+          {renderLinkItem("BLOG", "https://medium.com/@ribbonfinance", true)}
+          {renderLinkItem("TERMS", "/terms")}
+          {renderLinkItem("POLICY", "/policy")}
+          {renderLinkItem("DOCS", "https://docs.ribbon.finance")}
+          {mediaKit}
+        </LeftContainer>
+        <div className="d-flex flex-row">
+          {renderLinkItem("DISCORD", "http://discord.ribbon.finance", true)}
+          {renderLinkItem("TWITTER", "https://twitter.com/ribbonfinance", true)}
+          {renderLinkItem("GITHUB", "https://github.com/ribbon-finance", true)}
+        </div>
+      </FooterContainer>
+
+      <MobileFooter>
+        <MobileFooterRow>
+          {renderLinkItem("FAQS", "/faq")}
+          {renderLinkItem("BLOG", "https://medium.com/@ribbonfinance", true)}
+        </MobileFooterRow>
+        <MobileFooterRow>
+          {renderLinkItem("TERMS", "/terms")}
+          {renderLinkItem("POLICY", "/policy")}
+        </MobileFooterRow>
+        <MobileFooterRow>
+          {renderLinkItem("DOCS", "https://docs.ribbon.finance")}
+          {renderLinkItem("DISCORD", "http://discord.ribbon.finance", true)}
+        </MobileFooterRow>
+        <MobileFooterRow>
+          {renderLinkItem("TWITTER", "https://twitter.com/ribbonfinance", true)}
+          {renderLinkItem("GITHUB", "https://github.com/ribbon-finance", true)}
+        </MobileFooterRow>
+      </MobileFooter>
+    </>
   );
 };
 

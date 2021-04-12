@@ -157,7 +157,11 @@ const Hero = () => {
             </SubTitle>
           </SubtitleContainer>
           <ButtonContainer>
-            <a href="https://app.ribbon.finance">
+            <a
+              href="https://app.ribbon.finance"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
               <Button>START EARNING</Button>
             </a>
           </ButtonContainer>
