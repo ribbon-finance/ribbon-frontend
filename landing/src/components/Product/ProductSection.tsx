@@ -174,15 +174,6 @@ const IndicatorIcon = styled.i`
 const ProductContentContainer = styled(Row)<DynamicMarginProps>`
   position: relative;
   padding: 40px 0px;
-  ${(props) => {
-    if (props.empty <= 0) return null;
-    return `
-      margin-top: calc(${props.empty}px * 0.15);
-    `;
-  }}
-  @media (max-width: ${sizes.md}px) {
-    margin-top: 0px;
-  }
 `;
 
 const ProductContent = styled(Col)`
