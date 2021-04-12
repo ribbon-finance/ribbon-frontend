@@ -19,7 +19,6 @@ import { CurrencyType } from "../../pages/Portfolio/types";
 import { ethToUSD, toETH } from "../../utils/math";
 import PerformanceChart from "../PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../PerformanceChart/types";
-import useVaultData from "../../hooks/useVaultData";
 import { BalanceUpdate } from "../../models/vault";
 import sizes from "../../designSystem/sizes";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
@@ -179,19 +178,22 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
   const [rangeFilter, setRangeFilter] = useState<dateFilterType>("1m");
   const [, setShowConnectWalletModal] = useConnectWalletModal();
 
-  const vaultBalanceInAsset = useMemo(() => {
+  const {
+    sum: vaultBalanceInAsset,
+    sumYield: vaultYieldInAsset,
+  } = useMemo(() => {
     let sum = BigNumber.from(0);
+    let sumYield = BigNumber.from(0);
 
     Object.keys(vaultAccounts).forEach((key) => {
       const vaultAccount = vaultAccounts[key];
       if (vaultAccount) {
-        sum = sum
-          .add(vaultAccount.totalDeposits)
-          .sub(vaultAccount.totalYieldEarned);
+        sum = sum.add(vaultAccount.totalDeposits);
+        sumYield = sumYield.add(vaultAccount.totalYieldEarned);
       }
     });
 
-    return sum;
+    return { sum, sumYield };
   }, [vaultAccounts]);
 
   const afterDate = useMemo(() => {
@@ -290,9 +292,20 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
       };
     }
 
-    let balancesToCalculate = hoveredBalanceUpdate
-      ? balances.slice(0, balances.indexOf(hoveredBalanceUpdate) + 1)
-      : balances;
+    if (!hoveredBalanceUpdate) {
+      return {
+        yield: vaultYieldInAsset,
+        roi:
+          (parseFloat(ethers.utils.formatEther(vaultYieldInAsset)) /
+            parseFloat(ethers.utils.formatEther(vaultBalanceInAsset))) *
+          100,
+      };
+    }
+
+    let balancesToCalculate = balances.slice(
+      0,
+      balances.indexOf(hoveredBalanceUpdate) + 1
+    );
     let totalInvestment = BigNumber.from(0);
     let yieldEarned = BigNumber.from(0);
     let lastBalance = BigNumber.from(0);
@@ -322,7 +335,7 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
           parseFloat(ethers.utils.formatEther(totalInvestment))) *
         100,
     };
-  }, [balances, hoveredBalanceUpdate]);
+  }, [balances, hoveredBalanceUpdate, vaultYieldInAsset, vaultBalanceInAsset]);
 
   const renderYieldEarnedText = useCallback(() => {
     if (!active) {
