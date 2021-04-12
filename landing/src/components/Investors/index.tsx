@@ -34,9 +34,7 @@ const InvestorRow = styled(Row)`
   margin-top: 64px;
 `;
 
-const InvestorLogo = styled.img`
-  width: 50%;
-`;
+const InvestorLogo = styled.img``;
 
 const InvestorText = styled(BaseText)`
   font-weight: 600;
@@ -52,7 +50,7 @@ const Investors = () => {
     <MainContainer fluid>
       <Row className="d-flex justify-content-center">
         <Col className="d-flex justify-content-center">
-          <InvestorsTitle>Our Investors & Advisors</InvestorsTitle>
+          <InvestorsTitle>Our Investors</InvestorsTitle>
         </Col>
       </Row>
       <Container>
@@ -79,11 +77,6 @@ const Investors = () => {
           </Col>
           <Col xl={3} md={4} sm={12} xs={12}>
             <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorLogo src={Consensys} />
-            </InvestorCard>
-          </Col>
-          <Col xl={3} md={4} sm={12} xs={12}>
-            <InvestorCard className="d-flex justify-content-center align-items-center">
               <InvestorLogo src={Divergence} />
             </InvestorCard>
           </Col>
@@ -94,12 +87,12 @@ const Investors = () => {
           </Col>
           <Col xl={3} md={4} sm={12} xs={12}>
             <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorText>Defi Alliance</InvestorText>
+              <InvestorText>Joseph Lubin</InvestorText>
             </InvestorCard>
           </Col>
           <Col xl={3} md={4} sm={12} xs={12}>
             <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorText>Stani Kulechov</InvestorText>
+              <InvestorText>Defi Alliance</InvestorText>
             </InvestorCard>
           </Col>
           <Col xl={3} md={4} sm={12} xs={12}>
@@ -115,6 +108,11 @@ const Investors = () => {
           <Col xl={3} md={4} sm={12} xs={12}>
             <InvestorCard className="d-flex justify-content-center align-items-center">
               <InvestorText>Kain Warwick</InvestorText>
+            </InvestorCard>
+          </Col>
+          <Col xl={3} md={4} sm={12} xs={12}>
+            <InvestorCard className="d-flex justify-content-center align-items-center">
+              <InvestorText>Tony Sheng</InvestorText>
             </InvestorCard>
           </Col>
         </InvestorRow>

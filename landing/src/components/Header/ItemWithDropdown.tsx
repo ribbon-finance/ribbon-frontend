@@ -238,7 +238,7 @@ const ItemWithDropdown: React.FC<ItemWithDropdownProps> = ({
     extra?: React.ReactNode
   ) => {
     return (
-      <a key={index} href={link} target="_blank" rel="noreferrer noopener">
+      <a key={index} href={link} rel="noreferrer noopener">
         <MenuItem role="button">
           <MenuItemText>{title}</MenuItemText>
           {extra}

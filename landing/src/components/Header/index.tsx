@@ -178,9 +178,9 @@ const Header = () => {
             variant="desktop"
             dropdownItems={[
               { text: "Blog", link: "https://ribbonfinance.medium.com" },
-              { text: "FAQs", link: "https://ribbonfinance.medium.com" },
-              { text: "Terms", link: "https://ribbonfinance.medium.com" },
-              { text: "Policy", link: "https://ribbonfinance.medium.com" },
+              { text: "FAQs", link: "/faq" },
+              { text: "Terms", link: "/terms" },
+              { text: "Policy", link: "/policy" },
             ]}
           >
             About
