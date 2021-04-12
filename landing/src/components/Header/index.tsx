@@ -152,6 +152,7 @@ const Header = () => {
         to={to}
         target={external ? "_blank" : undefined}
         rel={external ? "noreferrer noopener" : undefined}
+        onClick={onToggleMenu}
       >
         {primary ? (
           <NavItem isSelected={isSelected}>
