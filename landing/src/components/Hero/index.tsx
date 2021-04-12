@@ -29,7 +29,7 @@ const SubtitleContainer = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-  margin-top: 30px;
+  margin-top: 100px;
 `;
 
 const SubTitle = styled(PrimaryText)`

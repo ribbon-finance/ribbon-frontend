@@ -67,6 +67,9 @@ const ProductDescription = styled(SecondaryText)`
 const ExpectedYieldTitle = styled(Subtitle)`
   color: ${colors.primaryText}A3;
   width: 100%;
+  font-family: Inter;
+  font-size: 12px;
+  line-height: 16px;
 `;
 
 const YieldText = styled(Title)`
@@ -95,7 +98,7 @@ const YieldCard = () => {
 
   return (
     <ProductCard
-      onClick={() => window.location.replace("https://app.ribbon.finance")}
+      onClick={() => window.open("https://app.ribbon.finance")}
       role="button"
     >
       <ProductTagContainer>
