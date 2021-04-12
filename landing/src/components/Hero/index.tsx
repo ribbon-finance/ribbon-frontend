@@ -86,6 +86,13 @@ const TitleAltSmall = styled(TitleSmall)`
   -webkit-text-stroke: 2px white;
 `;
 
+const CTAButton = styled(Button)`
+  &:hover {
+    background-color: #ffffff;
+    color: #1c1a19;
+  }
+`;
+
 const Hero = () => {
   const [, setCol] = useState(0);
 
@@ -162,7 +169,7 @@ const Hero = () => {
               target="_blank"
               rel="noreferrer noopener"
             >
-              <Button>START EARNING</Button>
+              <CTAButton>START EARNING</CTAButton>
             </a>
           </ButtonContainer>
         </Col>
