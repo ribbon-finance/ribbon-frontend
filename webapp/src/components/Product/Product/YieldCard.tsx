@@ -132,7 +132,7 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault = VaultList[0] }) => {
 
   const totalDepositStr = isLoading
     ? 0
-    : parseFloat(formatSignificantDecimals(formatEther(deposits)));
+    : parseFloat(formatSignificantDecimals(formatEther(deposits), 2));
   const depositLimitStr = isLoading
     ? 1
     : parseFloat(formatSignificantDecimals(formatEther(vaultLimit)));
@@ -155,7 +155,7 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault = VaultList[0] }) => {
   return (
     <ProductCard
       onClick={() =>
-        window.open(
+        history.push(
           `/theta-vault/${
             Object.keys(VaultNameOptionMap)[
               Object.values(VaultNameOptionMap).indexOf(vault)

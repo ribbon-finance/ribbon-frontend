@@ -93,7 +93,7 @@ const DepositPage = () => {
 
   const totalDepositStr = isLoading
     ? 0
-    : parseFloat(formatSignificantDecimals(formatEther(deposits)));
+    : parseFloat(formatSignificantDecimals(formatEther(deposits), 2));
   const depositLimitStr = isLoading
     ? 1
     : parseFloat(formatSignificantDecimals(formatEther(vaultLimit)));
