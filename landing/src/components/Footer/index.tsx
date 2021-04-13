@@ -54,6 +54,7 @@ const MobileFooterCol = styled(Col)`
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
 
   @media (max-width: ${sizes.sm}px) {
     padding-top: 27px;

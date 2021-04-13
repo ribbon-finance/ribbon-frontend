@@ -283,11 +283,11 @@ const Products = () => {
   const renderSplashFromType = useCallback(() => {
     switch (selectedProduct) {
       case "volatility":
-        return <Volatility height="40vh" opacity="0.4" />;
+        return <Volatility height="50vh" opacity="0.4" />;
       case "principalProtection":
-        return <PrincipalProtection height="40vh" opacity="0.4" />;
+        return <PrincipalProtection height="50vh" opacity="0.4" />;
       case "capitalAccumulation":
-        return <CapitalAccumulation height="40vh" opacity="0.4" />;
+        return <CapitalAccumulation height="50vh" opacity="0.4" />;
     }
   }, [selectedProduct]);
 
