@@ -1,8 +1,10 @@
 import { BigNumber } from "ethers";
+import { VaultOptions } from "../constants/constants";
 
 export interface UnconnectedVaultData {
   deposits: BigNumber;
   vaultLimit: BigNumber;
+  decimals: number;
 }
 
 export interface UserSpecificData {
@@ -21,6 +23,10 @@ export type VaultDataResponse = {
   status: DataResponseStatus;
   error: VaultDataErrors | null;
 } & ConnectedVaultData;
+
+export type VaultDataResponses = {
+  [vault in VaultOptions]: VaultDataResponse;
+};
 
 export type PendingTransaction = {
   txhash: string;

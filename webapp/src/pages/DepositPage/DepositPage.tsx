@@ -91,6 +91,10 @@ const DepositPage = () => {
   const { status, deposits, vaultLimit } = useVaultData(vaultOption);
   const isLoading = status === "loading";
 
+  console.log(vaultOption);
+
+  console.log(deposits.toString());
+
   const totalDepositStr = isLoading
     ? 0
     : parseFloat(formatSignificantDecimals(formatEther(deposits), 2));
