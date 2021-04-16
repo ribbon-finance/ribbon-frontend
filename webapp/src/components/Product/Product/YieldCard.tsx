@@ -21,6 +21,8 @@ import useTextAnimation from "../../../hooks/useTextAnimation";
 import { VaultOptions, VaultNameOptionMap } from "../../../constants/constants";
 import { productCopies } from "./productCopies";
 
+const { formatUnits } = ethers.utils;
+
 const ProductCard = styled.div`
   display: flex;
   flex: 1;
@@ -126,19 +128,10 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault }) => {
 
   const totalDepositStr = isLoading
     ? 0
-    : parseFloat(
-        formatSignificantDecimals(
-          ethers.utils.formatUnits(deposits, decimals),
-          2
-        )
-      );
+    : parseFloat(formatSignificantDecimals(formatUnits(deposits, decimals), 2));
   const depositLimitStr = isLoading
     ? 1
-    : parseFloat(
-        formatSignificantDecimals(
-          ethers.utils.formatUnits(vaultLimit, decimals)
-        )
-      );
+    : parseFloat(formatSignificantDecimals(formatUnits(vaultLimit, decimals)));
 
   const renderTag = (name: string) => (
     <ProductTag key={name}>

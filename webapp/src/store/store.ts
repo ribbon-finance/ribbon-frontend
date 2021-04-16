@@ -39,6 +39,4 @@ export const initialState: GlobalStore = {
   gasPrice: "",
 };
 
-console.log(initialState);
-
 export const { useGlobalState } = createGlobalState(initialState);

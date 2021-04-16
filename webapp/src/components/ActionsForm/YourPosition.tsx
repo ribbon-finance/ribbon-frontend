@@ -47,12 +47,12 @@ const YourPosition: React.FC<YourPositionProps> = ({
   vaultOption,
   className,
 }) => {
-  const { status, vaultBalanceInAsset } = useVaultData(vaultOption, {
+  const { status, vaultBalanceInAsset, decimals } = useVaultData(vaultOption, {
     poll: true,
   });
   const { price: ethusd } = useAssetPrice({ asset: "WETH" });
   const isLoading = status === "loading";
-  const positionAssetAmount = formatBigNumber(vaultBalanceInAsset);
+  const positionAssetAmount = formatBigNumber(vaultBalanceInAsset, 6, decimals);
   const positionInUSD = parseFloat(positionAssetAmount) * ethusd;
   const { balances } = useBalances();
 
@@ -81,11 +81,11 @@ const YourPosition: React.FC<YourPositionProps> = ({
     }
 
     return (
-      (parseFloat(ethers.utils.formatEther(yieldEarned)) /
-        parseFloat(ethers.utils.formatEther(totalInvestment))) *
+      (parseFloat(ethers.utils.formatUnits(yieldEarned, decimals)) /
+        parseFloat(ethers.utils.formatUnits(totalInvestment, decimals))) *
       100
     );
-  }, [balances]);
+  }, [balances, decimals]);
 
   return (
     <PositionsContainer
