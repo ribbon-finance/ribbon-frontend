@@ -6,7 +6,9 @@ import { useWeb3React } from "@web3-react/core";
 import { useGlobalState } from "../store/store";
 import { getVault } from "./useVault";
 import { getDefaultChainID } from "../utils/env";
-import { VaultOptions } from "../constants/constants";
+import { getAssets, VaultOptions } from "../constants/constants";
+import { isETHVault } from "../utils/vault";
+import { getERC20Token, ERC20Token } from "./useERC20Token";
 
 type UseVaultData = (
   vault: VaultOptions,
@@ -95,7 +97,12 @@ const useVaultData: UseVaultData = (vault, params) => {
           if (signerVault) {
             connectedPromises = [
               signerVault.accountVaultBalance(account),
-              library.getBalance(account),
+              isETHVault(vault)
+                ? library.getBalance(account)
+                : getERC20Token(
+                    library,
+                    getAssets(vault).toLowerCase() as ERC20Token
+                  )?.balanceOf(account),
               signerVault.maxWithdrawAmount(account),
             ];
           }

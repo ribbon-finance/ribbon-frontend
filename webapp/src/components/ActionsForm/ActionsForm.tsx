@@ -16,6 +16,7 @@ import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import { isVaultFull } from "../../utils/vault";
 import colors from "../../designSystem/colors";
 import { useLatestAPY } from "../../hooks/useAirtableData";
+import { getAssetDisplay } from "../../utils/asset";
 
 const { parseUnits, formatUnits } = ethers.utils;
 
@@ -191,6 +192,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     vaultLimit,
     vaultBalanceInAsset,
     maxWithdrawAmount,
+    asset,
     decimals,
   } = useVaultData(vaultOption);
   const gasPrice = useGasPrice();
@@ -206,7 +208,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   const [error, setError] = useState<ValidationErrors>("none");
 
   // derived states
-  const vaultFull = isVaultFull(deposits, vaultLimit);
+  const vaultFull = isVaultFull(deposits, vaultLimit, decimals);
   const connected = Boolean(active && account);
   const isInputNonZero = parseFloat(inputAmount) > 0;
 
@@ -330,13 +332,13 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
       account && !isLoadingData && userAssetBalance
         ? formatSignificantDecimals(formatUnits(userAssetBalance, decimals))
         : "---";
-    walletText = `Wallet Balance: ${position} ETH`;
+    walletText = `Wallet Balance: ${position} ${getAssetDisplay(asset)}`;
   } else {
     const position =
       account && !isLoadingData && userAssetBalance
         ? formatSignificantDecimals(formatUnits(vaultBalanceInAsset, decimals))
         : "---";
-    walletText = `Your Position: ${position} ETH`;
+    walletText = `Your Position: ${position} ${getAssetDisplay(asset)}`;
   }
 
   let disabled = true;
@@ -346,20 +348,20 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     disabled = true;
   } else if (isDeposit && isInputNonZero) {
     if (vaultFull) {
-      actionButtonText = "Deposit ETH";
+      actionButtonText = `Deposit ${getAssetDisplay(asset)}`;
       disabled = true;
     } else {
       actionButtonText = "Preview Deposit";
       disabled = false;
     }
   } else if (isDeposit) {
-    actionButtonText = "Deposit ETH";
+    actionButtonText = `Deposit ${getAssetDisplay(asset)}`;
     disabled = true;
   } else if (!isDeposit && isInputNonZero) {
     actionButtonText = "Preview Withdrawal";
     disabled = false;
   } else {
-    actionButtonText = "Withdraw ETH";
+    actionButtonText = `Withdraw ${getAssetDisplay(asset)}`;
     disabled = true;
   }
 
@@ -437,7 +439,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         </FormTitleContainer>
 
         <ContentContainer className="px-4 py-4">
-          <InputGuide>AMOUNT (ETH)</InputGuide>
+          <InputGuide>AMOUNT ({getAssetDisplay(asset)})</InputGuide>
           <FormInputContainer className="position-relative mt-2 mb-5 px-1">
             <FormInput
               ref={inputRef}

@@ -73,7 +73,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         exchange for high yield.
         <p />
         The vault generates yield by writing out-of-the-money call options on
-        ETH on a weekly basis and selling the options to market makers in
+        WBTC on a weekly basis and selling the options to market makers in
         exchange for premiums. The vault repeats this process on a weekly basis
         and reinvests the premiums, effectively compounding the yields for
         depositors over time.

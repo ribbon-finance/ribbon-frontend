@@ -88,7 +88,9 @@ const DepositPage = () => {
   usePullUp();
   const { account } = useWeb3React();
   const vaultOption = useVaultOption() || VaultList[0];
-  const { status, deposits, vaultLimit, decimals } = useVaultData(vaultOption);
+  const { status, deposits, vaultLimit, asset, decimals } = useVaultData(
+    vaultOption
+  );
   const isLoading = status === "loading";
 
   const totalDepositStr = isLoading
@@ -107,6 +109,7 @@ const DepositPage = () => {
         totalDeposit: "Current Vault Deposits",
         limit: "Max Vault Capacity",
       }}
+      asset={asset}
     />
   );
 

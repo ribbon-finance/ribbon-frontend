@@ -15,7 +15,6 @@ import { ethToUSD, formatSignificantDecimals } from "../../utils/math";
 import { capitalize } from "../../utils/text";
 import {
   getAssets,
-  getDecimals,
   VaultNameOptionMap,
   VaultOptions,
 } from "../../constants/constants";

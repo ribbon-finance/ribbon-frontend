@@ -12,12 +12,15 @@ import { CurrencyType } from "../../pages/Portfolio/types";
 import { assetToUSD, formatSignificantDecimals } from "../../utils/math";
 import { ProductType } from "../Product/types";
 import sizes from "../../designSystem/sizes";
-import { VaultList, VaultNameOptionMap } from "../../constants/constants";
+import {
+  getAssets,
+  VaultList,
+  VaultNameOptionMap,
+} from "../../constants/constants";
 import { productCopies } from "../Product/Product/productCopies";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { VaultAccount } from "../../models/vault";
-import useVaultData from "../../hooks/useVaultData";
-import { getAssetDisplay } from "../../utils/asset";
+import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 48px;
@@ -117,7 +120,8 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   currency,
   vaultAccount,
 }) => {
-  const { decimals, asset } = useVaultData(vaultAccount.vault.symbol);
+  const asset = getAssets(vaultAccount.vault.symbol);
+  const decimals = getAssetDecimals(asset);
   const { price: assetPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: asset,
   });

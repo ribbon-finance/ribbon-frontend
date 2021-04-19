@@ -11,7 +11,9 @@ import {
   formatSignificantDecimals,
   wmul,
 } from "../../utils/math";
-const { parseEther, formatEther } = ethers.utils;
+import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
+import { Assets } from "../../store/types";
+const { parseUnits, formatUnits } = ethers.utils;
 
 const AmountText = styled(Title)`
   font-size: 40px;
@@ -28,13 +30,17 @@ const Arrow = styled.i`
 `;
 
 const PreviewStep: React.FC<
-  PreviewStepProps & { onClickConfirmButton: () => Promise<void> }
+  PreviewStepProps & {
+    onClickConfirmButton: () => Promise<void>;
+    asset: Assets;
+  }
 > = ({
   actionType,
   amount,
   positionAmount,
   onClickConfirmButton,
   actionParams,
+  asset,
 }) => {
   const isDeposit = actionType === ACTIONS.deposit;
   const actionWord = isDeposit ? "Deposit" : "Withdrawal";
@@ -61,18 +67,20 @@ const PreviewStep: React.FC<
   ];
 
   const originalAmount = formatSignificantDecimals(
-    formatEther(positionAmount),
+    formatUnits(positionAmount, getAssetDecimals(asset)),
     5
   );
   // If it's a deposit, just add to the existing positionAmount
   // If it's a withdrawal, subtract the amount and the fee, we can hardcode the fee for now
   let newAmount = isDeposit
     ? positionAmount.add(amount)
-    : positionAmount.sub(amount).sub(wmul(amount, parseEther("0.005")));
+    : positionAmount
+        .sub(amount)
+        .sub(wmul(amount, parseUnits("0.005", getAssetDecimals(asset))));
 
   newAmount = newAmount.isNegative() ? BigNumber.from("0") : newAmount;
 
-  const newAmountStr = formatBigNumber(newAmount, 5);
+  const newAmountStr = formatBigNumber(newAmount, 5, getAssetDecimals(asset));
 
   return (
     <>
@@ -86,9 +94,12 @@ const PreviewStep: React.FC<
 
         <div>
           <AmountText>
-            {formatSignificantDecimals(formatEther(amount), 4)}
+            {formatSignificantDecimals(
+              formatUnits(amount, getAssetDecimals(asset)),
+              4
+            )}
           </AmountText>
-          <CurrencyText> ETH</CurrencyText>
+          <CurrencyText> {getAssetDisplay(asset)}</CurrencyText>
         </div>
 
         <div className="w-100 mt-4">
@@ -104,9 +115,9 @@ const PreviewStep: React.FC<
           <div className="d-flex flex-row align-items-center justify-content-between mb-4">
             <SecondaryText>Your Position</SecondaryText>
             <Title className="d-flex align-items-center text-right">
-              {originalAmount} ETH{" "}
+              {originalAmount} {getAssetDisplay(asset)}{" "}
               <Arrow className="fas fa-arrow-right mx-2"></Arrow> {newAmountStr}{" "}
-              ETH
+              {getAssetDisplay(asset)}
             </Title>
           </div>
         </div>

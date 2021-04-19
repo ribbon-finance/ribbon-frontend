@@ -50,15 +50,6 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
 export const getEtherscanURI = () =>
   isStaging() ? "https://kovan.etherscan.io" : "https://etherscan.io";
 
-export const getDecimals = (vault: VaultOptions) => {
-  switch (vault) {
-    case "rETH-THETA":
-      return 18;
-    case "rBTC-THETA":
-      return 8;
-  }
-};
-
 export const getAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
     case "rETH-THETA":

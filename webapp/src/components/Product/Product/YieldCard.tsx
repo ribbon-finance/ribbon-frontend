@@ -123,7 +123,7 @@ interface YieldCardProps {
 
 const YieldCard: React.FC<YieldCardProps> = ({ vault }) => {
   const history = useHistory();
-  const { status, deposits, vaultLimit, decimals } = useVaultData(vault);
+  const { status, deposits, vaultLimit, asset, decimals } = useVaultData(vault);
   const isLoading = status === "loading";
 
   const totalDepositStr = isLoading
@@ -191,6 +191,7 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault }) => {
         statsConfig={{
           fontSize: 12,
         }}
+        asset={asset}
       />
     </ProductCard>
   );

@@ -1,7 +1,16 @@
 import { BigNumber } from "ethers";
-import { parseEther } from "ethers/lib/utils";
+import { parseUnits } from "ethers/lib/utils";
+import { VaultOptions } from "../constants/constants";
 
-export const isVaultFull = (deposits: BigNumber, cap: BigNumber) => {
-  const margin = parseEther("1");
+export const isVaultFull = (
+  deposits: BigNumber,
+  cap: BigNumber,
+  decimals: number
+) => {
+  const margin = parseUnits("1", decimals);
   return !cap.isZero() && deposits.gte(cap.sub(margin));
+};
+
+export const isETHVault = (vault: VaultOptions) => {
+  return vault === "rETH-THETA";
 };
