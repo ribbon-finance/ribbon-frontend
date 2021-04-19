@@ -1,5 +1,5 @@
 import { BigNumber, ethers } from "ethers";
-const { formatEther } = ethers.utils;
+const { formatUnits } = ethers.utils;
 
 export const formatSignificantDecimals = (
   num: string,
@@ -10,9 +10,13 @@ export const formatSignificantDecimals = (
 
 export const formatBigNumber = (
   num: BigNumber,
-  significantDecimals: number = 6
+  significantDecimals: number = 6,
+  decimals: number = 18
 ) => {
-  return formatSignificantDecimals(formatEther(num), significantDecimals);
+  return formatSignificantDecimals(
+    formatUnits(num, decimals),
+    significantDecimals
+  );
 };
 
 export const toFiat = (etherVal: BigNumber) => {

@@ -12,7 +12,6 @@ import { Frame } from "framer";
 import { BaseButton, SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
-import YieldCard from "./Product/YieldCard";
 import {
   ProductType,
   ProductTabProps,
@@ -26,6 +25,7 @@ import useScreenSize from "../../hooks/useScreenSize";
 import useElementSize from "../../hooks/useElementSize";
 import useElementScroll from "../../hooks/useElementScroll";
 import sizes from "../../designSystem/sizes";
+import ThetaCarousel from "./ThetaCarousel";
 
 const ProductSectionContainer = styled(Container)`
   display: flex;
@@ -318,7 +318,7 @@ const Products = () => {
   const renderProduct = useCallback(() => {
     switch (selectedProduct) {
       case "yield":
-        return <YieldCard />;
+        return <ThetaCarousel />;
       case "volatility":
       case "principalProtection":
       case "capitalAccumulation":

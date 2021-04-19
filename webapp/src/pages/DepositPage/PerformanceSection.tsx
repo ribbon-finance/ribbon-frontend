@@ -104,7 +104,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           >
             audited by Peckshield
           </Link>{" "}
-          and are undergoing two more audits. Despite that, users are adviced to
+          and are undergoing two more audits. Despite that, users are advised to
           exercise caution and only risk funds they can afford to lose.
         </ParagraphText>
 

@@ -60,22 +60,32 @@ const useVaultData: UseVaultData = (vault, params) => {
           if (chainId !== envChainID) {
             doSideEffect &&
               setResponse((prevResponse) => ({
-                status: "error",
-                error: "wrong_network",
-                deposits: defaultToNextValue(zero, prevResponse.deposits),
-                vaultLimit: defaultToNextValue(zero, prevResponse.vaultLimit),
-                vaultBalanceInAsset: defaultToNextValue(
-                  zero,
-                  prevResponse.vaultBalanceInAsset
-                ),
-                userAssetBalance: defaultToNextValue(
-                  zero,
-                  prevResponse.userAssetBalance
-                ),
-                maxWithdrawAmount: defaultToNextValue(
-                  zero,
-                  prevResponse.maxWithdrawAmount
-                ),
+                ...prevResponse,
+                [vault]: {
+                  ...prevResponse[vault],
+                  status: "error",
+                  error: "wrong_network",
+                  deposits: defaultToNextValue(
+                    zero,
+                    prevResponse[vault].deposits
+                  ),
+                  vaultLimit: defaultToNextValue(
+                    zero,
+                    prevResponse[vault].vaultLimit
+                  ),
+                  vaultBalanceInAsset: defaultToNextValue(
+                    zero,
+                    prevResponse[vault].vaultBalanceInAsset
+                  ),
+                  userAssetBalance: defaultToNextValue(
+                    zero,
+                    prevResponse[vault].userAssetBalance
+                  ),
+                  maxWithdrawAmount: defaultToNextValue(
+                    zero,
+                    prevResponse[vault].maxWithdrawAmount
+                  ),
+                },
               }));
             return;
           }
@@ -98,19 +108,23 @@ const useVaultData: UseVaultData = (vault, params) => {
           if (!walletConnected) {
             doSideEffect &&
               setResponse((prevResponse) => ({
-                status: "success",
-                error: null,
-                deposits: defaultToPrevValue(
-                  prevResponse.deposits,
-                  responses[0]
-                ),
-                vaultLimit: defaultToPrevValue(
-                  prevResponse.vaultLimit,
-                  responses[1]
-                ),
-                vaultBalanceInAsset: prevResponse.vaultBalanceInAsset,
-                userAssetBalance: prevResponse.userAssetBalance,
-                maxWithdrawAmount: prevResponse.maxWithdrawAmount,
+                ...prevResponse,
+                [vault]: {
+                  ...prevResponse[vault],
+                  status: "success",
+                  error: null,
+                  deposits: defaultToPrevValue(
+                    prevResponse[vault].deposits,
+                    responses[0]
+                  ),
+                  vaultLimit: defaultToPrevValue(
+                    prevResponse[vault].vaultLimit,
+                    responses[1]
+                  ),
+                  vaultBalanceInAsset: prevResponse[vault].vaultBalanceInAsset,
+                  userAssetBalance: prevResponse[vault].userAssetBalance,
+                  maxWithdrawAmount: prevResponse[vault].maxWithdrawAmount,
+                },
               }));
 
             return;
@@ -118,25 +132,32 @@ const useVaultData: UseVaultData = (vault, params) => {
 
           doSideEffect &&
             setResponse((prevResponse) => ({
-              status: "success",
-              error: null,
-              deposits: defaultToPrevValue(prevResponse.deposits, responses[0]),
-              vaultLimit: defaultToPrevValue(
-                prevResponse.vaultLimit,
-                responses[1]
-              ),
-              vaultBalanceInAsset: defaultToPrevValue(
-                prevResponse.vaultBalanceInAsset,
-                responses[2]
-              ),
-              userAssetBalance: defaultToPrevValue(
-                prevResponse.userAssetBalance,
-                responses[3]
-              ),
-              maxWithdrawAmount: defaultToPrevValue(
-                prevResponse.maxWithdrawAmount,
-                responses[4]
-              ),
+              ...prevResponse,
+              [vault]: {
+                ...prevResponse[vault],
+                status: "success",
+                error: null,
+                deposits: defaultToPrevValue(
+                  prevResponse[vault].deposits,
+                  responses[0]
+                ),
+                vaultLimit: defaultToPrevValue(
+                  prevResponse[vault].vaultLimit,
+                  responses[1]
+                ),
+                vaultBalanceInAsset: defaultToPrevValue(
+                  prevResponse[vault].vaultBalanceInAsset,
+                  responses[2]
+                ),
+                userAssetBalance: defaultToPrevValue(
+                  prevResponse[vault].userAssetBalance,
+                  responses[3]
+                ),
+                maxWithdrawAmount: defaultToPrevValue(
+                  prevResponse[vault].maxWithdrawAmount,
+                  responses[4]
+                ),
+              },
             }));
         } catch (e) {
           console.error(e);
@@ -144,7 +165,7 @@ const useVaultData: UseVaultData = (vault, params) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, setResponse, walletConnected, chainId, library]);
+  }, [vault, account, setResponse, walletConnected, chainId, library]);
 
   useEffect(() => {
     let pollInterval: NodeJS.Timeout | null = null;
@@ -162,13 +183,13 @@ const useVaultData: UseVaultData = (vault, params) => {
     };
   }, [poll, pollingFrequency, doMulticall]);
 
-  useEffect(() => {
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     isMountedRef.current = false;
+  //   };
+  // }, []);
 
-  return response;
+  return response[vault];
 };
 
 export default useVaultData;

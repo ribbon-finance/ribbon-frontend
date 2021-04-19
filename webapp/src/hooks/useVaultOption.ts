@@ -8,9 +8,13 @@ import {
 } from "../constants/constants";
 
 const useVaultOption = () => {
-  const [vaultOption, setVaultOption] = useState<VaultOptions>();
   const match = useRouteMatch<{ vaultSymbol: string }>(
     "/theta-vault/:vaultSymbol"
+  );
+  const [vaultOption, setVaultOption] = useState<VaultOptions | undefined>(
+    match?.params.vaultSymbol && match.params.vaultSymbol in VaultNameOptionMap
+      ? VaultNameOptionMap[match?.params.vaultSymbol as VaultName]
+      : undefined
   );
 
   useEffect(() => {

@@ -164,7 +164,7 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
     asset: "WETH",
   });
   const { vaultAccounts, loading: vaultAccountLoading } = useVaultAccounts(
-    VaultList as [VaultOptions]
+    VaultList
   );
   const animatedLoadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],

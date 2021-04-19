@@ -17,7 +17,7 @@ import { isVaultFull } from "../../utils/vault";
 import colors from "../../designSystem/colors";
 import { useLatestAPY } from "../../hooks/useAirtableData";
 
-const { parseEther, formatEther } = ethers.utils;
+const { parseUnits, formatUnits } = ethers.utils;
 
 const Container = styled.div<ActionFormVariantProps>`
   ${(props) =>
@@ -191,6 +191,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     vaultLimit,
     vaultBalanceInAsset,
     maxWithdrawAmount,
+    decimals,
   } = useVaultData(vaultOption);
   const gasPrice = useGasPrice();
   const { active, account } = useWeb3React();
@@ -224,11 +225,11 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
           ? BigNumber.from("0")
           : maxAmount;
 
-        setInputAmount(formatEther(actualMaxAmount));
+        setInputAmount(formatUnits(actualMaxAmount, decimals));
       }
       // Withdraw flow
       else {
-        setInputAmount(formatEther(maxWithdrawAmount));
+        setInputAmount(formatUnits(maxWithdrawAmount, decimals));
       }
     }
   };
@@ -247,7 +248,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     // Make sure we schedule the error updates after the input updates
     requestAnimationFrame(() => {
       if (rawInput) {
-        const amount = parseEther(rawInput);
+        const amount = parseUnits(rawInput, decimals);
 
         if (!isLoadingData && connected) {
           if (isDeposit && amount.gt(userAssetBalance)) {
@@ -277,11 +278,13 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
 
     return {
       actionType: isDeposit ? ACTIONS.deposit : ACTIONS.withdraw,
-      amount: inputAmount ? parseEther(inputAmount) : BigNumber.from("0"),
+      amount: inputAmount
+        ? parseUnits(inputAmount, decimals)
+        : BigNumber.from("0"),
       positionAmount: BigNumber.from(vaultBalanceStr),
       actionParams,
     };
-  }, [isDeposit, inputAmount, vaultBalanceStr, latestAPY.res]);
+  }, [isDeposit, inputAmount, vaultBalanceStr, latestAPY.res, decimals]);
 
   const handleClickActionButton = () => {
     isDesktop && isInputNonZero && connected && setShowActionModal(true);
@@ -325,13 +328,13 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   } else if (isDeposit) {
     const position =
       account && !isLoadingData && userAssetBalance
-        ? formatSignificantDecimals(formatEther(userAssetBalance))
+        ? formatSignificantDecimals(formatUnits(userAssetBalance, decimals))
         : "---";
     walletText = `Wallet Balance: ${position} ETH`;
   } else {
     const position =
       account && !isLoadingData && userAssetBalance
-        ? formatSignificantDecimals(formatEther(vaultBalanceInAsset))
+        ? formatSignificantDecimals(formatUnits(vaultBalanceInAsset, decimals))
         : "---";
     walletText = `Your Position: ${position} ETH`;
   }

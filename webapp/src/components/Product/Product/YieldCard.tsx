@@ -18,14 +18,10 @@ import useVaultData from "../../../hooks/useVaultData";
 import { formatSignificantDecimals } from "../../../utils/math";
 import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useTextAnimation from "../../../hooks/useTextAnimation";
-import {
-  VaultOptions,
-  VaultList,
-  VaultNameOptionMap,
-} from "../../../constants/constants";
+import { VaultOptions, VaultNameOptionMap } from "../../../constants/constants";
 import { productCopies } from "./productCopies";
 
-const { formatEther } = ethers.utils;
+const { formatUnits } = ethers.utils;
 
 const ProductCard = styled.div`
   display: flex;
@@ -36,7 +32,7 @@ const ProductCard = styled.div`
   border-radius: ${theme.border.radius};
   padding: 16px 24px 24px 16px;
   box-shadow: 4px 8px 80px rgba(255, 56, 92, 0.16);
-  margin: 0 64px;
+  margin: 0 80px;
   transition: 0.25s box-shadow ease-out;
   max-width: 343px;
 
@@ -122,20 +118,20 @@ const ArrowRight = styled.i`
 `;
 
 interface YieldCardProps {
-  vault?: VaultOptions;
+  vault: VaultOptions;
 }
 
-const YieldCard: React.FC<YieldCardProps> = ({ vault = VaultList[0] }) => {
+const YieldCard: React.FC<YieldCardProps> = ({ vault }) => {
   const history = useHistory();
-  const { status, deposits, vaultLimit } = useVaultData(vault);
+  const { status, deposits, vaultLimit, decimals } = useVaultData(vault);
   const isLoading = status === "loading";
 
   const totalDepositStr = isLoading
     ? 0
-    : parseFloat(formatSignificantDecimals(formatEther(deposits), 2));
+    : parseFloat(formatSignificantDecimals(formatUnits(deposits, decimals), 2));
   const depositLimitStr = isLoading
     ? 1
-    : parseFloat(formatSignificantDecimals(formatEther(vaultLimit)));
+    : parseFloat(formatSignificantDecimals(formatUnits(vaultLimit, decimals)));
 
   const renderTag = (name: string) => (
     <ProductTag key={name}>

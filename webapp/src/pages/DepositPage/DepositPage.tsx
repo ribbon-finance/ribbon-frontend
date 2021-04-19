@@ -18,7 +18,7 @@ import { VaultList, VaultOptions } from "../../constants/constants";
 import { productCopies } from "../../components/Product/Product/productCopies";
 import useVaultOption from "../../hooks/useVaultOption";
 
-const { formatEther } = ethers.utils;
+const { formatUnits } = ethers.utils;
 
 const HeroContainer = styled.div`
   background: linear-gradient(
@@ -88,15 +88,15 @@ const DepositPage = () => {
   usePullUp();
   const { account } = useWeb3React();
   const vaultOption = useVaultOption() || VaultList[0];
-  const { status, deposits, vaultLimit } = useVaultData(vaultOption);
+  const { status, deposits, vaultLimit, decimals } = useVaultData(vaultOption);
   const isLoading = status === "loading";
 
   const totalDepositStr = isLoading
     ? 0
-    : parseFloat(formatSignificantDecimals(formatEther(deposits), 2));
+    : parseFloat(formatSignificantDecimals(formatUnits(deposits, decimals), 2));
   const depositLimitStr = isLoading
     ? 1
-    : parseFloat(formatSignificantDecimals(formatEther(vaultLimit)));
+    : parseFloat(formatSignificantDecimals(formatUnits(vaultLimit, decimals)));
 
   const depositCapBar = (
     <DepositCapBar

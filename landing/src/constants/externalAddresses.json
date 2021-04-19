@@ -3,14 +3,16 @@
 		"feeds": {
 			"dai/eth": "0x22B58f1EbEDfCA50feF632bD73368b2FdA96D541",
 			"eth/usd": "0x9326BFA02ADD2366b30bacB125260Af641031331",
-			"link/eth": "0xa36085f69e2889c224210f603d836748e7dc0088"
+			"link/eth": "0xa36085f69e2889c224210f603d836748e7dc0088",
+			"usdc/eth": "0x986b5E1e1755e3C2440e960477f25201B0a8bbD4"
 		},
 		"assets": {
 			"dai": "0x1528F3FCc26d13F7079325Fb78D9442607781c8C",
 			"link": "0xa36085f69e2889c224210f603d836748e7dc0088",
 			"eth": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
 			"weth": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
-			"usdc": "0xf5cb5408b40e819e7db5347664be03b52accac9d"
+			"usdc": "0xf5cb5408b40e819e7db5347664be03b52accac9d",
+			"wbtc": "0xd7c8c2f7b6ebdbc88e5ab0101dd24ed5aca58b0f"
 		},
 		"airswapSwap": "0x79fb4604f2D7bD558Cda0DFADb7d61D98b28CA9f",
 		"oTokenFactory": "0xb9D17Ab06e27f63d0FD75099d5874a194eE623e2",
@@ -120,19 +122,25 @@
 				"isPut": true
 			}
 		],
-		"oTokenFactory": "0x7C06792Af1632E77cb27a558Dc0885338F4Bdf8E",
-		"multicall": "0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441",
 		"feeds": {
 			"dai/eth": "0x22B58f1EbEDfCA50feF632bD73368b2FdA96D541",
 			"eth/usd": "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419",
-			"link/eth": "0xa36085f69e2889c224210f603d836748e7dc0088"
+			"link/eth": "0xa36085f69e2889c224210f603d836748e7dc0088",
+			"usdc/eth": "0x986b5E1e1755e3C2440e960477f25201B0a8bbD4"
 		},
 		"assets": {
 			"eth": "0x0000000000000000000000000000000000000000",
 			"weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 			"wbtc": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
 			"usdc": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
-		}
+		},
+		"airswapSwap": "0x4572f2554421Bd64Bef1c22c8a81840E8D496BeA",
+		"oTokenFactory": "0x7C06792Af1632E77cb27a558Dc0885338F4Bdf8E",
+		"gammaController": "0x4ccc2339F87F6c59c6893E1A678c2266cA58dC72",
+		"gammaMarginPool": "0x5934807cC0654d46755eBd2848840b616256C6Ef",
+		"uniswapV2Router": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+		"zeroExExchangeV3": "0xDef1C0ded9bec7F1a1670819833240f027b25EfF",
+		"multicall": "0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441"
 	},
 	"mainnet-sim": {
 		"assets": {
