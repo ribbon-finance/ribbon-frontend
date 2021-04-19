@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { AssertsThisTypePredicate } from "typescript";
 import { useGlobalState } from "../store/store";
 import { AssetsList, Assets } from "../store/types";
 
@@ -52,3 +53,42 @@ const useAssetPrice: (args: {
   return { price: prices[asset], loading };
 };
 export default useAssetPrice;
+
+export const useAssetsPrice: (args: {
+  assets: Assets[];
+}) => { prices: Partial<{ [asset in Assets]: number }>; loading: boolean } = ({
+  assets = ["WETH"],
+}) => {
+  const [prices, setPrices] = useGlobalState("prices");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    Promise.all(
+      assets.map(async (asset) => {
+        if (fetchedOnce[asset]) {
+          return;
+        }
+
+        if (AssetsList.includes(asset)) {
+          fetchedOnce[asset] = true;
+          setLoading(true);
+          const price = await getAssetPriceInUSD(COINGECKO_CURRENCIES[asset]);
+          setPrices((prices) => ({
+            ...prices,
+            [asset]: price,
+          }));
+          setLoading(false);
+        } else {
+          throw new Error(`Unknown asset ${asset}`);
+        }
+      })
+    );
+    setLoading(false);
+  }, [assets, setPrices]);
+
+  return {
+    prices: Object.fromEntries(assets.map((asset) => [asset, prices[asset]])),
+    loading,
+  };
+};
