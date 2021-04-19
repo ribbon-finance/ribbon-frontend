@@ -199,7 +199,6 @@ const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
   currency,
 }) => {
   const { active } = useWeb3React();
-  // @ts-ignore
   const { vaultAccounts, loading } = useVaultAccounts(VaultList);
   const animatedLoadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],

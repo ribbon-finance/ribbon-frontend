@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import { createGlobalState } from "react-hooks-global-state";
-import { VaultList } from "../constants/constants";
+import { getDecimals, VaultList } from "../constants/constants";
 import { PendingTransaction, VaultDataResponses } from "./types";
 
 interface GlobalStore {
@@ -23,7 +23,7 @@ export const initialState: GlobalStore = {
         deposits: BigNumber.from("0"),
         vaultLimit: BigNumber.from("0"),
         vaultBalanceInAsset: BigNumber.from("0"),
-        decimals: 0,
+        decimals: getDecimals(vault),
         userAssetBalance: BigNumber.from("0"),
         maxWithdrawAmount: BigNumber.from("0"),
         error: null,

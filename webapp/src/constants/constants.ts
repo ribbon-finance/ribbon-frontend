@@ -24,8 +24,13 @@ export const getWBTCThetaVaultId = () => {
     : deployment.kovan.RibbonWBTCCoveredCall; // TODO:
 };
 
-export const VaultList = ["rETH-THETA", "rBTC-THETA"] as const;
-export type VaultOptions = typeof VaultList[number];
+export const FullVaultList = ["rETH-THETA", "rBTC-THETA"] as const;
+export type VaultOptions = typeof FullVaultList[number];
+export const ProdExcludeVault: VaultOptions[] = ["rBTC-THETA"];
+// @ts-ignore
+export const VaultList: VaultOptions[] = isStaging()
+  ? FullVaultList
+  : FullVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
 
 export const VaultAddressMap: { [vault in VaultOptions]: () => string } = {
   "rETH-THETA": getETHThetaVaultId,
@@ -41,3 +46,12 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
 
 export const getEtherscanURI = () =>
   isStaging() ? "https://kovan.etherscan.io" : "https://etherscan.io";
+
+export const getDecimals = (vault: VaultOptions) => {
+  switch (vault) {
+    case "rETH-THETA":
+      return 18;
+    case "rBTC-THETA":
+      return 8;
+  }
+};

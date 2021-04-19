@@ -35,10 +35,9 @@ const useVaultData: UseVaultData = (vault, params) => {
       const providerVault = getVault(ethersProvider, vault, false);
 
       if (providerVault) {
-        const unconnectedPromises: Promise<number | BigNumber>[] = [
+        const unconnectedPromises = [
           providerVault.totalBalance(),
           providerVault.cap(),
-          providerVault.decimals(),
         ];
 
         let connectedPromises: Promise<BigNumber>[] = [];
@@ -63,6 +62,7 @@ const useVaultData: UseVaultData = (vault, params) => {
               setResponse((prevResponse) => ({
                 ...prevResponse,
                 [vault]: {
+                  ...prevResponse[vault],
                   status: "error",
                   error: "wrong_network",
                   deposits: defaultToNextValue(
@@ -73,7 +73,6 @@ const useVaultData: UseVaultData = (vault, params) => {
                     zero,
                     prevResponse[vault].vaultLimit
                   ),
-                  decimals: 0,
                   vaultBalanceInAsset: defaultToNextValue(
                     zero,
                     prevResponse[vault].vaultBalanceInAsset
@@ -111,17 +110,17 @@ const useVaultData: UseVaultData = (vault, params) => {
               setResponse((prevResponse) => ({
                 ...prevResponse,
                 [vault]: {
+                  ...prevResponse[vault],
                   status: "success",
                   error: null,
                   deposits: defaultToPrevValue(
                     prevResponse[vault].deposits,
-                    responses[0] as BigNumber
+                    responses[0]
                   ),
                   vaultLimit: defaultToPrevValue(
                     prevResponse[vault].vaultLimit,
-                    responses[1] as BigNumber
+                    responses[1]
                   ),
-                  decimals: responses[2] as number,
                   vaultBalanceInAsset: prevResponse[vault].vaultBalanceInAsset,
                   userAssetBalance: prevResponse[vault].userAssetBalance,
                   maxWithdrawAmount: prevResponse[vault].maxWithdrawAmount,
@@ -135,28 +134,28 @@ const useVaultData: UseVaultData = (vault, params) => {
             setResponse((prevResponse) => ({
               ...prevResponse,
               [vault]: {
+                ...prevResponse[vault],
                 status: "success",
                 error: null,
                 deposits: defaultToPrevValue(
                   prevResponse[vault].deposits,
-                  responses[0] as BigNumber
+                  responses[0]
                 ),
                 vaultLimit: defaultToPrevValue(
                   prevResponse[vault].vaultLimit,
-                  responses[1] as BigNumber
+                  responses[1]
                 ),
-                decimals: responses[2] as number,
                 vaultBalanceInAsset: defaultToPrevValue(
                   prevResponse[vault].vaultBalanceInAsset,
-                  responses[3] as BigNumber
+                  responses[2]
                 ),
                 userAssetBalance: defaultToPrevValue(
                   prevResponse[vault].userAssetBalance,
-                  responses[4] as BigNumber
+                  responses[3]
                 ),
                 maxWithdrawAmount: defaultToPrevValue(
                   prevResponse[vault].maxWithdrawAmount,
-                  responses[5] as BigNumber
+                  responses[4]
                 ),
               },
             }));
