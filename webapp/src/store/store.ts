@@ -1,13 +1,16 @@
 import { BigNumber } from "ethers";
 import { createGlobalState } from "react-hooks-global-state";
-import { getDecimals, VaultList } from "../constants/constants";
-import { PendingTransaction, VaultDataResponses } from "./types";
+import { getAssets, getDecimals, VaultList } from "../constants/constants";
+import {
+  PendingTransaction,
+  VaultDataResponses,
+  Assets,
+  AssetsList,
+} from "./types";
 
 interface GlobalStore {
   vaultData: VaultDataResponses;
-  prices: {
-    WETH: number;
-  };
+  prices: { [asset in Assets]: number };
   pendingTransactions: PendingTransaction[];
   showConnectWallet: boolean;
   latestAPY: number;
@@ -24,14 +27,15 @@ export const initialState: GlobalStore = {
         vaultLimit: BigNumber.from("0"),
         vaultBalanceInAsset: BigNumber.from("0"),
         decimals: getDecimals(vault),
+        asset: getAssets(vault),
         userAssetBalance: BigNumber.from("0"),
         maxWithdrawAmount: BigNumber.from("0"),
         error: null,
       },
     ])
   ) as VaultDataResponses,
-  prices: {
-    WETH: 0.0,
+  prices: Object.fromEntries(AssetsList.map((asset) => [asset, 0.0])) as {
+    [asset in Assets]: number;
   },
   pendingTransactions: [],
   showConnectWallet: false,

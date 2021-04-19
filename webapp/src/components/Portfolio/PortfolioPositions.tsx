@@ -9,17 +9,15 @@ import theme from "../../designSystem/theme";
 import useAssetPrice from "../../hooks/useAssetPrice";
 import useTextAnimation from "../../hooks/useTextAnimation";
 import { CurrencyType } from "../../pages/Portfolio/types";
-import { ethToUSD, formatSignificantDecimals } from "../../utils/math";
+import { assetToUSD, formatSignificantDecimals } from "../../utils/math";
 import { ProductType } from "../Product/types";
 import sizes from "../../designSystem/sizes";
-import {
-  VaultList,
-  VaultNameOptionMap,
-  VaultOptions,
-} from "../../constants/constants";
+import { VaultList, VaultNameOptionMap } from "../../constants/constants";
 import { productCopies } from "../Product/Product/productCopies";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { VaultAccount } from "../../models/vault";
+import useVaultData from "../../hooks/useVaultData";
+import { getAssetDisplay } from "../../utils/asset";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 48px;
@@ -43,12 +41,15 @@ const PositionContainer = styled.div`
   width: 100%;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
-  margin-bottom: 18px;
+  margin-top: 16px;
   padding: 16px;
   display: flex;
   flex-wrap: wrap;
   position: relative;
-  margin-top: 24px;
+
+  &:first-child {
+    margin-top: 24px;
+  }
 `;
 
 const PositionInfoRow = styled.div`
@@ -116,35 +117,42 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   currency,
   vaultAccount,
 }) => {
-  const { price: ethPrice, loading: ethPriceLoading } = useAssetPrice({});
+  const { decimals, asset } = useVaultData(vaultAccount.vault.symbol);
+  const { price: assetPrice, loading: assetPriceLoading } = useAssetPrice({
+    asset: asset,
+  });
   const animatedLoadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
-    ethPriceLoading
+    assetPriceLoading
   );
 
   const renderAmountText = useCallback(
     (amount: BigNumber, currency: CurrencyType) => {
       switch (currency) {
         case "usd":
-          return ethPriceLoading
+          return assetPriceLoading
             ? animatedLoadingText
-            : `${ethToUSD(amount, ethPrice)}`;
+            : `${assetToUSD(amount, assetPrice, decimals)}`;
         case "eth":
           return `${formatSignificantDecimals(
-            ethers.utils.formatEther(amount)
-          )} ETH`;
+            ethers.utils.formatUnits(amount, decimals)
+          )} ${getAssetDisplay(asset)}`;
       }
     },
-    [ethPrice, animatedLoadingText, ethPriceLoading]
+    [asset, assetPrice, animatedLoadingText, assetPriceLoading, decimals]
   );
 
   const calculatedROI = useMemo(
     () =>
-      (parseFloat(ethers.utils.formatEther(vaultAccount.totalYieldEarned)) /
-        parseFloat(ethers.utils.formatEther(vaultAccount.totalDeposits))) *
+      (parseFloat(
+        ethers.utils.formatUnits(vaultAccount.totalYieldEarned, decimals)
+      ) /
+        parseFloat(
+          ethers.utils.formatUnits(vaultAccount.totalDeposits, decimals)
+        )) *
       100,
-    [vaultAccount]
+    [vaultAccount, decimals]
   );
 
   return (
@@ -214,33 +222,37 @@ const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
     );
   }, [vaultAccounts]);
 
+  const positionContent = useMemo(() => {
+    if (!active) {
+      return <SectionPlaceholderText>---</SectionPlaceholderText>;
+    }
+    if (loading) {
+      return (
+        <SectionPlaceholderText>{animatedLoadingText}</SectionPlaceholderText>
+      );
+    }
+
+    if (Object.keys(filteredVaultAccounts).length <= 0) {
+      return (
+        <SectionPlaceholderText>
+          You have no outstanding positions
+        </SectionPlaceholderText>
+      );
+    }
+
+    return Object.keys(filteredVaultAccounts).map((key) => (
+      <PortfolioPosition
+        key={key}
+        currency={currency}
+        vaultAccount={filteredVaultAccounts[key]}
+      />
+    ));
+  }, [active, animatedLoadingText, currency, filteredVaultAccounts, loading]);
+
   return (
     <PortfolioPositionsContainer>
       <SectionTitle>Positions</SectionTitle>
-      {active ? (
-        <>
-          {loading && (
-            <SectionPlaceholderText>
-              {animatedLoadingText}
-            </SectionPlaceholderText>
-          )}
-          {Object.keys(filteredVaultAccounts).map((key) => (
-            <PortfolioPosition
-              key={key}
-              currency={currency}
-              vaultAccount={filteredVaultAccounts[key]}
-            />
-          ))}
-          {!loading && Object.keys(filteredVaultAccounts).length <= 0 && (
-            <SectionPlaceholderText>
-              You have no outstanding positions
-            </SectionPlaceholderText>
-          )}
-          {}
-        </>
-      ) : (
-        <SectionPlaceholderText>---</SectionPlaceholderText>
-      )}
+      {positionContent}
     </PortfolioPositionsContainer>
   );
 };

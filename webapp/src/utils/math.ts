@@ -31,17 +31,26 @@ export const toUSD = (bn: BigNumber) =>
 export const toETH = (bn: BigNumber, precision: number = 4) =>
   parseFloat(ethers.utils.formatEther(bn)).toFixed(precision);
 
+export const assetToUSD = (
+  num: BigNumber | number,
+  assetPrice: number,
+  assetDecimal: number = 18,
+  precision: number = 2
+): string => {
+  const pnlUSD =
+    num instanceof BigNumber
+      ? parseFloat(ethers.utils.formatUnits(num, assetDecimal)) * assetPrice
+      : num * assetPrice;
+
+  return "$" + pnlUSD.toFixed(precision);
+};
+
 export const ethToUSD = (
   num: BigNumber | number,
   ethPrice: number,
   precision: number = 2
 ): string => {
-  const pnlUSD =
-    num instanceof BigNumber
-      ? parseFloat(ethers.utils.formatEther(num)) * ethPrice
-      : num * ethPrice;
-
-  return "$" + pnlUSD.toFixed(precision);
+  return assetToUSD(num, ethPrice, 18, precision);
 };
 
 export const formatOption = (bn: BigNumber): number =>

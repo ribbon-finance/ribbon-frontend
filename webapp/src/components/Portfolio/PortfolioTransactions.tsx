@@ -13,7 +13,14 @@ import useTransactions from "../../hooks/useTransactions";
 import { CurrencyType } from "../../pages/Portfolio/types";
 import { ethToUSD, formatSignificantDecimals } from "../../utils/math";
 import { capitalize } from "../../utils/text";
-import { VaultNameOptionMap, VaultOptions } from "../../constants/constants";
+import {
+  getAssets,
+  getDecimals,
+  VaultNameOptionMap,
+  VaultOptions,
+} from "../../constants/constants";
+import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
+import { Assets } from "../../store/types";
 
 const PortfolioTransactionsContainer = styled.div`
   margin-top: 48px;
@@ -86,7 +93,8 @@ const PortfolioTransactions: React.FC<PortfolioTransactionsProps> = ({
     (
       amount: BigNumber,
       type: "deposit" | "withdraw",
-      currency: CurrencyType
+      currency: CurrencyType,
+      asset: Assets
     ) => {
       const prependSymbol = type === "deposit" ? "+" : "-";
 
@@ -97,8 +105,8 @@ const PortfolioTransactions: React.FC<PortfolioTransactionsProps> = ({
             : `${prependSymbol}${ethToUSD(amount, ethPrice)}`;
         case "eth":
           return `${prependSymbol}${formatSignificantDecimals(
-            ethers.utils.formatEther(amount)
-          )} ETH`;
+            ethers.utils.formatUnits(amount, getAssetDecimals(asset))
+          )} ${getAssetDisplay(asset)}`;
       }
     },
     [ethPrice, ethPriceLoading, animatedLoadingText]
@@ -139,7 +147,8 @@ const PortfolioTransactions: React.FC<PortfolioTransactionsProps> = ({
             {renderTransactionAmountText(
               transaction.amount,
               transaction.type,
-              currency
+              currency,
+              getAssets(transaction.vault.symbol)
             )}
           </Title>
         </TransactionInfoRow>
@@ -153,7 +162,8 @@ const PortfolioTransactions: React.FC<PortfolioTransactionsProps> = ({
             {renderTransactionAmountText(
               transaction.amount,
               transaction.type,
-              currency === "eth" ? "usd" : "eth"
+              currency === "eth" ? "usd" : "eth",
+              getAssets(transaction.vault.symbol)
             )}
           </TransactionSecondaryInfoText>
         </TransactionInfoRow>
