@@ -13,6 +13,8 @@ import {
 } from "../../utils/math";
 import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
 import { Assets } from "../../store/types";
+import { VaultOptions } from "../../constants/constants";
+import { productCopies } from "../Product/Product/productCopies";
 const { parseUnits, formatUnits } = ethers.utils;
 
 const AmountText = styled(Title)`
@@ -33,6 +35,7 @@ const PreviewStep: React.FC<
   PreviewStepProps & {
     onClickConfirmButton: () => Promise<void>;
     asset: Assets;
+    vaultOption: VaultOptions;
   }
 > = ({
   actionType,
@@ -41,6 +44,7 @@ const PreviewStep: React.FC<
   onClickConfirmButton,
   actionParams,
   asset,
+  vaultOption,
 }) => {
   const isDeposit = actionType === ACTIONS.deposit;
   const actionWord = isDeposit ? "Deposit" : "Withdrawal";
@@ -59,7 +63,7 @@ const PreviewStep: React.FC<
   }
 
   const detailRows: { key: string; value: string }[] = [
-    { key: "Product", value: "T-100-e" },
+    { key: "Product", value: productCopies[vaultOption].title },
     { key: "Product Type", value: "Theta Vault" },
     isDeposit
       ? { key: "Approx. APY", value: `${detailValue}% APY` }

@@ -211,6 +211,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         })}
         onClickConfirmButton={handleClickConfirmButton}
         asset={getAssets(vaultOption)}
+        vaultOption={vaultOption}
       />
     ),
     2: <ConfirmationStep />,
