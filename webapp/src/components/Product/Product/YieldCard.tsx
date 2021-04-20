@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { ethers } from "ethers";
@@ -20,13 +20,13 @@ import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useTextAnimation from "../../../hooks/useTextAnimation";
 import { VaultOptions, VaultNameOptionMap } from "../../../constants/constants";
 import { productCopies } from "./productCopies";
+import WETHLogo from "../Splash/Vault/WETHLogo";
+import WBTCLogo from "../Splash/Vault/WBTCLogo";
 
 const { formatUnits } = ethers.utils;
 
 const ProductCard = styled.div`
   display: flex;
-  flex: 1;
-  flex-wrap: wrap;
   background-color: ${colors.background};
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
@@ -35,6 +35,7 @@ const ProductCard = styled.div`
   margin: 0 80px;
   transition: 0.25s box-shadow ease-out;
   max-width: 343px;
+  position: relative;
 
   @keyframes shimmerAnimation {
     0% {
@@ -56,8 +57,16 @@ const ProductCard = styled.div`
   }
 
   @media (max-width: ${sizes.md}px) {
-    margin: 0 40px;
+    min-width: 280px;
+    margin: 0 12px;
   }
+`;
+
+const ProductContent = styled.div`
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  z-index: 1;
 `;
 
 const ProductTagContainer = styled.div`
@@ -117,13 +126,31 @@ const ArrowRight = styled.i`
   transform: rotate(-45deg);
 `;
 
+const BackgroundContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 0;
+`;
+
+const StyledWBTCLogo = styled(WBTCLogo)`
+  && * {
+    fill: white;
+  }
+`;
+
 interface YieldCardProps {
   vault: VaultOptions;
 }
 
 const YieldCard: React.FC<YieldCardProps> = ({ vault }) => {
   const history = useHistory();
-  const { status, deposits, vaultLimit, decimals } = useVaultData(vault);
+  const { status, deposits, vaultLimit, asset, decimals } = useVaultData(vault);
   const isLoading = status === "loading";
 
   const totalDepositStr = isLoading
@@ -148,6 +175,15 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault }) => {
   );
   const perfStr = latestAPY.res ? `${latestAPY.res.toFixed(2)}%` : loadingText;
 
+  const backgroundLogo = useMemo(() => {
+    switch (vault) {
+      case "rETH-THETA":
+        return <WETHLogo width="40%" opacity="0.1" />;
+      case "rBTC-THETA":
+        return <StyledWBTCLogo width="50%" opacity="0.04" />;
+    }
+  }, [vault]);
+
   return (
     <ProductCard
       onClick={() =>
@@ -161,37 +197,41 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault }) => {
       }
       role="button"
     >
-      <TopContainer>
-        <ProductTagContainer>
-          {productCopies[vault].tags.map((tag) => renderTag(tag))}
-        </ProductTagContainer>
+      <ProductContent>
+        <TopContainer>
+          <ProductTagContainer>
+            {productCopies[vault].tags.map((tag) => renderTag(tag))}
+          </ProductTagContainer>
 
-        <ArrowContainer>
-          <ArrowRight className="fas fa-arrow-right"></ArrowRight>
-        </ArrowContainer>
-      </TopContainer>
+          <ArrowContainer>
+            <ArrowRight className="fas fa-arrow-right"></ArrowRight>
+          </ArrowContainer>
+        </TopContainer>
 
-      <ProductTitle>{productCopies[vault].title}</ProductTitle>
-      <ProductDescription>
-        {productCopies[vault].description}
-      </ProductDescription>
-      <ExpectedYieldTitle>Current Projected Yield (APY)</ExpectedYieldTitle>
-      <YieldText>{perfStr}</YieldText>
-      <DepositCapBar
-        loading={isLoading}
-        totalDeposit={totalDepositStr}
-        limit={depositLimitStr}
-        copies={{
-          totalDeposit: "Current Deposits",
-          limit: "Max Capacity",
-        }}
-        labelConfig={{
-          fontSize: 12,
-        }}
-        statsConfig={{
-          fontSize: 12,
-        }}
-      />
+        <ProductTitle>{productCopies[vault].title}</ProductTitle>
+        <ProductDescription>
+          {productCopies[vault].description}
+        </ProductDescription>
+        <ExpectedYieldTitle>Current Projected Yield (APY)</ExpectedYieldTitle>
+        <YieldText>{perfStr}</YieldText>
+        <DepositCapBar
+          loading={isLoading}
+          totalDeposit={totalDepositStr}
+          limit={depositLimitStr}
+          copies={{
+            totalDeposit: "Current Deposits",
+            limit: "Max Capacity",
+          }}
+          labelConfig={{
+            fontSize: 12,
+          }}
+          statsConfig={{
+            fontSize: 12,
+          }}
+          asset={asset}
+        />
+      </ProductContent>
+      <BackgroundContainer>{backgroundLogo}</BackgroundContainer>
     </ProductCard>
   );
 };

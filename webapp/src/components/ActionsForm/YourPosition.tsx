@@ -7,8 +7,9 @@ import { Title } from "../../designSystem";
 import useAssetPrice from "../../hooks/useAssetPrice";
 import useBalances from "../../hooks/useBalances";
 import useVaultData from "../../hooks/useVaultData";
-import { formatBigNumber } from "../../utils/math";
+import { assetToUSD, formatBigNumber } from "../../utils/math";
 import { VaultOptions } from "../../constants/constants";
+import { getAssetDisplay } from "../../utils/asset";
 
 const PositionsContainer = styled.div`
   font-family: VCR, sans-serif;
@@ -47,13 +48,15 @@ const YourPosition: React.FC<YourPositionProps> = ({
   vaultOption,
   className,
 }) => {
-  const { status, vaultBalanceInAsset, decimals } = useVaultData(vaultOption, {
-    poll: true,
-  });
-  const { price: ethusd } = useAssetPrice({ asset: "WETH" });
+  const { status, vaultBalanceInAsset, asset, decimals } = useVaultData(
+    vaultOption,
+    {
+      poll: true,
+    }
+  );
+  const { price: assetPrice } = useAssetPrice({ asset: asset });
   const isLoading = status === "loading";
   const positionAssetAmount = formatBigNumber(vaultBalanceInAsset, 6, decimals);
-  const positionInUSD = parseFloat(positionAssetAmount) * ethusd;
   const { balances } = useBalances();
 
   const allTimeROI = useMemo(() => {
@@ -97,12 +100,16 @@ const YourPosition: React.FC<YourPositionProps> = ({
         <div className="w-100 d-flex flex-row align-items-center justify-content-between ml-2">
           <PositionTitle>Your Position</PositionTitle>
           <PositionTitle>
-            {isLoading ? "Loading" : `${positionAssetAmount} ETH`}
+            {isLoading
+              ? "Loading"
+              : `${positionAssetAmount} ${getAssetDisplay(asset)}`}
           </PositionTitle>
         </div>
         <div className="w-100 d-flex flex-row align-items-center justify-content-between ml-2 mt-1">
           <ProfitText>+{allTimeROI.toFixed(4)}%</ProfitText>
-          <AmountText>${positionInUSD.toFixed(2)}</AmountText>
+          <AmountText>
+            {assetToUSD(vaultBalanceInAsset, assetPrice, decimals)}
+          </AmountText>
         </div>
       </div>
     </PositionsContainer>

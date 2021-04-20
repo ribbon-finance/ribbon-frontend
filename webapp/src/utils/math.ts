@@ -1,4 +1,6 @@
 import { BigNumber, ethers } from "ethers";
+import currency from "currency.js";
+
 const { formatUnits } = ethers.utils;
 
 export const formatSignificantDecimals = (
@@ -31,27 +33,46 @@ export const toUSD = (bn: BigNumber) =>
 export const toETH = (bn: BigNumber, precision: number = 4) =>
   parseFloat(ethers.utils.formatEther(bn)).toFixed(precision);
 
+export const assetToFiat = (
+  num: BigNumber | number,
+  assetPrice: number,
+  assetDecimal: number = 18,
+  precision: number = 2
+): string => {
+  return (num instanceof BigNumber
+    ? parseFloat(ethers.utils.formatUnits(num, assetDecimal)) * assetPrice
+    : num * assetPrice
+  ).toFixed(precision);
+};
+
+export const assetToUSD = (
+  num: BigNumber | number,
+  assetPrice: number,
+  assetDecimal: number = 18,
+  precision: number = 2
+): string => {
+  return currency(
+    assetToFiat(num, assetPrice, assetDecimal, precision)
+  ).format();
+};
+
 export const ethToUSD = (
   num: BigNumber | number,
   ethPrice: number,
   precision: number = 2
 ): string => {
-  const pnlUSD =
-    num instanceof BigNumber
-      ? parseFloat(ethers.utils.formatEther(num)) * ethPrice
-      : num * ethPrice;
-
-  return "$" + pnlUSD.toFixed(precision);
+  return assetToUSD(num, ethPrice, 18, precision);
 };
 
 export const formatOption = (bn: BigNumber): number =>
   parseFloat(ethers.utils.formatUnits(bn, 8));
 
-export const WAD = ethers.utils.parseEther("1");
+export const getWAD = (decimals: number) =>
+  ethers.utils.parseUnits("1", decimals);
 
-export const wmul = (x: BigNumber, y: BigNumber) => {
+export const wmul = (x: BigNumber, y: BigNumber, decimals: number) => {
   return x
     .mul(y)
-    .add(WAD.div(ethers.BigNumber.from("2")))
-    .div(WAD);
+    .add(getWAD(decimals).div(ethers.BigNumber.from("2")))
+    .div(getWAD(decimals));
 };

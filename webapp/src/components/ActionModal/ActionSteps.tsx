@@ -17,7 +17,8 @@ import ConfirmationStep from "./ConfirmationStep";
 import SubmittedStep from "./SubmittedStep";
 import FormStep from "./FormStep";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
-import { VaultOptions } from "../../constants/constants";
+import { getAssets, VaultOptions } from "../../constants/constants";
+import { isETHVault } from "../../utils/vault";
 
 export interface ActionStepsProps {
   vaultOption: VaultOptions;
@@ -148,11 +149,15 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       setStep(STEPS.confirmationStep);
       try {
         if (isDeposit) {
-          const res = await vault.depositETH({ value: amountStr });
+          const res = await (isETHVault(vaultOption)
+            ? vault.depositETH({ value: amountStr })
+            : vault.deposit(amountStr));
           setTxhash(res.hash);
           setStep(STEPS.submittedStep);
         } else {
-          const res = await vault.withdrawETH(sharesStr);
+          const res = await (isETHVault(vaultOption)
+            ? vault.withdrawETH(sharesStr)
+            : vault.withdraw(sharesStr));
           setTxhash(res.hash);
           setStep(STEPS.submittedStep);
         }
@@ -205,6 +210,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
           actionParams,
         })}
         onClickConfirmButton={handleClickConfirmButton}
+        asset={getAssets(vaultOption)}
+        vaultOption={vaultOption}
       />
     ),
     2: <ConfirmationStep />,

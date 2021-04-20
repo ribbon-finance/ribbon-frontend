@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { SecondaryText, Title } from "../../designSystem";
+import { Assets } from "../../store/types";
+import { getAssetDisplay } from "../../utils/asset";
 
 const BackgroundBar = styled.div`
   height: 16px;
@@ -51,6 +53,7 @@ const DepositCapBar: React.FC<{
   statsConfig?: {
     fontSize: number;
   };
+  asset: Assets;
 }> = ({
   loading,
   totalDeposit,
@@ -58,6 +61,7 @@ const DepositCapBar: React.FC<{
   copies = { totalDeposit: "Total Deposits", limit: "Limit" },
   labelConfig = { fontSize: 16 },
   statsConfig = { fontSize: 16 },
+  asset,
 }) => {
   let percent = totalDeposit / (limit > 0 ? limit : 1);
   if (percent < 0) {
@@ -72,7 +76,7 @@ const DepositCapBar: React.FC<{
       <div className="d-flex flex-row justify-content-between">
         <DepositLabel config={labelConfig}>{copies.totalDeposit}</DepositLabel>
         <DepositStat config={statsConfig}>
-          {loading ? "Loading..." : `${totalDeposit} ETH`}
+          {loading ? "Loading..." : `${totalDeposit} ${getAssetDisplay(asset)}`}
         </DepositStat>
       </div>
 
@@ -84,7 +88,7 @@ const DepositCapBar: React.FC<{
       <div className="d-flex flex-row justify-content-between">
         <DepositLabel config={labelConfig}>{copies.limit}</DepositLabel>
         <DepositStat config={statsConfig}>
-          {loading ? "Loading..." : `${limit} ETH`}
+          {loading ? "Loading..." : `${limit} ${getAssetDisplay(asset)}`}
         </DepositStat>
       </div>
     </div>

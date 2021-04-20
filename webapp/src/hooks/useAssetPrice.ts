@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useGlobalState } from "../store/store";
+import { AssetsList, Assets } from "../store/types";
 
 type APIResponse = Record<string, { usd: number }>;
 
@@ -16,14 +17,13 @@ const getAssetPriceInUSD = async (currencyName: string): Promise<number> => {
   return 0;
 };
 
-type Assets = "WETH";
-
 const COINGECKO_CURRENCIES = {
   WETH: "ethereum",
+  WBTC: "wrapped-bitcoin",
 };
 
-// We need this global variable so we can prevent over-fetching
-let fetchedOnce = false;
+// TODO: We need this global variable so we can prevent over-fetching
+let fetchedOnce = Object.fromEntries(AssetsList.map((asset) => [asset, false]));
 
 const useAssetPrice: (args: {
   asset?: Assets;
@@ -32,15 +32,16 @@ const useAssetPrice: (args: {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    !fetchedOnce &&
+    !fetchedOnce[asset] &&
       (async () => {
-        if (asset === "WETH") {
-          fetchedOnce = true;
+        if (AssetsList.includes(asset)) {
+          fetchedOnce[asset] = true;
           setLoading(true);
           const price = await getAssetPriceInUSD(COINGECKO_CURRENCIES[asset]);
-          setPrices({
+          setPrices((prices) => ({
+            ...prices,
             [asset]: price,
-          });
+          }));
           setLoading(false);
         } else {
           throw new Error(`Unknown asset ${asset}`);
@@ -51,3 +52,42 @@ const useAssetPrice: (args: {
   return { price: prices[asset], loading };
 };
 export default useAssetPrice;
+
+export const useAssetsPrice: (args: {
+  assets: Assets[];
+}) => { prices: Partial<{ [asset in Assets]: number }>; loading: boolean } = ({
+  assets = ["WETH"],
+}) => {
+  const [prices, setPrices] = useGlobalState("prices");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    Promise.all(
+      assets.map(async (asset) => {
+        if (fetchedOnce[asset]) {
+          return;
+        }
+
+        if (AssetsList.includes(asset)) {
+          fetchedOnce[asset] = true;
+          setLoading(true);
+          const price = await getAssetPriceInUSD(COINGECKO_CURRENCIES[asset]);
+          setPrices((prices) => ({
+            ...prices,
+            [asset]: price,
+          }));
+          setLoading(false);
+        } else {
+          throw new Error(`Unknown asset ${asset}`);
+        }
+      })
+    );
+    setLoading(false);
+  }, [assets, setPrices]);
+
+  return {
+    prices: Object.fromEntries(assets.map((asset) => [asset, prices[asset]])),
+    loading,
+  };
+};

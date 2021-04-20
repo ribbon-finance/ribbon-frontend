@@ -1,3 +1,4 @@
+import { Assets } from "../store/types";
 import { isStaging } from "../utils/env";
 import deployment from "./deployments.json";
 
@@ -19,9 +20,11 @@ export const getETHThetaVaultId = () => {
 };
 
 export const getWBTCThetaVaultId = () => {
-  return isStaging()
+  return (isStaging()
     ? deployment.kovan.RibbonWBTCCoveredCall
-    : deployment.kovan.RibbonWBTCCoveredCall; // TODO:
+    : deployment.kovan.RibbonWBTCCoveredCall
+  ) // TODO:
+    .toLowerCase();
 };
 
 export const FullVaultList = ["rETH-THETA", "rBTC-THETA"] as const;
@@ -47,11 +50,11 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
 export const getEtherscanURI = () =>
   isStaging() ? "https://kovan.etherscan.io" : "https://etherscan.io";
 
-export const getDecimals = (vault: VaultOptions) => {
+export const getAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
     case "rETH-THETA":
-      return 18;
+      return "WETH";
     case "rBTC-THETA":
-      return 8;
+      return "WBTC";
   }
 };

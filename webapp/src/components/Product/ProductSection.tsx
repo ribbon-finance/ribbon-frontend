@@ -26,6 +26,7 @@ import useElementSize from "../../hooks/useElementSize";
 import useElementScroll from "../../hooks/useElementScroll";
 import sizes from "../../designSystem/sizes";
 import ThetaCarousel from "./ThetaCarousel";
+import MobileThetaProducts from "./MobileThetaProducts";
 
 const ProductSectionContainer = styled(Container)`
   display: flex;
@@ -249,7 +250,7 @@ const Products = () => {
     object | boolean
   >(false);
 
-  const { height } = useScreenSize();
+  const { width, height } = useScreenSize();
   const { height: headerHeight } = useElementSize(headerRef, {
     mutationObserver: false,
   });
@@ -318,7 +319,7 @@ const Products = () => {
   const renderProduct = useCallback(() => {
     switch (selectedProduct) {
       case "yield":
-        return <ThetaCarousel />;
+        return width > sizes.md ? <ThetaCarousel /> : <MobileThetaProducts />;
       case "volatility":
       case "principalProtection":
       case "capitalAccumulation":
@@ -331,7 +332,7 @@ const Products = () => {
           </>
         );
     }
-  }, [selectedProduct, renderSplashFromType]);
+  }, [selectedProduct, renderSplashFromType, width]);
 
   return (
     <ProductSectionContainer>

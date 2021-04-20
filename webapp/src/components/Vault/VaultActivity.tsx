@@ -120,9 +120,15 @@ const VaultActivity: React.FC<VaultActivityProps> = ({ vaultOption }) => {
         setSortBy={setSortBy}
       />
       {width > sizes.md ? (
-        <DesktopVaultActivityList activities={processedActivities} />
+        <DesktopVaultActivityList
+          activities={processedActivities}
+          vaultOption={vaultOption}
+        />
       ) : (
-        <MobileVaultActivityList activities={processedActivities} />
+        <MobileVaultActivityList
+          activities={processedActivities}
+          vaultOption={vaultOption}
+        />
       )}
       <PaginationContainer>
         {loading ? (

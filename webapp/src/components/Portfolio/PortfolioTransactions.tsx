@@ -7,13 +7,19 @@ import moment from "moment";
 import { SecondaryText, Subtitle, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
-import useAssetPrice from "../../hooks/useAssetPrice";
+import { useAssetsPrice } from "../../hooks/useAssetPrice";
 import useTextAnimation from "../../hooks/useTextAnimation";
 import useTransactions from "../../hooks/useTransactions";
 import { CurrencyType } from "../../pages/Portfolio/types";
-import { ethToUSD, formatSignificantDecimals } from "../../utils/math";
+import { assetToUSD, formatSignificantDecimals } from "../../utils/math";
 import { capitalize } from "../../utils/text";
-import { VaultNameOptionMap, VaultOptions } from "../../constants/constants";
+import {
+  getAssets,
+  VaultNameOptionMap,
+  VaultOptions,
+} from "../../constants/constants";
+import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
+import { Assets, AssetsList } from "../../store/types";
 
 const PortfolioTransactionsContainer = styled.div`
   margin-top: 48px;
@@ -75,33 +81,42 @@ const PortfolioTransactions: React.FC<PortfolioTransactionsProps> = ({
 }) => {
   const { transactions, loading } = useTransactions();
   const { active } = useWeb3React();
-  const { price: ethPrice, loading: ethPriceLoading } = useAssetPrice({});
+  const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice({
+    // @ts-ignore
+    assets: AssetsList,
+  });
   const animatedLoadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
-    loading || ethPriceLoading
+    loading || assetPricesLoading
   );
 
   const renderTransactionAmountText = useCallback(
     (
       amount: BigNumber,
       type: "deposit" | "withdraw",
-      currency: CurrencyType
+      currency: CurrencyType,
+      asset: Assets
     ) => {
       const prependSymbol = type === "deposit" ? "+" : "-";
 
       switch (currency) {
         case "usd":
-          return ethPriceLoading
+          return assetPricesLoading
             ? animatedLoadingText
-            : `${prependSymbol}${ethToUSD(amount, ethPrice)}`;
+            : `${prependSymbol}${assetToUSD(
+                amount,
+                // @ts-ignore
+                assetPrices[asset],
+                getAssetDecimals(asset)
+              )}`;
         case "eth":
           return `${prependSymbol}${formatSignificantDecimals(
-            ethers.utils.formatEther(amount)
-          )} ETH`;
+            ethers.utils.formatUnits(amount, getAssetDecimals(asset))
+          )} ${getAssetDisplay(asset)}`;
       }
     },
-    [ethPrice, ethPriceLoading, animatedLoadingText]
+    [assetPrices, assetPricesLoading, animatedLoadingText]
   );
 
   const renderTransactions = useCallback(() => {
@@ -139,7 +154,8 @@ const PortfolioTransactions: React.FC<PortfolioTransactionsProps> = ({
             {renderTransactionAmountText(
               transaction.amount,
               transaction.type,
-              currency
+              currency,
+              getAssets(transaction.vault.symbol)
             )}
           </Title>
         </TransactionInfoRow>
@@ -153,7 +169,8 @@ const PortfolioTransactions: React.FC<PortfolioTransactionsProps> = ({
             {renderTransactionAmountText(
               transaction.amount,
               transaction.type,
-              currency === "eth" ? "usd" : "eth"
+              currency === "eth" ? "usd" : "eth",
+              getAssets(transaction.vault.symbol)
             )}
           </TransactionSecondaryInfoText>
         </TransactionInfoRow>

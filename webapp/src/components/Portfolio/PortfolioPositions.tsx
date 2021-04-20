@@ -1,25 +1,27 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import styled from "styled-components";
+import { Frame } from "framer";
 
 import { SecondaryText, Subtitle, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 import useAssetPrice from "../../hooks/useAssetPrice";
 import useTextAnimation from "../../hooks/useTextAnimation";
-import { CurrencyType } from "../../pages/Portfolio/types";
-import { ethToUSD, formatSignificantDecimals } from "../../utils/math";
+import { currencies, CurrencyType } from "../../pages/Portfolio/types";
+import { assetToUSD, formatSignificantDecimals } from "../../utils/math";
 import { ProductType } from "../Product/types";
 import sizes from "../../designSystem/sizes";
 import {
+  getAssets,
   VaultList,
   VaultNameOptionMap,
-  VaultOptions,
 } from "../../constants/constants";
 import { productCopies } from "../Product/Product/productCopies";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { VaultAccount } from "../../models/vault";
+import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 48px;
@@ -27,10 +29,34 @@ const PortfolioPositionsContainer = styled.div`
   flex-wrap: wrap;
 `;
 
+const HeaderContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+`;
+
 const SectionTitle = styled(Title)`
-  width: 100%;
   font-size: 18px;
   line-height: 24px;
+  margin-right: 16px;
+`;
+
+const CurrencySwitch = styled.div`
+  border-radius: ${theme.border.radius};
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  background-color: rgba(255, 255, 255, 0.04);
+  display: flex;
+  position: relative;
+`;
+
+const CurrencyButton = styled.div`
+  padding: 8px 13px;
+  z-index: 1;
+`;
+
+const ActiveCurrencyButton = styled(Frame)`
+  border-radius: ${theme.border.radius} !important;
+  background-color: ${colors.pillBackground} !important;
 `;
 
 const SectionPlaceholderText = styled(SecondaryText)`
@@ -43,12 +69,15 @@ const PositionContainer = styled.div`
   width: 100%;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
-  margin-bottom: 18px;
+  margin-top: 16px;
   padding: 16px;
   display: flex;
   flex-wrap: wrap;
   position: relative;
-  margin-top: 24px;
+
+  &:first-child {
+    margin-top: 24px;
+  }
 `;
 
 const PositionInfoRow = styled.div`
@@ -116,35 +145,43 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   currency,
   vaultAccount,
 }) => {
-  const { price: ethPrice, loading: ethPriceLoading } = useAssetPrice({});
+  const asset = getAssets(vaultAccount.vault.symbol);
+  const decimals = getAssetDecimals(asset);
+  const { price: assetPrice, loading: assetPriceLoading } = useAssetPrice({
+    asset: asset,
+  });
   const animatedLoadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
-    ethPriceLoading
+    assetPriceLoading
   );
 
   const renderAmountText = useCallback(
     (amount: BigNumber, currency: CurrencyType) => {
       switch (currency) {
         case "usd":
-          return ethPriceLoading
+          return assetPriceLoading
             ? animatedLoadingText
-            : `${ethToUSD(amount, ethPrice)}`;
+            : `${assetToUSD(amount, assetPrice, decimals)}`;
         case "eth":
           return `${formatSignificantDecimals(
-            ethers.utils.formatEther(amount)
-          )} ETH`;
+            ethers.utils.formatUnits(amount, decimals)
+          )} ${getAssetDisplay(asset)}`;
       }
     },
-    [ethPrice, animatedLoadingText, ethPriceLoading]
+    [asset, assetPrice, animatedLoadingText, assetPriceLoading, decimals]
   );
 
   const calculatedROI = useMemo(
     () =>
-      (parseFloat(ethers.utils.formatEther(vaultAccount.totalYieldEarned)) /
-        parseFloat(ethers.utils.formatEther(vaultAccount.totalDeposits))) *
+      (parseFloat(
+        ethers.utils.formatUnits(vaultAccount.totalYieldEarned, decimals)
+      ) /
+        parseFloat(
+          ethers.utils.formatUnits(vaultAccount.totalDeposits, decimals)
+        )) *
       100,
-    [vaultAccount]
+    [vaultAccount, decimals]
   );
 
   return (
@@ -193,18 +230,42 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 
 interface PortfolioPositionsProps {
   currency: CurrencyType;
+  updateCurrency: (current: CurrencyType) => void;
 }
 
 const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
   currency,
+  updateCurrency,
 }) => {
   const { active } = useWeb3React();
+  const currencyRefs = currencies.reduce<any>((acc, curr) => {
+    acc[curr] = React.createRef();
+    return acc;
+  }, {});
+  const [currencyButtonAnimation, setCurrencyButtonAnimation] = useState<
+    object | boolean
+  >(false);
   const { vaultAccounts, loading } = useVaultAccounts(VaultList);
   const animatedLoadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
     loading
   );
+
+  useEffect(() => {
+    const currentCurrency = currencyRefs[currency].current;
+
+    if (!currentCurrency) {
+      return;
+    }
+
+    setCurrencyButtonAnimation({
+      left: currentCurrency.offsetLeft,
+      top: currentCurrency.offsetTop,
+      height: currentCurrency.clientHeight,
+      width: currentCurrency.clientWidth,
+    });
+  }, [currency, currencyRefs]);
 
   const filteredVaultAccounts = useMemo(() => {
     return Object.fromEntries(
@@ -214,33 +275,66 @@ const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
     );
   }, [vaultAccounts]);
 
+  const toggleCurrency = useCallback(() => {
+    updateCurrency(currencies.find((c) => c !== currency) as CurrencyType);
+  }, [updateCurrency, currency]);
+
+  const positionContent = useMemo(() => {
+    if (!active) {
+      return <SectionPlaceholderText>---</SectionPlaceholderText>;
+    }
+    if (loading) {
+      return (
+        <SectionPlaceholderText>{animatedLoadingText}</SectionPlaceholderText>
+      );
+    }
+
+    if (Object.keys(filteredVaultAccounts).length <= 0) {
+      return (
+        <SectionPlaceholderText>
+          You have no outstanding positions
+        </SectionPlaceholderText>
+      );
+    }
+
+    return Object.keys(filteredVaultAccounts).map((key) => (
+      <PortfolioPosition
+        key={key}
+        currency={currency}
+        vaultAccount={filteredVaultAccounts[key]}
+      />
+    ));
+  }, [active, animatedLoadingText, currency, filteredVaultAccounts, loading]);
+
+  const renderCurrencyButton = useCallback(
+    (currency: CurrencyType) => (
+      <CurrencyButton ref={currencyRefs[currency]} key={currency}>
+        <Subtitle>{currency.toUpperCase()}</Subtitle>
+      </CurrencyButton>
+    ),
+    // currencyRefs are being changed from this block, having dependencies will causes max depth reach
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [currency]
+  );
+
   return (
     <PortfolioPositionsContainer>
-      <SectionTitle>Positions</SectionTitle>
-      {active ? (
-        <>
-          {loading && (
-            <SectionPlaceholderText>
-              {animatedLoadingText}
-            </SectionPlaceholderText>
-          )}
-          {Object.keys(filteredVaultAccounts).map((key) => (
-            <PortfolioPosition
-              key={key}
-              currency={currency}
-              vaultAccount={filteredVaultAccounts[key]}
-            />
-          ))}
-          {!loading && Object.keys(filteredVaultAccounts).length <= 0 && (
-            <SectionPlaceholderText>
-              You have no outstanding positions
-            </SectionPlaceholderText>
-          )}
-          {}
-        </>
-      ) : (
-        <SectionPlaceholderText>---</SectionPlaceholderText>
-      )}
+      <HeaderContainer>
+        <SectionTitle>Positions</SectionTitle>
+        <CurrencySwitch role="button" onClick={toggleCurrency}>
+          <ActiveCurrencyButton
+            transition={{
+              type: "keyframes",
+              ease: "easeOut",
+            }}
+            height={0}
+            width={0}
+            animate={currencyButtonAnimation}
+          />
+          {currencies.map((currency) => renderCurrencyButton(currency))}
+        </CurrencySwitch>
+      </HeaderContainer>
+      {positionContent}
     </PortfolioPositionsContainer>
   );
 };

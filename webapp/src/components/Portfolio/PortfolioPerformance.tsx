@@ -1,5 +1,4 @@
 import { useWeb3React } from "@web3-react/core";
-import { BigNumber, ethers } from "ethers";
 import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import {
@@ -9,21 +8,22 @@ import {
   Title,
 } from "../../designSystem";
 import moment from "moment";
+import currency from "currency.js";
 
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
-import useAssetPrice from "../../hooks/useAssetPrice";
+import { useAssetsPrice } from "../../hooks/useAssetPrice";
 import useBalances from "../../hooks/useBalances";
 import useTextAnimation from "../../hooks/useTextAnimation";
-import { CurrencyType } from "../../pages/Portfolio/types";
-import { ethToUSD, toETH } from "../../utils/math";
+import { assetToFiat } from "../../utils/math";
 import PerformanceChart from "../PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../PerformanceChart/types";
-import { BalanceUpdate } from "../../models/vault";
 import sizes from "../../designSystem/sizes";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
-import { VaultList, VaultOptions } from "../../constants/constants";
+import { getAssets, VaultList } from "../../constants/constants";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
+import { AssetsList } from "../../store/types";
+import { getAssetDecimals } from "../../utils/asset";
 
 const PerformanceContainer = styled.div`
   display: flex;
@@ -149,32 +149,22 @@ const KPIText = styled(Title)<{ active: boolean; state?: "green" | "red" }>`
   }};
 `;
 
-interface PortfolioPerformanceProps {
-  currency: CurrencyType;
-}
-
 const dateFilterOptions = ["24h", "1w", "1m", "all"] as const;
 type dateFilterType = typeof dateFilterOptions[number];
 
-const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
-  currency,
-}) => {
+const PortfolioPerformance = () => {
   const { active } = useWeb3React();
-  const { price: ethPrice, loading: ethPriceLoading } = useAssetPrice({
-    asset: "WETH",
+  const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice({
+    // @ts-ignore
+    assets: AssetsList,
   });
   const { vaultAccounts, loading: vaultAccountLoading } = useVaultAccounts(
     VaultList
   );
-  const animatedLoadingText = useTextAnimation(
-    ["Loading", "Loading .", "Loading ..", "Loading ..."],
-    250,
-    ethPriceLoading || vaultAccountLoading
-  );
   const [
-    hoveredBalanceUpdate,
-    setHoveredBalanceUpdate,
-  ] = useState<BalanceUpdate>();
+    hoveredBalanceUpdateIndex,
+    setHoveredBalanceUpdateIndex,
+  ] = useState<number>();
   const [rangeFilter, setRangeFilter] = useState<dateFilterType>("1m");
   const [, setShowConnectWalletModal] = useConnectWalletModal();
 
@@ -182,19 +172,35 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
     sum: vaultBalanceInAsset,
     sumYield: vaultYieldInAsset,
   } = useMemo(() => {
-    let sum = BigNumber.from(0);
-    let sumYield = BigNumber.from(0);
+    let sum = 0;
+    let sumYield = 0;
 
     Object.keys(vaultAccounts).forEach((key) => {
       const vaultAccount = vaultAccounts[key];
       if (vaultAccount) {
-        sum = sum.add(vaultAccount.totalDeposits);
-        sumYield = sumYield.add(vaultAccount.totalYieldEarned);
+        const currentAsset = getAssets(vaultAccount.vault.symbol);
+        const currentAssetDecimals = getAssetDecimals(currentAsset);
+        sum += parseFloat(
+          assetToFiat(
+            vaultAccount.totalDeposits,
+            // @ts-ignore
+            assetPrices[currentAsset],
+            currentAssetDecimals
+          )
+        );
+        sumYield += parseFloat(
+          assetToFiat(
+            vaultAccount.totalYieldEarned,
+            // @ts-ignore
+            assetPrices[currentAsset],
+            currentAssetDecimals
+          )
+        );
       }
     });
 
     return { sum, sumYield };
-  }, [vaultAccounts]);
+  }, [vaultAccounts, assetPrices]);
 
   const afterDate = useMemo(() => {
     switch (rangeFilter) {
@@ -207,114 +213,120 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
     }
   }, [rangeFilter]);
 
-  const { balances, loading } = useBalances(
-    undefined,
-    afterDate ? afterDate.unix() : undefined
-  );
-  const loadingText = useTextAnimation(
+  // Fetch balances update
+  const {
+    balances: balanceUpdates,
+    loading: balanceUpdatesLoading,
+  } = useBalances(undefined, afterDate ? afterDate.unix() : undefined);
+  const loading =
+    assetPricesLoading || vaultAccountLoading || balanceUpdatesLoading;
+  const animatedLoadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
     loading
   );
 
+  // Accumulate balance with USD value
+  const balances = useMemo(() => {
+    const vaultLastBalances: { [key: string]: number } = {};
+    let balances: {
+      balance: number;
+      yieldEarned: number;
+      timestamp: number;
+    }[] = [];
+
+    balances = balanceUpdates.map((balanceUpdate) => {
+      const currentAsset = getAssets(balanceUpdate.vault.symbol);
+      const currentAssetDecimals = getAssetDecimals(currentAsset);
+
+      vaultLastBalances[balanceUpdate.vault.symbol] = parseFloat(
+        assetToFiat(
+          balanceUpdate.balance,
+          // @ts-ignore
+          assetPrices[currentAsset],
+          currentAssetDecimals
+        )
+      );
+
+      return {
+        balance: Object.keys(vaultLastBalances).reduce(
+          (acc, curr) => acc + vaultLastBalances[curr],
+          0
+        ),
+        yieldEarned: parseFloat(
+          assetToFiat(
+            balanceUpdate.yieldEarned,
+            // @ts-ignore
+            assetPrices[currentAsset],
+            currentAssetDecimals
+          )
+        ),
+        timestamp: balanceUpdate.timestamp,
+      };
+    });
+
+    return balances;
+  }, [balanceUpdates, assetPrices]);
+
   const calculatedKPI = useMemo(() => {
     if (balances.length <= 0) {
       return {
-        yield: BigNumber.from(0),
+        yield: 0,
         roi: 0,
-        deposit: BigNumber.from(0),
+        balance: 0,
       };
     }
 
-    if (!hoveredBalanceUpdate) {
+    if (hoveredBalanceUpdateIndex === undefined) {
       return {
         yield: vaultYieldInAsset,
-        roi:
-          (parseFloat(ethers.utils.formatEther(vaultYieldInAsset)) /
-            parseFloat(ethers.utils.formatEther(vaultBalanceInAsset))) *
-          100,
-        deposit: vaultBalanceInAsset,
+        roi: (vaultYieldInAsset / vaultBalanceInAsset) * 100,
+        balance: vaultBalanceInAsset,
       };
     }
 
-    let balancesToCalculate = balances.slice(
-      0,
-      balances.indexOf(hoveredBalanceUpdate) + 1
-    );
-    let totalInvestment = BigNumber.from(0);
-    let yieldEarned = BigNumber.from(0);
-    let lastBalance = BigNumber.from(0);
+    let balancesToCalculate = balances.slice(0, hoveredBalanceUpdateIndex + 1);
+    let totalInvestment = 0;
+    let yieldEarned = 0;
+    let lastBalance = 0;
 
     for (let i = 0; i < balancesToCalculate.length; i++) {
       const currentBalanceObj = balancesToCalculate[i];
-      totalInvestment = totalInvestment.add(
-        currentBalanceObj.balance
-          .sub(lastBalance)
-          .sub(currentBalanceObj.yieldEarned)
-      );
-      yieldEarned = yieldEarned.add(currentBalanceObj.yieldEarned);
+      totalInvestment +=
+        currentBalanceObj.balance - lastBalance - currentBalanceObj.yieldEarned;
+      yieldEarned += currentBalanceObj.yieldEarned;
       lastBalance = currentBalanceObj.balance;
-    }
-
-    if (totalInvestment.lte(0)) {
-      return {
-        yield: BigNumber.from(0),
-        roi: 0,
-        deposit: totalInvestment,
-      };
     }
 
     return {
       yield: yieldEarned,
-      roi:
-        (parseFloat(ethers.utils.formatEther(yieldEarned)) /
-          parseFloat(ethers.utils.formatEther(totalInvestment))) *
-        100,
-      deposit: totalInvestment,
+      roi: totalInvestment > 0 ? (yieldEarned / totalInvestment) * 100 : 0,
+      balance: totalInvestment + yieldEarned,
     };
-  }, [balances, hoveredBalanceUpdate, vaultYieldInAsset, vaultBalanceInAsset]);
+  }, [
+    balances,
+    hoveredBalanceUpdateIndex,
+    vaultYieldInAsset,
+    vaultBalanceInAsset,
+  ]);
 
-  const getDepositAmount = useCallback(() => {
-    switch (currency) {
-      case "eth":
-        return toETH(calculatedKPI.deposit, 2);
-      case "usd":
-        return ethPriceLoading
-          ? animatedLoadingText
-          : ethToUSD(calculatedKPI.deposit, ethPrice);
-    }
-  }, [calculatedKPI, currency, ethPrice, ethPriceLoading, animatedLoadingText]);
-
-  const renderDepositData = useCallback(() => {
+  const renderDepositText = useCallback(() => {
     if (!active) {
-      return (
-        <KPI>
-          <DepositAmount active={active}>---</DepositAmount>
-        </KPI>
-      );
+      return "---";
     }
 
     if (loading) {
-      return (
-        <KPI>
-          <DepositAmount active={active}>{loadingText}</DepositAmount>
-        </KPI>
-      );
+      return animatedLoadingText;
     }
 
-    return (
-      <KPI>
-        <DepositAmount active={active}>{getDepositAmount()}</DepositAmount>
-        <DepositCurrency>{currency}</DepositCurrency>
-      </KPI>
-    );
-  }, [active, currency, loadingText, loading, getDepositAmount]);
+    return currency(calculatedKPI.balance.toFixed(2)).format();
+  }, [active, animatedLoadingText, loading, calculatedKPI]);
 
   const handleChartHover = useCallback(
     (hoverInfo: HoverInfo) => {
-      setHoveredBalanceUpdate(
+      setHoveredBalanceUpdateIndex(
         hoverInfo.focused
-          ? balances.find(
+          ? balances.findIndex(
               (balance) =>
                 balance.timestamp * 1000 === hoverInfo.xData.getTime()
             )
@@ -329,20 +341,34 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
       return "---";
     }
 
-    switch (currency) {
-      case "eth":
-        return `+${toETH(calculatedKPI.yield, 2)}`;
-      case "usd":
-        return `+${ethToUSD(calculatedKPI.yield, ethPrice)}`;
+    if (loading) {
+      return animatedLoadingText;
     }
-  }, [active, calculatedKPI, currency, ethPrice]);
+
+    return `+${currency(calculatedKPI.yield.toFixed(2)).format()}`;
+  }, [active, calculatedKPI, loading, animatedLoadingText]);
+
+  const renderRoiText = useCallback(() => {
+    if (!active) {
+      return "---";
+    }
+
+    if (loading) {
+      return animatedLoadingText;
+    }
+
+    return `+${calculatedKPI.roi.toFixed(2)}%`;
+  }, [active, loading, animatedLoadingText, calculatedKPI]);
 
   const depositHeader = useMemo(
     () => (
       <DepositChartExtra>
-        <ColumnLabel>Deposits</ColumnLabel>
+        <ColumnLabel>Balances</ColumnLabel>
         <div className="d-flex align-items-center flex-wrap">
-          {renderDepositData()}
+          <KPI>
+            <DepositAmount active={active}>{renderDepositText()}</DepositAmount>
+            <DepositCurrency>{active && !loading ? "USD" : ""}</DepositCurrency>
+          </KPI>
           <DateFilters>
             {dateFilterOptions.map((currRange) => (
               <DateFilter
@@ -357,15 +383,13 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
         </div>
       </DepositChartExtra>
     ),
-    [rangeFilter, renderDepositData]
+    [rangeFilter, renderDepositText, active, loading]
   );
 
   const processedGraphData = useMemo(() => {
     if (balances.length > 2) {
       return {
-        dataset: balances.map((balance) =>
-          parseFloat(ethers.utils.formatEther(balance.balance))
-        ),
+        dataset: balances.map((balance) => balance.balance),
         labels: balances.map((balance) => new Date(balance.timestamp * 1000)),
       };
     }
@@ -373,12 +397,8 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
     if (balances.length === 1) {
       return {
         dataset: [
-          parseFloat(
-            ethers.utils.formatEther(
-              balances[0].balance.sub(balances[0].yieldEarned)
-            )
-          ),
-          parseFloat(ethers.utils.formatEther(balances[0].balance)),
+          balances[0].balance - balances[0].yieldEarned,
+          balances[0].balance,
         ],
         labels: [
           afterDate?.toDate() || new Date(),
@@ -388,10 +408,7 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
     }
 
     return {
-      dataset: [
-        parseFloat(ethers.utils.formatEther(vaultBalanceInAsset)),
-        parseFloat(ethers.utils.formatEther(vaultBalanceInAsset)),
-      ],
+      dataset: [vaultBalanceInAsset, vaultBalanceInAsset],
       labels: [afterDate?.toDate() || new Date(), new Date()],
     };
   }, [balances, afterDate, vaultBalanceInAsset]);
@@ -428,11 +445,11 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
           <KPI>
             <KPIText
               active={active}
-              state={calculatedKPI.yield.gt(0) ? "green" : undefined}
+              state={calculatedKPI.yield > 0 ? "green" : undefined}
             >
               {renderYieldEarnedText()}
             </KPIText>
-            <DepositCurrency>{active ? currency : ""}</DepositCurrency>
+            <DepositCurrency>{active && !loading ? "USD" : ""}</DepositCurrency>
           </KPI>
         </KPIColumn>
         <KPIColumn>
@@ -441,7 +458,7 @@ const PortfolioPerformance: React.FC<PortfolioPerformanceProps> = ({
             active={active}
             state={calculatedKPI.roi > 0 ? "green" : undefined}
           >
-            {active ? `+${calculatedKPI.roi.toFixed(2)}%` : "---"}
+            {renderRoiText()}
           </KPIText>
         </KPIColumn>
       </PerformanceColumn>

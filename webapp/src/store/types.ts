@@ -1,10 +1,13 @@
 import { BigNumber } from "ethers";
 import { VaultOptions } from "../constants/constants";
 
+export const AssetsList = ["WETH", "WBTC"] as const;
+export type Assets = typeof AssetsList[number];
 export interface UnconnectedVaultData {
   deposits: BigNumber;
   vaultLimit: BigNumber;
   decimals: number;
+  asset: Assets;
 }
 
 export interface UserSpecificData {
