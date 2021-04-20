@@ -20,7 +20,7 @@ const PortfolioPage = () => {
               setCurrency(newCurrency)
             }
           />
-          <PortfolioPerformance currency={currency} />
+          <PortfolioPerformance />
           <PortfolioPositions currency={currency} />
           <PortfolioTransactions currency={currency} />
         </Col>
