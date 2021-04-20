@@ -18,7 +18,7 @@ const MobileThetaProducts = () => {
     <ScrollContainer>
       <Vaults className="d-flex">
         {VaultList.map((vault) => (
-          <YieldCard vault={vault} />
+          <YieldCard key={vault} vault={vault} />
         ))}
       </Vaults>
     </ScrollContainer>

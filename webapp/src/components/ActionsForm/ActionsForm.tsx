@@ -197,7 +197,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   } = useVaultData(vaultOption);
   const gasPrice = useGasPrice();
   const { active, account } = useWeb3React();
-  const latestAPY = useLatestAPY();
+  const latestAPY = useLatestAPY(vaultOption);
 
   // state hooks
   const isLoadingData = status === "loading";

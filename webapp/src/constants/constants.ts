@@ -58,3 +58,12 @@ export const getAssets = (vault: VaultOptions): Assets => {
       return "WBTC";
   }
 };
+
+export const getAirtableName = (vault: VaultOptions): string => {
+  switch (vault) {
+    case "rETH-THETA":
+      return "T-100-ETH";
+    case "rBTC-THETA":
+      return "T-100-WBTC";
+  }
+};

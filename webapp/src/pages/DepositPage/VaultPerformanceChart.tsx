@@ -6,6 +6,7 @@ import colors from "../../designSystem/colors";
 import PerformanceChart from "../../components/PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../../components/PerformanceChart/types";
 import { useLatestAPY, useHistoricalData } from "../../hooks/useAirtableData";
+import { VaultOptions } from "../../constants/constants";
 
 const VaultPerformacneChartContainer = styled.div`
   border: 1px solid ${colors.border};
@@ -46,8 +47,14 @@ const DateFilter = styled(Title)<DateFilterProps>`
   color: ${(props) => (props.active ? "#FFFFFF" : "rgba(255, 255, 255, 0.4)")};
 `;
 
-const VaultPerformanceChart: React.FC = () => {
-  const airtableData = useHistoricalData();
+interface VaultPerformanceChartProps {
+  vaultOption: VaultOptions;
+}
+
+const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
+  vaultOption,
+}) => {
+  const airtableData = useHistoricalData(vaultOption);
   const yields = airtableData.res.map((data) => data.cumYield);
   const timestamps = airtableData.res.map((data) => new Date(data.timestamp));
 
@@ -92,7 +99,7 @@ const VaultPerformanceChart: React.FC = () => {
     ? `${(yields[chartIndex] || 0.0).toFixed(2)}%`
     : "Loading";
 
-  const latestAPY = useLatestAPY();
+  const latestAPY = useLatestAPY(vaultOption);
   const projectedAPY = latestAPY.res
     ? `+${latestAPY.res.toFixed(2)}%`
     : "Loading";
