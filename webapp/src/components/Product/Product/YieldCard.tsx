@@ -57,7 +57,8 @@ const ProductCard = styled.div`
   }
 
   @media (max-width: ${sizes.md}px) {
-    margin: 0 40px;
+    min-width: 280px;
+    margin: 0 12px;
   }
 `;
 
