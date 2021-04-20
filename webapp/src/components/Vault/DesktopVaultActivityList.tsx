@@ -1,15 +1,19 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import styled from "styled-components";
 import moment from "moment";
 import { ethers } from "ethers";
 
-import { getEtherscanURI } from "../../constants/constants";
+import {
+  getAssets,
+  getEtherscanURI,
+  VaultOptions,
+} from "../../constants/constants";
 import { BaseLink, SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 import { VaultActivity, VaultActivityType } from "../../models/vault";
 import {
-  ethToUSD,
+  assetToUSD,
   formatOption,
   formatSignificantDecimals,
 } from "../../utils/math";
@@ -18,6 +22,7 @@ import useElementSize from "../../hooks/useElementSize";
 import sizes from "../../designSystem/sizes";
 import useScreenSize from "../../hooks/useScreenSize";
 import useTextAnimation from "../../hooks/useTextAnimation";
+import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
 
 const VaultActivityRow = styled.div`
   display: flex;
@@ -155,19 +160,31 @@ const ExternalLink = styled.i`
 
 interface DesktopVaultActivityListProps {
   activities: VaultActivity[];
+  vaultOption: VaultOptions;
 }
 
 const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
   activities,
+  vaultOption,
 }) => {
-  const { price: ethPrice, loading: ethPriceLoading } = useAssetPrice({});
+  const { asset, decimals } = useMemo(() => {
+    const asset = getAssets(vaultOption);
+    return {
+      asset: asset,
+      decimals: getAssetDecimals(asset),
+    };
+  }, [vaultOption]);
+  const { price: assetPrice, loading: assetPriceLoading } = useAssetPrice({
+    asset: asset,
+  });
+
   const containerRef = useRef<HTMLDivElement>(null);
   const { width } = useElementSize(containerRef);
   const { width: screenWidth } = useScreenSize();
   const loadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
-    ethPriceLoading
+    assetPriceLoading
   );
 
   const getVaultActivityExternalURL = useCallback((activity: VaultActivity) => {
@@ -203,7 +220,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
               {/** Option Details */}
               <VaultActivityCol containerWidth={width} weight={0.35}>
                 <VaultPrimaryText>
-                  O-WETH {moment(activity.expiry, "X").format("M/DD")} CALL
+                  O-{asset} {moment(activity.expiry, "X").format("M/DD")} CALL
                 </VaultPrimaryText>
                 <VaultSecondaryText>
                   Strike {formatOption(activity.strikePrice)}
@@ -218,7 +235,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
               >
                 <VaultPrimaryText>
                   {formatSignificantDecimals(
-                    ethers.utils.formatEther(activity.depositAmount)
+                    ethers.utils.formatUnits(activity.depositAmount, decimals)
                   )}
                 </VaultPrimaryText>
               </VaultActivityCol>
@@ -255,7 +272,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
               {/** Option Details */}
               <VaultActivityCol containerWidth={width} weight={0.35}>
                 <VaultPrimaryText>
-                  O-WETH{" "}
+                  O-{asset + " "}
                   {moment(activity.vaultShortPosition.expiry, "X").format(
                     "M/DD"
                   )}{" "}
@@ -288,21 +305,29 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 <VaultPrimaryText variant="green">
                   +
                   {formatSignificantDecimals(
-                    ethers.utils.formatEther(activity.premium)
+                    ethers.utils.formatUnits(activity.premium, decimals)
                   )}{" "}
-                  ETH
+                  {getAssetDisplay(asset)}
                 </VaultPrimaryText>
                 <VaultSecondaryText fontFamily="VCR">
-                  {ethPriceLoading
+                  {assetPriceLoading
                     ? loadingText
-                    : `+${ethToUSD(activity.premium, ethPrice)}`}
+                    : `+${assetToUSD(activity.premium, assetPrice, decimals)}`}
                 </VaultSecondaryText>
               </VaultActivityCol>
             </>
           );
       }
     },
-    [width, ethPrice, ethPriceLoading, screenWidth, loadingText]
+    [
+      width,
+      assetPrice,
+      assetPriceLoading,
+      screenWidth,
+      loadingText,
+      asset,
+      decimals,
+    ]
   );
 
   return (
