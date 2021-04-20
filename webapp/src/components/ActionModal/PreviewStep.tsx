@@ -80,7 +80,13 @@ const PreviewStep: React.FC<
     ? positionAmount.add(amount)
     : positionAmount
         .sub(amount)
-        .sub(wmul(amount, parseUnits("0.005", getAssetDecimals(asset))));
+        .sub(
+          wmul(
+            amount,
+            parseUnits("0.005", getAssetDecimals(asset)),
+            getAssetDecimals(asset)
+          )
+        );
 
   newAmount = newAmount.isNegative() ? BigNumber.from("0") : newAmount;
 
