@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { AssertsThisTypePredicate } from "typescript";
 import { useGlobalState } from "../store/store";
 import { AssetsList, Assets } from "../store/types";
 

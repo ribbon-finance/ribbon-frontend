@@ -7,7 +7,7 @@ import { Title } from "../../designSystem";
 import useAssetPrice from "../../hooks/useAssetPrice";
 import useBalances from "../../hooks/useBalances";
 import useVaultData from "../../hooks/useVaultData";
-import { formatBigNumber } from "../../utils/math";
+import { assetToUSD, formatBigNumber } from "../../utils/math";
 import { VaultOptions } from "../../constants/constants";
 import { getAssetDisplay } from "../../utils/asset";
 
@@ -54,10 +54,9 @@ const YourPosition: React.FC<YourPositionProps> = ({
       poll: true,
     }
   );
-  const { price: ethusd } = useAssetPrice({ asset: "WETH" });
+  const { price: assetPrice } = useAssetPrice({ asset: asset });
   const isLoading = status === "loading";
   const positionAssetAmount = formatBigNumber(vaultBalanceInAsset, 6, decimals);
-  const positionInUSD = parseFloat(positionAssetAmount) * ethusd;
   const { balances } = useBalances();
 
   const allTimeROI = useMemo(() => {
@@ -108,7 +107,9 @@ const YourPosition: React.FC<YourPositionProps> = ({
         </div>
         <div className="w-100 d-flex flex-row align-items-center justify-content-between ml-2 mt-1">
           <ProfitText>+{allTimeROI.toFixed(4)}%</ProfitText>
-          <AmountText>${positionInUSD.toFixed(2)}</AmountText>
+          <AmountText>
+            {assetToUSD(vaultBalanceInAsset, assetPrice, decimals)}
+          </AmountText>
         </div>
       </div>
     </PositionsContainer>

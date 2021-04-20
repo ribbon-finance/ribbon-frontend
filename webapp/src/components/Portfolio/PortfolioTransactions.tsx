@@ -7,15 +7,11 @@ import moment from "moment";
 import { SecondaryText, Subtitle, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
-import useAssetPrice, { useAssetsPrice } from "../../hooks/useAssetPrice";
+import { useAssetsPrice } from "../../hooks/useAssetPrice";
 import useTextAnimation from "../../hooks/useTextAnimation";
 import useTransactions from "../../hooks/useTransactions";
 import { CurrencyType } from "../../pages/Portfolio/types";
-import {
-  assetToUSD,
-  ethToUSD,
-  formatSignificantDecimals,
-} from "../../utils/math";
+import { assetToUSD, formatSignificantDecimals } from "../../utils/math";
 import { capitalize } from "../../utils/text";
 import {
   getAssets,
