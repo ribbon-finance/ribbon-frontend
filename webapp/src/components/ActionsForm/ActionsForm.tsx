@@ -581,7 +581,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
                 your wBTC in the vault’s strategy.
               </ApprovalDescription>
               <ApprovalHelp
-                to="https://google.com"
+                to="/faq"
                 target="__blank"
                 rel="noreferrer noopener"
               >
