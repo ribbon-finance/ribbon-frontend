@@ -294,8 +294,8 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     if (!isLoadingData && connected && vault && account) {
       if (isDeposit && gasPrice !== "") {
         const gasLimit = isDeposit
-          ? GAS_LIMITS.depositETH
-          : GAS_LIMITS.withdrawETH;
+          ? GAS_LIMITS[vaultOption].deposit
+          : GAS_LIMITS[vaultOption].withdraw;
         const gasFee = BigNumber.from(gasLimit.toString()).mul(
           BigNumber.from(gasPrice)
         );
