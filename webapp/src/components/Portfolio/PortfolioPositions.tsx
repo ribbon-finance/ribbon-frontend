@@ -33,6 +33,7 @@ const SectionTitle = styled(Title)`
   font-size: 18px;
   line-height: 24px;
   margin-right: 16px;
+  width: 100%;
 `;
 
 const SectionPlaceholderText = styled(SecondaryText)`
