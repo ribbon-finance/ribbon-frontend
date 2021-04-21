@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
+import { getAirtableName, VaultOptions } from "../constants/constants";
 import { useGlobalState } from "../store/store";
 
 interface AirtableData {
@@ -24,8 +25,11 @@ interface WeeklyPerformance {
 const API_KEY = process.env.REACT_APP_AIRTABLE_API_KEY;
 const BASE_ID = process.env.REACT_APP_AIRTABLE_BASE_ID;
 
-export const useHistoricalData = () => {
-  const API_URL = `https://api.airtable.com/v0/${BASE_ID}/table?sort%5B0%5D%5Bfield%5D=Timestamp&sort%5B0%5D%5Bdirection%5D=asc`;
+type UseHistoricalData = (vaultOption: VaultOptions) => AirtableData;
+
+export const useHistoricalData: UseHistoricalData = (vaultOption) => {
+  const airtableName = getAirtableName(vaultOption);
+  const API_URL = `https://api.airtable.com/v0/${BASE_ID}/${airtableName}?sort%5B0%5D%5Bfield%5D=Timestamp&sort%5B0%5D%5Bdirection%5D=asc`;
 
   const [data, setData] = useState<AirtableData>({
     fetched: false,
@@ -72,13 +76,14 @@ export const useHistoricalData = () => {
   return data;
 };
 
-type UseLatestAPY = () => APYData;
+type UseLatestAPY = (vaultOption: VaultOptions) => APYData;
 
 // We need this global variable so we can prevent over-fetching
 let fetchedOnce = false;
 
-export const useLatestAPY: UseLatestAPY = () => {
-  const API_URL = `https://api.airtable.com/v0/${BASE_ID}/table?sort%5B0%5D%5Bfield%5D=Timestamp&sort%5B0%5D%5Bdirection%5D=desc&maxRecords=1`;
+export const useLatestAPY: UseLatestAPY = (vaultOption) => {
+  const airtableName = getAirtableName(vaultOption);
+  const API_URL = `https://api.airtable.com/v0/${BASE_ID}/${airtableName}?sort%5B0%5D%5Bfield%5D=Timestamp&sort%5B0%5D%5Bdirection%5D=desc&maxRecords=1`;
   const [latestAPY, setLatestAPY] = useGlobalState("latestAPY");
   const [fetched, setFetched] = useState(false);
 

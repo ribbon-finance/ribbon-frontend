@@ -166,7 +166,7 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault }) => {
     </ProductTag>
   );
 
-  const latestAPY = useLatestAPY();
+  const latestAPY = useLatestAPY(vault);
 
   const loadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
