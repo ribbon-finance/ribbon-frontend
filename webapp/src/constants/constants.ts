@@ -7,9 +7,17 @@ export const NETWORK_NAMES: Record<number, string> = {
   42: "kovan",
 };
 
-export const GAS_LIMITS = {
-  depositETH: 80000,
-  withdrawETH: 100000,
+export const GAS_LIMITS: {
+  [vault in VaultOptions]: { deposit: number; withdraw: number };
+} = {
+  "rETH-THETA": {
+    deposit: 80000,
+    withdraw: 100000,
+  },
+  "rBTC-THETA": {
+    deposit: 100000,
+    withdraw: 140000,
+  },
 };
 
 export const getETHThetaVaultId = () => {
@@ -27,7 +35,7 @@ export const getWBTCThetaVaultId = () => {
     .toLowerCase();
 };
 
-export const FullVaultList = ["rETH-THETA", "rBTC-THETA"] as const;
+export const FullVaultList = ["rBTC-THETA", "rETH-THETA"] as const;
 export type VaultOptions = typeof FullVaultList[number];
 export const ProdExcludeVault: VaultOptions[] = ["rBTC-THETA"];
 // @ts-ignore

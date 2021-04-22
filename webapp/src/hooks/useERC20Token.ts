@@ -3,9 +3,7 @@ import { isStaging } from "../utils/env";
 import addresses from "../constants/externalAddresses.json";
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
-
-const ERC20TokenList = ["weth", "usdc", "wbtc"] as const;
-export type ERC20Token = typeof ERC20TokenList[number];
+import { ERC20Token } from "../models/eth";
 
 export const getERC20Token = (library: any, token: ERC20Token) => {
   if (library) {

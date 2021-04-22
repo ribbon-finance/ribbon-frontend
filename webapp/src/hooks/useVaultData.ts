@@ -8,7 +8,8 @@ import { getVault } from "./useVault";
 import { getDefaultChainID } from "../utils/env";
 import { getAssets, VaultOptions } from "../constants/constants";
 import { isETHVault } from "../utils/vault";
-import { getERC20Token, ERC20Token } from "./useERC20Token";
+import { getERC20Token } from "./useERC20Token";
+import { ERC20Token } from "../models/eth";
 
 type UseVaultData = (
   vault: VaultOptions,

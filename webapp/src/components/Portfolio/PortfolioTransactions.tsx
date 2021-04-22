@@ -72,13 +72,7 @@ const TransactionSecondaryInfoText = styled(Subtitle)`
   line-height: 16px;
 `;
 
-interface PortfolioTransactionsProps {
-  currency: CurrencyType;
-}
-
-const PortfolioTransactions: React.FC<PortfolioTransactionsProps> = ({
-  currency,
-}) => {
+const PortfolioTransactions = () => {
   const { transactions, loading } = useTransactions();
   const { active } = useWeb3React();
   const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice({
@@ -154,7 +148,7 @@ const PortfolioTransactions: React.FC<PortfolioTransactionsProps> = ({
             {renderTransactionAmountText(
               transaction.amount,
               transaction.type,
-              currency,
+              "eth",
               getAssets(transaction.vault.symbol)
             )}
           </Title>
@@ -169,7 +163,7 @@ const PortfolioTransactions: React.FC<PortfolioTransactionsProps> = ({
             {renderTransactionAmountText(
               transaction.amount,
               transaction.type,
-              currency === "eth" ? "usd" : "eth",
+              "usd",
               getAssets(transaction.vault.symbol)
             )}
           </TransactionSecondaryInfoText>
@@ -182,7 +176,6 @@ const PortfolioTransactions: React.FC<PortfolioTransactionsProps> = ({
     animatedLoadingText,
     loading,
     renderTransactionAmountText,
-    currency,
   ]);
 
   return (

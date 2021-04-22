@@ -1,13 +1,15 @@
 import { BigNumber } from "ethers";
 import React, { useCallback, useEffect, useState } from "react";
-import { VaultList } from "../../constants/constants";
+import { getAssets, VaultList, VaultOptions } from "../../constants/constants";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
 import useVaultData from "../../hooks/useVaultData";
 import { useWeb3Context } from "../../hooks/web3Context";
-import { PendingTransaction } from "../../store/types";
+import { Assets, PendingTransaction } from "../../store/types";
+import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
 import { getDefaultNetworkName } from "../../utils/env";
 import { formatBigNumber } from "../../utils/math";
 import { capitalize } from "../../utils/text";
+import { productCopies } from "../Product/Product/productCopies";
 import Toast from "./BaseToast";
 
 export const WrongNetworkToast = () => {
@@ -69,9 +71,39 @@ export const TxStatusToast = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pendingTransactions, setStatus, setCurrentTx]);
 
+  const renderSuccessTxSubtitle = useCallback(
+    (
+      type: "approval" | "deposit" | "withdraw",
+      amountFormatted: string,
+      vault: VaultOptions,
+      asset: Assets
+    ) => {
+      switch (type) {
+        case "approval":
+          return `${getAssetDisplay(asset)} approved for ${
+            productCopies[vault].title
+          } successfully`;
+        case "withdraw":
+          return `${amountFormatted} ${getAssetDisplay(asset)} withdrawn into ${
+            productCopies[vault].title
+          }`;
+        case "deposit":
+          return `${amountFormatted} ${getAssetDisplay(asset)} deposited from ${
+            productCopies[vault].title
+          }`;
+      }
+    },
+    []
+  );
+
   if (status && currentTx) {
-    const { type, amount } = currentTx;
-    const amountFormatted = formatBigNumber(BigNumber.from(amount));
+    const { type, amount, vault } = currentTx;
+    const asset = getAssets(vault);
+    const amountFormatted = formatBigNumber(
+      BigNumber.from(amount),
+      6,
+      getAssetDecimals(asset)
+    );
 
     if (status === "error") {
       return (
@@ -85,7 +117,7 @@ export const TxStatusToast = () => {
       );
     }
 
-    const word = type === "deposit" ? "Deposit" : "Withdrawal";
+    const word = capitalize(type);
 
     return (
       <Toast
@@ -93,9 +125,7 @@ export const TxStatusToast = () => {
         onClose={() => setStatus(null)}
         type="success"
         title={`${word} successful`}
-        subtitle={`${amountFormatted} ETH ${
-          type === "deposit" ? "deposited into" : "withdrawn from"
-        } T-100-E`}
+        subtitle={renderSuccessTxSubtitle(type, amountFormatted, vault, asset)}
       ></Toast>
     );
   }

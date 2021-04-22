@@ -124,10 +124,11 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
           txhash,
           type: isDeposit ? "deposit" : "withdraw",
           amount: amountStr,
+          vault: vaultOption,
         },
       ]);
     }
-  }, [txhash, setPendingTransactions, isDeposit, amountStr]);
+  }, [txhash, setPendingTransactions, isDeposit, amountStr, vaultOption]);
 
   useEffect(() => {
     // we check that the txhash has already been removed
@@ -199,7 +200,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const stepComponents = {
     0: !skipToPreview && (
-      <FormStep vaultOption={vaultOption} onSubmit={onSubmitForm}></FormStep>
+      <FormStep vaultOption={vaultOption} onSubmit={onSubmitForm} />
     ),
     1: (
       <PreviewStep

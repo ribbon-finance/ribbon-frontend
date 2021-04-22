@@ -2,21 +2,37 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
-import { Title } from "../../designSystem";
+import {
+  BaseLink,
+  PrimaryText,
+  SecondaryText,
+  Title,
+} from "../../designSystem";
 import { formatSignificantDecimals } from "../../utils/math";
 import YourPosition from "./YourPosition";
 import ActionModal from "../ActionModal/ActionModal";
 import { ActionButton, ConnectWalletButton } from "../Common/buttons";
-import { GAS_LIMITS, VaultOptions } from "../../constants/constants";
+import {
+  GAS_LIMITS,
+  VaultAddressMap,
+  VaultOptions,
+} from "../../constants/constants";
 import useGasPrice from "../../hooks/useGasPrice";
 import useVaultData from "../../hooks/useVaultData";
 import useVault from "../../hooks/useVault";
 import { ACTIONS, PreviewStepProps } from "../ActionModal/types";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
-import { isVaultFull } from "../../utils/vault";
+import { isETHVault, isVaultFull } from "../../utils/vault";
 import colors from "../../designSystem/colors";
 import { useLatestAPY } from "../../hooks/useAirtableData";
 import { getAssetDisplay } from "../../utils/asset";
+import WBTCLogo from "../Product/Splash/Vault/WBTCLogo";
+import { getERC20Token } from "../../hooks/useERC20Token";
+import { useWeb3Context } from "../../hooks/web3Context";
+import usePendingTransactions from "../../hooks/usePendingTransactions";
+import useTextAnimation from "../../hooks/useTextAnimation";
+import useTokenAllowance from "../../hooks/useTokenAllowance";
+import { ERC20Token } from "../../models/eth";
 
 const { parseUnits, formatUnits } = ethers.utils;
 
@@ -159,6 +175,50 @@ const WalletBalance = styled.div<{ state: WalletBalanceStates }>`
   }};
 `;
 
+const ApprovalIconContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
+`;
+
+const ApprovalIcon = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 64px;
+  height: 64px;
+  padding: 8px;
+  border-radius: 100px;
+  background-color: ${colors.green}29;
+`;
+
+const GreenWBTCLogo = styled(WBTCLogo)`
+  && * {
+    fill: ${colors.green};
+  }
+`;
+
+const ApprovalDescription = styled(PrimaryText)`
+  display: block;
+  text-align: center;
+  margin-bottom: 16px;
+`;
+
+const ApprovalHelp = styled(BaseLink)`
+  display: flex;
+  justify-content: center;
+  text-decoration: underline ${colors.text};
+  margin-bottom: 40px;
+
+  &:hover {
+    text-decoration: underline ${colors.text}A3;
+
+    span {
+      color: ${colors.text}A3;
+    }
+  }
+`;
+
 type ValidationErrors = "none" | "insufficient_balance";
 
 export interface FormStepProps {
@@ -196,8 +256,10 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     decimals,
   } = useVaultData(vaultOption);
   const gasPrice = useGasPrice();
-  const { active, account } = useWeb3React();
+  const { active, account, library } = useWeb3React();
+  const { provider } = useWeb3Context();
   const latestAPY = useLatestAPY(vaultOption);
+  const [, setPendingTransactions] = usePendingTransactions();
 
   // state hooks
   const isLoadingData = status === "loading";
@@ -206,6 +268,26 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showActionModal, setShowActionModal] = useState(false);
   const [error, setError] = useState<ValidationErrors>("none");
+  const [showTokenApproval, setShowTokenApproval] = useState(false);
+  const tokenAllowance = useTokenAllowance(
+    isETHVault(vaultOption) ? undefined : (asset.toLowerCase() as ERC20Token),
+    VaultAddressMap[vaultOption]()
+  );
+  const [waitingApproval, setWaitingApproval] = useState(false);
+  const waitingApprovalLoadingText = useTextAnimation(
+    ["Approving", "Approving .", "Approving ..", "Approving ..."],
+    250,
+    waitingApproval
+  );
+
+  const tokenContract = useMemo(() => {
+    if (isETHVault(vaultOption)) {
+      return;
+    }
+
+    // @ts-ignore
+    return getERC20Token(library, asset.toLowerCase());
+  }, [vaultOption, asset, library]);
 
   // derived states
   const vaultFull = isVaultFull(deposits, vaultLimit, decimals);
@@ -216,8 +298,8 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     if (!isLoadingData && connected && vault && account) {
       if (isDeposit && gasPrice !== "") {
         const gasLimit = isDeposit
-          ? GAS_LIMITS.depositETH
-          : GAS_LIMITS.withdrawETH;
+          ? GAS_LIMITS[vaultOption].deposit
+          : GAS_LIMITS[vaultOption].withdraw;
         const gasFee = BigNumber.from(gasLimit.toString()).mul(
           BigNumber.from(gasPrice)
         );
@@ -288,9 +370,59 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     };
   }, [isDeposit, inputAmount, vaultBalanceStr, latestAPY.res, decimals]);
 
-  const handleClickActionButton = () => {
+  const canProceedToPreview = () => {
+    const amount = parseUnits(inputAmount, decimals);
+    return !isDeposit || isETHVault(vaultOption) || tokenAllowance.gte(amount);
+  };
+
+  const proceedToPreview = () => {
     isDesktop && isInputNonZero && connected && setShowActionModal(true);
     !isDesktop && isInputNonZero && connected && onSubmit(previewStepProps);
+  };
+
+  const handleClickActionButton = () => {
+    if (!canProceedToPreview()) {
+      setShowTokenApproval(true);
+      return;
+    }
+
+    proceedToPreview();
+  };
+
+  const handleApproveToken = async () => {
+    setWaitingApproval(true);
+    if (tokenContract) {
+      const amount =
+        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+
+      try {
+        const tx = await tokenContract.approve(
+          VaultAddressMap[vaultOption](),
+          amount
+        );
+
+        const txhash = tx.hash;
+
+        setPendingTransactions((pendingTransactions) => [
+          ...pendingTransactions,
+          {
+            txhash,
+            type: "approval",
+            amount: amount,
+            vault: vaultOption,
+          },
+        ]);
+
+        // Wait for transaction to be approved
+        const receipt = await provider.waitForTransaction(txhash);
+        if (receipt.status) {
+          // Update user allowance
+          setShowTokenApproval(false);
+          proceedToPreview();
+        }
+      } catch (err) {}
+    }
+    setWaitingApproval(false);
   };
 
   const onCloseActionsModal = useCallback(() => {
@@ -416,6 +548,15 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     ]
   );
 
+  const renderApprovalAssetLogo = useCallback(() => {
+    switch (asset) {
+      case "WBTC":
+        return <GreenWBTCLogo />;
+      default:
+        return <></>;
+    }
+  }, [asset]);
+
   return (
     <Container variant={variant}>
       {isDesktop && desktopActionModal}
@@ -439,24 +580,49 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         </FormTitleContainer>
 
         <ContentContainer className="px-4 py-4">
-          <InputGuide>AMOUNT ({getAssetDisplay(asset)})</InputGuide>
-          <FormInputContainer className="position-relative mt-2 mb-5 px-1">
-            <FormInput
-              ref={inputRef}
-              type="number"
-              className="form-control"
-              aria-label="ETH"
-              placeholder="0"
-              value={inputAmount}
-              onChange={handleChange}
-              onWheel={onInputWheel}
-            />
-            {connected && (
-              <MaxAccessory onClick={handleClickMax}>MAX</MaxAccessory>
-            )}
-          </FormInputContainer>
-
-          {button}
+          {isDeposit && showTokenApproval ? (
+            <>
+              <ApprovalIconContainer>
+                <ApprovalIcon>{renderApprovalAssetLogo()}</ApprovalIcon>
+              </ApprovalIconContainer>
+              <ApprovalDescription>
+                Before you deposit, the vault needs your permission to invest
+                your wBTC in the vault’s strategy.
+              </ApprovalDescription>
+              <ApprovalHelp
+                to="/faq"
+                target="__blank"
+                rel="noreferrer noopener"
+              >
+                <SecondaryText>Why do I have to do this?</SecondaryText>
+              </ApprovalHelp>
+              <ActionButton onClick={handleApproveToken} className="py-3 mb-4">
+                {waitingApproval
+                  ? waitingApprovalLoadingText
+                  : `Approve ${getAssetDisplay(asset)}`}
+              </ActionButton>
+            </>
+          ) : (
+            <>
+              <InputGuide>AMOUNT ({getAssetDisplay(asset)})</InputGuide>
+              <FormInputContainer className="position-relative mt-2 mb-5 px-1">
+                <FormInput
+                  ref={inputRef}
+                  type="number"
+                  className="form-control"
+                  aria-label="ETH"
+                  placeholder="0"
+                  value={inputAmount}
+                  onChange={handleChange}
+                  onWheel={onInputWheel}
+                />
+                {connected && (
+                  <MaxAccessory onClick={handleClickMax}>MAX</MaxAccessory>
+                )}
+              </FormInputContainer>
+              {button}
+            </>
+          )}
 
           <WalletBalance state={walletBalanceState}>{walletText}</WalletBalance>
         </ContentContainer>

@@ -33,6 +33,7 @@
     "react-hooks-global-state": "^1.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "smoothscroll-polyfill": "^0.4.4",
     "styled-components": "^5.2.1",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"
@@ -67,6 +68,7 @@
     "@typechain/ethers-v5": "^6.0.5",
     "@types/chart.js": "^2.9.31",
     "@types/react-router-dom": "^5.1.7",
+    "@types/smoothscroll-polyfill": "^0.3.1",
     "@types/styled-components": "^5.1.9",
     "typechain": "^4.0.3"
   }

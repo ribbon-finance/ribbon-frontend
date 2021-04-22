@@ -33,6 +33,7 @@ export type VaultDataResponses = {
 
 export type PendingTransaction = {
   txhash: string;
-  type: "deposit" | "withdraw";
+  type: "deposit" | "withdraw" | "approval";
   amount: string;
+  vault: VaultOptions;
 };

@@ -36,6 +36,7 @@ const ProductCard = styled.div`
   transition: 0.25s box-shadow ease-out;
   max-width: 343px;
   position: relative;
+  height: 100%;
 
   @keyframes shimmerAnimation {
     0% {
@@ -110,20 +111,6 @@ const TopContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-`;
-
-const ArrowContainer = styled.div`
-  background: rgba(255, 255, 255, 0.04);
-  width: 40px;
-  height: 40px;
-  border-radius: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-const ArrowRight = styled.i`
-  color: white;
-  transform: rotate(-45deg);
 `;
 
 const BackgroundContainer = styled.div`
@@ -202,10 +189,6 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault }) => {
           <ProductTagContainer>
             {productCopies[vault].tags.map((tag) => renderTag(tag))}
           </ProductTagContainer>
-
-          <ArrowContainer>
-            <ArrowRight className="fas fa-arrow-right"></ArrowRight>
-          </ArrowContainer>
         </TopContainer>
 
         <ProductTitle>{productCopies[vault].title}</ProductTitle>

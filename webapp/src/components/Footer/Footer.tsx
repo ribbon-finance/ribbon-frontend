@@ -40,6 +40,7 @@ const FooterContainer = styled.div<{
     top: unset;
     bottom: 0px;
     height: ${theme.footer.mobile.height}px;
+    z-index: 1;
   }
 `;
 

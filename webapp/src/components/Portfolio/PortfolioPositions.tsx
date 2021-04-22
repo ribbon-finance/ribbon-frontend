@@ -1,15 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import styled from "styled-components";
-import { Frame } from "framer";
 
 import { SecondaryText, Subtitle, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 import useAssetPrice from "../../hooks/useAssetPrice";
 import useTextAnimation from "../../hooks/useTextAnimation";
-import { currencies, CurrencyType } from "../../pages/Portfolio/types";
+import { CurrencyType } from "../../pages/Portfolio/types";
 import { assetToUSD, formatSignificantDecimals } from "../../utils/math";
 import { ProductType } from "../Product/types";
 import sizes from "../../designSystem/sizes";
@@ -27,36 +26,14 @@ const PortfolioPositionsContainer = styled.div`
   margin-top: 48px;
   display: flex;
   flex-wrap: wrap;
-`;
-
-const HeaderContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
+  width: 100%;
 `;
 
 const SectionTitle = styled(Title)`
   font-size: 18px;
   line-height: 24px;
   margin-right: 16px;
-`;
-
-const CurrencySwitch = styled.div`
-  border-radius: ${theme.border.radius};
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  background-color: rgba(255, 255, 255, 0.04);
-  display: flex;
-  position: relative;
-`;
-
-const CurrencyButton = styled.div`
-  padding: 8px 13px;
-  z-index: 1;
-`;
-
-const ActiveCurrencyButton = styled(Frame)`
-  border-radius: ${theme.border.radius} !important;
-  background-color: ${colors.pillBackground} !important;
+  width: 100%;
 `;
 
 const SectionPlaceholderText = styled(SecondaryText)`
@@ -137,12 +114,10 @@ const KPIDatas = styled.div`
 `;
 
 interface PortfolioPositionProps {
-  currency: CurrencyType;
   vaultAccount: VaultAccount;
 }
 
 const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
-  currency,
   vaultAccount,
 }) => {
   const asset = getAssets(vaultAccount.vault.symbol);
@@ -199,7 +174,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
         <Title>
           {renderAmountText(
             vaultAccount.totalDeposits.add(vaultAccount.totalYieldEarned),
-            currency
+            "eth"
           )}
         </Title>
       </PositionInfoRow>
@@ -210,14 +185,14 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
         <PositionSecondaryInfoText>
           {renderAmountText(
             vaultAccount.totalDeposits.add(vaultAccount.totalYieldEarned),
-            currency === "eth" ? "usd" : "eth"
+            "usd"
           )}
         </PositionSecondaryInfoText>
       </PositionInfoRow>
       <KPIContainer>
         <KPIDatas>
           <Title>
-            +{renderAmountText(vaultAccount.totalYieldEarned, currency)}
+            +{renderAmountText(vaultAccount.totalYieldEarned, "usd")}
           </Title>
           <PositionSecondaryInfoText variant="green">
             +{calculatedROI.toFixed(2)}%
@@ -228,44 +203,14 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   );
 };
 
-interface PortfolioPositionsProps {
-  currency: CurrencyType;
-  updateCurrency: (current: CurrencyType) => void;
-}
-
-const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
-  currency,
-  updateCurrency,
-}) => {
+const PortfolioPositions = () => {
   const { active } = useWeb3React();
-  const currencyRefs = currencies.reduce<any>((acc, curr) => {
-    acc[curr] = React.createRef();
-    return acc;
-  }, {});
-  const [currencyButtonAnimation, setCurrencyButtonAnimation] = useState<
-    object | boolean
-  >(false);
   const { vaultAccounts, loading } = useVaultAccounts(VaultList);
   const animatedLoadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
     loading
   );
-
-  useEffect(() => {
-    const currentCurrency = currencyRefs[currency].current;
-
-    if (!currentCurrency) {
-      return;
-    }
-
-    setCurrencyButtonAnimation({
-      left: currentCurrency.offsetLeft,
-      top: currentCurrency.offsetTop,
-      height: currentCurrency.clientHeight,
-      width: currentCurrency.clientWidth,
-    });
-  }, [currency, currencyRefs]);
 
   const filteredVaultAccounts = useMemo(() => {
     return Object.fromEntries(
@@ -274,10 +219,6 @@ const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
         .filter((item) => item[1])
     );
   }, [vaultAccounts]);
-
-  const toggleCurrency = useCallback(() => {
-    updateCurrency(currencies.find((c) => c !== currency) as CurrencyType);
-  }, [updateCurrency, currency]);
 
   const positionContent = useMemo(() => {
     if (!active) {
@@ -298,42 +239,13 @@ const PortfolioPositions: React.FC<PortfolioPositionsProps> = ({
     }
 
     return Object.keys(filteredVaultAccounts).map((key) => (
-      <PortfolioPosition
-        key={key}
-        currency={currency}
-        vaultAccount={filteredVaultAccounts[key]}
-      />
+      <PortfolioPosition key={key} vaultAccount={filteredVaultAccounts[key]} />
     ));
-  }, [active, animatedLoadingText, currency, filteredVaultAccounts, loading]);
-
-  const renderCurrencyButton = useCallback(
-    (currency: CurrencyType) => (
-      <CurrencyButton ref={currencyRefs[currency]} key={currency}>
-        <Subtitle>{currency.toUpperCase()}</Subtitle>
-      </CurrencyButton>
-    ),
-    // currencyRefs are being changed from this block, having dependencies will causes max depth reach
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currency]
-  );
+  }, [active, animatedLoadingText, filteredVaultAccounts, loading]);
 
   return (
     <PortfolioPositionsContainer>
-      <HeaderContainer>
-        <SectionTitle>Positions</SectionTitle>
-        <CurrencySwitch role="button" onClick={toggleCurrency}>
-          <ActiveCurrencyButton
-            transition={{
-              type: "keyframes",
-              ease: "easeOut",
-            }}
-            height={0}
-            width={0}
-            animate={currencyButtonAnimation}
-          />
-          {currencies.map((currency) => renderCurrencyButton(currency))}
-        </CurrencySwitch>
-      </HeaderContainer>
+      <SectionTitle>Positions</SectionTitle>
       {positionContent}
     </PortfolioPositionsContainer>
   );
