@@ -24,6 +24,11 @@ const MobileThetaProducts = () => {
   const [productIndex, setProductIndex] = useState(0);
 
   const dragEndCallback = (_event: any, info: PanInfo) => {
+    // Prevent small movement to affect scroll
+    if (!(info.offset.x <= -10 || info.offset.x >= 10)) {
+      return;
+    }
+
     const currIndex = info.offset.x < 0 ? productIndex + 1 : productIndex - 1;
     if (currIndex < 0) {
       return;
