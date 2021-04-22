@@ -39,7 +39,6 @@ const ModalBody = styled.div<ModalBodyProps>`
   width: ${(props) => (props.variant === "desktop" ? "383px" : "100%")};
   max-width: 450px;
   min-height: 480px;
-  max-height: 480px;
 
   ${(props) =>
     props.variant === "mobile" &&
@@ -86,7 +85,6 @@ const StepsContainer = styled.div<ModalProps>`
   ${(props) =>
     props.variant === "desktop" &&
     `
-    position: absolute;
     width: 100%;
     height: 100%;
     `}

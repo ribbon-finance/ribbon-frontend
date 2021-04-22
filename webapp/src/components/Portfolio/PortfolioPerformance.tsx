@@ -269,15 +269,7 @@ const PortfolioPerformance = () => {
   }, [balanceUpdates, assetPrices]);
 
   const calculatedKPI = useMemo(() => {
-    if (balances.length <= 0) {
-      return {
-        yield: 0,
-        roi: 0,
-        balance: 0,
-      };
-    }
-
-    if (hoveredBalanceUpdateIndex === undefined) {
+    if (hoveredBalanceUpdateIndex === undefined || balances.length <= 0) {
       return {
         yield: vaultYieldInAsset,
         roi: (vaultYieldInAsset / vaultBalanceInAsset) * 100,

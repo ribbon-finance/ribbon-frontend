@@ -31,8 +31,8 @@ const HeroContainer = styled.div`
 `;
 
 const HeroText = styled(Title)`
-  font-size: 72px;
-  line-height: 72px;
+  font-size: 56px;
+  line-height: 64px;
   margin-bottom: 24px;
 `;
 

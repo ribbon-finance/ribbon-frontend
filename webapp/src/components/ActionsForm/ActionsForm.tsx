@@ -395,30 +395,32 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
       const amount =
         "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 
-      const tx = await tokenContract.approve(
-        VaultAddressMap[vaultOption](),
-        amount
-      );
+      try {
+        const tx = await tokenContract.approve(
+          VaultAddressMap[vaultOption](),
+          amount
+        );
 
-      const txhash = tx.hash;
+        const txhash = tx.hash;
 
-      setPendingTransactions((pendingTransactions) => [
-        ...pendingTransactions,
-        {
-          txhash,
-          type: "approval",
-          amount: amount,
-          vault: vaultOption,
-        },
-      ]);
+        setPendingTransactions((pendingTransactions) => [
+          ...pendingTransactions,
+          {
+            txhash,
+            type: "approval",
+            amount: amount,
+            vault: vaultOption,
+          },
+        ]);
 
-      // Wait for transaction to be approved
-      const receipt = await provider.waitForTransaction(txhash);
-      if (receipt.status) {
-        // Update user allowance
-        setShowTokenApproval(false);
-        proceedToPreview();
-      }
+        // Wait for transaction to be approved
+        const receipt = await provider.waitForTransaction(txhash);
+        if (receipt.status) {
+          // Update user allowance
+          setShowTokenApproval(false);
+          proceedToPreview();
+        }
+      } catch (err) {}
     }
     setWaitingApproval(false);
   };
