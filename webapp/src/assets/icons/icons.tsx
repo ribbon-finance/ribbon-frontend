@@ -48,9 +48,9 @@ export const SuccessIcon: React.FC<IconProps> = ({
       <path
         d="M16.6663 5L7.49967 14.1667L3.33301 10"
         stroke={color}
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   </span>

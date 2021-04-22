@@ -31,6 +31,8 @@ import { getERC20Token } from "../../hooks/useERC20Token";
 import { useWeb3Context } from "../../hooks/web3Context";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
 import useTextAnimation from "../../hooks/useTextAnimation";
+import useTokenAllowance from "../../hooks/useTokenAllowance";
+import { ERC20Token } from "../../models/eth";
 
 const { parseUnits, formatUnits } = ethers.utils;
 
@@ -266,9 +268,11 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showActionModal, setShowActionModal] = useState(false);
   const [error, setError] = useState<ValidationErrors>("none");
-  const [tokenApprovalStatus, setTokenApprovalStatus] = useState<
-    "not required" | "unapproved" | "approving"
-  >(isETHVault(vaultOption) ? "not required" : "unapproved");
+  const [showTokenApproval, setShowTokenApproval] = useState(false);
+  const tokenAllowance = useTokenAllowance(
+    isETHVault(vaultOption) ? undefined : (asset.toLowerCase() as ERC20Token),
+    VaultAddressMap[vaultOption]()
+  );
   const [waitingApproval, setWaitingApproval] = useState(false);
   const waitingApprovalLoadingText = useTextAnimation(
     ["Approving", "Approving .", "Approving ..", "Approving ..."],
@@ -367,7 +371,8 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   }, [isDeposit, inputAmount, vaultBalanceStr, latestAPY.res, decimals]);
 
   const canProceedToPreview = () => {
-    return !isDeposit || tokenApprovalStatus === "not required";
+    const amount = parseUnits(inputAmount, decimals);
+    return !isDeposit || isETHVault(vaultOption) || tokenAllowance.gte(amount);
   };
 
   const proceedToPreview = () => {
@@ -377,7 +382,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
 
   const handleClickActionButton = () => {
     if (!canProceedToPreview()) {
-      setTokenApprovalStatus("approving");
+      setShowTokenApproval(true);
       return;
     }
 
@@ -387,7 +392,8 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   const handleApproveToken = async () => {
     setWaitingApproval(true);
     if (tokenContract) {
-      const amount = parseUnits(inputAmount, decimals);
+      const amount =
+        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 
       const tx = await tokenContract.approve(
         VaultAddressMap[vaultOption](),
@@ -401,16 +407,17 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         {
           txhash,
           type: "approval",
-          amount: amount.toString(),
+          amount: amount,
           vault: vaultOption,
         },
       ]);
 
+      // Wait for transaction to be approved
       const receipt = await provider.waitForTransaction(txhash);
       if (receipt.status) {
+        // Update user allowance
+        setShowTokenApproval(false);
         proceedToPreview();
-        // Reset back to unapproved state after proceed to preview, so user can redo the whole flow
-        setTokenApprovalStatus("unapproved");
       }
     }
     setWaitingApproval(false);
@@ -571,7 +578,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         </FormTitleContainer>
 
         <ContentContainer className="px-4 py-4">
-          {isDeposit && tokenApprovalStatus === "approving" ? (
+          {isDeposit && showTokenApproval ? (
             <>
               <ApprovalIconContainer>
                 <ApprovalIcon>{renderApprovalAssetLogo()}</ApprovalIcon>

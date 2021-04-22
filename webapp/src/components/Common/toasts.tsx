@@ -80,9 +80,9 @@ export const TxStatusToast = () => {
     ) => {
       switch (type) {
         case "approval":
-          return `${amountFormatted} ${getAssetDisplay(asset)} approved for ${
+          return `${getAssetDisplay(asset)} approved for ${
             productCopies[vault].title
-          }`;
+          } successfully`;
         case "withdraw":
           return `${amountFormatted} ${getAssetDisplay(asset)} withdrawn into ${
             productCopies[vault].title
