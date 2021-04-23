@@ -8,6 +8,7 @@ import React, {
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
+
 import {
   BaseLink,
   PrimaryText,
@@ -286,16 +287,22 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     waitingApproval
   );
 
+  const allowanceStr = tokenAllowance?.toString();
+
   // Show token approval when needed
   useEffect(() => {
-    if (tokenAllowance && tokenAllowance.isZero() && !isETHVault(vaultOption)) {
+    if (
+      allowanceStr &&
+      BigNumber.from(allowanceStr).isZero() &&
+      !isETHVault(vaultOption)
+    ) {
       setShowTokenApproval(true);
       return;
     }
 
     setShowTokenApproval(false);
     setWaitingApproval(false);
-  }, [tokenAllowance, vaultOption]);
+  }, [allowanceStr, vaultOption]);
 
   const tokenContract = useMemo(() => {
     if (isETHVault(vaultOption)) {
