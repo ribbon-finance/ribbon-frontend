@@ -25,7 +25,7 @@ const LinksContainer = styled.div`
 `;
 
 const LeftContainer = styled(LinksContainer)`
-  flex-grow: 1;
+  margin-right: auto;
 `;
 
 const LinkItem = styled.div`
@@ -69,6 +69,7 @@ const MobileFooterCol = styled(Col)`
 const LinkItemText = styled(Title)`
   font-size: 14px;
   line-height: 20px;
+  white-space: nowrap;
 `;
 
 const DesktopFooter = () => {
@@ -105,6 +106,7 @@ const DesktopFooter = () => {
           {mediaKit}
         </LeftContainer>
         <div className="d-flex flex-row">
+          {renderLinkItem("DEFI PULSE", "https://defipulse.com/", true)}
           {renderLinkItem("DISCORD", "http://discord.ribbon.finance", true)}
           {renderLinkItem("TWITTER", "https://twitter.com/ribbonfinance", true)}
           {renderLinkItem("GITHUB", "https://github.com/ribbon-finance", true)}
@@ -127,6 +129,9 @@ const DesktopFooter = () => {
         <MobileFooterRow>
           {renderLinkItem("TWITTER", "https://twitter.com/ribbonfinance", true)}
           {renderLinkItem("GITHUB", "https://github.com/ribbon-finance", true)}
+        </MobileFooterRow>
+        <MobileFooterRow>
+          {renderLinkItem("DEFI PULSE", "https://defipulse.com/", true)}
         </MobileFooterRow>
       </MobileFooter>
     </>
