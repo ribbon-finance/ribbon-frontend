@@ -14,7 +14,7 @@ const FooterContainer = styled.div`
   flex-wrap: nowrap;
   border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
 
-  @media (max-width: ${sizes.md}px) {
+  @media (max-width: ${sizes.lg}px) {
     display: none;
   }
 `;
@@ -25,7 +25,7 @@ const LinksContainer = styled.div`
 `;
 
 const LeftContainer = styled(LinksContainer)`
-  flex-grow: 1;
+  margin-right: auto;
 `;
 
 const LinkItem = styled.div`
@@ -40,7 +40,7 @@ const LinkItem = styled.div`
 const MobileFooter = styled.div`
   border-top: 1px solid #2b2b2b;
 
-  @media (min-width: ${sizes.sm}px) {
+  @media (min-width: ${sizes.lg}px) {
     display: none;
   }
 `;
@@ -56,12 +56,19 @@ const MobileFooterCol = styled(Col)`
   justify-content: center;
   padding: 0;
 
-  @media (max-width: ${sizes.sm}px) {
+  @media (max-width: ${sizes.lg}px) {
     padding-top: 27px;
     padding-bottom: 27px;
   }
 
   @media (min-width: ${sizes.lg}px) {
+    && {
+      max-width: unset;
+      flex: unset;
+    }
+  }
+
+  @media (min-width: ${sizes.xl}px) {
     max-width: 50%;
   }
 `;
@@ -69,12 +76,13 @@ const MobileFooterCol = styled(Col)`
 const LinkItemText = styled(Title)`
   font-size: 14px;
   line-height: 20px;
+  white-space: nowrap;
 `;
 
 const DesktopFooter = () => {
   const renderLinkItem = useCallback(
     (title: string, to: string, external: boolean = false) => (
-      <MobileFooterCol xs={6} md={1}>
+      <MobileFooterCol xs={6}>
         <BaseLink to={to}>
           <LinkItem>
             <LinkItemText>{title}</LinkItemText>
@@ -105,6 +113,7 @@ const DesktopFooter = () => {
           {mediaKit}
         </LeftContainer>
         <div className="d-flex flex-row">
+          {renderLinkItem("DEFI PULSE", "https://defipulse.com/", true)}
           {renderLinkItem("DISCORD", "http://discord.ribbon.finance", true)}
           {renderLinkItem("TWITTER", "https://twitter.com/ribbonfinance", true)}
           {renderLinkItem("GITHUB", "https://github.com/ribbon-finance", true)}
@@ -127,6 +136,9 @@ const DesktopFooter = () => {
         <MobileFooterRow>
           {renderLinkItem("TWITTER", "https://twitter.com/ribbonfinance", true)}
           {renderLinkItem("GITHUB", "https://github.com/ribbon-finance", true)}
+        </MobileFooterRow>
+        <MobileFooterRow>
+          {renderLinkItem("DEFI PULSE", "https://defipulse.com/", true)}
         </MobileFooterRow>
       </MobileFooter>
     </>
