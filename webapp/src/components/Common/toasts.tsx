@@ -80,9 +80,7 @@ export const TxStatusToast = () => {
     ) => {
       switch (type) {
         case "approval":
-          return `${getAssetDisplay(asset)} approved for ${
-            productCopies[vault].title
-          } successfully`;
+          return `Your ${getAssetDisplay(asset)} is ready to deposit`;
         case "withdraw":
           return `${amountFormatted} ${getAssetDisplay(asset)} withdrawn into ${
             productCopies[vault].title
@@ -112,7 +110,11 @@ export const TxStatusToast = () => {
           onClose={() => setStatus(null)}
           type="error"
           title={`${type} failed`}
-          subtitle="Please resubmit transaction"
+          subtitle={
+            type === "approval"
+              ? `Please try approving ${getAssetDisplay(asset)} again`
+              : "Please resubmit transaction"
+          }
         ></Toast>
       );
     }

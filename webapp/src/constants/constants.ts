@@ -30,9 +30,8 @@ export const getETHThetaVaultId = () => {
 export const getWBTCThetaVaultId = () => {
   return (isStaging()
     ? deployment.kovan.RibbonWBTCCoveredCall
-    : deployment.kovan.RibbonWBTCCoveredCall
-  ) // TODO:
-    .toLowerCase();
+    : deployment.mainnet.RibbonWBTCCoveredCall
+  ).toLowerCase();
 };
 
 export const FullVaultList = ["rBTC-THETA", "rETH-THETA"] as const;
