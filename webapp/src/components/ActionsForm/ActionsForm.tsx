@@ -1,7 +1,14 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
+
 import {
   BaseLink,
   PrimaryText,
@@ -280,6 +287,23 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     waitingApproval
   );
 
+  const allowanceStr = tokenAllowance?.toString();
+
+  // Show token approval when needed
+  useEffect(() => {
+    if (
+      allowanceStr &&
+      BigNumber.from(allowanceStr).isZero() &&
+      !isETHVault(vaultOption)
+    ) {
+      setShowTokenApproval(true);
+      return;
+    }
+
+    setShowTokenApproval(false);
+    setWaitingApproval(false);
+  }, [allowanceStr, vaultOption]);
+
   const tokenContract = useMemo(() => {
     if (isETHVault(vaultOption)) {
       return;
@@ -370,23 +394,9 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     };
   }, [isDeposit, inputAmount, vaultBalanceStr, latestAPY.res, decimals]);
 
-  const canProceedToPreview = () => {
-    const amount = parseUnits(inputAmount, decimals);
-    return !isDeposit || isETHVault(vaultOption) || tokenAllowance.gte(amount);
-  };
-
-  const proceedToPreview = () => {
+  const handleClickActionButton = () => {
     isDesktop && isInputNonZero && connected && setShowActionModal(true);
     !isDesktop && isInputNonZero && connected && onSubmit(previewStepProps);
-  };
-
-  const handleClickActionButton = () => {
-    if (!canProceedToPreview()) {
-      setShowTokenApproval(true);
-      return;
-    }
-
-    proceedToPreview();
   };
 
   const handleApproveToken = async () => {
@@ -414,15 +424,11 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         ]);
 
         // Wait for transaction to be approved
-        const receipt = await provider.waitForTransaction(txhash);
-        if (receipt.status) {
-          // Update user allowance
-          setShowTokenApproval(false);
-          proceedToPreview();
-        }
-      } catch (err) {}
+        await provider.waitForTransaction(txhash);
+      } catch (err) {
+        setWaitingApproval(false);
+      }
     }
-    setWaitingApproval(false);
   };
 
   const onCloseActionsModal = useCallback(() => {
@@ -596,7 +602,11 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
               >
                 <SecondaryText>Why do I have to do this?</SecondaryText>
               </ApprovalHelp>
-              <ActionButton onClick={handleApproveToken} className="py-3 mb-4">
+              <ActionButton
+                onClick={handleApproveToken}
+                className="py-3 mb-4"
+                disabled={vaultFull}
+              >
                 {waitingApproval
                   ? waitingApprovalLoadingText
                   : `Approve ${getAssetDisplay(asset)}`}
