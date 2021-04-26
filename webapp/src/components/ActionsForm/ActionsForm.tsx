@@ -593,7 +593,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
               </ApprovalIconContainer>
               <ApprovalDescription>
                 Before you deposit, the vault needs your permission to invest
-                your wBTC in the vault’s strategy.
+                your {getAssetDisplay(asset)} in the vault’s strategy.
               </ApprovalDescription>
               <ApprovalHelp
                 to="/faq"
