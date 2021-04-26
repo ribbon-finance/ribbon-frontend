@@ -3,7 +3,7 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import styled from "styled-components";
 
-import { SecondaryText, Subtitle, Title } from "../../designSystem";
+import { BaseLink, SecondaryText, Subtitle, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 import useAssetPrice from "../../hooks/useAssetPrice";
@@ -42,19 +42,23 @@ const SectionPlaceholderText = styled(SecondaryText)`
   margin-top: 24px;
 `;
 
-const PositionContainer = styled.div`
+const PositionLink = styled(BaseLink)`
   width: 100%;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: ${theme.border.radius};
   margin-top: 16px;
-  padding: 16px;
-  display: flex;
-  flex-wrap: wrap;
-  position: relative;
 
   &:first-child {
     margin-top: 24px;
   }
+`;
+
+const PositionContainer = styled.div`
+  width: 100%;
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-radius: ${theme.border.radius};
+  padding: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
 `;
 
 const PositionInfoRow = styled.div`
@@ -130,6 +134,9 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
     250,
     assetPriceLoading
   );
+  const vaultName = Object.keys(VaultNameOptionMap)[
+    Object.values(VaultNameOptionMap).indexOf(vaultAccount.vault.symbol)
+  ];
 
   const renderAmountText = useCallback(
     (amount: BigNumber, currency: CurrencyType) => {
@@ -160,46 +167,42 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   );
 
   return (
-    <PositionContainer>
-      <PositionInfoRow>
-        <PositionSymbolTitle product="yield" className="flex-grow-1">
-          {
-            Object.keys(VaultNameOptionMap)[
-              Object.values(VaultNameOptionMap).indexOf(
-                vaultAccount.vault.symbol
-              )
-            ]
-          }
-        </PositionSymbolTitle>
-        <Title>
-          {renderAmountText(
-            vaultAccount.totalDeposits.add(vaultAccount.totalYieldEarned),
-            "eth"
-          )}
-        </Title>
-      </PositionInfoRow>
-      <PositionInfoRow>
-        <PositionInfoText className="flex-grow-1">
-          {productCopies[vaultAccount.vault.symbol].subtitle}
-        </PositionInfoText>
-        <PositionSecondaryInfoText>
-          {renderAmountText(
-            vaultAccount.totalDeposits.add(vaultAccount.totalYieldEarned),
-            "usd"
-          )}
-        </PositionSecondaryInfoText>
-      </PositionInfoRow>
-      <KPIContainer>
-        <KPIDatas>
+    <PositionLink to={`/theta-vault/${vaultName}`}>
+      <PositionContainer>
+        <PositionInfoRow>
+          <PositionSymbolTitle product="yield" className="flex-grow-1">
+            {vaultName}
+          </PositionSymbolTitle>
           <Title>
-            +{renderAmountText(vaultAccount.totalYieldEarned, "usd")}
+            {renderAmountText(
+              vaultAccount.totalDeposits.add(vaultAccount.totalYieldEarned),
+              "eth"
+            )}
           </Title>
-          <PositionSecondaryInfoText variant="green">
-            +{calculatedROI.toFixed(2)}%
+        </PositionInfoRow>
+        <PositionInfoRow>
+          <PositionInfoText className="flex-grow-1">
+            {productCopies[vaultAccount.vault.symbol].subtitle}
+          </PositionInfoText>
+          <PositionSecondaryInfoText>
+            {renderAmountText(
+              vaultAccount.totalDeposits.add(vaultAccount.totalYieldEarned),
+              "usd"
+            )}
           </PositionSecondaryInfoText>
-        </KPIDatas>
-      </KPIContainer>
-    </PositionContainer>
+        </PositionInfoRow>
+        <KPIContainer>
+          <KPIDatas>
+            <Title>
+              +{renderAmountText(vaultAccount.totalYieldEarned, "usd")}
+            </Title>
+            <PositionSecondaryInfoText variant="green">
+              +{calculatedROI.toFixed(2)}%
+            </PositionSecondaryInfoText>
+          </KPIDatas>
+        </KPIContainer>
+      </PositionContainer>
+    </PositionLink>
   );
 };
 
