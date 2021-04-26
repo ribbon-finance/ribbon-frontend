@@ -23,6 +23,7 @@ import sizes from "../../designSystem/sizes";
 import useScreenSize from "../../hooks/useScreenSize";
 import useTextAnimation from "../../hooks/useTextAnimation";
 import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
+import { ExternalIcon } from "../../assets/icons/icons";
 
 const VaultActivityRow = styled.div`
   display: flex;
@@ -153,8 +154,7 @@ const VaultActivityExternalLinkContainer = styled.div`
   }
 `;
 
-const ExternalLink = styled.i`
-  color: white;
+const ExternalLink = styled(ExternalIcon)`
   opacity: 0.48;
 `;
 
@@ -366,7 +366,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
             rel="noreferrer noopener"
           >
             <VaultActivityExternalLinkContainer>
-              <ExternalLink className="fas fa-external-link-alt" />
+              <ExternalLink />
             </VaultActivityExternalLinkContainer>
           </BaseLink>
         </VaultActivityRow>

@@ -33,13 +33,13 @@ import { isETHVault, isVaultFull } from "../../utils/vault";
 import colors from "../../designSystem/colors";
 import { useLatestAPY } from "../../hooks/useAirtableData";
 import { getAssetDisplay } from "../../utils/asset";
-import WBTCLogo from "../Product/Splash/Vault/WBTCLogo";
 import { getERC20Token } from "../../hooks/useERC20Token";
 import { useWeb3Context } from "../../hooks/web3Context";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
 import useTextAnimation from "../../hooks/useTextAnimation";
 import useTokenAllowance from "../../hooks/useTokenAllowance";
 import { ERC20Token } from "../../models/eth";
+import { WBTCLogo } from "../../assets/icons/erc20Assets";
 
 const { parseUnits, formatUnits } = ethers.utils;
 
@@ -593,7 +593,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
               </ApprovalIconContainer>
               <ApprovalDescription>
                 Before you deposit, the vault needs your permission to invest
-                your wBTC in the vault’s strategy.
+                your {getAssetDisplay(asset)} in the vault’s strategy.
               </ApprovalDescription>
               <ApprovalHelp
                 to="/faq"

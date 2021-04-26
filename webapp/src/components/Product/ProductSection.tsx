@@ -18,9 +18,9 @@ import {
   DynamicMarginProps,
   HeaderScrollIndicatorProps,
 } from "./types";
-import Volatility from "./Splash/Volatility";
-import PrincipalProtection from "./Splash/PrincipalProtection";
-import CapitalAccumulation from "./Splash/CapitalAccumulation";
+import Volatility from "../../assets/icons/theta/Volatility";
+import PrincipalProtection from "../../assets/icons/theta/PrincipalProtection";
+import CapitalAccumulation from "../../assets/icons/theta/CapitalAccumulation";
 import useScreenSize from "../../hooks/useScreenSize";
 import useElementSize from "../../hooks/useElementSize";
 import useElementScroll from "../../hooks/useElementScroll";

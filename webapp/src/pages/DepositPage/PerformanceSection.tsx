@@ -4,6 +4,7 @@ import { productCopies } from "../../components/Product/Product/productCopies";
 import { VaultOptions } from "../../constants/constants";
 
 import { PrimaryText, SecondaryText, Title } from "../../designSystem";
+import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";
 import VaultPerformanceChart from "./VaultPerformanceChart";
 
@@ -23,6 +24,10 @@ const ParagraphText = styled(SecondaryText)`
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
+`;
+
+const Highlight = styled.span`
+  color: ${colors.primaryText};
 `;
 
 const LinkIcon = styled.i`
@@ -79,10 +84,21 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       </Paragraph>
 
       <Paragraph>
-        <ParagraphHeading>Withdrawal Fee - 0.5%</ParagraphHeading>
+        <ParagraphHeading>Withdrawals</ParagraphHeading>
         <ParagraphText>
-          Withdrawing from the vault has a fixed withdrawal fee of 0.5%. This is
-          to encourage longer-term depositors.
+          Withdrawing from the vault has a fixed{" "}
+          <Highlight>withdrawal fee of 0.5%.</Highlight> This is to encourage
+          longer-term depositors.
+          <br />
+          <br />
+          The vault allocates 90% of the funds deposited towards its covered
+          call strategy and{" "}
+          <Highlight>
+            reserves 10% of the funds deposited for withdrawals.
+          </Highlight>
+          If in any given week the 10% withdrawal limit is reached, withdrawals
+          from the vault will be disabled and depositors will have to wait until
+          the following week in order to withdraw their funds.
         </ParagraphText>
       </Paragraph>
 
