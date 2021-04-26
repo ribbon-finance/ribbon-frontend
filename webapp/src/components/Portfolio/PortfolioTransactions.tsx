@@ -21,6 +21,7 @@ import {
 } from "../../constants/constants";
 import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
 import { Assets, AssetsList } from "../../store/types";
+import { ExternalIcon } from "../../assets/icons/icons";
 
 const PortfolioTransactionsContainer = styled.div`
   margin-top: 48px;
@@ -84,8 +85,7 @@ const ExternalLink = styled.div`
   width: 24px;
 `;
 
-const ExternalLinkIcon = styled.i`
-  color: white;
+const ExternalLinkIcon = styled(ExternalIcon)`
   opacity: 0.48;
 `;
 
@@ -193,7 +193,7 @@ const PortfolioTransactions = () => {
           rel="noreferrer noopener"
         >
           <ExternalLink>
-            <ExternalLinkIcon className="fas fa-external-link-alt" />
+            <ExternalLinkIcon />
           </ExternalLink>
         </BaseLink>
       </TransactionContainer>
