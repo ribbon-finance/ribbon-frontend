@@ -4,7 +4,7 @@ import { BigNumber, ethers } from "ethers";
 import styled from "styled-components";
 import moment from "moment";
 
-import { SecondaryText, Subtitle, Title } from "../../designSystem";
+import { BaseLink, SecondaryText, Subtitle, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 import { useAssetsPrice } from "../../hooks/useAssetPrice";
@@ -15,6 +15,7 @@ import { assetToUSD, formatSignificantDecimals } from "../../utils/math";
 import { capitalize } from "../../utils/text";
 import {
   getAssets,
+  getEtherscanURI,
   VaultNameOptionMap,
   VaultOptions,
 } from "../../constants/constants";
@@ -46,7 +47,13 @@ const TransactionContainer = styled.div`
   margin-bottom: 18px;
   padding: 16px;
   display: flex;
+  align-items: center;
+`;
+
+const TransactionInfo = styled.div`
+  display: flex;
   flex-wrap: wrap;
+  flex-grow: 1;
 `;
 
 const TransactionInfoRow = styled.div`
@@ -70,6 +77,16 @@ const TransactionSecondaryInfoText = styled(Subtitle)`
   color: ${colors.primaryText}A3;
   letter-spacing: unset;
   line-height: 16px;
+`;
+
+const ExternalLink = styled.div`
+  margin: 0 8px 0px 24px;
+  width: 24px;
+`;
+
+const ExternalLinkIcon = styled.i`
+  color: white;
+  opacity: 0.48;
 `;
 
 const PortfolioTransactions = () => {
@@ -134,40 +151,51 @@ const PortfolioTransactions = () => {
 
     return transactions.map((transaction) => (
       <TransactionContainer key={transaction.id}>
-        <TransactionInfoRow>
-          <Title className="flex-grow-1">
-            {
-              Object.keys(VaultNameOptionMap)[
-                Object.values(VaultNameOptionMap).indexOf(
-                  transaction.vault.symbol as VaultOptions
-                )
-              ]
-            }
-          </Title>
-          <Title>
-            {renderTransactionAmountText(
-              transaction.amount,
-              transaction.type,
-              "eth",
-              getAssets(transaction.vault.symbol)
-            )}
-          </Title>
-        </TransactionInfoRow>
-        <TransactionInfoRow>
-          <TransactionInfoText className="flex-grow-1">
-            {`${transaction.type === "deposit" ? `↓` : `↑`} ${capitalize(
-              transaction.type
-            )} - ${moment(transaction.timestamp, "X").fromNow()}`}
-          </TransactionInfoText>
-          <TransactionSecondaryInfoText>
-            {renderTransactionAmountText(
-              transaction.amount,
-              transaction.type,
-              "usd",
-              getAssets(transaction.vault.symbol)
-            )}
-          </TransactionSecondaryInfoText>
-        </TransactionInfoRow>
+        <TransactionInfo>
+          <TransactionInfoRow>
+            <Title className="flex-grow-1">
+              {
+                Object.keys(VaultNameOptionMap)[
+                  Object.values(VaultNameOptionMap).indexOf(
+                    transaction.vault.symbol as VaultOptions
+                  )
+                ]
+              }
+            </Title>
+            <Title>
+              {renderTransactionAmountText(
+                transaction.amount,
+                transaction.type,
+                "eth",
+                getAssets(transaction.vault.symbol)
+              )}
+            </Title>
+          </TransactionInfoRow>
+          <TransactionInfoRow>
+            <TransactionInfoText className="flex-grow-1">
+              {`${transaction.type === "deposit" ? `↓` : `↑`} ${capitalize(
+                transaction.type
+              )} - ${moment(transaction.timestamp, "X").fromNow()}`}
+            </TransactionInfoText>
+            <TransactionSecondaryInfoText>
+              {renderTransactionAmountText(
+                transaction.amount,
+                transaction.type,
+                "usd",
+                getAssets(transaction.vault.symbol)
+              )}
+            </TransactionSecondaryInfoText>
+          </TransactionInfoRow>
+        </TransactionInfo>
+        <BaseLink
+          to={`${getEtherscanURI()}/tx/${transaction.txhash}`}
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          <ExternalLink>
+            <ExternalLinkIcon className="fas fa-external-link-alt" />
+          </ExternalLink>
+        </BaseLink>
       </TransactionContainer>
     ));
   }, [
