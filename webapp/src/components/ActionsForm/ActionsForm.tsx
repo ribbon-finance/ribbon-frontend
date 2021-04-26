@@ -33,13 +33,13 @@ import { isETHVault, isVaultFull } from "../../utils/vault";
 import colors from "../../designSystem/colors";
 import { useLatestAPY } from "../../hooks/useAirtableData";
 import { getAssetDisplay } from "../../utils/asset";
-import WBTCLogo from "../Product/Splash/Vault/WBTCLogo";
 import { getERC20Token } from "../../hooks/useERC20Token";
 import { useWeb3Context } from "../../hooks/web3Context";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
 import useTextAnimation from "../../hooks/useTextAnimation";
 import useTokenAllowance from "../../hooks/useTokenAllowance";
 import { ERC20Token } from "../../models/eth";
+import { WBTCLogo } from "../../assets/icons/erc20Assets";
 
 const { parseUnits, formatUnits } = ethers.utils;
 

@@ -19,7 +19,7 @@ import {
   injectedConnector,
   getWalletConnectConnector,
 } from "../../utils/connectors";
-import { MetamaskIcon, WalletConnectIcon } from "../../utils/icon";
+import { MetamaskIcon, WalletConnectIcon } from "../../assets/icons/connector";
 import { ConnectorButtonProps, connectorType } from "./types";
 import useTextAnimation from "../../hooks/useTextAnimation";
 import Indicator from "../Indicator/Indicator";

@@ -6,7 +6,7 @@ import colors from "../../designSystem/colors";
 import DepositCapBar from "./DepositCapBar";
 import PerformanceSection from "./PerformanceSection";
 import ActionsForm from "../../components/ActionsForm/ActionsForm";
-import Theta from "../../components/Product/Splash/Theta";
+import Theta from "../../assets/icons/theta/Theta";
 import useVaultData from "../../hooks/useVaultData";
 import { formatSignificantDecimals } from "../../utils/math";
 import sizes from "../../designSystem/sizes";

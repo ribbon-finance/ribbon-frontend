@@ -20,8 +20,7 @@ import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useTextAnimation from "../../../hooks/useTextAnimation";
 import { VaultOptions, VaultNameOptionMap } from "../../../constants/constants";
 import { productCopies } from "./productCopies";
-import WETHLogo from "../Splash/Vault/WETHLogo";
-import WBTCLogo from "../Splash/Vault/WBTCLogo";
+import WETHLogo, { WBTCLogo } from "../../../assets/icons/erc20Assets";
 
 const { formatUnits } = ethers.utils;
 
