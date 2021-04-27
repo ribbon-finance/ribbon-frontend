@@ -1,4 +1,6 @@
+import { BigNumber } from "@ethersproject/bignumber";
 import { Assets } from "../store/types";
+import { getAssetDecimals } from "../utils/asset";
 import { isStaging } from "../utils/env";
 import deployment from "./deployments.json";
 
@@ -64,6 +66,15 @@ export const getAssets = (vault: VaultOptions): Assets => {
     case "rBTC-THETA":
       return "WBTC";
   }
+};
+
+export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
+  "rETH-THETA": BigNumber.from(200).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rETH-THETA")))
+  ),
+  "rBTC-THETA": BigNumber.from(10).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rBTC-THETA")))
+  ),
 };
 
 export const getAirtableName = (vault: VaultOptions): string => {
