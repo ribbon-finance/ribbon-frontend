@@ -1,7 +1,12 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { getAirtableName, VaultOptions } from "../constants/constants";
+import {
+  getAirtableName,
+  getAssets,
+  VaultOptions,
+} from "../constants/constants";
 import { useGlobalState } from "../store/store";
+import { Assets, AssetsList } from "../store/types";
 
 interface AirtableData {
   fetched: boolean;
@@ -78,38 +83,50 @@ export const useHistoricalData: UseHistoricalData = (vaultOption) => {
 
 type UseLatestAPY = (vaultOption: VaultOptions) => APYData;
 
-// We need this global variable so we can prevent over-fetching
-let fetchedOnce = false;
-
 export const useLatestAPY: UseLatestAPY = (vaultOption) => {
-  const airtableName = getAirtableName(vaultOption);
-  const API_URL = `https://api.airtable.com/v0/${BASE_ID}/${airtableName}?sort%5B0%5D%5Bfield%5D=Timestamp&sort%5B0%5D%5Bdirection%5D=desc&maxRecords=1`;
+  const asset = getAssets(vaultOption);
   const [latestAPY, setLatestAPY] = useGlobalState("latestAPY");
-  const [fetched, setFetched] = useState(false);
+  const [fetched, setFetched] = useState<{ [asset in Assets]: boolean }>(
+    Object.fromEntries(AssetsList.map((asset) => [asset, false])) as {
+      [asset in Assets]: boolean;
+    }
+  );
 
   const fetchAirtableData = useCallback(async () => {
-    const response = await axios.get(API_URL, {
-      headers: {
-        Authorization: `Bearer ${API_KEY}`,
-      },
-    });
+    if (fetched[asset]) {
+      return;
+    }
+
+    const response = await axios.get(
+      `https://api.airtable.com/v0/${BASE_ID}/${getAirtableName(
+        vaultOption
+      )}?sort%5B0%5D%5Bfield%5D=Timestamp&sort%5B0%5D%5Bdirection%5D=desc&maxRecords=1`,
+      {
+        headers: {
+          Authorization: `Bearer ${API_KEY}`,
+        },
+      }
+    );
 
     const data = response.data.records;
-    const latestAPY = data[0].fields.APY * 100;
+    const newApy = data[0].fields.APY * 100;
 
-    setFetched(true);
-    setLatestAPY(latestAPY);
-  }, [API_URL, setLatestAPY]);
+    setFetched((prev) => ({
+      ...prev,
+      [asset]: true,
+    }));
+    setLatestAPY((prev) => ({
+      ...prev,
+      [asset]: newApy,
+    }));
+  }, [vaultOption, setLatestAPY, asset, fetched]);
 
   useEffect(() => {
-    if (!latestAPY && !fetchedOnce) {
-      fetchedOnce = true;
-      fetchAirtableData();
-    }
-  }, [fetchAirtableData, latestAPY]);
+    fetchAirtableData();
+  }, [fetchAirtableData]);
 
   return {
-    fetched,
-    res: latestAPY,
+    fetched: fetched[asset],
+    res: latestAPY[asset],
   };
 };

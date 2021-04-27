@@ -22,6 +22,7 @@ import { ActionButton, ConnectWalletButton } from "../Common/buttons";
 import {
   GAS_LIMITS,
   VaultAddressMap,
+  VaultMaxDeposit,
   VaultOptions,
 } from "../../constants/constants";
 import useGasPrice from "../../hooks/useGasPrice";
@@ -226,7 +227,7 @@ const ApprovalHelp = styled(BaseLink)`
   }
 `;
 
-type ValidationErrors = "none" | "insufficient_balance";
+type ValidationErrors = "none" | "insufficient_balance" | "max_exceeded";
 
 export interface FormStepProps {
   onSubmit?: (previewStepProps: PreviewStepProps) => void;
@@ -315,6 +316,8 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
 
   // derived states
   const vaultFull = isVaultFull(deposits, vaultLimit, decimals);
+  const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
+  const maxDeposited = vaultBalanceInAsset.gte(vaultMaxDepositAmount);
   const connected = Boolean(active && account);
   const isInputNonZero = parseFloat(inputAmount) > 0;
 
@@ -329,9 +332,14 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         );
         const total = BigNumber.from(userAssetBalance);
         const maxAmount = total.sub(gasFee);
-        const actualMaxAmount = maxAmount.isNegative()
+        const allowedMaxAmount = maxAmount.lte(
+          vaultMaxDepositAmount.sub(vaultBalanceInAsset)
+        )
+          ? maxAmount
+          : vaultMaxDepositAmount.sub(vaultBalanceInAsset);
+        const actualMaxAmount = allowedMaxAmount.isNegative()
           ? BigNumber.from("0")
-          : maxAmount;
+          : allowedMaxAmount;
 
         setInputAmount(formatUnits(actualMaxAmount, decimals));
       }
@@ -361,6 +369,11 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         if (!isLoadingData && connected) {
           if (isDeposit && amount.gt(userAssetBalance)) {
             setError("insufficient_balance");
+          } else if (
+            isDeposit &&
+            amount.gt(vaultMaxDepositAmount.sub(vaultBalanceInAsset))
+          ) {
+            setError("max_exceeded");
           } else if (!isDeposit && amount.gt(maxWithdrawAmount)) {
             setError("insufficient_balance");
           } else {
@@ -465,6 +478,10 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
 
   if (vaultFull) {
     walletText = "The Vault is currently full";
+  } else if (maxDeposited) {
+    walletText = `This vault has a max deposit of ${parseInt(
+      formatUnits(vaultMaxDepositAmount, decimals)
+    )} ${getAssetDisplay(asset)} per depositor`;
   } else if (isDeposit) {
     const position =
       account && !isLoadingData && userAssetBalance
@@ -484,8 +501,13 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   if (error === "insufficient_balance") {
     actionButtonText = "Insufficient Balance";
     disabled = true;
+  } else if (error === "max_exceeded") {
+    actionButtonText = `Maximum ${parseInt(
+      formatUnits(vaultMaxDepositAmount, decimals)
+    )} ${getAssetDisplay(asset)} Exceeded`;
+    disabled = true;
   } else if (isDeposit && isInputNonZero) {
-    if (vaultFull) {
+    if (vaultFull || maxDeposited) {
       actionButtonText = `Deposit ${getAssetDisplay(asset)}`;
       disabled = true;
     } else {
@@ -504,7 +526,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   }
 
   let walletBalanceState: WalletBalanceStates = "inactive";
-  if (vaultFull) {
+  if (vaultFull || maxDeposited) {
     walletBalanceState = "error";
   } else {
     walletBalanceState = connected ? "active" : "inactive";
@@ -605,7 +627,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
               <ActionButton
                 onClick={handleApproveToken}
                 className="py-3 mb-4"
-                disabled={vaultFull}
+                disabled={vaultFull || maxDeposited}
               >
                 {waitingApproval
                   ? waitingApprovalLoadingText

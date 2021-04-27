@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { ExternalIcon } from "../../assets/icons/icons";
 import { productCopies } from "../../components/Product/Product/productCopies";
 import { VaultOptions } from "../../constants/constants";
 
@@ -30,7 +31,7 @@ const Highlight = styled.span`
   color: ${colors.primaryText};
 `;
 
-const LinkIcon = styled.i`
+const LinkIcon = styled(ExternalIcon)`
   width: 24px;
   height: 24px;
 `;
@@ -131,7 +132,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
             rel="noreferrer noopener"
           >
             <span className="mr-2">Read More</span>
-            <LinkIcon className="fas fa-external-link-alt"></LinkIcon>
+            <LinkIcon />
           </Link>
         </PrimaryText>
       </Paragraph>
