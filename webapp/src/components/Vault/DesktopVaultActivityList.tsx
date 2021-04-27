@@ -12,11 +12,7 @@ import { BaseLink, SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 import { VaultActivity, VaultActivityType } from "../../models/vault";
-import {
-  assetToUSD,
-  formatOption,
-  formatSignificantDecimals,
-} from "../../utils/math";
+import { assetToUSD, formatOption } from "../../utils/math";
 import useAssetPrice from "../../hooks/useAssetPrice";
 import useElementSize from "../../hooks/useElementSize";
 import sizes from "../../designSystem/sizes";
