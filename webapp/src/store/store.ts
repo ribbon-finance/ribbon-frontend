@@ -14,7 +14,7 @@ interface GlobalStore {
   prices: { [asset in Assets]: number };
   pendingTransactions: PendingTransaction[];
   showConnectWallet: boolean;
-  latestAPY: number;
+  latestAPY: { [asset in Assets]: number };
   gasPrice: string;
 }
 
@@ -40,7 +40,9 @@ export const initialState: GlobalStore = {
   },
   pendingTransactions: [],
   showConnectWallet: false,
-  latestAPY: 0.0,
+  latestAPY: Object.fromEntries(AssetsList.map((asset) => [asset, 0.0])) as {
+    [asset in Assets]: number;
+  },
   gasPrice: "",
 };
 
