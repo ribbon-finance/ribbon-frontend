@@ -234,9 +234,9 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 weight={0.15}
               >
                 <VaultPrimaryText>
-                  {formatSignificantDecimals(
+                  {parseFloat(
                     ethers.utils.formatUnits(activity.depositAmount, decimals)
-                  )}
+                  ).toFixed(4)}
                 </VaultPrimaryText>
               </VaultActivityCol>
 
@@ -290,9 +290,9 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 weight={0.15}
               >
                 <VaultPrimaryText>
-                  {formatSignificantDecimals(
+                  {parseFloat(
                     formatOption(activity.sellAmount).toFixed(6)
-                  )}
+                  ).toFixed(4)}
                 </VaultPrimaryText>
               </VaultActivityCol>
 
@@ -304,9 +304,9 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
               >
                 <VaultPrimaryText variant="green">
                   +
-                  {formatSignificantDecimals(
+                  {parseFloat(
                     ethers.utils.formatUnits(activity.premium, decimals)
-                  )}{" "}
+                  ).toFixed(4)}{" "}
                   {getAssetDisplay(asset)}
                 </VaultPrimaryText>
                 <VaultSecondaryText fontFamily="VCR">
