@@ -123,8 +123,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           </Link>{" "}
           and{" "}
           <Link
-            // TODO: Replace URL
-            href="https://google.com"
+            href="https://github.com/ribbon-finance/audit/blob/master/reports/Chainsafe-Ribbon-Audit_April-2021.pdf"
             target="_blank"
             rel="noreferrer noopener"
           >
