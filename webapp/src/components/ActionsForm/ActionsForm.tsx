@@ -618,7 +618,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
                 your {getAssetDisplay(asset)} in the vault’s strategy.
               </ApprovalDescription>
               <ApprovalHelp
-                to="/faq"
+                to="https://ribbon.finance/faq"
                 target="__blank"
                 rel="noreferrer noopener"
               >

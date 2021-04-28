@@ -121,7 +121,15 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           >
             audited by Peckshield
           </Link>{" "}
-          and are undergoing two more audits. Despite that, users are advised to
+          and{" "}
+          <Link
+            href="https://github.com/ribbon-finance/audit/blob/master/reports/Chainsafe-Ribbon-Audit_April-2021.pdf"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            ChainSafe
+          </Link>{" "}
+          and are undergoing a final audit. Despite that, users are advised to
           exercise caution and only risk funds they can afford to lose.
         </ParagraphText>
 
