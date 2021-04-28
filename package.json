@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "name": "ribbon-frontend",
+  "devDependencies": {
+  },
+  "workspaces": [
+    "core/",
+    "landing/",
+    "webapp/"
+  ]
+}
