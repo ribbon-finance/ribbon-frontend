@@ -121,7 +121,16 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           >
             audited by Peckshield
           </Link>{" "}
-          and are undergoing two more audits. Despite that, users are advised to
+          and{" "}
+          <Link
+            // TODO: Replace URL
+            href="https://google.com"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            ChainSafe
+          </Link>{" "}
+          and are undergoing a final audit. Despite that, users are advised to
           exercise caution and only risk funds they can afford to lose.
         </ParagraphText>
 
