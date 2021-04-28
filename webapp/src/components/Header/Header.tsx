@@ -212,7 +212,13 @@ const Header = () => {
             false,
             true
           )}
-          {renderLinkItem("FAQS", "https://ribbon.finance/faq", false, false)}
+          {renderLinkItem(
+            "FAQS",
+            "https://ribbon.finance/faq",
+            false,
+            false,
+            true
+          )}
           {renderLinkItem(
             "BLOG",
             "https://medium.com/@ribbonfinance",
@@ -224,13 +230,15 @@ const Header = () => {
             "TERMS",
             "https://ribbon.finance/terms",
             false,
-            false
+            false,
+            true
           )}
           {renderLinkItem(
             "POLICY",
             "https://ribbon.finance/policy",
             false,
-            false
+            false,
+            true
           )}
         </MobileOverlayMenu>
       </MobileOnly>

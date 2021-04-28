@@ -22,7 +22,7 @@ const SectionQuestion = styled(PrimaryText)`
   color: white;
   font-size: 16px;
   line-height: 24px;
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 16px;
 `;
 

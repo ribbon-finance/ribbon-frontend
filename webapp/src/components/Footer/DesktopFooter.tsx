@@ -42,8 +42,8 @@ const LinkItemText = styled(Title)`
 
 const DesktopFooter = () => {
   const renderLinkItem = useCallback(
-    (title: string, to: string, external: boolean = false) => (
-      <BaseLink to={to}>
+    (title: string, to: string) => (
+      <BaseLink to={to} target="_blank" rel="noreferrer noopener">
         <LinkItem>
           <LinkItemText>{title}</LinkItemText>
         </LinkItem>
@@ -56,14 +56,14 @@ const DesktopFooter = () => {
     <FooterContainer>
       <LeftContainer>
         {renderLinkItem("FAQ", "https://ribbon.finance/faq")}
-        {renderLinkItem("BLOG", "https://medium.com/@ribbonfinance", true)}
+        {renderLinkItem("BLOG", "https://medium.com/@ribbonfinance")}
         {renderLinkItem("TERMS", "https://ribbon.finance/terms")}
         {renderLinkItem("POLICY", "https://ribbon.finance/policy")}
       </LeftContainer>
       <LinksContainer>
-        {renderLinkItem("DISCORD", "http://discord.ribbon.finance", true)}
-        {renderLinkItem("TWITTER", "https://twitter.com/ribbonfinance", true)}
-        {renderLinkItem("GITHUB", "https://github.com/ribbon-finance", true)}
+        {renderLinkItem("DISCORD", "http://discord.ribbon.finance")}
+        {renderLinkItem("TWITTER", "https://twitter.com/ribbonfinance")}
+        {renderLinkItem("GITHUB", "https://github.com/ribbon-finance")}
       </LinksContainer>
     </FooterContainer>
   );
