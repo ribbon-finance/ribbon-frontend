@@ -31,6 +31,7 @@ import { ExternalIcon } from "shared/lib/assets/icons/icons";
 const PortfolioTransactionsContainer = styled.div`
   margin-top: 48px;
   display: flex;
+  flex: 1;
   flex-wrap: wrap;
 `;
 

@@ -272,12 +272,18 @@ const PortfolioPerformance = () => {
     if (hoveredBalanceUpdateIndex === undefined || balances.length <= 0) {
       return {
         yield: vaultYieldInAsset,
-        roi: (vaultYieldInAsset / vaultBalanceInAsset) * 100,
+        roi:
+          vaultBalanceInAsset > 0
+            ? (vaultYieldInAsset / vaultBalanceInAsset) * 100
+            : 0,
         balance: vaultBalanceInAsset,
       };
     }
 
-    let balancesToCalculate = balances.slice(0, hoveredBalanceUpdateIndex + 1);
+    let balancesToCalculate = balances.slice(
+      0,
+      hoveredBalanceUpdateIndex >= 0 ? hoveredBalanceUpdateIndex + 1 : 1
+    );
     let totalInvestment = 0;
     let yieldEarned = 0;
     let lastBalance = 0;

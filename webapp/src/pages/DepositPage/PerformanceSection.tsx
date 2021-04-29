@@ -87,11 +87,6 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       <Paragraph>
         <ParagraphHeading>Withdrawals</ParagraphHeading>
         <ParagraphText>
-          Withdrawing from the vault has a fixed{" "}
-          <Highlight>withdrawal fee of 0.5%.</Highlight> This is to encourage
-          longer-term depositors.
-          <br />
-          <br />
           The vault allocates 90% of the funds deposited towards its covered
           call strategy and{" "}
           <Highlight>
@@ -100,6 +95,11 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           If in any given week the 10% withdrawal limit is reached, withdrawals
           from the vault will be disabled and depositors will have to wait until
           the following week in order to withdraw their funds.
+          <br />
+          <br />
+          Withdrawing from the vault has a fixed{" "}
+          <Highlight>withdrawal fee of 0.5%.</Highlight> This is to encourage
+          longer-term depositors.
         </ParagraphText>
       </Paragraph>
 

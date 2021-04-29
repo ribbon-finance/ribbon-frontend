@@ -161,13 +161,15 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 
   const calculatedROI = useMemo(
     () =>
-      (parseFloat(
-        ethers.utils.formatUnits(vaultAccount.totalYieldEarned, decimals)
-      ) /
-        parseFloat(
-          ethers.utils.formatUnits(vaultAccount.totalDeposits, decimals)
-        )) *
-      100,
+      !vaultAccount.totalDeposits.isZero()
+        ? (parseFloat(
+            ethers.utils.formatUnits(vaultAccount.totalYieldEarned, decimals)
+          ) /
+            parseFloat(
+              ethers.utils.formatUnits(vaultAccount.totalDeposits, decimals)
+            )) *
+          100
+        : 0,
     [vaultAccount, decimals]
   );
 
@@ -224,7 +226,9 @@ const PortfolioPositions = () => {
     return Object.fromEntries(
       Object.keys(vaultAccounts)
         .map((key) => [key, vaultAccounts[key]])
-        .filter((item) => item[1])
+        .filter(
+          (item) => item[1] && !(item[1] as VaultAccount).totalDeposits.isZero()
+        )
     );
   }, [vaultAccounts]);
 
