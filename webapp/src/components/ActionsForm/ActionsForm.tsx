@@ -14,11 +14,14 @@ import {
   PrimaryText,
   SecondaryText,
   Title,
-} from "../../designSystem";
+} from "shared/lib/designSystem";
 import { formatSignificantDecimals } from "../../utils/math";
 import YourPosition from "./YourPosition";
 import ActionModal from "../ActionModal/ActionModal";
-import { ActionButton, ConnectWalletButton } from "../Common/buttons";
+import {
+  ActionButton,
+  ConnectWalletButton,
+} from "shared/lib/components/Common/buttons";
 import {
   GAS_LIMITS,
   VaultAddressMap,
@@ -31,7 +34,7 @@ import useVault from "../../hooks/useVault";
 import { ACTIONS, PreviewStepProps } from "../ActionModal/types";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import { isETHVault, isVaultFull } from "../../utils/vault";
-import colors from "../../designSystem/colors";
+import colors from "shared/lib/designSystem/colors";
 import { useLatestAPY } from "../../hooks/useAirtableData";
 import { getAssetDisplay } from "../../utils/asset";
 import { getERC20Token } from "../../hooks/useERC20Token";
@@ -40,7 +43,7 @@ import usePendingTransactions from "../../hooks/usePendingTransactions";
 import useTextAnimation from "../../hooks/useTextAnimation";
 import useTokenAllowance from "../../hooks/useTokenAllowance";
 import { ERC20Token } from "../../models/eth";
-import { WBTCLogo } from "../../assets/icons/erc20Assets";
+import { WBTCLogo } from "shared/lib/assets/icons/erc20Assets";
 
 const { parseUnits, formatUnits } = ethers.utils;
 

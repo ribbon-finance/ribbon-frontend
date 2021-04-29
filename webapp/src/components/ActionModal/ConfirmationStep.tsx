@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { keyframes } from "styled-components";
 
-import Theta from "../../assets/icons/theta/Theta";
+import Theta from "shared/lib/assets/icons/theta/Theta";
 
 const ThetaAnimation = keyframes`
   15% {

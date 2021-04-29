@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import colors from "../../designSystem/colors";
+import colors from "shared/lib/designSystem/colors";
 
 const Container = styled.div`
   width: 8px;
@@ -11,12 +11,12 @@ const Container = styled.div`
 `;
 
 interface IndicatorProps {
-	connected: boolean
+  connected: boolean;
 }
 
 const Indicator = ({ connected }: IndicatorProps) => {
-	const backgroundColor = connected ? colors.green : 'red'
-	return <Container style={{ backgroundColor }} />
-}
+  const backgroundColor = connected ? colors.green : "red";
+  return <Container style={{ backgroundColor }} />;
+};
 
 export default Indicator;

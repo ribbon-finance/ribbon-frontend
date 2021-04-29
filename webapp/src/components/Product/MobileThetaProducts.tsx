@@ -65,7 +65,7 @@ const MobileThetaProducts = () => {
         onDragEnd={dragEndCallback}
       >
         {VaultList.map((vault) => (
-          <div ref={yieldCardRefs[vault]}>
+          <div ref={yieldCardRefs[vault]} key={vault}>
             <YieldCard key={vault} vault={vault} />
           </div>
         ))}

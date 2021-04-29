@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { BigNumber, ethers } from "ethers";
 
 import PositionIcon from "../../assets/img/positionIcon.svg";
-import { Title } from "../../designSystem";
+import { Title } from "shared/lib/designSystem";
 import useAssetPrice from "../../hooks/useAssetPrice";
 import useBalances from "../../hooks/useBalances";
 import useVaultData from "../../hooks/useVaultData";

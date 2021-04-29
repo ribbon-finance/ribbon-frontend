@@ -3,15 +3,20 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import styled from "styled-components";
 
-import { BaseLink, SecondaryText, Subtitle, Title } from "../../designSystem";
-import colors from "../../designSystem/colors";
-import theme from "../../designSystem/theme";
+import {
+  BaseLink,
+  SecondaryText,
+  Subtitle,
+  Title,
+} from "shared/lib/designSystem";
+import colors from "shared/lib/designSystem/colors";
+import theme from "shared/lib/designSystem/theme";
 import useAssetPrice from "../../hooks/useAssetPrice";
 import useTextAnimation from "../../hooks/useTextAnimation";
 import { CurrencyType } from "../../pages/Portfolio/types";
 import { assetToUSD, formatSignificantDecimals } from "../../utils/math";
 import { ProductType } from "../Product/types";
-import sizes from "../../designSystem/sizes";
+import sizes from "shared/lib/designSystem/sizes";
 import {
   getAssets,
   VaultList,

@@ -4,9 +4,14 @@ import { BigNumber, ethers } from "ethers";
 import styled from "styled-components";
 import moment from "moment";
 
-import { BaseLink, SecondaryText, Subtitle, Title } from "../../designSystem";
-import colors from "../../designSystem/colors";
-import theme from "../../designSystem/theme";
+import {
+  BaseLink,
+  SecondaryText,
+  Subtitle,
+  Title,
+} from "shared/lib/designSystem";
+import colors from "shared/lib/designSystem/colors";
+import theme from "shared/lib/designSystem/theme";
 import { useAssetsPrice } from "../../hooks/useAssetPrice";
 import useTextAnimation from "../../hooks/useTextAnimation";
 import useTransactions from "../../hooks/useTransactions";
@@ -21,7 +26,7 @@ import {
 } from "../../constants/constants";
 import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
 import { Assets, AssetsList } from "../../store/types";
-import { ExternalIcon } from "../../assets/icons/icons";
+import { ExternalIcon } from "shared/lib/assets/icons/icons";
 
 const PortfolioTransactionsContainer = styled.div`
   margin-top: 48px;

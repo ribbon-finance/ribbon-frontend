@@ -8,18 +8,18 @@ import {
   getEtherscanURI,
   VaultOptions,
 } from "../../constants/constants";
-import { BaseLink, SecondaryText, Title } from "../../designSystem";
-import colors from "../../designSystem/colors";
-import theme from "../../designSystem/theme";
+import { BaseLink, SecondaryText, Title } from "shared/lib/designSystem";
+import colors from "shared/lib/designSystem/colors";
+import theme from "shared/lib/designSystem/theme";
 import { VaultActivity, VaultActivityType } from "../../models/vault";
 import { assetToUSD, formatOption } from "../../utils/math";
 import useAssetPrice from "../../hooks/useAssetPrice";
 import useElementSize from "../../hooks/useElementSize";
-import sizes from "../../designSystem/sizes";
+import sizes from "shared/lib/designSystem/sizes";
 import useScreenSize from "../../hooks/useScreenSize";
 import useTextAnimation from "../../hooks/useTextAnimation";
 import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
-import { ExternalIcon } from "../../assets/icons/icons";
+import { ExternalIcon } from "shared/lib/assets/icons/icons";
 
 const VaultActivityRow = styled.div`
   display: flex;

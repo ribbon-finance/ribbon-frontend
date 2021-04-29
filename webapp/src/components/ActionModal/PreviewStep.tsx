@@ -2,9 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { BigNumber, ethers } from "ethers";
 
-import { Subtitle, SecondaryText, Title } from "../../designSystem";
-import colors from "../../designSystem/colors";
-import { ActionButton } from "../Common/buttons";
+import { Subtitle, SecondaryText, Title } from "shared/lib/designSystem";
+import colors from "shared/lib/designSystem/colors";
+import { ActionButton } from "shared/lib/components/Common/buttons";
 import { ACTIONS, PreviewStepProps } from "./types";
 import {
   formatBigNumber,

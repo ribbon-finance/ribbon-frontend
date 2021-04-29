@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { SecondaryText, Title } from "../../designSystem";
+import { SecondaryText, Title } from "shared/lib/designSystem";
 import { Assets } from "../../store/types";
 import { getAssetDisplay } from "../../utils/asset";
 

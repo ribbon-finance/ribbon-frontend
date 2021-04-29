@@ -4,9 +4,9 @@ import moment from "moment";
 import { ethers } from "ethers";
 
 import { VaultActivity, VaultActivityType } from "../../models/vault";
-import theme from "../../designSystem/theme";
-import colors from "../../designSystem/colors";
-import { SecondaryText, Title } from "../../designSystem";
+import theme from "shared/lib/designSystem/theme";
+import colors from "shared/lib/designSystem/colors";
+import { SecondaryText, Title } from "shared/lib/designSystem";
 import { formatSignificantDecimals, formatOption } from "../../utils/math";
 import { getAssets, VaultOptions } from "../../constants/constants";
 import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";

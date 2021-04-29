@@ -2,8 +2,8 @@ import React, { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
-import sizes from "../../designSystem/sizes";
-import theme from "../../designSystem/theme";
+import sizes from "shared/lib/designSystem/sizes";
+import theme from "shared/lib/designSystem/theme";
 import useScreenSize from "../../hooks/useScreenSize";
 import useVaultOption from "../../hooks/useVaultOption";
 import AccountStatus from "../Wallet/AccountStatus";

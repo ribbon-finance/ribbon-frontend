@@ -1,5 +1,5 @@
 {
-  "name": "core",
+  "name": "shared",
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
@@ -33,13 +33,11 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "start-storybook -p 9009 -s public",
     "clean": "rm -rf ./lib",
     "prebuild": "yarn clean",
     "build": "tsc --build \"./tsconfig.json\"",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build-storybook": "build-storybook",
     "lint": "eslint './src/**/*.{js,jsx,ts,tsx}'",
     "lint:fix": "eslint --fix './src/**/*.{js,jsx,ts,tsx}'"
   },
@@ -72,19 +70,11 @@
     ]
   },
   "devDependencies": {
-    "@storybook/addon-actions": "^6.2.9",
-    "@storybook/addon-essentials": "^6.2.9",
-    "@storybook/addon-knobs": "^6.2.9",
-    "@storybook/addon-links": "^6.2.9",
-    "@storybook/node-logger": "^6.2.9",
-    "@storybook/preset-create-react-app": "^3.1.7",
-    "@storybook/react": "^6.2.9",
     "@types/react-router-dom": "^5.1.7",
     "@types/styled-components": "^5.1.9",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
-    "prettier": "^2.2.1",
-    "storybook-readme": "^5.0.9"
+    "prettier": "^2.2.1"
   }
 }

@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { SecondaryText, Title } from "../../designSystem";
-import colors from "../../designSystem/colors";
+import { SecondaryText, Title } from "shared/lib/designSystem";
+import colors from "shared/lib/designSystem/colors";
 import PerformanceChart from "../../components/PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../../components/PerformanceChart/types";
 import { useLatestAPY, useHistoricalData } from "../../hooks/useAirtableData";

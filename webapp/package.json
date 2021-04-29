@@ -19,6 +19,7 @@
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "chart.js": "^2.9.4",
+    "shared": "^0.1.0",
     "craco-less": "^1.17.1",
     "currency.js": "^2.0.3",
     "ethers": "^5.0.32",

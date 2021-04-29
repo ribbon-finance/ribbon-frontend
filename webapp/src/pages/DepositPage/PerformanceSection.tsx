@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import { ExternalIcon } from "../../assets/icons/icons";
+import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { productCopies } from "../../components/Product/Product/productCopies";
 import { VaultOptions } from "../../constants/constants";
 
-import { PrimaryText, SecondaryText, Title } from "../../designSystem";
-import colors from "../../designSystem/colors";
-import sizes from "../../designSystem/sizes";
+import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
+import colors from "shared/lib/designSystem/colors";
+import sizes from "shared/lib/designSystem/sizes";
 import VaultPerformanceChart from "./VaultPerformanceChart";
 
 const Paragraph = styled.div`

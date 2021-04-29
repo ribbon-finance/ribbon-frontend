@@ -6,19 +6,19 @@ import {
   SecondaryText,
   Subtitle,
   Title,
-} from "../../designSystem";
+} from "shared/lib/designSystem";
 import moment from "moment";
 import currency from "currency.js";
 
-import colors from "../../designSystem/colors";
-import theme from "../../designSystem/theme";
+import colors from "shared/lib/designSystem/colors";
+import theme from "shared/lib/designSystem/theme";
 import { useAssetsPrice } from "../../hooks/useAssetPrice";
 import useBalances from "../../hooks/useBalances";
 import useTextAnimation from "../../hooks/useTextAnimation";
 import { assetToFiat } from "../../utils/math";
 import PerformanceChart from "../PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../PerformanceChart/types";
-import sizes from "../../designSystem/sizes";
+import sizes from "shared/lib/designSystem/sizes";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import { getAssets, VaultList } from "../../constants/constants";
 import useVaultAccounts from "../../hooks/useVaultAccounts";

@@ -5,7 +5,7 @@ import styled from "styled-components";
 import PortfolioPerformance from "../../components/Portfolio/PortfolioPerformance";
 import PortfolioPositions from "../../components/Portfolio/PortfolioPositions";
 import PortfolioTransactions from "../../components/Portfolio/PortfolioTransactions";
-import { Title } from "../../designSystem";
+import { Title } from "shared/lib/designSystem";
 
 const PerformanceTitle = styled(Title)`
   font-size: 18px;

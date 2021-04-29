@@ -10,7 +10,7 @@ import { getDefaultNetworkName } from "../../utils/env";
 import { formatBigNumber } from "../../utils/math";
 import { capitalize } from "../../utils/text";
 import { productCopies } from "../Product/Product/productCopies";
-import Toast from "./BaseToast";
+import Toast from "shared/lib/components/Common/BaseToast";
 
 export const WrongNetworkToast = () => {
   const [showToast, setShowToast] = useState(false);
