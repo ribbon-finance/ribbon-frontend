@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
-import { useHistory } from "react-router-dom";
 import { ethers } from "ethers";
 
 import WETHLogo, { WBTCLogo } from "../../../assets/icons/erc20Assets";
@@ -19,7 +18,7 @@ import useVaultData from "../../../hooks/useVaultData";
 import { formatSignificantDecimals } from "../../../utils/math";
 import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useTextAnimation from "../../../hooks/useTextAnimation";
-import { VaultOptions, VaultNameOptionMap } from "../../../constants/constants";
+import { VaultOptions } from "../../../constants/constants";
 import { productCopies } from "../productCopies";
 
 const { formatUnits } = ethers.utils;

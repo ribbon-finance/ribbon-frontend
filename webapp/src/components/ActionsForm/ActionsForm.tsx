@@ -45,6 +45,7 @@ import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
 import useTokenAllowance from "../../hooks/useTokenAllowance";
 import SwapBTCDropdown from "./SwapBTCDropdown";
+import theme from "shared/lib/designSystem/theme";
 
 const { parseUnits, formatUnits } = ethers.utils;
 
@@ -122,6 +123,7 @@ const ContentContainer = styled.div`
   background: #1c1a19;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
+  border-bottom: ${theme.border.width} ${theme.border.style} ${colors.border};
 `;
 
 const FormInputContainer = styled.div`
@@ -660,8 +662,8 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
             </>
           )}
           <WalletBalance state={walletBalanceState}>{walletText}</WalletBalance>
-          <SwapBTCDropdown />
         </ContentContainer>
+        <SwapBTCDropdown open={true} />
       </FormContainer>
 
       {connected && isDesktop && (
