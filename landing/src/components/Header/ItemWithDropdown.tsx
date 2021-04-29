@@ -12,7 +12,7 @@ import {
   MenuStateProps,
 } from "./types";
 import theme from "../../designSystem/theme";
-import MobileOverlayMenu from "../Common/MobileOverlayMenu";
+import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import MenuButton from "./MenuButton";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import ButtonArrow from "../Common/ButtonArrow";
