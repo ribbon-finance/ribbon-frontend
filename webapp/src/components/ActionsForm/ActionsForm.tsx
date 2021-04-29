@@ -28,22 +28,23 @@ import {
   VaultMaxDeposit,
   VaultOptions,
 } from "shared/lib/constants/constants";
-import useGasPrice from "../../hooks/useGasPrice";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import useVault from "shared/lib/hooks/useVault";
-import { ACTIONS, PreviewStepProps } from "../ActionModal/types";
-import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import { isETHVault, isVaultFull } from "shared/lib/utils/vault";
 import colors from "shared/lib/designSystem/colors";
 import { useLatestAPY } from "shared/lib/hooks/useAirtableData";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import { getERC20Token } from "shared/lib/hooks/useERC20Token";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
-import usePendingTransactions from "../../hooks/usePendingTransactions";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import useTokenAllowance from "../../hooks/useTokenAllowance";
 import { ERC20Token } from "shared/lib/models/eth";
 import { WBTCLogo } from "shared/lib/assets/icons/erc20Assets";
+import { ACTIONS, PreviewStepProps } from "../ActionModal/types";
+import useGasPrice from "../../hooks/useGasPrice";
+import useConnectWalletModal from "../../hooks/useConnectWalletModal";
+import usePendingTransactions from "../../hooks/usePendingTransactions";
+import useTokenAllowance from "../../hooks/useTokenAllowance";
+import SwapBTCDropdown from "./SwapBTCDropdown";
 
 const { parseUnits, formatUnits } = ethers.utils;
 
@@ -658,8 +659,8 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
               {button}
             </>
           )}
-
           <WalletBalance state={walletBalanceState}>{walletText}</WalletBalance>
+          <SwapBTCDropdown />
         </ContentContainer>
       </FormContainer>
 
