@@ -1,8 +1,8 @@
+import { useWeb3React } from "@web3-react/core";
+import { useEffect, useState } from "react";
 import { IERC20, IERC20__factory } from "../codegen";
 import { isStaging } from "../utils/env";
 import addresses from "../constants/externalAddresses.json";
-import { useWeb3React } from "@web3-react/core";
-import { useEffect, useState } from "react";
 import { ERC20Token } from "../models/eth";
 
 export const getERC20Token = (library: any, token: ERC20Token) => {

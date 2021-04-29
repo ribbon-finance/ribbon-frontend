@@ -7,7 +7,7 @@ import ActionSteps from "./ActionSteps";
 import { PreviewStepProps, StepData, STEPS } from "./types";
 import sizes from "shared/lib/designSystem/sizes";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
-import { VaultOptions } from "../../constants/constants";
+import { VaultOptions } from "shared/lib/constants/constants";
 
 const ModalNavigation = styled.div`
   position: absolute;

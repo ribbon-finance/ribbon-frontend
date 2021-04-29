@@ -6,7 +6,7 @@ import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
 import theme from "shared/lib/designSystem/theme";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
-import useScreenSize from "../../hooks/useScreenSize";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { capitalize } from "../../utils/text";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import { SortBy, ActivityFilter, activityFilters, sortByList } from "./types";

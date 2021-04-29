@@ -10,11 +10,11 @@ import {
   formatBigNumber,
   formatSignificantDecimals,
   wmul,
-} from "../../utils/math";
-import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
-import { Assets } from "../../store/types";
-import { VaultOptions } from "../../constants/constants";
-import { productCopies } from "../Product/Product/productCopies";
+} from "shared/lib/utils/math";
+import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import { Assets } from "shared/lib/store/types";
+import { VaultOptions } from "shared/lib/constants/constants";
+import { productCopies } from "shared/lib/components/Product/productCopies";
 const { parseUnits, formatUnits } = ethers.utils;
 
 const AmountText = styled(Title)`

@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import sizes from "shared/lib/designSystem/sizes";
 import theme from "shared/lib/designSystem/theme";
-import useScreenSize from "../../hooks/useScreenSize";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
 import useVaultOption from "../../hooks/useVaultOption";
 import AccountStatus from "../Wallet/AccountStatus";
 import DesktopFooter from "./DesktopFooter";

@@ -17,10 +17,8 @@ export const useWeb3Context = () => useContext(Web3Context);
 
 export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({
   children,
-}) => {
-  return (
-    <Web3Context.Provider value={{ provider: defaultProvider }}>
-      {children}
-    </Web3Context.Provider>
-  );
-};
+}) => (
+  <Web3Context.Provider value={{ provider: defaultProvider }}>
+    {children}
+  </Web3Context.Provider>
+);

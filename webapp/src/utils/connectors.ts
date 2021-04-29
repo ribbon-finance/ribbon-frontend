@@ -1,6 +1,6 @@
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
-import { isStaging } from "./env";
+import { isStaging } from "shared/lib/utils/env";
 
 export const injectedConnector = new InjectedConnector({
   supportedChainIds: isStaging() ? [42] : [1],

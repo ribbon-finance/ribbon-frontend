@@ -1,11 +1,11 @@
 import React from "react";
 
-import ProductSection from "../../components/Product/ProductSection";
+import ProductCarousel from "shared/lib/components/Product/ProductCarousel";
 
 const Homepage = () => {
   return (
     <>
-      <ProductSection />
+      <ProductCarousel />
     </>
   );
 };

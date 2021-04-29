@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
-import { productCopies } from "../../components/Product/Product/productCopies";
-import { VaultOptions } from "../../constants/constants";
+import { productCopies } from "shared/lib/components/Product/productCopies";
+import { VaultOptions } from "shared/lib/constants/constants";
 
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";

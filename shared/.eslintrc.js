@@ -98,6 +98,9 @@ module.exports = {
     camelcase: 0,
     "react/destructuring-assignment": 0,
     "no-unused-expressions": 0,
+    "no-return-assign": 0,
+    "default-case": 0,
+    "consistent-return": 0,
   },
   overrides: [
     {

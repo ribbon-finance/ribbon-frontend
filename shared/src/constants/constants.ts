@@ -22,19 +22,17 @@ export const GAS_LIMITS: {
   },
 };
 
-export const getETHThetaVaultId = () => {
-  return (isStaging()
+export const getETHThetaVaultId = () =>
+  (isStaging()
     ? deployment.kovan.RibbonETHCoveredCall
     : deployment.mainnet.RibbonETHCoveredCall
   ).toLowerCase();
-};
 
-export const getWBTCThetaVaultId = () => {
-  return (isStaging()
+export const getWBTCThetaVaultId = () =>
+  (isStaging()
     ? deployment.kovan.RibbonWBTCCoveredCall
     : deployment.mainnet.RibbonWBTCCoveredCall
   ).toLowerCase();
-};
 
 export const FullVaultList = ["rBTC-THETA", "rETH-THETA"] as const;
 export type VaultOptions = typeof FullVaultList[number];

@@ -2,10 +2,10 @@ import React, { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
 
-import { VaultList } from "../../constants/constants";
-import colors from "shared/lib/designSystem/colors";
-import theme from "shared/lib/designSystem/theme";
-import YieldCard from "./Product/YieldCard";
+import { VaultList } from "../../../constants/constants";
+import colors from "../../../designSystem/colors";
+import theme from "../../../designSystem/theme";
+import YieldCard from "./YieldCard";
 
 const Carousel = styled.div`
   display: flex;

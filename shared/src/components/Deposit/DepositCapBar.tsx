@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { SecondaryText, Title } from "shared/lib/designSystem";
+import { SecondaryText, Title } from "../../designSystem";
 import { Assets } from "../../store/types";
 import { getAssetDisplay } from "../../utils/asset";
 
@@ -81,8 +81,8 @@ const DepositCapBar: React.FC<{
       </div>
 
       <div className="d-flex flex-row position-relative my-3">
-        <BackgroundBar></BackgroundBar>
-        <ForegroundBar style={{ width: `${percent}%` }}></ForegroundBar>
+        <BackgroundBar />
+        <ForegroundBar style={{ width: `${percent}%` }} />
       </div>
 
       <div className="d-flex flex-row justify-content-between">

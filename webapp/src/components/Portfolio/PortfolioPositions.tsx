@@ -12,20 +12,20 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import useAssetPrice from "../../hooks/useAssetPrice";
-import useTextAnimation from "../../hooks/useTextAnimation";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { CurrencyType } from "../../pages/Portfolio/types";
-import { assetToUSD, formatSignificantDecimals } from "../../utils/math";
-import { ProductType } from "../Product/types";
+import { assetToUSD, formatSignificantDecimals } from "shared/lib/utils/math";
+import { ProductType } from "shared/lib/components/Product/types";
 import sizes from "shared/lib/designSystem/sizes";
 import {
   getAssets,
   VaultList,
   VaultNameOptionMap,
-} from "../../constants/constants";
-import { productCopies } from "../Product/Product/productCopies";
+} from "shared/lib/constants/constants";
+import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
-import { VaultAccount } from "../../models/vault";
-import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
+import { VaultAccount } from "shared/lib/models/vault";
+import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 48px;

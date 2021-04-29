@@ -1,8 +1,8 @@
 import React, { createRef, useRef, useState } from "react";
 import styled from "styled-components";
-import { VaultList } from "../../constants/constants";
-import YieldCard from "./Product/YieldCard";
 import { motion, PanInfo } from "framer-motion";
+import { VaultList } from "../../../constants/constants";
+import YieldCard from "./YieldCard";
 
 const ScrollContainer = styled.div`
   display: flex;

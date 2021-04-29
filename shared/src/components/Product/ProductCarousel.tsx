@@ -9,24 +9,24 @@ import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
 import { Frame } from "framer";
 
-import { BaseButton, SecondaryText, Title } from "shared/lib/designSystem";
-import colors from "shared/lib/designSystem/colors";
-import theme from "shared/lib/designSystem/theme";
+import { BaseButton, SecondaryText, Title } from "../../designSystem";
+import colors from "../../designSystem/colors";
+import theme from "../../designSystem/theme";
+import Volatility from "../../assets/icons/theta/Volatility";
+import PrincipalProtection from "../../assets/icons/theta/PrincipalProtection";
+import CapitalAccumulation from "../../assets/icons/theta/CapitalAccumulation";
+import sizes from "../../designSystem/sizes";
 import {
   ProductType,
   ProductTabProps,
   DynamicMarginProps,
   HeaderScrollIndicatorProps,
 } from "./types";
-import Volatility from "shared/lib/assets/icons/theta/Volatility";
-import PrincipalProtection from "shared/lib/assets/icons/theta/PrincipalProtection";
-import CapitalAccumulation from "shared/lib/assets/icons/theta/CapitalAccumulation";
 import useScreenSize from "../../hooks/useScreenSize";
 import useElementSize from "../../hooks/useElementSize";
 import useElementScroll from "../../hooks/useElementScroll";
-import sizes from "shared/lib/designSystem/sizes";
-import ThetaCarousel from "./ThetaCarousel";
-import MobileThetaProducts from "./MobileThetaProducts";
+import ThetaCarousel from "./Theta/ThetaCarousel";
+import MobileThetaProducts from "./Theta/MobileThetaProducts";
 
 const ProductSectionContainer = styled(Container)`
   display: flex;
@@ -116,6 +116,8 @@ const ProductTabButton = styled(BaseButton)<ProductTabProps>`
           case "volatility":
           case "principalProtection":
             return props.selected ? `#000000A3` : colors.primaryText;
+          default:
+            return null;
         }
       }};
     }
@@ -137,6 +139,8 @@ const ProductTabButtonText = styled(SecondaryText)<ProductTabProps>`
       case "volatility":
       case "principalProtection":
         return "black";
+      default:
+        return null;
     }
   }};
 `;
@@ -173,6 +177,8 @@ const HeaderScrollIndicator = styled.div<HeaderScrollIndicatorProps>`
         return `
           right: 0;
         `;
+      default:
+        return null;
     }
   }}
 `;
@@ -313,6 +319,8 @@ const Products = () => {
         return <PrincipalProtection height="50vh" opacity="0.4" />;
       case "capitalAccumulation":
         return <CapitalAccumulation height="50vh" opacity="0.4" />;
+      default:
+        return <></>;
     }
   }, [selectedProduct]);
 
@@ -331,6 +339,8 @@ const Products = () => {
             </ComingSoonContainer>
           </>
         );
+      default:
+        return <></>;
     }
   }, [selectedProduct, renderSplashFromType, width]);
 

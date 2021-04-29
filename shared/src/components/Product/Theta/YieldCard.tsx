@@ -3,24 +3,24 @@ import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { ethers } from "ethers";
 
+import WETHLogo, { WBTCLogo } from "../../../assets/icons/erc20Assets";
 import {
   BaseButton,
   Title,
   Subtitle,
   SecondaryText,
   BaseText,
-} from "shared/lib/designSystem";
-import colors from "shared/lib/designSystem/colors";
-import sizes from "shared/lib/designSystem/sizes";
-import theme from "shared/lib/designSystem/theme";
-import DepositCapBar from "../../../pages/DepositPage/DepositCapBar";
+} from "../../../designSystem";
+import colors from "../../../designSystem/colors";
+import sizes from "../../../designSystem/sizes";
+import theme from "../../../designSystem/theme";
+import DepositCapBar from "../../Deposit/DepositCapBar";
 import useVaultData from "../../../hooks/useVaultData";
 import { formatSignificantDecimals } from "../../../utils/math";
 import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useTextAnimation from "../../../hooks/useTextAnimation";
 import { VaultOptions, VaultNameOptionMap } from "../../../constants/constants";
-import { productCopies } from "./productCopies";
-import WETHLogo, { WBTCLogo } from "shared/lib/assets/icons/erc20Assets";
+import { productCopies } from "../productCopies";
 
 const { formatUnits } = ethers.utils;
 
@@ -167,6 +167,8 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault }) => {
         return <WETHLogo width="40%" opacity="0.1" />;
       case "rBTC-THETA":
         return <StyledWBTCLogo width="50%" opacity="0.04" />;
+      default:
+        return <></>;
     }
   }, [vault]);
 

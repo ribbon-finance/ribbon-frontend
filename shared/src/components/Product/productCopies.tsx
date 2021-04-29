@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import { VaultOptions } from "../../../constants/constants";
+import { VaultOptions } from "../../constants/constants";
 
 const Link = styled.a`
   color: rgba(255, 255, 255, 0.8);

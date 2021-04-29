@@ -1,8 +1,8 @@
 import { BigNumber } from "ethers";
-import { useWeb3Context } from "./web3Context";
 import { useCallback, useEffect, useRef } from "react";
-import { VaultDataResponse } from "../store/types";
 import { useWeb3React } from "@web3-react/core";
+import { useWeb3Context } from "./web3Context";
+import { VaultDataResponse } from "../store/types";
 import { useGlobalState } from "../store/store";
 import { getVault } from "./useVault";
 import { getDefaultChainID } from "../utils/env";
@@ -48,16 +48,12 @@ const useVaultData: UseVaultData = (vault, params) => {
         const defaultToNextValue = (
           prevValue: BigNumber,
           nextValue: BigNumber
-        ) => {
-          return prevValue.isZero() ? nextValue : prevValue;
-        };
+        ) => (prevValue.isZero() ? nextValue : prevValue);
 
         const defaultToPrevValue = (
           prevValue: BigNumber,
           nextValue: BigNumber
-        ) => {
-          return nextValue.isZero() ? prevValue : nextValue;
-        };
+        ) => (nextValue.isZero() ? prevValue : nextValue);
 
         if (walletConnected && account && chainId) {
           if (chainId !== envChainID) {
@@ -176,6 +172,7 @@ const useVaultData: UseVaultData = (vault, params) => {
   }, [vault, account, setResponse, walletConnected, chainId, library]);
 
   useEffect(() => {
+    // eslint-disable-next-line no-undef
     let pollInterval: NodeJS.Timeout | null = null;
     if (poll) {
       doMulticall();
@@ -190,12 +187,6 @@ const useVaultData: UseVaultData = (vault, params) => {
       }
     };
   }, [poll, pollingFrequency, doMulticall]);
-
-  // useEffect(() => {
-  //   return () => {
-  //     isMountedRef.current = false;
-  //   };
-  // }, []);
 
   return response[vault];
 };

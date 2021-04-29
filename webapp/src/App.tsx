@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import smoothscroll from "smoothscroll-polyfill";
 
 import RootApp from "./components/RootApp";
-import { Web3ContextProvider } from "./hooks/web3Context";
+import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
 import { getLibrary } from "./utils/getLibrary";
 
 function App() {

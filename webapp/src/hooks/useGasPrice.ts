@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useCallback, useEffect } from "react";
 import { ethers } from "ethers";
-import { useGlobalState } from "../store/store";
+import { useGlobalState } from "shared/lib/store/store";
 
 const { parseUnits } = ethers.utils;
 

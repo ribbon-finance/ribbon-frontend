@@ -1,5 +1,5 @@
-import { useGlobalState } from "../store/store";
-import { PendingTransaction } from "../store/types";
+import { useGlobalState } from "shared/lib/store/store";
+import { PendingTransaction } from "shared/lib/store/types";
 
 const usePendingTransactions: () => [
   PendingTransaction[],

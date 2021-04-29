@@ -24,7 +24,7 @@ import {
   WalletConnectIcon,
 } from "shared/lib/assets/icons/connector";
 import { ConnectorButtonProps, connectorType } from "./types";
-import useTextAnimation from "../../hooks/useTextAnimation";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import Indicator from "../Indicator/Indicator";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 

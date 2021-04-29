@@ -52,13 +52,11 @@ export const useHistoricalData: UseHistoricalData = (vaultOption) => {
 
     // Get cumulative yield
     const weeklyYields = data.map((row: any) => row.fields.WeeklyYield * 100);
-    var cumYield: number[] = [];
-    weeklyYields.reduce(function (a: any, b: any, i: any) {
-      return (cumYield[i] = a + b);
-    }, 0);
+    const cumYield: number[] = [];
+    weeklyYields.reduce((a: any, b: any, i: any) => (cumYield[i] = a + b), 0);
 
-    const formattedData = data.map(function (row: any, index: number) {
-      let formatted: WeeklyPerformance = {
+    const formattedData = data.map((row: any, index: number) => {
+      const formatted: WeeklyPerformance = {
         apy: row.fields.APY * 100,
         premiums: row.fields.Premiums,
         principal: row.fields.Principal,

@@ -11,6 +11,4 @@ export const isVaultFull = (
   return !cap.isZero() && deposits.gte(cap.sub(margin));
 };
 
-export const isETHVault = (vault: VaultOptions) => {
-  return vault === "rETH-THETA";
-};
+export const isETHVault = (vault: VaultOptions) => vault === "rETH-THETA";

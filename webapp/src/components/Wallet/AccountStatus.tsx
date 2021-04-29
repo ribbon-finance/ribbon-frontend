@@ -31,7 +31,7 @@ import { ActionButton } from "shared/lib/components/Common/buttons";
 import ActionModal from "../ActionModal/ActionModal";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
-import { VaultOptions } from "../../constants/constants";
+import { VaultOptions } from "shared/lib/constants/constants";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;

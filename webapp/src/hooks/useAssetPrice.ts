@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useGlobalState } from "../store/store";
-import { AssetsList, Assets } from "../store/types";
+import { useGlobalState } from "shared/lib/store/store";
+import { AssetsList, Assets } from "shared/lib/store/types";
 
 type APIResponse = Record<string, { usd: number }>;
 
@@ -23,7 +23,9 @@ const COINGECKO_CURRENCIES = {
 };
 
 // TODO: We need this global variable so we can prevent over-fetching
-let fetchedOnce = Object.fromEntries(AssetsList.map((asset) => [asset, false]));
+const fetchedOnce = Object.fromEntries(
+  AssetsList.map((asset) => [asset, false])
+);
 
 const useAssetPrice: (args: {
   asset?: Assets;

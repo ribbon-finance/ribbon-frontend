@@ -13,19 +13,19 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { useAssetsPrice } from "../../hooks/useAssetPrice";
-import useTextAnimation from "../../hooks/useTextAnimation";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useTransactions from "../../hooks/useTransactions";
 import { CurrencyType } from "../../pages/Portfolio/types";
-import { assetToUSD, formatSignificantDecimals } from "../../utils/math";
+import { assetToUSD, formatSignificantDecimals } from "shared/lib/utils/math";
 import { capitalize } from "../../utils/text";
 import {
   getAssets,
   getEtherscanURI,
   VaultNameOptionMap,
   VaultOptions,
-} from "../../constants/constants";
-import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
-import { Assets, AssetsList } from "../../store/types";
+} from "shared/lib/constants/constants";
+import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import { Assets, AssetsList } from "shared/lib/store/types";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 
 const PortfolioTransactionsContainer = styled.div`

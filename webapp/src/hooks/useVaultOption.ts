@@ -5,7 +5,7 @@ import {
   VaultName,
   VaultNameOptionMap,
   VaultOptions,
-} from "../constants/constants";
+} from "shared/lib/constants/constants";
 
 const useVaultOption = () => {
   const match = useRouteMatch<{ vaultSymbol: string }>(

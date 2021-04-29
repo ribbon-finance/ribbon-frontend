@@ -11,14 +11,14 @@ import {
   STEPS,
 } from "./types";
 
-import useVault from "../../hooks/useVault";
+import useVault from "shared/lib/hooks/useVault";
 import PreviewStep from "./PreviewStep";
 import ConfirmationStep from "./ConfirmationStep";
 import SubmittedStep from "./SubmittedStep";
 import FormStep from "./FormStep";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
-import { getAssets, VaultOptions } from "../../constants/constants";
-import { isETHVault } from "../../utils/vault";
+import { getAssets, VaultOptions } from "shared/lib/constants/constants";
+import { isETHVault } from "shared/lib/utils/vault";
 
 export interface ActionStepsProps {
   vaultOption: VaultOptions;
