@@ -334,7 +334,8 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
           BigNumber.from(gasPrice)
         );
         const total = BigNumber.from(userAssetBalance);
-        const maxAmount = total.sub(gasFee);
+        // TODO: Optimize the code to request gas fees only when needed
+        const maxAmount = isETHVault(vaultOption) ? total.sub(gasFee) : total;
         const allowedMaxAmount = maxAmount.lte(
           vaultMaxDepositAmount.sub(vaultBalanceInAsset)
         )
