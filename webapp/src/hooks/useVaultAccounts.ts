@@ -3,9 +3,9 @@ import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
 import { BigNumber } from "ethers";
 
-import { VaultAccount } from "../models/vault";
-import { getSubgraphqlURI } from "../utils/env";
-import { VaultAddressMap, VaultOptions } from "../constants/constants";
+import { VaultAccount } from "shared/lib/models/vault";
+import { getSubgraphqlURI } from "shared/lib/utils/env";
+import { VaultAddressMap, VaultOptions } from "shared/lib/constants/constants";
 
 const useVaultAccounts = (vaults: VaultOptions[]) => {
   const { account } = useWeb3React();

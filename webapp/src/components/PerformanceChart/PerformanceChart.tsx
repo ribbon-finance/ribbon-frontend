@@ -5,7 +5,7 @@ import { ChartOptions } from "chart.js";
 import moment from "moment";
 
 import { HoverInfo } from "./types";
-import { SecondaryText } from "../../designSystem";
+import { SecondaryText } from "shared/lib/designSystem";
 
 const PerformanceChartContainer = styled.div`
   width: 100%;

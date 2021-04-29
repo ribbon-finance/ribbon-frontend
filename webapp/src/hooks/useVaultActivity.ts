@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { BigNumber } from "ethers";
 
-import { VaultAddressMap, VaultOptions } from "../constants/constants";
-import { VaultActivity } from "../models/vault";
-import { getSubgraphqlURI } from "../utils/env";
+import { VaultAddressMap, VaultOptions } from "shared/lib/constants/constants";
+import { VaultActivity } from "shared/lib/models/vault";
+import { getSubgraphqlURI } from "shared/lib/utils/env";
 
 const useVaultActivity = (vault: VaultOptions) => {
   const [activities, setActivities] = useState<VaultActivity[]>([]);

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import Row from "react-bootstrap/Row";
 import { Container } from "react-bootstrap";
 import { Title } from "../../designSystem";
-import Products from "../Product/ProductSection";
+import Product from "shared/lib/components/Product/ProductCarousel";
 
 const ProductCarouselContainer = styled(Container)`
   padding-top: 160px;
@@ -19,7 +19,10 @@ const ProductCarousel = () => {
     <ProductCarouselContainer>
       <Row className="d-flex justify-content-center">
         <CarouselTitle>Our Products</CarouselTitle>
-        <Products />
+        <Product
+          dynamicMargin={false}
+          onVaultPress={() => window.open("https://app.ribbon.finance")}
+        />
       </Row>
     </ProductCarouselContainer>
   );

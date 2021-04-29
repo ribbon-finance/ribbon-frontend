@@ -3,13 +3,13 @@ import styled from "styled-components";
 import { BigNumber, ethers } from "ethers";
 
 import PositionIcon from "../../assets/img/positionIcon.svg";
-import { Title } from "../../designSystem";
+import { Title } from "shared/lib/designSystem";
 import useAssetPrice from "../../hooks/useAssetPrice";
 import useBalances from "../../hooks/useBalances";
-import useVaultData from "../../hooks/useVaultData";
-import { assetToUSD, formatBigNumber } from "../../utils/math";
-import { VaultOptions } from "../../constants/constants";
-import { getAssetDisplay } from "../../utils/asset";
+import useVaultData from "shared/lib/hooks/useVaultData";
+import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
+import { VaultOptions } from "shared/lib/constants/constants";
+import { getAssetDisplay } from "shared/lib/utils/asset";
 
 const PositionsContainer = styled.div`
   font-family: VCR, sans-serif;

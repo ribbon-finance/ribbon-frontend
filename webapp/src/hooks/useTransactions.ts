@@ -3,8 +3,8 @@ import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
 import { BigNumber } from "ethers";
 
-import { VaultTransaction } from "../models/vault";
-import { getSubgraphqlURI } from "../utils/env";
+import { VaultTransaction } from "shared/lib/models/vault";
+import { getSubgraphqlURI } from "shared/lib/utils/env";
 
 const useTransactions = () => {
   const { account } = useWeb3React();

@@ -1,10 +1,10 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
 
-import { BaseLink, Title } from "../../designSystem";
-import colors from "../../designSystem/colors";
-import sizes from "../../designSystem/sizes";
-import theme from "../../designSystem/theme";
+import { BaseLink, Title } from "shared/lib/designSystem";
+import colors from "shared/lib/designSystem/colors";
+import sizes from "shared/lib/designSystem/sizes";
+import theme from "shared/lib/designSystem/theme";
 
 const FooterContainer = styled.div`
   display: flex;

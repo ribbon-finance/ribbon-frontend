@@ -8,7 +8,7 @@ import DepositPage from "../pages/DepositPage/DepositPage";
 import useEagerConnect from "../hooks/useEagerConnect";
 import PortfolioPage from "../pages/Portfolio/PortfolioPage";
 import Footer from "./Footer/Footer";
-import useScreenSize from "../hooks/useScreenSize";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { WrongNetworkToast, TxStatusToast } from "./Common/toasts";
 import WalletConnectModal from "./Wallet/WalletConnectModal";
 

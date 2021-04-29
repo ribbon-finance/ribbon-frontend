@@ -1,4 +1,4 @@
-import { isProduction } from "./env";
+import { isProduction } from "shared/lib/utils/env";
 
 export const addAnalyticsEvent = (
   eventName: string,

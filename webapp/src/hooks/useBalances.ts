@@ -3,8 +3,8 @@ import axios from "axios";
 import { BigNumber } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 
-import { BalanceUpdate } from "../models/vault";
-import { getSubgraphqlURI } from "../utils/env";
+import { BalanceUpdate } from "shared/lib/models/vault";
+import { getSubgraphqlURI } from "shared/lib/utils/env";
 
 const useBalances = (before?: number, after?: number) => {
   const { account } = useWeb3React();

@@ -5,14 +5,14 @@ import useVaultActivity from "../../hooks/useVaultActivity";
 import { ActivityFilter, activityFilters, SortBy, sortByList } from "./types";
 import VaultActivityHeader from "./VaultActivityHeader";
 import DesktopVaultActivityList from "./DesktopVaultActivityList";
-import useScreenSize from "../../hooks/useScreenSize";
-import sizes from "../../designSystem/sizes";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
+import sizes from "shared/lib/designSystem/sizes";
 import MobileVaultActivityList from "./MobileVaultActivityList";
-import colors from "../../designSystem/colors";
-import theme from "../../designSystem/theme";
-import { Title } from "../../designSystem";
-import useTextAnimation from "../../hooks/useTextAnimation";
-import { VaultOptions } from "../../constants/constants";
+import colors from "shared/lib/designSystem/colors";
+import theme from "shared/lib/designSystem/theme";
+import { Title } from "shared/lib/designSystem";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import { VaultOptions } from "shared/lib/constants/constants";
 
 const PaginationContainer = styled.div`
   display: flex;

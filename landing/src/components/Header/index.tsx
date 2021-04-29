@@ -8,7 +8,7 @@ import { Title, BaseLink, Button } from "../../designSystem";
 import MenuButton from "./MenuButton";
 import { NavItemProps, MobileMenuOpenProps } from "./types";
 import theme from "../../designSystem/theme";
-import MobileOverlayMenu from "../Common/MobileOverlayMenu";
+import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import ItemWithDropdown from "./ItemWithDropdown";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`

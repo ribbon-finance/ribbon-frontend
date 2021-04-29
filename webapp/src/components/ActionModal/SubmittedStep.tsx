@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 
 import SubmittedIcon from "../../assets/img/SubmittedIcon.svg";
-import { ActionButton } from "../Common/buttons";
+import { ActionButton } from "shared/lib/components/Common/buttons";
 
 const Submitted = styled.img`
   width: 100%;

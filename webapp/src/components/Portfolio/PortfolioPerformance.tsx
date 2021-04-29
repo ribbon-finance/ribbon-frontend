@@ -6,24 +6,24 @@ import {
   SecondaryText,
   Subtitle,
   Title,
-} from "../../designSystem";
+} from "shared/lib/designSystem";
 import moment from "moment";
 import currency from "currency.js";
 
-import colors from "../../designSystem/colors";
-import theme from "../../designSystem/theme";
+import colors from "shared/lib/designSystem/colors";
+import theme from "shared/lib/designSystem/theme";
 import { useAssetsPrice } from "../../hooks/useAssetPrice";
 import useBalances from "../../hooks/useBalances";
-import useTextAnimation from "../../hooks/useTextAnimation";
-import { assetToFiat } from "../../utils/math";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import { assetToFiat } from "shared/lib/utils/math";
 import PerformanceChart from "../PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../PerformanceChart/types";
-import sizes from "../../designSystem/sizes";
+import sizes from "shared/lib/designSystem/sizes";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
-import { getAssets, VaultList } from "../../constants/constants";
+import { getAssets, VaultList } from "shared/lib/constants/constants";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
-import { AssetsList } from "../../store/types";
-import { getAssetDecimals } from "../../utils/asset";
+import { AssetsList } from "shared/lib/store/types";
+import { getAssetDecimals } from "shared/lib/utils/asset";
 
 const PerformanceContainer = styled.div`
   display: flex;
@@ -272,12 +272,18 @@ const PortfolioPerformance = () => {
     if (hoveredBalanceUpdateIndex === undefined || balances.length <= 0) {
       return {
         yield: vaultYieldInAsset,
-        roi: (vaultYieldInAsset / vaultBalanceInAsset) * 100,
+        roi:
+          vaultBalanceInAsset > 0
+            ? (vaultYieldInAsset / vaultBalanceInAsset) * 100
+            : 0,
         balance: vaultBalanceInAsset,
       };
     }
 
-    let balancesToCalculate = balances.slice(0, hoveredBalanceUpdateIndex + 1);
+    let balancesToCalculate = balances.slice(
+      0,
+      hoveredBalanceUpdateIndex >= 0 ? hoveredBalanceUpdateIndex + 1 : 1
+    );
     let totalInvestment = 0;
     let yieldEarned = 0;
     let lastBalance = 0;

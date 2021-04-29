@@ -14,33 +14,36 @@ import {
   PrimaryText,
   SecondaryText,
   Title,
-} from "../../designSystem";
-import { formatSignificantDecimals } from "../../utils/math";
+} from "shared/lib/designSystem";
+import { formatSignificantDecimals } from "shared/lib/utils/math";
 import YourPosition from "./YourPosition";
 import ActionModal from "../ActionModal/ActionModal";
-import { ActionButton, ConnectWalletButton } from "../Common/buttons";
+import {
+  ActionButton,
+  ConnectWalletButton,
+} from "shared/lib/components/Common/buttons";
 import {
   GAS_LIMITS,
   VaultAddressMap,
   VaultMaxDeposit,
   VaultOptions,
-} from "../../constants/constants";
+} from "shared/lib/constants/constants";
 import useGasPrice from "../../hooks/useGasPrice";
-import useVaultData from "../../hooks/useVaultData";
-import useVault from "../../hooks/useVault";
+import useVaultData from "shared/lib/hooks/useVaultData";
+import useVault from "shared/lib/hooks/useVault";
 import { ACTIONS, PreviewStepProps } from "../ActionModal/types";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
-import { isETHVault, isVaultFull } from "../../utils/vault";
-import colors from "../../designSystem/colors";
-import { useLatestAPY } from "../../hooks/useAirtableData";
-import { getAssetDisplay } from "../../utils/asset";
-import { getERC20Token } from "../../hooks/useERC20Token";
-import { useWeb3Context } from "../../hooks/web3Context";
+import { isETHVault, isVaultFull } from "shared/lib/utils/vault";
+import colors from "shared/lib/designSystem/colors";
+import { useLatestAPY } from "shared/lib/hooks/useAirtableData";
+import { getAssetDisplay } from "shared/lib/utils/asset";
+import { getERC20Token } from "shared/lib/hooks/useERC20Token";
+import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
-import useTextAnimation from "../../hooks/useTextAnimation";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useTokenAllowance from "../../hooks/useTokenAllowance";
-import { ERC20Token } from "../../models/eth";
-import { WBTCLogo } from "../../assets/icons/erc20Assets";
+import { ERC20Token } from "shared/lib/models/eth";
+import { WBTCLogo } from "shared/lib/assets/icons/erc20Assets";
 
 const { parseUnits, formatUnits } = ethers.utils;
 

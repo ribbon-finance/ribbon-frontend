@@ -12,16 +12,19 @@ import {
   BaseModalHeader,
   BaseText,
   Title,
-} from "../../designSystem";
-import colors from "../../designSystem/colors";
-import theme from "../../designSystem/theme";
+} from "shared/lib/designSystem";
+import colors from "shared/lib/designSystem/colors";
+import theme from "shared/lib/designSystem/theme";
 import {
   injectedConnector,
   getWalletConnectConnector,
 } from "../../utils/connectors";
-import { MetamaskIcon, WalletConnectIcon } from "../../assets/icons/connector";
+import {
+  MetamaskIcon,
+  WalletConnectIcon,
+} from "shared/lib/assets/icons/connector";
 import { ConnectorButtonProps, connectorType } from "./types";
-import useTextAnimation from "../../hooks/useTextAnimation";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import Indicator from "../Indicator/Indicator";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 

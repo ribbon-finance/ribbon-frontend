@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import { ExternalIcon } from "../../assets/icons/icons";
-import { productCopies } from "../../components/Product/Product/productCopies";
-import { VaultOptions } from "../../constants/constants";
+import { ExternalIcon } from "shared/lib/assets/icons/icons";
+import { productCopies } from "shared/lib/components/Product/productCopies";
+import { VaultOptions } from "shared/lib/constants/constants";
 
-import { PrimaryText, SecondaryText, Title } from "../../designSystem";
-import colors from "../../designSystem/colors";
-import sizes from "../../designSystem/sizes";
+import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
+import colors from "shared/lib/designSystem/colors";
+import sizes from "shared/lib/designSystem/sizes";
 import VaultPerformanceChart from "./VaultPerformanceChart";
 
 const Paragraph = styled.div`
@@ -87,11 +87,6 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       <Paragraph>
         <ParagraphHeading>Withdrawals</ParagraphHeading>
         <ParagraphText>
-          Withdrawing from the vault has a fixed{" "}
-          <Highlight>withdrawal fee of 0.5%.</Highlight> This is to encourage
-          longer-term depositors.
-          <br />
-          <br />
           The vault allocates 90% of the funds deposited towards its covered
           call strategy and{" "}
           <Highlight>
@@ -100,6 +95,11 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           If in any given week the 10% withdrawal limit is reached, withdrawals
           from the vault will be disabled and depositors will have to wait until
           the following week in order to withdraw their funds.
+          <br />
+          <br />
+          Withdrawing from the vault has a fixed{" "}
+          <Highlight>withdrawal fee of 0.5%.</Highlight> This is to encourage
+          longer-term depositors.
         </ParagraphText>
       </Paragraph>
 

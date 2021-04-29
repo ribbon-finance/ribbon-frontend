@@ -3,14 +3,14 @@ import styled from "styled-components";
 import { useRouteMatch } from "react-router-dom";
 
 import Logo from "./Logo";
-import colors from "../../designSystem/colors";
-import sizes from "../../designSystem/sizes";
-import { Title, BaseLink } from "../../designSystem";
+import colors from "shared/lib/designSystem/colors";
+import sizes from "shared/lib/designSystem/sizes";
+import { Title, BaseLink } from "shared/lib/designSystem";
 import MenuButton from "./MenuButton";
 import { NavItemProps, MobileMenuOpenProps } from "./types";
 import AccountStatus from "../Wallet/AccountStatus";
-import theme from "../../designSystem/theme";
-import MobileOverlayMenu from "../Common/MobileOverlayMenu";
+import theme from "shared/lib/designSystem/theme";
+import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;

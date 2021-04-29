@@ -1,16 +1,20 @@
 import { BigNumber } from "ethers";
 import React, { useCallback, useEffect, useState } from "react";
-import { getAssets, VaultList, VaultOptions } from "../../constants/constants";
+import {
+  getAssets,
+  VaultList,
+  VaultOptions,
+} from "shared/lib/constants/constants";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
-import useVaultData from "../../hooks/useVaultData";
-import { useWeb3Context } from "../../hooks/web3Context";
-import { Assets, PendingTransaction } from "../../store/types";
-import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
-import { getDefaultNetworkName } from "../../utils/env";
-import { formatBigNumber } from "../../utils/math";
+import useVaultData from "shared/lib/hooks/useVaultData";
+import { useWeb3Context } from "shared/lib/hooks/web3Context";
+import { Assets, PendingTransaction } from "shared/lib/store/types";
+import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import { getDefaultNetworkName } from "shared/lib/utils/env";
+import { formatBigNumber } from "shared/lib/utils/math";
 import { capitalize } from "../../utils/text";
-import { productCopies } from "../Product/Product/productCopies";
-import Toast from "./BaseToast";
+import { productCopies } from "shared/lib/components/Product/productCopies";
+import Toast from "shared/lib/components/Common/BaseToast";
 
 export const WrongNetworkToast = () => {
   const [showToast, setShowToast] = useState(false);

@@ -3,24 +3,29 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import styled from "styled-components";
 
-import { BaseLink, SecondaryText, Subtitle, Title } from "../../designSystem";
-import colors from "../../designSystem/colors";
-import theme from "../../designSystem/theme";
+import {
+  BaseLink,
+  SecondaryText,
+  Subtitle,
+  Title,
+} from "shared/lib/designSystem";
+import colors from "shared/lib/designSystem/colors";
+import theme from "shared/lib/designSystem/theme";
 import useAssetPrice from "../../hooks/useAssetPrice";
-import useTextAnimation from "../../hooks/useTextAnimation";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { CurrencyType } from "../../pages/Portfolio/types";
-import { assetToUSD, formatSignificantDecimals } from "../../utils/math";
-import { ProductType } from "../Product/types";
-import sizes from "../../designSystem/sizes";
+import { assetToUSD, formatSignificantDecimals } from "shared/lib/utils/math";
+import { ProductType } from "shared/lib/components/Product/types";
+import sizes from "shared/lib/designSystem/sizes";
 import {
   getAssets,
   VaultList,
   VaultNameOptionMap,
-} from "../../constants/constants";
-import { productCopies } from "../Product/Product/productCopies";
+} from "shared/lib/constants/constants";
+import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
-import { VaultAccount } from "../../models/vault";
-import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
+import { VaultAccount } from "shared/lib/models/vault";
+import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 48px;
@@ -156,13 +161,15 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 
   const calculatedROI = useMemo(
     () =>
-      (parseFloat(
-        ethers.utils.formatUnits(vaultAccount.totalYieldEarned, decimals)
-      ) /
-        parseFloat(
-          ethers.utils.formatUnits(vaultAccount.totalDeposits, decimals)
-        )) *
-      100,
+      !vaultAccount.totalDeposits.isZero()
+        ? (parseFloat(
+            ethers.utils.formatUnits(vaultAccount.totalYieldEarned, decimals)
+          ) /
+            parseFloat(
+              ethers.utils.formatUnits(vaultAccount.totalDeposits, decimals)
+            )) *
+          100
+        : 0,
     [vaultAccount, decimals]
   );
 
@@ -219,7 +226,9 @@ const PortfolioPositions = () => {
     return Object.fromEntries(
       Object.keys(vaultAccounts)
         .map((key) => [key, vaultAccounts[key]])
-        .filter((item) => item[1])
+        .filter(
+          (item) => item[1] && !(item[1] as VaultAccount).totalDeposits.isZero()
+        )
     );
   }, [vaultAccounts]);
 

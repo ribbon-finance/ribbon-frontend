@@ -1,14 +1,14 @@
 import React, { useCallback, useRef, useState } from "react";
 import styled from "styled-components";
 
-import { BaseButton, Title } from "../../designSystem";
-import colors from "../../designSystem/colors";
-import sizes from "../../designSystem/sizes";
-import theme from "../../designSystem/theme";
+import { BaseButton, Title } from "shared/lib/designSystem";
+import colors from "shared/lib/designSystem/colors";
+import sizes from "shared/lib/designSystem/sizes";
+import theme from "shared/lib/designSystem/theme";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
-import useScreenSize from "../../hooks/useScreenSize";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { capitalize } from "../../utils/text";
-import ButtonArrow from "../Common/ButtonArrow";
+import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import { SortBy, ActivityFilter, activityFilters, sortByList } from "./types";
 
 const Header = styled(Title)`
