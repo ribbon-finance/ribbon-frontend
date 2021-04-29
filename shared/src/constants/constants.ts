@@ -36,7 +36,7 @@ export const getWBTCThetaVaultId = () =>
 
 export const FullVaultList = ["rBTC-THETA", "rETH-THETA"] as const;
 export type VaultOptions = typeof FullVaultList[number];
-export const ProdExcludeVault: VaultOptions[] = ["rBTC-THETA"];
+export const ProdExcludeVault: VaultOptions[] = [];
 // @ts-ignore
 export const VaultList: VaultOptions[] = isStaging()
   ? FullVaultList
