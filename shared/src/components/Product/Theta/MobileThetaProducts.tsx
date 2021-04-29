@@ -1,21 +1,27 @@
 import React, { createRef, useRef, useState } from "react";
 import styled from "styled-components";
 import { motion, PanInfo } from "framer-motion";
-import { VaultList } from "../../../constants/constants";
+import { VaultList, VaultOptions } from "../../../constants/constants";
 import YieldCard from "./YieldCard";
 
 const ScrollContainer = styled.div`
   display: flex;
   // overflow-x: scroll;
   overflow-x: hidden;
-  margin: -80px -15px -40px -15px;
+  margin: -80px -15px -80px -15px;
 `;
 
 const Vaults = styled(motion.div)`
-  padding: 80px 12px 40px 12px;
+  padding: 80px 12px 80px 12px;
 `;
 
-const MobileThetaProducts = () => {
+interface MobileThetaProductsProps {
+  onVaultPress: (vault: VaultOptions) => void;
+}
+
+const MobileThetaProducts: React.FC<MobileThetaProductsProps> = ({
+  onVaultPress,
+}) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const yieldCardRefs = VaultList.reduce<any>((acc, vault) => {
     acc[vault] = createRef();
@@ -66,7 +72,11 @@ const MobileThetaProducts = () => {
       >
         {VaultList.map((vault) => (
           <div ref={yieldCardRefs[vault]} key={vault}>
-            <YieldCard key={vault} vault={vault} />
+            <YieldCard
+              key={vault}
+              vault={vault}
+              onClick={() => onVaultPress(vault)}
+            />
           </div>
         ))}
       </Vaults>

@@ -132,10 +132,10 @@ const StyledWBTCLogo = styled(WBTCLogo)`
 
 interface YieldCardProps {
   vault: VaultOptions;
+  onClick: () => void;
 }
 
-const YieldCard: React.FC<YieldCardProps> = ({ vault }) => {
-  const history = useHistory();
+const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
   const { status, deposits, vaultLimit, asset, decimals } = useVaultData(vault);
   const isLoading = status === "loading";
 
@@ -173,18 +173,7 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault }) => {
   }, [vault]);
 
   return (
-    <ProductCard
-      onClick={() =>
-        history.push(
-          `/theta-vault/${
-            Object.keys(VaultNameOptionMap)[
-              Object.values(VaultNameOptionMap).indexOf(vault)
-            ]
-          }`
-        )
-      }
-      role="button"
-    >
+    <ProductCard onClick={onClick} role="button">
       <ProductContent>
         <TopContainer>
           <ProductTagContainer>

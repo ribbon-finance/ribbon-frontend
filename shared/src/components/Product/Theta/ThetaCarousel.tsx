@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
 
-import { VaultList } from "../../../constants/constants";
+import { VaultList, VaultOptions } from "../../../constants/constants";
 import colors from "../../../designSystem/colors";
 import theme from "../../../designSystem/theme";
 import YieldCard from "./YieldCard";
@@ -40,7 +40,11 @@ const ArrowButton = styled.div<{ disabled?: boolean }>`
   }
 `;
 
-const ThetaCarousel = () => {
+interface ThetaCarouselProps {
+  onVaultPress: (vault: VaultOptions) => void;
+}
+
+const ThetaCarousel: React.FC<ThetaCarouselProps> = ({ onVaultPress }) => {
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
   const canPrev = useMemo(() => activeIndex > 0, [activeIndex]);
@@ -84,7 +88,10 @@ const ThetaCarousel = () => {
             opacity: 0,
           }}
         >
-          <YieldCard vault={VaultList[activeIndex]} />
+          <YieldCard
+            vault={VaultList[activeIndex]}
+            onClick={() => onVaultPress(VaultList[activeIndex])}
+          />
         </motion.div>
       </AnimatePresence>
       <ArrowButton

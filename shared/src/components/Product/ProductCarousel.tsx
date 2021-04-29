@@ -27,6 +27,7 @@ import useElementSize from "../../hooks/useElementSize";
 import useElementScroll from "../../hooks/useElementScroll";
 import ThetaCarousel from "./Theta/ThetaCarousel";
 import MobileThetaProducts from "./Theta/MobileThetaProducts";
+import { VaultOptions } from "../../constants/constants";
 
 const ProductSectionContainer = styled(Container)`
   display: flex;
@@ -242,7 +243,15 @@ const productTabs: Array<{ name: ProductType; title: string }> = [
   },
 ];
 
-const Products = () => {
+interface ProductCarouselProps {
+  dynamicMargin: boolean;
+  onVaultPress: (vault: VaultOptions) => void;
+}
+
+const ProductCarousel: React.FC<ProductCarouselProps> = ({
+  dynamicMargin = true,
+  onVaultPress,
+}) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const tabContainerRef = useRef<HTMLDivElement>(null);
@@ -265,12 +274,13 @@ const Products = () => {
   });
   const { scrollY } = useElementScroll(tabContainerRef);
   // Minus header and footer to determine the empty space available for offset
-  const empty =
-    height -
-    headerHeight -
-    contentHeight -
-    theme.header.height -
-    theme.footer.desktop.height;
+  const empty = dynamicMargin
+    ? height -
+      headerHeight -
+      contentHeight -
+      theme.header.height -
+      theme.footer.desktop.height
+    : 0;
 
   useEffect(() => {
     const currentTab = tabRefs[selectedProduct].current;
@@ -327,7 +337,11 @@ const Products = () => {
   const renderProduct = useCallback(() => {
     switch (selectedProduct) {
       case "yield":
-        return width > sizes.md ? <ThetaCarousel /> : <MobileThetaProducts />;
+        return width > sizes.md ? (
+          <ThetaCarousel onVaultPress={onVaultPress} />
+        ) : (
+          <MobileThetaProducts onVaultPress={onVaultPress} />
+        );
       case "volatility":
       case "principalProtection":
       case "capitalAccumulation":
@@ -397,4 +411,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default ProductCarousel;
