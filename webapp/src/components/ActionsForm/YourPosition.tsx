@@ -97,7 +97,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
       <img style={{ width: 45 }} src={PositionIcon} alt="Positions" />
 
       <div className="w-100">
-        <div className="w-100 d-flex flex-row align-items-center justify-content-between ml-2">
+        <div className="d-flex flex-row align-items-center justify-content-between ml-2">
           <PositionTitle>Your Position</PositionTitle>
           <PositionTitle>
             {isLoading
@@ -105,7 +105,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
               : `${positionAssetAmount} ${getAssetDisplay(asset)}`}
           </PositionTitle>
         </div>
-        <div className="w-100 d-flex flex-row align-items-center justify-content-between ml-2 mt-1">
+        <div className="d-flex flex-row align-items-center justify-content-between ml-2 mt-1">
           <ProfitText>+{allTimeROI.toFixed(4)}%</ProfitText>
           <AmountText>
             {assetToUSD(vaultBalanceInAsset, assetPrice, decimals)}
