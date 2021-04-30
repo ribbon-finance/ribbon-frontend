@@ -7,20 +7,18 @@ import { VaultNameOptionMap } from "shared/lib/constants/constants";
 const Homepage = () => {
   const history = useHistory();
   return (
-    <>
-      <ProductCarousel
-        dynamicMargin={true}
-        onVaultPress={(vault) =>
-          history.push(
-            `/theta-vault/${
-              Object.keys(VaultNameOptionMap)[
-                Object.values(VaultNameOptionMap).indexOf(vault)
-              ]
-            }`
-          )
-        }
-      />
-    </>
+    <ProductCarousel
+      dynamicMargin={true}
+      onVaultPress={(vault) =>
+        history.push(
+          `/theta-vault/${
+            Object.keys(VaultNameOptionMap)[
+              Object.values(VaultNameOptionMap).indexOf(vault)
+            ]
+          }`
+        )
+      }
+    />
   );
 };
 

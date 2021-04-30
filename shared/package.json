@@ -35,6 +35,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
+    "start": "tsc -w",
     "clean": "rm -rf ./lib",
     "prebuild": "yarn clean",
     "build": "tsc --build \"./tsconfig.json\"",

@@ -16,8 +16,7 @@ import {
   Title,
 } from "shared/lib/designSystem";
 import { formatSignificantDecimals } from "shared/lib/utils/math";
-import YourPosition from "./YourPosition";
-import ActionModal from "../ActionModal/ActionModal";
+
 import {
   ActionButton,
   ConnectWalletButton,
@@ -28,22 +27,29 @@ import {
   VaultMaxDeposit,
   VaultOptions,
 } from "shared/lib/constants/constants";
-import useGasPrice from "../../hooks/useGasPrice";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import useVault from "shared/lib/hooks/useVault";
-import { ACTIONS, PreviewStepProps } from "../ActionModal/types";
-import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import { isETHVault, isVaultFull } from "shared/lib/utils/vault";
 import colors from "shared/lib/designSystem/colors";
 import { useLatestAPY } from "shared/lib/hooks/useAirtableData";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import { getERC20Token } from "shared/lib/hooks/useERC20Token";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
-import usePendingTransactions from "../../hooks/usePendingTransactions";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import useTokenAllowance from "../../hooks/useTokenAllowance";
 import { ERC20Token } from "shared/lib/models/eth";
 import { WBTCLogo } from "shared/lib/assets/icons/erc20Assets";
+import theme from "shared/lib/designSystem/theme";
+import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
+import { Assets } from "shared/lib/store/types";
+
+import YourPosition from "./YourPosition";
+import ActionModal from "../ActionModal/ActionModal";
+import { ACTIONS, PreviewStepProps } from "../ActionModal/types";
+import useGasPrice from "../../hooks/useGasPrice";
+import useConnectWalletModal from "../../hooks/useConnectWalletModal";
+import usePendingTransactions from "../../hooks/usePendingTransactions";
+import useTokenAllowance from "../../hooks/useTokenAllowance";
+import SwapBTCDropdown from "./SwapBTCDropdown";
 
 const { parseUnits, formatUnits } = ethers.utils;
 
@@ -62,9 +68,9 @@ const FormContainer = styled.div`
   font-family: VCR, sans-serif;
   color: #f3f3f3;
   width: 100%;
-  border: 1px solid #2b2b2b;
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
   box-sizing: border-box;
-  border-radius: 8px;
+  border-radius: ${theme.border.radius};
 `;
 
 const FormTitleContainer = styled.div`
@@ -118,9 +124,10 @@ const InputGuide = styled.div`
 `;
 
 const ContentContainer = styled.div`
-  background: #1c1a19;
+  background: ${colors.background};
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
+  border-bottom: ${theme.border.width} ${theme.border.style} ${colors.border};
 `;
 
 const FormInputContainer = styled.div`
@@ -230,6 +237,25 @@ const ApprovalHelp = styled(BaseLink)`
   }
 `;
 
+const SwapTriggerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const SwapTriggerButton = styled.div`
+  margin-top: 24px;
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-radius: 100px;
+  padding: 8px 16px;
+  width: 300px;
+  display: flex;
+  align-items: center;
+`;
+
+const SwapTriggerButtonText = styled(SecondaryText)`
+  flex: 1;
+`;
+
 type ValidationErrors = "none" | "insufficient_balance" | "max_exceeded";
 
 export interface FormStepProps {
@@ -290,6 +316,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     250,
     waitingApproval
   );
+  const [swapContainerOpen, setSwapContainerOpen] = useState(false);
 
   const allowanceStr = tokenAllowance?.toString();
 
@@ -589,6 +616,46 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     }
   }, [asset]);
 
+  const getSwapTriggerText = useCallback((_asset: Assets) => {
+    switch (_asset) {
+      case "WBTC":
+        return "Swap your BTC or renBTC for wBTC";
+      default:
+        return "";
+    }
+  }, []);
+
+  const renderSwapContainerTrigger = useCallback(() => {
+    switch (asset) {
+      case "WBTC":
+        return (
+          <SwapTriggerContainer>
+            <SwapTriggerButton
+              role="button"
+              onClick={() => setSwapContainerOpen((open) => !open)}
+            >
+              <SwapTriggerButtonText>
+                {getSwapTriggerText(asset)}
+              </SwapTriggerButtonText>
+              <ButtonArrow isOpen={swapContainerOpen} />
+            </SwapTriggerButton>
+          </SwapTriggerContainer>
+        );
+
+      default:
+        return <></>;
+    }
+  }, [asset, getSwapTriggerText, swapContainerOpen]);
+
+  const renderSwapContainer = useCallback(() => {
+    switch (asset) {
+      case "WBTC":
+        return <SwapBTCDropdown open={swapContainerOpen} />;
+      default:
+        return <></>;
+    }
+  }, [asset, swapContainerOpen]);
+
   return (
     <Container variant={variant}>
       {isDesktop && desktopActionModal}
@@ -659,9 +726,10 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
               {button}
             </>
           )}
-
           <WalletBalance state={walletBalanceState}>{walletText}</WalletBalance>
+          {renderSwapContainerTrigger()}
         </ContentContainer>
+        {renderSwapContainer()}
       </FormContainer>
 
       {connected && isDesktop && (
