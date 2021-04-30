@@ -1,8 +1,11 @@
 import styled from "styled-components";
 import Row from "react-bootstrap/Row";
 import { Container } from "react-bootstrap";
-import { Title } from "../../designSystem";
+
 import Product from "shared/lib/components/Product/ProductCarousel";
+import { VaultNameOptionMap } from "shared/lib/constants/constants";
+
+import { Title } from "../../designSystem";
 
 const ProductCarouselContainer = styled(Container)`
   padding-top: 160px;
@@ -21,7 +24,15 @@ const ProductCarousel = () => {
         <CarouselTitle>Our Products</CarouselTitle>
         <Product
           dynamicMargin={false}
-          onVaultPress={() => window.open("https://app.ribbon.finance")}
+          onVaultPress={(vault) =>
+            window.open(
+              `https://app.ribbon.finance/theta-vault/${
+                Object.keys(VaultNameOptionMap)[
+                  Object.values(VaultNameOptionMap).indexOf(vault)
+                ]
+              }`
+            )
+          }
         />
       </Row>
     </ProductCarouselContainer>

@@ -1,19 +1,20 @@
+import React from "react";
+import styled from "styled-components";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Web3ReactProvider } from "@web3-react/core";
+
+import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
+import { getLibrary } from "shared/lib/utils/getLibrary";
+
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import ProductCarousel from "./components/ProductCarousel";
 import Mission from "./components/Mission";
 import Footer from "./components/Footer";
-
-import styled from "styled-components";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import React from "react";
 import Investors from "./components/Investors";
 import PolicyPage from "./pages/PolicyPage";
 import TermsPage from "./pages/TermsPage";
 import FAQPage from "./pages/FAQ";
-import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
-import { Web3ReactProvider } from "@web3-react/core";
-import { getLibrary } from "shared/lib/utils/getLibrary";
 
 const Body = styled.div`
   background-color: #1c1a19;
