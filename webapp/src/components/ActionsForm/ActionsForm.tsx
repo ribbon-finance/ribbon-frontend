@@ -37,7 +37,7 @@ import { getERC20Token } from "shared/lib/hooks/useERC20Token";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { ERC20Token } from "shared/lib/models/eth";
-import { WBTCLogo } from "shared/lib/assets/icons/erc20Assets";
+import { WBTCLogo, USDCLogo } from "shared/lib/assets/icons/erc20Assets";
 import theme from "shared/lib/designSystem/theme";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import { Assets } from "shared/lib/store/types";
@@ -212,6 +212,18 @@ const ApprovalIcon = styled.div`
 
 const GreenWBTCLogo = styled(WBTCLogo)`
   && * {
+    fill: ${colors.green};
+  }
+`;
+
+const GreenUSDCLogo = styled(USDCLogo)`
+  margin: -8px;
+
+  && .background {
+    fill: none;
+  }
+
+  && .content {
     fill: ${colors.green};
   }
 `;
@@ -611,6 +623,8 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     switch (asset) {
       case "WBTC":
         return <GreenWBTCLogo />;
+      case "USDC":
+        return <GreenUSDCLogo />;
       default:
         return <></>;
     }

@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import styled from "styled-components";
 import { ethers } from "ethers";
 
-import WETHLogo, { WBTCLogo } from "../../../assets/icons/erc20Assets";
+import { WETHLogo, WBTCLogo } from "../../../assets/icons/erc20Assets";
 import {
   BaseButton,
   Title,
