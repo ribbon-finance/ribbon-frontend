@@ -26,6 +26,7 @@ import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { VaultAccount } from "shared/lib/models/vault";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import useVaultData from "shared/lib/hooks/useVaultData";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 48px;
@@ -142,6 +143,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   const vaultName = Object.keys(VaultNameOptionMap)[
     Object.values(VaultNameOptionMap).indexOf(vaultAccount.vault.symbol)
   ];
+  const { vaultBalanceInAsset } = useVaultData(vaultAccount.vault.symbol);
 
   const renderAmountText = useCallback(
     (amount: BigNumber, currency: CurrencyType) => {
@@ -161,16 +163,19 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 
   const calculatedROI = useMemo(
     () =>
-      !vaultAccount.totalDeposits.isZero()
+      !vaultBalanceInAsset.isZero()
         ? (parseFloat(
             ethers.utils.formatUnits(vaultAccount.totalYieldEarned, decimals)
           ) /
             parseFloat(
-              ethers.utils.formatUnits(vaultAccount.totalDeposits, decimals)
+              ethers.utils.formatUnits(
+                vaultBalanceInAsset.sub(vaultAccount.totalYieldEarned),
+                decimals
+              )
             )) *
           100
         : 0,
-    [vaultAccount, decimals]
+    [vaultAccount, vaultBalanceInAsset, decimals]
   );
 
   return (
@@ -180,22 +185,14 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
           <PositionSymbolTitle product="yield" className="flex-grow-1">
             {vaultName}
           </PositionSymbolTitle>
-          <Title>
-            {renderAmountText(
-              vaultAccount.totalDeposits.add(vaultAccount.totalYieldEarned),
-              "eth"
-            )}
-          </Title>
+          <Title>{renderAmountText(vaultBalanceInAsset, "eth")}</Title>
         </PositionInfoRow>
         <PositionInfoRow>
           <PositionInfoText className="flex-grow-1">
             {productCopies[vaultAccount.vault.symbol].subtitle}
           </PositionInfoText>
           <PositionSecondaryInfoText>
-            {renderAmountText(
-              vaultAccount.totalDeposits.add(vaultAccount.totalYieldEarned),
-              "usd"
-            )}
+            {renderAmountText(vaultBalanceInAsset, "usd")}
           </PositionSecondaryInfoText>
         </PositionInfoRow>
         <KPIContainer>
