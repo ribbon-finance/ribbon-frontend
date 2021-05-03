@@ -104,9 +104,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
       </>
     ),
   },
-  "rUSDC-THETA": {
-    title: "T-USDC-P",
-    subtitle: "Theta Vault - USDC",
+  "rETH-THETA-P": {
+    title: "T-ETH-P",
+    subtitle: "Theta Vault - ETH",
     description:
       "The vault generates yield by running an automated ETH put selling strategy.",
     tags: ["THETA VAULT", "ETH"],
@@ -141,6 +141,48 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         The primary risk for running this put selling strategy is that the vault
         may incur a weekly loss in the case where the put options sold by the
         vault expire <b>in-the-money</b> (meaning the price of ETH is below the
+        strike price of the put options minted by the vault). Such a situation
+        is expected to happen less than 5% of the time.
+      </>
+    ),
+  },
+  "rBTC-THETA-P": {
+    title: "T-WBTC-P",
+    subtitle: "Theta Vault - WBTC",
+    description:
+      "The vault generates yield by running an automated WBTC put selling strategy.",
+    tags: ["THETA VAULT", "WBTC"],
+    strategy: (
+      <>
+        This vault earns yield on its USDC deposits by running an automated
+        strategy that sells WBTC{" "}
+        <Link
+          href="https://www.investopedia.com/terms/c/coveredcall.asp"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          put options
+        </Link>
+        .
+        <p />
+        Put simply, the vault mints <i>out-of-the-money</i> WBTC put options on
+        Opyn on a weekly basis and sells these options to market makers for a
+        fee (the market price of the option, also known as the option premium).
+        The vault repeats this process on a weekly basis and reinvests the
+        income earned from selling options to mint new options, effectively
+        compounding the yields for depositors over time.
+        <p />
+        The vault has a <b>manager</b> who selects the strike price for the put
+        options minted by the vault. The manager is responsible for making the
+        best tradeoff between yield versus the risk of the put options getting
+        exercised.
+      </>
+    ),
+    vaultRisk: (
+      <>
+        The primary risk for running this put selling strategy is that the vault
+        may incur a weekly loss in the case where the put options sold by the
+        vault expire <b>in-the-money</b> (meaning the price of WBTC is below the
         strike price of the put options minted by the vault). Such a situation
         is expected to happen less than 5% of the time.
       </>

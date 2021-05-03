@@ -6,14 +6,18 @@
     "TwinYieldLogic": "0x9CaD2350135b27D86785b3c9c9E7532eC7C61532",
     "RibbonFactoryLogic": "0x0B7D191C7bE317D585C6E58a88AB99784AFd4020",
     "RibbonFactory": "0x5A53a1C73a8e7e91291817B2D04B4d8468DE172d",
-    "ProtocolAdapterLib": "0x35C29c1Ba97e52c235b713182974403194aD43E4",
+    "ProtocolAdapterLib": "0x5aB7ac7a17D4a81eBB20B5d455c999Bfc2e11dD5",
     "RibbonVolatilityLogic": "0xd38baB7A38F2af45C9e42e9079193332e69d34a0",
     "HegicAdapterLogic": "0x66E2A3d8BD9991AFE001cB299c9B8992baDf1D48",
     "GammaAdapterLogic": "0xd7d2608f5a35d0FF4a2Db93eCF6EB0Fd8c81ff6F",
     "RibbonETHCoveredCallLogic": "0xf6403bED7e50678E8E20dbCAD3FAF7C9C4D5B7ED",
     "RibbonETHCoveredCall": "0x88729C2FFEE36Ec3b154750c28828ACC3956BdfE",
     "RibbonWBTCCoveredCallLogic": "0xD0A72d468da3C3FAfE2222afBc9732Dc1532dd55",
-    "RibbonWBTCCoveredCall": "0x1616b4Db185E813DAcA6A7C6D288cb988BA45982"
+    "RibbonWBTCCoveredCall": "0x1616b4Db185E813DAcA6A7C6D288cb988BA45982",
+    "RibbonWBTCPutLogic": "0xbee7734842fE52e83A2232d0c1010dDaC92d5cC0",
+    "RibbonWBTCPut": "0xAA5f300eF530c6023f983B7619E08041A6B4Bf64",
+    "RibbonETHPutLogic": "0x8ca023ED7AcBB27C62944196A59f81c8a9A75F27",
+    "RibbonETHPut": "0xC567eaac4937AA98ED813DE9BB38b6ddf1D32596"
   },
   "development": {
     "DataProvider": "0xA586074FA4Fe3E546A132a16238abe37951D41fE",
@@ -28,9 +32,9 @@
     "GammaAdapterLogic": "0x287654A8209a50b18d28b9aF18a1dEB83DBcf3BA",
     "HegicAdapterLogic": "0x0bd5Aa838368E91F8959bA0d2a254FfdD09daa8c",
     "ProtocolAdapterLib": "0x8b49fDd0cb50ba6D5c053d844feE55e5076F8504",
-    "RibbonETHCoveredCallLogic": "0x49CA9ECA607C8483a2b4f955631dE2119aC15b74",
+    "RibbonETHCoveredCallLogic": "0x5907c9A2FF421Be53556Be7fa1b5a2d90a187Dfd",
     "RibbonETHCoveredCall": "0x0FABaF48Bbf864a3947bdd0Ba9d764791a60467A",
-    "RibbonWBTCCoveredCallLogic": "0x509B51Fc4e1D7bCc2A97fad9a791C313de83fAb8",
+    "RibbonWBTCCoveredCallLogic": "0xe97557dD2B9cCCd9Dd94c4432281A942e2E6Fc75",
     "RibbonWBTCCoveredCall": "0x8b5876f5B0Bf64056A89Aa7e97511644758c3E8c"
   },
   "mainnet-fork": {
@@ -40,9 +44,9 @@
     "GammaAdapterLogic": "0x287654A8209a50b18d28b9aF18a1dEB83DBcf3BA",
     "RibbonFactoryLogic": "0x6e0f736a2a0b81E7D8B7D6Ac3608aC977341bA4F",
     "ProtocolAdapterLib": "0x8b49fDd0cb50ba6D5c053d844feE55e5076F8504",
-    "RibbonETHCoveredCallLogic": "0x49CA9ECA607C8483a2b4f955631dE2119aC15b74",
+    "RibbonETHCoveredCallLogic": "0x5907c9A2FF421Be53556Be7fa1b5a2d90a187Dfd",
     "RibbonETHCoveredCall": "0x0FABaF48Bbf864a3947bdd0Ba9d764791a60467A",
-    "RibbonWBTCCoveredCallLogic": "0x509B51Fc4e1D7bCc2A97fad9a791C313de83fAb8",
+    "RibbonWBTCCoveredCallLogic": "0xe97557dD2B9cCCd9Dd94c4432281A942e2E6Fc75",
     "RibbonWBTCCoveredCall": "0x8b5876f5B0Bf64056A89Aa7e97511644758c3E8c"
   },
   "mainnet-sim": {
