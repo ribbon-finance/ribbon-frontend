@@ -106,11 +106,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       <Paragraph>
         <ParagraphHeading>Risk</ParagraphHeading>
         <ParagraphText>
-          The primary risk for running this covered call strategy is that
-          depositors could potentially give up upside in exchange for guaranteed
-          yield. This only happens when the call options get exercised, which
-          should happen less than 3% of the time. In such a situation,
-          depositors can still expect to be up significantly in USD terms.
+          {productCopies[vaultOption].vaultRisk}
           <br />
           <br />
           The Theta Vault smart contracts have been{" "}
