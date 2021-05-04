@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { SecondaryText, Title } from "../../designSystem";
 import { Assets } from "../../store/types";
 import { getAssetDisplay } from "../../utils/asset";
+import { formatAmount } from "../../utils/math";
 
 const BackgroundBar = styled.div`
   height: 16px;
@@ -76,7 +77,9 @@ const DepositCapBar: React.FC<{
       <div className="d-flex flex-row justify-content-between">
         <DepositLabel config={labelConfig}>{copies.totalDeposit}</DepositLabel>
         <DepositStat config={statsConfig}>
-          {loading ? "Loading..." : `${totalDeposit} ${getAssetDisplay(asset)}`}
+          {loading
+            ? "Loading..."
+            : `${formatAmount(totalDeposit)} ${getAssetDisplay(asset)}`}
         </DepositStat>
       </div>
 
@@ -88,7 +91,9 @@ const DepositCapBar: React.FC<{
       <div className="d-flex flex-row justify-content-between">
         <DepositLabel config={labelConfig}>{copies.limit}</DepositLabel>
         <DepositStat config={statsConfig}>
-          {loading ? "Loading..." : `${limit} ${getAssetDisplay(asset)}`}
+          {loading
+            ? "Loading..."
+            : `${formatAmount(limit)} ${getAssetDisplay(asset)}`}
         </DepositStat>
       </div>
     </div>
