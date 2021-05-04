@@ -1,7 +1,7 @@
 import { BigNumber } from "ethers";
 import { VaultOptions } from "../constants/constants";
 
-export const AssetsList = ["WETH", "WBTC"] as const;
+export const AssetsList = ["WETH", "WBTC", "USDC"] as const;
 export type Assets = typeof AssetsList[number];
 export interface UnconnectedVaultData {
   deposits: BigNumber;

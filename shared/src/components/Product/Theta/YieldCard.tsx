@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import styled from "styled-components";
 import { ethers } from "ethers";
 
-import WETHLogo, { WBTCLogo } from "../../../assets/icons/erc20Assets";
+import { WETHLogo, WBTCLogo } from "../../../assets/icons/erc20Assets";
 import {
   BaseButton,
   Title,
@@ -163,8 +163,10 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
   const backgroundLogo = useMemo(() => {
     switch (vault) {
       case "rETH-THETA":
+      case "rETH-THETA-P":
         return <WETHLogo width="40%" opacity="0.1" />;
       case "rBTC-THETA":
+      case "rBTC-THETA-P":
         return <StyledWBTCLogo width="50%" opacity="0.04" />;
       default:
         return <></>;

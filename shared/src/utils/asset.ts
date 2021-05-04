@@ -13,6 +13,8 @@ export const getAssetDecimals = (asset: Assets): number => {
   switch (asset) {
     case "WBTC":
       return 8;
+    case "USDC":
+      return 6;
     case "WETH":
     default:
       return 18;

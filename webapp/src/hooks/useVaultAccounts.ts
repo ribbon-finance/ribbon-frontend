@@ -41,7 +41,7 @@ const fetchVaultAccounts = async (vaults: VaultOptions[], account: string) => {
         {
           ${vaults.map(
             (vault) => `     
-            ${vault.replace("-", "")}: vaultAccount(id:"${VaultAddressMap[
+            ${vault.replace(/-/g, "")}: vaultAccount(id:"${VaultAddressMap[
               vault
             ]()}-${account.toLowerCase()}") {
               totalDeposits
@@ -58,7 +58,7 @@ const fetchVaultAccounts = async (vaults: VaultOptions[], account: string) => {
 
   return Object.fromEntries(
     (vaults as string[]).map((vault): [string, VaultAccount | undefined] => {
-      const data = response.data.data[vault.replace("-", "")];
+      const data = response.data.data[vault.replace(/-/g, "")];
 
       if (!data) {
         return [vault, undefined];
