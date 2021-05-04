@@ -58,19 +58,19 @@ export const SuccessIcon: React.FC<IconProps> = ({
 
 export const ExternalIcon: React.FC<IconProps> = ({
   containerStyle = {},
-  color = "white",
+  color = "#FFFFFF7A",
   onClick = () => {},
 }) => (
   <span style={containerStyle}>
     <svg
-      width="24"
       height="24"
+      width="24"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       onClick={onClick}
     >
-      <g opacity="0.48">
+      <g>
         <path
           fillRule="evenodd"
           clipRule="evenodd"

@@ -32,41 +32,38 @@ export const GAS_LIMITS: {
   },
 };
 
-export const getETHThetaVaultId = () =>
+const getETHThetaVaultId = () =>
   (isStaging()
     ? deployment.kovan.RibbonETHCoveredCall
     : deployment.mainnet.RibbonETHCoveredCall
   ).toLowerCase();
 
-export const getWBTCThetaVaultId = () =>
+const getWBTCThetaVaultId = () =>
   (isStaging()
     ? deployment.kovan.RibbonWBTCCoveredCall
     : deployment.mainnet.RibbonWBTCCoveredCall
   ).toLowerCase();
 
-export const getWBTCPutThetaVaultId = () =>
+const getWBTCPutThetaVaultId = () =>
   isStaging()
     ? deployment.kovan.RibbonWBTCPut
     : // TODO: Update mainnet address
       deployment.kovan.RibbonWBTCPut;
 
-export const getETHPutThetaVaultId = () =>
+const getETHPutThetaVaultId = () =>
   isStaging()
     ? deployment.kovan.RibbonETHPut
     : // TODO: Update mainnet address
       deployment.kovan.RibbonETHPut;
 
-export const FullVaultList = [
+const FullVaultList = [
   "rBTC-THETA-P",
   "rETH-THETA-P",
   "rBTC-THETA",
   "rETH-THETA",
 ] as const;
 export type VaultOptions = typeof FullVaultList[number];
-export const ProdExcludeVault: VaultOptions[] = [
-  "rBTC-THETA-P",
-  "rETH-THETA-P",
-];
+const ProdExcludeVault: VaultOptions[] = ["rBTC-THETA-P", "rETH-THETA-P"];
 // @ts-ignore
 export const VaultList: VaultOptions[] = isStaging()
   ? FullVaultList
@@ -98,7 +95,6 @@ export const getEtherscanURI = () =>
 
 export const getAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
-    // TODO: Confirm asset
     case "rETH-THETA-P":
     case "rBTC-THETA-P":
       return "USDC";

@@ -27,21 +27,17 @@ const ParagraphText = styled(SecondaryText)`
   line-height: 24px;
 `;
 
-const Highlight = styled.span`
-  color: ${colors.primaryText};
-`;
-
 const LinkIcon = styled(ExternalIcon)`
   width: 24px;
   height: 24px;
 `;
 
 const Link = styled.a`
-  color: rgba(255, 255, 255, 0.8);
+  color: ${colors.primaryText};
   text-decoration: underline;
 
   &:hover {
-    color: rgba(255, 255, 255, 0.8);
+    color: ${colors.primaryText}CC;
   }
 `;
 
@@ -88,18 +84,14 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
         <ParagraphHeading>Withdrawals</ParagraphHeading>
         <ParagraphText>
           The vault allocates 90% of the funds deposited towards its covered
-          call strategy and{" "}
-          <Highlight>
-            reserves 10% of the funds deposited for withdrawals.
-          </Highlight>
+          call strategy and reserves 10% of the funds deposited for withdrawals.
           If in any given week the 10% withdrawal limit is reached, withdrawals
           from the vault will be disabled and depositors will have to wait until
           the following week in order to withdraw their funds.
           <br />
           <br />
-          Withdrawing from the vault has a fixed{" "}
-          <Highlight>withdrawal fee of 0.5%.</Highlight> This is to encourage
-          longer-term depositors.
+          Withdrawing from the vault has a fixed withdrawal fee of 0.5%. This is
+          to encourage longer-term depositors.
         </ParagraphText>
       </Paragraph>
 
@@ -136,7 +128,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
             rel="noreferrer noopener"
           >
             <span className="mr-2">Read More</span>
-            <LinkIcon />
+            <LinkIcon color="white" />
           </Link>
         </PrimaryText>
       </Paragraph>
