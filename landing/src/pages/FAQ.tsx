@@ -157,7 +157,7 @@ const sections = [
           <span>
             <p>
               On the Ethereum blockchain, wallets have full control over their
-              ERC20 tokens. In order to let the application spend a wallet's
+              ERC20 tokens. In order to let an application spend a wallet's
               tokens, the user has to explicitly give permission to the
               application to spend them. This is what's called an ERC20
               allowance. Theta Vaults prompt users to approve an unlimited
