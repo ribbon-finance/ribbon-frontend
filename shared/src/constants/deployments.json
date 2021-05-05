@@ -35,28 +35,8 @@
     "RibbonETHCoveredCallLogic": "0x5907c9A2FF421Be53556Be7fa1b5a2d90a187Dfd",
     "RibbonETHCoveredCall": "0x0FABaF48Bbf864a3947bdd0Ba9d764791a60467A",
     "RibbonWBTCCoveredCallLogic": "0xe97557dD2B9cCCd9Dd94c4432281A942e2E6Fc75",
-    "RibbonWBTCCoveredCall": "0x8b5876f5B0Bf64056A89Aa7e97511644758c3E8c"
-  },
-  "mainnet-fork": {
-    "RibbonFactory": "0x863dd8Ea9B7472c54CdE1F0e2D5B2bCC8CBf0Cd1",
-    "RibbonVolatilityLogic": "0x7004f9fcdE66E2ecABF408132Cb21Ebbcf53D4B0",
-    "HegicAdapterLogic": "0x0bd5Aa838368E91F8959bA0d2a254FfdD09daa8c",
-    "GammaAdapterLogic": "0x287654A8209a50b18d28b9aF18a1dEB83DBcf3BA",
-    "RibbonFactoryLogic": "0x6e0f736a2a0b81E7D8B7D6Ac3608aC977341bA4F",
-    "ProtocolAdapterLib": "0x8b49fDd0cb50ba6D5c053d844feE55e5076F8504",
-    "RibbonETHCoveredCallLogic": "0x5907c9A2FF421Be53556Be7fa1b5a2d90a187Dfd",
-    "RibbonETHCoveredCall": "0x0FABaF48Bbf864a3947bdd0Ba9d764791a60467A",
-    "RibbonWBTCCoveredCallLogic": "0xe97557dD2B9cCCd9Dd94c4432281A942e2E6Fc75",
-    "RibbonWBTCCoveredCall": "0x8b5876f5B0Bf64056A89Aa7e97511644758c3E8c"
-  },
-  "mainnet-sim": {
-    "RibbonFactory": "0x863dd8Ea9B7472c54CdE1F0e2D5B2bCC8CBf0Cd1",
-    "RibbonVolatilityLogic": "0xcC9eD7EA0cD0bf2497c60f1533486aBd3586deA9",
-    "HegicAdapterLogic": "0x0bd5Aa838368E91F8959bA0d2a254FfdD09daa8c",
-    "GammaAdapterLogic": "0x2C4A3eF36e204706014eEe6267f82a29773D0632",
-    "RibbonFactoryLogic": "0x84a5A8c504eC7f9Add6771459c5Dfc8475138c33",
-    "ProtocolAdapterLib": "0x7004f9fcdE66E2ecABF408132Cb21Ebbcf53D4B0",
-    "RibbonETHCoveredCallLogic": "0x1BD681bA5e9Db4c72c26e381659d1a4c806d96c6",
-    "RibbonETHCoveredCall": "0xe7e6aeb09441F332E16D7C7C37a971a31610fb8B"
+    "RibbonWBTCCoveredCall": "0x8b5876f5B0Bf64056A89Aa7e97511644758c3E8c",
+    "RibbonETHPutLogic": "0xBC9D2F325fb69307cD07046682D0293551B35Cc1",
+    "RibbonETHPut": "0x16772a7f4a3ca291C21B8AcE76F9332dDFfbb5Ef"
   }
 }
