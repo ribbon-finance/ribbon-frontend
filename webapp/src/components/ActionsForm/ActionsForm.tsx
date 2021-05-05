@@ -388,14 +388,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
       }
       // Withdraw flow
       else {
-        setInputAmount(
-          formatUnits(
-            maxWithdrawAmount
-              .mul(BigNumber.from(1000))
-              .div(BigNumber.from(995)),
-            decimals
-          )
-        );
+        setInputAmount(formatUnits(maxWithdrawAmount, decimals));
       }
     }
   };
