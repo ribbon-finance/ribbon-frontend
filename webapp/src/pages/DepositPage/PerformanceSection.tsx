@@ -134,7 +134,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
         </MarketYield>
       );
     },
-    []
+    [renderProtocolLogo]
   );
 
   return (
