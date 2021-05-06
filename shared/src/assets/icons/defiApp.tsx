@@ -154,53 +154,39 @@ export const DYDXIcon: React.FC<SVGProps> = (props) => (
 
 export const AAVEIcon: React.FC<SVGProps> = (props) => (
   <svg
-    version="1.1"
-    id="Layer_1"
     xmlns="http://www.w3.org/2000/svg"
-    x="0px"
-    y="0px"
-    viewBox="0 0 800 800"
-    enableBackground="new 0 0 800 800"
-    xmlSpace="preserve"
+    clipRule="evenodd"
+    fillRule="evenodd"
+    strokeLinejoin="round"
+    strokeMiterlimit="1.41421"
+    viewBox="0 0 300.00015 300.00015"
+    version="1.1"
+    id="svg13"
+    width="300.00015"
+    height="300.00015"
     {...props}
   >
-    <style type="text/css">
-      {`  
-        .st0{clip-path:url(#SVGID_2_);}
-        .st1{fill:url(#SVGID_3_);}
-        .st2{fill:#FFFFFF;}
-      `}
-    </style>
-    <g>
-      <defs>
-        <rect id="SVGID_1_" width="800" height="800" />
-      </defs>
-      <clipPath id="SVGID_2_">
-        <use xlinkHref="#SVGID_1_" overflow="visible" />
-      </clipPath>
-      <g id="b" className="st0">
-        <linearGradient
-          id="SVGID_3_"
-          gradientUnits="userSpaceOnUse"
-          x1="-597.3553"
-          y1="900.6861"
-          x2="-598.0993"
-          y2="900.0601"
-          gradientTransform="matrix(776 0 0 -776 464237 699089)"
-        >
-          <stop offset="0" stopColor="#B6509E" />
-          <stop offset="1" stopColor="#2EBAC6" />
-        </linearGradient>
-        <circle className="st1" cx="400" cy="400" r="388" />
-        <path
-          className="st2"
-          d="M569.8,554.6L438.6,237.4c-7.4-16.4-18.4-24.4-32.9-24.4h-11.6c-14.5,0-25.5,8-32.9,24.4l-57.1,138.2h-43.2
-			c-12.9,0.1-23.4,10.5-23.5,23.5v0.3c0.1,12.9,10.6,23.4,23.5,23.5h23.2l-54.5,131.7c-1,2.9-1.6,5.9-1.6,9c0,7.4,2.3,13.2,6.4,17.7
-			s10,6.7,17.4,6.7c4.9-0.1,9.6-1.6,13.5-4.5c4.2-2.9,7.1-7.1,9.4-11.9l60-148.8h41.6c12.9-0.1,23.4-10.5,23.5-23.5v-0.6
-			c-0.1-12.9-10.6-23.4-23.5-23.5h-22.2l45.8-114.1l124.8,310.4c2.3,4.8,5.2,9,9.4,11.9c3.9,2.9,8.7,4.4,13.5,4.5
-			c7.4,0,13.2-2.2,17.4-6.7c4.2-4.5,6.4-10.3,6.4-17.7C571.5,560.5,571,557.4,569.8,554.6z"
-        />
-      </g>
+    <defs id="defs17" />
+    <linearGradient
+      id="a"
+      gradientTransform="matrix(-369.036,310.497,-310.497,-369.036,434.927,94.423)"
+      gradientUnits="userSpaceOnUse"
+      x1="0"
+      x2="1"
+      y1="0"
+      y2="0"
+    >
+      <stop offset="0" stopColor="#b6509e" id="stop2" />
+      <stop offset="1" stopColor="#2ebac6" id="stop4" />
+    </linearGradient>
+    <g transform="matrix(0.604839,0,0,0.604839,-1.209678,-1.209678)" id="g11">
+      <circle cx="250" cy="250" fill="url(#a)" r="248" id="circle7" />
+      <path
+        d="M 358.5,348.8 274.6,146.1 c -4.7,-10.5 -11.8,-15.6 -21,-15.6 h -7.4 c -9.3,0 -16.3,5.1 -21,15.6 l -36.5,88.3 h -27.6 c -8.2,0.1 -15,6.7 -15,15 v 0.2 c 0.1,8.2 6.8,15 15,15 h 14.8 l -34.8,84.2 c -0.6,1.9 -1,3.8 -1,5.8 0,4.7 1.5,8.4 4.1,11.3 2.6,2.9 6.4,4.3 11.1,4.3 3.1,-0.1 6.1,-1 8.6,-2.9 2.7,-1.9 4.5,-4.5 6,-7.6 l 38.4,-95.1 h 26.6 c 8.2,-0.1 15,-6.7 15,-15 v -0.4 c -0.1,-8.2 -6.8,-15 -15,-15 h -14.2 l 29.3,-72.9 79.8,198.4 c 1.5,3.1 3.3,5.8 6,7.6 2.5,1.9 5.6,2.8 8.6,2.9 4.7,0 8.4,-1.4 11.1,-4.3 2.7,-2.9 4.1,-6.6 4.1,-11.3 0,-2 -0.3,-4 -1.1,-5.8 z"
+        fill="#ffffff"
+        fillRule="nonzero"
+        id="path9"
+      />
     </g>
   </svg>
 );
