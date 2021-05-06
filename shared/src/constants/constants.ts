@@ -72,15 +72,15 @@ export const VaultAddressMap: { [vault in VaultOptions]: () => string } = {
 };
 
 export const VaultNamesList = [
-  "T-ETH-P",
-  "T-WBTC-P",
+  "T-USDC-P-ETH",
+  "T-USDC-P-WBTC",
   "T-ETH-C",
   "T-WBTC-C",
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
-  "T-ETH-P": "rETH-THETA-P",
-  "T-WBTC-P": "rBTC-THETA-P",
+  "T-USDC-P-ETH": "rETH-THETA-P",
+  "T-USDC-P-WBTC": "rBTC-THETA-P",
   "T-ETH-C": "rETH-THETA",
   "T-WBTC-C": "rBTC-THETA",
 };
@@ -118,9 +118,9 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
 export const getAirtableName = (vault: VaultOptions): string => {
   switch (vault) {
     case "rETH-THETA-P":
-      return "T-ETH-P";
+      return "T-USDC-P-ETH";
     case "rBTC-THETA-P":
-      return "T-WBTC-P";
+      return "T-USDC-P-WBTC";
     case "rETH-THETA":
       return "T-ETH-C";
     case "rBTC-THETA":

@@ -162,7 +162,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     ),
   },
   "rETH-THETA-P": {
-    title: "T-ETH-P",
+    title: "T-USDC-P-ETH",
     subtitle: "Theta Vault - ETH",
     description:
       "The vault generates yield by running an automated ETH put selling strategy.",
@@ -284,7 +284,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     ),
   },
   "rBTC-THETA-P": {
-    title: "T-WBTC-P",
+    title: "T-USDC-P-WBTC",
     subtitle: "Theta Vault - WBTC",
     description:
       "The vault generates yield by running an automated WBTC put selling strategy.",
