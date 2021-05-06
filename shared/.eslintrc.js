@@ -101,6 +101,7 @@ module.exports = {
     "no-return-assign": 0,
     "default-case": 0,
     "consistent-return": 0,
+    "no-plusplus": 0,
   },
   overrides: [
     {
