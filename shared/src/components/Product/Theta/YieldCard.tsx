@@ -20,6 +20,7 @@ import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useTextAnimation from "../../../hooks/useTextAnimation";
 import { VaultOptions } from "../../../constants/constants";
 import { productCopies } from "../productCopies";
+import useAssetsYield from "../../../hooks/useAssetsYield";
 
 const { formatUnits } = ethers.utils;
 
