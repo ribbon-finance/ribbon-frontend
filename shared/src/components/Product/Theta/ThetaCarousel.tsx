@@ -71,7 +71,7 @@ const ThetaCarousel: React.FC<ThetaCarouselProps> = ({ onVaultPress }) => {
         <motion.div
           key={activeIndex}
           transition={{
-            duration: 0.4,
+            duration: 0.25,
             type: "keyframes",
             ease: "easeInOut",
           }}
