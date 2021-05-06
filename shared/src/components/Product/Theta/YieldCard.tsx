@@ -300,7 +300,7 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
         <YieldComparisonAPR>{perfStr}</YieldComparisonAPR>
       </YieldComparisonCard>
       <YieldComparisonTitle>Market USDC Yields (APY)</YieldComparisonTitle>
-      {yieldInfos.slice(1, 4).map(({ protocol, apr }) => (
+      {yieldInfos.slice(0, 3).map(({ protocol, apr }) => (
         <YieldComparisonCard key={protocol}>
           {renderProtocolLogo(protocol)}
           <YieldComparisonText>{protocol}</YieldComparisonText>
