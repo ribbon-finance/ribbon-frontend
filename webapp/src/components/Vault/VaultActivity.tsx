@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import useVaultActivity from "../../hooks/useVaultActivity";
@@ -111,6 +111,52 @@ const VaultActivity: React.FC<VaultActivityProps> = ({ vaultOption }) => {
     activities,
   ]);
 
+  const renderPagination = useCallback(() => {
+    if (loading) {
+      return <PaginationText>{loadingText}</PaginationText>;
+    }
+
+    if (activities.length <= 0) {
+      return (
+        <PaginationText>There is currently no vault activity</PaginationText>
+      );
+    }
+
+    return (
+      <>
+        <ArrowButton
+          role="button"
+          disabled={!canPrev}
+          onClick={() => {
+            if (!canPrev) {
+              return;
+            }
+
+            setPage((currPage) => currPage - 1);
+          }}
+        >
+          <i className="fas fa-arrow-left" />
+        </ArrowButton>
+        <PaginationText>
+          {page}/{Math.ceil(activities.length / perPage)}
+        </PaginationText>
+        <ArrowButton
+          role="button"
+          disabled={!canNext}
+          onClick={() => {
+            if (!canNext) {
+              return;
+            }
+
+            setPage((currPage) => currPage + 1);
+          }}
+        >
+          <i className="fas fa-arrow-right" />
+        </ArrowButton>
+      </>
+    );
+  }, [loading, activities, canPrev, canNext, loadingText, page]);
+
   return (
     <>
       <VaultActivityHeader
@@ -130,43 +176,7 @@ const VaultActivity: React.FC<VaultActivityProps> = ({ vaultOption }) => {
           vaultOption={vaultOption}
         />
       )}
-      <PaginationContainer>
-        {loading ? (
-          <PaginationText>{loadingText}</PaginationText>
-        ) : (
-          <>
-            <ArrowButton
-              role="button"
-              disabled={!canPrev}
-              onClick={() => {
-                if (!canPrev) {
-                  return;
-                }
-
-                setPage((currPage) => currPage - 1);
-              }}
-            >
-              <i className="fas fa-arrow-left" />
-            </ArrowButton>
-            <PaginationText>
-              {page}/{Math.ceil(activities.length / perPage)}
-            </PaginationText>
-            <ArrowButton
-              role="button"
-              disabled={!canNext}
-              onClick={() => {
-                if (!canNext) {
-                  return;
-                }
-
-                setPage((currPage) => currPage + 1);
-              }}
-            >
-              <i className="fas fa-arrow-right" />
-            </ArrowButton>
-          </>
-        )}
-      </PaginationContainer>
+      <PaginationContainer>{renderPagination()}</PaginationContainer>
     </>
   );
 };
