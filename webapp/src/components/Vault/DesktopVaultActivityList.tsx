@@ -6,6 +6,8 @@ import { ethers } from "ethers";
 import {
   getAssets,
   getEtherscanURI,
+  isPutVault,
+  getOptionAssets,
   VaultOptions,
 } from "shared/lib/constants/constants";
 import { BaseLink, SecondaryText, Title } from "shared/lib/designSystem";
@@ -216,7 +218,10 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
               {/** Option Details */}
               <VaultActivityCol containerWidth={width} weight={0.35}>
                 <VaultPrimaryText>
-                  O-{asset} {moment(activity.expiry, "X").format("M/DD")} CALL
+                  O-{asset} {moment(activity.expiry, "X").format("M/DD")}{" "}
+                  {isPutVault(vaultOption)
+                    ? `${getOptionAssets(vaultOption)} PUT`
+                    : "CALL"}
                 </VaultPrimaryText>
                 <VaultSecondaryText>
                   Strike {formatOption(activity.strikePrice)}
@@ -272,7 +277,9 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                   {moment(activity.vaultShortPosition.expiry, "X").format(
                     "M/DD"
                   )}{" "}
-                  CALL
+                  {isPutVault(vaultOption)
+                    ? `${getOptionAssets(vaultOption)} PUT`
+                    : "CALL"}
                 </VaultPrimaryText>
                 <VaultSecondaryText>
                   Strike {formatOption(activity.vaultShortPosition.strikePrice)}

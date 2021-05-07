@@ -1,13 +1,24 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { productCopies } from "shared/lib/components/Product/productCopies";
-import { VaultOptions } from "shared/lib/constants/constants";
+import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
+import useAssetsYield from "shared/lib/hooks/useAssetsYield";
 import VaultPerformanceChart from "./VaultPerformanceChart";
+import { getAssetDisplay } from "shared/lib/utils/asset";
+import { DefiScoreProtocol } from "shared/lib/models/defiScore";
+import theme from "shared/lib/designSystem/theme";
+import {
+  AAVEIcon,
+  CompoundIcon,
+  DDEXIcon,
+  DYDXIcon,
+  OasisIcon,
+} from "shared/lib/assets/icons/defiApp";
 
 const Paragraph = styled.div`
   margin-bottom: 48px;
@@ -61,6 +72,27 @@ const Container = styled.div`
   }
 `;
 
+const MarketYield = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-radius: ${theme.border.radius};
+  padding: 12px 16px;
+
+  &:first-child {
+    margin-top: 0px;
+  }
+`;
+
+const MarketTitle = styled(Title)`
+  margin-left: 8px;
+`;
+
+const MarketYielAPR = styled(Title)`
+  margin-left: auto;
+`;
+
 interface PerformanceSectionProps {
   vaultOption: VaultOptions;
 }
@@ -68,6 +100,43 @@ interface PerformanceSectionProps {
 const PerformanceSection: React.FC<PerformanceSectionProps> = ({
   vaultOption,
 }) => {
+  const asset = getAssets(vaultOption);
+  const yieldInfos = useAssetsYield(asset);
+
+  const renderProtocolLogo = useCallback((protocol: DefiScoreProtocol) => {
+    switch (protocol) {
+      case "aave":
+        return <AAVEIcon height="40px" width="40px" />;
+      case "compound":
+        return <CompoundIcon height="40px" width="40px" />;
+      case "ddex":
+        return <DDEXIcon height="40px" width="40px" />;
+      case "dydx":
+        return (
+          <DYDXIcon
+            height="40px"
+            width="40px"
+            style={{ borderRadius: "100px" }}
+          />
+        );
+      case "mcd":
+        return <OasisIcon height="40px" width="40px" />;
+    }
+  }, []);
+
+  const renderYieldInfo = useCallback(
+    ({ protocol, apr }: { protocol: DefiScoreProtocol; apr: number }) => {
+      return (
+        <MarketYield key={protocol}>
+          {renderProtocolLogo(protocol)}
+          <MarketTitle>{protocol}</MarketTitle>
+          <MarketYielAPR>{`${apr.toFixed(2)}%`}</MarketYielAPR>
+        </MarketYield>
+      );
+    },
+    [renderProtocolLogo]
+  );
+
   return (
     <Container className="col-xl-7 col-md-6">
       <Paragraph>
@@ -78,6 +147,13 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       <Paragraph>
         <ParagraphHeading>Vault Performance</ParagraphHeading>
         <VaultPerformanceChart vaultOption={vaultOption} />
+      </Paragraph>
+
+      <Paragraph>
+        <ParagraphHeading>
+          MARKET {getAssetDisplay(asset)} YIELDS (APY)
+        </ParagraphHeading>
+        {yieldInfos.map((info) => renderYieldInfo(info))}
       </Paragraph>
 
       <Paragraph>

@@ -20,15 +20,13 @@ export const GAS_LIMITS: {
     deposit: 100000,
     withdraw: 140000,
   },
-  // TODO: Update gas limit
   "rBTC-THETA-P": {
-    deposit: 100000,
-    withdraw: 140000,
+    deposit: 120000,
+    withdraw: 120000,
   },
-  // TODO: Update gas limit
   "rETH-THETA-P": {
-    deposit: 100000,
-    withdraw: 140000,
+    deposit: 120000,
+    withdraw: 120000,
   },
 };
 
@@ -51,41 +49,42 @@ const getWBTCPutThetaVaultId = () =>
       deployment.kovan.RibbonWBTCPut;
 
 const getETHPutThetaVaultId = () =>
-  isStaging()
-    ? deployment.kovan.RibbonETHPut
-    : // TODO: Update mainnet address
-      deployment.kovan.RibbonETHPut;
+  isStaging() ? deployment.kovan.RibbonETHPut : deployment.mainnet.RibbonETHPut;
 
 const FullVaultList = [
-  "rBTC-THETA-P",
   "rETH-THETA-P",
+  "rBTC-THETA-P",
   "rBTC-THETA",
   "rETH-THETA",
 ] as const;
 export type VaultOptions = typeof FullVaultList[number];
 const ProdExcludeVault: VaultOptions[] = ["rBTC-THETA-P", "rETH-THETA-P"];
+const PutThetaVault: VaultOptions[] = ["rBTC-THETA-P", "rETH-THETA-P"];
 // @ts-ignore
 export const VaultList: VaultOptions[] = isStaging()
   ? FullVaultList
   : FullVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
 
+export const isPutVault = (vault: VaultOptions): boolean =>
+  PutThetaVault.includes(vault);
+
 export const VaultAddressMap: { [vault in VaultOptions]: () => string } = {
-  "rBTC-THETA-P": getWBTCPutThetaVaultId,
   "rETH-THETA-P": getETHPutThetaVaultId,
+  "rBTC-THETA-P": getWBTCPutThetaVaultId,
   "rETH-THETA": getETHThetaVaultId,
   "rBTC-THETA": getWBTCThetaVaultId,
 };
 
 export const VaultNamesList = [
-  "T-WBTC-P",
-  "T-ETH-P",
+  "T-USDC-P-ETH",
+  "T-USDC-P-WBTC",
   "T-ETH-C",
   "T-WBTC-C",
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
-  "T-WBTC-P": "rBTC-THETA-P",
-  "T-ETH-P": "rETH-THETA-P",
+  "T-USDC-P-ETH": "rETH-THETA-P",
+  "T-USDC-P-WBTC": "rBTC-THETA-P",
   "T-ETH-C": "rETH-THETA",
   "T-WBTC-C": "rBTC-THETA",
 };
@@ -105,12 +104,21 @@ export const getAssets = (vault: VaultOptions): Assets => {
   }
 };
 
+export const getOptionAssets = (vault: VaultOptions): Assets => {
+  switch (vault) {
+    case "rBTC-THETA":
+    case "rBTC-THETA-P":
+      return "WBTC";
+    case "rETH-THETA":
+    case "rETH-THETA-P":
+      return "WETH";
+  }
+};
+
 export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
-  // TODO: Update vault deposit limit
   "rBTC-THETA-P": BigNumber.from(500000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rBTC-THETA-P")))
   ),
-  // TODO: Update vault deposit limit
   "rETH-THETA-P": BigNumber.from(500000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rETH-THETA-P")))
   ),
@@ -124,13 +132,13 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
 
 export const getAirtableName = (vault: VaultOptions): string => {
   switch (vault) {
-    case "rBTC-THETA-P":
-      return "T-100-ETH"; // TODO: Replace airtable name
     case "rETH-THETA-P":
-      return "T-100-ETH"; // TODO: Replace airtable name
+      return "T-USDC-P-ETH";
+    case "rBTC-THETA-P":
+      return "T-USDC-P-WBTC";
     case "rETH-THETA":
-      return "T-100-ETH";
+      return "T-ETH-C";
     case "rBTC-THETA":
-      return "T-100-WBTC";
+      return "T-WBTC-C";
   }
 };

@@ -43,7 +43,7 @@ const fetchVaultAccounts = async (vaults: VaultOptions[], account: string) => {
             (vault) => `     
             ${vault.replace(/-/g, "")}: vaultAccount(id:"${VaultAddressMap[
               vault
-            ]()}-${account.toLowerCase()}") {
+            ]().toLowerCase()}-${account.toLowerCase()}") {
               totalDeposits
               totalYieldEarned
               vault {

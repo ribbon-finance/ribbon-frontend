@@ -8,9 +8,10 @@ export interface IconProps extends SVGProps {
 }
 
 export const CloseIcon: React.FC<IconProps> = ({
-  containerStyle = {},
+  containerStyle = { display: "flex" },
   color = "white",
   onClick = () => {},
+  ...props
 }) => (
   <span style={containerStyle}>
     <svg
@@ -20,6 +21,7 @@ export const CloseIcon: React.FC<IconProps> = ({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       onClick={onClick}
+      {...props}
     >
       <path
         fillRule="evenodd"
@@ -32,9 +34,10 @@ export const CloseIcon: React.FC<IconProps> = ({
 );
 
 export const SuccessIcon: React.FC<IconProps> = ({
-  containerStyle = {},
+  containerStyle = { display: "flex" },
   color = "white",
   onClick = () => {},
+  ...props
 }) => (
   <span style={containerStyle}>
     <svg
@@ -44,6 +47,7 @@ export const SuccessIcon: React.FC<IconProps> = ({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       onClick={onClick}
+      {...props}
     >
       <path
         d="M16.6663 5L7.49967 14.1667L3.33301 10"
@@ -57,9 +61,10 @@ export const SuccessIcon: React.FC<IconProps> = ({
 );
 
 export const ExternalIcon: React.FC<IconProps> = ({
-  containerStyle = {},
+  containerStyle = { display: "flex" },
   color = "#FFFFFF7A",
   onClick = () => {},
+  ...props
 }) => (
   <span style={containerStyle}>
     <svg
@@ -69,6 +74,7 @@ export const ExternalIcon: React.FC<IconProps> = ({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       onClick={onClick}
+      {...props}
     >
       <g>
         <path
@@ -78,6 +84,85 @@ export const ExternalIcon: React.FC<IconProps> = ({
           fill={color}
         />
       </g>
+    </svg>
+  </span>
+);
+
+export const BarChartIcon: React.FC<IconProps> = ({
+  containerStyle = { display: "flex" },
+  color = "white",
+  onClick = () => {},
+  ...props
+}) => (
+  <span style={containerStyle}>
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      onClick={onClick}
+      {...props}
+    >
+      <path
+        d="M6.66665 15H3.33331"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M11.6666 10H3.33331"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M16.6666 5L3.33331 5"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  </span>
+);
+
+export const GlobeIcon: React.FC<IconProps> = ({
+  containerStyle = { display: "flex" },
+  color = "white",
+  onClick = () => {},
+  ...props
+}) => (
+  <span style={containerStyle}>
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      onClick={onClick}
+      {...props}
+    >
+      <path
+        d="M10 18.3333C14.6024 18.3333 18.3334 14.6024 18.3334 10C18.3334 5.39763 14.6024 1.66667 10 1.66667C5.39765 1.66667 1.66669 5.39763 1.66669 10C1.66669 14.6024 5.39765 18.3333 10 18.3333Z"
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M1.66669 10H18.3334"
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10 1.66667C12.0844 3.94863 13.269 6.91003 13.3334 10C13.269 13.09 12.0844 16.0514 10 18.3333C7.91562 16.0514 6.73106 13.09 6.66669 10C6.73106 6.91003 7.91562 3.94863 10 1.66667V1.66667Z"
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   </span>
 );

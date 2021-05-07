@@ -8,7 +8,7 @@ import OverlayTooltipExplanation from "../Common/OverlayTooltipExplanation";
 
 const HighlighText = styled.span`
   color: ${colors.primaryText};
-  cursor: pointer;
+  cursor: help;
 
   poin &:hover {
     color: ${colors.primaryText}CC;
@@ -43,7 +43,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
             />
           )}
-          trigger="click"
+          trigger={["click", "hover"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -59,12 +59,12 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           overlay={(props) => (
             <OverlayTooltipExplanation
               title="OUT-OF-THE-MONEY"
-              explanation="An BTC covered call is out-of-the-money (OTM) if the strike price is above the market price of BTC."
+              explanation="An WBTC covered call is out-of-the-money (OTM) if the strike price is above the market price of WBTC."
               overlayInjectedProps={props}
               learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
             />
           )}
-          trigger="click"
+          trigger={["click", "hover"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -111,7 +111,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
             />
           )}
-          trigger="click"
+          trigger={["click", "hover"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -127,12 +127,12 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           overlay={(props) => (
             <OverlayTooltipExplanation
               title="OUT-OF-THE-MONEY"
-              explanation="An BTC covered call is out-of-the-money (OTM) if the strike price is above the market price of BTC."
+              explanation="An WBTC covered call is out-of-the-money (OTM) if the strike price is above the market price of WBTC."
               overlayInjectedProps={props}
               learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
             />
           )}
-          trigger="click"
+          trigger={["click", "hover"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -162,7 +162,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     ),
   },
   "rETH-THETA-P": {
-    title: "T-ETH-P",
+    title: "T-USDC-P-ETH",
     subtitle: "Theta Vault - ETH",
     description:
       "The vault generates yield by running an automated ETH put selling strategy.",
@@ -180,7 +180,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
             />
           )}
-          trigger="click"
+          trigger={["click", "hover"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -200,7 +200,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/m/mint.asp"
             />
           )}
-          trigger="click"
+          trigger={["click", "hover"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -217,7 +217,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
             />
           )}
-          trigger="click"
+          trigger={["click", "hover"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -237,7 +237,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/o/option-premium.asp"
             />
           )}
-          trigger="click"
+          trigger={["click", "hover"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -269,7 +269,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
             />
           )}
-          trigger="click"
+          trigger={["click", "hover"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -284,7 +284,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     ),
   },
   "rBTC-THETA-P": {
-    title: "T-WBTC-P",
+    title: "T-USDC-P-WBTC",
     subtitle: "Theta Vault - WBTC",
     description:
       "The vault generates yield by running an automated WBTC put selling strategy.",
@@ -302,7 +302,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/p/putoption.asp"
             />
           )}
-          trigger="click"
+          trigger={["click", "hover"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -322,7 +322,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/m/mint.asp"
             />
           )}
-          trigger="click"
+          trigger={["click", "hover"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -334,12 +334,12 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           overlay={(props) => (
             <OverlayTooltipExplanation
               title="OUT-OF-THE-MONEY"
-              explanation="An BTC put option is out-of-the-money (OTM) if the strike price is below the market price of BTC."
+              explanation="A WBTC put option is out-of-the-money (OTM) if the strike price is below the market price of WBTC."
               overlayInjectedProps={props}
               learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
             />
           )}
-          trigger="click"
+          trigger={["click", "hover"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -359,7 +359,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/o/option-premium.asp"
             />
           )}
-          trigger="click"
+          trigger={["click", "hover"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -386,12 +386,12 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           overlay={(props) => (
             <OverlayTooltipExplanation
               title="IN-THE-MONEY"
-              explanation="An BTC put option is in-the-money (OTM) if the strike price is above the market price of BTC."
+              explanation="A WBTC put option is in-the-money (OTM) if the strike price is above the market price of WBTC."
               overlayInjectedProps={props}
               learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
             />
           )}
-          trigger="click"
+          trigger={["click", "hover"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>

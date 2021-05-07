@@ -1,6 +1,7 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ethers } from "ethers";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { WETHLogo, WBTCLogo } from "../../../assets/icons/erc20Assets";
 import {
@@ -20,6 +21,17 @@ import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useTextAnimation from "../../../hooks/useTextAnimation";
 import { VaultOptions } from "../../../constants/constants";
 import { productCopies } from "../productCopies";
+import { BarChartIcon, GlobeIcon } from "../../../assets/icons/icons";
+import Logo from "../../../assets/icons/logo";
+import useAssetsYield from "../../../hooks/useAssetsYield";
+import { DefiScoreProtocol } from "../../../models/defiScore";
+import {
+  AAVEIcon,
+  CompoundIcon,
+  DDEXIcon,
+  DYDXIcon,
+  OasisIcon,
+} from "../../../assets/icons/defiApp";
 
 const { formatUnits } = ethers.utils;
 
@@ -33,8 +45,10 @@ const ProductCard = styled.div`
   margin: 0 80px;
   transition: 0.25s box-shadow ease-out;
   max-width: 343px;
+  min-height: 411px;
   position: relative;
   height: 100%;
+  perspective: 2000px;
 
   @keyframes shimmerAnimation {
     0% {
@@ -63,21 +77,35 @@ const ProductCard = styled.div`
 
 const ProductContent = styled.div`
   display: flex;
+  flex-direction: column;
   flex: 1;
   flex-wrap: wrap;
   z-index: 1;
 `;
 
-const ProductTagContainer = styled.div`
+const ProductTopContainer = styled.div`
   display: flex;
   flex-wrap: nowrap;
+`;
+
+const ProductInfo = styled(motion.div)<{ mode: "info" | "yield" }>`
+  display: flex;
+  flex-wrap: wrap;
+  ${(props) => {
+    if (props.mode === "info") {
+      return `
+        flex: 1;
+      `;
+    }
+
+    return null;
+  }}
 `;
 
 const ProductTag = styled(BaseButton)`
   background: ${colors.pillBackground};
   padding: 8px;
   margin-right: 4px;
-  margin-bottom: 8px;
 `;
 
 const ProductTitle = styled(Title)`
@@ -109,6 +137,7 @@ const TopContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 8px;
 `;
 
 const BackgroundContainer = styled.div`
@@ -129,6 +158,44 @@ const StyledWBTCLogo = styled(WBTCLogo)`
   }
 `;
 
+const ModeSwitcherContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 100px;
+  background: ${colors.green}14;
+`;
+
+const YieldComparisonCard = styled.div`
+  display: flex;
+  width: 100%;
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-radius: ${theme.border.radius};
+  background-color: #252322;
+  padding: 8px;
+  margin-top: 8px;
+`;
+
+const YieldComparisonTitle = styled(ExpectedYieldTitle)`
+  margin-top: 24px;
+
+  &:first-child {
+    margin-top: 14px;
+  }
+`;
+
+const YieldComparisonText = styled(Title)`
+  font-size: 14px;
+  line-height: 24px;
+  margin-left: 8px;
+`;
+
+const YieldComparisonAPR = styled(YieldComparisonText)`
+  margin-left: auto;
+`;
+
 interface YieldCardProps {
   vault: VaultOptions;
   onClick: () => void;
@@ -137,6 +204,8 @@ interface YieldCardProps {
 const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
   const { status, deposits, vaultLimit, asset, decimals } = useVaultData(vault);
   const isLoading = status === "loading";
+  const [mode, setMode] = useState<"info" | "yield">("info");
+  const yieldInfos = useAssetsYield(asset);
 
   const totalDepositStr = isLoading
     ? 0
@@ -160,6 +229,11 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
   );
   const perfStr = latestAPY.res ? `${latestAPY.res.toFixed(2)}%` : loadingText;
 
+  const onSwapMode = useCallback((e) => {
+    e.stopPropagation();
+    setMode((prev) => (prev === "info" ? "yield" : "info"));
+  }, []);
+
   const backgroundLogo = useMemo(() => {
     switch (vault) {
       case "rETH-THETA":
@@ -173,37 +247,114 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
     }
   }, [vault]);
 
+  const ProductInfoContent = () => (
+    <>
+      <ProductTitle>{productCopies[vault].title}</ProductTitle>
+      <ProductDescription>
+        {productCopies[vault].description}
+      </ProductDescription>
+      <ExpectedYieldTitle>Current Projected Yield (APY)</ExpectedYieldTitle>
+      <YieldText>{perfStr}</YieldText>
+      <DepositCapBar
+        loading={isLoading}
+        totalDeposit={totalDepositStr}
+        limit={depositLimitStr}
+        copies={{
+          totalDeposit: "Current Deposits",
+          limit: "Max Capacity",
+        }}
+        labelConfig={{
+          fontSize: 12,
+        }}
+        statsConfig={{
+          fontSize: 12,
+        }}
+        asset={asset}
+      />
+    </>
+  );
+
+  const renderProtocolLogo = useCallback((protocol: DefiScoreProtocol) => {
+    switch (protocol) {
+      case "aave":
+        return <AAVEIcon height="24" width="24" />;
+      case "compound":
+        return <CompoundIcon height="24" width="24" />;
+      case "ddex":
+        return <DDEXIcon height="24" width="24" />;
+      case "dydx":
+        return (
+          <DYDXIcon height="24" width="24" style={{ borderRadius: "100px" }} />
+        );
+      case "mcd":
+        return <OasisIcon height="24" width="24" />;
+    }
+  }, []);
+
+  const ProductYieldComparison = () => (
+    <>
+      <YieldComparisonTitle>Current Projected Yield (APY)</YieldComparisonTitle>
+      <YieldComparisonCard>
+        <Logo height="24" width="24" />
+        <YieldComparisonText>{productCopies[vault].title}</YieldComparisonText>
+        <YieldComparisonAPR>{perfStr}</YieldComparisonAPR>
+      </YieldComparisonCard>
+      <YieldComparisonTitle>Market USDC Yields (APY)</YieldComparisonTitle>
+      {yieldInfos
+        .slice(0, 3)
+        .map(
+          ({ protocol, apr }: { protocol: DefiScoreProtocol; apr: number }) => (
+            <YieldComparisonCard key={protocol}>
+              {renderProtocolLogo(protocol)}
+              <YieldComparisonText>{protocol}</YieldComparisonText>
+              <YieldComparisonAPR>{`${apr.toFixed(2)}%`}</YieldComparisonAPR>
+            </YieldComparisonCard>
+          )
+        )}
+    </>
+  );
+
   return (
     <ProductCard onClick={onClick} role="button">
       <ProductContent>
         <TopContainer>
-          <ProductTagContainer>
+          <ProductTopContainer>
             {productCopies[vault].tags.map((tag) => renderTag(tag))}
-          </ProductTagContainer>
+          </ProductTopContainer>
+          <ModeSwitcherContainer role="button" onClick={onSwapMode}>
+            {mode === "info" ? (
+              <GlobeIcon color={colors.green} />
+            ) : (
+              <BarChartIcon color={colors.green} />
+            )}
+          </ModeSwitcherContainer>
         </TopContainer>
-
-        <ProductTitle>{productCopies[vault].title}</ProductTitle>
-        <ProductDescription>
-          {productCopies[vault].description}
-        </ProductDescription>
-        <ExpectedYieldTitle>Current Projected Yield (APY)</ExpectedYieldTitle>
-        <YieldText>{perfStr}</YieldText>
-        <DepositCapBar
-          loading={isLoading}
-          totalDeposit={totalDepositStr}
-          limit={depositLimitStr}
-          copies={{
-            totalDeposit: "Current Deposits",
-            limit: "Max Capacity",
-          }}
-          labelConfig={{
-            fontSize: 12,
-          }}
-          statsConfig={{
-            fontSize: 12,
-          }}
-          asset={asset}
-        />
+        <AnimatePresence exitBeforeEnter initial={false}>
+          <ProductInfo
+            key={mode}
+            mode={mode}
+            transition={{
+              duration: 0.1,
+              type: "keyframes",
+              ease: "linear",
+            }}
+            initial={{
+              transform: "rotateY(90deg)",
+            }}
+            animate={{
+              transform: "rotateY(0deg)",
+            }}
+            exit={{
+              transform: "rotateY(-90deg)",
+            }}
+          >
+            {mode === "info" ? (
+              <ProductInfoContent />
+            ) : (
+              <ProductYieldComparison />
+            )}
+          </ProductInfo>
+        </AnimatePresence>
       </ProductContent>
       <BackgroundContainer>{backgroundLogo}</BackgroundContainer>
     </ProductCard>
