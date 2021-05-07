@@ -330,6 +330,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
       loadingText,
       asset,
       decimals,
+      vaultOption,
     ]
   );
 
