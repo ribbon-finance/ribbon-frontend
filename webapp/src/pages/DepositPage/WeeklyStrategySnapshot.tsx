@@ -200,14 +200,17 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
     return {
       isProfit: profit >= 0,
       roi:
-        ((profit * 52) /
+        ((profit /
           parseFloat(
             assetToFiat(
               latestShortPosition.depositAmount,
               prices[asset]!,
               getAssetDecimals(asset)
             )
-          )) *
+          ) +
+          1) **
+          52 -
+          1) *
         100,
     };
   }, [
@@ -225,7 +228,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
 
     if (!KPI) return "---";
 
-    return `${KPI.roi.toFixed(4)}%`;
+    return `${KPI.roi.toFixed(2)}%`;
   }, [KPI, loading, loadingText]);
 
   return (
