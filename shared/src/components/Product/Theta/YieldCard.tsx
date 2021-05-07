@@ -300,13 +300,17 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
         <YieldComparisonAPR>{perfStr}</YieldComparisonAPR>
       </YieldComparisonCard>
       <YieldComparisonTitle>Market USDC Yields (APY)</YieldComparisonTitle>
-      {yieldInfos.slice(0, 3).map(({ protocol, apr }) => (
-        <YieldComparisonCard key={protocol}>
-          {renderProtocolLogo(protocol)}
-          <YieldComparisonText>{protocol}</YieldComparisonText>
-          <YieldComparisonAPR>{`${apr.toFixed(2)}%`}</YieldComparisonAPR>
-        </YieldComparisonCard>
-      ))}
+      {yieldInfos
+        .slice(0, 3)
+        .map(
+          ({ protocol, apr }: { protocol: DefiScoreProtocol; apr: number }) => (
+            <YieldComparisonCard key={protocol}>
+              {renderProtocolLogo(protocol)}
+              <YieldComparisonText>{protocol}</YieldComparisonText>
+              <YieldComparisonAPR>{`${apr.toFixed(2)}%`}</YieldComparisonAPR>
+            </YieldComparisonCard>
+          )
+        )}
     </>
   );
 
@@ -330,21 +334,18 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
             key={mode}
             mode={mode}
             transition={{
-              duration: 0.15,
+              duration: 0.1,
               type: "keyframes",
               ease: "linear",
             }}
             initial={{
               transform: "rotateY(90deg)",
-              opacity: 1,
             }}
             animate={{
               transform: "rotateY(0deg)",
-              opacity: 1,
             }}
             exit={{
               transform: "rotateY(-90deg)",
-              opacity: 1,
             }}
           >
             {mode === "info" ? (

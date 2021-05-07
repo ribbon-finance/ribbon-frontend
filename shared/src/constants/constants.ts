@@ -59,10 +59,14 @@ const FullVaultList = [
 ] as const;
 export type VaultOptions = typeof FullVaultList[number];
 const ProdExcludeVault: VaultOptions[] = ["rBTC-THETA-P", "rETH-THETA-P"];
+const PutThetaVault: VaultOptions[] = ["rBTC-THETA-P", "rETH-THETA-P"];
 // @ts-ignore
 export const VaultList: VaultOptions[] = isStaging()
   ? FullVaultList
   : FullVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
+
+export const isPutVault = (vault: VaultOptions): boolean =>
+  PutThetaVault.includes(vault);
 
 export const VaultAddressMap: { [vault in VaultOptions]: () => string } = {
   "rETH-THETA-P": getETHPutThetaVaultId,
@@ -97,6 +101,17 @@ export const getAssets = (vault: VaultOptions): Assets => {
       return "WETH";
     case "rBTC-THETA":
       return "WBTC";
+  }
+};
+
+export const getOptionAssets = (vault: VaultOptions): Assets => {
+  switch (vault) {
+    case "rBTC-THETA":
+    case "rBTC-THETA-P":
+      return "WBTC";
+    case "rETH-THETA":
+    case "rETH-THETA-P":
+      return "WETH";
   }
 };
 
