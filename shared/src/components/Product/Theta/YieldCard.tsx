@@ -303,13 +303,19 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
       {yieldInfos
         .slice(0, 3)
         .map(
-          ({ protocol, apr }: { protocol: DefiScoreProtocol; apr: number }) => (
-            <YieldComparisonCard key={protocol}>
-              {renderProtocolLogo(protocol)}
-              <YieldComparisonText>{protocol}</YieldComparisonText>
-              <YieldComparisonAPR>{`${apr.toFixed(2)}%`}</YieldComparisonAPR>
-            </YieldComparisonCard>
-          )
+          ({ protocol, apr }: { protocol: DefiScoreProtocol; apr: number }) => {
+            if (apr < 0.01) {
+              return <></>;
+            }
+
+            return (
+              <YieldComparisonCard key={protocol}>
+                {renderProtocolLogo(protocol)}
+                <YieldComparisonText>{protocol}</YieldComparisonText>
+                <YieldComparisonAPR>{`${apr.toFixed(2)}%`}</YieldComparisonAPR>
+              </YieldComparisonCard>
+            );
+          }
         )}
     </>
   );

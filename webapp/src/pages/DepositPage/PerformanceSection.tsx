@@ -126,6 +126,10 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
 
   const renderYieldInfo = useCallback(
     ({ protocol, apr }: { protocol: DefiScoreProtocol; apr: number }) => {
+      if (apr < 0.01) {
+        return <></>;
+      }
+
       return (
         <MarketYield key={protocol}>
           {renderProtocolLogo(protocol)}
@@ -202,6 +206,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
             href="https://ribbonfinance.medium.com/theta-vault-backtest-results-6e8c59adf38c"
             target="_blank"
             rel="noreferrer noopener"
+            className="d-flex"
           >
             <span className="mr-2">Read More</span>
             <LinkIcon color="white" />
