@@ -32,6 +32,7 @@ import {
   DYDXIcon,
   OasisIcon,
 } from "../../../assets/icons/defiApp";
+import { getAssetDisplay } from "../../../utils/asset";
 
 const { formatUnits } = ethers.utils;
 
@@ -299,7 +300,9 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
         <YieldComparisonText>{productCopies[vault].title}</YieldComparisonText>
         <YieldComparisonAPR>{perfStr}</YieldComparisonAPR>
       </YieldComparisonCard>
-      <YieldComparisonTitle>Market USDC Yields (APY)</YieldComparisonTitle>
+      <YieldComparisonTitle>
+        Market {getAssetDisplay(asset)} Yields (APY)
+      </YieldComparisonTitle>
       {yieldInfos
         .slice(0, 3)
         .map(
