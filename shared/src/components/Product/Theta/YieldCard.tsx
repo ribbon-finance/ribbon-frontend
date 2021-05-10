@@ -32,6 +32,7 @@ import {
   DYDXIcon,
   OasisIcon,
 } from "../../../assets/icons/defiApp";
+import { getAssetDisplay } from "../../../utils/asset";
 
 const { formatUnits } = ethers.utils;
 
@@ -299,17 +300,25 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
         <YieldComparisonText>{productCopies[vault].title}</YieldComparisonText>
         <YieldComparisonAPR>{perfStr}</YieldComparisonAPR>
       </YieldComparisonCard>
-      <YieldComparisonTitle>Market USDC Yields (APY)</YieldComparisonTitle>
+      <YieldComparisonTitle>
+        Market {getAssetDisplay(asset)} Yields (APY)
+      </YieldComparisonTitle>
       {yieldInfos
         .slice(0, 3)
         .map(
-          ({ protocol, apr }: { protocol: DefiScoreProtocol; apr: number }) => (
-            <YieldComparisonCard key={protocol}>
-              {renderProtocolLogo(protocol)}
-              <YieldComparisonText>{protocol}</YieldComparisonText>
-              <YieldComparisonAPR>{`${apr.toFixed(2)}%`}</YieldComparisonAPR>
-            </YieldComparisonCard>
-          )
+          ({ protocol, apr }: { protocol: DefiScoreProtocol; apr: number }) => {
+            if (apr < 0.01) {
+              return <></>;
+            }
+
+            return (
+              <YieldComparisonCard key={protocol}>
+                {renderProtocolLogo(protocol)}
+                <YieldComparisonText>{protocol}</YieldComparisonText>
+                <YieldComparisonAPR>{`${apr.toFixed(2)}%`}</YieldComparisonAPR>
+              </YieldComparisonCard>
+            );
+          }
         )}
     </>
   );

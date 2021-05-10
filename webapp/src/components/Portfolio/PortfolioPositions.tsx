@@ -145,6 +145,14 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   ];
   const { vaultBalanceInAsset } = useVaultData(vaultAccount.vault.symbol);
 
+  const balance = useMemo(() => {
+    if (!vaultBalanceInAsset.isZero()) {
+      return vaultBalanceInAsset;
+    }
+
+    return vaultAccount.totalDeposits.add(vaultAccount.totalYieldEarned);
+  }, [vaultAccount, vaultBalanceInAsset]);
+
   const renderAmountText = useCallback(
     (amount: BigNumber, currency: CurrencyType) => {
       switch (currency) {
@@ -163,19 +171,19 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 
   const calculatedROI = useMemo(
     () =>
-      !vaultBalanceInAsset.isZero()
+      !balance.isZero()
         ? (parseFloat(
             ethers.utils.formatUnits(vaultAccount.totalYieldEarned, decimals)
           ) /
             parseFloat(
               ethers.utils.formatUnits(
-                vaultBalanceInAsset.sub(vaultAccount.totalYieldEarned),
+                balance.sub(vaultAccount.totalYieldEarned),
                 decimals
               )
             )) *
           100
         : 0,
-    [vaultAccount, vaultBalanceInAsset, decimals]
+    [vaultAccount, balance, decimals]
   );
 
   return (
@@ -185,14 +193,14 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
           <PositionSymbolTitle product="yield" className="flex-grow-1">
             {vaultName}
           </PositionSymbolTitle>
-          <Title>{renderAmountText(vaultBalanceInAsset, "eth")}</Title>
+          <Title>{renderAmountText(balance, "eth")}</Title>
         </PositionInfoRow>
         <PositionInfoRow>
           <PositionInfoText className="flex-grow-1">
             {productCopies[vaultAccount.vault.symbol].subtitle}
           </PositionInfoText>
           <PositionSecondaryInfoText>
-            {renderAmountText(vaultBalanceInAsset, "usd")}
+            {renderAmountText(balance, "usd")}
           </PositionSecondaryInfoText>
         </PositionInfoRow>
         <KPIContainer>

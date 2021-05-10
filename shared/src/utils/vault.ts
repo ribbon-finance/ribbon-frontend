@@ -7,7 +7,7 @@ export const isVaultFull = (
   cap: BigNumber,
   decimals: number
 ) => {
-  const margin = parseUnits("1", decimals);
+  const margin = parseUnits("0.01", decimals);
   return !cap.isZero() && deposits.gte(cap.sub(margin));
 };
 
