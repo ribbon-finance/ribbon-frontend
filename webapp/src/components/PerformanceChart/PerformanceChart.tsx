@@ -93,7 +93,7 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
   );
 };
 
-const Chart: React.FC<{
+export const Chart: React.FC<{
   dataset: number[];
   labels: Date[];
   onHover: (hoverInfo: HoverInfo) => void;
