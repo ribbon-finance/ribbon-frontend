@@ -27,6 +27,11 @@ import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import StrikeChart from "./StrikeChart";
 
 const VaultPerformacneChartContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  padding: 30px 0;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: 4px 4px 0px 0px;
 `;
@@ -232,13 +237,32 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
     return `${KPI.roi.toFixed(2)}%`;
   }, [KPI, loading, loadingText]);
 
+  const strikeChart = useMemo(() => {
+    if (loading) {
+      return <Title>{loadingText}</Title>;
+    }
+
+    if (!latestShortPosition) {
+      return <Title>No strike choosen</Title>;
+    }
+
+    return (
+      <StrikeChart
+        current={prices[optionAsset] || 0}
+        strike={
+          latestShortPosition
+            ? formatOption(latestShortPosition.strikePrice)
+            : 0
+        }
+        profitable={KPI ? KPI.isProfit : true}
+      />
+    );
+  }, [prices, latestShortPosition, optionAsset, KPI, loading, loadingText]);
+
   return (
     <>
-      <VaultPerformacneChartContainer
-        className="pt-4"
-        style={{ paddingBottom: 30 }}
-      >
-        <StrikeChart />
+      <VaultPerformacneChartContainer>
+        {strikeChart}
       </VaultPerformacneChartContainer>
       <VaultPerformacneChartSecondaryContainer>
         <Row noGutters>
