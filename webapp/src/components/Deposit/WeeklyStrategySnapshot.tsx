@@ -24,6 +24,7 @@ import {
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import StrikeChart from "./StrikeChart";
 
 const VaultPerformacneChartContainer = styled.div`
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
@@ -236,7 +237,9 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
       <VaultPerformacneChartContainer
         className="pt-4"
         style={{ paddingBottom: 30 }}
-      ></VaultPerformacneChartContainer>
+      >
+        <StrikeChart />
+      </VaultPerformacneChartContainer>
       <VaultPerformacneChartSecondaryContainer>
         <Row noGutters>
           <DataCol xs="6">
