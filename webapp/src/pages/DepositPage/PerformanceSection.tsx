@@ -19,7 +19,7 @@ import {
   DYDXIcon,
   OasisIcon,
 } from "shared/lib/assets/icons/defiApp";
-import WeeklyStrategySnapshot from "./WeeklyStrategySnapshot";
+import WeeklyStrategySnapshot from "../../components/Deposit/WeeklyStrategySnapshot";
 
 const Paragraph = styled.div`
   margin-bottom: 48px;
