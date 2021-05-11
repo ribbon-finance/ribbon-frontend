@@ -33,7 +33,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     tags: ["THETA VAULT", "ETH"],
     strategy: (
       <>
-        This vault earns yield on ETH through running an automated{" "}
+        This vault earns yield on its ETH deposits by running an automated ETH{" "}
         <OverlayTrigger
           overlay={(props) => (
             <OverlayTooltipExplanation
@@ -43,7 +43,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
             />
           )}
-          trigger={["click", "hover"]}
+          trigger={["click"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -51,20 +51,36 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
             </HighlighText>
           )}
         </OverlayTrigger>{" "}
-        strategy. Put simply, the vault sells potential upside in exchange for
-        high yield.
+        strategy.
         <p />
-        The vault generates yield by writing{" "}
+        Put simply, the vault{" "}
+        <OverlayTrigger
+          overlay={(props) => (
+            <OverlayTooltipExplanation
+              title="MINTING"
+              explanation="The vault mints, or creates, an option by depositing collateral into an Opyn vault resulting in the issuance of an oToken that represents the option contract."
+              overlayInjectedProps={props}
+              learnMoreURL="https://www.investopedia.com/terms/m/mint.asp"
+            />
+          )}
+          trigger={["click"]}
+        >
+          {({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              mints
+            </HighlighText>
+          )}
+        </OverlayTrigger>{" "}
         <OverlayTrigger
           overlay={(props) => (
             <OverlayTooltipExplanation
               title="OUT-OF-THE-MONEY"
-              explanation="An WBTC covered call is out-of-the-money (OTM) if the strike price is above the market price of WBTC."
+              explanation="An ETH covered call is out-of-the-money (OTM) if the strike price is above the market price of ETH."
               overlayInjectedProps={props}
               learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
             />
           )}
-          trigger={["click", "hover"]}
+          trigger={["click"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -72,24 +88,77 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
             </HighlighText>
           )}
         </OverlayTrigger>{" "}
-        call options on ETH on a weekly basis and selling the options to market
-        makers in exchange for premiums. The vault repeats this process on a
-        weekly basis and reinvests the premiums, effectively compounding the
-        yields for depositors over time.
+        ETH call options on Opyn on a weekly basis and sells these options to
+        market makers for a fee (the market price of the option, also known as
+        the{" "}
+        <OverlayTrigger
+          overlay={(props) => (
+            <OverlayTooltipExplanation
+              title="Option Premium"
+              explanation="The option premium is the current market price of an option contract."
+              overlayInjectedProps={props}
+              learnMoreURL="https://www.investopedia.com/terms/o/option-premium.asp"
+            />
+          )}
+          trigger={["click"]}
+        >
+          {({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              option premium
+            </HighlighText>
+          )}
+        </OverlayTrigger>
+        ). The vault repeats this process on a weekly basis and reinvests the
+        income earned from selling options to mint new options, effectively
+        compounding the yields for depositors over time.
         <p />
-        The vault has a manager who selects the strike prices for the call
-        options that the vault writes. This manager is responsible for making
-        the best tradeoff between yield vs risk of the call options getting
-        exercised.
+        The vault has a manager who selects the{" "}
+        <OverlayTrigger
+          overlay={(props) => (
+            <OverlayTooltipExplanation
+              title="STRIKE PRICE"
+              explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
+              overlayInjectedProps={props}
+              learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
+            />
+          )}
+          trigger={["click"]}
+        >
+          {({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              strike price
+            </HighlighText>
+          )}
+        </OverlayTrigger>{" "}
+        for the call options minted by the vault. The manager is responsible for
+        making the best tradeoff between yield versus the risk of the put
+        options getting exercised.
       </>
     ),
     vaultRisk: (
       <>
-        The primary risk for running this covered call strategy is that
-        depositors could potentially give up upside in exchange for guaranteed
-        yield. This only happens when the call options get exercised, which
-        should happen less than 3% of the time. In such a situation, depositors
-        can still expect to be up significantly in USD terms.
+        The primary risk for running this covered call strategy is that the
+        vault may incur a weekly loss in the case where the call options sold by
+        the vault expire{" "}
+        <OverlayTrigger
+          overlay={(props) => (
+            <OverlayTooltipExplanation
+              title="IN-THE-MONEY"
+              explanation="An ETH call option is in-the-money (OTM) if the strike price is below the market price of ETH."
+              overlayInjectedProps={props}
+              learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
+            />
+          )}
+          trigger={["click"]}
+        >
+          {({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              in-the-money
+            </HighlighText>
+          )}
+        </OverlayTrigger>{" "}
+        (meaning the price of ETH is above the strike price of the call options
+        minted by the vault).
       </>
     ),
   },
@@ -101,7 +170,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     tags: ["THETA VAULT", "WBTC"],
     strategy: (
       <>
-        This vault earns yield on wBTC through running an automated{" "}
+        This vault earns yield on its WBTC deposits by running an automated WBTC{" "}
         <OverlayTrigger
           overlay={(props) => (
             <OverlayTooltipExplanation
@@ -111,7 +180,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
             />
           )}
-          trigger={["click", "hover"]}
+          trigger={["click"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -119,10 +188,26 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
             </HighlighText>
           )}
         </OverlayTrigger>{" "}
-        strategy. Put simply, the vault sells potential upside in exchange for
-        high yield.
+        strategy.
         <p />
-        The vault generates yield by writing{" "}
+        Put simply, the vault{" "}
+        <OverlayTrigger
+          overlay={(props) => (
+            <OverlayTooltipExplanation
+              title="MINTING"
+              explanation="The vault mints, or creates, an option by depositing collateral into an Opyn vault resulting in the issuance of an oToken that represents the option contract."
+              overlayInjectedProps={props}
+              learnMoreURL="https://www.investopedia.com/terms/m/mint.asp"
+            />
+          )}
+          trigger={["click"]}
+        >
+          {({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              mints
+            </HighlighText>
+          )}
+        </OverlayTrigger>{" "}
         <OverlayTrigger
           overlay={(props) => (
             <OverlayTooltipExplanation
@@ -132,7 +217,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
             />
           )}
-          trigger={["click", "hover"]}
+          trigger={["click"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -140,24 +225,77 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
             </HighlighText>
           )}
         </OverlayTrigger>{" "}
-        call options on WBTC on a weekly basis and selling the options to market
-        makers in exchange for premiums. The vault repeats this process on a
-        weekly basis and reinvests the premiums, effectively compounding the
-        yields for depositors over time.
+        WBTC call options on Opyn on a weekly basis and sells these options to
+        market makers for a fee (the market price of the option, also known as
+        the{" "}
+        <OverlayTrigger
+          overlay={(props) => (
+            <OverlayTooltipExplanation
+              title="Option Premium"
+              explanation="The option premium is the current market price of an option contract."
+              overlayInjectedProps={props}
+              learnMoreURL="https://www.investopedia.com/terms/o/option-premium.asp"
+            />
+          )}
+          trigger={["click"]}
+        >
+          {({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              option premium
+            </HighlighText>
+          )}
+        </OverlayTrigger>
+        ). The vault repeats this process on a weekly basis and reinvests the
+        income earned from selling options to mint new options, effectively
+        compounding the yields for depositors over time.
         <p />
-        The vault has a manager who selects the strike prices for the call
-        options that the vault writes. This manager is responsible for making
-        the best tradeoff between yield vs risk of the call options getting
-        exercised.
+        The vault has a manager who selects the{" "}
+        <OverlayTrigger
+          overlay={(props) => (
+            <OverlayTooltipExplanation
+              title="STRIKE PRICE"
+              explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
+              overlayInjectedProps={props}
+              learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
+            />
+          )}
+          trigger={["click"]}
+        >
+          {({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              strike price
+            </HighlighText>
+          )}
+        </OverlayTrigger>{" "}
+        for the call options minted by the vault. The manager is responsible for
+        making the best tradeoff between yield versus the risk of the put
+        options getting exercised.
       </>
     ),
     vaultRisk: (
       <>
-        The primary risk for running this covered call strategy is that
-        depositors could potentially give up upside in exchange for guaranteed
-        yield. This only happens when the call options get exercised, which
-        should happen less than 3% of the time. In such a situation, depositors
-        can still expect to be up significantly in USD terms.
+        The primary risk for running this covered call strategy is that the
+        vault may incur a weekly loss in the case where the call options sold by
+        the vault expire{" "}
+        <OverlayTrigger
+          overlay={(props) => (
+            <OverlayTooltipExplanation
+              title="IN-THE-MONEY"
+              explanation="An WBTC call option is in-the-money (OTM) if the strike price is below the market price of WBTC."
+              overlayInjectedProps={props}
+              learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
+            />
+          )}
+          trigger={["click"]}
+        >
+          {({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              in-the-money
+            </HighlighText>
+          )}
+        </OverlayTrigger>{" "}
+        (meaning the price of WBTC is above the strike price of the call options
+        minted by the vault).
       </>
     ),
   },
@@ -180,7 +318,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
             />
           )}
-          trigger={["click", "hover"]}
+          trigger={["click"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -200,7 +338,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/m/mint.asp"
             />
           )}
-          trigger={["click", "hover"]}
+          trigger={["click"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -217,7 +355,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
             />
           )}
-          trigger={["click", "hover"]}
+          trigger={["click"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -237,7 +375,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/o/option-premium.asp"
             />
           )}
-          trigger={["click", "hover"]}
+          trigger={["click"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -269,7 +407,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
             />
           )}
-          trigger={["click", "hover"]}
+          trigger={["click"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -302,7 +440,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/p/putoption.asp"
             />
           )}
-          trigger={["click", "hover"]}
+          trigger={["click"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -322,7 +460,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/m/mint.asp"
             />
           )}
-          trigger={["click", "hover"]}
+          trigger={["click"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -339,7 +477,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
             />
           )}
-          trigger={["click", "hover"]}
+          trigger={["click"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -359,7 +497,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/o/option-premium.asp"
             />
           )}
-          trigger={["click", "hover"]}
+          trigger={["click"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -391,7 +529,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
             />
           )}
-          trigger={["click", "hover"]}
+          trigger={["click"]}
         >
           {({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
