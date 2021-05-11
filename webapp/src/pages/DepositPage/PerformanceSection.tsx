@@ -19,6 +19,7 @@ import {
   DYDXIcon,
   OasisIcon,
 } from "shared/lib/assets/icons/defiApp";
+import WeeklyStrategySnapshot from "../../components/Deposit/WeeklyStrategySnapshot";
 
 const Paragraph = styled.div`
   margin-bottom: 48px;
@@ -146,6 +147,11 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       <Paragraph>
         <ParagraphHeading>Vault Strategy</ParagraphHeading>
         <ParagraphText>{productCopies[vaultOption].strategy}</ParagraphText>
+      </Paragraph>
+
+      <Paragraph>
+        <ParagraphHeading>Weekly Strategy Snapshot</ParagraphHeading>
+        <WeeklyStrategySnapshot vaultOption={vaultOption} />
       </Paragraph>
 
       <Paragraph>

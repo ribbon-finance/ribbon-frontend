@@ -32,6 +32,7 @@ const fetchVaultAvtivity = async (
     query: `
         {
           vaultShortPositions (where: { vault_in: ["${vaultAddress}"] }){
+            id
             depositAmount
             strikePrice
             openedAt
@@ -40,6 +41,7 @@ const fetchVaultAvtivity = async (
           }
           vaultOptionTrades (where: { vault_in: ["${vaultAddress}"] }) {
             vaultShortPosition {
+              id
               strikePrice
               expiry
             }
