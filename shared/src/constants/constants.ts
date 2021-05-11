@@ -58,7 +58,7 @@ const FullVaultList = [
   "rETH-THETA",
 ] as const;
 export type VaultOptions = typeof FullVaultList[number];
-const ProdExcludeVault: VaultOptions[] = ["rBTC-THETA-P", "rETH-THETA-P"];
+const ProdExcludeVault: VaultOptions[] = ["rBTC-THETA-P"];
 const PutThetaVault: VaultOptions[] = ["rBTC-THETA-P", "rETH-THETA-P"];
 // @ts-ignore
 export const VaultList: VaultOptions[] = isStaging()
