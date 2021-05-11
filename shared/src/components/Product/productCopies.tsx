@@ -216,7 +216,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
       </>
     ),
   },
-  "rETH-THETA-P": {
+  "rUSDC-ETH-P-THETA": {
     title: "T-USDC-P-ETH",
     subtitle: "Theta Vault - ETH",
     description:
@@ -303,7 +303,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
       </>
     ),
   },
-  "rBTC-THETA-P": {
+  "rUSDC-BTC-P-THETA": {
     title: "T-USDC-P-WBTC",
     subtitle: "Theta Vault - WBTC",
     description:

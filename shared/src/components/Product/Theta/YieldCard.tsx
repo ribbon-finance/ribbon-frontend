@@ -238,10 +238,10 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
   const backgroundLogo = useMemo(() => {
     switch (vault) {
       case "rETH-THETA":
-      case "rETH-THETA-P":
+      case "rUSDC-ETH-P-THETA":
         return <WETHLogo width="40%" opacity="0.1" />;
       case "rBTC-THETA":
-      case "rBTC-THETA-P":
+      case "rUSDC-BTC-P-THETA":
         return <StyledWBTCLogo width="50%" opacity="0.04" />;
       default:
         return <></>;
