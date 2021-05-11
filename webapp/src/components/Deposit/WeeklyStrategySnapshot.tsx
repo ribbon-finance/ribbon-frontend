@@ -210,16 +210,16 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
     return {
       isProfit: profit >= 0,
       roi:
-        annualizedPerformance(
-          profit /
-            parseFloat(
-              assetToFiat(
-                latestShortPosition.depositAmount,
-                prices[asset]!,
-                getAssetDecimals(asset)
-              )
+        (profit /
+          parseFloat(
+            assetToFiat(
+              latestShortPosition.depositAmount,
+              prices[asset]!,
+              getAssetDecimals(asset)
             )
-        ) * 100,
+          )) *
+        100 *
+        0.9,
     };
   }, [
     activities,
@@ -287,9 +287,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
             <DataNumber>{strikeAPRText}</DataNumber>
           </DataCol>
           <DataCol xs="6">
-            <DataLabel className="d-block">
-              Profitability (Annualised)
-            </DataLabel>
+            <DataLabel className="d-block">This Week's Performance</DataLabel>
             <DataNumber
               variant={KPI ? (KPI.isProfit ? "green" : "red") : undefined}
             >

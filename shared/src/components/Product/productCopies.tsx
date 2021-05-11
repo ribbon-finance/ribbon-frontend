@@ -227,16 +227,16 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         This vault earns yield on its USDC deposits by running an automated
         strategy that sells ETH{" "}
         <TooltipExplanation
-          title="Covered Call"
-          explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
-          learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
+          title="Put Option"
+          explanation="A put option is a contract giving the owner the right, but not the obligation, to sell–or sell short–a specified amount of an underlying security at a pre-determined price within a specified time frame. This pre-determined price that buyer of the put option can sell at is called the strike price."
+          learnMoreURL="https://www.investopedia.com/terms/p/putoption.asp"
           renderContent={({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
-              covered call
+              put options
             </HighlighText>
           )}
         />
-        .
+        . The idea is to profit when the asset goes up in price.
         <p />
         Put simply, the vault{" "}
         <TooltipExplanation
