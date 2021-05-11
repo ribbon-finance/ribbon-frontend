@@ -29,7 +29,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     title: "T-ETH-C",
     subtitle: "Theta Vault - ETH",
     description:
-      "Theta Vault is a yield-generating strategy on ETH. The vault runs an automated covered call strategy.",
+      "Generates yield by running an automated ETH covered call strategy.",
     tags: ["THETA VAULT", "ETH"],
     strategy: (
       <>
@@ -166,7 +166,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     title: "T-WBTC-C",
     subtitle: "Theta Vault - WBTC",
     description:
-      "Theta Vault is a yield-generating strategy on WBTC. The vault runs an automated covered call strategy.",
+      "Generates yield by runnning an automated WBTC covered call strategy.",
     tags: ["THETA VAULT", "WBTC"],
     strategy: (
       <>
@@ -303,7 +303,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     title: "T-USDC-P-ETH",
     subtitle: "Theta Vault - ETH",
     description:
-      "The vault generates yield by running an automated ETH put selling strategy.",
+      "Generates yield by running an automated ETH put selling strategy.",
     tags: ["THETA VAULT", "ETH"],
     strategy: (
       <>
@@ -425,7 +425,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     title: "T-USDC-P-WBTC",
     subtitle: "Theta Vault - WBTC",
     description:
-      "The vault generates yield by running an automated WBTC put selling strategy.",
+      "Generates yield by running an automated WBTC put selling strategy.",
     tags: ["THETA VAULT", "WBTC"],
     strategy: (
       <>
