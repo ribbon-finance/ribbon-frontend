@@ -43,6 +43,7 @@ interface OverlayTooltipExplanationProps {
   explanation: string;
   learnMoreURL?: string;
   overlayInjectedProps: OverlayInjectedProps;
+  setShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const OverlayTooltipExplanation: React.FC<OverlayTooltipExplanationProps> = ({
@@ -50,8 +51,13 @@ const OverlayTooltipExplanation: React.FC<OverlayTooltipExplanationProps> = ({
   explanation,
   learnMoreURL,
   overlayInjectedProps,
+  setShow,
 }) => (
-  <Tooltip {...overlayInjectedProps}>
+  <Tooltip
+    {...overlayInjectedProps}
+    onMouseOver={() => setShow(true)}
+    onMouseOut={() => setShow(false)}
+  >
     <Title>{title}</Title>
     <Explanation>{explanation}</Explanation>
     {learnMoreURL && (

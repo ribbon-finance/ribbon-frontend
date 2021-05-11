@@ -72,3 +72,6 @@ export const formatAmount = (n: number): string => {
 
   return "";
 };
+
+export const annualizedPerformance = (performance: number) =>
+  (performance + 1) ** 52 - 1;
