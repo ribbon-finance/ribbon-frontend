@@ -13,7 +13,11 @@ import {
   VaultOptionTrade,
   VaultShortPosition,
 } from "shared/lib/models/vault";
-import { assetToFiat, formatOption } from "shared/lib/utils/math";
+import {
+  assetToFiat,
+  formatOption,
+  annualizedPerformance,
+} from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import {
   getAssets,
@@ -26,7 +30,7 @@ import colors from "shared/lib/designSystem/colors";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import StrikeChart from "./StrikeChart";
 
-const VaultPerformacneChartContainer = styled.div`
+const VaultPerformanceChartContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,7 +40,7 @@ const VaultPerformacneChartContainer = styled.div`
   border-radius: 4px 4px 0px 0px;
 `;
 
-const VaultPerformacneChartSecondaryContainer = styled.div`
+const VaultPerformanceChartSecondaryContainer = styled.div`
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-top: none;
   border-radius: 0px 0px 4px 4px;
@@ -206,18 +210,16 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
     return {
       isProfit: profit >= 0,
       roi:
-        ((profit /
-          parseFloat(
-            assetToFiat(
-              latestShortPosition.depositAmount,
-              prices[asset]!,
-              getAssetDecimals(asset)
+        annualizedPerformance(
+          profit /
+            parseFloat(
+              assetToFiat(
+                latestShortPosition.depositAmount,
+                prices[asset]!,
+                getAssetDecimals(asset)
+              )
             )
-          ) +
-          1) **
-          52 -
-          1) *
-        100,
+        ) * 100,
     };
   }, [
     activities,
@@ -261,10 +263,10 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
 
   return (
     <>
-      <VaultPerformacneChartContainer>
+      <VaultPerformanceChartContainer>
         {strikeChart}
-      </VaultPerformacneChartContainer>
-      <VaultPerformacneChartSecondaryContainer>
+      </VaultPerformanceChartContainer>
+      <VaultPerformanceChartSecondaryContainer>
         <Row noGutters>
           <DataCol xs="6">
             <DataLabel className="d-block">
@@ -299,7 +301,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
             <DataNumber>{toExpiryText}</DataNumber>
           </DataCol>
         </Row>
-      </VaultPerformacneChartSecondaryContainer>
+      </VaultPerformanceChartSecondaryContainer>
     </>
   );
 };
