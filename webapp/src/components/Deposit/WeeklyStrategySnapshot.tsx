@@ -13,11 +13,7 @@ import {
   VaultOptionTrade,
   VaultShortPosition,
 } from "shared/lib/models/vault";
-import {
-  assetToFiat,
-  formatOption,
-  annualizedPerformance,
-} from "shared/lib/utils/math";
+import { assetToFiat, formatOption } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import {
   getAssets,
@@ -240,7 +236,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   }, [KPI, loading, loadingText]);
 
   const strikeChart = useMemo(() => {
-    if (loading) {
+    if (loading || !prices[optionAsset]) {
       return <Title>{loadingText}</Title>;
     }
 

@@ -81,48 +81,53 @@ const StrikeChart: React.FC<StrikeChartProps> = ({
     [current, strike, profitable]
   );
 
-  return (
-    <Line
-      data={getData}
-      options={options}
-      plugins={[
-        {
-          afterDatasetsDraw: (chart: any) => {
-            const ctx = chart.chart.ctx;
-            chart.chart.data.datasets.forEach((dataset: any, i: number) => {
-              const meta = chart.chart.getDatasetMeta(i);
-              const element = meta.data[i];
+  const chart = useMemo(
+    () => (
+      <Line
+        data={getData}
+        options={options}
+        plugins={[
+          {
+            afterDatasetsDraw: (chart: any) => {
+              const ctx = chart.chart.ctx;
+              chart.chart.data.datasets.forEach((dataset: any, i: number) => {
+                const meta = chart.chart.getDatasetMeta(i);
+                const element = meta.data[i];
 
-              // Set font
-              ctx.fillStyle =
-                i === 1 ? "white" : profitable ? colors.green : colors.red;
-              const fontSize = 12;
-              const fontStyle = "normal";
-              const fontFamily = "VCR, sans-serif";
-              ctx.font = Chart.helpers.fontString(
-                fontSize,
-                fontStyle,
-                fontFamily
-              );
-              ctx.textAlign = "center";
-              ctx.textBaseline = "middle";
-              const padding = 8;
-              const position = element.tooltipPosition();
+                // Set font
+                ctx.fillStyle =
+                  i === 1 ? "white" : profitable ? colors.green : colors.red;
+                const fontSize = 12;
+                const fontStyle = "normal";
+                const fontFamily = "VCR, sans-serif";
+                ctx.font = Chart.helpers.fontString(
+                  fontSize,
+                  fontStyle,
+                  fontFamily
+                );
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                const padding = 8;
+                const position = element.tooltipPosition();
 
-              const text = currency(dataset.data[i]).format({ symbol: "" });
-              const offsetLength = ctx.measureText(text).width / 2 + 23;
+                const text = currency(dataset.data[i]).format({ symbol: "" });
+                const offsetLength = ctx.measureText(text).width / 2 + 23;
 
-              ctx.fillText(
-                text,
-                position.x + (i === 0 ? offsetLength : -offsetLength),
-                position.y - fontSize / 2 - padding
-              );
-            });
+                ctx.fillText(
+                  text,
+                  position.x + (i === 0 ? offsetLength : -offsetLength),
+                  position.y - fontSize / 2 - padding
+                );
+              });
+            },
           },
-        },
-      ]}
-    />
+        ]}
+      />
+    ),
+    [getData, options, profitable]
   );
+
+  return chart;
 };
 
 export default StrikeChart;
