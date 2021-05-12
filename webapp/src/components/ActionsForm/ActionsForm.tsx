@@ -211,6 +211,7 @@ const ApprovalIcon = styled.div`
 `;
 
 const GreenWBTCLogo = styled(WBTCLogo)`
+  width: 100%;
   && * {
     fill: ${colors.green};
   }
@@ -218,6 +219,7 @@ const GreenWBTCLogo = styled(WBTCLogo)`
 
 const GreenUSDCLogo = styled(USDCLogo)`
   margin: -8px;
+  width: 100%;
 
   && .background {
     fill: none;
