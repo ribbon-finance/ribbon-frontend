@@ -2,7 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import { useRouteMatch } from "react-router-dom";
 
-import Logo from "./Logo";
+import HeaderLogo from "./HeaderLogo";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
 import { Title, BaseLink } from "shared/lib/designSystem";
@@ -28,7 +28,23 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
 
   // The backdrop for the menu does not show up if we enable the backdrop-filter
   // for the header nav. To get around that, just set 'none'
-  backdrop-filter: ${(props) => (props.isMenuOpen ? "none" : "blur(80px)")};
+  ${(props) => {
+    if (props.isMenuOpen) {
+      return null;
+    }
+
+    return `
+      backdrop-filter: blur(40px);
+      /**
+       * Firefox desktop come with default flag to have backdrop-filter disabled
+       * Firefox Android also currently has bug where backdrop-filter is not being applied
+       * More info: https://bugzilla.mozilla.org/show_bug.cgi?id=1178765
+       **/
+      @-moz-document url-prefix() {
+        background-color: rgba(0, 0, 0, 0.9);
+      }
+    `;
+  }}
 `;
 
 const LogoContainer = styled.div`
@@ -147,7 +163,7 @@ const Header = () => {
     >
       {/* LOGO */}
       <LogoContainer>
-        <Logo></Logo>
+        <HeaderLogo />
       </LogoContainer>
 
       {/* LINKS */}
