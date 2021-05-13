@@ -94,6 +94,7 @@ const useVaultData: UseVaultData = (vault, params) => {
           if (signerVault) {
             connectedPromises = [
               signerVault.accountVaultBalance(account),
+              // (async () => BigNumber.from(0))(),
               isETHVault(vault)
                 ? library.getBalance(account)
                 : getERC20Token(
@@ -101,6 +102,7 @@ const useVaultData: UseVaultData = (vault, params) => {
                     getAssets(vault).toLowerCase() as ERC20Token
                   )?.balanceOf(account),
               signerVault.maxWithdrawAmount(account),
+              // (async () => BigNumber.from(0))(),
             ];
           }
         }
