@@ -22,7 +22,7 @@ import {
 import WeeklyStrategySnapshot from "../../components/Deposit/WeeklyStrategySnapshot";
 
 const Paragraph = styled.div`
-  margin-bottom: 48px;
+  margin-bottom: 64px;
 `;
 
 const ParagraphHeading = styled(Title)`
