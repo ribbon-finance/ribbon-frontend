@@ -74,6 +74,7 @@ export const Subtitle = styled.span`
   font-weight: normal;
   font-size: 12px;
   letter-spacing: 1.5px;
+  text-transform: uppercase;
 `;
 
 export const PrimaryText = styled(BaseText)`
