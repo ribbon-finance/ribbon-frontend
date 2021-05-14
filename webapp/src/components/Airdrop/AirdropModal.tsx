@@ -179,7 +179,7 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
           </>
         );
     }
-  }, [account, steps, setShowConnectModal]);
+  }, [account, steps, setShowConnectModal, renderTopLogo]);
 
   return (
     <StyledModal show={show} onHide={onClose} centered backdrop={true}>
