@@ -126,7 +126,11 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
     if (step === "claim" || step === "claimed") {
       setStep("info");
     }
+<<<<<<< HEAD
   }, [onClose, step]);
+=======
+  }, [account, steps, setShowConnectModal, renderTopLogo]);
+>>>>>>> df64e7c (Update deps of airdrop modal content)
 
   return (
     <StyledModal show={show} onHide={handleClose} centered backdrop={true}>
