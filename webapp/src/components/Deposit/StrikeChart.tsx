@@ -43,11 +43,11 @@ const StrikeChart: React.FC<StrikeChartProps> = ({
     (canvas: any): ChartData => {
       const ctx = canvas.getContext("2d");
       const green = ctx.createLinearGradient(0, 0, 0, 104);
-      green.addColorStop(0, `${colors.green}05`);
-      green.addColorStop(1, `${colors.green}14`);
+      green.addColorStop(strike > current ? 0 : 1, `${colors.green}05`);
+      green.addColorStop(strike > current ? 1 : 0, `${colors.green}14`);
       const red = ctx.createLinearGradient(0, 0, 0, 104);
-      red.addColorStop(0, `${colors.red}05`);
-      red.addColorStop(1, `${colors.red}14`);
+      red.addColorStop(strike > current ? 0 : 1, `${colors.red}05`);
+      red.addColorStop(strike > current ? 1 : 0, `${colors.red}14`);
 
       return {
         labels: ["start", "end"],

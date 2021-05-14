@@ -3,7 +3,11 @@ import styled from "styled-components";
 import { ethers } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { WETHLogo, WBTCLogo } from "../../../assets/icons/erc20Assets";
+import {
+  WETHLogo,
+  WBTCLogo,
+  USDCLogo,
+} from "../../../assets/icons/erc20Assets";
 import {
   BaseButton,
   Title,
@@ -159,6 +163,12 @@ const StyledWBTCLogo = styled(WBTCLogo)`
   }
 `;
 
+const StyledUSDCLogo = styled(USDCLogo)`
+  .background {
+    fill: #ffffff52;
+  }
+`;
+
 const ModeSwitcherContainer = styled.div`
   display: flex;
   align-items: center;
@@ -238,11 +248,12 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
   const backgroundLogo = useMemo(() => {
     switch (vault) {
       case "rETH-THETA":
-      case "rUSDC-ETH-P-THETA":
         return <WETHLogo width="40%" opacity="0.1" />;
       case "rBTC-THETA":
-      case "rUSDC-BTC-P-THETA":
         return <StyledWBTCLogo width="50%" opacity="0.04" />;
+      case "rUSDC-ETH-P-THETA":
+      case "rUSDC-BTC-P-THETA":
+        return <StyledUSDCLogo width="50%" opacity="0.04" />;
       default:
         return <></>;
     }

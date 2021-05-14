@@ -22,7 +22,7 @@ import {
 import WeeklyStrategySnapshot from "../../components/Deposit/WeeklyStrategySnapshot";
 
 const Paragraph = styled.div`
-  margin-bottom: 48px;
+  margin-bottom: 64px;
 `;
 
 const ParagraphHeading = styled(Title)`
@@ -56,21 +56,6 @@ const Link = styled.a`
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-
-  @media (max-width: ${sizes.md}px) {
-    & > div:nth-child(2) {
-      order: 1;
-    }
-    & > div:nth-child(1) {
-      order: 2;
-    }
-    & > div:nth-child(3) {
-      order: 3;
-    }
-    & > div:nth-child(4) {
-      order: 4;
-    }
-  }
 `;
 
 const MarketYield = styled.div`
