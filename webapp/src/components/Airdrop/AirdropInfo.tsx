@@ -66,6 +66,7 @@ const getAirdropTitle = (variant: AirdropBreakDownType) => {
 const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
   display: flex;
   justify-content: center;
+  z-index: 1;
   margin-top: ${(props) =>
     props.marginTop === "auto"
       ? props.marginTop
@@ -103,6 +104,19 @@ const ViewBreakdownPill = styled.div`
   background: ${colors.green}14;
   padding: 8px 16px;
   border-radius: 100px;
+  position: relative;
+
+  &:after {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    content: " ";
+    top: 0;
+    left: 0;
+    background-color: ${colors.background};
+    border-radius: 100px;
+    z-index: -1;
+  }
 `;
 
 const ViewBreakdownPillText = styled(Subtitle)`
@@ -151,7 +165,7 @@ const BreakdownContainer = styled(motion.div)`
   height: calc(100%);
   background: ${colors.background};
   padding: 0 16px;
-  z-index: 2;
+  z-index: 10;
 `;
 
 const HideBreakdownButton = styled.div`
@@ -195,6 +209,35 @@ const BreakdwonPillIndicator = styled.div<{ variant: AirdropBreakDownType }>`
 const BreakdownPillToken = styled(Subtitle)<{ variant: AirdropBreakDownType }>`
   color: ${(props) => getAirdropColor(props.variant)};
   margin-left: auto;
+`;
+
+const BackgroundContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -16px;
+  left: 0;
+  width: 100%;
+  height: calc(100%);
+  padding: 0 16px;
+  overflow: hidden;
+`;
+
+const marquee = keyframes`
+  from {
+    transform: translateX(500px);
+  }
+
+  to {
+    transform: translateX(-500px);
+  }
+`;
+
+const BackgroundText = styled(Title)`
+  font-size: 160px;
+  color: ${colors.primaryText}0A;
+  animation: ${marquee} 15s linear infinite;
 `;
 
 interface AirdropInfoProps {
@@ -366,6 +409,9 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
   return (
     <>
       {renderInfo()}
+      <BackgroundContainer>
+        <BackgroundText>$RIBBON</BackgroundText>
+      </BackgroundContainer>
       <AnimatePresence>
         {showBreakdown && (
           <BreakdownContainer

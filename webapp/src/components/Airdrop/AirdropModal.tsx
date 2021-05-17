@@ -46,7 +46,7 @@ const CloseButton = styled.div`
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: 48px;
   color: ${colors.text};
-  z-index: 1;
+  z-index: 2;
 `;
 
 interface AirdropModalProps {
