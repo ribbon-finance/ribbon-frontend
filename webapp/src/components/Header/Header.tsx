@@ -11,6 +11,7 @@ import { NavItemProps, MobileMenuOpenProps } from "./types";
 import AccountStatus from "../Wallet/AccountStatus";
 import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
+import AirdropButton from "../Airdrop/AirdropButton";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
@@ -49,11 +50,18 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
 
 const LogoContainer = styled.div`
   padding-left: 40px;
+  margin-right: auto;
   z-index: 1000;
 
   @media (max-width: ${sizes.md}px) {
     padding-left: 0;
   }
+`;
+
+const AirdropContainer = styled.div`
+  display: flex;
+  margin-right: 8px;
+  z-index: 1;
 `;
 
 const HeaderAbsoluteContainer = styled.div`
@@ -159,7 +167,7 @@ const Header = () => {
   return (
     <HeaderContainer
       isMenuOpen={isMenuOpen}
-      className="d-flex align-items-center justify-content-between"
+      className="d-flex align-items-center"
     >
       {/* LOGO */}
       <LogoContainer>
@@ -181,6 +189,10 @@ const Header = () => {
           )}
         </LinksContainer>
       </HeaderAbsoluteContainer>
+
+      <AirdropContainer>
+        <AirdropButton />
+      </AirdropContainer>
 
       <AccountStatus variant="desktop" />
 
