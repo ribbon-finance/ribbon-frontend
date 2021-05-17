@@ -55,6 +55,21 @@ const CloseButton = styled.div`
   z-index: 2;
 `;
 
+const CloseButton = styled.div`
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-radius: 48px;
+  color: ${colors.text};
+  z-index: 1;
+`;
+
 interface AirdropModalProps {
   show: boolean;
   onClose: () => void;
