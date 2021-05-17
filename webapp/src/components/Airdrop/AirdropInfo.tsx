@@ -20,12 +20,10 @@ import {
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import theme from "shared/lib/designSystem/theme";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
-import useAirdropProof from "../../hooks/useAirdropProof";
-import { formatUnits } from "@ethersproject/units";
+import useAirdrop from "../../hooks/useAirdrop";
+import { AirdropBreakDownType } from "../../models/airdrop";
 
-type BreakdownVariant = "charm" | "hegic" | "opyn" | "discord" | "ribbon";
-
-const getBreakdownVariantColor = (variant: BreakdownVariant) => {
+const getAirdropColor = (variant: AirdropBreakDownType) => {
   switch (variant) {
     case "charm":
       return colors.brands.charm;
@@ -35,8 +33,33 @@ const getBreakdownVariantColor = (variant: BreakdownVariant) => {
       return colors.brands.hegic;
     case "opyn":
       return colors.brands.opyn;
-    case "ribbon":
+    case "primitive":
+      return colors.brands.primitive;
+    case "strangle":
+    case "thetaVaultBase":
+    case "thetaVaultBonus":
       return colors.red;
+  }
+};
+
+const getAirdropTitle = (variant: AirdropBreakDownType) => {
+  switch (variant) {
+    case "charm":
+      return "Charm Seller";
+    case "discord":
+      return "DISCORD CONTRIBUTER";
+    case "hegic":
+      return "HEGIC LP";
+    case "opyn":
+      return "OPYN SELLER";
+    case "primitive":
+      return "Primitive LP";
+    case "strangle":
+      return "STRANGLE BUYER";
+    case "thetaVaultBase":
+      return "VAULT USER";
+    case "thetaVaultBonus":
+      return "VAULT USER BONUS";
   }
 };
 
@@ -146,7 +169,7 @@ const HideBreakdownButton = styled.div`
 `;
 
 const BreakdownPill = styled.div<{
-  variant: BreakdownVariant;
+  variant: AirdropBreakDownType;
   entitled: boolean;
 }>`
   display: flex;
@@ -154,23 +177,23 @@ const BreakdownPill = styled.div<{
   padding: 8px 12px;
   margin: 0 16px;
   width: 100%;
-  background: ${(props) => getBreakdownVariantColor(props.variant)}14;
+  background: ${(props) => getAirdropColor(props.variant)}14;
   border: ${theme.border.width} ${theme.border.style}
-    ${(props) => getBreakdownVariantColor(props.variant)};
+    ${(props) => getAirdropColor(props.variant)};
   border-radius: 100px;
   opacity: ${(props) => (props.entitled ? "1" : "0.24")};
 `;
 
-const BreakdwonPillIndicator = styled.div<{ variant: BreakdownVariant }>`
+const BreakdwonPillIndicator = styled.div<{ variant: AirdropBreakDownType }>`
   height: 8px;
   width: 8px;
-  background: ${(props) => getBreakdownVariantColor(props.variant)};
+  background: ${(props) => getAirdropColor(props.variant)};
   margin-right: 8px;
   border-radius: 4px;
 `;
 
-const BreakdownPillToken = styled(Subtitle)<{ variant: BreakdownVariant }>`
-  color: ${(props) => getBreakdownVariantColor(props.variant)};
+const BreakdownPillToken = styled(Subtitle)<{ variant: AirdropBreakDownType }>`
+  color: ${(props) => getAirdropColor(props.variant)};
   margin-left: auto;
 `;
 
@@ -182,21 +205,35 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
   const { account } = useWeb3React();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showBreakdown, setShowBreakdown] = useState(false);
-  const proof = useAirdropProof();
+  const airdrop = useAirdrop();
 
   const airdropAmountStr = useMemo(() => {
-    if (!proof) {
+    if (!airdrop) {
       return "0";
     }
 
-    return parseFloat(parseFloat(formatUnits(proof.amount, 18)).toFixed(2));
-  }, [proof]);
+    return airdrop.total;
+  }, [airdrop]);
 
   const renderTopLogo = useCallback(
     () => (
       <ContentColumn marginTop={-8}>
         <RotatingLogo height="64px" width="64px" />
       </ContentColumn>
+    ),
+    []
+  );
+
+  const readMore = useMemo(
+    () => (
+      <LearnMoreLink
+        to="https://ribbon.finance/faq"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        <PrimaryText>Read about $RIBBON</PrimaryText>
+        <LearnMoreIcon height="20px" width="20px" color="white" />
+      </LearnMoreLink>
     ),
     []
   );
@@ -217,12 +254,7 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
               Please connect your wallet to check for unclaimed $RIBBON
             </Description>
           </ContentColumn>
-          <ContentColumn marginTop="auto">
-            <LearnMoreLink to="https://ribbon.finance/faq">
-              <PrimaryText>Read about $RIBBON</PrimaryText>
-              <LearnMoreIcon height="20px" width="20px" color="white" />
-            </LearnMoreLink>
-          </ContentColumn>
+          <ContentColumn marginTop="auto">{readMore}</ContentColumn>
           <ContentColumn>
             <ConnectWalletButton
               onClick={() => setShowConnectModal(true)}
@@ -254,17 +286,12 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
             <BarChartIcon width="20px" height="20px" color={colors.green} />
           </ViewBreakdownPill>
         </ContentColumn>
-        <ContentColumn marginTop="auto">
-          <LearnMoreLink to="https://ribbon.finance/faq">
-            <PrimaryText>Read about $RIBBON</PrimaryText>
-            <LearnMoreIcon height="20px" width="20px" color="white" />
-          </LearnMoreLink>
-        </ContentColumn>
+        <ContentColumn marginTop="auto">{readMore}</ContentColumn>
         <ContentColumn>
           <ActionButton
             className="btn py-3 mb-2"
             onClick={onClaim}
-            disabled={!proof || proof.amount.isZero()}
+            disabled={!airdrop?.total}
           >
             CLAIM $RIBBON
           </ActionButton>
@@ -277,27 +304,42 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
     setShowConnectModal,
     airdropAmountStr,
     onClaim,
-    proof,
+    airdrop,
+    readMore,
   ]);
 
   const renderBreakdownPill = useCallback(
     (
-      title: string,
       token: number,
       entitled: boolean,
-      variant: BreakdownVariant,
-      first: boolean
+      variant: AirdropBreakDownType,
+      index: number
     ) => (
-      <ContentColumn marginTop={first ? 24 : 16}>
+      <ContentColumn marginTop={index === 0 ? 24 : 16} key={index}>
         <BreakdownPill variant={variant} entitled={entitled}>
           <BreakdwonPillIndicator variant={variant} />
-          <Subtitle>{title}</Subtitle>
+          <Subtitle>{getAirdropTitle(variant)}</Subtitle>
           <BreakdownPillToken variant={variant}>{token} BRN</BreakdownPillToken>
         </BreakdownPill>
       </ContentColumn>
     ),
     []
   );
+
+  const renderBreakdownPills = useCallback(() => {
+    if (!airdrop) {
+      return <></>;
+    }
+
+    return Object.keys(airdrop.breakdown).map((key, index) =>
+      renderBreakdownPill(
+        airdrop.breakdown[key] || 0,
+        airdrop.breakdown[key],
+        key as AirdropBreakDownType,
+        index
+      )
+    );
+  }, [airdrop, renderBreakdownPill]);
 
   const renderBreakdown = useCallback(
     () => (
@@ -308,19 +350,8 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
         <ContentColumn marginTop={8}>
           <UnclaimData variant="small">{airdropAmountStr}</UnclaimData>
         </ContentColumn>
-        {renderBreakdownPill("Charm Option Seller", 15, false, "charm", true)}
-        {renderBreakdownPill("HEGIC OPTION SELLER", 15, true, "hegic", false)}
-        {renderBreakdownPill("OPYN OPTION SELLER", 15, false, "opyn", false)}
-        {renderBreakdownPill("DISCORD CONTRIBUTER", 45, true, "discord", false)}
-        {renderBreakdownPill("STRANGLE BUYER", 60, true, "ribbon", false)}
-        {renderBreakdownPill("VAULT USER", 85, true, "ribbon", false)}
-        {renderBreakdownPill("VAULT USER BONUS", 85, true, "ribbon", false)}
-        <ContentColumn marginTop={24}>
-          <LearnMoreLink to="https://ribbon.finance/faq">
-            <PrimaryText>Read about $RIBBON</PrimaryText>
-            <LearnMoreIcon height="20px" width="20px" color="white" />
-          </LearnMoreLink>
-        </ContentColumn>
+        {renderBreakdownPills()}
+        <ContentColumn marginTop={24}>{readMore}</ContentColumn>
         <HideBreakdownButton
           role="button"
           onClick={() => setShowBreakdown(false)}
@@ -329,7 +360,7 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
         </HideBreakdownButton>
       </>
     ),
-    [renderBreakdownPill, airdropAmountStr]
+    [airdropAmountStr, readMore, renderBreakdownPills]
   );
 
   return (

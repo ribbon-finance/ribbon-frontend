@@ -29,6 +29,7 @@ const colors = {
     hegic: "#45FFF4",
     charm: "#5A67D8",
     discord: "#5A65EA",
+    primitive: "#FFFFFF",
   },
 };
 
