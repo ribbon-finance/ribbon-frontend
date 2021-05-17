@@ -238,6 +238,7 @@ const BackgroundText = styled(Title)`
   font-size: 160px;
   color: ${colors.primaryText}0A;
   animation: ${marquee} 30s linear infinite;
+  white-space: nowrap;
 `;
 
 interface AirdropInfoProps {
