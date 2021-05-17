@@ -120,12 +120,13 @@ const BreakdownContainer = styled(motion.div)`
   flex-direction: column;
   flex-wrap: wrap;
   position: absolute;
-  top: -40px;
+  top: -16px;
   left: 0;
   width: 100%;
-  height: calc(100% + 24px);
+  height: calc(100%);
   background: ${colors.background};
   padding: 0 16px;
+  z-index: 2;
 `;
 
 const HideBreakdownButton = styled.div`
@@ -142,7 +143,10 @@ const HideBreakdownButton = styled.div`
   color: ${colors.text};
 `;
 
-const BreakdownPill = styled.div<{ variant: BreakdownVariant }>`
+const BreakdownPill = styled.div<{
+  variant: BreakdownVariant;
+  entitled: boolean;
+}>`
   display: flex;
   align-items: center;
   padding: 8px 12px;
@@ -152,6 +156,7 @@ const BreakdownPill = styled.div<{ variant: BreakdownVariant }>`
   border: ${theme.border.width} ${theme.border.style}
     ${(props) => getBreakdownVariantColor(props.variant)};
   border-radius: 100px;
+  opacity: ${(props) => (props.entitled ? "1" : "0.24")};
 `;
 
 const BreakdwonPillIndicator = styled.div<{ variant: BreakdownVariant }>`
@@ -174,7 +179,7 @@ const AirdropInfo = () => {
 
   const renderTopLogo = useCallback(
     () => (
-      <ContentColumn marginTop={-24}>
+      <ContentColumn marginTop={-8}>
         <RotatingLogo height="64px" width="64px" />
       </ContentColumn>
     ),
@@ -256,7 +261,7 @@ const AirdropInfo = () => {
       first: boolean
     ) => (
       <ContentColumn marginTop={first ? 24 : 16}>
-        <BreakdownPill variant={variant}>
+        <BreakdownPill variant={variant} entitled={entitled}>
           <BreakdwonPillIndicator variant={variant} />
           <Subtitle>{title}</Subtitle>
           <BreakdownPillToken variant={variant}>{token} BRN</BreakdownPillToken>
@@ -275,9 +280,9 @@ const AirdropInfo = () => {
         <ContentColumn marginTop={8}>
           <UnclaimData variant="small">320</UnclaimData>
         </ContentColumn>
-        {renderBreakdownPill("Charm Option Seller", 15, true, "charm", true)}
+        {renderBreakdownPill("Charm Option Seller", 15, false, "charm", true)}
         {renderBreakdownPill("HEGIC OPTION SELLER", 15, true, "hegic", false)}
-        {renderBreakdownPill("OPYN OPTION SELLER", 15, true, "opyn", false)}
+        {renderBreakdownPill("OPYN OPTION SELLER", 15, false, "opyn", false)}
         {renderBreakdownPill("DISCORD CONTRIBUTER", 45, true, "discord", false)}
         {renderBreakdownPill("STRANGLE BUYER", 60, true, "ribbon", false)}
         {renderBreakdownPill("VAULT USER", 85, true, "ribbon", false)}
