@@ -226,18 +226,18 @@ const BackgroundContainer = styled.div`
 
 const marquee = keyframes`
   from {
-    transform: translateX(500px);
+    transform: translateX(750px);
   }
 
   to {
-    transform: translateX(-500px);
+    transform: translateX(-750px);
   }
 `;
 
 const BackgroundText = styled(Title)`
   font-size: 160px;
   color: ${colors.primaryText}0A;
-  animation: ${marquee} 15s linear infinite;
+  animation: ${marquee} 30s linear infinite;
 `;
 
 interface AirdropInfoProps {
@@ -274,7 +274,7 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
         target="_blank"
         rel="noreferrer noopener"
       >
-        <PrimaryText>Read about $RIBBON</PrimaryText>
+        <PrimaryText>Read about $RBN</PrimaryText>
         <LearnMoreIcon height="20px" width="20px" color="white" />
       </LearnMoreLink>
     ),
@@ -287,14 +287,14 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
         <>
           {renderTopLogo()}
           <ContentColumn marginTop={64}>
-            <UnclaimLabel>UNCLAIMED $RIBBON</UnclaimLabel>
+            <UnclaimLabel>UNCLAIMED $RBN</UnclaimLabel>
           </ContentColumn>
           <ContentColumn marginTop={8}>
             <UnclaimData variant="small">---</UnclaimData>
           </ContentColumn>
           <ContentColumn marginTop={16}>
             <Description>
-              Please connect your wallet to check for unclaimed $RIBBON
+              Please connect your wallet to check for unclaimed $RBN
             </Description>
           </ContentColumn>
           <ContentColumn marginTop="auto">{readMore}</ContentColumn>
@@ -315,7 +315,7 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
       <>
         {renderTopLogo()}
         <ContentColumn marginTop={64}>
-          <UnclaimLabel>UNCLAIMED $RIBBON</UnclaimLabel>
+          <UnclaimLabel>UNCLAIMED $RBN</UnclaimLabel>
         </ContentColumn>
         <ContentColumn marginTop={8}>
           <UnclaimData variant="big">{airdropAmountStr}</UnclaimData>
@@ -336,7 +336,7 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
             onClick={onClaim}
             disabled={!airdrop?.total}
           >
-            CLAIM $RIBBON
+            CLAIM $RBN
           </ActionButton>
         </ContentColumn>
       </>
@@ -388,7 +388,7 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
     () => (
       <>
         <ContentColumn>
-          <UnclaimLabel>UNCLAIMED $RIBBON</UnclaimLabel>
+          <UnclaimLabel>UNCLAIMED $RBN</UnclaimLabel>
         </ContentColumn>
         <ContentColumn marginTop={8}>
           <UnclaimData variant="small">{airdropAmountStr}</UnclaimData>
@@ -410,7 +410,7 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
     <>
       {renderInfo()}
       <BackgroundContainer>
-        <BackgroundText>$RIBBON</BackgroundText>
+        <BackgroundText>$RBN AIRDROP</BackgroundText>
       </BackgroundContainer>
       <AnimatePresence>
         {showBreakdown && (

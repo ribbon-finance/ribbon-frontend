@@ -35,7 +35,7 @@ const AirdropButton = () => {
 
   const amountStr = useMemo(() => {
     if (!account) {
-      return "$RIBBON";
+      return "$RBN";
     }
 
     if (!airdrop) {
