@@ -174,7 +174,11 @@ const BreakdownPillToken = styled(Subtitle)<{ variant: BreakdownVariant }>`
   margin-left: auto;
 `;
 
-const AirdropInfo = () => {
+interface AirdropInfoProps {
+  onClaim: () => void;
+}
+
+const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
   const { account } = useWeb3React();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showBreakdown, setShowBreakdown] = useState(false);
@@ -257,11 +261,24 @@ const AirdropInfo = () => {
           </LearnMoreLink>
         </ContentColumn>
         <ContentColumn>
-          <ActionButton className="btn py-3 mb-2">CLAIM $RIBBON</ActionButton>
+          <ActionButton
+            className="btn py-3 mb-2"
+            onClick={onClaim}
+            disabled={!proof || proof.amount.isZero()}
+          >
+            CLAIM $RIBBON
+          </ActionButton>
         </ContentColumn>
       </>
     );
-  }, [account, renderTopLogo, setShowConnectModal, airdropAmountStr]);
+  }, [
+    account,
+    renderTopLogo,
+    setShowConnectModal,
+    airdropAmountStr,
+    onClaim,
+    proof,
+  ]);
 
   const renderBreakdownPill = useCallback(
     (

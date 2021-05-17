@@ -1,14 +1,15 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 
 import { BaseModal, BaseModalHeader } from "shared/lib/designSystem";
 
 import AirdropInfo from "./AirdropInfo";
-import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
 import MenuButton from "../Header/MenuButton";
+import { AnimatePresence, motion } from "framer-motion";
+import AirdropClaim from "./AirdropClaim";
 
 const StyledModal = styled(BaseModal)`
   .modal-dialog {
@@ -22,9 +23,15 @@ const StyledModal = styled(BaseModal)`
   }
 `;
 
-const ModalContent = styled(Modal.Body)`
+const ModalContent = styled(motion.div)`
   display: flex;
   flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  padding: 16px;
 `;
 
 const CloseButton = styled.div`
@@ -48,29 +55,60 @@ interface AirdropModalProps {
 }
 
 const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
-  const [steps] = useState<"info">("info");
+  const [steps, setSteps] = useState<"info" | "claim">("info");
 
   const content = useMemo(() => {
     switch (steps) {
       case "info":
-        return <AirdropInfo />;
+        return <AirdropInfo onClaim={() => setSteps("claim")} />;
+      case "claim":
+        return <AirdropClaim />;
     }
   }, [steps]);
 
+  const handleClose = useCallback(() => {
+    setSteps("info");
+    onClose();
+  }, [onClose]);
+
   return (
-    <StyledModal show={show} onHide={onClose} centered backdrop={true}>
+    <StyledModal show={show} onHide={handleClose} centered backdrop={true}>
       <BaseModalHeader>
-        {" "}
-        <CloseButton role="button" onClick={onClose}>
+        <CloseButton role="button" onClick={handleClose}>
           <MenuButton
             isOpen={true}
-            onToggle={onClose}
+            onToggle={handleClose}
             size={20}
             color={"#FFFFFFA3"}
           />
         </CloseButton>
       </BaseModalHeader>
-      <ModalContent>{content}</ModalContent>
+      <Modal.Body>
+        <AnimatePresence initial={false}>
+          <ModalContent
+            key={steps}
+            transition={{
+              duration: 0.25,
+              type: "keyframes",
+              ease: "easeInOut",
+            }}
+            initial={{
+              x: 50,
+              opacity: 0,
+            }}
+            animate={{
+              x: 0,
+              opacity: 1,
+            }}
+            exit={{
+              x: -50,
+              opacity: 0,
+            }}
+          >
+            {content}
+          </ModalContent>
+        </AnimatePresence>
+      </Modal.Body>
     </StyledModal>
   );
 };
