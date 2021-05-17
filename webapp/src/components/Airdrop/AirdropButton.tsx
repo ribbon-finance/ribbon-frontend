@@ -6,6 +6,8 @@ import Logo from "shared/lib/assets/icons/logo";
 import { Title } from "shared/lib/designSystem";
 import AirdropModal from "./AirdropModal";
 import colors from "shared/lib/designSystem/colors";
+import useAirdropProof from "../../hooks/useAirdropProof";
+import { formatUnits } from "@ethersproject/units";
 
 const LogoContainer = styled.div`
   display: flex;
@@ -28,21 +30,21 @@ const ClaimAmount = styled(Title)`
 
 const AirdropButton = () => {
   // Update the set amount logic
-  const [amount] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const { account } = useWeb3React();
+  const proof = useAirdropProof();
 
   const amountStr = useMemo(() => {
     if (!account) {
       return "$RIBBON";
     }
 
-    if (!amount) {
+    if (!proof) {
       return "0.00";
     }
 
-    return amount;
-  }, [amount, account]);
+    return parseFloat(parseFloat(formatUnits(proof.amount, 18)).toFixed(2));
+  }, [account, proof]);
 
   return (
     <>
@@ -56,7 +58,6 @@ const AirdropButton = () => {
       <AirdropModal
         show={showModal}
         onClose={() => {
-          console.log("lol");
           setShowModal(false);
         }}
       />

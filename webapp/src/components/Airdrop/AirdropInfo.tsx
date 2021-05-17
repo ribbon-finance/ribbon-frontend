@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import styled, { keyframes } from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
@@ -20,6 +20,8 @@ import {
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import theme from "shared/lib/designSystem/theme";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
+import useAirdropProof from "../../hooks/useAirdropProof";
+import { formatUnits } from "@ethersproject/units";
 
 type BreakdownVariant = "charm" | "hegic" | "opyn" | "discord" | "ribbon";
 
@@ -176,6 +178,15 @@ const AirdropInfo = () => {
   const { account } = useWeb3React();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showBreakdown, setShowBreakdown] = useState(false);
+  const proof = useAirdropProof();
+
+  const airdropAmountStr = useMemo(() => {
+    if (!proof) {
+      return "0";
+    }
+
+    return parseFloat(parseFloat(formatUnits(proof.amount, 18)).toFixed(2));
+  }, [proof]);
 
   const renderTopLogo = useCallback(
     () => (
@@ -228,7 +239,7 @@ const AirdropInfo = () => {
           <UnclaimLabel>UNCLAIMED $RIBBON</UnclaimLabel>
         </ContentColumn>
         <ContentColumn marginTop={8}>
-          <UnclaimData variant="big">0</UnclaimData>
+          <UnclaimData variant="big">{airdropAmountStr}</UnclaimData>
         </ContentColumn>
         <ContentColumn marginTop={16}>
           <ViewBreakdownPill
@@ -250,7 +261,7 @@ const AirdropInfo = () => {
         </ContentColumn>
       </>
     );
-  }, [account, renderTopLogo, setShowConnectModal]);
+  }, [account, renderTopLogo, setShowConnectModal, airdropAmountStr]);
 
   const renderBreakdownPill = useCallback(
     (
@@ -278,7 +289,7 @@ const AirdropInfo = () => {
           <UnclaimLabel>UNCLAIMED $RIBBON</UnclaimLabel>
         </ContentColumn>
         <ContentColumn marginTop={8}>
-          <UnclaimData variant="small">320</UnclaimData>
+          <UnclaimData variant="small">{airdropAmountStr}</UnclaimData>
         </ContentColumn>
         {renderBreakdownPill("Charm Option Seller", 15, false, "charm", true)}
         {renderBreakdownPill("HEGIC OPTION SELLER", 15, true, "hegic", false)}
@@ -301,7 +312,7 @@ const AirdropInfo = () => {
         </HideBreakdownButton>
       </>
     ),
-    [renderBreakdownPill]
+    [renderBreakdownPill, airdropAmountStr]
   );
 
   return (
