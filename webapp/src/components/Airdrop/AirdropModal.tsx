@@ -127,6 +127,11 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
     }
   }, [onClose, step]);
 
+  const handleClose = useCallback(() => {
+    setSteps("info");
+    onClose();
+  }, [onClose]);
+
   return (
     <StyledModal show={show} onHide={handleClose} centered backdrop={true}>
       <BaseModalHeader>
