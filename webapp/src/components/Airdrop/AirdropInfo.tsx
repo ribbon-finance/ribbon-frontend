@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import styled, { keyframes } from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
+import currency from "currency.js";
 
 import Logo from "shared/lib/assets/icons/logo";
 import {
@@ -129,8 +130,8 @@ const UnclaimData = styled(Title)<{ variant: "big" | "small" }>`
     switch (props.variant) {
       case "big":
         return `
-          font-size: 96px;
-          line-height: 96px;
+          font-size: 84px;
+          line-height: 84px;
         `;
       case "small":
         return `
@@ -180,6 +181,7 @@ const HideBreakdownButton = styled.div`
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: 48px;
   color: ${colors.text};
+  z-index: 10;
 `;
 
 const BreakdownPill = styled.div<{
@@ -256,7 +258,7 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
       return "0";
     }
 
-    return airdrop.total;
+    return airdrop.total.toLocaleString();
   }, [airdrop]);
 
   const renderTopLogo = useCallback(
@@ -363,7 +365,9 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
         <BreakdownPill variant={variant} entitled={entitled}>
           <BreakdwonPillIndicator variant={variant} />
           <Subtitle>{getAirdropTitle(variant)}</Subtitle>
-          <BreakdownPillToken variant={variant}>{token} BRN</BreakdownPillToken>
+          <BreakdownPillToken variant={variant}>
+            {token.toLocaleString()} BRN
+          </BreakdownPillToken>
         </BreakdownPill>
       </ContentColumn>
     ),
@@ -395,7 +399,7 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
           <UnclaimData variant="small">{airdropAmountStr}</UnclaimData>
         </ContentColumn>
         {renderBreakdownPills()}
-        <ContentColumn marginTop={24}>{readMore}</ContentColumn>
+        <ContentColumn marginTop="auto">{readMore}</ContentColumn>
         <HideBreakdownButton
           role="button"
           onClick={() => setShowBreakdown(false)}

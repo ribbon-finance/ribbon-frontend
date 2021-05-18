@@ -32,10 +32,9 @@ const useAirdrop = () => {
 
     const airdropClaim = (proof as ProofObj)["claims"][account];
     const airdropBreakdown = Object.fromEntries(
-      Object.keys(breakdown).map((key) => [
-        [key],
-        breakdown[key as AirdropBreakDownType][account],
-      ])
+      Object.keys(breakdown)
+        .map((key) => [[key], breakdown[key as AirdropBreakDownType][account]])
+        .filter((entry) => entry[1])
     );
     const total = airdrop[account];
 
