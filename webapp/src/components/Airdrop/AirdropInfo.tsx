@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import styled, { keyframes } from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
-import currency from "currency.js";
 
 import Logo from "shared/lib/assets/icons/logo";
 import {
@@ -223,7 +222,6 @@ const BackgroundContainer = styled.div`
   width: 100%;
   height: calc(100%);
   padding: 0 16px;
-  overflow: hidden;
 `;
 
 const marquee = keyframes`

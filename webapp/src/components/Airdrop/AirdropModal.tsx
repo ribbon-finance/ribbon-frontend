@@ -20,6 +20,7 @@ const StyledModal = styled(BaseModal)`
 
   .modal-content {
     min-height: 580px;
+    overflow: hidden;
   }
 `;
 
@@ -56,32 +57,37 @@ interface AirdropModalProps {
 
 const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
   const [steps, setSteps] = useState<"info" | "claim">("info");
+  const [canClose, setCanClose] = useState(true);
 
   const content = useMemo(() => {
     switch (steps) {
       case "info":
         return <AirdropInfo onClaim={() => setSteps("claim")} />;
       case "claim":
-        return <AirdropClaim />;
+        return <AirdropClaim setCanModalClose={setCanClose} />;
     }
   }, [steps]);
 
   const handleClose = useCallback(() => {
-    setSteps("info");
+    if (!canClose) return;
+
     onClose();
-  }, [onClose]);
+    setSteps("info");
+  }, [onClose, canClose]);
 
   return (
     <StyledModal show={show} onHide={handleClose} centered backdrop={true}>
       <BaseModalHeader>
-        <CloseButton role="button" onClick={handleClose}>
-          <MenuButton
-            isOpen={true}
-            onToggle={handleClose}
-            size={20}
-            color={"#FFFFFFA3"}
-          />
-        </CloseButton>
+        {canClose && (
+          <CloseButton role="button" onClick={handleClose}>
+            <MenuButton
+              isOpen={true}
+              onToggle={handleClose}
+              size={20}
+              color={"#FFFFFFA3"}
+            />
+          </CloseButton>
+        )}
       </BaseModalHeader>
       <Modal.Body>
         <AnimatePresence initial={false}>
