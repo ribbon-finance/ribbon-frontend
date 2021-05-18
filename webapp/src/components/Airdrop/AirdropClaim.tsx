@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import styled, { css, keyframes } from "styled-components";
 
 import { PrimaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { Waves } from "shared/lib/assets";
+import Logo from "shared/lib/assets/icons/logo";
+import Lightning from "../Common/Lightning";
 
 const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
   display: flex;
@@ -74,20 +76,30 @@ const changingColorBackground = keyframes`
   }
 `;
 
-const Pole = styled.div<{ animate?: boolean }>`
+const Pole = styled.div<{ type?: "animate" | "ribbon" }>`
   width: 160px;
   height: 320px;
-  background: #ffffff0a;
   border-radius: ${theme.border.radius};
 
   ${(props) => {
-    if (!props.animate) {
-      return null;
+    switch (props.type) {
+      case "animate":
+        return css`
+          animation: 12s ${changingColorBackground} linear infinite;
+        `;
+      case "ribbon":
+        return `
+          box-shadow: 16px 24px 160px ${colors.products.yield};
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        `;
+      default:
+        return `
+          background: #ffffff0a;
+        `;
     }
-
-    return css`
-      animation: 12s ${changingColorBackground} linear infinite;
-    `;
   }}
 `;
 
@@ -156,31 +168,67 @@ const ColorChangingWaves = styled(Waves)`
   }
 `;
 
+const PoleLogo = styled(Logo)`
+  min-width: 500px;
+  min-height: 500px;
+  margin-top: 50px;
+`;
+
 interface AirdropClaimProps {
-  setCanModalClose: React.Dispatch<React.SetStateAction<boolean>>;
+  step: "claim" | "claiming" | "claimed";
+  setStep: React.Dispatch<
+    React.SetStateAction<"info" | "claim" | "claiming" | "claimed">
+  >;
 }
 
-const AirdropClaim: React.FC<AirdropClaimProps> = ({ setCanModalClose }) => {
-  const [claiming, setClaiming] = useState(false);
-
+const AirdropClaim: React.FC<AirdropClaimProps> = ({ step, setStep }) => {
+  // TODO: Should replace with actual claiming steps
   useEffect(() => {
-    setTimeout(() => {
-      setClaiming(true);
-    }, 5000);
-  }, []);
+    const timer = setTimeout(() => {
+      if (step === "claim") {
+        setStep("claiming");
+      } else if (step === "claiming") {
+        setStep("claimed");
+      }
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [setStep, step]);
 
-  useEffect(() => {
-    setCanModalClose(claiming ? false : true);
+  const renderLightning = useCallback(
+    () => (
+      <>
+        <Lightning height={12} width={80} left={183} top={48} />
+        <Lightning height={12} width={40} left={24} top={152} />
+        <Lightning height={12} width={24} left={319} top={232} />
+        <Lightning height={12} width={64} left={0} top={362} />
+        <Lightning height={12} width={16} left={276} top={426} />
+      </>
+    ),
+    []
+  );
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [claiming]);
-
-  return (
-    <>
-      {claiming ? (
+  switch (step) {
+    case "claim":
+      return (
+        <>
+          <ContentColumn marginTop={-24}>
+            <Title>CONFIRM Transaction</Title>
+          </ContentColumn>
+          <ContentColumn marginTop="auto">
+            <PrimaryText className="text-center">
+              Confirm this transaction in your wallet
+            </PrimaryText>
+          </ContentColumn>
+          <FloatingContainer>
+            <Pole />
+          </FloatingContainer>
+        </>
+      );
+    case "claiming":
+      return (
         <>
           <FloatingContainer>
-            <Pole animate={true} />
+            <Pole type="animate" />
           </FloatingContainer>
           <FloatingContainer>
             <ClaimingText>Claiming $RBN</ClaimingText>
@@ -189,21 +237,33 @@ const AirdropClaim: React.FC<AirdropClaimProps> = ({ setCanModalClose }) => {
             <ColorChangingWaves />
           </ContentColumn>
         </>
-      ) : (
+      );
+    case "claimed":
+      return (
         <>
           <ContentColumn marginTop={-24}>
-            <Title>CONFIRM Transaction</Title>
+            <Title>$RBN CLAIMED</Title>
           </ContentColumn>
           <ContentColumn marginTop="auto">
-            <PrimaryText>Confirm this transaction in your wallet</PrimaryText>
+            <PrimaryText className="text-center">
+              Thank you for being part of the community!
+            </PrimaryText>
           </ContentColumn>
           <FloatingContainer>
-            <Pole />
+            <Pole type="ribbon">
+              <PoleLogo />
+            </Pole>
           </FloatingContainer>
+          {renderLightning()}
         </>
-      )}
-    </>
-  );
+      );
+    default:
+      return (
+        <FloatingContainer>
+          <Pole />
+        </FloatingContainer>
+      );
+  }
 };
 
 export default AirdropClaim;

@@ -56,29 +56,32 @@ interface AirdropModalProps {
 }
 
 const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
-  const [steps, setSteps] = useState<"info" | "claim">("info");
-  const [canClose, setCanClose] = useState(true);
+  const [step, setStep] = useState<"info" | "claim" | "claiming" | "claimed">(
+    "info"
+  );
 
   const content = useMemo(() => {
-    switch (steps) {
+    switch (step) {
       case "info":
-        return <AirdropInfo onClaim={() => setSteps("claim")} />;
+        return <AirdropInfo onClaim={() => setStep("claim")} />;
       case "claim":
-        return <AirdropClaim setCanModalClose={setCanClose} />;
+      case "claiming":
+      case "claimed":
+        return <AirdropClaim step={step} setStep={setStep} />;
     }
-  }, [steps]);
+  }, [step]);
 
   const handleClose = useCallback(() => {
-    if (!canClose) return;
-
     onClose();
-    setSteps("info");
-  }, [onClose, canClose]);
+    if (step === "claim" || step === "claimed") {
+      setStep("info");
+    }
+  }, [onClose, step]);
 
   return (
     <StyledModal show={show} onHide={handleClose} centered backdrop={true}>
       <BaseModalHeader>
-        {canClose && (
+        {
           <CloseButton role="button" onClick={handleClose}>
             <MenuButton
               isOpen={true}
@@ -87,29 +90,41 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
               color={"#FFFFFFA3"}
             />
           </CloseButton>
-        )}
+        }
       </BaseModalHeader>
       <Modal.Body>
         <AnimatePresence initial={false}>
           <ModalContent
-            key={steps}
+            key={step}
             transition={{
               duration: 0.25,
               type: "keyframes",
               ease: "easeInOut",
             }}
-            initial={{
-              x: 50,
-              opacity: 0,
-            }}
-            animate={{
-              x: 0,
-              opacity: 1,
-            }}
-            exit={{
-              x: -50,
-              opacity: 0,
-            }}
+            initial={
+              step === "info" || step === "claim"
+                ? {
+                    x: 50,
+                    opacity: 0,
+                  }
+                : {}
+            }
+            animate={
+              step === "info" || step === "claim"
+                ? {
+                    x: 0,
+                    opacity: 1,
+                  }
+                : {}
+            }
+            exit={
+              step === "info"
+                ? {
+                    x: -50,
+                    opacity: 0,
+                  }
+                : {}
+            }
           >
             {content}
           </ModalContent>
