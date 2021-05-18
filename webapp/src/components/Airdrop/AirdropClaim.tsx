@@ -236,6 +236,14 @@ const AirdropClaim: React.FC<AirdropClaimProps> = ({
     case "claiming":
       return (
         <>
+          <ContentColumn marginTop={-24}>
+            <Title>CONFIRM Transaction</Title>
+          </ContentColumn>
+          <ContentColumn marginTop="auto">
+            <PrimaryText className="text-center">
+              Confirm this transaction in your wallet
+            </PrimaryText>
+          </ContentColumn>
           <FloatingContainer>
             <Pole type="animate" />
           </FloatingContainer>
