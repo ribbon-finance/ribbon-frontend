@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { SecondaryText, Subtitle, Title } from "shared/lib/designSystem";
+import { SecondaryText, Subtitle } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import styled from "styled-components";
