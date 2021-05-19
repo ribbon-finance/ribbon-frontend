@@ -190,7 +190,7 @@ const AirdropClaim: React.FC<AirdropClaimProps> = ({ step, setStep }) => {
       } else if (step === "claiming") {
         setStep("claimed");
       }
-    }, 1000);
+    }, 5000);
     return () => clearTimeout(timer);
   }, [setStep, step]);
 

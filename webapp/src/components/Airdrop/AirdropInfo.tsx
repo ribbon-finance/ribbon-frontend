@@ -21,47 +21,7 @@ import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import theme from "shared/lib/designSystem/theme";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import useAirdrop from "../../hooks/useAirdrop";
-import { AirdropBreakDownType } from "../../models/airdrop";
-
-const getAirdropColor = (variant: AirdropBreakDownType) => {
-  switch (variant) {
-    case "charm":
-      return colors.brands.charm;
-    case "discord":
-      return colors.brands.discord;
-    case "hegic":
-      return colors.brands.hegic;
-    case "opyn":
-      return colors.brands.opyn;
-    case "primitive":
-      return colors.brands.primitive;
-    case "strangle":
-    case "thetaVaultBase":
-    case "thetaVaultBonus":
-      return colors.red;
-  }
-};
-
-const getAirdropTitle = (variant: AirdropBreakDownType) => {
-  switch (variant) {
-    case "charm":
-      return "Charm Seller";
-    case "discord":
-      return "DISCORD CONTRIBUTER";
-    case "hegic":
-      return "HEGIC LP";
-    case "opyn":
-      return "OPYN SELLER";
-    case "primitive":
-      return "Primitive LP";
-    case "strangle":
-      return "STRANGLE BUYER";
-    case "thetaVaultBase":
-      return "VAULT USER";
-    case "thetaVaultBonus":
-      return "VAULT USER BONUS";
-  }
-};
+import AirdropBreakdown from "./AirdropBreakdown";
 
 const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
   display: flex;
@@ -181,35 +141,6 @@ const HideBreakdownButton = styled.div`
   border-radius: 48px;
   color: ${colors.text};
   z-index: 10;
-`;
-
-const BreakdownPill = styled.div<{
-  variant: AirdropBreakDownType;
-  entitled: boolean;
-}>`
-  display: flex;
-  align-items: center;
-  padding: 8px 12px;
-  margin: 0 16px;
-  width: 100%;
-  background: ${(props) => getAirdropColor(props.variant)}14;
-  border: ${theme.border.width} ${theme.border.style}
-    ${(props) => getAirdropColor(props.variant)};
-  border-radius: 100px;
-  opacity: ${(props) => (props.entitled ? "1" : "0.24")};
-`;
-
-const BreakdwonPillIndicator = styled.div<{ variant: AirdropBreakDownType }>`
-  height: 8px;
-  width: 8px;
-  background: ${(props) => getAirdropColor(props.variant)};
-  margin-right: 8px;
-  border-radius: 4px;
-`;
-
-const BreakdownPillToken = styled(Subtitle)<{ variant: AirdropBreakDownType }>`
-  color: ${(props) => getAirdropColor(props.variant)};
-  margin-left: auto;
 `;
 
 const BackgroundContainer = styled.div`
@@ -352,51 +283,18 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
     readMore,
   ]);
 
-  const renderBreakdownPill = useCallback(
-    (
-      token: number,
-      entitled: boolean,
-      variant: AirdropBreakDownType,
-      index: number
-    ) => (
-      <ContentColumn marginTop={index === 0 ? 24 : 16} key={index}>
-        <BreakdownPill variant={variant} entitled={entitled}>
-          <BreakdwonPillIndicator variant={variant} />
-          <Subtitle>{getAirdropTitle(variant)}</Subtitle>
-          <BreakdownPillToken variant={variant}>
-            {token.toLocaleString()} BRN
-          </BreakdownPillToken>
-        </BreakdownPill>
-      </ContentColumn>
-    ),
-    []
-  );
-
-  const renderBreakdownPills = useCallback(() => {
-    if (!airdrop) {
-      return <></>;
-    }
-
-    return Object.keys(airdrop.breakdown).map((key, index) =>
-      renderBreakdownPill(
-        airdrop.breakdown[key] || 0,
-        airdrop.breakdown[key],
-        key as AirdropBreakDownType,
-        index
-      )
-    );
-  }, [airdrop, renderBreakdownPill]);
-
   const renderBreakdown = useCallback(
     () => (
       <>
         <ContentColumn>
           <UnclaimLabel>UNCLAIMED $RBN</UnclaimLabel>
         </ContentColumn>
-        <ContentColumn marginTop={8}>
+        <ContentColumn marginTop={24}>
           <UnclaimData variant="small">{airdropAmountStr}</UnclaimData>
         </ContentColumn>
-        {renderBreakdownPills()}
+        <ContentColumn>
+          <AirdropBreakdown />
+        </ContentColumn>
         <ContentColumn marginTop="auto">{readMore}</ContentColumn>
         <HideBreakdownButton
           role="button"
@@ -406,7 +304,7 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
         </HideBreakdownButton>
       </>
     ),
-    [airdropAmountStr, readMore, renderBreakdownPills]
+    [airdropAmountStr, readMore]
   );
 
   return (
