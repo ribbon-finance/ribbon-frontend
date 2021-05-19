@@ -2,23 +2,21 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer } from "ethers";
+import { Contract, Signer, utils } from "ethers";
 import { Provider } from "@ethersproject/providers";
-
-import type { RibbonCoveredCall } from "../RibbonCoveredCall";
-
-export class RibbonCoveredCall__factory {
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): RibbonCoveredCall {
-    return new Contract(address, _abi, signerOrProvider) as RibbonCoveredCall;
-  }
-}
+import type {
+  RibbonCoveredCall,
+  RibbonCoveredCallInterface,
+} from "../RibbonCoveredCall";
 
 const _abi = [
   {
     inputs: [
+      {
+        internalType: "address",
+        name: "_asset",
+        type: "address",
+      },
       {
         internalType: "address",
         name: "_factory",
@@ -38,6 +36,16 @@ const _abi = [
         internalType: "address",
         name: "_swapContract",
         type: "address",
+      },
+      {
+        internalType: "uint8",
+        name: "_tokenDecimals",
+        type: "uint8",
+      },
+      {
+        internalType: "uint256",
+        name: "_minimumSupply",
+        type: "uint256",
       },
     ],
     stateMutability: "nonpayable",
@@ -261,6 +269,38 @@ const _abi = [
     ],
     name: "Withdraw",
     type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "oldFee",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "newFee",
+        type: "uint256",
+      },
+    ],
+    name: "WithdrawalFeeSet",
+    type: "event",
+  },
+  {
+    inputs: [],
+    name: "MINIMUM_SUPPLY",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
@@ -494,7 +534,7 @@ const _abi = [
         type: "uint8",
       },
     ],
-    stateMutability: "pure",
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -615,11 +655,6 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "_asset",
-        type: "address",
-      },
-      {
-        internalType: "address",
         name: "_owner",
         type: "address",
       },
@@ -632,6 +667,16 @@ const _abi = [
         internalType: "uint256",
         name: "_initCap",
         type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "_tokenName",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_tokenSymbol",
+        type: "string",
       },
     ],
     name: "initialize",
@@ -792,6 +837,164 @@ const _abi = [
   {
     inputs: [
       {
+        components: [
+          {
+            internalType: "uint256",
+            name: "nonce",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "expiry",
+            type: "uint256",
+          },
+          {
+            components: [
+              {
+                internalType: "bytes4",
+                name: "kind",
+                type: "bytes4",
+              },
+              {
+                internalType: "address",
+                name: "wallet",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "token",
+                type: "address",
+              },
+              {
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "id",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct Types.Party",
+            name: "signer",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "bytes4",
+                name: "kind",
+                type: "bytes4",
+              },
+              {
+                internalType: "address",
+                name: "wallet",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "token",
+                type: "address",
+              },
+              {
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "id",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct Types.Party",
+            name: "sender",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "bytes4",
+                name: "kind",
+                type: "bytes4",
+              },
+              {
+                internalType: "address",
+                name: "wallet",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "token",
+                type: "address",
+              },
+              {
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "id",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct Types.Party",
+            name: "affiliate",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "address",
+                name: "signatory",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "validator",
+                type: "address",
+              },
+              {
+                internalType: "bytes1",
+                name: "version",
+                type: "bytes1",
+              },
+              {
+                internalType: "uint8",
+                name: "v",
+                type: "uint8",
+              },
+              {
+                internalType: "bytes32",
+                name: "r",
+                type: "bytes32",
+              },
+              {
+                internalType: "bytes32",
+                name: "s",
+                type: "bytes32",
+              },
+            ],
+            internalType: "struct Types.Signature",
+            name: "signature",
+            type: "tuple",
+          },
+        ],
+        internalType: "struct Types.Order",
+        name: "order",
+        type: "tuple",
+      },
+    ],
+    name: "sellOptions",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "newCap",
         type: "uint256",
@@ -882,7 +1085,7 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "withdrawalFee",
+        name: "newWithdrawalFee",
         type: "uint256",
       },
     ],
@@ -1047,3 +1250,16 @@ const _abi = [
     type: "function",
   },
 ];
+
+export class RibbonCoveredCall__factory {
+  static readonly abi = _abi;
+  static createInterface(): RibbonCoveredCallInterface {
+    return new utils.Interface(_abi) as RibbonCoveredCallInterface;
+  }
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): RibbonCoveredCall {
+    return new Contract(address, _abi, signerOrProvider) as RibbonCoveredCall;
+  }
+}

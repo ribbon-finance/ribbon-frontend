@@ -2,7 +2,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { IERC20 } from "./IERC20";
+export type { MerkleDistributor } from "./MerkleDistributor";
 export type { RibbonCoveredCall } from "./RibbonCoveredCall";
 
 export { IERC20__factory } from "./factories/IERC20__factory";
+export { MerkleDistributor__factory } from "./factories/MerkleDistributor__factory";
 export { RibbonCoveredCall__factory } from "./factories/RibbonCoveredCall__factory";

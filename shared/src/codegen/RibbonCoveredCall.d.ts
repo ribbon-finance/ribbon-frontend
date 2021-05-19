@@ -9,7 +9,7 @@ import {
   BigNumber,
   BigNumberish,
   PopulatedTransaction,
-  Contract,
+  BaseContract,
   ContractTransaction,
   Overrides,
   PayableOverrides,
@@ -22,6 +22,7 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface RibbonCoveredCallInterface extends ethers.utils.Interface {
   functions: {
+    "MINIMUM_SUPPLY()": FunctionFragment;
     "SWAP_CONTRACT()": FunctionFragment;
     "USDC()": FunctionFragment;
     "WETH()": FunctionFragment;
@@ -45,7 +46,7 @@ interface RibbonCoveredCallInterface extends ethers.utils.Interface {
     "factory()": FunctionFragment;
     "feeRecipient()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
-    "initialize(address,address,address,uint256)": FunctionFragment;
+    "initialize(address,address,uint256,string,string)": FunctionFragment;
     "instantWithdrawalFee()": FunctionFragment;
     "lockedAmount()": FunctionFragment;
     "lockedRatio()": FunctionFragment;
@@ -58,6 +59,7 @@ interface RibbonCoveredCallInterface extends ethers.utils.Interface {
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "rollToNextOption()": FunctionFragment;
+    "sellOptions(tuple)": FunctionFragment;
     "setCap(uint256)": FunctionFragment;
     "setFeeRecipient(address)": FunctionFragment;
     "setManager(address)": FunctionFragment;
@@ -74,6 +76,10 @@ interface RibbonCoveredCallInterface extends ethers.utils.Interface {
     "withdrawETH(uint256)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "MINIMUM_SUPPLY",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "SWAP_CONTRACT",
     values?: undefined
@@ -141,7 +147,7 @@ interface RibbonCoveredCallInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [string, string, string, BigNumberish]
+    values: [string, string, BigNumberish, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "instantWithdrawalFee",
@@ -181,6 +187,44 @@ interface RibbonCoveredCallInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "rollToNextOption",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "sellOptions",
+    values: [
+      {
+        nonce: BigNumberish;
+        expiry: BigNumberish;
+        signer: {
+          kind: BytesLike;
+          wallet: string;
+          token: string;
+          amount: BigNumberish;
+          id: BigNumberish;
+        };
+        sender: {
+          kind: BytesLike;
+          wallet: string;
+          token: string;
+          amount: BigNumberish;
+          id: BigNumberish;
+        };
+        affiliate: {
+          kind: BytesLike;
+          wallet: string;
+          token: string;
+          amount: BigNumberish;
+          id: BigNumberish;
+        };
+        signature: {
+          signatory: string;
+          validator: string;
+          version: BytesLike;
+          v: BigNumberish;
+          r: BytesLike;
+          s: BytesLike;
+        };
+      }
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "setCap",
@@ -243,6 +287,10 @@ interface RibbonCoveredCallInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "MINIMUM_SUPPLY",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "SWAP_CONTRACT",
     data: BytesLike
@@ -333,6 +381,10 @@ interface RibbonCoveredCallInterface extends ethers.utils.Interface {
     functionFragment: "rollToNextOption",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "sellOptions",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setCap", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setFeeRecipient",
@@ -385,6 +437,7 @@ interface RibbonCoveredCallInterface extends ethers.utils.Interface {
     "OwnershipTransferred(address,address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
     "Withdraw(address,uint256,uint256,uint256)": EventFragment;
+    "WithdrawalFeeSet(uint256,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
@@ -396,9 +449,10 @@ interface RibbonCoveredCallInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "WithdrawalFeeSet"): EventFragment;
 }
 
-export class RibbonCoveredCall extends Contract {
+export class RibbonCoveredCall extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -442,39 +496,22 @@ export class RibbonCoveredCall extends Contract {
   interface: RibbonCoveredCallInterface;
 
   functions: {
-    SWAP_CONTRACT(overrides?: CallOverrides): Promise<[string]>;
+    MINIMUM_SUPPLY(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "SWAP_CONTRACT()"(overrides?: CallOverrides): Promise<[string]>;
+    SWAP_CONTRACT(overrides?: CallOverrides): Promise<[string]>;
 
     USDC(overrides?: CallOverrides): Promise<[string]>;
 
-    "USDC()"(overrides?: CallOverrides): Promise<[string]>;
-
     WETH(overrides?: CallOverrides): Promise<[string]>;
-
-    "WETH()"(overrides?: CallOverrides): Promise<[string]>;
 
     accountVaultBalance(
       account: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    "accountVaultBalance(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     adapter(overrides?: CallOverrides): Promise<[string]>;
 
-    "adapter()"(overrides?: CallOverrides): Promise<[string]>;
-
     allowance(
-      owner: string,
-      spender: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    "allowance(address,address)"(
       owner: string,
       spender: string,
       overrides?: CallOverrides
@@ -486,52 +523,24 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "approve(address,uint256)"(
-      spender: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     asset(overrides?: CallOverrides): Promise<[string]>;
-
-    "asset()"(overrides?: CallOverrides): Promise<[string]>;
 
     assetAmountToShares(
       assetAmount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    "assetAmountToShares(uint256)"(
-      assetAmount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     assetBalance(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "assetBalance()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     balanceOf(account: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "balanceOf(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     cap(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "cap()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     currentOption(overrides?: CallOverrides): Promise<[string]>;
 
-    "currentOption()"(overrides?: CallOverrides): Promise<[string]>;
-
     currentOptionExpiry(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "currentOptionExpiry()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     decimals(overrides?: CallOverrides): Promise<[number]>;
-
-    "decimals()"(overrides?: CallOverrides): Promise<[number]>;
 
     decreaseAllowance(
       spender: string,
@@ -539,22 +548,9 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "decreaseAllowance(address,uint256)"(
-      spender: string,
-      subtractedValue: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     delay(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "delay()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     deposit(
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "deposit(uint256)"(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -563,25 +559,13 @@ export class RibbonCoveredCall extends Contract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "depositETH()"(
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     emergencyWithdrawFromShort(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "emergencyWithdrawFromShort()"(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     factory(overrides?: CallOverrides): Promise<[string]>;
 
-    "factory()"(overrides?: CallOverrides): Promise<[string]>;
-
     feeRecipient(overrides?: CallOverrides): Promise<[string]>;
-
-    "feeRecipient()"(overrides?: CallOverrides): Promise<[string]>;
 
     increaseAllowance(
       spender: string,
@@ -589,79 +573,39 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "increaseAllowance(address,uint256)"(
-      spender: string,
-      addedValue: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     initialize(
-      _asset: string,
       _owner: string,
       _feeRecipient: string,
       _initCap: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "initialize(address,address,address,uint256)"(
-      _asset: string,
-      _owner: string,
-      _feeRecipient: string,
-      _initCap: BigNumberish,
+      _tokenName: string,
+      _tokenSymbol: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     instantWithdrawalFee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "instantWithdrawalFee()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     lockedAmount(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "lockedAmount()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     lockedRatio(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "lockedRatio()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     manager(overrides?: CallOverrides): Promise<[string]>;
-
-    "manager()"(overrides?: CallOverrides): Promise<[string]>;
 
     maxWithdrawAmount(
       account: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    "maxWithdrawAmount(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     maxWithdrawableShares(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "maxWithdrawableShares()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
-    "name()"(overrides?: CallOverrides): Promise<[string]>;
-
     nextOption(overrides?: CallOverrides): Promise<[string]>;
-
-    "nextOption()"(overrides?: CallOverrides): Promise<[string]>;
 
     nextOptionReadyAt(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "nextOptionReadyAt()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     owner(overrides?: CallOverrides): Promise<[string]>;
 
-    "owner()"(overrides?: CallOverrides): Promise<[string]>;
-
     renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "renounceOwnership()"(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -669,16 +613,44 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "rollToNextOption()"(
+    sellOptions(
+      order: {
+        nonce: BigNumberish;
+        expiry: BigNumberish;
+        signer: {
+          kind: BytesLike;
+          wallet: string;
+          token: string;
+          amount: BigNumberish;
+          id: BigNumberish;
+        };
+        sender: {
+          kind: BytesLike;
+          wallet: string;
+          token: string;
+          amount: BigNumberish;
+          id: BigNumberish;
+        };
+        affiliate: {
+          kind: BytesLike;
+          wallet: string;
+          token: string;
+          amount: BigNumberish;
+          id: BigNumberish;
+        };
+        signature: {
+          signatory: string;
+          validator: string;
+          version: BytesLike;
+          v: BigNumberish;
+          r: BytesLike;
+          s: BytesLike;
+        };
+      },
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     setCap(
-      newCap: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "setCap(uint256)"(
       newCap: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -688,17 +660,7 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "setFeeRecipient(address)"(
-      newFeeRecipient: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     setManager(
-      newManager: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "setManager(address)"(
       newManager: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -716,48 +678,18 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "setNextOption((address,address,address,uint256,uint256,uint8,address))"(
-      optionTerms: {
-        underlying: string;
-        strikeAsset: string;
-        collateralAsset: string;
-        expiry: BigNumberish;
-        strikePrice: BigNumberish;
-        optionType: BigNumberish;
-        paymentToken: string;
-      },
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     setWithdrawalFee(
-      withdrawalFee: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "setWithdrawalFee(uint256)"(
-      withdrawalFee: BigNumberish,
+      newWithdrawalFee: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
-    "symbol()"(overrides?: CallOverrides): Promise<[string]>;
-
     totalBalance(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "totalBalance()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "totalSupply()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     transfer(
-      recipient: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "transfer(address,uint256)"(
       recipient: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -770,29 +702,12 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "transferFrom(address,address,uint256)"(
-      sender: string,
-      recipient: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     withdraw(
-      share: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "withdraw(uint256)"(
       share: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -807,60 +722,28 @@ export class RibbonCoveredCall extends Contract {
       }
     >;
 
-    "withdrawAmountWithShares(uint256)"(
-      share: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        amountAfterFee: BigNumber;
-        feeAmount: BigNumber;
-      }
-    >;
-
     withdrawETH(
-      share: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "withdrawETH(uint256)"(
       share: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
 
-  SWAP_CONTRACT(overrides?: CallOverrides): Promise<string>;
+  MINIMUM_SUPPLY(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "SWAP_CONTRACT()"(overrides?: CallOverrides): Promise<string>;
+  SWAP_CONTRACT(overrides?: CallOverrides): Promise<string>;
 
   USDC(overrides?: CallOverrides): Promise<string>;
 
-  "USDC()"(overrides?: CallOverrides): Promise<string>;
-
   WETH(overrides?: CallOverrides): Promise<string>;
-
-  "WETH()"(overrides?: CallOverrides): Promise<string>;
 
   accountVaultBalance(
     account: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  "accountVaultBalance(address)"(
-    account: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   adapter(overrides?: CallOverrides): Promise<string>;
 
-  "adapter()"(overrides?: CallOverrides): Promise<string>;
-
   allowance(
-    owner: string,
-    spender: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "allowance(address,address)"(
     owner: string,
     spender: string,
     overrides?: CallOverrides
@@ -872,52 +755,24 @@ export class RibbonCoveredCall extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "approve(address,uint256)"(
-    spender: string,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   asset(overrides?: CallOverrides): Promise<string>;
-
-  "asset()"(overrides?: CallOverrides): Promise<string>;
 
   assetAmountToShares(
     assetAmount: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  "assetAmountToShares(uint256)"(
-    assetAmount: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   assetBalance(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "assetBalance()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  "balanceOf(address)"(
-    account: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   cap(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "cap()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   currentOption(overrides?: CallOverrides): Promise<string>;
 
-  "currentOption()"(overrides?: CallOverrides): Promise<string>;
-
   currentOptionExpiry(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "currentOptionExpiry()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   decimals(overrides?: CallOverrides): Promise<number>;
-
-  "decimals()"(overrides?: CallOverrides): Promise<number>;
 
   decreaseAllowance(
     spender: string,
@@ -925,22 +780,9 @@ export class RibbonCoveredCall extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "decreaseAllowance(address,uint256)"(
-    spender: string,
-    subtractedValue: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   delay(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "delay()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   deposit(
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "deposit(uint256)"(
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -949,25 +791,13 @@ export class RibbonCoveredCall extends Contract {
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "depositETH()"(
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   emergencyWithdrawFromShort(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "emergencyWithdrawFromShort()"(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   factory(overrides?: CallOverrides): Promise<string>;
 
-  "factory()"(overrides?: CallOverrides): Promise<string>;
-
   feeRecipient(overrides?: CallOverrides): Promise<string>;
-
-  "feeRecipient()"(overrides?: CallOverrides): Promise<string>;
 
   increaseAllowance(
     spender: string,
@@ -975,79 +805,39 @@ export class RibbonCoveredCall extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "increaseAllowance(address,uint256)"(
-    spender: string,
-    addedValue: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   initialize(
-    _asset: string,
     _owner: string,
     _feeRecipient: string,
     _initCap: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "initialize(address,address,address,uint256)"(
-    _asset: string,
-    _owner: string,
-    _feeRecipient: string,
-    _initCap: BigNumberish,
+    _tokenName: string,
+    _tokenSymbol: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   instantWithdrawalFee(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "instantWithdrawalFee()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   lockedAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "lockedAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   lockedRatio(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "lockedRatio()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   manager(overrides?: CallOverrides): Promise<string>;
-
-  "manager()"(overrides?: CallOverrides): Promise<string>;
 
   maxWithdrawAmount(
     account: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  "maxWithdrawAmount(address)"(
-    account: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   maxWithdrawableShares(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "maxWithdrawableShares()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   name(overrides?: CallOverrides): Promise<string>;
 
-  "name()"(overrides?: CallOverrides): Promise<string>;
-
   nextOption(overrides?: CallOverrides): Promise<string>;
-
-  "nextOption()"(overrides?: CallOverrides): Promise<string>;
 
   nextOptionReadyAt(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "nextOptionReadyAt()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   owner(overrides?: CallOverrides): Promise<string>;
 
-  "owner()"(overrides?: CallOverrides): Promise<string>;
-
   renounceOwnership(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "renounceOwnership()"(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1055,16 +845,44 @@ export class RibbonCoveredCall extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "rollToNextOption()"(
+  sellOptions(
+    order: {
+      nonce: BigNumberish;
+      expiry: BigNumberish;
+      signer: {
+        kind: BytesLike;
+        wallet: string;
+        token: string;
+        amount: BigNumberish;
+        id: BigNumberish;
+      };
+      sender: {
+        kind: BytesLike;
+        wallet: string;
+        token: string;
+        amount: BigNumberish;
+        id: BigNumberish;
+      };
+      affiliate: {
+        kind: BytesLike;
+        wallet: string;
+        token: string;
+        amount: BigNumberish;
+        id: BigNumberish;
+      };
+      signature: {
+        signatory: string;
+        validator: string;
+        version: BytesLike;
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
+      };
+    },
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   setCap(
-    newCap: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "setCap(uint256)"(
     newCap: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1074,17 +892,7 @@ export class RibbonCoveredCall extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "setFeeRecipient(address)"(
-    newFeeRecipient: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   setManager(
-    newManager: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "setManager(address)"(
     newManager: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1102,48 +910,18 @@ export class RibbonCoveredCall extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "setNextOption((address,address,address,uint256,uint256,uint8,address))"(
-    optionTerms: {
-      underlying: string;
-      strikeAsset: string;
-      collateralAsset: string;
-      expiry: BigNumberish;
-      strikePrice: BigNumberish;
-      optionType: BigNumberish;
-      paymentToken: string;
-    },
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   setWithdrawalFee(
-    withdrawalFee: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "setWithdrawalFee(uint256)"(
-    withdrawalFee: BigNumberish,
+    newWithdrawalFee: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   symbol(overrides?: CallOverrides): Promise<string>;
 
-  "symbol()"(overrides?: CallOverrides): Promise<string>;
-
   totalBalance(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "totalBalance()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   transfer(
-    recipient: string,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "transfer(address,uint256)"(
     recipient: string,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -1156,29 +934,12 @@ export class RibbonCoveredCall extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "transferFrom(address,address,uint256)"(
-    sender: string,
-    recipient: string,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   transferOwnership(
     newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "transferOwnership(address)"(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   withdraw(
-    share: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "withdraw(uint256)"(
     share: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1190,57 +951,28 @@ export class RibbonCoveredCall extends Contract {
     [BigNumber, BigNumber] & { amountAfterFee: BigNumber; feeAmount: BigNumber }
   >;
 
-  "withdrawAmountWithShares(uint256)"(
-    share: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber] & { amountAfterFee: BigNumber; feeAmount: BigNumber }
-  >;
-
   withdrawETH(
     share: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "withdrawETH(uint256)"(
-    share: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   callStatic: {
-    SWAP_CONTRACT(overrides?: CallOverrides): Promise<string>;
+    MINIMUM_SUPPLY(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "SWAP_CONTRACT()"(overrides?: CallOverrides): Promise<string>;
+    SWAP_CONTRACT(overrides?: CallOverrides): Promise<string>;
 
     USDC(overrides?: CallOverrides): Promise<string>;
 
-    "USDC()"(overrides?: CallOverrides): Promise<string>;
-
     WETH(overrides?: CallOverrides): Promise<string>;
-
-    "WETH()"(overrides?: CallOverrides): Promise<string>;
 
     accountVaultBalance(
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "accountVaultBalance(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     adapter(overrides?: CallOverrides): Promise<string>;
 
-    "adapter()"(overrides?: CallOverrides): Promise<string>;
-
     allowance(
-      owner: string,
-      spender: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "allowance(address,address)"(
       owner: string,
       spender: string,
       overrides?: CallOverrides
@@ -1252,52 +984,24 @@ export class RibbonCoveredCall extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "approve(address,uint256)"(
-      spender: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     asset(overrides?: CallOverrides): Promise<string>;
-
-    "asset()"(overrides?: CallOverrides): Promise<string>;
 
     assetAmountToShares(
       assetAmount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "assetAmountToShares(uint256)"(
-      assetAmount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     assetBalance(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "assetBalance()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    "balanceOf(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     cap(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "cap()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     currentOption(overrides?: CallOverrides): Promise<string>;
 
-    "currentOption()"(overrides?: CallOverrides): Promise<string>;
-
     currentOptionExpiry(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "currentOptionExpiry()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     decimals(overrides?: CallOverrides): Promise<number>;
-
-    "decimals()"(overrides?: CallOverrides): Promise<number>;
 
     decreaseAllowance(
       spender: string,
@@ -1305,38 +1009,17 @@ export class RibbonCoveredCall extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "decreaseAllowance(address,uint256)"(
-      spender: string,
-      subtractedValue: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     delay(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "delay()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     deposit(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    "deposit(uint256)"(
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     depositETH(overrides?: CallOverrides): Promise<void>;
-
-    "depositETH()"(overrides?: CallOverrides): Promise<void>;
 
     emergencyWithdrawFromShort(overrides?: CallOverrides): Promise<void>;
 
-    "emergencyWithdrawFromShort()"(overrides?: CallOverrides): Promise<void>;
-
     factory(overrides?: CallOverrides): Promise<string>;
 
-    "factory()"(overrides?: CallOverrides): Promise<string>;
-
     feeRecipient(overrides?: CallOverrides): Promise<string>;
-
-    "feeRecipient()"(overrides?: CallOverrides): Promise<string>;
 
     increaseAllowance(
       spender: string,
@@ -1344,105 +1027,87 @@ export class RibbonCoveredCall extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "increaseAllowance(address,uint256)"(
-      spender: string,
-      addedValue: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     initialize(
-      _asset: string,
       _owner: string,
       _feeRecipient: string,
       _initCap: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "initialize(address,address,address,uint256)"(
-      _asset: string,
-      _owner: string,
-      _feeRecipient: string,
-      _initCap: BigNumberish,
+      _tokenName: string,
+      _tokenSymbol: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     instantWithdrawalFee(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "instantWithdrawalFee()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     lockedAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "lockedAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     lockedRatio(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "lockedRatio()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     manager(overrides?: CallOverrides): Promise<string>;
-
-    "manager()"(overrides?: CallOverrides): Promise<string>;
 
     maxWithdrawAmount(
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "maxWithdrawAmount(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     maxWithdrawableShares(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "maxWithdrawableShares()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
-    "name()"(overrides?: CallOverrides): Promise<string>;
-
     nextOption(overrides?: CallOverrides): Promise<string>;
-
-    "nextOption()"(overrides?: CallOverrides): Promise<string>;
 
     nextOptionReadyAt(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "nextOptionReadyAt()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     owner(overrides?: CallOverrides): Promise<string>;
-
-    "owner()"(overrides?: CallOverrides): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
-
     rollToNextOption(overrides?: CallOverrides): Promise<void>;
 
-    "rollToNextOption()"(overrides?: CallOverrides): Promise<void>;
-
-    setCap(newCap: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    "setCap(uint256)"(
-      newCap: BigNumberish,
+    sellOptions(
+      order: {
+        nonce: BigNumberish;
+        expiry: BigNumberish;
+        signer: {
+          kind: BytesLike;
+          wallet: string;
+          token: string;
+          amount: BigNumberish;
+          id: BigNumberish;
+        };
+        sender: {
+          kind: BytesLike;
+          wallet: string;
+          token: string;
+          amount: BigNumberish;
+          id: BigNumberish;
+        };
+        affiliate: {
+          kind: BytesLike;
+          wallet: string;
+          token: string;
+          amount: BigNumberish;
+          id: BigNumberish;
+        };
+        signature: {
+          signatory: string;
+          validator: string;
+          version: BytesLike;
+          v: BigNumberish;
+          r: BytesLike;
+          s: BytesLike;
+        };
+      },
       overrides?: CallOverrides
     ): Promise<void>;
+
+    setCap(newCap: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     setFeeRecipient(
       newFeeRecipient: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "setFeeRecipient(address)"(
-      newFeeRecipient: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     setManager(newManager: string, overrides?: CallOverrides): Promise<void>;
-
-    "setManager(address)"(
-      newManager: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     setNextOption(
       optionTerms: {
@@ -1457,48 +1122,18 @@ export class RibbonCoveredCall extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "setNextOption((address,address,address,uint256,uint256,uint8,address))"(
-      optionTerms: {
-        underlying: string;
-        strikeAsset: string;
-        collateralAsset: string;
-        expiry: BigNumberish;
-        strikePrice: BigNumberish;
-        optionType: BigNumberish;
-        paymentToken: string;
-      },
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     setWithdrawalFee(
-      withdrawalFee: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setWithdrawalFee(uint256)"(
-      withdrawalFee: BigNumberish,
+      newWithdrawalFee: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     symbol(overrides?: CallOverrides): Promise<string>;
 
-    "symbol()"(overrides?: CallOverrides): Promise<string>;
-
     totalBalance(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "totalBalance()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     transfer(
-      recipient: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    "transfer(address,uint256)"(
       recipient: string,
       amount: BigNumberish,
       overrides?: CallOverrides
@@ -1511,41 +1146,14 @@ export class RibbonCoveredCall extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "transferFrom(address,address,uint256)"(
-      sender: string,
-      recipient: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     transferOwnership(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "transferOwnership(address)"(
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     withdraw(share: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    "withdraw(uint256)"(
-      share: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     withdrawAmountWithShares(
-      share: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        amountAfterFee: BigNumber;
-        feeAmount: BigNumber;
-      }
-    >;
-
-    "withdrawAmountWithShares(uint256)"(
       share: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
@@ -1556,129 +1164,115 @@ export class RibbonCoveredCall extends Contract {
     >;
 
     withdrawETH(share: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    "withdrawETH(uint256)"(
-      share: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
   };
 
   filters: {
     Approval(
-      owner: string | null,
-      spender: string | null,
-      value: null
+      owner?: string | null,
+      spender?: string | null,
+      value?: null
     ): TypedEventFilter<
       [string, string, BigNumber],
       { owner: string; spender: string; value: BigNumber }
     >;
 
     CapSet(
-      oldCap: null,
-      newCap: null,
-      manager: null
+      oldCap?: null,
+      newCap?: null,
+      manager?: null
     ): TypedEventFilter<
       [BigNumber, BigNumber, string],
       { oldCap: BigNumber; newCap: BigNumber; manager: string }
     >;
 
     CloseShort(
-      options: string | null,
-      withdrawAmount: null,
-      manager: null
+      options?: string | null,
+      withdrawAmount?: null,
+      manager?: null
     ): TypedEventFilter<
       [string, BigNumber, string],
       { options: string; withdrawAmount: BigNumber; manager: string }
     >;
 
     Deposit(
-      account: string | null,
-      amount: null,
-      share: null
+      account?: string | null,
+      amount?: null,
+      share?: null
     ): TypedEventFilter<
       [string, BigNumber, BigNumber],
       { account: string; amount: BigNumber; share: BigNumber }
     >;
 
     ManagerChanged(
-      oldManager: null,
-      newManager: null
+      oldManager?: null,
+      newManager?: null
     ): TypedEventFilter<
       [string, string],
       { oldManager: string; newManager: string }
     >;
 
     OpenShort(
-      options: string | null,
-      depositAmount: null,
-      manager: null
+      options?: string | null,
+      depositAmount?: null,
+      manager?: null
     ): TypedEventFilter<
       [string, BigNumber, string],
       { options: string; depositAmount: BigNumber; manager: string }
     >;
 
     OwnershipTransferred(
-      previousOwner: string | null,
-      newOwner: string | null
+      previousOwner?: string | null,
+      newOwner?: string | null
     ): TypedEventFilter<
       [string, string],
       { previousOwner: string; newOwner: string }
     >;
 
     Transfer(
-      from: string | null,
-      to: string | null,
-      value: null
+      from?: string | null,
+      to?: string | null,
+      value?: null
     ): TypedEventFilter<
       [string, string, BigNumber],
       { from: string; to: string; value: BigNumber }
     >;
 
     Withdraw(
-      account: string | null,
-      amount: null,
-      share: null,
-      fee: null
+      account?: string | null,
+      amount?: null,
+      share?: null,
+      fee?: null
     ): TypedEventFilter<
       [string, BigNumber, BigNumber, BigNumber],
       { account: string; amount: BigNumber; share: BigNumber; fee: BigNumber }
     >;
+
+    WithdrawalFeeSet(
+      oldFee?: null,
+      newFee?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber],
+      { oldFee: BigNumber; newFee: BigNumber }
+    >;
   };
 
   estimateGas: {
-    SWAP_CONTRACT(overrides?: CallOverrides): Promise<BigNumber>;
+    MINIMUM_SUPPLY(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "SWAP_CONTRACT()"(overrides?: CallOverrides): Promise<BigNumber>;
+    SWAP_CONTRACT(overrides?: CallOverrides): Promise<BigNumber>;
 
     USDC(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "USDC()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     WETH(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "WETH()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     accountVaultBalance(
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "accountVaultBalance(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     adapter(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "adapter()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     allowance(
-      owner: string,
-      spender: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "allowance(address,address)"(
       owner: string,
       spender: string,
       overrides?: CallOverrides
@@ -1690,52 +1284,24 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "approve(address,uint256)"(
-      spender: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     asset(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "asset()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     assetAmountToShares(
       assetAmount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "assetAmountToShares(uint256)"(
-      assetAmount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     assetBalance(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "assetBalance()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    "balanceOf(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     cap(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "cap()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     currentOption(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "currentOption()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     currentOptionExpiry(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "currentOptionExpiry()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "decimals()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     decreaseAllowance(
       spender: string,
@@ -1743,22 +1309,9 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "decreaseAllowance(address,uint256)"(
-      spender: string,
-      subtractedValue: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     delay(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "delay()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     deposit(
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "deposit(uint256)"(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1767,25 +1320,13 @@ export class RibbonCoveredCall extends Contract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "depositETH()"(
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     emergencyWithdrawFromShort(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "emergencyWithdrawFromShort()"(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     factory(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "factory()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     feeRecipient(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "feeRecipient()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     increaseAllowance(
       spender: string,
@@ -1793,79 +1334,39 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "increaseAllowance(address,uint256)"(
-      spender: string,
-      addedValue: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     initialize(
-      _asset: string,
       _owner: string,
       _feeRecipient: string,
       _initCap: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "initialize(address,address,address,uint256)"(
-      _asset: string,
-      _owner: string,
-      _feeRecipient: string,
-      _initCap: BigNumberish,
+      _tokenName: string,
+      _tokenSymbol: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     instantWithdrawalFee(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "instantWithdrawalFee()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     lockedAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "lockedAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     lockedRatio(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "lockedRatio()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     manager(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "manager()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     maxWithdrawAmount(
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "maxWithdrawAmount(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     maxWithdrawableShares(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "maxWithdrawableShares()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "name()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     nextOption(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "nextOption()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     nextOptionReadyAt(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "nextOptionReadyAt()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "renounceOwnership()"(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1873,16 +1374,44 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "rollToNextOption()"(
+    sellOptions(
+      order: {
+        nonce: BigNumberish;
+        expiry: BigNumberish;
+        signer: {
+          kind: BytesLike;
+          wallet: string;
+          token: string;
+          amount: BigNumberish;
+          id: BigNumberish;
+        };
+        sender: {
+          kind: BytesLike;
+          wallet: string;
+          token: string;
+          amount: BigNumberish;
+          id: BigNumberish;
+        };
+        affiliate: {
+          kind: BytesLike;
+          wallet: string;
+          token: string;
+          amount: BigNumberish;
+          id: BigNumberish;
+        };
+        signature: {
+          signatory: string;
+          validator: string;
+          version: BytesLike;
+          v: BigNumberish;
+          r: BytesLike;
+          s: BytesLike;
+        };
+      },
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     setCap(
-      newCap: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "setCap(uint256)"(
       newCap: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1892,17 +1421,7 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "setFeeRecipient(address)"(
-      newFeeRecipient: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     setManager(
-      newManager: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "setManager(address)"(
       newManager: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1920,48 +1439,18 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "setNextOption((address,address,address,uint256,uint256,uint8,address))"(
-      optionTerms: {
-        underlying: string;
-        strikeAsset: string;
-        collateralAsset: string;
-        expiry: BigNumberish;
-        strikePrice: BigNumberish;
-        optionType: BigNumberish;
-        paymentToken: string;
-      },
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     setWithdrawalFee(
-      withdrawalFee: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "setWithdrawalFee(uint256)"(
-      withdrawalFee: BigNumberish,
+      newWithdrawalFee: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "symbol()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     totalBalance(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "totalBalance()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     transfer(
-      recipient: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "transfer(address,uint256)"(
       recipient: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1974,19 +1463,7 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "transferFrom(address,address,uint256)"(
-      sender: string,
-      recipient: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "transferOwnership(address)"(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1996,17 +1473,7 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "withdraw(uint256)"(
-      share: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     withdrawAmountWithShares(
-      share: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "withdrawAmountWithShares(uint256)"(
       share: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -2015,47 +1482,25 @@ export class RibbonCoveredCall extends Contract {
       share: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    "withdrawETH(uint256)"(
-      share: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    SWAP_CONTRACT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    MINIMUM_SUPPLY(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "SWAP_CONTRACT()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    SWAP_CONTRACT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     USDC(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "USDC()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     WETH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "WETH()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     accountVaultBalance(
       account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "accountVaultBalance(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     adapter(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "adapter()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     allowance(
-      owner: string,
-      spender: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "allowance(address,address)"(
       owner: string,
       spender: string,
       overrides?: CallOverrides
@@ -2067,59 +1512,29 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "approve(address,uint256)"(
-      spender: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     asset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "asset()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     assetAmountToShares(
       assetAmount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "assetAmountToShares(uint256)"(
-      assetAmount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     assetBalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "assetBalance()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     balanceOf(
       account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "balanceOf(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     cap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "cap()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     currentOption(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "currentOption()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     currentOptionExpiry(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "currentOptionExpiry()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "decimals()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     decreaseAllowance(
       spender: string,
@@ -2127,22 +1542,9 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "decreaseAllowance(address,uint256)"(
-      spender: string,
-      subtractedValue: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     delay(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "delay()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     deposit(
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "deposit(uint256)"(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -2151,25 +1553,13 @@ export class RibbonCoveredCall extends Contract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "depositETH()"(
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     emergencyWithdrawFromShort(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "emergencyWithdrawFromShort()"(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "factory()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     feeRecipient(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "feeRecipient()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     increaseAllowance(
       spender: string,
@@ -2177,25 +1567,12 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "increaseAllowance(address,uint256)"(
-      spender: string,
-      addedValue: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     initialize(
-      _asset: string,
       _owner: string,
       _feeRecipient: string,
       _initCap: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "initialize(address,address,address,uint256)"(
-      _asset: string,
-      _owner: string,
-      _feeRecipient: string,
-      _initCap: BigNumberish,
+      _tokenName: string,
+      _tokenSymbol: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2203,28 +1580,13 @@ export class RibbonCoveredCall extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "instantWithdrawalFee()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     lockedAmount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "lockedAmount()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     lockedRatio(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "lockedRatio()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     manager(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "manager()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     maxWithdrawAmount(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "maxWithdrawAmount(address)"(
       account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -2233,33 +1595,15 @@ export class RibbonCoveredCall extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "maxWithdrawableShares()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "name()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     nextOption(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "nextOption()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     nextOptionReadyAt(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "nextOptionReadyAt()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "renounceOwnership()"(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2267,16 +1611,44 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "rollToNextOption()"(
+    sellOptions(
+      order: {
+        nonce: BigNumberish;
+        expiry: BigNumberish;
+        signer: {
+          kind: BytesLike;
+          wallet: string;
+          token: string;
+          amount: BigNumberish;
+          id: BigNumberish;
+        };
+        sender: {
+          kind: BytesLike;
+          wallet: string;
+          token: string;
+          amount: BigNumberish;
+          id: BigNumberish;
+        };
+        affiliate: {
+          kind: BytesLike;
+          wallet: string;
+          token: string;
+          amount: BigNumberish;
+          id: BigNumberish;
+        };
+        signature: {
+          signatory: string;
+          validator: string;
+          version: BytesLike;
+          v: BigNumberish;
+          r: BytesLike;
+          s: BytesLike;
+        };
+      },
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     setCap(
-      newCap: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "setCap(uint256)"(
       newCap: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -2286,17 +1658,7 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "setFeeRecipient(address)"(
-      newFeeRecipient: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     setManager(
-      newManager: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "setManager(address)"(
       newManager: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -2314,48 +1676,18 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "setNextOption((address,address,address,uint256,uint256,uint8,address))"(
-      optionTerms: {
-        underlying: string;
-        strikeAsset: string;
-        collateralAsset: string;
-        expiry: BigNumberish;
-        strikePrice: BigNumberish;
-        optionType: BigNumberish;
-        paymentToken: string;
-      },
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     setWithdrawalFee(
-      withdrawalFee: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "setWithdrawalFee(uint256)"(
-      withdrawalFee: BigNumberish,
+      newWithdrawalFee: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "symbol()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     totalBalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "totalBalance()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "totalSupply()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     transfer(
-      recipient: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "transfer(address,uint256)"(
       recipient: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -2368,19 +1700,7 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "transferFrom(address,address,uint256)"(
-      sender: string,
-      recipient: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "transferOwnership(address)"(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -2390,27 +1710,12 @@ export class RibbonCoveredCall extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "withdraw(uint256)"(
-      share: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     withdrawAmountWithShares(
       share: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "withdrawAmountWithShares(uint256)"(
-      share: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     withdrawETH(
-      share: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "withdrawETH(uint256)"(
       share: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;

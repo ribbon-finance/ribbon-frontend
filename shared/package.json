@@ -43,7 +43,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint './src/**/*.{js,jsx,ts,tsx}'",
-    "lint:fix": "eslint --fix './src/**/*.{js,jsx,ts,tsx}'"
+    "lint:fix": "eslint --fix './src/**/*.{js,jsx,ts,tsx}'",
+    "codegen": "typechain --target ethers-v5 --out-dir src/codegen 'src/constants/abis/*.json'"
   },
   "eslintConfig": {
     "extends": [
@@ -74,11 +75,13 @@
     ]
   },
   "devDependencies": {
+    "@typechain/ethers-v5": "^7.0.0",
     "@types/react-router-dom": "^5.1.7",
     "@types/styled-components": "^5.1.9",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "typechain": "^5.0.0"
   }
 }
