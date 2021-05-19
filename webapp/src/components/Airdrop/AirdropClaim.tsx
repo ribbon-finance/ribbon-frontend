@@ -7,6 +7,11 @@ import theme from "shared/lib/designSystem/theme";
 import { Waves } from "shared/lib/assets";
 import Logo from "shared/lib/assets/icons/logo";
 import Lightning from "../Common/Lightning";
+import useMerkleDistributor from "../../hooks/useMerkleDistributor";
+import useAirdrop from "../../hooks/useAirdrop";
+import { useWeb3React } from "@web3-react/core";
+import usePendingTransactions from "../../hooks/usePendingTransactions";
+import { useWeb3Context } from "shared/lib/hooks/web3Context";
 
 const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
   display: flex;
@@ -182,17 +187,61 @@ interface AirdropClaimProps {
 }
 
 const AirdropClaim: React.FC<AirdropClaimProps> = ({ step, setStep }) => {
-  // TODO: Should replace with actual claiming steps
+  const merkleDistributor = useMerkleDistributor();
+  const { account } = useWeb3React();
+  const { provider } = useWeb3Context();
+  const airdrop = useAirdrop();
+  const [, setPendingTransactions] = usePendingTransactions();
+
+  const claimAirdrop = useCallback(async () => {
+    if (!airdrop) {
+      return;
+    }
+
+    if (!merkleDistributor) {
+      return;
+    }
+
+    try {
+      const tx = await merkleDistributor.claim(
+        airdrop.proof.index,
+        account,
+        airdrop.proof.amount,
+        airdrop.proof.proof
+      );
+
+      setStep("claiming");
+
+      const txhash = tx.hash;
+
+      setPendingTransactions((pendingTransactions) => [
+        ...pendingTransactions,
+        {
+          txhash,
+          type: "claim",
+          amount: airdrop.total.toLocaleString(),
+        },
+      ]);
+
+      await provider.waitForTransaction(txhash);
+      setStep("claimed");
+    } catch (err) {
+      setStep("info");
+    }
+  }, [
+    account,
+    airdrop,
+    merkleDistributor,
+    setStep,
+    setPendingTransactions,
+    provider,
+  ]);
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (step === "claim") {
-        setStep("claiming");
-      } else if (step === "claiming") {
-        setStep("claimed");
-      }
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, [setStep, step]);
+    if (step === "claim") {
+      claimAirdrop();
+    }
+  }, [setStep, step, claimAirdrop]);
 
   const renderLightning = useCallback(
     () => (
