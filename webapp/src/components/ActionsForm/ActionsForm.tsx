@@ -415,6 +415,8 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   const isInputNonZero = parseFloat(inputAmount) > 0;
 
   const handleClickMax = async () => {
+    // Clear error
+    setError("none");
     if (!isLoadingData && connected && vault && account) {
       if (isDeposit && gasPrice !== "") {
         const gasLimit = isDeposit
