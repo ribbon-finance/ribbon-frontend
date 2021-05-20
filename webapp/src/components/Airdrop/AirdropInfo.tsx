@@ -35,16 +35,16 @@ const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
 
 const rotate = keyframes`
   from {
-    transform: rotate(0deg);
+    transform: rotateY(0deg);
   }
 
   to {
-    transform: rotate(360deg);
+    transform: rotateY(360deg);
   }
 `;
 
 const RotatingLogo = styled(Logo)`
-  animation: ${rotate} 4s linear infinite;
+  animation: ${rotate} 2.5s linear infinite;
 `;
 
 const UnclaimLabel = styled(Subtitle)`
