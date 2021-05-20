@@ -40,6 +40,7 @@ const getAirdropTitle = (variant: ProcessedAirdropBreakdownType) => {
 const BreakdownContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
+  width: 100%;
 `;
 
 const BreakdownBackground = styled.div<{

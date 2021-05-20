@@ -1,15 +1,20 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
+import { AnimatePresence, motion } from "framer-motion";
+import { useWeb3React } from "@web3-react/core";
 
 import { BaseModal, BaseModalHeader } from "shared/lib/designSystem";
-
-import AirdropInfo from "./AirdropInfo";
+import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
+
+import AirdropInfo from "./AirdropInfo";
 import MenuButton from "../Header/MenuButton";
-import { AnimatePresence, motion } from "framer-motion";
 import AirdropClaim from "./AirdropClaim";
+import useMerkleDistributor from "../../hooks/useMerkleDistributor";
+import useAirdrop from "../../hooks/useAirdrop";
+import usePendingTransactions from "../../hooks/usePendingTransactions";
 
 const StyledModal = styled(BaseModal)`
   .modal-dialog {
@@ -56,20 +61,65 @@ interface AirdropModalProps {
 }
 
 const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
-  const [step, setStep] = useState<"info" | "claim" | "claiming" | "claimed">(
-    "info"
-  );
+  const [step, setStep] = useState<
+    "info" | "claim" | "claiming" | "successTransition" | "claimed"
+  >("info");
+  const merkleDistributor = useMerkleDistributor();
+  const { account } = useWeb3React();
+  const { provider } = useWeb3Context();
+  const airdrop = useAirdrop();
+  const [, setPendingTransactions] = usePendingTransactions();
 
-  const content = useMemo(() => {
-    switch (step) {
-      case "info":
-        return <AirdropInfo onClaim={() => setStep("claim")} />;
-      case "claim":
-      case "claiming":
-      case "claimed":
-        return <AirdropClaim step={step} setStep={setStep} />;
+  useEffect(() => {
+    // Skip transition state if the user had closed the modal
+    if (step === "successTransition" && !show) {
+      setStep("claimed");
     }
-  }, [step]);
+  }, [step, show]);
+
+  const claimAirdrop = useCallback(async () => {
+    if (!airdrop) {
+      return;
+    }
+
+    if (!merkleDistributor) {
+      return;
+    }
+
+    try {
+      const tx = await merkleDistributor.claim(
+        airdrop.proof.index,
+        account,
+        airdrop.proof.amount,
+        airdrop.proof.proof
+      );
+
+      setStep("claiming");
+
+      const txhash = tx.hash;
+
+      setPendingTransactions((pendingTransactions) => [
+        ...pendingTransactions,
+        {
+          txhash,
+          type: "claim",
+          amount: airdrop.total.toLocaleString(),
+        },
+      ]);
+
+      await provider.waitForTransaction(txhash);
+      setStep("successTransition");
+    } catch (err) {
+      setStep("info");
+    }
+  }, [
+    account,
+    airdrop,
+    merkleDistributor,
+    setStep,
+    setPendingTransactions,
+    provider,
+  ]);
 
   const handleClose = useCallback(() => {
     onClose();
@@ -126,7 +176,15 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
                 : {}
             }
           >
-            {content}
+            {step === "info" ? (
+              <AirdropInfo onClaim={() => setStep("claim")} />
+            ) : (
+              <AirdropClaim
+                step={step}
+                setStep={setStep}
+                claimAirdrop={claimAirdrop}
+              />
+            )}
           </ModalContent>
         </AnimatePresence>
       </Modal.Body>

@@ -91,7 +91,7 @@ const AirdropButton = () => {
       return "$RBN";
     }
 
-    if (!airdrop) {
+    if (!airdrop || !airdrop.total) {
       return "0.00";
     }
 
