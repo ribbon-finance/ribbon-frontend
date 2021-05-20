@@ -12,6 +12,7 @@ import AccountStatus from "../Wallet/AccountStatus";
 import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import AirdropButton from "../Airdrop/AirdropButton";
+import { isStaging } from "shared/lib/utils/env";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
@@ -190,9 +191,12 @@ const Header = () => {
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
-      <AirdropContainer>
-        <AirdropButton />
-      </AirdropContainer>
+      {/** TODO: Remove when going production */}
+      {isStaging() && (
+        <AirdropContainer>
+          <AirdropButton />
+        </AirdropContainer>
+      )}
 
       <AccountStatus variant="desktop" />
 
