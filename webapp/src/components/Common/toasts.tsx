@@ -75,24 +75,28 @@ export const TxStatusToast = () => {
 
   const renderSuccessTxSubtitle = useCallback(
     (
-      type: "approval" | "deposit" | "withdraw" | "claim",
-      amountFormatted: string,
-      vault?: VaultOptions,
-      asset?: Assets
+      params:
+        | {
+            type: "approval" | "deposit" | "withdraw";
+            amountFormatted: string;
+            vault: VaultOptions;
+            asset: Assets;
+          }
+        | { type: "claim"; amountFormatted: string }
     ) => {
-      switch (type) {
+      switch (params.type) {
         case "approval":
-          return `Your ${getAssetDisplay(asset!)} is ready to deposit`;
+          return `Your ${getAssetDisplay(params.asset)} is ready to deposit`;
         case "withdraw":
-          return `${amountFormatted} ${getAssetDisplay(
-            asset!
-          )} withdrawn into ${productCopies[vault!].title}`;
+          return `${params.amountFormatted} ${getAssetDisplay(
+            params.asset
+          )} withdrawn into ${productCopies[params.vault].title}`;
         case "deposit":
-          return `${amountFormatted} ${getAssetDisplay(
-            asset!
-          )} deposited from ${productCopies[vault!].title}`;
+          return `${params.amountFormatted} ${getAssetDisplay(
+            params.asset
+          )} deposited from ${productCopies[params.vault].title}`;
         case "claim":
-          return `${amountFormatted} $RBN claimed`;
+          return `${params.amountFormatted} $RBN claimed`;
       }
     },
     []
@@ -130,7 +134,16 @@ export const TxStatusToast = () => {
         onClose={() => setStatus(null)}
         type={type === "claim" ? "claim" : "success"}
         title={`${word} successful`}
-        subtitle={renderSuccessTxSubtitle(type, amountFormatted, vault, asset)}
+        subtitle={renderSuccessTxSubtitle(
+          type === "claim"
+            ? { type, amountFormatted }
+            : {
+                type,
+                amountFormatted,
+                vault: vault!,
+                asset: asset!,
+              }
+        )}
       ></Toast>
     );
   }
