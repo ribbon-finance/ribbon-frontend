@@ -1,7 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { Assets } from "../store/types";
 import { getAssetDecimals } from "../utils/asset";
-import { isStaging } from "../utils/env";
+import { isDevelopment } from "../utils/env";
 import deployment from "./deployments.json";
 
 export const NETWORK_NAMES: Record<number, string> = {
@@ -31,25 +31,27 @@ export const GAS_LIMITS: {
 };
 
 const getETHThetaVaultId = () =>
-  (isStaging()
+  (isDevelopment()
     ? deployment.kovan.RibbonETHCoveredCall
     : deployment.mainnet.RibbonETHCoveredCall
   ).toLowerCase();
 
 const getWBTCThetaVaultId = () =>
-  (isStaging()
+  (isDevelopment()
     ? deployment.kovan.RibbonWBTCCoveredCall
     : deployment.mainnet.RibbonWBTCCoveredCall
   ).toLowerCase();
 
 const getWBTCPutThetaVaultId = () =>
-  isStaging()
+  isDevelopment()
     ? deployment.kovan.RibbonWBTCPut
     : // TODO: Update mainnet address
       deployment.kovan.RibbonWBTCPut;
 
 const getETHPutThetaVaultId = () =>
-  isStaging() ? deployment.kovan.RibbonETHPut : deployment.mainnet.RibbonETHPut;
+  isDevelopment()
+    ? deployment.kovan.RibbonETHPut
+    : deployment.mainnet.RibbonETHPut;
 
 const FullVaultList = [
   "rUSDC-ETH-P-THETA",
@@ -64,7 +66,7 @@ const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
 ];
 // @ts-ignore
-export const VaultList: VaultOptions[] = isStaging()
+export const VaultList: VaultOptions[] = isDevelopment()
   ? FullVaultList
   : FullVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
 
@@ -93,7 +95,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
 };
 
 export const getEtherscanURI = () =>
-  isStaging() ? "https://kovan.etherscan.io" : "https://etherscan.io";
+  isDevelopment() ? "https://kovan.etherscan.io" : "https://etherscan.io";
 
 export const getAssets = (vault: VaultOptions): Assets => {
   switch (vault) {

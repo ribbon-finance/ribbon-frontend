@@ -191,7 +191,7 @@ const Header = () => {
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
-      {/** TODO: Remove when going production */}
+      {/** TODO: Remove when going production, only enabled in Staging site */}
       {isStaging() && (
         <AirdropContainer>
           <AirdropButton />
