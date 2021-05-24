@@ -54,28 +54,20 @@ const CloseButton = styled.div`
   color: ${colors.text};
   z-index: 2;
 `;
-
 interface AirdropModalProps {
   show: boolean;
   onClose: () => void;
 }
 
 const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
-  const [step, setStep] = useState<
-    "info" | "claim" | "claiming" | "successTransition" | "claimed"
-  >("info");
+  const [step, setStep] = useState<"info" | "claim" | "claiming" | "claimed">(
+    "info"
+  );
   const merkleDistributor = useMerkleDistributor();
   const { account } = useWeb3React();
   const { provider } = useWeb3Context();
   const airdrop = useAirdrop();
   const [, setPendingTransactions] = usePendingTransactions();
-
-  useEffect(() => {
-    // Skip transition state if the user had closed the modal
-    if (step === "successTransition" && !show) {
-      setStep("claimed");
-    }
-  }, [step, show]);
 
   const claimAirdrop = useCallback(async () => {
     if (!airdrop) {
@@ -108,7 +100,7 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
       ]);
 
       await provider.waitForTransaction(txhash);
-      setStep("successTransition");
+      setStep("claimed");
     } catch (err) {
       setStep("info");
     }

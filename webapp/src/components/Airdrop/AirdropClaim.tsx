@@ -175,11 +175,9 @@ const PoleLogo = styled(Logo)`
 `;
 
 interface AirdropClaimProps {
-  step: "claim" | "claiming" | "successTransition" | "claimed";
+  step: "claim" | "claiming" | "claimed";
   setStep: React.Dispatch<
-    React.SetStateAction<
-      "info" | "claim" | "claiming" | "successTransition" | "claimed"
-    >
+    React.SetStateAction<"info" | "claim" | "claiming" | "claimed">
   >;
   claimAirdrop: () => void;
 }
@@ -192,25 +190,17 @@ const AirdropClaim: React.FC<AirdropClaimProps> = ({
   useEffect(() => {
     if (step === "claim") {
       claimAirdrop();
-    } else if (step === "successTransition") {
-      const timeout = setTimeout(() => {
-        setStep("claimed");
-      }, 3000);
-
-      return () => {
-        clearTimeout(timeout);
-      };
     }
   }, [setStep, step, claimAirdrop]);
 
   const renderLightning = useCallback(
     () => (
       <>
-        <Lightning height={12} width={80} left={183} top={48} />
-        <Lightning height={12} width={40} left={24} top={152} />
-        <Lightning height={12} width={24} left={319} top={232} />
-        <Lightning height={12} width={64} left={0} top={362} />
-        <Lightning height={12} width={16} left={276} top={426} />
+        <Lightning height={16} width={80} left={183} top={48} />
+        <Lightning height={16} width={40} left={24} top={152} />
+        <Lightning height={16} width={24} left={319} top={232} />
+        <Lightning height={16} width={64} left={0} top={362} />
+        <Lightning height={16} width={16} left={276} top={426} />
       </>
     ),
     []
@@ -236,6 +226,14 @@ const AirdropClaim: React.FC<AirdropClaimProps> = ({
     case "claiming":
       return (
         <>
+          <ContentColumn marginTop={-24}>
+            <Title>CONFIRM Transaction</Title>
+          </ContentColumn>
+          <ContentColumn marginTop="auto">
+            <PrimaryText className="text-center">
+              Confirm this transaction in your wallet
+            </PrimaryText>
+          </ContentColumn>
           <FloatingContainer>
             <Pole type="animate" />
           </FloatingContainer>
@@ -265,12 +263,6 @@ const AirdropClaim: React.FC<AirdropClaimProps> = ({
           </FloatingContainer>
           {renderLightning()}
         </>
-      );
-    default:
-      return (
-        <FloatingContainer>
-          <Pole />
-        </FloatingContainer>
       );
   }
 };

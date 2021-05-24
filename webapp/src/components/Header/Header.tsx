@@ -21,7 +21,7 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
   border-bottom: 1px solid ${colors.border};
   background: rgba(255, 255, 255, 0.01);
 
-  @media (max-width: ${sizes.md}px) {
+  @media (max-width: ${sizes.lg}px) {
     padding: 16px 24px;
     border-bottom: none;
   }
@@ -54,7 +54,7 @@ const LogoContainer = styled.div`
   margin-right: auto;
   z-index: 1000;
 
-  @media (max-width: ${sizes.md}px) {
+  @media (max-width: ${sizes.lg}px) {
     padding-left: 0;
   }
 `;
@@ -72,7 +72,7 @@ const HeaderAbsoluteContainer = styled.div`
   width: 100%;
   justify-content: center;
 
-  @media (max-width: ${sizes.md}px) {
+  @media (max-width: ${sizes.lg}px) {
     display: none;
   }
 `;
@@ -92,7 +92,7 @@ const NavItem = styled.div<NavItemProps>`
     opacity: ${(props) => (props.isSelected ? theme.hover.opacity : "1")};
   }
 
-  @media (max-width: ${sizes.md}px) {
+  @media (max-width: ${sizes.lg}px) {
     padding: 0px 0px 40px 48px;
   }
 `;
@@ -102,7 +102,7 @@ const NavLinkText = styled(Title)`
   font-size: 14px;
   line-height: 20px;
 
-  @media (max-width: ${sizes.md}px) {
+  @media (max-width: ${sizes.lg}px) {
     font-size: 24px;
   }
 `;
@@ -110,7 +110,7 @@ const NavLinkText = styled(Title)`
 const SecondaryMobileNavItem = styled.div`
   display: none;
 
-  @media (max-width: ${sizes.md}px) {
+  @media (max-width: ${sizes.lg}px) {
     display: flex;
     padding: 0px 0px 24px 48px;
   }
@@ -124,7 +124,7 @@ const SecondaryMobileNavLinktext = styled(Title)`
 const MobileOnly = styled.div`
   display: none;
 
-  @media (max-width: ${sizes.md}px) {
+  @media (max-width: ${sizes.lg}px) {
     display: flex;
   }
 `;

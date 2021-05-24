@@ -6,7 +6,6 @@ import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import sizes from "shared/lib/designSystem/sizes";
 import useAssetsYield from "shared/lib/hooks/useAssetsYield";
 import VaultPerformanceChart from "./VaultPerformanceChart";
 import { getAssetDisplay } from "shared/lib/utils/asset";
@@ -113,7 +112,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
   const renderYieldInfo = useCallback(
     ({ protocol, apr }: { protocol: DefiScoreProtocol; apr: number }) => {
       if (apr < 0.01) {
-        return <></>;
+        return null;
       }
 
       return (

@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { SecondaryText, Subtitle, Title } from "shared/lib/designSystem";
+import { SecondaryText, Subtitle } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import styled from "styled-components";
@@ -25,7 +25,7 @@ export const getAirdropColor = (variant: ProcessedAirdropBreakdownType) => {
 const getAirdropTitle = (variant: ProcessedAirdropBreakdownType) => {
   switch (variant) {
     case "option":
-      return "Option Trader";
+      return "Options Trader";
     case "discord":
       return "DISCORD MEMBER";
     case "strangle":
