@@ -175,11 +175,9 @@ const PoleLogo = styled(Logo)`
 `;
 
 interface AirdropClaimProps {
-  step: "claim" | "claiming" | "successTransition" | "claimed";
+  step: "claim" | "claiming" | "claimed";
   setStep: React.Dispatch<
-    React.SetStateAction<
-      "info" | "claim" | "claiming" | "successTransition" | "claimed"
-    >
+    React.SetStateAction<"info" | "claim" | "claiming" | "claimed">
   >;
   claimAirdrop: () => void;
 }
@@ -192,14 +190,6 @@ const AirdropClaim: React.FC<AirdropClaimProps> = ({
   useEffect(() => {
     if (step === "claim") {
       claimAirdrop();
-    } else if (step === "successTransition") {
-      const timeout = setTimeout(() => {
-        setStep("claimed");
-      }, 3000);
-
-      return () => {
-        clearTimeout(timeout);
-      };
     }
   }, [setStep, step, claimAirdrop]);
 
@@ -273,12 +263,6 @@ const AirdropClaim: React.FC<AirdropClaimProps> = ({
           </FloatingContainer>
           {renderLightning()}
         </>
-      );
-    default:
-      return (
-        <FloatingContainer>
-          <Pole />
-        </FloatingContainer>
       );
   }
 };
