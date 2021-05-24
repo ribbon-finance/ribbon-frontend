@@ -1,7 +1,9 @@
 // We just default to staging by default
 export const isStaging = () =>
-  process.env.REACT_APP_VERCEL_GIT_COMMIT_REF === "staging" ||
-  process.env.REACT_APP_VERCEL_GIT_COMMIT_REF !== "master";
+  !(
+    process.env.REACT_APP_VERCEL_GIT_COMMIT_REF === "staging" ||
+    process.env.REACT_APP_VERCEL_GIT_COMMIT_REF !== "master"
+  );
 
 // We use the same environment for development and staging
 // But we still need a switch to only show dev features locally

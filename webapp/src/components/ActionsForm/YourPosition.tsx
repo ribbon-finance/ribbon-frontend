@@ -1,15 +1,16 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 
 import PositionIcon from "../../assets/img/positionIcon.svg";
 import { Title } from "shared/lib/designSystem";
 import useAssetPrice from "../../hooks/useAssetPrice";
-import useBalances from "../../hooks/useBalances";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
 import { VaultOptions } from "shared/lib/constants/constants";
 import { getAssetDisplay } from "shared/lib/utils/asset";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useVaultAccounts from "../../hooks/useVaultAccounts";
 
 const PositionsContainer = styled.div`
   font-family: VCR, sans-serif;
@@ -55,40 +56,35 @@ const YourPosition: React.FC<YourPositionProps> = ({
     }
   );
   const { price: assetPrice } = useAssetPrice({ asset: asset });
-  const isLoading = status === "loading";
+  // Uses useMemo to create array so that useVaultAccounts does not constantly create new array that causes website lag
+  const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
+  const { vaultAccounts, loading: vaultAccountLoading } =
+    useVaultAccounts(vaultOptions);
+  const isLoading = status === "loading" || vaultAccountLoading;
+  const loadingText = useTextAnimation(
+    ["Loading", "Loading .", "Loading ..", "Loading ..."],
+    250,
+    isLoading
+  );
   const positionAssetAmount = formatBigNumber(vaultBalanceInAsset, 6, decimals);
-  const { balances } = useBalances();
 
   const allTimeROI = useMemo(() => {
-    if (balances.length <= 0) {
-      return 0;
-    }
+    const vaultAccount = vaultAccounts[vaultOption];
 
-    let totalInvestment = BigNumber.from(0);
-    let yieldEarned = BigNumber.from(0);
-    let lastBalance = BigNumber.from(0);
-
-    for (let i = 0; i < balances.length; i++) {
-      const currentBalanceObj = balances[i];
-      totalInvestment = totalInvestment.add(
-        currentBalanceObj.balance
-          .sub(lastBalance)
-          .sub(currentBalanceObj.yieldEarned)
-      );
-      yieldEarned = yieldEarned.add(currentBalanceObj.yieldEarned);
-      lastBalance = currentBalanceObj.balance;
-    }
-
-    if (totalInvestment.lte(0)) {
+    if (!vaultAccount) {
       return 0;
     }
 
     return (
-      (parseFloat(ethers.utils.formatUnits(yieldEarned, decimals)) /
-        parseFloat(ethers.utils.formatUnits(totalInvestment, decimals))) *
+      (parseFloat(
+        ethers.utils.formatUnits(vaultAccount.totalYieldEarned, decimals)
+      ) /
+        parseFloat(
+          ethers.utils.formatUnits(vaultAccount.totalDeposits, decimals)
+        )) *
       100
     );
-  }, [balances, decimals]);
+  }, [vaultAccounts, vaultOption, decimals]);
 
   return (
     <PositionsContainer
@@ -101,12 +97,14 @@ const YourPosition: React.FC<YourPositionProps> = ({
           <PositionTitle>Your Position</PositionTitle>
           <PositionTitle>
             {isLoading
-              ? "Loading"
+              ? loadingText
               : `${positionAssetAmount} ${getAssetDisplay(asset)}`}
           </PositionTitle>
         </div>
         <div className="d-flex flex-row align-items-center justify-content-between ml-2 mt-1">
-          <ProfitText>+{allTimeROI.toFixed(4)}%</ProfitText>
+          <ProfitText>
+            {isLoading ? loadingText : `+${allTimeROI.toFixed(4)}%`}
+          </ProfitText>
           <AmountText>
             {assetToUSD(vaultBalanceInAsset, assetPrice, decimals)}
           </AmountText>

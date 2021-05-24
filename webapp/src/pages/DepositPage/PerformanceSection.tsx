@@ -112,7 +112,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
   const renderYieldInfo = useCallback(
     ({ protocol, apr }: { protocol: DefiScoreProtocol; apr: number }) => {
       if (apr < 0.01) {
-        return <></>;
+        return null;
       }
 
       return (
