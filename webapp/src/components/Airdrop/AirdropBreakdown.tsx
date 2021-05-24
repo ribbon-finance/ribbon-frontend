@@ -25,7 +25,7 @@ export const getAirdropColor = (variant: ProcessedAirdropBreakdownType) => {
 const getAirdropTitle = (variant: ProcessedAirdropBreakdownType) => {
   switch (variant) {
     case "option":
-      return "Option Trader";
+      return "Options Trader";
     case "discord":
       return "DISCORD MEMBER";
     case "strangle":

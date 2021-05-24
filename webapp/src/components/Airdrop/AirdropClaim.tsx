@@ -206,11 +206,11 @@ const AirdropClaim: React.FC<AirdropClaimProps> = ({
   const renderLightning = useCallback(
     () => (
       <>
-        <Lightning height={12} width={80} left={183} top={48} />
-        <Lightning height={12} width={40} left={24} top={152} />
-        <Lightning height={12} width={24} left={319} top={232} />
-        <Lightning height={12} width={64} left={0} top={362} />
-        <Lightning height={12} width={16} left={276} top={426} />
+        <Lightning height={16} width={80} left={183} top={48} />
+        <Lightning height={16} width={40} left={24} top={152} />
+        <Lightning height={16} width={24} left={319} top={232} />
+        <Lightning height={16} width={64} left={0} top={362} />
+        <Lightning height={16} width={16} left={276} top={426} />
       </>
     ),
     []
