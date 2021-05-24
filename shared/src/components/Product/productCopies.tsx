@@ -1,11 +1,9 @@
 import React from "react";
-import { OverlayTrigger } from "react-bootstrap";
 import styled from "styled-components";
 
 import { VaultOptions } from "../../constants/constants";
 import colors from "../../designSystem/colors";
 import TooltipExplanation from "../Common/TooltipExplanation";
-import TooltipExplanationContent from "../Common/TooltipExplanationContent";
 
 const HighlighText = styled.span`
   color: ${colors.primaryText};

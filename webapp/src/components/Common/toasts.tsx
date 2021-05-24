@@ -47,10 +47,8 @@ export const WrongNetworkToast = () => {
 type TxStatuses = "success" | "error" | null;
 
 export const TxStatusToast = () => {
-  const [
-    pendingTransactions,
-    setPendingTransactions,
-  ] = usePendingTransactions();
+  const [pendingTransactions, setPendingTransactions] =
+    usePendingTransactions();
 
   const [status, setStatus] = useState<TxStatuses>(null);
   const [currentTx, setCurrentTx] = useState<PendingTransaction | null>(null);
@@ -77,35 +75,40 @@ export const TxStatusToast = () => {
 
   const renderSuccessTxSubtitle = useCallback(
     (
-      type: "approval" | "deposit" | "withdraw",
-      amountFormatted: string,
-      vault: VaultOptions,
-      asset: Assets
+      params:
+        | {
+            type: "approval" | "deposit" | "withdraw";
+            amountFormatted: string;
+            vault: VaultOptions;
+            asset: Assets;
+          }
+        | { type: "claim"; amountFormatted: string }
     ) => {
-      switch (type) {
+      switch (params.type) {
         case "approval":
-          return `Your ${getAssetDisplay(asset)} is ready to deposit`;
+          return `Your ${getAssetDisplay(params.asset)} is ready to deposit`;
         case "withdraw":
-          return `${amountFormatted} ${getAssetDisplay(asset)} withdrawn into ${
-            productCopies[vault].title
-          }`;
+          return `${params.amountFormatted} ${getAssetDisplay(
+            params.asset
+          )} withdrawn into ${productCopies[params.vault].title}`;
         case "deposit":
-          return `${amountFormatted} ${getAssetDisplay(asset)} deposited from ${
-            productCopies[vault].title
-          }`;
+          return `${params.amountFormatted} ${getAssetDisplay(
+            params.asset
+          )} deposited from ${productCopies[params.vault].title}`;
+        case "claim":
+          return `${params.amountFormatted} $RBN claimed`;
       }
     },
     []
   );
 
   if (status && currentTx) {
-    const { type, amount, vault } = currentTx;
-    const asset = getAssets(vault);
-    const amountFormatted = formatBigNumber(
-      BigNumber.from(amount),
-      6,
-      getAssetDecimals(asset)
-    );
+    const { type, amount } = currentTx;
+    const vault = currentTx.type === "claim" ? undefined : currentTx.vault;
+    const asset = vault ? getAssets(vault) : undefined;
+    const amountFormatted: string = vault
+      ? formatBigNumber(BigNumber.from(amount), 6, getAssetDecimals(asset!))
+      : amount;
 
     if (status === "error") {
       return (
@@ -116,7 +119,7 @@ export const TxStatusToast = () => {
           title={`${type} failed`}
           subtitle={
             type === "approval"
-              ? `Please try approving ${getAssetDisplay(asset)} again`
+              ? `Please try approving ${getAssetDisplay(asset!)} again`
               : "Please resubmit transaction"
           }
         ></Toast>
@@ -129,9 +132,18 @@ export const TxStatusToast = () => {
       <Toast
         show={status === "success"}
         onClose={() => setStatus(null)}
-        type="success"
+        type={type === "claim" ? "claim" : "success"}
         title={`${word} successful`}
-        subtitle={renderSuccessTxSubtitle(type, amountFormatted, vault, asset)}
+        subtitle={renderSuccessTxSubtitle(
+          type === "claim"
+            ? { type, amountFormatted }
+            : {
+                type,
+                amountFormatted,
+                vault: vault!,
+                asset: asset!,
+              }
+        )}
       ></Toast>
     );
   }

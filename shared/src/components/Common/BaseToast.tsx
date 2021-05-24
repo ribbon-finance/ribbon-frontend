@@ -1,10 +1,11 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import BootstrapToast, {
   ToastProps as BootstrapToastProps,
 } from "react-bootstrap/Toast";
 
 import styled from "styled-components";
 import { SuccessIcon, CloseIcon } from "../../assets/icons/icons";
+import Logo from "../../assets/icons/logo";
 import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";
@@ -49,7 +50,7 @@ const Body = styled(BootstrapToast.Body)`
 `;
 
 interface StatusProps {
-  type: "success" | "error";
+  type: "success" | "error" | "claim";
 }
 
 const IconCircle = styled.div<StatusProps>`
@@ -78,12 +79,16 @@ const BaseToast: React.FC<ToastProps> = ({
   subtitle,
   ...props
 }) => {
-  const icon =
-    type === "success" ? (
-      <SuccessIcon color={colors.green} />
-    ) : (
-      <CloseIcon color={colors.red} />
-    );
+  const icon = useMemo(() => {
+    switch (type) {
+      case "success":
+        return <SuccessIcon color={colors.green} />;
+      case "error":
+        return <CloseIcon color={colors.red} />;
+      case "claim":
+        return <Logo />;
+    }
+  }, [type]);
 
   // When the caller doesnt specify the `show` variable
   // it means that the caller doesnt want to control the state of the Toast

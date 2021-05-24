@@ -32,12 +32,18 @@ export type VaultDataResponses = {
   [vault in VaultOptions]: VaultDataResponse;
 };
 
-export type PendingTransaction = {
-  txhash: string;
-  type: "deposit" | "withdraw" | "approval";
-  amount: string;
-  vault: VaultOptions;
-};
+export type PendingTransaction =
+  | {
+      txhash: string;
+      type: "deposit" | "withdraw" | "approval";
+      amount: string;
+      vault: VaultOptions;
+    }
+  | {
+      txhash: string;
+      type: "claim";
+      amount: string;
+    };
 
 export type AssetYieldsInfoData = {
   [token in DefiScoreToken]: Array<{

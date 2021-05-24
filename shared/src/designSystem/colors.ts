@@ -24,6 +24,13 @@ const colors = {
     sales: "#16ceb9",
     minting: "#729ded",
   },
+  brands: {
+    opyn: "#6FC0A2",
+    hegic: "#45FFF4",
+    charm: "#5A67D8",
+    discord: "#5A65EA",
+    primitive: "#FFFFFF",
+  },
 };
 
 export default colors;

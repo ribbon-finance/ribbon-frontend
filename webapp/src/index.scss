@@ -114,3 +114,7 @@ $placeholder-color: rgba(255, 255, 255, 0.64);
     padding-right: 18px;
   }
 }
+
+.modal-backdrop.show {
+  opacity: 0
+}

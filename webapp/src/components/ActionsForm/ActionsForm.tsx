@@ -8,6 +8,7 @@ import React, {
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
+import moment from "moment";
 
 import {
   BaseLink,
@@ -50,6 +51,9 @@ import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
 import useTokenAllowance from "../../hooks/useTokenAllowance";
 import SwapBTCDropdown from "./SwapBTCDropdown";
+import useVaultActivity from "../../hooks/useVaultActivity";
+import { VaultActivityMeta, VaultShortPosition } from "shared/lib/models/vault";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 
 const { parseUnits, formatUnits } = ethers.utils;
 
@@ -174,8 +178,10 @@ const MaxAccessory = styled.div`
 type WalletBalanceStates = "active" | "inactive" | "error";
 
 const WalletBalance = styled.div<{ state: WalletBalanceStates }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  text-align: center;
   font-size: 14px;
   line-height: 20px;
   text-transform: uppercase;
@@ -191,6 +197,25 @@ const WalletBalance = styled.div<{ state: WalletBalanceStates }>`
         return "rgba(255, 255, 255, 0.16)";
     }
   }};
+`;
+
+const WithdrawLimitText = styled(SecondaryText)`
+  display: flex;
+  color: ${colors.red};
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+`;
+
+const HelpContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 16px;
+  width: 16px;
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-radius: 100px;
+  margin-left: 8px;
 `;
 
 const ApprovalIconContainer = styled.div`
@@ -270,7 +295,12 @@ const SwapTriggerButtonText = styled(SecondaryText)`
   flex: 1;
 `;
 
-type ValidationErrors = "none" | "insufficient_balance" | "max_exceeded";
+type ValidationErrors =
+  | "none"
+  | "insufficient_balance"
+  | "max_exceeded"
+  | "withdraw_limit_reached"
+  | "withdraw_limit_exceeded";
 
 export interface FormStepProps {
   onSubmit?: (previewStepProps: PreviewStepProps) => void;
@@ -331,8 +361,27 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     waitingApproval
   );
   const [swapContainerOpen, setSwapContainerOpen] = useState(false);
+  const { activities } = useVaultActivity(vaultOption);
 
   const allowanceStr = tokenAllowance?.toString();
+
+  // Calculate the latest option short position
+  const withdrawalFreeUpTime = useMemo(() => {
+    const sortedActivities = activities
+      .filter((activity) => activity.type === "minting")
+      .sort((a, b) => (a.date.valueOf() < b.date.valueOf() ? 1 : -1));
+
+    if (sortedActivities.length <= 0) {
+      return "coming Friday";
+    }
+
+    return moment(
+      (sortedActivities[0] as VaultShortPosition & VaultActivityMeta).expiry,
+      "X"
+    )
+      .add(2, "hours")
+      .format("MMMM Do, YYYY");
+  }, [activities]);
 
   // Show token approval when needed
   useEffect(() => {
@@ -405,33 +454,62 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     }
 
     setInputAmount(rawInput); // Let's flush out the input changes first.
+  };
 
+  // Listen to amount and set error accordingly
+  useEffect(() => {
     // Make sure we schedule the error updates after the input updates
     requestAnimationFrame(() => {
-      if (rawInput) {
-        const amount = parseUnits(rawInput, decimals);
+      if (
+        !isDeposit &&
+        !vaultBalanceInAsset.isZero() &&
+        maxWithdrawAmount.isZero()
+      ) {
+        setError("withdraw_limit_reached");
+        return;
+      }
+
+      if (inputAmount) {
+        const amount = parseUnits(inputAmount, decimals);
 
         if (!isLoadingData && connected) {
           if (isDeposit && amount.gt(userAssetBalance)) {
             setError("insufficient_balance");
+            return;
           } else if (
             isDeposit &&
             amount.gt(vaultMaxDepositAmount.sub(vaultBalanceInAsset))
           ) {
             setError("max_exceeded");
+            return;
+          } else if (
+            !isDeposit &&
+            amount.gt(maxWithdrawAmount) &&
+            amount.lte(vaultBalanceInAsset)
+          ) {
+            setError("withdraw_limit_exceeded");
+            return;
           } else if (!isDeposit && amount.gt(maxWithdrawAmount)) {
             setError("insufficient_balance");
-          } else {
-            // if nothing was hit, we reset to no error
-            setError("none");
+            return;
           }
         }
-      } else {
-        // If we do not have any input, we can safely assume there is no error
-        setError("none");
       }
+
+      setError("none");
     });
-  };
+  }, [
+    inputAmount,
+    connected,
+    decimals,
+    isDeposit,
+    isLoadingData,
+    maxWithdrawAmount,
+    userAssetBalance,
+    vaultBalanceInAsset,
+    vaultMaxDepositAmount,
+  ]);
+
   const vaultBalanceStr = vaultBalanceInAsset.toString();
 
   const previewStepProps = useMemo(() => {
@@ -550,6 +628,12 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     actionButtonText = `Maximum ${parseInt(
       formatUnits(vaultMaxDepositAmount, decimals)
     )} ${getAssetDisplay(asset)} Exceeded`;
+    disabled = true;
+  } else if (error === "withdraw_limit_exceeded") {
+    actionButtonText = `WEEKLY LIMIT EXCEEDED`;
+    disabled = true;
+  } else if (error === "withdraw_limit_reached") {
+    actionButtonText = `WithdrawALS DISABLED`;
     disabled = true;
   } else if (isDeposit && isInputNonZero) {
     if (vaultFull || maxDeposited) {
@@ -672,6 +756,53 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     }
   }, [asset, swapContainerOpen]);
 
+  const renderWalletBalance = useCallback(() => {
+    if (error === "withdraw_limit_reached") {
+      // In case if no latest short position detected
+      return (
+        <WithdrawLimitText>
+          The vault’s weekly withdrawal limit has been reached. Withdrawals will
+          be enabled again at 1000 UTC on {withdrawalFreeUpTime}.
+        </WithdrawLimitText>
+      );
+    }
+
+    if (error === "withdraw_limit_exceeded") {
+      return (
+        <WalletBalance state={walletBalanceState}>
+          Weekly Withdraw Limit:{" "}
+          {formatSignificantDecimals(formatUnits(maxWithdrawAmount, decimals))}{" "}
+          {getAssetDisplay(asset)}
+          <TooltipExplanation
+            title="WEEKLY WITHDRAWAL LIMIT"
+            explanation={`Withdrawing ${formatSignificantDecimals(
+              formatUnits(maxWithdrawAmount, decimals)
+            )} ${getAssetDisplay(
+              asset
+            )} will result in the vault hitting its weekly withdrawal limit. If the withdrawal limit is reached, withdrawals will be disabled until ${withdrawalFreeUpTime}.`}
+            renderContent={({ ref, ...triggerHandler }) => (
+              <HelpContainer ref={ref} {...triggerHandler}>
+                ?
+              </HelpContainer>
+            )}
+          />
+        </WalletBalance>
+      );
+    }
+
+    return (
+      <WalletBalance state={walletBalanceState}>{walletText}</WalletBalance>
+    );
+  }, [
+    error,
+    walletBalanceState,
+    walletText,
+    maxWithdrawAmount,
+    decimals,
+    asset,
+    withdrawalFreeUpTime,
+  ]);
+
   return (
     <Container variant={variant}>
       {isDesktop && desktopActionModal}
@@ -742,7 +873,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
               {button}
             </>
           )}
-          <WalletBalance state={walletBalanceState}>{walletText}</WalletBalance>
+          {renderWalletBalance()}
           {renderSwapContainerTrigger()}
         </ContentContainer>
         {renderSwapContainer()}
