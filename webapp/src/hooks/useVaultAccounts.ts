@@ -46,6 +46,7 @@ const fetchVaultAccounts = async (vaults: VaultOptions[], account: string) => {
             ]().toLowerCase()}-${account.toLowerCase()}") {
               totalDeposits
               totalYieldEarned
+              totalBalance
               vault {
                 symbol
               }
@@ -70,6 +71,7 @@ const fetchVaultAccounts = async (vaults: VaultOptions[], account: string) => {
           ...data,
           totalDeposits: BigNumber.from(data.totalDeposits),
           totalYieldEarned: BigNumber.from(data.totalYieldEarned),
+          totalBalance: BigNumber.from(data.totalBalance),
         },
       ];
     })
