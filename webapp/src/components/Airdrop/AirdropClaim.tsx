@@ -231,7 +231,7 @@ const AirdropClaim: React.FC<AirdropClaimProps> = ({
           </ContentColumn>
           <ContentColumn marginTop="auto">
             <PrimaryText className="text-center">
-              Confirm this transaction in your wallet
+              {/* Confirm this transaction in your wallet */}
             </PrimaryText>
           </ContentColumn>
           <FloatingContainer>
