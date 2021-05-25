@@ -119,7 +119,7 @@ const AirdropBreakdown = () => {
           <BreakdwonPillIndicator variant={variant} />
           <Subtitle>{getAirdropTitle(variant)}</Subtitle>
           <BreakdownPillToken variant={variant}>
-            {token.toLocaleString()} BRN
+            {token.toLocaleString()} RBN
           </BreakdownPillToken>
         </BreakdownPill>
         {variant === "option" && (
