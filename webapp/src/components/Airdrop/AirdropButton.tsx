@@ -95,7 +95,7 @@ const AirdropButton = () => {
       return "0.00";
     }
 
-    return airdrop.total;
+    return airdrop.total.toLocaleString();
   }, [account, airdrop]);
 
   const isClaiming = useMemo(() => {

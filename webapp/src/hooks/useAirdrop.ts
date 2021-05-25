@@ -38,7 +38,9 @@ const useAirdrop = () => {
         .map((key) => [[key], breakdown[key as AirdropBreakDownType][account]])
         .filter((entry) => entry[1])
     );
-    const total = airdrop[account];
+    const total = BigNumber.from("0x" + airdrop[account])
+      .div(BigNumber.from(10).pow(BigNumber.from(18)))
+      .toNumber();
 
     if (!airdropClaim || !airdropBreakdown || !total) {
       setAirdropInfo(undefined);
