@@ -1,9 +1,9 @@
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
-import { isStaging } from "shared/lib/utils/env";
+import { isDevelopment } from "shared/lib/utils/env";
 
 export const injectedConnector = new InjectedConnector({
-  supportedChainIds: isStaging() ? [42] : [1],
+  supportedChainIds: isDevelopment() ? [42] : [1],
 });
 
 /**
@@ -13,7 +13,7 @@ export const injectedConnector = new InjectedConnector({
  */
 export const getWalletConnectConnector = () => {
   return new WalletConnectConnector({
-    rpc: isStaging()
+    rpc: isDevelopment()
       ? { 42: process.env.REACT_APP_TESTNET_URI || "" }
       : { 1: process.env.REACT_APP_MAINNET_URI || "" },
   });

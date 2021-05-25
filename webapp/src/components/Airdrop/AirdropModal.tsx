@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";

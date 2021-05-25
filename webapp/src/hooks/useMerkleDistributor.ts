@@ -6,7 +6,7 @@ import {
   MerkleDistributor__factory,
   MerkleDistributor,
 } from "shared/lib/codegen";
-import { isStaging } from "shared/lib/utils/env";
+import { isDevelopment } from "shared/lib/utils/env";
 
 export const getMerkleDistributor = (
   library: any
@@ -14,7 +14,7 @@ export const getMerkleDistributor = (
   if (library) {
     const provider = library.getSigner();
     return MerkleDistributor__factory.connect(
-      isStaging()
+      isDevelopment()
         ? deployments.kovan.MerkleDistributor
         : // TODO: Replace with Mainnet
           deployments.kovan.MerkleDistributor,
