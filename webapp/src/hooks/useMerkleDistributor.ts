@@ -17,7 +17,7 @@ export const getMerkleDistributor = (
       isDevelopment()
         ? deployments.kovan.MerkleDistributor
         : // TODO: Replace with Mainnet
-          deployments.kovan.MerkleDistributor,
+          deployments.mainnet.MerkleDistributor,
       provider
     );
   }

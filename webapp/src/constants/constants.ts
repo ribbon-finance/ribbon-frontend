@@ -7,7 +7,7 @@ export const proof: AirdropProof = isDevelopment()
 
 export const airdrop: Airdrop = isDevelopment()
   ? require("../data/airdrop-kovan.json")
-  : require("../data/airdrop-kovan.json");
+  : require("../data/airdrop.json");
 
 export const breakdown: AirdropBreakdown = isDevelopment()
   ? require("../data/breakdown-kovan.json")
