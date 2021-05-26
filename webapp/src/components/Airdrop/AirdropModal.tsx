@@ -61,7 +61,7 @@ interface AirdropModalProps {
 
 const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
   const [step, setStep] = useState<"info" | "claim" | "claiming" | "claimed">(
-    "info"
+    "claimed"
   );
   const merkleDistributor = useMerkleDistributor();
   const { account } = useWeb3React();

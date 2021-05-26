@@ -187,6 +187,11 @@ const Header = () => {
             "/portfolio",
             Boolean(useRouteMatch({ path: "/portfolio", exact: true }))
           )}
+          {renderLinkItem(
+            "STAKING",
+            "/staking",
+            Boolean(useRouteMatch({ path: "/staking", exact: true }))
+          )}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
@@ -218,6 +223,11 @@ const Header = () => {
             "PORTFOLIO",
             "/portfolio",
             Boolean(useRouteMatch({ path: "/portfolio", exact: true }))
+          )}
+          {renderLinkItem(
+            "STAKING",
+            "/staking",
+            Boolean(useRouteMatch({ path: "/staking", exact: true }))
           )}
           {renderLinkItem(
             "DISCORD",
