@@ -6,6 +6,7 @@ import { AirdropBreakDownType } from "../models/airdrop";
 import { proof, airdrop, breakdown } from "../constants/constants";
 import useMerkleDistributor from "./useMerkleDistributor";
 import usePendingTransactions from "./usePendingTransactions";
+import { formatUnits } from "@ethersproject/units";
 
 const useAirdrop = () => {
   const { account } = useWeb3React();
@@ -38,9 +39,9 @@ const useAirdrop = () => {
         .map((key) => [[key], breakdown[key as AirdropBreakDownType][account]])
         .filter((entry) => entry[1])
     );
-    const total = BigNumber.from("0x" + airdrop[account])
-      .div(BigNumber.from(10).pow(BigNumber.from(18)))
-      .toNumber();
+    const total = airdrop[account]
+      ? parseFloat(formatUnits(BigNumber.from("0x" + airdrop[account]), 18))
+      : 0;
 
     if (!airdropClaim || !airdropBreakdown || !total) {
       setAirdropInfo(undefined);
