@@ -26,7 +26,6 @@ import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { VaultAccount } from "shared/lib/models/vault";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
-import useVaultData from "shared/lib/hooks/useVaultData";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 48px;
@@ -148,6 +147,9 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
     Object.keys(VaultNameOptionMap)[
       Object.values(VaultNameOptionMap).indexOf(vaultAccount.vault.symbol)
     ];
+  const vaultNetProfit = vaultAccount.totalBalance.sub(
+    vaultAccount.totalDeposits
+  );
 
   const renderAmountText = useCallback(
     (amount: BigNumber, currency: CurrencyType) => {
@@ -197,7 +199,8 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
         <KPIContainer>
           <KPIDatas>
             <Title>
-              +{renderAmountText(vaultAccount.totalYieldEarned, "usd")}
+              {vaultNetProfit.isNegative() ? "" : "+"}
+              {renderAmountText(vaultNetProfit, "usd")}
             </Title>
             <PositionSecondaryInfoText
               variant={calculatedROI >= 0 ? "green" : "red"}

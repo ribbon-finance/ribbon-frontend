@@ -116,7 +116,9 @@ const YourPosition: React.FC<YourPositionProps> = ({
         </div>
         <div className="d-flex flex-row align-items-center justify-content-between ml-2 mt-1">
           <ProfitText roi={roi}>
-            {isLoading ? loadingText : `+${roi.toFixed(4)}%`}
+            {isLoading
+              ? loadingText
+              : `${roi > 0 ? "+" : ""}${roi.toFixed(4)}%`}
           </ProfitText>
           <AmountText>{positionAssetAmountUSD}</AmountText>
         </div>
