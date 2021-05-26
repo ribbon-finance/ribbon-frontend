@@ -111,11 +111,12 @@ const PortfolioTransactions = () => {
   const renderTransactionAmountText = useCallback(
     (
       amount: BigNumber,
-      type: "deposit" | "withdraw",
+      type: "deposit" | "withdraw" | "transfer" | "receive",
       currency: CurrencyType,
       asset: Assets
     ) => {
-      const prependSymbol = type === "deposit" ? "+" : "-";
+      const prependSymbol =
+        type === "deposit" || type === "receive" ? "+" : "-";
 
       switch (currency) {
         case "usd":
@@ -179,9 +180,14 @@ const PortfolioTransactions = () => {
           </TransactionInfoRow>
           <TransactionInfoRow>
             <TransactionInfoText className="flex-grow-1">
-              {`${transaction.type === "deposit" ? `↓` : `↑`} ${capitalize(
-                transaction.type
-              )} - ${moment(transaction.timestamp, "X").fromNow()}`}
+              {`${
+                transaction.type === "deposit" || transaction.type === "receive"
+                  ? `↓`
+                  : `↑`
+              } ${capitalize(transaction.type)} - ${moment(
+                transaction.timestamp,
+                "X"
+              ).fromNow()}`}
             </TransactionInfoText>
             <TransactionSecondaryInfoText>
               {renderTransactionAmountText(

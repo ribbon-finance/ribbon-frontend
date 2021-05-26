@@ -55,6 +55,7 @@ const fetchBalances = async (
             timestamp
             balance
             yieldEarned
+            isWithdraw
           }
         }
         `,

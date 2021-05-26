@@ -26,7 +26,6 @@ import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { VaultAccount } from "shared/lib/models/vault";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
-import useVaultData from "shared/lib/hooks/useVaultData";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 48px;
@@ -88,13 +87,17 @@ const PositionInfoText = styled(SecondaryText)`
   font-weight: 400;
 `;
 
-const PositionSecondaryInfoText = styled(Subtitle)<{ variant?: "green" }>`
+const PositionSecondaryInfoText = styled(Subtitle)<{
+  variant?: "green" | "red";
+}>`
   letter-spacing: unset;
   line-height: 16px;
   ${(props) => {
     switch (props.variant) {
       case "green":
-        return `color: ${colors.green}`;
+        return `color: ${colors.green};`;
+      case "red":
+        return `color: ${colors.red};`;
       default:
         return `color: ${colors.primaryText}A3;`;
     }
@@ -140,18 +143,13 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
     250,
     assetPriceLoading
   );
-  const vaultName = Object.keys(VaultNameOptionMap)[
-    Object.values(VaultNameOptionMap).indexOf(vaultAccount.vault.symbol)
-  ];
-  const { vaultBalanceInAsset } = useVaultData(vaultAccount.vault.symbol);
-
-  const balance = useMemo(() => {
-    if (!vaultBalanceInAsset.isZero()) {
-      return vaultBalanceInAsset;
-    }
-
-    return vaultAccount.totalDeposits.add(vaultAccount.totalYieldEarned);
-  }, [vaultAccount, vaultBalanceInAsset]);
+  const vaultName =
+    Object.keys(VaultNameOptionMap)[
+      Object.values(VaultNameOptionMap).indexOf(vaultAccount.vault.symbol)
+    ];
+  const vaultNetProfit = vaultAccount.totalBalance.sub(
+    vaultAccount.totalDeposits
+  );
 
   const renderAmountText = useCallback(
     (amount: BigNumber, currency: CurrencyType) => {
@@ -169,22 +167,17 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
     [asset, assetPrice, animatedLoadingText, assetPriceLoading, decimals]
   );
 
-  const calculatedROI = useMemo(
-    () =>
-      !balance.isZero()
-        ? (parseFloat(
-            ethers.utils.formatUnits(vaultAccount.totalYieldEarned, decimals)
-          ) /
-            parseFloat(
-              ethers.utils.formatUnits(
-                balance.sub(vaultAccount.totalYieldEarned),
-                decimals
-              )
-            )) *
+  const calculatedROI = useMemo(() => {
+    const netProfit = vaultAccount.totalBalance.sub(vaultAccount.totalDeposits);
+
+    return !vaultAccount.totalBalance.isZero()
+      ? (parseFloat(ethers.utils.formatUnits(netProfit, decimals)) /
+          parseFloat(
+            ethers.utils.formatUnits(vaultAccount.totalDeposits, decimals)
+          )) *
           100
-        : 0,
-    [vaultAccount, balance, decimals]
-  );
+      : 0;
+  }, [vaultAccount, decimals]);
 
   return (
     <PositionLink to={`/theta-vault/${vaultName}`}>
@@ -193,23 +186,27 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
           <PositionSymbolTitle product="yield" className="flex-grow-1">
             {vaultName}
           </PositionSymbolTitle>
-          <Title>{renderAmountText(balance, "eth")}</Title>
+          <Title>{renderAmountText(vaultAccount.totalBalance, "eth")}</Title>
         </PositionInfoRow>
         <PositionInfoRow>
           <PositionInfoText className="flex-grow-1">
             {productCopies[vaultAccount.vault.symbol].subtitle}
           </PositionInfoText>
           <PositionSecondaryInfoText>
-            {renderAmountText(balance, "usd")}
+            {renderAmountText(vaultAccount.totalBalance, "usd")}
           </PositionSecondaryInfoText>
         </PositionInfoRow>
         <KPIContainer>
           <KPIDatas>
             <Title>
-              +{renderAmountText(vaultAccount.totalYieldEarned, "usd")}
+              {vaultNetProfit.isNegative() ? "" : "+"}
+              {renderAmountText(vaultNetProfit, "usd")}
             </Title>
-            <PositionSecondaryInfoText variant="green">
-              +{calculatedROI.toFixed(2)}%
+            <PositionSecondaryInfoText
+              variant={calculatedROI >= 0 ? "green" : "red"}
+            >
+              {calculatedROI >= 0 ? "+" : ""}
+              {calculatedROI.toFixed(2)}%
             </PositionSecondaryInfoText>
           </KPIDatas>
         </KPIContainer>

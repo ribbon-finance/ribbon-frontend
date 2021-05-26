@@ -11,6 +11,7 @@ import { VaultOptions } from "shared/lib/constants/constants";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
+import colors from "shared/lib/designSystem/colors";
 
 const PositionsContainer = styled.div`
   font-family: VCR, sans-serif;
@@ -26,8 +27,8 @@ const PositionTitle = styled(Title)`
   font-size: 14px;
 `;
 
-const ProfitText = styled.span`
-  color: #16ceb9;
+const ProfitText = styled.span<{ roi: number }>`
+  color: ${(props) => (props.roi >= 0 ? colors.green : colors.red)};
   font-size: 12px;
   line-height: 16px;
   text-transform: capitalize;
@@ -49,12 +50,9 @@ const YourPosition: React.FC<YourPositionProps> = ({
   vaultOption,
   className,
 }) => {
-  const { status, vaultBalanceInAsset, asset, decimals } = useVaultData(
-    vaultOption,
-    {
-      poll: true,
-    }
-  );
+  const { status, asset, decimals } = useVaultData(vaultOption, {
+    poll: true,
+  });
   const { price: assetPrice } = useAssetPrice({ asset: asset });
   // Uses useMemo to create array so that useVaultAccounts does not constantly create new array that causes website lag
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
@@ -66,9 +64,21 @@ const YourPosition: React.FC<YourPositionProps> = ({
     250,
     isLoading
   );
-  const positionAssetAmount = formatBigNumber(vaultBalanceInAsset, 6, decimals);
 
-  const allTimeROI = useMemo(() => {
+  const [positionAssetAmount, positionAssetAmountUSD] = useMemo(() => {
+    const vaultAccount = vaultAccounts[vaultOption];
+
+    if (!vaultAccount) {
+      return [loadingText, loadingText];
+    }
+
+    return [
+      formatBigNumber(vaultAccount.totalBalance, 6, decimals),
+      assetToUSD(vaultAccount.totalBalance, assetPrice, decimals),
+    ];
+  }, [vaultAccounts, loadingText, vaultOption, decimals, assetPrice]);
+
+  const roi = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
 
     if (!vaultAccount) {
@@ -77,7 +87,10 @@ const YourPosition: React.FC<YourPositionProps> = ({
 
     return (
       (parseFloat(
-        ethers.utils.formatUnits(vaultAccount.totalYieldEarned, decimals)
+        ethers.utils.formatUnits(
+          vaultAccount.totalBalance.sub(vaultAccount.totalDeposits),
+          decimals
+        )
       ) /
         parseFloat(
           ethers.utils.formatUnits(vaultAccount.totalDeposits, decimals)
@@ -102,12 +115,12 @@ const YourPosition: React.FC<YourPositionProps> = ({
           </PositionTitle>
         </div>
         <div className="d-flex flex-row align-items-center justify-content-between ml-2 mt-1">
-          <ProfitText>
-            {isLoading ? loadingText : `+${allTimeROI.toFixed(4)}%`}
+          <ProfitText roi={roi}>
+            {isLoading
+              ? loadingText
+              : `${roi > 0 ? "+" : ""}${roi.toFixed(4)}%`}
           </ProfitText>
-          <AmountText>
-            {assetToUSD(vaultBalanceInAsset, assetPrice, decimals)}
-          </AmountText>
+          <AmountText>{positionAssetAmountUSD}</AmountText>
         </div>
       </div>
     </PositionsContainer>
