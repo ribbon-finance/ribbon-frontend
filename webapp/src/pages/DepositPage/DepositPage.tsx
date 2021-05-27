@@ -1,9 +1,11 @@
 import React, { ReactNode } from "react";
 import { ethers } from "ethers";
 import styled from "styled-components";
+import { useWeb3React } from "@web3-react/core";
+
 import { Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import DepositCapBar from "shared/lib/components/Deposit/DepositCapBar";
+import CapBar from "shared/lib/components/Deposit/CapBar";
 import PerformanceSection from "./PerformanceSection";
 import ActionsForm from "../../components/ActionsForm/ActionsForm";
 import Theta from "shared/lib/assets/icons/theta/Theta";
@@ -11,7 +13,6 @@ import useVaultData from "shared/lib/hooks/useVaultData";
 import { formatSignificantDecimals } from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
 import YourPosition from "../../components/ActionsForm/YourPosition";
-import { useWeb3React } from "@web3-react/core";
 import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
 import { VaultList, VaultOptions } from "shared/lib/constants/constants";
@@ -88,9 +89,8 @@ const DepositPage = () => {
   usePullUp();
   const { account } = useWeb3React();
   const vaultOption = useVaultOption() || VaultList[0];
-  const { status, deposits, vaultLimit, asset, decimals } = useVaultData(
-    vaultOption
-  );
+  const { status, deposits, vaultLimit, asset, decimals } =
+    useVaultData(vaultOption);
   const isLoading = status === "loading";
 
   const totalDepositStr = isLoading
@@ -101,13 +101,13 @@ const DepositPage = () => {
     : parseFloat(formatSignificantDecimals(formatUnits(vaultLimit, decimals)));
 
   const depositCapBar = (
-    <DepositCapBar
+    <CapBar
       loading={isLoading}
-      totalDeposit={totalDepositStr}
-      limit={depositLimitStr}
+      current={totalDepositStr}
+      cap={depositLimitStr}
       copies={{
-        totalDeposit: "Current Vault Deposits",
-        limit: "Max Vault Capacity",
+        current: "Current Vault Deposits",
+        cap: "Max Vault Capacity",
       }}
       asset={asset}
     />
