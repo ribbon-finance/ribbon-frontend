@@ -12,11 +12,11 @@ const BackgroundBar = styled.div<{ height: number }>`
   border-radius: 4px;
 `;
 
-const ForegroundBar = styled.div`
+const ForegroundBar = styled.div<{ height: number }>`
   position: absolute;
   top: 0;
   left: 0;
-  height: 16px;
+  height: ${(props) => props.height}px;
   background: #ffffff;
   border-radius: 4px;
   width: 100%;
@@ -92,7 +92,10 @@ const CapBar: React.FC<{
         className={`d-flex flex-row position-relative ${barConfig.extraClassNames}`}
       >
         <BackgroundBar height={barConfig.height} />
-        <ForegroundBar style={{ width: `${percent}%` }} />
+        <ForegroundBar
+          height={barConfig.height}
+          style={{ width: `${percent}%` }}
+        />
       </div>
 
       <div className="d-flex flex-row justify-content-between">

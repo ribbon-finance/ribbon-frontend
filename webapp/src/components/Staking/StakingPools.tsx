@@ -13,6 +13,7 @@ import {
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import { useWeb3React } from "@web3-react/core";
+import useStakingPool from "../../hooks/useStakingPool";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -161,6 +162,8 @@ interface StakingPoolProps {
 const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   const { active } = useWeb3React();
   const [, setShowConnectWalletModal] = useConnectWalletModal();
+  const { data: stakingPoolData, loading } = useStakingPool(vaultOption);
+
   const logo = useMemo(() => {
     switch (vaultOption) {
       case "rBTC-THETA":
@@ -182,7 +185,8 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           <div className="d-flex flex-wrap">
             <StakingPoolTitle className="w-100">{vaultOption}</StakingPoolTitle>
             <StakingPoolSubtitle>
-              Your Unstaked Balance: ---
+              Your Unstaked Balance: {/* TODO: Balance */}
+              {active ? stakingPoolData.claimableRbn : "---"}
             </StakingPoolSubtitle>
           </div>
         </div>
@@ -192,7 +196,9 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           <ClaimableTokenPill>
             <ClaimableTokenIndicator />
             <Subtitle className="mr-2">CLAIMABLE $RBN</Subtitle>
-            <ClaimableTokenAmount>---</ClaimableTokenAmount>
+            <ClaimableTokenAmount>
+              {active ? stakingPoolData.claimableRbn : "---"}
+            </ClaimableTokenAmount>
           </ClaimableTokenPill>
         </div>
 
@@ -200,8 +206,8 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
         <div className="w-100 mt-4">
           <CapBar
             loading={false}
-            current={0}
-            cap={5000}
+            current={stakingPoolData.currentStake}
+            cap={stakingPoolData.poolSize}
             copies={{
               current: "Your Current Stake",
               cap: "Pool Size",
@@ -222,7 +228,9 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
         {/* Expected Yield */}
         <div className="d-flex align-items-center mt-4 w-100">
           <SecondaryText>Expected Yield (APY)</SecondaryText>
-          <ExpectedYieldData className="ml-auto">24.25%</ExpectedYieldData>
+          <ExpectedYieldData className="ml-auto">
+            {stakingPoolData.expectedYield.toFixed(2)}%
+          </ExpectedYieldData>
         </div>
       </div>
       <StakingPoolCardFooter>
