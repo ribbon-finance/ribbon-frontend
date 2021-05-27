@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   getAirtableName,
   getAssets,
+  VaultList,
   VaultOptions,
 } from "../constants/constants";
 import { useGlobalState } from "../store/store";
@@ -84,14 +85,14 @@ type UseLatestAPY = (vaultOption: VaultOptions) => APYData;
 export const useLatestAPY: UseLatestAPY = (vaultOption) => {
   const asset = getAssets(vaultOption);
   const [latestAPY, setLatestAPY] = useGlobalState("latestAPY");
-  const [fetched, setFetched] = useState<{ [asset in Assets]: boolean }>(
-    Object.fromEntries(AssetsList.map((asset) => [asset, false])) as {
-      [asset in Assets]: boolean;
+  const [fetched, setFetched] = useState<{ [option in VaultOptions]: boolean }>(
+    Object.fromEntries(VaultList.map((option) => [option, false])) as {
+      [option in VaultOptions]: boolean;
     }
   );
 
   const fetchAirtableData = useCallback(async () => {
-    if (fetched[asset]) {
+    if (fetched[vaultOption]) {
       return;
     }
 
@@ -111,11 +112,11 @@ export const useLatestAPY: UseLatestAPY = (vaultOption) => {
 
     setFetched((prev) => ({
       ...prev,
-      [asset]: true,
+      [vaultOption]: true,
     }));
     setLatestAPY((prev) => ({
       ...prev,
-      [asset]: newApy,
+      [vaultOption]: newApy,
     }));
   }, [vaultOption, setLatestAPY, asset, fetched]);
 
@@ -124,7 +125,7 @@ export const useLatestAPY: UseLatestAPY = (vaultOption) => {
   }, [fetchAirtableData]);
 
   return {
-    fetched: fetched[asset],
-    res: latestAPY[asset],
+    fetched: fetched[vaultOption],
+    res: latestAPY[vaultOption],
   };
 };

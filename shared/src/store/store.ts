@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import { createGlobalState } from "react-hooks-global-state";
-import { getAssets, VaultList } from "../constants/constants";
+import { getAssets, VaultList, VaultOptions } from "../constants/constants";
 import {
   DefiScoreProtocol,
   DefiScoreToken,
@@ -20,7 +20,7 @@ interface GlobalStore {
   prices: { [asset in Assets]: number };
   pendingTransactions: PendingTransaction[];
   showConnectWallet: boolean;
-  latestAPY: { [asset in Assets]: number };
+  latestAPY: { [option in VaultOptions]: number };
   assetYieldsInfo: {
     fetched: boolean;
     data: AssetYieldsInfoData;
@@ -50,7 +50,7 @@ export const initialState: GlobalStore = {
   },
   pendingTransactions: [],
   showConnectWallet: false,
-  latestAPY: Object.fromEntries(AssetsList.map((asset) => [asset, 0.0])) as {
+  latestAPY: Object.fromEntries(VaultList.map((option) => [option, 0.0])) as {
     [asset in Assets]: number;
   },
   assetYieldsInfo: {
@@ -58,7 +58,7 @@ export const initialState: GlobalStore = {
     data: Object.fromEntries(
       DefiScoreTokenList.map((token) => [token, new Array(0)])
     ) as {
-      [token in DefiScoreToken]: Array<{
+      [option in VaultOptions]: Array<{
         protocol: DefiScoreProtocol;
         apr: number;
       }>;
