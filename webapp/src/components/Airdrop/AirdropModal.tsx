@@ -54,6 +54,7 @@ const CloseButton = styled.div`
   color: ${colors.text};
   z-index: 2;
 `;
+
 interface AirdropModalProps {
   show: boolean;
   onClose: () => void;
@@ -123,16 +124,14 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
   return (
     <StyledModal show={show} onHide={handleClose} centered backdrop={true}>
       <BaseModalHeader>
-        {
-          <CloseButton role="button" onClick={handleClose}>
-            <MenuButton
-              isOpen={true}
-              onToggle={handleClose}
-              size={20}
-              color={"#FFFFFFA3"}
-            />
-          </CloseButton>
-        }
+        <CloseButton role="button" onClick={handleClose}>
+          <MenuButton
+            isOpen={true}
+            onToggle={handleClose}
+            size={20}
+            color={"#FFFFFFA3"}
+          />
+        </CloseButton>
       </BaseModalHeader>
       <Modal.Body>
         <AnimatePresence initial={false}>

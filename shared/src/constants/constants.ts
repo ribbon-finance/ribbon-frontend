@@ -53,7 +53,7 @@ const getETHPutThetaVaultId = () =>
     ? deployment.kovan.RibbonETHPut
     : deployment.mainnet.RibbonETHPut;
 
-const FullVaultList = [
+export const FullVaultList = [
   "rUSDC-ETH-P-THETA",
   "rUSDC-BTC-P-THETA",
   "rBTC-THETA",
