@@ -51,14 +51,14 @@ export const initialState: GlobalStore = {
   pendingTransactions: [],
   showConnectWallet: false,
   latestAPY: Object.fromEntries(VaultList.map((option) => [option, 0.0])) as {
-    [asset in Assets]: number;
+    [option in VaultOptions]: number;
   },
   assetYieldsInfo: {
     fetched: false,
     data: Object.fromEntries(
       DefiScoreTokenList.map((token) => [token, new Array(0)])
     ) as {
-      [option in VaultOptions]: Array<{
+      [token in DefiScoreToken]: Array<{
         protocol: DefiScoreProtocol;
         apr: number;
       }>;
