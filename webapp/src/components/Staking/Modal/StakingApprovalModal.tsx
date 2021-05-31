@@ -13,13 +13,10 @@ import {
 import MenuButton from "../../Header/MenuButton";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
-
 import { getEtherscanURI, VaultOptions } from "shared/lib/constants/constants";
 import StakingApprovalModalInfo from "./StakingApprovalModalInfo";
 import TrafficLight from "../../Common/TrafficLight";
 import { IERC20 } from "shared/lib/codegen";
-import { useWeb3Context } from "shared/lib/hooks/web3Context";
-import usePendingTransactions from "../../../hooks/usePendingTransactions";
 
 const StyledModal = styled(BaseModal)`
   .modal-dialog {
@@ -107,6 +104,12 @@ interface StakingApprovalModalProps {
   onClose: () => void;
   vaultOption: VaultOptions;
   tokenContract: IERC20 | undefined;
+  handleApprove: (
+    setStep: React.Dispatch<
+      React.SetStateAction<"info" | "approve" | "approving">
+    >
+  ) => void;
+  txId: string;
 }
 
 const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
@@ -114,11 +117,10 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
   onClose,
   vaultOption,
   tokenContract,
+  handleApprove,
+  txId,
 }) => {
   const [step, setStep] = useState<"info" | "approve" | "approving">("info");
-  const { provider } = useWeb3Context();
-  const [, setPendingTransactions] = usePendingTransactions();
-  const [txId, setTxId] = useState("");
 
   const handleClose = useCallback(() => {
     onClose();
@@ -127,54 +129,15 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
     }
   }, [step, onClose]);
 
-  const handleApprove = useCallback(async () => {
-    if (!tokenContract) {
-      return;
-    }
-
-    setStep("approve");
-    const amount =
-      "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-
-    try {
-      const tx = await tokenContract.approve(
-        // TODO: Replace with real spender address
-        "0x76e7Caa7131581eE6f4c562b7Ca5379AB9024083",
-        amount
-      );
-
-      setStep("approving");
-
-      const txhash = tx.hash;
-
-      setTxId(txhash);
-      setPendingTransactions((pendingTransactions) => [
-        ...pendingTransactions,
-        {
-          txhash,
-          type: "approval",
-          amount: amount,
-          vault: vaultOption,
-        },
-      ]);
-
-      // Wait for transaction to be approved
-      await provider.waitForTransaction(txhash);
-      setStep("info");
-      setTxId("");
-      onClose();
-    } catch (err) {
-      setStep("info");
-    }
-  }, [tokenContract, provider, setPendingTransactions, vaultOption, onClose]);
-
   const body = useMemo(() => {
     switch (step) {
       case "info":
         return (
           <StakingApprovalModalInfo
             vaultOption={vaultOption}
-            onApprove={handleApprove}
+            onApprove={() => {
+              handleApprove(setStep);
+            }}
           />
         );
       case "approve":

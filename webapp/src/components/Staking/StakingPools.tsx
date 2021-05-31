@@ -26,6 +26,8 @@ import { getAssetDecimals } from "shared/lib/utils/asset";
 import { formatSignificantDecimals } from "shared/lib/utils/math";
 import useTokenAllowance from "../../hooks/useTokenAllowance";
 import StakingApprovalModal from "./Modal/StakingApprovalModal";
+import usePendingTransactions from "../../hooks/usePendingTransactions";
+import { useWeb3Context } from "shared/lib/hooks/web3Context";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -173,6 +175,7 @@ interface StakingPoolProps {
 
 const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   const { active, account } = useWeb3React();
+  const { provider } = useWeb3Context();
   const [, setShowConnectWalletModal] = useConnectWalletModal();
   const { data: stakingPoolData, loading: stakingPoolLoading } = useStakingPool(
     vaultOption
@@ -185,6 +188,8 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
     vaultOption,
     "0x76e7Caa7131581eE6f4c562b7Ca5379AB9024083"
   );
+  const [, setPendingTransactions] = usePendingTransactions();
+  const [txId, setTxId] = useState("");
 
   const [loading, setLoading] = useState(false);
   const isLoading = loading || stakingPoolLoading;
@@ -233,6 +238,14 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
     return true;
   }, [tokenAllowance]);
 
+  const primaryActionLoadingText = useTextAnimation(
+    hasAllowance
+      ? ["Staking", "Staking .", "Staking ..", "Staking ..."]
+      : ["Approving", "Approving .", "Approving ..", "Approving ..."],
+    250,
+    !!txId
+  );
+
   const renderUnstakeBalance = useCallback(() => {
     if (!active) {
       return "---";
@@ -245,6 +258,54 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
     return formatSignificantDecimals(formatUnits(tokenBalance, decimals));
   }, [active, isLoading, loadingText, tokenBalance, decimals]);
 
+  const handleApprove = useCallback(
+    async (
+      setStep: React.Dispatch<
+        React.SetStateAction<"info" | "approve" | "approving">
+      >
+    ) => {
+      if (!tokenContract) {
+        return;
+      }
+
+      setStep("approve");
+      const amount =
+        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+
+      try {
+        const tx = await tokenContract.approve(
+          // TODO: Replace with real spender address
+          "0x76e7Caa7131581eE6f4c562b7Ca5379AB9024083",
+          amount
+        );
+
+        setStep("approving");
+
+        const txhash = tx.hash;
+
+        setTxId(txhash);
+        setPendingTransactions((pendingTransactions) => [
+          ...pendingTransactions,
+          {
+            txhash,
+            type: "approval",
+            amount: amount,
+            vault: vaultOption,
+          },
+        ]);
+
+        // Wait for transaction to be approved
+        await provider.waitForTransaction(txhash);
+        setStep("info");
+        setTxId("");
+        setShowApprovalModal(false);
+      } catch (err) {
+        setStep("info");
+      }
+    },
+    [tokenContract, provider, setPendingTransactions, vaultOption]
+  );
+
   return (
     <>
       <StakingApprovalModal
@@ -252,6 +313,8 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
         onClose={() => setShowApprovalModal(false)}
         vaultOption={vaultOption}
         tokenContract={tokenContract}
+        handleApprove={handleApprove}
+        txId={txId}
       />
       <StakingPoolCard role="button">
         <div className="d-flex flex-wrap w-100 p-3">
@@ -320,9 +383,9 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
                     setShowApprovalModal(true);
                   }
                 }}
-                active={hasAllowance}
+                active={hasAllowance || !!txId}
               >
-                Stake
+                {txId ? primaryActionLoadingText : "Stake"}
               </StakingPoolCardFooterButton>
               <StakingPoolCardFooterButton
                 role="button"
