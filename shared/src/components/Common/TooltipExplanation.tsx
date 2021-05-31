@@ -6,7 +6,7 @@ import TooltipExplanationContent from "./TooltipExplanationContent";
 
 interface TooltipExplanationProps {
   title: string;
-  explanation: string;
+  explanation: React.ReactNode;
   learnMoreURL?: string;
   renderContent: (
     props: OverlayTriggerRenderProps & React.HTMLAttributes<HTMLElement>

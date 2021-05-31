@@ -28,6 +28,8 @@ import useTokenAllowance from "../../hooks/useTokenAllowance";
 import StakingApprovalModal from "./Modal/StakingApprovalModal";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import { productCopies } from "shared/lib/components/Product/productCopies";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -167,6 +169,23 @@ const StakingPoolCardFooterButton = styled(Title)<{ active: boolean }>`
   &:not(:first-child) {
     border-left: ${theme.border.width} ${theme.border.style} ${colors.border};
   }
+`;
+
+const HelpContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 16px;
+  width: 16px;
+  border: ${theme.border.width} ${theme.border.style} ${colors.borderLight};
+  border-radius: 100px;
+  margin-left: 8px;
+`;
+
+const HelpText = styled(SecondaryText)`
+  font-size: 10px;
+  line-height: 12px;
+  color: ${colors.text};
 `;
 
 interface StakingPoolProps {
@@ -322,9 +341,21 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           <div className="d-flex align-items-center">
             <LogoContainer>{logo}</LogoContainer>
             <div className="d-flex flex-wrap">
-              <StakingPoolTitle className="w-100">
-                {vaultOption}
-              </StakingPoolTitle>
+              <div className="d-flex w-100 align-items-center">
+                <StakingPoolTitle>{vaultOption}</StakingPoolTitle>
+                <TooltipExplanation
+                  title={vaultOption}
+                  explanation={
+                    productCopies[vaultOption].liquidityMining.explanation
+                  }
+                  renderContent={({ ref, ...triggerHandler }) => (
+                    <HelpContainer ref={ref} {...triggerHandler}>
+                      <HelpText>!</HelpText>
+                    </HelpContainer>
+                  )}
+                  learnMoreURL="https://ribbon.finance/faq"
+                />
+              </div>
               <StakingPoolSubtitle>
                 Your Unstaked Balance: {renderUnstakeBalance()}
               </StakingPoolSubtitle>
@@ -367,7 +398,19 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
 
           {/* Expected Yield */}
           <div className="d-flex align-items-center mt-4 w-100">
-            <SecondaryText>Expected Yield (APY)</SecondaryText>
+            <div className="d-flex align-items-center">
+              <SecondaryText>Expected Yield (APY)</SecondaryText>
+              <TooltipExplanation
+                title="EXPECTED YIELD (APY)"
+                explanation={`By staking your ${vaultOption} tokens in the pool, you earn weekly $RBN rewards.`}
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HelpContainer ref={ref} {...triggerHandler}>
+                    <HelpText>!</HelpText>
+                  </HelpContainer>
+                )}
+                learnMoreURL="https://ribbon.finance/faq"
+              />
+            </div>
             <ExpectedYieldData className="ml-auto">
               {stakingPoolData.expectedYield.toFixed(2)}%
             </ExpectedYieldData>
