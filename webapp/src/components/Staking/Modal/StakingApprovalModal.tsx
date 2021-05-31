@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { Modal } from "react-bootstrap";
 import { AnimatePresence, motion } from "framer-motion";
 
 import {
+  BaseLink,
   BaseModal,
   BaseModalHeader,
   PrimaryText,
@@ -13,7 +14,7 @@ import MenuButton from "../../Header/MenuButton";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
 
-import { VaultOptions } from "shared/lib/constants/constants";
+import { getEtherscanURI, VaultOptions } from "shared/lib/constants/constants";
 import StakingApprovalModalInfo from "./StakingApprovalModalInfo";
 import TrafficLight from "../../Common/TrafficLight";
 import { IERC20 } from "shared/lib/codegen";
@@ -91,6 +92,16 @@ const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
       : `${props.marginTop || 24}px`};
 `;
 
+const UnderlinedLink = styled(BaseLink)`
+  text-decoration: underline;
+  color: ${colors.text};
+
+  &:hover {
+    text-decoration: none;
+    color: ${colors.text};
+  }
+`;
+
 interface StakingApprovalModalProps {
   show: boolean;
   onClose: () => void;
@@ -107,6 +118,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
   const [step, setStep] = useState<"info" | "approve" | "approving">("info");
   const { provider } = useWeb3Context();
   const [, setPendingTransactions] = usePendingTransactions();
+  const [txId, setTxId] = useState("");
 
   const handleClose = useCallback(() => {
     onClose();
@@ -135,6 +147,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
 
       const txhash = tx.hash;
 
+      setTxId(txhash);
       setPendingTransactions((pendingTransactions) => [
         ...pendingTransactions,
         {
@@ -148,6 +161,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
       // Wait for transaction to be approved
       await provider.waitForTransaction(txhash);
       setStep("info");
+      setTxId("");
       onClose();
     } catch (err) {
       setStep("info");
@@ -185,12 +199,21 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
                 </PrimaryText>
               </ContentColumn>
             ) : (
-              <></>
+              <ContentColumn marginTop="auto">
+                <UnderlinedLink
+                  to={`${getEtherscanURI()}/tx/${txId}`}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="d-flex"
+                >
+                  <PrimaryText className="mb-2">View on Etherscan</PrimaryText>
+                </UnderlinedLink>
+              </ContentColumn>
             )}
           </>
         );
     }
-  }, [step, vaultOption, handleApprove]);
+  }, [step, vaultOption, handleApprove, txId]);
 
   return (
     <StyledModal show={show} onHide={handleClose} centered backdrop={true}>

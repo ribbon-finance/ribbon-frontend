@@ -128,8 +128,8 @@ const StakingApprovalModalInfo: React.FC<StakingApprovalModalInfoProps> = ({
       </ContentColumn>
       <ContentColumn>
         <PrimaryText className="text-center font-weight-normal">
-          Before you stake, the pool needs your permission to hold your
-          rETH-THETA tokens.
+          Before you stake, the pool needs your permission to hold your{" "}
+          {vaultOption} tokens.
         </PrimaryText>
       </ContentColumn>
       <ContentColumn marginTop={16}>
