@@ -290,7 +290,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
             txhash,
             type: "approval",
             amount: amount,
-            vault: vaultOption,
+            stakeAsset: vaultOption,
           },
         ]);
 

@@ -43,6 +43,12 @@ export type PendingTransaction =
       txhash: string;
       type: "claim";
       amount: string;
+    }
+  | {
+      txhash: string;
+      type: "approval";
+      amount: string;
+      stakeAsset: VaultOptions;
     };
 
 export type AssetYieldsInfoData = {
