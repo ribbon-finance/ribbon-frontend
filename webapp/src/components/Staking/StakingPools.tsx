@@ -180,7 +180,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   const tokenContract = useERC20Token(vaultOption);
   const [tokenBalance, setTokenBalance] = useState(BigNumber.from(0));
   const decimals = getAssetDecimals(getAssets(vaultOption));
-  // Replace spender address
+  // TODO: Replace spender address
   const tokenAllowance = useTokenAllowance(
     vaultOption,
     "0x76e7Caa7131581eE6f4c562b7Ca5379AB9024083"
@@ -228,6 +228,8 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
       return false;
     }
 
+    setShowApprovalModal(false);
+
     return true;
   }, [tokenAllowance]);
 
@@ -249,6 +251,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
         show={showApprovalModal}
         onClose={() => setShowApprovalModal(false)}
         vaultOption={vaultOption}
+        tokenContract={tokenContract}
       />
       <StakingPoolCard role="button">
         <div className="d-flex flex-wrap w-100 p-3">

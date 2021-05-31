@@ -72,6 +72,7 @@ const TrafficLight: React.FC<TrafficLightProps> = ({
     <Container width={lightBarConfig.width}>
       {ProductList.map((product, index) => (
         <LightBar
+          key={index}
           height={lightBarConfig.height}
           spacing={lightBarConfig.spacing}
           product={product}

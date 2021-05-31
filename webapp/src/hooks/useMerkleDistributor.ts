@@ -16,8 +16,7 @@ export const getMerkleDistributor = (
     return MerkleDistributor__factory.connect(
       isDevelopment()
         ? deployments.kovan.MerkleDistributor
-        : // TODO: Replace with Mainnet
-          deployments.mainnet.MerkleDistributor,
+        : deployments.mainnet.MerkleDistributor,
       provider
     );
   }
