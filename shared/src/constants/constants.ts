@@ -53,6 +53,23 @@ const getETHPutThetaVaultId = () =>
     ? deployment.kovan.RibbonETHPut
     : deployment.mainnet.RibbonETHPut;
 
+export const VaultLiquidityMiningMap: {
+  [vault in VaultOptions]: string;
+} = isDevelopment()
+  ? {
+      "rUSDC-ETH-P-THETA": deployment.kovan.RibbonETHPutStakingReward,
+      "rUSDC-BTC-P-THETA": deployment.kovan.RibbonWBTCPutStakingReward,
+      "rBTC-THETA": deployment.kovan.RibbonWBTCCoveredCallStakingReward,
+      "rETH-THETA": deployment.kovan.RibbonETHCoveredCallStakingReward,
+    }
+  : {
+      // TODO: Replace with mainnet addresses
+      "rUSDC-ETH-P-THETA": "",
+      "rUSDC-BTC-P-THETA": "",
+      "rBTC-THETA": "",
+      "rETH-THETA": "",
+    };
+
 export const FullVaultList = [
   "rUSDC-ETH-P-THETA",
   "rUSDC-BTC-P-THETA",

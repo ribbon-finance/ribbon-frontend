@@ -5,9 +5,13 @@ import { isDevelopment } from "../utils/env";
 import addresses from "../constants/externalAddresses.json";
 import { ERC20Token } from "../models/eth";
 
-export const getERC20Token = (library: any, token: ERC20Token) => {
+export const getERC20Token = (
+  library: any,
+  token: ERC20Token,
+  useSigner: boolean = true
+) => {
   if (library) {
-    const provider = library.getSigner();
+    const provider = useSigner ? library.getSigner() : library;
 
     return IERC20__factory.connect(
       isDevelopment()
@@ -25,8 +29,8 @@ const useERC20Token = (token: ERC20Token) => {
   const [contract, setContract] = useState<IERC20>();
 
   useEffect(() => {
-    if (active && library) {
-      setContract(getERC20Token(library, token));
+    if (library) {
+      setContract(getERC20Token(library, token, active));
     }
   }, [library, active, token]);
 

@@ -7,6 +7,7 @@ import { useWeb3React } from "@web3-react/core";
 import { SecondaryText, Subtitle, Title } from "shared/lib/designSystem";
 import {
   getAssets,
+  VaultLiquidityMiningMap,
   VaultList,
   VaultOptions,
 } from "shared/lib/constants/constants";
@@ -23,7 +24,7 @@ import useStakingPool from "../../hooks/useStakingPool";
 import useERC20Token from "shared/lib/hooks/useERC20Token";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { getAssetDecimals } from "shared/lib/utils/asset";
-import { formatSignificantDecimals } from "shared/lib/utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 import useTokenAllowance from "../../hooks/useTokenAllowance";
 import StakingApprovalModal from "./Modal/StakingApprovalModal";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
@@ -202,10 +203,9 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   const tokenContract = useERC20Token(vaultOption);
   const [tokenBalance, setTokenBalance] = useState(BigNumber.from(0));
   const decimals = getAssetDecimals(getAssets(vaultOption));
-  // TODO: Replace spender address
   const tokenAllowance = useTokenAllowance(
     vaultOption,
-    "0x76e7Caa7131581eE6f4c562b7Ca5379AB9024083"
+    VaultLiquidityMiningMap[vaultOption]
   );
   const [, setPendingTransactions] = usePendingTransactions();
   const [txId, setTxId] = useState("");
@@ -274,7 +274,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
       return loadingText;
     }
 
-    return formatSignificantDecimals(formatUnits(tokenBalance, decimals));
+    return formatBigNumber(tokenBalance, 6, decimals);
   }, [active, isLoading, loadingText, tokenBalance, decimals]);
 
   const handleApprove = useCallback(
@@ -293,8 +293,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
 
       try {
         const tx = await tokenContract.approve(
-          // TODO: Replace with real spender address
-          "0x76e7Caa7131581eE6f4c562b7Ca5379AB9024083",
+          VaultLiquidityMiningMap[vaultOption],
           amount
         );
 
@@ -368,7 +367,9 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
               <ClaimableTokenIndicator />
               <Subtitle className="mr-2">CLAIMABLE $RBN</Subtitle>
               <ClaimableTokenAmount>
-                {active ? stakingPoolData.claimableRbn : "---"}
+                {active
+                  ? formatBigNumber(stakingPoolData.claimableRbn, 2, 18)
+                  : "---"}
               </ClaimableTokenAmount>
             </ClaimableTokenPill>
           </div>
@@ -377,8 +378,10 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           <div className="w-100 mt-4">
             <CapBar
               loading={false}
-              current={stakingPoolData.currentStake}
-              cap={stakingPoolData.poolSize}
+              current={parseFloat(
+                formatUnits(stakingPoolData.currentStake, decimals)
+              )}
+              cap={parseFloat(formatUnits(stakingPoolData.poolSize, decimals))}
               copies={{
                 current: "Your Current Stake",
                 cap: "Pool Size",
