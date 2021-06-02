@@ -7,18 +7,18 @@ import {
   VaultOptions,
 } from "shared/lib/constants/constants";
 import useERC20Token from "shared/lib/hooks/useERC20Token";
+import { StakingPoolData } from "../models/staking";
 import useStakingReward from "./useStakingReward";
 
-// TODO:
-const initialData = {
+const initialData: StakingPoolData = {
   currentStake: BigNumber.from(0),
   poolSize: BigNumber.from(0),
-  expectedYield: 24.1,
+  expectedYield: 0,
   claimableRbn: BigNumber.from(0),
 };
 
 const useStakingPool = (option: VaultOptions) => {
-  const [data, setData] = useState(initialData);
+  const [data, setData] = useState<StakingPoolData>(initialData);
   const [loading, setLoading] = useState(false);
   const contract = useStakingReward(option);
   const { active, account } = useWeb3React();

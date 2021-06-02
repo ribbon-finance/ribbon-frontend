@@ -31,6 +31,7 @@ import usePendingTransactions from "../../hooks/usePendingTransactions";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import { productCopies } from "shared/lib/components/Product/productCopies";
+import StakingActionModal from "./Modal/StakingActionModal";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -219,13 +220,14 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   );
 
   const [showApprovalModal, setShowApprovalModal] = useState(false);
+  const [showActionModal, setShowActionModal] = useState(false);
 
   const logo = useMemo(() => {
     switch (vaultOption) {
       case "rBTC-THETA":
         return <RedWBTCLogo />;
       case "rETH-THETA":
-        return <RedWETHLogo height="32px" />;
+        return <RedWETHLogo height="70%" />;
       case "rUSDC-BTC-P-THETA":
       case "rUSDC-ETH-P-THETA":
         return <RedUSDCLogo />;
@@ -334,6 +336,14 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
         handleApprove={handleApprove}
         txId={txId}
       />
+      <StakingActionModal
+        show={showActionModal}
+        onClose={() => setShowActionModal(false)}
+        vaultOption={vaultOption}
+        logo={logo}
+        stakingPoolData={stakingPoolData}
+        tokenBalance={tokenBalance}
+      />
       <StakingPoolCard role="button">
         <div className="d-flex flex-wrap w-100 p-3">
           {/* Card Title */}
@@ -424,11 +434,11 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
             <>
               <StakingPoolCardFooterButton
                 role="button"
-                onClick={() => {
-                  if (!hasAllowance) {
-                    setShowApprovalModal(true);
-                  }
-                }}
+                onClick={() =>
+                  hasAllowance
+                    ? setShowActionModal(true)
+                    : setShowApprovalModal(true)
+                }
                 active={hasAllowance || !!txId}
               >
                 {txId ? primaryActionLoadingText : "Stake"}

@@ -14,7 +14,7 @@ import theme from "shared/lib/designSystem/theme";
 import useAssetPrice from "../../hooks/useAssetPrice";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { CurrencyType } from "../../pages/Portfolio/types";
-import { assetToUSD, formatSignificantDecimals } from "shared/lib/utils/math";
+import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
 import { ProductType } from "shared/lib/components/Product/types";
 import sizes from "shared/lib/designSystem/sizes";
 import {
@@ -159,9 +159,9 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
             ? animatedLoadingText
             : `${assetToUSD(amount, assetPrice, decimals)}`;
         case "eth":
-          return `${formatSignificantDecimals(
-            ethers.utils.formatUnits(amount, decimals)
-          )} ${getAssetDisplay(asset)}`;
+          return `${formatBigNumber(amount, 6, decimals)} ${getAssetDisplay(
+            asset
+          )}`;
       }
     },
     [asset, assetPrice, animatedLoadingText, assetPriceLoading, decimals]

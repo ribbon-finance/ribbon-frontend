@@ -11,6 +11,10 @@ import { BigNumber, ethers } from "ethers";
 import moment from "moment";
 
 import {
+  BaseInput,
+  BaseInputButton,
+  BaseInputContianer,
+  BaseInputLabel,
   BaseLink,
   PrimaryText,
   SecondaryText,
@@ -119,60 +123,11 @@ const FormTitle = styled(Title)<{ active: boolean }>`
   color: ${(props) => (props.active ? "#f3f3f3" : "rgba(255, 255, 255, 0.64)")};
 `;
 
-const InputGuide = styled.div`
-  color: #ffffff;
-  opacity: 0.4;
-  font-size: 12px;
-  line-height: 16px;
-  letter-spacing: 1.5px;
-`;
-
 const ContentContainer = styled.div`
   background: ${colors.background};
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   border-bottom: ${theme.border.width} ${theme.border.style} ${colors.border};
-`;
-
-const FormInputContainer = styled.div`
-  width: 100%;
-  height: 80px;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 4px;
-`;
-
-const FormInput = styled.input`
-  width: 80%;
-  height: 100%;
-  font-size: 40px;
-  line-height: 64px;
-  color: #ffffff;
-  border: none;
-  background: none;
-
-  &:focus {
-    color: #ffffff;
-    background: none;
-    border: none;
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-    border: rgba(255, 255, 255, 0);
-  }
-`;
-
-const MaxAccessory = styled.div`
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  right: 0;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
-  padding: 8px;
-  height: 32px;
-  font-size: 11px;
-  line-height: 16px;
-  text-align: center;
-  letter-spacing: 1.5px;
-  cursor: pointer;
 `;
 
 type WalletBalanceStates = "active" | "inactive" | "error";
@@ -854,9 +809,9 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
             </>
           ) : (
             <>
-              <InputGuide>AMOUNT ({getAssetDisplay(asset)})</InputGuide>
-              <FormInputContainer className="position-relative mt-2 mb-5 px-1">
-                <FormInput
+              <BaseInputLabel>AMOUNT ({getAssetDisplay(asset)})</BaseInputLabel>
+              <BaseInputContianer className="position-relative mb-5">
+                <BaseInput
                   ref={inputRef}
                   type="number"
                   className="form-control"
@@ -867,9 +822,11 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
                   onWheel={onInputWheel}
                 />
                 {connected && (
-                  <MaxAccessory onClick={handleClickMax}>MAX</MaxAccessory>
+                  <BaseInputButton onClick={handleClickMax}>
+                    MAX
+                  </BaseInputButton>
                 )}
-              </FormInputContainer>
+              </BaseInputContianer>
               {button}
             </>
           )}
