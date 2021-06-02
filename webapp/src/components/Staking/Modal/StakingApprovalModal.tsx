@@ -16,7 +16,6 @@ import colors from "shared/lib/designSystem/colors";
 import { getEtherscanURI, VaultOptions } from "shared/lib/constants/constants";
 import StakingApprovalModalInfo from "./StakingApprovalModalInfo";
 import TrafficLight from "../../Common/TrafficLight";
-import { IERC20 } from "shared/lib/codegen";
 
 const StyledModal = styled(BaseModal)`
   .modal-dialog {
@@ -103,7 +102,6 @@ interface StakingApprovalModalProps {
   show: boolean;
   onClose: () => void;
   vaultOption: VaultOptions;
-  tokenContract: IERC20 | undefined;
   handleApprove: (
     setStep: React.Dispatch<
       React.SetStateAction<"info" | "approve" | "approving">
@@ -116,7 +114,6 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
   show,
   onClose,
   vaultOption,
-  tokenContract,
   handleApprove,
   txId,
 }) => {

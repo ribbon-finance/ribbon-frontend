@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { useWeb3React } from "@web3-react/core";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 import styled from "styled-components";
 import moment from "moment";
 
@@ -16,11 +16,7 @@ import { useAssetsPrice } from "../../hooks/useAssetPrice";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useTransactions from "../../hooks/useTransactions";
 import { CurrencyType } from "../../pages/Portfolio/types";
-import {
-  assetToUSD,
-  formatBigNumber,
-  formatSignificantDecimals,
-} from "shared/lib/utils/math";
+import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
 import { capitalize } from "../../utils/text";
 import {
   getAssets,
