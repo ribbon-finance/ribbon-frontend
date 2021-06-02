@@ -27,6 +27,7 @@ import {
   VaultAddressMap,
   VaultMaxDeposit,
   VaultOptions,
+  VaultWithdrawalFee,
 } from "shared/lib/constants/constants";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import useVault from "shared/lib/hooks/useVault";
@@ -517,7 +518,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
       ? { action: ACTIONS.deposit, yield: latestAPY.res }
       : {
           action: ACTIONS.withdraw,
-          withdrawalFee: 0.5,
+          withdrawalFee: parseFloat(VaultWithdrawalFee[vaultOption]),
         };
 
     return {
