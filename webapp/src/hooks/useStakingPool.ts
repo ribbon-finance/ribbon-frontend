@@ -1,6 +1,6 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { useWeb3React } from "@web3-react/core";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import {
   VaultLiquidityMiningMap,
@@ -17,59 +17,91 @@ const initialData: StakingPoolData = {
   claimableRbn: BigNumber.from(0),
 };
 
-const useStakingPool = (option: VaultOptions) => {
+type UseStakingPool = (
+  vault: VaultOptions,
+  params?: {
+    poll: boolean;
+    pollingFrequency?: number;
+  }
+) => { data: StakingPoolData; loading: boolean };
+
+const useStakingPool: UseStakingPool = (
+  option,
+  { poll, pollingFrequency } = { poll: true, pollingFrequency: 5000 }
+) => {
   const [data, setData] = useState<StakingPoolData>(initialData);
   const [loading, setLoading] = useState(false);
+  const [firstLoaded, setFirstLoaded] = useState(false);
   const contract = useStakingReward(option);
   const { active, account } = useWeb3React();
   const tokenContract = useERC20Token(option);
 
-  useEffect(() => {
+  const doMulticall = useCallback(async () => {
     if (!contract) {
       return;
     }
 
-    (async () => {
+    if (!firstLoaded) {
       setLoading(true);
-      /**
-       * 1. Pool size
-       * 2. TODO: Expected yield
-       */
-      const unconnectedPromises = [
-        tokenContract.balanceOf(VaultLiquidityMiningMap[option]),
-        (async () => 24.1)(),
-      ];
+    }
+    /**
+     * 1. Pool size
+     * 2. TODO: Expected yield
+     */
+    const unconnectedPromises = [
+      tokenContract.balanceOf(VaultLiquidityMiningMap[option]),
+      (async () => 24.1)(),
+    ];
 
-      /**
-       * 1. Current stake
-       * 2. Claimable rbn
-       */
-      const promises = unconnectedPromises.concat(
-        active
-          ? [contract.balanceOf(account), contract.earned(account)]
-          : [
-              /** User had not connected their wallet, default to 0 */
-              (async () => BigNumber.from(0))(),
-              (async () => BigNumber.from(0))(),
-            ]
-      );
+    /**
+     * 1. Current stake
+     * 2. Claimable rbn
+     */
+    const promises = unconnectedPromises.concat(
+      active
+        ? [contract.balanceOf(account), contract.earned(account)]
+        : [
+            /** User had not connected their wallet, default to 0 */
+            (async () => BigNumber.from(0))(),
+            (async () => BigNumber.from(0))(),
+          ]
+    );
 
-      const [
-        poolSize,
-        expectedYield,
-        currentStake,
-        claimableRbn,
-      ] = await Promise.all(promises);
+    const [
+      poolSize,
+      expectedYield,
+      currentStake,
+      claimableRbn,
+    ] = await Promise.all(promises);
 
-      setData({
-        poolSize,
-        expectedYield,
-        currentStake,
-        claimableRbn,
-      });
+    setData({
+      poolSize,
+      expectedYield,
+      currentStake,
+      claimableRbn,
+    });
+
+    if (!firstLoaded) {
       setLoading(false);
-    })();
-  }, [account, active, contract, option, tokenContract]);
+      setFirstLoaded(true);
+    }
+  }, [account, active, contract, option, tokenContract, firstLoaded]);
+
+  useEffect(() => {
+    let pollInterval: any = undefined;
+    if (poll) {
+      doMulticall();
+      pollInterval = setInterval(doMulticall, pollingFrequency);
+    } else {
+      doMulticall();
+    }
+
+    return () => {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+      }
+    };
+  }, [poll, pollingFrequency, doMulticall]);
 
   return { data, loading };
 };

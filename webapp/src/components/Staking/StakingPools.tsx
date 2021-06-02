@@ -198,7 +198,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   const { active, account } = useWeb3React();
   const { provider } = useWeb3Context();
   const [, setShowConnectWalletModal] = useConnectWalletModal();
-  const { data: stakingPoolData, loading: stakingPoolLoading } = useStakingPool(
+  const { data: stakingPoolData } = useStakingPool(
     vaultOption
   );
   const tokenContract = useERC20Token(vaultOption);
@@ -212,7 +212,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   const [txId, setTxId] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const isLoading = loading || stakingPoolLoading;
+  const isLoading = loading ;
   const loadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
