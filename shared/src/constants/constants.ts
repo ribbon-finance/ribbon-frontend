@@ -136,7 +136,7 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
 };
 
 export const VaultWithdrawalFee: { [vault in VaultOptions]: string } = {
-  "rUSDC-BTC-P-THETA": "0.05",
+  "rUSDC-BTC-P-THETA": "0.5",
   "rUSDC-ETH-P-THETA": "2",
   "rETH-THETA": "0.5",
   "rBTC-THETA": "0.5",
