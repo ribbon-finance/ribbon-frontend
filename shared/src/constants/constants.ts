@@ -135,6 +135,13 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   ),
 };
 
+export const VaultWithdrawalFee: { [vault in VaultOptions]: string } = {
+  "rUSDC-BTC-P-THETA": "0.5",
+  "rUSDC-ETH-P-THETA": "2",
+  "rETH-THETA": "0.5",
+  "rBTC-THETA": "0.5",
+};
+
 export const getAirtableName = (vault: VaultOptions): string => {
   switch (vault) {
     case "rUSDC-ETH-P-THETA":
