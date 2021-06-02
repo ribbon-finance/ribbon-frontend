@@ -47,8 +47,10 @@ export const WrongNetworkToast = () => {
 type TxStatuses = "success" | "error" | null;
 
 export const TxStatusToast = () => {
-  const [pendingTransactions, setPendingTransactions] =
-    usePendingTransactions();
+  const [
+    pendingTransactions,
+    setPendingTransactions,
+  ] = usePendingTransactions();
 
   const [status, setStatus] = useState<TxStatuses>(null);
   const [currentTx, setCurrentTx] = useState<PendingTransaction | null>(null);
@@ -90,7 +92,7 @@ export const TxStatusToast = () => {
         case "withdraw":
           return `${params.amountFormatted} ${getAssetDisplay(
             params.asset
-          )} withdrawn into ${productCopies[params.vault].title}`;
+          )} withdrawn from ${productCopies[params.vault].title}`;
         case "deposit":
           return `${params.amountFormatted} ${getAssetDisplay(
             params.asset
