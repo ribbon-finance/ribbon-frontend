@@ -13,9 +13,16 @@ import {
 import MenuButton from "../../Header/MenuButton";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
-import { getEtherscanURI, VaultOptions } from "shared/lib/constants/constants";
+import {
+  getEtherscanURI,
+  VaultLiquidityMiningMap,
+  VaultOptions,
+} from "shared/lib/constants/constants";
 import StakingApprovalModalInfo from "./StakingApprovalModalInfo";
 import TrafficLight from "../../Common/TrafficLight";
+import { useWeb3Context } from "shared/lib/hooks/web3Context";
+import usePendingTransactions from "../../../hooks/usePendingTransactions";
+import useERC20Token from "shared/lib/hooks/useERC20Token";
 
 const StyledModal = styled(BaseModal)`
   .modal-dialog {
@@ -102,22 +109,58 @@ interface StakingApprovalModalProps {
   show: boolean;
   onClose: () => void;
   vaultOption: VaultOptions;
-  handleApprove: (
-    setStep: React.Dispatch<
-      React.SetStateAction<"info" | "approve" | "approving">
-    >
-  ) => void;
-  txId: string;
 }
 
 const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
   show,
   onClose,
   vaultOption,
-  handleApprove,
-  txId,
 }) => {
+  const { provider } = useWeb3Context();
+  const [, setPendingTransactions] = usePendingTransactions();
+  const tokenContract = useERC20Token(vaultOption);
   const [step, setStep] = useState<"info" | "approve" | "approving">("info");
+  const [txId, setTxId] = useState("");
+
+  const handleApprove = useCallback(async () => {
+    if (!tokenContract) {
+      return;
+    }
+
+    setStep("approve");
+    const amount =
+      "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+
+    try {
+      const tx = await tokenContract.approve(
+        VaultLiquidityMiningMap[vaultOption],
+        amount
+      );
+
+      setStep("approving");
+
+      const txhash = tx.hash;
+
+      setTxId(txhash);
+      setPendingTransactions((pendingTransactions) => [
+        ...pendingTransactions,
+        {
+          txhash,
+          type: "approval",
+          amount: amount,
+          stakeAsset: vaultOption,
+        },
+      ]);
+
+      // Wait for transaction to be approved
+      await provider.waitForTransaction(txhash);
+      setStep("info");
+      setTxId("");
+      onClose();
+    } catch (err) {
+      setStep("info");
+    }
+  }, [onClose, tokenContract, provider, setPendingTransactions, vaultOption]);
 
   const handleClose = useCallback(() => {
     onClose();
@@ -133,7 +176,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
           <StakingApprovalModalInfo
             vaultOption={vaultOption}
             onApprove={() => {
-              handleApprove(setStep);
+              handleApprove();
             }}
           />
         );

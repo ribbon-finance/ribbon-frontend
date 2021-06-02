@@ -49,6 +49,12 @@ export type PendingTransaction =
       type: "approval";
       amount: string;
       stakeAsset: VaultOptions;
+    }
+  | {
+      txhash: string;
+      type: "stake";
+      amount: string;
+      stakeAsset: VaultOptions;
     };
 
 export type AssetYieldsInfoData = {

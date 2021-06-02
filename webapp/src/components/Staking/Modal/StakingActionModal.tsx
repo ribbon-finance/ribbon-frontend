@@ -33,6 +33,7 @@ import { ActionButton } from "shared/lib/components/Common/buttons";
 import useStakingReward from "../../../hooks/useStakingReward";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import TrafficLight from "../../Common/TrafficLight";
+import usePendingTransactions from "../../../hooks/usePendingTransactions";
 
 const StyledModal = styled(BaseModal)<{ isForm: boolean }>`
   .modal-dialog {
@@ -194,6 +195,8 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
   const decimals = getAssetDecimals(getAssets(vaultOption));
   const [error, setError] = useState<"insufficient_balance">();
   const stakingReward = useStakingReward(vaultOption);
+  const [, setPendingTransactions] = usePendingTransactions();
+  const [txId, setTxId] = useState("");
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -233,14 +236,35 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
       setStep("staking");
 
       const txhash = tx.hash;
-      // TODO:
+
+      setTxId(txhash);
+      setPendingTransactions((pendingTransactions) => [
+        ...pendingTransactions,
+        {
+          txhash,
+          type: "stake",
+          amount: input,
+          stakeAsset: vaultOption,
+        },
+      ]);
+
       await provider.waitForTransaction(txhash);
       setStep("form");
+      setTxId("");
+      setInput("");
       onClose();
     } catch (err) {
       setStep("preview");
     }
-  }, [decimals, input, provider, stakingReward, onClose]);
+  }, [
+    decimals,
+    input,
+    provider,
+    stakingReward,
+    onClose,
+    setPendingTransactions,
+    vaultOption,
+  ]);
 
   /**
    * Input Validation
@@ -396,8 +420,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
             ) : (
               <ContentColumn marginTop="auto">
                 <UnderlinedLink
-                  // TODO:
-                  to={`${getEtherscanURI()}/tx/`}
+                  to={`${getEtherscanURI()}/tx/${txId}`}
                   target="_blank"
                   rel="noreferrer noopener"
                   className="d-flex"
@@ -418,6 +441,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     input,
     step,
     logo,
+    txId,
     vaultOption,
     tokenBalance,
     stakingPoolData,

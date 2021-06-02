@@ -133,6 +133,9 @@ export const TxStatusToast = () => {
       case "claim":
         subtitle = `${amountFormatted} $RBN claimed`;
         break;
+      case "stake":
+        subtitle = `${amountFormatted} ${stakeAsset} staked`;
+        break;
     }
 
     return (
