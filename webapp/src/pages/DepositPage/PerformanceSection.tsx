@@ -2,7 +2,11 @@ import React, { useCallback } from "react";
 import styled from "styled-components";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { productCopies } from "shared/lib/components/Product/productCopies";
-import { getAssets, VaultOptions } from "shared/lib/constants/constants";
+import {
+  getAssets,
+  VaultOptions,
+  VaultWithdrawalFee,
+} from "shared/lib/constants/constants";
 
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -87,6 +91,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
 }) => {
   const asset = getAssets(vaultOption);
   const yieldInfos = useAssetsYield(asset);
+  const withdrawalFee = VaultWithdrawalFee[vaultOption];
 
   const renderProtocolLogo = useCallback((protocol: DefiScoreProtocol) => {
     switch (protocol) {
@@ -160,8 +165,8 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           the following week in order to withdraw their funds.
           <br />
           <br />
-          Withdrawing from the vault has a fixed withdrawal fee of 0.5%. This is
-          to encourage longer-term depositors.
+          Withdrawing from the vault has a fixed withdrawal fee of{" "}
+          {withdrawalFee}%. This is to encourage longer-term depositors.
         </ParagraphText>
       </Paragraph>
 
