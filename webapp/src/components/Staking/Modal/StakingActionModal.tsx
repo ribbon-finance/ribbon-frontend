@@ -176,7 +176,6 @@ interface StakingActionModalProps {
   logo: React.ReactNode;
   vaultOption: VaultOptions;
   stakingPoolData: StakingPoolData;
-  tokenBalance: BigNumber;
 }
 
 const StakingActionModal: React.FC<StakingActionModalProps> = ({
@@ -185,7 +184,6 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
   logo,
   vaultOption,
   stakingPoolData,
-  tokenBalance,
 }) => {
   const [step, setStep] = useState<"form" | "preview" | "stake" | "staking">(
     "form"
@@ -214,8 +212,8 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
   );
 
   const handleMaxPressed = useCallback(() => {
-    setInput(formatUnits(tokenBalance, decimals));
-  }, [decimals, tokenBalance]);
+    setInput(formatUnits(stakingPoolData.unstakedBalance, decimals));
+  }, [decimals, stakingPoolData]);
 
   const handleClose = useCallback(() => {
     onClose();
@@ -278,11 +276,15 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     }
 
     /** Check sufficient balance for deposit */
-    if (!tokenBalance.gte(BigNumber.from(parseUnits(input, decimals)))) {
+    if (
+      !stakingPoolData.unstakedBalance.gte(
+        BigNumber.from(parseUnits(input, decimals))
+      )
+    ) {
       setError("insufficient_balance");
       return;
     }
-  }, [decimals, input, tokenBalance]);
+  }, [decimals, input, stakingPoolData]);
 
   const renderActionButtonText = useCallback(() => {
     switch (error) {
@@ -323,7 +325,9 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
             </ContentColumn>
             <InfoColumn>
               <SecondaryText>Unstaked Balance</SecondaryText>
-              <InfoData>{formatBigNumber(tokenBalance, 4, decimals)}</InfoData>
+              <InfoData>
+                {formatBigNumber(stakingPoolData.unstakedBalance, 4, decimals)}
+              </InfoData>
             </InfoColumn>
             <InfoColumn>
               <SecondaryText>Pool Size</SecondaryText>
@@ -443,7 +447,6 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     logo,
     txId,
     vaultOption,
-    tokenBalance,
     stakingPoolData,
     renderActionButtonText,
   ]);

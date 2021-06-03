@@ -15,6 +15,7 @@ const initialData: StakingPoolData = {
   poolSize: BigNumber.from(0),
   expectedYield: 0,
   claimableRbn: BigNumber.from(0),
+  unstakedBalance: BigNumber.from(0),
 };
 
 type UseStakingPool = (
@@ -56,12 +57,18 @@ const useStakingPool: UseStakingPool = (
     /**
      * 1. Current stake
      * 2. Claimable rbn
+     * 3. Unstaked balance
      */
     const promises = unconnectedPromises.concat(
       active
-        ? [contract.balanceOf(account), contract.earned(account)]
+        ? [
+            contract.balanceOf(account),
+            contract.earned(account),
+            tokenContract.balanceOf(account),
+          ]
         : [
             /** User had not connected their wallet, default to 0 */
+            (async () => BigNumber.from(0))(),
             (async () => BigNumber.from(0))(),
             (async () => BigNumber.from(0))(),
           ]
@@ -72,6 +79,7 @@ const useStakingPool: UseStakingPool = (
       expectedYield,
       currentStake,
       claimableRbn,
+      unstakedBalance,
     ] = await Promise.all(promises);
 
     setData({
@@ -79,6 +87,7 @@ const useStakingPool: UseStakingPool = (
       expectedYield,
       currentStake,
       claimableRbn,
+      unstakedBalance,
     });
 
     if (!firstLoaded) {

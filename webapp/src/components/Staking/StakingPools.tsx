@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { BigNumber } from "@ethersproject/bignumber";
 import { formatUnits } from "@ethersproject/units";
 import { useWeb3React } from "@web3-react/core";
 
@@ -21,14 +20,12 @@ import {
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import useStakingPool from "../../hooks/useStakingPool";
-import useERC20Token from "shared/lib/hooks/useERC20Token";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
 import useTokenAllowance from "../../hooks/useTokenAllowance";
 import StakingApprovalModal from "./Modal/StakingApprovalModal";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
-import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import StakingActionModal from "./Modal/StakingActionModal";
@@ -195,25 +192,15 @@ interface StakingPoolProps {
 }
 
 const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
-  const { active, account } = useWeb3React();
+  const { active } = useWeb3React();
   const [, setShowConnectWalletModal] = useConnectWalletModal();
   const { data: stakingPoolData } = useStakingPool(vaultOption);
-  const tokenContract = useERC20Token(vaultOption);
-  const [tokenBalance, setTokenBalance] = useState(BigNumber.from(0));
   const decimals = getAssetDecimals(getAssets(vaultOption));
   const tokenAllowance = useTokenAllowance(
     vaultOption,
     VaultLiquidityMiningMap[vaultOption]
   );
   const [pendingTransactions] = usePendingTransactions();
-
-  const [loading, setLoading] = useState(false);
-  const isLoading = loading;
-  const loadingText = useTextAnimation(
-    ["Loading", "Loading .", "Loading ..", "Loading ..."],
-    250,
-    isLoading
-  );
 
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [showActionModal, setShowActionModal] = useState(false);
@@ -270,32 +257,13 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
     }
   }, [vaultOption]);
 
-  useEffect(() => {
-    if (!tokenContract || !account) {
-      setTokenBalance(BigNumber.from(0));
-      return;
-    }
-
-    // Get balance
-    (async () => {
-      setLoading(true);
-      const balance = await tokenContract.balanceOf(account);
-      setTokenBalance(balance);
-      setLoading(false);
-    })();
-  }, [tokenContract, account]);
-
   const renderUnstakeBalance = useCallback(() => {
     if (!active) {
       return "---";
     }
 
-    if (loading) {
-      return loadingText;
-    }
-
-    return formatBigNumber(tokenBalance, 6, decimals);
-  }, [active, loading, loadingText, tokenBalance, decimals]);
+    return formatBigNumber(stakingPoolData.unstakedBalance, 6, decimals);
+  }, [active, stakingPoolData, decimals]);
 
   return (
     <>
@@ -310,7 +278,6 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
         vaultOption={vaultOption}
         logo={logo}
         stakingPoolData={stakingPoolData}
-        tokenBalance={tokenBalance}
       />
       <StakingPoolCard role="button">
         <div className="d-flex flex-wrap w-100 p-3">

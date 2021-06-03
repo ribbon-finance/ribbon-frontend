@@ -5,4 +5,5 @@ export interface StakingPoolData {
   poolSize: BigNumber;
   expectedYield: number;
   claimableRbn: BigNumber;
+  unstakedBalance: BigNumber;
 }
