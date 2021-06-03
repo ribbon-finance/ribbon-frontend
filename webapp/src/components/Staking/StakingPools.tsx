@@ -203,24 +203,21 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   const [pendingTransactions] = usePendingTransactions();
 
   const [showApprovalModal, setShowApprovalModal] = useState(false);
+  const [isStakeAction, setIsStakeAction] = useState(true);
   const [showActionModal, setShowActionModal] = useState(false);
 
-  const ongoingTransaction: "approval" | "staking" | undefined = useMemo(() => {
+  const ongoingTransaction:
+    | "approval"
+    | "stake"
+    | "unstake"
+    | undefined = useMemo(() => {
     for (let i = 0; i < pendingTransactions.length; i++) {
       const currentTx = pendingTransactions[i];
 
-      /** Check for approval */
-      if (
-        currentTx.type === "approval" &&
-        // @ts-ignore
-        currentTx.stakeAsset === vaultOption
-      ) {
-        return "approval";
-      } else if (
-        currentTx.type === "stake" &&
-        currentTx.stakeAsset === vaultOption
-      ) {
-        return "staking";
+      // @ts-ignore
+      if (currentTx.stakeAsset === vaultOption) {
+        /** Pending transaction with stake asset can only be this 3 state */
+        return currentTx.type as "approval" | "stake" | "unstake";
       }
     }
 
@@ -237,10 +234,26 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
     return true;
   }, [tokenAllowance]);
 
+  const actionLoadingTextBase = useMemo(() => {
+    switch (ongoingTransaction) {
+      case "stake":
+        return "Staking";
+      case "approval":
+        return "Approving";
+      case "unstake":
+        return "Unstaking";
+      default:
+        return "Loading";
+    }
+  }, [ongoingTransaction]);
+
   const primaryActionLoadingText = useTextAnimation(
-    ongoingTransaction === "staking"
-      ? ["Staking", "Staking .", "Staking ..", "Staking ..."]
-      : ["Approving", "Approving .", "Approving ..", "Approving ..."],
+    [
+      actionLoadingTextBase,
+      `${actionLoadingTextBase} .`,
+      `${actionLoadingTextBase} ..`,
+      `${actionLoadingTextBase} ...`,
+    ],
     250,
     !!ongoingTransaction
   );
@@ -265,6 +278,18 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
     return formatBigNumber(stakingPoolData.unstakedBalance, 6, decimals);
   }, [active, stakingPoolData, decimals]);
 
+  const showStakeModal = useMemo(() => {
+    if (ongoingTransaction === "stake") {
+      /** Always show staking modal when there is ongoing transaction */
+      return true;
+    } else if (ongoingTransaction === "unstake") {
+      /** Likewise with unstaking transaction */
+      return false;
+    }
+
+    return isStakeAction;
+  }, [isStakeAction, ongoingTransaction]);
+
   return (
     <>
       <StakingApprovalModal
@@ -273,6 +298,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
         vaultOption={vaultOption}
       />
       <StakingActionModal
+        stake={showStakeModal}
         show={showActionModal}
         onClose={() => setShowActionModal(false)}
         vaultOption={vaultOption}
@@ -369,21 +395,36 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
             <>
               <StakingPoolCardFooterButton
                 role="button"
-                onClick={() =>
-                  hasAllowance
-                    ? setShowActionModal(true)
-                    : setShowApprovalModal(true)
+                onClick={() => {
+                  if (hasAllowance) {
+                    setShowActionModal(true);
+                    setIsStakeAction(true);
+                    return;
+                  }
+                  setShowApprovalModal(true);
+                }}
+                active={
+                  hasAllowance ||
+                  ongoingTransaction === "approval" ||
+                  ongoingTransaction === "stake"
                 }
-                active={hasAllowance || !!ongoingTransaction}
               >
-                {ongoingTransaction ? primaryActionLoadingText : "Stake"}
+                {ongoingTransaction === "approval" ||
+                ongoingTransaction === "stake"
+                  ? primaryActionLoadingText
+                  : "Stake"}
               </StakingPoolCardFooterButton>
               <StakingPoolCardFooterButton
                 role="button"
-                onClick={() => {}}
-                active={false}
+                onClick={() => {
+                  setShowActionModal(true);
+                  setIsStakeAction(false);
+                }}
+                active={ongoingTransaction === "unstake"}
               >
-                Unstake
+                {ongoingTransaction === "unstake"
+                  ? primaryActionLoadingText
+                  : "Unstake"}
               </StakingPoolCardFooterButton>
               <StakingPoolCardFooterButton
                 role="button"

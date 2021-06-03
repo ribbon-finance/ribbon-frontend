@@ -52,7 +52,7 @@ export type PendingTransaction =
     }
   | {
       txhash: string;
-      type: "stake";
+      type: "stake" | "unstake";
       amount: string;
       stakeAsset: VaultOptions;
     };

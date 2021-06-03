@@ -171,6 +171,7 @@ const UnderlinedLink = styled(BaseLink)`
 `;
 
 interface StakingActionModalProps {
+  stake: boolean;
   show: boolean;
   onClose: () => void;
   logo: React.ReactNode;
@@ -179,19 +180,22 @@ interface StakingActionModalProps {
 }
 
 const StakingActionModal: React.FC<StakingActionModalProps> = ({
+  stake,
   show,
   onClose,
   logo,
   vaultOption,
   stakingPoolData,
 }) => {
-  const [step, setStep] = useState<"form" | "preview" | "stake" | "staking">(
-    "form"
-  );
+  const [step, setStep] = useState<
+    "form" | "preview" | "walletAction" | "processing"
+  >("form");
   const [input, setInput] = useState("");
   const { provider } = useWeb3Context();
   const decimals = getAssetDecimals(getAssets(vaultOption));
-  const [error, setError] = useState<"insufficient_balance">();
+  const [error, setError] = useState<
+    "insufficient_balance" | "insufficient_staked"
+  >();
   const stakingReward = useStakingReward(vaultOption);
   const [, setPendingTransactions] = usePendingTransactions();
   const [txId, setTxId] = useState("");
@@ -211,27 +215,36 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     []
   );
 
-  const handleMaxPressed = useCallback(() => {
-    setInput(formatUnits(stakingPoolData.unstakedBalance, decimals));
-  }, [decimals, stakingPoolData]);
+  const handleMaxPressed = useCallback(
+    () =>
+      stake
+        ? setInput(formatUnits(stakingPoolData.unstakedBalance, decimals))
+        : setInput(formatUnits(stakingPoolData.currentStake, decimals)),
+    [stake, decimals, stakingPoolData]
+  );
 
   const handleClose = useCallback(() => {
     onClose();
-    if (step === "preview" || step === "stake") {
+    if (step === "preview" || step === "walletAction") {
       setStep("form");
+    }
+    if (step !== "processing") {
+      setInput("");
     }
   }, [step, onClose]);
 
-  const handleStake = useCallback(async () => {
+  const handleActionPressed = useCallback(async () => {
     if (!stakingReward) {
       return;
     }
-    setStep("stake");
+    setStep("walletAction");
 
     try {
-      const tx = await stakingReward.stake(parseUnits(input, decimals));
+      const tx = stake
+        ? await stakingReward.stake(parseUnits(input, decimals))
+        : await stakingReward.withdraw(parseUnits(input, decimals));
 
-      setStep("staking");
+      setStep("processing");
 
       const txhash = tx.hash;
 
@@ -240,7 +253,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
         ...pendingTransactions,
         {
           txhash,
-          type: "stake",
+          type: stake ? "stake" : "unstake",
           amount: input,
           stakeAsset: vaultOption,
         },
@@ -262,6 +275,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     onClose,
     setPendingTransactions,
     vaultOption,
+    stake,
   ]);
 
   /**
@@ -277,23 +291,32 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
 
     /** Check sufficient balance for deposit */
     if (
+      stake &&
       !stakingPoolData.unstakedBalance.gte(
         BigNumber.from(parseUnits(input, decimals))
       )
     ) {
       setError("insufficient_balance");
-      return;
+    } else if (
+      !stake &&
+      !stakingPoolData.currentStake.gte(
+        BigNumber.from(parseUnits(input, decimals))
+      )
+    ) {
+      setError("insufficient_staked");
     }
-  }, [decimals, input, stakingPoolData]);
+  }, [decimals, input, stake, stakingPoolData]);
 
   const renderActionButtonText = useCallback(() => {
     switch (error) {
       case "insufficient_balance":
         return "INSUFFICIENT BALANCE";
+      case "insufficient_staked":
+        return "INSUFFICIENT STAKED BALANCE";
       default:
-        return "STAKE PREVIEW";
+        return stake ? "STAKE PREVIEW" : "UNSTAKE PREVIEW";
     }
-  }, [error]);
+  }, [stake, error]);
 
   const body = useMemo(() => {
     switch (step) {
@@ -323,12 +346,25 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                 </BaseInputContianer>
               </div>
             </ContentColumn>
-            <InfoColumn>
-              <SecondaryText>Unstaked Balance</SecondaryText>
-              <InfoData>
-                {formatBigNumber(stakingPoolData.unstakedBalance, 4, decimals)}
-              </InfoData>
-            </InfoColumn>
+            {stake ? (
+              <InfoColumn>
+                <SecondaryText>Unstaked Balance</SecondaryText>
+                <InfoData>
+                  {formatBigNumber(
+                    stakingPoolData.unstakedBalance,
+                    4,
+                    decimals
+                  )}
+                </InfoData>
+              </InfoColumn>
+            ) : (
+              <InfoColumn>
+                <SecondaryText>Your Current Stake</SecondaryText>
+                <InfoData>
+                  {formatBigNumber(stakingPoolData.currentStake, 4, decimals)}
+                </InfoData>
+              </InfoColumn>
+            )}
             <InfoColumn>
               <SecondaryText>Pool Size</SecondaryText>
               <InfoData>
@@ -348,19 +384,32 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                 {renderActionButtonText()}
               </ActionButton>
             </ContentColumn>
-            <ContentColumn marginTop={16} className="mb-2">
-              <CurrentStakeTitle>
-                Your Current Stake:{" "}
-                {formatBigNumber(stakingPoolData.currentStake, 4, decimals)}
-              </CurrentStakeTitle>
-            </ContentColumn>
+            {stake ? (
+              <ContentColumn marginTop={16} className="mb-2">
+                <CurrentStakeTitle>
+                  Your Current Stake:{" "}
+                  {formatBigNumber(stakingPoolData.currentStake, 4, decimals)}
+                </CurrentStakeTitle>
+              </ContentColumn>
+            ) : (
+              <ContentColumn marginTop={16} className="mb-2">
+                <CurrentStakeTitle>
+                  Unstaked Balance:{" "}
+                  {formatBigNumber(
+                    stakingPoolData.unstakedBalance,
+                    4,
+                    decimals
+                  )}
+                </CurrentStakeTitle>
+              </ContentColumn>
+            )}
           </>
         );
       case "preview":
         return (
           <>
             <ContentColumn marginTop={-24}>
-              <ModalTitle>STAKE PREVIEW</ModalTitle>
+              <ModalTitle>{stake ? "STAKE" : "UNSTAKE"} PREVIEW</ModalTitle>
             </ContentColumn>
             <ModalHeaderBackground />
             <ContentColumn marginTop={48}>
@@ -381,9 +430,13 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                 {formatBigNumber(stakingPoolData.currentStake, 4, decimals)}
                 <Arrow className="fas fa-arrow-right mx-2" />
                 {formatBigNumber(
-                  stakingPoolData.currentStake.add(
-                    BigNumber.from(parseUnits(input, decimals))
-                  ),
+                  stake
+                    ? stakingPoolData.currentStake.add(
+                        BigNumber.from(parseUnits(input, decimals))
+                      )
+                    : stakingPoolData.currentStake.sub(
+                        BigNumber.from(parseUnits(input, decimals))
+                      ),
                   4,
                   decimals
                 )}
@@ -394,28 +447,31 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               <InfoData>{stakingPoolData.expectedYield.toFixed(2)}%</InfoData>
             </InfoColumn>
             <ContentColumn marginTop="auto">
-              <ActionButton className="btn py-3 mb-2" onClick={handleStake}>
-                STAKE NOW
+              <ActionButton
+                className="btn py-3 mb-2"
+                onClick={handleActionPressed}
+              >
+                {stake ? "STAKE" : "UNSTAKE"} NOW
               </ActionButton>
             </ContentColumn>
           </>
         );
-      case "stake":
-      case "staking":
+      case "walletAction":
+      case "processing":
         return (
           <>
             <ContentColumn marginTop={-24}>
               <ModalTitle>
-                {step === "stake"
+                {step === "walletAction"
                   ? "CONFIRM Transaction"
                   : "TRANSACTION SUBMITTED"}
               </ModalTitle>
             </ContentColumn>
             <ModalHeaderBackground />
             <FloatingContainer>
-              <TrafficLight active={step === "staking"} />
+              <TrafficLight active={step === "processing"} />
             </FloatingContainer>
-            {step === "stake" ? (
+            {step === "walletAction" ? (
               <ContentColumn marginTop="auto">
                 <PrimaryText className="mb-2">
                   Confirm this transaction in your wallet
@@ -437,11 +493,12 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
         );
     }
   }, [
+    stake,
     decimals,
     error,
     handleInputChange,
     handleMaxPressed,
-    handleStake,
+    handleActionPressed,
     input,
     step,
     logo,
@@ -479,7 +536,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               ease: "easeInOut",
             }}
             initial={
-              step !== "staking"
+              step !== "processing"
                 ? {
                     y: -200,
                     opacity: 0,
@@ -487,7 +544,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                 : {}
             }
             animate={
-              step !== "staking"
+              step !== "processing"
                 ? {
                     y: 0,
                     opacity: 1,
