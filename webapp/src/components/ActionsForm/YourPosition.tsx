@@ -68,15 +68,26 @@ const YourPosition: React.FC<YourPositionProps> = ({
   const [positionAssetAmount, positionAssetAmountUSD] = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
 
-    if (!vaultAccount) {
+    if (vaultAccountLoading) {
       return [loadingText, loadingText];
+    }
+
+    if (!vaultAccount) {
+      return ["0", "$0.00"];
     }
 
     return [
       formatBigNumber(vaultAccount.totalBalance, 6, decimals),
       assetToUSD(vaultAccount.totalBalance, assetPrice, decimals),
     ];
-  }, [vaultAccounts, loadingText, vaultOption, decimals, assetPrice]);
+  }, [
+    vaultAccountLoading,
+    vaultAccounts,
+    loadingText,
+    vaultOption,
+    decimals,
+    assetPrice,
+  ]);
 
   const roi = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
@@ -118,7 +129,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
           <ProfitText roi={roi}>
             {isLoading
               ? loadingText
-              : `${roi > 0 ? "+" : ""}${roi.toFixed(4)}%`}
+              : `${roi >= 0 ? "+" : ""}${roi.toFixed(4)}%`}
           </ProfitText>
           <AmountText>{positionAssetAmountUSD}</AmountText>
         </div>
