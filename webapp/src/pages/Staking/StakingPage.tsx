@@ -8,7 +8,7 @@ const StakingPage = () => {
   return (
     <Container>
       <Row className="justify-content-center">
-        <Col sm="11" md="9" lg="7" className="d-flex flex-wrap">
+        <Col sm="12" md="10" lg="8" xl="7" className="d-flex flex-wrap">
           <StakingOverview />
           <StakingPools />
         </Col>

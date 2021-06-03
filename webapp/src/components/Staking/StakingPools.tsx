@@ -29,6 +29,7 @@ import usePendingTransactions from "../../hooks/usePendingTransactions";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import StakingActionModal from "./Modal/StakingActionModal";
+import sizes from "shared/lib/designSystem/sizes";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -79,6 +80,16 @@ const StakingPoolSubtitle = styled(SecondaryText)`
   color: ${colors.primaryText}52;
 `;
 
+const ClaimableTokenPillContainer = styled.div`
+  margin-left: auto;
+
+  @media (max-width: ${sizes.sm}px) {
+    order: 4;
+    width: 100%;
+    margin: 24px 0px 8px 0px;
+  }
+`;
+
 const ClaimableTokenPill = styled.div`
   display: flex;
   align-items: center;
@@ -98,6 +109,7 @@ const ClaimableTokenIndicator = styled.div`
 
 const ClaimableTokenAmount = styled(Subtitle)`
   color: ${colors.red};
+  margin-left: auto;
 `;
 
 const LogoContainer = styled.div`
@@ -151,6 +163,7 @@ const ExpectedYieldData = styled(Title)`
 
 const StakingPoolCardFooter = styled.div`
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   width: 100%;
   border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
@@ -167,6 +180,16 @@ const StakingPoolCardFooterButton = styled(Title)<{ active: boolean }>`
 
   &:not(:first-child) {
     border-left: ${theme.border.width} ${theme.border.style} ${colors.border};
+  }
+
+  @media (max-width: ${sizes.sm}px) {
+    flex: unset;
+    width: 100%;
+
+    &:not(:first-child) {
+      border-left: unset;
+      border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
+    }
   }
 `;
 
@@ -310,8 +333,8 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           {/* Card Title */}
           <div className="d-flex align-items-center">
             <LogoContainer>{logo}</LogoContainer>
-            <div className="d-flex flex-wrap">
-              <div className="d-flex w-100 align-items-center">
+            <div className="d-flex flex-column">
+              <div className="d-flex align-items-center">
                 <StakingPoolTitle>{vaultOption}</StakingPoolTitle>
                 <TooltipExplanation
                   title={vaultOption}
@@ -333,7 +356,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           </div>
 
           {/* Claimable Pill */}
-          <div className="ml-auto">
+          <ClaimableTokenPillContainer>
             <ClaimableTokenPill>
               <ClaimableTokenIndicator />
               <Subtitle className="mr-2">CLAIMABLE $RBN</Subtitle>
@@ -343,7 +366,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
                   : "---"}
               </ClaimableTokenAmount>
             </ClaimableTokenPill>
-          </div>
+          </ClaimableTokenPillContainer>
 
           {/* Capbar */}
           <div className="w-100 mt-4">
