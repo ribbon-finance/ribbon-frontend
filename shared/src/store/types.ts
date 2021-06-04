@@ -55,6 +55,12 @@ export type PendingTransaction =
       type: "stake" | "unstake";
       amount: string;
       stakeAsset: VaultOptions;
+    }
+  | {
+      txhash: string;
+      type: "rewardClaim";
+      amount: string;
+      stakeAsset: VaultOptions;
     };
 
 export type AssetYieldsInfoData = {

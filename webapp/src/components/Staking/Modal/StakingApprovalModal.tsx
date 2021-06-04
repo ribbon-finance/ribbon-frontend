@@ -4,7 +4,7 @@ import { Modal } from "react-bootstrap";
 import { AnimatePresence, motion } from "framer-motion";
 
 import {
-  BaseLink,
+  BaseUnderlineLink,
   BaseModal,
   BaseModalHeader,
   PrimaryText,
@@ -93,16 +93,6 @@ const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
     props.marginTop === "auto"
       ? props.marginTop
       : `${props.marginTop || 24}px`};
-`;
-
-const UnderlinedLink = styled(BaseLink)`
-  text-decoration: underline;
-  color: ${colors.text};
-
-  &:hover {
-    text-decoration: none;
-    color: ${colors.text};
-  }
 `;
 
 interface StakingApprovalModalProps {
@@ -203,14 +193,14 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
               </ContentColumn>
             ) : (
               <ContentColumn marginTop="auto">
-                <UnderlinedLink
+                <BaseUnderlineLink
                   to={`${getEtherscanURI()}/tx/${txId}`}
                   target="_blank"
                   rel="noreferrer noopener"
                   className="d-flex"
                 >
                   <PrimaryText className="mb-2">View on Etherscan</PrimaryText>
-                </UnderlinedLink>
+                </BaseUnderlineLink>
               </ContentColumn>
             )}
           </>

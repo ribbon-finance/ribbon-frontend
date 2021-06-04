@@ -89,13 +89,23 @@ export const TxStatusToast = () => {
       ? formatBigNumber(BigNumber.from(amount), 6, getAssetDecimals(asset!))
       : amount;
 
+    let actionTitle: string;
+
+    switch (type) {
+      case "rewardClaim":
+        actionTitle = "Reward Claim";
+        break;
+      default:
+        actionTitle = capitalize(type);
+    }
+
     if (status === "error") {
       return (
         <Toast
           show={status === "error"}
           onClose={() => setStatus(null)}
           type="error"
-          title={`${type} failed`}
+          title={`${actionTitle} failed`}
           subtitle={
             type === "approval"
               ? `Please try approving ${
@@ -107,8 +117,7 @@ export const TxStatusToast = () => {
       );
     }
 
-    const word = capitalize(type);
-    let subtitle: string = "";
+    let subtitle: string;
 
     switch (type) {
       case "approval":
@@ -131,6 +140,7 @@ export const TxStatusToast = () => {
         )} deposited from ${productCopies[vault!].title}`;
         break;
       case "claim":
+      case "rewardClaim":
         subtitle = `${amountFormatted} $RBN claimed`;
         break;
       case "stake":
@@ -138,14 +148,15 @@ export const TxStatusToast = () => {
         break;
       case "unstake":
         subtitle = `${amountFormatted} ${stakeAsset} unstaked`;
+        break;
     }
 
     return (
       <Toast
         show={status === "success"}
         onClose={() => setStatus(null)}
-        type={type === "claim" ? "claim" : "success"}
-        title={`${word} successful`}
+        type={type === "claim" || type === "rewardClaim" ? "claim" : "success"}
+        title={`${actionTitle} successful`}
         subtitle={subtitle}
       ></Toast>
     );

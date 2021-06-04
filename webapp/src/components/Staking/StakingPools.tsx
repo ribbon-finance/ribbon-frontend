@@ -30,6 +30,7 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import StakingActionModal from "./Modal/StakingActionModal";
 import sizes from "shared/lib/designSystem/sizes";
+import StakingClaimModal from "./Modal/StakingClaimModal";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -228,11 +229,13 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [isStakeAction, setIsStakeAction] = useState(true);
   const [showActionModal, setShowActionModal] = useState(false);
+  const [showClaimModal, setShowClaimModal] = useState(false);
 
   const ongoingTransaction:
     | "approval"
     | "stake"
     | "unstake"
+    | "rewardClaim"
     | undefined = useMemo(() => {
     for (let i = 0; i < pendingTransactions.length; i++) {
       const currentTx = pendingTransactions[i];
@@ -240,7 +243,11 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
       // @ts-ignore
       if (currentTx.stakeAsset === vaultOption) {
         /** Pending transaction with stake asset can only be this 3 state */
-        return currentTx.type as "approval" | "stake" | "unstake";
+        return currentTx.type as
+          | "approval"
+          | "stake"
+          | "unstake"
+          | "rewardClaim";
       }
     }
 
@@ -265,6 +272,8 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
         return "Approving";
       case "unstake":
         return "Unstaking";
+      case "rewardClaim":
+        return "Claiming";
       default:
         return "Loading";
     }
@@ -328,7 +337,14 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
         logo={logo}
         stakingPoolData={stakingPoolData}
       />
-      <StakingPoolCard role="button">
+      <StakingClaimModal
+        show={showClaimModal}
+        onClose={() => setShowClaimModal(false)}
+        vaultOption={vaultOption}
+        logo={logo}
+        stakingPoolData={stakingPoolData}
+      />
+      <StakingPoolCard>
         <div className="d-flex flex-wrap w-100 p-3">
           {/* Card Title */}
           <div className="d-flex align-items-center">
@@ -451,10 +467,12 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
               </StakingPoolCardFooterButton>
               <StakingPoolCardFooterButton
                 role="button"
-                onClick={() => {}}
-                active={false}
+                onClick={() => setShowClaimModal(true)}
+                active={ongoingTransaction === "rewardClaim"}
               >
-                Claim $RBN
+                {ongoingTransaction === "rewardClaim"
+                  ? primaryActionLoadingText
+                  : "Claim $RBN"}
               </StakingPoolCardFooterButton>
             </>
           ) : (

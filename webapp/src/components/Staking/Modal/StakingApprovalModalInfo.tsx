@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import styled from "styled-components";
 
 import {
-  BaseLink,
+  BaseUnderlineLink,
   PrimaryText,
   SecondaryText,
   Title,
@@ -88,16 +88,6 @@ const ApproveAssetTitle = styled(Title)<{ str: string }>`
   `}
 `;
 
-const UnderlinedLink = styled(BaseLink)`
-  text-decoration: underline;
-  color: ${colors.text};
-
-  &:hover {
-    text-decoration: none;
-    color: ${colors.text};
-  }
-`;
-
 interface StakingApprovalModalInfoProps {
   vaultOption: VaultOptions;
   onApprove: () => void;
@@ -133,14 +123,14 @@ const StakingApprovalModalInfo: React.FC<StakingApprovalModalInfoProps> = ({
         </PrimaryText>
       </ContentColumn>
       <ContentColumn marginTop={16}>
-        <UnderlinedLink
+        <BaseUnderlineLink
           to="https://ribbon.finance/faq"
           target="_blank"
           rel="noreferrer noopener"
           className="d-flex"
         >
           <SecondaryText>Why do I have to do this?</SecondaryText>
-        </UnderlinedLink>
+        </BaseUnderlineLink>
       </ContentColumn>
       <ContentColumn marginTop="auto">
         <ActionButton className="btn py-3 mb-2" onClick={onApprove}>

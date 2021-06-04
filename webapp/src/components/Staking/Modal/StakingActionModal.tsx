@@ -15,7 +15,7 @@ import {
   BaseInputButton,
   BaseInputContianer,
   BaseInputLabel,
-  BaseLink,
+  BaseUnderlineLink,
   BaseModal,
   BaseModalHeader,
   PrimaryText,
@@ -158,16 +158,6 @@ const PreviewAmount = styled(Title)`
 const Arrow = styled.i`
   font-size: 12px;
   color: ${colors.buttons.primary};
-`;
-
-const UnderlinedLink = styled(BaseLink)`
-  text-decoration: underline;
-  color: ${colors.text};
-
-  &:hover {
-    text-decoration: none;
-    color: ${colors.text};
-  }
 `;
 
 interface StakingActionModalProps {
@@ -479,14 +469,14 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               </ContentColumn>
             ) : (
               <ContentColumn marginTop="auto">
-                <UnderlinedLink
+                <BaseUnderlineLink
                   to={`${getEtherscanURI()}/tx/${txId}`}
                   target="_blank"
                   rel="noreferrer noopener"
                   className="d-flex"
                 >
                   <PrimaryText className="mb-2">View on Etherscan</PrimaryText>
-                </UnderlinedLink>
+                </BaseUnderlineLink>
               </ContentColumn>
             )}
           </>

@@ -14,6 +14,7 @@ const initialData: StakingPoolData = {
   currentStake: BigNumber.from(0),
   poolSize: BigNumber.from(0),
   expectedYield: 0,
+  claimHistory: [],
   claimableRbn: BigNumber.from(0),
   unstakedBalance: BigNumber.from(0),
 };
@@ -48,16 +49,19 @@ const useStakingPool: UseStakingPool = (
     /**
      * 1. Pool size
      * 2. TODO: Expected yield
+     * 3. Last Time Reward Applicable
      */
     const unconnectedPromises = [
       tokenContract.balanceOf(VaultLiquidityMiningMap[option]),
       (async () => 24.1)(),
+      contract.lastTimeRewardApplicable(),
     ];
 
     /**
      * 1. Current stake
      * 2. Claimable rbn
      * 3. Unstaked balance
+     * 4. Claim Events
      */
     const promises = unconnectedPromises.concat(
       active
@@ -65,26 +69,34 @@ const useStakingPool: UseStakingPool = (
             contract.balanceOf(account),
             contract.earned(account),
             tokenContract.balanceOf(account),
+            contract.queryFilter(contract.filters.RewardPaid(account)),
           ]
         : [
             /** User had not connected their wallet, default to 0 */
             (async () => BigNumber.from(0))(),
             (async () => BigNumber.from(0))(),
             (async () => BigNumber.from(0))(),
+            (async () => [])(),
           ]
     );
 
     const [
       poolSize,
       expectedYield,
+      lastTimeRewardApplicable,
       currentStake,
       claimableRbn,
       unstakedBalance,
+      claimEvents,
     ] = await Promise.all(promises);
 
     setData({
       poolSize,
       expectedYield,
+      lastTimeRewardApplicable: lastTimeRewardApplicable.toString(),
+      claimHistory: claimEvents.map((event: any) => ({
+        amount: BigNumber.from(event.data),
+      })),
       currentStake,
       claimableRbn,
       unstakedBalance,

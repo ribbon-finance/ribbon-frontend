@@ -18,6 +18,16 @@ export const BaseLink = styled(Link)`
   }
 `;
 
+export const BaseUnderlineLink = styled(BaseLink)`
+  text-decoration: underline;
+  color: ${colors.text};
+
+  &:hover {
+    text-decoration: none;
+    color: ${colors.text};
+  }
+`;
+
 export const BaseButton = styled.div`
   display: flex;
   border-radius: ${theme.border.radius};
