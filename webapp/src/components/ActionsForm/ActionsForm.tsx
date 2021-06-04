@@ -515,7 +515,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         ]);
 
         // Wait for transaction to be approved
-        await provider.waitForTransaction(txhash);
+        await provider.waitForTransaction(txhash, 5);
       } catch (err) {
         setWaitingApproval(false);
       }
