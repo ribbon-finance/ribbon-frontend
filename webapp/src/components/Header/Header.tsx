@@ -187,11 +187,11 @@ const Header = () => {
             "/portfolio",
             Boolean(useRouteMatch({ path: "/portfolio", exact: true }))
           )}
-          {/* {renderLinkItem(
+          {renderLinkItem(
             "STAKING",
             "/staking",
             Boolean(useRouteMatch({ path: "/staking", exact: true }))
-          )} */}
+          )}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
@@ -224,11 +224,11 @@ const Header = () => {
             "/portfolio",
             Boolean(useRouteMatch({ path: "/portfolio", exact: true }))
           )}
-          {/* {renderLinkItem(
+          {renderLinkItem(
             "STAKING",
             "/staking",
             Boolean(useRouteMatch({ path: "/staking", exact: true }))
-          )} */}
+          )}
           {renderLinkItem(
             "DISCORD",
             "http://tiny.cc/ribbon-discord",

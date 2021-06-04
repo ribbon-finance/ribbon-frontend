@@ -29,8 +29,8 @@ import {
 import {
   GAS_LIMITS,
   VaultAddressMap,
-  VaultMaxDeposit,
   VaultOptions,
+  VaultWithdrawalFee,
 } from "shared/lib/constants/constants";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import useVault from "shared/lib/hooks/useVault";
@@ -253,7 +253,7 @@ const SwapTriggerButtonText = styled(SecondaryText)`
 type ValidationErrors =
   | "none"
   | "insufficient_balance"
-  | "max_exceeded"
+  | "capacity_overflow"
   | "withdraw_limit_reached"
   | "withdraw_limit_exceeded";
 
@@ -364,8 +364,6 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
 
   // derived states
   const vaultFull = isVaultFull(deposits, vaultLimit, decimals);
-  const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
-  const maxDeposited = vaultBalanceInAsset.gte(vaultMaxDepositAmount);
   const connected = Boolean(active && account);
   const isInputNonZero = parseFloat(inputAmount) > 0;
 
@@ -381,16 +379,17 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         const total = BigNumber.from(userAssetBalance);
         // TODO: Optimize the code to request gas fees only when needed
         const maxAmount = isETHVault(vaultOption) ? total.sub(gasFee) : total;
-        const allowedMaxAmount = maxAmount.lte(
-          vaultMaxDepositAmount.sub(vaultBalanceInAsset)
-        )
-          ? maxAmount
-          : vaultMaxDepositAmount.sub(vaultBalanceInAsset);
-        const actualMaxAmount = allowedMaxAmount.isNegative()
+        const userMaxAmount = maxAmount.isNegative()
           ? BigNumber.from("0")
-          : allowedMaxAmount;
+          : maxAmount;
 
-        setInputAmount(formatUnits(actualMaxAmount, decimals));
+        // Check if max is vault availableBalance
+        const vaultAvailableBalance = vaultLimit.sub(deposits);
+        const finalMaxAmount = userMaxAmount.gt(vaultAvailableBalance)
+          ? vaultAvailableBalance
+          : userMaxAmount;
+
+        setInputAmount(formatUnits(finalMaxAmount, decimals));
       }
       // Withdraw flow
       else {
@@ -431,11 +430,8 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
           if (isDeposit && amount.gt(userAssetBalance)) {
             setError("insufficient_balance");
             return;
-          } else if (
-            isDeposit &&
-            amount.gt(vaultMaxDepositAmount.sub(vaultBalanceInAsset))
-          ) {
-            setError("max_exceeded");
+          } else if (isDeposit && amount.gt(vaultLimit.sub(deposits))) {
+            setError("capacity_overflow");
             return;
           } else if (
             !isDeposit &&
@@ -454,6 +450,8 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
       setError("none");
     });
   }, [
+    deposits,
+    vaultLimit,
     inputAmount,
     connected,
     decimals,
@@ -462,7 +460,6 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     maxWithdrawAmount,
     userAssetBalance,
     vaultBalanceInAsset,
-    vaultMaxDepositAmount,
   ]);
 
   const vaultBalanceStr = vaultBalanceInAsset.toString();
@@ -472,7 +469,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
       ? { action: ACTIONS.deposit, yield: latestAPY.res }
       : {
           action: ACTIONS.withdraw,
-          withdrawalFee: 0.5,
+          withdrawalFee: parseFloat(VaultWithdrawalFee[vaultOption]),
         };
 
     return {
@@ -483,7 +480,14 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
       positionAmount: BigNumber.from(vaultBalanceStr),
       actionParams,
     };
-  }, [isDeposit, inputAmount, vaultBalanceStr, latestAPY.res, decimals]);
+  }, [
+    vaultOption,
+    isDeposit,
+    inputAmount,
+    vaultBalanceStr,
+    latestAPY.res,
+    decimals,
+  ]);
 
   const handleClickActionButton = () => {
     isDesktop && isInputNonZero && connected && setShowActionModal(true);
@@ -556,10 +560,6 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
 
   if (vaultFull) {
     walletText = "The Vault is currently full";
-  } else if (maxDeposited) {
-    walletText = `This vault has a max deposit of ${parseInt(
-      formatUnits(vaultMaxDepositAmount, decimals)
-    )} ${getAssetDisplay(asset)} per depositor`;
   } else if (isDeposit) {
     const position =
       account && !isLoadingData && userAssetBalance
@@ -579,19 +579,17 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   if (error === "insufficient_balance") {
     actionButtonText = "Insufficient Balance";
     disabled = true;
-  } else if (error === "max_exceeded") {
-    actionButtonText = `Maximum ${parseInt(
-      formatUnits(vaultMaxDepositAmount, decimals)
-    )} ${getAssetDisplay(asset)} Exceeded`;
-    disabled = true;
   } else if (error === "withdraw_limit_exceeded") {
     actionButtonText = `WEEKLY LIMIT EXCEEDED`;
     disabled = true;
   } else if (error === "withdraw_limit_reached") {
     actionButtonText = `WithdrawALS DISABLED`;
     disabled = true;
+  } else if (error === "capacity_overflow") {
+    actionButtonText = `Exceed Vault Balance`;
+    disabled = true;
   } else if (isDeposit && isInputNonZero) {
-    if (vaultFull || maxDeposited) {
+    if (vaultFull) {
       actionButtonText = `Deposit ${getAssetDisplay(asset)}`;
       disabled = true;
     } else {
@@ -610,7 +608,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   }
 
   let walletBalanceState: WalletBalanceStates = "inactive";
-  if (vaultFull || maxDeposited) {
+  if (vaultFull) {
     walletBalanceState = "error";
   } else {
     walletBalanceState = connected ? "active" : "inactive";
@@ -800,7 +798,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
               <ActionButton
                 onClick={handleApproveToken}
                 className="py-3 mb-4"
-                disabled={vaultFull || maxDeposited}
+                disabled={vaultFull}
               >
                 {waitingApproval
                   ? waitingApprovalLoadingText
