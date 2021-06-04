@@ -24,6 +24,7 @@ import { ActionButton } from "shared/lib/components/Common/buttons";
 import useStakingReward from "../../../hooks/useStakingReward";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
+import RBNClaimModalContent from "../../Common/RBNClaimModalContent";
 
 const StyledModal = styled(BaseModal)`
   .modal-dialog {
@@ -253,6 +254,8 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
             </ContentColumn>
           </>
         );
+      default:
+        return <RBNClaimModalContent step={step} setStep={setStep} />;
     }
   }, [step, logo, vaultOption, stakingPoolData, handleClaim]);
 

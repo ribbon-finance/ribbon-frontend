@@ -11,7 +11,7 @@ import colors from "shared/lib/designSystem/colors";
 
 import AirdropInfo from "./AirdropInfo";
 import MenuButton from "../Header/MenuButton";
-import AirdropClaim from "./AirdropClaim";
+import RBNClaimModalContent from "../Common/RBNClaimModalContent";
 import useMerkleDistributor from "../../hooks/useMerkleDistributor";
 import useAirdrop from "../../hooks/useAirdrop";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
@@ -78,6 +78,8 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
     if (!merkleDistributor) {
       return;
     }
+
+    setStep("claim");
 
     try {
       const tx = await merkleDistributor.claim(
@@ -168,13 +170,9 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
             }
           >
             {step === "info" ? (
-              <AirdropInfo onClaim={() => setStep("claim")} />
+              <AirdropInfo onClaim={claimAirdrop} />
             ) : (
-              <AirdropClaim
-                step={step}
-                setStep={setStep}
-                claimAirdrop={claimAirdrop}
-              />
+              <RBNClaimModalContent step={step} setStep={setStep} />
             )}
           </ModalContent>
         </AnimatePresence>
