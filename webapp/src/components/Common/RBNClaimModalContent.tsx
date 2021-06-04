@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import styled, { css, keyframes } from "styled-components";
 
 import { PrimaryText, Title } from "shared/lib/designSystem";
