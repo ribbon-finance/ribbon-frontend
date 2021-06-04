@@ -25,7 +25,6 @@ import {
 import {
   GAS_LIMITS,
   VaultAddressMap,
-  VaultMaxDeposit,
   VaultOptions,
   VaultWithdrawalFee,
 } from "shared/lib/constants/constants";
@@ -410,8 +409,6 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
 
   // derived states
   const vaultFull = isVaultFull(deposits, vaultLimit, decimals);
-  const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
-  const maxDeposited = vaultBalanceInAsset.gte(vaultMaxDepositAmount);
   const connected = Boolean(active && account);
   const isInputNonZero = parseFloat(inputAmount) > 0;
 
@@ -427,14 +424,9 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         const total = BigNumber.from(userAssetBalance);
         // TODO: Optimize the code to request gas fees only when needed
         const maxAmount = isETHVault(vaultOption) ? total.sub(gasFee) : total;
-        const allowedMaxAmount = maxAmount.lte(
-          vaultMaxDepositAmount.sub(vaultBalanceInAsset)
-        )
-          ? maxAmount
-          : vaultMaxDepositAmount.sub(vaultBalanceInAsset);
-        const actualMaxAmount = allowedMaxAmount.isNegative()
+        const actualMaxAmount = maxAmount.isNegative()
           ? BigNumber.from("0")
-          : allowedMaxAmount;
+          : maxAmount;
 
         setInputAmount(formatUnits(actualMaxAmount, decimals));
       }
@@ -478,12 +470,6 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
             setError("insufficient_balance");
             return;
           } else if (
-            isDeposit &&
-            amount.gt(vaultMaxDepositAmount.sub(vaultBalanceInAsset))
-          ) {
-            setError("max_exceeded");
-            return;
-          } else if (
             !isDeposit &&
             amount.gt(maxWithdrawAmount) &&
             amount.lte(vaultBalanceInAsset)
@@ -508,7 +494,6 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     maxWithdrawAmount,
     userAssetBalance,
     vaultBalanceInAsset,
-    vaultMaxDepositAmount,
   ]);
 
   const vaultBalanceStr = vaultBalanceInAsset.toString();
@@ -602,10 +587,6 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
 
   if (vaultFull) {
     walletText = "The Vault is currently full";
-  } else if (maxDeposited) {
-    walletText = `This vault has a max deposit of ${parseInt(
-      formatUnits(vaultMaxDepositAmount, decimals)
-    )} ${getAssetDisplay(asset)} per depositor`;
   } else if (isDeposit) {
     const position =
       account && !isLoadingData && userAssetBalance
@@ -625,11 +606,6 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   if (error === "insufficient_balance") {
     actionButtonText = "Insufficient Balance";
     disabled = true;
-  } else if (error === "max_exceeded") {
-    actionButtonText = `Maximum ${parseInt(
-      formatUnits(vaultMaxDepositAmount, decimals)
-    )} ${getAssetDisplay(asset)} Exceeded`;
-    disabled = true;
   } else if (error === "withdraw_limit_exceeded") {
     actionButtonText = `WEEKLY LIMIT EXCEEDED`;
     disabled = true;
@@ -637,7 +613,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     actionButtonText = `WithdrawALS DISABLED`;
     disabled = true;
   } else if (isDeposit && isInputNonZero) {
-    if (vaultFull || maxDeposited) {
+    if (vaultFull) {
       actionButtonText = `Deposit ${getAssetDisplay(asset)}`;
       disabled = true;
     } else {
@@ -656,7 +632,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   }
 
   let walletBalanceState: WalletBalanceStates = "inactive";
-  if (vaultFull || maxDeposited) {
+  if (vaultFull) {
     walletBalanceState = "error";
   } else {
     walletBalanceState = connected ? "active" : "inactive";
@@ -846,7 +822,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
               <ActionButton
                 onClick={handleApproveToken}
                 className="py-3 mb-4"
-                disabled={vaultFull || maxDeposited}
+                disabled={vaultFull}
               >
                 {waitingApproval
                   ? waitingApprovalLoadingText

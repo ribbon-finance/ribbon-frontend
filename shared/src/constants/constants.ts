@@ -120,21 +120,6 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
   }
 };
 
-export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
-  "rUSDC-BTC-P-THETA": BigNumber.from(500000).mul(
-    BigNumber.from(10).pow(getAssetDecimals(getAssets("rUSDC-BTC-P-THETA")))
-  ),
-  "rUSDC-ETH-P-THETA": BigNumber.from(1000000).mul(
-    BigNumber.from(10).pow(getAssetDecimals(getAssets("rUSDC-ETH-P-THETA")))
-  ),
-  "rETH-THETA": BigNumber.from(1000).mul(
-    BigNumber.from(10).pow(getAssetDecimals(getAssets("rETH-THETA")))
-  ),
-  "rBTC-THETA": BigNumber.from(10).mul(
-    BigNumber.from(10).pow(getAssetDecimals(getAssets("rBTC-THETA")))
-  ),
-};
-
 export const VaultWithdrawalFee: { [vault in VaultOptions]: string } = {
   "rUSDC-BTC-P-THETA": "0.5",
   "rUSDC-ETH-P-THETA": "2",
