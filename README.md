@@ -15,6 +15,7 @@ The frontend repo is a monorepo. Each package in the monorepo is a [Yarn workspa
 ## Packages
 
 - `shared`: holds all constants, common React components.
+- `landing`: holds the Ribbon landing page.
 - `webapp`: holds the v1 Ribbon webapp.
 - `mvp`: holds the deprecated Strangles webapp.
 
