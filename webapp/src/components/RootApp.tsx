@@ -13,6 +13,7 @@ import { WrongNetworkToast, TxStatusToast } from "./Common/toasts";
 import WalletConnectModal from "./Wallet/WalletConnectModal";
 import NotFound from "../pages/NotFound";
 import StakingPage from "../pages/Staking/StakingPage";
+import { isProduction } from "shared/lib/utils/env";
 
 const Root = styled.div<{ screenHeight: number }>`
   background-color: #1c1a19;
@@ -44,9 +45,11 @@ const RootApp = () => {
           <Route path="/portfolio">
             <PortfolioPage />
           </Route>
-          <Route path="/staking">
-            <StakingPage />
-          </Route>
+          {!isProduction() && (
+            <Route path="/staking">
+              <StakingPage />
+            </Route>
+          )}
           <Route>
             <NotFound />
           </Route>
