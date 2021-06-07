@@ -12,7 +12,10 @@ export const formatBigNumber = (
   num: BigNumber,
   significantDecimals: number = 6,
   decimals: number = 18
-) => formatSignificantDecimals(formatUnits(num, decimals), significantDecimals);
+) =>
+  parseFloat(
+    formatSignificantDecimals(formatUnits(num, decimals), significantDecimals)
+  ).toLocaleString();
 
 export const toFiat = (etherVal: BigNumber) => {
   const scaleFactor = ethers.BigNumber.from(10).pow("6");

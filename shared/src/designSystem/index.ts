@@ -18,6 +18,16 @@ export const BaseLink = styled(Link)`
   }
 `;
 
+export const BaseUnderlineLink = styled(BaseLink)`
+  text-decoration: underline;
+  color: ${colors.text};
+
+  &:hover {
+    text-decoration: none;
+    color: ${colors.text};
+  }
+`;
+
 export const BaseButton = styled.div`
   display: flex;
   border-radius: ${theme.border.radius};
@@ -92,4 +102,58 @@ export const SecondaryText = styled.span`
   font-size: 14px;
   line-height: 20px;
   color: ${colors.text};
+`;
+
+export const BaseInputLabel = styled.div`
+  color: ${colors.primaryText};
+  opacity: 0.4;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 1.5px;
+`;
+
+export const BaseInputContianer = styled.div`
+  width: 100%;
+  height: 72px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+  margin-top: 8px;
+  padding: 0 4px;
+`;
+
+export const BaseInput = styled.input`
+  width: 80%;
+  height: 100%;
+  font-size: 40px;
+  line-height: 64px;
+  color: ${colors.primaryText};
+  border: none;
+  background: none;
+  font-family: VCR, sans-serif;
+
+  &:focus {
+    color: ${colors.primaryText};
+    background: none;
+    border: none;
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    border: rgba(255, 255, 255, 0);
+  }
+`;
+
+export const BaseInputButton = styled.div`
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  right: 0;
+  background: rgba(255, 255, 255, 0.08);
+  color: ${colors.primaryText};
+  border-radius: 4px;
+  padding: 8px;
+  height: 32px;
+  font-size: 11px;
+  line-height: 16px;
+  text-align: center;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  font-family: VCR, sans-serif;
 `;

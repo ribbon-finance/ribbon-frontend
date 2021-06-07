@@ -18,7 +18,11 @@
     "RibbonWBTCPut": "0x18B2Eddc35a48fa2c33DbeA1Db0485867F831853",
     "RibbonETHPutLogic": "0xB51DF316fD35a2C14dfe2AF4787f10BE6f2Ab148",
     "RibbonETHPut": "0xd58EFBFF4277335D9d8aBaF0658c95D250DE484A",
-    "MerkleDistributor": "0x76e7Caa7131581eE6f4c562b7Ca5379AB9024083"
+    "MerkleDistributor": "0x76e7Caa7131581eE6f4c562b7Ca5379AB9024083",
+    "RibbonETHCoveredCallStakingReward": "0x79F653c6eD5e2054ee038F34A3cE7ecAa1d89084",
+    "RibbonWBTCCoveredCallStakingReward": "0x210139dAa8125155b64c69701df6f4E03EcF89f1",
+    "RibbonWBTCPutStakingReward": "0xd5707Abde5366a5c2b9B490faf1f1e07B734a0a7",
+    "RibbonETHPutStakingReward": "0xa8A4bb7254210aADa78493c3034405C4B3140052"
   },
   "development": {
     "DataProvider": "0xA586074FA4Fe3E546A132a16238abe37951D41fE",

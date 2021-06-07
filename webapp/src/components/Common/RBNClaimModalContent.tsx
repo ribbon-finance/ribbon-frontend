@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import styled, { css, keyframes } from "styled-components";
 
 import { PrimaryText, Title } from "shared/lib/designSystem";
@@ -6,7 +6,7 @@ import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { Waves } from "shared/lib/assets";
 import Logo from "shared/lib/assets/icons/logo";
-import Lightning from "../Common/Lightning";
+import Lightning from "./Lightning";
 
 const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
   display: flex;
@@ -174,25 +174,17 @@ const PoleLogo = styled(Logo)`
   margin-top: 50px;
 `;
 
-interface AirdropClaimProps {
+interface RBNClaimModalContentProps {
   step: "claim" | "claiming" | "claimed";
   setStep: React.Dispatch<
     React.SetStateAction<"info" | "claim" | "claiming" | "claimed">
   >;
-  claimAirdrop: () => void;
 }
 
-const AirdropClaim: React.FC<AirdropClaimProps> = ({
+const RBNClaimModalContent: React.FC<RBNClaimModalContentProps> = ({
   step,
   setStep,
-  claimAirdrop,
 }) => {
-  useEffect(() => {
-    if (step === "claim") {
-      claimAirdrop();
-    }
-  }, [setStep, step, claimAirdrop]);
-
   const renderLightning = useCallback(
     () => (
       <>
@@ -262,4 +254,4 @@ const AirdropClaim: React.FC<AirdropClaimProps> = ({
   }
 };
 
-export default AirdropClaim;
+export default RBNClaimModalContent;

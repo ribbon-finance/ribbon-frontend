@@ -42,11 +42,6 @@ const ParagraphText = styled(SecondaryText)`
   line-height: 24px;
 `;
 
-const LinkIcon = styled(ExternalIcon)`
-  width: 24px;
-  height: 24px;
-`;
-
 const Link = styled.a`
   color: ${colors.primaryText};
   text-decoration: underline;
@@ -204,7 +199,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
             className="d-flex"
           >
             <span className="mr-2">Read More</span>
-            <LinkIcon color="white" />
+            <ExternalIcon color="white" />
           </Link>
         </PrimaryText>
       </Paragraph>

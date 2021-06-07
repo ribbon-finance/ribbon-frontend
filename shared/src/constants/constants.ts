@@ -1,6 +1,4 @@
-import { BigNumber } from "@ethersproject/bignumber";
 import { Assets } from "../store/types";
-import { getAssetDecimals } from "../utils/asset";
 import { isDevelopment } from "../utils/env";
 import deployment from "./deployments.json";
 
@@ -53,7 +51,24 @@ const getETHPutThetaVaultId = () =>
     ? deployment.kovan.RibbonETHPut
     : deployment.mainnet.RibbonETHPut;
 
-const FullVaultList = [
+export const VaultLiquidityMiningMap: {
+  [vault in VaultOptions]: string;
+} = isDevelopment()
+  ? {
+      "rUSDC-ETH-P-THETA": deployment.kovan.RibbonETHPutStakingReward,
+      "rUSDC-BTC-P-THETA": deployment.kovan.RibbonWBTCPutStakingReward,
+      "rBTC-THETA": deployment.kovan.RibbonWBTCCoveredCallStakingReward,
+      "rETH-THETA": deployment.kovan.RibbonETHCoveredCallStakingReward,
+    }
+  : {
+      // TODO: Replace with mainnet addresses
+      "rUSDC-ETH-P-THETA": "",
+      "rUSDC-BTC-P-THETA": "",
+      "rBTC-THETA": "",
+      "rETH-THETA": "",
+    };
+
+export const FullVaultList = [
   "rUSDC-ETH-P-THETA",
   "rUSDC-BTC-P-THETA",
   "rBTC-THETA",
@@ -69,6 +84,10 @@ const PutThetaVault: VaultOptions[] = [
 export const VaultList: VaultOptions[] = isDevelopment()
   ? FullVaultList
   : FullVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
+
+export const LiquidityMiningPoolOrder: VaultOptions[] = [
+  ...VaultList,
+].reverse();
 
 export const isPutVault = (vault: VaultOptions): boolean =>
   PutThetaVault.includes(vault);

@@ -21,6 +21,9 @@ interface ProductCopies {
   tags: string[];
   strategy: React.ReactNode;
   vaultRisk: React.ReactNode;
+  liquidityMining: {
+    explanation: React.ReactNode;
+  };
 }
 
 export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
@@ -34,7 +37,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
       <>
         This vault earns yield on its ETH deposits by running an automated ETH{" "}
         <TooltipExplanation
-          title="Covered Call"
+          title="COVERED CALL"
           explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
           learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
           renderContent={({ ref, ...triggerHandler }) => (
@@ -70,7 +73,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         market makers for a fee (the market price of the option, also known as
         the{" "}
         <TooltipExplanation
-          title="Option Premium"
+          title="OPTION PREMIUM"
           explanation="The option premium is the current market price of an option contract."
           learnMoreURL="https://www.investopedia.com/terms/o/option-premium.asp"
           renderContent={({ ref, ...props }) => (
@@ -118,6 +121,18 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         minted by the vault).
       </>
     ),
+    liquidityMining: {
+      explanation: (
+        <>
+          rETH-THETA is a token that represents ETH deposits in the ETH Theta
+          Vault (T-ETH-C).
+          <br />
+          <br />
+          Stake your rETH-THETA tokens in the rETH-THETA staking pool to earn
+          $RBN rewards.
+        </>
+      ),
+    },
   },
   "rBTC-THETA": {
     title: "T-WBTC-C",
@@ -129,7 +144,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
       <>
         This vault earns yield on its WBTC deposits by running an automated WBTC{" "}
         <TooltipExplanation
-          title="Covered Call"
+          title="COVERED CALL"
           explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
           learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
           renderContent={({ ref, ...triggerHandler }) => (
@@ -165,7 +180,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         market makers for a fee (the market price of the option, also known as
         the{" "}
         <TooltipExplanation
-          title="Option Premium"
+          title="OPTION PREMIUM"
           explanation="The option premium is the current market price of an option contract."
           learnMoreURL="https://www.investopedia.com/terms/o/option-premium.asp"
           renderContent={({ ref, ...triggerHandler }) => (
@@ -213,6 +228,18 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         minted by the vault).
       </>
     ),
+    liquidityMining: {
+      explanation: (
+        <>
+          rWBTC-THETA is a token that represents WBTC deposits in the WBTC Theta
+          Vault (T-WBTC-C).
+          <br />
+          <br />
+          Stake your rWBTC-THETA tokens in the rWBTC-THETA staking pool to earn
+          $RBN rewards.
+        </>
+      ),
+    },
   },
   "rUSDC-ETH-P-THETA": {
     title: "T-USDC-P-ETH",
@@ -225,7 +252,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         This vault earns yield on its USDC deposits by running an automated
         strategy that sells ETH{" "}
         <TooltipExplanation
-          title="Put Option"
+          title="PUT OPTION"
           explanation="A put option is a contract giving the owner the right, but not the obligation, to sell–or sell short–a specified amount of an underlying security at a pre-determined price within a specified time frame. This pre-determined price that buyer of the put option can sell at is called the strike price."
           learnMoreURL="https://www.investopedia.com/terms/p/putoption.asp"
           renderContent={({ ref, ...triggerHandler }) => (
@@ -261,7 +288,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         market makers for a fee (the market price of the option, also known as
         the{" "}
         <TooltipExplanation
-          title="Option Premium"
+          title="OPTION PREMIUM"
           explanation="The option premium is the current market price of an option contract."
           learnMoreURL="https://www.investopedia.com/terms/o/option-premium.asp"
           renderContent={({ ref, ...triggerHandler }) => (
@@ -300,6 +327,18 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         5% of the time.
       </>
     ),
+    liquidityMining: {
+      explanation: (
+        <>
+          rUSDC-ETH-P-THETA is a token that represents USDC deposits in the ETH
+          Put Theta Vault (T-USDC-P-ETH).
+          <br />
+          <br />
+          Stake your rUSDC-ETH-P-THETA tokens in the rUSDC-ETH-P-THETA staking
+          pool to earn $RBN rewards.
+        </>
+      ),
+    },
   },
   "rUSDC-BTC-P-THETA": {
     title: "T-USDC-P-WBTC",
@@ -312,7 +351,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         This vault earns yield on its USDC deposits by running an automated
         strategy that sells WBTC{" "}
         <TooltipExplanation
-          title="Put Option"
+          title="PUT OPTION"
           explanation="A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
           learnMoreURL="https://www.investopedia.com/terms/p/putoption.asp"
           renderContent={({ ref, ...triggerHandler }) => (
@@ -348,7 +387,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         market makers for a fee (the market price of the option, also known as
         the{" "}
         <TooltipExplanation
-          title="Option Premium"
+          title="OPTION PREMIUM"
           explanation="The option premium is the current market price of an option contract."
           learnMoreURL="https://www.investopedia.com/terms/o/option-premium.asp"
           renderContent={({ ref, ...triggerHandler }) => (
@@ -387,5 +426,17 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         5% of the time.
       </>
     ),
+    liquidityMining: {
+      explanation: (
+        <>
+          rUSDC-BTC-P-THETA is a token that represents USDC deposits in the WBTC
+          Put Theta Vault (T-USDC-P-WBTC).
+          <br />
+          <br />
+          Stake your rUSDC-BTC-P-THETA tokens in the rUSDC-BTC-P-THETA staking
+          pool to earn $RBN rewards.
+        </>
+      ),
+    },
   },
 };

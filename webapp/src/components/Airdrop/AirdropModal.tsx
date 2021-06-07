@@ -11,7 +11,7 @@ import colors from "shared/lib/designSystem/colors";
 
 import AirdropInfo from "./AirdropInfo";
 import MenuButton from "../Header/MenuButton";
-import AirdropClaim from "./AirdropClaim";
+import RBNClaimModalContent from "../Common/RBNClaimModalContent";
 import useMerkleDistributor from "../../hooks/useMerkleDistributor";
 import useAirdrop from "../../hooks/useAirdrop";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
@@ -54,6 +54,7 @@ const CloseButton = styled.div`
   color: ${colors.text};
   z-index: 2;
 `;
+
 interface AirdropModalProps {
   show: boolean;
   onClose: () => void;
@@ -77,6 +78,8 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
     if (!merkleDistributor) {
       return;
     }
+
+    setStep("claim");
 
     try {
       const tx = await merkleDistributor.claim(
@@ -123,16 +126,14 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
   return (
     <StyledModal show={show} onHide={handleClose} centered backdrop={true}>
       <BaseModalHeader>
-        {
-          <CloseButton role="button" onClick={handleClose}>
-            <MenuButton
-              isOpen={true}
-              onToggle={handleClose}
-              size={20}
-              color={"#FFFFFFA3"}
-            />
-          </CloseButton>
-        }
+        <CloseButton role="button" onClick={handleClose}>
+          <MenuButton
+            isOpen={true}
+            onToggle={handleClose}
+            size={20}
+            color={"#FFFFFFA3"}
+          />
+        </CloseButton>
       </BaseModalHeader>
       <Modal.Body>
         <AnimatePresence initial={false}>
@@ -169,13 +170,9 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
             }
           >
             {step === "info" ? (
-              <AirdropInfo onClaim={() => setStep("claim")} />
+              <AirdropInfo onClaim={claimAirdrop} />
             ) : (
-              <AirdropClaim
-                step={step}
-                setStep={setStep}
-                claimAirdrop={claimAirdrop}
-              />
+              <RBNClaimModalContent step={step} setStep={setStep} />
             )}
           </ModalContent>
         </AnimatePresence>

@@ -4,7 +4,9 @@
 export type { IERC20 } from "./IERC20";
 export type { MerkleDistributor } from "./MerkleDistributor";
 export type { RibbonCoveredCall } from "./RibbonCoveredCall";
+export type { RibbonStakingRewards } from "./RibbonStakingRewards";
 
 export { IERC20__factory } from "./factories/IERC20__factory";
 export { MerkleDistributor__factory } from "./factories/MerkleDistributor__factory";
 export { RibbonCoveredCall__factory } from "./factories/RibbonCoveredCall__factory";
+export { RibbonStakingRewards__factory } from "./factories/RibbonStakingRewards__factory";

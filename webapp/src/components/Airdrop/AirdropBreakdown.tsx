@@ -114,8 +114,8 @@ const AirdropBreakdown = () => {
 
   const renderBreakdownPill = useCallback(
     (token: number, variant: ProcessedAirdropBreakdownType, index: number) => (
-      <BreakdownBackground variant={variant}>
-        <BreakdownPill variant={variant} key={index}>
+      <BreakdownBackground variant={variant} key={index}>
+        <BreakdownPill variant={variant}>
           <BreakdwonPillIndicator variant={variant} />
           <Subtitle>{getAirdropTitle(variant)}</Subtitle>
           <BreakdownPillToken variant={variant}>

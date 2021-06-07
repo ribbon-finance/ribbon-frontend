@@ -11,6 +11,10 @@ import { BigNumber, ethers } from "ethers";
 import moment from "moment";
 
 import {
+  BaseInput,
+  BaseInputButton,
+  BaseInputContianer,
+  BaseInputLabel,
   BaseLink,
   PrimaryText,
   SecondaryText,
@@ -54,6 +58,7 @@ import SwapBTCDropdown from "./SwapBTCDropdown";
 import useVaultActivity from "../../hooks/useVaultActivity";
 import { VaultActivityMeta, VaultShortPosition } from "shared/lib/models/vault";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "../Common/HelpInfo";
 
 const { parseUnits, formatUnits } = ethers.utils;
 
@@ -119,60 +124,11 @@ const FormTitle = styled(Title)<{ active: boolean }>`
   color: ${(props) => (props.active ? "#f3f3f3" : "rgba(255, 255, 255, 0.64)")};
 `;
 
-const InputGuide = styled.div`
-  color: #ffffff;
-  opacity: 0.4;
-  font-size: 12px;
-  line-height: 16px;
-  letter-spacing: 1.5px;
-`;
-
 const ContentContainer = styled.div`
   background: ${colors.background};
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   border-bottom: ${theme.border.width} ${theme.border.style} ${colors.border};
-`;
-
-const FormInputContainer = styled.div`
-  width: 100%;
-  height: 80px;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 4px;
-`;
-
-const FormInput = styled.input`
-  width: 80%;
-  height: 100%;
-  font-size: 40px;
-  line-height: 64px;
-  color: #ffffff;
-  border: none;
-  background: none;
-
-  &:focus {
-    color: #ffffff;
-    background: none;
-    border: none;
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-    border: rgba(255, 255, 255, 0);
-  }
-`;
-
-const MaxAccessory = styled.div`
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  right: 0;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
-  padding: 8px;
-  height: 32px;
-  font-size: 11px;
-  line-height: 16px;
-  text-align: center;
-  letter-spacing: 1.5px;
-  cursor: pointer;
 `;
 
 type WalletBalanceStates = "active" | "inactive" | "error";
@@ -205,17 +161,6 @@ const WithdrawLimitText = styled(SecondaryText)`
   font-size: 14px;
   line-height: 20px;
   text-align: center;
-`;
-
-const HelpContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 16px;
-  width: 16px;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: 100px;
-  margin-left: 8px;
 `;
 
 const ApprovalIconContainer = styled.div`
@@ -298,7 +243,7 @@ const SwapTriggerButtonText = styled(SecondaryText)`
 type ValidationErrors =
   | "none"
   | "insufficient_balance"
-  | "max_exceeded"
+  | "capacity_overflow"
   | "withdraw_limit_reached"
   | "withdraw_limit_exceeded";
 
@@ -424,11 +369,17 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         const total = BigNumber.from(userAssetBalance);
         // TODO: Optimize the code to request gas fees only when needed
         const maxAmount = isETHVault(vaultOption) ? total.sub(gasFee) : total;
-        const actualMaxAmount = maxAmount.isNegative()
+        const userMaxAmount = maxAmount.isNegative()
           ? BigNumber.from("0")
           : maxAmount;
 
-        setInputAmount(formatUnits(actualMaxAmount, decimals));
+        // Check if max is vault availableBalance
+        const vaultAvailableBalance = vaultLimit.sub(deposits);
+        const finalMaxAmount = userMaxAmount.gt(vaultAvailableBalance)
+          ? vaultAvailableBalance
+          : userMaxAmount;
+
+        setInputAmount(formatUnits(finalMaxAmount, decimals));
       }
       // Withdraw flow
       else {
@@ -469,6 +420,9 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
           if (isDeposit && amount.gt(userAssetBalance)) {
             setError("insufficient_balance");
             return;
+          } else if (isDeposit && amount.gt(vaultLimit.sub(deposits))) {
+            setError("capacity_overflow");
+            return;
           } else if (
             !isDeposit &&
             amount.gt(maxWithdrawAmount) &&
@@ -486,6 +440,8 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
       setError("none");
     });
   }, [
+    deposits,
+    vaultLimit,
     inputAmount,
     connected,
     decimals,
@@ -514,7 +470,14 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
       positionAmount: BigNumber.from(vaultBalanceStr),
       actionParams,
     };
-  }, [isDeposit, inputAmount, vaultBalanceStr, latestAPY.res, decimals]);
+  }, [
+    vaultOption,
+    isDeposit,
+    inputAmount,
+    vaultBalanceStr,
+    latestAPY.res,
+    decimals,
+  ]);
 
   const handleClickActionButton = () => {
     isDesktop && isInputNonZero && connected && setShowActionModal(true);
@@ -546,7 +509,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         ]);
 
         // Wait for transaction to be approved
-        await provider.waitForTransaction(txhash);
+        await provider.waitForTransaction(txhash, 5);
       } catch (err) {
         setWaitingApproval(false);
       }
@@ -611,6 +574,9 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     disabled = true;
   } else if (error === "withdraw_limit_reached") {
     actionButtonText = `WithdrawALS DISABLED`;
+    disabled = true;
+  } else if (error === "capacity_overflow") {
+    actionButtonText = `Exceed Vault Balance`;
     disabled = true;
   } else if (isDeposit && isInputNonZero) {
     if (vaultFull) {
@@ -758,9 +724,9 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
               asset
             )} will result in the vault hitting its weekly withdrawal limit. If the withdrawal limit is reached, withdrawals will be disabled until ${withdrawalFreeUpTime}.`}
             renderContent={({ ref, ...triggerHandler }) => (
-              <HelpContainer ref={ref} {...triggerHandler}>
+              <HelpInfo containerRef={ref} {...triggerHandler}>
                 ?
-              </HelpContainer>
+              </HelpInfo>
             )}
           />
         </WalletBalance>
@@ -831,9 +797,9 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
             </>
           ) : (
             <>
-              <InputGuide>AMOUNT ({getAssetDisplay(asset)})</InputGuide>
-              <FormInputContainer className="position-relative mt-2 mb-5 px-1">
-                <FormInput
+              <BaseInputLabel>AMOUNT ({getAssetDisplay(asset)})</BaseInputLabel>
+              <BaseInputContianer className="position-relative mb-5">
+                <BaseInput
                   ref={inputRef}
                   type="number"
                   className="form-control"
@@ -844,9 +810,11 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
                   onWheel={onInputWheel}
                 />
                 {connected && (
-                  <MaxAccessory onClick={handleClickMax}>MAX</MaxAccessory>
+                  <BaseInputButton onClick={handleClickMax}>
+                    MAX
+                  </BaseInputButton>
                 )}
-              </FormInputContainer>
+              </BaseInputContianer>
               {button}
             </>
           )}

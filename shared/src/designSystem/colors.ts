@@ -2,6 +2,7 @@ const colors = {
   background: "#1C1A19",
   backgroundDarker: "#08090E",
   border: "#2B2B2B",
+  borderLight: "#2E2C2B",
   text: "#ACACAB",
   primaryText: "#FFFFFF",
   green: "#16CEB9",

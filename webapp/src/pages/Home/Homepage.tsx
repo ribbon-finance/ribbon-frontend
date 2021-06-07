@@ -12,6 +12,7 @@ const ProductTitle = styled(Title)`
   font-size: 24px;
   text-align: center;
   margin-top: 16px;
+
   @media (max-width: ${sizes.md}px) {
     display: block;
   }

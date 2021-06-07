@@ -19,7 +19,11 @@ const Tooltip = styled.div`
   border-radius: ${theme.border.radius};
   display: flex;
   flex-direction: column;
-  z-index: 10;
+  z-index: 1100;
+`;
+
+const ExplanationTitle = styled(Title)`
+  text-transform: none;
 `;
 
 const Explanation = styled(SecondaryText)`
@@ -40,7 +44,7 @@ const LearnMore = styled(PrimaryText)`
 
 interface OverlayTooltipExplanationProps {
   title: string;
-  explanation: string;
+  explanation: React.ReactNode;
   learnMoreURL?: string;
   overlayInjectedProps: OverlayInjectedProps;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -58,7 +62,7 @@ const OverlayTooltipExplanation: React.FC<OverlayTooltipExplanationProps> = ({
     onMouseOver={() => setShow(true)}
     onMouseOut={() => setShow(false)}
   >
-    <Title>{title}</Title>
+    <ExplanationTitle>{title}</ExplanationTitle>
     <Explanation>{explanation}</Explanation>
     {learnMoreURL && (
       <LearnMoreLink

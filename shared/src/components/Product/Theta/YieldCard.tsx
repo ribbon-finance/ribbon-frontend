@@ -18,7 +18,7 @@ import {
 import colors from "../../../designSystem/colors";
 import sizes from "../../../designSystem/sizes";
 import theme from "../../../designSystem/theme";
-import DepositCapBar from "../../Deposit/DepositCapBar";
+import CapBar from "../../Deposit/CapBar";
 import useVaultData from "../../../hooks/useVaultData";
 import { formatSignificantDecimals } from "../../../utils/math";
 import { useLatestAPY } from "../../../hooks/useAirtableData";
@@ -57,13 +57,13 @@ const ProductCard = styled.div`
 
   @keyframes shimmerAnimation {
     0% {
-      box-shadow: rgba(255, 56, 92, 0.4) 8px 8px 120px;
+      box-shadow: ${colors.products.yield}66 8px 8px 120px;
     }
     50% {
-      box-shadow: rgba(255, 56, 92, 0.16) 8px 8px 120px;
+      box-shadow: ${colors.products.yield}29 8px 8px 120px;
     }
     100% {
-      box-shadow: rgba(255, 56, 92, 0.4) 8px 8px 120px;
+      box-shadow: ${colors.products.yield}66 8px 8px 120px;
     }
   }
 
@@ -71,7 +71,7 @@ const ProductCard = styled.div`
 
   &:hover {
     animation: none;
-    box-shadow: rgba(255, 56, 92, 0.4) 8px 8px 120px;
+    box-shadow: ${colors.products.yield}66 8px 8px 120px;
   }
 
   @media (max-width: ${sizes.md}px) {
@@ -267,13 +267,13 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
       </ProductDescription>
       <ExpectedYieldTitle>Current Projected Yield (APY)</ExpectedYieldTitle>
       <YieldText>{perfStr}</YieldText>
-      <DepositCapBar
+      <CapBar
         loading={isLoading}
-        totalDeposit={totalDepositStr}
-        limit={depositLimitStr}
+        current={totalDepositStr}
+        cap={depositLimitStr}
         copies={{
-          totalDeposit: "Current Deposits",
-          limit: "Max Capacity",
+          current: "Current Deposits",
+          cap: "Max Capacity",
         }}
         labelConfig={{
           fontSize: 12,

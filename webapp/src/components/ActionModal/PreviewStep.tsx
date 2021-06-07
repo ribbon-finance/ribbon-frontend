@@ -6,16 +6,12 @@ import { Subtitle, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { ACTIONS, PreviewStepProps } from "./types";
-import {
-  formatBigNumber,
-  formatSignificantDecimals,
-  wmul,
-} from "shared/lib/utils/math";
+import { formatBigNumber, wmul } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
 import { VaultOptions } from "shared/lib/constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
-const { parseUnits, formatUnits } = ethers.utils;
+const { parseUnits } = ethers.utils;
 
 const AmountText = styled(Title)`
   font-size: 40px;
@@ -70,9 +66,10 @@ const PreviewStep: React.FC<
       : { key: "Withdrawal Fee", value: `${detailValue}%` },
   ];
 
-  const originalAmount = formatSignificantDecimals(
-    formatUnits(positionAmount, getAssetDecimals(asset)),
-    5
+  const originalAmount = formatBigNumber(
+    positionAmount,
+    5,
+    getAssetDecimals(asset)
   );
   // If it's a deposit, just add to the existing positionAmount
   // If it's a withdrawal, subtract the amount and the fee, we can hardcode the fee for now
@@ -102,12 +99,9 @@ const PreviewStep: React.FC<
           {actionWord} Amount
         </Subtitle>
 
-        <div>
+        <div className="text-center">
           <AmountText>
-            {formatSignificantDecimals(
-              formatUnits(amount, getAssetDecimals(asset)),
-              4
-            )}
+            {formatBigNumber(amount, 4, getAssetDecimals(asset))}
           </AmountText>
           <CurrencyText> {getAssetDisplay(asset)}</CurrencyText>
         </div>

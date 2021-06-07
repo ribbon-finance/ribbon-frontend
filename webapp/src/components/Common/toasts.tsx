@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   getAssets,
   VaultList,
@@ -8,7 +8,7 @@ import {
 import usePendingTransactions from "../../hooks/usePendingTransactions";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
-import { Assets, PendingTransaction } from "shared/lib/store/types";
+import { PendingTransaction } from "shared/lib/store/types";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { getDefaultNetworkName } from "shared/lib/utils/env";
 import { formatBigNumber } from "shared/lib/utils/math";
@@ -47,10 +47,8 @@ export const WrongNetworkToast = () => {
 type TxStatuses = "success" | "error" | null;
 
 export const TxStatusToast = () => {
-  const [
-    pendingTransactions,
-    setPendingTransactions,
-  ] = usePendingTransactions();
+  const [pendingTransactions, setPendingTransactions] =
+    usePendingTransactions();
 
   const [status, setStatus] = useState<TxStatuses>(null);
   const [currentTx, setCurrentTx] = useState<PendingTransaction | null>(null);
@@ -75,42 +73,31 @@ export const TxStatusToast = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pendingTransactions, setStatus, setCurrentTx]);
 
-  const renderSuccessTxSubtitle = useCallback(
-    (
-      params:
-        | {
-            type: "approval" | "deposit" | "withdraw";
-            amountFormatted: string;
-            vault: VaultOptions;
-            asset: Assets;
-          }
-        | { type: "claim"; amountFormatted: string }
-    ) => {
-      switch (params.type) {
-        case "approval":
-          return `Your ${getAssetDisplay(params.asset)} is ready to deposit`;
-        case "withdraw":
-          return `${params.amountFormatted} ${getAssetDisplay(
-            params.asset
-          )} withdrawn from ${productCopies[params.vault].title}`;
-        case "deposit":
-          return `${params.amountFormatted} ${getAssetDisplay(
-            params.asset
-          )} deposited from ${productCopies[params.vault].title}`;
-        case "claim":
-          return `${params.amountFormatted} $RBN claimed`;
-      }
-    },
-    []
-  );
+  const toast = useMemo(() => {
+    if (!status || !currentTx) {
+      return null;
+    }
 
-  if (status && currentTx) {
     const { type, amount } = currentTx;
-    const vault = currentTx.type === "claim" ? undefined : currentTx.vault;
+    // @ts-ignore
+    const vault: VaultOptions | undefined = currentTx.vault;
+    // @ts-ignore
+    const stakeAsset: VaultOptions | undefined = currentTx.stakeAsset;
+
     const asset = vault ? getAssets(vault) : undefined;
     const amountFormatted: string = vault
       ? formatBigNumber(BigNumber.from(amount), 6, getAssetDecimals(asset!))
       : amount;
+
+    let actionTitle: string;
+
+    switch (type) {
+      case "rewardClaim":
+        actionTitle = "Reward Claim";
+        break;
+      default:
+        actionTitle = capitalize(type);
+    }
 
     if (status === "error") {
       return (
@@ -118,36 +105,62 @@ export const TxStatusToast = () => {
           show={status === "error"}
           onClose={() => setStatus(null)}
           type="error"
-          title={`${type} failed`}
+          title={`${actionTitle} failed`}
           subtitle={
             type === "approval"
-              ? `Please try approving ${getAssetDisplay(asset!)} again`
+              ? `Please try approving ${
+                  asset ? getAssetDisplay(asset) : stakeAsset!
+                } again`
               : "Please resubmit transaction"
           }
         ></Toast>
       );
     }
 
-    const word = capitalize(type);
+    let subtitle: string;
+
+    switch (type) {
+      case "approval":
+        subtitle = `Your ${
+          // @ts-ignore
+          asset ? getAssetDisplay(asset) : stakeAsset
+        } is ready to ${
+          // @ts-ignore
+          asset ? "deposit" : "stake"
+        }`;
+        break;
+      case "withdraw":
+        subtitle = `${amountFormatted} ${getAssetDisplay(
+          asset!
+        )} withdrawn from ${productCopies[vault!].title}`;
+        break;
+      case "deposit":
+        subtitle = `${amountFormatted} ${getAssetDisplay(
+          asset!
+        )} deposited into ${productCopies[vault!].title}`;
+        break;
+      case "claim":
+      case "rewardClaim":
+        subtitle = `${amountFormatted} $RBN claimed`;
+        break;
+      case "stake":
+        subtitle = `${amountFormatted} ${stakeAsset} staked`;
+        break;
+      case "unstake":
+        subtitle = `${amountFormatted} ${stakeAsset} unstaked`;
+        break;
+    }
 
     return (
       <Toast
         show={status === "success"}
         onClose={() => setStatus(null)}
-        type={type === "claim" ? "claim" : "success"}
-        title={`${word} successful`}
-        subtitle={renderSuccessTxSubtitle(
-          type === "claim"
-            ? { type, amountFormatted }
-            : {
-                type,
-                amountFormatted,
-                vault: vault!,
-                asset: asset!,
-              }
-        )}
+        type={type === "claim" || type === "rewardClaim" ? "claim" : "success"}
+        title={`${actionTitle} successful`}
+        subtitle={subtitle}
       ></Toast>
     );
-  }
-  return null;
+  }, [status, currentTx]);
+
+  return toast;
 };

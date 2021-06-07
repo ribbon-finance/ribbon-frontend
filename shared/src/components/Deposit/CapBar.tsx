@@ -5,18 +5,18 @@ import { Assets } from "../../store/types";
 import { getAssetDisplay } from "../../utils/asset";
 import { formatAmount } from "../../utils/math";
 
-const BackgroundBar = styled.div`
-  height: 16px;
+const BackgroundBar = styled.div<{ height: number }>`
+  height: ${(props) => props.height}px;
   width: 100%;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 4px;
 `;
 
-const ForegroundBar = styled.div`
+const ForegroundBar = styled.div<{ height: number }>`
   position: absolute;
   top: 0;
   left: 0;
-  height: 16px;
+  height: ${(props) => props.height}px;
   background: #ffffff;
   border-radius: 4px;
   width: 100%;
@@ -40,13 +40,13 @@ const DepositStat = styled(Title)<{
   line-height: 20px;
 `;
 
-const DepositCapBar: React.FC<{
+const CapBar: React.FC<{
   loading: boolean;
-  totalDeposit: number;
-  limit: number;
+  current: number;
+  cap: number;
   copies?: {
-    totalDeposit: string;
-    limit: string;
+    current: string;
+    cap: string;
   };
   labelConfig?: {
     fontSize: number;
@@ -54,17 +54,22 @@ const DepositCapBar: React.FC<{
   statsConfig?: {
     fontSize: number;
   };
-  asset: Assets;
+  barConfig?: {
+    height: number;
+    extraClassNames: string;
+  };
+  asset?: Assets;
 }> = ({
   loading,
-  totalDeposit,
-  limit,
-  copies = { totalDeposit: "Total Deposits", limit: "Limit" },
+  current,
+  cap,
+  copies = { current: "Total Deposits", cap: "Limit" },
   labelConfig = { fontSize: 16 },
   statsConfig = { fontSize: 16 },
+  barConfig = { height: 16, extraClassNames: "my-3" },
   asset,
 }) => {
-  let percent = totalDeposit / (limit > 0 ? limit : 1);
+  let percent = current / (cap > 0 ? cap : 1);
   if (percent < 0) {
     percent = 0;
   } else if (percent > 1) {
@@ -75,28 +80,33 @@ const DepositCapBar: React.FC<{
   return (
     <div className="w-100">
       <div className="d-flex flex-row justify-content-between">
-        <DepositLabel config={labelConfig}>{copies.totalDeposit}</DepositLabel>
+        <DepositLabel config={labelConfig}>{copies.current}</DepositLabel>
         <DepositStat config={statsConfig}>
           {loading
             ? "Loading..."
-            : `${formatAmount(totalDeposit)} ${getAssetDisplay(asset)}`}
+            : `${formatAmount(current)} ${asset ? getAssetDisplay(asset) : ""}`}
         </DepositStat>
       </div>
 
-      <div className="d-flex flex-row position-relative my-3">
-        <BackgroundBar />
-        <ForegroundBar style={{ width: `${percent}%` }} />
+      <div
+        className={`d-flex flex-row position-relative ${barConfig.extraClassNames}`}
+      >
+        <BackgroundBar height={barConfig.height} />
+        <ForegroundBar
+          height={barConfig.height}
+          style={{ width: `${percent}%` }}
+        />
       </div>
 
       <div className="d-flex flex-row justify-content-between">
-        <DepositLabel config={labelConfig}>{copies.limit}</DepositLabel>
+        <DepositLabel config={labelConfig}>{copies.cap}</DepositLabel>
         <DepositStat config={statsConfig}>
           {loading
             ? "Loading..."
-            : `${formatAmount(limit)} ${getAssetDisplay(asset)}`}
+            : `${formatAmount(cap)} ${asset ? getAssetDisplay(asset) : ""}`}
         </DepositStat>
       </div>
     </div>
   );
 };
-export default DepositCapBar;
+export default CapBar;
