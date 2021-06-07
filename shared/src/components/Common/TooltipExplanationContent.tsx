@@ -19,7 +19,7 @@ const Tooltip = styled.div`
   border-radius: ${theme.border.radius};
   display: flex;
   flex-direction: column;
-  z-index: 10;
+  z-index: 1100;
 `;
 
 const ExplanationTitle = styled(Title)`

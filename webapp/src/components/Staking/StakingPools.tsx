@@ -7,7 +7,7 @@ import { SecondaryText, Subtitle, Title } from "shared/lib/designSystem";
 import {
   getAssets,
   VaultLiquidityMiningMap,
-  VaultList,
+  LiquidityMiningPoolOrder,
   VaultOptions,
 } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
@@ -31,6 +31,7 @@ import { productCopies } from "shared/lib/components/Product/productCopies";
 import StakingActionModal from "./Modal/StakingActionModal";
 import sizes from "shared/lib/designSystem/sizes";
 import StakingClaimModal from "./Modal/StakingClaimModal";
+import HelpInfo from "../Common/HelpInfo";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -63,10 +64,10 @@ const StakingPoolCard = styled.div`
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
   margin-bottom: 48px;
-  animation: ${shimmerKeyframe} 3s infinite;
+  box-shadow: ${colors.red}29 8px 16px 80px;
 
   &:hover {
-    box-shadow: ${colors.red}66 8px 16px 80px !important;
+    animation: ${shimmerKeyframe} 3s infinite;
   }
 `;
 
@@ -194,23 +195,6 @@ const StakingPoolCardFooterButton = styled(Title)<{ active: boolean }>`
   }
 `;
 
-const HelpContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 16px;
-  width: 16px;
-  border: ${theme.border.width} ${theme.border.style} ${colors.borderLight};
-  border-radius: 100px;
-  margin-left: 8px;
-`;
-
-const HelpText = styled(SecondaryText)`
-  font-size: 10px;
-  line-height: 12px;
-  color: ${colors.text};
-`;
-
 interface StakingPoolProps {
   vaultOption: VaultOptions;
 }
@@ -287,7 +271,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
       `${actionLoadingTextBase} ...`,
     ],
     250,
-    !!ongoingTransaction
+    Boolean(ongoingTransaction)
   );
 
   const logo = useMemo(() => {
@@ -358,9 +342,9 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
                     productCopies[vaultOption].liquidityMining.explanation
                   }
                   renderContent={({ ref, ...triggerHandler }) => (
-                    <HelpContainer ref={ref} {...triggerHandler}>
-                      <HelpText>!</HelpText>
-                    </HelpContainer>
+                    <HelpInfo containerRef={ref} {...triggerHandler}>
+                      i
+                    </HelpInfo>
                   )}
                   learnMoreURL="https://ribbon.finance/faq"
                 />
@@ -417,9 +401,9 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
                 title="EXPECTED YIELD (APY)"
                 explanation={`By staking your ${vaultOption} tokens in the pool, you earn weekly $RBN rewards.`}
                 renderContent={({ ref, ...triggerHandler }) => (
-                  <HelpContainer ref={ref} {...triggerHandler}>
-                    <HelpText>!</HelpText>
-                  </HelpContainer>
+                  <HelpInfo containerRef={ref} {...triggerHandler}>
+                    i
+                  </HelpInfo>
                 )}
                 learnMoreURL="https://ribbon.finance/faq"
               />
@@ -496,7 +480,7 @@ const StakingPools = () => {
   return (
     <StakingPoolsContainer>
       <SectionHeader className="mb-4 w-100">STAKING POOLS</SectionHeader>
-      {VaultList.map((option) => (
+      {LiquidityMiningPoolOrder.map((option) => (
         <StakingPool key={option} vaultOption={option} />
       ))}
     </StakingPoolsContainer>

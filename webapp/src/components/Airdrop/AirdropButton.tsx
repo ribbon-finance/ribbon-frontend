@@ -99,7 +99,7 @@ const AirdropButton = () => {
   }, [account, airdrop]);
 
   const isClaiming = useMemo(() => {
-    return !!pendingTransactions.find((item) => item.type === "claim");
+    return Boolean(pendingTransactions.find((item) => item.type === "claim"));
   }, [pendingTransactions]);
 
   return (

@@ -25,6 +25,8 @@ import useStakingReward from "../../../hooks/useStakingReward";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import RBNClaimModalContent from "../../Common/RBNClaimModalContent";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "../../Common/HelpInfo";
 
 const StyledModal = styled(BaseModal)`
   .modal-dialog {
@@ -233,7 +235,19 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
               </InfoData>
             </InfoColumn>
             <InfoColumn>
-              <SecondaryText>Expected Yield (APY)</SecondaryText>
+              <div className="d-flex align-items-center">
+                <SecondaryText>Expected Yield (APY)</SecondaryText>
+                <TooltipExplanation
+                  title="EXPECTED YIELD (APY)"
+                  explanation={`By staking your ${vaultOption} tokens in the pool, you earn weekly $RBN rewards.`}
+                  renderContent={({ ref, ...triggerHandler }) => (
+                    <HelpInfo containerRef={ref} {...triggerHandler}>
+                      i
+                    </HelpInfo>
+                  )}
+                  learnMoreURL="https://ribbon.finance/faq"
+                />
+              </div>
               <InfoData>{stakingPoolData.expectedYield.toFixed(2)}%</InfoData>
             </InfoColumn>
             <ContentColumn marginTop="auto">

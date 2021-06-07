@@ -132,12 +132,12 @@ export const TxStatusToast = () => {
       case "withdraw":
         subtitle = `${amountFormatted} ${getAssetDisplay(
           asset!
-        )} withdrawn into ${productCopies[vault!].title}`;
+        )} withdrawn from ${productCopies[vault!].title}`;
         break;
       case "deposit":
         subtitle = `${amountFormatted} ${getAssetDisplay(
           asset!
-        )} deposited from ${productCopies[vault!].title}`;
+        )} deposited into ${productCopies[vault!].title}`;
         break;
       case "claim":
       case "rewardClaim":

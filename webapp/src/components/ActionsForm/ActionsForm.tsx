@@ -58,6 +58,7 @@ import SwapBTCDropdown from "./SwapBTCDropdown";
 import useVaultActivity from "../../hooks/useVaultActivity";
 import { VaultActivityMeta, VaultShortPosition } from "shared/lib/models/vault";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "../Common/HelpInfo";
 
 const { parseUnits, formatUnits } = ethers.utils;
 
@@ -160,17 +161,6 @@ const WithdrawLimitText = styled(SecondaryText)`
   font-size: 14px;
   line-height: 20px;
   text-align: center;
-`;
-
-const HelpContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 16px;
-  width: 16px;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: 100px;
-  margin-left: 8px;
 `;
 
 const ApprovalIconContainer = styled.div`
@@ -734,9 +724,9 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
               asset
             )} will result in the vault hitting its weekly withdrawal limit. If the withdrawal limit is reached, withdrawals will be disabled until ${withdrawalFreeUpTime}.`}
             renderContent={({ ref, ...triggerHandler }) => (
-              <HelpContainer ref={ref} {...triggerHandler}>
+              <HelpInfo containerRef={ref} {...triggerHandler}>
                 ?
-              </HelpContainer>
+              </HelpInfo>
             )}
           />
         </WalletBalance>

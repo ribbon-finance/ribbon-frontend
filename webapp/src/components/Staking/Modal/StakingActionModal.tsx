@@ -34,6 +34,8 @@ import useStakingReward from "../../../hooks/useStakingReward";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import TrafficLight from "../../Common/TrafficLight";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "../../Common/HelpInfo";
 
 const StyledModal = styled(BaseModal)<{ isForm: boolean }>`
   .modal-dialog {
@@ -362,13 +364,27 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               </InfoData>
             </InfoColumn>
             <InfoColumn>
-              <SecondaryText>Expected Yield (APY)</SecondaryText>
+              <div className="d-flex align-items-center">
+                <SecondaryText>Expected Yield (APY)</SecondaryText>
+                <TooltipExplanation
+                  title="EXPECTED YIELD (APY)"
+                  explanation={`By staking your ${vaultOption} tokens in the pool, you earn weekly $RBN rewards.`}
+                  renderContent={({ ref, ...triggerHandler }) => (
+                    <HelpInfo containerRef={ref} {...triggerHandler}>
+                      i
+                    </HelpInfo>
+                  )}
+                  learnMoreURL="https://ribbon.finance/faq"
+                />
+              </div>
               <InfoData>{stakingPoolData.expectedYield.toFixed(2)}%</InfoData>
             </InfoColumn>
             <ContentColumn marginTop="auto">
               <ActionButton
                 className="btn py-3"
-                disabled={!!error || !(!!input && parseFloat(input) > 0)}
+                disabled={
+                  Boolean(error) || !(Boolean(input) && parseFloat(input) > 0)
+                }
                 onClick={() => setStep("preview")}
               >
                 {renderActionButtonText()}
