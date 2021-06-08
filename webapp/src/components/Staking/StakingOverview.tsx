@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 
 import colors from "shared/lib/designSystem/colors";
@@ -12,6 +12,11 @@ import {
 } from "shared/lib/designSystem";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { Waves } from "shared/lib/assets";
+import useStakingPool from "../../hooks/useStakingPool";
+import { VaultList } from "shared/lib/constants/constants";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import { BigNumber } from "@ethersproject/bignumber";
+import { formatBigNumber } from "shared/lib/utils/math";
 
 const OverviewContainer = styled.div`
   display: flex;
@@ -97,6 +102,31 @@ const OverviewLabel = styled(SecondaryText)`
 `;
 
 const StakingOverview = () => {
+  const { stakingPools, loading } = useStakingPool(VaultList);
+  const loadingText = useTextAnimation(
+    ["Loading", "Loading .", "Loading ..", "Loading ..."],
+    250,
+    loading
+  );
+
+  const totalRewardDistributed = useMemo(() => {
+    if (loading) {
+      return loadingText;
+    }
+
+    let totalDistributed = BigNumber.from(0);
+
+    for (let i = 0; i < VaultList.length; i++) {
+      const stakingPool = stakingPools[VaultList[i]];
+      if (!stakingPool) {
+        break;
+      }
+      totalDistributed = totalDistributed.add(stakingPool.totalRewardClaimed);
+    }
+
+    return formatBigNumber(totalDistributed, 2, 18);
+  }, [loading, loadingText, stakingPools]);
+
   return (
     <OverviewContainer>
       <OverviewInfo>
@@ -127,8 +157,7 @@ const StakingOverview = () => {
       </OverviewInfo>
       <OverviewKPI>
         <OverviewLabel>$RBN Distributed</OverviewLabel>
-        {/* TODO: Replace with API */}
-        <Title>1,282,128.00</Title>
+        <Title>{totalRewardDistributed}</Title>
       </OverviewKPI>
       <OverviewKPI>
         <OverviewLabel>No. of $RBN Holders</OverviewLabel>
