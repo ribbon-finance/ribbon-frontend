@@ -34,8 +34,6 @@ import useStakingReward from "../../../hooks/useStakingReward";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import TrafficLight from "../../Common/TrafficLight";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
-import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import HelpInfo from "../../Common/HelpInfo";
 
 const StyledModal = styled(BaseModal)<{ isForm: boolean }>`
   .modal-dialog {

@@ -158,10 +158,10 @@ const RedWETHLogo = styled(WETHLogo)`
   }
 `;
 
-const ExpectedYieldData = styled(Title)`
-  font-size: 14px;
-  line-height: 20px;
-`;
+// const ExpectedYieldData = styled(Title)`
+//   font-size: 14px;
+//   line-height: 20px;
+// `;
 
 const StakingPoolCardFooter = styled.div`
   display: flex;

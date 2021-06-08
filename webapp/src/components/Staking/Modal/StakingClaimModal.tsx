@@ -25,8 +25,6 @@ import useStakingReward from "../../../hooks/useStakingReward";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import RBNClaimModalContent from "../../Common/RBNClaimModalContent";
-import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import HelpInfo from "../../Common/HelpInfo";
 
 const StyledModal = styled(BaseModal)`
   .modal-dialog {
