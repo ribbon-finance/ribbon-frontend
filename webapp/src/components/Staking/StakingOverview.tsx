@@ -17,6 +17,7 @@ import { VaultList } from "shared/lib/constants/constants";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { BigNumber } from "@ethersproject/bignumber";
 import { formatBigNumber } from "shared/lib/utils/math";
+import useRBNToken from "../../hooks/useRBNToken";
 
 const OverviewContainer = styled.div`
   display: flex;
@@ -102,15 +103,16 @@ const OverviewLabel = styled(SecondaryText)`
 `;
 
 const StakingOverview = () => {
-  const { stakingPools, loading } = useStakingPool(VaultList);
+  const { stakingPools, loading: stakingLoading } = useStakingPool(VaultList);
+  const { data: tokenData, loading: tokenLoading } = useRBNToken();
   const loadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
-    loading
+    stakingLoading || tokenLoading
   );
 
   const totalRewardDistributed = useMemo(() => {
-    if (loading) {
+    if (stakingLoading) {
       return loadingText;
     }
 
@@ -125,7 +127,15 @@ const StakingOverview = () => {
     }
 
     return formatBigNumber(totalDistributed, 2, 18);
-  }, [loading, loadingText, stakingPools]);
+  }, [stakingLoading, loadingText, stakingPools]);
+
+  const numHolderText = useMemo(() => {
+    if (tokenLoading || !tokenData) {
+      return loadingText;
+    }
+
+    return tokenData.numHolders.toLocaleString();
+  }, [loadingText, tokenData, tokenLoading]);
 
   return (
     <OverviewContainer>
@@ -161,8 +171,7 @@ const StakingOverview = () => {
       </OverviewKPI>
       <OverviewKPI>
         <OverviewLabel>No. of $RBN Holders</OverviewLabel>
-        {/* TODO: Replace with API */}
-        <Title>1,500</Title>
+        <Title>{numHolderText}</Title>
       </OverviewKPI>
     </OverviewContainer>
   );
