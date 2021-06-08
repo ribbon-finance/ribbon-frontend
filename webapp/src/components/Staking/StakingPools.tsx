@@ -394,7 +394,8 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           </div>
 
           {/* Expected Yield */}
-          <div className="d-flex align-items-center mt-4 w-100">
+          {/* TODO: Unlock this after $RBN has dollar amount */}
+          {/* <div className="d-flex align-items-center mt-4 w-100">
             <div className="d-flex align-items-center">
               <SecondaryText>Expected Yield (APY)</SecondaryText>
               <TooltipExplanation
@@ -411,7 +412,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
             <ExpectedYieldData className="ml-auto">
               {stakingPoolData.expectedYield.toFixed(2)}%
             </ExpectedYieldData>
-          </div>
+          </div> */}
         </div>
         <StakingPoolCardFooter>
           {active ? (
