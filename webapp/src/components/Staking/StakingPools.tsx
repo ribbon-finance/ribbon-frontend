@@ -19,7 +19,7 @@ import {
 } from "shared/lib/assets/icons/erc20Assets";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
-import useStakingPool from "../../hooks/useStakingPool";
+import useStakingPoolData from "../../hooks/useStakingPoolData";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
@@ -202,7 +202,7 @@ interface StakingPoolProps {
 const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   const { active } = useWeb3React();
   const [, setShowConnectWalletModal] = useConnectWalletModal();
-  const { data: stakingPoolData } = useStakingPool(vaultOption);
+  const { data: stakingPoolData } = useStakingPoolData(vaultOption);
   const decimals = getAssetDecimals(getAssets(vaultOption));
   const tokenAllowance = useTokenAllowance(
     vaultOption,
