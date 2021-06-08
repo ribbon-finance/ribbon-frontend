@@ -363,7 +363,8 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                 {formatBigNumber(stakingPoolData.poolSize, 4, decimals)}
               </InfoData>
             </InfoColumn>
-            <InfoColumn>
+            {/* TODO: Unlock this after $RBN has dollar amount */}
+            {/* <InfoColumn>
               <div className="d-flex align-items-center">
                 <SecondaryText>Expected Yield (APY)</SecondaryText>
                 <TooltipExplanation
@@ -378,7 +379,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                 />
               </div>
               <InfoData>{stakingPoolData.expectedYield.toFixed(2)}%</InfoData>
-            </InfoColumn>
+            </InfoColumn> */}
             <ContentColumn marginTop="auto">
               <ActionButton
                 className="btn py-3"
@@ -448,10 +449,11 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                 )}
               </InfoData>
             </InfoColumn>
-            <InfoColumn>
+            {/* TODO: Unlock this after $RBN has dollar amount */}
+            {/* <InfoColumn>
               <SecondaryText>Expected Yield (APY)</SecondaryText>
               <InfoData>{stakingPoolData.expectedYield.toFixed(2)}%</InfoData>
-            </InfoColumn>
+            </InfoColumn> */}
             <ContentColumn marginTop="auto">
               <ActionButton
                 className="btn py-3 mb-2"

@@ -234,7 +234,8 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
                   : "---"}
               </InfoData>
             </InfoColumn>
-            <InfoColumn>
+            {/* TODO: Unlock this after $RBN has dollar amount */}
+            {/* <InfoColumn>
               <div className="d-flex align-items-center">
                 <SecondaryText>Expected Yield (APY)</SecondaryText>
                 <TooltipExplanation
@@ -249,7 +250,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
                 />
               </div>
               <InfoData>{stakingPoolData.expectedYield.toFixed(2)}%</InfoData>
-            </InfoColumn>
+            </InfoColumn> */}
             <ContentColumn marginTop="auto">
               <BaseUnderlineLink
                 to="https://ribbon.finance/faq"
