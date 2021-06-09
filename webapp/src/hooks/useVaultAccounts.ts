@@ -47,6 +47,7 @@ const fetchVaultAccounts = async (vaults: VaultOptions[], account: string) => {
               totalDeposits
               totalYieldEarned
               totalBalance
+              totalStakedBalance
               vault {
                 symbol
               }
@@ -72,6 +73,7 @@ const fetchVaultAccounts = async (vaults: VaultOptions[], account: string) => {
           totalDeposits: BigNumber.from(data.totalDeposits),
           totalYieldEarned: BigNumber.from(data.totalYieldEarned),
           totalBalance: BigNumber.from(data.totalBalance),
+          totalStakedBalance: BigNumber.from(data.totalStakedBalance),
         },
       ];
     })
