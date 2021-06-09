@@ -27,6 +27,7 @@ import {
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets, AssetsList } from "shared/lib/store/types";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
+import { VaultTransactionType } from "shared/lib/models/vault";
 
 const PortfolioTransactionsContainer = styled.div`
   margin-top: 48px;
@@ -111,12 +112,14 @@ const PortfolioTransactions = () => {
   const renderTransactionAmountText = useCallback(
     (
       amount: BigNumber,
-      type: "deposit" | "withdraw" | "transfer" | "receive",
+      type: VaultTransactionType,
       currency: CurrencyType,
       asset: Assets
     ) => {
       const prependSymbol =
-        type === "deposit" || type === "receive" ? "+" : "-";
+        type === "deposit" || type === "receive" || type === "stake"
+          ? "+"
+          : "-";
 
       switch (currency) {
         case "usd":
@@ -183,7 +186,9 @@ const PortfolioTransactions = () => {
           <TransactionInfoRow>
             <TransactionInfoText className="flex-grow-1">
               {`${
-                transaction.type === "deposit" || transaction.type === "receive"
+                transaction.type === "deposit" ||
+                transaction.type === "receive" ||
+                transaction.type === "stake"
                   ? `↓`
                   : `↑`
               } ${capitalize(transaction.type)} - ${moment(

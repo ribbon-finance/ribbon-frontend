@@ -19,6 +19,8 @@ export interface VaultAccount {
   totalYieldEarned: BigNumber;
   totalDeposits: BigNumber;
   totalBalance: BigNumber;
+  totalStakedShares: BigNumber;
+  totalStakedBalance: BigNumber;
 }
 
 export interface VaultShortPosition {
@@ -50,10 +52,18 @@ export interface VaultOptionTrade {
   txhash: string;
 }
 
+export type VaultTransactionType =
+  | "deposit"
+  | "withdraw"
+  | "transfer"
+  | "receive"
+  | "stake"
+  | "unstake";
+
 export interface VaultTransaction {
   id: string;
   vault: Vault;
-  type: "deposit" | "withdraw" | "transfer" | "receive";
+  type: VaultTransactionType;
   address: string;
   txhash: string;
   timestamp: number;
@@ -69,6 +79,7 @@ export interface BalanceUpdate {
   balance: BigNumber;
   yieldEarned: BigNumber;
   isWithdraw: boolean;
+  stakedBalance: BigNumber;
 }
 
 export type VaultActivityType = "minting" | "sales";
