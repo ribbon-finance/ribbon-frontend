@@ -58,7 +58,7 @@ const sections = [
       {
         question: "Does Ribbon have a token?",
         answer:
-          "No, we do not have a token. We are aware that there are scammers that have created fake Ribbon tokens and are actively distributing them on DEXes. Do not buy them.",
+          "Yes, we have a token. You can find more information about the $RBN Airdrop and contract below. Be aware that there are scammers that have created fake Ribbon tokens and are actively distributing them on DEXes. Do not buy them. Official RBN address: 0x6123B0049F904d730dB3C36a31167D9d4121fA6B",
       },
       {
         question: "What are structured products?",
