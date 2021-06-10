@@ -7,7 +7,6 @@ import {
   SecondaryText,
   Title,
 } from "shared/lib/designSystem";
-import colors from "shared/lib/designSystem/colors";
 import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { getAssetLogo } from "shared/lib/utils/asset";

@@ -76,14 +76,14 @@ const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
       : `${props.marginTop || 24}px`};
 `;
 
-const LogoContainer = styled.div`
+const LogoContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 64px;
   height: 64px;
   border-radius: 100px;
-  background: ${colors.red}29;
+  background: ${(props) => props.color}29;
 `;
 
 const AssetTitle = styled(Title)<{ str: string }>`
@@ -201,7 +201,9 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
         return (
           <>
             <ContentColumn marginTop={-8}>
-              <LogoContainer>{logo}</LogoContainer>
+              <LogoContainer color={getVaultColor(vaultOption)}>
+                {logo}
+              </LogoContainer>
             </ContentColumn>
             <ContentColumn marginTop={8}>
               <AssetTitle str={vaultOption}>{vaultOption}</AssetTitle>

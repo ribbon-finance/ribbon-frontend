@@ -20,10 +20,7 @@ import {
   SecondaryText,
   Title,
 } from "shared/lib/designSystem";
-import {
-  formatBigNumber,
-  formatSignificantDecimals,
-} from "shared/lib/utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 
 import {
   ActionButton,

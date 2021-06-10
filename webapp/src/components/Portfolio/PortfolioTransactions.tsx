@@ -28,6 +28,7 @@ import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets, AssetsList } from "shared/lib/store/types";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { VaultTransactionType } from "shared/lib/models/vault";
+import { getVaultColor } from "shared/lib/utils/vault";
 
 const PortfolioTransactionsContainer = styled.div`
   margin-top: 48px;
@@ -41,6 +42,10 @@ const SectionTitle = styled(Title)`
   font-size: 18px;
   line-height: 24px;
   margin-bottom: 24px;
+`;
+
+const TransactionTitle = styled(Title)<{ color: string }>`
+  color: ${(props) => props.color};
 `;
 
 const SectionPlaceholderText = styled(SecondaryText)`
@@ -79,6 +84,14 @@ const TransactionInfoText = styled(SecondaryText)`
   font-size: 12px;
   line-height: 16px;
   font-weight: 400;
+  display: flex;
+  align-items: center;
+`;
+
+const AssetDisplayTitle = styled(Title)`
+  color: ${colors.text};
+  text-transform: none;
+  margin-left: 8px;
 `;
 
 const TransactionSecondaryInfoText = styled(Subtitle)`
@@ -96,6 +109,26 @@ const ExternalLinkIcon = styled(ExternalIcon)`
   opacity: 0.48;
 `;
 
+const StakeCircle = styled.div<{ type: "solid" | "hollow" }>`
+  height: 8px;
+  width: 8px;
+  margin-right: 6px;
+  border-radius: 4px;
+
+  ${(props) => {
+    switch (props.type) {
+      case "solid":
+        return `
+          background: ${colors.text};
+        `;
+      case "hollow":
+        return `
+          border: ${theme.border.width} ${theme.border.style} ${colors.text}
+        `;
+    }
+  }}
+`;
+
 const PortfolioTransactions = () => {
   const { transactions, loading } = useTransactions();
   const { active } = useWeb3React();
@@ -107,6 +140,19 @@ const PortfolioTransactions = () => {
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
     loading || assetPricesLoading
+  );
+
+  const getTransactionAssetText = useCallback(
+    (vaultOption: VaultOptions, type: VaultTransactionType) => {
+      switch (type) {
+        case "stake":
+        case "unstake":
+          return vaultOption;
+        default:
+          return getAssetDisplay(getAssets(vaultOption));
+      }
+    },
+    []
   );
 
   const renderTransactionAmountText = useCallback(
@@ -136,11 +182,26 @@ const PortfolioTransactions = () => {
             amount,
             6,
             getAssetDecimals(asset)
-          )} ${getAssetDisplay(asset)}`;
+          )} `;
       }
     },
     [assetPrices, assetPricesLoading, animatedLoadingText]
   );
+
+  const renderTransactionSymbol = useCallback((type: VaultTransactionType) => {
+    switch (type) {
+      case "deposit":
+      case "receive":
+        return "↓";
+      case "withdraw":
+      case "transfer":
+        return "↑";
+      case "stake":
+        return <StakeCircle type="solid" />;
+      case "unstake":
+        return <StakeCircle type="hollow" />;
+    }
+  }, []);
 
   const renderTransactions = useCallback(() => {
     if (!active) {
@@ -165,7 +226,11 @@ const PortfolioTransactions = () => {
       <TransactionContainer key={transaction.id}>
         <TransactionInfo>
           <TransactionInfoRow>
-            <Title className="flex-grow-1">
+            {/* Title */}
+            <TransactionTitle
+              color={getVaultColor(transaction.vault.symbol)}
+              className="flex-grow-1"
+            >
               {
                 Object.keys(VaultNameOptionMap)[
                   Object.values(VaultNameOptionMap).indexOf(
@@ -173,7 +238,9 @@ const PortfolioTransactions = () => {
                   )
                 ]
               }
-            </Title>
+            </TransactionTitle>
+
+            {/* Amount in crypto */}
             <Title>
               {renderTransactionAmountText(
                 transaction.amount,
@@ -182,20 +249,24 @@ const PortfolioTransactions = () => {
                 getAssets(transaction.vault.symbol)
               )}
             </Title>
+            <AssetDisplayTitle>
+              {getTransactionAssetText(
+                transaction.vault.symbol,
+                transaction.type
+              )}
+            </AssetDisplayTitle>
           </TransactionInfoRow>
           <TransactionInfoRow>
+            {/* Type and time */}
             <TransactionInfoText className="flex-grow-1">
-              {`${
-                transaction.type === "deposit" ||
-                transaction.type === "receive" ||
-                transaction.type === "stake"
-                  ? `↓`
-                  : `↑`
-              } ${capitalize(transaction.type)} - ${moment(
+              {renderTransactionSymbol(transaction.type)}
+              {` ${capitalize(transaction.type)} - ${moment(
                 transaction.timestamp,
                 "X"
               ).fromNow()}`}
             </TransactionInfoText>
+
+            {/* Amount in USD */}
             <TransactionSecondaryInfoText>
               {renderTransactionAmountText(
                 transaction.amount,
@@ -222,7 +293,9 @@ const PortfolioTransactions = () => {
     transactions,
     animatedLoadingText,
     loading,
+    renderTransactionSymbol,
     renderTransactionAmountText,
+    getTransactionAssetText,
   ]);
 
   return (
