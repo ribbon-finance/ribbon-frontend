@@ -20,7 +20,10 @@ import {
   SecondaryText,
   Title,
 } from "shared/lib/designSystem";
-import { formatSignificantDecimals } from "shared/lib/utils/math";
+import {
+  formatBigNumber,
+  formatSignificantDecimals,
+} from "shared/lib/utils/math";
 
 import {
   ActionButton,
@@ -59,6 +62,7 @@ import useVaultActivity from "../../hooks/useVaultActivity";
 import { VaultActivityMeta, VaultShortPosition } from "shared/lib/models/vault";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "../Common/HelpInfo";
+import useVaultAccounts from "../../hooks/useVaultAccounts";
 
 const { parseUnits, formatUnits } = ethers.utils;
 
@@ -131,36 +135,44 @@ const ContentContainer = styled.div`
   border-bottom: ${theme.border.width} ${theme.border.style} ${colors.border};
 `;
 
-type WalletBalanceStates = "active" | "inactive" | "error";
+type WalletBalanceStates = "active" | "inactive" | "vaultFull" | "error";
 
 const WalletBalance = styled.div<{ state: WalletBalanceStates }>`
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
   width: 100%;
   font-size: 14px;
   line-height: 20px;
   text-transform: uppercase;
-  color: ${(props) => {
+
+  ${(props) => {
     switch (props.state) {
       case "active":
-        return "#FFFFFFA3";
+        return `
+          color: "#FFFFFFA3";
+        `;
       case "inactive":
-        return "rgba(255, 255, 255, 0.16)";
+        return `
+          color: rgba(255, 255, 255, 0.16);
+        `;
+      case "vaultFull":
+        return `
+          color: ${colors.red}
+        `;
       case "error":
-        return colors.red;
+        return `
+          color: ${colors.red};
+          font-family: "Inter", sans-serif;
+          text-transform: none;
+        `;
       default:
-        return "rgba(255, 255, 255, 0.16)";
+        return `
+          color: rgba(255, 255, 255, 0.16);
+        `;
     }
-  }};
-`;
-
-const WithdrawLimitText = styled(SecondaryText)`
-  display: flex;
-  color: ${colors.red};
-  font-size: 14px;
-  line-height: 20px;
-  text-align: center;
+  }}
 `;
 
 const ApprovalIconContainer = styled.div`
@@ -244,6 +256,7 @@ type ValidationErrors =
   | "none"
   | "insufficient_balance"
   | "capacity_overflow"
+  | "withdraw_amount_staked"
   | "withdraw_limit_reached"
   | "withdraw_limit_exceeded";
 
@@ -281,6 +294,8 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     asset,
     decimals,
   } = useVaultData(vaultOption);
+  const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
+  const { vaultAccounts } = useVaultAccounts(vaultOptions);
   const gasPrice = useGasPrice();
   const { active, account, library } = useWeb3React();
   const { provider } = useWeb3Context();
@@ -354,6 +369,18 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
 
   // derived states
   const vaultFull = isVaultFull(deposits, vaultLimit, decimals);
+  const allBalanceStaked = useMemo(() => {
+    const vaultAccount = vaultAccounts[vaultOption];
+
+    /**
+     * When total balance is non-zero and equal to staked amount, it mean the person has staked all his amount into the vault
+     */
+    return (
+      vaultAccount &&
+      !vaultAccount.totalBalance.isZero() &&
+      vaultAccount.totalBalance.eq(vaultAccount.totalStakedBalance)
+    );
+  }, [vaultAccounts, vaultOption]);
   const connected = Boolean(active && account);
   const isInputNonZero = parseFloat(inputAmount) > 0;
 
@@ -417,20 +444,43 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         const amount = parseUnits(inputAmount, decimals);
 
         if (!isLoadingData && connected) {
+          const vaultAccount = vaultAccounts[vaultOption];
+
+          /** Check if amount to deposit more than balance */
           if (isDeposit && amount.gt(userAssetBalance)) {
             setError("insufficient_balance");
             return;
-          } else if (isDeposit && amount.gt(vaultLimit.sub(deposits))) {
+          }
+
+          /** Check if deposit amount more than vault available */
+          if (isDeposit && amount.gt(vaultLimit.sub(deposits))) {
             setError("capacity_overflow");
             return;
-          } else if (
+          }
+
+          /** Check if vault withdrawal hitting limit */
+          if (
             !isDeposit &&
             amount.gt(maxWithdrawAmount) &&
             amount.lte(vaultBalanceInAsset)
           ) {
             setError("withdraw_limit_exceeded");
             return;
-          } else if (!isDeposit && amount.gt(maxWithdrawAmount)) {
+          }
+
+          /** Check if amount staked when withdraw */
+          if (
+            !isDeposit &&
+            amount.gt(maxWithdrawAmount) &&
+            vaultAccount &&
+            amount.lte(vaultAccount.totalBalance)
+          ) {
+            setError("withdraw_amount_staked");
+            return;
+          }
+
+          /** Check if user has enough balance to withdraw */
+          if (!isDeposit && amount.gt(maxWithdrawAmount)) {
             setError("insufficient_balance");
             return;
           }
@@ -440,6 +490,8 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
       setError("none");
     });
   }, [
+    vaultOption,
+    vaultAccounts,
     deposits,
     vaultLimit,
     inputAmount,
@@ -479,10 +531,10 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     decimals,
   ]);
 
-  const handleClickActionButton = () => {
+  const handleClickActionButton = useCallback(() => {
     isDesktop && isInputNonZero && connected && setShowActionModal(true);
     !isDesktop && isInputNonZero && connected && onSubmit(previewStepProps);
-  };
+  }, [connected, isDesktop, isInputNonZero, onSubmit, previewStepProps]);
 
   const handleApproveToken = async () => {
     setWaitingApproval(true);
@@ -546,78 +598,235 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     };
   };
 
-  let walletText = "";
-
-  if (vaultFull) {
-    walletText = "The Vault is currently full";
-  } else if (isDeposit) {
-    const position =
-      account && !isLoadingData && userAssetBalance
-        ? formatSignificantDecimals(formatUnits(userAssetBalance, decimals))
-        : "---";
-    walletText = `Wallet Balance: ${position} ${getAssetDisplay(asset)}`;
-  } else {
-    const position =
-      account && !isLoadingData && userAssetBalance
-        ? formatSignificantDecimals(formatUnits(vaultBalanceInAsset, decimals))
-        : "---";
-    walletText = `Your Position: ${position} ${getAssetDisplay(asset)}`;
-  }
-
-  let disabled = true;
-  let actionButtonText = "";
-  if (error === "insufficient_balance") {
-    actionButtonText = "Insufficient Balance";
-    disabled = true;
-  } else if (error === "withdraw_limit_exceeded") {
-    actionButtonText = `WEEKLY LIMIT EXCEEDED`;
-    disabled = true;
-  } else if (error === "withdraw_limit_reached") {
-    actionButtonText = `WithdrawALS DISABLED`;
-    disabled = true;
-  } else if (error === "capacity_overflow") {
-    actionButtonText = `Exceed Vault Balance`;
-    disabled = true;
-  } else if (isDeposit && isInputNonZero) {
-    if (vaultFull) {
-      actionButtonText = `Deposit ${getAssetDisplay(asset)}`;
-      disabled = true;
-    } else {
-      actionButtonText = "Preview Deposit";
-      disabled = false;
+  const formWalletContent = useMemo(() => {
+    if (isDeposit && vaultFull) {
+      return "The Vault is currently full";
     }
-  } else if (isDeposit) {
-    actionButtonText = `Deposit ${getAssetDisplay(asset)}`;
-    disabled = true;
-  } else if (!isDeposit && isInputNonZero) {
-    actionButtonText = "Preview Withdrawal";
-    disabled = false;
-  } else {
-    actionButtonText = `Withdraw ${getAssetDisplay(asset)}`;
-    disabled = true;
-  }
 
-  let walletBalanceState: WalletBalanceStates = "inactive";
-  if (vaultFull) {
-    walletBalanceState = "error";
-  } else {
-    walletBalanceState = connected ? "active" : "inactive";
-  }
+    if (!isDeposit && allBalanceStaked) {
+      return `You have staked all your ${vaultOption} tokens. You must unstake your ${vaultOption} tokens before you can withdraw from the vault.`;
+    }
 
-  let button;
-
-  if (connected) {
-    button = (
-      <ActionButton
-        disabled={disabled}
-        onClick={handleClickActionButton}
-        className="py-3 mb-4"
-      >
-        {actionButtonText}
-      </ActionButton>
+    const vaultAccount = vaultAccounts[vaultOption];
+    const stakedAmountText = vaultAccount ? (
+      <>
+        AVAILABLE TO WITHDRAW: {formatBigNumber(maxWithdrawAmount, 6, decimals)}{" "}
+        {getAssetDisplay(asset)}
+        <TooltipExplanation
+          title="AVAILABLE TO WITHDRAW"
+          explanation={
+            <>
+              You have staked{" "}
+              {formatBigNumber(vaultAccount.totalStakedBalance, 6, decimals)}{" "}
+              {vaultOption} tokens, leaving you with{" "}
+              {formatBigNumber(maxWithdrawAmount, 6, decimals)}{" "}
+              {getAssetDisplay(asset)} available for withdrawal.
+              <br />
+              <br />
+              To increase the amount available for withdrawal, you must unstake
+              your {vaultOption} tokens from the staking pool.
+            </>
+          }
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HelpInfo containerRef={ref} {...triggerHandler}>
+              ?
+            </HelpInfo>
+          )}
+        />
+      </>
+    ) : (
+      <></>
     );
-  } else {
-    button = (
+
+    if (error !== "none") {
+      switch (error) {
+        case "withdraw_limit_reached":
+          return `The vault’s weekly withdrawal limit has been reached. Withdrawals
+            will be enabled again at 1000 UTC on ${withdrawalFreeUpTime}.`;
+        case "withdraw_limit_exceeded":
+          return (
+            <>
+              Weekly Withdraw Limit:{" "}
+              {formatBigNumber(maxWithdrawAmount, 6, decimals)}{" "}
+              {getAssetDisplay(asset)}
+              <TooltipExplanation
+                title="WEEKLY WITHDRAWAL LIMIT"
+                explanation={`Withdrawing ${formatBigNumber(
+                  maxWithdrawAmount,
+                  6,
+                  decimals
+                )} ${getAssetDisplay(
+                  asset
+                )} will result in the vault hitting its weekly withdrawal limit. If the withdrawal limit is reached, withdrawals will be disabled until ${withdrawalFreeUpTime}.`}
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HelpInfo containerRef={ref} {...triggerHandler}>
+                    ?
+                  </HelpInfo>
+                )}
+              />
+            </>
+          );
+        case "withdraw_amount_staked":
+          return stakedAmountText;
+      }
+    }
+
+    if (!account || isLoadingData) {
+      return "---";
+    }
+
+    if (isDeposit) {
+      const position = formatBigNumber(userAssetBalance, 6, decimals);
+
+      return `Wallet Balance: ${position} ${getAssetDisplay(asset)}`;
+    }
+
+    const position = formatBigNumber(vaultBalanceInAsset, 6, decimals);
+
+    /**
+     * Condition to check withdraw is limited by staked
+     * 1. Max withdraw amount must match total balance
+     * 2. Staked amount is bigger than 0
+     */
+    if (
+      vaultAccount &&
+      vaultBalanceInAsset.eq(maxWithdrawAmount) &&
+      !vaultAccount.totalStakedShares.isZero()
+    ) {
+      return stakedAmountText;
+    }
+
+    /**
+     * Over here, we show unstaked position instead
+     */
+    if (vaultAccount && !vaultAccount.totalStakedShares.isZero()) {
+      return (
+        <>
+          unstaked position: {position} {getAssetDisplay(asset)}
+          <TooltipExplanation
+            title="AVAILABLE TO WITHDRAW"
+            explanation={
+              <>
+                You have staked{" "}
+                {formatBigNumber(vaultAccount.totalStakedBalance, 6, decimals)}{" "}
+                {vaultOption} tokens, leaving you with {position}{" "}
+                {getAssetDisplay(asset)} unstaked balance.
+                <br />
+                <br />
+                To increase the balance for withdrawal, you must unstake your{" "}
+                {vaultOption} tokens from the staking pool.
+              </>
+            }
+            renderContent={({ ref, ...triggerHandler }) => (
+              <HelpInfo containerRef={ref} {...triggerHandler}>
+                ?
+              </HelpInfo>
+            )}
+          />
+        </>
+      );
+    }
+
+    return `Your Position: ${position} ${getAssetDisplay(asset)}`;
+  }, [
+    account,
+    allBalanceStaked,
+    asset,
+    decimals,
+    error,
+    isDeposit,
+    isLoadingData,
+    maxWithdrawAmount,
+    userAssetBalance,
+    vaultAccounts,
+    vaultBalanceInAsset,
+    vaultOption,
+    vaultFull,
+    withdrawalFreeUpTime,
+  ]);
+
+  const actionButtonText = useMemo(() => {
+    if (error !== "none") {
+      switch (error) {
+        case "insufficient_balance":
+          return "Insufficient Balance";
+        case "withdraw_limit_exceeded":
+          return "WEEKLY LIMIT EXCEEDED";
+        case "withdraw_limit_reached":
+          return "WithdrawALS DISABLED";
+        case "capacity_overflow":
+          return "Exceed Vault Balance";
+        case "withdraw_amount_staked":
+          return "AVAILABLE LIMIT EXCEEDED";
+      }
+    }
+
+    /** Deposit */
+    if (isDeposit) {
+      if (isInputNonZero) {
+        return `Preview Deposit`;
+      }
+
+      return `Deposit ${getAssetDisplay(asset)}`;
+    }
+
+    if (isInputNonZero) {
+      return `Preview Withdrawal`;
+    }
+
+    return `Withdraw ${getAssetDisplay(asset)}`;
+  }, [asset, error, isDeposit, isInputNonZero]);
+
+  const actionDisabled = useMemo(() => {
+    if (
+      error === "none" &&
+      isInputNonZero &&
+      ((isDeposit && !vaultFull) || !isDeposit)
+    ) {
+      return false;
+    }
+
+    return true;
+  }, [error, isDeposit, isInputNonZero, vaultFull]);
+
+  const walletBalanceState = useMemo(() => {
+    if (isDeposit && vaultFull) {
+      return "vaultFull";
+    }
+
+    if (!isDeposit && allBalanceStaked) {
+      return "error";
+    }
+
+    switch (error) {
+      case "withdraw_limit_exceeded":
+      case "withdraw_amount_staked":
+      case "insufficient_balance":
+        return "active";
+
+      case "none":
+        break;
+      default:
+        return "error";
+    }
+
+    return connected ? "active" : "inactive";
+  }, [allBalanceStaked, connected, error, isDeposit, vaultFull]);
+
+  const button = useMemo(() => {
+    if (connected) {
+      return (
+        <ActionButton
+          disabled={actionDisabled}
+          onClick={handleClickActionButton}
+          className="py-3 mb-4"
+        >
+          {actionButtonText}
+        </ActionButton>
+      );
+    }
+
+    return (
       <ConnectWalletButton
         onClick={() => setShowConnectModal(true)}
         type="button"
@@ -626,7 +835,13 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         Connect Wallet
       </ConnectWalletButton>
     );
-  }
+  }, [
+    actionButtonText,
+    connected,
+    actionDisabled,
+    handleClickActionButton,
+    setShowConnectModal,
+  ]);
 
   const desktopActionModal = useMemo(
     () => (
@@ -698,53 +913,6 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         return <></>;
     }
   }, [asset, swapContainerOpen]);
-
-  const renderWalletBalance = useCallback(() => {
-    if (error === "withdraw_limit_reached") {
-      // In case if no latest short position detected
-      return (
-        <WithdrawLimitText>
-          The vault’s weekly withdrawal limit has been reached. Withdrawals will
-          be enabled again at 1000 UTC on {withdrawalFreeUpTime}.
-        </WithdrawLimitText>
-      );
-    }
-
-    if (error === "withdraw_limit_exceeded") {
-      return (
-        <WalletBalance state={walletBalanceState}>
-          Weekly Withdraw Limit:{" "}
-          {formatSignificantDecimals(formatUnits(maxWithdrawAmount, decimals))}{" "}
-          {getAssetDisplay(asset)}
-          <TooltipExplanation
-            title="WEEKLY WITHDRAWAL LIMIT"
-            explanation={`Withdrawing ${formatSignificantDecimals(
-              formatUnits(maxWithdrawAmount, decimals)
-            )} ${getAssetDisplay(
-              asset
-            )} will result in the vault hitting its weekly withdrawal limit. If the withdrawal limit is reached, withdrawals will be disabled until ${withdrawalFreeUpTime}.`}
-            renderContent={({ ref, ...triggerHandler }) => (
-              <HelpInfo containerRef={ref} {...triggerHandler}>
-                ?
-              </HelpInfo>
-            )}
-          />
-        </WalletBalance>
-      );
-    }
-
-    return (
-      <WalletBalance state={walletBalanceState}>{walletText}</WalletBalance>
-    );
-  }, [
-    error,
-    walletBalanceState,
-    walletText,
-    maxWithdrawAmount,
-    decimals,
-    asset,
-    withdrawalFreeUpTime,
-  ]);
 
   return (
     <Container variant={variant}>
@@ -818,7 +986,9 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
               {button}
             </>
           )}
-          {renderWalletBalance()}
+          <WalletBalance state={walletBalanceState}>
+            {formWalletContent}
+          </WalletBalance>
           {renderSwapContainerTrigger()}
         </ContentContainer>
         {renderSwapContainer()}

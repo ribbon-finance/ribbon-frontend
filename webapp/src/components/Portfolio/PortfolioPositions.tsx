@@ -26,7 +26,6 @@ import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { VaultAccount } from "shared/lib/models/vault";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
-import useStakingAccount from "../../hooks/useStakingAccount";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 48px;
