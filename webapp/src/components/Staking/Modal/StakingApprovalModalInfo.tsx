@@ -8,13 +8,10 @@ import {
   Title,
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import {
-  USDCLogo,
-  WBTCLogo,
-  WETHLogo,
-} from "shared/lib/assets/icons/erc20Assets";
 import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 import { ActionButton } from "shared/lib/components/Common/buttons";
+import { getAssetLogo } from "shared/lib/utils/asset";
+import { getVaultColor } from "shared/lib/utils/vault";
 
 const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
   display: flex;
@@ -26,51 +23,14 @@ const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
       : `${props.marginTop || 24}px`};
 `;
 
-const LogoContainer = styled.div`
+const LogoContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 64px;
   height: 64px;
   border-radius: 100px;
-  background: ${colors.green}29;
-`;
-
-const GreenWBTCLogo = styled(WBTCLogo)`
-  width: 100%;
-  && * {
-    fill: ${colors.green};
-  }
-`;
-
-const GreenUSDCLogo = styled(USDCLogo)`
-  margin: -8px;
-  width: 100%;
-
-  && .background {
-    fill: none;
-  }
-
-  && .content {
-    fill: ${colors.green};
-  }
-`;
-
-const GreenWETHLogo = styled(WETHLogo)`
-  .cls-1,
-  .cls-5 {
-    fill: ${colors.green}66;
-  }
-
-  .cls-2,
-  .cls-6 {
-    fill: ${colors.green}CC;
-  }
-
-  .cls-3,
-  .cls-4 {
-    fill: ${colors.green};
-  }
+  background: ${(props) => props.color}29;
 `;
 
 const ApproveAssetTitle = styled(Title)<{ str: string }>`
@@ -98,20 +58,21 @@ const StakingApprovalModalInfo: React.FC<StakingApprovalModalInfoProps> = ({
   onApprove,
 }) => {
   const logo = useMemo(() => {
-    switch (getAssets(vaultOption)) {
-      case "WBTC":
-        return <GreenWBTCLogo />;
-      case "USDC":
-        return <GreenUSDCLogo />;
+    const asset = getAssets(vaultOption);
+    const Logo = getAssetLogo(asset);
+
+    switch (asset) {
+      case "WETH":
+        return <Logo height="48px" />;
       default:
-        return <GreenWETHLogo height="48px" />;
+        return <Logo />;
     }
   }, [vaultOption]);
 
   return (
     <>
       <ContentColumn marginTop={-8}>
-        <LogoContainer>{logo}</LogoContainer>
+        <LogoContainer color={getVaultColor(vaultOption)}>{logo}</LogoContainer>
       </ContentColumn>
       <ContentColumn marginTop={8}>
         <ApproveAssetTitle str={vaultOption}>{vaultOption}</ApproveAssetTitle>
@@ -133,7 +94,11 @@ const StakingApprovalModalInfo: React.FC<StakingApprovalModalInfoProps> = ({
         </BaseUnderlineLink>
       </ContentColumn>
       <ContentColumn marginTop="auto">
-        <ActionButton className="btn py-3 mb-2" onClick={onApprove}>
+        <ActionButton
+          className="btn py-3 mb-2"
+          onClick={onApprove}
+          color={getVaultColor(vaultOption)}
+        >
           Approve
         </ActionButton>
       </ContentColumn>

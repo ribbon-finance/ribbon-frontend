@@ -33,8 +33,8 @@ const OverviewInfo = styled.div`
   padding: 24px;
   background: linear-gradient(
     96.84deg,
-    ${colors.green}29 1.04%,
-    ${colors.green}07 98.99%
+    ${colors.green}0A 1.04%,
+    ${colors.green}02 98.99%
   );
   border-radius: ${theme.border.radius} ${theme.border.radius} 0 0;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};

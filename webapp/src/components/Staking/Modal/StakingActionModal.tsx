@@ -34,6 +34,7 @@ import useStakingReward from "../../../hooks/useStakingReward";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import TrafficLight from "../../Common/TrafficLight";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
+import { getVaultColor } from "shared/lib/utils/vault";
 
 const StyledModal = styled(BaseModal)<{ isForm: boolean }>`
   .modal-dialog {
@@ -111,14 +112,14 @@ const ModalTitle = styled(Title)`
   z-index: 2;
 `;
 
-const LogoContainer = styled.div`
+const LogoContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 64px;
   height: 64px;
   border-radius: 100px;
-  background: ${colors.red}29;
+  background: ${(props) => props.color}29;
 `;
 
 const AssetTitle = styled(Title)<{ str: string }>`
@@ -189,6 +190,8 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
   const stakingReward = useStakingReward(vaultOption);
   const [, setPendingTransactions] = usePendingTransactions();
   const [txId, setTxId] = useState("");
+
+  const color = getVaultColor(vaultOption);
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -314,7 +317,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
         return (
           <>
             <ContentColumn marginTop={-8}>
-              <LogoContainer>{logo}</LogoContainer>
+              <LogoContainer color={color}>{logo}</LogoContainer>
             </ContentColumn>
             <ContentColumn marginTop={8}>
               <AssetTitle str={vaultOption}>{vaultOption}</AssetTitle>
@@ -381,6 +384,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
             <ContentColumn marginTop="auto">
               <ActionButton
                 className="btn py-3"
+                color={color}
                 disabled={
                   Boolean(error) || !(Boolean(input) && parseFloat(input) > 0)
                 }
@@ -456,6 +460,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               <ActionButton
                 className="btn py-3 mb-2"
                 onClick={handleActionPressed}
+                color={color}
               >
                 {stake ? "STAKE" : "UNSTAKE"} NOW
               </ActionButton>
@@ -499,6 +504,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
         );
     }
   }, [
+    color,
     stake,
     decimals,
     error,
