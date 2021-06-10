@@ -12,16 +12,11 @@ import {
 } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
-import {
-  USDCLogo,
-  WBTCLogo,
-  WETHLogo,
-} from "shared/lib/assets/icons/erc20Assets";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import useStakingPoolData from "../../hooks/useStakingPoolData";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import { getAssetDecimals } from "shared/lib/utils/asset";
+import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
 import useTokenAllowance from "../../hooks/useTokenAllowance";
 import StakingApprovalModal from "./Modal/StakingApprovalModal";
@@ -32,6 +27,7 @@ import StakingActionModal from "./Modal/StakingActionModal";
 import sizes from "shared/lib/designSystem/sizes";
 import StakingClaimModal from "./Modal/StakingClaimModal";
 import HelpInfo from "../Common/HelpInfo";
+import { getVaultColor } from "shared/lib/utils/vault";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -45,29 +41,29 @@ const SectionHeader = styled(Title)`
   line-height: 24px;
 `;
 
-const shimmerKeyframe = keyframes`
+const shimmerKeyframe = (color: string) => keyframes`
     0% {
-      box-shadow: ${colors.red}66 8px 16px 80px;
+      box-shadow: ${color}66 8px 16px 80px;
     }
     50% {
-      box-shadow: ${colors.red}29 8px 16px 80px;
+      box-shadow: ${color}29 8px 16px 80px;
     }
     100% {
-      box-shadow: ${colors.red}66 8px 16px 80px;
+      box-shadow: ${color}66 8px 16px 80px;
     }
 `;
 
-const StakingPoolCard = styled.div`
+const StakingPoolCard = styled.div<{ color: string }>`
   display: flex;
   flex-wrap: wrap;
   width: 100%;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
   margin-bottom: 48px;
-  box-shadow: ${colors.red}29 8px 16px 80px;
 
   &:hover {
-    animation: ${shimmerKeyframe} 3s infinite;
+    animation: ${(props) => shimmerKeyframe(props.color)} 3s infinite;
+    border-color: ${(props) => props.color};
   }
 `;
 
@@ -92,29 +88,29 @@ const ClaimableTokenPillContainer = styled.div`
   }
 `;
 
-const ClaimableTokenPill = styled.div`
+const ClaimableTokenPill = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
   padding: 8px 12px;
-  border: ${theme.border.width} ${theme.border.style} ${colors.red};
-  background: ${colors.red}14;
+  border: ${theme.border.width} ${theme.border.style} ${(props) => props.color};
+  background: ${(props) => props.color}14;
   border-radius: 100px;
 `;
 
-const ClaimableTokenIndicator = styled.div`
+const ClaimableTokenIndicator = styled.div<{ color: string }>`
   height: 8px;
   width: 8px;
-  background: ${colors.red};
+  background: ${(props) => props.color};
   margin-right: 8px;
   border-radius: 4px;
 `;
 
-const ClaimableTokenAmount = styled(Subtitle)`
-  color: ${colors.red};
+const ClaimableTokenAmount = styled(Subtitle)<{ color: string }>`
+  color: ${(props) => props.color};
   margin-left: auto;
 `;
 
-const LogoContainer = styled.div`
+const LogoContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -122,40 +118,7 @@ const LogoContainer = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 100px;
-  background: ${colors.red}29;
-`;
-
-const RedWBTCLogo = styled(WBTCLogo)`
-  && * {
-    fill: ${colors.red};
-  }
-`;
-
-const RedUSDCLogo = styled(USDCLogo)`
-  .content {
-    fill: ${colors.red};
-  }
-
-  .background {
-    fill: none;
-  }
-`;
-
-const RedWETHLogo = styled(WETHLogo)`
-  .cls-1,
-  .cls-5 {
-    fill: ${colors.red}66;
-  }
-
-  .cls-2,
-  .cls-6 {
-    fill: ${colors.red}CC;
-  }
-
-  .cls-3,
-  .cls-4 {
-    fill: ${colors.red};
-  }
+  background: ${(props) => props.color}29;
 `;
 
 // const ExpectedYieldData = styled(Title)`
@@ -171,14 +134,17 @@ const StakingPoolCardFooter = styled.div`
   border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
 `;
 
-const StakingPoolCardFooterButton = styled(Title)<{ active: boolean }>`
+const StakingPoolCardFooterButton = styled(Title)<{
+  active: boolean;
+  color: string;
+}>`
   flex: 1;
   font-size: 14px;
   line-height: 20px;
   padding: 14px 0;
   text-align: center;
 
-  color: ${(props) => (props.active ? colors.green : colors.primaryText)};
+  color: ${(props) => (props.active ? props.color : colors.primaryText)};
 
   &:not(:first-child) {
     border-left: ${theme.border.width} ${theme.border.style} ${colors.border};
@@ -214,6 +180,8 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   const [isStakeAction, setIsStakeAction] = useState(true);
   const [showActionModal, setShowActionModal] = useState(false);
   const [showClaimModal, setShowClaimModal] = useState(false);
+
+  const color = getVaultColor(vaultOption);
 
   const ongoingTransaction:
     | "approval"
@@ -275,14 +243,14 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   );
 
   const logo = useMemo(() => {
-    switch (vaultOption) {
-      case "rBTC-THETA":
-        return <RedWBTCLogo />;
-      case "rETH-THETA":
-        return <RedWETHLogo height="70%" />;
-      case "rUSDC-BTC-P-THETA":
-      case "rUSDC-ETH-P-THETA":
-        return <RedUSDCLogo />;
+    const asset = getAssets(vaultOption);
+    const Logo = getAssetLogo(asset);
+
+    switch (asset) {
+      case "WETH":
+        return <Logo height="70%" />;
+      default:
+        return <Logo />;
     }
   }, [vaultOption]);
 
@@ -328,11 +296,11 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
         logo={logo}
         stakingPoolData={stakingPoolData}
       />
-      <StakingPoolCard>
+      <StakingPoolCard color={color}>
         <div className="d-flex flex-wrap w-100 p-3">
           {/* Card Title */}
           <div className="d-flex align-items-center">
-            <LogoContainer>{logo}</LogoContainer>
+            <LogoContainer color={color}>{logo}</LogoContainer>
             <div className="d-flex flex-column">
               <div className="d-flex align-items-center">
                 <StakingPoolTitle>{vaultOption}</StakingPoolTitle>
@@ -357,10 +325,10 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
 
           {/* Claimable Pill */}
           <ClaimableTokenPillContainer>
-            <ClaimableTokenPill>
-              <ClaimableTokenIndicator />
+            <ClaimableTokenPill color={color}>
+              <ClaimableTokenIndicator color={color} />
               <Subtitle className="mr-2">CLAIMABLE $RBN</Subtitle>
-              <ClaimableTokenAmount>
+              <ClaimableTokenAmount color={color}>
                 {active
                   ? formatBigNumber(stakingPoolData.claimableRbn, 2, 18)
                   : "---"}
@@ -419,6 +387,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
             <>
               <StakingPoolCardFooterButton
                 role="button"
+                color={color}
                 onClick={() => {
                   if (hasAllowance) {
                     setShowActionModal(true);
@@ -440,6 +409,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
               </StakingPoolCardFooterButton>
               <StakingPoolCardFooterButton
                 role="button"
+                color={color}
                 onClick={() => {
                   setShowActionModal(true);
                   setIsStakeAction(false);
@@ -452,6 +422,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
               </StakingPoolCardFooterButton>
               <StakingPoolCardFooterButton
                 role="button"
+                color={color}
                 onClick={() => setShowClaimModal(true)}
                 active={ongoingTransaction === "rewardClaim"}
               >
@@ -463,10 +434,11 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           ) : (
             <StakingPoolCardFooterButton
               role="button"
+              color={colors.green}
               onClick={() => {
                 setShowConnectWalletModal(true);
               }}
-              active={true}
+              active={false}
             >
               CONNECT WALLET
             </StakingPoolCardFooterButton>

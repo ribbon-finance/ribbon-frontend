@@ -25,6 +25,7 @@ import useStakingReward from "../../../hooks/useStakingReward";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import RBNClaimModalContent from "../../Common/RBNClaimModalContent";
+import { getVaultColor } from "shared/lib/utils/vault";
 
 const StyledModal = styled(BaseModal)`
   .modal-dialog {
@@ -261,7 +262,11 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
               </BaseUnderlineLink>
             </ContentColumn>
             <ContentColumn>
-              <ActionButton className="btn py-3 mb-2" onClick={handleClaim}>
+              <ActionButton
+                className="btn py-3 mb-2"
+                onClick={handleClaim}
+                color={getVaultColor(vaultOption)}
+              >
                 Claim $RBN
               </ActionButton>
             </ContentColumn>

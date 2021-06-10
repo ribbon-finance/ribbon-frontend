@@ -22,14 +22,15 @@ export const Button = styled.button`
 export const BaseActionButton = styled(Button)`
   ${(props) =>
     props.disabled
-      ? `background: ${colors.buttons.error};
+      ? `
+      background: ${props.color ? props.color : colors.buttons.primary}29;
       color: ${colors.primaryText};
 
       &:hover {
         color: ${colors.primaryText};
       }`
       : `
-      background: ${colors.buttons.primary};
+      background: ${props.color ? props.color : colors.buttons.primary};
       color: ${colors.primaryText};
 
       &:hover {
@@ -52,6 +53,7 @@ interface ActionButtonProps {
   disabled?: boolean;
   link?: string;
   onClick?: () => void;
+  color?: string;
   children: ReactNode;
 }
 
@@ -60,6 +62,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   link = "",
   className = "",
   children,
+  color,
   disabled = false,
 }) => {
   const hasLink = link !== "";
@@ -78,6 +81,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
       disabled={disabled}
       onClick={handleClick}
       type="button"
+      color={color}
       className={`btn ${className}`}
     >
       {link !== "" ? (

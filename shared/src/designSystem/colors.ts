@@ -32,6 +32,11 @@ const colors = {
     discord: "#5A65EA",
     primitive: "#FFFFFF",
   },
+  asset: {
+    WETH: "#627EEA",
+    WBTC: "#E39652",
+    USDC: "#3E73C4",
+  },
 };
 
 export default colors;
