@@ -143,8 +143,17 @@ const InfoColumn = styled(ContentColumn)`
   justify-content: space-between;
 `;
 
-const InfoData = styled(Title)`
+const InfoData = styled(Title)<{ error?: boolean }>`
   text-transform: none;
+  ${(props) => {
+    if (props.error) {
+      return `
+        color: ${colors.red};
+      `;
+    }
+
+    return ``;
+  }}
 `;
 
 const CurrentStakeTitle = styled(Subtitle)`
@@ -342,7 +351,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
             {stake ? (
               <InfoColumn>
                 <SecondaryText>Unstaked Balance</SecondaryText>
-                <InfoData>
+                <InfoData error={Boolean(error)}>
                   {formatBigNumber(
                     stakingPoolData.unstakedBalance,
                     4,
@@ -353,7 +362,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
             ) : (
               <InfoColumn>
                 <SecondaryText>Your Current Stake</SecondaryText>
-                <InfoData>
+                <InfoData error={Boolean(error)}>
                   {formatBigNumber(stakingPoolData.currentStake, 4, decimals)}
                 </InfoData>
               </InfoColumn>
@@ -385,6 +394,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               <ActionButton
                 className="btn py-3"
                 color={color}
+                error={Boolean(error)}
                 disabled={
                   Boolean(error) || !(Boolean(input) && parseFloat(input) > 0)
                 }
