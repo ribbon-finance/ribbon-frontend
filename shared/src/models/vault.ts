@@ -68,6 +68,7 @@ export interface VaultTransaction {
   txhash: string;
   timestamp: number;
   amount: BigNumber;
+  underlyingAmount: BigNumber;
   fee: number;
 }
 
