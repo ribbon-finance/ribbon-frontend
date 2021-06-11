@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import styled from "styled-components";
@@ -201,6 +201,16 @@ const PortfolioTransactions = () => {
 
     return filteredTransactions;
   }, [activityFilter, sortBy, transactions]);
+
+  useEffect(() => {
+    const totalNumPage = Math.ceil(processedTransactions.length / perPage);
+    if (
+      processedTransactions.length &&
+      page > Math.ceil(processedTransactions.length / perPage)
+    ) {
+      setPage(totalNumPage);
+    }
+  }, [page, processedTransactions]);
 
   const getTransactionAssetText = useCallback(
     (vaultOption: VaultOptions, type: VaultTransactionType) => {
