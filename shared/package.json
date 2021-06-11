@@ -15,6 +15,8 @@
     "url": "https://github.com/ribbon-finance/ribbon-frontend.git"
   },
   "dependencies": {
+    "@rooks/use-mutation-observer": "^4.11.2",
+    "@rooks/use-on-window-scroll": "^4.11.2",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
