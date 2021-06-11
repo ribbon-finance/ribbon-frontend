@@ -19,23 +19,46 @@ export const Button = styled.button`
   }
 `;
 
-export const BaseActionButton = styled(Button)`
-  ${(props) =>
-    props.disabled
+export const BaseActionButton = styled(Button)<{
+  error?: boolean;
+  color?: string;
+}>`
+  ${(props) => {
+    if (props.error) {
+      return `
+        background: ${colors.red}14;
+        color: ${colors.red};
+        
+        && {
+          opacity: 1;
+        }
+
+        &:hover {
+          background: ${colors.red}14;
+          color: ${colors.red};
+        }
+      `;
+    }
+
+    return props.color
       ? `
-      background: ${props.color ? props.color : colors.buttons.primary}29;
-      color: ${colors.primaryText};
+        background: ${props.color}14;
+        color: ${props.color};
 
-      &:hover {
-        color: ${colors.primaryText};
-      }`
+        &:hover {
+          background: ${props.color}${props.disabled ? 14 : 29};
+          color: ${props.color};
+        }
+      `
       : `
-      background: ${props.color ? props.color : colors.buttons.primary};
-      color: ${colors.primaryText};
-
-      &:hover {
+        background: ${colors.buttons.primary}${props.disabled ? 29 : ""};
         color: ${colors.primaryText};
-      }`}
+
+        &:hover {
+          color: ${colors.primaryText};
+        }
+      `;
+  }}
 `;
 
 const InternalButtonLink = styled.a`
@@ -54,6 +77,7 @@ interface ActionButtonProps {
   link?: string;
   onClick?: () => void;
   color?: string;
+  error?: boolean;
   children: ReactNode;
 }
 
@@ -63,6 +87,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   className = "",
   children,
   color,
+  error,
   disabled = false,
 }) => {
   const hasLink = link !== "";
@@ -78,10 +103,11 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
 
   return (
     <BaseActionButton
-      disabled={disabled}
+      disabled={disabled || error}
       onClick={handleClick}
       type="button"
       color={color}
+      error={error}
       className={`btn ${className}`}
     >
       {link !== "" ? (
