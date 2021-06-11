@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import styled from "styled-components";
@@ -29,6 +29,15 @@ import { Assets, AssetsList } from "shared/lib/store/types";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { VaultTransactionType } from "shared/lib/models/vault";
 import { getVaultColor } from "shared/lib/utils/vault";
+import {
+  PortfolioTransactionActivityFilter,
+  portfolioTransactionActivityFilters,
+  PortfolioTransactionSortBy,
+  portfolioTransactionSortByList,
+} from "./types";
+import Pagination from "shared/lib/components/Common/Pagination";
+import { AnimatePresence, motion } from "framer-motion";
+import usePrevious from "../../hooks/usePrevious";
 
 const PortfolioTransactionsContainer = styled.div`
   margin-top: 48px;
@@ -61,6 +70,10 @@ const TransactionContainer = styled.div`
   padding: 16px;
   display: flex;
   align-items: center;
+
+  &:last-child {
+    margin-bottom: 40px;
+  }
 `;
 
 const TransactionInfo = styled.div`
@@ -129,6 +142,8 @@ const StakeCircle = styled.div<{ type: "solid" | "hollow" }>`
   }}
 `;
 
+const perPage = 6;
+
 const PortfolioTransactions = () => {
   const { transactions, loading } = useTransactions();
   const { active } = useWeb3React();
@@ -141,6 +156,44 @@ const PortfolioTransactions = () => {
     250,
     loading || assetPricesLoading
   );
+  const [page, setPage] = useState(1);
+  const [sortBy, setSortBy] = useState<PortfolioTransactionSortBy>(
+    portfolioTransactionSortByList[0]
+  );
+  const [activityFilter, setActivityFilter] =
+    useState<PortfolioTransactionActivityFilter>(
+      portfolioTransactionActivityFilters[0]
+    );
+
+  const processedTransactions = useMemo(() => {
+    let filteredTransactions = transactions;
+
+    /** Filter transactions */
+    switch (activityFilter) {
+      case "all activity":
+        break;
+      default:
+        filteredTransactions = transactions.filter(
+          (transaction) => transaction.type === activityFilter
+        );
+    }
+
+    /** Sort */
+    switch (sortBy) {
+      case "latest first":
+        filteredTransactions.sort((a, b) =>
+          a.timestamp < b.timestamp ? 1 : -1
+        );
+        break;
+      case "oldest first":
+        filteredTransactions.sort((a, b) =>
+          a.timestamp > b.timestamp ? 1 : -1
+        );
+        break;
+    }
+
+    return filteredTransactions;
+  }, [activityFilter, sortBy, transactions]);
 
   const getTransactionAssetText = useCallback(
     (vaultOption: VaultOptions, type: VaultTransactionType) => {
@@ -214,83 +267,86 @@ const PortfolioTransactions = () => {
       );
     }
 
-    if (transactions.length <= 0) {
+    if (processedTransactions.length <= 0) {
       return (
         <SectionPlaceholderText>
-          You have no previous transactions on Ribbon
+          You have no transactions
         </SectionPlaceholderText>
       );
     }
 
-    return transactions.map((transaction) => (
-      <TransactionContainer key={transaction.id}>
-        <TransactionInfo>
-          <TransactionInfoRow>
-            {/* Title */}
-            <TransactionTitle
-              color={getVaultColor(transaction.vault.symbol)}
-              className="flex-grow-1"
-            >
-              {
-                Object.keys(VaultNameOptionMap)[
-                  Object.values(VaultNameOptionMap).indexOf(
-                    transaction.vault.symbol as VaultOptions
-                  )
-                ]
-              }
-            </TransactionTitle>
+    return processedTransactions
+      .slice((page - 1) * perPage, page * perPage)
+      .map((transaction) => (
+        <TransactionContainer key={transaction.id}>
+          <TransactionInfo>
+            <TransactionInfoRow>
+              {/* Title */}
+              <TransactionTitle
+                color={getVaultColor(transaction.vault.symbol)}
+                className="flex-grow-1"
+              >
+                {
+                  Object.keys(VaultNameOptionMap)[
+                    Object.values(VaultNameOptionMap).indexOf(
+                      transaction.vault.symbol as VaultOptions
+                    )
+                  ]
+                }
+              </TransactionTitle>
 
-            {/* Amount in crypto */}
-            <Title>
-              {renderTransactionAmountText(
-                transaction.amount,
-                transaction.type,
-                "eth",
-                getAssets(transaction.vault.symbol)
-              )}
-            </Title>
-            <AssetDisplayTitle>
-              {getTransactionAssetText(
-                transaction.vault.symbol,
-                transaction.type
-              )}
-            </AssetDisplayTitle>
-          </TransactionInfoRow>
-          <TransactionInfoRow>
-            {/* Type and time */}
-            <TransactionInfoText className="flex-grow-1">
-              {renderTransactionSymbol(transaction.type)}
-              {` ${capitalize(transaction.type)} - ${moment(
-                transaction.timestamp,
-                "X"
-              ).fromNow()}`}
-            </TransactionInfoText>
+              {/* Amount in crypto */}
+              <Title>
+                {renderTransactionAmountText(
+                  transaction.amount,
+                  transaction.type,
+                  "eth",
+                  getAssets(transaction.vault.symbol)
+                )}
+              </Title>
+              <AssetDisplayTitle>
+                {getTransactionAssetText(
+                  transaction.vault.symbol,
+                  transaction.type
+                )}
+              </AssetDisplayTitle>
+            </TransactionInfoRow>
+            <TransactionInfoRow>
+              {/* Type and time */}
+              <TransactionInfoText className="flex-grow-1">
+                {renderTransactionSymbol(transaction.type)}
+                {` ${capitalize(transaction.type)} - ${moment(
+                  transaction.timestamp,
+                  "X"
+                ).fromNow()}`}
+              </TransactionInfoText>
 
-            {/* Amount in USD */}
-            <TransactionSecondaryInfoText>
-              {renderTransactionAmountText(
-                transaction.underlyingAmount,
-                transaction.type,
-                "usd",
-                getAssets(transaction.vault.symbol)
-              )}
-            </TransactionSecondaryInfoText>
-          </TransactionInfoRow>
-        </TransactionInfo>
-        <BaseLink
-          to={`${getEtherscanURI()}/tx/${transaction.txhash}`}
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          <ExternalLink>
-            <ExternalLinkIcon />
-          </ExternalLink>
-        </BaseLink>
-      </TransactionContainer>
-    ));
+              {/* Amount in USD */}
+              <TransactionSecondaryInfoText>
+                {renderTransactionAmountText(
+                  transaction.underlyingAmount,
+                  transaction.type,
+                  "usd",
+                  getAssets(transaction.vault.symbol)
+                )}
+              </TransactionSecondaryInfoText>
+            </TransactionInfoRow>
+          </TransactionInfo>
+          <BaseLink
+            to={`${getEtherscanURI()}/tx/${transaction.txhash}`}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            <ExternalLink>
+              <ExternalLinkIcon />
+            </ExternalLink>
+          </BaseLink>
+        </TransactionContainer>
+      ));
   }, [
     active,
-    transactions,
+    page,
+    processedTransactions,
     animatedLoadingText,
     loading,
     renderTransactionSymbol,
@@ -301,7 +357,36 @@ const PortfolioTransactions = () => {
   return (
     <PortfolioTransactionsContainer>
       <SectionTitle>Transactions</SectionTitle>
-      {renderTransactions()}
+      <AnimatePresence initial={false} exitBeforeEnter>
+        <motion.div
+          key={page}
+          transition={{
+            duration: 0.25,
+            type: "keyframes",
+            ease: "easeInOut",
+          }}
+          initial={{
+            y: 50,
+            opacity: 0,
+          }}
+          animate={{
+            y: 0,
+            opacity: 1,
+          }}
+          exit={{
+            y: 50,
+            opacity: 0,
+          }}
+          className="w-100"
+        >
+          {renderTransactions()}
+        </motion.div>
+      </AnimatePresence>
+      <Pagination
+        page={page}
+        total={Math.ceil(processedTransactions.length / perPage)}
+        setPage={setPage}
+      />
     </PortfolioTransactionsContainer>
   );
 };
