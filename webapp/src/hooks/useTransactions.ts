@@ -47,6 +47,7 @@ const fetchTransactions = async (
               symbol
             }
             amount
+            underlyingAmount
             address
             txhash
             timestamp
@@ -58,6 +59,7 @@ const fetchTransactions = async (
   return response.data.data.vaultTransactions.map((transaction: any) => ({
     ...transaction,
     amount: BigNumber.from(transaction.amount),
+    underlyingAmount: BigNumber.from(transaction.underlyingAmount),
   }));
 };
 

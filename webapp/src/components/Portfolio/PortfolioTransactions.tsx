@@ -269,7 +269,7 @@ const PortfolioTransactions = () => {
             {/* Amount in USD */}
             <TransactionSecondaryInfoText>
               {renderTransactionAmountText(
-                transaction.amount,
+                transaction.underlyingAmount,
                 transaction.type,
                 "usd",
                 getAssets(transaction.vault.symbol)
