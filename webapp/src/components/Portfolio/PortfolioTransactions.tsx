@@ -3,6 +3,7 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import styled from "styled-components";
 import moment from "moment";
+import { AnimatePresence, motion } from "framer-motion";
 
 import {
   BaseLink,
@@ -17,7 +18,7 @@ import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useTransactions from "../../hooks/useTransactions";
 import { CurrencyType } from "../../pages/Portfolio/types";
 import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
-import { capitalize } from "../../utils/text";
+import { capitalize } from "shared/lib/utils/text";
 import {
   getAssets,
   getEtherscanURI,
@@ -36,8 +37,9 @@ import {
   portfolioTransactionSortByList,
 } from "./types";
 import Pagination from "shared/lib/components/Common/Pagination";
-import { AnimatePresence, motion } from "framer-motion";
-import usePrevious from "../../hooks/usePrevious";
+import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
+import sizes from "shared/lib/designSystem/sizes";
 
 const PortfolioTransactionsContainer = styled.div`
   margin-top: 48px;
@@ -47,10 +49,14 @@ const PortfolioTransactionsContainer = styled.div`
 `;
 
 const SectionTitle = styled(Title)`
-  width: 100%;
   font-size: 18px;
   line-height: 24px;
-  margin-bottom: 24px;
+  margin-right: 24px;
+
+  @media (max-width: ${sizes.sm}px) {
+    width: 100%;
+    margin-bottom: 16px;
+  }
 `;
 
 const TransactionTitle = styled(Title)<{ color: string }>`
@@ -164,6 +170,7 @@ const PortfolioTransactions = () => {
     useState<PortfolioTransactionActivityFilter>(
       portfolioTransactionActivityFilters[0]
     );
+  const { width } = useScreenSize();
 
   const processedTransactions = useMemo(() => {
     let filteredTransactions = transactions;
@@ -336,6 +343,7 @@ const PortfolioTransactions = () => {
             to={`${getEtherscanURI()}/tx/${transaction.txhash}`}
             target="_blank"
             rel="noreferrer noopener"
+            className="d-none d-sm-block"
           >
             <ExternalLink>
               <ExternalLinkIcon />
@@ -356,7 +364,25 @@ const PortfolioTransactions = () => {
 
   return (
     <PortfolioTransactionsContainer>
-      <SectionTitle>Transactions</SectionTitle>
+      <div className="d-flex flex-wrap align-items-center w-100 mb-4">
+        <SectionTitle>Transactions</SectionTitle>
+        <FilterDropdown
+          // @ts-ignore
+          options={portfolioTransactionActivityFilters}
+          value={activityFilter}
+          // @ts-ignore
+          onSelect={setActivityFilter}
+          dropdownOrientation={width > sizes.sm ? "right" : "left"}
+        />
+        <FilterDropdown
+          // @ts-ignore
+          options={portfolioTransactionSortByList}
+          value={sortBy}
+          // @ts-ignore
+          onSelect={setSortBy}
+          className="ml-3"
+        />
+      </div>
       <AnimatePresence initial={false} exitBeforeEnter>
         <motion.div
           key={page}

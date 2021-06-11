@@ -11,6 +11,5 @@ export const copyTextToClipboard = (text: string) => {
   textField.remove();
 };
 
-export const capitalize = (str: string) => {
-  return str.charAt(0).toUpperCase() + str.substring(1);
-};
+export const capitalize = (str: string) =>
+  str.charAt(0).toUpperCase() + str.substring(1);

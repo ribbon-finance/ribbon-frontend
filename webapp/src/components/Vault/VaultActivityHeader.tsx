@@ -5,11 +5,11 @@ import { BaseButton, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
 import theme from "shared/lib/designSystem/theme";
-import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
-import { capitalize } from "../../utils/text";
+import { capitalize } from "shared/lib/utils/text";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import { SortBy, ActivityFilter, activityFilters, sortByList } from "./types";
+import useOutsideAlerter from "shared/lib/hooks/useOutsideAlerter";
 
 const Header = styled(Title)`
   font-size: 18px;
