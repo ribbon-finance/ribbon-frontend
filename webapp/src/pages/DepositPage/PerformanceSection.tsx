@@ -178,6 +178,14 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
             rel="noreferrer noopener"
           >
             audited by Peckshield
+          </Link>
+          ,{" "}
+          <Link
+            href="https://github.com/ribbon-finance/audit/blob/master/reports/Quantstamp%20Theta%20Vault.pdf"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            Quantstamp
           </Link>{" "}
           and{" "}
           <Link
@@ -186,9 +194,9 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
             rel="noreferrer noopener"
           >
             ChainSafe
-          </Link>{" "}
-          and are undergoing a final audit. Despite that, users are advised to
-          exercise caution and only risk funds they can afford to lose.
+          </Link>
+          . Despite that, users are advised to exercise caution and only risk
+          funds they can afford to lose.
         </ParagraphText>
 
         <PrimaryText className="d-block mt-3">
