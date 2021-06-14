@@ -59,11 +59,13 @@ const StakingPoolCard = styled.div<{ color: string }>`
   width: 100%;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
+  padding: 1px;
   margin-bottom: 48px;
 
   &:hover {
     animation: ${(props) => shimmerKeyframe(props.color)} 3s infinite;
-    border-color: ${(props) => props.color};
+    border: 2px ${theme.border.style} ${(props) => props.color};
+    padding: 0px;
   }
 `;
 
