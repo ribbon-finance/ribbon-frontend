@@ -153,11 +153,11 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       <Paragraph>
         <ParagraphHeading>Withdrawals</ParagraphHeading>
         <ParagraphText>
-          The vault allocates 90% of the funds deposited towards its covered
-          call strategy and reserves 10% of the funds deposited for withdrawals.
-          If in any given week the 10% withdrawal limit is reached, withdrawals
-          from the vault will be disabled and depositors will have to wait until
-          the following week in order to withdraw their funds.
+          The vault allocates 90% of the funds deposited towards its strategy
+          and reserves 10% of the funds deposited for withdrawals. If in any
+          given week the 10% withdrawal limit is reached, withdrawals from the
+          vault will be disabled and depositors will have to wait until the
+          following week in order to withdraw their funds.
           <br />
           <br />
           Withdrawing from the vault has a fixed withdrawal fee of{" "}
