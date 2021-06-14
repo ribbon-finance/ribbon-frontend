@@ -69,10 +69,10 @@ export const VaultLiquidityMiningMap: {
     };
 
 export const FullVaultList = [
+  "rETH-THETA",
+  "rBTC-THETA",
   "rUSDC-ETH-P-THETA",
   "rUSDC-BTC-P-THETA",
-  "rBTC-THETA",
-  "rETH-THETA",
 ] as const;
 export type VaultOptions = typeof FullVaultList[number];
 const ProdExcludeVault: VaultOptions[] = ["rUSDC-BTC-P-THETA"];
