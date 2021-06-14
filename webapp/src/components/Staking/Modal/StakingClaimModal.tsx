@@ -111,10 +111,6 @@ const InfoData = styled(Title)`
   text-transform: none;
 `;
 
-const ClaimableRBNData = styled(InfoData)`
-  color: ${colors.red};
-`;
-
 interface StakingClaimModalProps {
   show: boolean;
   onClose: () => void;
@@ -210,9 +206,9 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
             </ContentColumn>
             <InfoColumn marginTop={40}>
               <SecondaryText>Unclaimed $RBN</SecondaryText>
-              <ClaimableRBNData>
+              <InfoData>
                 {formatBigNumber(stakingPoolData.claimableRbn, 2, 18)}
-              </ClaimableRBNData>
+              </InfoData>
             </InfoColumn>
             <InfoColumn>
               <SecondaryText>Claimed $RBN</SecondaryText>
@@ -235,23 +231,15 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
                   : "---"}
               </InfoData>
             </InfoColumn>
-            {/* TODO: Unlock this after $RBN has dollar amount */}
-            {/* <InfoColumn>
+            <InfoColumn>
               <div className="d-flex align-items-center">
-                <SecondaryText>Expected Yield (APY)</SecondaryText>
-                <TooltipExplanation
-                  title="EXPECTED YIELD (APY)"
-                  explanation={`By staking your ${vaultOption} tokens in the pool, you earn weekly $RBN rewards.`}
-                  renderContent={({ ref, ...triggerHandler }) => (
-                    <HelpInfo containerRef={ref} {...triggerHandler}>
-                      i
-                    </HelpInfo>
-                  )}
-                  learnMoreURL="https://ribbon.finance/faq"
-                />
+                <SecondaryText>Pool rewards</SecondaryText>
               </div>
-              <InfoData>{stakingPoolData.expectedYield.toFixed(2)}%</InfoData>
-            </InfoColumn> */}
+              <InfoData>
+                {formatBigNumber(stakingPoolData.poolRewardForDuration, 6, 18)}{" "}
+                RBN
+              </InfoData>
+            </InfoColumn>
             <ContentColumn marginTop="auto">
               <BaseUnderlineLink
                 to="https://ribbon.finance/faq"

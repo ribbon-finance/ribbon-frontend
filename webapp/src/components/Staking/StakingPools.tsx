@@ -123,10 +123,10 @@ const LogoContainer = styled.div<{ color: string }>`
   background: ${(props) => props.color}29;
 `;
 
-// const ExpectedYieldData = styled(Title)`
-//   font-size: 14px;
-//   line-height: 20px;
-// `;
+const PoolRewardData = styled(Title)`
+  font-size: 14px;
+  line-height: 20px;
+`;
 
 const StakingPoolCardFooter = styled.div`
   display: flex;
@@ -363,26 +363,16 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
             />
           </div>
 
-          {/* Expected Yield */}
-          {/* TODO: Unlock this after $RBN has dollar amount */}
-          {/* <div className="d-flex align-items-center mt-4 w-100">
+          {/* Pool reward of duration */}
+          <div className="d-flex align-items-center mt-4 w-100">
             <div className="d-flex align-items-center">
-              <SecondaryText>Expected Yield (APY)</SecondaryText>
-              <TooltipExplanation
-                title="EXPECTED YIELD (APY)"
-                explanation={`By staking your ${vaultOption} tokens in the pool, you earn weekly $RBN rewards.`}
-                renderContent={({ ref, ...triggerHandler }) => (
-                  <HelpInfo containerRef={ref} {...triggerHandler}>
-                    i
-                  </HelpInfo>
-                )}
-                learnMoreURL="https://ribbon.finance/faq"
-              />
+              <SecondaryText>Pool rewards </SecondaryText>
             </div>
-            <ExpectedYieldData className="ml-auto">
-              {stakingPoolData.expectedYield.toFixed(2)}%
-            </ExpectedYieldData>
-          </div> */}
+            <PoolRewardData className="ml-auto">
+              {formatBigNumber(stakingPoolData.poolRewardForDuration, 6, 18)}{" "}
+              RBN
+            </PoolRewardData>
+          </div>
         </div>
         <StakingPoolCardFooter>
           {active ? (
