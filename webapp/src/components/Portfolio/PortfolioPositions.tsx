@@ -15,7 +15,6 @@ import useAssetPrice from "../../hooks/useAssetPrice";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { CurrencyType } from "../../pages/Portfolio/types";
 import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
-import { ProductType } from "shared/lib/components/Product/types";
 import sizes from "shared/lib/designSystem/sizes";
 import {
   getAssets,
@@ -25,7 +24,8 @@ import {
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { VaultAccount } from "shared/lib/models/vault";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
+import { getVaultColor } from "shared/lib/utils/vault";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 48px;
@@ -49,19 +49,38 @@ const SectionPlaceholderText = styled(SecondaryText)`
 
 const PositionLink = styled(BaseLink)`
   width: 100%;
-  margin-top: 16px;
-
-  &:first-child {
-    margin-top: 24px;
-  }
+  margin-top: 24px;
 `;
 
-const PositionContainer = styled.div`
+const PositionContainer = styled.div<{ color: string }>`
   width: 100%;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
   padding: 16px;
   display: flex;
+  align-items: center;
+
+  &:hover {
+    box-shadow: ${(props) => props.color}3D 8px 16px 80px;
+    border: 2px ${theme.border.style} ${(props) => props.color};
+    padding: 15px;
+  }
+`;
+
+const LogoContainer = styled.div<{ color: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  background: ${(props) => props.color}29;
+`;
+
+const PositionInfo = styled.div`
+  display: flex;
+  flex: 1;
   flex-wrap: wrap;
   position: relative;
 `;
@@ -76,8 +95,8 @@ const PositionInfoRow = styled.div`
   }
 `;
 
-const PositionSymbolTitle = styled(Title)<{ product: ProductType }>`
-  color: ${(props) => colors.products[props.product]};
+const StyledTitle = styled(Title)`
+  text-transform: none;
 `;
 
 const PositionInfoText = styled(SecondaryText)`
@@ -87,21 +106,10 @@ const PositionInfoText = styled(SecondaryText)`
   font-weight: 400;
 `;
 
-const PositionSecondaryInfoText = styled(Subtitle)<{
-  variant?: "green" | "red";
-}>`
+const PositionSecondaryInfoText = styled(Subtitle)`
   letter-spacing: unset;
   line-height: 16px;
-  ${(props) => {
-    switch (props.variant) {
-      case "green":
-        return `color: ${colors.green};`;
-      case "red":
-        return `color: ${colors.red};`;
-      default:
-        return `color: ${colors.primaryText}A3;`;
-    }
-  }}
+  color: ${colors.primaryText}A3;
 `;
 
 const KPIContainer = styled.div`
@@ -126,6 +134,17 @@ const KPIDatas = styled.div`
   justify-content: center;
 `;
 
+const KPIRoi = styled(Title)<{ variant: "red" | "green" }>`
+  ${(props) => {
+    switch (props.variant) {
+      case "green":
+        return `color: ${colors.green};`;
+      case "red":
+        return `color: ${colors.red};`;
+    }
+  }}
+`;
+
 interface PortfolioPositionProps {
   vaultAccount: VaultAccount;
 }
@@ -135,6 +154,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 }) => {
   const asset = getAssets(vaultAccount.vault.symbol);
   const decimals = getAssetDecimals(asset);
+  const color = getVaultColor(vaultAccount.vault.symbol);
   const { price: assetPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: asset,
   });
@@ -147,9 +167,6 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
     Object.keys(VaultNameOptionMap)[
       Object.values(VaultNameOptionMap).indexOf(vaultAccount.vault.symbol)
     ];
-  const vaultNetProfit = vaultAccount.totalBalance.sub(
-    vaultAccount.totalDeposits
-  );
 
   const renderAmountText = useCallback(
     (amount: BigNumber, currency: CurrencyType) => {
@@ -159,12 +176,10 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
             ? animatedLoadingText
             : `${assetToUSD(amount, assetPrice, decimals)}`;
         case "eth":
-          return `${formatBigNumber(amount, 6, decimals)} ${getAssetDisplay(
-            asset
-          )}`;
+          return `${formatBigNumber(amount, 6, decimals)}`;
       }
     },
-    [asset, assetPrice, animatedLoadingText, assetPriceLoading, decimals]
+    [assetPrice, animatedLoadingText, assetPriceLoading, decimals]
   );
 
   const calculatedROI = useMemo(() => {
@@ -179,37 +194,51 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
       : 0;
   }, [vaultAccount, decimals]);
 
+  const logo = useMemo(() => {
+    const Logo = getAssetLogo(asset);
+
+    switch (asset) {
+      case "WETH":
+        return <Logo height="70%" />;
+      default:
+        return <Logo />;
+    }
+  }, [asset]);
+
   return (
     <PositionLink to={`/theta-vault/${vaultName}`}>
-      <PositionContainer>
-        <PositionInfoRow>
-          <PositionSymbolTitle product="yield" className="flex-grow-1">
-            {vaultName}
-          </PositionSymbolTitle>
-          <Title>{renderAmountText(vaultAccount.totalBalance, "eth")}</Title>
-        </PositionInfoRow>
-        <PositionInfoRow>
-          <PositionInfoText className="flex-grow-1">
-            {productCopies[vaultAccount.vault.symbol].subtitle}
-          </PositionInfoText>
-          <PositionSecondaryInfoText>
-            {renderAmountText(vaultAccount.totalBalance, "usd")}
-          </PositionSecondaryInfoText>
-        </PositionInfoRow>
-        <KPIContainer>
-          <KPIDatas>
-            <Title>
-              {vaultNetProfit.isNegative() ? "" : "+"}
-              {renderAmountText(vaultNetProfit, "usd")}
-            </Title>
-            <PositionSecondaryInfoText
-              variant={calculatedROI >= 0 ? "green" : "red"}
-            >
-              {calculatedROI >= 0 ? "+" : ""}
-              {calculatedROI.toFixed(2)}%
+      <PositionContainer color={color}>
+        <LogoContainer color={color}>{logo}</LogoContainer>
+        <PositionInfo>
+          <PositionInfoRow>
+            {/* Title */}
+            <StyledTitle className="flex-grow-1">
+              {vaultAccount.vault.symbol}
+            </StyledTitle>
+
+            {/* Amount in Crypto */}
+            <Title>{renderAmountText(vaultAccount.totalBalance, "eth")}</Title>
+          </PositionInfoRow>
+          <PositionInfoRow>
+            {/* Subtitle */}
+            <PositionInfoText className="flex-grow-1">
+              {productCopies[vaultAccount.vault.symbol].subtitle}
+            </PositionInfoText>
+
+            {/* Amount in Fiat */}
+            <PositionSecondaryInfoText>
+              {renderAmountText(vaultAccount.totalBalance, "usd")}
             </PositionSecondaryInfoText>
-          </KPIDatas>
-        </KPIContainer>
+          </PositionInfoRow>
+          <KPIContainer>
+            <KPIDatas>
+              <KPIRoi variant={calculatedROI >= 0 ? "green" : "red"}>
+                {calculatedROI >= 0 ? "+" : ""}
+                {calculatedROI.toFixed(2)}%
+              </KPIRoi>
+            </KPIDatas>
+          </KPIContainer>
+        </PositionInfo>
       </PositionContainer>
     </PositionLink>
   );
