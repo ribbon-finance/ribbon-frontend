@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { ethers } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -37,16 +37,28 @@ import {
   OasisIcon,
 } from "../../../assets/icons/defiApp";
 import { getAssetDisplay } from "../../../utils/asset";
+import { getVaultColor } from "../../../utils/vault";
 
 const { formatUnits } = ethers.utils;
 
-const ProductCard = styled.div`
+const shimmerKeyframe = (color: string) => keyframes`
+    0% {
+      box-shadow: ${color}66 8px 16px 80px;
+    }
+    50% {
+      box-shadow: ${color}29 8px 16px 80px;
+    }
+    100% {
+      box-shadow: ${color}66 8px 16px 80px;
+    }
+`;
+
+const ProductCard = styled.div<{ color: string }>`
   display: flex;
   background-color: ${colors.background};
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
   padding: 16px 24px 24px 16px;
-  box-shadow: 4px 8px 80px rgba(255, 56, 92, 0.16);
   margin: 0 80px;
   transition: 0.25s box-shadow ease-out;
   max-width: 343px;
@@ -55,23 +67,11 @@ const ProductCard = styled.div`
   height: 100%;
   perspective: 2000px;
 
-  @keyframes shimmerAnimation {
-    0% {
-      box-shadow: ${colors.products.yield}66 8px 8px 120px;
-    }
-    50% {
-      box-shadow: ${colors.products.yield}29 8px 8px 120px;
-    }
-    100% {
-      box-shadow: ${colors.products.yield}66 8px 8px 120px;
-    }
-  }
-
-  animation: shimmerAnimation 3s infinite;
+  animation: ${(props) => shimmerKeyframe(props.color)} 3s infinite;
 
   &:hover {
     animation: none;
-    box-shadow: ${colors.products.yield}66 8px 8px 120px;
+    box-shadow: ${(props) => props.color}66 8px 8px 120px;
   }
 
   @media (max-width: ${sizes.md}px) {
@@ -113,8 +113,8 @@ const ProductTag = styled(BaseButton)`
   margin-right: 4px;
 `;
 
-const ProductTitle = styled(Title)`
-  color: ${colors.products.yield};
+const ProductTitle = styled(Title)<{ color: string }>`
+  color: ${(props) => props.color};
   font-size: 36px;
   margin-bottom: 8px;
 `;
@@ -217,6 +217,7 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
   const isLoading = status === "loading";
   const [mode, setMode] = useState<"info" | "yield">("info");
   const yieldInfos = useAssetsYield(asset);
+  const color = getVaultColor(vault);
 
   const totalDepositStr = isLoading
     ? 0
@@ -261,7 +262,7 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
 
   const ProductInfoContent = () => (
     <>
-      <ProductTitle>{productCopies[vault].title}</ProductTitle>
+      <ProductTitle color={color}>{productCopies[vault].title}</ProductTitle>
       <ProductDescription>
         {productCopies[vault].description}
       </ProductDescription>
@@ -335,7 +336,7 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
   );
 
   return (
-    <ProductCard onClick={onClick} role="button">
+    <ProductCard onClick={onClick} role="button" color={color}>
       <ProductContent>
         <TopContainer>
           <ProductTopContainer>
