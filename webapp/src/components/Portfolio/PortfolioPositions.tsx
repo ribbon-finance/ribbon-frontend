@@ -229,9 +229,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
           <PositionInfo>
             <PositionInfoRow>
               {/* Title */}
-              <StyledTitle className="flex-grow-1">
-                {vaultAccount.vault.symbol}
-              </StyledTitle>
+              <StyledTitle className="flex-grow-1">{vaultName}</StyledTitle>
 
               {/* Amount in Crypto */}
               <Title>
