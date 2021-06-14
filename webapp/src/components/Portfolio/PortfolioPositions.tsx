@@ -53,18 +53,34 @@ const PositionLink = styled(BaseLink)`
 `;
 
 const PositionContainer = styled.div<{ color: string }>`
-  width: 100%;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: ${theme.border.radius};
-  padding: 16px;
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  border-radius: ${theme.border.radius};
+  border: 2px ${theme.border.style} #00000000;
 
   &:hover {
     box-shadow: ${(props) => props.color}3D 8px 16px 80px;
     border: 2px ${theme.border.style} ${(props) => props.color};
-    padding: 15px;
   }
+`;
+
+const PositionMainContainer = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 16px;
+  background: ${colors.background};
+  border-radius: ${theme.border.radius};
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  z-index: 2;
+`;
+
+const PositionStakedContainer = styled(PositionMainContainer)`
+  margin-top: -16px;
+  padding-top: calc(16px + 16px);
+  background: ${colors.backgroundLighter};
+  z-index: 1;
 `;
 
 const LogoContainer = styled.div<{ color: string }>`
@@ -208,37 +224,53 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   return (
     <PositionLink to={`/theta-vault/${vaultName}`}>
       <PositionContainer color={color}>
-        <LogoContainer color={color}>{logo}</LogoContainer>
-        <PositionInfo>
-          <PositionInfoRow>
-            {/* Title */}
-            <StyledTitle className="flex-grow-1">
-              {vaultAccount.vault.symbol}
-            </StyledTitle>
+        <PositionMainContainer>
+          <LogoContainer color={color}>{logo}</LogoContainer>
+          <PositionInfo>
+            <PositionInfoRow>
+              {/* Title */}
+              <StyledTitle className="flex-grow-1">
+                {vaultAccount.vault.symbol}
+              </StyledTitle>
 
-            {/* Amount in Crypto */}
-            <Title>{renderAmountText(vaultAccount.totalBalance, "eth")}</Title>
-          </PositionInfoRow>
-          <PositionInfoRow>
-            {/* Subtitle */}
-            <PositionInfoText className="flex-grow-1">
-              {productCopies[vaultAccount.vault.symbol].subtitle}
-            </PositionInfoText>
+              {/* Amount in Crypto */}
+              <Title>
+                {renderAmountText(vaultAccount.totalBalance, "eth")}
+              </Title>
+            </PositionInfoRow>
+            <PositionInfoRow>
+              {/* Subtitle */}
+              <PositionInfoText className="flex-grow-1">
+                {productCopies[vaultAccount.vault.symbol].subtitle}
+              </PositionInfoText>
 
-            {/* Amount in Fiat */}
-            <PositionSecondaryInfoText>
-              {renderAmountText(vaultAccount.totalBalance, "usd")}
-            </PositionSecondaryInfoText>
-          </PositionInfoRow>
-          <KPIContainer>
-            <KPIDatas>
-              <KPIRoi variant={calculatedROI >= 0 ? "green" : "red"}>
-                {calculatedROI >= 0 ? "+" : ""}
-                {calculatedROI.toFixed(2)}%
-              </KPIRoi>
-            </KPIDatas>
-          </KPIContainer>
-        </PositionInfo>
+              {/* Amount in Fiat */}
+              <PositionSecondaryInfoText>
+                {renderAmountText(vaultAccount.totalBalance, "usd")}
+              </PositionSecondaryInfoText>
+            </PositionInfoRow>
+            <KPIContainer>
+              <KPIDatas>
+                <KPIRoi variant={calculatedROI >= 0 ? "green" : "red"}>
+                  {calculatedROI >= 0 ? "+" : ""}
+                  {calculatedROI.toFixed(2)}%
+                </KPIRoi>
+              </KPIDatas>
+            </KPIContainer>
+          </PositionInfo>
+        </PositionMainContainer>
+        {!vaultAccount.totalStakedBalance.isZero() && (
+          <PositionStakedContainer>
+            <PositionInfoRow>
+              <PositionInfoText className="flex-grow-1">
+                Staked Amount
+              </PositionInfoText>
+              <PositionSecondaryInfoText>
+                {renderAmountText(vaultAccount.totalStakedBalance, "eth")}
+              </PositionSecondaryInfoText>
+            </PositionInfoRow>
+          </PositionStakedContainer>
+        )}
       </PositionContainer>
     </PositionLink>
   );
