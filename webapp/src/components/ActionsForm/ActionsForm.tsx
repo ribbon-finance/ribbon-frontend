@@ -34,10 +34,10 @@ import {
 } from "shared/lib/constants/constants";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import useVault from "shared/lib/hooks/useVault";
-import { isETHVault, isVaultFull } from "shared/lib/utils/vault";
+import { getVaultColor, isETHVault, isVaultFull } from "shared/lib/utils/vault";
 import colors from "shared/lib/designSystem/colors";
 import { useLatestAPY } from "shared/lib/hooks/useAirtableData";
-import { getAssetDisplay } from "shared/lib/utils/asset";
+import { getAssetDisplay, getAssetLogo } from "shared/lib/utils/asset";
 import { getERC20Token } from "shared/lib/hooks/useERC20Token";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
@@ -178,7 +178,7 @@ const ApprovalIconContainer = styled.div`
   margin: 16px 0;
 `;
 
-const ApprovalIcon = styled.div`
+const ApprovalIcon = styled.div<{ color: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -186,27 +186,7 @@ const ApprovalIcon = styled.div`
   height: 64px;
   padding: 8px;
   border-radius: 100px;
-  background-color: ${colors.green}29;
-`;
-
-const GreenWBTCLogo = styled(WBTCLogo)`
-  width: 100%;
-  && * {
-    fill: ${colors.green};
-  }
-`;
-
-const GreenUSDCLogo = styled(USDCLogo)`
-  margin: -8px;
-  width: 100%;
-
-  && .background {
-    fill: none;
-  }
-
-  && .content {
-    fill: ${colors.green};
-  }
+  background-color: ${(props) => props.color}29;
 `;
 
 const ApprovalDescription = styled(PrimaryText)`
@@ -281,6 +261,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
 
   // network hooks
   const vault = useVault(vaultOption);
+  const color = getVaultColor(vaultOption);
   const {
     status,
     userAssetBalance,
@@ -817,6 +798,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
           disabled={actionDisabled}
           onClick={handleClickActionButton}
           className="py-3 mb-4"
+          color={color}
         >
           {actionButtonText}
         </ActionButton>
@@ -833,6 +815,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
       </ConnectWalletButton>
     );
   }, [
+    color,
     actionButtonText,
     connected,
     actionDisabled,
@@ -861,14 +844,9 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   );
 
   const renderApprovalAssetLogo = useCallback(() => {
-    switch (asset) {
-      case "WBTC":
-        return <GreenWBTCLogo />;
-      case "USDC":
-        return <GreenUSDCLogo />;
-      default:
-        return <></>;
-    }
+    const Logo = getAssetLogo(asset);
+
+    return <Logo />;
   }, [asset]);
 
   const getSwapTriggerText = useCallback((_asset: Assets) => {
@@ -937,7 +915,9 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
           {isDeposit && showTokenApproval ? (
             <>
               <ApprovalIconContainer>
-                <ApprovalIcon>{renderApprovalAssetLogo()}</ApprovalIcon>
+                <ApprovalIcon color={color}>
+                  {renderApprovalAssetLogo()}
+                </ApprovalIcon>
               </ApprovalIconContainer>
               <ApprovalDescription>
                 Before you deposit, the vault needs your permission to invest
@@ -954,6 +934,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
                 onClick={handleApproveToken}
                 className="py-3 mb-4"
                 disabled={vaultFull}
+                color={color}
               >
                 {waitingApproval
                   ? waitingApprovalLoadingText
