@@ -103,7 +103,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
 
   return (
     <BaseActionButton
-      disabled={disabled || error}
+      disabled={disabled}
       onClick={handleClick}
       type="button"
       color={color}

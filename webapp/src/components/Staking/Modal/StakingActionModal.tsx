@@ -35,6 +35,7 @@ import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import TrafficLight from "../../Common/TrafficLight";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import { getVaultColor } from "shared/lib/utils/vault";
+import moment from "moment";
 
 const StyledModal = styled(BaseModal)<{ isForm: boolean }>`
   .modal-dialog {
@@ -120,6 +121,8 @@ const LogoContainer = styled.div<{ color: string }>`
   height: 64px;
   border-radius: 100px;
   background: ${(props) => props.color}29;
+  color: ${(props) => props.color};
+  font-size: 40px;
 `;
 
 const AssetTitle = styled(Title)<{ str: string }>`
@@ -188,8 +191,8 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
   stakingPoolData,
 }) => {
   const [step, setStep] = useState<
-    "form" | "preview" | "walletAction" | "processing"
-  >("form");
+    "warning" | "form" | "preview" | "walletAction" | "processing"
+  >("warning");
   const [input, setInput] = useState("");
   const { provider } = useWeb3Context();
   const decimals = getAssetDecimals(getAssets(vaultOption));
@@ -227,8 +230,9 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
 
   const handleClose = useCallback(() => {
     onClose();
-    if (step === "preview" || step === "walletAction") {
-      setStep("form");
+    console.log(step);
+    if (step === "form" || step === "preview" || step === "walletAction") {
+      setStep("warning");
     }
     if (step !== "processing") {
       setInput("");
@@ -262,7 +266,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
       ]);
 
       await provider.waitForTransaction(txhash);
-      setStep("form");
+      setStep("warning");
       setTxId("");
       setInput("");
       onClose();
@@ -279,6 +283,23 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     vaultOption,
     stake,
   ]);
+
+  /**
+   * Check if it's withdraw and before period end
+   */
+  useEffect(() => {
+    if (
+      !show ||
+      (show &&
+        step === "warning" &&
+        !stake &&
+        moment(stakingPoolData.periodFinish, "X").diff(moment()) > 0)
+    ) {
+      return;
+    }
+
+    setStep("form");
+  }, [show, stake, stakingPoolData, step]);
 
   /**
    * Input Validation
@@ -322,6 +343,38 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
 
   const body = useMemo(() => {
     switch (step) {
+      case "warning":
+        return (
+          <>
+            <ContentColumn marginTop={-8}>
+              <LogoContainer color={colors.red}>!</LogoContainer>
+            </ContentColumn>
+            <ContentColumn marginTop={16}>
+              <AssetTitle str="WARNING">WARNING</AssetTitle>
+            </ContentColumn>
+            <ContentColumn marginTop={16}>
+              <SecondaryText className="text-center">
+                Your RBN rewards will be forfeited if your unstake your tokens
+                before the end of the program (
+                {moment(stakingPoolData.periodFinish, "X").format(
+                  "MMM Do, YYYY"
+                )}
+                ).
+              </SecondaryText>
+            </ContentColumn>
+            <ContentColumn marginTop="auto">
+              <ActionButton
+                className="btn py-3 mb-3"
+                color={color}
+                error={true}
+                disabled={false}
+                onClick={() => setStep("form")}
+              >
+                Continue
+              </ActionButton>
+            </ContentColumn>
+          </>
+        );
       case "form":
         return (
           <>
@@ -373,23 +426,15 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                 {formatBigNumber(stakingPoolData.poolSize, 4, decimals)}
               </InfoData>
             </InfoColumn>
-            {/* TODO: Unlock this after $RBN has dollar amount */}
-            {/* <InfoColumn>
+            <InfoColumn>
               <div className="d-flex align-items-center">
-                <SecondaryText>Expected Yield (APY)</SecondaryText>
-                <TooltipExplanation
-                  title="EXPECTED YIELD (APY)"
-                  explanation={`By staking your ${vaultOption} tokens in the pool, you earn weekly $RBN rewards.`}
-                  renderContent={({ ref, ...triggerHandler }) => (
-                    <HelpInfo containerRef={ref} {...triggerHandler}>
-                      i
-                    </HelpInfo>
-                  )}
-                  learnMoreURL="https://ribbon.finance/faq"
-                />
+                <SecondaryText>Pool rewards</SecondaryText>
               </div>
-              <InfoData>{stakingPoolData.expectedYield.toFixed(2)}%</InfoData>
-            </InfoColumn> */}
+              <InfoData>
+                {formatBigNumber(stakingPoolData.poolRewardForDuration, 6, 18)}{" "}
+                RBN
+              </InfoData>
+            </InfoColumn>
             <ContentColumn marginTop="auto">
               <ActionButton
                 className="btn py-3"
@@ -461,11 +506,13 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                 )}
               </InfoData>
             </InfoColumn>
-            {/* TODO: Unlock this after $RBN has dollar amount */}
-            {/* <InfoColumn>
-              <SecondaryText>Expected Yield (APY)</SecondaryText>
-              <InfoData>{stakingPoolData.expectedYield.toFixed(2)}%</InfoData>
-            </InfoColumn> */}
+            <InfoColumn>
+              <SecondaryText>Pool rewards</SecondaryText>
+              <InfoData>
+                {formatBigNumber(stakingPoolData.poolRewardForDuration, 6, 18)}{" "}
+                RBN
+              </InfoData>
+            </InfoColumn>
             <ContentColumn marginTop="auto">
               <ActionButton
                 className="btn py-3 mb-2"

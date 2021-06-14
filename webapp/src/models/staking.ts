@@ -4,10 +4,11 @@ export interface StakingPoolData {
   currentStake: BigNumber;
   poolSize: BigNumber;
   lastTimeRewardApplicable?: string;
+  periodFinish?: string;
   claimHistory: Array<{
     amount: BigNumber;
   }>;
-  expectedYield: number;
+  poolRewardForDuration: BigNumber;
   claimableRbn: BigNumber;
   unstakedBalance: BigNumber;
 }

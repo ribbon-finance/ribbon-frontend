@@ -13,7 +13,7 @@ import useStakingReward from "./useStakingReward";
 const initialData: StakingPoolData = {
   currentStake: BigNumber.from(0),
   poolSize: BigNumber.from(0),
-  expectedYield: 0,
+  poolRewardForDuration: BigNumber.from(0),
   claimHistory: [],
   claimableRbn: BigNumber.from(0),
   unstakedBalance: BigNumber.from(0),
@@ -48,13 +48,15 @@ const useStakingPoolData: UseStakingPoolData = (
     }
     /**
      * 1. Pool size
-     * 2. TODO: Expected yield
+     * 2. Pool reward of duration
      * 3. Last Time Reward Applicable
+     * 4. Period finish
      */
     const unconnectedPromises = [
       tokenContract.balanceOf(VaultLiquidityMiningMap[option]),
-      (async () => 24.1)(),
+      contract.getRewardForDuration(),
       contract.lastTimeRewardApplicable(),
+      contract.periodFinish(),
     ];
 
     /**
@@ -82,8 +84,9 @@ const useStakingPoolData: UseStakingPoolData = (
 
     const [
       poolSize,
-      expectedYield,
+      poolRewardForDuration,
       lastTimeRewardApplicable,
+      periodFinish,
       currentStake,
       claimableRbn,
       unstakedBalance,
@@ -92,8 +95,9 @@ const useStakingPoolData: UseStakingPoolData = (
 
     setData({
       poolSize,
-      expectedYield,
+      poolRewardForDuration,
       lastTimeRewardApplicable: lastTimeRewardApplicable.toString(),
+      periodFinish,
       claimHistory: claimEvents.map((event: any) => ({
         amount: BigNumber.from(event.data),
       })),
