@@ -75,17 +75,58 @@ const TransactionContainer = styled.div`
   margin-bottom: 18px;
   padding: 16px;
   display: flex;
-  align-items: center;
 
   &:last-child {
     margin-bottom: 40px;
   }
 `;
 
+const TransactionTypeContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  background: #ffffff14;
+  border-radius: 100px;
+  margin-right: 8px;
+  color: ${colors.primaryText};
+  font-size: 20px;
+`;
+
+const StakeOuterCircle = styled.div`
+  display: flex;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ffffff66;
+  border-radius: 10px;
+`;
+
+const StakeCircle = styled.div<{ type: "solid" | "hollow" }>`
+  height: 12px;
+  width: 12px;
+  border-radius: 6px;
+
+  ${(props) => {
+    switch (props.type) {
+      case "solid":
+        return `
+          background: ${colors.primaryText};
+        `;
+      case "hollow":
+        return `
+          border: ${theme.border.width} ${theme.border.style} ${colors.primaryText}
+        `;
+    }
+  }}
+`;
+
 const TransactionInfo = styled.div`
   display: flex;
   flex-wrap: wrap;
-  flex-grow: 1;
+  flex: 1;
 `;
 
 const TransactionInfoRow = styled.div`
@@ -98,13 +139,22 @@ const TransactionInfoRow = styled.div`
   }
 `;
 
-const TransactionInfoText = styled(SecondaryText)`
+const TransactionInfoText = styled(SecondaryText)<{ variant?: "dark" }>`
   color: ${colors.primaryText}A3;
   font-size: 12px;
   line-height: 16px;
   font-weight: 400;
   display: flex;
   align-items: center;
+
+  ${(props) => {
+    switch (props.variant) {
+      case "dark":
+        return `color: ${colors.primaryText}3D`;
+      default:
+        return ``;
+    }
+  }}
 `;
 
 const AssetDisplayTitle = styled(Title)`
@@ -119,6 +169,12 @@ const TransactionSecondaryInfoText = styled(Subtitle)`
   line-height: 16px;
 `;
 
+const Divider = styled.div`
+  border-left: 2px ${theme.border.style} #ffffff3d;
+  height: auto;
+  margin: 4px 16px 4px 16px;
+`;
+
 const ExternalLink = styled.div`
   margin: 0 8px 0px 24px;
   width: 24px;
@@ -126,26 +182,6 @@ const ExternalLink = styled.div`
 
 const ExternalLinkIcon = styled(ExternalIcon)`
   opacity: 0.48;
-`;
-
-const StakeCircle = styled.div<{ type: "solid" | "hollow" }>`
-  height: 8px;
-  width: 8px;
-  margin-right: 6px;
-  border-radius: 4px;
-
-  ${(props) => {
-    switch (props.type) {
-      case "solid":
-        return `
-          background: ${colors.text};
-        `;
-      case "hollow":
-        return `
-          border: ${theme.border.width} ${theme.border.style} ${colors.text}
-        `;
-    }
-  }}
 `;
 
 const perPage = 6;
@@ -267,7 +303,11 @@ const PortfolioTransactions = () => {
       case "transfer":
         return "↑";
       case "stake":
-        return <StakeCircle type="solid" />;
+        return (
+          <StakeOuterCircle>
+            <StakeCircle type="solid" />
+          </StakeOuterCircle>
+        );
       case "unstake":
         return <StakeCircle type="hollow" />;
     }
@@ -295,13 +335,21 @@ const PortfolioTransactions = () => {
     return processedTransactions
       .slice((page - 1) * perPage, page * perPage)
       .map((transaction) => (
-        <TransactionContainer key={transaction.id}>
-          <TransactionInfo>
+        <TransactionContainer
+          key={transaction.id}
+          className="align-items-md-center"
+        >
+          <TransactionTypeContainer>
+            {renderTransactionSymbol(transaction.type)}
+          </TransactionTypeContainer>
+
+          {/* Desktop */}
+          <TransactionInfo className="d-none d-md-flex">
             <TransactionInfoRow>
               {/* Title */}
               <TransactionTitle
                 color={getVaultColor(transaction.vault.symbol)}
-                className="flex-grow-1"
+                className="mr-auto"
               >
                 {
                   Object.keys(VaultNameOptionMap)[
@@ -329,10 +377,9 @@ const PortfolioTransactions = () => {
               </AssetDisplayTitle>
             </TransactionInfoRow>
             <TransactionInfoRow>
-              {/* Type and time */}
-              <TransactionInfoText className="flex-grow-1">
-                {renderTransactionSymbol(transaction.type)}
-                {` ${capitalize(transaction.type)} - ${moment(
+              {/* Type and Time */}
+              <TransactionInfoText className="mr-auto">
+                {`${capitalize(transaction.type)} - ${moment(
                   transaction.timestamp,
                   "X"
                 ).fromNow()}`}
@@ -349,11 +396,56 @@ const PortfolioTransactions = () => {
               </TransactionSecondaryInfoText>
             </TransactionInfoRow>
           </TransactionInfo>
+
+          {/* Mobile */}
+          <TransactionInfo className="d-flex d-md-none">
+            <TransactionInfoRow>
+              {/* Title */}
+              <TransactionTitle color={getVaultColor(transaction.vault.symbol)}>
+                {
+                  Object.keys(VaultNameOptionMap)[
+                    Object.values(VaultNameOptionMap).indexOf(
+                      transaction.vault.symbol as VaultOptions
+                    )
+                  ]
+                }
+              </TransactionTitle>
+
+              <Divider />
+
+              {/* Type */}
+              <Title>{transaction.type}</Title>
+            </TransactionInfoRow>
+            <TransactionInfoRow>
+              {/* Amount in crypto */}
+              <TransactionInfoText className="mr-1">
+                {renderTransactionAmountText(
+                  transaction.amount,
+                  transaction.type,
+                  "eth",
+                  getAssets(transaction.vault.symbol)
+                )}
+              </TransactionInfoText>
+              <TransactionInfoText variant="dark">
+                {getTransactionAssetText(
+                  transaction.vault.symbol,
+                  transaction.type
+                )}
+              </TransactionInfoText>
+            </TransactionInfoRow>
+            <div className="pt-2">
+              {/* Type and Time */}
+              <TransactionInfoText className="mr-auto">
+                {moment(transaction.timestamp, "X").fromNow()}
+              </TransactionInfoText>
+            </div>
+          </TransactionInfo>
+
           <BaseLink
             to={`${getEtherscanURI()}/tx/${transaction.txhash}`}
             target="_blank"
             rel="noreferrer noopener"
-            className="d-none d-sm-block"
+            className="d-none d-md-block"
           >
             <ExternalLink>
               <ExternalLinkIcon />
