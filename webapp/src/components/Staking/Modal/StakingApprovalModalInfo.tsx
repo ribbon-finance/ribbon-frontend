@@ -1,5 +1,6 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
+import moment from "moment";
 
 import {
   BaseUnderlineLink,
@@ -13,6 +14,7 @@ import { getAssetLogo } from "shared/lib/utils/asset";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { StakingPoolData } from "../../../models/staking";
 import colors from "shared/lib/designSystem/colors";
+import ModalContentExtra from "../../Common/ModalContentExtra";
 
 const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
   display: flex;
@@ -53,6 +55,14 @@ const ErrorMessage = styled(Title)`
   color: ${colors.red};
 `;
 
+const WarningText = styled(PrimaryText)<{ color: string }>`
+  display: flex;
+  color: ${(props) => props.color};
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+`;
+
 interface StakingApprovalModalInfoProps {
   vaultOption: VaultOptions;
   stakingPoolData: StakingPoolData;
@@ -64,6 +74,7 @@ const StakingApprovalModalInfo: React.FC<StakingApprovalModalInfoProps> = ({
   stakingPoolData,
   onApprove,
 }) => {
+  const color = getVaultColor(vaultOption);
   const logo = useMemo(() => {
     const asset = getAssets(vaultOption);
     const Logo = getAssetLogo(asset);
@@ -76,10 +87,22 @@ const StakingApprovalModalInfo: React.FC<StakingApprovalModalInfoProps> = ({
     }
   }, [vaultOption]);
 
+  const renderStakingFinishDate = useCallback(() => {
+    if (stakingPoolData.periodFinish) {
+      const finishPeriod = moment(stakingPoolData.periodFinish, "X");
+
+      if (finishPeriod.diff(moment()) > 0) {
+        return finishPeriod.format("MMM Do, YYYY");
+      }
+    }
+
+    return "TBA";
+  }, [stakingPoolData]);
+
   return (
     <>
       <ContentColumn marginTop={-8}>
-        <LogoContainer color={getVaultColor(vaultOption)}>{logo}</LogoContainer>
+        <LogoContainer color={color}>{logo}</LogoContainer>
       </ContentColumn>
       <ContentColumn marginTop={8}>
         <ApproveAssetTitle str={vaultOption}>{vaultOption}</ApproveAssetTitle>
@@ -110,10 +133,18 @@ const StakingApprovalModalInfo: React.FC<StakingApprovalModalInfoProps> = ({
           Approve
         </ActionButton>
       </ContentColumn>
-      {stakingPoolData.unstakedBalance.isZero() && (
+      {stakingPoolData.unstakedBalance.isZero() ? (
         <ContentColumn marginTop={16}>
           <ErrorMessage className="mb-2">WALLET BALANCE: 0</ErrorMessage>
         </ContentColumn>
+      ) : (
+        <ModalContentExtra>
+          <WarningText color={color}>
+            IMPORTANT: To claim RBN rewards you must remain staked in the pool
+            until the end of the liquidity mining program (
+            {renderStakingFinishDate()}).
+          </WarningText>
+        </ModalContentExtra>
       )}
     </>
   );

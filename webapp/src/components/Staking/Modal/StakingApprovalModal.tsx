@@ -33,6 +33,7 @@ const StyledModal = styled(BaseModal)<{ height: number }>`
   }
 
   .modal-content {
+    transition: min-height 0.25s;
     min-height: ${(props) => props.height}px;
     overflow: hidden;
   }
