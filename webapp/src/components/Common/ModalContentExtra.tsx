@@ -6,7 +6,7 @@ import colors from "shared/lib/designSystem/colors";
 
 const EndingBorder = styled.div`
   height: 16px;
-  margin: -16px -16px 0px -16px;
+  margin: 0px -16px 0px -16px;
   border-radius: ${theme.border.radius};
   border-bottom: ${theme.border.width} ${theme.border.style} ${colors.border};
   background: ${colors.background};

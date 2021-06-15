@@ -10,12 +10,12 @@ export const Button = styled.button`
   line-height: 24px;
   text-align: center;
   text-transform: uppercase;
-  outline: none !important;
+  outline: none;
 
   &:active,
   &:focus {
-    outline: none !important;
-    box-shadow: none !important;
+    outline: none;
+    box-shadow: none;
   }
 `;
 
@@ -44,6 +44,7 @@ export const BaseActionButton = styled(Button)<{
       ? `
         background: ${props.color}14;
         color: ${props.color};
+        box-shadow: 8px 16px 64px ${props.color}14;
 
         &:hover {
           background: ${props.color}${props.disabled ? 14 : 29};

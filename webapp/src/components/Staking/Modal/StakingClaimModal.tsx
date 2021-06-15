@@ -257,6 +257,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
                 className="btn py-3 mb-2"
                 onClick={handleClaim}
                 color={getVaultColor(vaultOption)}
+                disabled={stakingPoolData.claimableRbn.isZero()}
               >
                 Claim $RBN
               </ActionButton>
