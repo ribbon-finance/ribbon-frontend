@@ -230,7 +230,6 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
 
   const handleClose = useCallback(() => {
     onClose();
-    console.log(step);
     if (step === "form" || step === "preview" || step === "walletAction") {
       setStep("warning");
     }
@@ -289,16 +288,12 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
    */
   useEffect(() => {
     if (
-      !show ||
-      (show &&
-        step === "warning" &&
-        !stake &&
-        moment(stakingPoolData.periodFinish, "X").diff(moment()) > 0)
+      show &&
+      step === "warning" &&
+      !(!stake && moment(stakingPoolData.periodFinish, "X").diff(moment()) > 0)
     ) {
-      return;
+      setStep("form");
     }
-
-    setStep("form");
   }, [show, stake, stakingPoolData, step]);
 
   /**

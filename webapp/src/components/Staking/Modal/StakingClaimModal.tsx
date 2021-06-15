@@ -226,7 +226,8 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
             <InfoColumn>
               <SecondaryText>Time till next reward</SecondaryText>
               <InfoData>
-                {toNextRewardDuration
+                {toNextRewardDuration &&
+                toNextRewardDuration.asMilliseconds() > 0
                   ? `${toNextRewardDuration.days()}D ${toNextRewardDuration.hours()}H ${toNextRewardDuration.minutes()}M`
                   : "---"}
               </InfoData>

@@ -84,9 +84,7 @@ export const VaultList: VaultOptions[] = isDevelopment()
   ? FullVaultList
   : FullVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
 
-export const LiquidityMiningPoolOrder: VaultOptions[] = [
-  ...VaultList,
-].reverse();
+export const LiquidityMiningPoolOrder: VaultOptions[] = [...VaultList];
 
 export const isPutVault = (vault: VaultOptions): boolean =>
   PutThetaVault.includes(vault);
