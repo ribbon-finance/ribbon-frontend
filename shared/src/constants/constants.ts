@@ -61,11 +61,10 @@ export const VaultLiquidityMiningMap: {
       "rETH-THETA": deployment.kovan.RibbonETHCoveredCallStakingReward,
     }
   : {
-      // TODO: Replace with mainnet addresses
-      "rUSDC-ETH-P-THETA": "",
+      "rUSDC-ETH-P-THETA": deployment.mainnet.RibbonETHPutStakingReward,
       "rUSDC-BTC-P-THETA": "",
-      "rBTC-THETA": "",
-      "rETH-THETA": "",
+      "rBTC-THETA": deployment.mainnet.RibbonWBTCCoveredCallStakingReward,
+      "rETH-THETA": deployment.mainnet.RibbonETHCoveredCallStakingReward,
     };
 
 export const FullVaultList = [
