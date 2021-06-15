@@ -281,6 +281,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
       <StakingApprovalModal
         show={showApprovalModal}
         onClose={() => setShowApprovalModal(false)}
+        stakingPoolData={stakingPoolData}
         vaultOption={vaultOption}
       />
       <StakingActionModal

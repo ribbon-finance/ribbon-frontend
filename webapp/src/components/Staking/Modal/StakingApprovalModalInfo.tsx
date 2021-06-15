@@ -11,6 +11,8 @@ import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import { getVaultColor } from "shared/lib/utils/vault";
+import { StakingPoolData } from "../../../models/staking";
+import colors from "shared/lib/designSystem/colors";
 
 const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
   display: flex;
@@ -47,13 +49,19 @@ const ApproveAssetTitle = styled(Title)<{ str: string }>`
   `}
 `;
 
+const ErrorMessage = styled(Title)`
+  color: ${colors.red};
+`;
+
 interface StakingApprovalModalInfoProps {
   vaultOption: VaultOptions;
+  stakingPoolData: StakingPoolData;
   onApprove: () => void;
 }
 
 const StakingApprovalModalInfo: React.FC<StakingApprovalModalInfoProps> = ({
   vaultOption,
+  stakingPoolData,
   onApprove,
 }) => {
   const logo = useMemo(() => {
@@ -97,10 +105,16 @@ const StakingApprovalModalInfo: React.FC<StakingApprovalModalInfoProps> = ({
           className="btn py-3 mb-2"
           onClick={onApprove}
           color={getVaultColor(vaultOption)}
+          disabled={stakingPoolData.unstakedBalance.isZero()}
         >
           Approve
         </ActionButton>
       </ContentColumn>
+      {stakingPoolData.unstakedBalance.isZero() && (
+        <ContentColumn marginTop={16}>
+          <ErrorMessage className="mb-2">WALLET BALANCE: 0</ErrorMessage>
+        </ContentColumn>
+      )}
     </>
   );
 };
