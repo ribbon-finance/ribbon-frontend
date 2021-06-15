@@ -118,7 +118,7 @@ const KPI = styled.div`
 `;
 
 const DepositAmount = styled(Title)<{ active: boolean }>`
-  font-size: 40px;
+  font-size: 32px;
   line-height: 48px;
   ${(props) => (!props.active ? `opacity: 0.16;` : null)}
 `;
@@ -131,7 +131,6 @@ const DepositCurrency = styled(Subtitle)`
 `;
 
 const KPIText = styled(Title)<{ active: boolean; state?: "green" | "red" }>`
-  font-size: 18px;
   line-height: 24px;
   color: ${(props) => {
     if (!props.active) {

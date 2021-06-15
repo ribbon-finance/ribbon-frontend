@@ -43,6 +43,7 @@ const FilterDropdownMenu = styled.div<{
     props.isOpen
       ? `
           position: absolute;
+          z-index: 2000;
           ${(() => {
             switch (props.horizontalOrientation) {
               case "left":

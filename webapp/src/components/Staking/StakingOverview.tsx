@@ -18,6 +18,7 @@ import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { BigNumber } from "@ethersproject/bignumber";
 import { formatBigNumber } from "shared/lib/utils/math";
 import useRBNToken from "../../hooks/useRBNToken";
+import sizes from "shared/lib/designSystem/sizes";
 
 const OverviewContainer = styled.div`
   display: flex;
@@ -92,6 +93,15 @@ const OverviewKPI = styled.div`
 
   &:nth-child(odd) {
     border-left: none;
+  }
+
+  @media (max-width: ${sizes.sm}px) {
+    width: 100%;
+    border-top: none;
+
+    &:nth-child(odd) {
+      border-left: ${theme.border.width} ${theme.border.style} ${colors.border};
+    }
   }
 `;
 

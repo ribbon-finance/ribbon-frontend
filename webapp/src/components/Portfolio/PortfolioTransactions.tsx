@@ -42,7 +42,7 @@ import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
 
 const PortfolioTransactionsContainer = styled.div`
-  margin-top: 48px;
+  margin-top: 64px;
   display: flex;
   flex: 1;
   flex-wrap: wrap;
@@ -53,7 +53,7 @@ const SectionTitle = styled(Title)`
   line-height: 24px;
   margin-right: 24px;
 
-  @media (max-width: ${sizes.sm}px) {
+  @media (max-width: ${sizes.md}px) {
     width: 100%;
     margin-bottom: 16px;
   }
@@ -181,7 +181,11 @@ const ExternalLink = styled.div`
 `;
 
 const ExternalLinkIcon = styled(ExternalIcon)`
-  opacity: 0.48;
+  opacity: ${theme.hover.opacity};
+
+  &:hover {
+    opacity: 1;
+  }
 `;
 
 const perPage = 6;
@@ -448,7 +452,7 @@ const PortfolioTransactions = () => {
             className="d-none d-md-block"
           >
             <ExternalLink>
-              <ExternalLinkIcon />
+              <ExternalLinkIcon color="white" />
             </ExternalLink>
           </BaseLink>
         </TransactionContainer>
@@ -467,14 +471,14 @@ const PortfolioTransactions = () => {
   return (
     <PortfolioTransactionsContainer>
       <div className="d-flex flex-wrap align-items-center w-100 mb-4">
-        <SectionTitle>Transactions</SectionTitle>
+        <SectionTitle>Transaction History</SectionTitle>
         <FilterDropdown
           // @ts-ignore
           options={portfolioTransactionActivityFilters}
           value={activityFilter}
           // @ts-ignore
           onSelect={setActivityFilter}
-          dropdownOrientation={width > sizes.sm ? "right" : "left"}
+          dropdownOrientation={width > sizes.md ? "right" : "left"}
         />
         <FilterDropdown
           // @ts-ignore

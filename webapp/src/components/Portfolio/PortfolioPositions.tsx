@@ -26,9 +26,12 @@ import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { VaultAccount } from "shared/lib/models/vault";
 import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
 import { getVaultColor } from "shared/lib/utils/vault";
+import useStakingPoolData from "../../hooks/useStakingPoolData";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "../Common/HelpInfo";
 
 const PortfolioPositionsContainer = styled.div`
-  margin-top: 48px;
+  margin-top: 64px;
   display: flex;
   flex-wrap: wrap;
   width: 100%;
@@ -174,10 +177,12 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   const { price: assetPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: asset,
   });
+  const { data: stakingPoolData, loading: stakingPoolLoading } =
+    useStakingPoolData(vaultAccount.vault.symbol);
   const animatedLoadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
-    assetPriceLoading
+    assetPriceLoading || stakingPoolLoading
   );
   const vaultName =
     Object.keys(VaultNameOptionMap)[
@@ -229,11 +234,33 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
           <PositionInfo>
             <PositionInfoRow>
               {/* Title */}
-              <StyledTitle className="flex-grow-1">{vaultName}</StyledTitle>
+              <div className="d-flex align-items-center flex-grow-1">
+                <StyledTitle>{vaultAccount.vault.symbol}</StyledTitle>
+                <TooltipExplanation
+                  title={vaultAccount.vault.symbol}
+                  explanation={
+                    productCopies[vaultAccount.vault.symbol].liquidityMining
+                      .explanation
+                  }
+                  renderContent={({ ref, ...triggerHandler }) => (
+                    <HelpInfo containerRef={ref} {...triggerHandler}>
+                      i
+                    </HelpInfo>
+                  )}
+                  learnMoreURL="https://ribbon.finance/faq"
+                />
+              </div>
 
-              {/* Amount in Crypto */}
+              {/* Amount in Vault Token */}
               <Title>
-                {renderAmountText(vaultAccount.totalBalance, "eth")}
+                {stakingPoolLoading
+                  ? animatedLoadingText
+                  : renderAmountText(
+                      stakingPoolData.unstakedBalance.add(
+                        stakingPoolData.currentStake
+                      ),
+                      "eth"
+                    )}
               </Title>
             </PositionInfoRow>
             <PositionInfoRow>
@@ -257,18 +284,17 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
             </KPIContainer>
           </PositionInfo>
         </PositionMainContainer>
-        {!vaultAccount.totalStakedBalance.isZero() && (
-          <PositionStakedContainer>
-            <PositionInfoRow>
-              <PositionInfoText className="flex-grow-1">
-                Staked Amount
-              </PositionInfoText>
-              <PositionSecondaryInfoText>
-                {renderAmountText(vaultAccount.totalStakedBalance, "eth")}
-              </PositionSecondaryInfoText>
-            </PositionInfoRow>
-          </PositionStakedContainer>
-        )}
+
+        <PositionStakedContainer>
+          <PositionInfoRow>
+            <PositionInfoText className="flex-grow-1">
+              Staked Amount
+            </PositionInfoText>
+            <PositionSecondaryInfoText>
+              {renderAmountText(vaultAccount.totalStakedBalance, "eth")}
+            </PositionSecondaryInfoText>
+          </PositionInfoRow>
+        </PositionStakedContainer>
       </PositionContainer>
     </PositionLink>
   );
