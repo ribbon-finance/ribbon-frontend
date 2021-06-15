@@ -156,8 +156,8 @@ const StakingOverview = () => {
         <Title className="mt-3 w-100">Staking On Ribbon</Title>
         <OverviewDescription className="mt-3 w-100">
           By staking your vault share tokens, you are able to earn RBN token
-          rewards. RBN rewards are released on a weekly basis. Any withdrawals
-          before July 19 forfeits accrued rewards.
+          rewards. RBN rewards are released on a weekly basis. Any unstaking
+          before July 16 forfeits accrued rewards.
         </OverviewDescription>
         <UnderlineLink
           to="https://ribbon.finance/faq"
