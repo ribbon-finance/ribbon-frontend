@@ -12,7 +12,7 @@ import { PendingTransaction } from "shared/lib/store/types";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { getDefaultNetworkName } from "shared/lib/utils/env";
 import { formatBigNumber } from "shared/lib/utils/math";
-import { capitalize } from "../../utils/text";
+import { capitalize } from "shared/lib/utils/text";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import Toast from "shared/lib/components/Common/BaseToast";
 

@@ -14,6 +14,7 @@ const HelpContainer = styled.div`
   border: ${theme.border.width} ${theme.border.style} ${colors.borderLight};
   border-radius: 100px;
   margin-left: 8px;
+  z-index: 1;
 `;
 
 const HelpText = styled(SecondaryText)`

@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useMemo } from "react";
 import { ethers } from "ethers";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
@@ -8,24 +8,29 @@ import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import PerformanceSection from "./PerformanceSection";
 import ActionsForm from "../../components/ActionsForm/ActionsForm";
-import Theta from "shared/lib/assets/icons/theta/Theta";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { formatSignificantDecimals } from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
 import YourPosition from "../../components/ActionsForm/YourPosition";
 import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
-import { VaultList, VaultOptions } from "shared/lib/constants/constants";
+import {
+  getAssets,
+  VaultList,
+  VaultOptions,
+} from "shared/lib/constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultOption from "../../hooks/useVaultOption";
+import { getVaultColor } from "shared/lib/utils/vault";
+import { getAssetLogo } from "shared/lib/utils/asset";
 
 const { formatUnits } = ethers.utils;
 
-const HeroContainer = styled.div`
+const HeroContainer = styled.div<{ color: string }>`
   background: linear-gradient(
     96.84deg,
-    rgba(252, 10, 84, 0.16) 1.04%,
-    rgba(252, 10, 84, 0.0256) 98.99%
+    ${(props) => props.color}14 1.04%,
+    ${(props) => props.color}03 98.99%
   );
   padding: 40px 0;
   overflow: hidden;
@@ -54,10 +59,13 @@ const AttributePill = styled.div`
 `;
 
 const SplashImage = styled.div`
+  display: flex;
+  align-items: center;
   z-index: 0;
   top: 0;
   right: 0;
   width: 600px;
+  height: 100%;
 
   @media (max-width: ${sizes.xl}px) {
     display: none;
@@ -137,8 +145,26 @@ const HeroSection: React.FC<{
   depositCapBar: ReactNode;
   vaultOption: VaultOptions;
 }> = ({ depositCapBar, vaultOption }) => {
+  const logo = useMemo(() => {
+    const asset = getAssets(vaultOption);
+    const Logo = getAssetLogo(asset);
+
+    switch (asset) {
+      case "WETH":
+        return <Logo width="55%" style={{ marginTop: 40 }} />;
+      case "WBTC":
+        return <Logo height="130%" style={{ marginTop: 40 }} />;
+      case "USDC":
+        return <Logo height="180%" style={{ marginTop: 40 }} />;
+      default:
+        return <Logo />;
+    }
+  }, [vaultOption]);
   return (
-    <HeroContainer className="position-relative">
+    <HeroContainer
+      className="position-relative"
+      color={getVaultColor(vaultOption)}
+    >
       <div className="container">
         <div className="row mx-lg-n1">
           <div style={{ zIndex: 1 }} className="col-xl-6 d-flex flex-column">
@@ -156,7 +182,7 @@ const HeroSection: React.FC<{
           </div>
 
           <SplashImage className="position-absolute offset-xl-6">
-            <Theta viewBox="0 120 523.74982 523.74988" />
+            {logo}
           </SplashImage>
         </div>
       </div>

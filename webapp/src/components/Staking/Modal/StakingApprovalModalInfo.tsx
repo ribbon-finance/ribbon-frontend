@@ -1,5 +1,6 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
+import moment from "moment";
 
 import {
   BaseUnderlineLink,
@@ -7,14 +8,13 @@ import {
   SecondaryText,
   Title,
 } from "shared/lib/designSystem";
-import colors from "shared/lib/designSystem/colors";
-import {
-  USDCLogo,
-  WBTCLogo,
-  WETHLogo,
-} from "shared/lib/assets/icons/erc20Assets";
 import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 import { ActionButton } from "shared/lib/components/Common/buttons";
+import { getAssetLogo } from "shared/lib/utils/asset";
+import { getVaultColor } from "shared/lib/utils/vault";
+import { StakingPoolData } from "../../../models/staking";
+import colors from "shared/lib/designSystem/colors";
+import ModalContentExtra from "../../Common/ModalContentExtra";
 
 const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
   display: flex;
@@ -26,51 +26,14 @@ const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
       : `${props.marginTop || 24}px`};
 `;
 
-const LogoContainer = styled.div`
+const LogoContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 64px;
   height: 64px;
   border-radius: 100px;
-  background: ${colors.green}29;
-`;
-
-const GreenWBTCLogo = styled(WBTCLogo)`
-  width: 100%;
-  && * {
-    fill: ${colors.green};
-  }
-`;
-
-const GreenUSDCLogo = styled(USDCLogo)`
-  margin: -8px;
-  width: 100%;
-
-  && .background {
-    fill: none;
-  }
-
-  && .content {
-    fill: ${colors.green};
-  }
-`;
-
-const GreenWETHLogo = styled(WETHLogo)`
-  .cls-1,
-  .cls-5 {
-    fill: ${colors.green}66;
-  }
-
-  .cls-2,
-  .cls-6 {
-    fill: ${colors.green}CC;
-  }
-
-  .cls-3,
-  .cls-4 {
-    fill: ${colors.green};
-  }
+  background: ${(props) => props.color}29;
 `;
 
 const ApproveAssetTitle = styled(Title)<{ str: string }>`
@@ -88,30 +51,58 @@ const ApproveAssetTitle = styled(Title)<{ str: string }>`
   `}
 `;
 
+const ErrorMessage = styled(Title)`
+  color: ${colors.red};
+`;
+
+const WarningText = styled(PrimaryText)<{ color: string }>`
+  display: flex;
+  color: ${(props) => props.color};
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+`;
+
 interface StakingApprovalModalInfoProps {
   vaultOption: VaultOptions;
+  stakingPoolData: StakingPoolData;
   onApprove: () => void;
 }
 
 const StakingApprovalModalInfo: React.FC<StakingApprovalModalInfoProps> = ({
   vaultOption,
+  stakingPoolData,
   onApprove,
 }) => {
+  const color = getVaultColor(vaultOption);
   const logo = useMemo(() => {
-    switch (getAssets(vaultOption)) {
-      case "WBTC":
-        return <GreenWBTCLogo />;
-      case "USDC":
-        return <GreenUSDCLogo />;
+    const asset = getAssets(vaultOption);
+    const Logo = getAssetLogo(asset);
+
+    switch (asset) {
+      case "WETH":
+        return <Logo height="48px" />;
       default:
-        return <GreenWETHLogo height="48px" />;
+        return <Logo />;
     }
   }, [vaultOption]);
+
+  const renderStakingFinishDate = useCallback(() => {
+    if (stakingPoolData.periodFinish) {
+      const finishPeriod = moment(stakingPoolData.periodFinish, "X");
+
+      if (finishPeriod.diff(moment()) > 0) {
+        return finishPeriod.format("MMM Do, YYYY");
+      }
+    }
+
+    return "TBA";
+  }, [stakingPoolData]);
 
   return (
     <>
       <ContentColumn marginTop={-8}>
-        <LogoContainer>{logo}</LogoContainer>
+        <LogoContainer color={color}>{logo}</LogoContainer>
       </ContentColumn>
       <ContentColumn marginTop={8}>
         <ApproveAssetTitle str={vaultOption}>{vaultOption}</ApproveAssetTitle>
@@ -133,10 +124,28 @@ const StakingApprovalModalInfo: React.FC<StakingApprovalModalInfoProps> = ({
         </BaseUnderlineLink>
       </ContentColumn>
       <ContentColumn marginTop="auto">
-        <ActionButton className="btn py-3 mb-2" onClick={onApprove}>
+        <ActionButton
+          className="btn py-3 mb-2"
+          onClick={onApprove}
+          color={getVaultColor(vaultOption)}
+          disabled={stakingPoolData.unstakedBalance.isZero()}
+        >
           Approve
         </ActionButton>
       </ContentColumn>
+      {stakingPoolData.unstakedBalance.isZero() ? (
+        <ContentColumn marginTop={16}>
+          <ErrorMessage className="mb-2">WALLET BALANCE: 0</ErrorMessage>
+        </ContentColumn>
+      ) : (
+        <ModalContentExtra>
+          <WarningText color={color}>
+            IMPORTANT: To claim RBN rewards you must remain staked in the pool
+            until the end of the liquidity mining program (
+            {renderStakingFinishDate()}).
+          </WarningText>
+        </ModalContentExtra>
+      )}
     </>
   );
 };

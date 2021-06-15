@@ -15,7 +15,7 @@ import theme from "shared/lib/designSystem/theme";
 import { useAssetsPrice } from "../../hooks/useAssetPrice";
 import useBalances from "../../hooks/useBalances";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import { assetToFiat } from "shared/lib/utils/math";
+import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
 import PerformanceChart from "../PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../PerformanceChart/types";
 import sizes from "shared/lib/designSystem/sizes";
@@ -24,6 +24,7 @@ import { getAssets, VaultList } from "shared/lib/constants/constants";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { AssetsList } from "shared/lib/store/types";
 import { getAssetDecimals } from "shared/lib/utils/asset";
+import useRBNTokenAccount from "../../hooks/useRBNTokenAccount";
 
 const PerformanceContainer = styled.div`
   display: flex;
@@ -87,29 +88,38 @@ const ConnectWalletButton = styled(PrimaryText)`
 `;
 
 const KPIColumn = styled.div`
-  width: 50%;
+  width: calc(100% / 3);
   padding: 16px;
   display: flex;
   flex-wrap: wrap;
+  border-left: ${theme.border.width} ${theme.border.style} ${colors.border};
 
   &:first-child {
-    border-right: ${theme.border.width} ${theme.border.style} ${colors.border};
+    border-left: none;
   }
 
-  @media (max-width: ${sizes.sm}px) {
+  @media (max-width: ${sizes.md}px) {
     width: 100%;
+    border-left: unset;
+    border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
 
     &:first-child {
-      border-right: none;
-      border-bottom: ${theme.border.width} ${theme.border.style}
-        ${colors.border};
+      border-top: none;
     }
   }
 `;
 
-const ColumnLabel = styled(SecondaryText)`
+const ColumnLabel = styled(SecondaryText)<{ variant?: "red" }>`
   font-size: 12px;
   width: 100%;
+  ${(props) => {
+    switch (props.variant) {
+      case "red":
+        return `color: ${colors.red};`;
+      default:
+        return ``;
+    }
+  }}
 `;
 
 const KPI = styled.div`
@@ -118,7 +128,7 @@ const KPI = styled.div`
 `;
 
 const DepositAmount = styled(Title)<{ active: boolean }>`
-  font-size: 40px;
+  font-size: 32px;
   line-height: 48px;
   ${(props) => (!props.active ? `opacity: 0.16;` : null)}
 `;
@@ -131,7 +141,6 @@ const DepositCurrency = styled(Subtitle)`
 `;
 
 const KPIText = styled(Title)<{ active: boolean; state?: "green" | "red" }>`
-  font-size: 18px;
   line-height: 24px;
   color: ${(props) => {
     if (!props.active) {
@@ -164,6 +173,8 @@ const PortfolioPerformance = () => {
     useState<number>();
   const [rangeFilter, setRangeFilter] = useState<dateFilterType>("1m");
   const [, setShowConnectWalletModal] = useConnectWalletModal();
+  const { data: RBNTokenAccount, loading: RBNTokenAccountLoading } =
+    useRBNTokenAccount();
 
   const { deposit: vaultTotalDeposit, balance: vaultBalanceInAsset } =
     useMemo(() => {
@@ -212,7 +223,10 @@ const PortfolioPerformance = () => {
   const { balances: balanceUpdates, loading: balanceUpdatesLoading } =
     useBalances(undefined, afterDate ? afterDate.unix() : undefined);
   const loading =
-    assetPricesLoading || vaultAccountLoading || balanceUpdatesLoading;
+    assetPricesLoading ||
+    vaultAccountLoading ||
+    balanceUpdatesLoading ||
+    RBNTokenAccountLoading;
   const animatedLoadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
@@ -382,6 +396,20 @@ const PortfolioPerformance = () => {
     )}%`;
   }, [active, loading, animatedLoadingText, calculatedKPI]);
 
+  const renderRBNBalanceText = useCallback(() => {
+    if (!active) {
+      return "---";
+    }
+
+    if (loading) {
+      return animatedLoadingText;
+    }
+
+    return RBNTokenAccount
+      ? formatBigNumber(RBNTokenAccount.balance, 6, 18)
+      : "0.00";
+  }, [RBNTokenAccount, active, animatedLoadingText, loading]);
+
   const depositHeader = useMemo(
     () => (
       <DepositChartExtra>
@@ -491,6 +519,10 @@ const PortfolioPerformance = () => {
           >
             {renderRoiText()}
           </KPIText>
+        </KPIColumn>
+        <KPIColumn>
+          <ColumnLabel variant="red">$RBN Balance</ColumnLabel>
+          <KPIText active={active}>{renderRBNBalanceText()}</KPIText>
         </KPIColumn>
       </PerformanceColumn>
     </PerformanceContainer>

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { ethers } from "ethers";
 
 import PositionIcon from "../../assets/img/positionIcon.svg";
-import { Title } from "shared/lib/designSystem";
+import { SecondaryText, Subtitle, Title } from "shared/lib/designSystem";
 import useAssetPrice from "../../hooks/useAssetPrice";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
@@ -12,15 +12,32 @@ import { getAssetDisplay } from "shared/lib/utils/asset";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
 import colors from "shared/lib/designSystem/colors";
+import theme from "shared/lib/designSystem/theme";
 
 const PositionsContainer = styled.div`
   font-family: VCR, sans-serif;
   color: white;
-  background: #1c1a19;
-  border: 1px solid #2b2b2b;
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
   box-sizing: border-box;
-  border-radius: 8px;
-  height: 76px;
+  border-radius: ${theme.border.radius};
+`;
+
+const PositionMainContent = styled.div`
+  border-radius: ${theme.border.radius};
+  border-bottom: ${theme.border.width} ${theme.border.style} ${colors.border};
+  background: ${colors.background};
+  padding: 16px;
+  z-index: 2;
+`;
+
+const PositionStakedContainer = styled.div`
+  display: flex;
+  align-items: center;
+  border-radius: ${theme.border.radius};
+  background: ${colors.backgroundLighter};
+  padding: 24px 16px 8px 16px;
+  margin-top: -16px;
+  z-index: 1;
 `;
 
 const PositionTitle = styled(Title)`
@@ -34,11 +51,16 @@ const ProfitText = styled.span<{ roi: number }>`
   text-transform: capitalize;
 `;
 
-const AmountText = styled.span`
+const AmountText = styled(Subtitle)`
   font-size: 12px;
   line-height: 16px;
-  text-transform: capitalize;
-  color: rgba(255, 255, 255, 0.64);
+  color: ${colors.text};
+  letter-spacing: unset;
+`;
+
+const StakeLabel = styled(SecondaryText)`
+  font-size: 12px;
+  line-height: 20px;
 `;
 
 interface YourPositionProps {
@@ -110,31 +132,51 @@ const YourPosition: React.FC<YourPositionProps> = ({
     );
   }, [vaultAccounts, vaultOption, decimals]);
 
-  return (
-    <PositionsContainer
-      className={`d-flex flex-row justify-content-center align-items-center ${className}`}
-    >
-      <img style={{ width: 45 }} src={PositionIcon} alt="Positions" />
+  const stakingText = useMemo(() => {
+    const vaultAccount = vaultAccounts[vaultOption];
 
-      <div className="w-100">
-        <div className="d-flex flex-row align-items-center justify-content-between ml-2">
-          <PositionTitle>Your Position</PositionTitle>
-          <PositionTitle>
-            {isLoading
-              ? loadingText
-              : `${positionAssetAmount} ${getAssetDisplay(asset)}`}
-          </PositionTitle>
-        </div>
-        <div className="d-flex flex-row align-items-center justify-content-between ml-2 mt-1">
-          <ProfitText roi={roi}>
-            {isLoading
-              ? loadingText
-              : `${roi >= 0 ? "+" : ""}${roi.toFixed(4)}%`}
-          </ProfitText>
-          <AmountText>{positionAssetAmountUSD}</AmountText>
-        </div>
-      </div>
-    </PositionsContainer>
+    if (vaultAccount && !vaultAccount.totalBalance.isZero()) {
+      return formatBigNumber(vaultAccount.totalStakedBalance, 6, decimals);
+    }
+
+    return undefined;
+  }, [decimals, vaultAccounts, vaultOption]);
+
+  return (
+    <>
+      <PositionsContainer className={`d-flex flex-column ${className}`}>
+        <PositionMainContent className="d-flex flex-row justify-content-center align-items-center">
+          <img style={{ width: 45 }} src={PositionIcon} alt="Positions" />
+
+          <div className="w-100">
+            <div className="d-flex flex-row align-items-center justify-content-between ml-2">
+              <PositionTitle>Your Position</PositionTitle>
+              <PositionTitle>
+                {isLoading
+                  ? loadingText
+                  : `${positionAssetAmount} ${getAssetDisplay(asset)}`}
+              </PositionTitle>
+            </div>
+            <div className="d-flex flex-row align-items-center justify-content-between ml-2 mt-1">
+              <ProfitText roi={roi}>
+                {isLoading
+                  ? loadingText
+                  : `${roi >= 0 ? "+" : ""}${roi.toFixed(4)}%`}
+              </ProfitText>
+              <AmountText>{positionAssetAmountUSD}</AmountText>
+            </div>
+          </div>
+        </PositionMainContent>
+        {stakingText && (
+          <PositionStakedContainer>
+            <StakeLabel className="mr-auto">
+              Staked Amount ({vaultOption})
+            </StakeLabel>
+            <AmountText>{stakingText}</AmountText>
+          </PositionStakedContainer>
+        )}
+      </PositionsContainer>
+    </>
   );
 };
 

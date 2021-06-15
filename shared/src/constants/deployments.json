@@ -22,7 +22,8 @@
     "RibbonETHCoveredCallStakingReward": "0x79F653c6eD5e2054ee038F34A3cE7ecAa1d89084",
     "RibbonWBTCCoveredCallStakingReward": "0x210139dAa8125155b64c69701df6f4E03EcF89f1",
     "RibbonWBTCPutStakingReward": "0xd5707Abde5366a5c2b9B490faf1f1e07B734a0a7",
-    "RibbonETHPutStakingReward": "0xa8A4bb7254210aADa78493c3034405C4B3140052"
+    "RibbonETHPutStakingReward": "0xa8A4bb7254210aADa78493c3034405C4B3140052",
+    "RibbonToken": "0xfD55C3bB2d78d4FB67EB27807c9FD9B36F5ce592"
   },
   "development": {
     "DataProvider": "0xA586074FA4Fe3E546A132a16238abe37951D41fE",
@@ -46,6 +47,7 @@
     "MerkleDistributor": "0x7902e4bfb1eb9F4559d55417Aee1Dc6E4b8cC1Bf",
     "RibbonETHCoveredCallStakingReward": "0xd46f9546ebAbAAC44DC1B6D0Ac1eeb357D34FBeB",
     "RibbonWBTCCoveredCallStakingReward": "0x1d27a3A92330693B897db9B1C26290Ba381049b1",
-    "RibbonETHPutStakingReward": "0xe79734461499246b6A8C8e768B96bebd0C891f63"
+    "RibbonETHPutStakingReward": "0xe79734461499246b6A8C8e768B96bebd0C891f63",
+    "RibbonToken": "0x6123B0049F904d730dB3C36a31167D9d4121fA6B"
   }
 }

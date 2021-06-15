@@ -9,6 +9,7 @@ import {
   BaseModalHeader,
   SecondaryText,
   Title,
+  PrimaryText,
 } from "shared/lib/designSystem";
 import { StakingPoolData } from "../../../models/staking";
 import { Modal } from "react-bootstrap";
@@ -25,8 +26,8 @@ import useStakingReward from "../../../hooks/useStakingReward";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import RBNClaimModalContent from "../../Common/RBNClaimModalContent";
-import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import HelpInfo from "../../Common/HelpInfo";
+import { getVaultColor } from "shared/lib/utils/vault";
+import ModalContentExtra from "../../Common/ModalContentExtra";
 
 const StyledModal = styled(BaseModal)`
   .modal-dialog {
@@ -77,14 +78,14 @@ const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
       : `${props.marginTop || 24}px`};
 `;
 
-const LogoContainer = styled.div`
+const LogoContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 64px;
   height: 64px;
   border-radius: 100px;
-  background: ${colors.red}29;
+  background: ${(props) => props.color}29;
 `;
 
 const AssetTitle = styled(Title)<{ str: string }>`
@@ -112,8 +113,12 @@ const InfoData = styled(Title)`
   text-transform: none;
 `;
 
-const ClaimableRBNData = styled(InfoData)`
-  color: ${colors.red};
+const WarningText = styled(PrimaryText)<{ color: string }>`
+  display: flex;
+  color: ${(props) => props.color};
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
 `;
 
 interface StakingClaimModalProps {
@@ -182,6 +187,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
   ]);
 
   const body = useMemo(() => {
+    const color = getVaultColor(vaultOption);
     switch (step) {
       case "info":
         /**
@@ -199,19 +205,22 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
               "milliseconds"
             )
           : undefined;
+        const periodFinish = stakingPoolData.periodFinish
+          ? moment(stakingPoolData.periodFinish, "X")
+          : undefined;
         return (
           <>
             <ContentColumn marginTop={-8}>
-              <LogoContainer>{logo}</LogoContainer>
+              <LogoContainer color={color}>{logo}</LogoContainer>
             </ContentColumn>
             <ContentColumn marginTop={8}>
               <AssetTitle str={vaultOption}>{vaultOption}</AssetTitle>
             </ContentColumn>
             <InfoColumn marginTop={40}>
               <SecondaryText>Unclaimed $RBN</SecondaryText>
-              <ClaimableRBNData>
+              <InfoData>
                 {formatBigNumber(stakingPoolData.claimableRbn, 2, 18)}
-              </ClaimableRBNData>
+              </InfoData>
             </InfoColumn>
             <InfoColumn>
               <SecondaryText>Claimed $RBN</SecondaryText>
@@ -229,26 +238,20 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
             <InfoColumn>
               <SecondaryText>Time till next reward</SecondaryText>
               <InfoData>
-                {toNextRewardDuration
+                {toNextRewardDuration &&
+                toNextRewardDuration.asMilliseconds() > 0
                   ? `${toNextRewardDuration.days()}D ${toNextRewardDuration.hours()}H ${toNextRewardDuration.minutes()}M`
                   : "---"}
               </InfoData>
             </InfoColumn>
             <InfoColumn>
               <div className="d-flex align-items-center">
-                <SecondaryText>Expected Yield (APY)</SecondaryText>
-                <TooltipExplanation
-                  title="EXPECTED YIELD (APY)"
-                  explanation={`By staking your ${vaultOption} tokens in the pool, you earn weekly $RBN rewards.`}
-                  renderContent={({ ref, ...triggerHandler }) => (
-                    <HelpInfo containerRef={ref} {...triggerHandler}>
-                      i
-                    </HelpInfo>
-                  )}
-                  learnMoreURL="https://ribbon.finance/faq"
-                />
+                <SecondaryText>Pool rewards</SecondaryText>
               </div>
-              <InfoData>{stakingPoolData.expectedYield.toFixed(2)}%</InfoData>
+              <InfoData>
+                {formatBigNumber(stakingPoolData.poolRewardForDuration, 6, 18)}{" "}
+                RBN
+              </InfoData>
             </InfoColumn>
             <ContentColumn marginTop="auto">
               <BaseUnderlineLink
@@ -261,11 +264,27 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
                 <ExternalIcon className="ml-1" />
               </BaseUnderlineLink>
             </ContentColumn>
-            <ContentColumn>
-              <ActionButton className="btn py-3 mb-2" onClick={handleClaim}>
-                Claim $RBN
-              </ActionButton>
-            </ContentColumn>
+            {periodFinish && periodFinish.diff(moment()) > 0 ? (
+              <ModalContentExtra>
+                <WarningText color={color}>
+                  In order to claim your RBN rewards you must remain staked
+                  until the end of the liquidity mining program (
+                  {periodFinish.format("MMM Do, YYYY")}
+                  ).
+                </WarningText>
+              </ModalContentExtra>
+            ) : (
+              <ContentColumn>
+                <ActionButton
+                  className="btn py-3 mb-2"
+                  onClick={handleClaim}
+                  color={color}
+                  disabled={stakingPoolData.claimableRbn.isZero()}
+                >
+                  Claim $RBN
+                </ActionButton>
+              </ContentColumn>
+            )}
           </>
         );
       default:

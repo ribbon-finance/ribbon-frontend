@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 
 import colors from "shared/lib/designSystem/colors";
@@ -12,6 +12,13 @@ import {
 } from "shared/lib/designSystem";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { Waves } from "shared/lib/assets";
+import useStakingPool from "../../hooks/useStakingPool";
+import { VaultList } from "shared/lib/constants/constants";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import { BigNumber } from "@ethersproject/bignumber";
+import { formatBigNumber } from "shared/lib/utils/math";
+import useRBNToken from "../../hooks/useRBNToken";
+import sizes from "shared/lib/designSystem/sizes";
 
 const OverviewContainer = styled.div`
   display: flex;
@@ -27,8 +34,8 @@ const OverviewInfo = styled.div`
   padding: 24px;
   background: linear-gradient(
     96.84deg,
-    ${colors.green}29 1.04%,
-    ${colors.green}07 98.99%
+    ${colors.green}0A 1.04%,
+    ${colors.green}02 98.99%
   );
   border-radius: ${theme.border.radius} ${theme.border.radius} 0 0;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
@@ -87,6 +94,15 @@ const OverviewKPI = styled.div`
   &:nth-child(odd) {
     border-left: none;
   }
+
+  @media (max-width: ${sizes.sm}px) {
+    width: 100%;
+    border-top: none;
+
+    &:nth-child(odd) {
+      border-left: ${theme.border.width} ${theme.border.style} ${colors.border};
+    }
+  }
 `;
 
 const OverviewLabel = styled(SecondaryText)`
@@ -97,6 +113,40 @@ const OverviewLabel = styled(SecondaryText)`
 `;
 
 const StakingOverview = () => {
+  const { stakingPools, loading: stakingLoading } = useStakingPool(VaultList);
+  const { data: tokenData, loading: tokenLoading } = useRBNToken();
+  const loadingText = useTextAnimation(
+    ["Loading", "Loading .", "Loading ..", "Loading ..."],
+    250,
+    stakingLoading || tokenLoading
+  );
+
+  const totalRewardDistributed = useMemo(() => {
+    if (stakingLoading) {
+      return loadingText;
+    }
+
+    let totalDistributed = BigNumber.from(0);
+
+    for (let i = 0; i < VaultList.length; i++) {
+      const stakingPool = stakingPools[VaultList[i]];
+      if (!stakingPool) {
+        break;
+      }
+      totalDistributed = totalDistributed.add(stakingPool.totalRewardClaimed);
+    }
+
+    return formatBigNumber(totalDistributed, 2, 18);
+  }, [stakingLoading, loadingText, stakingPools]);
+
+  const numHolderText = useMemo(() => {
+    if (tokenLoading || !tokenData) {
+      return loadingText;
+    }
+
+    return tokenData.numHolders.toLocaleString();
+  }, [loadingText, tokenData, tokenLoading]);
+
   return (
     <OverviewContainer>
       <OverviewInfo>
@@ -127,13 +177,11 @@ const StakingOverview = () => {
       </OverviewInfo>
       <OverviewKPI>
         <OverviewLabel>$RBN Distributed</OverviewLabel>
-        {/* TODO: Replace with API */}
-        <Title>1,282,128.00</Title>
+        <Title>{totalRewardDistributed}</Title>
       </OverviewKPI>
       <OverviewKPI>
         <OverviewLabel>No. of $RBN Holders</OverviewLabel>
-        {/* TODO: Replace with API */}
-        <Title>1,500</Title>
+        <Title>{numHolderText}</Title>
       </OverviewKPI>
     </OverviewContainer>
   );

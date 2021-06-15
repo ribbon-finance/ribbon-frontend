@@ -23,8 +23,9 @@ import TrafficLight from "../../Common/TrafficLight";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import useERC20Token from "shared/lib/hooks/useERC20Token";
+import { StakingPoolData } from "../../../models/staking";
 
-const StyledModal = styled(BaseModal)`
+const StyledModal = styled(BaseModal)<{ height: number }>`
   .modal-dialog {
     max-width: 343px;
     margin-left: auto;
@@ -32,7 +33,8 @@ const StyledModal = styled(BaseModal)`
   }
 
   .modal-content {
-    min-height: 424px;
+    transition: min-height 0.25s;
+    min-height: ${(props) => props.height}px;
     overflow: hidden;
   }
 `;
@@ -98,12 +100,14 @@ const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
 interface StakingApprovalModalProps {
   show: boolean;
   onClose: () => void;
+  stakingPoolData: StakingPoolData;
   vaultOption: VaultOptions;
 }
 
 const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
   show,
   onClose,
+  stakingPoolData,
   vaultOption,
 }) => {
   const { provider } = useWeb3Context();
@@ -165,6 +169,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
         return (
           <StakingApprovalModalInfo
             vaultOption={vaultOption}
+            stakingPoolData={stakingPoolData}
             onApprove={() => {
               handleApprove();
             }}
@@ -206,10 +211,24 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
           </>
         );
     }
-  }, [step, vaultOption, handleApprove, txId]);
+  }, [step, vaultOption, handleApprove, txId, stakingPoolData]);
+
+  const modalHeight = useMemo(() => {
+    if (step === "info") {
+      return stakingPoolData.unstakedBalance.isZero() ? 476 : 504;
+    }
+
+    return 424;
+  }, [stakingPoolData, step]);
 
   return (
-    <StyledModal show={show} onHide={handleClose} centered backdrop={true}>
+    <StyledModal
+      show={show}
+      onHide={handleClose}
+      centered
+      backdrop={true}
+      height={modalHeight}
+    >
       <BaseModalHeader>
         <CloseButton role="button" onClick={handleClose}>
           <MenuButton

@@ -29,7 +29,7 @@ interface ProductCopies {
 export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
   "rETH-THETA": {
     title: "T-ETH-C",
-    subtitle: "Theta Vault - ETH",
+    subtitle: "ETH Covered Call",
     description:
       "Generates yield by running an automated ETH covered call strategy.",
     tags: ["THETA VAULT", "ETH"],
@@ -136,7 +136,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
   },
   "rBTC-THETA": {
     title: "T-WBTC-C",
-    subtitle: "Theta Vault - WBTC",
+    subtitle: "WBTC Covered Call",
     description:
       "Generates yield by runnning an automated WBTC covered call strategy.",
     tags: ["THETA VAULT", "WBTC"],
@@ -243,7 +243,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
   },
   "rUSDC-ETH-P-THETA": {
     title: "T-USDC-P-ETH",
-    subtitle: "Theta Vault - ETH",
+    subtitle: "ETH Put-Selling",
     description:
       "Generates yield by running an automated ETH put selling strategy.",
     tags: ["THETA VAULT", "ETH"],
@@ -342,7 +342,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
   },
   "rUSDC-BTC-P-THETA": {
     title: "T-USDC-P-WBTC",
-    subtitle: "Theta Vault - WBTC",
+    subtitle: "WBTC Put-Selling",
     description:
       "Generates yield by running an automated WBTC put selling strategy.",
     tags: ["THETA VAULT", "WBTC"],

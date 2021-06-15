@@ -1,5 +1,6 @@
 const colors = {
   background: "#1C1A19",
+  backgroundLighter: "#1F1D1C",
   backgroundDarker: "#08090E",
   border: "#2B2B2B",
   borderLight: "#2E2C2B",
@@ -31,6 +32,11 @@ const colors = {
     charm: "#5A67D8",
     discord: "#5A65EA",
     primitive: "#FFFFFF",
+  },
+  asset: {
+    WETH: "#627EEA",
+    WBTC: "#E39652",
+    USDC: "#3E73C4",
   },
 };
 

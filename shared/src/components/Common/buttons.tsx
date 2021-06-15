@@ -10,31 +10,56 @@ export const Button = styled.button`
   line-height: 24px;
   text-align: center;
   text-transform: uppercase;
-  outline: none !important;
+  outline: none;
 
   &:active,
   &:focus {
-    outline: none !important;
-    box-shadow: none !important;
+    outline: none;
+    box-shadow: none;
   }
 `;
 
-export const BaseActionButton = styled(Button)`
-  ${(props) =>
-    props.disabled
-      ? `background: ${colors.buttons.error};
-      color: ${colors.primaryText};
+export const BaseActionButton = styled(Button)<{
+  error?: boolean;
+  color?: string;
+}>`
+  ${(props) => {
+    if (props.error) {
+      return `
+        background: ${colors.red}14;
+        color: ${colors.red};
+        
+        && {
+          opacity: 1;
+        }
 
-      &:hover {
-        color: ${colors.primaryText};
-      }`
+        &:hover {
+          background: ${colors.red}14;
+          color: ${colors.red};
+        }
+      `;
+    }
+
+    return props.color
+      ? `
+        background: ${props.color}14;
+        color: ${props.color};
+        box-shadow: 8px 16px 64px ${props.color}14;
+
+        &:hover {
+          background: ${props.color}${props.disabled ? 14 : 29};
+          color: ${props.color};
+        }
+      `
       : `
-      background: ${colors.buttons.primary};
-      color: ${colors.primaryText};
-
-      &:hover {
+        background: ${colors.buttons.primary}${props.disabled ? 29 : ""};
         color: ${colors.primaryText};
-      }`}
+
+        &:hover {
+          color: ${colors.primaryText};
+        }
+      `;
+  }}
 `;
 
 const InternalButtonLink = styled.a`
@@ -52,6 +77,8 @@ interface ActionButtonProps {
   disabled?: boolean;
   link?: string;
   onClick?: () => void;
+  color?: string;
+  error?: boolean;
   children: ReactNode;
 }
 
@@ -60,6 +87,8 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   link = "",
   className = "",
   children,
+  color,
+  error,
   disabled = false,
 }) => {
   const hasLink = link !== "";
@@ -78,6 +107,8 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
       disabled={disabled}
       onClick={handleClick}
       type="button"
+      color={color}
+      error={error}
       className={`btn ${className}`}
     >
       {link !== "" ? (

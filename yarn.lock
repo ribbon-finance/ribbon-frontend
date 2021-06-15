@@ -1926,6 +1926,16 @@
   resolved "https://registry.yarnpkg.com/@rooks/use-mutation-observer/-/use-mutation-observer-4.11.0.tgz#2df8f9520c6c63041c02f2e66e091c2cf40a178d"
   integrity sha512-nvqYT49TCTC6RHR/2Seg8qXbnslHzA8ACSZeyck/4OyV5SCOggbIoJORWCxPMF6Skj+DIngbzf7Kfhx3b/LRvQ==
 
+"@rooks/use-mutation-observer@^4.11.2":
+  version "4.11.2"
+  resolved "https://registry.yarnpkg.com/@rooks/use-mutation-observer/-/use-mutation-observer-4.11.2.tgz#a0466c4338e0a4487ea19253c86bcd427c29f4af"
+  integrity sha512-vpsdrZdr6TkB1zZJcHx+fR1YC/pHs2BaqcuYiEGjBVbwY5xcC49+h0hAUtQKHth3oJqXfIX/Ng8S7s5HFHdM/A==
+
+"@rooks/use-on-window-scroll@^4.11.2":
+  version "4.11.2"
+  resolved "https://registry.yarnpkg.com/@rooks/use-on-window-scroll/-/use-on-window-scroll-4.11.2.tgz#8ab0aa6ad8206b9f396f890d332a3709f7808980"
+  integrity sha512-Uhb79wyidwbGNG6oqWRjkMDPRDMD9T2nZGsuLgUuV3/yAUTlcy4mBBKrZDUO92TbwzvEmH3VqQfr2qLQtjoS5w==
+
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.3.tgz#3802ddd21a50a949b6721ddd72da36e67e7f1b2d"
