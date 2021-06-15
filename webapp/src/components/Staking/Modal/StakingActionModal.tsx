@@ -349,8 +349,8 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
             </ContentColumn>
             <ContentColumn marginTop={16}>
               <SecondaryText className="text-center">
-                Your RBN rewards will be forfeited if your unstake your tokens
-                before the end of the program (
+                Your entire RBN reward will be forfeited if you unstake your
+                tokens before the end of the program (
                 {moment(stakingPoolData.periodFinish, "X").format(
                   "MMM Do, YYYY"
                 )}
