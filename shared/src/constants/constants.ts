@@ -160,5 +160,4 @@ export const getAirtableName = (vault: VaultOptions): string => {
 
 export const RibbonTokenAddress = isDevelopment()
   ? deployment.kovan.RibbonToken
-  : // TODO: Replace with mainnet address
-    "";
+  : deployment.mainnet.RibbonToken;
