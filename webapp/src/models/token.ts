@@ -7,3 +7,10 @@ export interface ERC20TokenSubgraphData {
   holders: string[];
   totalSupply: BigNumber;
 }
+
+export interface ERC20TokenAccountSubgraphData {
+  id: string;
+  token: ERC20TokenSubgraphData;
+  balance: BigNumber;
+  account: string;
+}

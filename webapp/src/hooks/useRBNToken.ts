@@ -41,8 +41,6 @@ const fetchTokenSubgraph = async (): Promise<ERC20TokenSubgraphData> => {
         `,
   });
 
-  console.log(response);
-
   return {
     ...response.data.data.erc20Token,
     totalSupply: BigNumber.from(response.data.data.erc20Token.totalSupply),
