@@ -1,6 +1,6 @@
 const theme = {
   hover: {
-    opacity: 0.7,
+    opacity: 0.64,
   },
   border: {
     radius: "8px",

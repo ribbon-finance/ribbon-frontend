@@ -145,8 +145,13 @@ const StakingPoolCardFooterButton = styled(Title)<{
   line-height: 20px;
   padding: 14px 0;
   text-align: center;
+  opacity: ${theme.hover.opacity};
 
   color: ${(props) => (props.active ? props.color : colors.primaryText)};
+
+  &:hover {
+    opacity: 1;
+  }
 
   &:not(:first-child) {
     border-left: ${theme.border.width} ${theme.border.style} ${colors.border};

@@ -4,6 +4,7 @@ import { formatUnits, parseUnits } from "@ethersproject/units";
 import { BigNumber } from "@ethersproject/bignumber";
 import { Modal } from "react-bootstrap";
 import { AnimatePresence, motion } from "framer-motion";
+import moment from "moment";
 
 import {
   getAssets,
@@ -35,7 +36,6 @@ import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import TrafficLight from "../../Common/TrafficLight";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import { getVaultColor } from "shared/lib/utils/vault";
-import moment from "moment";
 
 const StyledModal = styled(BaseModal)<{ isForm: boolean }>`
   .modal-dialog {
