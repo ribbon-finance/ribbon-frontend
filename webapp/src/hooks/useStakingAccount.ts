@@ -9,9 +9,11 @@ import {
 } from "shared/lib/constants/constants";
 import { getSubgraphqlURI } from "shared/lib/utils/env";
 import { StakingPoolAccount } from "../models/staking";
+import { impersonateAddress } from "../utils/development";
 
 const useStakingAccount = (vaults: VaultOptions[]) => {
-  const { account } = useWeb3React();
+  const web3Context = useWeb3React();
+  const account = impersonateAddress ? impersonateAddress : web3Context.account;
   const [stakingAccounts, setStakingAccounts] = useState<{
     [key: string]: StakingPoolAccount | undefined;
   }>({});

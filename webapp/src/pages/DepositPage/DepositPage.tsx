@@ -29,8 +29,8 @@ const { formatUnits } = ethers.utils;
 const HeroContainer = styled.div<{ color: string }>`
   background: linear-gradient(
     96.84deg,
-    ${(props) => props.color}14 1.04%,
-    ${(props) => props.color}03 98.99%
+    ${(props) => props.color}29 1.04%,
+    ${(props) => props.color}07 98.99%
   );
   padding: 40px 0;
   overflow: hidden;
@@ -61,8 +61,8 @@ const AttributePill = styled.div`
 const SplashImage = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   z-index: 0;
-  top: 0;
   right: 0;
   width: 600px;
   height: 100%;
@@ -85,7 +85,6 @@ const MobilePositions = styled(YourPosition)`
     margin-right: 16px;
     margin-top: -15px;
     margin-bottom: 48px;
-    padding: 18px;
   }
 
   @media (min-width: ${sizes.md + 1}px) {
@@ -145,6 +144,8 @@ const HeroSection: React.FC<{
   depositCapBar: ReactNode;
   vaultOption: VaultOptions;
 }> = ({ depositCapBar, vaultOption }) => {
+  const color = getVaultColor(vaultOption);
+
   const logo = useMemo(() => {
     const asset = getAssets(vaultOption);
     const Logo = getAssetLogo(asset);
@@ -153,20 +154,26 @@ const HeroSection: React.FC<{
       case "WETH":
         return <Logo width="55%" style={{ marginTop: 40 }} />;
       case "WBTC":
-        return <Logo height="130%" style={{ marginTop: 40 }} />;
+        return <Logo height="190%" style={{ marginTop: 40 }} />;
       case "USDC":
-        return <Logo height="180%" style={{ marginTop: 40 }} />;
+        return (
+          <Logo
+            height="180%"
+            style={{
+              marginTop: 40,
+            }}
+            backgroundColor={`${color}29`}
+          />
+        );
       default:
         return <Logo />;
     }
-  }, [vaultOption]);
+  }, [color, vaultOption]);
+
   return (
-    <HeroContainer
-      className="position-relative"
-      color={getVaultColor(vaultOption)}
-    >
+    <HeroContainer className="position-relative" color={color}>
       <div className="container">
-        <div className="row mx-lg-n1">
+        <div className="row mx-lg-n1 position-relative">
           <div style={{ zIndex: 1 }} className="col-xl-6 d-flex flex-column">
             <div className="d-flex flex-row my-3">
               {productCopies[vaultOption].tags.map((tag) => (
@@ -181,7 +188,7 @@ const HeroSection: React.FC<{
             {depositCapBar}
           </div>
 
-          <SplashImage className="position-absolute offset-xl-6">
+          <SplashImage className="position-absolute col-xl-6">
             {logo}
           </SplashImage>
         </div>

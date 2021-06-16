@@ -4,6 +4,7 @@ import { IERC20, IERC20__factory } from "../codegen";
 import { isDevelopment } from "../utils/env";
 import addresses from "../constants/externalAddresses.json";
 import { ERC20Token } from "../models/eth";
+import { useWeb3Context } from "./web3Context";
 
 export const getERC20Token = (
   library: any,
@@ -25,14 +26,15 @@ export const getERC20Token = (
 };
 
 const useERC20Token = (token: ERC20Token) => {
-  const { library, active } = useWeb3React();
+  const { active, library } = useWeb3React();
+  const { provider } = useWeb3Context();
   const [contract, setContract] = useState<IERC20>();
 
   useEffect(() => {
-    if (library) {
-      setContract(getERC20Token(library, token, active));
+    if (provider) {
+      setContract(getERC20Token(library || provider, token, active));
     }
-  }, [library, active, token]);
+  }, [provider, active, library, token]);
 
   return contract;
 };

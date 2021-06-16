@@ -98,7 +98,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           )}
         />{" "}
         for the call options minted by the vault. The manager is responsible for
-        making the best tradeoff between yield versus the risk of the put
+        making the best tradeoff between yield versus the risk of the call
         options getting exercised.
       </>
     ),
@@ -205,7 +205,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           )}
         />{" "}
         for the call options minted by the vault. The manager is responsible for
-        making the best tradeoff between yield versus the risk of the put
+        making the best tradeoff between yield versus the risk of the call
         options getting exercised.
       </>
     ),

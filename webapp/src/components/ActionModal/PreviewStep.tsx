@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { BigNumber, ethers } from "ethers";
 
 import { Subtitle, SecondaryText, Title } from "shared/lib/designSystem";
-import colors from "shared/lib/designSystem/colors";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { ACTIONS, PreviewStepProps } from "./types";
 import { formatBigNumber, wmul } from "shared/lib/utils/math";
@@ -11,6 +10,7 @@ import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
 import { VaultOptions } from "shared/lib/constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
+import { getVaultColor } from "shared/lib/utils/vault";
 const { parseUnits } = ethers.utils;
 
 const AmountText = styled(Title)`
@@ -22,9 +22,9 @@ const CurrencyText = styled(AmountText)`
   color: rgba(255, 255, 255, 0.48);
 `;
 
-const Arrow = styled.i`
+const Arrow = styled.i<{ color: string }>`
   font-size: 12px;
-  color: ${colors.buttons.primary};
+  color: ${(props) => props.color};
 `;
 
 const PreviewStep: React.FC<
@@ -44,6 +44,7 @@ const PreviewStep: React.FC<
 }) => {
   const isDeposit = actionType === ACTIONS.deposit;
   const actionWord = isDeposit ? "Deposit" : "Withdrawal";
+  const color = getVaultColor(vaultOption);
 
   let detailValue = "";
 
@@ -120,14 +121,18 @@ const PreviewStep: React.FC<
             <SecondaryText>Your Position</SecondaryText>
             <Title className="d-flex align-items-center text-right">
               {originalAmount} {getAssetDisplay(asset)}{" "}
-              <Arrow className="fas fa-arrow-right mx-2"></Arrow> {newAmountStr}{" "}
-              {getAssetDisplay(asset)}
+              <Arrow className="fas fa-arrow-right mx-2" color={color} />{" "}
+              {newAmountStr} {getAssetDisplay(asset)}
             </Title>
           </div>
         </div>
       </div>
 
-      <ActionButton onClick={onClickConfirmButton} className="btn py-3 my-3">
+      <ActionButton
+        onClick={onClickConfirmButton}
+        className="btn py-3 my-3"
+        color={color}
+      >
         {isDeposit ? "Deposit" : "Withdraw"} Now
       </ActionButton>
     </>

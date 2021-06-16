@@ -5,20 +5,20 @@ import { Assets } from "../../store/types";
 import { getAssetDisplay } from "../../utils/asset";
 import { formatAmount } from "../../utils/math";
 
-const BackgroundBar = styled.div<{ height: number }>`
+const BackgroundBar = styled.div<{ height: number; radius: number }>`
   height: ${(props) => props.height}px;
   width: 100%;
   background: rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
+  border-radius: ${(props) => props.radius}px;
 `;
 
-const ForegroundBar = styled.div<{ height: number }>`
+const ForegroundBar = styled.div<{ height: number; radius: number }>`
   position: absolute;
   top: 0;
   left: 0;
   height: ${(props) => props.height}px;
   background: #ffffff;
-  border-radius: 4px;
+  border-radius: ${(props) => props.radius}px;
   width: 100%;
 `;
 
@@ -57,6 +57,7 @@ const CapBar: React.FC<{
   barConfig?: {
     height: number;
     extraClassNames: string;
+    radius: number;
   };
   asset?: Assets;
 }> = ({
@@ -66,7 +67,7 @@ const CapBar: React.FC<{
   copies = { current: "Total Deposits", cap: "Limit" },
   labelConfig = { fontSize: 16 },
   statsConfig = { fontSize: 16 },
-  barConfig = { height: 16, extraClassNames: "my-3" },
+  barConfig = { height: 16, extraClassNames: "my-3", radius: 4 },
   asset,
 }) => {
   let percent = current / (cap > 0 ? cap : 1);
@@ -91,10 +92,11 @@ const CapBar: React.FC<{
       <div
         className={`d-flex flex-row position-relative ${barConfig.extraClassNames}`}
       >
-        <BackgroundBar height={barConfig.height} />
+        <BackgroundBar height={barConfig.height} radius={barConfig.radius} />
         <ForegroundBar
           height={barConfig.height}
           style={{ width: `${percent}%` }}
+          radius={barConfig.radius}
         />
       </div>
 

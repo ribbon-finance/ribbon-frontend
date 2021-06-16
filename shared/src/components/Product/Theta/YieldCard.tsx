@@ -169,14 +169,14 @@ const StyledUSDCLogo = styled(USDCLogo)`
   }
 `;
 
-const ModeSwitcherContainer = styled.div`
+const ModeSwitcherContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 32px;
   height: 32px;
   border-radius: 100px;
-  background: ${colors.green}14;
+  background: ${(props) => props.color}14;
 `;
 
 const YieldComparisonCard = styled.div`
@@ -342,11 +342,15 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
           <ProductTopContainer>
             {productCopies[vault].tags.map((tag) => renderTag(tag))}
           </ProductTopContainer>
-          <ModeSwitcherContainer role="button" onClick={onSwapMode}>
+          <ModeSwitcherContainer
+            role="button"
+            onClick={onSwapMode}
+            color={color}
+          >
             {mode === "info" ? (
-              <GlobeIcon color={colors.green} />
+              <GlobeIcon color={color} />
             ) : (
-              <BarChartIcon color={colors.green} />
+              <BarChartIcon color={color} />
             )}
           </ModeSwitcherContainer>
         </TopContainer>
