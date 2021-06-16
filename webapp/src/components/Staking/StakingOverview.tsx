@@ -1,6 +1,6 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "styled-components";
-
+import moment from "moment"
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import {
@@ -87,7 +87,7 @@ const StyledWaves = styled(Waves)`
 const OverviewKPI = styled.div`
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   padding: 16px;
-  width: 50%;
+  width: 33%;
   display: flex;
   flex-wrap: wrap;
 
@@ -115,6 +115,8 @@ const OverviewLabel = styled(SecondaryText)`
 const StakingOverview = () => {
   const { stakingPools, loading: stakingLoading } = useStakingPool(VaultList);
   const { data: tokenData, loading: tokenLoading } = useRBNToken();
+  const [week, setWeek] = useState(1);
+  const [nextStakeRewardStart, setNextStakeRewardStart] = useState(moment.utc("2021-06-18").set("hour", 10).set("minute", 30));
   const loadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
@@ -146,6 +148,28 @@ const StakingOverview = () => {
 
     return tokenData.numHolders.toLocaleString();
   }, [loadingText, tokenData, tokenLoading]);
+
+  const timeTillNextRewardWeek = useMemo(() => {
+    //end date for LP
+    const endStakeReward = moment.utc("2021-06-18").set("hour", 10).set("minute", 30).add("28", "days");
+
+    if (endStakeReward.diff(moment()) <= 0) {
+      return "End of Rewards, you can unstake now";
+    }
+
+    //after time of next reward week hits, set next reward week to a week later
+    if(nextStakeRewardStart.diff(moment()) <= 0){
+      setWeek(week + 1)
+      setNextStakeRewardStart(nextStakeRewardStart.add("7", "days"))
+    }
+
+    const startTime = moment.duration(
+      nextStakeRewardStart.diff(moment()),
+      "milliseconds"
+    );
+
+    return `${startTime.days()}D ${startTime.hours()}H ${startTime.minutes()}M`;
+  }, [week, nextStakeRewardStart]);
 
   return (
     <OverviewContainer>
@@ -182,6 +206,10 @@ const StakingOverview = () => {
       <OverviewKPI>
         <OverviewLabel>No. of $RBN Holders</OverviewLabel>
         <Title>{numHolderText}</Title>
+      </OverviewKPI>
+      <OverviewKPI>
+        <OverviewLabel>Time to Week {week} Stake Rewards</OverviewLabel>
+        <Title>{timeTillNextRewardWeek}</Title>
       </OverviewKPI>
     </OverviewContainer>
   );
