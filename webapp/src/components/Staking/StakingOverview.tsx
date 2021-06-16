@@ -161,7 +161,7 @@ const StakingOverview = () => {
           program ends on July 19th, 2021.
         </OverviewDescription>
         <UnderlineLink
-          to="https://gov.ribbon.finance/t/rgp-2-ribbon-liquidity-mining-program/90"
+          to="https://ribbonfinance.medium.com/rgp-2-liquidity-mining-program-cc81f0b7a270"
           target="_blank"
           rel="noreferrer noopener"
           className="d-flex mt-4"
