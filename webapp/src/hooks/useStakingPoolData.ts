@@ -43,7 +43,7 @@ const useStakingPoolData: UseStakingPoolData = (
   const tokenContract = useERC20Token(option);
 
   const doMulticall = useCallback(async () => {
-    if (!contract) {
+    if (!contract || !tokenContract) {
       return;
     }
 

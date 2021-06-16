@@ -9,37 +9,36 @@ import {
   VaultLiquidityMiningMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
+import { useWeb3Context } from "shared/lib/hooks/web3Context";
 
 export const getStakingReward = (
   library: any,
   vaultOption: VaultOptions,
   useSigner: boolean = true
 ) => {
-  if (library) {
-    const provider = useSigner ? library.getSigner() : library;
+  const provider = useSigner ? library.getSigner() : library;
 
-    return RibbonStakingRewards__factory.connect(
-      VaultLiquidityMiningMap[vaultOption],
-      provider
-    );
-  }
-
-  return undefined;
+  return RibbonStakingRewards__factory.connect(
+    VaultLiquidityMiningMap[vaultOption],
+    provider
+  );
 };
 
 const useStakingReward = (vaultOption: VaultOptions) => {
-  const { library, active } = useWeb3React();
+  const { active } = useWeb3React();
+  const { provider } = useWeb3Context();
   const [
     stakingReward,
     setStakingReward,
   ] = useState<RibbonStakingRewards | null>(null);
 
   useEffect(() => {
-    if (library) {
-      const vault = getStakingReward(library, vaultOption, active);
+    console.log(provider);
+    if (provider) {
+      const vault = getStakingReward(provider, vaultOption, active);
       setStakingReward(vault);
     }
-  }, [library, active, vaultOption]);
+  }, [provider, active, vaultOption]);
 
   return stakingReward;
 };
