@@ -7,11 +7,11 @@ import {
   VaultLiquidityMiningMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
-import useERC20Token, { getERC20Token } from "shared/lib/hooks/useERC20Token";
+import { getERC20Token } from "shared/lib/hooks/useERC20Token";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import { StakingPoolData } from "../models/staking";
 import { impersonateAddress } from "../utils/development";
-import useStakingReward, { getStakingReward } from "./useStakingReward";
+import { getStakingReward } from "./useStakingReward";
 
 const initialData: StakingPoolData = {
   currentStake: BigNumber.from(0),
@@ -120,7 +120,7 @@ const useStakingPoolData: UseStakingPoolData = (
       setLoading(false);
       setFirstLoaded(true);
     }
-  }, [account, active, provider, option, firstLoaded]);
+  }, [account, active, library, provider, option, firstLoaded]);
 
   useEffect(() => {
     let pollInterval: any = undefined;
