@@ -6,9 +6,11 @@ import { RibbonTokenAddress } from "shared/lib/constants/constants";
 
 import { getSubgraphqlURI } from "shared/lib/utils/env";
 import { ERC20TokenAccountSubgraphData } from "../models/token";
+import { impersonateAddress } from "../utils/development";
 
 const useRBNTokenAccount = () => {
-  const { account } = useWeb3React();
+  const web3Context = useWeb3React();
+  const account = impersonateAddress ? impersonateAddress : web3Context.account;
   const [data, setData] = useState<ERC20TokenAccountSubgraphData>();
   const [loading, setLoading] = useState(false);
 

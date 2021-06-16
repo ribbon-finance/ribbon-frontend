@@ -7,9 +7,11 @@ import { proof, airdrop, breakdown } from "../constants/constants";
 import useMerkleDistributor from "./useMerkleDistributor";
 import usePendingTransactions from "./usePendingTransactions";
 import { formatUnits } from "@ethersproject/units";
+import { impersonateAddress } from "../utils/development";
 
 const useAirdrop = () => {
-  const { account } = useWeb3React();
+  const web3Context = useWeb3React();
+  const account = impersonateAddress ? impersonateAddress : web3Context.account;
   const merkleDistributor = useMerkleDistributor();
   const [airdropInfo, setAirdropInfo] = useState<
     | {

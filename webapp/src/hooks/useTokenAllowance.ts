@@ -5,9 +5,12 @@ import { getERC20Token } from "shared/lib/hooks/useERC20Token";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import { useEffect, useMemo, useState } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
+import { impersonateAddress } from "../utils/development";
 
 const useTokenAllowance = (token: ERC20Token | undefined, address: string) => {
-  const { account, library } = useWeb3React();
+  const web3Context = useWeb3React();
+  const library = web3Context.library;
+  const account = impersonateAddress ? impersonateAddress : web3Context.account;
   const { provider } = useWeb3Context();
   const tokenContract = useMemo(() => {
     if (!token) {

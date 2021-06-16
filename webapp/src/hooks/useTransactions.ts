@@ -5,9 +5,11 @@ import { BigNumber } from "ethers";
 
 import { VaultTransaction } from "shared/lib/models/vault";
 import { getSubgraphqlURI } from "shared/lib/utils/env";
+import { impersonateAddress } from "../utils/development";
 
 const useTransactions = () => {
-  const { account } = useWeb3React();
+  const web3Context = useWeb3React();
+  const account = impersonateAddress ? impersonateAddress : web3Context.account;
   const [transactions, setTransactions] = useState<VaultTransaction[]>([]);
   const [loading, setLoading] = useState(false);
 

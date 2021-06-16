@@ -6,9 +6,11 @@ import { BigNumber } from "ethers";
 import { VaultAccount } from "shared/lib/models/vault";
 import { getSubgraphqlURI } from "shared/lib/utils/env";
 import { VaultAddressMap, VaultOptions } from "shared/lib/constants/constants";
+import { impersonateAddress } from "../utils/development";
 
 const useVaultAccounts = (vaults: VaultOptions[]) => {
-  const { account } = useWeb3React();
+  const web3Context = useWeb3React();
+  const account = impersonateAddress ? impersonateAddress : web3Context.account;
   const [vaultAccounts, setVaultAccounts] = useState<{
     [key: string]: VaultAccount | undefined;
   }>({});

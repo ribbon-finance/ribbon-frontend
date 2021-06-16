@@ -9,6 +9,7 @@ import {
 } from "shared/lib/constants/constants";
 import useERC20Token from "shared/lib/hooks/useERC20Token";
 import { StakingPoolData } from "../models/staking";
+import { impersonateAddress } from "../utils/development";
 import useStakingReward from "./useStakingReward";
 
 const initialData: StakingPoolData = {
@@ -36,7 +37,9 @@ const useStakingPoolData: UseStakingPoolData = (
   const [loading, setLoading] = useState(false);
   const [firstLoaded, setFirstLoaded] = useState(false);
   const contract = useStakingReward(option);
-  const { active, account } = useWeb3React();
+  const web3Context = useWeb3React();
+  const active = web3Context.active;
+  const account = impersonateAddress ? impersonateAddress : web3Context.account;
   const tokenContract = useERC20Token(option);
 
   const doMulticall = useCallback(async () => {
