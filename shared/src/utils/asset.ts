@@ -1,4 +1,5 @@
-import styled from "styled-components";
+import React from "react";
+import styled, { StyledComponent } from "styled-components";
 import { USDCLogo, WBTCLogo, WETHLogo } from "../assets/icons/erc20Assets";
 import colors from "../designSystem/colors";
 import { Assets } from "../store/types";
@@ -33,12 +34,13 @@ const ColoredWBTCLogo = styled(WBTCLogo)`
   }
 `;
 
-const ColoredUSDCLogo = styled(USDCLogo)`
+const ColoredUSDCLogo = styled(USDCLogo)<{ backgroundColor?: string }>`
   margin: -8px;
   width: 100%;
 
   && .background {
-    fill: none;
+    fill: ${(props) =>
+      props.backgroundColor ? props.backgroundColor : "none"};
   }
 
   && .content {
@@ -63,12 +65,19 @@ const ColoredWETHLogo = styled(WETHLogo)`
   }
 `;
 
-export const getAssetLogo = (asset: Assets) => {
+export const getAssetLogo: (
+  asset: Assets
+) => StyledComponent<
+  React.FC<React.SVGAttributes<SVGElement>>,
+  any,
+  { backgroundColor?: string },
+  never
+> = (asset) => {
   switch (asset) {
-    case "WBTC":
-      return ColoredWBTCLogo;
     case "USDC":
       return ColoredUSDCLogo;
+    case "WBTC":
+      return ColoredWBTCLogo;
     case "WETH":
       return ColoredWETHLogo;
   }
