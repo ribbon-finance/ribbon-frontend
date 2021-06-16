@@ -281,8 +281,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
         .div(stakingPoolData.poolSize)
         .mul(stakingPoolData.poolRewardForDuration)
         .div(BigNumber.from(10).pow(18)),
-      6,
-      18
+      0
     );
   }, [active, stakingPoolData]);
 
