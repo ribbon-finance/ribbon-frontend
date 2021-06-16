@@ -1,5 +1,6 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { useWeb3React } from "@web3-react/core";
+import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 
 import {
@@ -97,7 +98,7 @@ const useStakingPoolData: UseStakingPoolData = (
       poolSize,
       poolRewardForDuration,
       lastTimeRewardApplicable: lastTimeRewardApplicable.toString(),
-      periodFinish,
+      periodFinish: moment(periodFinish, "X").add(3, "days").unix().toString(),
       claimHistory: claimEvents.map((event: any) => ({
         amount: BigNumber.from(event.data),
       })),

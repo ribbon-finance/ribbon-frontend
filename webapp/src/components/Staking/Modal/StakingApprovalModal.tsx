@@ -183,7 +183,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
               <Title>
                 {step === "approve"
                   ? "CONFIRM Approval"
-                  : "TRANSACTION SUBMITTED"}
+                  : "TRANSACTION PENDING"}
               </Title>
             </ContentColumn>
             <ModalHeaderBackground />

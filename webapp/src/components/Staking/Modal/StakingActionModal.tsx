@@ -168,9 +168,9 @@ const PreviewAmount = styled(Title)`
   line-height: 52px;
 `;
 
-const Arrow = styled.i`
+const Arrow = styled.i<{ color: string }>`
   font-size: 12px;
-  color: ${colors.buttons.primary};
+  color: ${(props) => props.color};
 `;
 
 interface StakingActionModalProps {
@@ -349,8 +349,8 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
             </ContentColumn>
             <ContentColumn marginTop={16}>
               <SecondaryText className="text-center">
-                Your entire RBN reward will be forfeited if you unstake your
-                tokens before the end of the program (
+                Your RBN rewards will be forfeited if you unstake your tokens
+                before the end of the program (
                 {moment(stakingPoolData.periodFinish, "X").format(
                   "MMM Do, YYYY"
                 )}
@@ -487,7 +487,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               <SecondaryText>Your Stake</SecondaryText>
               <InfoData>
                 {formatBigNumber(stakingPoolData.currentStake, 4, decimals)}
-                <Arrow className="fas fa-arrow-right mx-2" />
+                <Arrow className="fas fa-arrow-right mx-2" color={color} />
                 {formatBigNumber(
                   stake
                     ? stakingPoolData.currentStake.add(
@@ -527,7 +527,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               <ModalTitle>
                 {step === "walletAction"
                   ? "CONFIRM Transaction"
-                  : "TRANSACTION SUBMITTED"}
+                  : "TRANSACTION PENDING"}
               </ModalTitle>
             </ContentColumn>
             <ModalHeaderBackground />

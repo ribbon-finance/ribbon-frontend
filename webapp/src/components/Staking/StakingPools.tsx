@@ -322,7 +322,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
                       i
                     </HelpInfo>
                   )}
-                  learnMoreURL="https://ribbon.finance/faq"
+                  learnMoreURL="https://gov.ribbon.finance/t/rgp-2-ribbon-liquidity-mining-program/90"
                 />
               </div>
               <StakingPoolSubtitle>
@@ -365,6 +365,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
               barConfig={{
                 height: 8,
                 extraClassNames: "my-2",
+                radius: 2,
               }}
             />
           </div>

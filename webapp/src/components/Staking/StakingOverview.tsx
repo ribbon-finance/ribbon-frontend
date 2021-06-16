@@ -155,12 +155,13 @@ const StakingOverview = () => {
         </OverviewTag>
         <Title className="mt-3 w-100">Staking On Ribbon</Title>
         <OverviewDescription className="mt-3 w-100">
-          By staking your vault share tokens, you are able to earn RBN token
-          rewards. RBN rewards are released on a weekly basis. Any unstaking
-          before July 16 forfeits accrued rewards.
+          The program aims to grow vault adjusted TVL, expand the voting power
+          to those who missed out on the airdrop and to distribute the
+          governance token to those who have the most skin in the game. The
+          program ends on July 19th, 2021.
         </OverviewDescription>
         <UnderlineLink
-          to="https://ribbon.finance/faq"
+          to="https://gov.ribbon.finance/t/rgp-2-ribbon-liquidity-mining-program/90"
           target="_blank"
           rel="noreferrer noopener"
           className="d-flex mt-4"
