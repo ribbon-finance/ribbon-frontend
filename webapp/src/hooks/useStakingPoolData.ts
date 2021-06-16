@@ -7,10 +7,11 @@ import {
   VaultLiquidityMiningMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
-import useERC20Token from "shared/lib/hooks/useERC20Token";
+import useERC20Token, { getERC20Token } from "shared/lib/hooks/useERC20Token";
+import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import { StakingPoolData } from "../models/staking";
 import { impersonateAddress } from "../utils/development";
-import useStakingReward from "./useStakingReward";
+import useStakingReward, { getStakingReward } from "./useStakingReward";
 
 const initialData: StakingPoolData = {
   currentStake: BigNumber.from(0),
@@ -36,13 +37,18 @@ const useStakingPoolData: UseStakingPoolData = (
   const [data, setData] = useState<StakingPoolData>(initialData);
   const [loading, setLoading] = useState(false);
   const [firstLoaded, setFirstLoaded] = useState(false);
-  const contract = useStakingReward(option);
+  // const contract = useStakingReward(option);
   const web3Context = useWeb3React();
+  const { provider } = useWeb3Context();
   const active = web3Context.active;
+  const library = web3Context.library;
   const account = impersonateAddress ? impersonateAddress : web3Context.account;
-  const tokenContract = useERC20Token(option);
+  // const tokenContract = useERC20Token(option);
 
   const doMulticall = useCallback(async () => {
+    const contract = getStakingReward(library || provider, option, active);
+    const tokenContract = getERC20Token(library || provider, option, active);
+
     if (!contract || !tokenContract) {
       return;
     }
@@ -114,7 +120,7 @@ const useStakingPoolData: UseStakingPoolData = (
       setLoading(false);
       setFirstLoaded(true);
     }
-  }, [account, active, contract, option, tokenContract, firstLoaded]);
+  }, [account, active, provider, option, firstLoaded]);
 
   useEffect(() => {
     let pollInterval: any = undefined;

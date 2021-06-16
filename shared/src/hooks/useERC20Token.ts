@@ -26,15 +26,15 @@ export const getERC20Token = (
 };
 
 const useERC20Token = (token: ERC20Token) => {
-  const { active } = useWeb3React();
+  const { active, library } = useWeb3React();
   const { provider } = useWeb3Context();
   const [contract, setContract] = useState<IERC20>();
 
   useEffect(() => {
     if (provider) {
-      setContract(getERC20Token(provider, token, active));
+      setContract(getERC20Token(library || provider, token, active));
     }
-  }, [provider, active, token]);
+  }, [provider, active, library, token]);
 
   return contract;
 };

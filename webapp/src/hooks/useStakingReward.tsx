@@ -25,7 +25,7 @@ export const getStakingReward = (
 };
 
 const useStakingReward = (vaultOption: VaultOptions) => {
-  const { active } = useWeb3React();
+  const { active, library } = useWeb3React();
   const { provider } = useWeb3Context();
   const [
     stakingReward,
@@ -33,12 +33,11 @@ const useStakingReward = (vaultOption: VaultOptions) => {
   ] = useState<RibbonStakingRewards | null>(null);
 
   useEffect(() => {
-    console.log(provider);
     if (provider) {
-      const vault = getStakingReward(provider, vaultOption, active);
+      const vault = getStakingReward(library || provider, vaultOption, active);
       setStakingReward(vault);
     }
-  }, [provider, active, vaultOption]);
+  }, [provider, active, library, vaultOption]);
 
   return stakingReward;
 };
