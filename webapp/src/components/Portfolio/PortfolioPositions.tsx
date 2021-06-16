@@ -196,10 +196,12 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
             ? animatedLoadingText
             : `${assetToUSD(amount, assetPrice, decimals)}`;
         case "eth":
-          return `${formatBigNumber(amount, 6, decimals)}`;
+          return `${formatBigNumber(amount, 6, decimals)} ${getAssetDisplay(
+            asset
+          )}`;
       }
     },
-    [assetPrice, animatedLoadingText, assetPriceLoading, decimals]
+    [asset, assetPrice, animatedLoadingText, assetPriceLoading, decimals]
   );
 
   const calculatedROI = useMemo(() => {
@@ -237,8 +239,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 
               {/* Amount in Vault Token */}
               <Title>
-                {renderAmountText(vaultAccount.totalBalance, "eth")}{" "}
-                {getAssetDisplay(asset)}
+                {renderAmountText(vaultAccount.totalBalance, "eth")}
               </Title>
             </PositionInfoRow>
             <PositionInfoRow>
@@ -266,10 +267,10 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
         <PositionStakedContainer>
           <PositionInfoRow>
             <PositionInfoText className="flex-grow-1">
-              Staked Amount ({vaultAccount.vault.symbol})
+              Staked Amount
             </PositionInfoText>
             <PositionSecondaryInfoText>
-              {renderAmountText(vaultAccount.totalStakedShares, "eth")}
+              {renderAmountText(vaultAccount.totalStakedBalance, "eth")}
             </PositionSecondaryInfoText>
           </PositionInfoRow>
         </PositionStakedContainer>

@@ -136,11 +136,15 @@ const YourPosition: React.FC<YourPositionProps> = ({
     const vaultAccount = vaultAccounts[vaultOption];
 
     if (vaultAccount && !vaultAccount.totalBalance.isZero()) {
-      return formatBigNumber(vaultAccount.totalStakedBalance, 6, decimals);
+      return `${formatBigNumber(
+        vaultAccount.totalStakedBalance,
+        6,
+        decimals
+      )} ${getAssetDisplay(asset)}`;
     }
 
     return undefined;
-  }, [decimals, vaultAccounts, vaultOption]);
+  }, [asset, decimals, vaultAccounts, vaultOption]);
 
   return (
     <>
@@ -169,9 +173,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
         </PositionMainContent>
         {stakingText && (
           <PositionStakedContainer>
-            <StakeLabel className="mr-auto">
-              Staked Amount ({vaultOption})
-            </StakeLabel>
+            <StakeLabel className="mr-auto">Staked Amount</StakeLabel>
             <AmountText>{stakingText}</AmountText>
           </PositionStakedContainer>
         )}
