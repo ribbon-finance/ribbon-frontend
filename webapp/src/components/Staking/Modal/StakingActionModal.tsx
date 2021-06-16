@@ -307,6 +307,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     if (
       show &&
       step === "warning" &&
+      stakingPoolData.periodFinish &&
       !(!stake && moment(stakingPoolData.periodFinish, "X").diff(moment()) > 0)
     ) {
       setStep("form");
