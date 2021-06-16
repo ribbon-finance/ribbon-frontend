@@ -62,6 +62,23 @@ const ModalContent = styled(motion.div)`
   padding: 16px;
 `;
 
+const BackButton = styled.div`
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 48px;
+  z-index: 2;
+
+  & > i {
+    color: #ffffff;
+  }
+`;
+
 const CloseButton = styled.div`
   position: absolute;
   top: 16px;
@@ -581,6 +598,11 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
       isForm={step === "form"}
     >
       <BaseModalHeader>
+        {step === "preview" && (
+          <BackButton role="button" onClick={() => setStep("form")}>
+            <i className="fas fa-arrow-left" />
+          </BackButton>
+        )}
         <CloseButton role="button" onClick={handleClose}>
           <MenuButton
             isOpen={true}
