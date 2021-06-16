@@ -85,7 +85,6 @@ const MobilePositions = styled(YourPosition)`
     margin-right: 16px;
     margin-top: -15px;
     margin-bottom: 48px;
-    padding: 18px;
   }
 
   @media (min-width: ${sizes.md + 1}px) {
