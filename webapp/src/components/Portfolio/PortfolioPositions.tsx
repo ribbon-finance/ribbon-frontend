@@ -76,6 +76,8 @@ const PositionMainContainer = styled.div`
   padding: 16px;
   background: ${colors.background};
   border-radius: ${theme.border.radius};
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   z-index: 2;
 `;
@@ -84,6 +86,7 @@ const PositionStakedContainer = styled(PositionMainContainer)`
   margin-top: -16px;
   padding-top: calc(16px + 16px);
   background: ${colors.backgroundLighter};
+  border-radius: ${theme.border.radius};
   z-index: 1;
 `;
 
@@ -183,10 +186,9 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
     250,
     assetPriceLoading
   );
-  const vaultName =
-    Object.keys(VaultNameOptionMap)[
-      Object.values(VaultNameOptionMap).indexOf(vaultAccount.vault.symbol)
-    ];
+  const vaultName = Object.keys(VaultNameOptionMap)[
+    Object.values(VaultNameOptionMap).indexOf(vaultAccount.vault.symbol)
+  ];
 
   const renderAmountText = useCallback(
     (amount: BigNumber, currency: CurrencyType) => {
