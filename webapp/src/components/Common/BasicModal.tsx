@@ -114,7 +114,7 @@ const BasicModal: React.FC<BasicModalProps> = ({
               isOpen={true}
               onToggle={onClose}
               size={20}
-              color={"#FFFFFFA3"}
+              color={colors.text}
             />
           </CloseButton>
         )}
