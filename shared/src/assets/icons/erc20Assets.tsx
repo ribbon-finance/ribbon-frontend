@@ -60,44 +60,44 @@ export const WBTCLogo: React.FC<SVGProps> = (props) => (
 
 export const WETHLogo: React.FC<SVGProps> = (props) => (
   <svg
-    viewBox="0 0 256 417"
-    version="1.1"
+    width="296"
+    height="480"
+    viewBox="0 0 296 480"
+    fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    preserveAspectRatio="xMidYMid"
     {...props}
   >
-    <g>
-      <polygon
-        className="cls-2"
-        fill="#343434"
-        points="127.9611 0 125.1661 9.5 125.1661 285.168 127.9611 287.958 255.9231 212.32"
-      />
-      <polygon
-        className="cls-1"
-        fill="#8C8C8C"
-        points="127.962 0 0 212.32 127.962 287.959 127.962 154.158"
-      />
-      <polygon
-        className="cls-6"
-        fill="#3C3C3B"
-        points="127.9611 312.1866 126.3861 314.1066 126.3861 412.3056 127.9611 416.9066 255.9991 236.5866"
-      />
-      <polygon
-        className="cls-5"
-        fill="#8C8C8C"
-        points="127.962 416.9052 127.962 312.1852 0 236.5852"
-      />
-      <polygon
-        className="cls-4"
-        fill="#141414"
-        points="127.9611 287.9577 255.9211 212.3207 127.9611 154.1587"
-      />
-      <polygon
-        className="cls-3"
-        fill="#393939"
-        points="0.0009 212.3208 127.9609 287.9578 127.9609 154.1588"
+    <g opacity="0.8">
+      <path
+        opacity="0.6"
+        d="M147.687 177.339L0.444031 244.304L147.687 331.296L294.871 244.304L147.687 177.339Z"
+        fill="#627EEA"
       />
     </g>
+    <g opacity="0.65">
+      <path
+        opacity="0.45"
+        d="M0.444031 244.304L147.686 331.296V0L0.444031 244.304Z"
+        fill="#627EEA"
+      />
+    </g>
+    <path
+      opacity="0.8"
+      d="M147.687 0V331.296L294.871 244.304L147.687 0Z"
+      fill="#627EEA"
+    />
+    <g opacity="0.65">
+      <path
+        opacity="0.45"
+        d="M0.444031 272.202L147.686 479.638V359.193L0.444031 272.202Z"
+        fill="#627EEA"
+      />
+    </g>
+    <path
+      opacity="0.8"
+      d="M147.687 359.193V479.638L294.987 272.202L147.687 359.193Z"
+      fill="#627EEA"
+    />
   </svg>
 );
 

@@ -48,23 +48,6 @@ const ColoredUSDCLogo = styled(USDCLogo)<{ backgroundColor?: string }>`
   }
 `;
 
-const ColoredWETHLogo = styled(WETHLogo)`
-  .cls-1,
-  .cls-5 {
-    fill: ${colors.asset.WETH}66;
-  }
-
-  .cls-2,
-  .cls-6 {
-    fill: ${colors.asset.WETH}CC;
-  }
-
-  .cls-3,
-  .cls-4 {
-    fill: ${colors.asset.WETH};
-  }
-`;
-
 export const getAssetLogo: (
   asset: Assets
 ) => StyledComponent<
@@ -79,6 +62,6 @@ export const getAssetLogo: (
     case "WBTC":
       return ColoredWBTCLogo;
     case "WETH":
-      return ColoredWETHLogo;
+      return WETHLogo;
   }
 };
