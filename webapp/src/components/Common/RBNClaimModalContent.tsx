@@ -1,31 +1,26 @@
 import React, { useCallback } from "react";
 import styled, { css, keyframes } from "styled-components";
 
-import { PrimaryText, Title } from "shared/lib/designSystem";
+import {
+  BaseModalContentColumn,
+  PrimaryText,
+  Title,
+} from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { Waves } from "shared/lib/assets";
 import Logo from "shared/lib/assets/icons/logo";
 import Lightning from "./Lightning";
 
-const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
-  display: flex;
-  justify-content: center;
-  margin-top: ${(props) =>
-    props.marginTop === "auto"
-      ? props.marginTop
-      : `${props.marginTop || 24}px`};
-`;
-
 const FloatingContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: -16px;
+  top: 0;
   left: 0;
   width: 100%;
-  height: calc(100%);
+  height: 100%;
   padding: 0 16px;
 `;
 
@@ -202,14 +197,14 @@ const RBNClaimModalContent: React.FC<RBNClaimModalContentProps> = ({
     case "claim":
       return (
         <>
-          <ContentColumn marginTop={-24}>
+          <BaseModalContentColumn marginTop={8}>
             <Title>CONFIRM Transaction</Title>
-          </ContentColumn>
-          <ContentColumn marginTop="auto">
+          </BaseModalContentColumn>
+          <BaseModalContentColumn marginTop="auto">
             <PrimaryText className="text-center">
               Confirm this transaction in your wallet
             </PrimaryText>
-          </ContentColumn>
+          </BaseModalContentColumn>
           <FloatingContainer>
             <Pole />
           </FloatingContainer>
@@ -218,31 +213,31 @@ const RBNClaimModalContent: React.FC<RBNClaimModalContentProps> = ({
     case "claiming":
       return (
         <>
-          <ContentColumn marginTop={-24}>
-            <Title>CONFIRM Transaction</Title>
-          </ContentColumn>
+          <BaseModalContentColumn marginTop={8}>
+            <Title>PENDING Transaction</Title>
+          </BaseModalContentColumn>
           <FloatingContainer>
             <Pole type="animate" />
           </FloatingContainer>
           <FloatingContainer>
             <ClaimingText>Claiming $RBN</ClaimingText>
           </FloatingContainer>
-          <ContentColumn marginTop="auto">
+          <BaseModalContentColumn marginTop="auto">
             <ColorChangingWaves />
-          </ContentColumn>
+          </BaseModalContentColumn>
         </>
       );
     case "claimed":
       return (
         <>
-          <ContentColumn marginTop={-24}>
+          <BaseModalContentColumn marginTop={8}>
             <Title>$RBN CLAIMED</Title>
-          </ContentColumn>
-          <ContentColumn marginTop="auto">
+          </BaseModalContentColumn>
+          <BaseModalContentColumn marginTop="auto">
             <PrimaryText className="text-center">
               Thank you for being part of the community!
             </PrimaryText>
-          </ContentColumn>
+          </BaseModalContentColumn>
           <FloatingContainer>
             <Pole type="ribbon">
               <PoleLogo />

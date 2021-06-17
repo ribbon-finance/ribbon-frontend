@@ -29,6 +29,7 @@ const ModalNavigationCloseButton = styled.span`
 
 interface ModalBodyProps extends ModalProps {
   isFormStep: boolean;
+  steps: StepData;
 }
 
 const ModalBody = styled.div<ModalBodyProps>`
@@ -36,9 +37,17 @@ const ModalBody = styled.div<ModalBodyProps>`
   border: 1px solid #2b2b2b;
   box-sizing: border-box;
   border-radius: 8px;
-  width: ${(props) => (props.variant === "desktop" ? "383px" : "100%")};
+  width: ${(props) => (props.variant === "desktop" ? "383px" : "375px")};
   max-width: 450px;
-  min-height: 480px;
+  min-height: ${(props) => {
+    switch (props.steps.stepNum) {
+      case STEPS.confirmationStep:
+      case STEPS.submittedStep:
+        return "unset";
+      default:
+        return "480px";
+    }
+  }};
 
   ${(props) =>
     props.variant === "mobile" &&
@@ -85,10 +94,10 @@ const StepsContainer = styled.div<ModalProps>`
   ${(props) =>
     props.variant === "desktop" &&
     `
-    width: 100%;
     height: 100%;
     `}
 
+  width: 100%;
   padding-left: ${modalPadding}px;
   padding-right: ${modalPadding}px;
 `;
@@ -119,9 +128,10 @@ const ActionModal: React.FC<ActionModalProps> = ({
   });
   const isDesktop = variant === "desktop";
 
-  const onChangeStep = useCallback((stepData) => setStepData(stepData), [
-    setStepData,
-  ]);
+  const onChangeStep = useCallback(
+    (stepData) => setStepData(stepData),
+    [setStepData]
+  );
 
   const renderModalNavigationItem = useCallback(() => {
     if (isDesktop) {
@@ -180,6 +190,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
         <ModalBody
           isFormStep={stepData.stepNum === STEPS.formStep}
           variant={variant}
+          steps={stepData}
         >
           {stepData.title !== "" && (
             <ModalTitle className="position-relative d-flex align-items-center justify-content-center">

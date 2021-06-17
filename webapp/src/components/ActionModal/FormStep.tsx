@@ -4,7 +4,7 @@ import ActionsForm, { FormStepProps } from "../ActionsForm/ActionsForm";
 const FormStep: React.FC<FormStepProps> = ({ vaultOption, onSubmit }) => {
   return (
     <>
-      <div style={{ width: 343 }}>
+      <div>
         <ActionsForm
           vaultOption={vaultOption}
           variant="mobile"

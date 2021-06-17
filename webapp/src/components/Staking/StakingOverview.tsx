@@ -112,6 +112,10 @@ const OverviewLabel = styled(SecondaryText)`
   margin-bottom: 8px;
 `;
 
+const LearnMoreText = styled(PrimaryText)`
+  font-size: 14px;
+`;
+
 const StakingOverview = () => {
   const { stakingPools, loading: stakingLoading } = useStakingPool(VaultList);
   const { data: tokenData, loading: tokenLoading } = useRBNToken();
@@ -166,9 +170,9 @@ const StakingOverview = () => {
           rel="noreferrer noopener"
           className="d-flex mt-4"
         >
-          <PrimaryText className="mr-2">
+          <LearnMoreText className="mr-2">
             Learn more about our liquidity mining program
-          </PrimaryText>
+          </LearnMoreText>
           <ExternalIcon color="white" />
         </UnderlineLink>
         <OverviewBackgroundContainer>

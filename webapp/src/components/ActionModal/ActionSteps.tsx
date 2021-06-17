@@ -13,8 +13,7 @@ import {
 
 import useVault from "shared/lib/hooks/useVault";
 import PreviewStep from "./PreviewStep";
-import ConfirmationStep from "./ConfirmationStep";
-import SubmittedStep from "./SubmittedStep";
+import TransactionStep from "./TransactionStep";
 import FormStep from "./FormStep";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
 import { getAssets, VaultOptions } from "shared/lib/constants/constants";
@@ -43,10 +42,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const [step, setStep] = useState<Steps>(firstStep);
   const [txhash, setTxhash] = useState("");
   const vault = useVault(vaultOption);
-  const [
-    pendingTransactions,
-    setPendingTransactions,
-  ] = usePendingTransactions();
+  const [pendingTransactions, setPendingTransactions] =
+    usePendingTransactions();
 
   const [actionType, setActionType] = useState<ActionType>("deposit");
   const [amount, setAmount] = useState<BigNumber>(BigNumber.from("0"));
@@ -215,8 +212,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         vaultOption={vaultOption}
       />
     ),
-    2: <ConfirmationStep />,
-    3: <SubmittedStep txhash={txhash} />,
+    2: <TransactionStep />,
+    3: <TransactionStep txhash={txhash} />,
   };
 
   return <>{stepComponents[step]}</>;
