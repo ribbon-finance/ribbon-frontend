@@ -225,11 +225,11 @@ const productTabs: Array<{ name: ProductType; title: string }> = [
   },
   {
     name: "principalProtection",
-    title: "Principal Protection",
+    title: "Protection",
   },
   {
     name: "capitalAccumulation",
-    title: "Capital Accumulation",
+    title: "Accumulation",
   },
 ];
 
