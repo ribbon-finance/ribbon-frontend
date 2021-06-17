@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import moment from "moment"
 import colors from "shared/lib/designSystem/colors";
@@ -115,8 +115,7 @@ const OverviewLabel = styled(SecondaryText)`
 const StakingOverview = () => {
   const { stakingPools, loading: stakingLoading } = useStakingPool(VaultList);
   const { data: tokenData, loading: tokenLoading } = useRBNToken();
-  const [week, setWeek] = useState(1);
-  const [nextStakeRewardStart, setNextStakeRewardStart] = useState(moment.utc("2021-06-18").set("hour", 10).set("minute", 30));
+
   const loadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
@@ -149,27 +148,38 @@ const StakingOverview = () => {
     return tokenData.numHolders.toLocaleString();
   }, [loadingText, tokenData, tokenLoading]);
 
+  const [week, nextStakeRewardStart] = useMemo(() => {
+    const startDate = moment.utc("2021-06-18").set("hour", 10).set("minute", 30);
+
+    let weekCount
+  
+    if(moment().diff(startDate) < 0){
+      weekCount = 1
+    } else {
+      weekCount = moment().diff(startDate, "weeks") + 2
+    }
+    
+    // Next stake reward date
+    const nextStakeReward = startDate.add(weekCount - 1, "weeks")
+
+    return [weekCount, nextStakeReward]
+  }, []);
+
   const timeTillNextRewardWeek = useMemo(() => {
-    //end date for LP
-    const endStakeReward = moment.utc("2021-06-18").set("hour", 10).set("minute", 30).add("28", "days");
+    const endStakeReward = moment.utc("2021-07-16").set("hour", 10).set("minute", 30);
 
     if (endStakeReward.diff(moment()) <= 0) {
       return "End of Rewards, you can unstake now";
     }
 
-    //after time of next reward week hits, set next reward week to a week later
-    if(nextStakeRewardStart.diff(moment()) <= 0){
-      setWeek(week + 1)
-      setNextStakeRewardStart(nextStakeRewardStart.add("7", "days"))
-    }
-
+    // Time till next stake reward date
     const startTime = moment.duration(
       nextStakeRewardStart.diff(moment()),
       "milliseconds"
     );
 
     return `${startTime.days()}D ${startTime.hours()}H ${startTime.minutes()}M`;
-  }, [week, nextStakeRewardStart]);
+  }, [nextStakeRewardStart]);
 
   return (
     <OverviewContainer>
