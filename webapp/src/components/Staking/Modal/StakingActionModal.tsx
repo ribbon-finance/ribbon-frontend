@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { formatUnits, parseUnits } from "@ethersproject/units";
 import { BigNumber } from "@ethersproject/bignumber";
-import { Modal } from "react-bootstrap";
-import { AnimatePresence, motion } from "framer-motion";
 import moment from "moment";
 
 import {
@@ -17,16 +15,13 @@ import {
   BaseInputContianer,
   BaseInputLabel,
   BaseUnderlineLink,
-  BaseModal,
-  BaseModalHeader,
   PrimaryText,
   SecondaryText,
   Subtitle,
   Title,
+  BaseModalContentColumn,
 } from "shared/lib/designSystem";
-import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
-import MenuButton from "../../Header/MenuButton";
 import { StakingPoolData } from "../../../models/staking";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
@@ -36,94 +31,18 @@ import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import TrafficLight from "../../Common/TrafficLight";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import { getVaultColor } from "shared/lib/utils/vault";
-
-const StyledModal = styled(BaseModal)<{ isForm: boolean }>`
-  .modal-dialog {
-    max-width: 343px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .modal-content {
-    transition: min-height 0.25s;
-    min-height: ${(props) => (props.isForm ? 564 : 424)}px;
-    overflow: hidden;
-  }
-`;
-
-const ModalContent = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  padding: 16px;
-`;
-
-const BackButton = styled.div`
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 48px;
-  z-index: 2;
-
-  & > i {
-    color: #ffffff;
-  }
-`;
-
-const CloseButton = styled.div`
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: 48px;
-  color: ${colors.text};
-  z-index: 2;
-`;
-
-const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
-  display: flex;
-  justify-content: center;
-  z-index: 1;
-  margin-top: ${(props) =>
-    props.marginTop === "auto"
-      ? props.marginTop
-      : `${props.marginTop || 24}px`};
-`;
+import BasicModal from "../../Common/BasicModal";
 
 const FloatingContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: -16px;
-  left: 0;
-  width: 100%;
-  height: calc(100%);
-  padding: 0 16px;
-`;
-
-const ModalHeaderBackground = styled.div`
-  background: ${colors.pillBackground};
-  height: 72px;
-  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  margin-top: -32px;
+  height: 100%;
+  padding: 0 16px;
 `;
 
 const ModalTitle = styled(Title)`
@@ -157,7 +76,7 @@ const AssetTitle = styled(Title)<{ str: string }>`
   `}
 `;
 
-const InfoColumn = styled(ContentColumn)`
+const InfoColumn = styled(BaseModalContentColumn)`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -359,13 +278,13 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
       case "warning":
         return (
           <>
-            <ContentColumn marginTop={-8}>
+            <BaseModalContentColumn>
               <LogoContainer color={colors.red}>!</LogoContainer>
-            </ContentColumn>
-            <ContentColumn marginTop={16}>
+            </BaseModalContentColumn>
+            <BaseModalContentColumn marginTop={16}>
               <AssetTitle str="WARNING">WARNING</AssetTitle>
-            </ContentColumn>
-            <ContentColumn marginTop={16}>
+            </BaseModalContentColumn>
+            <BaseModalContentColumn marginTop={16}>
               <SecondaryText className="text-center">
                 Your RBN rewards will be forfeited if you unstake your tokens
                 before the end of the program (
@@ -374,8 +293,8 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                 )}
                 ).
               </SecondaryText>
-            </ContentColumn>
-            <ContentColumn marginTop="auto">
+            </BaseModalContentColumn>
+            <BaseModalContentColumn marginTop="auto">
               <ActionButton
                 className="btn py-3 mb-3"
                 color={color}
@@ -385,19 +304,19 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               >
                 Continue
               </ActionButton>
-            </ContentColumn>
+            </BaseModalContentColumn>
           </>
         );
       case "form":
         return (
           <>
-            <ContentColumn marginTop={-8}>
+            <BaseModalContentColumn>
               <LogoContainer color={color}>{logo}</LogoContainer>
-            </ContentColumn>
-            <ContentColumn marginTop={8}>
+            </BaseModalContentColumn>
+            <BaseModalContentColumn marginTop={8}>
               <AssetTitle str={vaultOption}>{vaultOption}</AssetTitle>
-            </ContentColumn>
-            <ContentColumn>
+            </BaseModalContentColumn>
+            <BaseModalContentColumn>
               <div className="d-flex w-100 flex-wrap">
                 <BaseInputLabel>AMOUNT ({vaultOption})</BaseInputLabel>
                 <BaseInputContianer className="position-relative">
@@ -413,7 +332,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                   </BaseInputButton>
                 </BaseInputContianer>
               </div>
-            </ContentColumn>
+            </BaseModalContentColumn>
             {stake ? (
               <InfoColumn>
                 <SecondaryText>Unstaked Balance</SecondaryText>
@@ -448,7 +367,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                 RBN
               </InfoData>
             </InfoColumn>
-            <ContentColumn marginTop="auto">
+            <BaseModalContentColumn marginTop="auto">
               <ActionButton
                 className="btn py-3"
                 color={color}
@@ -460,16 +379,16 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               >
                 {renderActionButtonText()}
               </ActionButton>
-            </ContentColumn>
+            </BaseModalContentColumn>
             {stake ? (
-              <ContentColumn marginTop={16} className="mb-2">
+              <BaseModalContentColumn marginTop={16} className="mb-2">
                 <CurrentStakeTitle>
                   Your Current Stake:{" "}
                   {formatBigNumber(stakingPoolData.currentStake, 4, decimals)}
                 </CurrentStakeTitle>
-              </ContentColumn>
+              </BaseModalContentColumn>
             ) : (
-              <ContentColumn marginTop={16} className="mb-2">
+              <BaseModalContentColumn marginTop={16} className="mb-2">
                 <CurrentStakeTitle>
                   Unstaked Balance:{" "}
                   {formatBigNumber(
@@ -478,25 +397,24 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                     decimals
                   )}
                 </CurrentStakeTitle>
-              </ContentColumn>
+              </BaseModalContentColumn>
             )}
           </>
         );
       case "preview":
         return (
           <>
-            <ContentColumn marginTop={-24}>
+            <BaseModalContentColumn marginTop={8}>
               <ModalTitle>{stake ? "STAKE" : "UNSTAKE"} PREVIEW</ModalTitle>
-            </ContentColumn>
-            <ModalHeaderBackground />
-            <ContentColumn marginTop={48}>
+            </BaseModalContentColumn>
+            <BaseModalContentColumn marginTop={48}>
               <BaseInputLabel>AMOUNT ({vaultOption})</BaseInputLabel>
-            </ContentColumn>
-            <ContentColumn marginTop={4}>
+            </BaseModalContentColumn>
+            <BaseModalContentColumn marginTop={4}>
               <PreviewAmount>
                 {parseFloat(parseFloat(input).toFixed(4))}
               </PreviewAmount>
-            </ContentColumn>
+            </BaseModalContentColumn>
             <InfoColumn>
               <SecondaryText>Pool</SecondaryText>
               <InfoData>{vaultOption}</InfoData>
@@ -526,7 +444,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                 RBN
               </InfoData>
             </InfoColumn>
-            <ContentColumn marginTop="auto">
+            <BaseModalContentColumn marginTop="auto">
               <ActionButton
                 className="btn py-3 mb-2"
                 onClick={handleActionPressed}
@@ -534,32 +452,31 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               >
                 {stake ? "STAKE" : "UNSTAKE"} NOW
               </ActionButton>
-            </ContentColumn>
+            </BaseModalContentColumn>
           </>
         );
       case "walletAction":
       case "processing":
         return (
           <>
-            <ContentColumn marginTop={-24}>
+            <BaseModalContentColumn marginTop={8}>
               <ModalTitle>
                 {step === "walletAction"
                   ? "CONFIRM Transaction"
                   : "TRANSACTION PENDING"}
               </ModalTitle>
-            </ContentColumn>
-            <ModalHeaderBackground />
+            </BaseModalContentColumn>
             <FloatingContainer>
               <TrafficLight active={step === "processing"} />
             </FloatingContainer>
             {step === "walletAction" ? (
-              <ContentColumn marginTop="auto">
+              <BaseModalContentColumn marginTop="auto">
                 <PrimaryText className="mb-2">
                   Confirm this transaction in your wallet
                 </PrimaryText>
-              </ContentColumn>
+              </BaseModalContentColumn>
             ) : (
-              <ContentColumn marginTop="auto">
+              <BaseModalContentColumn marginTop="auto">
                 <BaseUnderlineLink
                   to={`${getEtherscanURI()}/tx/${txId}`}
                   target="_blank"
@@ -568,7 +485,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                 >
                   <PrimaryText className="mb-2">View on Etherscan</PrimaryText>
                 </BaseUnderlineLink>
-              </ContentColumn>
+              </BaseModalContentColumn>
             )}
           </>
         );
@@ -591,67 +508,46 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
   ]);
 
   return (
-    <StyledModal
+    <BasicModal
       show={show}
-      onHide={handleClose}
-      centered
-      backdrop={true}
-      isForm={step === "form"}
+      onClose={handleClose}
+      height={step === "form" ? 564 : 424}
+      backButton={
+        step === "preview" ? { onClick: () => setStep("form") } : undefined
+      }
+      animationProps={{
+        key: step,
+        transition: {
+          duration: 0.25,
+          type: "keyframes",
+          ease: "easeInOut",
+        },
+        initial:
+          step !== "processing"
+            ? {
+                y: -200,
+                opacity: 0,
+              }
+            : {},
+        animate:
+          step !== "processing"
+            ? {
+                y: 0,
+                opacity: 1,
+              }
+            : {},
+        exit:
+          step === "form" || step === "preview"
+            ? {
+                y: 200,
+                opacity: 0,
+              }
+            : {},
+      }}
+      headerBackground={step !== "warning" && step !== "form"}
     >
-      <BaseModalHeader>
-        {step === "preview" && (
-          <BackButton role="button" onClick={() => setStep("form")}>
-            <i className="fas fa-arrow-left" />
-          </BackButton>
-        )}
-        <CloseButton role="button" onClick={handleClose}>
-          <MenuButton
-            isOpen={true}
-            onToggle={handleClose}
-            size={20}
-            color={"#FFFFFFA3"}
-          />
-        </CloseButton>
-      </BaseModalHeader>
-      <Modal.Body>
-        <AnimatePresence initial={false}>
-          <ModalContent
-            key={step}
-            transition={{
-              duration: 0.25,
-              type: "keyframes",
-              ease: "easeInOut",
-            }}
-            initial={
-              step !== "processing"
-                ? {
-                    y: -200,
-                    opacity: 0,
-                  }
-                : {}
-            }
-            animate={
-              step !== "processing"
-                ? {
-                    y: 0,
-                    opacity: 1,
-                  }
-                : {}
-            }
-            exit={
-              step === "form" || step === "preview"
-                ? {
-                    y: 200,
-                    opacity: 0,
-                  }
-                : {}
-            }
-          >
-            {body}
-          </ModalContent>
-        </AnimatePresence>
-      </Modal.Body>
-    </StyledModal>
+      {body}
+    </BasicModal>
   );
 };
 

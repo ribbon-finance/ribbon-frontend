@@ -50,12 +50,14 @@ const ColoredUSDCLogo = styled(USDCLogo)<{ backgroundColor?: string }>`
 
 export const getAssetLogo: (
   asset: Assets
-) => StyledComponent<
-  React.FC<React.SVGAttributes<SVGElement>>,
-  any,
-  { backgroundColor?: string },
-  never
-> = (asset) => {
+) =>
+  | StyledComponent<
+      React.FC<React.SVGAttributes<SVGElement>>,
+      any,
+      { backgroundColor?: string },
+      never
+    >
+  | React.FC<React.SVGAttributes<SVGElement>> = (asset) => {
   switch (asset) {
     case "USDC":
       return ColoredUSDCLogo;

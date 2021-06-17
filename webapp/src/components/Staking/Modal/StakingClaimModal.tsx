@@ -1,21 +1,15 @@
-import { AnimatePresence, motion } from "framer-motion";
 import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import { VaultOptions } from "shared/lib/constants/constants";
 import {
   BaseUnderlineLink,
-  BaseModal,
-  BaseModalHeader,
+  BaseModalContentColumn,
   SecondaryText,
   Title,
   PrimaryText,
 } from "shared/lib/designSystem";
 import { StakingPoolData } from "../../../models/staking";
-import { Modal } from "react-bootstrap";
-import theme from "shared/lib/designSystem/theme";
-import colors from "shared/lib/designSystem/colors";
-import MenuButton from "../../Header/MenuButton";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { BigNumber } from "@ethersproject/bignumber";
 import moment from "moment";
@@ -28,55 +22,7 @@ import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import RBNClaimModalContent from "../../Common/RBNClaimModalContent";
 import { getVaultColor } from "shared/lib/utils/vault";
 import ModalContentExtra from "../../Common/ModalContentExtra";
-
-const StyledModal = styled(BaseModal)`
-  .modal-dialog {
-    max-width: 343px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .modal-content {
-    min-height: 580px;
-    overflow: hidden;
-  }
-`;
-
-const ModalContent = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  padding: 16px;
-`;
-
-const CloseButton = styled.div`
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: 48px;
-  color: ${colors.text};
-  z-index: 2;
-`;
-
-const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
-  display: flex;
-  justify-content: center;
-  z-index: 1;
-  margin-top: ${(props) =>
-    props.marginTop === "auto"
-      ? props.marginTop
-      : `${props.marginTop || 24}px`};
-`;
+import BasicModal from "../../Common/BasicModal";
 
 const LogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -103,7 +49,7 @@ const AssetTitle = styled(Title)<{ str: string }>`
   `}
 `;
 
-const InfoColumn = styled(ContentColumn)`
+const InfoColumn = styled(BaseModalContentColumn)`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -210,12 +156,12 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
           : undefined;
         return (
           <>
-            <ContentColumn marginTop={-8}>
+            <BaseModalContentColumn>
               <LogoContainer color={color}>{logo}</LogoContainer>
-            </ContentColumn>
-            <ContentColumn marginTop={8}>
+            </BaseModalContentColumn>
+            <BaseModalContentColumn marginTop={8}>
               <AssetTitle str={vaultOption}>{vaultOption}</AssetTitle>
-            </ContentColumn>
+            </BaseModalContentColumn>
             <InfoColumn marginTop={40}>
               <SecondaryText>Unclaimed $RBN</SecondaryText>
               <InfoData>
@@ -253,7 +199,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
                 RBN
               </InfoData>
             </InfoColumn>
-            <ContentColumn marginTop="auto">
+            <BaseModalContentColumn marginTop="auto">
               <BaseUnderlineLink
                 to="https://ribbonfinance.medium.com/rbn-airdrop-distribution-70b6cb0b870c"
                 target="_blank"
@@ -263,7 +209,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
                 <SecondaryText>Read about $RBN</SecondaryText>
                 <ExternalIcon className="ml-1" />
               </BaseUnderlineLink>
-            </ContentColumn>
+            </BaseModalContentColumn>
             {periodFinish && periodFinish.diff(moment()) > 0 ? (
               <ModalContentExtra>
                 <WarningText color={color}>
@@ -274,7 +220,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
                 </WarningText>
               </ModalContentExtra>
             ) : (
-              <ContentColumn>
+              <BaseModalContentColumn>
                 <ActionButton
                   className="btn py-3 mb-2"
                   onClick={handleClaim}
@@ -283,7 +229,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
                 >
                   Claim $RBN
                 </ActionButton>
-              </ContentColumn>
+              </BaseModalContentColumn>
             )}
           </>
         );
@@ -293,56 +239,42 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
   }, [step, logo, vaultOption, stakingPoolData, handleClaim]);
 
   return (
-    <StyledModal show={show} onHide={handleClose} centered backdrop={true}>
-      <BaseModalHeader>
-        <CloseButton role="button" onClick={handleClose}>
-          <MenuButton
-            isOpen={true}
-            onToggle={handleClose}
-            size={20}
-            color={"#FFFFFFA3"}
-          />
-        </CloseButton>
-      </BaseModalHeader>
-      <Modal.Body>
-        <AnimatePresence initial={false}>
-          <ModalContent
-            key={step}
-            transition={{
-              duration: 0.25,
-              type: "keyframes",
-              ease: "easeInOut",
-            }}
-            initial={
-              step === "info" || step === "claim"
-                ? {
-                    x: 50,
-                    opacity: 0,
-                  }
-                : {}
-            }
-            animate={
-              step === "info" || step === "claim"
-                ? {
-                    x: 0,
-                    opacity: 1,
-                  }
-                : {}
-            }
-            exit={
-              step === "info"
-                ? {
-                    x: -50,
-                    opacity: 0,
-                  }
-                : {}
-            }
-          >
-            {body}
-          </ModalContent>
-        </AnimatePresence>
-      </Modal.Body>
-    </StyledModal>
+    <BasicModal
+      show={show}
+      onClose={handleClose}
+      height={580}
+      animationProps={{
+        key: step,
+        transition: {
+          duration: 0.25,
+          type: "keyframes",
+          ease: "easeInOut",
+        },
+        initial:
+          step === "info" || step === "claim"
+            ? {
+                x: 50,
+                opacity: 0,
+              }
+            : {},
+        animate:
+          step === "info" || step === "claim"
+            ? {
+                x: 0,
+                opacity: 1,
+              }
+            : {},
+        exit:
+          step === "info"
+            ? {
+                x: -50,
+                opacity: 0,
+              }
+            : {},
+      }}
+    >
+      {body}
+    </BasicModal>
   );
 };
 

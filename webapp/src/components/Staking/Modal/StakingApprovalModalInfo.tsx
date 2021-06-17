@@ -3,6 +3,7 @@ import styled from "styled-components";
 import moment from "moment";
 
 import {
+  BaseModalContentColumn,
   BaseUnderlineLink,
   PrimaryText,
   SecondaryText,
@@ -15,16 +16,6 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import { StakingPoolData } from "../../../models/staking";
 import colors from "shared/lib/designSystem/colors";
 import ModalContentExtra from "../../Common/ModalContentExtra";
-
-const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
-  display: flex;
-  justify-content: center;
-  z-index: 1;
-  margin-top: ${(props) =>
-    props.marginTop === "auto"
-      ? props.marginTop
-      : `${props.marginTop || 24}px`};
-`;
 
 const LogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -101,19 +92,19 @@ const StakingApprovalModalInfo: React.FC<StakingApprovalModalInfoProps> = ({
 
   return (
     <>
-      <ContentColumn marginTop={-8}>
+      <BaseModalContentColumn>
         <LogoContainer color={color}>{logo}</LogoContainer>
-      </ContentColumn>
-      <ContentColumn marginTop={8}>
+      </BaseModalContentColumn>
+      <BaseModalContentColumn marginTop={8}>
         <ApproveAssetTitle str={vaultOption}>{vaultOption}</ApproveAssetTitle>
-      </ContentColumn>
-      <ContentColumn>
+      </BaseModalContentColumn>
+      <BaseModalContentColumn>
         <PrimaryText className="text-center font-weight-normal">
           Before you stake, the pool needs your permission to hold your{" "}
           {vaultOption} tokens.
         </PrimaryText>
-      </ContentColumn>
-      <ContentColumn marginTop={16}>
+      </BaseModalContentColumn>
+      <BaseModalContentColumn marginTop={16}>
         <BaseUnderlineLink
           to="https://ribbon.finance/faq"
           target="_blank"
@@ -122,8 +113,8 @@ const StakingApprovalModalInfo: React.FC<StakingApprovalModalInfoProps> = ({
         >
           <SecondaryText>Why do I have to do this?</SecondaryText>
         </BaseUnderlineLink>
-      </ContentColumn>
-      <ContentColumn marginTop="auto">
+      </BaseModalContentColumn>
+      <BaseModalContentColumn marginTop="auto">
         <ActionButton
           className="btn py-3 mb-2"
           onClick={onApprove}
@@ -132,11 +123,11 @@ const StakingApprovalModalInfo: React.FC<StakingApprovalModalInfoProps> = ({
         >
           Approve
         </ActionButton>
-      </ContentColumn>
+      </BaseModalContentColumn>
       {stakingPoolData.unstakedBalance.isZero() ? (
-        <ContentColumn marginTop={16}>
+        <BaseModalContentColumn marginTop={16}>
           <ErrorMessage className="mb-2">WALLET BALANCE: 0</ErrorMessage>
-        </ContentColumn>
+        </BaseModalContentColumn>
       ) : (
         <ModalContentExtra>
           <WarningText color={color}>
