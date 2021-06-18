@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Logo from "shared/lib/assets/icons/logo";
 import {
   BaseLink,
+  BaseModalContentColumn,
   PrimaryText,
   SecondaryText,
   Subtitle,
@@ -22,16 +23,6 @@ import theme from "shared/lib/designSystem/theme";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import useAirdrop from "../../hooks/useAirdrop";
 import AirdropBreakdown from "./AirdropBreakdown";
-
-const ContentColumn = styled.div<{ marginTop?: number | "auto" }>`
-  display: flex;
-  justify-content: center;
-  z-index: 1;
-  margin-top: ${(props) =>
-    props.marginTop === "auto"
-      ? props.marginTop
-      : `${props.marginTop || 24}px`};
-`;
 
 const rotate = keyframes`
   from {
@@ -119,10 +110,10 @@ const BreakdownContainer = styled(motion.div)`
   flex-direction: column;
   flex-wrap: wrap;
   position: absolute;
-  top: -16px;
+  top: 16;
   left: 0;
   width: 100%;
-  height: calc(100%);
+  height: calc(100% - 32px);
   background: ${colors.background};
   padding: 0 16px;
   z-index: 10;
@@ -148,10 +139,10 @@ const BackgroundContainer = styled.div`
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: -16px;
+  top: 0;
   left: 0;
   width: 100%;
-  height: calc(100%);
+  height: 100%;
   padding: 0 16px;
 `;
 
@@ -192,9 +183,9 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
 
   const renderTopLogo = useCallback(
     () => (
-      <ContentColumn marginTop={-8}>
+      <BaseModalContentColumn>
         <RotatingLogo height="64px" width="64px" />
-      </ContentColumn>
+      </BaseModalContentColumn>
     ),
     []
   );
@@ -218,19 +209,21 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
       return (
         <>
           {renderTopLogo()}
-          <ContentColumn marginTop={64}>
+          <BaseModalContentColumn marginTop={64}>
             <UnclaimLabel>UNCLAIMED $RBN</UnclaimLabel>
-          </ContentColumn>
-          <ContentColumn marginTop={8}>
+          </BaseModalContentColumn>
+          <BaseModalContentColumn marginTop={8}>
             <UnclaimData variant="small">---</UnclaimData>
-          </ContentColumn>
-          <ContentColumn marginTop={16}>
+          </BaseModalContentColumn>
+          <BaseModalContentColumn marginTop={16}>
             <Description>
               Please connect your wallet to check for unclaimed $RBN
             </Description>
-          </ContentColumn>
-          <ContentColumn marginTop="auto">{readMore}</ContentColumn>
-          <ContentColumn>
+          </BaseModalContentColumn>
+          <BaseModalContentColumn marginTop="auto">
+            {readMore}
+          </BaseModalContentColumn>
+          <BaseModalContentColumn>
             <ConnectWalletButton
               onClick={() => setShowConnectModal(true)}
               type="button"
@@ -238,7 +231,7 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
             >
               Connect Wallet
             </ConnectWalletButton>
-          </ContentColumn>
+          </BaseModalContentColumn>
         </>
       );
     }
@@ -246,13 +239,13 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
     return (
       <>
         {renderTopLogo()}
-        <ContentColumn marginTop={64}>
+        <BaseModalContentColumn marginTop={64}>
           <UnclaimLabel>UNCLAIMED $RBN</UnclaimLabel>
-        </ContentColumn>
-        <ContentColumn marginTop={8}>
+        </BaseModalContentColumn>
+        <BaseModalContentColumn marginTop={8}>
           <UnclaimData variant="big">{airdropAmountStr}</UnclaimData>
-        </ContentColumn>
-        <ContentColumn marginTop={16}>
+        </BaseModalContentColumn>
+        <BaseModalContentColumn marginTop={16}>
           <ViewBreakdownPill
             role="button"
             onClick={() => setShowBreakdown(true)}
@@ -260,9 +253,11 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
             <ViewBreakdownPillText>View Breakdown</ViewBreakdownPillText>
             <BarChartIcon width="20px" height="20px" color={colors.green} />
           </ViewBreakdownPill>
-        </ContentColumn>
-        <ContentColumn marginTop="auto">{readMore}</ContentColumn>
-        <ContentColumn>
+        </BaseModalContentColumn>
+        <BaseModalContentColumn marginTop="auto">
+          {readMore}
+        </BaseModalContentColumn>
+        <BaseModalContentColumn>
           <ActionButton
             className="btn py-3 mb-2"
             onClick={onClaim}
@@ -270,7 +265,7 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
           >
             CLAIM $RBN
           </ActionButton>
-        </ContentColumn>
+        </BaseModalContentColumn>
       </>
     );
   }, [
@@ -286,16 +281,18 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
   const renderBreakdown = useCallback(
     () => (
       <>
-        <ContentColumn>
+        <BaseModalContentColumn>
           <UnclaimLabel>UNCLAIMED $RBN</UnclaimLabel>
-        </ContentColumn>
-        <ContentColumn marginTop={24}>
+        </BaseModalContentColumn>
+        <BaseModalContentColumn marginTop={24}>
           <UnclaimData variant="small">{airdropAmountStr}</UnclaimData>
-        </ContentColumn>
-        <ContentColumn>
+        </BaseModalContentColumn>
+        <BaseModalContentColumn>
           <AirdropBreakdown />
-        </ContentColumn>
-        <ContentColumn marginTop="auto">{readMore}</ContentColumn>
+        </BaseModalContentColumn>
+        <BaseModalContentColumn marginTop="auto">
+          {readMore}
+        </BaseModalContentColumn>
         <HideBreakdownButton
           role="button"
           onClick={() => setShowBreakdown(false)}

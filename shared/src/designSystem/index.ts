@@ -69,6 +69,18 @@ export const BaseModalFooter = styled(BootstrapModal.Footer)`
   border-top: unset;
 `;
 
+export const BaseModalContentColumn = styled.div<{
+  marginTop?: number | "auto";
+}>`
+  display: flex;
+  justify-content: center;
+  z-index: 1;
+  margin-top: ${(props) =>
+    props.marginTop === "auto"
+      ? props.marginTop
+      : `${props.marginTop || 24}px`};
+`;
+
 export const Title = styled.span`
   color: ${colors.primaryText};
   font-family: VCR, sans-serif;
