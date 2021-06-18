@@ -1,6 +1,6 @@
 # Ribbon Frontend
 
-This repo hosts the source code that runs 3 of Ribbon Finance's webapps, the landing page, the v1 webapp, and the Strangles webapp.
+This repo hosts the source code that runs 3 of Ribbon Finance's webapps, the landing page and the v1 webapp.
 
 ## Getting Started
 
