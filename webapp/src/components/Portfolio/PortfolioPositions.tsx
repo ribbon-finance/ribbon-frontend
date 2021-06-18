@@ -94,7 +94,7 @@ const LogoContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 8px;
+  margin-right: 24px;
   width: 40px;
   height: 40px;
   border-radius: 100px;

@@ -89,7 +89,7 @@ const TransactionTypeContainer = styled.div`
   width: 40px;
   background: #ffffff14;
   border-radius: 100px;
-  margin-right: 8px;
+  margin-right: 24px;
   color: ${colors.primaryText};
   font-size: 20px;
 `;
@@ -176,7 +176,7 @@ const Divider = styled.div`
 `;
 
 const ExternalLink = styled.div`
-  margin: 0 8px 0px 24px;
+  margin: 0px 0px 0px 24px;
   width: 24px;
 `;
 
