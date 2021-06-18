@@ -19,15 +19,14 @@ The webapp uses environment variables to talk to the blockchain. Copy paste thes
 You will need to have access to a node to fill up `REACT_APP_MAINNET_URI` and `REACT_APP_TESTNET_URI`, we recommend either [Infura](https://infura.io/) or [Alchemy](https://www.alchemyapi.io/).
 
 ```
-REACT_APP_VERCEL_GIT_COMMIT_REF=staging # used to track which branch is used to deploy the app. 'staging' uses kovan for URLs
+REACT_APP_VERCEL_GIT_COMMIT_REF=staging # used to track which branch is used to deploy the app. 'staging' uses mainnet for URLs
 REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID=your_analytics_id
-# INFURA URI is also your MAINNET_URI
-REACT_APP_MAINNET_URI=your_mainet_uri # Default to homestead if does not exists
-REACT_APP_TESTNET_URI=your_testnet_uri
+REACT_APP_MAINNET_URI=https://mainnet.infura.io/v3/d43d838246464b5690f8b10337b446d7
+REACT_APP_TESTNET_URI=https://kovan.infura.io/v3/d43d838246464b5690f8b10337b446d7
 REACT_APP_SUBGRAPHQL_URL=https://api.thegraph.com/subgraphs/name/kenchangh/ribbon-finance
 REACT_APP_KOVAN_SUBGRAPHQL_URL=https://api.thegraph.com/subgraphs/name/kenchangh/ribbon-finance-kovan
-REACT_APP_AIRTABLE_API_KEY=airtable_api_key
-REACT_APP_AIRTABLE_BASE_ID=airtable_base_id
+REACT_APP_AIRTABLE_API_KEY=keymgnfgwnQHmH4pl
+REACT_APP_AIRTABLE_BASE_ID=app5c70grFW2INfkN
 ```
 
 In order to switch between the development environment and a production environment, we can change the `REACT_APP_VERCEL_GIT_COMMIT_REF` env var.
