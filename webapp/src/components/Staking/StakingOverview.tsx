@@ -90,6 +90,7 @@ const OverviewKPIContainer = styled.div`
 
   div {
     border-top: none;
+
     &:first-child {
       border-right: none;
       border-bottom-left-radius: ${theme.border.radius};
@@ -108,6 +109,7 @@ const OverviewKPIContainer = styled.div`
 `;
 
 const OverviewKPI = styled.div`
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
   padding: 16px;
   width: calc(100% / 3);
   display: flex;
