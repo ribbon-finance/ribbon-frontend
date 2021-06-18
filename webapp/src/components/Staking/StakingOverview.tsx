@@ -87,7 +87,7 @@ const StyledWaves = styled(Waves)`
 const OverviewKPI = styled.div`
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   padding: 16px;
-  width: 33%;
+  width: calc(100% / 3);
   display: flex;
   flex-wrap: wrap;
 
