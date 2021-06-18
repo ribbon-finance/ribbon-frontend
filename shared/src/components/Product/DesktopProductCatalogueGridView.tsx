@@ -7,7 +7,7 @@ import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
 import { AssetsList } from "../../store/types";
-import { getAssetDisplay } from "../../utils/asset";
+import { getAssetColor, getAssetDisplay } from "../../utils/asset";
 import FilterDropdown from "../Common/FilterDropdown";
 import MultiselectFilterDropdown from "../Common/MultiselectFilterDropdown";
 import SwitchViewButton from "./Shared/SwitchViewButton";
@@ -62,26 +62,40 @@ interface DesktopProductCatalogueGridViewProps {
 
 const DesktopProductCatalogueGridView: React.FC<
   DesktopProductCatalogueGridViewProps & VaultFilterProps
-> = ({ setView, onVaultPress, sort, setSort, filteredProducts }) => (
+> = ({
+  setView,
+  onVaultPress,
+  sort,
+  setSort,
+  filterStrategies,
+  setFilterStrategies,
+  filterAssets,
+  setFilterAssets,
+  filteredProducts,
+}) => (
   <div className="container mt-5 d-flex flex-column align-items-center">
     <FilterContainer>
       <MultiselectFilterDropdown
+        values={filterStrategies}
         options={VaultStrategyList.map((strategy) => ({
           value: strategy,
           display: strategy,
+          color: colors.green,
         }))}
         title="STRATEGY"
-        onSelect={() => {}}
-        dropdownOrientation="left"
+        // @ts-ignore
+        onSelect={setFilterStrategies}
       />
       <MultiselectFilterDropdown
+        values={filterAssets}
         options={AssetsList.map((asset) => ({
           value: asset,
           display: getAssetDisplay(asset),
+          color: getAssetColor(asset),
         }))}
         title="DEPOSIT ASSET"
-        onSelect={() => {}}
-        dropdownOrientation="left"
+        // @ts-ignore
+        onSelect={setFilterAssets}
       />
       <FilterDropdown
         // @ts-ignore
@@ -110,6 +124,15 @@ const DesktopProductCatalogueGridView: React.FC<
         <YieldCardContainer
           key={vault}
           layout
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
           transition={{
             type: "keyframes",
             ease: "easeOut",

@@ -37,16 +37,14 @@ const DesktopProductCatalogueGalleryView: React.FC<DesktopProductCatalogueGridVi
         <div className="d-flex w-100">
           <FilterContainer>
             <MultiselectFilterDropdown
-              options={[{ value: "lol", display: "lol" }]}
+              options={[{ value: "lol", display: "lol", color: colors.green }]}
               title="FILTERS"
               onSelect={() => {}}
-              dropdownOrientation="left"
             />
             <MultiselectFilterDropdown
-              options={[{ value: "lol", display: "lol" }]}
+              options={[{ value: "lol", display: "lol", color: colors.green }]}
               title="SORT BY"
               onSelect={() => {}}
-              dropdownOrientation="left"
             />
             {setView && <SwitchViewButton view="gallery" setView={setView} />}
           </FilterContainer>

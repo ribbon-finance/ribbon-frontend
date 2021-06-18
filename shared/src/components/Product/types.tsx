@@ -35,10 +35,12 @@ export type DesktopViewType = "grid" | "gallery";
 export const VaultStrategyList = ["COVERED-CALL", "PUT-SELLING"] as const;
 export type VaultStrategy = typeof VaultStrategyList[number];
 export const VaultStrategyMap: {
-  [strategy in VaultStrategy]: VaultOptions[];
+  [vault in VaultOptions]: VaultStrategy;
 } = {
-  "COVERED-CALL": ["rETH-THETA", "rBTC-THETA"],
-  "PUT-SELLING": ["rUSDC-ETH-P-THETA", "rUSDC-BTC-P-THETA"],
+  "rETH-THETA": "COVERED-CALL",
+  "rBTC-THETA": "COVERED-CALL",
+  "rUSDC-ETH-P-THETA": "PUT-SELLING",
+  "rUSDC-BTC-P-THETA": "PUT-SELLING",
 };
 
 export const VaultSortByList = [

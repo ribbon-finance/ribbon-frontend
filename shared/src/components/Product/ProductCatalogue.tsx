@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { VaultList } from "../../constants/constants";
+import { getAssets, VaultList } from "../../constants/constants";
 
 import sizes from "../../designSystem/sizes";
 import { useLatestAPYs } from "../../hooks/useAirtableData";
@@ -12,6 +12,7 @@ import {
   VaultSortBy,
   VaultSortByList,
   VaultStrategy,
+  VaultStrategyMap,
 } from "./types";
 
 const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
@@ -25,7 +26,22 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
   const yieldsData = useLatestAPYs(VaultList);
 
   const filteredProducts = useMemo(() => {
-    const filteredList = [...VaultList];
+    const filteredList = VaultList.filter((vault) => {
+      // Filter for strategies
+      if (
+        filterStrategies.length &&
+        !filterStrategies.includes(VaultStrategyMap[vault])
+      ) {
+        return false;
+      }
+
+      // Filter for assets
+      if (filterAssets.length && !filterAssets.includes(getAssets(vault))) {
+        return false;
+      }
+
+      return true;
+    });
 
     switch (sort) {
       case "NEWEST FIRST":
@@ -51,7 +67,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
     }
 
     return filteredList;
-  }, [sort, yieldsData]);
+  }, [filterStrategies, sort, yieldsData]);
 
   return width > sizes.md ? (
     <DesktopProductCatalogue

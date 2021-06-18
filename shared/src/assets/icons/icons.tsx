@@ -233,3 +233,22 @@ export const GalleryIcon: React.FC<SVGProps> = (props) => (
     <rect x="16.5" y="6.5" width="1" height="7" rx="0.5" stroke="white" />
   </svg>
 );
+
+export const CheckIcon: React.FC<SVGProps> = (props) => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M16.6667 5L7.50004 14.1667L3.33337 10"
+      stroke="#FFFFFF"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
