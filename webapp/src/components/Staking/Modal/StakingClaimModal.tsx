@@ -13,7 +13,6 @@ import { StakingPoolData } from "../../../models/staking";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { BigNumber } from "@ethersproject/bignumber";
 import moment from "moment";
-import { isDevelopment } from "shared/lib/utils/env";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import useStakingReward from "../../../hooks/useStakingReward";
@@ -132,25 +131,39 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
     vaultOption,
   ]);
 
+  const timeTillNextRewardWeek = useMemo(() => {
+    const startDate = moment.utc("2021-06-18").set("hour", 10).set("minute", 30);
+
+    let weekCount
+  
+    if(moment().diff(startDate) < 0){
+      weekCount = 1
+    } else {
+      weekCount = moment().diff(startDate, "weeks") + 2
+    }
+    
+    // Next stake reward date
+    const nextStakeReward = startDate.add(weekCount - 1, "weeks")
+
+    const endStakeReward = moment.utc("2021-07-16").set("hour", 10).set("minute", 30);
+
+    if (endStakeReward.diff(moment()) <= 0) {
+      return "End of Rewards, you can unstake now";
+    }
+
+    // Time till next stake reward date
+    const startTime = moment.duration(
+      nextStakeReward.diff(moment()),
+      "milliseconds"
+    );
+
+    return `${startTime.days()}D ${startTime.hours()}H ${startTime.minutes()}M`;
+  }, []);
+
   const body = useMemo(() => {
     const color = getVaultColor(vaultOption);
     switch (step) {
       case "info":
-        /**
-         * Development: 100 seconds from last reward
-         * Production: 7 days from last reward
-         */
-        const toNextRewardDuration = stakingPoolData.lastTimeRewardApplicable
-          ? moment.duration(
-              moment(stakingPoolData.lastTimeRewardApplicable, "X")
-                .add(
-                  isDevelopment() ? 100 : 7,
-                  isDevelopment() ? "seconds" : "days"
-                )
-                .diff(moment()),
-              "milliseconds"
-            )
-          : undefined;
         const periodFinish = stakingPoolData.periodFinish
           ? moment(stakingPoolData.periodFinish, "X")
           : undefined;
@@ -184,10 +197,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
             <InfoColumn>
               <SecondaryText>Time till next reward</SecondaryText>
               <InfoData>
-                {toNextRewardDuration &&
-                toNextRewardDuration.asMilliseconds() > 0
-                  ? `${toNextRewardDuration.days()}D ${toNextRewardDuration.hours()}H ${toNextRewardDuration.minutes()}M`
-                  : "---"}
+                {timeTillNextRewardWeek}
               </InfoData>
             </InfoColumn>
             <InfoColumn>
@@ -236,7 +246,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
       default:
         return <RBNClaimModalContent step={step} setStep={setStep} />;
     }
-  }, [step, logo, vaultOption, stakingPoolData, handleClaim]);
+  }, [step, logo, vaultOption, stakingPoolData, handleClaim, timeTillNextRewardWeek]);
 
   return (
     <BasicModal
