@@ -1,3 +1,4 @@
+import { motion } from "framer";
 import React from "react";
 import styled from "styled-components";
 import { VaultOptions } from "../../constants/constants";
@@ -35,19 +36,20 @@ const FilterContainer = styled.div`
   }
 `;
 
-const YieldCardsContainer = styled.div`
+const YieldCardsContainer = styled.ul`
   display: flex;
   width: calc(320px * 3);
   flex-wrap: wrap;
   justify-content: flex-start;
   margin-bottom: 40px;
+  padding-inline-start: 0;
 
   @media (max-width: ${sizes.lg}px) {
     width: calc(320px * 2);
   }
 `;
 
-const YieldCardContainer = styled.div`
+const YieldCardContainer = styled(motion.li)`
   height: 492px;
   margin: 40px 15px 0px 15px; ;
 `;
@@ -105,12 +107,15 @@ const DesktopProductCatalogueGridView: React.FC<
     </FilterContainer>
     <YieldCardsContainer>
       {filteredProducts.map((vault) => (
-        <YieldCardContainer>
-          <YieldCard
-            key={vault}
-            vault={vault}
-            onClick={() => onVaultPress(vault)}
-          />
+        <YieldCardContainer
+          key={vault}
+          layout
+          transition={{
+            type: "keyframes",
+            ease: "easeOut",
+          }}
+        >
+          <YieldCard vault={vault} onClick={() => onVaultPress(vault)} />
         </YieldCardContainer>
       ))}
     </YieldCardsContainer>

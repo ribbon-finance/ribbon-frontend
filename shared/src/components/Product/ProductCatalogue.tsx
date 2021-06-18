@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { VaultList } from "../../constants/constants";
 
 import sizes from "../../designSystem/sizes";
+import { useLatestAPYs } from "../../hooks/useAirtableData";
 import useScreenSize from "../../hooks/useScreenSize";
 import { Assets } from "../../store/types";
 import DesktopProductCatalogue from "./DesktopProductCatalogue";
@@ -21,6 +22,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
   const [filterStrategies, setFilterStrategies] = useState<VaultStrategy[]>([]);
   const [filterAssets, setFilterAssets] = useState<Assets[]>([]);
   const [sort, setSort] = useState<VaultSortBy>(VaultSortByList[0]);
+  const yieldsData = useLatestAPYs(VaultList);
 
   const filteredProducts = useMemo(() => {
     const filteredList = [...VaultList];
@@ -36,10 +38,20 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
           VaultReleaseOrder.indexOf(a) > VaultReleaseOrder.indexOf(b) ? 1 : -1
         );
         break;
+      case "YIELD: HIGH TO LOW":
+        filteredList.sort((a, b) =>
+          yieldsData[a].res < yieldsData[b].res ? 1 : -1
+        );
+        break;
+      case "YIELD: LOW TO HIGH":
+        filteredList.sort((a, b) =>
+          yieldsData[a].res > yieldsData[b].res ? 1 : -1
+        );
+        break;
     }
 
     return filteredList;
-  }, [sort]);
+  }, [sort, yieldsData]);
 
   return width > sizes.md ? (
     <DesktopProductCatalogue
