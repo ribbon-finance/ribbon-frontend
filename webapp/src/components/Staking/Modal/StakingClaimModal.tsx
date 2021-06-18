@@ -164,11 +164,6 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
     const color = getVaultColor(vaultOption);
     switch (step) {
       case "info":
-        /**
-         * Development: 100 seconds from last reward
-         * Production: 7 days from last reward
-         */
-
         const periodFinish = stakingPoolData.periodFinish
           ? moment(stakingPoolData.periodFinish, "X")
           : undefined;
