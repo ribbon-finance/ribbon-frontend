@@ -92,6 +92,11 @@ const TransactionTypeContainer = styled.div`
   margin-right: 24px;
   color: ${colors.primaryText};
   font-size: 20px;
+  
+  @media (max-width: ${sizes.md}px) {
+    margin: auto;
+    margin-right: 24px;
+  }
 `;
 
 const StakeOuterCircle = styled.div`
