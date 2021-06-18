@@ -128,7 +128,6 @@ const ContentContainer = styled.div`
   background: ${colors.background};
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
-  border-bottom: ${theme.border.width} ${theme.border.style} ${colors.border};
 `;
 
 type WalletBalanceStates = "active" | "inactive" | "vaultFull" | "error";
