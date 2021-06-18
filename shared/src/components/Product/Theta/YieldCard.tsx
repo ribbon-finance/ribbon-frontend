@@ -59,10 +59,9 @@ const ProductCard = styled.div<{ color: string }>`
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
   padding: 16px 24px 24px 16px;
-  margin: 0 80px;
   transition: 0.25s box-shadow ease-out;
-  max-width: 343px;
-  min-height: 411px;
+  max-width: 290px;
+  min-height: 492px;
   position: relative;
   height: 100%;
   perspective: 2000px;

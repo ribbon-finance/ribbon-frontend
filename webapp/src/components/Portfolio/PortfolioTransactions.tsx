@@ -478,7 +478,10 @@ const PortfolioTransactions = () => {
           value={activityFilter}
           // @ts-ignore
           onSelect={setActivityFilter}
-          dropdownOrientation={width > sizes.md ? "right" : "left"}
+          dropdownMenuConfig={{
+            horizontalOrientation: width > sizes.md ? "right" : "left",
+            topBuffer: 8,
+          }}
         />
         <FilterDropdown
           // @ts-ignore

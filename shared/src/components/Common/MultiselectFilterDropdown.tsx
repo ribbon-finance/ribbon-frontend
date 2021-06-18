@@ -11,28 +11,15 @@ import useScreenSize from "../../hooks/useScreenSize";
 import { capitalize } from "../../utils/text";
 import ButtonArrow from "./ButtonArrow";
 
-interface FilterDropdownButtonConfig {
-  background: string;
-  paddingHorizontal: number;
-  paddingVertical: number;
-  color: string;
-}
-
-interface FilterDropdownMenuConfig {
-  horizontalOrientation?: "left" | "right";
-  topBuffer: number;
-}
-
 const Filter = styled.div`
   position: relative;
 `;
 
-const FilterButton = styled(BaseButton)<{ config: FilterDropdownButtonConfig }>`
+const FilterButton = styled(BaseButton)`
   display: flex;
   align-items: center;
-  padding: ${(props) =>
-    `${props.config.paddingVertical}px ${props.config.paddingHorizontal}px`};
-  background-color: ${(props) => props.config.background};
+  padding: 12px 16px;
+  background-color: ${colors.primaryText}14;
 
   &:hover {
     span {
@@ -41,17 +28,16 @@ const FilterButton = styled(BaseButton)<{ config: FilterDropdownButtonConfig }>`
   }
 `;
 
-const FilterButtonText = styled(Title)<{ config: FilterDropdownButtonConfig }>`
+const FilterButtonText = styled(Title)`
   font-size: 14px;
-  color: ${(props) => props.config.color};
+  color: ${colors.primaryText};
   text-transform: uppercase;
 `;
 
 const FilterDropdownMenu = styled.div<{
   isOpen: boolean;
+  horizontalOrientation?: "left" | "right";
   verticalOrientation: "top" | "bottom";
-  buttonPaddingVertical: number;
-  config: FilterDropdownMenuConfig;
 }>`
   ${(props) =>
     props.isOpen
@@ -59,7 +45,7 @@ const FilterDropdownMenu = styled.div<{
           position: absolute;
           z-index: 2000;
           ${(() => {
-            switch (props.config.horizontalOrientation) {
+            switch (props.horizontalOrientation) {
               case "left":
                 return `left: 0px;`;
               case "right":
@@ -73,14 +59,11 @@ const FilterDropdownMenu = styled.div<{
                 return `bottom: 48px;`;
               case "bottom":
               default:
-                return `top: calc(21px + ${
-                  props.buttonPaddingVertical * 2
-                }px + ${props.config.topBuffer}px);`;
+                return `top: 48px;`;
             }
           })()}
           width: fit-content;
           background-color: ${colors.backgroundDarker};
-          border: ${theme.border.width} ${theme.border.style} ${colors.border};
           border-radius: ${theme.border.radius};
         `
       : `
@@ -117,31 +100,16 @@ const MenuItemText = styled(Title)`
   line-height: 20px;
 `;
 
-interface FilterDropdownProps {
-  options: string[];
-  value: string;
+interface MultiselectFilterDropdownProps {
+  options: { value: string; display: string }[];
+  title: string;
   onSelect: (option: string) => void;
-  buttonConfig?: FilterDropdownButtonConfig;
-  dropdownMenuConfig?: FilterDropdownMenuConfig;
+  dropdownOrientation?: "left" | "right";
 }
 
-const FilterDropdown: React.FC<
-  FilterDropdownProps & React.HTMLAttributes<HTMLDivElement>
-> = ({
-  options,
-  value,
-  onSelect,
-  buttonConfig = {
-    background: colors.backgroundDarker,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    color: `${colors.primaryText}A3`,
-  },
-  dropdownMenuConfig = {
-    topBuffer: 8,
-  },
-  ...props
-}) => {
+const MultiselectFilterDropdown: React.FC<
+  MultiselectFilterDropdownProps & React.HTMLAttributes<HTMLDivElement>
+> = ({ options, title, onSelect, dropdownOrientation, ...props }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const { height, width } = useScreenSize();
@@ -190,21 +158,19 @@ const FilterDropdown: React.FC<
         onClick={() => {
           setOpen((open) => !open);
         }}
-        config={buttonConfig}
       >
-        <FilterButtonText config={buttonConfig}>
-          {value} <ButtonArrow isOpen={open} />
+        <FilterButtonText>
+          {title} <ButtonArrow isOpen={open} />
         </FilterButtonText>
       </FilterButton>
       <FilterDropdownMenu
         isOpen={open}
+        horizontalOrientation={dropdownOrientation}
         verticalOrientation={getVerticalOrientation()}
-        buttonPaddingVertical={buttonConfig.paddingVertical}
-        config={dropdownMenuConfig}
       >
         {options.map((filterOption) =>
-          renderMenuItem(capitalize(filterOption), () => {
-            onSelect(filterOption);
+          renderMenuItem(capitalize(filterOption.display), () => {
+            onSelect(filterOption.value);
             setOpen(false);
           })
         )}
@@ -213,4 +179,4 @@ const FilterDropdown: React.FC<
   );
 };
 
-export default FilterDropdown;
+export default MultiselectFilterDropdown;

@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router";
 
-import ProductCarousel from "shared/lib/components/Product/ProductCarousel";
+import ProductCatalogue from "shared/lib/components/Product/ProductCatalogue";
 import { VaultNameOptionMap } from "shared/lib/constants/constants";
 import { Title } from "shared/lib/designSystem";
 import sizes from "shared/lib/designSystem/sizes";
@@ -23,7 +23,7 @@ const Homepage = () => {
   return (
     <>
       <ProductTitle>PRODUCT</ProductTitle>
-      <ProductCarousel
+      <ProductCatalogue
         dynamicMargin={true}
         onVaultPress={(vault) =>
           history.push(
