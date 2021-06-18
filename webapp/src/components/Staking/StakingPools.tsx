@@ -136,6 +136,7 @@ const StakingPoolCardFooter = styled.div`
   justify-content: center;
   width: 100%;
   border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
+  background: ${colors.backgroundLighter};
 `;
 
 const StakingPoolCardFooterButton = styled(Title)<{

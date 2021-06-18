@@ -22,6 +22,7 @@ const VaultPerformacneChartSecondaryContainer = styled.div`
   border-left: 1px solid ${colors.border};
   border-right: 1px solid ${colors.border};
   border-radius: 0px 0px 4px 4px;
+  background: ${colors.backgroundLighter};
 `;
 
 const APYLabel = styled(SecondaryText)`
