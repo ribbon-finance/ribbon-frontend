@@ -377,7 +377,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
           ? BigNumber.from("0")
           : maxAmount;
         
-        // Fringe case: if amt of deposit greather than vault limit, return 0
+        // Fringe case: if amt of deposit greater than vault limit, return 0
         const vaultAvailableBalance = deposits.gt(vaultLimit)
           ? BigNumber.from("0")
           : vaultLimit.sub(deposits);
