@@ -351,7 +351,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           <ClaimableTokenPillContainer>
             <ClaimableTokenPill color={color}>
               <ClaimableTokenIndicator color={color} />
-              <Subtitle className="mr-2">CLAIMABLE $RBN</Subtitle>
+              <Subtitle className="mr-2">EARNED $RBN</Subtitle>
               <ClaimableTokenAmount color={color}>
                 {active
                   ? formatBigNumber(stakingPoolData.claimableRbn, 2, 18)

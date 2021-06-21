@@ -22,7 +22,7 @@ import {
   VaultNameOptionMap,
 } from "shared/lib/constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
-import useVaultAccounts from "../../hooks/useVaultAccounts";
+import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { VaultAccount } from "shared/lib/models/vault";
 import {
   getAssetDecimals,
@@ -186,9 +186,10 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
     250,
     assetPriceLoading
   );
-  const vaultName = Object.keys(VaultNameOptionMap)[
-    Object.values(VaultNameOptionMap).indexOf(vaultAccount.vault.symbol)
-  ];
+  const vaultName =
+    Object.keys(VaultNameOptionMap)[
+      Object.values(VaultNameOptionMap).indexOf(vaultAccount.vault.symbol)
+    ];
 
   const renderAmountText = useCallback(
     (amount: BigNumber, currency: CurrencyType) => {

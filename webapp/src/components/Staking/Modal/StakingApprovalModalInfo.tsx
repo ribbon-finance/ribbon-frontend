@@ -15,7 +15,7 @@ import { getAssetLogo } from "shared/lib/utils/asset";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { StakingPoolData } from "../../../models/staking";
 import colors from "shared/lib/designSystem/colors";
-import ModalContentExtra from "../../Common/ModalContentExtra";
+import ModalContentExtra from "shared/lib/components/Common/ModalContentExtra";
 
 const LogoContainer = styled.div<{ color: string }>`
   display: flex;

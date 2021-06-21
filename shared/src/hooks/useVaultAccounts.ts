@@ -3,14 +3,14 @@ import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
 import { BigNumber } from "ethers";
 
-import { VaultAccount } from "shared/lib/models/vault";
-import { getSubgraphqlURI } from "shared/lib/utils/env";
-import { VaultAddressMap, VaultOptions } from "shared/lib/constants/constants";
 import { impersonateAddress } from "../utils/development";
+import { VaultAddressMap, VaultOptions } from "../constants/constants";
+import { VaultAccount } from "../models/vault";
+import { getSubgraphqlURI } from "../utils/env";
 
 const useVaultAccounts = (vaults: VaultOptions[]) => {
   const web3Context = useWeb3React();
-  const account = impersonateAddress ? impersonateAddress : web3Context.account;
+  const account = impersonateAddress || web3Context.account;
   const [vaultAccounts, setVaultAccounts] = useState<{
     [key: string]: VaultAccount | undefined;
   }>({});

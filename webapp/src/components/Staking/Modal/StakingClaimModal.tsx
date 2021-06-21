@@ -21,7 +21,7 @@ import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import RBNClaimModalContent from "../../Common/RBNClaimModalContent";
 import { getVaultColor } from "shared/lib/utils/vault";
-import ModalContentExtra from "../../Common/ModalContentExtra";
+import ModalContentExtra from "shared/lib/components/Common/ModalContentExtra";
 import BasicModal from "../../Common/BasicModal";
 
 const LogoContainer = styled.div<{ color: string }>`

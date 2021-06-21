@@ -32,7 +32,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     subtitle: "ETH Covered Call",
     description:
       "Generates yield by running an automated ETH covered call strategy.",
-    tags: ["THETA VAULT", "ETH"],
+    tags: ["COVERED CALL"],
     strategy: (
       <>
         This vault earns yield on its ETH deposits by running an automated ETH{" "}
@@ -139,7 +139,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     subtitle: "WBTC Covered Call",
     description:
       "Generates yield by runnning an automated WBTC covered call strategy.",
-    tags: ["THETA VAULT", "WBTC"],
+    tags: ["COVERED CALL"],
     strategy: (
       <>
         This vault earns yield on its WBTC deposits by running an automated WBTC{" "}
@@ -246,7 +246,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     subtitle: "ETH Put-Selling",
     description:
       "Generates yield by running an automated ETH put selling strategy.",
-    tags: ["THETA VAULT", "ETH"],
+    tags: ["PUT-SELLING"],
     strategy: (
       <>
         This vault earns yield on its USDC deposits by running an automated
@@ -345,7 +345,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     subtitle: "WBTC Put-Selling",
     description:
       "Generates yield by running an automated WBTC put selling strategy.",
-    tags: ["THETA VAULT", "WBTC"],
+    tags: ["PUT-SELLING"],
     strategy: (
       <>
         This vault earns yield on its USDC deposits by running an automated

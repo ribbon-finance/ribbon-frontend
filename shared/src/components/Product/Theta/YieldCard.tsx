@@ -1,13 +1,8 @@
-import React, { useCallback, useMemo, useState } from "react";
-import styled, { keyframes } from "styled-components";
+import React, { useCallback, useState } from "react";
+import styled from "styled-components";
 import { ethers } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
 
-import {
-  WETHLogo,
-  WBTCLogo,
-  USDCLogo,
-} from "../../../assets/icons/erc20Assets";
 import {
   BaseButton,
   Title,
@@ -36,45 +31,31 @@ import {
   DYDXIcon,
   OasisIcon,
 } from "../../../assets/icons/defiApp";
-import { getAssetDisplay } from "../../../utils/asset";
+import { getAssetDisplay, getAssetLogo } from "../../../utils/asset";
 import { getVaultColor } from "../../../utils/vault";
+import { Waves } from "../../../assets";
+import ModalContentExtra from "../../Common/ModalContentExtra";
 
 const { formatUnits } = ethers.utils;
-
-const shimmerKeyframe = (color: string) => keyframes`
-    0% {
-      box-shadow: ${color}66 8px 16px 80px;
-    }
-    50% {
-      box-shadow: ${color}29 8px 16px 80px;
-    }
-    100% {
-      box-shadow: ${color}66 8px 16px 80px;
-    }
-`;
 
 const ProductCard = styled.div<{ color: string }>`
   display: flex;
   background-color: ${colors.background};
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border: 2px ${theme.border.style} transparent;
   border-radius: ${theme.border.radius};
-  padding: 16px 24px 24px 16px;
-  transition: 0.25s box-shadow ease-out;
-  max-width: 290px;
+  transition: 0.25s box-shadow ease-out, 0.25s border ease-out;
+  width: 290px;
   min-height: 492px;
   position: relative;
   height: 100%;
   perspective: 2000px;
 
-  animation: ${(props) => shimmerKeyframe(props.color)} 3s infinite;
-
   &:hover {
-    animation: none;
-    box-shadow: ${(props) => props.color}66 8px 8px 120px;
+    box-shadow: ${(props) => props.color}66 8px 16px 80px;
+    border: 2px ${theme.border.style} ${(props) => props.color};
   }
 
   @media (max-width: ${sizes.md}px) {
-    min-width: 280px;
     margin: 0 12px;
   }
 `;
@@ -85,16 +66,36 @@ const ProductContent = styled.div`
   flex: 1;
   flex-wrap: wrap;
   z-index: 1;
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-radius: ${theme.border.radius};
+  padding: 16px;
 `;
 
-const ProductTopContainer = styled.div`
+const TopContainer = styled.div`
   display: flex;
-  flex-wrap: nowrap;
+  position: relative;
+  justify-content: space-between;
+  width: calc(100% + 32px);
+  height: 120px;
+  margin: -16px;
+  padding: 16px;
+  margin-bottom: 0;
+`;
+
+const TagContainer = styled.div`
+  z-index: 1;
+`;
+
+const ProductTag = styled(BaseButton)<{ color: string }>`
+  background: ${(props) => props.color}29;
+  padding: 8px;
+  margin-right: 4px;
 `;
 
 const ProductInfo = styled(motion.div)<{ mode: "info" | "yield" }>`
   display: flex;
   flex-wrap: wrap;
+  flex-direction: column;
   ${(props) => {
     if (props.mode === "info") {
       return `
@@ -106,21 +107,40 @@ const ProductInfo = styled(motion.div)<{ mode: "info" | "yield" }>`
   }}
 `;
 
-const ProductTag = styled(BaseButton)`
-  background: ${colors.pillBackground};
-  padding: 8px;
-  margin-right: 4px;
+const ProductAssetLogoContainer = styled.div<{ color: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  width: 56px;
+  margin-top: calc(-56px / 2);
+  background: ${(props) => props.color}29;
+  border: 2px ${theme.border.style} ${colors.background};
+  border-radius: 100px;
+  position: relative;
+
+  &:before {
+    display: block;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    content: " ";
+    background-color: ${colors.background};
+    border-radius: 100px;
+    z-index: -1;
+  }
 `;
 
-const ProductTitle = styled(Title)<{ color: string }>`
-  color: ${(props) => props.color};
-  font-size: 36px;
-  margin-bottom: 8px;
+const ProductTitle = styled(Title)`
+  font-size: 32px;
+  line-height: 40px;
+  margin: 8px 0px;
+  width: 100%;
 `;
 
 const ProductDescription = styled(SecondaryText)`
   line-height: 1.5;
-  margin-bottom: 24px;
+  margin-bottom: auto;
 `;
 
 const ExpectedYieldTitle = styled(BaseText)`
@@ -130,42 +150,10 @@ const ExpectedYieldTitle = styled(BaseText)`
 `;
 
 const YieldText = styled(Title)`
-  font-size: 32px;
+  font-size: 24px;
   width: 100%;
+  margin-top: 4px;
   margin-bottom: 24px;
-`;
-
-const TopContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-`;
-
-const BackgroundContainer = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 0;
-`;
-
-const StyledWBTCLogo = styled(WBTCLogo)`
-  && * {
-    fill: white;
-  }
-`;
-
-const StyledUSDCLogo = styled(USDCLogo)`
-  .background {
-    fill: #ffffff52;
-  }
 `;
 
 const ModeSwitcherContainer = styled.div<{ color: string }>`
@@ -176,6 +164,27 @@ const ModeSwitcherContainer = styled.div<{ color: string }>`
   height: 32px;
   border-radius: 100px;
   background: ${(props) => props.color}14;
+  z-index: 1;
+`;
+
+const TopBackgroundContianer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 1px;
+  border-radius: ${theme.border.radius};
+  overflow: hidden;
+`;
+
+const StyledWaves = styled(Waves)<{ color: string }>`
+  path {
+    stroke: ${(props) => props.color}14;
+  }
 `;
 
 const YieldComparisonCard = styled.div`
@@ -206,6 +215,14 @@ const YieldComparisonAPR = styled(YieldComparisonText)`
   margin-left: auto;
 `;
 
+const PositionLabel = styled(SecondaryText)`
+  font-size: 12px;
+`;
+
+const PositionStats = styled(Title)`
+  font-size: 14px;
+`;
+
 interface YieldCardProps {
   vault: VaultOptions;
   onClick: () => void;
@@ -225,12 +242,6 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
     ? 1
     : parseFloat(formatSignificantDecimals(formatUnits(vaultLimit, decimals)));
 
-  const renderTag = (name: string) => (
-    <ProductTag key={name}>
-      <Subtitle>{name}</Subtitle>
-    </ProductTag>
-  );
-
   const latestAPY = useLatestAPY(vault);
 
   const loadingText = useTextAnimation(
@@ -245,46 +256,47 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
     setMode((prev) => (prev === "info" ? "yield" : "info"));
   }, []);
 
-  const backgroundLogo = useMemo(() => {
-    switch (vault) {
-      case "rETH-THETA":
-        return <WETHLogo width="40%" opacity="0.1" />;
-      case "rBTC-THETA":
-        return <StyledWBTCLogo width="50%" opacity="0.04" />;
-      case "rUSDC-ETH-P-THETA":
-      case "rUSDC-BTC-P-THETA":
-        return <StyledUSDCLogo width="50%" opacity="0.04" />;
-      default:
-        return <></>;
-    }
-  }, [vault]);
+  const ProductInfoContent = () => {
+    const Logo = getAssetLogo(asset);
 
-  const ProductInfoContent = () => (
-    <>
-      <ProductTitle color={color}>{productCopies[vault].title}</ProductTitle>
-      <ProductDescription>
-        {productCopies[vault].description}
-      </ProductDescription>
-      <ExpectedYieldTitle>Current Projected Yield (APY)</ExpectedYieldTitle>
-      <YieldText>{perfStr}</YieldText>
-      <CapBar
-        loading={isLoading}
-        current={totalDepositStr}
-        cap={depositLimitStr}
-        copies={{
-          current: "Current Deposits",
-          cap: "Max Capacity",
-        }}
-        labelConfig={{
-          fontSize: 12,
-        }}
-        statsConfig={{
-          fontSize: 12,
-        }}
-        asset={asset}
-      />
-    </>
-  );
+    let logo = <Logo />;
+
+    switch (asset) {
+      case "WETH":
+        logo = <Logo height="70%" />;
+    }
+
+    return (
+      <>
+        <ProductAssetLogoContainer color={color}>
+          {logo}
+        </ProductAssetLogoContainer>
+        <ProductTitle color={color}>{productCopies[vault].title}</ProductTitle>
+        <ProductDescription>
+          {productCopies[vault].description}
+        </ProductDescription>
+        <ExpectedYieldTitle>Current Projected Yield (APY)</ExpectedYieldTitle>
+        <YieldText>{perfStr}</YieldText>
+        <CapBar
+          loading={isLoading}
+          current={totalDepositStr}
+          cap={depositLimitStr}
+          copies={{
+            current: "Current Deposits",
+            cap: "Max Capacity",
+          }}
+          labelConfig={{
+            fontSize: 12,
+          }}
+          statsConfig={{
+            fontSize: 14,
+          }}
+          barConfig={{ height: 4, extraClassNames: "my-2", radius: 2 }}
+          asset={asset}
+        />
+      </>
+    );
+  };
 
   const renderProtocolLogo = useCallback((protocol: DefiScoreProtocol) => {
     switch (protocol) {
@@ -338,9 +350,16 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
     <ProductCard onClick={onClick} role="button" color={color}>
       <ProductContent>
         <TopContainer>
-          <ProductTopContainer>
-            {productCopies[vault].tags.map((tag) => renderTag(tag))}
-          </ProductTopContainer>
+          {/* Tags */}
+          <TagContainer>
+            {productCopies[vault].tags.map((tag) => (
+              <ProductTag key={tag} color={color}>
+                <Subtitle>{tag}</Subtitle>
+              </ProductTag>
+            ))}
+          </TagContainer>
+
+          {/* Mode switcher button */}
           <ModeSwitcherContainer
             role="button"
             onClick={onSwapMode}
@@ -352,6 +371,13 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
               <BarChartIcon color={color} />
             )}
           </ModeSwitcherContainer>
+
+          {/* Top container background */}
+          <TopBackgroundContianer>
+            <div>
+              <StyledWaves height="136px" width="834px" color={color} />
+            </div>
+          </TopBackgroundContianer>
         </TopContainer>
         <AnimatePresence exitBeforeEnter initial={false}>
           <ProductInfo
@@ -379,8 +405,13 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
             )}
           </ProductInfo>
         </AnimatePresence>
+        <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
+          <div className="d-flex align-items-center w-100">
+            <PositionLabel className="mr-auto">Your Position</PositionLabel>
+            <PositionStats>14.3 {getAssetDisplay(asset)}</PositionStats>
+          </div>
+        </ModalContentExtra>
       </ProductContent>
-      <BackgroundContainer>{backgroundLogo}</BackgroundContainer>
     </ProductCard>
   );
 };

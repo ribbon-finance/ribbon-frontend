@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { BalanceUpdate } from "shared/lib/models/vault";
 import { getSubgraphqlURI } from "shared/lib/utils/env";
-import { impersonateAddress } from "../utils/development";
+import { impersonateAddress } from "shared/lib/utils/development";
 
 const useBalances = (before?: number, after?: number) => {
   const web3Context = useWeb3React();

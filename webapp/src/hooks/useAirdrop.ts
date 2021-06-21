@@ -7,7 +7,7 @@ import { proof, airdrop, breakdown } from "../constants/constants";
 import useMerkleDistributor from "./useMerkleDistributor";
 import usePendingTransactions from "./usePendingTransactions";
 import { formatUnits } from "@ethersproject/units";
-import { impersonateAddress } from "../utils/development";
+import { impersonateAddress } from "shared/lib/utils/development";
 
 const useAirdrop = () => {
   const web3Context = useWeb3React();

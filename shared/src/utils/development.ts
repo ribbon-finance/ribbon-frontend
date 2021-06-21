@@ -1,4 +1,4 @@
-import { isProduction } from "shared/lib/utils/env";
+import { isProduction } from "./env";
 
 /**
  * Only change this line

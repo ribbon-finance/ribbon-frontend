@@ -10,7 +10,7 @@ import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
 import { VaultOptions } from "shared/lib/constants/constants";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import useVaultAccounts from "../../hooks/useVaultAccounts";
+import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 

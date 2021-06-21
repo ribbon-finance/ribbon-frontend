@@ -21,7 +21,7 @@ import { HoverInfo } from "../PerformanceChart/types";
 import sizes from "shared/lib/designSystem/sizes";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import { getAssets, VaultList } from "shared/lib/constants/constants";
-import useVaultAccounts from "../../hooks/useVaultAccounts";
+import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { AssetsList } from "shared/lib/store/types";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import useRBNTokenAccount from "../../hooks/useRBNTokenAccount";
