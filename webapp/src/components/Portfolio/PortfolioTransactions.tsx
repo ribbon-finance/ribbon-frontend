@@ -92,6 +92,11 @@ const TransactionTypeContainer = styled.div`
   margin-right: 8px;
   color: ${colors.primaryText};
   font-size: 20px;
+
+  @media (max-width: ${sizes.md}px) {
+    margin: auto;
+    margin-right: 24px;
+  }
 `;
 
 const StakeOuterCircle = styled.div`
@@ -176,7 +181,7 @@ const Divider = styled.div`
 `;
 
 const ExternalLink = styled.div`
-  margin: 0 8px 0px 24px;
+  margin: 0px 0px 0px 24px;
   width: 24px;
 `;
 
@@ -209,7 +214,7 @@ const PortfolioTransactions = () => {
   const [activityFilter, setActivityFilter] =
     useState<PortfolioTransactionActivityFilter>(
       portfolioTransactionActivityFilters[0]
-    );
+  );
   const { width } = useScreenSize();
 
   const processedTransactions = useMemo(() => {
