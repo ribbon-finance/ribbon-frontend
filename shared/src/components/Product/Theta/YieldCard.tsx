@@ -92,19 +92,11 @@ const ProductTag = styled(BaseButton)<{ color: string }>`
   margin-right: 4px;
 `;
 
-const ProductInfo = styled(motion.div)<{ mode: "info" | "yield" }>`
+const ProductInfo = styled(motion.div)`
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
-  ${(props) => {
-    if (props.mode === "info") {
-      return `
-        flex: 1;
-      `;
-    }
-
-    return null;
-  }}
+  flex: 1;
 `;
 
 const ProductAssetLogoContainer = styled.div<{ color: string }>`
@@ -382,7 +374,6 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
         <AnimatePresence exitBeforeEnter initial={false}>
           <ProductInfo
             key={mode}
-            mode={mode}
             transition={{
               duration: 0.1,
               type: "keyframes",
