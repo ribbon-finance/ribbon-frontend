@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { CheckIcon } from "../../assets/icons/icons";
 
@@ -195,6 +195,13 @@ const MultiselectFilterDropdown: React.FC<
   const { height, width } = useScreenSize();
   const dropdownBoundingRect = useBoundingclientrect(ref);
   const [selected, setSelected] = useState<string[]>(values);
+
+  // Reset selected value if close without save
+  useEffect(() => {
+    if (!open) {
+      setSelected(values);
+    }
+  }, [open]);
 
   useOutsideAlerter(ref, () => {
     setOpen(false);
