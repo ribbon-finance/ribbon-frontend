@@ -38,25 +38,14 @@ import {
 } from "../../../assets/icons/defiApp";
 import { getAssetDisplay } from "../../../utils/asset";
 import { getVaultColor } from "../../../utils/vault";
+import { shimmerKeyframe } from "../../../designSystem/keyframes";
 
 const { formatUnits } = ethers.utils;
-
-const shimmerKeyframe = (color: string) => keyframes`
-    0% {
-      box-shadow: ${color}66 8px 16px 80px;
-    }
-    50% {
-      box-shadow: ${color}29 8px 16px 80px;
-    }
-    100% {
-      box-shadow: ${color}66 8px 16px 80px;
-    }
-`;
 
 const ProductCard = styled.div<{ color: string }>`
   display: flex;
   background-color: ${colors.background};
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border: 2px ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
   padding: 16px 24px 24px 16px;
   margin: 0 80px;
@@ -67,11 +56,14 @@ const ProductCard = styled.div<{ color: string }>`
   height: 100%;
   perspective: 2000px;
 
+  transition: 0.2s;
   animation: ${(props) => shimmerKeyframe(props.color)} 3s infinite;
 
   &:hover {
+    transition: 0.2s;
     animation: none;
-    box-shadow: ${(props) => props.color}66 8px 8px 120px;
+    box-shadow: ${(props) => props.color}66 8px 16px 80px;
+    border: 2px ${theme.border.style} ${(props) => props.color};
   }
 
   @media (max-width: ${sizes.md}px) {

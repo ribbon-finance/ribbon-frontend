@@ -62,8 +62,10 @@ const PositionContainer = styled.div<{ color: string }>`
   width: 100%;
   border-radius: ${theme.border.radius};
   border: 2px ${theme.border.style} #00000000;
-
+  transition: 0.2s;
+  
   &:hover {
+    transition: 0.2s;
     box-shadow: ${(props) => props.color}3D 8px 16px 80px;
     border: 2px ${theme.border.style} ${(props) => props.color};
   }
@@ -94,7 +96,7 @@ const LogoContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 24px;
+  margin-right: 8px;
   width: 40px;
   height: 40px;
   border-radius: 100px;

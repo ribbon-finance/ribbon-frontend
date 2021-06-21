@@ -114,7 +114,6 @@ const OverviewKPI = styled.div`
   width: calc(100% / 3);
   display: flex;
   flex-wrap: wrap;
-  background: ${colors.backgroundLighter};
 
   @media (max-width: ${sizes.sm}px) {
     width: 100%;

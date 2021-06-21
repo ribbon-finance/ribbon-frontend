@@ -89,10 +89,10 @@ const TransactionTypeContainer = styled.div`
   width: 40px;
   background: #ffffff14;
   border-radius: 100px;
-  margin-right: 24px;
+  margin-right: 8px;
   color: ${colors.primaryText};
   font-size: 20px;
-  
+
   @media (max-width: ${sizes.md}px) {
     margin: auto;
     margin-right: 24px;
@@ -214,7 +214,7 @@ const PortfolioTransactions = () => {
   const [activityFilter, setActivityFilter] =
     useState<PortfolioTransactionActivityFilter>(
       portfolioTransactionActivityFilters[0]
-    );
+  );
   const { width } = useScreenSize();
 
   const processedTransactions = useMemo(() => {

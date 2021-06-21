@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { formatUnits } from "@ethersproject/units";
 import { useWeb3React } from "@web3-react/core";
 
@@ -29,6 +29,7 @@ import StakingClaimModal from "./Modal/StakingClaimModal";
 import HelpInfo from "../Common/HelpInfo";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { BigNumber } from "ethers";
+import { shimmerKeyframe } from "shared/lib/designSystem/keyframes";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -42,18 +43,6 @@ const SectionHeader = styled(Title)`
   line-height: 24px;
 `;
 
-const shimmerKeyframe = (color: string) => keyframes`
-    0% {
-      box-shadow: ${color}66 8px 16px 80px;
-    }
-    50% {
-      box-shadow: ${color}29 8px 16px 80px;
-    }
-    100% {
-      box-shadow: ${color}66 8px 16px 80px;
-    }
-`;
-
 const StakingPoolCard = styled.div<{ color: string }>`
   display: flex;
   flex-wrap: wrap;
@@ -63,8 +52,10 @@ const StakingPoolCard = styled.div<{ color: string }>`
   padding: 1px;
   margin-bottom: 48px;
   background: ${colors.background};
+  transition: 0.2s;
 
   &:hover {
+    transition: 0.2s;
     animation: ${(props) => shimmerKeyframe(props.color)} 3s infinite;
     border: 2px ${theme.border.style} ${(props) => props.color};
     padding: 0px;
@@ -118,7 +109,7 @@ const LogoContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 24px;
+  margin-right: 8px;
   width: 40px;
   height: 40px;
   border-radius: 100px;
@@ -137,7 +128,6 @@ const StakingPoolCardFooter = styled.div`
   justify-content: center;
   width: 100%;
   border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
-  background: ${colors.backgroundLighter};
 `;
 
 const StakingPoolCardFooterButton = styled(Title)<{

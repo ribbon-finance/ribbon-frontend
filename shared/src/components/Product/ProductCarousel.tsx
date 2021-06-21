@@ -187,6 +187,7 @@ const ProductContentContainer = styled(Row)<DynamicMarginProps>`
       margin-top: calc(${props.empty}px * 0.15);
     `;
   }}
+
   @media (max-width: ${sizes.md}px) {
     padding: 40px 0px 0px 0px;
     margin-top: 0px;
@@ -350,7 +351,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
 
   return (
     <ProductSectionContainer>
-      <ProductContainerBody>
+      <ProductContainerBody color={colors.products[selectedProduct]}>
         {/* Title and Product tab */}
         <HeaderContainer ref={headerRef} empty={empty}>
           <ProductTabScrollContainer>

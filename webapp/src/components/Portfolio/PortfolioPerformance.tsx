@@ -93,7 +93,6 @@ const KPIColumn = styled.div`
   display: flex;
   flex-wrap: wrap;
   border-left: ${theme.border.width} ${theme.border.style} ${colors.border};
-  background: ${colors.backgroundLighter};
 
   &:first-child {
     border-left: none;
