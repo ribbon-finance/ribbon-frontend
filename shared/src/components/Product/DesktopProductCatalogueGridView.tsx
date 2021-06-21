@@ -7,7 +7,11 @@ import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
 import { AssetsList } from "../../store/types";
-import { getAssetColor, getAssetDisplay } from "../../utils/asset";
+import {
+  getAssetColor,
+  getAssetDisplay,
+  getAssetLogo,
+} from "../../utils/asset";
 import FilterDropdown from "../Common/FilterDropdown";
 import MultiselectFilterDropdown from "../Common/MultiselectFilterDropdown";
 import SwitchViewButton from "./Shared/SwitchViewButton";
@@ -88,11 +92,21 @@ const DesktopProductCatalogueGridView: React.FC<
       />
       <MultiselectFilterDropdown
         values={filterAssets}
-        options={AssetsList.map((asset) => ({
-          value: asset,
-          display: getAssetDisplay(asset),
-          color: getAssetColor(asset),
-        }))}
+        options={AssetsList.map((asset) => {
+          const Logo = getAssetLogo(asset);
+          let logo = <Logo />;
+          switch (asset) {
+            case "WETH":
+              logo = <Logo height="70%" />;
+          }
+          return {
+            value: asset,
+            display: getAssetDisplay(asset),
+            color: getAssetColor(asset),
+            textColor: colors.primaryText,
+            logo: logo,
+          };
+        })}
         title="DEPOSIT ASSET"
         // @ts-ignore
         onSelect={setFilterAssets}

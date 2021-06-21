@@ -9,7 +9,6 @@ import theme from "../../designSystem/theme";
 import { useBoundingclientrect } from "../../hooks/useBoundingclientrect";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import useScreenSize from "../../hooks/useScreenSize";
-import { capitalize } from "../../utils/text";
 import ButtonArrow from "./ButtonArrow";
 
 interface FilterDropdownButtonConfig {
@@ -119,6 +118,18 @@ const MenuItem = styled.div<{ color: string; active: boolean }>`
   }}
 `;
 
+const LogoContainer = styled.div<{ color: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  margin: -12px;
+  margin-right: 8px;
+  background: ${(props) => props.color}29;
+  border-radius: 100px;
+`;
+
 const MenuItemText = styled(Title)<{ color: string }>`
   color: ${(props) => props.color};
   white-space: nowrap;
@@ -143,9 +154,17 @@ const SaveButton = styled(BaseButton)`
   border-radius: ${theme.border.radius};
 `;
 
+interface DropdownOption {
+  value: string;
+  display: string;
+  color: string;
+  textColor?: string;
+  logo?: React.ReactElement;
+}
+
 interface MultiselectFilterDropdownProps {
   values: string[];
-  options: { value: string; display: string; color: string }[];
+  options: DropdownOption[];
   title: string;
   onSelect: (option: string[]) => void;
   buttonConfig?: FilterDropdownButtonConfig;
@@ -182,25 +201,35 @@ const MultiselectFilterDropdown: React.FC<
   });
 
   const renderMenuItem = useCallback(
-    (title: string, value: string, color: string) => {
-      const active = selected.includes(value);
-      const textColor = active ? color : colors.primaryText;
+    (option: DropdownOption) => {
+      const active = selected.includes(option.value);
+      const textColor = option.textColor ? option.textColor : option.color;
       return (
         <MenuItem
           onClick={() => {
             setSelected((currSelected) =>
-              currSelected.includes(value)
-                ? currSelected.filter((curr) => curr !== value)
-                : currSelected.concat(value)
+              currSelected.includes(option.value)
+                ? currSelected.filter((curr) => curr !== option.value)
+                : currSelected.concat(option.value)
             );
           }}
           role="button"
-          key={title}
-          color={color}
+          key={option.value}
+          color={option.color}
           active={active}
         >
-          <MenuItemText color={textColor}>{title}</MenuItemText>
-          <StyledCheckButton color={textColor} className="ml-auto" />
+          {option.logo ? (
+            <LogoContainer color={option.color}>{option.logo}</LogoContainer>
+          ) : (
+            <></>
+          )}
+          <MenuItemText color={active ? textColor : colors.primaryText}>
+            {option.display}
+          </MenuItemText>
+          <StyledCheckButton
+            color={active ? textColor : colors.primaryText}
+            className="ml-auto"
+          />
         </MenuItem>
       );
     },
@@ -249,13 +278,7 @@ const MultiselectFilterDropdown: React.FC<
         buttonPaddingVertical={buttonConfig.paddingVertical}
         config={dropdownMenuConfig}
       >
-        {options.map((filterOption) =>
-          renderMenuItem(
-            capitalize(filterOption.display),
-            filterOption.value,
-            filterOption.color
-          )
-        )}
+        {options.map((filterOption) => renderMenuItem(filterOption))}
         <SaveButton
           role="button"
           onClick={() => {

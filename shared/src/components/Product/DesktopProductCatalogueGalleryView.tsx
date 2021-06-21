@@ -37,11 +37,13 @@ const DesktopProductCatalogueGalleryView: React.FC<DesktopProductCatalogueGridVi
         <div className="d-flex w-100">
           <FilterContainer>
             <MultiselectFilterDropdown
+              values={[]}
               options={[{ value: "lol", display: "lol", color: colors.green }]}
               title="FILTERS"
               onSelect={() => {}}
             />
             <MultiselectFilterDropdown
+              values={[]}
               options={[{ value: "lol", display: "lol", color: colors.green }]}
               title="SORT BY"
               onSelect={() => {}}
