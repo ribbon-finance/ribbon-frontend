@@ -6,6 +6,7 @@ import { VaultOptions } from "../../constants/constants";
 import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
+import { VaultAccount } from "../../models/vault";
 import { AssetsList } from "../../store/types";
 import {
   getAssetColor,
@@ -62,6 +63,9 @@ interface DesktopProductCatalogueGridViewProps {
   setView: React.Dispatch<React.SetStateAction<DesktopViewType>>;
   onVaultPress: (vault: VaultOptions) => void;
   filteredProducts: VaultOptions[];
+  vaultAccounts: {
+    [key: string]: VaultAccount | undefined;
+  };
 }
 
 const DesktopProductCatalogueGridView: React.FC<
@@ -76,6 +80,7 @@ const DesktopProductCatalogueGridView: React.FC<
   filterAssets,
   setFilterAssets,
   filteredProducts,
+  vaultAccounts,
 }) => (
   <div className="container mt-5 d-flex flex-column align-items-center">
     <FilterContainer>
@@ -152,7 +157,11 @@ const DesktopProductCatalogueGridView: React.FC<
             ease: "easeOut",
           }}
         >
-          <YieldCard vault={vault} onClick={() => onVaultPress(vault)} />
+          <YieldCard
+            vault={vault}
+            onClick={() => onVaultPress(vault)}
+            vaultAccount={vaultAccounts[vault]}
+          />
         </YieldCardContainer>
       ))}
     </YieldCardsContainer>

@@ -15,7 +15,10 @@ import sizes from "../../../designSystem/sizes";
 import theme from "../../../designSystem/theme";
 import CapBar from "../../Deposit/CapBar";
 import useVaultData from "../../../hooks/useVaultData";
-import { formatSignificantDecimals } from "../../../utils/math";
+import {
+  formatBigNumber,
+  formatSignificantDecimals,
+} from "../../../utils/math";
 import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useTextAnimation from "../../../hooks/useTextAnimation";
 import { VaultOptions } from "../../../constants/constants";
@@ -35,6 +38,7 @@ import { getAssetDisplay, getAssetLogo } from "../../../utils/asset";
 import { getVaultColor } from "../../../utils/vault";
 import { Waves } from "../../../assets";
 import ModalContentExtra from "../../Common/ModalContentExtra";
+import { VaultAccount } from "../../../models/vault";
 
 const { formatUnits } = ethers.utils;
 
@@ -218,9 +222,14 @@ const PositionStats = styled(Title)`
 interface YieldCardProps {
   vault: VaultOptions;
   onClick: () => void;
+  vaultAccount?: VaultAccount;
 }
 
-const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
+const YieldCard: React.FC<YieldCardProps> = ({
+  vault,
+  onClick,
+  vaultAccount,
+}) => {
   const { status, deposits, vaultLimit, asset, decimals } = useVaultData(vault);
   const isLoading = status === "loading";
   const [mode, setMode] = useState<"info" | "yield">("info");
@@ -399,7 +408,15 @@ const YieldCard: React.FC<YieldCardProps> = ({ vault, onClick }) => {
         <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
           <div className="d-flex align-items-center w-100">
             <PositionLabel className="mr-auto">Your Position</PositionLabel>
-            <PositionStats>14.3 {getAssetDisplay(asset)}</PositionStats>
+            <PositionStats>
+              {vaultAccount
+                ? `${formatBigNumber(
+                    vaultAccount.totalBalance,
+                    6,
+                    decimals
+                  )} ${getAssetDisplay(asset)}`
+                : "---"}
+            </PositionStats>
           </div>
         </ModalContentExtra>
       </ProductContent>

@@ -4,6 +4,7 @@ import { getAssets, VaultList } from "../../constants/constants";
 import sizes from "../../designSystem/sizes";
 import { useLatestAPYs } from "../../hooks/useAirtableData";
 import useScreenSize from "../../hooks/useScreenSize";
+import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { Assets } from "../../store/types";
 import DesktopProductCatalogue from "./DesktopProductCatalogue";
 import {
@@ -24,6 +25,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
   const [filterAssets, setFilterAssets] = useState<Assets[]>([]);
   const [sort, setSort] = useState<VaultSortBy>(VaultSortByList[0]);
   const yieldsData = useLatestAPYs(VaultList);
+  const { vaultAccounts } = useVaultAccounts(VaultList);
 
   const filteredProducts = useMemo(() => {
     const filteredList = VaultList.filter((vault) => {
@@ -80,6 +82,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
       setFilterAssets={setFilterAssets}
       setSort={setSort}
       filteredProducts={filteredProducts}
+      vaultAccounts={vaultAccounts}
     />
   ) : (
     <></>

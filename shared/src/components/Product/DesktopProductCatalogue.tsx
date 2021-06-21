@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { VaultOptions } from "../../constants/constants";
+import { VaultAccount } from "../../models/vault";
 import DesktopProductCatalogueGalleryView from "./DesktopProductCatalogueGalleryView";
 import DesktopProductCatalogueGridView from "./DesktopProductCatalogueGridView";
 import {
@@ -8,11 +9,15 @@ import {
   VaultFilterProps,
 } from "./types";
 
+interface DesktopProductCatalogueProps {
+  filteredProducts: VaultOptions[];
+  vaultAccounts: {
+    [key: string]: VaultAccount | undefined;
+  };
+}
+
 const DesktopProductCatalogue: React.FC<
-  ProductCatalogueProps &
-    VaultFilterProps & {
-      filteredProducts: VaultOptions[];
-    }
+  ProductCatalogueProps & VaultFilterProps & DesktopProductCatalogueProps
 > = ({ dynamicMargin, ...props }) => {
   const [view, setView] = useState<DesktopViewType>("grid");
 
