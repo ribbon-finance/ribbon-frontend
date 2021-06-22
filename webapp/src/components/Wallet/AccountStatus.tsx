@@ -23,7 +23,7 @@ import {
 } from "./types";
 import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
-import MenuButton from "../Header/MenuButton";
+import MenuButton from "shared/lib/components/Common/MenuButton";
 import { copyTextToClipboard } from "shared/lib/utils/text";
 import useOutsideAlerter from "shared/lib/hooks/useOutsideAlerter";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";

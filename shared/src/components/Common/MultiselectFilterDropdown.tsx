@@ -29,7 +29,9 @@ const Filter = styled.div`
 
 const FilterButton = styled(BaseButton)<{ config: FilterDropdownButtonConfig }>`
   display: flex;
+  width: 100%;
   align-items: center;
+  justify-content: center;
   padding: ${(props) =>
     `${props.config.paddingVertical}px ${props.config.paddingHorizontal}px`};
   background-color: ${(props) => props.config.background};

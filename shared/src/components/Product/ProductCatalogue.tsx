@@ -7,6 +7,7 @@ import useScreenSize from "../../hooks/useScreenSize";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { Assets } from "../../store/types";
 import DesktopProductCatalogue from "./DesktopProductCatalogue";
+import MobileProductCatalogue from "./MobileProductCatalogue";
 import {
   ProductCatalogueProps,
   VaultReleaseOrder,
@@ -85,7 +86,18 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
       vaultAccounts={vaultAccounts}
     />
   ) : (
-    <></>
+    <MobileProductCatalogue
+      dynamicMargin={dynamicMargin}
+      onVaultPress={onVaultPress}
+      filterStrategies={filterStrategies}
+      filterAssets={filterAssets}
+      sort={sort}
+      setFilterStrategies={setFilterStrategies}
+      setFilterAssets={setFilterAssets}
+      setSort={setSort}
+      filteredProducts={filteredProducts}
+      vaultAccounts={vaultAccounts}
+    />
   );
 };
 

@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "styled-components";
 
 const Container = styled.div<{ size: number }>`
@@ -50,18 +51,16 @@ interface MenuButtonProps {
   onToggle: () => void;
 }
 
-const MenuButton = ({
+const MenuButton: React.FC<MenuButtonProps> = ({
   size = 24,
   color = "white",
   isOpen,
   onToggle,
-}: MenuButtonProps) => {
-  return (
-    <Container onClick={onToggle} size={size}>
-      <LineTop size={size} isOpen={isOpen} color={color} />
-      <LineBottom size={size} isOpen={isOpen} color={color} />
-    </Container>
-  );
-};
+}) => (
+  <Container onClick={onToggle} size={size}>
+    <LineTop size={size} isOpen={isOpen} color={color} />
+    <LineBottom size={size} isOpen={isOpen} color={color} />
+  </Container>
+);
 
 export default MenuButton;

@@ -6,7 +6,7 @@ import HeaderLogo from "./HeaderLogo";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
 import { Title, BaseLink } from "shared/lib/designSystem";
-import MenuButton from "./MenuButton";
+import MenuButton from "shared/lib/components/Common/MenuButton";
 import { NavItemProps, MobileMenuOpenProps } from "./types";
 import AccountStatus from "../Wallet/AccountStatus";
 import theme from "shared/lib/designSystem/theme";

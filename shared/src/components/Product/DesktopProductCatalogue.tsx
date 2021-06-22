@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { VaultOptions } from "../../constants/constants";
 import { VaultAccount } from "../../models/vault";
 import DesktopProductCatalogueGalleryView from "./DesktopProductCatalogueGalleryView";
-import DesktopProductCatalogueGridView from "./DesktopProductCatalogueGridView";
+import ProductCatalogueGridView from "./ProductCatalogueGridView";
 import {
   DesktopViewType,
   ProductCatalogueProps,
@@ -23,7 +23,13 @@ const DesktopProductCatalogue: React.FC<
 
   switch (view) {
     case "grid":
-      return <DesktopProductCatalogueGridView setView={setView} {...props} />;
+      return (
+        <ProductCatalogueGridView
+          setView={setView}
+          {...props}
+          variant="desktop"
+        />
+      );
     case "gallery":
       return <DesktopProductCatalogueGalleryView setView={setView} />;
   }

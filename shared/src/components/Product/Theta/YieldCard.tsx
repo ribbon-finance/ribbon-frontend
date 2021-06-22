@@ -54,13 +54,15 @@ const ProductCard = styled.div<{ color: string }>`
   height: 100%;
   perspective: 2000px;
 
+  @media (max-width: ${sizes.md}px) {
+    width: 100%;
+    min-width: 290px;
+    max-width: 343px;
+  }
+
   &:hover {
     box-shadow: ${(props) => props.color}66 8px 16px 80px;
     border: 2px ${theme.border.style} ${(props) => props.color};
-  }
-
-  @media (max-width: ${sizes.md}px) {
-    margin: 0 12px;
   }
 `;
 

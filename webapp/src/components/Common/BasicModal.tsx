@@ -6,7 +6,7 @@ import { AnimatePresence, HTMLMotionProps, motion } from "framer-motion";
 import { BaseModal, BaseModalHeader } from "shared/lib/designSystem";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
-import MenuButton from "../Header/MenuButton";
+import MenuButton from "shared/lib/components/Common/MenuButton";
 
 const StyledModal = styled(BaseModal)<{ height: number }>`
   .modal-dialog {
