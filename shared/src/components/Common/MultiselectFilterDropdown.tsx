@@ -278,7 +278,9 @@ const MultiselectFilterDropdown: React.FC<
         config={buttonConfig}
       >
         <FilterButtonText config={buttonConfig}>
-          {title} <ButtonArrow isOpen={open} />
+          {title}
+          {values.length > 0 ? ` (${values.length})` : ""}{" "}
+          <ButtonArrow isOpen={open} />
         </FilterButtonText>
       </FilterButton>
       <FilterDropdownMenu
