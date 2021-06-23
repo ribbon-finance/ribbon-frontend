@@ -70,7 +70,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
     }
 
     return filteredList;
-  }, [filterStrategies, sort, yieldsData]);
+  }, [filterAssets, filterStrategies, sort, yieldsData]);
 
   return width > sizes.md ? (
     <DesktopProductCatalogue

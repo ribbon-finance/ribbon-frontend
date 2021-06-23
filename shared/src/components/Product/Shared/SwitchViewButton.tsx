@@ -29,7 +29,7 @@ const SwitchViewButton: React.FC<SwitchViewButtonProps> = ({
       case "grid":
         return <GalleryIcon />;
     }
-  }, []);
+  }, [view]);
 
   return (
     <Button

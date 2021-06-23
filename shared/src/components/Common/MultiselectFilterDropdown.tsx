@@ -203,7 +203,7 @@ const MultiselectFilterDropdown: React.FC<
     if (!open) {
       setSelected(values);
     }
-  }, [open]);
+  }, [open, values]);
 
   useOutsideAlerter(ref, () => {
     setOpen(false);

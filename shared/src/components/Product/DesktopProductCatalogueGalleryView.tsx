@@ -263,7 +263,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
         </VaultSecondaryInfo>
       </VaultInfo>
     );
-  }, [roi, currentVault, filteredProducts, vaultAccounts, getVaultUSDDisplay]);
+  }, [roi, currentVault, vaultAccounts, getVaultUSDDisplay]);
 
   return (
     <FullscreenContainer

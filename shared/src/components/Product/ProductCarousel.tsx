@@ -346,7 +346,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
       default:
         return <></>;
     }
-  }, [selectedProduct, renderSplashFromType, width]);
+  }, [onVaultPress, selectedProduct, renderSplashFromType, width]);
 
   return (
     <ProductSectionContainer>

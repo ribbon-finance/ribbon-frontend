@@ -1,6 +1,6 @@
 import { formatUnits } from "@ethersproject/units";
 import { AnimatePresence, motion } from "framer";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { BarChartIcon, GlobeIcon } from "../../../assets/icons/icons";
 
@@ -20,6 +20,7 @@ import { formatSignificantDecimals } from "../../../utils/math";
 import { getVaultColor } from "../../../utils/vault";
 import CapBar from "../../Deposit/CapBar";
 import { productCopies } from "../productCopies";
+import YieldComparison from "./YieldComparison";
 
 const FrameContainer = styled.div`
   perspective: 2000px;
@@ -89,7 +90,7 @@ interface YieldFrameProps {
 
 const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
   const { status, deposits, vaultLimit, asset, decimals } = useVaultData(vault);
-  const isLoading = status === "loading";
+  const isLoading = useMemo(() => status === "loading", [status]);
   const color = getVaultColor(vault);
   const Logo = getAssetLogo(asset);
   const latestAPY = useLatestAPY(vault);
@@ -114,6 +115,62 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
     e.stopPropagation();
     setMode((prev) => (prev === "info" ? "yield" : "info"));
   }, []);
+
+  const body = useMemo(() => {
+    switch (mode) {
+      case "info":
+        return (
+          <>
+            <div className="mt-4">
+              <Logo height="208" width="auto" />
+            </div>
+            <div className="d-flex align-items-center mt-4">
+              <ProjectedAPYLabel>Projected Yield (APY)</ProjectedAPYLabel>
+              <ProjectedAPYData color={color}>{perfStr}</ProjectedAPYData>
+            </div>
+            <div className="mt-auto">
+              <CapBar
+                loading={isLoading}
+                current={totalDepositStr}
+                cap={depositLimitStr}
+                copies={{
+                  current: "Current Deposits",
+                  cap: "Max Capacity",
+                }}
+                labelConfig={{
+                  fontSize: 12,
+                }}
+                statsConfig={{
+                  fontSize: 14,
+                }}
+                barConfig={{ height: 4, extraClassNames: "my-2", radius: 2 }}
+                asset={asset}
+              />
+            </div>
+          </>
+        );
+      case "yield":
+        return (
+          <YieldComparison
+            vault={vault}
+            config={{
+              background: `${color}29`,
+              border: "none",
+            }}
+          />
+        );
+    }
+  }, [
+    vault,
+    Logo,
+    asset,
+    mode,
+    color,
+    perfStr,
+    isLoading,
+    totalDepositStr,
+    depositLimitStr,
+  ]);
 
   return (
     <FrameContainer role="button" onClick={onClick}>
@@ -159,32 +216,7 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
               )}
             </ModeSwitcherContainer>
           </div>
-          <div className="mt-4">
-            <Logo height="208" width="auto" />
-          </div>
-          <div className="d-flex align-items-center mt-4">
-            <ProjectedAPYLabel>Projected Yield (APY)</ProjectedAPYLabel>
-            <ProjectedAPYData color={color}>{perfStr}</ProjectedAPYData>
-          </div>
-          <div className="mt-auto">
-            <CapBar
-              loading={isLoading}
-              current={totalDepositStr}
-              cap={depositLimitStr}
-              copies={{
-                current: "Current Deposits",
-                cap: "Max Capacity",
-              }}
-              labelConfig={{
-                fontSize: 12,
-              }}
-              statsConfig={{
-                fontSize: 14,
-              }}
-              barConfig={{ height: 4, extraClassNames: "my-2", radius: 2 }}
-              asset={asset}
-            />
-          </div>
+          {body}
         </Frame>
       </AnimatePresence>
     </FrameContainer>

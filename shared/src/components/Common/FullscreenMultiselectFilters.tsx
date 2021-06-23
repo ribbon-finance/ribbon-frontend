@@ -271,7 +271,7 @@ const FullscreenMultiselectFilter: React.FC<
         </MenuItem>
       );
     },
-    [selected]
+    [selected, onSelect]
   );
 
   return (
@@ -322,7 +322,7 @@ const FullscreenMultiselectFilters: React.FC<
         )
       );
     }
-  }, [open]);
+  }, [open, filters]);
 
   const handleClose = useCallback(() => {
     setOpen(false);

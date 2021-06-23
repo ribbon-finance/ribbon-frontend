@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ethers } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
@@ -24,21 +24,12 @@ import useTextAnimation from "../../../hooks/useTextAnimation";
 import { VaultOptions } from "../../../constants/constants";
 import { productCopies } from "../productCopies";
 import { BarChartIcon, GlobeIcon } from "../../../assets/icons/icons";
-import Logo from "../../../assets/icons/logo";
-import useAssetsYield from "../../../hooks/useAssetsYield";
-import { DefiScoreProtocol } from "../../../models/defiScore";
-import {
-  AAVEIcon,
-  CompoundIcon,
-  DDEXIcon,
-  DYDXIcon,
-  OasisIcon,
-} from "../../../assets/icons/defiApp";
 import { getAssetDisplay, getAssetLogo } from "../../../utils/asset";
 import { getVaultColor } from "../../../utils/vault";
 import { Waves } from "../../../assets";
 import ModalContentExtra from "../../Common/ModalContentExtra";
 import { VaultAccount } from "../../../models/vault";
+import YieldComparison from "./YieldComparison";
 
 const { formatUnits } = ethers.utils;
 
@@ -179,34 +170,6 @@ const StyledWaves = styled(Waves)<{ color: string }>`
   }
 `;
 
-const YieldComparisonCard = styled.div`
-  display: flex;
-  width: 100%;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: ${theme.border.radius};
-  background-color: #252322;
-  padding: 8px;
-  margin-top: 8px;
-`;
-
-const YieldComparisonTitle = styled(ExpectedYieldTitle)`
-  margin-top: 24px;
-
-  &:first-child {
-    margin-top: 14px;
-  }
-`;
-
-const YieldComparisonText = styled(Title)`
-  font-size: 14px;
-  line-height: 24px;
-  margin-left: 8px;
-`;
-
-const YieldComparisonAPR = styled(YieldComparisonText)`
-  margin-left: auto;
-`;
-
 const PositionLabel = styled(SecondaryText)`
   font-size: 12px;
 `;
@@ -227,9 +190,8 @@ const YieldCard: React.FC<YieldCardProps> = ({
   vaultAccount,
 }) => {
   const { status, deposits, vaultLimit, asset, decimals } = useVaultData(vault);
-  const isLoading = status === "loading";
+  const isLoading = useMemo(() => status === "loading", [status]);
   const [mode, setMode] = useState<"info" | "yield">("info");
-  const yieldInfos = useAssetsYield(asset);
   const color = getVaultColor(vault);
 
   const totalDepositStr = isLoading
@@ -295,54 +257,6 @@ const YieldCard: React.FC<YieldCardProps> = ({
     );
   };
 
-  const renderProtocolLogo = useCallback((protocol: DefiScoreProtocol) => {
-    switch (protocol) {
-      case "aave":
-        return <AAVEIcon height="24" width="24" />;
-      case "compound":
-        return <CompoundIcon height="24" width="24" />;
-      case "ddex":
-        return <DDEXIcon height="24" width="24" />;
-      case "dydx":
-        return (
-          <DYDXIcon height="24" width="24" style={{ borderRadius: "100px" }} />
-        );
-      case "mcd":
-        return <OasisIcon height="24" width="24" />;
-    }
-  }, []);
-
-  const ProductYieldComparison = () => (
-    <>
-      <YieldComparisonTitle>Current Projected Yield (APY)</YieldComparisonTitle>
-      <YieldComparisonCard>
-        <Logo height="24" width="24" />
-        <YieldComparisonText>{productCopies[vault].title}</YieldComparisonText>
-        <YieldComparisonAPR>{perfStr}</YieldComparisonAPR>
-      </YieldComparisonCard>
-      <YieldComparisonTitle>
-        Market {getAssetDisplay(asset)} Yields (APY)
-      </YieldComparisonTitle>
-      {yieldInfos
-        .slice(0, 3)
-        .map(
-          ({ protocol, apr }: { protocol: DefiScoreProtocol; apr: number }) => {
-            if (apr < 0.01) {
-              return <></>;
-            }
-
-            return (
-              <YieldComparisonCard key={protocol}>
-                {renderProtocolLogo(protocol)}
-                <YieldComparisonText>{protocol}</YieldComparisonText>
-                <YieldComparisonAPR>{`${apr.toFixed(2)}%`}</YieldComparisonAPR>
-              </YieldComparisonCard>
-            );
-          }
-        )}
-    </>
-  );
-
   return (
     <CardContainer>
       <AnimatePresence exitBeforeEnter initial={false}>
@@ -400,7 +314,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
             {mode === "info" ? (
               <ProductInfoContent />
             ) : (
-              <ProductYieldComparison />
+              <YieldComparison vault={vault} />
             )}
           </ProductInfo>
           <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
