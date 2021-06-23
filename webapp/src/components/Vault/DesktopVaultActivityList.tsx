@@ -15,7 +15,7 @@ import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { VaultActivity, VaultActivityType } from "shared/lib/models/vault";
 import { assetToUSD, formatOption } from "shared/lib/utils/math";
-import useAssetPrice from "../../hooks/useAssetPrice";
+import useAssetPrice from "shared/lib/hooks/useAssetPrice";
 import useElementSize from "shared/lib/hooks/useElementSize";
 import sizes from "shared/lib/designSystem/sizes";
 import useScreenSize from "shared/lib/hooks/useScreenSize";

@@ -7,7 +7,7 @@ import RBNClaimModalContent from "../Common/RBNClaimModalContent";
 import useMerkleDistributor from "../../hooks/useMerkleDistributor";
 import useAirdrop from "../../hooks/useAirdrop";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
-import BasicModal from "../Common/BasicModal";
+import BasicModal from "shared/lib/components/Common/BasicModal";
 
 interface AirdropModalProps {
   show: boolean;

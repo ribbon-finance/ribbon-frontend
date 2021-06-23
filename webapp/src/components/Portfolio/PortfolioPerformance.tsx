@@ -12,7 +12,7 @@ import currency from "currency.js";
 
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import { useAssetsPrice } from "../../hooks/useAssetPrice";
+import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import useBalances from "../../hooks/useBalances";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";

@@ -96,9 +96,11 @@ const ProductCatalogueGridView: React.FC<
   variant,
 }) => (
   <div className="container mt-5 d-flex flex-column align-items-center">
+    {/* Filters */}
     <FilterContainer>
       {variant === "desktop" ? (
         <>
+          {/* Strategy */}
           <MultiselectFilterDropdown
             values={filterStrategies}
             options={VaultStrategyList.map((strategy) => ({
@@ -110,6 +112,7 @@ const ProductCatalogueGridView: React.FC<
             // @ts-ignore
             onSelect={setFilterStrategies}
           />
+          {/* Assets */}
           <MultiselectFilterDropdown
             values={filterAssets}
             options={AssetsList.map((asset) => {
@@ -174,6 +177,7 @@ const ProductCatalogueGridView: React.FC<
           className="flex-grow-1 "
         />
       )}
+      {/* Sort */}
       <FilterDropdown
         // @ts-ignore
         options={VaultSortByList}
@@ -194,7 +198,6 @@ const ProductCatalogueGridView: React.FC<
         }}
         className="flex-grow-1"
       />
-
       {setView && <SwitchViewButton view="grid" setView={setView} />}
     </FilterContainer>
     <YieldCardsContainer>

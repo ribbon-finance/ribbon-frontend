@@ -31,7 +31,9 @@ const DesktopProductCatalogue: React.FC<
         />
       );
     case "gallery":
-      return <DesktopProductCatalogueGalleryView setView={setView} />;
+      return (
+        <DesktopProductCatalogueGalleryView setView={setView} {...props} />
+      );
   }
 };
 

@@ -78,7 +78,7 @@ export const BaseModalContentColumn = styled.div<{
   margin-top: ${(props) =>
     props.marginTop === "auto"
       ? props.marginTop
-      : `${props.marginTop || 24}px`};
+      : `${props.marginTop === undefined ? 24 : props.marginTop}px`};
 `;
 
 export const Title = styled.span`

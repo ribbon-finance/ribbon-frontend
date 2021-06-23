@@ -31,7 +31,7 @@ import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import TrafficLight from "../../Common/TrafficLight";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import { getVaultColor } from "shared/lib/utils/vault";
-import BasicModal from "../../Common/BasicModal";
+import BasicModal from "shared/lib/components/Common/BasicModal";
 
 const FloatingContainer = styled.div`
   display: flex;

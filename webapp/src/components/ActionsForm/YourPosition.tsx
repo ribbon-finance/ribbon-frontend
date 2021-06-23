@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 
 import PositionIcon from "../../assets/img/positionIcon.svg";
 import { SecondaryText, Subtitle, Title } from "shared/lib/designSystem";
-import useAssetPrice from "../../hooks/useAssetPrice";
+import useAssetPrice from "shared/lib/hooks/useAssetPrice";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
 import { VaultOptions } from "shared/lib/constants/constants";

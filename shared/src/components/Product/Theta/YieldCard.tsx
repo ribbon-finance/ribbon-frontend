@@ -42,39 +42,33 @@ import { VaultAccount } from "../../../models/vault";
 
 const { formatUnits } = ethers.utils;
 
-const ProductCard = styled.div<{ color: string }>`
+const CardContainer = styled.div`
+  perspective: 2000px;
+`;
+
+const ProductCard = styled(motion.div)<{ color: string }>`
   display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
   background-color: ${colors.background};
-  border: 2px ${theme.border.style} transparent;
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
-  transition: 0.25s box-shadow ease-out, 0.25s border ease-out;
+  transition: 0.25s box-shadow ease-out, 0.25s border-color ease-out;
   width: 290px;
   min-height: 492px;
   position: relative;
   height: 100%;
-  perspective: 2000px;
+  padding: 17px;
 
   @media (max-width: ${sizes.md}px) {
-    width: 100%;
-    min-width: 290px;
-    max-width: 343px;
+    width: 343px;
   }
 
   &:hover {
     box-shadow: ${(props) => props.color}66 8px 16px 80px;
     border: 2px ${theme.border.style} ${(props) => props.color};
+    padding: 16px;
   }
-`;
-
-const ProductContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  flex-wrap: wrap;
-  z-index: 1;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: ${theme.border.radius};
-  padding: 16px;
 `;
 
 const TopContainer = styled.div`
@@ -98,7 +92,7 @@ const ProductTag = styled(BaseButton)<{ color: string }>`
   margin-right: 4px;
 `;
 
-const ProductInfo = styled(motion.div)`
+const ProductInfo = styled.div`
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
@@ -350,79 +344,82 @@ const YieldCard: React.FC<YieldCardProps> = ({
   );
 
   return (
-    <ProductCard onClick={onClick} role="button" color={color}>
-      <ProductContent>
-        <TopContainer>
-          {/* Tags */}
-          <TagContainer>
-            {productCopies[vault].tags.map((tag) => (
-              <ProductTag key={tag} color={color}>
-                <Subtitle>{tag}</Subtitle>
-              </ProductTag>
-            ))}
-          </TagContainer>
+    <CardContainer>
+      <AnimatePresence exitBeforeEnter initial={false}>
+        <ProductCard
+          key={mode}
+          transition={{
+            duration: 0.1,
+            type: "keyframes",
+            ease: "linear",
+          }}
+          initial={{
+            transform: "rotateY(90deg)",
+          }}
+          animate={{
+            transform: "rotateY(0deg)",
+          }}
+          exit={{
+            transform: "rotateY(-90deg)",
+          }}
+          onClick={onClick}
+          role="button"
+          color={color}
+        >
+          <TopContainer>
+            {/* Tags */}
+            <TagContainer>
+              {productCopies[vault].tags.map((tag) => (
+                <ProductTag key={tag} color={color}>
+                  <Subtitle>{tag}</Subtitle>
+                </ProductTag>
+              ))}
+            </TagContainer>
 
-          {/* Mode switcher button */}
-          <ModeSwitcherContainer
-            role="button"
-            onClick={onSwapMode}
-            color={color}
-          >
-            {mode === "info" ? (
-              <GlobeIcon color={color} />
-            ) : (
-              <BarChartIcon color={color} />
-            )}
-          </ModeSwitcherContainer>
+            {/* Mode switcher button */}
+            <ModeSwitcherContainer
+              role="button"
+              onClick={onSwapMode}
+              color={color}
+            >
+              {mode === "info" ? (
+                <GlobeIcon color={color} />
+              ) : (
+                <BarChartIcon color={color} />
+              )}
+            </ModeSwitcherContainer>
 
-          {/* Top container background */}
-          <TopBackgroundContianer>
-            <div>
-              <StyledWaves height="136px" width="834px" color={color} />
-            </div>
-          </TopBackgroundContianer>
-        </TopContainer>
-        <AnimatePresence exitBeforeEnter initial={false}>
-          <ProductInfo
-            key={mode}
-            transition={{
-              duration: 0.1,
-              type: "keyframes",
-              ease: "linear",
-            }}
-            initial={{
-              transform: "rotateY(90deg)",
-            }}
-            animate={{
-              transform: "rotateY(0deg)",
-            }}
-            exit={{
-              transform: "rotateY(-90deg)",
-            }}
-          >
+            {/* Top container background */}
+            <TopBackgroundContianer>
+              <div>
+                <StyledWaves height="136px" width="834px" color={color} />
+              </div>
+            </TopBackgroundContianer>
+          </TopContainer>
+          <ProductInfo>
             {mode === "info" ? (
               <ProductInfoContent />
             ) : (
               <ProductYieldComparison />
             )}
           </ProductInfo>
-        </AnimatePresence>
-        <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
-          <div className="d-flex align-items-center w-100">
-            <PositionLabel className="mr-auto">Your Position</PositionLabel>
-            <PositionStats>
-              {vaultAccount
-                ? `${formatBigNumber(
-                    vaultAccount.totalBalance,
-                    6,
-                    decimals
-                  )} ${getAssetDisplay(asset)}`
-                : "---"}
-            </PositionStats>
-          </div>
-        </ModalContentExtra>
-      </ProductContent>
-    </ProductCard>
+          <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
+            <div className="d-flex align-items-center w-100">
+              <PositionLabel className="mr-auto">Your Position</PositionLabel>
+              <PositionStats>
+                {vaultAccount
+                  ? `${formatBigNumber(
+                      vaultAccount.totalBalance,
+                      6,
+                      decimals
+                    )} ${getAssetDisplay(asset)}`
+                  : "---"}
+              </PositionStats>
+            </div>
+          </ModalContentExtra>
+        </ProductCard>
+      </AnimatePresence>
+    </CardContainer>
   );
 };
 

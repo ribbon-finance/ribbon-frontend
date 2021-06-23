@@ -2,9 +2,17 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { CheckIcon } from "../../assets/icons/icons";
 
-import { BaseButton, SecondaryText, Title } from "../../designSystem";
+import {
+  BaseButton,
+  BaseModalContentColumn,
+  SecondaryText,
+  Title,
+} from "../../designSystem";
 import colors from "../../designSystem/colors";
+import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
+import useScreenSize from "../../hooks/useScreenSize";
+import BasicModal from "./BasicModal";
 import ButtonArrow from "./ButtonArrow";
 import MenuButton from "./MenuButton";
 import MobileOverlayMenu from "./MobileOverlayMenu";
@@ -85,9 +93,13 @@ const SaveButton = styled(BaseButton)`
   width: 100%;
   justify-content: center;
   padding: 14px 0px;
-  margin: 16px 15px auto 15px;
+  margin: 16px 0px auto 0px;
   background: ${colors.backgroundDarker};
   border-radius: ${theme.border.radius};
+
+  @media (max-width: ${sizes.md}px) {
+    margin: 16px 15px auto 15px;
+  }
 `;
 
 const FilterSection = styled.div`
@@ -109,6 +121,42 @@ const FilterSectionHeader = styled.div`
   padding: 12px 16px;
   background: ${colors.primaryText}14;
   border-radius: ${theme.border.radius};
+`;
+
+const ModalFixedHeightColumn = styled(BaseModalContentColumn)<{
+  height: number;
+}>`
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: ${(props) => props.height}px;
+`;
+
+const ModalMaxContentBody = styled(BaseModalContentColumn)`
+  flex: 1;
+  overflow: hidden;
+  margin: 0px -16px 0px -16px;
+`;
+
+const ModalFooterColumn = styled.div`
+  position: absolute;
+  width: calc(100%);
+  height: ${theme.footer.mobile.height}px;
+  bottom: 0;
+  left: 0;
+  padding: 0px 16px 16px 16px;
+  background: ${colors.primaryText}03;
+  z-index: 1;
+
+  backdrop-filter: blur(40px);
+  /**
+   * Firefox desktop come with default flag to have backdrop-filter disabled
+   * Firefox Android also currently has bug where backdrop-filter is not being applied
+   * More info: https://bugzilla.mozilla.org/show_bug.cgi?id=1178765
+   **/
+  @-moz-document url-prefix() {
+    background-color: rgba(0, 0, 0, 0.9);
+  }
 `;
 
 const MenuItem = styled.div<{ color: string; active: boolean }>`
@@ -161,6 +209,15 @@ const StyledCheckButton = styled(CheckIcon)<{ color: string }>`
   path {
     transition: fill 150ms;
     stroke: ${(props) => props.color};
+  }
+`;
+
+const ScrollFilterContainer = styled.div`
+  overflow: scroll;
+  padding-bottom: ${theme.footer.mobile.height}px;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 `;
 
@@ -254,6 +311,7 @@ const FullscreenMultiselectFilters: React.FC<
     (acc, key) => acc + filterSelected[key].length,
     0
   );
+  const { width } = useScreenSize();
 
   // Reset back to value if not saved
   useEffect(() => {
@@ -269,6 +327,17 @@ const FullscreenMultiselectFilters: React.FC<
   const handleClose = useCallback(() => {
     setOpen(false);
   }, []);
+
+  const handleClear = useCallback(() => {
+    setFilterSelected((filterSelected) =>
+      Object.fromEntries(Object.keys(filterSelected).map((key) => [key, []]))
+    );
+  }, []);
+
+  const handleSave = useCallback(() => {
+    filters.forEach(({ name, onSelect }) => onSelect(filterSelected[name]));
+    setOpen(false);
+  }, [filters, filterSelected]);
 
   return (
     <>
@@ -286,75 +355,112 @@ const FullscreenMultiselectFilters: React.FC<
           <ButtonArrow isOpen={open} />
         </FilterButtonText>
       </FilterButton>
-      <MobileOverlayMenu
-        isMenuOpen={open}
-        // mountRoot="div#root"
-        boundingDivProps={{
-          className: "d-flex w-100 flex-grow-1",
-        }}
-        className="d-flex w-100"
-      >
-        <div className="d-flex flex-column flex-wrap h-100 w-100">
-          <FilterHeader>
-            <ClearButton
-              className="ml-4"
-              onClick={() => {
-                setFilterSelected((filterSelected) =>
-                  Object.fromEntries(
-                    Object.keys(filterSelected).map((key) => [key, []])
-                  )
-                );
-              }}
-              role="button"
-            >
-              Clear
-            </ClearButton>
-            <CloseButton
-              role="button"
-              onClick={handleClose}
-              className="ml-auto mr-3"
-            >
-              <MenuButton
-                isOpen
-                onToggle={handleClose}
-                size={20}
-                color="#FFFFFFA3"
-              />
-            </CloseButton>
-            <HeaderTitleContainer>
-              <Title>{title}</Title>
-            </HeaderTitleContainer>
-          </FilterHeader>
-          <div className="d-flex flex-wrap align-content-start w-100 flex-grow-1">
-            {filters.map(({ name, title, options }) => (
-              <FullscreenMultiselectFilter
-                title={title}
-                selected={filterSelected[name]}
-                options={options}
-                onSelect={(selected) => {
-                  setFilterSelected((filterSelected) => ({
-                    ...filterSelected,
-                    [name]: selected,
-                  }));
-                }}
-              />
-            ))}
+      {width > sizes.md ? (
+        <BasicModal
+          show={open}
+          height={560}
+          onClose={handleClose}
+          headerBackground
+        >
+          <>
+            {/* Header */}
+            <ModalFixedHeightColumn marginTop={-16} height={72}>
+              <ClearButton
+                className="ml-2 mr-auto"
+                onClick={handleClear}
+                role="button"
+              >
+                Clear
+              </ClearButton>
+              <HeaderTitleContainer>
+                <Title>{title}</Title>
+              </HeaderTitleContainer>
+            </ModalFixedHeightColumn>
+
+            {/* Content */}
+            <ModalMaxContentBody marginTop={0}>
+              <ScrollFilterContainer className="d-flex flex-wrap align-content-start w-100 flex-grow-1">
+                {filters.map(({ name, title: filterTitle, options }) => (
+                  <FullscreenMultiselectFilter
+                    title={filterTitle}
+                    selected={filterSelected[name]}
+                    options={options}
+                    onSelect={(selected) => {
+                      setFilterSelected((filterSelected) => ({
+                        ...filterSelected,
+                        [name]: selected,
+                      }));
+                    }}
+                  />
+                ))}
+              </ScrollFilterContainer>
+            </ModalMaxContentBody>
+
+            {/* Footer */}
+            <ModalFooterColumn>
+              <SaveButton role="button" onClick={handleSave}>
+                <Title>VIEW RESULTS</Title>
+              </SaveButton>
+            </ModalFooterColumn>
+          </>
+        </BasicModal>
+      ) : (
+        <MobileOverlayMenu
+          isMenuOpen={open}
+          boundingDivProps={{
+            className: "d-flex w-100 flex-grow-1",
+          }}
+          className="d-flex w-100"
+        >
+          <div className="d-flex flex-column flex-wrap h-100 w-100">
+            {/* Header */}
+            <FilterHeader>
+              <ClearButton className="ml-4" onClick={handleClear} role="button">
+                Clear
+              </ClearButton>
+              <CloseButton
+                role="button"
+                onClick={handleClose}
+                className="ml-auto mr-3"
+              >
+                <MenuButton
+                  isOpen
+                  onToggle={handleClose}
+                  size={20}
+                  color="#FFFFFFA3"
+                />
+              </CloseButton>
+              <HeaderTitleContainer>
+                <Title>{title}</Title>
+              </HeaderTitleContainer>
+            </FilterHeader>
+
+            {/* Content */}
+            <div className="d-flex flex-wrap align-content-start w-100 flex-grow-1">
+              {filters.map(({ name, title: filterTitle, options }) => (
+                <FullscreenMultiselectFilter
+                  title={filterTitle}
+                  selected={filterSelected[name]}
+                  options={options}
+                  onSelect={(selected) => {
+                    setFilterSelected((filterSelected) => ({
+                      ...filterSelected,
+                      [name]: selected,
+                    }));
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Footer */}
+            <FilterFooter>
+              <SaveButton role="button" onClick={handleSave}>
+                <Title>VIEW RESULTS</Title>
+              </SaveButton>
+            </FilterFooter>
           </div>
-          <FilterFooter>
-            <SaveButton
-              role="button"
-              onClick={() => {
-                filters.forEach(({ name, onSelect }) =>
-                  onSelect(filterSelected[name])
-                );
-                setOpen(false);
-              }}
-            >
-              <Title>VIEW RESULTS</Title>
-            </SaveButton>
-          </FilterFooter>
-        </div>
-      </MobileOverlayMenu>
+        </MobileOverlayMenu>
+      )}
     </>
   );
 };

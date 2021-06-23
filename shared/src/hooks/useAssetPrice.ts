@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useGlobalState } from "shared/lib/store/store";
-import { AssetsList, Assets } from "shared/lib/store/types";
+
+import { useGlobalState } from "../store/store";
+import { Assets, AssetsList } from "../store/types";
 
 type APIResponse = Record<string, { usd: number }>;
 
@@ -9,7 +10,7 @@ const getAssetPriceInUSD = async (currencyName: string): Promise<number> => {
   const apiURL = `https://api.coingecko.com/api/v3/simple/price?ids=${currencyName}&vs_currencies=usd`;
 
   const response = await axios.get(apiURL);
-  const data: APIResponse = response.data;
+  const { data } = response;
 
   if (data && data[currencyName]) {
     return data[currencyName].usd;
