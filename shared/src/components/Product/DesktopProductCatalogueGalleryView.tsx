@@ -127,6 +127,7 @@ const VaultPositionSecondaryText = styled(Title)<{ roi?: number }>`
 
 const VaultFrameContainer = styled.div`
   animation: ${hoverAnimation(10)} 3s linear infinite;
+  backdrop-filter: blur(16px);
 `;
 
 const BackgroundContainer = styled.div`

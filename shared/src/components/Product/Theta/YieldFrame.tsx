@@ -35,7 +35,6 @@ const Frame = styled(motion.div)<{ color: string }>`
   position: relative;
   padding: 18px;
   border-radius: ${theme.border.radius};
-  backdrop-filter: blur(16px);
   background: linear-gradient(
     96.84deg,
     ${(props) => props.color}29 1.04%,
