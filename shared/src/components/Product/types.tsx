@@ -26,7 +26,7 @@ export interface HeaderScrollIndicatorProps {
 }
 
 export interface ProductCatalogueProps {
-  dynamicMargin: boolean;
+  variant: "landing" | "webapp";
   onVaultPress: (vault: VaultOptions) => void;
 }
 

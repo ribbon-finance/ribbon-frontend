@@ -18,7 +18,7 @@ import {
 } from "./types";
 
 const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
-  dynamicMargin,
+  variant,
   onVaultPress,
 }) => {
   const { width } = useScreenSize();
@@ -74,7 +74,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
 
   return width > sizes.md ? (
     <DesktopProductCatalogue
-      dynamicMargin={dynamicMargin}
+      variant={variant}
       onVaultPress={onVaultPress}
       filterStrategies={filterStrategies}
       filterAssets={filterAssets}
@@ -87,7 +87,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
     />
   ) : (
     <MobileProductCatalogue
-      dynamicMargin={dynamicMargin}
+      variant={variant}
       onVaultPress={onVaultPress}
       filterStrategies={filterStrategies}
       filterAssets={filterAssets}

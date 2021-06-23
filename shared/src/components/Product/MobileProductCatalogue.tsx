@@ -13,8 +13,6 @@ interface DesktopProductCatalogueProps {
 
 const MobileProductCatalogue: React.FC<
   ProductCatalogueProps & VaultFilterProps & DesktopProductCatalogueProps
-> = ({ dynamicMargin, ...props }) => (
-  <ProductCatalogueGridView {...props} variant="mobile" />
-);
+> = (props) => <ProductCatalogueGridView {...props} variant="mobile" />;
 
 export default MobileProductCatalogue;

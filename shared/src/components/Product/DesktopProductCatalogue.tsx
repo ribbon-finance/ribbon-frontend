@@ -18,8 +18,18 @@ interface DesktopProductCatalogueProps {
 
 const DesktopProductCatalogue: React.FC<
   ProductCatalogueProps & VaultFilterProps & DesktopProductCatalogueProps
-> = ({ dynamicMargin, ...props }) => {
+> = ({ variant, ...props }) => {
   const [view, setView] = useState<DesktopViewType>("grid");
+
+  if (variant === "landing") {
+    return (
+      <DesktopProductCatalogueGalleryView
+        variant={variant}
+        setView={setView}
+        {...props}
+      />
+    );
+  }
 
   switch (view) {
     case "grid":
@@ -32,7 +42,11 @@ const DesktopProductCatalogue: React.FC<
       );
     case "gallery":
       return (
-        <DesktopProductCatalogueGalleryView setView={setView} {...props} />
+        <DesktopProductCatalogueGalleryView
+          variant={variant}
+          setView={setView}
+          {...props}
+        />
       );
   }
 };

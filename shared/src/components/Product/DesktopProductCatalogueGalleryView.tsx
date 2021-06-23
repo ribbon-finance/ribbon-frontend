@@ -158,6 +158,7 @@ const BackgroundText = styled(Title)`
   white-space: nowrap;
 `;
 interface DesktopProductCatalogueGridViewProps {
+  variant: "landing" | "webapp";
   setView?: React.Dispatch<React.SetStateAction<DesktopViewType>>;
   onVaultPress: (vault: VaultOptions) => void;
   filteredProducts: VaultOptions[];
@@ -169,6 +170,7 @@ interface DesktopProductCatalogueGridViewProps {
 const DesktopProductCatalogueGalleryView: React.FC<
   DesktopProductCatalogueGridViewProps & VaultFilterProps
 > = ({
+  variant,
   setView,
   onVaultPress,
   filteredProducts,
@@ -302,7 +304,11 @@ const DesktopProductCatalogueGalleryView: React.FC<
   return (
     <Container fluid className="position-relative px-0 d-flex">
       <FullscreenContainer
-        height={height - theme.header.height - theme.footer.desktop.height}
+        height={
+          variant === "webapp"
+            ? height - theme.header.height - theme.footer.desktop.height
+            : 500
+        }
       >
         <Row className="h-100 align-content-start">
           {/* Left Column */}
@@ -370,7 +376,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
                   }}
                   className="flex-grow-1"
                 />
-                {setView && (
+                {setView && variant === "webapp" && (
                   <SwitchViewButton view="gallery" setView={setView} />
                 )}
               </FilterContainer>

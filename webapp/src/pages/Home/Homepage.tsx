@@ -24,7 +24,7 @@ const Homepage = () => {
     <>
       <ProductTitle>PRODUCT</ProductTitle>
       <ProductCatalogue
-        dynamicMargin={true}
+        variant="webapp"
         onVaultPress={(vault) =>
           history.push(
             `/theta-vault/${
