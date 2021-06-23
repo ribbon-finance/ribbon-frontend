@@ -152,6 +152,9 @@ const DesktopProductCatalogueGalleryView: React.FC<
 }) => {
   const { height } = useScreenSize();
   const [page, setPage] = useState(1);
+  const [currentVault, setCurrentVault] = useState<VaultOptions | undefined>(
+    filteredProducts[page - 1]
+  );
   const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice({
     // @ts-ignore
     assets: AssetsList,
@@ -159,9 +162,17 @@ const DesktopProductCatalogueGalleryView: React.FC<
 
   // Prevent page overflow
   useEffect(() => {
-    if (page > filteredProducts.length) {
-      setPage(filteredProducts.length);
+    if (filteredProducts.length <= 0) {
+      setCurrentVault(undefined);
+      return;
     }
+
+    let currPage = page;
+    if (page > filteredProducts.length) {
+      currPage = filteredProducts.length;
+      setPage(currPage);
+    }
+    setCurrentVault(filteredProducts[currPage - 1]);
   }, [page, filteredProducts]);
 
   const roi = useMemo(() => {
@@ -209,20 +220,25 @@ const DesktopProductCatalogueGalleryView: React.FC<
   );
 
   const vaultInfo = useMemo(() => {
-    const vault = filteredProducts[page - 1];
-    const asset = getAssets(vault);
+    if (!currentVault) {
+      return <></>;
+    }
+
+    const asset = getAssets(currentVault);
     const decimals = getAssetDecimals(asset);
-    const vaultAccount = vaultAccounts[vault];
+    const vaultAccount = vaultAccounts[currentVault];
 
     return (
       <VaultInfo>
         {/* Title */}
-        <VaultTitle className="w-100">{productCopies[vault].title}</VaultTitle>
+        <VaultTitle className="w-100">
+          {productCopies[currentVault].title}
+        </VaultTitle>
 
         <VaultSecondaryInfo>
           {/* Description */}
           <SecondaryText className="mt-3">
-            {productCopies[vault].description}
+            {productCopies[currentVault].description}
           </SecondaryText>
 
           {/* Your position box */}
@@ -254,7 +270,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
         </VaultSecondaryInfo>
       </VaultInfo>
     );
-  }, [roi, page, filteredProducts, vaultAccounts, getVaultUSDDisplay]);
+  }, [roi, currentVault, filteredProducts, vaultAccounts, getVaultUSDDisplay]);
 
   return (
     <FullscreenContainer
@@ -333,7 +349,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
           {/* Vault Info */}
           <AnimatePresence exitBeforeEnter>
             <motion.div
-              key={page}
+              key={currentVault}
               className="d-flex justify-content-end mt-auto mb-auto"
               transition={{
                 duration: 0.25,
@@ -372,7 +388,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
         <Col xs="6" className="d-flex align-items-center h-100">
           <AnimatePresence exitBeforeEnter>
             <motion.div
-              key={page}
+              key={currentVault}
               transition={{
                 duration: 0.35,
                 type: "keyframes",
@@ -392,12 +408,14 @@ const DesktopProductCatalogueGalleryView: React.FC<
               }}
               className="d-flex"
             >
-              <VaultFrameContainer className="ml-5">
-                <Frame
-                  vault={filteredProducts[page - 1]}
-                  onClick={() => onVaultPress(filteredProducts[page - 1])}
-                />
-              </VaultFrameContainer>
+              {currentVault && (
+                <VaultFrameContainer className="ml-5">
+                  <Frame
+                    vault={currentVault}
+                    onClick={() => onVaultPress(currentVault)}
+                  />
+                </VaultFrameContainer>
+              )}
             </motion.div>
           </AnimatePresence>
         </Col>
