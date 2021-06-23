@@ -200,11 +200,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
   }, [vaultAccounts, page, filteredProducts]);
 
   const getVaultUSDDisplay = useCallback(
-    (vaultAccount: VaultAccount | undefined, asset: Assets) => {
-      if (!vaultAccount) {
-        return "---";
-      }
-
+    (vaultAccount: VaultAccount, asset: Assets) => {
       if (assetPricesLoading) {
         // TODO:
         return "Loading";
@@ -242,31 +238,28 @@ const DesktopProductCatalogueGalleryView: React.FC<
           </SecondaryText>
 
           {/* Your position box */}
-          <VaultPositionBox>
-            <div className="w-100 d-flex">
-              <VaultPositionPrimaryText className="mr-auto">
-                Your Position
-              </VaultPositionPrimaryText>
-              <VaultPositionPrimaryText>
-                {vaultAccount
-                  ? `
-                      ${formatAmount(
-                        parseFloat(
-                          formatUnits(vaultAccount.totalBalance, decimals)
-                        )
-                      )} ${getAssetDisplay(asset)}`
-                  : "---"}
-              </VaultPositionPrimaryText>
-            </div>
-            <div className="w-100 d-flex">
-              <VaultPositionSecondaryText roi={roi} className="mr-auto">
-                {roi.toFixed(2)}%
-              </VaultPositionSecondaryText>
-              <VaultPositionSecondaryText>
-                {getVaultUSDDisplay(vaultAccount, asset)}
-              </VaultPositionSecondaryText>
-            </div>
-          </VaultPositionBox>
+          {vaultAccount && (
+            <VaultPositionBox>
+              <div className="w-100 d-flex">
+                <VaultPositionPrimaryText className="mr-auto">
+                  Your Position
+                </VaultPositionPrimaryText>
+                <VaultPositionPrimaryText>
+                  {`${formatAmount(
+                    parseFloat(formatUnits(vaultAccount.totalBalance, decimals))
+                  )} ${getAssetDisplay(asset)}`}
+                </VaultPositionPrimaryText>
+              </div>
+              <div className="w-100 d-flex">
+                <VaultPositionSecondaryText roi={roi} className="mr-auto">
+                  {roi.toFixed(2)}%
+                </VaultPositionSecondaryText>
+                <VaultPositionSecondaryText>
+                  {getVaultUSDDisplay(vaultAccount, asset)}
+                </VaultPositionSecondaryText>
+              </div>
+            </VaultPositionBox>
+          )}
         </VaultSecondaryInfo>
       </VaultInfo>
     );

@@ -1,12 +1,24 @@
+import { formatUnits } from "@ethersproject/units";
 import { AnimatePresence, motion } from "framer";
 import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import { BarChartIcon, GlobeIcon } from "../../../assets/icons/icons";
 
 import { VaultOptions } from "../../../constants/constants";
-import { BaseButton, Subtitle } from "../../../designSystem";
+import {
+  BaseButton,
+  SecondaryText,
+  Subtitle,
+  Title,
+} from "../../../designSystem";
 import theme from "../../../designSystem/theme";
+import { useLatestAPY } from "../../../hooks/useAirtableData";
+import useTextAnimation from "../../../hooks/useTextAnimation";
+import useVaultData from "../../../hooks/useVaultData";
+import { getAssetLogo } from "../../../utils/asset";
+import { formatSignificantDecimals } from "../../../utils/math";
 import { getVaultColor } from "../../../utils/vault";
+import CapBar from "../../Deposit/CapBar";
 import { productCopies } from "../productCopies";
 
 const FrameContainer = styled.div`
@@ -15,6 +27,7 @@ const FrameContainer = styled.div`
 
 const Frame = styled(motion.div)<{ color: string }>`
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   width: 294px;
   height: 429px;
@@ -57,13 +70,44 @@ const ModeSwitcherContainer = styled.div<{ color: string }>`
   z-index: 1;
 `;
 
+const ProjectedAPYLabel = styled(SecondaryText)`
+  font-size: 12px;
+  line-height: 16px;
+  margin-right: auto;
+`;
+
+const ProjectedAPYData = styled(Title)<{ color: string }>`
+  font-size: 14px;
+  line-height: 20px;
+  color: ${(props) => props.color};
+`;
+
 interface YieldFrameProps {
   vault: VaultOptions;
   onClick: () => void;
 }
 
 const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
+  const { status, deposits, vaultLimit, asset, decimals } = useVaultData(vault);
+  const isLoading = status === "loading";
   const color = getVaultColor(vault);
+  const Logo = getAssetLogo(asset);
+  const latestAPY = useLatestAPY(vault);
+
+  const loadingText = useTextAnimation(
+    ["Loading", "Loading .", "Loading ..", "Loading ..."],
+    250,
+    !latestAPY.fetched
+  );
+  const perfStr = latestAPY.res ? `${latestAPY.res.toFixed(2)}%` : loadingText;
+
+  const totalDepositStr = isLoading
+    ? 0
+    : parseFloat(formatSignificantDecimals(formatUnits(deposits, decimals), 2));
+  const depositLimitStr = isLoading
+    ? 1
+    : parseFloat(formatSignificantDecimals(formatUnits(vaultLimit, decimals)));
+
   const [mode, setMode] = useState<"info" | "yield">("info");
 
   const onSwapMode = useCallback((e) => {
@@ -114,6 +158,32 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
                 <BarChartIcon color={color} />
               )}
             </ModeSwitcherContainer>
+          </div>
+          <div className="mt-4">
+            <Logo height="208" width="auto" />
+          </div>
+          <div className="d-flex align-items-center mt-4">
+            <ProjectedAPYLabel>Projected Yield (APY)</ProjectedAPYLabel>
+            <ProjectedAPYData color={color}>{perfStr}</ProjectedAPYData>
+          </div>
+          <div className="mt-auto">
+            <CapBar
+              loading={isLoading}
+              current={totalDepositStr}
+              cap={depositLimitStr}
+              copies={{
+                current: "Current Deposits",
+                cap: "Max Capacity",
+              }}
+              labelConfig={{
+                fontSize: 12,
+              }}
+              statsConfig={{
+                fontSize: 14,
+              }}
+              barConfig={{ height: 4, extraClassNames: "my-2", radius: 2 }}
+              asset={asset}
+            />
           </div>
         </Frame>
       </AnimatePresence>
