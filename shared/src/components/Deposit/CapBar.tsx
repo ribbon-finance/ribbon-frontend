@@ -77,6 +77,7 @@ const CapBar: React.FC<{
     percent = 1;
   }
   percent *= 100;
+  current = current > cap ? cap : current;
 
   return (
     <div className="w-100">

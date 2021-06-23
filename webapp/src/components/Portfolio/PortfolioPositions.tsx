@@ -65,6 +65,7 @@ const PositionContainer = styled.div<{ color: string }>`
   transition: 0.25s box-shadow ease-out, 0.25s border ease-out;
 
   &:hover {
+    transition: 0.2s;
     box-shadow: ${(props) => props.color}3D 8px 16px 80px;
     border: 2px ${theme.border.style} ${(props) => props.color};
   }

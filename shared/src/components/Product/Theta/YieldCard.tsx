@@ -42,14 +42,14 @@ const ProductCard = styled(motion.div)<{ color: string }>`
   flex-direction: column;
   flex-wrap: wrap;
   background-color: ${colors.background};
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border: 2px ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
-  transition: 0.25s box-shadow ease-out, 0.25s border-color ease-out;
+  transition: 0.25s box-shadow ease-out, 0.25s border ease-out;
   width: 290px;
   min-height: 492px;
   position: relative;
   height: 100%;
-  padding: 17px;
+  padding: 16px;
 
   @media (max-width: ${sizes.md}px) {
     width: 343px;
@@ -58,7 +58,6 @@ const ProductCard = styled(motion.div)<{ color: string }>`
   &:hover {
     box-shadow: ${(props) => props.color}66 8px 16px 80px;
     border: 2px ${theme.border.style} ${(props) => props.color};
-    padding: 16px;
   }
 `;
 

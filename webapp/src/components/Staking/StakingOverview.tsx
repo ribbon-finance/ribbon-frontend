@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
-
+import moment from "moment";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import {
@@ -84,24 +84,39 @@ const StyledWaves = styled(Waves)`
   }
 `;
 
+const OverviewKPIContainer = styled.div`
+  display: flex;
+  width: 100%;
+
+  div {
+    border-top: none;
+
+    &:first-child {
+      border-right: none;
+      border-bottom-left-radius: ${theme.border.radius};
+    }
+
+    &:last-child {
+      border-left: none;
+      border-bottom-right-radius: ${theme.border.radius};
+    }
+
+    &:not(:first-child):not(:last-child) {
+      border: ${theme.border.width} ${theme.border.style} ${colors.border};
+      border-top: none;
+    }
+  }
+`;
+
 const OverviewKPI = styled.div`
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   padding: 16px;
-  width: 50%;
+  width: calc(100% / 3);
   display: flex;
   flex-wrap: wrap;
 
-  &:nth-child(odd) {
-    border-left: none;
-  }
-
   @media (max-width: ${sizes.sm}px) {
     width: 100%;
-    border-top: none;
-
-    &:nth-child(odd) {
-      border-left: ${theme.border.width} ${theme.border.style} ${colors.border};
-    }
   }
 `;
 
@@ -119,6 +134,7 @@ const LearnMoreText = styled(PrimaryText)`
 const StakingOverview = () => {
   const { stakingPools, loading: stakingLoading } = useStakingPool(VaultList);
   const { data: tokenData, loading: tokenLoading } = useRBNToken();
+
   const loadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
     250,
@@ -151,6 +167,39 @@ const StakingOverview = () => {
     return tokenData.numHolders.toLocaleString();
   }, [loadingText, tokenData, tokenLoading]);
 
+  const [week, nextStakeRewardStart] = useMemo(() => {
+    const startDate = moment.utc("2021-06-18").set("hour", 10).set("minute", 30);
+
+    let weekCount;
+
+    if (moment().diff(startDate) < 0) {
+      weekCount = 1;
+    } else {
+      weekCount = moment().diff(startDate, "weeks") + 2;
+    }
+
+    // Next stake reward date
+    const nextStakeReward = startDate.add(weekCount - 1, "weeks");
+
+    return [weekCount, nextStakeReward];
+  }, []);
+
+  const timeTillNextRewardWeek = useMemo(() => {
+    const endStakeReward = moment.utc("2021-07-16").set("hour", 10).set("minute", 30);
+
+    if (endStakeReward.diff(moment()) <= 0) {
+      return "End of Rewards, you can unstake now";
+    }
+
+    // Time till next stake reward date
+    const startTime = moment.duration(
+      nextStakeRewardStart.diff(moment()),
+      "milliseconds"
+    );
+
+    return `${startTime.days()}D ${startTime.hours()}H ${startTime.minutes()}M`;
+  }, [nextStakeRewardStart]);
+
   return (
     <OverviewContainer>
       <OverviewInfo>
@@ -179,14 +228,20 @@ const StakingOverview = () => {
           <StyledWaves />
         </OverviewBackgroundContainer>
       </OverviewInfo>
-      <OverviewKPI>
-        <OverviewLabel>$RBN Distributed</OverviewLabel>
-        <Title>{totalRewardDistributed}</Title>
-      </OverviewKPI>
-      <OverviewKPI>
-        <OverviewLabel>No. of $RBN Holders</OverviewLabel>
-        <Title>{numHolderText}</Title>
-      </OverviewKPI>
+      <OverviewKPIContainer>
+        <OverviewKPI>
+          <OverviewLabel>$RBN Distributed</OverviewLabel>
+          <Title>{totalRewardDistributed}</Title>
+        </OverviewKPI>
+        <OverviewKPI>
+          <OverviewLabel>No. of $RBN Holders</OverviewLabel>
+          <Title>{numHolderText}</Title>
+        </OverviewKPI>
+        <OverviewKPI>
+          <OverviewLabel>Time to Week {week} Stake Rewards</OverviewLabel>
+          <Title>{timeTillNextRewardWeek}</Title>
+        </OverviewKPI>
+      </OverviewKPIContainer>
     </OverviewContainer>
   );
 };
