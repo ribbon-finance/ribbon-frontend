@@ -478,7 +478,9 @@ const DesktopProductCatalogueGalleryView: React.FC<
               opacity: 0,
             }}
           >
-            <BackgroundText>{currentVault}</BackgroundText>
+            <BackgroundText>
+              {currentVault ? productCopies[currentVault].title : ""}
+            </BackgroundText>
           </motion.div>
         </AnimatePresence>
       </BackgroundContainer>
