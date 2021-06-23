@@ -35,12 +35,12 @@ const Frame = styled(motion.div)<{ color: string }>`
   position: relative;
   padding: 18px;
   border-radius: ${theme.border.radius};
+  backdrop-filter: blur(16px);
   background: linear-gradient(
     96.84deg,
     ${(props) => props.color}29 1.04%,
     ${(props) => props.color}0A 98.99%
   );
-  backdrop-filter: blur(16px);
   transition: 0.25s border-color ease-out;
 
   &:hover {
@@ -121,7 +121,7 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
       case "info":
         return (
           <>
-            <div className="mt-4">
+            <div className="mt-4 d-flex justify-content-center">
               <Logo height="208" width="auto" />
             </div>
             <div className="d-flex align-items-center mt-4">

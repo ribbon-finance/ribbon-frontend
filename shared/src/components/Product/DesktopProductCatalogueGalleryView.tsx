@@ -11,6 +11,7 @@ import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 import { useAssetsPrice } from "../../hooks/useAssetPrice";
 import useScreenSize from "../../hooks/useScreenSize";
+import useTextAnimation from "../../hooks/useTextAnimation";
 import { VaultAccount } from "../../models/vault";
 import { Assets, AssetsList } from "../../store/types";
 import {
@@ -37,6 +38,7 @@ import {
 const FullscreenContainer = styled(Container)<{ height: number }>`
   padding-top: 24px;
   height: ${(props) => props.height}px;
+  z-index: 1;
 `;
 
 const FilterContainer = styled.div`
@@ -127,6 +129,34 @@ const VaultFrameContainer = styled.div`
   animation: ${hoverAnimation(10)} 3s linear infinite;
 `;
 
+const BackgroundContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+`;
+
+const marquee = keyframes`
+  from {
+    transform: translateX(75vw);
+  }
+
+  to {
+    transform: translateX(-75vw);
+  }
+`;
+
+const BackgroundText = styled(Title)`
+  font-size: 240px;
+  color: ${colors.primaryText}0A;
+  animation: ${marquee} 30s linear infinite;
+  white-space: nowrap;
+`;
 interface DesktopProductCatalogueGridViewProps {
   setView?: React.Dispatch<React.SetStateAction<DesktopViewType>>;
   onVaultPress: (vault: VaultOptions) => void;
@@ -159,6 +189,11 @@ const DesktopProductCatalogueGalleryView: React.FC<
     // @ts-ignore
     assets: AssetsList,
   });
+  const loadingText = useTextAnimation(
+    ["Loading", "Loading .", "Loading ..", "Loading ..."],
+    250,
+    assetPricesLoading
+  );
 
   // Prevent page overflow
   useEffect(() => {
@@ -202,8 +237,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
   const getVaultUSDDisplay = useCallback(
     (vaultAccount: VaultAccount, asset: Assets) => {
       if (assetPricesLoading) {
-        // TODO:
-        return "Loading";
+        return loadingText;
       }
 
       return assetToUSD(
@@ -212,7 +246,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
         getAssetDecimals(asset)
       );
     },
-    [assetPrices, assetPricesLoading]
+    [loadingText, assetPrices, assetPricesLoading]
   );
 
   const vaultInfo = useMemo(() => {
@@ -266,154 +300,182 @@ const DesktopProductCatalogueGalleryView: React.FC<
   }, [roi, currentVault, vaultAccounts, getVaultUSDDisplay]);
 
   return (
-    <FullscreenContainer
-      height={height - theme.header.height - theme.footer.desktop.height}
-    >
-      <Row className="h-100 align-content-start">
-        {/* Left Column */}
-        <Col xs="6" className="d-flex flex-wrap h-100 flex-column">
-          {/* Filters */}
-          <div className="d-flex mr-auto">
-            <FilterContainer>
-              <FullscreenMultiselectFilters
-                filters={[
-                  {
-                    name: "strategy",
-                    title: "STRATEGY",
-                    values: filterStrategies,
-                    options: VaultStrategyList.map((strategy) => ({
-                      value: strategy,
-                      display: strategy,
-                      color: colors.green,
-                    })),
-                    // @ts-ignore
-                    onSelect: setFilterStrategies,
-                  },
-                  {
-                    name: "asset",
-                    title: "DEPOSIT ASSET",
-                    values: filterAssets,
-                    options: AssetsList.map((asset) => {
-                      const Logo = getAssetLogo(asset);
-                      let logo = <Logo />;
-                      switch (asset) {
-                        case "WETH":
-                          logo = <Logo height="70%" />;
-                      }
-                      return {
-                        value: asset,
-                        display: getAssetDisplay(asset),
-                        color: getAssetColor(asset),
-                        textColor: colors.primaryText,
-                        logo: logo,
-                      };
-                    }),
-                    // @ts-ignore
-                    onSelect: setFilterAssets,
-                  },
-                ]}
-                title="FILTERS"
-                className="flex-grow-1 "
+    <Container fluid className="position-relative px-0 d-flex">
+      <FullscreenContainer
+        height={height - theme.header.height - theme.footer.desktop.height}
+      >
+        <Row className="h-100 align-content-start">
+          {/* Left Column */}
+          <Col xs="6" className="d-flex flex-wrap h-100 flex-column">
+            {/* Filters */}
+            <div className="d-flex mr-auto">
+              <FilterContainer>
+                <FullscreenMultiselectFilters
+                  filters={[
+                    {
+                      name: "strategy",
+                      title: "STRATEGY",
+                      values: filterStrategies,
+                      options: VaultStrategyList.map((strategy) => ({
+                        value: strategy,
+                        display: strategy,
+                        color: colors.green,
+                      })),
+                      // @ts-ignore
+                      onSelect: setFilterStrategies,
+                    },
+                    {
+                      name: "asset",
+                      title: "DEPOSIT ASSET",
+                      values: filterAssets,
+                      options: AssetsList.map((asset) => {
+                        const Logo = getAssetLogo(asset);
+                        let logo = <Logo />;
+                        switch (asset) {
+                          case "WETH":
+                            logo = <Logo height="70%" />;
+                        }
+                        return {
+                          value: asset,
+                          display: getAssetDisplay(asset),
+                          color: getAssetColor(asset),
+                          textColor: colors.primaryText,
+                          logo: logo,
+                        };
+                      }),
+                      // @ts-ignore
+                      onSelect: setFilterAssets,
+                    },
+                  ]}
+                  title="FILTERS"
+                  className="flex-grow-1 "
+                />
+                <FilterDropdown
+                  // @ts-ignore
+                  options={VaultSortByList}
+                  value={sort}
+                  // @ts-ignore
+                  onSelect={(option: string) => {
+                    setSort(option as VaultSortBy);
+                  }}
+                  buttonConfig={{
+                    background: `${colors.primaryText}14`,
+                    paddingHorizontal: 16,
+                    paddingVertical: 12,
+                    color: colors.primaryText,
+                  }}
+                  dropdownMenuConfig={{
+                    horizontalOrientation: "right",
+                    topBuffer: 16,
+                  }}
+                  className="flex-grow-1"
+                />
+                {setView && (
+                  <SwitchViewButton view="gallery" setView={setView} />
+                )}
+              </FilterContainer>
+            </div>
+
+            {/* Vault Info */}
+            <AnimatePresence exitBeforeEnter>
+              <motion.div
+                key={currentVault}
+                className="d-flex justify-content-end mt-auto mb-auto"
+                transition={{
+                  duration: 0.25,
+                  type: "keyframes",
+                  ease: "easeOut",
+                }}
+                initial={{
+                  opacity: 0,
+                  y: 100,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                  y: 100,
+                }}
+              >
+                {vaultInfo}
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Pagination */}
+            <div className="mr-auto mb-4">
+              <Pagination
+                page={page}
+                total={filteredProducts.length}
+                setPage={setPage}
+                variant="buttonLeft"
               />
-              <FilterDropdown
-                // @ts-ignore
-                options={VaultSortByList}
-                value={sort}
-                // @ts-ignore
-                onSelect={(option: string) => {
-                  setSort(option as VaultSortBy);
-                }}
-                buttonConfig={{
-                  background: `${colors.primaryText}14`,
-                  paddingHorizontal: 16,
-                  paddingVertical: 12,
-                  color: colors.primaryText,
-                }}
-                dropdownMenuConfig={{
-                  horizontalOrientation: "right",
-                  topBuffer: 16,
-                }}
-                className="flex-grow-1"
-              />
-              {setView && <SwitchViewButton view="gallery" setView={setView} />}
-            </FilterContainer>
-          </div>
+            </div>
+          </Col>
 
-          {/* Vault Info */}
-          <AnimatePresence exitBeforeEnter>
-            <motion.div
-              key={currentVault}
-              className="d-flex justify-content-end mt-auto mb-auto"
-              transition={{
-                duration: 0.25,
-                type: "keyframes",
-                ease: "easeOut",
-              }}
-              initial={{
-                opacity: 0,
-                y: 100,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              exit={{
-                opacity: 0,
-                y: 100,
-              }}
-            >
-              {vaultInfo}
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Pagination */}
-          <div className="mr-auto mb-4">
-            <Pagination
-              page={page}
-              total={filteredProducts.length}
-              setPage={setPage}
-              variant="buttonLeft"
-            />
-          </div>
-        </Col>
-
-        {/* Right column */}
-        <Col xs="6" className="d-flex align-items-center h-100">
-          <AnimatePresence exitBeforeEnter>
-            <motion.div
-              key={currentVault}
-              transition={{
-                duration: 0.35,
-                type: "keyframes",
-                ease: "easeOut",
-              }}
-              initial={{
-                opacity: 0,
-                y: 100,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              exit={{
-                opacity: 0,
-                y: 100,
-              }}
-              className="d-flex"
-            >
-              {currentVault && (
-                <VaultFrameContainer className="ml-5">
-                  <Frame
-                    vault={currentVault}
-                    onClick={() => onVaultPress(currentVault)}
-                  />
-                </VaultFrameContainer>
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </Col>
-      </Row>
-    </FullscreenContainer>
+          {/* Right column */}
+          <Col xs="6" className="d-flex align-items-center h-100">
+            <AnimatePresence exitBeforeEnter>
+              <motion.div
+                key={currentVault}
+                transition={{
+                  duration: 0.35,
+                  type: "keyframes",
+                  ease: "easeOut",
+                }}
+                initial={{
+                  opacity: 0,
+                  y: 100,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                  y: 100,
+                }}
+                className="d-flex"
+              >
+                {currentVault && (
+                  <VaultFrameContainer className="ml-5">
+                    <Frame
+                      vault={currentVault}
+                      onClick={() => onVaultPress(currentVault)}
+                    />
+                  </VaultFrameContainer>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </Col>
+        </Row>
+      </FullscreenContainer>
+      <BackgroundContainer>
+        <AnimatePresence exitBeforeEnter>
+          <motion.div
+            key={currentVault}
+            className="d-flex justify-content-end mt-auto mb-auto"
+            transition={{
+              duration: 0.25,
+              type: "keyframes",
+              ease: "easeOut",
+            }}
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+          >
+            <BackgroundText>{currentVault}</BackgroundText>
+          </motion.div>
+        </AnimatePresence>
+      </BackgroundContainer>
+    </Container>
   );
 };
 
