@@ -54,7 +54,6 @@ const StakingPoolCard = styled.div<{ color: string }>`
   transition: 0.25s border-color ease-out;
 
   &:hover {
-    transition: 0.2s;
     animation: ${(props) => shimmerKeyframe(props.color)} 3s infinite;
     border: 2px ${theme.border.style} ${(props) => props.color};
     padding: 0px;
