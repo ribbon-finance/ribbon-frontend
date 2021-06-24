@@ -12,7 +12,7 @@ import currency from "currency.js";
 
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import { useAssetsPrice } from "../../hooks/useAssetPrice";
+import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import useBalances from "../../hooks/useBalances";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
@@ -21,7 +21,7 @@ import { HoverInfo } from "../PerformanceChart/types";
 import sizes from "shared/lib/designSystem/sizes";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import { getAssets, VaultList } from "shared/lib/constants/constants";
-import useVaultAccounts from "../../hooks/useVaultAccounts";
+import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { AssetsList } from "shared/lib/store/types";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import useRBNTokenAccount from "../../hooks/useRBNTokenAccount";

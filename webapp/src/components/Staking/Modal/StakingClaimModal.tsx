@@ -20,8 +20,8 @@ import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import RBNClaimModalContent from "../../Common/RBNClaimModalContent";
 import { getVaultColor } from "shared/lib/utils/vault";
-import ModalContentExtra from "../../Common/ModalContentExtra";
-import BasicModal from "../../Common/BasicModal";
+import ModalContentExtra from "shared/lib/components/Common/ModalContentExtra";
+import BasicModal from "shared/lib/components/Common/BasicModal";
 
 const LogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -132,20 +132,26 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
   ]);
 
   const timeTillNextRewardWeek = useMemo(() => {
-    const startDate = moment.utc("2021-06-18").set("hour", 10).set("minute", 30);
+    const startDate = moment
+      .utc("2021-06-18")
+      .set("hour", 10)
+      .set("minute", 30);
 
-    let weekCount
-  
-    if(moment().diff(startDate) < 0){
-      weekCount = 1
+    let weekCount;
+
+    if (moment().diff(startDate) < 0) {
+      weekCount = 1;
     } else {
-      weekCount = moment().diff(startDate, "weeks") + 2
+      weekCount = moment().diff(startDate, "weeks") + 2;
     }
-    
-    // Next stake reward date
-    const nextStakeReward = startDate.add(weekCount - 1, "weeks")
 
-    const endStakeReward = moment.utc("2021-07-16").set("hour", 10).set("minute", 30);
+    // Next stake reward date
+    const nextStakeReward = startDate.add(weekCount - 1, "weeks");
+
+    const endStakeReward = moment
+      .utc("2021-07-16")
+      .set("hour", 10)
+      .set("minute", 30);
 
     if (endStakeReward.diff(moment()) <= 0) {
       return "End of Rewards, you can unstake now";
@@ -196,9 +202,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
             </InfoColumn>
             <InfoColumn>
               <SecondaryText>Time till next reward</SecondaryText>
-              <InfoData>
-                {timeTillNextRewardWeek}
-              </InfoData>
+              <InfoData>{timeTillNextRewardWeek}</InfoData>
             </InfoColumn>
             <InfoColumn>
               <div className="d-flex align-items-center">
@@ -246,7 +250,14 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
       default:
         return <RBNClaimModalContent step={step} setStep={setStep} />;
     }
-  }, [step, logo, vaultOption, stakingPoolData, handleClaim, timeTillNextRewardWeek]);
+  }, [
+    step,
+    logo,
+    vaultOption,
+    stakingPoolData,
+    handleClaim,
+    timeTillNextRewardWeek,
+  ]);
 
   return (
     <BasicModal

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import Row from "react-bootstrap/Row";
 import { Container } from "react-bootstrap";
 
-import Product from "shared/lib/components/Product/ProductCarousel";
+import ProductCatalogue from "shared/lib/components/Product/ProductCatalogue";
 import { VaultNameOptionMap } from "shared/lib/constants/constants";
 
 import { Title } from "../../designSystem";
@@ -15,15 +15,16 @@ const ProductCarouselContainer = styled(Container)`
 const CarouselTitle = styled(Title)`
   font-size: 24px;
   line-height: 32px;
+  margin-bottom: 64px;
 `;
 
 const ProductCarousel = () => {
   return (
-    <ProductCarouselContainer>
+    <ProductCarouselContainer fluid>
       <Row className="d-flex justify-content-center">
         <CarouselTitle>Our Products</CarouselTitle>
-        <Product
-          dynamicMargin={false}
+        <ProductCatalogue
+          variant="landing"
           onVaultPress={(vault) =>
             window.open(
               `https://app.ribbon.finance/theta-vault/${

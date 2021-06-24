@@ -13,7 +13,7 @@ import {
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import { useAssetsPrice } from "../../hooks/useAssetPrice";
+import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useTransactions from "../../hooks/useTransactions";
 import { CurrencyType } from "../../pages/Portfolio/types";
@@ -483,7 +483,10 @@ const PortfolioTransactions = () => {
           value={activityFilter}
           // @ts-ignore
           onSelect={setActivityFilter}
-          dropdownOrientation={width > sizes.md ? "right" : "left"}
+          dropdownMenuConfig={{
+            horizontalOrientation: width > sizes.md ? "right" : "left",
+            topBuffer: 8,
+          }}
         />
         <FilterDropdown
           // @ts-ignore

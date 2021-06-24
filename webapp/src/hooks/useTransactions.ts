@@ -5,7 +5,7 @@ import { BigNumber } from "ethers";
 
 import { VaultTransaction } from "shared/lib/models/vault";
 import { getSubgraphqlURI } from "shared/lib/utils/env";
-import { impersonateAddress } from "../utils/development";
+import { impersonateAddress } from "shared/lib/utils/development";
 
 const useTransactions = () => {
   const web3Context = useWeb3React();

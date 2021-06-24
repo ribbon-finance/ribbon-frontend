@@ -30,6 +30,7 @@ import HelpInfo from "../Common/HelpInfo";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { BigNumber } from "ethers";
 import { shimmerKeyframe } from "shared/lib/designSystem/keyframes";
+import moment from "moment";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -51,11 +52,9 @@ const StakingPoolCard = styled.div<{ color: string }>`
   border-radius: ${theme.border.radius};
   padding: 1px;
   margin-bottom: 48px;
-  background: ${colors.background};
-  transition: 0.2s;
+  transition: 0.25s border-color ease-out;
 
   &:hover {
-    transition: 0.2s;
     animation: ${(props) => shimmerKeyframe(props.color)} 3s infinite;
     border: 2px ${theme.border.style} ${(props) => props.color};
     padding: 0px;
@@ -343,7 +342,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           <ClaimableTokenPillContainer>
             <ClaimableTokenPill color={color}>
               <ClaimableTokenIndicator color={color} />
-              <Subtitle className="mr-2">CLAIMABLE $RBN</Subtitle>
+              <Subtitle className="mr-2">EARNED $RBN</Subtitle>
               <ClaimableTokenAmount color={color}>
                 {active
                   ? formatBigNumber(stakingPoolData.claimableRbn, 2, 18)
@@ -445,7 +444,13 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
               >
                 {ongoingTransaction === "rewardClaim"
                   ? primaryActionLoadingText
-                  : "Claim $RBN"}
+                  : `${
+                      stakingPoolData.periodFinish &&
+                      moment(stakingPoolData.periodFinish, "X").diff(moment()) >
+                        0
+                        ? "Claim Info"
+                        : "Claim $RBN"
+                    }`}
               </StakingPoolCardFooterButton>
             </>
           ) : (

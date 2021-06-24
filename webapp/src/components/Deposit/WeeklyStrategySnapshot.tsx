@@ -6,7 +6,7 @@ import moment from "moment";
 import { BigNumber } from "@ethersproject/bignumber";
 
 import theme from "shared/lib/designSystem/theme";
-import { useAssetsPrice } from "../../hooks/useAssetPrice";
+import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import useVaultActivity from "../../hooks/useVaultActivity";
 import {
   VaultActivityMeta,

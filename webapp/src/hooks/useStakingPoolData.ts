@@ -10,7 +10,7 @@ import {
 import { getERC20Token } from "shared/lib/hooks/useERC20Token";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import { StakingPoolData } from "../models/staking";
-import { impersonateAddress } from "../utils/development";
+import { impersonateAddress } from "shared/lib/utils/development";
 import { getStakingReward } from "./useStakingReward";
 
 const initialData: StakingPoolData = {

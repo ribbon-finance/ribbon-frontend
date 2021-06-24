@@ -8,42 +8,17 @@ import DesktopVaultActivityList from "./DesktopVaultActivityList";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
 import MobileVaultActivityList from "./MobileVaultActivityList";
-import colors from "shared/lib/designSystem/colors";
-import theme from "shared/lib/designSystem/theme";
 import { Title } from "shared/lib/designSystem";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { VaultOptions } from "shared/lib/constants/constants";
+import Pagination from "shared/lib/components/Common/Pagination";
+import { AnimatePresence, motion } from "framer-motion";
 
 const PaginationContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 24px;
-`;
-
-const ArrowButton = styled.div<{ disabled?: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${colors.backgroundDarker};
-  border-radius: 100px;
-  width: 40px;
-  height: 40px;
-  ${(props) =>
-    props.disabled
-      ? `
-          opacity: 0.24;
-          cursor: default;
-        `
-      : `
-          &:hover {
-            opacity: ${theme.hover.opacity};
-          }
-        `}
-
-  i {
-    color: white;
-  }
 `;
 
 const PaginationText = styled(Title)`
@@ -53,7 +28,7 @@ const PaginationText = styled(Title)`
   margin-right: 24px;
 `;
 
-const perPage = 10;
+const perPage = 6;
 
 interface VaultActivityProps {
   vaultOption: VaultOptions;
@@ -105,12 +80,6 @@ const VaultActivity: React.FC<VaultActivityProps> = ({ vaultOption }) => {
     return filteredActivities;
   }, [activities, activityFilter, sortBy, page]);
 
-  const canPrev = useMemo(() => page > 1, [page]);
-  const canNext = useMemo(() => Math.ceil(activities.length / perPage) > page, [
-    page,
-    activities,
-  ]);
-
   const renderPagination = useCallback(() => {
     if (loading) {
       return <PaginationText>{loadingText}</PaginationText>;
@@ -123,39 +92,13 @@ const VaultActivity: React.FC<VaultActivityProps> = ({ vaultOption }) => {
     }
 
     return (
-      <>
-        <ArrowButton
-          role="button"
-          disabled={!canPrev}
-          onClick={() => {
-            if (!canPrev) {
-              return;
-            }
-
-            setPage((currPage) => currPage - 1);
-          }}
-        >
-          <i className="fas fa-arrow-left" />
-        </ArrowButton>
-        <PaginationText>
-          {page}/{Math.ceil(activities.length / perPage)}
-        </PaginationText>
-        <ArrowButton
-          role="button"
-          disabled={!canNext}
-          onClick={() => {
-            if (!canNext) {
-              return;
-            }
-
-            setPage((currPage) => currPage + 1);
-          }}
-        >
-          <i className="fas fa-arrow-right" />
-        </ArrowButton>
-      </>
+      <Pagination
+        page={page}
+        total={Math.ceil(activities.length / perPage)}
+        setPage={setPage}
+      />
     );
-  }, [loading, activities, canPrev, canNext, loadingText, page]);
+  }, [loading, activities, loadingText, page]);
 
   return (
     <>
@@ -165,17 +108,41 @@ const VaultActivity: React.FC<VaultActivityProps> = ({ vaultOption }) => {
         sortBy={sortBy}
         setSortBy={setSortBy}
       />
-      {width > sizes.md ? (
-        <DesktopVaultActivityList
-          activities={processedActivities}
-          vaultOption={vaultOption}
-        />
-      ) : (
-        <MobileVaultActivityList
-          activities={processedActivities}
-          vaultOption={vaultOption}
-        />
-      )}
+      <AnimatePresence initial={false} exitBeforeEnter>
+        <motion.div
+          key={page}
+          transition={{
+            duration: 0.25,
+            type: "keyframes",
+            ease: "easeInOut",
+          }}
+          initial={{
+            y: 50,
+            opacity: 0,
+          }}
+          animate={{
+            y: 0,
+            opacity: 1,
+          }}
+          exit={{
+            y: 50,
+            opacity: 0,
+          }}
+          className="w-100"
+        >
+          {width > sizes.md ? (
+            <DesktopVaultActivityList
+              activities={processedActivities}
+              vaultOption={vaultOption}
+            />
+          ) : (
+            <MobileVaultActivityList
+              activities={processedActivities}
+              vaultOption={vaultOption}
+            />
+          )}
+        </motion.div>
+      </AnimatePresence>
       <PaginationContainer>{renderPagination()}</PaginationContainer>
     </>
   );

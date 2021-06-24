@@ -18,7 +18,7 @@ import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import useERC20Token from "shared/lib/hooks/useERC20Token";
 import { StakingPoolData } from "../../../models/staking";
-import BasicModal from "../../Common/BasicModal";
+import BasicModal from "shared/lib/components/Common/BasicModal";
 
 const FloatingContainer = styled.div`
   display: flex;

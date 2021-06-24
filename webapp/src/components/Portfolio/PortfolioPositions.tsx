@@ -11,7 +11,7 @@ import {
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import useAssetPrice from "../../hooks/useAssetPrice";
+import useAssetPrice from "shared/lib/hooks/useAssetPrice";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { CurrencyType } from "../../pages/Portfolio/types";
 import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
@@ -22,7 +22,7 @@ import {
   VaultNameOptionMap,
 } from "shared/lib/constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
-import useVaultAccounts from "../../hooks/useVaultAccounts";
+import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { VaultAccount } from "shared/lib/models/vault";
 import {
   getAssetDecimals,
@@ -62,8 +62,8 @@ const PositionContainer = styled.div<{ color: string }>`
   width: 100%;
   border-radius: ${theme.border.radius};
   border: 2px ${theme.border.style} #00000000;
-  transition: 0.2s;
-  
+  transition: 0.25s box-shadow ease-out, 0.25s border ease-out;
+
   &:hover {
     transition: 0.2s;
     box-shadow: ${(props) => props.color}3D 8px 16px 80px;
@@ -188,9 +188,10 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
     250,
     assetPriceLoading
   );
-  const vaultName = Object.keys(VaultNameOptionMap)[
-    Object.values(VaultNameOptionMap).indexOf(vaultAccount.vault.symbol)
-  ];
+  const vaultName =
+    Object.keys(VaultNameOptionMap)[
+      Object.values(VaultNameOptionMap).indexOf(vaultAccount.vault.symbol)
+    ];
 
   const renderAmountText = useCallback(
     (amount: BigNumber, currency: CurrencyType) => {

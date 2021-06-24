@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useRef } from "react";
 import styled from "styled-components";
 import moment from "moment";
-import { ethers } from "ethers";
 
 import {
   getAssets,
@@ -14,8 +13,12 @@ import { BaseLink, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { VaultActivity, VaultActivityType } from "shared/lib/models/vault";
-import { assetToUSD, formatOption } from "shared/lib/utils/math";
-import useAssetPrice from "../../hooks/useAssetPrice";
+import {
+  assetToUSD,
+  formatBigNumber,
+  formatOption,
+} from "shared/lib/utils/math";
+import useAssetPrice from "shared/lib/hooks/useAssetPrice";
 import useElementSize from "shared/lib/hooks/useElementSize";
 import sizes from "shared/lib/designSystem/sizes";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
@@ -235,9 +238,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 weight={0.15}
               >
                 <VaultPrimaryText>
-                  {parseFloat(
-                    ethers.utils.formatUnits(activity.depositAmount, decimals)
-                  ).toFixed(4)}
+                  {formatBigNumber(activity.depositAmount, 4, decimals)}
                 </VaultPrimaryText>
               </VaultActivityCol>
 
@@ -293,9 +294,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 weight={0.15}
               >
                 <VaultPrimaryText>
-                  {parseFloat(
-                    formatOption(activity.sellAmount).toFixed(6)
-                  ).toFixed(4)}
+                  {formatOption(activity.sellAmount).toLocaleString()}
                 </VaultPrimaryText>
               </VaultActivityCol>
 
@@ -306,10 +305,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 weight={0.25}
               >
                 <VaultPrimaryText variant="green">
-                  +
-                  {parseFloat(
-                    ethers.utils.formatUnits(activity.premium, decimals)
-                  ).toFixed(4)}{" "}
+                  +{formatBigNumber(activity.premium, 6, decimals)}{" "}
                   {getAssetDisplay(asset)}
                 </VaultPrimaryText>
                 <VaultSecondaryText fontFamily="VCR">

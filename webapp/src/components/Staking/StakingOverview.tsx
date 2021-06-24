@@ -168,7 +168,10 @@ const StakingOverview = () => {
   }, [loadingText, tokenData, tokenLoading]);
 
   const [week, nextStakeRewardStart] = useMemo(() => {
-    const startDate = moment.utc("2021-06-18").set("hour", 10).set("minute", 30);
+    const startDate = moment
+      .utc("2021-06-18")
+      .set("hour", 10)
+      .set("minute", 30);
 
     let weekCount;
 
@@ -185,7 +188,10 @@ const StakingOverview = () => {
   }, []);
 
   const timeTillNextRewardWeek = useMemo(() => {
-    const endStakeReward = moment.utc("2021-07-16").set("hour", 10).set("minute", 30);
+    const endStakeReward = moment
+      .utc("2021-07-16")
+      .set("hour", 10)
+      .set("minute", 30);
 
     if (endStakeReward.diff(moment()) <= 0) {
       return "End of Rewards, you can unstake now";
@@ -204,9 +210,9 @@ const StakingOverview = () => {
     <OverviewContainer>
       <OverviewInfo>
         <OverviewTag>
-          <Subtitle>Liquidity Mining</Subtitle>
+          <Subtitle>STAKING ON RIBBON</Subtitle>
         </OverviewTag>
-        <Title className="mt-3 w-100">Staking On Ribbon</Title>
+        <Title className="mt-3 w-100">Liquidity Mining Program</Title>
         <OverviewDescription className="mt-3 w-100">
           The program aims to grow vault adjusted TVL, expand the voting power
           to those who missed out on the airdrop and to distribute the

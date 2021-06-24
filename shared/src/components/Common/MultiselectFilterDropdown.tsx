@@ -1,14 +1,14 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { CheckIcon } from "../../assets/icons/icons";
 
-import { BaseButton, Title } from "../../designSystem";
+import { BaseButton, SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
 import { useBoundingclientrect } from "../../hooks/useBoundingclientrect";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import useScreenSize from "../../hooks/useScreenSize";
-import { capitalize } from "../../utils/text";
 import ButtonArrow from "./ButtonArrow";
 
 interface FilterDropdownButtonConfig {
@@ -34,8 +34,8 @@ const FilterButton = styled(BaseButton)<{
 }>`
   display: flex;
   width: 100%;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   padding: ${(props) =>
     `${props.config.paddingVertical}px ${props.config.paddingHorizontal}px`};
   background-color: ${(props) =>
@@ -43,7 +43,6 @@ const FilterButton = styled(BaseButton)<{
 
   &:hover {
     background-color: ${(props) => props.config.activeBackground};
-
     span {
       color: ${colors.primaryText};
     }
@@ -67,6 +66,7 @@ const FilterDropdownMenu = styled.div<{
       ? `
           position: absolute;
           z-index: 2000;
+          padding: 16px;
           ${(() => {
             switch (props.config.horizontalOrientation) {
               case "left":
@@ -89,7 +89,9 @@ const FilterDropdownMenu = styled.div<{
           })()}
           width: fit-content;
           background-color: ${colors.backgroundDarker};
-          border: ${theme.border.width} ${theme.border.style} ${colors.border};
+                    border: ${theme.border.width} ${theme.border.style} ${
+          colors.border
+        };
           border-radius: ${theme.border.radius};
         `
       : `
@@ -97,58 +99,103 @@ const FilterDropdownMenu = styled.div<{
         `}
 `;
 
-const MenuItem = styled.div`
-  padding: 8px 16px;
-  padding-right: 66px;
-  opacity: 1;
+const MenuItem = styled.div<{ color: string; active: boolean }>`
   display: flex;
   align-items: center;
+  width: 256px;
+  padding: 14px 16px;
+  opacity: 0.48;
+  border-radius: 100px;
+  background: ${(props) => `${props.color}14`};
+  margin-bottom: 16px;
+  border: ${theme.border.width} ${theme.border.style} transparent;
+  transition: border 150ms;
 
-  &:first-child {
-    padding-top: 16px;
-  }
-
-  &:last-child {
-    padding-bottom: 16px;
-  }
-
-  &:hover {
-    span {
-      color: ${colors.primaryText};
+  ${(props) => {
+    if (props.active) {
+      return `
+        opacity: 1;
+        border: ${theme.border.width} ${theme.border.style} ${props.color};
+      `;
     }
-  }
+    return `
+      &:hover {
+        opacity: 1;
+      }
+    `;
+  }}
 `;
 
-const MenuItemText = styled(Title)`
-  color: ${colors.primaryText}A3;
+const LogoContainer = styled.div<{ color: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  margin: -12px;
+  margin-right: 8px;
+  background: ${(props) => props.color}29;
+  border-radius: 100px;
+`;
+
+const MenuItemText = styled(Title)<{ color: string }>`
+  color: ${(props) => props.color};
   white-space: nowrap;
   font-size: 14px;
   line-height: 20px;
+  transition: color 150ms;
 `;
 
-interface FilterDropdownProps {
-  options: string[];
+const StyledCheckButton = styled(CheckIcon)<{ color: string }>`
+  path {
+    transition: fill 150ms;
+    stroke: ${(props) => props.color};
+  }
+`;
+
+const SaveButton = styled(BaseButton)`
+  display: flex;
+  justify-content: center;
+  padding: 12px 24px;
+  margin-top: 24px;
+  background: ${colors.primaryText}14;
+  border-radius: ${theme.border.radius};
+`;
+
+interface DropdownOption {
   value: string;
-  onSelect: (option: string) => void;
+  display: string;
+  color: string;
+  textColor?: string;
+  logo?: React.ReactElement;
+}
+
+interface MultiselectFilterDropdownProps {
+  values: string[];
+  options: DropdownOption[];
+  title: string;
+  onSelect: (option: string[]) => void;
   buttonConfig?: FilterDropdownButtonConfig;
   dropdownMenuConfig?: FilterDropdownMenuConfig;
 }
 
-const FilterDropdown: React.FC<
-  FilterDropdownProps & React.HTMLAttributes<HTMLDivElement>
+const MultiselectFilterDropdown: React.FC<
+  MultiselectFilterDropdownProps & React.HTMLAttributes<HTMLDivElement>
 > = ({
+  values,
   options,
-  value,
+  title,
   onSelect,
   buttonConfig = {
-    background: colors.backgroundDarker,
-    activeBackground: colors.backgroundDarker,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    color: `${colors.primaryText}A3`,
+    background: `${colors.primaryText}0A`,
+    activeBackground: `${colors.primaryText}14`,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    color: `${colors.primaryText}`,
   },
   dropdownMenuConfig = {
-    topBuffer: 8,
+    horizontalOrientation: "left",
+    topBuffer: 16,
   },
   ...props
 }) => {
@@ -156,18 +203,53 @@ const FilterDropdown: React.FC<
   const [open, setOpen] = useState(false);
   const { height, width } = useScreenSize();
   const dropdownBoundingRect = useBoundingclientrect(ref);
+  const [selected, setSelected] = useState<string[]>(values);
+
+  // Reset selected value if close without save
+  useEffect(() => {
+    if (!open) {
+      setSelected(values);
+    }
+  }, [open, values]);
 
   useOutsideAlerter(ref, () => {
     setOpen(false);
   });
 
   const renderMenuItem = useCallback(
-    (title: string, onClick: () => void) => (
-      <MenuItem onClick={onClick} role="button" key={title}>
-        <MenuItemText>{title}</MenuItemText>
-      </MenuItem>
-    ),
-    []
+    (option: DropdownOption) => {
+      const active = selected.includes(option.value);
+      const textColor = option.textColor ? option.textColor : option.color;
+      return (
+        <MenuItem
+          onClick={() => {
+            setSelected((currSelected) =>
+              currSelected.includes(option.value)
+                ? currSelected.filter((curr) => curr !== option.value)
+                : currSelected.concat(option.value)
+            );
+          }}
+          role="button"
+          key={option.value}
+          color={option.color}
+          active={active}
+        >
+          {option.logo ? (
+            <LogoContainer color={option.color}>{option.logo}</LogoContainer>
+          ) : (
+            <></>
+          )}
+          <MenuItemText color={active ? textColor : colors.primaryText}>
+            {option.display}
+          </MenuItemText>
+          <StyledCheckButton
+            color={active ? textColor : colors.primaryText}
+            className="ml-auto"
+          />
+        </MenuItem>
+      );
+    },
+    [selected]
   );
 
   const getVerticalOrientation = useCallback(() => {
@@ -204,7 +286,9 @@ const FilterDropdown: React.FC<
         config={buttonConfig}
       >
         <FilterButtonText config={buttonConfig}>
-          {value} <ButtonArrow isOpen={open} />
+          {title}
+          {values.length > 0 ? ` (${values.length})` : ""}{" "}
+          <ButtonArrow isOpen={open} />
         </FilterButtonText>
       </FilterButton>
       <FilterDropdownMenu
@@ -213,15 +297,29 @@ const FilterDropdown: React.FC<
         buttonPaddingVertical={buttonConfig.paddingVertical}
         config={dropdownMenuConfig}
       >
-        {options.map((filterOption) =>
-          renderMenuItem(capitalize(filterOption), () => {
-            onSelect(filterOption);
+        {options.map((filterOption) => renderMenuItem(filterOption))}
+        <SaveButton
+          role="button"
+          onClick={() => {
+            onSelect(selected);
             setOpen(false);
-          })
-        )}
+          }}
+        >
+          <Title>Save</Title>
+        </SaveButton>
+        <div className="d-flex w-100 justify-content-center mt-3">
+          <SecondaryText
+            onClick={() => {
+              setSelected(options.map((option) => option.value));
+            }}
+            role="button"
+          >
+            Select All
+          </SecondaryText>
+        </div>
       </FilterDropdownMenu>
     </Filter>
   );
 };
 
-export default FilterDropdown;
+export default MultiselectFilterDropdown;

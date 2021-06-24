@@ -6,6 +6,37 @@ import { Subtitle } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 
+const PaginationContainer = styled.div<{ variant?: "buttonLeft" }>`
+  ${(props) => {
+    switch (props.variant) {
+      case "buttonLeft":
+        return `
+          & :nth-child(1) {
+            order: 1;
+          }
+
+          & :nth-child(2) {
+            order: 3;
+          }
+
+          & :nth-child(3) {
+            order: 4;
+          }
+
+          & :nth-child(4) {
+            order: 5;
+          }
+
+          & :nth-child(5) {
+            order: 2;
+            margin-left: 16px;
+          }
+        `;
+    }
+    return ``;
+  }}
+`;
+
 const ArrowButton = styled.div<{ disabled?: boolean }>`
   display: flex;
   align-items: center;
@@ -48,11 +79,20 @@ interface PaginationProps {
   page: number;
   total: number;
   setPage: React.Dispatch<React.SetStateAction<number>>;
+  variant?: "buttonLeft";
 }
 
-const Pagination: React.FC<PaginationProps> = ({ page, total, setPage }) =>
+const Pagination: React.FC<PaginationProps> = ({
+  page,
+  total,
+  setPage,
+  variant,
+}) =>
   total > 0 ? (
-    <div className="d-flex w-100 justify-content-center align-items-center">
+    <PaginationContainer
+      className="d-flex w-100 justify-content-center align-items-center"
+      variant={variant}
+    >
       <ArrowButton
         role="button"
         disabled={page <= 1}
@@ -99,7 +139,7 @@ const Pagination: React.FC<PaginationProps> = ({ page, total, setPage }) =>
       >
         <i className="fas fa-arrow-right" />
       </ArrowButton>
-    </div>
+    </PaginationContainer>
   ) : (
     <></>
   );

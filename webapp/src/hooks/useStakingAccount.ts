@@ -9,7 +9,7 @@ import {
 } from "shared/lib/constants/constants";
 import { getSubgraphqlURI } from "shared/lib/utils/env";
 import { StakingPoolAccount } from "../models/staking";
-import { impersonateAddress } from "../utils/development";
+import { impersonateAddress } from "shared/lib/utils/development";
 
 const useStakingAccount = (vaults: VaultOptions[]) => {
   const web3Context = useWeb3React();

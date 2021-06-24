@@ -166,3 +166,89 @@ export const GlobeIcon: React.FC<IconProps> = ({
     </svg>
   </span>
 );
+
+export const GridIcon: React.FC<SVGProps> = (props) => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M8.33333 2.5H2.5V8.33333H8.33333V2.5Z"
+      stroke="white"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M17.5 2.5H11.6667V8.33333H17.5V2.5Z"
+      stroke="white"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M17.5 11.6667H11.6667V17.5H17.5V11.6667Z"
+      stroke="white"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M8.33333 11.6667H2.5V17.5H8.33333V11.6667Z"
+      stroke="white"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const GalleryIcon: React.FC<SVGProps> = (props) => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <mask id="path-1-inside-1" fill="white">
+      <rect x="6" y="2" width="8" height="16" rx="1" />
+    </mask>
+    <rect
+      x="6"
+      y="2"
+      width="8"
+      height="16"
+      rx="1"
+      stroke="white"
+      strokeWidth="3"
+      mask="url(#path-1-inside-1)"
+    />
+    <rect x="2.5" y="6.5" width="1" height="7" rx="0.5" stroke="white" />
+    <rect x="16.5" y="6.5" width="1" height="7" rx="0.5" stroke="white" />
+  </svg>
+);
+
+export const CheckIcon: React.FC<SVGProps> = (props) => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M16.6667 5L7.50004 14.1667L3.33337 10"
+      stroke="#FFFFFF"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);

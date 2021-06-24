@@ -2,12 +2,10 @@ import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import {
   getAirtableName,
-  getAssets,
   VaultList,
   VaultOptions,
 } from "../constants/constants";
 import { useGlobalState } from "../store/store";
-import { Assets, AssetsList } from "../store/types";
 
 interface AirtableData {
   fetched: boolean;
@@ -18,6 +16,10 @@ interface APYData {
   fetched: boolean;
   res: number;
 }
+
+type APYDatas = {
+  [vault in VaultOptions]: APYData[];
+};
 
 interface WeeklyPerformance {
   apy: number;
@@ -83,7 +85,6 @@ export const useHistoricalData: UseHistoricalData = (vaultOption) => {
 type UseLatestAPY = (vaultOption: VaultOptions) => APYData;
 
 export const useLatestAPY: UseLatestAPY = (vaultOption) => {
-  const asset = getAssets(vaultOption);
   const [latestAPY, setLatestAPY] = useGlobalState("latestAPY");
   const [fetched, setFetched] = useState<{ [option in VaultOptions]: boolean }>(
     Object.fromEntries(VaultList.map((option) => [option, false])) as {
@@ -118,7 +119,7 @@ export const useLatestAPY: UseLatestAPY = (vaultOption) => {
       ...prev,
       [vaultOption]: newApy,
     }));
-  }, [vaultOption, setLatestAPY, asset, fetched]);
+  }, [vaultOption, setLatestAPY, fetched]);
 
   useEffect(() => {
     fetchAirtableData();
@@ -128,4 +129,58 @@ export const useLatestAPY: UseLatestAPY = (vaultOption) => {
     fetched: fetched[vaultOption],
     res: latestAPY[vaultOption],
   };
+};
+
+export const useLatestAPYs = (vaultOptions: VaultOptions[]) => {
+  const [latestAPY, setLatestAPY] = useGlobalState("latestAPY");
+  const [fetched, setFetched] = useState<{ [option in VaultOptions]: boolean }>(
+    Object.fromEntries(VaultList.map((option) => [option, false])) as {
+      [option in VaultOptions]: boolean;
+    }
+  );
+
+  const fetchAirtableData = useCallback(async () => {
+    vaultOptions.forEach(async (vaultOption) => {
+      if (fetched[vaultOption]) {
+        return;
+      }
+
+      const response = await axios.get(
+        `https://api.airtable.com/v0/${BASE_ID}/${getAirtableName(
+          vaultOption
+        )}?sort%5B0%5D%5Bfield%5D=Timestamp&sort%5B0%5D%5Bdirection%5D=desc&maxRecords=1`,
+        {
+          headers: {
+            Authorization: `Bearer ${API_KEY}`,
+          },
+        }
+      );
+
+      const data = response.data.records;
+      const newApy = data[0].fields.APY * 100;
+
+      setFetched((prev) => ({
+        ...prev,
+        [vaultOption]: true,
+      }));
+      setLatestAPY((prev) => ({
+        ...prev,
+        [vaultOption]: newApy,
+      }));
+    });
+  }, [vaultOptions, setLatestAPY, fetched]);
+
+  useEffect(() => {
+    fetchAirtableData();
+  }, [fetchAirtableData]);
+
+  return Object.fromEntries(
+    vaultOptions.map((vaultOption) => [
+      vaultOption,
+      {
+        fetched: fetched[vaultOption],
+        res: latestAPY[vaultOption],
+      },
+    ])
+  );
 };

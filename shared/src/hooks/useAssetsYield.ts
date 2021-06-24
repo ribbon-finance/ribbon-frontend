@@ -4,7 +4,6 @@ import {
   DefiScoreToken,
   DefiScoreTokenList,
   DefiScoreOpportunitiesResponse,
-  DefiScoreProtocol,
 } from "../models/defiScore";
 import { useGlobalState } from "../store/store";
 import { Assets, AssetYieldsInfoData } from "../store/types";
@@ -47,7 +46,7 @@ const useAssetsYield = (asset: Assets) => {
         ) as AssetYieldsInfoData,
       });
     })();
-  }, []);
+  }, [assetYieldsInfo, setAssetYieldsInfo]);
 
   return assetYieldsInfo.data[
     asset === "WETH" ? "eth" : (asset.toLowerCase() as DefiScoreToken)

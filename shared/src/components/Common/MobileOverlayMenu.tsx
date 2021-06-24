@@ -19,7 +19,7 @@ export const MobileOverlayContainer = styled.div<MobileOverlayContainerProps>`
   right: 0;
   height: ${(props) => (props.height ? `${props.height}px` : `100vh`)};
   z-index: ${(props) => (props.isMenuOpen ? 50 : -1)};
-  transition: 0.1s all ease-in;
+  transition: 0.25s all ease-out;
   display: flex;
 
   backdrop-filter: blur(40px);
