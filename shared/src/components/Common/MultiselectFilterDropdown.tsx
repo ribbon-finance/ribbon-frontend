@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { CheckIcon } from "../../assets/icons/icons";
 
-import { BaseButton, Title } from "../../designSystem";
+import { BaseButton, SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
@@ -13,6 +13,7 @@ import ButtonArrow from "./ButtonArrow";
 
 interface FilterDropdownButtonConfig {
   background: string;
+  activeBackground: string;
   paddingHorizontal: number;
   paddingVertical: number;
   color: string;
@@ -27,16 +28,21 @@ const Filter = styled.div`
   position: relative;
 `;
 
-const FilterButton = styled(BaseButton)<{ config: FilterDropdownButtonConfig }>`
+const FilterButton = styled(BaseButton)<{
+  config: FilterDropdownButtonConfig;
+  active: boolean;
+}>`
   display: flex;
   width: 100%;
   align-items: center;
   justify-content: center;
   padding: ${(props) =>
     `${props.config.paddingVertical}px ${props.config.paddingHorizontal}px`};
-  background-color: ${(props) => props.config.background};
+  background-color: ${(props) =>
+    props.active ? props.config.activeBackground : props.config.background};
 
   &:hover {
+    background-color: ${(props) => props.config.activeBackground};
     span {
       color: ${colors.primaryText};
     }
@@ -114,7 +120,7 @@ const MenuItem = styled.div<{ color: string; active: boolean }>`
     }
     return `
       &:hover {
-        opacity: ${theme.hover.opacity};
+        opacity: 1;
       }
     `;
   }}
@@ -181,7 +187,8 @@ const MultiselectFilterDropdown: React.FC<
   title,
   onSelect,
   buttonConfig = {
-    background: `${colors.primaryText}14`,
+    background: `${colors.primaryText}0A`,
+    activeBackground: `${colors.primaryText}14`,
     paddingHorizontal: 16,
     paddingVertical: 12,
     color: `${colors.primaryText}`,
@@ -272,6 +279,7 @@ const MultiselectFilterDropdown: React.FC<
     <Filter {...props} ref={ref}>
       <FilterButton
         role="button"
+        active={open}
         onClick={() => {
           setOpen((open) => !open);
         }}
@@ -299,6 +307,16 @@ const MultiselectFilterDropdown: React.FC<
         >
           <Title>Save</Title>
         </SaveButton>
+        <div className="d-flex w-100 justify-content-center mt-3">
+          <SecondaryText
+            onClick={() => {
+              setSelected(options.map((option) => option.value));
+            }}
+            role="button"
+          >
+            Select All
+          </SecondaryText>
+        </div>
       </FilterDropdownMenu>
     </Filter>
   );

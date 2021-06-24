@@ -1,14 +1,21 @@
 import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
 import moment from "moment";
-import { ethers } from "ethers";
 
 import { VaultActivity, VaultActivityType } from "shared/lib/models/vault";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
 import { SecondaryText, Title } from "shared/lib/designSystem";
-import { formatSignificantDecimals, formatOption } from "shared/lib/utils/math";
-import { getAssets, VaultOptions } from "shared/lib/constants/constants";
+import {
+  formatSignificantDecimals,
+  formatOption,
+  formatBigNumber,
+} from "shared/lib/utils/math";
+import {
+  getAssets,
+  isPutVault,
+  VaultOptions,
+} from "shared/lib/constants/constants";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 
 const VaultActivityRow = styled.div`
@@ -78,17 +85,14 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
           return (
             <>
               <Title>
-                MINTED{" "}
-                {formatSignificantDecimals(
-                  ethers.utils.formatUnits(activity.depositAmount, decimals),
-                  2
-                )}{" "}
+                MINTED {formatBigNumber(activity.depositAmount, 2, decimals)}{" "}
                 CONTRACTS
               </Title>
               <VaultSecondaryInfoText>
                 O-{asset}-
                 {moment(activity.expiry, "X").format("DD-MMM-YY").toUpperCase()}
-                -{formatOption(activity.strikePrice)}C
+                -{formatOption(activity.strikePrice)}
+                {isPutVault(vaultOption) ? "P" : "C"}
               </VaultSecondaryInfoText>
               <VaultActivityInfoRow>
                 <div className="d-flex flex-column">
@@ -108,9 +112,11 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
             <>
               <Title>
                 SOLD{" "}
-                {formatSignificantDecimals(
-                  formatOption(activity.sellAmount).toFixed(6)
-                )}{" "}
+                {parseFloat(
+                  formatSignificantDecimals(
+                    formatOption(activity.sellAmount).toFixed(6)
+                  )
+                ).toLocaleString()}{" "}
                 CONTRACTS
               </Title>
               <VaultSecondaryInfoText>
@@ -118,15 +124,13 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
                 {moment(activity.vaultShortPosition.expiry, "X")
                   .format("DD-MMM-YY")
                   .toUpperCase()}
-                -{formatOption(activity.vaultShortPosition.strikePrice)}C
+                -{formatOption(activity.vaultShortPosition.strikePrice)}
+                {isPutVault(vaultOption) ? "P" : "C"}
               </VaultSecondaryInfoText>
               <VaultActivityInfoRow>
                 <div className="d-flex flex-column">
                   <VaultActivityYieldText>
-                    +
-                    {formatSignificantDecimals(
-                      ethers.utils.formatUnits(activity.premium, decimals)
-                    )}{" "}
+                    +{formatBigNumber(activity.premium, 6, decimals)}{" "}
                     {getAssetDisplay(asset)}
                   </VaultActivityYieldText>
                   <VaultSecondaryInfoText>
@@ -141,7 +145,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
           );
       }
     },
-    [asset, decimals]
+    [asset, decimals, vaultOption]
   );
 
   return (

@@ -25,6 +25,7 @@ import FilterDropdown from "../Common/FilterDropdown";
 import FullscreenMultiselectFilters from "../Common/FullscreenMultiselectFilters";
 import Pagination from "../Common/Pagination";
 import { productCopies } from "./productCopies";
+import EmptyResult from "./Shared/EmptyResult";
 import SwitchViewButton from "./Shared/SwitchViewButton";
 import Frame from "./Theta/YieldFrame";
 import {
@@ -57,33 +58,10 @@ const FilterContainer = styled.div`
   }
 `;
 
-const hoverAnimation = (height: number) => keyframes`
-  0% {
-    transform: translateY(0px);
-  }
-
-  25% {
-    transform: translateY(${height}px);
-  }
-
-  50% {
-    transform: translateY(0px);
-  }
-
-  75% {
-    transform: translateY(-${height}px);
-  }
-
-  100% {
-    transform: translateY(0px);
-  }
-`;
-
 const VaultInfo = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: 366px;
-  animation: ${hoverAnimation(5)} 3.5s linear infinite;
 `;
 
 const VaultTitle = styled(Title)`
@@ -125,9 +103,14 @@ const VaultPositionSecondaryText = styled(Title)<{ roi?: number }>`
   }};
 `;
 
-const VaultFrameContainer = styled.div`
-  animation: ${hoverAnimation(10)} 3s linear infinite;
+const VaultFrameContainer = styled(motion.div)`
   backdrop-filter: blur(16px);
+`;
+
+const EmptyResultContainer = styled.div`
+  width: 100%;
+  margin-right: -50%;
+  z-index: 1;
 `;
 
 const BackgroundContainer = styled.div`
@@ -144,11 +127,11 @@ const BackgroundContainer = styled.div`
 
 const marquee = keyframes`
   from {
-    transform: translateX(75vw);
+    transform: translateX(90vw);
   }
 
   to {
-    transform: translateX(-75vw);
+    transform: translateX(-90vw);
   }
 `;
 
@@ -254,7 +237,14 @@ const DesktopProductCatalogueGalleryView: React.FC<
 
   const vaultInfo = useMemo(() => {
     if (!currentVault) {
-      return <></>;
+      return (
+        <EmptyResultContainer>
+          <EmptyResult
+            setFilterAssets={setFilterAssets}
+            setFilterStrategies={setFilterStrategies}
+          />
+        </EmptyResultContainer>
+      );
     }
 
     const asset = getAssets(currentVault);
@@ -262,7 +252,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
     const vaultAccount = vaultAccounts[currentVault];
 
     return (
-      <VaultInfo>
+      <VaultInfo role="button" onClick={() => onVaultPress(currentVault)}>
         {/* Title */}
         <VaultTitle className="w-100">
           {productCopies[currentVault].title}
@@ -300,7 +290,15 @@ const DesktopProductCatalogueGalleryView: React.FC<
         </VaultSecondaryInfo>
       </VaultInfo>
     );
-  }, [roi, currentVault, vaultAccounts, getVaultUSDDisplay]);
+  }, [
+    roi,
+    currentVault,
+    onVaultPress,
+    vaultAccounts,
+    getVaultUSDDisplay,
+    setFilterAssets,
+    setFilterStrategies,
+  ]);
 
   return (
     <Container fluid className="position-relative px-0 d-flex">
@@ -366,7 +364,8 @@ const DesktopProductCatalogueGalleryView: React.FC<
                     setSort(option as VaultSortBy);
                   }}
                   buttonConfig={{
-                    background: `${colors.primaryText}14`,
+                    background: `${colors.primaryText}0A`,
+                    activeBackground: `${colors.primaryText}14`,
                     paddingHorizontal: 16,
                     paddingVertical: 12,
                     color: colors.primaryText,
@@ -424,7 +423,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
           {/* Right column */}
           <Col xs="6" className="d-flex align-items-center h-100">
             <AnimatePresence exitBeforeEnter>
-              <motion.div
+              <VaultFrameContainer
                 key={currentVault}
                 transition={{
                   duration: 0.35,
@@ -443,17 +442,15 @@ const DesktopProductCatalogueGalleryView: React.FC<
                   opacity: 0,
                   y: 100,
                 }}
-                className="d-flex"
+                className="d-flex ml-5"
               >
                 {currentVault && (
-                  <VaultFrameContainer className="ml-5">
-                    <Frame
-                      vault={currentVault}
-                      onClick={() => onVaultPress(currentVault)}
-                    />
-                  </VaultFrameContainer>
+                  <Frame
+                    vault={currentVault}
+                    onClick={() => onVaultPress(currentVault)}
+                  />
                 )}
-              </motion.div>
+              </VaultFrameContainer>
             </AnimatePresence>
           </Col>
         </Row>

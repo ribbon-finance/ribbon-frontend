@@ -34,14 +34,6 @@ export type DesktopViewType = "grid" | "gallery";
 
 export const VaultStrategyList = ["COVERED-CALL", "PUT-SELLING"] as const;
 export type VaultStrategy = typeof VaultStrategyList[number];
-export const VaultStrategyMap: {
-  [vault in VaultOptions]: VaultStrategy;
-} = {
-  "rETH-THETA": "COVERED-CALL",
-  "rBTC-THETA": "COVERED-CALL",
-  "rUSDC-ETH-P-THETA": "PUT-SELLING",
-  "rUSDC-BTC-P-THETA": "PUT-SELLING",
-};
 
 export const VaultSortByList = [
   "SORT BY",
@@ -53,11 +45,14 @@ export const VaultSortByList = [
 export type VaultSortBy = typeof VaultSortByList[number];
 export const VaultReleaseOrder: VaultOptions[] = VaultList;
 
-export interface VaultFilterProps {
+export interface VaultSetFilterProps {
+  setFilterStrategies: React.Dispatch<React.SetStateAction<VaultStrategy[]>>;
+  setFilterAssets: React.Dispatch<React.SetStateAction<Assets[]>>;
+}
+
+export interface VaultFilterProps extends VaultSetFilterProps {
   filterStrategies: VaultStrategy[];
   filterAssets: Assets[];
   sort: VaultSortBy;
-  setFilterStrategies: React.Dispatch<React.SetStateAction<VaultStrategy[]>>;
-  setFilterAssets: React.Dispatch<React.SetStateAction<Assets[]>>;
   setSort: React.Dispatch<React.SetStateAction<VaultSortBy>>;
 }

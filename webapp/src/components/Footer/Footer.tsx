@@ -1,5 +1,4 @@
-import React, { useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import React from "react";
 import styled from "styled-components";
 
 import sizes from "shared/lib/designSystem/sizes";
@@ -11,7 +10,6 @@ import DesktopFooter from "./DesktopFooter";
 
 const FooterContainer = styled.div<{
   screenHeight: number;
-  desktopVariant: "sticky" | "fixed";
 }>`
   height: ${theme.footer.desktop.height}px;
   width: 100%;
@@ -27,22 +25,12 @@ const FooterContainer = styled.div<{
     background-color: rgba(0, 0, 0, 0.9);
   }
 
-  ${(props) => {
-    switch (props.desktopVariant) {
-      case "sticky":
-        return `
-          position: sticky;
-          top: calc(${
-            props.screenHeight ? `${props.screenHeight}px` : `100%`
-          } - ${theme.footer.desktop.height}px);
-        `;
-      case "fixed":
-        return `
-        position: fixed;
-        bottom: 0px;
-        `;
-    }
-  }}
+  ${(props) => `
+    position: sticky;
+    top: calc(${props.screenHeight ? `${props.screenHeight}px` : `100%`} - ${
+    theme.footer.desktop.height
+  }px);
+  `}
 
   @media (max-width: ${sizes.lg}px) {
     position: fixed;
@@ -54,8 +42,6 @@ const FooterContainer = styled.div<{
 `;
 
 const MobileFooterOffsetContainer = styled.div`
-  height: ${theme.footer.desktop.height}px;
-
   @media (max-width: ${sizes.lg}px) {
     height: ${theme.footer.mobile.height}px;
   }
@@ -64,23 +50,10 @@ const MobileFooterOffsetContainer = styled.div`
 const Footer = () => {
   const { height: screenHeight } = useScreenSize();
   const vaultOption = useVaultOption();
-  const location = useLocation();
-
-  const desktopFooterVariant = useMemo(() => {
-    switch (location.pathname) {
-      case "/":
-        return "fixed";
-      default:
-        return "sticky";
-    }
-  }, [location]);
 
   return (
     <>
-      <FooterContainer
-        screenHeight={screenHeight}
-        desktopVariant={desktopFooterVariant}
-      >
+      <FooterContainer screenHeight={screenHeight}>
         {/** Desktop */}
         <DesktopFooter />
 

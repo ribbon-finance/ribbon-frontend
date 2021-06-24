@@ -30,6 +30,7 @@ import HelpInfo from "../Common/HelpInfo";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { BigNumber } from "ethers";
 import { shimmerKeyframe } from "shared/lib/designSystem/keyframes";
+import moment from "moment";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -443,7 +444,13 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
               >
                 {ongoingTransaction === "rewardClaim"
                   ? primaryActionLoadingText
-                  : "Claim $RBN"}
+                  : `${
+                      stakingPoolData.periodFinish &&
+                      moment(stakingPoolData.periodFinish, "X").diff(moment()) >
+                        0
+                        ? "Claim Info"
+                        : "Claim $RBN"
+                    }`}
               </StakingPoolCardFooterButton>
             </>
           ) : (

@@ -96,7 +96,7 @@ const ProductAssetLogoContainer = styled.div<{ color: string }>`
   height: 56px;
   width: 56px;
   margin-top: calc(-56px / 2);
-  background: ${(props) => props.color}29;
+  background-color: ${colors.background};
   border: 2px ${theme.border.style} ${colors.background};
   border-radius: 100px;
   position: relative;
@@ -107,9 +107,8 @@ const ProductAssetLogoContainer = styled.div<{ color: string }>`
     height: 100%;
     width: 100%;
     content: " ";
-    background-color: ${colors.background};
+    background: ${(props) => props.color}29;
     border-radius: 100px;
-    z-index: -1;
   }
 `;
 

@@ -19,20 +19,27 @@ import MobileOverlayMenu from "./MobileOverlayMenu";
 
 interface FilterDropdownButtonConfig {
   background: string;
+  activeBackground: string;
   paddingHorizontal: number;
   paddingVertical: number;
   color: string;
 }
 
-const FilterButton = styled(BaseButton)<{ config: FilterDropdownButtonConfig }>`
+const FilterButton = styled(BaseButton)<{
+  config: FilterDropdownButtonConfig;
+  active: boolean;
+}>`
   display: flex;
   align-items: center;
   justify-content: center;
   padding: ${(props) =>
     `${props.config.paddingVertical}px ${props.config.paddingHorizontal}px`};
-  background-color: ${(props) => props.config.background};
+  background-color: ${(props) =>
+    props.active ? props.config.activeBackground : props.config.background};
 
   &:hover {
+    background-color: ${(props) => props.config.activeBackground};
+
     span {
       color: ${colors.primaryText};
     }
@@ -51,6 +58,7 @@ const FilterHeader = styled.div`
   width: 100%;
   height: 80px;
   align-items: center;
+  background: ${colors.pillBackground};
 `;
 
 const ClearButton = styled(SecondaryText)`
@@ -296,7 +304,8 @@ const FullscreenMultiselectFilters: React.FC<
   filters,
   title,
   buttonConfig = {
-    background: `${colors.primaryText}14`,
+    background: `${colors.primaryText}0A`,
+    activeBackground: `${colors.primaryText}14`,
     paddingHorizontal: 16,
     paddingVertical: 12,
     color: `${colors.primaryText}`,
@@ -343,6 +352,7 @@ const FullscreenMultiselectFilters: React.FC<
     <>
       <FilterButton
         role="button"
+        active={open}
         onClick={() => {
           setOpen((open) => !open);
         }}

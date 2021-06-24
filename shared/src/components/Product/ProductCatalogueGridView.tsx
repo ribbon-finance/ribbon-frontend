@@ -1,5 +1,5 @@
 import { motion } from "framer";
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import { VaultOptions } from "../../constants/constants";
 
@@ -16,6 +16,7 @@ import {
 import FilterDropdown from "../Common/FilterDropdown";
 import FullscreenMultiselectFilters from "../Common/FullscreenMultiselectFilters";
 import MultiselectFilterDropdown from "../Common/MultiselectFilterDropdown";
+import EmptyResult from "./Shared/EmptyResult";
 import SwitchViewButton from "./Shared/SwitchViewButton";
 import YieldCard from "./Theta/YieldCard";
 import {
@@ -68,6 +69,17 @@ const YieldCardContainer = styled(motion.li)`
   height: 492px;
   margin: 40px 15px 0px 15px;
   margin-block-end: 0px;
+  list-style-type: none;
+`;
+
+const EmptyContainer = styled.div`
+  height: 60vh;
+  width: 100%;
+
+  @media (max-width: ${sizes.sm}px) {
+    height: unset;
+    margin-top: 60px;
+  }
 `;
 
 interface ProductCatalogueGridViewProps {
@@ -94,67 +106,79 @@ const ProductCatalogueGridView: React.FC<
   filteredProducts,
   vaultAccounts,
   variant,
-}) => (
-  <div className="container mt-5 d-flex flex-column align-items-center">
-    {/* Filters */}
-    <FilterContainer>
-      {variant === "desktop" ? (
-        <>
-          {/* Strategy */}
-          <MultiselectFilterDropdown
-            values={filterStrategies}
-            options={VaultStrategyList.map((strategy) => ({
-              value: strategy,
-              display: strategy,
-              color: colors.green,
-            }))}
-            title="STRATEGY"
-            // @ts-ignore
-            onSelect={setFilterStrategies}
+}) => {
+  const productResults = useMemo(() => {
+    if (!filteredProducts.length) {
+      return (
+        <EmptyContainer>
+          <EmptyResult
+            setFilterAssets={setFilterAssets}
+            setFilterStrategies={setFilterStrategies}
           />
-          {/* Assets */}
-          <MultiselectFilterDropdown
-            values={filterAssets}
-            options={AssetsList.map((asset) => {
-              const Logo = getAssetLogo(asset);
-              let logo = <Logo />;
-              switch (asset) {
-                case "WETH":
-                  logo = <Logo height="70%" />;
-              }
-              return {
-                value: asset,
-                display: getAssetDisplay(asset),
-                color: getAssetColor(asset),
-                textColor: colors.primaryText,
-                logo: logo,
-              };
-            })}
-            title="DEPOSIT ASSET"
-            // @ts-ignore
-            onSelect={setFilterAssets}
-          />{" "}
-        </>
-      ) : (
-        <FullscreenMultiselectFilters
-          filters={[
-            {
-              name: "strategy",
-              title: "STRATEGY",
-              values: filterStrategies,
-              options: VaultStrategyList.map((strategy) => ({
+        </EmptyContainer>
+      );
+    }
+
+    return (
+      <YieldCardsContainer>
+        {filteredProducts.map((vault) => (
+          <YieldCardContainer
+            key={vault}
+            layout
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.4,
+              type: "keyframes",
+              ease: "easeOut",
+            }}
+          >
+            <YieldCard
+              vault={vault}
+              onClick={() => onVaultPress(vault)}
+              vaultAccount={vaultAccounts[vault]}
+            />
+          </YieldCardContainer>
+        ))}
+      </YieldCardsContainer>
+    );
+  }, [
+    setFilterAssets,
+    setFilterStrategies,
+    filteredProducts,
+    onVaultPress,
+    vaultAccounts,
+  ]);
+
+  return (
+    <div className="container mt-5 d-flex flex-column align-items-center">
+      {/* Filters */}
+      <FilterContainer>
+        {variant === "desktop" ? (
+          <>
+            {/* Strategy */}
+            <MultiselectFilterDropdown
+              values={filterStrategies}
+              options={VaultStrategyList.map((strategy) => ({
                 value: strategy,
                 display: strategy,
                 color: colors.green,
-              })),
+              }))}
+              title="STRATEGY"
               // @ts-ignore
-              onSelect: setFilterStrategies,
-            },
-            {
-              name: "asset",
-              title: "DEPOSIT ASSET",
-              values: filterAssets,
-              options: AssetsList.map((asset) => {
+              onSelect={setFilterStrategies}
+            />
+            {/* Assets */}
+            <MultiselectFilterDropdown
+              values={filterAssets}
+              options={AssetsList.map((asset) => {
                 const Logo = getAssetLogo(asset);
                 let logo = <Logo />;
                 switch (asset) {
@@ -168,66 +192,81 @@ const ProductCatalogueGridView: React.FC<
                   textColor: colors.primaryText,
                   logo: logo,
                 };
-              }),
+              })}
+              title="DEPOSIT ASSET"
               // @ts-ignore
-              onSelect: setFilterAssets,
-            },
-          ]}
-          title="FILTERS"
-          className="flex-grow-1 "
-        />
-      )}
-      {/* Sort */}
-      <FilterDropdown
-        // @ts-ignore
-        options={VaultSortByList}
-        value={sort}
-        // @ts-ignore
-        onSelect={(option: string) => {
-          setSort(option as VaultSortBy);
-        }}
-        buttonConfig={{
-          background: `${colors.primaryText}14`,
-          paddingHorizontal: 16,
-          paddingVertical: 12,
-          color: colors.primaryText,
-        }}
-        dropdownMenuConfig={{
-          horizontalOrientation: "right",
-          topBuffer: 16,
-        }}
-        className="flex-grow-1"
-      />
-      {setView && <SwitchViewButton view="grid" setView={setView} />}
-    </FilterContainer>
-    <YieldCardsContainer>
-      {filteredProducts.map((vault) => (
-        <YieldCardContainer
-          key={vault}
-          layout
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          exit={{
-            opacity: 0,
-          }}
-          transition={{
-            type: "keyframes",
-            ease: "easeOut",
-          }}
-        >
-          <YieldCard
-            vault={vault}
-            onClick={() => onVaultPress(vault)}
-            vaultAccount={vaultAccounts[vault]}
+              onSelect={setFilterAssets}
+            />{" "}
+          </>
+        ) : (
+          <FullscreenMultiselectFilters
+            filters={[
+              {
+                name: "strategy",
+                title: "STRATEGY",
+                values: filterStrategies,
+                options: VaultStrategyList.map((strategy) => ({
+                  value: strategy,
+                  display: strategy,
+                  color: colors.green,
+                })),
+                // @ts-ignore
+                onSelect: setFilterStrategies,
+              },
+              {
+                name: "asset",
+                title: "DEPOSIT ASSET",
+                values: filterAssets,
+                options: AssetsList.map((asset) => {
+                  const Logo = getAssetLogo(asset);
+                  let logo = <Logo />;
+                  switch (asset) {
+                    case "WETH":
+                      logo = <Logo height="70%" />;
+                  }
+                  return {
+                    value: asset,
+                    display: getAssetDisplay(asset),
+                    color: getAssetColor(asset),
+                    textColor: colors.primaryText,
+                    logo: logo,
+                  };
+                }),
+                // @ts-ignore
+                onSelect: setFilterAssets,
+              },
+            ]}
+            title="FILTERS"
+            className="flex-grow-1 "
           />
-        </YieldCardContainer>
-      ))}
-    </YieldCardsContainer>
-  </div>
-);
+        )}
+        {/* Sort */}
+        <FilterDropdown
+          // @ts-ignore
+          options={VaultSortByList}
+          value={sort}
+          // @ts-ignore
+          onSelect={(option: string) => {
+            setSort(option as VaultSortBy);
+          }}
+          buttonConfig={{
+            background: `${colors.primaryText}0A`,
+            activeBackground: `${colors.primaryText}14`,
+            paddingHorizontal: 16,
+            paddingVertical: 12,
+            color: colors.primaryText,
+          }}
+          dropdownMenuConfig={{
+            horizontalOrientation: "right",
+            topBuffer: 16,
+          }}
+          className="flex-grow-1"
+        />
+        {setView && <SwitchViewButton view="grid" setView={setView} />}
+      </FilterContainer>
+      {productResults}
+    </div>
+  );
+};
 
 export default ProductCatalogueGridView;

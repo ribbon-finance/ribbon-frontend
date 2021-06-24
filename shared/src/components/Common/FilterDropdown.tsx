@@ -13,6 +13,7 @@ import ButtonArrow from "./ButtonArrow";
 
 interface FilterDropdownButtonConfig {
   background: string;
+  activeBackground: string;
   paddingHorizontal: number;
   paddingVertical: number;
   color: string;
@@ -27,16 +28,22 @@ const Filter = styled.div`
   position: relative;
 `;
 
-const FilterButton = styled(BaseButton)<{ config: FilterDropdownButtonConfig }>`
+const FilterButton = styled(BaseButton)<{
+  config: FilterDropdownButtonConfig;
+  active: boolean;
+}>`
   display: flex;
   width: 100%;
   justify-content: center;
   align-items: center;
   padding: ${(props) =>
     `${props.config.paddingVertical}px ${props.config.paddingHorizontal}px`};
-  background-color: ${(props) => props.config.background};
+  background-color: ${(props) =>
+    props.active ? props.config.activeBackground : props.config.background};
 
   &:hover {
+    background-color: ${(props) => props.config.activeBackground};
+
     span {
       color: ${colors.primaryText};
     }
@@ -135,6 +142,7 @@ const FilterDropdown: React.FC<
   onSelect,
   buttonConfig = {
     background: colors.backgroundDarker,
+    activeBackground: colors.backgroundDarker,
     paddingHorizontal: 12,
     paddingVertical: 8,
     color: `${colors.primaryText}A3`,
@@ -189,6 +197,7 @@ const FilterDropdown: React.FC<
     <Filter {...props} ref={ref}>
       <FilterButton
         role="button"
+        active={open}
         onClick={() => {
           setOpen((open) => !open);
         }}

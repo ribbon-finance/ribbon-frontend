@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { getAssets, VaultList } from "../../constants/constants";
+import { getAssets, isPutVault, VaultList } from "../../constants/constants";
 
 import sizes from "../../designSystem/sizes";
 import { useLatestAPYs } from "../../hooks/useAirtableData";
@@ -14,7 +14,6 @@ import {
   VaultSortBy,
   VaultSortByList,
   VaultStrategy,
-  VaultStrategyMap,
 } from "./types";
 
 const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
@@ -33,7 +32,9 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
       // Filter for strategies
       if (
         filterStrategies.length &&
-        !filterStrategies.includes(VaultStrategyMap[vault])
+        !filterStrategies.includes(
+          isPutVault(vault) ? "PUT-SELLING" : "COVERED-CALL"
+        )
       ) {
         return false;
       }

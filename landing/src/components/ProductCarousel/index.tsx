@@ -20,7 +20,7 @@ const CarouselTitle = styled(Title)`
 
 const ProductCarousel = () => {
   return (
-    <ProductCarouselContainer>
+    <ProductCarouselContainer fluid>
       <Row className="d-flex justify-content-center">
         <CarouselTitle>Our Products</CarouselTitle>
         <ProductCatalogue

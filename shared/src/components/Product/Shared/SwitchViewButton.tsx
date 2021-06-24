@@ -7,10 +7,14 @@ import theme from "../../../designSystem/theme";
 import { DesktopViewType } from "../types";
 
 const Button = styled.div`
-  background: ${colors.primaryText}14;
+  background: ${colors.primaryText}0A;
   height: 45px;
   width: 45px;
   border-radius: ${theme.border.radius};
+
+  &:hover {
+    background: ${colors.primaryText}14;
+  }
 `;
 
 interface SwitchViewButtonProps {
