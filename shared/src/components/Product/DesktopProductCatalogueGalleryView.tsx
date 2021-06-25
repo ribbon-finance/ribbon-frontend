@@ -197,7 +197,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
   }, [page, filteredProducts]);
 
   const roi = useMemo(() => {
-    const vault = filteredProducts[page];
+    const vault = filteredProducts[page - 1];
     const asset = getAssets(vault);
     const vaultAccount = vaultAccounts[vault];
     const decimals = getAssetDecimals(asset);
