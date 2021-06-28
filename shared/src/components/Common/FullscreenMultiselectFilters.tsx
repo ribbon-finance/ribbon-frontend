@@ -392,6 +392,7 @@ const FullscreenMultiselectFilters: React.FC<
               <ScrollFilterContainer className="d-flex flex-wrap align-content-start w-100 flex-grow-1">
                 {filters.map(({ name, title: filterTitle, options }) => (
                   <FullscreenMultiselectFilter
+                    key={name}
                     title={filterTitle}
                     selected={filterSelected[name]}
                     options={options}
@@ -449,6 +450,7 @@ const FullscreenMultiselectFilters: React.FC<
             <div className="d-flex flex-wrap align-content-start w-100 flex-grow-1">
               {filters.map(({ name, title: filterTitle, options }) => (
                 <FullscreenMultiselectFilter
+                  key={name}
                   title={filterTitle}
                   selected={filterSelected[name]}
                   options={options}

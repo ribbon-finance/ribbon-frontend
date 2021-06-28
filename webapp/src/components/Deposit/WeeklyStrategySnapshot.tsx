@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "styled-components";
 import currency from "currency.js";
 import { Col, Row } from "react-bootstrap";
@@ -21,10 +21,13 @@ import {
   isPutVault,
   VaultOptions,
 } from "shared/lib/constants/constants";
-import { SecondaryText, Title } from "shared/lib/designSystem";
+import { BaseButton, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import StrikeChart from "./StrikeChart";
+import { getVaultColor } from "shared/lib/utils/vault";
+import ProfitCalculatorModal from "./ProfitCalculatorModal";
+import { formatUnits } from "@ethersproject/units";
 
 const VaultPerformanceChartContainer = styled.div`
   display: flex;
@@ -81,6 +84,27 @@ const DataNumber = styled(Title)<{ variant?: "green" | "red" }>`
   }}
 `;
 
+const CalculatorButton = styled(BaseButton)<{ color: string }>`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 10px 0px;
+  margin-top: 24px;
+  background: ${(props) => props.color}29;
+  border-radius: 100px;
+
+  &:hover {
+    opacity: ${theme.hover.opacity};
+  }
+`;
+
+const CalculatorButtonText = styled(Title)<{ color: string }>`
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 1px;
+  color: ${(props) => props.color};
+`;
+
 interface WeeklyStrategySnapshotProps {
   vaultOption: VaultOptions;
 }
@@ -93,10 +117,12 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   );
   const asset = getAssets(vaultOption);
   const optionAsset = getOptionAssets(vaultOption);
+  const color = getVaultColor(vaultOption);
   const { prices, loading: priceLoading } = useAssetsPrice({
     assets: [asset, optionAsset],
   });
   const loading = priceLoading || activityLoading;
+  const [showCalculator, setShowCalculator] = useState(false);
 
   const loadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],
@@ -104,35 +130,60 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
     loading
   );
 
-  // Calculate the latest option short position
-  const latestShortPosition = useMemo(() => {
+  const currentOption = useMemo(() => {
     const sortedActivities = activities
       .filter((activity) => activity.type === "minting")
       .sort((a, b) => (a.date.valueOf() < b.date.valueOf() ? 1 : -1));
-
     if (sortedActivities.length <= 0) {
       return undefined;
     }
-
-    return sortedActivities[0] as VaultShortPosition &
+    const latestShortPosition = sortedActivities[0] as VaultShortPosition &
       VaultActivityMeta & { type: "minting" };
-  }, [activities]);
+    const optionTraded = activities.filter(
+      (activity) =>
+        activity.type === "sales" &&
+        activity.vaultShortPosition.id === latestShortPosition.id
+    ) as (VaultOptionTrade & VaultActivityMeta & { type: "sales" })[];
+
+    const decimals = getAssetDecimals(asset);
+    const isPut = isPutVault(vaultOption);
+
+    return {
+      strike: latestShortPosition.strikePrice,
+      expiry: moment(latestShortPosition.expiry, "X"),
+      premium: optionTraded.reduce(
+        (acc, curr) => acc.add(curr.premium),
+        BigNumber.from(0)
+      ),
+      depositAmount: latestShortPosition.depositAmount,
+      amount: isPut
+        ? parseFloat(
+            assetToFiat(
+              latestShortPosition.depositAmount,
+              prices[asset]!,
+              decimals
+            )
+          ) / formatOption(latestShortPosition.strikePrice)
+        : parseFloat(formatUnits(latestShortPosition.depositAmount, decimals)),
+      isPut: isPut,
+    };
+  }, [activities, asset, prices, vaultOption]);
 
   const strikeAPRText = useMemo(() => {
     if (activityLoading) return loadingText;
 
-    if (!latestShortPosition) return "---";
+    if (!currentOption) return "---";
 
-    return currency(formatOption(latestShortPosition.strikePrice)).format();
-  }, [latestShortPosition, loadingText, activityLoading]);
+    return currency(formatOption(currentOption.strike)).format();
+  }, [currentOption, loadingText, activityLoading]);
 
   const toExpiryText = useMemo(() => {
     if (activityLoading) return loadingText;
 
-    if (!latestShortPosition) return "---";
+    if (!currentOption) return "---";
 
     const toExpiryDuration = moment.duration(
-      moment(latestShortPosition.expiry, "X").diff(moment()),
+      currentOption.expiry.diff(moment()),
       "milliseconds"
     );
 
@@ -141,92 +192,46 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
     }
 
     return `${toExpiryDuration.days()}D ${toExpiryDuration.hours()}H ${toExpiryDuration.minutes()}M`;
-  }, [latestShortPosition, loadingText, activityLoading]);
+  }, [currentOption, loadingText, activityLoading]);
 
   const KPI = useMemo(() => {
-    if (loading || !latestShortPosition) {
+    if (loading || !currentOption) {
       return undefined;
     }
 
     const higherStrike =
-      formatOption(latestShortPosition.strikePrice) > prices[optionAsset]!;
-    const isPut = isPutVault(vaultOption);
-    const isExercisedRange = isPut ? higherStrike : !higherStrike;
-
-    const optionTraded = activities.filter(
-      (activity) =>
-        activity.type === "sales" &&
-        activity.vaultShortPosition.id === latestShortPosition.id
-    ) as (VaultOptionTrade & VaultActivityMeta & { type: "sales" })[];
-
-    const totalYield = optionTraded.reduce(
-      (acc, curr) => acc.add(curr.premium),
-      BigNumber.from(0)
-    );
+      formatOption(currentOption.strike) > prices[optionAsset]!;
+    const isExercisedRange = currentOption.isPut ? higherStrike : !higherStrike;
+    const assetDecimals = getAssetDecimals(asset);
 
     let profit: number;
 
     if (!isExercisedRange) {
-      profit = parseFloat(
-        assetToFiat(totalYield, prices[asset]!, getAssetDecimals(asset))
-      );
-    } else if (isPut) {
+      profit = parseFloat(formatUnits(currentOption.premium, assetDecimals));
+    } else if (currentOption.isPut) {
       const exerciseCost =
-        formatOption(latestShortPosition.strikePrice) - prices[optionAsset]!;
-      const soldAmount =
-        parseFloat(
-          assetToFiat(
-            latestShortPosition.depositAmount,
-            prices[asset]!,
-            getAssetDecimals(asset)
-          )
-        ) / formatOption(latestShortPosition.strikePrice);
+        formatOption(currentOption.strike) - prices[optionAsset]!;
 
       profit =
-        parseFloat(
-          assetToFiat(totalYield, prices[asset]!, getAssetDecimals(asset))
-        ) -
-        soldAmount * exerciseCost;
+        parseFloat(formatUnits(currentOption.premium, assetDecimals)) -
+        currentOption.amount * exerciseCost;
     } else {
-      const exerciseCost =
-        prices[optionAsset]! - formatOption(latestShortPosition.strikePrice);
-
       profit =
-        parseFloat(
-          assetToFiat(totalYield, prices[asset]!, getAssetDecimals(asset))
-        ) -
-        parseFloat(
-          assetToFiat(
-            latestShortPosition.depositAmount,
-            exerciseCost,
-            getAssetDecimals(optionAsset)
-          )
-        );
+        (currentOption.amount * formatOption(currentOption.strike)) /
+          prices[optionAsset]! -
+        currentOption.amount +
+        parseFloat(formatUnits(currentOption.premium, assetDecimals));
     }
 
     return {
       isProfit: profit >= 0,
       roi:
         (profit /
-          parseFloat(
-            assetToFiat(
-              latestShortPosition.depositAmount,
-              prices[asset]!,
-              getAssetDecimals(asset)
-            )
-          )) *
+          parseFloat(formatUnits(currentOption.depositAmount, assetDecimals))) *
         100 *
         0.9,
     };
-  }, [
-    activities,
-    loading,
-    latestShortPosition,
-    vaultOption,
-    prices,
-    optionAsset,
-    asset,
-  ]);
+  }, [loading, currentOption, prices, optionAsset, asset]);
 
   const ProfitabilityText = useMemo(() => {
     if (loading) return loadingText;
@@ -241,22 +246,18 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
       return <Title>{loadingText}</Title>;
     }
 
-    if (!latestShortPosition) {
+    if (!currentOption) {
       return <Title>No strike choosen</Title>;
     }
 
     return (
       <StrikeChart
         current={prices[optionAsset] || 0}
-        strike={
-          latestShortPosition
-            ? formatOption(latestShortPosition.strikePrice)
-            : 0
-        }
+        strike={formatOption(currentOption.strike)}
         profitable={KPI ? KPI.isProfit : true}
       />
     );
-  }, [prices, latestShortPosition, optionAsset, KPI, loading, loadingText]);
+  }, [prices, currentOption, optionAsset, KPI, loading, loadingText]);
 
   return (
     <>
@@ -297,6 +298,28 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
           </DataCol>
         </Row>
       </VaultPerformanceChartSecondaryContainer>
+      {currentOption && (
+        <>
+          <CalculatorButton
+            color={color}
+            role="button"
+            onClick={() => setShowCalculator(true)}
+          >
+            <CalculatorButtonText color={color}>
+              OPEN PROFIT CALCULATOR
+            </CalculatorButtonText>
+          </CalculatorButton>
+          <ProfitCalculatorModal
+            show={showCalculator}
+            onClose={() => setShowCalculator(false)}
+            prices={prices}
+            asset={asset}
+            optionAsset={optionAsset}
+            currentOption={currentOption}
+            vaultOption={vaultOption}
+          />
+        </>
+      )}
     </>
   );
 };
