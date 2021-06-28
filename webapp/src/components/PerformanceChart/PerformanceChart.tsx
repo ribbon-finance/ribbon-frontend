@@ -110,7 +110,7 @@ export const Chart: React.FC<{
   gradientStopColor = "rgba(121, 255, 203, 0)",
   pointBackgroundColor = "rgba(121, 255, 203, 1)",
 }) => {
-  const options = useMemo(() => {
+  const options = useMemo((): ChartOptions => {
     return {
       maintainAspectRatio: false,
       title: { display: false },
@@ -211,7 +211,7 @@ export const Chart: React.FC<{
     ]
   );
 
-  return <Line data={getData} options={options as ChartOptions}></Line>;
+  return <Line type="line" data={getData} options={options}></Line>;
 };
 
 export default PerformanceChart;

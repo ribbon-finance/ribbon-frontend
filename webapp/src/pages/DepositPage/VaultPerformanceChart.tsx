@@ -74,19 +74,6 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
     }
   }, [yieldLen]);
 
-  // Comment out month changes while data is < 5 rows
-  // const aMonthFromNow = moment(new Date()).subtract(1, "months");
-  // const dataset = monthFilter
-  //   ? yields.filter((_, index) => {
-  //       return moment(timestamps[index]).isAfter(aMonthFromNow);
-  //     })
-  //   : yields;
-  // const labels = monthFilter
-  //   ? timestamps.filter((date) => {
-  //       return moment(date).isAfter(aMonthFromNow);
-  //     })
-  //   : timestamps;
-
   const handleChartHover = useCallback(
     (hoverInfo: HoverInfo) => {
       if (hoverInfo.focused) {

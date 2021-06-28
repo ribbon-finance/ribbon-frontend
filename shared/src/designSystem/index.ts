@@ -155,7 +155,7 @@ export const BaseInput = styled.input`
 export const BaseInputButton = styled.div`
   position: absolute;
   top: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-16px, -50%);
   right: 0;
   background: rgba(255, 255, 255, 0.08);
   color: ${colors.primaryText};

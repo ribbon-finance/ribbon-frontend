@@ -1,8 +1,9 @@
 import Chart, { ChartData, ChartOptions } from "chart.js";
 import React, { useCallback, useMemo } from "react";
 import { Line } from "react-chartjs-2";
-import colors from "shared/lib/designSystem/colors";
 import currency from "currency.js";
+
+import colors from "shared/lib/designSystem/colors";
 
 interface StrikeChartProps {
   strike: number;
