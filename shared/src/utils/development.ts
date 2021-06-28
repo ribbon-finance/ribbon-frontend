@@ -3,7 +3,6 @@ import { isProduction } from "./env";
 /**
  * Only change this line
  */
-// const addressToImpersonate = "0xc95c069f83b8e9eaeebf813a4fcf6762b881e35f";
 const addressToImpersonate = undefined;
 
 /**

@@ -158,8 +158,6 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
     return `${toExpiryDuration.days()}D ${toExpiryDuration.hours()}H ${toExpiryDuration.minutes()}M`;
   }, [currentOption]);
 
-  console.log(KPI);
-
   return (
     <BasicModal
       show={show}
