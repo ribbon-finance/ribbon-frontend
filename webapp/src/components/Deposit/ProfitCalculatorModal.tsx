@@ -99,21 +99,21 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
   currentOption,
   vaultOption,
 }) => {
-  const [input, setInput] = useState<number>();
+  const [input, setInput] = useState<string>("");
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
   const { vaultAccounts } = useVaultAccounts(vaultOptions);
 
   const handleInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const parsedInput = parseFloat(e.target.value);
-    setInput(isNaN(parsedInput) ? undefined : parsedInput);
+    setInput(isNaN(parsedInput) || parsedInput < 0 ? "" : `${parsedInput}`);
   }, []);
 
   const handleCurrentPress = useCallback(() => {
-    setInput(prices[optionAsset]);
+    setInput(`${prices[optionAsset]!}`);
   }, [prices, optionAsset]);
 
   const KPI = useMemo(() => {
-    const calculatePrice = input || prices[optionAsset]!;
+    const calculatePrice = input ? parseFloat(input) : prices[optionAsset]!;
     const higherStrike = formatOption(currentOption.strike) > calculatePrice;
     const isExercisedRange = currentOption.isPut ? higherStrike : !higherStrike;
     const assetDecimals = getAssetDecimals(asset);
@@ -174,14 +174,18 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
           className="justify-content-start"
         >
           <div className="d-flex w-100 flex-wrap">
-            <BaseInputLabel>ENTER ETH PRICE</BaseInputLabel>
+            <BaseInputLabel>
+              ENTER {getAssetDisplay(optionAsset)} PRICE
+            </BaseInputLabel>
             <BaseInputContianer className="position-relative">
               <BaseInput
                 type="number"
+                min="0"
                 className="form-control"
                 placeholder={`$${prices[optionAsset]}`}
                 value={input}
                 onChange={handleInput}
+                inputWidth="70%"
               />
               <BaseInputButton onClick={handleCurrentPress}>
                 CURRENT
@@ -193,7 +197,7 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
           <ChartContainer>
             <ProfitChart
               strike={formatOption(currentOption.strike)}
-              price={input || prices[optionAsset]!}
+              price={input ? parseFloat(input) : prices[optionAsset]!}
               premium={
                 parseFloat(
                   assetToFiat(

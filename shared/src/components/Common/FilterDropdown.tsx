@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from "framer";
 import React, { useCallback, useRef, useState } from "react";
 import styled from "styled-components";
 
@@ -56,7 +57,7 @@ const FilterButtonText = styled(Title)<{ config: FilterDropdownButtonConfig }>`
   text-transform: uppercase;
 `;
 
-const FilterDropdownMenu = styled.div<{
+const FilterDropdownMenu = styled(motion.div)<{
   isOpen: boolean;
   verticalOrientation: "top" | "bottom";
   buttonPaddingVertical: number;
@@ -207,19 +208,38 @@ const FilterDropdown: React.FC<
           {value} <ButtonArrow isOpen={open} />
         </FilterButtonText>
       </FilterButton>
-      <FilterDropdownMenu
-        isOpen={open}
-        verticalOrientation={getVerticalOrientation()}
-        buttonPaddingVertical={buttonConfig.paddingVertical}
-        config={dropdownMenuConfig}
-      >
-        {options.map((filterOption) =>
-          renderMenuItem(capitalize(filterOption), () => {
-            onSelect(filterOption);
-            setOpen(false);
-          })
-        )}
-      </FilterDropdownMenu>
+      <AnimatePresence>
+        <FilterDropdownMenu
+          key={open.toString()}
+          isOpen={open}
+          verticalOrientation={getVerticalOrientation()}
+          buttonPaddingVertical={buttonConfig.paddingVertical}
+          config={dropdownMenuConfig}
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          exit={{
+            opacity: 0,
+            y: 20,
+          }}
+          transition={{
+            type: "keyframes",
+            duration: 0.2,
+          }}
+        >
+          {options.map((filterOption) =>
+            renderMenuItem(capitalize(filterOption), () => {
+              onSelect(filterOption);
+              setOpen(false);
+            })
+          )}
+        </FilterDropdownMenu>
+      </AnimatePresence>
     </Filter>
   );
 };

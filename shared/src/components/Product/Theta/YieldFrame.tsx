@@ -15,7 +15,7 @@ import theme from "../../../designSystem/theme";
 import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useTextAnimation from "../../../hooks/useTextAnimation";
 import useVaultData from "../../../hooks/useVaultData";
-import { getAssetLogo } from "../../../utils/asset";
+import { getAssetColor, getAssetLogo } from "../../../utils/asset";
 import { formatSignificantDecimals } from "../../../utils/math";
 import { getVaultColor } from "../../../utils/vault";
 import CapBar from "../../Deposit/CapBar";
@@ -40,10 +40,11 @@ const Frame = styled(motion.div)<{ color: string }>`
     ${(props) => props.color}29 1.04%,
     ${(props) => props.color}0A 98.99%
   );
-  transition: 0.25s border-color ease-out;
+  transition: 0.25s border-color ease-out, 0.25s box-shadow ease-out;
 
   &:hover {
     padding: 16px;
+    box-shadow: ${(props) => props.color}66 8px 16px 80px;
     border: 2px ${theme.border.style} ${(props) => props.color};
   }
 `;
@@ -82,6 +83,16 @@ const ProjectedAPYData = styled(Title)<{ color: string }>`
   color: ${(props) => props.color};
 `;
 
+const USDCBackground = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 208px;
+  height: 208px;
+  background: ${getAssetColor("USDC")}29;
+  border-radius: 104px;
+`;
+
 interface YieldFrameProps {
   vault: VaultOptions;
   onClick: () => void;
@@ -115,14 +126,25 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
     setMode((prev) => (prev === "info" ? "yield" : "info"));
   }, []);
 
+  const logo = useMemo(() => {
+    switch (asset) {
+      case "USDC":
+        return (
+          <USDCBackground>
+            <Logo />
+          </USDCBackground>
+        );
+      default:
+        return <Logo height="208" width="auto" />;
+    }
+  }, [asset, Logo]);
+
   const body = useMemo(() => {
     switch (mode) {
       case "info":
         return (
           <>
-            <div className="mt-4 d-flex justify-content-center">
-              <Logo height="208" width="auto" />
-            </div>
+            <div className="mt-4 d-flex justify-content-center">{logo}</div>
             <div className="d-flex align-items-center mt-4">
               <ProjectedAPYLabel>Projected Yield (APY)</ProjectedAPYLabel>
               <ProjectedAPYData color={color}>{perfStr}</ProjectedAPYData>
@@ -161,7 +183,7 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
     }
   }, [
     vault,
-    Logo,
+    logo,
     asset,
     mode,
     color,
