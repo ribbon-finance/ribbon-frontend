@@ -1,5 +1,6 @@
 import { BigNumber } from "ethers";
 import { createGlobalState } from "react-hooks-global-state";
+import { DesktopViewType } from "../components/Product/types";
 import { getAssets, VaultList, VaultOptions } from "../constants/constants";
 import {
   DefiScoreProtocol,
@@ -26,6 +27,7 @@ interface GlobalStore {
     data: AssetYieldsInfoData;
   };
   gasPrice: string;
+  desktopView: DesktopViewType;
 }
 
 export const initialState: GlobalStore = {
@@ -65,6 +67,7 @@ export const initialState: GlobalStore = {
     },
   },
   gasPrice: "",
+  desktopView: "grid",
 };
 
 export const { useGlobalState } = createGlobalState(initialState);

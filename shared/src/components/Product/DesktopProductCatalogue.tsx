@@ -1,14 +1,11 @@
 import { AnimatePresence, motion } from "framer";
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { VaultOptions } from "../../constants/constants";
 import { VaultAccount } from "../../models/vault";
+import { useGlobalState } from "../../store/store";
 import DesktopProductCatalogueGalleryView from "./DesktopProductCatalogueGalleryView";
 import ProductCatalogueGridView from "./ProductCatalogueGridView";
-import {
-  DesktopViewType,
-  ProductCatalogueProps,
-  VaultFilterProps,
-} from "./types";
+import { ProductCatalogueProps, VaultFilterProps } from "./types";
 
 interface DesktopProductCatalogueProps {
   filteredProducts: VaultOptions[];
@@ -20,7 +17,7 @@ interface DesktopProductCatalogueProps {
 const DesktopProductCatalogue: React.FC<
   ProductCatalogueProps & VaultFilterProps & DesktopProductCatalogueProps
 > = ({ variant, ...props }) => {
-  const [view, setView] = useState<DesktopViewType>("grid");
+  const [view, setView] = useGlobalState("desktopView");
 
   const body = useMemo(() => {
     if (variant === "landing") {
@@ -51,7 +48,7 @@ const DesktopProductCatalogue: React.FC<
           />
         );
     }
-  }, [props, variant, view]);
+  }, [props, variant, view, setView]);
 
   return (
     <AnimatePresence exitBeforeEnter initial={false}>
