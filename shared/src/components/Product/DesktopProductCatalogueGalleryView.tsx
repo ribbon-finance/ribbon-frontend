@@ -126,20 +126,9 @@ const BackgroundContainer = styled.div`
   overflow: hidden;
 `;
 
-const marquee = keyframes`
-  from {
-    transform: translateX(90vw);
-  }
-
-  to {
-    transform: translateX(-90vw);
-  }
-`;
-
 const BackgroundText = styled(Title)`
   font-size: 240px;
   color: ${colors.primaryText}0A;
-  // animation: ${marquee} 30s linear infinite;
   white-space: nowrap;
 `;
 interface DesktopProductCatalogueGridViewProps {
