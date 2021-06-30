@@ -78,7 +78,7 @@ const VaultActivity: React.FC<VaultActivityProps> = ({ vaultOption }) => {
   useEffect(() => {
     const maxNumPages = Math.ceil(filteredActivities.length / perPage);
     if (page > maxNumPages) {
-      setPage(maxNumPages);
+      setPage(maxNumPages > 0 ? maxNumPages : 1);
     }
   }, [page, filteredActivities]);
 
