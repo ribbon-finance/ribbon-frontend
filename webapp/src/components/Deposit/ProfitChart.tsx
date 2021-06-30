@@ -91,8 +91,6 @@ const ProfitChart: React.FC<ProfitChartProps> = ({
         );
   }, [breakeven, premium, strike]);
 
-  console.log(priceRange);
-
   const drawPricePoint = useCallback(
     (chart: any, price: number, drawIndex: number) => {
       const ctx = chart.chart.ctx;
