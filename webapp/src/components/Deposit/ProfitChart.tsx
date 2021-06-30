@@ -74,21 +74,24 @@ const ProfitChart: React.FC<ProfitChartProps> = ({
     return [closestSmallerNum!, closestBiggerNum!];
   }, []);
 
-  const priceRange = useMemo(
-    () =>
-      premium > 0
-        ? getRange(
-            Math.round(breakeven * (1 - (premium * 5) / strike)),
-            Math.round(breakeven * (1 + (premium * 5) / strike)),
-            breakeven * (premium / strike / 10)
-          )
-        : getRange(
-            Math.round(breakeven * 0.9),
-            Math.round(breakeven * 1.1),
-            breakeven * (premium / strike / 10)
-          ),
-    [breakeven, premium, strike]
-  );
+  const priceRange = useMemo(() => {
+    return premium > 0
+      ? getRange(
+          Math.round(breakeven * (1 - (premium * 5) / strike)),
+          Math.round(breakeven * (1 + (premium * 5) / strike)),
+          breakeven *
+            (premium > 0
+              ? premium / strike / 10
+              : breakeven * (1 + (premium * 5) / strike))
+        )
+      : getRange(
+          Math.round(breakeven * 0.9),
+          Math.round(breakeven * 1.1),
+          breakeven * 0.02
+        );
+  }, [breakeven, premium, strike]);
+
+  console.log(priceRange);
 
   const drawPricePoint = useCallback(
     (chart: any, price: number, drawIndex: number) => {
