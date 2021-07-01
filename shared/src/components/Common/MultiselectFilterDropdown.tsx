@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from "framer";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { CheckIcon } from "../../assets/icons/icons";
@@ -55,7 +56,7 @@ const FilterButtonText = styled(Title)<{ config: FilterDropdownButtonConfig }>`
   text-transform: uppercase;
 `;
 
-const FilterDropdownMenu = styled.div<{
+const FilterDropdownMenu = styled(motion.div)<{
   isOpen: boolean;
   verticalOrientation: "top" | "bottom";
   buttonPaddingVertical: number;
@@ -291,33 +292,56 @@ const MultiselectFilterDropdown: React.FC<
           <ButtonArrow isOpen={open} />
         </FilterButtonText>
       </FilterButton>
-      <FilterDropdownMenu
-        isOpen={open}
-        verticalOrientation={getVerticalOrientation()}
-        buttonPaddingVertical={buttonConfig.paddingVertical}
-        config={dropdownMenuConfig}
-      >
-        {options.map((filterOption) => renderMenuItem(filterOption))}
-        <SaveButton
-          role="button"
-          onClick={() => {
-            onSelect(selected);
-            setOpen(false);
+      <AnimatePresence>
+        <FilterDropdownMenu
+          key={open.toString()}
+          isOpen={open}
+          verticalOrientation={getVerticalOrientation()}
+          buttonPaddingVertical={buttonConfig.paddingVertical}
+          config={dropdownMenuConfig}
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          exit={{
+            opacity: 0,
+            y: 20,
+          }}
+          transition={{
+            type: "keyframes",
+            duration: 0.2,
           }}
         >
-          <Title>Save</Title>
-        </SaveButton>
-        <div className="d-flex w-100 justify-content-center mt-3">
-          <SecondaryText
-            onClick={() => {
-              setSelected(options.map((option) => option.value));
-            }}
+          {options.map((filterOption) => renderMenuItem(filterOption))}
+          <SaveButton
             role="button"
+            onClick={() => {
+              onSelect(selected);
+              setOpen(false);
+            }}
           >
-            Select All
-          </SecondaryText>
-        </div>
-      </FilterDropdownMenu>
+            <Title>Save</Title>
+          </SaveButton>
+          <div className="d-flex w-100 justify-content-center mt-3">
+            <SecondaryText
+              onClick={() =>
+                selected.length === options.length
+                  ? setSelected([])
+                  : setSelected(options.map((option) => option.value))
+              }
+              role="button"
+            >
+              {selected.length === options.length
+                ? `Deselect All`
+                : `Select All`}
+            </SecondaryText>
+          </div>
+        </FilterDropdownMenu>
+      </AnimatePresence>
     </Filter>
   );
 };

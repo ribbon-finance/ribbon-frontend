@@ -18,6 +18,7 @@ interface ProfitChartProps {
   price: number;
   premium: number;
   isPut: boolean;
+  onHover: (price: number | undefined) => void;
 }
 
 const ProfitChart: React.FC<ProfitChartProps> = ({
@@ -25,6 +26,7 @@ const ProfitChart: React.FC<ProfitChartProps> = ({
   price,
   premium,
   isPut,
+  onHover,
 }) => {
   const calculateProfit = useCallback(
     (p: number) => {
@@ -72,20 +74,84 @@ const ProfitChart: React.FC<ProfitChartProps> = ({
     return [closestSmallerNum!, closestBiggerNum!];
   }, []);
 
-  const priceRange = useMemo(
-    () =>
-      premium > 0
-        ? getRange(
-            Math.round(breakeven * (1 - (premium * 5) / strike)),
-            Math.round(breakeven * (1 + (premium * 5) / strike)),
-            breakeven * (premium / strike / 20)
-          )
-        : getRange(
-            Math.round(breakeven * 0.9),
-            Math.round(breakeven * 1.1),
-            breakeven * (premium / strike / 20)
-          ),
-    [breakeven, premium, strike]
+  const priceRange = useMemo(() => {
+    return premium > 0
+      ? getRange(
+          Math.round(breakeven * (1 - (premium * 5) / strike)),
+          Math.round(breakeven * (1 + (premium * 5) / strike)),
+          breakeven *
+            (premium > 0
+              ? premium / strike / 10
+              : breakeven * (1 + (premium * 5) / strike))
+        )
+      : getRange(
+          Math.round(breakeven * 0.9),
+          Math.round(breakeven * 1.1),
+          breakeven * 0.02
+        );
+  }, [breakeven, premium, strike]);
+
+  const drawPricePoint = useCallback(
+    (chart: any, price: number, drawIndex: number) => {
+      const ctx = chart.chart.ctx;
+      // Get breakeven datasaet because of stability over every point
+      const datasetIndex = chart.chart.data.datasets.findIndex(
+        (dataset: any) => dataset.label === "breakeven"
+      );
+      const meta = chart.chart.getDatasetMeta(datasetIndex);
+      // draw line behind dot
+      // ctx.globalCompositeOperation = "destination-over";
+      const leftX = chart.chart.scales["x-axis-0"].left;
+      const rightX = chart.chart.scales["x-axis-0"].right;
+      const topY = chart.chart.scales["y-axis-0"].top;
+      const bottomY = chart.chart.scales["y-axis-0"].bottom - 1;
+      /**
+       * Draw price point
+       */
+      const priceElement = meta.data[drawIndex];
+      const priceX = priceElement._view.x;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(priceX, topY);
+      ctx.lineTo(priceX, bottomY);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = colors.primaryText;
+      ctx.stroke();
+      ctx.restore();
+
+      /**
+       * Draw price text
+       */
+      ctx.fillStyle = "white";
+      const fontSize = 12;
+      const fontStyle = "normal";
+      const fontFamily = "VCR, sans-serif";
+      ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      const padding = 8;
+
+      const text = `${drawIndex === 0 ? "<<< " : ""}${currency(
+        price
+      ).format()}${drawIndex === meta.data.length - 1 ? " >>>" : ""}`;
+      const textLength = ctx.measureText(text).width;
+
+      let xPosition = priceX;
+
+      if (xPosition - textLength / 2 < leftX) {
+        xPosition = leftX + padding + textLength / 2;
+      }
+
+      if (xPosition + textLength / 2 > rightX) {
+        xPosition = rightX - padding - textLength / 2;
+      }
+
+      ctx.fillText(text, xPosition, topY - fontSize / 2 - padding);
+
+      ctx.globalCompositeOperation = "source-over";
+    },
+    []
   );
 
   const options = useMemo((): ChartOptions => {
@@ -112,14 +178,21 @@ const ProfitChart: React.FC<ProfitChartProps> = ({
         xAxes: [{ display: false }],
       },
       animation: { duration: 0 },
-      hover: { intersect: false },
+      hover: { animationDuration: 0, intersect: false },
       tooltips: {
         enabled: false,
         intersect: false,
         mode: "nearest",
       },
+      onHover: (_: any, elements: any) => {
+        if (elements && elements.length) {
+          onHover(priceRange[elements[0]._index]);
+          return;
+        }
+        onHover(undefined);
+      },
     };
-  }, [isPut, priceRange, calculateProfit]);
+  }, [isPut, priceRange, calculateProfit, onHover]);
 
   const getData = useCallback(
     (canvas: any): ChartData => {
@@ -140,6 +213,17 @@ const ProfitChart: React.FC<ProfitChartProps> = ({
         Math.abs(breakeven - neighbourPointToBreakeven[1])
           ? neighbourPointToBreakeven[0]
           : neighbourPointToBreakeven[1];
+
+      const neighbourPointToPrice = findNeighbourPoint(
+        priceRange,
+        price
+      ).filter((neighbour) => neighbour);
+      const closestPricePoint =
+        neighbourPointToPrice.length < 2 ||
+        Math.abs(price - neighbourPointToPrice[0]) <
+          Math.abs(price - neighbourPointToPrice[1])
+          ? neighbourPointToPrice[0]
+          : neighbourPointToPrice[1];
 
       return {
         labels: priceRange.map((price) => price),
@@ -200,10 +284,19 @@ const ProfitChart: React.FC<ProfitChartProps> = ({
             backgroundColor: red,
             lineTension: 0,
           },
+          {
+            label: "price",
+            data: priceRange.map((p) =>
+              p === closestPricePoint ? price : null
+            ),
+            type: "line",
+            pointRadius: 0,
+            pointHoverRadius: 0,
+          },
         ],
       };
     },
-    [breakeven, calculateProfit, findNeighbourPoint, priceRange]
+    [breakeven, calculateProfit, findNeighbourPoint, price, priceRange]
   );
 
   const chart = useMemo(() => {
@@ -217,28 +310,14 @@ const ProfitChart: React.FC<ProfitChartProps> = ({
       (p) => p === closestStrikePoint
     );
 
-    const neighbourPointToPrice = findNeighbourPoint(priceRange, price).filter(
-      (neighbour) => neighbour
-    );
-    const closestPricePoint =
-      neighbourPointToPrice.length < 2 ||
-      Math.abs(price - neighbourPointToPrice[0]) <
-        Math.abs(price - neighbourPointToPrice[1])
-        ? neighbourPointToPrice[0]
-        : neighbourPointToPrice[1];
-    const closestPriceIndex = priceRange.findIndex(
-      (p) => p === closestPricePoint
-    );
-
     return (
       <Line
-        key={`${price}`}
         type="line"
         data={getData}
         options={options}
         plugins={[
           {
-            afterDatasetsDraw: (chart: any) => {
+            afterDraw: (chart: any) => {
               const ctx = chart.chart.ctx;
               // Get breakeven datasaet because of stability over every point
               const datasetIndex = chart.chart.data.datasets.findIndex(
@@ -287,58 +366,29 @@ const ProfitChart: React.FC<ProfitChartProps> = ({
               /**
                * Draw price point
                */
-              const priceElement = meta.data[closestPriceIndex];
-              const priceX = priceElement._view.x;
-
-              ctx.save();
-              ctx.beginPath();
-              ctx.moveTo(priceX, topY);
-              ctx.lineTo(priceX, bottomY);
-              ctx.lineWidth = 2;
-              ctx.strokeStyle = colors.primaryText;
-              ctx.stroke();
-              ctx.restore();
-
-              /**
-               * Draw price text
-               */
-              ctx.fillStyle = "white";
-              const fontSize = 12;
-              const fontStyle = "normal";
-              const fontFamily = "VCR, sans-serif";
-              ctx.font = Chart.helpers.fontString(
-                fontSize,
-                fontStyle,
-                fontFamily
+              const priceDatasetIndex = chart.chart.data.datasets.findIndex(
+                (dataset: any) => dataset.label === "price"
               );
-              ctx.textAlign = "center";
-              ctx.textBaseline = "middle";
-              const padding = 8;
+              const priceDataset = chart.chart.data.datasets[priceDatasetIndex];
 
-              const text = `${closestPriceIndex === 0 ? "<<< " : ""}${currency(
-                price
-              ).format()}${
-                closestPriceIndex === priceRange.length - 1 ? " >>>" : ""
-              }`;
-              const textLength = ctx.measureText(text).width;
-
-              let xPosition = priceX;
-
-              if (xPosition - textLength / 2 < leftX) {
-                xPosition = leftX + padding + textLength / 2;
-              }
-
-              if (xPosition + textLength / 2 > rightX) {
-                xPosition = rightX - padding - textLength / 2;
-              }
-
-              ctx.fillText(text, xPosition, topY - fontSize / 2 - padding);
+              drawPricePoint(
+                chart,
+                priceDataset.data.find((data: any) => data !== null),
+                priceDataset.data.findIndex((data: any) => data !== null)
+              );
             },
           },
         ]}
       />
     );
-  }, [getData, findNeighbourPoint, priceRange, price, strike, options]);
+  }, [
+    drawPricePoint,
+    getData,
+    findNeighbourPoint,
+    priceRange,
+    strike,
+    options,
+  ]);
 
   return chart;
 };

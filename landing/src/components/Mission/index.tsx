@@ -2,38 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { Title, BaseText } from "../../designSystem";
 import { Container } from "react-bootstrap";
-import Trail from "../../img/trail.svg";
+
+import { Title, BaseText } from "../../designSystem";
 import Plane from "../../img/ShapePlane.svg";
 import sizes from "../../designSystem/sizes";
+import theme from "../../designSystem/theme";
+import colors from "../../designSystem/colors";
 
 const MainContainer = styled(Container)`
   padding-top: 80px;
   padding-bottom: 80px;
-`;
-
-const MissionText = styled(BaseText)`
-  font-family: VCR;
-  font-size: 12px;
-  line-height: 16px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: #ff385c;
-`;
-
-const MissionSubtitle = styled(BaseText)`
-  font-size: 16px;
-  line-height: 24px;
-  color: rgba(255, 255, 255, 0.8);
-`;
-
-const TrailImage = styled.img`
-  margin-left: 50px;
-
-  @media (max-width: ${sizes.md}px) {
-    display: none;
-  }
 `;
 
 const PlaneImage = styled.img`
@@ -43,17 +22,35 @@ const PlaneImage = styled.img`
 
 const MissionTitleRow = styled(Row)`
   margin-top: 40px;
+  justify-content: center;
 `;
 
 const MissionSubtitleRow = styled(Row)`
   margin-top: 40px;
+  justify-content: center;
+`;
+
+const MissionPill = styled.div`
+  padding: 8px 16px;
+  border-radius: ${theme.border.radius};
+  background: ${colors.products.yield}29;
+`;
+
+const MissionText = styled(BaseText)`
+  font-family: VCR;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: ${colors.products.yield};
 `;
 
 const MissionTitle = styled(Title)`
   font-size: 64px;
   line-height: 64px;
+  width: 100%;
   text-transform: uppercase;
-  color: #ffffff;
+  text-align: center;
 
   @media (max-width: ${sizes.md}px) {
     font-size: 40px;
@@ -61,23 +58,29 @@ const MissionTitle = styled(Title)`
   }
 `;
 
+const MissionSubtitle = styled(BaseText)`
+  font-size: 16px;
+  line-height: 24px;
+  color: ${colors.text};
+  text-align: center;
+`;
+
 const Mission = () => {
   return (
     <MainContainer>
-      <Row>
-        <Col>
+      <div className="d-flex justify-content-center w-100">
+        <MissionPill>
           <MissionText>Our Mission</MissionText>
-          <TrailImage src={Trail} />
-        </Col>
-      </Row>
+        </MissionPill>
+      </div>
       <MissionTitleRow fluid>
-        <Col>
+        <Col xs={11} lg={10} className="d-flex">
           <MissionTitle>Bringing Structured Products to DeFi</MissionTitle>
         </Col>
       </MissionTitleRow>
 
       <MissionSubtitleRow>
-        <Col md={6} sm={12} xs={12}>
+        <Col xs={12} md={8} className="d-flex">
           <MissionSubtitle>
             Ribbon uses financial engineering to create structured products that
             deliver sustainable yield. Ribbon's first product focuses on yield

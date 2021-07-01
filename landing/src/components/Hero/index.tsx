@@ -1,22 +1,27 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Title, PrimaryText, Button } from "../../designSystem";
 import { Container } from "react-bootstrap";
+
 import sizes from "../../designSystem/sizes";
+import colors from "../../designSystem/colors";
 
 const ColorColumn = styled(Col)<{
   activeColor: string;
-  passiveColor: string;
 }>`
   height: 640px;
-  width: 20%;
-  background-color: ${(p) => p.passiveColor};
+  transition: background-color 200ms ease-out, box-shadow 200ms ease-out;
+
+  &:hover {
+    background-color: ${(p) => p.activeColor};
+    box-shadow: 8px 16px 120px ${(p) => p.activeColor};
+  }
 `;
 
 const MainContainer = styled(Container)`
-  background-color: #1c1a19;
+  background-color: ${colors.background};
   height: 640px;
 
   @media (max-width: ${sizes.md}px) {
@@ -33,7 +38,7 @@ const ButtonContainer = styled.div`
 `;
 
 const SubTitle = styled(PrimaryText)`
-  color: #ffffff;
+  color: ${colors.primaryText};
 `;
 
 const BackgroundContainer = styled(Row)`
@@ -88,58 +93,20 @@ const TitleAltSmall = styled(TitleSmall)`
 
 const CTAButton = styled(Button)`
   &:hover {
-    background-color: #ffffff;
-    color: #1c1a19;
+    background-color: ${colors.primaryText};
+    color: ${colors.background};
   }
 `;
 
 const Hero = () => {
-  const [, setCol] = useState(0);
-
-  enum PassiveColors {
-    "#1C1A19",
-  }
-
-  enum ActiveColors {
-    "#FF385C",
-    "#FF9000",
-    "#79FFCB",
-    "#729DED",
-  }
-
-  function changeBackground(e: any, column: number) {
-    e.target.style.background = ActiveColors[column];
-    setCol(column);
-  }
-
-  function resetBackground(e: any, column: number) {
-    e.target.style.background = PassiveColors[column];
-  }
-
   return (
     <MainContainer fluid>
       <HeroContainer fluid style={{ position: "relative" }}>
         <BackgroundContainer>
-          <ColorColumn
-            passiveColor={PassiveColors[0]}
-            onMouseOver={(e: any) => changeBackground(e, 0)}
-            onMouseLeave={(e: any) => resetBackground(e, 0)}
-          />
-          <ColorColumn
-            passiveColor={PassiveColors[0]}
-            onMouseOver={(e: any) => changeBackground(e, 1)}
-            onMouseLeave={(e: any) => resetBackground(e, 0)}
-          />
-          <ColorColumn
-            passiveColor={PassiveColors[0]}
-            onMouseOver={(e: any) => changeBackground(e, 2)}
-            onMouseLeave={(e: any) => resetBackground(e, 0)}
-          />
-          <ColorColumn
-            passiveColor={PassiveColors[0]}
-            onMouseOver={(e: any) => changeBackground(e, 3)}
-            onMouseLeave={(e: any) => resetBackground(e, 0)}
-          />
+          <ColorColumn activeColor={colors.products.yield} />
+          <ColorColumn activeColor={colors.products.volatility} />
+          <ColorColumn activeColor={colors.green} />
+          <ColorColumn activeColor={colors.products.capitalAccumulation} />
         </BackgroundContainer>
       </HeroContainer>
 

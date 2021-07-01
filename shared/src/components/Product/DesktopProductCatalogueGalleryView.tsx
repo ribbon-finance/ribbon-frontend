@@ -4,9 +4,10 @@ import { AnimatePresence, motion } from "framer";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import styled, { keyframes } from "styled-components";
+import Marquee from "react-fast-marquee/dist";
+
 import { getAssets, VaultOptions } from "../../constants/constants";
 import { SecondaryText, Title } from "../../designSystem";
-
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 import { useAssetsPrice } from "../../hooks/useAssetPrice";
@@ -39,7 +40,7 @@ import {
 const FullscreenContainer = styled(Container)<{ height: number }>`
   padding-top: 24px;
   height: ${(props) => props.height}px;
-  z-index: 1;
+  z-index: 2;
 `;
 
 const FilterContainer = styled.div`
@@ -125,20 +126,9 @@ const BackgroundContainer = styled.div`
   overflow: hidden;
 `;
 
-const marquee = keyframes`
-  from {
-    transform: translateX(90vw);
-  }
-
-  to {
-    transform: translateX(-90vw);
-  }
-`;
-
 const BackgroundText = styled(Title)`
   font-size: 240px;
   color: ${colors.primaryText}0A;
-  animation: ${marquee} 30s linear infinite;
   white-space: nowrap;
 `;
 interface DesktopProductCatalogueGridViewProps {
@@ -475,9 +465,11 @@ const DesktopProductCatalogueGalleryView: React.FC<
               opacity: 0,
             }}
           >
-            <BackgroundText>
-              {currentVault ? productCopies[currentVault].title : ""}
-            </BackgroundText>
+            <Marquee gradient={false} speed={75}>
+              <BackgroundText>
+                {currentVault ? productCopies[currentVault].title : ""}
+              </BackgroundText>
+            </Marquee>
           </motion.div>
         </AnimatePresence>
       </BackgroundContainer>

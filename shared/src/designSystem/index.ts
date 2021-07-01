@@ -133,8 +133,8 @@ export const BaseInputContianer = styled.div`
   padding: 0 4px;
 `;
 
-export const BaseInput = styled.input`
-  width: 80%;
+export const BaseInput = styled.input<{ inputWidth?: string }>`
+  width: ${(props) => props.inputWidth || "80%"};
   height: 100%;
   font-size: 40px;
   line-height: 64px;

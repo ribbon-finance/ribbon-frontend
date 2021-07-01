@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import useVaultActivity from "../../hooks/useVaultActivity";
@@ -48,7 +48,7 @@ const VaultActivity: React.FC<VaultActivityProps> = ({ vaultOption }) => {
     loading
   );
 
-  const processedActivities = useMemo(() => {
+  const filteredActivities = useMemo(() => {
     let filteredActivities = activities;
 
     switch (activityFilter) {
@@ -72,20 +72,26 @@ const VaultActivity: React.FC<VaultActivityProps> = ({ vaultOption }) => {
         break;
     }
 
-    filteredActivities = filteredActivities.slice(
-      (page - 1) * perPage,
-      page * perPage
-    );
-
     return filteredActivities;
-  }, [activities, activityFilter, sortBy, page]);
+  }, [activities, activityFilter, sortBy]);
+
+  useEffect(() => {
+    const maxNumPages = Math.ceil(filteredActivities.length / perPage);
+    if (page > maxNumPages) {
+      setPage(maxNumPages > 0 ? maxNumPages : 1);
+    }
+  }, [page, filteredActivities]);
+
+  const paginatedActivities = useMemo(() => {
+    return filteredActivities.slice((page - 1) * perPage, page * perPage);
+  }, [filteredActivities, page]);
 
   const renderPagination = useCallback(() => {
     if (loading) {
       return <PaginationText>{loadingText}</PaginationText>;
     }
 
-    if (activities.length <= 0) {
+    if (filteredActivities.length <= 0) {
       return (
         <PaginationText>There is currently no vault activity</PaginationText>
       );
@@ -94,11 +100,11 @@ const VaultActivity: React.FC<VaultActivityProps> = ({ vaultOption }) => {
     return (
       <Pagination
         page={page}
-        total={Math.ceil(activities.length / perPage)}
+        total={Math.ceil(filteredActivities.length / perPage)}
         setPage={setPage}
       />
     );
-  }, [loading, activities, loadingText, page]);
+  }, [loading, filteredActivities, loadingText, page]);
 
   return (
     <>
@@ -132,12 +138,12 @@ const VaultActivity: React.FC<VaultActivityProps> = ({ vaultOption }) => {
         >
           {width > sizes.md ? (
             <DesktopVaultActivityList
-              activities={processedActivities}
+              activities={paginatedActivities}
               vaultOption={vaultOption}
             />
           ) : (
             <MobileVaultActivityList
-              activities={processedActivities}
+              activities={paginatedActivities}
               vaultOption={vaultOption}
             />
           )}

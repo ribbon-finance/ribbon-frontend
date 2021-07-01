@@ -34,6 +34,13 @@ const ChartContainer = styled.div`
 const StrikeLabel = styled(Subtitle)`
   color: ${colors.text};
   letter-spacing: 1px;
+  line-height: 16px;
+`;
+
+const HoverLabel = styled(SecondaryText)`
+  font-size: 12px;
+  line-height: 16px;
+  color: ${colors.primaryText};
 `;
 
 const CalculationContainer = styled.div`
@@ -99,21 +106,28 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
   currentOption,
   vaultOption,
 }) => {
-  const [input, setInput] = useState<number>();
+  const [input, setInput] = useState<string>("");
+  const [hoverPrice, setHoverPrice] = useState<number>();
+  const [chartHovering, setChartHovering] = useState(false);
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
   const { vaultAccounts } = useVaultAccounts(vaultOptions);
 
   const handleInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const parsedInput = parseFloat(e.target.value);
-    setInput(isNaN(parsedInput) ? undefined : parsedInput);
+    setInput(isNaN(parsedInput) || parsedInput < 0 ? "" : `${parsedInput}`);
   }, []);
 
   const handleCurrentPress = useCallback(() => {
-    setInput(prices[optionAsset]);
+    setInput(`${prices[optionAsset]!}`);
   }, [prices, optionAsset]);
 
   const KPI = useMemo(() => {
-    const calculatePrice = input || prices[optionAsset]!;
+    let calculatePrice = input ? parseFloat(input) : prices[optionAsset]!;
+
+    if (hoverPrice) {
+      calculatePrice = hoverPrice;
+    }
+
     const higherStrike = formatOption(currentOption.strike) > calculatePrice;
     const isExercisedRange = currentOption.isPut ? higherStrike : !higherStrike;
     const assetDecimals = getAssetDecimals(asset);
@@ -143,7 +157,7 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
         100 *
         0.9,
     };
-  }, [asset, currentOption, input, optionAsset, prices]);
+  }, [asset, currentOption, input, hoverPrice, optionAsset, prices]);
 
   const toExpiryText = useMemo(() => {
     const toExpiryDuration = moment.duration(
@@ -174,14 +188,18 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
           className="justify-content-start"
         >
           <div className="d-flex w-100 flex-wrap">
-            <BaseInputLabel>ENTER ETH PRICE</BaseInputLabel>
+            <BaseInputLabel>
+              ENTER {getAssetDisplay(optionAsset)} PRICE
+            </BaseInputLabel>
             <BaseInputContianer className="position-relative">
               <BaseInput
                 type="number"
+                min="0"
                 className="form-control"
                 placeholder={`$${prices[optionAsset]}`}
                 value={input}
                 onChange={handleInput}
+                inputWidth="70%"
               />
               <BaseInputButton onClick={handleCurrentPress}>
                 CURRENT
@@ -190,10 +208,24 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
           </div>
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={16}>
-          <ChartContainer>
+          <ChartContainer
+            onClick={() => {
+              if (hoverPrice) {
+                setInput(hoverPrice.toFixed(2));
+              }
+            }}
+            onMouseEnter={() => setChartHovering(true)}
+            onMouseLeave={() => setChartHovering(false)}
+          >
             <ProfitChart
               strike={formatOption(currentOption.strike)}
-              price={input || prices[optionAsset]!}
+              price={
+                hoverPrice
+                  ? hoverPrice
+                  : input
+                  ? parseFloat(input)
+                  : prices[optionAsset]!
+              }
               premium={
                 parseFloat(
                   assetToFiat(
@@ -204,14 +236,19 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
                 ) / currentOption.amount
               }
               isPut={currentOption.isPut}
+              onHover={setHoverPrice}
             />
           </ChartContainer>
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={8}>
-          <StrikeLabel>
-            STRIKE PRICE:{" "}
-            {currency(formatOption(currentOption.strike)).format()}
-          </StrikeLabel>
+          {chartHovering ? (
+            <HoverLabel>Click to update price field above</HoverLabel>
+          ) : (
+            <StrikeLabel>
+              STRIKE PRICE:{" "}
+              {currency(formatOption(currentOption.strike)).format()}
+            </StrikeLabel>
+          )}
         </BaseModalContentColumn>
         <ModalContentExtra style={{ flex: 1 }}>
           <CalculationContainer>
