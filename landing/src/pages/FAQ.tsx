@@ -43,7 +43,7 @@ const Link = styled.a`
   line-height: 24px;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.64);
-  text-decoration: underline;
+  text-decoration: underline !important;
 `;
 
 const sections = [
@@ -57,8 +57,32 @@ const sections = [
       },
       {
         question: "Does Ribbon have a token?",
-        answer:
-          "No, we do not have a token. We are aware that there are scammers that have created fake Ribbon tokens and are actively distributing them on DEXes. Do not buy them.",
+        answer: (
+          <span>
+            <p>
+              Yes, we have a token. You can find more information about the $RBN
+              Airdrop{" "}
+              <Link
+                href="https://ribbonfinance.medium.com/rbn-airdrop-distribution-70b6cb0b870c"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                in the blog post
+              </Link>
+              . Be aware that there are scammers that have created fake Ribbon
+              tokens and are actively distributing them on DEXes. Do not buy
+              them. Official RBN address:{" "}
+              <Link
+                href="https://etherscan.io/address/0x6123b0049f904d730db3c36a31167d9d4121fa6b"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                0x6123B0049F904d730dB3C36a31167D9d4121fA6B
+              </Link>
+              .
+            </p>
+          </span>
+        ),
       },
       {
         question: "What are structured products?",
@@ -137,12 +161,29 @@ const sections = [
               a relatively low chance of the options getting exercised.
             </p>
             <p>
-              The smart contracts are{" "}
+              The smart contracts are audited by{" "}
               <Link
                 href="https://github.com/peckshield/publications/blob/master/audit_reports/PeckShield-Audit-Report-Ribbon-v1.0.pdf"
                 target="_blank"
+                rel="noreferrer noopener"
               >
-                audited by Peckshield
+                Peckshield
+              </Link>
+              ,{" "}
+              <Link
+                href="https://github.com/ribbon-finance/audit/blob/master/reports/Chainsafe-Ribbon-Audit_April-2021.pdf"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                ChainSafe
+              </Link>{" "}
+              and{" "}
+              <Link
+                href="https://github.com/ribbon-finance/audit/blob/master/reports/Quantstamp%20Theta%20Vault.pdf"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                Quantstamp
               </Link>
               . Despite that, users are advised to exercise caution and only
               risk funds they can afford to lose.{" "}
