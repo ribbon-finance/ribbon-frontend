@@ -213,7 +213,9 @@ const YieldCard: React.FC<YieldCardProps> = ({
     250,
     !latestAPY.fetched
   );
-  const perfStr = latestAPY.res ? `${latestAPY.res.toFixed(2)}%` : loadingText;
+  const perfStr = latestAPY.fetched
+    ? `${latestAPY.res.toFixed(2)}%`
+    : loadingText;
 
   const onSwapMode = useCallback((e) => {
     e.stopPropagation();

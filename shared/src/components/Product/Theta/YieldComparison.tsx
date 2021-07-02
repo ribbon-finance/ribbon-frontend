@@ -76,7 +76,9 @@ const YieldComparison: React.FC<YieldComparisonProps> = ({
     250,
     !latestAPY.fetched
   );
-  const perfStr = latestAPY.res ? `${latestAPY.res.toFixed(2)}%` : loadingText;
+  const perfStr = latestAPY.fetched
+    ? `${latestAPY.res.toFixed(2)}%`
+    : loadingText;
 
   const renderProtocolLogo = useCallback((protocol: DefiScoreProtocol) => {
     switch (protocol) {
