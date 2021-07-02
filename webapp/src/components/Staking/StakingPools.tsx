@@ -6,6 +6,7 @@ import { useWeb3React } from "@web3-react/core";
 import { SecondaryText, Subtitle, Title } from "shared/lib/designSystem";
 import {
   getAssets,
+  getDisplayAssets,
   VaultLiquidityMiningMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
@@ -241,7 +242,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   );
 
   const logo = useMemo(() => {
-    const asset = getAssets(vaultOption);
+    const asset = getDisplayAssets(vaultOption);
     const Logo = getAssetLogo(asset);
 
     switch (asset) {
