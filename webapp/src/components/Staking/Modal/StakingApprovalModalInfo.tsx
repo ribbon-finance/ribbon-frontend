@@ -9,7 +9,7 @@ import {
   SecondaryText,
   Title,
 } from "shared/lib/designSystem";
-import { getAssets, VaultOptions } from "shared/lib/constants/constants";
+import { getDisplayAssets, VaultOptions } from "shared/lib/constants/constants";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -67,7 +67,7 @@ const StakingApprovalModalInfo: React.FC<StakingApprovalModalInfoProps> = ({
 }) => {
   const color = getVaultColor(vaultOption);
   const logo = useMemo(() => {
-    const asset = getAssets(vaultOption);
+    const asset = getDisplayAssets(vaultOption);
     const Logo = getAssetLogo(asset);
 
     switch (asset) {
