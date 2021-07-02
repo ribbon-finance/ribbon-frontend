@@ -22,6 +22,7 @@ const COINGECKO_CURRENCIES = {
   WETH: "ethereum",
   WBTC: "wrapped-bitcoin",
   USDC: "usd-coin",
+  yvUSDC: "",
 };
 
 // TODO: We need this global variable so we can prevent over-fetching

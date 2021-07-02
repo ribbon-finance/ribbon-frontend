@@ -54,7 +54,7 @@ const fetchStakingAccounts = async (
               ""
             )}: vaultLiquidityMiningPoolAccount(id:"${VaultLiquidityMiningMap[
               vault
-            ].toLowerCase()}-${account.toLowerCase()}") {
+            ]!.toLowerCase()}-${account.toLowerCase()}") {
               pool {
                 numDepositors
                 totalSupply

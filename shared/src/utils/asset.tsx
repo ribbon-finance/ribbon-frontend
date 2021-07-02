@@ -1,6 +1,11 @@
 import React from "react";
 import styled, { StyledComponent } from "styled-components";
-import { USDCLogo, WBTCLogo, WETHLogo } from "../assets/icons/erc20Assets";
+import {
+  USDCLogo,
+  WBTCLogo,
+  WETHLogo,
+  YVUSDcLogo,
+} from "../assets/icons/erc20Assets";
 import colors from "../designSystem/colors";
 import { Assets } from "../store/types";
 
@@ -18,6 +23,7 @@ export const getAssetDecimals = (asset: Assets): number => {
     case "WBTC":
       return 8;
     case "USDC":
+    case "yvUSDC":
       return 6;
     case "WETH":
     default:
@@ -48,6 +54,20 @@ const ColoredUSDCLogo = styled(USDCLogo)<{ backgroundColor?: string }>`
   }
 `;
 
+const ColoredYUSDCLogo = styled(YVUSDcLogo)<{ backgroundColor?: string }>`
+  margin: -8px;
+  width: 100%;
+
+  && .background {
+    fill: ${(props) =>
+      props.backgroundColor ? props.backgroundColor : "none"};
+  }
+
+  && .content {
+    fill: ${colors.asset.USDC};
+  }
+`;
+
 export const getAssetLogo: (
   asset: Assets
 ) =>
@@ -59,11 +79,14 @@ export const getAssetLogo: (
     >
   | React.FC<React.SVGAttributes<SVGElement>> = (asset) => {
   switch (asset) {
+    // TODO: Maybe need update this
     case "USDC":
       return ColoredUSDCLogo;
     case "WBTC":
       return ColoredWBTCLogo;
     case "WETH":
       return WETHLogo;
+    case "yvUSDC":
+      return ColoredYUSDCLogo;
   }
 };
