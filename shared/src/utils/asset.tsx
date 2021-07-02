@@ -84,7 +84,6 @@ export const getAssetLogo: (
       }
     > = (asset) => {
   switch (asset) {
-    // TODO: Maybe need update this
     case "USDC":
       return ColoredUSDCLogo;
     case "WBTC":
