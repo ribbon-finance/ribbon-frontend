@@ -79,7 +79,6 @@ export const getAssetLogo: (
     >
   | React.FC<React.SVGAttributes<SVGElement>> = (asset) => {
   switch (asset) {
-    // TODO: Maybe need update this
     case "USDC":
       return ColoredUSDCLogo;
     case "WBTC":

@@ -83,16 +83,6 @@ const ProjectedAPYData = styled(Title)<{ color: string }>`
   color: ${(props) => props.color};
 `;
 
-const USDCBackground = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 208px;
-  height: 208px;
-  background: ${getAssetColor("USDC")}29;
-  border-radius: 104px;
-`;
-
 interface YieldFrameProps {
   vault: VaultOptions;
   onClick: () => void;
@@ -117,7 +107,9 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
     250,
     !latestAPY.fetched
   );
-  const perfStr = latestAPY.res ? `${latestAPY.res.toFixed(2)}%` : loadingText;
+  const perfStr = latestAPY.fetched
+    ? `${latestAPY.res.toFixed(2)}%`
+    : loadingText;
 
   const totalDepositStr = isLoading
     ? 0

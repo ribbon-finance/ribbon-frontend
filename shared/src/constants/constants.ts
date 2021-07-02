@@ -186,9 +186,8 @@ export const getAirtableName = (vault: VaultOptions): string => {
       return "T-ETH-C";
     case "rBTC-THETA":
       return "T-WBTC-C";
-    // TODO: Update airtable name
     case "ryvUSDC-ETH-P-THETA":
-      return "T-USDC-P-ETH";
+      return "T-YUSDC-P-ETH";
   }
 };
 
