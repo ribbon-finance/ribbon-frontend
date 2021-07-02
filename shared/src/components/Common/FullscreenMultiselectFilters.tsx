@@ -88,6 +88,11 @@ const HeaderTitleContainer = styled.div`
   justify-content: center;
 `;
 
+const FilterContent = styled.div`
+  overflow: scroll;
+  max-height: calc(100vh - 80px - ${theme.footer.mobile.height}px);
+`;
+
 const FilterFooter = styled.div`
   display: flex;
   align-items: center;
@@ -447,7 +452,7 @@ const FullscreenMultiselectFilters: React.FC<
             </FilterHeader>
 
             {/* Content */}
-            <div className="d-flex flex-wrap align-content-start w-100 flex-grow-1">
+            <FilterContent className="d-flex flex-wrap align-content-start w-100 flex-grow-1">
               {filters.map(({ name, title: filterTitle, options }) => (
                 <FullscreenMultiselectFilter
                   key={name}
@@ -462,7 +467,7 @@ const FullscreenMultiselectFilters: React.FC<
                   }}
                 />
               ))}
-            </div>
+            </FilterContent>
 
             {/* Footer */}
             <FilterFooter>
