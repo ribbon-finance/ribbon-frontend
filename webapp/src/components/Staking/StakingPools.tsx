@@ -172,7 +172,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   const decimals = getAssetDecimals(getAssets(vaultOption));
   const tokenAllowance = useTokenAllowance(
     vaultOption,
-    VaultLiquidityMiningMap[vaultOption]
+    VaultLiquidityMiningMap[vaultOption]!
   );
   const [pendingTransactions] = usePendingTransactions();
 

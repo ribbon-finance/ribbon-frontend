@@ -1,7 +1,12 @@
 import { BigNumber } from "ethers";
 import { createGlobalState } from "react-hooks-global-state";
 import { DesktopViewType } from "../components/Product/types";
-import { getAssets, VaultList, VaultOptions } from "../constants/constants";
+import {
+  getAssets,
+  getDisplayAssets,
+  VaultList,
+  VaultOptions,
+} from "../constants/constants";
 import {
   DefiScoreProtocol,
   DefiScoreToken,
@@ -40,6 +45,7 @@ export const initialState: GlobalStore = {
         vaultLimit: BigNumber.from("0"),
         vaultBalanceInAsset: BigNumber.from("0"),
         asset: getAssets(vault),
+        displayAsset: getDisplayAssets(vault),
         decimals: getAssetDecimals(getAssets(vault)),
         userAssetBalance: BigNumber.from("0"),
         maxWithdrawAmount: BigNumber.from("0"),

@@ -11,14 +11,35 @@
 			"link": "0xa36085f69e2889c224210f603d836748e7dc0088",
 			"eth": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
 			"weth": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
-			"usdc": "0x7e6edA50d1c833bE936492BF42C1BF376239E9e2",
+			"usdc": "0xF5Cb5408B40E819e7Db5347664Be03B52AcCAC9d",
 			"wbtc": "0x50570256f0da172a1908207aAf0c80d4b279f303",
 			"yvweth": "0x1E0E04C1c5c57328fcB83dEd981e304812c36962",
 			"yvusdc": "0x9d54311cCaA9C0d4ee6BD60cB82A40F4B942c8b3",
 			"rETH-THETA": "0x5B8E6eaB6502CC642d00A55F0d8B5f5557c94Bc5",
 			"rBTC-THETA": "0xB0204738a785B2f788B55A4f7da2F74bB0a84245",
 			"rUSDC-ETH-P-THETA": "0xd58EFBFF4277335D9d8aBaF0658c95D250DE484A",
-			"rUSDC-BTC-P-THETA": "0x18B2Eddc35a48fa2c33DbeA1Db0485867F831853"
+			"rUSDC-BTC-P-THETA": "0x18B2Eddc35a48fa2c33DbeA1Db0485867F831853",
+			"ryvUSDC-ETH-P-THETA": "0x526624Ac3b2d409816fB95D49a9512e5674b052e"
+		},
+		"secondary": {
+			"comment": "There is 2 different USDC in Kovan. They are being used in different context. Different USDC are needed depending on contracts.",
+			"usdc": [
+				{
+					"name": "Old Opyn USDC",
+					"address": "0x7e6edA50d1c833bE936492BF42C1BF376239E9e2",
+					"usage": [
+						"yvUSDC",
+						"Liquidity Mining Pool"
+					]
+				},
+				{
+					"name": "New Opyn",
+					"address": "0xF5Cb5408B40E819e7Db5347664Be03B52AcCAC9d",
+					"usage": [
+						"New theta vault"
+					]
+				}
+			]
 		},
 		"yearnRegistry": "0x26a6F436EAa4Db308eF9A3Bbe46Cc495F39C366D",
 		"airswapSwap": "0x79fb4604f2D7bD558Cda0DFADb7d61D98b28CA9f",
@@ -49,7 +70,8 @@
 			"rETH-THETA": "0x0FABaF48Bbf864a3947bdd0Ba9d764791a60467A",
 			"rBTC-THETA": "0x8b5876f5B0Bf64056A89Aa7e97511644758c3E8c",
 			"rUSDC-ETH-P-THETA": "0x16772a7f4a3ca291C21B8AcE76F9332dDFfbb5Ef",
-			"rUSDC-BTC-P-THETA": "0x16772a7f4a3ca291C21B8AcE76F9332dDFfbb5Ef"
+			"rUSDC-BTC-P-THETA": "0x16772a7f4a3ca291C21B8AcE76F9332dDFfbb5Ef",
+			"ryvUSDC-ETH-P-THETA": "0x8FE74471F198E426e96bE65f40EeD1F8BA96e54f"
 		},
 		"yearnRegistry": "0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804",
 		"airswapSwap": "0x4572f2554421Bd64Bef1c22c8a81840E8D496BeA",

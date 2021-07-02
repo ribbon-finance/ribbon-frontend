@@ -99,10 +99,17 @@ interface YieldFrameProps {
 }
 
 const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
-  const { status, deposits, vaultLimit, asset, decimals } = useVaultData(vault);
+  const {
+    status,
+    deposits,
+    vaultLimit,
+    asset,
+    displayAsset,
+    decimals,
+  } = useVaultData(vault);
   const isLoading = useMemo(() => status === "loading", [status]);
   const color = getVaultColor(vault);
-  const Logo = getAssetLogo(asset);
+  const Logo = getAssetLogo(displayAsset);
   const latestAPY = useLatestAPY(vault);
 
   const loadingText = useTextAnimation(
@@ -130,9 +137,11 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
     switch (asset) {
       case "USDC":
         return (
-          <USDCBackground>
-            <Logo />
-          </USDCBackground>
+          <Logo
+            height="208"
+            width="auto"
+            backgroundColor={`${getAssetColor("USDC")}29`}
+          />
         );
       default:
         return <Logo height="208" width="auto" />;

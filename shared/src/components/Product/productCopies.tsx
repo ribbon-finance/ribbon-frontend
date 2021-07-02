@@ -439,4 +439,103 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
       ),
     },
   },
+  "ryvUSDC-ETH-P-THETA": {
+    title: "T-yUSDC-P-ETH",
+    subtitle: "ETH Put-Selling",
+    description:
+      "Generates yield by running an automated ETH put selling strategy.",
+    tags: ["PUT-SELLING"],
+    strategy: (
+      <>
+        This vault earns yield on its yvUSDC deposits by running an automated
+        strategy that sells ETH{" "}
+        <TooltipExplanation
+          title="PUT OPTION"
+          explanation="A put option is a contract giving the owner the right, but not the obligation, to sell–or sell short–a specified amount of an underlying security at a pre-determined price within a specified time frame. This pre-determined price that buyer of the put option can sell at is called the strike price."
+          learnMoreURL="https://www.investopedia.com/terms/p/putoption.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              put options
+            </HighlighText>
+          )}
+        />
+        . The idea is to profit when the asset goes up in price.
+        <p />
+        Put simply, the vault{" "}
+        <TooltipExplanation
+          title="MINTING"
+          explanation="The vault mints, or creates, an option by depositing collateral into an Opyn vault resulting in the issuance of an oToken that represents the option contract."
+          learnMoreURL="https://www.investopedia.com/terms/m/mint.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              mints
+            </HighlighText>
+          )}
+        />{" "}
+        <TooltipExplanation
+          title="OUT-OF-THE-MONEY"
+          explanation="An ETH put option is out-of-the-money (OTM) if the strike price is below the market price of ETH."
+          learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              out-of-the-money
+            </HighlighText>
+          )}
+        />{" "}
+        ETH put options on Opyn on a weekly basis and sells these options to
+        market makers for a fee (the market price of the option, also known as
+        the{" "}
+        <TooltipExplanation
+          title="OPTION PREMIUM"
+          explanation="The option premium is the current market price of an option contract."
+          learnMoreURL="https://www.investopedia.com/terms/o/option-premium.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              option premium
+            </HighlighText>
+          )}
+        />
+        ). The vault repeats this process on a weekly basis and reinvests the
+        income earned from selling options to mint new options, effectively
+        compounding the yields for depositors over time.
+        <p />
+        The vault has a manager who selects the strike price for the put options
+        minted by the vault. The manager is responsible for making the best
+        tradeoff between yield versus the risk of the put options getting
+        exercised.
+      </>
+    ),
+    vaultRisk: (
+      <>
+        The primary risk for running this put selling strategy is that the vault
+        may incur a weekly loss in the case where the put options sold by the
+        vault expire{" "}
+        <TooltipExplanation
+          title="IN-THE-MONEY"
+          explanation="An ETH put option is in-the-money (OTM) if the strike price is above the market price of ETH."
+          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              in-the-money
+            </HighlighText>
+          )}
+        />{" "}
+        (meaning the price of ETH is below the strike price of the put options
+        minted by the vault). Such a situation is expected to happen less than
+        5% of the time.
+      </>
+    ),
+    liquidityMining: {
+      explanation: (
+        <>
+          ryvUSDC-ETH-P-THETA is a token that represents yvUSDC deposits in the
+          ETH Put Theta Vault (T-yUSDC-P-ETH).
+          <br />
+          <br />
+          Stake your ryvUSDC-ETH-P-THETA tokens in the ryvUSDC-ETH-P-THETA
+          staking pool to earn $RBN rewards.
+        </>
+      ),
+    },
+  },
 };
