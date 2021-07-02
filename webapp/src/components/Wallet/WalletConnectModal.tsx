@@ -18,15 +18,18 @@ import theme from "shared/lib/designSystem/theme";
 import {
   injectedConnector,
   getWalletConnectConnector,
+  walletlinkConnector,
 } from "../../utils/connectors";
 import {
   MetamaskIcon,
   WalletConnectIcon,
+  WalletLinkIcon,
 } from "shared/lib/assets/icons/connector";
 import { ConnectorButtonProps, connectorType } from "./types";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import Indicator from "../Indicator/Indicator";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
+import { WalletLinkConnector } from "@web3-react/walletlink-connector";
 
 const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
   background-color: ${colors.backgroundDarker};
@@ -90,6 +93,12 @@ const LearnMoreArrow = styled(BaseText)`
   margin-left: 5px;
 `;
 
+const StyledWalletLinkIcon = styled(WalletLinkIcon)`
+  path.outerBackground {
+    fill: #0000;
+  }
+`;
+
 const WalletConnectModal: React.FC = () => {
   const {
     connector,
@@ -126,6 +135,9 @@ const WalletConnectModal: React.FC = () => {
           break;
         case "walletConnect":
           await activateWeb3(getWalletConnectConnector());
+          break;
+        case "walletLink":
+          await activateWeb3(walletlinkConnector);
       }
       setConnectingConnector(undefined);
     },
@@ -149,6 +161,8 @@ const WalletConnectModal: React.FC = () => {
           case "walletConnect":
             if (connector instanceof WalletConnectConnector) return "connected";
             break;
+          case "walletLink":
+            if (connector instanceof WalletLinkConnector) return "connected";
         }
       }
 
@@ -170,6 +184,8 @@ const WalletConnectModal: React.FC = () => {
         return <MetamaskIcon height={40} width={40} />;
       case "walletConnect":
         return <WalletConnectIcon height={40} width={40} />;
+      case "walletLink":
+        return <StyledWalletLinkIcon height={40} width={40} />;
     }
   }, []);
 
@@ -209,6 +225,7 @@ const WalletConnectModal: React.FC = () => {
       <Modal.Body>
         {renderConnectorButton("metamask", "METAMASK")}
         {renderConnectorButton("walletConnect", "WALLET CONNECT")}
+        {renderConnectorButton("walletLink", "COINBASE WALLET")}
         <LearnMoreLink
           to="https://ethereum.org/en/wallets/"
           target="_blank"
