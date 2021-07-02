@@ -7,7 +7,6 @@ import { SecondaryText, Subtitle, Title } from "shared/lib/designSystem";
 import {
   getAssets,
   VaultLiquidityMiningMap,
-  LiquidityMiningPoolOrder,
   VaultOptions,
 } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
@@ -475,8 +474,8 @@ const StakingPools = () => {
   return (
     <StakingPoolsContainer>
       <SectionHeader className="mb-4 w-100">STAKING POOLS</SectionHeader>
-      {LiquidityMiningPoolOrder.map((option) => (
-        <StakingPool key={option} vaultOption={option} />
+      {Object.keys(VaultLiquidityMiningMap).map((option) => (
+        <StakingPool key={option} vaultOption={option as VaultOptions} />
       ))}
     </StakingPoolsContainer>
   );
