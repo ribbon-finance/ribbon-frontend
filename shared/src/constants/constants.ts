@@ -8,11 +8,11 @@ export const NETWORK_NAMES: Record<number, string> = {
 };
 
 export const FullVaultList = [
+  "ryvUSDC-ETH-P-THETA",
   "rETH-THETA",
   "rBTC-THETA",
   "rUSDC-ETH-P-THETA",
   "rUSDC-BTC-P-THETA",
-  "ryvUSDC-ETH-P-THETA",
 ] as const;
 export type VaultOptions = typeof FullVaultList[number];
 const ProdExcludeVault: VaultOptions[] = [
@@ -98,8 +98,6 @@ export const VaultLiquidityMiningMap: Partial<
       "rBTC-THETA": deployment.mainnet.RibbonWBTCCoveredCallStakingReward,
       "rETH-THETA": deployment.mainnet.RibbonETHCoveredCallStakingReward,
     };
-
-export const LiquidityMiningPoolOrder: VaultOptions[] = [...VaultList];
 
 export const isPutVault = (vault: VaultOptions): boolean =>
   PutThetaVault.includes(vault);
