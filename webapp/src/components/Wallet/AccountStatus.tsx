@@ -32,6 +32,7 @@ import ActionModal from "../ActionModal/ActionModal";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import { VaultOptions } from "shared/lib/constants/constants";
+import { getVaultColor } from "shared/lib/utils/vault";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -401,7 +402,12 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
           {renderButtonContent()}
         </WalletButton>
         {vaultOption && (
-          <InvestButton onClick={handleInvestButtonClick}>Invest</InvestButton>
+          <InvestButton
+            onClick={handleInvestButtonClick}
+            color={vaultOption ? getVaultColor(vaultOption) : undefined}
+          >
+            Invest
+          </InvestButton>
         )}
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>
           {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
