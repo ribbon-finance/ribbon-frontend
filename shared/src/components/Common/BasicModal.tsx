@@ -7,9 +7,10 @@ import theme from "../../designSystem/theme";
 import colors from "../../designSystem/colors";
 import MenuButton from "./MenuButton";
 
-const StyledModal = styled(BaseModal)<{ height: number }>`
+const StyledModal = styled(BaseModal)<{ height: number; maxWidth: number }>`
   .modal-dialog {
-    max-width: 343px;
+    width: 95vw;
+    max-width: ${(props) => props.maxWidth}px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -76,6 +77,7 @@ const ModalHeaderBackground = styled.div`
 interface BasicModalProps {
   show: boolean;
   height: number;
+  maxWidth?: number;
   onClose: () => void;
   closeButton?: boolean;
   backButton?: {
@@ -89,6 +91,7 @@ interface BasicModalProps {
 const BasicModal: React.FC<BasicModalProps> = ({
   show,
   height,
+  maxWidth = 343,
   onClose,
   closeButton = true,
   backButton,
@@ -96,7 +99,14 @@ const BasicModal: React.FC<BasicModalProps> = ({
   animationProps = {},
   headerBackground = false,
 }) => (
-  <StyledModal show={show} centered height={height} onHide={onClose} backdrop>
+  <StyledModal
+    show={show}
+    centered
+    height={height}
+    maxWidth={maxWidth}
+    onHide={onClose}
+    backdrop
+  >
     <BaseModalHeader>
       {/* Back button */}
       {backButton && (
