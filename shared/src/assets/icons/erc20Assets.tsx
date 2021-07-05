@@ -157,7 +157,9 @@ const SideYearnLogo = styled(YearnLogo)<{ width: number; height: number }>`
     ${colors.border};
 `;
 
-export const YVUSDcLogo: React.FC<SVGProps> = (props) => {
+export const YVUSDcLogo: React.FC<
+  SVGProps & { markerConfig?: { height: number; width: number } }
+> = ({ markerConfig, ...props }) => {
   const ref = useRef<HTMLDivElement>(null);
   const { width, height } = useElementSize(ref);
   const yearnDimension = Math.min(width, height) * 0.35;
@@ -165,7 +167,10 @@ export const YVUSDcLogo: React.FC<SVGProps> = (props) => {
   return (
     <YVUSDcLogoContainer ref={ref}>
       <USDCLogo {...props} />
-      <SideYearnLogo width={yearnDimension} height={yearnDimension} />
+      <SideYearnLogo
+        width={markerConfig ? markerConfig.height : yearnDimension}
+        height={markerConfig ? markerConfig.width : yearnDimension}
+      />
     </YVUSDcLogoContainer>
   );
 };

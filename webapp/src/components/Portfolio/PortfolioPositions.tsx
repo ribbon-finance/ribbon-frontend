@@ -229,6 +229,8 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
     switch (displayAsset) {
       case "WETH":
         return <Logo height="70%" />;
+      case "yvUSDC":
+        return <Logo markerConfig={{ height: 16, width: 16 }} />;
       default:
         return <Logo />;
     }
