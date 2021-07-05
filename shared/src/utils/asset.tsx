@@ -77,7 +77,12 @@ export const getAssetLogo: (
       { backgroundColor?: string },
       never
     >
-  | React.FC<React.SVGAttributes<SVGElement>> = (asset) => {
+  | React.FC<React.SVGAttributes<SVGElement>>
+  | React.FC<
+      React.SVGAttributes<SVGElement> & {
+        markerConfig?: { height: number; width: number };
+      }
+    > = (asset) => {
   switch (asset) {
     case "USDC":
       return ColoredUSDCLogo;

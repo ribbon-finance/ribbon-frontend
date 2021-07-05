@@ -126,8 +126,9 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
   }, []);
 
   const logo = useMemo(() => {
-    switch (asset) {
+    switch (displayAsset) {
       case "USDC":
+      case "yvUSDC":
         return (
           <Logo
             height="208"
@@ -138,7 +139,7 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
       default:
         return <Logo height="208" width="auto" />;
     }
-  }, [asset, Logo]);
+  }, [displayAsset, Logo]);
 
   const body = useMemo(() => {
     switch (mode) {

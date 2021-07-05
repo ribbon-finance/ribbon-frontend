@@ -7,12 +7,14 @@ import { Container } from "react-bootstrap";
 
 import sizes from "../../designSystem/sizes";
 import colors from "../../designSystem/colors";
+import theme from "../../designSystem/theme";
 
 const ColorColumn = styled(Col)<{
   activeColor: string;
 }>`
   height: 640px;
   transition: background-color 200ms ease-out, box-shadow 200ms ease-out;
+  border-radius: 0px 0px ${theme.border.radius} ${theme.border.radius};
 
   &:hover {
     background-color: ${(p) => p.activeColor};
