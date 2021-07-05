@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Modal } from "react-bootstrap";
 import { useWeb3React } from "@web3-react/core";
 import styled from "styled-components";
 import { InjectedConnector } from "@web3-react/injected-connector";
@@ -8,8 +7,7 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import {
   BaseButton,
   BaseLink,
-  BaseModal,
-  BaseModalHeader,
+  BaseModalContentColumn,
   BaseText,
   Title,
 } from "shared/lib/designSystem";
@@ -27,11 +25,12 @@ import { ConnectorButtonProps, connectorType } from "./types";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import Indicator from "../Indicator/Indicator";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
+import BasicModal from "shared/lib/components/Common/BasicModal";
 
 const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
   background-color: ${colors.backgroundDarker};
-  margin-bottom: 16px;
   align-items: center;
+  width: 100%;
 
   &:hover {
     opacity: ${theme.hover.opacity};
@@ -74,8 +73,6 @@ const ConnectorButtonText = styled(Title)`
 `;
 
 const LearnMoreLink = styled(BaseLink)`
-  margin: 24px 0px;
-
   &:hover {
     opacity: ${theme.hover.opacity};
   }
@@ -202,23 +199,30 @@ const WalletConnectModal: React.FC = () => {
   );
 
   return (
-    <BaseModal show={show} onHide={onClose} centered>
-      <BaseModalHeader closeButton>
-        <Title>CONNECT WALLET</Title>
-      </BaseModalHeader>
-      <Modal.Body>
-        {renderConnectorButton("metamask", "METAMASK")}
-        {renderConnectorButton("walletConnect", "WALLET CONNECT")}
-        <LearnMoreLink
-          to="https://ethereum.org/en/wallets/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <LearnMoreText>Learn more about wallets</LearnMoreText>
-          <LearnMoreArrow>&#8594;</LearnMoreArrow>
-        </LearnMoreLink>
-      </Modal.Body>
-    </BaseModal>
+    <BasicModal show={show} onClose={onClose} height={354}>
+      <>
+        <BaseModalContentColumn marginTop={8}>
+          <Title>CONNECT WALLET</Title>
+        </BaseModalContentColumn>
+        <BaseModalContentColumn>
+          {renderConnectorButton("metamask", "METAMASK")}
+        </BaseModalContentColumn>
+        <BaseModalContentColumn marginTop={16}>
+          {renderConnectorButton("walletConnect", "WALLET CONNECT")}
+        </BaseModalContentColumn>
+        <BaseModalContentColumn marginTop={16}>
+          <LearnMoreLink
+            to="https://ethereum.org/en/wallets/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-100"
+          >
+            <LearnMoreText>Learn more about wallets</LearnMoreText>
+            <LearnMoreArrow>&#8594;</LearnMoreArrow>
+          </LearnMoreLink>
+        </BaseModalContentColumn>
+      </>
+    </BasicModal>
   );
 };
 
