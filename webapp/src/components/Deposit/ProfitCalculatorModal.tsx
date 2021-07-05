@@ -242,7 +242,7 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={8}>
           {chartHovering ? (
-            <HoverLabel>Click to update price field above</HoverLabel>
+            <HoverLabel>Tap to update price field above</HoverLabel>
           ) : (
             <StrikeLabel>
               STRIKE PRICE:{" "}

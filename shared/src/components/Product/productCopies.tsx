@@ -253,7 +253,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         strategy that sells ETH{" "}
         <TooltipExplanation
           title="PUT OPTION"
-          explanation="A put option is a contract giving the owner the right, but not the obligation, to sell–or sell short–a specified amount of an underlying security at a pre-determined price within a specified time frame. This pre-determined price that buyer of the put option can sell at is called the strike price."
+          explanation="A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
           learnMoreURL="https://www.investopedia.com/terms/p/putoption.asp"
           renderContent={({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -301,10 +301,20 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         income earned from selling options to mint new options, effectively
         compounding the yields for depositors over time.
         <p />
-        The vault has a manager who selects the strike price for the put options
-        minted by the vault. The manager is responsible for making the best
-        tradeoff between yield versus the risk of the put options getting
-        exercised.
+        The vault has a manager who selects the{" "}
+        <TooltipExplanation
+          title="STRIKE PRICE"
+          explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
+          learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              strike price
+            </HighlighText>
+          )}
+        />{" "}
+        for the put options minted by the vault. The manager is responsible for
+        making the best tradeoff between yield versus the risk of the put
+        options getting exercised.
       </>
     ),
     vaultRisk: (
@@ -400,10 +410,20 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         income earned from selling options to mint new options, effectively
         compounding the yields for depositors over time.
         <p />
-        The vault has a manager who selects the strike price for the put options
-        minted by the vault. The manager is responsible for making the best
-        tradeoff between yield versus the risk of the put options getting
-        exercised.
+        The vault has a manager who selects the{" "}
+        <TooltipExplanation
+          title="STRIKE PRICE"
+          explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
+          learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              strike price
+            </HighlighText>
+          )}
+        />{" "}
+        for the put options minted by the vault. The manager is responsible for
+        making the best tradeoff between yield versus the risk of the put
+        options getting exercised.
       </>
     ),
     vaultRisk: (
@@ -447,34 +467,47 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     tags: ["PUT-SELLING"],
     strategy: (
       <>
-        This vault earns yield on its yvUSDC deposits by running an automated
-        strategy that sells ETH{" "}
+        This vault earns yield on its USDC deposits by running an automated
+        strategy that deposits USDC into the Yearn USDC{" "}
+        <TooltipExplanation
+          title="YVAULT"
+          explanation="yVaults are Yearn vaults that accept customer deposits and then route them through strategies which seek out the highest yield available in DeFi."
+          learnMoreURL="https://docs.yearn.finance/yearn-finance/yvaults/overview#what-are-yvaults"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              yVault
+            </HighlighText>
+          )}
+        />{" "}
+        and sells ETH{" "}
         <TooltipExplanation
           title="PUT OPTION"
-          explanation="A put option is a contract giving the owner the right, but not the obligation, to sell–or sell short–a specified amount of an underlying security at a pre-determined price within a specified time frame. This pre-determined price that buyer of the put option can sell at is called the strike price."
+          explanation="A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
           learnMoreURL="https://www.investopedia.com/terms/p/putoption.asp"
           renderContent={({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
               put options
             </HighlighText>
           )}
-        />
-        . The idea is to profit when the asset goes up in price.
-        <p />
-        Put simply, the vault{" "}
+        />{" "}
+        that are collaterlised by Yearn{" "}
         <TooltipExplanation
-          title="MINTING"
-          explanation="The vault mints, or creates, an option by depositing collateral into an Opyn vault resulting in the issuance of an oToken that represents the option contract."
-          learnMoreURL="https://www.investopedia.com/terms/m/mint.asp"
+          title="YVUSDC"
+          explanation="yvUSDC is the deposit token that represents a user's share of the USDC yVault."
+          learnMoreURL="https://docs.yearn.finance/yearn-finance/yvaults/vault-tokens"
           renderContent={({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
-              mints
+              yvUSDC
             </HighlighText>
           )}
         />{" "}
+        deposit tokens.
+        <p />
+        On a weekly basis, the vault deposits USDC into the Yearn USDC yVault,
+        uses the yvUSDC deposit token as collateral to mint{" "}
         <TooltipExplanation
           title="OUT-OF-THE-MONEY"
-          explanation="An ETH put option is out-of-the-money (OTM) if the strike price is below the market price of ETH."
+          explanation="A ETH put option is out-of-the-money (OTM) if the strike price is below the market price of ETH."
           learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
           renderContent={({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -482,9 +515,19 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
             </HighlighText>
           )}
         />{" "}
-        ETH put options on Opyn on a weekly basis and sells these options to
-        market makers for a fee (the market price of the option, also known as
-        the{" "}
+        ETH put options on{" "}
+        <TooltipExplanation
+          title="Opyn"
+          explanation="Opyn is a DeFi options protocol."
+          learnMoreURL="https://www.opyn.co/"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              Opyn
+            </HighlighText>
+          )}
+        />{" "}
+        and then sells these options to market makers for a fee (the market
+        price of the option, also known as the{" "}
         <TooltipExplanation
           title="OPTION PREMIUM"
           explanation="The option premium is the current market price of an option contract."
@@ -499,10 +542,20 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         income earned from selling options to mint new options, effectively
         compounding the yields for depositors over time.
         <p />
-        The vault has a manager who selects the strike price for the put options
-        minted by the vault. The manager is responsible for making the best
-        tradeoff between yield versus the risk of the put options getting
-        exercised.
+        The vault has a manager who selects the{" "}
+        <TooltipExplanation
+          title="STRIKE PRICE"
+          explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
+          learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              strike price
+            </HighlighText>
+          )}
+        />{" "}
+        for the call options minted by the vault. The manager is responsible for
+        making the best tradeoff between yield versus the risk of the put
+        options getting exercised.
       </>
     ),
     vaultRisk: (
