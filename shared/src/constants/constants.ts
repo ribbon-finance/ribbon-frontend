@@ -1,11 +1,33 @@
 import { Assets } from "../store/types";
-import { isDevelopment } from "../utils/env";
+import { isDevelopment, isProduction } from "../utils/env";
 import deployment from "./deployments.json";
 
 export const NETWORK_NAMES: Record<number, string> = {
   1: "mainnet",
   42: "kovan",
 };
+
+export const FullVaultList = [
+  "ryvUSDC-ETH-P-THETA",
+  "rETH-THETA",
+  "rBTC-THETA",
+  "rUSDC-ETH-P-THETA",
+  "rUSDC-BTC-P-THETA",
+] as const;
+export type VaultOptions = typeof FullVaultList[number];
+const ProdExcludeVault: VaultOptions[] = [
+  "rUSDC-BTC-P-THETA",
+  "ryvUSDC-ETH-P-THETA",
+];
+const PutThetaVault: VaultOptions[] = [
+  "rUSDC-BTC-P-THETA",
+  "rUSDC-ETH-P-THETA",
+  "ryvUSDC-ETH-P-THETA",
+];
+// @ts-ignore
+export const VaultList: VaultOptions[] = !isProduction()
+  ? FullVaultList
+  : FullVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
 
 export const GAS_LIMITS: {
   [vault in VaultOptions]: { deposit: number; withdraw: number };
@@ -25,6 +47,10 @@ export const GAS_LIMITS: {
   "rUSDC-ETH-P-THETA": {
     deposit: 120000,
     withdraw: 120000,
+  },
+  "ryvUSDC-ETH-P-THETA": {
+    deposit: 210000,
+    withdraw: 210000,
   },
 };
 
@@ -51,9 +77,16 @@ const getETHPutThetaVaultId = () =>
     ? deployment.kovan.RibbonETHPut
     : deployment.mainnet.RibbonETHPut;
 
-export const VaultLiquidityMiningMap: {
-  [vault in VaultOptions]: string;
-} = isDevelopment()
+const getYearnETHPutThetaVaultId = () =>
+  isDevelopment()
+    ? deployment.kovan.RibbonYearnETHPut
+    : deployment.mainnet.RibbonYearnETHPut;
+
+export const VaultLiquidityMiningMap: Partial<
+  {
+    [vault in VaultOptions]: string;
+  }
+> = isDevelopment()
   ? {
       "rUSDC-ETH-P-THETA": deployment.kovan.RibbonETHPutStakingReward,
       "rUSDC-BTC-P-THETA": deployment.kovan.RibbonWBTCPutStakingReward,
@@ -62,29 +95,9 @@ export const VaultLiquidityMiningMap: {
     }
   : {
       "rUSDC-ETH-P-THETA": deployment.mainnet.RibbonETHPutStakingReward,
-      "rUSDC-BTC-P-THETA": "",
       "rBTC-THETA": deployment.mainnet.RibbonWBTCCoveredCallStakingReward,
       "rETH-THETA": deployment.mainnet.RibbonETHCoveredCallStakingReward,
     };
-
-export const FullVaultList = [
-  "rETH-THETA",
-  "rBTC-THETA",
-  "rUSDC-ETH-P-THETA",
-  "rUSDC-BTC-P-THETA",
-] as const;
-export type VaultOptions = typeof FullVaultList[number];
-const ProdExcludeVault: VaultOptions[] = ["rUSDC-BTC-P-THETA"];
-const PutThetaVault: VaultOptions[] = [
-  "rUSDC-BTC-P-THETA",
-  "rUSDC-ETH-P-THETA",
-];
-// @ts-ignore
-export const VaultList: VaultOptions[] = isDevelopment()
-  ? FullVaultList
-  : FullVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
-
-export const LiquidityMiningPoolOrder: VaultOptions[] = [...VaultList];
 
 export const isPutVault = (vault: VaultOptions): boolean =>
   PutThetaVault.includes(vault);
@@ -94,6 +107,7 @@ export const VaultAddressMap: { [vault in VaultOptions]: () => string } = {
   "rUSDC-BTC-P-THETA": getWBTCPutThetaVaultId,
   "rETH-THETA": getETHThetaVaultId,
   "rBTC-THETA": getWBTCThetaVaultId,
+  "ryvUSDC-ETH-P-THETA": getYearnETHPutThetaVaultId,
 };
 
 export const VaultNamesList = [
@@ -101,6 +115,7 @@ export const VaultNamesList = [
   "T-USDC-P-WBTC",
   "T-ETH-C",
   "T-WBTC-C",
+  "T-yUSDC-P-ETH",
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
@@ -108,6 +123,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-USDC-P-WBTC": "rUSDC-BTC-P-THETA",
   "T-ETH-C": "rETH-THETA",
   "T-WBTC-C": "rBTC-THETA",
+  "T-yUSDC-P-ETH": "ryvUSDC-ETH-P-THETA",
 };
 
 export const getEtherscanURI = () =>
@@ -117,6 +133,7 @@ export const getAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
     case "rUSDC-ETH-P-THETA":
     case "rUSDC-BTC-P-THETA":
+    case "ryvUSDC-ETH-P-THETA":
       return "USDC";
     case "rETH-THETA":
       return "WETH";
@@ -132,7 +149,22 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
       return "WBTC";
     case "rETH-THETA":
     case "rUSDC-ETH-P-THETA":
+    case "ryvUSDC-ETH-P-THETA":
       return "WETH";
+  }
+};
+
+export const getDisplayAssets = (vault: VaultOptions): Assets => {
+  switch (vault) {
+    case "rUSDC-ETH-P-THETA":
+    case "rUSDC-BTC-P-THETA":
+      return "USDC";
+    case "rETH-THETA":
+      return "WETH";
+    case "rBTC-THETA":
+      return "WBTC";
+    case "ryvUSDC-ETH-P-THETA":
+      return "yvUSDC";
   }
 };
 
@@ -141,6 +173,7 @@ export const VaultWithdrawalFee: { [vault in VaultOptions]: string } = {
   "rUSDC-ETH-P-THETA": "2",
   "rETH-THETA": "0.5",
   "rBTC-THETA": "0.5",
+  "ryvUSDC-ETH-P-THETA": "1.0",
 };
 
 export const getAirtableName = (vault: VaultOptions): string => {
@@ -153,6 +186,8 @@ export const getAirtableName = (vault: VaultOptions): string => {
       return "T-ETH-C";
     case "rBTC-THETA":
       return "T-WBTC-C";
+    case "ryvUSDC-ETH-P-THETA":
+      return "T-YUSDC-P-ETH";
   }
 };
 

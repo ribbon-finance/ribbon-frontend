@@ -39,7 +39,7 @@ const fetchStakingPools = async (vaults: VaultOptions[]) => {
               ""
             )}: vaultLiquidityMiningPool(id:"${VaultLiquidityMiningMap[
               vault
-            ].toLowerCase()}") {
+            ]!.toLowerCase()}") {
               numDepositors
               totalSupply
               totalRewardClaimed

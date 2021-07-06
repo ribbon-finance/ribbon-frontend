@@ -15,7 +15,7 @@ import YourPosition from "../../components/ActionsForm/YourPosition";
 import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
 import {
-  getAssets,
+  getDisplayAssets,
   VaultList,
   VaultOptions,
 } from "shared/lib/constants/constants";
@@ -147,7 +147,7 @@ const HeroSection: React.FC<{
   const color = getVaultColor(vaultOption);
 
   const logo = useMemo(() => {
-    const asset = getAssets(vaultOption);
+    const asset = getDisplayAssets(vaultOption);
     const Logo = getAssetLogo(asset);
 
     switch (asset) {
@@ -156,6 +156,7 @@ const HeroSection: React.FC<{
       case "WBTC":
         return <Logo height="190%" style={{ marginTop: 40 }} />;
       case "USDC":
+      case "yvUSDC":
         return (
           <Logo
             height="180%"

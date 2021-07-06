@@ -1,6 +1,7 @@
 import React, { ReactNode, useCallback, useRef } from "react";
 import styled from "styled-components";
 import colors from "../../designSystem/colors";
+import theme from "../../designSystem/theme";
 
 export const Button = styled.button`
   font-family: VCR, sans-serif;

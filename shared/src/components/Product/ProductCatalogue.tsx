@@ -1,5 +1,11 @@
 import React, { useMemo, useState } from "react";
-import { getAssets, isPutVault, VaultList } from "../../constants/constants";
+import {
+  getAssets,
+  getDisplayAssets,
+  getOptionAssets,
+  isPutVault,
+  VaultList,
+} from "../../constants/constants";
 
 import sizes from "../../designSystem/sizes";
 import { useLatestAPYs } from "../../hooks/useAirtableData";
@@ -40,7 +46,12 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
       }
 
       // Filter for assets
-      if (filterAssets.length && !filterAssets.includes(getAssets(vault))) {
+      if (
+        filterAssets.length &&
+        !filterAssets.includes(getAssets(vault)) &&
+        !filterAssets.includes(getOptionAssets(vault)) &&
+        !filterAssets.includes(getDisplayAssets(vault))
+      ) {
         return false;
       }
 

@@ -91,7 +91,7 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
     : "Loading";
 
   const latestAPY = useLatestAPY(vaultOption);
-  const projectedAPY = latestAPY.res
+  const projectedAPY = latestAPY.fetched
     ? `+${latestAPY.res.toFixed(2)}%`
     : "Loading";
 

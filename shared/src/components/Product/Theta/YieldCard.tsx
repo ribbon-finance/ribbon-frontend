@@ -187,7 +187,14 @@ const YieldCard: React.FC<YieldCardProps> = ({
   onClick,
   vaultAccount,
 }) => {
-  const { status, deposits, vaultLimit, asset, decimals } = useVaultData(vault);
+  const {
+    status,
+    deposits,
+    vaultLimit,
+    asset,
+    displayAsset,
+    decimals,
+  } = useVaultData(vault);
   const isLoading = useMemo(() => status === "loading", [status]);
   const [mode, setMode] = useState<"info" | "yield">("info");
   const color = getVaultColor(vault);
@@ -206,7 +213,9 @@ const YieldCard: React.FC<YieldCardProps> = ({
     250,
     !latestAPY.fetched
   );
-  const perfStr = latestAPY.res ? `${latestAPY.res.toFixed(2)}%` : loadingText;
+  const perfStr = latestAPY.fetched
+    ? `${latestAPY.res.toFixed(2)}%`
+    : loadingText;
 
   const onSwapMode = useCallback((e) => {
     e.stopPropagation();
@@ -214,13 +223,16 @@ const YieldCard: React.FC<YieldCardProps> = ({
   }, []);
 
   const ProductInfoContent = () => {
-    const Logo = getAssetLogo(asset);
+    const Logo = getAssetLogo(displayAsset);
 
     let logo = <Logo />;
 
-    switch (asset) {
+    switch (displayAsset) {
       case "WETH":
         logo = <Logo height="70%" />;
+        break;
+      case "yvUSDC":
+        logo = <Logo markerConfig={{ height: 24, width: 24 }} />;
     }
 
     return (

@@ -83,26 +83,23 @@ const ProjectedAPYData = styled(Title)<{ color: string }>`
   color: ${(props) => props.color};
 `;
 
-const USDCBackground = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 208px;
-  height: 208px;
-  background: ${getAssetColor("USDC")}29;
-  border-radius: 104px;
-`;
-
 interface YieldFrameProps {
   vault: VaultOptions;
   onClick: () => void;
 }
 
 const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
-  const { status, deposits, vaultLimit, asset, decimals } = useVaultData(vault);
+  const {
+    status,
+    deposits,
+    vaultLimit,
+    asset,
+    displayAsset,
+    decimals,
+  } = useVaultData(vault);
   const isLoading = useMemo(() => status === "loading", [status]);
   const color = getVaultColor(vault);
-  const Logo = getAssetLogo(asset);
+  const Logo = getAssetLogo(displayAsset);
   const latestAPY = useLatestAPY(vault);
 
   const loadingText = useTextAnimation(
@@ -110,7 +107,9 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
     250,
     !latestAPY.fetched
   );
-  const perfStr = latestAPY.res ? `${latestAPY.res.toFixed(2)}%` : loadingText;
+  const perfStr = latestAPY.fetched
+    ? `${latestAPY.res.toFixed(2)}%`
+    : loadingText;
 
   const totalDepositStr = isLoading
     ? 0
@@ -127,17 +126,20 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
   }, []);
 
   const logo = useMemo(() => {
-    switch (asset) {
+    switch (displayAsset) {
       case "USDC":
+      case "yvUSDC":
         return (
-          <USDCBackground>
-            <Logo />
-          </USDCBackground>
+          <Logo
+            height="208"
+            width="auto"
+            backgroundColor={`${getAssetColor("USDC")}29`}
+          />
         );
       default:
         return <Logo height="208" width="auto" />;
     }
-  }, [asset, Logo]);
+  }, [displayAsset, Logo]);
 
   const body = useMemo(() => {
     switch (mode) {

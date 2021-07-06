@@ -13,7 +13,11 @@ import {
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { Waves } from "shared/lib/assets";
 import useStakingPool from "../../hooks/useStakingPool";
-import { VaultList } from "shared/lib/constants/constants";
+import {
+  VaultLiquidityMiningMap,
+  VaultList,
+  VaultOptions,
+} from "shared/lib/constants/constants";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { BigNumber } from "@ethersproject/bignumber";
 import { formatBigNumber } from "shared/lib/utils/math";
@@ -132,7 +136,13 @@ const LearnMoreText = styled(PrimaryText)`
 `;
 
 const StakingOverview = () => {
-  const { stakingPools, loading: stakingLoading } = useStakingPool(VaultList);
+  const miningPoolOptionList = useMemo(
+    () => Object.keys(VaultLiquidityMiningMap) as VaultOptions[],
+    []
+  );
+  const { stakingPools, loading: stakingLoading } = useStakingPool(
+    miningPoolOptionList
+  );
   const { data: tokenData, loading: tokenLoading } = useRBNToken();
 
   const loadingText = useTextAnimation(

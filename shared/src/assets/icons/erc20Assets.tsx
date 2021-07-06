@@ -1,4 +1,9 @@
-import React from "react";
+import React, { useRef } from "react";
+import styled from "styled-components";
+import colors from "../../designSystem/colors";
+import theme from "../../designSystem/theme";
+import useElementSize from "../../hooks/useElementSize";
+import { YearnLogo } from "./defiApp";
 
 type SVGProps = React.SVGAttributes<SVGElement>;
 
@@ -125,3 +130,47 @@ export const USDCLogo: React.FC<SVGProps> = (props) => (
     />
   </svg>
 );
+
+const YVUSDcLogoContainer = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  .background {
+    fill: #1c202a;
+  }
+
+  .content {
+    fill: #006ae3;
+  }
+`;
+
+const SideYearnLogo = styled(YearnLogo)<{ width: number; height: number }>`
+  position: absolute;
+  bottom: 0px;
+  right: calc(-${(props) => props.width}px * 0.2);
+  border-radius: 100px;
+  border: ${(props) => props.width * 0.03}px ${theme.border.style}
+    ${colors.border};
+`;
+
+export const YVUSDcLogo: React.FC<
+  SVGProps & { markerConfig?: { height: number; width: number } }
+> = ({ markerConfig, ...props }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const { width, height } = useElementSize(ref);
+  const yearnDimension = Math.min(width, height) * 0.35;
+
+  return (
+    <YVUSDcLogoContainer ref={ref}>
+      <USDCLogo {...props} />
+      <SideYearnLogo
+        width={markerConfig ? markerConfig.height : yearnDimension}
+        height={markerConfig ? markerConfig.width : yearnDimension}
+      />
+    </YVUSDcLogoContainer>
+  );
+};

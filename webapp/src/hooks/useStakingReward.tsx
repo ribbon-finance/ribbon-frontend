@@ -19,7 +19,7 @@ export const getStakingReward = (
   const provider = useSigner ? library.getSigner() : library;
 
   return RibbonStakingRewards__factory.connect(
-    VaultLiquidityMiningMap[vaultOption],
+    VaultLiquidityMiningMap[vaultOption]!,
     provider
   );
 };

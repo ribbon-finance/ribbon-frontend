@@ -18,6 +18,7 @@ import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
 import {
   getAssets,
+  getDisplayAssets,
   VaultList,
   VaultNameOptionMap,
 } from "shared/lib/constants/constants";
@@ -222,15 +223,18 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   }, [vaultAccount, decimals]);
 
   const logo = useMemo(() => {
-    const Logo = getAssetLogo(asset);
+    const displayAsset = getDisplayAssets(vaultAccount.vault.symbol);
+    const Logo = getAssetLogo(displayAsset);
 
-    switch (asset) {
+    switch (displayAsset) {
       case "WETH":
         return <Logo height="70%" />;
+      case "yvUSDC":
+        return <Logo markerConfig={{ height: 16, width: 16 }} />;
       default:
         return <Logo />;
     }
-  }, [asset]);
+  }, [vaultAccount]);
 
   return (
     <PositionLink to={`/theta-vault/${vaultName}`}>

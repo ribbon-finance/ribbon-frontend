@@ -2,13 +2,14 @@ import { BigNumber } from "ethers";
 import { VaultOptions } from "../constants/constants";
 import { DefiScoreProtocol, DefiScoreToken } from "../models/defiScore";
 
-export const AssetsList = ["WETH", "WBTC", "USDC"] as const;
+export const AssetsList = ["WETH", "WBTC", "USDC", "yvUSDC"] as const;
 export type Assets = typeof AssetsList[number];
 export interface UnconnectedVaultData {
   deposits: BigNumber;
   vaultLimit: BigNumber;
   decimals: number;
   asset: Assets;
+  displayAsset: Assets;
 }
 
 export interface UserSpecificData {

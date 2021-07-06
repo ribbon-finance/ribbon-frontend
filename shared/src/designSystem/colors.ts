@@ -37,6 +37,7 @@ const colors = {
     WETH: "#627EEA",
     WBTC: "#E39652",
     USDC: "#3E73C4",
+    yvUSDC: "#3E73C4",
   },
 };
 

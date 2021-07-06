@@ -6,8 +6,8 @@ import { useWeb3React } from "@web3-react/core";
 import { SecondaryText, Subtitle, Title } from "shared/lib/designSystem";
 import {
   getAssets,
+  getDisplayAssets,
   VaultLiquidityMiningMap,
-  LiquidityMiningPoolOrder,
   VaultOptions,
 } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
@@ -172,7 +172,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   const decimals = getAssetDecimals(getAssets(vaultOption));
   const tokenAllowance = useTokenAllowance(
     vaultOption,
-    VaultLiquidityMiningMap[vaultOption]
+    VaultLiquidityMiningMap[vaultOption]!
   );
   const [pendingTransactions] = usePendingTransactions();
 
@@ -242,7 +242,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   );
 
   const logo = useMemo(() => {
-    const asset = getAssets(vaultOption);
+    const asset = getDisplayAssets(vaultOption);
     const Logo = getAssetLogo(asset);
 
     switch (asset) {
@@ -475,8 +475,8 @@ const StakingPools = () => {
   return (
     <StakingPoolsContainer>
       <SectionHeader className="mb-4 w-100">STAKING POOLS</SectionHeader>
-      {LiquidityMiningPoolOrder.map((option) => (
-        <StakingPool key={option} vaultOption={option} />
+      {Object.keys(VaultLiquidityMiningMap).map((option) => (
+        <StakingPool key={option} vaultOption={option as VaultOptions} />
       ))}
     </StakingPoolsContainer>
   );
