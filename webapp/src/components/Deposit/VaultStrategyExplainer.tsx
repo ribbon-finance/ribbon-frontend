@@ -391,7 +391,12 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
 
   return (
     <ExplainerContainer ref={containerRef} color={color}>
-      <VisualSection height={(sectionWidth / 23) * 8} color={color}>
+      <VisualSection
+        height={
+          width > sizes.lg ? (sectionWidth / 23) * 8 : (sectionWidth / 15) * 7
+        }
+        color={color}
+      >
         <AnimatePresence initial={false} exitBeforeEnter>
           <motion.div
             key={step}

@@ -8,18 +8,23 @@ import colors from "shared/lib/designSystem/colors";
 import { Assets } from "shared/lib/store/types";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import { MoneyLogo } from "../../../assets/icons/deposits/tradeOffer";
+import sizes from "shared/lib/designSystem/sizes";
 
 const TargetContainer = styled.div`
   display: flex;
   height: 75%;
   width: 80%;
+
+  @media (max-width: ${sizes.lg}px) {
+    width: 90%;
+  }
 `;
 
 const TargetCircle = styled.div<{ color: string; dimension: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 100px;
+  border-radius: ${(props) => props.dimension / 2}px;
   height: ${(props) => props.dimension}px;
   width: ${(props) => props.dimension}px;
   background: ${(props) => props.color}14;
@@ -56,7 +61,11 @@ const TradeTunnelContainer = styled.div<{
     ${(props) => props.color}14 47.92%,
     transparent 100%
   );
-  border-radius: 40px 0 0 40px;
+  border-radius: 100px 0 0 100px;
+
+  @media (max-width: ${sizes.lg}px) {
+    width: 40%;
+  }
 
   ${(props) => {
     switch (props.variant) {
@@ -64,12 +73,20 @@ const TradeTunnelContainer = styled.div<{
         return `
           top: calc(20% / 3);
           left: calc(50% * 17 / 30);
+
+          @media (max-width: ${sizes.lg}px) {
+            left: 31%;
+          }
         `;
       case "to":
         return `
           bottom: calc(20% / 3);
           right: calc(50% * 17 / 30);
           transform: rotate(-180deg);
+
+          @media (max-width: ${sizes.lg}px) {
+            right: 31%;
+          }
         `;
     }
   }}
@@ -130,7 +147,7 @@ const TradeTokenContainer = styled.div<{
   background: ${colors.background};
   height: ${(props) => props.dimension}px;
   width: ${(props) => props.dimension}px;
-  border-radius: 100px;
+  border-radius: ${(props) => props.dimension / 2}px;
   top: ${(props) => props.containerMargin}px;
   animation: 5.6s
     ${(props) =>
@@ -147,7 +164,7 @@ const TradeTokenContainer = styled.div<{
     width: 100%;
     height: 100%;
     background: ${(props) => `${props.color}14`};
-    border-radius: 100px;
+    border-radius: ${(props) => props.dimension / 2}px;
   }
 `;
 
@@ -156,7 +173,7 @@ const OTokenLogo = styled.div<{ dimension: number; color: string }>`
   height: ${(props) => props.dimension}px;
   border: ${(props) => Math.ceil(props.dimension / 12)}px solid
     ${(props) => props.color};
-  border-radius: 100px;
+  border-radius: ${(props) => props.dimension / 2}px;
 `;
 
 type OfferTokenType = "oToken" | "money" | Assets;
