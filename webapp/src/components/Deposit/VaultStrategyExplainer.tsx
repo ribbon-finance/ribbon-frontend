@@ -26,6 +26,7 @@ import TradeOffer from "./ExplainerGraphic.tsx/TradeOffer";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
+import VaultDeposit from "./ExplainerGraphic.tsx/VaultDeposit";
 
 const ExplainerContainer = styled.div<{ color: string }>`
   display: flex;
@@ -118,6 +119,8 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
   const renderGraphic = useCallback(
     (s: ExplanationStep) => {
       switch (s) {
+        case "deposit":
+          return <VaultDeposit depositAsset={asset} />;
         case "strikeSelection":
           return <StrikeSelection color={color} />;
         case "mintOption":
@@ -141,7 +144,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           );
       }
     },
-    [color, vaultOption]
+    [asset, color, vaultOption]
   );
 
   const renderTitle = useCallback(

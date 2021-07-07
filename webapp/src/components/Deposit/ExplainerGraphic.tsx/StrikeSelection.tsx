@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import colors from "shared/lib/designSystem/colors";
 import useElementSize from "shared/lib/hooks/useElementSize";
-import { ChartWaves } from "../../../assets/icons/deposits/strikeSelection";
+import { ChartWaves } from "../../../assets/icons/vaultExplainer/strikeSelection";
 
 const DottedLine = styled.div<{ top: number; active: boolean; color: string }>`
   position: absolute;

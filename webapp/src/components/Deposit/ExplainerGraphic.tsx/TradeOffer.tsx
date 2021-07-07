@@ -7,7 +7,7 @@ import Logo from "shared/lib/assets/icons/logo";
 import colors from "shared/lib/designSystem/colors";
 import { Assets } from "shared/lib/store/types";
 import { getAssetLogo } from "shared/lib/utils/asset";
-import { MoneyLogo } from "../../../assets/icons/deposits/tradeOffer";
+import { MoneyLogo } from "../../../assets/icons/vaultExplainer/tradeOffer";
 import sizes from "shared/lib/designSystem/sizes";
 
 const TargetContainer = styled.div`
