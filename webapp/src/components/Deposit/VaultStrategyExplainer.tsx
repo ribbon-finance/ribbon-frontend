@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
+import { AnimatePresence, motion } from "framer-motion";
 
 import {
   getAssets,
@@ -13,7 +14,6 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import SegmentPagination from "../Common/SegmentPagination";
-import { AnimatePresence, motion } from "framer-motion";
 import StrikeSelection from "./ExplainerGraphic.tsx/StrikeSelection";
 import TradeOffer from "./ExplainerGraphic.tsx/TradeOffer";
 

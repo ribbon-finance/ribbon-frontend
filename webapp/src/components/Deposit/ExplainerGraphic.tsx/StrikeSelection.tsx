@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
-import colors from "shared/lib/designSystem/colors";
-import useElementSize from "shared/lib/hooks/useElementSize";
 import styled from "styled-components";
 
+import colors from "shared/lib/designSystem/colors";
+import useElementSize from "shared/lib/hooks/useElementSize";
 import { ChartWaves } from "../../../assets/icons/deposits/strikeSelection";
 
 const DottedLine = styled.div<{ top: number; active: boolean; color: string }>`
