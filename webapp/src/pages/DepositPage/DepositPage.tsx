@@ -163,13 +163,12 @@ const HeroSection: React.FC<{
             style={{
               marginTop: 40,
             }}
-            backgroundColor={`${color}29`}
           />
         );
       default:
         return <Logo />;
     }
-  }, [color, vaultOption]);
+  }, [vaultOption]);
 
   return (
     <HeroContainer className="position-relative" color={color}>
