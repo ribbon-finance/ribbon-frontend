@@ -191,6 +191,19 @@ const TradeTunnel: React.FC<TradeTunnelProps> = ({
         );
       default:
         const AssetLogo = getAssetLogo(tradeToken);
+
+        if (tradeToken === "yvUSDC") {
+          return (
+            <AssetLogo
+              height="80%"
+              width="80%"
+              markerConfig={{
+                height: ((height * 5) / 6) * 0.35,
+                width: ((height * 5) / 6) * 0.35,
+              }}
+            />
+          );
+        }
         return <AssetLogo height="80%" width="80%" />;
     }
   }, [color, height, tradeToken]);

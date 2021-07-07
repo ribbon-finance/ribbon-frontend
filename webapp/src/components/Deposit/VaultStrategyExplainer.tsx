@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -18,6 +24,8 @@ import SegmentPagination from "../Common/SegmentPagination";
 import StrikeSelection from "./ExplainerGraphic.tsx/StrikeSelection";
 import TradeOffer from "./ExplainerGraphic.tsx/TradeOffer";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
+import sizes from "shared/lib/designSystem/sizes";
 
 const ExplainerContainer = styled.div<{ color: string }>`
   display: flex;
@@ -83,11 +91,29 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
   vaultOption,
 }) => {
   const containerRef = useRef(null);
+  const { width } = useScreenSize();
   const { width: sectionWidth } = useElementSize(containerRef);
   const color = getVaultColor(vaultOption);
   const asset = getAssets(vaultOption);
 
   const [step, setStep] = useState<ExplanationStep>("deposit");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setStep((step) => {
+        const currentNum = parseInt(
+          Object.keys(ExplanationStepNum).find(
+            (key) => ExplanationStepNum[parseInt(key)] === step
+          )!
+        );
+        return ExplanationStepNum[
+          (currentNum % Object.keys(ExplanationStepNum).length) + 1
+        ];
+      });
+    }, 8000);
+
+    return () => clearTimeout(timer);
+  }, [step]);
 
   const renderGraphic = useCallback(
     (s: ExplanationStep) => {
@@ -95,11 +121,12 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
         case "strikeSelection":
           return <StrikeSelection color={color} />;
         case "mintOption":
+          const collateralAsset = getDisplayAssets(vaultOption);
           return (
             <TradeOffer
               color={color}
               tradeTarget="Opyn Vault"
-              offerToken={asset}
+              offerToken={collateralAsset}
               receiveToken="oToken"
             />
           );
@@ -114,7 +141,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           );
       }
     },
-    [asset, color]
+    [color, vaultOption]
   );
 
   const renderTitle = useCallback(
@@ -312,7 +339,10 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
 
   const infoSection = useMemo(
     () => (
-      <ExplainerSection height={200} className="d-flex flex-column p-3">
+      <ExplainerSection
+        height={width > sizes.lg ? 220 : 280}
+        className="d-flex flex-column p-3"
+      >
         <AnimatePresence initial={false} exitBeforeEnter>
           <motion.div
             key={step}
@@ -356,7 +386,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
         />
       </ExplainerSection>
     ),
-    [color, step, renderTitle, renderDescription]
+    [color, width, step, renderTitle, renderDescription]
   );
 
   return (
