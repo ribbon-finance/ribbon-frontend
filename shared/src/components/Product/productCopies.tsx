@@ -517,7 +517,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         />{" "}
         ETH put options on{" "}
         <TooltipExplanation
-          title="Opyn"
+          title="OPYN"
           explanation="Opyn is a DeFi options protocol."
           learnMoreURL="https://www.opyn.co/"
           renderContent={({ ref, ...triggerHandler }) => (

@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import {
   getAssets,
+  getDisplayAssets,
   isPutVault,
   VaultOptions,
 } from "shared/lib/constants/constants";
@@ -16,6 +17,7 @@ import { getAssetDisplay } from "shared/lib/utils/asset";
 import SegmentPagination from "../Common/SegmentPagination";
 import StrikeSelection from "./ExplainerGraphic.tsx/StrikeSelection";
 import TradeOffer from "./ExplainerGraphic.tsx/TradeOffer";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 
 const ExplainerContainer = styled.div<{ color: string }>`
   display: flex;
@@ -41,6 +43,15 @@ const VisualSection = styled(ExplainerSection)<{ color: string }>`
 
 const InfoTitle = styled(Title)<{ color: string }>`
   color: ${(props) => props.color};
+`;
+
+const HighlighText = styled.span`
+  color: ${colors.primaryText};
+  cursor: help;
+
+  poin &:hover {
+    color: ${colors.primaryText}CC;
+  }
 `;
 
 type ExplanationStep =
@@ -138,23 +149,162 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
   const renderDescription = useCallback(
     (s: ExplanationStep) => {
       const assetUnit = getAssetDisplay(asset);
+      const collateralAsset = getDisplayAssets(vaultOption);
+      const collateralAssetUnit = getAssetDisplay(collateralAsset);
       const isPut = isPutVault(vaultOption);
       switch (s) {
         case "deposit":
-          return `The vault receives ${assetUnit} from depositors and invests 90% of these funds in its weekly strategy. The remaining 10% of funds is set aside so that depositors can withdraw their ${assetUnit} from the vault.`;
+          return (
+            <>
+              The vault receives {assetUnit} from depositors and invests 90% of
+              these funds in its weekly strategy. The remaining 10% of funds is
+              set aside so that depositors can withdraw their {assetUnit} from
+              the vault.
+            </>
+          );
         case "strikeSelection":
-          return `Before creating the ${assetUnit} ${
-            isPut ? "put" : "call"
-          } option, the vault manager must choose the strike price for the options. Currently the role of the vault manager is played by the Ribbon team.`;
+          return (
+            <>
+              Before creating the {assetUnit} {isPut ? "put" : "call"} option,
+              the vault manager must choose the{" "}
+              <TooltipExplanation
+                title="STRIKE PRICE"
+                explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
+                learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HighlighText ref={ref} {...triggerHandler}>
+                    strike price
+                  </HighlighText>
+                )}
+              />{" "}
+              for the options. Currently the role of the vault manager is played
+              by the Ribbon team.
+            </>
+          );
         case "mintOption":
+          return (
+            <>
+              Every Friday, the vault creates{" "}
+              <TooltipExplanation
+                title="EUROPEAN OPTIONS"
+                explanation="A European option is a version of an options contract that limits execution to its expiration date."
+                learnMoreURL="https://www.investopedia.com/terms/e/europeanoption.asp"
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HighlighText ref={ref} {...triggerHandler}>
+                    European
+                  </HighlighText>
+                )}
+              />{" "}
+              <TooltipExplanation
+                title={isPut ? "PUT OPTION" : "COVERED CALL"}
+                explanation={
+                  isPut
+                    ? "A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
+                    : "A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
+                }
+                learnMoreURL={
+                  isPut
+                    ? "https://www.investopedia.com/terms/p/putoption.asp"
+                    : "https://www.investopedia.com/terms/c/coveredcall.asp"
+                }
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HighlighText ref={ref} {...triggerHandler}>
+                    {assetUnit} {isPut ? "put" : "call"} options
+                  </HighlighText>
+                )}
+              />{" "}
+              by depositing {collateralAssetUnit} as collateral in an{" "}
+              <TooltipExplanation
+                title="OPYN"
+                explanation="Opyn is a DeFi options protocol."
+                learnMoreURL="https://www.opyn.co/"
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HighlighText ref={ref} {...triggerHandler}>
+                    Opyn
+                  </HighlighText>
+                )}
+              />{" "}
+              vault and setting a strike price (selected by the manager) and
+              expiry date (the following Friday). In return, the vault receives
+              oTokens from the Opyn vault which represent the {assetUnit}{" "}
+              {isPut ? "put" : "call"} options.
+            </>
+          );
         case "tradeOption":
+          return (
+            <>
+              The newly minted options are sold to{" "}
+              <TooltipExplanation
+                title="MARKET MAKER"
+                explanation="A market maker (MM) is a firm or individual who actively quotes two-sided markets in a security, providing bids and offers (known as asks) along with the market size of each."
+                learnMoreURL="https://www.investopedia.com/terms/m/marketmaker.asp"
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HighlighText ref={ref} {...triggerHandler}>
+                    market makers
+                  </HighlighText>
+                )}
+              />{" "}
+              for a fee (the market price of the option, also known as the{" "}
+              <TooltipExplanation
+                title="OPTION PREMIUM"
+                explanation="The option premium is the current market price of an option contract."
+                learnMoreURL="https://www.investopedia.com/terms/o/option-premium.asp"
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HighlighText ref={ref} {...triggerHandler}>
+                    option premium
+                  </HighlighText>
+                )}
+              />
+              ). The sale is done{" "}
+              <TooltipExplanation
+                title="OVER-THE-COUNTER (OTC)"
+                explanation="Over-the-counter (OTC) refers to the process of how securities are traded via a broker-dealer network as opposed to on a centralized exchange."
+                learnMoreURL="https://www.investopedia.com/terms/o/otc.asp"
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HighlighText ref={ref} {...triggerHandler}>
+                    OTC
+                  </HighlighText>
+                )}
+              />{" "}
+              via{" "}
+              <TooltipExplanation
+                title="AIRSWAP"
+                explanation="Airswap is a DeFi peer-to-peer trading protocol."
+                learnMoreURL="https://www.airswap.io/"
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HighlighText ref={ref} {...triggerHandler}>
+                    Airswap
+                  </HighlighText>
+                )}
+              />
+              .
+            </>
+          );
         case "expiryA":
         case "expiryB":
-          return "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non";
+          return (
+            <>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit ut
+              aliquam, purus sit amet luctus venenatis, lectus magna fringilla
+              urna, porttitor rhoncus dolor purus non
+            </>
+          );
         case "settlementA":
-          return `The ${assetUnit} used to collateralize the options in the Opyn vault is returned back to the Ribbon vault.`;
+          return (
+            <>
+              The {assetUnit} used to collateralize the options in the Opyn
+              vault is returned back to the Ribbon vault.
+            </>
+          );
         case "settlementB":
-          return `The options are cash-settled, meaning that for each options contract, market makers receive the difference between the between the price of ${assetUnit} at expiry and the strike price. The remaining ${assetUnit} left over is returned to the Ribbon vault.`;
+          return (
+            <>
+              The options are cash-settled, meaning that for each options
+              contract, market makers receive the difference between the between
+              the price of {assetUnit} at expiry and the strike price. The
+              remaining {assetUnit} left over is returned to the Ribbon vault.
+            </>
+          );
       }
     },
     [asset, vaultOption]
