@@ -50,6 +50,7 @@ const ColoredLogo = styled(Logo)<{ color: string }>`
 const TradeTunnelContainer = styled.div<{
   color: string;
   variant: "from" | "to";
+  oneSidedTrade: boolean;
 }>`
   position: absolute;
   display: flex;
@@ -68,10 +69,28 @@ const TradeTunnelContainer = styled.div<{
   }
 
   ${(props) => {
+    if (props.oneSidedTrade) {
+      return `
+        top: calc((100% - 40%) / 2);
+      `;
+    }
+
     switch (props.variant) {
       case "from":
         return `
           top: calc(20% / 3);
+        `;
+      case "to":
+        return `
+          bottom: calc(20% / 3);
+        `;
+    }
+  }}
+
+  ${(props) => {
+    switch (props.variant) {
+      case "from":
+        return `
           left: calc(50% * 17 / 30);
 
           @media (max-width: ${sizes.lg}px) {
@@ -80,12 +99,15 @@ const TradeTunnelContainer = styled.div<{
         `;
       case "to":
         return `
-          bottom: calc(20% / 3);
           right: calc(50% * 17 / 30);
           transform: rotate(-180deg);
 
           @media (max-width: ${sizes.lg}px) {
             right: 31%;
+          }
+
+          & .token {
+            transform: rotate(-180deg);
           }
         `;
     }
@@ -94,7 +116,6 @@ const TradeTunnelContainer = styled.div<{
 
 const tradeTokenKeyframe = (
   width: number,
-  itemDimension: number,
   containerMargin: number
 ) => keyframes`
   0% {
@@ -151,11 +172,7 @@ const TradeTokenContainer = styled.div<{
   top: ${(props) => props.containerMargin}px;
   animation: 5.6s
     ${(props) =>
-      tradeTokenKeyframe(
-        props.containerWidth,
-        props.dimension,
-        props.containerMargin
-      )}
+      tradeTokenKeyframe(props.containerWidth, props.containerMargin)}
     linear infinite;
 
   &:before {
@@ -182,12 +199,14 @@ interface TradeTunnelProps {
   color: string;
   variant: "from" | "to";
   tradeToken: OfferTokenType;
+  oneSidedTrade: boolean;
 }
 
 const TradeTunnel: React.FC<TradeTunnelProps> = ({
   color,
   variant,
   tradeToken,
+  oneSidedTrade,
 }) => {
   const ref = useRef(null);
   const { height, width } = useElementSize(ref);
@@ -226,13 +245,19 @@ const TradeTunnel: React.FC<TradeTunnelProps> = ({
   }, [color, height, tradeToken]);
 
   return (
-    <TradeTunnelContainer ref={ref} color={color} variant={variant}>
+    <TradeTunnelContainer
+      ref={ref}
+      color={color}
+      variant={variant}
+      oneSidedTrade={oneSidedTrade}
+    >
       <div className="d-flex w-100 h-100 position-relative">
         <TradeTokenContainer
           containerWidth={width}
           dimension={(height * 5) / 6}
           containerMargin={height / 12}
           color={color}
+          className="token"
         >
           {token}
         </TradeTokenContainer>
@@ -244,8 +269,8 @@ const TradeTunnel: React.FC<TradeTunnelProps> = ({
 interface TradeOfferProps {
   color: string;
   tradeTarget: string;
-  offerToken: OfferTokenType;
-  receiveToken: OfferTokenType;
+  offerToken?: OfferTokenType;
+  receiveToken?: OfferTokenType;
 }
 
 const TradeOffer: React.FC<TradeOfferProps> = ({
@@ -284,10 +309,24 @@ const TradeOffer: React.FC<TradeOfferProps> = ({
         </TargetCircle>
 
         {/* Offer Tunnel */}
-        <TradeTunnel color={color} variant="from" tradeToken={offerToken} />
+        {offerToken && (
+          <TradeTunnel
+            color={color}
+            variant="from"
+            tradeToken={offerToken}
+            oneSidedTrade={!Boolean(receiveToken)}
+          />
+        )}
 
         {/* Receive Tunnel */}
-        <TradeTunnel color={color} variant="to" tradeToken={receiveToken} />
+        {receiveToken && (
+          <TradeTunnel
+            color={color}
+            variant="to"
+            tradeToken={receiveToken}
+            oneSidedTrade={!Boolean(offerToken)}
+          />
+        )}
       </TargetContainer>
     </div>
   );

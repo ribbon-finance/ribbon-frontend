@@ -63,26 +63,22 @@ const HighlighText = styled.span`
   }
 `;
 
-type ExplanationStep =
-  | "deposit"
-  | "strikeSelection"
-  | "mintOption"
-  | "tradeOption"
-  | "expiryA"
-  | "settlementA"
-  | "expiryB"
-  | "settlementB";
+const ExplanationStepList = [
+  "deposit",
+  "yearnVaultDeposit",
+  "strikeSelection",
+  "mintOption",
+  "tradeOption",
+  "expiryA",
+  "settlementA",
+  "expiryB",
+  "settlementB",
+] as const;
 
-const ExplanationStepNum: { [key: number]: ExplanationStep } = {
-  1: "deposit",
-  2: "strikeSelection",
-  3: "mintOption",
-  4: "tradeOption",
-  5: "expiryA",
-  6: "settlementA",
-  7: "expiryB",
-  8: "settlementB",
-};
+type ExplanationStep = typeof ExplanationStepList[number];
+const NonYearnExclusionExplanationStepList: ExplanationStep[] = [
+  "yearnVaultDeposit",
+];
 
 interface VaultStrategyExplainerProps {
   vaultOption: VaultOptions;
@@ -97,34 +93,53 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
   const color = getVaultColor(vaultOption);
   const asset = getAssets(vaultOption);
 
-  const [step, setStep] = useState<ExplanationStep>("deposit");
+  const currentVaultExplanationStepList = useMemo(() => {
+    switch (getDisplayAssets(vaultOption)) {
+      case "yvUSDC":
+        return ExplanationStepList;
+      default:
+        return [...ExplanationStepList].filter(
+          (item) => !NonYearnExclusionExplanationStepList.includes(item)
+        );
+    }
+  }, [vaultOption]);
+
+  const [step, setStep] = useState<ExplanationStep>(
+    currentVaultExplanationStepList[0]
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setStep((step) => {
-        const currentNum = parseInt(
-          Object.keys(ExplanationStepNum).find(
-            (key) => ExplanationStepNum[parseInt(key)] === step
-          )!
-        );
-        return ExplanationStepNum[
-          (currentNum % Object.keys(ExplanationStepNum).length) + 1
-        ];
-      });
+      setStep(
+        (step) =>
+          currentVaultExplanationStepList[
+            (currentVaultExplanationStepList.indexOf(step) + 1) %
+              currentVaultExplanationStepList.length
+          ]
+      );
     }, 8000);
 
     return () => clearTimeout(timer);
-  }, [step]);
+  }, [step, currentVaultExplanationStepList]);
 
   const renderGraphic = useCallback(
     (s: ExplanationStep) => {
+      const collateralAsset = getDisplayAssets(vaultOption);
       switch (s) {
         case "deposit":
           return <VaultDeposit depositAsset={asset} />;
+        case "yearnVaultDeposit":
+          return (
+            <TradeOffer
+              color={color}
+              tradeTarget="Yearn Vault"
+              offerToken={asset}
+              receiveToken={collateralAsset}
+            />
+          );
         case "strikeSelection":
           return <StrikeSelection color={color} />;
         case "mintOption":
-          const collateralAsset = getDisplayAssets(vaultOption);
           return (
             <TradeOffer
               color={color}
@@ -142,6 +157,22 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
               receiveToken="money"
             />
           );
+        case "settlementA":
+          return (
+            <TradeOffer
+              color={color}
+              tradeTarget="Opyn Vault"
+              receiveToken={collateralAsset}
+            />
+          );
+        case "settlementB":
+          return (
+            <TradeOffer
+              color={color}
+              tradeTarget="Market Maker"
+              offerToken={asset}
+            />
+          );
       }
     },
     [asset, color, vaultOption]
@@ -153,6 +184,8 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
       switch (s) {
         case "deposit":
           return "VAULT Receives DEPOSITS";
+        case "yearnVaultDeposit":
+          return `DEPOSITS ${getAssetDisplay(asset)} IN YEARN`;
         case "strikeSelection":
           return "MANAGER SELECTS STRIKE AND EXPIRY";
         case "mintOption":
@@ -173,7 +206,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           return "MARKET MAKERS EXERCISE OPTIONS";
       }
     },
-    [vaultOption]
+    [asset, vaultOption]
   );
 
   const renderDescription = useCallback(
@@ -312,6 +345,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           );
         case "expiryA":
         case "expiryB":
+        case "yearnVaultDeposit":
           return (
             <>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit ut
@@ -322,8 +356,8 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
         case "settlementA":
           return (
             <>
-              The {assetUnit} used to collateralize the options in the Opyn
-              vault is returned back to the Ribbon vault.
+              The {collateralAssetUnit} used to collateralize the options in the
+              Opyn vault is returned back to the Ribbon vault.
             </>
           );
         case "settlementB":
@@ -332,7 +366,8 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
               The options are cash-settled, meaning that for each options
               contract, market makers receive the difference between the between
               the price of {assetUnit} at expiry and the strike price. The
-              remaining {assetUnit} left over is returned to the Ribbon vault.
+              remaining {collateralAssetUnit} left over is returned to the
+              Ribbon vault.
             </>
           );
       }
@@ -377,19 +412,22 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           </motion.div>
         </AnimatePresence>
         <SegmentPagination
-          page={parseInt(
-            Object.keys(ExplanationStepNum).find(
-              (key) => ExplanationStepNum[parseInt(key)] === step
-            )!
-          )}
-          total={Object.keys(ExplanationStepNum).length}
+          page={currentVaultExplanationStepList.indexOf(step) + 1}
+          total={currentVaultExplanationStepList.length}
           onPageClick={(page) => {
-            setStep(ExplanationStepNum[page]);
+            setStep(currentVaultExplanationStepList[page - 1]);
           }}
         />
       </ExplainerSection>
     ),
-    [color, width, step, renderTitle, renderDescription]
+    [
+      color,
+      currentVaultExplanationStepList,
+      width,
+      step,
+      renderTitle,
+      renderDescription,
+    ]
   );
 
   return (
