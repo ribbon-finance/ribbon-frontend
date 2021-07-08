@@ -22,12 +22,13 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import SegmentPagination from "../Common/SegmentPagination";
-import StrikeSelection from "./ExplainerGraphic.tsx/StrikeSelection";
-import TradeOffer from "./ExplainerGraphic.tsx/TradeOffer";
+import StrikeSelection from "./ExplainerGraphic/StrikeSelection";
+import ExpiryChart from "./ExplainerGraphic/ExpiryChart";
+import TradeOffer from "./ExplainerGraphic/TradeOffer";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
-import VaultDeposit from "./ExplainerGraphic.tsx/VaultDeposit";
+import VaultDeposit from "./ExplainerGraphic/VaultDeposit";
 
 const ExplainerContainer = styled.div<{ color: string }>`
   display: flex;
@@ -160,6 +161,8 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
               receiveToken={asset}
             />
           );
+        case "expiryA":
+          return <ExpiryChart color={color} higherPrice={isPut} isOTM />;
         case "settlementA":
           return (
             <TradeOffer
@@ -167,6 +170,10 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
               tradeTarget="Opyn Vault"
               receiveToken={collateralAsset}
             />
+          );
+        case "expiryB":
+          return (
+            <ExpiryChart color={color} higherPrice={!isPut} isOTM={false} />
           );
         case "settlementB":
           return (
