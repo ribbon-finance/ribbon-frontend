@@ -23,6 +23,7 @@ import {
   OasisIcon,
 } from "shared/lib/assets/icons/defiApp";
 import WeeklyStrategySnapshot from "../../components/Deposit/WeeklyStrategySnapshot";
+import VaultStrategyExplainer from "../../components/Deposit/VaultStrategyExplainer";
 
 const Paragraph = styled.div`
   margin-bottom: 64px;
@@ -128,9 +129,12 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
 
   return (
     <Container className="col-xl-7 col-md-6">
-      <Paragraph>
+      <Paragraph className="d-flex flex-column">
         <ParagraphHeading>Vault Strategy</ParagraphHeading>
-        <ParagraphText>{productCopies[vaultOption].strategy}</ParagraphText>
+        <ParagraphText className="mb-4">
+          {productCopies[vaultOption].strategy}
+        </ParagraphText>
+        <VaultStrategyExplainer vaultOption={vaultOption} />
       </Paragraph>
 
       <Paragraph>

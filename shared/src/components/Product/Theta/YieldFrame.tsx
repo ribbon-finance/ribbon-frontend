@@ -127,15 +127,6 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
 
   const logo = useMemo(() => {
     switch (displayAsset) {
-      case "USDC":
-      case "yvUSDC":
-        return (
-          <Logo
-            height="208"
-            width="auto"
-            backgroundColor={`${getAssetColor("USDC")}29`}
-          />
-        );
       default:
         return <Logo height="208" width="auto" />;
     }

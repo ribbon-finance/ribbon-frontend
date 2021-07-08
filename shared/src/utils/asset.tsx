@@ -46,7 +46,7 @@ const ColoredUSDCLogo = styled(USDCLogo)<{ backgroundColor?: string }>`
 
   && .background {
     fill: ${(props) =>
-      props.backgroundColor ? props.backgroundColor : "none"};
+      props.backgroundColor ? props.backgroundColor : `${colors.asset.USDC}29`};
   }
 
   && .content {
@@ -60,7 +60,7 @@ const ColoredYUSDCLogo = styled(YVUSDcLogo)<{ backgroundColor?: string }>`
 
   && .background {
     fill: ${(props) =>
-      props.backgroundColor ? props.backgroundColor : "none"};
+      props.backgroundColor ? props.backgroundColor : `${colors.asset.USDC}29`};
   }
 
   && .content {

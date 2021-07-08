@@ -35,7 +35,8 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     tags: ["COVERED CALL"],
     strategy: (
       <>
-        This vault earns yield on its ETH deposits by running an automated ETH{" "}
+        The vault earns yield on its ETH deposits by running a weekly automated
+        ETH{" "}
         <TooltipExplanation
           title="COVERED CALL"
           explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
@@ -48,58 +49,10 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         />{" "}
         strategy.
         <p />
-        Put simply, the vault{" "}
-        <TooltipExplanation
-          title="MINTING"
-          explanation="The vault mints, or creates, an option by depositing collateral into an Opyn vault resulting in the issuance of an oToken that represents the option contract."
-          learnMoreURL="https://www.investopedia.com/terms/m/mint.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              mints
-            </HighlighText>
-          )}
-        />{" "}
-        <TooltipExplanation
-          title="OUT-OF-THE-MONEY"
-          explanation="An ETH covered call is out-of-the-money (OTM) if the strike price is above the market price of ETH."
-          learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              out-of-the-money
-            </HighlighText>
-          )}
-        />{" "}
-        ETH call options on Opyn on a weekly basis and sells these options to
-        market makers for a fee (the market price of the option, also known as
-        the{" "}
-        <TooltipExplanation
-          title="OPTION PREMIUM"
-          explanation="The option premium is the current market price of an option contract."
-          learnMoreURL="https://www.investopedia.com/terms/o/option-premium.asp"
-          renderContent={({ ref, ...props }) => (
-            <HighlighText ref={ref} {...props}>
-              option premium
-            </HighlighText>
-          )}
-        />
-        ). The vault repeats this process on a weekly basis and reinvests the
-        income earned from selling options to mint new options, effectively
+        The vault reinvests the yield earned back into the strategy, effectively
         compounding the yields for depositors over time.
         <p />
-        The vault has a manager who selects the{" "}
-        <TooltipExplanation
-          title="STRIKE PRICE"
-          explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
-          learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              strike price
-            </HighlighText>
-          )}
-        />{" "}
-        for the call options minted by the vault. The manager is responsible for
-        making the best tradeoff between yield versus the risk of the call
-        options getting exercised.
+        The strategy works as follows:
       </>
     ),
     vaultRisk: (
@@ -142,7 +95,8 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     tags: ["COVERED CALL"],
     strategy: (
       <>
-        This vault earns yield on its WBTC deposits by running an automated WBTC{" "}
+        The vault earns yield on its WBTC deposits by running a weekly automated
+        WBTC{" "}
         <TooltipExplanation
           title="COVERED CALL"
           explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
@@ -155,58 +109,10 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         />{" "}
         strategy.
         <p />
-        Put simply, the vault{" "}
-        <TooltipExplanation
-          title="MINTING"
-          explanation="The vault mints, or creates, an option by depositing collateral into an Opyn vault resulting in the issuance of an oToken that represents the option contract."
-          learnMoreURL="https://www.investopedia.com/terms/m/mint.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              mints
-            </HighlighText>
-          )}
-        />{" "}
-        <TooltipExplanation
-          title="OUT-OF-THE-MONEY"
-          explanation="An WBTC covered call is out-of-the-money (OTM) if the strike price is above the market price of WBTC."
-          learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              out-of-the-money
-            </HighlighText>
-          )}
-        />{" "}
-        WBTC call options on Opyn on a weekly basis and sells these options to
-        market makers for a fee (the market price of the option, also known as
-        the{" "}
-        <TooltipExplanation
-          title="OPTION PREMIUM"
-          explanation="The option premium is the current market price of an option contract."
-          learnMoreURL="https://www.investopedia.com/terms/o/option-premium.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              option premium
-            </HighlighText>
-          )}
-        />
-        ). The vault repeats this process on a weekly basis and reinvests the
-        income earned from selling options to mint new options, effectively
+        The vault reinvests the yield earned back into the strategy, effectively
         compounding the yields for depositors over time.
         <p />
-        The vault has a manager who selects the{" "}
-        <TooltipExplanation
-          title="STRIKE PRICE"
-          explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
-          learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              strike price
-            </HighlighText>
-          )}
-        />{" "}
-        for the call options minted by the vault. The manager is responsible for
-        making the best tradeoff between yield versus the risk of the call
-        options getting exercised.
+        The strategy works as follows:
       </>
     ),
     vaultRisk: (
@@ -249,72 +155,24 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     tags: ["PUT-SELLING"],
     strategy: (
       <>
-        This vault earns yield on its USDC deposits by running an automated
-        strategy that sells ETH{" "}
+        T-USDC-P-ETH earns yield on its USDC deposits by running a weekly
+        automated ETH{" "}
         <TooltipExplanation
           title="PUT OPTION"
           explanation="A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
           learnMoreURL="https://www.investopedia.com/terms/p/putoption.asp"
           renderContent={({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
-              put options
+              put-selling
             </HighlighText>
           )}
-        />
-        . The idea is to profit when the asset goes up in price.
+        />{" "}
+        strategy, where the put options are collateralized by USDC.
         <p />
-        Put simply, the vault{" "}
-        <TooltipExplanation
-          title="MINTING"
-          explanation="The vault mints, or creates, an option by depositing collateral into an Opyn vault resulting in the issuance of an oToken that represents the option contract."
-          learnMoreURL="https://www.investopedia.com/terms/m/mint.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              mints
-            </HighlighText>
-          )}
-        />{" "}
-        <TooltipExplanation
-          title="OUT-OF-THE-MONEY"
-          explanation="An ETH put option is out-of-the-money (OTM) if the strike price is below the market price of ETH."
-          learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              out-of-the-money
-            </HighlighText>
-          )}
-        />{" "}
-        ETH put options on Opyn on a weekly basis and sells these options to
-        market makers for a fee (the market price of the option, also known as
-        the{" "}
-        <TooltipExplanation
-          title="OPTION PREMIUM"
-          explanation="The option premium is the current market price of an option contract."
-          learnMoreURL="https://www.investopedia.com/terms/o/option-premium.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              option premium
-            </HighlighText>
-          )}
-        />
-        ). The vault repeats this process on a weekly basis and reinvests the
-        income earned from selling options to mint new options, effectively
-        compounding the yields for depositors over time.
+        The vault reinvests the yield it earns back into the strategy,
+        effectively compounding the yields for depositors over time.
         <p />
-        The vault has a manager who selects the{" "}
-        <TooltipExplanation
-          title="STRIKE PRICE"
-          explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
-          learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              strike price
-            </HighlighText>
-          )}
-        />{" "}
-        for the put options minted by the vault. The manager is responsible for
-        making the best tradeoff between yield versus the risk of the put
-        options getting exercised.
+        The strategy works as follows:
       </>
     ),
     vaultRisk: (
@@ -358,72 +216,24 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     tags: ["PUT-SELLING"],
     strategy: (
       <>
-        This vault earns yield on its USDC deposits by running an automated
-        strategy that sells WBTC{" "}
+        T-USDC-P-WBTC earns yield on its USDC deposits by running a weekly
+        automated WBTC{" "}
         <TooltipExplanation
           title="PUT OPTION"
           explanation="A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
           learnMoreURL="https://www.investopedia.com/terms/p/putoption.asp"
           renderContent={({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
-              put options
+              put-selling
             </HighlighText>
           )}
-        />
-        .
+        />{" "}
+        strategy, where the put options are collateralized by USDC.
         <p />
-        Put simply, the vault{" "}
-        <TooltipExplanation
-          title="MINTING"
-          explanation="The vault mints, or creates, an option by depositing collateral into an Opyn vault resulting in the issuance of an oToken that represents the option contract."
-          learnMoreURL="https://www.investopedia.com/terms/m/mint.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              mints
-            </HighlighText>
-          )}
-        />{" "}
-        <TooltipExplanation
-          title="OUT-OF-THE-MONEY"
-          explanation="A WBTC put option is out-of-the-money (OTM) if the strike price is below the market price of WBTC."
-          learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              out-of-the-money
-            </HighlighText>
-          )}
-        />{" "}
-        WBTC put options on Opyn on a weekly basis and sells these options to
-        market makers for a fee (the market price of the option, also known as
-        the{" "}
-        <TooltipExplanation
-          title="OPTION PREMIUM"
-          explanation="The option premium is the current market price of an option contract."
-          learnMoreURL="https://www.investopedia.com/terms/o/option-premium.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              option premium
-            </HighlighText>
-          )}
-        />
-        ). The vault repeats this process on a weekly basis and reinvests the
-        income earned from selling options to mint new options, effectively
-        compounding the yields for depositors over time.
+        The vault reinvests the yield it earns back into the strategy,
+        effectively compounding the yields for depositors over time.
         <p />
-        The vault has a manager who selects the{" "}
-        <TooltipExplanation
-          title="STRIKE PRICE"
-          explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
-          learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              strike price
-            </HighlighText>
-          )}
-        />{" "}
-        for the put options minted by the vault. The manager is responsible for
-        making the best tradeoff between yield versus the risk of the put
-        options getting exercised.
+        The strategy works as follows:
       </>
     ),
     vaultRisk: (
@@ -467,30 +277,19 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     tags: ["PUT-SELLING"],
     strategy: (
       <>
-        This vault earns yield on its USDC deposits by running an automated
-        strategy that deposits USDC into the Yearn USDC{" "}
-        <TooltipExplanation
-          title="YVAULT"
-          explanation="yVaults are Yearn vaults that accept customer deposits and then route them through strategies which seek out the highest yield available in DeFi."
-          learnMoreURL="https://docs.yearn.finance/yearn-finance/yvaults/overview#what-are-yvaults"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              yVault
-            </HighlighText>
-          )}
-        />{" "}
-        and sells ETH{" "}
+        T-YUSDC-P-ETH earns yield on its USDC deposits by running a weekly
+        automated ETH{" "}
         <TooltipExplanation
           title="PUT OPTION"
           explanation="A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
           learnMoreURL="https://www.investopedia.com/terms/p/putoption.asp"
           renderContent={({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
-              put options
+              put-selling
             </HighlighText>
           )}
         />{" "}
-        that are collaterlised by Yearn{" "}
+        strategy, where the put options are collateralized by{" "}
         <TooltipExplanation
           title="YVUSDC"
           explanation="yvUSDC is the deposit token that represents a user's share of the USDC yVault."
@@ -500,62 +299,13 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               yvUSDC
             </HighlighText>
           )}
-        />{" "}
-        deposit tokens.
-        <p />
-        On a weekly basis, the vault deposits USDC into the Yearn USDC yVault,
-        uses the yvUSDC deposit token as collateral to mint{" "}
-        <TooltipExplanation
-          title="OUT-OF-THE-MONEY"
-          explanation="A ETH put option is out-of-the-money (OTM) if the strike price is below the market price of ETH."
-          learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              out-of-the-money
-            </HighlighText>
-          )}
-        />{" "}
-        ETH put options on{" "}
-        <TooltipExplanation
-          title="Opyn"
-          explanation="Opyn is a DeFi options protocol."
-          learnMoreURL="https://www.opyn.co/"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              Opyn
-            </HighlighText>
-          )}
-        />{" "}
-        and then sells these options to market makers for a fee (the market
-        price of the option, also known as the{" "}
-        <TooltipExplanation
-          title="OPTION PREMIUM"
-          explanation="The option premium is the current market price of an option contract."
-          learnMoreURL="https://www.investopedia.com/terms/o/option-premium.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              option premium
-            </HighlighText>
-          )}
         />
-        ). The vault repeats this process on a weekly basis and reinvests the
-        income earned from selling options to mint new options, effectively
-        compounding the yields for depositors over time.
+        .
         <p />
-        The vault has a manager who selects the{" "}
-        <TooltipExplanation
-          title="STRIKE PRICE"
-          explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
-          learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              strike price
-            </HighlighText>
-          )}
-        />{" "}
-        for the call options minted by the vault. The manager is responsible for
-        making the best tradeoff between yield versus the risk of the put
-        options getting exercised.
+        The vault reinvests the yield it earns back into the strategy,
+        effectively compounding the yields for depositors over time.
+        <p />
+        The strategy works as follows:
       </>
     ),
     vaultRisk: (
