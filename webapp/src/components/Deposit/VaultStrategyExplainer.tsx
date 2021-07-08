@@ -509,7 +509,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                 )}
               />
               , and so for each options contract, market makers can withdraw the
-              difference between the between the price of {optionAssetUnit} and
+              difference between the price of {optionAssetUnit} and
               the strike price at expiry. Any {collateralAssetUnit} left over is
               returned to the Ribbon vault.
             </>
