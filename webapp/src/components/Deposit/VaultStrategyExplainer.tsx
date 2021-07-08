@@ -92,6 +92,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
   const { width: sectionWidth } = useElementSize(containerRef);
   const color = getVaultColor(vaultOption);
   const asset = getAssets(vaultOption);
+  const isPut = isPutVault(vaultOption);
 
   const currentVaultExplanationStepList = useMemo(() => {
     switch (getDisplayAssets(vaultOption)) {
@@ -138,7 +139,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
             />
           );
         case "strikeSelection":
-          return <StrikeSelection color={color} />;
+          return <StrikeSelection color={color} isPut={isPut} />;
         case "mintOption":
           return (
             <TradeOffer
@@ -175,12 +176,11 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           );
       }
     },
-    [asset, color, vaultOption]
+    [asset, color, isPut, vaultOption]
   );
 
   const renderTitle = useCallback(
     (s: ExplanationStep) => {
-      const isPut = isPutVault(vaultOption);
       switch (s) {
         case "deposit":
           return "VAULT Receives DEPOSITS";
@@ -206,7 +206,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           return "MARKET MAKERS EXERCISE OPTIONS";
       }
     },
-    [asset, vaultOption]
+    [asset, isPut]
   );
 
   const renderDescription = useCallback(
@@ -214,7 +214,6 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
       const assetUnit = getAssetDisplay(asset);
       const collateralAsset = getDisplayAssets(vaultOption);
       const collateralAssetUnit = getAssetDisplay(collateralAsset);
-      const isPut = isPutVault(vaultOption);
       switch (s) {
         case "deposit":
           return (
@@ -372,7 +371,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           );
       }
     },
-    [asset, vaultOption]
+    [asset, isPut, vaultOption]
   );
 
   const infoSection = useMemo(
