@@ -29,6 +29,7 @@ import {
 import {
   GAS_LIMITS,
   VaultAddressMap,
+  VaultMaxDeposit,
   VaultOptions,
   VaultWithdrawalFee,
 } from "shared/lib/constants/constants";
@@ -231,6 +232,7 @@ type ValidationErrors =
   | "none"
   | "insufficient_balance"
   | "capacity_overflow"
+  | "max_exceeded"
   | "withdraw_amount_staked"
   | "withdraw_limit_reached"
   | "withdraw_limit_exceeded";
@@ -345,6 +347,8 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
 
   // derived states
   const vaultFull = isVaultFull(deposits, vaultLimit, decimals);
+  const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
+  const maxDeposited = vaultBalanceInAsset.gte(vaultMaxDepositAmount);
   const allBalanceStaked = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
 
@@ -372,20 +376,25 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         const total = BigNumber.from(userAssetBalance);
         // TODO: Optimize the code to request gas fees only when needed
         const maxAmount = isETHVault(vaultOption) ? total.sub(gasFee) : total;
-        const userMaxAmount = maxAmount.isNegative()
+        const allowedMaxAmount = maxAmount.lte(
+          vaultMaxDepositAmount.sub(vaultBalanceInAsset)
+        )
+          ? maxAmount
+          : vaultMaxDepositAmount.sub(vaultBalanceInAsset);
+        const userMaxAmount = allowedMaxAmount.isNegative()
           ? BigNumber.from("0")
-          : maxAmount;
-        
+          : allowedMaxAmount;
+
         // Fringe case: if amt of deposit greater than vault limit, return 0
         const vaultAvailableBalance = deposits.gt(vaultLimit)
           ? BigNumber.from("0")
           : vaultLimit.sub(deposits);
-        
+
         // Check if max is vault availableBalance
         const finalMaxAmount = userMaxAmount.gt(vaultAvailableBalance)
           ? vaultAvailableBalance
           : userMaxAmount;
-          
+
         setInputAmount(formatUnits(finalMaxAmount, decimals));
       }
       // Withdraw flow
@@ -429,6 +438,15 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
           /** Check if amount to deposit more than balance */
           if (isDeposit && amount.gt(userAssetBalance)) {
             setError("insufficient_balance");
+            return;
+          }
+
+          /** Check if amount more than vault max deposit amount */
+          if (
+            isDeposit &&
+            amount.gt(vaultMaxDepositAmount.sub(vaultBalanceInAsset))
+          ) {
+            setError("max_exceeded");
             return;
           }
 
@@ -481,6 +499,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     isLoadingData,
     maxWithdrawAmount,
     userAssetBalance,
+    vaultMaxDepositAmount,
     vaultBalanceInAsset,
   ]);
 
@@ -581,6 +600,12 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   const formWalletContent = useMemo(() => {
     if (isDeposit && vaultFull) {
       return "The Vault is currently full";
+    }
+
+    if (isDeposit && maxDeposited) {
+      return `This vault has a max deposit of ${parseInt(
+        formatUnits(vaultMaxDepositAmount, decimals)
+      )} ${getAssetDisplay(asset)} per depositor`;
     }
 
     if (!isDeposit && allBalanceStaked) {
@@ -717,9 +742,11 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     isDeposit,
     isLoadingData,
     maxWithdrawAmount,
+    maxDeposited,
     userAssetBalance,
     vaultAccounts,
     vaultBalanceInAsset,
+    vaultMaxDepositAmount,
     vaultOption,
     vaultFull,
     withdrawalFreeUpTime,
@@ -738,6 +765,10 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
           return "Exceed Vault Balance";
         case "withdraw_amount_staked":
           return "AVAILABLE LIMIT EXCEEDED";
+        case "max_exceeded":
+          return `Maximum ${parseInt(
+            formatUnits(vaultMaxDepositAmount, decimals)
+          )} ${getAssetDisplay(asset)} Exceeded`;
       }
     }
 
@@ -755,22 +786,29 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     }
 
     return `Withdraw ${getAssetDisplay(asset)}`;
-  }, [asset, error, isDeposit, isInputNonZero]);
+  }, [
+    asset,
+    decimals,
+    error,
+    isDeposit,
+    isInputNonZero,
+    vaultMaxDepositAmount,
+  ]);
 
   const actionDisabled = useMemo(() => {
     if (
       error === "none" &&
       isInputNonZero &&
-      ((isDeposit && !vaultFull) || !isDeposit)
+      ((isDeposit && !vaultFull && !maxDeposited) || !isDeposit)
     ) {
       return false;
     }
 
     return true;
-  }, [error, isDeposit, isInputNonZero, vaultFull]);
+  }, [error, isDeposit, isInputNonZero, maxDeposited, vaultFull]);
 
   const walletBalanceState = useMemo(() => {
-    if (isDeposit && vaultFull) {
+    if (isDeposit && (vaultFull || maxDeposited)) {
       return "vaultFull";
     }
 
@@ -782,6 +820,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
       case "withdraw_limit_exceeded":
       case "withdraw_amount_staked":
       case "insufficient_balance":
+      case "max_exceeded":
         return "active";
 
       case "none":
@@ -791,7 +830,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     }
 
     return connected ? "active" : "inactive";
-  }, [allBalanceStaked, connected, error, isDeposit, vaultFull]);
+  }, [allBalanceStaked, connected, error, isDeposit, maxDeposited, vaultFull]);
 
   const button = useMemo(() => {
     if (connected) {
@@ -935,7 +974,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
               <ActionButton
                 onClick={handleApproveToken}
                 className="py-3 mb-4"
-                disabled={vaultFull}
+                disabled={vaultFull || maxDeposited}
                 color={color}
               >
                 {waitingApproval

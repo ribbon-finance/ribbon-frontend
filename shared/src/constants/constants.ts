@@ -1,4 +1,6 @@
+import { BigNumber } from "@ethersproject/bignumber";
 import { Assets } from "../store/types";
+import { getAssetDecimals } from "../utils/asset";
 import { isDevelopment, isProduction } from "../utils/env";
 import deployment from "./deployments.json";
 
@@ -166,6 +168,24 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
     case "ryvUSDC-ETH-P-THETA":
       return "yvUSDC";
   }
+};
+
+export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
+  "rUSDC-BTC-P-THETA": BigNumber.from(500000).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rUSDC-BTC-P-THETA")))
+  ),
+  "rUSDC-ETH-P-THETA": BigNumber.from(500000).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rUSDC-ETH-P-THETA")))
+  ),
+  "rETH-THETA": BigNumber.from(250).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rETH-THETA")))
+  ),
+  "rBTC-THETA": BigNumber.from(15).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rBTC-THETA")))
+  ),
+  "ryvUSDC-ETH-P-THETA": BigNumber.from(500000).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("ryvUSDC-ETH-P-THETA")))
+  ),
 };
 
 export const VaultWithdrawalFee: { [vault in VaultOptions]: string } = {
