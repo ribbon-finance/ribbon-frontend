@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { setTimeout } from "timers";
@@ -27,18 +21,10 @@ import MenuButton from "shared/lib/components/Common/MenuButton";
 import { copyTextToClipboard } from "shared/lib/utils/text";
 import useOutsideAlerter from "shared/lib/hooks/useOutsideAlerter";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
-import { ActionButton } from "shared/lib/components/Common/buttons";
-import ActionModal from "../ActionModal/ActionModal";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
-import { VaultOptions } from "shared/lib/constants/constants";
-import { getVaultColor } from "shared/lib/utils/vault";
 
-const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
-const investButtonWidth = 30;
-const investButtonMarginLeft =
-  100 - walletButtonMarginLeft * 2 - walletButtonWidth - investButtonWidth;
 
 const WalletContainer = styled.div<AccountStatusVariantProps>`
   justify-content: center;
@@ -114,13 +100,6 @@ const WalletButtonText = styled(Title)<WalletStatusProps>`
 
     return `color: ${colors.green}`;
   }}
-`;
-
-const InvestButton = styled(ActionButton)`
-  margin-left: ${investButtonMarginLeft}%;
-  width: ${investButtonWidth}%;
-  height: 48px;
-  border-radius: 8px;
 `;
 
 const WalletDesktopMenu = styled.div<MenuStateProps>`
@@ -239,7 +218,6 @@ const MenuCloseItem = styled(MenuItem)`
 `;
 
 interface AccountStatusProps {
-  vaultOption?: VaultOptions;
   variant: "desktop" | "mobile";
 }
 
@@ -247,10 +225,7 @@ const truncateAddress = (address: string) => {
   return address.slice(0, 6) + "..." + address.slice(address.length - 4);
 };
 
-const AccountStatus: React.FC<AccountStatusProps> = ({
-  vaultOption,
-  variant,
-}) => {
+const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   const {
     connector,
     deactivate: deactivateWeb3,
@@ -259,7 +234,6 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     account,
   } = useWeb3React();
   const [, setShowConnectModal] = useConnectWalletModal();
-  const [showActionModal, setShowActionModal] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
     "hidden"
@@ -338,14 +312,6 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     onCloseMenu();
   }, [deactivateWeb3, onCloseMenu, connector]);
 
-  const onCloseActionsModal = useCallback(() => {
-    setShowActionModal(false);
-  }, [setShowActionModal]);
-
-  const handleInvestButtonClick = () => {
-    setShowActionModal(true);
-  };
-
   const renderButtonContent = () =>
     active && account ? (
       <>
@@ -375,40 +341,18 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     return <WalletCopyIcon className="far fa-clone" state={copyState} />;
   };
 
-  const formModal = useMemo(
-    () =>
-      vaultOption ? (
-        <ActionModal
-          vaultOption={vaultOption}
-          variant="mobile"
-          show={showActionModal}
-          onClose={onCloseActionsModal}
-        />
-      ) : null,
-    [vaultOption, showActionModal, onCloseActionsModal]
-  );
-
   return (
     <>
       {/* Main Button and Desktop Menu */}
       <WalletContainer variant={variant} ref={desktopMenuRef}>
         <WalletButton
           variant={variant}
-          showInvestButton={vaultOption !== undefined}
           connected={active}
           role="button"
           onClick={handleButtonClick}
         >
           {renderButtonContent()}
         </WalletButton>
-        {vaultOption && (
-          <InvestButton
-            onClick={handleInvestButtonClick}
-            color={vaultOption ? getVaultColor(vaultOption) : undefined}
-          >
-            Invest
-          </InvestButton>
-        )}
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>
           {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
           {renderMenuItem(
@@ -442,8 +386,6 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
           <MenuButton isOpen={true} onToggle={onCloseMenu} />
         </MenuCloseItem>
       </WalletMobileOverlayMenu>
-
-      {formModal}
     </>
   );
 };

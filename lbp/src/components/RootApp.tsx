@@ -2,17 +2,10 @@ import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 
-import Header from "./Header/Header";
-import Homepage from "../pages/Home/Homepage";
-import DepositPage from "../pages/DepositPage/DepositPage";
-import useEagerConnect from "shared/lib/hooks/useEagerConnect";
-import PortfolioPage from "../pages/Portfolio/PortfolioPage";
-import Footer from "./Footer/Footer";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
-import { WrongNetworkToast, TxStatusToast } from "./Common/toasts";
+import useEagerConnect from "shared/lib/hooks/useEagerConnect";
 import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal";
-import NotFound from "../pages/NotFound";
-import StakingPage from "../pages/Staking/StakingPage";
+import Header from "./Header/Header";
 
 const Root = styled.div<{ screenHeight: number }>`
   background-color: #1c1a19;
@@ -26,11 +19,10 @@ const RootApp = () => {
 
   return (
     <Root id="appRoot" screenHeight={screenHeight}>
-      <WrongNetworkToast />
-      <TxStatusToast />
       <WalletConnectModal />
       <Router>
         <Header />
+        {/* 
         <Switch>
           <Route path="/" exact>
             <Homepage />
@@ -51,7 +43,7 @@ const RootApp = () => {
             <NotFound />
           </Route>
         </Switch>
-        <Footer />
+        <Footer /> */}
       </Router>
     </Root>
   );

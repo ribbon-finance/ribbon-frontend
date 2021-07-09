@@ -1,4 +1,5 @@
-import { useGlobalState } from "shared/lib/store/store";
+import React from "react";
+import { useGlobalState } from "../store/store";
 
 const useConnectWalletModal: () => [
   boolean,

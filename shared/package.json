@@ -25,6 +25,9 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@web3-react/core": "^6.1.9",
+    "@web3-react/injected-connector": "^6.0.7",
+    "@web3-react/walletconnect-connector": "^6.1.9",
+    "@web3-react/walletlink-connector": "^6.2.2",
     "currency.js": "^2.0.3",
     "ethers": "^5.1.4",
     "framer-motion": "^4.1.11",
@@ -53,16 +56,6 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ],
-    "overrides": [
-      {
-        "files": [
-          "**/*.stories.*"
-        ],
-        "rules": {
-          "import/no-anonymous-default-export": "off"
-        }
-      }
     ]
   },
   "browserslist": {

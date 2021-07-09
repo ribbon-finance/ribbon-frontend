@@ -13,7 +13,7 @@ import {
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
-import useConnectWalletModal from "../../hooks/useConnectWalletModal";
+import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import useStakingPoolData from "../../hooks/useStakingPoolData";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
