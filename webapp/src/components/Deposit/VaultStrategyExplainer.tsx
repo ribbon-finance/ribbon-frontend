@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -54,6 +48,11 @@ const VisualSection = styled(ExplainerSection)<{ color: string }>`
 
 const InfoTitle = styled(Title)<{ color: string }>`
   color: ${(props) => props.color};
+`;
+
+const InfoDescription = styled(SecondaryText)`
+  font-size: 16px;
+  line-height: 24px;
 `;
 
 const HighlighText = styled.span`
@@ -111,20 +110,6 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
   const [step, setStep] = useState<ExplanationStep>(
     currentVaultExplanationStepList[0]
   );
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setStep(
-        (step) =>
-          currentVaultExplanationStepList[
-            (currentVaultExplanationStepList.indexOf(step) + 1) %
-              currentVaultExplanationStepList.length
-          ]
-      );
-    }, 8000);
-
-    return () => clearTimeout(timer);
-  }, [step, currentVaultExplanationStepList]);
 
   const renderGraphic = useCallback(
     (s: ExplanationStep) => {
@@ -202,11 +187,13 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
         case "tradeOption":
           return "VAULT SELLS OPTIONS TO MARKET MAKERS";
         case "expiryA":
-          return `OPTIONS EXPIRE OTM`;
+          return `Expiry A - OPTIONS EXPIRE OTM`;
         case "settlementA":
           return "COLLATERAL RETURNED TO THE VAULT";
         case "expiryB":
-          return `STRIKE IS ${isPut ? "ABOVE" : "BELOW"} MARKET PRICE`;
+          return `Expiry B - STRIKE IS ${
+            isPut ? "ABOVE" : "BELOW"
+          } MARKET PRICE`;
         case "settlementB":
           return "MARKET MAKER EXERCISEs OPTIONS";
       }
@@ -509,9 +496,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                 )}
               />
               , and so for each options contract, market makers can withdraw the
-              difference between the price of {optionAssetUnit} and
-              the strike price at expiry. Any {collateralAssetUnit} left over is
-              returned to the Ribbon vault.
+              difference between the price of {optionAssetUnit} and the strike
+              price at expiry. Any {collateralAssetUnit} left over is returned
+              to the Ribbon vault.
             </>
           );
       }
@@ -522,7 +509,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
   const infoSection = useMemo(
     () => (
       <ExplainerSection
-        height={width > sizes.lg ? 220 : 280}
+        height={width > sizes.lg ? 270 : 320}
         className="d-flex flex-column p-3"
       >
         <AnimatePresence initial={false} exitBeforeEnter>
@@ -550,9 +537,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
             <InfoTitle color={color} className="mb-3">
               {renderTitle(step)}
             </InfoTitle>
-            <SecondaryText className="flex-grow-1">
+            <InfoDescription className="flex-grow-1">
               {renderDescription(step)}
-            </SecondaryText>
+            </InfoDescription>
           </motion.div>
         </AnimatePresence>
         <SegmentPagination

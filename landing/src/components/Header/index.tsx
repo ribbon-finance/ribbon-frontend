@@ -251,7 +251,14 @@ const Header = () => {
           {renderLinkItem("FAQs", "/faq", false, false, true)}
           {renderLinkItem(
             "BLOG",
-            "http://tiny.cc/ribbon-discord",
+            "https://medium.com/@ribbonfinance",
+            false,
+            false,
+            true
+          )}
+          {renderLinkItem(
+            "SNAPSHOT",
+            "https://snapshot.org/#/rbn.eth",
             false,
             false,
             true

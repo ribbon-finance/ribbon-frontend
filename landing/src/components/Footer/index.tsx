@@ -83,7 +83,11 @@ const DesktopFooter = () => {
   const renderLinkItem = useCallback(
     (title: string, to: string, external: boolean = false) => (
       <MobileFooterCol xs={6}>
-        <BaseLink to={to}>
+        <BaseLink
+          to={to}
+          target={external ? "_blank" : undefined}
+          rel={external ? "noreferrer noopener" : undefined}
+        >
           <LinkItem>
             <LinkItemText>{title}</LinkItemText>
           </LinkItem>
@@ -113,6 +117,7 @@ const DesktopFooter = () => {
           {mediaKit}
         </LeftContainer>
         <div className="d-flex flex-row">
+          {renderLinkItem("SNAPSHOT", "https://snapshot.org/#/rbn.eth", true)}
           {renderLinkItem("DEFI PULSE", "https://defipulse.com/", true)}
           {renderLinkItem("DISCORD", "http://discord.ribbon.finance", true)}
           {renderLinkItem("TWITTER", "https://twitter.com/ribbonfinance", true)}
@@ -131,13 +136,14 @@ const DesktopFooter = () => {
         </MobileFooterRow>
         <MobileFooterRow>
           {renderLinkItem("DOCS", "https://docs.ribbon.finance")}
+          {renderLinkItem("SNAPSHOT", "https://snapshot.org/#/rbn.eth", true)}
+        </MobileFooterRow>
+        <MobileFooterRow>
           {renderLinkItem("DISCORD", "http://discord.ribbon.finance", true)}
-        </MobileFooterRow>
-        <MobileFooterRow>
           {renderLinkItem("TWITTER", "https://twitter.com/ribbonfinance", true)}
-          {renderLinkItem("GITHUB", "https://github.com/ribbon-finance", true)}
         </MobileFooterRow>
         <MobileFooterRow>
+          {renderLinkItem("GITHUB", "https://github.com/ribbon-finance", true)}
           {renderLinkItem("DEFI PULSE", "https://defipulse.com/", true)}
         </MobileFooterRow>
       </MobileFooter>

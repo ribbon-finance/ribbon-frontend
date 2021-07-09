@@ -128,7 +128,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
   );
 
   return (
-    <Container className="col-xl-7 col-md-6">
+    <Container className="col-md-6">
       <Paragraph className="d-flex flex-column">
         <ParagraphHeading>Vault Strategy</ParagraphHeading>
         <ParagraphText className="mb-4">

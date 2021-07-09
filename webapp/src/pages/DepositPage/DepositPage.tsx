@@ -23,8 +23,15 @@ import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { getAssetLogo } from "shared/lib/utils/asset";
+import { Container } from "react-bootstrap";
 
 const { formatUnits } = ethers.utils;
+
+const DepositContainer = styled(Container)`
+  @media (min-width: ${sizes.xl}px) {
+    max-width: 1140px;
+  }
+`;
 
 const HeroContainer = styled.div<{ color: string }>`
   background: linear-gradient(
@@ -76,6 +83,10 @@ const DesktopActionsFormContainer = styled.div`
   @media (max-width: ${sizes.md}px) {
     display: none;
   }
+
+  @media (min-width: ${sizes.xl}px) {
+    padding: 0px 30px;
+  }
 `;
 
 const MobilePositions = styled(YourPosition)`
@@ -124,18 +135,18 @@ const DepositPage = () => {
     <>
       <HeroSection depositCapBar={depositCapBar} vaultOption={vaultOption} />
 
-      <div className="container py-5">
+      <DepositContainer className="py-5">
         <div className="row mx-lg-n1">
           {account && <MobilePositions vaultOption={vaultOption} />}
 
           <PerformanceSection vaultOption={vaultOption} />
 
-          <DesktopActionsFormContainer className="col-xl-4 offset-xl-1 col-md-6">
+          <DesktopActionsFormContainer className="col-xl-5 offset-xl-1 col-md-6">
             <ActionsForm vaultOption={vaultOption} variant="desktop" />
           </DesktopActionsFormContainer>
         </div>
         <VaultActivity vaultOption={vaultOption} />
-      </div>
+      </DepositContainer>
     </>
   );
 };

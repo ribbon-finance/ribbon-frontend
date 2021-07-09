@@ -46,8 +46,8 @@ const MissionText = styled(BaseText)`
 `;
 
 const MissionTitle = styled(Title)`
-  font-size: 64px;
-  line-height: 64px;
+  font-size: 48px;
+  line-height: 56px;
   width: 100%;
   text-transform: uppercase;
   text-align: center;
@@ -74,13 +74,13 @@ const Mission = () => {
         </MissionPill>
       </div>
       <MissionTitleRow fluid>
-        <Col xs={11} lg={10} className="d-flex">
+        <Col xs={11} lg={10} xl={6} className="d-flex">
           <MissionTitle>Bringing Structured Products to DeFi</MissionTitle>
         </Col>
       </MissionTitleRow>
 
       <MissionSubtitleRow>
-        <Col xs={12} md={8} className="d-flex">
+        <Col xs={12} md={8} xl={6} className="d-flex">
           <MissionSubtitle>
             Ribbon uses financial engineering to create structured products that
             deliver sustainable yield. Ribbon's first product focuses on yield

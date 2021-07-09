@@ -47,10 +47,8 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
             </HighlighText>
           )}
         />{" "}
-        strategy.
-        <p />
-        The vault reinvests the yield earned back into the strategy, effectively
-        compounding the yields for depositors over time.
+        strategy. The vault reinvests the yield earned back into the strategy,
+        effectively compounding the yields for depositors over time.
         <p />
         The strategy works as follows:
       </>
@@ -107,10 +105,8 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
             </HighlighText>
           )}
         />{" "}
-        strategy.
-        <p />
-        The vault reinvests the yield earned back into the strategy, effectively
-        compounding the yields for depositors over time.
+        strategy. The vault reinvests the yield earned back into the strategy,
+        effectively compounding the yields for depositors over time.
         <p />
         The strategy works as follows:
       </>
@@ -167,10 +163,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
             </HighlighText>
           )}
         />{" "}
-        strategy, where the put options are collateralized by USDC.
-        <p />
-        The vault reinvests the yield it earns back into the strategy,
-        effectively compounding the yields for depositors over time.
+        strategy, where the put options are collateralized by USDC. The vault
+        reinvests the yield it earns back into the strategy, effectively
+        compounding the yields for depositors over time.
         <p />
         The strategy works as follows:
       </>
@@ -228,10 +223,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
             </HighlighText>
           )}
         />{" "}
-        strategy, where the put options are collateralized by USDC.
-        <p />
-        The vault reinvests the yield it earns back into the strategy,
-        effectively compounding the yields for depositors over time.
+        strategy, where the put options are collateralized by USDC. The vault
+        reinvests the yield it earns back into the strategy, effectively
+        compounding the yields for depositors over time.
         <p />
         The strategy works as follows:
       </>
@@ -300,9 +294,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
             </HighlighText>
           )}
         />
-        .
-        <p />
-        The vault reinvests the yield it earns back into the strategy,
+        . The vault reinvests the yield it earns back into the strategy,
         effectively compounding the yields for depositors over time.
         <p />
         The strategy works as follows:
