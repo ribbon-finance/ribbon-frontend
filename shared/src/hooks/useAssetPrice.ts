@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { useGlobalState } from "../store/store";
 import { Assets, AssetsList } from "../store/types";
 
-type APIResponse = Record<string, { usd: number }>;
-
 const getAssetPriceInUSD = async (currencyName: string): Promise<number> => {
   const apiURL = `https://api.coingecko.com/api/v3/simple/price?ids=${currencyName}&vs_currencies=usd`;
 

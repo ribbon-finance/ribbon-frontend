@@ -1,1 +1,2 @@
-export default {};
+const index = {}
+export default index;

@@ -15,7 +15,7 @@ import theme from "../../../designSystem/theme";
 import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useTextAnimation from "../../../hooks/useTextAnimation";
 import useVaultData from "../../../hooks/useVaultData";
-import { getAssetColor, getAssetLogo } from "../../../utils/asset";
+import { getAssetLogo } from "../../../utils/asset";
 import { formatSignificantDecimals } from "../../../utils/math";
 import { getVaultColor } from "../../../utils/vault";
 import CapBar from "../../Deposit/CapBar";
