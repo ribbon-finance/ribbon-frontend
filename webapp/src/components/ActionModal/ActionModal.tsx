@@ -8,6 +8,7 @@ import { PreviewStepProps, StepData, STEPS } from "./types";
 import sizes from "shared/lib/designSystem/sizes";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
 import { VaultOptions } from "shared/lib/constants/constants";
+import theme from "shared/lib/designSystem/theme";
 
 const ModalNavigation = styled.div`
   position: absolute;
@@ -85,6 +86,13 @@ const ModalContent = styled.div`
 `;
 
 const ModalHeaderCloseButton = styled.i`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-radius: 48px;
   cursor: pointer;
   position: absolute;
   right: ${modalPadding}px;

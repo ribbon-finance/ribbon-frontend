@@ -143,14 +143,13 @@ const tradeTokenKeyframe = (
     opacity: 1;
   }
 
-
   71.43% {
     left: ${(width * 2) / 3}px;
     opacity: 0;
   }
 
   100% {
-    left: ${containerMargin}px;
+    left: ${(width * 2) / 3}px;
     opacity: 0;
   }
 `;
