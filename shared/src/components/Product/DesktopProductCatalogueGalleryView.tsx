@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { AnimatePresence, motion } from "framer";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import Marquee from "react-fast-marquee/dist";
 
 import { getAssets, VaultOptions } from "../../constants/constants";

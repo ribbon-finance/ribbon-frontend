@@ -48,8 +48,7 @@
     "build": "tsc --build \"./tsconfig.json\"",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint './src/**/*.{js,jsx,ts,tsx}'",
-    "lint:fix": "eslint --fix './src/**/*.{js,jsx,ts,tsx}'",
+    "lint": "eslint --fix --ext .tsx,.ts .",
     "codegen": "typechain --target ethers-v5 --out-dir src/codegen 'src/constants/abis/*.json'"
   },
   "eslintConfig": {
