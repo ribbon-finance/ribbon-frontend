@@ -3,7 +3,8 @@
   "workspaces": [
     "shared",
     "landing",
-    "webapp"
+    "webapp",
+    "lbp"
   ],
   "devDependencies": {
     "husky": "^6.0.0"

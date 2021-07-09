@@ -1,4 +1,4 @@
-import { isProduction } from "shared/lib/utils/env";
+import { isProduction } from "./env";
 
 export const addAnalyticsEvent = (
   eventName: string,
@@ -17,6 +17,6 @@ export const addAnalyticsEvent = (
 };
 
 export const addConnectEvent = (label: string, account: string) => {
-  account = account.replace("0x", "");
-  addAnalyticsEvent("connectAccount", label, account);
+  const accountStr = account.replace("0x", "");
+  addAnalyticsEvent("connectAccount", label, accountStr);
 };

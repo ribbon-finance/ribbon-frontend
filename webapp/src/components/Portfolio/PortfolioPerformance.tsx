@@ -19,7 +19,7 @@ import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
 import PerformanceChart from "../PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../PerformanceChart/types";
 import sizes from "shared/lib/designSystem/sizes";
-import useConnectWalletModal from "../../hooks/useConnectWalletModal";
+import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { getAssets, VaultList } from "shared/lib/constants/constants";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { AssetsList } from "shared/lib/store/types";
@@ -167,53 +167,46 @@ const PortfolioPerformance = () => {
     // @ts-ignore
     assets: AssetsList,
   });
-  const { vaultAccounts, loading: vaultAccountLoading } = useVaultAccounts(
-    VaultList
-  );
-  const [
-    hoveredBalanceUpdateIndex,
-    setHoveredBalanceUpdateIndex,
-  ] = useState<number>();
+  const { vaultAccounts, loading: vaultAccountLoading } =
+    useVaultAccounts(VaultList);
+  const [hoveredBalanceUpdateIndex, setHoveredBalanceUpdateIndex] =
+    useState<number>();
   const [rangeFilter, setRangeFilter] = useState<dateFilterType>("1m");
   const [, setShowConnectWalletModal] = useConnectWalletModal();
-  const {
-    data: RBNTokenAccount,
-    loading: RBNTokenAccountLoading,
-  } = useRBNTokenAccount();
+  const { data: RBNTokenAccount, loading: RBNTokenAccountLoading } =
+    useRBNTokenAccount();
 
-  const {
-    deposit: vaultTotalDeposit,
-    balance: vaultBalanceInAsset,
-  } = useMemo(() => {
-    let deposit = 0;
-    let balance = 0;
+  const { deposit: vaultTotalDeposit, balance: vaultBalanceInAsset } =
+    useMemo(() => {
+      let deposit = 0;
+      let balance = 0;
 
-    Object.keys(vaultAccounts).forEach((key) => {
-      const vaultAccount = vaultAccounts[key];
-      if (vaultAccount) {
-        const currentAsset = getAssets(vaultAccount.vault.symbol);
-        const currentAssetDecimals = getAssetDecimals(currentAsset);
-        deposit += parseFloat(
-          assetToFiat(
-            vaultAccount.totalDeposits,
-            // @ts-ignore
-            assetPrices[currentAsset],
-            currentAssetDecimals
-          )
-        );
-        balance += parseFloat(
-          assetToFiat(
-            vaultAccount.totalBalance,
-            // @ts-ignore
-            assetPrices[currentAsset],
-            currentAssetDecimals
-          )
-        );
-      }
-    });
+      Object.keys(vaultAccounts).forEach((key) => {
+        const vaultAccount = vaultAccounts[key];
+        if (vaultAccount) {
+          const currentAsset = getAssets(vaultAccount.vault.symbol);
+          const currentAssetDecimals = getAssetDecimals(currentAsset);
+          deposit += parseFloat(
+            assetToFiat(
+              vaultAccount.totalDeposits,
+              // @ts-ignore
+              assetPrices[currentAsset],
+              currentAssetDecimals
+            )
+          );
+          balance += parseFloat(
+            assetToFiat(
+              vaultAccount.totalBalance,
+              // @ts-ignore
+              assetPrices[currentAsset],
+              currentAssetDecimals
+            )
+          );
+        }
+      });
 
-    return { deposit, balance };
-  }, [vaultAccounts, assetPrices]);
+      return { deposit, balance };
+    }, [vaultAccounts, assetPrices]);
 
   const afterDate = useMemo(() => {
     switch (rangeFilter) {
@@ -227,10 +220,8 @@ const PortfolioPerformance = () => {
   }, [rangeFilter]);
 
   // Fetch balances update
-  const {
-    balances: balanceUpdates,
-    loading: balanceUpdatesLoading,
-  } = useBalances(undefined, afterDate ? afterDate.unix() : undefined);
+  const { balances: balanceUpdates, loading: balanceUpdatesLoading } =
+    useBalances(undefined, afterDate ? afterDate.unix() : undefined);
   const loading =
     assetPricesLoading ||
     vaultAccountLoading ||
