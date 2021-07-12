@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Frame } from "framer";
 import styled from "styled-components";
 
@@ -48,10 +48,14 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
   value,
   onSelect,
 }) => {
-  const controlRefs = segments.reduce<any>((acc, curr) => {
-    acc[curr.value] = React.createRef();
-    return acc;
-  }, {});
+  const controlRefs = useMemo(
+    () =>
+      segments.reduce<any>((acc, curr) => {
+        acc[curr.value] = React.createRef();
+        return acc;
+      }, {}),
+    [segments]
+  );
   const [activeBackgroundState, setActiveBackgroundState] = useState<
     object | boolean
   >(false);
