@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Container } from "react-bootstrap";
+import { AnimatePresence, motion } from "framer-motion";
+
 import SegmentControl from "../components/Common/SegmentControl";
 import TokenSaleInfo from "../components/TokenSale/TokenSaleInfo";
 
@@ -34,7 +36,27 @@ const Homepage = () => {
           onSelect={(value) => setViews(value as HomepageView)}
         />
       </div>
-      {content}
+      <AnimatePresence exitBeforeEnter>
+        <motion.div
+          key={views}
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+          transition={{
+            duration: 0.25,
+            type: "keyframes",
+            ease: "easeInOut",
+          }}
+        >
+          {content}
+        </motion.div>
+      </AnimatePresence>
     </Container>
   );
 };
