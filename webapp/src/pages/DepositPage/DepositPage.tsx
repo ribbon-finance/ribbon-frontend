@@ -27,7 +27,7 @@ import { Container } from "react-bootstrap";
 
 const { formatUnits } = ethers.utils;
 
-const DepositContainer = styled(Container)`
+const DepositPageContainer = styled(Container)`
   @media (min-width: ${sizes.xl}px) {
     max-width: 1140px;
   }
@@ -85,7 +85,7 @@ const DesktopActionsFormContainer = styled.div`
   }
 
   @media (min-width: ${sizes.xl}px) {
-    padding: 0px 30px;
+    padding: 0px 45px 0px 30px;
   }
 `;
 
@@ -135,7 +135,7 @@ const DepositPage = () => {
     <>
       <HeroSection depositCapBar={depositCapBar} vaultOption={vaultOption} />
 
-      <DepositContainer className="py-5">
+      <DepositPageContainer className="py-5">
         <div className="row mx-lg-n1">
           {account && <MobilePositions vaultOption={vaultOption} />}
 
@@ -146,7 +146,7 @@ const DepositPage = () => {
           </DesktopActionsFormContainer>
         </div>
         <VaultActivity vaultOption={vaultOption} />
-      </DepositContainer>
+      </DepositPageContainer>
     </>
   );
 };
@@ -183,7 +183,7 @@ const HeroSection: React.FC<{
 
   return (
     <HeroContainer className="position-relative" color={color}>
-      <div className="container">
+      <DepositPageContainer className="container">
         <div className="row mx-lg-n1 position-relative">
           <div style={{ zIndex: 1 }} className="col-xl-6 d-flex flex-column">
             <div className="d-flex flex-row my-3">
@@ -203,7 +203,7 @@ const HeroSection: React.FC<{
             {logo}
           </SplashImage>
         </div>
-      </div>
+      </DepositPageContainer>
     </HeroContainer>
   );
 };
