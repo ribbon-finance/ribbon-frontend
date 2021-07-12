@@ -53,6 +53,7 @@ const InfoTitle = styled(Title)<{ color: string }>`
 const InfoDescription = styled(SecondaryText)`
   font-size: 16px;
   line-height: 24px;
+  font-weight: 400;
 `;
 
 const HighlighText = styled.span`
@@ -164,8 +165,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           return (
             <TradeOffer
               color={color}
-              tradeTarget="Market Maker"
-              offerToken={asset}
+              offerParty="MARKET MAKER"
+              tradeTarget="Opyn Vault"
+              receiveToken={asset}
             />
           );
       }
@@ -491,7 +493,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                 learnMoreURL="https://www.investopedia.com/terms/c/cash-settled-options.asp"
                 renderContent={({ ref, ...triggerHandler }) => (
                   <HighlighText ref={ref} {...triggerHandler}>
-                    in-the-money
+                    cash-settled
                   </HighlighText>
                 )}
               />
