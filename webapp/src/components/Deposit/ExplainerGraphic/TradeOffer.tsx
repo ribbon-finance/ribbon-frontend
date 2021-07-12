@@ -268,6 +268,7 @@ const TradeTunnel: React.FC<TradeTunnelProps> = ({
 
 interface TradeOfferProps {
   color: string;
+  offerParty?: string;
   tradeTarget: string;
   offerToken?: OfferTokenType;
   receiveToken?: OfferTokenType;
@@ -275,6 +276,7 @@ interface TradeOfferProps {
 
 const TradeOffer: React.FC<TradeOfferProps> = ({
   color,
+  offerParty,
   tradeTarget,
   offerToken,
   receiveToken,
@@ -294,11 +296,17 @@ const TradeOffer: React.FC<TradeOfferProps> = ({
           dimension={height * 0.75}
           className="mr-auto"
         >
-          <ColoredLogo
-            width={`${height * 0.75 * 0.3}px`}
-            height={`${height * 0.75 * 0.3}px`}
-            color={color}
-          />
+          {offerParty ? (
+            <TargetLabel color={color} size={height * 0.75 * 0.1}>
+              {offerParty}
+            </TargetLabel>
+          ) : (
+            <ColoredLogo
+              width={`${height * 0.75 * 0.3}px`}
+              height={`${height * 0.75 * 0.3}px`}
+              color={color}
+            />
+          )}
         </TargetCircle>
 
         {/* To circle */}

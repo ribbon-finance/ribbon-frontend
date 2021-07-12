@@ -214,7 +214,7 @@ const PortfolioTransactions = () => {
   const [activityFilter, setActivityFilter] =
     useState<PortfolioTransactionActivityFilter>(
       portfolioTransactionActivityFilters[0]
-  );
+    );
   const { width } = useScreenSize();
 
   const processedTransactions = useMemo(() => {
@@ -474,7 +474,7 @@ const PortfolioTransactions = () => {
   ]);
 
   return (
-    <PortfolioTransactionsContainer>
+    <PortfolioTransactionsContainer className="mb-5">
       <div className="d-flex flex-wrap align-items-center w-100 mb-4">
         <SectionTitle>Transaction History</SectionTitle>
         <FilterDropdown

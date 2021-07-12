@@ -56,6 +56,10 @@ const InfoTitle = styled(Title)<{ color: string }>`
   color: ${(props) => props.color};
 `;
 
+const InfoDescription = styled(SecondaryText)`
+  font-weight: 400;
+`;
+
 const HighlighText = styled.span`
   color: ${colors.primaryText};
   cursor: help;
@@ -179,8 +183,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           return (
             <TradeOffer
               color={color}
-              tradeTarget="Market Maker"
-              offerToken={asset}
+              offerParty="MARKET MAKER"
+              tradeTarget="Opyn Vault"
+              receiveToken={asset}
             />
           );
       }
@@ -504,14 +509,14 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                 learnMoreURL="https://www.investopedia.com/terms/c/cash-settled-options.asp"
                 renderContent={({ ref, ...triggerHandler }) => (
                   <HighlighText ref={ref} {...triggerHandler}>
-                    in-the-money
+                    cash-settled
                   </HighlighText>
                 )}
               />
               , and so for each options contract, market makers can withdraw the
-              difference between the price of {optionAssetUnit} and
-              the strike price at expiry. Any {collateralAssetUnit} left over is
-              returned to the Ribbon vault.
+              difference between the price of {optionAssetUnit} and the strike
+              price at expiry. Any {collateralAssetUnit} left over is returned
+              to the Ribbon vault.
             </>
           );
       }
@@ -550,9 +555,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
             <InfoTitle color={color} className="mb-3">
               {renderTitle(step)}
             </InfoTitle>
-            <SecondaryText className="flex-grow-1">
+            <InfoDescription className="flex-grow-1">
               {renderDescription(step)}
-            </SecondaryText>
+            </InfoDescription>
           </motion.div>
         </AnimatePresence>
         <SegmentPagination
