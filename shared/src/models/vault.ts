@@ -28,6 +28,7 @@ export interface VaultShortPosition {
   vault: Vault;
   option: string;
   depositAmount: BigNumber;
+  mintAmount: BigNumber;
   initiatedBy: string;
   strikePrice: BigNumber;
   expiry: number;

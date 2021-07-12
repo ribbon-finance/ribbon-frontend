@@ -34,6 +34,7 @@ const fetchVaultAvtivity = async (
           vaultShortPositions (where: { vault_in: ["${vaultAddress}"] }){
             id
             depositAmount
+            mintAmount
             strikePrice
             openedAt
             openTxhash
@@ -58,6 +59,7 @@ const fetchVaultAvtivity = async (
     ...response.data.data.vaultShortPositions.map((item: any) => ({
       ...item,
       depositAmount: BigNumber.from(item.depositAmount),
+      mintAmount: BigNumber.from(item.mintAmount),
       strikePrice: BigNumber.from(item.strikePrice),
       date: new Date(item.openedAt * 1000),
       type: "minting",
