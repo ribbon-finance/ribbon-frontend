@@ -4,9 +4,10 @@ import styled from "styled-components";
 
 import colors from "shared/lib/designSystem/colors";
 import { Subtitle } from "shared/lib/designSystem";
+import theme from "shared/lib/designSystem/theme";
 
 const SegmentControlContainer = styled.div`
-  border-radius: 12px;
+  border-radius: ${theme.border.radius};
   background-color: ${colors.backgroundDarker};
   display: flex;
   position: relative;
@@ -14,7 +15,7 @@ const SegmentControlContainer = styled.div`
 `;
 
 const ActiveBackground = styled(Frame)`
-  border-radius: 12px !important;
+  border-radius: ${theme.border.radius} !important;
   background-color: ${colors.primaryText}1F !important;
 `;
 
