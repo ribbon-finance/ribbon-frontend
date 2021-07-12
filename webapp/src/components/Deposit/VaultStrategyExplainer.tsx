@@ -449,8 +449,8 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                   </HighlighText>
                 )}
               />
-              , if the strike price is lower than the market price of{" "}
-              {optionAssetUnit}, the options expire{" "}
+              , if the strike price is {isPut ? "higher" : "lower"} than the
+              market price of {optionAssetUnit}, the options expire{" "}
               <TooltipExplanation
                 title="IN-THE-MONEY"
                 explanation={`An ${optionAssetUnit} ${
