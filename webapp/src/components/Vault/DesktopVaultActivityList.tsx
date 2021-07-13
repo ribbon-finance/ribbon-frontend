@@ -238,7 +238,8 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 weight={0.15}
               >
                 <VaultPrimaryText>
-                  {formatBigNumber(activity.depositAmount, 4, decimals)}
+                  {/* Otokens have 8 decimals */}
+                  {formatBigNumber(activity.mintAmount, 4, 8)}
                 </VaultPrimaryText>
               </VaultActivityCol>
 
