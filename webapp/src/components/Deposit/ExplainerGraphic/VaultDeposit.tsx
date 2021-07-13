@@ -22,8 +22,6 @@ const VaultDeposit: React.FC<VaultDepositProps> = ({ depositAsset }) => {
     }
   }, [depositAsset]);
 
-  console.log(animationData);
-
   return (
     <div className="d-flex flex-column w-100 h-100 justify-content-center">
       <Lottie

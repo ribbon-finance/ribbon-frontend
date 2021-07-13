@@ -6,6 +6,7 @@ import styled from "styled-components";
 import SegmentControl from "../../components/Common/SegmentControl";
 import TokenSaleOverview from "./TokenSaleOverview";
 import FAQ from "./FAQ";
+import TransactionView from "./TransactionView";
 
 const ContentContainer = styled(motion.div)`
   margin-top: 40px;
@@ -22,10 +23,10 @@ const Homepage = () => {
     switch (views) {
       case HomepageViewList[0]:
         return <TokenSaleOverview />;
+      case HomepageViewList[1]:
+        return <TransactionView />;
       case HomepageViewList[2]:
         return <FAQ />;
-      default:
-        return <></>;
     }
   }, [views]);
 
