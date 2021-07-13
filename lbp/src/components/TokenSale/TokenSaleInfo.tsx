@@ -34,7 +34,7 @@ const InfoTable = styled.div`
   display: flex;
   flex-wrap: wrap;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: 4px;
+  border-radius: ${theme.border.radiusSmall};
   background: ${colors.primaryText}03;
   margin: 40px 0px;
 `;

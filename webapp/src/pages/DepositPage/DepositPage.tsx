@@ -24,6 +24,7 @@ import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import { Container } from "react-bootstrap";
+import theme from "shared/lib/designSystem/theme";
 
 const { formatUnits } = ethers.utils;
 
@@ -52,7 +53,7 @@ const HeroText = styled(Title)`
 const AttributePill = styled.div`
   background: ${colors.pillBackground};
   color: ${colors.primaryText};
-  border-radius: 4px;
+  border-radius: ${theme.border.radiusSmall};
   padding: 16px;
   font-family: VCR, sans-serif;
   font-style: normal;

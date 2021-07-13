@@ -6,7 +6,7 @@ import useScreenSize from "shared/lib/hooks/useScreenSize";
 import useEagerConnect from "shared/lib/hooks/useEagerConnect";
 import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal";
 import Header from "./Header/Header";
-import Homepage from "../pages/Homepage";
+import Homepage from "../pages/Homepage/Homepage";
 import Footer from "./Footer/Footer";
 
 const Root = styled.div<{ screenHeight: number }>`
@@ -29,21 +29,6 @@ const RootApp = () => {
           <Route path="/" exact>
             <Homepage />
           </Route>
-          {/* <Route path="/theta-vault/:vaultSymbol">
-            <DepositPage />
-          </Route>
-          <Route path="/theta-vault">
-            <DepositPage />
-          </Route>
-          <Route path="/portfolio">
-            <PortfolioPage />
-          </Route>
-          <Route path="/staking">
-            <StakingPage />
-          </Route>
-          <Route>
-            <NotFound />
-          </Route> */}
         </Switch>
         <Footer />
       </Router>

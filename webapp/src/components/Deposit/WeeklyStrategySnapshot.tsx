@@ -36,13 +36,13 @@ const VaultPerformanceChartContainer = styled.div`
   height: 200px;
   padding: 30px 0;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: 4px 4px 0px 0px;
+  border-radius: ${theme.border.radiusSmall} ${theme.border.radiusSmall} 0px 0px;
 `;
 
 const VaultPerformanceChartSecondaryContainer = styled.div`
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-top: none;
-  border-radius: 0px 0px 4px 4px;
+  border-radius: 0px 0px ${theme.border.radiusSmall} ${theme.border.radiusSmall};
   background: ${colors.backgroundLighter};
 `;
 

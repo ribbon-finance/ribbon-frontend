@@ -1,9 +1,16 @@
 import React, { useMemo, useState } from "react";
 import { Container } from "react-bootstrap";
 import { AnimatePresence, motion } from "framer-motion";
+import styled from "styled-components";
 
-import SegmentControl from "../components/Common/SegmentControl";
-import TokenSaleInfo from "../components/TokenSale/TokenSaleInfo";
+import SegmentControl from "../../components/Common/SegmentControl";
+import TokenSaleOverview from "./TokenSaleOverview";
+import FAQ from "./FAQ";
+
+const ContentContainer = styled(motion.div)`
+  margin-top: 40px;
+  margin-bottom: 64px;
+`;
 
 const HomepageViewList = ["OVERVIEW", "TRANSACTIONS", "RBN FAQS"] as const;
 type HomepageView = typeof HomepageViewList[number];
@@ -14,11 +21,9 @@ const Homepage = () => {
   const content = useMemo(() => {
     switch (views) {
       case HomepageViewList[0]:
-        return (
-          <>
-            <TokenSaleInfo />
-          </>
-        );
+        return <TokenSaleOverview />;
+      case HomepageViewList[2]:
+        return <FAQ />;
       default:
         return <></>;
     }
@@ -37,7 +42,7 @@ const Homepage = () => {
         />
       </div>
       <AnimatePresence exitBeforeEnter>
-        <motion.div
+        <ContentContainer
           key={views}
           initial={{
             opacity: 0,
@@ -55,7 +60,7 @@ const Homepage = () => {
           }}
         >
           {content}
-        </motion.div>
+        </ContentContainer>
       </AnimatePresence>
     </Container>
   );

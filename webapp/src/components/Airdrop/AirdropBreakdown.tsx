@@ -70,7 +70,7 @@ const BreakdwonPillIndicator = styled.div<{
   width: 8px;
   background: ${(props) => getAirdropColor(props.variant)};
   margin-right: 8px;
-  border-radius: 4px;
+  border-radius: ${theme.border.radiusSmall};
 `;
 
 const BreakdownPillToken = styled(Subtitle)<{

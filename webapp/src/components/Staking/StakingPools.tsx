@@ -96,7 +96,7 @@ const ClaimableTokenIndicator = styled.div<{ color: string }>`
   width: 8px;
   background: ${(props) => props.color};
   margin-right: 8px;
-  border-radius: 4px;
+  border-radius: ${theme.border.radiusSmall};
 `;
 
 const ClaimableTokenAmount = styled(Subtitle)<{ color: string }>`
