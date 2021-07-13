@@ -1,10 +1,16 @@
-import React from "react";
-import { Accordion, Card } from "react-bootstrap";
+import React, { useContext } from "react";
+import {
+  Accordion,
+  AccordionContext,
+  Card,
+  useAccordionToggle,
+} from "react-bootstrap";
 import styled from "styled-components";
-import { PrimaryText, SecondaryText } from "../../designSystem";
+import { PrimaryText } from "../../designSystem";
 
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
+import ButtonArrow from "./ButtonArrow";
 
 const AccordionItem = styled(Card)`
   background: ${colors.primaryText}0A;
@@ -13,6 +19,8 @@ const AccordionItem = styled(Card)`
 `;
 
 const AccordionHeader = styled(Card.Header)`
+  display: flex;
+  align-items: center;
   position: relative;
   background-color: ${colors.background};
   padding: 20px 16px;
@@ -38,10 +46,40 @@ const AccordionHeader = styled(Card.Header)`
   }
 `;
 
+const AccordionHeaderArrow = styled.div`
+  margin: 0px 8px 0px 24px;
+  opacity: 0.64;
+  color: ${colors.primaryText};
+`;
+
+const BaseAccordionToggleWithMenu: React.FC<any> = ({
+  children,
+  eventKey,
+  callback,
+}) => {
+  const currentEventKey = useContext(AccordionContext);
+
+  const decoratedOnClick = useAccordionToggle(
+    eventKey,
+    () => callback && callback(eventKey)
+  );
+
+  const isCurrentEventKey = currentEventKey === eventKey;
+
+  return (
+    <AccordionHeader onClick={decoratedOnClick} role="button">
+      {children}
+      <AccordionHeaderArrow>
+        <ButtonArrow isOpen={isCurrentEventKey} />
+      </AccordionHeaderArrow>
+    </AccordionHeader>
+  );
+};
+
 interface BaseAccordionProps {
   items: {
     header: string;
-    body: string;
+    body: JSX.Element;
   }[];
 }
 
@@ -50,17 +88,11 @@ const BaseAccordion: React.FC<BaseAccordionProps> = ({ items }) => {
     <Accordion>
       {items.map((item, index) => (
         <AccordionItem>
-          <Accordion.Toggle
-            as={AccordionHeader}
-            eventKey={index.toString()}
-            role="button"
-          >
-            <PrimaryText>{item.header}</PrimaryText>
-          </Accordion.Toggle>
+          <BaseAccordionToggleWithMenu eventKey={index.toString()}>
+            <PrimaryText className="mr-auto">{item.header}</PrimaryText>
+          </BaseAccordionToggleWithMenu>
           <Accordion.Collapse eventKey={index.toString()}>
-            <Card.Body>
-              <SecondaryText>{item.body}</SecondaryText>
-            </Card.Body>
+            <Card.Body className="p-3">{item.body}</Card.Body>
           </Accordion.Collapse>
         </AccordionItem>
       ))}
