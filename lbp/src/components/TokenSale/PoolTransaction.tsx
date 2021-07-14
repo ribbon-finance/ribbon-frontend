@@ -63,7 +63,7 @@ const PoolTransaction = () => {
     <div className="d-flex flex-column">
       <SectionTitle>Pool Transactions</SectionTitle>
       <TableWithFixedHeader
-        weights={[0.3, 0.3, 0.15, 0.25]}
+        weights={[0.25, 0.3, 0.15, 0.3]}
         orientations={["left", "left", "left", "right"]}
         labels={["Action", "Account", "Price", "Quantity"]}
         data={transactions.map((transaction) => [
