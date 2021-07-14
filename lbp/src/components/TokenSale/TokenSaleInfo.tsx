@@ -63,7 +63,7 @@ const InfoTableCellData = styled(Title)`
 `;
 
 const TokenAddress = styled(Title)`
-  color: ${colors.text};
+  color: ${colors.primaryText};
 `;
 
 const TokenSaleInfo = () => {
@@ -120,7 +120,7 @@ const TokenSaleInfo = () => {
           className="d-flex flex-wrap"
         >
           <TokenAddress>{RibbonTokenBalancerPoolAddress}</TokenAddress>
-          <ExternalIcon className="ml-2" />
+          <ExternalIcon className="ml-2" color={colors.primaryText} />
         </BaseLink>
 
         {/* Token Address */}
@@ -132,7 +132,7 @@ const TokenSaleInfo = () => {
           className="d-flex flex-wrap"
         >
           <TokenAddress>{RibbonTokenAddress}</TokenAddress>
-          <ExternalIcon className="ml-2" />
+          <ExternalIcon className="ml-2" color={colors.primaryText} />
         </BaseLink>
       </Col>
     </Row>
