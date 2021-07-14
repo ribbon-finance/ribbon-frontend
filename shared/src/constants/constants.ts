@@ -117,7 +117,7 @@ export const VaultNamesList = [
   "T-USDC-P-WBTC",
   "T-ETH-C",
   "T-WBTC-C",
-  "T-yUSDC-P-ETH",
+  "T-yvUSDC-P-ETH",
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
@@ -125,7 +125,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-USDC-P-WBTC": "rUSDC-BTC-P-THETA",
   "T-ETH-C": "rETH-THETA",
   "T-WBTC-C": "rBTC-THETA",
-  "T-yUSDC-P-ETH": "ryvUSDC-ETH-P-THETA",
+  "T-yvUSDC-P-ETH": "ryvUSDC-ETH-P-THETA",
 };
 
 export const getEtherscanURI = () =>
@@ -207,7 +207,7 @@ export const getAirtableName = (vault: VaultOptions): string => {
     case "rBTC-THETA":
       return "T-WBTC-C";
     case "ryvUSDC-ETH-P-THETA":
-      return "T-YUSDC-P-ETH";
+      return "T-YVUSDC-P-ETH";
   }
 };
 

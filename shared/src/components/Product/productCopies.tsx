@@ -264,14 +264,14 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     },
   },
   "ryvUSDC-ETH-P-THETA": {
-    title: "T-yUSDC-P-ETH",
+    title: "T-yvUSDC-P-ETH",
     subtitle: "ETH Put-Selling",
     description:
       "Generates yield by running an automated ETH put selling strategy.",
     tags: ["PUT-SELLING"],
     strategy: (
       <>
-        T-YUSDC-P-ETH earns yield on its USDC deposits by running a weekly
+        T-YVUSDC-P-ETH earns yield on its USDC deposits by running a weekly
         automated ETH{" "}
         <TooltipExplanation
           title="PUT OPTION"
@@ -324,7 +324,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
       explanation: (
         <>
           ryvUSDC-ETH-P-THETA is a token that represents yvUSDC deposits in the
-          ETH Put Theta Vault (T-yUSDC-P-ETH).
+          ETH Put Theta Vault (T-yvUSDC-P-ETH).
           <br />
           <br />
           Stake your ryvUSDC-ETH-P-THETA tokens in the ryvUSDC-ETH-P-THETA
