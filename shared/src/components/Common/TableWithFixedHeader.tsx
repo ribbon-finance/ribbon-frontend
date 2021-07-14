@@ -44,6 +44,19 @@ const TableCol = styled.div<{
   }};
 `;
 
+const TableHeaderCol = styled(TableCol)<{ hasLogo: boolean }>`
+  &:first-child {
+    width: ${(props) =>
+      props.contentWidth
+        ? `calc((${props.contentWidth}px * ${props.weight})${
+            props.hasLogo
+              ? ` + ${logoContainerWidth}px + ${logoContainerMargin}px`
+              : ``
+          })`
+        : `${props.weight * 100}%`};
+  }
+`;
+
 const TableRow = styled.div`
   display: flex;
   flex-wrap: nowrap;
@@ -160,13 +173,14 @@ const TableWithFixedHeader: React.FC<TableWithFixedHeaderProps> = ({
     <div className="d-flex flex-column" ref={containerRef}>
       <TableHeader>
         {weights.map((weight, index) => (
-          <TableCol
+          <TableHeaderCol
             weight={weight}
             contentWidth={availableContentWidth}
             orientation={orientations ? orientations[index] : undefined}
+            hasLogo={Boolean(logos)}
           >
             <SecondaryText>{labels[index]}</SecondaryText>
-          </TableCol>
+          </TableHeaderCol>
         ))}
       </TableHeader>
       <AnimatePresence initial={false} exitBeforeEnter>
