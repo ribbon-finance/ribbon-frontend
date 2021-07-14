@@ -23,6 +23,7 @@ import useOutsideAlerter from "shared/lib/hooks/useOutsideAlerter";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
+import { truncateAddress } from "shared/lib/utils/address";
 
 const walletButtonWidth = 55;
 
@@ -220,10 +221,6 @@ const MenuCloseItem = styled(MenuItem)`
 interface AccountStatusProps {
   variant: "desktop" | "mobile";
 }
-
-const truncateAddress = (address: string) => {
-  return address.slice(0, 6) + "..." + address.slice(address.length - 4);
-};
 
 const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   const {

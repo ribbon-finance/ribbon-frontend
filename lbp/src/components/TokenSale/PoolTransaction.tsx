@@ -7,6 +7,7 @@ import useLBPPoolTransactions from "../../hooks/useLBPPoolTransactions";
 import TableWithFixedHeader from "shared/lib/components/Common/TableWithFixedHeader";
 import { getEtherscanURI } from "shared/lib/constants/constants";
 import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
+import { truncateAddress } from "shared/lib/utils/address";
 
 const SectionTitle = styled(Title)`
   font-size: 18px;
@@ -26,10 +27,6 @@ const TransactionSecondaryText = styled(SecondaryText)<{
   ${(props) =>
     props.fontFamily ? `font-family: ${props.fontFamily}, sans-serif;` : ""}
 `;
-
-const truncateAddress = (address: string) => {
-  return address.slice(0, 6) + "..." + address.slice(address.length - 4);
-};
 
 const PoolTransaction = () => {
   const { transactions } = useLBPPoolTransactions();

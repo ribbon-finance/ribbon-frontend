@@ -33,6 +33,7 @@ import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import { VaultOptions } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
+import { truncateAddress } from "shared/lib/utils/address";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -242,10 +243,6 @@ interface AccountStatusProps {
   vaultOption?: VaultOptions;
   variant: "desktop" | "mobile";
 }
-
-const truncateAddress = (address: string) => {
-  return address.slice(0, 6) + "..." + address.slice(address.length - 4);
-};
 
 const AccountStatus: React.FC<AccountStatusProps> = ({
   vaultOption,

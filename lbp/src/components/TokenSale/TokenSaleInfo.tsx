@@ -13,12 +13,9 @@ import theme from "shared/lib/designSystem/theme";
 import {
   getEtherscanURI,
   RibbonTokenAddress,
+  RibbonTokenBalancerPoolAddress,
 } from "shared/lib/constants/constants";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
-
-const TokenSaleRow = styled(Row)`
-  margin-top: 64px;
-`;
 
 const InfoTitle = styled(Title)`
   font-size: 18px;
@@ -71,7 +68,7 @@ const TokenAddress = styled(Title)`
 
 const TokenSaleInfo = () => {
   return (
-    <TokenSaleRow>
+    <Row>
       <Col md={6} className="d-flex flex-column">
         {/* Text wall */}
         <InfoTitle>RBN TOKEN SALE</InfoTitle>
@@ -114,8 +111,20 @@ const TokenSaleInfo = () => {
           </InfoTableCell>
         </InfoTable>
 
+        {/* Balancer Pool Address */}
+        <LabelText>Balancer Pool</LabelText>
+        <BaseLink
+          to={`${getEtherscanURI()}/address/${RibbonTokenBalancerPoolAddress}`}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="d-flex flex-wrap"
+        >
+          <TokenAddress>{RibbonTokenBalancerPoolAddress}</TokenAddress>
+          <ExternalIcon className="ml-2" />
+        </BaseLink>
+
         {/* Token Address */}
-        <LabelText>Token Address</LabelText>
+        <LabelText className="mt-3">RBN Token Address</LabelText>
         <BaseLink
           to={`${getEtherscanURI()}/address/${RibbonTokenAddress}`}
           target="_blank"
@@ -126,7 +135,7 @@ const TokenSaleInfo = () => {
           <ExternalIcon className="ml-2" />
         </BaseLink>
       </Col>
-    </TokenSaleRow>
+    </Row>
   );
 };
 

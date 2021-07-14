@@ -6,14 +6,13 @@ import styled from "styled-components";
 import SegmentControl from "../../components/Common/SegmentControl";
 import TokenSaleOverview from "./TokenSaleOverview";
 import FAQ from "./FAQ";
-import TransactionView from "./TransactionView";
 
 const ContentContainer = styled(motion.div)`
   margin-top: 40px;
   margin-bottom: 64px;
 `;
 
-const HomepageViewList = ["OVERVIEW", "TRANSACTIONS", "RBN FAQS"] as const;
+const HomepageViewList = ["OVERVIEW", "RBN FAQS"] as const;
 type HomepageView = typeof HomepageViewList[number];
 
 const Homepage = () => {
@@ -24,8 +23,6 @@ const Homepage = () => {
       case HomepageViewList[0]:
         return <TokenSaleOverview />;
       case HomepageViewList[1]:
-        return <TransactionView />;
-      case HomepageViewList[2]:
         return <FAQ />;
     }
   }, [views]);
