@@ -3,7 +3,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Logo from "./Logo";
 import { Link } from "react-router-dom";
-import { BaseText, Button } from "../../designSystem";
+import { Button } from "../../designSystem";
 
 const HeaderContainer = styled.div`
   padding-top: 15px;

@@ -6,29 +6,30 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { WalletLinkConnector } from "@web3-react/walletlink-connector";
 
 import {
+  injectedConnector,
+  getWalletConnectConnector,
+  walletlinkConnector,
+} from "../../utils/connectors";
+
+import { ConnectorButtonProps, connectorType } from "./types";
+import Indicator from "../Indicator/Indicator";
+import {
   BaseButton,
   BaseLink,
   BaseModalContentColumn,
   BaseText,
   Title,
-} from "shared/lib/designSystem";
-import colors from "shared/lib/designSystem/colors";
-import theme from "shared/lib/designSystem/theme";
-import {
-  injectedConnector,
-  getWalletConnectConnector,
-  walletlinkConnector,
-} from "../../utils/connectors";
+} from "../../designSystem";
+import colors from "../../designSystem/colors";
+import theme from "../../designSystem/theme";
 import {
   MetamaskIcon,
   WalletConnectIcon,
   WalletLinkIcon,
-} from "shared/lib/assets/icons/connector";
-import { ConnectorButtonProps, connectorType } from "./types";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import Indicator from "../Indicator/Indicator";
+} from "../../assets/icons/connector";
+import useTextAnimation from "../../hooks/useTextAnimation";
+import BasicModal from "../Common/BasicModal";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
-import BasicModal from "shared/lib/components/Common/BasicModal";
 
 const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
   background-color: ${colors.backgroundDarker};
@@ -104,8 +105,10 @@ const WalletConnectModal: React.FC = () => {
     account,
     active,
   } = useWeb3React();
-  const [connectingConnector, setConnectingConnector] =
-    useState<connectorType>();
+  const [
+    connectingConnector,
+    setConnectingConnector,
+  ] = useState<connectorType>();
   const initializingText = useTextAnimation(
     ["INITIALIZING", "INITIALIZING .", "INITIALIZING ..", "INITIALIZING ..."],
     250,

@@ -10,10 +10,11 @@ import {
   useHistoricalData,
 } from "shared/lib/hooks/useAirtableData";
 import { VaultOptions } from "shared/lib/constants/constants";
+import theme from "shared/lib/designSystem/theme";
 
 const VaultPerformacneChartContainer = styled.div`
   border: 1px solid ${colors.border};
-  border-radius: 4px 4px 0px 0px;
+  border-radius: ${theme.border.radiusSmall} ${theme.border.radiusSmall} 0px 0px;
 `;
 
 const VaultPerformacneChartSecondaryContainer = styled.div`
@@ -21,7 +22,7 @@ const VaultPerformacneChartSecondaryContainer = styled.div`
   border-bottom: 1px solid ${colors.border};
   border-left: 1px solid ${colors.border};
   border-right: 1px solid ${colors.border};
-  border-radius: 0px 0px 4px 4px;
+  border-radius: 0px 0px ${theme.border.radiusSmall} ${theme.border.radiusSmall};
   background: ${colors.backgroundLighter};
 `;
 

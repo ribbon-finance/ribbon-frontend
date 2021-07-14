@@ -17,10 +17,6 @@ interface APYData {
   res: number;
 }
 
-type APYDatas = {
-  [vault in VaultOptions]: APYData[];
-};
-
 interface WeeklyPerformance {
   apy: number;
   premiums: number;

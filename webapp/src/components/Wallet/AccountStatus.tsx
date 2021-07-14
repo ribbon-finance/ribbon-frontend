@@ -9,10 +9,10 @@ import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { setTimeout } from "timers";
 
-import Indicator from "../Indicator/Indicator";
+import Indicator from "shared/lib/components/Indicator/Indicator";
 import sizes from "shared/lib/designSystem/sizes";
 import { Title, BaseButton } from "shared/lib/designSystem";
-import { addConnectEvent } from "../../utils/analytics";
+import { addConnectEvent } from "shared/lib/utils/analytics";
 import colors from "shared/lib/designSystem/colors";
 import {
   WalletStatusProps,
@@ -20,7 +20,7 @@ import {
   WalletButtonProps,
   MenuStateProps,
   WalletCopyIconProps,
-} from "./types";
+} from "shared/lib/components/Wallet/types";
 import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import MenuButton from "shared/lib/components/Common/MenuButton";
@@ -29,10 +29,11 @@ import useOutsideAlerter from "shared/lib/hooks/useOutsideAlerter";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import ActionModal from "../ActionModal/ActionModal";
-import useConnectWalletModal from "../../hooks/useConnectWalletModal";
+import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import { VaultOptions } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
+import { truncateAddress } from "shared/lib/utils/address";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -242,10 +243,6 @@ interface AccountStatusProps {
   vaultOption?: VaultOptions;
   variant: "desktop" | "mobile";
 }
-
-const truncateAddress = (address: string) => {
-  return address.slice(0, 6) + "..." + address.slice(address.length - 4);
-};
 
 const AccountStatus: React.FC<AccountStatusProps> = ({
   vaultOption,

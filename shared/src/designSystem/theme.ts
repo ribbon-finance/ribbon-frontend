@@ -4,6 +4,7 @@ const theme = {
   },
   border: {
     radius: "8px",
+    radiusSmall: "4px",
     width: "1px",
     style: "solid",
   },

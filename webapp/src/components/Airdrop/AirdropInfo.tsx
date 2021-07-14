@@ -18,7 +18,7 @@ import {
   ActionButton,
   ConnectWalletButton,
 } from "shared/lib/components/Common/buttons";
-import useConnectWalletModal from "../../hooks/useConnectWalletModal";
+import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import theme from "shared/lib/designSystem/theme";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import useAirdrop from "../../hooks/useAirdrop";

@@ -5,12 +5,12 @@ import styled from "styled-components";
 import Header from "./Header/Header";
 import Homepage from "../pages/Home/Homepage";
 import DepositPage from "../pages/DepositPage/DepositPage";
-import useEagerConnect from "../hooks/useEagerConnect";
+import useEagerConnect from "shared/lib/hooks/useEagerConnect";
 import PortfolioPage from "../pages/Portfolio/PortfolioPage";
 import Footer from "./Footer/Footer";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { WrongNetworkToast, TxStatusToast } from "./Common/toasts";
-import WalletConnectModal from "./Wallet/WalletConnectModal";
+import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal";
 import NotFound from "../pages/NotFound";
 import StakingPage from "../pages/Staking/StakingPage";
 
@@ -26,8 +26,8 @@ const RootApp = () => {
 
   return (
     <Root id="appRoot" screenHeight={screenHeight}>
-      <WrongNetworkToast></WrongNetworkToast>
-      <TxStatusToast></TxStatusToast>
+      <WrongNetworkToast />
+      <TxStatusToast />
       <WalletConnectModal />
       <Router>
         <Header />

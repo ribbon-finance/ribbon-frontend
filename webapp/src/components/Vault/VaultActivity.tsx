@@ -86,6 +86,9 @@ const VaultActivity: React.FC<VaultActivityProps> = ({ vaultOption }) => {
     return filteredActivities.slice((page - 1) * perPage, page * perPage);
   }, [filteredActivities, page]);
 
+  /**
+   * TODO: Currently Table with Fixed Header component that comes with pagination only has desktop support, to be expenad in the future with mobile table
+   */
   const renderPagination = useCallback(() => {
     if (loading) {
       return <PaginationText>{loadingText}</PaginationText>;
@@ -97,6 +100,10 @@ const VaultActivity: React.FC<VaultActivityProps> = ({ vaultOption }) => {
       );
     }
 
+    if (width > sizes.md) {
+      return <></>;
+    }
+
     return (
       <Pagination
         page={page}
@@ -104,7 +111,7 @@ const VaultActivity: React.FC<VaultActivityProps> = ({ vaultOption }) => {
         setPage={setPage}
       />
     );
-  }, [loading, filteredActivities, loadingText, page]);
+  }, [loading, filteredActivities, width, loadingText, page]);
 
   return (
     <>
@@ -138,7 +145,7 @@ const VaultActivity: React.FC<VaultActivityProps> = ({ vaultOption }) => {
         >
           {width > sizes.md ? (
             <DesktopVaultActivityList
-              activities={paginatedActivities}
+              activities={filteredActivities}
               vaultOption={vaultOption}
             />
           ) : (

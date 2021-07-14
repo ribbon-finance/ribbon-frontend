@@ -51,7 +51,7 @@ import YourPosition from "./YourPosition";
 import ActionModal from "../ActionModal/ActionModal";
 import { ACTIONS, PreviewStepProps } from "../ActionModal/types";
 import useGasPrice from "../../hooks/useGasPrice";
-import useConnectWalletModal from "../../hooks/useConnectWalletModal";
+import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
 import useTokenAllowance from "../../hooks/useTokenAllowance";
 import SwapBTCDropdown from "./SwapBTCDropdown";
