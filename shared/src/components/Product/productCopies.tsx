@@ -267,7 +267,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     title: "T-yvUSDC-P-ETH",
     subtitle: "ETH Put-Selling",
     description:
-      "Generates yield by running an automated ETH put selling strategy.",
+      "Generates yield by running an automated yvUSDC-collateralized ETH put selling strategy.",
     tags: ["PUT-SELLING"],
     strategy: (
       <>
