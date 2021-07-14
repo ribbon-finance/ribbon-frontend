@@ -5,7 +5,7 @@ import { LBPPoolTransaction } from "../models/lbp";
 
 const useLBPPoolTransactions = () => {
   const [transactions] = useState<LBPPoolTransaction[]>(
-    [...Array(10)].map(() =>
+    [...Array(938)].map(() =>
       Math.random() > 0.5
         ? {
             id: "0x343b22857f6a864bea4c2a814ef9b8df73163e6e",

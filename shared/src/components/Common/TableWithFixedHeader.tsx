@@ -1,12 +1,14 @@
-import React, { useMemo, useRef } from "react";
+import { AnimatePresence, motion } from "framer";
+import React, { useMemo, useRef, useState } from "react";
 import styled from "styled-components";
+
 import { ExternalIcon } from "../../assets/icons/icons";
 import { BaseLink, SecondaryText } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
-
 import useElementSize from "../../hooks/useElementSize";
+import Pagination from "./Pagination";
 
 const logoContainerWidth = 40;
 const logoContainerMargin = 16;
@@ -88,6 +90,13 @@ const ExternalLinkContainer = styled.div`
   }
 `;
 
+const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+`;
+
 interface TableWithFixedHeaderProps {
   weights: number[];
   labels: string[];
@@ -109,6 +118,7 @@ const TableWithFixedHeader: React.FC<TableWithFixedHeaderProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { width } = useElementSize(containerRef);
+  const [page, setPage] = useState<number>(1);
 
   const availableContentWidth = useMemo(() => {
     let calculatedWidth = width - 32;
@@ -125,7 +135,26 @@ const TableWithFixedHeader: React.FC<TableWithFixedHeaderProps> = ({
 
     return calculatedWidth;
   }, [externalLinks, logos, width]);
-  console.log(width, availableContentWidth);
+
+  const pagination = useMemo(() => {
+    if (data.length > 0) {
+      return (
+        <PaginationContainer>
+          <Pagination
+            page={page}
+            total={Math.ceil(data.length / perPage)}
+            setPage={setPage}
+          />
+        </PaginationContainer>
+      );
+    }
+
+    return <></>;
+  }, [data, page, perPage]);
+
+  const paginatedData = useMemo(() => {
+    return data.slice((page - 1) * perPage, page * perPage);
+  }, [data, page, perPage]);
 
   return (
     <div className="d-flex flex-column" ref={containerRef}>
@@ -140,36 +169,66 @@ const TableWithFixedHeader: React.FC<TableWithFixedHeaderProps> = ({
           </TableCol>
         ))}
       </TableHeader>
-      {data.map((row, index) => (
-        <TableRow>
-          {/* Row Logo */}
-          {logos && <LogoContainer>{logos[index]}</LogoContainer>}
+      <AnimatePresence initial={false} exitBeforeEnter>
+        <motion.div
+          key={page}
+          transition={{
+            duration: 0.25,
+            type: "keyframes",
+            ease: "easeInOut",
+          }}
+          initial={{
+            y: 50,
+            opacity: 0,
+          }}
+          animate={{
+            y: 0,
+            opacity: 1,
+          }}
+          exit={{
+            y: 50,
+            opacity: 0,
+          }}
+          className="w-100"
+        >
+          {paginatedData.map((row, index) => {
+            const rowNum = (page - 1) * perPage + index;
+            return (
+              <TableRow>
+                {/* Row Logo */}
+                {logos && <LogoContainer>{logos[rowNum]}</LogoContainer>}
 
-          {/* Row content */}
-          {row.map((col, index) => (
-            <TableCol
-              weight={weights[index]}
-              contentWidth={availableContentWidth}
-              orientation={orientations ? orientations[index] : undefined}
-            >
-              {col}
-            </TableCol>
-          ))}
+                {/* Row content */}
+                {row.map((col, colNum) => (
+                  <TableCol
+                    weight={weights[colNum]}
+                    contentWidth={availableContentWidth}
+                    orientation={
+                      orientations ? orientations[colNum] : undefined
+                    }
+                  >
+                    {col}
+                  </TableCol>
+                ))}
 
-          {/* External Link */}
-          {externalLinks && (
-            <BaseLink
-              to={externalLinks[index]}
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              <ExternalLinkContainer>
-                <ExternalIcon color="white" />
-              </ExternalLinkContainer>
-            </BaseLink>
-          )}
-        </TableRow>
-      ))}
+                {/* External Link */}
+                {externalLinks && (
+                  <BaseLink
+                    to={externalLinks[rowNum]}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    <ExternalLinkContainer>
+                      <ExternalIcon color="white" />
+                    </ExternalLinkContainer>
+                  </BaseLink>
+                )}
+              </TableRow>
+            );
+          })}
+        </motion.div>
+      </AnimatePresence>
+      {pagination}
     </div>
   );
 };
