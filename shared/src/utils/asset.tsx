@@ -54,7 +54,7 @@ const ColoredUSDCLogo = styled(USDCLogo)<{ backgroundColor?: string }>`
   }
 `;
 
-const ColoredYUSDCLogo = styled(YVUSDcLogo)<{ backgroundColor?: string }>`
+const ColoredYVUSDCLogo = styled(YVUSDcLogo)<{ backgroundColor?: string }>`
   margin: -8px;
   width: 100%;
 
@@ -91,6 +91,6 @@ export const getAssetLogo: (
     case "WETH":
       return WETHLogo;
     case "yvUSDC":
-      return ColoredYUSDCLogo;
+      return ColoredYVUSDCLogo;
   }
 };

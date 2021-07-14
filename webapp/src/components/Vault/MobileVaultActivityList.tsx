@@ -85,8 +85,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
           return (
             <>
               <Title>
-                MINTED {formatBigNumber(activity.depositAmount, 2, decimals)}{" "}
-                CONTRACTS
+                MINTED {formatBigNumber(activity.mintAmount, 2, 8)} CONTRACTS
               </Title>
               <VaultSecondaryInfoText>
                 O-{asset}-
