@@ -354,7 +354,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
               ) - the sale is done{" "}
               <TooltipExplanation
                 title="OVER-THE-COUNTER (OTC)"
-                explanation="Over-the-counter (OTC) refers to the process of how securities are traded via a broker-dealer network as opposed to on a centralized exchange."
+                explanation="Over-the-counter (OTC) refers to the process of how tokens are traded via a broker-dealer network as opposed to on a centralized exchange."
                 learnMoreURL="https://www.investopedia.com/terms/o/otc.asp"
                 renderContent={({ ref, ...triggerHandler }) => (
                   <HighlighText ref={ref} {...triggerHandler}>
