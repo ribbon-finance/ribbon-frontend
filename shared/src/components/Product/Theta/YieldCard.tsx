@@ -113,7 +113,7 @@ const ProductAssetLogoContainer = styled.div<{ color: string }>`
 `;
 
 const ProductTitle = styled(Title)`
-  font-size: 32px;
+  font-size: 28px;
   line-height: 40px;
   margin: 8px 0px;
   width: 100%;
