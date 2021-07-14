@@ -180,7 +180,7 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "rBTC-THETA": BigNumber.from(15).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rBTC-THETA")))
   ),
-  "ryvUSDC-ETH-P-THETA": BigNumber.from(500000).mul(
+  "ryvUSDC-ETH-P-THETA": BigNumber.from(10000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("ryvUSDC-ETH-P-THETA")))
   ),
 };
