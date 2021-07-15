@@ -27,7 +27,12 @@ interface GlobalStore {
   prices: { [asset in Assets]: { price: number; fetched: boolean } };
   pendingTransactions: PendingTransaction[];
   showConnectWallet: boolean;
-  latestAPY: { [option in VaultOptions]: number };
+  latestAPY: {
+    [option in VaultOptions]: {
+      apy: number;
+      fetched: boolean;
+    };
+  };
   assetYieldsInfo: {
     fetched: boolean;
     data: AssetYieldsInfoData;
@@ -62,8 +67,13 @@ export const initialState: GlobalStore = {
   },
   pendingTransactions: [],
   showConnectWallet: false,
-  latestAPY: Object.fromEntries(VaultList.map((option) => [option, 0.0])) as {
-    [option in VaultOptions]: number;
+  latestAPY: Object.fromEntries(
+    VaultList.map((option) => [option, { apy: 0.0, fetched: false }])
+  ) as {
+    [option in VaultOptions]: {
+      apy: number;
+      fetched: boolean;
+    };
   },
   assetYieldsInfo: {
     fetched: false,
