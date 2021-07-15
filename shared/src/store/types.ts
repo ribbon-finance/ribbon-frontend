@@ -70,3 +70,16 @@ export type AssetYieldsInfoData = {
     apr: number;
   }>;
 };
+
+export type AirdropInfoData = {
+  total: number;
+  proof: {
+    index: number;
+    amount: BigNumber;
+    proof: string[];
+  };
+  breakdown: {
+    [key: string]: number;
+  };
+  claimed: boolean;
+};

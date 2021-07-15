@@ -19,6 +19,7 @@ import {
   Assets,
   AssetsList,
   AssetYieldsInfoData,
+  AirdropInfoData,
 } from "./types";
 
 interface GlobalStore {
@@ -33,6 +34,7 @@ interface GlobalStore {
   };
   gasPrice: string;
   desktopView: DesktopViewType;
+  airdropInfo: AirdropInfoData | undefined;
 }
 
 export const initialState: GlobalStore = {
@@ -74,6 +76,7 @@ export const initialState: GlobalStore = {
   },
   gasPrice: "",
   desktopView: "grid",
+  airdropInfo: undefined
 };
 
 export const { useGlobalState } = createGlobalState(initialState);
