@@ -177,29 +177,9 @@ const StakingOverview = () => {
     return tokenData.numHolders.toLocaleString();
   }, [loadingText, tokenData, tokenLoading]);
 
-  const [week, nextStakeRewardStart] = useMemo(() => {
-    const startDate = moment
-      .utc("2021-06-18")
-      .set("hour", 10)
-      .set("minute", 30);
-
-    let weekCount;
-
-    if (moment().diff(startDate) < 0) {
-      weekCount = 1;
-    } else {
-      weekCount = moment().diff(startDate, "weeks") + 2;
-    }
-
-    // Next stake reward date
-    const nextStakeReward = startDate.add(weekCount - 1, "weeks");
-
-    return [weekCount, nextStakeReward];
-  }, []);
-
-  const timeTillNextRewardWeek = useMemo(() => {
+  const timeTillProgramsEnd = useMemo(() => {
     const endStakeReward = moment
-      .utc("2021-07-16")
+      .utc("2021-07-19")
       .set("hour", 10)
       .set("minute", 30);
 
@@ -209,12 +189,12 @@ const StakingOverview = () => {
 
     // Time till next stake reward date
     const startTime = moment.duration(
-      nextStakeRewardStart.diff(moment()),
+      endStakeReward.diff(moment()),
       "milliseconds"
     );
 
     return `${startTime.days()}D ${startTime.hours()}H ${startTime.minutes()}M`;
-  }, [nextStakeRewardStart]);
+  }, []);
 
   return (
     <OverviewContainer>
@@ -254,8 +234,8 @@ const StakingOverview = () => {
           <Title>{numHolderText}</Title>
         </OverviewKPI>
         <OverviewKPI>
-          <OverviewLabel>Time to Week {week} Stake Rewards</OverviewLabel>
-          <Title>{timeTillNextRewardWeek}</Title>
+          <OverviewLabel>Time till programs end</OverviewLabel>
+          <Title>{timeTillProgramsEnd}</Title>
         </OverviewKPI>
       </OverviewKPIContainer>
     </OverviewContainer>
