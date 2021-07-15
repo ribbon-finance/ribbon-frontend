@@ -1,4 +1,4 @@
-import React, {  useRef } from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
@@ -148,17 +148,30 @@ const YVUSDcLogoContainer = styled.div`
   }
 `;
 
-const SideYearnLogo = styled(YearnLogo)<{ width: number; height: number }>`
+const SideYearnLogo = styled(YearnLogo)<{
+  width: number;
+  height: number;
+  bottom?: string;
+  right?: string;
+}>`
   position: absolute;
-  bottom: 0px;
-  right: calc(-${(props) => props.width}px * 0.2);
+  bottom: ${(props) => (props.bottom ? props.bottom : "0px")};
+  right: ${(props) =>
+    props.right ? props.right : `calc(-${props.width}px * 0.2)`};
   border-radius: 100px;
   border: ${(props) => props.width * 0.03}px ${theme.border.style}
     ${colors.border};
 `;
 
 export const YVUSDcLogo: React.FC<
-  SVGProps & { markerConfig?: { height: number; width: number } }
+  SVGProps & {
+    markerConfig?: {
+      height?: number;
+      width?: number;
+      bottom?: string;
+      right?: string;
+    };
+  }
 > = ({ markerConfig, ...props }) => {
   const ref = useRef<HTMLDivElement>(null);
   const { width, height } = useElementSize(ref);
@@ -168,8 +181,10 @@ export const YVUSDcLogo: React.FC<
     <YVUSDcLogoContainer ref={ref}>
       <USDCLogo {...props} />
       <SideYearnLogo
-        width={markerConfig ? markerConfig.height : yearnDimension}
-        height={markerConfig ? markerConfig.width : yearnDimension}
+        width={markerConfig?.height || yearnDimension}
+        height={markerConfig?.width || yearnDimension}
+        bottom={markerConfig?.bottom}
+        right={markerConfig?.right}
       />
     </YVUSDcLogoContainer>
   );

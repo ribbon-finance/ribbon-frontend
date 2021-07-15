@@ -33,7 +33,7 @@ import {
   DesktopViewType,
   VaultFilterProps,
   VaultSortBy,
-  VaultSortByList,
+  VaultSortByFilterOptions,
   VaultStrategyList,
 } from "./types";
 
@@ -346,8 +346,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
                   className="flex-grow-1 "
                 />
                 <FilterDropdown
-                  // @ts-ignore
-                  options={VaultSortByList}
+                  options={VaultSortByFilterOptions}
                   value={sort}
                   // @ts-ignore
                   onSelect={(option: string) => {

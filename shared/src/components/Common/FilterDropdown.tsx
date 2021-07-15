@@ -128,7 +128,7 @@ const MenuItemText = styled(Title)`
 `;
 
 interface FilterDropdownProps {
-  options: string[];
+  options: Array<string | { display: string; value: string }>;
   value: string;
   onSelect: (option: string) => void;
   buttonConfig?: FilterDropdownButtonConfig;
@@ -232,11 +232,17 @@ const FilterDropdown: React.FC<
             duration: 0.2,
           }}
         >
-          {options.map((filterOption) =>
-            renderMenuItem(capitalize(filterOption), () => {
-              onSelect(filterOption);
-              setOpen(false);
-            })
+          {options.map(
+            (filterOption: string | { display: string; value: string }) =>
+              typeof filterOption === "string"
+                ? renderMenuItem(capitalize(filterOption), () => {
+                    onSelect(filterOption);
+                    setOpen(false);
+                  })
+                : renderMenuItem(capitalize(filterOption.display), () => {
+                    onSelect(filterOption.value);
+                    setOpen(false);
+                  })
           )}
         </FilterDropdownMenu>
       </AnimatePresence>

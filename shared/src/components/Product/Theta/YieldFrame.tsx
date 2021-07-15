@@ -127,6 +127,15 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
 
   const logo = useMemo(() => {
     switch (displayAsset) {
+      case "yvUSDC":
+        return (
+          <Logo
+            height="208"
+            width="auto"
+            markerConfig={{ height: 48, width: 48, right: "16px" }}
+          />
+        );
+
       default:
         return <Logo height="208" width="auto" />;
     }

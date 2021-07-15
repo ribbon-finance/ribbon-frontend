@@ -175,6 +175,9 @@ const HeroSection: React.FC<{
             style={{
               marginTop: 40,
             }}
+            markerConfig={{
+              right: "0px",
+            }}
           />
         );
       default:

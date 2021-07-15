@@ -80,7 +80,12 @@ export const getAssetLogo: (
   | React.FC<React.SVGAttributes<SVGElement>>
   | React.FC<
       React.SVGAttributes<SVGElement> & {
-        markerConfig?: { height: number; width: number };
+        markerConfig?: {
+          height?: number;
+          width?: number;
+          right?: string;
+          bottom?: string;
+        };
       }
     > = (asset) => {
   switch (asset) {
