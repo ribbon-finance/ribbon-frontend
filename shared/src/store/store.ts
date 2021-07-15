@@ -24,7 +24,7 @@ import {
 
 interface GlobalStore {
   vaultData: VaultDataResponses;
-  prices: { [asset in Assets]: number };
+  prices: { [asset in Assets]: { price: number; fetched: boolean } };
   pendingTransactions: PendingTransaction[];
   showConnectWallet: boolean;
   latestAPY: { [option in VaultOptions]: number };
@@ -55,8 +55,10 @@ export const initialState: GlobalStore = {
       },
     ])
   ) as VaultDataResponses,
-  prices: Object.fromEntries(AssetsList.map((asset) => [asset, 0.0])) as {
-    [asset in Assets]: number;
+  prices: Object.fromEntries(
+    AssetsList.map((asset) => [asset, { price: 0.0, fetched: false }])
+  ) as {
+    [asset in Assets]: { price: number; fetched: boolean };
   },
   pendingTransactions: [],
   showConnectWallet: false,
@@ -76,7 +78,7 @@ export const initialState: GlobalStore = {
   },
   gasPrice: "",
   desktopView: "grid",
-  airdropInfo: undefined
+  airdropInfo: undefined,
 };
 
 export const { useGlobalState } = createGlobalState(initialState);
