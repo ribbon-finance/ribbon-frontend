@@ -243,10 +243,9 @@ const MultiselectFilterDropdown: React.FC<
           <MenuItemText color={active ? textColor : colors.primaryText}>
             {option.display}
           </MenuItemText>
-          <StyledCheckButton
-            color={active ? textColor : colors.primaryText}
-            className="ml-auto"
-          />
+          {active && (
+            <StyledCheckButton color={textColor} className="ml-auto" />
+          )}
         </MenuItem>
       );
     },

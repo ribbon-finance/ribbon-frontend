@@ -378,17 +378,17 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           </div>
 
           {/* Estimated pool rewards */}
-          <div className="d-flex align-items-center mt-4 w-100">
+          {/* <div className="d-flex align-items-center mt-4 w-100">
             <div className="d-flex align-items-center">
               <SecondaryText>Your estimated rewards </SecondaryText>
             </div>
             <PoolRewardData className="ml-auto" color={color}>
               {renderEstimatedRewards()} RBN
             </PoolRewardData>
-          </div>
+          </div> */}
 
           {/* Pool reward of duration */}
-          <div className="d-flex align-items-center mt-2 w-100">
+          <div className="d-flex align-items-center mt-4 w-100">
             <div className="d-flex align-items-center">
               <SecondaryText>Pool rewards </SecondaryText>
             </div>
