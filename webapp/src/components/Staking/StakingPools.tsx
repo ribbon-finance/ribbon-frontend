@@ -28,7 +28,6 @@ import sizes from "shared/lib/designSystem/sizes";
 import StakingClaimModal from "./Modal/StakingClaimModal";
 import HelpInfo from "../Common/HelpInfo";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { BigNumber } from "ethers";
 import { shimmerKeyframe } from "shared/lib/designSystem/keyframes";
 import moment from "moment";
 
@@ -261,20 +260,20 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
     return formatBigNumber(stakingPoolData.unstakedBalance, 6, decimals);
   }, [active, stakingPoolData, decimals]);
 
-  const renderEstimatedRewards = useCallback(() => {
-    if (!active || stakingPoolData.currentStake.isZero()) {
-      return "---";
-    }
+  // const renderEstimatedRewards = useCallback(() => {
+  //   if (!active || stakingPoolData.currentStake.isZero()) {
+  //     return "---";
+  //   }
 
-    return formatBigNumber(
-      stakingPoolData.currentStake
-        .mul(BigNumber.from(10).pow(18))
-        .div(stakingPoolData.poolSize)
-        .mul(stakingPoolData.poolRewardForDuration)
-        .div(BigNumber.from(10).pow(18)),
-      0
-    );
-  }, [active, stakingPoolData]);
+  //   return formatBigNumber(
+  //     stakingPoolData.currentStake
+  //       .mul(BigNumber.from(10).pow(18))
+  //       .div(stakingPoolData.poolSize)
+  //       .mul(stakingPoolData.poolRewardForDuration)
+  //       .div(BigNumber.from(10).pow(18)),
+  //     0
+  //   );
+  // }, [active, stakingPoolData]);
 
   const showStakeModal = useMemo(() => {
     if (ongoingTransaction === "stake") {
