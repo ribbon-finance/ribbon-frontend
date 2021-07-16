@@ -113,13 +113,6 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
                 <APYNumber>{perfStr}</APYNumber>
               </div>
               <div>
-                {/* <DateFilter
-                active={monthFilter}
-                className="mr-3"
-                onClick={() => setMonthFilter(true)}
-              >
-                1m
-              </DateFilter> */}
                 <DateFilter
                   active={!monthFilter}
                   onClick={() => setMonthFilter(false)}

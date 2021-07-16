@@ -317,17 +317,19 @@ const PortfolioPerformance = () => {
       };
     }
 
-    let balancesToCalculate = balances.slice(
-      0,
-      hoveredBalanceUpdateIndex >= 0 ? hoveredBalanceUpdateIndex + 1 : 1
-    );
-    let totalInvestment = 0;
-    let netProfit = 0;
+    let balancesToCalculate = balances
+      .slice(
+        hoveredBalanceUpdateIndex >= 0 ? hoveredBalanceUpdateIndex + 1 : 1,
+        balances.length
+      )
+      .reverse();
+    let netProfit = vaultBalanceInAsset - vaultTotalDeposit;
+    let totalInvestment = vaultTotalDeposit;
 
     for (let i = 0; i < balancesToCalculate.length; i++) {
       const currentBalanceObj = balancesToCalculate[i];
-      totalInvestment += currentBalanceObj.netDeposit;
-      netProfit += currentBalanceObj.netProfit;
+      totalInvestment -= currentBalanceObj.netDeposit;
+      netProfit -= currentBalanceObj.netProfit;
     }
 
     return {
