@@ -91,8 +91,8 @@ const AirdropButton = () => {
       return "$RBN";
     }
 
-    if (!airdrop || !airdrop.total) {
-      return "0.00";
+    if (!airdrop) {
+      return "";
     }
 
     return airdrop.total.toLocaleString();
@@ -113,7 +113,9 @@ const AirdropButton = () => {
             <RedLogo height="32px" width="32px" />
           </LogoSignal>
         </LogoContainer>
-        {!isClaiming && <ClaimAmount>{amountStr}</ClaimAmount>}
+        {!isClaiming && airdrop && !airdrop.claimed && (
+          <ClaimAmount>{amountStr}</ClaimAmount>
+        )}
       </ButtonContainer>
       <AirdropModal
         show={showModal}

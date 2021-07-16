@@ -23,11 +23,6 @@ const COINGECKO_CURRENCIES = {
   yvUSDC: "",
 };
 
-// TODO: We need this global variable so we can prevent over-fetching
-const fetchedOnce = Object.fromEntries(
-  AssetsList.map((asset) => [asset, false])
-);
-
 const useAssetPrice: (args: {
   asset?: Assets;
 }) => { price: number; loading: boolean } = ({ asset = "WETH" }) => {
@@ -35,24 +30,23 @@ const useAssetPrice: (args: {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    !fetchedOnce[asset] &&
+    !prices[asset].fetched &&
       (async () => {
         if (AssetsList.includes(asset)) {
-          fetchedOnce[asset] = true;
           setLoading(true);
           const price = await getAssetPriceInUSD(COINGECKO_CURRENCIES[asset]);
           setPrices((prices) => ({
             ...prices,
-            [asset]: price,
+            [asset]: { price, fetched: true },
           }));
           setLoading(false);
         } else {
           throw new Error(`Unknown asset ${asset}`);
         }
       })();
-  }, [asset, setPrices]);
+  }, [asset, prices, setPrices]);
 
-  return { price: prices[asset], loading };
+  return { price: prices[asset].price, loading };
 };
 export default useAssetPrice;
 
@@ -68,17 +62,19 @@ export const useAssetsPrice: (args: {
     setLoading(true);
     Promise.all(
       assets.map(async (asset) => {
-        if (fetchedOnce[asset]) {
+        if (prices[asset].fetched) {
           return;
         }
 
         if (AssetsList.includes(asset)) {
-          fetchedOnce[asset] = true;
           setLoading(true);
           const price = await getAssetPriceInUSD(COINGECKO_CURRENCIES[asset]);
           setPrices((prices) => ({
             ...prices,
-            [asset]: price,
+            [asset]: {
+              price,
+              fetched: true,
+            },
           }));
           setLoading(false);
         } else {
@@ -87,10 +83,12 @@ export const useAssetsPrice: (args: {
       })
     );
     setLoading(false);
-  }, [assets, setPrices]);
+  }, [assets, prices, setPrices]);
 
   return {
-    prices: Object.fromEntries(assets.map((asset) => [asset, prices[asset]])),
+    prices: Object.fromEntries(
+      assets.map((asset) => [asset, prices[asset].price])
+    ),
     loading,
   };
 };

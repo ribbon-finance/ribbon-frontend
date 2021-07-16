@@ -43,6 +43,16 @@ export const VaultSortByList = [
   "YIELD: LOW TO HIGH",
 ] as const;
 export type VaultSortBy = typeof VaultSortByList[number];
+export const VaultSortByFilterOptions: Array<
+  VaultSortBy | { display: string; value: VaultSortBy }
+> = VaultSortByList.map((item) =>
+  item === VaultSortByList[0]
+    ? {
+        display: "DEFAULT",
+        value: item,
+      }
+    : item
+);
 export const VaultReleaseOrder: VaultOptions[] = VaultList;
 
 export interface VaultSetFilterProps {

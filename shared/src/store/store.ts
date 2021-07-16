@@ -19,20 +19,27 @@ import {
   Assets,
   AssetsList,
   AssetYieldsInfoData,
+  AirdropInfoData,
 } from "./types";
 
 interface GlobalStore {
   vaultData: VaultDataResponses;
-  prices: { [asset in Assets]: number };
+  prices: { [asset in Assets]: { price: number; fetched: boolean } };
   pendingTransactions: PendingTransaction[];
   showConnectWallet: boolean;
-  latestAPY: { [option in VaultOptions]: number };
+  latestAPY: {
+    [option in VaultOptions]: {
+      apy: number;
+      fetched: boolean;
+    };
+  };
   assetYieldsInfo: {
     fetched: boolean;
     data: AssetYieldsInfoData;
   };
   gasPrice: string;
   desktopView: DesktopViewType;
+  airdropInfo: AirdropInfoData | undefined;
 }
 
 export const initialState: GlobalStore = {
@@ -53,13 +60,20 @@ export const initialState: GlobalStore = {
       },
     ])
   ) as VaultDataResponses,
-  prices: Object.fromEntries(AssetsList.map((asset) => [asset, 0.0])) as {
-    [asset in Assets]: number;
+  prices: Object.fromEntries(
+    AssetsList.map((asset) => [asset, { price: 0.0, fetched: false }])
+  ) as {
+    [asset in Assets]: { price: number; fetched: boolean };
   },
   pendingTransactions: [],
   showConnectWallet: false,
-  latestAPY: Object.fromEntries(VaultList.map((option) => [option, 0.0])) as {
-    [option in VaultOptions]: number;
+  latestAPY: Object.fromEntries(
+    VaultList.map((option) => [option, { apy: 0.0, fetched: false }])
+  ) as {
+    [option in VaultOptions]: {
+      apy: number;
+      fetched: boolean;
+    };
   },
   assetYieldsInfo: {
     fetched: false,
@@ -74,6 +88,7 @@ export const initialState: GlobalStore = {
   },
   gasPrice: "",
   desktopView: "grid",
+  airdropInfo: undefined,
 };
 
 export const { useGlobalState } = createGlobalState(initialState);

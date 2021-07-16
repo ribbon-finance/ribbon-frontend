@@ -605,7 +605,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     if (isDeposit && maxDeposited) {
       return `This vault has a max deposit of ${parseInt(
         formatUnits(vaultMaxDepositAmount, decimals)
-      )} ${getAssetDisplay(asset)} per depositor`;
+      ).toLocaleString()} ${getAssetDisplay(asset)} per depositor`;
     }
 
     if (!isDeposit && allBalanceStaked) {
@@ -768,7 +768,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         case "max_exceeded":
           return `Maximum ${parseInt(
             formatUnits(vaultMaxDepositAmount, decimals)
-          )} ${getAssetDisplay(asset)} Exceeded`;
+          ).toLocaleString()} ${getAssetDisplay(asset)} Exceeded`;
       }
     }
 

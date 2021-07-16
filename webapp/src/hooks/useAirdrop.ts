@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "@ethersproject/bignumber";
 
@@ -8,25 +8,13 @@ import useMerkleDistributor from "./useMerkleDistributor";
 import usePendingTransactions from "./usePendingTransactions";
 import { formatUnits } from "@ethersproject/units";
 import { impersonateAddress } from "shared/lib/utils/development";
+import { useGlobalState } from "shared/lib/store/store";
 
 const useAirdrop = () => {
   const web3Context = useWeb3React();
   const account = impersonateAddress ? impersonateAddress : web3Context.account;
   const merkleDistributor = useMerkleDistributor();
-  const [airdropInfo, setAirdropInfo] = useState<
-    | {
-        total: number;
-        proof: {
-          index: number;
-          amount: BigNumber;
-          proof: string[];
-        };
-        breakdown: {
-          [key: string]: number;
-        };
-      }
-    | undefined
-  >(undefined);
+  const [airdropInfo, setAirdropInfo] = useGlobalState("airdropInfo");
   const [pendingTransactions] = usePendingTransactions();
 
   const updateAirdropInfo = useCallback(async () => {
@@ -53,15 +41,18 @@ const useAirdrop = () => {
     const claimed = await merkleDistributor.isClaimed(airdropClaim.index);
 
     setAirdropInfo({
-      total: claimed ? 0 : total,
+      total: total,
       proof: { ...airdropClaim, amount: BigNumber.from(airdropClaim.amount) },
       breakdown: airdropBreakdown,
+      claimed,
     });
-  }, [account, merkleDistributor]);
+  }, [account, merkleDistributor, setAirdropInfo]);
 
   useEffect(() => {
-    updateAirdropInfo();
-  }, [updateAirdropInfo]);
+    if (!airdropInfo) {
+      updateAirdropInfo();
+    }
+  }, [airdropInfo, updateAirdropInfo]);
 
   useEffect(() => {
     pendingTransactions.forEach((tx) => {
@@ -69,7 +60,7 @@ const useAirdrop = () => {
         setAirdropInfo((prev) => (prev ? { ...prev, total: 0 } : undefined));
       }
     });
-  }, [pendingTransactions]);
+  }, [pendingTransactions, setAirdropInfo]);
 
   return airdropInfo;
 };

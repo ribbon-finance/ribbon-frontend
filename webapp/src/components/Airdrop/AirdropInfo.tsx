@@ -240,7 +240,11 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
       <>
         {renderTopLogo()}
         <BaseModalContentColumn marginTop={64}>
-          <UnclaimLabel>UNCLAIMED $RBN</UnclaimLabel>
+          <UnclaimLabel>
+            {airdrop?.claimed
+              ? "CLAIMED $RBN AIRDROP"
+              : "UNCLAIMED $RBN AIRDROP"}
+          </UnclaimLabel>
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={8}>
           <UnclaimData variant="big">{airdropAmountStr}</UnclaimData>
@@ -261,9 +265,9 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
           <ActionButton
             className="btn py-3 mb-2"
             onClick={onClaim}
-            disabled={!airdrop?.total}
+            disabled={airdrop?.claimed}
           >
-            CLAIM $RBN
+            CLAIM $RBN AIRDROP
           </ActionButton>
         </BaseModalContentColumn>
       </>
@@ -282,7 +286,11 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
     () => (
       <>
         <BaseModalContentColumn>
-          <UnclaimLabel>UNCLAIMED $RBN</UnclaimLabel>
+          <UnclaimLabel>
+            {airdrop?.claimed
+              ? "CLAIMED $RBN AIRDROP"
+              : "UNCLAIMED $RBN AIRDROP"}
+          </UnclaimLabel>
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={24}>
           <UnclaimData variant="small">{airdropAmountStr}</UnclaimData>
@@ -301,7 +309,7 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
         </HideBreakdownButton>
       </>
     ),
-    [airdropAmountStr, readMore]
+    [airdrop, airdropAmountStr, readMore]
   );
 
   return (

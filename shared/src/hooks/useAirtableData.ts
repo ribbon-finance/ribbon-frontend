@@ -82,14 +82,9 @@ type UseLatestAPY = (vaultOption: VaultOptions) => APYData;
 
 export const useLatestAPY: UseLatestAPY = (vaultOption) => {
   const [latestAPY, setLatestAPY] = useGlobalState("latestAPY");
-  const [fetched, setFetched] = useState<{ [option in VaultOptions]: boolean }>(
-    Object.fromEntries(VaultList.map((option) => [option, false])) as {
-      [option in VaultOptions]: boolean;
-    }
-  );
 
   const fetchAirtableData = useCallback(async () => {
-    if (fetched[vaultOption]) {
+    if (latestAPY[vaultOption].fetched) {
       return;
     }
 
@@ -107,37 +102,28 @@ export const useLatestAPY: UseLatestAPY = (vaultOption) => {
     const data = response.data.records;
     const newApy = data[0].fields.APY * 100;
 
-    setFetched((prev) => ({
-      ...prev,
-      [vaultOption]: true,
-    }));
     setLatestAPY((prev) => ({
       ...prev,
-      [vaultOption]: newApy,
+      [vaultOption]: { apy: newApy, fetched: true },
     }));
-  }, [vaultOption, setLatestAPY, fetched]);
+  }, [vaultOption, latestAPY, setLatestAPY]);
 
   useEffect(() => {
     fetchAirtableData();
   }, [fetchAirtableData]);
 
   return {
-    fetched: fetched[vaultOption],
-    res: latestAPY[vaultOption],
+    fetched: latestAPY[vaultOption].fetched,
+    res: latestAPY[vaultOption].apy,
   };
 };
 
 export const useLatestAPYs = (vaultOptions: VaultOptions[]) => {
   const [latestAPY, setLatestAPY] = useGlobalState("latestAPY");
-  const [fetched, setFetched] = useState<{ [option in VaultOptions]: boolean }>(
-    Object.fromEntries(VaultList.map((option) => [option, false])) as {
-      [option in VaultOptions]: boolean;
-    }
-  );
 
   const fetchAirtableData = useCallback(async () => {
     vaultOptions.forEach(async (vaultOption) => {
-      if (fetched[vaultOption]) {
+      if (latestAPY[vaultOption].fetched) {
         return;
       }
 
@@ -155,16 +141,12 @@ export const useLatestAPYs = (vaultOptions: VaultOptions[]) => {
       const data = response.data.records;
       const newApy = data[0].fields.APY * 100;
 
-      setFetched((prev) => ({
-        ...prev,
-        [vaultOption]: true,
-      }));
       setLatestAPY((prev) => ({
         ...prev,
-        [vaultOption]: newApy,
+        [vaultOption]: { apy: newApy, fetched: true },
       }));
     });
-  }, [vaultOptions, setLatestAPY, fetched]);
+  }, [vaultOptions, latestAPY, setLatestAPY]);
 
   useEffect(() => {
     fetchAirtableData();
@@ -174,8 +156,8 @@ export const useLatestAPYs = (vaultOptions: VaultOptions[]) => {
     vaultOptions.map((vaultOption) => [
       vaultOption,
       {
-        fetched: fetched[vaultOption],
-        res: latestAPY[vaultOption],
+        fetched: latestAPY[vaultOption].fetched,
+        res: latestAPY[vaultOption].apy,
       },
     ])
   );
