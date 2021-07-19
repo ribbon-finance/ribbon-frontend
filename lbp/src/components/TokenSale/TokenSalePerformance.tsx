@@ -1,10 +1,13 @@
 import React from "react";
 import styled from "styled-components";
+import { Col, Row } from "react-bootstrap";
 
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import { Col, Row } from "react-bootstrap";
 import { SecondaryText, Title } from "shared/lib/designSystem";
+import useRBNToken from "shared/lib/hooks/useRBNToken";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLBPPoolData from "../../hooks/useLBPPoolData";
 
 const SaleChartContainer = styled.div`
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
@@ -63,6 +66,14 @@ const StatisticData = styled(Title)`
 `;
 
 const TokenSalePerformance = () => {
+  const { data: tokenData, loading: tokenLoading } = useRBNToken();
+  const { data: poolData, loading: poolLoading } = useLBPPoolData();
+  const loadingText = useTextAnimation(
+    ["Loading", "Loading .", "Loading ..", "Loading ..."],
+    250,
+    tokenLoading || poolLoading
+  );
+
   return (
     <SaleChartContainer>
       <Row>
@@ -101,7 +112,9 @@ const TokenSalePerformance = () => {
           </StatisticContainer>
           <StatisticContainer>
             <StatisticLabel>No. of RBN Tokenholders</StatisticLabel>
-            <StatisticData>2,202</StatisticData>
+            <StatisticData>
+              {tokenLoading ? loadingText : tokenData?.numHolders}
+            </StatisticData>
           </StatisticContainer>
           <StatisticContainer>
             <StatisticLabel>Token Sale Ends In</StatisticLabel>

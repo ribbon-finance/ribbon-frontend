@@ -24,7 +24,7 @@ import { getAssets, VaultList } from "shared/lib/constants/constants";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { AssetsList } from "shared/lib/store/types";
 import { getAssetDecimals } from "shared/lib/utils/asset";
-import useRBNTokenAccount from "../../hooks/useRBNTokenAccount";
+import useRBNTokenAccount from "shared/lib/hooks/useRBNTokenAccount";
 
 const PerformanceContainer = styled.div`
   display: flex;

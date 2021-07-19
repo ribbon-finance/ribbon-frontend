@@ -37,13 +37,9 @@ const useStakingPoolData: UseStakingPoolData = (
   const [data, setData] = useState<StakingPoolData>(initialData);
   const [loading, setLoading] = useState(false);
   const [firstLoaded, setFirstLoaded] = useState(false);
-  // const contract = useStakingReward(option);
-  const web3Context = useWeb3React();
+  const { active, library, account: web3Account } = useWeb3React();
   const { provider } = useWeb3Context();
-  const active = web3Context.active;
-  const library = web3Context.library;
-  const account = impersonateAddress ? impersonateAddress : web3Context.account;
-  // const tokenContract = useERC20Token(option);
+  const account = impersonateAddress ? impersonateAddress : web3Account;
 
   const doMulticall = useCallback(async () => {
     const contract = getStakingReward(library || provider, option, active);
@@ -56,6 +52,7 @@ const useStakingPoolData: UseStakingPoolData = (
     if (!firstLoaded) {
       setLoading(true);
     }
+
     /**
      * 1. Pool size
      * 2. Pool reward of duration
