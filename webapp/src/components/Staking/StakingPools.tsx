@@ -448,7 +448,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
                       moment(stakingPoolData.periodFinish, "X").diff(moment()) >
                         0
                         ? "Claim Info"
-                        : "Claim and unstake"
+                        : "Claim & unstake"
                     }`}
               </StakingPoolCardFooterButton>
             </>
