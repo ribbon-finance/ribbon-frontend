@@ -102,7 +102,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
     setStep("claim");
 
     try {
-      const tx = await stakingReward.getReward();
+      const tx = await stakingReward.exit();
 
       setStep("claiming");
 
