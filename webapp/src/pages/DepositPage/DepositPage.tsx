@@ -50,8 +50,8 @@ const HeroText = styled(Title)`
   margin-bottom: 24px;
 `;
 
-const AttributePill = styled.div`
-  background: ${colors.pillBackground};
+const AttributePill = styled.div<{ color: string }>`
+  background: ${(props) => props.color}29;
   color: ${colors.primaryText};
   border-radius: ${theme.border.radiusSmall};
   padding: 16px;
@@ -192,7 +192,11 @@ const HeroSection: React.FC<{
           <div style={{ zIndex: 1 }} className="col-xl-6 d-flex flex-column">
             <div className="d-flex flex-row my-3">
               {productCopies[vaultOption].tags.map((tag) => (
-                <AttributePill className="mr-2 text-uppercase" key={tag}>
+                <AttributePill
+                  className="mr-2 text-uppercase"
+                  key={tag}
+                  color={color}
+                >
                   {tag}
                 </AttributePill>
               ))}

@@ -26,7 +26,6 @@ import { productCopies } from "../productCopies";
 import { BarChartIcon, GlobeIcon } from "../../../assets/icons/icons";
 import { getAssetDisplay, getAssetLogo } from "../../../utils/asset";
 import { getVaultColor } from "../../../utils/vault";
-import { Waves } from "../../../assets";
 import ModalContentExtra from "../../Common/ModalContentExtra";
 import { VaultAccount } from "../../../models/vault";
 import YieldComparison from "./YieldComparison";
@@ -61,7 +60,7 @@ const ProductCard = styled(motion.div)<{ color: string }>`
   }
 `;
 
-const TopContainer = styled.div`
+const TopContainer = styled.div<{ color: string }>`
   display: flex;
   position: relative;
   justify-content: space-between;
@@ -70,6 +69,12 @@ const TopContainer = styled.div`
   margin: -16px;
   padding: 16px;
   margin-bottom: 0;
+
+  background: linear-gradient(
+    96.84deg,
+    ${(props) => props.color}14 1.04%,
+    ${(props) => props.color}03 98.99%
+  );
 `;
 
 const TagContainer = styled.div`
@@ -146,26 +151,6 @@ const ModeSwitcherContainer = styled.div<{ color: string }>`
   border-radius: 100px;
   background: ${(props) => props.color}14;
   z-index: 1;
-`;
-
-const TopBackgroundContianer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  padding: 1px;
-  border-radius: ${theme.border.radius};
-  overflow: hidden;
-`;
-
-const StyledWaves = styled(Waves)<{ color: string }>`
-  path {
-    stroke: ${(props) => props.color}14;
-  }
 `;
 
 const PositionLabel = styled(SecondaryText)`
@@ -290,7 +275,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
           role="button"
           color={color}
         >
-          <TopContainer>
+          <TopContainer color={color}>
             {/* Tags */}
             <TagContainer>
               {productCopies[vault].tags.map((tag) => (
@@ -312,13 +297,6 @@ const YieldCard: React.FC<YieldCardProps> = ({
                 <BarChartIcon color={color} />
               )}
             </ModeSwitcherContainer>
-
-            {/* Top container background */}
-            <TopBackgroundContianer>
-              <div>
-                <StyledWaves height="136px" width="834px" color={color} />
-              </div>
-            </TopBackgroundContianer>
           </TopContainer>
           <ProductInfo>
             {mode === "info" ? (
