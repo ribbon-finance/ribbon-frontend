@@ -400,7 +400,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
         <StakingPoolCardFooter>
           {active ? (
             <>
-              <StakingPoolCardFooterButton
+              {/* <StakingPoolCardFooterButton
                 role="button"
                 color={color}
                 onClick={() => {
@@ -421,7 +421,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
                 ongoingTransaction === "stake"
                   ? primaryActionLoadingText
                   : "Stake"}
-              </StakingPoolCardFooterButton>
+              </StakingPoolCardFooterButton> */}
               {/* <StakingPoolCardFooterButton
                 role="button"
                 color={color}
@@ -448,7 +448,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
                       moment(stakingPoolData.periodFinish, "X").diff(moment()) >
                         0
                         ? "Claim Info"
-                        : "Claim & unstake"
+                        : "Unstake & Claim"
                     }`}
               </StakingPoolCardFooterButton>
             </>

@@ -241,7 +241,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
                   color={color}
                   disabled={stakingPoolData.claimableRbn.isZero()}
                 >
-                  Claim & Unstake
+                  {"Unstake & Claim"}
                 </ActionButton>
               </BaseModalContentColumn>
             )}
