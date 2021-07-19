@@ -107,7 +107,7 @@ const useStakingPoolData: UseStakingPoolData = (
       poolSize,
       poolRewardForDuration,
       lastTimeRewardApplicable: lastTimeRewardApplicable.toString(),
-      periodFinish: moment(periodFinish, "X").add(3, "days").unix().toString(),
+      periodFinish: moment(periodFinish, "X").add(1, "days").unix().toString(),
       claimHistory: claimEvents.map((event: any) => ({
         amount: BigNumber.from(event.data),
       })),
