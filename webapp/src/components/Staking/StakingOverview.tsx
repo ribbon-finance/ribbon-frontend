@@ -161,7 +161,7 @@ const StakingOverview = () => {
     for (let i = 0; i < VaultList.length; i++) {
       const stakingPool = stakingPools[VaultList[i]];
       if (!stakingPool) {
-        break;
+        continue;
       }
       totalDistributed = totalDistributed.add(stakingPool.totalRewardClaimed);
     }
