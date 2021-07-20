@@ -11,6 +11,7 @@ import { getSubgraphqlURI } from "../utils/env";
 const useRBNTokenAccount = () => {
   const web3Context = useWeb3React();
   const account = impersonateAddress ? impersonateAddress : web3Context.account;
+  // TODO: Global state
   const [data, setData] = useState<ERC20TokenAccountSubgraphData>();
   const [loading, setLoading] = useState(false);
 

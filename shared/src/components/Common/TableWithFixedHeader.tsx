@@ -178,6 +178,7 @@ const TableWithFixedHeader: React.FC<TableWithFixedHeaderProps> = ({
             contentWidth={availableContentWidth}
             orientation={orientations ? orientations[index] : undefined}
             hasLogo={Boolean(logos)}
+            key={index}
           >
             <SecondaryText>{labels[index]}</SecondaryText>
           </TableHeaderCol>
@@ -208,7 +209,7 @@ const TableWithFixedHeader: React.FC<TableWithFixedHeaderProps> = ({
           {paginatedData.map((row, index) => {
             const rowNum = (page - 1) * perPage + index;
             return (
-              <TableRow>
+              <TableRow key={index}>
                 {/* Row Logo */}
                 {logos && <LogoContainer>{logos[rowNum]}</LogoContainer>}
 
@@ -220,6 +221,7 @@ const TableWithFixedHeader: React.FC<TableWithFixedHeaderProps> = ({
                     orientation={
                       orientations ? orientations[colNum] : undefined
                     }
+                    key={colNum}
                   >
                     {col}
                   </TableCol>

@@ -14,6 +14,7 @@ import { impersonateAddress } from "shared/lib/utils/development";
 const useStakingAccount = (vaults: VaultOptions[]) => {
   const web3Context = useWeb3React();
   const account = impersonateAddress ? impersonateAddress : web3Context.account;
+  // TODO: Global state
   const [stakingAccounts, setStakingAccounts] = useState<{
     [key: string]: StakingPoolAccount | undefined;
   }>({});

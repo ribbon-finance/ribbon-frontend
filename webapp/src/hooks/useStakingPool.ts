@@ -10,6 +10,7 @@ import { getSubgraphqlURI } from "shared/lib/utils/env";
 import { StakingPool } from "../models/staking";
 
 const useStakingPool = (vaults: VaultOptions[]) => {
+  // TODO: Global state
   const [stakingPools, setStakingPools] = useState<{
     [key: string]: StakingPool | undefined;
   }>({});

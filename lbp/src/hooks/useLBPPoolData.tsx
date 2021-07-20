@@ -1,48 +1,60 @@
 import { useState } from "react";
 import { useCallback, useEffect } from "react";
 
-import { LBPPoolData } from "../models/lbp";
+import { RibbonTokenAddress } from "shared/lib/constants/constants";
 import useLBPPool from "./useLBPPool";
+import { useLBPGlobalState } from "../store/store";
+import { LBPPoolInitialBalance, LBPPoolUSDC } from "../constants/constants";
+import { LBPPoolData } from "../models/lbp";
 
 type UseLBPPoolData = (params?: {
   poll: boolean;
   pollingFrequency?: number;
-}) => any;
+}) => { data: LBPPoolData | undefined; loading: boolean };
 
 const useLBPPoolData: UseLBPPoolData = (
   { poll, pollingFrequency } = { poll: true, pollingFrequency: 5000 }
 ) => {
-  const [data, setData] = useState<LBPPoolData>();
+  const [poolData, setPoolData] = useLBPGlobalState("lbpPoolData");
   const [loading, setLoading] = useState(false);
-  const [firstLoaded, setFirstLoaded] = useState(false);
-  const pool = useLBPPool();
+  const contract = useLBPPool();
 
   const doMulticall = useCallback(async () => {
-    if (!pool) {
+    if (!contract) {
       return;
     }
 
-    if (!firstLoaded) {
+    if (!poolData.fetched) {
       setLoading(true);
     }
 
     /**
      * 1. Spot price
+     * 2. USDC Balance
+     * 3. Ribbon Balance
      */
-    // const unconnectedPromises = [];
+    const unconnectedPromises = [
+      contract.getSpotPrice(LBPPoolUSDC, RibbonTokenAddress),
+      contract.getBalance(LBPPoolUSDC),
+      contract.getBalance(RibbonTokenAddress),
+      contract.getSwapFee(),
+    ];
 
-    // try {
-    //   const [spotPrice] = await Promise.all(unconnectedPromises);
-    //   console.log(spotPrice);
-    // } catch (err) {
-    //   console.log(err);
-    // }
+    const [spotPrice, usdcBalance, ribbonBalance] = await Promise.all(
+      unconnectedPromises
+    );
 
-    if (!firstLoaded) {
-      setLoading(false);
-      setFirstLoaded(true);
-    }
-  }, [pool, firstLoaded]);
+    setPoolData({
+      fetched: true,
+      data: {
+        spotPrice,
+        ribbonSold: LBPPoolInitialBalance.ribbon.sub(ribbonBalance),
+        usdcRaised: usdcBalance.sub(LBPPoolInitialBalance.usdc),
+      },
+    });
+
+    setLoading(false);
+  }, [contract, poolData.fetched, setPoolData]);
 
   useEffect(() => {
     let pollInterval: any = undefined;
@@ -60,7 +72,7 @@ const useLBPPoolData: UseLBPPoolData = (
     };
   }, [poll, pollingFrequency, doMulticall]);
 
-  return { data, loading };
+  return { data: poolData.data, loading };
 };
 
 export default useLBPPoolData;

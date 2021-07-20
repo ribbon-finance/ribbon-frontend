@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import { Col, Row } from "react-bootstrap";
 
@@ -8,6 +8,7 @@ import { SecondaryText, Title } from "shared/lib/designSystem";
 import useRBNToken from "shared/lib/hooks/useRBNToken";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useLBPPoolData from "../../hooks/useLBPPoolData";
+import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
 
 const SaleChartContainer = styled.div`
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
@@ -74,6 +75,22 @@ const TokenSalePerformance = () => {
     tokenLoading || poolLoading
   );
 
+  const [spotPriceText, rbnSoldText, usdcRaisedText] = useMemo(() => {
+    if (poolLoading) {
+      return [loadingText, loadingText, loadingText];
+    }
+
+    if (!poolData) {
+      return ["---", 0, 0];
+    }
+
+    return [
+      assetToUSD(poolData.spotPrice, 1, 6),
+      formatBigNumber(poolData.ribbonSold, 4, 18),
+      formatBigNumber(poolData.usdcRaised, 2, 6),
+    ];
+  }, [loadingText, poolData, poolLoading]);
+
   return (
     <SaleChartContainer>
       <Row>
@@ -83,7 +100,7 @@ const TokenSalePerformance = () => {
             <RibbonSaleLabel>RBN PRICE</RibbonSaleLabel>
           </div>
           <div className="d-flex ml-4 mt-1">
-            <PriceText>$0.2945</PriceText>
+            <PriceText>{spotPriceText}</PriceText>
           </div>
           <div className="flex-grow-1"></div>
           <div className="ml-4 mt-3 mb-3 d-flex">
@@ -104,11 +121,11 @@ const TokenSalePerformance = () => {
         <Col md={4}>
           <StatisticContainer>
             <StatisticLabel>RBN Sold</StatisticLabel>
-            <StatisticData>30,000,000</StatisticData>
+            <StatisticData>{rbnSoldText}</StatisticData>
           </StatisticContainer>
           <StatisticContainer>
             <StatisticLabel>USDC Raised</StatisticLabel>
-            <StatisticData>15,000,000</StatisticData>
+            <StatisticData>{usdcRaisedText}</StatisticData>
           </StatisticContainer>
           <StatisticContainer>
             <StatisticLabel>No. of RBN Tokenholders</StatisticLabel>

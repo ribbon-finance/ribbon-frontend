@@ -50,7 +50,7 @@ import { Assets } from "shared/lib/store/types";
 import YourPosition from "./YourPosition";
 import ActionModal from "../ActionModal/ActionModal";
 import { ACTIONS, PreviewStepProps } from "../ActionModal/types";
-import useGasPrice from "../../hooks/useGasPrice";
+import useGasPrice from "shared/lib/hooks/useGasPrice";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
 import useTokenAllowance from "../../hooks/useTokenAllowance";

@@ -18,7 +18,6 @@ import useStakingPoolData from "../../hooks/useStakingPoolData";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
-import useTokenAllowance from "../../hooks/useTokenAllowance";
 import StakingApprovalModal from "./Modal/StakingApprovalModal";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
@@ -169,10 +168,6 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   const [, setShowConnectWalletModal] = useConnectWalletModal();
   const { data: stakingPoolData } = useStakingPoolData(vaultOption);
   const decimals = getAssetDecimals(getAssets(vaultOption));
-  const tokenAllowance = useTokenAllowance(
-    vaultOption,
-    VaultLiquidityMiningMap[vaultOption]!
-  );
   const [pendingTransactions] = usePendingTransactions();
 
   const [showApprovalModal, setShowApprovalModal] = useState(false);

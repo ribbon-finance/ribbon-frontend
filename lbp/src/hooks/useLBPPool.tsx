@@ -1,18 +1,28 @@
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 
+import { LBPPool__factory, LBPPool } from "shared/lib/codegen";
+import { RibbonTokenBalancerPoolAddress } from "shared/lib/constants/constants";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 
-type UseLBPPool = () => null;
+export const getLBPPool = (library: any, useSigner: boolean = true) => {
+  const provider = useSigner ? library.getSigner() : library;
+
+  return LBPPool__factory.connect(RibbonTokenBalancerPoolAddress, provider);
+};
+
+type UseLBPPool = () => LBPPool | null;
 
 const useLBPPool: UseLBPPool = () => {
-  const { library, active } = useWeb3React();
+  const { active, library } = useWeb3React();
   const { provider } = useWeb3Context();
-  const [pool] = useState(null);
+  const [pool, setPool] = useState<LBPPool | null>(null);
 
   useEffect(() => {
-    // const vault = getLBPPool(library || provider, active);
-    // setPool(vault);
+    if (provider) {
+      const vault = getLBPPool(library || provider, active);
+      setPool(vault);
+    }
   }, [active, library, provider]);
 
   return pool;

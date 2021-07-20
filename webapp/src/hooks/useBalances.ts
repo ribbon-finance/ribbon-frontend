@@ -10,6 +10,7 @@ import { impersonateAddress } from "shared/lib/utils/development";
 const useBalances = (before?: number, after?: number) => {
   const web3Context = useWeb3React();
   const account = impersonateAddress ? impersonateAddress : web3Context.account;
+  // TODO: Global state
   const [balances, setBalances] = useState<BalanceUpdate[]>([]);
   const [loading, setLoading] = useState(false);
 

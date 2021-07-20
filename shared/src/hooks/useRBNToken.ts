@@ -7,6 +7,7 @@ import { ERC20TokenSubgraphData } from "../models/token";
 import { getSubgraphqlURI } from "../utils/env";
 
 const useRBNToken = () => {
+  // TODO: Global state
   const [data, setData] = useState<ERC20TokenSubgraphData>();
   const [loading, setLoading] = useState(false);
 

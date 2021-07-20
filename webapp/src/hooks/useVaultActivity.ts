@@ -7,6 +7,7 @@ import { VaultActivity } from "shared/lib/models/vault";
 import { getSubgraphqlURI } from "shared/lib/utils/env";
 
 const useVaultActivity = (vault: VaultOptions) => {
+  // TODO: Global state
   const [activities, setActivities] = useState<VaultActivity[]>([]);
   const [loading, setLoading] = useState(false);
 
