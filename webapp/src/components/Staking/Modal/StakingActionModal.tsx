@@ -231,7 +231,11 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     ) {
       setStep("form");
     }
-  }, [show, stake, stakingPoolData, step]);
+
+    if (show && !stake) {
+      handleMaxPressed();
+    }
+  }, [handleMaxPressed, show, stake, stakingPoolData, step]);
 
   /**
    * Input Validation

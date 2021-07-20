@@ -161,7 +161,7 @@ const StakingOverview = () => {
     for (let i = 0; i < VaultList.length; i++) {
       const stakingPool = stakingPools[VaultList[i]];
       if (!stakingPool) {
-        break;
+        continue;
       }
       totalDistributed = totalDistributed.add(stakingPool.totalRewardClaimed);
     }
@@ -179,12 +179,12 @@ const StakingOverview = () => {
 
   const timeTillProgramsEnd = useMemo(() => {
     const endStakeReward = moment
-      .utc("2021-07-19")
+      .utc("2021-07-17")
       .set("hour", 10)
       .set("minute", 30);
 
     if (endStakeReward.diff(moment()) <= 0) {
-      return "End of Rewards, you can unstake now";
+      return "End of Rewards";
     }
 
     // Time till next stake reward date

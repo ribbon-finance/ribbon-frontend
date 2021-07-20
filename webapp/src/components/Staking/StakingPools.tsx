@@ -204,15 +204,15 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
     return undefined;
   }, [pendingTransactions, vaultOption]);
 
-  const hasAllowance = useMemo(() => {
-    if (!tokenAllowance || tokenAllowance.isZero()) {
-      return false;
-    }
+  // const hasAllowance = useMemo(() => {
+  //   if (!tokenAllowance || tokenAllowance.isZero()) {
+  //     return false;
+  //   }
 
-    setShowApprovalModal(false);
+  //   setShowApprovalModal(false);
 
-    return true;
-  }, [tokenAllowance]);
+  //   return true;
+  // }, [tokenAllowance]);
 
   const actionLoadingTextBase = useMemo(() => {
     switch (ongoingTransaction) {
@@ -400,7 +400,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
         <StakingPoolCardFooter>
           {active ? (
             <>
-              <StakingPoolCardFooterButton
+              {/* <StakingPoolCardFooterButton
                 role="button"
                 color={color}
                 onClick={() => {
@@ -421,36 +421,40 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
                 ongoingTransaction === "stake"
                   ? primaryActionLoadingText
                   : "Stake"}
-              </StakingPoolCardFooterButton>
-              <StakingPoolCardFooterButton
-                role="button"
-                color={color}
-                onClick={() => {
-                  setShowActionModal(true);
-                  setIsStakeAction(false);
-                }}
-                active={ongoingTransaction === "unstake"}
-              >
-                {ongoingTransaction === "unstake"
-                  ? primaryActionLoadingText
-                  : "Unstake"}
-              </StakingPoolCardFooterButton>
-              <StakingPoolCardFooterButton
-                role="button"
-                color={color}
-                onClick={() => setShowClaimModal(true)}
-                active={ongoingTransaction === "rewardClaim"}
-              >
-                {ongoingTransaction === "rewardClaim"
-                  ? primaryActionLoadingText
-                  : `${
-                      stakingPoolData.periodFinish &&
-                      moment(stakingPoolData.periodFinish, "X").diff(moment()) >
-                        0
-                        ? "Claim Info"
-                        : "Claim $RBN"
-                    }`}
-              </StakingPoolCardFooterButton>
+              </StakingPoolCardFooterButton> */}
+              {stakingPoolData.claimableRbn.isZero() ? (
+                <StakingPoolCardFooterButton
+                  role="button"
+                  color={color}
+                  onClick={() => {
+                    setShowActionModal(true);
+                    setIsStakeAction(false);
+                  }}
+                  active={ongoingTransaction === "unstake"}
+                >
+                  {ongoingTransaction === "unstake"
+                    ? primaryActionLoadingText
+                    : "Unstake"}
+                </StakingPoolCardFooterButton>
+              ) : (
+                <StakingPoolCardFooterButton
+                  role="button"
+                  color={color}
+                  onClick={() => setShowClaimModal(true)}
+                  active={ongoingTransaction === "rewardClaim"}
+                >
+                  {ongoingTransaction === "rewardClaim"
+                    ? primaryActionLoadingText
+                    : `${
+                        stakingPoolData.periodFinish &&
+                        moment(stakingPoolData.periodFinish, "X").diff(
+                          moment()
+                        ) > 0
+                          ? "Claim Info"
+                          : "Unstake & Claim"
+                      }`}
+                </StakingPoolCardFooterButton>
+              )}
             </>
           ) : (
             <StakingPoolCardFooterButton
