@@ -110,11 +110,11 @@ const TokenSalePerformance = () => {
                   color={colors.products.yield}
                   className="px-5 py-3"
                   onClick={() =>
-                    setSwapModal((currentSwapModal) => ({
+                    setSwapModal({
                       show: true,
                       offerToken: "USDC",
                       receiveToken: "RBN",
-                    }))
+                    })
                   }
                 >
                   BUY
@@ -123,11 +123,11 @@ const TokenSalePerformance = () => {
                   className="ml-3 px-5 py-3"
                   variant="secondary"
                   onClick={() =>
-                    setSwapModal((currentSwapModal) => ({
+                    setSwapModal({
                       show: true,
                       offerToken: "RBN",
                       receiveToken: "USDC",
-                    }))
+                    })
                   }
                 >
                   SELL
