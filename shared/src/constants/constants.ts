@@ -168,19 +168,19 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
 };
 
 export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
-  "rUSDC-BTC-P-THETA": BigNumber.from(500000).mul(
+  "rUSDC-BTC-P-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rUSDC-BTC-P-THETA")))
   ),
-  "rUSDC-ETH-P-THETA": BigNumber.from(500000).mul(
+  "rUSDC-ETH-P-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rUSDC-ETH-P-THETA")))
   ),
-  "rETH-THETA": BigNumber.from(250).mul(
+  "rETH-THETA": BigNumber.from(50000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rETH-THETA")))
   ),
-  "rBTC-THETA": BigNumber.from(15).mul(
+  "rBTC-THETA": BigNumber.from(2000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rBTC-THETA")))
   ),
-  "ryvUSDC-ETH-P-THETA": BigNumber.from(10000000).mul(
+  "ryvUSDC-ETH-P-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("ryvUSDC-ETH-P-THETA")))
   ),
 };
