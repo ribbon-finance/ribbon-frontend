@@ -101,19 +101,19 @@ const TokenSaleInfo = () => {
           </InfoTableCell>
           <InfoTableCell>
             <LabelText>$RBN Start Weight</LabelText>
-            <InfoTableCellData>95</InfoTableCellData>
+            <InfoTableCellData>95%</InfoTableCellData>
           </InfoTableCell>
           <InfoTableCell>
             <LabelText>USDC Start Weight</LabelText>
-            <InfoTableCellData>5</InfoTableCellData>
+            <InfoTableCellData>5%</InfoTableCellData>
           </InfoTableCell>
           <InfoTableCell>
             <LabelText>$RBN End Weight</LabelText>
-            <InfoTableCellData>50</InfoTableCellData>
+            <InfoTableCellData>50%</InfoTableCellData>
           </InfoTableCell>
           <InfoTableCell>
             <LabelText>USDC End Weight</LabelText>
-            <InfoTableCellData>50</InfoTableCellData>
+            <InfoTableCellData>50%</InfoTableCellData>
           </InfoTableCell>
         </InfoTable>
 

@@ -117,8 +117,7 @@ export const SecondaryText = styled.span`
 `;
 
 export const BaseInputLabel = styled.div`
-  color: ${colors.primaryText};
-  opacity: 0.4;
+  color: ${colors.text};
   font-size: 12px;
   line-height: 16px;
   letter-spacing: 1.5px;

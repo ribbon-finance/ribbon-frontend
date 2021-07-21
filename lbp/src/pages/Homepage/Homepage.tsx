@@ -28,39 +28,41 @@ const Homepage = () => {
   }, [views]);
 
   return (
-    <Container>
-      <div className="mt-5 d-flex justify-content-center">
-        <SegmentControl
-          segments={HomepageViewList.map((view) => ({
-            value: view,
-            display: view,
-          }))}
-          value={views}
-          onSelect={(value) => setViews(value as HomepageView)}
-        />
-      </div>
-      <AnimatePresence exitBeforeEnter>
-        <ContentContainer
-          key={views}
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          exit={{
-            opacity: 0,
-          }}
-          transition={{
-            duration: 0.25,
-            type: "keyframes",
-            ease: "easeInOut",
-          }}
-        >
-          {content}
-        </ContentContainer>
-      </AnimatePresence>
-    </Container>
+    <>
+      <Container>
+        <div className="mt-5 d-flex justify-content-center">
+          <SegmentControl
+            segments={HomepageViewList.map((view) => ({
+              value: view,
+              display: view,
+            }))}
+            value={views}
+            onSelect={(value) => setViews(value as HomepageView)}
+          />
+        </div>
+        <AnimatePresence exitBeforeEnter>
+          <ContentContainer
+            key={views}
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.25,
+              type: "keyframes",
+              ease: "easeInOut",
+            }}
+          >
+            {content}
+          </ContentContainer>
+        </AnimatePresence>
+      </Container>
+    </>
   );
 };
 
