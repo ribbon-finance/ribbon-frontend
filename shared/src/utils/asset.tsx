@@ -9,7 +9,7 @@ import {
 import colors from "../designSystem/colors";
 import { Assets } from "../store/types";
 
-export const getAssetDisplay = (asset: Assets): string => {
+export const getAssetDisplay = (asset: Assets | string): string => {
   switch (asset) {
     case "WETH":
       return "ETH";
@@ -18,7 +18,7 @@ export const getAssetDisplay = (asset: Assets): string => {
   }
 };
 
-export const getAssetDecimals = (asset: Assets): number => {
+export const getAssetDecimals = (asset: Assets | string): number => {
   switch (asset) {
     case "WBTC":
       return 8;
@@ -68,9 +68,7 @@ const ColoredYVUSDCLogo = styled(YVUSDcLogo)<{ backgroundColor?: string }>`
   }
 `;
 
-export const getAssetLogo: (
-  asset: Assets
-) =>
+export const getAssetLogo: (asset: Assets) =>
   | StyledComponent<
       React.FC<React.SVGAttributes<SVGElement>>,
       any,

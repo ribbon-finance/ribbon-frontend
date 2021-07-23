@@ -18,3 +18,7 @@ export const LBPPoolInitialBalance = isDevelopment()
       usdc: BigNumber.from(55472217).mul(BigNumber.from(10).pow(4)),
       ribbon: BigNumber.from(50000000).mul(BigNumber.from(10).pow(18)),
     };
+
+export const BalancerPoolUrls = isDevelopment()
+  ? `https://ipfs.fleek.co/ipns/balancer-bucket.storage.fleek.co/balancer-exchange-kovan/pools?timestamp=${Date.now()}`
+  : `https://ipfs.fleek.co/ipns/balancer-bucket.storage.fleek.co/balancer-exchange/pools?timestamp=${Date.now()}`;

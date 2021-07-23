@@ -2,7 +2,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 
 import { LBPPool } from "shared/lib/codegen";
-import { LBPPoolFactory } from "shared/lib/codegen/LBPPoolFactory"
+import { LBPPoolFactory } from "shared/lib/codegen/LBPPoolFactory";
 import { RibbonTokenBalancerPoolAddress } from "shared/lib/constants/constants";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 

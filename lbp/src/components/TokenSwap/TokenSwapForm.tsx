@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
-import { BigNumber } from "ethers";
 
 import {
   BaseInput,
@@ -19,12 +18,7 @@ import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { useLBPGlobalState } from "../../store/store";
 import Logo from "shared/lib/assets/icons/logo";
 import { USDCLogo } from "shared/lib/assets/icons/erc20Assets";
-import useLBPPool from "../../hooks/useLBPPool";
-import { LBPPoolUSDC } from "../../constants/constants";
-import { RibbonTokenAddress } from "shared/lib/constants/constants";
 import { handleSmallNumber } from "shared/lib/utils/math";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import { formatUnits } from "ethers/lib/utils";
 
 const PrimaryInputLabel = styled(BaseInputLabel)`
   font-family: VCR;
@@ -72,22 +66,18 @@ const BalancerReadMoreLink = styled(BaseUnderlineLink)`
 
 interface TokenSwapFormProps {
   swapAmount?: number;
+  receiveAmount: number;
+  exchangeRate: number;
   onSwapAmountChange: (amount: string) => void;
 }
 
 const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
   swapAmount,
+  receiveAmount,
+  exchangeRate,
   onSwapAmountChange,
 }) => {
   const [swapModal, setSwapModal] = useLBPGlobalState("swapModal");
-  const [exchangeRate, setExchangeRate] = useState<BigNumber>();
-  const [loading, setLoading] = useState(false);
-  const loadingText = useTextAnimation(
-    ["Loading", "Loading .", "Loading ..", "Loading ..."],
-    250,
-    loading
-  );
-  const contract = useLBPPool();
 
   const renderAssetLogo = useCallback((asset: "RBN" | "USDC") => {
     switch (asset) {
@@ -98,63 +88,23 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
     }
   }, []);
 
-  useEffect(() => {
-    if (!contract) {
-      return;
-    }
-    (async () => {
-      setLoading(true);
-      const offerTokenAddress =
-        swapModal.offerToken === "USDC" ? LBPPoolUSDC : RibbonTokenAddress;
-      const receiveTokenAddress =
-        swapModal.receiveToken === "USDC" ? LBPPoolUSDC : RibbonTokenAddress;
-
-      setExchangeRate(
-        await contract.getSpotPrice(offerTokenAddress, receiveTokenAddress)
-      );
-      setLoading(false);
-    })();
-  }, [contract, swapModal.offerToken, swapModal.receiveToken]);
-
   const exchangeRateText = useMemo(() => {
-    if (loading) {
-      return loadingText;
-    }
-
-    if (!exchangeRate) {
-      return "---";
+    if (!swapAmount || !receiveAmount) {
+      return `1 ${swapModal.offerToken} = ${handleSmallNumber(exchangeRate)} ${
+        swapModal.receiveToken
+      }`;
     }
 
     return `1 ${swapModal.offerToken} = ${handleSmallNumber(
-      1 /
-        parseFloat(
-          formatUnits(exchangeRate, swapModal.offerToken === "USDC" ? 6 : 18)
-        )
+      receiveAmount / swapAmount
     )} ${swapModal.receiveToken}`;
   }, [
     exchangeRate,
-    loading,
-    loadingText,
+    receiveAmount,
+    swapAmount,
     swapModal.offerToken,
     swapModal.receiveToken,
   ]);
-
-  const renderReceiveTokenAmount = useCallback(() => {
-    if (loading) {
-      return loadingText;
-    }
-
-    if (!exchangeRate) {
-      return "---";
-    }
-
-    return handleSmallNumber(
-      (swapAmount ? swapAmount : 0) /
-        parseFloat(
-          formatUnits(exchangeRate, swapModal.offerToken === "USDC" ? 6 : 18)
-        )
-    );
-  }, [exchangeRate, loading, loadingText, swapAmount, swapModal.offerToken]);
 
   return (
     <>
@@ -219,7 +169,7 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
               <TokenSwapInput
                 type="number"
                 className="form-control"
-                value={renderReceiveTokenAmount()}
+                value={handleSmallNumber(receiveAmount)}
                 disabled
               />
             </div>
