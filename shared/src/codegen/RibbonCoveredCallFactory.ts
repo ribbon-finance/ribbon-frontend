@@ -2,12 +2,19 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
+import { Contract, Signer } from "ethers";
 import { Provider } from "@ethersproject/providers";
-import type {
-  RibbonCoveredCall,
-  RibbonCoveredCallInterface,
-} from "../RibbonCoveredCall";
+
+import type { RibbonCoveredCall } from "./RibbonCoveredCall";
+
+export class RibbonCoveredCallFactory {
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): RibbonCoveredCall {
+    return new Contract(address, _abi, signerOrProvider) as RibbonCoveredCall;
+  }
+}
 
 const _abi = [
   {
@@ -1250,16 +1257,3 @@ const _abi = [
     type: "function",
   },
 ];
-
-export class RibbonCoveredCall__factory {
-  static readonly abi = _abi;
-  static createInterface(): RibbonCoveredCallInterface {
-    return new utils.Interface(_abi) as RibbonCoveredCallInterface;
-  }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): RibbonCoveredCall {
-    return new Contract(address, _abi, signerOrProvider) as RibbonCoveredCall;
-  }
-}

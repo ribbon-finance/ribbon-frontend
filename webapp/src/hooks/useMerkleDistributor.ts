@@ -2,18 +2,17 @@ import { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
 import deployments from "shared/lib/constants/deployments.json";
-import {
-  MerkleDistributor__factory,
-  MerkleDistributor,
-} from "shared/lib/codegen";
 import { isDevelopment } from "shared/lib/utils/env";
+import { MerkleDistributorFactory } from "shared/lib/codegen/MerkleDistributorFactory";
+import { MerkleDistributor } from "shared/lib/codegen";
+
 
 export const getMerkleDistributor = (
   library: any
 ): MerkleDistributor | undefined => {
   if (library) {
     const provider = library.getSigner();
-    return MerkleDistributor__factory.connect(
+    return MerkleDistributorFactory.connect(
       isDevelopment()
         ? deployments.kovan.MerkleDistributor
         : deployments.mainnet.MerkleDistributor,

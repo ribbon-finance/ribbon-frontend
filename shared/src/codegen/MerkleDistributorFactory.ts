@@ -2,12 +2,19 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
+import { Contract, Signer } from "ethers";
 import { Provider } from "@ethersproject/providers";
-import type {
-  MerkleDistributor,
-  MerkleDistributorInterface,
-} from "../MerkleDistributor";
+
+import type { MerkleDistributor } from "./MerkleDistributor";
+
+export class MerkleDistributorFactory {
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): MerkleDistributor {
+    return new Contract(address, _abi, signerOrProvider) as MerkleDistributor;
+  }
+}
 
 const _abi = [
   {
@@ -263,16 +270,3 @@ const _abi = [
     type: "function",
   },
 ];
-
-export class MerkleDistributor__factory {
-  static readonly abi = _abi;
-  static createInterface(): MerkleDistributorInterface {
-    return new utils.Interface(_abi) as MerkleDistributorInterface;
-  }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): MerkleDistributor {
-    return new Contract(address, _abi, signerOrProvider) as MerkleDistributor;
-  }
-}

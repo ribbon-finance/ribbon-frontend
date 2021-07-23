@@ -1,10 +1,10 @@
-import { Provider } from "@ethersproject/providers";
+import { BaseProvider } from "@ethersproject/providers";
 import { ethers } from "ethers";
 import React, { ReactElement, useContext } from "react";
 import { getNodeURI } from "../utils/env";
 
 export type Web3ContextData = {
-  provider: Provider;
+  provider: BaseProvider;
 };
 
 const defaultProvider = ethers.getDefaultProvider(getNodeURI());

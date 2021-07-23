@@ -1,10 +1,11 @@
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
-import { IERC20, IERC20__factory } from "../codegen";
 import { isDevelopment } from "../utils/env";
 import addresses from "../constants/externalAddresses.json";
 import { ERC20Token } from "../models/eth";
 import { useWeb3Context } from "./web3Context";
+import { IERC20Factory } from "../codegen/IERC20Factory";
+import { IERC20 } from "../codegen";
 
 export const getERC20Token = (
   library: any,
@@ -14,7 +15,7 @@ export const getERC20Token = (
   if (library) {
     const provider = useSigner ? library.getSigner() : library;
 
-    return IERC20__factory.connect(
+    return IERC20Factory.connect(
       isDevelopment()
         ? addresses.kovan.assets[token]
         : addresses.mainnet.assets[token],

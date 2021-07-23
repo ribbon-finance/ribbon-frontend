@@ -37,7 +37,6 @@ const useLBPPoolData: UseLBPPoolData = (
       contract.getSpotPrice(LBPPoolUSDC, RibbonTokenAddress),
       contract.getBalance(LBPPoolUSDC),
       contract.getBalance(RibbonTokenAddress),
-      contract.getSwapFee(),
     ];
 
     const [spotPrice, usdcBalance, ribbonBalance] = await Promise.all(

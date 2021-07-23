@@ -18,7 +18,7 @@
     "chart.js": "^2.9.4",
     "craco-less": "^1.17.1",
     "currency.js": "^2.0.3",
-    "ethers": "^5.0.32",
+    "ethers": "5.0.17",
     "framer": "^1.2.28",
     "framer-motion": "^4.1.4",
     "lottie-web": "^5.7.8",
@@ -43,8 +43,7 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "lint": "eslint --fix --ext .tsx,.ts .",
-    "codegen": "typechain --target=ethers-v5 --outDir src/codegen 'src/constants/abis/*.json'"
+    "lint": "eslint --fix --ext .tsx,.ts ."
   },
   "eslintConfig": {
     "extends": [
@@ -65,12 +64,10 @@
     ]
   },
   "devDependencies": {
-    "@typechain/ethers-v5": "^6.0.5",
     "@types/chart.js": "^2.9.31",
     "@types/react-lottie": "^1.2.5",
     "@types/react-router-dom": "^5.1.7",
     "@types/smoothscroll-polyfill": "^0.3.1",
-    "@types/styled-components": "^5.1.9",
-    "typechain": "^4.0.3"
+    "@types/styled-components": "^5.1.9"
   }
 }

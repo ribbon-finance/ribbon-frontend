@@ -18,7 +18,7 @@
     "@web3-react/walletconnect-connector": "^6.1.9",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
-    "ethers": "^5.1.0",
+    "ethers": "5.0.17",
     "framer": "^1.2.29",
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.1",

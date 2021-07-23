@@ -2,9 +2,19 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
+import { Contract, Signer } from "ethers";
 import { Provider } from "@ethersproject/providers";
-import type { LBPPool, LBPPoolInterface } from "../LBPPool";
+
+import type { LBPPool } from "./LBPPool";
+
+export class LBPPoolFactory {
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): LBPPool {
+    return new Contract(address, _abi, signerOrProvider) as LBPPool;
+  }
+}
 
 const _abi = [
   {
@@ -1636,16 +1646,3 @@ const _abi = [
     type: "function",
   },
 ];
-
-export class LBPPool__factory {
-  static readonly abi = _abi;
-  static createInterface(): LBPPoolInterface {
-    return new utils.Interface(_abi) as LBPPoolInterface;
-  }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): LBPPool {
-    return new Contract(address, _abi, signerOrProvider) as LBPPool;
-  }
-}

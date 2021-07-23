@@ -9,15 +9,16 @@ import {
   BigNumber,
   BigNumberish,
   PopulatedTransaction,
-  BaseContract,
+} from "ethers";
+import {
+  Contract,
   ContractTransaction,
   Overrides,
   CallOverrides,
-} from "ethers";
+} from "@ethersproject/contracts";
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface LBPPoolInterface extends ethers.utils.Interface {
   functions: {
@@ -558,101 +559,202 @@ interface LBPPoolInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
-export class LBPPool extends BaseContract {
+export class LBPPool extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  listeners<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter?: TypedEventFilter<EventArgsArray, EventArgsObject>
-  ): Array<TypedListener<EventArgsArray, EventArgsObject>>;
-  off<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
-  ): this;
-  on<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
-  ): this;
-  once<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
-  ): this;
-  removeListener<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
-  ): this;
-  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>
-  ): this;
-
-  listeners(eventName?: string): Array<Listener>;
-  off(eventName: string, listener: Listener): this;
-  on(eventName: string, listener: Listener): this;
-  once(eventName: string, listener: Listener): this;
-  removeListener(eventName: string, listener: Listener): this;
-  removeAllListeners(eventName?: string): this;
-
-  queryFilter<EventArgsArray extends Array<any>, EventArgsObject>(
-    event: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    fromBlockOrBlockhash?: string | number | undefined,
-    toBlock?: string | number | undefined
-  ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
+  on(event: EventFilter | string, listener: Listener): this;
+  once(event: EventFilter | string, listener: Listener): this;
+  addListener(eventName: EventFilter | string, listener: Listener): this;
+  removeAllListeners(eventName: EventFilter | string): this;
+  removeListener(eventName: any, listener: Listener): this;
 
   interface: LBPPoolInterface;
 
   functions: {
-    BONE(overrides?: CallOverrides): Promise<[BigNumber]>;
+    BONE(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
-    BPOW_PRECISION(overrides?: CallOverrides): Promise<[BigNumber]>;
+    "BONE()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
-    EXIT_FEE(overrides?: CallOverrides): Promise<[BigNumber]>;
+    BPOW_PRECISION(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
-    INIT_POOL_SUPPLY(overrides?: CallOverrides): Promise<[BigNumber]>;
+    "BPOW_PRECISION()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
-    MAX_BOUND_TOKENS(overrides?: CallOverrides): Promise<[BigNumber]>;
+    EXIT_FEE(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
-    MAX_BPOW_BASE(overrides?: CallOverrides): Promise<[BigNumber]>;
+    "EXIT_FEE()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
-    MAX_FEE(overrides?: CallOverrides): Promise<[BigNumber]>;
+    INIT_POOL_SUPPLY(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
-    MAX_IN_RATIO(overrides?: CallOverrides): Promise<[BigNumber]>;
+    "INIT_POOL_SUPPLY()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
-    MAX_OUT_RATIO(overrides?: CallOverrides): Promise<[BigNumber]>;
+    MAX_BOUND_TOKENS(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
-    MAX_TOTAL_WEIGHT(overrides?: CallOverrides): Promise<[BigNumber]>;
+    "MAX_BOUND_TOKENS()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
-    MAX_WEIGHT(overrides?: CallOverrides): Promise<[BigNumber]>;
+    MAX_BPOW_BASE(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
-    MIN_BALANCE(overrides?: CallOverrides): Promise<[BigNumber]>;
+    "MAX_BPOW_BASE()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
-    MIN_BOUND_TOKENS(overrides?: CallOverrides): Promise<[BigNumber]>;
+    MAX_FEE(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
-    MIN_BPOW_BASE(overrides?: CallOverrides): Promise<[BigNumber]>;
+    "MAX_FEE()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
-    MIN_FEE(overrides?: CallOverrides): Promise<[BigNumber]>;
+    MAX_IN_RATIO(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
-    MIN_WEIGHT(overrides?: CallOverrides): Promise<[BigNumber]>;
+    "MAX_IN_RATIO()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    MAX_OUT_RATIO(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "MAX_OUT_RATIO()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    MAX_TOTAL_WEIGHT(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "MAX_TOTAL_WEIGHT()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    MAX_WEIGHT(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "MAX_WEIGHT()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    MIN_BALANCE(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "MIN_BALANCE()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    MIN_BOUND_TOKENS(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "MIN_BOUND_TOKENS()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    MIN_BPOW_BASE(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "MIN_BPOW_BASE()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    MIN_FEE(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "MIN_FEE()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    MIN_WEIGHT(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "MIN_WEIGHT()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
     allowance(
       src: string,
       dst: string,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "allowance(address,address)"(
+      src: string,
+      dst: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
 
     approve(
       dst: string,
       amt: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    balanceOf(whom: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+    "approve(address,uint256)"(
+      dst: string,
+      amt: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    balanceOf(
+      whom: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "balanceOf(address)"(
+      whom: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
 
     bind(
       token: string,
       balance: BigNumberish,
       denorm: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "bind(address,uint256,uint256)"(
+      token: string,
+      balance: BigNumberish,
+      denorm: BigNumberish,
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     calcInGivenOut(
@@ -663,7 +765,23 @@ export class LBPPool extends BaseContract {
       tokenAmountOut: BigNumberish,
       swapFee: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { tokenAmountIn: BigNumber }>;
+    ): Promise<{
+      tokenAmountIn: BigNumber;
+      0: BigNumber;
+    }>;
+
+    "calcInGivenOut(uint256,uint256,uint256,uint256,uint256,uint256)"(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      tokenAmountOut: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      tokenAmountIn: BigNumber;
+      0: BigNumber;
+    }>;
 
     calcOutGivenIn(
       tokenBalanceIn: BigNumberish,
@@ -673,7 +791,23 @@ export class LBPPool extends BaseContract {
       tokenAmountIn: BigNumberish,
       swapFee: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { tokenAmountOut: BigNumber }>;
+    ): Promise<{
+      tokenAmountOut: BigNumber;
+      0: BigNumber;
+    }>;
+
+    "calcOutGivenIn(uint256,uint256,uint256,uint256,uint256,uint256)"(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      tokenAmountIn: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      tokenAmountOut: BigNumber;
+      0: BigNumber;
+    }>;
 
     calcPoolInGivenSingleOut(
       tokenBalanceOut: BigNumberish,
@@ -683,7 +817,23 @@ export class LBPPool extends BaseContract {
       tokenAmountOut: BigNumberish,
       swapFee: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { poolAmountIn: BigNumber }>;
+    ): Promise<{
+      poolAmountIn: BigNumber;
+      0: BigNumber;
+    }>;
+
+    "calcPoolInGivenSingleOut(uint256,uint256,uint256,uint256,uint256,uint256)"(
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      poolSupply: BigNumberish,
+      totalWeight: BigNumberish,
+      tokenAmountOut: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      poolAmountIn: BigNumber;
+      0: BigNumber;
+    }>;
 
     calcPoolOutGivenSingleIn(
       tokenBalanceIn: BigNumberish,
@@ -693,7 +843,23 @@ export class LBPPool extends BaseContract {
       tokenAmountIn: BigNumberish,
       swapFee: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { poolAmountOut: BigNumber }>;
+    ): Promise<{
+      poolAmountOut: BigNumber;
+      0: BigNumber;
+    }>;
+
+    "calcPoolOutGivenSingleIn(uint256,uint256,uint256,uint256,uint256,uint256)"(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      poolSupply: BigNumberish,
+      totalWeight: BigNumberish,
+      tokenAmountIn: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      poolAmountOut: BigNumber;
+      0: BigNumber;
+    }>;
 
     calcSingleInGivenPoolOut(
       tokenBalanceIn: BigNumberish,
@@ -703,7 +869,23 @@ export class LBPPool extends BaseContract {
       poolAmountOut: BigNumberish,
       swapFee: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { tokenAmountIn: BigNumber }>;
+    ): Promise<{
+      tokenAmountIn: BigNumber;
+      0: BigNumber;
+    }>;
+
+    "calcSingleInGivenPoolOut(uint256,uint256,uint256,uint256,uint256,uint256)"(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      poolSupply: BigNumberish,
+      totalWeight: BigNumberish,
+      poolAmountOut: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      tokenAmountIn: BigNumber;
+      0: BigNumber;
+    }>;
 
     calcSingleOutGivenPoolIn(
       tokenBalanceOut: BigNumberish,
@@ -713,7 +895,23 @@ export class LBPPool extends BaseContract {
       poolAmountIn: BigNumberish,
       swapFee: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { tokenAmountOut: BigNumber }>;
+    ): Promise<{
+      tokenAmountOut: BigNumber;
+      0: BigNumber;
+    }>;
+
+    "calcSingleOutGivenPoolIn(uint256,uint256,uint256,uint256,uint256,uint256)"(
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      poolSupply: BigNumberish,
+      totalWeight: BigNumberish,
+      poolAmountIn: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      tokenAmountOut: BigNumber;
+      0: BigNumber;
+    }>;
 
     calcSpotPrice(
       tokenBalanceIn: BigNumberish,
@@ -722,141 +920,364 @@ export class LBPPool extends BaseContract {
       tokenWeightOut: BigNumberish,
       swapFee: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { spotPrice: BigNumber }>;
+    ): Promise<{
+      spotPrice: BigNumber;
+      0: BigNumber;
+    }>;
 
-    decimals(overrides?: CallOverrides): Promise<[number]>;
+    "calcSpotPrice(uint256,uint256,uint256,uint256,uint256)"(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      spotPrice: BigNumber;
+      0: BigNumber;
+    }>;
+
+    decimals(overrides?: CallOverrides): Promise<{
+      0: number;
+    }>;
+
+    "decimals()"(overrides?: CallOverrides): Promise<{
+      0: number;
+    }>;
 
     decreaseApproval(
       dst: string,
       amt: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "decreaseApproval(address,uint256)"(
+      dst: string,
+      amt: BigNumberish,
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     exitPool(
       poolAmountIn: BigNumberish,
       minAmountsOut: BigNumberish[],
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "exitPool(uint256,uint256[])"(
+      poolAmountIn: BigNumberish,
+      minAmountsOut: BigNumberish[],
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     exitswapExternAmountOut(
       tokenOut: string,
       tokenAmountOut: BigNumberish,
       maxPoolAmountIn: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "exitswapExternAmountOut(address,uint256,uint256)"(
+      tokenOut: string,
+      tokenAmountOut: BigNumberish,
+      maxPoolAmountIn: BigNumberish,
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     exitswapPoolAmountIn(
       tokenOut: string,
       poolAmountIn: BigNumberish,
       minAmountOut: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    finalize(
-      overrides?: Overrides & { from?: string | Promise<string> }
+    "exitswapPoolAmountIn(address,uint256,uint256)"(
+      tokenOut: string,
+      poolAmountIn: BigNumberish,
+      minAmountOut: BigNumberish,
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    getBalance(token: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+    finalize(overrides?: Overrides): Promise<ContractTransaction>;
 
-    getColor(overrides?: CallOverrides): Promise<[string]>;
+    "finalize()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-    getController(overrides?: CallOverrides): Promise<[string]>;
-
-    getCurrentTokens(
+    getBalance(
+      token: string,
       overrides?: CallOverrides
-    ): Promise<[string[]] & { tokens: string[] }>;
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "getBalance(address)"(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    getColor(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "getColor()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    getController(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "getController()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    getCurrentTokens(overrides?: CallOverrides): Promise<{
+      tokens: string[];
+      0: string[];
+    }>;
+
+    "getCurrentTokens()"(overrides?: CallOverrides): Promise<{
+      tokens: string[];
+      0: string[];
+    }>;
 
     getDenormalizedWeight(
       token: string,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<{
+      0: BigNumber;
+    }>;
 
-    getFinalTokens(
+    "getDenormalizedWeight(address)"(
+      token: string,
       overrides?: CallOverrides
-    ): Promise<[string[]] & { tokens: string[] }>;
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    getFinalTokens(overrides?: CallOverrides): Promise<{
+      tokens: string[];
+      0: string[];
+    }>;
+
+    "getFinalTokens()"(overrides?: CallOverrides): Promise<{
+      tokens: string[];
+      0: string[];
+    }>;
 
     getNormalizedWeight(
       token: string,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<{
+      0: BigNumber;
+    }>;
 
-    getNumTokens(overrides?: CallOverrides): Promise<[BigNumber]>;
+    "getNormalizedWeight(address)"(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    getNumTokens(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "getNumTokens()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
     getSpotPrice(
       tokenIn: string,
       tokenOut: string,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { spotPrice: BigNumber }>;
+    ): Promise<{
+      spotPrice: BigNumber;
+      0: BigNumber;
+    }>;
+
+    "getSpotPrice(address,address)"(
+      tokenIn: string,
+      tokenOut: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      spotPrice: BigNumber;
+      0: BigNumber;
+    }>;
 
     getSpotPriceSansFee(
       tokenIn: string,
       tokenOut: string,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { spotPrice: BigNumber }>;
+    ): Promise<{
+      spotPrice: BigNumber;
+      0: BigNumber;
+    }>;
 
-    getSwapFee(overrides?: CallOverrides): Promise<[BigNumber]>;
+    "getSpotPriceSansFee(address,address)"(
+      tokenIn: string,
+      tokenOut: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      spotPrice: BigNumber;
+      0: BigNumber;
+    }>;
 
-    getTotalDenormalizedWeight(overrides?: CallOverrides): Promise<[BigNumber]>;
+    getSwapFee(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
-    gulp(
+    "getSwapFee()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    getTotalDenormalizedWeight(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "getTotalDenormalizedWeight()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    gulp(token: string, overrides?: Overrides): Promise<ContractTransaction>;
+
+    "gulp(address)"(
       token: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     increaseApproval(
       dst: string,
       amt: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    isBound(t: string, overrides?: CallOverrides): Promise<[boolean]>;
+    "increaseApproval(address,uint256)"(
+      dst: string,
+      amt: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    isFinalized(overrides?: CallOverrides): Promise<[boolean]>;
+    isBound(
+      t: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
 
-    isPublicSwap(overrides?: CallOverrides): Promise<[boolean]>;
+    "isBound(address)"(
+      t: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    isFinalized(overrides?: CallOverrides): Promise<{
+      0: boolean;
+    }>;
+
+    "isFinalized()"(overrides?: CallOverrides): Promise<{
+      0: boolean;
+    }>;
+
+    isPublicSwap(overrides?: CallOverrides): Promise<{
+      0: boolean;
+    }>;
+
+    "isPublicSwap()"(overrides?: CallOverrides): Promise<{
+      0: boolean;
+    }>;
 
     joinPool(
       poolAmountOut: BigNumberish,
       maxAmountsIn: BigNumberish[],
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "joinPool(uint256,uint256[])"(
+      poolAmountOut: BigNumberish,
+      maxAmountsIn: BigNumberish[],
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     joinswapExternAmountIn(
       tokenIn: string,
       tokenAmountIn: BigNumberish,
       minPoolAmountOut: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "joinswapExternAmountIn(address,uint256,uint256)"(
+      tokenIn: string,
+      tokenAmountIn: BigNumberish,
+      minPoolAmountOut: BigNumberish,
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     joinswapPoolAmountOut(
       tokenIn: string,
       poolAmountOut: BigNumberish,
       maxAmountIn: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    name(overrides?: CallOverrides): Promise<[string]>;
+    "joinswapPoolAmountOut(address,uint256,uint256)"(
+      tokenIn: string,
+      poolAmountOut: BigNumberish,
+      maxAmountIn: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    name(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "name()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
 
     rebind(
       token: string,
       balance: BigNumberish,
       denorm: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "rebind(address,uint256,uint256)"(
+      token: string,
+      balance: BigNumberish,
+      denorm: BigNumberish,
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     setController(
       manager: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setController(address)"(
+      manager: string,
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     setPublicSwap(
       public_: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setPublicSwap(bool)"(
+      public_: boolean,
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     setSwapFee(
       swapFee: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setSwapFee(uint256)"(
+      swapFee: BigNumberish,
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     swapExactAmountIn(
@@ -865,7 +1286,16 @@ export class LBPPool extends BaseContract {
       tokenOut: string,
       minAmountOut: BigNumberish,
       maxPrice: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "swapExactAmountIn(address,uint256,address,uint256,uint256)"(
+      tokenIn: string,
+      tokenAmountIn: BigNumberish,
+      tokenOut: string,
+      minAmountOut: BigNumberish,
+      maxPrice: BigNumberish,
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     swapExactAmountOut(
@@ -874,65 +1304,139 @@ export class LBPPool extends BaseContract {
       tokenOut: string,
       tokenAmountOut: BigNumberish,
       maxPrice: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    symbol(overrides?: CallOverrides): Promise<[string]>;
+    "swapExactAmountOut(address,uint256,address,uint256,uint256)"(
+      tokenIn: string,
+      maxAmountIn: BigNumberish,
+      tokenOut: string,
+      tokenAmountOut: BigNumberish,
+      maxPrice: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
+    symbol(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "symbol()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    totalSupply(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "totalSupply()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
     transfer(
       dst: string,
       amt: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "transfer(address,uint256)"(
+      dst: string,
+      amt: BigNumberish,
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     transferFrom(
       src: string,
       dst: string,
       amt: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    unbind(
+    "transferFrom(address,address,uint256)"(
+      src: string,
+      dst: string,
+      amt: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    unbind(token: string, overrides?: Overrides): Promise<ContractTransaction>;
+
+    "unbind(address)"(
       token: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
   };
 
   BONE(overrides?: CallOverrides): Promise<BigNumber>;
 
+  "BONE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   BPOW_PRECISION(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "BPOW_PRECISION()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   EXIT_FEE(overrides?: CallOverrides): Promise<BigNumber>;
 
+  "EXIT_FEE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   INIT_POOL_SUPPLY(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "INIT_POOL_SUPPLY()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   MAX_BOUND_TOKENS(overrides?: CallOverrides): Promise<BigNumber>;
 
+  "MAX_BOUND_TOKENS()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   MAX_BPOW_BASE(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "MAX_BPOW_BASE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   MAX_FEE(overrides?: CallOverrides): Promise<BigNumber>;
 
+  "MAX_FEE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   MAX_IN_RATIO(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "MAX_IN_RATIO()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   MAX_OUT_RATIO(overrides?: CallOverrides): Promise<BigNumber>;
 
+  "MAX_OUT_RATIO()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   MAX_TOTAL_WEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "MAX_TOTAL_WEIGHT()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   MAX_WEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
 
+  "MAX_WEIGHT()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   MIN_BALANCE(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "MIN_BALANCE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   MIN_BOUND_TOKENS(overrides?: CallOverrides): Promise<BigNumber>;
 
+  "MIN_BOUND_TOKENS()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   MIN_BPOW_BASE(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "MIN_BPOW_BASE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   MIN_FEE(overrides?: CallOverrides): Promise<BigNumber>;
 
+  "MIN_FEE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   MIN_WEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
 
+  "MIN_WEIGHT()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   allowance(
+    src: string,
+    dst: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "allowance(address,address)"(
     src: string,
     dst: string,
     overrides?: CallOverrides
@@ -941,19 +1445,47 @@ export class LBPPool extends BaseContract {
   approve(
     dst: string,
     amt: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "approve(address,uint256)"(
+    dst: string,
+    amt: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   balanceOf(whom: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  "balanceOf(address)"(
+    whom: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   bind(
     token: string,
     balance: BigNumberish,
     denorm: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "bind(address,uint256,uint256)"(
+    token: string,
+    balance: BigNumberish,
+    denorm: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   calcInGivenOut(
+    tokenBalanceIn: BigNumberish,
+    tokenWeightIn: BigNumberish,
+    tokenBalanceOut: BigNumberish,
+    tokenWeightOut: BigNumberish,
+    tokenAmountOut: BigNumberish,
+    swapFee: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "calcInGivenOut(uint256,uint256,uint256,uint256,uint256,uint256)"(
     tokenBalanceIn: BigNumberish,
     tokenWeightIn: BigNumberish,
     tokenBalanceOut: BigNumberish,
@@ -973,7 +1505,27 @@ export class LBPPool extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  "calcOutGivenIn(uint256,uint256,uint256,uint256,uint256,uint256)"(
+    tokenBalanceIn: BigNumberish,
+    tokenWeightIn: BigNumberish,
+    tokenBalanceOut: BigNumberish,
+    tokenWeightOut: BigNumberish,
+    tokenAmountIn: BigNumberish,
+    swapFee: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   calcPoolInGivenSingleOut(
+    tokenBalanceOut: BigNumberish,
+    tokenWeightOut: BigNumberish,
+    poolSupply: BigNumberish,
+    totalWeight: BigNumberish,
+    tokenAmountOut: BigNumberish,
+    swapFee: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "calcPoolInGivenSingleOut(uint256,uint256,uint256,uint256,uint256,uint256)"(
     tokenBalanceOut: BigNumberish,
     tokenWeightOut: BigNumberish,
     poolSupply: BigNumberish,
@@ -993,7 +1545,27 @@ export class LBPPool extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  "calcPoolOutGivenSingleIn(uint256,uint256,uint256,uint256,uint256,uint256)"(
+    tokenBalanceIn: BigNumberish,
+    tokenWeightIn: BigNumberish,
+    poolSupply: BigNumberish,
+    totalWeight: BigNumberish,
+    tokenAmountIn: BigNumberish,
+    swapFee: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   calcSingleInGivenPoolOut(
+    tokenBalanceIn: BigNumberish,
+    tokenWeightIn: BigNumberish,
+    poolSupply: BigNumberish,
+    totalWeight: BigNumberish,
+    poolAmountOut: BigNumberish,
+    swapFee: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "calcSingleInGivenPoolOut(uint256,uint256,uint256,uint256,uint256,uint256)"(
     tokenBalanceIn: BigNumberish,
     tokenWeightIn: BigNumberish,
     poolSupply: BigNumberish,
@@ -1013,7 +1585,26 @@ export class LBPPool extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  "calcSingleOutGivenPoolIn(uint256,uint256,uint256,uint256,uint256,uint256)"(
+    tokenBalanceOut: BigNumberish,
+    tokenWeightOut: BigNumberish,
+    poolSupply: BigNumberish,
+    totalWeight: BigNumberish,
+    poolAmountIn: BigNumberish,
+    swapFee: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   calcSpotPrice(
+    tokenBalanceIn: BigNumberish,
+    tokenWeightIn: BigNumberish,
+    tokenBalanceOut: BigNumberish,
+    tokenWeightOut: BigNumberish,
+    swapFee: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "calcSpotPrice(uint256,uint256,uint256,uint256,uint256)"(
     tokenBalanceIn: BigNumberish,
     tokenWeightIn: BigNumberish,
     tokenBalanceOut: BigNumberish,
@@ -1024,59 +1615,118 @@ export class LBPPool extends BaseContract {
 
   decimals(overrides?: CallOverrides): Promise<number>;
 
+  "decimals()"(overrides?: CallOverrides): Promise<number>;
+
   decreaseApproval(
     dst: string,
     amt: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "decreaseApproval(address,uint256)"(
+    dst: string,
+    amt: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   exitPool(
     poolAmountIn: BigNumberish,
     minAmountsOut: BigNumberish[],
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "exitPool(uint256,uint256[])"(
+    poolAmountIn: BigNumberish,
+    minAmountsOut: BigNumberish[],
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   exitswapExternAmountOut(
     tokenOut: string,
     tokenAmountOut: BigNumberish,
     maxPoolAmountIn: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "exitswapExternAmountOut(address,uint256,uint256)"(
+    tokenOut: string,
+    tokenAmountOut: BigNumberish,
+    maxPoolAmountIn: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   exitswapPoolAmountIn(
     tokenOut: string,
     poolAmountIn: BigNumberish,
     minAmountOut: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  finalize(
-    overrides?: Overrides & { from?: string | Promise<string> }
+  "exitswapPoolAmountIn(address,uint256,uint256)"(
+    tokenOut: string,
+    poolAmountIn: BigNumberish,
+    minAmountOut: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  finalize(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "finalize()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   getBalance(token: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+  "getBalance(address)"(
+    token: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getColor(overrides?: CallOverrides): Promise<string>;
+
+  "getColor()"(overrides?: CallOverrides): Promise<string>;
 
   getController(overrides?: CallOverrides): Promise<string>;
 
+  "getController()"(overrides?: CallOverrides): Promise<string>;
+
   getCurrentTokens(overrides?: CallOverrides): Promise<string[]>;
+
+  "getCurrentTokens()"(overrides?: CallOverrides): Promise<string[]>;
 
   getDenormalizedWeight(
     token: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  "getDenormalizedWeight(address)"(
+    token: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getFinalTokens(overrides?: CallOverrides): Promise<string[]>;
+
+  "getFinalTokens()"(overrides?: CallOverrides): Promise<string[]>;
 
   getNormalizedWeight(
     token: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  "getNormalizedWeight(address)"(
+    token: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getNumTokens(overrides?: CallOverrides): Promise<BigNumber>;
 
+  "getNumTokens()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   getSpotPrice(
+    tokenIn: string,
+    tokenOut: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getSpotPrice(address,address)"(
     tokenIn: string,
     tokenOut: string,
     overrides?: CallOverrides
@@ -1088,69 +1738,137 @@ export class LBPPool extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  "getSpotPriceSansFee(address,address)"(
+    tokenIn: string,
+    tokenOut: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getSwapFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "getSwapFee()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   getTotalDenormalizedWeight(overrides?: CallOverrides): Promise<BigNumber>;
 
-  gulp(
+  "getTotalDenormalizedWeight()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  gulp(token: string, overrides?: Overrides): Promise<ContractTransaction>;
+
+  "gulp(address)"(
     token: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   increaseApproval(
     dst: string,
     amt: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "increaseApproval(address,uint256)"(
+    dst: string,
+    amt: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   isBound(t: string, overrides?: CallOverrides): Promise<boolean>;
 
+  "isBound(address)"(t: string, overrides?: CallOverrides): Promise<boolean>;
+
   isFinalized(overrides?: CallOverrides): Promise<boolean>;
 
+  "isFinalized()"(overrides?: CallOverrides): Promise<boolean>;
+
   isPublicSwap(overrides?: CallOverrides): Promise<boolean>;
+
+  "isPublicSwap()"(overrides?: CallOverrides): Promise<boolean>;
 
   joinPool(
     poolAmountOut: BigNumberish,
     maxAmountsIn: BigNumberish[],
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "joinPool(uint256,uint256[])"(
+    poolAmountOut: BigNumberish,
+    maxAmountsIn: BigNumberish[],
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   joinswapExternAmountIn(
     tokenIn: string,
     tokenAmountIn: BigNumberish,
     minPoolAmountOut: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "joinswapExternAmountIn(address,uint256,uint256)"(
+    tokenIn: string,
+    tokenAmountIn: BigNumberish,
+    minPoolAmountOut: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   joinswapPoolAmountOut(
     tokenIn: string,
     poolAmountOut: BigNumberish,
     maxAmountIn: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "joinswapPoolAmountOut(address,uint256,uint256)"(
+    tokenIn: string,
+    poolAmountOut: BigNumberish,
+    maxAmountIn: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   name(overrides?: CallOverrides): Promise<string>;
+
+  "name()"(overrides?: CallOverrides): Promise<string>;
 
   rebind(
     token: string,
     balance: BigNumberish,
     denorm: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "rebind(address,uint256,uint256)"(
+    token: string,
+    balance: BigNumberish,
+    denorm: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   setController(
     manager: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setController(address)"(
+    manager: string,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   setPublicSwap(
     public_: boolean,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setPublicSwap(bool)"(
+    public_: boolean,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   setSwapFee(
     swapFee: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setSwapFee(uint256)"(
+    swapFee: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   swapExactAmountIn(
@@ -1159,7 +1877,16 @@ export class LBPPool extends BaseContract {
     tokenOut: string,
     minAmountOut: BigNumberish,
     maxPrice: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "swapExactAmountIn(address,uint256,address,uint256,uint256)"(
+    tokenIn: string,
+    tokenAmountIn: BigNumberish,
+    tokenOut: string,
+    minAmountOut: BigNumberish,
+    maxPrice: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   swapExactAmountOut(
@@ -1168,65 +1895,131 @@ export class LBPPool extends BaseContract {
     tokenOut: string,
     tokenAmountOut: BigNumberish,
     maxPrice: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "swapExactAmountOut(address,uint256,address,uint256,uint256)"(
+    tokenIn: string,
+    maxAmountIn: BigNumberish,
+    tokenOut: string,
+    tokenAmountOut: BigNumberish,
+    maxPrice: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   symbol(overrides?: CallOverrides): Promise<string>;
 
+  "symbol()"(overrides?: CallOverrides): Promise<string>;
+
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   transfer(
     dst: string,
     amt: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "transfer(address,uint256)"(
+    dst: string,
+    amt: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   transferFrom(
     src: string,
     dst: string,
     amt: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  unbind(
+  "transferFrom(address,address,uint256)"(
+    src: string,
+    dst: string,
+    amt: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  unbind(token: string, overrides?: Overrides): Promise<ContractTransaction>;
+
+  "unbind(address)"(
     token: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   callStatic: {
     BONE(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "BONE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     BPOW_PRECISION(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "BPOW_PRECISION()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     EXIT_FEE(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "EXIT_FEE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     INIT_POOL_SUPPLY(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "INIT_POOL_SUPPLY()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAX_BOUND_TOKENS(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "MAX_BOUND_TOKENS()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     MAX_BPOW_BASE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "MAX_BPOW_BASE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAX_FEE(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "MAX_FEE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     MAX_IN_RATIO(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "MAX_IN_RATIO()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAX_OUT_RATIO(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "MAX_OUT_RATIO()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     MAX_TOTAL_WEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "MAX_TOTAL_WEIGHT()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAX_WEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "MAX_WEIGHT()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     MIN_BALANCE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "MIN_BALANCE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     MIN_BOUND_TOKENS(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "MIN_BOUND_TOKENS()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     MIN_BPOW_BASE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "MIN_BPOW_BASE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     MIN_FEE(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "MIN_FEE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     MIN_WEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "MIN_WEIGHT()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     allowance(
+      src: string,
+      dst: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "allowance(address,address)"(
       src: string,
       dst: string,
       overrides?: CallOverrides
@@ -1238,7 +2031,18 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    "approve(address,uint256)"(
+      dst: string,
+      amt: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     balanceOf(whom: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "balanceOf(address)"(
+      whom: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     bind(
       token: string,
@@ -1247,7 +2051,24 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    "bind(address,uint256,uint256)"(
+      token: string,
+      balance: BigNumberish,
+      denorm: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     calcInGivenOut(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      tokenAmountOut: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "calcInGivenOut(uint256,uint256,uint256,uint256,uint256,uint256)"(
       tokenBalanceIn: BigNumberish,
       tokenWeightIn: BigNumberish,
       tokenBalanceOut: BigNumberish,
@@ -1267,7 +2088,27 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    "calcOutGivenIn(uint256,uint256,uint256,uint256,uint256,uint256)"(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      tokenAmountIn: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     calcPoolInGivenSingleOut(
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      poolSupply: BigNumberish,
+      totalWeight: BigNumberish,
+      tokenAmountOut: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "calcPoolInGivenSingleOut(uint256,uint256,uint256,uint256,uint256,uint256)"(
       tokenBalanceOut: BigNumberish,
       tokenWeightOut: BigNumberish,
       poolSupply: BigNumberish,
@@ -1287,7 +2128,27 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    "calcPoolOutGivenSingleIn(uint256,uint256,uint256,uint256,uint256,uint256)"(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      poolSupply: BigNumberish,
+      totalWeight: BigNumberish,
+      tokenAmountIn: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     calcSingleInGivenPoolOut(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      poolSupply: BigNumberish,
+      totalWeight: BigNumberish,
+      poolAmountOut: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "calcSingleInGivenPoolOut(uint256,uint256,uint256,uint256,uint256,uint256)"(
       tokenBalanceIn: BigNumberish,
       tokenWeightIn: BigNumberish,
       poolSupply: BigNumberish,
@@ -1307,7 +2168,26 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    "calcSingleOutGivenPoolIn(uint256,uint256,uint256,uint256,uint256,uint256)"(
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      poolSupply: BigNumberish,
+      totalWeight: BigNumberish,
+      poolAmountIn: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     calcSpotPrice(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "calcSpotPrice(uint256,uint256,uint256,uint256,uint256)"(
       tokenBalanceIn: BigNumberish,
       tokenWeightIn: BigNumberish,
       tokenBalanceOut: BigNumberish,
@@ -1318,7 +2198,15 @@ export class LBPPool extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<number>;
 
+    "decimals()"(overrides?: CallOverrides): Promise<number>;
+
     decreaseApproval(
+      dst: string,
+      amt: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "decreaseApproval(address,uint256)"(
       dst: string,
       amt: BigNumberish,
       overrides?: CallOverrides
@@ -1330,7 +2218,20 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    "exitPool(uint256,uint256[])"(
+      poolAmountIn: BigNumberish,
+      minAmountsOut: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     exitswapExternAmountOut(
+      tokenOut: string,
+      tokenAmountOut: BigNumberish,
+      maxPoolAmountIn: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "exitswapExternAmountOut(address,uint256,uint256)"(
       tokenOut: string,
       tokenAmountOut: BigNumberish,
       maxPoolAmountIn: BigNumberish,
@@ -1344,31 +2245,71 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    "exitswapPoolAmountIn(address,uint256,uint256)"(
+      tokenOut: string,
+      poolAmountIn: BigNumberish,
+      minAmountOut: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     finalize(overrides?: CallOverrides): Promise<void>;
+
+    "finalize()"(overrides?: CallOverrides): Promise<void>;
 
     getBalance(token: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    "getBalance(address)"(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getColor(overrides?: CallOverrides): Promise<string>;
+
+    "getColor()"(overrides?: CallOverrides): Promise<string>;
 
     getController(overrides?: CallOverrides): Promise<string>;
 
+    "getController()"(overrides?: CallOverrides): Promise<string>;
+
     getCurrentTokens(overrides?: CallOverrides): Promise<string[]>;
+
+    "getCurrentTokens()"(overrides?: CallOverrides): Promise<string[]>;
 
     getDenormalizedWeight(
       token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    "getDenormalizedWeight(address)"(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getFinalTokens(overrides?: CallOverrides): Promise<string[]>;
+
+    "getFinalTokens()"(overrides?: CallOverrides): Promise<string[]>;
 
     getNormalizedWeight(
       token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    "getNormalizedWeight(address)"(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getNumTokens(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "getNumTokens()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getSpotPrice(
+      tokenIn: string,
+      tokenOut: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getSpotPrice(address,address)"(
       tokenIn: string,
       tokenOut: string,
       overrides?: CallOverrides
@@ -1380,11 +2321,25 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    "getSpotPriceSansFee(address,address)"(
+      tokenIn: string,
+      tokenOut: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getSwapFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getSwapFee()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getTotalDenormalizedWeight(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "getTotalDenormalizedWeight()"(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     gulp(token: string, overrides?: CallOverrides): Promise<void>;
+
+    "gulp(address)"(token: string, overrides?: CallOverrides): Promise<void>;
 
     increaseApproval(
       dst: string,
@@ -1392,11 +2347,23 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    "increaseApproval(address,uint256)"(
+      dst: string,
+      amt: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     isBound(t: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "isBound(address)"(t: string, overrides?: CallOverrides): Promise<boolean>;
 
     isFinalized(overrides?: CallOverrides): Promise<boolean>;
 
+    "isFinalized()"(overrides?: CallOverrides): Promise<boolean>;
+
     isPublicSwap(overrides?: CallOverrides): Promise<boolean>;
+
+    "isPublicSwap()"(overrides?: CallOverrides): Promise<boolean>;
 
     joinPool(
       poolAmountOut: BigNumberish,
@@ -1404,7 +2371,20 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    "joinPool(uint256,uint256[])"(
+      poolAmountOut: BigNumberish,
+      maxAmountsIn: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     joinswapExternAmountIn(
+      tokenIn: string,
+      tokenAmountIn: BigNumberish,
+      minPoolAmountOut: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "joinswapExternAmountIn(address,uint256,uint256)"(
       tokenIn: string,
       tokenAmountIn: BigNumberish,
       minPoolAmountOut: BigNumberish,
@@ -1418,7 +2398,16 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    "joinswapPoolAmountOut(address,uint256,uint256)"(
+      tokenIn: string,
+      poolAmountOut: BigNumberish,
+      maxAmountIn: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     name(overrides?: CallOverrides): Promise<string>;
+
+    "name()"(overrides?: CallOverrides): Promise<string>;
 
     rebind(
       token: string,
@@ -1427,11 +2416,33 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    "rebind(address,uint256,uint256)"(
+      token: string,
+      balance: BigNumberish,
+      denorm: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setController(manager: string, overrides?: CallOverrides): Promise<void>;
+
+    "setController(address)"(
+      manager: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     setPublicSwap(public_: boolean, overrides?: CallOverrides): Promise<void>;
 
+    "setPublicSwap(bool)"(
+      public_: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setSwapFee(swapFee: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    "setSwapFee(uint256)"(
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     swapExactAmountIn(
       tokenIn: string,
@@ -1440,12 +2451,26 @@ export class LBPPool extends BaseContract {
       minAmountOut: BigNumberish,
       maxPrice: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        tokenAmountOut: BigNumber;
-        spotPriceAfter: BigNumber;
-      }
-    >;
+    ): Promise<{
+      tokenAmountOut: BigNumber;
+      spotPriceAfter: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
+
+    "swapExactAmountIn(address,uint256,address,uint256,uint256)"(
+      tokenIn: string,
+      tokenAmountIn: BigNumberish,
+      tokenOut: string,
+      minAmountOut: BigNumberish,
+      maxPrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      tokenAmountOut: BigNumber;
+      spotPriceAfter: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
 
     swapExactAmountOut(
       tokenIn: string,
@@ -1454,18 +2479,42 @@ export class LBPPool extends BaseContract {
       tokenAmountOut: BigNumberish,
       maxPrice: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        tokenAmountIn: BigNumber;
-        spotPriceAfter: BigNumber;
-      }
-    >;
+    ): Promise<{
+      tokenAmountIn: BigNumber;
+      spotPriceAfter: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
+
+    "swapExactAmountOut(address,uint256,address,uint256,uint256)"(
+      tokenIn: string,
+      maxAmountIn: BigNumberish,
+      tokenOut: string,
+      tokenAmountOut: BigNumberish,
+      maxPrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      tokenAmountIn: BigNumber;
+      spotPriceAfter: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
 
     symbol(overrides?: CallOverrides): Promise<string>;
 
+    "symbol()"(overrides?: CallOverrides): Promise<string>;
+
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     transfer(
+      dst: string,
+      amt: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "transfer(address,uint256)"(
       dst: string,
       amt: BigNumberish,
       overrides?: CallOverrides
@@ -1478,107 +2527,122 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    "transferFrom(address,address,uint256)"(
+      src: string,
+      dst: string,
+      amt: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     unbind(token: string, overrides?: CallOverrides): Promise<void>;
+
+    "unbind(address)"(token: string, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
-    Approval(
-      src?: string | null,
-      dst?: string | null,
-      amt?: null
-    ): TypedEventFilter<
-      [string, string, BigNumber],
-      { src: string; dst: string; amt: BigNumber }
-    >;
+    Approval(src: string | null, dst: string | null, amt: null): EventFilter;
 
     LOG_CALL(
-      sig?: BytesLike | null,
-      caller?: string | null,
-      data?: null
-    ): TypedEventFilter<
-      [string, string, string],
-      { sig: string; caller: string; data: string }
-    >;
+      sig: BytesLike | null,
+      caller: string | null,
+      data: null
+    ): EventFilter;
 
     LOG_EXIT(
-      caller?: string | null,
-      tokenOut?: string | null,
-      tokenAmountOut?: null
-    ): TypedEventFilter<
-      [string, string, BigNumber],
-      { caller: string; tokenOut: string; tokenAmountOut: BigNumber }
-    >;
+      caller: string | null,
+      tokenOut: string | null,
+      tokenAmountOut: null
+    ): EventFilter;
 
     LOG_JOIN(
-      caller?: string | null,
-      tokenIn?: string | null,
-      tokenAmountIn?: null
-    ): TypedEventFilter<
-      [string, string, BigNumber],
-      { caller: string; tokenIn: string; tokenAmountIn: BigNumber }
-    >;
+      caller: string | null,
+      tokenIn: string | null,
+      tokenAmountIn: null
+    ): EventFilter;
 
     LOG_SWAP(
-      caller?: string | null,
-      tokenIn?: string | null,
-      tokenOut?: string | null,
-      tokenAmountIn?: null,
-      tokenAmountOut?: null
-    ): TypedEventFilter<
-      [string, string, string, BigNumber, BigNumber],
-      {
-        caller: string;
-        tokenIn: string;
-        tokenOut: string;
-        tokenAmountIn: BigNumber;
-        tokenAmountOut: BigNumber;
-      }
-    >;
+      caller: string | null,
+      tokenIn: string | null,
+      tokenOut: string | null,
+      tokenAmountIn: null,
+      tokenAmountOut: null
+    ): EventFilter;
 
-    Transfer(
-      src?: string | null,
-      dst?: string | null,
-      amt?: null
-    ): TypedEventFilter<
-      [string, string, BigNumber],
-      { src: string; dst: string; amt: BigNumber }
-    >;
+    Transfer(src: string | null, dst: string | null, amt: null): EventFilter;
   };
 
   estimateGas: {
     BONE(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "BONE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     BPOW_PRECISION(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "BPOW_PRECISION()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     EXIT_FEE(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "EXIT_FEE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     INIT_POOL_SUPPLY(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "INIT_POOL_SUPPLY()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAX_BOUND_TOKENS(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "MAX_BOUND_TOKENS()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     MAX_BPOW_BASE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "MAX_BPOW_BASE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAX_FEE(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "MAX_FEE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     MAX_IN_RATIO(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "MAX_IN_RATIO()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAX_OUT_RATIO(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "MAX_OUT_RATIO()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     MAX_TOTAL_WEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "MAX_TOTAL_WEIGHT()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAX_WEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "MAX_WEIGHT()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     MIN_BALANCE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "MIN_BALANCE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     MIN_BOUND_TOKENS(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "MIN_BOUND_TOKENS()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     MIN_BPOW_BASE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "MIN_BPOW_BASE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     MIN_FEE(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "MIN_FEE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     MIN_WEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "MIN_WEIGHT()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     allowance(
+      src: string,
+      dst: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "allowance(address,address)"(
       src: string,
       dst: string,
       overrides?: CallOverrides
@@ -1587,19 +2651,47 @@ export class LBPPool extends BaseContract {
     approve(
       dst: string,
       amt: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "approve(address,uint256)"(
+      dst: string,
+      amt: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     balanceOf(whom: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "balanceOf(address)"(
+      whom: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     bind(
       token: string,
       balance: BigNumberish,
       denorm: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "bind(address,uint256,uint256)"(
+      token: string,
+      balance: BigNumberish,
+      denorm: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     calcInGivenOut(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      tokenAmountOut: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "calcInGivenOut(uint256,uint256,uint256,uint256,uint256,uint256)"(
       tokenBalanceIn: BigNumberish,
       tokenWeightIn: BigNumberish,
       tokenBalanceOut: BigNumberish,
@@ -1619,7 +2711,27 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    "calcOutGivenIn(uint256,uint256,uint256,uint256,uint256,uint256)"(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      tokenAmountIn: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     calcPoolInGivenSingleOut(
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      poolSupply: BigNumberish,
+      totalWeight: BigNumberish,
+      tokenAmountOut: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "calcPoolInGivenSingleOut(uint256,uint256,uint256,uint256,uint256,uint256)"(
       tokenBalanceOut: BigNumberish,
       tokenWeightOut: BigNumberish,
       poolSupply: BigNumberish,
@@ -1639,7 +2751,27 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    "calcPoolOutGivenSingleIn(uint256,uint256,uint256,uint256,uint256,uint256)"(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      poolSupply: BigNumberish,
+      totalWeight: BigNumberish,
+      tokenAmountIn: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     calcSingleInGivenPoolOut(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      poolSupply: BigNumberish,
+      totalWeight: BigNumberish,
+      poolAmountOut: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "calcSingleInGivenPoolOut(uint256,uint256,uint256,uint256,uint256,uint256)"(
       tokenBalanceIn: BigNumberish,
       tokenWeightIn: BigNumberish,
       poolSupply: BigNumberish,
@@ -1659,7 +2791,26 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    "calcSingleOutGivenPoolIn(uint256,uint256,uint256,uint256,uint256,uint256)"(
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      poolSupply: BigNumberish,
+      totalWeight: BigNumberish,
+      poolAmountIn: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     calcSpotPrice(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "calcSpotPrice(uint256,uint256,uint256,uint256,uint256)"(
       tokenBalanceIn: BigNumberish,
       tokenWeightIn: BigNumberish,
       tokenBalanceOut: BigNumberish,
@@ -1670,59 +2821,118 @@ export class LBPPool extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "decimals()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     decreaseApproval(
       dst: string,
       amt: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "decreaseApproval(address,uint256)"(
+      dst: string,
+      amt: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     exitPool(
       poolAmountIn: BigNumberish,
       minAmountsOut: BigNumberish[],
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "exitPool(uint256,uint256[])"(
+      poolAmountIn: BigNumberish,
+      minAmountsOut: BigNumberish[],
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     exitswapExternAmountOut(
       tokenOut: string,
       tokenAmountOut: BigNumberish,
       maxPoolAmountIn: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "exitswapExternAmountOut(address,uint256,uint256)"(
+      tokenOut: string,
+      tokenAmountOut: BigNumberish,
+      maxPoolAmountIn: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     exitswapPoolAmountIn(
       tokenOut: string,
       poolAmountIn: BigNumberish,
       minAmountOut: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
-    finalize(
-      overrides?: Overrides & { from?: string | Promise<string> }
+    "exitswapPoolAmountIn(address,uint256,uint256)"(
+      tokenOut: string,
+      poolAmountIn: BigNumberish,
+      minAmountOut: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
+
+    finalize(overrides?: Overrides): Promise<BigNumber>;
+
+    "finalize()"(overrides?: Overrides): Promise<BigNumber>;
 
     getBalance(token: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    "getBalance(address)"(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getColor(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getColor()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getController(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "getController()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getCurrentTokens(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getCurrentTokens()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getDenormalizedWeight(
       token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    "getDenormalizedWeight(address)"(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getFinalTokens(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getFinalTokens()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getNormalizedWeight(
       token: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    "getNormalizedWeight(address)"(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getNumTokens(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "getNumTokens()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getSpotPrice(
+      tokenIn: string,
+      tokenOut: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getSpotPrice(address,address)"(
       tokenIn: string,
       tokenOut: string,
       overrides?: CallOverrides
@@ -1734,69 +2944,133 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    "getSpotPriceSansFee(address,address)"(
+      tokenIn: string,
+      tokenOut: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getSwapFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getSwapFee()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getTotalDenormalizedWeight(overrides?: CallOverrides): Promise<BigNumber>;
 
-    gulp(
-      token: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    "getTotalDenormalizedWeight()"(
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    gulp(token: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "gulp(address)"(token: string, overrides?: Overrides): Promise<BigNumber>;
 
     increaseApproval(
       dst: string,
       amt: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "increaseApproval(address,uint256)"(
+      dst: string,
+      amt: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     isBound(t: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    "isBound(address)"(
+      t: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     isFinalized(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "isFinalized()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     isPublicSwap(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "isPublicSwap()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     joinPool(
       poolAmountOut: BigNumberish,
       maxAmountsIn: BigNumberish[],
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "joinPool(uint256,uint256[])"(
+      poolAmountOut: BigNumberish,
+      maxAmountsIn: BigNumberish[],
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     joinswapExternAmountIn(
       tokenIn: string,
       tokenAmountIn: BigNumberish,
       minPoolAmountOut: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "joinswapExternAmountIn(address,uint256,uint256)"(
+      tokenIn: string,
+      tokenAmountIn: BigNumberish,
+      minPoolAmountOut: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     joinswapPoolAmountOut(
       tokenIn: string,
       poolAmountOut: BigNumberish,
       maxAmountIn: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "joinswapPoolAmountOut(address,uint256,uint256)"(
+      tokenIn: string,
+      poolAmountOut: BigNumberish,
+      maxAmountIn: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "name()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     rebind(
       token: string,
       balance: BigNumberish,
       denorm: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
-    setController(
+    "rebind(address,uint256,uint256)"(
+      token: string,
+      balance: BigNumberish,
+      denorm: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    setController(manager: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "setController(address)"(
       manager: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
-    setPublicSwap(
+    setPublicSwap(public_: boolean, overrides?: Overrides): Promise<BigNumber>;
+
+    "setPublicSwap(bool)"(
       public_: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     setSwapFee(
       swapFee: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setSwapFee(uint256)"(
+      swapFee: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     swapExactAmountIn(
@@ -1805,7 +3079,16 @@ export class LBPPool extends BaseContract {
       tokenOut: string,
       minAmountOut: BigNumberish,
       maxPrice: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "swapExactAmountIn(address,uint256,address,uint256,uint256)"(
+      tokenIn: string,
+      tokenAmountIn: BigNumberish,
+      tokenOut: string,
+      minAmountOut: BigNumberish,
+      maxPrice: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     swapExactAmountOut(
@@ -1814,66 +3097,139 @@ export class LBPPool extends BaseContract {
       tokenOut: string,
       tokenAmountOut: BigNumberish,
       maxPrice: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "swapExactAmountOut(address,uint256,address,uint256,uint256)"(
+      tokenIn: string,
+      maxAmountIn: BigNumberish,
+      tokenOut: string,
+      tokenAmountOut: BigNumberish,
+      maxPrice: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "symbol()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     transfer(
       dst: string,
       amt: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "transfer(address,uint256)"(
+      dst: string,
+      amt: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     transferFrom(
       src: string,
       dst: string,
       amt: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
-    unbind(
-      token: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    "transferFrom(address,address,uint256)"(
+      src: string,
+      dst: string,
+      amt: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
+
+    unbind(token: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "unbind(address)"(token: string, overrides?: Overrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
     BONE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "BONE()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     BPOW_PRECISION(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "BPOW_PRECISION()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     EXIT_FEE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "EXIT_FEE()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     INIT_POOL_SUPPLY(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "INIT_POOL_SUPPLY()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     MAX_BOUND_TOKENS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "MAX_BOUND_TOKENS()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     MAX_BPOW_BASE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "MAX_BPOW_BASE()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     MAX_FEE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "MAX_FEE()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     MAX_IN_RATIO(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "MAX_IN_RATIO()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     MAX_OUT_RATIO(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "MAX_OUT_RATIO()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     MAX_TOTAL_WEIGHT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "MAX_TOTAL_WEIGHT()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     MAX_WEIGHT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "MAX_WEIGHT()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     MIN_BALANCE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "MIN_BALANCE()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     MIN_BOUND_TOKENS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "MIN_BOUND_TOKENS()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     MIN_BPOW_BASE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "MIN_BPOW_BASE()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     MIN_FEE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "MIN_FEE()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     MIN_WEIGHT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "MIN_WEIGHT()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     allowance(
+      src: string,
+      dst: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "allowance(address,address)"(
       src: string,
       dst: string,
       overrides?: CallOverrides
@@ -1882,10 +3238,21 @@ export class LBPPool extends BaseContract {
     approve(
       dst: string,
       amt: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "approve(address,uint256)"(
+      dst: string,
+      amt: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     balanceOf(
+      whom: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "balanceOf(address)"(
       whom: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1894,10 +3261,27 @@ export class LBPPool extends BaseContract {
       token: string,
       balance: BigNumberish,
       denorm: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "bind(address,uint256,uint256)"(
+      token: string,
+      balance: BigNumberish,
+      denorm: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     calcInGivenOut(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      tokenAmountOut: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "calcInGivenOut(uint256,uint256,uint256,uint256,uint256,uint256)"(
       tokenBalanceIn: BigNumberish,
       tokenWeightIn: BigNumberish,
       tokenBalanceOut: BigNumberish,
@@ -1917,7 +3301,27 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    "calcOutGivenIn(uint256,uint256,uint256,uint256,uint256,uint256)"(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      tokenAmountIn: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     calcPoolInGivenSingleOut(
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      poolSupply: BigNumberish,
+      totalWeight: BigNumberish,
+      tokenAmountOut: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "calcPoolInGivenSingleOut(uint256,uint256,uint256,uint256,uint256,uint256)"(
       tokenBalanceOut: BigNumberish,
       tokenWeightOut: BigNumberish,
       poolSupply: BigNumberish,
@@ -1937,7 +3341,27 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    "calcPoolOutGivenSingleIn(uint256,uint256,uint256,uint256,uint256,uint256)"(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      poolSupply: BigNumberish,
+      totalWeight: BigNumberish,
+      tokenAmountIn: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     calcSingleInGivenPoolOut(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      poolSupply: BigNumberish,
+      totalWeight: BigNumberish,
+      poolAmountOut: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "calcSingleInGivenPoolOut(uint256,uint256,uint256,uint256,uint256,uint256)"(
       tokenBalanceIn: BigNumberish,
       tokenWeightIn: BigNumberish,
       poolSupply: BigNumberish,
@@ -1957,7 +3381,26 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    "calcSingleOutGivenPoolIn(uint256,uint256,uint256,uint256,uint256,uint256)"(
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      poolSupply: BigNumberish,
+      totalWeight: BigNumberish,
+      poolAmountIn: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     calcSpotPrice(
+      tokenBalanceIn: BigNumberish,
+      tokenWeightIn: BigNumberish,
+      tokenBalanceOut: BigNumberish,
+      tokenWeightOut: BigNumberish,
+      swapFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "calcSpotPrice(uint256,uint256,uint256,uint256,uint256)"(
       tokenBalanceIn: BigNumberish,
       tokenWeightIn: BigNumberish,
       tokenBalanceOut: BigNumberish,
@@ -1968,62 +3411,125 @@ export class LBPPool extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "decimals()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     decreaseApproval(
       dst: string,
       amt: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "decreaseApproval(address,uint256)"(
+      dst: string,
+      amt: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     exitPool(
       poolAmountIn: BigNumberish,
       minAmountsOut: BigNumberish[],
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "exitPool(uint256,uint256[])"(
+      poolAmountIn: BigNumberish,
+      minAmountsOut: BigNumberish[],
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     exitswapExternAmountOut(
       tokenOut: string,
       tokenAmountOut: BigNumberish,
       maxPoolAmountIn: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "exitswapExternAmountOut(address,uint256,uint256)"(
+      tokenOut: string,
+      tokenAmountOut: BigNumberish,
+      maxPoolAmountIn: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     exitswapPoolAmountIn(
       tokenOut: string,
       poolAmountIn: BigNumberish,
       minAmountOut: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    finalize(
-      overrides?: Overrides & { from?: string | Promise<string> }
+    "exitswapPoolAmountIn(address,uint256,uint256)"(
+      tokenOut: string,
+      poolAmountIn: BigNumberish,
+      minAmountOut: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
+
+    finalize(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "finalize()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     getBalance(
       token: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    "getBalance(address)"(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getColor(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getColor()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getController(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "getController()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getCurrentTokens(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getCurrentTokens()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     getDenormalizedWeight(
       token: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    "getDenormalizedWeight(address)"(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getFinalTokens(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getFinalTokens()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     getNormalizedWeight(
       token: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    "getNormalizedWeight(address)"(
+      token: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getNumTokens(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "getNumTokens()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getSpotPrice(
+      tokenIn: string,
+      tokenOut: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getSpotPrice(address,address)"(
       tokenIn: string,
       tokenOut: string,
       overrides?: CallOverrides
@@ -2035,21 +3541,41 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    "getSpotPriceSansFee(address,address)"(
+      tokenIn: string,
+      tokenOut: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getSwapFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getSwapFee()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getTotalDenormalizedWeight(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    gulp(
+    "getTotalDenormalizedWeight()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    gulp(token: string, overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "gulp(address)"(
       token: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     increaseApproval(
       dst: string,
       amt: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "increaseApproval(address,uint256)"(
+      dst: string,
+      amt: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     isBound(
@@ -2057,52 +3583,105 @@ export class LBPPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    "isBound(address)"(
+      t: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     isFinalized(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "isFinalized()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     isPublicSwap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "isPublicSwap()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     joinPool(
       poolAmountOut: BigNumberish,
       maxAmountsIn: BigNumberish[],
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "joinPool(uint256,uint256[])"(
+      poolAmountOut: BigNumberish,
+      maxAmountsIn: BigNumberish[],
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     joinswapExternAmountIn(
       tokenIn: string,
       tokenAmountIn: BigNumberish,
       minPoolAmountOut: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "joinswapExternAmountIn(address,uint256,uint256)"(
+      tokenIn: string,
+      tokenAmountIn: BigNumberish,
+      minPoolAmountOut: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     joinswapPoolAmountOut(
       tokenIn: string,
       poolAmountOut: BigNumberish,
       maxAmountIn: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "joinswapPoolAmountOut(address,uint256,uint256)"(
+      tokenIn: string,
+      poolAmountOut: BigNumberish,
+      maxAmountIn: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "name()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     rebind(
       token: string,
       balance: BigNumberish,
       denorm: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "rebind(address,uint256,uint256)"(
+      token: string,
+      balance: BigNumberish,
+      denorm: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     setController(
       manager: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setController(address)"(
+      manager: string,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     setPublicSwap(
       public_: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setPublicSwap(bool)"(
+      public_: boolean,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     setSwapFee(
       swapFee: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setSwapFee(uint256)"(
+      swapFee: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     swapExactAmountIn(
@@ -2111,7 +3690,16 @@ export class LBPPool extends BaseContract {
       tokenOut: string,
       minAmountOut: BigNumberish,
       maxPrice: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "swapExactAmountIn(address,uint256,address,uint256,uint256)"(
+      tokenIn: string,
+      tokenAmountIn: BigNumberish,
+      tokenOut: string,
+      minAmountOut: BigNumberish,
+      maxPrice: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     swapExactAmountOut(
@@ -2120,29 +3708,57 @@ export class LBPPool extends BaseContract {
       tokenOut: string,
       tokenAmountOut: BigNumberish,
       maxPrice: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "swapExactAmountOut(address,uint256,address,uint256,uint256)"(
+      tokenIn: string,
+      maxAmountIn: BigNumberish,
+      tokenOut: string,
+      tokenAmountOut: BigNumberish,
+      maxPrice: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "symbol()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "totalSupply()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transfer(
       dst: string,
       amt: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "transfer(address,uint256)"(
+      dst: string,
+      amt: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     transferFrom(
       src: string,
       dst: string,
       amt: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    unbind(
+    "transferFrom(address,address,uint256)"(
+      src: string,
+      dst: string,
+      amt: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    unbind(token: string, overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "unbind(address)"(
       token: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
   };
 }
