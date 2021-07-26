@@ -89,7 +89,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     title: "T-WBTC-C",
     subtitle: "WBTC Covered Call",
     description:
-      "Generates yield by runnning an automated WBTC covered call strategy.",
+      "Generates yield by running an automated WBTC covered call strategy.",
     tags: ["COVERED CALL"],
     strategy: (
       <>
