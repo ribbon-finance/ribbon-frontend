@@ -1,5 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
+import { BigNumber } from "ethers";
+import { useWeb3React } from "@web3-react/core";
 
 import {
   BaseInput,
@@ -19,6 +21,12 @@ import { useLBPGlobalState } from "../../store/store";
 import Logo from "shared/lib/assets/icons/logo";
 import { USDCLogo } from "shared/lib/assets/icons/erc20Assets";
 import { handleSmallNumber } from "shared/lib/utils/math";
+import useLBPPool from "../../hooks/useLBPPool";
+import { parseUnits } from "ethers/lib/utils";
+import { getAssetDecimals } from "shared/lib/utils/asset";
+import { LBPPoolUSDC } from "../../constants/constants";
+import { RibbonTokenAddress } from "shared/lib/constants/constants";
+import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 
 const PrimaryInputLabel = styled(BaseInputLabel)`
   font-family: VCR;
@@ -77,7 +85,10 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
   exchangeRate,
   onSwapAmountChange,
 }) => {
+  const { active } = useWeb3React();
+  const [, setShowConnectModal] = useConnectWalletModal();
   const [swapModal, setSwapModal] = useLBPGlobalState("swapModal");
+  const contract = useLBPPool();
 
   const renderAssetLogo = useCallback((asset: "RBN" | "USDC") => {
     switch (asset) {
@@ -145,11 +156,16 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
         <ArrowContainer
           role="button"
           onClick={() => {
+            /** Swap token */
             setSwapModal((current) => ({
               ...current,
               offerToken: current.receiveToken,
               receiveToken: current.offerToken,
             }));
+            /** Swap amount */
+            if (receiveAmount) {
+              onSwapAmountChange(receiveAmount.toFixed(4));
+            }
           }}
         >
           <i className="fas fa-arrow-down" />
@@ -184,9 +200,62 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
 
       {/* Swap button */}
       <BaseModalContentColumn>
-        <ActionButton className="py-3" color={colors.products.yield} disabled>
-          PREVIEW SWAP
-        </ActionButton>
+        {active ? (
+          <ActionButton
+            className="py-3"
+            color={colors.products.yield}
+            disabled={!receiveAmount}
+            onClick={async () => {
+              if (!swapAmount) {
+                return;
+              }
+
+              const offerTokenAddress =
+                swapModal.offerToken === "USDC"
+                  ? LBPPoolUSDC
+                  : RibbonTokenAddress;
+              const receiveTokenAddress =
+                swapModal.receiveToken === "USDC"
+                  ? LBPPoolUSDC
+                  : RibbonTokenAddress;
+              try {
+                const offerBigNumber = parseUnits(
+                  swapAmount.toString(),
+                  getAssetDecimals(swapModal.offerToken)
+                );
+                const receiveBigNumber = parseUnits(
+                  receiveAmount.toString(),
+                  getAssetDecimals(swapModal.receiveToken)
+                );
+
+                /** Assume 1% slippage */
+                await contract.swapExactAmountIn(
+                  offerTokenAddress,
+                  offerBigNumber,
+                  receiveTokenAddress,
+                  receiveBigNumber.mul(99).div(100),
+                  offerBigNumber
+                    .mul(BigNumber.from(10).pow(18))
+                    .div(receiveBigNumber)
+                    .mul(101)
+                    .div(100)
+                );
+              } catch (err) {
+                console.log(err);
+              }
+            }}
+          >
+            PREVIEW SWAP
+          </ActionButton>
+        ) : (
+          <ActionButton
+            className="py-3"
+            color={colors.green}
+            onClick={() => setShowConnectModal(true)}
+          >
+            Connect Wallet
+          </ActionButton>
+        )}
       </BaseModalContentColumn>
 
       <BaseModalContentColumn>
