@@ -14,12 +14,11 @@ export const injectedConnector = new InjectedConnector({
  */
 export const getWalletConnectConnector = () =>
   new WalletConnectConnector({
-    supportedChainIds: isDevelopment() ? [42] : [1],
     rpc: isDevelopment()
       ? { 42: process.env.REACT_APP_TESTNET_URI || "" }
       : { 1: process.env.REACT_APP_MAINNET_URI || "" },
-      qrcode: true,
-      pollingInterval: 12000
+    qrcode: true,
+    pollingInterval: 12000
   });
 
 export const walletlinkConnector = new WalletLinkConnector({
