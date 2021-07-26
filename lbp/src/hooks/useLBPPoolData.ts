@@ -1,10 +1,16 @@
 import { useState } from "react";
 import { useCallback, useEffect } from "react";
 
-import { RibbonTokenAddress } from "shared/lib/constants/constants";
+import {
+  getERC20TokenAddress,
+  RibbonTokenAddress,
+} from "shared/lib/constants/constants";
 import useLBPPool from "./useLBPPool";
 import { useLBPGlobalState } from "../store/store";
-import { LBPPoolInitialBalance, LBPPoolUSDC } from "../constants/constants";
+import {
+  LBPPoolInitialBalance,
+  RBNPurchaseToken,
+} from "../constants/constants";
 import { LBPPoolData } from "../models/lbp";
 
 type UseLBPPoolData = (params?: {
@@ -29,13 +35,16 @@ const useLBPPoolData: UseLBPPoolData = (
     }
 
     /**
-     * 1. Spot price
-     * 2. USDC Balance
+     * 1. Spot price with default purchase token
+     * 2. Default purcahse token balance
      * 3. Ribbon Balance
      */
     const unconnectedPromises = [
-      contract.getSpotPrice(LBPPoolUSDC, RibbonTokenAddress),
-      contract.getBalance(LBPPoolUSDC),
+      contract.getSpotPrice(
+        getERC20TokenAddress(RBNPurchaseToken[0]),
+        RibbonTokenAddress
+      ),
+      contract.getBalance(getERC20TokenAddress(RBNPurchaseToken[0])),
       contract.getBalance(RibbonTokenAddress),
     ];
 

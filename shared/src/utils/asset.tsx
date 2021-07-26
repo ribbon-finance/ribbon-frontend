@@ -9,7 +9,7 @@ import {
 import colors from "../designSystem/colors";
 import { Assets } from "../store/types";
 
-export const getAssetDisplay = (asset: Assets | string): string => {
+export const getAssetDisplay = (asset: Assets): string => {
   switch (asset) {
     case "WETH":
       return "ETH";
@@ -18,7 +18,7 @@ export const getAssetDisplay = (asset: Assets | string): string => {
   }
 };
 
-export const getAssetDecimals = (asset: Assets | string): number => {
+export const getAssetDecimals = (asset: Assets): number => {
   switch (asset) {
     case "WBTC":
       return 8;

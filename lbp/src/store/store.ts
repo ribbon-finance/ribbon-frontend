@@ -1,4 +1,6 @@
 import { createGlobalState } from "react-hooks-global-state";
+
+import { ERC20Token } from "shared/lib/models/eth";
 import { LBPPoolData } from "../models/lbp";
 
 interface GlobalStore {
@@ -8,8 +10,8 @@ interface GlobalStore {
   };
   swapModal: {
     show: boolean;
-    offerToken: "USDC" | "RBN";
-    receiveToken: "USDC" | "RBN";
+    offerToken: ERC20Token;
+    receiveToken: ERC20Token;
   };
 }
 
@@ -20,11 +22,10 @@ export const initialState: GlobalStore = {
   },
   swapModal: {
     show: false,
-    offerToken: "USDC",
-    receiveToken: "RBN",
+    offerToken: "usdc",
+    receiveToken: "rbn",
   },
 };
 
-export const { useGlobalState: useLBPGlobalState } = createGlobalState(
-  initialState
-);
+export const { useGlobalState: useLBPGlobalState } =
+  createGlobalState(initialState);

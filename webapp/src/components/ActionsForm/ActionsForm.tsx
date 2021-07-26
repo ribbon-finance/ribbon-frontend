@@ -53,7 +53,7 @@ import { ACTIONS, PreviewStepProps } from "../ActionModal/types";
 import useGasPrice from "shared/lib/hooks/useGasPrice";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
-import useTokenAllowance from "../../hooks/useTokenAllowance";
+import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import SwapBTCDropdown from "./SwapBTCDropdown";
 import useVaultActivity from "../../hooks/useVaultActivity";
 import { VaultActivityMeta, VaultShortPosition } from "shared/lib/models/vault";

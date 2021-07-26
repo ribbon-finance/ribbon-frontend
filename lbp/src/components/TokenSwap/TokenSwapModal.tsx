@@ -4,8 +4,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import BigNumberJS from "bignumber.js";
 
 import BasicModal from "shared/lib/components/Common/BasicModal";
-import { RibbonTokenAddress } from "shared/lib/constants/constants";
-import { LBPPoolUSDC } from "../../constants/constants";
+import { getERC20TokenAddress } from "shared/lib/constants/constants";
 import { useLBPSor } from "../../hooks/useLBPSor";
 import { useLBPGlobalState } from "../../store/store";
 import {
@@ -13,7 +12,7 @@ import {
   BigNumberToBigNumberJS,
 } from "../../utils/bignumber";
 import TokenSwapForm from "./TokenSwapForm";
-import { getAssetDecimals } from "shared/lib/utils/asset";
+import { getERC20TokenDecimals } from "shared/lib/models/eth";
 
 const TokenSwapModal = () => {
   const [swapModal, setSwapModal] = useLBPGlobalState("swapModal");
@@ -27,10 +26,8 @@ const TokenSwapModal = () => {
 
   useEffect(() => {
     (async () => {
-      const offerTokenAddress =
-        swapModal.offerToken === "USDC" ? LBPPoolUSDC : RibbonTokenAddress;
-      const receiveTokenAddress =
-        swapModal.receiveToken === "USDC" ? LBPPoolUSDC : RibbonTokenAddress;
+      const offerTokenAddress = getERC20TokenAddress(swapModal.offerToken);
+      const receiveTokenAddress = getERC20TokenAddress(swapModal.receiveToken);
 
       if (!sor.hasDataForPair(offerTokenAddress, receiveTokenAddress)) {
         return;
@@ -43,7 +40,7 @@ const TokenSwapModal = () => {
         BigNumberToBigNumberJS(
           parseUnits(
             swapAmount ? swapAmount.toString() : "0",
-            getAssetDecimals(swapModal.offerToken)
+            getERC20TokenDecimals(swapModal.offerToken)
           )
         )
       );
@@ -55,8 +52,8 @@ const TokenSwapModal = () => {
             .div(spotPrice)
             .times(
               `1e${
-                getAssetDecimals(swapModal.offerToken) -
-                getAssetDecimals(swapModal.receiveToken)
+                getERC20TokenDecimals(swapModal.offerToken) -
+                getERC20TokenDecimals(swapModal.receiveToken)
               }`
             )
             .toString()
@@ -88,7 +85,10 @@ const TokenSwapModal = () => {
       <TokenSwapForm
         swapAmount={parseFloat(swapAmount)}
         receiveAmount={parseFloat(
-          formatUnits(receiveAmount, getAssetDecimals(swapModal.receiveToken))
+          formatUnits(
+            receiveAmount,
+            getERC20TokenDecimals(swapModal.receiveToken)
+          )
         )}
         exchangeRate={exchangeRate}
         onSwapAmountChange={(amount) => {

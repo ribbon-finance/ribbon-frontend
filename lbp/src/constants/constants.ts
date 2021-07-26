@@ -1,11 +1,13 @@
 import { BigNumber } from "ethers";
 
 import { isDevelopment } from "shared/lib/utils/env";
-import addresses from "shared/lib/constants/externalAddresses.json";
+import { ERC20Token } from "../../../shared/lib/models/eth";
 
-export const LBPPoolUSDC = isDevelopment()
-  ? addresses.kovan.assets.usdc
-  : addresses.mainnet.assets.usdc;
+/**
+ * Please place the first entry to be default
+ * In this case, USDC
+ */
+export const RBNPurchaseToken: ERC20Token[] = ["usdc"];
 
 export const LBPPoolInitialBalance = isDevelopment()
   ? {

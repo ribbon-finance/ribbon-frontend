@@ -11,6 +11,8 @@ import useLBPPoolData from "../../hooks/useLBPPoolData";
 import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { useLBPGlobalState } from "../../store/store";
+import { getERC20TokenDecimals } from "shared/lib/models/eth";
+import { RBNPurchaseToken } from "../../constants/constants";
 
 const SaleChartContainer = styled.div`
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
@@ -88,9 +90,17 @@ const TokenSalePerformance = () => {
     }
 
     return [
-      assetToUSD(poolData.spotPrice, 1, 6),
+      assetToUSD(
+        poolData.spotPrice,
+        1,
+        getERC20TokenDecimals(RBNPurchaseToken[0])
+      ),
       formatBigNumber(poolData.ribbonSold, 4, 18),
-      formatBigNumber(poolData.usdcRaised, 2, 6),
+      formatBigNumber(
+        poolData.usdcRaised,
+        2,
+        getERC20TokenDecimals(RBNPurchaseToken[0])
+      ),
     ];
   }, [loadingText, poolData, poolLoading]);
 
@@ -112,8 +122,8 @@ const TokenSalePerformance = () => {
                   onClick={() =>
                     setSwapModal({
                       show: true,
-                      offerToken: "USDC",
-                      receiveToken: "RBN",
+                      offerToken: "usdc",
+                      receiveToken: "rbn",
                     })
                   }
                 >
@@ -125,8 +135,8 @@ const TokenSalePerformance = () => {
                   onClick={() =>
                     setSwapModal({
                       show: true,
-                      offerToken: "RBN",
-                      receiveToken: "USDC",
+                      offerToken: "rbn",
+                      receiveToken: "usdc",
                     })
                   }
                 >

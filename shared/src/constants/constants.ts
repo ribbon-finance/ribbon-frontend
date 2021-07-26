@@ -1,8 +1,10 @@
 import { BigNumber } from "@ethersproject/bignumber";
+import { ERC20Token } from "../models/eth";
 import { Assets } from "../store/types";
 import { getAssetDecimals } from "../utils/asset";
 import { isDevelopment, isProduction } from "../utils/env";
 import deployment from "./deployments.json";
+import addresses from "./externalAddresses.json";
 
 export const NETWORK_NAMES: Record<number, string> = {
   1: "mainnet",
@@ -216,3 +218,8 @@ export const RibbonTokenBalancerPoolAddress = isDevelopment()
   ? deployment.kovan.RibbonTokenBalancerPool
   : // TODO: Update Mainnet Address
     "";
+
+export const getERC20TokenAddress = (token: ERC20Token) =>
+  isDevelopment()
+    ? addresses.kovan.assets[token]
+    : addresses.mainnet.assets[token];

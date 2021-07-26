@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { BigNumber } from "ethers";
 import { useWeb3React } from "@web3-react/core";
@@ -23,10 +23,20 @@ import { USDCLogo } from "shared/lib/assets/icons/erc20Assets";
 import { handleSmallNumber } from "shared/lib/utils/math";
 import useLBPPool from "../../hooks/useLBPPool";
 import { parseUnits } from "ethers/lib/utils";
-import { getAssetDecimals } from "shared/lib/utils/asset";
-import { LBPPoolUSDC } from "../../constants/constants";
-import { RibbonTokenAddress } from "shared/lib/constants/constants";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
+import {
+  ERC20Token,
+  getERC20TokenDecimals,
+  getERC20TokenDisplay,
+} from "shared/lib/models/eth";
+import {
+  getERC20TokenAddress,
+  RibbonTokenBalancerPoolAddress,
+} from "shared/lib/constants/constants";
+import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
+import useERC20Token from "shared/lib/hooks/useERC20Token";
+import { useWeb3Context } from "shared/lib/hooks/web3Context";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 
 const PrimaryInputLabel = styled(BaseInputLabel)`
   font-family: VCR;
@@ -86,35 +96,169 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
   onSwapAmountChange,
 }) => {
   const { active } = useWeb3React();
+  const { provider } = useWeb3Context();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [swapModal, setSwapModal] = useLBPGlobalState("swapModal");
   const contract = useLBPPool();
+  const allowance = useTokenAllowance(
+    swapModal.offerToken,
+    RibbonTokenBalancerPoolAddress
+  );
+  const tokenContract = useERC20Token(swapModal.offerToken);
+  const [waitingApproval, setWaitingApproval] = useState(false);
+  const approvingAnimatedText = useTextAnimation(
+    ["Approving", "Approving .", "Approving ..", "Approving ..."],
+    250,
+    waitingApproval
+  );
 
-  const renderAssetLogo = useCallback((asset: "RBN" | "USDC") => {
+  const renderAssetLogo = useCallback((asset: ERC20Token) => {
     switch (asset) {
-      case "RBN":
+      case "rbn":
         return <Logo height={40} width={40} />;
-      case "USDC":
+      case "usdc":
         return <USDCLogo height={40} width={40} />;
+      default:
+        return <></>;
     }
   }, []);
 
-  const exchangeRateText = useMemo(() => {
-    if (!swapAmount || !receiveAmount) {
-      return `1 ${swapModal.offerToken} = ${handleSmallNumber(exchangeRate)} ${
-        swapModal.receiveToken
-      }`;
+  const needTokenApprove = useMemo(() => {
+    if (!allowance || !swapAmount) {
+      return true;
     }
 
-    return `1 ${swapModal.offerToken} = ${handleSmallNumber(
-      receiveAmount / swapAmount
-    )} ${swapModal.receiveToken}`;
+    return allowance.lt(
+      parseUnits(
+        swapAmount.toString(),
+        getERC20TokenDecimals(swapModal.offerToken)
+      )
+    );
+  }, [allowance, swapAmount, swapModal.offerToken]);
+
+  const exchangeRateText = useMemo(() => {
+    let effectiveExchangeRate = exchangeRate;
+
+    if (swapAmount && receiveAmount) {
+      effectiveExchangeRate = receiveAmount / swapAmount;
+    }
+
+    return `1 ${getERC20TokenDisplay(
+      swapModal.offerToken
+    )} = ${handleSmallNumber(effectiveExchangeRate)} ${getERC20TokenDisplay(
+      swapModal.receiveToken
+    )}`;
   }, [
     exchangeRate,
     receiveAmount,
     swapAmount,
     swapModal.offerToken,
     swapModal.receiveToken,
+  ]);
+
+  const actionButton = useMemo(() => {
+    if (!active) {
+      <ActionButton
+        className="py-3"
+        color={colors.green}
+        onClick={() => setShowConnectModal(true)}
+      >
+        Connect Wallet
+      </ActionButton>;
+    }
+
+    if (swapAmount && needTokenApprove) {
+      return (
+        <ActionButton
+          className="py-3"
+          color={colors.products.yield}
+          disabled={!receiveAmount}
+          onClick={async () => {
+            setWaitingApproval(true);
+            const amount =
+              "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+
+            try {
+              const tx = await tokenContract.approve(
+                RibbonTokenBalancerPoolAddress,
+                amount
+              );
+
+              const txhash = tx.hash;
+
+              // setPendingTransactions((pendingTransactions) => [
+              //   ...pendingTransactions,
+              //   {
+              //     txhash,
+              //     type: "approval",
+              //     amount: amount,
+              //     vault: vaultOption,
+              //   },
+              // ]);
+
+              // Wait for transaction to be approved
+              await provider.waitForTransaction(txhash, 5);
+            } catch (err) {
+              setWaitingApproval(false);
+            }
+          }}
+        >
+          {waitingApproval
+            ? approvingAnimatedText
+            : `APPROVE ${getERC20TokenDisplay(swapModal.offerToken)}`}
+        </ActionButton>
+      );
+    }
+
+    return (
+      <ActionButton
+        className="py-3"
+        color={colors.products.yield}
+        disabled={!receiveAmount || needTokenApprove}
+        onClick={async () => {
+          if (!swapAmount) {
+            return;
+          }
+
+          const offerBigNumber = parseUnits(
+            swapAmount.toString(),
+            getERC20TokenDecimals(swapModal.offerToken)
+          );
+          const receiveBigNumber = parseUnits(
+            receiveAmount.toString(),
+            getERC20TokenDecimals(swapModal.receiveToken)
+          );
+
+          /** Assume 1% slippage */
+          await contract.swapExactAmountIn(
+            getERC20TokenAddress(swapModal.offerToken),
+            offerBigNumber,
+            getERC20TokenAddress(swapModal.receiveToken),
+            receiveBigNumber.mul(99).div(100),
+            offerBigNumber
+              .mul(BigNumber.from(10).pow(18))
+              .div(receiveBigNumber)
+              .mul(101)
+              .div(100)
+          );
+        }}
+      >
+        PREVIEW SWAP
+      </ActionButton>
+    );
+  }, [
+    active,
+    approvingAnimatedText,
+    contract,
+    needTokenApprove,
+    provider,
+    receiveAmount,
+    setShowConnectModal,
+    swapAmount,
+    swapModal.offerToken,
+    swapModal.receiveToken,
+    tokenContract,
+    waitingApproval,
   ]);
 
   return (
@@ -137,7 +281,9 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
             <div className="d-flex w-100 h-100">
               <TokenSwapInputAssetContainer>
                 {renderAssetLogo(swapModal.offerToken)}
-                <Title className="ml-2">{swapModal.offerToken}</Title>
+                <Title className="ml-2">
+                  {getERC20TokenDisplay(swapModal.offerToken)}
+                </Title>
               </TokenSwapInputAssetContainer>
               <TokenSwapInput
                 type="number"
@@ -180,7 +326,9 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
             <div className="d-flex w-100 h-100">
               <TokenSwapInputAssetContainer>
                 {renderAssetLogo(swapModal.receiveToken)}
-                <Title className="ml-2">{swapModal.receiveToken}</Title>
+                <Title className="ml-2">
+                  {getERC20TokenDisplay(swapModal.receiveToken)}
+                </Title>
               </TokenSwapInputAssetContainer>
               <TokenSwapInput
                 type="number"
@@ -199,64 +347,7 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
       </BaseModalContentColumn>
 
       {/* Swap button */}
-      <BaseModalContentColumn>
-        {active ? (
-          <ActionButton
-            className="py-3"
-            color={colors.products.yield}
-            disabled={!receiveAmount}
-            onClick={async () => {
-              if (!swapAmount) {
-                return;
-              }
-
-              const offerTokenAddress =
-                swapModal.offerToken === "USDC"
-                  ? LBPPoolUSDC
-                  : RibbonTokenAddress;
-              const receiveTokenAddress =
-                swapModal.receiveToken === "USDC"
-                  ? LBPPoolUSDC
-                  : RibbonTokenAddress;
-              try {
-                const offerBigNumber = parseUnits(
-                  swapAmount.toString(),
-                  getAssetDecimals(swapModal.offerToken)
-                );
-                const receiveBigNumber = parseUnits(
-                  receiveAmount.toString(),
-                  getAssetDecimals(swapModal.receiveToken)
-                );
-
-                /** Assume 1% slippage */
-                await contract.swapExactAmountIn(
-                  offerTokenAddress,
-                  offerBigNumber,
-                  receiveTokenAddress,
-                  receiveBigNumber.mul(99).div(100),
-                  offerBigNumber
-                    .mul(BigNumber.from(10).pow(18))
-                    .div(receiveBigNumber)
-                    .mul(101)
-                    .div(100)
-                );
-              } catch (err) {
-                console.log(err);
-              }
-            }}
-          >
-            PREVIEW SWAP
-          </ActionButton>
-        ) : (
-          <ActionButton
-            className="py-3"
-            color={colors.green}
-            onClick={() => setShowConnectModal(true)}
-          >
-            Connect Wallet
-          </ActionButton>
-        )}
-      </BaseModalContentColumn>
+      <BaseModalContentColumn>{actionButton}</BaseModalContentColumn>
 
       <BaseModalContentColumn>
         <BalancerReadMoreLink

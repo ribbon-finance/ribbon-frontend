@@ -1,10 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { SOR } from "@balancer-labs/sor";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import BigNumberJS from "bignumber.js";
 import { isDevelopment } from "shared/lib/utils/env";
-import { BalancerPoolUrls, LBPPoolUSDC } from "../constants/constants";
-import { RibbonTokenAddress } from "shared/lib/constants/constants";
+import { BalancerPoolUrls, RBNPurchaseToken } from "../constants/constants";
+import {
+  getERC20TokenAddress,
+  RibbonTokenAddress,
+} from "shared/lib/constants/constants";
 
 export const useLBPSor = () => {
   const { provider } = useWeb3Context();
@@ -21,15 +24,31 @@ export const useLBPSor = () => {
   }, [provider]);
 
   /**
-   * Fetched pools
+   * Fetch pools
+   */
+  const fetchPools = useCallback(async () => {
+    await Promise.all(
+      RBNPurchaseToken.flatMap((token) => [
+        sor.fetchFilteredPairPools(
+          getERC20TokenAddress(token),
+          RibbonTokenAddress
+        ),
+        sor.fetchFilteredPairPools(
+          RibbonTokenAddress,
+          getERC20TokenAddress(token)
+        ),
+      ])
+    );
+
+    setFetchCounter((counter) => counter + 1);
+  }, [sor]);
+
+  /**
+   * Initial fetch, and potentially look into regular update
    */
   useEffect(() => {
-    (async () => {
-      await sor.fetchFilteredPairPools(LBPPoolUSDC, RibbonTokenAddress);
-      await sor.fetchFilteredPairPools(RibbonTokenAddress, LBPPoolUSDC);
-      setFetchCounter((counter) => counter + 1);
-    })();
-  }, [sor]);
+    fetchPools();
+  }, [fetchPools]);
 
   return { sor, fetchCounter };
 };
