@@ -13,6 +13,9 @@ import {
 } from "../../utils/bignumber";
 import TokenSwapForm from "./TokenSwapForm";
 import { getERC20TokenDecimals } from "shared/lib/models/eth";
+import { useMemo } from "react";
+import { SwapStep, SwapStepList } from "./types";
+import TokenSwapPreview from "./TokenSwapPreview";
 
 const TokenSwapModal = () => {
   const [swapModal, setSwapModal] = useLBPGlobalState("swapModal");
@@ -21,6 +24,7 @@ const TokenSwapModal = () => {
     BigNumber.from(0)
   );
   const [exchangeRate, setExchangeRate] = useState(0);
+  const [step, setStep] = useState<SwapStep>(SwapStepList[0]);
 
   const { sor, fetchCounter: sorFetchCounter } = useLBPSor();
 
@@ -68,6 +72,23 @@ const TokenSwapModal = () => {
     sorFetchCounter,
   ]);
 
+  /**
+   * Reset modal when closed
+   */
+  useEffect(() => {
+    if (!swapModal.show) {
+      setSwapAmount("");
+      setStep(SwapStepList[0]);
+    }
+  }, [swapModal.show]);
+
+  const handleSwapAmountChange = useCallback((amount) => {
+    const parsedInput = parseFloat(amount);
+    setSwapAmount(
+      isNaN(parsedInput) || parsedInput < 0 ? "" : `${parsedInput}`
+    );
+  }, []);
+
   const handleClose = useCallback(() => {
     setSwapModal((currentSwapModal) => ({
       ...currentSwapModal,
@@ -75,29 +96,67 @@ const TokenSwapModal = () => {
     }));
   }, [setSwapModal]);
 
+  const body = useMemo(() => {
+    switch (step) {
+      case SwapStepList[0]:
+        return (
+          <TokenSwapForm
+            swapAmount={parseFloat(swapAmount)}
+            receiveAmount={parseFloat(
+              formatUnits(
+                receiveAmount,
+                getERC20TokenDecimals(swapModal.receiveToken)
+              )
+            )}
+            exchangeRate={exchangeRate}
+            onSwapAmountChange={handleSwapAmountChange}
+            onPreview={() => {
+              if (!receiveAmount) {
+                return;
+              }
+
+              setStep("preview");
+            }}
+          />
+        );
+      case SwapStepList[1]:
+        return (
+          <TokenSwapPreview
+            swapAmount={parseUnits(
+              swapAmount,
+              getERC20TokenDecimals(swapModal.offerToken)
+            )}
+            receiveAmount={receiveAmount}
+          />
+        );
+    }
+  }, [
+    exchangeRate,
+    handleSwapAmountChange,
+    receiveAmount,
+    step,
+    swapAmount,
+    swapModal.offerToken,
+    swapModal.receiveToken,
+  ]);
+
   return (
     <BasicModal
       show={swapModal.show}
       onClose={handleClose}
       height={516}
       headerBackground
+      backButton={
+        step === "preview"
+          ? {
+              onClick: () => {
+                setStep("form");
+              },
+            }
+          : undefined
+      }
     >
-      <TokenSwapForm
-        swapAmount={parseFloat(swapAmount)}
-        receiveAmount={parseFloat(
-          formatUnits(
-            receiveAmount,
-            getERC20TokenDecimals(swapModal.receiveToken)
-          )
-        )}
-        exchangeRate={exchangeRate}
-        onSwapAmountChange={(amount) => {
-          const parsedInput = parseFloat(amount);
-          setSwapAmount(
-            isNaN(parsedInput) || parsedInput < 0 ? "" : `${parsedInput}`
-          );
-        }}
-      />
+      {body}
     </BasicModal>
   );
 };

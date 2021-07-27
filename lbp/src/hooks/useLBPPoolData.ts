@@ -38,6 +38,7 @@ const useLBPPoolData: UseLBPPoolData = (
      * 1. Spot price with default purchase token
      * 2. Default purcahse token balance
      * 3. Ribbon Balance
+     * 4. Swap fees
      */
     const unconnectedPromises = [
       contract.getSpotPrice(
@@ -46,9 +47,10 @@ const useLBPPoolData: UseLBPPoolData = (
       ),
       contract.getBalance(getERC20TokenAddress(RBNPurchaseToken[0])),
       contract.getBalance(RibbonTokenAddress),
+      contract.getSwapFee(),
     ];
 
-    const [spotPrice, usdcBalance, ribbonBalance] = await Promise.all(
+    const [spotPrice, usdcBalance, ribbonBalance, swapFees] = await Promise.all(
       unconnectedPromises
     );
 
@@ -58,6 +60,7 @@ const useLBPPoolData: UseLBPPoolData = (
         spotPrice,
         ribbonSold: LBPPoolInitialBalance.ribbon.sub(ribbonBalance),
         usdcRaised: usdcBalance.sub(LBPPoolInitialBalance.usdc),
+        swapFees,
       },
     });
 

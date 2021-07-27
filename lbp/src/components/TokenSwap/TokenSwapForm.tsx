@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
-import { BigNumber } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 
 import {
@@ -21,7 +20,6 @@ import { useLBPGlobalState } from "../../store/store";
 import Logo from "shared/lib/assets/icons/logo";
 import { USDCLogo } from "shared/lib/assets/icons/erc20Assets";
 import { handleSmallNumber } from "shared/lib/utils/math";
-import useLBPPool from "../../hooks/useLBPPool";
 import { parseUnits } from "ethers/lib/utils";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import {
@@ -29,10 +27,7 @@ import {
   getERC20TokenDecimals,
   getERC20TokenDisplay,
 } from "shared/lib/models/eth";
-import {
-  getERC20TokenAddress,
-  RibbonTokenBalancerPoolAddress,
-} from "shared/lib/constants/constants";
+import { RibbonTokenBalancerPoolAddress } from "shared/lib/constants/constants";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import useERC20Token from "shared/lib/hooks/useERC20Token";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
@@ -87,6 +82,7 @@ interface TokenSwapFormProps {
   receiveAmount: number;
   exchangeRate: number;
   onSwapAmountChange: (amount: string) => void;
+  onPreview: () => void;
 }
 
 const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
@@ -94,12 +90,12 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
   receiveAmount,
   exchangeRate,
   onSwapAmountChange,
+  onPreview,
 }) => {
   const { active } = useWeb3React();
   const { provider } = useWeb3Context();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [swapModal, setSwapModal] = useLBPGlobalState("swapModal");
-  const contract = useLBPPool();
   const allowance = useTokenAllowance(
     swapModal.offerToken,
     RibbonTokenBalancerPoolAddress
@@ -186,6 +182,7 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
 
               const txhash = tx.hash;
 
+              /** TODO: Add pending transactions */
               // setPendingTransactions((pendingTransactions) => [
               //   ...pendingTransactions,
               //   {
@@ -215,33 +212,7 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
         className="py-3"
         color={colors.products.yield}
         disabled={!receiveAmount || needTokenApprove}
-        onClick={async () => {
-          if (!swapAmount) {
-            return;
-          }
-
-          const offerBigNumber = parseUnits(
-            swapAmount.toString(),
-            getERC20TokenDecimals(swapModal.offerToken)
-          );
-          const receiveBigNumber = parseUnits(
-            receiveAmount.toString(),
-            getERC20TokenDecimals(swapModal.receiveToken)
-          );
-
-          /** Assume 1% slippage */
-          await contract.swapExactAmountIn(
-            getERC20TokenAddress(swapModal.offerToken),
-            offerBigNumber,
-            getERC20TokenAddress(swapModal.receiveToken),
-            receiveBigNumber.mul(99).div(100),
-            offerBigNumber
-              .mul(BigNumber.from(10).pow(18))
-              .div(receiveBigNumber)
-              .mul(101)
-              .div(100)
-          );
-        }}
+        onClick={onPreview}
       >
         PREVIEW SWAP
       </ActionButton>
@@ -249,14 +220,13 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
   }, [
     active,
     approvingAnimatedText,
-    contract,
     needTokenApprove,
+    onPreview,
     provider,
     receiveAmount,
     setShowConnectModal,
     swapAmount,
     swapModal.offerToken,
-    swapModal.receiveToken,
     tokenContract,
     waitingApproval,
   ]);

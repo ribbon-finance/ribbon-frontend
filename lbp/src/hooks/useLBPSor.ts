@@ -9,7 +9,14 @@ import {
   RibbonTokenAddress,
 } from "shared/lib/constants/constants";
 
-export const useLBPSor = () => {
+type UseLBPSor = (params?: { poll: boolean; pollingFrequency?: number }) => {
+  sor: SOR;
+  fetchCounter: number;
+};
+
+export const useLBPSor: UseLBPSor = (
+  { poll, pollingFrequency } = { poll: true, pollingFrequency: 5000 }
+) => {
   const { provider } = useWeb3Context();
   const [fetchCounter, setFetchCounter] = useState(0);
 
@@ -47,8 +54,20 @@ export const useLBPSor = () => {
    * Initial fetch, and potentially look into regular update
    */
   useEffect(() => {
-    fetchPools();
-  }, [fetchPools]);
+    let pollInterval: any = undefined;
+    if (poll) {
+      fetchPools();
+      pollInterval = setInterval(fetchPools, pollingFrequency);
+    } else {
+      fetchPools();
+    }
+
+    return () => {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+      }
+    };
+  }, [fetchPools, poll, pollingFrequency]);
 
   return { sor, fetchCounter };
 };

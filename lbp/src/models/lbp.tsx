@@ -17,4 +17,5 @@ export interface LBPPoolData {
   spotPrice: BigNumber;
   ribbonSold: BigNumber;
   usdcRaised: BigNumber;
+  swapFees: BigNumber;
 }
