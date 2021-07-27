@@ -1,12 +1,13 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { RibbonTokenAddress } from "shared/lib/constants/constants";
 
-import { getSubgraphqlURI } from "shared/lib/utils/env";
+import { RibbonTokenAddress } from "../constants/constants";
 import { ERC20TokenSubgraphData } from "../models/token";
+import { getSubgraphqlURI } from "../utils/env";
 
 const useRBNToken = () => {
+  // TODO: Global state
   const [data, setData] = useState<ERC20TokenSubgraphData>();
   const [loading, setLoading] = useState(false);
 

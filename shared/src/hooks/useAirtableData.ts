@@ -2,7 +2,6 @@ import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import {
   getAirtableName,
-  VaultList,
   VaultOptions,
 } from "../constants/constants";
 import { useGlobalState } from "../store/store";

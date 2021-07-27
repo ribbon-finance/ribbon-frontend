@@ -10,6 +10,7 @@ import { impersonateAddress } from "shared/lib/utils/development";
 const useTransactions = () => {
   const web3Context = useWeb3React();
   const account = impersonateAddress ? impersonateAddress : web3Context.account;
+  // TODO: Global state
   const [transactions, setTransactions] = useState<VaultTransaction[]>([]);
   const [loading, setLoading] = useState(false);
 

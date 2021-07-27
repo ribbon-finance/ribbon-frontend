@@ -2,12 +2,23 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
+import { Contract, Signer } from "ethers";
 import { Provider } from "@ethersproject/providers";
-import type {
-  RibbonStakingRewards,
-  RibbonStakingRewardsInterface,
-} from "../RibbonStakingRewards";
+
+import type { RibbonStakingRewards } from "./RibbonStakingRewards";
+
+export class RibbonStakingRewardsFactory {
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): RibbonStakingRewards {
+    return new Contract(
+      address,
+      _abi,
+      signerOrProvider
+    ) as RibbonStakingRewards;
+  }
+}
 
 const _abi = [
   {
@@ -629,20 +640,3 @@ const _abi = [
     type: "function",
   },
 ];
-
-export class RibbonStakingRewards__factory {
-  static readonly abi = _abi;
-  static createInterface(): RibbonStakingRewardsInterface {
-    return new utils.Interface(_abi) as RibbonStakingRewardsInterface;
-  }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): RibbonStakingRewards {
-    return new Contract(
-      address,
-      _abi,
-      signerOrProvider
-    ) as RibbonStakingRewards;
-  }
-}

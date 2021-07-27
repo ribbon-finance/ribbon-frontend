@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
+import { Col, Row } from "react-bootstrap";
 
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import { Col, Row } from "react-bootstrap";
 import { SecondaryText, Title } from "shared/lib/designSystem";
+import useRBNToken from "shared/lib/hooks/useRBNToken";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLBPPoolData from "../../hooks/useLBPPoolData";
+import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
+import { ActionButton } from "shared/lib/components/Common/buttons";
+import { useLBPGlobalState } from "../../store/store";
+import { getERC20TokenDecimals } from "shared/lib/models/eth";
+import { RBNPurchaseToken } from "../../constants/constants";
 
 const SaleChartContainer = styled.div`
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
@@ -63,53 +71,118 @@ const StatisticData = styled(Title)`
 `;
 
 const TokenSalePerformance = () => {
-  return (
-    <SaleChartContainer>
-      <Row>
-        {/* Chart */}
-        <Col md={8} className="d-flex flex-column">
-          <div className="mt-4 ml-4">
-            <RibbonSaleLabel>RBN PRICE</RibbonSaleLabel>
-          </div>
-          <div className="d-flex ml-4 mt-1">
-            <PriceText>$0.2945</PriceText>
-          </div>
-          <div className="flex-grow-1"></div>
-          <div className="ml-4 mt-3 mb-3 d-flex">
-            <Legend>
-              <LegendIndicator color={colors.green} />
-              <SecondaryText>RBN price</SecondaryText>
-            </Legend>
-            <Legend>
-              <LegendIndicator color={colors.products.capitalAccumulation} />
-              <SecondaryText>
-                Projected RBN price with no new buyers
-              </SecondaryText>
-            </Legend>
-          </div>
-        </Col>
+  const { data: tokenData, loading: tokenLoading } = useRBNToken();
+  const { data: poolData, loading: poolLoading } = useLBPPoolData();
+  const loadingText = useTextAnimation(
+    ["Loading", "Loading .", "Loading ..", "Loading ..."],
+    250,
+    tokenLoading || poolLoading
+  );
+  const [, setSwapModal] = useLBPGlobalState("swapModal");
 
-        {/* Statistic */}
-        <Col md={4}>
-          <StatisticContainer>
-            <StatisticLabel>RBN Sold</StatisticLabel>
-            <StatisticData>30,000,000</StatisticData>
-          </StatisticContainer>
-          <StatisticContainer>
-            <StatisticLabel>USDC Raised</StatisticLabel>
-            <StatisticData>15,000,000</StatisticData>
-          </StatisticContainer>
-          <StatisticContainer>
-            <StatisticLabel>No. of RBN Tokenholders</StatisticLabel>
-            <StatisticData>2,202</StatisticData>
-          </StatisticContainer>
-          <StatisticContainer>
-            <StatisticLabel>Token Sale Ends In</StatisticLabel>
-            <StatisticData>2D 23H 12M</StatisticData>
-          </StatisticContainer>
-        </Col>
-      </Row>
-    </SaleChartContainer>
+  const [spotPriceText, rbnSoldText, usdcRaisedText] = useMemo(() => {
+    if (poolLoading) {
+      return [loadingText, loadingText, loadingText];
+    }
+
+    if (!poolData) {
+      return ["---", 0, 0];
+    }
+
+    return [
+      assetToUSD(
+        poolData.spotPrice,
+        1,
+        getERC20TokenDecimals(RBNPurchaseToken[0])
+      ),
+      formatBigNumber(poolData.ribbonSold, 4, 18),
+      formatBigNumber(
+        poolData.usdcRaised,
+        2,
+        getERC20TokenDecimals(RBNPurchaseToken[0])
+      ),
+    ];
+  }, [loadingText, poolData, poolLoading]);
+
+  return (
+    <>
+      <SaleChartContainer>
+        <Row>
+          {/* Chart */}
+          <Col md={8} className="d-flex flex-column">
+            <div className="mt-4 ml-4">
+              <RibbonSaleLabel>RBN PRICE</RibbonSaleLabel>
+            </div>
+            <div className="d-flex ml-4 mt-1 align-items-center">
+              <PriceText>{spotPriceText}</PriceText>
+              <div className="d-flex ml-auto">
+                <ActionButton
+                  color={colors.products.yield}
+                  className="px-5 py-3"
+                  onClick={() =>
+                    setSwapModal({
+                      show: true,
+                      offerToken: "usdc",
+                      receiveToken: "rbn",
+                    })
+                  }
+                >
+                  BUY
+                </ActionButton>
+                <ActionButton
+                  className="ml-3 px-5 py-3"
+                  variant="secondary"
+                  onClick={() =>
+                    setSwapModal({
+                      show: true,
+                      offerToken: "rbn",
+                      receiveToken: "usdc",
+                    })
+                  }
+                >
+                  SELL
+                </ActionButton>
+              </div>
+            </div>
+            <div className="flex-grow-1"></div>
+            <div className="ml-4 mt-3 mb-3 d-flex">
+              <Legend>
+                <LegendIndicator color={colors.green} />
+                <SecondaryText>RBN price</SecondaryText>
+              </Legend>
+              <Legend>
+                <LegendIndicator color={colors.products.capitalAccumulation} />
+                <SecondaryText>
+                  Projected RBN price with no new buyers
+                </SecondaryText>
+              </Legend>
+            </div>
+          </Col>
+
+          {/* Statistic */}
+          <Col md={4}>
+            <StatisticContainer>
+              <StatisticLabel>RBN Sold</StatisticLabel>
+              <StatisticData>{rbnSoldText}</StatisticData>
+            </StatisticContainer>
+            <StatisticContainer>
+              <StatisticLabel>USDC Raised</StatisticLabel>
+              <StatisticData>{usdcRaisedText}</StatisticData>
+            </StatisticContainer>
+            <StatisticContainer>
+              <StatisticLabel>No. of RBN Tokenholders</StatisticLabel>
+              <StatisticData>
+                {tokenLoading ? loadingText : tokenData?.numHolders}
+              </StatisticData>
+            </StatisticContainer>
+            <StatisticContainer>
+              <StatisticLabel>Token Sale Ends In</StatisticLabel>
+              <StatisticData>2D 23H 12M</StatisticData>
+            </StatisticContainer>
+          </Col>
+        </Row>
+      </SaleChartContainer>
+    </>
   );
 };
 

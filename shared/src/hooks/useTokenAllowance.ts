@@ -1,11 +1,11 @@
 import { useWeb3React } from "@web3-react/core";
 
-import { ERC20Token } from "shared/lib/models/eth";
-import { getERC20Token } from "shared/lib/hooks/useERC20Token";
-import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import { useEffect, useMemo, useState } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
-import { impersonateAddress } from "shared/lib/utils/development";
+import { ERC20Token } from "../models/eth";
+import { impersonateAddress } from "../utils/development";
+import { useWeb3Context } from "./web3Context";
+import { getERC20Token } from "./useERC20Token";
 
 const useTokenAllowance = (token: ERC20Token | undefined, address: string) => {
   const web3Context = useWeb3React();

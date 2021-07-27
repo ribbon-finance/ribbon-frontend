@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 
 import {
   RibbonStakingRewards,
-  RibbonStakingRewards__factory,
 } from "shared/lib/codegen";
+import { RibbonStakingRewardsFactory } from "shared/lib/codegen/RibbonStakingRewardsFactory"
 import {
   VaultLiquidityMiningMap,
   VaultOptions,
@@ -18,7 +18,7 @@ export const getStakingReward = (
 ) => {
   const provider = useSigner ? library.getSigner() : library;
 
-  return RibbonStakingRewards__factory.connect(
+  return RibbonStakingRewardsFactory.connect(
     VaultLiquidityMiningMap[vaultOption]!,
     provider
   );

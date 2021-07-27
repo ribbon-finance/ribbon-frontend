@@ -1,6 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
-import { RibbonCoveredCall, RibbonCoveredCall__factory } from "../codegen";
+import { RibbonCoveredCall } from "../codegen";
+import { RibbonCoveredCallFactory } from "../codegen/RibbonCoveredCallFactory";
 import { VaultAddressMap, VaultOptions } from "../constants/constants";
 
 export const getVault = (
@@ -11,7 +12,7 @@ export const getVault = (
   if (library) {
     const provider = useSigner ? library.getSigner() : library;
 
-    const vault = RibbonCoveredCall__factory.connect(
+    const vault = RibbonCoveredCallFactory.connect(
       VaultAddressMap[vaultOption](),
       provider
     );

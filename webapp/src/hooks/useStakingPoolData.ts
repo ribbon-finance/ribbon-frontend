@@ -11,7 +11,7 @@ import { getERC20Token } from "shared/lib/hooks/useERC20Token";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import { StakingPoolData } from "../models/staking";
 import { impersonateAddress } from "shared/lib/utils/development";
-import { getStakingReward } from "./useStakingReward";
+import useStakingReward from "./useStakingReward";
 
 const initialData: StakingPoolData = {
   currentStake: BigNumber.from(0),
@@ -34,19 +34,16 @@ const useStakingPoolData: UseStakingPoolData = (
   option,
   { poll, pollingFrequency } = { poll: true, pollingFrequency: 5000 }
 ) => {
+  // TODO: Global state
   const [data, setData] = useState<StakingPoolData>(initialData);
   const [loading, setLoading] = useState(false);
   const [firstLoaded, setFirstLoaded] = useState(false);
-  // const contract = useStakingReward(option);
-  const web3Context = useWeb3React();
+  const { active, library, account: web3Account } = useWeb3React();
   const { provider } = useWeb3Context();
-  const active = web3Context.active;
-  const library = web3Context.library;
-  const account = impersonateAddress ? impersonateAddress : web3Context.account;
-  // const tokenContract = useERC20Token(option);
+  const account = impersonateAddress ? impersonateAddress : web3Account;
+  const contract = useStakingReward(option);
 
   const doMulticall = useCallback(async () => {
-    const contract = getStakingReward(library || provider, option, active);
     const tokenContract = getERC20Token(library || provider, option, active);
 
     if (!contract || !tokenContract) {
@@ -56,6 +53,7 @@ const useStakingPoolData: UseStakingPoolData = (
     if (!firstLoaded) {
       setLoading(true);
     }
+
     /**
      * 1. Pool size
      * 2. Pool reward of duration
@@ -120,7 +118,7 @@ const useStakingPoolData: UseStakingPoolData = (
       setLoading(false);
       setFirstLoaded(true);
     }
-  }, [account, active, library, provider, option, firstLoaded]);
+  }, [account, active, contract, library, provider, option, firstLoaded]);
 
   useEffect(() => {
     let pollInterval: any = undefined;

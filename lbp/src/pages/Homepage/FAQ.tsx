@@ -77,8 +77,8 @@ const FAQ = () => {
     <>
       <Row className="justify-content-center">
         <Col xs={11} sm={10} md={9} lg={8} xl={7}>
-          {FAQItems.map((item) => (
-            <AccordionContainer>
+          {FAQItems.map((item, index) => (
+            <AccordionContainer key={index}>
               <BaseAccordion
                 items={[
                   {

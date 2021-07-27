@@ -87,3 +87,14 @@ export const getRange = (start: number, stop: number, step: number) => {
   }
   return a;
 };
+
+export const handleSmallNumber = (n: number, decimals: number = 4): number => {
+  let parsedString = n.toFixed(decimals)
+  if (n < 1e-6) {
+    parsedString = n.toPrecision(1)
+  } else if (n < 1e-4) {
+    parsedString = n.toPrecision(2)
+  } 
+  
+  return parseFloat(parsedString)
+}

@@ -87,7 +87,7 @@ const BaseAccordion: React.FC<BaseAccordionProps> = ({ items }) => {
   return (
     <Accordion>
       {items.map((item, index) => (
-        <AccordionItem>
+        <AccordionItem key={index}>
           <BaseAccordionToggleWithMenu eventKey={index.toString()}>
             <PrimaryText className="mr-auto">{item.header}</PrimaryText>
           </BaseAccordionToggleWithMenu>

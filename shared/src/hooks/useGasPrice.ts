@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useCallback, useEffect } from "react";
 import { ethers } from "ethers";
-import { useGlobalState } from "shared/lib/store/store";
+import { useGlobalState } from "../store/store";
 
 const { parseUnits } = ethers.utils;
 
@@ -15,6 +15,7 @@ interface APIResponse {
   };
 }
 
+// GLobal state
 let fetchedOnce = false;
 
 const useGasPrice = () => {

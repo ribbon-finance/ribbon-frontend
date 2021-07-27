@@ -24,13 +24,12 @@ import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
 import VaultDeposit from "./ExplainerGraphic/VaultDeposit";
 
-const ExplainerContainer = styled.div<{ color: string }>`
+const ExplainerContainer = styled.div`
   display: flex;
   flex-direction: column;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
   overflow: hidden;
-  background: ${(props) => props.color}0a;
   overflow: hidden;
 `;
 
@@ -520,7 +519,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
   const infoSection = useMemo(
     () => (
       <ExplainerSection
-        height={width > sizes.lg ? 270 : 320}
+        height={width > sizes.lg ? 280 : 330}
         className="d-flex flex-column p-3"
       >
         <AnimatePresence initial={false} exitBeforeEnter>
@@ -573,7 +572,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
   );
 
   return (
-    <ExplainerContainer ref={containerRef} color={color}>
+    <ExplainerContainer ref={containerRef}>
       <VisualSection
         height={
           width > sizes.lg ? (sectionWidth / 23) * 8 : (sectionWidth / 15) * 7

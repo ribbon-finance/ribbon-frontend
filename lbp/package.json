@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@balancer-labs/sor": "^1.0.0",
     "@craco/craco": "^6.1.1",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -13,6 +14,8 @@
     "@types/react-dom": "^17.0.0",
     "@web3-react/core": "^6.1.9",
     "bootstrap": "^4.6.0",
+    "currency.js": "^2.0.4",
+    "ethers": "5.0.17",
     "moment": "^2.29.1",
     "node-sass": "^6.0.1",
     "react": "^17.0.2",

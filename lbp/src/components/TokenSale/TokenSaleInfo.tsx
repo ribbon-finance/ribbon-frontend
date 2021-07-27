@@ -16,6 +16,8 @@ import {
   RibbonTokenBalancerPoolAddress,
 } from "shared/lib/constants/constants";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
+import { formatBigNumber } from "shared/lib/utils/math";
+import { LBPPoolInitialBalance } from "../../constants/constants";
 
 const InfoTitle = styled(Title)`
   font-size: 18px;
@@ -87,27 +89,31 @@ const TokenSaleInfo = () => {
         <InfoTable>
           <InfoTableCell>
             <LabelText>$RBN Start Balance</LabelText>
-            <InfoTableCellData>30,000,000</InfoTableCellData>
+            <InfoTableCellData>
+              {formatBigNumber(LBPPoolInitialBalance.ribbon, 4, 18)}
+            </InfoTableCellData>
           </InfoTableCell>
           <InfoTableCell>
             <LabelText>USDC Start Balance</LabelText>
-            <InfoTableCellData>5,000,000</InfoTableCellData>
+            <InfoTableCellData>
+              {formatBigNumber(LBPPoolInitialBalance.usdc, 2, 6)}
+            </InfoTableCellData>
           </InfoTableCell>
           <InfoTableCell>
             <LabelText>$RBN Start Weight</LabelText>
-            <InfoTableCellData>95</InfoTableCellData>
+            <InfoTableCellData>95%</InfoTableCellData>
           </InfoTableCell>
           <InfoTableCell>
             <LabelText>USDC Start Weight</LabelText>
-            <InfoTableCellData>5</InfoTableCellData>
+            <InfoTableCellData>5%</InfoTableCellData>
           </InfoTableCell>
           <InfoTableCell>
             <LabelText>$RBN End Weight</LabelText>
-            <InfoTableCellData>50</InfoTableCellData>
+            <InfoTableCellData>50%</InfoTableCellData>
           </InfoTableCell>
           <InfoTableCell>
             <LabelText>USDC End Weight</LabelText>
-            <InfoTableCellData>50</InfoTableCellData>
+            <InfoTableCellData>50%</InfoTableCellData>
           </InfoTableCell>
         </InfoTable>
 

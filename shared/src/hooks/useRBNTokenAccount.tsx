@@ -2,15 +2,16 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { RibbonTokenAddress } from "shared/lib/constants/constants";
 
-import { getSubgraphqlURI } from "shared/lib/utils/env";
+import { RibbonTokenAddress } from "../constants/constants";
 import { ERC20TokenAccountSubgraphData } from "../models/token";
-import { impersonateAddress } from "shared/lib/utils/development";
+import { impersonateAddress } from "../utils/development";
+import { getSubgraphqlURI } from "../utils/env";
 
 const useRBNTokenAccount = () => {
   const web3Context = useWeb3React();
   const account = impersonateAddress ? impersonateAddress : web3Context.account;
+  // TODO: Global state
   const [data, setData] = useState<ERC20TokenAccountSubgraphData>();
   const [loading, setLoading] = useState(false);
 

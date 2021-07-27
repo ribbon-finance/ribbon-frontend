@@ -8,6 +8,7 @@ import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal"
 import Header from "./Header/Header";
 import Homepage from "../pages/Homepage/Homepage";
 import Footer from "./Footer/Footer";
+import TokenSwapModal from "./TokenSwap/TokenSwapModal";
 
 const Root = styled.div<{ screenHeight: number }>`
   background-color: #1c1a19;
@@ -22,6 +23,7 @@ const RootApp = () => {
   return (
     <Root id="appRoot" screenHeight={screenHeight}>
       <WalletConnectModal />
+      <TokenSwapModal />
       <Router>
         <Header />
 

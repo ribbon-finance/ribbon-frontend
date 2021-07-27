@@ -12,3 +12,10 @@ export interface LBPPoolTransaction {
   price: number;
   amount: BigNumber;
 }
+
+export interface LBPPoolData {
+  spotPrice: BigNumber;
+  ribbonSold: BigNumber;
+  usdcRaised: BigNumber;
+  swapFees: BigNumber;
+}

@@ -11,6 +11,7 @@ import { getSubgraphqlURI } from "../utils/env";
 const useVaultAccounts = (vaults: VaultOptions[]) => {
   const web3Context = useWeb3React();
   const account = impersonateAddress || web3Context.account;
+  // TODO: Global states
   const [vaultAccounts, setVaultAccounts] = useState<{
     [key: string]: VaultAccount | undefined;
   }>({});

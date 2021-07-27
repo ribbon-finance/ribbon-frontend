@@ -9,15 +9,16 @@ import {
   BigNumber,
   BigNumberish,
   PopulatedTransaction,
-  BaseContract,
+} from "ethers";
+import {
+  Contract,
   ContractTransaction,
   Overrides,
   CallOverrides,
-} from "ethers";
+} from "@ethersproject/contracts";
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface MerkleDistributorInterface extends ethers.utils.Interface {
   functions: {
@@ -107,128 +108,200 @@ interface MerkleDistributorInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Recovered"): EventFragment;
 }
 
-export class MerkleDistributor extends BaseContract {
+export class MerkleDistributor extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  listeners<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter?: TypedEventFilter<EventArgsArray, EventArgsObject>
-  ): Array<TypedListener<EventArgsArray, EventArgsObject>>;
-  off<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
-  ): this;
-  on<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
-  ): this;
-  once<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
-  ): this;
-  removeListener<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
-  ): this;
-  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>
-  ): this;
-
-  listeners(eventName?: string): Array<Listener>;
-  off(eventName: string, listener: Listener): this;
-  on(eventName: string, listener: Listener): this;
-  once(eventName: string, listener: Listener): this;
-  removeListener(eventName: string, listener: Listener): this;
-  removeAllListeners(eventName?: string): this;
-
-  queryFilter<EventArgsArray extends Array<any>, EventArgsObject>(
-    event: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    fromBlockOrBlockhash?: string | number | undefined,
-    toBlock?: string | number | undefined
-  ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
+  on(event: EventFilter | string, listener: Listener): this;
+  once(event: EventFilter | string, listener: Listener): this;
+  addListener(eventName: EventFilter | string, listener: Listener): this;
+  removeAllListeners(eventName: EventFilter | string): this;
+  removeListener(eventName: any, listener: Listener): this;
 
   interface: MerkleDistributorInterface;
 
   functions: {
-    acceptOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    acceptOwnership(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "acceptOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
 
     claim(
       index: BigNumberish,
       account: string,
       amount: BigNumberish,
       merkleProof: BytesLike[],
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "claim(uint256,address,uint256,bytes32[])"(
+      index: BigNumberish,
+      account: string,
+      amount: BigNumberish,
+      merkleProof: BytesLike[],
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     isClaimed(
       index: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    ): Promise<{
+      0: boolean;
+    }>;
 
-    merkleRoot(overrides?: CallOverrides): Promise<[string]>;
+    "isClaimed(uint256)"(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    merkleRoot(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "merkleRoot()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
 
     nominateNewOwner(
       _owner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    nominatedOwner(overrides?: CallOverrides): Promise<[string]>;
+    "nominateNewOwner(address)"(
+      _owner: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    owner(overrides?: CallOverrides): Promise<[string]>;
+    nominatedOwner(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
 
-    ownerUnlockTime(overrides?: CallOverrides): Promise<[BigNumber]>;
+    "nominatedOwner()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    owner(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "owner()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    ownerUnlockTime(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "ownerUnlockTime()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
 
     recoverERC20(
       tokenAddress: string,
       tokenAmount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    token(overrides?: CallOverrides): Promise<[string]>;
+    "recoverERC20(address,uint256)"(
+      tokenAddress: string,
+      tokenAmount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    token(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "token()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
   };
 
-  acceptOwnership(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  acceptOwnership(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "acceptOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   claim(
     index: BigNumberish,
     account: string,
     amount: BigNumberish,
     merkleProof: BytesLike[],
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "claim(uint256,address,uint256,bytes32[])"(
+    index: BigNumberish,
+    account: string,
+    amount: BigNumberish,
+    merkleProof: BytesLike[],
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   isClaimed(index: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
+  "isClaimed(uint256)"(
+    index: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   merkleRoot(overrides?: CallOverrides): Promise<string>;
+
+  "merkleRoot()"(overrides?: CallOverrides): Promise<string>;
 
   nominateNewOwner(
     _owner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "nominateNewOwner(address)"(
+    _owner: string,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   nominatedOwner(overrides?: CallOverrides): Promise<string>;
 
+  "nominatedOwner()"(overrides?: CallOverrides): Promise<string>;
+
   owner(overrides?: CallOverrides): Promise<string>;
 
+  "owner()"(overrides?: CallOverrides): Promise<string>;
+
   ownerUnlockTime(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "ownerUnlockTime()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   recoverERC20(
     tokenAddress: string,
     tokenAmount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "recoverERC20(address,uint256)"(
+    tokenAddress: string,
+    tokenAmount: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   token(overrides?: CallOverrides): Promise<string>;
 
+  "token()"(overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
     acceptOwnership(overrides?: CallOverrides): Promise<void>;
 
+    "acceptOwnership()"(overrides?: CallOverrides): Promise<void>;
+
     claim(
+      index: BigNumberish,
+      account: string,
+      amount: BigNumberish,
+      merkleProof: BytesLike[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "claim(uint256,address,uint256,bytes32[])"(
       index: BigNumberish,
       account: string,
       amount: BigNumberish,
@@ -238,15 +311,33 @@ export class MerkleDistributor extends BaseContract {
 
     isClaimed(index: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
+    "isClaimed(uint256)"(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     merkleRoot(overrides?: CallOverrides): Promise<string>;
+
+    "merkleRoot()"(overrides?: CallOverrides): Promise<string>;
 
     nominateNewOwner(_owner: string, overrides?: CallOverrides): Promise<void>;
 
+    "nominateNewOwner(address)"(
+      _owner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     nominatedOwner(overrides?: CallOverrides): Promise<string>;
+
+    "nominatedOwner()"(overrides?: CallOverrides): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
+    "owner()"(overrides?: CallOverrides): Promise<string>;
+
     ownerUnlockTime(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "ownerUnlockTime()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     recoverERC20(
       tokenAddress: string,
@@ -254,91 +345,117 @@ export class MerkleDistributor extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    "recoverERC20(address,uint256)"(
+      tokenAddress: string,
+      tokenAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     token(overrides?: CallOverrides): Promise<string>;
+
+    "token()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
-    Claimed(
-      index?: null,
-      account?: null,
-      amount?: null
-    ): TypedEventFilter<
-      [BigNumber, string, BigNumber],
-      { index: BigNumber; account: string; amount: BigNumber }
-    >;
+    Claimed(index: null, account: null, amount: null): EventFilter;
 
-    OwnerChanged(
-      oldOwner?: null,
-      newOwner?: null
-    ): TypedEventFilter<
-      [string, string],
-      { oldOwner: string; newOwner: string }
-    >;
+    OwnerChanged(oldOwner: null, newOwner: null): EventFilter;
 
-    OwnerNominated(
-      newOwner?: null
-    ): TypedEventFilter<[string], { newOwner: string }>;
+    OwnerNominated(newOwner: null): EventFilter;
 
-    Recovered(
-      token?: null,
-      amount?: null
-    ): TypedEventFilter<
-      [string, BigNumber],
-      { token: string; amount: BigNumber }
-    >;
+    Recovered(token: null, amount: null): EventFilter;
   };
 
   estimateGas: {
-    acceptOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    acceptOwnership(overrides?: Overrides): Promise<BigNumber>;
+
+    "acceptOwnership()"(overrides?: Overrides): Promise<BigNumber>;
 
     claim(
       index: BigNumberish,
       account: string,
       amount: BigNumberish,
       merkleProof: BytesLike[],
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "claim(uint256,address,uint256,bytes32[])"(
+      index: BigNumberish,
+      account: string,
+      amount: BigNumberish,
+      merkleProof: BytesLike[],
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     isClaimed(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "isClaimed(uint256)"(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     merkleRoot(overrides?: CallOverrides): Promise<BigNumber>;
 
-    nominateNewOwner(
+    "merkleRoot()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    nominateNewOwner(_owner: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "nominateNewOwner(address)"(
       _owner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     nominatedOwner(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "nominatedOwner()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     ownerUnlockTime(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "ownerUnlockTime()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     recoverERC20(
       tokenAddress: string,
       tokenAmount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "recoverERC20(address,uint256)"(
+      tokenAddress: string,
+      tokenAmount: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     token(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "token()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    acceptOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    acceptOwnership(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "acceptOwnership()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     claim(
       index: BigNumberish,
       account: string,
       amount: BigNumberish,
       merkleProof: BytesLike[],
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "claim(uint256,address,uint256,bytes32[])"(
+      index: BigNumberish,
+      account: string,
+      amount: BigNumberish,
+      merkleProof: BytesLike[],
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     isClaimed(
@@ -346,25 +463,55 @@ export class MerkleDistributor extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    "isClaimed(uint256)"(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     merkleRoot(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "merkleRoot()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     nominateNewOwner(
       _owner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "nominateNewOwner(address)"(
+      _owner: string,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     nominatedOwner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "nominatedOwner()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     ownerUnlockTime(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "ownerUnlockTime()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     recoverERC20(
       tokenAddress: string,
       tokenAmount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "recoverERC20(address,uint256)"(
+      tokenAddress: string,
+      tokenAmount: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     token(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "token()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

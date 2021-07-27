@@ -68,9 +68,7 @@ const ColoredYVUSDCLogo = styled(YVUSDcLogo)<{ backgroundColor?: string }>`
   }
 `;
 
-export const getAssetLogo: (
-  asset: Assets
-) =>
+export const getAssetLogo: (asset: Assets) =>
   | StyledComponent<
       React.FC<React.SVGAttributes<SVGElement>>,
       any,
