@@ -17,6 +17,8 @@ export const getWalletConnectConnector = () =>
     rpc: isDevelopment()
       ? { 42: process.env.REACT_APP_TESTNET_URI || "" }
       : { 1: process.env.REACT_APP_MAINNET_URI || "" },
+    qrcode: true,
+    pollingInterval: 5000,
   });
 
 export const walletlinkConnector = new WalletLinkConnector({
