@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SOR } from "@balancer-labs/sor";
-import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import BigNumberJS from "bignumber.js";
+
+import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import { isDevelopment } from "shared/lib/utils/env";
 import { BalancerPoolUrls, RBNPurchaseToken } from "../constants/constants";
 import {
