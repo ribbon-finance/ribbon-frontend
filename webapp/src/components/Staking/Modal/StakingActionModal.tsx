@@ -28,7 +28,7 @@ import { formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import useStakingReward from "../../../hooks/useStakingReward";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
-import TrafficLight from "../../Common/TrafficLight";
+import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import { getVaultColor } from "shared/lib/utils/vault";
 import BasicModal from "shared/lib/components/Common/BasicModal";

@@ -13,7 +13,7 @@ import {
   VaultOptions,
 } from "shared/lib/constants/constants";
 import StakingApprovalModalInfo from "./StakingApprovalModalInfo";
-import TrafficLight from "../../Common/TrafficLight";
+import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import useERC20Token from "shared/lib/hooks/useERC20Token";
