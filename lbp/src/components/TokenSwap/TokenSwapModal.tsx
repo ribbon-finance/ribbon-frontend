@@ -23,7 +23,7 @@ const TokenSwapModal = () => {
   const [receiveAmount, setReceiveAmount] = useState<BigNumber>(
     BigNumber.from(0)
   );
-  const [exchangeRate, setExchangeRate] = useState(0);
+  const [exchangeInfo, setExchangeInfo] = useState({ rate: 0, slippage: 0 });
   const [step, setStep] = useState<SwapStep>(SwapStepList[0]);
 
   const { sor, fetchCounter: sorFetchCounter } = useLBPSor();
@@ -37,21 +37,28 @@ const TokenSwapModal = () => {
         return;
       }
 
+      const amountInBigNumberJS = BigNumberToBigNumberJS(
+        parseUnits(
+          swapAmount ? swapAmount.toString() : "0",
+          getERC20TokenDecimals(swapModal.offerToken)
+        )
+      );
+
       const [, tradeAmount, spotPrice] = await sor.getSwaps(
         offerTokenAddress,
         receiveTokenAddress,
         "swapExactIn",
-        BigNumberToBigNumberJS(
-          parseUnits(
-            swapAmount ? swapAmount.toString() : "0",
-            getERC20TokenDecimals(swapModal.offerToken)
-          )
-        )
+        amountInBigNumberJS
       );
 
+      const calculatedPrice = amountInBigNumberJS
+        .div(tradeAmount)
+        .times("1e18");
+      const slippageNumber = calculatedPrice.div(spotPrice).minus(1);
+
       setReceiveAmount(BigNumberJSToBigNumber(tradeAmount));
-      setExchangeRate(
-        parseFloat(
+      setExchangeInfo({
+        rate: parseFloat(
           new BigNumberJS("1e18")
             .div(spotPrice)
             .times(
@@ -61,8 +68,11 @@ const TokenSwapModal = () => {
               }`
             )
             .toString()
-        )
-      );
+        ),
+        slippage: slippageNumber.isNegative()
+          ? 0
+          : parseFloat(slippageNumber.toString()),
+      });
     })();
   }, [
     swapAmount,
@@ -108,7 +118,7 @@ const TokenSwapModal = () => {
                 getERC20TokenDecimals(swapModal.receiveToken)
               )
             )}
-            exchangeRate={exchangeRate}
+            exchangeInfo={exchangeInfo}
             onSwapAmountChange={handleSwapAmountChange}
             onPreview={() => {
               if (!receiveAmount) {
@@ -131,7 +141,7 @@ const TokenSwapModal = () => {
         );
     }
   }, [
-    exchangeRate,
+    exchangeInfo,
     handleSwapAmountChange,
     receiveAmount,
     step,
@@ -144,7 +154,7 @@ const TokenSwapModal = () => {
     <BasicModal
       show={swapModal.show}
       onClose={handleClose}
-      height={516}
+      height={564}
       headerBackground
       backButton={
         step === "preview"

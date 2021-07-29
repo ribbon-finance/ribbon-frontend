@@ -73,6 +73,12 @@ const ArrowContainer = styled.div`
   }
 `;
 
+const InfoColumn = styled(BaseModalContentColumn)`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 const BalancerReadMoreLink = styled(BaseUnderlineLink)`
   color: ${colors.primaryText};
 `;
@@ -80,7 +86,7 @@ const BalancerReadMoreLink = styled(BaseUnderlineLink)`
 interface TokenSwapFormProps {
   swapAmount?: number;
   receiveAmount: number;
-  exchangeRate: number;
+  exchangeInfo: { rate: number; slippage: number };
   onSwapAmountChange: (amount: string) => void;
   onPreview: () => void;
 }
@@ -88,7 +94,7 @@ interface TokenSwapFormProps {
 const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
   swapAmount,
   receiveAmount,
-  exchangeRate,
+  exchangeInfo,
   onSwapAmountChange,
   onPreview,
 }) => {
@@ -133,7 +139,11 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
   }, [allowance, swapAmount, swapModal.offerToken]);
 
   const exchangeRateText = useMemo(() => {
-    let effectiveExchangeRate = exchangeRate;
+    if (!exchangeInfo.rate) {
+      return "---";
+    }
+
+    let effectiveExchangeRate = exchangeInfo.rate;
 
     if (swapAmount && receiveAmount) {
       effectiveExchangeRate = receiveAmount / swapAmount;
@@ -145,12 +155,24 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
       swapModal.receiveToken
     )}`;
   }, [
-    exchangeRate,
+    exchangeInfo.rate,
     receiveAmount,
     swapAmount,
     swapModal.offerToken,
     swapModal.receiveToken,
   ]);
+
+  const priceImpactText = useMemo(() => {
+    if (isNaN(exchangeInfo.slippage)) {
+      return `---`;
+    }
+
+    if (exchangeInfo.slippage < 1e-4) {
+      return `0%`;
+    }
+
+    return `${exchangeInfo.slippage.toFixed(4)}%`;
+  }, [exchangeInfo.slippage]);
 
   const actionButton = useMemo(() => {
     if (!active) {
@@ -311,10 +333,15 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
         </div>
       </BaseModalContentColumn>
 
-      {/* Conversion rate */}
-      <BaseModalContentColumn marginTop={16}>
-        <SecondaryInfoLabel>{exchangeRateText}</SecondaryInfoLabel>
-      </BaseModalContentColumn>
+      {/* Trade info */}
+      <InfoColumn>
+        <SecondaryText>Price</SecondaryText>
+        <Title>{exchangeRateText}</Title>
+      </InfoColumn>
+      <InfoColumn marginTop={16}>
+        <SecondaryText>Price Impact</SecondaryText>
+        <Title>{priceImpactText}</Title>
+      </InfoColumn>
 
       {/* Swap button */}
       <BaseModalContentColumn>{actionButton}</BaseModalContentColumn>
