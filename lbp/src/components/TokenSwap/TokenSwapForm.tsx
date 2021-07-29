@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
+import { AnimatePresence, motion } from "framer-motion";
 
 import {
   BaseInput,
@@ -15,7 +16,7 @@ import {
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import { ExternalIcon } from "shared/lib/assets/icons/icons";
+import { ExternalIcon, SettingsIcon } from "shared/lib/assets/icons/icons";
 import { useLBPGlobalState } from "../../store/store";
 import Logo from "shared/lib/assets/icons/logo";
 import { USDCLogo } from "shared/lib/assets/icons/erc20Assets";
@@ -32,6 +33,42 @@ import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import useERC20Token from "shared/lib/hooks/useERC20Token";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import TokenSwapSettings from "./TokenSwapSettings";
+import { SlippageConfig } from "./types";
+
+const FloatingContainer = styled.div`
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 16px 16px;
+`;
+
+const ButtonContainer = styled.div`
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-radius: 40px;
+  width: 40px;
+  height: 40px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const SettingsContainer = styled(motion.div)`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: ${colors.background};
+  z-index: 10;
+`;
 
 const PrimaryInputLabel = styled(BaseInputLabel)`
   font-family: VCR;
@@ -79,16 +116,14 @@ const InfoColumn = styled(BaseModalContentColumn)`
   justify-content: space-between;
 `;
 
-const BalancerReadMoreLink = styled(BaseUnderlineLink)`
-  color: ${colors.primaryText};
-`;
-
 interface TokenSwapFormProps {
   swapAmount?: number;
   receiveAmount: number;
   exchangeInfo: { rate: number; slippage: number };
   onSwapAmountChange: (amount: string) => void;
   onPreview: () => void;
+  slippageConfig: SlippageConfig;
+  setSlippageConfig: (value: SlippageConfig) => void;
 }
 
 const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
@@ -97,11 +132,14 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
   exchangeInfo,
   onSwapAmountChange,
   onPreview,
+  slippageConfig,
+  setSlippageConfig,
 }) => {
   const { active } = useWeb3React();
   const { provider } = useWeb3Context();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [swapModal, setSwapModal] = useLBPGlobalState("swapModal");
+  const [showSettings, setShowSettings] = useState(false);
   const allowance = useTokenAllowance(
     swapModal.offerToken,
     RibbonTokenBalancerPoolAddress
@@ -171,7 +209,7 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
       return `0%`;
     }
 
-    return `${exchangeInfo.slippage.toFixed(4)}%`;
+    return `${(exchangeInfo.slippage * 100).toFixed(2)}%`;
   }, [exchangeInfo.slippage]);
 
   const actionButton = useMemo(() => {
@@ -253,110 +291,170 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
     waitingApproval,
   ]);
 
+  const modalForm = useMemo(
+    () => (
+      <>
+        {/* Title */}
+        <BaseModalContentColumn marginTop={8}>
+          <Title>SWAP TOKENS</Title>
+        </BaseModalContentColumn>
+
+        {/* Pay input */}
+        <BaseModalContentColumn marginTop={24 + 16}>
+          <div className="d-flex w-100 flex-wrap">
+            <div className="d-flex w-100 align-items-center">
+              <PrimaryInputLabel>YOU PAY</PrimaryInputLabel>
+              <SecondaryInfoLabel className="ml-auto">
+                Max 25,000 USDC
+              </SecondaryInfoLabel>
+            </div>
+            <BaseInputContianer>
+              <div className="d-flex w-100 h-100">
+                <TokenSwapInputAssetContainer>
+                  {renderAssetLogo(swapModal.offerToken)}
+                  <Title className="ml-2">
+                    {getERC20TokenDisplay(swapModal.offerToken)}
+                  </Title>
+                </TokenSwapInputAssetContainer>
+                <TokenSwapInput
+                  type="number"
+                  className="form-control"
+                  placeholder="0"
+                  value={swapAmount}
+                  onChange={(e) => onSwapAmountChange(e.target.value)}
+                />
+              </div>
+            </BaseInputContianer>
+          </div>
+        </BaseModalContentColumn>
+
+        {/* Arrow */}
+        <BaseModalContentColumn marginTop={16}>
+          <ArrowContainer
+            role="button"
+            onClick={() => {
+              /** Swap token */
+              setSwapModal((current) => ({
+                ...current,
+                offerToken: current.receiveToken,
+                receiveToken: current.offerToken,
+              }));
+              /** Swap amount */
+              if (receiveAmount) {
+                onSwapAmountChange(receiveAmount.toFixed(4));
+              }
+            }}
+          >
+            <i className="fas fa-arrow-down" />
+          </ArrowContainer>
+        </BaseModalContentColumn>
+
+        {/* Receive input */}
+        <BaseModalContentColumn marginTop={-8}>
+          <div className="d-flex w-100 flex-wrap">
+            <PrimaryInputLabel>YOU RECEIVE</PrimaryInputLabel>
+            <BaseInputContianer className="position-relative">
+              <div className="d-flex w-100 h-100">
+                <TokenSwapInputAssetContainer>
+                  {renderAssetLogo(swapModal.receiveToken)}
+                  <Title className="ml-2">
+                    {getERC20TokenDisplay(swapModal.receiveToken)}
+                  </Title>
+                </TokenSwapInputAssetContainer>
+                <TokenSwapInput
+                  type="number"
+                  className="form-control"
+                  value={handleSmallNumber(receiveAmount)}
+                  disabled
+                />
+              </div>
+            </BaseInputContianer>
+          </div>
+        </BaseModalContentColumn>
+
+        {/* Trade info */}
+        <InfoColumn>
+          <SecondaryText>Price</SecondaryText>
+          <Title>{exchangeRateText}</Title>
+        </InfoColumn>
+        <InfoColumn marginTop={16}>
+          <SecondaryText>Price Impact</SecondaryText>
+          <Title>{priceImpactText}</Title>
+        </InfoColumn>
+
+        {/* Swap button */}
+        <BaseModalContentColumn>{actionButton}</BaseModalContentColumn>
+
+        <BaseModalContentColumn>
+          <BaseUnderlineLink
+            to="https://ribbonfinance.medium.com/rbn-airdrop-distribution-70b6cb0b870c"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="d-flex align-items-center"
+          >
+            <PrimaryText>Swap tokens on Balancer</PrimaryText>
+            <ExternalIcon className="ml-1" color={colors.primaryText} />
+          </BaseUnderlineLink>
+        </BaseModalContentColumn>
+      </>
+    ),
+    [
+      actionButton,
+      exchangeRateText,
+      onSwapAmountChange,
+      priceImpactText,
+      receiveAmount,
+      renderAssetLogo,
+      setSwapModal,
+      swapAmount,
+      swapModal.offerToken,
+      swapModal.receiveToken,
+    ]
+  );
+
   return (
     <>
-      {/* Title */}
-      <BaseModalContentColumn marginTop={8}>
-        <Title>SWAP TOKENS</Title>
-      </BaseModalContentColumn>
+      {/* Header Settings */}
+      <FloatingContainer>
+        <ButtonContainer role="button" onClick={() => setShowSettings(true)}>
+          <SettingsIcon />
+        </ButtonContainer>
+      </FloatingContainer>
 
-      {/* Pay input */}
-      <BaseModalContentColumn marginTop={24 + 16}>
-        <div className="d-flex w-100 flex-wrap">
-          <div className="d-flex w-100 align-items-center">
-            <PrimaryInputLabel>YOU PAY</PrimaryInputLabel>
-            <SecondaryInfoLabel className="ml-auto">
-              Max 25,000 USDC
-            </SecondaryInfoLabel>
-          </div>
-          <BaseInputContianer>
-            <div className="d-flex w-100 h-100">
-              <TokenSwapInputAssetContainer>
-                {renderAssetLogo(swapModal.offerToken)}
-                <Title className="ml-2">
-                  {getERC20TokenDisplay(swapModal.offerToken)}
-                </Title>
-              </TokenSwapInputAssetContainer>
-              <TokenSwapInput
-                type="number"
-                className="form-control"
-                placeholder="0"
-                value={swapAmount}
-                onChange={(e) => onSwapAmountChange(e.target.value)}
-              />
-            </div>
-          </BaseInputContianer>
-        </div>
-      </BaseModalContentColumn>
+      {/* Form */}
+      {modalForm}
 
-      {/* Arrow */}
-      <BaseModalContentColumn marginTop={16}>
-        <ArrowContainer
-          role="button"
-          onClick={() => {
-            /** Swap token */
-            setSwapModal((current) => ({
-              ...current,
-              offerToken: current.receiveToken,
-              receiveToken: current.offerToken,
-            }));
-            /** Swap amount */
-            if (receiveAmount) {
-              onSwapAmountChange(receiveAmount.toFixed(4));
-            }
-          }}
-        >
-          <i className="fas fa-arrow-down" />
-        </ArrowContainer>
-      </BaseModalContentColumn>
-
-      {/* Receive input */}
-      <BaseModalContentColumn marginTop={-8}>
-        <div className="d-flex w-100 flex-wrap">
-          <PrimaryInputLabel>YOU RECEIVE</PrimaryInputLabel>
-          <BaseInputContianer className="position-relative">
-            <div className="d-flex w-100 h-100">
-              <TokenSwapInputAssetContainer>
-                {renderAssetLogo(swapModal.receiveToken)}
-                <Title className="ml-2">
-                  {getERC20TokenDisplay(swapModal.receiveToken)}
-                </Title>
-              </TokenSwapInputAssetContainer>
-              <TokenSwapInput
-                type="number"
-                className="form-control"
-                value={handleSmallNumber(receiveAmount)}
-                disabled
-              />
-            </div>
-          </BaseInputContianer>
-        </div>
-      </BaseModalContentColumn>
-
-      {/* Trade info */}
-      <InfoColumn>
-        <SecondaryText>Price</SecondaryText>
-        <Title>{exchangeRateText}</Title>
-      </InfoColumn>
-      <InfoColumn marginTop={16}>
-        <SecondaryText>Price Impact</SecondaryText>
-        <Title>{priceImpactText}</Title>
-      </InfoColumn>
-
-      {/* Swap button */}
-      <BaseModalContentColumn>{actionButton}</BaseModalContentColumn>
-
-      <BaseModalContentColumn>
-        <BalancerReadMoreLink
-          to="https://ribbonfinance.medium.com/rbn-airdrop-distribution-70b6cb0b870c"
-          target="_blank"
-          rel="noreferrer noopener"
-          className="d-flex align-items-center"
-        >
-          <PrimaryText>Swap tokens on Balancer</PrimaryText>
-          <ExternalIcon className="ml-1" color={colors.primaryText} />
-        </BalancerReadMoreLink>
-      </BaseModalContentColumn>
+      {/* Slippage Tolerance */}
+      <AnimatePresence>
+        {showSettings && (
+          <SettingsContainer
+            key={showSettings ? 1 : 0}
+            transition={{
+              duration: 0.25,
+              type: "keyframes",
+              ease: "easeInOut",
+            }}
+            initial={{
+              y: 100,
+              opacity: 0,
+            }}
+            animate={{
+              y: 0,
+              opacity: 1,
+            }}
+            exit={{
+              y: 100,
+              opacity: 0,
+            }}
+          >
+            <TokenSwapSettings
+              onClose={() => setShowSettings(false)}
+              slippageConfig={slippageConfig}
+              setSlippageConfig={setSlippageConfig}
+            />
+          </SettingsContainer>
+        )}
+      </AnimatePresence>
     </>
   );
 };

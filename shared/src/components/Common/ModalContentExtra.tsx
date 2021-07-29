@@ -13,16 +13,21 @@ const EndingBorder = styled.div`
   z-index: 1;
 `;
 
-const ExtraContainer = styled.div`
+const ExtraContainer = styled.div<{ backgroundColor?: string }>`
   display: flex;
-  background: ${colors.backgroundLighter};
+  background: ${(props) =>
+    props.backgroundColor ? props.backgroundColor : colors.backgroundLighter};
   border-radius: ${theme.border.radius};
   margin: -16px;
   padding: 16px;
   padding-top: 32px;
 `;
 
-const ModalContentExtra: React.FC<HTMLAttributes<HTMLDivElement>> = (props) => (
+interface ModalContentExtraProps extends HTMLAttributes<HTMLDivElement> {
+  backgroundColor?: string;
+}
+
+const ModalContentExtra: React.FC<ModalContentExtraProps> = (props) => (
   <>
     <EndingBorder />
     <ExtraContainer {...props} />

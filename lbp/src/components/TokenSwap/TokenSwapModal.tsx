@@ -17,7 +17,12 @@ import {
 } from "../../utils/bignumber";
 import TokenSwapForm from "./TokenSwapForm";
 import { getERC20TokenDecimals } from "shared/lib/models/eth";
-import { SwapStep, SwapStepList } from "./types";
+import {
+  SlippageConfig,
+  SlippageOptionsList,
+  SwapStep,
+  SwapStepList,
+} from "./types";
 import TokenSwapPreview from "./TokenSwapPreview";
 import useLBPPool from "../../hooks/useLBPPool";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
@@ -56,6 +61,10 @@ const TokenSwapModal = () => {
   const [exchangeInfo, setExchangeInfo] = useState({ rate: 0, slippage: 0 });
   const [step, setStep] = useState<SwapStep>(SwapStepList[0]);
   const [txId, setTxId] = useState("");
+  const [slippageConfig, setSlippageConfig] = useState<SlippageConfig>({
+    name: SlippageOptionsList[SlippageOptionsList.length - 1],
+    value: SlippageOptionsList[SlippageOptionsList.length - 1],
+  });
 
   const { sor, fetchCounter: sorFetchCounter } = useLBPSor();
 
@@ -205,6 +214,8 @@ const TokenSwapModal = () => {
 
               setStep("preview");
             }}
+            slippageConfig={slippageConfig}
+            setSlippageConfig={setSlippageConfig}
           />
         );
       case SwapStepList[1]:
@@ -260,6 +271,7 @@ const TokenSwapModal = () => {
     handleSwap,
     handleSwapAmountChange,
     receiveAmount,
+    slippageConfig,
     step,
     swapAmount,
     swapModal.offerToken,
