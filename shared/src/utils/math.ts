@@ -31,11 +31,12 @@ export const toETH = (bn: BigNumber, precision: number = 4) =>
   parseFloat(ethers.utils.formatEther(bn)).toFixed(precision);
 
 export const assetToFiat = (
-  num: BigNumber | number,
+  num: BigNumber | EthersBigNumber | number,
   assetPrice: number,
   assetDecimal: number = 18,
   precision: number = 2
 ): string =>
+  // @ts-ignore
   (num instanceof BigNumber || num instanceof EthersBigNumber
     ? parseFloat(ethers.utils.formatUnits(num, assetDecimal)) * assetPrice
     : num * assetPrice
