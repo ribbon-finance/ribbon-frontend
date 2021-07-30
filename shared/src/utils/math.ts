@@ -1,5 +1,5 @@
 import { BigNumber } from "@ethersproject/bignumber";
-import { ethers } from "ethers";
+import { ethers, BigNumber as EthersBigNumber } from "ethers";
 import currency from "currency.js";
 
 const { formatUnits } = ethers.utils;
@@ -36,7 +36,7 @@ export const assetToFiat = (
   assetDecimal: number = 18,
   precision: number = 2
 ): string =>
-  (num instanceof BigNumber
+  (num instanceof BigNumber || num instanceof EthersBigNumber
     ? parseFloat(ethers.utils.formatUnits(num, assetDecimal)) * assetPrice
     : num * assetPrice
   ).toFixed(precision);
