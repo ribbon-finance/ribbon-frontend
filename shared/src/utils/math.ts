@@ -100,3 +100,8 @@ export const handleSmallNumber = (n: number, decimals: number = 4): number => {
 
   return parseFloat(parsedString);
 };
+
+export const isPracticallyZero = (num: BigNumber, decimals: number, marginString: string = "0.01") => {
+    const margin = ethers.utils.parseUnits(marginString, decimals);
+    return num.lt(margin)
+}
