@@ -155,16 +155,16 @@ const TokenSwapModal = () => {
         swapAmount,
         getERC20TokenDecimals(swapModal.offerToken)
       );
-      /** Assume 10% slippage */
+
       const tx = await contract.swapExactAmountIn(
         getERC20TokenAddress(swapModal.offerToken),
         swapAmountBigNumber,
         getERC20TokenAddress(swapModal.receiveToken),
-        receiveAmount.mul(90).div(100),
+        receiveAmount.mul(100 - slippageConfig.value).div(100),
         swapAmountBigNumber
           .mul(BigNumber.from(10).pow(18))
           .div(receiveAmount)
-          .mul(110)
+          .mul(100 + slippageConfig.value)
           .div(100)
       );
 
@@ -188,6 +188,7 @@ const TokenSwapModal = () => {
     handleClose,
     provider,
     receiveAmount,
+    slippageConfig,
     swapAmount,
     swapModal.offerToken,
     swapModal.receiveToken,

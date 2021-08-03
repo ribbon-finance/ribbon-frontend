@@ -123,7 +123,7 @@ interface TokenSwapFormProps {
   onSwapAmountChange: (amount: string) => void;
   onPreview: () => void;
   slippageConfig: SlippageConfig;
-  setSlippageConfig: (value: SlippageConfig) => void;
+  setSlippageConfig: React.Dispatch<React.SetStateAction<SlippageConfig>>;
 }
 
 const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
@@ -214,13 +214,15 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
 
   const actionButton = useMemo(() => {
     if (!active) {
-      <ActionButton
-        className="py-3"
-        color={colors.green}
-        onClick={() => setShowConnectModal(true)}
-      >
-        Connect Wallet
-      </ActionButton>;
+      return (
+        <ActionButton
+          className="py-3"
+          color={colors.green}
+          onClick={() => setShowConnectModal(true)}
+        >
+          Connect Wallet
+        </ActionButton>
+      );
     }
 
     if (swapAmount && needTokenApprove) {

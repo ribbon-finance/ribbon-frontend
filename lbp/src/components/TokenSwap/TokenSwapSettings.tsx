@@ -5,6 +5,7 @@ import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import {
+  BaseInput,
   BaseModalContentColumn,
   BaseUnderlineLink,
   PrimaryText,
@@ -81,10 +82,17 @@ const SlippageOptionText = styled(Title)<{ active: boolean }>`
   color: ${(props) => (props.active ? colors.primaryText : colors.text)};
 `;
 
+const SlippageOptionInput = styled(BaseInput)`
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: 1px;
+  text-align: right;
+`;
+
 interface TokenSwapSettingsProps {
   onClose: () => void;
   slippageConfig: SlippageConfig;
-  setSlippageConfig: (value: SlippageConfig) => void;
+  setSlippageConfig: React.Dispatch<React.SetStateAction<SlippageConfig>>;
 }
 
 const TokenSwapSettings: React.FC<TokenSwapSettingsProps> = ({
@@ -104,7 +112,7 @@ const TokenSwapSettings: React.FC<TokenSwapSettingsProps> = ({
         </HeaderButtonContainer>
       </HeaderContainer>
 
-      {/* Slippage Form */}
+      {/* Slippage Form Select Options */}
       <BaseModalContentColumn>
         <div className="d-flex flex-row w-100">
           {SlippageOptionsList.map((slippageValue) => {
@@ -127,6 +135,45 @@ const TokenSwapSettings: React.FC<TokenSwapSettingsProps> = ({
             );
           })}
         </div>
+      </BaseModalContentColumn>
+
+      {/* Custom slippage input field */}
+      <BaseModalContentColumn marginTop={16}>
+        <SlippageOptionButton
+          active={slippageConfig.name === "custom"}
+          role="button"
+          onClick={() =>
+            setSlippageConfig((currConfig) => ({
+              name: "custom",
+              value: currConfig.name === "custom" ? currConfig.value : 0,
+            }))
+          }
+          className="px-3"
+        >
+          <SlippageOptionText active={slippageConfig.name === "custom"}>
+            CUSTOM
+          </SlippageOptionText>
+          <SlippageOptionInput
+            type="number"
+            className="form-control"
+            placeholder="0.5"
+            value={
+              slippageConfig.name === "custom" && slippageConfig.value
+                ? slippageConfig.value.toString()
+                : ""
+            }
+            onChange={(e) => {
+              const floatNum = parseFloat(e.target.value);
+              setSlippageConfig({
+                name: "custom",
+                value: isNaN(floatNum) ? 0 : floatNum,
+              });
+            }}
+          />
+          <SlippageOptionText active={slippageConfig.name === "custom"}>
+            %
+          </SlippageOptionText>
+        </SlippageOptionButton>
       </BaseModalContentColumn>
 
       {/* Links */}
