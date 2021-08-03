@@ -290,7 +290,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   const [showTokenApproval, setShowTokenApproval] = useState(false);
   const tokenAllowance = useTokenAllowance(
     isETHVault(vaultOption) ? undefined : (asset.toLowerCase() as ERC20Token),
-    VaultAddressMap[vaultOption]()
+    VaultAddressMap[vaultOption]
   );
   const [waitingApproval, setWaitingApproval] = useState(false);
   const waitingApprovalLoadingText = useTextAnimation(
@@ -543,7 +543,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
 
       try {
         const tx = await tokenContract.approve(
-          VaultAddressMap[vaultOption](),
+          VaultAddressMap[vaultOption],
           amount
         );
 

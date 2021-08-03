@@ -81,8 +81,8 @@ export const BaseModalContentColumn = styled.div<{
       : `${props.marginTop === undefined ? 24 : props.marginTop}px`};
 `;
 
-export const Title = styled.span`
-  color: ${colors.primaryText};
+export const Title = styled.span<{color?: string}>`
+  color: ${(props) => props.color ? props.color : colors.primaryText};
   font-family: VCR, sans-serif;
   font-style: normal;
   font-weight: normal;

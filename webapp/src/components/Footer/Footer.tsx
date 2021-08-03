@@ -49,7 +49,7 @@ const MobileFooterOffsetContainer = styled.div`
 
 const Footer = () => {
   const { height: screenHeight } = useScreenSize();
-  const vaultOption = useVaultOption();
+  const { vaultOption } = useVaultOption();
 
   return (
     <>

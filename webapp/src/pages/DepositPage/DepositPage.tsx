@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 
-import { Title } from "shared/lib/designSystem";
+import { BaseLink, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import PerformanceSection from "./PerformanceSection";
@@ -17,7 +17,10 @@ import usePullUp from "../../hooks/usePullUp";
 import {
   getDisplayAssets,
   VaultList,
+  VaultNameOptionMap,
   VaultOptions,
+  VaultVersion,
+  VaultVersionList,
 } from "shared/lib/constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultOption from "../../hooks/useVaultOption";
@@ -51,10 +54,10 @@ const HeroText = styled(Title)`
 `;
 
 const AttributePill = styled.div<{ color: string }>`
+  display: flex;
   background: ${(props) => props.color}29;
   color: ${colors.primaryText};
   border-radius: ${theme.border.radiusSmall};
-  padding: 16px;
   font-family: VCR, sans-serif;
   font-style: normal;
   font-weight: normal;
@@ -64,6 +67,17 @@ const AttributePill = styled.div<{ color: string }>`
   text-align: center;
   letter-spacing: 1.5px;
   text-transform: uppercase;
+`;
+
+const TagPill = styled(AttributePill)`
+  padding: 16px;
+`;
+
+const AttributeVersionSelector = styled.div<{ color: string; active: boolean }>`
+  padding: 16px;
+  border-radius: ${theme.border.radiusSmall};
+  border: ${theme.border.width} ${theme.border.style}
+    ${(props) => (props.active ? props.color : "transparent")};
 `;
 
 const SplashImage = styled.div`
@@ -107,7 +121,7 @@ const MobilePositions = styled(YourPosition)`
 const DepositPage = () => {
   usePullUp();
   const { account } = useWeb3React();
-  const vaultOption = useVaultOption() || VaultList[0];
+  const { vaultOption = VaultList[0], vaultVersion = "v1" } = useVaultOption();
   const { status, deposits, vaultLimit, asset, decimals } =
     useVaultData(vaultOption);
   const isLoading = status === "loading";
@@ -134,7 +148,11 @@ const DepositPage = () => {
 
   return (
     <>
-      <HeroSection depositCapBar={depositCapBar} vaultOption={vaultOption} />
+      <HeroSection
+        depositCapBar={depositCapBar}
+        vaultOption={vaultOption}
+        variant={vaultVersion}
+      />
 
       <DepositPageContainer className="py-5">
         <div className="row mx-lg-n1">
@@ -155,7 +173,8 @@ const DepositPage = () => {
 const HeroSection: React.FC<{
   depositCapBar: ReactNode;
   vaultOption: VaultOptions;
-}> = ({ depositCapBar, vaultOption }) => {
+  variant: VaultVersion;
+}> = ({ depositCapBar, vaultOption, variant }) => {
   const color = getVaultColor(vaultOption);
 
   const logo = useMemo(() => {
@@ -192,14 +211,44 @@ const HeroSection: React.FC<{
           <div style={{ zIndex: 1 }} className="col-xl-6 d-flex flex-column">
             <div className="d-flex flex-row my-3">
               {productCopies[vaultOption].tags.map((tag) => (
-                <AttributePill
+                <TagPill
                   className="mr-2 text-uppercase"
                   key={tag}
                   color={color}
                 >
                   {tag}
-                </AttributePill>
+                </TagPill>
               ))}
+              <AttributePill className="mr-2 text-uppercase" color={color}>
+                {VaultVersionList.map((version) => (
+                  <BaseLink
+                    to={
+                      version === "v1"
+                        ? `/theta-vault/${
+                            Object.keys(VaultNameOptionMap)[
+                              Object.values(VaultNameOptionMap).indexOf(
+                                vaultOption
+                              )
+                            ]
+                          }`
+                        : `/v2/theta-vault/${
+                            Object.keys(VaultNameOptionMap)[
+                              Object.values(VaultNameOptionMap).indexOf(
+                                vaultOption
+                              )
+                            ]
+                          }`
+                    }
+                  >
+                    <AttributeVersionSelector
+                      active={version === variant}
+                      color={color}
+                    >
+                      <Title color={color}>{version}</Title>
+                    </AttributeVersionSelector>
+                  </BaseLink>
+                ))}
+              </AttributePill>
             </div>
 
             <HeroText>{productCopies[vaultOption].title}</HeroText>
