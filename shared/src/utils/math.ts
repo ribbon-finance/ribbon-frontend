@@ -1,4 +1,5 @@
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "@ethersproject/bignumber";
+import { ethers, BigNumber as EthersBigNumber } from "ethers";
 import currency from "currency.js";
 
 const { formatUnits } = ethers.utils;
@@ -30,12 +31,13 @@ export const toETH = (bn: BigNumber, precision: number = 4) =>
   parseFloat(ethers.utils.formatEther(bn)).toFixed(precision);
 
 export const assetToFiat = (
-  num: BigNumber | number,
+  num: BigNumber | EthersBigNumber | number,
   assetPrice: number,
   assetDecimal: number = 18,
   precision: number = 2
 ): string =>
-  (num instanceof BigNumber
+  // @ts-ignore
+  (num instanceof BigNumber || num instanceof EthersBigNumber
     ? parseFloat(ethers.utils.formatUnits(num, assetDecimal)) * assetPrice
     : num * assetPrice
   ).toFixed(precision);
@@ -89,12 +91,17 @@ export const getRange = (start: number, stop: number, step: number) => {
 };
 
 export const handleSmallNumber = (n: number, decimals: number = 4): number => {
-  let parsedString = n.toFixed(decimals)
+  let parsedString = n.toFixed(decimals);
   if (n < 1e-6) {
-    parsedString = n.toPrecision(1)
+    parsedString = n.toPrecision(1);
   } else if (n < 1e-4) {
-    parsedString = n.toPrecision(2)
-  } 
-  
-  return parseFloat(parsedString)
+    parsedString = n.toPrecision(2);
+  }
+
+  return parseFloat(parsedString);
+};
+
+export const isPracticallyZero = (num: BigNumber, decimals: number, marginString: string = "0.01") => {
+    const margin = ethers.utils.parseUnits(marginString, decimals);
+    return num.lt(margin)
 }

@@ -29,6 +29,7 @@ import HelpInfo from "../Common/HelpInfo";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { shimmerKeyframe } from "shared/lib/designSystem/keyframes";
 import moment from "moment";
+import { BigNumber } from "ethers";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -282,6 +283,111 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
     return isStakeAction;
   }, [isStakeAction, ongoingTransaction]);
 
+  const rbnPill = useMemo(() => {
+    if (
+      moment(stakingPoolData.periodFinish, "X").diff(moment()) &&
+      stakingPoolData.claimableRbn.isZero()
+    ) {
+      return (
+        <ClaimableTokenPillContainer>
+          <ClaimableTokenPill color={color}>
+            <ClaimableTokenIndicator color={color} />
+            <Subtitle className="mr-2">AMOUNT CLAIMED</Subtitle>
+            <ClaimableTokenAmount color={color}>
+              {formatBigNumber(
+                stakingPoolData.claimHistory.reduce(
+                  (acc, curr) => acc.add(curr.amount),
+                  BigNumber.from(0)
+                ),
+                2,
+                18
+              )}
+            </ClaimableTokenAmount>
+          </ClaimableTokenPill>
+        </ClaimableTokenPillContainer>
+      );
+    }
+
+    return (
+      <ClaimableTokenPillContainer>
+        <ClaimableTokenPill color={color}>
+          <ClaimableTokenIndicator color={color} />
+          <Subtitle className="mr-2">EARNED $RBN</Subtitle>
+          <ClaimableTokenAmount color={color}>
+            {active
+              ? formatBigNumber(stakingPoolData.claimableRbn, 2, 18)
+              : "---"}
+          </ClaimableTokenAmount>
+        </ClaimableTokenPill>
+      </ClaimableTokenPillContainer>
+    );
+  }, [active, color, stakingPoolData]);
+
+  const stakingPoolButtons = useMemo(() => {
+    if (!active) {
+      return (
+        <StakingPoolCardFooterButton
+          role="button"
+          color={colors.green}
+          onClick={() => {
+            setShowConnectWalletModal(true);
+          }}
+          active={false}
+        >
+          CONNECT WALLET
+        </StakingPoolCardFooterButton>
+      );
+    }
+
+    if (
+      !stakingPoolData.claimableRbn.isZero() ||
+      stakingPoolData.claimHistory.length
+    ) {
+      return (
+        <StakingPoolCardFooterButton
+          role="button"
+          color={color}
+          onClick={() => setShowClaimModal(true)}
+          active={ongoingTransaction === "rewardClaim"}
+        >
+          {ongoingTransaction === "rewardClaim"
+            ? primaryActionLoadingText
+            : `${
+                (stakingPoolData.periodFinish &&
+                  moment(stakingPoolData.periodFinish, "X").diff(moment()) >
+                    0) ||
+                stakingPoolData.claimableRbn.isZero()
+                  ? "Claim Info"
+                  : "Unstake & Claim"
+              }`}
+        </StakingPoolCardFooterButton>
+      );
+    }
+
+    return (
+      <StakingPoolCardFooterButton
+        role="button"
+        color={color}
+        onClick={() => {
+          setShowActionModal(true);
+          setIsStakeAction(false);
+        }}
+        active={ongoingTransaction === "unstake"}
+      >
+        {ongoingTransaction === "unstake"
+          ? primaryActionLoadingText
+          : "Unstake"}
+      </StakingPoolCardFooterButton>
+    );
+  }, [
+    active,
+    color,
+    ongoingTransaction,
+    primaryActionLoadingText,
+    setShowConnectWalletModal,
+    stakingPoolData,
+  ]);
+
   return (
     <>
       <StakingApprovalModal
@@ -333,17 +439,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           </div>
 
           {/* Claimable Pill */}
-          <ClaimableTokenPillContainer>
-            <ClaimableTokenPill color={color}>
-              <ClaimableTokenIndicator color={color} />
-              <Subtitle className="mr-2">EARNED $RBN</Subtitle>
-              <ClaimableTokenAmount color={color}>
-                {active
-                  ? formatBigNumber(stakingPoolData.claimableRbn, 2, 18)
-                  : "---"}
-              </ClaimableTokenAmount>
-            </ClaimableTokenPill>
-          </ClaimableTokenPillContainer>
+          {rbnPill}
 
           {/* Capbar */}
           <div className="w-100 mt-4">
@@ -392,78 +488,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
             </PoolRewardData>
           </div>
         </div>
-        <StakingPoolCardFooter>
-          {active ? (
-            <>
-              {/* <StakingPoolCardFooterButton
-                role="button"
-                color={color}
-                onClick={() => {
-                  if (hasAllowance) {
-                    setShowActionModal(true);
-                    setIsStakeAction(true);
-                    return;
-                  }
-                  setShowApprovalModal(true);
-                }}
-                active={
-                  hasAllowance ||
-                  ongoingTransaction === "approval" ||
-                  ongoingTransaction === "stake"
-                }
-              >
-                {ongoingTransaction === "approval" ||
-                ongoingTransaction === "stake"
-                  ? primaryActionLoadingText
-                  : "Stake"}
-              </StakingPoolCardFooterButton> */}
-              {stakingPoolData.claimableRbn.isZero() ? (
-                <StakingPoolCardFooterButton
-                  role="button"
-                  color={color}
-                  onClick={() => {
-                    setShowActionModal(true);
-                    setIsStakeAction(false);
-                  }}
-                  active={ongoingTransaction === "unstake"}
-                >
-                  {ongoingTransaction === "unstake"
-                    ? primaryActionLoadingText
-                    : "Unstake"}
-                </StakingPoolCardFooterButton>
-              ) : (
-                <StakingPoolCardFooterButton
-                  role="button"
-                  color={color}
-                  onClick={() => setShowClaimModal(true)}
-                  active={ongoingTransaction === "rewardClaim"}
-                >
-                  {ongoingTransaction === "rewardClaim"
-                    ? primaryActionLoadingText
-                    : `${
-                        stakingPoolData.periodFinish &&
-                        moment(stakingPoolData.periodFinish, "X").diff(
-                          moment()
-                        ) > 0
-                          ? "Claim Info"
-                          : "Unstake & Claim"
-                      }`}
-                </StakingPoolCardFooterButton>
-              )}
-            </>
-          ) : (
-            <StakingPoolCardFooterButton
-              role="button"
-              color={colors.green}
-              onClick={() => {
-                setShowConnectWalletModal(true);
-              }}
-              active={false}
-            >
-              CONNECT WALLET
-            </StakingPoolCardFooterButton>
-          )}
-        </StakingPoolCardFooter>
+        <StakingPoolCardFooter>{stakingPoolButtons}</StakingPoolCardFooter>
       </StakingPoolCard>
     </>
   );

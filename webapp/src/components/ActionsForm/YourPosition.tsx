@@ -78,9 +78,8 @@ const YourPosition: React.FC<YourPositionProps> = ({
   const { price: assetPrice } = useAssetPrice({ asset: asset });
   // Uses useMemo to create array so that useVaultAccounts does not constantly create new array that causes website lag
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
-  const { vaultAccounts, loading: vaultAccountLoading } = useVaultAccounts(
-    vaultOptions
-  );
+  const { vaultAccounts, loading: vaultAccountLoading } =
+    useVaultAccounts(vaultOptions);
   const isLoading = status === "loading" || vaultAccountLoading;
   const loadingText = useTextAnimation(
     ["Loading", "Loading .", "Loading ..", "Loading ..."],

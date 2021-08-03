@@ -14,7 +14,11 @@ import theme from "shared/lib/designSystem/theme";
 import useAssetPrice from "shared/lib/hooks/useAssetPrice";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { CurrencyType } from "../../pages/Portfolio/types";
-import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
+import {
+  assetToUSD,
+  formatBigNumber,
+  isPracticallyZero,
+} from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
 import {
   getAssets,
@@ -213,7 +217,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   const calculatedROI = useMemo(() => {
     const netProfit = vaultAccount.totalBalance.sub(vaultAccount.totalDeposits);
 
-    return !vaultAccount.totalBalance.isZero()
+    return !isPracticallyZero(vaultAccount.totalBalance, decimals)
       ? (parseFloat(ethers.utils.formatUnits(netProfit, decimals)) /
           parseFloat(
             ethers.utils.formatUnits(vaultAccount.totalDeposits, decimals)
