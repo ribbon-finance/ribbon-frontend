@@ -72,6 +72,7 @@ export type AssetYieldsInfoData = {
 };
 
 export type AirdropInfoData = {
+  account: string;
   total: number;
   proof: {
     index: number;

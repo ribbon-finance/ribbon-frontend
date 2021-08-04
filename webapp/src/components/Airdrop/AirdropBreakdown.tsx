@@ -15,14 +15,14 @@ type ProcessedAirdropBreakdownType = AirdropBreakDownType | "option";
 
 export const getAirdropColor = (variant: ProcessedAirdropBreakdownType) => {
   switch (variant) {
-    case "option":
-      return colors.green;
     case "discord":
       return colors.brands.discord;
     case "strangle":
     case "thetaVaultBase":
     case "thetaVaultBonus":
       return colors.red;
+    default:
+      return colors.green;
   }
 };
 
