@@ -3,7 +3,12 @@ import { ethers } from "ethers";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 
-import { BaseLink, Title } from "shared/lib/designSystem";
+import {
+  BaseIndicator,
+  BaseLink,
+  PrimaryText,
+  Title,
+} from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import PerformanceSection from "./PerformanceSection";
@@ -28,6 +33,7 @@ import { getAssetLogo } from "shared/lib/utils/asset";
 import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
+import { isProduction } from "shared/lib/utils/env";
 
 const { formatUnits } = ethers.utils;
 
@@ -35,6 +41,21 @@ const DepositPageContainer = styled(Container)`
   @media (min-width: ${sizes.xl}px) {
     max-width: 1140px;
   }
+`;
+
+const BannerContainer = styled.div<{ color: string }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background: ${(props) => `${props.color}29`};
+  padding: 12px 0px;
+`;
+
+const BannerButton = styled.div<{ color: string }>`
+  padding: 10px 16px;
+  border: ${theme.border.width} ${theme.border.style} ${(props) => props.color};
+  border-radius: 100px;
 `;
 
 const HeroContainer = styled.div<{ color: string }>`
@@ -205,45 +226,65 @@ const HeroSection: React.FC<{
   }, [vaultOption]);
 
   return (
-    <HeroContainer className="position-relative" color={color}>
-      <DepositPageContainer className="container">
-        <div className="row mx-lg-n1 position-relative">
-          <div style={{ zIndex: 1 }} className="col-xl-6 d-flex flex-column">
-            <div className="d-flex flex-row my-3">
-              {productCopies[vaultOption].tags.map((tag) => (
-                <TagPill
-                  className="mr-2 text-uppercase"
-                  key={tag}
-                  color={color}
-                >
-                  {tag}
-                </TagPill>
-              ))}
-              <AttributePill className="mr-2 text-uppercase" color={color}>
-                {VaultVersionList.map((version) => (
-                  <BaseLink to={getVaultURI(vaultOption, version)}>
-                    <AttributeVersionSelector
-                      active={version === variant}
-                      color={color}
-                    >
-                      <Title color={color}>{version}</Title>
-                    </AttributeVersionSelector>
-                  </BaseLink>
+    <>
+      {/* // TODO: V2 feature tagged */}
+      {/* V1 top banner */}
+      {!isProduction() && variant === "v1" && (
+        <BannerContainer color={color}>
+          <BaseIndicator size={8} color={color} className="mr-2" />
+          <PrimaryText color={color} className="mr-3">
+            V2 vaults are now live
+          </PrimaryText>
+          <BaseLink to={getVaultURI(vaultOption, "v2")}>
+            <BannerButton color={color} role="button">
+              <PrimaryText color={color}>Switch to V2</PrimaryText>
+            </BannerButton>
+          </BaseLink>
+        </BannerContainer>
+      )}
+      <HeroContainer className="position-relative" color={color}>
+        <DepositPageContainer className="container">
+          <div className="row mx-lg-n1 position-relative">
+            <div style={{ zIndex: 1 }} className="col-xl-6 d-flex flex-column">
+              <div className="d-flex flex-row my-3">
+                {productCopies[vaultOption].tags.map((tag) => (
+                  <TagPill
+                    className="mr-2 text-uppercase"
+                    key={tag}
+                    color={color}
+                  >
+                    {tag}
+                  </TagPill>
                 ))}
-              </AttributePill>
+                {/* TODO: v2 feature tagged */}
+                {!isProduction() && (
+                  <AttributePill className="mr-2 text-uppercase" color={color}>
+                    {VaultVersionList.map((version) => (
+                      <BaseLink to={getVaultURI(vaultOption, version)}>
+                        <AttributeVersionSelector
+                          active={version === variant}
+                          color={color}
+                        >
+                          <Title color={color}>{version}</Title>
+                        </AttributeVersionSelector>
+                      </BaseLink>
+                    ))}
+                  </AttributePill>
+                )}
+              </div>
+
+              <HeroText>{productCopies[vaultOption].title}</HeroText>
+
+              {depositCapBar}
             </div>
 
-            <HeroText>{productCopies[vaultOption].title}</HeroText>
-
-            {depositCapBar}
+            <SplashImage className="position-absolute col-xl-6">
+              {logo}
+            </SplashImage>
           </div>
-
-          <SplashImage className="position-absolute col-xl-6">
-            {logo}
-          </SplashImage>
-        </div>
-      </DepositPageContainer>
-    </HeroContainer>
+        </DepositPageContainer>
+      </HeroContainer>
+    </>
   );
 };
 

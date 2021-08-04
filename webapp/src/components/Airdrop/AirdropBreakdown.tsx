@@ -1,5 +1,9 @@
 import React, { useCallback, useMemo } from "react";
-import { SecondaryText, Subtitle } from "shared/lib/designSystem";
+import {
+  BaseIndicator,
+  SecondaryText,
+  Subtitle,
+} from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import styled from "styled-components";
@@ -63,16 +67,6 @@ const BreakdownPill = styled.div<{
   border-radius: 100px;
 `;
 
-const BreakdwonPillIndicator = styled.div<{
-  variant: ProcessedAirdropBreakdownType;
-}>`
-  height: 8px;
-  width: 8px;
-  background: ${(props) => getAirdropColor(props.variant)};
-  margin-right: 8px;
-  border-radius: ${theme.border.radiusSmall};
-`;
-
 const BreakdownPillToken = styled(Subtitle)<{
   variant: ProcessedAirdropBreakdownType;
 }>`
@@ -116,7 +110,11 @@ const AirdropBreakdown = () => {
     (token: number, variant: ProcessedAirdropBreakdownType, index: number) => (
       <BreakdownBackground variant={variant} key={index}>
         <BreakdownPill variant={variant}>
-          <BreakdwonPillIndicator variant={variant} />
+          <BaseIndicator
+            size={8}
+            color={getAirdropColor(variant)}
+            className="mr-2"
+          />
           <Subtitle>{getAirdropTitle(variant)}</Subtitle>
           <BreakdownPillToken variant={variant}>
             {token.toLocaleString()} RBN

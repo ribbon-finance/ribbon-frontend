@@ -3,7 +3,12 @@ import styled from "styled-components";
 import { formatUnits } from "@ethersproject/units";
 import { useWeb3React } from "@web3-react/core";
 
-import { SecondaryText, Subtitle, Title } from "shared/lib/designSystem";
+import {
+  BaseIndicator,
+  SecondaryText,
+  Subtitle,
+  Title,
+} from "shared/lib/designSystem";
 import {
   getAssets,
   getDisplayAssets,
@@ -88,14 +93,6 @@ const ClaimableTokenPill = styled.div<{ color: string }>`
   border: ${theme.border.width} ${theme.border.style} ${(props) => props.color};
   background: ${(props) => props.color}14;
   border-radius: 100px;
-`;
-
-const ClaimableTokenIndicator = styled.div<{ color: string }>`
-  height: 8px;
-  width: 8px;
-  background: ${(props) => props.color};
-  margin-right: 8px;
-  border-radius: ${theme.border.radiusSmall};
 `;
 
 const ClaimableTokenAmount = styled(Subtitle)<{ color: string }>`
@@ -291,7 +288,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
       return (
         <ClaimableTokenPillContainer>
           <ClaimableTokenPill color={color}>
-            <ClaimableTokenIndicator color={color} />
+            <BaseIndicator size={8} color={color} className="mr-2" />
             <Subtitle className="mr-2">AMOUNT CLAIMED</Subtitle>
             <ClaimableTokenAmount color={color}>
               {formatBigNumber(
@@ -311,7 +308,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
     return (
       <ClaimableTokenPillContainer>
         <ClaimableTokenPill color={color}>
-          <ClaimableTokenIndicator color={color} />
+          <BaseIndicator size={8} color={color} className="mr-2" />
           <Subtitle className="mr-2">EARNED $RBN</Subtitle>
           <ClaimableTokenAmount color={color}>
             {active
