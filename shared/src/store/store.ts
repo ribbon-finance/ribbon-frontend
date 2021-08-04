@@ -12,6 +12,7 @@ import {
   DefiScoreToken,
   DefiScoreTokenList,
 } from "../models/defiScore";
+import { ERC20Token, ERC20TokenList } from "../models/eth";
 import { getAssetDecimals } from "../utils/asset";
 import {
   PendingTransaction,
@@ -40,6 +41,7 @@ interface GlobalStore {
   gasPrice: string;
   desktopView: DesktopViewType;
   airdropInfo: AirdropInfoData | undefined;
+  tokenBalances: {[token in ERC20Token]: { fetched: boolean, balance: BigNumber }}
 }
 
 export const initialState: GlobalStore = {
@@ -89,6 +91,11 @@ export const initialState: GlobalStore = {
   gasPrice: "",
   desktopView: "grid",
   airdropInfo: undefined,
+  tokenBalances: Object.fromEntries(
+    ERC20TokenList.map((token) => [token, { balance: BigNumber.from(0), fetched: false }])
+  ) as {
+    [token in ERC20Token]: { fetched: boolean, balance: BigNumber }
+  }
 };
 
 export const { useGlobalState } = createGlobalState(initialState);

@@ -1,7 +1,6 @@
 import { FullVaultList } from "../constants/constants";
-import { capitalize } from "../utils/text";
 
-const ERC20TokenList = [
+export const ERC20TokenList = [
   "weth",
   "usdc",
   "wbtc",

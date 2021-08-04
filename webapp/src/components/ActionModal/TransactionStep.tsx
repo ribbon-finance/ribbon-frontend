@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import { BaseUnderlineLink, PrimaryText } from "shared/lib/designSystem";
-import TrafficLight from "../Common/TrafficLight";
+import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import { getEtherscanURI } from "shared/lib/constants/constants";
 
 const TrafficLightContainer = styled.div`
