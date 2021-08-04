@@ -63,13 +63,13 @@ export const VaultLiquidityMiningMap: Partial<
     [vault in VaultOptions]: string;
   }
 > = isDevelopment()
-    ? {
+  ? {
       "rUSDC-ETH-P-THETA": deployment.kovan.RibbonETHPutStakingReward,
       "rUSDC-BTC-P-THETA": deployment.kovan.RibbonWBTCPutStakingReward,
       "rBTC-THETA": deployment.kovan.RibbonWBTCCoveredCallStakingReward,
       "rETH-THETA": deployment.kovan.RibbonETHCoveredCallStakingReward,
     }
-    : {
+  : {
       "rUSDC-ETH-P-THETA": deployment.mainnet.RibbonETHPutStakingReward,
       "rBTC-THETA": deployment.mainnet.RibbonWBTCCoveredCallStakingReward,
       "rETH-THETA": deployment.mainnet.RibbonETHCoveredCallStakingReward,
@@ -85,7 +85,7 @@ export const VaultAddressMap: { [vault in VaultOptions]: string } = {
   "rUSDC-BTC-P-THETA": isDevelopment()
     ? deployment.kovan.RibbonWBTCPut
     : // TODO: Update mainnet address
-    deployment.kovan.RibbonWBTCPut,
+      deployment.kovan.RibbonWBTCPut,
   "rETH-THETA": isDevelopment()
     ? deployment.kovan.RibbonETHCoveredCall
     : deployment.mainnet.RibbonETHCoveredCall,
@@ -130,6 +130,26 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-ETH-C": "rETH-THETA",
   "T-WBTC-C": "rBTC-THETA",
   "T-yvUSDC-P-ETH": "ryvUSDC-ETH-P-THETA",
+};
+
+export const getVaultURI = (
+  vaultOption: VaultOptions,
+  variant: VaultVersion = "v1"
+): string => {
+  switch (variant) {
+    case "v1":
+      return `/theta-vault/${
+        Object.keys(VaultNameOptionMap)[
+          Object.values(VaultNameOptionMap).indexOf(vaultOption)
+        ]
+      }`;
+    case "v2":
+      return `/v2/theta-vault/${
+        Object.keys(VaultNameOptionMap)[
+          Object.values(VaultNameOptionMap).indexOf(vaultOption)
+        ]
+      }`;
+  }
 };
 
 export const getEtherscanURI = () =>
@@ -222,7 +242,7 @@ export const RibbonTokenAddress = isDevelopment()
 export const RibbonTokenBalancerPoolAddress = isDevelopment()
   ? deployment.kovan.RibbonTokenBalancerPool
   : // TODO: Update Mainnet Address
-  "";
+    "";
 
 export const getERC20TokenAddress = (token: ERC20Token) =>
   isDevelopment()

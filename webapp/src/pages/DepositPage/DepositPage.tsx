@@ -16,8 +16,8 @@ import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
 import {
   getDisplayAssets,
+  getVaultURI,
   VaultList,
-  VaultNameOptionMap,
   VaultOptions,
   VaultVersion,
   VaultVersionList,
@@ -221,25 +221,7 @@ const HeroSection: React.FC<{
               ))}
               <AttributePill className="mr-2 text-uppercase" color={color}>
                 {VaultVersionList.map((version) => (
-                  <BaseLink
-                    to={
-                      version === "v1"
-                        ? `/theta-vault/${
-                            Object.keys(VaultNameOptionMap)[
-                              Object.values(VaultNameOptionMap).indexOf(
-                                vaultOption
-                              )
-                            ]
-                          }`
-                        : `/v2/theta-vault/${
-                            Object.keys(VaultNameOptionMap)[
-                              Object.values(VaultNameOptionMap).indexOf(
-                                vaultOption
-                              )
-                            ]
-                          }`
-                    }
-                  >
+                  <BaseLink to={getVaultURI(vaultOption, version)}>
                     <AttributeVersionSelector
                       active={version === variant}
                       color={color}
