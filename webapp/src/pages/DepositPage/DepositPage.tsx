@@ -16,7 +16,6 @@ import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
 import {
   getDisplayAssets,
-  getVaultURI,
   VaultList,
   VaultOptions,
   VaultVersion,
@@ -28,6 +27,7 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
+import { getVaultURI } from "../../constants/constants";
 
 const { formatUnits } = ethers.utils;
 

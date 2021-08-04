@@ -132,26 +132,6 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-yvUSDC-P-ETH": "ryvUSDC-ETH-P-THETA",
 };
 
-export const getVaultURI = (
-  vaultOption: VaultOptions,
-  variant: VaultVersion = "v1"
-): string => {
-  switch (variant) {
-    case "v1":
-      return `/theta-vault/${
-        Object.keys(VaultNameOptionMap)[
-          Object.values(VaultNameOptionMap).indexOf(vaultOption)
-        ]
-      }`;
-    case "v2":
-      return `/v2/theta-vault/${
-        Object.keys(VaultNameOptionMap)[
-          Object.values(VaultNameOptionMap).indexOf(vaultOption)
-        ]
-      }`;
-  }
-};
-
 export const getEtherscanURI = () =>
   isDevelopment() ? "https://kovan.etherscan.io" : "https://etherscan.io";
 
