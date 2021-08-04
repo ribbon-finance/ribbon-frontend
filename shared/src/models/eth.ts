@@ -1,6 +1,6 @@
 import { FullVaultList } from "../constants/constants";
 
-const ERC20TokenList = [
+export const ERC20TokenList = [
   "weth",
   "usdc",
   "wbtc",

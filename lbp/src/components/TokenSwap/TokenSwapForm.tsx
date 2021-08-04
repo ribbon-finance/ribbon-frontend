@@ -20,7 +20,7 @@ import { ExternalIcon, SettingsIcon } from "shared/lib/assets/icons/icons";
 import { useLBPGlobalState } from "../../store/store";
 import Logo from "shared/lib/assets/icons/logo";
 import { USDCLogo } from "shared/lib/assets/icons/erc20Assets";
-import { handleSmallNumber } from "shared/lib/utils/math";
+import { formatBigNumber, handleSmallNumber } from "shared/lib/utils/math";
 import { parseUnits } from "ethers/lib/utils";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import {
@@ -35,6 +35,7 @@ import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import TokenSwapSettings from "./TokenSwapSettings";
 import { SlippageConfig } from "./types";
+import useERC20TokenBalance from "shared/lib/hooks/useERC20TokenBalance";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -151,6 +152,8 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
     250,
     waitingApproval
   );
+  const { balance: assetBalance, fetched: assetBalanceFetched } =
+    useERC20TokenBalance(swapModal.offerToken);
 
   const renderAssetLogo = useCallback((asset: ERC20Token) => {
     switch (asset) {
@@ -307,7 +310,14 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
             <div className="d-flex w-100 align-items-center">
               <PrimaryInputLabel>YOU PAY</PrimaryInputLabel>
               <SecondaryInfoLabel className="ml-auto">
-                Max 25,000 USDC
+                Balance:{" "}
+                {assetBalanceFetched
+                  ? `${formatBigNumber(
+                      assetBalance,
+                      4,
+                      getERC20TokenDecimals(swapModal.offerToken)
+                    )} ${getERC20TokenDisplay(swapModal.offerToken)}`
+                  : "---"}
               </SecondaryInfoLabel>
             </div>
             <BaseInputContianer>
@@ -402,6 +412,8 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
     ),
     [
       actionButton,
+      assetBalance,
+      assetBalanceFetched,
       exchangeRateText,
       onSwapAmountChange,
       priceImpactText,
