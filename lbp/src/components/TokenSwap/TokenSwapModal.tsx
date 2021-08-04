@@ -62,8 +62,8 @@ const TokenSwapModal = () => {
   const [step, setStep] = useState<SwapStep>(SwapStepList[0]);
   const [txId, setTxId] = useState("");
   const [slippageConfig, setSlippageConfig] = useState<SlippageConfig>({
-    name: SlippageOptionsList[SlippageOptionsList.length - 1],
-    value: SlippageOptionsList[SlippageOptionsList.length - 1],
+    name: SlippageOptionsList[0],
+    value: SlippageOptionsList[0],
   });
 
   const { sor, fetchCounter: sorFetchCounter } = useLBPSor();

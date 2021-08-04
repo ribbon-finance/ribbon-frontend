@@ -1,7 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
-import { BigNumber } from "ethers";
 import { useCallback, useEffect } from "react";
-import { useState } from "react";
 import { ERC20Token } from "../models/eth";
 import { useGlobalState } from "../store/store";
 import { impersonateAddress } from "../utils/development";
@@ -63,9 +61,45 @@ export const useERC20TokensBalance = (
     pollingFrequency: 5000,
   }
 ) => {
-  const { active, library } = useWeb3React();
-  const [loading, setLoading] = useState(false);
+  const { active, library, account: web3Account } = useWeb3React();
+  const account = impersonateAddress ? impersonateAddress : web3Account;
   const [tokenBalances, setTokenBalances] = useGlobalState("tokenBalances");
 
-  return { ...tokenBalances, loading };
+  const updateBalances = useCallback(async () => {
+    if (!active || !account) {
+      return;
+    }
+
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i];
+      const contract = getERC20Token(library, token)!;
+
+      const balance = await contract.balanceOf(account);
+      setTokenBalances((curr) => ({
+        ...curr,
+        [token]: {
+          balance,
+          fetched: true,
+        },
+      }));
+    }
+  }, [account, active, library, setTokenBalances, tokens]);
+
+  useEffect(() => {
+    updateBalances();
+
+    let pollInterval: any = undefined;
+    if (poll) {
+      pollInterval = setInterval(updateBalances, pollingFrequency);
+    }
+
+    // Clear interval
+    return () => {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+      }
+    };
+  }, [poll, pollingFrequency, updateBalances]);
+
+  return { ...tokenBalances };
 };
