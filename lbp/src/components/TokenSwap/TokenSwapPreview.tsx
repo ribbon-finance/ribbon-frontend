@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { BigNumber } from "ethers";
 import styled from "styled-components";
 import currency from "currency.js";
@@ -12,9 +12,7 @@ import {
 } from "shared/lib/designSystem";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import colors from "shared/lib/designSystem/colors";
-import useLBPPool from "../../hooks/useLBPPool";
 import { useLBPGlobalState } from "../../store/store";
-import { getERC20TokenAddress } from "shared/lib/constants/constants";
 import Logo from "shared/lib/assets/icons/logo";
 import { USDCLogo } from "shared/lib/assets/icons/erc20Assets";
 import {
@@ -26,8 +24,6 @@ import { formatBigNumber } from "shared/lib/utils/math";
 import useLBPPoolData from "../../hooks/useLBPPoolData";
 import { useMemo } from "react";
 import { formatEther, formatUnits } from "ethers/lib/utils";
-import { useWeb3Context } from "shared/lib/hooks/web3Context";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 
 const PrimaryInputLabel = styled(BaseInputLabel)`
   font-family: VCR;
@@ -47,22 +43,16 @@ const InfoColumn = styled(BaseModalContentColumn)`
 interface TokenSwapPreviewProps {
   swapAmount: BigNumber;
   receiveAmount: BigNumber;
+  handleSwap: () => void;
 }
 
 const TokenSwapPreview: React.FC<TokenSwapPreviewProps> = ({
   swapAmount,
   receiveAmount,
+  handleSwap,
 }) => {
-  const contract = useLBPPool();
-  const { provider } = useWeb3Context();
-  const [swapModal, setSwapModal] = useLBPGlobalState("swapModal");
+  const [swapModal] = useLBPGlobalState("swapModal");
   const { data: poolData } = useLBPPoolData();
-  const [swapping, setSwapping] = useState(false);
-  const swappingAnimatedText = useTextAnimation(
-    ["Swapping", "Swapping .", "Swapping ..", "Swapping ..."],
-    250,
-    swapping
-  );
 
   const [rbnPrice, totalSwapFees] = useMemo(() => {
     const swapNumber = parseFloat(
@@ -188,40 +178,9 @@ const TokenSwapPreview: React.FC<TokenSwapPreviewProps> = ({
         <ActionButton
           className="py-3"
           color={colors.products.yield}
-          onClick={async () => {
-            setSwapping(true);
-            try {
-              /** Assume 10% slippage */
-              const tx = await contract.swapExactAmountIn(
-                getERC20TokenAddress(swapModal.offerToken),
-                swapAmount,
-                getERC20TokenAddress(swapModal.receiveToken),
-                receiveAmount.mul(90).div(100),
-                swapAmount
-                  .mul(BigNumber.from(10).pow(18))
-                  .div(receiveAmount)
-                  .mul(110)
-                  .div(100)
-              );
-
-              const txhash = tx.hash;
-
-              /** TODO: Add pending transactions */
-
-              // Wait for transaction to be approved
-              await provider.waitForTransaction(txhash);
-
-              setSwapping(false);
-              setSwapModal((swapModal) => ({
-                ...swapModal,
-                show: false,
-              }));
-            } catch (err) {
-              setSwapping(false);
-            }
-          }}
+          onClick={handleSwap}
         >
-          {swapping ? swappingAnimatedText : "SWAP TOKENS"}
+          SWAP TOKENS
         </ActionButton>
       </BaseModalContentColumn>
     </>

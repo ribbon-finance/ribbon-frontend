@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { ProductList, ProductType } from "shared/lib/components/Product/types";
-import colors from "shared/lib/designSystem/colors";
+import colors from "../../designSystem/colors";
+import { ProductList, ProductType } from "../Product/types";
 
 const Container = styled.div<{ width: number }>`
   display: flex;
