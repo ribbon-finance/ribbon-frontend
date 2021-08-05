@@ -15,12 +15,19 @@ import useVault from "shared/lib/hooks/useVault";
 import PreviewStep from "./PreviewStep";
 import TransactionStep from "./TransactionStep";
 import FormStep from "./FormStep";
-import usePendingTransactions from "../../hooks/usePendingTransactions";
-import { getAssets, VaultOptions } from "shared/lib/constants/constants";
+import {
+  getAssets,
+  VaultOptions,
+  VaultVersion,
+} from "shared/lib/constants/constants";
 import { isETHVault } from "shared/lib/utils/vault";
+import usePendingTransactions from "../../../../hooks/usePendingTransactions";
 
 export interface ActionStepsProps {
-  vaultOption: VaultOptions;
+  vault: {
+    vaultOption: VaultOptions;
+    vaultVersion: VaultVersion;
+  };
   show: boolean;
   onClose: () => void;
   onChangeStep: (stepData: StepData) => void;
@@ -30,7 +37,7 @@ export interface ActionStepsProps {
 }
 
 const ActionSteps: React.FC<ActionStepsProps> = ({
-  vaultOption,
+  vault: { vaultOption, vaultVersion },
   show,
   onClose,
   onChangeStep,
@@ -197,7 +204,11 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const stepComponents = {
     0: !skipToPreview && (
-      <FormStep vaultOption={vaultOption} onSubmit={onSubmitForm} />
+      <FormStep
+        vaultVersion={vaultVersion}
+        vaultOption={vaultOption}
+        onSubmit={onSubmitForm}
+      />
     ),
     1: (
       <PreviewStep

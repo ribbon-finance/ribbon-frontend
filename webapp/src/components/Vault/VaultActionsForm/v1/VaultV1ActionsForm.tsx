@@ -47,18 +47,18 @@ import theme from "shared/lib/designSystem/theme";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import { Assets } from "shared/lib/store/types";
 
-import YourPosition from "./YourPosition";
-import ActionModal from "../ActionModal/ActionModal";
-import { ACTIONS, PreviewStepProps } from "../ActionModal/types";
+import YourPosition from "../YourPosition";
+import ActionModal from "../Modal/ActionModal";
+import { ACTIONS, PreviewStepProps } from "../Modal/types";
 import useGasPrice from "shared/lib/hooks/useGasPrice";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import usePendingTransactions from "../../hooks/usePendingTransactions";
+import usePendingTransactions from "../../../../hooks/usePendingTransactions";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
-import SwapBTCDropdown from "./SwapBTCDropdown";
-import useVaultActivity from "../../hooks/useVaultActivity";
+import SwapBTCDropdown from "../SwapBTCDropdown";
+import useVaultActivity from "../../../../hooks/useVaultActivity";
 import { VaultActivityMeta, VaultShortPosition } from "shared/lib/models/vault";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import HelpInfo from "../Common/HelpInfo";
+import HelpInfo from "../../../Common/HelpInfo";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 
 const { parseUnits, formatUnits } = ethers.utils;
@@ -246,7 +246,7 @@ interface ActionFormVariantProps {
   variant: "desktop" | "mobile";
 }
 
-const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
+const VaultV1ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   variant,
   vaultOption,
   onSubmit = () => {},
@@ -867,7 +867,7 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   const desktopActionModal = useMemo(
     () => (
       <ActionModal
-        vaultOption={vaultOption}
+        vault={{ vaultOption, vaultVersion: "v1" }}
         variant={"desktop"}
         show={showActionModal}
         onClose={onCloseActionsModal}
@@ -1020,4 +1020,4 @@ const ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   );
 };
 
-export default ActionsForm;
+export default VaultV1ActionsForm;

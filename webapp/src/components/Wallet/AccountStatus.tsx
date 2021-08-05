@@ -28,10 +28,10 @@ import { copyTextToClipboard } from "shared/lib/utils/text";
 import useOutsideAlerter from "shared/lib/hooks/useOutsideAlerter";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import ActionModal from "../ActionModal/ActionModal";
+import ActionModal from "../Vault/VaultActionsForm/Modal/ActionModal";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
-import { VaultOptions } from "shared/lib/constants/constants";
+import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { truncateAddress } from "shared/lib/utils/address";
 
@@ -240,14 +240,14 @@ const MenuCloseItem = styled(MenuItem)`
 `;
 
 interface AccountStatusProps {
-  vaultOption?: VaultOptions;
+  vault?: {
+    vaultOption: VaultOptions;
+    vaultVersion: VaultVersion;
+  };
   variant: "desktop" | "mobile";
 }
 
-const AccountStatus: React.FC<AccountStatusProps> = ({
-  vaultOption,
-  variant,
-}) => {
+const AccountStatus: React.FC<AccountStatusProps> = ({ vault, variant }) => {
   const {
     connector,
     deactivate: deactivateWeb3,
@@ -374,15 +374,15 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
 
   const formModal = useMemo(
     () =>
-      vaultOption ? (
+      vault ? (
         <ActionModal
-          vaultOption={vaultOption}
+          vault={vault}
           variant="mobile"
           show={showActionModal}
           onClose={onCloseActionsModal}
         />
       ) : null,
-    [vaultOption, showActionModal, onCloseActionsModal]
+    [vault, showActionModal, onCloseActionsModal]
   );
 
   return (
@@ -391,17 +391,17 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
       <WalletContainer variant={variant} ref={desktopMenuRef}>
         <WalletButton
           variant={variant}
-          showInvestButton={vaultOption !== undefined}
+          showInvestButton={vault !== undefined}
           connected={active}
           role="button"
           onClick={handleButtonClick}
         >
           {renderButtonContent()}
         </WalletButton>
-        {vaultOption && (
+        {vault && (
           <InvestButton
             onClick={handleInvestButtonClick}
-            color={vaultOption ? getVaultColor(vaultOption) : undefined}
+            color={getVaultColor(vault.vaultOption)}
           >
             Invest
           </InvestButton>

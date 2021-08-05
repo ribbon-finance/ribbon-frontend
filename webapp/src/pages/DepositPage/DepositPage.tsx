@@ -12,11 +12,11 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import PerformanceSection from "./PerformanceSection";
-import ActionsForm from "../../components/ActionsForm/ActionsForm";
+import VaultV1ActionsForm from "../../components/Vault/VaultActionsForm/v1/VaultV1ActionsForm";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { formatSignificantDecimals } from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
-import YourPosition from "../../components/ActionsForm/YourPosition";
+import YourPosition from "../../components/Vault/VaultActionsForm/YourPosition";
 import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
 import {
@@ -34,6 +34,7 @@ import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
 import { isProduction } from "shared/lib/utils/env";
+import VaultV2ActionsForm from "../../components/Vault/VaultActionsForm/v2/VaultV2ActionForm";
 
 const { formatUnits } = ethers.utils;
 
@@ -142,7 +143,7 @@ const MobilePositions = styled(YourPosition)`
 const DepositPage = () => {
   usePullUp();
   const { account } = useWeb3React();
-  const { vaultOption = VaultList[0], vaultVersion = "v1" } = useVaultOption();
+  const { vaultOption = VaultList[0], vaultVersion } = useVaultOption();
   const { status, deposits, vaultLimit, asset, decimals } =
     useVaultData(vaultOption);
   const isLoading = status === "loading";
@@ -167,6 +168,17 @@ const DepositPage = () => {
     />
   );
 
+  const actionForm = useMemo(() => {
+    switch (vaultVersion) {
+      case "v1":
+        return (
+          <VaultV1ActionsForm vaultOption={vaultOption} variant="desktop" />
+        );
+      case "v2":
+        return <VaultV2ActionsForm />;
+    }
+  }, [vaultOption, vaultVersion]);
+
   return (
     <>
       <HeroSection
@@ -182,7 +194,7 @@ const DepositPage = () => {
           <PerformanceSection vaultOption={vaultOption} />
 
           <DesktopActionsFormContainer className="col-xl-5 offset-xl-1 col-md-6">
-            <ActionsForm vaultOption={vaultOption} variant="desktop" />
+            {actionForm}
           </DesktopActionsFormContainer>
         </div>
         <VaultActivity vaultOption={vaultOption} />

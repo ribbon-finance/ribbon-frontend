@@ -26,7 +26,7 @@ const useVaultOption = () => {
       ? VaultNameOptionMap[matchv2?.params.vaultSymbol as VaultName]
       : undefined
   );
-  const [vaultVersion, setVaultVersion] = useState<VaultVersion | undefined>(
+  const [vaultVersion, setVaultVersion] = useState<VaultVersion>(
     // Match v1
     matchv1?.params.vaultSymbol &&
       matchv1.params.vaultSymbol in VaultNameOptionMap
@@ -35,7 +35,8 @@ const useVaultOption = () => {
       matchv2?.params.vaultSymbol &&
         matchv2.params.vaultSymbol in VaultNameOptionMap
       ? "v2"
-      : undefined
+      : // Default version
+        "v1"
   );
 
   useEffect(() => {

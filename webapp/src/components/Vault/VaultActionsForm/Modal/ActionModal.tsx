@@ -7,7 +7,7 @@ import ActionSteps from "./ActionSteps";
 import { PreviewStepProps, StepData, STEPS } from "./types";
 import sizes from "shared/lib/designSystem/sizes";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
-import { VaultOptions } from "shared/lib/constants/constants";
+import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
 
 const ModalNavigation = styled.div`
@@ -115,7 +115,10 @@ interface ModalProps {
 }
 
 interface ActionModalProps extends ModalProps {
-  vaultOption: VaultOptions;
+  vault: {
+    vaultOption: VaultOptions;
+    vaultVersion: VaultVersion;
+  };
   show: boolean;
   onClose: () => void;
   onSuccess?: () => void;
@@ -123,7 +126,7 @@ interface ActionModalProps extends ModalProps {
 }
 
 const ActionModal: React.FC<ActionModalProps> = ({
-  vaultOption,
+  vault,
   show,
   onClose,
   variant,
@@ -180,7 +183,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
   return (
     <div>
       <MobileOverlayMenu
-        key={`actionModal-${vaultOption}`}
+        key={`actionModal-${vault.vaultOption}`}
         isMenuOpen={show}
         onClick={onClose}
         mountRoot="div#root"
@@ -210,7 +213,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
           <ModalContent className="position-relative">
             <StepsContainer variant={variant}>
               <ActionSteps
-                vaultOption={vaultOption}
+                vault={vault}
                 skipToPreview={isDesktop}
                 show={show}
                 onClose={onClose}
