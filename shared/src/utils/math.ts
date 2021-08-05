@@ -59,7 +59,7 @@ export const ethToUSD = (
 export const formatOption = (bn: BigNumber): number =>
   parseFloat(ethers.utils.formatUnits(bn, 8));
 
-export const getWAD = (decimals: number) =>
+export const getWAD = (decimals: number): BigNumber =>
   ethers.utils.parseUnits("1", decimals);
 
 export const wmul = (x: BigNumber, y: BigNumber, decimals: number) =>
