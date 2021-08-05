@@ -29,7 +29,7 @@
     "@web3-react/walletconnect-connector": "^6.2.4",
     "@web3-react/walletlink-connector": "^6.2.2",
     "currency.js": "^2.0.3",
-    "ethers": "5.0.17",
+    "ethers": "5.4.0",
     "framer-motion": "^4.1.11",
     "react": "^17.0.2",
     "react-bootstrap": "^1.5.2",
