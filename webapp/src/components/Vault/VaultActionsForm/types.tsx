@@ -1,4 +1,4 @@
-import { VaultOptions } from "../../../../../shared/lib/constants/constants";
+import { VaultOptions } from "shared/lib/constants/constants";
 
 export interface FormStepProps {
   vaultOption: VaultOptions;
