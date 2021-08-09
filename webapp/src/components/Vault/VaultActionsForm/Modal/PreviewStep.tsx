@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 
 import { Subtitle, SecondaryText, Title } from "shared/lib/designSystem";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { ACTIONS, ActionType } from "./types";
-import { formatBigNumber, wmul } from "shared/lib/utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
 import {
@@ -80,16 +80,7 @@ const PreviewStep: React.FC<{
   // If it's a withdrawal, subtract the amount and the fee, we can hardcode the fee for now
   let newAmount = isDeposit
     ? positionAmount.add(amount)
-    : positionAmount
-        .sub(amount)
-        .sub(
-          wmul(
-            amount,
-            ethers.utils.parseUnits("0.005", getAssetDecimals(asset)),
-            getAssetDecimals(asset)
-          )
-        );
-
+    : positionAmount.sub(amount);
   newAmount = newAmount.isNegative() ? BigNumber.from("0") : newAmount;
 
   const newAmountStr = formatBigNumber(newAmount, 5, getAssetDecimals(asset));

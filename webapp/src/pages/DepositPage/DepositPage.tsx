@@ -183,7 +183,7 @@ const DepositPage = () => {
 
           {/* Form for desktop */}
           <DesktopActionsFormContainer className="col-xl-5 offset-xl-1 col-md-6">
-            <DesktopActionForm vaultOption={vaultOption} />
+            <DesktopActionForm vault={{ vaultOption, vaultVersion }} />
           </DesktopActionsFormContainer>
         </div>
         <VaultActivity vaultOption={vaultOption} />
@@ -261,7 +261,10 @@ const HeroSection: React.FC<{
                 {!isProduction() && (
                   <AttributePill className="mr-2 text-uppercase" color={color}>
                     {VaultVersionList.map((version) => (
-                      <BaseLink to={getVaultURI(vaultOption, version)}>
+                      <BaseLink
+                        to={getVaultURI(vaultOption, version)}
+                        key={version}
+                      >
                         <AttributeVersionSelector
                           active={version === variant}
                           color={color}
