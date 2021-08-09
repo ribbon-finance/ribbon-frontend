@@ -81,8 +81,8 @@ export const BaseModalContentColumn = styled.div<{
       : `${props.marginTop === undefined ? 24 : props.marginTop}px`};
 `;
 
-export const Title = styled.span`
-  color: ${colors.primaryText};
+export const Title = styled.span<{color?: string}>`
+  color: ${(props) => props.color ? props.color : colors.primaryText};
   font-family: VCR, sans-serif;
   font-style: normal;
   font-weight: normal;
@@ -99,12 +99,12 @@ export const Subtitle = styled.span`
   text-transform: uppercase;
 `;
 
-export const PrimaryText = styled(BaseText)`
+export const PrimaryText = styled(BaseText)<{color?: string}>`
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
-  color: ${colors.primaryText};
+  color: ${(props) => props.color ? props.color : colors.primaryText};
 `;
 
 export const SecondaryText = styled.span`
@@ -168,3 +168,10 @@ export const BaseInputButton = styled.div`
   cursor: pointer;
   font-family: VCR, sans-serif;
 `;
+
+export const BaseIndicator = styled.div<{size: number, color: string}>`
+  width: ${(props) => props.size}px;
+  height: ${(props) => props.size}px;
+  border-radius: ${(props) => props.size / 2}px;
+  background: ${(props) => props.color};
+`

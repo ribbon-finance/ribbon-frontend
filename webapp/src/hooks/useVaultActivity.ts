@@ -27,7 +27,7 @@ const useVaultActivity = (vault: VaultOptions) => {
 const fetchVaultAvtivity = async (
   vault: VaultOptions
 ): Promise<VaultActivity[]> => {
-  const vaultAddress = VaultAddressMap[vault]().toLowerCase();
+  const vaultAddress = VaultAddressMap[vault].toLowerCase();
 
   const response = await axios.post(getSubgraphqlURI(), {
     query: `

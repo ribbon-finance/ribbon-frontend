@@ -11,6 +11,9 @@ export const NETWORK_NAMES: Record<number, string> = {
   42: "kovan",
 };
 
+export const VaultVersionList = ["v1", "v2"] as const;
+export type VaultVersion = typeof VaultVersionList[number];
+
 export const FullVaultList = [
   "ryvUSDC-ETH-P-THETA",
   "rETH-THETA",
@@ -55,34 +58,6 @@ export const GAS_LIMITS: {
   },
 };
 
-const getETHThetaVaultId = () =>
-  (isDevelopment()
-    ? deployment.kovan.RibbonETHCoveredCall
-    : deployment.mainnet.RibbonETHCoveredCall
-  ).toLowerCase();
-
-const getWBTCThetaVaultId = () =>
-  (isDevelopment()
-    ? deployment.kovan.RibbonWBTCCoveredCall
-    : deployment.mainnet.RibbonWBTCCoveredCall
-  ).toLowerCase();
-
-const getWBTCPutThetaVaultId = () =>
-  isDevelopment()
-    ? deployment.kovan.RibbonWBTCPut
-    : // TODO: Update mainnet address
-      deployment.kovan.RibbonWBTCPut;
-
-const getETHPutThetaVaultId = () =>
-  isDevelopment()
-    ? deployment.kovan.RibbonETHPut
-    : deployment.mainnet.RibbonETHPut;
-
-const getYearnETHPutThetaVaultId = () =>
-  isDevelopment()
-    ? deployment.kovan.RibbonYearnETHPut
-    : deployment.mainnet.RibbonYearnETHPut;
-
 export const VaultLiquidityMiningMap: Partial<
   {
     [vault in VaultOptions]: string;
@@ -103,12 +78,42 @@ export const VaultLiquidityMiningMap: Partial<
 export const isPutVault = (vault: VaultOptions): boolean =>
   PutThetaVault.includes(vault);
 
-export const VaultAddressMap: { [vault in VaultOptions]: () => string } = {
-  "rUSDC-ETH-P-THETA": getETHPutThetaVaultId,
-  "rUSDC-BTC-P-THETA": getWBTCPutThetaVaultId,
-  "rETH-THETA": getETHThetaVaultId,
-  "rBTC-THETA": getWBTCThetaVaultId,
-  "ryvUSDC-ETH-P-THETA": getYearnETHPutThetaVaultId,
+export const VaultAddressMap: { [vault in VaultOptions]: string } = {
+  "rUSDC-ETH-P-THETA": isDevelopment()
+    ? deployment.kovan.RibbonETHPut
+    : deployment.mainnet.RibbonETHPut,
+  "rUSDC-BTC-P-THETA": isDevelopment()
+    ? deployment.kovan.RibbonWBTCPut
+    : // TODO: Update mainnet address
+      deployment.kovan.RibbonWBTCPut,
+  "rETH-THETA": isDevelopment()
+    ? deployment.kovan.RibbonETHCoveredCall
+    : deployment.mainnet.RibbonETHCoveredCall,
+  "rBTC-THETA": isDevelopment()
+    ? deployment.kovan.RibbonWBTCCoveredCall
+    : deployment.mainnet.RibbonWBTCCoveredCall,
+  "ryvUSDC-ETH-P-THETA": isDevelopment()
+    ? deployment.kovan.RibbonYearnETHPut
+    : deployment.mainnet.RibbonYearnETHPut,
+};
+
+// TODO: Fill up with v2 addresses
+export const VaultV2AddressMap: { [vault in VaultOptions]: string } = {
+  "rUSDC-ETH-P-THETA": isDevelopment()
+    ? deployment.kovan.RibbonETHPut
+    : deployment.mainnet.RibbonETHPut,
+  "rUSDC-BTC-P-THETA": isDevelopment()
+    ? deployment.kovan.RibbonWBTCPut
+    : deployment.kovan.RibbonWBTCPut,
+  "rETH-THETA": isDevelopment()
+    ? deployment.kovan.RibbonETHCoveredCall
+    : deployment.mainnet.RibbonETHCoveredCall,
+  "rBTC-THETA": isDevelopment()
+    ? deployment.kovan.RibbonWBTCCoveredCall
+    : deployment.mainnet.RibbonWBTCCoveredCall,
+  "ryvUSDC-ETH-P-THETA": isDevelopment()
+    ? deployment.kovan.RibbonYearnETHPut
+    : deployment.mainnet.RibbonYearnETHPut,
 };
 
 export const VaultNamesList = [

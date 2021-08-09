@@ -1,17 +1,20 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 
 import { Subtitle, SecondaryText, Title } from "shared/lib/designSystem";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import { ACTIONS, PreviewStepProps } from "./types";
-import { formatBigNumber, wmul } from "shared/lib/utils/math";
+import { ACTIONS, ActionType } from "./types";
+import { formatBigNumber } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
-import { VaultOptions } from "shared/lib/constants/constants";
+import {
+  VaultOptions,
+  VaultWithdrawalFee,
+} from "shared/lib/constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import { getVaultColor } from "shared/lib/utils/vault";
-const { parseUnits } = ethers.utils;
+import { useLatestAPY } from "shared/lib/hooks/useAirtableData";
 
 const AmountText = styled(Title)`
   font-size: 40px;
@@ -27,45 +30,46 @@ const Arrow = styled.i<{ color: string }>`
   color: ${(props) => props.color};
 `;
 
-const PreviewStep: React.FC<
-  PreviewStepProps & {
-    onClickConfirmButton: () => Promise<void>;
-    asset: Assets;
-    vaultOption: VaultOptions;
-  }
-> = ({
+const PreviewStep: React.FC<{
+  actionType: ActionType;
+  amount: BigNumber;
+  positionAmount: BigNumber;
+  onClickConfirmButton: () => Promise<void>;
+  asset: Assets;
+  vaultOption: VaultOptions;
+}> = ({
   actionType,
   amount,
   positionAmount,
   onClickConfirmButton,
-  actionParams,
   asset,
   vaultOption,
 }) => {
   const isDeposit = actionType === ACTIONS.deposit;
   const actionWord = isDeposit ? "Deposit" : "Withdrawal";
   const color = getVaultColor(vaultOption);
+  const latestAPY = useLatestAPY(vaultOption);
 
-  let detailValue = "";
+  const detailRows = useMemo(() => {
+    let detailValue = "";
 
-  switch (actionParams.action) {
-    case ACTIONS.deposit:
-      detailValue = actionParams.yield.toFixed(2);
-      break;
-    case ACTIONS.withdraw:
-      detailValue = actionParams.withdrawalFee.toString();
-      break;
-    default:
-      break;
-  }
+    switch (actionType) {
+      case ACTIONS.deposit:
+        detailValue = latestAPY.fetched ? latestAPY.res.toFixed(2) : "0.00";
+        break;
+      case ACTIONS.withdraw:
+        detailValue = parseFloat(VaultWithdrawalFee[vaultOption]).toString();
+        break;
+    }
 
-  const detailRows: { key: string; value: string }[] = [
-    { key: "Product", value: productCopies[vaultOption].title },
-    { key: "Product Type", value: "Theta Vault" },
-    isDeposit
-      ? { key: "Approx. APY", value: `${detailValue}% APY` }
-      : { key: "Withdrawal Fee", value: `${detailValue}%` },
-  ];
+    return [
+      { key: "Product", value: productCopies[vaultOption].title },
+      { key: "Product Type", value: "Theta Vault" },
+      isDeposit
+        ? { key: "Approx. APY", value: `${detailValue}% APY` }
+        : { key: "Withdrawal Fee", value: `${detailValue}%` },
+    ];
+  }, [actionType, isDeposit, latestAPY, vaultOption]);
 
   const originalAmount = formatBigNumber(
     positionAmount,
@@ -76,16 +80,7 @@ const PreviewStep: React.FC<
   // If it's a withdrawal, subtract the amount and the fee, we can hardcode the fee for now
   let newAmount = isDeposit
     ? positionAmount.add(amount)
-    : positionAmount
-        .sub(amount)
-        .sub(
-          wmul(
-            amount,
-            parseUnits("0.005", getAssetDecimals(asset)),
-            getAssetDecimals(asset)
-          )
-        );
-
+    : positionAmount.sub(amount);
   newAmount = newAmount.isNegative() ? BigNumber.from("0") : newAmount;
 
   const newAmountStr = formatBigNumber(newAmount, 5, getAssetDecimals(asset));

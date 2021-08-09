@@ -13,6 +13,7 @@ import { WrongNetworkToast, TxStatusToast } from "./Common/toasts";
 import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal";
 import NotFound from "../pages/NotFound";
 import StakingPage from "../pages/Staking/StakingPage";
+import { isProduction } from "shared/lib/utils/env";
 
 const Root = styled.div<{ screenHeight: number }>`
   background-color: #1c1a19;
@@ -38,9 +39,11 @@ const RootApp = () => {
           <Route path="/theta-vault/:vaultSymbol">
             <DepositPage />
           </Route>
-          <Route path="/theta-vault">
-            <DepositPage />
-          </Route>
+          {!isProduction() && (
+            <Route path="/v2/theta-vault/:vaultSymbol">
+              <DepositPage />
+            </Route>
+          )}
           <Route path="/portfolio">
             <PortfolioPage />
           </Route>

@@ -37,7 +37,7 @@ const FooterContainer = styled.div<{
     top: unset;
     bottom: 0px;
     height: ${theme.footer.mobile.height}px;
-    z-index: 1;
+    z-index: 5;
   }
 `;
 
@@ -49,7 +49,7 @@ const MobileFooterOffsetContainer = styled.div`
 
 const Footer = () => {
   const { height: screenHeight } = useScreenSize();
-  const vaultOption = useVaultOption();
+  const { vaultOption, vaultVersion } = useVaultOption();
 
   return (
     <>
@@ -58,7 +58,10 @@ const Footer = () => {
         <DesktopFooter />
 
         {/** Mobile */}
-        <AccountStatus variant="mobile" vaultOption={vaultOption} />
+        <AccountStatus
+          variant="mobile"
+          vault={vaultOption ? { vaultOption, vaultVersion } : undefined}
+        />
       </FooterContainer>
       <MobileFooterOffsetContainer />
     </>

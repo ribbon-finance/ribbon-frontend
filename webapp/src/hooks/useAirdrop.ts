@@ -41,6 +41,7 @@ const useAirdrop = () => {
     const claimed = await merkleDistributor.isClaimed(airdropClaim.index);
 
     setAirdropInfo({
+      account,
       total: total,
       proof: { ...airdropClaim, amount: BigNumber.from(airdropClaim.amount) },
       breakdown: airdropBreakdown,
@@ -49,10 +50,10 @@ const useAirdrop = () => {
   }, [account, merkleDistributor, setAirdropInfo]);
 
   useEffect(() => {
-    if (!airdropInfo) {
+    if (!airdropInfo || airdropInfo.account !== account) {
       updateAirdropInfo();
     }
-  }, [airdropInfo, updateAirdropInfo]);
+  }, [account, airdropInfo, updateAirdropInfo]);
 
   useEffect(() => {
     pendingTransactions.forEach((tx) => {

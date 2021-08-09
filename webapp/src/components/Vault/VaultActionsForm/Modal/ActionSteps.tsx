@@ -1,42 +1,40 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { BigNumber } from "ethers";
 
-import {
-  ActionParams,
-  ACTIONS,
-  ActionType,
-  PreviewStepProps,
-  StepData,
-  Steps,
-  STEPS,
-} from "./types";
+import { ACTIONS, StepData, Steps, STEPS } from "./types";
 
 import useVault from "shared/lib/hooks/useVault";
 import PreviewStep from "./PreviewStep";
 import TransactionStep from "./TransactionStep";
 import FormStep from "./FormStep";
-import usePendingTransactions from "../../hooks/usePendingTransactions";
-import { getAssets, VaultOptions } from "shared/lib/constants/constants";
+import {
+  getAssets,
+  VaultOptions,
+  VaultVersion,
+} from "shared/lib/constants/constants";
 import { isETHVault } from "shared/lib/utils/vault";
+import usePendingTransactions from "../../../../hooks/usePendingTransactions";
+import useVaultActionForm from "../../../../hooks/useVaultActionForm";
+import { parseUnits } from "@ethersproject/units";
+import useVaultData from "shared/lib/hooks/useVaultData";
 
 export interface ActionStepsProps {
-  vaultOption: VaultOptions;
+  vault: {
+    vaultOption: VaultOptions;
+    vaultVersion: VaultVersion;
+  };
   show: boolean;
   onClose: () => void;
   onChangeStep: (stepData: StepData) => void;
-  onSuccess: () => void;
   skipToPreview?: boolean;
-  previewStepProps?: PreviewStepProps;
 }
 
 const ActionSteps: React.FC<ActionStepsProps> = ({
-  vaultOption,
+  vault: { vaultOption, vaultVersion },
   show,
   onClose,
   onChangeStep,
   skipToPreview = false,
-  previewStepProps,
-  onSuccess,
 }) => {
   const firstStep = skipToPreview ? STEPS.previewStep : STEPS.formStep;
   const [step, setStep] = useState<Steps>(firstStep);
@@ -44,30 +42,22 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const vault = useVault(vaultOption);
   const [pendingTransactions, setPendingTransactions] =
     usePendingTransactions();
-
-  const [actionType, setActionType] = useState<ActionType>("deposit");
-  const [amount, setAmount] = useState<BigNumber>(BigNumber.from("0"));
-  const [positionAmount, setPositionAmount] = useState<BigNumber>(
-    BigNumber.from("0")
-  );
-  const [actionParams, setActionParams] = useState<ActionParams>({
-    action: "deposit",
-    yield: 0,
-  });
+  const { vaultBalanceInAsset, decimals } = useVaultData(vaultOption);
 
   // We need to pre-fetch the number of shares that the user wants to withdraw
   const [shares, setShares] = useState<BigNumber>(BigNumber.from("0"));
+  const { vaultActionForm, resetActionForm } = useVaultActionForm(vaultOption);
 
-  const isDeposit = actionType === ACTIONS.deposit;
+  const isDeposit = vaultActionForm.actionType === ACTIONS.deposit;
   const actionWord = isDeposit ? "Deposit" : "Withdrawal";
 
   const cleanupEffects = useCallback(() => {
     setTxhash("");
 
     if (step === STEPS.submittedStep) {
-      onSuccess();
+      resetActionForm();
     }
-  }, [step, onSuccess]);
+  }, [resetActionForm, step]);
 
   const handleClose = useCallback(() => {
     cleanupEffects();
@@ -90,18 +80,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     };
   }, [show, firstStep, setStep]);
 
+  const amount = parseUnits(vaultActionForm.inputAmount || "0", decimals);
   const amountStr = amount.toString();
   const sharesStr = shares.toString();
-
-  // Update with previewStepProps
-  useEffect(() => {
-    if (previewStepProps) {
-      setActionType(previewStepProps.actionType);
-      setAmount(previewStepProps.amount);
-      setPositionAmount(previewStepProps.positionAmount);
-      setActionParams(previewStepProps.actionParams);
-    }
-  }, [previewStepProps]);
 
   useEffect(() => {
     if (vault) {
@@ -110,7 +91,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         setShares(shares);
       })();
     }
-  }, [amountStr, vault]);
+  }, [vault, amountStr]);
 
   // append the txhash into the global store
   useEffect(() => {
@@ -119,13 +100,13 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         ...pendingTransactions,
         {
           txhash,
-          type: isDeposit ? "deposit" : "withdraw",
+          type: vaultActionForm.actionType,
           amount: amountStr,
           vault: vaultOption,
         },
       ]);
     }
-  }, [txhash, setPendingTransactions, isDeposit, amountStr, vaultOption]);
+  }, [txhash, setPendingTransactions, amountStr, vaultOption, vaultActionForm]);
 
   useEffect(() => {
     // we check that the txhash has already been removed
@@ -180,33 +161,19 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     });
   }, [step, onChangeStep, actionWord]);
 
-  const onSubmitForm = useCallback(
-    (submittedFormProps) => {
-      // check that it's a legal state transition
-      // if not, just ignore
-      if (step !== STEPS.previewStep - 1) return;
-      setStep(STEPS.previewStep);
-
-      setActionType(submittedFormProps.actionType);
-      setAmount(submittedFormProps.amount);
-      setPositionAmount(submittedFormProps.positionAmount);
-      setActionParams(submittedFormProps.actionParams);
-    },
-    [step]
-  );
-
   const stepComponents = {
     0: !skipToPreview && (
-      <FormStep vaultOption={vaultOption} onSubmit={onSubmitForm} />
+      <FormStep
+        vaultVersion={vaultVersion}
+        vaultOption={vaultOption}
+        onFormSubmit={() => setStep(STEPS.previewStep)}
+      />
     ),
     1: (
       <PreviewStep
-        {...(previewStepProps || {
-          actionType,
-          amount,
-          positionAmount,
-          actionParams,
-        })}
+        actionType={vaultActionForm.actionType}
+        amount={amount}
+        positionAmount={vaultBalanceInAsset}
         onClickConfirmButton={handleClickConfirmButton}
         asset={getAssets(vaultOption)}
         vaultOption={vaultOption}

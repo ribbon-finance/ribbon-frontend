@@ -1,5 +1,9 @@
 import React, { useCallback, useMemo } from "react";
-import { SecondaryText, Subtitle } from "shared/lib/designSystem";
+import {
+  BaseIndicator,
+  SecondaryText,
+  Subtitle,
+} from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import styled from "styled-components";
@@ -11,14 +15,14 @@ type ProcessedAirdropBreakdownType = AirdropBreakDownType | "option";
 
 export const getAirdropColor = (variant: ProcessedAirdropBreakdownType) => {
   switch (variant) {
-    case "option":
-      return colors.green;
     case "discord":
       return colors.brands.discord;
     case "strangle":
     case "thetaVaultBase":
     case "thetaVaultBonus":
       return colors.red;
+    default:
+      return colors.green;
   }
 };
 
@@ -61,16 +65,6 @@ const BreakdownPill = styled.div<{
   border: ${theme.border.width} ${theme.border.style}
     ${(props) => getAirdropColor(props.variant)};
   border-radius: 100px;
-`;
-
-const BreakdwonPillIndicator = styled.div<{
-  variant: ProcessedAirdropBreakdownType;
-}>`
-  height: 8px;
-  width: 8px;
-  background: ${(props) => getAirdropColor(props.variant)};
-  margin-right: 8px;
-  border-radius: ${theme.border.radiusSmall};
 `;
 
 const BreakdownPillToken = styled(Subtitle)<{
@@ -116,7 +110,11 @@ const AirdropBreakdown = () => {
     (token: number, variant: ProcessedAirdropBreakdownType, index: number) => (
       <BreakdownBackground variant={variant} key={index}>
         <BreakdownPill variant={variant}>
-          <BreakdwonPillIndicator variant={variant} />
+          <BaseIndicator
+            size={8}
+            color={getAirdropColor(variant)}
+            className="mr-2"
+          />
           <Subtitle>{getAirdropTitle(variant)}</Subtitle>
           <BreakdownPillToken variant={variant}>
             {token.toLocaleString()} RBN
