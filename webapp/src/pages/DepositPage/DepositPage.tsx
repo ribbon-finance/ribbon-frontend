@@ -12,11 +12,11 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import PerformanceSection from "./PerformanceSection";
-import VaultV1ActionsForm from "../../components/Vault/VaultActionsForm/v1/VaultV1ActionsForm";
+import VaultV1ActionsForm from "../../components/Vault/VaultActionsForm/VaultV1ActionsForm";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { formatSignificantDecimals } from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
-import YourPosition from "../../components/Vault/VaultActionsForm/YourPosition";
+import YourPosition from "../../components/Vault/YourPosition";
 import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
 import {
@@ -34,7 +34,7 @@ import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
 import { isProduction } from "shared/lib/utils/env";
-import VaultV2ActionsForm from "../../components/Vault/VaultActionsForm/v2/VaultV2ActionForm";
+import VaultV2ActionsForm from "../../components/Vault/VaultActionsForm/VaultV2ActionForm";
 
 const { formatUnits } = ethers.utils;
 

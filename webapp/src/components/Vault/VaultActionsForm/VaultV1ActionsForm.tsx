@@ -21,23 +21,17 @@ import {
   Title,
 } from "shared/lib/designSystem";
 import { formatBigNumber } from "shared/lib/utils/math";
-
 import {
   ActionButton,
   ConnectWalletButton,
 } from "shared/lib/components/Common/buttons";
 import {
-  GAS_LIMITS,
   VaultAddressMap,
   VaultMaxDeposit,
-  VaultOptions,
-  VaultWithdrawalFee,
 } from "shared/lib/constants/constants";
 import useVaultData from "shared/lib/hooks/useVaultData";
-import useVault from "shared/lib/hooks/useVault";
 import { getVaultColor, isETHVault, isVaultFull } from "shared/lib/utils/vault";
 import colors from "shared/lib/designSystem/colors";
-import { useLatestAPY } from "shared/lib/hooks/useAirtableData";
 import { getAssetDisplay, getAssetLogo } from "shared/lib/utils/asset";
 import { getERC20Token } from "shared/lib/hooks/useERC20Token";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
@@ -48,18 +42,18 @@ import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import { Assets } from "shared/lib/store/types";
 
 import YourPosition from "../YourPosition";
-import ActionModal from "../Modal/ActionModal";
-import { ACTIONS, PreviewStepProps } from "../Modal/types";
-import useGasPrice from "shared/lib/hooks/useGasPrice";
+import ActionModal from "./Modal/ActionModal";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import usePendingTransactions from "../../../../hooks/usePendingTransactions";
+import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
-import SwapBTCDropdown from "../SwapBTCDropdown";
-import useVaultActivity from "../../../../hooks/useVaultActivity";
+import SwapBTCDropdown from "./SwapBTCDropdown";
+import useVaultActivity from "../../../hooks/useVaultActivity";
 import { VaultActivityMeta, VaultShortPosition } from "shared/lib/models/vault";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import HelpInfo from "../../../Common/HelpInfo";
+import HelpInfo from "../../Common/HelpInfo";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
+import { FormStepProps } from "./types";
+import useVaultActionForm from "../../../hooks/useVaultActionForm";
 
 const { parseUnits, formatUnits } = ethers.utils;
 
@@ -237,11 +231,6 @@ type ValidationErrors =
   | "withdraw_limit_reached"
   | "withdraw_limit_exceeded";
 
-export interface FormStepProps {
-  onSubmit?: (previewStepProps: PreviewStepProps) => void;
-  vaultOption: VaultOptions;
-}
-
 interface ActionFormVariantProps {
   variant: "desktop" | "mobile";
 }
@@ -249,7 +238,6 @@ interface ActionFormVariantProps {
 const VaultV1ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   variant,
   vaultOption,
-  onSubmit = () => {},
 }) => {
   // constants
   const DEPOSIT_TAB = true;
@@ -260,7 +248,6 @@ const VaultV1ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   // network hooks
-  const vault = useVault(vaultOption);
   const color = getVaultColor(vaultOption);
   const {
     status,
@@ -272,18 +259,18 @@ const VaultV1ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     asset,
     decimals,
   } = useVaultData(vaultOption);
+  const { vaultActionForm, handleInputChange, handleMaxClick } =
+    useVaultActionForm(vaultOption);
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
   const { vaultAccounts } = useVaultAccounts(vaultOptions);
-  const gasPrice = useGasPrice();
   const { active, account, library } = useWeb3React();
   const { provider } = useWeb3Context();
-  const latestAPY = useLatestAPY(vaultOption);
   const [, setPendingTransactions] = usePendingTransactions();
 
   // state hooks
   const isLoadingData = status === "loading";
   const [isDeposit, setIsDeposit] = useState(true);
-  const [inputAmount, setInputAmount] = useState("");
+  // const [inputAmount, setInputAmount] = useState("");
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showActionModal, setShowActionModal] = useState(false);
   const [error, setError] = useState<ValidationErrors>("none");
@@ -362,59 +349,47 @@ const VaultV1ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     );
   }, [vaultAccounts, vaultOption]);
   const connected = Boolean(active && account);
-  const isInputNonZero = parseFloat(inputAmount) > 0;
+  const isInputNonZero = parseFloat(vaultActionForm.inputAmount) > 0;
 
-  const handleClickMax = async () => {
-    if (!isLoadingData && connected && vault && account) {
-      if (isDeposit && gasPrice !== "") {
-        const gasLimit = isDeposit
-          ? GAS_LIMITS[vaultOption].deposit
-          : GAS_LIMITS[vaultOption].withdraw;
-        const gasFee = BigNumber.from(gasLimit.toString()).mul(
-          BigNumber.from(gasPrice)
-        );
-        const total = BigNumber.from(userAssetBalance);
-        // TODO: Optimize the code to request gas fees only when needed
-        const maxAmount = isETHVault(vaultOption) ? total.sub(gasFee) : total;
-        const allowedMaxAmount = maxAmount.lte(
-          vaultMaxDepositAmount.sub(vaultBalanceInAsset)
-        )
-          ? maxAmount
-          : vaultMaxDepositAmount.sub(vaultBalanceInAsset);
-        const userMaxAmount = allowedMaxAmount.isNegative()
-          ? BigNumber.from("0")
-          : allowedMaxAmount;
+  // const handleClickMax = async () => {
+  //   if (!isLoadingData && connected && vault && account) {
+  //     if (isDeposit && gasPrice !== "") {
+  //       const gasLimit = isDeposit
+  //         ? GAS_LIMITS[vaultOption].deposit
+  //         : GAS_LIMITS[vaultOption].withdraw;
+  //       const gasFee = BigNumber.from(gasLimit.toString()).mul(
+  //         BigNumber.from(gasPrice)
+  //       );
+  //       const total = BigNumber.from(userAssetBalance);
+  //       // TODO: Optimize the code to request gas fees only when needed
+  //       const maxAmount = isETHVault(vaultOption) ? total.sub(gasFee) : total;
+  //       const allowedMaxAmount = maxAmount.lte(
+  //         vaultMaxDepositAmount.sub(vaultBalanceInAsset)
+  //       )
+  //         ? maxAmount
+  //         : vaultMaxDepositAmount.sub(vaultBalanceInAsset);
+  //       const userMaxAmount = allowedMaxAmount.isNegative()
+  //         ? BigNumber.from("0")
+  //         : allowedMaxAmount;
 
-        // Fringe case: if amt of deposit greater than vault limit, return 0
-        const vaultAvailableBalance = deposits.gt(vaultLimit)
-          ? BigNumber.from("0")
-          : vaultLimit.sub(deposits);
+  //       // Fringe case: if amt of deposit greater than vault limit, return 0
+  //       const vaultAvailableBalance = deposits.gt(vaultLimit)
+  //         ? BigNumber.from("0")
+  //         : vaultLimit.sub(deposits);
 
-        // Check if max is vault availableBalance
-        const finalMaxAmount = userMaxAmount.gt(vaultAvailableBalance)
-          ? vaultAvailableBalance
-          : userMaxAmount;
+  //       // Check if max is vault availableBalance
+  //       const finalMaxAmount = userMaxAmount.gt(vaultAvailableBalance)
+  //         ? vaultAvailableBalance
+  //         : userMaxAmount;
 
-        setInputAmount(formatUnits(finalMaxAmount, decimals));
-      }
-      // Withdraw flow
-      else {
-        setInputAmount(formatUnits(maxWithdrawAmount, decimals));
-      }
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawInput = e.target.value;
-
-    // Do not allow user to enter smaller than 0
-    if (rawInput && parseFloat(rawInput) < 0) {
-      setInputAmount("");
-      return;
-    }
-
-    setInputAmount(rawInput); // Let's flush out the input changes first.
-  };
+  //       setInputAmount(formatUnits(finalMaxAmount, decimals));
+  //     }
+  //     // Withdraw flow
+  //     else {
+  //       setInputAmount(formatUnits(maxWithdrawAmount, decimals));
+  //     }
+  //   }
+  // };
 
   // Listen to amount and set error accordingly
   useEffect(() => {
@@ -429,8 +404,8 @@ const VaultV1ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         return;
       }
 
-      if (inputAmount) {
-        const amount = parseUnits(inputAmount, decimals);
+      if (vaultActionForm.inputAmount) {
+        const amount = parseUnits(vaultActionForm.inputAmount, decimals);
 
         if (!isLoadingData && connected) {
           const vaultAccount = vaultAccounts[vaultOption];
@@ -488,52 +463,25 @@ const VaultV1ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
       setError("none");
     });
   }, [
-    vaultOption,
-    vaultAccounts,
-    deposits,
-    vaultLimit,
-    inputAmount,
     connected,
     decimals,
+    deposits,
     isDeposit,
     isLoadingData,
     maxWithdrawAmount,
     userAssetBalance,
-    vaultMaxDepositAmount,
+    vaultAccounts,
+    vaultActionForm,
     vaultBalanceInAsset,
-  ]);
-
-  const vaultBalanceStr = vaultBalanceInAsset.toString();
-
-  const previewStepProps = useMemo(() => {
-    const actionParams = isDeposit
-      ? { action: ACTIONS.deposit, yield: latestAPY.res }
-      : {
-          action: ACTIONS.withdraw,
-          withdrawalFee: parseFloat(VaultWithdrawalFee[vaultOption]),
-        };
-
-    return {
-      actionType: isDeposit ? ACTIONS.deposit : ACTIONS.withdraw,
-      amount: inputAmount
-        ? parseUnits(inputAmount, decimals)
-        : BigNumber.from("0"),
-      positionAmount: BigNumber.from(vaultBalanceStr),
-      actionParams,
-    };
-  }, [
+    vaultLimit,
+    vaultMaxDepositAmount,
     vaultOption,
-    isDeposit,
-    inputAmount,
-    vaultBalanceStr,
-    latestAPY.res,
-    decimals,
   ]);
 
   const handleClickActionButton = useCallback(() => {
     isDesktop && isInputNonZero && connected && setShowActionModal(true);
-    !isDesktop && isInputNonZero && connected && onSubmit(previewStepProps);
-  }, [connected, isDesktop, isInputNonZero, onSubmit, previewStepProps]);
+    // !isDesktop && isInputNonZero && connected && onSubmit(previewStepProps);
+  }, [connected, isDesktop, isInputNonZero]);
 
   const handleApproveToken = async () => {
     setWaitingApproval(true);
@@ -577,11 +525,11 @@ const VaultV1ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     }
   };
 
-  const onSuccess = useCallback(() => {
-    setIsDeposit(true);
-    setInputAmount("");
-    setError("none");
-  }, [setInputAmount, setError]);
+  // const onSuccess = useCallback(() => {
+  //   setIsDeposit(true);
+  //   setInputAmount("");
+  //   setError("none");
+  // }, [setInputAmount, setError]);
 
   const switchToTab = (switchingToDepositTab: boolean) => {
     // Resets the input amount if switching to a different tab
@@ -591,7 +539,7 @@ const VaultV1ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
         (!isDeposit && switchingToDepositTab)
       ) {
         setIsDeposit(switchingToDepositTab);
-        setInputAmount("");
+        // setInputAmount("");
         setError("none");
       }
     };
@@ -864,26 +812,6 @@ const VaultV1ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
     setShowConnectModal,
   ]);
 
-  const desktopActionModal = useMemo(
-    () => (
-      <ActionModal
-        vault={{ vaultOption, vaultVersion: "v1" }}
-        variant={"desktop"}
-        show={showActionModal}
-        onClose={onCloseActionsModal}
-        previewStepProps={previewStepProps}
-        onSuccess={onSuccess}
-      ></ActionModal>
-    ),
-    [
-      vaultOption,
-      showActionModal,
-      previewStepProps,
-      onSuccess,
-      onCloseActionsModal,
-    ]
-  );
-
   const renderApprovalAssetLogo = useCallback(() => {
     const Logo = getAssetLogo(asset);
 
@@ -932,7 +860,14 @@ const VaultV1ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
 
   return (
     <Container variant={variant}>
-      {isDesktop && desktopActionModal}
+      {isDesktop && (
+        <ActionModal
+          vault={{ vaultOption, vaultVersion: "v1" }}
+          variant={"desktop"}
+          show={showActionModal}
+          onClose={onCloseActionsModal}
+        />
+      )}
 
       <FormContainer>
         <FormTitleContainer className="d-flex flex-row align-items-center">
@@ -992,12 +927,12 @@ const VaultV1ActionsForm: React.FC<ActionFormVariantProps & FormStepProps> = ({
                   className="form-control"
                   aria-label="ETH"
                   placeholder="0"
-                  value={inputAmount}
-                  onChange={handleChange}
+                  value={vaultActionForm.inputAmount}
+                  onChange={handleInputChange}
                   onWheel={onInputWheel}
                 />
                 {connected && (
-                  <BaseInputButton onClick={handleClickMax}>
+                  <BaseInputButton onClick={handleMaxClick}>
                     MAX
                   </BaseInputButton>
                 )}

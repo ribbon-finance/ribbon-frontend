@@ -1,7 +1,8 @@
 import React from "react";
 import { VaultVersion } from "../../../../../../shared/lib/constants/constants";
-import VaultV1ActionsForm, { FormStepProps } from "../v1/VaultV1ActionsForm";
-import VaultV2ActionsForm from "../v2/VaultV2ActionForm";
+import { FormStepProps } from "../types";
+import VaultV1ActionsForm from "../VaultV1ActionsForm";
+import VaultV2ActionsForm from "../VaultV2ActionForm";
 
 interface VaultVersionProps {
   vaultVersion: VaultVersion;
