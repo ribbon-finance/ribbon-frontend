@@ -12,7 +12,6 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import PerformanceSection from "./PerformanceSection";
-import VaultV1ActionsForm from "../../components/Vault/VaultActionsForm/VaultV1ActionsForm";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { formatSignificantDecimals } from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
@@ -34,7 +33,7 @@ import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
 import { isProduction } from "shared/lib/utils/env";
-import VaultV2ActionsForm from "../../components/Vault/VaultActionsForm/VaultV2ActionForm";
+import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopActionForm";
 
 const { formatUnits } = ethers.utils;
 
@@ -168,17 +167,6 @@ const DepositPage = () => {
     />
   );
 
-  const actionForm = useMemo(() => {
-    switch (vaultVersion) {
-      case "v1":
-        return (
-          <VaultV1ActionsForm vaultOption={vaultOption} variant="desktop" />
-        );
-      case "v2":
-        return <VaultV2ActionsForm />;
-    }
-  }, [vaultOption, vaultVersion]);
-
   return (
     <>
       <HeroSection
@@ -193,8 +181,9 @@ const DepositPage = () => {
 
           <PerformanceSection vaultOption={vaultOption} />
 
+          {/* Form for desktop */}
           <DesktopActionsFormContainer className="col-xl-5 offset-xl-1 col-md-6">
-            {actionForm}
+            <DesktopActionForm vaultOption={vaultOption} />
           </DesktopActionsFormContainer>
         </div>
         <VaultActivity vaultOption={vaultOption} />

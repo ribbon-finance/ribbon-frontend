@@ -163,7 +163,11 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const stepComponents = {
     0: !skipToPreview && (
-      <FormStep vaultVersion={vaultVersion} vaultOption={vaultOption} />
+      <FormStep
+        vaultVersion={vaultVersion}
+        vaultOption={vaultOption}
+        onFormSubmit={() => setStep(STEPS.previewStep)}
+      />
     ),
     1: (
       <PreviewStep
