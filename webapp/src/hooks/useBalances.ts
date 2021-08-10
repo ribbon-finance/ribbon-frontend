@@ -49,7 +49,8 @@ const fetchBalances = async (
               ${params.after ? `timestamp_gte: ${params.after},` : ``}
             },
             orderBy: timestamp,
-            orderDirection: asc
+            orderDirection: desc,
+            first: 1000
           ) {
             vault {
               symbol
@@ -64,7 +65,7 @@ const fetchBalances = async (
         `,
   });
 
-  return response.data.data.balanceUpdates.map((item: any) => ({
+  return response.data.data.balanceUpdates.reverse().map((item: any) => ({
     ...item,
     balance: BigNumber.from(item.balance),
     yieldEarned: BigNumber.from(item.yieldEarned),
