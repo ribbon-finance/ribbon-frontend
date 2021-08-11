@@ -13,6 +13,7 @@ import {
   DefiScoreTokenList,
 } from "../models/defiScore";
 import { ERC20Token, ERC20TokenList } from "../models/eth";
+import { VaultAccount } from "../models/vault";
 import { getAssetDecimals } from "../utils/asset";
 import {
   PendingTransaction,
@@ -42,7 +43,12 @@ interface GlobalStore {
   desktopView: DesktopViewType;
   airdropInfo: AirdropInfoData | undefined;
   tokenBalances: {[token in ERC20Token]: { fetched: boolean, balance: BigNumber }}
+  vaultAccounts: {[option in VaultOptions]: VaultAccount | undefined}
 }
+
+export const initialVaultaccounts = Object.fromEntries(
+    VaultList.map((option) => [option, undefined])
+  ) as {[option in VaultOptions]: VaultAccount | undefined}
 
 export const initialState: GlobalStore = {
   vaultData: Object.fromEntries(
@@ -95,7 +101,8 @@ export const initialState: GlobalStore = {
     ERC20TokenList.map((token) => [token, { balance: BigNumber.from(0), fetched: false }])
   ) as {
     [token in ERC20Token]: { fetched: boolean, balance: BigNumber }
-  }
+  },
+  vaultAccounts: initialVaultaccounts
 };
 
 export const { useGlobalState } = createGlobalState(initialState);

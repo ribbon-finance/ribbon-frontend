@@ -67,7 +67,7 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
   return (
     <MigrationFormContainer>
       {/* Logo */}
-      <MigrateLogoContainer color={color}>
+      <MigrateLogoContainer color={color} className="mt-3">
         <MigrateIcon color={color} />
       </MigrateLogoContainer>
 
