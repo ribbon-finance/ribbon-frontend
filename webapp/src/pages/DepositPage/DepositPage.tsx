@@ -20,6 +20,7 @@ import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
 import {
   getDisplayAssets,
+  hasVaultVersion,
   VaultList,
   VaultOptions,
   VaultVersion,
@@ -34,6 +35,7 @@ import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
 import { isProduction } from "shared/lib/utils/env";
 import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopActionForm";
+import { Redirect } from "react-router-dom";
 
 const { formatUnits } = ethers.utils;
 
@@ -142,9 +144,10 @@ const MobilePositions = styled(YourPosition)`
 const DepositPage = () => {
   usePullUp();
   const { account } = useWeb3React();
-  const { vaultOption = VaultList[0], vaultVersion } = useVaultOption();
-  const { status, deposits, vaultLimit, asset, decimals } =
-    useVaultData(vaultOption);
+  const { vaultOption, vaultVersion } = useVaultOption();
+  const { status, deposits, vaultLimit, asset, decimals } = useVaultData(
+    vaultOption || VaultList[0]
+  );
   const isLoading = status === "loading";
 
   const totalDepositStr = isLoading
@@ -166,6 +169,20 @@ const DepositPage = () => {
       asset={asset}
     />
   );
+
+  /**
+   * Redirect to homepage if no clear vault is choosen
+   */
+  if (!vaultOption) {
+    return <Redirect to="/" />;
+  }
+
+  /**
+   * Redirect to v1 if vault version given is invalid
+   */
+  if (vaultVersion !== "v1" && !hasVaultVersion(vaultOption, vaultVersion)) {
+    return <Redirect to={getVaultURI(vaultOption, "v1")} />;
+  }
 
   return (
     <>
@@ -230,19 +247,21 @@ const HeroSection: React.FC<{
     <>
       {/* // TODO: V2 feature tagged */}
       {/* V1 top banner */}
-      {!isProduction() && variant === "v1" && (
-        <BannerContainer color={color}>
-          <BaseIndicator size={8} color={color} className="mr-2" />
-          <PrimaryText color={color} className="mr-3">
-            V2 vaults are now live
-          </PrimaryText>
-          <BaseLink to={getVaultURI(vaultOption, "v2")}>
-            <BannerButton color={color} role="button">
-              <PrimaryText color={color}>Switch to V2</PrimaryText>
-            </BannerButton>
-          </BaseLink>
-        </BannerContainer>
-      )}
+      {!isProduction() &&
+        variant === "v1" &&
+        hasVaultVersion(vaultOption, "v2") && (
+          <BannerContainer color={color}>
+            <BaseIndicator size={8} color={color} className="mr-2" />
+            <PrimaryText color={color} className="mr-3">
+              V2 vaults are now live
+            </PrimaryText>
+            <BaseLink to={getVaultURI(vaultOption, "v2")}>
+              <BannerButton color={color} role="button">
+                <PrimaryText color={color}>Switch to V2</PrimaryText>
+              </BannerButton>
+            </BaseLink>
+          </BannerContainer>
+        )}
       <HeroContainer className="position-relative" color={color}>
         <DepositPageContainer className="container">
           <div className="row mx-lg-n1 position-relative">
@@ -260,19 +279,24 @@ const HeroSection: React.FC<{
                 {/* TODO: v2 feature tagged */}
                 {!isProduction() && (
                   <AttributePill className="mr-2 text-uppercase" color={color}>
-                    {VaultVersionList.map((version) => (
-                      <BaseLink
-                        to={getVaultURI(vaultOption, version)}
-                        key={version}
-                      >
-                        <AttributeVersionSelector
-                          active={version === variant}
-                          color={color}
+                    {[...VaultVersionList].reverse().map((version) =>
+                      version === "v1" ||
+                      hasVaultVersion(vaultOption, version) ? (
+                        <BaseLink
+                          to={getVaultURI(vaultOption, version)}
+                          key={version}
                         >
-                          <Title color={color}>{version}</Title>
-                        </AttributeVersionSelector>
-                      </BaseLink>
-                    ))}
+                          <AttributeVersionSelector
+                            active={version === variant}
+                            color={color}
+                          >
+                            <Title color={color}>{version}</Title>
+                          </AttributeVersionSelector>
+                        </BaseLink>
+                      ) : (
+                        <></>
+                      )
+                    )}
                   </AttributePill>
                 )}
               </div>

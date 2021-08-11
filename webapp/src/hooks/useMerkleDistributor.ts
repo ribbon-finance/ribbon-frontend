@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
-import deployments from "shared/lib/constants/deployments.json";
+import deployments from "shared/lib/constants/v1Deployments.json";
 import { isDevelopment } from "shared/lib/utils/env";
 import { MerkleDistributorFactory } from "shared/lib/codegen/MerkleDistributorFactory";
 import { MerkleDistributor } from "shared/lib/codegen";
-
 
 export const getMerkleDistributor = (
   library: any

@@ -27,7 +27,12 @@ const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
           />
         );
       case "v2":
-        return <VaultV2ActionsForm />;
+        return (
+          <VaultV2ActionsForm
+            vaultOption={vault.vaultOption}
+            onFormSubmit={() => setShowActionModal(true)}
+          />
+        );
     }
   }, [vault]);
 

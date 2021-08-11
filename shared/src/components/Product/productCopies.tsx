@@ -203,66 +203,6 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
       ),
     },
   },
-  "rUSDC-BTC-P-THETA": {
-    title: "T-USDC-P-WBTC",
-    subtitle: "WBTC Put-Selling",
-    description:
-      "Generates yield by running an automated WBTC put selling strategy.",
-    tags: ["PUT-SELLING"],
-    strategy: (
-      <>
-        T-USDC-P-WBTC earns yield on its USDC deposits by running a weekly
-        automated WBTC{" "}
-        <TooltipExplanation
-          title="PUT OPTION"
-          explanation="A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
-          learnMoreURL="https://www.investopedia.com/terms/p/putoption.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              put-selling
-            </HighlighText>
-          )}
-        />{" "}
-        strategy, where the put options are collateralized by USDC. The vault
-        reinvests the yield it earns back into the strategy, effectively
-        compounding the yields for depositors over time.
-        <p />
-        The strategy works as follows:
-      </>
-    ),
-    vaultRisk: (
-      <>
-        The primary risk for running this put selling strategy is that the vault
-        may incur a weekly loss in the case where the put options sold by the
-        vault expire{" "}
-        <TooltipExplanation
-          title="IN-THE-MONEY"
-          explanation="A WBTC put option is in-the-money (OTM) if the strike price is above the market price of WBTC."
-          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
-              in-the-money
-            </HighlighText>
-          )}
-        />
-        (meaning the price of WBTC is below the strike price of the put options
-        minted by the vault). Such a situation is expected to happen less than
-        5% of the time.
-      </>
-    ),
-    liquidityMining: {
-      explanation: (
-        <>
-          rUSDC-BTC-P-THETA is a token that represents USDC deposits in the WBTC
-          Put Theta Vault (T-USDC-P-WBTC).
-          <br />
-          <br />
-          Stake your rUSDC-BTC-P-THETA tokens in the rUSDC-BTC-P-THETA staking
-          pool to earn $RBN rewards.
-        </>
-      ),
-    },
-  },
   "ryvUSDC-ETH-P-THETA": {
     title: "T-yvUSDC-P-ETH",
     subtitle: "ETH Put-Selling",
