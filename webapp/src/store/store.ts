@@ -16,7 +16,7 @@ interface GlobalStore {
 export const initialVaultActionForm = {
   inputAmount: "",
   // Default to deposit
-  actionType: ACTIONS.deposit,
+  actionType: ACTIONS.transfer,
 };
 
 export const initialState: GlobalStore = {

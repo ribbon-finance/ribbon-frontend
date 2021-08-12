@@ -47,6 +47,7 @@ import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { FormStepProps } from "./types";
 import useVaultActionForm from "../../../hooks/useVaultActionForm";
 import { ACTIONS } from "./Modal/types";
+import VaultV1TransferForm from "./VaultV1TransferForm";
 
 const { parseUnits, formatUnits } = ethers.utils;
 
@@ -96,10 +97,13 @@ const FormTitleDiv = styled.div<{ left: boolean; active: boolean }>`
     background-color: white;
   }
 
-  ${(props) =>
-    props.left
-      ? "border-top-left-radius: 8px;"
-      : "border-top-right-radius: 8px;"}
+  &:first-child {
+    border-top-left-radius: 8px;
+  }
+
+  &:last-child {
+    border-top-right-radius: 8px;
+  }
 `;
 
 const FormTitle = styled(Title)<{ active: boolean }>`
@@ -245,6 +249,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     maxWithdrawAmount,
     asset,
     decimals,
+    vaultMaxWithdrawAmount,
   } = useVaultData(vaultOption);
   const {
     handleActionTypeChange,
@@ -420,7 +425,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     vaultOption,
   ]);
 
-  const handleApproveToken = async () => {
+  const handleApproveToken = useCallback(async () => {
     setWaitingApproval(true);
     if (tokenContract) {
       const amount =
@@ -450,7 +455,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
         setWaitingApproval(false);
       }
     }
-  };
+  }, [provider, setPendingTransactions, tokenContract, vaultOption]);
 
   const formWalletContent = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
@@ -634,6 +639,8 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
         }
 
         return `Withdraw ${getAssetDisplay(asset)}`;
+      case ACTIONS.transfer:
+        return "Preview Transfer";
     }
   }, [
     asset,
@@ -669,7 +676,9 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
         <ActionButton
           disabled={Boolean(error) || !isInputNonZero}
           onClick={onFormSubmit}
-          className="py-3 mb-4"
+          className={`py-3 ${
+            vaultActionForm.actionType !== ACTIONS.transfer ? "mb-4" : ""
+          }`}
           color={color}
         >
           {actionButtonText}
@@ -694,6 +703,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     isInputNonZero,
     onFormSubmit,
     setShowConnectModal,
+    vaultActionForm,
   ]);
 
   const renderApprovalAssetLogo = useCallback(() => {
@@ -701,6 +711,99 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
 
     return <Logo />;
   }, [asset]);
+
+  const formContent = useMemo(() => {
+    /**
+     * Approval before deposit
+     */
+    if (vaultActionForm.actionType === ACTIONS.deposit && showTokenApproval) {
+      return (
+        <>
+          <ApprovalIconContainer>
+            <ApprovalIcon color={color}>
+              {renderApprovalAssetLogo()}
+            </ApprovalIcon>
+          </ApprovalIconContainer>
+          <ApprovalDescription>
+            Before you deposit, the vault needs your permission to invest your{" "}
+            {getAssetDisplay(asset)} in the vault’s strategy.
+          </ApprovalDescription>
+          <ApprovalHelp
+            to="https://ribbon.finance/faq"
+            target="__blank"
+            rel="noreferrer noopener"
+          >
+            <SecondaryText>Why do I have to do this?</SecondaryText>
+          </ApprovalHelp>
+          <ActionButton
+            onClick={handleApproveToken}
+            className="py-3 mb-4"
+            disabled={Boolean(error)}
+            color={color}
+          >
+            {waitingApproval
+              ? waitingApprovalLoadingText
+              : `Approve ${getAssetDisplay(asset)}`}
+          </ActionButton>
+        </>
+      );
+    }
+
+    switch (vaultActionForm.actionType) {
+      case ACTIONS.deposit:
+      case ACTIONS.withdraw:
+        return (
+          <>
+            <BaseInputLabel>AMOUNT ({getAssetDisplay(asset)})</BaseInputLabel>
+            <BaseInputContianer className="position-relative mb-5">
+              <BaseInput
+                type="number"
+                className="form-control"
+                aria-label="ETH"
+                placeholder="0"
+                value={vaultActionForm.inputAmount}
+                onChange={handleInputChange}
+              />
+              {connected && (
+                <BaseInputButton onClick={handleMaxClick}>MAX</BaseInputButton>
+              )}
+            </BaseInputContianer>
+            {button}
+          </>
+        );
+      case ACTIONS.transfer:
+        return (
+          <VaultV1TransferForm
+            transferVaultData={{
+              vaultBalanceInAsset,
+              maxWithdrawAmount,
+              vaultMaxWithdrawAmount,
+            }}
+            inputAmount={vaultActionForm.inputAmount}
+            handleInputChange={handleInputChange}
+            handleMaxClick={handleMaxClick}
+            actionButton={button}
+          />
+        );
+    }
+  }, [
+    asset,
+    button,
+    color,
+    connected,
+    error,
+    handleApproveToken,
+    handleInputChange,
+    handleMaxClick,
+    maxWithdrawAmount,
+    renderApprovalAssetLogo,
+    showTokenApproval,
+    vaultActionForm,
+    vaultBalanceInAsset,
+    vaultMaxWithdrawAmount,
+    waitingApproval,
+    waitingApprovalLoadingText,
+  ]);
 
   const getSwapTriggerText = useCallback((_asset: Assets) => {
     switch (_asset) {
@@ -711,7 +814,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     }
   }, []);
 
-  const renderSwapContainerTrigger = useCallback(() => {
+  const swapContainerTrigger = useMemo(() => {
     switch (asset) {
       case "WBTC":
         return (
@@ -733,7 +836,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     }
   }, [asset, getSwapTriggerText, swapContainerOpen]);
 
-  const renderSwapContainer = useCallback(() => {
+  const swapContainer = useMemo(() => {
     switch (asset) {
       case "WBTC":
         return <SwapBTCDropdown open={swapContainerOpen} />;
@@ -764,66 +867,29 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
               Withdraw
             </FormTitle>
           </FormTitleDiv>
+          {vaultOption === "rUSDC-ETH-P-THETA" && (
+            <FormTitleDiv
+              left={false}
+              active={vaultActionForm.actionType === ACTIONS.transfer}
+              onClick={() => handleActionTypeChange(ACTIONS.transfer)}
+            >
+              <FormTitle
+                active={vaultActionForm.actionType === ACTIONS.transfer}
+              >
+                Transfer
+              </FormTitle>
+            </FormTitleDiv>
+          )}
         </FormTitleContainer>
 
         <ContentContainer className="px-4 py-4">
-          {vaultActionForm.actionType === ACTIONS.deposit &&
-          showTokenApproval ? (
-            <>
-              <ApprovalIconContainer>
-                <ApprovalIcon color={color}>
-                  {renderApprovalAssetLogo()}
-                </ApprovalIcon>
-              </ApprovalIconContainer>
-              <ApprovalDescription>
-                Before you deposit, the vault needs your permission to invest
-                your {getAssetDisplay(asset)} in the vault’s strategy.
-              </ApprovalDescription>
-              <ApprovalHelp
-                to="https://ribbon.finance/faq"
-                target="__blank"
-                rel="noreferrer noopener"
-              >
-                <SecondaryText>Why do I have to do this?</SecondaryText>
-              </ApprovalHelp>
-              <ActionButton
-                onClick={handleApproveToken}
-                className="py-3 mb-4"
-                disabled={Boolean(error)}
-                color={color}
-              >
-                {waitingApproval
-                  ? waitingApprovalLoadingText
-                  : `Approve ${getAssetDisplay(asset)}`}
-              </ActionButton>
-            </>
-          ) : (
-            <>
-              <BaseInputLabel>AMOUNT ({getAssetDisplay(asset)})</BaseInputLabel>
-              <BaseInputContianer className="position-relative mb-5">
-                <BaseInput
-                  type="number"
-                  className="form-control"
-                  aria-label="ETH"
-                  placeholder="0"
-                  value={vaultActionForm.inputAmount}
-                  onChange={handleInputChange}
-                />
-                {connected && (
-                  <BaseInputButton onClick={handleMaxClick}>
-                    MAX
-                  </BaseInputButton>
-                )}
-              </BaseInputContianer>
-              {button}
-            </>
-          )}
+          {formContent}
           <WalletBalance state={walletBalanceState}>
             {formWalletContent}
           </WalletBalance>
-          {renderSwapContainerTrigger()}
+          {swapContainerTrigger}
         </ContentContainer>
-        {renderSwapContainer()}
+        {swapContainer}
       </FormContainer>
 
       {connected && variant === "desktop" && (

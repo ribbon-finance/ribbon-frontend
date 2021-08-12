@@ -149,6 +149,8 @@ export const TxStatusToast = () => {
       case "unstake":
         subtitle = `${amountFormatted} ${stakeAsset} unstaked`;
         break;
+      case "transfer":
+        subtitle = `$`
     }
 
     return (

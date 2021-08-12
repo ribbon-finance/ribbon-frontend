@@ -41,6 +41,8 @@ const useVaultData: UseVaultData = (vault, params) => {
         const unconnectedPromises = [
           providerVault.totalBalance(),
           providerVault.cap(),
+          providerVault.maxWithdrawableShares(),
+          providerVault.totalSupply(),
         ];
 
         let connectedPromises: Promise<BigNumber>[] = [];
@@ -69,6 +71,10 @@ const useVaultData: UseVaultData = (vault, params) => {
                     prevResponse[vault].deposits
                   ),
                   vaultLimit: defaultToNextValue(
+                    zero,
+                    prevResponse[vault].vaultLimit
+                  ),
+                  vaultMaxWithdrawAmount: defaultToNextValue(
                     zero,
                     prevResponse[vault].vaultLimit
                   ),
@@ -125,6 +131,10 @@ const useVaultData: UseVaultData = (vault, params) => {
                     prevResponse[vault].vaultLimit,
                     responses[1]
                   ),
+                  vaultMaxWithdrawAmount: defaultToPrevValue(
+                    prevResponse[vault].vaultMaxWithdrawAmount,
+                    responses[2].mul(responses[0]).div(responses[3])
+                  ),
                   vaultBalanceInAsset: prevResponse[vault].vaultBalanceInAsset,
                   userAssetBalance: prevResponse[vault].userAssetBalance,
                   maxWithdrawAmount: prevResponse[vault].maxWithdrawAmount,
@@ -149,17 +159,21 @@ const useVaultData: UseVaultData = (vault, params) => {
                   prevResponse[vault].vaultLimit,
                   responses[1]
                 ),
+                vaultMaxWithdrawAmount: defaultToPrevValue(
+                  prevResponse[vault].vaultMaxWithdrawAmount,
+                  responses[2].mul(responses[0]).div(responses[3])
+                ),
                 vaultBalanceInAsset: defaultToPrevValue(
                   prevResponse[vault].vaultBalanceInAsset,
-                  responses[2]
+                  responses[4]
                 ),
                 userAssetBalance: defaultToPrevValue(
                   prevResponse[vault].userAssetBalance,
-                  responses[3]
+                  responses[5]
                 ),
                 maxWithdrawAmount: defaultToPrevValue(
                   prevResponse[vault].maxWithdrawAmount,
-                  responses[4]
+                  responses[6]
                 ),
               },
             }));

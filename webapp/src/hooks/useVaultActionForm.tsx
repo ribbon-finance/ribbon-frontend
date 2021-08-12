@@ -118,6 +118,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
         }));
         break;
       case ACTIONS.withdraw:
+      case ACTIONS.transfer:
         setVaultActionForm((actionForm) => ({
           ...actionForm,
           inputAmount: formatUnits(maxWithdrawAmount, decimals),
