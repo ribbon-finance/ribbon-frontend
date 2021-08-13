@@ -59,6 +59,7 @@ export const initialState: GlobalStore = {
         deposits: BigNumber.from("0"),
         vaultLimit: BigNumber.from("0"),
         vaultBalanceInAsset: BigNumber.from("0"),
+        vaultMaxWithdrawAmount: BigNumber.from("0"),
         asset: getAssets(vault),
         displayAsset: getDisplayAssets(vault),
         decimals: getAssetDecimals(getAssets(vault)),

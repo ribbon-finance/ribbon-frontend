@@ -124,6 +124,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
               ? vault.withdrawETH(sharesStr)
               : vault.withdraw(sharesStr));
             break;
+          case ACTIONS.transfer:
+            // TODO:
+            return;
         }
 
         /**
@@ -150,7 +153,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                 type: ACTIONS.transfer as "transfer",
                 amount: amountStr,
                 transferVault: vaultOption,
-                receiveVault: "ryvUSDC-ETH-P-THETA",
+                receiveVault: vaultActionForm.receiveVault!,
               },
             ]);
         }

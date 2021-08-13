@@ -10,13 +10,14 @@ interface GlobalStore {
     vaultOption?: VaultOptions;
     inputAmount: string;
     actionType: ActionType;
+    receiveVault?: VaultOptions;
   };
 }
 
 export const initialVaultActionForm = {
   inputAmount: "",
   // Default to deposit
-  actionType: ACTIONS.transfer,
+  actionType: ACTIONS.deposit,
 };
 
 export const initialState: GlobalStore = {

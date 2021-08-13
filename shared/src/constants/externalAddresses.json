@@ -27,7 +27,7 @@
 			"usdc": [
 				{
 					"name": "Old Opyn USDC",
-					"address": "0x7e6edA50d1c833bE936492BF42C1BF376239E9e2",
+					"address": "0xF5Cb5408B40E819e7Db5347664Be03B52AcCAC9d",
 					"usage": [
 						"yvUSDC",
 						"Liquidity Mining Pool"
@@ -35,7 +35,7 @@
 				},
 				{
 					"name": "New Opyn",
-					"address": "0xF5Cb5408B40E819e7Db5347664Be03B52AcCAC9d",
+					"address": "0x7e6edA50d1c833bE936492BF42C1BF376239E9e2",
 					"usage": [
 						"New theta vault"
 					]

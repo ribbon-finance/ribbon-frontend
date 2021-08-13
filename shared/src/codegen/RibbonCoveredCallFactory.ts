@@ -31,6 +31,11 @@ const _abi = [
       },
       {
         internalType: "address",
+        name: "_registry",
+        type: "address",
+      },
+      {
+        internalType: "address",
         name: "_weth",
         type: "address",
       },
@@ -53,6 +58,11 @@ const _abi = [
         internalType: "uint256",
         name: "_minimumSupply",
         type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "_isPut",
+        type: "bool",
       },
     ],
     stateMutability: "nonpayable",
@@ -181,6 +191,37 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "replacement",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "shares",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "Migrate",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "address",
         name: "options",
@@ -250,6 +291,19 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "address",
+        name: "replacement",
+        type: "address",
+      },
+    ],
+    name: "VaultSunset",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "address",
         name: "account",
@@ -275,6 +329,37 @@ const _abi = [
       },
     ],
     name: "Withdraw",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "oldShares",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "newShares",
+        type: "uint256",
+      },
+    ],
+    name: "WithdrawToV1Vault",
     type: "event",
   },
   {
@@ -507,6 +592,63 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "closeShort",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "underlying",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "strikeAsset",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "collateralAsset",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "expiry",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "strikePrice",
+            type: "uint256",
+          },
+          {
+            internalType: "enum ProtocolAdapterTypes.OptionType",
+            name: "optionType",
+            type: "uint8",
+          },
+          {
+            internalType: "address",
+            name: "paymentToken",
+            type: "address",
+          },
+        ],
+        internalType: "struct ProtocolAdapterTypes.OptionTerms",
+        name: "optionTerms",
+        type: "tuple",
+      },
+    ],
+    name: "commitAndClose",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "currentOption",
     outputs: [
       {
@@ -610,19 +752,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "factory",
-    outputs: [
-      {
-        internalType: "contract IRibbonFactory",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "feeRecipient",
     outputs: [
       {
@@ -706,6 +835,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "isPut",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "lockedAmount",
     outputs: [
       {
@@ -777,6 +919,13 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "migrate",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "name",
     outputs: [
       {
@@ -829,9 +978,35 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "registry",
+    outputs: [
+      {
+        internalType: "contract IVaultRegistry",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "renounceOwnership",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "replacementVault",
+    outputs: [
+      {
+        internalType: "contract IRibbonV2Vault",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -1041,49 +1216,12 @@ const _abi = [
   {
     inputs: [
       {
-        components: [
-          {
-            internalType: "address",
-            name: "underlying",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "strikeAsset",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "collateralAsset",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "expiry",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "strikePrice",
-            type: "uint256",
-          },
-          {
-            internalType: "enum ProtocolAdapterTypes.OptionType",
-            name: "optionType",
-            type: "uint8",
-          },
-          {
-            internalType: "address",
-            name: "paymentToken",
-            type: "address",
-          },
-        ],
-        internalType: "struct ProtocolAdapterTypes.OptionTerms",
-        name: "optionTerms",
-        type: "tuple",
+        internalType: "uint256",
+        name: "newWithdrawalFee",
+        type: "uint256",
       },
     ],
-    name: "setNextOption",
+    name: "setWithdrawalFee",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -1091,12 +1229,12 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "newWithdrawalFee",
-        type: "uint256",
+        internalType: "address",
+        name: "upgradeTo",
+        type: "address",
       },
     ],
-    name: "setWithdrawalFee",
+    name: "sunset",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -1207,6 +1345,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "underlying",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "uint256",
@@ -1252,6 +1403,24 @@ const _abi = [
       },
     ],
     name: "withdrawETH",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "share",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "vault",
+        type: "address",
+      },
+    ],
+    name: "withdrawToV1Vault",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

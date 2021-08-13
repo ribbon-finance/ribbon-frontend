@@ -252,6 +252,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     vaultMaxWithdrawAmount,
   } = useVaultData(vaultOption);
   const {
+    canTransfer,
     handleActionTypeChange,
     handleInputChange,
     handleMaxClick,
@@ -774,6 +775,8 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
       case ACTIONS.transfer:
         return (
           <VaultV1TransferForm
+            vaultOption={vaultOption}
+            receiveVault={vaultActionForm.receiveVault!}
             transferVaultData={{
               vaultBalanceInAsset,
               maxWithdrawAmount,
@@ -801,6 +804,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     vaultActionForm,
     vaultBalanceInAsset,
     vaultMaxWithdrawAmount,
+    vaultOption,
     waitingApproval,
     waitingApprovalLoadingText,
   ]);
@@ -867,7 +871,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
               Withdraw
             </FormTitle>
           </FormTitleDiv>
-          {vaultOption === "rUSDC-ETH-P-THETA" && (
+          {canTransfer && (
             <FormTitleDiv
               left={false}
               active={vaultActionForm.actionType === ACTIONS.transfer}

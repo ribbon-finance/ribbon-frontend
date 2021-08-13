@@ -13,16 +13,26 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { useMemo } from "react";
-import { getAssets, VaultOptions } from "shared/lib/constants/constants";
+import {
+  getAssets,
+  VaultNameOptionMap,
+  VaultOptions,
+} from "shared/lib/constants/constants";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { BigNumber } from "ethers";
+import HelpInfo from "../../Common/HelpInfo";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 
 const TransferToVault = styled.div`
   display: flex;
   background: ${colors.primaryText}0a;
   border-radius: ${theme.border.radiusSmall};
   padding: 8px;
+`;
+
+const TransferToVaultTitle = styled(Title)`
+  text-transform: none;
 `;
 
 const TransferToVaultLogo = styled.div`
@@ -37,6 +47,8 @@ const InfoData = styled(Title)`
 `;
 
 interface VaultV1TransferFormProps {
+  vaultOption: VaultOptions;
+  receiveVault: VaultOptions;
   transferVaultData: {
     vaultBalanceInAsset: BigNumber;
     maxWithdrawAmount: BigNumber;
@@ -49,28 +61,28 @@ interface VaultV1TransferFormProps {
 }
 
 const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
+  vaultOption,
+  receiveVault,
   transferVaultData,
   inputAmount,
   handleInputChange,
   handleMaxClick,
   actionButton,
 }) => {
-  /**
-   * We return yvUSDC as we assume the transfer is always done from USDC vault
-   */
-  const transferVault = useMemo((): VaultOptions => {
-    return "ryvUSDC-ETH-P-THETA";
-  }, []);
-
-  const AssetLogo = getAssetLogo(getAssets(transferVault));
-  const { deposits, vaultLimit, asset, decimals } = useVaultData(transferVault);
+  const AssetLogo = getAssetLogo(getAssets(receiveVault));
+  const { deposits, vaultLimit, asset, decimals } = useVaultData(receiveVault);
+  const assetDisplay = getAssetDisplay(asset);
 
   /**
    * Calculate available limit to transfer for user
    */
   const availableLimit = useMemo(() => {
-    return vaultLimit.sub(deposits);
-  }, [deposits, vaultLimit]);
+    const userAvailableLimit = transferVaultData.vaultMaxWithdrawAmount;
+    const transferVaultEmptyCapacity = vaultLimit.sub(deposits);
+    return userAvailableLimit.lte(transferVaultEmptyCapacity)
+      ? userAvailableLimit
+      : transferVaultEmptyCapacity;
+  }, [deposits, transferVaultData.vaultMaxWithdrawAmount, vaultLimit]);
 
   return (
     <>
@@ -81,18 +93,22 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
           <AssetLogo />
         </TransferToVaultLogo>
         <div className="d-flex flex-column justify-content-center ml-2">
-          <Title>T-yvUSDC-P-ETH</Title>
+          <TransferToVaultTitle>
+            {
+              Object.keys(VaultNameOptionMap)[
+                Object.values(VaultNameOptionMap).indexOf(receiveVault)
+              ]
+            }
+          </TransferToVaultTitle>
           <SecondaryText>
-            Available Capacity ({getAssetDisplay(asset)}):{" "}
+            Available Capacity ({assetDisplay}):{" "}
             {formatBigNumber(vaultLimit.sub(deposits), 2, decimals)}
           </SecondaryText>
         </div>
       </TransferToVault>
 
       {/* Amount Input */}
-      <BaseInputLabel className="mt-4">
-        AMOUNT ({getAssetDisplay(asset)})
-      </BaseInputLabel>
+      <BaseInputLabel className="mt-4">AMOUNT ({assetDisplay})</BaseInputLabel>
       <BaseInputContianer className="position-relative">
         <BaseInput
           type="number"
@@ -108,20 +124,41 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
       {/* Extra information */}
       <div className="d-flex align-items-center mt-4">
         <SecondaryText>Available Limit</SecondaryText>
+        <TooltipExplanation
+          title="AVAILABLE LIMIT"
+          explanation={`This is equal to the value of your deposits minus the funds you have staked in the ${vaultOption} staking pool.`}
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HelpInfo containerRef={ref} {...triggerHandler}>
+              i
+            </HelpInfo>
+          )}
+        />
         <InfoData>
-          {formatBigNumber(availableLimit, 2, decimals)}{" "}
-          {getAssetDisplay(asset)}
+          {formatBigNumber(availableLimit, 2, decimals)} {assetDisplay}
         </InfoData>
       </div>
       <div className="d-flex align-items-center mt-3 mb-4">
         <SecondaryText>Weekly Transfer Limit</SecondaryText>
+        <TooltipExplanation
+          title="AVAILABLE LIMIT"
+          explanation={`You can withdraw up to ${formatBigNumber(
+            transferVaultData.vaultMaxWithdrawAmount,
+            2,
+            decimals
+          )} ${assetDisplay} before the vault hits its weekly transfer and withdrawal limit (10% of the funds in the vault).`}
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HelpInfo containerRef={ref} {...triggerHandler}>
+              i
+            </HelpInfo>
+          )}
+        />
         <InfoData>
           {formatBigNumber(
             transferVaultData.vaultMaxWithdrawAmount,
             2,
             decimals
           )}{" "}
-          {getAssetDisplay(asset)}
+          {assetDisplay}
         </InfoData>
       </div>
 

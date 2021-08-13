@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { BigNumber } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 
@@ -47,6 +47,15 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     resetActionForm();
   }, [vaultOption, resetActionForm]);
 
+  const canTransfer = useMemo(() => {
+    switch (vaultOption) {
+      case "rUSDC-ETH-P-THETA":
+        return true;
+      default:
+        return false;
+    }
+  }, [vaultOption]);
+
   /**
    * Handle user changing action type
    * Action type: deposit, withdraw
@@ -58,12 +67,25 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
         return;
       }
 
-      setVaultActionForm({
-        inputAmount: "",
-        actionType,
-      });
+      switch (actionType) {
+        case ACTIONS.transfer:
+          switch (vaultOption) {
+            case "rUSDC-ETH-P-THETA":
+              setVaultActionForm((vaultActionForm) => ({
+                ...vaultActionForm,
+                actionType: ACTIONS.transfer,
+                receiveVault: "ryvUSDC-ETH-P-THETA",
+              }));
+          }
+          break;
+        default:
+          setVaultActionForm({
+            inputAmount: "",
+            actionType,
+          });
+      }
     },
-    [setVaultActionForm, vaultActionForm.actionType]
+    [setVaultActionForm, vaultActionForm.actionType, vaultOption]
   );
 
   /**
@@ -140,6 +162,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   ]);
 
   return {
+    canTransfer,
     handleActionTypeChange,
     handleInputChange,
     handleMaxClick,
