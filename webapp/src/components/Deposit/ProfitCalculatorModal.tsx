@@ -8,7 +8,7 @@ import BasicModal from "shared/lib/components/Common/BasicModal";
 import {
   BaseInput,
   BaseInputButton,
-  BaseInputContianer,
+  BaseInputContainer,
   BaseInputLabel,
   BaseModalContentColumn,
   SecondaryText,
@@ -191,7 +191,7 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
             <BaseInputLabel>
               ENTER {getAssetDisplay(optionAsset)} PRICE
             </BaseInputLabel>
-            <BaseInputContianer className="position-relative">
+            <BaseInputContainer className="position-relative">
               <BaseInput
                 type="number"
                 min="0"
@@ -204,7 +204,7 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
               <BaseInputButton onClick={handleCurrentPress}>
                 CURRENT
               </BaseInputButton>
-            </BaseInputContianer>
+            </BaseInputContainer>
           </div>
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={16}>

@@ -123,7 +123,7 @@ export const BaseInputLabel = styled.div`
   letter-spacing: 1.5px;
 `;
 
-export const BaseInputContianer = styled.div`
+export const BaseInputContainer = styled.div`
   width: 100%;
   height: 72px;
   background: rgba(255, 255, 255, 0.04);

@@ -7,7 +7,7 @@ import moment from "moment";
 import {
   BaseInput,
   BaseInputButton,
-  BaseInputContianer,
+  BaseInputContainer,
   BaseInputLabel,
   BaseLink,
   PrimaryText,
@@ -757,7 +757,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
         return (
           <>
             <BaseInputLabel>AMOUNT ({getAssetDisplay(asset)})</BaseInputLabel>
-            <BaseInputContianer className="position-relative mb-5">
+            <BaseInputContainer className="position-relative mb-5">
               <BaseInput
                 type="number"
                 className="form-control"
@@ -769,7 +769,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
               {connected && (
                 <BaseInputButton onClick={handleMaxClick}>MAX</BaseInputButton>
               )}
-            </BaseInputContianer>
+            </BaseInputContainer>
             {button}
           </>
         );

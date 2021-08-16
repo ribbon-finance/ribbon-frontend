@@ -10,7 +10,7 @@ import {
 import {
   BaseInput,
   BaseInputButton,
-  BaseInputContianer,
+  BaseInputContainer,
   BaseInputLabel,
   SecondaryText,
   Title,
@@ -106,7 +106,7 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
 
       {/* Amount Input */}
       <BaseInputLabel className="mt-4">AMOUNT ({assetDisplay})</BaseInputLabel>
-      <BaseInputContianer className="position-relative">
+      <BaseInputContainer className="position-relative">
         <BaseInput
           type="number"
           className="form-control"
@@ -116,7 +116,7 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
           onChange={handleInputChange}
         />
         <BaseInputButton onClick={handleMaxClick}>MAX</BaseInputButton>
-      </BaseInputContianer>
+      </BaseInputContainer>
 
       {/* Extra information */}
       <div className="d-flex align-items-center mt-4">

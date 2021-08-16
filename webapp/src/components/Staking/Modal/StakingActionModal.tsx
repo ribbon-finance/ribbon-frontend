@@ -12,7 +12,7 @@ import {
 import {
   BaseInput,
   BaseInputButton,
-  BaseInputContianer,
+  BaseInputContainer,
   BaseInputLabel,
   BaseUnderlineLink,
   PrimaryText,
@@ -323,7 +323,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
             <BaseModalContentColumn>
               <div className="d-flex w-100 flex-wrap">
                 <BaseInputLabel>AMOUNT ({vaultOption})</BaseInputLabel>
-                <BaseInputContianer className="position-relative">
+                <BaseInputContainer className="position-relative">
                   <BaseInput
                     type="number"
                     className="form-control"
@@ -334,7 +334,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                   <BaseInputButton onClick={handleMaxPressed}>
                     MAX
                   </BaseInputButton>
-                </BaseInputContianer>
+                </BaseInputContainer>
               </div>
             </BaseModalContentColumn>
             {stake ? (
