@@ -291,9 +291,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
                   <ProductTag key={version} color={color}>
                     <Subtitle>{version}</Subtitle>
                   </ProductTag>
-                ) : (
-                  <></>
-                )
+                ) : null
               )}
             </TagContainer>
 
