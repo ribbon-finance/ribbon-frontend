@@ -7,33 +7,35 @@ import { impersonateAddress } from "../utils/development";
 import { VaultAddressMap, VaultOptions } from "../constants/constants";
 import { VaultAccount } from "../models/vault";
 import { getSubgraphqlURI } from "../utils/env";
+import { initialVaultaccounts, useGlobalState } from "../store/store";
 
 const useVaultAccounts = (vaults: VaultOptions[]) => {
   const web3Context = useWeb3React();
   const account = impersonateAddress || web3Context.account;
-  // TODO: Global states
-  const [vaultAccounts, setVaultAccounts] = useState<{
-    [key: string]: VaultAccount | undefined;
-  }>({});
+  const [vaultAccounts, setVaultAccounts] = useGlobalState("vaultAccounts")
   const [loading, setLoading] = useState(false);
 
   const loadVaultAccounts = useCallback(
     async (vs: VaultOptions[], acc: string) => {
       setLoading(true);
-      setVaultAccounts(await fetchVaultAccounts(vs, acc));
+      const results = await fetchVaultAccounts(vs, acc)
+      setVaultAccounts((curr) => ({
+        ...curr,
+        ...results
+      }));
       setLoading(false);
     },
-    []
+    [setVaultAccounts]
   );
 
   useEffect(() => {
     if (!account) {
-      setVaultAccounts({});
+      setVaultAccounts(initialVaultaccounts);
       return;
     }
 
     loadVaultAccounts(vaults, account);
-  }, [vaults, account, loadVaultAccounts]);
+  }, [vaults, account, loadVaultAccounts, setVaultAccounts]);
 
   return { vaultAccounts, loading };
 };
@@ -46,7 +48,7 @@ const fetchVaultAccounts = async (vaults: VaultOptions[], account: string) => {
             (vault) => `     
             ${vault.replace(/-/g, "")}: vaultAccount(id:"${VaultAddressMap[
               vault
-            ].toLowerCase()}-${account.toLowerCase()}") {
+            ].v1.toLowerCase()}-${account.toLowerCase()}") {
               totalDeposits
               totalYieldEarned
               totalBalance

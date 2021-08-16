@@ -2,8 +2,10 @@ import React from "react";
 
 type SVGProps = React.SVGAttributes<SVGElement>;
 
-export interface IconProps extends SVGProps {
+export interface SVGPropsWithColor extends SVGProps {
   color?: string;
+}
+export interface IconProps extends SVGPropsWithColor {
   containerStyle?: React.CSSProperties;
 }
 
@@ -276,5 +278,35 @@ export const SettingsIcon: React.FC<SVGProps> = (props) => (
       strokeLinecap="round"
       strokeLinejoin="round"
     />
+  </svg>
+);
+
+export const MigrateIcon: React.FC<SVGPropsWithColor> = ({
+  color,
+  ...props
+}) => (
+  <svg
+    width="22"
+    height="27"
+    viewBox="0 0 22 27"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M11 20.3333L11 1.66658"
+      stroke={color || "white"}
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M1.66634 11L10.9997 1.66667L20.333 11"
+      stroke={color || "white"}
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <rect x="1" y="25" width="20" height="2" rx="1" fill={color || "white"} />
   </svg>
 );

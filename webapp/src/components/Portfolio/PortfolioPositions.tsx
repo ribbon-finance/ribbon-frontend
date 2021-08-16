@@ -25,6 +25,7 @@ import {
   getDisplayAssets,
   VaultList,
   VaultNameOptionMap,
+  VaultOptions,
 } from "shared/lib/constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
@@ -304,10 +305,17 @@ const PortfolioPositions = () => {
   const filteredVaultAccounts = useMemo(() => {
     return Object.fromEntries(
       Object.keys(vaultAccounts)
-        .map((key) => [key, vaultAccounts[key]])
-        .filter(
-          (item) => item[1] && !(item[1] as VaultAccount).totalDeposits.isZero()
-        )
+        .map((key) => [key, vaultAccounts[key as VaultOptions]])
+        .filter((item) => {
+          const account = item[1] as VaultAccount;
+          return (
+            account &&
+            !isPracticallyZero(
+              account.totalDeposits,
+              getAssetDecimals(getAssets(account.vault.symbol))
+            )
+          );
+        })
     );
   }, [vaultAccounts]);
 

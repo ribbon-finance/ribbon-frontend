@@ -34,6 +34,8 @@ interface ModalBodyProps extends ModalProps {
 }
 
 const ModalBody = styled.div<ModalBodyProps>`
+  display: flex;
+  flex-direction: column;
   background: #1c1a19;
   border: 1px solid #2b2b2b;
   box-sizing: border-box;
@@ -82,6 +84,7 @@ const ModalContent = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  flex: 1;
   height: 100%;
 `;
 
@@ -99,6 +102,9 @@ const ModalHeaderCloseButton = styled.i`
 `;
 
 const StepsContainer = styled.div<ModalProps>`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   ${(props) =>
     props.variant === "desktop" &&
     `

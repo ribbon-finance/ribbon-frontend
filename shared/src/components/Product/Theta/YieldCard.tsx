@@ -21,7 +21,11 @@ import {
 } from "../../../utils/math";
 import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useTextAnimation from "../../../hooks/useTextAnimation";
-import { VaultOptions } from "../../../constants/constants";
+import {
+  hasVaultVersion,
+  VaultOptions,
+  VaultVersionListExludeV1,
+} from "../../../constants/constants";
 import { productCopies } from "../productCopies";
 import { BarChartIcon, GlobeIcon } from "../../../assets/icons/icons";
 import { getAssetDisplay, getAssetLogo } from "../../../utils/asset";
@@ -79,6 +83,9 @@ const TopContainer = styled.div<{ color: string }>`
 
 const TagContainer = styled.div`
   z-index: 1;
+  flex: 1;
+  display: flex;
+  align-self: baseline;
 `;
 
 const ProductTag = styled(BaseButton)<{ color: string }>`
@@ -172,14 +179,8 @@ const YieldCard: React.FC<YieldCardProps> = ({
   onClick,
   vaultAccount,
 }) => {
-  const {
-    status,
-    deposits,
-    vaultLimit,
-    asset,
-    displayAsset,
-    decimals,
-  } = useVaultData(vault);
+  const { status, deposits, vaultLimit, asset, displayAsset, decimals } =
+    useVaultData(vault);
   const isLoading = useMemo(() => status === "loading", [status]);
   const [mode, setMode] = useState<"info" | "yield">("info");
   const color = getVaultColor(vault);
@@ -278,11 +279,20 @@ const YieldCard: React.FC<YieldCardProps> = ({
           <TopContainer color={color}>
             {/* Tags */}
             <TagContainer>
+              {/* Product tags */}
               {productCopies[vault].tags.map((tag) => (
                 <ProductTag key={tag} color={color}>
                   <Subtitle>{tag}</Subtitle>
                 </ProductTag>
               ))}
+              {/* Version tags */}
+              {VaultVersionListExludeV1.map((version) =>
+                hasVaultVersion(vault, version) ? (
+                  <ProductTag key={version} color={color}>
+                    <Subtitle>{version}</Subtitle>
+                  </ProductTag>
+                ) : null
+              )}
             </TagContainer>
 
             {/* Mode switcher button */}

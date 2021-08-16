@@ -9,6 +9,7 @@ import TransactionStep from "./TransactionStep";
 import FormStep from "./FormStep";
 import {
   getAssets,
+  VaultAddressMap,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
@@ -17,6 +18,7 @@ import usePendingTransactions from "../../../../hooks/usePendingTransactions";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
 import useVaultData from "shared/lib/hooks/useVaultData";
+import { capitalize } from "shared/lib/utils/text";
 
 export interface ActionStepsProps {
   vault: {
@@ -48,8 +50,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const [shares, setShares] = useState<BigNumber>(BigNumber.from("0"));
   const { vaultActionForm, resetActionForm } = useVaultActionForm(vaultOption);
 
-  const isDeposit = vaultActionForm.actionType === ACTIONS.deposit;
-  const actionWord = isDeposit ? "Deposit" : "Withdrawal";
+  const actionWord = capitalize(vaultActionForm.actionType);
 
   const cleanupEffects = useCallback(() => {
     setTxhash("");
@@ -93,21 +94,6 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     }
   }, [vault, amountStr]);
 
-  // append the txhash into the global store
-  useEffect(() => {
-    if (txhash !== "") {
-      setPendingTransactions((pendingTransactions) => [
-        ...pendingTransactions,
-        {
-          txhash,
-          type: vaultActionForm.actionType,
-          amount: amountStr,
-          vault: vaultOption,
-        },
-      ]);
-    }
-  }, [txhash, setPendingTransactions, amountStr, vaultOption, vaultActionForm]);
-
   useEffect(() => {
     // we check that the txhash has already been removed
     // so we can dismiss the modal
@@ -127,19 +113,58 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       if (step !== STEPS.confirmationStep - 1) return;
       setStep(STEPS.confirmationStep);
       try {
-        if (isDeposit) {
-          const res = await (isETHVault(vaultOption)
-            ? vault.depositETH({ value: amountStr })
-            : vault.deposit(amountStr));
-          setTxhash(res.hash);
-          setStep(STEPS.submittedStep);
-        } else {
-          const res = await (isETHVault(vaultOption)
-            ? vault.withdrawETH(sharesStr)
-            : vault.withdraw(sharesStr));
-          setTxhash(res.hash);
-          setStep(STEPS.submittedStep);
+        let res: any;
+        switch (vaultActionForm.actionType) {
+          case ACTIONS.deposit:
+            res = await (isETHVault(vaultOption)
+              ? vault.depositETH({ value: amountStr })
+              : vault.deposit(amountStr));
+            break;
+          case ACTIONS.withdraw:
+            res = await (isETHVault(vaultOption)
+              ? vault.withdrawETH(sharesStr)
+              : vault.withdraw(sharesStr));
+            break;
+          case ACTIONS.transfer:
+            res = await vault.withdrawToV1Vault(
+              sharesStr,
+              VaultAddressMap[vaultActionForm.receiveVault!].v1
+            );
+            break;
         }
+
+        /**
+         * Append transaction into pending transaction list
+         */
+        switch (vaultActionForm.actionType) {
+          case ACTIONS.deposit:
+          case ACTIONS.withdraw:
+            setPendingTransactions((pendingTransactions) => [
+              ...pendingTransactions,
+              {
+                txhash: res.hash,
+                type: vaultActionForm.actionType as "deposit" | "withdraw",
+                amount: amountStr,
+                vault: vaultOption,
+              },
+            ]);
+            break;
+          case ACTIONS.transfer:
+            setPendingTransactions((pendingTransactions) => [
+              ...pendingTransactions,
+              {
+                txhash: res.hash,
+                type: ACTIONS.transfer as "transfer",
+                amount: amountStr,
+                transferVault: vaultOption,
+                receiveVault: vaultActionForm.receiveVault!,
+              },
+            ]);
+            break;
+        }
+
+        setTxhash(res.hash);
+        setStep(STEPS.submittedStep);
       } catch (e) {
         console.error(e);
         handleClose();
@@ -177,6 +202,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         onClickConfirmButton={handleClickConfirmButton}
         asset={getAssets(vaultOption)}
         vaultOption={vaultOption}
+        receiveVaultOption={vaultActionForm.receiveVault}
       />
     ),
     2: <TransactionStep />,

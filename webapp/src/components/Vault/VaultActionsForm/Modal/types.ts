@@ -1,12 +1,10 @@
-export const ACTIONS: { deposit: DepositAction; withdraw: WithdrawAction } = {
+const ActionTypeList = ["deposit", "withdraw", "transfer"] as const;
+export type ActionType = typeof ActionTypeList[number];
+export const ACTIONS: { [type in ActionType]: ActionType } = {
   deposit: "deposit",
   withdraw: "withdraw",
-};
-
-export type DepositAction = "deposit";
-export type WithdrawAction = "withdraw";
-
-export type ActionType = DepositAction | WithdrawAction;
+  transfer: "transfer",
+} as const;
 
 export interface ActionModalContentProps {
   onChangeStep: (StepData: StepData) => void;

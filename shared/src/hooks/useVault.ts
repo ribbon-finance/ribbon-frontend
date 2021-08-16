@@ -13,7 +13,7 @@ export const getVault = (
     const provider = useSigner ? library.getSigner() : library;
 
     const vault = RibbonCoveredCallFactory.connect(
-      VaultAddressMap[vaultOption],
+      VaultAddressMap[vaultOption].v1,
       provider
     );
     return vault;

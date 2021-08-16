@@ -10,6 +10,7 @@ interface GlobalStore {
     vaultOption?: VaultOptions;
     inputAmount: string;
     actionType: ActionType;
+    receiveVault?: VaultOptions;
   };
 }
 

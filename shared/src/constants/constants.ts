@@ -3,7 +3,8 @@ import { ERC20Token } from "../models/eth";
 import { Assets } from "../store/types";
 import { getAssetDecimals } from "../utils/asset";
 import { isDevelopment, isProduction } from "../utils/env";
-import deployment from "./deployments.json";
+import v1deployment from "./v1Deployments.json";
+import v2deployment from "./v2Deployments.json";
 import addresses from "./externalAddresses.json";
 
 export const NETWORK_NAMES: Record<number, string> = {
@@ -14,17 +15,18 @@ export const NETWORK_NAMES: Record<number, string> = {
 export const VaultVersionList = ["v1", "v2"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 
+export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">
+export const VaultVersionListExludeV1 = VaultVersionList.filter((version) => version !== "v1") as Array<VaultVersionExcludeV1>
+
 export const FullVaultList = [
   "ryvUSDC-ETH-P-THETA",
   "rETH-THETA",
   "rBTC-THETA",
   "rUSDC-ETH-P-THETA",
-  "rUSDC-BTC-P-THETA",
 ] as const;
 export type VaultOptions = typeof FullVaultList[number];
-const ProdExcludeVault: VaultOptions[] = ["rUSDC-BTC-P-THETA"];
+const ProdExcludeVault: VaultOptions[] = [];
 const PutThetaVault: VaultOptions[] = [
-  "rUSDC-BTC-P-THETA",
   "rUSDC-ETH-P-THETA",
   "ryvUSDC-ETH-P-THETA",
 ];
@@ -44,10 +46,6 @@ export const GAS_LIMITS: {
     deposit: 100000,
     withdraw: 140000,
   },
-  "rUSDC-BTC-P-THETA": {
-    deposit: 120000,
-    withdraw: 120000,
-  },
   "rUSDC-ETH-P-THETA": {
     deposit: 120000,
     withdraw: 120000,
@@ -64,61 +62,70 @@ export const VaultLiquidityMiningMap: Partial<
   }
 > = isDevelopment()
   ? {
-      "rUSDC-ETH-P-THETA": deployment.kovan.RibbonETHPutStakingReward,
-      "rUSDC-BTC-P-THETA": deployment.kovan.RibbonWBTCPutStakingReward,
-      "rBTC-THETA": deployment.kovan.RibbonWBTCCoveredCallStakingReward,
-      "rETH-THETA": deployment.kovan.RibbonETHCoveredCallStakingReward,
+      "rUSDC-ETH-P-THETA": v1deployment.kovan.RibbonETHPutStakingReward,
+      "rBTC-THETA": v1deployment.kovan.RibbonWBTCCoveredCallStakingReward,
+      "rETH-THETA": v1deployment.kovan.RibbonETHCoveredCallStakingReward,
     }
   : {
-      "rUSDC-ETH-P-THETA": deployment.mainnet.RibbonETHPutStakingReward,
-      "rBTC-THETA": deployment.mainnet.RibbonWBTCCoveredCallStakingReward,
-      "rETH-THETA": deployment.mainnet.RibbonETHCoveredCallStakingReward,
+      "rUSDC-ETH-P-THETA": v1deployment.mainnet.RibbonETHPutStakingReward,
+      "rBTC-THETA": v1deployment.mainnet.RibbonWBTCCoveredCallStakingReward,
+      "rETH-THETA": v1deployment.mainnet.RibbonETHCoveredCallStakingReward,
     };
 
 export const isPutVault = (vault: VaultOptions): boolean =>
   PutThetaVault.includes(vault);
 
-export const VaultAddressMap: { [vault in VaultOptions]: string } = {
+export const VaultAddressMap: {
+  [vault in VaultOptions]: { v1: string } & Partial<
+    {
+      [version in Exclude<VaultVersion, "v1">]: string;
+    }
+  >;
+} = {
   "rUSDC-ETH-P-THETA": isDevelopment()
-    ? deployment.kovan.RibbonETHPut
-    : deployment.mainnet.RibbonETHPut,
-  "rUSDC-BTC-P-THETA": isDevelopment()
-    ? deployment.kovan.RibbonWBTCPut
-    : // TODO: Update mainnet address
-      deployment.kovan.RibbonWBTCPut,
+    ? {
+        v1: v1deployment.kovan.RibbonETHPut,
+        v2: v2deployment.kovan.RibbonThetaVaultETHPut,
+      }
+    : {
+        v1: v1deployment.mainnet.RibbonETHPut,
+      },
   "rETH-THETA": isDevelopment()
-    ? deployment.kovan.RibbonETHCoveredCall
-    : deployment.mainnet.RibbonETHCoveredCall,
+    ? {
+        v1: v1deployment.kovan.RibbonETHCoveredCall,
+        v2: v2deployment.kovan.RibbonThetaVaultETHCall,
+      }
+    : {
+        v1: v1deployment.mainnet.RibbonETHCoveredCall,
+      },
   "rBTC-THETA": isDevelopment()
-    ? deployment.kovan.RibbonWBTCCoveredCall
-    : deployment.mainnet.RibbonWBTCCoveredCall,
+    ? {
+        v1: v1deployment.kovan.RibbonWBTCCoveredCall,
+        v2: v2deployment.kovan.RibbonThetaVaultWBTCCall,
+      }
+    : {
+        v1: v1deployment.mainnet.RibbonWBTCCoveredCall,
+      },
   "ryvUSDC-ETH-P-THETA": isDevelopment()
-    ? deployment.kovan.RibbonYearnETHPut
-    : deployment.mainnet.RibbonYearnETHPut,
+    ? {
+        v1: v1deployment.kovan.RibbonYearnETHPut,
+      }
+    : {
+        v1: v1deployment.mainnet.RibbonYearnETHPut,
+      },
 };
 
-// TODO: Fill up with v2 addresses
-export const VaultV2AddressMap: { [vault in VaultOptions]: string } = {
-  "rUSDC-ETH-P-THETA": isDevelopment()
-    ? deployment.kovan.RibbonETHPut
-    : deployment.mainnet.RibbonETHPut,
-  "rUSDC-BTC-P-THETA": isDevelopment()
-    ? deployment.kovan.RibbonWBTCPut
-    : deployment.kovan.RibbonWBTCPut,
-  "rETH-THETA": isDevelopment()
-    ? deployment.kovan.RibbonETHCoveredCall
-    : deployment.mainnet.RibbonETHCoveredCall,
-  "rBTC-THETA": isDevelopment()
-    ? deployment.kovan.RibbonWBTCCoveredCall
-    : deployment.mainnet.RibbonWBTCCoveredCall,
-  "ryvUSDC-ETH-P-THETA": isDevelopment()
-    ? deployment.kovan.RibbonYearnETHPut
-    : deployment.mainnet.RibbonYearnETHPut,
-};
+/**
+ * Used to check if vault of given version exists. Only used for v2 and above
+ * @param vaultOption 
+ * @returns boolean
+ */
+export const hasVaultVersion = (vaultOption: VaultOptions, version: VaultVersionExcludeV1): boolean => {
+  return Boolean(VaultAddressMap[vaultOption][version])
+}
 
 export const VaultNamesList = [
   "T-USDC-P-ETH",
-  "T-USDC-P-WBTC",
   "T-ETH-C",
   "T-WBTC-C",
   "T-yvUSDC-P-ETH",
@@ -126,7 +133,6 @@ export const VaultNamesList = [
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-USDC-P-ETH": "rUSDC-ETH-P-THETA",
-  "T-USDC-P-WBTC": "rUSDC-BTC-P-THETA",
   "T-ETH-C": "rETH-THETA",
   "T-WBTC-C": "rBTC-THETA",
   "T-yvUSDC-P-ETH": "ryvUSDC-ETH-P-THETA",
@@ -138,7 +144,6 @@ export const getEtherscanURI = () =>
 export const getAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
     case "rUSDC-ETH-P-THETA":
-    case "rUSDC-BTC-P-THETA":
     case "ryvUSDC-ETH-P-THETA":
       return "USDC";
     case "rETH-THETA":
@@ -151,7 +156,6 @@ export const getAssets = (vault: VaultOptions): Assets => {
 export const getOptionAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
     case "rBTC-THETA":
-    case "rUSDC-BTC-P-THETA":
       return "WBTC";
     case "rETH-THETA":
     case "rUSDC-ETH-P-THETA":
@@ -163,7 +167,6 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
 export const getDisplayAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
     case "rUSDC-ETH-P-THETA":
-    case "rUSDC-BTC-P-THETA":
       return "USDC";
     case "rETH-THETA":
       return "WETH";
@@ -175,9 +178,6 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
 };
 
 export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
-  "rUSDC-BTC-P-THETA": BigNumber.from(100000000).mul(
-    BigNumber.from(10).pow(getAssetDecimals(getAssets("rUSDC-BTC-P-THETA")))
-  ),
   "rUSDC-ETH-P-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rUSDC-ETH-P-THETA")))
   ),
@@ -193,7 +193,6 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
 };
 
 export const VaultWithdrawalFee: { [vault in VaultOptions]: string } = {
-  "rUSDC-BTC-P-THETA": "0.5",
   "rUSDC-ETH-P-THETA": "1.0",
   "rETH-THETA": "0.5",
   "rBTC-THETA": "0.5",
@@ -204,8 +203,6 @@ export const getAirtableName = (vault: VaultOptions): string => {
   switch (vault) {
     case "rUSDC-ETH-P-THETA":
       return "T-USDC-P-ETH";
-    case "rUSDC-BTC-P-THETA":
-      return "T-USDC-P-WBTC";
     case "rETH-THETA":
       return "T-ETH-C";
     case "rBTC-THETA":
@@ -216,11 +213,11 @@ export const getAirtableName = (vault: VaultOptions): string => {
 };
 
 export const RibbonTokenAddress = isDevelopment()
-  ? deployment.kovan.RibbonToken
-  : deployment.mainnet.RibbonToken;
+  ? v1deployment.kovan.RibbonToken
+  : v1deployment.mainnet.RibbonToken;
 
 export const RibbonTokenBalancerPoolAddress = isDevelopment()
-  ? deployment.kovan.RibbonTokenBalancerPool
+  ? v1deployment.kovan.RibbonTokenBalancerPool
   : // TODO: Update Mainnet Address
     "";
 

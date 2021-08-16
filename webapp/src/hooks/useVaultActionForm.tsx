@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { BigNumber } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 
@@ -16,6 +16,13 @@ import useGasPrice from "shared/lib/hooks/useGasPrice";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { isETHVault } from "shared/lib/utils/vault";
 
+export type VaultActionFormTransferData =
+  | {
+      availableCapacity: BigNumber;
+      availableLimit: BigNumber;
+    }
+  | undefined;
+
 const useVaultActionForm = (vaultOption: VaultOptions) => {
   const [vaultActionForm, setVaultActionForm] =
     useWebappGlobalState("vaultActionForm");
@@ -27,8 +34,12 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     vaultBalanceInAsset,
     maxWithdrawAmount,
     decimals,
+    vaultMaxWithdrawAmount,
   } = useVaultData(vaultOption);
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
+  const receiveVaultData = useVaultData(
+    vaultActionForm.vaultOption || vaultOption
+  );
 
   /**
    * Utility for reset action form
@@ -47,6 +58,37 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     resetActionForm();
   }, [vaultOption, resetActionForm]);
 
+  const canTransfer = useMemo(() => {
+    switch (vaultOption) {
+      case "rUSDC-ETH-P-THETA":
+        return true;
+      default:
+        return false;
+    }
+  }, [vaultOption]);
+
+  const transferData = useMemo((): VaultActionFormTransferData => {
+    if (!canTransfer || vaultActionForm.actionType !== ACTIONS.transfer) {
+      return undefined;
+    }
+
+    const availableCapacity = receiveVaultData.vaultLimit.sub(
+      receiveVaultData.deposits
+    );
+
+    return {
+      availableCapacity,
+      availableLimit: vaultMaxWithdrawAmount.lte(availableCapacity)
+        ? vaultMaxWithdrawAmount
+        : availableCapacity,
+    };
+  }, [
+    canTransfer,
+    receiveVaultData,
+    vaultActionForm.actionType,
+    vaultMaxWithdrawAmount,
+  ]);
+
   /**
    * Handle user changing action type
    * Action type: deposit, withdraw
@@ -58,12 +100,25 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
         return;
       }
 
-      setVaultActionForm({
-        inputAmount: "",
-        actionType,
-      });
+      switch (actionType) {
+        case ACTIONS.transfer:
+          switch (vaultOption) {
+            case "rUSDC-ETH-P-THETA":
+              setVaultActionForm((vaultActionForm) => ({
+                ...vaultActionForm,
+                actionType: ACTIONS.transfer,
+                receiveVault: "ryvUSDC-ETH-P-THETA",
+              }));
+          }
+          break;
+        default:
+          setVaultActionForm({
+            inputAmount: "",
+            actionType,
+          });
+      }
     },
-    [setVaultActionForm, vaultActionForm.actionType]
+    [setVaultActionForm, vaultActionForm.actionType, vaultOption]
   );
 
   /**
@@ -123,6 +178,14 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
           inputAmount: formatUnits(maxWithdrawAmount, decimals),
         }));
         break;
+      case ACTIONS.transfer:
+        setVaultActionForm((actionForm) => ({
+          ...actionForm,
+          inputAmount: transferData
+            ? formatUnits(transferData.availableLimit, decimals)
+            : "",
+        }));
+        break;
     }
   }, [
     decimals,
@@ -130,6 +193,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     gasPrice,
     maxWithdrawAmount,
     setVaultActionForm,
+    transferData,
     userAssetBalance,
     vaultActionForm,
     vaultBalanceInAsset,
@@ -139,11 +203,13 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   ]);
 
   return {
+    canTransfer,
     handleActionTypeChange,
     handleInputChange,
     handleMaxClick,
-    vaultActionForm,
     resetActionForm,
+    transferData,
+    vaultActionForm,
   };
 };
 

@@ -20,7 +20,11 @@ import PerformanceChart from "../PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../PerformanceChart/types";
 import sizes from "shared/lib/designSystem/sizes";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import { getAssets, VaultList } from "shared/lib/constants/constants";
+import {
+  getAssets,
+  VaultList,
+  VaultOptions,
+} from "shared/lib/constants/constants";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { AssetsList } from "shared/lib/store/types";
 import { getAssetDecimals } from "shared/lib/utils/asset";
@@ -182,7 +186,7 @@ const PortfolioPerformance = () => {
       let balance = 0;
 
       Object.keys(vaultAccounts).forEach((key) => {
-        const vaultAccount = vaultAccounts[key];
+        const vaultAccount = vaultAccounts[key as VaultOptions];
         if (vaultAccount) {
           const currentAsset = getAssets(vaultAccount.vault.symbol);
           const currentAssetDecimals = getAssetDecimals(currentAsset);

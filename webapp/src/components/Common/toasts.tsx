@@ -78,9 +78,10 @@ export const TxStatusToast = () => {
       return null;
     }
 
-    const { type, amount } = currentTx;
-    // @ts-ignore
-    const vault: VaultOptions | undefined = currentTx.vault;
+    const { amount } = currentTx;
+    const vault: VaultOptions | undefined =
+      // @ts-ignore
+      currentTx.vault || currentTx.transferVault;
     // @ts-ignore
     const stakeAsset: VaultOptions | undefined = currentTx.stakeAsset;
 
@@ -91,12 +92,12 @@ export const TxStatusToast = () => {
 
     let actionTitle: string;
 
-    switch (type) {
+    switch (currentTx.type) {
       case "rewardClaim":
         actionTitle = "Reward Claim";
         break;
       default:
-        actionTitle = capitalize(type);
+        actionTitle = capitalize(currentTx.type);
     }
 
     if (status === "error") {
@@ -107,7 +108,7 @@ export const TxStatusToast = () => {
           type="error"
           title={`${actionTitle} failed`}
           subtitle={
-            type === "approval"
+            currentTx.type === "approval"
               ? `Please try approving ${
                   asset ? getAssetDisplay(asset) : stakeAsset!
                 } again`
@@ -119,7 +120,7 @@ export const TxStatusToast = () => {
 
     let subtitle: string;
 
-    switch (type) {
+    switch (currentTx.type) {
       case "approval":
         subtitle = `Your ${
           // @ts-ignore
@@ -149,13 +150,22 @@ export const TxStatusToast = () => {
       case "unstake":
         subtitle = `${amountFormatted} ${stakeAsset} unstaked`;
         break;
+      case "transfer":
+        const receiveVault = currentTx.receiveVault;
+        subtitle = `${amountFormatted} ${getAssetDisplay(
+          getAssets(receiveVault)
+        )} transferred to ${productCopies[receiveVault].title}`;
     }
 
     return (
       <Toast
         show={status === "success"}
         onClose={() => setStatus(null)}
-        type={type === "claim" || type === "rewardClaim" ? "claim" : "success"}
+        type={
+          currentTx.type === "claim" || currentTx.type === "rewardClaim"
+            ? "claim"
+            : "success"
+        }
         title={`${actionTitle} successful`}
         subtitle={subtitle}
       ></Toast>

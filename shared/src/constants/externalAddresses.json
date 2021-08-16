@@ -27,7 +27,7 @@
 			"usdc": [
 				{
 					"name": "Old Opyn USDC",
-					"address": "0x7e6edA50d1c833bE936492BF42C1BF376239E9e2",
+					"address": "0xF5Cb5408B40E819e7Db5347664Be03B52AcCAC9d",
 					"usage": [
 						"yvUSDC",
 						"Liquidity Mining Pool"
@@ -35,7 +35,7 @@
 				},
 				{
 					"name": "New Opyn",
-					"address": "0xF5Cb5408B40E819e7Db5347664Be03B52AcCAC9d",
+					"address": "0x7e6edA50d1c833bE936492BF42C1BF376239E9e2",
 					"usage": [
 						"New theta vault"
 					]
@@ -43,6 +43,7 @@
 			]
 		},
 		"yearnRegistry": "0x26a6F436EAa4Db308eF9A3Bbe46Cc495F39C366D",
+		"thetaRegistry": "0x3b8AF76FACd2032F02Add76f6993740b3964479f",
 		"airswapSwap": "0x79fb4604f2D7bD558Cda0DFADb7d61D98b28CA9f",
 		"oTokenFactory": "0xb9D17Ab06e27f63d0FD75099d5874a194eE623e2",
 		"gammaController": "0xdEE7D0f8CcC0f7AC7e45Af454e5e7ec1552E8e4e",
