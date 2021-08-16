@@ -15,6 +15,7 @@ import {
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { useLatestAPY } from "shared/lib/hooks/useAirtableData";
+import { capitalize } from "shared/lib/utils/text";
 
 const AmountText = styled(Title)`
   font-size: 40px;
@@ -37,6 +38,7 @@ const PreviewStep: React.FC<{
   onClickConfirmButton: () => Promise<void>;
   asset: Assets;
   vaultOption: VaultOptions;
+  receiveVaultOption?: VaultOptions;
 }> = ({
   actionType,
   amount,
@@ -44,46 +46,91 @@ const PreviewStep: React.FC<{
   onClickConfirmButton,
   asset,
   vaultOption,
+  receiveVaultOption,
 }) => {
-  const isDeposit = actionType === ACTIONS.deposit;
-  const actionWord = isDeposit ? "Deposit" : "Withdrawal";
+  const actionWord = capitalize(actionType);
   const color = getVaultColor(vaultOption);
   const latestAPY = useLatestAPY(vaultOption);
 
   const detailRows = useMemo(() => {
-    let detailValue = "";
+    let actionDetails: { key: string; value: string } = { key: "", value: "" };
 
     switch (actionType) {
       case ACTIONS.deposit:
-        detailValue = latestAPY.fetched ? latestAPY.res.toFixed(2) : "0.00";
+        actionDetails = {
+          key: "Approx. APY",
+          value: `${
+            latestAPY.fetched ? latestAPY.res.toFixed(2) : "0.00"
+          }% APY`,
+        };
         break;
       case ACTIONS.withdraw:
-        detailValue = parseFloat(VaultWithdrawalFee[vaultOption]).toString();
+        actionDetails = {
+          key: "Withdrawal Fee",
+          value: `${parseFloat(VaultWithdrawalFee[vaultOption]).toString()}%`,
+        };
         break;
+      case ACTIONS.transfer:
+        actionDetails = {
+          key: "Transfer Fee",
+          value: "0.00%",
+        };
+    }
+
+    if (actionType === ACTIONS.transfer) {
+      return [
+        {
+          key: "Transfer To",
+          value: productCopies[receiveVaultOption!].title,
+        },
+        {
+          key: "Transfer From",
+          value: productCopies[vaultOption].title,
+        },
+        actionDetails,
+      ];
     }
 
     return [
       { key: "Product", value: productCopies[vaultOption].title },
       { key: "Product Type", value: "Theta Vault" },
-      isDeposit
-        ? { key: "Approx. APY", value: `${detailValue}% APY` }
-        : { key: "Withdrawal Fee", value: `${detailValue}%` },
+      actionDetails,
     ];
-  }, [actionType, isDeposit, latestAPY, vaultOption]);
+  }, [actionType, latestAPY, receiveVaultOption, vaultOption]);
 
   const originalAmount = formatBigNumber(
     positionAmount,
     5,
     getAssetDecimals(asset)
   );
+
   // If it's a deposit, just add to the existing positionAmount
   // If it's a withdrawal, subtract the amount and the fee, we can hardcode the fee for now
-  let newAmount = isDeposit
-    ? positionAmount.add(amount)
-    : positionAmount.sub(amount);
-  newAmount = newAmount.isNegative() ? BigNumber.from("0") : newAmount;
+  const newAmountStr = useMemo(() => {
+    let newAmount;
 
-  const newAmountStr = formatBigNumber(newAmount, 5, getAssetDecimals(asset));
+    switch (actionType) {
+      case ACTIONS.deposit:
+        newAmount = positionAmount.add(amount);
+        break;
+      case ACTIONS.withdraw:
+      default:
+        newAmount = positionAmount.sub(amount);
+        break;
+    }
+
+    newAmount = newAmount.isNegative() ? BigNumber.from("0") : newAmount;
+    return formatBigNumber(newAmount, 5, getAssetDecimals(asset));
+  }, [actionType, amount, asset, positionAmount]);
+
+  const positionChanged = useMemo(() => {
+    switch (actionType) {
+      case ACTIONS.transfer:
+        return false;
+      default:
+        return true;
+    }
+  }, [actionType]);
 
   return (
     <>
@@ -112,23 +159,25 @@ const PreviewStep: React.FC<{
               <Title className="text-right">{detail.value}</Title>
             </div>
           ))}
-          <div className="d-flex flex-row align-items-center justify-content-between mb-4">
-            <SecondaryText>Your Position</SecondaryText>
-            <Title className="d-flex align-items-center text-right">
-              {originalAmount} {getAssetDisplay(asset)}{" "}
-              <Arrow className="fas fa-arrow-right mx-2" color={color} />{" "}
-              {newAmountStr} {getAssetDisplay(asset)}
-            </Title>
-          </div>
+          {positionChanged && (
+            <div className="d-flex flex-row align-items-center justify-content-between mb-4">
+              <SecondaryText>Your Position</SecondaryText>
+              <Title className="d-flex align-items-center text-right">
+                {originalAmount} {getAssetDisplay(asset)}{" "}
+                <Arrow className="fas fa-arrow-right mx-2" color={color} />{" "}
+                {newAmountStr} {getAssetDisplay(asset)}
+              </Title>
+            </div>
+          )}
         </div>
       </div>
 
       <ActionButton
         onClick={onClickConfirmButton}
-        className="btn py-3 my-3"
+        className="btn py-3 mb-4 mt-auto"
         color={color}
       >
-        {isDeposit ? "Deposit" : "Withdraw"} Now
+        {actionWord} Now
       </ActionButton>
     </>
   );

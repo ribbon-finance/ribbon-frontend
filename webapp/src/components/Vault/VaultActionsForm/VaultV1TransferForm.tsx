@@ -1,7 +1,12 @@
 import React from "react";
 import styled from "styled-components";
+import { BigNumber } from "ethers";
 
-import { getAssetDisplay, getAssetLogo } from "shared/lib/utils/asset";
+import {
+  getAssetDecimals,
+  getAssetDisplay,
+  getAssetLogo,
+} from "shared/lib/utils/asset";
 import {
   BaseInput,
   BaseInputButton,
@@ -12,17 +17,15 @@ import {
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import { useMemo } from "react";
 import {
   getAssets,
   VaultNameOptionMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
-import useVaultData from "shared/lib/hooks/useVaultData";
 import { formatBigNumber } from "shared/lib/utils/math";
-import { BigNumber } from "ethers";
 import HelpInfo from "../../Common/HelpInfo";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import { VaultActionFormTransferData } from "../../../hooks/useVaultActionForm";
 
 const TransferToVault = styled.div`
   display: flex;
@@ -54,6 +57,7 @@ interface VaultV1TransferFormProps {
     maxWithdrawAmount: BigNumber;
     vaultMaxWithdrawAmount: BigNumber;
   };
+  transferData: VaultActionFormTransferData;
   inputAmount: string;
   handleInputChange: (input: React.ChangeEvent<HTMLInputElement>) => void;
   handleMaxClick: () => void;
@@ -64,25 +68,16 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
   vaultOption,
   receiveVault,
   transferVaultData,
+  transferData,
   inputAmount,
   handleInputChange,
   handleMaxClick,
   actionButton,
 }) => {
   const AssetLogo = getAssetLogo(getAssets(receiveVault));
-  const { deposits, vaultLimit, asset, decimals } = useVaultData(receiveVault);
+  const asset = getAssets(vaultOption);
+  const decimals = getAssetDecimals(asset);
   const assetDisplay = getAssetDisplay(asset);
-
-  /**
-   * Calculate available limit to transfer for user
-   */
-  const availableLimit = useMemo(() => {
-    const userAvailableLimit = transferVaultData.vaultMaxWithdrawAmount;
-    const transferVaultEmptyCapacity = vaultLimit.sub(deposits);
-    return userAvailableLimit.lte(transferVaultEmptyCapacity)
-      ? userAvailableLimit
-      : transferVaultEmptyCapacity;
-  }, [deposits, transferVaultData.vaultMaxWithdrawAmount, vaultLimit]);
 
   return (
     <>
@@ -102,7 +97,9 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
           </TransferToVaultTitle>
           <SecondaryText>
             Available Capacity ({assetDisplay}):{" "}
-            {formatBigNumber(vaultLimit.sub(deposits), 2, decimals)}
+            {transferData
+              ? formatBigNumber(transferData.availableCapacity, 2, decimals)
+              : "---"}
           </SecondaryText>
         </div>
       </TransferToVault>
@@ -134,7 +131,10 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
           )}
         />
         <InfoData>
-          {formatBigNumber(availableLimit, 2, decimals)} {assetDisplay}
+          {transferData
+            ? formatBigNumber(transferData.availableLimit, 2, decimals)
+            : "---"}{" "}
+          {assetDisplay}
         </InfoData>
       </div>
       <div className="d-flex align-items-center mt-3 mb-4">

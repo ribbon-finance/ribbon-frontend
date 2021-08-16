@@ -9,6 +9,7 @@ import TransactionStep from "./TransactionStep";
 import FormStep from "./FormStep";
 import {
   getAssets,
+  VaultAddressMap,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
@@ -125,8 +126,11 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
               : vault.withdraw(sharesStr));
             break;
           case ACTIONS.transfer:
-            // TODO:
-            return;
+            res = await vault.withdrawToV1Vault(
+              sharesStr,
+              VaultAddressMap[vaultActionForm.receiveVault!].v1
+            );
+            break;
         }
 
         /**
@@ -138,7 +142,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
             setPendingTransactions((pendingTransactions) => [
               ...pendingTransactions,
               {
-                txhash: res.txhash,
+                txhash: res.hash,
                 type: vaultActionForm.actionType as "deposit" | "withdraw",
                 amount: amountStr,
                 vault: vaultOption,
@@ -149,13 +153,14 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
             setPendingTransactions((pendingTransactions) => [
               ...pendingTransactions,
               {
-                txhash: res.txhash,
+                txhash: res.hash,
                 type: ACTIONS.transfer as "transfer",
                 amount: amountStr,
                 transferVault: vaultOption,
                 receiveVault: vaultActionForm.receiveVault!,
               },
             ]);
+            break;
         }
 
         setTxhash(res.hash);
@@ -197,6 +202,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         onClickConfirmButton={handleClickConfirmButton}
         asset={getAssets(vaultOption)}
         vaultOption={vaultOption}
+        receiveVaultOption={vaultActionForm.receiveVault}
       />
     ),
     2: <TransactionStep />,

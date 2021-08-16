@@ -256,6 +256,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     handleActionTypeChange,
     handleInputChange,
     handleMaxClick,
+    transferData,
     vaultActionForm,
   } = useVaultActionForm(vaultOption);
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
@@ -782,6 +783,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
               maxWithdrawAmount,
               vaultMaxWithdrawAmount,
             }}
+            transferData={transferData}
             inputAmount={vaultActionForm.inputAmount}
             handleInputChange={handleInputChange}
             handleMaxClick={handleMaxClick}
@@ -801,6 +803,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     maxWithdrawAmount,
     renderApprovalAssetLogo,
     showTokenApproval,
+    transferData,
     vaultActionForm,
     vaultBalanceInAsset,
     vaultMaxWithdrawAmount,
