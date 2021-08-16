@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import {
   BaseInput,
-  BaseInputContianer,
+  BaseInputContainer,
   BaseInputLabel,
   BaseModalContentColumn,
   BaseUnderlineLink,
@@ -320,7 +320,7 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
                   : "---"}
               </SecondaryInfoLabel>
             </div>
-            <BaseInputContianer>
+            <BaseInputContainer>
               <div className="d-flex w-100 h-100">
                 <TokenSwapInputAssetContainer>
                   {renderAssetLogo(swapModal.offerToken)}
@@ -336,7 +336,7 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
                   onChange={(e) => onSwapAmountChange(e.target.value)}
                 />
               </div>
-            </BaseInputContianer>
+            </BaseInputContainer>
           </div>
         </BaseModalContentColumn>
 
@@ -365,7 +365,7 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
         <BaseModalContentColumn marginTop={-8}>
           <div className="d-flex w-100 flex-wrap">
             <PrimaryInputLabel>YOU RECEIVE</PrimaryInputLabel>
-            <BaseInputContianer className="position-relative">
+            <BaseInputContainer className="position-relative">
               <div className="d-flex w-100 h-100">
                 <TokenSwapInputAssetContainer>
                   {renderAssetLogo(swapModal.receiveToken)}
@@ -380,7 +380,7 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
                   disabled
                 />
               </div>
-            </BaseInputContianer>
+            </BaseInputContainer>
           </div>
         </BaseModalContentColumn>
 
