@@ -4,7 +4,7 @@ import styled from "styled-components";
 import currency from "currency.js";
 
 import {
-  BaseInputContianer,
+  BaseInputContainer,
   BaseInputLabel,
   BaseModalContentColumn,
   SecondaryText,
@@ -126,7 +126,7 @@ const TokenSwapPreview: React.FC<TokenSwapPreviewProps> = ({
       <BaseModalContentColumn marginTop={24 + 16}>
         <div className="d-flex w-100 flex-wrap">
           <PrimaryInputLabel>YOU PAY</PrimaryInputLabel>
-          <BaseInputContianer>
+          <BaseInputContainer>
             <div className="d-flex w-100 h-100 align-items-center pl-2">
               {renderAssetLogo(swapModal.offerToken)}
               <Title className="px-2">
@@ -134,7 +134,7 @@ const TokenSwapPreview: React.FC<TokenSwapPreviewProps> = ({
               </Title>
               <UnitText>{getERC20TokenDisplay(swapModal.offerToken)}</UnitText>
             </div>
-          </BaseInputContianer>
+          </BaseInputContainer>
         </div>
       </BaseModalContentColumn>
 
@@ -142,7 +142,7 @@ const TokenSwapPreview: React.FC<TokenSwapPreviewProps> = ({
       <BaseModalContentColumn>
         <div className="d-flex w-100 flex-wrap">
           <PrimaryInputLabel>YOU RECEIVE</PrimaryInputLabel>
-          <BaseInputContianer>
+          <BaseInputContainer>
             <div className="d-flex w-100 h-100 align-items-center pl-2">
               {renderAssetLogo(swapModal.receiveToken)}
               <Title className="px-2">
@@ -152,7 +152,7 @@ const TokenSwapPreview: React.FC<TokenSwapPreviewProps> = ({
                 {getERC20TokenDisplay(swapModal.receiveToken)}
               </UnitText>
             </div>
-          </BaseInputContianer>
+          </BaseInputContainer>
         </div>
       </BaseModalContentColumn>
 
