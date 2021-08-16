@@ -306,9 +306,16 @@ const PortfolioPositions = () => {
     return Object.fromEntries(
       Object.keys(vaultAccounts)
         .map((key) => [key, vaultAccounts[key as VaultOptions]])
-        .filter(
-          (item) => item[1] && !(item[1] as VaultAccount).totalDeposits.isZero()
-        )
+        .filter((item) => {
+          const account = item[1] as VaultAccount;
+          return (
+            account &&
+            !isPracticallyZero(
+              account.totalDeposits,
+              getAssetDecimals(getAssets(account.vault.symbol))
+            )
+          );
+        })
     );
   }, [vaultAccounts]);
 
