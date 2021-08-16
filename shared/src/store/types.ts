@@ -63,13 +63,14 @@ export type PendingTransaction =
       type: "rewardClaim";
       amount: string;
       stakeAsset: VaultOptions;
-    } | {
+    }
+  | {
       txhash: string;
       type: "transfer";
       amount: string;
       transferVault: VaultOptions;
       receiveVault: VaultOptions;
-    }
+    };
 
 export type AssetYieldsInfoData = {
   [token in DefiScoreToken]: Array<{
