@@ -38,7 +38,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   } = useVaultData(vaultOption);
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const receiveVaultData = useVaultData(
-    vaultActionForm.vaultOption || vaultOption
+    vaultActionForm.receiveVault || vaultOption
   );
 
   /**
@@ -72,9 +72,12 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
       return undefined;
     }
 
-    const availableCapacity = receiveVaultData.vaultLimit.sub(
+    let availableCapacity = receiveVaultData.vaultLimit.sub(
       receiveVaultData.deposits
     );
+    availableCapacity = availableCapacity.gte(BigNumber.from(0))
+      ? availableCapacity
+      : BigNumber.from(0);
 
     return {
       availableCapacity,
