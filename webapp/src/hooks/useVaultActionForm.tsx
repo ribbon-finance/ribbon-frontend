@@ -77,9 +77,12 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
       return undefined;
     }
 
-    const availableCapacity = receiveVaultData.vaultLimit.sub(
+    let availableCapacity = receiveVaultData.vaultLimit.sub(
       receiveVaultData.deposits
     );
+    availableCapacity = availableCapacity.gte(BigNumber.from(0))
+      ? availableCapacity
+      : BigNumber.from(0);
 
     return {
       availableCapacity,
