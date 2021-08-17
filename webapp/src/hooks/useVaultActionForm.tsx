@@ -39,7 +39,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   } = useVaultData(vaultOption);
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const receiveVaultData = useVaultData(
-    vaultActionForm.vaultOption || vaultOption
+    vaultActionForm.receiveVault || vaultOption
   );
 
   /**
@@ -60,7 +60,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   }, [vaultOption, resetActionForm]);
 
   const canTransfer = useMemo(() => {
-    if (!isProduction()) {
+    if (isProduction()) {
       return false;
     }
 
