@@ -80,8 +80,8 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     return {
       availableCapacity,
       availableLimit: vaultMaxWithdrawAmount.lte(availableCapacity)
-        ? vaultMaxWithdrawAmount
-        : availableCapacity,
+        ? availableCapacity
+        : vaultMaxWithdrawAmount,
     };
   }, [
     canTransfer,
