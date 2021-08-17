@@ -80,8 +80,8 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     return {
       availableCapacity,
       availableLimit: vaultMaxWithdrawAmount.lte(availableCapacity)
-        ? availableCapacity
-        : vaultMaxWithdrawAmount,
+        ? vaultMaxWithdrawAmount
+        : availableCapacity,
     };
   }, [
     canTransfer,
@@ -183,7 +183,9 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
         setVaultActionForm((actionForm) => ({
           ...actionForm,
           inputAmount: transferData
-            ? formatUnits(transferData.availableLimit, decimals)
+            ? maxWithdrawAmount.lte(transferData.availableLimit)
+              ? formatUnits(maxWithdrawAmount, decimals)
+              : formatUnits(transferData.availableLimit, decimals)
             : "",
         }));
         break;
