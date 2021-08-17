@@ -60,10 +60,6 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   }, [vaultOption, resetActionForm]);
 
   const canTransfer = useMemo(() => {
-    if (!isProduction()) {
-      return false;
-    }
-
     switch (vaultOption) {
       case "rUSDC-ETH-P-THETA":
         return true;
