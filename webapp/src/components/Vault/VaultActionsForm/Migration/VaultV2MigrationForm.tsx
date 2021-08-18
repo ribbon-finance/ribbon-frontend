@@ -123,6 +123,14 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
     onFormSubmit();
   }, [handleActionTypeChange, handleMaxClick, onFormSubmit]);
 
+  /**
+   * Show migration form here
+   */
+  const handleMigrate = useCallback(() => {
+    handleActionTypeChange(ACTIONS.migrate);
+    onFormSubmit();
+  }, [handleActionTypeChange, onFormSubmit]);
+
   const body = useMemo(() => {
     switch (mode) {
       case "options":
@@ -201,7 +209,11 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
             </div>
 
             {/* Migrate button */}
-            <ActionButton color={color} className="py-3 mt-4">
+            <ActionButton
+              color={color}
+              className="py-3 mt-4"
+              onClick={handleMigrate}
+            >
               MIGRATE {getAssetDisplay(asset)}
             </ActionButton>
           </>
@@ -211,6 +223,7 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
     asset,
     color,
     decimals,
+    handleMigrate,
     handleWithdraw,
     mode,
     vaultAccount.totalBalance,
