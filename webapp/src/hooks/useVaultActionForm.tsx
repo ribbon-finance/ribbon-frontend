@@ -189,6 +189,11 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
               ? formatUnits(transferData.availableLimit, decimals)
               : "",
           };
+        case ACTIONS.migrate:
+          return {
+            ...actionForm,
+            inputAmount: formatUnits(vaultBalanceInAsset, decimals),
+          };
         default:
           return actionForm;
       }

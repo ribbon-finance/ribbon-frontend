@@ -142,11 +142,15 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         switch (vaultActionForm.actionType) {
           case ACTIONS.deposit:
           case ACTIONS.withdraw:
+          case ACTIONS.migrate:
             setPendingTransactions((pendingTransactions) => [
               ...pendingTransactions,
               {
                 txhash: res.hash,
-                type: vaultActionForm.actionType as "deposit" | "withdraw",
+                type: vaultActionForm.actionType as
+                  | "deposit"
+                  | "withdraw"
+                  | "migrate",
                 amount: amountStr,
                 vault: vaultOption,
               },

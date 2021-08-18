@@ -128,8 +128,9 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
    */
   const handleMigrate = useCallback(() => {
     handleActionTypeChange(ACTIONS.migrate);
+    handleMaxClick();
     onFormSubmit();
-  }, [handleActionTypeChange, onFormSubmit]);
+  }, [handleActionTypeChange, handleMaxClick, onFormSubmit]);
 
   const body = useMemo(() => {
     switch (mode) {
