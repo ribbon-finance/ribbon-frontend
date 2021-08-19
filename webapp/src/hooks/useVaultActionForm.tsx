@@ -34,7 +34,6 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     vaultBalanceInAsset,
     maxWithdrawAmount,
     decimals,
-    vaultMaxWithdrawAmount,
   } = useVaultData(vaultOption);
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const receiveVaultData = useVaultData(
@@ -81,15 +80,15 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
 
     return {
       availableCapacity,
-      availableLimit: vaultMaxWithdrawAmount.lte(availableCapacity)
-        ? vaultMaxWithdrawAmount
+      availableLimit: maxWithdrawAmount.lte(availableCapacity)
+        ? maxWithdrawAmount
         : availableCapacity,
     };
   }, [
     canTransfer,
+    maxWithdrawAmount,
     receiveVaultData,
     vaultActionForm.actionType,
-    vaultMaxWithdrawAmount,
   ]);
 
   /**
@@ -184,9 +183,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
           return {
             ...actionForm,
             inputAmount: transferData
-              ? maxWithdrawAmount.lte(transferData.availableLimit)
-                ? formatUnits(maxWithdrawAmount, decimals)
-                : formatUnits(transferData.availableLimit, decimals)
+              ? formatUnits(transferData.availableLimit, decimals)
               : "",
           };
         case ACTIONS.migrate:

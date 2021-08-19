@@ -245,7 +245,7 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
       </MigrationFormContainer>
       <MigrationFormExtraContainer>
         <PrimaryText color={color}>
-          IMPORTANT: Withdrawal fees do not apply for migrations from V1 to V2{" "}
+          IMPORTANT: Withdrawal fees do not apply for migrations from V1 to V2
         </PrimaryText>
       </MigrationFormExtraContainer>
     </>
