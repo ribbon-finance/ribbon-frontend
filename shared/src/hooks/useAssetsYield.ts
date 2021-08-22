@@ -9,9 +9,8 @@ import { useGlobalState } from "../store/store";
 import { Assets, AssetYieldsInfoData } from "../store/types";
 
 const useAssetsYield = (asset: Assets) => {
-  const [assetYieldsInfo, setAssetYieldsInfo] = useGlobalState(
-    "assetYieldsInfo"
-  );
+  const [assetYieldsInfo, setAssetYieldsInfo] =
+    useGlobalState("assetYieldsInfo");
 
   useEffect(() => {
     if (assetYieldsInfo.fetched) {
@@ -30,7 +29,7 @@ const useAssetsYield = (asset: Assets) => {
 
         yieldInfoObj[curr.token].push({
           protocol: curr.protocol,
-          apr: parseFloat(curr.apr),
+          apr: parseFloat(curr.aprHistory[curr.aprHistory.length - 1].value),
         });
       }
 
