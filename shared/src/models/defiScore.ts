@@ -28,11 +28,10 @@ export type DefiScoreProtocol = typeof DefiScoreProtocolList[number];
 
 export interface DefiScoreOpportunitiesResponse {
   data: Array<{
-    apr: string;
-    aprHistory: {
-      data: number;
+    aprHistory: Array<{
+      date: number;
       value: string;
-    };
+    }>;
     currentPrice: string;
     executeUrl: string;
     protocol: DefiScoreProtocol;
