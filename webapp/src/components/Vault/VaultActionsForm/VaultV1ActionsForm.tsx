@@ -806,8 +806,8 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
           <VaultV1TransferForm
             vaultOption={vaultOption}
             receiveVault={vaultActionForm.receiveVault!}
+            vaultAccount={vaultAccounts[vaultOption]}
             transferVaultData={{
-              vaultBalanceInAsset,
               maxWithdrawAmount,
               vaultMaxWithdrawAmount,
             }}
@@ -832,8 +832,8 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     renderApprovalAssetLogo,
     showTokenApproval,
     transferData,
+    vaultAccounts,
     vaultActionForm,
-    vaultBalanceInAsset,
     vaultMaxWithdrawAmount,
     vaultOption,
     waitingApproval,

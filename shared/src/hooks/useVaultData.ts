@@ -135,9 +135,9 @@ const useVaultData: UseVaultData = (vault, params) => {
                     prevResponse[vault].vaultMaxWithdrawAmount,
                     responses[2].mul(responses[0]).div(responses[3])
                   ),
-                  vaultBalanceInAsset: prevResponse[vault].vaultBalanceInAsset,
-                  userAssetBalance: prevResponse[vault].userAssetBalance,
-                  maxWithdrawAmount: prevResponse[vault].maxWithdrawAmount,
+                  vaultBalanceInAsset: zero,
+                  userAssetBalance: zero,
+                  maxWithdrawAmount: zero,
                 },
               }));
 

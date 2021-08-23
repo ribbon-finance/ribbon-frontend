@@ -19,7 +19,7 @@ import { isETHVault } from "shared/lib/utils/vault";
 export type VaultActionFormTransferData =
   | {
       availableCapacity: BigNumber;
-      availableLimit: BigNumber;
+      availableTransferAmount: BigNumber;
     }
   | undefined;
 
@@ -80,7 +80,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
 
     return {
       availableCapacity,
-      availableLimit: maxWithdrawAmount.lte(availableCapacity)
+      availableTransferAmount: maxWithdrawAmount.lte(availableCapacity)
         ? maxWithdrawAmount
         : availableCapacity,
     };
@@ -183,7 +183,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
           return {
             ...actionForm,
             inputAmount: transferData
-              ? formatUnits(transferData.availableLimit, decimals)
+              ? formatUnits(transferData.availableTransferAmount, decimals)
               : "",
           };
         case ACTIONS.migrate:
