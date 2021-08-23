@@ -10,6 +10,7 @@ import { getAssets, VaultOptions } from "../constants/constants";
 import { isETHVault } from "../utils/vault";
 import { getERC20Token } from "./useERC20Token";
 import { ERC20Token } from "../models/eth";
+import { parseUnits } from "@ethersproject/units";
 
 type UseVaultData = (
   vault: VaultOptions,

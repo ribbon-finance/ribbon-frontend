@@ -9,7 +9,7 @@ import colors from "shared/lib/designSystem/colors";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import { VaultAccount } from "shared/lib/models/vault";
-import { formatBigNumber } from "shared/lib/utils/math";
+import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import { MigrateIcon } from "shared/lib/assets/icons/icons";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { ActionButton } from "shared/lib/components/Common/buttons";
@@ -114,6 +114,23 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
     ];
   }, [deposits, vaultMaxWithdrawAmount]);
 
+  const error = useMemo(() => {
+    if (!isPracticallyZero(vaultAccount.totalStakedBalance, decimals)) {
+      return "amountStaked";
+    }
+
+    if (vaultAccount.totalBalance.gt(vaultMaxWithdrawAmount)) {
+      return "insufficientWithdrawalLimit";
+    }
+
+    return undefined;
+  }, [
+    decimals,
+    vaultAccount.totalBalance,
+    vaultAccount.totalStakedBalance,
+    vaultMaxWithdrawAmount,
+  ]);
+
   /**
    * Show v1 withdraw form here
    */
@@ -131,6 +148,28 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
     handleMaxClick();
     onFormSubmit();
   }, [handleActionTypeChange, handleMaxClick, onFormSubmit]);
+
+  const errorText = useMemo(() => {
+    switch (error) {
+      case "amountStaked":
+        return (
+          <SecondaryText className="mt-3" color={colors.red}>
+            Before you migrate to V2 you must unstake your funds from the
+            rETH-THETA staking pool
+          </SecondaryText>
+        );
+      case "insufficientWithdrawalLimit":
+        return (
+          <SecondaryText className="mt-3" color={colors.red}>
+            Migrating your ETH from V1 to V2 will breach the weekly migration
+            limit. Please try again on Friday at 10am UTC when the weekly
+            migration limit is reset.
+          </SecondaryText>
+        );
+    }
+
+    return <></>;
+  }, [error]);
 
   const body = useMemo(() => {
     switch (mode) {
@@ -213,10 +252,12 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
             <ActionButton
               color={color}
               className="py-3 mt-4"
+              disabled={Boolean(error)}
               onClick={handleMigrate}
             >
               MIGRATE {getAssetDisplay(asset)}
             </ActionButton>
+            {errorText}
           </>
         );
     }
@@ -224,6 +265,8 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
     asset,
     color,
     decimals,
+    error,
+    errorText,
     handleMigrate,
     handleWithdraw,
     mode,
