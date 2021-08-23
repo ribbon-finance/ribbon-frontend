@@ -1,9 +1,10 @@
-const ActionTypeList = ["deposit", "withdraw", "transfer"] as const;
+const ActionTypeList = ["deposit", "withdraw", "transfer", "migrate"] as const;
 export type ActionType = typeof ActionTypeList[number];
 export const ACTIONS: { [type in ActionType]: ActionType } = {
   deposit: "deposit",
   withdraw: "withdraw",
   transfer: "transfer",
+  migrate: "migrate",
 } as const;
 
 export interface ActionModalContentProps {

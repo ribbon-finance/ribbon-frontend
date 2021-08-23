@@ -199,7 +199,7 @@ const DepositPage = () => {
           <PerformanceSection vaultOption={vaultOption} />
 
           {/* Form for desktop */}
-          <DesktopActionsFormContainer className="col-xl-5 offset-xl-1 col-md-6">
+          <DesktopActionsFormContainer className="d-flex flex-column col-xl-5 offset-xl-1 col-md-6">
             <DesktopActionForm vault={{ vaultOption, vaultVersion }} />
           </DesktopActionsFormContainer>
         </div>

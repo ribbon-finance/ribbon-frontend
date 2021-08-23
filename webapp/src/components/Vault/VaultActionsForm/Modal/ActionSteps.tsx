@@ -131,6 +131,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
               VaultAddressMap[vaultActionForm.receiveVault!].v1
             );
             break;
+          case ACTIONS.migrate:
+            res = await vault.migrate();
+            break;
         }
 
         /**
@@ -139,11 +142,15 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         switch (vaultActionForm.actionType) {
           case ACTIONS.deposit:
           case ACTIONS.withdraw:
+          case ACTIONS.migrate:
             setPendingTransactions((pendingTransactions) => [
               ...pendingTransactions,
               {
                 txhash: res.hash,
-                type: vaultActionForm.actionType as "deposit" | "withdraw",
+                type: vaultActionForm.actionType as
+                  | "deposit"
+                  | "withdraw"
+                  | "migrate",
                 amount: amountStr,
                 vault: vaultOption,
               },
@@ -175,7 +182,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   useEffect(() => {
     const titles = {
       [STEPS.formStep]: "",
-      [STEPS.previewStep]: `${actionWord} Preview`,
+      [STEPS.previewStep]:
+        vaultActionForm.actionType === "migrate" ? "" : `${actionWord} Preview`,
       [STEPS.confirmationStep]: `Confirm ${actionWord}`,
       [STEPS.submittedStep]: "Transaction Submitted",
     };
@@ -184,7 +192,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       title: titles[step],
       stepNum: step,
     });
-  }, [step, onChangeStep, actionWord]);
+  }, [actionWord, onChangeStep, step, vaultActionForm.actionType]);
 
   const stepComponents = {
     0: !skipToPreview && (

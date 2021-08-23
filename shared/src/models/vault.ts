@@ -59,7 +59,8 @@ export type VaultTransactionType =
   | "transfer"
   | "receive"
   | "stake"
-  | "unstake";
+  | "unstake"
+  | "migrate";
 
 export interface VaultTransaction {
   id: string;

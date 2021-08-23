@@ -10,6 +10,7 @@ import { getAssets, VaultOptions } from "../constants/constants";
 import { isETHVault } from "../utils/vault";
 import { getERC20Token } from "./useERC20Token";
 import { ERC20Token } from "../models/eth";
+import { parseUnits } from "@ethersproject/units";
 
 type UseVaultData = (
   vault: VaultOptions,
@@ -135,9 +136,9 @@ const useVaultData: UseVaultData = (vault, params) => {
                     prevResponse[vault].vaultMaxWithdrawAmount,
                     responses[2].mul(responses[0]).div(responses[3])
                   ),
-                  vaultBalanceInAsset: prevResponse[vault].vaultBalanceInAsset,
-                  userAssetBalance: prevResponse[vault].userAssetBalance,
-                  maxWithdrawAmount: prevResponse[vault].maxWithdrawAmount,
+                  vaultBalanceInAsset: zero,
+                  userAssetBalance: zero,
+                  maxWithdrawAmount: zero,
                 },
               }));
 

@@ -19,7 +19,7 @@ import { isETHVault } from "shared/lib/utils/vault";
 export type VaultActionFormTransferData =
   | {
       availableCapacity: BigNumber;
-      availableLimit: BigNumber;
+      availableTransferAmount: BigNumber;
     }
   | undefined;
 
@@ -34,7 +34,6 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     vaultBalanceInAsset,
     maxWithdrawAmount,
     decimals,
-    vaultMaxWithdrawAmount,
   } = useVaultData(vaultOption);
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const receiveVaultData = useVaultData(
@@ -81,15 +80,15 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
 
     return {
       availableCapacity,
-      availableLimit: vaultMaxWithdrawAmount.lte(availableCapacity)
-        ? vaultMaxWithdrawAmount
+      availableTransferAmount: maxWithdrawAmount.lte(availableCapacity)
+        ? maxWithdrawAmount
         : availableCapacity,
     };
   }, [
     canTransfer,
+    maxWithdrawAmount,
     receiveVaultData,
     vaultActionForm.actionType,
-    vaultMaxWithdrawAmount,
   ]);
 
   /**
@@ -143,55 +142,59 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
    * Handle max press from user
    */
   const handleMaxClick = useCallback(() => {
-    switch (vaultActionForm.actionType) {
-      case ACTIONS.deposit:
-        const gasLimit = GAS_LIMITS[vaultOption].deposit;
-        const gasFee = BigNumber.from(gasLimit.toString()).mul(
-          BigNumber.from(gasPrice || "0")
-        );
-        const total = BigNumber.from(userAssetBalance);
-        // TODO: Optimize the code to request gas fees only when needed
-        const maxAmount = isETHVault(vaultOption) ? total.sub(gasFee) : total;
-        const allowedMaxAmount = maxAmount.lte(
-          vaultMaxDepositAmount.sub(vaultBalanceInAsset)
-        )
-          ? maxAmount
-          : vaultMaxDepositAmount.sub(vaultBalanceInAsset);
-        const userMaxAmount = allowedMaxAmount.isNegative()
-          ? BigNumber.from("0")
-          : allowedMaxAmount;
+    setVaultActionForm((actionForm) => {
+      switch (actionForm.actionType) {
+        case ACTIONS.deposit:
+          const gasLimit = GAS_LIMITS[vaultOption].deposit;
+          const gasFee = BigNumber.from(gasLimit.toString()).mul(
+            BigNumber.from(gasPrice || "0")
+          );
+          const total = BigNumber.from(userAssetBalance);
+          // TODO: Optimize the code to request gas fees only when needed
+          const maxAmount = isETHVault(vaultOption) ? total.sub(gasFee) : total;
+          const allowedMaxAmount = maxAmount.lte(
+            vaultMaxDepositAmount.sub(vaultBalanceInAsset)
+          )
+            ? maxAmount
+            : vaultMaxDepositAmount.sub(vaultBalanceInAsset);
+          const userMaxAmount = allowedMaxAmount.isNegative()
+            ? BigNumber.from("0")
+            : allowedMaxAmount;
 
-        // Fringe case: if amt of deposit greater than vault limit, return 0
-        const vaultAvailableBalance = deposits.gt(vaultLimit)
-          ? BigNumber.from("0")
-          : vaultLimit.sub(deposits);
+          // Fringe case: if amt of deposit greater than vault limit, return 0
+          const vaultAvailableBalance = deposits.gt(vaultLimit)
+            ? BigNumber.from("0")
+            : vaultLimit.sub(deposits);
 
-        // Check if max is vault availableBalance
-        const finalMaxAmount = userMaxAmount.gt(vaultAvailableBalance)
-          ? vaultAvailableBalance
-          : userMaxAmount;
-        setVaultActionForm((actionForm) => ({
-          ...actionForm,
-          inputAmount: formatUnits(finalMaxAmount, decimals),
-        }));
-        break;
-      case ACTIONS.withdraw:
-        setVaultActionForm((actionForm) => ({
-          ...actionForm,
-          inputAmount: formatUnits(maxWithdrawAmount, decimals),
-        }));
-        break;
-      case ACTIONS.transfer:
-        setVaultActionForm((actionForm) => ({
-          ...actionForm,
-          inputAmount: transferData
-            ? maxWithdrawAmount.lte(transferData.availableLimit)
-              ? formatUnits(maxWithdrawAmount, decimals)
-              : formatUnits(transferData.availableLimit, decimals)
-            : "",
-        }));
-        break;
-    }
+          // Check if max is vault availableBalance
+          const finalMaxAmount = userMaxAmount.gt(vaultAvailableBalance)
+            ? vaultAvailableBalance
+            : userMaxAmount;
+          return {
+            ...actionForm,
+            inputAmount: formatUnits(finalMaxAmount, decimals),
+          };
+        case ACTIONS.withdraw:
+          return {
+            ...actionForm,
+            inputAmount: formatUnits(maxWithdrawAmount, decimals),
+          };
+        case ACTIONS.transfer:
+          return {
+            ...actionForm,
+            inputAmount: transferData
+              ? formatUnits(transferData.availableTransferAmount, decimals)
+              : "",
+          };
+        case ACTIONS.migrate:
+          return {
+            ...actionForm,
+            inputAmount: formatUnits(vaultBalanceInAsset, decimals),
+          };
+        default:
+          return actionForm;
+      }
+    });
   }, [
     decimals,
     deposits,
@@ -200,7 +203,6 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     setVaultActionForm,
     transferData,
     userAssetBalance,
-    vaultActionForm,
     vaultBalanceInAsset,
     vaultLimit,
     vaultMaxDepositAmount,

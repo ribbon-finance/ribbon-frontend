@@ -32,6 +32,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
       <VaultV2MigrationForm
         vaultOption={vaultOption}
         vaultAccount={vaultAccounts[vaultOption]!}
+        onFormSubmit={onFormSubmit}
       />
     );
   }

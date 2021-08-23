@@ -4,11 +4,12 @@ import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem";
 import ActionSteps from "./ActionSteps";
-import { StepData, STEPS } from "./types";
+import { ACTIONS, StepData, STEPS } from "./types";
 import sizes from "shared/lib/designSystem/sizes";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
 import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
+import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 
 const ModalNavigation = styled.div`
   position: absolute;
@@ -48,7 +49,7 @@ const ModalBody = styled.div<ModalBodyProps>`
       case STEPS.submittedStep:
         return "unset";
       default:
-        return "480px";
+        return "430px";
     }
   }};
 
@@ -68,7 +69,7 @@ const ModalBody = styled.div<ModalBodyProps>`
 
 const modalPadding = 16;
 
-const ModalTitle = styled.div`
+const ModalHeaderWithBackground = styled.div`
   background: #151413;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
@@ -77,6 +78,10 @@ const ModalTitle = styled.div`
   padding-left: ${modalPadding}px;
   padding-right: ${modalPadding}px;
   margin-bottom: 24px;
+`;
+
+const InvisibleModalHeader = styled.div`
+  padding-top: 32px;
 `;
 
 const ModalContent = styled.div`
@@ -140,6 +145,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
     title: "",
   });
   const isDesktop = variant === "desktop";
+  const { vaultActionForm } = useVaultActionForm(vault.vaultOption);
 
   const onChangeStep = useCallback(
     (stepData) => setStepData(stepData),
@@ -182,6 +188,25 @@ const ActionModal: React.FC<ActionModalProps> = ({
     );
   }, [isDesktop, stepData, onClose]);
 
+  const renderModalHeader = useCallback(() => {
+    if (stepData.title !== "") {
+      return (
+        <ModalHeaderWithBackground className="position-relative d-flex align-items-center justify-content-center">
+          <Title>{stepData.title}</Title>
+          {renderModalCloseButton()}
+        </ModalHeaderWithBackground>
+      );
+    }
+
+    if (vaultActionForm.actionType === ACTIONS.migrate) {
+      return (
+        <InvisibleModalHeader className="position-relative d-flex align-items-center justify-content-center">
+          {renderModalCloseButton()}
+        </InvisibleModalHeader>
+      );
+    }
+  }, [renderModalCloseButton, stepData.title, vaultActionForm.actionType]);
+
   return (
     <div>
       <MobileOverlayMenu
@@ -205,12 +230,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
           variant={variant}
           steps={stepData}
         >
-          {stepData.title !== "" && (
-            <ModalTitle className="position-relative d-flex align-items-center justify-content-center">
-              <Title>{stepData.title}</Title>
-              {renderModalCloseButton()}
-            </ModalTitle>
-          )}
+          {renderModalHeader()}
 
           <ModalContent className="position-relative">
             <StepsContainer variant={variant}>

@@ -107,13 +107,13 @@ export const PrimaryText = styled(BaseText)<{color?: string}>`
   color: ${(props) => props.color ? props.color : colors.primaryText};
 `;
 
-export const SecondaryText = styled.span`
+export const SecondaryText = styled.span<{color?: string}>`
   font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
   line-height: 20px;
-  color: ${colors.text};
+  color: ${(props) => props.color ? props.color : colors.text};
 `;
 
 export const BaseInputLabel = styled.div`
@@ -123,13 +123,15 @@ export const BaseInputLabel = styled.div`
   letter-spacing: 1.5px;
 `;
 
-export const BaseInputContainer = styled.div`
+export const BaseInputContainer = styled.div<{error?: boolean}>`
   width: 100%;
   height: 72px;
   background: rgba(255, 255, 255, 0.04);
   border-radius: 4px;
   margin-top: 8px;
   padding: 0 4px;
+  border: ${theme.border.width} ${theme.border.style} ${(props) => props.error ? colors.red : `transparent`};
+  transition: border 0.25s;
 `;
 
 export const BaseInput = styled.input<{ inputWidth?: string }>`

@@ -16,6 +16,23 @@ import { productCopies } from "shared/lib/components/Product/productCopies";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { useLatestAPY } from "shared/lib/hooks/useAirtableData";
 import { capitalize } from "shared/lib/utils/text";
+import { MigrateIcon } from "shared/lib/assets/icons/icons";
+
+const MigrateLogoContainer = styled.div<{ color: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 100px;
+  background: ${(props) => props.color}14;
+`;
+
+const FormTitle = styled(Title)`
+  font-size: 22px;
+  line-height: 28px;
+  letter-spacing: 1px;
+`;
 
 const AmountText = styled(Title)`
   font-size: 40px;
@@ -48,7 +65,6 @@ const PreviewStep: React.FC<{
   vaultOption,
   receiveVaultOption,
 }) => {
-  const actionWord = capitalize(actionType);
   const color = getVaultColor(vaultOption);
   const latestAPY = useLatestAPY(vaultOption);
 
@@ -132,55 +148,106 @@ const PreviewStep: React.FC<{
     }
   }, [actionType]);
 
-  return (
-    <>
-      <div
-        style={{ flex: 1 }}
-        className="d-flex w-100 flex-column align-items-center"
-      >
-        <Subtitle className="d-block text-uppercase" style={{ opacity: 0.4 }}>
-          {actionWord} Amount
-        </Subtitle>
+  switch (actionType) {
+    case "migrate":
+      return (
+        <div
+          style={{ flex: 1 }}
+          className="d-flex flex-column align-items-center"
+        >
+          {/* Logo */}
+          <MigrateLogoContainer color={color}>
+            <MigrateIcon color={color} />
+          </MigrateLogoContainer>
 
-        <div className="text-center">
-          <AmountText>
-            {formatBigNumber(amount, 4, getAssetDecimals(asset))}
-          </AmountText>
-          <CurrencyText> {getAssetDisplay(asset)}</CurrencyText>
+          {/* Title */}
+          <FormTitle className="mt-3">MIRGATE PREVIEW</FormTitle>
+
+          {/* Info Preview */}
+          <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-auto">
+            <SecondaryText>Amount</SecondaryText>
+            <Title className="text-right">
+              {originalAmount} {getAssetDisplay(asset)}
+            </Title>
+          </div>
+          <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+            <SecondaryText>Product</SecondaryText>
+            <Title className="text-right">
+              {productCopies[vaultOption].title}
+            </Title>
+          </div>
+          <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4 mb-auto">
+            <SecondaryText>Migration</SecondaryText>
+            <Title className="d-flex align-items-center text-right">
+              V1 <Arrow className="fas fa-arrow-right mx-2" color={color} /> V2
+            </Title>
+          </div>
+
+          {/* Migrate Button */}
+          <ActionButton
+            onClick={onClickConfirmButton}
+            className="btn py-3 mb-4"
+            color={color}
+          >
+            CONFIRM MIGRATION TO V2
+          </ActionButton>
         </div>
-
-        <div className="w-100 mt-4">
-          {detailRows.map((detail, index) => (
-            <div
-              key={index}
-              className="d-flex flex-row align-items-center justify-content-between mb-4"
+      );
+    default:
+      const actionWord = capitalize(actionType);
+      return (
+        <>
+          <div
+            style={{ flex: 1 }}
+            className="d-flex w-100 flex-column align-items-center"
+          >
+            <Subtitle
+              className="d-block text-uppercase"
+              style={{ opacity: 0.4 }}
             >
-              <SecondaryText>{detail.key}</SecondaryText>
-              <Title className="text-right">{detail.value}</Title>
-            </div>
-          ))}
-          {positionChanged && (
-            <div className="d-flex flex-row align-items-center justify-content-between mb-4">
-              <SecondaryText>Your Position</SecondaryText>
-              <Title className="d-flex align-items-center text-right">
-                {originalAmount} {getAssetDisplay(asset)}{" "}
-                <Arrow className="fas fa-arrow-right mx-2" color={color} />{" "}
-                {newAmountStr} {getAssetDisplay(asset)}
-              </Title>
-            </div>
-          )}
-        </div>
-      </div>
+              {actionWord} Amount
+            </Subtitle>
 
-      <ActionButton
-        onClick={onClickConfirmButton}
-        className="btn py-3 mb-4 mt-auto"
-        color={color}
-      >
-        {actionWord} Now
-      </ActionButton>
-    </>
-  );
+            <div className="text-center">
+              <AmountText>
+                {formatBigNumber(amount, 4, getAssetDecimals(asset))}
+              </AmountText>
+              <CurrencyText> {getAssetDisplay(asset)}</CurrencyText>
+            </div>
+
+            <div className="w-100 mt-4">
+              {detailRows.map((detail, index) => (
+                <div
+                  key={index}
+                  className="d-flex flex-row align-items-center justify-content-between mb-4"
+                >
+                  <SecondaryText>{detail.key}</SecondaryText>
+                  <Title className="text-right">{detail.value}</Title>
+                </div>
+              ))}
+              {positionChanged && (
+                <div className="d-flex flex-row align-items-center justify-content-between mb-4">
+                  <SecondaryText>Your Position</SecondaryText>
+                  <Title className="d-flex align-items-center text-right">
+                    {originalAmount} {getAssetDisplay(asset)}{" "}
+                    <Arrow className="fas fa-arrow-right mx-2" color={color} />{" "}
+                    {newAmountStr} {getAssetDisplay(asset)}
+                  </Title>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <ActionButton
+            onClick={onClickConfirmButton}
+            className="btn py-3 mb-4 mt-auto"
+            color={color}
+          >
+            {actionWord} Now
+          </ActionButton>
+        </>
+      );
+  }
 };
 
 export default PreviewStep;

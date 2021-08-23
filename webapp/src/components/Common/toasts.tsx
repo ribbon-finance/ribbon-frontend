@@ -155,6 +155,11 @@ export const TxStatusToast = () => {
         subtitle = `${amountFormatted} ${getAssetDisplay(
           getAssets(receiveVault)
         )} transferred to ${productCopies[receiveVault].title}`;
+        break;
+      case "migrate":
+        subtitle = `${amountFormatted} migrated to ${
+          productCopies[vault!].title
+        } V2`;
     }
 
     return (

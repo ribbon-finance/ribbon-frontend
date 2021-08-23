@@ -52,11 +52,12 @@ import VaultV1TransferForm from "./VaultV1TransferForm";
 const { parseUnits, formatUnits } = ethers.utils;
 
 const Container = styled.div<{ variant: "desktop" | "mobile" }>`
+  display: flex;
+  flex-direction: column;
   ${(props) =>
     props.variant === "mobile" &&
     `
     height: 100%;
-    display:flex;
     align-items: center;
     justify-content:center;
   `}
@@ -69,6 +70,31 @@ const FormContainer = styled.div`
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   box-sizing: border-box;
   border-radius: ${theme.border.radius};
+  background: ${colors.background};
+  z-index: 1;
+`;
+
+const FormContainerExtra = styled.div<{ variant: "desktop" | "mobile" }>`
+  background: ${colors.primaryText}0a;
+  margin-top: -16px;
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-radius: ${theme.border.radius};
+  text-align: center;
+  z-index: 0;
+
+  ${(props) => {
+    switch (props.variant) {
+      case "desktop":
+        return `padding: 32px 24px 16px 24px;`;
+      case "mobile":
+        return `padding: 24px 24px 12px 24px;`;
+    }
+  }}
+`;
+
+const FormContainerExtraText = styled(PrimaryText)`
+  font-size: 14px;
+  line-height: 20px;
 `;
 
 const FormTitleContainer = styled.div`
@@ -672,41 +698,43 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     return connected ? "active" : "inactive";
   }, [connected, error]);
 
-  const button = useMemo(() => {
-    if (connected) {
-      return (
-        <ActionButton
-          disabled={Boolean(error) || !isInputNonZero}
-          onClick={onFormSubmit}
-          className={`py-3 ${
-            vaultActionForm.actionType !== ACTIONS.transfer ? "mb-4" : ""
-          }`}
-          color={color}
-        >
-          {actionButtonText}
-        </ActionButton>
-      );
-    }
+  const renderButton = useCallback(
+    (error: string | undefined) => {
+      if (connected) {
+        return (
+          <ActionButton
+            disabled={Boolean(error) || !isInputNonZero}
+            onClick={onFormSubmit}
+            className={`py-3 ${
+              vaultActionForm.actionType !== ACTIONS.transfer ? "mb-4" : ""
+            }`}
+            color={color}
+          >
+            {actionButtonText}
+          </ActionButton>
+        );
+      }
 
-    return (
-      <ConnectWalletButton
-        onClick={() => setShowConnectModal(true)}
-        type="button"
-        className="btn py-3 mb-4"
-      >
-        Connect Wallet
-      </ConnectWalletButton>
-    );
-  }, [
-    actionButtonText,
-    color,
-    connected,
-    error,
-    isInputNonZero,
-    onFormSubmit,
-    setShowConnectModal,
-    vaultActionForm,
-  ]);
+      return (
+        <ConnectWalletButton
+          onClick={() => setShowConnectModal(true)}
+          type="button"
+          className="btn py-3 mb-4"
+        >
+          Connect Wallet
+        </ConnectWalletButton>
+      );
+    },
+    [
+      actionButtonText,
+      color,
+      connected,
+      isInputNonZero,
+      onFormSubmit,
+      setShowConnectModal,
+      vaultActionForm,
+    ]
+  );
 
   const renderApprovalAssetLogo = useCallback(() => {
     const Logo = getAssetLogo(asset);
@@ -770,7 +798,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
                 <BaseInputButton onClick={handleMaxClick}>MAX</BaseInputButton>
               )}
             </BaseInputContainer>
-            {button}
+            {renderButton(error)}
           </>
         );
       case ACTIONS.transfer:
@@ -778,8 +806,8 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
           <VaultV1TransferForm
             vaultOption={vaultOption}
             receiveVault={vaultActionForm.receiveVault!}
+            vaultAccount={vaultAccounts[vaultOption]}
             transferVaultData={{
-              vaultBalanceInAsset,
               maxWithdrawAmount,
               vaultMaxWithdrawAmount,
             }}
@@ -787,13 +815,13 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
             inputAmount={vaultActionForm.inputAmount}
             handleInputChange={handleInputChange}
             handleMaxClick={handleMaxClick}
-            actionButton={button}
+            renderActionButton={renderButton}
           />
         );
     }
   }, [
     asset,
-    button,
+    renderButton,
     color,
     connected,
     error,
@@ -804,8 +832,8 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     renderApprovalAssetLogo,
     showTokenApproval,
     transferData,
+    vaultAccounts,
     vaultActionForm,
-    vaultBalanceInAsset,
     vaultMaxWithdrawAmount,
     vaultOption,
     waitingApproval,
@@ -898,6 +926,15 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
         </ContentContainer>
         {swapContainer}
       </FormContainer>
+      {vaultActionForm.actionType === "transfer" && (
+        <FormContainerExtra variant={variant}>
+          <FormContainerExtraText color={color}>
+            Vault transfers are <strong>FREE</strong>: withdrawal fees are
+            waived when you transfer funds between T-USDC-P-ETH and
+            T-yvUSDC-P-ETH
+          </FormContainerExtraText>
+        </FormContainerExtra>
+      )}
 
       {connected && variant === "desktop" && (
         <YourPosition vaultOption={vaultOption} className="mt-4" />
