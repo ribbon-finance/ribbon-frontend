@@ -47,7 +47,6 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const { vaultBalanceInAsset, decimals } = useVaultData(vaultOption);
 
   // We need to pre-fetch the number of shares that the user wants to withdraw
-  const [shares, setShares] = useState<BigNumber>(BigNumber.from("0"));
   const { vaultActionForm, resetActionForm } = useVaultActionForm(vaultOption);
 
   const actionWord = capitalize(vaultActionForm.actionType);
@@ -83,16 +82,6 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const amount = parseUnits(vaultActionForm.inputAmount || "0", decimals);
   const amountStr = amount.toString();
-  const sharesStr = shares.toString();
-
-  useEffect(() => {
-    if (vault) {
-      (async () => {
-        const shares = await vault.assetAmountToShares(amountStr);
-        setShares(shares);
-      })();
-    }
-  }, [vault, amountStr]);
 
   useEffect(() => {
     // we check that the txhash has already been removed
@@ -114,6 +103,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       setStep(STEPS.confirmationStep);
       try {
         let res: any;
+        let shares: BigNumber;
         switch (vaultActionForm.actionType) {
           case ACTIONS.deposit:
             res = await (isETHVault(vaultOption)
@@ -121,13 +111,15 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
               : vault.deposit(amountStr));
             break;
           case ACTIONS.withdraw:
+            shares = await vault.assetAmountToShares(amountStr);
             res = await (isETHVault(vaultOption)
-              ? vault.withdrawETH(sharesStr)
-              : vault.withdraw(sharesStr));
+              ? vault.withdrawETH(shares)
+              : vault.withdraw(shares));
             break;
           case ACTIONS.transfer:
+            shares = await vault.assetAmountToShares(amountStr);
             res = await vault.withdrawToV1Vault(
-              sharesStr,
+              shares,
               VaultAddressMap[vaultActionForm.receiveVault!].v1
             );
             break;
