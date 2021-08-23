@@ -9,19 +9,28 @@ import { VaultAccount } from "../models/vault";
 import { getSubgraphqlURI } from "../utils/env";
 import { initialVaultaccounts, useGlobalState } from "../store/store";
 
-const useVaultAccounts = (vaults: VaultOptions[]) => {
+const useVaultAccounts = (
+  vaults: VaultOptions[],
+  {
+    poll,
+    pollingFrequency,
+  }: {
+    poll: boolean;
+    pollingFrequency?: number;
+  } = { poll: true, pollingFrequency: 5000 }
+) => {
   const web3Context = useWeb3React();
   const account = impersonateAddress || web3Context.account;
-  const [vaultAccounts, setVaultAccounts] = useGlobalState("vaultAccounts")
+  const [vaultAccounts, setVaultAccounts] = useGlobalState("vaultAccounts");
   const [loading, setLoading] = useState(false);
 
   const loadVaultAccounts = useCallback(
     async (vs: VaultOptions[], acc: string) => {
       setLoading(true);
-      const results = await fetchVaultAccounts(vs, acc)
+      const results = await fetchVaultAccounts(vs, acc);
       setVaultAccounts((curr) => ({
         ...curr,
-        ...results
+        ...results,
       }));
       setLoading(false);
     },
@@ -34,8 +43,22 @@ const useVaultAccounts = (vaults: VaultOptions[]) => {
       return;
     }
 
+    let pollInterval: any = undefined;
+    if (poll) {
+  loadVaultAccounts(vaults, account);
+      pollInterval = setInterval(loadVaultAccounts, pollingFrequency, vaults, account);
+    } else {
     loadVaultAccounts(vaults, account);
-  }, [vaults, account, loadVaultAccounts, setVaultAccounts]);
+    }
+
+    return () => {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+      }
+    };
+
+
+  }, [vaults, account, loadVaultAccounts, poll, pollingFrequency, setVaultAccounts]);
 
   return { vaultAccounts, loading };
 };
