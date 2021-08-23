@@ -25,14 +25,20 @@ const useVaultAccounts = (
   const [loading, setLoading] = useState(false);
 
   const loadVaultAccounts = useCallback(
-    async (vs: VaultOptions[], acc: string) => {
-      setLoading(true);
+    async (vs: VaultOptions[], acc: string, isInterval: boolean = true) => {
+      if (!isInterval) {
+        setLoading(true);
+      }
+
       const results = await fetchVaultAccounts(vs, acc);
       setVaultAccounts((curr) => ({
         ...curr,
         ...results,
       }));
-      setLoading(false);
+
+      if (!isInterval) {
+        setLoading(false);
+      }
     },
     [setVaultAccounts]
   );
@@ -45,10 +51,15 @@ const useVaultAccounts = (
 
     let pollInterval: any = undefined;
     if (poll) {
-  loadVaultAccounts(vaults, account);
-      pollInterval = setInterval(loadVaultAccounts, pollingFrequency, vaults, account);
+      loadVaultAccounts(vaults, account, false);
+      pollInterval = setInterval(
+        loadVaultAccounts,
+        pollingFrequency,
+        vaults,
+        account
+      );
     } else {
-    loadVaultAccounts(vaults, account);
+      loadVaultAccounts(vaults, account, false);
     }
 
     return () => {
@@ -56,9 +67,14 @@ const useVaultAccounts = (
         clearInterval(pollInterval);
       }
     };
-
-
-  }, [vaults, account, loadVaultAccounts, poll, pollingFrequency, setVaultAccounts]);
+  }, [
+    vaults,
+    account,
+    loadVaultAccounts,
+    poll,
+    pollingFrequency,
+    setVaultAccounts,
+  ]);
 
   return { vaultAccounts, loading };
 };
