@@ -296,16 +296,16 @@ export const MigrateIcon: React.FC<SVGPropsWithColor> = ({
     <path
       d="M11 20.3333L11 1.66658"
       stroke={color || "white"}
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M1.66634 11L10.9997 1.66667L20.333 11"
       stroke={color || "white"}
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <rect x="1" y="25" width="20" height="2" rx="1" fill={color || "white"} />
   </svg>

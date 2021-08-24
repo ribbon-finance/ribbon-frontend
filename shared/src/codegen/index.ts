@@ -6,3 +6,4 @@ export type { LBPPool } from "./LBPPool";
 export type { MerkleDistributor } from "./MerkleDistributor";
 export type { RibbonCoveredCall } from "./RibbonCoveredCall";
 export type { RibbonStakingRewards } from "./RibbonStakingRewards";
+export type { RibbonV2ThetaVault } from "./RibbonV2ThetaVault";

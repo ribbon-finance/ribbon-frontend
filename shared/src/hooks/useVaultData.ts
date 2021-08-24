@@ -10,7 +10,7 @@ import { getAssets, VaultOptions } from "../constants/constants";
 import { isETHVault } from "../utils/vault";
 import { getERC20Token } from "./useERC20Token";
 import { ERC20Token } from "../models/eth";
-import { parseUnits } from "@ethersproject/units";
+import { impersonateAddress } from "../utils/development";
 
 type UseVaultData = (
   vault: VaultOptions,
@@ -25,7 +25,13 @@ const useVaultData: UseVaultData = (vault, params) => {
   const pollingFrequency = (params && params.pollingFrequency) || 4000;
 
   const isMountedRef = useRef(true);
-  const { chainId, library, active: walletConnected, account } = useWeb3React();
+  const {
+    chainId,
+    library,
+    active: walletConnected,
+    account: web3Account,
+  } = useWeb3React();
+  const account = impersonateAddress ? impersonateAddress : web3Account;
   const { provider: ethersProvider } = useWeb3Context();
 
   const [response, setResponse] = useGlobalState("vaultData");
@@ -183,8 +189,15 @@ const useVaultData: UseVaultData = (vault, params) => {
         }
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vault, account, setResponse, walletConnected, chainId, library]);
+  }, [
+    vault,
+    account,
+    ethersProvider,
+    setResponse,
+    walletConnected,
+    chainId,
+    library,
+  ]);
 
   useEffect(() => {
     // eslint-disable-next-line no-undef

@@ -6,6 +6,7 @@ import { getAssetDecimals } from "shared/lib/utils/asset";
 import { isPracticallyZero } from "shared/lib/utils/math";
 import VaultV2MigrationForm from "./Migration/VaultV2MigrationForm";
 import { FormStepProps } from "./types";
+// import useV2VaultData from "shared/lib/hooks/useV2VaultData";
 
 const VaultV2ActionsForm: React.FC<FormStepProps> = ({
   vaultOption,
