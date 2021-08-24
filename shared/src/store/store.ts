@@ -84,6 +84,7 @@ export const initialState: GlobalStore = {
         displayAsset: getDisplayAssets(vault),
         lockedBalanceInAsset: BigNumber.from(0),
         depositBalanceInAsset: BigNumber.from(0),
+        userAssetBalance: BigNumber.from(0),
       },
     ])
   ) as V2VaultDataResponses,

@@ -18,18 +18,6 @@ import { ACTIONS } from "../Modal/types";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 
-const MigrationFormContainer = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  text-align: center;
-  padding: 24px;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: ${theme.border.radius};
-  background: ${colors.background};
-  z-index: 1;
-`;
-
 const MigrateLogoContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
@@ -58,16 +46,6 @@ const PillButton = styled.div`
   padding: 10px 16px;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: 100px;
-`;
-
-const MigrationFormExtraContainer = styled.div`
-  background: ${colors.primaryText}0a;
-  padding: 32px 24px 16px 24px;
-  margin-top: -16px;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: ${theme.border.radius};
-  text-align: center;
-  z-index: 0;
 `;
 
 const MigratinFormModeList = ["options", "migrate"] as const;
@@ -276,22 +254,15 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
   ]);
 
   return (
-    <>
-      <MigrationFormContainer>
-        {/* Logo */}
-        <MigrateLogoContainer color={color} className="mt-3">
-          <MigrateIcon color={color} />
-        </MigrateLogoContainer>
+    <div className="d-flex flex-column align-items-center p-4">
+      {/* Logo */}
+      <MigrateLogoContainer color={color} className="mt-3">
+        <MigrateIcon color={color} />
+      </MigrateLogoContainer>
 
-        <FormTitle className="mt-3">MIRGATE TO V2</FormTitle>
-        {body}
-      </MigrationFormContainer>
-      <MigrationFormExtraContainer>
-        <PrimaryText color={color}>
-          IMPORTANT: Withdrawal fees do not apply for migrations from V1 to V2
-        </PrimaryText>
-      </MigrationFormExtraContainer>
-    </>
+      <FormTitle className="mt-3">MIRGATE TO V2</FormTitle>
+      {body}
+    </div>
   );
 };
 

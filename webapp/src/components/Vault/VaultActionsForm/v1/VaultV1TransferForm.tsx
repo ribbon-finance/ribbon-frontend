@@ -24,9 +24,9 @@ import {
   VaultOptions,
 } from "shared/lib/constants/constants";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
-import HelpInfo from "../../Common/HelpInfo";
+import HelpInfo from "../../../Common/HelpInfo";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import { VaultActionFormTransferData } from "../../../hooks/useVaultActionForm";
+import { VaultActionFormTransferData } from "../../../../hooks/useVaultActionForm";
 import { VaultAccount } from "shared/lib/models/vault";
 
 const TransferToVault = styled.div`

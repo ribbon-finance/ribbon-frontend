@@ -45,17 +45,19 @@ export interface UnconnectedV2VaultData {
 /**
  * lockedBalanceInAsset: Locked portion of position in the vault
  * depositBalanceInAsset: Portion where it allow for withdrawInstantly
+ * userAssetBalance: User asset balance
  */
 export interface ConnectedV2VaultData {
   lockedBalanceInAsset: BigNumber;
-  depositBalanceInAsset: BigNumber; 
+  depositBalanceInAsset: BigNumber;
+  userAssetBalance: BigNumber;
 }
 
 export type V2VaultDataResponse = UnconnectedV2VaultData & ConnectedV2VaultData;
 
 export type V2VaultDataResponses = {
   [vault in VaultOptions]: V2VaultDataResponse;
-}
+};
 
 export type PendingTransaction =
   | {
@@ -93,7 +95,7 @@ export type PendingTransaction =
       amount: string;
       transferVault: VaultOptions;
       receiveVault: VaultOptions;
-    } 
+    };
 
 export type AssetYieldsInfoData = {
   [token in DefiScoreToken]: Array<{

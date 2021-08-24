@@ -47,7 +47,7 @@ import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { FormStepProps } from "./types";
 import useVaultActionForm from "../../../hooks/useVaultActionForm";
 import { ACTIONS } from "./Modal/types";
-import VaultV1TransferForm from "./VaultV1TransferForm";
+import VaultV1TransferForm from "./v1/VaultV1TransferForm";
 
 const { parseUnits, formatUnits } = ethers.utils;
 
@@ -112,7 +112,7 @@ const FormTitleContainer = styled.div`
   }
 `;
 
-const FormTitleDiv = styled.div<{ left: boolean; active: boolean }>`
+const FormTitleDiv = styled.div<{ active: boolean }>`
   width: 100%;
   padding: 24px 0;
   background-color: ${(props) =>
@@ -885,7 +885,6 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
       <FormContainer>
         <FormTitleContainer className="d-flex flex-row align-items-center">
           <FormTitleDiv
-            left
             active={vaultActionForm.actionType === ACTIONS.deposit}
             onClick={() => handleActionTypeChange(ACTIONS.deposit)}
           >
@@ -894,7 +893,6 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
             </FormTitle>
           </FormTitleDiv>
           <FormTitleDiv
-            left={false}
             active={vaultActionForm.actionType === ACTIONS.withdraw}
             onClick={() => handleActionTypeChange(ACTIONS.withdraw)}
           >
@@ -904,7 +902,6 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
           </FormTitleDiv>
           {canTransfer && (
             <FormTitleDiv
-              left={false}
               active={vaultActionForm.actionType === ACTIONS.transfer}
               onClick={() => handleActionTypeChange(ACTIONS.transfer)}
             >

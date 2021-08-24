@@ -4,9 +4,12 @@ import { BigNumber } from "ethers";
 
 import { V2VaultDataResponse } from "../store/types";
 import { useGlobalState } from "../store/store";
-import { VaultOptions } from "../constants/constants";
+import { getAssets, VaultOptions } from "../constants/constants";
 import useV2Vault from "./useV2Vault";
 import { impersonateAddress } from "../utils/development";
+import { isETHVault } from "../utils/vault";
+import { getERC20Token } from "./useERC20Token";
+import { ERC20Token } from "../models/eth";
 
 type UseVaultData = (
   vault: VaultOptions,
@@ -20,7 +23,7 @@ const useV2VaultData: UseVaultData = (
   vault,
   { poll, pollingFrequency } = { poll: true, pollingFrequency: 5000 }
 ) => {
-  const { active, account: web3Account } = useWeb3React();
+  const { active, account: web3Account, library } = useWeb3React();
   const contract = useV2Vault(vault);
   const account = impersonateAddress ? impersonateAddress : web3Account;
 
@@ -47,25 +50,38 @@ const useV2VaultData: UseVaultData = (
       /**
        * 1. Deposit receipts
        * 2. Account vault balance
+       * 3. User asset balance
        */
       const promises = unconnectedPromises.concat(
         active
           ? [
               contract.depositReceipts(account!),
               contract.accountVaultBalance(account!),
+              isETHVault(vault)
+                ? library.getBalance(account!)
+                : getERC20Token(
+                    library,
+                    getAssets(vault).toLowerCase() as ERC20Token
+                  )!.balanceOf(account!),
             ]
           : [
               // Default value when not connected
               (async () => ({ amount: BigNumber.from(0) }))(),
               (async () => BigNumber.from(0))(),
+              (async () => BigNumber.from(0))(),
             ]
       );
 
-      const [totalBalance, cap, depositReceipts, accountVaultBalance] =
-        await Promise.all(
-          // Default to 0 when error
-          promises.map((p) => p.catch((e) => BigNumber.from(0)))
-        );
+      const [
+        totalBalance,
+        cap,
+        depositReceipts,
+        accountVaultBalance,
+        userAssetBalance,
+      ] = await Promise.all(
+        // Default to 0 when error
+        promises.map((p) => p.catch((e) => BigNumber.from(0)))
+      );
 
       setResponse((prevResponse) => ({
         ...prevResponse,
@@ -76,6 +92,7 @@ const useV2VaultData: UseVaultData = (
           lockedBalanceInAsset: accountVaultBalance,
           depositBalanceInAsset: (depositReceipts as { amount: BigNumber })
             .amount,
+          userAssetBalance,
         },
       }));
 
@@ -83,7 +100,7 @@ const useV2VaultData: UseVaultData = (
         setLoading(false);
       }
     },
-    [account, active, contract, setResponse, vault]
+    [account, active, contract, library, setResponse, vault]
   );
 
   useEffect(() => {
