@@ -232,7 +232,7 @@ const PortfolioPerformance = () => {
     balanceUpdatesLoading ||
     RBNTokenAccountLoading;
   const animatedLoadingText = useTextAnimation(
-    ["Loading", "Loading .", "Loading ..", "Loading ..."],
+    undefined,
     250,
     loading
   );

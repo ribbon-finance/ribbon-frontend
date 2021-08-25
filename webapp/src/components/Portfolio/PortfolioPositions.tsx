@@ -190,7 +190,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
     asset: asset,
   });
   const animatedLoadingText = useTextAnimation(
-    ["Loading", "Loading .", "Loading ..", "Loading ..."],
+    undefined,
     250,
     assetPriceLoading
   );
@@ -296,11 +296,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 const PortfolioPositions = () => {
   const { active } = useWeb3React();
   const { vaultAccounts, loading } = useVaultAccounts(VaultList);
-  const animatedLoadingText = useTextAnimation(
-    ["Loading", "Loading .", "Loading ..", "Loading ..."],
-    250,
-    loading
-  );
+  const animatedLoadingText = useTextAnimation(undefined, 250, loading);
 
   const filteredVaultAccounts = useMemo(() => {
     return Object.fromEntries(

@@ -86,11 +86,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
   });
 
   const { width: screenWidth } = useScreenSize();
-  const loadingText = useTextAnimation(
-    ["Loading", "Loading .", "Loading ..", "Loading ..."],
-    250,
-    assetPriceLoading
-  );
+  const loadingText = useTextAnimation(undefined, 250, assetPriceLoading);
 
   const getVaultActivityExternalURL = useCallback((activity: VaultActivity) => {
     switch (activity.type) {

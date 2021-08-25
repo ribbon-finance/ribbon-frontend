@@ -12,6 +12,8 @@ import colors from "shared/lib/designSystem/colors";
 import { PrimaryText } from "shared/lib/designSystem";
 import { getVaultColor } from "shared/lib/utils/vault";
 import VaultV2DepositWithdrawForm from "./v2/VaultV2DepositWithdrawForm";
+import useVaultActionForm from "../../../hooks/useVaultActionForm";
+import { ACTIONS } from "./Modal/types";
 
 const FormContainer = styled.div`
   display: flex;
@@ -42,6 +44,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
   const { vaultAccounts } = useVaultAccounts(vaultOptions);
   const decimals = getAssetDecimals(getAssets(vaultOption));
   const color = getVaultColor(vaultOption);
+  const { vaultActionForm } = useVaultActionForm(vaultOption);
 
   const showMigrationForm = useMemo(
     () =>
@@ -74,20 +77,61 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
     );
   }, [onFormSubmit, showMigrationForm, vaultAccounts, vaultOption]);
 
+  const formExtra = useMemo(() => {
+    if (vaultActionForm.actionType === ACTIONS.withdraw) {
+      return <></>;
+    }
+
+    let formExtraText = <></>;
+
+    if (showMigrationForm) {
+      formExtraText = (
+        <>
+          IMPORTANT: Withdrawal fees do not apply for migrations from V1 to V2
+        </>
+      );
+    } else {
+      switch (vaultActionForm.actionType) {
+        case ACTIONS.deposit:
+          formExtraText = (
+            <>
+              Your deposit will be deployed in the vault’s weekly strategy on
+              Friday at 11am UTC
+            </>
+          );
+          break;
+        case ACTIONS.transfer:
+          formExtraText = (
+            <>
+              Vault transfers are <strong>FREE</strong>: withdrawal fees are
+              waived when you transfer funds between{" "}
+              {vaultActionForm.vaultOption} and
+              {vaultActionForm.receiveVault}
+            </>
+          );
+          break;
+      }
+    }
+
+    return (
+      <FormExtraContainer>
+        <PrimaryText color={color}>{formExtraText}</PrimaryText>
+      </FormExtraContainer>
+    );
+  }, [
+    color,
+    showMigrationForm,
+    vaultActionForm.actionType,
+    vaultActionForm.receiveVault,
+    vaultActionForm.vaultOption,
+  ]);
+
   return (
     <>
       <FormContainer>{content}</FormContainer>
 
       {/* Extra */}
-      {
-        <FormExtraContainer>
-          <PrimaryText color={color}>
-            {showMigrationForm
-              ? "IMPORTANT: Withdrawal fees do not apply for migrations from V1 to V2"
-              : "Your deposit will be deployed in the vault’s weekly strategy on Friday at 11am UTC"}
-          </PrimaryText>
-        </FormExtraContainer>
-      }
+      {formExtra}
     </>
   );
 };

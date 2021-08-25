@@ -203,7 +203,7 @@ const PortfolioTransactions = () => {
     assets: AssetsList,
   });
   const animatedLoadingText = useTextAnimation(
-    ["Loading", "Loading .", "Loading ..", "Loading ..."],
+    undefined,
     250,
     loading || assetPricesLoading
   );

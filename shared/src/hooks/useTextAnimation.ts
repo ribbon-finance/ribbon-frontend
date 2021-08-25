@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const useTextAnimation = (
-  texts: string[], // Must be always more than 1
+  texts: string[] = ["Loading", "Loading .", "Loading ..", "Loading ..."],
   interval: number = 1000, // in Milliseconds
   animating: boolean = true
 ) => {

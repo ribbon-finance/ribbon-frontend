@@ -140,13 +140,12 @@ const StakingOverview = () => {
     () => Object.keys(VaultLiquidityMiningMap) as VaultOptions[],
     []
   );
-  const { stakingPools, loading: stakingLoading } = useStakingPool(
-    miningPoolOptionList
-  );
+  const { stakingPools, loading: stakingLoading } =
+    useStakingPool(miningPoolOptionList);
   const { data: tokenData, loading: tokenLoading } = useRBNToken();
 
   const loadingText = useTextAnimation(
-    ["Loading", "Loading .", "Loading ..", "Loading ..."],
+    undefined,
     250,
     stakingLoading || tokenLoading
   );
