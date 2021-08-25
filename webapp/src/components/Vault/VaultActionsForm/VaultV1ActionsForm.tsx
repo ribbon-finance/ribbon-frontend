@@ -9,7 +9,6 @@ import {
   BaseInputButton,
   BaseInputContainer,
   BaseInputLabel,
-  BaseLink,
   PrimaryText,
   SecondaryText,
   Title,
@@ -26,17 +25,13 @@ import {
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { getVaultColor, isETHVault, isVaultFull } from "shared/lib/utils/vault";
 import colors from "shared/lib/designSystem/colors";
-import { getAssetDisplay, getAssetLogo } from "shared/lib/utils/asset";
-import { getERC20Token } from "shared/lib/hooks/useERC20Token";
-import { useWeb3Context } from "shared/lib/hooks/web3Context";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import { getAssetDisplay } from "shared/lib/utils/asset";
 import { ERC20Token } from "shared/lib/models/eth";
 import theme from "shared/lib/designSystem/theme";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import { Assets } from "shared/lib/store/types";
 import YourPosition from "../YourPosition";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import SwapBTCDropdown from "./SwapBTCDropdown";
 import useVaultActivity from "../../../hooks/useVaultActivity";
@@ -48,6 +43,7 @@ import { FormStepProps } from "./types";
 import useVaultActionForm from "../../../hooks/useVaultActionForm";
 import { ACTIONS } from "./Modal/types";
 import VaultV1TransferForm from "./v1/VaultV1TransferForm";
+import VaultApprovalForm from "./common/VaultApprovalForm";
 
 const { parseUnits, formatUnits } = ethers.utils;
 
@@ -188,44 +184,6 @@ const WalletBalance = styled.div<{ state: WalletBalanceStates }>`
   }}
 `;
 
-const ApprovalIconContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin: 16px 0;
-`;
-
-const ApprovalIcon = styled.div<{ color: string }>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 64px;
-  height: 64px;
-  padding: 8px;
-  border-radius: 100px;
-  background-color: ${(props) => props.color}29;
-`;
-
-const ApprovalDescription = styled(PrimaryText)`
-  display: block;
-  text-align: center;
-  margin-bottom: 16px;
-`;
-
-const ApprovalHelp = styled(BaseLink)`
-  display: flex;
-  justify-content: center;
-  text-decoration: underline ${colors.text};
-  margin-bottom: 40px;
-
-  &:hover {
-    text-decoration: underline ${colors.text}A3;
-
-    span {
-      color: ${colors.text}A3;
-    }
-  }
-`;
-
 const SwapTriggerContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -287,9 +245,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
   } = useVaultActionForm(vaultOption);
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
   const { vaultAccounts } = useVaultAccounts(vaultOptions);
-  const { active, account, library } = useWeb3React();
-  const { provider } = useWeb3Context();
-  const [, setPendingTransactions] = usePendingTransactions();
+  const { active, account } = useWeb3React();
 
   // state hooks
   const isLoadingData = status === "loading";
@@ -298,12 +254,6 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
   const tokenAllowance = useTokenAllowance(
     isETHVault(vaultOption) ? undefined : (asset.toLowerCase() as ERC20Token),
     VaultAddressMap[vaultOption].v1
-  );
-  const [waitingApproval, setWaitingApproval] = useState(false);
-  const waitingApprovalLoadingText = useTextAnimation(
-    ["Approving", "Approving .", "Approving ..", "Approving ..."],
-    250,
-    waitingApproval
   );
   const [swapContainerOpen, setSwapContainerOpen] = useState(false);
   const { activities } = useVaultActivity(vaultOption);
@@ -340,17 +290,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     }
 
     setShowTokenApproval(false);
-    setWaitingApproval(false);
   }, [allowanceStr, vaultOption]);
-
-  const tokenContract = useMemo(() => {
-    if (isETHVault(vaultOption)) {
-      return;
-    }
-
-    // @ts-ignore
-    return getERC20Token(library, asset.toLowerCase());
-  }, [vaultOption, asset, library]);
 
   // derived states
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
@@ -452,38 +392,6 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     vaultMaxDepositAmount,
     vaultOption,
   ]);
-
-  const handleApproveToken = useCallback(async () => {
-    setWaitingApproval(true);
-    if (tokenContract) {
-      const amount =
-        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-
-      try {
-        const tx = await tokenContract.approve(
-          VaultAddressMap[vaultOption].v1,
-          amount
-        );
-
-        const txhash = tx.hash;
-
-        setPendingTransactions((pendingTransactions) => [
-          ...pendingTransactions,
-          {
-            txhash,
-            type: "approval",
-            amount: amount,
-            vault: vaultOption,
-          },
-        ]);
-
-        // Wait for transaction to be approved
-        await provider.waitForTransaction(txhash, 5);
-      } catch (err) {
-        setWaitingApproval(false);
-      }
-    }
-  }, [provider, setPendingTransactions, tokenContract, vaultOption]);
 
   const formWalletContent = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
@@ -736,47 +644,12 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     ]
   );
 
-  const renderApprovalAssetLogo = useCallback(() => {
-    const Logo = getAssetLogo(asset);
-
-    return <Logo />;
-  }, [asset]);
-
   const formContent = useMemo(() => {
     /**
      * Approval before deposit
      */
     if (vaultActionForm.actionType === ACTIONS.deposit && showTokenApproval) {
-      return (
-        <>
-          <ApprovalIconContainer>
-            <ApprovalIcon color={color}>
-              {renderApprovalAssetLogo()}
-            </ApprovalIcon>
-          </ApprovalIconContainer>
-          <ApprovalDescription>
-            Before you deposit, the vault needs your permission to invest your{" "}
-            {getAssetDisplay(asset)} in the vault’s strategy.
-          </ApprovalDescription>
-          <ApprovalHelp
-            to="https://ribbon.finance/faq"
-            target="__blank"
-            rel="noreferrer noopener"
-          >
-            <SecondaryText>Why do I have to do this?</SecondaryText>
-          </ApprovalHelp>
-          <ActionButton
-            onClick={handleApproveToken}
-            className="py-3 mb-4"
-            disabled={Boolean(error)}
-            color={color}
-          >
-            {waitingApproval
-              ? waitingApprovalLoadingText
-              : `Approve ${getAssetDisplay(asset)}`}
-          </ActionButton>
-        </>
-      );
+      return <VaultApprovalForm vaultOption={vaultOption} version="v1" />;
     }
 
     switch (vaultActionForm.actionType) {
@@ -822,22 +695,17 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
   }, [
     asset,
     renderButton,
-    color,
     connected,
     error,
-    handleApproveToken,
     handleInputChange,
     handleMaxClick,
     maxWithdrawAmount,
-    renderApprovalAssetLogo,
     showTokenApproval,
     transferData,
     vaultAccounts,
     vaultActionForm,
     vaultMaxWithdrawAmount,
     vaultOption,
-    waitingApproval,
-    waitingApprovalLoadingText,
   ]);
 
   const getSwapTriggerText = useCallback((_asset: Assets) => {
