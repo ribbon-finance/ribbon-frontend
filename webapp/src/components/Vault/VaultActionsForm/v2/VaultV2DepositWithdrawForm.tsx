@@ -1,17 +1,20 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "styled-components";
 
 import colors from "shared/lib/designSystem/colors";
 import { VaultAddressMap, VaultOptions } from "shared/lib/constants/constants";
 import { ACTIONS } from "../Modal/types";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
-import { Title } from "shared/lib/designSystem";
+import { SecondaryText, Title } from "shared/lib/designSystem";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import useV2VaultData from "shared/lib/hooks/useV2VaultData";
 import { ERC20Token } from "shared/lib/models/eth";
 import { isETHVault } from "shared/lib/utils/vault";
 import { isPracticallyZero } from "shared/lib/utils/math";
 import VaultApprovalForm from "../common/VaultApprovalForm";
+import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
+import theme from "shared/lib/designSystem/theme";
+import SwapBTCDropdown from "../common/SwapBTCDropdown";
 
 const FormTabContainer = styled.div`
   display: flex;
@@ -61,6 +64,25 @@ const FormTabTitle = styled(Title)<{ active: boolean }>`
   color: ${(props) => (props.active ? "#f3f3f3" : "rgba(255, 255, 255, 0.64)")};
 `;
 
+const SwapTriggerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const SwapTriggerButton = styled.div`
+  margin-top: 24px;
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-radius: 100px;
+  padding: 8px 16px;
+  width: 300px;
+  display: flex;
+  align-items: center;
+`;
+
+const SwapTriggerButtonText = styled(SecondaryText)`
+  flex: 1;
+`;
+
 interface VaultV2DepositWithdrawFormProps {
   vaultOption: VaultOptions;
   onFormSubmit: () => void;
@@ -108,6 +130,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
 
     return false;
   }, [decimals, tokenAllowance, vaultActionForm.actionType, vaultOption]);
+  const [swapContainerOpen, setSwapContainerOpen] = useState(false);
 
   const formContent = useMemo(() => {
     /**
@@ -141,25 +164,42 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     //         {renderButton(error)}
     //       </>
     //     );
-    //   case ACTIONS.transfer:
-    //     return (
-    //       <VaultV1TransferForm
-    //         vaultOption={vaultOption}
-    //         receiveVault={vaultActionForm.receiveVault!}
-    //         vaultAccount={vaultAccounts[vaultOption]}
-    //         transferVaultData={{
-    //           maxWithdrawAmount,
-    //           vaultMaxWithdrawAmount,
-    //         }}
-    //         transferData={transferData}
-    //         inputAmount={vaultActionForm.inputAmount}
-    //         handleInputChange={handleInputChange}
-    //         handleMaxClick={handleMaxClick}
-    //         renderActionButton={renderButton}
-    //       />
-    //     );
     // }
   }, [showTokenApproval, vaultOption]);
+
+  const swapContainerTrigger = useMemo(() => {
+    switch (asset) {
+      case "WBTC":
+        return (
+          <SwapTriggerContainer>
+            <SwapTriggerButton
+              role="button"
+              onClick={() => setSwapContainerOpen((open) => !open)}
+            >
+              <SwapTriggerButtonText>
+                Swap your BTC or renBTC for wBTC
+              </SwapTriggerButtonText>
+              <ButtonArrow
+                isOpen={swapContainerOpen}
+                color={colors.primaryText}
+              />
+            </SwapTriggerButton>
+          </SwapTriggerContainer>
+        );
+
+      default:
+        return <></>;
+    }
+  }, [asset, swapContainerOpen]);
+
+  const swapContainer = useMemo(() => {
+    switch (asset) {
+      case "WBTC":
+        return <SwapBTCDropdown open={swapContainerOpen} />;
+      default:
+        return <></>;
+    }
+  }, [asset, swapContainerOpen]);
 
   return (
     <>
@@ -186,7 +226,10 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
 
       <div className="d-flex flex-column align-items-center p-4">
         {formContent}
+        {swapContainerTrigger}
       </div>
+
+      {swapContainer}
     </>
   );
 };

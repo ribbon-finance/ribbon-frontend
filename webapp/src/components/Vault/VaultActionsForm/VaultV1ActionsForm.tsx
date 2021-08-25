@@ -33,7 +33,7 @@ import { Assets } from "shared/lib/store/types";
 import YourPosition from "../YourPosition";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
-import SwapBTCDropdown from "./SwapBTCDropdown";
+import SwapBTCDropdown from "./common/SwapBTCDropdown";
 import useVaultActivity from "../../../hooks/useVaultActivity";
 import { VaultActivityMeta, VaultShortPosition } from "shared/lib/models/vault";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
@@ -708,15 +708,6 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     vaultOption,
   ]);
 
-  const getSwapTriggerText = useCallback((_asset: Assets) => {
-    switch (_asset) {
-      case "WBTC":
-        return "Swap your BTC or renBTC for wBTC";
-      default:
-        return "";
-    }
-  }, []);
-
   const swapContainerTrigger = useMemo(() => {
     switch (asset) {
       case "WBTC":
@@ -727,7 +718,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
               onClick={() => setSwapContainerOpen((open) => !open)}
             >
               <SwapTriggerButtonText>
-                {getSwapTriggerText(asset)}
+                Swap your BTC or renBTC for wBTC
               </SwapTriggerButtonText>
               <ButtonArrow isOpen={swapContainerOpen} />
             </SwapTriggerButton>
@@ -737,7 +728,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
       default:
         return <></>;
     }
-  }, [asset, getSwapTriggerText, swapContainerOpen]);
+  }, [asset, swapContainerOpen]);
 
   const swapContainer = useMemo(() => {
     switch (asset) {
