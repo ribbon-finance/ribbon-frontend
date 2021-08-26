@@ -258,6 +258,13 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
       .format("MMMM Do, YYYY");
   }, [activities]);
 
+  /**
+   * Default to deposit at v1
+   */
+  useEffect(() => {
+    handleActionTypeChange(ACTIONS.deposit);
+  }, [handleActionTypeChange]);
+
   // Show token approval when needed
   useEffect(() => {
     if (

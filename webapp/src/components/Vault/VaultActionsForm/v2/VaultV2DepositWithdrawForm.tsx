@@ -16,6 +16,7 @@ import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
 import SwapBTCDropdown from "../common/SwapBTCDropdown";
 import VaultBasicAmountForm from "../common/VaultBasicAmountForm";
+import { useEffect } from "react";
 
 const FormTabContainer = styled.div`
   display: flex;
@@ -96,17 +97,10 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
   /**
    * Primary hooks
    */
-  const {
-    canTransfer,
-    handleActionTypeChange,
-    handleInputChange,
-    handleMaxClick,
-    transferData,
-    vaultActionForm,
-  } = useVaultActionForm(vaultOption);
+  const { handleActionTypeChange, vaultActionForm } =
+    useVaultActionForm(vaultOption);
   const {
     data: { asset, decimals },
-    loading,
   } = useV2VaultData(vaultOption);
 
   /**
@@ -132,6 +126,13 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     return false;
   }, [decimals, tokenAllowance, vaultActionForm.actionType, vaultOption]);
   const [swapContainerOpen, setSwapContainerOpen] = useState(false);
+
+  /**
+   * Default action to deposit
+   */
+  useEffect(() => {
+    handleActionTypeChange(ACTIONS.deposit, "v2");
+  }, [handleActionTypeChange]);
 
   const formContent = useMemo(() => {
     /**
@@ -198,7 +199,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       <FormTabContainer>
         <FormTab
           active={vaultActionForm.actionType === ACTIONS.deposit}
-          onClick={() => handleActionTypeChange(ACTIONS.deposit)}
+          onClick={() => handleActionTypeChange(ACTIONS.deposit, "v2")}
         >
           <FormTabTitle active={vaultActionForm.actionType === ACTIONS.deposit}>
             Deposit
@@ -206,7 +207,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
         </FormTab>
         <FormTab
           active={vaultActionForm.actionType === ACTIONS.withdraw}
-          onClick={() => handleActionTypeChange(ACTIONS.withdraw)}
+          onClick={() => handleActionTypeChange(ACTIONS.withdraw, "v2")}
         >
           <FormTabTitle
             active={vaultActionForm.actionType === ACTIONS.withdraw}

@@ -6,6 +6,8 @@ import {
   GAS_LIMITS,
   VaultMaxDeposit,
   VaultOptions,
+  VaultVersion,
+  VaultVersionList,
 } from "shared/lib/constants/constants";
 import {
   ACTIONS,
@@ -98,32 +100,45 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
    * Action type: deposit, withdraw
    */
   const handleActionTypeChange = useCallback(
-    (actionType: ActionType) => {
+    (
+      actionType: ActionType,
+      vaultVersion: VaultVersion = VaultVersionList[0]
+    ) => {
       // Do nothing if changing to the same action type
-      if (actionType === vaultActionForm.actionType) {
-        return;
-      }
+      setVaultActionForm((actionForm) => {
+        if (
+          actionType === actionForm.actionType &&
+          vaultVersion === actionForm.vaultVersion
+        ) {
+          return actionForm;
+        }
 
-      switch (actionType) {
-        case ACTIONS.transfer:
-          switch (vaultOption) {
-            case "rUSDC-ETH-P-THETA":
-              setVaultActionForm((vaultActionForm) => ({
-                ...vaultActionForm,
-                actionType: ACTIONS.transfer,
-                receiveVault: "ryvUSDC-ETH-P-THETA",
-              }));
-          }
-          break;
-        default:
-          setVaultActionForm((vaultActionForm) => ({
-            ...vaultActionForm,
-            inputAmount: "",
-            actionType,
-          }));
-      }
+        switch (actionType) {
+          case ACTIONS.transfer:
+            switch (vaultOption) {
+              case "rUSDC-ETH-P-THETA":
+                return {
+                  ...actionForm,
+                  vaultVersion,
+                  inputAmount: "",
+                  actionType: ACTIONS.transfer,
+                  receiveVault: "ryvUSDC-ETH-P-THETA",
+                };
+            }
+            break;
+          default:
+            return {
+              ...actionForm,
+              vaultVersion,
+              inputAmount: "",
+              actionType,
+            };
+        }
+
+        return actionForm;
+      });
     },
-    [setVaultActionForm, vaultActionForm.actionType, vaultOption]
+    [setVaultActionForm, vaultOption]
   );
 
   /**
@@ -146,57 +161,72 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
    */
   const handleMaxClick = useCallback(() => {
     setVaultActionForm((actionForm) => {
-      switch (actionForm.actionType) {
-        case ACTIONS.deposit:
-          const gasLimit = GAS_LIMITS[vaultOption].deposit;
-          const gasFee = BigNumber.from(gasLimit.toString()).mul(
-            BigNumber.from(gasPrice || "0")
-          );
-          const total = BigNumber.from(userAssetBalance);
-          // TODO: Optimize the code to request gas fees only when needed
-          const maxAmount = isETHVault(vaultOption) ? total.sub(gasFee) : total;
-          const allowedMaxAmount = maxAmount.lte(
-            vaultMaxDepositAmount.sub(vaultBalanceInAsset)
-          )
-            ? maxAmount
-            : vaultMaxDepositAmount.sub(vaultBalanceInAsset);
-          const userMaxAmount = allowedMaxAmount.isNegative()
-            ? BigNumber.from("0")
-            : allowedMaxAmount;
+      console.log(actionForm.vaultVersion);
+      switch (actionForm.vaultVersion) {
+        /**
+         * V1 handle max click
+         */
+        case "v1":
+          switch (actionForm.actionType) {
+            case ACTIONS.deposit:
+              const gasLimit = GAS_LIMITS[vaultOption].deposit;
+              const gasFee = BigNumber.from(gasLimit.toString()).mul(
+                BigNumber.from(gasPrice || "0")
+              );
+              const total = BigNumber.from(userAssetBalance);
+              // TODO: Optimize the code to request gas fees only when needed
+              const maxAmount = isETHVault(vaultOption)
+                ? total.sub(gasFee)
+                : total;
+              const allowedMaxAmount = maxAmount.lte(
+                vaultMaxDepositAmount.sub(vaultBalanceInAsset)
+              )
+                ? maxAmount
+                : vaultMaxDepositAmount.sub(vaultBalanceInAsset);
+              const userMaxAmount = allowedMaxAmount.isNegative()
+                ? BigNumber.from("0")
+                : allowedMaxAmount;
 
-          // Fringe case: if amt of deposit greater than vault limit, return 0
-          const vaultAvailableBalance = deposits.gt(vaultLimit)
-            ? BigNumber.from("0")
-            : vaultLimit.sub(deposits);
+              // Fringe case: if amt of deposit greater than vault limit, return 0
+              const vaultAvailableBalance = deposits.gt(vaultLimit)
+                ? BigNumber.from("0")
+                : vaultLimit.sub(deposits);
 
-          // Check if max is vault availableBalance
-          const finalMaxAmount = userMaxAmount.gt(vaultAvailableBalance)
-            ? vaultAvailableBalance
-            : userMaxAmount;
-          return {
-            ...actionForm,
-            inputAmount: formatUnits(finalMaxAmount, decimals),
-          };
-        case ACTIONS.withdraw:
-          return {
-            ...actionForm,
-            inputAmount: formatUnits(maxWithdrawAmount, decimals),
-          };
-        case ACTIONS.transfer:
-          return {
-            ...actionForm,
-            inputAmount: transferData
-              ? formatUnits(transferData.availableTransferAmount, decimals)
-              : "",
-          };
-        case ACTIONS.migrate:
-          return {
-            ...actionForm,
-            inputAmount: formatUnits(vaultBalanceInAsset, decimals),
-          };
-        default:
+              // Check if max is vault availableBalance
+              const finalMaxAmount = userMaxAmount.gt(vaultAvailableBalance)
+                ? vaultAvailableBalance
+                : userMaxAmount;
+              return {
+                ...actionForm,
+                inputAmount: formatUnits(finalMaxAmount, decimals),
+              };
+            case ACTIONS.withdraw:
+              return {
+                ...actionForm,
+                inputAmount: formatUnits(maxWithdrawAmount, decimals),
+              };
+            case ACTIONS.transfer:
+              return {
+                ...actionForm,
+                inputAmount: transferData
+                  ? formatUnits(transferData.availableTransferAmount, decimals)
+                  : "",
+              };
+            case ACTIONS.migrate:
+              return {
+                ...actionForm,
+                inputAmount: formatUnits(vaultBalanceInAsset, decimals),
+              };
+          }
+          break;
+
+        /**
+         * V2 handle max click
+         */
+        case "v2":
           return actionForm;
       }
+      return actionForm;
     });
   }, [
     decimals,
