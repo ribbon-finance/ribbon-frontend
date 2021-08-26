@@ -19,7 +19,6 @@ const FormContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  text-align: center;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
   background: ${colors.background};

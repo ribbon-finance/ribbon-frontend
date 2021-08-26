@@ -54,8 +54,10 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
    * Reset form when vault option changes
    */
   useEffect(() => {
-    resetActionForm();
-  }, [vaultOption, resetActionForm]);
+    if (vaultActionForm.vaultOption !== vaultOption) {
+      resetActionForm();
+    }
+  }, [vaultActionForm.vaultOption, vaultOption, resetActionForm]);
 
   const canTransfer = useMemo(() => {
     switch (vaultOption) {
@@ -114,10 +116,11 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
           }
           break;
         default:
-          setVaultActionForm({
+          setVaultActionForm((vaultActionForm) => ({
+            ...vaultActionForm,
             inputAmount: "",
             actionType,
-          });
+          }));
       }
     },
     [setVaultActionForm, vaultActionForm.actionType, vaultOption]

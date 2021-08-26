@@ -34,10 +34,6 @@ const FormTitle = styled(Title)`
   letter-spacing: 1px;
 `;
 
-const FormDescription = styled(PrimaryText)`
-  color: ${colors.text};
-`;
-
 const FormDescriptionHighlight = styled.span`
   color: ${colors.primaryText};
 `;
@@ -131,14 +127,14 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
     switch (error) {
       case "amountStaked":
         return (
-          <SecondaryText className="mt-3" color={colors.red}>
+          <SecondaryText className="mt-3 text-center" color={colors.red}>
             Before you migrate to V2 you must unstake your funds from the
             rETH-THETA staking pool
           </SecondaryText>
         );
       case "insufficientWithdrawalLimit":
         return (
-          <SecondaryText className="mt-3" color={colors.red}>
+          <SecondaryText className="mt-3 text-center" color={colors.red}>
             Migrating your ETH from V1 to V2 will breach the weekly migration
             limit. Please try again on Friday at 10am UTC when the weekly
             migration limit is reset.
@@ -154,14 +150,14 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
       case "options":
         return (
           <>
-            <FormDescription className="mt-3">
+            <PrimaryText className="mt-3 text-center" color={colors.text}>
               You can now move your V1 deposit balance of{" "}
               <FormDescriptionHighlight>
                 {formatBigNumber(vaultAccount.totalBalance, 6, decimals)}{" "}
                 {getAssetDisplay(asset)}
               </FormDescriptionHighlight>{" "}
               to the V2 vault
-            </FormDescription>
+            </PrimaryText>
 
             {/* Migrate button */}
             <ActionButton
@@ -185,9 +181,9 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
       case "migrate":
         return (
           <>
-            <FormDescription className="mt-3">
+            <PrimaryText className="mt-3 text-center" color={colors.text}>
               ETH deposits can now be migrated over from the V1 vault
-            </FormDescription>
+            </PrimaryText>
 
             {/* V1 Balance */}
             <div className="d-flex w-100 align-items-center mt-4">

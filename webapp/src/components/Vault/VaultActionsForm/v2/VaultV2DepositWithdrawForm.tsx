@@ -15,6 +15,7 @@ import VaultApprovalForm from "../common/VaultApprovalForm";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
 import SwapBTCDropdown from "../common/SwapBTCDropdown";
+import VaultBasicAmountForm from "../common/VaultBasicAmountForm";
 
 const FormTabContainer = styled.div`
   display: flex;
@@ -140,32 +141,23 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       return <VaultApprovalForm vaultOption={vaultOption} version="v2" />;
     }
 
-    // switch (vaultActionForm.actionType) {
-    //   case ACTIONS.deposit:
-    //   case ACTIONS.withdraw:
-    //     return (
-    //       <>
-    //         <BaseInputLabel>AMOUNT ({getAssetDisplay(asset)})</BaseInputLabel>
-    //         <BaseInputContainer className="position-relative mb-5">
-    //           <BaseInput
-    //             type="number"
-    //             className="form-control"
-    //             aria-label="ETH"
-    //             placeholder="0"
-    //             value={vaultActionForm.inputAmount}
-    //             onChange={handleInputChange}
-    //           />
-    //           {connected && (
-    //             <BaseInputButton onClick={handleMaxClick}>
-    //               MAX
-    //             </BaseInputButton>
-    //           )}
-    //         </BaseInputContainer>
-    //         {renderButton(error)}
-    //       </>
-    //     );
-    // }
-  }, [showTokenApproval, vaultOption]);
+    switch (vaultActionForm.actionType) {
+      case ACTIONS.deposit:
+        return (
+          <VaultBasicAmountForm
+            vaultOption={vaultOption}
+            error={false}
+            onFormSubmit={onFormSubmit}
+            actionButtonText={"Deposit"}
+          />
+        );
+    }
+  }, [
+    onFormSubmit,
+    showTokenApproval,
+    vaultActionForm.actionType,
+    vaultOption,
+  ]);
 
   const swapContainerTrigger = useMemo(() => {
     switch (asset) {
@@ -224,7 +216,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
         </FormTab>
       </FormTabContainer>
 
-      <div className="d-flex flex-column align-items-center p-4">
+      <div className="d-flex flex-column p-4">
         {formContent}
         {swapContainerTrigger}
       </div>

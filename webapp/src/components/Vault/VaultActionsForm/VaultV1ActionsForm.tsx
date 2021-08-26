@@ -1,23 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import moment from "moment";
 
-import {
-  BaseInput,
-  BaseInputButton,
-  BaseInputContainer,
-  BaseInputLabel,
-  PrimaryText,
-  SecondaryText,
-  Title,
-} from "shared/lib/designSystem";
+import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import { formatBigNumber } from "shared/lib/utils/math";
-import {
-  ActionButton,
-  ConnectWalletButton,
-} from "shared/lib/components/Common/buttons";
 import {
   VaultAddressMap,
   VaultMaxDeposit,
@@ -29,9 +17,7 @@ import { getAssetDisplay } from "shared/lib/utils/asset";
 import { ERC20Token } from "shared/lib/models/eth";
 import theme from "shared/lib/designSystem/theme";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
-import { Assets } from "shared/lib/store/types";
 import YourPosition from "../YourPosition";
-import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import SwapBTCDropdown from "./common/SwapBTCDropdown";
 import useVaultActivity from "../../../hooks/useVaultActivity";
@@ -44,6 +30,7 @@ import useVaultActionForm from "../../../hooks/useVaultActionForm";
 import { ACTIONS } from "./Modal/types";
 import VaultV1TransferForm from "./v1/VaultV1TransferForm";
 import VaultApprovalForm from "./common/VaultApprovalForm";
+import VaultBasicAmountForm from "./common/VaultBasicAmountForm";
 
 const { parseUnits, formatUnits } = ethers.utils;
 
@@ -235,21 +222,14 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     decimals,
     vaultMaxWithdrawAmount,
   } = useVaultData(vaultOption);
-  const {
-    canTransfer,
-    handleActionTypeChange,
-    handleInputChange,
-    handleMaxClick,
-    transferData,
-    vaultActionForm,
-  } = useVaultActionForm(vaultOption);
+  const { canTransfer, handleActionTypeChange, vaultActionForm } =
+    useVaultActionForm(vaultOption);
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
   const { vaultAccounts } = useVaultAccounts(vaultOptions);
   const { active, account } = useWeb3React();
 
   // state hooks
   const isLoadingData = status === "loading";
-  const [, setShowConnectModal] = useConnectWalletModal();
   const [showTokenApproval, setShowTokenApproval] = useState(false);
   const tokenAllowance = useTokenAllowance(
     isETHVault(vaultOption) ? undefined : (asset.toLowerCase() as ERC20Token),
@@ -578,6 +558,8 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
       case ACTIONS.transfer:
         return "Preview Transfer";
     }
+
+    return "";
   }, [
     asset,
     decimals,
@@ -606,44 +588,6 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     return connected ? "active" : "inactive";
   }, [connected, error]);
 
-  const renderButton = useCallback(
-    (error: string | undefined) => {
-      if (connected) {
-        return (
-          <ActionButton
-            disabled={Boolean(error) || !isInputNonZero}
-            onClick={onFormSubmit}
-            className={`py-3 ${
-              vaultActionForm.actionType !== ACTIONS.transfer ? "mb-4" : ""
-            }`}
-            color={color}
-          >
-            {actionButtonText}
-          </ActionButton>
-        );
-      }
-
-      return (
-        <ConnectWalletButton
-          onClick={() => setShowConnectModal(true)}
-          type="button"
-          className="btn py-3 mb-4"
-        >
-          Connect Wallet
-        </ConnectWalletButton>
-      );
-    },
-    [
-      actionButtonText,
-      color,
-      connected,
-      isInputNonZero,
-      onFormSubmit,
-      setShowConnectModal,
-      vaultActionForm,
-    ]
-  );
-
   const formContent = useMemo(() => {
     /**
      * Approval before deposit
@@ -656,52 +600,33 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
       case ACTIONS.deposit:
       case ACTIONS.withdraw:
         return (
-          <>
-            <BaseInputLabel>AMOUNT ({getAssetDisplay(asset)})</BaseInputLabel>
-            <BaseInputContainer className="position-relative mb-5">
-              <BaseInput
-                type="number"
-                className="form-control"
-                aria-label="ETH"
-                placeholder="0"
-                value={vaultActionForm.inputAmount}
-                onChange={handleInputChange}
-              />
-              {connected && (
-                <BaseInputButton onClick={handleMaxClick}>MAX</BaseInputButton>
-              )}
-            </BaseInputContainer>
-            {renderButton(error)}
-          </>
+          <VaultBasicAmountForm
+            vaultOption={vaultOption}
+            error={Boolean(error)}
+            onFormSubmit={onFormSubmit}
+            actionButtonText={actionButtonText}
+          />
         );
       case ACTIONS.transfer:
         return (
           <VaultV1TransferForm
             vaultOption={vaultOption}
-            receiveVault={vaultActionForm.receiveVault!}
             vaultAccount={vaultAccounts[vaultOption]}
             transferVaultData={{
               maxWithdrawAmount,
               vaultMaxWithdrawAmount,
             }}
-            transferData={transferData}
-            inputAmount={vaultActionForm.inputAmount}
-            handleInputChange={handleInputChange}
-            handleMaxClick={handleMaxClick}
-            renderActionButton={renderButton}
+            actionButtonText={actionButtonText}
+            onFormSubmit={onFormSubmit}
           />
         );
     }
   }, [
-    asset,
-    renderButton,
-    connected,
+    actionButtonText,
     error,
-    handleInputChange,
-    handleMaxClick,
     maxWithdrawAmount,
+    onFormSubmit,
     showTokenApproval,
-    transferData,
     vaultAccounts,
     vaultActionForm,
     vaultMaxWithdrawAmount,
