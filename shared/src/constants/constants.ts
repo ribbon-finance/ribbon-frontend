@@ -15,8 +15,10 @@ export const NETWORK_NAMES: Record<number, string> = {
 export const VaultVersionList = ["v1", "v2"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 
-export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">
-export const VaultVersionListExludeV1 = VaultVersionList.filter((version) => version !== "v1") as Array<VaultVersionExcludeV1>
+export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">;
+export const VaultVersionListExludeV1 = VaultVersionList.filter(
+  (version) => version !== "v1"
+) as Array<VaultVersionExcludeV1>;
 
 export const FullVaultList = [
   "ryvUSDC-ETH-P-THETA",
@@ -36,23 +38,50 @@ export const VaultList: VaultOptions[] = !isProduction()
   : FullVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
 
 export const GAS_LIMITS: {
-  [vault in VaultOptions]: { deposit: number; withdraw: number };
+  [vault in VaultOptions]: {
+    v1: { deposit: number; withdraw: number };
+  } & Partial<{
+    v2: {
+      deposit: number;
+      withdrawInstantly: number;
+    };
+  }>;
 } = {
   "rETH-THETA": {
-    deposit: 80000,
-    withdraw: 100000,
+    v1: {
+      deposit: 80000,
+      withdraw: 100000,
+    },
+    v2: {
+      deposit: 120000,
+      withdrawInstantly: 120000,
+    },
   },
   "rBTC-THETA": {
-    deposit: 100000,
-    withdraw: 140000,
+    v1: {
+      deposit: 100000,
+      withdraw: 140000,
+    },
+    v2: {
+      deposit: 140000,
+      withdrawInstantly: 120000,
+    },
   },
   "rUSDC-ETH-P-THETA": {
-    deposit: 120000,
-    withdraw: 120000,
+    v1: {
+      deposit: 120000,
+      withdraw: 120000,
+    },
+    v2: {
+      deposit: 140000,
+      withdrawInstantly: 120000,
+    },
   },
   "ryvUSDC-ETH-P-THETA": {
-    deposit: 210000,
-    withdraw: 210000,
+    v1: {
+      deposit: 210000,
+      withdraw: 210000,
+    },
   },
 };
 
@@ -117,12 +146,15 @@ export const VaultAddressMap: {
 
 /**
  * Used to check if vault of given version exists. Only used for v2 and above
- * @param vaultOption 
+ * @param vaultOption
  * @returns boolean
  */
-export const hasVaultVersion = (vaultOption: VaultOptions, version: VaultVersionExcludeV1): boolean => {
-  return Boolean(VaultAddressMap[vaultOption][version])
-}
+export const hasVaultVersion = (
+  vaultOption: VaultOptions,
+  version: VaultVersionExcludeV1
+): boolean => {
+  return Boolean(VaultAddressMap[vaultOption][version]);
+};
 
 export const VaultNamesList = [
   "T-USDC-P-ETH",

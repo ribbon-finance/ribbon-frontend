@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
 
 import { ACTIONS, StepData, Steps, STEPS } from "./types";
@@ -19,6 +19,7 @@ import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { capitalize } from "shared/lib/utils/text";
+import useV2Vault from "shared/lib/hooks/useV2Vault";
 
 export interface ActionStepsProps {
   vault: {
@@ -41,7 +42,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const firstStep = skipToPreview ? STEPS.previewStep : STEPS.formStep;
   const [step, setStep] = useState<Steps>(firstStep);
   const [txhash, setTxhash] = useState("");
-  const vault = useVault(vaultOption);
+  const v1Vault = useVault(vaultOption);
+  const v2Vault = useV2Vault(vaultOption);
   const [pendingTransactions, setPendingTransactions] =
     usePendingTransactions();
   const { vaultBalanceInAsset, decimals } = useVaultData(vaultOption);
@@ -80,8 +82,14 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     };
   }, [show, firstStep, setStep]);
 
-  const amount = parseUnits(vaultActionForm.inputAmount || "0", decimals);
-  const amountStr = amount.toString();
+  const [amount, amountStr] = useMemo(() => {
+    try {
+      const amount = parseUnits(vaultActionForm.inputAmount || "0", decimals);
+      return [amount, amount.toString()];
+    } catch (err) {
+      return [BigNumber.from(0), "0"];
+    }
+  }, [decimals, vaultActionForm.inputAmount]);
 
   useEffect(() => {
     // we check that the txhash has already been removed
@@ -97,6 +105,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   }, [step, pendingTransactions, txhash, handleClose]);
 
   const handleClickConfirmButton = async () => {
+    const vault = vaultActionForm.vaultVersion === "v1" ? v1Vault : v2Vault;
     if (vault !== null) {
       // check illegal state transition
       if (step !== STEPS.confirmationStep - 1) return;

@@ -17,6 +17,7 @@ import { initialVaultActionForm, useWebappGlobalState } from "../store/store";
 import useGasPrice from "shared/lib/hooks/useGasPrice";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { isETHVault } from "shared/lib/utils/vault";
+import useV2VaultData from "shared/lib/hooks/useV2VaultData";
 
 export type VaultActionFormTransferData =
   | {
@@ -29,14 +30,27 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   const [vaultActionForm, setVaultActionForm] =
     useWebappGlobalState("vaultActionForm");
   const gasPrice = useGasPrice();
+  /**
+   * V1 vault data
+   */
+  const { deposits, vaultLimit, vaultBalanceInAsset, maxWithdrawAmount } =
+    useVaultData(vaultOption);
+  /**
+   * V2 vault data
+   */
   const {
-    userAssetBalance,
-    deposits,
-    vaultLimit,
-    vaultBalanceInAsset,
-    maxWithdrawAmount,
-    decimals,
-  } = useVaultData(vaultOption);
+    data: {
+      cap: v2Cap,
+      decimals,
+      depositBalanceInAsset: v2DepositBalanceInAsset,
+      lockedBalanceInAsset: v2LockedBalanceInAsset,
+      totalBalance: v2TotalBalance,
+      userAssetBalance,
+    },
+  } = useV2VaultData(vaultOption);
+  const v2VaultBalanceInAsset = v2DepositBalanceInAsset.add(
+    v2LockedBalanceInAsset
+  );
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const receiveVaultData = useVaultData(
     vaultActionForm.receiveVault || vaultOption
@@ -161,7 +175,6 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
    */
   const handleMaxClick = useCallback(() => {
     setVaultActionForm((actionForm) => {
-      console.log(actionForm.vaultVersion);
       switch (actionForm.vaultVersion) {
         /**
          * V1 handle max click
@@ -169,7 +182,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
         case "v1":
           switch (actionForm.actionType) {
             case ACTIONS.deposit:
-              const gasLimit = GAS_LIMITS[vaultOption].deposit;
+              const gasLimit = GAS_LIMITS[vaultOption].v1.deposit;
               const gasFee = BigNumber.from(gasLimit.toString()).mul(
                 BigNumber.from(gasPrice || "0")
               );
@@ -224,7 +237,46 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
          * V2 handle max click
          */
         case "v2":
-          return actionForm;
+          switch (actionForm.actionType) {
+            case ACTIONS.deposit:
+              const gasLimit = GAS_LIMITS[vaultOption].v2!.deposit;
+              const gasFee = BigNumber.from(gasLimit.toString()).mul(
+                BigNumber.from(gasPrice || "0")
+              );
+              const total = BigNumber.from(userAssetBalance);
+              // TODO: Optimize the code to request gas fees only when needed
+              const maxAmount = isETHVault(vaultOption)
+                ? total.sub(gasFee)
+                : total;
+              const allowedMaxAmount = maxAmount.lte(
+                vaultMaxDepositAmount.sub(v2VaultBalanceInAsset)
+              )
+                ? maxAmount
+                : vaultMaxDepositAmount.sub(v2VaultBalanceInAsset);
+              const userMaxAmount = allowedMaxAmount.isNegative()
+                ? BigNumber.from("0")
+                : allowedMaxAmount;
+
+              // Fringe case: if amt of deposit greater than vault limit, return 0
+              const vaultAvailableBalance = v2TotalBalance.gt(v2Cap)
+                ? BigNumber.from("0")
+                : v2Cap.sub(v2TotalBalance);
+
+              // Check if max is vault availableBalance
+              const finalMaxAmount = userMaxAmount.gt(vaultAvailableBalance)
+                ? vaultAvailableBalance
+                : userMaxAmount;
+              return {
+                ...actionForm,
+                inputAmount: formatUnits(finalMaxAmount, decimals),
+              };
+            case ACTIONS.withdraw:
+              // TODO: Add withdraw type
+              return {
+                ...actionForm,
+                inputAmount: formatUnits(v2DepositBalanceInAsset, decimals),
+              };
+          }
       }
       return actionForm;
     });
@@ -236,6 +288,10 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     setVaultActionForm,
     transferData,
     userAssetBalance,
+    v2Cap,
+    v2DepositBalanceInAsset,
+    v2TotalBalance,
+    v2VaultBalanceInAsset,
     vaultBalanceInAsset,
     vaultLimit,
     vaultMaxDepositAmount,

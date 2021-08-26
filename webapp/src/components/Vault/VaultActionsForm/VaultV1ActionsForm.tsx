@@ -320,49 +320,61 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
         break;
     }
 
-    /** Check block with input requirement */
-    if (isInputNonZero && !isLoadingData && connected) {
-      const amount = parseUnits(vaultActionForm.inputAmount, decimals);
+    try {
+      /** Check block with input requirement */
+      if (isInputNonZero && !isLoadingData && connected) {
+        const amountBigNumber = parseUnits(
+          vaultActionForm.inputAmount,
+          decimals
+        );
 
-      switch (vaultActionForm.actionType) {
-        case ACTIONS.deposit:
-          /** Insufficient balance */
-          if (amount.gt(userAssetBalance)) {
-            return "insufficient_balance";
-          }
+        switch (vaultActionForm.actionType) {
+          case ACTIONS.deposit:
+            /** Insufficient balance */
+            if (amountBigNumber.gt(userAssetBalance)) {
+              return "insufficient_balance";
+            }
 
-          /** Check amount more than vault max deposit amount */
-          if (amount.gt(vaultMaxDepositAmount.sub(vaultBalanceInAsset))) {
-            return "max_exceeded";
-          }
+            /** Check amount more than vault max deposit amount */
+            if (
+              amountBigNumber.gt(vaultMaxDepositAmount.sub(vaultBalanceInAsset))
+            ) {
+              return "max_exceeded";
+            }
 
-          /** Check if deposit amount more than vault available */
-          if (amount.gt(vaultLimit.sub(deposits))) {
-            return "capacity_overflow";
-          }
-          break;
-        case ACTIONS.withdraw:
-          /** Check if vault withdrawal hitting limit */
-          if (amount.gt(maxWithdrawAmount) && amount.lte(vaultBalanceInAsset)) {
-            return "withdraw_limit_exceeded";
-          }
+            /** Check if deposit amount more than vault available */
+            if (amountBigNumber.gt(vaultLimit.sub(deposits))) {
+              return "capacity_overflow";
+            }
+            break;
+          case ACTIONS.withdraw:
+            /** Check if vault withdrawal hitting limit */
+            if (
+              amountBigNumber.gt(maxWithdrawAmount) &&
+              amountBigNumber.lte(vaultBalanceInAsset)
+            ) {
+              return "withdraw_limit_exceeded";
+            }
 
-          /** Check if amount staked when withdraw */
-          if (
-            amount.gt(maxWithdrawAmount) &&
-            vaultAccount &&
-            amount.lte(vaultAccount.totalBalance)
-          ) {
-            return "withdraw_amount_staked";
-          }
+            /** Check if amount staked when withdraw */
+            if (
+              amountBigNumber.gt(maxWithdrawAmount) &&
+              vaultAccount &&
+              amountBigNumber.lte(vaultAccount.totalBalance)
+            ) {
+              return "withdraw_amount_staked";
+            }
 
-          /** Check if user has enough balance to withdraw */
-          if (amount.gt(maxWithdrawAmount)) {
-            return "insufficient_balance";
-          }
+            /** Check if user has enough balance to withdraw */
+            if (amountBigNumber.gt(maxWithdrawAmount)) {
+              return "insufficient_balance";
+            }
 
-          break;
+            break;
+        }
       }
+    } catch (err) {
+      // Ignore, this happen when unable to parse input during first load bcuz of value from other assets
     }
   }, [
     connected,
