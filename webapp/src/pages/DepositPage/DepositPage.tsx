@@ -36,6 +36,7 @@ import { getVaultURI } from "../../constants/constants";
 import { isProduction } from "shared/lib/utils/env";
 import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopActionForm";
 import { Redirect } from "react-router-dom";
+import useV2VaultData from "shared/lib/hooks/useV2VaultData";
 
 const { formatUnits } = ethers.utils;
 
@@ -145,17 +146,35 @@ const DepositPage = () => {
   usePullUp();
   const { account } = useWeb3React();
   const { vaultOption, vaultVersion } = useVaultOption();
-  const { status, deposits, vaultLimit, asset, decimals } = useVaultData(
+  const { status, deposits, vaultLimit } = useVaultData(
     vaultOption || VaultList[0]
   );
-  const isLoading = status === "loading";
+  const {
+    data: { asset, cap, decimals, totalBalance },
+    loading,
+  } = useV2VaultData(vaultOption || VaultList[0]);
+  const isLoading = status === "loading" || loading;
 
-  const totalDepositStr = isLoading
-    ? 0
-    : parseFloat(formatSignificantDecimals(formatUnits(deposits, decimals), 2));
-  const depositLimitStr = isLoading
-    ? 1
-    : parseFloat(formatSignificantDecimals(formatUnits(vaultLimit, decimals)));
+  const [totalDepositStr, depositLimitStr] = useMemo(() => {
+    switch (vaultVersion) {
+      case "v1":
+        return [
+          parseFloat(
+            formatSignificantDecimals(formatUnits(deposits, decimals), 2)
+          ),
+          parseFloat(
+            formatSignificantDecimals(formatUnits(vaultLimit, decimals))
+          ),
+        ];
+      case "v2":
+        return [
+          parseFloat(
+            formatSignificantDecimals(formatUnits(totalBalance, decimals), 2)
+          ),
+          parseFloat(formatSignificantDecimals(formatUnits(cap, decimals))),
+        ];
+    }
+  }, [cap, decimals, deposits, totalBalance, vaultLimit, vaultVersion]);
 
   const depositCapBar = (
     <CapBar
