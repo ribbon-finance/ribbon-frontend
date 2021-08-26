@@ -10,13 +10,15 @@ import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import useV2VaultData from "shared/lib/hooks/useV2VaultData";
 import { ERC20Token } from "shared/lib/models/eth";
 import { isETHVault } from "shared/lib/utils/vault";
-import { isPracticallyZero } from "shared/lib/utils/math";
+import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import VaultApprovalForm from "../common/VaultApprovalForm";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
 import SwapBTCDropdown from "../common/SwapBTCDropdown";
 import VaultBasicAmountForm from "../common/VaultBasicAmountForm";
 import { useEffect } from "react";
+import { useWeb3React } from "@web3-react/core";
+import { getAssetDisplay } from "shared/lib/utils/asset";
 
 const FormTabContainer = styled.div`
   display: flex;
@@ -66,6 +68,13 @@ const FormTabTitle = styled(Title)<{ active: boolean }>`
   color: ${(props) => (props.active ? "#f3f3f3" : "rgba(255, 255, 255, 0.64)")};
 `;
 
+const FormInfoText = styled(Title)`
+  font-size: 14px;
+  line-height: 24px;
+  text-align: center;
+  color: ${colors.text};
+`;
+
 const SwapTriggerContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -100,8 +109,10 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
   const { handleActionTypeChange, vaultActionForm } =
     useVaultActionForm(vaultOption);
   const {
-    data: { asset, decimals },
+    data: { asset, decimals, userAssetBalance },
+    loading,
   } = useV2VaultData(vaultOption);
+  const { active } = useWeb3React();
 
   /**
    * Side hooks
@@ -145,6 +156,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     switch (vaultActionForm.actionType) {
       case ACTIONS.deposit:
         return (
+          // TODO: Action Text
           <VaultBasicAmountForm
             vaultOption={vaultOption}
             error={false}
@@ -158,6 +170,120 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     showTokenApproval,
     vaultActionForm.actionType,
     vaultOption,
+  ]);
+
+  const formInfoText = useMemo(() => {
+    //  switch (error) {
+    //    case "vaultFull":
+    //      return "The Vault is currently full";
+    //    case "maxDeposited":
+    //      return `This vault has a max deposit of ${parseInt(
+    //        formatUnits(vaultMaxDepositAmount, decimals)
+    //      ).toLocaleString()} ${getAssetDisplay(asset)} per depositor`;
+    //    case "allBalanceStaked":
+    //      return `You have staked all your ${vaultOption} tokens. You must unstake your ${vaultOption} tokens before you can withdraw from the vault.`;
+    //    case "withdraw_limit_reached":
+    //      return `The vault’s weekly withdrawal limit has been reached. Withdrawals
+    //       will be enabled again at 1000 UTC on ${withdrawalFreeUpTime}.`;
+    //    case "withdraw_limit_exceeded":
+    //      return (
+    //        <>
+    //          Weekly Withdraw Limit:{" "}
+    //          {formatBigNumber(maxWithdrawAmount, 6, decimals)}{" "}
+    //          {getAssetDisplay(asset)}
+    //          <TooltipExplanation
+    //            title="WEEKLY WITHDRAWAL LIMIT"
+    //            explanation={`Withdrawing ${formatBigNumber(
+    //              maxWithdrawAmount,
+    //              6,
+    //              decimals
+    //            )} ${getAssetDisplay(
+    //              asset
+    //            )} will result in the vault hitting its weekly withdrawal limit. If the withdrawal limit is reached, withdrawals will be disabled until ${withdrawalFreeUpTime}.`}
+    //            renderContent={({ ref, ...triggerHandler }) => (
+    //              <HelpInfo containerRef={ref} {...triggerHandler}>
+    //                ?
+    //              </HelpInfo>
+    //            )}
+    //          />
+    //        </>
+    //      );
+    //    case "withdraw_amount_staked":
+    //      return stakedAmountText;
+    //  }
+
+    if (!active || loading) {
+      return <FormInfoText>---</FormInfoText>;
+    }
+
+    switch (vaultActionForm.actionType) {
+      case ACTIONS.deposit:
+        return (
+          <FormInfoText>
+            Wallet Balance: {formatBigNumber(userAssetBalance, 6, decimals)}{" "}
+            {getAssetDisplay(asset)}
+          </FormInfoText>
+        );
+      //  case ACTIONS.withdraw:
+      //    const position = formatBigNumber(vaultBalanceInAsset, 6, decimals);
+
+      //    /**
+      //     * Condition to check withdraw is limited by staked
+      //     * 1. Max withdraw amount must match total balance
+      //     * 2. Staked amount is bigger than 0
+      //     */
+      //    if (
+      //      vaultAccount &&
+      //      vaultBalanceInAsset.eq(maxWithdrawAmount) &&
+      //      !vaultAccount.totalStakedShares.isZero()
+      //    ) {
+      //      return stakedAmountText;
+      //    }
+
+      //    /**
+      //     * Over here, we show unstaked position instead
+      //     */
+      //    if (vaultAccount && !vaultAccount.totalStakedShares.isZero()) {
+      //      return (
+      //        <>
+      //          unstaked position: {position} {getAssetDisplay(asset)}
+      //          <TooltipExplanation
+      //            title="AVAILABLE TO WITHDRAW"
+      //            explanation={
+      //              <>
+      //                You have staked{" "}
+      //                {formatBigNumber(
+      //                  vaultAccount.totalStakedBalance,
+      //                  6,
+      //                  decimals
+      //                )}{" "}
+      //                {vaultOption} tokens, leaving you with {position}{" "}
+      //                {getAssetDisplay(asset)} unstaked balance.
+      //                <br />
+      //                <br />
+      //                To increase the balance for withdrawal, you must unstake
+      //                your {vaultOption} tokens from the staking pool.
+      //              </>
+      //            }
+      //            renderContent={({ ref, ...triggerHandler }) => (
+      //              <HelpInfo containerRef={ref} {...triggerHandler}>
+      //                ?
+      //              </HelpInfo>
+      //            )}
+      //          />
+      //        </>
+      //      );
+      //    }
+
+      //    return `Your Position: ${position} ${getAssetDisplay(asset)}`;
+    }
+  }, [
+    active,
+    asset,
+    decimals,
+    loading,
+    userAssetBalance,
+    vaultActionForm.actionType,
   ]);
 
   const swapContainerTrigger = useMemo(() => {
@@ -219,6 +345,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
 
       <div className="d-flex flex-column p-4">
         {formContent}
+        {formInfoText}
         {swapContainerTrigger}
       </div>
 
