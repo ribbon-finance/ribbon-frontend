@@ -25,7 +25,7 @@ import { VaultActivityMeta, VaultShortPosition } from "shared/lib/models/vault";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "../../Common/HelpInfo";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
-import { FormStepProps } from "./types";
+import { FormStepProps, VaultValidationErrors } from "./types";
 import useVaultActionForm from "../../../hooks/useVaultActionForm";
 import { ACTIONS } from "./Modal/types";
 import VaultV1TransferForm from "./v1/VaultV1TransferForm";
@@ -190,17 +190,6 @@ const SwapTriggerButtonText = styled(SecondaryText)`
   flex: 1;
 `;
 
-type ValidationErrors =
-  | "vaultFull"
-  | "maxDeposited"
-  | "allBalanceStaked"
-  | "insufficient_balance"
-  | "capacity_overflow"
-  | "max_exceeded"
-  | "withdraw_amount_staked"
-  | "withdraw_limit_reached"
-  | "withdraw_limit_exceeded";
-
 interface VaultV1ActionsFormProps {
   variant: "desktop" | "mobile";
 }
@@ -287,7 +276,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
   /**
    * Error validation
    */
-  const error = useMemo((): ValidationErrors | undefined => {
+  const error = useMemo((): VaultValidationErrors | undefined => {
     const vaultAccount = vaultAccounts[vaultOption];
 
     /** Check for error without input requirement */
@@ -306,7 +295,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
       case ACTIONS.withdraw:
         /** Withdraw limit reached */
         if (!vaultBalanceInAsset.isZero() && maxWithdrawAmount.isZero()) {
-          return "withdraw_limit_reached";
+          return "withdrawLimitReached";
         }
 
         /** All balance staked */
@@ -332,19 +321,19 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
           case ACTIONS.deposit:
             /** Insufficient balance */
             if (amountBigNumber.gt(userAssetBalance)) {
-              return "insufficient_balance";
+              return "insufficientBalance";
             }
 
             /** Check amount more than vault max deposit amount */
             if (
               amountBigNumber.gt(vaultMaxDepositAmount.sub(vaultBalanceInAsset))
             ) {
-              return "max_exceeded";
+              return "maxExceeded";
             }
 
             /** Check if deposit amount more than vault available */
             if (amountBigNumber.gt(vaultLimit.sub(deposits))) {
-              return "capacity_overflow";
+              return "capacityOverflow";
             }
             break;
           case ACTIONS.withdraw:
@@ -353,7 +342,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
               amountBigNumber.gt(maxWithdrawAmount) &&
               amountBigNumber.lte(vaultBalanceInAsset)
             ) {
-              return "withdraw_limit_exceeded";
+              return "withdrawLimitExceeded";
             }
 
             /** Check if amount staked when withdraw */
@@ -362,12 +351,12 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
               vaultAccount &&
               amountBigNumber.lte(vaultAccount.totalBalance)
             ) {
-              return "withdraw_amount_staked";
+              return "withdrawAmountStaked";
             }
 
             /** Check if user has enough balance to withdraw */
             if (amountBigNumber.gt(maxWithdrawAmount)) {
-              return "insufficient_balance";
+              return "insufficientBalance";
             }
 
             break;
@@ -433,10 +422,10 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
         ).toLocaleString()} ${getAssetDisplay(asset)} per depositor`;
       case "allBalanceStaked":
         return `You have staked all your ${vaultOption} tokens. You must unstake your ${vaultOption} tokens before you can withdraw from the vault.`;
-      case "withdraw_limit_reached":
+      case "withdrawLimitReached":
         return `The vault’s weekly withdrawal limit has been reached. Withdrawals
           will be enabled again at 1000 UTC on ${withdrawalFreeUpTime}.`;
-      case "withdraw_limit_exceeded":
+      case "withdrawLimitExceeded":
         return (
           <>
             Weekly Withdraw Limit:{" "}
@@ -459,7 +448,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
             />
           </>
         );
-      case "withdraw_amount_staked":
+      case "withdrawAmountStaked":
         return stakedAmountText;
     }
 
@@ -545,17 +534,17 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
 
   const actionButtonText = useMemo(() => {
     switch (error) {
-      case "insufficient_balance":
+      case "insufficientBalance":
         return "Insufficient Balance";
-      case "withdraw_limit_exceeded":
+      case "withdrawLimitExceeded":
         return "WEEKLY LIMIT EXCEEDED";
-      case "withdraw_limit_reached":
+      case "withdrawLimitReached":
         return "WithdrawALS DISABLED";
-      case "capacity_overflow":
+      case "capacityOverflow":
         return "Exceed Vault Balance";
-      case "withdraw_amount_staked":
+      case "withdrawAmountStaked":
         return "AVAILABLE LIMIT EXCEEDED";
-      case "max_exceeded":
+      case "maxExceeded":
         return `Maximum ${parseInt(
           formatUnits(vaultMaxDepositAmount, decimals)
         ).toLocaleString()} ${getAssetDisplay(asset)} Exceeded`;
@@ -593,10 +582,11 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
       case "vaultFull":
       case "maxDeposited":
         return "vaultFull";
-      case "withdraw_limit_exceeded":
-      case "withdraw_amount_staked":
-      case "insufficient_balance":
-      case "max_exceeded":
+      case "withdrawLimitExceeded":
+      case "withdrawAmountStaked":
+      case "insufficientBalance":
+      case "maxExceeded":
+      case "capacityOverflow":
         return "active";
       case undefined:
         break;
@@ -621,7 +611,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
         return (
           <VaultBasicAmountForm
             vaultOption={vaultOption}
-            error={Boolean(error)}
+            error={error}
             onFormSubmit={onFormSubmit}
             actionButtonText={actionButtonText}
           />

@@ -1,24 +1,29 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
+import { useWeb3React } from "@web3-react/core";
+import { parseUnits } from "@ethersproject/units";
 
 import colors from "shared/lib/designSystem/colors";
-import { VaultAddressMap, VaultOptions } from "shared/lib/constants/constants";
+import {
+  VaultAddressMap,
+  VaultMaxDeposit,
+  VaultOptions,
+} from "shared/lib/constants/constants";
 import { ACTIONS } from "../Modal/types";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import useV2VaultData from "shared/lib/hooks/useV2VaultData";
 import { ERC20Token } from "shared/lib/models/eth";
-import { isETHVault } from "shared/lib/utils/vault";
+import { isETHVault, isVaultFull } from "shared/lib/utils/vault";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import VaultApprovalForm from "../common/VaultApprovalForm";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
 import SwapBTCDropdown from "../common/SwapBTCDropdown";
 import VaultBasicAmountForm from "../common/VaultBasicAmountForm";
-import { useEffect } from "react";
-import { useWeb3React } from "@web3-react/core";
 import { getAssetDisplay } from "shared/lib/utils/asset";
+import { VaultValidationErrors } from "../types";
 
 const FormTabContainer = styled.div`
   display: flex;
@@ -72,7 +77,7 @@ const FormInfoText = styled(Title)`
   font-size: 14px;
   line-height: 24px;
   text-align: center;
-  color: ${colors.text};
+  color: ${(props) => (props.color ? props.color : colors.text)};
 `;
 
 const SwapTriggerContainer = styled.div`
@@ -109,10 +114,22 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
   const { handleActionTypeChange, vaultActionForm } =
     useVaultActionForm(vaultOption);
   const {
-    data: { asset, decimals, userAssetBalance },
+    data: {
+      asset,
+      cap,
+      decimals,
+      depositBalanceInAsset,
+      lockedBalanceInAsset,
+      totalBalance,
+      userAssetBalance,
+    },
     loading,
   } = useV2VaultData(vaultOption);
+  const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
   const { active } = useWeb3React();
+
+  const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
+  const isInputNonZero = parseFloat(vaultActionForm.inputAmount) > 0;
 
   /**
    * Side hooks
@@ -145,6 +162,67 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     handleActionTypeChange(ACTIONS.deposit, "v2");
   }, [handleActionTypeChange]);
 
+  const error = useMemo((): VaultValidationErrors | undefined => {
+    switch (vaultActionForm.actionType) {
+      case ACTIONS.deposit:
+        /** Vault full */
+        if (isVaultFull(totalBalance, cap, decimals)) {
+          return "vaultFull";
+        }
+
+        /** Max Deposited */
+        if (vaultMaxDepositAmount.lt(vaultBalanceInAsset)) {
+          return "maxDeposited";
+        }
+        break;
+    }
+
+    try {
+      /** Check block with input requirement */
+      if (isInputNonZero && !loading && active) {
+        const amountBigNumber = parseUnits(
+          vaultActionForm.inputAmount,
+          decimals
+        );
+
+        switch (vaultActionForm.actionType) {
+          case ACTIONS.deposit:
+            if (amountBigNumber.gt(userAssetBalance)) {
+              return "insufficientBalance";
+            }
+
+            if (
+              amountBigNumber.gt(vaultMaxDepositAmount.sub(vaultBalanceInAsset))
+            ) {
+              return "maxExceeded";
+            }
+
+            if (amountBigNumber.gt(cap.sub(totalBalance))) {
+              return "capacityOverflow";
+            }
+
+            break;
+        }
+      }
+    } catch (err) {
+      // Assume no error because empty input unable to parse
+    }
+
+    return undefined;
+  }, [
+    active,
+    cap,
+    decimals,
+    isInputNonZero,
+    loading,
+    totalBalance,
+    userAssetBalance,
+    vaultActionForm.actionType,
+    vaultActionForm.inputAmount,
+    vaultBalanceInAsset,
+    vaultMaxDepositAmount,
+  ]);
+
   const formContent = useMemo(() => {
     /**
      * Approval before deposit
@@ -156,16 +234,16 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     switch (vaultActionForm.actionType) {
       case ACTIONS.deposit:
         return (
-          // TODO: Action Text
           <VaultBasicAmountForm
             vaultOption={vaultOption}
-            error={false}
+            error={error}
             onFormSubmit={onFormSubmit}
-            actionButtonText={"Deposit"}
+            actionButtonText="Preview Deposit"
           />
         );
     }
   }, [
+    error,
     onFormSubmit,
     showTokenApproval,
     vaultActionForm.actionType,
@@ -173,44 +251,22 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
   ]);
 
   const formInfoText = useMemo(() => {
-    //  switch (error) {
-    //    case "vaultFull":
-    //      return "The Vault is currently full";
-    //    case "maxDeposited":
-    //      return `This vault has a max deposit of ${parseInt(
-    //        formatUnits(vaultMaxDepositAmount, decimals)
-    //      ).toLocaleString()} ${getAssetDisplay(asset)} per depositor`;
-    //    case "allBalanceStaked":
-    //      return `You have staked all your ${vaultOption} tokens. You must unstake your ${vaultOption} tokens before you can withdraw from the vault.`;
-    //    case "withdraw_limit_reached":
-    //      return `The vault’s weekly withdrawal limit has been reached. Withdrawals
-    //       will be enabled again at 1000 UTC on ${withdrawalFreeUpTime}.`;
-    //    case "withdraw_limit_exceeded":
-    //      return (
-    //        <>
-    //          Weekly Withdraw Limit:{" "}
-    //          {formatBigNumber(maxWithdrawAmount, 6, decimals)}{" "}
-    //          {getAssetDisplay(asset)}
-    //          <TooltipExplanation
-    //            title="WEEKLY WITHDRAWAL LIMIT"
-    //            explanation={`Withdrawing ${formatBigNumber(
-    //              maxWithdrawAmount,
-    //              6,
-    //              decimals
-    //            )} ${getAssetDisplay(
-    //              asset
-    //            )} will result in the vault hitting its weekly withdrawal limit. If the withdrawal limit is reached, withdrawals will be disabled until ${withdrawalFreeUpTime}.`}
-    //            renderContent={({ ref, ...triggerHandler }) => (
-    //              <HelpInfo containerRef={ref} {...triggerHandler}>
-    //                ?
-    //              </HelpInfo>
-    //            )}
-    //          />
-    //        </>
-    //      );
-    //    case "withdraw_amount_staked":
-    //      return stakedAmountText;
-    //  }
+    switch (error) {
+      case "vaultFull":
+        return (
+          <FormInfoText color={colors.red}>
+            The Vault is currently full
+          </FormInfoText>
+        );
+      case "maxDeposited":
+        return (
+          <FormInfoText color={colors.red}>
+            This vault has a max deposit of{" "}
+            {formatBigNumber(vaultMaxDepositAmount, 6, decimals)} $
+            {getAssetDisplay(asset)} per depositor
+          </FormInfoText>
+        );
+    }
 
     if (!active || loading) {
       return <FormInfoText>---</FormInfoText>;
@@ -219,7 +275,9 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     switch (vaultActionForm.actionType) {
       case ACTIONS.deposit:
         return (
-          <FormInfoText>
+          <FormInfoText
+            color={error === "insufficientBalance" ? colors.red : undefined}
+          >
             Wallet Balance: {formatBigNumber(userAssetBalance, 6, decimals)}{" "}
             {getAssetDisplay(asset)}
           </FormInfoText>
@@ -281,9 +339,11 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     active,
     asset,
     decimals,
+    error,
     loading,
     userAssetBalance,
     vaultActionForm.actionType,
+    vaultMaxDepositAmount,
   ]);
 
   const swapContainerTrigger = useMemo(() => {
