@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
 import { useWeb3React } from "@web3-react/core";
-import { formatUnits } from "ethers/lib/utils";
 
 import {
   BaseInput,

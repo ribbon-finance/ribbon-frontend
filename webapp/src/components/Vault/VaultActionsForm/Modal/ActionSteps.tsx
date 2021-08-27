@@ -106,6 +106,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const handleClickConfirmButton = async () => {
     const vault = vaultActionForm.vaultVersion === "v1" ? v1Vault : v2Vault;
+    
     if (vault !== null) {
       // check illegal state transition
       if (step !== STEPS.confirmationStep - 1) return;
@@ -120,10 +121,35 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
               : vault.deposit(amountStr));
             break;
           case ACTIONS.withdraw:
-            shares = await vault.assetAmountToShares(amountStr);
-            res = await (isETHVault(vaultOption)
-              ? vault.withdrawETH(shares)
-              : vault.withdraw(shares));
+            /** Handle different version of withdraw separately */
+            switch (vaultActionForm.vaultVersion) {
+              /**
+               * V1 withdraw
+               */
+              case "v1":
+                shares = await vault.assetAmountToShares(amountStr);
+                res = await (isETHVault(vaultOption)
+                  ? vault.withdrawETH(shares)
+                  : vault.withdraw(shares));
+                break;
+
+              /**
+               * V2 withdraw
+               */
+              case "v2":
+                switch (vaultActionForm.withdrawOption) {
+                  /** Instant withdraw for V2 */
+                  case "instant":
+                    res = await vault.withdrawInstantly(amountStr);
+                    break;
+
+                  /** Initiate withdrawal for v2 */
+                  case "standard":
+                    res = await vault.initiateWithdraw(amountStr);
+                    break;
+                }
+                break;
+            }
             break;
           case ACTIONS.transfer:
             shares = await vault.assetAmountToShares(amountStr);

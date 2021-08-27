@@ -12,6 +12,8 @@ import {
 import {
   ACTIONS,
   ActionType,
+  V2WithdrawOption,
+  V2WithdrawOptionList,
 } from "../components/Vault/VaultActionsForm/Modal/types";
 import { initialVaultActionForm, useWebappGlobalState } from "../store/store";
 import useGasPrice from "shared/lib/hooks/useGasPrice";
@@ -60,20 +62,23 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
    * Utility for reset action form
    */
   const resetActionForm = useCallback(() => {
-    setVaultActionForm({
-      ...initialVaultActionForm,
-      vaultOption,
-    });
-  }, [vaultOption, setVaultActionForm]);
+    setVaultActionForm((actionForm) => ({
+      ...actionForm,
+      inputAmount: "",
+    }));
+  }, [setVaultActionForm]);
 
   /**
    * Reset form when vault option changes
    */
   useEffect(() => {
     if (vaultActionForm.vaultOption !== vaultOption) {
-      resetActionForm();
+      setVaultActionForm({
+        ...initialVaultActionForm,
+        vaultOption,
+      });
     }
-  }, [vaultActionForm.vaultOption, vaultOption, resetActionForm]);
+  }, [vaultActionForm.vaultOption, setVaultActionForm, vaultOption]);
 
   const canTransfer = useMemo(() => {
     switch (vaultOption) {
@@ -116,13 +121,19 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   const handleActionTypeChange = useCallback(
     (
       actionType: ActionType,
-      vaultVersion: VaultVersion = VaultVersionList[0]
+      vaultVersion: VaultVersion = VaultVersionList[0],
+      {
+        withdrawOption,
+      }: {
+        withdrawOption?: V2WithdrawOption;
+      } = {}
     ) => {
       // Do nothing if changing to the same action type
       setVaultActionForm((actionForm) => {
         if (
           actionType === actionForm.actionType &&
-          vaultVersion === actionForm.vaultVersion
+          vaultVersion === actionForm.vaultVersion &&
+          withdrawOption === actionForm.withdrawOption
         ) {
           return actionForm;
         }
@@ -140,6 +151,21 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
                 };
             }
             break;
+          // @ts-ignore
+          case ACTIONS.withdraw:
+            /**
+             * Only catch v2 vault and set default withdraw option if not provided
+             */
+            if (vaultVersion === "v2") {
+              return {
+                ...actionForm,
+                vaultVersion,
+                inputAmount: "",
+                actionType,
+                withdrawOption: withdrawOption || V2WithdrawOptionList[0],
+              };
+            }
+          // eslint-disable-next-line no-fallthrough
           default:
             return {
               ...actionForm,
@@ -271,11 +297,19 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
                 inputAmount: formatUnits(finalMaxAmount, decimals),
               };
             case ACTIONS.withdraw:
-              // TODO: Add withdraw type
-              return {
-                ...actionForm,
-                inputAmount: formatUnits(v2DepositBalanceInAsset, decimals),
-              };
+              switch (actionForm.withdrawOption) {
+                case "instant":
+                  return {
+                    ...actionForm,
+                    inputAmount: formatUnits(v2DepositBalanceInAsset, decimals),
+                  };
+                case "standard":
+                default:
+                  return {
+                    ...actionForm,
+                    inputAmount: formatUnits(v2LockedBalanceInAsset, decimals),
+                  };
+              }
           }
       }
       return actionForm;
@@ -290,6 +324,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     userAssetBalance,
     v2Cap,
     v2DepositBalanceInAsset,
+    v2LockedBalanceInAsset,
     v2TotalBalance,
     v2VaultBalanceInAsset,
     vaultBalanceInAsset,

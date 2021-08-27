@@ -7,6 +7,7 @@ import {
 import {
   ACTIONS,
   ActionType,
+  V2WithdrawOption,
 } from "../components/Vault/VaultActionsForm/Modal/types";
 
 interface GlobalStore {
@@ -15,6 +16,7 @@ interface GlobalStore {
     vaultVersion: VaultVersion;
     inputAmount: string;
     actionType: ActionType;
+    withdrawOption?: V2WithdrawOption;
     receiveVault?: VaultOptions;
   };
 }

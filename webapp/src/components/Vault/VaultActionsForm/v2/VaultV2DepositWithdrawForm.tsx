@@ -24,6 +24,7 @@ import SwapBTCDropdown from "../common/SwapBTCDropdown";
 import VaultBasicAmountForm from "../common/VaultBasicAmountForm";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import { VaultValidationErrors } from "../types";
+import VaultV2WithdrawForm from "./VaultV2WithdrawForm";
 
 const FormTabContainer = styled.div`
   display: flex;
@@ -202,6 +203,22 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
             }
 
             break;
+
+          case ACTIONS.withdraw:
+            switch (vaultActionForm.withdrawOption) {
+              case "instant":
+                if (amountBigNumber.gt(depositBalanceInAsset)) {
+                  return "withdrawLimitExceeded";
+                }
+
+                break;
+              case "standard":
+                if (amountBigNumber.gt(lockedBalanceInAsset)) {
+                  return "withdrawLimitExceeded";
+                }
+
+                break;
+            }
         }
       }
     } catch (err) {
@@ -213,12 +230,15 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     active,
     cap,
     decimals,
+    depositBalanceInAsset,
     isInputNonZero,
     loading,
+    lockedBalanceInAsset,
     totalBalance,
     userAssetBalance,
     vaultActionForm.actionType,
     vaultActionForm.inputAmount,
+    vaultActionForm.withdrawOption,
     vaultBalanceInAsset,
     vaultMaxDepositAmount,
   ]);
@@ -241,9 +261,21 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
             actionButtonText="Preview Deposit"
           />
         );
+      case ACTIONS.withdraw:
+        return (
+          <VaultV2WithdrawForm
+            vaultOption={vaultOption}
+            error={error}
+            onFormSubmit={onFormSubmit}
+            depositBalanceInAsset={depositBalanceInAsset}
+            lockedBalanceInAsset={lockedBalanceInAsset}
+          />
+        );
     }
   }, [
+    depositBalanceInAsset,
     error,
+    lockedBalanceInAsset,
     onFormSubmit,
     showTokenApproval,
     vaultActionForm.actionType,
@@ -403,7 +435,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
         </FormTab>
       </FormTabContainer>
 
-      <div className="d-flex flex-column p-4">
+      <div className="d-flex flex-column p-4 w-100">
         {formContent}
         {formInfoText}
         {swapContainerTrigger}

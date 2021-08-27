@@ -7,6 +7,9 @@ export const ACTIONS: { [type in ActionType]: ActionType } = {
   migrate: "migrate",
 } as const;
 
+export const V2WithdrawOptionList = ["standard", "instant"] as const;
+export type V2WithdrawOption = typeof V2WithdrawOptionList[number];
+
 export interface ActionModalContentProps {
   onChangeStep: (StepData: StepData) => void;
 }
