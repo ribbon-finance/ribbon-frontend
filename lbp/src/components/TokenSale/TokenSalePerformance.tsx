@@ -73,11 +73,7 @@ const StatisticData = styled(Title)`
 const TokenSalePerformance = () => {
   const { data: tokenData, loading: tokenLoading } = useRBNToken();
   const { data: poolData, loading: poolLoading } = useLBPPoolData();
-  const loadingText = useTextAnimation(
-    ["Loading", "Loading .", "Loading ..", "Loading ..."],
-    250,
-    tokenLoading || poolLoading
-  );
+  const loadingText = useTextAnimation(tokenLoading || poolLoading);
   const [, setSwapModal] = useLBPGlobalState("swapModal");
 
   const [spotPriceText, rbnSoldText, usdcRaisedText] = useMemo(() => {

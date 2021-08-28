@@ -81,7 +81,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
   const { vaultAccounts, loading: vaultAccountLoading } =
     useVaultAccounts(vaultOptions);
   const isLoading = status === "loading" || vaultAccountLoading;
-  const loadingText = useTextAnimation(undefined, 250, isLoading);
+  const loadingText = useTextAnimation(isLoading);
 
   const [positionAssetAmount, positionAssetAmountUSD] = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];

@@ -83,11 +83,10 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
   }, [vaultOption, asset, library]);
 
   const [waitingApproval, setWaitingApproval] = useState(false);
-  const loadingText = useTextAnimation(
-    ["Approving", "Approving .", "Approving ..", "Approving ..."],
-    250,
-    waitingApproval
-  );
+  const loadingText = useTextAnimation(waitingApproval, {
+    texts: ["Approving", "Approving .", "Approving ..", "Approving ..."],
+    interval: 250,
+  });
 
   const handleApproveToken = useCallback(async () => {
     setWaitingApproval(true);

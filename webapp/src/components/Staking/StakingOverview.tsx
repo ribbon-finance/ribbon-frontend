@@ -144,11 +144,7 @@ const StakingOverview = () => {
     useStakingPool(miningPoolOptionList);
   const { data: tokenData, loading: tokenLoading } = useRBNToken();
 
-  const loadingText = useTextAnimation(
-    undefined,
-    250,
-    stakingLoading || tokenLoading
-  );
+  const loadingText = useTextAnimation(stakingLoading || tokenLoading);
 
   const totalRewardDistributed = useMemo(() => {
     if (stakingLoading) {

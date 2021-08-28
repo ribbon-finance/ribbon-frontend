@@ -89,24 +89,14 @@ interface YieldFrameProps {
 }
 
 const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
-  const {
-    status,
-    deposits,
-    vaultLimit,
-    asset,
-    displayAsset,
-    decimals,
-  } = useVaultData(vault);
+  const { status, deposits, vaultLimit, asset, displayAsset, decimals } =
+    useVaultData(vault);
   const isLoading = useMemo(() => status === "loading", [status]);
   const color = getVaultColor(vault);
   const Logo = getAssetLogo(displayAsset);
   const latestAPY = useLatestAPY(vault);
 
-  const loadingText = useTextAnimation(
-    ["Loading", "Loading .", "Loading ..", "Loading ..."],
-    250,
-    !latestAPY.fetched
-  );
+  const loadingText = useTextAnimation(!latestAPY.fetched);
   const perfStr = latestAPY.fetched
     ? `${latestAPY.res.toFixed(2)}%`
     : loadingText;

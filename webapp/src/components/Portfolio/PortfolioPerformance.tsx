@@ -231,11 +231,7 @@ const PortfolioPerformance = () => {
     vaultAccountLoading ||
     balanceUpdatesLoading ||
     RBNTokenAccountLoading;
-  const animatedLoadingText = useTextAnimation(
-    undefined,
-    250,
-    loading
-  );
+  const animatedLoadingText = useTextAnimation(loading);
 
   // Accumulate balance with USD value
   const balances = useMemo(() => {

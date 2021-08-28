@@ -189,11 +189,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   const { price: assetPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: asset,
   });
-  const animatedLoadingText = useTextAnimation(
-    undefined,
-    250,
-    assetPriceLoading
-  );
+  const animatedLoadingText = useTextAnimation(assetPriceLoading);
   const vaultName =
     Object.keys(VaultNameOptionMap)[
       Object.values(VaultNameOptionMap).indexOf(vaultAccount.vault.symbol)
@@ -296,7 +292,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 const PortfolioPositions = () => {
   const { active } = useWeb3React();
   const { vaultAccounts, loading } = useVaultAccounts(VaultList);
-  const animatedLoadingText = useTextAnimation(undefined, 250, loading);
+  const animatedLoadingText = useTextAnimation(loading);
 
   const filteredVaultAccounts = useMemo(() => {
     return Object.fromEntries(

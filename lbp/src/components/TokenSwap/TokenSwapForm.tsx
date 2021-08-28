@@ -147,11 +147,10 @@ const TokenSwapForm: React.FC<TokenSwapFormProps> = ({
   );
   const tokenContract = useERC20Token(swapModal.offerToken);
   const [waitingApproval, setWaitingApproval] = useState(false);
-  const approvingAnimatedText = useTextAnimation(
-    ["Approving", "Approving .", "Approving ..", "Approving ..."],
-    250,
-    waitingApproval
-  );
+  const approvingAnimatedText = useTextAnimation(waitingApproval, {
+    texts: ["Approving", "Approving .", "Approving ..", "Approving ..."],
+    interval: 250,
+  });
   const { balance: assetBalance, fetched: assetBalanceFetched } =
     useERC20TokenBalance(swapModal.offerToken);
 

@@ -123,7 +123,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   const loading = priceLoading || activityLoading;
   const [showCalculator, setShowCalculator] = useState(false);
 
-  const loadingText = useTextAnimation(undefined, 250, loading);
+  const loadingText = useTextAnimation(loading);
 
   const currentOption = useMemo(() => {
     const sortedActivities = activities

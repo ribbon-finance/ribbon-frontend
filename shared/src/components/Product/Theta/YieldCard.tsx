@@ -194,11 +194,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
 
   const latestAPY = useLatestAPY(vault);
 
-  const loadingText = useTextAnimation(
-    ["Loading", "Loading .", "Loading ..", "Loading ..."],
-    250,
-    !latestAPY.fetched
-  );
+  const loadingText = useTextAnimation(!latestAPY.fetched);
   const perfStr = latestAPY.fetched
     ? `${latestAPY.res.toFixed(2)}%`
     : loadingText;

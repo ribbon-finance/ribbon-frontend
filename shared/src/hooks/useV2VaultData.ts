@@ -66,9 +66,9 @@ const useV2VaultData: UseVaultData = (
             ]
           : [
               // Default value when not connected
-              (async () => ({ amount: BigNumber.from(0) }))(),
-              (async () => BigNumber.from(0))(),
-              (async () => BigNumber.from(0))(),
+              Promise.resolve({ amount: BigNumber.from(0) }),
+              Promise.resolve(BigNumber.from(0)),
+              Promise.resolve(BigNumber.from(0)),
             ]
       );
 
