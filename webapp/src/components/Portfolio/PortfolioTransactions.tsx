@@ -202,11 +202,7 @@ const PortfolioTransactions = () => {
     // @ts-ignore
     assets: AssetsList,
   });
-  const animatedLoadingText = useTextAnimation(
-    ["Loading", "Loading .", "Loading ..", "Loading ..."],
-    250,
-    loading || assetPricesLoading
-  );
+  const animatedLoadingText = useTextAnimation(loading || assetPricesLoading);
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<PortfolioTransactionSortBy>(
     portfolioTransactionSortByList[0]

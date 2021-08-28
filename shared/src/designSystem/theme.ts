@@ -3,6 +3,7 @@ const theme = {
     opacity: 0.64,
   },
   border: {
+    radiusBig: "12px",
     radius: "8px",
     radiusSmall: "4px",
     width: "1px",

@@ -18,18 +18,6 @@ import { ACTIONS } from "../Modal/types";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 
-const MigrationFormContainer = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  text-align: center;
-  padding: 24px;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: ${theme.border.radius};
-  background: ${colors.background};
-  z-index: 1;
-`;
-
 const MigrateLogoContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
@@ -46,10 +34,6 @@ const FormTitle = styled(Title)`
   letter-spacing: 1px;
 `;
 
-const FormDescription = styled(PrimaryText)`
-  color: ${colors.text};
-`;
-
 const FormDescriptionHighlight = styled.span`
   color: ${colors.primaryText};
 `;
@@ -58,16 +42,6 @@ const PillButton = styled.div`
   padding: 10px 16px;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: 100px;
-`;
-
-const MigrationFormExtraContainer = styled.div`
-  background: ${colors.primaryText}0a;
-  padding: 32px 24px 16px 24px;
-  margin-top: -16px;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: ${theme.border.radius};
-  text-align: center;
-  z-index: 0;
 `;
 
 const MigratinFormModeList = ["options", "migrate"] as const;
@@ -153,14 +127,14 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
     switch (error) {
       case "amountStaked":
         return (
-          <SecondaryText className="mt-3" color={colors.red}>
+          <SecondaryText className="mt-3 text-center" color={colors.red}>
             Before you migrate to V2 you must unstake your funds from the
             rETH-THETA staking pool
           </SecondaryText>
         );
       case "insufficientWithdrawalLimit":
         return (
-          <SecondaryText className="mt-3" color={colors.red}>
+          <SecondaryText className="mt-3 text-center" color={colors.red}>
             Migrating your ETH from V1 to V2 will breach the weekly migration
             limit. Please try again on Friday at 10am UTC when the weekly
             migration limit is reset.
@@ -176,14 +150,14 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
       case "options":
         return (
           <>
-            <FormDescription className="mt-3">
+            <PrimaryText className="mt-3 text-center" color={colors.text}>
               You can now move your V1 deposit balance of{" "}
               <FormDescriptionHighlight>
                 {formatBigNumber(vaultAccount.totalBalance, 6, decimals)}{" "}
                 {getAssetDisplay(asset)}
               </FormDescriptionHighlight>{" "}
               to the V2 vault
-            </FormDescription>
+            </PrimaryText>
 
             {/* Migrate button */}
             <ActionButton
@@ -207,9 +181,9 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
       case "migrate":
         return (
           <>
-            <FormDescription className="mt-3">
+            <PrimaryText className="mt-3 text-center" color={colors.text}>
               ETH deposits can now be migrated over from the V1 vault
-            </FormDescription>
+            </PrimaryText>
 
             {/* V1 Balance */}
             <div className="d-flex w-100 align-items-center mt-4">
@@ -276,22 +250,15 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
   ]);
 
   return (
-    <>
-      <MigrationFormContainer>
-        {/* Logo */}
-        <MigrateLogoContainer color={color} className="mt-3">
-          <MigrateIcon color={color} />
-        </MigrateLogoContainer>
+    <div className="d-flex flex-column align-items-center p-4">
+      {/* Logo */}
+      <MigrateLogoContainer color={color} className="mt-3">
+        <MigrateIcon color={color} />
+      </MigrateLogoContainer>
 
-        <FormTitle className="mt-3">MIRGATE TO V2</FormTitle>
-        {body}
-      </MigrationFormContainer>
-      <MigrationFormExtraContainer>
-        <PrimaryText color={color}>
-          IMPORTANT: Withdrawal fees do not apply for migrations from V1 to V2
-        </PrimaryText>
-      </MigrationFormExtraContainer>
-    </>
+      <FormTitle className="mt-3">MIRGATE TO V2</FormTitle>
+      {body}
+    </div>
   );
 };
 

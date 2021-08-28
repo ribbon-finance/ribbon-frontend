@@ -223,14 +223,16 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   }, [ongoingTransaction]);
 
   const primaryActionLoadingText = useTextAnimation(
-    [
-      actionLoadingTextBase,
-      `${actionLoadingTextBase} .`,
-      `${actionLoadingTextBase} ..`,
-      `${actionLoadingTextBase} ...`,
-    ],
-    250,
-    Boolean(ongoingTransaction)
+    Boolean(ongoingTransaction),
+    {
+      texts: [
+        actionLoadingTextBase,
+        `${actionLoadingTextBase} .`,
+        `${actionLoadingTextBase} ..`,
+        `${actionLoadingTextBase} ...`,
+      ],
+      interval: 250,
+    }
   );
 
   const logo = useMemo(() => {

@@ -112,9 +112,8 @@ interface WeeklyStrategySnapshotProps {
 const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   vaultOption,
 }) => {
-  const { activities, loading: activityLoading } = useVaultActivity(
-    vaultOption
-  );
+  const { activities, loading: activityLoading } =
+    useVaultActivity(vaultOption);
   const asset = getAssets(vaultOption);
   const optionAsset = getOptionAssets(vaultOption);
   const color = getVaultColor(vaultOption);
@@ -124,11 +123,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   const loading = priceLoading || activityLoading;
   const [showCalculator, setShowCalculator] = useState(false);
 
-  const loadingText = useTextAnimation(
-    ["Loading", "Loading .", "Loading ..", "Loading ..."],
-    250,
-    loading
-  );
+  const loadingText = useTextAnimation(loading);
 
   const currentOption = useMemo(() => {
     const sortedActivities = activities

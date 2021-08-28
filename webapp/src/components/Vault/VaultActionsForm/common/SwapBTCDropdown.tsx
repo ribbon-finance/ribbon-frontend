@@ -6,11 +6,12 @@ import { BaseLink, Title } from "shared/lib/designSystem";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import theme from "shared/lib/designSystem/theme";
 
-import BadgerImg from "../../../assets/img/badger.png";
-import CurveImg from "../../../assets/img/curve.png";
-import Arrow from "../../../assets/img/arrow.svg";
+import BadgerImg from "../../../../assets/img/badger.png";
+import CurveImg from "../../../../assets/img/curve.png";
+import Arrow from "../../../../assets/img/arrow.svg";
 
 const Container = styled.div<{ open: boolean }>`
+  width: 100%;
   background: ${colors.background};
   overflow: hidden;
   transition: all 0.2s ease-out;

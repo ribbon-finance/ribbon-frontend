@@ -7,7 +7,7 @@ import { impersonateAddress } from "../utils/development";
 import { useWeb3Context } from "./web3Context";
 import { getERC20Token } from "./useERC20Token";
 
-const useTokenAllowance = (token: ERC20Token | undefined, address: string) => {
+const useTokenAllowance = (token: ERC20Token | undefined, address?: string) => {
   const web3Context = useWeb3React();
   const library = web3Context.library;
   const account = impersonateAddress ? impersonateAddress : web3Context.account;
@@ -22,7 +22,8 @@ const useTokenAllowance = (token: ERC20Token | undefined, address: string) => {
   const [allowance, setAllowance] = useState<BigNumber>();
 
   useEffect(() => {
-    if (!account || !tokenContract) {
+    if (!account || !tokenContract || !address) {
+      setAllowance(undefined);
       return;
     }
 

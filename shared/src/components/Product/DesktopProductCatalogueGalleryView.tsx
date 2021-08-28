@@ -165,11 +165,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
     // @ts-ignore
     assets: AssetsList,
   });
-  const loadingText = useTextAnimation(
-    ["Loading", "Loading .", "Loading ..", "Loading ..."],
-    250,
-    assetPricesLoading
-  );
+  const loadingText = useTextAnimation(assetPricesLoading);
 
   // Prevent page overflow
   useEffect(() => {

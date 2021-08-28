@@ -1,7 +1,8 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
 import { BigNumber } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
+import { useWeb3React } from "@web3-react/core";
 
 import {
   getAssetDecimals,
@@ -24,10 +25,16 @@ import {
   VaultOptions,
 } from "shared/lib/constants/constants";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
-import HelpInfo from "../../Common/HelpInfo";
+import HelpInfo from "../../../Common/HelpInfo";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import { VaultActionFormTransferData } from "../../../hooks/useVaultActionForm";
+import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { VaultAccount } from "shared/lib/models/vault";
+import {
+  ActionButton,
+  ConnectWalletButton,
+} from "shared/lib/components/Common/buttons";
+import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
+import { getVaultColor } from "shared/lib/utils/vault";
 
 const TransferToVault = styled.div`
   display: flex;
@@ -60,34 +67,34 @@ const InfoData = styled(Title)`
 
 interface VaultV1TransferFormProps {
   vaultOption: VaultOptions;
-  receiveVault: VaultOptions;
   vaultAccount?: VaultAccount;
   transferVaultData: {
     maxWithdrawAmount: BigNumber;
     vaultMaxWithdrawAmount: BigNumber;
   };
-  transferData: VaultActionFormTransferData;
-  inputAmount: string;
-  handleInputChange: (input: React.ChangeEvent<HTMLInputElement>) => void;
-  handleMaxClick: () => void;
-  renderActionButton: (error: string | undefined) => JSX.Element;
+  actionButtonText: string;
+  onFormSubmit: () => void;
 }
 
 const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
   vaultOption,
-  receiveVault,
   vaultAccount,
   transferVaultData,
-  transferData,
-  inputAmount,
-  handleInputChange,
-  handleMaxClick,
-  renderActionButton,
+  actionButtonText,
+  onFormSubmit,
 }) => {
-  const AssetLogo = getAssetLogo(getAssets(receiveVault));
   const asset = getAssets(vaultOption);
   const decimals = getAssetDecimals(asset);
   const assetDisplay = getAssetDisplay(asset);
+  const color = getVaultColor(vaultOption);
+
+  const { handleInputChange, handleMaxClick, vaultActionForm, transferData } =
+    useVaultActionForm(vaultOption);
+  const { active } = useWeb3React();
+  const [, setShowConnectModal] = useConnectWalletModal();
+
+  const isInputNonZero = parseFloat(vaultActionForm.inputAmount) > 0;
+  const AssetLogo = getAssetLogo(getAssets(vaultActionForm.receiveVault!));
 
   const availableLimit = useMemo(() => {
     return vaultAccount
@@ -96,11 +103,11 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
   }, [vaultAccount]);
 
   const error = useMemo(() => {
-    if (inputAmount === "" || !transferData) {
+    if (!isInputNonZero || !transferData) {
       return undefined;
     }
 
-    const inputBigNumber = parseUnits(inputAmount, decimals);
+    const inputBigNumber = parseUnits(vaultActionForm.inputAmount, decimals);
 
     /** Check bigger than available limit */
     if (inputBigNumber.gt(availableLimit)) {
@@ -120,7 +127,14 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
     }
 
     return undefined;
-  }, [availableLimit, decimals, inputAmount, transferData, transferVaultData]);
+  }, [
+    availableLimit,
+    decimals,
+    isInputNonZero,
+    transferData,
+    transferVaultData,
+    vaultActionForm,
+  ]);
 
   const isZeroCapacity = useMemo(() => {
     return (
@@ -132,6 +146,41 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
   const isZeroAvailableLimit = useMemo(() => {
     return vaultAccount && isPracticallyZero(availableLimit, decimals);
   }, [availableLimit, decimals, vaultAccount]);
+
+  const renderActionButton = useCallback(
+    (error: string | undefined) => {
+      if (active) {
+        return (
+          <ActionButton
+            disabled={Boolean(error) || !isInputNonZero}
+            onClick={onFormSubmit}
+            className="py-3"
+            color={color}
+          >
+            {actionButtonText}
+          </ActionButton>
+        );
+      }
+
+      return (
+        <ConnectWalletButton
+          onClick={() => setShowConnectModal(true)}
+          type="button"
+          className="btn py-3 mb-4"
+        >
+          Connect Wallet
+        </ConnectWalletButton>
+      );
+    },
+    [
+      active,
+      actionButtonText,
+      color,
+      isInputNonZero,
+      onFormSubmit,
+      setShowConnectModal,
+    ]
+  );
 
   return (
     <>
@@ -145,7 +194,9 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
           <TransferToVaultTitle>
             {
               Object.keys(VaultNameOptionMap)[
-                Object.values(VaultNameOptionMap).indexOf(receiveVault)
+                Object.values(VaultNameOptionMap).indexOf(
+                  vaultActionForm.receiveVault!
+                )
               ]
             }
           </TransferToVaultTitle>
@@ -172,7 +223,7 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
           className="form-control"
           aria-label="ETH"
           placeholder="0"
-          value={inputAmount}
+          value={vaultActionForm.inputAmount}
           onChange={handleInputChange}
         />
         <BaseInputButton onClick={handleMaxClick}>MAX</BaseInputButton>

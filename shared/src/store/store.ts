@@ -22,10 +22,12 @@ import {
   AssetsList,
   AssetYieldsInfoData,
   AirdropInfoData,
+  V2VaultDataResponses,
 } from "./types";
 
 interface GlobalStore {
   vaultData: VaultDataResponses;
+  v2VaultData: V2VaultDataResponses;
   prices: { [asset in Assets]: { price: number; fetched: boolean } };
   pendingTransactions: PendingTransaction[];
   showConnectWallet: boolean;
@@ -42,13 +44,15 @@ interface GlobalStore {
   gasPrice: string;
   desktopView: DesktopViewType;
   airdropInfo: AirdropInfoData | undefined;
-  tokenBalances: {[token in ERC20Token]: { fetched: boolean, balance: BigNumber }}
-  vaultAccounts: {[option in VaultOptions]: VaultAccount | undefined}
+  tokenBalances: {
+    [token in ERC20Token]: { fetched: boolean; balance: BigNumber };
+  };
+  vaultAccounts: { [option in VaultOptions]: VaultAccount | undefined };
 }
 
 export const initialVaultaccounts = Object.fromEntries(
-    VaultList.map((option) => [option, undefined])
-  ) as {[option in VaultOptions]: VaultAccount | undefined}
+  VaultList.map((option) => [option, undefined])
+) as { [option in VaultOptions]: VaultAccount | undefined };
 
 export const initialState: GlobalStore = {
   vaultData: Object.fromEntries(
@@ -69,6 +73,21 @@ export const initialState: GlobalStore = {
       },
     ])
   ) as VaultDataResponses,
+  v2VaultData: Object.fromEntries(
+    VaultList.map((vault) => [
+      vault,
+      {
+        totalBalance: BigNumber.from(0),
+        cap: BigNumber.from(0),
+        decimals: getAssetDecimals(getAssets(vault)),
+        asset: getAssets(vault),
+        displayAsset: getDisplayAssets(vault),
+        lockedBalanceInAsset: BigNumber.from(0),
+        depositBalanceInAsset: BigNumber.from(0),
+        userAssetBalance: BigNumber.from(0),
+      },
+    ])
+  ) as V2VaultDataResponses,
   prices: Object.fromEntries(
     AssetsList.map((asset) => [asset, { price: 0.0, fetched: false }])
   ) as {
@@ -99,11 +118,14 @@ export const initialState: GlobalStore = {
   desktopView: "grid",
   airdropInfo: undefined,
   tokenBalances: Object.fromEntries(
-    ERC20TokenList.map((token) => [token, { balance: BigNumber.from(0), fetched: false }])
+    ERC20TokenList.map((token) => [
+      token,
+      { balance: BigNumber.from(0), fetched: false },
+    ])
   ) as {
-    [token in ERC20Token]: { fetched: boolean, balance: BigNumber }
+    [token in ERC20Token]: { fetched: boolean; balance: BigNumber };
   },
-  vaultAccounts: initialVaultaccounts
+  vaultAccounts: initialVaultaccounts,
 };
 
 export const { useGlobalState } = createGlobalState(initialState);
