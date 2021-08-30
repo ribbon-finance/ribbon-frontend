@@ -30,6 +30,20 @@ export const getAssetDecimals = (asset: Assets): number => {
   }
 };
 
+export const getAssetDefaultSignificantDecimals = (asset: Assets): number => {
+  const assetDecimal = getAssetDecimals(asset);
+
+  switch (assetDecimal) {
+    case 18:
+      return 6;
+    case 8:
+      return 5;
+    case 6:
+    default:
+      return 2;
+  }
+};
+
 export const getAssetColor = (asset: Assets): string => colors.asset[asset];
 
 const ColoredWBTCLogo = styled(WBTCLogo)`

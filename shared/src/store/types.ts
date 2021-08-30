@@ -41,6 +41,7 @@ export interface UnconnectedV2VaultData {
   asset: Assets;
   displayAsset: Assets;
   pricePerShare: BigNumber;
+  round: number;
 }
 
 /**
@@ -52,6 +53,10 @@ export interface ConnectedV2VaultData {
   lockedBalanceInAsset: BigNumber;
   depositBalanceInAsset: BigNumber;
   userAssetBalance: BigNumber;
+  withdrawals: {
+    shares: BigNumber;
+    round: number;
+  };
 }
 
 export type V2VaultDataResponse = UnconnectedV2VaultData &

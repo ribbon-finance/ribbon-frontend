@@ -44,8 +44,17 @@ const useV2VaultData: UseVaultData = (
        * 1. Total Balance
        * 2. Cap
        */
-      const unconnectedPromises: Promise<BigNumber | { amount: BigNumber }>[] =
-        [contract.totalBalance(), contract.cap(), contract.pricePerShare()];
+      const unconnectedPromises: Promise<
+        | BigNumber
+        | { amount: BigNumber }
+        | { round: number }
+        | { share: BigNumber; round: number }
+      >[] = [
+        contract.totalBalance(),
+        contract.cap(),
+        contract.pricePerShare(),
+        contract.vaultState(),
+      ];
 
       /**
        * 1. Deposit receipts
@@ -63,12 +72,14 @@ const useV2VaultData: UseVaultData = (
                     library,
                     getAssets(vault).toLowerCase() as ERC20Token
                   )!.balanceOf(account!),
+              contract.withdrawals(account!),
             ]
           : [
               // Default value when not connected
               Promise.resolve({ amount: BigNumber.from(0) }),
               Promise.resolve(BigNumber.from(0)),
               Promise.resolve(BigNumber.from(0)),
+              Promise.resolve({ round: 1, share: BigNumber.from(0) }),
             ]
       );
 
@@ -76,9 +87,11 @@ const useV2VaultData: UseVaultData = (
         totalBalance,
         cap,
         pricePerShare,
+        vaultState,
         depositReceipts,
         accountVaultBalance,
         userAssetBalance,
+        withdrawals,
       ] = await Promise.all(
         // Default to 0 when error
         promises.map((p) => p.catch((e) => BigNumber.from(0)))
@@ -91,10 +104,12 @@ const useV2VaultData: UseVaultData = (
           totalBalance,
           cap,
           pricePerShare,
+          round: (vaultState as { round: number }).round,
           lockedBalanceInAsset: accountVaultBalance,
           depositBalanceInAsset: (depositReceipts as { amount: BigNumber })
             .amount,
           userAssetBalance,
+          withdrawals,
         },
       }));
 

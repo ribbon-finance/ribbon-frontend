@@ -28,7 +28,11 @@ import {
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { VaultInputValidationErrorList, VaultValidationErrors } from "../types";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import {
+  getAssetDecimals,
+  getAssetDisplay,
+  getAssetDefaultSignificantDecimals,
+} from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "../../../Common/HelpInfo";
@@ -74,6 +78,7 @@ interface VaultV2WithdrawFormProps {
   onFormSubmit: () => void;
   depositBalanceInAsset: BigNumber;
   lockedBalanceInAsset: BigNumber;
+  initiatedWithdrawAmount: BigNumber;
 }
 
 const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
@@ -82,6 +87,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
   onFormSubmit,
   depositBalanceInAsset,
   lockedBalanceInAsset,
+  initiatedWithdrawAmount,
 }) => {
   const asset = getAssets(vaultOption);
   const assetDisplay = getAssetDisplay(asset);
@@ -111,7 +117,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
 
   useEffect(() => {
     const currentRef =
-      withdrawOptionRefs[vaultActionForm.withdrawOption!].current;
+      withdrawOptionRefs[vaultActionForm.withdrawOption!]?.current;
 
     if (!currentRef) {
       return;
@@ -194,6 +200,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
 
   const formExtraInfo = useMemo(() => {
     const decimals = getAssetDecimals(asset);
+    const significantDecimals = getAssetDefaultSignificantDecimals(asset);
     switch (vaultActionForm.withdrawOption) {
       case "instant":
         return (
@@ -202,7 +209,11 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
             <InfoData
               color={error === "withdrawLimitExceeded" ? colors.red : undefined}
             >
-              {formatBigNumber(depositBalanceInAsset, 2, decimals)}{" "}
+              {formatBigNumber(
+                depositBalanceInAsset,
+                significantDecimals,
+                decimals
+              )}{" "}
               {assetDisplay}
             </InfoData>
           </div>
@@ -226,7 +237,11 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
                   error === "withdrawLimitExceeded" ? colors.red : undefined
                 }
               >
-                {formatBigNumber(lockedBalanceInAsset, 2, decimals)}{" "}
+                {formatBigNumber(
+                  lockedBalanceInAsset,
+                  significantDecimals,
+                  decimals
+                )}{" "}
                 {assetDisplay}
               </InfoData>
             </div>
@@ -253,7 +268,11 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
                 )}
               />
               <InfoData>
-                {formatBigNumber(lockedBalanceInAsset, 2, decimals)}{" "}
+                {formatBigNumber(
+                  initiatedWithdrawAmount,
+                  significantDecimals,
+                  decimals
+                )}{" "}
                 {assetDisplay}
               </InfoData>
             </div>
@@ -267,6 +286,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
     assetDisplay,
     depositBalanceInAsset,
     error,
+    initiatedWithdrawAmount,
     lockedBalanceInAsset,
     vaultActionForm.withdrawOption,
   ]);

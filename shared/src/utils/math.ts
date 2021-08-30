@@ -14,9 +14,9 @@ export const formatBigNumber = (
   significantDecimals: number = 6,
   decimals: number = 18
 ) =>
-  parseFloat(
-    formatSignificantDecimals(formatUnits(num, decimals), significantDecimals)
-  ).toLocaleString();
+  parseFloat(formatUnits(num, decimals)).toLocaleString(undefined, {
+    maximumFractionDigits: significantDecimals,
+  });
 
 export const toFiat = (etherVal: BigNumber) => {
   const scaleFactor = ethers.BigNumber.from(10).pow("6");
@@ -101,7 +101,11 @@ export const handleSmallNumber = (n: number, decimals: number = 4): number => {
   return parseFloat(parsedString);
 };
 
-export const isPracticallyZero = (num: BigNumber, decimals: number, marginString: string = "0.01") => {
-    const margin = ethers.utils.parseUnits(marginString, decimals);
-    return num.lt(margin)
-}
+export const isPracticallyZero = (
+  num: BigNumber,
+  decimals: number,
+  marginString: string = "0.01"
+) => {
+  const margin = ethers.utils.parseUnits(marginString, decimals);
+  return num.lt(margin);
+};
