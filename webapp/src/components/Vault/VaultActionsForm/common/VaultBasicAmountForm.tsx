@@ -19,7 +19,6 @@ import {
   VaultMaxDeposit,
   VaultOptions,
 } from "shared/lib/constants/constants";
-import { ACTIONS } from "../Modal/types";
 import { getVaultColor } from "shared/lib/utils/vault";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { VaultInputValidationErrorList, VaultValidationErrors } from "../types";
@@ -82,9 +81,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
         <ActionButton
           disabled={Boolean(error) || !isInputNonZero}
           onClick={onFormSubmit}
-          className={`mt-4 py-3 ${
-            vaultActionForm.actionType !== ACTIONS.transfer ? "mb-4" : ""
-          }`}
+          className={`mt-4 py-3 mb-4`}
           color={color}
         >
           {actionButtonText}
@@ -96,7 +93,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
       <ConnectWalletButton
         onClick={() => setShowConnectModal(true)}
         type="button"
-        className="btn py-3 mb-4"
+        className="btn mt-4 py-3 mb-4"
       >
         Connect Wallet
       </ConnectWalletButton>
@@ -109,7 +106,6 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
     isInputNonZero,
     onFormSubmit,
     setShowConnectModal,
-    vaultActionForm,
   ]);
 
   return (

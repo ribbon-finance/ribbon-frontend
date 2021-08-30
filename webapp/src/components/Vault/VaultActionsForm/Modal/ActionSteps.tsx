@@ -20,6 +20,7 @@ import { parseUnits } from "@ethersproject/units";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { capitalize } from "shared/lib/utils/text";
 import useV2Vault from "shared/lib/hooks/useV2Vault";
+import useV2VaultData from "shared/lib/hooks/useV2VaultData";
 
 export interface ActionStepsProps {
   vault: {
@@ -46,7 +47,10 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const v2Vault = useV2Vault(vaultOption);
   const [pendingTransactions, setPendingTransactions] =
     usePendingTransactions();
-  const { vaultBalanceInAsset, decimals } = useVaultData(vaultOption);
+  const { vaultBalanceInAsset } = useVaultData(vaultOption);
+  const {
+    data: { pricePerShare, decimals },
+  } = useV2VaultData(vaultOption);
 
   // We need to pre-fetch the number of shares that the user wants to withdraw
   const { vaultActionForm, resetActionForm } = useVaultActionForm(vaultOption);
@@ -106,7 +110,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const handleClickConfirmButton = async () => {
     const vault = vaultActionForm.vaultVersion === "v1" ? v1Vault : v2Vault;
-    
+
     if (vault !== null) {
       // check illegal state transition
       if (step !== STEPS.confirmationStep - 1) return;
@@ -145,7 +149,10 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
                   /** Initiate withdrawal for v2 */
                   case "standard":
-                    res = await vault.initiateWithdraw(amountStr);
+                    shares = amount
+                      .mul(BigNumber.from(10).pow(decimals))
+                      .div(pricePerShare);
+                    res = await vault.initiateWithdraw(shares);
                     break;
                 }
                 break;

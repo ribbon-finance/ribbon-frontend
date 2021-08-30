@@ -277,9 +277,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
         <ActionButton
           disabled={Boolean(error) || !isInputNonZero}
           onClick={onFormSubmit}
-          className={`mt-4 py-3 ${
-            vaultActionForm.actionType !== ACTIONS.transfer ? "mb-4" : ""
-          }`}
+          className="mt-4 py-3"
           color={color}
         >
           {vaultActionForm.withdrawOption! === "standard"
@@ -293,7 +291,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
       <ConnectWalletButton
         onClick={() => setShowConnectModal(true)}
         type="button"
-        className="btn py-3 mb-4"
+        className="mt-4 btn py-3 mb-4"
       >
         Connect Wallet
       </ConnectWalletButton>

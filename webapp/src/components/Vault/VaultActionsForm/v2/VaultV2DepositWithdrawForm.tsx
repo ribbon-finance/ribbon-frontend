@@ -125,7 +125,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       userAssetBalance,
     },
     loading,
-  } = useV2VaultData(vaultOption);
+  } = useV2VaultData(vaultOption, { poll: true, pollingFrequency: 5000 });
   const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
   const { active } = useWeb3React();
 
@@ -300,12 +300,12 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
         );
     }
 
-    if (!active || loading) {
-      return <FormInfoText>---</FormInfoText>;
-    }
-
     switch (vaultActionForm.actionType) {
       case ACTIONS.deposit:
+        if (!active || loading) {
+          return <FormInfoText>---</FormInfoText>;
+        }
+
         return (
           <FormInfoText
             color={error === "insufficientBalance" ? colors.red : undefined}
@@ -314,58 +314,6 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
             {getAssetDisplay(asset)}
           </FormInfoText>
         );
-      //  case ACTIONS.withdraw:
-      //    const position = formatBigNumber(vaultBalanceInAsset, 6, decimals);
-
-      //    /**
-      //     * Condition to check withdraw is limited by staked
-      //     * 1. Max withdraw amount must match total balance
-      //     * 2. Staked amount is bigger than 0
-      //     */
-      //    if (
-      //      vaultAccount &&
-      //      vaultBalanceInAsset.eq(maxWithdrawAmount) &&
-      //      !vaultAccount.totalStakedShares.isZero()
-      //    ) {
-      //      return stakedAmountText;
-      //    }
-
-      //    /**
-      //     * Over here, we show unstaked position instead
-      //     */
-      //    if (vaultAccount && !vaultAccount.totalStakedShares.isZero()) {
-      //      return (
-      //        <>
-      //          unstaked position: {position} {getAssetDisplay(asset)}
-      //          <TooltipExplanation
-      //            title="AVAILABLE TO WITHDRAW"
-      //            explanation={
-      //              <>
-      //                You have staked{" "}
-      //                {formatBigNumber(
-      //                  vaultAccount.totalStakedBalance,
-      //                  6,
-      //                  decimals
-      //                )}{" "}
-      //                {vaultOption} tokens, leaving you with {position}{" "}
-      //                {getAssetDisplay(asset)} unstaked balance.
-      //                <br />
-      //                <br />
-      //                To increase the balance for withdrawal, you must unstake
-      //                your {vaultOption} tokens from the staking pool.
-      //              </>
-      //            }
-      //            renderContent={({ ref, ...triggerHandler }) => (
-      //              <HelpInfo containerRef={ref} {...triggerHandler}>
-      //                ?
-      //              </HelpInfo>
-      //            )}
-      //          />
-      //        </>
-      //      );
-      //    }
-
-      //    return `Your Position: ${position} ${getAssetDisplay(asset)}`;
     }
   }, [
     active,

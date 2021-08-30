@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 
@@ -21,7 +21,7 @@ type UseVaultData = (
 
 const useV2VaultData: UseVaultData = (
   vault,
-  { poll, pollingFrequency } = { poll: true, pollingFrequency: 5000 }
+  { poll, pollingFrequency } = { poll: false, pollingFrequency: 5000 }
 ) => {
   const { active, account: web3Account, library } = useWeb3React();
   const contract = useV2Vault(vault);
@@ -45,7 +45,7 @@ const useV2VaultData: UseVaultData = (
        * 2. Cap
        */
       const unconnectedPromises: Promise<BigNumber | { amount: BigNumber }>[] =
-        [contract.totalBalance(), contract.cap()];
+        [contract.totalBalance(), contract.cap(), contract.pricePerShare()];
 
       /**
        * 1. Deposit receipts
@@ -75,6 +75,7 @@ const useV2VaultData: UseVaultData = (
       const [
         totalBalance,
         cap,
+        pricePerShare,
         depositReceipts,
         accountVaultBalance,
         userAssetBalance,
@@ -89,6 +90,7 @@ const useV2VaultData: UseVaultData = (
           ...prevResponse[vault],
           totalBalance,
           cap,
+          pricePerShare,
           lockedBalanceInAsset: accountVaultBalance,
           depositBalanceInAsset: (depositReceipts as { amount: BigNumber })
             .amount,
