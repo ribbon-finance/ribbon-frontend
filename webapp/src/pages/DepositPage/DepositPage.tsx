@@ -213,16 +213,16 @@ const DepositPage = () => {
 
       <DepositPageContainer className="py-5">
         <div className="row mx-lg-n1">
-          {account && <MobilePositions vaultOption={vaultOption} />}
+          {account && <MobilePositions vault={{ vaultOption, vaultVersion }} />}
 
-          <PerformanceSection vaultOption={vaultOption} />
+          <PerformanceSection vault={{ vaultOption, vaultVersion }} />
 
           {/* Form for desktop */}
           <DesktopActionsFormContainer className="d-flex flex-column col-xl-5 offset-xl-1 col-md-6">
             <DesktopActionForm vault={{ vaultOption, vaultVersion }} />
           </DesktopActionsFormContainer>
         </div>
-        <VaultActivity vaultOption={vaultOption} />
+        <VaultActivity vault={{ vaultOption, vaultVersion }} />
       </DepositPageContainer>
     </>
   );

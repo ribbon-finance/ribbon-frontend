@@ -7,7 +7,7 @@ import { SecondaryText, Subtitle, Title } from "shared/lib/designSystem";
 import useAssetPrice from "shared/lib/hooks/useAssetPrice";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
-import { VaultOptions } from "shared/lib/constants/constants";
+import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
@@ -64,12 +64,15 @@ const StakeLabel = styled(SecondaryText)`
 `;
 
 interface YourPositionProps {
-  vaultOption: VaultOptions;
+  vault: {
+    vaultOption: VaultOptions;
+    vaultVersion: VaultVersion;
+  };
   className?: string;
 }
 
 const YourPosition: React.FC<YourPositionProps> = ({
-  vaultOption,
+  vault: { vaultOption, vaultVersion },
   className,
 }) => {
   const { status, asset, decimals } = useVaultData(vaultOption, {
@@ -78,8 +81,11 @@ const YourPosition: React.FC<YourPositionProps> = ({
   const { price: assetPrice } = useAssetPrice({ asset: asset });
   // Uses useMemo to create array so that useVaultAccounts does not constantly create new array that causes website lag
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
-  const { vaultAccounts, loading: vaultAccountLoading } =
-    useVaultAccounts(vaultOptions);
+  const vaultVersions = useMemo(() => [vaultVersion], [vaultVersion]);
+  const { vaultAccounts, loading: vaultAccountLoading } = useVaultAccounts(
+    vaultOptions,
+    vaultVersions
+  );
   const isLoading = status === "loading" || vaultAccountLoading;
   const loadingText = useTextAnimation(isLoading);
 
@@ -95,7 +101,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
     }
 
     return [
-      formatBigNumber(vaultAccount.totalBalance, 6, decimals),
+      formatBigNumber(vaultAccount.totalBalance, decimals),
       assetToUSD(vaultAccount.totalBalance, assetPrice, decimals),
     ];
   }, [
@@ -134,7 +140,6 @@ const YourPosition: React.FC<YourPositionProps> = ({
     if (vaultAccount && !vaultAccount.totalBalance.isZero()) {
       return `${formatBigNumber(
         vaultAccount.totalStakedBalance,
-        6,
         decimals
       )} ${getAssetDisplay(asset)}`;
     }

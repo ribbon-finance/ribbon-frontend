@@ -85,7 +85,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
           return (
             <>
               <Title>
-                MINTED {formatBigNumber(activity.mintAmount, 2, 8)} CONTRACTS
+                MINTED {formatBigNumber(activity.mintAmount, 8)} CONTRACTS
               </Title>
               <VaultSecondaryInfoText>
                 O-{asset}-
@@ -129,7 +129,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
               <VaultActivityInfoRow>
                 <div className="d-flex flex-column">
                   <VaultActivityYieldText>
-                    +{formatBigNumber(activity.premium, 6, decimals)}{" "}
+                    +{formatBigNumber(activity.premium, decimals)}{" "}
                     {getAssetDisplay(asset)}
                   </VaultActivityYieldText>
                   <VaultSecondaryInfoText>

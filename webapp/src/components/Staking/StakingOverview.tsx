@@ -161,7 +161,7 @@ const StakingOverview = () => {
       totalDistributed = totalDistributed.add(stakingPool.totalRewardClaimed);
     }
 
-    return formatBigNumber(totalDistributed, 2, 18);
+    return formatBigNumber(totalDistributed, 18);
   }, [stakingLoading, loadingText, stakingPools]);
 
   const numHolderText = useMemo(() => {

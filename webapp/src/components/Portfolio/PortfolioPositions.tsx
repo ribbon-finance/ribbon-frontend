@@ -26,6 +26,7 @@ import {
   VaultList,
   VaultNameOptionMap,
   VaultOptions,
+  VaultVersionList,
 } from "shared/lib/constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
@@ -36,6 +37,8 @@ import {
   getAssetLogo,
 } from "shared/lib/utils/asset";
 import { getVaultColor } from "shared/lib/utils/vault";
+
+const vaultVersions = [...VaultVersionList];
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 64px;
@@ -203,7 +206,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
             ? animatedLoadingText
             : `${assetToUSD(amount, assetPrice, decimals)}`;
         case "eth":
-          return `${formatBigNumber(amount, 6, decimals)} ${getAssetDisplay(
+          return `${formatBigNumber(amount, decimals)} ${getAssetDisplay(
             asset
           )}`;
       }
@@ -291,7 +294,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 
 const PortfolioPositions = () => {
   const { active } = useWeb3React();
-  const { vaultAccounts, loading } = useVaultAccounts(VaultList);
+  const { vaultAccounts, loading } = useVaultAccounts(VaultList, vaultVersions);
   const animatedLoadingText = useTextAnimation(loading);
 
   const filteredVaultAccounts = useMemo(() => {
@@ -300,6 +303,7 @@ const PortfolioPositions = () => {
         .map((key) => [key, vaultAccounts[key as VaultOptions]])
         .filter((item) => {
           const account = item[1] as VaultAccount;
+
           return (
             account &&
             !isPracticallyZero(

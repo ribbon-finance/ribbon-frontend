@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { parseUnits } from "@ethersproject/units";
+import { BigNumber } from "ethers";
 
 import colors from "shared/lib/designSystem/colors";
 import {
@@ -119,13 +120,15 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       asset,
       cap,
       decimals,
+      pricePerShare,
       depositBalanceInAsset,
       lockedBalanceInAsset,
       totalBalance,
       userAssetBalance,
+      withdrawals,
     },
     loading,
-  } = useV2VaultData(vaultOption);
+  } = useV2VaultData(vaultOption, { poll: true });
   const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
   const { active } = useWeb3React();
 
@@ -269,17 +272,23 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
             onFormSubmit={onFormSubmit}
             depositBalanceInAsset={depositBalanceInAsset}
             lockedBalanceInAsset={lockedBalanceInAsset}
+            initiatedWithdrawAmount={withdrawals.shares
+              .mul(pricePerShare)
+              .div(BigNumber.from(10).pow(decimals))}
           />
         );
     }
   }, [
+    decimals,
     depositBalanceInAsset,
     error,
     lockedBalanceInAsset,
     onFormSubmit,
+    pricePerShare,
     showTokenApproval,
     vaultActionForm.actionType,
     vaultOption,
+    withdrawals.shares,
   ]);
 
   const formInfoText = useMemo(() => {
@@ -294,78 +303,26 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
         return (
           <FormInfoText color={colors.red}>
             This vault has a max deposit of{" "}
-            {formatBigNumber(vaultMaxDepositAmount, 6, decimals)} $
+            {formatBigNumber(vaultMaxDepositAmount, decimals)} $
             {getAssetDisplay(asset)} per depositor
           </FormInfoText>
         );
     }
 
-    if (!active || loading) {
-      return <FormInfoText>---</FormInfoText>;
-    }
-
     switch (vaultActionForm.actionType) {
       case ACTIONS.deposit:
+        if (!active || loading) {
+          return <FormInfoText>---</FormInfoText>;
+        }
+
         return (
           <FormInfoText
             color={error === "insufficientBalance" ? colors.red : undefined}
           >
-            Wallet Balance: {formatBigNumber(userAssetBalance, 6, decimals)}{" "}
+            Wallet Balance: {formatBigNumber(userAssetBalance, decimals)}{" "}
             {getAssetDisplay(asset)}
           </FormInfoText>
         );
-      //  case ACTIONS.withdraw:
-      //    const position = formatBigNumber(vaultBalanceInAsset, 6, decimals);
-
-      //    /**
-      //     * Condition to check withdraw is limited by staked
-      //     * 1. Max withdraw amount must match total balance
-      //     * 2. Staked amount is bigger than 0
-      //     */
-      //    if (
-      //      vaultAccount &&
-      //      vaultBalanceInAsset.eq(maxWithdrawAmount) &&
-      //      !vaultAccount.totalStakedShares.isZero()
-      //    ) {
-      //      return stakedAmountText;
-      //    }
-
-      //    /**
-      //     * Over here, we show unstaked position instead
-      //     */
-      //    if (vaultAccount && !vaultAccount.totalStakedShares.isZero()) {
-      //      return (
-      //        <>
-      //          unstaked position: {position} {getAssetDisplay(asset)}
-      //          <TooltipExplanation
-      //            title="AVAILABLE TO WITHDRAW"
-      //            explanation={
-      //              <>
-      //                You have staked{" "}
-      //                {formatBigNumber(
-      //                  vaultAccount.totalStakedBalance,
-      //                  6,
-      //                  decimals
-      //                )}{" "}
-      //                {vaultOption} tokens, leaving you with {position}{" "}
-      //                {getAssetDisplay(asset)} unstaked balance.
-      //                <br />
-      //                <br />
-      //                To increase the balance for withdrawal, you must unstake
-      //                your {vaultOption} tokens from the staking pool.
-      //              </>
-      //            }
-      //            renderContent={({ ref, ...triggerHandler }) => (
-      //              <HelpInfo containerRef={ref} {...triggerHandler}>
-      //                ?
-      //              </HelpInfo>
-      //            )}
-      //          />
-      //        </>
-      //      );
-      //    }
-
-      //    return `Your Position: ${position} ${getAssetDisplay(asset)}`;
     }
   }, [
     active,

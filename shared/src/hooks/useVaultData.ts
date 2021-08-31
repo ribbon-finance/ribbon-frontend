@@ -21,7 +21,7 @@ type UseVaultData = (
 ) => VaultDataResponse;
 
 const useVaultData: UseVaultData = (vault, params) => {
-  const poll = false || Boolean(params && params.poll);
+  const poll = Boolean(params && params.poll);
   const pollingFrequency = (params && params.pollingFrequency) || 4000;
 
   const isMountedRef = useRef(true);

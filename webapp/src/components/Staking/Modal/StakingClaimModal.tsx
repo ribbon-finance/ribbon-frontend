@@ -113,7 +113,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
         {
           txhash,
           type: "rewardClaim",
-          amount: formatBigNumber(stakingPoolData.claimableRbn, 2, 18),
+          amount: formatBigNumber(stakingPoolData.claimableRbn, 18),
           stakeAsset: vaultOption,
         },
       ]);
@@ -184,7 +184,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
             <InfoColumn marginTop={40}>
               <SecondaryText>Unclaimed $RBN</SecondaryText>
               <InfoData>
-                {formatBigNumber(stakingPoolData.claimableRbn, 2, 18)}
+                {formatBigNumber(stakingPoolData.claimableRbn, 18)}
               </InfoData>
             </InfoColumn>
             <InfoColumn>
@@ -195,7 +195,6 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
                     (acc, curr) => acc.add(curr.amount),
                     BigNumber.from(0)
                   ),
-                  2,
                   18
                 )}
               </InfoData>
@@ -209,8 +208,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
                 <SecondaryText>Pool rewards</SecondaryText>
               </div>
               <InfoData>
-                {formatBigNumber(stakingPoolData.poolRewardForDuration, 6, 18)}{" "}
-                RBN
+                {formatBigNumber(stakingPoolData.poolRewardForDuration, 18)} RBN
               </InfoData>
             </InfoColumn>
             <BaseModalContentColumn marginTop="auto">

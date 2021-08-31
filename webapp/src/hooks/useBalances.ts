@@ -4,8 +4,11 @@ import { BigNumber } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 
 import { BalanceUpdate } from "shared/lib/models/vault";
-import { getSubgraphqlURI } from "shared/lib/utils/env";
 import { impersonateAddress } from "shared/lib/utils/development";
+import {
+  getSubgraphURIForVersion,
+  VaultVersionList,
+} from "shared/lib/constants/constants";
 
 const useBalances = (before?: number, after?: number) => {
   const web3Context = useWeb3React();
@@ -39,37 +42,52 @@ const fetchBalances = async (
   account: string,
   params: { before?: number; after?: number } = {}
 ): Promise<BalanceUpdate[]> => {
-  const response = await axios.post(getSubgraphqlURI(), {
-    query: `
-        {
-          balanceUpdates(
-            where: {
-              account:"${account}",
-              ${params.before ? `timestamp_lte: ${params.before},` : ``}
-              ${params.after ? `timestamp_gte: ${params.after},` : ``}
-            },
-            orderBy: timestamp,
-            orderDirection: desc,
-            first: 1000
-          ) {
-            vault {
-              symbol
-              name
+  const responses = Object.fromEntries(
+    await Promise.all(
+      VaultVersionList.map(async (version) => {
+        const response = await axios.post(getSubgraphURIForVersion(version), {
+          query: `
+          {
+            balanceUpdates(
+              where: {
+                account:"${account}",
+                ${params.before ? `timestamp_lte: ${params.before},` : ``}
+                ${params.after ? `timestamp_gte: ${params.after},` : ``}
+              },
+              orderBy: timestamp,
+              orderDirection: desc,
+              first: 1000
+            ) {
+              vault {
+                symbol
+                name
+              }
+              timestamp
+              balance
+              yieldEarned
+              isWithdraw
             }
-            timestamp
-            balance
-            yieldEarned
-            isWithdraw
           }
-        }
-        `,
-  });
+          `,
+        });
 
-  return response.data.data.balanceUpdates.reverse().map((item: any) => ({
-    ...item,
-    balance: BigNumber.from(item.balance),
-    yieldEarned: BigNumber.from(item.yieldEarned),
-  }));
+        return [version, response];
+      })
+    )
+  );
+
+  return Object.keys(responses).flatMap((version) =>
+    responses[version].data.data
+      ? responses[version].data.data.balanceUpdates
+          .reverse()
+          .map((item: any) => ({
+            ...item,
+            balance: BigNumber.from(item.balance),
+            yieldEarned: BigNumber.from(item.yieldEarned),
+            vaultVersion: version,
+          }))
+      : []
+  );
 };
 
 export default useBalances;

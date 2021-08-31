@@ -341,25 +341,21 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               <InfoColumn>
                 <SecondaryText>Unstaked Balance</SecondaryText>
                 <InfoData error={Boolean(error)}>
-                  {formatBigNumber(
-                    stakingPoolData.unstakedBalance,
-                    4,
-                    decimals
-                  )}
+                  {formatBigNumber(stakingPoolData.unstakedBalance, decimals)}
                 </InfoData>
               </InfoColumn>
             ) : (
               <InfoColumn>
                 <SecondaryText>Your Current Stake</SecondaryText>
                 <InfoData error={Boolean(error)}>
-                  {formatBigNumber(stakingPoolData.currentStake, 4, decimals)}
+                  {formatBigNumber(stakingPoolData.currentStake, decimals)}
                 </InfoData>
               </InfoColumn>
             )}
             <InfoColumn>
               <SecondaryText>Pool Size</SecondaryText>
               <InfoData>
-                {formatBigNumber(stakingPoolData.poolSize, 4, decimals)}
+                {formatBigNumber(stakingPoolData.poolSize, decimals)}
               </InfoData>
             </InfoColumn>
             <InfoColumn>
@@ -367,8 +363,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                 <SecondaryText>Pool rewards</SecondaryText>
               </div>
               <InfoData>
-                {formatBigNumber(stakingPoolData.poolRewardForDuration, 6, 18)}{" "}
-                RBN
+                {formatBigNumber(stakingPoolData.poolRewardForDuration, 18)} RBN
               </InfoData>
             </InfoColumn>
             <BaseModalContentColumn marginTop="auto">
@@ -388,18 +383,14 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               <BaseModalContentColumn marginTop={16} className="mb-2">
                 <CurrentStakeTitle>
                   Your Current Stake:{" "}
-                  {formatBigNumber(stakingPoolData.currentStake, 4, decimals)}
+                  {formatBigNumber(stakingPoolData.currentStake, decimals)}
                 </CurrentStakeTitle>
               </BaseModalContentColumn>
             ) : (
               <BaseModalContentColumn marginTop={16} className="mb-2">
                 <CurrentStakeTitle>
                   Unstaked Balance:{" "}
-                  {formatBigNumber(
-                    stakingPoolData.unstakedBalance,
-                    4,
-                    decimals
-                  )}
+                  {formatBigNumber(stakingPoolData.unstakedBalance, decimals)}
                 </CurrentStakeTitle>
               </BaseModalContentColumn>
             )}
@@ -426,7 +417,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
             <InfoColumn>
               <SecondaryText>Your Stake</SecondaryText>
               <InfoData>
-                {formatBigNumber(stakingPoolData.currentStake, 4, decimals)}
+                {formatBigNumber(stakingPoolData.currentStake, decimals)}
                 <Arrow className="fas fa-arrow-right mx-2" color={color} />
                 {formatBigNumber(
                   stake
@@ -436,7 +427,6 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                     : stakingPoolData.currentStake.sub(
                         BigNumber.from(parseUnits(input, decimals))
                       ),
-                  4,
                   decimals
                 )}
               </InfoData>
@@ -444,8 +434,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
             <InfoColumn>
               <SecondaryText>Pool rewards</SecondaryText>
               <InfoData>
-                {formatBigNumber(stakingPoolData.poolRewardForDuration, 6, 18)}{" "}
-                RBN
+                {formatBigNumber(stakingPoolData.poolRewardForDuration, 18)} RBN
               </InfoData>
             </InfoColumn>
             <BaseModalContentColumn marginTop="auto">

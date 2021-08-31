@@ -1,6 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { ethers, BigNumber as EthersBigNumber } from "ethers";
 import currency from "currency.js";
+import { getDefaultSignificantDecimalsFromAssetDecimals } from "./asset";
 
 const { formatUnits } = ethers.utils;
 
@@ -11,12 +12,16 @@ export const formatSignificantDecimals = (
 
 export const formatBigNumber = (
   num: BigNumber,
-  significantDecimals: number = 6,
-  decimals: number = 18
-) =>
-  parseFloat(
-    formatSignificantDecimals(formatUnits(num, decimals), significantDecimals)
-  ).toLocaleString();
+  decimals: number = 18,
+  significantDecimals?: number
+) => {
+  const _significantDecimals =
+    significantDecimals ||
+    getDefaultSignificantDecimalsFromAssetDecimals(decimals);
+  return parseFloat(formatUnits(num, decimals)).toLocaleString(undefined, {
+    maximumFractionDigits: _significantDecimals,
+  });
+};
 
 export const toFiat = (etherVal: BigNumber) => {
   const scaleFactor = ethers.BigNumber.from(10).pow("6");
@@ -101,7 +106,16 @@ export const handleSmallNumber = (n: number, decimals: number = 4): number => {
   return parseFloat(parsedString);
 };
 
-export const isPracticallyZero = (num: BigNumber, decimals: number, marginString: string = "0.01") => {
-    const margin = ethers.utils.parseUnits(marginString, decimals);
-    return num.lt(margin)
-}
+export const isPracticallyZero = (
+  num: BigNumber,
+  decimals: number,
+  marginString?: string
+) => {
+  const defaultSignificantDecimals =
+    getDefaultSignificantDecimalsFromAssetDecimals(decimals);
+  const _marginString =
+    marginString ||
+    (1 / 10 ** defaultSignificantDecimals).toFixed(defaultSignificantDecimals);
+  const margin = ethers.utils.parseUnits(_marginString, decimals);
+  return num.lt(margin);
+};

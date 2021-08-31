@@ -9,6 +9,7 @@ import { formatBigNumber } from "shared/lib/utils/math";
 import {
   VaultAddressMap,
   VaultMaxDeposit,
+  VaultVersion,
 } from "shared/lib/constants/constants";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { getVaultColor, isETHVault, isVaultFull } from "shared/lib/utils/vault";
@@ -210,11 +211,14 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     asset,
     decimals,
     vaultMaxWithdrawAmount,
-  } = useVaultData(vaultOption);
+  } = useVaultData(vaultOption, { poll: true });
   const { canTransfer, handleActionTypeChange, vaultActionForm } =
     useVaultActionForm(vaultOption);
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
-  const { vaultAccounts } = useVaultAccounts(vaultOptions);
+  const vaultVersions = useMemo((): VaultVersion[] => ["v1"], []);
+  const { vaultAccounts } = useVaultAccounts(vaultOptions, vaultVersions, {
+    poll: true,
+  });
   const { active, account } = useWeb3React();
 
   // state hooks
@@ -385,16 +389,16 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     const vaultAccount = vaultAccounts[vaultOption];
     const stakedAmountText = vaultAccount ? (
       <>
-        AVAILABLE TO WITHDRAW: {formatBigNumber(maxWithdrawAmount, 6, decimals)}{" "}
+        AVAILABLE TO WITHDRAW: {formatBigNumber(maxWithdrawAmount, decimals)}{" "}
         {getAssetDisplay(asset)}
         <TooltipExplanation
           title="AVAILABLE TO WITHDRAW"
           explanation={
             <>
               You have staked{" "}
-              {formatBigNumber(vaultAccount.totalStakedBalance, 6, decimals)}{" "}
+              {formatBigNumber(vaultAccount.totalStakedBalance, decimals)}{" "}
               {vaultOption} tokens, leaving you with{" "}
-              {formatBigNumber(maxWithdrawAmount, 6, decimals)}{" "}
+              {formatBigNumber(maxWithdrawAmount, decimals)}{" "}
               {getAssetDisplay(asset)} available for withdrawal.
               <br />
               <br />
@@ -429,13 +433,12 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
         return (
           <>
             Weekly Withdraw Limit:{" "}
-            {formatBigNumber(maxWithdrawAmount, 6, decimals)}{" "}
+            {formatBigNumber(maxWithdrawAmount, decimals)}{" "}
             {getAssetDisplay(asset)}
             <TooltipExplanation
               title="WEEKLY WITHDRAWAL LIMIT"
               explanation={`Withdrawing ${formatBigNumber(
                 maxWithdrawAmount,
-                6,
                 decimals
               )} ${getAssetDisplay(
                 asset
@@ -460,11 +463,10 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
       case ACTIONS.deposit:
         return `Wallet Balance: ${formatBigNumber(
           userAssetBalance,
-          6,
           decimals
         )} ${getAssetDisplay(asset)}`;
       case ACTIONS.withdraw:
-        const position = formatBigNumber(vaultBalanceInAsset, 6, decimals);
+        const position = formatBigNumber(vaultBalanceInAsset, decimals);
 
         /**
          * Condition to check withdraw is limited by staked
@@ -491,11 +493,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
                 explanation={
                   <>
                     You have staked{" "}
-                    {formatBigNumber(
-                      vaultAccount.totalStakedBalance,
-                      6,
-                      decimals
-                    )}{" "}
+                    {formatBigNumber(vaultAccount.totalStakedBalance, decimals)}{" "}
                     {vaultOption} tokens, leaving you with {position}{" "}
                     {getAssetDisplay(asset)} unstaked balance.
                     <br />
@@ -727,7 +725,10 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
       )}
 
       {connected && variant === "desktop" && (
-        <YourPosition vaultOption={vaultOption} className="mt-4" />
+        <YourPosition
+          vault={{ vaultOption, vaultVersion: "v1" }}
+          className="mt-4"
+        />
       )}
     </Container>
   );

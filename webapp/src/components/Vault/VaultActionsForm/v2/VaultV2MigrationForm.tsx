@@ -153,7 +153,7 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
             <PrimaryText className="mt-3 text-center" color={colors.text}>
               You can now move your V1 deposit balance of{" "}
               <FormDescriptionHighlight>
-                {formatBigNumber(vaultAccount.totalBalance, 6, decimals)}{" "}
+                {formatBigNumber(vaultAccount.totalBalance, decimals)}{" "}
                 {getAssetDisplay(asset)}
               </FormDescriptionHighlight>{" "}
               to the V2 vault
@@ -189,7 +189,7 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
             <div className="d-flex w-100 align-items-center mt-4">
               <SecondaryText>Your V1 Balance</SecondaryText>
               <Title className="ml-auto">
-                {formatBigNumber(vaultAccount.totalBalance, 6, decimals)}{" "}
+                {formatBigNumber(vaultAccount.totalBalance, decimals)}{" "}
                 {getAssetDisplay(asset)}
               </Title>
             </div>

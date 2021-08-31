@@ -2,34 +2,50 @@ import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { BigNumber } from "ethers";
 
-import { VaultAddressMap, VaultOptions } from "shared/lib/constants/constants";
+import {
+  getSubgraphURIForVersion,
+  VaultAddressMap,
+  VaultOptions,
+  VaultVersion,
+  VaultVersionList,
+} from "shared/lib/constants/constants";
 import { VaultActivity } from "shared/lib/models/vault";
-import { getSubgraphqlURI } from "shared/lib/utils/env";
 
-const useVaultActivity = (vault: VaultOptions) => {
+const useVaultActivity = (
+  vault: VaultOptions,
+  vaultVersion: VaultVersion = VaultVersionList[0]
+) => {
   // TODO: Global state
   const [activities, setActivities] = useState<VaultActivity[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const loadActivity = useCallback(async (vault: VaultOptions) => {
-    setLoading(true);
-    setActivities(await fetchVaultAvtivity(vault));
-    setLoading(false);
-  }, []);
+  const loadActivity = useCallback(
+    async (_vault: VaultOptions, _vaultVersion: VaultVersion) => {
+      setLoading(true);
+      setActivities(await fetchVaultAvtivity(_vault, _vaultVersion));
+      setLoading(false);
+    },
+    []
+  );
 
   useEffect(() => {
-    loadActivity(vault);
-  }, [vault, loadActivity]);
+    loadActivity(vault, vaultVersion);
+  }, [vault, vaultVersion, loadActivity]);
 
   return { activities, loading };
 };
 
 const fetchVaultAvtivity = async (
-  vault: VaultOptions
+  vault: VaultOptions,
+  vaultVersion: VaultVersion
 ): Promise<VaultActivity[]> => {
-  const vaultAddress = VaultAddressMap[vault].v1.toLowerCase();
+  const vaultAddress = VaultAddressMap[vault][vaultVersion]?.toLowerCase();
 
-  const response = await axios.post(getSubgraphqlURI(), {
+  if (!vaultAddress) {
+    return [];
+  }
+
+  const response = await axios.post(getSubgraphURIForVersion(vaultVersion), {
     query: `
         {
           vaultShortPositions (where: { vault_in: ["${vaultAddress}"] }){

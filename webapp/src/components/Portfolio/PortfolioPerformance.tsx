@@ -24,11 +24,14 @@ import {
   getAssets,
   VaultList,
   VaultOptions,
+  VaultVersionList,
 } from "shared/lib/constants/constants";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { AssetsList } from "shared/lib/store/types";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import useRBNTokenAccount from "shared/lib/hooks/useRBNTokenAccount";
+
+const vaultVersions = [...VaultVersionList];
 
 const PerformanceContainer = styled.div`
   display: flex;
@@ -171,8 +174,10 @@ const PortfolioPerformance = () => {
     // @ts-ignore
     assets: AssetsList,
   });
-  const { vaultAccounts, loading: vaultAccountLoading } =
-    useVaultAccounts(VaultList);
+  const { vaultAccounts, loading: vaultAccountLoading } = useVaultAccounts(
+    VaultList,
+    vaultVersions
+  );
   const [hoveredBalanceUpdateIndex, setHoveredBalanceUpdateIndex] =
     useState<number>();
   const [rangeFilter, setRangeFilter] = useState<dateFilterType>("1m");
@@ -246,9 +251,10 @@ const PortfolioPerformance = () => {
     balances = balanceUpdates.map((balanceUpdate) => {
       const currentAsset = getAssets(balanceUpdate.vault.symbol);
       const currentAssetDecimals = getAssetDecimals(currentAsset);
+      const vaultLastBalanceKey =
+        balanceUpdate.vault.symbol + balanceUpdate.vaultVersion;
 
-      const vaultLastBalance =
-        vaultLastBalances[balanceUpdate.vault.symbol] || 0;
+      const vaultLastBalance = vaultLastBalances[vaultLastBalanceKey] || 0;
       const vaultCurrentBalance = parseFloat(
         assetToFiat(
           balanceUpdate.balance,
@@ -288,7 +294,7 @@ const PortfolioPerformance = () => {
         }
       }
 
-      vaultLastBalances[balanceUpdate.vault.symbol] = vaultCurrentBalance;
+      vaultLastBalances[vaultLastBalanceKey] = vaultCurrentBalance;
 
       return {
         balance: Object.keys(vaultLastBalances).reduce(
@@ -408,7 +414,7 @@ const PortfolioPerformance = () => {
     }
 
     return RBNTokenAccount
-      ? formatBigNumber(RBNTokenAccount.balance, 6, 18)
+      ? formatBigNumber(RBNTokenAccount.balance, 18)
       : "0.00";
   }, [RBNTokenAccount, active, animatedLoadingText, loading]);
 

@@ -87,7 +87,7 @@ export const TxStatusToast = () => {
 
     const asset = vault ? getAssets(vault) : undefined;
     const amountFormatted: string = vault
-      ? formatBigNumber(BigNumber.from(amount), 6, getAssetDecimals(asset!))
+      ? formatBigNumber(BigNumber.from(amount), getAssetDecimals(asset!))
       : amount;
 
     let actionTitle: string;

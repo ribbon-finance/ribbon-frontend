@@ -2,7 +2,12 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { ERC20Token } from "../models/eth";
 import { Assets } from "../store/types";
 import { getAssetDecimals } from "../utils/asset";
-import { isDevelopment, isProduction } from "../utils/env";
+import {
+  getSubgraphqlURI,
+  getV2SubgraphURI,
+  isDevelopment,
+  isProduction,
+} from "../utils/env";
 import v1deployment from "./v1Deployments.json";
 import v2deployment from "./v2Deployments.json";
 import addresses from "./externalAddresses.json";
@@ -126,6 +131,7 @@ export const VaultAddressMap: {
       }
     : {
         v1: v1deployment.mainnet.RibbonETHCoveredCall,
+        v2: v2deployment.mainnet.RibbonThetaVaultETHCall,
       },
   "rBTC-THETA": isDevelopment()
     ? {
@@ -134,6 +140,7 @@ export const VaultAddressMap: {
       }
     : {
         v1: v1deployment.mainnet.RibbonWBTCCoveredCall,
+        v2: v2deployment.mainnet.RibbonThetaVaultWBTCCall,
       },
   "ryvUSDC-ETH-P-THETA": isDevelopment()
     ? {
@@ -153,7 +160,7 @@ export const hasVaultVersion = (
   vaultOption: VaultOptions,
   version: VaultVersionExcludeV1
 ): boolean => {
-  return Boolean(VaultAddressMap[vaultOption][version]);
+  return !isProduction() && Boolean(VaultAddressMap[vaultOption][version]);
 };
 
 export const VaultNamesList = [
@@ -172,6 +179,15 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
 
 export const getEtherscanURI = () =>
   isDevelopment() ? "https://kovan.etherscan.io" : "https://etherscan.io";
+
+export const getSubgraphURIForVersion = (vaultVersion: VaultVersion) => {
+  switch (vaultVersion) {
+    case "v1":
+      return getSubgraphqlURI();
+    case "v2":
+      return getV2SubgraphURI();
+  }
+};
 
 export const getAssets = (vault: VaultOptions): Assets => {
   switch (vault) {

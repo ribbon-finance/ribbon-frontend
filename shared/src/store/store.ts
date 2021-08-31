@@ -82,9 +82,15 @@ export const initialState: GlobalStore = {
         decimals: getAssetDecimals(getAssets(vault)),
         asset: getAssets(vault),
         displayAsset: getDisplayAssets(vault),
+        pricePerShare: BigNumber.from(0),
+        round: 1,
         lockedBalanceInAsset: BigNumber.from(0),
         depositBalanceInAsset: BigNumber.from(0),
         userAssetBalance: BigNumber.from(0),
+        withdrawals: {
+          shares: BigNumber.from(0),
+          round: 1,
+        },
       },
     ])
   ) as V2VaultDataResponses,

@@ -10,7 +10,7 @@ import sizes from "shared/lib/designSystem/sizes";
 import MobileVaultActivityList from "./MobileVaultActivityList";
 import { Title } from "shared/lib/designSystem";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import { VaultOptions } from "shared/lib/constants/constants";
+import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
 import Pagination from "shared/lib/components/Common/Pagination";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -31,11 +31,16 @@ const PaginationText = styled(Title)`
 const perPage = 6;
 
 interface VaultActivityProps {
-  vaultOption: VaultOptions;
+  vault: {
+    vaultOption: VaultOptions;
+    vaultVersion: VaultVersion;
+  };
 }
 
-const VaultActivity: React.FC<VaultActivityProps> = ({ vaultOption }) => {
-  const { activities, loading } = useVaultActivity(vaultOption);
+const VaultActivity: React.FC<VaultActivityProps> = ({
+  vault: { vaultOption, vaultVersion },
+}) => {
+  const { activities, loading } = useVaultActivity(vaultOption, vaultVersion);
   const [activityFilter, setActivityFilter] = useState<ActivityFilter>(
     activityFilters[0]
   );

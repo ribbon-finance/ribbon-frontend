@@ -74,6 +74,7 @@ interface VaultV2WithdrawFormProps {
   onFormSubmit: () => void;
   depositBalanceInAsset: BigNumber;
   lockedBalanceInAsset: BigNumber;
+  initiatedWithdrawAmount: BigNumber;
 }
 
 const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
@@ -82,6 +83,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
   onFormSubmit,
   depositBalanceInAsset,
   lockedBalanceInAsset,
+  initiatedWithdrawAmount,
 }) => {
   const asset = getAssets(vaultOption);
   const assetDisplay = getAssetDisplay(asset);
@@ -111,7 +113,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
 
   useEffect(() => {
     const currentRef =
-      withdrawOptionRefs[vaultActionForm.withdrawOption!].current;
+      withdrawOptionRefs[vaultActionForm.withdrawOption!]?.current;
 
     if (!currentRef) {
       return;
@@ -202,8 +204,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
             <InfoData
               color={error === "withdrawLimitExceeded" ? colors.red : undefined}
             >
-              {formatBigNumber(depositBalanceInAsset, 2, decimals)}{" "}
-              {assetDisplay}
+              {formatBigNumber(depositBalanceInAsset, decimals)} {assetDisplay}
             </InfoData>
           </div>
         );
@@ -226,8 +227,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
                   error === "withdrawLimitExceeded" ? colors.red : undefined
                 }
               >
-                {formatBigNumber(lockedBalanceInAsset, 2, decimals)}{" "}
-                {assetDisplay}
+                {formatBigNumber(lockedBalanceInAsset, decimals)} {assetDisplay}
               </InfoData>
             </div>
             <div className="d-flex align-items-center mt-3 mb-1">
@@ -253,7 +253,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
                 )}
               />
               <InfoData>
-                {formatBigNumber(lockedBalanceInAsset, 2, decimals)}{" "}
+                {formatBigNumber(initiatedWithdrawAmount, decimals)}{" "}
                 {assetDisplay}
               </InfoData>
             </div>
@@ -267,6 +267,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
     assetDisplay,
     depositBalanceInAsset,
     error,
+    initiatedWithdrawAmount,
     lockedBalanceInAsset,
     vaultActionForm.withdrawOption,
   ]);
@@ -277,9 +278,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
         <ActionButton
           disabled={Boolean(error) || !isInputNonZero}
           onClick={onFormSubmit}
-          className={`mt-4 py-3 ${
-            vaultActionForm.actionType !== ACTIONS.transfer ? "mb-4" : ""
-          }`}
+          className="mt-4 py-3"
           color={color}
         >
           {vaultActionForm.withdrawOption! === "standard"
@@ -293,7 +292,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
       <ConnectWalletButton
         onClick={() => setShowConnectModal(true)}
         type="button"
-        className="btn py-3 mb-4"
+        className="mt-4 btn py-3 mb-4"
       >
         Connect Wallet
       </ConnectWalletButton>
