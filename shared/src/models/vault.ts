@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { VaultOptions } from "../constants/constants";
+import { VaultOptions, VaultVersion } from "../constants/constants";
 
 export interface Vault {
   id: string;
@@ -80,6 +80,7 @@ export interface BalanceUpdate {
   yieldEarned: BigNumber;
   isWithdraw: boolean;
   stakedBalance: BigNumber;
+  vaultVersion: VaultVersion;
 }
 
 export type VaultActivityType = "minting" | "sales";

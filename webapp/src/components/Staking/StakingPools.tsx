@@ -298,7 +298,8 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
                   (acc, curr) => acc.add(curr.amount),
                   BigNumber.from(0)
                 ),
-                18
+                18,
+                2
               )}
             </ClaimableTokenAmount>
           </ClaimableTokenPill>
@@ -312,7 +313,9 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           <BaseIndicator size={8} color={color} className="mr-2" />
           <Subtitle className="mr-2">EARNED $RBN</Subtitle>
           <ClaimableTokenAmount color={color}>
-            {active ? formatBigNumber(stakingPoolData.claimableRbn, 18) : "---"}
+            {active
+              ? formatBigNumber(stakingPoolData.claimableRbn, 18, 2)
+              : "---"}
           </ClaimableTokenAmount>
         </ClaimableTokenPill>
       </ClaimableTokenPillContainer>

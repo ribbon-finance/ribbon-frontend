@@ -251,9 +251,10 @@ const PortfolioPerformance = () => {
     balances = balanceUpdates.map((balanceUpdate) => {
       const currentAsset = getAssets(balanceUpdate.vault.symbol);
       const currentAssetDecimals = getAssetDecimals(currentAsset);
+      const vaultLastBalanceKey =
+        balanceUpdate.vault.symbol + balanceUpdate.vaultVersion;
 
-      const vaultLastBalance =
-        vaultLastBalances[balanceUpdate.vault.symbol] || 0;
+      const vaultLastBalance = vaultLastBalances[vaultLastBalanceKey] || 0;
       const vaultCurrentBalance = parseFloat(
         assetToFiat(
           balanceUpdate.balance,
@@ -293,7 +294,7 @@ const PortfolioPerformance = () => {
         }
       }
 
-      vaultLastBalances[balanceUpdate.vault.symbol] = vaultCurrentBalance;
+      vaultLastBalances[vaultLastBalanceKey] = vaultCurrentBalance;
 
       return {
         balance: Object.keys(vaultLastBalances).reduce(

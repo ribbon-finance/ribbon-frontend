@@ -4,8 +4,11 @@ import { BigNumber } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 
 import { BalanceUpdate } from "shared/lib/models/vault";
-import { getSubgraphqlURI } from "shared/lib/utils/env";
 import { impersonateAddress } from "shared/lib/utils/development";
+import {
+  getSubgraphURIForVersion,
+  VaultVersionList,
+} from "shared/lib/constants/constants";
 
 const useBalances = (before?: number, after?: number) => {
   const web3Context = useWeb3React();
@@ -39,8 +42,11 @@ const fetchBalances = async (
   account: string,
   params: { before?: number; after?: number } = {}
 ): Promise<BalanceUpdate[]> => {
-  const response = await axios.post(getSubgraphqlURI(), {
-    query: `
+  const responses = Object.fromEntries(
+    await Promise.all(
+      VaultVersionList.map(async (version) => {
+        const response = await axios.post(getSubgraphURIForVersion(version), {
+          query: `
         {
           balanceUpdates(
             where: {
@@ -63,13 +69,21 @@ const fetchBalances = async (
           }
         }
         `,
-  });
+        });
 
-  return response.data.data.balanceUpdates.reverse().map((item: any) => ({
-    ...item,
-    balance: BigNumber.from(item.balance),
-    yieldEarned: BigNumber.from(item.yieldEarned),
-  }));
+        return [version, response];
+      })
+    )
+  );
+
+  return Object.keys(responses).flatMap((version) =>
+    responses[version].data.data.balanceUpdates.reverse().map((item: any) => ({
+      ...item,
+      balance: BigNumber.from(item.balance),
+      yieldEarned: BigNumber.from(item.yieldEarned),
+      vaultVersion: version,
+    }))
+  );
 };
 
 export default useBalances;
