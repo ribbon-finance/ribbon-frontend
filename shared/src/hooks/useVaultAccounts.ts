@@ -31,8 +31,8 @@ const useVaultAccounts = (
 
   const loadVaultAccounts = useCallback(
     async (
-      vs: VaultOptions[],
-      vvs: VaultVersion[],
+      _vaultOptions: VaultOptions[],
+      _vaultVersions: VaultVersion[],
       acc: string,
       isInterval: boolean = true
     ) => {
@@ -40,7 +40,11 @@ const useVaultAccounts = (
         setLoading(true);
       }
 
-      const results = await fetchVaultAccounts(vs, vvs, acc);
+      const results = await fetchVaultAccounts(
+        _vaultOptions,
+        _vaultVersions,
+        acc
+      );
       setVaultAccounts((curr) => ({
         ...curr,
         ...results,
