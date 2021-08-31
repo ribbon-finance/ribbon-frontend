@@ -1,6 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { ethers, BigNumber as EthersBigNumber } from "ethers";
 import currency from "currency.js";
+import { getDefaultSignificantDecimalsFromAssetDecimals } from "./asset";
 
 const { formatUnits } = ethers.utils;
 
@@ -104,8 +105,13 @@ export const handleSmallNumber = (n: number, decimals: number = 4): number => {
 export const isPracticallyZero = (
   num: BigNumber,
   decimals: number,
-  marginString: string = "0.01"
+  marginString?: string
 ) => {
-  const margin = ethers.utils.parseUnits(marginString, decimals);
+  const defaultSignificantDecimals =
+    getDefaultSignificantDecimalsFromAssetDecimals(decimals);
+  const _marginString =
+    marginString ||
+    (1 / 10 ** defaultSignificantDecimals).toFixed(defaultSignificantDecimals);
+  const margin = ethers.utils.parseUnits(_marginString, decimals);
   return num.lt(margin);
 };

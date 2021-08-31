@@ -20,6 +20,12 @@ export const getSubgraphqlURI = () =>
     : process.env.REACT_APP_SUBGRAPHQL_URL) ||
   "https://api.thegraph.com/subgraphs/name/kenchangh/ribbon-finance-kovan";
 
+export const getV2SubgraphURI = () =>
+  (isDevelopment()
+    ? process.env.REACT_APP_KOVAN_V2_SUBGRAPHQL_URL
+    : process.env.REACT_APP_V2_SUBGRAPHQL_URL) ||
+  "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-v2-kovan";
+
 export const getDefaultNetworkName = () =>
   isDevelopment() ? "kovan" : "mainnet";
 

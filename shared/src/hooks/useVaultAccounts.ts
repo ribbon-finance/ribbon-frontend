@@ -4,20 +4,28 @@ import axios from "axios";
 import { BigNumber } from "ethers";
 
 import { impersonateAddress } from "../utils/development";
-import { VaultAddressMap, VaultOptions } from "../constants/constants";
+import {
+  getSubgraphURIForVersion,
+  VaultAddressMap,
+  VaultOptions,
+  VaultVersion,
+  VaultVersionList,
+} from "../constants/constants";
 import { VaultAccount } from "../models/vault";
-import { getSubgraphqlURI } from "../utils/env";
 import { initialVaultaccounts, useGlobalState } from "../store/store";
+
+const defaultVaultVersions = [VaultVersionList[0]];
 
 const useVaultAccounts = (
   vaults: VaultOptions[],
+  vaultVersions: VaultVersion[] = defaultVaultVersions,
   {
     poll,
     pollingFrequency,
   }: {
     poll: boolean;
     pollingFrequency?: number;
-  } = { poll: true, pollingFrequency: 5000 }
+  } = { poll: false, pollingFrequency: 5000 }
 ) => {
   const web3Context = useWeb3React();
   const account = impersonateAddress || web3Context.account;
@@ -25,12 +33,17 @@ const useVaultAccounts = (
   const [loading, setLoading] = useState(false);
 
   const loadVaultAccounts = useCallback(
-    async (vs: VaultOptions[], acc: string, isInterval: boolean = true) => {
+    async (
+      vs: VaultOptions[],
+      vvs: VaultVersion[],
+      acc: string,
+      isInterval: boolean = true
+    ) => {
       if (!isInterval) {
         setLoading(true);
       }
 
-      const results = await fetchVaultAccounts(vs, acc);
+      const results = await fetchVaultAccounts(vs, vvs, acc);
       setVaultAccounts((curr) => ({
         ...curr,
         ...results,
@@ -51,15 +64,16 @@ const useVaultAccounts = (
 
     let pollInterval: any = undefined;
     if (poll) {
-      loadVaultAccounts(vaults, account, false);
+      loadVaultAccounts(vaults, vaultVersions, account, false);
       pollInterval = setInterval(
         loadVaultAccounts,
         pollingFrequency,
         vaults,
+        vaultVersions,
         account
       );
     } else {
-      loadVaultAccounts(vaults, account, false);
+      loadVaultAccounts(vaults, vaultVersions, account, false);
     }
 
     return () => {
@@ -69,6 +83,7 @@ const useVaultAccounts = (
     };
   }, [
     vaults,
+    vaultVersions,
     account,
     loadVaultAccounts,
     poll,
@@ -79,49 +94,111 @@ const useVaultAccounts = (
   return { vaultAccounts, loading };
 };
 
-const fetchVaultAccounts = async (vaults: VaultOptions[], account: string) => {
-  const response = await axios.post(getSubgraphqlURI(), {
-    query: `
-        {
-          ${vaults.map(
-            (vault) => `     
-            ${vault.replace(/-/g, "")}: vaultAccount(id:"${VaultAddressMap[
-              vault
-            ].v1.toLowerCase()}-${account.toLowerCase()}") {
-              totalDeposits
-              totalYieldEarned
-              totalBalance
-              totalStakedBalance
-              totalStakedShares
-              vault {
-                symbol
+const fetchVaultAccounts = async (
+  vaults: VaultOptions[],
+  vaultVersions: VaultVersion[],
+  account: string
+) => {
+  const vaultAccountsAcrossVersion = Object.fromEntries(
+    await Promise.all(
+      vaultVersions.map(async (version) => {
+        const response = await axios.post(getSubgraphURIForVersion(version), {
+          query: `
+          {
+            ${vaults
+              .map((vault) => {
+                const vaultAddress = VaultAddressMap[vault][version];
+
+                if (!vaultAddress) {
+                  return undefined;
+                }
+
+                return `     
+                  ${vault.replace(
+                    /-/g,
+                    ""
+                  )}: vaultAccount(id:"${vaultAddress.toLowerCase()}-${account.toLowerCase()}") {
+                    totalDeposits
+                    totalYieldEarned
+                    totalBalance
+                    totalStakedBalance
+                    totalStakedShares
+                    vault {
+                      symbol
+                    }
+                  }
+                `;
+              })
+              .filter((query) => query)}
+          }
+          `,
+        });
+
+        return [
+          version,
+          Object.fromEntries(
+            (vaults as string[]).map(
+              (vault): [string, VaultAccount | undefined] => {
+                const data = response.data.data[vault.replace(/-/g, "")];
+
+                if (!data) {
+                  return [vault, undefined];
+                }
+
+                return [
+                  vault,
+                  {
+                    ...data,
+                    totalDeposits: BigNumber.from(data.totalDeposits),
+                    totalYieldEarned: BigNumber.from(data.totalYieldEarned),
+                    totalBalance: BigNumber.from(data.totalBalance),
+                    totalStakedShares: BigNumber.from(data.totalStakedShares),
+                    totalStakedBalance: BigNumber.from(data.totalStakedBalance),
+                  },
+                ];
               }
-            }
-          `
-          )}
-        }
-        `,
-  });
+            )
+          ),
+        ];
+      })
+    )
+  );
 
+  // Combine vault account across different version
   return Object.fromEntries(
-    (vaults as string[]).map((vault): [string, VaultAccount | undefined] => {
-      const data = response.data.data[vault.replace(/-/g, "")];
+    vaults.map((vault) => {
+      let vaultAccount: VaultAccount | undefined = undefined;
 
-      if (!data) {
-        return [vault, undefined];
+      for (let i = 0; i < vaultVersions.length; i++) {
+        const currentVersionVaultAccount =
+          vaultAccountsAcrossVersion[vaultVersions[i]][vault];
+
+        if (!vaultAccount) {
+          vaultAccount = currentVersionVaultAccount;
+          break;
+        }
+
+        vaultAccount = {
+          ...(vaultAccount as VaultAccount),
+          totalDeposits: vaultAccount.totalDeposits.add(
+            currentVersionVaultAccount.totalDeposits
+          ),
+          totalYieldEarned: vaultAccount.totalYieldEarned.add(
+            currentVersionVaultAccount.totalYieldEarned
+          ),
+          totalBalance: vaultAccount.totalBalance.add(
+            currentVersionVaultAccount.totalBalance
+          ),
+          totalStakedShares: vaultAccount.totalStakedShares.add(
+            currentVersionVaultAccount.totalStakedShares
+          ),
+          totalStakedBalance: vaultAccount.totalStakedBalance.add(
+            currentVersionVaultAccount.totalStakedBalance
+          ),
+        };
       }
 
-      return [
-        vault,
-        {
-          ...data,
-          totalDeposits: BigNumber.from(data.totalDeposits),
-          totalYieldEarned: BigNumber.from(data.totalYieldEarned),
-          totalBalance: BigNumber.from(data.totalBalance),
-          totalStakedShares: BigNumber.from(data.totalStakedShares),
-          totalStakedBalance: BigNumber.from(data.totalStakedBalance),
-        },
-      ];
+      return [vault, vaultAccount];
     })
   );
 };

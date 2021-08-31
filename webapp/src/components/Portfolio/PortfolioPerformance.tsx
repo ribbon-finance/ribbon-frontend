@@ -24,11 +24,14 @@ import {
   getAssets,
   VaultList,
   VaultOptions,
+  VaultVersionList,
 } from "shared/lib/constants/constants";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { AssetsList } from "shared/lib/store/types";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import useRBNTokenAccount from "shared/lib/hooks/useRBNTokenAccount";
+
+const vaultVersions = [...VaultVersionList];
 
 const PerformanceContainer = styled.div`
   display: flex;
@@ -171,8 +174,10 @@ const PortfolioPerformance = () => {
     // @ts-ignore
     assets: AssetsList,
   });
-  const { vaultAccounts, loading: vaultAccountLoading } =
-    useVaultAccounts(VaultList);
+  const { vaultAccounts, loading: vaultAccountLoading } = useVaultAccounts(
+    VaultList,
+    vaultVersions
+  );
   const [hoveredBalanceUpdateIndex, setHoveredBalanceUpdateIndex] =
     useState<number>();
   const [rangeFilter, setRangeFilter] = useState<dateFilterType>("1m");

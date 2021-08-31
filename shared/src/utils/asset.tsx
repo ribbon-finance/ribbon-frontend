@@ -30,10 +30,10 @@ export const getAssetDecimals = (asset: Assets): number => {
   }
 };
 
-export const getAssetDefaultSignificantDecimals = (asset: Assets): number => {
-  const assetDecimal = getAssetDecimals(asset);
-
-  switch (assetDecimal) {
+export const getDefaultSignificantDecimalsFromAssetDecimals = (
+  decimals: number
+) => {
+  switch (decimals) {
     case 18:
       return 6;
     case 8:
@@ -42,6 +42,12 @@ export const getAssetDefaultSignificantDecimals = (asset: Assets): number => {
     default:
       return 2;
   }
+};
+
+export const getAssetDefaultSignificantDecimals = (asset: Assets): number => {
+  return getDefaultSignificantDecimalsFromAssetDecimals(
+    getAssetDecimals(asset)
+  );
 };
 
 export const getAssetColor = (asset: Assets): string => colors.asset[asset];

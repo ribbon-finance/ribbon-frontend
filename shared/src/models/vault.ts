@@ -44,11 +44,8 @@ export interface VaultOptionTrade {
   id: string;
   vault: Vault;
   vaultShortPosition: VaultShortPosition;
-  buyer: string;
   sellAmount: BigNumber;
   premium: BigNumber;
-  optionToken: string;
-  premiumToken: string;
   timestamp: number;
   txhash: string;
 }

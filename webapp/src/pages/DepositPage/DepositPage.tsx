@@ -222,7 +222,7 @@ const DepositPage = () => {
             <DesktopActionForm vault={{ vaultOption, vaultVersion }} />
           </DesktopActionsFormContainer>
         </div>
-        <VaultActivity vaultOption={vaultOption} />
+        <VaultActivity vaultOption={vaultOption} vaultVersion={vaultVersion} />
       </DepositPageContainer>
     </>
   );
