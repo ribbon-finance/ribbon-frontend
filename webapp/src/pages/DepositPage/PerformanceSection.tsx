@@ -1,13 +1,14 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
+
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import {
   getAssets,
   VaultOptions,
+  VaultVersion,
   VaultWithdrawalFee,
 } from "shared/lib/constants/constants";
-
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import useAssetsYield from "shared/lib/hooks/useAssetsYield";
@@ -79,12 +80,14 @@ const MarketYielAPR = styled(Title)`
 `;
 
 interface PerformanceSectionProps {
-  vaultOption: VaultOptions;
+  vault: {
+    vaultOption: VaultOptions;
+    vaultVersion: VaultVersion;
+  };
 }
 
-const PerformanceSection: React.FC<PerformanceSectionProps> = ({
-  vaultOption,
-}) => {
+const PerformanceSection: React.FC<PerformanceSectionProps> = ({ vault }) => {
+  const { vaultOption } = vault;
   const asset = getAssets(vaultOption);
   const yieldInfos = useAssetsYield(asset);
   const withdrawalFee = VaultWithdrawalFee[vaultOption];
@@ -139,7 +142,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
 
       <Paragraph>
         <ParagraphHeading>Weekly Strategy Snapshot</ParagraphHeading>
-        <WeeklyStrategySnapshot vaultOption={vaultOption} />
+        <WeeklyStrategySnapshot vault={vault} />
       </Paragraph>
 
       <Paragraph>

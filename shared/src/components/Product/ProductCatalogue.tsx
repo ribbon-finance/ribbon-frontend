@@ -5,6 +5,7 @@ import {
   getOptionAssets,
   isPutVault,
   VaultList,
+  VaultVersionList,
 } from "../../constants/constants";
 
 import sizes from "../../designSystem/sizes";
@@ -22,6 +23,8 @@ import {
   VaultStrategy,
 } from "./types";
 
+const vaultVersions = [...VaultVersionList];
+
 const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
   variant,
   onVaultPress,
@@ -31,7 +34,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
   const [filterAssets, setFilterAssets] = useState<Assets[]>([]);
   const [sort, setSort] = useState<VaultSortBy>(VaultSortByList[0]);
   const yieldsData = useLatestAPYs(VaultList);
-  const { vaultAccounts } = useVaultAccounts(VaultList);
+  const { vaultAccounts } = useVaultAccounts(VaultList, vaultVersions);
 
   const filteredProducts = useMemo(() => {
     const filteredList = VaultList.filter((vault) => {

@@ -9,6 +9,7 @@ import { formatBigNumber } from "shared/lib/utils/math";
 import {
   VaultAddressMap,
   VaultMaxDeposit,
+  VaultVersion,
 } from "shared/lib/constants/constants";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { getVaultColor, isETHVault, isVaultFull } from "shared/lib/utils/vault";
@@ -214,7 +215,8 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
   const { canTransfer, handleActionTypeChange, vaultActionForm } =
     useVaultActionForm(vaultOption);
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
-  const { vaultAccounts } = useVaultAccounts(vaultOptions);
+  const vaultVersions = useMemo((): VaultVersion[] => ["v1"], []);
+  const { vaultAccounts } = useVaultAccounts(vaultOptions, vaultVersions);
   const { active, account } = useWeb3React();
 
   // state hooks
@@ -727,7 +729,10 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
       )}
 
       {connected && variant === "desktop" && (
-        <YourPosition vaultOption={vaultOption} className="mt-4" />
+        <YourPosition
+          vault={{ vaultOption, vaultVersion: "v1" }}
+          className="mt-4"
+        />
       )}
     </Container>
   );

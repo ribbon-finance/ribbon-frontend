@@ -20,6 +20,7 @@ import {
   getOptionAssets,
   isPutVault,
   VaultOptions,
+  VaultVersion,
 } from "shared/lib/constants/constants";
 import { BaseButton, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -106,12 +107,16 @@ const CalculatorButtonText = styled(Title)<{ color: string }>`
 `;
 
 interface WeeklyStrategySnapshotProps {
-  vaultOption: VaultOptions;
+  vault: {
+    vaultOption: VaultOptions;
+    vaultVersion: VaultVersion;
+  };
 }
 
 const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
-  vaultOption,
+  vault,
 }) => {
+  const { vaultOption } = vault;
   const { activities, loading: activityLoading } =
     useVaultActivity(vaultOption);
   const asset = getAssets(vaultOption);
@@ -305,13 +310,13 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
             </CalculatorButtonText>
           </CalculatorButton>
           <ProfitCalculatorModal
+            vault={vault}
             show={showCalculator}
             onClose={() => setShowCalculator(false)}
             prices={prices}
             asset={asset}
             optionAsset={optionAsset}
             currentOption={currentOption}
-            vaultOption={vaultOption}
           />
         </>
       )}

@@ -23,7 +23,7 @@ import colors from "shared/lib/designSystem/colors";
 import ModalContentExtra from "shared/lib/components/Common/ModalContentExtra";
 import { formatUnits } from "@ethersproject/units";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
-import { VaultOptions } from "shared/lib/constants/constants";
+import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
 
 const ChartContainer = styled.div`
   height: 264px;
@@ -81,6 +81,10 @@ const CalculationData = styled(Title)<{ variant?: "red" | "green" }>`
 `;
 
 interface ProfitCalculatorProps {
+  vault: {
+    vaultOption: VaultOptions;
+    vaultVersion: VaultVersion;
+  };
   show: boolean;
   onClose: () => void;
   prices: Partial<{ [asset in Assets]: number }>;
@@ -94,23 +98,23 @@ interface ProfitCalculatorProps {
     amount: number;
     isPut: boolean;
   };
-  vaultOption: VaultOptions;
 }
 
 const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
+  vault: { vaultOption, vaultVersion },
   show,
   onClose,
   prices,
   asset,
   optionAsset,
   currentOption,
-  vaultOption,
 }) => {
   const [input, setInput] = useState<string>("");
   const [hoverPrice, setHoverPrice] = useState<number>();
   const [chartHovering, setChartHovering] = useState(false);
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
-  const { vaultAccounts } = useVaultAccounts(vaultOptions);
+  const vaultVersions = useMemo(() => [vaultVersion], [vaultVersion]);
+  const { vaultAccounts } = useVaultAccounts(vaultOptions, vaultVersions);
 
   const handleInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const parsedInput = parseFloat(e.target.value);

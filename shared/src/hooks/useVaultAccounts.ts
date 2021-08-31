@@ -9,16 +9,13 @@ import {
   VaultAddressMap,
   VaultOptions,
   VaultVersion,
-  VaultVersionList,
 } from "../constants/constants";
 import { VaultAccount } from "../models/vault";
 import { initialVaultaccounts, useGlobalState } from "../store/store";
 
-const defaultVaultVersions = [VaultVersionList[0]];
-
 const useVaultAccounts = (
   vaults: VaultOptions[],
-  vaultVersions: VaultVersion[] = defaultVaultVersions,
+  vaultVersions: VaultVersion[],
   {
     poll,
     pollingFrequency,

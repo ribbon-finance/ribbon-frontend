@@ -31,13 +31,14 @@ const PaginationText = styled(Title)`
 const perPage = 6;
 
 interface VaultActivityProps {
-  vaultOption: VaultOptions;
-  vaultVersion: VaultVersion;
+  vault: {
+    vaultOption: VaultOptions;
+    vaultVersion: VaultVersion;
+  };
 }
 
 const VaultActivity: React.FC<VaultActivityProps> = ({
-  vaultOption,
-  vaultVersion,
+  vault: { vaultOption, vaultVersion },
 }) => {
   const { activities, loading } = useVaultActivity(vaultOption, vaultVersion);
   const [activityFilter, setActivityFilter] = useState<ActivityFilter>(
