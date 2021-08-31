@@ -122,7 +122,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
               </VaultSecondaryText>
             </>,
             <VaultPrimaryText>
-              {formatBigNumber(activity.depositAmount, 4, decimals)}
+              {formatBigNumber(activity.depositAmount, decimals)}
             </VaultPrimaryText>,
             <>
               <VaultPrimaryText>-</VaultPrimaryText>
@@ -160,7 +160,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
             </>,
             <>
               <VaultPrimaryText variant="green">
-                +{formatBigNumber(activity.premium, 6, decimals)}{" "}
+                +{formatBigNumber(activity.premium, decimals)}{" "}
                 {getAssetDisplay(asset)}
               </VaultPrimaryText>
               <VaultSecondaryText fontFamily="VCR">

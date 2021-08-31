@@ -15,13 +15,13 @@ type UseVaultData = (
   vault: VaultOptions,
   params?: {
     poll: boolean;
-    pollingFrequency: number;
+    pollingFrequency?: number;
   }
 ) => { data: V2VaultDataResponse; loading: boolean };
 
 const useV2VaultData: UseVaultData = (
   vault,
-  { poll, pollingFrequency } = { poll: false, pollingFrequency: 5000 }
+  { poll, pollingFrequency = 5000 } = { poll: false, pollingFrequency: 5000 }
 ) => {
   const { active, account: web3Account, library } = useWeb3React();
   const contract = useV2Vault(vault);

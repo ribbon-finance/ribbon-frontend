@@ -318,7 +318,6 @@ const YieldCard: React.FC<YieldCardProps> = ({
                 {vaultAccount
                   ? `${formatBigNumber(
                       vaultAccount.totalBalance,
-                      6,
                       decimals
                     )} ${getAssetDisplay(asset)}`
                   : "---"}

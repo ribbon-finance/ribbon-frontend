@@ -101,7 +101,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
     }
 
     return [
-      formatBigNumber(vaultAccount.totalBalance, 6, decimals),
+      formatBigNumber(vaultAccount.totalBalance, decimals),
       assetToUSD(vaultAccount.totalBalance, assetPrice, decimals),
     ];
   }, [
@@ -140,7 +140,6 @@ const YourPosition: React.FC<YourPositionProps> = ({
     if (vaultAccount && !vaultAccount.totalBalance.isZero()) {
       return `${formatBigNumber(
         vaultAccount.totalStakedBalance,
-        6,
         decimals
       )} ${getAssetDisplay(asset)}`;
     }

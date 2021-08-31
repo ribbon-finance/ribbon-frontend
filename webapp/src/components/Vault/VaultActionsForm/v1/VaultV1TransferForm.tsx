@@ -209,7 +209,7 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
           >
             Available Capacity ({assetDisplay}):{" "}
             {transferData
-              ? formatBigNumber(transferData.availableCapacity, 2, decimals)
+              ? formatBigNumber(transferData.availableCapacity, decimals)
               : "---"}
           </TransferToVaultCapacity>
         </div>
@@ -248,7 +248,7 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
               : undefined
           }
         >
-          {vaultAccount ? formatBigNumber(availableLimit, 2, decimals) : "---"}{" "}
+          {vaultAccount ? formatBigNumber(availableLimit, decimals) : "---"}{" "}
           {assetDisplay}
         </InfoData>
       </div>
@@ -258,7 +258,6 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
           title="AVAILABLE LIMIT"
           explanation={`You can withdraw up to ${formatBigNumber(
             transferVaultData.vaultMaxWithdrawAmount,
-            2,
             decimals
           )} ${assetDisplay} before the vault hits its weekly transfer and withdrawal limit (10% of the funds in the vault).`}
           renderContent={({ ref, ...triggerHandler }) => (
@@ -270,11 +269,7 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
         <InfoData
           color={error === "insufficientWeeklyLimit" ? colors.red : undefined}
         >
-          {formatBigNumber(
-            transferVaultData.vaultMaxWithdrawAmount,
-            2,
-            decimals
-          )}{" "}
+          {formatBigNumber(transferVaultData.vaultMaxWithdrawAmount, decimals)}{" "}
           {assetDisplay}
         </InfoData>
       </div>

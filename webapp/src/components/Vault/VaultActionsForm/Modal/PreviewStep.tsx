@@ -116,7 +116,6 @@ const PreviewStep: React.FC<{
 
   const originalAmount = formatBigNumber(
     positionAmount,
-    5,
     getAssetDecimals(asset)
   );
 
@@ -136,7 +135,7 @@ const PreviewStep: React.FC<{
     }
 
     newAmount = newAmount.isNegative() ? BigNumber.from("0") : newAmount;
-    return formatBigNumber(newAmount, 5, getAssetDecimals(asset));
+    return formatBigNumber(newAmount, getAssetDecimals(asset));
   }, [actionType, amount, asset, positionAmount]);
 
   const positionChanged = useMemo(() => {
@@ -210,7 +209,7 @@ const PreviewStep: React.FC<{
 
             <div className="text-center">
               <AmountText>
-                {formatBigNumber(amount, 4, getAssetDecimals(asset))}
+                {formatBigNumber(amount, getAssetDecimals(asset))}
               </AmountText>
               <CurrencyText> {getAssetDisplay(asset)}</CurrencyText>
             </div>

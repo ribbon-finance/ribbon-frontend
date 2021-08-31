@@ -18,7 +18,7 @@ const useVaultAccounts = (
   vaultVersions: VaultVersion[],
   {
     poll,
-    pollingFrequency,
+    pollingFrequency = 5000,
   }: {
     poll: boolean;
     pollingFrequency?: number;

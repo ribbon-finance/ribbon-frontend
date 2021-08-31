@@ -12,12 +12,16 @@ export const formatSignificantDecimals = (
 
 export const formatBigNumber = (
   num: BigNumber,
-  significantDecimals: number = 6,
-  decimals: number = 18
-) =>
-  parseFloat(formatUnits(num, decimals)).toLocaleString(undefined, {
-    maximumFractionDigits: significantDecimals,
+  decimals: number = 18,
+  significantDecimals?: number
+) => {
+  const _significantDecimals =
+    significantDecimals ||
+    getDefaultSignificantDecimalsFromAssetDecimals(decimals);
+  return parseFloat(formatUnits(num, decimals)).toLocaleString(undefined, {
+    maximumFractionDigits: _significantDecimals,
   });
+};
 
 export const toFiat = (etherVal: BigNumber) => {
   const scaleFactor = ethers.BigNumber.from(10).pow("6");

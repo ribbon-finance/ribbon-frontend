@@ -128,7 +128,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       withdrawals,
     },
     loading,
-  } = useV2VaultData(vaultOption, { poll: true, pollingFrequency: 5000 });
+  } = useV2VaultData(vaultOption, { poll: true });
   const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
   const { active } = useWeb3React();
 
@@ -303,7 +303,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
         return (
           <FormInfoText color={colors.red}>
             This vault has a max deposit of{" "}
-            {formatBigNumber(vaultMaxDepositAmount, 6, decimals)} $
+            {formatBigNumber(vaultMaxDepositAmount, decimals)} $
             {getAssetDisplay(asset)} per depositor
           </FormInfoText>
         );
@@ -319,7 +319,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
           <FormInfoText
             color={error === "insufficientBalance" ? colors.red : undefined}
           >
-            Wallet Balance: {formatBigNumber(userAssetBalance, 6, decimals)}{" "}
+            Wallet Balance: {formatBigNumber(userAssetBalance, decimals)}{" "}
             {getAssetDisplay(asset)}
           </FormInfoText>
         );

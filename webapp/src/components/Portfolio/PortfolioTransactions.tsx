@@ -299,7 +299,6 @@ const PortfolioTransactions = () => {
         case "eth":
           return `${prependSymbol}${formatBigNumber(
             amount,
-            6,
             getAssetDecimals(asset)
           )} `;
       }

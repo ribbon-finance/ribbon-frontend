@@ -252,7 +252,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
       return "---";
     }
 
-    return formatBigNumber(stakingPoolData.unstakedBalance, 6, decimals);
+    return formatBigNumber(stakingPoolData.unstakedBalance, decimals);
   }, [active, stakingPoolData, decimals]);
 
   // const renderEstimatedRewards = useCallback(() => {
@@ -298,7 +298,6 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
                   (acc, curr) => acc.add(curr.amount),
                   BigNumber.from(0)
                 ),
-                2,
                 18
               )}
             </ClaimableTokenAmount>
@@ -313,9 +312,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           <BaseIndicator size={8} color={color} className="mr-2" />
           <Subtitle className="mr-2">EARNED $RBN</Subtitle>
           <ClaimableTokenAmount color={color}>
-            {active
-              ? formatBigNumber(stakingPoolData.claimableRbn, 2, 18)
-              : "---"}
+            {active ? formatBigNumber(stakingPoolData.claimableRbn, 18) : "---"}
           </ClaimableTokenAmount>
         </ClaimableTokenPill>
       </ClaimableTokenPillContainer>
@@ -482,8 +479,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
               <SecondaryText>Pool rewards </SecondaryText>
             </div>
             <PoolRewardData className="ml-auto">
-              {formatBigNumber(stakingPoolData.poolRewardForDuration, 6, 18)}{" "}
-              RBN
+              {formatBigNumber(stakingPoolData.poolRewardForDuration, 18)} RBN
             </PoolRewardData>
           </div>
         </div>

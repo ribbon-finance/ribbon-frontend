@@ -58,7 +58,6 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
             const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
             return `Maximum ${formatBigNumber(
               vaultMaxDepositAmount,
-              6,
               getAssetDecimals(asset)
             )} ${getAssetDisplay(asset)} Exceeded`;
           case "capacityOverflow":

@@ -206,7 +206,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
             ? animatedLoadingText
             : `${assetToUSD(amount, assetPrice, decimals)}`;
         case "eth":
-          return `${formatBigNumber(amount, 6, decimals)} ${getAssetDisplay(
+          return `${formatBigNumber(amount, decimals)} ${getAssetDisplay(
             asset
           )}`;
       }
