@@ -136,7 +136,9 @@ const fetchVaultAccounts = async (
           Object.fromEntries(
             (vaults as string[]).map(
               (vault): [string, VaultAccount | undefined] => {
-                const data = response.data.data[vault.replace(/-/g, "")];
+                const data = response.data.data
+                  ? response.data.data[vault.replace(/-/g, "")]
+                  : false;
 
                 if (!data) {
                   return [vault, undefined];

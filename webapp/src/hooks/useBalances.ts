@@ -47,28 +47,28 @@ const fetchBalances = async (
       VaultVersionList.map(async (version) => {
         const response = await axios.post(getSubgraphURIForVersion(version), {
           query: `
-        {
-          balanceUpdates(
-            where: {
-              account:"${account}",
-              ${params.before ? `timestamp_lte: ${params.before},` : ``}
-              ${params.after ? `timestamp_gte: ${params.after},` : ``}
-            },
-            orderBy: timestamp,
-            orderDirection: desc,
-            first: 1000
-          ) {
-            vault {
-              symbol
-              name
+          {
+            balanceUpdates(
+              where: {
+                account:"${account}",
+                ${params.before ? `timestamp_lte: ${params.before},` : ``}
+                ${params.after ? `timestamp_gte: ${params.after},` : ``}
+              },
+              orderBy: timestamp,
+              orderDirection: desc,
+              first: 1000
+            ) {
+              vault {
+                symbol
+                name
+              }
+              timestamp
+              balance
+              yieldEarned
+              isWithdraw
             }
-            timestamp
-            balance
-            yieldEarned
-            isWithdraw
           }
-        }
-        `,
+          `,
         });
 
         return [version, response];
@@ -77,12 +77,16 @@ const fetchBalances = async (
   );
 
   return Object.keys(responses).flatMap((version) =>
-    responses[version].data.data.balanceUpdates.reverse().map((item: any) => ({
-      ...item,
-      balance: BigNumber.from(item.balance),
-      yieldEarned: BigNumber.from(item.yieldEarned),
-      vaultVersion: version,
-    }))
+    responses[version].data.data
+      ? responses[version].data.data.balanceUpdates
+          .reverse()
+          .map((item: any) => ({
+            ...item,
+            balance: BigNumber.from(item.balance),
+            yieldEarned: BigNumber.from(item.yieldEarned),
+            vaultVersion: version,
+          }))
+      : []
   );
 };
 
