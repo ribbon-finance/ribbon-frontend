@@ -81,8 +81,8 @@ export const BaseModalContentColumn = styled.div<{
       : `${props.marginTop === undefined ? 24 : props.marginTop}px`};
 `;
 
-export const Title = styled.span<{color?: string}>`
-  color: ${(props) => props.color ? props.color : colors.primaryText};
+export const Title = styled.span<{ color?: string }>`
+  color: ${(props) => (props.color ? props.color : colors.primaryText)};
   font-family: VCR, sans-serif;
   font-style: normal;
   font-weight: normal;
@@ -99,38 +99,40 @@ export const Subtitle = styled.span`
   text-transform: uppercase;
 `;
 
-export const PrimaryText = styled(BaseText)<{color?: string}>`
+export const PrimaryText = styled(BaseText)<{ color?: string }>`
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
-  color: ${(props) => props.color ? props.color : colors.primaryText};
+  color: ${(props) => (props.color ? props.color : colors.primaryText)};
 `;
 
-export const SecondaryText = styled.span<{color?: string}>`
+export const SecondaryText = styled.span<{ color?: string }>`
   font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
   line-height: 20px;
-  color: ${(props) => props.color ? props.color : colors.text};
+  color: ${(props) => (props.color ? props.color : colors.text)};
 `;
 
 export const BaseInputLabel = styled.div`
+  font-family: VCR, sans-serif;
   color: ${colors.text};
   font-size: 12px;
   line-height: 16px;
   letter-spacing: 1.5px;
 `;
 
-export const BaseInputContainer = styled.div<{error?: boolean}>`
+export const BaseInputContainer = styled.div<{ error?: boolean }>`
   width: 100%;
   height: 72px;
   background: rgba(255, 255, 255, 0.04);
   border-radius: 4px;
   margin-top: 8px;
   padding: 0 4px;
-  border: ${theme.border.width} ${theme.border.style} ${(props) => props.error ? colors.red : `transparent`};
+  border: ${theme.border.width} ${theme.border.style}
+    ${(props) => (props.error ? colors.red : `transparent`)};
   transition: border 0.25s;
 `;
 
@@ -171,9 +173,9 @@ export const BaseInputButton = styled.div`
   font-family: VCR, sans-serif;
 `;
 
-export const BaseIndicator = styled.div<{size: number, color: string}>`
+export const BaseIndicator = styled.div<{ size: number; color: string }>`
   width: ${(props) => props.size}px;
   height: ${(props) => props.size}px;
   border-radius: ${(props) => props.size / 2}px;
   background: ${(props) => props.color};
-`
+`;

@@ -312,9 +312,7 @@ const HeroSection: React.FC<{
                             <Title color={color}>{version}</Title>
                           </AttributeVersionSelector>
                         </BaseLink>
-                      ) : (
-                        <></>
-                      )
+                      ) : null
                     )}
                   </AttributePill>
                 )}

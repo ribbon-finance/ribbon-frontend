@@ -34,8 +34,19 @@ const FormTitle = styled(Title)`
   letter-spacing: 1px;
 `;
 
+const FormDescription = styled(PrimaryText)`
+  font-size: 14px;
+  line-height: 20px;
+  color: ${colors.text};
+`;
+
 const FormDescriptionHighlight = styled.span`
   color: ${colors.primaryText};
+`;
+
+const FormColumnData = styled(Title)`
+  font-size: 14px;
+  line-height: 20px;
 `;
 
 const PillButton = styled.div`
@@ -150,14 +161,14 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
       case "options":
         return (
           <>
-            <PrimaryText className="mt-3 text-center" color={colors.text}>
+            <FormDescription className="mt-3 text-center">
               You can now move your V1 deposit balance of{" "}
               <FormDescriptionHighlight>
                 {formatBigNumber(vaultAccount.totalBalance, decimals)}{" "}
                 {getAssetDisplay(asset)}
               </FormDescriptionHighlight>{" "}
               to the V2 vault
-            </PrimaryText>
+            </FormDescription>
 
             {/* Migrate button */}
             <ActionButton
@@ -181,17 +192,17 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
       case "migrate":
         return (
           <>
-            <PrimaryText className="mt-3 text-center" color={colors.text}>
+            <FormDescription className="mt-3 text-center">
               ETH deposits can now be migrated over from the V1 vault
-            </PrimaryText>
+            </FormDescription>
 
             {/* V1 Balance */}
             <div className="d-flex w-100 align-items-center mt-4">
               <SecondaryText>Your V1 Balance</SecondaryText>
-              <Title className="ml-auto">
+              <FormColumnData className="ml-auto">
                 {formatBigNumber(vaultAccount.totalBalance, decimals)}{" "}
                 {getAssetDisplay(asset)}
-              </Title>
+              </FormColumnData>
             </div>
 
             <div className="d-flex w-100 mt-3">
@@ -211,7 +222,7 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
                   fontSize: 14,
                 }}
                 statsConfig={{
-                  fontSize: 16,
+                  fontSize: 14,
                 }}
                 barConfig={{
                   height: 4,
@@ -229,7 +240,7 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
               disabled={Boolean(error)}
               onClick={handleMigrate}
             >
-              MIGRATE {getAssetDisplay(asset)}
+              Migration Preview
             </ActionButton>
             {errorText}
           </>

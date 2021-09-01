@@ -2,7 +2,6 @@ import React, { useMemo, useState } from "react";
 import {
   getAssets,
   getDisplayAssets,
-  getOptionAssets,
   isPutVault,
   VaultList,
   VaultVersionList,
@@ -52,7 +51,6 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
       if (
         filterAssets.length &&
         !filterAssets.includes(getAssets(vault)) &&
-        !filterAssets.includes(getOptionAssets(vault)) &&
         !filterAssets.includes(getDisplayAssets(vault))
       ) {
         return false;

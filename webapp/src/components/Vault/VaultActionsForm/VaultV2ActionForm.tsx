@@ -40,10 +40,11 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
   onFormSubmit,
 }) => {
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
-  const vaultVersions = useMemo((): VaultVersion[] => ["v2"], []);
-  const { vaultAccounts } = useVaultAccounts(vaultOptions, vaultVersions, {
-    poll: true,
-  });
+  const v1VaultVersions = useMemo((): VaultVersion[] => ["v1"], []);
+  const { vaultAccounts: v1VaultAccounts } = useVaultAccounts(
+    vaultOptions,
+    v1VaultVersions
+  );
   const decimals = getAssetDecimals(getAssets(vaultOption));
   const color = getVaultColor(vaultOption);
   const { vaultActionForm } = useVaultActionForm(vaultOption);
@@ -51,10 +52,13 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
   const showMigrationForm = useMemo(
     () =>
       Boolean(
-        vaultAccounts[vaultOption] &&
-          !isPracticallyZero(vaultAccounts[vaultOption]!.totalBalance, decimals)
+        v1VaultAccounts[vaultOption] &&
+          !isPracticallyZero(
+            v1VaultAccounts[vaultOption]!.totalBalance,
+            decimals
+          )
       ),
-    [decimals, vaultAccounts, vaultOption]
+    [decimals, v1VaultAccounts, vaultOption]
   );
 
   const content = useMemo(() => {
@@ -65,7 +69,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
       return (
         <VaultV2MigrationForm
           vaultOption={vaultOption}
-          vaultAccount={vaultAccounts[vaultOption]!}
+          vaultAccount={v1VaultAccounts[vaultOption]!}
           onFormSubmit={onFormSubmit}
         />
       );
@@ -77,7 +81,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
         onFormSubmit={onFormSubmit}
       />
     );
-  }, [onFormSubmit, showMigrationForm, vaultAccounts, vaultOption]);
+  }, [onFormSubmit, showMigrationForm, v1VaultAccounts, vaultOption]);
 
   const formExtra = useMemo(() => {
     if (vaultActionForm.actionType === ACTIONS.withdraw) {
