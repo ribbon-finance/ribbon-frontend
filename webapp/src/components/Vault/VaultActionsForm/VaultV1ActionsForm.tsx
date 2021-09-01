@@ -9,7 +9,6 @@ import { formatBigNumber } from "shared/lib/utils/math";
 import {
   VaultAddressMap,
   VaultMaxDeposit,
-  VaultVersion,
 } from "shared/lib/constants/constants";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { getVaultColor, isETHVault, isVaultFull } from "shared/lib/utils/vault";
@@ -215,8 +214,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
   const { canTransfer, handleActionTypeChange, vaultActionForm } =
     useVaultActionForm(vaultOption);
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
-  const vaultVersions = useMemo((): VaultVersion[] => ["v1"], []);
-  const { vaultAccounts } = useVaultAccounts(vaultOptions, vaultVersions, {
+  const { vaultAccounts } = useVaultAccounts(vaultOptions, "v1", {
     poll: true,
   });
   const { active, account } = useWeb3React();
