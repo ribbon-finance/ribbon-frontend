@@ -6,7 +6,11 @@ import PositionIcon from "../../assets/img/positionIcon.svg";
 import { SecondaryText, Subtitle, Title } from "shared/lib/designSystem";
 import useAssetPrice from "shared/lib/hooks/useAssetPrice";
 import useVaultData from "shared/lib/hooks/useVaultData";
-import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
+import {
+  assetToUSD,
+  formatBigNumber,
+  isPracticallyZero,
+} from "shared/lib/utils/math";
 import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
@@ -115,7 +119,10 @@ const YourPosition: React.FC<YourPositionProps> = ({
   const roi = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
 
-    if (!vaultAccount) {
+    if (
+      !vaultAccount ||
+      isPracticallyZero(vaultAccount.totalDeposits, decimals)
+    ) {
       return 0;
     }
 
@@ -165,7 +172,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
               <ProfitText roi={roi}>
                 {isLoading
                   ? loadingText
-                  : `${roi >= 0 ? "+" : ""}${roi.toFixed(4)}%`}
+                  : `${roi >= 0 ? "+" : ""}${parseFloat(roi.toFixed(4))}%`}
               </ProfitText>
               <AmountText>{positionAssetAmountUSD}</AmountText>
             </div>
