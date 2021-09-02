@@ -32,7 +32,7 @@ const FooterContainer = styled.div<{
   }px);
   `}
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.md}px) {
     position: fixed;
     top: unset;
     bottom: 0px;
@@ -42,7 +42,7 @@ const FooterContainer = styled.div<{
 `;
 
 const MobileFooterOffsetContainer = styled.div`
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.md}px) {
     height: ${theme.footer.mobile.height}px;
   }
 `;

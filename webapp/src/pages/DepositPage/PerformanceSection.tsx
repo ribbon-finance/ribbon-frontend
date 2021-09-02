@@ -25,6 +25,7 @@ import {
 } from "shared/lib/assets/icons/defiApp";
 import WeeklyStrategySnapshot from "../../components/Deposit/WeeklyStrategySnapshot";
 import VaultStrategyExplainer from "../../components/Deposit/VaultStrategyExplainer";
+import sizes from "shared/lib/designSystem/sizes";
 
 const Paragraph = styled.div`
   margin-bottom: 64px;
@@ -56,6 +57,12 @@ const Link = styled.a`
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  max-width: 50%;
+  padding: 0 16px;
+
+  @media (max-width: ${sizes.md}px) {
+    max-width: unset;
+  }
 `;
 
 const MarketYield = styled.div`
@@ -131,7 +138,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({ vault }) => {
   );
 
   return (
-    <Container className="col-md-6">
+    <Container>
       <Paragraph className="d-flex flex-column">
         <ParagraphHeading>Vault Strategy</ParagraphHeading>
         <ParagraphText className="mb-4">

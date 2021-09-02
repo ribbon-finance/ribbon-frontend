@@ -54,7 +54,7 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
         z-index: 1000;
         position: relative;
 
-        @media (max-width: ${sizes.lg}px) {
+        @media (max-width: ${sizes.md}px) {
           display: none;
         }
         `;
@@ -62,7 +62,7 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
         return `
           display: none;
 
-          @media (max-width: ${sizes.lg}px) {
+          @media (max-width: ${sizes.md}px) {
             display: flex;
             align-items: unset;
             padding-top: 16px;
@@ -102,7 +102,7 @@ const WalletButtonText = styled(Title)<WalletStatusProps>`
   font-size: 14px;
   line-height: 20px;
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.md}px) {
     font-size: 16px;
   }
 
@@ -139,7 +139,7 @@ const WalletDesktopMenu = styled.div<MenuStateProps>`
           display: none;
         `}
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.md}px) {
     display: none;
   }
 `;
@@ -153,7 +153,7 @@ const WalletMobileOverlayMenu = styled(
     switch (props.variant) {
       case "mobile":
         return `
-          @media (max-width: ${sizes.lg}px) {
+          @media (max-width: ${sizes.md}px) {
             display: flex;
             z-index: ${props.isMenuOpen ? 50 : -1};
           }
@@ -185,7 +185,7 @@ const MenuItem = styled.div`
     }
   }
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.md}px) {
     margin: unset;
     && {
       padding: 28px;
@@ -199,7 +199,7 @@ const MenuItemText = styled(Title)`
   font-size: 14px;
   line-height: 20px;
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.md}px) {
     font-size: 24px;
   }
 `;

@@ -119,6 +119,8 @@ const SplashImage = styled.div`
 `;
 
 const DesktopActionsFormContainer = styled.div`
+  display: flex;
+
   @media (max-width: ${sizes.md}px) {
     display: none;
   }
@@ -220,13 +222,13 @@ const DepositPage = () => {
       />
 
       <DepositPageContainer className="py-5">
-        <div className="row mx-lg-n1">
+        <div className="row ">
           {account && <MobilePositions vault={{ vaultOption, vaultVersion }} />}
 
           <PerformanceSection vault={{ vaultOption, vaultVersion }} />
 
           {/* Form for desktop */}
-          <DesktopActionsFormContainer className="d-flex flex-column col-xl-5 offset-xl-1 col-md-6">
+          <DesktopActionsFormContainer className="flex-column col-xl-5 offset-xl-1 col-md-6">
             <DesktopActionForm vault={{ vaultOption, vaultVersion }} />
           </DesktopActionsFormContainer>
         </div>
