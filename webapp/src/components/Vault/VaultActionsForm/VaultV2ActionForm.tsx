@@ -28,7 +28,7 @@ const FormContainer = styled.div`
 const FormExtraContainer = styled.div`
   background: ${colors.primaryText}0a;
   padding: 32px 24px 16px 24px;
-  margin-top: -16px;
+  margin-top: -20px;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
   text-align: center;

@@ -245,6 +245,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         asset={getAssets(vaultOption)}
         vaultOption={vaultOption}
         receiveVaultOption={vaultActionForm.receiveVault}
+        withdrawOption={vaultActionForm.withdrawOption}
       />
     ),
     2: <TransactionStep />,

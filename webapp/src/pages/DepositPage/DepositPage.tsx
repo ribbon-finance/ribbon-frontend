@@ -181,6 +181,11 @@ const DepositPage = () => {
       loading={isLoading}
       current={totalDepositStr}
       cap={depositLimitStr}
+      displayData={
+        vaultVersion === "v1" && !isLoading && vaultLimit.isZero()
+          ? { current: "---", cap: "---" }
+          : undefined
+      }
       copies={{
         current: "Current Vault Deposits",
         cap: "Max Vault Capacity",
@@ -209,6 +214,9 @@ const DepositPage = () => {
         depositCapBar={depositCapBar}
         vaultOption={vaultOption}
         variant={vaultVersion}
+        v1Inactive={
+          vaultVersion === "v1" ? !isLoading && vaultLimit.isZero() : undefined
+        }
       />
 
       <DepositPageContainer className="py-5">
@@ -232,7 +240,8 @@ const HeroSection: React.FC<{
   depositCapBar: ReactNode;
   vaultOption: VaultOptions;
   variant: VaultVersion;
-}> = ({ depositCapBar, vaultOption, variant }) => {
+  v1Inactive?: boolean;
+}> = ({ depositCapBar, vaultOption, variant, v1Inactive }) => {
   const color = getVaultColor(vaultOption);
 
   const logo = useMemo(() => {
@@ -272,7 +281,9 @@ const HeroSection: React.FC<{
           <BannerContainer color={color}>
             <BaseIndicator size={8} color={color} className="mr-2" />
             <PrimaryText color={color} className="mr-3">
-              V2 vaults are now live
+              {v1Inactive
+                ? "V1 vaults are now inactive and do not accept deposits"
+                : "V2 vaults are now live"}
             </PrimaryText>
             <BaseLink to={getVaultURI(vaultOption, "v2")}>
               <BannerButton color={color} role="button">

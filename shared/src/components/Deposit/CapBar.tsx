@@ -48,6 +48,10 @@ const CapBar: React.FC<{
     current: string;
     cap: string;
   };
+  displayData?: {
+    current?: string;
+    cap?: string;
+  };
   labelConfig?: {
     fontSize: number;
   };
@@ -65,12 +69,13 @@ const CapBar: React.FC<{
   current,
   cap,
   copies = { current: "Total Deposits", cap: "Limit" },
+  displayData: { current: displayCurrent, cap: displayCap } = {},
   labelConfig = { fontSize: 16 },
   statsConfig = { fontSize: 16 },
   barConfig = { height: 16, extraClassNames: "my-3", radius: 4 },
   asset,
 }) => {
-  let percent = current / (cap > 0 ? cap : 1);
+  let percent = cap > 0 ? current / cap : 0;
   if (percent < 0) {
     percent = 0;
   } else if (percent > 1) {
@@ -86,7 +91,13 @@ const CapBar: React.FC<{
         <DepositStat config={statsConfig}>
           {loading
             ? "Loading..."
-            : `${formatAmount(current)} ${asset ? getAssetDisplay(asset) : ""}`}
+            : `${
+                displayCurrent
+                  ? displayCurrent
+                  : `${formatAmount(current)} ${
+                      asset ? getAssetDisplay(asset) : ""
+                    }`
+              }`}
         </DepositStat>
       </div>
 
@@ -106,7 +117,13 @@ const CapBar: React.FC<{
         <DepositStat config={statsConfig}>
           {loading
             ? "Loading..."
-            : `${formatAmount(cap)} ${asset ? getAssetDisplay(asset) : ""}`}
+            : `${
+                displayCap
+                  ? displayCap
+                  : `${formatAmount(cap)} ${
+                      asset ? getAssetDisplay(asset) : ""
+                    }`
+              }`}
         </DepositStat>
       </div>
     </div>

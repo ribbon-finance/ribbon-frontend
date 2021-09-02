@@ -1,10 +1,9 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
 import { BigNumber } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 
 import { VaultOptions } from "shared/lib/constants/constants";
-import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import { getAssetDisplay } from "shared/lib/utils/asset";
@@ -40,23 +39,10 @@ const FormDescription = styled(PrimaryText)`
   color: ${colors.text};
 `;
 
-const FormDescriptionHighlight = styled.span`
-  color: ${colors.primaryText};
-`;
-
 const FormColumnData = styled(Title)`
   font-size: 14px;
   line-height: 20px;
 `;
-
-const PillButton = styled.div`
-  padding: 10px 16px;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: 100px;
-`;
-
-const MigratinFormModeList = ["options", "migrate"] as const;
-type MigrationFormMode = typeof MigratinFormModeList[number];
 
 interface VaultV2MigrationFormProps {
   vaultOption: VaultOptions;
@@ -75,8 +61,6 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
   const color = getVaultColor(vaultOption);
   const { handleActionTypeChange, handleMaxClick } =
     useVaultActionForm(vaultOption);
-
-  const [mode, setMode] = useState<MigrationFormMode>(MigratinFormModeList[0]);
 
   const [weeklyMigrationAmount, weeklyMigrationAmountLimit] = useMemo((): [
     BigNumber,
@@ -117,15 +101,6 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
   ]);
 
   /**
-   * Show v1 withdraw form here
-   */
-  const handleWithdraw = useCallback(() => {
-    handleActionTypeChange(ACTIONS.withdraw);
-    handleMaxClick();
-    onFormSubmit();
-  }, [handleActionTypeChange, handleMaxClick, onFormSubmit]);
-
-  /**
    * Show migration form here
    */
   const handleMigrate = useCallback(() => {
@@ -156,110 +131,6 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
     return <></>;
   }, [error]);
 
-  const body = useMemo(() => {
-    switch (mode) {
-      case "options":
-        return (
-          <>
-            <FormDescription className="mt-3 text-center">
-              You can now move your V1 deposit balance of{" "}
-              <FormDescriptionHighlight>
-                {formatBigNumber(vaultAccount.totalBalance, decimals)}{" "}
-                {getAssetDisplay(asset)}
-              </FormDescriptionHighlight>{" "}
-              to the V2 vault
-            </FormDescription>
-
-            {/* Migrate button */}
-            <ActionButton
-              color={color}
-              className="py-3 mt-4"
-              onClick={() => {
-                setMode("migrate");
-              }}
-            >
-              MIGRATE {getAssetDisplay(asset)}
-            </ActionButton>
-
-            <SecondaryText className="mt-3">OR</SecondaryText>
-
-            {/* Withdraw button */}
-            <PillButton className="mt-3" role="button" onClick={handleWithdraw}>
-              <PrimaryText>Withdraw {getAssetDisplay(asset)}</PrimaryText>
-            </PillButton>
-          </>
-        );
-      case "migrate":
-        return (
-          <>
-            <FormDescription className="mt-3 text-center">
-              ETH deposits can now be migrated over from the V1 vault
-            </FormDescription>
-
-            {/* V1 Balance */}
-            <div className="d-flex w-100 align-items-center mt-4">
-              <SecondaryText>Your V1 Balance</SecondaryText>
-              <FormColumnData className="ml-auto">
-                {formatBigNumber(vaultAccount.totalBalance, decimals)}{" "}
-                {getAssetDisplay(asset)}
-              </FormColumnData>
-            </div>
-
-            <div className="d-flex w-100 mt-3">
-              <CapBar
-                loading={false}
-                current={parseFloat(
-                  formatUnits(weeklyMigrationAmount, decimals)
-                )}
-                cap={parseFloat(
-                  formatUnits(weeklyMigrationAmountLimit, decimals)
-                )}
-                copies={{
-                  current: "Weekly Migrations",
-                  cap: "Weekly Migration Limit",
-                }}
-                labelConfig={{
-                  fontSize: 14,
-                }}
-                statsConfig={{
-                  fontSize: 14,
-                }}
-                barConfig={{
-                  height: 4,
-                  extraClassNames: "my-2",
-                  radius: 2,
-                }}
-                asset={asset}
-              />
-            </div>
-
-            {/* Migrate button */}
-            <ActionButton
-              color={color}
-              className="py-3 mt-4"
-              disabled={Boolean(error)}
-              onClick={handleMigrate}
-            >
-              Migration Preview
-            </ActionButton>
-            {errorText}
-          </>
-        );
-    }
-  }, [
-    asset,
-    color,
-    decimals,
-    error,
-    errorText,
-    handleMigrate,
-    handleWithdraw,
-    mode,
-    vaultAccount.totalBalance,
-    weeklyMigrationAmount,
-    weeklyMigrationAmountLimit,
-  ]);
-
   return (
     <div className="d-flex flex-column align-items-center p-4">
       {/* Logo */}
@@ -268,7 +139,54 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
       </MigrateLogoContainer>
 
       <FormTitle className="mt-3">MIRGATE TO V2</FormTitle>
-      {body}
+
+      <FormDescription className="mt-3 text-center">
+        ETH deposits can now be migrated over from the V1 vault
+      </FormDescription>
+
+      {/* V1 Balance */}
+      <div className="d-flex w-100 align-items-center mt-4">
+        <SecondaryText>Your V1 Balance</SecondaryText>
+        <FormColumnData className="ml-auto">
+          {formatBigNumber(vaultAccount.totalBalance, decimals)}{" "}
+          {getAssetDisplay(asset)}
+        </FormColumnData>
+      </div>
+
+      <div className="d-flex w-100 mt-3">
+        <CapBar
+          loading={false}
+          current={parseFloat(formatUnits(weeklyMigrationAmount, decimals))}
+          cap={parseFloat(formatUnits(weeklyMigrationAmountLimit, decimals))}
+          copies={{
+            current: "Weekly Migrations",
+            cap: "Weekly Migration Limit",
+          }}
+          labelConfig={{
+            fontSize: 14,
+          }}
+          statsConfig={{
+            fontSize: 14,
+          }}
+          barConfig={{
+            height: 4,
+            extraClassNames: "my-2",
+            radius: 2,
+          }}
+          asset={asset}
+        />
+      </div>
+
+      {/* Migrate button */}
+      <ActionButton
+        color={color}
+        className="py-3 mt-4"
+        disabled={Boolean(error)}
+        onClick={handleMigrate}
+      >
+        Migration Preview
+      </ActionButton>
+      {errorText}
     </div>
   );
 };
