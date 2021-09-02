@@ -6,6 +6,8 @@ import {
   getDisplayAssets,
   VaultList,
   VaultOptions,
+  VaultVersion,
+  VaultVersionList,
 } from "../constants/constants";
 import {
   DefiScoreProtocol,
@@ -47,12 +49,23 @@ interface GlobalStore {
   tokenBalances: {
     [token in ERC20Token]: { fetched: boolean; balance: BigNumber };
   };
-  vaultAccounts: { [option in VaultOptions]: VaultAccount | undefined };
+  vaultAccounts: {
+    [version in VaultVersion | "all"]: {
+      [option in VaultOptions]: VaultAccount | undefined;
+    };
+  };
 }
 
-export const initialVaultaccounts = Object.fromEntries(
-  VaultList.map((option) => [option, undefined])
-) as { [option in VaultOptions]: VaultAccount | undefined };
+export const initialVaultAccounts = Object.fromEntries(
+  [...VaultVersionList, "all"].map((version) => [
+    version,
+    Object.fromEntries(VaultList.map((option) => [option, undefined])),
+  ])
+) as {
+  [version in VaultVersion | "all"]: {
+    [option in VaultOptions]: VaultAccount | undefined;
+  };
+};
 
 export const initialState: GlobalStore = {
   vaultData: Object.fromEntries(
@@ -131,7 +144,7 @@ export const initialState: GlobalStore = {
   ) as {
     [token in ERC20Token]: { fetched: boolean; balance: BigNumber };
   },
-  vaultAccounts: initialVaultaccounts,
+  vaultAccounts: initialVaultAccounts,
 };
 
 export const { useGlobalState } = createGlobalState(initialState);

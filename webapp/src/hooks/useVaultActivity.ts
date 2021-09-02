@@ -72,6 +72,10 @@ const fetchVaultAvtivity = async (
         `,
   });
 
+  if (!response.data.data) {
+    return [];
+  }
+
   return [
     ...response.data.data.vaultShortPositions.map((item: any) => ({
       ...item,

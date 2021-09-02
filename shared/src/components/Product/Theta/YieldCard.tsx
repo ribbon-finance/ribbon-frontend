@@ -18,12 +18,14 @@ import useVaultData from "../../../hooks/useVaultData";
 import {
   formatBigNumber,
   formatSignificantDecimals,
+  isPracticallyZero,
 } from "../../../utils/math";
 import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useTextAnimation from "../../../hooks/useTextAnimation";
 import {
   hasVaultVersion,
   VaultOptions,
+  VaultVersionList,
   VaultVersionListExludeV1,
 } from "../../../constants/constants";
 import { productCopies } from "../productCopies";
@@ -33,6 +35,8 @@ import { getVaultColor } from "../../../utils/vault";
 import ModalContentExtra from "../../Common/ModalContentExtra";
 import { VaultAccount } from "../../../models/vault";
 import YieldComparison from "./YieldComparison";
+import useV2VaultData from "../../../hooks/useV2VaultData";
+import { useWeb3React } from "@web3-react/core";
 
 const { formatUnits } = ethers.utils;
 
@@ -179,18 +183,56 @@ const YieldCard: React.FC<YieldCardProps> = ({
   onClick,
   vaultAccount,
 }) => {
+  const { active } = useWeb3React();
   const { status, deposits, vaultLimit, asset, displayAsset, decimals } =
     useVaultData(vault);
+  const {
+    data: {
+      totalBalance: v2Deposits,
+      cap: v2VaultLimit,
+      lockedBalanceInAsset,
+      depositBalanceInAsset,
+    },
+    loading: v2DataLoading,
+  } = useV2VaultData(vault);
   const isLoading = useMemo(() => status === "loading", [status]);
   const [mode, setMode] = useState<"info" | "yield">("info");
   const color = getVaultColor(vault);
 
-  const totalDepositStr = isLoading
-    ? 0
-    : parseFloat(formatSignificantDecimals(formatUnits(deposits, decimals), 2));
-  const depositLimitStr = isLoading
-    ? 1
-    : parseFloat(formatSignificantDecimals(formatUnits(vaultLimit, decimals)));
+  const vaultVersion = useMemo(() => {
+    if (VaultVersionList[0] === "v1") {
+      if (!isLoading && vaultLimit.isZero()) {
+        return "v2";
+      }
+
+      return "v1";
+    }
+
+    return VaultVersionList[0];
+  }, [isLoading, vaultLimit]);
+
+  const [totalDepositStr, depositLimitStr] = useMemo(() => {
+    switch (vaultVersion) {
+      case "v1":
+        return [
+          parseFloat(
+            formatSignificantDecimals(formatUnits(deposits, decimals), 2)
+          ),
+          parseFloat(
+            formatSignificantDecimals(formatUnits(vaultLimit, decimals))
+          ),
+        ];
+      case "v2":
+        return [
+          parseFloat(
+            formatSignificantDecimals(formatUnits(v2Deposits, decimals), 2)
+          ),
+          parseFloat(
+            formatSignificantDecimals(formatUnits(v2VaultLimit, decimals))
+          ),
+        ];
+    }
+  }, [decimals, deposits, v2Deposits, v2VaultLimit, vaultLimit, vaultVersion]);
 
   const latestAPY = useLatestAPY(vault);
 
@@ -204,7 +246,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     setMode((prev) => (prev === "info" ? "yield" : "info"));
   }, []);
 
-  const ProductInfoContent = () => {
+  const ProductInfoContent = useCallback(() => {
     const Logo = getAssetLogo(displayAsset);
 
     let logo = <Logo />;
@@ -229,7 +271,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
         <ExpectedYieldTitle>Current Projected Yield (APY)</ExpectedYieldTitle>
         <YieldText>{perfStr}</YieldText>
         <CapBar
-          loading={isLoading}
+          loading={vaultVersion === "v1" ? isLoading : v2DataLoading}
           current={totalDepositStr}
           cap={depositLimitStr}
           copies={{
@@ -247,7 +289,78 @@ const YieldCard: React.FC<YieldCardProps> = ({
         />
       </>
     );
-  };
+  }, [
+    asset,
+    color,
+    depositLimitStr,
+    displayAsset,
+    isLoading,
+    perfStr,
+    totalDepositStr,
+    v2DataLoading,
+    vault,
+    vaultVersion,
+  ]);
+
+  const modalContentExtra = useMemo(() => {
+    switch (vaultVersion) {
+      case "v1":
+        return (
+          <div className="d-flex align-items-center w-100">
+            <PositionLabel className="mr-auto">Your Position</PositionLabel>
+            <PositionStats>
+              {vaultAccount
+                ? `${formatBigNumber(
+                    vaultAccount.totalBalance,
+                    decimals
+                  )} ${getAssetDisplay(asset)}`
+                : "---"}
+            </PositionStats>
+          </div>
+        );
+      case "v2":
+        if (
+          vaultAccount &&
+          !isPracticallyZero(vaultAccount.totalBalance, decimals)
+        ) {
+          return (
+            <div className="d-flex w-100 justify-content-center">
+              <SecondaryText color={colors.primaryText}>
+                Funds ready for migration to V2
+              </SecondaryText>
+            </div>
+          );
+        }
+
+        return (
+          <div className="d-flex align-items-center w-100">
+            <PositionLabel className="mr-auto">Your Position</PositionLabel>
+            <PositionStats>
+              {active &&
+              !v2DataLoading &&
+              !isPracticallyZero(
+                depositBalanceInAsset.add(lockedBalanceInAsset),
+                decimals
+              )
+                ? `${formatBigNumber(
+                    depositBalanceInAsset.add(lockedBalanceInAsset),
+                    decimals
+                  )} ${getAssetDisplay(asset)}`
+                : "---"}
+            </PositionStats>
+          </div>
+        );
+    }
+  }, [
+    active,
+    asset,
+    decimals,
+    depositBalanceInAsset,
+    lockedBalanceInAsset,
+    v2DataLoading,
+    vaultAccount,
+    vaultVersion,
+  ]);
 
   return (
     <CardContainer>
@@ -312,17 +425,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
             )}
           </ProductInfo>
           <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
-            <div className="d-flex align-items-center w-100">
-              <PositionLabel className="mr-auto">Your Position</PositionLabel>
-              <PositionStats>
-                {vaultAccount
-                  ? `${formatBigNumber(
-                      vaultAccount.totalBalance,
-                      decimals
-                    )} ${getAssetDisplay(asset)}`
-                  : "---"}
-              </PositionStats>
-            </div>
+            {modalContentExtra}
           </ModalContentExtra>
         </ProductCard>
       </AnimatePresence>

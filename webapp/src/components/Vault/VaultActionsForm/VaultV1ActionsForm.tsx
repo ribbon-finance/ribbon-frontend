@@ -1,15 +1,19 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import moment from "moment";
 
-import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
+import {
+  BaseLink,
+  PrimaryText,
+  SecondaryText,
+  Title,
+} from "shared/lib/designSystem";
 import { formatBigNumber } from "shared/lib/utils/math";
 import {
   VaultAddressMap,
   VaultMaxDeposit,
-  VaultVersion,
 } from "shared/lib/constants/constants";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { getVaultColor, isETHVault, isVaultFull } from "shared/lib/utils/vault";
@@ -32,6 +36,9 @@ import { ACTIONS } from "./Modal/types";
 import VaultV1TransferForm from "./v1/VaultV1TransferForm";
 import VaultApprovalForm from "./common/VaultApprovalForm";
 import VaultBasicAmountForm from "./common/VaultBasicAmountForm";
+import { MigrateIcon } from "shared/lib/assets/icons/icons";
+import { ActionButton } from "shared/lib/components/Common/buttons";
+import { getVaultURI } from "../../../constants/constants";
 
 const { parseUnits, formatUnits } = ethers.utils;
 
@@ -60,7 +67,7 @@ const FormContainer = styled.div`
 
 const FormContainerExtra = styled.div<{ variant: "desktop" | "mobile" }>`
   background: ${colors.primaryText}0a;
-  margin-top: -16px;
+  margin-top: -20px;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
   text-align: center;
@@ -191,6 +198,38 @@ const SwapTriggerButtonText = styled(SecondaryText)`
   flex: 1;
 `;
 
+const MigrateLogoContainer = styled.div<{ color: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 100px;
+  background: ${(props) => props.color}14;
+`;
+
+const MigrationTitle = styled(Title)`
+  font-size: 22px;
+  line-height: 28px;
+  letter-spacing: 1px;
+`;
+
+const MigrationDescription = styled(PrimaryText)`
+  font-size: 14px;
+  line-height: 20px;
+  color: ${colors.text};
+`;
+
+const MigrationDescriptionHighlight = styled.span`
+  color: ${colors.primaryText};
+`;
+
+const PillButton = styled.div`
+  padding: 10px 16px;
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-radius: 100px;
+`;
+
 interface VaultV1ActionsFormProps {
   variant: "desktop" | "mobile";
 }
@@ -212,11 +251,14 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     decimals,
     vaultMaxWithdrawAmount,
   } = useVaultData(vaultOption, { poll: true });
-  const { canTransfer, handleActionTypeChange, vaultActionForm } =
-    useVaultActionForm(vaultOption);
+  const {
+    canTransfer,
+    handleActionTypeChange,
+    handleMaxClick,
+    vaultActionForm,
+  } = useVaultActionForm(vaultOption);
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
-  const vaultVersions = useMemo((): VaultVersion[] => ["v1"], []);
-  const { vaultAccounts } = useVaultAccounts(vaultOptions, vaultVersions, {
+  const { vaultAccounts } = useVaultAccounts(vaultOptions, "v1", {
     poll: true,
   });
   const { active, account } = useWeb3React();
@@ -671,9 +713,55 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     }
   }, [asset, swapContainerOpen]);
 
-  return (
-    <Container variant={variant}>
-      <FormContainer>
+  const handleWithdraw = useCallback(() => {
+    handleActionTypeChange(ACTIONS.withdraw);
+    handleMaxClick();
+    onFormSubmit();
+  }, [handleActionTypeChange, handleMaxClick, onFormSubmit]);
+
+  const body = useMemo(() => {
+    if (!isLoadingData && vaultLimit.isZero()) {
+      const vaultAccount = vaultAccounts[vaultOption];
+      const balanceToMigrate = vaultAccount
+        ? vaultAccount.totalBalance
+        : BigNumber.from(0);
+
+      return (
+        <div className="d-flex flex-column align-items-center p-4">
+          <MigrateLogoContainer color={color} className="mt-3">
+            <MigrateIcon color={color} />
+          </MigrateLogoContainer>
+
+          <MigrationTitle className="mt-3">MIRGATE TO V2</MigrationTitle>
+
+          <MigrationDescription className="mt-3 text-center">
+            You can now move your V1 deposit balance of{" "}
+            <MigrationDescriptionHighlight>
+              {formatBigNumber(balanceToMigrate, decimals)}{" "}
+              {getAssetDisplay(asset)}
+            </MigrationDescriptionHighlight>{" "}
+            to the V2 vault
+          </MigrationDescription>
+
+          {/* Migrate button */}
+          <BaseLink to={getVaultURI(vaultOption, "v2")} className="w-100">
+            <ActionButton color={color} className="py-3 mt-4">
+              MIGRATE {getAssetDisplay(asset)}
+            </ActionButton>
+          </BaseLink>
+
+          <SecondaryText className="mt-3">OR</SecondaryText>
+
+          {/* Withdraw button */}
+          <PillButton className="mt-3" role="button" onClick={handleWithdraw}>
+            <PrimaryText>Withdraw {getAssetDisplay(asset)}</PrimaryText>
+          </PillButton>
+        </div>
+      );
+    }
+
+    return (
+      <>
         <FormTitleContainer className="d-flex flex-row align-items-center">
           <FormTitleDiv
             active={vaultActionForm.actionType === ACTIONS.deposit}
@@ -704,7 +792,6 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
             </FormTitleDiv>
           )}
         </FormTitleContainer>
-
         <ContentContainer className="px-4 py-4">
           {formContent}
           <WalletBalance state={walletBalanceState}>
@@ -713,16 +800,56 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
           {swapContainerTrigger}
         </ContentContainer>
         {swapContainer}
-      </FormContainer>
-      {vaultActionForm.actionType === "transfer" && (
+      </>
+    );
+  }, [
+    asset,
+    canTransfer,
+    color,
+    decimals,
+    formContent,
+    formWalletContent,
+    handleActionTypeChange,
+    handleWithdraw,
+    isLoadingData,
+    swapContainer,
+    swapContainerTrigger,
+    vaultAccounts,
+    vaultActionForm.actionType,
+    vaultLimit,
+    vaultOption,
+    walletBalanceState,
+  ]);
+
+  const formExtra = useMemo(() => {
+    if (!isLoadingData && vaultLimit.isZero()) {
+      return (
         <FormContainerExtra variant={variant}>
           <FormContainerExtraText color={color}>
-            Vault transfers are <strong>FREE</strong>: withdrawal fees are
-            waived when you transfer funds between T-USDC-P-ETH and
-            T-yvUSDC-P-ETH
+            IMPORTANT: Withdrawal fees do not apply for migrations from V1 to V2
           </FormContainerExtraText>
         </FormContainerExtra>
-      )}
+      );
+    }
+
+    switch (vaultActionForm.actionType) {
+      case ACTIONS.transfer:
+        return (
+          <FormContainerExtra variant={variant}>
+            <FormContainerExtraText color={color}>
+              Vault transfers are <strong>FREE</strong>: withdrawal fees are
+              waived when you transfer funds between T-USDC-P-ETH and
+              T-yvUSDC-P-ETH
+            </FormContainerExtraText>
+          </FormContainerExtra>
+        );
+    }
+  }, [color, isLoadingData, variant, vaultLimit, vaultActionForm.actionType]);
+
+  return (
+    <Container variant={variant}>
+      <FormContainer>{body}</FormContainer>
+      {formExtra}
 
       {connected && variant === "desktop" && (
         <YourPosition

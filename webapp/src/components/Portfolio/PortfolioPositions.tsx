@@ -26,7 +26,6 @@ import {
   VaultList,
   VaultNameOptionMap,
   VaultOptions,
-  VaultVersionList,
 } from "shared/lib/constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
@@ -37,8 +36,6 @@ import {
   getAssetLogo,
 } from "shared/lib/utils/asset";
 import { getVaultColor } from "shared/lib/utils/vault";
-
-const vaultVersions = [...VaultVersionList];
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 64px;
@@ -294,7 +291,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 
 const PortfolioPositions = () => {
   const { active } = useWeb3React();
-  const { vaultAccounts, loading } = useVaultAccounts(VaultList, vaultVersions);
+  const { vaultAccounts, loading } = useVaultAccounts(VaultList, "all");
   const animatedLoadingText = useTextAnimation(loading);
 
   const filteredVaultAccounts = useMemo(() => {

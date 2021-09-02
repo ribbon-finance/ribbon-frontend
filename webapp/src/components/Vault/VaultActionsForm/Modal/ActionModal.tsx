@@ -104,6 +104,7 @@ const ModalHeaderCloseButton = styled.i`
   cursor: pointer;
   position: absolute;
   right: ${modalPadding}px;
+  z-index: 10;
 `;
 
 const StepsContainer = styled.div<ModalProps>`

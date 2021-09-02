@@ -9,13 +9,14 @@ import {
   VaultAddressMap,
   VaultOptions,
   VaultVersion,
+  VaultVersionList,
 } from "../constants/constants";
 import { VaultAccount } from "../models/vault";
-import { initialVaultaccounts, useGlobalState } from "../store/store";
+import { initialVaultAccounts, useGlobalState } from "../store/store";
 
 const useVaultAccounts = (
   vaults: VaultOptions[],
-  vaultVersions: VaultVersion[],
+  variant: VaultVersion | "all",
   {
     poll,
     pollingFrequency = 5000,
@@ -32,7 +33,7 @@ const useVaultAccounts = (
   const loadVaultAccounts = useCallback(
     async (
       _vaultOptions: VaultOptions[],
-      _vaultVersions: VaultVersion[],
+      _variant: VaultVersion | "all",
       acc: string,
       isInterval: boolean = true
     ) => {
@@ -40,14 +41,13 @@ const useVaultAccounts = (
         setLoading(true);
       }
 
-      const results = await fetchVaultAccounts(
-        _vaultOptions,
-        _vaultVersions,
-        acc
-      );
+      const results = await fetchVaultAccounts(_vaultOptions, _variant, acc);
       setVaultAccounts((curr) => ({
         ...curr,
-        ...results,
+        [_variant]: {
+          ...curr[_variant],
+          ...results,
+        },
       }));
 
       if (!isInterval) {
@@ -59,22 +59,22 @@ const useVaultAccounts = (
 
   useEffect(() => {
     if (!account) {
-      setVaultAccounts(initialVaultaccounts);
+      setVaultAccounts(initialVaultAccounts);
       return;
     }
 
     let pollInterval: any = undefined;
     if (poll) {
-      loadVaultAccounts(vaults, vaultVersions, account, false);
+      loadVaultAccounts(vaults, variant, account, false);
       pollInterval = setInterval(
         loadVaultAccounts,
         pollingFrequency,
         vaults,
-        vaultVersions,
+        variant,
         account
       );
     } else {
-      loadVaultAccounts(vaults, vaultVersions, account, false);
+      loadVaultAccounts(vaults, variant, account, false);
     }
 
     return () => {
@@ -84,7 +84,7 @@ const useVaultAccounts = (
     };
   }, [
     vaults,
-    vaultVersions,
+    variant,
     account,
     loadVaultAccounts,
     poll,
@@ -92,14 +92,24 @@ const useVaultAccounts = (
     setVaultAccounts,
   ]);
 
-  return { vaultAccounts, loading };
+  return { vaultAccounts: vaultAccounts[variant], loading };
 };
 
 const fetchVaultAccounts = async (
   vaults: VaultOptions[],
-  vaultVersions: VaultVersion[],
+  variant: VaultVersion | "all",
   account: string
 ) => {
+  let vaultVersions: VaultVersion[];
+
+  switch (variant) {
+    case "all":
+      vaultVersions = [...VaultVersionList];
+      break;
+    default:
+      vaultVersions = [variant];
+  }
+
   const vaultAccountsAcrossVersion = Object.fromEntries(
     await Promise.all(
       vaultVersions.map(async (version) => {

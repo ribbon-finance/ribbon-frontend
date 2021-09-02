@@ -119,6 +119,8 @@ const SplashImage = styled.div`
 `;
 
 const DesktopActionsFormContainer = styled.div`
+  display: flex;
+
   @media (max-width: ${sizes.md}px) {
     display: none;
   }
@@ -181,6 +183,11 @@ const DepositPage = () => {
       loading={isLoading}
       current={totalDepositStr}
       cap={depositLimitStr}
+      displayData={
+        vaultVersion === "v1" && !isLoading && vaultLimit.isZero()
+          ? { current: "---", cap: "---" }
+          : undefined
+      }
       copies={{
         current: "Current Vault Deposits",
         cap: "Max Vault Capacity",
@@ -209,16 +216,19 @@ const DepositPage = () => {
         depositCapBar={depositCapBar}
         vaultOption={vaultOption}
         variant={vaultVersion}
+        v1Inactive={
+          vaultVersion === "v1" ? !isLoading && vaultLimit.isZero() : undefined
+        }
       />
 
       <DepositPageContainer className="py-5">
-        <div className="row mx-lg-n1">
+        <div className="row ">
           {account && <MobilePositions vault={{ vaultOption, vaultVersion }} />}
 
           <PerformanceSection vault={{ vaultOption, vaultVersion }} />
 
           {/* Form for desktop */}
-          <DesktopActionsFormContainer className="d-flex flex-column col-xl-5 offset-xl-1 col-md-6">
+          <DesktopActionsFormContainer className="flex-column col-xl-5 offset-xl-1 col-md-6">
             <DesktopActionForm vault={{ vaultOption, vaultVersion }} />
           </DesktopActionsFormContainer>
         </div>
@@ -232,7 +242,8 @@ const HeroSection: React.FC<{
   depositCapBar: ReactNode;
   vaultOption: VaultOptions;
   variant: VaultVersion;
-}> = ({ depositCapBar, vaultOption, variant }) => {
+  v1Inactive?: boolean;
+}> = ({ depositCapBar, vaultOption, variant, v1Inactive }) => {
   const color = getVaultColor(vaultOption);
 
   const logo = useMemo(() => {
@@ -272,7 +283,9 @@ const HeroSection: React.FC<{
           <BannerContainer color={color}>
             <BaseIndicator size={8} color={color} className="mr-2" />
             <PrimaryText color={color} className="mr-3">
-              V2 vaults are now live
+              {v1Inactive
+                ? "V1 vaults are now inactive and do not accept deposits"
+                : "V2 vaults are now live"}
             </PrimaryText>
             <BaseLink to={getVaultURI(vaultOption, "v2")}>
               <BannerButton color={color} role="button">
@@ -312,9 +325,7 @@ const HeroSection: React.FC<{
                             <Title color={color}>{version}</Title>
                           </AttributeVersionSelector>
                         </BaseLink>
-                      ) : (
-                        <></>
-                      )
+                      ) : null
                     )}
                   </AttributePill>
                 )}

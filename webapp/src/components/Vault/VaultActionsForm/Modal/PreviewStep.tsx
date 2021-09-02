@@ -4,7 +4,7 @@ import { BigNumber } from "ethers";
 
 import { Subtitle, SecondaryText, Title } from "shared/lib/designSystem";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import { ACTIONS, ActionType } from "./types";
+import { ACTIONS, ActionType, V2WithdrawOption } from "./types";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
@@ -50,6 +50,7 @@ const Arrow = styled.i<{ color: string }>`
 
 const PreviewStep: React.FC<{
   actionType: ActionType;
+  withdrawOption?: V2WithdrawOption;
   amount: BigNumber;
   positionAmount: BigNumber;
   onClickConfirmButton: () => Promise<void>;
@@ -58,6 +59,7 @@ const PreviewStep: React.FC<{
   receiveVaultOption?: VaultOptions;
 }> = ({
   actionType,
+  withdrawOption,
   amount,
   positionAmount,
   onClickConfirmButton,
@@ -148,7 +150,7 @@ const PreviewStep: React.FC<{
   }, [actionType]);
 
   switch (actionType) {
-    case "migrate":
+    case ACTIONS.migrate:
       return (
         <div
           style={{ flex: 1 }}
@@ -192,6 +194,12 @@ const PreviewStep: React.FC<{
           </ActionButton>
         </div>
       );
+    // @ts-ignore
+    case ACTIONS.withdraw:
+      if (withdrawOption === "standard") {
+        return <></>;
+      }
+    // eslint-disable-next-line no-fallthrough
     default:
       const actionWord = capitalize(actionType);
       return (

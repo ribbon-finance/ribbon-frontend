@@ -21,7 +21,7 @@ import {
   getAssetDisplay,
   getAssetLogo,
 } from "../../utils/asset";
-import { assetToUSD, formatAmount } from "../../utils/math";
+import { assetToUSD, formatAmount, isPracticallyZero } from "../../utils/math";
 import FilterDropdown from "../Common/FilterDropdown";
 import FullscreenMultiselectFilters from "../Common/FullscreenMultiselectFilters";
 import Pagination from "../Common/Pagination";
@@ -188,7 +188,10 @@ const DesktopProductCatalogueGalleryView: React.FC<
     const vaultAccount = vaultAccounts[vault];
     const decimals = getAssetDecimals(asset);
 
-    if (!vaultAccount) {
+    if (
+      !vaultAccount ||
+      isPracticallyZero(vaultAccount.totalDeposits, decimals)
+    ) {
       return 0;
     }
 
