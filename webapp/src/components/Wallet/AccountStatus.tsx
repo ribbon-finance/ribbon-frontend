@@ -31,9 +31,18 @@ import { ActionButton } from "shared/lib/components/Common/buttons";
 import ActionModal from "../Vault/VaultActionsForm/Modal/ActionModal";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
-import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
+import {
+  getAssets,
+  VaultList,
+  VaultOptions,
+  VaultVersion,
+} from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { truncateAddress } from "shared/lib/utils/address";
+import useVaultData from "shared/lib/hooks/useVaultData";
+import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
+import { isPracticallyZero } from "shared/lib/utils/math";
+import { getAssetDecimals } from "shared/lib/utils/asset";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -261,6 +270,15 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ vault, variant }) => {
   const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
     "hidden"
   );
+  const { status, vaultLimit } = useVaultData(
+    vault?.vaultOption || VaultList[0]
+  );
+  const vaultOptions = useMemo(
+    () => (vault ? [vault.vaultOption] : []),
+    [vault]
+  );
+  const { vaultAccounts: v1VaultAccounts, loading: v1VaultAccountsLoading } =
+    useVaultAccounts(vaultOptions, "v1");
 
   // Track clicked area outside of desktop menu
   const desktopMenuRef = useRef(null);
@@ -403,7 +421,18 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ vault, variant }) => {
             onClick={handleInvestButtonClick}
             color={getVaultColor(vault.vaultOption)}
           >
-            Invest
+            {(status !== "loading" &&
+              vault.vaultVersion === "v1" &&
+              vaultLimit.isZero()) ||
+            (!v1VaultAccountsLoading &&
+              vault.vaultVersion === "v2" &&
+              v1VaultAccounts[vault.vaultOption] &&
+              !isPracticallyZero(
+                v1VaultAccounts[vault.vaultOption]!.totalBalance,
+                getAssetDecimals(getAssets(vault.vaultOption))
+              ))
+              ? "Migrate"
+              : "Invest"}
           </InvestButton>
         )}
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>
