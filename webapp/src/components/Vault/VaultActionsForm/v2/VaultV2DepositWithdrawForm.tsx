@@ -164,7 +164,8 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
    */
   useEffect(() => {
     handleActionTypeChange(ACTIONS.deposit, "v2");
-  }, [handleActionTypeChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const error = useMemo((): VaultValidationErrors | undefined => {
     switch (vaultActionForm.actionType) {

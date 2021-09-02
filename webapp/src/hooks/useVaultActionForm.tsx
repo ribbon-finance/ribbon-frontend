@@ -48,6 +48,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
       lockedBalanceInAsset: v2LockedBalanceInAsset,
       totalBalance: v2TotalBalance,
       userAssetBalance,
+      withdrawals: v2Withdrawals,
     },
   } = useV2VaultData(vaultOption);
   const v2VaultBalanceInAsset = v2DepositBalanceInAsset.add(
@@ -114,6 +115,22 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     vaultActionForm.actionType,
   ]);
 
+  const withdrawMetadata = useMemo(() => {
+    switch (vaultActionForm.vaultVersion) {
+      case "v2":
+        return {
+          allowStandardWithdraw:
+            !v2LockedBalanceInAsset.isZero() || !v2Withdrawals.shares.isZero(),
+        };
+    }
+
+    return {};
+  }, [
+    v2LockedBalanceInAsset,
+    v2Withdrawals.shares,
+    vaultActionForm.vaultVersion,
+  ]);
+
   /**
    * Handle user changing action type
    * Action type: deposit, withdraw
@@ -157,12 +174,17 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
              * Only catch v2 vault and set default withdraw option if not provided
              */
             if (vaultVersion === "v2") {
+              withdrawOption = withdrawOption || V2WithdrawOptionList[0];
               return {
                 ...actionForm,
                 vaultVersion,
                 inputAmount: "",
                 actionType,
-                withdrawOption: withdrawOption || V2WithdrawOptionList[0],
+                withdrawOption:
+                  !withdrawMetadata.allowStandardWithdraw &&
+                  withdrawOption === "standard"
+                    ? "instant"
+                    : withdrawOption,
               };
             }
           // eslint-disable-next-line no-fallthrough
@@ -178,7 +200,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
         return actionForm;
       });
     },
-    [setVaultActionForm, vaultOption]
+    [setVaultActionForm, vaultOption, withdrawMetadata]
   );
 
   /**
@@ -341,6 +363,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     resetActionForm,
     transferData,
     vaultActionForm,
+    withdrawMetadata,
   };
 };
 

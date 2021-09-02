@@ -48,12 +48,16 @@ const WithdrawTypeSegmentControl = styled.div`
   flex: 1;
 `;
 
-const WithdrawTypeSegmentControlText = styled(Title)<{ active: boolean }>`
+const WithdrawTypeSegmentControlText = styled(Title)<{
+  active: boolean;
+  disabled: boolean;
+}>`
   display: flex;
   align-items: center;
   font-size: 14px;
   line-height: 20px;
   color: ${(props) => (props.active ? colors.green : colors.text)};
+  opacity: ${(props) => (props.disabled ? 0.4 : 1)};
 `;
 
 const WithdrawTypeSegmentControlBackground = styled(Frame)`
@@ -102,6 +106,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
     handleInputChange,
     handleMaxClick,
     vaultActionForm,
+    withdrawMetadata,
   } = useVaultActionForm(vaultOption);
   const { active } = useWeb3React();
   const [, setShowConnectModal] = useConnectWalletModal();
@@ -336,6 +341,10 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
           >
             <WithdrawTypeSegmentControlText
               active={vaultActionForm.withdrawOption === withdrawOption}
+              disabled={
+                withdrawOption === "standard" &&
+                !withdrawMetadata.allowStandardWithdraw
+              }
             >
               {withdrawOption}{" "}
               {renderWithdrawOptionExplanation(
