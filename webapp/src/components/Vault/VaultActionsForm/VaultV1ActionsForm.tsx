@@ -298,7 +298,8 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
    */
   useEffect(() => {
     handleActionTypeChange(ACTIONS.deposit);
-  }, [handleActionTypeChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Show token approval when needed
   useEffect(() => {
@@ -662,6 +663,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
             vaultOption={vaultOption}
             vaultAccount={vaultAccounts[vaultOption]}
             transferVaultData={{
+              vaultBalanceInAsset,
               maxWithdrawAmount,
               vaultMaxWithdrawAmount,
             }}
@@ -678,6 +680,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     showTokenApproval,
     vaultAccounts,
     vaultActionForm,
+    vaultBalanceInAsset,
     vaultMaxWithdrawAmount,
     vaultOption,
   ]);

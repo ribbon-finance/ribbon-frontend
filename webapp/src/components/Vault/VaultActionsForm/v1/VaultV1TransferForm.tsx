@@ -69,6 +69,7 @@ interface VaultV1TransferFormProps {
   vaultOption: VaultOptions;
   vaultAccount?: VaultAccount;
   transferVaultData: {
+    vaultBalanceInAsset: BigNumber;
     maxWithdrawAmount: BigNumber;
     vaultMaxWithdrawAmount: BigNumber;
   };
@@ -96,21 +97,15 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
   const isInputNonZero = parseFloat(vaultActionForm.inputAmount) > 0;
   const AssetLogo = getAssetLogo(getAssets(vaultActionForm.receiveVault!));
 
-  const availableLimit = useMemo(() => {
-    return vaultAccount
-      ? vaultAccount.totalBalance.sub(vaultAccount.totalStakedBalance)
-      : BigNumber.from(0);
-  }, [vaultAccount]);
-
   const error = useMemo(() => {
-    if (!isInputNonZero || !transferData) {
+    if (!active || !isInputNonZero || !transferData) {
       return undefined;
     }
 
     const inputBigNumber = parseUnits(vaultActionForm.inputAmount, decimals);
 
     /** Check bigger than available limit */
-    if (inputBigNumber.gt(availableLimit)) {
+    if (inputBigNumber.gt(transferVaultData.vaultBalanceInAsset)) {
       return "insufficientLimit";
     }
 
@@ -128,7 +123,7 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
 
     return undefined;
   }, [
-    availableLimit,
+    active,
     decimals,
     isInputNonZero,
     transferData,
@@ -144,8 +139,11 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
   }, [decimals, transferData]);
 
   const isZeroAvailableLimit = useMemo(() => {
-    return vaultAccount && isPracticallyZero(availableLimit, decimals);
-  }, [availableLimit, decimals, vaultAccount]);
+    return (
+      active &&
+      isPracticallyZero(transferVaultData.vaultBalanceInAsset, decimals)
+    );
+  }, [active, decimals, transferVaultData]);
 
   const renderActionButton = useCallback(
     (error: string | undefined) => {
@@ -202,7 +200,7 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
           </TransferToVaultTitle>
           <TransferToVaultCapacity
             color={
-              isZeroCapacity || error === "insufficientCapacity"
+              active && (isZeroCapacity || error === "insufficientCapacity")
                 ? colors.red
                 : undefined
             }
@@ -248,7 +246,9 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
               : undefined
           }
         >
-          {vaultAccount ? formatBigNumber(availableLimit, decimals) : "---"}{" "}
+          {active
+            ? formatBigNumber(transferVaultData.vaultBalanceInAsset, decimals)
+            : "---"}{" "}
           {assetDisplay}
         </InfoData>
       </div>
@@ -279,7 +279,8 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
 
       {/* Error message */}
       {isZeroAvailableLimit &&
-        !isPracticallyZero(vaultAccount!.totalBalance, decimals) && (
+        vaultAccount &&
+        !isPracticallyZero(vaultAccount.totalStakedBalance, decimals) && (
           <SecondaryText className="d-flex mt-3 text-center" color={colors.red}>
             You have staked all your {vaultOption} tokens. You must unstake your
             {vaultOption} tokens before you can withdraw from the vault
