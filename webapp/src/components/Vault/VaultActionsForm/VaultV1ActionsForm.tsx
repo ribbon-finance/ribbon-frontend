@@ -662,6 +662,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
             vaultOption={vaultOption}
             vaultAccount={vaultAccounts[vaultOption]}
             transferVaultData={{
+              vaultBalanceInAsset,
               maxWithdrawAmount,
               vaultMaxWithdrawAmount,
             }}
@@ -678,6 +679,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     showTokenApproval,
     vaultAccounts,
     vaultActionForm,
+    vaultBalanceInAsset,
     vaultMaxWithdrawAmount,
     vaultOption,
   ]);
