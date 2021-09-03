@@ -15,7 +15,11 @@ import theme from "shared/lib/designSystem/theme";
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import useBalances from "../../hooks/useBalances";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
+import {
+  assetToFiat,
+  formatBigNumber,
+  isPracticallyZero,
+} from "shared/lib/utils/math";
 import PerformanceChart from "../PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../PerformanceChart/types";
 import sizes from "shared/lib/designSystem/sizes";
@@ -192,6 +196,13 @@ const PortfolioPerformance = () => {
         if (vaultAccount) {
           const currentAsset = getAssets(vaultAccount.vault.symbol);
           const currentAssetDecimals = getAssetDecimals(currentAsset);
+
+          if (
+            isPracticallyZero(vaultAccount.totalDeposits, currentAssetDecimals)
+          ) {
+            return;
+          }
+
           deposit += parseFloat(
             assetToFiat(
               vaultAccount.totalDeposits,
@@ -308,6 +319,7 @@ const PortfolioPerformance = () => {
   }, [balanceUpdates, assetPrices]);
 
   const calculatedKPI = useMemo(() => {
+    console.log(balances);
     if (hoveredBalanceUpdateIndex === undefined || balances.length <= 0) {
       return {
         yield: vaultBalanceInAsset - vaultTotalDeposit,
@@ -343,11 +355,11 @@ const PortfolioPerformance = () => {
   }, [
     balances,
     hoveredBalanceUpdateIndex,
-    vaultTotalDeposit,
     vaultBalanceInAsset,
+    vaultTotalDeposit,
   ]);
 
-  const renderDepositText = useCallback(() => {
+  const renderBalanceText = useCallback(() => {
     if (!active) {
       return "---";
     }
@@ -421,7 +433,7 @@ const PortfolioPerformance = () => {
         <ColumnLabel>Balances</ColumnLabel>
         <div className="d-flex align-items-center flex-wrap">
           <KPI>
-            <DepositAmount active={active}>{renderDepositText()}</DepositAmount>
+            <DepositAmount active={active}>{renderBalanceText()}</DepositAmount>
             <DepositCurrency>{active && !loading ? "USD" : ""}</DepositCurrency>
           </KPI>
           <DateFilters>
@@ -438,7 +450,7 @@ const PortfolioPerformance = () => {
         </div>
       </DepositChartExtra>
     ),
-    [rangeFilter, renderDepositText, active, loading]
+    [rangeFilter, renderBalanceText, active, loading]
   );
 
   const processedGraphData = useMemo(() => {

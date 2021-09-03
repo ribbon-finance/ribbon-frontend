@@ -214,7 +214,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   const calculatedROI = useMemo(() => {
     const netProfit = vaultAccount.totalBalance.sub(vaultAccount.totalDeposits);
 
-    return !isPracticallyZero(vaultAccount.totalBalance, decimals)
+    return !isPracticallyZero(vaultAccount.totalDeposits, decimals)
       ? (parseFloat(ethers.utils.formatUnits(netProfit, decimals)) /
           parseFloat(
             ethers.utils.formatUnits(vaultAccount.totalDeposits, decimals)
@@ -304,7 +304,7 @@ const PortfolioPositions = () => {
           return (
             account &&
             !isPracticallyZero(
-              account.totalDeposits,
+              account.totalBalance,
               getAssetDecimals(getAssets(account.vault.symbol))
             )
           );

@@ -298,7 +298,8 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
    */
   useEffect(() => {
     handleActionTypeChange(ACTIONS.deposit);
-  }, [handleActionTypeChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Show token approval when needed
   useEffect(() => {
