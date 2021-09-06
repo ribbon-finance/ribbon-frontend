@@ -37,7 +37,7 @@ const ExplainerSection = styled.div<{ height: number }>`
   height: ${(props) => props.height}px;
 `;
 
-const VisualSection = styled(ExplainerSection)<{ color: string }>`
+const VisualMotionDiv = styled(motion.div)<{ color: string }>`
   background: linear-gradient(
     96.84deg,
     ${(props) => props.color}14 1.04%,
@@ -113,6 +113,20 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
     currentVaultExplanationStepList[0]
   );
 
+  const backgroundColor = useCallback(
+    (s: ExplanationStep) => {
+      switch (s) {
+        case "expiryA":
+          return colors.green;
+        case "expiryB":
+          return colors.red;
+        default:
+          return color;
+      }
+    },
+    [color]
+  );
+
   const renderGraphic = useCallback(
     (s: ExplanationStep) => {
       const collateralAsset = getDisplayAssets(vaultOption);
@@ -149,7 +163,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
             />
           );
         case "expiryA":
-          return <ExpiryChart color={color} higherPrice={isPut} isOTM />;
+          return <ExpiryChart higherPrice={isPut} isOTM />;
         case "settlementA":
           return (
             <TradeOffer
@@ -159,9 +173,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
             />
           );
         case "expiryB":
-          return (
-            <ExpiryChart color={color} higherPrice={!isPut} isOTM={false} />
-          );
+          return <ExpiryChart higherPrice={!isPut} isOTM={false} />;
         case "settlementB":
           return (
             <TradeOffer
@@ -573,14 +585,13 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
 
   return (
     <ExplainerContainer ref={containerRef}>
-      <VisualSection
+      <ExplainerSection
         height={
           width > sizes.lg ? (sectionWidth / 23) * 8 : (sectionWidth / 15) * 7
         }
-        color={color}
       >
         <AnimatePresence initial={false} exitBeforeEnter>
-          <motion.div
+          <VisualMotionDiv
             key={step}
             initial={{
               x: 100,
@@ -600,11 +611,12 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
               ease: "easeInOut",
             }}
             className="w-100 h-100"
+            color={backgroundColor(step)}
           >
             {renderGraphic(step)}
-          </motion.div>
+          </VisualMotionDiv>
         </AnimatePresence>
-      </VisualSection>
+      </ExplainerSection>
       {infoSection}
     </ExplainerContainer>
   );
