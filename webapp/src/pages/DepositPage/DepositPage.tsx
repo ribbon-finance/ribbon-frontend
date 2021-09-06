@@ -15,7 +15,7 @@ import PerformanceSection from "./PerformanceSection";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { formatSignificantDecimals } from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
-import YourPosition from "../../components/Vault/YourPosition";
+import OldYourPosition from "../../components/Vault/OldYourPosition";
 import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
 import {
@@ -37,6 +37,7 @@ import { isProduction } from "shared/lib/utils/env";
 import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopActionForm";
 import { Redirect } from "react-router-dom";
 import useV2VaultData from "shared/lib/hooks/useV2VaultData";
+import YourPosition from "../../components/Vault/YourPosition";
 
 const { formatUnits } = ethers.utils;
 
@@ -130,7 +131,7 @@ const DesktopActionsFormContainer = styled.div`
   }
 `;
 
-const MobilePositions = styled(YourPosition)`
+const MobilePositions = styled(OldYourPosition)`
   @media (max-width: ${sizes.md}px) {
     width: 100%;
     margin-left: 16px;
@@ -234,6 +235,8 @@ const DepositPage = () => {
         </div>
         <VaultActivity vault={{ vaultOption, vaultVersion }} />
       </DepositPageContainer>
+
+      <YourPosition vault={{ vaultOption, vaultVersion }} variant="desktop" />
     </>
   );
 };
