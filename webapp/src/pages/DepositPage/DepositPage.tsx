@@ -1,7 +1,6 @@
 import React, { ReactNode, useMemo } from "react";
 import { ethers } from "ethers";
 import styled from "styled-components";
-import { useWeb3React } from "@web3-react/core";
 
 import {
   BaseIndicator,
@@ -15,7 +14,6 @@ import PerformanceSection from "./PerformanceSection";
 import useVaultData from "shared/lib/hooks/useVaultData";
 import { formatSignificantDecimals } from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
-import OldYourPosition from "../../components/Vault/OldYourPosition";
 import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
 import {
@@ -38,6 +36,7 @@ import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopAc
 import { Redirect } from "react-router-dom";
 import useV2VaultData from "shared/lib/hooks/useV2VaultData";
 import YourPosition from "../../components/Vault/YourPosition";
+import YourPositionModal from "../../components/Vault/Modal/YourPositionModal";
 
 const { formatUnits } = ethers.utils;
 
@@ -131,23 +130,8 @@ const DesktopActionsFormContainer = styled.div`
   }
 `;
 
-const MobilePositions = styled(OldYourPosition)`
-  @media (max-width: ${sizes.md}px) {
-    width: 100%;
-    margin-left: 16px;
-    margin-right: 16px;
-    margin-top: -15px;
-    margin-bottom: 48px;
-  }
-
-  @media (min-width: ${sizes.md + 1}px) {
-    display: none !important;
-  }
-`;
-
 const DepositPage = () => {
   usePullUp();
-  const { account } = useWeb3React();
   const { vaultOption, vaultVersion } = useVaultOption();
   const { status, deposits, vaultLimit } = useVaultData(
     vaultOption || VaultList[0]
@@ -213,6 +197,7 @@ const DepositPage = () => {
 
   return (
     <>
+      <YourPositionModal vault={{ vaultOption, vaultVersion }} />
       <HeroSection
         depositCapBar={depositCapBar}
         vaultOption={vaultOption}
@@ -224,8 +209,6 @@ const DepositPage = () => {
 
       <DepositPageContainer className="py-5">
         <div className="row ">
-          {account && <MobilePositions vault={{ vaultOption, vaultVersion }} />}
-
           <PerformanceSection vault={{ vaultOption, vaultVersion }} />
 
           {/* Form for desktop */}
@@ -236,6 +219,7 @@ const DepositPage = () => {
         <VaultActivity vault={{ vaultOption, vaultVersion }} />
       </DepositPageContainer>
 
+      {/* Desktop Position Component */}
       <YourPosition vault={{ vaultOption, vaultVersion }} variant="desktop" />
     </>
   );

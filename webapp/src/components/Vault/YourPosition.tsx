@@ -20,6 +20,7 @@ import colors from "shared/lib/designSystem/colors";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
+import { useWebappGlobalState } from "../../store/store";
 
 const DesktopContainer = styled.div`
   display: flex;
@@ -66,6 +67,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
 
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
   const { vaultAccounts } = useVaultAccounts(vaultOptions, vaultVersion);
+  const [, setShowVaultPosition] = useWebappGlobalState("showVaultPosition");
 
   const roi = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
@@ -96,7 +98,11 @@ const YourPosition: React.FC<YourPositionProps> = ({
       case "desktop":
         return (
           <DesktopContainer>
-            <FloatingPositionCard color={color} role="button">
+            <FloatingPositionCard
+              color={color}
+              role="button"
+              onClick={() => setShowVaultPosition(true)}
+            >
               <AssetCircleContainer color={color} size={48}>
                 <Logo width={20} height={20} />
               </AssetCircleContainer>

@@ -22,7 +22,6 @@ import { getAssetDisplay } from "shared/lib/utils/asset";
 import { ERC20Token } from "shared/lib/models/eth";
 import theme from "shared/lib/designSystem/theme";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
-import OldYourPosition from "../OldYourPosition";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import SwapBTCDropdown from "./common/SwapBTCDropdown";
 import useVaultActivity from "../../../hooks/useVaultActivity";
@@ -853,13 +852,6 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     <Container variant={variant}>
       <FormContainer>{body}</FormContainer>
       {formExtra}
-
-      {connected && variant === "desktop" && (
-        <OldYourPosition
-          vault={{ vaultOption, vaultVersion: "v1" }}
-          className="mt-4"
-        />
-      )}
     </Container>
   );
 };
