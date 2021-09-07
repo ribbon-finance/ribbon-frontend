@@ -119,7 +119,7 @@ export const VaultAddressMap: {
   "rUSDC-ETH-P-THETA": isDevelopment()
     ? {
         v1: v1deployment.kovan.RibbonETHPut,
-        v2: v2deployment.kovan.RibbonThetaVaultETHPut,
+        v2: v1deployment.kovan.RibbonETHPut,
       }
     : {
         v1: v1deployment.mainnet.RibbonETHPut,
