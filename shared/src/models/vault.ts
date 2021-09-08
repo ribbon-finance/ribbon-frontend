@@ -69,6 +69,7 @@ export interface VaultTransaction {
   amount: BigNumber;
   underlyingAmount: BigNumber;
   fee: number;
+  vaultVersion: VaultVersion;
 }
 
 export interface BalanceUpdate {
