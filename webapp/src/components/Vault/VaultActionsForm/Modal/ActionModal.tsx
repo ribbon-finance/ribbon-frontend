@@ -190,6 +190,20 @@ const ActionModal: React.FC<ActionModalProps> = ({
   }, [isDesktop, stepData, onClose]);
 
   const renderModalHeader = useCallback(() => {
+    if (
+      vaultActionForm.actionType === ACTIONS.migrate ||
+      (vaultActionForm.vaultVersion === "v2" &&
+        vaultActionForm.actionType === "withdraw" &&
+        vaultActionForm.withdrawOption === "standard" &&
+        stepData.stepNum === STEPS.previewStep)
+    ) {
+      return (
+        <InvisibleModalHeader className="position-relative d-flex align-items-center justify-content-center">
+          {renderModalCloseButton()}
+        </InvisibleModalHeader>
+      );
+    }
+
     if (stepData.title !== "") {
       return (
         <ModalHeaderWithBackground className="position-relative d-flex align-items-center justify-content-center">
@@ -198,15 +212,12 @@ const ActionModal: React.FC<ActionModalProps> = ({
         </ModalHeaderWithBackground>
       );
     }
-
-    if (vaultActionForm.actionType === ACTIONS.migrate) {
-      return (
-        <InvisibleModalHeader className="position-relative d-flex align-items-center justify-content-center">
-          {renderModalCloseButton()}
-        </InvisibleModalHeader>
-      );
-    }
-  }, [renderModalCloseButton, stepData.title, vaultActionForm.actionType]);
+  }, [
+    renderModalCloseButton,
+    stepData.title,
+    stepData.stepNum,
+    vaultActionForm,
+  ]);
 
   return (
     <div>

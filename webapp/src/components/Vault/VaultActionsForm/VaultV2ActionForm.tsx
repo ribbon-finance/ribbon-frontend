@@ -105,19 +105,15 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
           );
           break;
         case ACTIONS.withdraw:
-          switch (vaultActionForm.withdrawOption) {
-            case "instant":
-              if (!isPracticallyZero(depositBalanceInAsset, decimals)) {
-                formExtraText = (
-                  <>
-                    You can withdraw your{" "}
-                    {formatBigNumber(depositBalanceInAsset, decimals)}{" "}
-                    {getAssetDisplay(asset)} instantly because these funds have
-                    not yet been deployed in the vault’s strategy
-                  </>
-                );
-              }
-              break;
+          if (!isPracticallyZero(depositBalanceInAsset, decimals)) {
+            formExtraText = (
+              <>
+                You can withdraw your{" "}
+                {formatBigNumber(depositBalanceInAsset, decimals)}{" "}
+                {getAssetDisplay(asset)} instantly because these funds have not
+                yet been deployed in the vault’s strategy
+              </>
+            );
           }
           break;
         case ACTIONS.transfer:
@@ -151,7 +147,6 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
     vaultActionForm.actionType,
     vaultActionForm.receiveVault,
     vaultActionForm.vaultOption,
-    vaultActionForm.withdrawOption,
   ]);
 
   return (

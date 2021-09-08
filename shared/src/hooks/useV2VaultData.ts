@@ -91,17 +91,33 @@ const useV2VaultData: UseVaultData = (
         _depositReceipts,
         accountVaultBalance,
         userAssetBalance,
-        withdrawals,
+        _withdrawals,
       ] = await Promise.all(
         // Default to 0 when error
         promises.map((p) => p.catch((e) => BigNumber.from(0)))
       );
 
-      const vaultState = _vaultState as { round: number };
-      const depositReceipts = _depositReceipts as {
+      const vaultState = (
+        (_vaultState as { round?: number }).round ? _vaultState : { round: 1 }
+      ) as { round: number };
+      const depositReceipts = (
+        (
+          _depositReceipts as {
+            amount: BigNumber;
+            round: number;
+          }
+        ).amount
+          ? _depositReceipts
+          : { amount: BigNumber.from(0), round: 1 }
+      ) as {
         amount: BigNumber;
         round: number;
       };
+      const withdrawals = (
+        (_withdrawals as { share: BigNumber; round: number }).round
+          ? _withdrawals
+          : { shares: BigNumber.from(0), round: 1 }
+      ) as { share: BigNumber; round: number };
 
       setResponse((prevResponse) => ({
         ...prevResponse,

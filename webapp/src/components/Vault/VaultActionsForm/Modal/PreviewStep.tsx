@@ -9,6 +9,7 @@ import { formatBigNumber } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
 import {
+  isPutVault,
   VaultOptions,
   VaultWithdrawalFee,
 } from "shared/lib/constants/constants";
@@ -17,8 +18,9 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import { useLatestAPY } from "shared/lib/hooks/useAirtableData";
 import { capitalize } from "shared/lib/utils/text";
 import { MigrateIcon } from "shared/lib/assets/icons/icons";
+import moment from "moment";
 
-const MigrateLogoContainer = styled.div<{ color: string }>`
+const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -157,9 +159,9 @@ const PreviewStep: React.FC<{
           className="d-flex flex-column align-items-center"
         >
           {/* Logo */}
-          <MigrateLogoContainer color={color}>
+          <ActionLogoContainer color={color}>
             <MigrateIcon color={color} />
-          </MigrateLogoContainer>
+          </ActionLogoContainer>
 
           {/* Title */}
           <FormTitle className="mt-3">MIRGATE PREVIEW</FormTitle>
@@ -197,7 +199,63 @@ const PreviewStep: React.FC<{
     // @ts-ignore
     case ACTIONS.withdraw:
       if (withdrawOption === "standard") {
-        return <></>;
+        const withdrawTime = moment()
+          .isoWeekday("friday")
+          .utc()
+          .set("hour", 10)
+          .set("minute", 0)
+          .set("second", 0)
+          .set("millisecond", 0);
+
+        return (
+          <div className="d-flex flex-column align-items-center">
+            {/* Logo */}
+            <ActionLogoContainer color={color}>
+              <MigrateIcon color={color} />
+            </ActionLogoContainer>
+
+            {/* Title */}
+            <FormTitle className="mt-3 text-center">
+              WITHDRAWAL INITIATION PREVIEW
+            </FormTitle>
+
+            {/* Info Preview */}
+            <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+              <SecondaryText>Withdraw Amount</SecondaryText>
+              <Title className="text-right">
+                {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
+                {getAssetDisplay(asset)}
+              </Title>
+            </div>
+            <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+              <SecondaryText>Product</SecondaryText>
+              <Title className="text-right">
+                {productCopies[vaultOption].title}
+              </Title>
+            </div>
+            <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+              <SecondaryText>Product</SecondaryText>
+              <Title className="text-right">
+                {productCopies[vaultOption].title}
+              </Title>
+            </div>
+            <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+              <SecondaryText>Withdraw Date</SecondaryText>
+              <Title className="d-flex align-items-center text-right">
+                {withdrawTime.format("MMM DD, YYYY")}
+              </Title>
+            </div>
+
+            {/* Migrate Button */}
+            <ActionButton
+              onClick={onClickConfirmButton}
+              className="btn py-3 mt-4 mb-4"
+              color={color}
+            >
+              CONFIRM WITHDRAW Initiation
+            </ActionButton>
+          </div>
+        );
       }
     // eslint-disable-next-line no-fallthrough
     default:

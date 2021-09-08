@@ -47,10 +47,30 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const v2Vault = useV2Vault(vaultOption);
   const [pendingTransactions, setPendingTransactions] =
     usePendingTransactions();
-  const { vaultBalanceInAsset } = useVaultData(vaultOption);
+  const { vaultBalanceInAsset: v1VaultBalanceInAsset } =
+    useVaultData(vaultOption);
   const {
-    data: { pricePerShare, decimals },
+    data: {
+      pricePerShare,
+      decimals,
+      lockedBalanceInAsset,
+      depositBalanceInAsset,
+    },
   } = useV2VaultData(vaultOption);
+
+  const vaultBalanceInAsset = useMemo(() => {
+    switch (vaultVersion) {
+      case "v1":
+        return v1VaultBalanceInAsset;
+      case "v2":
+        return lockedBalanceInAsset.add(depositBalanceInAsset);
+    }
+  }, [
+    depositBalanceInAsset,
+    lockedBalanceInAsset,
+    v1VaultBalanceInAsset,
+    vaultVersion,
+  ]);
 
   // We need to pre-fetch the number of shares that the user wants to withdraw
   const { vaultActionForm, resetActionForm } = useVaultActionForm(vaultOption);
