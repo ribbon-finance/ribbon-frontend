@@ -21,6 +21,7 @@ import useVaultData from "shared/lib/hooks/useVaultData";
 import { capitalize } from "shared/lib/utils/text";
 import useV2Vault from "shared/lib/hooks/useV2Vault";
 import useV2VaultData from "shared/lib/hooks/useV2VaultData";
+import WarningStep from "./WarningStep";
 
 export interface ActionStepsProps {
   vault: {
@@ -40,7 +41,27 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   onChangeStep,
   skipToPreview = false,
 }) => {
-  const firstStep = skipToPreview ? STEPS.previewStep : STEPS.formStep;
+  const { vaultActionForm, resetActionForm, withdrawMetadata } =
+    useVaultActionForm(vaultOption);
+
+  const firstStep = useMemo(() => {
+    if (
+      vaultActionForm.actionType === ACTIONS.withdraw &&
+      vaultActionForm.vaultVersion === "v2" &&
+      vaultActionForm.withdrawOption === "standard" &&
+      !withdrawMetadata.instantWithdrawBalance?.isZero()
+    ) {
+      return STEPS.warningStep;
+    }
+
+    return skipToPreview ? STEPS.previewStep : STEPS.formStep;
+  }, [
+    skipToPreview,
+    vaultActionForm.actionType,
+    vaultActionForm.vaultVersion,
+    vaultActionForm.withdrawOption,
+    withdrawMetadata.instantWithdrawBalance,
+  ]);
   const [step, setStep] = useState<Steps>(firstStep);
   const [txhash, setTxhash] = useState("");
   const v1Vault = useVault(vaultOption);
@@ -73,8 +94,6 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   ]);
 
   // We need to pre-fetch the number of shares that the user wants to withdraw
-  const { vaultActionForm, resetActionForm } = useVaultActionForm(vaultOption);
-
   const actionWord = capitalize(vaultActionForm.actionType);
 
   const cleanupEffects = useCallback(() => {
@@ -99,10 +118,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   // Whenever the `show` variable is toggled, we need to reset the step back to 0
   useEffect(() => {
     return () => {
-      // small timeout so it doesn't flicker
-      setTimeout(() => {
-        setStep(firstStep);
-      }, 500);
+      setStep(firstStep);
     };
   }, [show, firstStep, setStep]);
 
@@ -235,6 +251,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   useEffect(() => {
     const titles = {
+      [STEPS.warningStep]: "",
       [STEPS.formStep]: "",
       [STEPS.previewStep]:
         vaultActionForm.actionType === "migrate" ? "" : `${actionWord} Preview`,
@@ -249,6 +266,16 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   }, [actionWord, onChangeStep, step, vaultActionForm.actionType]);
 
   const stepComponents = {
+    [-1]: (
+      <WarningStep
+        actionType={vaultActionForm.actionType}
+        withdrawOption={vaultActionForm.withdrawOption}
+        vaultOption={vaultOption}
+        vaultVersion={vaultActionForm.vaultVersion}
+        withdrawMetadata={withdrawMetadata}
+        onFormSubmit={() => setStep(STEPS.previewStep)}
+      />
+    ),
     0: !skipToPreview && (
       <FormStep
         vaultVersion={vaultVersion}

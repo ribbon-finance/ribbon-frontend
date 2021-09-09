@@ -28,6 +28,11 @@ export type VaultActionFormTransferData =
     }
   | undefined;
 
+export type WithdrawMetadata = {
+  allowStandardWithdraw?: boolean;
+  instantWithdrawBalance?: BigNumber;
+};
+
 const useVaultActionForm = (vaultOption: VaultOptions) => {
   const [vaultActionForm, setVaultActionForm] =
     useWebappGlobalState("vaultActionForm");
@@ -115,7 +120,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     vaultActionForm.actionType,
   ]);
 
-  const withdrawMetadata = useMemo(() => {
+  const withdrawMetadata = useMemo((): WithdrawMetadata => {
     switch (vaultActionForm.vaultVersion) {
       case "v2":
         return {

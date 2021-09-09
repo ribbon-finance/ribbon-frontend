@@ -52,6 +52,7 @@ const ModalBody = styled.div<ModalBodyProps>`
   max-width: 450px;
   min-height: ${(props) => {
     switch (props.steps.stepNum) {
+      case STEPS.warningStep:
       case STEPS.confirmationStep:
       case STEPS.submittedStep:
         return "unset";
@@ -64,8 +65,8 @@ const ModalBody = styled.div<ModalBodyProps>`
     props.variant === "mobile" &&
     props.isFormStep &&
     `
-  background: none;
-  border: none;
+      background: none;
+      border: none;
   `}
 
   @media (max-width: ${sizes.md}px) {
@@ -199,6 +200,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
   const renderModalHeader = useCallback(() => {
     if (
       vaultActionForm.actionType === ACTIONS.migrate ||
+      stepData.stepNum === STEPS.warningStep ||
       (vaultActionForm.vaultVersion === "v2" &&
         vaultActionForm.actionType === "withdraw" &&
         vaultActionForm.withdrawOption === "standard" &&
