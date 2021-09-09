@@ -121,11 +121,13 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
         return {
           allowStandardWithdraw:
             !v2LockedBalanceInAsset.isZero() || !v2Withdrawals.shares.isZero(),
+          instantWithdrawBalance: v2DepositBalanceInAsset,
         };
     }
 
     return {};
   }, [
+    v2DepositBalanceInAsset,
     v2LockedBalanceInAsset,
     v2Withdrawals.shares,
     vaultActionForm.vaultVersion,

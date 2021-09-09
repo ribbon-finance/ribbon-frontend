@@ -2,14 +2,21 @@ import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import colors from "shared/lib/designSystem/colors";
-import { Title } from "shared/lib/designSystem";
+import { SecondaryText, Title } from "shared/lib/designSystem";
 import ActionSteps from "./ActionSteps";
 import { ACTIONS, StepData, STEPS } from "./types";
 import sizes from "shared/lib/designSystem/sizes";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
-import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
+import {
+  getAssets,
+  VaultOptions,
+  VaultVersion,
+} from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
+import ModalContentExtra from "shared/lib/components/Common/ModalContentExtra";
+import { getVaultColor } from "shared/lib/utils/vault";
+import { getAssetDisplay } from "shared/lib/utils/asset";
 
 const ModalNavigation = styled.div`
   position: absolute;
@@ -219,6 +226,36 @@ const ActionModal: React.FC<ActionModalProps> = ({
     vaultActionForm,
   ]);
 
+  const renderModalExtra = useCallback(() => {
+    // When user attempt to perform standard withdraw on V2 but has balance that allow instant withdraw
+    if (
+      vaultActionForm.actionType === ACTIONS.withdraw &&
+      vaultActionForm.vaultVersion === "v2" &&
+      vaultActionForm.withdrawOption === "standard" &&
+      stepData.stepNum === STEPS.previewStep
+    ) {
+      return (
+        <ModalContentExtra config={{ mx: 0 }}>
+          <SecondaryText
+            color={getVaultColor(vaultActionForm.vaultOption!)}
+            className="text-center"
+          >
+            On Friday at 10am UTC your{" "}
+            {getAssetDisplay(getAssets(vaultActionForm.vaultOption!))} will be
+            removed from the vault’s investable pool of funds and you can
+            complete your withdrawal
+          </SecondaryText>
+        </ModalContentExtra>
+      );
+    }
+  }, [
+    stepData.stepNum,
+    vaultActionForm.actionType,
+    vaultActionForm.vaultOption,
+    vaultActionForm.vaultVersion,
+    vaultActionForm.withdrawOption,
+  ]);
+
   return (
     <div>
       <MobileOverlayMenu
@@ -255,6 +292,8 @@ const ActionModal: React.FC<ActionModalProps> = ({
               />
             </StepsContainer>
           </ModalContent>
+
+          {renderModalExtra()}
         </ModalBody>
       </MobileOverlayMenu>
     </div>

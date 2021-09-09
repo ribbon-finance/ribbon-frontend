@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
 import { BigNumber } from "ethers";
+import moment from "moment";
 
 import { Subtitle, SecondaryText, Title } from "shared/lib/designSystem";
 import { ActionButton } from "shared/lib/components/Common/buttons";
@@ -18,7 +19,6 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import { useLatestAPY } from "shared/lib/hooks/useAirtableData";
 import { capitalize } from "shared/lib/utils/text";
 import { MigrateIcon } from "shared/lib/assets/icons/icons";
-import moment from "moment";
 
 const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -234,9 +234,9 @@ const PreviewStep: React.FC<{
               </Title>
             </div>
             <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
-              <SecondaryText>Product</SecondaryText>
+              <SecondaryText>Strategy</SecondaryText>
               <Title className="text-right">
-                {productCopies[vaultOption].title}
+                {isPutVault(vaultOption) ? "PUT SELLING" : "COVERED CALL"}
               </Title>
             </div>
             <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
@@ -249,7 +249,7 @@ const PreviewStep: React.FC<{
             {/* Migrate Button */}
             <ActionButton
               onClick={onClickConfirmButton}
-              className="btn py-3 mt-4 mb-4"
+              className="btn py-3 mt-4 mb-3"
               color={color}
             >
               CONFIRM WITHDRAW Initiation
