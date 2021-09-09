@@ -30,7 +30,7 @@ const ExtraContainer = styled.div<{
     props.backgroundColor ? props.backgroundColor : colors.backgroundLighter};
   border-radius: ${theme.border.radius};
   margin: -16px ${(props) => props.config?.mx ?? "-16"}px
-    ${(props) => props.config?.my ?? "0"}px
+    ${(props) => props.config?.my ?? "-16"}px
     ${(props) => props.config?.mx ?? "-16"}px;
   padding: 16px;
   padding-top: 32px;
