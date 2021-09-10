@@ -32,6 +32,7 @@ import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "../../../Common/HelpInfo";
+import AssetCircleContainer from "../../../Common/AssetCircleContainer";
 
 const WithdrawTypeSegmentControlContainer = styled.div`
   display: flex;
@@ -72,6 +73,19 @@ const InfoData = styled(Title)`
   margin-left: auto;
 `;
 
+const FormFooterButton = styled.div`
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-radius: 100px;
+  padding: 10px 16px;
+`;
+
+const WithdrawButtonLogo = styled.div<{ color: string }>`
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  background: ${(props) => props.color};
+`;
+
 interface VaultV2WithdrawFormProps {
   vaultOption: VaultOptions;
   error?: VaultValidationErrors;
@@ -79,6 +93,12 @@ interface VaultV2WithdrawFormProps {
   depositBalanceInAsset: BigNumber;
   lockedBalanceInAsset: BigNumber;
   initiatedWithdrawAmount: BigNumber;
+  withdrawals: {
+    shares: BigNumber;
+    amount: BigNumber;
+    round: number;
+  };
+  currentRound: number;
 }
 
 const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
@@ -88,6 +108,8 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
   depositBalanceInAsset,
   lockedBalanceInAsset,
   initiatedWithdrawAmount,
+  withdrawals,
+  currentRound,
 }) => {
   const asset = getAssets(vaultOption);
   const assetDisplay = getAssetDisplay(asset);
@@ -313,6 +335,28 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
     vaultActionForm,
   ]);
 
+  const formFooter = useMemo(() => {
+    if (
+      vaultActionForm.withdrawOption === "standard" &&
+      !withdrawals.amount.isZero() &&
+      withdrawals.round !== currentRound
+    ) {
+      return (
+        <FormFooterButton
+          className="d-flex align-items-center justify-content-center mt-4 mx-3"
+          role="button"
+        >
+          <AssetCircleContainer size={24} color={color}>
+            <WithdrawButtonLogo color={color} />
+          </AssetCircleContainer>
+          <SecondaryText className="ml-1" color={colors.primaryText}>
+            Complete your initiated withdrawals
+          </SecondaryText>
+        </FormFooterButton>
+      );
+    }
+  }, [color, currentRound, vaultActionForm.withdrawOption, withdrawals]);
+
   return (
     <>
       {/* Segment Control */}
@@ -381,6 +425,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
       )}
       {formExtraInfo}
       {renderButton()}
+      {formFooter}
     </>
   );
 };

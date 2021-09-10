@@ -114,10 +114,10 @@ const useV2VaultData: UseVaultData = (
         round: number;
       };
       const withdrawals = (
-        (_withdrawals as { share: BigNumber; round: number }).round
+        (_withdrawals as { shares: BigNumber; round: number }).round
           ? _withdrawals
           : { shares: BigNumber.from(0), round: 1 }
-      ) as { share: BigNumber; round: number };
+      ) as { shares: BigNumber; round: number };
 
       setResponse((prevResponse) => ({
         ...prevResponse,
@@ -133,7 +133,12 @@ const useV2VaultData: UseVaultData = (
               ? depositReceipts.amount
               : BigNumber.from(0),
           userAssetBalance,
-          withdrawals,
+          withdrawals: {
+            ...withdrawals,
+            amount: withdrawals.shares
+              .mul(pricePerShare as BigNumber)
+              .div(BigNumber.from(10).pow(prevResponse[vault].decimals)),
+          },
         },
       }));
 

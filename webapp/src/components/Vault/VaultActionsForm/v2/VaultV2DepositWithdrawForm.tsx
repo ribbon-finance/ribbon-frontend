@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { parseUnits } from "@ethersproject/units";
-import { BigNumber } from "ethers";
 
 import colors from "shared/lib/designSystem/colors";
 import {
@@ -120,9 +119,9 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       asset,
       cap,
       decimals,
-      pricePerShare,
       depositBalanceInAsset,
       lockedBalanceInAsset,
+      round,
       totalBalance,
       userAssetBalance,
       withdrawals,
@@ -273,23 +272,22 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
             onFormSubmit={onFormSubmit}
             depositBalanceInAsset={depositBalanceInAsset}
             lockedBalanceInAsset={lockedBalanceInAsset}
-            initiatedWithdrawAmount={withdrawals.shares
-              .mul(pricePerShare)
-              .div(BigNumber.from(10).pow(decimals))}
+            initiatedWithdrawAmount={withdrawals.amount}
+            withdrawals={withdrawals}
+            currentRound={round}
           />
         );
     }
   }, [
-    decimals,
     depositBalanceInAsset,
     error,
     lockedBalanceInAsset,
     onFormSubmit,
-    pricePerShare,
+    round,
     showTokenApproval,
     vaultActionForm.actionType,
     vaultOption,
-    withdrawals.shares,
+    withdrawals,
   ]);
 
   const formInfoText = useMemo(() => {

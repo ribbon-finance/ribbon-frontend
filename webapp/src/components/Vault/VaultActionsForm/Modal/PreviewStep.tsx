@@ -207,6 +207,10 @@ const PreviewStep: React.FC<{
           .set("second", 0)
           .set("millisecond", 0);
 
+        if (withdrawTime.isBefore(moment())) {
+          withdrawTime.add(1, "week");
+        }
+
         return (
           <div className="d-flex flex-column align-items-center">
             {/* Logo */}
