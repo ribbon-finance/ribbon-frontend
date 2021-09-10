@@ -203,7 +203,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
       stepData.stepNum === STEPS.warningStep ||
       (vaultActionForm.vaultVersion === "v2" &&
         vaultActionForm.actionType === "withdraw" &&
-        vaultActionForm.withdrawOption === "standard" &&
+        vaultActionForm.withdrawOption !== "instant" &&
         stepData.stepNum === STEPS.previewStep)
     ) {
       return (

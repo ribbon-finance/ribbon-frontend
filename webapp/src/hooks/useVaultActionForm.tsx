@@ -332,6 +332,11 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
                     ...actionForm,
                     inputAmount: formatUnits(v2DepositBalanceInAsset, decimals),
                   };
+                case "complete":
+                  return {
+                    ...actionForm,
+                    inputAmount: formatUnits(v2Withdrawals.amount, decimals),
+                  };
                 case "standard":
                 default:
                   return {
@@ -356,6 +361,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     v2LockedBalanceInAsset,
     v2TotalBalance,
     v2VaultBalanceInAsset,
+    v2Withdrawals,
     vaultBalanceInAsset,
     vaultLimit,
     vaultMaxDepositAmount,

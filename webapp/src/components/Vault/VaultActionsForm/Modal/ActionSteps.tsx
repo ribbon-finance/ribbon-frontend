@@ -190,6 +190,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                       .div(pricePerShare);
                     res = await vault.initiateWithdraw(shares);
                     break;
+                  case "complete":
+                    res = await vault.completeWithdraw();
+                    break;
                 }
                 break;
             }
