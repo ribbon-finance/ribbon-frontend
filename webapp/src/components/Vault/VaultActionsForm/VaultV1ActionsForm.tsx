@@ -10,7 +10,7 @@ import {
   SecondaryText,
   Title,
 } from "shared/lib/designSystem";
-import { formatBigNumber } from "shared/lib/utils/math";
+import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import {
   VaultAddressMap,
   VaultMaxDeposit,
@@ -722,12 +722,44 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
   }, [handleActionTypeChange, handleMaxClick, onFormSubmit]);
 
   const body = useMemo(() => {
+    /**
+     * Disabled Vault form body
+     */
     if (!isLoadingData && vaultLimit.isZero()) {
       const vaultAccount = vaultAccounts[vaultOption];
       const balanceToMigrate = vaultAccount
         ? vaultAccount.totalBalance
         : BigNumber.from(0);
 
+      /**
+       * If user has no remaining position
+       */
+      if (isPracticallyZero(balanceToMigrate, decimals)) {
+        return (
+          <div className="d-flex flex-column align-items-center p-4">
+            <MigrateLogoContainer color={color} className="mt-3">
+              <MigrateIcon color={color} />
+            </MigrateLogoContainer>
+
+            <MigrationTitle className="mt-3">V1 VAULT INACTIVE</MigrationTitle>
+
+            <MigrationDescription className="mx-3 mt-2 text-center">
+              V1 vaults are now inactive and do not accept deposits
+            </MigrationDescription>
+
+            {/* Migrate button */}
+            <BaseLink to={getVaultURI(vaultOption, "v2")} className="w-100">
+              <ActionButton color={color} className="py-3 mt-4">
+                SWITCH TO V2
+              </ActionButton>
+            </BaseLink>
+          </div>
+        );
+      }
+
+      /**
+       * If user has remaining position
+       */
       return (
         <div className="d-flex flex-column align-items-center p-4">
           <MigrateLogoContainer color={color} className="mt-3">
@@ -762,6 +794,9 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
       );
     }
 
+    /**
+     * Form body
+     */
     return (
       <>
         <FormTitleContainer className="d-flex flex-row align-items-center">
@@ -824,7 +859,16 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
   ]);
 
   const formExtra = useMemo(() => {
-    if (!isLoadingData && vaultLimit.isZero()) {
+    const vaultAccount = vaultAccounts[vaultOption];
+    const balanceToMigrate = vaultAccount
+      ? vaultAccount.totalBalance
+      : BigNumber.from(0);
+
+    if (
+      !isLoadingData &&
+      vaultLimit.isZero() &&
+      !isPracticallyZero(balanceToMigrate, decimals)
+    ) {
       return (
         <FormContainerExtra variant={variant}>
           <FormContainerExtraText color={color}>
@@ -846,7 +890,16 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
           </FormContainerExtra>
         );
     }
-  }, [color, isLoadingData, variant, vaultLimit, vaultActionForm.actionType]);
+  }, [
+    color,
+    decimals,
+    isLoadingData,
+    variant,
+    vaultAccounts,
+    vaultOption,
+    vaultLimit,
+    vaultActionForm.actionType,
+  ]);
 
   return (
     <Container variant={variant}>

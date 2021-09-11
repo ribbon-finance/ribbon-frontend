@@ -76,6 +76,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       decimals,
       lockedBalanceInAsset,
       depositBalanceInAsset,
+      withdrawals,
     },
   } = useV2VaultData(vaultOption);
 
@@ -84,13 +85,16 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       case "v1":
         return v1VaultBalanceInAsset;
       case "v2":
-        return lockedBalanceInAsset.add(depositBalanceInAsset);
+        return lockedBalanceInAsset
+          .add(depositBalanceInAsset)
+          .add(withdrawals.amount);
     }
   }, [
     depositBalanceInAsset,
     lockedBalanceInAsset,
     v1VaultBalanceInAsset,
     vaultVersion,
+    withdrawals,
   ]);
 
   // We need to pre-fetch the number of shares that the user wants to withdraw

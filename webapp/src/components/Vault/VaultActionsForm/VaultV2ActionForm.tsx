@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "styled-components";
 
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
@@ -47,11 +47,12 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
   const {
     data: { asset, decimals, depositBalanceInAsset },
   } = useV2VaultData(vaultOption, { poll: true });
+  const [hideMigrationForm, setHideMigrationForm] = useState(false);
 
   const color = getVaultColor(vaultOption);
   const { vaultActionForm } = useVaultActionForm(vaultOption);
 
-  const showMigrationForm = useMemo(
+  const canMigrate = useMemo(
     () =>
       Boolean(
         v1VaultAccounts[vaultOption] &&
@@ -67,12 +68,13 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
     /**
      * Show migration form if user has balance in v1
      */
-    if (showMigrationForm) {
+    if (canMigrate && !hideMigrationForm) {
       return (
         <VaultV2MigrationForm
           vaultOption={vaultOption}
           vaultAccount={v1VaultAccounts[vaultOption]!}
           onFormSubmit={onFormSubmit}
+          onHideForm={() => setHideMigrationForm(true)}
         />
       );
     }
@@ -83,12 +85,18 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
         onFormSubmit={onFormSubmit}
       />
     );
-  }, [onFormSubmit, showMigrationForm, v1VaultAccounts, vaultOption]);
+  }, [
+    onFormSubmit,
+    canMigrate,
+    hideMigrationForm,
+    v1VaultAccounts,
+    vaultOption,
+  ]);
 
   const formExtra = useMemo(() => {
     let formExtraText: JSX.Element | undefined = undefined;
 
-    if (showMigrationForm) {
+    if (canMigrate && !hideMigrationForm) {
       formExtraText = (
         <>
           IMPORTANT: Withdrawal fees do not apply for migrations from V1 to V2
@@ -143,7 +151,8 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
     color,
     decimals,
     depositBalanceInAsset,
-    showMigrationForm,
+    canMigrate,
+    hideMigrationForm,
     vaultActionForm.actionType,
     vaultActionForm.receiveVault,
     vaultActionForm.vaultOption,

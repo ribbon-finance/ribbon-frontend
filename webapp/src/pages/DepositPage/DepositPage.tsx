@@ -12,7 +12,10 @@ import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import PerformanceSection from "./PerformanceSection";
 import useVaultData from "shared/lib/hooks/useVaultData";
-import { formatSignificantDecimals } from "shared/lib/utils/math";
+import {
+  formatSignificantDecimals,
+  isPracticallyZero,
+} from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
 import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
@@ -209,7 +212,14 @@ const DepositPage = () => {
 
       <DepositPageContainer className="py-5">
         <div className="row ">
-          <PerformanceSection vault={{ vaultOption, vaultVersion }} />
+          <PerformanceSection
+            vault={{ vaultOption, vaultVersion }}
+            active={
+              !(
+                vaultVersion === "v1" && isPracticallyZero(vaultLimit, decimals)
+              )
+            }
+          />
 
           {/* Form for desktop */}
           <DesktopActionsFormContainer className="flex-column col-xl-5 offset-xl-1 col-md-6">

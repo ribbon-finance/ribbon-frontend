@@ -28,6 +28,10 @@ import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
 import { BigNumber } from "ethers";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "../../Common/HelpInfo";
+import CapBar from "shared/lib/components/Deposit/CapBar";
+import useStakingPoolData from "../../../hooks/useStakingPoolData";
 
 const PositionData = styled(Title)`
   font-size: 40px;
@@ -39,6 +43,15 @@ const ModalContent = styled(motion.div)`
   flex-direction: column;
   height: 100%;
   width: 100%;
+`;
+
+const InfoLabel = styled(SecondaryText)`
+  line-height: 16px;
+`;
+
+const InfoData = styled(Title)`
+  font-size: 14px;
+  line-height: 16px;
 `;
 
 interface YourPositionModalProps {
@@ -61,6 +74,7 @@ const YourPositionModal: React.FC<YourPositionModalProps> = ({
 
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
   const { vaultAccounts } = useVaultAccounts(vaultOptions, vaultVersion);
+  const { data: stakingPoolData } = useStakingPoolData(vaultOption);
 
   const [show, setShow] = useWebappGlobalState("showVaultPosition");
   const [mode, setMode] = useState<ModeType>(ModeList[0]);
@@ -141,9 +155,18 @@ const YourPositionModal: React.FC<YourPositionModalProps> = ({
 
             {/* Secondary Info */}
             <BaseModalContentColumn>
-              <div className="d-flex w-100 align-items-center justify-content-between">
-                <SecondaryText>Invested in Strategy</SecondaryText>
-                <Title>
+              <div className="d-flex w-100 align-items-center ">
+                <SecondaryText>Invested</SecondaryText>
+                <TooltipExplanation
+                  title="INVESTED"
+                  explanation="The amount that is currently invested in the vault's strategy."
+                  renderContent={({ ref, ...triggerHandler }) => (
+                    <HelpInfo containerRef={ref} {...triggerHandler}>
+                      i
+                    </HelpInfo>
+                  )}
+                />
+                <Title className="ml-auto">
                   {formatBigNumber(investedInStrategy, decimals)}{" "}
                   {getAssetDisplay(asset)}
                 </Title>
@@ -151,9 +174,18 @@ const YourPositionModal: React.FC<YourPositionModalProps> = ({
             </BaseModalContentColumn>
             {queuedAmount && (
               <BaseModalContentColumn>
-                <div className="d-flex w-100 align-items-center justify-content-between">
+                <div className="d-flex w-100 align-items-center ">
                   <SecondaryText>Queued</SecondaryText>
-                  <Title>
+                  <TooltipExplanation
+                    title="QUEUED"
+                    explanation="The amount that has been queued for investment in the vault's strategy. Queued funds will automatically be invested in the vault's next weekly strategy on Friday at 11am UTC."
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HelpInfo containerRef={ref} {...triggerHandler}>
+                        i
+                      </HelpInfo>
+                    )}
+                  />
+                  <Title className="ml-auto">
                     {formatBigNumber(queuedAmount, decimals)}{" "}
                     {getAssetDisplay(asset)}
                   </Title>
@@ -161,9 +193,9 @@ const YourPositionModal: React.FC<YourPositionModalProps> = ({
               </BaseModalContentColumn>
             )}
             <BaseModalContentColumn>
-              <div className="d-flex w-100 align-items-center justify-content-between">
+              <div className="d-flex w-100 align-items-center ">
                 <SecondaryText>Yield Earned</SecondaryText>
-                <Title>
+                <Title className="ml-auto">
                   {formatBigNumber(yieldEarned, decimals)}{" "}
                   {getAssetDisplay(asset)}
                 </Title>
@@ -172,7 +204,56 @@ const YourPositionModal: React.FC<YourPositionModalProps> = ({
           </>
         );
       case "staking":
-        return <></>;
+        return (
+          <>
+            {/* Logo */}
+            <BaseModalContentColumn className="mb-4">
+              <AssetCircleContainer size={96} color={color}>
+                <Logo width={48} height={48} />
+              </AssetCircleContainer>
+            </BaseModalContentColumn>
+
+            <CapBar
+              loading={false}
+              current={parseFloat(
+                formatUnits(vaultAccount.totalStakedBalance, decimals)
+              )}
+              cap={parseFloat(formatUnits(vaultAccount.totalBalance, decimals))}
+              copies={{
+                current: "Staked",
+                cap: "Position",
+              }}
+              labelConfig={{
+                fontSize: 14,
+              }}
+              statsConfig={{
+                fontSize: 14,
+              }}
+              barConfig={{
+                height: 4,
+                extraClassNames: "my-3",
+                radius: 2,
+              }}
+              asset={asset}
+            />
+
+            <BaseModalContentColumn>
+              <div className="d-flex w-100 align-items-center ">
+                <InfoLabel>RBN Earned</InfoLabel>
+                <InfoData className="ml-auto" color={colors.products.yield}>
+                  {formatBigNumber(
+                    vaultVersion === "v1"
+                      ? stakingPoolData.claimableRbn
+                      : BigNumber.from(0),
+                    18,
+                    2
+                  )}{" "}
+                  RBN
+                </InfoData>
+              </div>
+            </BaseModalContentColumn>
+          </>
+        );
     }
   }, [
     Logo,
@@ -183,7 +264,9 @@ const YourPositionModal: React.FC<YourPositionModalProps> = ({
     mode,
     queuedAmount,
     roi,
+    stakingPoolData.claimableRbn,
     vaultAccount,
+    vaultVersion,
     yieldEarned,
   ]);
 
