@@ -21,7 +21,9 @@ import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
 import {
   getDisplayAssets,
+  getEtherscanURI,
   hasVaultVersion,
+  VaultAddressMap,
   VaultList,
   VaultOptions,
   VaultVersion,
@@ -40,6 +42,8 @@ import { Redirect } from "react-router-dom";
 import useV2VaultData from "shared/lib/hooks/useV2VaultData";
 import YourPosition from "../../components/Vault/YourPosition";
 import YourPositionModal from "../../components/Vault/Modal/YourPositionModal";
+import { truncateAddress } from "shared/lib/utils/address";
+import { ExternalIcon } from "shared/lib/assets/icons/icons";
 
 const { formatUnits } = ethers.utils;
 
@@ -133,6 +137,23 @@ const DesktopActionsFormContainer = styled.div`
   }
 `;
 
+const ContractButton = styled.div<{ color: string }>`
+  @media (max-width: ${sizes.md}px) {
+    display: flex;
+    justify-content: center;
+    padding: 10px 16px;
+    background: ${(props) => props.color}14;
+    border-radius: 100px;
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-top: -15px;
+    margin-bottom: 48px;
+  }
+  @media (min-width: ${sizes.md + 1}px) {
+    display: none !important;
+  }
+`;
+
 const DepositPage = () => {
   usePullUp();
   const { vaultOption, vaultVersion } = useVaultOption();
@@ -211,7 +232,26 @@ const DepositPage = () => {
       />
 
       <DepositPageContainer className="py-5">
-        <div className="row ">
+        <div className="row">
+          {VaultAddressMap[vaultOption][vaultVersion] && (
+            <BaseLink
+              to={`${getEtherscanURI()}/address/${VaultAddressMap[vaultOption][
+                vaultVersion
+              ]!}`}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="w-100"
+            >
+              <ContractButton color={getVaultColor(vaultOption)}>
+                <Title color={getVaultColor(vaultOption)} className="mr-2">
+                  {`CONTRACT: ${truncateAddress(
+                    VaultAddressMap[vaultOption][vaultVersion]!
+                  )}`}
+                </Title>
+                <ExternalIcon color={getVaultColor(vaultOption)} />
+              </ContractButton>
+            </BaseLink>
+          )}
           <PerformanceSection
             vault={{ vaultOption, vaultVersion }}
             active={

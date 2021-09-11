@@ -528,8 +528,20 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
     [asset, isPut, isYearn, optionAsset, vaultOption]
   );
 
-  const infoSection = useMemo(
-    () => (
+  const infoSection = useMemo(() => {
+    let titleColor;
+    switch (step) {
+      case "expiryA":
+        titleColor = colors.green;
+        break;
+      case "expiryB":
+        titleColor = colors.red;
+        break;
+      default:
+        titleColor = color;
+    }
+
+    return (
       <ExplainerSection
         height={width > sizes.lg ? 280 : 330}
         className="d-flex flex-column p-3"
@@ -556,7 +568,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
             }}
             className="d-flex flex-column flex-grow-1"
           >
-            <InfoTitle color={color} className="mb-3">
+            <InfoTitle color={titleColor} className="mb-3">
               {renderTitle(step)}
             </InfoTitle>
             <InfoDescription className="flex-grow-1">
@@ -572,16 +584,15 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           }}
         />
       </ExplainerSection>
-    ),
-    [
-      color,
-      currentVaultExplanationStepList,
-      width,
-      step,
-      renderTitle,
-      renderDescription,
-    ]
-  );
+    );
+  }, [
+    color,
+    currentVaultExplanationStepList,
+    width,
+    step,
+    renderTitle,
+    renderDescription,
+  ]);
 
   return (
     <ExplainerContainer ref={containerRef}>
