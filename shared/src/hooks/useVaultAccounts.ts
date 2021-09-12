@@ -188,7 +188,11 @@ const fetchVaultAccounts = async (
 
         if (!vaultAccount) {
           vaultAccount = currentVersionVaultAccount;
-          break;
+          continue;
+        }
+
+        if (!currentVersionVaultAccount) {
+          continue;
         }
 
         vaultAccount = {
