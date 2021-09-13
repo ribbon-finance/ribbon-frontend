@@ -1,10 +1,8 @@
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 
-import {
-  RibbonStakingRewards,
-} from "shared/lib/codegen";
-import { RibbonStakingRewardsFactory } from "shared/lib/codegen/RibbonStakingRewardsFactory"
+import { RibbonStakingRewards } from "shared/lib/codegen";
+import { RibbonStakingRewardsFactory } from "shared/lib/codegen/RibbonStakingRewardsFactory";
 import {
   VaultLiquidityMiningMap,
   VaultOptions,
@@ -18,6 +16,10 @@ export const getStakingReward = (
 ) => {
   const provider = useSigner ? library.getSigner() : library;
 
+  if (!VaultLiquidityMiningMap[vaultOption]) {
+    return null;
+  }
+
   return RibbonStakingRewardsFactory.connect(
     VaultLiquidityMiningMap[vaultOption]!,
     provider
@@ -27,10 +29,8 @@ export const getStakingReward = (
 const useStakingReward = (vaultOption: VaultOptions) => {
   const { active, library } = useWeb3React();
   const { provider } = useWeb3Context();
-  const [
-    stakingReward,
-    setStakingReward,
-  ] = useState<RibbonStakingRewards | null>(null);
+  const [stakingReward, setStakingReward] =
+    useState<RibbonStakingRewards | null>(null);
 
   useEffect(() => {
     if (provider) {
