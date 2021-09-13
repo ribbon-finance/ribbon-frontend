@@ -410,7 +410,11 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   );
 
   return (
-    <div className="d-flex flex-wrap flex-column w-100">
+    <div
+      className={`d-flex flex-wrap flex-column ${
+        variant === "mobile" ? "w-100" : ""
+      }`}
+    >
       {vault && (
         <YourPosition
           vault={vault}
