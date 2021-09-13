@@ -312,7 +312,6 @@ const HeroSection: React.FC<{
 
   return (
     <>
-      {/* // TODO: V2 feature tagged */}
       {/* V1 top banner */}
       {variant === "v1" && hasVaultVersion(vaultOption, "v2") && (
         <BannerContainer color={color}>
@@ -343,7 +342,6 @@ const HeroSection: React.FC<{
                     {tag}
                   </TagPill>
                 ))}
-                {/* TODO: v2 feature tagged */}
                 {
                   <AttributePill className="mr-2 text-uppercase" color={color}>
                     {[...VaultVersionList].reverse().map((version) =>
