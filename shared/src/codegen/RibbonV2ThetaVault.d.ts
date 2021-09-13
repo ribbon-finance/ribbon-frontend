@@ -50,8 +50,9 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
     "feeRecipient()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "initRounds(uint256)": FunctionFragment;
-    "initialize(address,address,uint256,uint256,string,string,address,address,uint32,uint256,tuple)": FunctionFragment;
+    "initialize(address,address,address,uint256,uint256,string,string,address,address,uint32,uint256,tuple)": FunctionFragment;
     "initiateWithdraw(uint128)": FunctionFragment;
+    "keeper()": FunctionFragment;
     "lastStrikeOverride()": FunctionFragment;
     "managementFee()": FunctionFragment;
     "maxRedeem()": FunctionFragment;
@@ -69,14 +70,17 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
     "redeem(uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "rollToNextOption()": FunctionFragment;
-    "roundPricePerShare(uint16)": FunctionFragment;
+    "roundPricePerShare(uint256)": FunctionFragment;
     "setAuctionDuration(uint256)": FunctionFragment;
-    "setCap(uint104)": FunctionFragment;
+    "setCap(uint256)": FunctionFragment;
     "setFeeRecipient(address)": FunctionFragment;
     "setManagementFee(uint256)": FunctionFragment;
+    "setNewKeeper(address)": FunctionFragment;
+    "setOptionsPremiumPricer(address)": FunctionFragment;
     "setPerformanceFee(uint256)": FunctionFragment;
-    "setPremiumDiscount(uint16)": FunctionFragment;
+    "setPremiumDiscount(uint256)": FunctionFragment;
     "setStrikePrice(uint128)": FunctionFragment;
+    "setStrikeSelection(address)": FunctionFragment;
     "shareBalances(address)": FunctionFragment;
     "shares(address)": FunctionFragment;
     "startAuction()": FunctionFragment;
@@ -189,6 +193,7 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
     values: [
       string,
       string,
+      string,
       BigNumberish,
       BigNumberish,
       string,
@@ -211,6 +216,7 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
     functionFragment: "initiateWithdraw",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "keeper", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "lastStrikeOverride",
     values?: undefined
@@ -291,6 +297,14 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "setNewKeeper",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setOptionsPremiumPricer",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setPerformanceFee",
     values: [BigNumberish]
   ): string;
@@ -301,6 +315,10 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "setStrikePrice",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setStrikeSelection",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "shareBalances",
@@ -431,6 +449,7 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
     functionFragment: "initiateWithdraw",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "keeper", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "lastStrikeOverride",
     data: BytesLike
@@ -502,6 +521,14 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setNewKeeper",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setOptionsPremiumPricer",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setPerformanceFee",
     data: BytesLike
   ): Result;
@@ -511,6 +538,10 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setStrikePrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setStrikeSelection",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -871,6 +902,7 @@ export class RibbonV2ThetaVault extends Contract {
 
     initialize(
       _owner: string,
+      _keeper: string,
       _feeRecipient: string,
       _managementFee: BigNumberish,
       _performanceFee: BigNumberish,
@@ -891,8 +923,9 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initialize(address,address,uint256,uint256,string,string,address,address,uint32,uint256,(bool,uint8,address,address,uint56,uint104))"(
+    "initialize(address,address,address,uint256,uint256,string,string,address,address,uint32,uint256,(bool,uint8,address,address,uint56,uint104))"(
       _owner: string,
+      _keeper: string,
       _feeRecipient: string,
       _managementFee: BigNumberish,
       _performanceFee: BigNumberish,
@@ -923,12 +956,20 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    keeper(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "keeper()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
     lastStrikeOverride(overrides?: CallOverrides): Promise<{
-      0: number;
+      0: BigNumber;
     }>;
 
     "lastStrikeOverride()"(overrides?: CallOverrides): Promise<{
-      0: number;
+      0: BigNumber;
     }>;
 
     managementFee(overrides?: CallOverrides): Promise<{
@@ -1026,11 +1067,11 @@ export class RibbonV2ThetaVault extends Contract {
     }>;
 
     premiumDiscount(overrides?: CallOverrides): Promise<{
-      0: number;
+      0: BigNumber;
     }>;
 
     "premiumDiscount()"(overrides?: CallOverrides): Promise<{
-      0: number;
+      0: BigNumber;
     }>;
 
     pricePerShare(overrides?: CallOverrides): Promise<{
@@ -1066,7 +1107,7 @@ export class RibbonV2ThetaVault extends Contract {
       0: BigNumber;
     }>;
 
-    "roundPricePerShare(uint16)"(
+    "roundPricePerShare(uint256)"(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
@@ -1088,7 +1129,7 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "setCap(uint104)"(
+    "setCap(uint256)"(
       newCap: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -1113,6 +1154,26 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    setNewKeeper(
+      newKeeper: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setNewKeeper(address)"(
+      newKeeper: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    setOptionsPremiumPricer(
+      newOptionsPremiumPricer: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setOptionsPremiumPricer(address)"(
+      newOptionsPremiumPricer: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     setPerformanceFee(
       newPerformanceFee: BigNumberish,
       overrides?: Overrides
@@ -1128,7 +1189,7 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "setPremiumDiscount(uint16)"(
+    "setPremiumDiscount(uint256)"(
       newPremiumDiscount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -1140,6 +1201,16 @@ export class RibbonV2ThetaVault extends Contract {
 
     "setStrikePrice(uint128)"(
       strikePrice: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    setStrikeSelection(
+      newStrikeSelection: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setStrikeSelection(address)"(
+      newStrikeSelection: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1535,6 +1606,7 @@ export class RibbonV2ThetaVault extends Contract {
 
   initialize(
     _owner: string,
+    _keeper: string,
     _feeRecipient: string,
     _managementFee: BigNumberish,
     _performanceFee: BigNumberish,
@@ -1555,8 +1627,9 @@ export class RibbonV2ThetaVault extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initialize(address,address,uint256,uint256,string,string,address,address,uint32,uint256,(bool,uint8,address,address,uint56,uint104))"(
+  "initialize(address,address,address,uint256,uint256,string,string,address,address,uint32,uint256,(bool,uint8,address,address,uint56,uint104))"(
     _owner: string,
+    _keeper: string,
     _feeRecipient: string,
     _managementFee: BigNumberish,
     _performanceFee: BigNumberish,
@@ -1587,9 +1660,13 @@ export class RibbonV2ThetaVault extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  lastStrikeOverride(overrides?: CallOverrides): Promise<number>;
+  keeper(overrides?: CallOverrides): Promise<string>;
 
-  "lastStrikeOverride()"(overrides?: CallOverrides): Promise<number>;
+  "keeper()"(overrides?: CallOverrides): Promise<string>;
+
+  lastStrikeOverride(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "lastStrikeOverride()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   managementFee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1649,9 +1726,9 @@ export class RibbonV2ThetaVault extends Contract {
 
   "performanceFee()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  premiumDiscount(overrides?: CallOverrides): Promise<number>;
+  premiumDiscount(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "premiumDiscount()"(overrides?: CallOverrides): Promise<number>;
+  "premiumDiscount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   pricePerShare(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1680,7 +1757,7 @@ export class RibbonV2ThetaVault extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  "roundPricePerShare(uint16)"(
+  "roundPricePerShare(uint256)"(
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -1700,7 +1777,7 @@ export class RibbonV2ThetaVault extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "setCap(uint104)"(
+  "setCap(uint256)"(
     newCap: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -1725,6 +1802,26 @@ export class RibbonV2ThetaVault extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  setNewKeeper(
+    newKeeper: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setNewKeeper(address)"(
+    newKeeper: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  setOptionsPremiumPricer(
+    newOptionsPremiumPricer: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setOptionsPremiumPricer(address)"(
+    newOptionsPremiumPricer: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   setPerformanceFee(
     newPerformanceFee: BigNumberish,
     overrides?: Overrides
@@ -1740,7 +1837,7 @@ export class RibbonV2ThetaVault extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "setPremiumDiscount(uint16)"(
+  "setPremiumDiscount(uint256)"(
     newPremiumDiscount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -1752,6 +1849,16 @@ export class RibbonV2ThetaVault extends Contract {
 
   "setStrikePrice(uint128)"(
     strikePrice: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  setStrikeSelection(
+    newStrikeSelection: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setStrikeSelection(address)"(
+    newStrikeSelection: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2117,6 +2224,7 @@ export class RibbonV2ThetaVault extends Contract {
 
     initialize(
       _owner: string,
+      _keeper: string,
       _feeRecipient: string,
       _managementFee: BigNumberish,
       _performanceFee: BigNumberish,
@@ -2137,8 +2245,9 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize(address,address,uint256,uint256,string,string,address,address,uint32,uint256,(bool,uint8,address,address,uint56,uint104))"(
+    "initialize(address,address,address,uint256,uint256,string,string,address,address,uint32,uint256,(bool,uint8,address,address,uint56,uint104))"(
       _owner: string,
+      _keeper: string,
       _feeRecipient: string,
       _managementFee: BigNumberish,
       _performanceFee: BigNumberish,
@@ -2169,9 +2278,13 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    lastStrikeOverride(overrides?: CallOverrides): Promise<number>;
+    keeper(overrides?: CallOverrides): Promise<string>;
 
-    "lastStrikeOverride()"(overrides?: CallOverrides): Promise<number>;
+    "keeper()"(overrides?: CallOverrides): Promise<string>;
+
+    lastStrikeOverride(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "lastStrikeOverride()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     managementFee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2231,9 +2344,9 @@ export class RibbonV2ThetaVault extends Contract {
 
     "performanceFee()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    premiumDiscount(overrides?: CallOverrides): Promise<number>;
+    premiumDiscount(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "premiumDiscount()"(overrides?: CallOverrides): Promise<number>;
+    "premiumDiscount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     pricePerShare(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2259,7 +2372,7 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "roundPricePerShare(uint16)"(
+    "roundPricePerShare(uint256)"(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -2276,7 +2389,7 @@ export class RibbonV2ThetaVault extends Contract {
 
     setCap(newCap: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    "setCap(uint104)"(
+    "setCap(uint256)"(
       newCap: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -2301,6 +2414,23 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setNewKeeper(newKeeper: string, overrides?: CallOverrides): Promise<void>;
+
+    "setNewKeeper(address)"(
+      newKeeper: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setOptionsPremiumPricer(
+      newOptionsPremiumPricer: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setOptionsPremiumPricer(address)"(
+      newOptionsPremiumPricer: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setPerformanceFee(
       newPerformanceFee: BigNumberish,
       overrides?: CallOverrides
@@ -2316,7 +2446,7 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "setPremiumDiscount(uint16)"(
+    "setPremiumDiscount(uint256)"(
       newPremiumDiscount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -2328,6 +2458,16 @@ export class RibbonV2ThetaVault extends Contract {
 
     "setStrikePrice(uint128)"(
       strikePrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setStrikeSelection(
+      newStrikeSelection: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setStrikeSelection(address)"(
+      newStrikeSelection: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2746,6 +2886,7 @@ export class RibbonV2ThetaVault extends Contract {
 
     initialize(
       _owner: string,
+      _keeper: string,
       _feeRecipient: string,
       _managementFee: BigNumberish,
       _performanceFee: BigNumberish,
@@ -2766,8 +2907,9 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initialize(address,address,uint256,uint256,string,string,address,address,uint32,uint256,(bool,uint8,address,address,uint56,uint104))"(
+    "initialize(address,address,address,uint256,uint256,string,string,address,address,uint32,uint256,(bool,uint8,address,address,uint56,uint104))"(
       _owner: string,
+      _keeper: string,
       _feeRecipient: string,
       _managementFee: BigNumberish,
       _performanceFee: BigNumberish,
@@ -2797,6 +2939,10 @@ export class RibbonV2ThetaVault extends Contract {
       shares: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    keeper(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "keeper()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     lastStrikeOverride(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2874,7 +3020,7 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "roundPricePerShare(uint16)"(
+    "roundPricePerShare(uint256)"(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -2891,7 +3037,7 @@ export class RibbonV2ThetaVault extends Contract {
 
     setCap(newCap: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
 
-    "setCap(uint104)"(
+    "setCap(uint256)"(
       newCap: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -2916,6 +3062,23 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    setNewKeeper(newKeeper: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "setNewKeeper(address)"(
+      newKeeper: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    setOptionsPremiumPricer(
+      newOptionsPremiumPricer: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setOptionsPremiumPricer(address)"(
+      newOptionsPremiumPricer: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     setPerformanceFee(
       newPerformanceFee: BigNumberish,
       overrides?: Overrides
@@ -2931,7 +3094,7 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "setPremiumDiscount(uint16)"(
+    "setPremiumDiscount(uint256)"(
       newPremiumDiscount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -2943,6 +3106,16 @@ export class RibbonV2ThetaVault extends Contract {
 
     "setStrikePrice(uint128)"(
       strikePrice: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    setStrikeSelection(
+      newStrikeSelection: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setStrikeSelection(address)"(
+      newStrikeSelection: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3246,6 +3419,7 @@ export class RibbonV2ThetaVault extends Contract {
 
     initialize(
       _owner: string,
+      _keeper: string,
       _feeRecipient: string,
       _managementFee: BigNumberish,
       _performanceFee: BigNumberish,
@@ -3266,8 +3440,9 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initialize(address,address,uint256,uint256,string,string,address,address,uint32,uint256,(bool,uint8,address,address,uint56,uint104))"(
+    "initialize(address,address,address,uint256,uint256,string,string,address,address,uint32,uint256,(bool,uint8,address,address,uint56,uint104))"(
       _owner: string,
+      _keeper: string,
       _feeRecipient: string,
       _managementFee: BigNumberish,
       _performanceFee: BigNumberish,
@@ -3297,6 +3472,10 @@ export class RibbonV2ThetaVault extends Contract {
       shares: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
+
+    keeper(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "keeper()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     lastStrikeOverride(
       overrides?: CallOverrides
@@ -3397,7 +3576,7 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "roundPricePerShare(uint16)"(
+    "roundPricePerShare(uint256)"(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -3417,7 +3596,7 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "setCap(uint104)"(
+    "setCap(uint256)"(
       newCap: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
@@ -3442,6 +3621,26 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    setNewKeeper(
+      newKeeper: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setNewKeeper(address)"(
+      newKeeper: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    setOptionsPremiumPricer(
+      newOptionsPremiumPricer: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setOptionsPremiumPricer(address)"(
+      newOptionsPremiumPricer: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     setPerformanceFee(
       newPerformanceFee: BigNumberish,
       overrides?: Overrides
@@ -3457,7 +3656,7 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "setPremiumDiscount(uint16)"(
+    "setPremiumDiscount(uint256)"(
       newPremiumDiscount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
@@ -3469,6 +3668,16 @@ export class RibbonV2ThetaVault extends Contract {
 
     "setStrikePrice(uint128)"(
       strikePrice: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    setStrikeSelection(
+      newStrikeSelection: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setStrikeSelection(address)"(
+      newStrikeSelection: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

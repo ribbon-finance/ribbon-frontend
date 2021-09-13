@@ -639,9 +639,9 @@ const _abi = [
     name: "currentOtokenPremium",
     outputs: [
       {
-        internalType: "uint104",
+        internalType: "uint256",
         name: "",
-        type: "uint104",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -823,6 +823,11 @@ const _abi = [
       },
       {
         internalType: "address",
+        name: "_keeper",
+        type: "address",
+      },
+      {
+        internalType: "address",
         name: "_feeRecipient",
         type: "address",
       },
@@ -924,12 +929,25 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "keeper",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "lastStrikeOverride",
     outputs: [
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "",
-        type: "uint16",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -1048,9 +1066,9 @@ const _abi = [
     name: "overriddenStrikePrice",
     outputs: [
       {
-        internalType: "uint128",
+        internalType: "uint256",
         name: "",
-        type: "uint128",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -1087,9 +1105,9 @@ const _abi = [
     name: "premiumDiscount",
     outputs: [
       {
-        internalType: "uint32",
+        internalType: "uint256",
         name: "",
-        type: "uint32",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -1138,9 +1156,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "",
-        type: "uint16",
+        type: "uint256",
       },
     ],
     name: "roundPricePerShare",
@@ -1170,9 +1188,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint104",
+        internalType: "uint256",
         name: "newCap",
-        type: "uint104",
+        type: "uint256",
       },
     ],
     name: "setCap",
@@ -1209,6 +1227,32 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "newKeeper",
+        type: "address",
+      },
+    ],
+    name: "setNewKeeper",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOptionsPremiumPricer",
+        type: "address",
+      },
+    ],
+    name: "setOptionsPremiumPricer",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "newPerformanceFee",
         type: "uint256",
@@ -1222,9 +1266,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "newPremiumDiscount",
-        type: "uint16",
+        type: "uint256",
       },
     ],
     name: "setPremiumDiscount",
@@ -1241,6 +1285,19 @@ const _abi = [
       },
     ],
     name: "setStrikePrice",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newStrikeSelection",
+        type: "address",
+      },
+    ],
+    name: "setStrikeSelection",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
