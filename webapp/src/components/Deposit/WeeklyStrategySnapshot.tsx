@@ -116,9 +116,11 @@ interface WeeklyStrategySnapshotProps {
 const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   vault,
 }) => {
-  const { vaultOption } = vault;
-  const { activities, loading: activityLoading } =
-    useVaultActivity(vaultOption);
+  const { vaultOption, vaultVersion } = vault;
+  const { activities, loading: activityLoading } = useVaultActivity(
+    vaultOption,
+    vaultVersion
+  );
   const asset = getAssets(vaultOption);
   const optionAsset = getOptionAssets(vaultOption);
   const color = getVaultColor(vaultOption);
