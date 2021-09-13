@@ -72,8 +72,12 @@ const PreviewStep: React.FC<{
   const color = getVaultColor(vaultOption);
   const latestAPY = useLatestAPY(vaultOption);
 
-  const detailRows = useMemo(() => {
-    let actionDetails: { key: string; value: string } = { key: "", value: "" };
+  interface ActionDetail {
+    key: string;
+    value: string;
+  }
+  const detailRows: ActionDetail[] = useMemo(() => {
+    let actionDetails: ActionDetail = { key: "", value: "" };
 
     switch (actionType) {
       case ACTIONS.deposit:
@@ -111,12 +115,13 @@ const PreviewStep: React.FC<{
       ];
     }
 
-    return [
+    const details: ActionDetail[] = [
       { key: "Product", value: productCopies[vaultOption].title },
       { key: "Product Type", value: "Theta Vault" },
-      actionDetails,
-    ];
-  }, [actionType, latestAPY, receiveVaultOption, vaultOption]);
+      withdrawOption === "instant" ? null : actionDetails,
+    ].filter((x) => x !== null) as ActionDetail[];
+    return details;
+  }, [actionType, latestAPY, receiveVaultOption, vaultOption, withdrawOption]);
 
   const originalAmount = formatBigNumber(
     positionAmount,
