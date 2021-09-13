@@ -314,23 +314,21 @@ const HeroSection: React.FC<{
     <>
       {/* // TODO: V2 feature tagged */}
       {/* V1 top banner */}
-      {!isProduction() &&
-        variant === "v1" &&
-        hasVaultVersion(vaultOption, "v2") && (
-          <BannerContainer color={color}>
-            <BaseIndicator size={8} color={color} className="mr-2" />
-            <PrimaryText color={color} className="mr-3">
-              {v1Inactive
-                ? "V1 vaults are now inactive and do not accept deposits"
-                : "V2 vaults are now live"}
-            </PrimaryText>
-            <BaseLink to={getVaultURI(vaultOption, "v2")}>
-              <BannerButton color={color} role="button">
-                <PrimaryText color={color}>Switch to V2</PrimaryText>
-              </BannerButton>
-            </BaseLink>
-          </BannerContainer>
-        )}
+      {variant === "v1" && hasVaultVersion(vaultOption, "v2") && (
+        <BannerContainer color={color}>
+          <BaseIndicator size={8} color={color} className="mr-2" />
+          <PrimaryText color={color} className="mr-3">
+            {v1Inactive
+              ? "V1 vaults are now inactive and do not accept deposits"
+              : "V2 vaults are now live"}
+          </PrimaryText>
+          <BaseLink to={getVaultURI(vaultOption, "v2")}>
+            <BannerButton color={color} role="button">
+              <PrimaryText color={color}>Switch to V2</PrimaryText>
+            </BannerButton>
+          </BaseLink>
+        </BannerContainer>
+      )}
       <HeroContainer className="position-relative" color={color}>
         <DepositPageContainer className="container">
           <div className="row mx-lg-n1 position-relative">
@@ -346,7 +344,7 @@ const HeroSection: React.FC<{
                   </TagPill>
                 ))}
                 {/* TODO: v2 feature tagged */}
-                {!isProduction() && (
+                {
                   <AttributePill className="mr-2 text-uppercase" color={color}>
                     {[...VaultVersionList].reverse().map((version) =>
                       version === "v1" ||
@@ -365,7 +363,7 @@ const HeroSection: React.FC<{
                       ) : null
                     )}
                   </AttributePill>
-                )}
+                }
               </div>
 
               <HeroText>{productCopies[vaultOption].title}</HeroText>

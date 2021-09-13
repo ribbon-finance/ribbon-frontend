@@ -39,11 +39,11 @@ const RootApp = () => {
           <Route path="/theta-vault/:vaultSymbol">
             <DepositPage />
           </Route>
-          {!isProduction() && (
+          {
             <Route path="/v2/theta-vault/:vaultSymbol">
               <DepositPage />
             </Route>
-          )}
+          }
           <Route path="/portfolio">
             <PortfolioPage />
           </Route>

@@ -159,7 +159,7 @@ export const hasVaultVersion = (
   vaultOption: VaultOptions,
   version: VaultVersionExcludeV1
 ): boolean => {
-  return !isProduction() && Boolean(VaultAddressMap[vaultOption][version]);
+  return Boolean(VaultAddressMap[vaultOption][version]);
 };
 
 export const VaultNamesList = [
