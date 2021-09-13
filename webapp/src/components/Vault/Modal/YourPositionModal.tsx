@@ -109,14 +109,20 @@ const YourPositionModal: React.FC<YourPositionModalProps> = ({
         if (!vaultAccount) {
           return [BigNumber.from(0), undefined, BigNumber.from(0)];
         }
-
         return [
           vaultAccount.totalBalance,
           undefined,
           vaultAccount.totalYieldEarned,
         ];
       case "v2":
-        return [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)];
+        if (!vaultAccount) {
+          return [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)];
+        }
+        return [
+          vaultAccount.totalBalance.sub(vaultAccount.totalPendingDeposit),
+          vaultAccount.totalPendingDeposit,
+          vaultAccount.totalYieldEarned,
+        ];
     }
   }, [vaultAccount, vaultVersion]);
 
