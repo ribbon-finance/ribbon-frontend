@@ -82,6 +82,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   } = useV2VaultData(vaultOption);
 
   const vaultBalanceInAsset = useMemo(() => {
+    if (vaultActionForm.actionType === "migrate") {
+      return v1VaultBalanceInAsset;
+    }
     switch (vaultVersion) {
       case "v1":
         return v1VaultBalanceInAsset;
@@ -96,6 +99,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     v1VaultBalanceInAsset,
     vaultVersion,
     withdrawals,
+    vaultActionForm.actionType,
   ]);
 
   // We need to pre-fetch the number of shares that the user wants to withdraw
