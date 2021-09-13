@@ -411,7 +411,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
 
   return (
     <div
-      className={`d-flex flex-wrap flex-column ${
+      className={`d-flex d-md-none flex-wrap flex-column ${
         variant === "mobile" ? "w-100" : ""
       }`}
     >

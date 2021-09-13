@@ -174,7 +174,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
           return (
             <TooltipExplanation
               title="INSTANT WITHDRAWAL"
-              explanation="Instant withdrawals are for funds that have not been deposited but not yet deployed in the vault’s weekly strategy. Because these funds haven’t been deployed they can be withdrawn immediately."
+              explanation="Instant withdrawals are for funds that have been deposited but not yet deployed in the vault’s weekly strategy. Because these funds haven’t been deployed they can be withdrawn immediately."
               renderContent={({ ref, ...triggerHandler }) => (
                 <HelpInfo
                   containerRef={ref}
