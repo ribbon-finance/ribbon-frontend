@@ -321,14 +321,26 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
 
       switch (s) {
         case "deposit":
-          return (
-            <>
-              The vault receives {assetUnit} from depositors and invests 90% of
-              these funds in its weekly strategy. The remaining 10% of funds is
-              set aside so that depositors can withdraw their {assetUnit} from
-              the vault.
-            </>
-          );
+          switch (vaultVersion) {
+            case "v1":
+              return (
+                <>
+                  The vault receives {assetUnit} from depositors and invests 90%
+                  of these funds in its weekly strategy. The remaining 10% of
+                  funds is set aside so that depositors can withdraw their{" "}
+                  {assetUnit} from the vault.
+                </>
+              );
+            case "v2":
+            default:
+              return (
+                <>
+                  The vault receives {assetUnit} from depositors and invests
+                  100% of its {assetUnit} balance in its weekly options
+                  strategy.
+                </>
+              );
+          }
         case "yearnVaultDeposit":
           return (
             <>
