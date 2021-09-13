@@ -142,14 +142,16 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   // Whenever the `show` variable is toggled, we need to reset the step back to 0
   useEffect(() => {
-    if (stepData.stepNum === STEPS.formStep) {
+    if (!skipToPreview && stepData.stepNum === STEPS.formStep) {
       return;
     }
 
     return () => {
       setStep(firstStep);
     };
-  }, [show, firstStep, setStep, stepData.stepNum]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [show, firstStep, setStep, skipToPreview]);
 
   const [amount, amountStr] = useMemo(() => {
     try {
