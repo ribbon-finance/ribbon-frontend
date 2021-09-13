@@ -164,7 +164,7 @@ const PreviewStep: React.FC<{
           </ActionLogoContainer>
 
           {/* Title */}
-          <FormTitle className="mt-3">MIRGATE PREVIEW</FormTitle>
+          <FormTitle className="mt-3">MIGRATE PREVIEW</FormTitle>
 
           {/* Info Preview */}
           <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-auto">

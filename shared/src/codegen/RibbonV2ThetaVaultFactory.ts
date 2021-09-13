@@ -101,6 +101,31 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "uint256",
+        name: "oldCap",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "newCap",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "manager",
+        type: "address",
+      },
+    ],
+    name: "CapSet",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "address",
         name: "options",
@@ -113,7 +138,7 @@ const _abi = [
         type: "uint256",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "manager",
         type: "address",
@@ -142,6 +167,12 @@ const _abi = [
         internalType: "uint256",
         name: "round",
         type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "feeRecipient",
+        type: "address",
       },
     ],
     name: "CollectVaultFees",
@@ -176,13 +207,13 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "auctioningToken",
         type: "address",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "biddingToken",
         type: "address",
@@ -194,7 +225,7 @@ const _abi = [
         type: "uint256",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "manager",
         type: "address",
@@ -207,7 +238,7 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "account",
         type: "address",
@@ -259,6 +290,25 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
+        name: "managementFee",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "newManagementFee",
+        type: "uint256",
+      },
+    ],
+    name: "ManagementFeeSet",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
         name: "strikePrice",
         type: "uint256",
       },
@@ -288,7 +338,7 @@ const _abi = [
         type: "uint256",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "manager",
         type: "address",
@@ -314,6 +364,25 @@ const _abi = [
       },
     ],
     name: "OwnershipTransferred",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "performanceFee",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "newPerformanceFee",
+        type: "uint256",
+      },
+    ],
+    name: "PerformanceFeeSet",
     type: "event",
   },
   {
@@ -389,7 +458,7 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "account",
         type: "address",
@@ -409,6 +478,19 @@ const _abi = [
     ],
     name: "Withdraw",
     type: "event",
+  },
+  {
+    inputs: [],
+    name: "DELAY",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
@@ -457,6 +539,19 @@ const _abi = [
         internalType: "address",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "PERIOD",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -685,19 +780,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "delay",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "uint256",
@@ -843,12 +925,12 @@ const _abi = [
       },
       {
         internalType: "string",
-        name: "tokenName",
+        name: "_tokenName",
         type: "string",
       },
       {
         internalType: "string",
-        name: "tokenSymbol",
+        name: "_tokenSymbol",
         type: "string",
       },
       {
@@ -917,9 +999,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint128",
-        name: "shares",
-        type: "uint128",
+        internalType: "uint256",
+        name: "numShares",
+        type: "uint256",
       },
     ],
     name: "initiateWithdraw",
@@ -942,12 +1024,12 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "lastStrikeOverride",
+    name: "lastStrikeOverrideRound",
     outputs: [
       {
-        internalType: "uint256",
+        internalType: "uint16",
         name: "",
-        type: "uint256",
+        type: "uint16",
       },
     ],
     stateMutability: "view",
@@ -1130,7 +1212,7 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "shares",
+        name: "numShares",
         type: "uint256",
       },
     ],

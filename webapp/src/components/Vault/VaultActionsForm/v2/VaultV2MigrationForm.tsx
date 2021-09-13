@@ -128,7 +128,7 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
         <MigrateIcon color={color} />
       </MigrateLogoContainer>
 
-      <FormTitle className="mt-3">MIRGATE TO V2</FormTitle>
+      <FormTitle className="mt-3">MIGRATE TO V2</FormTitle>
 
       <FormDescription className="mt-3 text-center">
         ETH deposits can now be migrated over from the V1 vault
@@ -172,7 +172,7 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
         disabled={Boolean(error)}
         onClick={handleMigrate}
       >
-        Migration {getAssetDisplay(asset)}
+        Migrate {getAssetDisplay(asset)}
       </ActionButton>
       {errorText}
       <SecondaryText

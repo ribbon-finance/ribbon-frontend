@@ -23,10 +23,12 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
   functions: {
+    "DELAY()": FunctionFragment;
     "GAMMA_CONTROLLER()": FunctionFragment;
     "GNOSIS_EASY_AUCTION()": FunctionFragment;
     "MARGIN_POOL()": FunctionFragment;
     "OTOKEN_FACTORY()": FunctionFragment;
+    "PERIOD()": FunctionFragment;
     "USDC()": FunctionFragment;
     "WETH()": FunctionFragment;
     "accountVaultBalance(address)": FunctionFragment;
@@ -42,7 +44,6 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
     "currentOtokenPremium()": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
-    "delay()": FunctionFragment;
     "deposit(uint256)": FunctionFragment;
     "depositETH()": FunctionFragment;
     "depositFor(uint256,address)": FunctionFragment;
@@ -51,9 +52,9 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
     "increaseAllowance(address,uint256)": FunctionFragment;
     "initRounds(uint256)": FunctionFragment;
     "initialize(address,address,address,uint256,uint256,string,string,address,address,uint32,uint256,tuple)": FunctionFragment;
-    "initiateWithdraw(uint128)": FunctionFragment;
+    "initiateWithdraw(uint256)": FunctionFragment;
     "keeper()": FunctionFragment;
-    "lastStrikeOverride()": FunctionFragment;
+    "lastStrikeOverrideRound()": FunctionFragment;
     "managementFee()": FunctionFragment;
     "maxRedeem()": FunctionFragment;
     "name()": FunctionFragment;
@@ -98,6 +99,7 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
     "withdrawals(address)": FunctionFragment;
   };
 
+  encodeFunctionData(functionFragment: "DELAY", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "GAMMA_CONTROLLER",
     values?: undefined
@@ -114,6 +116,7 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
     functionFragment: "OTOKEN_FACTORY",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "PERIOD", values?: undefined): string;
   encodeFunctionData(functionFragment: "USDC", values?: undefined): string;
   encodeFunctionData(functionFragment: "WETH", values?: undefined): string;
   encodeFunctionData(
@@ -159,7 +162,6 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
     functionFragment: "decreaseAllowance",
     values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "delay", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "deposit",
     values: [BigNumberish]
@@ -218,7 +220,7 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "keeper", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "lastStrikeOverride",
+    functionFragment: "lastStrikeOverrideRound",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -372,6 +374,7 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "withdrawals", values: [string]): string;
 
+  decodeFunctionResult(functionFragment: "DELAY", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "GAMMA_CONTROLLER",
     data: BytesLike
@@ -388,6 +391,7 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
     functionFragment: "OTOKEN_FACTORY",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "PERIOD", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "USDC", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "WETH", data: BytesLike): Result;
   decodeFunctionResult(
@@ -427,7 +431,6 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
     functionFragment: "decreaseAllowance",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "delay", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "depositETH", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "depositFor", data: BytesLike): Result;
@@ -451,7 +454,7 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "keeper", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "lastStrikeOverride",
+    functionFragment: "lastStrikeOverrideRound",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -596,15 +599,18 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "AuctionDurationSet(uint256,uint256)": EventFragment;
+    "CapSet(uint256,uint256,address)": EventFragment;
     "CloseShort(address,uint256,address)": EventFragment;
-    "CollectVaultFees(uint256,uint256,uint256)": EventFragment;
+    "CollectVaultFees(uint256,uint256,uint256,address)": EventFragment;
     "Deposit(address,uint256,uint256)": EventFragment;
     "InitiateGnosisAuction(address,address,uint256,address)": EventFragment;
     "InitiateWithdraw(address,uint256,uint256)": EventFragment;
     "InstantWithdraw(address,uint256,uint256)": EventFragment;
+    "ManagementFeeSet(uint256,uint256)": EventFragment;
     "NewOptionStrikeSelected(uint256,uint256)": EventFragment;
     "OpenShort(address,uint256,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
+    "PerformanceFeeSet(uint256,uint256)": EventFragment;
     "PremiumDiscountSet(uint256,uint256)": EventFragment;
     "Redeem(address,uint256,uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
@@ -613,15 +619,18 @@ interface RibbonV2ThetaVaultInterface extends ethers.utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "AuctionDurationSet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "CapSet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "CloseShort"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "CollectVaultFees"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "InitiateGnosisAuction"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "InitiateWithdraw"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "InstantWithdraw"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ManagementFeeSet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "NewOptionStrikeSelected"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OpenShort"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PerformanceFeeSet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PremiumDiscountSet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Redeem"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
@@ -642,6 +651,14 @@ export class RibbonV2ThetaVault extends Contract {
   interface: RibbonV2ThetaVaultInterface;
 
   functions: {
+    DELAY(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "DELAY()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
     GAMMA_CONTROLLER(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
@@ -672,6 +689,14 @@ export class RibbonV2ThetaVault extends Contract {
 
     "OTOKEN_FACTORY()"(overrides?: CallOverrides): Promise<{
       0: string;
+    }>;
+
+    PERIOD(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "PERIOD()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
     }>;
 
     USDC(overrides?: CallOverrides): Promise<{
@@ -812,14 +837,6 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    delay(overrides?: CallOverrides): Promise<{
-      0: BigNumber;
-    }>;
-
-    "delay()"(overrides?: CallOverrides): Promise<{
-      0: BigNumber;
-    }>;
-
     deposit(
       amount: BigNumberish,
       overrides?: Overrides
@@ -906,8 +923,8 @@ export class RibbonV2ThetaVault extends Contract {
       _feeRecipient: string,
       _managementFee: BigNumberish,
       _performanceFee: BigNumberish,
-      tokenName: string,
-      tokenSymbol: string,
+      _tokenName: string,
+      _tokenSymbol: string,
       _optionsPremiumPricer: string,
       _strikeSelection: string,
       _premiumDiscount: BigNumberish,
@@ -929,8 +946,8 @@ export class RibbonV2ThetaVault extends Contract {
       _feeRecipient: string,
       _managementFee: BigNumberish,
       _performanceFee: BigNumberish,
-      tokenName: string,
-      tokenSymbol: string,
+      _tokenName: string,
+      _tokenSymbol: string,
       _optionsPremiumPricer: string,
       _strikeSelection: string,
       _premiumDiscount: BigNumberish,
@@ -947,12 +964,12 @@ export class RibbonV2ThetaVault extends Contract {
     ): Promise<ContractTransaction>;
 
     initiateWithdraw(
-      shares: BigNumberish,
+      numShares: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initiateWithdraw(uint128)"(
-      shares: BigNumberish,
+    "initiateWithdraw(uint256)"(
+      numShares: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -964,12 +981,12 @@ export class RibbonV2ThetaVault extends Contract {
       0: string;
     }>;
 
-    lastStrikeOverride(overrides?: CallOverrides): Promise<{
-      0: BigNumber;
+    lastStrikeOverrideRound(overrides?: CallOverrides): Promise<{
+      0: number;
     }>;
 
-    "lastStrikeOverride()"(overrides?: CallOverrides): Promise<{
-      0: BigNumber;
+    "lastStrikeOverrideRound()"(overrides?: CallOverrides): Promise<{
+      0: number;
     }>;
 
     managementFee(overrides?: CallOverrides): Promise<{
@@ -1083,12 +1100,12 @@ export class RibbonV2ThetaVault extends Contract {
     }>;
 
     redeem(
-      shares: BigNumberish,
+      numShares: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "redeem(uint256)"(
-      shares: BigNumberish,
+      numShares: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1415,6 +1432,10 @@ export class RibbonV2ThetaVault extends Contract {
     }>;
   };
 
+  DELAY(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "DELAY()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   GAMMA_CONTROLLER(overrides?: CallOverrides): Promise<string>;
 
   "GAMMA_CONTROLLER()"(overrides?: CallOverrides): Promise<string>;
@@ -1430,6 +1451,10 @@ export class RibbonV2ThetaVault extends Contract {
   OTOKEN_FACTORY(overrides?: CallOverrides): Promise<string>;
 
   "OTOKEN_FACTORY()"(overrides?: CallOverrides): Promise<string>;
+
+  PERIOD(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "PERIOD()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   USDC(overrides?: CallOverrides): Promise<string>;
 
@@ -1524,10 +1549,6 @@ export class RibbonV2ThetaVault extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  delay(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "delay()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   deposit(
     amount: BigNumberish,
     overrides?: Overrides
@@ -1610,8 +1631,8 @@ export class RibbonV2ThetaVault extends Contract {
     _feeRecipient: string,
     _managementFee: BigNumberish,
     _performanceFee: BigNumberish,
-    tokenName: string,
-    tokenSymbol: string,
+    _tokenName: string,
+    _tokenSymbol: string,
     _optionsPremiumPricer: string,
     _strikeSelection: string,
     _premiumDiscount: BigNumberish,
@@ -1633,8 +1654,8 @@ export class RibbonV2ThetaVault extends Contract {
     _feeRecipient: string,
     _managementFee: BigNumberish,
     _performanceFee: BigNumberish,
-    tokenName: string,
-    tokenSymbol: string,
+    _tokenName: string,
+    _tokenSymbol: string,
     _optionsPremiumPricer: string,
     _strikeSelection: string,
     _premiumDiscount: BigNumberish,
@@ -1651,12 +1672,12 @@ export class RibbonV2ThetaVault extends Contract {
   ): Promise<ContractTransaction>;
 
   initiateWithdraw(
-    shares: BigNumberish,
+    numShares: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initiateWithdraw(uint128)"(
-    shares: BigNumberish,
+  "initiateWithdraw(uint256)"(
+    numShares: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1664,9 +1685,9 @@ export class RibbonV2ThetaVault extends Contract {
 
   "keeper()"(overrides?: CallOverrides): Promise<string>;
 
-  lastStrikeOverride(overrides?: CallOverrides): Promise<BigNumber>;
+  lastStrikeOverrideRound(overrides?: CallOverrides): Promise<number>;
 
-  "lastStrikeOverride()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "lastStrikeOverrideRound()"(overrides?: CallOverrides): Promise<number>;
 
   managementFee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1735,12 +1756,12 @@ export class RibbonV2ThetaVault extends Contract {
   "pricePerShare()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   redeem(
-    shares: BigNumberish,
+    numShares: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "redeem(uint256)"(
-    shares: BigNumberish,
+    numShares: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2036,6 +2057,10 @@ export class RibbonV2ThetaVault extends Contract {
   }>;
 
   callStatic: {
+    DELAY(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "DELAY()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     GAMMA_CONTROLLER(overrides?: CallOverrides): Promise<string>;
 
     "GAMMA_CONTROLLER()"(overrides?: CallOverrides): Promise<string>;
@@ -2051,6 +2076,10 @@ export class RibbonV2ThetaVault extends Contract {
     OTOKEN_FACTORY(overrides?: CallOverrides): Promise<string>;
 
     "OTOKEN_FACTORY()"(overrides?: CallOverrides): Promise<string>;
+
+    PERIOD(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "PERIOD()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     USDC(overrides?: CallOverrides): Promise<string>;
 
@@ -2145,10 +2174,6 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    delay(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "delay()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     deposit(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     "deposit(uint256)"(
@@ -2228,8 +2253,8 @@ export class RibbonV2ThetaVault extends Contract {
       _feeRecipient: string,
       _managementFee: BigNumberish,
       _performanceFee: BigNumberish,
-      tokenName: string,
-      tokenSymbol: string,
+      _tokenName: string,
+      _tokenSymbol: string,
       _optionsPremiumPricer: string,
       _strikeSelection: string,
       _premiumDiscount: BigNumberish,
@@ -2251,8 +2276,8 @@ export class RibbonV2ThetaVault extends Contract {
       _feeRecipient: string,
       _managementFee: BigNumberish,
       _performanceFee: BigNumberish,
-      tokenName: string,
-      tokenSymbol: string,
+      _tokenName: string,
+      _tokenSymbol: string,
       _optionsPremiumPricer: string,
       _strikeSelection: string,
       _premiumDiscount: BigNumberish,
@@ -2269,12 +2294,12 @@ export class RibbonV2ThetaVault extends Contract {
     ): Promise<void>;
 
     initiateWithdraw(
-      shares: BigNumberish,
+      numShares: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initiateWithdraw(uint128)"(
-      shares: BigNumberish,
+    "initiateWithdraw(uint256)"(
+      numShares: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2282,9 +2307,9 @@ export class RibbonV2ThetaVault extends Contract {
 
     "keeper()"(overrides?: CallOverrides): Promise<string>;
 
-    lastStrikeOverride(overrides?: CallOverrides): Promise<BigNumber>;
+    lastStrikeOverrideRound(overrides?: CallOverrides): Promise<number>;
 
-    "lastStrikeOverride()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "lastStrikeOverrideRound()"(overrides?: CallOverrides): Promise<number>;
 
     managementFee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2352,10 +2377,10 @@ export class RibbonV2ThetaVault extends Contract {
 
     "pricePerShare()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    redeem(shares: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    redeem(numShares: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     "redeem(uint256)"(
-      shares: BigNumberish,
+      numShares: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2657,28 +2682,35 @@ export class RibbonV2ThetaVault extends Contract {
       newAuctionDuration: null
     ): EventFilter;
 
+    CapSet(oldCap: null, newCap: null, manager: null): EventFilter;
+
     CloseShort(
       options: string | null,
       withdrawAmount: null,
-      manager: null
+      manager: string | null
     ): EventFilter;
 
     CollectVaultFees(
       performanceFee: null,
       vaultFee: null,
-      round: null
+      round: null,
+      feeRecipient: string | null
     ): EventFilter;
 
     Deposit(account: string | null, amount: null, round: null): EventFilter;
 
     InitiateGnosisAuction(
-      auctioningToken: null,
-      biddingToken: null,
+      auctioningToken: string | null,
+      biddingToken: string | null,
       auctionCounter: null,
-      manager: null
+      manager: string | null
     ): EventFilter;
 
-    InitiateWithdraw(account: null, shares: null, round: null): EventFilter;
+    InitiateWithdraw(
+      account: string | null,
+      shares: null,
+      round: null
+    ): EventFilter;
 
     InstantWithdraw(
       account: string | null,
@@ -2686,17 +2718,24 @@ export class RibbonV2ThetaVault extends Contract {
       round: null
     ): EventFilter;
 
+    ManagementFeeSet(managementFee: null, newManagementFee: null): EventFilter;
+
     NewOptionStrikeSelected(strikePrice: null, delta: null): EventFilter;
 
     OpenShort(
       options: string | null,
       depositAmount: null,
-      manager: null
+      manager: string | null
     ): EventFilter;
 
     OwnershipTransferred(
       previousOwner: string | null,
       newOwner: string | null
+    ): EventFilter;
+
+    PerformanceFeeSet(
+      performanceFee: null,
+      newPerformanceFee: null
     ): EventFilter;
 
     PremiumDiscountSet(
@@ -2708,10 +2747,14 @@ export class RibbonV2ThetaVault extends Contract {
 
     Transfer(from: string | null, to: string | null, value: null): EventFilter;
 
-    Withdraw(account: null, amount: null, shares: null): EventFilter;
+    Withdraw(account: string | null, amount: null, shares: null): EventFilter;
   };
 
   estimateGas: {
+    DELAY(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "DELAY()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     GAMMA_CONTROLLER(overrides?: CallOverrides): Promise<BigNumber>;
 
     "GAMMA_CONTROLLER()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2727,6 +2770,10 @@ export class RibbonV2ThetaVault extends Contract {
     OTOKEN_FACTORY(overrides?: CallOverrides): Promise<BigNumber>;
 
     "OTOKEN_FACTORY()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    PERIOD(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "PERIOD()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     USDC(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2821,10 +2868,6 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    delay(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "delay()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     deposit(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
 
     "deposit(uint256)"(
@@ -2890,8 +2933,8 @@ export class RibbonV2ThetaVault extends Contract {
       _feeRecipient: string,
       _managementFee: BigNumberish,
       _performanceFee: BigNumberish,
-      tokenName: string,
-      tokenSymbol: string,
+      _tokenName: string,
+      _tokenSymbol: string,
       _optionsPremiumPricer: string,
       _strikeSelection: string,
       _premiumDiscount: BigNumberish,
@@ -2913,8 +2956,8 @@ export class RibbonV2ThetaVault extends Contract {
       _feeRecipient: string,
       _managementFee: BigNumberish,
       _performanceFee: BigNumberish,
-      tokenName: string,
-      tokenSymbol: string,
+      _tokenName: string,
+      _tokenSymbol: string,
       _optionsPremiumPricer: string,
       _strikeSelection: string,
       _premiumDiscount: BigNumberish,
@@ -2931,12 +2974,12 @@ export class RibbonV2ThetaVault extends Contract {
     ): Promise<BigNumber>;
 
     initiateWithdraw(
-      shares: BigNumberish,
+      numShares: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initiateWithdraw(uint128)"(
-      shares: BigNumberish,
+    "initiateWithdraw(uint256)"(
+      numShares: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -2944,9 +2987,9 @@ export class RibbonV2ThetaVault extends Contract {
 
     "keeper()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    lastStrikeOverride(overrides?: CallOverrides): Promise<BigNumber>;
+    lastStrikeOverrideRound(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "lastStrikeOverride()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "lastStrikeOverrideRound()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     managementFee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -3000,10 +3043,10 @@ export class RibbonV2ThetaVault extends Contract {
 
     "pricePerShare()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    redeem(shares: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
+    redeem(numShares: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
 
     "redeem(uint256)"(
-      shares: BigNumberish,
+      numShares: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3223,6 +3266,10 @@ export class RibbonV2ThetaVault extends Contract {
   };
 
   populateTransaction: {
+    DELAY(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "DELAY()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     GAMMA_CONTROLLER(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "GAMMA_CONTROLLER()"(
@@ -3246,6 +3293,10 @@ export class RibbonV2ThetaVault extends Contract {
     "OTOKEN_FACTORY()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    PERIOD(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "PERIOD()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     USDC(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -3351,10 +3402,6 @@ export class RibbonV2ThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    delay(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "delay()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     deposit(
       amount: BigNumberish,
       overrides?: Overrides
@@ -3423,8 +3470,8 @@ export class RibbonV2ThetaVault extends Contract {
       _feeRecipient: string,
       _managementFee: BigNumberish,
       _performanceFee: BigNumberish,
-      tokenName: string,
-      tokenSymbol: string,
+      _tokenName: string,
+      _tokenSymbol: string,
       _optionsPremiumPricer: string,
       _strikeSelection: string,
       _premiumDiscount: BigNumberish,
@@ -3446,8 +3493,8 @@ export class RibbonV2ThetaVault extends Contract {
       _feeRecipient: string,
       _managementFee: BigNumberish,
       _performanceFee: BigNumberish,
-      tokenName: string,
-      tokenSymbol: string,
+      _tokenName: string,
+      _tokenSymbol: string,
       _optionsPremiumPricer: string,
       _strikeSelection: string,
       _premiumDiscount: BigNumberish,
@@ -3464,12 +3511,12 @@ export class RibbonV2ThetaVault extends Contract {
     ): Promise<PopulatedTransaction>;
 
     initiateWithdraw(
-      shares: BigNumberish,
+      numShares: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initiateWithdraw(uint128)"(
-      shares: BigNumberish,
+    "initiateWithdraw(uint256)"(
+      numShares: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -3477,11 +3524,11 @@ export class RibbonV2ThetaVault extends Contract {
 
     "keeper()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    lastStrikeOverride(
+    lastStrikeOverrideRound(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "lastStrikeOverride()"(
+    "lastStrikeOverrideRound()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -3554,12 +3601,12 @@ export class RibbonV2ThetaVault extends Contract {
     "pricePerShare()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     redeem(
-      shares: BigNumberish,
+      numShares: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "redeem(uint256)"(
-      shares: BigNumberish,
+      numShares: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
