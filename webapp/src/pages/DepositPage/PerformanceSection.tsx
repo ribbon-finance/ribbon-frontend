@@ -150,7 +150,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
             <ParagraphText className="mb-4">
               {productCopies[vaultOption].strategy}
             </ParagraphText>
-            <VaultStrategyExplainer vaultOption={vaultOption} />
+            <VaultStrategyExplainer vault={vault} />
           </Paragraph>
 
           <Paragraph>
