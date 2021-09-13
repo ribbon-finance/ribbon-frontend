@@ -1,70 +1,71 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import styled from "styled-components";
-import { ethers } from "ethers";
+import { formatUnits } from "@ethersproject/units";
 
-import PositionIcon from "../../assets/img/positionIcon.svg";
-import { SecondaryText, Subtitle, Title } from "shared/lib/designSystem";
-import useAssetPrice from "shared/lib/hooks/useAssetPrice";
-import useVaultData from "shared/lib/hooks/useVaultData";
 import {
-  assetToUSD,
-  formatBigNumber,
-  isPracticallyZero,
-} from "shared/lib/utils/math";
-import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
-import { getAssetDisplay } from "shared/lib/utils/asset";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
-import colors from "shared/lib/designSystem/colors";
+  getAssets,
+  VaultOptions,
+  VaultVersion,
+} from "shared/lib/constants/constants";
+import { getVaultColor } from "shared/lib/utils/vault";
 import theme from "shared/lib/designSystem/theme";
+import AssetCircleContainer from "../Common/AssetCircleContainer";
+import {
+  getAssetDecimals,
+  getAssetDisplay,
+  getAssetLogo,
+} from "shared/lib/utils/asset";
+import { Title } from "shared/lib/designSystem";
+import colors from "shared/lib/designSystem/colors";
+import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
+import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
+import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
+import { useWebappGlobalState } from "../../store/store";
+import sizes from "shared/lib/designSystem/sizes";
 
-const PositionsContainer = styled.div`
-  font-family: VCR, sans-serif;
-  color: white;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  box-sizing: border-box;
-  border-radius: ${theme.border.radius};
-`;
-
-const PositionMainContent = styled.div`
-  border-radius: ${theme.border.radius} ${theme.border.radius} 0 0;
-  border-bottom: ${theme.border.width} ${theme.border.style} ${colors.border};
-  background: ${colors.background};
-  padding: 16px;
-  z-index: 2;
-`;
-
-const PositionStakedContainer = styled.div`
+const DesktopContainer = styled.div`
   display: flex;
-  align-items: center;
+  position: sticky;
+  bottom: 40px;
+  left: 40px;
+  width: max-content;
+
+  @media (max-width: ${sizes.md}px) {
+    display: none;
+  }
+`;
+
+const MobileContainer = styled.div<{ color: string }>`
+  display: none;
+
+  @media (max-width: ${sizes.md}px) {
+    display: flex;
+    width: 100%;
+    background: linear-gradient(
+      96.84deg,
+      ${(props) => props.color}14 1.04%,
+      ${(props) => props.color}03 98.99%
+    );
+    padding: 4px 16px;
+  }
+`;
+
+const FloatingPositionCard = styled.div<{ color: string }>`
+  display: flex;
   border-radius: ${theme.border.radius};
-  background: ${colors.backgroundLighter};
-  padding: 24px 16px 8px 16px;
-  margin-top: -16px;
-  z-index: 1;
+  padding: 4px;
+  backdrop-filter: blur(32px);
+  background: linear-gradient(
+    96.84deg,
+    ${(props) => props.color}14 1.04%,
+    ${(props) => props.color}03 98.99%
+  );
 `;
 
-const PositionTitle = styled(Title)`
-  font-size: 14px;
-`;
-
-const ProfitText = styled.span<{ roi: number }>`
-  color: ${(props) => (props.roi >= 0 ? colors.green : colors.red)};
-  font-size: 12px;
+const PositionInfoText = styled(Title)<{ size: number }>`
+  letter-spacing: 1px;
+  font-size: ${(props) => props.size}px;
   line-height: 16px;
-  text-transform: capitalize;
-`;
-
-const AmountText = styled(Subtitle)`
-  font-size: 12px;
-  line-height: 16px;
-  color: ${colors.text};
-  letter-spacing: unset;
-`;
-
-const StakeLabel = styled(SecondaryText)`
-  font-size: 12px;
-  line-height: 20px;
 `;
 
 interface YourPositionProps {
@@ -72,49 +73,25 @@ interface YourPositionProps {
     vaultOption: VaultOptions;
     vaultVersion: VaultVersion;
   };
-  className?: string;
+  variant: "desktop" | "mobile";
+  onShowHook?: (show: boolean) => void;
 }
 
 const YourPosition: React.FC<YourPositionProps> = ({
   vault: { vaultOption, vaultVersion },
-  className,
+  variant,
+  onShowHook,
 }) => {
-  const { status, asset, decimals } = useVaultData(vaultOption, {
+  const color = getVaultColor(vaultOption);
+  const asset = getAssets(vaultOption);
+  const decimals = getAssetDecimals(asset);
+  const Logo = getAssetLogo(asset);
+
+  const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
+  const { vaultAccounts } = useVaultAccounts(vaultOptions, vaultVersion, {
     poll: true,
   });
-  const { price: assetPrice } = useAssetPrice({ asset: asset });
-  // Uses useMemo to create array so that useVaultAccounts does not constantly create new array that causes website lag
-  const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
-  const { vaultAccounts, loading: vaultAccountLoading } = useVaultAccounts(
-    vaultOptions,
-    vaultVersion
-  );
-  const isLoading = status === "loading" || vaultAccountLoading;
-  const loadingText = useTextAnimation(isLoading);
-
-  const [positionAssetAmount, positionAssetAmountUSD] = useMemo(() => {
-    const vaultAccount = vaultAccounts[vaultOption];
-
-    if (vaultAccountLoading) {
-      return [loadingText, loadingText];
-    }
-
-    if (!vaultAccount) {
-      return ["0", "$0.00"];
-    }
-
-    return [
-      formatBigNumber(vaultAccount.totalBalance, decimals),
-      assetToUSD(vaultAccount.totalBalance, assetPrice, decimals),
-    ];
-  }, [
-    vaultAccountLoading,
-    vaultAccounts,
-    loadingText,
-    vaultOption,
-    decimals,
-    assetPrice,
-  ]);
+  const [, setShowVaultPosition] = useWebappGlobalState("showVaultPosition");
 
   const roi = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
@@ -128,65 +105,99 @@ const YourPosition: React.FC<YourPositionProps> = ({
 
     return (
       (parseFloat(
-        ethers.utils.formatUnits(
+        formatUnits(
           vaultAccount.totalBalance.sub(vaultAccount.totalDeposits),
           decimals
         )
       ) /
-        parseFloat(
-          ethers.utils.formatUnits(vaultAccount.totalDeposits, decimals)
-        )) *
+        parseFloat(formatUnits(vaultAccount.totalDeposits, decimals))) *
       100
     );
   }, [vaultAccounts, vaultOption, decimals]);
 
-  const stakingText = useMemo(() => {
-    const vaultAccount = vaultAccounts[vaultOption];
+  const vaultAccount = vaultAccounts[vaultOption];
 
-    if (vaultAccount && !vaultAccount.totalBalance.isZero()) {
-      return `${formatBigNumber(
-        vaultAccount.totalStakedBalance,
-        decimals
-      )} ${getAssetDisplay(asset)}`;
+  useEffect(() => {
+    onShowHook &&
+      onShowHook(
+        Boolean(
+          vaultAccount &&
+            !isPracticallyZero(vaultAccount.totalBalance, decimals)
+        )
+      );
+  }, [decimals, onShowHook, vaultAccount]);
+
+  if (vaultAccount && !isPracticallyZero(vaultAccount.totalBalance, decimals)) {
+    switch (variant) {
+      case "desktop":
+        return (
+          <DesktopContainer>
+            <FloatingPositionCard
+              color={color}
+              role="button"
+              onClick={() => setShowVaultPosition(true)}
+            >
+              <AssetCircleContainer color={color} size={48}>
+                <Logo width={20} height={20} />
+              </AssetCircleContainer>
+              <div className="d-flex flex-column justify-content-center p-2">
+                <PositionInfoText size={10} color={colors.text}>
+                  POSITION ({getAssetDisplay(asset)})
+                </PositionInfoText>
+                <div className="d-flex">
+                  <PositionInfoText size={14}>
+                    {formatBigNumber(vaultAccount.totalBalance, decimals)}
+                  </PositionInfoText>
+                  <PositionInfoText
+                    size={10}
+                    color={roi >= 0 ? colors.green : colors.red}
+                    className="ml-2"
+                  >
+                    {`${roi >= 0 ? "+" : ""}${parseFloat(roi.toFixed(4))}%`}
+                  </PositionInfoText>
+                </div>
+              </div>
+              <div className="d-flex align-items-center ml-5 mr-3">
+                <ButtonArrow isOpen={false} color={colors.text} />
+              </div>
+            </FloatingPositionCard>
+          </DesktopContainer>
+        );
+      case "mobile":
+        return (
+          <MobileContainer
+            color={color}
+            onClick={() => setShowVaultPosition(true)}
+          >
+            <AssetCircleContainer color={color} size={48}>
+              <Logo width={20} height={20} />
+            </AssetCircleContainer>
+            <div className="d-flex flex-column justify-content-center p-2">
+              <PositionInfoText size={10} color={colors.text}>
+                POSITION ({getAssetDisplay(asset)})
+              </PositionInfoText>
+              <div className="d-flex">
+                <PositionInfoText size={14}>
+                  {formatBigNumber(vaultAccount.totalBalance, decimals)}
+                </PositionInfoText>
+                <PositionInfoText
+                  size={10}
+                  color={roi >= 0 ? colors.green : colors.red}
+                  className="ml-2"
+                >
+                  {`${roi >= 0 ? "+" : ""}${parseFloat(roi.toFixed(4))}%`}
+                </PositionInfoText>
+              </div>
+            </div>
+            <div className="d-flex align-items-center ml-auto mr-3">
+              <ButtonArrow isOpen={false} color={colors.text} />
+            </div>
+          </MobileContainer>
+        );
     }
+  }
 
-    return undefined;
-  }, [asset, decimals, vaultAccounts, vaultOption]);
-
-  return (
-    <>
-      <PositionsContainer className={`d-flex flex-column ${className}`}>
-        <PositionMainContent className="d-flex flex-row justify-content-center align-items-center">
-          <img style={{ width: 45 }} src={PositionIcon} alt="Positions" />
-
-          <div className="w-100">
-            <div className="d-flex flex-row align-items-center justify-content-between ml-2">
-              <PositionTitle>Your Position</PositionTitle>
-              <PositionTitle>
-                {isLoading
-                  ? loadingText
-                  : `${positionAssetAmount} ${getAssetDisplay(asset)}`}
-              </PositionTitle>
-            </div>
-            <div className="d-flex flex-row align-items-center justify-content-between ml-2 mt-1">
-              <ProfitText roi={roi}>
-                {isLoading
-                  ? loadingText
-                  : `${roi >= 0 ? "+" : ""}${parseFloat(roi.toFixed(4))}%`}
-              </ProfitText>
-              <AmountText>{positionAssetAmountUSD}</AmountText>
-            </div>
-          </div>
-        </PositionMainContent>
-        {stakingText && (
-          <PositionStakedContainer>
-            <StakeLabel className="mr-auto">Staked Amount</StakeLabel>
-            <AmountText>{stakingText}</AmountText>
-          </PositionStakedContainer>
-        )}
-      </PositionsContainer>
-    </>
-  );
+  return <></>;
 };
 
 export default YourPosition;

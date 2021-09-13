@@ -46,7 +46,7 @@ const useV2VaultData: UseVaultData = (
        */
       const unconnectedPromises: Promise<
         | BigNumber
-        | { amount: BigNumber }
+        | { amount: BigNumber; round: number }
         | { round: number }
         | { share: BigNumber; round: number }
       >[] = [
@@ -76,7 +76,7 @@ const useV2VaultData: UseVaultData = (
             ]
           : [
               // Default value when not connected
-              Promise.resolve({ amount: BigNumber.from(0) }),
+              Promise.resolve({ amount: BigNumber.from(0), round: 1 }),
               Promise.resolve(BigNumber.from(0)),
               Promise.resolve(BigNumber.from(0)),
               Promise.resolve({ round: 1, share: BigNumber.from(0) }),
@@ -87,15 +87,37 @@ const useV2VaultData: UseVaultData = (
         totalBalance,
         cap,
         pricePerShare,
-        vaultState,
-        depositReceipts,
+        _vaultState,
+        _depositReceipts,
         accountVaultBalance,
         userAssetBalance,
-        withdrawals,
+        _withdrawals,
       ] = await Promise.all(
         // Default to 0 when error
         promises.map((p) => p.catch((e) => BigNumber.from(0)))
       );
+
+      const vaultState = (
+        (_vaultState as { round?: number }).round ? _vaultState : { round: 1 }
+      ) as { round: number };
+      const depositReceipts = (
+        (
+          _depositReceipts as {
+            amount: BigNumber;
+            round: number;
+          }
+        ).amount
+          ? _depositReceipts
+          : { amount: BigNumber.from(0), round: 1 }
+      ) as {
+        amount: BigNumber;
+        round: number;
+      };
+      const withdrawals = (
+        (_withdrawals as { shares: BigNumber; round: number }).round
+          ? _withdrawals
+          : { shares: BigNumber.from(0), round: 1 }
+      ) as { shares: BigNumber; round: number };
 
       setResponse((prevResponse) => ({
         ...prevResponse,
@@ -104,12 +126,19 @@ const useV2VaultData: UseVaultData = (
           totalBalance,
           cap,
           pricePerShare,
-          round: (vaultState as { round: number }).round,
+          round: vaultState.round,
           lockedBalanceInAsset: accountVaultBalance,
-          depositBalanceInAsset: (depositReceipts as { amount: BigNumber })
-            .amount,
+          depositBalanceInAsset:
+            depositReceipts.round === vaultState.round
+              ? depositReceipts.amount
+              : BigNumber.from(0),
           userAssetBalance,
-          withdrawals,
+          withdrawals: {
+            ...withdrawals,
+            amount: withdrawals.shares
+              .mul(pricePerShare as BigNumber)
+              .div(BigNumber.from(10).pow(prevResponse[vault].decimals)),
+          },
         },
       }));
 

@@ -1,7 +1,6 @@
 import React, { ReactNode, useMemo } from "react";
 import { ethers } from "ethers";
 import styled from "styled-components";
-import { useWeb3React } from "@web3-react/core";
 
 import {
   BaseIndicator,
@@ -13,14 +12,18 @@ import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import PerformanceSection from "./PerformanceSection";
 import useVaultData from "shared/lib/hooks/useVaultData";
-import { formatSignificantDecimals } from "shared/lib/utils/math";
+import {
+  formatSignificantDecimals,
+  isPracticallyZero,
+} from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
-import YourPosition from "../../components/Vault/YourPosition";
 import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
 import {
   getDisplayAssets,
+  getEtherscanURI,
   hasVaultVersion,
+  VaultAddressMap,
   VaultList,
   VaultOptions,
   VaultVersion,
@@ -37,6 +40,10 @@ import { isProduction } from "shared/lib/utils/env";
 import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopActionForm";
 import { Redirect } from "react-router-dom";
 import useV2VaultData from "shared/lib/hooks/useV2VaultData";
+import YourPosition from "../../components/Vault/YourPosition";
+import YourPositionModal from "../../components/Vault/Modal/YourPositionModal";
+import { truncateAddress } from "shared/lib/utils/address";
+import { ExternalIcon } from "shared/lib/assets/icons/icons";
 
 const { formatUnits } = ethers.utils;
 
@@ -130,15 +137,18 @@ const DesktopActionsFormContainer = styled.div`
   }
 `;
 
-const MobilePositions = styled(YourPosition)`
+const ContractButton = styled.div<{ color: string }>`
   @media (max-width: ${sizes.md}px) {
-    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 10px 16px;
+    background: ${(props) => props.color}14;
+    border-radius: 100px;
     margin-left: 16px;
     margin-right: 16px;
     margin-top: -15px;
     margin-bottom: 48px;
   }
-
   @media (min-width: ${sizes.md + 1}px) {
     display: none !important;
   }
@@ -146,7 +156,6 @@ const MobilePositions = styled(YourPosition)`
 
 const DepositPage = () => {
   usePullUp();
-  const { account } = useWeb3React();
   const { vaultOption, vaultVersion } = useVaultOption();
   const { status, deposits, vaultLimit } = useVaultData(
     vaultOption || VaultList[0]
@@ -212,6 +221,7 @@ const DepositPage = () => {
 
   return (
     <>
+      <YourPositionModal vault={{ vaultOption, vaultVersion }} />
       <HeroSection
         depositCapBar={depositCapBar}
         vaultOption={vaultOption}
@@ -222,10 +232,34 @@ const DepositPage = () => {
       />
 
       <DepositPageContainer className="py-5">
-        <div className="row ">
-          {account && <MobilePositions vault={{ vaultOption, vaultVersion }} />}
-
-          <PerformanceSection vault={{ vaultOption, vaultVersion }} />
+        <div className="row">
+          {VaultAddressMap[vaultOption][vaultVersion] && (
+            <BaseLink
+              to={`${getEtherscanURI()}/address/${VaultAddressMap[vaultOption][
+                vaultVersion
+              ]!}`}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="w-100"
+            >
+              <ContractButton color={getVaultColor(vaultOption)}>
+                <Title color={getVaultColor(vaultOption)} className="mr-2">
+                  {`CONTRACT: ${truncateAddress(
+                    VaultAddressMap[vaultOption][vaultVersion]!
+                  )}`}
+                </Title>
+                <ExternalIcon color={getVaultColor(vaultOption)} />
+              </ContractButton>
+            </BaseLink>
+          )}
+          <PerformanceSection
+            vault={{ vaultOption, vaultVersion }}
+            active={
+              !(
+                vaultVersion === "v1" && isPracticallyZero(vaultLimit, decimals)
+              )
+            }
+          />
 
           {/* Form for desktop */}
           <DesktopActionsFormContainer className="flex-column col-xl-5 offset-xl-1 col-md-6">
@@ -234,6 +268,9 @@ const DepositPage = () => {
         </div>
         <VaultActivity vault={{ vaultOption, vaultVersion }} />
       </DepositPageContainer>
+
+      {/* Desktop Position Component */}
+      <YourPosition vault={{ vaultOption, vaultVersion }} variant="desktop" />
     </>
   );
 };

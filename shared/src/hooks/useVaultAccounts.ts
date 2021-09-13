@@ -134,6 +134,7 @@ const fetchVaultAccounts = async (
                     totalBalance
                     totalStakedBalance
                     totalStakedShares
+                    ${version === "v2" ? `totalPendingDeposit` : ``}
                     vault {
                       symbol
                     }
@@ -167,6 +168,9 @@ const fetchVaultAccounts = async (
                     totalBalance: BigNumber.from(data.totalBalance),
                     totalStakedShares: BigNumber.from(data.totalStakedShares),
                     totalStakedBalance: BigNumber.from(data.totalStakedBalance),
+                    totalPendingDeposit: data.totalPendingDeposit
+                      ? BigNumber.from(data.totalPendingDeposit)
+                      : BigNumber.from(0),
                   },
                 ];
               }
@@ -188,7 +192,11 @@ const fetchVaultAccounts = async (
 
         if (!vaultAccount) {
           vaultAccount = currentVersionVaultAccount;
-          break;
+          continue;
+        }
+
+        if (!currentVersionVaultAccount) {
+          continue;
         }
 
         vaultAccount = {

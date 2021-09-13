@@ -2,14 +2,21 @@ import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import colors from "shared/lib/designSystem/colors";
-import { Title } from "shared/lib/designSystem";
+import { SecondaryText, Title } from "shared/lib/designSystem";
 import ActionSteps from "./ActionSteps";
 import { ACTIONS, StepData, STEPS } from "./types";
 import sizes from "shared/lib/designSystem/sizes";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
-import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
+import {
+  getAssets,
+  VaultOptions,
+  VaultVersion,
+} from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
+import ModalContentExtra from "shared/lib/components/Common/ModalContentExtra";
+import { getVaultColor } from "shared/lib/utils/vault";
+import { getAssetDisplay } from "shared/lib/utils/asset";
 
 const ModalNavigation = styled.div`
   position: absolute;
@@ -45,6 +52,7 @@ const ModalBody = styled.div<ModalBodyProps>`
   max-width: 450px;
   min-height: ${(props) => {
     switch (props.steps.stepNum) {
+      case STEPS.warningStep:
       case STEPS.confirmationStep:
       case STEPS.submittedStep:
         return "unset";
@@ -57,8 +65,8 @@ const ModalBody = styled.div<ModalBodyProps>`
     props.variant === "mobile" &&
     props.isFormStep &&
     `
-  background: none;
-  border: none;
+      background: none;
+      border: none;
   `}
 
   @media (max-width: ${sizes.md}px) {
@@ -148,11 +156,6 @@ const ActionModal: React.FC<ActionModalProps> = ({
   const isDesktop = variant === "desktop";
   const { vaultActionForm } = useVaultActionForm(vault.vaultOption);
 
-  const onChangeStep = useCallback(
-    (stepData) => setStepData(stepData),
-    [setStepData]
-  );
-
   const renderModalNavigationItem = useCallback(() => {
     if (isDesktop) {
       return;
@@ -190,6 +193,22 @@ const ActionModal: React.FC<ActionModalProps> = ({
   }, [isDesktop, stepData, onClose]);
 
   const renderModalHeader = useCallback(() => {
+    if (
+      (vaultActionForm.actionType === ACTIONS.migrate &&
+        stepData.stepNum === STEPS.previewStep) ||
+      stepData.stepNum === STEPS.warningStep ||
+      (vaultActionForm.vaultVersion === "v2" &&
+        vaultActionForm.actionType === "withdraw" &&
+        vaultActionForm.withdrawOption !== "instant" &&
+        stepData.stepNum === STEPS.previewStep)
+    ) {
+      return (
+        <InvisibleModalHeader className="position-relative d-flex align-items-center justify-content-center">
+          {renderModalCloseButton()}
+        </InvisibleModalHeader>
+      );
+    }
+
     if (stepData.title !== "") {
       return (
         <ModalHeaderWithBackground className="position-relative d-flex align-items-center justify-content-center">
@@ -198,15 +217,42 @@ const ActionModal: React.FC<ActionModalProps> = ({
         </ModalHeaderWithBackground>
       );
     }
+  }, [
+    renderModalCloseButton,
+    stepData.title,
+    stepData.stepNum,
+    vaultActionForm,
+  ]);
 
-    if (vaultActionForm.actionType === ACTIONS.migrate) {
+  const renderModalExtra = useCallback(() => {
+    // When user attempt to perform standard withdraw on V2 but has balance that allow instant withdraw
+    if (
+      vaultActionForm.actionType === ACTIONS.withdraw &&
+      vaultActionForm.vaultVersion === "v2" &&
+      vaultActionForm.withdrawOption === "standard" &&
+      stepData.stepNum === STEPS.previewStep
+    ) {
       return (
-        <InvisibleModalHeader className="position-relative d-flex align-items-center justify-content-center">
-          {renderModalCloseButton()}
-        </InvisibleModalHeader>
+        <ModalContentExtra config={{ mx: 0 }}>
+          <SecondaryText
+            color={getVaultColor(vaultActionForm.vaultOption!)}
+            className="text-center"
+          >
+            On Friday at 10am UTC your{" "}
+            {getAssetDisplay(getAssets(vaultActionForm.vaultOption!))} will be
+            removed from the vault’s investable pool of funds and you can
+            complete your withdrawal
+          </SecondaryText>
+        </ModalContentExtra>
       );
     }
-  }, [renderModalCloseButton, stepData.title, vaultActionForm.actionType]);
+  }, [
+    stepData.stepNum,
+    vaultActionForm.actionType,
+    vaultActionForm.vaultOption,
+    vaultActionForm.vaultVersion,
+    vaultActionForm.withdrawOption,
+  ]);
 
   return (
     <div>
@@ -240,10 +286,13 @@ const ActionModal: React.FC<ActionModalProps> = ({
                 skipToPreview={isDesktop}
                 show={show}
                 onClose={onClose}
-                onChangeStep={onChangeStep}
+                stepData={stepData}
+                onChangeStep={setStepData}
               />
             </StepsContainer>
           </ModalContent>
+
+          {renderModalExtra()}
         </ModalBody>
       </MobileOverlayMenu>
     </div>

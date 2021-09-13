@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
 import { BigNumber } from "ethers";
+import moment from "moment";
 
 import { Subtitle, SecondaryText, Title } from "shared/lib/designSystem";
 import { ActionButton } from "shared/lib/components/Common/buttons";
@@ -9,6 +10,7 @@ import { formatBigNumber } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
 import {
+  isPutVault,
   VaultOptions,
   VaultWithdrawalFee,
 } from "shared/lib/constants/constants";
@@ -18,7 +20,7 @@ import { useLatestAPY } from "shared/lib/hooks/useAirtableData";
 import { capitalize } from "shared/lib/utils/text";
 import { MigrateIcon } from "shared/lib/assets/icons/icons";
 
-const MigrateLogoContainer = styled.div<{ color: string }>`
+const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -70,8 +72,12 @@ const PreviewStep: React.FC<{
   const color = getVaultColor(vaultOption);
   const latestAPY = useLatestAPY(vaultOption);
 
-  const detailRows = useMemo(() => {
-    let actionDetails: { key: string; value: string } = { key: "", value: "" };
+  interface ActionDetail {
+    key: string;
+    value: string;
+  }
+  const detailRows: ActionDetail[] = useMemo(() => {
+    let actionDetails: ActionDetail = { key: "", value: "" };
 
     switch (actionType) {
       case ACTIONS.deposit:
@@ -109,12 +115,13 @@ const PreviewStep: React.FC<{
       ];
     }
 
-    return [
+    const details: ActionDetail[] = [
       { key: "Product", value: productCopies[vaultOption].title },
       { key: "Product Type", value: "Theta Vault" },
-      actionDetails,
-    ];
-  }, [actionType, latestAPY, receiveVaultOption, vaultOption]);
+      withdrawOption === "instant" ? null : actionDetails,
+    ].filter((x) => x !== null) as ActionDetail[];
+    return details;
+  }, [actionType, latestAPY, receiveVaultOption, vaultOption, withdrawOption]);
 
   const originalAmount = formatBigNumber(
     positionAmount,
@@ -157,12 +164,12 @@ const PreviewStep: React.FC<{
           className="d-flex flex-column align-items-center"
         >
           {/* Logo */}
-          <MigrateLogoContainer color={color}>
+          <ActionLogoContainer color={color}>
             <MigrateIcon color={color} />
-          </MigrateLogoContainer>
+          </ActionLogoContainer>
 
           {/* Title */}
-          <FormTitle className="mt-3">MIRGATE PREVIEW</FormTitle>
+          <FormTitle className="mt-3">MIGRATE PREVIEW</FormTitle>
 
           {/* Info Preview */}
           <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-auto">
@@ -196,9 +203,115 @@ const PreviewStep: React.FC<{
       );
     // @ts-ignore
     case ACTIONS.withdraw:
-      if (withdrawOption === "standard") {
-        return <></>;
+      switch (withdrawOption) {
+        case "standard":
+          const withdrawTime = moment()
+            .isoWeekday("friday")
+            .utc()
+            .set("hour", 10)
+            .set("minute", 0)
+            .set("second", 0)
+            .set("millisecond", 0);
+
+          if (withdrawTime.isBefore(moment())) {
+            withdrawTime.add(1, "week");
+          }
+
+          return (
+            <div className="d-flex flex-column align-items-center">
+              {/* Logo */}
+              <ActionLogoContainer color={color}>
+                <MigrateIcon color={color} />
+              </ActionLogoContainer>
+
+              {/* Title */}
+              <FormTitle className="mt-3 text-center">
+                WITHDRAWAL INITIATION PREVIEW
+              </FormTitle>
+
+              {/* Info Preview */}
+              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+                <SecondaryText>Withdraw Amount</SecondaryText>
+                <Title className="text-right">
+                  {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
+                  {getAssetDisplay(asset)}
+                </Title>
+              </div>
+              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+                <SecondaryText>Product</SecondaryText>
+                <Title className="text-right">
+                  {productCopies[vaultOption].title}
+                </Title>
+              </div>
+              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+                <SecondaryText>Strategy</SecondaryText>
+                <Title className="text-right">
+                  {isPutVault(vaultOption) ? "PUT SELLING" : "COVERED CALL"}
+                </Title>
+              </div>
+              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+                <SecondaryText>Withdraw Date</SecondaryText>
+                <Title className="d-flex align-items-center text-right">
+                  {withdrawTime.format("MMM DD, YYYY")}
+                </Title>
+              </div>
+
+              {/* Migrate Button */}
+              <ActionButton
+                onClick={onClickConfirmButton}
+                className="btn py-3 mt-4 mb-3"
+                color={color}
+              >
+                CONFIRM WITHDRAW Initiation
+              </ActionButton>
+            </div>
+          );
+        case "complete":
+          return (
+            <div className="d-flex flex-column align-items-center">
+              {/* Logo */}
+              <ActionLogoContainer color={color}>
+                <MigrateIcon color={color} />
+              </ActionLogoContainer>
+
+              {/* Title */}
+              <FormTitle className="mt-3 text-center">
+                WITHDRAWAL PREVIEW
+              </FormTitle>
+
+              {/* Info Preview */}
+              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+                <SecondaryText>Withdraw Amount</SecondaryText>
+                <Title className="text-right">
+                  {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
+                  {getAssetDisplay(asset)}
+                </Title>
+              </div>
+              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+                <SecondaryText>Product</SecondaryText>
+                <Title className="text-right">
+                  {productCopies[vaultOption].title}
+                </Title>
+              </div>
+              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+                <SecondaryText>Strategy</SecondaryText>
+                <Title className="text-right">
+                  {isPutVault(vaultOption) ? "PUT SELLING" : "COVERED CALL"}
+                </Title>
+              </div>
+
+              {/* Migrate Button */}
+              <ActionButton
+                onClick={onClickConfirmButton}
+                className="btn py-3 mt-5 mb-3"
+                color={color}
+              >
+                COMPLETE WITHDRAWAL
+              </ActionButton>
+            </div>
+          );
       }
+
     // eslint-disable-next-line no-fallthrough
     default:
       const actionWord = capitalize(actionType);

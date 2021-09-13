@@ -21,6 +21,7 @@ export interface VaultAccount {
   totalBalance: BigNumber;
   totalStakedShares: BigNumber;
   totalStakedBalance: BigNumber;
+  totalPendingDeposit: BigNumber;
 }
 
 export interface VaultShortPosition {
@@ -69,6 +70,7 @@ export interface VaultTransaction {
   amount: BigNumber;
   underlyingAmount: BigNumber;
   fee: number;
+  vaultVersion: VaultVersion;
 }
 
 export interface BalanceUpdate {

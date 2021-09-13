@@ -1,7 +1,5 @@
 import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
-import { BigNumber } from "ethers";
-import { formatUnits } from "ethers/lib/utils";
 
 import { VaultOptions } from "shared/lib/constants/constants";
 import colors from "shared/lib/designSystem/colors";
@@ -15,7 +13,9 @@ import { ActionButton } from "shared/lib/components/Common/buttons";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { ACTIONS } from "../Modal/types";
 import useVaultData from "shared/lib/hooks/useVaultData";
-import CapBar from "shared/lib/components/Deposit/CapBar";
+import useV2VaultData from "shared/lib/hooks/useV2VaultData";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "../../../Common/HelpInfo";
 
 const MigrateLogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -48,56 +48,46 @@ interface VaultV2MigrationFormProps {
   vaultOption: VaultOptions;
   vaultAccount: VaultAccount;
   onFormSubmit: () => void;
+  onHideForm: () => void;
 }
 
 const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
   vaultOption,
   vaultAccount,
   onFormSubmit,
+  onHideForm,
 }) => {
-  /** V1 Vault data */
-  const { deposits, vaultMaxWithdrawAmount, asset, decimals } =
-    useVaultData(vaultOption);
+  const { vaultMaxWithdrawAmount, asset, decimals } = useVaultData(vaultOption);
+  const {
+    data: { totalBalance, cap },
+  } = useV2VaultData(vaultOption);
   const color = getVaultColor(vaultOption);
   const { handleActionTypeChange, handleMaxClick } =
     useVaultActionForm(vaultOption);
 
-  const [weeklyMigrationAmount, weeklyMigrationAmountLimit] = useMemo((): [
-    BigNumber,
-    BigNumber
-  ] => {
-    const vaultCollaterizedAmount = deposits.sub(vaultMaxWithdrawAmount);
-    const vaultMinimumUncollaterizedAmount = vaultCollaterizedAmount
-      .mul(100)
-      .div(90)
-      .div(10);
-    const weeklyMigration = vaultMinimumUncollaterizedAmount.sub(
-      vaultMaxWithdrawAmount
-    );
+  const migrationLimit = useMemo(() => {
+    const v2Capacity = cap.sub(totalBalance);
 
-    return [
-      weeklyMigration.isNegative() ? BigNumber.from(0) : weeklyMigration,
-      vaultMaxWithdrawAmount.gte(vaultMinimumUncollaterizedAmount)
-        ? vaultMaxWithdrawAmount
-        : vaultMinimumUncollaterizedAmount,
-    ];
-  }, [deposits, vaultMaxWithdrawAmount]);
+    return vaultMaxWithdrawAmount.gte(v2Capacity)
+      ? v2Capacity
+      : vaultMaxWithdrawAmount;
+  }, [cap, totalBalance, vaultMaxWithdrawAmount]);
 
   const error = useMemo(() => {
     if (!isPracticallyZero(vaultAccount.totalStakedBalance, decimals)) {
       return "amountStaked";
     }
 
-    if (vaultAccount.totalBalance.gt(vaultMaxWithdrawAmount)) {
-      return "insufficientWithdrawalLimit";
+    if (vaultAccount.totalBalance.gt(migrationLimit)) {
+      return "insufficientMigrationLimit";
     }
 
     return undefined;
   }, [
     decimals,
+    migrationLimit,
     vaultAccount.totalBalance,
     vaultAccount.totalStakedBalance,
-    vaultMaxWithdrawAmount,
   ]);
 
   /**
@@ -118,7 +108,7 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
             rETH-THETA staking pool
           </SecondaryText>
         );
-      case "insufficientWithdrawalLimit":
+      case "insufficientMigrationLimit":
         return (
           <SecondaryText className="mt-3 text-center" color={colors.red}>
             Migrating your ETH from V1 to V2 will breach the weekly migration
@@ -138,7 +128,7 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
         <MigrateIcon color={color} />
       </MigrateLogoContainer>
 
-      <FormTitle className="mt-3">MIRGATE TO V2</FormTitle>
+      <FormTitle className="mt-3">MIGRATE TO V2</FormTitle>
 
       <FormDescription className="mt-3 text-center">
         ETH deposits can now be migrated over from the V1 vault
@@ -153,28 +143,26 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
         </FormColumnData>
       </div>
 
-      <div className="d-flex w-100 mt-3">
-        <CapBar
-          loading={false}
-          current={parseFloat(formatUnits(weeklyMigrationAmount, decimals))}
-          cap={parseFloat(formatUnits(weeklyMigrationAmountLimit, decimals))}
-          copies={{
-            current: "Weekly Migrations",
-            cap: "Weekly Migration Limit",
-          }}
-          labelConfig={{
-            fontSize: 14,
-          }}
-          statsConfig={{
-            fontSize: 14,
-          }}
-          barConfig={{
-            height: 4,
-            extraClassNames: "my-2",
-            radius: 2,
-          }}
-          asset={asset}
+      {/* Migration limit */}
+      <div className="d-flex w-100 align-items-center mt-4">
+        <SecondaryText>Migration Limit</SecondaryText>
+        <TooltipExplanation
+          title="MIGRATION LIMIT"
+          explanation="The weekly migration limit is the max amount that can be migrated to the v2 vault. This amount takes into account the v1 vault's weekly withdrawal limit and the v2 vault's initial capacity."
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HelpInfo containerRef={ref} {...triggerHandler}>
+              i
+            </HelpInfo>
+          )}
         />
+        <FormColumnData
+          className="ml-auto"
+          color={
+            error === "insufficientMigrationLimit" ? colors.red : undefined
+          }
+        >
+          {formatBigNumber(migrationLimit, decimals)} {getAssetDisplay(asset)}
+        </FormColumnData>
       </div>
 
       {/* Migrate button */}
@@ -184,9 +172,17 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
         disabled={Boolean(error)}
         onClick={handleMigrate}
       >
-        Migration Preview
+        Migrate {getAssetDisplay(asset)}
       </ActionButton>
       {errorText}
+      <SecondaryText
+        className="mt-4 "
+        color={colors.primaryText}
+        role="button"
+        onClick={onHideForm}
+      >
+        <u>Skip Migration</u>
+      </SecondaryText>
     </div>
   );
 };

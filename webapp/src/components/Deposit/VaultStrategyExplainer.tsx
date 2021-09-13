@@ -8,6 +8,7 @@ import {
   getOptionAssets,
   isPutVault,
   VaultOptions,
+  VaultVersion,
 } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
@@ -23,6 +24,9 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
 import VaultDeposit from "./ExplainerGraphic/VaultDeposit";
+import AlgoStrikeSelection from "./ExplainerGraphic/AlgoStrikeSelection";
+import GnosisAuction from "./ExplainerGraphic/GnosisAuction";
+import { useEffect } from "react";
 
 const ExplainerContainer = styled.div`
   display: flex;
@@ -37,7 +41,7 @@ const ExplainerSection = styled.div<{ height: number }>`
   height: ${(props) => props.height}px;
 `;
 
-const VisualSection = styled(ExplainerSection)<{ color: string }>`
+const VisualMotionDiv = styled(motion.div)<{ color: string }>`
   background: linear-gradient(
     96.84deg,
     ${(props) => props.color}14 1.04%,
@@ -67,8 +71,11 @@ const HighlighText = styled.span`
 const ExplanationStepList = [
   "deposit",
   "yearnVaultDeposit",
+  "algoStrikeSelection",
   "strikeSelection",
   "mintOption",
+  "gnosisAuction",
+  "gnosisTrade",
   "tradeOption",
   "expiryA",
   "settlementA",
@@ -81,12 +88,42 @@ const NonYearnExclusionExplanationStepList: ExplanationStep[] = [
   "yearnVaultDeposit",
 ];
 
+const ExplanatioStepMap: { [version in VaultVersion]: Array<ExplanationStep> } =
+  {
+    v1: [
+      "deposit",
+      "yearnVaultDeposit",
+      "strikeSelection",
+      "mintOption",
+      "tradeOption",
+      "expiryA",
+      "settlementA",
+      "expiryB",
+      "settlementB",
+    ],
+    v2: [
+      "deposit",
+      "yearnVaultDeposit",
+      "algoStrikeSelection",
+      "mintOption",
+      "gnosisAuction",
+      "gnosisTrade",
+      "expiryA",
+      "settlementA",
+      "expiryB",
+      "settlementB",
+    ],
+  };
+
 interface VaultStrategyExplainerProps {
-  vaultOption: VaultOptions;
+  vault: {
+    vaultOption: VaultOptions;
+    vaultVersion: VaultVersion;
+  };
 }
 
 const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
-  vaultOption,
+  vault: { vaultOption, vaultVersion },
 }) => {
   const containerRef = useRef(null);
   const { width } = useScreenSize();
@@ -101,16 +138,39 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
   const currentVaultExplanationStepList = useMemo(() => {
     switch (getDisplayAssets(vaultOption)) {
       case "yvUSDC":
-        return ExplanationStepList;
+        return ExplanatioStepMap[vaultVersion];
       default:
-        return [...ExplanationStepList].filter(
+        return ExplanatioStepMap[vaultVersion].filter(
           (item) => !NonYearnExclusionExplanationStepList.includes(item)
         );
     }
-  }, [vaultOption]);
+  }, [vaultOption, vaultVersion]);
 
   const [step, setStep] = useState<ExplanationStep>(
     currentVaultExplanationStepList[0]
+  );
+
+  /**
+   * Prevent wrong step showing up when change vault version
+   */
+  useEffect(() => {
+    if (!currentVaultExplanationStepList.includes(step)) {
+      setStep(currentVaultExplanationStepList[0]);
+    }
+  }, [currentVaultExplanationStepList, step]);
+
+  const backgroundColor = useCallback(
+    (s: ExplanationStep) => {
+      switch (s) {
+        case "expiryA":
+          return colors.green;
+        case "expiryB":
+          return colors.red;
+        default:
+          return color;
+      }
+    },
+    [color]
   );
 
   const renderGraphic = useCallback(
@@ -128,6 +188,8 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
               receiveToken={collateralAsset}
             />
           );
+        case "algoStrikeSelection":
+          return <AlgoStrikeSelection depositAsset={asset} />;
         case "strikeSelection":
           return <StrikeSelection color={color} isPut={isPut} />;
         case "mintOption":
@@ -137,6 +199,16 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
               tradeTarget="Opyn Vault"
               offerToken={collateralAsset}
               receiveToken="oToken"
+            />
+          );
+        case "gnosisAuction":
+          return <GnosisAuction depositAsset={asset} />;
+        case "gnosisTrade":
+          return (
+            <TradeOffer
+              color={color}
+              tradeTarget="Gnosis"
+              receiveToken={asset}
             />
           );
         case "tradeOption":
@@ -149,7 +221,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
             />
           );
         case "expiryA":
-          return <ExpiryChart color={color} higherPrice={isPut} isOTM />;
+          return <ExpiryChart higherPrice={isPut} isOTM />;
         case "settlementA":
           return (
             <TradeOffer
@@ -159,21 +231,30 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
             />
           );
         case "expiryB":
-          return (
-            <ExpiryChart color={color} higherPrice={!isPut} isOTM={false} />
-          );
+          return <ExpiryChart higherPrice={!isPut} isOTM={false} />;
         case "settlementB":
+          let offerParty;
+
+          switch (vaultVersion) {
+            case "v1":
+              offerParty = "MARKET MAKER";
+              break;
+            case "v2":
+            default:
+              offerParty = "OPTION BUYER";
+          }
+
           return (
             <TradeOffer
               color={color}
-              offerParty="MARKET MAKER"
+              offerParty={offerParty}
               tradeTarget="Opyn Vault"
               receiveToken={asset}
             />
           );
       }
     },
-    [asset, color, isPut, vaultOption]
+    [asset, color, isPut, vaultOption, vaultVersion]
   );
 
   const renderTitle = useCallback(
@@ -183,10 +264,16 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           return "VAULT Receives DEPOSITS";
         case "yearnVaultDeposit":
           return `DEPOSITS ${getAssetDisplay(asset)} IN YEARN`;
+        case "algoStrikeSelection":
+          return "ALGORITHMIC STRIKE SELECTION";
         case "strikeSelection":
           return "MANAGER SELECTS STRIKE AND EXPIRY";
         case "mintOption":
           return "VAULT CREATES OPTIONS";
+        case "gnosisAuction":
+          return "VAULT SELLS OPTIONS VIA GNOSIS AUCTION";
+        case "gnosisTrade":
+          return "VAULT COLLECTS YIELDS";
         case "tradeOption":
           return "VAULT SELLS OPTIONS TO MARKET MAKERS";
         case "expiryA":
@@ -198,10 +285,21 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
             isPut ? "ABOVE" : "BELOW"
           } MARKET PRICE`;
         case "settlementB":
-          return "MARKET MAKER EXERCISEs OPTIONS";
+          let offerParty;
+
+          switch (vaultVersion) {
+            case "v1":
+              offerParty = "MARKET MAKER";
+              break;
+            case "v2":
+            default:
+              offerParty = "OPTION BUYER";
+          }
+
+          return `${offerParty} EXERCISEs OPTIONS`;
       }
     },
-    [asset, isPut]
+    [asset, isPut, vaultVersion]
   );
 
   const renderDescription = useCallback(
@@ -210,16 +308,39 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
       const optionAssetUnit = getAssetDisplay(optionAsset);
       const collateralAsset = getDisplayAssets(vaultOption);
       const collateralAssetUnit = getAssetDisplay(collateralAsset);
+      let optionBuyerParty;
+
+      switch (vaultVersion) {
+        case "v1":
+          optionBuyerParty = "market makers";
+          break;
+        case "v2":
+        default:
+          optionBuyerParty = "option buyers";
+      }
+
       switch (s) {
         case "deposit":
-          return (
-            <>
-              The vault receives {assetUnit} from depositors and invests 90% of
-              these funds in its weekly strategy. The remaining 10% of funds is
-              set aside so that depositors can withdraw their {assetUnit} from
-              the vault.
-            </>
-          );
+          switch (vaultVersion) {
+            case "v1":
+              return (
+                <>
+                  The vault receives {assetUnit} from depositors and invests 90%
+                  of these funds in its weekly strategy. The remaining 10% of
+                  funds is set aside so that depositors can withdraw their{" "}
+                  {assetUnit} from the vault.
+                </>
+              );
+            case "v2":
+            default:
+              return (
+                <>
+                  The vault receives {assetUnit} from depositors and invests
+                  100% of its {assetUnit} balance in its weekly options
+                  strategy.
+                </>
+              );
+          }
         case "yearnVaultDeposit":
           return (
             <>
@@ -248,6 +369,42 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
               />
               . By converting {assetUnit} into {collateralAssetUnit}, the vault
               gains exposure to the yield generated by the Yearn yVault.
+            </>
+          );
+        case "algoStrikeSelection":
+          return (
+            <>
+              The vault algorithmically selects the optimal{" "}
+              <TooltipExplanation
+                title="STRIKE PRICE"
+                explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
+                learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HighlighText ref={ref} {...triggerHandler}>
+                    strike price
+                  </HighlighText>
+                )}
+              />{" "}
+              for the{" "}
+              <TooltipExplanation
+                title={isPut ? "PUT OPTION" : "COVERED CALL"}
+                explanation={
+                  isPut
+                    ? "A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
+                    : "A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
+                }
+                learnMoreURL={
+                  isPut
+                    ? "https://www.investopedia.com/terms/p/putoption.asp"
+                    : "https://www.investopedia.com/terms/c/coveredcall.asp"
+                }
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HighlighText ref={ref} {...triggerHandler}>
+                    {optionAssetUnit} {isPut ? "put" : "call"} options
+                  </HighlighText>
+                )}
+              />
+              .
             </>
           );
         case "strikeSelection":
@@ -327,6 +484,23 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
               expiry date (the following Friday). In return, the vault receives
               oTokens from the Opyn vault which represent the {optionAssetUnit}{" "}
               {isPut ? "put" : "call"} options.
+            </>
+          );
+        case "gnosisAuction":
+          return (
+            <>
+              The vault sells the newly minted options via a Gnosis batch
+              auction. The vault first sets a minimum price for the options and
+              then opens up bidding to anyone in the world. Participants whose
+              bid is greater than or equal to the final clearing price receive
+              the auctioned oTokens.
+            </>
+          );
+        case "gnosisTrade":
+          return (
+            <>
+              The {assetUnit} earned from the Gnosis auction is collected by the
+              vault and represents the yield on this strategy.
             </>
           );
         case "tradeOption":
@@ -418,7 +592,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                 )}
               />
               . In this situation the {isPut ? "put" : "call"} options held by
-              the market makers expire worthless.
+              the {optionBuyerParty} expire worthless.
             </>
           );
         case "settlementA":
@@ -473,7 +647,8 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                   </HighlighText>
                 )}
               />
-              . In this situation the market makers can exercise their options.
+              . In this situation the {optionBuyerParty} can exercise their
+              options.
             </>
           );
         case "settlementB":
@@ -494,7 +669,8 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                   </HighlighText>
                 )}
               />
-              , the market makers can exercise their options. The options are{" "}
+              , the {optionBuyerParty} can exercise their options. The options
+              are{" "}
               <TooltipExplanation
                 title="CASH-SETTLED OPTIONS"
                 explanation="A cash-settled option is a type of option for which actual physical delivery of the underlying asset or security is not required."
@@ -505,19 +681,31 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                   </HighlighText>
                 )}
               />
-              , and so for each options contract, market makers can withdraw the
-              difference between the price of {optionAssetUnit} and the strike
-              price at expiry. Any {collateralAssetUnit} left over is returned
-              to the Ribbon vault.
+              , and so for each options contract, {optionBuyerParty} can
+              withdraw the difference between the price of {optionAssetUnit} and
+              the strike price at expiry. Any {collateralAssetUnit} left over is
+              returned to the Ribbon vault.
             </>
           );
       }
     },
-    [asset, isPut, isYearn, optionAsset, vaultOption]
+    [asset, isPut, isYearn, optionAsset, vaultOption, vaultVersion]
   );
 
-  const infoSection = useMemo(
-    () => (
+  const infoSection = useMemo(() => {
+    let titleColor;
+    switch (step) {
+      case "expiryA":
+        titleColor = colors.green;
+        break;
+      case "expiryB":
+        titleColor = colors.red;
+        break;
+      default:
+        titleColor = color;
+    }
+
+    return (
       <ExplainerSection
         height={width > sizes.lg ? 280 : 330}
         className="d-flex flex-column p-3"
@@ -544,7 +732,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
             }}
             className="d-flex flex-column flex-grow-1"
           >
-            <InfoTitle color={color} className="mb-3">
+            <InfoTitle color={titleColor} className="mb-3">
               {renderTitle(step)}
             </InfoTitle>
             <InfoDescription className="flex-grow-1">
@@ -560,27 +748,25 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           }}
         />
       </ExplainerSection>
-    ),
-    [
-      color,
-      currentVaultExplanationStepList,
-      width,
-      step,
-      renderTitle,
-      renderDescription,
-    ]
-  );
+    );
+  }, [
+    color,
+    currentVaultExplanationStepList,
+    width,
+    step,
+    renderTitle,
+    renderDescription,
+  ]);
 
   return (
     <ExplainerContainer ref={containerRef}>
-      <VisualSection
+      <ExplainerSection
         height={
           width > sizes.lg ? (sectionWidth / 23) * 8 : (sectionWidth / 15) * 7
         }
-        color={color}
       >
         <AnimatePresence initial={false} exitBeforeEnter>
-          <motion.div
+          <VisualMotionDiv
             key={step}
             initial={{
               x: 100,
@@ -600,11 +786,12 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
               ease: "easeInOut",
             }}
             className="w-100 h-100"
+            color={backgroundColor(step)}
           >
             {renderGraphic(step)}
-          </motion.div>
+          </VisualMotionDiv>
         </AnimatePresence>
-      </VisualSection>
+      </ExplainerSection>
       {infoSection}
     </ExplainerContainer>
   );

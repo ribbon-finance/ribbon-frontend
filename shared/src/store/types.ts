@@ -55,6 +55,7 @@ export interface ConnectedV2VaultData {
   userAssetBalance: BigNumber;
   withdrawals: {
     shares: BigNumber;
+    amount: BigNumber;
     round: number;
   };
 }

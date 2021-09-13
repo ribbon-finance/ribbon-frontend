@@ -43,6 +43,7 @@ import useVaultData from "shared/lib/hooks/useVaultData";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { isPracticallyZero } from "shared/lib/utils/math";
 import { getAssetDecimals } from "shared/lib/utils/asset";
+import YourPosition from "../Vault/YourPosition";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -254,9 +255,14 @@ interface AccountStatusProps {
     vaultVersion: VaultVersion;
   };
   variant: "desktop" | "mobile";
+  showVaultPositionHook?: (show: boolean) => void;
 }
 
-const AccountStatus: React.FC<AccountStatusProps> = ({ vault, variant }) => {
+const AccountStatus: React.FC<AccountStatusProps> = ({
+  vault,
+  variant,
+  showVaultPositionHook,
+}) => {
   const {
     connector,
     deactivate: deactivateWeb3,
@@ -404,7 +410,19 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ vault, variant }) => {
   );
 
   return (
-    <>
+    <div
+      className={`d-flex flex-wrap flex-column ${
+        variant === "mobile" ? "w-100" : ""
+      }`}
+    >
+      {vault && (
+        <YourPosition
+          vault={vault}
+          variant="mobile"
+          onShowHook={showVaultPositionHook}
+        />
+      )}
+
       {/* Main Button and Desktop Menu */}
       <WalletContainer variant={variant} ref={desktopMenuRef}>
         <WalletButton
@@ -470,7 +488,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ vault, variant }) => {
       </WalletMobileOverlayMenu>
 
       {formModal}
-    </>
+    </div>
   );
 };
 export default AccountStatus;

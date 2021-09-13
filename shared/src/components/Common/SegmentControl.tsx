@@ -2,24 +2,68 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Frame } from "framer";
 import styled from "styled-components";
 
-import colors from "shared/lib/designSystem/colors";
-import { Subtitle } from "shared/lib/designSystem";
-import theme from "shared/lib/designSystem/theme";
+import theme from "../../designSystem/theme";
+import colors from "../../designSystem/colors";
+import { Subtitle } from "../../designSystem";
 
-const SegmentControlContainer = styled.div`
+type WidthType = "fullWidth" | "maxContent";
+
+const SegmentControlContainer = styled.div<{
+  theme?: "outline";
+  color?: string;
+  widthType: WidthType;
+}>`
   border-radius: ${theme.border.radius};
-  background-color: ${colors.backgroundDarker};
+  background-color: ${(props) =>
+    props.color ? `${props.color}14` : colors.backgroundDarker};
   display: flex;
   position: relative;
-  padding: 8px;
+
+  ${(props) => {
+    switch (props.theme) {
+      case "outline":
+        return "";
+      default:
+        return "padding: 8px;";
+    }
+  }}
+
+  ${(props) => {
+    switch (props.widthType) {
+      case "fullWidth":
+        return `
+          flex: 1;
+        `;
+      case "maxContent":
+        return ``;
+    }
+  }}
 `;
 
-const ActiveBackground = styled(Frame)`
+const ActiveBackground = styled(Frame)<{
+  theme?: "outline";
+  color?: string;
+}>`
   border-radius: ${theme.border.radius} !important;
-  background-color: ${colors.primaryText}1F !important;
+  ${(props) => {
+    switch (props.theme) {
+      case "outline":
+        return `
+          border: ${theme.border.width} ${theme.border.style} 
+            ${props.color ? props.color : colors.primaryText};
+          background-color: transparent !important;
+        `;
+      default:
+        return `
+          background-color: ${
+            props.color ? props.color : colors.primaryText
+          }1F !important;
+        `;
+    }
+  }}
 `;
 
-const SegmentControlButton = styled.div`
+const SegmentControlButton = styled.div<{ widthType: WidthType }>`
   padding: 12px 16px;
   z-index: 1;
   margin-right: 4px;
@@ -27,6 +71,19 @@ const SegmentControlButton = styled.div`
   &:last-child {
     margin-right: 0px;
   }
+
+  ${(props) => {
+    switch (props.widthType) {
+      case "fullWidth":
+        return `
+          display: flex;
+          flex: 1;
+          justify-content: center;
+        `;
+      case "maxContent":
+        return ``;
+    }
+  }}
 `;
 
 const SegmentControlButtonText = styled(Subtitle)`
@@ -42,12 +99,18 @@ interface SegmentControlProps {
   }[];
   value: string;
   onSelect: (value: string) => void;
+  config?: {
+    theme?: "outline";
+    color?: string;
+    widthType?: WidthType;
+  };
 }
 
 const SegmentControl: React.FC<SegmentControlProps> = ({
   segments,
   value,
   onSelect,
+  config: { theme, color, widthType = "maxContent" } = {},
 }) => {
   const controlRefs = useMemo(
     () =>
@@ -77,7 +140,7 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
   }, [value, controlRefs]);
 
   return (
-    <SegmentControlContainer>
+    <SegmentControlContainer theme={theme} color={color} widthType={widthType}>
       <ActiveBackground
         transition={{
           type: "keyframes",
@@ -88,6 +151,8 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
           width: 0,
         }}
         animate={activeBackgroundState}
+        theme={theme}
+        color={color}
       />
       {segments.map((segment) => (
         <SegmentControlButton
@@ -95,8 +160,11 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
           role="button"
           onClick={() => onSelect(segment.value)}
           ref={controlRefs[segment.value]}
+          widthType={widthType}
         >
-          <SegmentControlButtonText>{segment.display}</SegmentControlButtonText>
+          <SegmentControlButtonText color={color}>
+            {segment.display}
+          </SegmentControlButtonText>
         </SegmentControlButton>
       ))}
     </SegmentControlContainer>

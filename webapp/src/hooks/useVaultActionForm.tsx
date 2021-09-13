@@ -28,6 +28,11 @@ export type VaultActionFormTransferData =
     }
   | undefined;
 
+export type WithdrawMetadata = {
+  allowStandardWithdraw?: boolean;
+  instantWithdrawBalance?: BigNumber;
+};
+
 const useVaultActionForm = (vaultOption: VaultOptions) => {
   const [vaultActionForm, setVaultActionForm] =
     useWebappGlobalState("vaultActionForm");
@@ -115,17 +120,19 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     vaultActionForm.actionType,
   ]);
 
-  const withdrawMetadata = useMemo(() => {
+  const withdrawMetadata = useMemo((): WithdrawMetadata => {
     switch (vaultActionForm.vaultVersion) {
       case "v2":
         return {
           allowStandardWithdraw:
             !v2LockedBalanceInAsset.isZero() || !v2Withdrawals.shares.isZero(),
+          instantWithdrawBalance: v2DepositBalanceInAsset,
         };
     }
 
     return {};
   }, [
+    v2DepositBalanceInAsset,
     v2LockedBalanceInAsset,
     v2Withdrawals.shares,
     vaultActionForm.vaultVersion,
@@ -325,6 +332,11 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
                     ...actionForm,
                     inputAmount: formatUnits(v2DepositBalanceInAsset, decimals),
                   };
+                case "complete":
+                  return {
+                    ...actionForm,
+                    inputAmount: formatUnits(v2Withdrawals.amount, decimals),
+                  };
                 case "standard":
                 default:
                   return {
@@ -349,6 +361,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     v2LockedBalanceInAsset,
     v2TotalBalance,
     v2VaultBalanceInAsset,
+    v2Withdrawals,
     vaultBalanceInAsset,
     vaultLimit,
     vaultMaxDepositAmount,

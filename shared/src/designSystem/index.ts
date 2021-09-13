@@ -35,7 +35,7 @@ export const BaseButton = styled.div`
 `;
 
 export const BaseModal = styled(BootstrapModal)`
-  backdrop-filter: blur(40px);
+  backdrop-filter: blur(80px);
   /**
    * Firefox desktop come with default flag to have backdrop-filter disabled
    * Firefox Android also currently has bug where backdrop-filter is not being applied
@@ -89,8 +89,8 @@ export const Title = styled.span<{ color?: string }>`
   text-transform: uppercase;
 `;
 
-export const Subtitle = styled.span`
-  color: ${colors.primaryText};
+export const Subtitle = styled.span<{ color?: string }>`
+  color: ${(props) => (props.color ? props.color : colors.primaryText)};
   font-family: VCR, sans-serif;
   font-style: normal;
   font-weight: normal;

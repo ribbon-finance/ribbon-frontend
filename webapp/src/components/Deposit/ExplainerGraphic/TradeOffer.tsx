@@ -9,6 +9,7 @@ import { Assets } from "shared/lib/store/types";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import { MoneyLogo } from "../../../assets/icons/vaultExplainer/tradeOffer";
 import sizes from "shared/lib/designSystem/sizes";
+import { GnosisLogo } from "shared/lib/assets/icons/defiApp";
 
 const TargetContainer = styled.div`
   display: flex;
@@ -44,6 +45,12 @@ const ColoredLogo = styled(Logo)<{ color: string }>`
 
   path {
     stroke: ${(props) => props.color};
+  }
+`;
+
+const ColoredGnosisLogo = styled(GnosisLogo)<{ color: string }>`
+  g {
+    fill: ${(props) => props.color};
   }
 `;
 
@@ -283,6 +290,35 @@ const TradeOffer: React.FC<TradeOfferProps> = ({
   const ref = useRef(null);
   const { height } = useElementSize(ref);
 
+  const renderParty = (party?: string) => {
+    if (!party) {
+      return (
+        <ColoredLogo
+          width={`${height * 0.75 * 0.3}px`}
+          height={`${height * 0.75 * 0.3}px`}
+          color={color}
+        />
+      );
+    }
+
+    switch (party?.toLocaleLowerCase()) {
+      case "gnosis":
+        return (
+          <ColoredGnosisLogo
+            width={`${height * 0.75 * 0.3}px`}
+            height={`${height * 0.75 * 0.3}px`}
+            color={color}
+          />
+        );
+      default:
+        return (
+          <TargetLabel color={color} size={height * 0.75 * 0.1}>
+            {party}
+          </TargetLabel>
+        );
+    }
+  };
+
   return (
     <div
       ref={ref}
@@ -295,24 +331,12 @@ const TradeOffer: React.FC<TradeOfferProps> = ({
           dimension={height * 0.75}
           className="mr-auto"
         >
-          {offerParty ? (
-            <TargetLabel color={color} size={height * 0.75 * 0.1}>
-              {offerParty}
-            </TargetLabel>
-          ) : (
-            <ColoredLogo
-              width={`${height * 0.75 * 0.3}px`}
-              height={`${height * 0.75 * 0.3}px`}
-              color={color}
-            />
-          )}
+          {renderParty(offerParty)}
         </TargetCircle>
 
         {/* To circle */}
         <TargetCircle color={color} dimension={height * 0.75}>
-          <TargetLabel color={color} size={height * 0.75 * 0.1}>
-            {tradeTarget}
-          </TargetLabel>
+          {renderParty(tradeTarget)}
         </TargetCircle>
 
         {/* Offer Tunnel */}

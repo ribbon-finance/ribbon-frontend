@@ -4,8 +4,11 @@ import axios from "axios";
 import { BigNumber } from "ethers";
 
 import { VaultTransaction } from "shared/lib/models/vault";
-import { getSubgraphqlURI } from "shared/lib/utils/env";
 import { impersonateAddress } from "shared/lib/utils/development";
+import {
+  getSubgraphURIForVersion,
+  VaultVersionList,
+} from "shared/lib/constants/constants";
 
 const useTransactions = () => {
   const web3Context = useWeb3React();
@@ -35,35 +38,50 @@ const useTransactions = () => {
 const fetchTransactions = async (
   account: string
 ): Promise<VaultTransaction[]> => {
-  const response = await axios.post(getSubgraphqlURI(), {
-    query: `
-        {
-          vaultTransactions(
-            where:{address:"${account}"}, 
-            orderBy: timestamp, 
-            orderDirection: desc
-          ) {
-            id
-            type
-            vault {
+  const responses = Object.fromEntries(
+    await Promise.all(
+      VaultVersionList.map(async (version) => {
+        const response = await axios.post(getSubgraphURIForVersion(version), {
+          query: `
+          {
+            vaultTransactions(
+              where:{address:"${account}"}, 
+              orderBy: timestamp, 
+              orderDirection: desc
+            ) {
               id
-              symbol
+              type
+              vault {
+                id
+                symbol
+              }
+              amount
+              underlyingAmount
+              address
+              txhash
+              timestamp
             }
-            amount
-            underlyingAmount
-            address
-            txhash
-            timestamp
           }
-        }
-        `,
-  });
+          `,
+        });
 
-  return response.data.data.vaultTransactions.map((transaction: any) => ({
-    ...transaction,
-    amount: BigNumber.from(transaction.amount),
-    underlyingAmount: BigNumber.from(transaction.underlyingAmount),
-  }));
+        return [version, response];
+      })
+    )
+  );
+
+  return Object.keys(responses).flatMap((version) =>
+    responses[version].data.data
+      ? responses[version].data.data.vaultTransactions.map(
+          (transaction: any) => ({
+            ...transaction,
+            amount: BigNumber.from(transaction.amount),
+            underlyingAmount: BigNumber.from(transaction.underlyingAmount),
+            vaultVersion: version,
+          })
+        )
+      : []
+  );
 };
 
 export default useTransactions;

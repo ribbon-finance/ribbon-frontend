@@ -18,6 +18,7 @@ const theme = {
     },
     mobile: {
       height: 104,
+      heightWithPosition: 104 + 56,
     },
   },
 };

@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
+import { formatUnits } from "@ethersproject/units";
 
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -9,8 +10,15 @@ import {
   useLatestAPY,
   useHistoricalData,
 } from "shared/lib/hooks/useAirtableData";
-import { VaultOptions } from "shared/lib/constants/constants";
+import {
+  getAssets,
+  VaultOptions,
+  VaultVersion,
+} from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
+import useV2VaultPriceHistory from "../../hooks/useV2VaultPriceHistory";
+import { getAssetDecimals } from "shared/lib/utils/asset";
+import moment from "moment";
 
 const VaultPerformacneChartContainer = styled.div`
   border: 1px solid ${colors.border};
@@ -53,15 +61,64 @@ const DateFilter = styled(Title)<DateFilterProps>`
 `;
 
 interface VaultPerformanceChartProps {
-  vaultOption: VaultOptions;
+  vault: {
+    vaultOption: VaultOptions;
+    vaultVersion: VaultVersion;
+  };
 }
 
 const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
-  vaultOption,
+  vault: { vaultOption, vaultVersion },
 }) => {
   const airtableData = useHistoricalData(vaultOption);
-  const yields = airtableData.res.map((data) => data.cumYield);
-  const timestamps = airtableData.res.map((data) => new Date(data.timestamp));
+  const { priceHistory: v2PriceHistory } = useV2VaultPriceHistory(vaultOption);
+
+  const [yields, timestamps] = useMemo(() => {
+    switch (vaultVersion) {
+      case "v1":
+        return [
+          airtableData.res.map((data) => data.cumYield),
+          airtableData.res.map((data) => new Date(data.timestamp)),
+        ];
+      case "v2":
+        if (v2PriceHistory.length === 0) {
+          return [
+            [0, 0],
+            [moment().toDate(), moment().toDate()],
+          ];
+        }
+
+        if (v2PriceHistory.length === 1) {
+          return [
+            [0, 0],
+            [
+              v2PriceHistory[0].timestamp.toDate(),
+              v2PriceHistory[0].timestamp.toDate(),
+            ],
+          ];
+        }
+
+        return [
+          v2PriceHistory.map((data, index) => {
+            /**
+             * Initial yield as 0
+             */
+            if (index === 0) {
+              return 0;
+            }
+
+            const decimals = getAssetDecimals(getAssets(vaultOption));
+            const initialPrice = parseFloat(
+              formatUnits(v2PriceHistory[0].price, decimals)
+            );
+            const currentPrice = parseFloat(formatUnits(data.price, decimals));
+
+            return ((currentPrice - initialPrice) / initialPrice) * 100;
+          }),
+          v2PriceHistory.map((data) => data.timestamp.toDate()),
+        ];
+    }
+  }, [airtableData.res, v2PriceHistory, vaultOption, vaultVersion]);
 
   // states
   const [monthFilter, setMonthFilter] = useState(false);

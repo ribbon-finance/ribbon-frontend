@@ -32,6 +32,7 @@ import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "../../../Common/HelpInfo";
+import AssetCircleContainer from "../../../Common/AssetCircleContainer";
 
 const WithdrawTypeSegmentControlContainer = styled.div`
   display: flex;
@@ -72,6 +73,19 @@ const InfoData = styled(Title)`
   margin-left: auto;
 `;
 
+const FormFooterButton = styled.div`
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-radius: 100px;
+  padding: 10px 16px;
+`;
+
+const WithdrawButtonLogo = styled.div<{ color: string }>`
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  background: ${(props) => props.color};
+`;
+
 interface VaultV2WithdrawFormProps {
   vaultOption: VaultOptions;
   error?: VaultValidationErrors;
@@ -79,6 +93,7 @@ interface VaultV2WithdrawFormProps {
   depositBalanceInAsset: BigNumber;
   lockedBalanceInAsset: BigNumber;
   initiatedWithdrawAmount: BigNumber;
+  canCompleteWithdraw: boolean;
 }
 
 const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
@@ -88,6 +103,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
   depositBalanceInAsset,
   lockedBalanceInAsset,
   initiatedWithdrawAmount,
+  canCompleteWithdraw,
 }) => {
   const asset = getAssets(vaultOption);
   const assetDisplay = getAssetDisplay(asset);
@@ -118,7 +134,11 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
 
   useEffect(() => {
     const currentRef =
-      withdrawOptionRefs[vaultActionForm.withdrawOption!]?.current;
+      withdrawOptionRefs[
+        vaultActionForm.withdrawOption! === "complete"
+          ? "stamdard"
+          : vaultActionForm.withdrawOption!
+      ]?.current;
 
     if (!currentRef) {
       return;
@@ -132,6 +152,21 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
     });
   }, [vaultActionForm.withdrawOption, withdrawOptionRefs]);
 
+  /**
+   * Check to make sure user only use complete when they can complete withdraw
+   */
+  useEffect(() => {
+    if (!canCompleteWithdraw && vaultActionForm.withdrawOption === "complete") {
+      handleActionTypeChange(ACTIONS.withdraw, "v2", {
+        withdrawOption: "standard",
+      });
+    }
+  }, [
+    canCompleteWithdraw,
+    handleActionTypeChange,
+    vaultActionForm.withdrawOption,
+  ]);
+
   const renderWithdrawOptionExplanation = useCallback(
     (withdrawOption: V2WithdrawOption, active: boolean) => {
       switch (withdrawOption) {
@@ -139,7 +174,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
           return (
             <TooltipExplanation
               title="INSTANT WITHDRAWAL"
-              explanation="Instant withdrawals are for funds that have not been deposited but not yet deployed in the vault’s weekly strategy. Because these funds haven’t been deployed they can be withdrawn immediately."
+              explanation="Instant withdrawals are for funds that have been deposited but not yet deployed in the vault’s weekly strategy. Because these funds haven’t been deployed they can be withdrawn immediately."
               renderContent={({ ref, ...triggerHandler }) => (
                 <HelpInfo
                   containerRef={ref}
@@ -152,6 +187,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
             />
           );
         case "standard":
+        case "complete":
           return (
             <TooltipExplanation
               title="STANDARD WITHDRAWAL"
@@ -193,6 +229,8 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
       switch (_error) {
         case "withdrawLimitExceeded":
           return "Available limit exceeded";
+        case "eixstingWithdraw":
+          return "Existing withdraw from previous round";
       }
     }
 
@@ -214,6 +252,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
           </div>
         );
       case "standard":
+      case "complete":
         return (
           <>
             <div className="d-flex align-items-center mt-3">
@@ -282,13 +321,15 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
       return (
         <ActionButton
           disabled={Boolean(error) || !isInputNonZero}
-          onClick={onFormSubmit}
+          onClick={() => {
+            onFormSubmit();
+          }}
           className="mt-4 py-3"
           color={color}
         >
-          {vaultActionForm.withdrawOption! === "standard"
-            ? "Initiate Withdrawal"
-            : `Withdraw ${assetDisplay}`}
+          {vaultActionForm.withdrawOption! === "instant"
+            ? `Withdraw ${assetDisplay}`
+            : "Initiate Withdrawal"}
         </ActionButton>
       );
     }
@@ -310,7 +351,38 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
     isInputNonZero,
     onFormSubmit,
     setShowConnectModal,
-    vaultActionForm,
+    vaultActionForm.withdrawOption,
+  ]);
+
+  const formFooter = useMemo(() => {
+    if (canCompleteWithdraw) {
+      return (
+        <FormFooterButton
+          className="d-flex align-items-center justify-content-center mt-4 mx-3"
+          role="button"
+          onClick={() => {
+            handleActionTypeChange(ACTIONS.withdraw, "v2", {
+              withdrawOption: "complete",
+            });
+            handleMaxClick();
+            onFormSubmit();
+          }}
+        >
+          <AssetCircleContainer size={24} color={color}>
+            <WithdrawButtonLogo color={color} />
+          </AssetCircleContainer>
+          <SecondaryText className="ml-1" color={colors.primaryText}>
+            Complete your initiated withdrawals
+          </SecondaryText>
+        </FormFooterButton>
+      );
+    }
+  }, [
+    canCompleteWithdraw,
+    color,
+    handleActionTypeChange,
+    handleMaxClick,
+    onFormSubmit,
   ]);
 
   return (
@@ -328,32 +400,38 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
           }}
           animate={activeBackgroundState}
         />
-        {V2WithdrawOptionList.map((withdrawOption) => (
-          <WithdrawTypeSegmentControl
-            key={withdrawOption}
-            ref={withdrawOptionRefs[withdrawOption]}
-            role="button"
-            onClick={() => {
-              handleActionTypeChange(ACTIONS.withdraw, "v2", {
-                withdrawOption: withdrawOption,
-              });
-            }}
-          >
-            <WithdrawTypeSegmentControlText
-              active={vaultActionForm.withdrawOption === withdrawOption}
-              disabled={
-                withdrawOption === "standard" &&
-                !withdrawMetadata.allowStandardWithdraw
-              }
+        {V2WithdrawOptionList.map((withdrawOption) => {
+          /**
+           * Complete withdraw is also consider as standard
+           */
+          const active =
+            vaultActionForm.withdrawOption === withdrawOption ||
+            (withdrawOption === "standard" &&
+              vaultActionForm.withdrawOption === "complete");
+          return (
+            <WithdrawTypeSegmentControl
+              key={withdrawOption}
+              ref={withdrawOptionRefs[withdrawOption]}
+              role="button"
+              onClick={() => {
+                handleActionTypeChange(ACTIONS.withdraw, "v2", {
+                  withdrawOption: withdrawOption,
+                });
+              }}
             >
-              {withdrawOption}{" "}
-              {renderWithdrawOptionExplanation(
-                withdrawOption,
-                vaultActionForm.withdrawOption === withdrawOption
-              )}
-            </WithdrawTypeSegmentControlText>
-          </WithdrawTypeSegmentControl>
-        ))}
+              <WithdrawTypeSegmentControlText
+                active={active}
+                disabled={
+                  withdrawOption !== "instant" &&
+                  !withdrawMetadata.allowStandardWithdraw
+                }
+              >
+                {withdrawOption}{" "}
+                {renderWithdrawOptionExplanation(withdrawOption, active)}
+              </WithdrawTypeSegmentControlText>
+            </WithdrawTypeSegmentControl>
+          );
+        })}
       </WithdrawTypeSegmentControlContainer>
 
       {/* Input */}
@@ -381,6 +459,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
       )}
       {formExtraInfo}
       {renderButton()}
+      {formFooter}
     </>
   );
 };

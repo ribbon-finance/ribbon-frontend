@@ -7,7 +7,11 @@ import theme from "../../designSystem/theme";
 import colors from "../../designSystem/colors";
 import MenuButton from "./MenuButton";
 
-const StyledModal = styled(BaseModal)<{ height: number; maxWidth: number }>`
+const StyledModal = styled(BaseModal)<{
+  height: number;
+  maxWidth: number;
+  theme?: string;
+}>`
   .modal-dialog {
     width: 95vw;
     max-width: ${(props) => props.maxWidth}px;
@@ -19,6 +23,14 @@ const StyledModal = styled(BaseModal)<{ height: number; maxWidth: number }>`
     transition: min-height 0.25s;
     min-height: ${(props) => props.height}px;
     overflow: hidden;
+
+    ${(props) =>
+      props.theme
+        ? `
+            background-color: ${props.theme}03;
+            border: ${theme.border.width} ${theme.border.style} ${props.theme}29;
+          `
+        : ``}}
   }
 `;
 
@@ -39,7 +51,7 @@ const BackButton = styled.div`
   }
 `;
 
-const CloseButton = styled.div`
+const CloseButton = styled.div<{ theme?: string }>`
   position: absolute;
   top: 16px;
   right: 16px;
@@ -48,7 +60,8 @@ const CloseButton = styled.div`
   justify-content: center;
   width: 40px;
   height: 40px;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border: ${theme.border.width} ${theme.border.style}
+    ${(props) => (props.theme ? `${colors.primaryText}0A` : `${colors.border}`)};
   border-radius: 48px;
   color: ${colors.text};
   z-index: 2;
@@ -86,6 +99,7 @@ interface BasicModalProps {
   children: JSX.Element;
   animationProps?: HTMLMotionProps<"div"> & RefAttributes<HTMLDivElement>;
   headerBackground?: boolean;
+  theme?: string;
 }
 
 const BasicModal: React.FC<BasicModalProps> = ({
@@ -98,6 +112,7 @@ const BasicModal: React.FC<BasicModalProps> = ({
   children,
   animationProps = {},
   headerBackground = false,
+  theme,
 }) => (
   <StyledModal
     show={show}
@@ -106,6 +121,7 @@ const BasicModal: React.FC<BasicModalProps> = ({
     maxWidth={maxWidth}
     onHide={onClose}
     backdrop
+    theme={theme}
   >
     <BaseModalHeader>
       {/* Back button */}

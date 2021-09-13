@@ -3,9 +3,9 @@ import { Container } from "react-bootstrap";
 import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
 
-import SegmentControl from "../../components/Common/SegmentControl";
 import TokenSaleOverview from "./TokenSaleOverview";
 import FAQ from "./FAQ";
+import SegmentControl from "shared/lib/components/Common/SegmentControl";
 
 const ContentContainer = styled(motion.div)`
   margin-top: 40px;

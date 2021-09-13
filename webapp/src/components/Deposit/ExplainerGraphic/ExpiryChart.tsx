@@ -164,18 +164,17 @@ const Line = styled.div<{ color: string; variant: "price" | "strike" }>`
 `;
 
 interface SettlementChartProps {
-  color: string;
   higherPrice: boolean;
   isOTM: boolean;
 }
 
 const ExpiryChart: React.FC<SettlementChartProps> = ({
-  color,
   higherPrice,
   isOTM,
 }) => {
   const ref = useRef(null);
   const { height, width } = useElementSize(ref);
+  const color = isOTM ? colors.green : colors.red;
 
   return (
     <div

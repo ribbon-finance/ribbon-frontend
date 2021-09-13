@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { parseUnits } from "@ethersproject/units";
-import { BigNumber } from "ethers";
 
 import colors from "shared/lib/designSystem/colors";
 import {
@@ -120,9 +119,9 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       asset,
       cap,
       decimals,
-      pricePerShare,
       depositBalanceInAsset,
       lockedBalanceInAsset,
+      round,
       totalBalance,
       userAssetBalance,
       withdrawals,
@@ -134,6 +133,13 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
 
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const isInputNonZero = parseFloat(vaultActionForm.inputAmount) > 0;
+  const canCompleteWithdraw = useMemo(() => {
+    return (
+      vaultActionForm.withdrawOption !== "instant" &&
+      !withdrawals.amount.isZero() &&
+      withdrawals.round !== round
+    );
+  }, [round, vaultActionForm.withdrawOption, withdrawals]);
 
   /**
    * Side hooks
@@ -217,8 +223,13 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
 
                 break;
               case "standard":
+              case "complete":
                 if (amountBigNumber.gt(lockedBalanceInAsset)) {
                   return "withdrawLimitExceeded";
+                }
+
+                if (canCompleteWithdraw) {
+                  return "eixstingWithdraw";
                 }
 
                 break;
@@ -232,6 +243,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     return undefined;
   }, [
     active,
+    canCompleteWithdraw,
     cap,
     decimals,
     depositBalanceInAsset,
@@ -273,23 +285,21 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
             onFormSubmit={onFormSubmit}
             depositBalanceInAsset={depositBalanceInAsset}
             lockedBalanceInAsset={lockedBalanceInAsset}
-            initiatedWithdrawAmount={withdrawals.shares
-              .mul(pricePerShare)
-              .div(BigNumber.from(10).pow(decimals))}
+            initiatedWithdrawAmount={withdrawals.amount}
+            canCompleteWithdraw={canCompleteWithdraw}
           />
         );
     }
   }, [
-    decimals,
+    canCompleteWithdraw,
     depositBalanceInAsset,
     error,
     lockedBalanceInAsset,
     onFormSubmit,
-    pricePerShare,
     showTokenApproval,
     vaultActionForm.actionType,
     vaultOption,
-    withdrawals.shares,
+    withdrawals.amount,
   ]);
 
   const formInfoText = useMemo(() => {
