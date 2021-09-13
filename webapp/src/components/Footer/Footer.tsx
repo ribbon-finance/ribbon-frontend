@@ -7,9 +7,11 @@ import useScreenSize from "shared/lib/hooks/useScreenSize";
 import useVaultOption from "../../hooks/useVaultOption";
 import AccountStatus from "../Wallet/AccountStatus";
 import DesktopFooter from "./DesktopFooter";
+import { useState } from "react";
 
 const FooterContainer = styled.div<{
   screenHeight: number;
+  showVaultPosition: boolean;
 }>`
   height: ${theme.footer.desktop.height}px;
   width: 100%;
@@ -36,24 +38,34 @@ const FooterContainer = styled.div<{
     position: fixed;
     top: unset;
     bottom: 0px;
-    height: ${theme.footer.mobile.height}px;
+    height: ${(props) =>
+      props.showVaultPosition
+        ? theme.footer.mobile.heightWithPosition
+        : theme.footer.mobile.height}px;
     z-index: 5;
   }
 `;
 
-const MobileFooterOffsetContainer = styled.div`
+const MobileFooterOffsetContainer = styled.div<{ showVaultPosition: boolean }>`
   @media (max-width: ${sizes.md}px) {
-    height: ${theme.footer.mobile.height}px;
+    height: ${(props) =>
+      props.showVaultPosition
+        ? theme.footer.mobile.heightWithPosition
+        : theme.footer.mobile.height}px;
   }
 `;
 
 const Footer = () => {
   const { height: screenHeight } = useScreenSize();
   const { vaultOption, vaultVersion } = useVaultOption();
+  const [showVaultPosition, setShowVaultPosition] = useState(false);
 
   return (
     <>
-      <FooterContainer screenHeight={screenHeight}>
+      <FooterContainer
+        screenHeight={screenHeight}
+        showVaultPosition={showVaultPosition}
+      >
         {/** Desktop */}
         <DesktopFooter />
 
@@ -61,9 +73,10 @@ const Footer = () => {
         <AccountStatus
           variant="mobile"
           vault={vaultOption ? { vaultOption, vaultVersion } : undefined}
+          showVaultPositionHook={setShowVaultPosition}
         />
       </FooterContainer>
-      <MobileFooterOffsetContainer />
+      <MobileFooterOffsetContainer showVaultPosition={showVaultPosition} />
     </>
   );
 };
