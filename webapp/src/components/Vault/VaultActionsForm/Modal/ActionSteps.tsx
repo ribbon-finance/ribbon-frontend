@@ -30,6 +30,7 @@ export interface ActionStepsProps {
   };
   show: boolean;
   onClose: () => void;
+  stepData: StepData;
   onChangeStep: (stepData: StepData) => void;
   skipToPreview?: boolean;
 }
@@ -38,6 +39,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   vault: { vaultOption, vaultVersion },
   show,
   onClose,
+  stepData,
   onChangeStep,
   skipToPreview = false,
 }) => {
@@ -62,7 +64,6 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     vaultActionForm.withdrawOption,
     withdrawMetadata.instantWithdrawBalance,
   ]);
-  const [step, setStep] = useState<Steps>(firstStep);
   const [txhash, setTxhash] = useState("");
   const v1Vault = useVault(vaultOption);
   const v2Vault = useV2Vault(vaultOption);
@@ -100,13 +101,33 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   // We need to pre-fetch the number of shares that the user wants to withdraw
   const actionWord = capitalize(vaultActionForm.actionType);
 
+  const setStep = useCallback(
+    (_step: Steps) => {
+      const titles = {
+        [STEPS.warningStep]: "",
+        [STEPS.formStep]: "",
+        [STEPS.previewStep]:
+          vaultActionForm.actionType === "migrate"
+            ? ""
+            : `${actionWord} Preview`,
+        [STEPS.confirmationStep]: `Confirm ${actionWord}`,
+        [STEPS.submittedStep]: "Transaction Submitted",
+      };
+      onChangeStep({
+        title: titles[_step],
+        stepNum: _step,
+      });
+    },
+    [actionWord, onChangeStep, vaultActionForm.actionType]
+  );
+
   const cleanupEffects = useCallback(() => {
     setTxhash("");
 
-    if (step === STEPS.submittedStep) {
+    if (stepData.stepNum === STEPS.submittedStep) {
       resetActionForm();
     }
-  }, [resetActionForm, step]);
+  }, [resetActionForm, stepData.stepNum]);
 
   const handleClose = useCallback(() => {
     cleanupEffects();
@@ -121,10 +142,14 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   // Whenever the `show` variable is toggled, we need to reset the step back to 0
   useEffect(() => {
+    if (stepData.stepNum === STEPS.formStep) {
+      return;
+    }
+
     return () => {
       setStep(firstStep);
     };
-  }, [show, firstStep, setStep]);
+  }, [show, firstStep, setStep, stepData.stepNum]);
 
   const [amount, amountStr] = useMemo(() => {
     try {
@@ -138,7 +163,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   useEffect(() => {
     // we check that the txhash has already been removed
     // so we can dismiss the modal
-    if (step === STEPS.submittedStep && txhash !== "") {
+    if (stepData.stepNum === STEPS.submittedStep && txhash !== "") {
       const pendingTx = pendingTransactions.find((tx) => tx.txhash === txhash);
       if (!pendingTx) {
         setTimeout(() => {
@@ -146,14 +171,14 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         }, 300);
       }
     }
-  }, [step, pendingTransactions, txhash, handleClose]);
+  }, [pendingTransactions, txhash, handleClose, stepData.stepNum]);
 
   const handleClickConfirmButton = async () => {
     const vault = vaultActionForm.vaultVersion === "v1" ? v1Vault : v2Vault;
 
     if (vault !== null) {
       // check illegal state transition
-      if (step !== STEPS.confirmationStep - 1) return;
+      if (stepData.stepNum !== STEPS.confirmationStep - 1) return;
       setStep(STEPS.confirmationStep);
       try {
         let res: any;
@@ -256,22 +281,6 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     }
   };
 
-  useEffect(() => {
-    const titles = {
-      [STEPS.warningStep]: "",
-      [STEPS.formStep]: "",
-      [STEPS.previewStep]:
-        vaultActionForm.actionType === "migrate" ? "" : `${actionWord} Preview`,
-      [STEPS.confirmationStep]: `Confirm ${actionWord}`,
-      [STEPS.submittedStep]: "Transaction Submitted",
-    };
-
-    onChangeStep({
-      title: titles[step],
-      stepNum: step,
-    });
-  }, [actionWord, onChangeStep, step, vaultActionForm.actionType]);
-
   const stepComponents = {
     [-1]: (
       <WarningStep
@@ -306,7 +315,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     3: <TransactionStep txhash={txhash} />,
   };
 
-  return <>{stepComponents[step]}</>;
+  return <>{stepComponents[stepData.stepNum]}</>;
 };
 
 export default ActionSteps;

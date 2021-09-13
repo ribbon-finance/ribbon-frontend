@@ -156,11 +156,6 @@ const ActionModal: React.FC<ActionModalProps> = ({
   const isDesktop = variant === "desktop";
   const { vaultActionForm } = useVaultActionForm(vault.vaultOption);
 
-  const onChangeStep = useCallback(
-    (stepData) => setStepData(stepData),
-    [setStepData]
-  );
-
   const renderModalNavigationItem = useCallback(() => {
     if (isDesktop) {
       return;
@@ -291,7 +286,8 @@ const ActionModal: React.FC<ActionModalProps> = ({
                 skipToPreview={isDesktop}
                 show={show}
                 onClose={onClose}
-                onChangeStep={onChangeStep}
+                stepData={stepData}
+                onChangeStep={setStepData}
               />
             </StepsContainer>
           </ModalContent>
