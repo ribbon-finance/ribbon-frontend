@@ -18,6 +18,7 @@ import {
 import theme from "shared/lib/designSystem/theme";
 import useV2VaultPriceHistory from "../../hooks/useV2VaultPriceHistory";
 import { getAssetDecimals } from "shared/lib/utils/asset";
+import moment from "moment";
 
 const VaultPerformacneChartContainer = styled.div`
   border: 1px solid ${colors.border};
@@ -80,6 +81,23 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
           airtableData.res.map((data) => new Date(data.timestamp)),
         ];
       case "v2":
+        if (v2PriceHistory.length === 0) {
+          return [
+            [0, 0],
+            [moment().toDate(), moment().toDate()],
+          ];
+        }
+
+        if (v2PriceHistory.length === 1) {
+          return [
+            [0, 0],
+            [
+              v2PriceHistory[0].timestamp.toDate(),
+              v2PriceHistory[0].timestamp.toDate(),
+            ],
+          ];
+        }
+
         return [
           v2PriceHistory.map((data, index) => {
             /**
