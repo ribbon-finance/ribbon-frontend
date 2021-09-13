@@ -36,7 +36,6 @@ import { getAssetLogo } from "shared/lib/utils/asset";
 import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
-import { isProduction } from "shared/lib/utils/env";
 import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopActionForm";
 import { Redirect } from "react-router-dom";
 import useV2VaultData from "shared/lib/hooks/useV2VaultData";

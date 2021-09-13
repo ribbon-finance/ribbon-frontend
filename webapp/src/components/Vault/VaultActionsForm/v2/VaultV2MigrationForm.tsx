@@ -111,15 +111,15 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
       case "insufficientMigrationLimit":
         return (
           <SecondaryText className="mt-3 text-center" color={colors.red}>
-            Migrating your ETH from V1 to V2 will breach the weekly migration
-            limit. Please try again on Friday at 10am UTC when the weekly
-            migration limit is reset.
+            Migrating your {getAssetDisplay(asset)} from V1 to V2 will breach
+            the weekly migration limit. Please try again on Friday at 10am UTC
+            when the weekly migration limit is reset.
           </SecondaryText>
         );
     }
 
     return <></>;
-  }, [error]);
+  }, [error, asset]);
 
   return (
     <div className="d-flex flex-column align-items-center p-4">
@@ -131,7 +131,8 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
       <FormTitle className="mt-3">MIGRATE TO V2</FormTitle>
 
       <FormDescription className="mt-3 text-center">
-        ETH deposits can now be migrated over from the V1 vault
+        {getAssetDisplay(asset)} deposits can now be migrated over from the V1
+        vault
       </FormDescription>
 
       {/* V1 Balance */}
