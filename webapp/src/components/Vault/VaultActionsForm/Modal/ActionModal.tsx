@@ -199,7 +199,8 @@ const ActionModal: React.FC<ActionModalProps> = ({
 
   const renderModalHeader = useCallback(() => {
     if (
-      vaultActionForm.actionType === ACTIONS.migrate ||
+      (vaultActionForm.actionType === ACTIONS.migrate &&
+        stepData.stepNum === STEPS.previewStep) ||
       stepData.stepNum === STEPS.warningStep ||
       (vaultActionForm.vaultVersion === "v2" &&
         vaultActionForm.actionType === "withdraw" &&

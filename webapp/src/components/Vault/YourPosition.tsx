@@ -66,7 +66,9 @@ const YourPosition: React.FC<YourPositionProps> = ({
   const Logo = getAssetLogo(asset);
 
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
-  const { vaultAccounts } = useVaultAccounts(vaultOptions, vaultVersion);
+  const { vaultAccounts } = useVaultAccounts(vaultOptions, vaultVersion, {
+    poll: true,
+  });
   const [, setShowVaultPosition] = useWebappGlobalState("showVaultPosition");
 
   const roi = useMemo(() => {

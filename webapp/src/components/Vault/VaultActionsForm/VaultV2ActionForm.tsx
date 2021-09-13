@@ -42,7 +42,8 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
   const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
   const { vaultAccounts: v1VaultAccounts } = useVaultAccounts(
     vaultOptions,
-    "v1"
+    "v1",
+    { poll: true }
   );
   const {
     data: { asset, decimals, depositBalanceInAsset },
