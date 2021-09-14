@@ -26,6 +26,8 @@ import {
   VaultList,
   VaultNameOptionMap,
   VaultOptions,
+  VaultVersion,
+  VaultVersionList,
 } from "shared/lib/constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
@@ -126,6 +128,16 @@ const PositionInfoRow = styled.div`
   }
 `;
 
+const VaultVersionBadge = styled.div<{ color: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: ${theme.border.radiusSmall};
+  background: ${(props) => props.color}3D;
+`;
+
 const StyledTitle = styled(Title)`
   text-transform: none;
 `;
@@ -178,10 +190,12 @@ const KPIRoi = styled(Title)<{ variant: "red" | "green" }>`
 
 interface PortfolioPositionProps {
   vaultAccount: VaultAccount;
+  vaultVersion: VaultVersion;
 }
 
 const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   vaultAccount,
+  vaultVersion,
 }) => {
   const asset = getAssets(vaultAccount.vault.symbol);
   const decimals = getAssetDecimals(asset);
@@ -237,6 +251,19 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
     }
   }, [vaultAccount]);
 
+  const vaultBadge = useMemo(() => {
+    switch (vaultVersion) {
+      case "v2":
+        return (
+          <VaultVersionBadge color={color} className="ml-2">
+            <Subtitle>V2</Subtitle>
+          </VaultVersionBadge>
+        );
+    }
+
+    return <></>;
+  }, [color, vaultVersion]);
+
   return (
     <PositionLink to={`/theta-vault/${vaultName}`}>
       <PositionContainer color={color}>
@@ -245,21 +272,22 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
           <PositionInfo>
             <PositionInfoRow>
               {/* Title */}
-              <StyledTitle className="flex-grow-1">{vaultName}</StyledTitle>
+              <StyledTitle>{vaultName}</StyledTitle>
+              {vaultBadge}
 
               {/* Amount in Vault Token */}
-              <Title>
+              <Title className="ml-auto">
                 {renderAmountText(vaultAccount.totalBalance, "eth")}
               </Title>
             </PositionInfoRow>
             <PositionInfoRow>
               {/* Subtitle */}
-              <PositionInfoText className="flex-grow-1">
+              <PositionInfoText>
                 {productCopies[vaultAccount.vault.symbol].subtitle}
               </PositionInfoText>
 
               {/* Amount in Fiat */}
-              <PositionSecondaryInfoText>
+              <PositionSecondaryInfoText className="ml-auto">
                 {renderAmountText(vaultAccount.totalBalance, "usd")}
               </PositionSecondaryInfoText>
             </PositionInfoRow>
@@ -291,26 +319,49 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 
 const PortfolioPositions = () => {
   const { active } = useWeb3React();
-  const { vaultAccounts, loading } = useVaultAccounts(VaultList, "all");
+  const { vaultAccounts: v1VaultAccounts, loading: v1Loading } =
+    useVaultAccounts(VaultList, "v1");
+  const { vaultAccounts: v2VaultAccounts, loading: v2Loading } =
+    useVaultAccounts(VaultList, "v2");
+  const loading = v1Loading || v2Loading;
   const animatedLoadingText = useTextAnimation(loading);
 
   const filteredVaultAccounts = useMemo(() => {
     return Object.fromEntries(
-      Object.keys(vaultAccounts)
-        .map((key) => [key, vaultAccounts[key as VaultOptions]])
-        .filter((item) => {
-          const account = item[1] as VaultAccount;
+      VaultList.map((vaultOption) => [
+        vaultOption,
+        Object.fromEntries(
+          VaultVersionList.map((vaultVersion) => {
+            switch (vaultVersion) {
+              case "v1":
+                return [vaultVersion, v1VaultAccounts[vaultOption]];
+              case "v2":
+              default:
+                return [vaultVersion, v2VaultAccounts[vaultOption]];
+            }
+          }).filter((item) => {
+            const account = item[1] as VaultAccount | undefined;
 
-          return (
-            account &&
-            !isPracticallyZero(
-              account.totalBalance,
-              getAssetDecimals(getAssets(account.vault.symbol))
-            )
-          );
-        })
-    );
-  }, [vaultAccounts]);
+            return (
+              account &&
+              !isPracticallyZero(
+                account.totalBalance,
+                getAssetDecimals(getAssets(account.vault.symbol))
+              )
+            );
+          })
+        ),
+      ]).filter((item) => Object.keys(item[1]).length > 0)
+    ) as Partial<
+      {
+        [vault in VaultOptions]: Partial<
+          {
+            [version in VaultVersion]: VaultAccount;
+          }
+        >;
+      }
+    >;
+  }, [v1VaultAccounts, v2VaultAccounts]);
 
   const positionContent = useMemo(() => {
     if (!active) {
@@ -330,9 +381,21 @@ const PortfolioPositions = () => {
       );
     }
 
-    return Object.keys(filteredVaultAccounts).map((key) => (
-      <PortfolioPosition key={key} vaultAccount={filteredVaultAccounts[key]} />
-    ));
+    return Object.keys(filteredVaultAccounts).map((vaultOption) =>
+      Object.keys(filteredVaultAccounts[vaultOption as VaultOptions]!).map(
+        (vaultVersion) => (
+          <PortfolioPosition
+            key={`${vaultOption}${vaultVersion}`}
+            vaultAccount={
+              filteredVaultAccounts[vaultOption as VaultOptions]![
+                vaultVersion as VaultVersion
+              ]!
+            }
+            vaultVersion={vaultVersion as VaultVersion}
+          />
+        )
+      )
+    );
   }, [active, animatedLoadingText, filteredVaultAccounts, loading]);
 
   return (
