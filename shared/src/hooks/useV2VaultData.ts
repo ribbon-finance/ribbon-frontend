@@ -79,7 +79,7 @@ const useV2VaultData: UseVaultData = (
               Promise.resolve({ amount: BigNumber.from(0), round: 1 }),
               Promise.resolve(BigNumber.from(0)),
               Promise.resolve(BigNumber.from(0)),
-              Promise.resolve({ round: 1, share: BigNumber.from(0) }),
+              Promise.resolve({ round: 1, shares: BigNumber.from(0) }),
             ]
       );
 

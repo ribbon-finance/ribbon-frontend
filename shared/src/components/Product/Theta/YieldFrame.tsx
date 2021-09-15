@@ -4,7 +4,11 @@ import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { BarChartIcon, GlobeIcon } from "../../../assets/icons/icons";
 
-import { VaultOptions } from "../../../constants/constants";
+import {
+  VaultOptions,
+  VaultVersion,
+  VaultVersionList,
+} from "../../../constants/constants";
 import {
   BaseButton,
   SecondaryText,
@@ -14,6 +18,7 @@ import {
 import theme from "../../../designSystem/theme";
 import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useTextAnimation from "../../../hooks/useTextAnimation";
+import useV2VaultData from "../../../hooks/useV2VaultData";
 import useVaultData from "../../../hooks/useVaultData";
 import { getAssetLogo } from "../../../utils/asset";
 import { formatSignificantDecimals } from "../../../utils/math";
@@ -73,13 +78,20 @@ const ModeSwitcherContainer = styled.div<{ color: string }>`
 
 interface YieldFrameProps {
   vault: VaultOptions;
-  onClick: () => void;
+  onVaultPress: (vault: VaultOptions, vaultVersion: VaultVersion) => void;
 }
 
-const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
+const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onVaultPress }) => {
   const { status, deposits, vaultLimit, asset, displayAsset, decimals } =
     useVaultData(vault);
-  const isLoading = useMemo(() => status === "loading", [status]);
+  const {
+    data: { totalBalance: v2Deposits, cap: v2VaultLimit },
+    loading: v2DataLoading,
+  } = useV2VaultData(vault);
+  const isLoading = useMemo(
+    () => status === "loading" || v2DataLoading,
+    [status, v2DataLoading]
+  );
   const color = getVaultColor(vault);
   const Logo = getAssetLogo(displayAsset);
   const latestAPY = useLatestAPY(vault);
@@ -89,14 +101,42 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
     ? `${latestAPY.res.toFixed(2)}%`
     : loadingText;
 
-  const totalDepositStr = isLoading
-    ? 0
-    : parseFloat(formatSignificantDecimals(formatUnits(deposits, decimals), 2));
-  const depositLimitStr = isLoading
-    ? 1
-    : parseFloat(formatSignificantDecimals(formatUnits(vaultLimit, decimals)));
-
   const [mode, setMode] = useState<"info" | "yield">("info");
+
+  const vaultVersion = useMemo(() => {
+    if (VaultVersionList[0] === "v1") {
+      if (!isLoading && vaultLimit.isZero()) {
+        return "v2";
+      }
+
+      return "v1";
+    }
+
+    return VaultVersionList[0];
+  }, [isLoading, vaultLimit]);
+
+  const [totalDepositStr, depositLimitStr] = useMemo(() => {
+    switch (vaultVersion) {
+      case "v1":
+        return [
+          parseFloat(
+            formatSignificantDecimals(formatUnits(deposits, decimals), 2)
+          ),
+          parseFloat(
+            formatSignificantDecimals(formatUnits(vaultLimit, decimals))
+          ),
+        ];
+      case "v2":
+        return [
+          parseFloat(
+            formatSignificantDecimals(formatUnits(v2Deposits, decimals), 2)
+          ),
+          parseFloat(
+            formatSignificantDecimals(formatUnits(v2VaultLimit, decimals))
+          ),
+        ];
+    }
+  }, [decimals, deposits, v2Deposits, v2VaultLimit, vaultLimit, vaultVersion]);
 
   const onSwapMode = useCallback((e) => {
     e.stopPropagation();
@@ -178,7 +218,10 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
   ]);
 
   return (
-    <FrameContainer role="button" onClick={onClick}>
+    <FrameContainer
+      role="button"
+      onClick={() => onVaultPress(vault, vaultVersion)}
+    >
       <AnimatePresence exitBeforeEnter initial={false}>
         <Frame
           key={mode}

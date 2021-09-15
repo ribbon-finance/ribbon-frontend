@@ -1,5 +1,9 @@
 import React from "react";
-import { VaultList, VaultOptions } from "../../constants/constants";
+import {
+  VaultList,
+  VaultOptions,
+  VaultVersion,
+} from "../../constants/constants";
 import { Assets } from "../../store/types";
 
 export const ProductList = [
@@ -27,7 +31,7 @@ export interface HeaderScrollIndicatorProps {
 
 export interface ProductCatalogueProps {
   variant: "landing" | "webapp";
-  onVaultPress: (vault: VaultOptions) => void;
+  onVaultPress: (vault: VaultOptions, vaultVersion: VaultVersion) => void;
 }
 
 export type DesktopViewType = "grid" | "gallery";

@@ -6,7 +6,11 @@ import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
 import Marquee from "react-fast-marquee/dist";
 
-import { getAssets, VaultOptions } from "../../constants/constants";
+import {
+  getAssets,
+  VaultOptions,
+  VaultVersion,
+} from "../../constants/constants";
 import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
@@ -28,7 +32,7 @@ import Pagination from "../Common/Pagination";
 import { productCopies } from "./productCopies";
 import EmptyResult from "./Shared/EmptyResult";
 import SwitchViewButton from "./Shared/SwitchViewButton";
-import Frame from "./Theta/YieldFrame";
+import YieldFrame from "./Theta/YieldFrame";
 import {
   DesktopViewType,
   VaultFilterProps,
@@ -117,7 +121,7 @@ const BackgroundText = styled(Title)`
 interface DesktopProductCatalogueGridViewProps {
   variant: "landing" | "webapp";
   setView?: React.Dispatch<React.SetStateAction<DesktopViewType>>;
-  onVaultPress: (vault: VaultOptions) => void;
+  onVaultPress: (vault: VaultOptions, vaultVersion: VaultVersion) => void;
   filteredProducts: VaultOptions[];
   vaultAccounts: {
     [key: string]: VaultAccount | undefined;
@@ -224,7 +228,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
     const vaultAccount = vaultAccounts[currentVault];
 
     return (
-      <VaultInfo role="button" onClick={() => onVaultPress(currentVault)}>
+      <VaultInfo>
         {/* Title */}
         <Title fontSize={48} lineHeight={56} className="w-100">
           {productCopies[currentVault].title}
@@ -270,7 +274,6 @@ const DesktopProductCatalogueGalleryView: React.FC<
   }, [
     roi,
     currentVault,
-    onVaultPress,
     vaultAccounts,
     getVaultUSDDisplay,
     setFilterAssets,
@@ -421,9 +424,9 @@ const DesktopProductCatalogueGalleryView: React.FC<
                 className="d-flex ml-5"
               >
                 {currentVault && (
-                  <Frame
+                  <YieldFrame
                     vault={currentVault}
-                    onClick={() => onVaultPress(currentVault)}
+                    onVaultPress={onVaultPress}
                   />
                 )}
               </VaultFrameContainer>

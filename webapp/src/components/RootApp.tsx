@@ -13,9 +13,10 @@ import { WrongNetworkToast, TxStatusToast } from "./Common/toasts";
 import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal";
 import NotFound from "../pages/NotFound";
 import StakingPage from "../pages/Staking/StakingPage";
+import colors from "shared/lib/designSystem/colors";
 
 const Root = styled.div<{ screenHeight: number }>`
-  background-color: #1c1a19;
+  background-color: ${colors.background};
   min-height: ${(props) =>
     props.screenHeight ? `${props.screenHeight}px` : `100vh`};
 `;

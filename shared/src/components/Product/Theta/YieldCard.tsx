@@ -8,7 +8,6 @@ import {
   Title,
   Subtitle,
   SecondaryText,
-  BaseText,
 } from "../../../designSystem";
 import colors from "../../../designSystem/colors";
 import sizes from "../../../designSystem/sizes";
@@ -25,6 +24,7 @@ import useTextAnimation from "../../../hooks/useTextAnimation";
 import {
   hasVaultVersion,
   VaultOptions,
+  VaultVersion,
   VaultVersionList,
   VaultVersionListExludeV1,
 } from "../../../constants/constants";
@@ -36,7 +36,6 @@ import ModalContentExtra from "../../Common/ModalContentExtra";
 import { VaultAccount } from "../../../models/vault";
 import YieldComparison from "./YieldComparison";
 import useV2VaultData from "../../../hooks/useV2VaultData";
-import { useWeb3React } from "@web3-react/core";
 
 const { formatUnits } = ethers.utils;
 
@@ -146,25 +145,19 @@ const ModeSwitcherContainer = styled.div<{ color: string }>`
 
 interface YieldCardProps {
   vault: VaultOptions;
-  onClick: () => void;
+  onVaultPress: (vault: VaultOptions, vaultVersion: VaultVersion) => void;
   vaultAccount?: VaultAccount;
 }
 
 const YieldCard: React.FC<YieldCardProps> = ({
   vault,
-  onClick,
+  onVaultPress,
   vaultAccount,
 }) => {
-  const { active } = useWeb3React();
   const { status, deposits, vaultLimit, asset, displayAsset, decimals } =
     useVaultData(vault);
   const {
-    data: {
-      totalBalance: v2Deposits,
-      cap: v2VaultLimit,
-      lockedBalanceInAsset,
-      depositBalanceInAsset,
-    },
+    data: { totalBalance: v2Deposits, cap: v2VaultLimit },
     loading: v2DataLoading,
   } = useV2VaultData(vault);
   const isLoading = useMemo(() => status === "loading", [status]);
@@ -290,68 +283,36 @@ const YieldCard: React.FC<YieldCardProps> = ({
   ]);
 
   const modalContentExtra = useMemo(() => {
-    switch (vaultVersion) {
-      case "v1":
-        return (
-          <div className="d-flex align-items-center w-100">
-            <SecondaryText fontSize={12} className="mr-auto">
-              Your Position
-            </SecondaryText>
-            <Title fontSize={14}>
-              {vaultAccount
-                ? `${formatBigNumber(
-                    vaultAccount.totalBalance,
-                    decimals
-                  )} ${getAssetDisplay(asset)}`
-                : "---"}
-            </Title>
-          </div>
-        );
-      case "v2":
-        if (
-          vaultAccount &&
-          !isPracticallyZero(vaultAccount.totalBalance, decimals)
-        ) {
-          return (
-            <div className="d-flex w-100 justify-content-center">
-              <SecondaryText fontSize={12} color={colors.primaryText}>
-                Funds ready for migration to V2
-              </SecondaryText>
-            </div>
-          );
-        }
-
-        return (
-          <div className="d-flex align-items-center w-100">
-            <SecondaryText fontSize={12} className="mr-auto">
-              Your Position
-            </SecondaryText>
-            <Title fontSize={14}>
-              {active &&
-              !v2DataLoading &&
-              !isPracticallyZero(
-                depositBalanceInAsset.add(lockedBalanceInAsset),
-                decimals
-              )
-                ? `${formatBigNumber(
-                    depositBalanceInAsset.add(lockedBalanceInAsset),
-                    decimals
-                  )} ${getAssetDisplay(asset)}`
-                : "---"}
-            </Title>
-          </div>
-        );
+    if (
+      vaultVersion === "v2" &&
+      vaultAccount &&
+      !isPracticallyZero(vaultAccount.totalBalance, decimals)
+    ) {
+      return (
+        <div className="d-flex w-100 justify-content-center">
+          <SecondaryText fontSize={12} color={colors.primaryText}>
+            Funds ready for migration to V2
+          </SecondaryText>
+        </div>
+      );
     }
-  }, [
-    active,
-    asset,
-    decimals,
-    depositBalanceInAsset,
-    lockedBalanceInAsset,
-    v2DataLoading,
-    vaultAccount,
-    vaultVersion,
-  ]);
+
+    return (
+      <div className="d-flex align-items-center w-100">
+        <SecondaryText fontSize={12} className="mr-auto">
+          Your Position
+        </SecondaryText>
+        <Title fontSize={14}>
+          {vaultAccount
+            ? `${formatBigNumber(
+                vaultAccount.totalBalance,
+                decimals
+              )} ${getAssetDisplay(asset)}`
+            : "---"}
+        </Title>
+      </div>
+    );
+  }, [asset, decimals, vaultAccount, vaultVersion]);
 
   return (
     <CardContainer>
@@ -372,7 +333,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
           exit={{
             transform: "rotateY(-90deg)",
           }}
-          onClick={onClick}
+          onClick={() => onVaultPress(vault, vaultVersion)}
           role="button"
           color={color}
         >

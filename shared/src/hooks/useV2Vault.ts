@@ -30,10 +30,8 @@ const useV2Vault = (vaultOption: VaultOptions) => {
   const [vault, setVault] = useState<RibbonV2ThetaVault | null>(null);
 
   useEffect(() => {
-    if (active && library) {
-      const vault = getV2Vault(library || provider, vaultOption, active);
-      setVault(vault);
-    }
+    const vault = getV2Vault(library || provider, vaultOption, active);
+    setVault(vault);
   }, [active, library, provider, vaultOption]);
 
   return vault;
