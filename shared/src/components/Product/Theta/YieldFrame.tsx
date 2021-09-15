@@ -71,18 +71,6 @@ const ModeSwitcherContainer = styled.div<{ color: string }>`
   z-index: 1;
 `;
 
-const ProjectedAPYLabel = styled(SecondaryText)`
-  font-size: 12px;
-  line-height: 16px;
-  margin-right: auto;
-`;
-
-const ProjectedAPYData = styled(Title)<{ color: string }>`
-  font-size: 14px;
-  line-height: 20px;
-  color: ${(props) => props.color};
-`;
-
 interface YieldFrameProps {
   vault: VaultOptions;
   onClick: () => void;
@@ -138,8 +126,12 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
           <>
             <div className="mt-4 d-flex justify-content-center">{logo}</div>
             <div className="d-flex align-items-center mt-4">
-              <ProjectedAPYLabel>Projected Yield (APY)</ProjectedAPYLabel>
-              <ProjectedAPYData color={color}>{perfStr}</ProjectedAPYData>
+              <SecondaryText fontSize={12} lineHeight={16} className="mr-auto">
+                Projected Yield (APY)
+              </SecondaryText>
+              <Title fontSize={14} lineHeight={20} color={color}>
+                {perfStr}
+              </Title>
             </div>
             <div className="mt-auto">
               <CapBar

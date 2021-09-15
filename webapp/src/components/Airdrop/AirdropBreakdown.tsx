@@ -81,15 +81,6 @@ const BreakdownPillDropdown = styled.div`
   padding: 16px;
 `;
 
-const BreakdownPillDropdownText = styled(SecondaryText)<{
-  variant: ProcessedAirdropBreakdownType;
-}>`
-  color: ${(props) => getAirdropColor(props.variant)}A3;
-  font-size: 12px;
-  line-height: 16px;
-  text-align: center;
-`;
-
 const AirdropBreakdown = () => {
   const airdrop = useAirdrop();
 
@@ -122,10 +113,15 @@ const AirdropBreakdown = () => {
         </BreakdownPill>
         {variant === "option" && (
           <BreakdownPillDropdown>
-            <BreakdownPillDropdownText variant={variant}>
+            <SecondaryText
+              color={`${getAirdropColor(variant)}A3`}
+              fontSize={12}
+              lineHeight={16}
+              className="text-center"
+            >
               Airdrop for being either a Charm seller, Opyn seller, Hegic LP or
               Primitive LP.
-            </BreakdownPillDropdownText>
+            </SecondaryText>
           </BreakdownPillDropdown>
         )}
       </BreakdownBackground>

@@ -47,10 +47,6 @@ const TransferToVaultTitle = styled(Title)`
   text-transform: none;
 `;
 
-const TransferToVaultCapacity = styled(SecondaryText)`
-  font-size: 12px;
-`;
-
 const TransferToVaultLogo = styled.div`
   display: flex;
   align-items: center;
@@ -198,7 +194,8 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
               ]
             }
           </TransferToVaultTitle>
-          <TransferToVaultCapacity
+          <SecondaryText
+            fontSize={12}
             color={
               active && (isZeroCapacity || error === "insufficientCapacity")
                 ? colors.red
@@ -209,7 +206,7 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
             {transferData
               ? formatBigNumber(transferData.availableCapacity, decimals)
               : "---"}
-          </TransferToVaultCapacity>
+          </SecondaryText>
         </div>
       </TransferToVault>
 

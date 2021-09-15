@@ -41,16 +41,6 @@ const YieldComparisonTitle = styled(BaseText)`
   }
 `;
 
-const YieldComparisonText = styled(Title)`
-  font-size: 14px;
-  line-height: 24px;
-  margin-left: 8px;
-`;
-
-const YieldComparisonAPR = styled(YieldComparisonText)`
-  margin-left: auto;
-`;
-
 interface YieldComparisonProps {
   vault: VaultOptions;
   config?: {
@@ -101,8 +91,12 @@ const YieldComparison: React.FC<YieldComparisonProps> = ({
         border={config.border}
       >
         <Logo height="24" width="24" />
-        <YieldComparisonText>{productCopies[vault].title}</YieldComparisonText>
-        <YieldComparisonAPR>{perfStr}</YieldComparisonAPR>
+        <Title fontSize={14} lineHeight={24} className="ml-2">
+          {productCopies[vault].title}
+        </Title>
+        <Title fontSize={14} lineHeight={24} className="ml-auto">
+          {perfStr}
+        </Title>
       </YieldComparisonCard>
       <YieldComparisonTitle>
         Market {getAssetDisplay(asset)} Yields (APY)
@@ -122,8 +116,14 @@ const YieldComparison: React.FC<YieldComparisonProps> = ({
                 border={config.border}
               >
                 {renderProtocolLogo(protocol)}
-                <YieldComparisonText>{protocol}</YieldComparisonText>
-                <YieldComparisonAPR>{`${apr.toFixed(2)}%`}</YieldComparisonAPR>
+                <Title fontSize={14} lineHeight={24} className="ml-2">
+                  {protocol}
+                </Title>
+                <Title
+                  fontSize={14}
+                  lineHeight={24}
+                  className="ml-auto"
+                >{`${apr.toFixed(2)}%`}</Title>
               </YieldComparisonCard>
             );
           }

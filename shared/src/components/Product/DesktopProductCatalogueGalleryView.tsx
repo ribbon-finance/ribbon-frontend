@@ -65,11 +65,6 @@ const VaultInfo = styled.div`
   width: 366px;
 `;
 
-const VaultTitle = styled(Title)`
-  font-size: 48px;
-  line-height: 56px;
-`;
-
 const VaultSecondaryInfo = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -89,19 +84,6 @@ const VaultPositionPrimaryText = styled(Title)`
   font-size: 14px;
   line-height: 24px;
   letter-spacing: 1px;
-`;
-
-const VaultPositionSecondaryText = styled(Title)<{ roi?: number }>`
-  font-size: 12px;
-  line-height: 16px;
-
-  color: ${(props) => {
-    if (props.roi === undefined) {
-      return colors.primaryText;
-    }
-
-    return props.roi >= 0 ? colors.green : colors.red;
-  }};
 `;
 
 const VaultFrameContainer = styled(motion.div)`
@@ -131,6 +113,7 @@ const BackgroundText = styled(Title)`
   color: ${colors.primaryText}0A;
   white-space: nowrap;
 `;
+
 interface DesktopProductCatalogueGridViewProps {
   variant: "landing" | "webapp";
   setView?: React.Dispatch<React.SetStateAction<DesktopViewType>>;
@@ -243,9 +226,9 @@ const DesktopProductCatalogueGalleryView: React.FC<
     return (
       <VaultInfo role="button" onClick={() => onVaultPress(currentVault)}>
         {/* Title */}
-        <VaultTitle className="w-100">
+        <Title fontSize={48} lineHeight={56} className="w-100">
           {productCopies[currentVault].title}
-        </VaultTitle>
+        </Title>
 
         <VaultSecondaryInfo>
           {/* Description */}
@@ -267,12 +250,17 @@ const DesktopProductCatalogueGalleryView: React.FC<
                 </VaultPositionPrimaryText>
               </div>
               <div className="w-100 d-flex">
-                <VaultPositionSecondaryText roi={roi} className="mr-auto">
+                <Title
+                  fontSize={12}
+                  lineHeight={16}
+                  color={roi >= 0 ? colors.green : colors.red}
+                  className="mr-auto"
+                >
                   {roi.toFixed(2)}%
-                </VaultPositionSecondaryText>
-                <VaultPositionSecondaryText>
+                </Title>
+                <Title fontSize={12} lineHeight={16}>
                   {getVaultUSDDisplay(vaultAccount, asset)}
-                </VaultPositionSecondaryText>
+                </Title>
               </div>
             </VaultPositionBox>
           )}

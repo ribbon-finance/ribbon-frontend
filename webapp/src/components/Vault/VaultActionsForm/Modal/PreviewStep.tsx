@@ -19,6 +19,7 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import { useLatestAPY } from "shared/lib/hooks/useAirtableData";
 import { capitalize } from "shared/lib/utils/text";
 import { MigrateIcon } from "shared/lib/assets/icons/icons";
+import colors from "shared/lib/designSystem/colors";
 
 const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -34,15 +35,6 @@ const FormTitle = styled(Title)`
   font-size: 22px;
   line-height: 28px;
   letter-spacing: 1px;
-`;
-
-const AmountText = styled(Title)`
-  font-size: 40px;
-  line-height: 64px;
-`;
-
-const CurrencyText = styled(AmountText)`
-  color: rgba(255, 255, 255, 0.48);
 `;
 
 const Arrow = styled.i<{ color: string }>`
@@ -329,10 +321,16 @@ const PreviewStep: React.FC<{
             </Subtitle>
 
             <div className="text-center">
-              <AmountText>
+              <Title fontSize={40} lineHeight={64}>
                 {formatBigNumber(amount, getAssetDecimals(asset))}
-              </AmountText>
-              <CurrencyText> {getAssetDisplay(asset)}</CurrencyText>
+              </Title>
+              <Title
+                fontSize={40}
+                lineHeight={64}
+                color={`${colors.primaryText}7A`}
+              >
+                {getAssetDisplay(asset)}
+              </Title>
             </div>
 
             <div className="w-100 mt-4">

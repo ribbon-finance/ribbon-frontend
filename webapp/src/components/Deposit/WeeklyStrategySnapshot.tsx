@@ -37,14 +37,17 @@ const VaultPerformanceChartContainer = styled.div`
   height: 200px;
   padding: 30px 0;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: ${theme.border.radiusSmall} ${theme.border.radiusSmall} 0px 0px;
+  border-radius: ${theme.border.radius} ${theme.border.radius} 0px 0px;
 `;
 
 const VaultPerformanceChartSecondaryContainer = styled.div`
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-top: none;
-  border-radius: 0px 0px ${theme.border.radiusSmall} ${theme.border.radiusSmall};
   background: ${colors.backgroundLighter};
+
+  &:last-child {
+    border-radius: 0px 0px ${theme.border.radius} ${theme.border.radius};
+  }
 `;
 
 const DataCol = styled(Col)`
@@ -89,10 +92,9 @@ const CalculatorButton = styled(BaseButton)<{ color: string }>`
   display: flex;
   justify-content: center;
   width: 100%;
-  padding: 10px 0px;
-  margin-top: 24px;
-  background: ${(props) => props.color}29;
-  border-radius: 100px;
+  padding: 16px 0px;
+  background: ${(props) => props.color}14;
+  border-radius: 0px 0px ${theme.border.radius} ${theme.border.radius};
 
   &:hover {
     opacity: ${theme.hover.opacity};

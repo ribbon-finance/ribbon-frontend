@@ -115,11 +115,6 @@ const SecondaryMobileNavItem = styled.div`
   }
 `;
 
-const SecondaryMobileNavLinktext = styled(Title)`
-  font-size: 18px;
-  color: rgba(255, 255, 255, 0.48);
-`;
-
 const MobileOnly = styled.div`
   display: none;
 
@@ -157,7 +152,9 @@ const Header = () => {
           </NavItem>
         ) : (
           <SecondaryMobileNavItem>
-            <SecondaryMobileNavLinktext>{title}</SecondaryMobileNavLinktext>
+            <Title fontSize={18} color={`${colors.primaryText}7A`}>
+              {title}
+            </Title>
           </SecondaryMobileNavItem>
         )}
       </BaseLink>

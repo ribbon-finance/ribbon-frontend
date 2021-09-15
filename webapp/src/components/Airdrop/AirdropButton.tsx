@@ -72,13 +72,6 @@ const RedLogo = styled(Logo)`
   }
 `;
 
-const ClaimAmount = styled(Title)`
-  color: ${colors.products.yield};
-  margin-right: 16px;
-  font-size: 14px;
-  line-height: 24px;
-`;
-
 const AirdropButton = () => {
   // Update the set amount logic
   const [showModal, setShowModal] = useState(false);
@@ -114,7 +107,14 @@ const AirdropButton = () => {
           </LogoSignal>
         </LogoContainer>
         {!isClaiming && airdrop && !airdrop.claimed && (
-          <ClaimAmount>{amountStr}</ClaimAmount>
+          <Title
+            fontSize={14}
+            lineHeight={24}
+            className="mr-3"
+            color={colors.products.yield}
+          >
+            {amountStr}
+          </Title>
         )}
       </ButtonContainer>
       <AirdropModal

@@ -63,11 +63,6 @@ const TransactionTitle = styled(Title)<{ color: string }>`
   color: ${(props) => props.color};
 `;
 
-const SectionPlaceholderText = styled(SecondaryText)`
-  font-size: 16px;
-  line-height: 24px;
-`;
-
 const TransactionContainer = styled.div`
   width: 100%;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
@@ -329,20 +324,26 @@ const PortfolioTransactions = () => {
 
   const renderTransactions = useCallback(() => {
     if (!active) {
-      return <SectionPlaceholderText>---</SectionPlaceholderText>;
+      return (
+        <SecondaryText fontSize={16} lineHeight={24}>
+          ---
+        </SecondaryText>
+      );
     }
 
     if (loading) {
       return (
-        <SectionPlaceholderText>{animatedLoadingText}</SectionPlaceholderText>
+        <SecondaryText fontSize={16} lineHeight={24}>
+          {animatedLoadingText}
+        </SecondaryText>
       );
     }
 
     if (processedTransactions.length <= 0) {
       return (
-        <SectionPlaceholderText>
+        <SecondaryText fontSize={16} lineHeight={24}>
           You have no transactions
-        </SectionPlaceholderText>
+        </SecondaryText>
       );
     }
 

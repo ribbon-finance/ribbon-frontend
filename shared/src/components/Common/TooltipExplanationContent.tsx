@@ -37,11 +37,6 @@ const LearnMoreLink = styled(BaseLink)`
   margin-top: 16px;
 `;
 
-const LearnMore = styled(PrimaryText)`
-  font-size: 14px;
-  margin-right: 8px;
-`;
-
 interface OverlayTooltipExplanationProps {
   title: string;
   explanation: React.ReactNode;
@@ -70,7 +65,9 @@ const OverlayTooltipExplanation: React.FC<OverlayTooltipExplanationProps> = ({
         target="_blank"
         rel="noreferrer noopener"
       >
-        <LearnMore>Learn More</LearnMore>
+        <PrimaryText fontSize={14} className="mr-2">
+          Learn More
+        </PrimaryText>
         <ExternalIcon containerStyle={{ display: "flex" }} color="white" />
       </LearnMoreLink>
     )}

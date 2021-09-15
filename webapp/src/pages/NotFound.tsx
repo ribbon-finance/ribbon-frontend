@@ -43,17 +43,14 @@ const RotatingLogo = styled(Logo)`
   }
 `;
 
-const BigTitle = styled(Title)`
-  font-size: 160px;
-  line-height: 160px;
-`;
-
 const NotFound = () => {
   const { height } = useScreenSize();
   return (
     <FloatingContainer height={height}>
       <RotatingLogo height={120} width={120} />
-      <BigTitle>404</BigTitle>
+      <Title fontSize={160} lineHeight={160}>
+        404
+      </Title>
     </FloatingContainer>
   );
 };

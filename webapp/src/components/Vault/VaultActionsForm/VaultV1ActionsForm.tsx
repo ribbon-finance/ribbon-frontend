@@ -766,7 +766,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
             <MigrateIcon color={color} />
           </MigrateLogoContainer>
 
-          <MigrationTitle className="mt-3">MIRGATE TO V2</MigrationTitle>
+          <MigrationTitle className="mt-3">MIGRATE TO V2</MigrationTitle>
 
           <MigrationDescription className="mt-3 text-center">
             You can now move your V1 deposit balance of{" "}

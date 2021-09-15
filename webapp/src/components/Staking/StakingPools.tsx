@@ -43,11 +43,6 @@ const StakingPoolsContainer = styled.div`
   width: 100%;
 `;
 
-const SectionHeader = styled(Title)`
-  font-size: 18px;
-  line-height: 24px;
-`;
-
 const StakingPoolCard = styled.div<{ color: string }>`
   display: flex;
   flex-wrap: wrap;
@@ -495,7 +490,9 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
 const StakingPools = () => {
   return (
     <StakingPoolsContainer>
-      <SectionHeader className="mb-4 w-100">STAKING POOLS</SectionHeader>
+      <Title fontSize={18} lineHeight={24} className="mb-4 w-100">
+        STAKING POOLS
+      </Title>
       {Object.keys(VaultLiquidityMiningMap).map((option) => (
         <StakingPool key={option} vaultOption={option as VaultOptions} />
       ))}

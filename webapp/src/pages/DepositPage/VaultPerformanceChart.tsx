@@ -34,21 +34,6 @@ const VaultPerformacneChartSecondaryContainer = styled.div`
   background: ${colors.backgroundLighter};
 `;
 
-const APYLabel = styled(SecondaryText)`
-  font-size: 12px;
-`;
-
-const APYNumber = styled(Title)`
-  font-size: 28px;
-  line-height: 36px;
-`;
-
-const FutureAPYNumber = styled(Title)`
-  font-size: 28px;
-  line-height: 36px;
-  color: #16ceb9;
-`;
-
 interface DateFilterProps {
   active: boolean;
 }
@@ -166,8 +151,12 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
           extras={
             <div className="d-flex align-items-center justify-content-between mb-3 px-4">
               <div>
-                <APYLabel className="d-block">Yield (Cumulative)</APYLabel>
-                <APYNumber>{perfStr}</APYNumber>
+                <SecondaryText fontSize={12} className="d-block">
+                  Yield (Cumulative)
+                </SecondaryText>
+                <Title fontSize={28} lineHeight={36}>
+                  {perfStr}
+                </Title>
               </div>
               <div>
                 <DateFilter
@@ -184,10 +173,12 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
       <VaultPerformacneChartSecondaryContainer>
         <div className="d-flex align-items-center justify-content-between mb-3 px-4">
           <div>
-            <APYLabel className="d-block">
+            <SecondaryText fontSize={12} className="d-block">
               Current Projected Yield (APY)
-            </APYLabel>
-            <FutureAPYNumber>{projectedAPY}</FutureAPYNumber>
+            </SecondaryText>
+            <Title fontSize={28} lineHeight={36} color={colors.green}>
+              {projectedAPY}
+            </Title>
           </div>
         </div>
       </VaultPerformacneChartSecondaryContainer>

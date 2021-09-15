@@ -131,10 +131,6 @@ const OverviewLabel = styled(SecondaryText)`
   margin-bottom: 8px;
 `;
 
-const LearnMoreText = styled(PrimaryText)`
-  font-size: 14px;
-`;
-
 const StakingOverview = () => {
   const miningPoolOptionList = useMemo(
     () => Object.keys(VaultLiquidityMiningMap) as VaultOptions[],
@@ -210,9 +206,9 @@ const StakingOverview = () => {
           rel="noreferrer noopener"
           className="d-flex mt-4"
         >
-          <LearnMoreText className="mr-2">
+          <PrimaryText fontSize={14} className="mr-2">
             Learn more about our liquidity mining program
-          </LearnMoreText>
+          </PrimaryText>
           <ExternalIcon color="white" />
         </UnderlineLink>
         <OverviewBackgroundContainer>

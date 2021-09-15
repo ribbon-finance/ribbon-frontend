@@ -99,11 +99,6 @@ const CurrentStakeTitle = styled(Subtitle)`
   color: ${colors.text};
 `;
 
-const PreviewAmount = styled(Title)`
-  font-size: 40px;
-  line-height: 52px;
-`;
-
 const Arrow = styled.i<{ color: string }>`
   font-size: 12px;
   color: ${(props) => props.color};
@@ -406,9 +401,9 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               <BaseInputLabel>AMOUNT ({vaultOption})</BaseInputLabel>
             </BaseModalContentColumn>
             <BaseModalContentColumn marginTop={4}>
-              <PreviewAmount>
+              <Title fontSize={40} lineHeight={52}>
                 {parseFloat(parseFloat(input).toFixed(4))}
-              </PreviewAmount>
+              </Title>
             </BaseModalContentColumn>
             <InfoColumn>
               <SecondaryText>Pool</SecondaryText>

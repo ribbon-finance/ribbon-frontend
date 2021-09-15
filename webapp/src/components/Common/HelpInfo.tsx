@@ -18,11 +18,6 @@ const HelpContainer = styled.div<{ color?: string }>`
   z-index: 1;
 `;
 
-const HelpText = styled(SecondaryText)`
-  font-size: 10px;
-  line-height: 12px;
-`;
-
 interface HelpInfoProps {
   containerRef: React.Ref<any>;
   color?: string;
@@ -32,7 +27,13 @@ const HelpInfo: React.FC<React.HTMLAttributes<HTMLDivElement> & HelpInfoProps> =
   ({ children, containerRef, color, ...props }) => {
     return (
       <HelpContainer color={color} {...props} ref={containerRef}>
-        <HelpText color={color || colors.text}>{children}</HelpText>
+        <SecondaryText
+          fontSize={10}
+          lineHeight={12}
+          color={color || colors.text}
+        >
+          {children}
+        </SecondaryText>
       </HelpContainer>
     );
   };

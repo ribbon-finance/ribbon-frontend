@@ -6,11 +6,6 @@ import colors from "../../../designSystem/colors";
 import theme from "../../../designSystem/theme";
 import { VaultSetFilterProps } from "../types";
 
-const Result = styled(Title)`
-  font-size: 18px;
-  line-height: 24px;
-`;
-
 const Descritpion = styled(PrimaryText)`
   margin-top: 8px;
   color: ${colors.text};
@@ -40,7 +35,9 @@ const EmptyResult: React.FC<
     {...props}
     className={`w-100 h-100 d-flex flex-column align-items-center justify-content-center flex-wrap ${props.className}`}
   >
-    <Result>NO RESULTS</Result>
+    <Title fontSize={18} lineHeight={24}>
+      NO RESULTS
+    </Title>
     <Descritpion>Pleas try adjusting your filters.</Descritpion>
     <ClearButton
       role="button"

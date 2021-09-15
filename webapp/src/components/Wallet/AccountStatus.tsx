@@ -51,6 +51,29 @@ const investButtonWidth = 30;
 const investButtonMarginLeft =
   100 - walletButtonMarginLeft * 2 - walletButtonWidth - investButtonWidth;
 
+const AccountStatusContainer = styled.div<AccountStatusVariantProps>`
+  flex-wrap: wrap;
+  flex-direction: column;
+
+  ${(props) => {
+    switch (props.variant) {
+      case "mobile":
+        return `
+          display: none;
+          
+          @media (max-width: ${sizes.md}px) {
+            display: flex;
+            width: 100%;
+          }
+        `;
+      case "desktop":
+        return `
+          display: flex;
+        `;
+    }
+  }}
+`;
+
 const WalletContainer = styled.div<AccountStatusVariantProps>`
   justify-content: center;
   align-items: center;
@@ -410,11 +433,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   );
 
   return (
-    <div
-      className={`d-flex flex-wrap flex-column ${
-        variant === "mobile" ? "w-100" : ""
-      }`}
-    >
+    <AccountStatusContainer variant={variant}>
       {vault && (
         <YourPosition
           vault={vault}
@@ -488,7 +507,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
       </WalletMobileOverlayMenu>
 
       {formModal}
-    </div>
+    </AccountStatusContainer>
   );
 };
 export default AccountStatus;

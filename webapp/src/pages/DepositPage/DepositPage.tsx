@@ -315,14 +315,21 @@ const HeroSection: React.FC<{
       {variant === "v1" && hasVaultVersion(vaultOption, "v2") && (
         <BannerContainer color={color}>
           <BaseIndicator size={8} color={color} className="mr-2" />
-          <PrimaryText color={color} className="mr-3">
+          <PrimaryText
+            fontSize={14}
+            lineHeight={20}
+            color={color}
+            className="mr-3"
+          >
             {v1Inactive
               ? "V1 vaults are now inactive and do not accept deposits"
               : "V2 vaults are now live"}
           </PrimaryText>
           <BaseLink to={getVaultURI(vaultOption, "v2")}>
             <BannerButton color={color} role="button">
-              <PrimaryText color={color}>Switch to V2</PrimaryText>
+              <PrimaryText fontSize={14} lineHeight={20} color={color}>
+                Switch to V2
+              </PrimaryText>
             </BannerButton>
           </BaseLink>
         </BannerContainer>

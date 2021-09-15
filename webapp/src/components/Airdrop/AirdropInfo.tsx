@@ -75,23 +75,6 @@ const ViewBreakdownPillText = styled(Subtitle)`
   margin-right: 8px;
 `;
 
-const UnclaimData = styled(Title)<{ variant: "big" | "small" }>`
-  ${(props) => {
-    switch (props.variant) {
-      case "big":
-        return `
-          font-size: 84px;
-          line-height: 84px;
-        `;
-      case "small":
-        return `
-          font-size: 64px;
-          line-height: 64px;
-        `;
-    }
-  }}
-`;
-
 const LearnMoreLink = styled(BaseLink)`
   display: flex;
   align-items: center;
@@ -213,7 +196,9 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
             <UnclaimLabel>UNCLAIMED $RBN</UnclaimLabel>
           </BaseModalContentColumn>
           <BaseModalContentColumn marginTop={8}>
-            <UnclaimData variant="small">---</UnclaimData>
+            <Title fontSize={64} lineHeight={64}>
+              ---
+            </Title>
           </BaseModalContentColumn>
           <BaseModalContentColumn marginTop={16}>
             <Description>
@@ -247,7 +232,9 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
           </UnclaimLabel>
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={8}>
-          <UnclaimData variant="big">{airdropAmountStr}</UnclaimData>
+          <Title fontSize={84} lineHeight={84}>
+            {airdropAmountStr}
+          </Title>
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={16}>
           <ViewBreakdownPill
@@ -293,7 +280,9 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
           </UnclaimLabel>
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={24}>
-          <UnclaimData variant="small">{airdropAmountStr}</UnclaimData>
+          <Title fontSize={64} lineHeight={64}>
+            {airdropAmountStr}
+          </Title>
         </BaseModalContentColumn>
         <BaseModalContentColumn>
           <AirdropBreakdown />

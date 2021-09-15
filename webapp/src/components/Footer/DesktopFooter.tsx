@@ -35,17 +35,14 @@ const LinkItem = styled.div`
   }
 `;
 
-const LinkItemText = styled(Title)`
-  font-size: 14px;
-  line-height: 20px;
-`;
-
 const DesktopFooter = () => {
   const renderLinkItem = useCallback(
     (title: string, to: string) => (
       <BaseLink to={to} target="_blank" rel="noreferrer noopener">
         <LinkItem>
-          <LinkItemText>{title}</LinkItemText>
+          <Title fontSize={14} lineHeight={20}>
+            {title}
+          </Title>
         </LinkItem>
       </BaseLink>
     ),

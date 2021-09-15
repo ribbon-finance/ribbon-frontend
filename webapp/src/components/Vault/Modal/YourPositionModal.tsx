@@ -33,11 +33,6 @@ import HelpInfo from "../../Common/HelpInfo";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import useStakingPoolData from "../../../hooks/useStakingPoolData";
 
-const PositionData = styled(Title)`
-  font-size: 40px;
-  line-height: 40px;
-`;
-
 const ModalContent = styled(motion.div)`
   display: flex;
   flex-direction: column;
@@ -46,11 +41,6 @@ const ModalContent = styled(motion.div)`
 `;
 
 const InfoLabel = styled(SecondaryText)`
-  line-height: 16px;
-`;
-
-const InfoData = styled(Title)`
-  font-size: 14px;
   line-height: 16px;
 `;
 
@@ -149,9 +139,9 @@ const YourPositionModal: React.FC<YourPositionModalProps> = ({
               </Subtitle>
             </BaseModalContentColumn>
             <BaseModalContentColumn marginTop={8}>
-              <PositionData>
+              <Title fontSize={40} lineHeight={40}>
                 {formatBigNumber(vaultAccount.totalBalance, decimals)}
-              </PositionData>
+              </Title>
             </BaseModalContentColumn>
             <BaseModalContentColumn marginTop={8}>
               <Subtitle color={roi >= 0 ? colors.green : colors.red}>
@@ -246,7 +236,12 @@ const YourPositionModal: React.FC<YourPositionModalProps> = ({
             <BaseModalContentColumn>
               <div className="d-flex w-100 align-items-center ">
                 <InfoLabel>RBN Earned</InfoLabel>
-                <InfoData className="ml-auto" color={colors.products.yield}>
+                <Title
+                  fontSize={14}
+                  lineHeight={16}
+                  className="ml-auto"
+                  color={colors.products.yield}
+                >
                   {formatBigNumber(
                     vaultVersion === "v1"
                       ? stakingPoolData.claimableRbn
@@ -255,7 +250,7 @@ const YourPositionModal: React.FC<YourPositionModalProps> = ({
                     2
                   )}{" "}
                   RBN
-                </InfoData>
+                </Title>
               </div>
             </BaseModalContentColumn>
           </>

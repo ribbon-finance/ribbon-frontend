@@ -81,38 +81,57 @@ export const BaseModalContentColumn = styled.div<{
       : `${props.marginTop === undefined ? 24 : props.marginTop}px`};
 `;
 
-export const Title = styled.span<{ color?: string }>`
+export const Title = styled.span<{
+  color?: string;
+  fontSize?: number;
+  lineHeight?: number;
+}>`
   color: ${(props) => (props.color ? props.color : colors.primaryText)};
   font-family: VCR, sans-serif;
   font-style: normal;
   font-weight: normal;
   text-transform: uppercase;
+  ${(props) => (props.fontSize ? `font-size: ${props.fontSize}px;` : ``)}
+  ${(props) => (props.lineHeight ? `line-height: ${props.lineHeight}px;` : ``)}
 `;
 
-export const Subtitle = styled.span<{ color?: string }>`
+export const Subtitle = styled.span<{
+  color?: string;
+  fontSize?: number;
+  lineHeight?: number;
+}>`
   color: ${(props) => (props.color ? props.color : colors.primaryText)};
   font-family: VCR, sans-serif;
   font-style: normal;
   font-weight: normal;
-  font-size: 12px;
+  font-size: ${(props) => (props.fontSize ? props.fontSize : 12)}px;
+  ${(props) => (props.lineHeight ? `line-height: ${props.lineHeight}px;` : ``)}
   letter-spacing: 1.5px;
   text-transform: uppercase;
 `;
 
-export const PrimaryText = styled(BaseText)<{ color?: string }>`
+export const PrimaryText = styled(BaseText)<{
+  color?: string;
+  fontSize?: number;
+  lineHeight?: number;
+}>`
   font-style: normal;
   font-weight: 500;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: ${(props) => (props.fontSize ? props.fontSize : 16)}px;
+  line-height: ${(props) => (props.lineHeight ? props.lineHeight : 24)}px;
   color: ${(props) => (props.color ? props.color : colors.primaryText)};
 `;
 
-export const SecondaryText = styled.span<{ color?: string }>`
+export const SecondaryText = styled.span<{
+  color?: string;
+  fontSize?: number;
+  lineHeight?: number;
+}>`
   font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: 500;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: ${(props) => (props.fontSize ? props.fontSize : 14)}px;
+  line-height: ${(props) => (props.lineHeight ? props.lineHeight : 20)}px;
   color: ${(props) => (props.color ? props.color : colors.text)};
 `;
 

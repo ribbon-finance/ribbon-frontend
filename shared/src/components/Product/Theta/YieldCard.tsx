@@ -128,29 +128,9 @@ const ProductAssetLogoContainer = styled.div<{ color: string }>`
   }
 `;
 
-const ProductTitle = styled(Title)`
-  font-size: 28px;
-  line-height: 40px;
-  margin: 8px 0px;
-  width: 100%;
-`;
-
 const ProductDescription = styled(SecondaryText)`
   line-height: 1.5;
   margin-bottom: auto;
-`;
-
-const ExpectedYieldTitle = styled(BaseText)`
-  color: ${colors.primaryText}A3;
-  width: 100%;
-  font-size: 12px;
-`;
-
-const YieldText = styled(Title)`
-  font-size: 24px;
-  width: 100%;
-  margin-top: 4px;
-  margin-bottom: 24px;
 `;
 
 const ModeSwitcherContainer = styled.div<{ color: string }>`
@@ -162,14 +142,6 @@ const ModeSwitcherContainer = styled.div<{ color: string }>`
   border-radius: 100px;
   background: ${(props) => props.color}14;
   z-index: 1;
-`;
-
-const PositionLabel = styled(SecondaryText)`
-  font-size: 12px;
-`;
-
-const PositionStats = styled(Title)`
-  font-size: 14px;
 `;
 
 interface YieldCardProps {
@@ -264,12 +236,27 @@ const YieldCard: React.FC<YieldCardProps> = ({
         <ProductAssetLogoContainer color={color}>
           {logo}
         </ProductAssetLogoContainer>
-        <ProductTitle color={color}>{productCopies[vault].title}</ProductTitle>
+        <Title
+          fontSize={28}
+          lineHeight={40}
+          color={color}
+          className="w-100 my-2"
+        >
+          {productCopies[vault].title}
+        </Title>
         <ProductDescription>
           {productCopies[vault].description}
         </ProductDescription>
-        <ExpectedYieldTitle>Current Projected Yield (APY)</ExpectedYieldTitle>
-        <YieldText>{perfStr}</YieldText>
+        <Title
+          color={`${colors.primaryText}A3`}
+          fontSize={12}
+          className="w-100"
+        >
+          Current Projected Yield (APY)
+        </Title>
+        <Title fontSize={24} className="w-100 mt-1 mb-4">
+          {perfStr}
+        </Title>
         <CapBar
           loading={vaultVersion === "v1" ? isLoading : v2DataLoading}
           current={totalDepositStr}
@@ -307,15 +294,17 @@ const YieldCard: React.FC<YieldCardProps> = ({
       case "v1":
         return (
           <div className="d-flex align-items-center w-100">
-            <PositionLabel className="mr-auto">Your Position</PositionLabel>
-            <PositionStats>
+            <SecondaryText fontSize={12} className="mr-auto">
+              Your Position
+            </SecondaryText>
+            <Title fontSize={14}>
               {vaultAccount
                 ? `${formatBigNumber(
                     vaultAccount.totalBalance,
                     decimals
                   )} ${getAssetDisplay(asset)}`
                 : "---"}
-            </PositionStats>
+            </Title>
           </div>
         );
       case "v2":
@@ -325,7 +314,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
         ) {
           return (
             <div className="d-flex w-100 justify-content-center">
-              <SecondaryText color={colors.primaryText}>
+              <SecondaryText fontSize={12} color={colors.primaryText}>
                 Funds ready for migration to V2
               </SecondaryText>
             </div>
@@ -334,8 +323,10 @@ const YieldCard: React.FC<YieldCardProps> = ({
 
         return (
           <div className="d-flex align-items-center w-100">
-            <PositionLabel className="mr-auto">Your Position</PositionLabel>
-            <PositionStats>
+            <SecondaryText fontSize={12} className="mr-auto">
+              Your Position
+            </SecondaryText>
+            <Title fontSize={14}>
               {active &&
               !v2DataLoading &&
               !isPracticallyZero(
@@ -347,7 +338,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
                     decimals
                   )} ${getAssetDisplay(asset)}`
                 : "---"}
-            </PositionStats>
+            </Title>
           </div>
         );
     }

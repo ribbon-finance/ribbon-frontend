@@ -32,12 +32,6 @@ const TargetCircle = styled.div<{ color: string; dimension: number }>`
   border: 1px dashed ${(props) => props.color};
 `;
 
-const TargetLabel = styled(Title)<{ color: string; size: number }>`
-  font-size: ${(props) => props.size}px;
-  line-height: ${(props) => props.size * 1.2}px;
-  color: ${(props) => props.color};
-`;
-
 const ColoredLogo = styled(Logo)<{ color: string }>`
   circle {
     fill: ${(props) => props.color}3D;
@@ -312,9 +306,13 @@ const TradeOffer: React.FC<TradeOfferProps> = ({
         );
       default:
         return (
-          <TargetLabel color={color} size={height * 0.75 * 0.1}>
+          <Title
+            color={color}
+            fontSize={height * 0.75 * 0.1}
+            lineHeight={height * 0.75 * 0.1 * 1.2}
+          >
             {party}
-          </TargetLabel>
+          </Title>
         );
     }
   };
