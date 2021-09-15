@@ -1,9 +1,9 @@
 import React from "react";
-import { SecondaryText } from "shared/lib/designSystem";
-
-import colors from "shared/lib/designSystem/colors";
-import theme from "shared/lib/designSystem/theme";
 import styled from "styled-components";
+
+import { SecondaryText } from "../../designSystem";
+import colors from "../../designSystem/colors";
+import theme from "../../designSystem/theme";
 
 const HelpContainer = styled.div<{ color?: string }>`
   display: flex;

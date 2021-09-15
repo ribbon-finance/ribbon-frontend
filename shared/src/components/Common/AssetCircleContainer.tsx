@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { keyframes } from "styled-components";
 
-import theme from "shared/lib/designSystem/theme";
+import theme from "../../designSystem/theme";
 
 const circleAnimation = (index: number, borderColor: string) => keyframes`
   ${index * 10}% {

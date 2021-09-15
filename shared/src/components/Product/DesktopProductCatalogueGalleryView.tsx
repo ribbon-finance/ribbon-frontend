@@ -1,31 +1,25 @@
-import { formatUnits } from "@ethersproject/units";
-import { ethers } from "ethers";
 import { AnimatePresence, motion } from "framer";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
 import Marquee from "react-fast-marquee/dist";
 
 import {
-  getAssets,
   VaultOptions,
   VaultVersion,
+  VaultVersionList,
 } from "../../constants/constants";
 import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
-import { useAssetsPrice } from "../../hooks/useAssetPrice";
 import useScreenSize from "../../hooks/useScreenSize";
-import useTextAnimation from "../../hooks/useTextAnimation";
 import { VaultAccount } from "../../models/vault";
-import { Assets, AssetsList } from "../../store/types";
+import { AssetsList } from "../../store/types";
 import {
   getAssetColor,
-  getAssetDecimals,
   getAssetDisplay,
   getAssetLogo,
 } from "../../utils/asset";
-import { assetToUSD, formatAmount, isPracticallyZero } from "../../utils/math";
 import FilterDropdown from "../Common/FilterDropdown";
 import FullscreenMultiselectFilters from "../Common/FullscreenMultiselectFilters";
 import Pagination from "../Common/Pagination";
@@ -40,6 +34,7 @@ import {
   VaultSortByFilterOptions,
   VaultStrategyList,
 } from "./types";
+import YourPosition from "../Vault/YourPosition";
 
 const FullscreenContainer = styled(Container)<{ height: number }>`
   padding-top: 24px;
@@ -73,21 +68,6 @@ const VaultSecondaryInfo = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: 280px;
-`;
-
-const VaultPositionBox = styled.div`
-  margin-top: 24px;
-  width: 100%;
-  background: ${colors.background};
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: ${theme.border.radius};
-  padding: 16px;
-`;
-
-const VaultPositionPrimaryText = styled(Title)`
-  font-size: 14px;
-  line-height: 24px;
-  letter-spacing: 1px;
 `;
 
 const VaultFrameContainer = styled(motion.div)`
@@ -148,11 +128,9 @@ const DesktopProductCatalogueGalleryView: React.FC<
   const [currentVault, setCurrentVault] = useState<VaultOptions | undefined>(
     filteredProducts[page - 1]
   );
-  const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice({
-    // @ts-ignore
-    assets: AssetsList,
-  });
-  const loadingText = useTextAnimation(assetPricesLoading);
+  const [vaultVersion, setVaultVersion] = useState<VaultVersion>(
+    VaultVersionList[0]
+  );
 
   // Prevent page overflow
   useEffect(() => {
@@ -169,48 +147,6 @@ const DesktopProductCatalogueGalleryView: React.FC<
     setCurrentVault(filteredProducts[currPage - 1]);
   }, [page, filteredProducts]);
 
-  const roi = useMemo(() => {
-    const vault = filteredProducts[page - 1];
-    const asset = getAssets(vault);
-    const vaultAccount = vaultAccounts[vault];
-    const decimals = getAssetDecimals(asset);
-
-    if (
-      !vaultAccount ||
-      isPracticallyZero(vaultAccount.totalDeposits, decimals)
-    ) {
-      return 0;
-    }
-
-    return (
-      (parseFloat(
-        ethers.utils.formatUnits(
-          vaultAccount.totalBalance.sub(vaultAccount.totalDeposits),
-          decimals
-        )
-      ) /
-        parseFloat(
-          ethers.utils.formatUnits(vaultAccount.totalDeposits, decimals)
-        )) *
-      100
-    );
-  }, [vaultAccounts, page, filteredProducts]);
-
-  const getVaultUSDDisplay = useCallback(
-    (vaultAccount: VaultAccount, asset: Assets) => {
-      if (assetPricesLoading) {
-        return loadingText;
-      }
-
-      return assetToUSD(
-        vaultAccount.totalBalance,
-        assetPrices[asset]!,
-        getAssetDecimals(asset)
-      );
-    },
-    [loadingText, assetPrices, assetPricesLoading]
-  );
-
   const vaultInfo = useMemo(() => {
     if (!currentVault) {
       return (
@@ -222,10 +158,6 @@ const DesktopProductCatalogueGalleryView: React.FC<
         </EmptyResultContainer>
       );
     }
-
-    const asset = getAssets(currentVault);
-    const decimals = getAssetDecimals(asset);
-    const vaultAccount = vaultAccounts[currentVault];
 
     return (
       <VaultInfo>
@@ -240,45 +172,17 @@ const DesktopProductCatalogueGalleryView: React.FC<
             {productCopies[currentVault].description}
           </SecondaryText>
 
-          {/* Your position box */}
-          {vaultAccount && (
-            <VaultPositionBox>
-              <div className="w-100 d-flex">
-                <VaultPositionPrimaryText className="mr-auto">
-                  Your Position
-                </VaultPositionPrimaryText>
-                <VaultPositionPrimaryText>
-                  {`${formatAmount(
-                    parseFloat(formatUnits(vaultAccount.totalBalance, decimals))
-                  )} ${getAssetDisplay(asset)}`}
-                </VaultPositionPrimaryText>
-              </div>
-              <div className="w-100 d-flex">
-                <Title
-                  fontSize={12}
-                  lineHeight={16}
-                  color={roi >= 0 ? colors.green : colors.red}
-                  className="mr-auto"
-                >
-                  {roi.toFixed(2)}%
-                </Title>
-                <Title fontSize={12} lineHeight={16}>
-                  {getVaultUSDDisplay(vaultAccount, asset)}
-                </Title>
-              </div>
-            </VaultPositionBox>
-          )}
+          <div className="mt-4">
+            <YourPosition
+              vault={{ vaultOption: currentVault, vaultVersion }}
+              variant="desktop"
+              alwaysShowPosition
+            />
+          </div>
         </VaultSecondaryInfo>
       </VaultInfo>
     );
-  }, [
-    roi,
-    currentVault,
-    vaultAccounts,
-    getVaultUSDDisplay,
-    setFilterAssets,
-    setFilterStrategies,
-  ]);
+  }, [currentVault, vaultVersion, setFilterAssets, setFilterStrategies]);
 
   return (
     <Container fluid className="position-relative px-0 d-flex">
@@ -427,6 +331,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
                   <YieldFrame
                     vault={currentVault}
                     onVaultPress={onVaultPress}
+                    updateVaultVersionHook={setVaultVersion}
                   />
                 )}
               </VaultFrameContainer>

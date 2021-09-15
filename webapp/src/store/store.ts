@@ -19,7 +19,6 @@ interface GlobalStore {
     withdrawOption?: V2WithdrawOption;
     receiveVault?: VaultOptions;
   };
-  showVaultPosition: boolean;
 }
 
 export const initialVaultActionForm = {
@@ -31,7 +30,6 @@ export const initialVaultActionForm = {
 
 export const initialState: GlobalStore = {
   vaultActionForm: initialVaultActionForm,
-  showVaultPosition: false,
 };
 
 export const { useGlobalState: useWebappGlobalState } =

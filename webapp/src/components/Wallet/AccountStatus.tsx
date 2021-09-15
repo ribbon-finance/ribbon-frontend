@@ -43,7 +43,7 @@ import useVaultData from "shared/lib/hooks/useVaultData";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { isPracticallyZero } from "shared/lib/utils/math";
 import { getAssetDecimals } from "shared/lib/utils/asset";
-import YourPosition from "../Vault/YourPosition";
+import YourPosition from "shared/lib/components/Vault/YourPosition";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;

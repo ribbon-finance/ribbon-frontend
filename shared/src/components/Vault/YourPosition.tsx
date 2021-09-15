@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { formatUnits } from "@ethersproject/units";
 
@@ -6,22 +6,22 @@ import {
   getAssets,
   VaultOptions,
   VaultVersion,
-} from "shared/lib/constants/constants";
-import { getVaultColor } from "shared/lib/utils/vault";
-import theme from "shared/lib/designSystem/theme";
-import AssetCircleContainer from "../Common/AssetCircleContainer";
+} from "../../constants/constants";
+import { getVaultColor } from "../../utils/vault";
+import theme from "../../designSystem/theme";
+import AssetCircleContainer from "../../components/Common/AssetCircleContainer";
 import {
   getAssetDecimals,
   getAssetDisplay,
   getAssetLogo,
-} from "shared/lib/utils/asset";
-import { Title } from "shared/lib/designSystem";
-import colors from "shared/lib/designSystem/colors";
-import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
-import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
-import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
-import { useWebappGlobalState } from "../../store/store";
-import sizes from "shared/lib/designSystem/sizes";
+} from "../../utils/asset";
+import { Title } from "../../designSystem";
+import colors from "../../designSystem/colors";
+import ButtonArrow from "../../components/Common/ButtonArrow";
+import useVaultAccounts from "../../hooks/useVaultAccounts";
+import { formatBigNumber, isPracticallyZero } from "../../utils/math";
+import sizes from "../../designSystem/sizes";
+import { useGlobalState } from "../../store/store";
 
 const DesktopContainer = styled.div`
   display: flex;
@@ -75,12 +75,14 @@ interface YourPositionProps {
   };
   variant: "desktop" | "mobile";
   onShowHook?: (show: boolean) => void;
+  alwaysShowPosition?: boolean;
 }
 
 const YourPosition: React.FC<YourPositionProps> = ({
   vault: { vaultOption, vaultVersion },
   variant,
   onShowHook,
+  alwaysShowPosition = false,
 }) => {
   const color = getVaultColor(vaultOption);
   const asset = getAssets(vaultOption);
@@ -91,7 +93,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
   const { vaultAccounts } = useVaultAccounts(vaultOptions, vaultVersion, {
     poll: true,
   });
-  const [, setShowVaultPosition] = useWebappGlobalState("showVaultPosition");
+  const [, setVaultPositionModal] = useGlobalState("vaultPositionModal");
 
   const roi = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
@@ -127,7 +129,18 @@ const YourPosition: React.FC<YourPositionProps> = ({
       );
   }, [decimals, onShowHook, vaultAccount]);
 
-  if (vaultAccount && !isPracticallyZero(vaultAccount.totalBalance, decimals)) {
+  const setShowPositionModal = useCallback(() => {
+    setVaultPositionModal({
+      show: true,
+      vaultOption,
+      vaultVersion,
+    });
+  }, [setVaultPositionModal, vaultOption, vaultVersion]);
+
+  if (
+    alwaysShowPosition ||
+    (vaultAccount && !isPracticallyZero(vaultAccount.totalBalance, decimals))
+  ) {
     switch (variant) {
       case "desktop":
         return (
@@ -135,7 +148,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
             <FloatingPositionCard
               color={color}
               role="button"
-              onClick={() => setShowVaultPosition(true)}
+              onClick={setShowPositionModal}
             >
               <AssetCircleContainer color={color} size={48}>
                 <Logo width={20} height={20} />
@@ -146,7 +159,9 @@ const YourPosition: React.FC<YourPositionProps> = ({
                 </PositionInfoText>
                 <div className="d-flex">
                   <PositionInfoText size={14}>
-                    {formatBigNumber(vaultAccount.totalBalance, decimals)}
+                    {vaultAccount
+                      ? formatBigNumber(vaultAccount.totalBalance, decimals)
+                      : "0.00"}
                   </PositionInfoText>
                   <PositionInfoText
                     size={10}
@@ -165,10 +180,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
         );
       case "mobile":
         return (
-          <MobileContainer
-            color={color}
-            onClick={() => setShowVaultPosition(true)}
-          >
+          <MobileContainer color={color} onClick={setShowPositionModal}>
             <AssetCircleContainer color={color} size={48}>
               <Logo width={20} height={20} />
             </AssetCircleContainer>
@@ -178,7 +190,9 @@ const YourPosition: React.FC<YourPositionProps> = ({
               </PositionInfoText>
               <div className="d-flex">
                 <PositionInfoText size={14}>
-                  {formatBigNumber(vaultAccount.totalBalance, decimals)}
+                  {vaultAccount
+                    ? formatBigNumber(vaultAccount.totalBalance, decimals)
+                    : "0.00"}
                 </PositionInfoText>
                 <PositionInfoText
                   size={10}

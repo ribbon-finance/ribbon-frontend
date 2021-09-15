@@ -22,11 +22,11 @@ import {
   BaseModalContentColumn,
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import { StakingPoolData } from "../../../models/staking";
+import { StakingPoolData } from "shared/lib/models/staking";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import useStakingReward from "../../../hooks/useStakingReward";
+import useStakingReward from "shared/lib/hooks/useStakingReward";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";

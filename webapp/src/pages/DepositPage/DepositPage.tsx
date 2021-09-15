@@ -39,8 +39,7 @@ import { getVaultURI } from "../../constants/constants";
 import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopActionForm";
 import { Redirect } from "react-router-dom";
 import useV2VaultData from "shared/lib/hooks/useV2VaultData";
-import YourPosition from "../../components/Vault/YourPosition";
-import YourPositionModal from "../../components/Vault/Modal/YourPositionModal";
+import YourPosition from "shared/lib/components/Vault/YourPosition";
 import { truncateAddress } from "shared/lib/utils/address";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 
@@ -220,7 +219,6 @@ const DepositPage = () => {
 
   return (
     <>
-      <YourPositionModal vault={{ vaultOption, vaultVersion }} />
       <HeroSection
         depositCapBar={depositCapBar}
         vaultOption={vaultOption}

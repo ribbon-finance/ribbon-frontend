@@ -2,16 +2,14 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { useWeb3React } from "@web3-react/core";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
+import { Event } from "@ethersproject/contracts";
 
-import {
-  VaultLiquidityMiningMap,
-  VaultOptions,
-} from "shared/lib/constants/constants";
-import { getERC20Token } from "shared/lib/hooks/useERC20Token";
-import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import { StakingPoolData } from "../models/staking";
-import { impersonateAddress } from "shared/lib/utils/development";
 import useStakingReward from "./useStakingReward";
+import { VaultLiquidityMiningMap, VaultOptions } from "../constants/constants";
+import { useWeb3Context } from "./web3Context";
+import { getERC20Token } from "./useERC20Token";
+import { impersonateAddress } from "../utils/development";
 
 const initialData: StakingPoolData = {
   currentStake: BigNumber.from(0),
@@ -46,7 +44,7 @@ const useStakingPoolData: UseStakingPoolData = (
   const doMulticall = useCallback(async () => {
     const tokenContract = getERC20Token(library || provider, option, active);
 
-    if (!contract || !tokenContract) {
+    if (!contract || !tokenContract || !VaultLiquidityMiningMap[option]) {
       return;
     }
 
@@ -60,8 +58,8 @@ const useStakingPoolData: UseStakingPoolData = (
      * 3. Last Time Reward Applicable
      * 4. Period finish
      */
-    const unconnectedPromises = [
-      tokenContract.balanceOf(VaultLiquidityMiningMap[option]),
+    const unconnectedPromises: Promise<BigNumber | Array<Event> | number>[] = [
+      tokenContract.balanceOf(VaultLiquidityMiningMap[option]!),
       contract.getRewardForDuration(),
       contract.lastTimeRewardApplicable(),
       contract.periodFinish(),
@@ -76,10 +74,12 @@ const useStakingPoolData: UseStakingPoolData = (
     const promises = unconnectedPromises.concat(
       active
         ? [
-            contract.balanceOf(account),
-            contract.earned(account),
-            tokenContract.balanceOf(account),
-            contract.queryFilter(contract.filters.RewardPaid(account)),
+            contract.balanceOf(account!),
+            contract.earned(account!),
+            tokenContract.balanceOf(account!),
+            contract.queryFilter(
+              contract.filters.RewardPaid(account as string, null)
+            ),
           ]
         : [
             /** User had not connected their wallet, default to 0 */
@@ -102,16 +102,19 @@ const useStakingPoolData: UseStakingPoolData = (
     ] = await Promise.all(promises);
 
     setData({
-      poolSize,
-      poolRewardForDuration,
+      poolSize: poolSize as BigNumber,
+      poolRewardForDuration: poolRewardForDuration as BigNumber,
       lastTimeRewardApplicable: lastTimeRewardApplicable.toString(),
-      periodFinish: moment(periodFinish, "X").add(1, "days").unix().toString(),
-      claimHistory: claimEvents.map((event: any) => ({
+      periodFinish: moment(periodFinish as number, "X")
+        .add(1, "days")
+        .unix()
+        .toString(),
+      claimHistory: (claimEvents as Event[]).map((event: any) => ({
         amount: BigNumber.from(event.data),
       })),
-      currentStake,
-      claimableRbn,
-      unstakedBalance,
+      currentStake: currentStake as BigNumber,
+      claimableRbn: claimableRbn as BigNumber,
+      unstakedBalance: unstakedBalance as BigNumber,
     });
 
     if (!firstLoaded) {

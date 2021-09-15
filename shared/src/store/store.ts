@@ -54,6 +54,11 @@ interface GlobalStore {
       [option in VaultOptions]: VaultAccount | undefined;
     };
   };
+  vaultPositionModal: {
+    show: boolean;
+    vaultOption?: VaultOptions;
+    vaultVersion: VaultVersion;
+  };
 }
 
 export const initialVaultAccounts = Object.fromEntries(
@@ -146,6 +151,10 @@ export const initialState: GlobalStore = {
     [token in ERC20Token]: { fetched: boolean; balance: BigNumber };
   },
   vaultAccounts: initialVaultAccounts,
+  vaultPositionModal: {
+    show: false,
+    vaultVersion: VaultVersionList[0],
+  },
 };
 
 export const { useGlobalState } = createGlobalState(initialState);

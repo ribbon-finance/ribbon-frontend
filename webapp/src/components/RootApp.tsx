@@ -14,6 +14,7 @@ import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal"
 import NotFound from "../pages/NotFound";
 import StakingPage from "../pages/Staking/StakingPage";
 import colors from "shared/lib/designSystem/colors";
+import YourPositionModal from "./Vault/Modal/YourPositionModal";
 
 const Root = styled.div<{ screenHeight: number }>`
   background-color: ${colors.background};
@@ -30,6 +31,7 @@ const RootApp = () => {
       <WrongNetworkToast />
       <TxStatusToast />
       <WalletConnectModal />
+      <YourPositionModal />
       <Router>
         <Header />
         <Switch>

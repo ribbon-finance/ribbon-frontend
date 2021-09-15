@@ -25,7 +25,7 @@ import {
   VaultOptions,
 } from "shared/lib/constants/constants";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
-import HelpInfo from "../../../Common/HelpInfo";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { VaultAccount } from "shared/lib/models/vault";
