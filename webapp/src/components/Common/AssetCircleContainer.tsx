@@ -1,17 +1,37 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 import theme from "shared/lib/designSystem/theme";
 
-const Circle = styled.div<{ size: number; color: string; background?: string }>`
+const circleAnimation = (index: number, borderColor: string) => keyframes`
+  ${index * 10}% {
+    border: ${theme.border.width} ${theme.border.style} ${borderColor}00;
+  }
+
+  ${index * 10 + 25}% {
+    border: ${theme.border.width} ${theme.border.style} ${borderColor};
+  }
+
+  ${index * 10 + 50}% {
+    border: ${theme.border.width} ${theme.border.style} ${borderColor}00;
+  }
+`;
+
+const Circle = styled.div<{
+  size: number;
+  color: string;
+  background?: string;
+  circleIndex: number;
+}>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: ${(props) => props.size}px;
   height: ${(props) => props.size}px;
-  border: ${theme.border.width} ${theme.border.style} ${(props) => props.color};
   border-radius: ${(props) => props.size / 2}px;
   background: ${(props) => props.background || "none"};
+  animation: 2s ${(props) => circleAnimation(props.circleIndex, props.color)}
+    linear infinite;
 `;
 
 interface AssetCircleContainerProps {
@@ -25,12 +45,13 @@ const AssetCircleContainer: React.FC<AssetCircleContainerProps> = ({
   children,
 }) => {
   return (
-    <Circle size={size} color={`${color}29`}>
-      <Circle size={(size * 5) / 6} color={`${color}66`}>
+    <Circle size={size} color={color} circleIndex={2}>
+      <Circle size={(size * 5) / 6} color={color} circleIndex={1}>
         <Circle
           size={(size * 4) / 6}
-          color={`${color}`}
+          color={color}
           background={`${color}1F`}
+          circleIndex={0}
         >
           {children}
         </Circle>
