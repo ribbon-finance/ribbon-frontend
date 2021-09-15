@@ -108,10 +108,6 @@ const YourPositionModal: React.FC = () => {
   }, [vaultAccount, vaultVersion]);
 
   const body = useMemo(() => {
-    if (!vaultAccount) {
-      return <></>;
-    }
-
     switch (mode) {
       case "deposits":
         return (
@@ -131,7 +127,9 @@ const YourPositionModal: React.FC = () => {
             </BaseModalContentColumn>
             <BaseModalContentColumn marginTop={8}>
               <Title fontSize={40} lineHeight={40}>
-                {formatBigNumber(vaultAccount.totalBalance, decimals)}
+                {vaultAccount
+                  ? formatBigNumber(vaultAccount.totalBalance, decimals)
+                  : "0.00"}
               </Title>
             </BaseModalContentColumn>
             <BaseModalContentColumn marginTop={8}>
@@ -202,10 +200,18 @@ const YourPositionModal: React.FC = () => {
 
             <CapBar
               loading={false}
-              current={parseFloat(
-                formatUnits(vaultAccount.totalStakedBalance, decimals)
-              )}
-              cap={parseFloat(formatUnits(vaultAccount.totalBalance, decimals))}
+              current={
+                vaultAccount
+                  ? parseFloat(
+                      formatUnits(vaultAccount.totalStakedBalance, decimals)
+                    )
+                  : 0
+              }
+              cap={
+                vaultAccount
+                  ? parseFloat(formatUnits(vaultAccount.totalBalance, decimals))
+                  : 0
+              }
               copies={{
                 current: "Staked",
                 cap: "Position",
@@ -262,65 +268,61 @@ const YourPositionModal: React.FC = () => {
     yieldEarned,
   ]);
 
-  if (vaultAccount && !isPracticallyZero(vaultAccount.totalBalance, decimals)) {
-    return (
-      <BasicModal
-        show={vaultPositionModal.show}
-        onClose={() =>
-          setVaultPositionModal((prev) => ({ ...prev, show: false }))
-        }
-        height={500}
-        theme={color}
-      >
-        <>
-          <AnimatePresence initial={false} exitBeforeEnter>
-            <ModalContent
-              key={mode}
-              initial={{
-                x: mode === ModeList[0] ? -100 : 100,
-                opacity: 0,
-              }}
-              animate={{
-                x: 0,
-                opacity: 1,
-              }}
-              exit={{
-                x: mode === ModeList[0] ? -100 : 100,
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.15,
-                type: "keyframes",
-                ease: "easeOut",
-              }}
-            >
-              {body}
-            </ModalContent>
-          </AnimatePresence>
+  return (
+    <BasicModal
+      show={vaultPositionModal.show}
+      onClose={() =>
+        setVaultPositionModal((prev) => ({ ...prev, show: false }))
+      }
+      height={500}
+      theme={color}
+    >
+      <>
+        <AnimatePresence initial={false} exitBeforeEnter>
+          <ModalContent
+            key={mode}
+            initial={{
+              x: mode === ModeList[0] ? -100 : 100,
+              opacity: 0,
+            }}
+            animate={{
+              x: 0,
+              opacity: 1,
+            }}
+            exit={{
+              x: mode === ModeList[0] ? -100 : 100,
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.15,
+              type: "keyframes",
+              ease: "easeOut",
+            }}
+          >
+            {body}
+          </ModalContent>
+        </AnimatePresence>
 
-          <BaseModalContentColumn marginTop="auto" className="mb-2">
-            <SegmentControl
-              segments={ModeList.map((mode) => ({
-                value: mode,
-                display: mode.toUpperCase(),
-              }))}
-              value={mode}
-              onSelect={(value) => {
-                setMode(value as ModeType);
-              }}
-              config={{
-                theme: "outline",
-                color: color,
-                widthType: "fullWidth",
-              }}
-            />
-          </BaseModalContentColumn>
-        </>
-      </BasicModal>
-    );
-  }
-
-  return <></>;
+        <BaseModalContentColumn marginTop="auto" className="mb-2">
+          <SegmentControl
+            segments={ModeList.map((mode) => ({
+              value: mode,
+              display: mode.toUpperCase(),
+            }))}
+            value={mode}
+            onSelect={(value) => {
+              setMode(value as ModeType);
+            }}
+            config={{
+              theme: "outline",
+              color: color,
+              widthType: "fullWidth",
+            }}
+          />
+        </BaseModalContentColumn>
+      </>
+    </BasicModal>
+  );
 };
 
 export default YourPositionModal;
