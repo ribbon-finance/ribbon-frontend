@@ -35,6 +35,7 @@ import {
   VaultStrategyList,
 } from "./types";
 import YourPosition from "../Vault/YourPosition";
+import { useWeb3React } from "@web3-react/core";
 
 const FullscreenContainer = styled(Container)<{ height: number }>`
   padding-top: 24px;
@@ -123,6 +124,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
   setFilterAssets,
   vaultAccounts,
 }) => {
+  const { active } = useWeb3React();
   const { height } = useScreenSize();
   const [page, setPage] = useState(1);
   const [currentVault, setCurrentVault] = useState<VaultOptions | undefined>(
@@ -172,17 +174,25 @@ const DesktopProductCatalogueGalleryView: React.FC<
             {productCopies[currentVault].description}
           </SecondaryText>
 
-          <div className="mt-4">
-            <YourPosition
-              vault={{ vaultOption: currentVault, vaultVersion }}
-              variant="desktop"
-              alwaysShowPosition
-            />
-          </div>
+          {active && (
+            <div className="mt-4">
+              <YourPosition
+                vault={{ vaultOption: currentVault, vaultVersion }}
+                variant="desktop"
+                alwaysShowPosition
+              />
+            </div>
+          )}
         </VaultSecondaryInfo>
       </VaultInfo>
     );
-  }, [currentVault, vaultVersion, setFilterAssets, setFilterStrategies]);
+  }, [
+    active,
+    currentVault,
+    vaultVersion,
+    setFilterAssets,
+    setFilterStrategies,
+  ]);
 
   return (
     <Container fluid className="position-relative px-0 d-flex">
