@@ -25,9 +25,11 @@ const ProductCarousel = () => {
         <CarouselTitle>Our Products</CarouselTitle>
         <ProductCatalogue
           variant="landing"
-          onVaultPress={(vault) =>
+          onVaultPress={(vault, version) =>
             window.open(
-              `https://app.ribbon.finance/theta-vault/${
+              `https://app.ribbon.finance/${
+                version === "v1" ? "" : `${version}/`
+              }theta-vault/${
                 Object.keys(VaultNameOptionMap)[
                   Object.values(VaultNameOptionMap).indexOf(vault)
                 ]

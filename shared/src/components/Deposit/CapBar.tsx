@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { SecondaryText, Title } from "../../designSystem";
+import colors from "../../designSystem/colors";
 import { Assets } from "../../store/types";
 import { getAssetDisplay } from "../../utils/asset";
 import { formatAmount } from "../../utils/math";
@@ -20,24 +21,6 @@ const ForegroundBar = styled.div<{ height: number; radius: number }>`
   background: #ffffff;
   border-radius: ${(props) => props.radius}px;
   width: 100%;
-`;
-
-const DepositLabel = styled(SecondaryText)<{
-  config: {
-    fontSize: number;
-  };
-}>`
-  font-size: ${(props) => props.config.fontSize}px;
-  color: rgba(255, 255, 255, 0.64);
-`;
-
-const DepositStat = styled(Title)<{
-  config: {
-    fontSize: number;
-  };
-}>`
-  font-size: ${(props) => props.config.fontSize}px;
-  line-height: 20px;
 `;
 
 const CapBar: React.FC<{
@@ -87,8 +70,10 @@ const CapBar: React.FC<{
   return (
     <div className="w-100">
       <div className="d-flex flex-row justify-content-between">
-        <DepositLabel config={labelConfig}>{copies.current}</DepositLabel>
-        <DepositStat config={statsConfig}>
+        <SecondaryText color={colors.text} fontSize={labelConfig.fontSize}>
+          {copies.current}
+        </SecondaryText>
+        <Title fontSize={statsConfig.fontSize} lineHeight={20}>
           {loading
             ? "Loading..."
             : `${
@@ -98,7 +83,7 @@ const CapBar: React.FC<{
                       asset ? getAssetDisplay(asset) : ""
                     }`
               }`}
-        </DepositStat>
+        </Title>
       </div>
 
       <div
@@ -113,8 +98,10 @@ const CapBar: React.FC<{
       </div>
 
       <div className="d-flex flex-row justify-content-between">
-        <DepositLabel config={labelConfig}>{copies.cap}</DepositLabel>
-        <DepositStat config={statsConfig}>
+        <SecondaryText color={colors.text} fontSize={labelConfig.fontSize}>
+          {copies.cap}
+        </SecondaryText>
+        <Title fontSize={statsConfig.fontSize} lineHeight={20}>
           {loading
             ? "Loading..."
             : `${
@@ -124,7 +111,7 @@ const CapBar: React.FC<{
                       asset ? getAssetDisplay(asset) : ""
                     }`
               }`}
-        </DepositStat>
+        </Title>
       </div>
     </div>
   );

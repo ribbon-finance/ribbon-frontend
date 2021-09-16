@@ -8,7 +8,7 @@ import {
   VaultOptions,
 } from "shared/lib/constants/constants";
 import { getSubgraphqlURI } from "shared/lib/utils/env";
-import { StakingPoolAccount } from "../models/staking";
+import { StakingPoolAccount } from "shared/lib/models/staking";
 import { impersonateAddress } from "shared/lib/utils/development";
 
 const useStakingAccount = (vaults: VaultOptions[]) => {
@@ -71,30 +71,29 @@ const fetchStakingAccounts = async (
   });
 
   return Object.fromEntries(
-    (vaults as string[]).map((vault): [
-      string,
-      StakingPoolAccount | undefined
-    ] => {
-      const data = response.data.data[vault.replace(/-/g, "")];
+    (vaults as string[]).map(
+      (vault): [string, StakingPoolAccount | undefined] => {
+        const data = response.data.data[vault.replace(/-/g, "")];
 
-      if (!data) {
-        return [vault, undefined];
-      }
+        if (!data) {
+          return [vault, undefined];
+        }
 
-      return [
-        vault,
-        {
-          ...data,
-          totalRewardClaimed: BigNumber.from(data.totalRewardClaimed),
-          totalBalance: BigNumber.from(data.totalBalance),
-          pool: {
-            ...data.pool,
-            totalSupply: BigNumber.from(data.pool.totalSupply),
-            totalRewardClaimed: BigNumber.from(data.pool.totalRewardClaimed),
+        return [
+          vault,
+          {
+            ...data,
+            totalRewardClaimed: BigNumber.from(data.totalRewardClaimed),
+            totalBalance: BigNumber.from(data.totalBalance),
+            pool: {
+              ...data.pool,
+              totalSupply: BigNumber.from(data.pool.totalSupply),
+              totalRewardClaimed: BigNumber.from(data.pool.totalRewardClaimed),
+            },
           },
-        },
-      ];
-    })
+        ];
+      }
+    )
   );
 };
 

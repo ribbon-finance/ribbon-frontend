@@ -17,9 +17,11 @@ import {
 } from "../components/Vault/VaultActionsForm/Modal/types";
 import { initialVaultActionForm, useWebappGlobalState } from "../store/store";
 import useGasPrice from "shared/lib/hooks/useGasPrice";
-import useVaultData from "shared/lib/hooks/useVaultData";
+import {
+  useVaultData,
+  useV2VaultData,
+} from "shared/lib/hooks/vaultDataContext";
 import { isETHVault } from "shared/lib/utils/vault";
-import useV2VaultData from "shared/lib/hooks/useV2VaultData";
 
 export type VaultActionFormTransferData =
   | {

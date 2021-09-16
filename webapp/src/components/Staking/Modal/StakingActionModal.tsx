@@ -22,11 +22,11 @@ import {
   BaseModalContentColumn,
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import { StakingPoolData } from "../../../models/staking";
+import { StakingPoolData } from "shared/lib/models/staking";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import useStakingReward from "../../../hooks/useStakingReward";
+import useStakingReward from "shared/lib/hooks/useStakingReward";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
@@ -97,11 +97,6 @@ const InfoData = styled(Title)<{ error?: boolean }>`
 
 const CurrentStakeTitle = styled(Subtitle)`
   color: ${colors.text};
-`;
-
-const PreviewAmount = styled(Title)`
-  font-size: 40px;
-  line-height: 52px;
 `;
 
 const Arrow = styled.i<{ color: string }>`
@@ -406,9 +401,9 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               <BaseInputLabel>AMOUNT ({vaultOption})</BaseInputLabel>
             </BaseModalContentColumn>
             <BaseModalContentColumn marginTop={4}>
-              <PreviewAmount>
+              <Title fontSize={40} lineHeight={52}>
                 {parseFloat(parseFloat(input).toFixed(4))}
-              </PreviewAmount>
+              </Title>
             </BaseModalContentColumn>
             <InfoColumn>
               <SecondaryText>Pool</SecondaryText>

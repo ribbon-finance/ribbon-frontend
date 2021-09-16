@@ -103,7 +103,6 @@ const PriceContainer = styled(BaseLineContainer)<{ isOTM: boolean }>`
 const LineLabel = styled.div<{
   width: number;
   color: string;
-  variant: "price" | "strike";
 }>`
   display: flex;
   align-items: center;
@@ -111,40 +110,7 @@ const LineLabel = styled.div<{
   width: ${(props) => props.width}px;
   height: 100%;
   border-radius: 0px 100px 100px 0px;
-
-  ${(props) => {
-    switch (props.variant) {
-      case "price":
-        return `
-          background: ${colors.primaryText}0A;
-        `;
-      case "strike":
-        return `
-          background: ${props.color}29;
-        `;
-    }
-  }}
-`;
-
-const LineLabelText = styled(Title)<{
-  fontSize: number;
-  color: string;
-  variant: "price" | "strike";
-}>`
-  font-size: ${(props) => props.fontSize}px;
-  line-height: ${(props) => props.fontSize * 1.2}px;
-  ${(props) => {
-    switch (props.variant) {
-      case "price":
-        return `
-          color: ${colors.primaryText};
-        `;
-      case "strike":
-        return `
-          color: ${props.color};
-        `;
-    }
-  }}
+  background: ${(props) => props.color};
 `;
 
 const Line = styled.div<{ color: string; variant: "price" | "strike" }>`
@@ -153,7 +119,7 @@ const Line = styled.div<{ color: string; variant: "price" | "strike" }>`
     switch (props.variant) {
       case "price":
         return `
-          border: 1px solid ${colors.primaryText};
+          border: 1px solid ${props.color};
         `;
       case "strike":
         return `
@@ -185,10 +151,14 @@ const ExpiryChart: React.FC<SettlementChartProps> = ({
         height={height * 0.125}
         position={higherPrice ? "bottom" : "top"}
       >
-        <LineLabel width={width * 0.14} color={color} variant="strike">
-          <LineLabelText fontSize={height / 16} color={color} variant="strike">
+        <LineLabel width={width * 0.14} color={`${color}29`}>
+          <Title
+            fontSize={height / 16}
+            lineHeight={(height / 16) * 1.2}
+            color={color}
+          >
             Strike
-          </LineLabelText>
+          </Title>
         </LineLabel>
         <Line color={color} variant="strike" />
       </StrikeContainer>
@@ -198,12 +168,12 @@ const ExpiryChart: React.FC<SettlementChartProps> = ({
         position={higherPrice ? "top" : "bottom"}
         isOTM={isOTM}
       >
-        <LineLabel width={width * 0.14} color={color} variant="price">
-          <LineLabelText fontSize={height / 16} color={color} variant="price">
+        <LineLabel width={width * 0.14} color={`${colors.primaryText}0A`}>
+          <Title fontSize={height / 16} lineHeight={(height / 16) * 1.2}>
             Price
-          </LineLabelText>
+          </Title>
         </LineLabel>
-        <Line color={color} variant="price" />
+        <Line color={colors.primaryText} variant="price" />
       </PriceContainer>
     </div>
   );

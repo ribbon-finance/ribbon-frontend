@@ -7,7 +7,7 @@ import {
   VaultOptions,
 } from "shared/lib/constants/constants";
 import { getSubgraphqlURI } from "shared/lib/utils/env";
-import { StakingPool } from "../models/staking";
+import { StakingPool } from "shared/lib/models/staking";
 
 const useStakingPool = (vaults: VaultOptions[]) => {
   // TODO: Global state

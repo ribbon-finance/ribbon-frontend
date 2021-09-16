@@ -25,7 +25,7 @@ import {
   VaultOptions,
 } from "shared/lib/constants/constants";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
-import HelpInfo from "../../../Common/HelpInfo";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { VaultAccount } from "shared/lib/models/vault";
@@ -45,10 +45,6 @@ const TransferToVault = styled.div`
 
 const TransferToVaultTitle = styled(Title)`
   text-transform: none;
-`;
-
-const TransferToVaultCapacity = styled(SecondaryText)`
-  font-size: 12px;
 `;
 
 const TransferToVaultLogo = styled.div`
@@ -198,7 +194,8 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
               ]
             }
           </TransferToVaultTitle>
-          <TransferToVaultCapacity
+          <SecondaryText
+            fontSize={12}
             color={
               active && (isZeroCapacity || error === "insufficientCapacity")
                 ? colors.red
@@ -209,7 +206,7 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
             {transferData
               ? formatBigNumber(transferData.availableCapacity, decimals)
               : "---"}
-          </TransferToVaultCapacity>
+          </SecondaryText>
         </div>
       </TransferToVault>
 

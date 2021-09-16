@@ -39,17 +39,40 @@ import {
 } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { truncateAddress } from "shared/lib/utils/address";
-import useVaultData from "shared/lib/hooks/useVaultData";
+import { useVaultData } from "shared/lib/hooks/vaultDataContext";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { isPracticallyZero } from "shared/lib/utils/math";
 import { getAssetDecimals } from "shared/lib/utils/asset";
-import YourPosition from "../Vault/YourPosition";
+import YourPosition from "shared/lib/components/Vault/YourPosition";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
 const investButtonWidth = 30;
 const investButtonMarginLeft =
   100 - walletButtonMarginLeft * 2 - walletButtonWidth - investButtonWidth;
+
+const AccountStatusContainer = styled.div<AccountStatusVariantProps>`
+  flex-wrap: wrap;
+  flex-direction: column;
+
+  ${(props) => {
+    switch (props.variant) {
+      case "mobile":
+        return `
+          display: none;
+          
+          @media (max-width: ${sizes.md}px) {
+            display: flex;
+            width: 100%;
+          }
+        `;
+      case "desktop":
+        return `
+          display: flex;
+        `;
+    }
+  }}
+`;
 
 const WalletContainer = styled.div<AccountStatusVariantProps>`
   justify-content: center;
@@ -410,11 +433,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   );
 
   return (
-    <div
-      className={`d-flex flex-wrap flex-column ${
-        variant === "mobile" ? "w-100" : ""
-      }`}
-    >
+    <AccountStatusContainer variant={variant}>
       {vault && (
         <YourPosition
           vault={vault}
@@ -488,7 +507,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
       </WalletMobileOverlayMenu>
 
       {formModal}
-    </div>
+    </AccountStatusContainer>
   );
 };
 export default AccountStatus;

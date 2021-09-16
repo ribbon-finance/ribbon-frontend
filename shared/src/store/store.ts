@@ -16,20 +16,15 @@ import {
 } from "../models/defiScore";
 import { ERC20Token, ERC20TokenList } from "../models/eth";
 import { VaultAccount } from "../models/vault";
-import { getAssetDecimals } from "../utils/asset";
 import {
   PendingTransaction,
-  VaultDataResponses,
   Assets,
   AssetsList,
   AssetYieldsInfoData,
   AirdropInfoData,
-  V2VaultDataResponses,
 } from "./types";
 
 interface GlobalStore {
-  vaultData: VaultDataResponses;
-  v2VaultData: V2VaultDataResponses;
   prices: { [asset in Assets]: { price: number; fetched: boolean } };
   pendingTransactions: PendingTransaction[];
   showConnectWallet: boolean;
@@ -54,6 +49,11 @@ interface GlobalStore {
       [option in VaultOptions]: VaultAccount | undefined;
     };
   };
+  vaultPositionModal: {
+    show: boolean;
+    vaultOption?: VaultOptions;
+    vaultVersion: VaultVersion;
+  };
 }
 
 export const initialVaultAccounts = Object.fromEntries(
@@ -68,46 +68,6 @@ export const initialVaultAccounts = Object.fromEntries(
 };
 
 export const initialState: GlobalStore = {
-  vaultData: Object.fromEntries(
-    VaultList.map((vault) => [
-      vault,
-      {
-        status: "loading",
-        deposits: BigNumber.from("0"),
-        vaultLimit: BigNumber.from("0"),
-        vaultBalanceInAsset: BigNumber.from("0"),
-        vaultMaxWithdrawAmount: BigNumber.from("0"),
-        asset: getAssets(vault),
-        displayAsset: getDisplayAssets(vault),
-        decimals: getAssetDecimals(getAssets(vault)),
-        userAssetBalance: BigNumber.from("0"),
-        maxWithdrawAmount: BigNumber.from("0"),
-        error: null,
-      },
-    ])
-  ) as VaultDataResponses,
-  v2VaultData: Object.fromEntries(
-    VaultList.map((vault) => [
-      vault,
-      {
-        totalBalance: BigNumber.from(0),
-        cap: BigNumber.from(0),
-        decimals: getAssetDecimals(getAssets(vault)),
-        asset: getAssets(vault),
-        displayAsset: getDisplayAssets(vault),
-        pricePerShare: BigNumber.from(0),
-        round: 1,
-        lockedBalanceInAsset: BigNumber.from(0),
-        depositBalanceInAsset: BigNumber.from(0),
-        userAssetBalance: BigNumber.from(0),
-        withdrawals: {
-          shares: BigNumber.from(0),
-          amount: BigNumber.from(0),
-          round: 1,
-        },
-      },
-    ])
-  ) as V2VaultDataResponses,
   prices: Object.fromEntries(
     AssetsList.map((asset) => [asset, { price: 0.0, fetched: false }])
   ) as {
@@ -146,6 +106,10 @@ export const initialState: GlobalStore = {
     [token in ERC20Token]: { fetched: boolean; balance: BigNumber };
   },
   vaultAccounts: initialVaultAccounts,
+  vaultPositionModal: {
+    show: false,
+    vaultVersion: VaultVersionList[0],
+  },
 };
 
 export const { useGlobalState } = createGlobalState(initialState);

@@ -37,12 +37,6 @@ const StrikeLabel = styled(Subtitle)`
   line-height: 16px;
 `;
 
-const HoverLabel = styled(SecondaryText)`
-  font-size: 12px;
-  line-height: 16px;
-  color: ${colors.primaryText};
-`;
-
 const CalculationContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -60,11 +54,6 @@ const CalculationColumn = styled.div`
   &:last-child {
     margin-bottom: unset;
   }
-`;
-
-const CalculationLabel = styled(SecondaryText)`
-  font-size: 14px;
-  margin-right: auto;
 `;
 
 const CalculationData = styled(Title)<{ variant?: "red" | "green" }>`
@@ -245,7 +234,13 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={8}>
           {chartHovering ? (
-            <HoverLabel>Tap to update price field above</HoverLabel>
+            <SecondaryText
+              fontSize={12}
+              lineHeight={16}
+              color={colors.primaryText}
+            >
+              Tap to update price field above
+            </SecondaryText>
           ) : (
             <StrikeLabel>
               STRIKE PRICE:{" "}
@@ -256,7 +251,9 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
         <ModalContentExtra style={{ flex: 1 }}>
           <CalculationContainer>
             <CalculationColumn>
-              <CalculationLabel>Vault % Gain / Loss</CalculationLabel>
+              <SecondaryText fontSize={14} className="mr-auto">
+                Vault % Gain / Loss
+              </SecondaryText>
               <CalculationData
                 variant={
                   KPI.roi > 0 ? "green" : KPI.roi < 0 ? "red" : undefined
@@ -268,9 +265,9 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
             </CalculationColumn>
             {vaultAccounts[vaultOption] && (
               <CalculationColumn>
-                <CalculationLabel>
+                <SecondaryText fontSize={14} className="mr-auto">
                   Your Gain / Loss ({getAssetDisplay(asset)})
-                </CalculationLabel>
+                </SecondaryText>
                 <CalculationData
                   variant={
                     KPI.roi > 0 ? "green" : KPI.roi < 0 ? "red" : undefined
@@ -292,7 +289,9 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
               </CalculationColumn>
             )}
             <CalculationColumn>
-              <CalculationLabel>Time to Expiry</CalculationLabel>
+              <SecondaryText fontSize={14} className="mr-auto">
+                Time to Expiry
+              </SecondaryText>
               <CalculationData>{toExpiryText}</CalculationData>
             </CalculationColumn>
           </CalculationContainer>

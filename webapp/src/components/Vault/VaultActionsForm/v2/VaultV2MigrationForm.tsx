@@ -12,10 +12,12 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { ACTIONS } from "../Modal/types";
-import useVaultData from "shared/lib/hooks/useVaultData";
-import useV2VaultData from "shared/lib/hooks/useV2VaultData";
+import {
+  useVaultData,
+  useV2VaultData,
+} from "shared/lib/hooks/vaultDataContext";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import HelpInfo from "../../../Common/HelpInfo";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
 
 const MigrateLogoContainer = styled.div<{ color: string }>`
   display: flex;

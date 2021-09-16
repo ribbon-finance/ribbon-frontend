@@ -25,7 +25,9 @@ const Homepage = () => {
       <ProductTitle>PRODUCT</ProductTitle>
       <ProductCatalogue
         variant="webapp"
-        onVaultPress={(vault) => history.push(getVaultURI(vault))}
+        onVaultPress={(vault, version) =>
+          history.push(getVaultURI(vault, version))
+        }
       />
     </>
   );

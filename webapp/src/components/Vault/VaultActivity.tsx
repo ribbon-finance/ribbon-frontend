@@ -21,13 +21,6 @@ const PaginationContainer = styled.div`
   margin-top: 24px;
 `;
 
-const PaginationText = styled(Title)`
-  font-size: 12px;
-  line-height: 16px;
-  margin-left: 24px;
-  margin-right: 24px;
-`;
-
 const perPage = 6;
 
 interface VaultActivityProps {
@@ -92,12 +85,18 @@ const VaultActivity: React.FC<VaultActivityProps> = ({
    */
   const renderPagination = useCallback(() => {
     if (loading) {
-      return <PaginationText>{loadingText}</PaginationText>;
+      return (
+        <Title fontSize={12} lineHeight={16} className="mx-4">
+          {loadingText}
+        </Title>
+      );
     }
 
     if (filteredActivities.length <= 0) {
       return (
-        <PaginationText>There is currently no vault activity</PaginationText>
+        <Title fontSize={12} lineHeight={16} className="mx-4">
+          There is currently no vault activity
+        </Title>
       );
     }
 

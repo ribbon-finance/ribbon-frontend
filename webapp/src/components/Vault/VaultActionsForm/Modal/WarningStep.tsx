@@ -24,11 +24,6 @@ const ActionLogoContainer = styled.div`
   background: ${colors.red}14;
 `;
 
-const TextLogo = styled(Title)`
-  font-size: 25px;
-  line-height: 25px;
-`;
-
 const FormTitle = styled(Title)`
   font-size: 22px;
   line-height: 28px;
@@ -65,7 +60,9 @@ const WarningStep: React.FC<WarningStepProps> = ({
       <div className="d-flex flex-column align-items-center">
         {/* Logo */}
         <ActionLogoContainer className="mt-3">
-          <TextLogo color={colors.red}>!</TextLogo>
+          <Title fontSize={25} lineHeight={25} color={colors.red}>
+            !
+          </Title>
         </ActionLogoContainer>
 
         {/* Title */}

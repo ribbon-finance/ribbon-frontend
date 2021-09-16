@@ -31,8 +31,8 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import HelpInfo from "../../../Common/HelpInfo";
-import AssetCircleContainer from "../../../Common/AssetCircleContainer";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContainer";
 
 const WithdrawTypeSegmentControlContainer = styled.div`
   display: flex;

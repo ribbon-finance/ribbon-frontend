@@ -15,7 +15,7 @@ import {
   VaultAddressMap,
   VaultMaxDeposit,
 } from "shared/lib/constants/constants";
-import useVaultData from "shared/lib/hooks/useVaultData";
+import { useVaultData } from "shared/lib/hooks/vaultDataContext";
 import { getVaultColor, isETHVault, isVaultFull } from "shared/lib/utils/vault";
 import colors from "shared/lib/designSystem/colors";
 import { getAssetDisplay } from "shared/lib/utils/asset";
@@ -27,7 +27,7 @@ import SwapBTCDropdown from "./common/SwapBTCDropdown";
 import useVaultActivity from "../../../hooks/useVaultActivity";
 import { VaultActivityMeta, VaultShortPosition } from "shared/lib/models/vault";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import HelpInfo from "../../Common/HelpInfo";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { FormStepProps, VaultValidationErrors } from "./types";
 import useVaultActionForm from "../../../hooks/useVaultActionForm";
@@ -249,7 +249,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     asset,
     decimals,
     vaultMaxWithdrawAmount,
-  } = useVaultData(vaultOption, { poll: true });
+  } = useVaultData(vaultOption);
   const {
     canTransfer,
     handleActionTypeChange,
@@ -766,7 +766,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
             <MigrateIcon color={color} />
           </MigrateLogoContainer>
 
-          <MigrationTitle className="mt-3">MIRGATE TO V2</MigrationTitle>
+          <MigrationTitle className="mt-3">MIGRATE TO V2</MigrationTitle>
 
           <MigrationDescription className="mt-3 text-center">
             You can now move your V1 deposit balance of{" "}

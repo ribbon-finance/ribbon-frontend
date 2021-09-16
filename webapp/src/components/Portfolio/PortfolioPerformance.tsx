@@ -117,19 +117,6 @@ const KPIColumn = styled.div`
   }
 `;
 
-const ColumnLabel = styled(SecondaryText)<{ variant?: "red" }>`
-  font-size: 12px;
-  width: 100%;
-  ${(props) => {
-    switch (props.variant) {
-      case "red":
-        return `color: ${colors.red};`;
-      default:
-        return ``;
-    }
-  }}
-`;
-
 const KPI = styled.div`
   display: flex;
   align-items: center;
@@ -429,7 +416,9 @@ const PortfolioPerformance = () => {
   const depositHeader = useMemo(
     () => (
       <DepositChartExtra>
-        <ColumnLabel>Balances</ColumnLabel>
+        <SecondaryText fontSize={12} className="w-100">
+          Balances
+        </SecondaryText>
         <div className="d-flex align-items-center flex-wrap">
           <KPI>
             <DepositAmount active={active}>{renderBalanceText()}</DepositAmount>
@@ -504,7 +493,9 @@ const PortfolioPerformance = () => {
       </DepositColumn>
       <PerformanceColumn>
         <KPIColumn>
-          <ColumnLabel>Yield Earned</ColumnLabel>
+          <SecondaryText fontSize={12} className="w-100">
+            Yield Earned
+          </SecondaryText>
           <KPI>
             <KPIText
               active={active}
@@ -522,7 +513,9 @@ const PortfolioPerformance = () => {
           </KPI>
         </KPIColumn>
         <KPIColumn>
-          <ColumnLabel>ROI</ColumnLabel>
+          <SecondaryText fontSize={12} className="w-100">
+            ROI
+          </SecondaryText>
           <KPIText
             active={active}
             state={
@@ -537,7 +530,9 @@ const PortfolioPerformance = () => {
           </KPIText>
         </KPIColumn>
         <KPIColumn>
-          <ColumnLabel variant="red">$RBN Balance</ColumnLabel>
+          <SecondaryText fontSize={12} color={colors.red} className="w-100">
+            $RBN Balance
+          </SecondaryText>
           <KPIText active={active}>{renderRBNBalanceText()}</KPIText>
         </KPIColumn>
       </PerformanceColumn>

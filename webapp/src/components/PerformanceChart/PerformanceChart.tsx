@@ -11,11 +11,6 @@ const PerformanceChartContainer = styled.div`
   width: 100%;
 `;
 
-const DateTooltip = styled(SecondaryText)`
-  font-size: 12px;
-  line-height: 16px;
-`;
-
 interface PerformanceChartProps {
   dataset: number[];
   labels: Date[];
@@ -79,7 +74,9 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
         {chart}
       </div>
       {date !== null ? (
-        <DateTooltip
+        <SecondaryText
+          fontSize={12}
+          lineHeight={16}
           className="position-absolute"
           style={{
             whiteSpace: "nowrap",
@@ -87,7 +84,7 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
           }}
         >
           {dateStr}
-        </DateTooltip>
+        </SecondaryText>
       ) : undefined}
     </PerformanceChartContainer>
   );

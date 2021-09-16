@@ -1,7 +1,6 @@
 import { motion } from "framer";
 import React, { useMemo } from "react";
 import styled from "styled-components";
-import { VaultOptions } from "../../constants/constants";
 
 import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";
@@ -26,6 +25,7 @@ import {
   VaultSortByFilterOptions,
   VaultStrategyList,
 } from "./types";
+import { VaultOptions, VaultVersion } from "../../constants/constants";
 
 const FilterContainer = styled.div`
   display: flex;
@@ -84,7 +84,7 @@ const EmptyContainer = styled.div`
 
 interface ProductCatalogueGridViewProps {
   setView?: React.Dispatch<React.SetStateAction<DesktopViewType>>;
-  onVaultPress: (vault: VaultOptions) => void;
+  onVaultPress: (vault: VaultOptions, vaultVersion: VaultVersion) => void;
   filteredProducts: VaultOptions[];
   vaultAccounts: {
     [key: string]: VaultAccount | undefined;
@@ -142,7 +142,7 @@ const ProductCatalogueGridView: React.FC<
           >
             <YieldCard
               vault={vault}
-              onClick={() => onVaultPress(vault)}
+              onVaultPress={onVaultPress}
               vaultAccount={vaultAccounts[vault]}
             />
           </YieldCardContainer>

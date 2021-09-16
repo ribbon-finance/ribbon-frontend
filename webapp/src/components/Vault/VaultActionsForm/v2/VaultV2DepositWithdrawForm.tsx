@@ -13,7 +13,7 @@ import { ACTIONS } from "../Modal/types";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
-import useV2VaultData from "shared/lib/hooks/useV2VaultData";
+import { useV2VaultData } from "shared/lib/hooks/vaultDataContext";
 import { ERC20Token } from "shared/lib/models/eth";
 import { isETHVault, isVaultFull } from "shared/lib/utils/vault";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
@@ -127,7 +127,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       withdrawals,
     },
     loading,
-  } = useV2VaultData(vaultOption, { poll: true });
+  } = useV2VaultData(vaultOption);
   const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
   const { active } = useWeb3React();
 

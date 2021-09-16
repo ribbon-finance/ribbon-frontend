@@ -1,10 +1,14 @@
 import { formatUnits } from "@ethersproject/units";
 import { AnimatePresence, motion } from "framer";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { BarChartIcon, GlobeIcon } from "../../../assets/icons/icons";
 
-import { VaultOptions } from "../../../constants/constants";
+import {
+  VaultOptions,
+  VaultVersion,
+  VaultVersionList,
+} from "../../../constants/constants";
 import {
   BaseButton,
   SecondaryText,
@@ -14,7 +18,7 @@ import {
 import theme from "../../../designSystem/theme";
 import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useTextAnimation from "../../../hooks/useTextAnimation";
-import useVaultData from "../../../hooks/useVaultData";
+import { useV2VaultData, useVaultData } from "../../../hooks/vaultDataContext";
 import { getAssetLogo } from "../../../utils/asset";
 import { formatSignificantDecimals } from "../../../utils/math";
 import { getVaultColor } from "../../../utils/vault";
@@ -71,27 +75,27 @@ const ModeSwitcherContainer = styled.div<{ color: string }>`
   z-index: 1;
 `;
 
-const ProjectedAPYLabel = styled(SecondaryText)`
-  font-size: 12px;
-  line-height: 16px;
-  margin-right: auto;
-`;
-
-const ProjectedAPYData = styled(Title)<{ color: string }>`
-  font-size: 14px;
-  line-height: 20px;
-  color: ${(props) => props.color};
-`;
-
 interface YieldFrameProps {
   vault: VaultOptions;
-  onClick: () => void;
+  onVaultPress: (vault: VaultOptions, vaultVersion: VaultVersion) => void;
+  updateVaultVersionHook?: (vaultVersion: VaultVersion) => void;
 }
 
-const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
+const YieldFrame: React.FC<YieldFrameProps> = ({
+  vault,
+  onVaultPress,
+  updateVaultVersionHook,
+}) => {
   const { status, deposits, vaultLimit, asset, displayAsset, decimals } =
     useVaultData(vault);
-  const isLoading = useMemo(() => status === "loading", [status]);
+  const {
+    data: { totalBalance: v2Deposits, cap: v2VaultLimit },
+    loading: v2DataLoading,
+  } = useV2VaultData(vault);
+  const isLoading = useMemo(
+    () => status === "loading" || v2DataLoading,
+    [status, v2DataLoading]
+  );
   const color = getVaultColor(vault);
   const Logo = getAssetLogo(displayAsset);
   const latestAPY = useLatestAPY(vault);
@@ -101,14 +105,46 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
     ? `${latestAPY.res.toFixed(2)}%`
     : loadingText;
 
-  const totalDepositStr = isLoading
-    ? 0
-    : parseFloat(formatSignificantDecimals(formatUnits(deposits, decimals), 2));
-  const depositLimitStr = isLoading
-    ? 1
-    : parseFloat(formatSignificantDecimals(formatUnits(vaultLimit, decimals)));
-
   const [mode, setMode] = useState<"info" | "yield">("info");
+
+  const vaultVersion = useMemo(() => {
+    if (VaultVersionList[0] === "v1") {
+      if (!isLoading && vaultLimit.isZero()) {
+        return "v2";
+      }
+
+      return "v1";
+    }
+
+    return VaultVersionList[0];
+  }, [isLoading, vaultLimit]);
+
+  useEffect(() => {
+    updateVaultVersionHook && updateVaultVersionHook(vaultVersion);
+  }, [updateVaultVersionHook, vaultVersion]);
+
+  const [totalDepositStr, depositLimitStr] = useMemo(() => {
+    switch (vaultVersion) {
+      case "v1":
+        return [
+          parseFloat(
+            formatSignificantDecimals(formatUnits(deposits, decimals), 2)
+          ),
+          parseFloat(
+            formatSignificantDecimals(formatUnits(vaultLimit, decimals))
+          ),
+        ];
+      case "v2":
+        return [
+          parseFloat(
+            formatSignificantDecimals(formatUnits(v2Deposits, decimals), 2)
+          ),
+          parseFloat(
+            formatSignificantDecimals(formatUnits(v2VaultLimit, decimals))
+          ),
+        ];
+    }
+  }, [decimals, deposits, v2Deposits, v2VaultLimit, vaultLimit, vaultVersion]);
 
   const onSwapMode = useCallback((e) => {
     e.stopPropagation();
@@ -138,8 +174,12 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
           <>
             <div className="mt-4 d-flex justify-content-center">{logo}</div>
             <div className="d-flex align-items-center mt-4">
-              <ProjectedAPYLabel>Projected Yield (APY)</ProjectedAPYLabel>
-              <ProjectedAPYData color={color}>{perfStr}</ProjectedAPYData>
+              <SecondaryText fontSize={12} lineHeight={16} className="mr-auto">
+                Projected Yield (APY)
+              </SecondaryText>
+              <Title fontSize={14} lineHeight={20} color={color}>
+                {perfStr}
+              </Title>
             </div>
             <div className="mt-auto">
               <CapBar
@@ -186,7 +226,10 @@ const YieldFrame: React.FC<YieldFrameProps> = ({ vault, onClick }) => {
   ]);
 
   return (
-    <FrameContainer role="button" onClick={onClick}>
+    <FrameContainer
+      role="button"
+      onClick={() => onVaultPress(vault, vaultVersion)}
+    >
       <AnimatePresence exitBeforeEnter initial={false}>
         <Frame
           key={mode}

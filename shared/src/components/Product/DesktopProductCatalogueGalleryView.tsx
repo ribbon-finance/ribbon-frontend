@@ -1,34 +1,32 @@
-import { formatUnits } from "@ethersproject/units";
-import { ethers } from "ethers";
 import { AnimatePresence, motion } from "framer";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
 import Marquee from "react-fast-marquee/dist";
 
-import { getAssets, VaultOptions } from "../../constants/constants";
+import {
+  VaultOptions,
+  VaultVersion,
+  VaultVersionList,
+} from "../../constants/constants";
 import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
-import { useAssetsPrice } from "../../hooks/useAssetPrice";
 import useScreenSize from "../../hooks/useScreenSize";
-import useTextAnimation from "../../hooks/useTextAnimation";
 import { VaultAccount } from "../../models/vault";
-import { Assets, AssetsList } from "../../store/types";
+import { AssetsList } from "../../store/types";
 import {
   getAssetColor,
-  getAssetDecimals,
   getAssetDisplay,
   getAssetLogo,
 } from "../../utils/asset";
-import { assetToUSD, formatAmount, isPracticallyZero } from "../../utils/math";
 import FilterDropdown from "../Common/FilterDropdown";
 import FullscreenMultiselectFilters from "../Common/FullscreenMultiselectFilters";
 import Pagination from "../Common/Pagination";
 import { productCopies } from "./productCopies";
 import EmptyResult from "./Shared/EmptyResult";
 import SwitchViewButton from "./Shared/SwitchViewButton";
-import Frame from "./Theta/YieldFrame";
+import YieldFrame from "./Theta/YieldFrame";
 import {
   DesktopViewType,
   VaultFilterProps,
@@ -36,6 +34,8 @@ import {
   VaultSortByFilterOptions,
   VaultStrategyList,
 } from "./types";
+import YourPosition from "../Vault/YourPosition";
+import { useWeb3React } from "@web3-react/core";
 
 const FullscreenContainer = styled(Container)<{ height: number }>`
   padding-top: 24px;
@@ -65,43 +65,10 @@ const VaultInfo = styled.div`
   width: 366px;
 `;
 
-const VaultTitle = styled(Title)`
-  font-size: 48px;
-  line-height: 56px;
-`;
-
 const VaultSecondaryInfo = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: 280px;
-`;
-
-const VaultPositionBox = styled.div`
-  margin-top: 24px;
-  width: 100%;
-  background: ${colors.background};
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: ${theme.border.radius};
-  padding: 16px;
-`;
-
-const VaultPositionPrimaryText = styled(Title)`
-  font-size: 14px;
-  line-height: 24px;
-  letter-spacing: 1px;
-`;
-
-const VaultPositionSecondaryText = styled(Title)<{ roi?: number }>`
-  font-size: 12px;
-  line-height: 16px;
-
-  color: ${(props) => {
-    if (props.roi === undefined) {
-      return colors.primaryText;
-    }
-
-    return props.roi >= 0 ? colors.green : colors.red;
-  }};
 `;
 
 const VaultFrameContainer = styled(motion.div)`
@@ -131,10 +98,11 @@ const BackgroundText = styled(Title)`
   color: ${colors.primaryText}0A;
   white-space: nowrap;
 `;
+
 interface DesktopProductCatalogueGridViewProps {
   variant: "landing" | "webapp";
   setView?: React.Dispatch<React.SetStateAction<DesktopViewType>>;
-  onVaultPress: (vault: VaultOptions) => void;
+  onVaultPress: (vault: VaultOptions, vaultVersion: VaultVersion) => void;
   filteredProducts: VaultOptions[];
   vaultAccounts: {
     [key: string]: VaultAccount | undefined;
@@ -156,16 +124,15 @@ const DesktopProductCatalogueGalleryView: React.FC<
   setFilterAssets,
   vaultAccounts,
 }) => {
+  const { active } = useWeb3React();
   const { height } = useScreenSize();
   const [page, setPage] = useState(1);
   const [currentVault, setCurrentVault] = useState<VaultOptions | undefined>(
     filteredProducts[page - 1]
   );
-  const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice({
-    // @ts-ignore
-    assets: AssetsList,
-  });
-  const loadingText = useTextAnimation(assetPricesLoading);
+  const [vaultVersion, setVaultVersion] = useState<VaultVersion>(
+    VaultVersionList[0]
+  );
 
   // Prevent page overflow
   useEffect(() => {
@@ -182,48 +149,6 @@ const DesktopProductCatalogueGalleryView: React.FC<
     setCurrentVault(filteredProducts[currPage - 1]);
   }, [page, filteredProducts]);
 
-  const roi = useMemo(() => {
-    const vault = filteredProducts[page - 1];
-    const asset = getAssets(vault);
-    const vaultAccount = vaultAccounts[vault];
-    const decimals = getAssetDecimals(asset);
-
-    if (
-      !vaultAccount ||
-      isPracticallyZero(vaultAccount.totalDeposits, decimals)
-    ) {
-      return 0;
-    }
-
-    return (
-      (parseFloat(
-        ethers.utils.formatUnits(
-          vaultAccount.totalBalance.sub(vaultAccount.totalDeposits),
-          decimals
-        )
-      ) /
-        parseFloat(
-          ethers.utils.formatUnits(vaultAccount.totalDeposits, decimals)
-        )) *
-      100
-    );
-  }, [vaultAccounts, page, filteredProducts]);
-
-  const getVaultUSDDisplay = useCallback(
-    (vaultAccount: VaultAccount, asset: Assets) => {
-      if (assetPricesLoading) {
-        return loadingText;
-      }
-
-      return assetToUSD(
-        vaultAccount.totalBalance,
-        assetPrices[asset]!,
-        getAssetDecimals(asset)
-      );
-    },
-    [loadingText, assetPrices, assetPricesLoading]
-  );
-
   const vaultInfo = useMemo(() => {
     if (!currentVault) {
       return (
@@ -236,16 +161,12 @@ const DesktopProductCatalogueGalleryView: React.FC<
       );
     }
 
-    const asset = getAssets(currentVault);
-    const decimals = getAssetDecimals(asset);
-    const vaultAccount = vaultAccounts[currentVault];
-
     return (
-      <VaultInfo role="button" onClick={() => onVaultPress(currentVault)}>
+      <VaultInfo>
         {/* Title */}
-        <VaultTitle className="w-100">
+        <Title fontSize={48} lineHeight={56} className="w-100">
           {productCopies[currentVault].title}
-        </VaultTitle>
+        </Title>
 
         <VaultSecondaryInfo>
           {/* Description */}
@@ -253,38 +174,22 @@ const DesktopProductCatalogueGalleryView: React.FC<
             {productCopies[currentVault].description}
           </SecondaryText>
 
-          {/* Your position box */}
-          {vaultAccount && (
-            <VaultPositionBox>
-              <div className="w-100 d-flex">
-                <VaultPositionPrimaryText className="mr-auto">
-                  Your Position
-                </VaultPositionPrimaryText>
-                <VaultPositionPrimaryText>
-                  {`${formatAmount(
-                    parseFloat(formatUnits(vaultAccount.totalBalance, decimals))
-                  )} ${getAssetDisplay(asset)}`}
-                </VaultPositionPrimaryText>
-              </div>
-              <div className="w-100 d-flex">
-                <VaultPositionSecondaryText roi={roi} className="mr-auto">
-                  {roi.toFixed(2)}%
-                </VaultPositionSecondaryText>
-                <VaultPositionSecondaryText>
-                  {getVaultUSDDisplay(vaultAccount, asset)}
-                </VaultPositionSecondaryText>
-              </div>
-            </VaultPositionBox>
+          {active && (
+            <div className="mt-4">
+              <YourPosition
+                vault={{ vaultOption: currentVault, vaultVersion }}
+                variant="desktop"
+                alwaysShowPosition
+              />
+            </div>
           )}
         </VaultSecondaryInfo>
       </VaultInfo>
     );
   }, [
-    roi,
+    active,
     currentVault,
-    onVaultPress,
-    vaultAccounts,
-    getVaultUSDDisplay,
+    vaultVersion,
     setFilterAssets,
     setFilterStrategies,
   ]);
@@ -433,9 +338,10 @@ const DesktopProductCatalogueGalleryView: React.FC<
                 className="d-flex ml-5"
               >
                 {currentVault && (
-                  <Frame
+                  <YieldFrame
                     vault={currentVault}
-                    onClick={() => onVaultPress(currentVault)}
+                    onVaultPress={onVaultPress}
+                    updateVaultVersionHook={setVaultVersion}
                   />
                 )}
               </VaultFrameContainer>

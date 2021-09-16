@@ -21,9 +21,9 @@ export const breakdown: AirdropBreakdown = isDevelopment()
 
 export const getVaultURI = (
   vaultOption: VaultOptions,
-  variant: VaultVersion = VaultVersionList[0]
+  vaultVersion: VaultVersion = VaultVersionList[0]
 ): string => {
-  switch (variant) {
+  switch (vaultVersion) {
     case "v1":
       return `/theta-vault/${
         Object.keys(VaultNameOptionMap)[

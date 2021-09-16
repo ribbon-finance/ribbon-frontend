@@ -27,7 +27,7 @@ const StyledModal = styled(BaseModal)<{
     ${(props) =>
       props.theme
         ? `
-            background-color: ${props.theme}03;
+            background-color: ${props.theme}0A;
             border: ${theme.border.width} ${theme.border.style} ${props.theme}29;
           `
         : ``}}

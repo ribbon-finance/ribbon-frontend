@@ -2,6 +2,7 @@ export const portfolioTransactionActivityFilters = [
   "all activity",
   "deposit",
   "withdraw",
+  "migrate",
   "stake",
   "unstake",
   "transfer",
@@ -12,5 +13,7 @@ export const portfolioTransactionSortByList = [
   "oldest first",
 ] as const;
 
-export type PortfolioTransactionActivityFilter = typeof portfolioTransactionActivityFilters[number];
-export type PortfolioTransactionSortBy = typeof portfolioTransactionSortByList[number];
+export type PortfolioTransactionActivityFilter =
+  typeof portfolioTransactionActivityFilters[number];
+export type PortfolioTransactionSortBy =
+  typeof portfolioTransactionSortByList[number];

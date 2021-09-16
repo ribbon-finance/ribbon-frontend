@@ -19,7 +19,7 @@ import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import useStakingPoolData from "../../hooks/useStakingPoolData";
+import useStakingPoolData from "shared/lib/hooks/useStakingPoolData";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
@@ -30,7 +30,7 @@ import { productCopies } from "shared/lib/components/Product/productCopies";
 import StakingActionModal from "./Modal/StakingActionModal";
 import sizes from "shared/lib/designSystem/sizes";
 import StakingClaimModal from "./Modal/StakingClaimModal";
-import HelpInfo from "../Common/HelpInfo";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { shimmerKeyframe } from "shared/lib/designSystem/keyframes";
 import moment from "moment";
@@ -41,11 +41,6 @@ const StakingPoolsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-`;
-
-const SectionHeader = styled(Title)`
-  font-size: 18px;
-  line-height: 24px;
 `;
 
 const StakingPoolCard = styled.div<{ color: string }>`
@@ -495,7 +490,9 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
 const StakingPools = () => {
   return (
     <StakingPoolsContainer>
-      <SectionHeader className="mb-4 w-100">STAKING POOLS</SectionHeader>
+      <Title fontSize={18} lineHeight={24} className="mb-4 w-100">
+        STAKING POOLS
+      </Title>
       {Object.keys(VaultLiquidityMiningMap).map((option) => (
         <StakingPool key={option} vaultOption={option as VaultOptions} />
       ))}

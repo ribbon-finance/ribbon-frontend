@@ -9,13 +9,13 @@ import {
   Title,
   PrimaryText,
 } from "shared/lib/designSystem";
-import { StakingPoolData } from "../../../models/staking";
+import { StakingPoolData } from "shared/lib/models/staking";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { BigNumber } from "@ethersproject/bignumber";
 import moment from "moment";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import useStakingReward from "../../../hooks/useStakingReward";
+import useStakingReward from "shared/lib/hooks/useStakingReward";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import RBNClaimModalContent from "../../Common/RBNClaimModalContent";

@@ -42,10 +42,6 @@ const DefiCard = styled.div`
   background-color: #252322;
 `;
 
-const AssetText = styled(Title)`
-  font-size: 16px;
-`;
-
 const OrText = styled.span`
   color: ${colors.primaryText}A3;
 `;
@@ -80,9 +76,9 @@ const SwapBTCDropdown: React.FC<SwapBTCDropdownProps> = ({ open }) => {
       >
         <DefiCard>
           <Image src={BadgerImg} />
-          <AssetText>BTC</AssetText>
+          <Title>BTC</Title>
           <ConvertImage />
-          <AssetText>WBTC</AssetText>
+          <Title>WBTC</Title>
           <StyledExternalIcon containerStyle={{ marginLeft: "auto" }} />
         </DefiCard>
       </DefiLink>
@@ -93,11 +89,11 @@ const SwapBTCDropdown: React.FC<SwapBTCDropdownProps> = ({ open }) => {
       >
         <DefiCard>
           <Image src={CurveImg} />
-          <AssetText>
+          <Title>
             BTC <OrText>OR</OrText> RENBTC
-          </AssetText>
+          </Title>
           <ConvertImage />
-          <AssetText>WBTC</AssetText>
+          <Title>WBTC</Title>
           <StyledExternalIcon containerStyle={{ marginLeft: "auto" }} />
         </DefiCard>
       </DefiLink>

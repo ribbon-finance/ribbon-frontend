@@ -17,10 +17,12 @@ import { isETHVault } from "shared/lib/utils/vault";
 import usePendingTransactions from "../../../../hooks/usePendingTransactions";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
-import useVaultData from "shared/lib/hooks/useVaultData";
+import {
+  useVaultData,
+  useV2VaultData,
+} from "shared/lib/hooks/vaultDataContext";
 import { capitalize } from "shared/lib/utils/text";
 import useV2Vault from "shared/lib/hooks/useV2Vault";
-import useV2VaultData from "shared/lib/hooks/useV2VaultData";
 import WarningStep from "./WarningStep";
 
 export interface ActionStepsProps {

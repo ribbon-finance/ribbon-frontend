@@ -220,7 +220,7 @@ const MenuItemText = styled(Title)<{ color: string }>`
 
 const StyledCheckButton = styled(CheckIcon)<{ color: string }>`
   path {
-    transition: fill 150ms;
+    transition: stroke 150ms;
     stroke: ${(props) => props.color};
   }
 `;
@@ -278,7 +278,7 @@ const FullscreenMultiselectFilter: React.FC<
             {option.display}
           </MenuItemText>
           <StyledCheckButton
-            color={active ? textColor : colors.primaryText}
+            color={`${textColor}${active ? "FF" : "00"}`}
             className="ml-auto"
           />
         </MenuItem>

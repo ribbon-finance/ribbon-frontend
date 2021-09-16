@@ -11,7 +11,10 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import PerformanceSection from "./PerformanceSection";
-import useVaultData from "shared/lib/hooks/useVaultData";
+import {
+  useVaultData,
+  useV2VaultData,
+} from "shared/lib/hooks/vaultDataContext";
 import {
   formatSignificantDecimals,
   isPracticallyZero,
@@ -38,9 +41,7 @@ import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
 import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopActionForm";
 import { Redirect } from "react-router-dom";
-import useV2VaultData from "shared/lib/hooks/useV2VaultData";
-import YourPosition from "../../components/Vault/YourPosition";
-import YourPositionModal from "../../components/Vault/Modal/YourPositionModal";
+import YourPosition from "shared/lib/components/Vault/YourPosition";
 import { truncateAddress } from "shared/lib/utils/address";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 
@@ -220,7 +221,6 @@ const DepositPage = () => {
 
   return (
     <>
-      <YourPositionModal vault={{ vaultOption, vaultVersion }} />
       <HeroSection
         depositCapBar={depositCapBar}
         vaultOption={vaultOption}
@@ -315,14 +315,21 @@ const HeroSection: React.FC<{
       {variant === "v1" && hasVaultVersion(vaultOption, "v2") && (
         <BannerContainer color={color}>
           <BaseIndicator size={8} color={color} className="mr-2" />
-          <PrimaryText color={color} className="mr-3">
+          <PrimaryText
+            fontSize={14}
+            lineHeight={20}
+            color={color}
+            className="mr-3"
+          >
             {v1Inactive
               ? "V1 vaults are now inactive and do not accept deposits"
               : "V2 vaults are now live"}
           </PrimaryText>
           <BaseLink to={getVaultURI(vaultOption, "v2")}>
             <BannerButton color={color} role="button">
-              <PrimaryText color={color}>Switch to V2</PrimaryText>
+              <PrimaryText fontSize={14} lineHeight={20} color={color}>
+                Switch to V2
+              </PrimaryText>
             </BannerButton>
           </BaseLink>
         </BannerContainer>
@@ -341,26 +348,24 @@ const HeroSection: React.FC<{
                     {tag}
                   </TagPill>
                 ))}
-                {
-                  <AttributePill className="mr-2 text-uppercase" color={color}>
-                    {[...VaultVersionList].reverse().map((version) =>
-                      version === "v1" ||
-                      hasVaultVersion(vaultOption, version) ? (
-                        <BaseLink
-                          to={getVaultURI(vaultOption, version)}
-                          key={version}
+                <AttributePill className="mr-2 text-uppercase" color={color}>
+                  {[...VaultVersionList].reverse().map((version) =>
+                    version === "v1" ||
+                    hasVaultVersion(vaultOption, version) ? (
+                      <BaseLink
+                        to={getVaultURI(vaultOption, version)}
+                        key={version}
+                      >
+                        <AttributeVersionSelector
+                          active={version === variant}
+                          color={color}
                         >
-                          <AttributeVersionSelector
-                            active={version === variant}
-                            color={color}
-                          >
-                            <Title color={color}>{version}</Title>
-                          </AttributeVersionSelector>
-                        </BaseLink>
-                      ) : null
-                    )}
-                  </AttributePill>
-                }
+                          <Title color={color}>{version}</Title>
+                        </AttributeVersionSelector>
+                      </BaseLink>
+                    ) : null
+                  )}
+                </AttributePill>
               </div>
 
               <HeroText>{productCopies[vaultOption].title}</HeroText>

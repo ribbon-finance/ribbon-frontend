@@ -1,13 +1,10 @@
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 
-import { RibbonStakingRewards } from "shared/lib/codegen";
-import { RibbonStakingRewardsFactory } from "shared/lib/codegen/RibbonStakingRewardsFactory";
-import {
-  VaultLiquidityMiningMap,
-  VaultOptions,
-} from "shared/lib/constants/constants";
-import { useWeb3Context } from "shared/lib/hooks/web3Context";
+import { RibbonStakingRewards } from "../codegen";
+import { RibbonStakingRewardsFactory } from "../codegen/RibbonStakingRewardsFactory";
+import { VaultLiquidityMiningMap, VaultOptions } from "../constants/constants";
+import { useWeb3Context } from "./web3Context";
 
 export const getStakingReward = (
   library: any,
