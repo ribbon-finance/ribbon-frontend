@@ -15,7 +15,7 @@ import {
   VaultAddressMap,
   VaultMaxDeposit,
 } from "shared/lib/constants/constants";
-import useVaultData from "shared/lib/hooks/useVaultData";
+import { useVaultData } from "shared/lib/hooks/vaultDataContext";
 import { getVaultColor, isETHVault, isVaultFull } from "shared/lib/utils/vault";
 import colors from "shared/lib/designSystem/colors";
 import { getAssetDisplay } from "shared/lib/utils/asset";
@@ -249,7 +249,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     asset,
     decimals,
     vaultMaxWithdrawAmount,
-  } = useVaultData(vaultOption, { poll: true });
+  } = useVaultData(vaultOption);
   const {
     canTransfer,
     handleActionTypeChange,

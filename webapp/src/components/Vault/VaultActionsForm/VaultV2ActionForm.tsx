@@ -13,7 +13,7 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import VaultV2DepositWithdrawForm from "./v2/VaultV2DepositWithdrawForm";
 import useVaultActionForm from "../../../hooks/useVaultActionForm";
 import { ACTIONS } from "./Modal/types";
-import useV2VaultData from "shared/lib/hooks/useV2VaultData";
+import { useV2VaultData } from "shared/lib/hooks/vaultDataContext";
 
 const FormContainer = styled.div`
   display: flex;
@@ -47,7 +47,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
   );
   const {
     data: { asset, decimals, depositBalanceInAsset },
-  } = useV2VaultData(vaultOption, { poll: true });
+  } = useV2VaultData(vaultOption);
   const [hideMigrationForm, setHideMigrationForm] = useState(false);
 
   const color = getVaultColor(vaultOption);

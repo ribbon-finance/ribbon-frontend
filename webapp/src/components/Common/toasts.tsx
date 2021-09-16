@@ -1,48 +1,47 @@
 import { BigNumber } from "ethers";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  getAssets,
-  VaultList,
-  VaultOptions,
-} from "shared/lib/constants/constants";
+import React, { useEffect, useMemo, useState } from "react";
+import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
-import useVaultData from "shared/lib/hooks/useVaultData";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import { PendingTransaction } from "shared/lib/store/types";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
-import { getDefaultNetworkName } from "shared/lib/utils/env";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { capitalize } from "shared/lib/utils/text";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import Toast from "shared/lib/components/Common/BaseToast";
 
-export const WrongNetworkToast = () => {
-  const [showToast, setShowToast] = useState(false);
-  const [shownOnce, setShownOnce] = useState(false);
-  const { status, error } = useVaultData(VaultList[0]);
-  const networkName = capitalize(getDefaultNetworkName());
+/**
+ * TODO: Temporary disabled
+ * In the future, we should seperate out wrong network service from useVaultData
+ * As currently we does not allow connection from "wrong network", this toast is not performing the intended behavior as well
+ */
+// export const WrongNetworkToast = () => {
+//   const [showToast, setShowToast] = useState(false);
+//   const [shownOnce, setShownOnce] = useState(false);
+//   const { status, error } = useVaultData(VaultList[0]);
+//   const networkName = capitalize(getDefaultNetworkName());
 
-  useEffect(() => {
-    if (status === "error" && error === "wrong_network" && !shownOnce) {
-      setShowToast(true);
-      setShownOnce(true);
-    }
-  }, [status, error, setShowToast, shownOnce]);
+//   useEffect(() => {
+//     if (status === "error" && error === "wrong_network" && !shownOnce) {
+//       setShowToast(true);
+//       setShownOnce(true);
+//     }
+//   }, [status, error, setShowToast, shownOnce]);
 
-  const onClose = useCallback(() => {
-    setShowToast(false);
-  }, [setShowToast]);
+//   const onClose = useCallback(() => {
+//     setShowToast(false);
+//   }, [setShowToast]);
 
-  return (
-    <Toast
-      show={showToast}
-      onClose={onClose}
-      type="error"
-      title="wrong network"
-      subtitle={`Please switch to ${networkName}`}
-    ></Toast>
-  );
-};
+//   return (
+//     <Toast
+//       show={showToast}
+//       onClose={onClose}
+//       type="error"
+//       title="wrong network"
+//       subtitle={`Please switch to ${networkName}`}
+//     ></Toast>
+//   );
+// };
 
 type TxStatuses = "success" | "error" | null;
 

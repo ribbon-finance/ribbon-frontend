@@ -11,7 +11,10 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import PerformanceSection from "./PerformanceSection";
-import useVaultData from "shared/lib/hooks/useVaultData";
+import {
+  useVaultData,
+  useV2VaultData,
+} from "shared/lib/hooks/vaultDataContext";
 import {
   formatSignificantDecimals,
   isPracticallyZero,
@@ -38,7 +41,6 @@ import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
 import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopActionForm";
 import { Redirect } from "react-router-dom";
-import useV2VaultData from "shared/lib/hooks/useV2VaultData";
 import YourPosition from "shared/lib/components/Vault/YourPosition";
 import { truncateAddress } from "shared/lib/utils/address";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";

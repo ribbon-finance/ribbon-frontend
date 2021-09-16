@@ -5,6 +5,7 @@ import { Web3ReactProvider } from "@web3-react/core";
 
 import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
 import { getLibrary } from "shared/lib/utils/getLibrary";
+import { VaultDataContextProvider } from "shared/lib/hooks/vaultDataContext";
 
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -26,36 +27,38 @@ function App() {
   return (
     <Web3ContextProvider>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <Body>
-          <Router>
-            <Header />
+        <VaultDataContextProvider>
+          <Body>
+            <Router>
+              <Header />
 
-            <Switch>
-              <Route path="/" exact>
-                <Hero />
-                <MainContent>
-                  <ProductCarousel />
-                  <Mission />
-                  <Investors />
-                </MainContent>
-              </Route>
+              <Switch>
+                <Route path="/" exact>
+                  <Hero />
+                  <MainContent>
+                    <ProductCarousel />
+                    <Mission />
+                    <Investors />
+                  </MainContent>
+                </Route>
 
-              <Route path="/policy">
-                <PolicyPage></PolicyPage>
-              </Route>
+                <Route path="/policy">
+                  <PolicyPage></PolicyPage>
+                </Route>
 
-              <Route path="/terms">
-                <TermsPage></TermsPage>
-              </Route>
+                <Route path="/terms">
+                  <TermsPage></TermsPage>
+                </Route>
 
-              <Route path="/faq">
-                <FAQPage></FAQPage>
-              </Route>
-            </Switch>
+                <Route path="/faq">
+                  <FAQPage></FAQPage>
+                </Route>
+              </Switch>
 
-            <Footer />
-          </Router>
-        </Body>
+              <Footer />
+            </Router>
+          </Body>
+        </VaultDataContextProvider>
       </Web3ReactProvider>
     </Web3ContextProvider>
   );

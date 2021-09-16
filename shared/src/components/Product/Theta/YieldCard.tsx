@@ -13,7 +13,6 @@ import colors from "../../../designSystem/colors";
 import sizes from "../../../designSystem/sizes";
 import theme from "../../../designSystem/theme";
 import CapBar from "../../Deposit/CapBar";
-import useVaultData from "../../../hooks/useVaultData";
 import {
   formatBigNumber,
   formatSignificantDecimals,
@@ -35,7 +34,7 @@ import { getVaultColor } from "../../../utils/vault";
 import ModalContentExtra from "../../Common/ModalContentExtra";
 import { VaultAccount } from "../../../models/vault";
 import YieldComparison from "./YieldComparison";
-import useV2VaultData from "../../../hooks/useV2VaultData";
+import { useV2VaultData, useVaultData } from "../../../hooks/vaultDataContext";
 
 const { formatUnits } = ethers.utils;
 
