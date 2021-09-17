@@ -273,6 +273,11 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
           <VaultBasicAmountForm
             vaultOption={vaultOption}
             error={error}
+            formExtra={{
+              label: "Wallet Balance",
+              amount: userAssetBalance,
+              error: error === "insufficientBalance",
+            }}
             onFormSubmit={onFormSubmit}
             actionButtonText="Preview Deposit"
           />
@@ -297,6 +302,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     lockedBalanceInAsset,
     onFormSubmit,
     showTokenApproval,
+    userAssetBalance,
     vaultActionForm.actionType,
     vaultOption,
     withdrawals.amount,
@@ -319,32 +325,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
           </FormInfoText>
         );
     }
-
-    switch (vaultActionForm.actionType) {
-      case ACTIONS.deposit:
-        if (!active || loading) {
-          return <FormInfoText>---</FormInfoText>;
-        }
-
-        return (
-          <FormInfoText
-            color={error === "insufficientBalance" ? colors.red : undefined}
-          >
-            Wallet Balance: {formatBigNumber(userAssetBalance, decimals)}{" "}
-            {getAssetDisplay(asset)}
-          </FormInfoText>
-        );
-    }
-  }, [
-    active,
-    asset,
-    decimals,
-    error,
-    loading,
-    userAssetBalance,
-    vaultActionForm.actionType,
-    vaultMaxDepositAmount,
-  ]);
+  }, [asset, decimals, error, vaultMaxDepositAmount]);
 
   const swapContainerTrigger = useMemo(() => {
     switch (asset) {

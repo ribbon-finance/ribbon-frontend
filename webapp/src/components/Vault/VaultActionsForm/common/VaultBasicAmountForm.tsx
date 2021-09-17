@@ -1,5 +1,6 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useWeb3React } from "@web3-react/core";
+import { BigNumber } from "ethers";
 
 import {
   BaseInput,
@@ -7,6 +8,7 @@ import {
   BaseInputContainer,
   BaseInputLabel,
   SecondaryText,
+  Title,
 } from "shared/lib/designSystem";
 import {
   ActionButton,
@@ -28,6 +30,11 @@ import { formatBigNumber } from "shared/lib/utils/math";
 interface VaultBasicAmountFormProps {
   vaultOption: VaultOptions;
   error?: VaultValidationErrors;
+  formExtra?: {
+    label: string;
+    amount: BigNumber;
+    error: boolean;
+  };
   onFormSubmit: () => void;
   actionButtonText: string;
 }
@@ -35,6 +42,7 @@ interface VaultBasicAmountFormProps {
 const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
   vaultOption,
   error,
+  formExtra,
   onFormSubmit,
   actionButtonText,
 }) => {
@@ -72,6 +80,27 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
       return "";
     },
     [asset, vaultOption]
+  );
+
+  const formExtraInfo = useMemo(
+    () =>
+      formExtra ? (
+        <div className="d-flex align-items-center mt-3 mb-1">
+          <SecondaryText>{formExtra.label}</SecondaryText>
+          <Title
+            fontSize={14}
+            lineHeight={24}
+            className="ml-auto"
+            color={formExtra.error ? colors.red : undefined}
+          >
+            {formatBigNumber(formExtra.amount, getAssetDecimals(asset))}{" "}
+            {getAssetDisplay(asset)}
+          </Title>
+        </div>
+      ) : (
+        <></>
+      ),
+    [asset, formExtra]
   );
 
   const renderButton = useCallback(() => {
@@ -131,6 +160,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
           {renderErrorText(error)}
         </SecondaryText>
       )}
+      {formExtraInfo}
       {renderButton()}
     </>
   );
