@@ -56,13 +56,15 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
 
   let dateTooltipPosition = datePosition - 15;
   if (index === 0) {
-    dateTooltipPosition = datePosition + 10;
-  } else if (index === dataset.length - 1) {
-    dateTooltipPosition = datePosition - 50;
+    dateTooltipPosition = datePosition;
+  } else if (index + 1 > dataset.length - dataset.length * 0.15) {
+    dateTooltipPosition =
+      datePosition -
+      110 * (1 - (dataset.length - (index + 1)) / (dataset.length * 0.15));
   }
 
   return (
-    <PerformanceChartContainer>
+    <PerformanceChartContainer className="position-relative">
       {extras}
       <div
         style={{
