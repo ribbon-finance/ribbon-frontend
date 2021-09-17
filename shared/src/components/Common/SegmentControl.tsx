@@ -131,12 +131,21 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
       return;
     }
 
-    setActiveBackgroundState({
-      left: currentCurrency.offsetLeft,
-      top: currentCurrency.offsetTop,
-      height: currentCurrency.clientHeight,
-      width: currentCurrency.clientWidth,
-    });
+    const handleResize = () => {
+      setActiveBackgroundState({
+        left: currentCurrency.offsetLeft,
+        top: currentCurrency.offsetTop,
+        height: currentCurrency.clientHeight,
+        width: currentCurrency.clientWidth,
+      });
+    };
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, [value, controlRefs]);
 
   return (
