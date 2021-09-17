@@ -1,6 +1,6 @@
 import React, { ReactNode, useMemo } from "react";
 import { ethers } from "ethers";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 import {
   BaseIndicator,
@@ -82,6 +82,36 @@ const HeroText = styled(Title)`
   font-size: 56px;
   line-height: 64px;
   margin-bottom: 24px;
+`;
+
+const liveryAnimation = (position: "top" | "bottom") => keyframes`
+  0% {
+    background-position-x: ${position === "top" ? 0 : 100}%;
+  }
+
+  50% {
+    background-position-x: ${position === "top" ? 100 : 0}%; 
+  }
+
+  100% {
+    background-position-x: ${position === "top" ? 0 : 100}%;
+  }
+`;
+
+const LiveryBar = styled.div<{ color: string; position: "top" | "bottom" }>`
+  position: absolute;
+  ${(props) => props.position}: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: ${(props) => `linear-gradient(
+    270deg,
+    ${props.color}00 15%,
+    ${props.color} 50%,
+    ${props.color}00 85%
+  )`};
+  background-size: 200%;
+  animation: 10s ${(props) => liveryAnimation(props.position)} linear infinite;
 `;
 
 const AttributePill = styled.div<{ color: string }>`
@@ -309,6 +339,20 @@ const HeroSection: React.FC<{
     }
   }, [vaultOption]);
 
+  const liveryHeroSection = useMemo(() => {
+    switch (variant) {
+      case "v2":
+        return (
+          <>
+            <LiveryBar color={color} position="top" />
+            <LiveryBar color={color} position="bottom" />
+          </>
+        );
+      default:
+        return <></>;
+    }
+  }, [color, variant]);
+
   return (
     <>
       {/* V1 top banner */}
@@ -378,6 +422,8 @@ const HeroSection: React.FC<{
             </SplashImage>
           </div>
         </DepositPageContainer>
+
+        {liveryHeroSection}
       </HeroContainer>
     </>
   );
