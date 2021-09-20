@@ -75,7 +75,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
         ...pendingTransactions,
         {
           txhash,
-          type: "approval",
+          type: "stakingApproval",
           amount: amount,
           stakeAsset: vaultOption,
         },
