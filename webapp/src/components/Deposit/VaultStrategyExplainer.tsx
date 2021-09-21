@@ -31,7 +31,7 @@ import { useEffect } from "react";
 const ExplainerContainer = styled.div`
   display: flex;
   flex-direction: column;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  background: ${colors.backgroundLight};
   border-radius: ${theme.border.radius};
   overflow: hidden;
   overflow: hidden;

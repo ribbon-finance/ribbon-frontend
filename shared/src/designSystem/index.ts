@@ -46,8 +46,8 @@ export const BaseModal = styled(BootstrapModal)`
   }
 
   .modal-content {
-    background-color: ${colors.background};
-    border: ${theme.border.width} ${theme.border.style} ${colors.border};
+    background-color: ${colors.backgroundLight};
+    border: none;
     border-radius: ${theme.border.radius};
 
     button.close {

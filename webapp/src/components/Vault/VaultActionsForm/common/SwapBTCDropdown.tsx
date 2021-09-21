@@ -12,7 +12,7 @@ import Arrow from "../../../../assets/img/arrow.svg";
 
 const Container = styled.div<{ open: boolean }>`
   width: 100%;
-  background: ${colors.background};
+  background: ${colors.backgroundLight};
   overflow: hidden;
   transition: all 0.2s ease-out;
   display: flex;
@@ -37,9 +37,8 @@ const DefiCard = styled.div`
   align-items: center;
   flex-direction: row;
   padding: 16px 12px;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
-  background-color: #252322;
+  background-color: ${colors.asset.WBTC}14;
 `;
 
 const OrText = styled.span`

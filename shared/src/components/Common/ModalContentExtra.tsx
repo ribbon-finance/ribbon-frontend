@@ -17,7 +17,7 @@ const EndingBorder = styled.div<{ config?: StyleConfig }>`
     ${(props) => props.config?.mx ?? "-16"}px;
   border-radius: ${theme.border.radius};
   border-bottom: ${theme.border.width} ${theme.border.style} ${colors.border};
-  background: ${colors.background};
+  background: ${colors.backgroundLight};
   z-index: 1;
 `;
 

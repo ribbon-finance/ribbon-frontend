@@ -47,16 +47,15 @@ const StakingPoolCard = styled.div<{ color: string }>`
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  background: ${colors.backgroundLight};
+  border: 2px ${theme.border.style} ${(props) => props.color}00;
   border-radius: ${theme.border.radius};
-  padding: 1px;
   margin-bottom: 48px;
   transition: 0.25s border-color ease-out;
 
   &:hover {
     animation: ${(props) => shimmerKeyframe(props.color)} 3s infinite;
     border: 2px ${theme.border.style} ${(props) => props.color};
-    padding: 0px;
   }
 `;
 

@@ -21,7 +21,7 @@ import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 const VaultActivityRow = styled.div`
   display: flex;
   flex-direction: column;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  background: ${colors.backgroundLight};
   border-radius: ${theme.border.radius};
   margin-bottom: 16px;
   padding: 16px;

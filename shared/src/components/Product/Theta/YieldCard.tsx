@@ -46,8 +46,8 @@ const ProductCard = styled(motion.div)<{ color: string }>`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  background-color: ${colors.background};
-  border: 2px ${theme.border.style} ${colors.border};
+  background-color: ${colors.backgroundLight};
+  border: 2px ${theme.border.style} ${(props) => props.color}00;
   border-radius: ${theme.border.radius};
   transition: 0.25s box-shadow ease-out, 0.25s border ease-out;
   width: 290px;

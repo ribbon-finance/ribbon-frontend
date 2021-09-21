@@ -121,19 +121,10 @@ const FilterSection = styled.div`
   flex-direction: column;
   width: 100%;
   padding: 16px;
-  margin-top: 24px;
 
-  &:first-child {
-    margin-top: 0px;
+  &:not(:first-child) {
+    margin-top: 8px;
   }
-`;
-
-const FilterSectionHeader = styled.div`
-  display: flex;
-  width: 100%;
-  padding: 12px 16px;
-  background: ${colors.primaryText}14;
-  border-radius: ${theme.border.radius};
 `;
 
 const ModalFixedHeightColumn = styled(BaseModalContentColumn)<{
@@ -172,30 +163,29 @@ const ModalFooterColumn = styled.div`
   }
 `;
 
-const MenuItem = styled.div<{ color: string; active: boolean }>`
+const MenuItem = styled.div<{ color?: string; active: boolean }>`
   display: flex;
   align-items: center;
   padding: 14px 16px;
-  opacity: 0.48;
+  opacity: 0.64;
   border-radius: 100px;
-  background: ${(props) => `${props.color}14`};
+  background: ${(props) =>
+    props.color ? `${props.color}14` : colors.backgroundLighter};
   margin-top: 16px;
   border: ${theme.border.width} ${theme.border.style} transparent;
   transition: border 150ms;
 
-  ${(props) => {
-    if (props.active) {
-      return `
+  ${(props) =>
+    props.active
+      ? `
         opacity: 1;
         border: ${theme.border.width} ${theme.border.style} ${props.color};
-      `;
-    }
-    return `
-      &:hover {
-        opacity: ${theme.hover.opacity};
-      }
-    `;
-  }}
+      `
+      : `
+        &:hover {
+          opacity: ${theme.hover.opacityHigher};
+        }
+      `}
 `;
 
 const LogoContainer = styled.div<{ color: string }>`
@@ -237,7 +227,7 @@ const ScrollFilterContainer = styled.div`
 interface DropdownOption {
   value: string;
   display: string;
-  color: string;
+  color?: string;
   textColor?: string;
   logo?: React.ReactElement;
 }
@@ -254,7 +244,9 @@ const FullscreenMultiselectFilter: React.FC<
   const renderMenuItem = useCallback(
     (option: DropdownOption) => {
       const active = selected.includes(option.value);
-      const textColor = option.textColor ? option.textColor : option.color;
+      const textColor = option.textColor
+        ? option.textColor
+        : option.color || colors.green;
       return (
         <MenuItem
           onClick={() => {
@@ -266,11 +258,13 @@ const FullscreenMultiselectFilter: React.FC<
           }}
           role="button"
           key={option.value}
-          color={option.color}
+          color={active ? option.color || colors.green : option.color}
           active={active}
         >
           {option.logo ? (
-            <LogoContainer color={option.color}>{option.logo}</LogoContainer>
+            <LogoContainer color={option.color || colors.green}>
+              {option.logo}
+            </LogoContainer>
           ) : (
             <></>
           )}
@@ -289,9 +283,9 @@ const FullscreenMultiselectFilter: React.FC<
 
   return (
     <FilterSection>
-      <FilterSectionHeader>
-        <Title>{title}</Title>
-      </FilterSectionHeader>
+      <Title fontSize={14} lineHeight={24}>
+        {title}
+      </Title>
       {options.map((option) => renderMenuItem(option))}
     </FilterSection>
   );
@@ -309,8 +303,8 @@ const FullscreenMultiselectFilters: React.FC<
   filters,
   title,
   buttonConfig = {
-    background: `${colors.primaryText}0A`,
-    activeBackground: `${colors.primaryText}14`,
+    background: colors.background,
+    activeBackground: colors.backgroundLight,
     paddingHorizontal: 16,
     paddingVertical: 12,
     color: `${colors.primaryText}`,
@@ -388,7 +382,7 @@ const FullscreenMultiselectFilters: React.FC<
                 Clear
               </ClearButton>
               <HeaderTitleContainer>
-                <Title>{title}</Title>
+                <Title fontSize={14}>{title}</Title>
               </HeaderTitleContainer>
             </ModalFixedHeightColumn>
 

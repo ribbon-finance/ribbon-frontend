@@ -21,15 +21,12 @@ import { getAssetDecimals } from "shared/lib/utils/asset";
 import moment from "moment";
 
 const VaultPerformacneChartContainer = styled.div`
-  border: 1px solid ${colors.border};
+  background: ${colors.backgroundLight};
   border-radius: ${theme.border.radiusSmall} ${theme.border.radiusSmall} 0px 0px;
 `;
 
 const VaultPerformacneChartSecondaryContainer = styled.div`
-  padding-top: 20px;
-  border-bottom: 1px solid ${colors.border};
-  border-left: 1px solid ${colors.border};
-  border-right: 1px solid ${colors.border};
+  padding: 20px 0px;
   border-radius: 0px 0px ${theme.border.radiusSmall} ${theme.border.radiusSmall};
   background: ${colors.backgroundLighter};
 `;
@@ -149,7 +146,7 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
           labels={timestamps}
           onChartHover={handleChartHover}
           extras={
-            <div className="d-flex align-items-center justify-content-between mb-3 px-4">
+            <div className="d-flex align-items-center justify-content-between px-4">
               <div>
                 <SecondaryText fontSize={12} className="d-block">
                   Yield (Cumulative)
@@ -171,7 +168,7 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
         />
       </VaultPerformacneChartContainer>
       <VaultPerformacneChartSecondaryContainer>
-        <div className="d-flex align-items-center justify-content-between mb-3 px-4">
+        <div className="d-flex align-items-center justify-content-between px-4">
           <div>
             <SecondaryText fontSize={12} className="d-block">
               Current Projected Yield (APY)

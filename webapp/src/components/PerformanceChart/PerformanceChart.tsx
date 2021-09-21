@@ -114,7 +114,7 @@ export const Chart: React.FC<{
       maintainAspectRatio: false,
       title: { display: false },
       legend: { display: false },
-      layout: { padding: { top: 20, bottom: 20, left: 10, right: 10 } },
+      layout: { padding: { top: 20, bottom: 20 } },
       scales: {
         yAxes: [
           {

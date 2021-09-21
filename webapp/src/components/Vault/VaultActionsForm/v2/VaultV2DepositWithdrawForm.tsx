@@ -39,7 +39,6 @@ const FormTabContainer = styled.div`
     height: 100%;
     width: 100%;
     content: " ";
-    background-color: ${colors.background};
     z-index: -1;
   }
 `;
@@ -48,7 +47,7 @@ const FormTab = styled.div<{ active: boolean }>`
   width: 100%;
   padding: 24px 0;
   background-color: ${(props) =>
-    props.active ? colors.background : "rgba(255,255,255,0.04)"};
+    props.active ? "none" : "rgba(255,255,255,0.04)"};
   cursor: pointer;
 
   &:after {

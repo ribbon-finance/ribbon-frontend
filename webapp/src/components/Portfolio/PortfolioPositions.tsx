@@ -69,7 +69,7 @@ const PositionContainer = styled.div<{ color: string }>`
   flex-wrap: wrap;
   width: 100%;
   border-radius: ${theme.border.radius};
-  border: 2px ${theme.border.style} #00000000;
+  border: 2px ${theme.border.style} ${(props) => props.color}00;
   transition: 0.25s box-shadow ease-out, 0.25s border ease-out;
 
   &:hover {
@@ -84,11 +84,8 @@ const PositionMainContainer = styled.div`
   align-items: center;
   width: 100%;
   padding: 16px;
-  background: ${colors.background};
+  background: ${colors.backgroundLight};
   border-radius: ${theme.border.radius};
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
   z-index: 2;
 `;
 
