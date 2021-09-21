@@ -24,7 +24,7 @@ const useFetchV2VaultData = (
   }: {
     poll: boolean;
     pollingFrequency: number;
-  } = { poll: true, pollingFrequency: 5000 }
+  } = { poll: true, pollingFrequency: 8000 }
 ): V2VaultData => {
   const { active, account: web3Account, library } = useWeb3React();
   const { provider } = useWeb3Context();

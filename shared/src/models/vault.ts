@@ -7,7 +7,6 @@ import {
   VaultVersion,
 } from "../constants/constants";
 import { Assets } from "../store/types";
-import { Moment } from "moment";
 import { getAssetDecimals } from "../utils/asset";
 
 export interface Vault {

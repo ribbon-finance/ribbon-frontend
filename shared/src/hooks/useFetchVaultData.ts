@@ -23,7 +23,7 @@ const useFetchVaultData = (
   }: {
     poll: boolean;
     pollingFrequency: number;
-  } = { poll: true, pollingFrequency: 5000 }
+  } = { poll: true, pollingFrequency: 8000 }
 ): VaultData => {
   const { library, active, account: web3Account } = useWeb3React();
   const { provider } = useWeb3Context();

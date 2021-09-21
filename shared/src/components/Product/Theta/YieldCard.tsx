@@ -153,8 +153,15 @@ const YieldCard: React.FC<YieldCardProps> = ({
   onVaultPress,
   vaultAccount,
 }) => {
-  const { status, deposits, vaultLimit, asset, displayAsset, decimals } =
-    useVaultData(vault);
+  const {
+    status,
+    deposits,
+    vaultLimit,
+    asset,
+    displayAsset,
+    decimals,
+    vaultBalanceInAsset,
+  } = useVaultData(vault);
   const {
     data: { totalBalance: v2Deposits, cap: v2VaultLimit },
     loading: v2DataLoading,
@@ -284,8 +291,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const modalContentExtra = useMemo(() => {
     if (
       vaultVersion === "v2" &&
-      vaultAccount &&
-      !isPracticallyZero(vaultAccount.totalBalance, decimals)
+      !isPracticallyZero(vaultBalanceInAsset, decimals)
     ) {
       return (
         <div className="d-flex w-100 justify-content-center">
@@ -311,7 +317,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
         </Title>
       </div>
     );
-  }, [asset, decimals, vaultAccount, vaultVersion]);
+  }, [asset, decimals, vaultAccount, vaultBalanceInAsset, vaultVersion]);
 
   return (
     <CardContainer>

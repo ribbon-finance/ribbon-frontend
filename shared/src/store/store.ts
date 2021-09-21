@@ -2,8 +2,6 @@ import { BigNumber } from "ethers";
 import { createGlobalState } from "react-hooks-global-state";
 import { DesktopViewType } from "../components/Product/types";
 import {
-  getAssets,
-  getDisplayAssets,
   VaultList,
   VaultOptions,
   VaultVersion,
