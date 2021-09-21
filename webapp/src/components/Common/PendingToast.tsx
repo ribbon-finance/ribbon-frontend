@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import BootstrapToast from "react-bootstrap/Toast";
 import styled from "styled-components";
 
 import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
 import { Title } from "shared/lib/designSystem";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
 
 interface BarConfig {
   width: number;
@@ -22,11 +23,19 @@ const PendingBar = styled.div<BarConfig & { color: string }>`
   }
 `;
 
-const StyledToast = styled(BootstrapToast)`
+const MobileToastContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 14px 0px;
+`;
+
+const DesktopToast = styled(BootstrapToast)`
   position: fixed;
   background: none;
   color: rgba(255, 255, 255, 0.64);
-  z-index: 50;
+  z-index: 10;
 
   @media (max-width: ${sizes.lg}px) {
     width: 90%;
@@ -45,7 +54,7 @@ const StyledToast = styled(BootstrapToast)`
   }
 `;
 
-const Body = styled(BootstrapToast.Body)`
+const DesktopBody = styled(BootstrapToast.Body)`
   height: 100%;
   background: ${colors.backgroundDarker};
   border-radius: 8px;
@@ -125,15 +134,17 @@ interface PendingToastProps {
 }
 
 const PendingToast: React.FC<PendingToastProps> = ({ title, color }) => {
-  return (
-    <StyledToast show={true}>
-      <Body>
+  const { width } = useScreenSize();
+
+  const body = useMemo(
+    () => (
+      <>
         <Title fontSize={14} className="mb-2">
           {title}
         </Title>
         <PendingAnimatingBars
           color={color}
-          count={39}
+          count={width > sizes.lg ? 39 : Math.floor((width * 0.9) / 8)}
           barConfig={{
             width: 4,
             height: 16,
@@ -141,8 +152,17 @@ const PendingToast: React.FC<PendingToastProps> = ({ title, color }) => {
           }}
           duration={800}
         />
-      </Body>
-    </StyledToast>
+      </>
+    ),
+    [color, title, width]
+  );
+
+  return width > sizes.lg ? (
+    <DesktopToast show={true}>
+      <DesktopBody>{body}</DesktopBody>
+    </DesktopToast>
+  ) : (
+    <MobileToastContainer>{body}</MobileToastContainer>
   );
 };
 
