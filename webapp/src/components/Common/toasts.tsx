@@ -152,7 +152,6 @@ export const TxStatusToast = () => {
   );
 
   if (!status || !currentTx) {
-    // return <PendingToast title="MIGRATING FUNDS" color={"#627EEA"} />;
     return null;
   }
 
