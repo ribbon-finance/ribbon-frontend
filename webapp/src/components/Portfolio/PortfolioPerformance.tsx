@@ -24,11 +24,7 @@ import PerformanceChart from "../PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../PerformanceChart/types";
 import sizes from "shared/lib/designSystem/sizes";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import {
-  getAssets,
-  VaultList,
-  VaultOptions,
-} from "shared/lib/constants/constants";
+import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { AssetsList } from "shared/lib/store/types";
 import { getAssetDecimals } from "shared/lib/utils/asset";
@@ -162,10 +158,8 @@ const PortfolioPerformance = () => {
     // @ts-ignore
     assets: AssetsList,
   });
-  const { vaultAccounts, loading: vaultAccountLoading } = useVaultAccounts(
-    VaultList,
-    "all"
-  );
+  const { vaultAccounts, loading: vaultAccountLoading } =
+    useVaultAccounts("all");
   const [hoveredBalanceUpdateIndex, setHoveredBalanceUpdateIndex] =
     useState<number>();
   const [rangeFilter, setRangeFilter] = useState<dateFilterType>("1m");

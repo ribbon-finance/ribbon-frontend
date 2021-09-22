@@ -29,6 +29,7 @@ import { VaultActivityMeta, VaultShortPosition } from "shared/lib/models/vault";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
+
 import { FormStepProps, VaultValidationErrors } from "./types";
 import useVaultActionForm from "../../../hooks/useVaultActionForm";
 import { ACTIONS } from "./Modal/types";
@@ -253,10 +254,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     handleMaxClick,
     vaultActionForm,
   } = useVaultActionForm(vaultOption);
-  const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
-  const { vaultAccounts } = useVaultAccounts(vaultOptions, "v1", {
-    poll: true,
-  });
+  const { vaultAccounts } = useVaultAccounts("v1");
   const { active, account } = useWeb3React();
 
   // state hooks

@@ -101,8 +101,7 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
   const [input, setInput] = useState<string>("");
   const [hoverPrice, setHoverPrice] = useState<number>();
   const [chartHovering, setChartHovering] = useState(false);
-  const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
-  const { vaultAccounts } = useVaultAccounts(vaultOptions, vaultVersion);
+  const { vaultAccounts } = useVaultAccounts(vaultVersion);
 
   const handleInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const parsedInput = parseFloat(e.target.value);

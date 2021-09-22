@@ -30,7 +30,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
   const [filterAssets, setFilterAssets] = useState<Assets[]>([]);
   const [sort, setSort] = useState<VaultSortBy>(VaultSortByList[0]);
   const yieldsData = useLatestAPYs(VaultList);
-  const { vaultAccounts } = useVaultAccounts(VaultList, "all");
+  const { vaultAccounts } = useVaultAccounts("all");
 
   const filteredProducts = useMemo(() => {
     const filteredList = VaultList.filter((vault) => {

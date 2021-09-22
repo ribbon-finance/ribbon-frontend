@@ -89,10 +89,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
   const decimals = getAssetDecimals(asset);
   const Logo = getAssetLogo(asset);
 
-  const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
-  const { vaultAccounts } = useVaultAccounts(vaultOptions, vaultVersion, {
-    poll: true,
-  });
+  const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const [, setVaultPositionModal] = useGlobalState("vaultPositionModal");
 
   const roi = useMemo(() => {

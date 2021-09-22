@@ -5,6 +5,7 @@ import {
   VaultList,
   VaultOptions,
   VaultVersion,
+  VaultVersionList,
 } from "../constants/constants";
 import { Assets } from "../store/types";
 import { getAssetDecimals } from "../utils/asset";
@@ -31,6 +32,19 @@ export interface VaultAccount {
   totalStakedBalance: BigNumber;
   totalPendingDeposit: BigNumber;
 }
+
+export type VaultAccountsData = {
+  [version in VaultVersion]: {
+    [option in VaultOptions]: VaultAccount | undefined;
+  };
+};
+
+export const defaultVaultAccountsData: VaultAccountsData = Object.fromEntries(
+  VaultVersionList.map((version) => [
+    version,
+    Object.fromEntries(VaultList.map((option) => [option, undefined])),
+  ])
+) as VaultAccountsData;
 
 export interface VaultShortPosition {
   id: string;
