@@ -1,0 +1,8 @@
+$container-max-widths: (
+  xl: 1200px,
+);
+
+.py-6 {
+  padding-top: ($spacer * 5) !important;
+  padding-bottom: ($spacer * 5) !important;
+}
