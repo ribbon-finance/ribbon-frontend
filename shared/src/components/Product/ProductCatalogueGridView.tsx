@@ -208,7 +208,6 @@ const ProductCatalogueGridView: React.FC<
                 options: VaultStrategyList.map((strategy) => ({
                   value: strategy,
                   display: strategy,
-                  color: colors.green,
                 })),
                 // @ts-ignore
                 onSelect: setFilterStrategies,
@@ -249,8 +248,8 @@ const ProductCatalogueGridView: React.FC<
             setSort(option as VaultSortBy);
           }}
           buttonConfig={{
-            background: `${colors.primaryText}0A`,
-            activeBackground: `${colors.primaryText}14`,
+            background: colors.background,
+            activeBackground: colors.backgroundLight,
             paddingHorizontal: 16,
             paddingVertical: 12,
             color: colors.primaryText,

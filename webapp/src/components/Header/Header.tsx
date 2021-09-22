@@ -18,7 +18,6 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
   position: sticky;
   top: 0;
   border-bottom: 1px solid ${colors.border};
-  background: rgba(255, 255, 255, 0.01);
 
   @media (max-width: ${sizes.lg}px) {
     padding: 16px 24px;

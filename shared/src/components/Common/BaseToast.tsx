@@ -16,7 +16,7 @@ const StyledToast = styled(BootstrapToast)`
   color: rgba(255, 255, 255, 0.64);
   z-index: 1000;
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.lg - 1}px) {
     width: 90%;
     max-width: 90%;
     top: 70px;

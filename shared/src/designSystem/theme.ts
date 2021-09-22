@@ -1,6 +1,7 @@
 const theme = {
   hover: {
     opacity: 0.64,
+    opacityHigher: 0.84,
   },
   border: {
     radiusBig: "12px",

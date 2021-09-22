@@ -29,6 +29,8 @@ const OverviewContainer = styled.div`
   flex-wrap: wrap;
   width: 100%;
   margin-top: 48px;
+  background: ${colors.backgroundLight};
+  border-radius: ${theme.border.radius};
 `;
 
 const OverviewInfo = styled.div`
@@ -42,7 +44,6 @@ const OverviewInfo = styled.div`
     ${colors.green}02 98.99%
   );
   border-radius: ${theme.border.radius} ${theme.border.radius} 0 0;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
 `;
 
 const OverviewTag = styled.div`
@@ -91,36 +92,21 @@ const StyledWaves = styled(Waves)`
 const OverviewKPIContainer = styled.div`
   display: flex;
   width: 100%;
-
-  div {
-    border-top: none;
-
-    &:first-child {
-      border-right: none;
-      border-bottom-left-radius: ${theme.border.radius};
-    }
-
-    &:last-child {
-      border-left: none;
-      border-bottom-right-radius: ${theme.border.radius};
-    }
-
-    &:not(:first-child):not(:last-child) {
-      border: ${theme.border.width} ${theme.border.style} ${colors.border};
-      border-top: none;
-    }
-  }
 `;
 
 const OverviewKPI = styled.div`
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
   padding: 16px;
   width: calc(100% / 3);
   display: flex;
   flex-wrap: wrap;
+  border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
 
   @media (max-width: ${sizes.sm}px) {
     width: 100%;
+  }
+
+  &:not(:last-child) {
+    border-right: ${theme.border.width} ${theme.border.style} ${colors.border};
   }
 `;
 

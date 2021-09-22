@@ -36,13 +36,11 @@ const VaultPerformanceChartContainer = styled.div`
   justify-content: center;
   height: 200px;
   padding: 30px 0;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  background: ${colors.backgroundLight};
   border-radius: ${theme.border.radius} ${theme.border.radius} 0px 0px;
 `;
 
 const VaultPerformanceChartSecondaryContainer = styled.div`
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-top: none;
   background: ${colors.backgroundLighter};
 
   &:last-child {
@@ -52,18 +50,13 @@ const VaultPerformanceChartSecondaryContainer = styled.div`
 
 const DataCol = styled(Col)`
   border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-right: ${theme.border.width} ${theme.border.style} ${colors.border};
 
   && {
     padding: 16px;
   }
 
-  &:nth-child(-n + 2) {
-    border-top: none;
-  }
-
   &:nth-child(even) {
-    border-right: none;
+    border-left: ${theme.border.width} ${theme.border.style} ${colors.border};
   }
 `;
 

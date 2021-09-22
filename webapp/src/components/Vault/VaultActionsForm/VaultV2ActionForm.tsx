@@ -19,17 +19,15 @@ const FormContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
-  background: ${colors.background};
+  background: ${colors.backgroundLight};
   z-index: 1;
 `;
 
 const FormExtraContainer = styled.div`
-  background: ${colors.primaryText}0a;
+  background: ${colors.backgroundLighter};
   padding: 32px 24px 16px 24px;
   margin-top: -20px;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};
   text-align: center;
   z-index: 0;

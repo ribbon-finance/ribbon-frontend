@@ -57,10 +57,9 @@ const FormContainer = styled.div`
   font-family: VCR, sans-serif;
   color: #f3f3f3;
   width: 100%;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
   box-sizing: border-box;
   border-radius: ${theme.border.radius};
-  background: ${colors.background};
+  background: ${colors.backgroundLight};
   z-index: 1;
 `;
 
@@ -97,7 +96,6 @@ const FormTitleContainer = styled.div`
     height: 100%;
     width: 100%;
     content: " ";
-    background-color: ${colors.background};
     z-index: -1;
   }
 `;
@@ -106,7 +104,7 @@ const FormTitleDiv = styled.div<{ active: boolean }>`
   width: 100%;
   padding: 24px 0;
   background-color: ${(props) =>
-    props.active ? "rgb(28, 26, 25,0.95)" : "rgba(255,255,255,0.04)"};
+    props.active ? "none" : "rgba(255,255,255,0.04)"};
   cursor: pointer;
 
   &:after {
@@ -133,7 +131,6 @@ const FormTitle = styled(Title)<{ active: boolean }>`
 `;
 
 const ContentContainer = styled.div`
-  background: ${colors.background};
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 `;

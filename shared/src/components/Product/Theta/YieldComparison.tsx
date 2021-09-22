@@ -20,10 +20,9 @@ import { DefiScoreProtocol } from "../../../models/defiScore";
 import { getAssetDisplay } from "../../../utils/asset";
 import { productCopies } from "../productCopies";
 
-const YieldComparisonCard = styled.div<{ background: string; border: string }>`
+const YieldComparisonCard = styled.div<{ background: string }>`
   display: flex;
   width: 100%;
-  border: ${(props) => props.border};
   border-radius: ${theme.border.radius};
   background-color: ${(props) => props.background};
   padding: 8px;
@@ -45,15 +44,13 @@ interface YieldComparisonProps {
   vault: VaultOptions;
   config?: {
     background: string;
-    border: string;
   };
 }
 
 const YieldComparison: React.FC<YieldComparisonProps> = ({
   vault,
   config = {
-    background: "#252322",
-    border: `${theme.border.width} ${theme.border.style} ${colors.border}`,
+    background: colors.backgroundLighter,
   },
 }) => {
   const asset = getAssets(vault);
@@ -86,10 +83,7 @@ const YieldComparison: React.FC<YieldComparisonProps> = ({
   return (
     <>
       <YieldComparisonTitle>Current Projected Yield (APY)</YieldComparisonTitle>
-      <YieldComparisonCard
-        background={config.background}
-        border={config.border}
-      >
+      <YieldComparisonCard background={config.background}>
         <Logo height="24" width="24" />
         <Title fontSize={14} lineHeight={24} className="ml-2">
           {productCopies[vault].title}
@@ -113,7 +107,6 @@ const YieldComparison: React.FC<YieldComparisonProps> = ({
               <YieldComparisonCard
                 key={protocol}
                 background={config.background}
-                border={config.border}
               >
                 {renderProtocolLogo(protocol)}
                 <Title fontSize={14} lineHeight={24} className="ml-2">

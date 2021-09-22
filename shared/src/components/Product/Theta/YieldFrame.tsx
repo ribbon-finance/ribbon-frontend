@@ -208,7 +208,6 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
             vault={vault}
             config={{
               background: `${color}29`,
-              border: "none",
             }}
           />
         );

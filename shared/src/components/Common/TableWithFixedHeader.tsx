@@ -61,12 +61,12 @@ const TableRow = styled.div`
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  background: ${colors.backgroundLight};
   border-radius: ${theme.border.radius};
   margin-top: 16px;
   padding: 16px;
 
-  &:nth-child(2) {
+  &:first-child {
     margin-top: 24px;
   }
 `;

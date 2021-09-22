@@ -164,7 +164,7 @@ const PreviewStep: React.FC<{
           <FormTitle className="mt-3">MIGRATE PREVIEW</FormTitle>
 
           {/* Info Preview */}
-          <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-auto">
+          <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4 mt-lg-auto">
             <SecondaryText>Amount</SecondaryText>
             <Title className="text-right">
               {originalAmount} {getAssetDisplay(asset)}
@@ -176,7 +176,7 @@ const PreviewStep: React.FC<{
               {productCopies[vaultOption].title}
             </Title>
           </div>
-          <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4 mb-auto">
+          <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4 mb-4 mb-md-5 mb-lg-auto">
             <SecondaryText>Migration</SecondaryText>
             <Title className="d-flex align-items-center text-right">
               V1 <Arrow className="fas fa-arrow-right mx-2" color={color} /> V2

@@ -31,7 +31,7 @@ import { useEffect } from "react";
 const ExplainerContainer = styled.div`
   display: flex;
   flex-direction: column;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  background: ${colors.backgroundLight};
   border-radius: ${theme.border.radius};
   overflow: hidden;
   overflow: hidden;
@@ -269,7 +269,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
         case "strikeSelection":
           return "MANAGER SELECTS STRIKE AND EXPIRY";
         case "mintOption":
-          return "VAULT CREATES OPTIONS";
+          return "VAULT MINTS OPTIONS";
         case "gnosisAuction":
           return "VAULT SELLS OPTIONS VIA GNOSIS AUCTION";
         case "gnosisTrade":
@@ -277,13 +277,11 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
         case "tradeOption":
           return "VAULT SELLS OPTIONS TO MARKET MAKERS";
         case "expiryA":
-          return `Expiry A - OPTIONS EXPIRE OTM`;
+          return `OPTIONS EXPIRE OTM`;
         case "settlementA":
           return "COLLATERAL RETURNED TO THE VAULT";
         case "expiryB":
-          return `Expiry B - STRIKE IS ${
-            isPut ? "ABOVE" : "BELOW"
-          } MARKET PRICE`;
+          return `STRIKE IS ${isPut ? "ABOVE" : "BELOW"} MARKET PRICE`;
         case "settlementB":
           let offerParty;
 
@@ -438,54 +436,109 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
             </>
           );
         case "mintOption":
-          return (
-            <>
-              Every Friday, the vault creates{" "}
-              <TooltipExplanation
-                title="EUROPEAN OPTIONS"
-                explanation="A European option is a version of an options contract that limits execution to its expiration date."
-                learnMoreURL="https://www.investopedia.com/terms/e/europeanoption.asp"
-                renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
-                    European
-                  </HighlighText>
-                )}
-              />{" "}
-              <TooltipExplanation
-                title={isPut ? "PUT OPTION" : "COVERED CALL"}
-                explanation={
-                  isPut
-                    ? "A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
-                    : "A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
-                }
-                learnMoreURL={
-                  isPut
-                    ? "https://www.investopedia.com/terms/p/putoption.asp"
-                    : "https://www.investopedia.com/terms/c/coveredcall.asp"
-                }
-                renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
-                    {optionAssetUnit} {isPut ? "put" : "call"} options
-                  </HighlighText>
-                )}
-              />{" "}
-              by depositing {collateralAssetUnit} as collateral in an{" "}
-              <TooltipExplanation
-                title="OPYN"
-                explanation="Opyn is a DeFi options protocol."
-                learnMoreURL="https://www.opyn.co/"
-                renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
-                    Opyn
-                  </HighlighText>
-                )}
-              />{" "}
-              vault and setting a strike price (selected by the manager) and
-              expiry date (the following Friday). In return, the vault receives
-              oTokens from the Opyn vault which represent the {optionAssetUnit}{" "}
-              {isPut ? "put" : "call"} options.
-            </>
-          );
+          switch (vaultVersion) {
+            case "v1":
+              return (
+                <>
+                  Every Friday, the vault creates{" "}
+                  <TooltipExplanation
+                    title="EUROPEAN OPTIONS"
+                    explanation="A European option is a version of an options contract that limits execution to its expiration date."
+                    learnMoreURL="https://www.investopedia.com/terms/e/europeanoption.asp"
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HighlighText ref={ref} {...triggerHandler}>
+                        European
+                      </HighlighText>
+                    )}
+                  />{" "}
+                  <TooltipExplanation
+                    title={isPut ? "PUT OPTION" : "COVERED CALL"}
+                    explanation={
+                      isPut
+                        ? "A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
+                        : "A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
+                    }
+                    learnMoreURL={
+                      isPut
+                        ? "https://www.investopedia.com/terms/p/putoption.asp"
+                        : "https://www.investopedia.com/terms/c/coveredcall.asp"
+                    }
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HighlighText ref={ref} {...triggerHandler}>
+                        {optionAssetUnit} {isPut ? "put" : "call"} options
+                      </HighlighText>
+                    )}
+                  />{" "}
+                  by depositing {collateralAssetUnit} as collateral in an{" "}
+                  <TooltipExplanation
+                    title="OPYN"
+                    explanation="Opyn is a DeFi options protocol."
+                    learnMoreURL="https://www.opyn.co/"
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HighlighText ref={ref} {...triggerHandler}>
+                        Opyn
+                      </HighlighText>
+                    )}
+                  />{" "}
+                  vault and setting a strike price (selected by the manager) and
+                  expiry date (the following Friday). In return, the vault
+                  receives oTokens from the Opyn vault which represent the{" "}
+                  {optionAssetUnit} {isPut ? "put" : "call"} options.
+                </>
+              );
+            case "v2":
+            default:
+              return (
+                <>
+                  Every Friday at 11am UTC, the vault mints{" "}
+                  <TooltipExplanation
+                    title="EUROPEAN OPTIONS"
+                    explanation="A European option is a version of an options contract that limits execution to its expiration date."
+                    learnMoreURL="https://www.investopedia.com/terms/e/europeanoption.asp"
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HighlighText ref={ref} {...triggerHandler}>
+                        European
+                      </HighlighText>
+                    )}
+                  />{" "}
+                  <TooltipExplanation
+                    title={isPut ? "PUT OPTION" : "COVERED CALL"}
+                    explanation={
+                      isPut
+                        ? "A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
+                        : "A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
+                    }
+                    learnMoreURL={
+                      isPut
+                        ? "https://www.investopedia.com/terms/p/putoption.asp"
+                        : "https://www.investopedia.com/terms/c/coveredcall.asp"
+                    }
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HighlighText ref={ref} {...triggerHandler}>
+                        {optionAssetUnit} {isPut ? "put" : "call"} options
+                      </HighlighText>
+                    )}
+                  />{" "}
+                  by depositing its {optionAssetUnit} balance as collateral in
+                  an{" "}
+                  <TooltipExplanation
+                    title="OPYN"
+                    explanation="Opyn is a DeFi options protocol."
+                    learnMoreURL="https://www.opyn.co/"
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HighlighText ref={ref} {...triggerHandler}>
+                        Opyn
+                      </HighlighText>
+                    )}
+                  />{" "}
+                  vault. The vault sets the strike price to the value determined
+                  by its selection algorithm and the expiry date to the
+                  following Friday. In return, the vault receives oTokens from
+                  the Opyn vault, each of which represent an {optionAssetUnit}{" "}
+                  {isPut ? "put" : "call"} option.
+                </>
+              );
+          }
         case "gnosisAuction":
           return (
             <>
@@ -591,8 +644,8 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                   </HighlighText>
                 )}
               />
-              . In this situation the {isPut ? "put" : "call"} options held by
-              the {optionBuyerParty} expire worthless.
+              . In this situation the oTokens held by the {optionBuyerParty}{" "}
+              expire worthless.
             </>
           );
         case "settlementA":
@@ -654,7 +707,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
         case "settlementB":
           return (
             <>
-              When the {isPut ? "put" : "call"} options expire{" "}
+              When the call options expire{" "}
               <TooltipExplanation
                 title="IN-THE-MONEY"
                 explanation={`An ${optionAssetUnit} ${
@@ -669,22 +722,12 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                   </HighlighText>
                 )}
               />
-              , the {optionBuyerParty} can exercise their options. The options
-              are{" "}
-              <TooltipExplanation
-                title="CASH-SETTLED OPTIONS"
-                explanation="A cash-settled option is a type of option for which actual physical delivery of the underlying asset or security is not required."
-                learnMoreURL="https://www.investopedia.com/terms/c/cash-settled-options.asp"
-                renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
-                    cash-settled
-                  </HighlighText>
-                )}
-              />
-              , and so for each options contract, {optionBuyerParty} can
-              withdraw the difference between the price of {optionAssetUnit} and
-              the strike price at expiry. Any {collateralAssetUnit} left over is
-              returned to the Ribbon vault.
+              , option holders exercise their options by withdrawing{" "}
+              {collateralAssetUnit} from the Opyn vault. The amount withdrawn is
+              equal to the difference between the between the price of{" "}
+              {optionAssetUnit} and the strike price at expiry from the Opyn
+              vault. Any {collateralAssetUnit} left over is returned back to the
+              Ribbon vault.
             </>
           );
       }

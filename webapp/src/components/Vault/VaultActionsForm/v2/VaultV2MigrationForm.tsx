@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
+import { BigNumber } from "ethers";
 
 import { VaultOptions } from "shared/lib/constants/constants";
 import colors from "shared/lib/designSystem/colors";
@@ -69,9 +70,12 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
 
   const migrationLimit = useMemo(() => {
     const v2Capacity = cap.sub(totalBalance);
+    const normalizedV2capacity = v2Capacity.isNegative()
+      ? BigNumber.from(0)
+      : v2Capacity;
 
-    return vaultMaxWithdrawAmount.gte(v2Capacity)
-      ? v2Capacity
+    return vaultMaxWithdrawAmount.gte(normalizedV2capacity)
+      ? normalizedV2capacity
       : vaultMaxWithdrawAmount;
   }, [cap, totalBalance, vaultMaxWithdrawAmount]);
 

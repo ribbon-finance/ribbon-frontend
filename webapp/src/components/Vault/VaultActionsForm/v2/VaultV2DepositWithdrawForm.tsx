@@ -39,7 +39,6 @@ const FormTabContainer = styled.div`
     height: 100%;
     width: 100%;
     content: " ";
-    background-color: ${colors.background};
     z-index: -1;
   }
 `;
@@ -48,7 +47,7 @@ const FormTab = styled.div<{ active: boolean }>`
   width: 100%;
   padding: 24px 0;
   background-color: ${(props) =>
-    props.active ? "rgb(28, 26, 25,0.95)" : "rgba(255,255,255,0.04)"};
+    props.active ? "none" : "rgba(255,255,255,0.04)"};
   cursor: pointer;
 
   &:after {
@@ -273,6 +272,11 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
           <VaultBasicAmountForm
             vaultOption={vaultOption}
             error={error}
+            formExtra={{
+              label: "Wallet Balance",
+              amount: userAssetBalance,
+              error: error === "insufficientBalance",
+            }}
             onFormSubmit={onFormSubmit}
             actionButtonText="Preview Deposit"
           />
@@ -297,6 +301,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     lockedBalanceInAsset,
     onFormSubmit,
     showTokenApproval,
+    userAssetBalance,
     vaultActionForm.actionType,
     vaultOption,
     withdrawals.amount,
@@ -319,32 +324,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
           </FormInfoText>
         );
     }
-
-    switch (vaultActionForm.actionType) {
-      case ACTIONS.deposit:
-        if (!active || loading) {
-          return <FormInfoText>---</FormInfoText>;
-        }
-
-        return (
-          <FormInfoText
-            color={error === "insufficientBalance" ? colors.red : undefined}
-          >
-            Wallet Balance: {formatBigNumber(userAssetBalance, decimals)}{" "}
-            {getAssetDisplay(asset)}
-          </FormInfoText>
-        );
-    }
-  }, [
-    active,
-    asset,
-    decimals,
-    error,
-    loading,
-    userAssetBalance,
-    vaultActionForm.actionType,
-    vaultMaxDepositAmount,
-  ]);
+  }, [asset, decimals, error, vaultMaxDepositAmount]);
 
   const swapContainerTrigger = useMemo(() => {
     switch (asset) {

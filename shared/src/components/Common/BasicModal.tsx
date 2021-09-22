@@ -28,7 +28,6 @@ const StyledModal = styled(BaseModal)<{
       props.theme
         ? `
             background-color: ${props.theme}0A;
-            border: ${theme.border.width} ${theme.border.style} ${props.theme}29;
           `
         : ``}}
   }
@@ -79,7 +78,7 @@ const ModalContent = styled(motion.div)`
 `;
 
 const ModalHeaderBackground = styled.div`
-  background: ${colors.pillBackground};
+  background: ${colors.backgroundDarker};
   height: 72px;
   position: absolute;
   top: 0;

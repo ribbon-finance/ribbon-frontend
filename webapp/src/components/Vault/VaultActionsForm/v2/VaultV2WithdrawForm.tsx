@@ -144,12 +144,21 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
       return;
     }
 
-    setActiveBackgroundState({
-      left: currentRef.offsetLeft,
-      top: currentRef.offsetTop,
-      height: currentRef.clientHeight,
-      width: currentRef.clientWidth,
-    });
+    const handleResize = () => {
+      setActiveBackgroundState({
+        left: currentRef.offsetLeft,
+        top: currentRef.offsetTop,
+        height: currentRef.clientHeight,
+        width: currentRef.clientWidth,
+      });
+    };
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, [vaultActionForm.withdrawOption, withdrawOptionRefs]);
 
   /**

@@ -28,11 +28,12 @@ const RootApp = () => {
 
   return (
     <Root id="appRoot" screenHeight={screenHeight}>
-      <TxStatusToast />
       <WalletConnectModal />
       <YourPositionModal />
+
       <Router>
         <Header />
+        <TxStatusToast />
         <Switch>
           <Route path="/" exact>
             <Homepage />
