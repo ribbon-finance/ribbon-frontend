@@ -30,7 +30,7 @@ import {
   VaultVersionList,
 } from "shared/lib/constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
-import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
+import { useAllVaultAccounts } from "shared/lib/hooks/useVaultAccounts";
 import { VaultAccount } from "shared/lib/models/vault";
 import {
   getAssetDecimals,
@@ -316,11 +316,10 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 
 const PortfolioPositions = () => {
   const { active } = useWeb3React();
-  const { vaultAccounts: v1VaultAccounts, loading: v1Loading } =
-    useVaultAccounts(VaultList, "v1");
-  const { vaultAccounts: v2VaultAccounts, loading: v2Loading } =
-    useVaultAccounts(VaultList, "v2");
-  const loading = v1Loading || v2Loading;
+  const {
+    data: { v1: v1VaultAccounts, v2: v2VaultAccounts },
+    loading,
+  } = useAllVaultAccounts();
   const animatedLoadingText = useTextAnimation(loading);
 
   const filteredVaultAccounts = useMemo(() => {

@@ -13,7 +13,6 @@ import {
   DefiScoreTokenList,
 } from "../models/defiScore";
 import { ERC20Token, ERC20TokenList } from "../models/eth";
-import { VaultAccount } from "../models/vault";
 import {
   PendingTransaction,
   Assets,
@@ -42,28 +41,12 @@ interface GlobalStore {
   tokenBalances: {
     [token in ERC20Token]: { fetched: boolean; balance: BigNumber };
   };
-  vaultAccounts: {
-    [version in VaultVersion | "all"]: {
-      [option in VaultOptions]: VaultAccount | undefined;
-    };
-  };
   vaultPositionModal: {
     show: boolean;
     vaultOption?: VaultOptions;
     vaultVersion: VaultVersion;
   };
 }
-
-export const initialVaultAccounts = Object.fromEntries(
-  [...VaultVersionList, "all"].map((version) => [
-    version,
-    Object.fromEntries(VaultList.map((option) => [option, undefined])),
-  ])
-) as {
-  [version in VaultVersion | "all"]: {
-    [option in VaultOptions]: VaultAccount | undefined;
-  };
-};
 
 export const initialState: GlobalStore = {
   prices: Object.fromEntries(
@@ -103,7 +86,6 @@ export const initialState: GlobalStore = {
   ) as {
     [token in ERC20Token]: { fetched: boolean; balance: BigNumber };
   },
-  vaultAccounts: initialVaultAccounts,
   vaultPositionModal: {
     show: false,
     vaultVersion: VaultVersionList[0],

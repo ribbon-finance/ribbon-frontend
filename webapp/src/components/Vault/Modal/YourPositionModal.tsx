@@ -20,6 +20,7 @@ import {
 } from "shared/lib/utils/asset";
 import colors from "shared/lib/designSystem/colors";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
+
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
 import { BigNumber } from "ethers";
@@ -54,8 +55,7 @@ const YourPositionModal: React.FC = () => {
   const decimals = getAssetDecimals(asset);
   const Logo = getAssetLogo(asset);
 
-  const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
-  const { vaultAccounts } = useVaultAccounts(vaultOptions, vaultVersion);
+  const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const { data: stakingPoolData } = useStakingPoolData(vaultOption);
 
   const [mode, setMode] = useState<ModeType>(ModeList[0]);

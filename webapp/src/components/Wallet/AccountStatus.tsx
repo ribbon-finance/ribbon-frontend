@@ -41,6 +41,7 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import { truncateAddress } from "shared/lib/utils/address";
 import { useVaultData } from "shared/lib/hooks/vaultDataContext";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
+
 import { isPracticallyZero } from "shared/lib/utils/math";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import YourPosition from "shared/lib/components/Vault/YourPosition";
@@ -302,12 +303,8 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   const { status, vaultLimit } = useVaultData(
     vault?.vaultOption || VaultList[0]
   );
-  const vaultOptions = useMemo(
-    () => (vault ? [vault.vaultOption] : []),
-    [vault]
-  );
   const { vaultAccounts: v1VaultAccounts, loading: v1VaultAccountsLoading } =
-    useVaultAccounts(vaultOptions, "v1");
+    useVaultAccounts("v1");
 
   // Track clicked area outside of desktop menu
   const desktopMenuRef = useRef(null);

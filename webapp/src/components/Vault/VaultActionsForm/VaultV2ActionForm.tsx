@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import styled from "styled-components";
 
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
+
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import VaultV2MigrationForm from "./v2/VaultV2MigrationForm";
@@ -37,12 +38,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
   vaultOption,
   onFormSubmit,
 }) => {
-  const vaultOptions = useMemo(() => [vaultOption], [vaultOption]);
-  const { vaultAccounts: v1VaultAccounts } = useVaultAccounts(
-    vaultOptions,
-    "v1",
-    { poll: true }
-  );
+  const { vaultAccounts: v1VaultAccounts } = useVaultAccounts("v1");
   const {
     data: { asset, decimals, depositBalanceInAsset },
   } = useV2VaultData(vaultOption);
