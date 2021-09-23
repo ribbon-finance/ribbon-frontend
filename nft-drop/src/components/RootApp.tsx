@@ -8,9 +8,11 @@ import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal"
 import Header from "./Header/Header";
 import Homepage from "../pages/Homepage/Homepage";
 import Footer from "./Footer/Footer";
+import InfoModal from "./Shared/InfoModal";
+import colors from "shared/lib/designSystem/colors";
 
 const Root = styled.div<{ screenHeight: number }>`
-  background-color: #1c1a19;
+  background-color: ${colors.background};
   min-height: ${(props) =>
     props.screenHeight ? `${props.screenHeight}px` : `100vh`};
 `;
@@ -22,6 +24,7 @@ const RootApp = () => {
   return (
     <Root id="appRoot" screenHeight={screenHeight}>
       <WalletConnectModal />
+      <InfoModal />
       <Router>
         <Header />
 

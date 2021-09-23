@@ -2,6 +2,7 @@ import React, { RefAttributes } from "react";
 import styled from "styled-components";
 import { Modal } from "react-bootstrap";
 import { AnimatePresence, HTMLMotionProps, motion } from "framer-motion";
+
 import { BaseModal, BaseModalHeader } from "../../designSystem";
 import theme from "../../designSystem/theme";
 import colors from "../../designSystem/colors";

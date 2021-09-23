@@ -1,18 +1,15 @@
-import { useState } from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
-import { useRouteMatch } from "react-router-dom";
 
 import HeaderLogo from "./HeaderLogo";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
-import { Title, BaseLink } from "shared/lib/designSystem";
-import MenuButton from "shared/lib/components/Common/MenuButton";
-import { NavItemProps, MobileMenuOpenProps } from "./types";
+import { Title } from "shared/lib/designSystem";
 import AccountStatus from "../Wallet/AccountStatus";
 import theme from "shared/lib/designSystem/theme";
-import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
+import { useNFTDropGlobalState } from "../../store/store";
 
-const HeaderContainer = styled.div<MobileMenuOpenProps>`
+const HeaderContainer = styled.div`
   height: ${theme.header.height}px;
   position: sticky;
   top: 0;
@@ -20,31 +17,13 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
   background: rgba(255, 255, 255, 0.01);
 
   @media (max-width: ${sizes.lg}px) {
+    flex-direction: column;
+    height: unset;
     padding: 16px 24px;
     border-bottom: none;
   }
 
-  z-index: ${(props) => (props.isMenuOpen ? 50 : 10)};
-
-  // The backdrop for the menu does not show up if we enable the backdrop-filter
-  // for the header nav. To get around that, just set 'none'
-  ${(props) => {
-    if (props.isMenuOpen) {
-      return null;
-    }
-
-    return `
-      backdrop-filter: blur(40px);
-      /**
-       * Firefox desktop come with default flag to have backdrop-filter disabled
-       * Firefox Android also currently has bug where backdrop-filter is not being applied
-       * More info: https://bugzilla.mozilla.org/show_bug.cgi?id=1178765
-       **/
-      @-moz-document url-prefix() {
-        background-color: rgba(0, 0, 0, 0.9);
-      }
-    `;
-  }}
+  z-index: 10;
 `;
 
 const LogoContainer = styled.div`
@@ -54,10 +33,11 @@ const LogoContainer = styled.div`
 
   @media (max-width: ${sizes.lg}px) {
     padding-left: 0;
+    margin-left: auto;
   }
 `;
 
-const HeaderAbsoluteContainer = styled.div`
+const DesktopHeaderAbsoluteContainer = styled.div`
   position: absolute;
   display: flex;
   height: 100%;
@@ -69,23 +49,28 @@ const HeaderAbsoluteContainer = styled.div`
   }
 `;
 
+const MobileInfoContainer = styled.div`
+  display: none;
+
+  @media (max-width: ${sizes.lg}px) {
+    display: flex;
+    margin-top: 48px;
+  }
+`;
+
 const LinksContainer = styled.div`
   display: flex;
 `;
 
-const NavItem = styled.div<NavItemProps>`
+const NavItem = styled.div`
   display: flex;
   align-items: center;
   padding: 0px 28px;
   height: 100%;
-  opacity: ${(props) => (props.isSelected ? "1" : "0.48")};
+  opacity: 0.48;
 
   &:hover {
-    opacity: ${(props) => (props.isSelected ? theme.hover.opacity : "1")};
-  }
-
-  @media (max-width: ${sizes.lg}px) {
-    padding: 0px 0px 40px 48px;
+    opacity: 1;
   }
 `;
 
@@ -95,111 +80,38 @@ const NavLinkText = styled(Title)`
   line-height: 20px;
 
   @media (max-width: ${sizes.lg}px) {
-    font-size: 24px;
-  }
-`;
-
-const SecondaryMobileNavItem = styled.div`
-  display: none;
-
-  @media (max-width: ${sizes.lg}px) {
-    display: flex;
-    padding: 0px 0px 24px 48px;
-  }
-`;
-
-const SecondaryMobileNavLinktext = styled(Title)`
-  font-size: 18px;
-  color: rgba(255, 255, 255, 0.48);
-`;
-
-const MobileOnly = styled.div`
-  display: none;
-
-  @media (max-width: ${sizes.lg}px) {
-    display: flex;
+    font-size: 16px;
+    line-height: 24px;
   }
 `;
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [, setShowInfoModal] = useNFTDropGlobalState("shwoInfoModal");
 
-  const onToggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const renderLinkItem = (
-    title: string,
-    to: string,
-    isSelected: boolean,
-    primary: boolean = true,
-    external: boolean = false
-  ) => {
-    return (
-      <BaseLink
-        to={to}
-        target={external ? "_blank" : undefined}
-        rel={external ? "noreferrer noopener" : undefined}
-        onClick={() => {
-          if (!external) setIsMenuOpen(false);
-        }}
-      >
-        {primary ? (
-          <NavItem isSelected={isSelected}>
-            <NavLinkText>{title}</NavLinkText>
-          </NavItem>
-        ) : (
-          <SecondaryMobileNavItem>
-            <SecondaryMobileNavLinktext>{title}</SecondaryMobileNavLinktext>
-          </SecondaryMobileNavItem>
-        )}
-      </BaseLink>
-    );
-  };
+  const links = useMemo(
+    () => (
+      <LinksContainer>
+        <NavItem role="button" onClick={() => setShowInfoModal(true)}>
+          <NavLinkText>INFO</NavLinkText>
+        </NavItem>
+      </LinksContainer>
+    ),
+    [setShowInfoModal]
+  );
 
   return (
-    <HeaderContainer
-      isMenuOpen={isMenuOpen}
-      className="d-flex align-items-center"
-    >
+    <HeaderContainer className="d-flex align-items-center">
       {/* LOGO */}
       <LogoContainer>
         <HeaderLogo />
       </LogoContainer>
 
       {/* LINKS */}
-      <HeaderAbsoluteContainer>
-        <LinksContainer>
-          {renderLinkItem(
-            "HOME",
-            "/",
-            Boolean(useRouteMatch({ path: "/", exact: true }))
-          )}
-        </LinksContainer>
-      </HeaderAbsoluteContainer>
+      <DesktopHeaderAbsoluteContainer>{links}</DesktopHeaderAbsoluteContainer>
+
+      <MobileInfoContainer>{links}</MobileInfoContainer>
 
       <AccountStatus variant="desktop" />
-
-      {/* MOBILE MENU */}
-      <MobileOnly>
-        <MenuButton onToggle={onToggleMenu} isOpen={isMenuOpen} />
-        <MobileOverlayMenu
-          className="flex-column align-items-center justify-content-center"
-          isMenuOpen={isMenuOpen}
-          onClick={onToggleMenu}
-          boundingDivProps={{
-            style: {
-              marginRight: "auto",
-            },
-          }}
-        >
-          {renderLinkItem(
-            "HOME",
-            "/",
-            Boolean(useRouteMatch({ path: "/", exact: true }))
-          )}
-        </MobileOverlayMenu>
-      </MobileOnly>
     </HeaderContainer>
   );
 };
