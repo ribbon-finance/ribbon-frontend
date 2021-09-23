@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import HeaderLogo from "./HeaderLogo";
@@ -15,13 +15,6 @@ const HeaderContainer = styled.div`
   top: 0;
   border-bottom: 1px solid ${colors.border};
   background: rgba(255, 255, 255, 0.01);
-
-  @media (max-width: ${sizes.lg}px) {
-    flex-direction: column;
-    height: unset;
-    padding: 16px 24px;
-    border-bottom: none;
-  }
 
   z-index: 10;
 `;
@@ -49,19 +42,6 @@ const DesktopHeaderAbsoluteContainer = styled.div`
   }
 `;
 
-const MobileInfoContainer = styled.div`
-  display: none;
-
-  @media (max-width: ${sizes.lg}px) {
-    display: flex;
-    margin-top: 48px;
-  }
-`;
-
-const LinksContainer = styled.div`
-  display: flex;
-`;
-
 const NavItem = styled.div`
   display: flex;
   align-items: center;
@@ -78,26 +58,10 @@ const NavLinkText = styled(Title)`
   letter-spacing: 1.5px;
   font-size: 14px;
   line-height: 20px;
-
-  @media (max-width: ${sizes.lg}px) {
-    font-size: 16px;
-    line-height: 24px;
-  }
 `;
 
 const Header = () => {
   const [, setShowInfoModal] = useNFTDropGlobalState("shwoInfoModal");
-
-  const links = useMemo(
-    () => (
-      <LinksContainer>
-        <NavItem role="button" onClick={() => setShowInfoModal(true)}>
-          <NavLinkText>INFO</NavLinkText>
-        </NavItem>
-      </LinksContainer>
-    ),
-    [setShowInfoModal]
-  );
 
   return (
     <HeaderContainer className="d-flex align-items-center">
@@ -107,9 +71,11 @@ const Header = () => {
       </LogoContainer>
 
       {/* LINKS */}
-      <DesktopHeaderAbsoluteContainer>{links}</DesktopHeaderAbsoluteContainer>
-
-      <MobileInfoContainer>{links}</MobileInfoContainer>
+      <DesktopHeaderAbsoluteContainer>
+        <NavItem role="button" onClick={() => setShowInfoModal(true)}>
+          <NavLinkText>INFO</NavLinkText>
+        </NavItem>
+      </DesktopHeaderAbsoluteContainer>
 
       <AccountStatus variant="desktop" />
     </HeaderContainer>

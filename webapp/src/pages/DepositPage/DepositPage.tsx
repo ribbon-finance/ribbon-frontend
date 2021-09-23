@@ -84,7 +84,7 @@ const HeroText = styled(Title)`
   margin-bottom: 24px;
 `;
 
-const liveryAnimation = (position: "top" | "bottom") => keyframes`
+const livelyAnimation = (position: "top" | "bottom") => keyframes`
   0% {
     background-position-x: ${position === "top" ? 0 : 100}%;
   }
@@ -111,7 +111,7 @@ const LiveryBar = styled.div<{ color: string; position: "top" | "bottom" }>`
     ${props.color}00 85%
   )`};
   background-size: 200%;
-  animation: 10s ${(props) => liveryAnimation(props.position)} linear infinite;
+  animation: 10s ${(props) => livelyAnimation(props.position)} linear infinite;
 `;
 
 const AttributePill = styled.div<{ color: string }>`
