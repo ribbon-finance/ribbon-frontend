@@ -1,19 +1,16 @@
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 
-import { NFTDropData } from "../models/nft";
+import { defaultNFTDropData, NFTDropData } from "../models/nft";
 
-const useNFTDropData = () => {
+const useFetchNFTDropData = () => {
   const { active } = useWeb3React();
-  const [nftDropData, setNFTDropData] = useState<NFTDropData>({
-    claimed: false,
-  });
+  const [nftDropData, setNFTDropData] =
+    useState<NFTDropData>(defaultNFTDropData);
 
   useEffect(() => {
     if (!active) {
-      setNFTDropData({
-        claimed: false,
-      });
+      setNFTDropData(defaultNFTDropData);
       return;
     }
 
@@ -27,4 +24,4 @@ const useNFTDropData = () => {
   return nftDropData;
 };
 
-export default useNFTDropData;
+export default useFetchNFTDropData;

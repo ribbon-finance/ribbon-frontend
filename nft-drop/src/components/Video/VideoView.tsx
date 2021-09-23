@@ -2,13 +2,11 @@ import React from "react";
 
 import { Subtitle } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import { HomepageView } from "../../pages/Homepage/Homepage";
+import { useNFTDropGlobalState } from "../../store/store";
 
-interface VideoViewProps {
-  setViews: React.Dispatch<React.SetStateAction<HomepageView>>;
-}
+const VideoView: React.FC = () => {
+  const [, setViews] = useNFTDropGlobalState("homepageView");
 
-const VideoView: React.FC<VideoViewProps> = ({ setViews }) => {
   return (
     <div>
       <Subtitle

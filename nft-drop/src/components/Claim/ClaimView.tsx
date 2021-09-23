@@ -6,16 +6,17 @@ import NFTFrame from "./NFTFrame";
 import sizes from "shared/lib/designSystem/sizes";
 import { Title } from "shared/lib/designSystem";
 import { useNFTDropGlobalState } from "../../store/store";
+import theme from "shared/lib/designSystem/theme";
 
 const MobileInfoButton = styled.div`
   display: none;
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.md}px) {
     display: flex;
     justify-content: center;
     position: absolute;
     top: 24px;
-    opacity: 0.48;
+    opacity: ${theme.hover.opacityLow};
 
     &:hover {
       opacity: 1;

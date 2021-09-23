@@ -1,5 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import styled, { keyframes } from "styled-components";
 
 import { PrimaryText } from "shared/lib/designSystem";
@@ -8,7 +8,8 @@ import {
   getThemeColorFromColorway,
 } from "../../utils/colors";
 import Logo from "shared/lib/assets/icons/logo";
-import useNFTDropData from "../../hooks/useNFTDropData";
+import { useNFTDropData } from "../../hooks/nftDataContext";
+import { useNFTDropGlobalState } from "../../store/store";
 
 const Frame = styled.div<{ width: number; height: number }>`
   display: flex;
@@ -73,6 +74,11 @@ interface NFTFrameProps {
 const NFTFrame: React.FC<NFTFrameProps> = ({ height, width }) => {
   const { active } = useWeb3React();
   const nftDropData = useNFTDropData();
+  const [, setClaimButtonWidth] = useNFTDropGlobalState("claimButtonWidth");
+
+  useEffect(() => {
+    setClaimButtonWidth(width);
+  }, [setClaimButtonWidth, width]);
 
   const content = useMemo(() => {
     if (!active) {

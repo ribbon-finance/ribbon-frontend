@@ -24,7 +24,7 @@ const LogoContainer = styled.div`
   margin-right: auto;
   z-index: 1000;
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.md}px) {
     padding-left: 0;
     margin-left: auto;
   }
@@ -37,7 +37,7 @@ const DesktopHeaderAbsoluteContainer = styled.div`
   width: 100%;
   justify-content: center;
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.md}px) {
     display: none;
   }
 `;

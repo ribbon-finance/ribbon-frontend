@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { Container } from "react-bootstrap";
 import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
@@ -8,17 +8,15 @@ import ClaimView from "../../components/Claim/ClaimView";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
 import theme from "shared/lib/designSystem/theme";
+import { useNFTDropGlobalState } from "../../store/store";
 
 const ContentContainer = styled(motion.div)`
   display: flex;
   height: 100%;
 `;
 
-const HomepageViewList = ["video", "claim"] as const;
-export type HomepageView = typeof HomepageViewList[number];
-
 const Homepage = () => {
-  const [views, setViews] = useState<HomepageView>(HomepageViewList[0]);
+  const [views] = useNFTDropGlobalState("homepageView");
   const { height, width } = useScreenSize();
 
   const containerHeight = useMemo(() => {
@@ -32,7 +30,7 @@ const Homepage = () => {
   const content = useMemo(() => {
     switch (views) {
       case "video":
-        return <VideoView setViews={setViews} />;
+        return <VideoView />;
       case "claim":
         return <ClaimView />;
     }

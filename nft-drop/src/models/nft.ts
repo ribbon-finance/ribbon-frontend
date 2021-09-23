@@ -4,3 +4,7 @@ export interface NFTDropData {
   tokenId?: number;
   proof?: string;
 }
+
+export const defaultNFTDropData = {
+  claimed: false,
+};
