@@ -8,6 +8,7 @@ import {
   getThemeColorFromColorway,
 } from "../../utils/colors";
 import Logo from "shared/lib/assets/icons/logo";
+import useNFTDropData from "../../hooks/useNFTDropData";
 
 const Frame = styled.div<{ width: number; height: number }>`
   display: flex;
@@ -71,6 +72,7 @@ interface NFTFrameProps {
 
 const NFTFrame: React.FC<NFTFrameProps> = ({ height, width }) => {
   const { active } = useWeb3React();
+  const nftDropData = useNFTDropData();
 
   const content = useMemo(() => {
     if (!active) {
@@ -81,14 +83,20 @@ const NFTFrame: React.FC<NFTFrameProps> = ({ height, width }) => {
       );
     }
 
-    // return <></>;
-    return <Logo width="37.5%" color={getLogoColorFromColorway(1)} />;
-  }, [active]);
+    if (nftDropData.colorway !== undefined) {
+      return (
+        <Logo
+          width="37.5%"
+          color={getLogoColorFromColorway(nftDropData.colorway)}
+        />
+      );
+    }
+  }, [active, nftDropData.colorway]);
 
   return (
     <Frame height={height} width={width}>
       <FrameBar
-        color={getThemeColorFromColorway(1)}
+        color={getThemeColorFromColorway(nftDropData.colorway)}
         position="top"
         height={height / 55}
       />
@@ -96,7 +104,7 @@ const NFTFrame: React.FC<NFTFrameProps> = ({ height, width }) => {
         {content}
       </div>
       <FrameBar
-        color={getThemeColorFromColorway(1)}
+        color={getThemeColorFromColorway(nftDropData.colorway)}
         position="bottom"
         height={height / 55}
       />
