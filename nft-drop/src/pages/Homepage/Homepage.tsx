@@ -38,7 +38,7 @@ const Homepage = () => {
 
   return (
     <>
-      <Container style={{ height: containerHeight }}>
+      <Container style={{ height: containerHeight }} fluid className="p-0">
         <AnimatePresence exitBeforeEnter>
           <ContentContainer
             key={views}

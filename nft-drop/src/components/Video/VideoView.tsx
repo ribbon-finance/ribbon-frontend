@@ -1,24 +1,52 @@
 import React from "react";
+import Marquee from "react-fast-marquee/dist";
+import styled from "styled-components";
 
-import { Subtitle } from "shared/lib/designSystem";
-import colors from "shared/lib/designSystem/colors";
-import { useNFTDropGlobalState } from "../../store/store";
+import { Title } from "shared/lib/designSystem";
+import { PlayIcon } from "shared/lib/assets/icons/icons";
+
+const MarqueeContainer = styled.div`
+  position: absolute;
+  top: calc(50% - 60px);
+  left: 0;
+  width: 100vw;
+  z-index: 1;
+`;
+
+const PlayButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: calc(50% - 80px);
+  left: calc(50% - 80px);
+  width: 160px;
+  height: 160px;
+  border-radius: 320px;
+  backdrop-filter: blur(40px);
+  background: rgba(255, 255, 255, 0.04);
+  z-index: 2;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+`;
 
 const VideoView: React.FC = () => {
-  const [, setViews] = useNFTDropGlobalState("homepageView");
-
   return (
-    <div>
-      <Subtitle
-        fontSize={14}
-        lineHeight={20}
-        color={colors.text}
-        role="button"
-        onClick={() => setViews("claim")}
-      >
-        Skip Video
-      </Subtitle>
-    </div>
+    <>
+      <PlayButton role="button">
+        <PlayIcon />
+      </PlayButton>
+      <MarqueeContainer>
+        <Marquee gradient={false} speed={100}>
+          <Title fontSize={120} lineHeight={120} className="mr-5">
+            HIT PLAY // HIT PLAY // HIT PLAY // HIT PLAY // HIT PLAY //
+          </Title>
+        </Marquee>
+      </MarqueeContainer>
+    </>
   );
 };
 

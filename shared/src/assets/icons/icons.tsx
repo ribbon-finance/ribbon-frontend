@@ -310,3 +310,19 @@ export const MigrateIcon: React.FC<SVGPropsWithColor> = ({
     <rect x="1" y="25" width="20" height="2" rx="1" fill={color || "white"} />
   </svg>
 );
+
+export const PlayIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
+  <svg
+    width="60"
+    height="60"
+    viewBox="0 0 60 60"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M13 7.32666C13 4.162 16.501 2.25063 19.163 3.96195L54.4327 26.6353C56.882 28.2098 56.882 31.7902 54.4327 33.3647L19.163 56.0381C16.501 57.7494 13 55.838 13 52.6733V7.32666Z"
+      fill={color || "#FC0A54"}
+    />
+  </svg>
+);
