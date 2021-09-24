@@ -1,15 +1,11 @@
 import React, { useCallback } from "react";
 import styled, { css, keyframes } from "styled-components";
 
-import {
-  BaseModalContentColumn,
-  PrimaryText,
-  Title,
-} from "shared/lib/designSystem";
-import colors from "shared/lib/designSystem/colors";
-import theme from "shared/lib/designSystem/theme";
-import { Waves } from "shared/lib/assets";
-import Logo from "shared/lib/assets/icons/logo";
+import { Waves } from "../../assets";
+import Logo from "../../assets/icons/logo";
+import { BaseModalContentColumn, PrimaryText, Title } from "../../designSystem";
+import colors from "../../designSystem/colors";
+import theme from "../../designSystem/theme";
 import Lightning from "./Lightning";
 
 const FloatingContainer = styled.div`
@@ -171,14 +167,10 @@ const PoleLogo = styled(Logo)`
 
 interface RBNClaimModalContentProps {
   step: "claim" | "claiming" | "claimed";
-  setStep: React.Dispatch<
-    React.SetStateAction<"info" | "claim" | "claiming" | "claimed">
-  >;
 }
 
 const RBNClaimModalContent: React.FC<RBNClaimModalContentProps> = ({
   step,
-  setStep,
 }) => {
   const renderLightning = useCallback(
     () => (

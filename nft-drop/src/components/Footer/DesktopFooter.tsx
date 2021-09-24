@@ -43,6 +43,7 @@ const DesktopFooter = () => {
   const nftDropData = useNFTDropData();
   const [views, setViews] = useNFTDropGlobalState("homepageView");
   const [buttonWidth] = useNFTDropGlobalState("claimButtonWidth");
+  const [, setShowClaimModal] = useNFTDropGlobalState("showClaimModal");
 
   const [footerContentId, footerContent] = useMemo(() => {
     switch (views) {
@@ -64,8 +65,8 @@ const DesktopFooter = () => {
             1,
             <div>
               <StyledActionButton
-                className="btn "
-                onClick={() => console.log("lol")}
+                className="btn"
+                onClick={() => setShowClaimModal(true)}
                 disabled={!active}
                 color={getThemeColorFromColorway(
                   !active ? 0 : nftDropData.colorway
@@ -85,7 +86,14 @@ const DesktopFooter = () => {
           </PrimaryText>,
         ];
     }
-  }, [active, buttonWidth, nftDropData.colorway, setViews, views]);
+  }, [
+    active,
+    buttonWidth,
+    nftDropData.colorway,
+    setShowClaimModal,
+    setViews,
+    views,
+  ]);
 
   return (
     <FooterContainer>

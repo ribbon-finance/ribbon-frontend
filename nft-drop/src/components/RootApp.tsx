@@ -10,6 +10,7 @@ import Homepage from "../pages/Homepage/Homepage";
 import Footer from "./Footer/Footer";
 import InfoModal from "./Shared/InfoModal";
 import colors from "shared/lib/designSystem/colors";
+import ClaimModal from "./Claim/ClaimModal";
 
 const Root = styled.div<{ screenHeight: number }>`
   background-color: ${colors.background};
@@ -25,6 +26,7 @@ const RootApp = () => {
     <Root id="appRoot" screenHeight={screenHeight}>
       <WalletConnectModal />
       <InfoModal />
+      <ClaimModal />
       <Router>
         <Header />
 
