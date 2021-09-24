@@ -1,18 +1,16 @@
 import React from "react";
 
-type SVGProps = React.SVGAttributes<SVGElement>;
+type SVGProps = React.SVGAttributes<SVGElement & { color?: string }>;
 
-const Logo: React.FC<SVGProps> = (props) => (
+const Logo: React.FC<SVGProps> = ({ color, ...props }) => (
   <svg
-    width="96"
-    height="96"
     viewBox="0 0 96 96"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
     <g clipPath="url(#clip0)">
-      <circle cx="48" cy="48" r="48" fill="#FF385C" />
+      <circle cx="48" cy="48" r="48" fill={color || "#FF385C"} />
       <path
         d="M3 71.9068L47.8065 25L71.61 49.5036L47.5 75.5"
         stroke="white"

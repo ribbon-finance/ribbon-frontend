@@ -1,5 +1,6 @@
 const theme = {
   hover: {
+    opacityLow: 0.48,
     opacity: 0.64,
     opacityHigher: 0.84,
   },

@@ -18,7 +18,7 @@ import { ActionButton } from "shared/lib/components/Common/buttons";
 import useStakingReward from "shared/lib/hooks/useStakingReward";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
-import RBNClaimModalContent from "../../Common/RBNClaimModalContent";
+import RBNClaimModalContent from "shared/lib/components/Common/RBNClaimModalContent";
 import { getVaultColor } from "shared/lib/utils/vault";
 import ModalContentExtra from "shared/lib/components/Common/ModalContentExtra";
 import BasicModal from "shared/lib/components/Common/BasicModal";
@@ -246,7 +246,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
           </>
         );
       default:
-        return <RBNClaimModalContent step={step} setStep={setStep} />;
+        return <RBNClaimModalContent step={step} />;
     }
   }, [
     step,

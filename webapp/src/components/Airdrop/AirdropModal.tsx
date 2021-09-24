@@ -3,7 +3,7 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import AirdropInfo from "./AirdropInfo";
-import RBNClaimModalContent from "../Common/RBNClaimModalContent";
+import RBNClaimModalContent from "shared/lib/components/Common/RBNClaimModalContent";
 import useMerkleDistributor from "../../hooks/useMerkleDistributor";
 import useAirdrop from "../../hooks/useAirdrop";
 import usePendingTransactions from "../../hooks/usePendingTransactions";
@@ -115,7 +115,7 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
       {step === "info" ? (
         <AirdropInfo onClaim={claimAirdrop} />
       ) : (
-        <RBNClaimModalContent step={step} setStep={setStep} />
+        <RBNClaimModalContent step={step} />
       )}
     </BasicModal>
   );

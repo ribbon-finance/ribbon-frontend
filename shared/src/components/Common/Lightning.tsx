@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import styled, { css, keyframes } from "styled-components";
 
-import colors from "shared/lib/designSystem/colors";
+import colors from "../../designSystem/colors";
 
 const lightningEffect = keyframes`
   0% {
