@@ -9,7 +9,15 @@ import useRibbonOG from "./useRibbonOG";
 
 const merkle = require("../data/merkle.json");
 
-const useFetchNFTDropData = () => {
+const useFetchNFTDropData = (
+  {
+    poll,
+    pollingFrequency,
+  }: {
+    poll: boolean;
+    pollingFrequency: number;
+  } = { poll: true, pollingFrequency: 10000 }
+) => {
   const { active, account: web3Account } = useWeb3React();
   const [nftDropData, setNFTDropData] =
     useState<NFTDropData>(defaultNFTDropData);
@@ -41,8 +49,21 @@ const useFetchNFTDropData = () => {
   }, [account, active, contract]);
 
   useEffect(() => {
-    fetchNFTDropData();
-  }, [fetchNFTDropData]);
+    // eslint-disable-next-line no-undef
+    let pollInterval: NodeJS.Timeout | null = null;
+    if (poll) {
+      fetchNFTDropData();
+      pollInterval = setInterval(fetchNFTDropData, pollingFrequency);
+    } else {
+      fetchNFTDropData();
+    }
+
+    return () => {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+      }
+    };
+  }, [fetchNFTDropData, poll, pollingFrequency]);
 
   return nftDropData;
 };

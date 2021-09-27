@@ -3,7 +3,6 @@ import { useCallback } from "react";
 import { useWeb3React } from "@web3-react/core";
 
 import RBNClaimModalContent from "shared/lib/components/Common/RBNClaimModalContent";
-import { setTimeout } from "timers";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { useNFTDropGlobalState } from "../../store/store";
 import { useNFTDropData } from "../../hooks/nftDataContext";
@@ -20,19 +19,33 @@ const ClaimModal = () => {
   const { provider } = useWeb3Context();
   const nftDropData = useNFTDropData();
   const contract = useRibbonOG();
+
   const [show, setShow] = useNFTDropGlobalState("showClaimModal");
   const [step, setStep] = useState<"claim" | "claiming" | "claimed">("claim");
 
   const onClaim = useCallback(async () => {
     if (!active) {
+      setShow(false);
       return;
     }
-    const tx = await contract.claim(nftDropData.tokenId, nftDropData.proof);
-    setStep("claiming");
 
-    await provider.waitForTransaction(tx.hash);
-    setStep("claimed");
-  }, [active, contract, provider, nftDropData.proof, nftDropData.tokenId]);
+    try {
+      const tx = await contract.claim(nftDropData.tokenId, nftDropData.proof);
+      setStep("claiming");
+
+      await provider.waitForTransaction(tx.hash);
+      setStep("claimed");
+    } catch (_) {
+      setShow(false);
+    }
+  }, [
+    active,
+    contract,
+    provider,
+    nftDropData.proof,
+    nftDropData.tokenId,
+    setShow,
+  ]);
 
   // Trigger wallet approval on modal show
   useEffect(() => {

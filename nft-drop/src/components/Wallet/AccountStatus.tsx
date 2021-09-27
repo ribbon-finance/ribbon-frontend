@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { setTimeout } from "timers";
@@ -24,8 +30,18 @@ import useOutsideAlerter from "shared/lib/hooks/useOutsideAlerter";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import { truncateAddress } from "shared/lib/utils/address";
+import { useNFTDropData } from "../../hooks/nftDataContext";
+import { useNFTDropGlobalState } from "../../store/store";
+import { getOGNFTOpenseaURI } from "../../constants/constants";
+import { getThemeColorFromColorway } from "../../utils/colors";
+import { ExternalIcon } from "shared/lib/assets/icons/icons";
+import { ActionButton } from "shared/lib/components/Common/buttons";
 
+const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
+const claimButtonWidth = 30;
+const claimButtonMarginLeft =
+  100 - walletButtonMarginLeft * 2 - walletButtonWidth - claimButtonWidth;
 
 const WalletContainer = styled.div<AccountStatusVariantProps>`
   justify-content: center;
@@ -101,6 +117,16 @@ const WalletButtonText = styled(Title)<WalletStatusProps>`
 
     return `color: ${colors.green}`;
   }}
+`;
+
+const ClaimButton = styled(ActionButton)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: ${claimButtonMarginLeft}%;
+  width: ${claimButtonWidth}%;
+  height: 48px;
+  border-radius: 8px;
 `;
 
 const WalletDesktopMenu = styled.div<MenuStateProps>`
@@ -230,6 +256,10 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
     active,
     account,
   } = useWeb3React();
+  const nftDropData = useNFTDropData();
+
+  const [, setShowClaimModal] = useNFTDropGlobalState("showClaimModal");
+  const [views] = useNFTDropGlobalState("homepageView");
   const [, setShowConnectModal] = useConnectWalletModal();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
@@ -338,18 +368,47 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
     return <WalletCopyIcon className="far fa-clone" state={copyState} />;
   };
 
+  const showActionButton = useMemo(
+    () => views === "claim" && Boolean(nftDropData.tokenId),
+    [nftDropData.tokenId, views]
+  );
+
   return (
     <>
       {/* Main Button and Desktop Menu */}
       <WalletContainer variant={variant} ref={desktopMenuRef}>
         <WalletButton
           variant={variant}
+          showInvestButton={showActionButton}
           connected={active}
           role="button"
           onClick={handleButtonClick}
         >
           {renderButtonContent()}
         </WalletButton>
+        {showActionButton && (
+          <ClaimButton
+            className="btn"
+            onClick={() =>
+              nftDropData.claimed
+                ? window.open(getOGNFTOpenseaURI(nftDropData.tokenId!))?.focus()
+                : setShowClaimModal(true)
+            }
+            color={getThemeColorFromColorway(nftDropData.colorway)}
+          >
+            {nftDropData.claimed ? (
+              <>
+                VIEW{" "}
+                <ExternalIcon
+                  color={getThemeColorFromColorway(nftDropData.colorway)}
+                  className="ml-2"
+                />
+              </>
+            ) : (
+              "CLAIM NFT"
+            )}
+          </ClaimButton>
+        )}
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>
           {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
           {renderMenuItem(
