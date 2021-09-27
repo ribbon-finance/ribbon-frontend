@@ -92,6 +92,7 @@ const NFTFrame: React.FC<NFTFrameProps> = ({ height, width }) => {
     if (nftDropData.colorway !== undefined) {
       return (
         <Logo
+          key={nftDropData.colorway || "null"}
           width="37.5%"
           color={getLogoColorFromColorway(nftDropData.colorway)}
         />

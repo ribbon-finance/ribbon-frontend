@@ -167,22 +167,57 @@ const PoleLogo = styled(Logo)`
 
 interface RBNClaimModalContentProps {
   step: "claim" | "claiming" | "claimed";
+  title?: string;
+  themeColor?: string;
 }
 
 const RBNClaimModalContent: React.FC<RBNClaimModalContentProps> = ({
   step,
+  title,
+  themeColor,
+  children,
 }) => {
   const renderLightning = useCallback(
     () => (
       <>
-        <Lightning height={16} width={80} left={183} top={48} />
-        <Lightning height={16} width={40} left={24} top={152} />
-        <Lightning height={16} width={24} left={319} top={232} />
-        <Lightning height={16} width={64} left={0} top={362} />
-        <Lightning height={16} width={16} left={276} top={426} />
+        <Lightning
+          themeColor={themeColor}
+          height={16}
+          width={80}
+          left={183}
+          top={48}
+        />
+        <Lightning
+          themeColor={themeColor}
+          height={16}
+          width={40}
+          left={24}
+          top={152}
+        />
+        <Lightning
+          themeColor={themeColor}
+          height={16}
+          width={24}
+          left={319}
+          top={232}
+        />
+        <Lightning
+          themeColor={themeColor}
+          height={16}
+          width={64}
+          left={0}
+          top={362}
+        />
+        <Lightning
+          themeColor={themeColor}
+          height={16}
+          width={16}
+          left={276}
+          top={426}
+        />
       </>
     ),
-    []
+    [themeColor]
   );
 
   switch (step) {
@@ -190,26 +225,24 @@ const RBNClaimModalContent: React.FC<RBNClaimModalContentProps> = ({
       return (
         <>
           <BaseModalContentColumn marginTop={8}>
-            <Title>CONFIRM Transaction</Title>
+            <Title>{title || "CONFIRM TRANSACTION"}</Title>
           </BaseModalContentColumn>
           <BaseModalContentColumn marginTop="auto">
             <PrimaryText className="text-center">
               Confirm this transaction in your wallet
             </PrimaryText>
           </BaseModalContentColumn>
-          <FloatingContainer>
-            <Pole />
-          </FloatingContainer>
+          <FloatingContainer>{children || <Pole />}</FloatingContainer>
         </>
       );
     case "claiming":
       return (
         <>
           <BaseModalContentColumn marginTop={8}>
-            <Title>PENDING Transaction</Title>
+            <Title>{title || "PENDING TRANSACTION"}</Title>
           </BaseModalContentColumn>
           <FloatingContainer>
-            <Pole type="animate" />
+            {children || <Pole type="animate" />}
           </FloatingContainer>
           <FloatingContainer>
             <ClaimingText>Claiming $RBN</ClaimingText>
@@ -223,7 +256,7 @@ const RBNClaimModalContent: React.FC<RBNClaimModalContentProps> = ({
       return (
         <>
           <BaseModalContentColumn marginTop={8}>
-            <Title>$RBN CLAIMED</Title>
+            <Title>{title || "$RBN CLAIMED"}</Title>
           </BaseModalContentColumn>
           <BaseModalContentColumn marginTop="auto">
             <PrimaryText className="text-center">
@@ -231,9 +264,11 @@ const RBNClaimModalContent: React.FC<RBNClaimModalContentProps> = ({
             </PrimaryText>
           </BaseModalContentColumn>
           <FloatingContainer>
-            <Pole type="ribbon">
-              <PoleLogo />
-            </Pole>
+            {children || (
+              <Pole type="ribbon">
+                <PoleLogo />
+              </Pole>
+            )}
           </FloatingContainer>
           {renderLightning()}
         </>
