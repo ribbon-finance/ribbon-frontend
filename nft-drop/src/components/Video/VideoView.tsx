@@ -2,16 +2,11 @@ import React from "react";
 import Marquee from "react-fast-marquee/dist";
 import styled from "styled-components";
 
-import { Title } from "shared/lib/designSystem";
+import { Subtitle, Title } from "shared/lib/designSystem";
 import { PlayIcon } from "shared/lib/assets/icons/icons";
-
-const MarqueeContainer = styled.div`
-  position: absolute;
-  top: calc(50% - 60px);
-  left: 0;
-  width: 100vw;
-  z-index: 1;
-`;
+import sizes from "shared/lib/designSystem/sizes";
+import { useNFTDropGlobalState } from "../../store/store";
+import colors from "shared/lib/designSystem/colors";
 
 const PlayButton = styled.div`
   display: flex;
@@ -33,7 +28,29 @@ const PlayButton = styled.div`
   }
 `;
 
+const MarqueeContainer = styled.div`
+  position: absolute;
+  top: calc(50% - 60px);
+  left: 0;
+  width: 100vw;
+  z-index: 1;
+`;
+
+const MobileSkipButtonContainer = styled.div`
+  display: none;
+  width: 100%;
+  position: absolute;
+  top: calc(50% + 80px + 48px);
+
+  @media (max-width: ${sizes.md}px) {
+    display: flex;
+    justify-content: center;
+  }
+`;
+
 const VideoView: React.FC = () => {
+  const [, setViews] = useNFTDropGlobalState("homepageView");
+
   return (
     <>
       <PlayButton role="button">
@@ -46,6 +63,17 @@ const VideoView: React.FC = () => {
           </Title>
         </Marquee>
       </MarqueeContainer>
+      <MobileSkipButtonContainer>
+        <Subtitle
+          fontSize={14}
+          lineHeight={20}
+          role="button"
+          onClick={() => setViews("claim")}
+          color={colors.text}
+        >
+          SKIP VIDEO
+        </Subtitle>
+      </MobileSkipButtonContainer>
     </>
   );
 };

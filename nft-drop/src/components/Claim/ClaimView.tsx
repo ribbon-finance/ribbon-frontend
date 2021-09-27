@@ -48,7 +48,11 @@ const ClaimView = () => {
           INFO
         </Title>
       </MobileInfoButton>
-      <NFTFrame height={frameHeight} width={frameWidth} />
+      <NFTFrame
+        height={frameHeight}
+        width={frameWidth}
+        animatingWidth={width}
+      />
     </div>
   );
 };
