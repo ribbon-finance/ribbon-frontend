@@ -2,7 +2,7 @@ export interface NFTDropData {
   claimed: boolean;
   colorway?: number;
   tokenId?: number;
-  proof?: string;
+  proof?: string[];
 }
 
 export const defaultNFTDropData = {

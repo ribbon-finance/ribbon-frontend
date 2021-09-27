@@ -55,7 +55,7 @@ const DesktopNFTFrameAnimatingBar: React.FC<DesktopNFTFrameAnimatingBarProps> =
 
     useEffect(() => {
       const animationInterval = setInterval(() => {
-        setActiveBarIndex((prev) => (prev + 1) % (count * 5));
+        setActiveBarIndex((prev) => (prev + 1) % (count * 5 || prev + 1));
       }, 1000 / count);
 
       return () => clearInterval(animationInterval);

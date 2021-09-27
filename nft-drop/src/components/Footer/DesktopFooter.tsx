@@ -11,6 +11,8 @@ import theme from "shared/lib/designSystem/theme";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { getThemeColorFromColorway } from "../../utils/colors";
 import { useNFTDropData } from "../../hooks/nftDataContext";
+import { ExternalIcon } from "shared/lib/assets/icons/icons";
+import { getOGNFTOpenseaURI } from "../../constants/constants";
 
 const FooterContainer = styled.div`
   display: flex;
@@ -33,6 +35,9 @@ const TextButton = styled(Subtitle)`
 `;
 
 const StyledActionButton = styled(ActionButton)<{ width: number }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-width: 150px;
   width: ${(props) => props.width}px;
   padding: 12px 64px;
@@ -66,14 +71,30 @@ const DesktopFooter = () => {
             <div>
               <StyledActionButton
                 className="btn"
-                onClick={() => setShowClaimModal(true)}
+                onClick={() =>
+                  nftDropData.claimed
+                    ? window
+                        .open(getOGNFTOpenseaURI(nftDropData.tokenId!))
+                        ?.focus()
+                    : setShowClaimModal(true)
+                }
                 disabled={!active}
                 color={getThemeColorFromColorway(
                   !active ? 0 : nftDropData.colorway
                 )}
                 width={buttonWidth}
               >
-                CLAIM NFT
+                {nftDropData.claimed ? (
+                  <>
+                    VIEW ON OPENSEA{" "}
+                    <ExternalIcon
+                      color={getThemeColorFromColorway(nftDropData.colorway)}
+                      className="ml-2"
+                    />
+                  </>
+                ) : (
+                  "CLAIM NFT"
+                )}
               </StyledActionButton>
             </div>,
           ];
@@ -86,14 +107,7 @@ const DesktopFooter = () => {
           </PrimaryText>,
         ];
     }
-  }, [
-    active,
-    buttonWidth,
-    nftDropData.colorway,
-    setShowClaimModal,
-    setViews,
-    views,
-  ]);
+  }, [active, buttonWidth, nftDropData, setShowClaimModal, setViews, views]);
 
   return (
     <FooterContainer>
