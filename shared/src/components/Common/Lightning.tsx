@@ -47,20 +47,16 @@ const LightningBar = styled.div<
 `;
 
 interface LightningProps extends React.HTMLAttributes<HTMLDivElement> {
-  theme?:
-    | "yield"
-    | "volatility"
-    | "principalProtection"
-    | "capitalAccumulation";
+  themeColor?: string;
 }
 
 const Lightning: React.FC<LightningProps & LightningBarProps> = ({
-  theme = "yield",
+  themeColor = colors.products.yield,
   ...props
 }) => {
   const color = useMemo(() => {
-    return Math.random() <= 0.6 ? colors.products[theme] : "white";
-  }, [theme]);
+    return Math.random() <= 0.6 ? themeColor : "white";
+  }, [themeColor]);
 
   const duration = useMemo(() => {
     return Math.random() * 3 + 1;

@@ -1,12 +1,15 @@
 import React, { useMemo, useRef } from "react";
 import styled from "styled-components";
+import { useWeb3React } from "@web3-react/core";
 
 import useElementSize from "shared/lib/hooks/useElementSize";
 import NFTFrame from "./NFTFrame";
 import sizes from "shared/lib/designSystem/sizes";
-import { Title } from "shared/lib/designSystem";
+import { SecondaryText, Title } from "shared/lib/designSystem";
 import { useNFTDropGlobalState } from "../../store/store";
 import theme from "shared/lib/designSystem/theme";
+import { useNFTDropData } from "../../hooks/nftDataContext";
+import colors from "shared/lib/designSystem/colors";
 
 const MobileInfoButton = styled.div`
   display: none;
@@ -24,7 +27,20 @@ const MobileInfoButton = styled.div`
   }
 `;
 
+const MobileNoClaimableText = styled(SecondaryText)<{ frameHeight: number }>`
+  display: none;
+
+  @media (max-width: ${sizes.md}px) {
+    display: block;
+    position: absolute;
+    top: calc(50% + ${(props) => props.frameHeight / 2}px + 24px);
+  }
+`;
+
 const ClaimView = () => {
+  const { active } = useWeb3React();
+  const nftDropData = useNFTDropData();
+
   const ref = useRef<HTMLDivElement>(null);
   const { height, width } = useElementSize(ref);
   const [, setShowInfoModal] = useNFTDropGlobalState("shwoInfoModal");
@@ -48,7 +64,21 @@ const ClaimView = () => {
           INFO
         </Title>
       </MobileInfoButton>
-      <NFTFrame height={frameHeight} width={frameWidth} />
+      <NFTFrame
+        height={frameHeight}
+        width={frameWidth}
+        animatingWidth={width}
+      />
+      {active && !nftDropData.tokenId ? (
+        <MobileNoClaimableText
+          frameHeight={frameHeight}
+          color={colors.primaryText}
+        >
+          Unfortunately, you don’t have a claimable NFT
+        </MobileNoClaimableText>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

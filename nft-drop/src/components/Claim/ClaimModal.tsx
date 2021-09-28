@@ -1,24 +1,51 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useCallback } from "react";
-import { useState } from "react";
+import { useWeb3React } from "@web3-react/core";
 
 import RBNClaimModalContent from "shared/lib/components/Common/RBNClaimModalContent";
-import { setTimeout } from "timers";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { useNFTDropGlobalState } from "../../store/store";
+import { useNFTDropData } from "../../hooks/nftDataContext";
+import {
+  getLogoColorFromColorway,
+  getThemeColorFromColorway,
+} from "../../utils/colors";
+import Logo from "shared/lib/assets/icons/logo";
+import useRibbonOG from "../../hooks/useRibbonOG";
+import { useWeb3Context } from "shared/lib/hooks/web3Context";
 
 const ClaimModal = () => {
+  const { active } = useWeb3React();
+  const { provider } = useWeb3Context();
+  const nftDropData = useNFTDropData();
+  const contract = useRibbonOG();
+
   const [show, setShow] = useNFTDropGlobalState("showClaimModal");
   const [step, setStep] = useState<"claim" | "claiming" | "claimed">("claim");
-  const [currentTx, setCurrentTx] = useState<string>();
 
-  const onClaim = useCallback(() => {
-    // Perform contract call and set claiming after that
-    setTimeout(() => {
-      setCurrentTx("0x29Cd242278018b719172e85D79DaB27691d07440");
+  const onClaim = useCallback(async () => {
+    if (!active) {
+      setShow(false);
+      return;
+    }
+
+    try {
+      const tx = await contract.claim(nftDropData.tokenId, nftDropData.proof);
       setStep("claiming");
-    }, 1500);
-  }, []);
+
+      await provider.waitForTransaction(tx.hash);
+      setStep("claimed");
+    } catch (_) {
+      setShow(false);
+    }
+  }, [
+    active,
+    contract,
+    provider,
+    nftDropData.proof,
+    nftDropData.tokenId,
+    setShow,
+  ]);
 
   // Trigger wallet approval on modal show
   useEffect(() => {
@@ -36,16 +63,6 @@ const ClaimModal = () => {
     });
   }, [show, onClaim]);
 
-  // Wait for current tx and set state accordingly
-  useEffect(() => {
-    if (currentTx) {
-      setTimeout(() => {
-        setCurrentTx(undefined);
-        setStep("claimed");
-      }, 1500);
-    }
-  }, [currentTx]);
-
   const onClose = useCallback(() => {
     setShow(false);
     if (step === "claimed") {
@@ -53,9 +70,36 @@ const ClaimModal = () => {
     }
   }, [setShow, step]);
 
+  const modalTitle = useMemo(() => {
+    switch (step) {
+      case "claiming":
+        return "TRANSACTION PENDING";
+      case "claimed":
+        return "LOGO CLAIMED";
+    }
+  }, [step]);
+
+  const modalContent = useMemo(() => {
+    if (step === "claimed") {
+      return (
+        <Logo
+          width={120}
+          height={120}
+          color={getLogoColorFromColorway(nftDropData.colorway)}
+        />
+      );
+    }
+  }, [nftDropData.colorway, step]);
+
   return (
     <BasicModal show={show} onClose={onClose} height={580}>
-      <RBNClaimModalContent step={step} />
+      <RBNClaimModalContent
+        step={step}
+        title={modalTitle}
+        themeColor={getThemeColorFromColorway(nftDropData.colorway)}
+      >
+        {modalContent}
+      </RBNClaimModalContent>
     </BasicModal>
   );
 };

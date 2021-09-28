@@ -1,15 +1,25 @@
 import colors from "shared/lib/designSystem/colors";
 
+export const getThemeFromColorway = (colorWay?: number) => {
+  switch (colorWay) {
+    case 0:
+      return "yield";
+    case 1:
+      return "volatility";
+    case 2:
+      return "capitalAccumulation";
+    case 3:
+      return "principalProtection";
+  }
+};
+
 export const getThemeColorFromColorway = (colorWay?: number) => {
   switch (colorWay) {
     case 0:
-      return colors.products.yield;
     case 1:
-      return colors.products.volatility;
     case 2:
-      return colors.products.capitalAccumulation;
     case 3:
-      return colors.products.principalProtection;
+      return colors.products[getThemeFromColorway(colorWay)!];
     default:
       return "#FFFFFF";
   }
@@ -18,13 +28,10 @@ export const getThemeColorFromColorway = (colorWay?: number) => {
 export const getLogoColorFromColorway = (colorWay?: number) => {
   switch (colorWay) {
     case 0:
-      return colors.products.yield;
     case 1:
-      return colors.products.volatility;
     case 2:
-      return colors.products.capitalAccumulation;
     case 3:
-      return colors.products.principalProtection;
+      return colors.products[getThemeFromColorway(colorWay)!];
     default:
       return "#000000";
   }

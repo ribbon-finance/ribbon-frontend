@@ -13,6 +13,7 @@ import { useNFTDropGlobalState } from "../../store/store";
 const ContentContainer = styled(motion.div)`
   display: flex;
   height: 100%;
+  position: relative;
 `;
 
 const Homepage = () => {

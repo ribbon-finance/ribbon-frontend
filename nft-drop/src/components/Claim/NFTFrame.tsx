@@ -10,6 +10,7 @@ import {
 import Logo from "shared/lib/assets/icons/logo";
 import { useNFTDropData } from "../../hooks/nftDataContext";
 import { useNFTDropGlobalState } from "../../store/store";
+import DesktopNFTFrameAnimatingBar from "./DesktopNFTFrameAnimatingBar";
 
 const Frame = styled.div<{ width: number; height: number }>`
   display: flex;
@@ -69,9 +70,14 @@ const FrameBar = styled.div<{
 interface NFTFrameProps {
   height: number;
   width: number;
+  animatingWidth: number;
 }
 
-const NFTFrame: React.FC<NFTFrameProps> = ({ height, width }) => {
+const NFTFrame: React.FC<NFTFrameProps> = ({
+  height,
+  width,
+  animatingWidth,
+}) => {
   const { active } = useWeb3React();
   const nftDropData = useNFTDropData();
   const [, setClaimButtonWidth] = useNFTDropGlobalState("claimButtonWidth");
@@ -92,29 +98,39 @@ const NFTFrame: React.FC<NFTFrameProps> = ({ height, width }) => {
     if (nftDropData.colorway !== undefined) {
       return (
         <Logo
+          key={nftDropData.tokenId}
           width="37.5%"
           color={getLogoColorFromColorway(nftDropData.colorway)}
         />
       );
     }
-  }, [active, nftDropData.colorway]);
+  }, [active, nftDropData.colorway, nftDropData.tokenId]);
 
   return (
-    <Frame height={height} width={width}>
-      <FrameBar
-        color={getThemeColorFromColorway(nftDropData.colorway)}
-        position="top"
-        height={height / 55}
-      />
-      <div className="d-flex align-items-center justify-content-center flex-grow-1 w-100">
-        {content}
-      </div>
-      <FrameBar
-        color={getThemeColorFromColorway(nftDropData.colorway)}
-        position="bottom"
-        height={height / 55}
-      />
-    </Frame>
+    <>
+      <Frame height={height} width={width}>
+        <FrameBar
+          color={getThemeColorFromColorway(nftDropData.colorway)}
+          position="top"
+          height={height / 55}
+        />
+        <div className="d-flex align-items-center justify-content-center flex-grow-1 w-100">
+          {content}
+        </div>
+        <FrameBar
+          color={getThemeColorFromColorway(nftDropData.colorway)}
+          position="bottom"
+          height={height / 55}
+        />
+      </Frame>
+      {nftDropData.colorway !== undefined && (
+        <DesktopNFTFrameAnimatingBar
+          color={getThemeColorFromColorway(nftDropData.colorway)}
+          height={(height * 6) / 11}
+          width={animatingWidth}
+        />
+      )}
+    </>
   );
 };
 
