@@ -177,7 +177,7 @@ const VideoView: React.FC = () => {
         >
           <ReactPlayer
             key="video-player"
-            url="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
+            url="https://archive.org/download/Rick_Astley_Never_Gonna_Give_You_Up/Rick_Astley_Never_Gonna_Give_You_Up.mp4"
             playing={playVideo}
             height="100%"
             width="100%"
