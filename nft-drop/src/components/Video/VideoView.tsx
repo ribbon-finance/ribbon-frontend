@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import Marquee from "react-fast-marquee/dist";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import ReactPlayer from "react-player";
 
 import { Subtitle, Title } from "shared/lib/designSystem";
@@ -8,6 +8,9 @@ import { PlayIcon } from "shared/lib/assets/icons/icons";
 import sizes from "shared/lib/designSystem/sizes";
 import { useNFTDropGlobalState } from "../../store/store";
 import colors from "shared/lib/designSystem/colors";
+import { useRef } from "react";
+import useElementSize from "shared/lib/hooks/useElementSize";
+import { getThemeColorFromColorway } from "../../utils/colors";
 
 const PlayButton = styled.div`
   display: flex;
@@ -27,6 +30,80 @@ const PlayButton = styled.div`
   &:hover {
     transform: scale(1.1);
   }
+`;
+
+const videoProgressBarBackgroundAnimation = keyframes`
+   0% {
+    background: ${getThemeColorFromColorway(0)};
+  }
+
+  20% {
+    background: ${getThemeColorFromColorway(1)};
+  }
+
+  40% {
+    background: ${getThemeColorFromColorway(2)};
+  }
+
+  60% {
+    background: ${getThemeColorFromColorway(3)};
+  }
+
+  80% {
+    background: ${getThemeColorFromColorway(4)};
+  }
+
+  100% {
+    background: ${getThemeColorFromColorway(0)};
+  }
+`;
+
+const VideoProgressBar = styled.div<{
+  progress: number;
+  position: "top" | "bottom" | "left" | "right";
+}>`
+  position: absolute;
+  ${(props) => {
+    switch (props.position) {
+      case "top":
+        return `
+          top: 0px;
+          left: 0px;
+        `;
+      case "bottom":
+        return `
+          bottom: 0px;
+          right: 0px;
+        `;
+      case "left":
+        return `
+          bottom: 0px;
+          left: 0px;
+        `;
+      case "right":
+        return `
+          top: 0px;
+          right: 0px;
+        `;
+    }
+  }}
+  ${(props) => {
+    switch (props.position) {
+      case "top":
+      case "bottom":
+        return `
+          width: ${props.progress}%;
+          height: 0.25vh;
+        `;
+      case "left":
+      case "right":
+        return `
+          height: ${props.progress}%;
+          width: 0.25vh;
+        `;
+    }
+  }}
+  animation: 10s ${videoProgressBarBackgroundAnimation} linear infinite;
 `;
 
 const MarqueeContainer = styled.div`
@@ -54,17 +131,66 @@ const VideoView: React.FC = () => {
   const [, setViews] = useNFTDropGlobalState("homepageView");
   const [playVideo, setPlayVideo] = useState(false);
 
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const { height, width } = useElementSize(videoContainerRef);
+  const [duration, setDuration] = useState(0);
+  const [progress, setProgress] = useState(0);
+
+  const [progress1, progress2, progress3, progress4] = useMemo(() => {
+    if (duration <= 0) {
+      return [0, 0, 0, 0];
+    }
+
+    const heightRatio = height / (height + width) / 2;
+    const widthRatio = width / (height + width) / 2;
+    const progressPercentage = progress / duration;
+
+    return [
+      Math.min((progressPercentage / widthRatio) * 100, 100),
+      progressPercentage > widthRatio
+        ? Math.min(((progressPercentage - widthRatio) / heightRatio) * 100, 100)
+        : 0,
+      progressPercentage > widthRatio + heightRatio
+        ? Math.min(
+            ((progressPercentage - widthRatio - heightRatio) / widthRatio) *
+              100,
+            100
+          )
+        : 0,
+      progressPercentage > widthRatio + heightRatio + widthRatio
+        ? Math.min(
+            ((progressPercentage - widthRatio - heightRatio - widthRatio) /
+              heightRatio) *
+              100,
+            100
+          )
+        : 0,
+    ];
+  }, [duration, height, progress, width]);
+
   const content = useMemo(
     () =>
       playVideo ? (
-        <ReactPlayer
-          className="video-player"
-          url="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
-          playing={playVideo}
-          onEnded={() => setViews("claim")}
-          height="100%"
-          width="100%"
-        />
+        <div
+          ref={videoContainerRef}
+          className="d-flex align-items-center justify-content-center position-relative mx-auto"
+        >
+          <ReactPlayer
+            key="video-player"
+            url="https://archive.org/download/Rick_Astley_Never_Gonna_Give_You_Up/Rick_Astley_Never_Gonna_Give_You_Up.mp4"
+            playing={playVideo}
+            height="100%"
+            width="100%"
+            onDuration={(duration) => setDuration(duration)}
+            progressInterval={20}
+            onProgress={(data) => setProgress(data.playedSeconds)}
+            onEnded={() => setViews("claim")}
+          />
+          <VideoProgressBar progress={progress1} position="top" />
+          <VideoProgressBar progress={progress2} position="right" />
+          <VideoProgressBar progress={progress3} position="bottom" />
+          <VideoProgressBar progress={progress4} position="left" />
+        </div>
       ) : (
         <>
           <PlayButton role="button" onClick={() => setPlayVideo(true)}>
@@ -79,7 +205,7 @@ const VideoView: React.FC = () => {
           </MarqueeContainer>
         </>
       ),
-    [playVideo, setViews]
+    [playVideo, progress1, progress2, progress3, progress4, setViews]
   );
 
   return (
