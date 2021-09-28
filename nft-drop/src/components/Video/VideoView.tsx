@@ -177,7 +177,7 @@ const VideoView: React.FC = () => {
         >
           <ReactPlayer
             key="video-player"
-            url="https://www.dropbox.com/s/3ay4xskhkws9tnj/Ribbon_launch_000_blur_audio_v03.mp4"
+            url="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
             playing={playVideo}
             height="100%"
             width="100%"
