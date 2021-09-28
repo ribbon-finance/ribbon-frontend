@@ -724,10 +724,10 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
               />
               , option holders exercise their options by withdrawing{" "}
               {collateralAssetUnit} from the Opyn vault. The amount withdrawn is
-              equal to the difference between the between the price of{" "}
-              {optionAssetUnit} and the strike price at expiry from the Opyn
-              vault. Any {collateralAssetUnit} left over is returned back to the
-              Ribbon vault.
+              equal to the difference between the price of {optionAssetUnit} and
+              the strike price at expiry from the Opyn vault. Any{" "}
+              {collateralAssetUnit} left over is returned back to the Ribbon
+              vault.
             </>
           );
       }
