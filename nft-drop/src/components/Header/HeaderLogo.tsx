@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import colors from "shared/lib/designSystem/colors";
-import Logo from "shared/lib/assets/icons/logo";
+import { AppLogo } from "shared/lib/assets/icons/logo";
 
 const LogoContainer = styled.div`
   display: flex;
@@ -20,7 +20,7 @@ const HeaderLogo = () => {
     <>
       <LogoContainer>
         <Link to="/">
-          <Logo height="48px" width="48px" />
+          <AppLogo height="48px" width="48px" />
         </Link>
       </LogoContainer>
     </>
