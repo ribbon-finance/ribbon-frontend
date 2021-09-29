@@ -155,7 +155,7 @@ const InvestButton = styled(ActionButton)`
   margin-left: ${investButtonMarginLeft}%;
   width: ${investButtonWidth}%;
   height: 48px;
-  border-radius: 8px;
+  border-radius: ${theme.border.radius};
 `;
 
 const WalletDesktopMenu = styled.div<MenuStateProps>`

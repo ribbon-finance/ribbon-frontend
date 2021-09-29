@@ -13,7 +13,7 @@ const HeaderContainer = styled.div`
   height: ${theme.header.height}px;
   position: sticky;
   top: 0;
-  border-bottom: 1px solid ${colors.border};
+  border-bottom: 1px solid ${colors.borderDark};
   background: rgba(255, 255, 255, 0.01);
 
   z-index: 10;
