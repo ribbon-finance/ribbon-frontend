@@ -120,13 +120,17 @@ const WalletButtonText = styled(Title)<WalletStatusProps>`
 `;
 
 const ClaimButton = styled(ActionButton)`
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   margin-left: ${claimButtonMarginLeft}%;
   width: ${claimButtonWidth}%;
   height: 48px;
-  border-radius: 8px;
+  border-radius: ${theme.border.radius};
+
+  @media (max-width: ${sizes.md}px) {
+    display: flex;
+  }
 `;
 
 const WalletDesktopMenu = styled.div<MenuStateProps>`

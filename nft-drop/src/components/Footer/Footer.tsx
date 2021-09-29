@@ -15,19 +15,9 @@ const FooterContainer = styled.div<{
   height: 80px;
   width: 100%;
   justify-content: center;
-  backdrop-filter: blur(40px);
   background: ${colors.backgroundLight};
   position: fixed;
   bottom: 0px;
-
-  /**
-   * Firefox desktop come with default flag to have backdrop-filter disabled
-   * Firefox Android also currently has bug where backdrop-filter is not being applied
-   * More info: https://bugzilla.mozilla.org/show_bug.cgi?id=1178765
-   **/
-  @-moz-document url-prefix() {
-    background-color: rgba(0, 0, 0, 0.9);
-  }
 
   @media (max-width: ${sizes.md}px) {
     height: ${theme.footer.mobile.height}px;

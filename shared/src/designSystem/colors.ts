@@ -3,6 +3,7 @@ const colors = {
   backgroundLight: "#1D1D20",
   backgroundLighter: "#212124",
   backgroundDarker: "#08090E",
+  borderDark: "#1F1F1F",
   border: "#2B2B2B",
   borderLight: "#2E2C2B",
   text: "#ACACAB",
