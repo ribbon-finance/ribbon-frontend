@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 import moment from "moment";
 
-import { VaultOptions, VaultVersion } from "../constants/constants";
+import { getAssets, VaultOptions, VaultVersion } from "../constants/constants";
 import { Notification } from "../models/notification";
 import { useAllVaultActivities } from "./useVaultActivity";
 import { useV2VaultsData } from "./vaultDataContext";
+import { useAllVaultAccounts } from "./useVaultAccounts";
+import { isPracticallyZero } from "../utils/math";
+import { getAssetDecimals } from "../utils/asset";
 
 const useNotifications = () => {
   const { activities: vaultsActivities } = useAllVaultActivities();
   const { data: v2VaultsData } = useV2VaultsData();
+  const { data: vaultAccounts } = useAllVaultAccounts();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
@@ -32,44 +36,57 @@ const useNotifications = () => {
     });
 
     Object.keys(vaultsActivities).forEach((version) => {
-      Object.keys(vaultsActivities[version as VaultVersion]).forEach(
-        (option) => {
-          const activities =
-            vaultsActivities[version as VaultVersion][option as VaultOptions];
+      const vaultVersion = version as VaultVersion;
+      Object.keys(vaultsActivities[vaultVersion]).forEach((option) => {
+        const vaultOption = option as VaultOptions;
+        const activities = vaultsActivities[vaultVersion][vaultOption];
+        const vaultAccount = vaultAccounts[vaultVersion][vaultOption];
 
-          activities.forEach((activity) => {
-            switch (activity.type) {
-              case "minting":
-                notificationList.push({
-                  date: moment(activity.date),
-                  type: "optionMinting",
-                  vault: option as VaultOptions,
-                  vaultVersion: version as VaultVersion,
-                  mintAmount: activity.mintAmount,
-                  strikePrice: activity.strikePrice,
-                  openedAt: activity.openedAt,
-                });
-                break;
-              case "sales":
-                notificationList.push({
-                  date: moment(activity.date),
-                  type: "optionSale",
-                  vault: option as VaultOptions,
-                  vaultVersion: version as VaultVersion,
-                  sellAmount: activity.sellAmount,
-                  premium: activity.premium,
-                  timestamp: activity.timestamp,
-                });
-            }
-          });
+        /**
+         * Filter out notification where user do not have position in
+         */
+        if (
+          !vaultAccount ||
+          isPracticallyZero(
+            vaultAccount.totalBalance,
+            getAssetDecimals(getAssets(vaultOption))
+          )
+        ) {
+          return;
         }
-      );
+
+        activities.forEach((activity) => {
+          switch (activity.type) {
+            case "minting":
+              notificationList.push({
+                date: moment(activity.date),
+                type: "optionMinting",
+                vault: vaultOption,
+                vaultVersion: vaultVersion,
+                mintAmount: activity.mintAmount,
+                strikePrice: activity.strikePrice,
+                openedAt: activity.openedAt,
+              });
+              break;
+            case "sales":
+              notificationList.push({
+                date: moment(activity.date),
+                type: "optionSale",
+                vault: vaultOption,
+                vaultVersion: vaultVersion,
+                sellAmount: activity.sellAmount,
+                premium: activity.premium,
+                timestamp: activity.timestamp,
+              });
+          }
+        });
+      });
     });
 
     setNotifications(
       notificationList.sort((a, b) => (a.date.isAfter(b.date) ? 1 : -1))
     );
-  }, [vaultsActivities, v2VaultsData]);
+  }, [vaultAccounts, vaultsActivities, v2VaultsData]);
 
   return notifications;
 };

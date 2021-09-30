@@ -12,11 +12,11 @@ export type NotificationType = typeof NotificationTypeList[number];
 
 interface NotificationMeta {
   date: Moment;
+  vault: VaultOptions;
 }
 
 export interface OptionMintingNotification extends NotificationMeta {
   type: typeof NotificationTypeList[0];
-  vault: VaultOptions;
   vaultVersion: VaultVersion;
   mintAmount: BigNumber;
   strikePrice: BigNumber;
@@ -25,7 +25,6 @@ export interface OptionMintingNotification extends NotificationMeta {
 
 export interface OptionSaleNotification extends NotificationMeta {
   type: typeof NotificationTypeList[1];
-  vault: VaultOptions;
   vaultVersion: VaultVersion;
   sellAmount: BigNumber;
   premium: BigNumber;
@@ -34,7 +33,6 @@ export interface OptionSaleNotification extends NotificationMeta {
 
 export interface withdrawalReadyNotification extends NotificationMeta {
   type: typeof NotificationTypeList[2];
-  vault: VaultOptions;
   amount: BigNumber;
 }
 
