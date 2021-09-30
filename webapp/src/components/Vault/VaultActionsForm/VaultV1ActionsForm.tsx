@@ -24,7 +24,7 @@ import theme from "shared/lib/designSystem/theme";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import SwapBTCDropdown from "./common/SwapBTCDropdown";
-import useVaultActivity from "../../../hooks/useVaultActivity";
+import useVaultActivity from "shared/lib/hooks/useVaultActivity";
 import { VaultActivityMeta, VaultShortPosition } from "shared/lib/models/vault";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";

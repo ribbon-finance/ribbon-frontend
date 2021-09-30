@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
-import useVaultActivity from "../../hooks/useVaultActivity";
+import useVaultActivity from "shared/lib/hooks/useVaultActivity";
 import { ActivityFilter, activityFilters, SortBy, sortByList } from "./types";
 import VaultActivityHeader from "./VaultActivityHeader";
 import DesktopVaultActivityList from "./DesktopVaultActivityList";

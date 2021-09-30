@@ -7,7 +7,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 
 import theme from "shared/lib/designSystem/theme";
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
-import useVaultActivity from "../../hooks/useVaultActivity";
+import useVaultActivity from "shared/lib/hooks/useVaultActivity";
 import {
   VaultActivityMeta,
   VaultOptionTrade,

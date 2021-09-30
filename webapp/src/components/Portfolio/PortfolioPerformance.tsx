@@ -13,7 +13,7 @@ import currency from "currency.js";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
-import useBalances from "../../hooks/useBalances";
+import useBalances from "shared/lib/hooks/useBalances";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import {
   assetToFiat,
