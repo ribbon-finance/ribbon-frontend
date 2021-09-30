@@ -5,19 +5,23 @@ import Col from "react-bootstrap/Col";
 import { Container } from "react-bootstrap";
 
 import { Title, BaseText } from "../../designSystem";
-import Plane from "../../img/ShapePlane.svg";
 import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
-import colors from "../../designSystem/colors";
+import colors from "shared/lib/designSystem/colors";
+import { Waves } from "shared/lib/assets";
 
 const MainContainer = styled(Container)`
   padding-top: 80px;
   padding-bottom: 80px;
 `;
 
-const PlaneImage = styled.img`
-  margin-top: 50px;
-  width: 100%;
+const StyledWaves = styled(Waves)`
+  opacity: 0.64;
+  margin-top: 64px;
+
+  * {
+    stroke: ${colors.green};
+  }
 `;
 
 const MissionTitleRow = styled(Row)`
@@ -93,7 +97,7 @@ const Mission = () => {
 
       <Row>
         <Col>
-          <PlaneImage src={Plane} />
+          <StyledWaves />
         </Col>
       </Row>
     </MainContainer>

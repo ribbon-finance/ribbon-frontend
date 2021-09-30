@@ -16,9 +16,10 @@ import Investors from "./components/Investors";
 import PolicyPage from "./pages/PolicyPage";
 import TermsPage from "./pages/TermsPage";
 import FAQPage from "./pages/FAQ";
+import colors from "shared/lib/designSystem/colors";
 
 const Body = styled.div`
-  background-color: #1c1a19;
+  background-color: ${colors.background};
 `;
 
 const MainContent = styled.div``;

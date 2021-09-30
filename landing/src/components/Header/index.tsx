@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 
 import Logo from "./Logo";
-import colors from "../../designSystem/colors";
+import colors from "shared/lib/designSystem/colors";
 import sizes from "../../designSystem/sizes";
 import { Title, BaseLink, Button } from "../../designSystem";
 import MenuButton from "./MenuButton";
@@ -126,7 +126,7 @@ const ButtonText = styled.span`
   line-height: 24px;
   text-align: center;
   text-transform: capitalize;
-  color: #16ceb9;
+  color: ${colors.green};
 `;
 
 const AppButton = styled(Button)`
@@ -216,6 +216,7 @@ const Header = () => {
               { text: "Discord", link: "http://discord.ribbon.finance" },
               { text: "Twitter", link: "https://twitter.com/ribbonfinance" },
               { text: "Github", link: "https://github.com/ribbon-finance" },
+              { text: "Snapshot", link: "https://snapshot.org/#/rbn.eth" },
             ]}
           >
             Community
