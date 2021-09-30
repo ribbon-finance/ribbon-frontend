@@ -1,7 +1,7 @@
 import { BigNumber } from "ethers";
 import { Moment } from "moment";
 
-import { VaultOptions } from "../constants/constants";
+import { VaultOptions, VaultVersion } from "../constants/constants";
 
 export const NotificationTypeList = [
   "optionMinting",
@@ -17,6 +17,7 @@ interface NotificationMeta {
 export interface OptionMintingNotification extends NotificationMeta {
   type: typeof NotificationTypeList[0];
   vault: VaultOptions;
+  vaultVersion: VaultVersion;
   mintAmount: BigNumber;
   strikePrice: BigNumber;
   openedAt: number;
@@ -25,6 +26,7 @@ export interface OptionMintingNotification extends NotificationMeta {
 export interface OptionSaleNotification extends NotificationMeta {
   type: typeof NotificationTypeList[1];
   vault: VaultOptions;
+  vaultVersion: VaultVersion;
   sellAmount: BigNumber;
   premium: BigNumber;
   timestamp: number;

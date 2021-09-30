@@ -106,6 +106,15 @@ export const resolveVaultActivitiesSubgraphResponse = (
     ])
   ) as VaultActivitiesData;
 
+export const useAllVaultActivities = () => {
+  const contextData = useContext(SubgraphDataContext);
+
+  return {
+    activities: contextData.vaultActivities,
+    loading: contextData.loading,
+  };
+};
+
 const useVaultActivity = (
   vault: VaultOptions,
   vaultVersion: VaultVersion = VaultVersionList[0]
