@@ -6,6 +6,8 @@ import theme from "shared/lib/designSystem/theme";
 import { BellIcon } from "shared/lib/assets/icons/icons";
 import useOutsideAlerter from "shared/lib/hooks/useOutsideAlerter";
 import NotificationView from "./NotificationView";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
+import sizes from "shared/lib/designSystem/sizes";
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -28,12 +30,15 @@ const ButtonContainer = styled.div`
 const NotificationButton = () => {
   const desktopMenuRef = useRef(null);
   const [show, setShow] = useState(false);
+  const { width } = useScreenSize();
 
   const handleCloseMenu = useCallback(() => {
     setShow(false);
   }, []);
 
-  useOutsideAlerter(desktopMenuRef, handleCloseMenu);
+  useOutsideAlerter(desktopMenuRef, () => {
+    if (width > sizes.md) handleCloseMenu();
+  });
 
   return (
     <div className="d-flex position-relative" ref={desktopMenuRef}>
