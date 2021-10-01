@@ -33,6 +33,7 @@ export interface OptionSaleNotification extends NotificationMeta {
 
 export interface withdrawalReadyNotification extends NotificationMeta {
   type: typeof NotificationTypeList[2];
+  vaultVersion: "v2";
   amount: BigNumber;
 }
 

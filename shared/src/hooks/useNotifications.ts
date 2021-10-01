@@ -30,6 +30,7 @@ const useNotifications = () => {
           date: moment(),
           type: "withdrawalReady",
           vault: vaultOption as VaultOptions,
+          vaultVersion: "v2",
           amount: vaultData.withdrawals.amount,
         });
       }

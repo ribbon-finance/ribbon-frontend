@@ -2,7 +2,12 @@ import React from "react";
 import styled from "styled-components";
 
 import useNotifications from "shared/lib/hooks/useNotifications";
-import { PrimaryText, Subtitle, Title } from "shared/lib/designSystem";
+import {
+  BaseLink,
+  PrimaryText,
+  Subtitle,
+  Title,
+} from "shared/lib/designSystem";
 import {
   getAssetDecimals,
   getAssetDisplay,
@@ -15,6 +20,8 @@ import { Notification } from "shared/lib/models/notification";
 import { formatBigNumber, formatOption } from "shared/lib/utils/math";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { productCopies } from "shared/lib/components/Product/productCopies";
+import { getVaultURI } from "../../constants/constants";
+import { useHistory } from "react-router-dom";
 
 const NotificationItems = styled.div`
   display: flex;
@@ -45,6 +52,10 @@ const NotificationItems = styled.div`
 const NotificationItem = styled.div`
   display: flex;
   padding: 16px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
 `;
 
 const NotificationItemIcon = styled.div`
@@ -68,8 +79,13 @@ const NotificationItemVaultPill = styled.div<{ color: string }>`
   border-radius: 100px;
 `;
 
-const NotificationList = () => {
+interface NotificationListProps {
+  onClose: () => void;
+}
+
+const NotificationList: React.FC<NotificationListProps> = ({ onClose }) => {
   const notifications = useNotifications();
+  const history = useHistory();
 
   const renderNotificationInfo = useCallback((notification: Notification) => {
     const asset = getAssets(notification.vault);
@@ -159,7 +175,15 @@ const NotificationList = () => {
         const Logo = getAssetLogo(getDisplayAssets(notification.vault));
 
         return (
-          <NotificationItem>
+          <NotificationItem
+            role="button"
+            onClick={() => {
+              onClose();
+              history.push(
+                getVaultURI(notification.vault, notification.vaultVersion)
+              );
+            }}
+          >
             <NotificationItemIcon>
               <Logo />
             </NotificationItemIcon>

@@ -86,7 +86,7 @@ const NotificationView: React.FC<NotificationViewProps> = ({
           className="d-flex flex-column position-relative"
           style={{ height: 531 }}
         >
-          <NotificationList />
+          <NotificationList onClose={onClose} />
         </div>
       </>
     );
