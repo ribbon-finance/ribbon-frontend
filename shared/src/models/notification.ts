@@ -18,7 +18,7 @@ interface NotificationMeta {
 export interface OptionMintingNotification extends NotificationMeta {
   type: typeof NotificationTypeList[0];
   vaultVersion: VaultVersion;
-  mintAmount: BigNumber;
+  depositAmount: BigNumber;
   strikePrice: BigNumber;
   openedAt: number;
 }

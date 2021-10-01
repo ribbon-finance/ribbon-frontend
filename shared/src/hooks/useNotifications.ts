@@ -63,7 +63,7 @@ const useNotifications = () => {
                 type: "optionMinting",
                 vault: vaultOption,
                 vaultVersion: vaultVersion,
-                mintAmount: activity.mintAmount,
+                depositAmount: activity.depositAmount,
                 strikePrice: activity.strikePrice,
                 openedAt: activity.openedAt,
               });
@@ -84,7 +84,7 @@ const useNotifications = () => {
     });
 
     setNotifications(
-      notificationList.sort((a, b) => (a.date.isAfter(b.date) ? 1 : -1))
+      notificationList.sort((a, b) => (a.date.isBefore(b.date) ? 1 : -1))
     );
   }, [vaultAccounts, vaultsActivities, v2VaultsData]);
 
