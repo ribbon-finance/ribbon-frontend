@@ -331,6 +331,7 @@ const HeroSection: React.FC<{
             }}
             markerConfig={{
               right: "0px",
+              border: "none",
             }}
           />
         );

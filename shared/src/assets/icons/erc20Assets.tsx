@@ -153,14 +153,17 @@ const SideYearnLogo = styled(YearnLogo)<{
   height: number;
   bottom?: string;
   right?: string;
+  border?: string;
 }>`
   position: absolute;
   bottom: ${(props) => (props.bottom ? props.bottom : "0px")};
   right: ${(props) =>
     props.right ? props.right : `calc(-${props.width}px * 0.2)`};
   border-radius: 100px;
-  border: ${(props) => props.width * 0.03}px ${theme.border.style}
-    ${colors.border};
+  border: ${(props) =>
+    props.border
+      ? props.border
+      : `${props.width * 0.03}px ${theme.border.style} ${colors.border}`};
 `;
 
 export const YVUSDcLogo: React.FC<
@@ -170,6 +173,7 @@ export const YVUSDcLogo: React.FC<
       width?: number;
       bottom?: string;
       right?: string;
+      border?: string;
     };
   }
 > = ({ markerConfig, ...props }) => {
@@ -185,6 +189,7 @@ export const YVUSDcLogo: React.FC<
         height={markerConfig?.width || yearnDimension}
         bottom={markerConfig?.bottom}
         right={markerConfig?.right}
+        border={markerConfig?.border}
       />
     </YVUSDcLogoContainer>
   );
