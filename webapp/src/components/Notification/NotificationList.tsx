@@ -108,73 +108,61 @@ const NotificationList: React.FC<NotificationListProps> = ({
       </NotificationItemVaultPill>
     );
 
+    let title: string;
+    let body: JSX.Element;
+
     switch (notification.type) {
       case "optionMinting":
-        return (
+        title = "MINTED OPTIONS";
+        body = (
           <>
-            <div className="d-flex align-items-center">
-              <Title fontSize={14} lineHeight={24}>
-                MINTED OPTIONS
-              </Title>
-              {badge}
-            </div>
-            <PrimaryText
-              fontSize={12}
-              lineHeight={16}
-              color={colors.text}
-              className="mt-1"
-            >
-              The vault minted{" "}
-              {formatBigNumber(notification.depositAmount, decimals)} options at
-              a strike price of $
-              {formatOption(notification.strikePrice).toLocaleString()}
-            </PrimaryText>
+            The vault minted{" "}
+            {formatBigNumber(notification.depositAmount, decimals)} options at a
+            strike price of $
+            {formatOption(notification.strikePrice).toLocaleString()}
           </>
         );
+        break;
       case "optionSale":
-        return (
+        title = "SOLD OPTIONS";
+        body = (
           <>
-            <div className="d-flex align-items-center">
-              <Title fontSize={14} lineHeight={24}>
-                SOLD OPTIONS
-              </Title>
-              {badge}
-            </div>
-            <PrimaryText
-              fontSize={12}
-              lineHeight={16}
-              color={colors.text}
-              className="mt-1"
-            >
-              The vault sold{" "}
-              {formatOption(notification.sellAmount).toLocaleString()} options
-              for {formatBigNumber(notification.premium, decimals)}{" "}
-              {getAssetDisplay(asset)}
-            </PrimaryText>
+            The vault sold{" "}
+            {formatOption(notification.sellAmount).toLocaleString()} options for{" "}
+            {formatBigNumber(notification.premium, decimals)}{" "}
+            {getAssetDisplay(asset)}
           </>
         );
+        break;
       case "withdrawalReady":
-        return (
+        title = "WITHDRAWALS READY";
+        body = (
           <>
-            <div className="d-flex align-items-center">
-              <Title fontSize={14} lineHeight={24}>
-                WITHDRAWALS READY
-              </Title>
-              {badge}
-            </div>
-            <PrimaryText
-              fontSize={12}
-              lineHeight={16}
-              color={colors.text}
-              className="mt-1"
-            >
-              Your initiated withdrawals of{" "}
-              {formatBigNumber(notification.amount, decimals)}{" "}
-              {getAssetDisplay(asset)} are now ready to withdraw from the vault
-            </PrimaryText>
+            Your initiated withdrawals of{" "}
+            {formatBigNumber(notification.amount, decimals)}{" "}
+            {getAssetDisplay(asset)} are now ready to withdraw from the vault
           </>
         );
     }
+
+    return (
+      <>
+        <div className="d-flex align-items-center">
+          <Title fontSize={14} lineHeight={24}>
+            {title}
+          </Title>
+          {badge}
+        </div>
+        <PrimaryText
+          fontSize={12}
+          lineHeight={16}
+          color={colors.text}
+          className="mt-1"
+        >
+          {body}
+        </PrimaryText>
+      </>
+    );
   }, []);
 
   return filteredNotifications.length > 0 ? (
