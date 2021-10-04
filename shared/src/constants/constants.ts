@@ -250,7 +250,7 @@ export const VaultFees: {
       withdrawalFee: "1.0",
     },
     v2: {
-      managementFee: "0",
+      managementFee: "2",
       performanceFee: "10",
     },
   },
