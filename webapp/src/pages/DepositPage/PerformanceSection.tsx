@@ -7,7 +7,7 @@ import {
   getAssets,
   VaultOptions,
   VaultVersion,
-  VaultWithdrawalFee,
+  VaultFees,
 } from "shared/lib/constants/constants";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -144,7 +144,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
     (_vaultOption: VaultOptions, _vaultVersion: VaultVersion) => {
       switch (_vaultVersion) {
         case "v1":
-          const withdrawalFee = VaultWithdrawalFee[_vaultOption];
+          const withdrawalFee = VaultFees[_vaultOption].v1.withdrawalFee;
           return (
             <>
               {" "}
@@ -214,6 +214,26 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           <ParagraphHeading>Withdrawals</ParagraphHeading>
           <ParagraphText>
             {renderWithdrawalsSection(vaultOption, vaultVersion)}
+          </ParagraphText>
+        </Paragraph>
+      )}
+
+      {vaultVersion === "v2" && (
+        <Paragraph>
+          <ParagraphHeading>FEE STRUCTURE</ParagraphHeading>
+          <ParagraphText>
+            The vault fee structure consists of a{" "}
+            {VaultFees[vaultOption].v2.managementFee}% annualised management fee
+            and a {VaultFees[vaultOption].v2.performanceFee}% annualised
+            performance fee.
+            <br />
+            <br />
+            If the weekly strategy is profitable, the weekly performance fee is
+            charged on the premiums earned and the weekly management fee is
+            charged on the assets managed by the vault.
+            <br />
+            <br />
+            If the weekly strategy is unprofitable, there are no fees charged.
           </ParagraphText>
         </Paragraph>
       )}

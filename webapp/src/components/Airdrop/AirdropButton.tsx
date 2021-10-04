@@ -103,7 +103,7 @@ const AirdropButton = () => {
       >
         <LogoContainer>
           <LogoSignal claiming={isClaiming}>
-            <RedLogo height="32px" width="32px" />
+            <RedLogo height={40} width={40} />
           </LogoSignal>
         </LogoContainer>
         {!isClaiming && airdrop && !airdrop.claimed && (
