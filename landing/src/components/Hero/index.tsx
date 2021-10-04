@@ -6,7 +6,7 @@ import { Title, PrimaryText, Button } from "../../designSystem";
 import { Container } from "react-bootstrap";
 
 import sizes from "../../designSystem/sizes";
-import colors from "../../designSystem/colors";
+import colors from "shared/lib/designSystem/colors";
 import theme from "../../designSystem/theme";
 
 const ColorColumn = styled(Col)<{
@@ -105,7 +105,7 @@ const Hero = () => {
     <MainContainer fluid>
       <HeroContainer fluid style={{ position: "relative" }}>
         <BackgroundContainer>
-          <ColorColumn activeColor={colors.products.yield} />
+          <ColorColumn activeColor={colors.red} />
           <ColorColumn activeColor={colors.products.volatility} />
           <ColorColumn activeColor={colors.green} />
           <ColorColumn activeColor={colors.products.capitalAccumulation} />

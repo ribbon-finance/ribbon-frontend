@@ -8,6 +8,7 @@ import React, {
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { setTimeout } from "timers";
+import { AnimatePresence, motion } from "framer";
 
 import Indicator from "shared/lib/components/Indicator/Indicator";
 import sizes from "shared/lib/designSystem/sizes";
@@ -158,7 +159,7 @@ const InvestButton = styled(ActionButton)`
   border-radius: ${theme.border.radius};
 `;
 
-const WalletDesktopMenu = styled.div<MenuStateProps>`
+const WalletDesktopMenu = styled(motion.div)<MenuStateProps>`
   ${(props) =>
     props.isMenuOpen
       ? `
@@ -469,16 +470,37 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
               : "Invest"}
           </InvestButton>
         )}
-        <WalletDesktopMenu isMenuOpen={isMenuOpen}>
-          {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
-          {renderMenuItem(
-            copyState === "hidden" ? "COPY ADDRESS" : "ADDRESS COPIED",
-            handleCopyAddress,
-            renderCopiedButton()
-          )}
-          {renderMenuItem("OPEN IN ETHERSCAN", handleOpenEtherscan)}
-          {renderMenuItem("DISCONNECT", handleDisconnect)}
-        </WalletDesktopMenu>
+        <AnimatePresence>
+          <WalletDesktopMenu
+            key={isMenuOpen.toString()}
+            isMenuOpen={isMenuOpen}
+            initial={{
+              opacity: 0,
+              y: 20,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            exit={{
+              opacity: 0,
+              y: 20,
+            }}
+            transition={{
+              type: "keyframes",
+              duration: 0.2,
+            }}
+          >
+            {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
+            {renderMenuItem(
+              copyState === "hidden" ? "COPY ADDRESS" : "ADDRESS COPIED",
+              handleCopyAddress,
+              renderCopiedButton()
+            )}
+            {renderMenuItem("OPEN IN ETHERSCAN", handleOpenEtherscan)}
+            {renderMenuItem("DISCONNECT", handleDisconnect)}
+          </WalletDesktopMenu>
+        </AnimatePresence>
       </WalletContainer>
 
       {/* Mobile Menu */}

@@ -117,6 +117,22 @@ export type VaultActivity =
   | (VaultShortPosition & VaultActivityMeta & { type: "minting" })
   | (VaultOptionTrade & VaultActivityMeta & { type: "sales" });
 
+export type VaultActivitiesData = {
+  [version in VaultVersion]: {
+    [option in VaultOptions]: VaultActivity[];
+  };
+};
+
+export const defaultVaultActivitiesData: VaultActivitiesData =
+  Object.fromEntries(
+    VaultVersionList.map((version) => [
+      version,
+      Object.fromEntries(
+        VaultList.map((option) => [option, [] as VaultActivity[]])
+      ),
+    ])
+  ) as VaultActivitiesData;
+
 export interface UnconnectedVaultData {
   deposits: BigNumber;
   vaultLimit: BigNumber;

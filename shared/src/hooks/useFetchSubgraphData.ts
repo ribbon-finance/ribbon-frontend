@@ -16,6 +16,18 @@ import {
   vaultAccountsGraphql,
 } from "./useVaultAccounts";
 import { isProduction } from "../utils/env";
+import {
+  resolveTransactionsSubgraphResponse,
+  transactionsGraphql,
+} from "./useTransactions";
+import {
+  balancesGraphql,
+  resolveBalancesSubgraphResponse,
+} from "./useBalances";
+import {
+  resolveVaultActivitiesSubgraphResponse,
+  vaultActivitiesGraphql,
+} from "./useVaultActivity";
 
 const useFetchSubgraphData = (
   {
@@ -40,11 +52,18 @@ const useFetchSubgraphData = (
       await Promise.all(
         VaultVersionList.map(async (version) => {
           const response = await axios.post(getSubgraphURIForVersion(version), {
-            query: `
-                {
-                  ${account ? vaultAccountsGraphql(account, version) : ""}
+            query: `{
+                ${
+                  account
+                    ? `
+                        ${vaultAccountsGraphql(account, version)}
+                        ${transactionsGraphql(account, version)}
+                        ${balancesGraphql(account, version)}
+                      `
+                    : ""
                 }
-              `,
+                ${vaultActivitiesGraphql(version)}
+              }`.replaceAll(" ", ""),
           });
 
           return [version, response.data.data];
@@ -55,6 +74,13 @@ const useFetchSubgraphData = (
     setData((prev) => ({
       ...prev,
       vaultAccounts: resolveVaultAccountsSubgraphResponse(
+        responsesAcrossVersions
+      ),
+      vaultActivities: resolveVaultActivitiesSubgraphResponse(
+        responsesAcrossVersions
+      ),
+      balances: resolveBalancesSubgraphResponse(responsesAcrossVersions),
+      transactions: resolveTransactionsSubgraphResponse(
         responsesAcrossVersions
       ),
       loading: false,

@@ -310,7 +310,6 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
       <AnimatePresence>
         {showBreakdown && (
           <BreakdownContainer
-            key={showBreakdown ? 1 : 0}
             transition={{
               duration: 0.25,
               type: "keyframes",

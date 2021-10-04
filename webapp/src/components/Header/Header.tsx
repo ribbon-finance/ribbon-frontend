@@ -12,6 +12,8 @@ import AccountStatus from "../Wallet/AccountStatus";
 import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import AirdropButton from "../Airdrop/AirdropButton";
+import NotificationButton from "../Notification/NotificationButton";
+import { useWeb3React } from "@web3-react/core";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
@@ -45,6 +47,15 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
       }
     `;
   }}
+
+  &:before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    background: rgba(255, 255, 255, 0.01);
+  }
 `;
 
 const LogoContainer = styled.div`
@@ -57,7 +68,7 @@ const LogoContainer = styled.div`
   }
 `;
 
-const AirdropContainer = styled.div`
+const HeaderButtonContainer = styled.div`
   display: flex;
   margin-right: 8px;
   z-index: 1;
@@ -123,6 +134,7 @@ const MobileOnly = styled.div`
 `;
 
 const Header = () => {
+  const { active } = useWeb3React();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const onToggleMenu = () => {
@@ -191,9 +203,15 @@ const Header = () => {
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
-      <AirdropContainer>
+      <HeaderButtonContainer>
         <AirdropButton />
-      </AirdropContainer>
+      </HeaderButtonContainer>
+
+      {active && (
+        <HeaderButtonContainer>
+          <NotificationButton />
+        </HeaderButtonContainer>
+      )}
 
       <AccountStatus variant="desktop" />
 

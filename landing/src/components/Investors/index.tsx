@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+
 import { Title, BaseText } from "../../designSystem";
 import { Container } from "react-bootstrap";
 import DCP from "../../img/Investors/dcp.svg";
@@ -10,6 +11,7 @@ import Nascent from "../../img/Investors/nascent.svg";
 import Coinbase from "../../img/Investors/coinbase.svg";
 import FreeCo from "../../img/Investors/freeCo.svg";
 import Divergence from "../../img/Investors/divergence.svg";
+import colors from "shared/lib/designSystem/colors";
 
 const MainContainer = styled(Container)`
   padding-top: 80px;
@@ -22,9 +24,8 @@ const InvestorsTitle = styled(Title)`
 `;
 
 const InvestorCard = styled.div`
-  background: #141415;
+  background: ${colors.backgroundLight};
   border-radius: 8px;
-  border: 1px solid #2b2b2b;
   margin-bottom: 16px;
   height: 120px;
 `;
@@ -41,7 +42,7 @@ const InvestorText = styled(BaseText)`
   line-height: 24px;
   text-align: center;
   text-transform: capitalize;
-  color: #ffffff;
+  color: ${colors.primaryText};
 `;
 
 const Investors = () => {

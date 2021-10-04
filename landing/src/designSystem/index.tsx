@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import theme from "./theme";
-import colors from "./colors";
+import colors from "shared/lib/designSystem/colors";
 import Link from "../components/Common/Link";
 
 export const BaseText = styled.span`
@@ -30,7 +30,7 @@ export const SecondaryText = styled(BaseText)`
 `;
 
 export const Title = styled(BaseText)`
-  color: #ffffff;
+  color: ${colors.primaryText};
   text-transform: uppercase;
   font-family: VCR;
   font-style: normal;
@@ -57,11 +57,11 @@ export const Button = styled.button`
   box-shadow: none;
   text-align: center;
   pointer-events: auto;
-  border: 2px solid #ffffff;
+  border: 2px solid ${colors.primaryText};
   box-sizing: border-box;
   border-radius: 8px;
   background: transparent;
-  color: #ffffff;
+  color: ${colors.primaryText};
   padding-top: 12px;
   padding-bottom: 12px;
   padding-left: 30px;

@@ -3,7 +3,7 @@ import { Col, Row } from "react-bootstrap";
 import styled from "styled-components";
 
 import { BaseLink, Title } from "../../designSystem";
-import colors from "../../designSystem/colors";
+import colors from "shared/lib/designSystem/colors";
 import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
 
@@ -38,7 +38,7 @@ const LinkItem = styled.div`
 `;
 
 const MobileFooter = styled.div`
-  border-top: 1px solid #2b2b2b;
+  border-top: 1px solid ${colors.background};
 
   @media (min-width: ${sizes.lg}px) {
     display: none;

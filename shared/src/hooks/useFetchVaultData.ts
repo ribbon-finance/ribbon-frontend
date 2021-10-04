@@ -111,9 +111,11 @@ const useFetchVaultData = (
             {
               ...prev.responses[vault],
               ...response,
-              vaultMaxWithdrawAmount: vaultMaxWithdrawableShares
-                .mul(response.deposits)
-                .div(totalSupply),
+              vaultMaxWithdrawAmount: !totalSupply.isZero
+                ? vaultMaxWithdrawableShares
+                    .mul(response.deposits)
+                    .div(totalSupply)
+                : BigNumber.from(0),
             },
           ]
         )

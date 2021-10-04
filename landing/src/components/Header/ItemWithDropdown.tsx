@@ -4,7 +4,7 @@ import { setTimeout } from "timers";
 
 import sizes from "../../designSystem/sizes";
 import { Title, BaseButton } from "../../designSystem";
-import colors from "../../designSystem/colors";
+import colors from "shared/lib/designSystem/colors";
 import {
   WalletStatusProps,
   AccountStatusVariantProps,

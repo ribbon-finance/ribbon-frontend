@@ -15,7 +15,7 @@ import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import useTransactions from "../../hooks/useTransactions";
+import useTransactions from "shared/lib/hooks/useTransactions";
 import { CurrencyType } from "../../pages/Portfolio/types";
 import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
 import { capitalize } from "shared/lib/utils/text";

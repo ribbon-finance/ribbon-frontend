@@ -29,6 +29,15 @@ export const useVaultData = (vault: VaultOptions) => {
   };
 };
 
+export const useV2VaultsData = () => {
+  const contextData = useContext(VaultDataContext);
+
+  return {
+    data: contextData.v2.responses,
+    loading: contextData.v2.loading,
+  };
+};
+
 export const useV2VaultData = (vault: VaultOptions) => {
   const contextData = useContext(VaultDataContext);
 

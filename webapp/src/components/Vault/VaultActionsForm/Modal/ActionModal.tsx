@@ -256,7 +256,6 @@ const ActionModal: React.FC<ActionModalProps> = ({
   return (
     <div>
       <MobileOverlayMenu
-        key={`actionModal-${vault.vaultOption}`}
         isMenuOpen={show}
         onClick={onClose}
         mountRoot="div#root"

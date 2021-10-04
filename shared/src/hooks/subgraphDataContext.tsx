@@ -1,15 +1,28 @@
 import React, { ReactElement } from "react";
 
-import { defaultVaultAccountsData, VaultAccountsData } from "../models/vault";
+import {
+  BalanceUpdate,
+  defaultVaultAccountsData,
+  defaultVaultActivitiesData,
+  VaultAccountsData,
+  VaultActivitiesData,
+  VaultTransaction,
+} from "../models/vault";
 import useFetchSubgraphData from "./useFetchSubgraphData";
 
 export type SubgraphDataContextType = {
   vaultAccounts: VaultAccountsData;
+  vaultActivities: VaultActivitiesData;
+  balances: BalanceUpdate[];
+  transactions: VaultTransaction[];
   loading: boolean;
 };
 
 export const defaultSubgraphData = {
   vaultAccounts: defaultVaultAccountsData,
+  vaultActivities: defaultVaultActivitiesData,
+  balances: [],
+  transactions: [],
   loading: true,
 };
 
