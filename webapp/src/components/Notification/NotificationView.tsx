@@ -75,6 +75,7 @@ const SettingsContainer = styled(motion.div)`
   height: 100%;
   border-radius: ${theme.border.radius};
   background: ${colors.backgroundDarker};
+  z-index: 10;
 `;
 
 const MenuItem = styled.div<{ active: boolean }>`

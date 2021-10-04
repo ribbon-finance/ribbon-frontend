@@ -1,6 +1,7 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
+import { motion } from "framer";
 
 import useNotifications from "shared/lib/hooks/useNotifications";
 import { PrimaryText, Subtitle, Title } from "shared/lib/designSystem";
@@ -9,7 +10,11 @@ import {
   getAssetDisplay,
   getAssetLogo,
 } from "shared/lib/utils/asset";
-import { getAssets, getDisplayAssets } from "shared/lib/constants/constants";
+import {
+  getAssets,
+  getDisplayAssets,
+  VaultOptions,
+} from "shared/lib/constants/constants";
 import colors from "shared/lib/designSystem/colors";
 import { useCallback } from "react";
 import { Notification, NotificationType } from "shared/lib/models/notification";
@@ -17,13 +22,26 @@ import { formatBigNumber, formatOption } from "shared/lib/utils/math";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import { getVaultURI } from "../../constants/constants";
+import theme from "shared/lib/designSystem/theme";
+import SegmentControl from "shared/lib/components/Common/SegmentControl";
 
-const NotificationItems = styled.div`
+const VaultFilterSection = styled.div`
+  border-bottom: ${theme.border.width} ${theme.border.style} ${colors.border};
+  position: relative;
+`;
+
+const NotificationItems = styled.ul`
   display: flex;
   flex-wrap: wrap;
   flex-grow: 1;
   overflow: auto;
   align-content: start;
+
+  /* List specific css */
+  padding-inline-start: 0;
+  list-style-type: none;
+  margin-block-end: 0px;
+  margin-block-start: 0px;
 
   /* Firefox */
   scrollbar-width: thin;
@@ -44,7 +62,7 @@ const NotificationItems = styled.div`
   }
 `;
 
-const NotificationItem = styled.div`
+const NotificationItem = styled(motion.li)`
   display: flex;
   padding: 16px;
   width: 100%;
@@ -86,13 +104,48 @@ const NotificationList: React.FC<NotificationListProps> = ({
 }) => {
   const notifications = useNotifications();
   const history = useHistory();
+  const [notificationVaultFilter, setNotificationVaultFilter] = useState<
+    VaultOptions | "all"
+  >("all");
 
-  const filteredNotifications = useMemo(
+  const typeFilteredNotifications = useMemo(
     () =>
       notifications.filter((notification) =>
         filters.includes(notification.type)
       ),
     [filters, notifications]
+  );
+
+  const notificationsVaultList = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          typeFilteredNotifications.map((notification) => notification.vault)
+        )
+      ),
+    [typeFilteredNotifications]
+  );
+
+  /**
+   * Ensure empty list does not happen
+   */
+  useEffect(() => {
+    if (
+      notificationVaultFilter !== "all" &&
+      !notificationsVaultList.includes(notificationVaultFilter)
+    ) {
+      setNotificationVaultFilter("all");
+    }
+  }, [notificationVaultFilter, notificationsVaultList]);
+
+  const filteredNotifications = useMemo(
+    () =>
+      typeFilteredNotifications.filter(
+        (notification) =>
+          notificationVaultFilter === "all" ||
+          notification.vault === notificationVaultFilter
+      ),
+    [notificationVaultFilter, typeFilteredNotifications]
   );
 
   const renderNotificationInfo = useCallback((notification: Notification) => {
@@ -166,38 +219,72 @@ const NotificationList: React.FC<NotificationListProps> = ({
   }, []);
 
   return filteredNotifications.length > 0 ? (
-    <NotificationItems>
-      {filteredNotifications.map((notification) => {
-        const Logo = getAssetLogo(getDisplayAssets(notification.vault));
+    <>
+      {notificationsVaultList.length > 1 && (
+        <VaultFilterSection>
+          <SegmentControl
+            segments={[{ value: "all", display: "ALL" }].concat(
+              notificationsVaultList.map((vault) => ({
+                value: vault,
+                display: productCopies[vault].title,
+              }))
+            )}
+            value={notificationVaultFilter}
+            onSelect={(value) =>
+              setNotificationVaultFilter(value as VaultOptions)
+            }
+          />
+        </VaultFilterSection>
+      )}
+      <NotificationItems>
+        {filteredNotifications.map((notification) => {
+          const Logo = getAssetLogo(getDisplayAssets(notification.vault));
 
-        return (
-          <NotificationItem
-            role="button"
-            onClick={() => {
-              onClose();
-              history.push(
-                getVaultURI(notification.vault, notification.vaultVersion)
-              );
-            }}
-          >
-            <NotificationItemIcon>
-              <Logo />
-            </NotificationItemIcon>
-            <NotificationItemInfo className="ml-2">
-              {renderNotificationInfo(notification)}
-              <PrimaryText
-                fontSize={12}
-                lineHeight={16}
-                className="mt-3"
-                style={{ opacity: 0.4 }}
-              >
-                {notification.date.fromNow()}
-              </PrimaryText>
-            </NotificationItemInfo>
-          </NotificationItem>
-        );
-      })}
-    </NotificationItems>
+          return (
+            <NotificationItem
+              key={notification.vault + notification.date.valueOf().toString()}
+              layout
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.4,
+                type: "keyframes",
+                ease: "easeOut",
+              }}
+              role="button"
+              onClick={() => {
+                onClose();
+                history.push(
+                  getVaultURI(notification.vault, notification.vaultVersion)
+                );
+              }}
+            >
+              <NotificationItemIcon>
+                <Logo height={40} width={40} />
+              </NotificationItemIcon>
+              <NotificationItemInfo className="ml-2">
+                {renderNotificationInfo(notification)}
+                <PrimaryText
+                  fontSize={12}
+                  lineHeight={16}
+                  className="mt-3"
+                  style={{ opacity: 0.4 }}
+                >
+                  {notification.date.fromNow()}
+                </PrimaryText>
+              </NotificationItemInfo>
+            </NotificationItem>
+          );
+        })}
+      </NotificationItems>
+    </>
   ) : (
     <div className="d-flex h-100 align-items-center justify-content-center">
       <PrimaryText fontSize={14} lineHeight={20}>

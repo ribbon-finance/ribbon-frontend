@@ -26,8 +26,24 @@ const useNotifications = () => {
         !vaultData.withdrawals.amount.isZero() &&
         vaultData.withdrawals.round !== vaultData.round
       ) {
+        const lastWithdrawTime = moment()
+          .isoWeekday("friday")
+          .utc()
+          .set("hour", 11)
+          .set("minute", 0)
+          .set("second", 0)
+          .set("millisecond", 0);
+
+        if (lastWithdrawTime.isAfter(moment())) {
+          lastWithdrawTime.subtract(1, "week");
+        }
+
         notificationList.push({
-          date: moment(),
+          /** Calculate how many weeks prior where the withdrawal happened using withdrawal round */
+          date: lastWithdrawTime.subtract(
+            vaultData.round - vaultData.withdrawals.round - 1,
+            "week"
+          ),
           type: "withdrawalReady",
           vault: vaultOption as VaultOptions,
           vaultVersion: "v2",
