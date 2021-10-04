@@ -1,16 +1,21 @@
 import { Link } from "react-router-dom";
-import Ribbon from "../../img/RibbonLogo.svg";
+import styled from "styled-components";
+
+import { AppLogo } from "shared/lib/assets/icons/logo";
+
+const LogoContainer = styled.div`
+  display: flex;
+  border-radius: 48px;
+`;
 
 const Logo = () => {
   return (
     <>
-      <Link to="/">
-        <img
-          src={Ribbon}
-          alt="Ribbon Finance"
-          style={{ height: 48, width: 48 }}
-        ></img>
-      </Link>
+      <LogoContainer>
+        <Link to="/">
+          <AppLogo height="48px" width="48px" />
+        </Link>
+      </LogoContainer>
     </>
   );
 };
