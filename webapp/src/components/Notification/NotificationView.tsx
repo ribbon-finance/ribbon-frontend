@@ -251,7 +251,13 @@ const NotificationView: React.FC<NotificationViewProps> = ({
       </NotificatioNDropdown>
     </AnimatePresence>
   ) : (
-    <BasicModal show={show} onClose={onClose} height={596} closeButton={false}>
+    <BasicModal
+      show={show}
+      onClose={onClose}
+      height={596}
+      closeButton={false}
+      backgroundColor={colors.backgroundDarker}
+    >
       <MobileModalContentContainer>{content}</MobileModalContentContainer>
     </BasicModal>
   );
