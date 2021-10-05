@@ -30,7 +30,7 @@ const VaultFilterSection = styled.div`
   position: relative;
 `;
 
-const VaultFilterIndicator = styled.div<{ color: string }>`
+const ColorDot = styled.div<{ color: string }>`
   height: 6px;
   width: 6px;
   border-radius: 3px;
@@ -109,7 +109,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
   onClose,
   filters,
 }) => {
-  const notifications = useNotifications();
+  const { notifications, lastReadTimestamp } = useNotifications();
   const history = useHistory();
   const [notificationVaultFilter, setNotificationVaultFilter] = useState<
     VaultOptions | "all"
@@ -237,10 +237,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
                 value: vault,
                 display: (
                   <span className="d-flex align-items-center">
-                    <VaultFilterIndicator
-                      color={getVaultColor(vault)}
-                      className="mr-2"
-                    />
+                    <ColorDot color={getVaultColor(vault)} className="mr-2" />
                     {productCopies[vault].title}
                   </span>
                 ),
@@ -297,6 +294,12 @@ const NotificationList: React.FC<NotificationListProps> = ({
                   {notification.date.fromNow()}
                 </PrimaryText>
               </NotificationItemInfo>
+              {lastReadTimestamp &&
+                lastReadTimestamp <= notification.date.valueOf() && (
+                  <div className="d-flex h-100 align-items-center ml-auto">
+                    <ColorDot color={getVaultColor(notification.vault)} />
+                  </div>
+                )}
             </NotificationItem>
           );
         })}

@@ -181,7 +181,6 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
 
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useElementScroll(containerRef);
-  console.log(scrollY);
 
   useEffect(() => {
     const currentCurrency = controlRefs[value].current;
