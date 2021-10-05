@@ -4,6 +4,7 @@ import { formatUnits } from "@ethersproject/units";
 
 import {
   getAssets,
+  getDisplayAssets,
   VaultOptions,
   VaultVersion,
 } from "../../constants/constants";
@@ -87,7 +88,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
   const color = getVaultColor(vaultOption);
   const asset = getAssets(vaultOption);
   const decimals = getAssetDecimals(asset);
-  const Logo = getAssetLogo(asset);
+  const Logo = getAssetLogo(getDisplayAssets(vaultOption));
 
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const [, setVaultPositionModal] = useGlobalState("vaultPositionModal");
