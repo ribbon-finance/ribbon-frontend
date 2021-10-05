@@ -30,6 +30,13 @@ const VaultFilterSection = styled.div`
   position: relative;
 `;
 
+const VaultFilterIndicator = styled.div<{ color: string }>`
+  height: 6px;
+  width: 6px;
+  border-radius: 3px;
+  background: ${(props) => props.color};
+`;
+
 const NotificationItems = styled.ul`
   display: flex;
   flex-wrap: wrap;
@@ -223,10 +230,20 @@ const NotificationList: React.FC<NotificationListProps> = ({
       {notificationsVaultList.length > 1 && (
         <VaultFilterSection>
           <SegmentControl
-            segments={[{ value: "all", display: "ALL" }].concat(
+            segments={[
+              { value: "all", display: "ALL" as string | JSX.Element },
+            ].concat(
               notificationsVaultList.map((vault) => ({
                 value: vault,
-                display: productCopies[vault].title,
+                display: (
+                  <span className="d-flex align-items-center">
+                    <VaultFilterIndicator
+                      color={getVaultColor(vault)}
+                      className="mr-2"
+                    />
+                    {productCopies[vault].title}
+                  </span>
+                ),
               }))
             )}
             value={notificationVaultFilter}

@@ -150,7 +150,7 @@ const SegmentControlButtonText = styled(Subtitle)`
 interface SegmentControlProps {
   segments: {
     value: string;
-    display: string;
+    display: string | JSX.Element;
   }[];
   value: string;
   onSelect: (value: string) => void;
@@ -243,10 +243,10 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
         ))}
       </SegmentControlContainer>
       {/** Scroll Indicator */}
-      <ContainerScrollIndicator direction="left" show={scrollY.left > 0}>
+      <ContainerScrollIndicator direction="left" show={scrollY.left > 5}>
         <IndicatorIcon className="fas fa-chevron-right" />
       </ContainerScrollIndicator>
-      <ContainerScrollIndicator direction="right" show={scrollY.right > 0}>
+      <ContainerScrollIndicator direction="right" show={scrollY.right > 5}>
         <IndicatorIcon className="fas fa-chevron-right" />
       </ContainerScrollIndicator>
     </>
