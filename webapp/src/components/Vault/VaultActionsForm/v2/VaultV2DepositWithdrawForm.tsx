@@ -25,6 +25,7 @@ import VaultBasicAmountForm from "../common/VaultBasicAmountForm";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import { VaultValidationErrors } from "../types";
 import VaultV2WithdrawForm from "./VaultV2WithdrawForm";
+import { useLocation } from "react-router-dom";
 
 const FormTabContainer = styled.div`
   display: flex;
@@ -111,7 +112,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
   /**
    * Primary hooks
    */
-  const { handleActionTypeChange, vaultActionForm } =
+  const { handleActionTypeChange, vaultActionForm, handleMaxClick } =
     useVaultActionForm(vaultOption);
   const {
     data: {
@@ -149,6 +150,44 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
   );
 
   /**
+   * Default to initial state and process initial state
+   */
+  const [processedInitialState, setProcessedInitialState] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (processedInitialState) {
+      return;
+    }
+
+    const searchParams = new URLSearchParams(location.search);
+    try {
+      switch (searchParams.get("initialAction")) {
+        case "completeWithdraw":
+          if (canCompleteWithdraw) {
+            handleActionTypeChange(ACTIONS.withdraw, "v2", {
+              withdrawOption: "complete",
+            });
+            handleMaxClick();
+            onFormSubmit();
+            setProcessedInitialState(true);
+          }
+          break;
+      }
+    } catch {
+      handleActionTypeChange(ACTIONS.deposit, "v2");
+      setProcessedInitialState(true);
+    }
+  }, [
+    canCompleteWithdraw,
+    handleActionTypeChange,
+    handleMaxClick,
+    location.search,
+    onFormSubmit,
+    processedInitialState,
+  ]);
+
+  /**
    * Check if approval needed
    */
   const showTokenApproval = useMemo(() => {
@@ -163,14 +202,6 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     return false;
   }, [decimals, tokenAllowance, vaultActionForm.actionType, vaultOption]);
   const [swapContainerOpen, setSwapContainerOpen] = useState(false);
-
-  /**
-   * Default action to deposit
-   */
-  useEffect(() => {
-    handleActionTypeChange(ACTIONS.deposit, "v2");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const error = useMemo((): VaultValidationErrors | undefined => {
     switch (vaultActionForm.actionType) {
@@ -222,7 +253,6 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
 
                 break;
               case "standard":
-              case "complete":
                 if (amountBigNumber.gt(lockedBalanceInAsset)) {
                   return "withdrawLimitExceeded";
                 }
@@ -231,6 +261,11 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
                   return "eixstingWithdraw";
                 }
 
+                break;
+              case "complete":
+                if (amountBigNumber.gt(withdrawals.amount)) {
+                  return "withdrawLimitExceeded";
+                }
                 break;
             }
         }
@@ -256,6 +291,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     vaultActionForm.withdrawOption,
     vaultBalanceInAsset,
     vaultMaxDepositAmount,
+    withdrawals,
   ]);
 
   const formContent = useMemo(() => {

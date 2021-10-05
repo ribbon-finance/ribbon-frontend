@@ -225,6 +225,19 @@ const NotificationList: React.FC<NotificationListProps> = ({
     );
   }, []);
 
+  const getNotificationRedirectQuerystring = useCallback(
+    (notification: Notification) => {
+      switch (notification.type) {
+        case "withdrawalReady":
+          return `?initialAction=completeWithdraw`;
+        case "optionMinting":
+        case "optionSale":
+          return `?jumpTo=vaultActivity&activityTimestamp=${notification.date.valueOf()}`;
+      }
+    },
+    []
+  );
+
   return filteredNotifications.length > 0 ? (
     <>
       {notificationsVaultList.length > 1 && (
@@ -276,7 +289,8 @@ const NotificationList: React.FC<NotificationListProps> = ({
               onClick={() => {
                 onClose();
                 history.push(
-                  getVaultURI(notification.vault, notification.vaultVersion)
+                  getVaultURI(notification.vault, notification.vaultVersion) +
+                    getNotificationRedirectQuerystring(notification)
                 );
               }}
             >

@@ -68,11 +68,17 @@ const VaultSecondaryText = styled(SecondaryText)<{
 interface DesktopVaultActivityListProps {
   activities: VaultActivity[];
   vaultOption: VaultOptions;
+  page: number;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+  perPage: number;
 }
 
 const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
   activities,
   vaultOption,
+  page,
+  setPage,
+  perPage,
 }) => {
   const { asset, decimals } = useMemo(() => {
     const asset = getAssets(vaultOption);
@@ -210,7 +216,11 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
         getVaultActivityExternalURL(activity)
       )}
       logos={activities.map((activity) => getActivityLogo(activity))}
-      perPage={6}
+      perPage={perPage}
+      pageController={{
+        page,
+        setPage,
+      }}
     />
   );
 };
