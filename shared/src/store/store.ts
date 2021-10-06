@@ -1,5 +1,6 @@
 import { BigNumber } from "ethers";
 import { createGlobalState } from "react-hooks-global-state";
+
 import { DesktopViewType } from "../components/Product/types";
 import {
   VaultList,
@@ -46,6 +47,7 @@ interface GlobalStore {
     vaultOption?: VaultOptions;
     vaultVersion: VaultVersion;
   };
+  notificationLastReadTimestamp?: number;
 }
 
 export const initialState: GlobalStore = {
@@ -90,6 +92,7 @@ export const initialState: GlobalStore = {
     show: false,
     vaultVersion: VaultVersionList[0],
   },
+  notificationLastReadTimestamp: undefined,
 };
 
 export const { useGlobalState } = createGlobalState(initialState);

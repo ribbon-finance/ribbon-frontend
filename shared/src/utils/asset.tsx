@@ -102,6 +102,7 @@ export const getAssetLogo: (asset: Assets) =>
           width?: number;
           right?: string;
           bottom?: string;
+          border?: string;
         };
       }
     > = (asset) => {

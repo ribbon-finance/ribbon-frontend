@@ -8,6 +8,7 @@ import useOutsideAlerter from "shared/lib/hooks/useOutsideAlerter";
 import NotificationView from "./NotificationView";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
+import useNotifications from "shared/lib/hooks/useNotifications";
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -27,23 +28,45 @@ const ButtonContainer = styled.div`
   }
 `;
 
+const UnreadIndicator = styled.div`
+  position: absolute;
+  top: 13px;
+  right: 13px;
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: ${colors.red};
+`;
+
 const NotificationButton = () => {
   const desktopMenuRef = useRef(null);
   const [show, setShow] = useState(false);
   const { width } = useScreenSize();
 
+  const { notifications, lastReadTimestamp, updateLastReadTimestamp } =
+    useNotifications();
+
   const handleCloseMenu = useCallback(() => {
     setShow(false);
-  }, []);
+    updateLastReadTimestamp();
+  }, [updateLastReadTimestamp]);
 
   useOutsideAlerter(desktopMenuRef, () => {
-    if (width > sizes.md) handleCloseMenu();
+    if (width > sizes.md && show) handleCloseMenu();
   });
 
   return (
     <div className="d-flex position-relative" ref={desktopMenuRef}>
-      <ButtonContainer role="button" onClick={() => setShow((prev) => !prev)}>
+      <ButtonContainer
+        role="button"
+        onClick={() => (show ? handleCloseMenu() : setShow(true))}
+      >
         <BellIcon height={16} width={16} />
+        {notifications.find(
+          (notification) =>
+            lastReadTimestamp &&
+            lastReadTimestamp <= notification.date.valueOf()
+        ) && <UnreadIndicator />}
       </ButtonContainer>
       <NotificationView show={show} onClose={handleCloseMenu} />
     </div>

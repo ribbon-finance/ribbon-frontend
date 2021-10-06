@@ -239,11 +239,48 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   ),
 };
 
-export const VaultWithdrawalFee: { [vault in VaultOptions]: string } = {
-  "rUSDC-ETH-P-THETA": "1.0",
-  "rETH-THETA": "0.5",
-  "rBTC-THETA": "0.5",
-  "ryvUSDC-ETH-P-THETA": "1.0",
+export const VaultFees: {
+  [vault in VaultOptions]: {
+    v1: { withdrawalFee: string };
+    v2: { managementFee: string; performanceFee: string };
+  };
+} = {
+  "rUSDC-ETH-P-THETA": {
+    v1: {
+      withdrawalFee: "1.0",
+    },
+    v2: {
+      managementFee: "2",
+      performanceFee: "10",
+    },
+  },
+  "rETH-THETA": {
+    v1: {
+      withdrawalFee: "0.5",
+    },
+    v2: {
+      managementFee: "2",
+      performanceFee: "10",
+    },
+  },
+  "rBTC-THETA": {
+    v1: {
+      withdrawalFee: "0.5",
+    },
+    v2: {
+      managementFee: "2",
+      performanceFee: "10",
+    },
+  },
+  "ryvUSDC-ETH-P-THETA": {
+    v1: {
+      withdrawalFee: "1.0",
+    },
+    v2: {
+      managementFee: "",
+      performanceFee: "",
+    },
+  },
 };
 
 export const getAirtableName = (vault: VaultOptions): string => {

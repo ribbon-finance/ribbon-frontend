@@ -45,9 +45,9 @@ const FrameBar = styled.div<{
   height: ${(props) => props.height}px;
   background: ${(props) => `linear-gradient(
     270deg,
-    ${props.color}00 0%,
+    ${props.color}00 5%,
     ${props.color} 50%,
-    ${props.color}00 100%
+    ${props.color}00 95%
   )`};
   background-size: 200%;
   animation: 10s ${(props) => livelyAnimation(props.position)} linear infinite;

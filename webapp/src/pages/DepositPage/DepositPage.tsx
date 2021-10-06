@@ -1,6 +1,7 @@
 import React, { ReactNode, useMemo } from "react";
 import { ethers } from "ethers";
 import styled, { keyframes } from "styled-components";
+import { Redirect } from "react-router-dom";
 
 import {
   BaseIndicator,
@@ -40,7 +41,6 @@ import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
 import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopActionForm";
-import { Redirect } from "react-router-dom";
 import YourPosition from "shared/lib/components/Vault/YourPosition";
 import { truncateAddress } from "shared/lib/utils/address";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
@@ -331,6 +331,7 @@ const HeroSection: React.FC<{
             }}
             markerConfig={{
               right: "0px",
+              border: "none",
             }}
           />
         );

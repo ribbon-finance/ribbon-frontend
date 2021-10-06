@@ -12,7 +12,7 @@ import { Assets } from "shared/lib/store/types";
 import {
   isPutVault,
   VaultOptions,
-  VaultWithdrawalFee,
+  VaultFees,
 } from "shared/lib/constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -83,7 +83,9 @@ const PreviewStep: React.FC<{
       case ACTIONS.withdraw:
         actionDetails = {
           key: "Withdrawal Fee",
-          value: `${parseFloat(VaultWithdrawalFee[vaultOption]).toString()}%`,
+          value: `${parseFloat(
+            VaultFees[vaultOption].v1.withdrawalFee
+          ).toString()}%`,
         };
         break;
       case ACTIONS.transfer:

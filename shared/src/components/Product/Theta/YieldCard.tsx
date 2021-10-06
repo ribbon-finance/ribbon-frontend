@@ -78,8 +78,8 @@ const TopContainer = styled.div<{ color: string }>`
 
   background: linear-gradient(
     96.84deg,
-    ${(props) => props.color}14 1.04%,
-    ${(props) => props.color}03 98.99%
+    ${(props) => props.color}29 1.04%,
+    ${(props) => props.color}14 98.99%
   );
 `;
 

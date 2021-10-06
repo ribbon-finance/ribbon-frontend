@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
@@ -13,6 +19,7 @@ import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
 import Pagination from "shared/lib/components/Common/Pagination";
 import { AnimatePresence, motion } from "framer-motion";
+import { useLocation } from "react-router-dom";
 
 const PaginationContainer = styled.div`
   display: flex;
@@ -33,6 +40,7 @@ interface VaultActivityProps {
 const VaultActivity: React.FC<VaultActivityProps> = ({
   vault: { vaultOption, vaultVersion },
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const { activities, loading } = useVaultActivity(vaultOption, vaultVersion);
   const [activityFilter, setActivityFilter] = useState<ActivityFilter>(
     activityFilters[0]
@@ -41,6 +49,12 @@ const VaultActivity: React.FC<VaultActivityProps> = ({
   const { width } = useScreenSize();
   const [page, setPage] = useState(1);
   const loadingText = useTextAnimation(loading);
+
+  /**
+   * Default to initial state and process initial state
+   */
+  const [processedInitialState, setProcessedInitialState] = useState(false);
+  const location = useLocation();
 
   const filteredActivities = useMemo(() => {
     let filteredActivities = activities;
@@ -68,6 +82,48 @@ const VaultActivity: React.FC<VaultActivityProps> = ({
 
     return filteredActivities;
   }, [activities, activityFilter, sortBy]);
+
+  /**
+   * Process initial states
+   */
+  useEffect(() => {
+    if (processedInitialState) {
+      return;
+    }
+
+    const searchParams = new URLSearchParams(location.search);
+    try {
+      switch (searchParams.get("jumpTo")) {
+        case "vaultActivity":
+          const jumpToActivity = filteredActivities.find(
+            (activity) =>
+              activity.date.valueOf() ===
+              parseInt(searchParams.get("activityTimestamp")!)
+          );
+
+          if (!loading && jumpToActivity) {
+            setTimeout(async () => {
+              if (containerRef.current) {
+                containerRef.current.scrollIntoView({ behavior: "smooth" });
+              }
+
+              setPage(
+                Math.min(
+                  Math.ceil(
+                    (filteredActivities.indexOf(jumpToActivity) + 1) / perPage
+                  ),
+                  1
+                )
+              );
+            }, 800);
+            setProcessedInitialState(true);
+          }
+          break;
+      }
+    } catch {
+      setProcessedInitialState(true);
+    }
+  }, [filteredActivities, loading, location.search, processedInitialState]);
 
   useEffect(() => {
     const maxNumPages = Math.ceil(filteredActivities.length / perPage);
@@ -123,6 +179,7 @@ const VaultActivity: React.FC<VaultActivityProps> = ({
       />
       <AnimatePresence initial={false} exitBeforeEnter>
         <motion.div
+          ref={containerRef}
           key={page}
           transition={{
             duration: 0.25,
@@ -147,6 +204,9 @@ const VaultActivity: React.FC<VaultActivityProps> = ({
             <DesktopVaultActivityList
               activities={filteredActivities}
               vaultOption={vaultOption}
+              page={page}
+              setPage={setPage}
+              perPage={perPage}
             />
           ) : (
             <MobileVaultActivityList

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import moment from "moment";
 
 import { getAssets, VaultOptions, VaultVersion } from "../constants/constants";
@@ -8,6 +8,9 @@ import { useV2VaultsData } from "./vaultDataContext";
 import { useAllVaultAccounts } from "./useVaultAccounts";
 import { isPracticallyZero } from "../utils/math";
 import { getAssetDecimals } from "../utils/asset";
+import { useGlobalState } from "../store/store";
+
+const localStorageKey = "notificationLastRead";
 
 const useNotifications = () => {
   const { activities: vaultsActivities } = useAllVaultActivities();
@@ -15,7 +18,34 @@ const useNotifications = () => {
   const { data: vaultAccounts } = useAllVaultAccounts();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [lastReadTimestamp, setLastReadTimestamp] = useGlobalState(
+    "notificationLastReadTimestamp"
+  );
 
+  /**
+   * Get last read timestamp
+   */
+  useEffect(() => {
+    let lastRead = localStorage.getItem(localStorageKey);
+
+    if (!lastRead) {
+      lastRead = moment().subtract(3, "days").valueOf().toString();
+      localStorage.setItem(localStorageKey, lastRead);
+    }
+
+    setLastReadTimestamp(parseInt(lastRead));
+  }, [setLastReadTimestamp]);
+
+  const updateLastReadTimestamp = useCallback(() => {
+    const lastRead = moment().valueOf();
+
+    localStorage.setItem(localStorageKey, lastRead.toString());
+    setLastReadTimestamp(lastRead);
+  }, [setLastReadTimestamp]);
+
+  /**
+   * Process Notification List Item
+   */
   useEffect(() => {
     const notificationList: Notification[] = [];
 
@@ -26,8 +56,24 @@ const useNotifications = () => {
         !vaultData.withdrawals.amount.isZero() &&
         vaultData.withdrawals.round !== vaultData.round
       ) {
+        const lastWithdrawTime = moment()
+          .isoWeekday("friday")
+          .utc()
+          .set("hour", 11)
+          .set("minute", 0)
+          .set("second", 0)
+          .set("millisecond", 0);
+
+        if (lastWithdrawTime.isAfter(moment())) {
+          lastWithdrawTime.subtract(1, "week");
+        }
+
         notificationList.push({
-          date: moment(),
+          /** Calculate how many weeks prior where the withdrawal happened using withdrawal round */
+          date: lastWithdrawTime.subtract(
+            vaultData.round - vaultData.withdrawals.round - 1,
+            "week"
+          ),
           type: "withdrawalReady",
           vault: vaultOption as VaultOptions,
           vaultVersion: "v2",
@@ -89,7 +135,11 @@ const useNotifications = () => {
     );
   }, [vaultAccounts, vaultsActivities, v2VaultsData]);
 
-  return notifications;
+  return {
+    notifications,
+    lastReadTimestamp,
+    updateLastReadTimestamp,
+  };
 };
 
 export default useNotifications;

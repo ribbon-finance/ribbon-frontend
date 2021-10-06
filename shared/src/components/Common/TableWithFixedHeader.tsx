@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 
 import { ExternalIcon } from "../../assets/icons/icons";
@@ -118,6 +118,10 @@ interface TableWithFixedHeaderProps {
   logos?: JSX.Element[];
   externalLinks?: string[];
   perPage?: number;
+  pageController?: {
+    page: number;
+    setPage: React.Dispatch<React.SetStateAction<number>>;
+  };
 }
 
 const TableWithFixedHeader: React.FC<TableWithFixedHeaderProps> = ({
@@ -128,10 +132,19 @@ const TableWithFixedHeader: React.FC<TableWithFixedHeaderProps> = ({
   logos,
   externalLinks,
   perPage = 10,
+  pageController,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { width } = useElementSize(containerRef);
-  const [page, setPage] = useState<number>(1);
+  const [page, _setPage] = useState<number>(1);
+  const setPage = pageController ? pageController.setPage : _setPage;
+
+  // Sync page controller with local state
+  useEffect(() => {
+    if (pageController && pageController.page !== page) {
+      _setPage(pageController.page);
+    }
+  }, [page, pageController]);
 
   const availableContentWidth = useMemo(() => {
     let calculatedWidth = width - 32;
@@ -163,7 +176,7 @@ const TableWithFixedHeader: React.FC<TableWithFixedHeaderProps> = ({
     }
 
     return <></>;
-  }, [data, page, perPage]);
+  }, [data, page, perPage, setPage]);
 
   const paginatedData = useMemo(() => {
     return data.slice((page - 1) * perPage, page * perPage);

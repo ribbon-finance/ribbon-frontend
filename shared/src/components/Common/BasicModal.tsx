@@ -99,6 +99,7 @@ interface BasicModalProps {
   children: JSX.Element;
   animationProps?: HTMLMotionProps<"div"> & RefAttributes<HTMLDivElement>;
   headerBackground?: boolean;
+  backgroundColor?: string;
   theme?: string;
 }
 
@@ -112,6 +113,7 @@ const BasicModal: React.FC<BasicModalProps> = ({
   children,
   animationProps = {},
   headerBackground = false,
+  backgroundColor,
   theme,
 }) => (
   <StyledModal
@@ -122,6 +124,7 @@ const BasicModal: React.FC<BasicModalProps> = ({
     onHide={onClose}
     backdrop
     theme={theme}
+    backgroundColor={backgroundColor}
   >
     <BaseModalHeader>
       {/* Back button */}

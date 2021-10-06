@@ -34,7 +34,7 @@ export const BaseButton = styled.div`
   padding: 12px 16px;
 `;
 
-export const BaseModal = styled(BootstrapModal)`
+export const BaseModal = styled(BootstrapModal)<{ backgroundColor?: string }>`
   backdrop-filter: blur(80px);
   /**
    * Firefox desktop come with default flag to have backdrop-filter disabled
@@ -46,7 +46,8 @@ export const BaseModal = styled(BootstrapModal)`
   }
 
   .modal-content {
-    background-color: ${colors.backgroundLight};
+    background-color: ${(props) =>
+      props.backgroundColor || colors.backgroundLight};
     border: none;
     border-radius: ${theme.border.radius};
 
