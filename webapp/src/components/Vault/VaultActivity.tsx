@@ -102,11 +102,17 @@ const VaultActivity: React.FC<VaultActivityProps> = ({
           );
 
           if (!loading && jumpToActivity) {
-            setTimeout(() => {
-              containerRef.current?.scrollIntoView({ behavior: "smooth" });
+            setTimeout(async () => {
+              if (containerRef.current) {
+                containerRef.current.scrollIntoView({ behavior: "smooth" });
+              }
+
               setPage(
-                Math.ceil(
-                  (filteredActivities.indexOf(jumpToActivity) + 1) / perPage
+                Math.min(
+                  Math.ceil(
+                    (filteredActivities.indexOf(jumpToActivity) + 1) / perPage
+                  ),
+                  1
                 )
               );
             }, 800);
