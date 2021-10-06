@@ -1,14 +1,10 @@
 import { BigNumber } from "ethers";
 import {
-  getAssets,
-  getDisplayAssets,
   VaultList,
   VaultOptions,
   VaultVersion,
   VaultVersionList,
 } from "../constants/constants";
-import { Assets } from "../store/types";
-import { getAssetDecimals } from "../utils/asset";
 
 export interface Vault {
   id: string;
