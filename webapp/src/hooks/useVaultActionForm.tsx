@@ -42,19 +42,23 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   /**
    * V1 vault data
    */
-  const { deposits, vaultLimit, vaultBalanceInAsset, maxWithdrawAmount } =
-    useVaultData(vaultOption);
+  const {
+    decimals,
+    deposits,
+    maxWithdrawAmount,
+    vaultLimit,
+    vaultBalanceInAsset,
+    userAssetBalance,
+  } = useVaultData(vaultOption);
   /**
    * V2 vault data
    */
   const {
     data: {
       cap: v2Cap,
-      decimals,
       depositBalanceInAsset: v2DepositBalanceInAsset,
       lockedBalanceInAsset: v2LockedBalanceInAsset,
       totalBalance: v2TotalBalance,
-      userAssetBalance,
       withdrawals: v2Withdrawals,
     },
   } = useV2VaultData(vaultOption);
