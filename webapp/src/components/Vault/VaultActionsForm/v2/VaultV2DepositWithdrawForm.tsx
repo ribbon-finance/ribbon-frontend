@@ -13,7 +13,7 @@ import { ACTIONS } from "../Modal/types";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
-import { useV2VaultData } from "shared/lib/hooks/vaultDataContext";
+import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { ERC20Token } from "shared/lib/models/eth";
 import { isETHVault, isVaultFull } from "shared/lib/utils/vault";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";

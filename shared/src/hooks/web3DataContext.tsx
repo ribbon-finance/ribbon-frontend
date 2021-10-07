@@ -5,6 +5,7 @@ import {
   getDisplayAssets,
   VaultOptions,
 } from "../constants/constants";
+import { defaultStakingPoolData, StakingPoolData } from "../models/staking";
 import {
   defaultV2VaultData,
   VaultData,
@@ -16,23 +17,26 @@ import useFetchAssetBalanceData, {
   defaultUserAssetBalanceData,
   UserAssetBalanceData,
 } from "./useFetchAssetBalanceData";
+import useFetchStakingPoolData from "./useFetchStakingPoolData";
 import useFetchV2VaultData from "./useFetchV2VaultData";
 import useFetchVaultData from "./useFetchVaultData";
 
-export type VaultDataContextType = {
+export type Web3DataContextType = {
   v1: VaultData;
   v2: V2VaultData;
   assetBalance: UserAssetBalanceData;
+  stakingPool: StakingPoolData;
 };
 
-export const VaultDataContext = React.createContext<VaultDataContextType>({
+export const Web3DataContext = React.createContext<Web3DataContextType>({
   v1: defaultVaultData,
   v2: defaultV2VaultData,
   assetBalance: defaultUserAssetBalanceData,
+  stakingPool: defaultStakingPoolData,
 });
 
 export const useVaultData = (vault: VaultOptions) => {
-  const contextData = useContext(VaultDataContext);
+  const contextData = useContext(Web3DataContext);
 
   return {
     ...contextData.v1.responses[vault],
@@ -48,7 +52,7 @@ export const useVaultData = (vault: VaultOptions) => {
 };
 
 export const useV2VaultsData = () => {
-  const contextData = useContext(VaultDataContext);
+  const contextData = useContext(Web3DataContext);
 
   return {
     data: contextData.v2.responses,
@@ -57,7 +61,7 @@ export const useV2VaultsData = () => {
 };
 
 export const useV2VaultData = (vault: VaultOptions) => {
-  const contextData = useContext(VaultDataContext);
+  const contextData = useContext(Web3DataContext);
 
   return {
     data: {
@@ -71,22 +75,33 @@ export const useV2VaultData = (vault: VaultOptions) => {
   };
 };
 
-export const VaultDataContextProvider: React.FC<{ children: ReactElement }> = ({
+export const useStakingPoolData = (vault: VaultOptions) => {
+  const contextData = useContext(Web3DataContext);
+
+  return {
+    data: contextData.stakingPool.responses[vault],
+    loading: contextData.stakingPool.loading,
+  };
+};
+
+export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({
   children,
 }) => {
   const vaultData = useFetchVaultData();
   const v2VaultData = useFetchV2VaultData();
   const assetBalance = useFetchAssetBalanceData();
+  const stakingPool = useFetchStakingPoolData();
 
   return (
-    <VaultDataContext.Provider
+    <Web3DataContext.Provider
       value={{
         v1: vaultData,
         v2: v2VaultData,
         assetBalance,
+        stakingPool,
       }}
     >
       {children}
-    </VaultDataContext.Provider>
+    </Web3DataContext.Provider>
   );
 };

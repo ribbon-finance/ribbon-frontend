@@ -17,10 +17,7 @@ import { isETHVault } from "shared/lib/utils/vault";
 import usePendingTransactions from "../../../../hooks/usePendingTransactions";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
-import {
-  useVaultData,
-  useV2VaultData,
-} from "shared/lib/hooks/vaultDataContext";
+import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { capitalize } from "shared/lib/utils/text";
 import useV2Vault from "shared/lib/hooks/useV2Vault";
 import WarningStep from "./WarningStep";

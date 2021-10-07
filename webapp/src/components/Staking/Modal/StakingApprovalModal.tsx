@@ -17,7 +17,7 @@ import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import usePendingTransactions from "../../../hooks/usePendingTransactions";
 import useERC20Token from "shared/lib/hooks/useERC20Token";
-import { StakingPoolData } from "shared/lib/models/staking";
+import { StakingPoolResponse } from "shared/lib/models/staking";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 
 const FloatingContainer = styled.div`
@@ -35,7 +35,7 @@ const FloatingContainer = styled.div`
 interface StakingApprovalModalProps {
   show: boolean;
   onClose: () => void;
-  stakingPoolData: StakingPoolData;
+  stakingPoolData: StakingPoolResponse;
   vaultOption: VaultOptions;
 }
 

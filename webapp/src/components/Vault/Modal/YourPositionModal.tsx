@@ -27,7 +27,7 @@ import { BigNumber } from "ethers";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import CapBar from "shared/lib/components/Deposit/CapBar";
-import useStakingPoolData from "shared/lib/hooks/useStakingPoolData";
+import { useStakingPoolData } from "shared/lib/hooks/web3DataContext";
 import { useGlobalState } from "shared/lib/store/store";
 
 const ModalContent = styled(motion.div)`

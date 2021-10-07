@@ -19,7 +19,7 @@ import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import useStakingPoolData from "shared/lib/hooks/useStakingPoolData";
+import {useStakingPoolData} from "shared/lib/hooks/web3DataContext";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
