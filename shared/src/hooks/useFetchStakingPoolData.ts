@@ -134,11 +134,10 @@ const useFetchStakingPoolData = (
 
   useEffect(() => {
     let pollInterval: any = undefined;
+    doMulticall();
+
     if (poll) {
-      doMulticall();
       pollInterval = setInterval(doMulticall, pollingFrequency);
-    } else {
-      doMulticall();
     }
 
     return () => {

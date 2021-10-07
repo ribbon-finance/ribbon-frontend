@@ -104,11 +104,10 @@ const useFetchSubgraphData = (
   useEffect(() => {
     // eslint-disable-next-line no-undef
     let pollInterval: NodeJS.Timeout | null = null;
+    doMulticall();
+
     if (poll) {
-      doMulticall();
       pollInterval = setInterval(doMulticall, pollingFrequency);
-    } else {
-      doMulticall();
     }
 
     return () => {
