@@ -2,7 +2,7 @@ import { isDevelopment } from "shared/lib/utils/env";
 
 export const RibbonOGAddress = isDevelopment()
   ? "0x81Eb8D19277da74BA7a1F804A79e1bC31CeF92C1"
-  : "0xD602e05594101FdCf3AF0dDcf4775fb1b78f5397";
+  : "0xf513bd4bA753548505A245be1877C39A4f0b5c96";
 
 export const getColorwayFromTokenID = (tokenId: number) => {
   if (tokenId < 1194) {
