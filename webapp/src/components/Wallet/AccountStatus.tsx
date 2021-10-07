@@ -110,7 +110,7 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
 
 const WalletButton = styled(BaseButton)<WalletButtonProps>`
   background-color: ${(props) =>
-    props.connected ? colors.backgroundDarker : `${colors.green}14`};
+    props.connected ? colors.background.two : `${colors.green}14`};
   align-items: center;
   height: fit-content;
 
@@ -167,7 +167,7 @@ const WalletDesktopMenu = styled(motion.div)<MenuStateProps>`
           right: 40px;
           top: 64px;
           width: fit-content;
-          background-color: ${colors.backgroundDarker};
+          background-color: ${colors.background.two};
           border-radius: ${theme.border.radius};
         `
       : `

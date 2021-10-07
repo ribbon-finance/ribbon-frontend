@@ -107,7 +107,7 @@ const SaveButton = styled(BaseButton)`
   justify-content: center;
   padding: 14px 0px;
   margin: 16px 0px auto 0px;
-  background: ${colors.backgroundDarker};
+  background: ${colors.background.two};
   border-radius: ${theme.border.radius};
 
   @media (max-width: ${sizes.md}px) {
@@ -170,7 +170,7 @@ const MenuItem = styled.div<{ color?: string; active: boolean }>`
   opacity: 0.64;
   border-radius: 100px;
   background: ${(props) =>
-    props.color ? `${props.color}14` : colors.backgroundLighter};
+    props.color ? `${props.color}14` : colors.background.three};
   margin-top: 16px;
   border: ${theme.border.width} ${theme.border.style} transparent;
   transition: border 150ms;
@@ -303,8 +303,8 @@ const FullscreenMultiselectFilters: React.FC<
   filters,
   title,
   buttonConfig = {
-    background: colors.background,
-    activeBackground: colors.backgroundLight,
+    background: colors.background.two,
+    activeBackground: colors.background.three,
     paddingHorizontal: 16,
     paddingVertical: 12,
     color: `${colors.primaryText}`,

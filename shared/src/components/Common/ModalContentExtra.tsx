@@ -17,7 +17,7 @@ const EndingBorder = styled.div<{ config?: StyleConfig }>`
     ${(props) => props.config?.mx ?? "-16"}px;
   border-radius: ${theme.border.radius};
   border-bottom: ${theme.border.width} ${theme.border.style} ${colors.border};
-  background: ${colors.backgroundLight};
+  background: ${colors.background.two};
   z-index: 1;
 `;
 
@@ -27,7 +27,7 @@ const ExtraContainer = styled.div<{
 }>`
   display: flex;
   background: ${(props) =>
-    props.backgroundColor ? props.backgroundColor : colors.backgroundLighter};
+    props.backgroundColor ? props.backgroundColor : colors.background.three};
   border-radius: ${theme.border.radius};
   margin: -16px ${(props) => props.config?.mx ?? "-16"}px
     ${(props) => props.config?.my ?? "-16"}px

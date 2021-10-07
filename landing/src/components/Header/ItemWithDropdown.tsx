@@ -93,7 +93,7 @@ const WalletDesktopMenu = styled.div<MenuStateProps>`
             right: 40px;
             top: 64px;
             width: fit-content;
-            background-color: ${colors.backgroundDarker};
+            background-color: ${colors.background.two};
             border-radius: ${theme.border.radius};
           `
       : `

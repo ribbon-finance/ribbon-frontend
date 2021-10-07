@@ -69,7 +69,7 @@ const MarketYield = styled.div`
   display: flex;
   align-items: center;
   margin-top: 16px;
-  background: ${colors.backgroundLight};
+  background: ${colors.background.two};
   border-radius: ${theme.border.radius};
   padding: 12px 16px;
 

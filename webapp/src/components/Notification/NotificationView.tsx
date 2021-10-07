@@ -27,7 +27,7 @@ const NotificatioNDropdown = styled(motion.div)<{ isOpen: boolean }>`
           position: absolute;
           right: -180px;
           top: 64px;
-          background-color: ${colors.backgroundDarker};
+          background-color: ${colors.background.two};
           border-radius: ${theme.border.radius};
         `
       : `
@@ -74,7 +74,7 @@ const SettingsContainer = styled(motion.div)`
   width: 100%;
   height: 100%;
   border-radius: ${theme.border.radius};
-  background: ${colors.backgroundDarker};
+  background: ${colors.background.two};
   z-index: 10;
 `;
 
@@ -256,7 +256,7 @@ const NotificationView: React.FC<NotificationViewProps> = ({
       onClose={onClose}
       height={596}
       closeButton={false}
-      backgroundColor={colors.backgroundDarker}
+      backgroundColor={colors.background.two}
     >
       <MobileModalContentContainer>{content}</MobileModalContentContainer>
     </BasicModal>

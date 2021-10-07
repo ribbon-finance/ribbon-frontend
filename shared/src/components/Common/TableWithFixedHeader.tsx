@@ -61,7 +61,7 @@ const TableRow = styled.div`
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  background: ${colors.backgroundLight};
+  background: ${colors.background.two};
   border-radius: ${theme.border.radius};
   margin-top: 16px;
   padding: 16px;

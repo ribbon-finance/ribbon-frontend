@@ -89,7 +89,7 @@ const FilterDropdownMenu = styled(motion.div)<{
             }
           })()}
           width: fit-content;
-          background-color: ${colors.backgroundDarker};
+          background-color: ${colors.background.two};
           border-radius: ${theme.border.radius};
         `
       : `
@@ -141,8 +141,8 @@ const FilterDropdown: React.FC<
   value,
   onSelect,
   buttonConfig = {
-    background: colors.backgroundLight,
-    activeBackground: colors.backgroundLight,
+    background: colors.background.two,
+    activeBackground: colors.background.two,
     paddingHorizontal: 12,
     paddingVertical: 8,
     color: `${colors.primaryText}A3`,

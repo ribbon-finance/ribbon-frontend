@@ -21,12 +21,12 @@ const FormContainer = styled.div`
   align-items: center;
   flex-direction: column;
   border-radius: ${theme.border.radius};
-  background: ${colors.backgroundLight};
+  background: ${colors.background.two};
   z-index: 1;
 `;
 
 const FormExtraContainer = styled.div`
-  background: ${colors.backgroundLighter};
+  background: ${colors.background.three};
   padding: 32px 24px 16px 24px;
   margin-top: -20px;
   border-radius: ${theme.border.radius};

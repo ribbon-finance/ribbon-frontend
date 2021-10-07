@@ -32,7 +32,7 @@ import BasicModal from "../Common/BasicModal";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 
 const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
-  background-color: ${colors.backgroundDarker};
+  background-color: ${colors.background.two};
   align-items: center;
   width: 100%;
 

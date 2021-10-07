@@ -34,7 +34,7 @@ const PerformanceContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  background: ${colors.backgroundLight};
+  background: ${colors.background.two};
   border-radius: ${theme.border.radius};
   margin-top: 24px;
 `;

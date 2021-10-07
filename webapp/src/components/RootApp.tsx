@@ -17,7 +17,7 @@ import colors from "shared/lib/designSystem/colors";
 import YourPositionModal from "./Vault/Modal/YourPositionModal";
 
 const Root = styled.div<{ screenHeight: number }>`
-  background-color: ${colors.background};
+  background-color: ${colors.background.one};
   min-height: ${(props) =>
     props.screenHeight ? `${props.screenHeight}px` : `100vh`};
 `;

@@ -47,7 +47,7 @@ export const BaseModal = styled(BootstrapModal)<{ backgroundColor?: string }>`
 
   .modal-content {
     background-color: ${(props) =>
-      props.backgroundColor || colors.backgroundLight};
+      props.backgroundColor || colors.background.two};
     border: none;
     border-radius: ${theme.border.radius};
 

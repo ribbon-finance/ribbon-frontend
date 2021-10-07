@@ -84,7 +84,7 @@ const PositionMainContainer = styled.div`
   align-items: center;
   width: 100%;
   padding: 16px;
-  background: ${colors.backgroundLight};
+  background: ${colors.background.two};
   border-radius: ${theme.border.radius};
   z-index: 2;
 `;
@@ -92,7 +92,7 @@ const PositionMainContainer = styled.div`
 const PositionStakedContainer = styled(PositionMainContainer)`
   margin-top: -16px;
   padding-top: calc(16px + 16px);
-  background: ${colors.backgroundLighter};
+  background: ${colors.background.three};
   border-radius: ${theme.border.radius};
   z-index: 1;
 `;

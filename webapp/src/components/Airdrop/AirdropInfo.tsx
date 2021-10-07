@@ -97,7 +97,7 @@ const BreakdownContainer = styled(motion.div)`
   left: 0;
   width: 100%;
   height: calc(100% - 32px);
-  background: ${colors.backgroundLight};
+  background: ${colors.background.two};
   padding: 0 16px;
   z-index: 10;
 `;

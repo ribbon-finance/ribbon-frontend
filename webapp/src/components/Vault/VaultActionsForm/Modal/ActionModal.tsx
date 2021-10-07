@@ -44,7 +44,7 @@ interface ModalBodyProps extends ModalProps {
 const ModalBody = styled.div<ModalBodyProps>`
   display: flex;
   flex-direction: column;
-  background: ${colors.backgroundLight};
+  background: ${colors.background.two};
   box-sizing: border-box;
   border-radius: 8px;
   width: ${(props) => (props.variant === "desktop" ? "383px" : "375px")};

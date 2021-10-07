@@ -29,7 +29,7 @@ const OverviewContainer = styled.div`
   flex-wrap: wrap;
   width: 100%;
   margin-top: 48px;
-  background: ${colors.backgroundLight};
+  background: ${colors.background.two};
   border-radius: ${theme.border.radius};
 `;
 

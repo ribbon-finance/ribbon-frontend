@@ -15,7 +15,7 @@ const ButtonContainer = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: ${theme.border.radius};
-  background: ${colors.backgroundDarker};
+  background: ${colors.background.two};
   height: 48px;
   width: 48px;
 

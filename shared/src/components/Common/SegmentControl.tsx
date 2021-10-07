@@ -16,7 +16,7 @@ const SegmentControlContainer = styled.div<{
 }>`
   border-radius: ${theme.border.radius};
   background-color: ${(props) =>
-    props.color ? `${props.color}14` : colors.backgroundDarker};
+    props.color ? `${props.color}14` : colors.background.two};
   display: flex;
   position: relative;
 

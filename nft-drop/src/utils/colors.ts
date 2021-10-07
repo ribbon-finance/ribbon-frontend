@@ -7,9 +7,9 @@ export const getThemeColorFromColorway = (colorWay?: number) => {
     case 1:
       return colors.products.volatility;
     case 2:
-      return colors.products.capitalAccumulation;
+      return colors.vaultActivity.sales;
     case 3:
-      return colors.products.principalProtection;
+      return "#2D99FF";
     default:
       return "#FFFFFF";
   }
@@ -22,9 +22,9 @@ export const getLogoColorFromColorway = (colorWay?: number) => {
     case 1:
       return colors.products.volatility;
     case 2:
-      return colors.products.capitalAccumulation;
+      return colors.vaultActivity.sales;
     case 3:
-      return colors.products.principalProtection;
+      return "#2D99FF";
     default:
       return "#000000";
   }

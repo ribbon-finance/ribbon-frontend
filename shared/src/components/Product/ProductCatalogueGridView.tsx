@@ -29,7 +29,6 @@ import { VaultOptions, VaultVersion } from "../../constants/constants";
 
 const FilterContainer = styled.div`
   display: flex;
-  background: ${colors.backgroundDarker};
   padding: 8px;
   border-radius: ${theme.border.radius};
   box-shadow: 4px 8px 40px rgba(0, 0, 0, 0.24);
@@ -248,8 +247,8 @@ const ProductCatalogueGridView: React.FC<
             setSort(option as VaultSortBy);
           }}
           buttonConfig={{
-            background: colors.background,
-            activeBackground: colors.backgroundLight,
+            background: colors.background.two,
+            activeBackground: colors.background.three,
             paddingHorizontal: 16,
             paddingVertical: 12,
             color: colors.primaryText,

@@ -24,7 +24,7 @@ const InvestorsTitle = styled(Title)`
 `;
 
 const InvestorCard = styled.div`
-  background: ${colors.backgroundLight};
+  background: ${colors.background.two};
   border-radius: 8px;
   margin-bottom: 16px;
   height: 120px;
