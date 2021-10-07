@@ -245,7 +245,7 @@ const RBNClaimModalContent: React.FC<RBNClaimModalContentProps> = ({
             {children || <Pole type="animate" />}
           </FloatingContainer>
           <FloatingContainer>
-            <ClaimingText>Claiming $RBN</ClaimingText>
+            <ClaimingText>Claiming NFT</ClaimingText>
           </FloatingContainer>
           <BaseModalContentColumn marginTop="auto">
             <ColorChangingWaves />
@@ -256,7 +256,7 @@ const RBNClaimModalContent: React.FC<RBNClaimModalContentProps> = ({
       return (
         <>
           <BaseModalContentColumn marginTop={8}>
-            <Title>{title || "$RBN CLAIMED"}</Title>
+            <Title>{title || "NFT CLAIMED"}</Title>
           </BaseModalContentColumn>
           <BaseModalContentColumn marginTop="auto">
             <PrimaryText className="text-center">
