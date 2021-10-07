@@ -62,7 +62,7 @@ export const CompoundIcon: React.FC<SVGProps> = (props) => (
     <style type="text/css">
       {`
         .st0{fill:#070A0E;}
-        .st1{fill-rule:evenodd;clip-rule:evenodd;fill:#00D395;}
+        .st1{fillRule:evenodd;clipRule:evenodd;fill:#00D395;}
       `}
     </style>
     <path
