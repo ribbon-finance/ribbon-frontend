@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useCallback } from "react";
 import { useWeb3React } from "@web3-react/core";
+import { BigNumber } from "ethers";
 
 import RBNClaimModalContent from "shared/lib/components/Common/RBNClaimModalContent";
 import BasicModal from "shared/lib/components/Common/BasicModal";
@@ -30,7 +31,10 @@ const ClaimModal = () => {
     }
 
     try {
-      const tx = await contract.claim(nftDropData.tokenId, nftDropData.proof);
+      const tx = await contract.claim(
+        BigNumber.from(`0x${nftDropData.tokenId!.toString()}`),
+        nftDropData.proof
+      );
       setStep("claiming");
 
       await provider.waitForTransaction(tx.hash);
