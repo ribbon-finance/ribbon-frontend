@@ -37,7 +37,7 @@ const useFetchNFTDropData = (
       return;
     }
 
-    const tokenId = parseFloat(BigNumber.from(merkleObj.amount).toString());
+    const tokenId = parseInt(BigNumber.from(merkleObj.amount).toString());
     const tokenIdOwner = await contract.ownerOf(tokenId).catch(() => undefined);
 
     setNFTDropData({
