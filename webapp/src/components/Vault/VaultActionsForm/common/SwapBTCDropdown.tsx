@@ -12,7 +12,7 @@ import Arrow from "../../../../assets/img/arrow.svg";
 
 const Container = styled.div<{ open: boolean }>`
   width: 100%;
-  background: ${colors.backgroundLight};
+  background: ${colors.background.two};
   overflow: hidden;
   transition: all 0.2s ease-out;
   display: flex;

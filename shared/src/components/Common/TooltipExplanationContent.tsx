@@ -13,7 +13,7 @@ import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 
 const Tooltip = styled.div`
-  background: ${colors.backgroundDarker};
+  background: ${colors.background.two};
   padding: 16px;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: ${theme.border.radius};

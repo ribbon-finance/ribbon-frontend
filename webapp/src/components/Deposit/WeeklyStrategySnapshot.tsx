@@ -36,12 +36,12 @@ const VaultPerformanceChartContainer = styled.div`
   justify-content: center;
   height: 200px;
   padding: 30px 0;
-  background: ${colors.backgroundLight};
+  background: ${colors.background.two};
   border-radius: ${theme.border.radius} ${theme.border.radius} 0px 0px;
 `;
 
 const VaultPerformanceChartSecondaryContainer = styled.div`
-  background: ${colors.backgroundLighter};
+  background: ${colors.background.three};
 
   &:last-child {
     border-radius: 0px 0px ${theme.border.radius} ${theme.border.radius};

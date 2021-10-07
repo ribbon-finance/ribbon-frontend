@@ -19,7 +19,7 @@ import FAQPage from "./pages/FAQ";
 import colors from "shared/lib/designSystem/colors";
 
 const Body = styled.div`
-  background-color: ${colors.background};
+  background-color: ${colors.background.one};
 `;
 
 const MainContent = styled.div``;

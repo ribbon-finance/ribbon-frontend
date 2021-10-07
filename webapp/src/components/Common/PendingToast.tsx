@@ -56,7 +56,7 @@ const DesktopToast = styled(BootstrapToast)`
 
 const DesktopBody = styled(BootstrapToast.Body)`
   height: 100%;
-  background: ${colors.backgroundDarker};
+  background: ${colors.background.two};
   border-radius: 8px;
   display: flex;
   flex-direction: column;

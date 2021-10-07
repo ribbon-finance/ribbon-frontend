@@ -15,7 +15,7 @@ const FooterContainer = styled.div<{
   height: 80px;
   width: 100%;
   justify-content: center;
-  background: ${colors.backgroundLight};
+  background: ${colors.background.two};
   position: fixed;
   bottom: 0px;
 

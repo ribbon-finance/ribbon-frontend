@@ -50,7 +50,7 @@ interface YieldComparisonProps {
 const YieldComparison: React.FC<YieldComparisonProps> = ({
   vault,
   config = {
-    background: colors.backgroundLighter,
+    background: colors.background.three,
   },
 }) => {
   const asset = getAssets(vault);

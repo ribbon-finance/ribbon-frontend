@@ -60,7 +60,7 @@ const FormContainer = styled.div`
   width: 100%;
   box-sizing: border-box;
   border-radius: ${theme.border.radius};
-  background: ${colors.backgroundLight};
+  background: ${colors.background.two};
   z-index: 1;
 `;
 

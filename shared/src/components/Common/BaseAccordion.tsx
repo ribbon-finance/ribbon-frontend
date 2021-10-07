@@ -22,7 +22,7 @@ const AccordionHeader = styled(Card.Header)`
   display: flex;
   align-items: center;
   position: relative;
-  background-color: ${colors.background};
+  background-color: ${colors.background.one};
   padding: 20px 16px;
 
   &&& {

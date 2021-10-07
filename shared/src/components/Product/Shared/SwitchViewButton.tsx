@@ -7,13 +7,13 @@ import theme from "../../../designSystem/theme";
 import { DesktopViewType } from "../types";
 
 const Button = styled.div`
-  background: ${colors.background};
+  background: ${colors.background.two};
   height: 45px;
   width: 45px;
   border-radius: ${theme.border.radius};
 
   &:hover {
-    background: ${colors.backgroundLight};
+    background: ${colors.background.three};
   }
 `;
 

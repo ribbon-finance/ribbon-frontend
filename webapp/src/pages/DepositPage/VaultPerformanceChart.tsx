@@ -21,14 +21,14 @@ import { getAssetDecimals } from "shared/lib/utils/asset";
 import moment from "moment";
 
 const VaultPerformacneChartContainer = styled.div`
-  background: ${colors.backgroundLight};
+  background: ${colors.background.two};
   border-radius: ${theme.border.radiusSmall} ${theme.border.radiusSmall} 0px 0px;
 `;
 
 const VaultPerformacneChartSecondaryContainer = styled.div`
   padding: 20px 0px;
   border-radius: 0px 0px ${theme.border.radiusSmall} ${theme.border.radiusSmall};
-  background: ${colors.backgroundLighter};
+  background: ${colors.background.three};
 `;
 
 interface DateFilterProps {

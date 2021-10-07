@@ -46,7 +46,7 @@ const ProductCard = styled(motion.div)<{ color: string }>`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  background-color: ${colors.backgroundLight};
+  background-color: ${colors.background.two};
   border: 2px ${theme.border.style} ${(props) => props.color}00;
   border-radius: ${theme.border.radius};
   transition: 0.25s box-shadow ease-out, 0.25s border ease-out;
@@ -110,8 +110,8 @@ const ProductAssetLogoContainer = styled.div<{ color: string }>`
   height: 56px;
   width: 56px;
   margin-top: calc(-56px / 2);
-  background-color: ${colors.background};
-  border: 2px ${theme.border.style} ${colors.background};
+  background-color: ${colors.background.one};
+  border: 2px ${theme.border.style} ${colors.background.one};
   border-radius: 100px;
   position: relative;
 

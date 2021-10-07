@@ -65,7 +65,7 @@ const TransactionTitle = styled(Title)<{ color: string }>`
 
 const TransactionContainer = styled.div`
   width: 100%;
-  background: ${colors.backgroundLight};
+  background: ${colors.background.two};
   border-radius: ${theme.border.radius};
   margin-bottom: 18px;
   padding: 16px;
