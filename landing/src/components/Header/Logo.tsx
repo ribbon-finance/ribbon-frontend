@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import { AppLogo } from "shared/lib/assets/icons/logo";
+import { default as AppLogo } from "shared/lib/assets/icons/logo";
 
 const LogoContainer = styled.div`
   display: flex;
