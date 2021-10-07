@@ -68,9 +68,7 @@ const useFetchSubgraphData = (
                     : ""
                 }
                 ${vaultActivitiesGraphql(version)}
-                
-                # Token Account is indexed in v1 subgraph
-                ${version === "v1" ? rbnTokenGraphql(account) : ""}
+                ${rbnTokenGraphql(account, version)}
               }`.replaceAll(" ", ""),
           });
 

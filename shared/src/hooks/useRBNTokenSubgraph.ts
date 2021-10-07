@@ -8,8 +8,18 @@ import {
 } from "../models/token";
 import { SubgraphDataContext } from "./subgraphDataContext";
 
-export const rbnTokenGraphql = (account?: string | null) =>
-  account
+export const rbnTokenGraphql = (
+  account: string | null | undefined,
+  vaultVersion: VaultVersion
+) => {
+  /**
+   * RBN Token graphql is only indexed in V1 subgraph
+   */
+  if (vaultVersion !== "v1") {
+    return "";
+  }
+
+  return account
     ? `
         erc20TokenAccount(id:"${RibbonTokenAddress.toLowerCase()}-${account.toLocaleLowerCase()}") {
           token {
@@ -31,7 +41,8 @@ export const rbnTokenGraphql = (account?: string | null) =>
           holders
           totalSupply
         }
-    `;
+      `;
+};
 
 /**
  * Remark: We fetch rbn token subgraph in v1 on subgraph
