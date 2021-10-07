@@ -28,6 +28,11 @@ import {
   resolveVaultActivitiesSubgraphResponse,
   vaultActivitiesGraphql,
 } from "./useVaultActivity";
+import {
+  rbnTokenGraphql,
+  resolveRBNTokenAccountSubgraphResponse,
+  resolveRBNTokenSubgraphResponse,
+} from "./useRBNTokenSubgraph";
 
 const useFetchSubgraphData = (
   {
@@ -63,6 +68,9 @@ const useFetchSubgraphData = (
                     : ""
                 }
                 ${vaultActivitiesGraphql(version)}
+                
+                # Token Account is indexed in v1 subgraph
+                ${version === "v1" ? rbnTokenGraphql(account) : ""}
               }`.replaceAll(" ", ""),
           });
 
@@ -81,6 +89,10 @@ const useFetchSubgraphData = (
       ),
       balances: resolveBalancesSubgraphResponse(responsesAcrossVersions),
       transactions: resolveTransactionsSubgraphResponse(
+        responsesAcrossVersions
+      ),
+      rbnToken: resolveRBNTokenSubgraphResponse(responsesAcrossVersions),
+      rbnTokenAccount: resolveRBNTokenAccountSubgraphResponse(
         responsesAcrossVersions
       ),
       loading: false,

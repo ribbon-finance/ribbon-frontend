@@ -1,4 +1,8 @@
 import React, { ReactElement } from "react";
+import {
+  ERC20TokenAccountSubgraphData,
+  ERC20TokenSubgraphData,
+} from "../models/token";
 
 import {
   BalanceUpdate,
@@ -15,6 +19,8 @@ export type SubgraphDataContextType = {
   vaultActivities: VaultActivitiesData;
   balances: BalanceUpdate[];
   transactions: VaultTransaction[];
+  rbnToken?: ERC20TokenSubgraphData;
+  rbnTokenAccount?: ERC20TokenAccountSubgraphData;
   loading: boolean;
 };
 
