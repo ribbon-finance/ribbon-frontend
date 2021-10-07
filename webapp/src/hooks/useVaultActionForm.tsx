@@ -17,10 +17,7 @@ import {
 } from "../components/Vault/VaultActionsForm/Modal/types";
 import { initialVaultActionForm, useWebappGlobalState } from "../store/store";
 import useGasPrice from "shared/lib/hooks/useGasPrice";
-import {
-  useVaultData,
-  useV2VaultData,
-} from "shared/lib/hooks/vaultDataContext";
+import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { isETHVault } from "shared/lib/utils/vault";
 
 export type VaultActionFormTransferData =
@@ -42,19 +39,23 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   /**
    * V1 vault data
    */
-  const { deposits, vaultLimit, vaultBalanceInAsset, maxWithdrawAmount } =
-    useVaultData(vaultOption);
+  const {
+    decimals,
+    deposits,
+    maxWithdrawAmount,
+    vaultLimit,
+    vaultBalanceInAsset,
+    userAssetBalance,
+  } = useVaultData(vaultOption);
   /**
    * V2 vault data
    */
   const {
     data: {
       cap: v2Cap,
-      decimals,
       depositBalanceInAsset: v2DepositBalanceInAsset,
       lockedBalanceInAsset: v2LockedBalanceInAsset,
       totalBalance: v2TotalBalance,
-      userAssetBalance,
       withdrawals: v2Withdrawals,
     },
   } = useV2VaultData(vaultOption);

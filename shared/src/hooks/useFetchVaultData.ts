@@ -4,10 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useWeb3Context } from "./web3Context";
 import { getVault } from "./useVault";
-import { getAssets, VaultList } from "../constants/constants";
-import { isETHVault } from "../utils/vault";
-import { getERC20Token } from "./useERC20Token";
-import { ERC20Token } from "../models/eth";
+import { VaultList } from "../constants/constants";
 import { impersonateAddress } from "../utils/development";
 import {
   defaultVaultData,
@@ -55,24 +52,16 @@ const useFetchVaultData = (
 
         /**
          * 1. Vault balance in asset
-         * 2. Asset balance
-         * 3. Max withdraw amount
+         * 2. Max withdraw amount
          */
         const promises = unconnectedPromises.concat(
           active
             ? [
                 contract.accountVaultBalance(account!),
-                isETHVault(vault)
-                  ? library.getBalance(account!)
-                  : getERC20Token(
-                      library,
-                      getAssets(vault).toLowerCase() as ERC20Token
-                    )!.balanceOf(account!),
                 contract.maxWithdrawAmount(account!),
               ]
             : [
                 // Default value when not connected
-                Promise.resolve(BigNumber.from(0)),
                 Promise.resolve(BigNumber.from(0)),
                 Promise.resolve(BigNumber.from(0)),
               ]
@@ -84,7 +73,6 @@ const useFetchVaultData = (
           vaultMaxWithdrawableShares,
           totalSupply,
           vaultBalanceInAsset,
-          userAssetBalance,
           maxWithdrawAmount,
         ] = await Promise.all(
           promises.map((p) => p.catch((e) => BigNumber.from(0)))
@@ -97,19 +85,17 @@ const useFetchVaultData = (
           vaultMaxWithdrawableShares,
           totalSupply,
           vaultBalanceInAsset,
-          userAssetBalance,
           maxWithdrawAmount,
         };
       })
     );
 
-    setData((prev) => ({
+    setData({
       responses: Object.fromEntries(
         responses.map(
           ({ vault, vaultMaxWithdrawableShares, totalSupply, ...response }) => [
             vault,
             {
-              ...prev.responses[vault],
               ...response,
               vaultMaxWithdrawAmount: !totalSupply.isZero()
                 ? vaultMaxWithdrawableShares
@@ -121,7 +107,7 @@ const useFetchVaultData = (
         )
       ) as VaultDataResponses,
       loading: false,
-    }));
+    });
 
     if (!isProduction()) {
       console.timeEnd("V1 Vault Data Fetch");
@@ -131,11 +117,10 @@ const useFetchVaultData = (
   useEffect(() => {
     // eslint-disable-next-line no-undef
     let pollInterval: NodeJS.Timeout | null = null;
+    doMulticall();
+
     if (poll) {
-      doMulticall();
       pollInterval = setInterval(doMulticall, pollingFrequency);
-    } else {
-      doMulticall();
     }
 
     return () => {

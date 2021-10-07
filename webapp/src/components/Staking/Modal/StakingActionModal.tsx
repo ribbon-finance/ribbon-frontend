@@ -22,7 +22,7 @@ import {
   BaseModalContentColumn,
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import { StakingPoolData } from "shared/lib/models/staking";
+import { StakingPoolResponse } from "shared/lib/models/staking";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
@@ -110,7 +110,7 @@ interface StakingActionModalProps {
   onClose: () => void;
   logo: React.ReactNode;
   vaultOption: VaultOptions;
-  stakingPoolData: StakingPoolData;
+  stakingPoolData: StakingPoolResponse;
 }
 
 const StakingActionModal: React.FC<StakingActionModalProps> = ({

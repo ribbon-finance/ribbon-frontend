@@ -5,10 +5,6 @@ import { BigNumber } from "ethers";
 import { getAssets, VaultList } from "../constants/constants";
 import { getV2Vault } from "./useV2Vault";
 import { impersonateAddress } from "../utils/development";
-import { isETHVault } from "../utils/vault";
-import { getERC20Token } from "./useERC20Token";
-import { ERC20Token } from "../models/eth";
-import moment from "moment";
 import {
   defaultV2VaultData,
   V2VaultData,
@@ -16,6 +12,7 @@ import {
 } from "../models/vault";
 import { useWeb3Context } from "./web3Context";
 import { isProduction } from "../utils/env";
+import { getAssetDecimals } from "../utils/asset";
 
 const useFetchV2VaultData = (
   {
@@ -62,26 +59,19 @@ const useFetchV2VaultData = (
 
         /**
          * 1. Deposit receipts
-         * 2. Account vault balance
-         * 3. User asset balance
+         * 2. User asset balance
+         * 3. Withdrawals
          */
         const promises = unconnectedPromises.concat(
           active
             ? [
                 contract.depositReceipts(account!),
                 contract.accountVaultBalance(account!),
-                isETHVault(vault)
-                  ? library.getBalance(account!)
-                  : getERC20Token(
-                      library,
-                      getAssets(vault).toLowerCase() as ERC20Token
-                    )!.balanceOf(account!),
                 contract.withdrawals(account!),
               ]
             : [
                 // Default value when not connected
                 Promise.resolve({ amount: BigNumber.from(0), round: 1 }),
-                Promise.resolve(BigNumber.from(0)),
                 Promise.resolve(BigNumber.from(0)),
                 Promise.resolve({ round: 1, shares: BigNumber.from(0) }),
               ]
@@ -94,7 +84,6 @@ const useFetchV2VaultData = (
           _vaultState,
           _depositReceipts,
           accountVaultBalance,
-          userAssetBalance,
           _withdrawals,
         ] = await Promise.all(
           // Default to 0 when error
@@ -134,27 +123,25 @@ const useFetchV2VaultData = (
             depositReceipts.round === vaultState.round
               ? depositReceipts.amount
               : BigNumber.from(0),
-          userAssetBalance,
           withdrawals,
-          lastFetched: moment(),
         };
       })
     );
 
     setData((prev) => ({
       responses: Object.fromEntries(
-        responses.map(({ vault, ...response }) => [
+        responses.map(({ vault, withdrawals, ...response }) => [
           vault,
           {
             ...prev.responses[vault],
             ...response,
-            withdrawals: response.withdrawals
+            withdrawals: withdrawals
               ? {
-                  ...response.withdrawals,
-                  amount: response.withdrawals.shares
+                  ...withdrawals,
+                  amount: withdrawals.shares
                     .mul(response.pricePerShare as BigNumber)
                     .div(
-                      BigNumber.from(10).pow(prev.responses[vault].decimals)
+                      BigNumber.from(10).pow(getAssetDecimals(getAssets(vault)))
                     ),
                 }
               : prev.responses[vault].withdrawals,
@@ -171,11 +158,10 @@ const useFetchV2VaultData = (
 
   useEffect(() => {
     let pollInterval: any = undefined;
+    doMulticall();
+
     if (poll) {
-      doMulticall();
       pollInterval = setInterval(doMulticall, pollingFrequency);
-    } else {
-      doMulticall();
     }
 
     return () => {

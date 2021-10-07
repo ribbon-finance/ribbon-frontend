@@ -14,7 +14,7 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import VaultV2DepositWithdrawForm from "./v2/VaultV2DepositWithdrawForm";
 import useVaultActionForm from "../../../hooks/useVaultActionForm";
 import { ACTIONS } from "./Modal/types";
-import { useV2VaultData } from "shared/lib/hooks/vaultDataContext";
+import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 
 const FormContainer = styled.div`
   display: flex;

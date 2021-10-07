@@ -18,7 +18,7 @@ import {
 import theme from "../../../designSystem/theme";
 import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useTextAnimation from "../../../hooks/useTextAnimation";
-import { useV2VaultData, useVaultData } from "../../../hooks/vaultDataContext";
+import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
 import { getAssetLogo } from "../../../utils/asset";
 import { formatSignificantDecimals } from "../../../utils/math";
 import { getVaultColor } from "../../../utils/vault";

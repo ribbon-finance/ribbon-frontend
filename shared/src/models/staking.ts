@@ -1,6 +1,8 @@
 import { BigNumber } from "@ethersproject/bignumber";
 
-export interface StakingPoolData {
+import { VaultList, VaultOptions } from "../constants/constants";
+
+export interface StakingPoolResponse {
   currentStake: BigNumber;
   poolSize: BigNumber;
   lastTimeRewardApplicable?: string;
@@ -12,6 +14,32 @@ export interface StakingPoolData {
   claimableRbn: BigNumber;
   unstakedBalance: BigNumber;
 }
+
+export type StakingPoolResponses = {
+  [vault in VaultOptions]: StakingPoolResponse;
+};
+
+export type StakingPoolData = {
+  responses: StakingPoolResponses;
+  loading: boolean;
+};
+
+export const defaultStakingPoolData: StakingPoolData = {
+  responses: Object.fromEntries(
+    VaultList.map((vault) => [
+      vault as VaultOptions,
+      {
+        currentStake: BigNumber.from(0),
+        poolSize: BigNumber.from(0),
+        poolRewardForDuration: BigNumber.from(0),
+        claimHistory: [] as Array<{ amount: BigNumber }>,
+        claimableRbn: BigNumber.from(0),
+        unstakedBalance: BigNumber.from(0),
+      },
+    ])
+  ) as StakingPoolResponses,
+  loading: true,
+};
 
 export interface StakingPool {
   id: string;

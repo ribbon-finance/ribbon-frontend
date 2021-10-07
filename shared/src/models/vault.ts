@@ -1,14 +1,10 @@
 import { BigNumber } from "ethers";
 import {
-  getAssets,
-  getDisplayAssets,
   VaultList,
   VaultOptions,
   VaultVersion,
   VaultVersionList,
 } from "../constants/constants";
-import { Assets } from "../store/types";
-import { getAssetDecimals } from "../utils/asset";
 
 export interface Vault {
   id: string;
@@ -136,15 +132,11 @@ export const defaultVaultActivitiesData: VaultActivitiesData =
 export interface UnconnectedVaultData {
   deposits: BigNumber;
   vaultLimit: BigNumber;
-  decimals: number;
-  asset: Assets;
-  displayAsset: Assets;
   vaultMaxWithdrawAmount: BigNumber;
 }
 
 export interface UserSpecificData {
   vaultBalanceInAsset: BigNumber;
-  userAssetBalance: BigNumber;
   maxWithdrawAmount: BigNumber;
 }
 export type VaultDataResponse = UnconnectedVaultData & UserSpecificData;
@@ -167,10 +159,6 @@ export const defaultVaultData: VaultData = {
         vaultLimit: BigNumber.from("0"),
         vaultBalanceInAsset: BigNumber.from("0"),
         vaultMaxWithdrawAmount: BigNumber.from("0"),
-        asset: getAssets(vault),
-        displayAsset: getDisplayAssets(vault),
-        decimals: getAssetDecimals(getAssets(vault)),
-        userAssetBalance: BigNumber.from("0"),
         maxWithdrawAmount: BigNumber.from("0"),
       },
     ])
@@ -181,9 +169,6 @@ export const defaultVaultData: VaultData = {
 export interface UnconnectedV2VaultData {
   totalBalance: BigNumber;
   cap: BigNumber;
-  decimals: number;
-  asset: Assets;
-  displayAsset: Assets;
   pricePerShare: BigNumber;
   round: number;
 }
@@ -191,12 +176,10 @@ export interface UnconnectedV2VaultData {
 /**
  * lockedBalanceInAsset: Locked portion of position in the vault
  * depositBalanceInAsset: Portion where it allow for withdrawInstantly
- * userAssetBalance: User asset balance
  */
 export interface ConnectedV2VaultData {
   lockedBalanceInAsset: BigNumber;
   depositBalanceInAsset: BigNumber;
-  userAssetBalance: BigNumber;
   withdrawals: {
     shares: BigNumber;
     amount: BigNumber;
@@ -221,14 +204,10 @@ export const defaultV2VaultData: V2VaultData = {
       {
         totalBalance: BigNumber.from(0),
         cap: BigNumber.from(0),
-        decimals: getAssetDecimals(getAssets(vault)),
-        asset: getAssets(vault),
-        displayAsset: getDisplayAssets(vault),
         pricePerShare: BigNumber.from(0),
         round: 1,
         lockedBalanceInAsset: BigNumber.from(0),
         depositBalanceInAsset: BigNumber.from(0),
-        userAssetBalance: BigNumber.from(0),
         withdrawals: {
           shares: BigNumber.from(0),
           amount: BigNumber.from(0),

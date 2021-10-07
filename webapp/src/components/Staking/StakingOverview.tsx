@@ -22,7 +22,7 @@ import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { BigNumber } from "@ethersproject/bignumber";
 import { formatBigNumber } from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
-import useRBNToken from "shared/lib/hooks/useRBNToken";
+import { useRBNToken } from "shared/lib/hooks/useRBNTokenSubgraph";
 
 const OverviewContainer = styled.div`
   display: flex;

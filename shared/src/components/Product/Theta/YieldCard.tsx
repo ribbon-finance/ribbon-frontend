@@ -34,7 +34,7 @@ import { getVaultColor } from "../../../utils/vault";
 import ModalContentExtra from "../../Common/ModalContentExtra";
 import { VaultAccount } from "../../../models/vault";
 import YieldComparison from "./YieldComparison";
-import { useV2VaultData, useVaultData } from "../../../hooks/vaultDataContext";
+import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
 
 const { formatUnits } = ethers.utils;
 

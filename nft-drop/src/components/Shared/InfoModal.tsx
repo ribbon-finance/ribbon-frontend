@@ -57,11 +57,11 @@ const InfoModal = () => {
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={16}>
           <PrimaryText color={colors.text}>
-            To mark the arrival of the new Ribbon App logo, we’ve saved XXX
+            To mark the arrival of the new Ribbon App logo, we’ve saved 3284
             versions of the original logo on-chain. Each logo is represented by
             a commemorative NFT that can be claimed by anyone who deposited
-            funds into a Ribbon vault before block XXX. The point at which you
-            first deposited funds determines which colour series your NFT
+            funds into a Ribbon vault before block 13300682. The point at which
+            you first deposited funds determines which colour series your NFT
             belongs to.
           </PrimaryText>
         </BaseModalContentColumn>

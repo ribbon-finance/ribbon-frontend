@@ -13,7 +13,7 @@ import { getDisplayAssets, VaultOptions } from "shared/lib/constants/constants";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { StakingPoolData } from "shared/lib/models/staking";
+import { StakingPoolResponse } from "shared/lib/models/staking";
 import colors from "shared/lib/designSystem/colors";
 import ModalContentExtra from "shared/lib/components/Common/ModalContentExtra";
 
@@ -56,7 +56,7 @@ const WarningText = styled(PrimaryText)<{ color: string }>`
 
 interface StakingApprovalModalInfoProps {
   vaultOption: VaultOptions;
-  stakingPoolData: StakingPoolData;
+  stakingPoolData: StakingPoolResponse;
   onApprove: () => void;
 }
 

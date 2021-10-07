@@ -13,10 +13,7 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { ACTIONS } from "../Modal/types";
-import {
-  useVaultData,
-  useV2VaultData,
-} from "shared/lib/hooks/vaultDataContext";
+import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 

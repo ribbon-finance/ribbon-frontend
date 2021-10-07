@@ -4,7 +4,7 @@ import moment from "moment";
 import { getAssets, VaultOptions, VaultVersion } from "../constants/constants";
 import { Notification } from "../models/notification";
 import { useAllVaultActivities } from "./useVaultActivity";
-import { useV2VaultsData } from "./vaultDataContext";
+import { useV2VaultsData } from "./web3DataContext";
 import { useAllVaultAccounts } from "./useVaultAccounts";
 import { isPracticallyZero } from "../utils/math";
 import { getAssetDecimals } from "../utils/asset";

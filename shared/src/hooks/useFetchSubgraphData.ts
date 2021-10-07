@@ -28,6 +28,11 @@ import {
   resolveVaultActivitiesSubgraphResponse,
   vaultActivitiesGraphql,
 } from "./useVaultActivity";
+import {
+  rbnTokenGraphql,
+  resolveRBNTokenAccountSubgraphResponse,
+  resolveRBNTokenSubgraphResponse,
+} from "./useRBNTokenSubgraph";
 
 const useFetchSubgraphData = (
   {
@@ -63,6 +68,7 @@ const useFetchSubgraphData = (
                     : ""
                 }
                 ${vaultActivitiesGraphql(version)}
+                ${rbnTokenGraphql(account, version)}
               }`.replaceAll(" ", ""),
           });
 
@@ -83,6 +89,10 @@ const useFetchSubgraphData = (
       transactions: resolveTransactionsSubgraphResponse(
         responsesAcrossVersions
       ),
+      rbnToken: resolveRBNTokenSubgraphResponse(responsesAcrossVersions),
+      rbnTokenAccount: resolveRBNTokenAccountSubgraphResponse(
+        responsesAcrossVersions
+      ),
       loading: false,
     }));
 
@@ -94,11 +104,10 @@ const useFetchSubgraphData = (
   useEffect(() => {
     // eslint-disable-next-line no-undef
     let pollInterval: NodeJS.Timeout | null = null;
+    doMulticall();
+
     if (poll) {
-      doMulticall();
       pollInterval = setInterval(doMulticall, pollingFrequency);
-    } else {
-      doMulticall();
     }
 
     return () => {

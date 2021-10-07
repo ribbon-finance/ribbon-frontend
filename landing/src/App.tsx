@@ -5,7 +5,7 @@ import { Web3ReactProvider } from "@web3-react/core";
 
 import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
 import { getLibrary } from "shared/lib/utils/getLibrary";
-import { VaultDataContextProvider } from "shared/lib/hooks/vaultDataContext";
+import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContext";
 
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -28,7 +28,7 @@ function App() {
   return (
     <Web3ContextProvider>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <VaultDataContextProvider>
+        <Web3DataContextProvider>
           <Body>
             <Router>
               <Header />
@@ -59,7 +59,7 @@ function App() {
               <Footer />
             </Router>
           </Body>
-        </VaultDataContextProvider>
+        </Web3DataContextProvider>
       </Web3ReactProvider>
     </Web3ContextProvider>
   );
