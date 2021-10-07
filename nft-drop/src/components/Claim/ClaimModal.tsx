@@ -32,7 +32,7 @@ const ClaimModal = () => {
 
     try {
       const tx = await contract.claim(
-        BigNumber.from(`0x${nftDropData.tokenId!.toString()}`),
+        BigNumber.from(`0x${nftDropData.tokenId!}`),
         nftDropData.proof
       );
       setStep("claiming");
