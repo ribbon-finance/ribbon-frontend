@@ -177,7 +177,7 @@ const VideoView: React.FC = () => {
         >
           <ReactPlayer
             key="video-player"
-            url="https://www.dropbox.com/s/4mr8i8sg6t8ry76/Ribbon%20Finance.mp4"
+            url="https://storage.googleapis.com/ribbon-bucket/nft-video/Ribbon%20Finance%20(Twitter%20Version).mp4"
             playing={playVideo}
             height="100%"
             width="100%"
