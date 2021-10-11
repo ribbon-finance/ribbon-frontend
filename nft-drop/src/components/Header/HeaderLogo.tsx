@@ -14,7 +14,7 @@ const HeaderLogo = () => {
     <>
       <LogoContainer>
         <Link to="/">
-          <AppLogo height="48px" width="48px" />
+          <AppLogo height="40px" width="40px" />
         </Link>
       </LogoContainer>
     </>
