@@ -96,7 +96,7 @@ const TitleAltSmall = styled(TitleSmall)`
 const CTAButton = styled(Button)`
   &:hover {
     background-color: ${colors.primaryText};
-    color: ${colors.background};
+    color: ${colors.background.one};
   }
 `;
 

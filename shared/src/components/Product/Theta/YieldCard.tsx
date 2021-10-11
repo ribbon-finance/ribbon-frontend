@@ -75,6 +75,7 @@ const TopContainer = styled.div<{ color: string }>`
   margin: -16px;
   padding: 16px;
   margin-bottom: 0;
+  border-radius: ${theme.border.radius} ${theme.border.radius} 0px 0px;
 
   background: linear-gradient(
     96.84deg,

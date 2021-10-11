@@ -218,3 +218,17 @@ export const defaultV2VaultData: V2VaultData = {
   ) as V2VaultDataResponses,
   loading: true,
 };
+
+export type V2VaultPriceHistory = {
+  pricePerShare: BigNumber;
+  timestamp: number;
+};
+
+export type V2VaultPriceHistoriesData = {
+  [vault in VaultOptions]: V2VaultPriceHistory[];
+};
+
+export const defaultV2VaultPriceHistoriesData: V2VaultPriceHistoriesData =
+  Object.fromEntries(
+    VaultList.map((vault) => [vault, [] as V2VaultPriceHistory[]])
+  ) as V2VaultPriceHistoriesData;

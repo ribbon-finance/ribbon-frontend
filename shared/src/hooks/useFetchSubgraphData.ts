@@ -33,6 +33,10 @@ import {
   resolveRBNTokenAccountSubgraphResponse,
   resolveRBNTokenSubgraphResponse,
 } from "./useRBNTokenSubgraph";
+import {
+  v2VaultPriceHistoryGraphql,
+  resolveV2VaultPriceHistorySubgraphResponse,
+} from "./useV2VaultPriceHistory";
 
 const useFetchSubgraphData = (
   {
@@ -69,6 +73,7 @@ const useFetchSubgraphData = (
                 }
                 ${vaultActivitiesGraphql(version)}
                 ${rbnTokenGraphql(account, version)}
+                ${v2VaultPriceHistoryGraphql(version)}
               }`.replaceAll(" ", ""),
           });
 
@@ -91,6 +96,9 @@ const useFetchSubgraphData = (
       ),
       rbnToken: resolveRBNTokenSubgraphResponse(responsesAcrossVersions),
       rbnTokenAccount: resolveRBNTokenAccountSubgraphResponse(
+        responsesAcrossVersions
+      ),
+      v2VaultPriceHistory: resolveV2VaultPriceHistorySubgraphResponse(
         responsesAcrossVersions
       ),
       loading: false,

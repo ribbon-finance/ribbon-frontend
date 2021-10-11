@@ -41,7 +41,7 @@ const useFetchAssetBalanceData = (
     }
 
     if (!active) {
-      setData(defaultUserAssetBalanceData);
+      setData({ ...defaultUserAssetBalanceData, loading: false });
       return;
     }
 
