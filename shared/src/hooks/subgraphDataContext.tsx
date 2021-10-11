@@ -6,8 +6,10 @@ import {
 
 import {
   BalanceUpdate,
+  defaultV2VaultPriceHistoriesData,
   defaultVaultAccountsData,
   defaultVaultActivitiesData,
+  V2VaultPriceHistoriesData,
   VaultAccountsData,
   VaultActivitiesData,
   VaultTransaction,
@@ -21,6 +23,7 @@ export type SubgraphDataContextType = {
   transactions: VaultTransaction[];
   rbnToken?: ERC20TokenSubgraphData;
   rbnTokenAccount?: ERC20TokenAccountSubgraphData;
+  v2VaultPriceHistory: V2VaultPriceHistoriesData;
   loading: boolean;
 };
 
@@ -29,6 +32,7 @@ export const defaultSubgraphData = {
   vaultActivities: defaultVaultActivitiesData,
   balances: [],
   transactions: [],
+  v2VaultPriceHistory: defaultV2VaultPriceHistoriesData,
   loading: true,
 };
 
