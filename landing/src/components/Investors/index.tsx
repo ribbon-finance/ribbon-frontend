@@ -10,7 +10,6 @@ import Scalar from "../../img/Investors/scalar.svg";
 import Nascent from "../../img/Investors/nascent.svg";
 import Coinbase from "../../img/Investors/coinbase.svg";
 import FreeCo from "../../img/Investors/freeCo.svg";
-import Divergence from "../../img/Investors/divergence.svg";
 import colors from "shared/lib/designSystem/colors";
 
 const MainContainer = styled(Container)`
@@ -77,11 +76,6 @@ const Investors = () => {
           </Col>
           <Col xl={3} md={4} sm={12} xs={12}>
             <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorLogo src={Divergence} />
-            </InvestorCard>
-          </Col>
-          <Col xl={3} md={4} sm={12} xs={12}>
-            <InvestorCard className="d-flex justify-content-center align-items-center">
               <InvestorLogo src={FreeCo} />
             </InvestorCard>
           </Col>
@@ -97,22 +91,7 @@ const Investors = () => {
           </Col>
           <Col xl={3} md={4} sm={12} xs={12}>
             <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorText>Hart Lambur</InvestorText>
-            </InvestorCard>
-          </Col>
-          <Col xl={3} md={4} sm={12} xs={12}>
-            <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorText>Tiantian Kullander</InvestorText>
-            </InvestorCard>
-          </Col>
-          <Col xl={3} md={4} sm={12} xs={12}>
-            <InvestorCard className="d-flex justify-content-center align-items-center">
               <InvestorText>Kain Warwick</InvestorText>
-            </InvestorCard>
-          </Col>
-          <Col xl={3} md={4} sm={12} xs={12}>
-            <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorText>Tony Sheng</InvestorText>
             </InvestorCard>
           </Col>
         </InvestorRow>
