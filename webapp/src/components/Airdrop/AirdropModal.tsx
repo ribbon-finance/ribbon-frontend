@@ -115,7 +115,7 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
       {step === "info" ? (
         <AirdropInfo onClaim={claimAirdrop} />
       ) : (
-        <RBNClaimModalContent step={step} />
+        <RBNClaimModalContent step={step} type="rbn" />
       )}
     </BasicModal>
   );

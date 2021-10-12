@@ -165,14 +165,18 @@ const PoleLogo = styled(Logo)`
   margin-top: 50px;
 `;
 
+type ClaimType = "nft" | "rbn";
+
 interface RBNClaimModalContentProps {
   step: "claim" | "claiming" | "claimed";
+  type: ClaimType;
   title?: string;
   themeColor?: string;
 }
 
 const RBNClaimModalContent: React.FC<RBNClaimModalContentProps> = ({
   step,
+  type,
   title,
   themeColor,
   children,
@@ -220,6 +224,8 @@ const RBNClaimModalContent: React.FC<RBNClaimModalContentProps> = ({
     [themeColor]
   );
 
+  const forNFT = type === "nft";
+
   switch (step) {
     case "claim":
       return (
@@ -245,7 +251,7 @@ const RBNClaimModalContent: React.FC<RBNClaimModalContentProps> = ({
             {children || <Pole type="animate" />}
           </FloatingContainer>
           <FloatingContainer>
-            <ClaimingText>Claiming NFT</ClaimingText>
+            <ClaimingText>Claiming {forNFT ? "NFT" : "$RBN"}</ClaimingText>
           </FloatingContainer>
           <BaseModalContentColumn marginTop="auto">
             <ColorChangingWaves />
@@ -256,7 +262,7 @@ const RBNClaimModalContent: React.FC<RBNClaimModalContentProps> = ({
       return (
         <>
           <BaseModalContentColumn marginTop={8}>
-            <Title>{title || "NFT CLAIMED"}</Title>
+            <Title>{title || `${forNFT ? "NFT" : "$RBN"} CLAIMED`}</Title>
           </BaseModalContentColumn>
           <BaseModalContentColumn marginTop="auto">
             <PrimaryText className="text-center">
