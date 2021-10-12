@@ -37,20 +37,14 @@ import {
   v2VaultPriceHistoryGraphql,
   resolveV2VaultPriceHistorySubgraphResponse,
 } from "./useV2VaultPriceHistory";
+import { usePendingTransactions } from "./pendingTransactionsContext";
 
-const useFetchSubgraphData = (
-  {
-    poll,
-    pollingFrequency,
-  }: {
-    poll: boolean;
-    pollingFrequency: number;
-  } = { poll: true, pollingFrequency: 8000 }
-) => {
+const useFetchSubgraphData = () => {
   const web3Context = useWeb3React();
   const account = impersonateAddress || web3Context.account;
   const [data, setData] =
     useState<SubgraphDataContextType>(defaultSubgraphData);
+  const { transactionsCounter } = usePendingTransactions();
 
   const doMulticall = useCallback(async () => {
     if (!isProduction()) {
@@ -110,20 +104,8 @@ const useFetchSubgraphData = (
   }, [account]);
 
   useEffect(() => {
-    // eslint-disable-next-line no-undef
-    let pollInterval: NodeJS.Timeout | null = null;
     doMulticall();
-
-    if (poll) {
-      pollInterval = setInterval(doMulticall, pollingFrequency);
-    }
-
-    return () => {
-      if (pollInterval) {
-        clearInterval(pollInterval);
-      }
-    };
-  }, [doMulticall, poll, pollingFrequency]);
+  }, [doMulticall, transactionsCounter]);
 
   return data;
 };

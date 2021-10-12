@@ -1,8 +1,8 @@
 import { BigNumber } from "ethers";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
+
 import { getAssets } from "shared/lib/constants/constants";
-import usePendingTransactions from "../../hooks/usePendingTransactions";
-import { useWeb3Context } from "shared/lib/hooks/web3Context";
+import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { PendingTransaction } from "shared/lib/store/types";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
@@ -45,43 +45,30 @@ import { getVaultColor } from "shared/lib/utils/vault";
 //   );
 // };
 
-type TxStatuses = "processing" | "success" | "error" | null;
+type TxStatuses = "processing" | "success" | "error" | undefined;
 
 export const TxStatusToast = () => {
-  const [pendingTransactions, setPendingTransactions] =
-    usePendingTransactions();
+  const { pendingTransactions, transactionsCounter } = usePendingTransactions();
 
-  const [status, setStatus] = useState<TxStatuses>(null);
-  const [currentTx, setCurrentTx] = useState<PendingTransaction | null>(null);
-  const { provider } = useWeb3Context();
+  const [showedPendingTxCounter, setShowPendingTxCounter] =
+    useState(transactionsCounter);
 
-  useEffect(() => {
-    if (provider && pendingTransactions.length) {
-      (async () => {
-        // we query from the tail of the pendingTransactions
-        const tailTx = pendingTransactions[pendingTransactions.length - 1];
-        setCurrentTx(tailTx);
-        setStatus(tailTx.type === "migrate" ? "processing" : null);
+  const [status, currentTx] = useMemo(() => {
+    const tailTx = pendingTransactions[pendingTransactions.length - 1];
 
-        // Wait for transaction success
-        const receipt = await provider.waitForTransaction(tailTx.txhash, 1);
-        setStatus(receipt.status ? "success" : "error");
-
-        // Clear from pending transactions
-        setPendingTransactions((pendingTransactions) => {
-          return pendingTransactions.filter(
-            (tx) => tx.txhash !== tailTx.txhash
-          );
-        });
-      })();
+    if (!tailTx) {
+      return [undefined, undefined];
     }
-  }, [
-    pendingTransactions,
-    provider,
-    setStatus,
-    setCurrentTx,
-    setPendingTransactions,
-  ]);
+
+    /**
+     * We keep track of migrate type for processing statuses
+     */
+    if (tailTx.type === "migrate") {
+      return [(tailTx.status || "processing") as TxStatuses, tailTx];
+    }
+
+    return [tailTx.status, tailTx];
+  }, [pendingTransactions]);
 
   const getAmountFormatted = useCallback((_currentTx: PendingTransaction) => {
     switch (_currentTx.type) {
@@ -159,8 +146,8 @@ export const TxStatusToast = () => {
     case "error":
       return (
         <Toast
-          show={status === "error"}
-          onClose={() => setStatus(null)}
+          show={showedPendingTxCounter !== transactionsCounter}
+          onClose={() => setShowPendingTxCounter(transactionsCounter)}
           type="error"
           title={`${getActionTitle(currentTx)} failed`}
           subtitle={(() => {
@@ -189,8 +176,8 @@ export const TxStatusToast = () => {
     case "success":
       return (
         <Toast
-          show={status === "success"}
-          onClose={() => setStatus(null)}
+          show={showedPendingTxCounter !== transactionsCounter}
+          onClose={() => setShowPendingTxCounter(transactionsCounter)}
           type={
             currentTx.type === "claim" || currentTx.type === "rewardClaim"
               ? "claim"

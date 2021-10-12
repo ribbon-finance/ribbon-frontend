@@ -29,7 +29,7 @@ import { ActionButton } from "shared/lib/components/Common/buttons";
 import useStakingReward from "shared/lib/hooks/useStakingReward";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import TrafficLight from "shared/lib/components/Common/TrafficLight";
-import usePendingTransactions from "../../../hooks/usePendingTransactions";
+import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { getVaultColor } from "shared/lib/utils/vault";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 
@@ -131,7 +131,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     "insufficient_balance" | "insufficient_staked"
   >();
   const stakingReward = useStakingReward(vaultOption);
-  const [, setPendingTransactions] = usePendingTransactions();
+  const { addPendingTransaction } = usePendingTransactions();
   const [txId, setTxId] = useState("");
 
   const color = getVaultColor(vaultOption);
@@ -185,17 +185,14 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
       const txhash = tx.hash;
 
       setTxId(txhash);
-      setPendingTransactions((pendingTransactions) => [
-        ...pendingTransactions,
-        {
-          txhash,
-          type: stake ? "stake" : "unstake",
-          amount: input,
-          stakeAsset: vaultOption,
-        },
-      ]);
+      addPendingTransaction({
+        txhash,
+        type: stake ? "stake" : "unstake",
+        amount: input,
+        stakeAsset: vaultOption,
+      });
 
-      await provider.waitForTransaction(txhash);
+      await provider.waitForTransaction(txhash, 5);
       setStep("warning");
       setTxId("");
       setInput("");
@@ -204,12 +201,12 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
       setStep("preview");
     }
   }, [
+    addPendingTransaction,
     decimals,
     input,
     provider,
     stakingReward,
     onClose,
-    setPendingTransactions,
     vaultOption,
     stake,
   ]);

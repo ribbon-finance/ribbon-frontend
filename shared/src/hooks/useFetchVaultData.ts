@@ -12,26 +12,30 @@ import {
   VaultDataResponses,
 } from "../models/vault";
 import { isProduction } from "../utils/env";
+import { usePendingTransactions } from "./pendingTransactionsContext";
 
-const useFetchVaultData = (
-  {
-    poll,
-    pollingFrequency,
-  }: {
-    poll: boolean;
-    pollingFrequency: number;
-  } = { poll: true, pollingFrequency: 8000 }
-): VaultData => {
+const useFetchVaultData = (): VaultData => {
   const { library, active, account: web3Account } = useWeb3React();
   const { provider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
+  const { transactionsCounter } = usePendingTransactions();
 
   const [data, setData] = useState<VaultData>(defaultVaultData);
+  const [, setMulticallCounter] = useState(0);
 
   const doMulticall = useCallback(async () => {
     if (!isProduction()) {
       console.time("V1 Vault Data Fetch");
     }
+
+    /**
+     * We keep track with counter so to make sure we always only update with the latest info
+     */
+    let currentCounter: number;
+    setMulticallCounter((counter) => {
+      currentCounter = counter + 1;
+      return currentCounter;
+    });
 
     const responses = await Promise.all(
       VaultList.map(async (vault) => {
@@ -90,23 +94,34 @@ const useFetchVaultData = (
       })
     );
 
-    setData({
-      responses: Object.fromEntries(
-        responses.map(
-          ({ vault, vaultMaxWithdrawableShares, totalSupply, ...response }) => [
-            vault,
-            {
-              ...response,
-              vaultMaxWithdrawAmount: !totalSupply.isZero()
-                ? vaultMaxWithdrawableShares
-                    .mul(response.deposits)
-                    .div(totalSupply)
-                : BigNumber.from(0),
-            },
-          ]
-        )
-      ) as VaultDataResponses,
-      loading: false,
+    setMulticallCounter((counter) => {
+      if (counter === currentCounter) {
+        setData({
+          responses: Object.fromEntries(
+            responses.map(
+              ({
+                vault,
+                vaultMaxWithdrawableShares,
+                totalSupply,
+                ...response
+              }) => [
+                vault,
+                {
+                  ...response,
+                  vaultMaxWithdrawAmount: !totalSupply.isZero()
+                    ? vaultMaxWithdrawableShares
+                        .mul(response.deposits)
+                        .div(totalSupply)
+                    : BigNumber.from(0),
+                },
+              ]
+            )
+          ) as VaultDataResponses,
+          loading: false,
+        });
+      }
+
+      return counter;
     });
 
     if (!isProduction()) {
@@ -115,20 +130,8 @@ const useFetchVaultData = (
   }, [account, active, library, provider]);
 
   useEffect(() => {
-    // eslint-disable-next-line no-undef
-    let pollInterval: NodeJS.Timeout | null = null;
     doMulticall();
-
-    if (poll) {
-      pollInterval = setInterval(doMulticall, pollingFrequency);
-    }
-
-    return () => {
-      if (pollInterval) {
-        clearInterval(pollInterval);
-      }
-    };
-  }, [poll, pollingFrequency, doMulticall]);
+  }, [doMulticall, transactionsCounter]);
 
   return data;
 };

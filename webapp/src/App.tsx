@@ -7,6 +7,7 @@ import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
 import { getLibrary } from "shared/lib/utils/getLibrary";
 import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContext";
 import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContext";
+import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTransactionsContext";
 
 function App() {
   useEffect(() => {
@@ -16,11 +17,13 @@ function App() {
   return (
     <Web3ContextProvider>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <Web3DataContextProvider>
-          <SubgraphDataContextProvider>
-            <RootApp />
-          </SubgraphDataContextProvider>
-        </Web3DataContextProvider>
+        <PendingTransactionsContextProvider>
+          <Web3DataContextProvider>
+            <SubgraphDataContextProvider>
+              <RootApp />
+            </SubgraphDataContextProvider>
+          </Web3DataContextProvider>
+        </PendingTransactionsContextProvider>
       </Web3ReactProvider>
     </Web3ContextProvider>
   );

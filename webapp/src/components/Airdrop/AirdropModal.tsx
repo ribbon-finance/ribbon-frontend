@@ -6,7 +6,7 @@ import AirdropInfo from "./AirdropInfo";
 import RBNClaimModalContent from "shared/lib/components/Common/RBNClaimModalContent";
 import useMerkleDistributor from "../../hooks/useMerkleDistributor";
 import useAirdrop from "../../hooks/useAirdrop";
-import usePendingTransactions from "../../hooks/usePendingTransactions";
+import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 
 interface AirdropModalProps {
@@ -22,7 +22,7 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
   const { account } = useWeb3React();
   const { provider } = useWeb3Context();
   const airdrop = useAirdrop();
-  const [, setPendingTransactions] = usePendingTransactions();
+  const { addPendingTransaction } = usePendingTransactions();
 
   const claimAirdrop = useCallback(async () => {
     if (!airdrop) {
@@ -47,26 +47,23 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
 
       const txhash = tx.hash;
 
-      setPendingTransactions((pendingTransactions) => [
-        ...pendingTransactions,
-        {
-          txhash,
-          type: "claim",
-          amount: airdrop.total.toLocaleString(),
-        },
-      ]);
+      addPendingTransaction({
+        txhash,
+        type: "claim",
+        amount: airdrop.total.toLocaleString(),
+      });
 
-      await provider.waitForTransaction(txhash);
+      await provider.waitForTransaction(txhash, 5);
       setStep("claimed");
     } catch (err) {
       setStep("info");
     }
   }, [
     account,
+    addPendingTransaction,
     airdrop,
     merkleDistributor,
     setStep,
-    setPendingTransactions,
     provider,
   ]);
 

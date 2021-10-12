@@ -16,7 +16,7 @@ import moment from "moment";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import useStakingReward from "shared/lib/hooks/useStakingReward";
-import usePendingTransactions from "../../../hooks/usePendingTransactions";
+import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import RBNClaimModalContent from "shared/lib/components/Common/RBNClaimModalContent";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -86,7 +86,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
     "info"
   );
   const stakingReward = useStakingReward(vaultOption);
-  const [, setPendingTransactions] = usePendingTransactions();
+  const { addPendingTransaction } = usePendingTransactions();
 
   const handleClose = useCallback(() => {
     onClose();
@@ -108,24 +108,21 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
 
       const txhash = tx.hash;
 
-      setPendingTransactions((pendingTransactions) => [
-        ...pendingTransactions,
-        {
-          txhash,
-          type: "rewardClaim",
-          amount: formatBigNumber(stakingPoolData.claimableRbn, 18),
-          stakeAsset: vaultOption,
-        },
-      ]);
+      addPendingTransaction({
+        txhash,
+        type: "rewardClaim",
+        amount: formatBigNumber(stakingPoolData.claimableRbn, 18),
+        stakeAsset: vaultOption,
+      });
 
-      await provider.waitForTransaction(txhash);
+      await provider.waitForTransaction(txhash, 5);
       setStep("claimed");
     } catch (err) {
       setStep("info");
     }
   }, [
+    addPendingTransaction,
     provider,
-    setPendingTransactions,
     stakingPoolData,
     stakingReward,
     vaultOption,

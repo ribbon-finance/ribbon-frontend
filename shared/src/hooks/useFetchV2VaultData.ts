@@ -13,26 +13,30 @@ import {
 import { useWeb3Context } from "./web3Context";
 import { isProduction } from "../utils/env";
 import { getAssetDecimals } from "../utils/asset";
+import { usePendingTransactions } from "./pendingTransactionsContext";
 
-const useFetchV2VaultData = (
-  {
-    poll,
-    pollingFrequency,
-  }: {
-    poll: boolean;
-    pollingFrequency: number;
-  } = { poll: true, pollingFrequency: 8000 }
-): V2VaultData => {
+const useFetchV2VaultData = (): V2VaultData => {
   const { active, account: web3Account, library } = useWeb3React();
   const { provider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
+  const { transactionsCounter } = usePendingTransactions();
 
   const [data, setData] = useState<V2VaultData>(defaultV2VaultData);
+  const [, setMulticallCounter] = useState(0);
 
   const doMulticall = useCallback(async () => {
     if (!isProduction()) {
       console.time("V2 Vault Data Fetch");
     }
+
+    /**
+     * We keep track with counter so to make sure we always only update with the latest info
+     */
+    let currentCounter: number;
+    setMulticallCounter((counter) => {
+      currentCounter = counter + 1;
+      return currentCounter;
+    });
 
     const responses = await Promise.all(
       VaultList.map(async (vault) => {
@@ -128,28 +132,36 @@ const useFetchV2VaultData = (
       })
     );
 
-    setData((prev) => ({
-      responses: Object.fromEntries(
-        responses.map(({ vault, withdrawals, ...response }) => [
-          vault,
-          {
-            ...prev.responses[vault],
-            ...response,
-            withdrawals: withdrawals
-              ? {
-                  ...withdrawals,
-                  amount: withdrawals.shares
-                    .mul(response.pricePerShare as BigNumber)
-                    .div(
-                      BigNumber.from(10).pow(getAssetDecimals(getAssets(vault)))
-                    ),
-                }
-              : prev.responses[vault].withdrawals,
-          },
-        ])
-      ) as V2VaultDataResponses,
-      loading: false,
-    }));
+    setMulticallCounter((counter) => {
+      if (counter === currentCounter) {
+        setData((prev) => ({
+          responses: Object.fromEntries(
+            responses.map(({ vault, withdrawals, ...response }) => [
+              vault,
+              {
+                ...prev.responses[vault],
+                ...response,
+                withdrawals: withdrawals
+                  ? {
+                      ...withdrawals,
+                      amount: withdrawals.shares
+                        .mul(response.pricePerShare as BigNumber)
+                        .div(
+                          BigNumber.from(10).pow(
+                            getAssetDecimals(getAssets(vault))
+                          )
+                        ),
+                    }
+                  : prev.responses[vault].withdrawals,
+              },
+            ])
+          ) as V2VaultDataResponses,
+          loading: false,
+        }));
+      }
+
+      return counter;
+    });
 
     if (!isProduction()) {
       console.timeEnd("V2 Vault Data Fetch");
@@ -157,19 +169,8 @@ const useFetchV2VaultData = (
   }, [account, active, library, provider]);
 
   useEffect(() => {
-    let pollInterval: any = undefined;
     doMulticall();
-
-    if (poll) {
-      pollInterval = setInterval(doMulticall, pollingFrequency);
-    }
-
-    return () => {
-      if (pollInterval) {
-        clearInterval(pollInterval);
-      }
-    };
-  }, [doMulticall, poll, pollingFrequency]);
+  }, [doMulticall, transactionsCounter]);
 
   return data;
 };

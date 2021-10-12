@@ -15,7 +15,7 @@ import {
 import StakingApprovalModalInfo from "./StakingApprovalModalInfo";
 import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
-import usePendingTransactions from "../../../hooks/usePendingTransactions";
+import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useERC20Token from "shared/lib/hooks/useERC20Token";
 import { StakingPoolResponse } from "shared/lib/models/staking";
 import BasicModal from "shared/lib/components/Common/BasicModal";
@@ -46,7 +46,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
   vaultOption,
 }) => {
   const { provider } = useWeb3Context();
-  const [, setPendingTransactions] = usePendingTransactions();
+  const { addPendingTransaction } = usePendingTransactions();
   const tokenContract = useERC20Token(vaultOption);
   const [step, setStep] = useState<"info" | "approve" | "approving">("info");
   const [txId, setTxId] = useState("");
@@ -71,15 +71,12 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
       const txhash = tx.hash;
 
       setTxId(txhash);
-      setPendingTransactions((pendingTransactions) => [
-        ...pendingTransactions,
-        {
-          txhash,
-          type: "stakingApproval",
-          amount: amount,
-          stakeAsset: vaultOption,
-        },
-      ]);
+      addPendingTransaction({
+        txhash,
+        type: "stakingApproval",
+        amount: amount,
+        stakeAsset: vaultOption,
+      });
 
       // Wait for transaction to be approved
       await provider.waitForTransaction(txhash, 5);
@@ -89,7 +86,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
     } catch (err) {
       setStep("info");
     }
-  }, [onClose, tokenContract, provider, setPendingTransactions, vaultOption]);
+  }, [addPendingTransaction, onClose, tokenContract, provider, vaultOption]);
 
   const handleClose = useCallback(() => {
     onClose();

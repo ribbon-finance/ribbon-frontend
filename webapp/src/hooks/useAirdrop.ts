@@ -5,7 +5,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { AirdropBreakDownType } from "../models/airdrop";
 import { proof, airdrop, breakdown } from "../constants/constants";
 import useMerkleDistributor from "./useMerkleDistributor";
-import usePendingTransactions from "./usePendingTransactions";
+import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { formatUnits } from "@ethersproject/units";
 import { impersonateAddress } from "shared/lib/utils/development";
 import { useGlobalState } from "shared/lib/store/store";
@@ -15,7 +15,7 @@ const useAirdrop = () => {
   const account = impersonateAddress ? impersonateAddress : web3Context.account;
   const merkleDistributor = useMerkleDistributor();
   const [airdropInfo, setAirdropInfo] = useGlobalState("airdropInfo");
-  const [pendingTransactions] = usePendingTransactions();
+  const { pendingTransactions } = usePendingTransactions();
 
   const updateAirdropInfo = useCallback(async () => {
     if (!account || !merkleDistributor) {
@@ -56,11 +56,9 @@ const useAirdrop = () => {
   }, [account, airdropInfo, updateAirdropInfo]);
 
   useEffect(() => {
-    pendingTransactions.forEach((tx) => {
-      if (tx.type === "claim") {
-        setAirdropInfo((prev) => (prev ? { ...prev, total: 0 } : undefined));
-      }
-    });
+    if (pendingTransactions[pendingTransactions.length - 1]?.type === "claim") {
+      setAirdropInfo((prev) => (prev ? { ...prev, total: 0 } : undefined));
+    }
   }, [pendingTransactions, setAirdropInfo]);
 
   return airdropInfo;

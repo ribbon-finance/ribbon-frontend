@@ -14,26 +14,30 @@ import {
 } from "../models/staking";
 import { getERC20Token } from "./useERC20Token";
 import { getStakingReward } from "./useStakingReward";
+import { usePendingTransactions } from "./pendingTransactionsContext";
 
-const useFetchStakingPoolData = (
-  {
-    poll,
-    pollingFrequency,
-  }: {
-    poll: boolean;
-    pollingFrequency: number;
-  } = { poll: true, pollingFrequency: 20000 }
-): StakingPoolData => {
+const useFetchStakingPoolData = (): StakingPoolData => {
   const { active, account: web3Account, library } = useWeb3React();
   const { provider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
+  const { transactionsCounter } = usePendingTransactions();
 
   const [data, setData] = useState<StakingPoolData>(defaultStakingPoolData);
+  const [, setMulticallCounter] = useState(0);
 
   const doMulticall = useCallback(async () => {
     if (!isProduction()) {
       console.time("Staking Pool Data Fetch");
     }
+
+    /**
+     * We keep track with counter so to make sure we always only update with the latest info
+     */
+    let currentCounter: number;
+    setMulticallCounter((counter) => {
+      currentCounter = counter + 1;
+      return currentCounter;
+    });
 
     const responses = await Promise.all(
       VaultList.map(async (vault) => {
@@ -114,18 +118,24 @@ const useFetchStakingPoolData = (
       })
     );
 
-    setData((prev) => ({
-      responses: Object.fromEntries(
-        responses.map(({ vault, ...response }) => [
-          vault,
-          {
-            ...prev.responses[vault],
-            ...response,
-          },
-        ])
-      ) as StakingPoolResponses,
-      loading: false,
-    }));
+    setMulticallCounter((counter) => {
+      if (counter === currentCounter) {
+        setData((prev) => ({
+          responses: Object.fromEntries(
+            responses.map(({ vault, ...response }) => [
+              vault,
+              {
+                ...prev.responses[vault],
+                ...response,
+              },
+            ])
+          ) as StakingPoolResponses,
+          loading: false,
+        }));
+      }
+
+      return counter;
+    });
 
     if (!isProduction()) {
       console.timeEnd("Staking Pool Data Fetch");
@@ -133,19 +143,8 @@ const useFetchStakingPoolData = (
   }, [account, active, library, provider]);
 
   useEffect(() => {
-    let pollInterval: any = undefined;
     doMulticall();
-
-    if (poll) {
-      pollInterval = setInterval(doMulticall, pollingFrequency);
-    }
-
-    return () => {
-      if (pollInterval) {
-        clearInterval(pollInterval);
-      }
-    };
-  }, [doMulticall, poll, pollingFrequency]);
+  }, [doMulticall, transactionsCounter]);
 
   return data;
 };

@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-cd ./shared && yarn lint && cd ../webapp && yarn lint && cd ../lbp && yarn lint && cd ../landing && yarn lint && cd ../nft-drop && yarn lint
+cd ./shared && yarn lint && cd ../webapp && yarn lint && cd ../landing && yarn lint && cd ../nft-drop && yarn lint

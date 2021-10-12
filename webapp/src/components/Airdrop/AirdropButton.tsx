@@ -7,7 +7,7 @@ import { Title } from "shared/lib/designSystem";
 import AirdropModal from "./AirdropModal";
 import colors from "shared/lib/designSystem/colors";
 import useAirdrop from "../../hooks/useAirdrop";
-import usePendingTransactions from "../../hooks/usePendingTransactions";
+import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import theme from "shared/lib/designSystem/theme";
 
 const ButtonContainer = styled.div`
@@ -77,7 +77,7 @@ const AirdropButton = () => {
   const [showModal, setShowModal] = useState(false);
   const { account } = useWeb3React();
   const airdrop = useAirdrop();
-  const [pendingTransactions] = usePendingTransactions();
+  const { pendingTransactions } = usePendingTransactions();
 
   const amountStr = useMemo(() => {
     if (!account) {
@@ -92,7 +92,9 @@ const AirdropButton = () => {
   }, [account, airdrop]);
 
   const isClaiming = useMemo(() => {
-    return Boolean(pendingTransactions.find((item) => item.type === "claim"));
+    return Boolean(
+      pendingTransactions.find((item) => item.type === "claim" && !item.status)
+    );
   }, [pendingTransactions]);
 
   return (

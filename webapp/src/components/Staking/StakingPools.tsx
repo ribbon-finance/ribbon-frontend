@@ -24,7 +24,7 @@ import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
 import StakingApprovalModal from "./Modal/StakingApprovalModal";
-import usePendingTransactions from "../../hooks/usePendingTransactions";
+import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import StakingActionModal from "./Modal/StakingActionModal";
@@ -160,7 +160,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   const [, setShowConnectWalletModal] = useConnectWalletModal();
   const { data: stakingPoolData } = useStakingPoolData(vaultOption);
   const decimals = getAssetDecimals(getAssets(vaultOption));
-  const [pendingTransactions] = usePendingTransactions();
+  const { pendingTransactions } = usePendingTransactions();
 
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [isStakeAction, setIsStakeAction] = useState(true);
@@ -169,26 +169,30 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
 
   const color = getVaultColor(vaultOption);
   const ongoingTransaction:
-    | "approval"
+    | "stakingApproval"
     | "stake"
     | "unstake"
     | "rewardClaim"
     | undefined = useMemo(() => {
-    for (let i = 0; i < pendingTransactions.length; i++) {
-      const currentTx = pendingTransactions[i];
+    const ongoingPendingTx = pendingTransactions.find(
+      (currentTx) =>
+        ["stakingApproval", "stake", "unstake", "rewardClaim"].includes(
+          currentTx.type
+        ) &&
+        // @ts-ignore
+        currentTx.stakeAsset === vaultOption &&
+        !currentTx.status
+    );
 
-      // @ts-ignore
-      if (currentTx.stakeAsset === vaultOption) {
-        /** Pending transaction with stake asset can only be this 3 state */
-        return currentTx.type as
-          | "approval"
-          | "stake"
-          | "unstake"
-          | "rewardClaim";
-      }
+    if (!ongoingPendingTx) {
+      return undefined;
     }
 
-    return undefined;
+    return ongoingPendingTx.type as
+      | "stakingApproval"
+      | "stake"
+      | "unstake"
+      | "rewardClaim";
   }, [pendingTransactions, vaultOption]);
 
   // const hasAllowance = useMemo(() => {
@@ -205,7 +209,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
     switch (ongoingTransaction) {
       case "stake":
         return "Staking";
-      case "approval":
+      case "stakingApproval":
         return "Approving";
       case "unstake":
         return "Unstaking";
