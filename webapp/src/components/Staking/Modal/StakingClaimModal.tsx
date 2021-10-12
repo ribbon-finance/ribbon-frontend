@@ -246,7 +246,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
           </>
         );
       default:
-        return <RBNClaimModalContent step={step} />;
+        return <RBNClaimModalContent step={step} type="rbn" />;
     }
   }, [
     step,

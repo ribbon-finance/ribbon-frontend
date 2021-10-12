@@ -75,7 +75,7 @@ const ClaimModal = () => {
       case "claiming":
         return "TRANSACTION PENDING";
       case "claimed":
-        return "LOGO CLAIMED";
+        return "NFT CLAIMED";
     }
   }, [step]);
 
@@ -95,6 +95,7 @@ const ClaimModal = () => {
     <BasicModal show={show} onClose={onClose} height={580}>
       <RBNClaimModalContent
         step={step}
+        type="nft"
         title={modalTitle}
         themeColor={getThemeColorFromColorway(nftDropData.colorway)}
       >
