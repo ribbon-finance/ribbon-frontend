@@ -118,6 +118,11 @@ const DesktopFooter = () => {
         </LeftContainer>
         <div className="d-flex flex-row">
           {renderLinkItem("SNAPSHOT", "https://snapshot.org/#/rbn.eth", true)}
+          {renderLinkItem(
+            "TOKEN TERMINAL",
+            "https://www.tokenterminal.com/terminal/projects/ribbon-finance",
+            true
+          )}
           {renderLinkItem("DEFI PULSE", "https://defipulse.com/", true)}
           {renderLinkItem("DISCORD", "http://discord.ribbon.finance", true)}
           {renderLinkItem("TWITTER", "https://twitter.com/ribbonfinance", true)}
@@ -145,6 +150,12 @@ const DesktopFooter = () => {
         <MobileFooterRow>
           {renderLinkItem("GITHUB", "https://github.com/ribbon-finance", true)}
           {renderLinkItem("DEFI PULSE", "https://defipulse.com/", true)}
+          {renderLinkItem("SNAPSHOT", "https://snapshot.org/#/rbn.eth", true)}
+          {renderLinkItem(
+            "TOKEN TERMINAL",
+            "https://www.tokenterminal.com/terminal/projects/ribbon-finance",
+            true
+          )}
         </MobileFooterRow>
       </MobileFooter>
     </>
