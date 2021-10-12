@@ -28,7 +28,7 @@ const VaultPerformacneChartContainer = styled.div`
 const VaultPerformacneChartSecondaryContainer = styled.div`
   padding: 20px 0px;
   border-radius: 0px 0px ${theme.border.radiusSmall} ${theme.border.radiusSmall};
-  background: ${colors.background.three};
+  background: ${colors.background.two};
 `;
 
 interface DateFilterProps {
