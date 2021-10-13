@@ -2,6 +2,7 @@ export const portfolioTransactionActivityFilters = [
   "all activity",
   "deposit",
   "withdraw",
+  "instant withdraw",
   "migrate",
   "stake",
   "unstake",
