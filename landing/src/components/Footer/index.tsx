@@ -12,7 +12,7 @@ const FooterContainer = styled.div`
   height: 52px;
   width: 100%;
   flex-wrap: nowrap;
-  border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-top: ${theme.border.width} ${theme.border.style} ${colors.borderOne};
 
   @media (max-width: ${sizes.lg}px) {
     display: none;

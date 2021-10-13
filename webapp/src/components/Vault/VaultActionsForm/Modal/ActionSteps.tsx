@@ -14,7 +14,7 @@ import {
   VaultVersion,
 } from "shared/lib/constants/constants";
 import { isETHVault } from "shared/lib/utils/vault";
-import usePendingTransactions from "../../../../hooks/usePendingTransactions";
+import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
 import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
@@ -66,7 +66,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const [txhash, setTxhash] = useState("");
   const v1Vault = useVault(vaultOption);
   const v2Vault = useV2Vault(vaultOption);
-  const [pendingTransactions, setPendingTransactions] =
+  const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
   const { vaultBalanceInAsset: v1VaultBalanceInAsset } =
     useVaultData(vaultOption);
@@ -166,11 +166,11 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   }, [decimals, vaultActionForm.inputAmount]);
 
   useEffect(() => {
-    // we check that the txhash has already been removed
+    // we check that the txhash and check if it had succeed
     // so we can dismiss the modal
     if (stepData.stepNum === STEPS.submittedStep && txhash !== "") {
       const pendingTx = pendingTransactions.find((tx) => tx.txhash === txhash);
-      if (!pendingTx) {
+      if (pendingTx && pendingTx.status) {
         setTimeout(() => {
           handleClose();
         }, 300);
@@ -250,30 +250,24 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
           case ACTIONS.deposit:
           case ACTIONS.withdraw:
           case ACTIONS.migrate:
-            setPendingTransactions((pendingTransactions) => [
-              ...pendingTransactions,
-              {
-                txhash: res.hash,
-                type: vaultActionForm.actionType as
-                  | "deposit"
-                  | "withdraw"
-                  | "migrate",
-                amount: amountStr,
-                vault: vaultOption,
-              },
-            ]);
+            addPendingTransaction({
+              txhash: res.hash,
+              type: vaultActionForm.actionType as
+                | "deposit"
+                | "withdraw"
+                | "migrate",
+              amount: amountStr,
+              vault: vaultOption,
+            });
             break;
           case ACTIONS.transfer:
-            setPendingTransactions((pendingTransactions) => [
-              ...pendingTransactions,
-              {
-                txhash: res.hash,
-                type: ACTIONS.transfer as "transfer",
-                amount: amountStr,
-                transferVault: vaultOption,
-                receiveVault: vaultActionForm.receiveVault!,
-              },
-            ]);
+            addPendingTransaction({
+              txhash: res.hash,
+              type: ACTIONS.transfer as "transfer",
+              amount: amountStr,
+              transferVault: vaultOption,
+              receiveVault: vaultActionForm.receiveVault!,
+            });
             break;
         }
 

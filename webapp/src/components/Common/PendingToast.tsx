@@ -114,6 +114,7 @@ const PendingAnimatingBars: React.FC<PendingAnimatingBarsProps> = ({
     <div className="d-flex">
       {[...Array(count)].map((_, index) => (
         <PendingBar
+          key={index}
           {...barConfig}
           color={`${color}${gapToAlpha(
             Math.min(

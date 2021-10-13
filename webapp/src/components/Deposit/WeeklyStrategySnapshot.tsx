@@ -41,7 +41,7 @@ const VaultPerformanceChartContainer = styled.div`
 `;
 
 const VaultPerformanceChartSecondaryContainer = styled.div`
-  background: ${colors.background.three};
+  background: ${colors.background.two};
 
   &:last-child {
     border-radius: 0px 0px ${theme.border.radius} ${theme.border.radius};

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
@@ -45,7 +45,8 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
   const [hideMigrationForm, setHideMigrationForm] = useState(false);
 
   const color = getVaultColor(vaultOption);
-  const { vaultActionForm } = useVaultActionForm(vaultOption);
+  const { vaultActionForm, handleActionTypeChange } =
+    useVaultActionForm(vaultOption);
 
   const canMigrate = useMemo(
     () =>
@@ -58,6 +59,15 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
       ),
     [decimals, v1VaultAccounts, vaultOption]
   );
+
+  /**
+   * Make sure action type cannot be migrate when user cannot migrate
+   */
+  useEffect(() => {
+    if (!canMigrate && vaultActionForm.actionType === "migrate") {
+      handleActionTypeChange(ACTIONS.deposit, "v2");
+    }
+  }, [canMigrate, vaultActionForm.actionType, handleActionTypeChange]);
 
   const content = useMemo(() => {
     /**

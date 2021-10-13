@@ -41,7 +41,7 @@ const ArrowButton = styled.div<{ disabled?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #ffffff0a;
+  background-color: ${colors.background.two};
   border-radius: 100px;
   width: 48px;
   height: 48px;
@@ -71,7 +71,7 @@ const TotalText = styled(Subtitle)`
 const PaginationBar = styled.div`
   width: 80px;
   height: 2px;
-  background-color: #ffffff0a;
+  background-color: ${colors.background.three};
   position: relative;
 `;
 

@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers";
 import { createGlobalState } from "react-hooks-global-state";
 
 import { DesktopViewType } from "../components/Product/types";
@@ -13,7 +12,6 @@ import {
   DefiScoreToken,
   DefiScoreTokenList,
 } from "../models/defiScore";
-import { ERC20Token, ERC20TokenList } from "../models/eth";
 import {
   PendingTransaction,
   Assets,
@@ -39,9 +37,6 @@ interface GlobalStore {
   gasPrice: string;
   desktopView: DesktopViewType;
   airdropInfo: AirdropInfoData | undefined;
-  tokenBalances: {
-    [token in ERC20Token]: { fetched: boolean; balance: BigNumber };
-  };
   vaultPositionModal: {
     show: boolean;
     vaultOption?: VaultOptions;
@@ -80,14 +75,6 @@ export const initialState: GlobalStore = {
   gasPrice: "",
   desktopView: "grid",
   airdropInfo: undefined,
-  tokenBalances: Object.fromEntries(
-    ERC20TokenList.map((token) => [
-      token,
-      { balance: BigNumber.from(0), fetched: false },
-    ])
-  ) as {
-    [token in ERC20Token]: { fetched: boolean; balance: BigNumber };
-  },
   vaultPositionModal: {
     show: false,
     vaultVersion: VaultVersionList[0],

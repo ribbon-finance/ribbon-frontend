@@ -38,6 +38,7 @@ import {
   getAssetLogo,
 } from "shared/lib/utils/asset";
 import { getVaultColor } from "shared/lib/utils/vault";
+import { getVaultURI } from "../../constants/constants";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 64px;
@@ -262,7 +263,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   }, [color, vaultVersion]);
 
   return (
-    <PositionLink to={`/theta-vault/${vaultName}`}>
+    <PositionLink to={getVaultURI(vaultAccount.vault.symbol, vaultVersion)}>
       <PositionContainer color={color}>
         <PositionMainContainer>
           <LogoContainer color={color}>{logo}</LogoContainer>

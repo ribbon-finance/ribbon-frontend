@@ -15,7 +15,7 @@ import { ERC20Token } from "shared/lib/models/eth";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { BaseLink, PrimaryText, SecondaryText } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import usePendingTransactions from "../../../../hooks/usePendingTransactions";
+import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { getAssetDisplay, getAssetLogo } from "shared/lib/utils/asset";
 
@@ -72,7 +72,7 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
 
   const { library } = useWeb3React();
   const { provider } = useWeb3Context();
-  const [, setPendingTransactions] = usePendingTransactions();
+  const { addPendingTransaction } = usePendingTransactions();
 
   const tokenContract = useMemo(() => {
     if (isETHVault(vaultOption)) {
@@ -102,15 +102,12 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
 
         const txhash = tx.hash;
 
-        setPendingTransactions((pendingTransactions) => [
-          ...pendingTransactions,
-          {
-            txhash,
-            type: "approval",
-            amount: amount,
-            vault: vaultOption,
-          },
-        ]);
+        addPendingTransaction({
+          txhash,
+          type: "approval",
+          amount: amount,
+          vault: vaultOption,
+        });
 
         // Wait for transaction to be approved
         await provider.waitForTransaction(txhash, 5);
@@ -119,7 +116,7 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
         setWaitingApproval(false);
       }
     }
-  }, [provider, setPendingTransactions, tokenContract, vaultOption, version]);
+  }, [addPendingTransaction, provider, tokenContract, vaultOption, version]);
 
   return (
     <>

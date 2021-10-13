@@ -7,6 +7,7 @@ import { impersonateAddress } from "../utils/development";
 import { ERC20Token } from "../models/eth";
 import { getERC20Token } from "./useERC20Token";
 import { isProduction } from "../utils/env";
+import { usePendingTransactions } from "./pendingTransactionsContext";
 
 export type UserAssetBalanceResponses = { [asset in Assets]: BigNumber };
 export type UserAssetBalanceData = {
@@ -27,13 +28,14 @@ const useFetchAssetBalanceData = (
   }: {
     poll: boolean;
     pollingFrequency: number;
-  } = { poll: true, pollingFrequency: 8000 }
+  } = { poll: true, pollingFrequency: 20000 }
 ) => {
   const [data, setData] = useState<UserAssetBalanceData>(
     defaultUserAssetBalanceData
   );
   const { library, active, account: web3Account } = useWeb3React();
   const account = impersonateAddress ? impersonateAddress : web3Account;
+  const { transactionsCounter } = usePendingTransactions();
 
   const doMulticall = useCallback(async () => {
     if (!isProduction()) {
@@ -70,9 +72,20 @@ const useFetchAssetBalanceData = (
     }
   }, [account, active, library]);
 
+  /**
+   * Fetch on first load and transaction success
+   */
+  useEffect(() => {
+    doMulticall();
+  }, [doMulticall, transactionsCounter]);
+
+  /**
+   * Schedule polling
+   * We still need polling as user might perform transaction that changes their asset balance
+   * (buy/sell) outside of app
+   */
   useEffect(() => {
     let pollInterval: any = undefined;
-    doMulticall();
 
     if (poll) {
       pollInterval = setInterval(doMulticall, pollingFrequency);

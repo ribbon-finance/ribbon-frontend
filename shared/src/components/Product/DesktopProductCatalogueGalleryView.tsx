@@ -94,7 +94,7 @@ const BackgroundContainer = styled.div`
 
 const BackgroundText = styled(Title)`
   font-size: 240px;
-  color: ${colors.primaryText}0A;
+  color: ${colors.primaryText}14;
   white-space: nowrap;
 `;
 
@@ -103,9 +103,6 @@ interface DesktopProductCatalogueGridViewProps {
   setView?: React.Dispatch<React.SetStateAction<DesktopViewType>>;
   onVaultPress: (vault: VaultOptions, vaultVersion: VaultVersion) => void;
   filteredProducts: VaultOptions[];
-  vaultAccounts: {
-    [key: string]: VaultAccount | undefined;
-  };
 }
 
 const DesktopProductCatalogueGalleryView: React.FC<
@@ -121,7 +118,6 @@ const DesktopProductCatalogueGalleryView: React.FC<
   setFilterStrategies,
   filterAssets,
   setFilterAssets,
-  vaultAccounts,
 }) => {
   const { active } = useWeb3React();
   const { height } = useScreenSize();

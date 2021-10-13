@@ -41,7 +41,7 @@ const PerformanceContainer = styled.div`
 
 const PerformanceColumn = styled.div`
   width: 100%;
-  border-bottom: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-bottom: ${theme.border.width} ${theme.border.style} ${colors.borderOne};
   display: flex;
   flex-wrap: wrap;
 
@@ -84,7 +84,7 @@ const DateFilter = styled(Title)<{ active: boolean }>`
 const ChartConnectWalletContainer = styled.div`
   width: 100%;
   height: 224px;
-  border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-top: ${theme.border.width} ${theme.border.style} ${colors.borderOne};
 `;
 
 const ConnectWalletButton = styled(PrimaryText)`
@@ -96,7 +96,7 @@ const KPIColumn = styled.div`
   padding: 16px;
   display: flex;
   flex-wrap: wrap;
-  border-left: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-left: ${theme.border.width} ${theme.border.style} ${colors.borderOne};
 
   &:first-child {
     border-left: none;
@@ -105,7 +105,7 @@ const KPIColumn = styled.div`
   @media (max-width: ${sizes.md}px) {
     width: 100%;
     border-left: unset;
-    border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
+    border-top: ${theme.border.width} ${theme.border.style} ${colors.borderOne};
 
     &:first-child {
       border-top: none;

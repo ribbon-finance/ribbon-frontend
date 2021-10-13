@@ -7,6 +7,7 @@ const colors = {
   },
   borderDark: "#1F1F1F",
   border: "#2B2B2B",
+  borderOne: "#1C1C22",
   borderLight: "#2E2C2B",
   text: "#ACACAB",
   primaryText: "#FFFFFF",

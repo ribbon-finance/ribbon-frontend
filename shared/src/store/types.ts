@@ -6,43 +6,41 @@ import { DefiScoreProtocol, DefiScoreToken } from "../models/defiScore";
 export const AssetsList = ["WETH", "WBTC", "USDC", "yvUSDC"] as const;
 export type Assets = typeof AssetsList[number];
 
-export type PendingTransaction =
+export type PendingTransaction = {
+  txhash: string;
+  status?: "success" | "error";
+} & (
   | {
-      txhash: string;
       type: "deposit" | "withdraw" | "approval" | "migrate";
       amount: string;
       vault: VaultOptions;
     }
   | {
-      txhash: string;
       type: "claim";
       amount: string;
     }
   | {
-      txhash: string;
       type: "stakingApproval";
       amount: string;
       stakeAsset: VaultOptions;
     }
   | {
-      txhash: string;
       type: "stake" | "unstake";
       amount: string;
       stakeAsset: VaultOptions;
     }
   | {
-      txhash: string;
       type: "rewardClaim";
       amount: string;
       stakeAsset: VaultOptions;
     }
   | {
-      txhash: string;
       type: "transfer";
       amount: string;
       transferVault: VaultOptions;
       receiveVault: VaultOptions;
-    };
+    }
+);
 
 export type AssetYieldsInfoData = {
   [token in DefiScoreToken]: Array<{
