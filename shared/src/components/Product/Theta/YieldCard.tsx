@@ -25,7 +25,6 @@ import {
   VaultOptions,
   VaultVersion,
   VaultVersionList,
-  VaultVersionListExludeV1,
 } from "../../../constants/constants";
 import { productCopies } from "../productCopies";
 import { BarChartIcon, GlobeIcon } from "../../../assets/icons/icons";
@@ -95,6 +94,24 @@ const ProductTag = styled(BaseButton)<{ color: string }>`
   background: ${(props) => props.color}29;
   padding: 8px;
   margin-right: 4px;
+  border-radius: ${theme.border.radiusSmall};
+`;
+
+const ProductVersionTag = styled(ProductTag)<{ active: boolean }>`
+  margin-right: 0px;
+  border: ${theme.border.width} ${theme.border.style}
+    ${(props) => `${props.color}${props.active ? "" : "00"}`};
+  border-radius: 0px;
+
+  &:first-child {
+    border-top-left-radius: ${theme.border.radiusSmall};
+    border-bottom-left-radius: ${theme.border.radiusSmall};
+  }
+
+  &:last-child {
+    border-top-right-radius: ${theme.border.radiusSmall};
+    border-bottom-right-radius: ${theme.border.radiusSmall};
+  }
 `;
 
 const ProductInfo = styled.div`
@@ -170,8 +187,10 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const isLoading = useMemo(() => status === "loading", [status]);
   const [mode, setMode] = useState<"info" | "yield">("info");
   const color = getVaultColor(vault);
+  const [userSelectedVaultVersion, setUserSelectedVaultVersion] =
+    useState<VaultVersion>();
 
-  const vaultVersion = useMemo(() => {
+  const defaultVaultVersion = useMemo(() => {
     if (VaultVersionList[0] === "v1") {
       if (!isLoading && vaultLimit.isZero()) {
         return "v2";
@@ -182,6 +201,8 @@ const YieldCard: React.FC<YieldCardProps> = ({
 
     return VaultVersionList[0];
   }, [isLoading, vaultLimit]);
+
+  const vaultVersion = userSelectedVaultVersion || defaultVaultVersion;
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {
@@ -352,14 +373,24 @@ const YieldCard: React.FC<YieldCardProps> = ({
                   <Subtitle>{tag}</Subtitle>
                 </ProductTag>
               ))}
-              {/* Version tags */}
-              {VaultVersionListExludeV1.map((version) =>
-                hasVaultVersion(vault, version) ? (
-                  <ProductTag key={version} color={color}>
-                    <Subtitle>{version}</Subtitle>
-                  </ProductTag>
-                ) : null
-              )}
+              <div className="d-flex">
+                {/* Version tags */}
+                {VaultVersionList.map((version) =>
+                  hasVaultVersion(vault, version) ? (
+                    <ProductVersionTag
+                      key={version}
+                      color={color}
+                      active={vaultVersion === version}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setUserSelectedVaultVersion(version);
+                      }}
+                    >
+                      <Subtitle>{version}</Subtitle>
+                    </ProductVersionTag>
+                  ) : null
+                )}
+              </div>
             </TagContainer>
 
             {/* Mode switcher button */}
