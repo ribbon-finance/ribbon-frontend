@@ -116,7 +116,7 @@ const StakingPoolCardFooter = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   width: 100%;
-  border-top: ${theme.border.width} ${theme.border.style} ${colors.borderOne};
+  border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
 `;
 
 const StakingPoolCardFooterButton = styled(Title)<{
@@ -137,7 +137,7 @@ const StakingPoolCardFooterButton = styled(Title)<{
   }
 
   &:not(:first-child) {
-    border-left: ${theme.border.width} ${theme.border.style} ${colors.borderOne};
+    border-left: ${theme.border.width} ${theme.border.style} ${colors.border};
   }
 
   @media (max-width: ${sizes.sm}px) {
@@ -146,8 +146,7 @@ const StakingPoolCardFooterButton = styled(Title)<{
 
     &:not(:first-child) {
       border-left: unset;
-      border-top: ${theme.border.width} ${theme.border.style}
-        ${colors.borderOne};
+      border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
     }
   }
 `;

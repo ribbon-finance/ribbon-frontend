@@ -99,15 +99,14 @@ const OverviewKPI = styled.div`
   width: calc(100% / 3);
   display: flex;
   flex-wrap: wrap;
-  border-top: ${theme.border.width} ${theme.border.style} ${colors.borderOne};
+  border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
 
   @media (max-width: ${sizes.sm}px) {
     width: 100%;
   }
 
   &:not(:last-child) {
-    border-right: ${theme.border.width} ${theme.border.style}
-      ${colors.borderOne};
+    border-right: ${theme.border.width} ${theme.border.style} ${colors.border};
   }
 `;
 
