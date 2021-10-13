@@ -74,8 +74,8 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
           return [
             [0, 0],
             [
-              new Date(v2PriceHistory[0].timestamp),
-              new Date(v2PriceHistory[0].timestamp),
+              new Date(v2PriceHistory[0].timestamp * 1000),
+              new Date(v2PriceHistory[0].timestamp * 1000),
             ],
           ];
         }
@@ -99,7 +99,7 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
 
             return ((currentPrice - initialPrice) / initialPrice) * 100;
           }),
-          v2PriceHistory.map((data) => new Date(data.timestamp)),
+          v2PriceHistory.map((data) => new Date(data.timestamp * 1000)),
         ];
     }
   }, [airtableData.res, v2PriceHistory, vaultOption, vaultVersion]);
