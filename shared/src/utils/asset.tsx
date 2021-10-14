@@ -88,6 +88,12 @@ const ColoredYVUSDCLogo = styled(YVUSDcLogo)<{ backgroundColor?: string }>`
   }
 `;
 
+export const LidoThemedETHLogo = styled(WETHLogo)`
+  path {
+    fill: ${colors.asset.stETH};
+  }
+`;
+
 export const getAssetLogo: (asset: Assets) =>
   | StyledComponent<
       React.FC<React.SVGAttributes<SVGElement>>,

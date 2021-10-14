@@ -70,7 +70,7 @@ const HighlighText = styled.span`
 
 const ExplanationStepList = [
   "deposit",
-  "yearnVaultDeposit",
+  "swapCollateralAsset",
   "algoStrikeSelection",
   "strikeSelection",
   "mintOption",
@@ -84,15 +84,15 @@ const ExplanationStepList = [
 ] as const;
 
 type ExplanationStep = typeof ExplanationStepList[number];
-const NonYearnExclusionExplanationStepList: ExplanationStep[] = [
-  "yearnVaultDeposit",
+const NonCollateralSwapExclusionExplanationStepList: ExplanationStep[] = [
+  "swapCollateralAsset",
 ];
 
 const ExplanatioStepMap: { [version in VaultVersion]: Array<ExplanationStep> } =
   {
     v1: [
       "deposit",
-      "yearnVaultDeposit",
+      "swapCollateralAsset",
       "strikeSelection",
       "mintOption",
       "tradeOption",
@@ -103,7 +103,7 @@ const ExplanatioStepMap: { [version in VaultVersion]: Array<ExplanationStep> } =
     ],
     v2: [
       "deposit",
-      "yearnVaultDeposit",
+      "swapCollateralAsset",
       "algoStrikeSelection",
       "mintOption",
       "gnosisAuction",
@@ -138,10 +138,12 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
   const currentVaultExplanationStepList = useMemo(() => {
     switch (getDisplayAssets(vaultOption)) {
       case "yvUSDC":
+      case "stETH":
         return ExplanatioStepMap[vaultVersion];
       default:
         return ExplanatioStepMap[vaultVersion].filter(
-          (item) => !NonYearnExclusionExplanationStepList.includes(item)
+          (item) =>
+            !NonCollateralSwapExclusionExplanationStepList.includes(item)
         );
     }
   }, [vaultOption, vaultVersion]);
@@ -178,18 +180,27 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
       const collateralAsset = getDisplayAssets(vaultOption);
       switch (s) {
         case "deposit":
-          return <VaultDeposit depositAsset={asset} />;
-        case "yearnVaultDeposit":
+          return <VaultDeposit vaultOption={vaultOption} />;
+        case "swapCollateralAsset":
+          let tradeTarget: string = "";
+          switch (getDisplayAssets(vaultOption)) {
+            case "stETH":
+              tradeTarget = "LIDO";
+              break;
+            case "yvUSDC":
+              tradeTarget = "Yearn Vault";
+              break;
+          }
           return (
             <TradeOffer
               color={color}
-              tradeTarget="Yearn Vault"
+              tradeTarget={tradeTarget}
               offerToken={asset}
               receiveToken={collateralAsset}
             />
           );
         case "algoStrikeSelection":
-          return <AlgoStrikeSelection depositAsset={asset} />;
+          return <AlgoStrikeSelection vaultOption={vaultOption} />;
         case "strikeSelection":
           return <StrikeSelection color={color} isPut={isPut} />;
         case "mintOption":
@@ -202,7 +213,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
             />
           );
         case "gnosisAuction":
-          return <GnosisAuction depositAsset={asset} />;
+          return <GnosisAuction vaultOption={vaultOption} />;
         case "gnosisTrade":
           return (
             <TradeOffer
@@ -249,7 +260,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
               color={color}
               offerParty={offerParty}
               tradeTarget="Opyn Vault"
-              receiveToken={asset}
+              receiveToken={collateralAsset}
             />
           );
       }
@@ -262,8 +273,17 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
       switch (s) {
         case "deposit":
           return "VAULT Receives DEPOSITS";
-        case "yearnVaultDeposit":
-          return `DEPOSITS ${getAssetDisplay(asset)} IN YEARN`;
+        case "swapCollateralAsset":
+          let collateralTarget: string = "";
+          switch (getDisplayAssets(vaultOption)) {
+            case "stETH":
+              collateralTarget = "LIDO";
+              break;
+            case "yvUSDC":
+              collateralTarget = "YEARN";
+              break;
+          }
+          return `DEPOSITS ${getAssetDisplay(asset)} IN ${collateralTarget}`;
         case "algoStrikeSelection":
           return "ALGORITHMIC STRIKE SELECTION";
         case "strikeSelection":
@@ -297,7 +317,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           return `${offerParty} EXERCISEs OPTIONS`;
       }
     },
-    [asset, isPut, vaultVersion]
+    [asset, isPut, vaultOption, vaultVersion]
   );
 
   const renderDescription = useCallback(
@@ -339,36 +359,73 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                 </>
               );
           }
-        case "yearnVaultDeposit":
-          return (
-            <>
-              Every Friday, the vault converts 100% of its {assetUnit} balance
-              into{" "}
-              <TooltipExplanation
-                title={collateralAssetUnit.toUpperCase()}
-                explanation={`${collateralAssetUnit} is the deposit token that represents a user's share of the ${assetUnit} yVault.`}
-                learnMoreURL="https://docs.yearn.finance/yearn-finance/yvaults/vault-tokens"
-                renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
-                    {collateralAssetUnit}
-                  </HighlighText>
-                )}
-              />{" "}
-              by depositing {assetUnit} into the Yearn {assetUnit}{" "}
-              <TooltipExplanation
-                title="YVAULT"
-                explanation="yVaults are Yearn vaults that accept customer deposits and then route them through strategies which seek out the highest yield available in DeFi."
-                learnMoreURL="https://docs.yearn.finance/yearn-finance/yvaults/overview#what-are-yvaults"
-                renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
-                    yVault
-                  </HighlighText>
-                )}
-              />
-              . By converting {assetUnit} into {collateralAssetUnit}, the vault
-              gains exposure to the yield generated by the Yearn yVault.
-            </>
-          );
+        case "swapCollateralAsset":
+          switch (getDisplayAssets(vaultOption)) {
+            case "stETH":
+              return (
+                <>
+                  Every Friday, the vault converts 100% of its {assetUnit}{" "}
+                  balance into{" "}
+                  <TooltipExplanation
+                    title={collateralAssetUnit.toUpperCase()}
+                    explanation={`${collateralAssetUnit} is the deposit token that represents a user's share of the their ETH on the Ethereum beacon chain.`}
+                    learnMoreURL="https://lido.fi/ethereum"
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HighlighText ref={ref} {...triggerHandler}>
+                        {collateralAssetUnit}
+                      </HighlighText>
+                    )}
+                  />{" "}
+                  by depositing {assetUnit} into the{" "}
+                  <TooltipExplanation
+                    title="LIDO"
+                    explanation="Lido is a defi asset staking protocol."
+                    learnMoreURL="https://lido.fi"
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HighlighText ref={ref} {...triggerHandler}>
+                        Lido
+                      </HighlighText>
+                    )}
+                  />{" "}
+                  smart contracts. By converting {assetUnit} into{" "}
+                  {collateralAssetUnit}, the vault gains exposure to the yield
+                  generated by the Yearn yVault.
+                </>
+              );
+            case "yvUSDC":
+              return (
+                <>
+                  Every Friday, the vault converts 100% of its {assetUnit}{" "}
+                  balance into{" "}
+                  <TooltipExplanation
+                    title={collateralAssetUnit.toUpperCase()}
+                    explanation={`${collateralAssetUnit} is the deposit token that represents a user's share of the ${assetUnit} yVault.`}
+                    learnMoreURL="https://docs.yearn.finance/yearn-finance/yvaults/vault-tokens"
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HighlighText ref={ref} {...triggerHandler}>
+                        {collateralAssetUnit}
+                      </HighlighText>
+                    )}
+                  />{" "}
+                  by depositing {assetUnit} into the Yearn {assetUnit}{" "}
+                  <TooltipExplanation
+                    title="YVAULT"
+                    explanation="yVaults are Yearn vaults that accept customer deposits and then route them through strategies which seek out the highest yield available in DeFi."
+                    learnMoreURL="https://docs.yearn.finance/yearn-finance/yvaults/overview#what-are-yvaults"
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HighlighText ref={ref} {...triggerHandler}>
+                        yVault
+                      </HighlighText>
+                    )}
+                  />
+                  . By converting {assetUnit} into {collateralAssetUnit}, the
+                  vault gains exposure to the yield generated by the Yearn
+                  yVault.
+                </>
+              );
+          }
+
+          return <></>;
         case "algoStrikeSelection":
           return (
             <>
@@ -519,8 +576,8 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                       </HighlighText>
                     )}
                   />{" "}
-                  by depositing its {optionAssetUnit} balance as collateral in
-                  an{" "}
+                  by depositing its {collateralAssetUnit} balance as collateral
+                  in an{" "}
                   <TooltipExplanation
                     title="OPYN"
                     explanation="Opyn is a DeFi options protocol."

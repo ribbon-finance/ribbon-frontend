@@ -1,26 +1,32 @@
 import React, { useMemo } from "react";
 import Lottie from "react-lottie";
 
-import { Assets } from "shared/lib/store/types";
 import WBTCDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/WBTC_Deposit.json";
 import USDCDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/USDC_Deposit.json";
 import ETHDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/ETH_Deposit.json";
+import STETHDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/STETH_Deposit.json";
+import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 
 interface VaultDepositProps {
-  depositAsset: Assets;
+  vaultOption: VaultOptions;
 }
 
-const VaultDeposit: React.FC<VaultDepositProps> = ({ depositAsset }) => {
+const VaultDeposit: React.FC<VaultDepositProps> = ({ vaultOption }) => {
   const animationData = useMemo(() => {
-    switch (depositAsset) {
-      case "WETH":
-        return ETHDepositAnimationData;
-      case "WBTC":
-        return WBTCDepositAnimationData;
-      case "USDC":
-        return USDCDepositAnimationData;
+    switch (vaultOption) {
+      case "rstETH-THETA":
+        return STETHDepositAnimationData;
+      default:
+        switch (getAssets(vaultOption)) {
+          case "WETH":
+            return ETHDepositAnimationData;
+          case "WBTC":
+            return WBTCDepositAnimationData;
+          case "USDC":
+            return USDCDepositAnimationData;
+        }
     }
-  }, [depositAsset]);
+  }, [vaultOption]);
 
   return (
     <div className="d-flex flex-column w-100 h-100 justify-content-center">
