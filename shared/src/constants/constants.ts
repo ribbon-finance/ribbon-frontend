@@ -85,8 +85,8 @@ export const GAS_LIMITS: {
   },
   "rstETH-THETA": {
     v2: {
-      deposit: 120000,
-      withdrawInstantly: 120000,
+      deposit: 170000,
+      withdrawInstantly: 130000,
     },
   },
 };
