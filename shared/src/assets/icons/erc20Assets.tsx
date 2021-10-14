@@ -65,8 +65,6 @@ export const WBTCLogo: React.FC<SVGProps> = (props) => (
 
 export const WETHLogo: React.FC<SVGProps> = (props) => (
   <svg
-    width="296"
-    height="480"
     viewBox="0 0 296 480"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -194,3 +192,51 @@ export const YVUSDcLogo: React.FC<
     </YVUSDcLogoContainer>
   );
 };
+
+export const STETHLogo: React.FC<SVGProps> = (props) => (
+  <svg
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M11.0533 18.3815L10.7973 18.7743C7.91001 23.2034 8.55481 29.0039 12.3475 32.7201C14.5788 34.9064 17.5032 35.9997 20.4276 36C20.4276 36 20.4276 36 11.0533 18.3815Z"
+      fill="#00A3FF"
+    />
+    <path
+      opacity="0.6"
+      d="M20.4256 23.7363L11.0513 18.3815C20.4256 36 20.4256 36 20.4256 36C20.4256 32.1628 20.4256 27.7659 20.4256 23.7363Z"
+      fill="#00A3FF"
+    />
+    <path
+      opacity="0.6"
+      d="M29.8119 18.3815L30.0679 18.7743C32.9552 23.2034 32.3104 29.0039 28.5176 32.7201C26.2864 34.9064 23.362 35.9997 20.4376 36C20.4376 36 20.4376 36 29.8119 18.3815Z"
+      fill="#00A3FF"
+    />
+    <path
+      opacity="0.2"
+      d="M20.4366 23.7363L29.811 18.3815C20.4367 36 20.4366 36 20.4366 36C20.4366 32.1628 20.4366 27.7659 20.4366 23.7363Z"
+      fill="#00A3FF"
+    />
+    <path
+      opacity="0.2"
+      d="M20.4401 11.7751V21.0104L28.515 16.3957L20.4401 11.7751Z"
+      fill="#00A3FF"
+    />
+    <path
+      opacity="0.6"
+      d="M20.4376 11.7751L12.3568 16.3956L20.4376 21.0104V11.7751Z"
+      fill="#00A3FF"
+    />
+    <path
+      d="M20.4376 4.0067L12.3568 16.3971L20.4376 11.7636V4.0067Z"
+      fill="#00A3FF"
+    />
+    <path
+      opacity="0.6"
+      d="M20.4401 11.7629L28.5212 16.3966L20.4401 4V11.7629Z"
+      fill="#00A3FF"
+    />
+  </svg>
+);

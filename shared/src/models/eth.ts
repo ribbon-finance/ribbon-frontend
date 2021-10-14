@@ -5,6 +5,7 @@ export const ERC20TokenList = [
   "usdc",
   "wbtc",
   "yvusdc",
+  "steth",
   "rbn",
   ...FullVaultList,
 ] as const;
@@ -26,6 +27,8 @@ export const getERC20TokenDisplay = (asset: ERC20Token): string => {
   switch (asset) {
     case "yvusdc":
       return "yvUSDC";
+    case "steth":
+      return "stETH";
     default:
       return asset.toUpperCase();
   }

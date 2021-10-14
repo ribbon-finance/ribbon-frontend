@@ -10,10 +10,14 @@ export const getVault = (
   vaultOption: VaultOptions,
   useSigner: boolean = true
 ) => {
+  if (!VaultAddressMap[vaultOption].v1) {
+    return null;
+  }
+
   const provider = useSigner ? library.getSigner() : library;
 
   const vault = RibbonCoveredCallFactory.connect(
-    VaultAddressMap[vaultOption].v1,
+    VaultAddressMap[vaultOption].v1!,
     provider
   );
   return vault;

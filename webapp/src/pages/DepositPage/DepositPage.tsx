@@ -242,8 +242,23 @@ const DepositPage = () => {
   /**
    * Redirect to v1 if vault version given is invalid
    */
-  if (vaultVersion !== "v1" && !hasVaultVersion(vaultOption, vaultVersion)) {
-    return <Redirect to={getVaultURI(vaultOption, "v1")} />;
+  if (!hasVaultVersion(vaultOption, vaultVersion)) {
+    const availableVaultVersions = VaultVersionList.filter((version) =>
+      hasVaultVersion(vaultOption, version)
+    );
+
+    if (availableVaultVersions.length <= 0) {
+      return <Redirect to="/" />;
+    }
+
+    return (
+      <Redirect
+        to={getVaultURI(
+          vaultOption,
+          availableVaultVersions[availableVaultVersions.length - 1]
+        )}
+      />
+    );
   }
 
   return (
@@ -392,7 +407,6 @@ const HeroSection: React.FC<{
                 ))}
                 <AttributePill className="mr-2 text-uppercase" color={color}>
                   {[...VaultVersionList].reverse().map((version) =>
-                    version === "v1" ||
                     hasVaultVersion(vaultOption, version) ? (
                       <BaseLink
                         to={getVaultURI(vaultOption, version)}
