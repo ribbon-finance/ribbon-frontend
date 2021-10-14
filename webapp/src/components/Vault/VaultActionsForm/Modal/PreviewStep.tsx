@@ -81,10 +81,11 @@ const PreviewStep: React.FC<{
         };
         break;
       case ACTIONS.withdraw:
+        // Since details row is only applicable to V1, we just leave value to 0% when the said vault does not have v1
         actionDetails = {
           key: "Withdrawal Fee",
           value: `${parseFloat(
-            VaultFees[vaultOption].v1.withdrawalFee
+            VaultFees[vaultOption].v1?.withdrawalFee ?? "0"
           ).toString()}%`,
         };
         break;
@@ -306,6 +307,11 @@ const PreviewStep: React.FC<{
           );
       }
 
+    /**
+     * IMPORTANT
+     * Do note over here that the fallthrough case currently will only allow V1 withdraw to fall through.
+     * Exercise great caution when introducing further fallthrough to avoid unintended consequences.
+     */
     // eslint-disable-next-line no-fallthrough
     default:
       const actionWord = capitalize(actionType);

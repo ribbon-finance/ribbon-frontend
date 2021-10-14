@@ -41,6 +41,10 @@ const useFetchVaultData = (): VaultData => {
       VaultList.map(async (vault) => {
         const contract = getVault(library || provider, vault, active);
 
+        if (!contract) {
+          return { vault };
+        }
+
         /**
          * 1. Total Balance
          * 2. Cap
@@ -96,7 +100,7 @@ const useFetchVaultData = (): VaultData => {
 
     setMulticallCounter((counter) => {
       if (counter === currentCounter) {
-        setData({
+        setData((prev) => ({
           responses: Object.fromEntries(
             responses.map(
               ({
@@ -107,18 +111,23 @@ const useFetchVaultData = (): VaultData => {
               }) => [
                 vault,
                 {
+                  ...prev.responses[vault],
                   ...response,
-                  vaultMaxWithdrawAmount: !totalSupply.isZero()
-                    ? vaultMaxWithdrawableShares
-                        .mul(response.deposits)
-                        .div(totalSupply)
-                    : BigNumber.from(0),
+                  vaultMaxWithdrawAmount:
+                    totalSupply &&
+                    vaultMaxWithdrawableShares &&
+                    response.deposits &&
+                    !totalSupply.isZero()
+                      ? vaultMaxWithdrawableShares
+                          .mul(response.deposits)
+                          .div(totalSupply)
+                      : BigNumber.from(0),
                 },
               ]
             )
           ) as VaultDataResponses,
           loading: false,
-        });
+        }));
       }
 
       return counter;

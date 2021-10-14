@@ -20,19 +20,15 @@ export const NETWORK_NAMES: Record<number, string> = {
 export const VaultVersionList = ["v1", "v2"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 
-export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">;
-export const VaultVersionListExludeV1 = VaultVersionList.filter(
-  (version) => version !== "v1"
-) as Array<VaultVersionExcludeV1>;
-
 export const FullVaultList = [
+  "rstETH-THETA",
   "ryvUSDC-ETH-P-THETA",
   "rETH-THETA",
   "rBTC-THETA",
   "rUSDC-ETH-P-THETA",
 ] as const;
 export type VaultOptions = typeof FullVaultList[number];
-const ProdExcludeVault: VaultOptions[] = [];
+const ProdExcludeVault: VaultOptions[] = ["rstETH-THETA"];
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
   "ryvUSDC-ETH-P-THETA",
@@ -43,9 +39,8 @@ export const VaultList: VaultOptions[] = !isProduction()
   : FullVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
 
 export const GAS_LIMITS: {
-  [vault in VaultOptions]: {
+  [vault in VaultOptions]: Partial<{
     v1: { deposit: number; withdraw: number };
-  } & Partial<{
     v2: {
       deposit: number;
       withdrawInstantly: number;
@@ -88,6 +83,12 @@ export const GAS_LIMITS: {
       withdraw: 210000,
     },
   },
+  "rstETH-THETA": {
+    v2: {
+      deposit: 170000,
+      withdrawInstantly: 130000,
+    },
+  },
 };
 
 export const VaultLiquidityMiningMap: Partial<
@@ -110,9 +111,9 @@ export const isPutVault = (vault: VaultOptions): boolean =>
   PutThetaVault.includes(vault);
 
 export const VaultAddressMap: {
-  [vault in VaultOptions]: { v1: string } & Partial<
+  [vault in VaultOptions]: Partial<
     {
-      [version in Exclude<VaultVersion, "v1">]: string;
+      [version in VaultVersion]: string;
     }
   >;
 } = {
@@ -148,6 +149,14 @@ export const VaultAddressMap: {
     : {
         v1: v1deployment.mainnet.RibbonYearnETHPut,
       },
+  "rstETH-THETA": isDevelopment()
+    ? {
+        // TODO: Replace kovan address
+        v2: v2deployment.kovan.RibbonThetaVaultETHCall,
+      }
+    : {
+        // TODO: Add stETH vault mainnet address
+      },
 };
 
 /**
@@ -167,6 +176,7 @@ export const VaultNamesList = [
   "T-ETH-C",
   "T-WBTC-C",
   "T-yvUSDC-P-ETH",
+  "T-stETH-C",
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
@@ -174,6 +184,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-ETH-C": "rETH-THETA",
   "T-WBTC-C": "rBTC-THETA",
   "T-yvUSDC-P-ETH": "ryvUSDC-ETH-P-THETA",
+  "T-stETH-C": "rstETH-THETA",
 };
 
 export const getEtherscanURI = () =>
@@ -194,6 +205,7 @@ export const getAssets = (vault: VaultOptions): Assets => {
     case "ryvUSDC-ETH-P-THETA":
       return "USDC";
     case "rETH-THETA":
+    case "rstETH-THETA":
       return "WETH";
     case "rBTC-THETA":
       return "WBTC";
@@ -207,6 +219,7 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
     case "rETH-THETA":
     case "rUSDC-ETH-P-THETA":
     case "ryvUSDC-ETH-P-THETA":
+    case "rstETH-THETA":
       return "WETH";
   }
 };
@@ -221,6 +234,8 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
       return "WBTC";
     case "ryvUSDC-ETH-P-THETA":
       return "yvUSDC";
+    case "rstETH-THETA":
+      return "stETH";
   }
 };
 
@@ -237,21 +252,21 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "ryvUSDC-ETH-P-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("ryvUSDC-ETH-P-THETA")))
   ),
+  // TODO: Confirm max deposit for stETH vault
+  "rstETH-THETA": BigNumber.from(50000).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rstETH-THETA")))
+  ),
 };
 
 export const VaultFees: {
-  [vault in VaultOptions]: {
+  [vault in VaultOptions]: Partial<{
     v1: { withdrawalFee: string };
     v2: { managementFee: string; performanceFee: string };
-  };
+  }>;
 } = {
   "rUSDC-ETH-P-THETA": {
     v1: {
       withdrawalFee: "1.0",
-    },
-    v2: {
-      managementFee: "2",
-      performanceFee: "10",
     },
   },
   "rETH-THETA": {
@@ -276,9 +291,11 @@ export const VaultFees: {
     v1: {
       withdrawalFee: "1.0",
     },
+  },
+  "rstETH-THETA": {
     v2: {
-      managementFee: "",
-      performanceFee: "",
+      managementFee: "2",
+      performanceFee: "10",
     },
   },
 };
@@ -293,6 +310,9 @@ export const getAirtableName = (vault: VaultOptions): string => {
       return "T-WBTC-C";
     case "ryvUSDC-ETH-P-THETA":
       return "T-YVUSDC-P-ETH";
+    case "rstETH-THETA":
+      // TODO: Update airtable name
+      return "T-USDC-P-ETH";
   }
 };
 

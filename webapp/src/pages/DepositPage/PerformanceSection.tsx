@@ -144,7 +144,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
     (_vaultOption: VaultOptions, _vaultVersion: VaultVersion) => {
       switch (_vaultVersion) {
         case "v1":
-          const withdrawalFee = VaultFees[_vaultOption].v1.withdrawalFee;
+          const withdrawalFee = VaultFees[_vaultOption].v1?.withdrawalFee;
           return (
             <>
               {" "}
@@ -223,8 +223,8 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           <ParagraphHeading>FEE STRUCTURE</ParagraphHeading>
           <ParagraphText>
             The vault fee structure consists of a{" "}
-            {VaultFees[vaultOption].v2.managementFee}% annualised management fee
-            and a {VaultFees[vaultOption].v2.performanceFee}% annualised
+            {VaultFees[vaultOption].v2?.managementFee}% annualised management
+            fee and a {VaultFees[vaultOption].v2?.performanceFee}% annualised
             performance fee.
             <br />
             <br />

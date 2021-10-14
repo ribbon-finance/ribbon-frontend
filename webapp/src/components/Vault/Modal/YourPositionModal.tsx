@@ -3,7 +3,11 @@ import styled from "styled-components";
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { getAssets, VaultList } from "shared/lib/constants/constants";
+import {
+  getAssets,
+  getDisplayAssets,
+  VaultList,
+} from "shared/lib/constants/constants";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { getVaultColor } from "shared/lib/utils/vault";
 import {
@@ -53,7 +57,7 @@ const YourPositionModal: React.FC = () => {
   const color = getVaultColor(vaultOption);
   const asset = getAssets(vaultOption);
   const decimals = getAssetDecimals(asset);
-  const Logo = getAssetLogo(asset);
+  const Logo = getAssetLogo(getDisplayAssets(vaultOption));
 
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const { data: stakingPoolData } = useStakingPoolData(vaultOption);

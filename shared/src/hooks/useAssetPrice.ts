@@ -21,11 +21,13 @@ const COINGECKO_CURRENCIES = {
   WBTC: "wrapped-bitcoin",
   USDC: "usd-coin",
   yvUSDC: "",
+  stETH: "staked-ether",
 };
 
-const useAssetPrice: (args: {
-  asset?: Assets;
-}) => { price: number; loading: boolean } = ({ asset = "WETH" }) => {
+const useAssetPrice: (args: { asset?: Assets }) => {
+  price: number;
+  loading: boolean;
+} = ({ asset = "WETH" }) => {
   const [prices, setPrices] = useGlobalState("prices");
   const [loading, setLoading] = useState(false);
 
@@ -50,11 +52,10 @@ const useAssetPrice: (args: {
 };
 export default useAssetPrice;
 
-export const useAssetsPrice: (args: {
-  assets: Assets[];
-}) => { prices: Partial<{ [asset in Assets]: number }>; loading: boolean } = ({
-  assets = ["WETH"],
-}) => {
+export const useAssetsPrice: (args: { assets: Assets[] }) => {
+  prices: Partial<{ [asset in Assets]: number }>;
+  loading: boolean;
+} = ({ assets = ["WETH"] }) => {
   const [prices, setPrices] = useGlobalState("prices");
   const [loading, setLoading] = useState(false);
 

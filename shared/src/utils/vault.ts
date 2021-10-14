@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
-import { getAssets, VaultOptions } from "../constants/constants";
+import { getDisplayAssets, VaultOptions } from "../constants/constants";
 import { getAssetColor } from "./asset";
 
 export const isVaultFull = (
@@ -12,7 +12,8 @@ export const isVaultFull = (
   return !cap.isZero() && deposits.gte(cap.sub(margin));
 };
 
-export const isETHVault = (vault: VaultOptions) => vault === "rETH-THETA";
+export const isETHVault = (vault: VaultOptions) =>
+  ["rETH-THETA", "rstETH-THETA"].includes(vault);
 
 export const getVaultColor = (vault: VaultOptions) =>
-  getAssetColor(getAssets(vault));
+  getAssetColor(getDisplayAssets(vault));

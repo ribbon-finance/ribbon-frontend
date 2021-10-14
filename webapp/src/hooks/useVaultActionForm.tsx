@@ -240,7 +240,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
         case "v1":
           switch (actionForm.actionType) {
             case ACTIONS.deposit:
-              const gasLimit = GAS_LIMITS[vaultOption].v1.deposit;
+              const gasLimit = GAS_LIMITS[vaultOption].v1!.deposit;
               const gasFee = BigNumber.from(gasLimit.toString()).mul(
                 BigNumber.from(gasPrice || "0")
               );

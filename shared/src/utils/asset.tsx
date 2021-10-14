@@ -1,6 +1,7 @@
 import React from "react";
 import styled, { StyledComponent } from "styled-components";
 import {
+  STETHLogo,
   USDCLogo,
   WBTCLogo,
   WETHLogo,
@@ -87,6 +88,12 @@ const ColoredYVUSDCLogo = styled(YVUSDcLogo)<{ backgroundColor?: string }>`
   }
 `;
 
+export const LidoThemedETHLogo = styled(WETHLogo)`
+  path {
+    fill: ${colors.asset.stETH};
+  }
+`;
+
 export const getAssetLogo: (asset: Assets) =>
   | StyledComponent<
       React.FC<React.SVGAttributes<SVGElement>>,
@@ -115,5 +122,7 @@ export const getAssetLogo: (asset: Assets) =>
       return WETHLogo;
     case "yvUSDC":
       return ColoredYVUSDCLogo;
+    case "stETH":
+      return STETHLogo;
   }
 };

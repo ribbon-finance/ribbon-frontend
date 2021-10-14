@@ -64,7 +64,7 @@ const ViewBreakdownPill = styled.div`
     content: " ";
     top: 0;
     left: 0;
-    background-color: ${colors.background};
+    background-color: ${colors.background.one};
     border-radius: 100px;
     z-index: -1;
   }

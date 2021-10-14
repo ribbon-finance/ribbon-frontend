@@ -23,7 +23,6 @@ const ColorColumn = styled(Col)<{
 `;
 
 const MainContainer = styled(Container)`
-  background-color: ${colors.background};
   height: 640px;
 
   @media (max-width: ${sizes.md}px) {

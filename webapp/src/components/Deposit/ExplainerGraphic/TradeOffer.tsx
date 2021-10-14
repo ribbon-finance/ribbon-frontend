@@ -10,6 +10,7 @@ import { getAssetLogo } from "shared/lib/utils/asset";
 import { MoneyLogo } from "../../../assets/icons/vaultExplainer/tradeOffer";
 import sizes from "shared/lib/designSystem/sizes";
 import { GnosisLogo } from "shared/lib/assets/icons/defiApp";
+import { WETHLogo } from "shared/lib/assets/icons/erc20Assets";
 
 const TargetContainer = styled.div`
   display: flex;
@@ -165,7 +166,7 @@ const TradeTokenContainer = styled.div<{
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${colors.background};
+  background: ${colors.background.one};
   height: ${(props) => props.dimension}px;
   width: ${(props) => props.dimension}px;
   border-radius: ${(props) => props.dimension / 2}px;
@@ -191,6 +192,12 @@ const OTokenLogo = styled.div<{ dimension: number; color: string }>`
   border: ${(props) => Math.ceil(props.dimension / 12)}px solid
     ${(props) => props.color};
   border-radius: ${(props) => props.dimension / 2}px;
+`;
+
+const ColoredWETHLogo = styled(WETHLogo)<{ color: string }>`
+  path {
+    fill: ${(props) => props.color};
+  }
 `;
 
 type OfferTokenType = "oToken" | "money" | Assets;
@@ -226,6 +233,10 @@ const TradeTunnel: React.FC<TradeTunnelProps> = ({
           />
         );
       default:
+        if (color === colors.asset.stETH && tradeToken === "WETH") {
+          return <ColoredWETHLogo color={color} height="80%" width="80%" />;
+        }
+
         const AssetLogo = getAssetLogo(tradeToken);
 
         if (tradeToken === "yvUSDC") {

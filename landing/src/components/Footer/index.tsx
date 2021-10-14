@@ -38,7 +38,7 @@ const LinkItem = styled.div`
 `;
 
 const MobileFooter = styled.div`
-  border-top: 1px solid ${colors.background};
+  border-top: 1px solid ${colors.borderDark};
 
   @media (min-width: ${sizes.lg}px) {
     display: none;
