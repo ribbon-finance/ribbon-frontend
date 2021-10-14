@@ -173,6 +173,9 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
             setProcessedInitialState(true);
           }
           break;
+        default:
+          handleActionTypeChange(ACTIONS.deposit, "v2");
+          setProcessedInitialState(true);
       }
     } catch {
       handleActionTypeChange(ACTIONS.deposit, "v2");

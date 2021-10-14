@@ -13,7 +13,6 @@ import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 import useScreenSize from "../../hooks/useScreenSize";
-import { VaultAccount } from "../../models/vault";
 import { AssetsList } from "../../store/types";
 import {
   getAssetColor,

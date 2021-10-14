@@ -215,6 +215,11 @@ const PortfolioTransactions = () => {
     switch (activityFilter) {
       case "all activity":
         break;
+      case "instant withdraw":
+        filteredTransactions = transactions.filter(
+          (transaction) => transaction.type === "instantWithdraw"
+        );
+        break;
       default:
         filteredTransactions = transactions.filter(
           (transaction) => transaction.type === activityFilter
@@ -276,6 +281,7 @@ const PortfolioTransactions = () => {
           prependSymbol = "+";
           break;
         case "withdraw":
+        case "instantWithdraw":
         case "transfer":
         case "unstake":
           prependSymbol = "-";
@@ -307,6 +313,7 @@ const PortfolioTransactions = () => {
       case "receive":
         return "↓";
       case "withdraw":
+      case "instantWithdraw":
       case "transfer":
         return "↑";
       case "stake":
@@ -321,6 +328,18 @@ const PortfolioTransactions = () => {
         return <MigrateIcon width={14} height={14} />;
     }
   }, []);
+
+  const getTransactionTypeDisplay = useCallback(
+    (type: VaultTransactionType) => {
+      switch (type) {
+        case "instantWithdraw":
+          return "Instant Withdraw";
+        default:
+          return capitalize(type);
+      }
+    },
+    []
+  );
 
   const renderTransactions = useCallback(() => {
     if (!active) {
@@ -394,7 +413,7 @@ const PortfolioTransactions = () => {
             <TransactionInfoRow>
               {/* Type and Time */}
               <TransactionInfoText className="mr-auto">
-                {`${capitalize(transaction.type)} - ${moment(
+                {`${getTransactionTypeDisplay(transaction.type)} - ${moment(
                   transaction.timestamp,
                   "X"
                 ).fromNow()}`}
@@ -429,7 +448,7 @@ const PortfolioTransactions = () => {
               <Divider />
 
               {/* Type */}
-              <Title>{transaction.type}</Title>
+              <Title>{getTransactionTypeDisplay(transaction.type)}</Title>
             </TransactionInfoRow>
             <TransactionInfoRow>
               {/* Amount in crypto */}
@@ -470,6 +489,7 @@ const PortfolioTransactions = () => {
       ));
   }, [
     active,
+    getTransactionTypeDisplay,
     page,
     processedTransactions,
     animatedLoadingText,

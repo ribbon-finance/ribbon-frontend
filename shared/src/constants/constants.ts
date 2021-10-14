@@ -157,7 +157,7 @@ export const VaultAddressMap: {
  */
 export const hasVaultVersion = (
   vaultOption: VaultOptions,
-  version: VaultVersionExcludeV1
+  version: VaultVersion
 ): boolean => {
   return Boolean(VaultAddressMap[vaultOption][version]);
 };

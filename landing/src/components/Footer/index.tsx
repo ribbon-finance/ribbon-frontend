@@ -12,7 +12,7 @@ const FooterContainer = styled.div`
   height: 52px;
   width: 100%;
   flex-wrap: nowrap;
-  border-top: ${theme.border.width} ${theme.border.style} ${colors.borderOne};
+  border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
 
   @media (max-width: ${sizes.lg}px) {
     display: none;
@@ -98,11 +98,13 @@ const DesktopFooter = () => {
   );
 
   const mediaKit = (
-    <BaseLink to="/ribbon_media_kit.zip" target="_blank" download>
-      <LinkItem>
-        <LinkItemText>Media Kit</LinkItemText>
-      </LinkItem>
-    </BaseLink>
+    <MobileFooterCol xs={6}>
+      <BaseLink to="/ribbon_media_kit.zip" target="_blank" download>
+        <LinkItem>
+          <LinkItemText>Media Kit</LinkItemText>
+        </LinkItem>
+      </BaseLink>
+    </MobileFooterCol>
   );
 
   return (
@@ -134,28 +136,20 @@ const DesktopFooter = () => {
         <MobileFooterRow>
           {renderLinkItem("FAQS", "/faq")}
           {renderLinkItem("BLOG", "https://medium.com/@ribbonfinance", true)}
-        </MobileFooterRow>
-        <MobileFooterRow>
           {renderLinkItem("TERMS", "/terms")}
           {renderLinkItem("POLICY", "/policy")}
-        </MobileFooterRow>
-        <MobileFooterRow>
           {renderLinkItem("DOCS", "https://docs.ribbon.finance")}
           {renderLinkItem("SNAPSHOT", "https://snapshot.org/#/rbn.eth", true)}
-        </MobileFooterRow>
-        <MobileFooterRow>
+          {renderLinkItem("DEFI PULSE", "https://defipulse.com/", true)}
           {renderLinkItem("DISCORD", "http://discord.ribbon.finance", true)}
           {renderLinkItem("TWITTER", "https://twitter.com/ribbonfinance", true)}
-        </MobileFooterRow>
-        <MobileFooterRow>
           {renderLinkItem("GITHUB", "https://github.com/ribbon-finance", true)}
-          {renderLinkItem("DEFI PULSE", "https://defipulse.com/", true)}
-          {renderLinkItem("SNAPSHOT", "https://snapshot.org/#/rbn.eth", true)}
           {renderLinkItem(
             "TOKEN TERMINAL",
             "https://www.tokenterminal.com/terminal/projects/ribbon-finance",
             true
           )}
+          {mediaKit}
         </MobileFooterRow>
       </MobileFooter>
     </>

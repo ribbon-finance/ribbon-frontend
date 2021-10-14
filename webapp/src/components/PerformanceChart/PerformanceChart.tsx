@@ -6,6 +6,7 @@ import moment from "moment";
 
 import { HoverInfo } from "./types";
 import { SecondaryText } from "shared/lib/designSystem";
+import colors from "shared/lib/designSystem/colors";
 
 const PerformanceChartContainer = styled.div`
   width: 100%;
@@ -104,10 +105,10 @@ export const Chart: React.FC<{
   dataset,
   labels,
   onHover,
-  borderColor = "#16CEB9",
-  gradientStartColor = "rgba(121, 255, 203, 0.24)",
-  gradientStopColor = "rgba(121, 255, 203, 0)",
-  pointBackgroundColor = "rgba(121, 255, 203, 1)",
+  borderColor = colors.green,
+  gradientStartColor = `${colors.green}3D`,
+  gradientStopColor = `${colors.green}00`,
+  pointBackgroundColor = colors.green,
 }) => {
   const options = useMemo((): ChartOptions => {
     return {
