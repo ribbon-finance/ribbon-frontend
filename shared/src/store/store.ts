@@ -14,14 +14,11 @@ import {
 } from "../models/defiScore";
 import {
   PendingTransaction,
-  Assets,
-  AssetsList,
   AssetYieldsInfoData,
   AirdropInfoData,
 } from "./types";
 
 interface GlobalStore {
-  prices: { [asset in Assets]: { price: number; fetched: boolean } };
   pendingTransactions: PendingTransaction[];
   showConnectWallet: boolean;
   latestAPY: {
@@ -46,11 +43,6 @@ interface GlobalStore {
 }
 
 export const initialState: GlobalStore = {
-  prices: Object.fromEntries(
-    AssetsList.map((asset) => [asset, { price: 0.0, fetched: false }])
-  ) as {
-    [asset in Assets]: { price: number; fetched: boolean };
-  },
   pendingTransactions: [],
   showConnectWallet: false,
   latestAPY: Object.fromEntries(

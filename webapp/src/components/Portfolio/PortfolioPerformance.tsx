@@ -26,7 +26,6 @@ import sizes from "shared/lib/designSystem/sizes";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
-import { AssetsList } from "shared/lib/store/types";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 
@@ -154,10 +153,7 @@ type dateFilterType = typeof dateFilterOptions[number];
 
 const PortfolioPerformance = () => {
   const { active } = useWeb3React();
-  const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice({
-    // @ts-ignore
-    assets: AssetsList,
-  });
+  const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice();
   const { vaultAccounts, loading: vaultAccountLoading } =
     useVaultAccounts("all");
   const [hoveredBalanceUpdateIndex, setHoveredBalanceUpdateIndex] =

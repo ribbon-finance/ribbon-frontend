@@ -26,7 +26,7 @@ import {
   VaultOptions,
 } from "shared/lib/constants/constants";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
-import { Assets, AssetsList } from "shared/lib/store/types";
+import { Assets } from "shared/lib/store/types";
 import { ExternalIcon, MigrateIcon } from "shared/lib/assets/icons/icons";
 import { VaultTransactionType } from "shared/lib/models/vault";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -193,10 +193,7 @@ const perPage = 6;
 const PortfolioTransactions = () => {
   const { transactions, loading } = useTransactions();
   const { active } = useWeb3React();
-  const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice({
-    // @ts-ignore
-    assets: AssetsList,
-  });
+  const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice();
   const animatedLoadingText = useTextAnimation(loading || assetPricesLoading);
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<PortfolioTransactionSortBy>(
