@@ -179,7 +179,6 @@ const PortfolioPerformance = () => {
   const loading =
     assetsPriceLoading || balanceUpdatesLoading || RBNTokenAccountLoading;
   const animatedLoadingText = useTextAnimation(loading);
-  console.log(balanceUpdates);
 
   /**
    * We process balances into fiat term before perform more processing
