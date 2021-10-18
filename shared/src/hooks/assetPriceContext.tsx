@@ -4,7 +4,10 @@ import { Assets, AssetsList } from "../store/types";
 import { useFetchAssetsPrice } from "./useAssetPrice";
 
 export type AssetPriceResponses = {
-  [asset in Assets]: { price: number; timestamp: number }[];
+  [asset in Assets]: {
+    latestPrice: number;
+    history: { [timestamp: number]: number };
+  };
 };
 
 export type AssetPriceContextData = {
@@ -14,10 +17,7 @@ export type AssetPriceContextData = {
 
 export const defaultAssetPriceContextData = {
   responses: Object.fromEntries(
-    AssetsList.map((asset) => [
-      asset,
-      [] as { price: number; timestamp: number }[],
-    ])
+    AssetsList.map((asset) => [asset, { latestPrice: 0, history: {} }])
   ) as AssetPriceResponses,
   loading: true,
 };

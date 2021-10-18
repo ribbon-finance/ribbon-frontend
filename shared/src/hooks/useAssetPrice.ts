@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useCallback, useContext, useEffect, useState } from "react";
+import { Moment } from "moment";
 
 import { Assets, AssetsList } from "../store/types";
 import {
@@ -46,7 +47,18 @@ export const useFetchAssetsPrice = () => {
 
     setData({
       responses: Object.fromEntries(
-        responses.map((response) => [response.asset, response.data])
+        responses.map((response) => [
+          response.asset,
+          {
+            latestPrice:
+              response.data.length > 0
+                ? response.data[response.data.length - 1].price
+                : 0,
+            history: Object.fromEntries(
+              response.data.map((item) => [item.timestamp, item.price])
+            ),
+          },
+        ])
       ) as AssetPriceResponses,
       loading: false,
     });
@@ -56,8 +68,6 @@ export const useFetchAssetsPrice = () => {
     fetchAssetsPrices();
   }, [fetchAssetsPrices]);
 
-  console.log(data);
-
   return data;
 };
 
@@ -65,11 +75,7 @@ const useAssetPrice = ({ asset }: { asset: Assets } = { asset: "WETH" }) => {
   const contextData = useContext(AssetPriceContext);
 
   return {
-    price:
-      contextData.responses[asset].length > 0
-        ? contextData.responses[asset][contextData.responses[asset].length - 1]
-            .price
-        : 0,
+    price: contextData.responses[asset].latestPrice,
     loading: contextData.loading,
   };
 };
@@ -83,13 +89,54 @@ export const useAssetsPrice = () => {
     prices: Object.fromEntries(
       AssetsList.map((asset) => [
         asset,
-        contextData.responses[asset].length > 0
-          ? contextData.responses[asset][
-              contextData.responses[asset].length - 1
-            ].price
-          : 0,
+        contextData.responses[asset].latestPrice,
       ])
     ) as { [asset in Assets]: number },
+    loading: contextData.loading,
+  };
+};
+
+export const useAssetsPriceHistory = () => {
+  const contextData = useContext(AssetPriceContext);
+
+  /**
+   * Search the price of asset with a given date
+   */
+  const searchAssetPriceFromDate = useCallback(
+    (asset: Assets, date: Date): number => {
+      const queryDate = new Date(date.toDateString());
+      queryDate.setUTCHours(0);
+
+      return contextData.responses[asset].history[queryDate.valueOf()] || 0;
+    },
+    [contextData.responses]
+  );
+
+  /**
+   * Wrapper for price search in the event where moment is provided
+   */
+  const searchAssetPriceFromMoment = useCallback(
+    (asset: Assets, momentObj: Moment) =>
+      searchAssetPriceFromDate(asset, momentObj.toDate()),
+    [searchAssetPriceFromDate]
+  );
+
+  /**
+   * Wrapper for price search in the event where timestamp is provided
+   */
+  const searchAssetPriceFromTimestamp = useCallback(
+    (asset: Assets, timestamp: number) =>
+      searchAssetPriceFromDate(asset, new Date(timestamp)),
+    [searchAssetPriceFromDate]
+  );
+
+  return {
+    histories: Object.fromEntries(
+      AssetsList.map((asset) => [asset, contextData.responses[asset].history])
+    ) as { [asset in Assets]: { [timestamp: number]: number } },
+    searchAssetPriceFromDate,
+    searchAssetPriceFromMoment,
+    searchAssetPriceFromTimestamp,
     loading: contextData.loading,
   };
 };

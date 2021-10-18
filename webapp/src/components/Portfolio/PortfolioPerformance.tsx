@@ -9,25 +9,22 @@ import {
 } from "shared/lib/designSystem";
 import moment from "moment";
 import currency from "currency.js";
+import { BigNumber } from "@ethersproject/bignumber";
 
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
+import { useAssetsPriceHistory } from "shared/lib/hooks/useAssetPrice";
 import useBalances from "shared/lib/hooks/useBalances";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import {
-  assetToFiat,
-  formatBigNumber,
-  isPracticallyZero,
-} from "shared/lib/utils/math";
+import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
 import PerformanceChart from "../PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../PerformanceChart/types";
 import sizes from "shared/lib/designSystem/sizes";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import { getAssets, VaultOptions } from "shared/lib/constants/constants";
-import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
+import { getAssets } from "shared/lib/constants/constants";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
+import { Assets } from "shared/lib/store/types";
 
 const PerformanceContainer = styled.div`
   display: flex;
@@ -153,54 +150,13 @@ type dateFilterType = typeof dateFilterOptions[number];
 
 const PortfolioPerformance = () => {
   const { active } = useWeb3React();
-  const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice();
-  const { vaultAccounts, loading: vaultAccountLoading } =
-    useVaultAccounts("all");
+  const { searchAssetPriceFromTimestamp } = useAssetsPriceHistory();
   const [hoveredBalanceUpdateIndex, setHoveredBalanceUpdateIndex] =
     useState<number>();
   const [rangeFilter, setRangeFilter] = useState<dateFilterType>("1m");
   const [, setShowConnectWalletModal] = useConnectWalletModal();
   const { data: RBNTokenAccount, loading: RBNTokenAccountLoading } =
     useRBNTokenAccount();
-
-  const { deposit: vaultTotalDeposit, balance: vaultBalanceInAsset } =
-    useMemo(() => {
-      let deposit = 0;
-      let balance = 0;
-
-      Object.keys(vaultAccounts).forEach((key) => {
-        const vaultAccount = vaultAccounts[key as VaultOptions];
-        if (vaultAccount) {
-          const currentAsset = getAssets(vaultAccount.vault.symbol);
-          const currentAssetDecimals = getAssetDecimals(currentAsset);
-
-          if (
-            isPracticallyZero(vaultAccount.totalDeposits, currentAssetDecimals)
-          ) {
-            return;
-          }
-
-          deposit += parseFloat(
-            assetToFiat(
-              vaultAccount.totalDeposits,
-              // @ts-ignore
-              assetPrices[currentAsset],
-              currentAssetDecimals
-            )
-          );
-          balance += parseFloat(
-            assetToFiat(
-              vaultAccount.totalBalance,
-              // @ts-ignore
-              assetPrices[currentAsset],
-              currentAssetDecimals
-            )
-          );
-        }
-      });
-
-      return { deposit, balance };
-    }, [vaultAccounts, assetPrices]);
 
   const afterDate = useMemo(() => {
     switch (rangeFilter) {
@@ -216,89 +172,204 @@ const PortfolioPerformance = () => {
   // Fetch balances update
   const { balances: balanceUpdates, loading: balanceUpdatesLoading } =
     useBalances(undefined, afterDate ? afterDate.unix() : undefined);
-  const loading =
-    assetPricesLoading ||
-    vaultAccountLoading ||
-    balanceUpdatesLoading ||
-    RBNTokenAccountLoading;
+  const loading = balanceUpdatesLoading || RBNTokenAccountLoading;
   const animatedLoadingText = useTextAnimation(loading);
 
-  // Accumulate balance with USD value
-  const balances = useMemo(() => {
-    const vaultLastBalances: { [key: string]: number } = {};
+  /**
+   * We process balances into fiat term before perform more processing
+   * balances[].balance - Total balance of user portfolio up until that point
+   * balances[].netDeposit - Net deposit of user in that specific round
+   * balances[].netProfit - Net profit of user in that round. This takes into account of asset price fluctuation and yield earned
+   * balances[].netYield - This only account for the fiat amount of yield for a given round
+   * balances[].timestamp - timestamp of the balance update
+   */
+  const {
+    balances,
+    vaultTotalDeposit,
+    vaultTotalYieldEarned,
+    vaultBalanceInAsset,
+  } = useMemo(() => {
+    const vaultLastBalances: {
+      [key: string]: {
+        asset: Assets;
+        fiatBalance: number;
+        cryptoBalance: BigNumber;
+        totalDeposit: number;
+        totalYieldEarned: number;
+      };
+    } = {};
     let balances: {
       balance: number;
       netDeposit: number;
       netProfit: number;
+      netYield: number;
       timestamp: number;
     }[];
 
     balances = balanceUpdates.map((balanceUpdate) => {
       const currentAsset = getAssets(balanceUpdate.vault.symbol);
       const currentAssetDecimals = getAssetDecimals(currentAsset);
-      const vaultLastBalanceKey =
-        balanceUpdate.vault.symbol + balanceUpdate.vaultVersion;
+      const vaultKey = balanceUpdate.vault.symbol + balanceUpdate.vaultVersion;
+      const currentAssetPrice = searchAssetPriceFromTimestamp(
+        currentAsset,
+        balanceUpdate.timestamp * 1000
+      );
 
-      const vaultLastBalance = vaultLastBalances[vaultLastBalanceKey] || 0;
-      const vaultCurrentBalance = parseFloat(
+      const vaultLastBalance = vaultLastBalances[vaultKey];
+      //Calculate current balance in fiat
+      const vaultCurrentFiatBalance = parseFloat(
         assetToFiat(
           balanceUpdate.balance,
-          // @ts-ignore
-          assetPrices[currentAsset],
+          currentAssetPrice,
           currentAssetDecimals
         )
       );
-      const vaultNetChange = vaultCurrentBalance - vaultLastBalance;
-      let netProfit: number = 0;
-      let netDeposit: number = 0;
 
-      if (vaultNetChange >= 0) {
-        // If balance goes up
+      /**
+       * If this is the first balanceUpdate, we take the balance as starting balance for calculating any further ROI
+       */
+      if (!vaultLastBalance) {
+        vaultLastBalances[vaultKey] = {
+          asset: currentAsset,
+          fiatBalance: vaultCurrentFiatBalance,
+          cryptoBalance: balanceUpdate.balance,
+          totalDeposit: vaultCurrentFiatBalance,
+          totalYieldEarned: 0,
+        };
+
+        return {
+          balance: Object.keys(vaultLastBalances).reduce((acc, curr) => {
+            const vaultLastBalance = vaultLastBalances[curr];
+            return (
+              acc +
+              parseFloat(
+                assetToFiat(
+                  vaultLastBalance.cryptoBalance,
+                  searchAssetPriceFromTimestamp(
+                    vaultLastBalance.asset,
+                    balanceUpdate.timestamp * 1000
+                  ),
+                  getAssetDecimals(vaultLastBalance.asset)
+                )
+              )
+            );
+          }, 0),
+          netDeposit: vaultCurrentFiatBalance,
+          netProfit: 0,
+          netYield: 0,
+          timestamp: balanceUpdate.timestamp,
+        };
+      }
+
+      // Find out net changes in vault amount
+      const vaultNetCryptoChange = balanceUpdate.balance.sub(
+        vaultLastBalance.cryptoBalance
+      );
+
+      // let netProfit: number = 0;
+      let netDeposit: number = 0;
+      let netYield: number = 0;
+
+      if (vaultNetCryptoChange.lt(BigNumber.from(0))) {
+        // If crypto balance goes up
         if (balanceUpdate.yieldEarned.isZero()) {
           // User deposit
-          netDeposit = vaultNetChange;
+          netDeposit = parseFloat(
+            assetToFiat(
+              vaultNetCryptoChange,
+              currentAssetPrice,
+              currentAssetDecimals
+            )
+          );
         } else {
           // Yield gained
-          netProfit = parseFloat(
+          netYield = parseFloat(
             assetToFiat(
               balanceUpdate.yieldEarned,
-              // @ts-ignore
-              assetPrices[currentAsset],
+              currentAssetPrice,
               currentAssetDecimals
             )
           );
         }
       } else {
-        // If balance goes down
+        // If crypto balance goes down
         if (balanceUpdate.isWithdraw) {
           // Balance decrease due to withdraw
-          netDeposit = vaultNetChange;
+          netDeposit = parseFloat(
+            assetToFiat(
+              vaultNetCryptoChange,
+              currentAssetPrice,
+              currentAssetDecimals
+            )
+          );
         } else {
           // Vault value goes down, causing losses
-          netProfit = vaultNetChange;
+          netYield = parseFloat(
+            assetToFiat(
+              vaultNetCryptoChange,
+              currentAssetPrice,
+              currentAssetDecimals
+            )
+          );
         }
       }
 
-      vaultLastBalances[vaultLastBalanceKey] = vaultCurrentBalance;
+      vaultLastBalances[vaultKey] = {
+        asset: currentAsset,
+        fiatBalance: vaultCurrentFiatBalance,
+        cryptoBalance: balanceUpdate.balance,
+        totalDeposit:
+          (vaultLastBalances[vaultKey]?.totalDeposit ?? 0) + netDeposit,
+        totalYieldEarned:
+          (vaultLastBalances[vaultKey]?.totalYieldEarned ?? 0) + netYield,
+      };
 
       return {
-        balance: Object.keys(vaultLastBalances).reduce(
-          (acc, curr) => acc + vaultLastBalances[curr],
-          0
-        ),
+        balance: Object.keys(vaultLastBalances).reduce((acc, curr) => {
+          const vaultLastBalance = vaultLastBalances[curr];
+          return (
+            acc +
+            parseFloat(
+              assetToFiat(
+                vaultLastBalance.cryptoBalance,
+                searchAssetPriceFromTimestamp(
+                  vaultLastBalance.asset,
+                  balanceUpdate.timestamp * 1000
+                ),
+                getAssetDecimals(vaultLastBalance.asset)
+              )
+            )
+          );
+        }, 0),
         netDeposit,
-        netProfit,
+        netProfit:
+          vaultCurrentFiatBalance - vaultLastBalance.fiatBalance - netDeposit,
+        netYield,
         timestamp: balanceUpdate.timestamp,
       };
     });
 
-    return balances;
-  }, [balanceUpdates, assetPrices]);
+    return {
+      balances,
+      vaultTotalDeposit: Object.keys(vaultLastBalances).reduce(
+        (acc, curr) => acc + vaultLastBalances[curr].totalDeposit,
+        0
+      ),
+      vaultTotalYieldEarned: Object.keys(vaultLastBalances).reduce(
+        (acc, curr) => acc + vaultLastBalances[curr].totalYieldEarned,
+        0
+      ),
+      vaultBalanceInAsset: Object.keys(vaultLastBalances).reduce(
+        (acc, curr) => acc + vaultLastBalances[curr].fiatBalance,
+        0
+      ),
+    };
+  }, [balanceUpdates, searchAssetPriceFromTimestamp]);
 
   const calculatedKPI = useMemo(() => {
     if (hoveredBalanceUpdateIndex === undefined || balances.length <= 0) {
       return {
-        yield: vaultBalanceInAsset - vaultTotalDeposit,
+        yield: vaultTotalYieldEarned,
         roi:
           vaultTotalDeposit > 0
             ? ((vaultBalanceInAsset - vaultTotalDeposit) / vaultTotalDeposit) *
@@ -314,6 +385,7 @@ const PortfolioPerformance = () => {
         balances.length
       )
       .reverse();
+    let netYield = vaultTotalYieldEarned;
     let netProfit = vaultBalanceInAsset - vaultTotalDeposit;
     let totalInvestment = vaultTotalDeposit;
 
@@ -321,10 +393,13 @@ const PortfolioPerformance = () => {
       const currentBalanceObj = balancesToCalculate[i];
       totalInvestment -= currentBalanceObj.netDeposit;
       netProfit -= currentBalanceObj.netProfit;
+      netYield -= currentBalanceObj.netYield;
     }
 
+    netYield = parseFloat(netYield.toFixed(2));
+
     return {
-      yield: netProfit,
+      yield: netYield,
       roi: totalInvestment > 0 ? (netProfit / totalInvestment) * 100 : 0,
       balance: totalInvestment + netProfit,
     };
@@ -333,6 +408,7 @@ const PortfolioPerformance = () => {
     hoveredBalanceUpdateIndex,
     vaultBalanceInAsset,
     vaultTotalDeposit,
+    vaultTotalYieldEarned,
   ]);
 
   const renderBalanceText = useCallback(() => {
@@ -370,7 +446,7 @@ const PortfolioPerformance = () => {
       return animatedLoadingText;
     }
 
-    return `${calculatedKPI.roi >= 0 ? "+" : ""}${currency(
+    return `${calculatedKPI.yield >= 0 ? "+" : ""}${currency(
       calculatedKPI.yield.toFixed(2)
     ).format()}`;
   }, [active, calculatedKPI, loading, animatedLoadingText]);
@@ -509,9 +585,9 @@ const PortfolioPerformance = () => {
           <KPIText
             active={active}
             state={
-              calculatedKPI.yield === 0
+              calculatedKPI.roi === 0
                 ? undefined
-                : calculatedKPI.yield > 0
+                : calculatedKPI.roi > 0
                 ? "green"
                 : "red"
             }

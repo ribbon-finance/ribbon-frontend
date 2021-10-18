@@ -17,7 +17,7 @@ import {
   formatBigNumber,
   formatOption,
 } from "shared/lib/utils/math";
-import useAssetPrice from "shared/lib/hooks/useAssetPrice";
+import { useAssetsPriceHistory } from "shared/lib/hooks/useAssetPrice";
 import sizes from "shared/lib/designSystem/sizes";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
@@ -87,9 +87,8 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
       decimals: getAssetDecimals(asset),
     };
   }, [vaultOption]);
-  const { price: assetPrice, loading: assetPriceLoading } = useAssetPrice({
-    asset: asset,
-  });
+  const { searchAssetPriceFromTimestamp, loading: assetPriceLoading } =
+    useAssetsPriceHistory();
 
   const { width: screenWidth } = useScreenSize();
   const loadingText = useTextAnimation(assetPriceLoading);
@@ -105,6 +104,11 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
 
   const getVaultActivityTableData = useCallback(
     (activity: VaultActivity) => {
+      const currentAssetPrice = searchAssetPriceFromTimestamp(
+        asset,
+        activity.date.valueOf()
+      );
+
       switch (activity.type) {
         case "minting":
           return [
@@ -172,19 +176,23 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
               <VaultSecondaryText fontFamily="VCR">
                 {assetPriceLoading
                   ? loadingText
-                  : `+${assetToUSD(activity.premium, assetPrice, decimals)}`}
+                  : `+${assetToUSD(
+                      activity.premium,
+                      currentAssetPrice,
+                      decimals
+                    )}`}
               </VaultSecondaryText>
             </>,
           ];
       }
     },
     [
-      assetPrice,
       assetPriceLoading,
       screenWidth,
       loadingText,
       asset,
       decimals,
+      searchAssetPriceFromTimestamp,
       vaultOption,
     ]
   );
