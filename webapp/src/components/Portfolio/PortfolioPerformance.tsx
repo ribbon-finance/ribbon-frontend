@@ -179,6 +179,7 @@ const PortfolioPerformance = () => {
   const loading =
     assetsPriceLoading || balanceUpdatesLoading || RBNTokenAccountLoading;
   const animatedLoadingText = useTextAnimation(loading);
+  console.log(balanceUpdates);
 
   /**
    * We process balances into fiat term before perform more processing
@@ -275,7 +276,7 @@ const PortfolioPerformance = () => {
       let netDeposit: number = 0;
       let netYield: number = 0;
 
-      if (vaultNetCryptoChange.lt(BigNumber.from(0))) {
+      if (vaultNetCryptoChange.gt(BigNumber.from(0))) {
         // If crypto balance goes up
         if (balanceUpdate.yieldEarned.isZero()) {
           // User deposit
@@ -404,15 +405,28 @@ const PortfolioPerformance = () => {
     return {
       balances,
       vaultTotalDeposit: Object.keys(vaultLastBalances).reduce(
-        (acc, curr) => acc + vaultLastBalances[curr].totalDeposit,
+        (acc, curr) =>
+          acc +
+          // Rule out withdrew vault
+          (vaultLastBalances[curr].fiatBalance > 0
+            ? vaultLastBalances[curr].totalDeposit
+            : 0),
         0
       ),
       vaultTotalYieldEarned: Object.keys(vaultLastBalances).reduce(
-        (acc, curr) => acc + vaultLastBalances[curr].totalYieldEarned,
+        (acc, curr) =>
+          acc +
+          (vaultLastBalances[curr].fiatBalance > 0
+            ? vaultLastBalances[curr].totalYieldEarned
+            : 0),
         0
       ),
       vaultBalanceInAsset: Object.keys(vaultLastBalances).reduce(
-        (acc, curr) => acc + vaultLastBalances[curr].fiatBalance,
+        (acc, curr) =>
+          acc +
+          (vaultLastBalances[curr].fiatBalance > 0
+            ? vaultLastBalances[curr].fiatBalance
+            : 0),
         0
       ),
     };
