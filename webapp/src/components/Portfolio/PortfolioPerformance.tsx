@@ -13,7 +13,10 @@ import { BigNumber } from "@ethersproject/bignumber";
 
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import { useAssetsPriceHistory } from "shared/lib/hooks/useAssetPrice";
+import {
+  useAssetsPrice,
+  useAssetsPriceHistory,
+} from "shared/lib/hooks/useAssetPrice";
 import useBalances from "shared/lib/hooks/useBalances";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
@@ -150,6 +153,7 @@ type dateFilterType = typeof dateFilterOptions[number];
 
 const PortfolioPerformance = () => {
   const { active } = useWeb3React();
+  const { prices: assetsPrice, loading: assetsPriceLoading } = useAssetsPrice();
   const { searchAssetPriceFromTimestamp } = useAssetsPriceHistory();
   const [hoveredBalanceUpdateIndex, setHoveredBalanceUpdateIndex] =
     useState<number>();
@@ -172,7 +176,8 @@ const PortfolioPerformance = () => {
   // Fetch balances update
   const { balances: balanceUpdates, loading: balanceUpdatesLoading } =
     useBalances(undefined, afterDate ? afterDate.unix() : undefined);
-  const loading = balanceUpdatesLoading || RBNTokenAccountLoading;
+  const loading =
+    assetsPriceLoading || balanceUpdatesLoading || RBNTokenAccountLoading;
   const animatedLoadingText = useTextAnimation(loading);
 
   /**
@@ -349,6 +354,53 @@ const PortfolioPerformance = () => {
       };
     });
 
+    /**
+     * Add current point in portfolio chart
+     */
+    const lastFiatBalance = Object.keys(vaultLastBalances).reduce<number>(
+      (acc, curr) => {
+        const vaultLastBalance = vaultLastBalances[curr];
+        const vaultCurrentFiatBalance = parseFloat(
+          assetToFiat(
+            vaultLastBalance.cryptoBalance,
+            assetsPrice[vaultLastBalance.asset],
+            getAssetDecimals(vaultLastBalance.asset)
+          )
+        );
+
+        vaultLastBalances[curr] = {
+          ...vaultLastBalance,
+          fiatBalance: vaultCurrentFiatBalance,
+        };
+
+        return acc + vaultLastBalance.fiatBalance;
+      },
+      0
+    );
+    const currentFiatBalance = Object.keys(vaultLastBalances).reduce(
+      (acc, curr) => {
+        const vaultLastBalance = vaultLastBalances[curr];
+        return (
+          acc +
+          parseFloat(
+            assetToFiat(
+              vaultLastBalance.cryptoBalance,
+              assetsPrice[vaultLastBalance.asset],
+              getAssetDecimals(vaultLastBalance.asset)
+            )
+          )
+        );
+      },
+      0
+    );
+    balances.push({
+      balance: currentFiatBalance,
+      netDeposit: 0,
+      netProfit: currentFiatBalance - lastFiatBalance,
+      netYield: 0,
+      timestamp: new Date().valueOf() / 1000,
+    });
+
     return {
       balances,
       vaultTotalDeposit: Object.keys(vaultLastBalances).reduce(
@@ -364,7 +416,7 @@ const PortfolioPerformance = () => {
         0
       ),
     };
-  }, [balanceUpdates, searchAssetPriceFromTimestamp]);
+  }, [assetsPrice, balanceUpdates, searchAssetPriceFromTimestamp]);
 
   const calculatedKPI = useMemo(() => {
     if (hoveredBalanceUpdateIndex === undefined || balances.length <= 0) {
