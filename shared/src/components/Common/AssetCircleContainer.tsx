@@ -4,15 +4,15 @@ import styled, { keyframes } from "styled-components";
 import theme from "../../designSystem/theme";
 
 const circleAnimation = (index: number, borderColor: string) => keyframes`
-  ${index * 10}% {
+  ${index * 5}% {
     border: ${theme.border.width} ${theme.border.style} ${borderColor}00;
   }
 
-  ${index * 10 + 25}% {
+  ${index * 5 + 16.5}% {
     border: ${theme.border.width} ${theme.border.style} ${borderColor};
   }
 
-  ${index * 10 + 50}% {
+  ${index * 5 + 33}% {
     border: ${theme.border.width} ${theme.border.style} ${borderColor}00;
   }
 `;
@@ -30,7 +30,7 @@ const Circle = styled.div<{
   height: ${(props) => props.size}px;
   border-radius: ${(props) => props.size / 2}px;
   background: ${(props) => props.background || "none"};
-  animation: 2s ${(props) => circleAnimation(props.circleIndex, props.color)}
+  animation: 3s ${(props) => circleAnimation(props.circleIndex, props.color)}
     linear infinite;
 `;
 

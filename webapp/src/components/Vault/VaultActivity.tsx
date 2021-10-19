@@ -177,45 +177,46 @@ const VaultActivity: React.FC<VaultActivityProps> = ({
         sortBy={sortBy}
         setSortBy={setSortBy}
       />
-      <AnimatePresence initial={false} exitBeforeEnter>
-        <motion.div
-          ref={containerRef}
-          key={page}
-          transition={{
-            duration: 0.25,
-            type: "keyframes",
-            ease: "easeInOut",
-          }}
-          initial={{
-            y: 50,
-            opacity: 0,
-          }}
-          animate={{
-            y: 0,
-            opacity: 1,
-          }}
-          exit={{
-            y: 50,
-            opacity: 0,
-          }}
-          className="w-100"
-        >
-          {width > sizes.md ? (
-            <DesktopVaultActivityList
-              activities={filteredActivities}
-              vaultOption={vaultOption}
-              page={page}
-              setPage={setPage}
-              perPage={perPage}
-            />
-          ) : (
+
+      {width > sizes.md ? (
+        <DesktopVaultActivityList
+          activities={filteredActivities}
+          vaultOption={vaultOption}
+          page={page}
+          setPage={setPage}
+          perPage={perPage}
+        />
+      ) : (
+        <AnimatePresence initial={false} exitBeforeEnter>
+          <motion.div
+            ref={containerRef}
+            key={page}
+            transition={{
+              duration: 0.25,
+              type: "keyframes",
+              ease: "easeInOut",
+            }}
+            initial={{
+              y: 50,
+              opacity: 0,
+            }}
+            animate={{
+              y: 0,
+              opacity: 1,
+            }}
+            exit={{
+              y: 50,
+              opacity: 0,
+            }}
+            className="w-100"
+          >
             <MobileVaultActivityList
               activities={paginatedActivities}
               vaultOption={vaultOption}
             />
-          )}
-        </motion.div>
-      </AnimatePresence>
+          </motion.div>
+        </AnimatePresence>
+      )}
       <PaginationContainer>{renderPagination()}</PaginationContainer>
     </>
   );

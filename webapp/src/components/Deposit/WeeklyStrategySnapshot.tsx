@@ -119,9 +119,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   const asset = getAssets(vaultOption);
   const optionAsset = getOptionAssets(vaultOption);
   const color = getVaultColor(vaultOption);
-  const { prices, loading: priceLoading } = useAssetsPrice({
-    assets: [asset, optionAsset],
-  });
+  const { prices, loading: priceLoading } = useAssetsPrice();
   const loading = priceLoading || activityLoading;
   const [showCalculator, setShowCalculator] = useState(false);
 

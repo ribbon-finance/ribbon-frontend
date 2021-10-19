@@ -13,7 +13,7 @@ import {
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
+import { useAssetsPriceHistory } from "shared/lib/hooks/useAssetPrice";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useTransactions from "shared/lib/hooks/useTransactions";
 import { CurrencyType } from "../../pages/Portfolio/types";
@@ -26,7 +26,7 @@ import {
   VaultOptions,
 } from "shared/lib/constants/constants";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
-import { Assets, AssetsList } from "shared/lib/store/types";
+import { Assets } from "shared/lib/store/types";
 import { ExternalIcon, MigrateIcon } from "shared/lib/assets/icons/icons";
 import { VaultTransactionType } from "shared/lib/models/vault";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -193,10 +193,9 @@ const perPage = 6;
 const PortfolioTransactions = () => {
   const { transactions, loading } = useTransactions();
   const { active } = useWeb3React();
-  const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice({
-    // @ts-ignore
-    assets: AssetsList,
-  });
+  // const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice();
+  const { searchAssetPriceFromTimestamp, loading: assetPricesLoading } =
+    useAssetsPriceHistory();
   const animatedLoadingText = useTextAnimation(loading || assetPricesLoading);
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<PortfolioTransactionSortBy>(
@@ -271,7 +270,9 @@ const PortfolioTransactions = () => {
       amount: BigNumber,
       type: VaultTransactionType,
       currency: CurrencyType,
-      asset: Assets
+      asset: Assets,
+      // In seconds
+      timestamp: number
     ) => {
       let prependSymbol = "";
       switch (type) {
@@ -293,8 +294,7 @@ const PortfolioTransactions = () => {
             ? animatedLoadingText
             : `${prependSymbol}${assetToUSD(
                 amount,
-                // @ts-ignore
-                assetPrices[asset],
+                searchAssetPriceFromTimestamp(asset, timestamp * 1000),
                 getAssetDecimals(asset)
               )}`;
         case "eth":
@@ -304,7 +304,7 @@ const PortfolioTransactions = () => {
           )} `;
       }
     },
-    [assetPrices, assetPricesLoading, animatedLoadingText]
+    [assetPricesLoading, animatedLoadingText, searchAssetPriceFromTimestamp]
   );
 
   const renderTransactionSymbol = useCallback((type: VaultTransactionType) => {
@@ -400,7 +400,8 @@ const PortfolioTransactions = () => {
                   transaction.amount,
                   transaction.type,
                   "eth",
-                  getAssets(transaction.vault.symbol)
+                  getAssets(transaction.vault.symbol),
+                  transaction.timestamp
                 )}
               </Title>
               <AssetDisplayTitle>
@@ -425,7 +426,8 @@ const PortfolioTransactions = () => {
                   transaction.underlyingAmount,
                   transaction.type,
                   "usd",
-                  getAssets(transaction.vault.symbol)
+                  getAssets(transaction.vault.symbol),
+                  transaction.timestamp
                 )}
               </TransactionSecondaryInfoText>
             </TransactionInfoRow>
@@ -457,7 +459,8 @@ const PortfolioTransactions = () => {
                   transaction.amount,
                   transaction.type,
                   "eth",
-                  getAssets(transaction.vault.symbol)
+                  getAssets(transaction.vault.symbol),
+                  transaction.timestamp
                 )}
               </TransactionInfoText>
               <TransactionInfoText variant="dark">

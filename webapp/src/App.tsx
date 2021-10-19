@@ -8,6 +8,7 @@ import { getLibrary } from "shared/lib/utils/getLibrary";
 import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContext";
 import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContext";
 import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTransactionsContext";
+import { AssetPriceContextProvider } from "shared/lib/hooks/assetPriceContext";
 
 function App() {
   useEffect(() => {
@@ -20,7 +21,9 @@ function App() {
         <PendingTransactionsContextProvider>
           <Web3DataContextProvider>
             <SubgraphDataContextProvider>
-              <RootApp />
+              <AssetPriceContextProvider>
+                <RootApp />
+              </AssetPriceContextProvider>
             </SubgraphDataContextProvider>
           </Web3DataContextProvider>
         </PendingTransactionsContextProvider>

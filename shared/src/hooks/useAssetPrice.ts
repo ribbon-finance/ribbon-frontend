@@ -1,95 +1,142 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { Moment } from "moment";
 
-import { useGlobalState } from "../store/store";
 import { Assets, AssetsList } from "../store/types";
+import {
+  AssetPriceContext,
+  AssetPriceResponses,
+  defaultAssetPriceContextData,
+} from "./assetPriceContext";
 
-const getAssetPriceInUSD = async (currencyName: string): Promise<number> => {
-  const apiURL = `https://api.coingecko.com/api/v3/simple/price?ids=${currencyName}&vs_currencies=usd`;
+const getAssetPricesInUSD = async (
+  currencyName: string
+): Promise<{ price: number; timestamp: number }[]> => {
+  const apiURL = `https://api.coingecko.com/api/v3/coins/${currencyName}/market_chart?vs_currency=usd&days=365&interval=daily`;
 
   const response = await axios.get(apiURL);
   const { data } = response;
 
-  if (data && data[currencyName]) {
-    return data[currencyName].usd;
-  }
-  return 0;
+  return data.prices.map((price: number[]) => ({
+    timestamp: price[0],
+    price: price[1],
+  }));
 };
 
 const COINGECKO_CURRENCIES = {
   WETH: "ethereum",
   WBTC: "wrapped-bitcoin",
   USDC: "usd-coin",
-  yvUSDC: "",
+  yvUSDC: undefined,
   stETH: "staked-ether",
 };
 
-const useAssetPrice: (args: { asset?: Assets }) => {
-  price: number;
-  loading: boolean;
-} = ({ asset = "WETH" }) => {
-  const [prices, setPrices] = useGlobalState("prices");
-  const [loading, setLoading] = useState(false);
+export const useFetchAssetsPrice = () => {
+  const [data, setData] = useState(defaultAssetPriceContextData);
 
-  useEffect(() => {
-    !prices[asset].fetched &&
-      (async () => {
-        if (AssetsList.includes(asset)) {
-          setLoading(true);
-          const price = await getAssetPriceInUSD(COINGECKO_CURRENCIES[asset]);
-          setPrices((prices) => ({
-            ...prices,
-            [asset]: { price, fetched: true },
-          }));
-          setLoading(false);
-        } else {
-          throw new Error(`Unknown asset ${asset}`);
-        }
-      })();
-  }, [asset, prices, setPrices]);
-
-  return { price: prices[asset].price, loading };
-};
-export default useAssetPrice;
-
-export const useAssetsPrice: (args: { assets: Assets[] }) => {
-  prices: Partial<{ [asset in Assets]: number }>;
-  loading: boolean;
-} = ({ assets = ["WETH"] }) => {
-  const [prices, setPrices] = useGlobalState("prices");
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    Promise.all(
-      assets.map(async (asset) => {
-        if (prices[asset].fetched) {
-          return;
-        }
-
-        if (AssetsList.includes(asset)) {
-          setLoading(true);
-          const price = await getAssetPriceInUSD(COINGECKO_CURRENCIES[asset]);
-          setPrices((prices) => ({
-            ...prices,
-            [asset]: {
-              price,
-              fetched: true,
-            },
-          }));
-          setLoading(false);
-        } else {
-          throw new Error(`Unknown asset ${asset}`);
-        }
+  const fetchAssetsPrices = useCallback(async () => {
+    const responses = await Promise.all(
+      AssetsList.map(async (asset) => {
+        const currencyName = COINGECKO_CURRENCIES[asset];
+        return {
+          asset,
+          data: currencyName ? await getAssetPricesInUSD(currencyName) : [],
+        };
       })
     );
-    setLoading(false);
-  }, [assets, prices, setPrices]);
+
+    setData({
+      responses: Object.fromEntries(
+        responses.map((response) => [
+          response.asset,
+          {
+            latestPrice:
+              response.data.length > 0
+                ? response.data[response.data.length - 1].price
+                : 0,
+            history: Object.fromEntries(
+              response.data.map((item) => [item.timestamp, item.price])
+            ),
+          },
+        ])
+      ) as AssetPriceResponses,
+      loading: false,
+    });
+  }, []);
+
+  useEffect(() => {
+    fetchAssetsPrices();
+  }, [fetchAssetsPrices]);
+
+  return data;
+};
+
+const useAssetPrice = ({ asset }: { asset: Assets } = { asset: "WETH" }) => {
+  const contextData = useContext(AssetPriceContext);
+
+  return {
+    price: contextData.responses[asset].latestPrice,
+    loading: contextData.loading,
+  };
+};
+
+export default useAssetPrice;
+
+export const useAssetsPrice = () => {
+  const contextData = useContext(AssetPriceContext);
 
   return {
     prices: Object.fromEntries(
-      assets.map((asset) => [asset, prices[asset].price])
-    ),
-    loading,
+      AssetsList.map((asset) => [
+        asset,
+        contextData.responses[asset].latestPrice,
+      ])
+    ) as { [asset in Assets]: number },
+    loading: contextData.loading,
+  };
+};
+
+export const useAssetsPriceHistory = () => {
+  const contextData = useContext(AssetPriceContext);
+
+  /**
+   * Search the price of asset with a given date
+   */
+  const searchAssetPriceFromDate = useCallback(
+    (asset: Assets, date: Date): number => {
+      const queryDate = new Date(date.toDateString());
+      queryDate.setUTCHours(0);
+
+      return contextData.responses[asset].history[queryDate.valueOf()] || 0;
+    },
+    [contextData.responses]
+  );
+
+  /**
+   * Wrapper for price search in the event where moment is provided
+   */
+  const searchAssetPriceFromMoment = useCallback(
+    (asset: Assets, momentObj: Moment) =>
+      searchAssetPriceFromDate(asset, momentObj.toDate()),
+    [searchAssetPriceFromDate]
+  );
+
+  /**
+   * Wrapper for price search in the event where timestamp is provided
+   */
+  const searchAssetPriceFromTimestamp = useCallback(
+    (asset: Assets, timestamp: number) =>
+      searchAssetPriceFromDate(asset, new Date(timestamp)),
+    [searchAssetPriceFromDate]
+  );
+
+  return {
+    histories: Object.fromEntries(
+      AssetsList.map((asset) => [asset, contextData.responses[asset].history])
+    ) as { [asset in Assets]: { [timestamp: number]: number } },
+    searchAssetPriceFromDate,
+    searchAssetPriceFromMoment,
+    searchAssetPriceFromTimestamp,
+    loading: contextData.loading,
   };
 };
