@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
 
-import { ACTIONS, StepData, Steps, STEPS } from "./types";
+import { ACTIONS, Steps, STEPS } from "./types";
 
 import useVault from "shared/lib/hooks/useVault";
 import PreviewStep from "./PreviewStep";
@@ -18,7 +18,6 @@ import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsCont
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
 import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
-import { capitalize } from "shared/lib/utils/text";
 import useV2Vault from "shared/lib/hooks/useV2Vault";
 import WarningStep from "./WarningStep";
 
@@ -29,8 +28,8 @@ export interface ActionStepsProps {
   };
   show: boolean;
   onClose: () => void;
-  stepData: StepData;
-  onChangeStep: (stepData: StepData) => void;
+  step: Steps;
+  onChangeStep: (stepData: Steps) => void;
   skipToPreview?: boolean;
 }
 
@@ -38,7 +37,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   vault: { vaultOption, vaultVersion },
   show,
   onClose,
-  stepData,
+  step,
   onChangeStep,
   skipToPreview = false,
 }) => {
@@ -101,36 +100,13 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     vaultActionForm.actionType,
   ]);
 
-  // We need to pre-fetch the number of shares that the user wants to withdraw
-  const actionWord = capitalize(vaultActionForm.actionType);
-
-  const setStep = useCallback(
-    (_step: Steps) => {
-      const titles = {
-        [STEPS.warningStep]: "",
-        [STEPS.formStep]: "",
-        [STEPS.previewStep]:
-          vaultActionForm.actionType === "migrate"
-            ? ""
-            : `${actionWord} Preview`,
-        [STEPS.confirmationStep]: `Confirm ${actionWord}`,
-        [STEPS.submittedStep]: "Transaction Submitted",
-      };
-      onChangeStep({
-        title: titles[_step],
-        stepNum: _step,
-      });
-    },
-    [actionWord, onChangeStep, vaultActionForm.actionType]
-  );
-
   const cleanupEffects = useCallback(() => {
     setTxhash("");
 
-    if (stepData.stepNum === STEPS.submittedStep) {
+    if (step === STEPS.submittedStep) {
       resetActionForm();
     }
-  }, [resetActionForm, stepData.stepNum]);
+  }, [resetActionForm, step]);
 
   const handleClose = useCallback(() => {
     cleanupEffects();
@@ -145,16 +121,16 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   // Whenever the `show` variable is toggled, we need to reset the step back to 0
   useEffect(() => {
-    if (!skipToPreview && stepData.stepNum === STEPS.formStep) {
+    if (!skipToPreview && step === STEPS.formStep) {
       return;
     }
 
     return () => {
-      setStep(firstStep);
+      onChangeStep(firstStep);
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [show, firstStep, setStep, skipToPreview]);
+  }, [show, firstStep, skipToPreview]);
 
   const [amount, amountStr] = useMemo(() => {
     try {
@@ -168,7 +144,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   useEffect(() => {
     // we check that the txhash and check if it had succeed
     // so we can dismiss the modal
-    if (stepData.stepNum === STEPS.submittedStep && txhash !== "") {
+    if (step === STEPS.submittedStep && txhash !== "") {
       const pendingTx = pendingTransactions.find((tx) => tx.txhash === txhash);
       if (pendingTx && pendingTx.status) {
         setTimeout(() => {
@@ -176,15 +152,15 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         }, 300);
       }
     }
-  }, [pendingTransactions, txhash, handleClose, stepData.stepNum]);
+  }, [pendingTransactions, txhash, handleClose, step]);
 
   const handleClickConfirmButton = async () => {
     const vault = vaultActionForm.vaultVersion === "v1" ? v1Vault : v2Vault;
 
     if (vault !== null) {
       // check illegal state transition
-      if (stepData.stepNum !== STEPS.confirmationStep - 1) return;
-      setStep(STEPS.confirmationStep);
+      if (step !== STEPS.confirmationStep - 1) return;
+      onChangeStep(STEPS.confirmationStep);
       try {
         let res: any;
         let shares: BigNumber;
@@ -272,7 +248,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         }
 
         setTxhash(res.hash);
-        setStep(STEPS.submittedStep);
+        onChangeStep(STEPS.submittedStep);
       } catch (e) {
         console.error(e);
         handleClose();
@@ -288,14 +264,14 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         vaultOption={vaultOption}
         vaultVersion={vaultActionForm.vaultVersion}
         withdrawMetadata={withdrawMetadata}
-        onFormSubmit={() => setStep(STEPS.previewStep)}
+        onFormSubmit={() => onChangeStep(STEPS.previewStep)}
       />
     ),
     0: !skipToPreview && (
       <FormStep
         vaultVersion={vaultVersion}
         vaultOption={vaultOption}
-        onFormSubmit={() => setStep(STEPS.previewStep)}
+        onFormSubmit={() => onChangeStep(STEPS.previewStep)}
       />
     ),
     1: (
@@ -314,7 +290,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     3: <TransactionStep txhash={txhash} />,
   };
 
-  return <>{stepComponents[stepData.stepNum]}</>;
+  return <>{stepComponents[step]}</>;
 };
 
 export default ActionSteps;

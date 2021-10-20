@@ -8,6 +8,7 @@ import {
   AssetPriceResponses,
   defaultAssetPriceContextData,
 } from "./assetPriceContext";
+import { isProduction } from "../utils/env";
 
 const getAssetPricesInUSD = async (
   currencyName: string
@@ -31,10 +32,22 @@ const COINGECKO_CURRENCIES = {
   stETH: "staked-ether",
 };
 
-export const useFetchAssetsPrice = () => {
+export const useFetchAssetsPrice = (
+  {
+    poll,
+    pollingFrequency,
+  }: {
+    poll: boolean;
+    pollingFrequency: number;
+  } = { poll: true, pollingFrequency: 120000 }
+) => {
   const [data, setData] = useState(defaultAssetPriceContextData);
 
   const fetchAssetsPrices = useCallback(async () => {
+    if (!isProduction()) {
+      console.time("Asset Price Data Fetch");
+    }
+
     const responses = await Promise.all(
       AssetsList.map(async (asset) => {
         const currencyName = COINGECKO_CURRENCIES[asset];
@@ -62,11 +75,27 @@ export const useFetchAssetsPrice = () => {
       ) as AssetPriceResponses,
       loading: false,
     });
+
+    if (!isProduction()) {
+      console.timeEnd("Asset Price Data Fetch");
+    }
   }, []);
 
   useEffect(() => {
     fetchAssetsPrices();
-  }, [fetchAssetsPrices]);
+
+    let pollInterval: any = undefined;
+
+    if (poll) {
+      pollInterval = setInterval(fetchAssetsPrices, pollingFrequency);
+    }
+
+    return () => {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+      }
+    };
+  }, [fetchAssetsPrices, poll, pollingFrequency]);
 
   return data;
 };

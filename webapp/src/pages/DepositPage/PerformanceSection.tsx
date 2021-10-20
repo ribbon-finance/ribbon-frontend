@@ -224,8 +224,8 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           <ParagraphText>
             The vault fee structure consists of a{" "}
             {VaultFees[vaultOption].v2?.managementFee}% annualised management
-            fee and a {VaultFees[vaultOption].v2?.performanceFee}% annualised
-            performance fee.
+            fee and a {VaultFees[vaultOption].v2?.performanceFee}% performance
+            fee.
             <br />
             <br />
             If the weekly strategy is profitable, the weekly performance fee is
