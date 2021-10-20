@@ -4,7 +4,7 @@ import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import colors from "shared/lib/designSystem/colors";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import ActionSteps from "./ActionSteps";
-import { ACTIONS, StepData, STEPS } from "./types";
+import { ACTIONS, Steps, STEPS } from "./types";
 import sizes from "shared/lib/designSystem/sizes";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
 import {
@@ -17,6 +17,7 @@ import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import ModalContentExtra from "shared/lib/components/Common/ModalContentExtra";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { getAssetDisplay } from "shared/lib/utils/asset";
+import { capitalize } from "shared/lib/utils/text";
 
 const ModalNavigation = styled.div`
   position: absolute;
@@ -38,7 +39,7 @@ const ModalNavigationCloseButton = styled.span`
 
 interface ModalBodyProps extends ModalProps {
   isFormStep: boolean;
-  steps: StepData;
+  steps: Steps;
 }
 
 const ModalBody = styled.div<ModalBodyProps>`
@@ -50,7 +51,7 @@ const ModalBody = styled.div<ModalBodyProps>`
   width: ${(props) => (props.variant === "desktop" ? "383px" : "375px")};
   max-width: 450px;
   min-height: ${(props) => {
-    switch (props.steps.stepNum) {
+    switch (props.steps) {
       case STEPS.warningStep:
       case STEPS.confirmationStep:
       case STEPS.submittedStep:
@@ -148,10 +149,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
   onClose,
   variant,
 }) => {
-  const [stepData, setStepData] = useState<StepData>({
-    stepNum: 0,
-    title: "",
-  });
+  const [step, setStep] = useState<Steps>(0);
   const isDesktop = variant === "desktop";
   const { vaultActionForm } = useVaultActionForm(vault.vaultOption);
 
@@ -160,10 +158,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
       return;
     }
 
-    if (
-      stepData.stepNum === STEPS.confirmationStep ||
-      stepData.stepNum === STEPS.submittedStep
-    ) {
+    if (step === STEPS.confirmationStep || step === STEPS.submittedStep) {
       return (
         <ModalNavigationCloseButton onClick={onClose}>
           <CloseIcon></CloseIcon>
@@ -177,10 +172,10 @@ const ActionModal: React.FC<ActionModalProps> = ({
         <Title>Back</Title>
       </div>
     );
-  }, [isDesktop, onClose, stepData]);
+  }, [isDesktop, onClose, step]);
 
   const renderModalCloseButton = useCallback(() => {
-    if (!isDesktop && stepData.stepNum !== STEPS.previewStep) {
+    if (!isDesktop && step !== STEPS.previewStep) {
       return;
     }
 
@@ -189,17 +184,17 @@ const ActionModal: React.FC<ActionModalProps> = ({
         <CloseIcon></CloseIcon>
       </ModalHeaderCloseButton>
     );
-  }, [isDesktop, stepData, onClose]);
+  }, [isDesktop, step, onClose]);
 
   const renderModalHeader = useCallback(() => {
     if (
       (vaultActionForm.actionType === ACTIONS.migrate &&
-        stepData.stepNum === STEPS.previewStep) ||
-      stepData.stepNum === STEPS.warningStep ||
+        step === STEPS.previewStep) ||
+      step === STEPS.warningStep ||
       (vaultActionForm.vaultVersion === "v2" &&
         vaultActionForm.actionType === "withdraw" &&
         vaultActionForm.withdrawOption !== "instant" &&
-        stepData.stepNum === STEPS.previewStep)
+        step === STEPS.previewStep)
     ) {
       return (
         <InvisibleModalHeader className="position-relative d-flex align-items-center justify-content-center">
@@ -208,20 +203,23 @@ const ActionModal: React.FC<ActionModalProps> = ({
       );
     }
 
-    if (stepData.title !== "") {
-      return (
-        <ModalHeaderWithBackground className="position-relative d-flex align-items-center justify-content-center">
-          <Title>{stepData.title}</Title>
-          {renderModalCloseButton()}
-        </ModalHeaderWithBackground>
-      );
-    }
-  }, [
-    renderModalCloseButton,
-    stepData.title,
-    stepData.stepNum,
-    vaultActionForm,
-  ]);
+    const actionWord = capitalize(vaultActionForm.actionType);
+    const titles = {
+      [STEPS.warningStep]: "",
+      [STEPS.formStep]: "",
+      [STEPS.previewStep]:
+        vaultActionForm.actionType === "migrate" ? "" : `${actionWord} Preview`,
+      [STEPS.confirmationStep]: `Confirm ${actionWord}`,
+      [STEPS.submittedStep]: "Transaction Submitted",
+    };
+
+    return (
+      <ModalHeaderWithBackground className="position-relative d-flex align-items-center justify-content-center">
+        <Title>{titles[step]}</Title>
+        {renderModalCloseButton()}
+      </ModalHeaderWithBackground>
+    );
+  }, [renderModalCloseButton, step, vaultActionForm]);
 
   const renderModalExtra = useCallback(() => {
     // When user attempt to perform standard withdraw on V2 but has balance that allow instant withdraw
@@ -229,7 +227,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
       vaultActionForm.actionType === ACTIONS.withdraw &&
       vaultActionForm.vaultVersion === "v2" &&
       vaultActionForm.withdrawOption === "standard" &&
-      stepData.stepNum === STEPS.previewStep
+      step === STEPS.previewStep
     ) {
       return (
         <ModalContentExtra config={{ mx: 0 }}>
@@ -246,7 +244,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
       );
     }
   }, [
-    stepData.stepNum,
+    step,
     vaultActionForm.actionType,
     vaultActionForm.vaultOption,
     vaultActionForm.vaultVersion,
@@ -271,9 +269,9 @@ const ActionModal: React.FC<ActionModalProps> = ({
           {renderModalNavigationItem()}
         </ModalNavigation>
         <ModalBody
-          isFormStep={stepData.stepNum === STEPS.formStep}
+          isFormStep={step === STEPS.formStep}
           variant={variant}
-          steps={stepData}
+          steps={step}
         >
           {renderModalHeader()}
 
@@ -284,8 +282,8 @@ const ActionModal: React.FC<ActionModalProps> = ({
                 skipToPreview={isDesktop}
                 show={show}
                 onClose={onClose}
-                stepData={stepData}
-                onChangeStep={setStepData}
+                step={step}
+                onChangeStep={setStep}
               />
             </StepsContainer>
           </ModalContent>

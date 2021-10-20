@@ -11,12 +11,6 @@ export const V2WithdrawOptionList = ["standard", "instant"] as const;
 
 export type V2WithdrawOption = typeof V2WithdrawOptionList[number] | "complete";
 
-export interface ActionModalContentProps {
-  onChangeStep: (StepData: StepData) => void;
-}
-
-export type ActionModalContent = React.FC<ActionModalContentProps>;
-
 /**
  * Steps
  */
@@ -45,8 +39,3 @@ export const STEPS: {
   confirmationStep: 2,
   submittedStep: 3,
 };
-
-export interface StepData {
-  title: string;
-  stepNum: Steps;
-}
