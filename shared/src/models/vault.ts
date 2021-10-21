@@ -220,16 +220,23 @@ export const defaultV2VaultData: V2VaultData = {
   loading: true,
 };
 
-export type V2VaultPriceHistory = {
+export type VaultPriceHistory = {
   pricePerShare: BigNumber;
   timestamp: number;
 };
 
-export type V2VaultPriceHistoriesData = {
-  [vault in VaultOptions]: V2VaultPriceHistory[];
+export type VaultPriceHistoriesData = {
+  [version in VaultVersion]: {
+    [vault in VaultOptions]: VaultPriceHistory[];
+  };
 };
 
-export const defaultV2VaultPriceHistoriesData: V2VaultPriceHistoriesData =
+export const defaultV2VaultPriceHistoriesData: VaultPriceHistoriesData =
   Object.fromEntries(
-    VaultList.map((vault) => [vault, [] as V2VaultPriceHistory[]])
-  ) as V2VaultPriceHistoriesData;
+    VaultVersionList.map((version) => [
+      version,
+      Object.fromEntries(
+        VaultList.map((vault) => [vault, [] as VaultPriceHistory[]])
+      ),
+    ])
+  ) as VaultPriceHistoriesData;

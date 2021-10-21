@@ -6,17 +6,14 @@ import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import PerformanceChart from "../../components/PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../../components/PerformanceChart/types";
-import {
-  useLatestAPY,
-  useHistoricalData,
-} from "shared/lib/hooks/useAirtableData";
+import { useLatestAPY } from "shared/lib/hooks/useAirtableData";
 import {
   getAssets,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
-import useV2VaultPriceHistory from "shared/lib/hooks/useV2VaultPriceHistory";
+import useVaultPriceHistory from "shared/lib/hooks/useVaultPriceHistory";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import moment from "moment";
 
@@ -52,57 +49,48 @@ interface VaultPerformanceChartProps {
 const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
   vault: { vaultOption, vaultVersion },
 }) => {
-  const airtableData = useHistoricalData(vaultOption);
-  const { priceHistory: v2PriceHistory } = useV2VaultPriceHistory(vaultOption);
+  const { priceHistory } = useVaultPriceHistory(vaultOption, vaultVersion);
 
   const [yields, timestamps] = useMemo(() => {
-    switch (vaultVersion) {
-      case "v1":
-        return [
-          airtableData.res.map((data) => data.cumYield),
-          airtableData.res.map((data) => new Date(data.timestamp)),
-        ];
-      case "v2":
-        if (v2PriceHistory.length === 0) {
-          return [
-            [0, 0],
-            [moment().toDate(), moment().toDate()],
-          ];
-        }
-
-        if (v2PriceHistory.length === 1) {
-          return [
-            [0, 0],
-            [
-              new Date(v2PriceHistory[0].timestamp * 1000),
-              new Date(v2PriceHistory[0].timestamp * 1000),
-            ],
-          ];
-        }
-
-        return [
-          v2PriceHistory.map((data, index) => {
-            /**
-             * Initial yield as 0
-             */
-            if (index === 0) {
-              return 0;
-            }
-
-            const decimals = getAssetDecimals(getAssets(vaultOption));
-            const initialPrice = parseFloat(
-              formatUnits(v2PriceHistory[0].pricePerShare, decimals)
-            );
-            const currentPrice = parseFloat(
-              formatUnits(data.pricePerShare, decimals)
-            );
-
-            return ((currentPrice - initialPrice) / initialPrice) * 100;
-          }),
-          v2PriceHistory.map((data) => new Date(data.timestamp * 1000)),
-        ];
+    if (priceHistory.length === 0) {
+      return [
+        [0, 0],
+        [moment().toDate(), moment().toDate()],
+      ];
     }
-  }, [airtableData.res, v2PriceHistory, vaultOption, vaultVersion]);
+
+    if (priceHistory.length === 1) {
+      return [
+        [0, 0],
+        [
+          new Date(priceHistory[0].timestamp * 1000),
+          new Date(priceHistory[0].timestamp * 1000),
+        ],
+      ];
+    }
+
+    return [
+      priceHistory.map((data, index) => {
+        /**
+         * Initial yield as 0
+         */
+        if (index === 0) {
+          return 0;
+        }
+
+        const decimals = getAssetDecimals(getAssets(vaultOption));
+        const initialPrice = parseFloat(
+          formatUnits(priceHistory[0].pricePerShare, decimals)
+        );
+        const currentPrice = parseFloat(
+          formatUnits(data.pricePerShare, decimals)
+        );
+
+        return ((currentPrice - initialPrice) / initialPrice) * 100;
+      }),
+      priceHistory.map((data) => new Date(data.timestamp * 1000)),
+    ];
+  }, [priceHistory, vaultOption]);
 
   // states
   const [monthFilter, setMonthFilter] = useState(false);
