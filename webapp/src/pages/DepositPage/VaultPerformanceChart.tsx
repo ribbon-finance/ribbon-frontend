@@ -6,14 +6,15 @@ import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import PerformanceChart from "../../components/PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../../components/PerformanceChart/types";
-import { useLatestAPY } from "shared/lib/hooks/useAirtableData";
 import {
   getAssets,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
-import useVaultPriceHistory from "shared/lib/hooks/useVaultPriceHistory";
+import useVaultPriceHistory, {
+  useLatestAPY,
+} from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import moment from "moment";
 
@@ -120,7 +121,7 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
     ? `${(yields[chartIndex] || 0.0).toFixed(2)}%`
     : "Loading";
 
-  const latestAPY = useLatestAPY(vaultOption);
+  const latestAPY = useLatestAPY(vaultOption, vaultVersion);
   const projectedAPY = latestAPY.fetched
     ? `+${latestAPY.res.toFixed(2)}%`
     : "Loading";

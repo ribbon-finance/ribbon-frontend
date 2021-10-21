@@ -2,7 +2,6 @@ import { createGlobalState } from "react-hooks-global-state";
 
 import { DesktopViewType } from "../components/Product/types";
 import {
-  VaultList,
   VaultOptions,
   VaultVersion,
   VaultVersionList,
@@ -21,12 +20,6 @@ import {
 interface GlobalStore {
   pendingTransactions: PendingTransaction[];
   showConnectWallet: boolean;
-  latestAPY: {
-    [option in VaultOptions]: {
-      apy: number;
-      fetched: boolean;
-    };
-  };
   assetYieldsInfo: {
     fetched: boolean;
     data: AssetYieldsInfoData;
@@ -45,14 +38,6 @@ interface GlobalStore {
 export const initialState: GlobalStore = {
   pendingTransactions: [],
   showConnectWallet: false,
-  latestAPY: Object.fromEntries(
-    VaultList.map((option) => [option, { apy: 0.0, fetched: false }])
-  ) as {
-    [option in VaultOptions]: {
-      apy: number;
-      fetched: boolean;
-    };
-  },
   assetYieldsInfo: {
     fetched: false,
     data: Object.fromEntries(

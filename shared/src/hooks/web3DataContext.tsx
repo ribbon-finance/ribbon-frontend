@@ -35,6 +35,15 @@ export const Web3DataContext = React.createContext<Web3DataContextType>({
   stakingPool: defaultStakingPoolData,
 });
 
+export const useVaultsData = () => {
+  const contextData = useContext(Web3DataContext);
+
+  return {
+    data: contextData.v1.responses,
+    loading: contextData.v1.loading,
+  };
+};
+
 export const useVaultData = (vault: VaultOptions) => {
   const contextData = useContext(Web3DataContext);
 

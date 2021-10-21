@@ -70,3 +70,17 @@ export interface VaultFilterProps extends VaultSetFilterProps {
   sort: VaultSortBy;
   setSort: React.Dispatch<React.SetStateAction<VaultSortBy>>;
 }
+
+export type VaultsDisplayVersion = {
+  [vault in VaultOptions]: VaultVersion;
+};
+
+export type UserSelectedVaultsVersion = Partial<VaultsDisplayVersion>;
+
+export type VaultsDisplayVersionProps = {
+  vaultsDisplayVersion: VaultsDisplayVersion;
+  setVaultDisplayVersion: (
+    vaultOption: VaultOptions,
+    vaultVersion: VaultVersion
+  ) => void;
+};

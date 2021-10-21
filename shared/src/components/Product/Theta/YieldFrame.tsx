@@ -16,8 +16,8 @@ import {
   Title,
 } from "../../../designSystem";
 import theme from "../../../designSystem/theme";
-import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useTextAnimation from "../../../hooks/useTextAnimation";
+import { useLatestAPY } from "../../../hooks/useVaultPerformanceUpdate";
 import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
 import { getAssetLogo } from "../../../utils/asset";
 import { formatSignificantDecimals } from "../../../utils/math";
@@ -77,12 +77,16 @@ const ModeSwitcherContainer = styled.div<{ color: string }>`
 
 interface YieldFrameProps {
   vault: VaultOptions;
+  vaultVersion: VaultVersion;
+  onVaultVersionChange: (version: VaultVersion) => void;
   onVaultPress: (vault: VaultOptions, vaultVersion: VaultVersion) => void;
   updateVaultVersionHook?: (vaultVersion: VaultVersion) => void;
 }
 
 const YieldFrame: React.FC<YieldFrameProps> = ({
   vault,
+  vaultVersion,
+  onVaultVersionChange,
   onVaultPress,
   updateVaultVersionHook,
 }) => {
@@ -96,28 +100,15 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
     () => status === "loading" || v2DataLoading,
     [status, v2DataLoading]
   );
-  const color = getVaultColor(vault);
-  const Logo = getAssetLogo(displayAsset);
-  const latestAPY = useLatestAPY(vault);
-
+  const latestAPY = useLatestAPY(vault, vaultVersion);
   const loadingText = useTextAnimation(!latestAPY.fetched);
   const perfStr = latestAPY.fetched
     ? `${latestAPY.res.toFixed(2)}%`
     : loadingText;
+  const color = getVaultColor(vault);
+  const Logo = getAssetLogo(displayAsset);
 
   const [mode, setMode] = useState<"info" | "yield">("info");
-
-  const vaultVersion = useMemo(() => {
-    if (VaultVersionList[0] === "v1") {
-      if (!isLoading && vaultLimit.isZero()) {
-        return "v2";
-      }
-
-      return "v1";
-    }
-
-    return VaultVersionList[0];
-  }, [isLoading, vaultLimit]);
 
   useEffect(() => {
     updateVaultVersionHook && updateVaultVersionHook(vaultVersion);
@@ -206,6 +197,7 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
         return (
           <YieldComparison
             vault={vault}
+            vaultVersion={vaultVersion}
             config={{
               background: `${color}29`,
             }}
@@ -214,6 +206,7 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
     }
   }, [
     vault,
+    vaultVersion,
     logo,
     asset,
     mode,
