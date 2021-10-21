@@ -37,7 +37,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
   const [filterAssets, setFilterAssets] = useState<Assets[]>([]);
   const [sort, setSort] = useState<VaultSortBy>(VaultSortByList[0]);
   const yieldsData = useLatestAPYs();
-  const { data: v1VaultsData } = useVaultsData();
+  const { data: v1VaultsData, loading: v1VaultsDataLoading } = useVaultsData();
   const { vaultAccounts } = useVaultAccounts("all");
   const [userSelectedVaultsVersion, setUserSelectedVaultsVersion] =
     useState<UserSelectedVaultsVersion>({});
@@ -63,7 +63,10 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
           for (let i = 0; i < availableVaultVersions.length; i++) {
             switch (availableVaultVersions[i]) {
               case "v1":
-                if (!v1VaultsData[vaultOption].vaultLimit.isZero()) {
+                if (
+                  (VaultVersionList[0] === "v1" && v1VaultsDataLoading) ||
+                  !v1VaultsData[vaultOption].vaultLimit.isZero()
+                ) {
                   return [vaultOption, "v1"];
                 }
                 break;
@@ -75,7 +78,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
           return [vaultOption, VaultVersionList[0]];
         })
       ) as VaultsDisplayVersion,
-    [userSelectedVaultsVersion, v1VaultsData]
+    [userSelectedVaultsVersion, v1VaultsData, v1VaultsDataLoading]
   );
 
   const setVaultDisplayVersion = useCallback(
