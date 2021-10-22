@@ -33,7 +33,7 @@ import ModalContentExtra from "../../Common/ModalContentExtra";
 import { VaultAccount } from "../../../models/vault";
 import YieldComparison from "./YieldComparison";
 import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
-import { useLatestAPY } from "../../../hooks/useVaultPerformanceUpdate";
+import { useLatestAPY } from "../../../hooks/useLatestOption";
 
 const { formatUnits } = ethers.utils;
 

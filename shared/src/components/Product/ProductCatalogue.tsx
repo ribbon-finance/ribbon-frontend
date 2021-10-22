@@ -11,9 +11,9 @@ import {
 } from "../../constants/constants";
 
 import sizes from "../../designSystem/sizes";
+import { useLatestAPYs } from "../../hooks/useLatestOption";
 import useScreenSize from "../../hooks/useScreenSize";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
-import { useLatestAPYs } from "../../hooks/useVaultPerformanceUpdate";
 import { useVaultsData } from "../../hooks/web3DataContext";
 import { Assets } from "../../store/types";
 import DesktopProductCatalogue from "./DesktopProductCatalogue";

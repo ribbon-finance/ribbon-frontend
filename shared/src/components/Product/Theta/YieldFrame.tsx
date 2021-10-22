@@ -4,11 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { BarChartIcon, GlobeIcon } from "../../../assets/icons/icons";
 
-import {
-  VaultOptions,
-  VaultVersion,
-  VaultVersionList,
-} from "../../../constants/constants";
+import { VaultOptions, VaultVersion } from "../../../constants/constants";
 import {
   BaseButton,
   SecondaryText,
@@ -16,8 +12,8 @@ import {
   Title,
 } from "../../../designSystem";
 import theme from "../../../designSystem/theme";
+import { useLatestAPY } from "../../../hooks/useLatestOption";
 import useTextAnimation from "../../../hooks/useTextAnimation";
-import { useLatestAPY } from "../../../hooks/useVaultPerformanceUpdate";
 import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
 import { getAssetLogo } from "../../../utils/asset";
 import { formatSignificantDecimals } from "../../../utils/math";

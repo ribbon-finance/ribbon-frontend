@@ -20,7 +20,7 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import { capitalize } from "shared/lib/utils/text";
 import { MigrateIcon } from "shared/lib/assets/icons/icons";
 import colors from "shared/lib/designSystem/colors";
-import { useLatestAPY } from "shared/lib/hooks/useVaultPerformanceUpdate";
+import { useLatestAPY } from "shared/lib/hooks/useLatestOption";
 
 const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;
