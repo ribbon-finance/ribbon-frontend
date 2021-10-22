@@ -1,9 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber";
-import { formatUnits } from "@ethersproject/units";
-import { useContext, useMemo } from "react";
+import { useContext } from "react";
 
 import {
-  getAssets,
   VaultAddressMap,
   VaultList,
   VaultOptions,
@@ -11,7 +9,6 @@ import {
   VaultVersionList,
 } from "../constants/constants";
 import { VaultPriceHistoriesData } from "../models/vault";
-import { getAssetDecimals } from "../utils/asset";
 import { SubgraphDataContext } from "./subgraphDataContext";
 
 const getVaultPriceHistoryKey = (vault: VaultOptions) =>
