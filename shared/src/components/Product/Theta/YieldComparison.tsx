@@ -9,12 +9,16 @@ import {
 } from "../../../assets/icons/defiApp";
 import Logo from "../../../assets/icons/logo";
 
-import { getAssets, VaultOptions } from "../../../constants/constants";
+import {
+  getAssets,
+  VaultOptions,
+  VaultVersion,
+} from "../../../constants/constants";
 import { BaseText, Title } from "../../../designSystem";
 import colors from "../../../designSystem/colors";
 import theme from "../../../designSystem/theme";
-import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useAssetsYield from "../../../hooks/useAssetsYield";
+import { useLatestAPY } from "../../../hooks/useLatestOption";
 import useTextAnimation from "../../../hooks/useTextAnimation";
 import { DefiScoreProtocol } from "../../../models/defiScore";
 import { getAssetDisplay } from "../../../utils/asset";
@@ -42,6 +46,7 @@ const YieldComparisonTitle = styled(BaseText)`
 
 interface YieldComparisonProps {
   vault: VaultOptions;
+  vaultVersion: VaultVersion;
   config?: {
     background: string;
   };
@@ -49,6 +54,7 @@ interface YieldComparisonProps {
 
 const YieldComparison: React.FC<YieldComparisonProps> = ({
   vault,
+  vaultVersion,
   config = {
     background: colors.background.three,
   },
@@ -56,7 +62,7 @@ const YieldComparison: React.FC<YieldComparisonProps> = ({
   const asset = getAssets(vault);
   const yieldInfos = useAssetsYield(asset);
 
-  const latestAPY = useLatestAPY(vault);
+  const latestAPY = useLatestAPY(vault, vaultVersion);
 
   const loadingText = useTextAnimation(!latestAPY.fetched);
   const perfStr = latestAPY.fetched

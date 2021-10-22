@@ -34,9 +34,9 @@ import {
   resolveRBNTokenSubgraphResponse,
 } from "./useRBNTokenSubgraph";
 import {
-  v2VaultPriceHistoryGraphql,
-  resolveV2VaultPriceHistorySubgraphResponse,
-} from "./useV2VaultPriceHistory";
+  vaultPriceHistoryGraphql,
+  resolveVaultPriceHistorySubgraphResponse,
+} from "./useVaultPerformanceUpdate";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 
 const useFetchSubgraphData = () => {
@@ -67,7 +67,7 @@ const useFetchSubgraphData = () => {
                 }
                 ${vaultActivitiesGraphql(version)}
                 ${rbnTokenGraphql(account, version)}
-                ${v2VaultPriceHistoryGraphql(version)}
+                ${vaultPriceHistoryGraphql(version)}
               }`.replaceAll(" ", ""),
           });
 
@@ -92,7 +92,7 @@ const useFetchSubgraphData = () => {
       rbnTokenAccount: resolveRBNTokenAccountSubgraphResponse(
         responsesAcrossVersions
       ),
-      v2VaultPriceHistory: resolveV2VaultPriceHistorySubgraphResponse(
+      vaultPriceHistory: resolveVaultPriceHistorySubgraphResponse(
         responsesAcrossVersions
       ),
       loading: false,

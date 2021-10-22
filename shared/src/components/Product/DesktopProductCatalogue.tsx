@@ -5,7 +5,11 @@ import { VaultAccount } from "../../models/vault";
 import { useGlobalState } from "../../store/store";
 import DesktopProductCatalogueGalleryView from "./DesktopProductCatalogueGalleryView";
 import ProductCatalogueGridView from "./ProductCatalogueGridView";
-import { ProductCatalogueProps, VaultFilterProps } from "./types";
+import {
+  ProductCatalogueProps,
+  VaultFilterProps,
+  VaultsDisplayVersionProps,
+} from "./types";
 
 interface DesktopProductCatalogueProps {
   filteredProducts: VaultOptions[];
@@ -15,7 +19,10 @@ interface DesktopProductCatalogueProps {
 }
 
 const DesktopProductCatalogue: React.FC<
-  ProductCatalogueProps & VaultFilterProps & DesktopProductCatalogueProps
+  ProductCatalogueProps &
+    VaultFilterProps &
+    DesktopProductCatalogueProps &
+    VaultsDisplayVersionProps
 > = ({ variant, ...props }) => {
   const [view, setView] = useGlobalState("desktopView");
 

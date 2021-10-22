@@ -6,6 +6,7 @@ import { Web3ReactProvider } from "@web3-react/core";
 import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
 import { getLibrary } from "shared/lib/utils/getLibrary";
 import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContext";
+import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContext";
 
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -29,36 +30,38 @@ function App() {
     <Web3ContextProvider>
       <Web3ReactProvider getLibrary={getLibrary}>
         <Web3DataContextProvider>
-          <Body>
-            <Router>
-              <Header />
+          <SubgraphDataContextProvider>
+            <Body>
+              <Router>
+                <Header />
 
-              <Switch>
-                <Route path="/" exact>
-                  <Hero />
-                  <MainContent>
-                    <ProductCarousel />
-                    <Mission />
-                    <Investors />
-                  </MainContent>
-                </Route>
+                <Switch>
+                  <Route path="/" exact>
+                    <Hero />
+                    <MainContent>
+                      <ProductCarousel />
+                      <Mission />
+                      <Investors />
+                    </MainContent>
+                  </Route>
 
-                <Route path="/policy">
-                  <PolicyPage></PolicyPage>
-                </Route>
+                  <Route path="/policy">
+                    <PolicyPage></PolicyPage>
+                  </Route>
 
-                <Route path="/terms">
-                  <TermsPage></TermsPage>
-                </Route>
+                  <Route path="/terms">
+                    <TermsPage></TermsPage>
+                  </Route>
 
-                <Route path="/faq">
-                  <FAQPage></FAQPage>
-                </Route>
-              </Switch>
+                  <Route path="/faq">
+                    <FAQPage></FAQPage>
+                  </Route>
+                </Switch>
 
-              <Footer />
-            </Router>
-          </Body>
+                <Footer />
+              </Router>
+            </Body>
+          </SubgraphDataContextProvider>
         </Web3DataContextProvider>
       </Web3ReactProvider>
     </Web3ContextProvider>

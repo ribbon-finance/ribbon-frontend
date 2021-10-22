@@ -3,22 +3,14 @@ import styled from "styled-components";
 import currency from "currency.js";
 import { Col, Row } from "react-bootstrap";
 import moment from "moment";
-import { BigNumber } from "@ethersproject/bignumber";
 
 import theme from "shared/lib/designSystem/theme";
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
-import useVaultActivity from "shared/lib/hooks/useVaultActivity";
-import {
-  VaultActivityMeta,
-  VaultOptionTrade,
-  VaultShortPosition,
-} from "shared/lib/models/vault";
-import { assetToFiat, formatOption } from "shared/lib/utils/math";
+import { formatOption } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import {
   getAssets,
   getOptionAssets,
-  isPutVault,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
@@ -29,6 +21,7 @@ import StrikeChart from "./StrikeChart";
 import { getVaultColor } from "shared/lib/utils/vault";
 import ProfitCalculatorModal from "./ProfitCalculatorModal";
 import { formatUnits } from "@ethersproject/units";
+import { useLatestOption } from "shared/lib/hooks/useLatestOption";
 
 const VaultPerformanceChartContainer = styled.div`
   display: flex;
@@ -112,7 +105,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   vault,
 }) => {
   const { vaultOption, vaultVersion } = vault;
-  const { activities, loading: activityLoading } = useVaultActivity(
+  const { option: currentOption, loading: optionLoading } = useLatestOption(
     vaultOption,
     vaultVersion
   );
@@ -120,60 +113,21 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   const optionAsset = getOptionAssets(vaultOption);
   const color = getVaultColor(vaultOption);
   const { prices, loading: priceLoading } = useAssetsPrice();
-  const loading = priceLoading || activityLoading;
+  const loading = priceLoading || optionLoading;
   const [showCalculator, setShowCalculator] = useState(false);
 
   const loadingText = useTextAnimation(loading);
 
-  const currentOption = useMemo(() => {
-    const sortedActivities = activities
-      .filter((activity) => activity.type === "minting")
-      .sort((a, b) => (a.date.valueOf() < b.date.valueOf() ? 1 : -1));
-    if (sortedActivities.length <= 0) {
-      return undefined;
-    }
-    const latestShortPosition = sortedActivities[0] as VaultShortPosition &
-      VaultActivityMeta & { type: "minting" };
-    const optionTraded = activities.filter(
-      (activity) =>
-        activity.type === "sales" &&
-        activity.vaultShortPosition.id === latestShortPosition.id
-    ) as (VaultOptionTrade & VaultActivityMeta & { type: "sales" })[];
-
-    const decimals = getAssetDecimals(asset);
-    const isPut = isPutVault(vaultOption);
-
-    return {
-      strike: latestShortPosition.strikePrice,
-      expiry: moment(latestShortPosition.expiry, "X"),
-      premium: optionTraded.reduce(
-        (acc, curr) => acc.add(curr.premium),
-        BigNumber.from(0)
-      ),
-      depositAmount: latestShortPosition.depositAmount,
-      amount: isPut
-        ? parseFloat(
-            assetToFiat(
-              latestShortPosition.depositAmount,
-              prices[asset]!,
-              decimals
-            )
-          ) / formatOption(latestShortPosition.strikePrice)
-        : parseFloat(formatUnits(latestShortPosition.depositAmount, decimals)),
-      isPut: isPut,
-    };
-  }, [activities, asset, prices, vaultOption]);
-
   const strikeAPRText = useMemo(() => {
-    if (activityLoading) return loadingText;
+    if (optionLoading) return loadingText;
 
     if (!currentOption) return "---";
 
     return currency(formatOption(currentOption.strike)).format();
-  }, [currentOption, loadingText, activityLoading]);
+  }, [currentOption, loadingText, optionLoading]);
 
   const toExpiryText = useMemo(() => {
-    if (activityLoading) return loadingText;
+    if (optionLoading) return loadingText;
 
     if (!currentOption) return "---";
 
@@ -187,7 +141,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
     }
 
     return `${toExpiryDuration.days()}D ${toExpiryDuration.hours()}H ${toExpiryDuration.minutes()}M`;
-  }, [currentOption, loadingText, activityLoading]);
+  }, [currentOption, loadingText, optionLoading]);
 
   const KPI = useMemo(() => {
     if (loading || !currentOption) {

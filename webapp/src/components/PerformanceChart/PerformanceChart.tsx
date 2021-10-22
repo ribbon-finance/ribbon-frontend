@@ -17,6 +17,7 @@ interface PerformanceChartProps {
   labels: Date[];
   extras?: React.ReactNode;
   onChartHover: (hoverInfo: HoverInfo) => void;
+  themeColor?: string;
 }
 
 const PerformanceChart: React.FC<PerformanceChartProps> = ({
@@ -24,6 +25,7 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
   labels,
   extras,
   onChartHover,
+  themeColor = colors.green,
 }) => {
   const [date, setDate] = useState<Date | null>(null);
   const [datePosition, setDatePosition] = useState(0);
@@ -50,9 +52,17 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
 
   const chart = useMemo(
     () => (
-      <Chart dataset={dataset} labels={labels} onHover={handleChartHover} />
+      <Chart
+        dataset={dataset}
+        labels={labels}
+        onHover={handleChartHover}
+        borderColor={themeColor}
+        gradientStartColor={`${themeColor}3D`}
+        gradientStopColor={`${themeColor}00`}
+        pointBackgroundColor={themeColor}
+      />
     ),
-    [dataset, labels, handleChartHover]
+    [dataset, labels, handleChartHover, themeColor]
   );
 
   let dateTooltipPosition = datePosition - 15;

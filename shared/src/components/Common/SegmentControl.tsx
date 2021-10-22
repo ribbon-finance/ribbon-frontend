@@ -103,12 +103,14 @@ const ActiveBackground = styled(Frame)<{
     switch (props.theme) {
       case "outline":
         return `
+          transition: 0.25s border ease-out;
           border: ${theme.border.width} ${theme.border.style} 
             ${props.color ? props.color : colors.primaryText};
           background-color: transparent !important;
         `;
       default:
         return `
+          transition: 0.35s background-color ease-out;
           background-color: ${
             props.color ? props.color : colors.primaryText
           }1F !important;
@@ -117,8 +119,12 @@ const ActiveBackground = styled(Frame)<{
   }}
 `;
 
-const SegmentControlButton = styled.div<{ widthType: WidthType }>`
-  padding: 12px 16px;
+const SegmentControlButton = styled.div<{
+  widthType: WidthType;
+  px: number;
+  py: number;
+}>`
+  padding: ${(props) => `${props.py}px ${props.px}px`};
   z-index: 1;
   margin-right: 4px;
 
@@ -141,8 +147,6 @@ const SegmentControlButton = styled.div<{ widthType: WidthType }>`
 `;
 
 const SegmentControlButtonText = styled(Subtitle)`
-  font-size: 14px;
-  line-height: 24px;
   letter-spacing: 1px;
   white-space: nowrap;
 `;
@@ -151,6 +155,7 @@ interface SegmentControlProps {
   segments: {
     value: string;
     display: string | JSX.Element;
+    textColor?: string;
   }[];
   value: string;
   onSelect: (value: string) => void;
@@ -158,6 +163,12 @@ interface SegmentControlProps {
     theme?: "outline";
     color?: string;
     widthType?: WidthType;
+    button?: {
+      px: number;
+      py: number;
+      fontSize: number;
+      lineHeight: number;
+    };
   };
 }
 
@@ -165,7 +176,12 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
   segments,
   value,
   onSelect,
-  config: { theme, color, widthType = "maxContent" } = {},
+  config: {
+    theme,
+    color,
+    widthType = "maxContent",
+    button = { px: 16, py: 12, fontSize: 14, lineHeight: 24 },
+  } = {},
 }) => {
   const controlRefs = useMemo(
     () =>
@@ -234,8 +250,14 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
             onClick={() => onSelect(segment.value)}
             ref={controlRefs[segment.value]}
             widthType={widthType}
+            px={button.px}
+            py={button.py}
           >
-            <SegmentControlButtonText color={color}>
+            <SegmentControlButtonText
+              color={segment.textColor ?? color}
+              fontSize={button.fontSize}
+              lineHeight={button.lineHeight}
+            >
               {segment.display}
             </SegmentControlButtonText>
           </SegmentControlButton>

@@ -21,6 +21,7 @@ import YieldCard from "./Theta/YieldCard";
 import {
   DesktopViewType,
   VaultFilterProps,
+  VaultsDisplayVersionProps,
   VaultSortBy,
   VaultSortByFilterOptions,
   VaultStrategyList,
@@ -92,7 +93,7 @@ interface ProductCatalogueGridViewProps {
 }
 
 const ProductCatalogueGridView: React.FC<
-  ProductCatalogueGridViewProps & VaultFilterProps
+  ProductCatalogueGridViewProps & VaultFilterProps & VaultsDisplayVersionProps
 > = ({
   setView,
   onVaultPress,
@@ -105,6 +106,8 @@ const ProductCatalogueGridView: React.FC<
   filteredProducts,
   vaultAccounts,
   variant,
+  vaultsDisplayVersion,
+  setVaultDisplayVersion,
 }) => {
   const productResults = useMemo(() => {
     if (!filteredProducts.length) {
@@ -143,17 +146,23 @@ const ProductCatalogueGridView: React.FC<
               vault={vault}
               onVaultPress={onVaultPress}
               vaultAccount={vaultAccounts[vault]}
+              vaultVersion={vaultsDisplayVersion[vault]}
+              onVaultVersionChange={(version) =>
+                setVaultDisplayVersion(vault, version)
+              }
             />
           </YieldCardContainer>
         ))}
       </YieldCardsContainer>
     );
   }, [
-    setFilterAssets,
-    setFilterStrategies,
     filteredProducts,
     onVaultPress,
+    setFilterAssets,
+    setFilterStrategies,
+    setVaultDisplayVersion,
     vaultAccounts,
+    vaultsDisplayVersion,
   ]);
 
   return (

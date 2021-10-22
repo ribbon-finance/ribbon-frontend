@@ -13,13 +13,14 @@ import {
   isPutVault,
   VaultOptions,
   VaultFees,
+  VaultVersion,
 } from "shared/lib/constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { useLatestAPY } from "shared/lib/hooks/useAirtableData";
 import { capitalize } from "shared/lib/utils/text";
 import { MigrateIcon } from "shared/lib/assets/icons/icons";
 import colors from "shared/lib/designSystem/colors";
+import { useLatestAPY } from "shared/lib/hooks/useLatestOption";
 
 const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -50,6 +51,7 @@ const PreviewStep: React.FC<{
   onClickConfirmButton: () => Promise<void>;
   asset: Assets;
   vaultOption: VaultOptions;
+  vaultVersion: VaultVersion;
   receiveVaultOption?: VaultOptions;
 }> = ({
   actionType,
@@ -59,10 +61,11 @@ const PreviewStep: React.FC<{
   onClickConfirmButton,
   asset,
   vaultOption,
+  vaultVersion,
   receiveVaultOption,
 }) => {
   const color = getVaultColor(vaultOption);
-  const latestAPY = useLatestAPY(vaultOption);
+  const latestAPY = useLatestAPY(vaultOption, vaultVersion);
 
   interface ActionDetail {
     key: string;

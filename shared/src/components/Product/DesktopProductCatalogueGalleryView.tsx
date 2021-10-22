@@ -29,6 +29,7 @@ import YieldFrame from "./Theta/YieldFrame";
 import {
   DesktopViewType,
   VaultFilterProps,
+  VaultsDisplayVersionProps,
   VaultSortBy,
   VaultSortByFilterOptions,
   VaultStrategyList,
@@ -105,7 +106,9 @@ interface DesktopProductCatalogueGridViewProps {
 }
 
 const DesktopProductCatalogueGalleryView: React.FC<
-  DesktopProductCatalogueGridViewProps & VaultFilterProps
+  DesktopProductCatalogueGridViewProps &
+    VaultFilterProps &
+    VaultsDisplayVersionProps
 > = ({
   variant,
   setView,
@@ -117,6 +120,8 @@ const DesktopProductCatalogueGalleryView: React.FC<
   setFilterStrategies,
   filterAssets,
   setFilterAssets,
+  vaultsDisplayVersion,
+  setVaultDisplayVersion,
 }) => {
   const { active } = useWeb3React();
   const { height } = useScreenSize();
@@ -333,8 +338,12 @@ const DesktopProductCatalogueGalleryView: React.FC<
                 {currentVault && (
                   <YieldFrame
                     vault={currentVault}
+                    vaultVersion={vaultsDisplayVersion[currentVault]}
                     onVaultPress={onVaultPress}
                     updateVaultVersionHook={setVaultVersion}
+                    onVaultVersionChange={(version) =>
+                      setVaultDisplayVersion(currentVault, version)
+                    }
                   />
                 )}
               </VaultFrameContainer>

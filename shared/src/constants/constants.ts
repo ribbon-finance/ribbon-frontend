@@ -300,22 +300,6 @@ export const VaultFees: {
   },
 };
 
-export const getAirtableName = (vault: VaultOptions): string => {
-  switch (vault) {
-    case "rUSDC-ETH-P-THETA":
-      return "T-USDC-P-ETH";
-    case "rETH-THETA":
-      return "T-ETH-C";
-    case "rBTC-THETA":
-      return "T-WBTC-C";
-    case "ryvUSDC-ETH-P-THETA":
-      return "T-YVUSDC-P-ETH";
-    case "rstETH-THETA":
-      // TODO: Update airtable name
-      return "T-USDC-P-ETH";
-  }
-};
-
 export const RibbonTokenAddress = isDevelopment()
   ? v1deployment.kovan.RibbonToken
   : v1deployment.mainnet.RibbonToken;

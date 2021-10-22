@@ -18,7 +18,6 @@ import {
   formatSignificantDecimals,
   isPracticallyZero,
 } from "../../../utils/math";
-import { useLatestAPY } from "../../../hooks/useAirtableData";
 import useTextAnimation from "../../../hooks/useTextAnimation";
 import {
   hasVaultVersion,
@@ -34,6 +33,7 @@ import ModalContentExtra from "../../Common/ModalContentExtra";
 import { VaultAccount } from "../../../models/vault";
 import YieldComparison from "./YieldComparison";
 import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
+import { useLatestAPY } from "../../../hooks/useLatestOption";
 
 const { formatUnits } = ethers.utils;
 
@@ -162,12 +162,16 @@ const ModeSwitcherContainer = styled.div<{ color: string }>`
 
 interface YieldCardProps {
   vault: VaultOptions;
+  vaultVersion: VaultVersion;
+  onVaultVersionChange: (version: VaultVersion) => void;
   onVaultPress: (vault: VaultOptions, vaultVersion: VaultVersion) => void;
   vaultAccount?: VaultAccount;
 }
 
 const YieldCard: React.FC<YieldCardProps> = ({
   vault,
+  vaultVersion,
+  onVaultVersionChange,
   onVaultPress,
   vaultAccount,
 }) => {
@@ -187,22 +191,6 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const isLoading = useMemo(() => status === "loading", [status]);
   const [mode, setMode] = useState<"info" | "yield">("info");
   const color = getVaultColor(vault);
-  const [userSelectedVaultVersion, setUserSelectedVaultVersion] =
-    useState<VaultVersion>();
-
-  const defaultVaultVersion = useMemo(() => {
-    if (VaultVersionList[0] === "v1") {
-      if (!isLoading && vaultLimit.isZero()) {
-        return "v2";
-      }
-
-      return "v1";
-    }
-
-    return VaultVersionList[0];
-  }, [isLoading, vaultLimit]);
-
-  const vaultVersion = userSelectedVaultVersion || defaultVaultVersion;
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {
@@ -227,7 +215,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     }
   }, [decimals, deposits, v2Deposits, v2VaultLimit, vaultLimit, vaultVersion]);
 
-  const latestAPY = useLatestAPY(vault);
+  const latestAPY = useLatestAPY(vault, vaultVersion);
 
   const loadingText = useTextAnimation(!latestAPY.fetched);
   const perfStr = latestAPY.fetched
@@ -383,7 +371,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
                       active={vaultVersion === version}
                       onClick={(e) => {
                         e.stopPropagation();
-                        setUserSelectedVaultVersion(version);
+                        onVaultVersionChange(version);
                       }}
                     >
                       <Subtitle>{version}</Subtitle>
@@ -410,7 +398,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
             {mode === "info" ? (
               <ProductInfoContent />
             ) : (
-              <YieldComparison vault={vault} />
+              <YieldComparison vault={vault} vaultVersion={vaultVersion} />
             )}
           </ProductInfo>
           <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
