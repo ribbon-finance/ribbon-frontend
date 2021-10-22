@@ -63,6 +63,12 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
           for (let i = 0; i < availableVaultVersions.length; i++) {
             switch (availableVaultVersions[i]) {
               case "v1":
+                /**
+                 * We check for V1 vault if it had been disabled
+                 * If we are still loading data and default vault version is v1,
+                 * then we proceed to show v1
+                 * It it had been disabled, we show other available vault version instead
+                 */
                 if (
                   (VaultVersionList[0] === "v1" && v1VaultsDataLoading) ||
                   !v1VaultsData[vaultOption].vaultLimit.isZero()

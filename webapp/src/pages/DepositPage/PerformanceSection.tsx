@@ -198,7 +198,6 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       )}
 
       <Paragraph>
-        <ParagraphHeading>Vault Performance</ParagraphHeading>
         <VaultPerformanceChart vault={vault} />
       </Paragraph>
 
