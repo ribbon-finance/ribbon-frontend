@@ -11,7 +11,6 @@ import {
   Title,
 } from "shared/lib/designSystem";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
-import { Waves } from "shared/lib/assets";
 import useStakingPool from "../../hooks/useStakingPool";
 import {
   VaultLiquidityMiningMap,
@@ -40,8 +39,8 @@ const OverviewInfo = styled.div`
   padding: 24px;
   background: linear-gradient(
     96.84deg,
-    ${colors.green}0A 1.04%,
-    ${colors.green}02 98.99%
+    ${colors.green}29 1.04%,
+    ${colors.green}0A 98.99%
   );
   border-radius: ${theme.border.radius} ${theme.border.radius} 0 0;
 `;
@@ -66,26 +65,6 @@ const UnderlineLink = styled(BaseLink)`
     text-decoration: underline;
     color: ${colors.primaryText};
     opacity: ${theme.hover.opacity};
-  }
-`;
-
-const OverviewBackgroundContainer = styled.div`
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-`;
-
-const StyledWaves = styled(Waves)`
-  margin-bottom: -75px;
-
-  path {
-    stroke: ${colors.green}3D;
   }
 `;
 
@@ -197,9 +176,6 @@ const StakingOverview = () => {
           </PrimaryText>
           <ExternalIcon color="white" />
         </UnderlineLink>
-        <OverviewBackgroundContainer>
-          <StyledWaves />
-        </OverviewBackgroundContainer>
       </OverviewInfo>
       <OverviewKPIContainer>
         <OverviewKPI>
