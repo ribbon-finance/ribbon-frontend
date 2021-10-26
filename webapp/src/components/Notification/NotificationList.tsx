@@ -246,15 +246,35 @@ const NotificationList: React.FC<NotificationListProps> = ({
             segments={[
               { value: "all", display: "ALL" as string | JSX.Element },
             ].concat(
-              notificationsVaultList.map((vault) => ({
-                value: vault,
-                display: (
-                  <span className="d-flex align-items-center">
-                    <ColorDot color={getVaultColor(vault)} className="mr-2" />
-                    {productCopies[vault].title}
-                  </span>
-                ),
-              }))
+              notificationsVaultList.map((vault) => {
+                const showColorDot = typeFilteredNotifications.find(
+                  (notification) =>
+                    notification.vault === vault &&
+                    lastReadTimestamp &&
+                    lastReadTimestamp <= notification.date.valueOf()
+                );
+
+                return {
+                  value: vault,
+                  display: (
+                    <span className="d-flex align-items-center">
+                      {showColorDot && (
+                        <ColorDot
+                          color={getVaultColor(vault)}
+                          className="mr-2"
+                        />
+                      )}
+                      <Title
+                        color={getVaultColor(vault)}
+                        fontSize={14}
+                        lineHeight={24}
+                      >
+                        {productCopies[vault].title}
+                      </Title>
+                    </span>
+                  ),
+                };
+              })
             )}
             value={notificationVaultFilter}
             onSelect={(value) =>
