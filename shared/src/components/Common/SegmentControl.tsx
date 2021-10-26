@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 import { Frame } from "framer";
 import styled from "styled-components";
 
@@ -6,6 +12,7 @@ import theme from "../../designSystem/theme";
 import colors from "../../designSystem/colors";
 import { Subtitle } from "../../designSystem";
 import useElementScroll from "../../hooks/useElementScroll";
+import useElementSize from "../../hooks/useElementSize";
 
 type WidthType = "fullWidth" | "maxContent";
 
@@ -197,6 +204,7 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
 
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useElementScroll(containerRef);
+  const { width } = useElementSize(containerRef);
 
   useEffect(() => {
     const currentCurrency = controlRefs[value].current;
@@ -221,6 +229,14 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
       window.removeEventListener("resize", handleResize);
     };
   }, [value, controlRefs]);
+
+  const handleScrollLeft = useCallback(() => {
+    containerRef.current?.scrollBy({ left: -width, behavior: "smooth" });
+  }, [width]);
+
+  const handleScrollRight = useCallback(() => {
+    containerRef.current?.scrollBy({ left: width, behavior: "smooth" });
+  }, [width]);
 
   return (
     <>
@@ -264,10 +280,20 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
         ))}
       </SegmentControlContainer>
       {/** Scroll Indicator */}
-      <ContainerScrollIndicator direction="left" show={scrollY.left > 5}>
+      <ContainerScrollIndicator
+        direction="left"
+        show={scrollY.left > 5}
+        role="button"
+        onClick={handleScrollLeft}
+      >
         <IndicatorIcon className="fas fa-chevron-right" />
       </ContainerScrollIndicator>
-      <ContainerScrollIndicator direction="right" show={scrollY.right > 5}>
+      <ContainerScrollIndicator
+        direction="right"
+        show={scrollY.right > 5}
+        role="button"
+        onClick={handleScrollRight}
+      >
         <IndicatorIcon className="fas fa-chevron-right" />
       </ContainerScrollIndicator>
     </>

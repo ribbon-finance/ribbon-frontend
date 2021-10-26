@@ -74,6 +74,7 @@ export const TxStatusToast = () => {
     switch (_currentTx.type) {
       case "deposit":
       case "withdraw":
+      case "withdrawInitiation":
       case "migrate":
         return formatBigNumber(
           BigNumber.from(_currentTx.amount),
@@ -92,9 +93,11 @@ export const TxStatusToast = () => {
   const getActionTitle = useCallback((_currentTx: PendingTransaction) => {
     switch (_currentTx.type) {
       case "rewardClaim":
-        return "Reward Claim";
+        return "Reward Claim Successful";
+      case "withdrawInitiation":
+        return "WITHDRAWAL INITIATED";
       default:
-        return capitalize(_currentTx.type);
+        return `${capitalize(_currentTx.type)} Successful`;
     }
   }, []);
 
@@ -109,6 +112,10 @@ export const TxStatusToast = () => {
           )} is ready to deposit`;
         case "stakingApproval":
           return `Your ${_currentTx.stakeAsset} is ready to stake`;
+        case "withdrawInitiation":
+          return `Initiated ${amountFormatted} ${getAssetDisplay(
+            getAssets(_currentTx.vault)
+          )} withdrawal from ${productCopies[_currentTx.vault].title}`;
         case "withdraw":
           return `${amountFormatted} ${getAssetDisplay(
             getAssets(_currentTx.vault)
@@ -183,7 +190,7 @@ export const TxStatusToast = () => {
               ? "claim"
               : "success"
           }
-          title={`${getActionTitle(currentTx)} successful`}
+          title={getActionTitle(currentTx)}
           subtitle={getSubtitle(currentTx)}
         />
       );

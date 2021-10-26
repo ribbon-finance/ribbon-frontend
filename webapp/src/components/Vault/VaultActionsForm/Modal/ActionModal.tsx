@@ -78,7 +78,7 @@ const ModalBody = styled.div<ModalBodyProps>`
 const modalPadding = 16;
 
 const ModalHeaderWithBackground = styled.div`
-  background: #151413;
+  background: ${colors.background.one};
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   padding-top: 20px;
@@ -209,8 +209,30 @@ const ActionModal: React.FC<ActionModalProps> = ({
       [STEPS.formStep]: "",
       [STEPS.previewStep]:
         vaultActionForm.actionType === "migrate" ? "" : `${actionWord} Preview`,
-      [STEPS.confirmationStep]: `Confirm ${actionWord}`,
-      [STEPS.submittedStep]: "Transaction Submitted",
+      [STEPS.confirmationStep]: (() => {
+        switch (vaultActionForm.actionType) {
+          case "withdraw":
+            if (vaultActionForm.withdrawOption === "standard") {
+              return "Confirm Transaction";
+            }
+
+            return `Confirm ${actionWord}`;
+          default:
+            return `Confirm ${actionWord}`;
+        }
+      })(),
+      [STEPS.submittedStep]: (() => {
+        switch (vaultActionForm.actionType) {
+          case "withdraw":
+            if (vaultActionForm.withdrawOption === "standard") {
+              return "Initiating Withdrawal";
+            }
+
+            return "Transaction Submitted";
+          default:
+            return "Transaction Submitted";
+        }
+      })(),
     };
 
     return (

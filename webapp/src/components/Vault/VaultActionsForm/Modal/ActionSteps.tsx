@@ -223,8 +223,22 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
          * Append transaction into pending transaction list
          */
         switch (vaultActionForm.actionType) {
-          case ACTIONS.deposit:
+          // @ts-ignore
           case ACTIONS.withdraw:
+            if (vaultActionForm.withdrawOption === "standard") {
+              addPendingTransaction({
+                txhash: res.hash,
+                type: "withdrawInitiation",
+                amount: amountStr,
+                vault: vaultOption,
+              });
+              break;
+            }
+          /**
+           * Fallthrough only apply for non-standard withdraw
+           */
+          // eslint-disable-next-line no-fallthrough
+          case ACTIONS.deposit:
           case ACTIONS.migrate:
             addPendingTransaction({
               txhash: res.hash,

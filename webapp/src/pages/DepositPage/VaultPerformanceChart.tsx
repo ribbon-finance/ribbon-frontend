@@ -21,13 +21,13 @@ import { useAssetsPriceHistory } from "shared/lib/hooks/useAssetPrice";
 import { assetToFiat } from "shared/lib/utils/math";
 import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 
-const VaultPerformacneChartContainer = styled.div`
+const VaultPerformanceChartContainer = styled.div`
   background: ${colors.background.two};
   border-radius: ${theme.border.radiusSmall} ${theme.border.radiusSmall} 0px 0px;
   padding-bottom: 30px;
 `;
 
-const VaultPerformacneChartSecondaryContainer = styled.div`
+const VaultPerformanceChartSecondaryContainer = styled.div`
   display: flex;
   border-radius: 0px 0px ${theme.border.radiusSmall} ${theme.border.radiusSmall};
   border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
@@ -366,7 +366,7 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
             x: vaultPerformanceTerm === "fiat" ? 50 : -50,
           }}
         >
-          <VaultPerformacneChartContainer className="pt-4">
+          <VaultPerformanceChartContainer className="pt-4">
             <PerformanceChart
               dataset={yields}
               labels={timestamps}
@@ -395,8 +395,8 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
               }
               themeColor={termThemeColor[vaultPerformanceTerm]}
             />
-          </VaultPerformacneChartContainer>
-          <VaultPerformacneChartSecondaryContainer>
+          </VaultPerformanceChartContainer>
+          <VaultPerformanceChartSecondaryContainer>
             <VaultPerformanceChartKPI>
               <SecondaryText fontSize={12} lineHeight={16} className="d-block">
                 Projected Yield (APY)
@@ -427,7 +427,7 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
                 }${prevWeekPerformance[vaultPerformanceTerm].toFixed(2)}%`}
               </Title>
             </VaultPerformanceChartKPI>
-          </VaultPerformacneChartSecondaryContainer>
+          </VaultPerformanceChartSecondaryContainer>
         </motion.div>
       </AnimatePresence>
     </>

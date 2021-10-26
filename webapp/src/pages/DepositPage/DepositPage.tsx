@@ -406,7 +406,7 @@ const HeroSection: React.FC<{
                   </TagPill>
                 ))}
                 <AttributePill className="mr-2 text-uppercase" color={color}>
-                  {[...VaultVersionList].reverse().map((version) =>
+                  {[...VaultVersionList].map((version) =>
                     hasVaultVersion(vaultOption, version) ? (
                       <BaseLink
                         to={getVaultURI(vaultOption, version)}

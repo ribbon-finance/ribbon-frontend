@@ -10,7 +10,7 @@ const Logo: React.FC<SVGProps> = ({ color, ...props }) => (
     {...props}
   >
     <g clipPath="url(#clip0)">
-      <circle cx="48" cy="48" r="48" fill={color || "#FF385C"} />
+      <circle cx="48" cy="48" r="48" fill={color || "#FC0A54"} />
       <path
         d="M3 71.9068L47.8065 25L71.61 49.5036L47.5 75.5"
         stroke="white"
