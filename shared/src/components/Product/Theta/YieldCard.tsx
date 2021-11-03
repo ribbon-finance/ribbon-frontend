@@ -34,6 +34,7 @@ import { VaultAccount } from "../../../models/vault";
 import YieldComparison from "./YieldComparison";
 import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
 import { useLatestAPY } from "../../../hooks/useLatestOption";
+import useAssetsYield from "../../../hooks/useAssetsYield";
 
 const { formatUnits } = ethers.utils;
 
@@ -188,6 +189,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     data: { totalBalance: v2Deposits, cap: v2VaultLimit },
     loading: v2DataLoading,
   } = useV2VaultData(vault);
+  const yieldInfos = useAssetsYield(asset);
   const isLoading = useMemo(() => status === "loading", [status]);
   const [mode, setMode] = useState<"info" | "yield">("info");
   const color = getVaultColor(vault);
@@ -382,23 +384,29 @@ const YieldCard: React.FC<YieldCardProps> = ({
             </TagContainer>
 
             {/* Mode switcher button */}
-            <ModeSwitcherContainer
-              role="button"
-              onClick={onSwapMode}
-              color={color}
-            >
-              {mode === "info" ? (
-                <GlobeIcon color={color} />
-              ) : (
-                <BarChartIcon color={color} />
-              )}
-            </ModeSwitcherContainer>
+            {yieldInfos && (
+              <ModeSwitcherContainer
+                role="button"
+                onClick={onSwapMode}
+                color={color}
+              >
+                {mode === "info" ? (
+                  <GlobeIcon color={color} />
+                ) : (
+                  <BarChartIcon color={color} />
+                )}
+              </ModeSwitcherContainer>
+            )}
           </TopContainer>
           <ProductInfo>
-            {mode === "info" ? (
-              <ProductInfoContent />
+            {mode === "yield" && yieldInfos ? (
+              <YieldComparison
+                vault={vault}
+                vaultVersion={vaultVersion}
+                yieldInfos={yieldInfos}
+              />
             ) : (
-              <YieldComparison vault={vault} vaultVersion={vaultVersion} />
+              <ProductInfoContent />
             )}
           </ProductInfo>
           <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>

@@ -12,6 +12,7 @@ import {
   Title,
 } from "../../../designSystem";
 import theme from "../../../designSystem/theme";
+import useAssetsYield from "../../../hooks/useAssetsYield";
 import { useLatestAPY } from "../../../hooks/useLatestOption";
 import useTextAnimation from "../../../hooks/useTextAnimation";
 import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
@@ -92,6 +93,7 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
     data: { totalBalance: v2Deposits, cap: v2VaultLimit },
     loading: v2DataLoading,
   } = useV2VaultData(vault);
+  const yieldInfos = useAssetsYield(asset);
   const isLoading = useMemo(
     () => status === "loading" || v2DataLoading,
     [status, v2DataLoading]
@@ -156,7 +158,22 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
 
   const body = useMemo(() => {
     switch (mode) {
-      case "info":
+      // @ts-ignore
+      case "yield":
+        if (yieldInfos) {
+          return (
+            <YieldComparison
+              vault={vault}
+              vaultVersion={vaultVersion}
+              config={{
+                background: `${color}29`,
+              }}
+              yieldInfos={yieldInfos}
+            />
+          );
+        }
+      // eslint-disable-next-line no-fallthrough
+      default:
         return (
           <>
             <div className="mt-4 d-flex justify-content-center">{logo}</div>
@@ -189,16 +206,6 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
             </div>
           </>
         );
-      case "yield":
-        return (
-          <YieldComparison
-            vault={vault}
-            vaultVersion={vaultVersion}
-            config={{
-              background: `${color}29`,
-            }}
-          />
-        );
     }
   }, [
     vault,
@@ -211,6 +218,7 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
     isLoading,
     totalDepositStr,
     depositLimitStr,
+    yieldInfos,
   ]);
 
   return (
@@ -248,17 +256,19 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
             </TagContainer>
 
             {/* Mode switcher button */}
-            <ModeSwitcherContainer
-              role="button"
-              onClick={onSwapMode}
-              color={color}
-            >
-              {mode === "info" ? (
-                <GlobeIcon color={color} />
-              ) : (
-                <BarChartIcon color={color} />
-              )}
-            </ModeSwitcherContainer>
+            {yieldInfos && (
+              <ModeSwitcherContainer
+                role="button"
+                onClick={onSwapMode}
+                color={color}
+              >
+                {mode === "info" ? (
+                  <GlobeIcon color={color} />
+                ) : (
+                  <BarChartIcon color={color} />
+                )}
+              </ModeSwitcherContainer>
+            )}
           </div>
           {body}
         </Frame>

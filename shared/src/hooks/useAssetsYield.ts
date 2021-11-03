@@ -6,9 +6,9 @@ import {
   DefiScoreOpportunitiesResponse,
 } from "../models/defiScore";
 import { useGlobalState } from "../store/store";
-import { Assets, AssetYieldsInfoData } from "../store/types";
+import { Assets, AssetYieldsInfo, AssetYieldsInfoData } from "../store/types";
 
-const useAssetsYield = (asset: Assets) => {
+const useAssetsYield = (asset: Assets): AssetYieldsInfo | undefined => {
   const [assetYieldsInfo, setAssetYieldsInfo] =
     useGlobalState("assetYieldsInfo");
 

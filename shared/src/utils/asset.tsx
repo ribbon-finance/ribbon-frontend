@@ -1,6 +1,7 @@
 import React from "react";
 import styled, { StyledComponent } from "styled-components";
 import {
+  AAVELogo,
   STETHLogo,
   USDCLogo,
   WBTCLogo,
@@ -124,5 +125,7 @@ export const getAssetLogo: (asset: Assets) =>
       return ColoredYVUSDCLogo;
     case "stETH":
       return STETHLogo;
+    case "AAVE":
+      return AAVELogo;
   }
 };

@@ -3,7 +3,14 @@ import { BigNumber } from "ethers";
 import { VaultOptions } from "../constants/constants";
 import { DefiScoreProtocol, DefiScoreToken } from "../models/defiScore";
 
-export const AssetsList = ["WETH", "WBTC", "USDC", "yvUSDC", "stETH"] as const;
+export const AssetsList = [
+  "WETH",
+  "WBTC",
+  "USDC",
+  "yvUSDC",
+  "stETH",
+  "AAVE",
+] as const;
 export type Assets = typeof AssetsList[number];
 
 export type PendingTransaction = {
@@ -47,11 +54,13 @@ export type PendingTransaction = {
     }
 );
 
+export type AssetYieldsInfo = Array<{
+  protocol: DefiScoreProtocol;
+  apr: number;
+}>;
+
 export type AssetYieldsInfoData = {
-  [token in DefiScoreToken]: Array<{
-    protocol: DefiScoreProtocol;
-    apr: number;
-  }>;
+  [token in DefiScoreToken]: AssetYieldsInfo;
 };
 
 export type AirdropInfoData = {

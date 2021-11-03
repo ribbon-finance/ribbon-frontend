@@ -70,7 +70,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
                  * It it had been disabled, we show other available vault version instead
                  */
                 if (
-                  (VaultVersionList[0] === "v1" && v1VaultsDataLoading) ||
+                  v1VaultsDataLoading ||
                   !v1VaultsData[vaultOption].vaultLimit.isZero()
                 ) {
                   return [vaultOption, "v1"];

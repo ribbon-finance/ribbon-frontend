@@ -43,6 +43,7 @@ const colors = {
     USDC: "#3E73C4",
     yvUSDC: "#3E73C4",
     stETH: "#00A3FF",
+    AAVE: "#2EBAC6",
   },
 };
 
