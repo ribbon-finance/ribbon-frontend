@@ -21,6 +21,7 @@ import useAssetsYield from "../../../hooks/useAssetsYield";
 import { useLatestAPY } from "../../../hooks/useLatestOption";
 import useTextAnimation from "../../../hooks/useTextAnimation";
 import { DefiScoreProtocol } from "../../../models/defiScore";
+import { AssetYieldsInfo } from "../../../store/types";
 import { getAssetDisplay } from "../../../utils/asset";
 import { productCopies } from "../productCopies";
 
@@ -50,6 +51,7 @@ interface YieldComparisonProps {
   config?: {
     background: string;
   };
+  yieldInfos: AssetYieldsInfo;
 }
 
 const YieldComparison: React.FC<YieldComparisonProps> = ({
@@ -58,9 +60,9 @@ const YieldComparison: React.FC<YieldComparisonProps> = ({
   config = {
     background: colors.background.three,
   },
+  yieldInfos,
 }) => {
   const asset = getAssets(vault);
-  const yieldInfos = useAssetsYield(asset);
 
   const latestAPY = useLatestAPY(vault, vaultVersion);
 

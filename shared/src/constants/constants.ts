@@ -21,12 +21,12 @@ export const VaultVersionList = ["v2", "v1"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 
 export const FullVaultList = [
+  "rAAVE-THETA",
   "rstETH-THETA",
   "ryvUSDC-ETH-P-THETA",
   "rETH-THETA",
   "rBTC-THETA",
   "rUSDC-ETH-P-THETA",
-  "rAAVE-THETA",
 ] as const;
 export type VaultOptions = typeof FullVaultList[number];
 const ProdExcludeVault: VaultOptions[] = ["rstETH-THETA", "rAAVE-THETA"];

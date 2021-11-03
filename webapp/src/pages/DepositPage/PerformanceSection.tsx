@@ -201,12 +201,14 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
         <VaultPerformanceChart vault={vault} />
       </Paragraph>
 
-      <Paragraph>
-        <ParagraphHeading>
-          MARKET {getAssetDisplay(asset)} YIELDS (APY)
-        </ParagraphHeading>
-        {yieldInfos.map((info) => renderYieldInfo(info))}
-      </Paragraph>
+      {yieldInfos && (
+        <Paragraph>
+          <ParagraphHeading>
+            MARKET {getAssetDisplay(asset)} YIELDS (APY)
+          </ParagraphHeading>
+          {yieldInfos.map((info) => renderYieldInfo(info))}
+        </Paragraph>
+      )}
 
       {active && (
         <Paragraph>

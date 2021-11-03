@@ -54,11 +54,13 @@ export type PendingTransaction = {
     }
 );
 
+export type AssetYieldsInfo = Array<{
+  protocol: DefiScoreProtocol;
+  apr: number;
+}>;
+
 export type AssetYieldsInfoData = {
-  [token in DefiScoreToken]: Array<{
-    protocol: DefiScoreProtocol;
-    apr: number;
-  }>;
+  [token in DefiScoreToken]: AssetYieldsInfo;
 };
 
 export type AirdropInfoData = {
