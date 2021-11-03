@@ -5,6 +5,7 @@ import WBTCGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuctio
 import USDCGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/USDC_Gnosis_Auction.json";
 import ETHGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/ETH_Gnosis_Auction.json";
 import STETHGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/STETH_Gnosis_Auction.json";
+import AAVEGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/AAVE_Gnosis_Auction.json";
 import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 
 interface GnosisAuctionProps {
@@ -24,6 +25,8 @@ const GnosisAuction: React.FC<GnosisAuctionProps> = ({ vaultOption }) => {
             return WBTCGnosisAuction;
           case "USDC":
             return USDCGnosisAuction;
+          case "AAVE":
+            return AAVEGnosisAuction;
         }
     }
   }, [vaultOption]);

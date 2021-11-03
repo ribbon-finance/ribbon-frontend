@@ -266,7 +266,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     },
   },
   "rstETH-THETA": {
-    title: "T-stETH-THETA",
+    title: "T-stETH-C",
     subtitle: "ETH Put-Selling",
     description:
       "Generates yield by running an automated stETH-collateralized ETH covered call strategy.",
@@ -328,6 +328,62 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           <br />
           Stake your rstETH-THETA tokens in the rstETH-THETA staking pool to
           earn $RBN rewards.
+        </>
+      ),
+    },
+  },
+  "rAAVE-THETA": {
+    title: "T-AAVE-C",
+    subtitle: "AAVE Put-Selling",
+    description:
+      "Generates yield by running an automated AAVE covered call strategy.",
+    tags: ["COVERED CALL"],
+    strategy: (
+      <>
+        The vault earns yield on its AAVE deposits by running a weekly automated
+        AAVE{" "}
+        <TooltipExplanation
+          title="COVERED CALL"
+          explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
+          learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              covered call
+            </HighlighText>
+          )}
+        />{" "}
+        strategy. The vault reinvests the yield earned back into the strategy,
+        effectively compounding the yields for depositors over time.
+      </>
+    ),
+    vaultRisk: (
+      <>
+        The primary risk for running this covered call strategy is that the
+        vault may incur a weekly loss in the case where the call options sold by
+        the vault expire{" "}
+        <TooltipExplanation
+          title="IN-THE-MONEY"
+          explanation="An ETH call option is in-the-money (ITM) if the strike price is below the market price of ETH."
+          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              in-the-money
+            </HighlighText>
+          )}
+        />{" "}
+        (meaning the price of AAVE is above the strike price of the call options
+        minted by the vault).
+      </>
+    ),
+    liquidityMining: {
+      explanation: (
+        <>
+          rAAVE-THETA is a token that represents AAVE deposits in the AAVE Theta
+          Vault (T-AAVE-C).
+          <br />
+          <br />
+          Stake your rAAVE-THETA tokens in the rAAVE-THETA staking pool to earn
+          $RBN rewards.
         </>
       ),
     },

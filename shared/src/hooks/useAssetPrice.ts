@@ -30,6 +30,7 @@ const COINGECKO_CURRENCIES = {
   USDC: "usd-coin",
   yvUSDC: undefined,
   stETH: "staked-ether",
+  AAVE: "aave",
 };
 
 export const useFetchAssetsPrice = (

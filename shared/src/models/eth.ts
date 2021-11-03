@@ -6,6 +6,7 @@ export const ERC20TokenList = [
   "wbtc",
   "yvusdc",
   "steth",
+  "aave",
   "rbn",
   ...FullVaultList,
 ] as const;

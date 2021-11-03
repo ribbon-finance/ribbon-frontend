@@ -47,9 +47,11 @@ const useAssetsYield = (asset: Assets) => {
     })();
   }, [assetYieldsInfo, setAssetYieldsInfo]);
 
-  return assetYieldsInfo.data[
-    asset === "WETH" ? "eth" : (asset.toLowerCase() as DefiScoreToken)
-  ];
+  return (
+    assetYieldsInfo.data[
+      asset === "WETH" ? "eth" : (asset.toLowerCase() as DefiScoreToken)
+    ] || []
+  );
 };
 
 export default useAssetsYield;
