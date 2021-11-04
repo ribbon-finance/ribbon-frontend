@@ -1,6 +1,6 @@
 import { formatUnits } from "@ethersproject/units";
 import { AnimatePresence, motion } from "framer";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { BarChartIcon, GlobeIcon } from "../../../assets/icons/icons";
 
@@ -77,7 +77,6 @@ interface YieldFrameProps {
   vaultVersion: VaultVersion;
   onVaultVersionChange: (version: VaultVersion) => void;
   onVaultPress: (vault: VaultOptions, vaultVersion: VaultVersion) => void;
-  updateVaultVersionHook?: (vaultVersion: VaultVersion) => void;
 }
 
 const YieldFrame: React.FC<YieldFrameProps> = ({
@@ -85,7 +84,6 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
   vaultVersion,
   onVaultVersionChange,
   onVaultPress,
-  updateVaultVersionHook,
 }) => {
   const { status, deposits, vaultLimit, asset, displayAsset, decimals } =
     useVaultData(vault);
@@ -107,10 +105,6 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
   const Logo = getAssetLogo(displayAsset);
 
   const [mode, setMode] = useState<"info" | "yield">("info");
-
-  useEffect(() => {
-    updateVaultVersionHook && updateVaultVersionHook(vaultVersion);
-  }, [updateVaultVersionHook, vaultVersion]);
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {

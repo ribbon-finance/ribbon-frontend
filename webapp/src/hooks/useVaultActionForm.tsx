@@ -7,7 +7,6 @@ import {
   VaultMaxDeposit,
   VaultOptions,
   VaultVersion,
-  VaultVersionList,
 } from "shared/lib/constants/constants";
 import {
   ACTIONS,
@@ -148,7 +147,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   const handleActionTypeChange = useCallback(
     (
       actionType: ActionType,
-      vaultVersion: VaultVersion = VaultVersionList[0],
+      vaultVersion: VaultVersion = "v1",
       {
         withdrawOption,
       }: {

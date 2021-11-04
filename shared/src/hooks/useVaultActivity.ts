@@ -117,7 +117,7 @@ export const useAllVaultActivities = () => {
 
 const useVaultActivity = (
   vault: VaultOptions,
-  vaultVersion: VaultVersion = VaultVersionList[0]
+  vaultVersion: VaultVersion = "v1"
 ) => {
   const contextData = useContext(SubgraphDataContext);
 
