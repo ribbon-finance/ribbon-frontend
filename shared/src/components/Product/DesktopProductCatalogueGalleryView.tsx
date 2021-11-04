@@ -4,11 +4,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
 import Marquee from "react-fast-marquee/dist";
 
-import {
-  VaultOptions,
-  VaultVersion,
-  VaultVersionList,
-} from "../../constants/constants";
+import { VaultOptions, VaultVersion } from "../../constants/constants";
 import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
@@ -129,9 +125,6 @@ const DesktopProductCatalogueGalleryView: React.FC<
   const [currentVault, setCurrentVault] = useState<VaultOptions | undefined>(
     filteredProducts[page - 1]
   );
-  const [vaultVersion, setVaultVersion] = useState<VaultVersion>(
-    VaultVersionList[0]
-  );
 
   // Prevent page overflow
   useEffect(() => {
@@ -176,7 +169,10 @@ const DesktopProductCatalogueGalleryView: React.FC<
           {active && (
             <div className="mt-4">
               <YourPosition
-                vault={{ vaultOption: currentVault, vaultVersion }}
+                vault={{
+                  vaultOption: currentVault,
+                  vaultVersion: vaultsDisplayVersion[currentVault],
+                }}
                 variant="desktop"
                 alwaysShowPosition
               />
@@ -188,9 +184,9 @@ const DesktopProductCatalogueGalleryView: React.FC<
   }, [
     active,
     currentVault,
-    vaultVersion,
     setFilterAssets,
     setFilterStrategies,
+    vaultsDisplayVersion,
   ]);
 
   return (
@@ -340,7 +336,6 @@ const DesktopProductCatalogueGalleryView: React.FC<
                     vault={currentVault}
                     vaultVersion={vaultsDisplayVersion[currentVault]}
                     onVaultPress={onVaultPress}
-                    updateVaultVersionHook={setVaultVersion}
                     onVaultVersionChange={(version) =>
                       setVaultDisplayVersion(currentVault, version)
                     }

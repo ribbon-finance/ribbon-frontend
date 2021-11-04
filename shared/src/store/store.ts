@@ -1,11 +1,7 @@
 import { createGlobalState } from "react-hooks-global-state";
 
 import { DesktopViewType } from "../components/Product/types";
-import {
-  VaultOptions,
-  VaultVersion,
-  VaultVersionList,
-} from "../constants/constants";
+import { VaultOptions, VaultVersion } from "../constants/constants";
 import {
   DefiScoreProtocol,
   DefiScoreToken,
@@ -54,7 +50,7 @@ export const initialState: GlobalStore = {
   airdropInfo: undefined,
   vaultPositionModal: {
     show: false,
-    vaultVersion: VaultVersionList[0],
+    vaultVersion: "v1" as VaultVersion,
   },
   notificationLastReadTimestamp: undefined,
 };

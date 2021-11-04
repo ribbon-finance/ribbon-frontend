@@ -3,7 +3,6 @@ import {
   VaultNameOptionMap,
   VaultOptions,
   VaultVersion,
-  VaultVersionList,
 } from "shared/lib/constants/constants";
 import { Airdrop, AirdropBreakdown, AirdropProof } from "../models/airdrop";
 
@@ -21,7 +20,7 @@ export const breakdown: AirdropBreakdown = isDevelopment()
 
 export const getVaultURI = (
   vaultOption: VaultOptions,
-  vaultVersion: VaultVersion = VaultVersionList[0]
+  vaultVersion: VaultVersion = "v1"
 ): string => {
   switch (vaultVersion) {
     case "v1":

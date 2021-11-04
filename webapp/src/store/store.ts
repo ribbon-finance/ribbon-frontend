@@ -1,9 +1,5 @@
 import { createGlobalState } from "react-hooks-global-state";
-import {
-  VaultOptions,
-  VaultVersion,
-  VaultVersionList,
-} from "shared/lib/constants/constants";
+import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
 import {
   ACTIONS,
   ActionType,
@@ -22,7 +18,7 @@ interface GlobalStore {
 }
 
 export const initialVaultActionForm = {
-  vaultVersion: VaultVersionList[0],
+  vaultVersion: "v1" as VaultVersion,
   inputAmount: "",
   // Default to deposit
   actionType: ACTIONS.deposit,
