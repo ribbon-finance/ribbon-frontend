@@ -29,7 +29,7 @@ export const FullVaultList = [
   "rUSDC-ETH-P-THETA",
 ] as const;
 export type VaultOptions = typeof FullVaultList[number];
-const ProdExcludeVault: VaultOptions[] = ["rstETH-THETA", "rAAVE-THETA"];
+const ProdExcludeVault: VaultOptions[] = ["rstETH-THETA"];
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
   "ryvUSDC-ETH-P-THETA",
@@ -92,7 +92,7 @@ export const GAS_LIMITS: {
   },
   "rAAVE-THETA": {
     v2: {
-      deposit: 170000,
+      deposit: 380000,
       withdrawInstantly: 130000,
     },
   },
