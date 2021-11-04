@@ -291,7 +291,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
    * Default to deposit at v1
    */
   useEffect(() => {
-    handleActionTypeChange(ACTIONS.deposit);
+    handleActionTypeChange(ACTIONS.deposit, "v1");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -711,7 +711,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
   }, [asset, swapContainerOpen]);
 
   const handleWithdraw = useCallback(() => {
-    handleActionTypeChange(ACTIONS.withdraw);
+    handleActionTypeChange(ACTIONS.withdraw, "v1");
     handleMaxClick();
     onFormSubmit();
   }, [handleActionTypeChange, handleMaxClick, onFormSubmit]);
@@ -797,7 +797,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
         <FormTitleContainer className="d-flex flex-row align-items-center">
           <FormTitleDiv
             active={vaultActionForm.actionType === ACTIONS.deposit}
-            onClick={() => handleActionTypeChange(ACTIONS.deposit)}
+            onClick={() => handleActionTypeChange(ACTIONS.deposit, "v1")}
           >
             <FormTitle active={vaultActionForm.actionType === ACTIONS.deposit}>
               Deposit
@@ -805,7 +805,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
           </FormTitleDiv>
           <FormTitleDiv
             active={vaultActionForm.actionType === ACTIONS.withdraw}
-            onClick={() => handleActionTypeChange(ACTIONS.withdraw)}
+            onClick={() => handleActionTypeChange(ACTIONS.withdraw, "v1")}
           >
             <FormTitle active={vaultActionForm.actionType === ACTIONS.withdraw}>
               Withdraw
@@ -814,7 +814,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
           {canTransfer && (
             <FormTitleDiv
               active={vaultActionForm.actionType === ACTIONS.transfer}
-              onClick={() => handleActionTypeChange(ACTIONS.transfer)}
+              onClick={() => handleActionTypeChange(ACTIONS.transfer, "v1")}
             >
               <FormTitle
                 active={vaultActionForm.actionType === ACTIONS.transfer}
