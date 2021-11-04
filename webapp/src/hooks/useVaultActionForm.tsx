@@ -80,13 +80,17 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
    * Reset form when vault option changes
    */
   useEffect(() => {
-    if (vaultActionForm.vaultOption !== vaultOption) {
-      setVaultActionForm({
-        ...initialVaultActionForm,
-        vaultOption,
-      });
-    }
-  }, [vaultActionForm.vaultOption, setVaultActionForm, vaultOption]);
+    setVaultActionForm((prevVaultActionForm) => {
+      if (prevVaultActionForm.vaultOption !== vaultOption) {
+        return {
+          ...initialVaultActionForm,
+          vaultOption,
+        };
+      }
+
+      return prevVaultActionForm;
+    });
+  }, [setVaultActionForm, vaultOption]);
 
   const canTransfer = useMemo(() => {
     switch (vaultOption) {
@@ -147,15 +151,15 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   const handleActionTypeChange = useCallback(
     (
       actionType: ActionType,
-      vaultVersion: VaultVersion = "v1",
+      vaultVersion: VaultVersion,
       {
         withdrawOption,
       }: {
         withdrawOption?: V2WithdrawOption;
       } = {}
     ) => {
-      // Do nothing if changing to the same action type
       setVaultActionForm((actionForm) => {
+        // Do nothing if changing to the same action type
         if (
           actionType === actionForm.actionType &&
           vaultVersion === actionForm.vaultVersion &&

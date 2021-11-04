@@ -97,7 +97,7 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
    * Show migration form here
    */
   const handleMigrate = useCallback(() => {
-    handleActionTypeChange(ACTIONS.migrate);
+    handleActionTypeChange(ACTIONS.migrate, "v1");
     handleMaxClick();
     onFormSubmit();
   }, [handleActionTypeChange, handleMaxClick, onFormSubmit]);
