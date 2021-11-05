@@ -25,6 +25,10 @@ const ContractButton = styled.div<{ color: string }>`
   margin-top: 24px;
 `;
 
+const ContractButtonTitle = styled(Title)`
+  letter-spacing: 1px;
+`;
+
 interface DesktopActionFormProps {
   vault: {
     vaultOption: VaultOptions;
@@ -75,11 +79,16 @@ const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
           className="w-100"
         >
           <ContractButton color={getVaultColor(vault.vaultOption)}>
-            <Title color={getVaultColor(vault.vaultOption)} className="mr-2">
+            <ContractButtonTitle
+              fontSize={14}
+              lineHeight={20}
+              color={getVaultColor(vault.vaultOption)}
+              className="mr-2"
+            >
               {`CONTRACT: ${truncateAddress(
                 VaultAddressMap[vault.vaultOption][vault.vaultVersion]!
               )}`}
-            </Title>
+            </ContractButtonTitle>
             <ExternalIcon color={getVaultColor(vault.vaultOption)} />
           </ContractButton>
         </BaseLink>

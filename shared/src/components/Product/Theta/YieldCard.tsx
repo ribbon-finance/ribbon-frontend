@@ -247,12 +247,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
         <ProductAssetLogoContainer color={color}>
           {logo}
         </ProductAssetLogoContainer>
-        <Title
-          fontSize={28}
-          lineHeight={40}
-          color={color}
-          className="w-100 my-2"
-        >
+        <Title fontSize={28} lineHeight={40} className="w-100 my-2">
           {productCopies[vault].title}
         </Title>
         <ProductDescription>

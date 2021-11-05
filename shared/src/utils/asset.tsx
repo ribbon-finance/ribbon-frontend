@@ -113,7 +113,10 @@ export const getAssetLogo: (asset: Assets) =>
           border?: string;
         };
       }
-    > = (asset) => {
+    >
+  | React.FC<React.SVGAttributes<SVGElement> & { showBackground?: boolean }> = (
+  asset
+) => {
   switch (asset) {
     case "USDC":
       return ColoredUSDCLogo;
