@@ -183,7 +183,7 @@ const ContractButton = styled.div<{ color: string }>`
 
 const ContractButtonTitle = styled(Title)`
   letter-spacing: 1px;
-`
+`;
 
 const DepositPage = () => {
   usePullUp();
@@ -237,7 +237,7 @@ const DepositPage = () => {
   );
 
   /**
-   * Redirect to homepage if no clear vault is choosen
+   * Redirect to homepage if no clear vault is chosen
    */
   if (!vaultOption) {
     return <Redirect to="/" />;
