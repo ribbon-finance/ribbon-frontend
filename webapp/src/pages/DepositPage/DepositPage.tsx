@@ -181,6 +181,10 @@ const ContractButton = styled.div<{ color: string }>`
   }
 `;
 
+const ContractButtonTitle = styled(Title)`
+  letter-spacing: 1px;
+`;
+
 const DepositPage = () => {
   usePullUp();
   const { vaultOption, vaultVersion } = useVaultOption();
@@ -233,7 +237,7 @@ const DepositPage = () => {
   );
 
   /**
-   * Redirect to homepage if no clear vault is choosen
+   * Redirect to homepage if no clear vault is chosen
    */
   if (!vaultOption) {
     return <Redirect to="/" />;
@@ -284,11 +288,16 @@ const DepositPage = () => {
               className="w-100"
             >
               <ContractButton color={getVaultColor(vaultOption)}>
-                <Title color={getVaultColor(vaultOption)} className="mr-2">
+                <ContractButtonTitle
+                  fontSize={14}
+                  lineHeight={20}
+                  color={getVaultColor(vaultOption)}
+                  className="mr-2"
+                >
                   {`CONTRACT: ${truncateAddress(
                     VaultAddressMap[vaultOption][vaultVersion]!
                   )}`}
-                </Title>
+                </ContractButtonTitle>
                 <ExternalIcon color={getVaultColor(vaultOption)} />
               </ContractButton>
             </BaseLink>
@@ -347,6 +356,8 @@ const HeroSection: React.FC<{
             }}
           />
         );
+      case "AAVE":
+        return <Logo showBackground />;
       default:
         return <Logo />;
     }

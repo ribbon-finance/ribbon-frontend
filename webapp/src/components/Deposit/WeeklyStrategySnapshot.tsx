@@ -196,7 +196,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
     }
 
     if (!currentOption) {
-      return <Title>No strike choosen</Title>;
+      return <Title>No strike chosen</Title>;
     }
 
     return (

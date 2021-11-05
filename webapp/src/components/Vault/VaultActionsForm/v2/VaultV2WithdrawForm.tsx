@@ -254,7 +254,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
           <div className="d-flex align-items-center mt-3 mb-1">
             <SecondaryText>Instant withdraw limit</SecondaryText>
             <TooltipExplanation
-              title="INSTANT WITHDRAW Limit"
+              title="INSTANT WITHDRAW LIMIT"
               explanation="This is equal to the value of your funds that are currently not invested in the vault’s weekly strategy. These funds can withdrawn from the vault immediately."
               renderContent={({ ref, ...triggerHandler }) => (
                 <HelpInfo containerRef={ref} {...triggerHandler}>

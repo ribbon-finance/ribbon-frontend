@@ -15,6 +15,10 @@ const circleAnimation = (index: number, borderColor: string) => keyframes`
   ${index * 5 + 33}% {
     border: ${theme.border.width} ${theme.border.style} ${borderColor}00;
   }
+
+  100% {
+    border: ${theme.border.width} ${theme.border.style} ${borderColor}00;
+  }
 `;
 
 const Circle = styled.div<{

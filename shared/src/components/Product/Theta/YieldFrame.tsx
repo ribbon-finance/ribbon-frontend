@@ -144,7 +144,8 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
             markerConfig={{ height: 48, width: 48, right: "16px" }}
           />
         );
-
+      case "AAVE":
+        return <Logo height="208" width="auto" showBackground />;
       default:
         return <Logo height="208" width="auto" />;
     }

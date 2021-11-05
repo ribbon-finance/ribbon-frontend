@@ -157,7 +157,9 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
 
     return (
       <FormExtraContainer>
-        <PrimaryText color={color}>{formExtraText}</PrimaryText>
+        <PrimaryText fontSize={14} lineHeight={20} color={color}>
+          {formExtraText}
+        </PrimaryText>
       </FormExtraContainer>
     );
   }, [

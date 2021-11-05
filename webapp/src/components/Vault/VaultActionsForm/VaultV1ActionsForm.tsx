@@ -866,7 +866,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     ) {
       return (
         <FormContainerExtra variant={variant}>
-          <FormContainerExtraText color={color}>
+          <FormContainerExtraText  color={color}>
             IMPORTANT: Withdrawal fees do not apply for migrations from V1 to V2
           </FormContainerExtraText>
         </FormContainerExtra>
