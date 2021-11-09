@@ -9,6 +9,7 @@ import {
   VaultOptions,
   VaultVersion,
   VaultVersionList,
+  VaultFees,
 } from "../constants/constants";
 import {
   VaultActivityMeta,
@@ -175,10 +176,25 @@ export const useLatestAPY = (
       case "v1":
         // For V1, we need to account for only 90% of assets are utilized
         return ((1 + (premium / depositAmount) * 0.9) ** 52 - 1) * 100;
-      default:
-        return ((1 + premium / depositAmount) ** 52 - 1) * 100;
+      case "v2":
+        // Management fees are annualized, therefore we divide by 52
+        const managementFee =
+          (premium + depositAmount) *
+          (parseFloat(VaultFees[vaultOption].v2?.managementFee || "0") /
+            100 /
+            52);
+        // Performance fees are directly applied on earnings
+        const performanceFee =
+          premium *
+          (parseFloat(VaultFees[vaultOption].v2?.performanceFee || "0") / 100);
+        return (
+          ((1 + (premium - managementFee - performanceFee) / depositAmount) **
+            52 -
+            1) *
+          100
+        );
     }
-  }, [decimals, option, vaultVersion]);
+  }, [decimals, option, vaultOption, vaultVersion]);
 
   return { fetched: !loading, res: latestAPY };
 };
@@ -212,10 +228,30 @@ export const useLatestAPYs = () => {
                     vaultOption,
                     ((1 + (premium / depositAmount) * 0.9) ** 52 - 1) * 100,
                   ];
-                default:
+                case "v2":
+                  // Management fees are annualized, therefore we divide by 52
+                  const managementFee =
+                    (premium + depositAmount) *
+                    (parseFloat(
+                      VaultFees[vaultOption].v2?.managementFee || "0"
+                    ) /
+                      100 /
+                      52);
+                  // Performance fees are directly applied on earnings
+                  const performanceFee =
+                    premium *
+                    (parseFloat(
+                      VaultFees[vaultOption].v2?.performanceFee || "0"
+                    ) /
+                      100);
                   return [
                     vaultOption,
-                    ((1 + premium / depositAmount) ** 52 - 1) * 100,
+                    ((1 +
+                      (premium - managementFee - performanceFee) /
+                        depositAmount) **
+                      52 -
+                      1) *
+                      100,
                   ];
               }
             })
