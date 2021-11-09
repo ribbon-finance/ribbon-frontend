@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useCallback, useContext, useEffect, useState } from "react";
-import moment, { Moment } from "moment";
+import { Moment } from "moment";
 
 import { Assets, AssetsList } from "../store/types";
 import {
