@@ -50,29 +50,49 @@ export const useFetchAssetsPrice = (
     }
 
     const responses = await Promise.all(
-      AssetsList.map(async (asset) => {
-        const currencyName = COINGECKO_CURRENCIES[asset];
-        return {
-          asset,
-          data: currencyName ? await getAssetPricesInUSD(currencyName) : [],
-        };
-      })
+      [...AssetsList]
+        .filter((asset) => asset !== "USDC")
+        .map(async (asset) => {
+          const currencyName = COINGECKO_CURRENCIES[asset];
+          return {
+            asset,
+            data: currencyName ? await getAssetPricesInUSD(currencyName) : [],
+          };
+        })
     );
+
+    const todayTimestamp = new Date(new Date().toDateString());
+    todayTimestamp.setHours(0 - todayTimestamp.getTimezoneOffset() / 60);
 
     setData({
       responses: Object.fromEntries(
-        responses.map((response) => [
-          response.asset,
-          {
-            latestPrice:
-              response.data.length > 0
-                ? response.data[response.data.length - 1].price
-                : 0,
-            history: Object.fromEntries(
-              response.data.map((item) => [item.timestamp, item.price])
-            ),
-          },
-        ])
+        responses
+          .map((response) => [
+            response.asset,
+            {
+              latestPrice:
+                response.data.length > 0
+                  ? response.data[response.data.length - 1].price
+                  : 0,
+              history: Object.fromEntries(
+                response.data.map((item) => [item.timestamp, item.price])
+              ),
+            },
+          ])
+          .concat([
+            [
+              "USDC",
+              {
+                latestPrice: 1,
+                history: Object.fromEntries(
+                  [...new Array(365)].map((_, index) => [
+                    todayTimestamp.valueOf() - index * (1000 * 60 * 60 * 24),
+                    1,
+                  ])
+                ),
+              },
+            ],
+          ])
       ) as AssetPriceResponses,
       loading: false,
     });
