@@ -201,7 +201,18 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                     res = await vault.initiateWithdraw(shares);
                     break;
                   case "complete":
-                    res = await vault.completeWithdraw();
+                    switch (vaultActionForm.vaultOption) {
+                      case "rstETH-THETA":
+                        /**
+                         * Default slippage of 1%
+                         */
+                        res = await vault.completeWithdraw(
+                          amount.mul(99).div(100)
+                        );
+                        break;
+                      default:
+                        res = await vault.completeWithdraw();
+                    }
                     break;
                 }
                 break;
