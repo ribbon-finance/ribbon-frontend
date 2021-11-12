@@ -166,9 +166,17 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         let shares: BigNumber;
         switch (vaultActionForm.actionType) {
           case ACTIONS.deposit:
-            res = await (vaultActionForm.depositAsset === "WETH"
-              ? vault.depositETH({ value: amountStr })
-              : vault.deposit(amountStr));
+            switch (vaultOption) {
+              case "rstETH-THETA":
+                res = await (vaultActionForm.depositAsset === "WETH"
+                  ? vault.depositETH({ value: amountStr })
+                  : vault.depositYieldToken(amountStr));
+                break;
+              default:
+                res = await (vaultActionForm.depositAsset === "WETH"
+                  ? vault.depositETH({ value: amountStr })
+                  : vault.deposit(amountStr));
+            }
             break;
           case ACTIONS.withdraw:
             /** Handle different version of withdraw separately */
