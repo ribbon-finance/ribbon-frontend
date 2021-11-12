@@ -359,3 +359,7 @@ export const getERC20TokenAddress = (token: ERC20Token) =>
   isDevelopment()
     ? addresses.kovan.assets[token]
     : addresses.mainnet.assets[token];
+
+export const LidoCuvrePoolAddress = isDevelopment()
+  ? ""
+  : addresses.mainnet.lidoCurvePool;

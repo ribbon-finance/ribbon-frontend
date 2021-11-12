@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
+import { useWeb3React } from "@web3-react/core";
 
 import { ACTIONS, Steps, STEPS } from "./types";
-
 import useVault from "shared/lib/hooks/useVault";
 import PreviewStep from "./PreviewStep";
 import TransactionStep from "./TransactionStep";
@@ -12,6 +12,7 @@ import {
   VaultAddressMap,
   VaultOptions,
   VaultVersion,
+  LidoCuvrePoolAddress,
 } from "shared/lib/constants/constants";
 import { isETHVault } from "shared/lib/utils/vault";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
@@ -20,6 +21,7 @@ import { parseUnits } from "@ethersproject/units";
 import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import useV2Vault from "shared/lib/hooks/useV2Vault";
 import WarningStep from "./WarningStep";
+import { getCurvePool } from "shared/lib/hooks/useCurvePool";
 
 export interface ActionStepsProps {
   vault: {
@@ -41,6 +43,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   onChangeStep,
   skipToPreview = false,
 }) => {
+  const { library } = useWeb3React();
   const { vaultActionForm, resetActionForm, withdrawMetadata } =
     useVaultActionForm(vaultOption);
 
@@ -214,9 +217,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                         /**
                          * Default slippage of 1%
                          */
-                        res = await vault.completeWithdraw(
-                          amount.mul(99).div(100)
+                        const curvePool = getCurvePool(
+                          library,
+                          LidoCuvrePoolAddress
                         );
+                        const minOut = await curvePool.get_dy(1, 0, amount);
+                        res = await vault.completeWithdraw(minOut);
                         break;
                       default:
                         res = await vault.completeWithdraw();
