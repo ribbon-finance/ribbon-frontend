@@ -166,7 +166,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         let shares: BigNumber;
         switch (vaultActionForm.actionType) {
           case ACTIONS.deposit:
-            res = await (isETHVault(vaultOption)
+            res = await (vaultActionForm.depositAsset === "WETH"
               ? vault.depositETH({ value: amountStr })
               : vault.deposit(amountStr));
             break;

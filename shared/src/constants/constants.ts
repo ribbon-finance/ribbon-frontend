@@ -158,15 +158,19 @@ export const VaultAddressMap: {
       },
   "rstETH-THETA": isDevelopment()
     ? {
-        // TODO: Replace kovan address
+        /**
+         * We use ETH vault for Kovan preview
+         */
         v2: v2deployment.kovan.RibbonThetaVaultETHCall,
       }
     : {
-        // TODO: Add stETH vault mainnet address
+        v2: v2deployment.mainnet.RibbonThetaVaultstETHCall,
       },
   "rAAVE-THETA": isDevelopment()
     ? {
-        // TODO: Replace kovan address
+        /**
+         * We use ETH vault for Kovan preview
+         */
         v2: v2deployment.kovan.RibbonThetaVaultETHCall,
       }
     : {
@@ -261,6 +265,16 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
       return "AAVE";
   }
 };
+
+export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
+  {
+    "rAAVE-THETA": ["AAVE"],
+    "rBTC-THETA": ["WBTC"],
+    "rETH-THETA": ["WETH"],
+    "rUSDC-ETH-P-THETA": ["USDC"],
+    "rstETH-THETA": ["stETH", "WETH"],
+    "ryvUSDC-ETH-P-THETA": ["USDC"],
+  };
 
 export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "rUSDC-ETH-P-THETA": BigNumber.from(100000000).mul(
