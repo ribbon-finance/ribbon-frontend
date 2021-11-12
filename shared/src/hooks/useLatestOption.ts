@@ -229,6 +229,7 @@ export const useLatestAPYs = () => {
                     ((1 + (premium / depositAmount) * 0.9) ** 52 - 1) * 100,
                   ];
                 case "v2":
+                default:
                   // Management fees are annualized, therefore we divide by 52
                   const managementFee =
                     (premium + depositAmount) *
