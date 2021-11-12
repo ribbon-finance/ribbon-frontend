@@ -40,7 +40,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
 }) => {
   const { vaultAccounts: v1VaultAccounts } = useVaultAccounts("v1");
   const {
-    data: { asset, decimals, depositBalanceInAsset },
+    data: { asset, decimals, depositBalanceInAsset, lockedBalanceInAsset },
   } = useV2VaultData(vaultOption);
   const [hideMigrationForm, setHideMigrationForm] = useState(false);
 
@@ -122,10 +122,9 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
             formExtraText =
               vaultActionForm.withdrawOption === "instant" ? (
                 <>
-                  You can withdraw your{" "}
-                  {formatBigNumber(depositBalanceInAsset, decimals)}{" "}
-                  {getAssetDisplay(asset)} instantly because these funds have
-                  not yet been deployed in the vault’s strategy
+                  IMPORTANT: instant withdrawals are only available before 11am
+                  UTC on Friday for funds that have not been deployed in the
+                  vault's weekly strategy
                 </>
               ) : (
                 <>
@@ -136,7 +135,23 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
                   strategy
                 </>
               );
+            break;
           }
+
+          if (!isPracticallyZero(lockedBalanceInAsset, decimals)) {
+            if (vaultActionForm.withdrawOption === "instant") {
+              formExtraText = (
+                <>
+                  Instant withdrawals are unavailable because your funds have
+                  been deployed in this week’s vault strategy. To withdraw your
+                  funds you need to initiate a withdrawal using standard
+                  withdrawals.
+                </>
+              );
+            }
+            break;
+          }
+
           break;
         case ACTIONS.transfer:
           formExtraText = (
@@ -164,11 +179,12 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
     );
   }, [
     asset,
+    canMigrate,
     color,
     decimals,
     depositBalanceInAsset,
-    canMigrate,
     hideMigrationForm,
+    lockedBalanceInAsset,
     vaultActionForm.actionType,
     vaultActionForm.receiveVault,
     vaultActionForm.vaultOption,
