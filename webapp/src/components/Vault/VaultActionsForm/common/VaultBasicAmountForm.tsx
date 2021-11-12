@@ -161,7 +161,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
   const isInputNonZero = parseFloat(vaultActionForm.inputAmount) > 0;
 
   const renderDepositAssetButton = useMemo(() => {
-    if (showSwapDepositAsset && vaultActionForm.depositAsset) {
+    if (active && showSwapDepositAsset && vaultActionForm.depositAsset) {
       const Logo = getAssetLogo(vaultActionForm.depositAsset);
 
       return (
@@ -253,6 +253,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
 
     return <></>;
   }, [
+    active,
     handleDepositAssetChange,
     showDepositAssetMenu,
     showSwapDepositAsset,
