@@ -132,7 +132,7 @@ interface VaultBasicAmountFormProps {
     unitDisplay?: string;
     error: boolean;
   };
-  showSwapDepositAsset: boolean;
+  showSwapDepositAsset?: boolean;
   onFormSubmit: () => void;
   actionButtonText: string;
 }
