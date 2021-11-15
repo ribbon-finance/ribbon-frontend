@@ -415,7 +415,10 @@ const PortfolioPerformance = () => {
   ]);
 
   const calculatedKPI = useMemo(() => {
-    if (hoveredBalanceUpdateIndex === undefined || balances.length <= 0) {
+    if (
+      hoveredBalanceUpdateIndex === undefined ||
+      subgraphBalanceUpdates.length <= 0
+    ) {
       return {
         yield: vaultTotalYieldEarned,
         roi:
@@ -449,6 +452,7 @@ const PortfolioPerformance = () => {
   }, [
     balances,
     hoveredBalanceUpdateIndex,
+    subgraphBalanceUpdates,
     vaultBalanceInAsset,
     vaultStartingBalance,
     vaultTotalDeposit,
