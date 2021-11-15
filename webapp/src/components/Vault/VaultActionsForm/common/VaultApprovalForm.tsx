@@ -90,12 +90,12 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
   const Logo = getAssetLogo(depositAsset);
 
   const tokenContract = useMemo(() => {
-    if (isETHVault(vaultOption)) {
+    if (depositAsset === "WETH") {
       return;
     }
 
     return getERC20Token(library, depositAsset.toLowerCase() as ERC20Token);
-  }, [depositAsset, library, vaultOption]);
+  }, [depositAsset, library]);
 
   const [waitingApproval, setWaitingApproval] = useState(false);
   const loadingText = useTextAnimation(waitingApproval, {
