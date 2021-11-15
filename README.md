@@ -4,8 +4,12 @@ This repo hosts the source code that runs 3 of Ribbon Finance's webapps, the lan
 
 ## Getting Started
 
-To begin, install the node dependencies:
+To begin, check your node version. Use node v14.18.1.
+```
+node -v
+```
 
+Install the node dependencies:
 ```
 yarn install
 ```
@@ -83,6 +87,11 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### Local development network
+Make sure you select Kovan testnet in Metamask for localhost development.
+You can get Kovan testnet Eth from: https://faucet.paradigm.xyz
+Kovan testnet was selected because Opyn had their contracts deployed there.
 
 ## Contributing
 
