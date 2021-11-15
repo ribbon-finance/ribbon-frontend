@@ -1,6 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
-import { RibbonV2ThetaVault } from "../codegen";
+import { RibbonV2stETHThetaVault, RibbonV2ThetaVault } from "../codegen";
 import { RibbonV2ThetaVaultFactory } from "../codegen/RibbonV2ThetaVaultFactory";
 import { RibbonV2stETHThetaVaultFactory } from "../codegen/RibbonV2stETHThetaVaultFactory";
 import { VaultAddressMap, VaultOptions } from "../constants/constants";
@@ -34,7 +34,9 @@ export const getV2Vault = (
 const useV2Vault = (vaultOption: VaultOptions) => {
   const { active, library } = useWeb3React();
   const { provider } = useWeb3Context();
-  const [vault, setVault] = useState<RibbonV2ThetaVault | null>(null);
+  const [vault, setVault] = useState<
+    RibbonV2ThetaVault | RibbonV2stETHThetaVault | null
+  >(null);
 
   useEffect(() => {
     const vault = getV2Vault(library || provider, vaultOption, active);
