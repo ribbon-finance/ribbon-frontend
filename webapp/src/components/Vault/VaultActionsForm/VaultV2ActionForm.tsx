@@ -1,20 +1,22 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
+import { useHistory } from "react-router";
 
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
-
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import VaultV2MigrationForm from "./v2/VaultV2MigrationForm";
 import { FormStepProps } from "./types";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
-import { PrimaryText } from "shared/lib/designSystem";
+import { Title, PrimaryText, SecondaryText } from "shared/lib/designSystem";
 import { getVaultColor } from "shared/lib/utils/vault";
 import VaultV2DepositWithdrawForm from "./v2/VaultV2DepositWithdrawForm";
 import useVaultActionForm from "../../../hooks/useVaultActionForm";
 import { ACTIONS } from "./Modal/types";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import { ActionButton } from "shared/lib/components/Common/buttons";
+import { getVaultURI } from "../../../constants/constants";
 
 const FormContainer = styled.div`
   display: flex;
@@ -34,15 +36,39 @@ const FormExtraContainer = styled.div`
   z-index: 0;
 `;
 
+const CompleteWithdrawLogo = styled.div<{ color: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 100px;
+  background: ${(props) => props.color}14;
+`;
+
+const CompleteWithdrawTitle = styled(Title)`
+  letter-spacing: 1px;
+`;
+
 const VaultV2ActionsForm: React.FC<FormStepProps> = ({
   vaultOption,
   onFormSubmit,
 }) => {
+  const history = useHistory();
   const { vaultAccounts: v1VaultAccounts } = useVaultAccounts("v1");
   const {
-    data: { asset, decimals, depositBalanceInAsset, lockedBalanceInAsset },
+    data: {
+      asset,
+      decimals,
+      depositBalanceInAsset,
+      lockedBalanceInAsset,
+      round,
+      withdrawals,
+    },
   } = useV2VaultData(vaultOption);
   const [hideMigrationForm, setHideMigrationForm] = useState(false);
+  const [hideCompleteWithdrawReminder, setHideCompleteWithdrawReminder] =
+    useState(false);
 
   const color = getVaultColor(vaultOption);
   const { vaultActionForm, handleActionTypeChange } =
@@ -59,6 +85,13 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
       ),
     [decimals, v1VaultAccounts, vaultOption]
   );
+  const canCompleteWithdraw = useMemo(() => {
+    return (
+      vaultActionForm.withdrawOption !== "instant" &&
+      !withdrawals.amount.isZero() &&
+      withdrawals.round !== round
+    );
+  }, [round, vaultActionForm.withdrawOption, withdrawals]);
 
   /**
    * Make sure action type cannot be migrate when user cannot migrate
@@ -84,6 +117,67 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
       );
     }
 
+    /**
+     * Show withdrawal reminder
+     */
+    if (canCompleteWithdraw && !hideCompleteWithdrawReminder) {
+      return (
+        <div className="d-flex flex-column align-items-center p-4">
+          <CompleteWithdrawLogo color={color} className="mt-3">
+            <PrimaryText fontSize={32} color={color}>
+              ↑
+            </PrimaryText>
+          </CompleteWithdrawLogo>
+
+          <CompleteWithdrawTitle
+            fontSize={22}
+            lineHeight={28}
+            className="mt-3 text-center"
+          >
+            Complete your initiated withdrawal
+          </CompleteWithdrawTitle>
+
+          <PrimaryText
+            fontSize={14}
+            lineHeight={20}
+            className="mt-3 text-center"
+            color={colors.text}
+          >
+            You can now complete your withdrawal of{" "}
+            {formatBigNumber(withdrawals.amount, decimals)}{" "}
+            {getAssetDisplay(asset)} from the vault.
+          </PrimaryText>
+
+          {/* Migrate button */}
+          <ActionButton
+            color={color}
+            className="py-3 mt-4"
+            onClick={() => {
+              setHideCompleteWithdrawReminder(true);
+              /**
+               * Push complete withdraw history
+               */
+              history.push(
+                getVaultURI(vaultOption, "v2") +
+                  "?initialAction=completeWithdraw"
+              );
+            }}
+          >
+            Complete Withdrawal
+          </ActionButton>
+
+          <SecondaryText
+            className="mt-4 "
+            color={colors.primaryText}
+            role="button"
+            onClick={() => setHideCompleteWithdrawReminder(true)}
+          >
+            <u>Skip</u>
+          </SecondaryText>
+        </div>
+      );
+    }
+
     return (
       <VaultV2DepositWithdrawForm
         vaultOption={vaultOption}
@@ -91,11 +185,18 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
       />
     );
   }, [
-    onFormSubmit,
+    asset,
+    canCompleteWithdraw,
     canMigrate,
+    color,
+    decimals,
+    hideCompleteWithdrawReminder,
     hideMigrationForm,
+    history,
+    onFormSubmit,
     v1VaultAccounts,
     vaultOption,
+    withdrawals.amount,
   ]);
 
   const formExtra = useMemo(() => {
@@ -107,7 +208,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
           IMPORTANT: Withdrawal fees do not apply for migrations from V1 to V2
         </>
       );
-    } else {
+    } else if (!canCompleteWithdraw || hideCompleteWithdrawReminder) {
       switch (vaultActionForm.actionType) {
         case ACTIONS.deposit:
           formExtraText = (
@@ -179,10 +280,12 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
     );
   }, [
     asset,
+    canCompleteWithdraw,
     canMigrate,
     color,
     decimals,
     depositBalanceInAsset,
+    hideCompleteWithdrawReminder,
     hideMigrationForm,
     lockedBalanceInAsset,
     vaultActionForm.actionType,
