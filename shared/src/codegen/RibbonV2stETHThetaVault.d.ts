@@ -26,9 +26,11 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     "DELAY()": FunctionFragment;
     "GAMMA_CONTROLLER()": FunctionFragment;
     "GNOSIS_EASY_AUCTION()": FunctionFragment;
+    "LDO()": FunctionFragment;
     "MARGIN_POOL()": FunctionFragment;
     "OTOKEN_FACTORY()": FunctionFragment;
     "PERIOD()": FunctionFragment;
+    "STETH_ETH_CRV_POOL()": FunctionFragment;
     "USDC()": FunctionFragment;
     "WETH()": FunctionFragment;
     "accountVaultBalance(address)": FunctionFragment;
@@ -38,22 +40,24 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     "balanceOf(address)": FunctionFragment;
     "burnRemainingOTokens()": FunctionFragment;
     "cap()": FunctionFragment;
+    "collateralToken()": FunctionFragment;
     "commitAndClose()": FunctionFragment;
-    "completeWithdraw()": FunctionFragment;
+    "completeWithdraw(uint256)": FunctionFragment;
     "currentOption()": FunctionFragment;
     "currentOtokenPremium()": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
-    "deposit(uint256)": FunctionFragment;
     "depositETH()": FunctionFragment;
-    "depositFor(uint256,address)": FunctionFragment;
+    "depositFor(address)": FunctionFragment;
     "depositReceipts(address)": FunctionFragment;
+    "depositYieldToken(uint256)": FunctionFragment;
     "feeRecipient()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "initRounds(uint256)": FunctionFragment;
     "initialize(address,address,address,uint256,uint256,string,string,address,address,uint32,uint256,tuple)": FunctionFragment;
     "initiateWithdraw(uint256)": FunctionFragment;
     "keeper()": FunctionFragment;
+    "lastQueuedWithdrawAmount()": FunctionFragment;
     "lastStrikeOverrideRound()": FunctionFragment;
     "managementFee()": FunctionFragment;
     "maxRedeem()": FunctionFragment;
@@ -72,16 +76,16 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     "renounceOwnership()": FunctionFragment;
     "rollToNextOption()": FunctionFragment;
     "roundPricePerShare(uint256)": FunctionFragment;
+    "sendLDORewards()": FunctionFragment;
     "setAuctionDuration(uint256)": FunctionFragment;
     "setCap(uint256)": FunctionFragment;
     "setFeeRecipient(address)": FunctionFragment;
     "setManagementFee(uint256)": FunctionFragment;
     "setNewKeeper(address)": FunctionFragment;
-    "setOptionsPremiumPricer(address)": FunctionFragment;
     "setPerformanceFee(uint256)": FunctionFragment;
     "setPremiumDiscount(uint256)": FunctionFragment;
     "setStrikePrice(uint128)": FunctionFragment;
-    "setStrikeSelection(address)": FunctionFragment;
+    "setStrikeSelectionOrPricer(address,bool)": FunctionFragment;
     "shareBalances(address)": FunctionFragment;
     "shares(address)": FunctionFragment;
     "startAuction()": FunctionFragment;
@@ -95,7 +99,7 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     "transferOwnership(address)": FunctionFragment;
     "vaultParams()": FunctionFragment;
     "vaultState()": FunctionFragment;
-    "withdrawInstantly(uint256)": FunctionFragment;
+    "withdrawInstantly(uint256,uint256)": FunctionFragment;
     "withdrawals(address)": FunctionFragment;
   };
 
@@ -108,6 +112,7 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     functionFragment: "GNOSIS_EASY_AUCTION",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "LDO", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "MARGIN_POOL",
     values?: undefined
@@ -117,6 +122,10 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "PERIOD", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "STETH_ETH_CRV_POOL",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "USDC", values?: undefined): string;
   encodeFunctionData(functionFragment: "WETH", values?: undefined): string;
   encodeFunctionData(
@@ -142,12 +151,16 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "cap", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "collateralToken",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "commitAndClose",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "completeWithdraw",
-    values?: undefined
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "currentOption",
@@ -163,20 +176,17 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "deposit",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "depositETH",
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: "depositFor",
-    values: [BigNumberish, string]
-  ): string;
+  encodeFunctionData(functionFragment: "depositFor", values: [string]): string;
   encodeFunctionData(
     functionFragment: "depositReceipts",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "depositYieldToken",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "feeRecipient",
@@ -219,6 +229,10 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "keeper", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "lastQueuedWithdrawAmount",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "lastStrikeOverrideRound",
     values?: undefined
@@ -283,6 +297,10 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "sendLDORewards",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "setAuctionDuration",
     values: [BigNumberish]
   ): string;
@@ -303,10 +321,6 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "setOptionsPremiumPricer",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "setPerformanceFee",
     values: [BigNumberish]
   ): string;
@@ -319,8 +333,8 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "setStrikeSelection",
-    values: [string]
+    functionFragment: "setStrikeSelectionOrPricer",
+    values: [string, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "shareBalances",
@@ -370,7 +384,7 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawInstantly",
-    values: [BigNumberish]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "withdrawals", values: [string]): string;
 
@@ -383,6 +397,7 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     functionFragment: "GNOSIS_EASY_AUCTION",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "LDO", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "MARGIN_POOL",
     data: BytesLike
@@ -392,6 +407,10 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "PERIOD", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "STETH_ETH_CRV_POOL",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "USDC", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "WETH", data: BytesLike): Result;
   decodeFunctionResult(
@@ -410,6 +429,10 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "cap", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "collateralToken",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "commitAndClose",
     data: BytesLike
@@ -431,11 +454,14 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     functionFragment: "decreaseAllowance",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "depositETH", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "depositFor", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "depositReceipts",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "depositYieldToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -453,6 +479,10 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "keeper", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "lastQueuedWithdrawAmount",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "lastStrikeOverrideRound",
     data: BytesLike
@@ -511,6 +541,10 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "sendLDORewards",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setAuctionDuration",
     data: BytesLike
   ): Result;
@@ -528,10 +562,6 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setOptionsPremiumPricer",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "setPerformanceFee",
     data: BytesLike
   ): Result;
@@ -544,7 +574,7 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setStrikeSelection",
+    functionFragment: "setStrikeSelectionOrPricer",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -599,7 +629,7 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "AuctionDurationSet(uint256,uint256)": EventFragment;
-    "CapSet(uint256,uint256,address)": EventFragment;
+    "CapSet(uint256,uint256)": EventFragment;
     "CloseShort(address,uint256,address)": EventFragment;
     "CollectVaultFees(uint256,uint256,uint256,address)": EventFragment;
     "Deposit(address,uint256,uint256)": EventFragment;
@@ -675,6 +705,14 @@ export class RibbonV2stETHThetaVault extends Contract {
       0: string;
     }>;
 
+    LDO(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "LDO()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
     MARGIN_POOL(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
@@ -697,6 +735,14 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     "PERIOD()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
+    }>;
+
+    STETH_ETH_CRV_POOL(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "STETH_ETH_CRV_POOL()"(overrides?: CallOverrides): Promise<{
+      0: string;
     }>;
 
     USDC(overrides?: CallOverrides): Promise<{
@@ -793,13 +839,27 @@ export class RibbonV2stETHThetaVault extends Contract {
       0: BigNumber;
     }>;
 
+    collateralToken(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "collateralToken()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
     commitAndClose(overrides?: Overrides): Promise<ContractTransaction>;
 
     "commitAndClose()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-    completeWithdraw(overrides?: Overrides): Promise<ContractTransaction>;
+    completeWithdraw(
+      minETHOut: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    "completeWithdraw()"(overrides?: Overrides): Promise<ContractTransaction>;
+    "completeWithdraw(uint256)"(
+      minETHOut: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     currentOption(overrides?: CallOverrides): Promise<{
       0: string;
@@ -837,30 +897,18 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    deposit(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "deposit(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     depositETH(overrides?: PayableOverrides): Promise<ContractTransaction>;
 
     "depositETH()"(overrides?: PayableOverrides): Promise<ContractTransaction>;
 
     depositFor(
-      amount: BigNumberish,
       creditor: string,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
-    "depositFor(uint256,address)"(
-      amount: BigNumberish,
+    "depositFor(address)"(
       creditor: string,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     depositReceipts(
@@ -886,6 +934,16 @@ export class RibbonV2stETHThetaVault extends Contract {
       1: BigNumber;
       2: BigNumber;
     }>;
+
+    depositYieldToken(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "depositYieldToken(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     feeRecipient(overrides?: CallOverrides): Promise<{
       0: string;
@@ -979,6 +1037,14 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     "keeper()"(overrides?: CallOverrides): Promise<{
       0: string;
+    }>;
+
+    lastQueuedWithdrawAmount(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "lastQueuedWithdrawAmount()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
     }>;
 
     lastStrikeOverrideRound(overrides?: CallOverrides): Promise<{
@@ -1131,6 +1197,10 @@ export class RibbonV2stETHThetaVault extends Contract {
       0: BigNumber;
     }>;
 
+    sendLDORewards(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "sendLDORewards()"(overrides?: Overrides): Promise<ContractTransaction>;
+
     setAuctionDuration(
       newAuctionDuration: BigNumberish,
       overrides?: Overrides
@@ -1181,16 +1251,6 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    setOptionsPremiumPricer(
-      newOptionsPremiumPricer: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setOptionsPremiumPricer(address)"(
-      newOptionsPremiumPricer: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     setPerformanceFee(
       newPerformanceFee: BigNumberish,
       overrides?: Overrides
@@ -1221,13 +1281,15 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    setStrikeSelection(
-      newStrikeSelection: string,
+    setStrikeSelectionOrPricer(
+      newContract: string,
+      isStrikeSelection: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "setStrikeSelection(address)"(
-      newStrikeSelection: string,
+    "setStrikeSelectionOrPricer(address,bool)"(
+      newContract: string,
+      isStrikeSelection: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1403,11 +1465,13 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     withdrawInstantly(
       amount: BigNumberish,
+      minETHOut: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "withdrawInstantly(uint256)"(
+    "withdrawInstantly(uint256,uint256)"(
       amount: BigNumberish,
+      minETHOut: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1444,6 +1508,10 @@ export class RibbonV2stETHThetaVault extends Contract {
 
   "GNOSIS_EASY_AUCTION()"(overrides?: CallOverrides): Promise<string>;
 
+  LDO(overrides?: CallOverrides): Promise<string>;
+
+  "LDO()"(overrides?: CallOverrides): Promise<string>;
+
   MARGIN_POOL(overrides?: CallOverrides): Promise<string>;
 
   "MARGIN_POOL()"(overrides?: CallOverrides): Promise<string>;
@@ -1455,6 +1523,10 @@ export class RibbonV2stETHThetaVault extends Contract {
   PERIOD(overrides?: CallOverrides): Promise<BigNumber>;
 
   "PERIOD()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  STETH_ETH_CRV_POOL(overrides?: CallOverrides): Promise<string>;
+
+  "STETH_ETH_CRV_POOL()"(overrides?: CallOverrides): Promise<string>;
 
   USDC(overrides?: CallOverrides): Promise<string>;
 
@@ -1517,13 +1589,23 @@ export class RibbonV2stETHThetaVault extends Contract {
 
   "cap()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+  collateralToken(overrides?: CallOverrides): Promise<string>;
+
+  "collateralToken()"(overrides?: CallOverrides): Promise<string>;
+
   commitAndClose(overrides?: Overrides): Promise<ContractTransaction>;
 
   "commitAndClose()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-  completeWithdraw(overrides?: Overrides): Promise<ContractTransaction>;
+  completeWithdraw(
+    minETHOut: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  "completeWithdraw()"(overrides?: Overrides): Promise<ContractTransaction>;
+  "completeWithdraw(uint256)"(
+    minETHOut: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   currentOption(overrides?: CallOverrides): Promise<string>;
 
@@ -1549,30 +1631,18 @@ export class RibbonV2stETHThetaVault extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  deposit(
-    amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "deposit(uint256)"(
-    amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   depositETH(overrides?: PayableOverrides): Promise<ContractTransaction>;
 
   "depositETH()"(overrides?: PayableOverrides): Promise<ContractTransaction>;
 
   depositFor(
-    amount: BigNumberish,
     creditor: string,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
-  "depositFor(uint256,address)"(
-    amount: BigNumberish,
+  "depositFor(address)"(
     creditor: string,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   depositReceipts(
@@ -1598,6 +1668,16 @@ export class RibbonV2stETHThetaVault extends Contract {
     1: BigNumber;
     2: BigNumber;
   }>;
+
+  depositYieldToken(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "depositYieldToken(uint256)"(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   feeRecipient(overrides?: CallOverrides): Promise<string>;
 
@@ -1684,6 +1764,10 @@ export class RibbonV2stETHThetaVault extends Contract {
   keeper(overrides?: CallOverrides): Promise<string>;
 
   "keeper()"(overrides?: CallOverrides): Promise<string>;
+
+  lastQueuedWithdrawAmount(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "lastQueuedWithdrawAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   lastStrikeOverrideRound(overrides?: CallOverrides): Promise<number>;
 
@@ -1783,6 +1867,10 @@ export class RibbonV2stETHThetaVault extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  sendLDORewards(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "sendLDORewards()"(overrides?: Overrides): Promise<ContractTransaction>;
+
   setAuctionDuration(
     newAuctionDuration: BigNumberish,
     overrides?: Overrides
@@ -1833,16 +1921,6 @@ export class RibbonV2stETHThetaVault extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  setOptionsPremiumPricer(
-    newOptionsPremiumPricer: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setOptionsPremiumPricer(address)"(
-    newOptionsPremiumPricer: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   setPerformanceFee(
     newPerformanceFee: BigNumberish,
     overrides?: Overrides
@@ -1873,13 +1951,15 @@ export class RibbonV2stETHThetaVault extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  setStrikeSelection(
-    newStrikeSelection: string,
+  setStrikeSelectionOrPricer(
+    newContract: string,
+    isStrikeSelection: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "setStrikeSelection(address)"(
-    newStrikeSelection: string,
+  "setStrikeSelectionOrPricer(address,bool)"(
+    newContract: string,
+    isStrikeSelection: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2028,11 +2108,13 @@ export class RibbonV2stETHThetaVault extends Contract {
 
   withdrawInstantly(
     amount: BigNumberish,
+    minETHOut: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "withdrawInstantly(uint256)"(
+  "withdrawInstantly(uint256,uint256)"(
     amount: BigNumberish,
+    minETHOut: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2069,6 +2151,10 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     "GNOSIS_EASY_AUCTION()"(overrides?: CallOverrides): Promise<string>;
 
+    LDO(overrides?: CallOverrides): Promise<string>;
+
+    "LDO()"(overrides?: CallOverrides): Promise<string>;
+
     MARGIN_POOL(overrides?: CallOverrides): Promise<string>;
 
     "MARGIN_POOL()"(overrides?: CallOverrides): Promise<string>;
@@ -2080,6 +2166,10 @@ export class RibbonV2stETHThetaVault extends Contract {
     PERIOD(overrides?: CallOverrides): Promise<BigNumber>;
 
     "PERIOD()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    STETH_ETH_CRV_POOL(overrides?: CallOverrides): Promise<string>;
+
+    "STETH_ETH_CRV_POOL()"(overrides?: CallOverrides): Promise<string>;
 
     USDC(overrides?: CallOverrides): Promise<string>;
 
@@ -2142,13 +2232,23 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     "cap()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    collateralToken(overrides?: CallOverrides): Promise<string>;
+
+    "collateralToken()"(overrides?: CallOverrides): Promise<string>;
+
     commitAndClose(overrides?: CallOverrides): Promise<void>;
 
     "commitAndClose()"(overrides?: CallOverrides): Promise<void>;
 
-    completeWithdraw(overrides?: CallOverrides): Promise<void>;
+    completeWithdraw(
+      minETHOut: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    "completeWithdraw()"(overrides?: CallOverrides): Promise<void>;
+    "completeWithdraw(uint256)"(
+      minETHOut: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     currentOption(overrides?: CallOverrides): Promise<string>;
 
@@ -2174,25 +2274,13 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    deposit(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    "deposit(uint256)"(
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     depositETH(overrides?: CallOverrides): Promise<void>;
 
     "depositETH()"(overrides?: CallOverrides): Promise<void>;
 
-    depositFor(
-      amount: BigNumberish,
-      creditor: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    depositFor(creditor: string, overrides?: CallOverrides): Promise<void>;
 
-    "depositFor(uint256,address)"(
-      amount: BigNumberish,
+    "depositFor(address)"(
       creditor: string,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -2220,6 +2308,16 @@ export class RibbonV2stETHThetaVault extends Contract {
       1: BigNumber;
       2: BigNumber;
     }>;
+
+    depositYieldToken(
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "depositYieldToken(uint256)"(
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     feeRecipient(overrides?: CallOverrides): Promise<string>;
 
@@ -2306,6 +2404,10 @@ export class RibbonV2stETHThetaVault extends Contract {
     keeper(overrides?: CallOverrides): Promise<string>;
 
     "keeper()"(overrides?: CallOverrides): Promise<string>;
+
+    lastQueuedWithdrawAmount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "lastQueuedWithdrawAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     lastStrikeOverrideRound(overrides?: CallOverrides): Promise<number>;
 
@@ -2402,6 +2504,10 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    sendLDORewards(overrides?: CallOverrides): Promise<void>;
+
+    "sendLDORewards()"(overrides?: CallOverrides): Promise<void>;
+
     setAuctionDuration(
       newAuctionDuration: BigNumberish,
       overrides?: CallOverrides
@@ -2446,16 +2552,6 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setOptionsPremiumPricer(
-      newOptionsPremiumPricer: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setOptionsPremiumPricer(address)"(
-      newOptionsPremiumPricer: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     setPerformanceFee(
       newPerformanceFee: BigNumberish,
       overrides?: CallOverrides
@@ -2486,13 +2582,15 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setStrikeSelection(
-      newStrikeSelection: string,
+    setStrikeSelectionOrPricer(
+      newContract: string,
+      isStrikeSelection: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "setStrikeSelection(address)"(
-      newStrikeSelection: string,
+    "setStrikeSelectionOrPricer(address,bool)"(
+      newContract: string,
+      isStrikeSelection: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2641,11 +2739,13 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     withdrawInstantly(
       amount: BigNumberish,
+      minETHOut: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "withdrawInstantly(uint256)"(
+    "withdrawInstantly(uint256,uint256)"(
       amount: BigNumberish,
+      minETHOut: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2682,7 +2782,7 @@ export class RibbonV2stETHThetaVault extends Contract {
       newAuctionDuration: null
     ): EventFilter;
 
-    CapSet(oldCap: null, newCap: null, manager: null): EventFilter;
+    CapSet(oldCap: null, newCap: null): EventFilter;
 
     CloseShort(
       options: string | null,
@@ -2763,6 +2863,10 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     "GNOSIS_EASY_AUCTION()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    LDO(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "LDO()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     MARGIN_POOL(overrides?: CallOverrides): Promise<BigNumber>;
 
     "MARGIN_POOL()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2774,6 +2878,10 @@ export class RibbonV2stETHThetaVault extends Contract {
     PERIOD(overrides?: CallOverrides): Promise<BigNumber>;
 
     "PERIOD()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    STETH_ETH_CRV_POOL(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "STETH_ETH_CRV_POOL()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     USDC(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2836,13 +2944,23 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     "cap()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    collateralToken(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "collateralToken()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     commitAndClose(overrides?: Overrides): Promise<BigNumber>;
 
     "commitAndClose()"(overrides?: Overrides): Promise<BigNumber>;
 
-    completeWithdraw(overrides?: Overrides): Promise<BigNumber>;
+    completeWithdraw(
+      minETHOut: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    "completeWithdraw()"(overrides?: Overrides): Promise<BigNumber>;
+    "completeWithdraw(uint256)"(
+      minETHOut: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     currentOption(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2868,27 +2986,18 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    deposit(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
-
-    "deposit(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     depositETH(overrides?: PayableOverrides): Promise<BigNumber>;
 
     "depositETH()"(overrides?: PayableOverrides): Promise<BigNumber>;
 
     depositFor(
-      amount: BigNumberish,
       creditor: string,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
-    "depositFor(uint256,address)"(
-      amount: BigNumberish,
+    "depositFor(address)"(
       creditor: string,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     depositReceipts(
@@ -2899,6 +3008,16 @@ export class RibbonV2stETHThetaVault extends Contract {
     "depositReceipts(address)"(
       arg0: string,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    depositYieldToken(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "depositYieldToken(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     feeRecipient(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2987,6 +3106,10 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     "keeper()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    lastQueuedWithdrawAmount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "lastQueuedWithdrawAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     lastStrikeOverrideRound(overrides?: CallOverrides): Promise<BigNumber>;
 
     "lastStrikeOverrideRound()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -3068,6 +3191,10 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    sendLDORewards(overrides?: Overrides): Promise<BigNumber>;
+
+    "sendLDORewards()"(overrides?: Overrides): Promise<BigNumber>;
+
     setAuctionDuration(
       newAuctionDuration: BigNumberish,
       overrides?: Overrides
@@ -3112,16 +3239,6 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    setOptionsPremiumPricer(
-      newOptionsPremiumPricer: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setOptionsPremiumPricer(address)"(
-      newOptionsPremiumPricer: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     setPerformanceFee(
       newPerformanceFee: BigNumberish,
       overrides?: Overrides
@@ -3152,13 +3269,15 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    setStrikeSelection(
-      newStrikeSelection: string,
+    setStrikeSelectionOrPricer(
+      newContract: string,
+      isStrikeSelection: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "setStrikeSelection(address)"(
-      newStrikeSelection: string,
+    "setStrikeSelectionOrPricer(address,bool)"(
+      newContract: string,
+      isStrikeSelection: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3249,11 +3368,13 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     withdrawInstantly(
       amount: BigNumberish,
+      minETHOut: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "withdrawInstantly(uint256)"(
+    "withdrawInstantly(uint256,uint256)"(
       amount: BigNumberish,
+      minETHOut: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3284,6 +3405,10 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    LDO(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "LDO()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     MARGIN_POOL(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "MARGIN_POOL()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -3297,6 +3422,14 @@ export class RibbonV2stETHThetaVault extends Contract {
     PERIOD(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "PERIOD()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    STETH_ETH_CRV_POOL(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "STETH_ETH_CRV_POOL()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     USDC(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -3366,13 +3499,25 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     "cap()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    collateralToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "collateralToken()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     commitAndClose(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "commitAndClose()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
-    completeWithdraw(overrides?: Overrides): Promise<PopulatedTransaction>;
+    completeWithdraw(
+      minETHOut: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
-    "completeWithdraw()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+    "completeWithdraw(uint256)"(
+      minETHOut: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
     currentOption(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -3402,30 +3547,18 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    deposit(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "deposit(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
     depositETH(overrides?: PayableOverrides): Promise<PopulatedTransaction>;
 
     "depositETH()"(overrides?: PayableOverrides): Promise<PopulatedTransaction>;
 
     depositFor(
-      amount: BigNumberish,
       creditor: string,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
-    "depositFor(uint256,address)"(
-      amount: BigNumberish,
+    "depositFor(address)"(
       creditor: string,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     depositReceipts(
@@ -3436,6 +3569,16 @@ export class RibbonV2stETHThetaVault extends Contract {
     "depositReceipts(address)"(
       arg0: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    depositYieldToken(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "depositYieldToken(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     feeRecipient(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -3523,6 +3666,14 @@ export class RibbonV2stETHThetaVault extends Contract {
     keeper(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "keeper()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    lastQueuedWithdrawAmount(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "lastQueuedWithdrawAmount()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     lastStrikeOverrideRound(
       overrides?: CallOverrides
@@ -3628,6 +3779,10 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    sendLDORewards(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "sendLDORewards()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+
     setAuctionDuration(
       newAuctionDuration: BigNumberish,
       overrides?: Overrides
@@ -3678,16 +3833,6 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    setOptionsPremiumPricer(
-      newOptionsPremiumPricer: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setOptionsPremiumPricer(address)"(
-      newOptionsPremiumPricer: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
     setPerformanceFee(
       newPerformanceFee: BigNumberish,
       overrides?: Overrides
@@ -3718,13 +3863,15 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    setStrikeSelection(
-      newStrikeSelection: string,
+    setStrikeSelectionOrPricer(
+      newContract: string,
+      isStrikeSelection: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "setStrikeSelection(address)"(
-      newStrikeSelection: string,
+    "setStrikeSelectionOrPricer(address,bool)"(
+      newContract: string,
+      isStrikeSelection: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -3820,11 +3967,13 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     withdrawInstantly(
       amount: BigNumberish,
+      minETHOut: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "withdrawInstantly(uint256)"(
+    "withdrawInstantly(uint256,uint256)"(
       amount: BigNumberish,
+      minETHOut: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

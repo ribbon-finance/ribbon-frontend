@@ -35,6 +35,16 @@ const _abi = [
       },
       {
         internalType: "address",
+        name: "_wsteth",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_ldo",
+        type: "address",
+      },
+      {
+        internalType: "address",
         name: "_oTokenFactory",
         type: "address",
       },
@@ -51,6 +61,11 @@ const _abi = [
       {
         internalType: "address",
         name: "_gnosisEasyAuction",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_crvPool",
         type: "address",
       },
     ],
@@ -115,12 +130,6 @@ const _abi = [
         internalType: "uint256",
         name: "newCap",
         type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "manager",
-        type: "address",
       },
     ],
     name: "CapSet",
@@ -524,6 +533,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "LDO",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "MARGIN_POOL",
     outputs: [
       {
@@ -556,6 +578,19 @@ const _abi = [
         internalType: "uint256",
         name: "",
         type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "STETH_ETH_CRV_POOL",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -708,13 +743,32 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "collateralToken",
+    outputs: [
+      {
+        internalType: "contract IWSTETH",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "commitAndClose",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [],
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "minETHOut",
+        type: "uint256",
+      },
+    ],
     name: "completeWithdraw",
     outputs: [],
     stateMutability: "nonpayable",
@@ -784,19 +838,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "deposit",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
     inputs: [],
     name: "depositETH",
     outputs: [],
@@ -806,11 +847,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-      {
         internalType: "address",
         name: "creditor",
         type: "address",
@@ -818,7 +854,7 @@ const _abi = [
     ],
     name: "depositFor",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
     type: "function",
   },
   {
@@ -848,6 +884,19 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "depositYieldToken",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -1021,6 +1070,19 @@ const _abi = [
         internalType: "address",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "lastQueuedWithdrawAmount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -1259,6 +1321,13 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "sendLDORewards",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "uint256",
@@ -1326,19 +1395,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "newOptionsPremiumPricer",
-        type: "address",
-      },
-    ],
-    name: "setOptionsPremiumPricer",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "uint256",
         name: "newPerformanceFee",
         type: "uint256",
@@ -1379,11 +1435,16 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "newStrikeSelection",
+        name: "newContract",
         type: "address",
       },
+      {
+        internalType: "bool",
+        name: "isStrikeSelection",
+        type: "bool",
+      },
     ],
-    name: "setStrikeSelection",
+    name: "setStrikeSelectionOrPricer",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -1645,6 +1706,11 @@ const _abi = [
       {
         internalType: "uint256",
         name: "amount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "minETHOut",
         type: "uint256",
       },
     ],
