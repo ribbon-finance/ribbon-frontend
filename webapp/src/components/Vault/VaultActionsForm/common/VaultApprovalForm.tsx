@@ -5,6 +5,7 @@ import { useWeb3React } from "@web3-react/core";
 import {
   getAssets,
   VaultAddressMap,
+  VaultAllowedDepositAssets,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
@@ -18,6 +19,7 @@ import colors from "shared/lib/designSystem/colors";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { getAssetDisplay, getAssetLogo } from "shared/lib/utils/asset";
+import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 
 const ApprovalIconContainer = styled.div`
   display: flex;
@@ -66,21 +68,34 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
   vaultOption,
   version,
 }) => {
+  const { vaultActionForm } = useVaultActionForm(vaultOption);
   const asset = getAssets(vaultOption);
-  const Logo = getAssetLogo(asset);
   const color = getVaultColor(vaultOption);
 
   const { library } = useWeb3React();
   const { provider } = useWeb3Context();
   const { addPendingTransaction } = usePendingTransactions();
 
+  const depositAsset = useMemo(() => {
+    switch (version) {
+      case "v1":
+        return asset;
+      default:
+        return (
+          vaultActionForm.depositAsset ||
+          VaultAllowedDepositAssets[vaultOption][0]
+        );
+    }
+  }, [asset, vaultActionForm.depositAsset, vaultOption, version]);
+  const Logo = getAssetLogo(depositAsset);
+
   const tokenContract = useMemo(() => {
     if (isETHVault(vaultOption)) {
       return;
     }
 
-    return getERC20Token(library, asset.toLowerCase() as ERC20Token);
-  }, [vaultOption, asset, library]);
+    return getERC20Token(library, depositAsset.toLowerCase() as ERC20Token);
+  }, [depositAsset, library, vaultOption]);
 
   const [waitingApproval, setWaitingApproval] = useState(false);
   const loadingText = useTextAnimation(waitingApproval, {
@@ -127,7 +142,7 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
       </ApprovalIconContainer>
       <ApprovalDescription>
         Before you deposit, the vault needs your permission to invest your{" "}
-        {getAssetDisplay(asset)} in the vault’s strategy.
+        {getAssetDisplay(depositAsset)} in the vault’s strategy.
       </ApprovalDescription>
       <ApprovalHelp
         to="https://ribbon.finance/faq"
@@ -141,7 +156,9 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
         className="py-3 mb-4"
         color={color}
       >
-        {waitingApproval ? loadingText : `Approve ${getAssetDisplay(asset)}`}
+        {waitingApproval
+          ? loadingText
+          : `Approve ${getAssetDisplay(depositAsset)}`}
       </ActionButton>
     </>
   );

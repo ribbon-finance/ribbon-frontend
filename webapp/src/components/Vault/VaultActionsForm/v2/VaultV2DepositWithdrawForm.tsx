@@ -20,7 +20,7 @@ import {
   useAssetBalance,
 } from "shared/lib/hooks/web3DataContext";
 import { ERC20Token } from "shared/lib/models/eth";
-import { isETHVault, isVaultFull } from "shared/lib/utils/vault";
+import { isVaultFull } from "shared/lib/utils/vault";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import VaultApprovalForm from "../common/VaultApprovalForm";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
@@ -151,7 +151,12 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
    * Side hooks
    */
   const tokenAllowance = useTokenAllowance(
-    isETHVault(vaultOption) ? undefined : (asset.toLowerCase() as ERC20Token),
+    vaultActionForm.depositAsset === "WETH"
+      ? undefined
+      : ((vaultActionForm.depositAsset?.toLowerCase() ||
+          VaultAllowedDepositAssets[
+            vaultOption
+          ][0].toLowerCase()) as ERC20Token),
     VaultAddressMap[vaultOption].v2
   );
 
@@ -202,14 +207,21 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
   const showTokenApproval = useMemo(() => {
     if (vaultActionForm.actionType === ACTIONS.deposit) {
       return (
-        !isETHVault(vaultOption) &&
+        (vaultActionForm.depositAsset ||
+          VaultAllowedDepositAssets[vaultOption][0]) !== "WETH" &&
         tokenAllowance &&
         isPracticallyZero(tokenAllowance, decimals)
       );
     }
 
     return false;
-  }, [decimals, tokenAllowance, vaultActionForm.actionType, vaultOption]);
+  }, [
+    decimals,
+    tokenAllowance,
+    vaultActionForm.actionType,
+    vaultActionForm.depositAsset,
+    vaultOption,
+  ]);
   const [swapContainerOpen, setSwapContainerOpen] = useState(false);
 
   const error = useMemo((): VaultValidationErrors | undefined => {
