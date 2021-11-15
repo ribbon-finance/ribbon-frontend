@@ -10,7 +10,7 @@ import {
   VaultVersion,
 } from "shared/lib/constants/constants";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
-import { getVaultColor, isETHVault } from "shared/lib/utils/vault";
+import { getVaultColor } from "shared/lib/utils/vault";
 import { getERC20Token } from "shared/lib/hooks/useERC20Token";
 import { ERC20Token } from "shared/lib/models/eth";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
