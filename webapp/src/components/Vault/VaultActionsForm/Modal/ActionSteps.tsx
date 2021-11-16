@@ -12,7 +12,7 @@ import {
   VaultAddressMap,
   VaultOptions,
   VaultVersion,
-  LidoCuvrePoolAddress,
+  LidoCurvePoolAddress,
 } from "shared/lib/constants/constants";
 import { isETHVault } from "shared/lib/utils/vault";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
@@ -219,7 +219,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                          */
                         const curvePool = getCurvePool(
                           library,
-                          LidoCuvrePoolAddress
+                          LidoCurvePoolAddress
                         );
                         const minOut = await curvePool.get_dy(1, 0, amount);
                         res = await vault.completeWithdraw(minOut);

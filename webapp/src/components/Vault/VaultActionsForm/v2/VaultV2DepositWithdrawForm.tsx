@@ -316,44 +316,19 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
   ]);
 
   const formContent = useMemo(() => {
-    // /**
-    //  * Remind user if they can complete withdraw
-    //  */
-    // if (canCompleteWithdraw) {
-    //   const color = getVaultColor(vaultOption);
-    //   return (
-    //     <div className="d-flex flex-column align-items-center p-4">
-    //       <CompleteWithdrawLogo color={color} className="mt-3">
-    //         <PrimaryText color={color}>↑</PrimaryText>
-    //       </CompleteWithdrawLogo>
-
-    //       <CompleteWithdrawTitle fontSize={22} lineHeight={28} className="mt-3">
-    //         Complete your initiated withdrawal
-    //       </CompleteWithdrawTitle>
-
-    //       <PrimaryText
-    //         fontSize={14}
-    //         lineHeight={20}
-    //         className="mt-3 text-center"
-    //       >
-    //         You can now complete your withdrawal of{" "}
-    //         {formatBigNumber(withdrawals.amount, decimals)}{" "}
-    //         {getAssetDisplay(asset)} from the vault.
-    //       </PrimaryText>
-
-    //       {/* Migrate button */}
-    //       <ActionButton color={color} className="py-3 mt-4">
-    //         MIGRATE {getAssetDisplay(asset)}
-    //       </ActionButton>
-    //     </div>
-    //   );
-    // }
-
     /**
      * Approval before deposit
      */
     if (showTokenApproval) {
-      return <VaultApprovalForm vaultOption={vaultOption} version="v2" />;
+      return (
+        <VaultApprovalForm
+          vaultOption={vaultOption}
+          version="v2"
+          showDepositAssetSwap={
+            VaultAllowedDepositAssets[vaultOption].length > 1
+          }
+        />
+      );
     }
 
     switch (vaultActionForm.actionType) {
