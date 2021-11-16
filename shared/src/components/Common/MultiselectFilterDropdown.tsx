@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from "framer";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { CheckIcon } from "../../assets/icons/icons";
 
+import { CheckIcon } from "../../assets/icons/icons";
 import { BaseButton, SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";

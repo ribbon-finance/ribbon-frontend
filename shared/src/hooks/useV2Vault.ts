@@ -1,7 +1,8 @@
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
-import { RibbonV2ThetaVault } from "../codegen";
+import { RibbonV2stETHThetaVault, RibbonV2ThetaVault } from "../codegen";
 import { RibbonV2ThetaVaultFactory } from "../codegen/RibbonV2ThetaVaultFactory";
+import { RibbonV2stETHThetaVaultFactory } from "../codegen/RibbonV2stETHThetaVaultFactory";
 import { VaultAddressMap, VaultOptions } from "../constants/constants";
 import { useWeb3Context } from "./web3Context";
 
@@ -16,18 +17,26 @@ export const getV2Vault = (
 
   const provider = useSigner ? library.getSigner() : library;
 
-  const vault = RibbonV2ThetaVaultFactory.connect(
-    VaultAddressMap[vaultOption].v2!,
-    provider
-  );
-
-  return vault;
+  switch (vaultOption) {
+    case "rstETH-THETA":
+      return RibbonV2stETHThetaVaultFactory.connect(
+        VaultAddressMap[vaultOption].v2!,
+        provider
+      );
+    default:
+      return RibbonV2ThetaVaultFactory.connect(
+        VaultAddressMap[vaultOption].v2!,
+        provider
+      );
+  }
 };
 
 const useV2Vault = (vaultOption: VaultOptions) => {
   const { active, library } = useWeb3React();
   const { provider } = useWeb3Context();
-  const [vault, setVault] = useState<RibbonV2ThetaVault | null>(null);
+  const [vault, setVault] = useState<
+    RibbonV2ThetaVault | RibbonV2stETHThetaVault | null
+  >(null);
 
   useEffect(() => {
     const vault = getV2Vault(library || provider, vaultOption, active);

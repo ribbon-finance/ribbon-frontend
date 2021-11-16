@@ -2,10 +2,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { parseUnits } from "@ethersproject/units";
+import { useLocation } from "react-router-dom";
 
 import colors from "shared/lib/designSystem/colors";
 import {
   VaultAddressMap,
+  VaultAllowedDepositAssets,
   VaultMaxDeposit,
   VaultOptions,
 } from "shared/lib/constants/constants";
@@ -13,9 +15,12 @@ import { ACTIONS } from "../Modal/types";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
-import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import {
+  useV2VaultData,
+  useAssetBalance,
+} from "shared/lib/hooks/web3DataContext";
 import { ERC20Token } from "shared/lib/models/eth";
-import { isETHVault, isVaultFull } from "shared/lib/utils/vault";
+import { isVaultFull } from "shared/lib/utils/vault";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import VaultApprovalForm from "../common/VaultApprovalForm";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
@@ -25,7 +30,6 @@ import VaultBasicAmountForm from "../common/VaultBasicAmountForm";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import { VaultValidationErrors } from "../types";
 import VaultV2WithdrawForm from "./VaultV2WithdrawForm";
-import { useLocation } from "react-router-dom";
 
 const FormTabContainer = styled.div`
   display: flex;
@@ -123,11 +127,13 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       lockedBalanceInAsset,
       round,
       totalBalance,
-      userAssetBalance,
       withdrawals,
     },
     loading,
   } = useV2VaultData(vaultOption);
+  const { balance: userAssetBalance } = useAssetBalance(
+    vaultActionForm.depositAsset || asset
+  );
   const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
   const { active } = useWeb3React();
 
@@ -145,7 +151,12 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
    * Side hooks
    */
   const tokenAllowance = useTokenAllowance(
-    isETHVault(vaultOption) ? undefined : (asset.toLowerCase() as ERC20Token),
+    vaultActionForm.depositAsset === "WETH"
+      ? undefined
+      : ((vaultActionForm.depositAsset?.toLowerCase() ||
+          VaultAllowedDepositAssets[
+            vaultOption
+          ][0].toLowerCase()) as ERC20Token),
     VaultAddressMap[vaultOption].v2
   );
 
@@ -196,14 +207,21 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
   const showTokenApproval = useMemo(() => {
     if (vaultActionForm.actionType === ACTIONS.deposit) {
       return (
-        !isETHVault(vaultOption) &&
+        (vaultActionForm.depositAsset ||
+          VaultAllowedDepositAssets[vaultOption][0]) !== "WETH" &&
         tokenAllowance &&
         isPracticallyZero(tokenAllowance, decimals)
       );
     }
 
     return false;
-  }, [decimals, tokenAllowance, vaultActionForm.actionType, vaultOption]);
+  }, [
+    decimals,
+    tokenAllowance,
+    vaultActionForm.actionType,
+    vaultActionForm.depositAsset,
+    vaultOption,
+  ]);
   const [swapContainerOpen, setSwapContainerOpen] = useState(false);
 
   const error = useMemo((): VaultValidationErrors | undefined => {
@@ -302,7 +320,15 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
      * Approval before deposit
      */
     if (showTokenApproval) {
-      return <VaultApprovalForm vaultOption={vaultOption} version="v2" />;
+      return (
+        <VaultApprovalForm
+          vaultOption={vaultOption}
+          version="v2"
+          showDepositAssetSwap={
+            VaultAllowedDepositAssets[vaultOption].length > 1
+          }
+        />
+      );
     }
 
     switch (vaultActionForm.actionType) {
@@ -314,8 +340,14 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
             formExtra={{
               label: "Wallet Balance",
               amount: userAssetBalance,
+              unitDisplay: getAssetDisplay(
+                vaultActionForm.depositAsset || asset
+              ),
               error: error === "insufficientBalance",
             }}
+            showSwapDepositAsset={
+              VaultAllowedDepositAssets[vaultOption].length > 1
+            }
             onFormSubmit={onFormSubmit}
             actionButtonText="Preview Deposit"
           />
@@ -334,6 +366,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
         );
     }
   }, [
+    asset,
     canCompleteWithdraw,
     depositBalanceInAsset,
     error,
@@ -342,6 +375,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     showTokenApproval,
     userAssetBalance,
     vaultActionForm.actionType,
+    vaultActionForm.depositAsset,
     vaultOption,
     withdrawals.amount,
   ]);

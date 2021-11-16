@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
+import { useWeb3React } from "@web3-react/core";
 
 import { ACTIONS, Steps, STEPS } from "./types";
-
 import useVault from "shared/lib/hooks/useVault";
 import PreviewStep from "./PreviewStep";
 import TransactionStep from "./TransactionStep";
@@ -12,6 +12,7 @@ import {
   VaultAddressMap,
   VaultOptions,
   VaultVersion,
+  LidoCurvePoolAddress,
 } from "shared/lib/constants/constants";
 import { isETHVault } from "shared/lib/utils/vault";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
@@ -20,6 +21,7 @@ import { parseUnits } from "@ethersproject/units";
 import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import useV2Vault from "shared/lib/hooks/useV2Vault";
 import WarningStep from "./WarningStep";
+import { getCurvePool } from "shared/lib/hooks/useCurvePool";
 
 export interface ActionStepsProps {
   vault: {
@@ -41,6 +43,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   onChangeStep,
   skipToPreview = false,
 }) => {
+  const { library } = useWeb3React();
   const { vaultActionForm, resetActionForm, withdrawMetadata } =
     useVaultActionForm(vaultOption);
 
@@ -166,9 +169,17 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         let shares: BigNumber;
         switch (vaultActionForm.actionType) {
           case ACTIONS.deposit:
-            res = await (isETHVault(vaultOption)
-              ? vault.depositETH({ value: amountStr })
-              : vault.deposit(amountStr));
+            switch (vaultOption) {
+              case "rstETH-THETA":
+                res = await (vaultActionForm.depositAsset === "WETH"
+                  ? vault.depositETH({ value: amountStr })
+                  : vault.depositYieldToken(amountStr));
+                break;
+              default:
+                res = await (vaultActionForm.depositAsset === "WETH"
+                  ? vault.depositETH({ value: amountStr })
+                  : vault.deposit(amountStr));
+            }
             break;
           case ACTIONS.withdraw:
             /** Handle different version of withdraw separately */
@@ -201,7 +212,21 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                     res = await vault.initiateWithdraw(shares);
                     break;
                   case "complete":
-                    res = await vault.completeWithdraw();
+                    switch (vaultActionForm.vaultOption) {
+                      case "rstETH-THETA":
+                        /**
+                         * Default slippage of 1%
+                         */
+                        const curvePool = getCurvePool(
+                          library,
+                          LidoCurvePoolAddress
+                        );
+                        const minOut = await curvePool.get_dy(1, 0, amount);
+                        res = await vault.completeWithdraw(minOut);
+                        break;
+                      default:
+                        res = await vault.completeWithdraw();
+                    }
                     break;
                 }
                 break;
