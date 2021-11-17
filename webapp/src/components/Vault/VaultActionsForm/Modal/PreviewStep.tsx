@@ -1,16 +1,19 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
 import { BigNumber } from "ethers";
-import moment from "moment";
 
-import { Subtitle, SecondaryText, Title } from "shared/lib/designSystem";
+import {
+  Subtitle,
+  SecondaryText,
+  Title,
+  PrimaryText,
+} from "shared/lib/designSystem";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { ACTIONS, ActionType, V2WithdrawOption } from "./types";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
 import {
-  isPutVault,
   VaultOptions,
   VaultFees,
   VaultVersion,
@@ -20,7 +23,11 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import { capitalize } from "shared/lib/utils/text";
 import { MigrateIcon } from "shared/lib/assets/icons/icons";
 import colors from "shared/lib/designSystem/colors";
+import theme from "shared/lib/designSystem/theme";
 import { useLatestAPY } from "shared/lib/hooks/useLatestOption";
+import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
 
 const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -41,6 +48,36 @@ const FormTitle = styled(Title)`
 const Arrow = styled.i<{ color: string }>`
   font-size: 12px;
   color: ${(props) => props.color};
+`;
+
+const WithdrawalStepsCircle = styled.div<{ active: boolean; color: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  border-radius: 32px;
+  background: ${(props) => props.color}14;
+
+  ${(props) =>
+    props.active
+      ? `
+          border: ${theme.border.width} ${theme.border.style} ${props.color};
+        `
+      : ``}
+`;
+
+const WithdrawalStepsDividerLine = styled.div<{ color: string }>`
+  width: 40px;
+  height: 1px;
+  background: ${(props) => props.color}3D;
+  margin-top: calc((32px - 1px) / 2);
+`;
+
+const WithdrawalWarningContainer = styled.div<{ color: string }>`
+  padding: 8px;
+  background: ${(props) => props.color}14;
+  border-radius: ${theme.border.radiusSmall};
 `;
 
 const PreviewStep: React.FC<{
@@ -66,6 +103,9 @@ const PreviewStep: React.FC<{
 }) => {
   const color = getVaultColor(vaultOption);
   const latestAPY = useLatestAPY(vaultOption, vaultVersion);
+  const {
+    data: { withdrawals: v2Withdrawals },
+  } = useV2VaultData(vaultOption);
 
   interface ActionDetail {
     key: string;
@@ -154,6 +194,75 @@ const PreviewStep: React.FC<{
     }
   }, [actionType]);
 
+  const renderWithdrawalSteps = useCallback(
+    (withdrawOption: V2WithdrawOption) => {
+      if (withdrawOption === "instant") {
+        return <></>;
+      }
+
+      return (
+        <div className="d-flex mt-2">
+          <div className="d-flex flex-column align-items-center">
+            <WithdrawalStepsCircle
+              active={withdrawOption === "standard"}
+              color={color}
+            >
+              <Title
+                fontSize={14}
+                lineHeight={20}
+                color={
+                  withdrawOption === "standard" ? color : colors.quaternaryText
+                }
+              >
+                1
+              </Title>
+            </WithdrawalStepsCircle>
+            <PrimaryText
+              fontSize={11}
+              lineHeight={12}
+              color={
+                withdrawOption === "standard" ? color : colors.quaternaryText
+              }
+              className="mt-2 text-center"
+              style={{ maxWidth: 60 }}
+            >
+              Initiate Withdrawal
+            </PrimaryText>
+          </div>
+          <WithdrawalStepsDividerLine color={color} />
+          <div className="d-flex flex-column align-items-center">
+            <WithdrawalStepsCircle
+              active={withdrawOption === "complete"}
+              color={color}
+            >
+              <Title
+                fontSize={14}
+                lineHeight={20}
+                color={
+                  withdrawOption === "complete" ? color : colors.quaternaryText
+                }
+              >
+                1
+              </Title>
+            </WithdrawalStepsCircle>
+            <PrimaryText
+              fontSize={11}
+              lineHeight={12}
+              color={
+                withdrawOption === "complete" ? color : colors.quaternaryText
+              }
+              className="mt-2 text-center mb-4"
+              style={{ maxWidth: 60 }}
+            >
+              Complete Withdrawal
+            </PrimaryText>
+          </div>
+        </div>
+      );
+    },
+    [color]
+  );
+
   switch (actionType) {
     case ACTIONS.migrate:
       return (
@@ -203,16 +312,97 @@ const PreviewStep: React.FC<{
     case ACTIONS.withdraw:
       switch (withdrawOption) {
         case "standard":
-          const withdrawTime = moment()
-            .isoWeekday("friday")
-            .utc()
-            .set("hour", 10)
-            .set("minute", 0)
-            .set("second", 0)
-            .set("millisecond", 0);
+          return (
+            <div className="d-flex flex-column align-items-center">
+              {/* Title */}
+              <FormTitle className="mt-4 mx-3 text-center">
+                INITIATE WITHDRAWAL PREVIEW
+              </FormTitle>
 
-          if (withdrawTime.isBefore(moment())) {
-            withdrawTime.add(1, "week");
+              {/* Info Preview */}
+              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+                <SecondaryText>Amount</SecondaryText>
+                <Title className="text-right">
+                  {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
+                  {getAssetDisplay(asset)}
+                </Title>
+              </div>
+              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+                <SecondaryText>Already Initiated</SecondaryText>
+                <Title className="text-right">
+                  {formatBigNumber(
+                    v2Withdrawals.amount,
+                    getAssetDecimals(asset)
+                  )}{" "}
+                  {getAssetDisplay(asset)}
+                </Title>
+              </div>
+              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+                <SecondaryText>Product</SecondaryText>
+                <Title className="text-right">
+                  {productCopies[vaultOption].title}
+                </Title>
+              </div>
+
+              {/* Migrate Button */}
+              <ActionButton
+                onClick={onClickConfirmButton}
+                className="btn py-3 mt-4 mb-3"
+                color={color}
+              >
+                INITIATE WITHDRAWAL
+              </ActionButton>
+              {renderWithdrawalSteps("standard")}
+              <WithdrawalWarningContainer
+                className="mb-4 w-100 text-center"
+                color={color}
+              >
+                <PrimaryText fontSize={14} lineHeight={20} color={color}>
+                  You can complete your withdrawal any time after 10am UTC on
+                  Friday when your ETH will be removed from the vault’s
+                  investable pool of funds
+                </PrimaryText>
+              </WithdrawalWarningContainer>
+            </div>
+          );
+        case "complete":
+          let description = <></>;
+          let slippage = <></>;
+
+          switch (vaultOption) {
+            case "rstETH-THETA":
+              description = (
+                <PrimaryText
+                  color={colors.text}
+                  fontSize={14}
+                  lineHeight={20}
+                  className="mt-3 text-center"
+                >
+                  To complete your withdrawal the vault will swap your stETH to
+                  ETH on Curve{" "}
+                </PrimaryText>
+              );
+              slippage = (
+                <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+                  <SecondaryText>Max Slippage</SecondaryText>
+                  <TooltipExplanation
+                    title="SLIPPAGE"
+                    explanation="Slippage refers to the difference between the expected price of a trade and the price at which the trade is executed."
+                    learnMoreURL="https://www.investopedia.com/terms/s/slippage.asp"
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HelpInfo
+                        containerRef={ref}
+                        {...triggerHandler}
+                        className="mr-auto"
+                      >
+                        i
+                      </HelpInfo>
+                    )}
+                  />
+
+                  <Title className="text-right">1.00%</Title>
+                </div>
+              );
           }
 
           return (
@@ -224,8 +414,9 @@ const PreviewStep: React.FC<{
 
               {/* Title */}
               <FormTitle className="mt-3 text-center">
-                WITHDRAWAL INITIATION PREVIEW
+                COMPLETE WITHDRAWAL
               </FormTitle>
+              {description}
 
               {/* Info Preview */}
               <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
@@ -241,18 +432,7 @@ const PreviewStep: React.FC<{
                   {productCopies[vaultOption].title}
                 </Title>
               </div>
-              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
-                <SecondaryText>Strategy</SecondaryText>
-                <Title className="text-right">
-                  {isPutVault(vaultOption) ? "PUT SELLING" : "COVERED CALL"}
-                </Title>
-              </div>
-              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
-                <SecondaryText>Withdraw Date</SecondaryText>
-                <Title className="d-flex align-items-center text-right">
-                  {withdrawTime.format("MMM DD, YYYY")}
-                </Title>
-              </div>
+              {slippage}
 
               {/* Migrate Button */}
               <ActionButton
@@ -260,52 +440,9 @@ const PreviewStep: React.FC<{
                 className="btn py-3 mt-4 mb-3"
                 color={color}
               >
-                CONFIRM WITHDRAW Initiation
-              </ActionButton>
-            </div>
-          );
-        case "complete":
-          return (
-            <div className="d-flex flex-column align-items-center">
-              {/* Logo */}
-              <ActionLogoContainer color={color}>
-                <MigrateIcon color={color} />
-              </ActionLogoContainer>
-
-              {/* Title */}
-              <FormTitle className="mt-3 text-center">
-                WITHDRAWAL PREVIEW
-              </FormTitle>
-
-              {/* Info Preview */}
-              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
-                <SecondaryText>Withdraw Amount</SecondaryText>
-                <Title className="text-right">
-                  {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
-                  {getAssetDisplay(asset)}
-                </Title>
-              </div>
-              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
-                <SecondaryText>Product</SecondaryText>
-                <Title className="text-right">
-                  {productCopies[vaultOption].title}
-                </Title>
-              </div>
-              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
-                <SecondaryText>Strategy</SecondaryText>
-                <Title className="text-right">
-                  {isPutVault(vaultOption) ? "PUT SELLING" : "COVERED CALL"}
-                </Title>
-              </div>
-
-              {/* Migrate Button */}
-              <ActionButton
-                onClick={onClickConfirmButton}
-                className="btn py-3 mt-5 mb-3"
-                color={color}
-              >
                 COMPLETE WITHDRAWAL
               </ActionButton>
+              {renderWithdrawalSteps("complete")}
             </div>
           );
       }
