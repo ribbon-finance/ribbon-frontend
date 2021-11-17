@@ -6,41 +6,48 @@ import BootstrapToast, {
 import styled from "styled-components";
 import { SuccessIcon, CloseIcon } from "../../assets/icons/icons";
 import Logo from "../../assets/icons/logo";
+import {
+  getDisplayAssets,
+  VaultList,
+  VaultOptions,
+} from "../../constants/constants";
 import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";
+import theme from "../../designSystem/theme";
+import { getAssetLogo } from "../../utils/asset";
+import { getVaultColor } from "../../utils/vault";
 
-const StyledToast = styled(BootstrapToast)`
+interface StatusProps {
+  type: "success" | "error" | "claim" | "reminder";
+}
+
+const StyledToast = styled(BootstrapToast)<StatusProps>`
   position: fixed;
   background: none;
   color: rgba(255, 255, 255, 0.64);
   z-index: 1000;
+  top: 70px;
 
   @media (max-width: ${sizes.lg - 1}px) {
     width: 90%;
     max-width: 90%;
-    top: 70px;
     left: 5%;
     right: 5%;
-    height: 80px;
   }
 
   @media (min-width: ${sizes.lg}px) {
-    top: 70px;
     right: 30px;
     width: 343px;
-    height: 80px;
   }
 `;
 
 const Body = styled(BootstrapToast.Body)`
   height: 100%;
-  background: #08090e;
-  border: 1px solid #2b2b2b;
+  background: ${colors.background.two};
   border-radius: 8px;
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  padding: 16px;
 
   @media (max-width: ${sizes.lg}px) {
     width: 100%;
@@ -49,11 +56,7 @@ const Body = styled(BootstrapToast.Body)`
   }
 `;
 
-interface StatusProps {
-  type: "success" | "error" | "claim";
-}
-
-const IconCircle = styled.div<StatusProps>`
+const IconCircle = styled.div<StatusProps & { color?: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,21 +65,34 @@ const IconCircle = styled.div<StatusProps>`
   border-radius: 100px;
   margin-right: 10px;
 
-  background-color: ${(props) =>
-    props.type === "error"
-      ? "rgba(255, 56, 92, 0.16)"
-      : "rgba(22, 206, 185, 0.16)"};
+  background-color: ${(props) => {
+    switch (props.type) {
+      case "error":
+        return `background-color: ${colors.red}29;`;
+      case "reminder":
+        return `
+          background-color: ${props.color!}29;
+          border: 1.5px ${theme.border.style} ${props.color}A3;
+        `;
+      default:
+        return `background-color: ${colors.green}29;`;
+    }
+  }};
 `;
 
 interface ToastProps extends BootstrapToastProps, StatusProps {
   title: string;
   subtitle: string;
+  extra?: {
+    vaultOption: VaultOptions;
+  };
 }
 
 const BaseToast: React.FC<ToastProps> = ({
   type,
   title,
   subtitle,
+  extra,
   ...props
 }) => {
   const icon = useMemo(() => {
@@ -87,8 +103,19 @@ const BaseToast: React.FC<ToastProps> = ({
         return <CloseIcon color={colors.red} />;
       case "claim":
         return <Logo />;
+      case "reminder":
+        const vaultOption = extra?.vaultOption || VaultList[0];
+        const asset = getDisplayAssets(vaultOption);
+        const AssetLogo = getAssetLogo(asset);
+
+        switch (asset) {
+          case "WETH":
+            return <AssetLogo height={24} width={24} />;
+          default:
+            return <AssetLogo />;
+        }
     }
-  }, [type]);
+  }, [extra, type]);
 
   // When the caller doesnt specify the `show` variable
   // it means that the caller doesnt want to control the state of the Toast
@@ -104,22 +131,37 @@ const BaseToast: React.FC<ToastProps> = ({
   return (
     <StyledToast
       show={Boolean(props.show) || controlledShow}
+      type={type}
       onClose={onClose}
       {...props}
     >
       <Body>
-        <IconCircle type={type}>{icon}</IconCircle>
-        <div style={{ flex: 1 }} className="d-flex flex-column">
-          <Title>{title}</Title>
-          <SecondaryText>{subtitle}</SecondaryText>
+        <IconCircle
+          type={type}
+          color={
+            type === "reminder"
+              ? getVaultColor(extra?.vaultOption || VaultList[0])
+              : undefined
+          }
+        >
+          {icon}
+        </IconCircle>
+        <div style={{ flex: 1 }} className="d-flex flex-column h-100">
+          <Title fontSize={14} lineHeight={20}>
+            {title}
+          </Title>
+          <SecondaryText fontSize={12} lineHeight={16} className="mt-1">
+            {subtitle}
+          </SecondaryText>
         </div>
-        <CloseIcon
-          containerStyle={{
-            cursor: "pointer",
-            marginRight: 16,
-          }}
-          onClick={onClose}
-        />
+        <div className="d-flex align-items-center">
+          <CloseIcon
+            containerStyle={{
+              cursor: "pointer",
+            }}
+            onClick={onClose}
+          />
+        </div>
       </Body>
     </StyledToast>
   );

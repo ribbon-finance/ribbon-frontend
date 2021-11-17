@@ -9,7 +9,7 @@ import useEagerConnect from "shared/lib/hooks/useEagerConnect";
 import PortfolioPage from "../pages/Portfolio/PortfolioPage";
 import Footer from "./Footer/Footer";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
-import { TxStatusToast } from "./Common/toasts";
+import { TxStatusToast, WithdrawReminderToast } from "./Common/toasts";
 import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal";
 import NotFound from "../pages/NotFound";
 import StakingPage from "../pages/Staking/StakingPage";
@@ -30,6 +30,7 @@ const RootApp = () => {
     <Root id="appRoot" screenHeight={screenHeight}>
       <WalletConnectModal />
       <YourPositionModal />
+      <WithdrawReminderToast />
 
       <Router>
         <Header />
