@@ -181,15 +181,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
   }, [isDesktop, step, onClose]);
 
   const renderModalHeader = useCallback(() => {
-    if (
-      (vaultActionForm.actionType === ACTIONS.migrate &&
-        step === STEPS.previewStep) ||
-      step === STEPS.warningStep ||
-      (vaultActionForm.vaultVersion === "v2" &&
-        vaultActionForm.actionType === "withdraw" &&
-        vaultActionForm.withdrawOption !== "instant" &&
-        step === STEPS.previewStep)
-    ) {
+    if (step === STEPS.previewStep) {
       return (
         <InvisibleModalHeader className="position-relative d-flex align-items-center justify-content-center">
           {renderModalCloseButton()}

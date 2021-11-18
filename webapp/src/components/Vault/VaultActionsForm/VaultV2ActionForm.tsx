@@ -17,6 +17,7 @@ import { ACTIONS } from "./Modal/types";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { getVaultURI } from "../../../constants/constants";
+import { WithdrawIcon } from "shared/lib/assets/icons/icons";
 
 const FormContainer = styled.div`
   display: flex;
@@ -124,9 +125,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
       return (
         <div className="d-flex flex-column align-items-center p-4">
           <CompleteWithdrawLogo color={color} className="mt-3">
-            <PrimaryText fontSize={32} color={color}>
-              ↑
-            </PrimaryText>
+            <WithdrawIcon color={color} height={32} width={32} />
           </CompleteWithdrawLogo>
 
           <CompleteWithdrawTitle

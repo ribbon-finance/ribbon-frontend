@@ -28,6 +28,8 @@ const StyledToast = styled(BootstrapToast)<StatusProps>`
   color: rgba(255, 255, 255, 0.64);
   z-index: 1000;
   top: 70px;
+  border: none;
+  box-shadow: none;
 
   @media (max-width: ${sizes.lg - 1}px) {
     width: 90%;
@@ -65,7 +67,7 @@ const IconCircle = styled.div<StatusProps & { color?: string }>`
   border-radius: 100px;
   margin-right: 10px;
 
-  background-color: ${(props) => {
+  ${(props) => {
     switch (props.type) {
       case "error":
         return `background-color: ${colors.red}29;`;
@@ -77,7 +79,7 @@ const IconCircle = styled.div<StatusProps & { color?: string }>`
       default:
         return `background-color: ${colors.green}29;`;
     }
-  }};
+  }}
 `;
 
 interface ToastProps extends BootstrapToastProps, StatusProps {
@@ -154,7 +156,7 @@ const BaseToast: React.FC<ToastProps> = ({
             {subtitle}
           </SecondaryText>
         </div>
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center ml-2">
           <CloseIcon
             containerStyle={{
               cursor: "pointer",

@@ -13,6 +13,7 @@ import {
   VaultOptions,
   VaultVersion,
   LidoCurvePoolAddress,
+  VaultAllowedDepositAssets,
 } from "shared/lib/constants/constants";
 import { isETHVault } from "shared/lib/utils/vault";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
@@ -81,6 +82,18 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       withdrawals,
     },
   } = useV2VaultData(vaultOption);
+
+  const asset = useMemo(() => {
+    switch (vaultActionForm.actionType) {
+      case ACTIONS.deposit:
+        return (
+          vaultActionForm.depositAsset ||
+          VaultAllowedDepositAssets[vaultOption][0]
+        );
+      default:
+        return getAssets(vaultOption);
+    }
+  }, [vaultActionForm.actionType, vaultActionForm.depositAsset, vaultOption]);
 
   const vaultBalanceInAsset = useMemo(() => {
     if (vaultActionForm.actionType === "migrate") {
@@ -171,12 +184,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
           case ACTIONS.deposit:
             switch (vaultOption) {
               case "rstETH-THETA":
-                res = await (vaultActionForm.depositAsset === "WETH"
+                res = await (asset === "WETH"
                   ? vault.depositETH({ value: amountStr })
                   : vault.depositYieldToken(amountStr));
                 break;
               default:
-                res = await (vaultActionForm.depositAsset === "WETH"
+                res = await (asset === "WETH"
                   ? vault.depositETH({ value: amountStr })
                   : vault.deposit(amountStr));
             }
@@ -248,8 +261,19 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
          * Append transaction into pending transaction list
          */
         switch (vaultActionForm.actionType) {
-          // @ts-ignore
+          case ACTIONS.deposit:
+            addPendingTransaction({
+              txhash: res.hash,
+              type: "deposit",
+              amount: amountStr,
+              vault: vaultOption,
+              asset: asset,
+            });
+            break;
           case ACTIONS.withdraw:
+            /**
+             * Standard withdrawal
+             */
             if (vaultActionForm.withdrawOption === "standard") {
               addPendingTransaction({
                 txhash: res.hash,
@@ -259,18 +283,20 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
               });
               break;
             }
-          /**
-           * Fallthrough only apply for non-standard withdraw
-           */
-          // eslint-disable-next-line no-fallthrough
-          case ACTIONS.deposit:
+            /**
+             * Other type of withdrawals
+             */
+            addPendingTransaction({
+              txhash: res.hash,
+              type: "withdraw",
+              amount: amountStr,
+              vault: vaultOption,
+            });
+            break;
           case ACTIONS.migrate:
             addPendingTransaction({
               txhash: res.hash,
-              type: vaultActionForm.actionType as
-                | "deposit"
-                | "withdraw"
-                | "migrate",
+              type: "migrate",
               amount: amountStr,
               vault: vaultOption,
             });
@@ -319,7 +345,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         amount={amount}
         positionAmount={vaultBalanceInAsset}
         onClickConfirmButton={handleClickConfirmButton}
-        asset={getAssets(vaultOption)}
+        asset={asset}
         vaultOption={vaultOption}
         vaultVersion={vaultVersion}
         receiveVaultOption={vaultActionForm.receiveVault}
