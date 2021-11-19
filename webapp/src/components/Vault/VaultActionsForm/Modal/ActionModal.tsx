@@ -51,7 +51,7 @@ const ModalBody = styled.div<ModalBodyProps>`
       case STEPS.submittedStep:
         return "unset";
       default:
-        return "430px";
+        return "396px";
     }
   }};
 

@@ -36,6 +36,7 @@ import colors from "shared/lib/designSystem/colors";
 import { formatBigNumber } from "shared/lib/utils/math";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
+import { ACTIONS } from "../Modal/types";
 
 const DepositAssetButton = styled.div`
   position: absolute;
@@ -145,7 +146,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
   onFormSubmit,
   actionButtonText,
 }) => {
-  const asset = getAssets(vaultOption);
+  // const asset = getAssets(vaultOption);
   const color = getVaultColor(vaultOption);
 
   const {
@@ -157,6 +158,18 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
   const { active } = useWeb3React();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showDepositAssetMenu, setShowDepositAssetMenu] = useState(false);
+
+  const asset = useMemo(() => {
+    switch (vaultActionForm.actionType) {
+      case ACTIONS.deposit:
+        return (
+          vaultActionForm.depositAsset ||
+          VaultAllowedDepositAssets[vaultOption][0]
+        );
+      default:
+        return getAssets(vaultOption);
+    }
+  }, [vaultActionForm.actionType, vaultActionForm.depositAsset, vaultOption]);
 
   const isInputNonZero = parseFloat(vaultActionForm.inputAmount) > 0;
 
