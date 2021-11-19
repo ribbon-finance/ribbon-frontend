@@ -12,6 +12,7 @@ import {
   VaultOptions,
   VaultFees,
   VaultVersion,
+  isPutVault,
 } from "shared/lib/constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -74,7 +75,7 @@ const WithdrawalStepsDividerLine = styled.div<{ color: string }>`
   margin-top: calc((32px - 1px) / 2);
 `;
 
-const WithdrawalWarningContainer = styled.div<{ color: string }>`
+const WarningContainer = styled.div<{ color: string }>`
   padding: 8px;
   background: ${(props) => props.color}14;
   border-radius: ${theme.border.radiusSmall};
@@ -112,53 +113,81 @@ const PreviewStep: React.FC<{
     value: string;
   }
   const detailRows: ActionDetail[] = useMemo(() => {
-    let actionDetails: ActionDetail = { key: "", value: "" };
+    const actionDetails: ActionDetail[] = [];
 
     switch (actionType) {
       case ACTIONS.deposit:
-        actionDetails = {
+        actionDetails.push({
           key: "Approx. APY",
           value: `${
             latestAPY.fetched ? latestAPY.res.toFixed(2) : "0.00"
           }% APY`,
-        };
+        });
         break;
       case ACTIONS.withdraw:
-        // Since details row is only applicable to V1, we just leave value to 0% when the said vault does not have v1
-        actionDetails = {
-          key: "Withdrawal Fee",
-          value: `${parseFloat(
-            VaultFees[vaultOption].v1?.withdrawalFee ?? "0"
-          ).toString()}%`,
-        };
+        switch (vaultVersion) {
+          case "v1":
+            actionDetails.push({
+              key: "Withdrawal Fee",
+              value: `${parseFloat(
+                VaultFees[vaultOption].v1?.withdrawalFee ?? "0"
+              ).toString()}%`,
+            });
+            break;
+          case "v2":
+            /**
+             * Strategy are only shown in instant withdraw.
+             */
+            switch (withdrawOption) {
+              case "instant":
+                switch (vaultOption) {
+                  case "rstETH-THETA":
+                    actionDetails.push({
+                      key: "Max Slippage",
+                      value: "1.00%",
+                    });
+                    break;
+                  default:
+                    actionDetails.push({
+                      key: "Strategy",
+                      value: isPutVault(vaultOption)
+                        ? "PUT SELLING"
+                        : "COVERED CALL",
+                    });
+                }
+            }
+        }
         break;
       case ACTIONS.transfer:
-        actionDetails = {
-          key: "Transfer Fee",
-          value: "0.00%",
-        };
-    }
-
-    if (actionType === ACTIONS.transfer) {
-      return [
-        {
-          key: "Transfer To",
-          value: productCopies[receiveVaultOption!].title,
-        },
-        {
-          key: "Transfer From",
-          value: productCopies[vaultOption].title,
-        },
-        actionDetails,
-      ];
+        actionDetails.push(
+          {
+            key: "Transfer To",
+            value: productCopies[receiveVaultOption!].title,
+          },
+          {
+            key: "Transfer From",
+            value: productCopies[vaultOption].title,
+          },
+          {
+            key: "Transfer Fee",
+            value: "0.00%",
+          }
+        );
     }
 
     const details: ActionDetail[] = [
       { key: "Product", value: productCopies[vaultOption].title },
-      withdrawOption === "instant" ? null : actionDetails,
-    ].filter((x) => x !== null) as ActionDetail[];
+      ...actionDetails,
+    ];
     return details;
-  }, [actionType, latestAPY, receiveVaultOption, vaultOption, withdrawOption]);
+  }, [
+    actionType,
+    latestAPY,
+    receiveVaultOption,
+    vaultOption,
+    vaultVersion,
+    withdrawOption,
+  ]);
 
   const originalAmount = formatBigNumber(
     positionAmount,
@@ -324,7 +353,7 @@ const PreviewStep: React.FC<{
                 INITIATE WITHDRAWAL
               </ActionButton>
               {renderWithdrawalSteps("standard")}
-              <WithdrawalWarningContainer
+              <WarningContainer
                 className="mb-4 w-100 text-center"
                 color={color}
               >
@@ -333,7 +362,7 @@ const PreviewStep: React.FC<{
                   Friday when your ETH will be removed from the vault’s
                   investable pool of funds
                 </PrimaryText>
-              </WithdrawalWarningContainer>
+              </WarningContainer>
             </div>
           );
         case "complete":
@@ -420,20 +449,53 @@ const PreviewStep: React.FC<{
 
     /**
      * IMPORTANT
-     * Do note over here that the fallthrough case currently will only allow V1 withdraw to fall through.
+     * Do note over here that the fallthrough case currently will only allow V1 withdraw and v2 instant withdraw to fall through.
      * Exercise great caution when introducing further fallthrough to avoid unintended consequences.
      */
     // eslint-disable-next-line no-fallthrough
     default:
       const actionWord = capitalize(actionType);
       let actionLogo = <></>;
+      let description = <></>;
+      let warning = <></>;
 
       switch (actionType) {
         case ACTIONS.deposit:
           actionLogo = <DepositIcon color={color} width={32} />;
+
+          switch (vaultVersion) {
+            case "v2":
+              warning = (
+                <WarningContainer
+                  className="mt-2 mb-4 w-100 text-center"
+                  color={color}
+                >
+                  <PrimaryText fontSize={14} lineHeight={20} color={color}>
+                    Your funds will be deployed in the vault’s next weekly
+                    strategy at 11am UTC on Friday
+                  </PrimaryText>
+                </WarningContainer>
+              );
+              break;
+          }
           break;
         case ACTIONS.withdraw:
           actionLogo = <WithdrawIcon color={color} width={32} />;
+
+          switch (vaultOption) {
+            case "rstETH-THETA":
+              description = (
+                <PrimaryText
+                  color={colors.text}
+                  fontSize={14}
+                  lineHeight={20}
+                  className="mt-3 text-center"
+                >
+                  To complete your withdrawal the vault will swap your stETH to
+                  ETH on Curve{" "}
+                </PrimaryText>
+              );
+          }
           break;
         case ACTIONS.transfer:
           actionLogo = <TransferIcon color={color} width={32} />;
@@ -448,6 +510,7 @@ const PreviewStep: React.FC<{
           <FormTitle className="mt-3 text-center">
             {actionWord} PREVIEW
           </FormTitle>
+          {description}
 
           {/* Info Preview */}
           <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
@@ -474,6 +537,7 @@ const PreviewStep: React.FC<{
           >
             {actionWord} Now
           </ActionButton>
+          {warning}
         </div>
       );
   }
