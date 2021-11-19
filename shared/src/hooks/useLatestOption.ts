@@ -22,6 +22,30 @@ import { assetToFiat, formatOption } from "../utils/math";
 import { useAssetsPrice } from "./useAssetPrice";
 import { formatUnits } from "@ethersproject/units";
 
+const calculateV1APY = (depositAmount: number, premium: number) => {
+  return ((1 + (premium / depositAmount) * 0.9) ** 52 - 1) * 100;
+};
+
+const calculateV2APY = (
+  vaultOption: VaultOptions,
+  depositAmount: number,
+  premium: number
+) => {
+  const managementFee =
+    (premium + depositAmount) *
+    (parseFloat(VaultFees[vaultOption].v2?.managementFee || "0") / 100 / 52);
+  // Performance fees are directly applied on earnings
+  const performanceFee =
+    premium *
+    (parseFloat(VaultFees[vaultOption].v2?.performanceFee || "0") / 100);
+
+  const calculatedApy =
+    ((1 + (premium - managementFee - performanceFee) / depositAmount) ** 52 -
+      1) *
+    100;
+  return calculatedApy > 0 ? calculatedApy : 0;
+};
+
 export const useLatestOption = (
   vaultOption: VaultOptions,
   vaultVersion: VaultVersion
@@ -33,46 +57,49 @@ export const useLatestOption = (
   );
   const { prices, loading: assetPriceLoading } = useAssetsPrice();
 
-  const option = useMemo(() => {
+  const optionHistory = useMemo(() => {
     const sortedActivities = activities
       .filter((activity) => activity.type === "minting")
       .sort((a, b) => (a.date.valueOf() < b.date.valueOf() ? 1 : -1));
     if (sortedActivities.length <= 0) {
-      return undefined;
+      return [];
     }
-    const latestShortPosition = sortedActivities[0] as VaultShortPosition &
-      VaultActivityMeta & { type: "minting" };
-    const optionTraded = activities.filter(
-      (activity) =>
-        activity.type === "sales" &&
-        activity.vaultShortPosition.id === latestShortPosition.id
-    ) as (VaultOptionTrade & VaultActivityMeta & { type: "sales" })[];
 
-    const decimals = getAssetDecimals(asset);
-    const isPut = isPutVault(vaultOption);
+    return sortedActivities.map((_shortPosition) => {
+      const shortPosition = _shortPosition as VaultShortPosition &
+        VaultActivityMeta & { type: "minting" };
+      const optionTraded = activities.filter(
+        (activity) =>
+          activity.type === "sales" &&
+          activity.vaultShortPosition.id === shortPosition.id
+      ) as (VaultOptionTrade & VaultActivityMeta & { type: "sales" })[];
 
-    return {
-      strike: latestShortPosition.strikePrice,
-      expiry: moment(latestShortPosition.expiry, "X"),
-      premium: optionTraded.reduce(
-        (acc, curr) => acc.add(curr.premium),
-        BigNumber.from(0)
-      ),
-      depositAmount: latestShortPosition.depositAmount,
-      amount: isPut
-        ? parseFloat(
-            assetToFiat(
-              latestShortPosition.depositAmount,
-              prices[asset]!,
-              decimals
-            )
-          ) / formatOption(latestShortPosition.strikePrice)
-        : parseFloat(formatUnits(latestShortPosition.depositAmount, decimals)),
-      isPut: isPut,
-    };
+      const decimals = getAssetDecimals(asset);
+      const isPut = isPutVault(vaultOption);
+
+      return {
+        strike: shortPosition.strikePrice,
+        expiry: moment(shortPosition.expiry, "X"),
+        premium: optionTraded.reduce(
+          (acc, curr) => acc.add(curr.premium),
+          BigNumber.from(0)
+        ),
+        depositAmount: shortPosition.depositAmount,
+        amount: isPut
+          ? parseFloat(
+              assetToFiat(shortPosition.depositAmount, prices[asset]!, decimals)
+            ) / formatOption(shortPosition.strikePrice)
+          : parseFloat(formatUnits(shortPosition.depositAmount, decimals)),
+        isPut: isPut,
+      };
+    });
   }, [activities, asset, prices, vaultOption]);
 
-  return { option, loading: activityLoading || assetPriceLoading };
+  return {
+    option: optionHistory.length > 0 ? optionHistory[0] : undefined,
+    optionHistory,
+    loading: activityLoading || assetPriceLoading,
+  };
 };
 
 export const useLatestOptions = () => {
@@ -92,67 +119,70 @@ export const useLatestOptions = () => {
               const sortedActivities = activities
                 .filter((activity) => activity.type === "minting")
                 .sort((a, b) => (a.date.valueOf() < b.date.valueOf() ? 1 : -1));
-
               if (sortedActivities.length <= 0) {
-                return [vaultOption, undefined];
+                return [vaultOption, []];
               }
-              const latestShortPosition =
-                sortedActivities[0] as VaultShortPosition &
-                  VaultActivityMeta & { type: "minting" };
-              const optionTraded = activities.filter(
-                (activity) =>
-                  activity.type === "sales" &&
-                  activity.vaultShortPosition.id === latestShortPosition.id
-              ) as (VaultOptionTrade & VaultActivityMeta & { type: "sales" })[];
-
-              const decimals = getAssetDecimals(asset);
-              const isPut = isPutVault(vaultOption);
 
               return [
                 vaultOption,
-                {
-                  strike: latestShortPosition.strikePrice,
-                  expiry: moment(latestShortPosition.expiry, "X"),
-                  premium: optionTraded.reduce(
-                    (acc, curr) => acc.add(curr.premium),
-                    BigNumber.from(0)
-                  ),
-                  depositAmount: latestShortPosition.depositAmount,
-                  amount: isPut
-                    ? parseFloat(
-                        assetToFiat(
-                          latestShortPosition.depositAmount,
-                          prices[asset]!,
-                          decimals
-                        )
-                      ) / formatOption(latestShortPosition.strikePrice)
-                    : parseFloat(
-                        formatUnits(latestShortPosition.depositAmount, decimals)
-                      ),
-                  isPut: isPut,
-                },
+                sortedActivities.map((_shortPosition) => {
+                  const shortPosition = _shortPosition as VaultShortPosition &
+                    VaultActivityMeta & { type: "minting" };
+                  const optionTraded = activities.filter(
+                    (activity) =>
+                      activity.type === "sales" &&
+                      activity.vaultShortPosition.id === shortPosition.id
+                  ) as (VaultOptionTrade &
+                    VaultActivityMeta & { type: "sales" })[];
+
+                  const decimals = getAssetDecimals(asset);
+                  const isPut = isPutVault(vaultOption);
+
+                  return {
+                    strike: shortPosition.strikePrice,
+                    expiry: moment(shortPosition.expiry, "X"),
+                    premium: optionTraded.reduce(
+                      (acc, curr) => acc.add(curr.premium),
+                      BigNumber.from(0)
+                    ),
+                    depositAmount: shortPosition.depositAmount,
+                    amount: isPut
+                      ? parseFloat(
+                          assetToFiat(
+                            shortPosition.depositAmount,
+                            prices[asset]!,
+                            decimals
+                          )
+                        ) / formatOption(shortPosition.strikePrice)
+                      : parseFloat(
+                          formatUnits(shortPosition.depositAmount, decimals)
+                        ),
+                    isPut: isPut,
+                  };
+                }),
               ];
             })
           ),
         ])
       ) as {
         [version in VaultVersion]: {
-          [option in VaultOptions]:
-            | {
-                strike: BigNumber;
-                expiry: Moment;
-                premium: BigNumber;
-                depositAmount: BigNumber;
-                amount: number;
-                isPut: boolean;
-              }
-            | undefined;
+          [option in VaultOptions]: {
+            strike: BigNumber;
+            expiry: Moment;
+            premium: BigNumber;
+            depositAmount: BigNumber;
+            amount: number;
+            isPut: boolean;
+          }[];
         };
       },
     [allActivities, prices]
   );
 
-  return { options, loading: activityLoading || assetPriceLoading };
+  return {
+    options,
+    loading: activityLoading || assetPriceLoading,
+  };
 };
 
 export const useLatestAPY = (
@@ -160,41 +190,52 @@ export const useLatestAPY = (
   vaultVersion: VaultVersion
 ) => {
   const decimals = getAssetDecimals(getAssets(vaultOption));
-  const { option, loading } = useLatestOption(vaultOption, vaultVersion);
+  const { optionHistory, loading } = useLatestOption(vaultOption, vaultVersion);
 
   const latestAPY = useMemo(() => {
-    if (!option) {
+    if (optionHistory.length <= 0) {
       return 0;
     }
 
-    const premium = parseFloat(formatUnits(option.premium, decimals));
-    const depositAmount = parseFloat(
-      formatUnits(option.depositAmount, decimals)
+    const currentWeekPremium = parseFloat(
+      formatUnits(optionHistory[0].premium, decimals)
     );
+    const currentWeekDepositAmount = parseFloat(
+      formatUnits(optionHistory[0].depositAmount, decimals)
+    );
+    const previousWeekPremium =
+      optionHistory.length > 1
+        ? parseFloat(formatUnits(optionHistory[1].premium, decimals))
+        : 0;
+    const previousWeekDepositAmount =
+      optionHistory.length > 1
+        ? parseFloat(formatUnits(optionHistory[1].depositAmount, decimals))
+        : 0;
 
     switch (vaultVersion) {
       case "v1":
-        // For V1, we need to account for only 90% of assets are utilized
-        return ((1 + (premium / depositAmount) * 0.9) ** 52 - 1) * 100;
-      case "v2":
-        // Management fees are annualized, therefore we divide by 52
-        const managementFee =
-          (premium + depositAmount) *
-          (parseFloat(VaultFees[vaultOption].v2?.managementFee || "0") /
-            100 /
-            52);
-        // Performance fees are directly applied on earnings
-        const performanceFee =
-          premium *
-          (parseFloat(VaultFees[vaultOption].v2?.performanceFee || "0") / 100);
-        return (
-          ((1 + (premium - managementFee - performanceFee) / depositAmount) **
-            52 -
-            1) *
-          100
+        const currentWeekv1APY = calculateV1APY(
+          currentWeekDepositAmount,
+          currentWeekPremium
         );
+        return currentWeekv1APY > 0 || optionHistory.length <= 1
+          ? currentWeekv1APY
+          : calculateV1APY(previousWeekDepositAmount, previousWeekPremium);
+      case "v2":
+        const currentWeekv2APY = calculateV2APY(
+          vaultOption,
+          currentWeekDepositAmount,
+          currentWeekPremium
+        );
+        return currentWeekv2APY > 0 || optionHistory.length <= 1
+          ? currentWeekv2APY
+          : calculateV2APY(
+              vaultOption,
+              previousWeekDepositAmount,
+              previousWeekPremium
+            );
     }
-  }, [decimals, option, vaultOption, vaultVersion]);
+  }, [decimals, optionHistory, vaultOption, vaultVersion]);
 
   return { fetched: !loading, res: latestAPY };
 };
@@ -210,49 +251,60 @@ export const useLatestAPYs = () => {
           Object.fromEntries(
             VaultList.map((vaultOption) => {
               const decimals = getAssetDecimals(getAssets(vaultOption));
-              const option = options[version][vaultOption];
+              const optionHistory = options[version][vaultOption];
 
-              if (!option) {
+              if (optionHistory.length <= 0) {
                 return [vaultOption, 0];
               }
 
-              const premium = parseFloat(formatUnits(option.premium, decimals));
-              const depositAmount = parseFloat(
-                formatUnits(option.depositAmount, decimals)
+              const currentWeekPremium = parseFloat(
+                formatUnits(optionHistory[0].premium, decimals)
               );
+              const currentWeekDepositAmount = parseFloat(
+                formatUnits(optionHistory[0].depositAmount, decimals)
+              );
+              const previousWeekPremium =
+                optionHistory.length > 1
+                  ? parseFloat(formatUnits(optionHistory[1].premium, decimals))
+                  : 0;
+              const previousWeekDepositAmount =
+                optionHistory.length > 1
+                  ? parseFloat(
+                      formatUnits(optionHistory[1].depositAmount, decimals)
+                    )
+                  : 0;
 
               switch (version) {
                 case "v1":
-                  // For V1, we need to account for only 90% of assets are utilized
+                  const currentWeekv1APY = calculateV1APY(
+                    currentWeekDepositAmount,
+                    currentWeekPremium
+                  );
                   return [
                     vaultOption,
-                    ((1 + (premium / depositAmount) * 0.9) ** 52 - 1) * 100,
+                    currentWeekv1APY > 0 || optionHistory.length <= 1
+                      ? currentWeekv1APY
+                      : calculateV1APY(
+                          previousWeekDepositAmount,
+                          previousWeekPremium
+                        ),
                   ];
                 case "v2":
                 default:
-                  // Management fees are annualized, therefore we divide by 52
-                  const managementFee =
-                    (premium + depositAmount) *
-                    (parseFloat(
-                      VaultFees[vaultOption].v2?.managementFee || "0"
-                    ) /
-                      100 /
-                      52);
-                  // Performance fees are directly applied on earnings
-                  const performanceFee =
-                    premium *
-                    (parseFloat(
-                      VaultFees[vaultOption].v2?.performanceFee || "0"
-                    ) /
-                      100);
+                  const currentWeekv2APY = calculateV2APY(
+                    vaultOption,
+                    currentWeekDepositAmount,
+                    currentWeekPremium
+                  );
                   return [
                     vaultOption,
-                    ((1 +
-                      (premium - managementFee - performanceFee) /
-                        depositAmount) **
-                      52 -
-                      1) *
-                      100,
+                    currentWeekv2APY > 0 || optionHistory.length <= 1
+                      ? currentWeekv2APY
+                      : calculateV2APY(
+                          vaultOption,
+                          previousWeekDepositAmount,
+                          previousWeekPremium
+                        ),
                   ];
               }
             })
