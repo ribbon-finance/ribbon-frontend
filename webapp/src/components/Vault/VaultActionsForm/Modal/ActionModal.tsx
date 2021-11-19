@@ -4,7 +4,7 @@ import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem";
 import ActionSteps from "./ActionSteps";
-import { ACTIONS, Steps, STEPS } from "./types";
+import { Steps, STEPS } from "./types";
 import sizes from "shared/lib/designSystem/sizes";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
 import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
@@ -181,15 +181,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
   }, [isDesktop, step, onClose]);
 
   const renderModalHeader = useCallback(() => {
-    if (
-      (vaultActionForm.actionType === ACTIONS.migrate &&
-        step === STEPS.previewStep) ||
-      step === STEPS.warningStep ||
-      (vaultActionForm.vaultVersion === "v2" &&
-        vaultActionForm.actionType === "withdraw" &&
-        vaultActionForm.withdrawOption !== "instant" &&
-        step === STEPS.previewStep)
-    ) {
+    if (step === STEPS.previewStep) {
       return (
         <InvisibleModalHeader className="position-relative d-flex align-items-center justify-content-center">
           {renderModalCloseButton()}

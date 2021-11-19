@@ -128,7 +128,7 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
     <div className="d-flex flex-column align-items-center p-4">
       {/* Logo */}
       <MigrateLogoContainer color={color} className="mt-3">
-        <MigrateIcon color={color} />
+        <MigrateIcon color={color} height={27} />
       </MigrateLogoContainer>
 
       <FormTitle className="mt-3">MIGRATE TO V2</FormTitle>

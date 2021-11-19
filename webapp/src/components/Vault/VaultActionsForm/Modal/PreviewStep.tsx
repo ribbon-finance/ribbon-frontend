@@ -2,12 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
 import { BigNumber } from "ethers";
 
-import {
-  Subtitle,
-  SecondaryText,
-  Title,
-  PrimaryText,
-} from "shared/lib/designSystem";
+import { SecondaryText, Title, PrimaryText } from "shared/lib/designSystem";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { ACTIONS, ActionType, V2WithdrawOption } from "./types";
 import { formatBigNumber } from "shared/lib/utils/math";
@@ -21,7 +16,12 @@ import {
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { capitalize } from "shared/lib/utils/text";
-import { MigrateIcon } from "shared/lib/assets/icons/icons";
+import {
+  DepositIcon,
+  MigrateIcon,
+  TransferIcon,
+  WithdrawIcon,
+} from "shared/lib/assets/icons/icons";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { useLatestAPY } from "shared/lib/hooks/useLatestOption";
@@ -155,7 +155,6 @@ const PreviewStep: React.FC<{
 
     const details: ActionDetail[] = [
       { key: "Product", value: productCopies[vaultOption].title },
-      { key: "Product Type", value: "Theta Vault" },
       withdrawOption === "instant" ? null : actionDetails,
     ].filter((x) => x !== null) as ActionDetail[];
     return details;
@@ -165,34 +164,6 @@ const PreviewStep: React.FC<{
     positionAmount,
     getAssetDecimals(asset)
   );
-
-  // If it's a deposit, just add to the existing positionAmount
-  // If it's a withdrawal, subtract the amount and the fee, we can hardcode the fee for now
-  const newAmountStr = useMemo(() => {
-    let newAmount;
-
-    switch (actionType) {
-      case ACTIONS.deposit:
-        newAmount = positionAmount.add(amount);
-        break;
-      case ACTIONS.withdraw:
-      default:
-        newAmount = positionAmount.sub(amount);
-        break;
-    }
-
-    newAmount = newAmount.isNegative() ? BigNumber.from("0") : newAmount;
-    return formatBigNumber(newAmount, getAssetDecimals(asset));
-  }, [actionType, amount, asset, positionAmount]);
-
-  const positionChanged = useMemo(() => {
-    switch (actionType) {
-      case ACTIONS.transfer:
-        return false;
-      default:
-        return true;
-    }
-  }, [actionType]);
 
   const renderWithdrawalSteps = useCallback(
     (withdrawOption: V2WithdrawOption) => {
@@ -242,7 +213,7 @@ const PreviewStep: React.FC<{
                   withdrawOption === "complete" ? color : colors.quaternaryText
                 }
               >
-                1
+                2
               </Title>
             </WithdrawalStepsCircle>
             <PrimaryText
@@ -272,7 +243,7 @@ const PreviewStep: React.FC<{
         >
           {/* Logo */}
           <ActionLogoContainer color={color}>
-            <MigrateIcon color={color} />
+            <MigrateIcon color={color} height={27} />
           </ActionLogoContainer>
 
           {/* Title */}
@@ -409,7 +380,7 @@ const PreviewStep: React.FC<{
             <div className="d-flex flex-column align-items-center">
               {/* Logo */}
               <ActionLogoContainer color={color}>
-                <MigrateIcon color={color} />
+                <WithdrawIcon color={color} />
               </ActionLogoContainer>
 
               {/* Title */}
@@ -455,63 +426,55 @@ const PreviewStep: React.FC<{
     // eslint-disable-next-line no-fallthrough
     default:
       const actionWord = capitalize(actionType);
+      let actionLogo = <></>;
+
+      switch (actionType) {
+        case ACTIONS.deposit:
+          actionLogo = <DepositIcon color={color} width={32} />;
+          break;
+        case ACTIONS.withdraw:
+          actionLogo = <WithdrawIcon color={color} width={32} />;
+          break;
+        case ACTIONS.transfer:
+          actionLogo = <TransferIcon color={color} width={32} />;
+      }
+
       return (
-        <>
-          <div
-            style={{ flex: 1 }}
-            className="d-flex w-100 flex-column align-items-center"
-          >
-            <Subtitle
-              className="d-block text-uppercase"
-              style={{ opacity: 0.4 }}
-            >
-              {actionWord} Amount
-            </Subtitle>
+        <div className="d-flex flex-column align-items-center">
+          {/* Logo */}
+          <ActionLogoContainer color={color}>{actionLogo}</ActionLogoContainer>
 
-            <div className="text-center">
-              <Title fontSize={40} lineHeight={64}>
-                {formatBigNumber(amount, getAssetDecimals(asset))}
-              </Title>
-              <Title
-                fontSize={40}
-                lineHeight={64}
-                color={`${colors.primaryText}7A`}
-              >
-                {getAssetDisplay(asset)}
-              </Title>
-            </div>
+          {/* Title */}
+          <FormTitle className="mt-3 text-center">
+            {actionWord} PREVIEW
+          </FormTitle>
 
-            <div className="w-100 mt-4">
-              {detailRows.map((detail, index) => (
-                <div
-                  key={index}
-                  className="d-flex flex-row align-items-center justify-content-between mb-4"
-                >
-                  <SecondaryText>{detail.key}</SecondaryText>
-                  <Title className="text-right">{detail.value}</Title>
-                </div>
-              ))}
-              {positionChanged && (
-                <div className="d-flex flex-row align-items-center justify-content-between mb-4">
-                  <SecondaryText>Your Position</SecondaryText>
-                  <Title className="d-flex align-items-center text-right">
-                    {originalAmount} {getAssetDisplay(asset)}{" "}
-                    <Arrow className="fas fa-arrow-right mx-2" color={color} />{" "}
-                    {newAmountStr} {getAssetDisplay(asset)}
-                  </Title>
-                </div>
-              )}
-            </div>
+          {/* Info Preview */}
+          <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+            <SecondaryText>{actionWord} Amount</SecondaryText>
+            <Title className="text-right">
+              {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
+              {getAssetDisplay(asset)}
+            </Title>
           </div>
+          {detailRows.map((detail, index) => (
+            <div
+              className="d-flex w-100 flex-row align-items-center justify-content-between mt-4"
+              key={index}
+            >
+              <SecondaryText>{detail.key}</SecondaryText>
+              <Title className="text-right">{detail.value}</Title>
+            </div>
+          ))}
 
           <ActionButton
             onClick={onClickConfirmButton}
-            className="btn py-3 mb-4 mt-auto"
+            className="btn py-3 mt-4 mb-3"
             color={color}
           >
             {actionWord} Now
           </ActionButton>
-        </>
+        </div>
       );
   }
 };

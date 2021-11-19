@@ -129,7 +129,7 @@ export const TxStatusToast = () => {
           )} withdrawn from ${productCopies[_currentTx.vault].title}`;
         case "deposit":
           return `${amountFormatted} ${getAssetDisplay(
-            getAssets(_currentTx.vault)
+            _currentTx.asset
           )} deposited into ${productCopies[_currentTx.vault].title}`;
         case "claim":
         case "rewardClaim":
