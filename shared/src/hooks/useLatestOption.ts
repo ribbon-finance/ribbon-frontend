@@ -290,6 +290,7 @@ export const useLatestAPYs = () => {
                         ),
                   ];
                 case "v2":
+                default:
                   const currentWeekv2APY = calculateV2APY(
                     vaultOption,
                     currentWeekDepositAmount,
