@@ -258,7 +258,7 @@ export const WithdrawReminderToast = () => {
       (reminder) => !reminder.shown
     ).length;
     if (showReminderIndex >= remindersNotShown) {
-      setShowReminderIndex(remindersNotShown - 1);
+      setShowReminderIndex(Math.max(remindersNotShown - 1, 0));
     }
   }, [reminders, showReminderIndex]);
 
