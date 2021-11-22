@@ -189,6 +189,10 @@ const ActionModal: React.FC<ActionModalProps> = ({
       );
     }
 
+    if (step === STEPS.formStep) {
+      return <></>;
+    }
+
     const actionWord = capitalize(vaultActionForm.actionType);
     const titles = {
       [STEPS.warningStep]: "",

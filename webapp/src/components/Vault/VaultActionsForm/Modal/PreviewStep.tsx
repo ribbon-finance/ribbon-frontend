@@ -409,7 +409,7 @@ const PreviewStep: React.FC<{
             <div className="d-flex flex-column align-items-center">
               {/* Logo */}
               <ActionLogoContainer color={color}>
-                <WithdrawIcon color={color} />
+                <WithdrawIcon color={color} width={32} />
               </ActionLogoContainer>
 
               {/* Title */}
