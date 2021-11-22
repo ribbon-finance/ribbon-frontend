@@ -423,7 +423,7 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
                 className="mt-1"
               >
                 {`${
-                  prevWeekPerformance[vaultPerformanceTerm] >= 0 ? "+" : "-"
+                  prevWeekPerformance[vaultPerformanceTerm] >= 0 ? "+" : ""
                 }${prevWeekPerformance[vaultPerformanceTerm].toFixed(2)}%`}
               </Title>
             </VaultPerformanceChartKPI>
