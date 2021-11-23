@@ -144,7 +144,7 @@ const PreviewStep: React.FC<{
                   case "rstETH-THETA":
                     actionDetails.push({
                       key: "Max Slippage",
-                      value: "1.00%",
+                      value: "0.1%",
                     });
                     break;
                   default:
@@ -400,7 +400,7 @@ const PreviewStep: React.FC<{
                     )}
                   />
 
-                  <Title className="text-right">1.00%</Title>
+                  <Title className="text-right">0.1%</Title>
                 </div>
               );
           }
