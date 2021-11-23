@@ -164,7 +164,7 @@ export const VaultAddressMap: {
         v2: v2deployment.kovan.RibbonThetaVaultETHCall,
       }
     : {
-        v2: v2deployment.mainnet.RibbonThetaVaultstETHCall,
+        v2: v2deployment.mainnet.RibbonThetaVaultSTETHCall,
       },
   "rAAVE-THETA": isDevelopment()
     ? {
