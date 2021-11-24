@@ -529,7 +529,9 @@ const PreviewStep: React.FC<{
           {description}
 
           {/* Info Preview */}
-          {vaultOption === "rstETH-THETA" ? (
+          {vaultOption === "rstETH-THETA" &&
+          actionType === "withdraw" &&
+          withdrawOption === "instant" ? (
             <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
               <SecondaryText>Estimated {actionWord} Amount</SecondaryText>
               <Title className="text-right">
