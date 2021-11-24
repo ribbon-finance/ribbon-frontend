@@ -29,7 +29,7 @@ export const FullVaultList = [
   "rUSDC-ETH-P-THETA",
 ] as const;
 export type VaultOptions = typeof FullVaultList[number];
-const ProdExcludeVault: VaultOptions[] = ["rstETH-THETA"];
+const ProdExcludeVault: VaultOptions[] = [];
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
   "ryvUSDC-ETH-P-THETA",
@@ -164,7 +164,7 @@ export const VaultAddressMap: {
         v2: v2deployment.kovan.RibbonThetaVaultETHCall,
       }
     : {
-        v2: v2deployment.mainnet.RibbonThetaVaultstETHCall,
+        v2: v2deployment.mainnet.RibbonThetaVaultSTETHCall,
       },
   "rAAVE-THETA": isDevelopment()
     ? {
@@ -363,3 +363,5 @@ export const getERC20TokenAddress = (token: ERC20Token) =>
 export const LidoCurvePoolAddress = isDevelopment()
   ? ""
   : addresses.mainnet.lidoCurvePool;
+
+export const CurveSwapSlippage = 0.003;

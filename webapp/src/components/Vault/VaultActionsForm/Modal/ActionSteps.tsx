@@ -14,8 +14,10 @@ import {
   VaultVersion,
   LidoCurvePoolAddress,
   VaultAllowedDepositAssets,
+  CurveSwapSlippage,
 } from "shared/lib/constants/constants";
 import { isETHVault } from "shared/lib/utils/vault";
+import { amountAfterSlippage } from "shared/lib/utils/math";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
@@ -214,7 +216,28 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                 switch (vaultActionForm.withdrawOption) {
                   /** Instant withdraw for V2 */
                   case "instant":
-                    res = await vault.withdrawInstantly(amountStr);
+                    switch (vaultActionForm.vaultOption) {
+                      case "rstETH-THETA":
+                        /**
+                         * Default slippage of 0.3%
+                         */
+                        const curvePool = getCurvePool(
+                          library,
+                          LidoCurvePoolAddress
+                        );
+                        const minOut = await curvePool.get_dy(
+                          1,
+                          0,
+                          amountAfterSlippage(amount, CurveSwapSlippage),
+                          { gasLimit: 300000 }
+                        );
+                        res = await vault.withdrawInstantly(amountStr, minOut, {
+                          gasLimit: 220000,
+                        });
+                        break;
+                      default:
+                        res = await vault.withdrawInstantly(amountStr);
+                    }
                     break;
 
                   /** Initiate withdrawal for v2 */
@@ -228,14 +251,21 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                     switch (vaultActionForm.vaultOption) {
                       case "rstETH-THETA":
                         /**
-                         * Default slippage of 1%
+                         * Default slippage of 0.3%
                          */
                         const curvePool = getCurvePool(
                           library,
                           LidoCurvePoolAddress
                         );
-                        const minOut = await curvePool.get_dy(1, 0, amount);
-                        res = await vault.completeWithdraw(minOut);
+                        const minOut = await curvePool.get_dy(
+                          1,
+                          0,
+                          amountAfterSlippage(amount, CurveSwapSlippage),
+                          { gasLimit: 300000 }
+                        );
+                        res = await vault.completeWithdraw(minOut, {
+                          gasLimit: 300000,
+                        });
                         break;
                       default:
                         res = await vault.completeWithdraw();

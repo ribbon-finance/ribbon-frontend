@@ -98,11 +98,11 @@ export const TxStatusToast = () => {
   const getActionTitle = useCallback((_currentTx: PendingTransaction) => {
     switch (_currentTx.type) {
       case "rewardClaim":
-        return "Reward Claim Successful";
+        return "Reward Claim";
       case "withdrawInitiation":
         return "WITHDRAWAL INITIATED";
       default:
-        return `${capitalize(_currentTx.type)} Successful`;
+        return `${capitalize(_currentTx.type)}`;
     }
   }, []);
 
@@ -197,7 +197,7 @@ export const TxStatusToast = () => {
               ? "claim"
               : "success"
           }
-          title={getActionTitle(currentTx)}
+          title={getActionTitle(currentTx) + " success"}
           subtitle={getSubtitle(currentTx)}
         />
       );
