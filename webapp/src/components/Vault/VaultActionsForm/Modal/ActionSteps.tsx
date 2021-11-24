@@ -228,10 +228,11 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                         const minOut = await curvePool.get_dy(
                           1,
                           0,
-                          amountAfterSlippage(amount, CurveSwapSlippage)
+                          amountAfterSlippage(amount, CurveSwapSlippage),
+                          { gasLimit: 300000 }
                         );
                         res = await vault.withdrawInstantly(amountStr, minOut, {
-                          gasLimit: 300000,
+                          gasLimit: 220000,
                         });
                         break;
                       default:
@@ -259,9 +260,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                         const minOut = await curvePool.get_dy(
                           1,
                           0,
-                          amountAfterSlippage(amount, CurveSwapSlippage)
+                          amountAfterSlippage(amount, CurveSwapSlippage),
+                          { gasLimit: 300000 }
                         );
-                        res = await vault.completeWithdraw(minOut);
+                        res = await vault.completeWithdraw(minOut, {
+                          gasLimit: 300000,
+                        });
                         break;
                       default:
                         res = await vault.completeWithdraw();
