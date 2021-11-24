@@ -29,7 +29,7 @@ export const FullVaultList = [
   "rUSDC-ETH-P-THETA",
 ] as const;
 export type VaultOptions = typeof FullVaultList[number];
-const ProdExcludeVault: VaultOptions[] = ["rstETH-THETA"];
+const ProdExcludeVault: VaultOptions[] = [];
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
   "ryvUSDC-ETH-P-THETA",
