@@ -42,7 +42,7 @@ export interface StETHSwapEstimate {
 export const useCurvePoolEstimateStETHSwap = (
   getEstimate: Boolean,
   amount: BigNumber
-) => {
+): StETHSwapEstimate => {
   const { library } = useWeb3React();
   const { provider } = useWeb3Context();
   const [output, setOutput] = useState<StETHSwapEstimate>({
@@ -62,7 +62,7 @@ export const useCurvePoolEstimateStETHSwap = (
     );
 
     (async () => {
-      const minOut = await curvePool.get_dy(1, 0, amount);
+      const minOut = await curvePool.get_dy(1, 0, amount, { gasLimit: 300000 });
       setOutput({
         swapOutput: minOut,
         swapOutputWithSlippage: amountAfterSlippage(minOut, CurveSwapSlippage),

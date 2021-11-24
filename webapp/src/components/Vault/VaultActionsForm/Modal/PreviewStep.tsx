@@ -429,7 +429,10 @@ const PreviewStep: React.FC<{
                 <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
                   <SecondaryText>Estimated Withdraw Amount</SecondaryText>
                   <Title className="text-right">
-                    {formatBigNumber(swapOutput, getAssetDecimals(asset))}{" "}
+                    {formatBigNumber(
+                      swapOutput.isZero() ? amount : swapOutput,
+                      getAssetDecimals(asset)
+                    )}{" "}
                     {getAssetDisplay(asset)}
                   </Title>
                 </div>
@@ -535,7 +538,10 @@ const PreviewStep: React.FC<{
             <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
               <SecondaryText>Estimated {actionWord} Amount</SecondaryText>
               <Title className="text-right">
-                {formatBigNumber(swapOutput, getAssetDecimals(asset))}{" "}
+                {formatBigNumber(
+                  swapOutput.isZero() ? amount : swapOutput,
+                  getAssetDecimals(asset)
+                )}{" "}
                 {getAssetDisplay(asset)}
               </Title>
             </div>
