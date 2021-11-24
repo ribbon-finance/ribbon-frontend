@@ -62,6 +62,7 @@ export const useCurvePoolEstimateStETHSwap = (
     );
 
     (async () => {
+      if (amount.isZero()) return;
       const minOut = await curvePool.get_dy(1, 0, amount, { gasLimit: 300000 });
       setOutput({
         swapOutput: minOut,
