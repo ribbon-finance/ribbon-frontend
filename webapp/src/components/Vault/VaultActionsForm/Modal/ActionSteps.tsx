@@ -14,6 +14,7 @@ import {
   VaultVersion,
   LidoCurvePoolAddress,
   VaultAllowedDepositAssets,
+  CurveSwapSlippage,
 } from "shared/lib/constants/constants";
 import { isETHVault } from "shared/lib/utils/vault";
 import { amountAfterSlippage } from "shared/lib/utils/math";
@@ -218,7 +219,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                     switch (vaultActionForm.vaultOption) {
                       case "rstETH-THETA":
                         /**
-                         * Default slippage of 0.1%
+                         * Default slippage of 0.3%
                          */
                         const curvePool = getCurvePool(
                           library,
@@ -227,14 +228,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                         const minOut = await curvePool.get_dy(
                           1,
                           0,
-                          amountAfterSlippage(amount, 0.005)
+                          amountAfterSlippage(amount, CurveSwapSlippage)
                         );
-                        console.log(
-                          amountStr,
-                          minOut.toString(),
-                          amountAfterSlippage(amount, 0.005).toString()
-                        );
-                        res = await vault.withdrawInstantly(amountStr, 1, {
+                        res = await vault.withdrawInstantly(amountStr, minOut, {
                           gasLimit: 300000,
                         });
                         break;
@@ -254,7 +250,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                     switch (vaultActionForm.vaultOption) {
                       case "rstETH-THETA":
                         /**
-                         * Default slippage of 0.1%
+                         * Default slippage of 0.3%
                          */
                         const curvePool = getCurvePool(
                           library,
@@ -263,7 +259,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                         const minOut = await curvePool.get_dy(
                           1,
                           0,
-                          amountAfterSlippage(amount, 0.001)
+                          amountAfterSlippage(amount, CurveSwapSlippage)
                         );
                         res = await vault.completeWithdraw(minOut);
                         break;

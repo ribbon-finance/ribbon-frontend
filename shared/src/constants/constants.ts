@@ -363,3 +363,5 @@ export const getERC20TokenAddress = (token: ERC20Token) =>
 export const LidoCurvePoolAddress = isDevelopment()
   ? ""
   : addresses.mainnet.lidoCurvePool;
+
+export const CurveSwapSlippage = 0.003;

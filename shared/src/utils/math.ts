@@ -131,6 +131,5 @@ export const amountAfterSlippage = (
   const discountValue = ethers.utils
     .parseUnits("1", decimals)
     .sub(ethers.utils.parseUnits(slippage.toFixed(3), decimals));
-  console.log(discountValue.toString());
   return num.mul(discountValue).div(BigNumber.from(10).pow(decimals));
 };
