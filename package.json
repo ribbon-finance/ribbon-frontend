@@ -4,8 +4,8 @@
     "shared",
     "landing",
     "webapp",
-    "lbp",
-    "nft-drop"
+    "nft-drop",
+    "governance"
   ],
   "devDependencies": {
     "husky": "^6.0.0"
