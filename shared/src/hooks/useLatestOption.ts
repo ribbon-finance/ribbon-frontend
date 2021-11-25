@@ -9,7 +9,6 @@ import {
   VaultOptions,
   VaultVersion,
   VaultVersionList,
-  VaultFees,
 } from "../constants/constants";
 import {
   VaultActivityMeta,
@@ -21,30 +20,6 @@ import useVaultActivity, { useAllVaultActivities } from "./useVaultActivity";
 import { assetToFiat, formatOption } from "../utils/math";
 import { useAssetsPrice } from "./useAssetPrice";
 import { formatUnits } from "@ethersproject/units";
-
-const calculateV1APY = (depositAmount: number, premium: number) => {
-  return ((1 + (premium / depositAmount) * 0.9) ** 52 - 1) * 100;
-};
-
-const calculateV2APY = (
-  vaultOption: VaultOptions,
-  depositAmount: number,
-  premium: number
-) => {
-  const managementFee =
-    (premium + depositAmount) *
-    (parseFloat(VaultFees[vaultOption].v2?.managementFee || "0") / 100 / 52);
-  // Performance fees are directly applied on earnings
-  const performanceFee =
-    premium *
-    (parseFloat(VaultFees[vaultOption].v2?.performanceFee || "0") / 100);
-
-  const calculatedApy =
-    ((1 + (premium - managementFee - performanceFee) / depositAmount) ** 52 -
-      1) *
-    100;
-  return calculatedApy > 0 ? calculatedApy : 0;
-};
 
 export const useLatestOption = (
   vaultOption: VaultOptions,
