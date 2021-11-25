@@ -14,12 +14,12 @@ import {
   VaultVersion,
 } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
-import { useLatestAPY } from "shared/lib/hooks/useLatestOption";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
 import { useAssetsPriceHistory } from "shared/lib/hooks/useAssetPrice";
 import { assetToFiat } from "shared/lib/utils/math";
 import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
+import useLatestAPY from "shared/lib/hooks/useLatestAPY";
 
 const VaultPerformanceChartContainer = styled.div`
   background: ${colors.background.two};
@@ -69,6 +69,7 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
   const { priceHistory } = useVaultPriceHistory(vaultOption, vaultVersion);
   const { searchAssetPriceFromTimestamp } = useAssetsPriceHistory();
   const latestAPY = useLatestAPY(vaultOption, vaultVersion);
+
   const [vaultPerformanceTerm, setVaultPerformanceTerm] = useState<
     "crypto" | "fiat"
   >("crypto");

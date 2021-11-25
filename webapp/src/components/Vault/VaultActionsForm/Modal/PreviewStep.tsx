@@ -25,11 +25,11 @@ import {
 } from "shared/lib/assets/icons/icons";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import { useLatestAPY } from "shared/lib/hooks/useLatestOption";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { useCurvePoolEstimateStETHSwap } from "shared/lib/hooks/useCurvePool";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import useLatestAPY from "shared/lib/hooks/useLatestAPY";
 
 const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;

@@ -17,7 +17,7 @@ import {
 import { BaseText, Title } from "../../../designSystem";
 import colors from "../../../designSystem/colors";
 import theme from "../../../designSystem/theme";
-import { useLatestAPY } from "../../../hooks/useLatestOption";
+import useLatestAPY from "../../../hooks/useLatestAPY";
 import useTextAnimation from "../../../hooks/useTextAnimation";
 import { DefiScoreProtocol } from "../../../models/defiScore";
 import { AssetYieldsInfo } from "../../../store/types";

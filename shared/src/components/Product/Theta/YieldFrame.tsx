@@ -13,7 +13,7 @@ import {
 } from "../../../designSystem";
 import theme from "../../../designSystem/theme";
 import useAssetsYield from "../../../hooks/useAssetsYield";
-import { useLatestAPY } from "../../../hooks/useLatestOption";
+import useLatestAPY from "../../../hooks/useLatestAPY";
 import useTextAnimation from "../../../hooks/useTextAnimation";
 import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
 import { getAssetLogo } from "../../../utils/asset";

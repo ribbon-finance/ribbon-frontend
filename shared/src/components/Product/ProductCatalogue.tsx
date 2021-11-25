@@ -11,7 +11,7 @@ import {
 } from "../../constants/constants";
 
 import sizes from "../../designSystem/sizes";
-import { useLatestAPYs } from "../../hooks/useLatestOption";
+import { useLatestAPYs } from "../../hooks/useLatestAPY";
 import useScreenSize from "../../hooks/useScreenSize";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { useVaultsData } from "../../hooks/web3DataContext";
