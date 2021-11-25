@@ -27,6 +27,7 @@ import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { useLatestAPY } from "shared/lib/hooks/useLatestOption";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import { useCurvePoolEstimateStETHSwap } from "shared/lib/hooks/useCurvePool";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 
@@ -108,6 +109,11 @@ const PreviewStep: React.FC<{
     data: { withdrawals: v2Withdrawals },
   } = useV2VaultData(vaultOption);
 
+  const { swapOutput } = useCurvePoolEstimateStETHSwap(
+    vaultOption === "rstETH-THETA",
+    amount
+  );
+
   interface ActionDetail {
     key: string;
     value: string;
@@ -144,7 +150,7 @@ const PreviewStep: React.FC<{
                   case "rstETH-THETA":
                     actionDetails.push({
                       key: "Max Slippage",
-                      value: "1.00%",
+                      value: "0.3%",
                     });
                     break;
                   default:
@@ -400,7 +406,7 @@ const PreviewStep: React.FC<{
                     )}
                   />
 
-                  <Title className="text-right">1.00%</Title>
+                  <Title className="text-right">0.3%</Title>
                 </div>
               );
           }
@@ -419,13 +425,26 @@ const PreviewStep: React.FC<{
               {description}
 
               {/* Info Preview */}
-              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
-                <SecondaryText>Withdraw Amount</SecondaryText>
-                <Title className="text-right">
-                  {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
-                  {getAssetDisplay(asset)}
-                </Title>
-              </div>
+              {vaultOption === "rstETH-THETA" ? (
+                <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+                  <SecondaryText>Estimated Withdraw Amount</SecondaryText>
+                  <Title className="text-right">
+                    {formatBigNumber(
+                      swapOutput.isZero() ? amount : swapOutput,
+                      getAssetDecimals(asset)
+                    )}{" "}
+                    {getAssetDisplay(asset)}
+                  </Title>
+                </div>
+              ) : (
+                <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+                  <SecondaryText>Withdraw Amount</SecondaryText>
+                  <Title className="text-right">
+                    {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
+                    {getAssetDisplay(asset)}
+                  </Title>
+                </div>
+              )}
               <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
                 <SecondaryText>Product</SecondaryText>
                 <Title className="text-right">
@@ -513,13 +532,28 @@ const PreviewStep: React.FC<{
           {description}
 
           {/* Info Preview */}
-          <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
-            <SecondaryText>{actionWord} Amount</SecondaryText>
-            <Title className="text-right">
-              {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
-              {getAssetDisplay(asset)}
-            </Title>
-          </div>
+          {vaultOption === "rstETH-THETA" &&
+          actionType === "withdraw" &&
+          withdrawOption === "instant" ? (
+            <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+              <SecondaryText>Estimated {actionWord} Amount</SecondaryText>
+              <Title className="text-right">
+                {formatBigNumber(
+                  swapOutput.isZero() ? amount : swapOutput,
+                  getAssetDecimals(asset)
+                )}{" "}
+                {getAssetDisplay(asset)}
+              </Title>
+            </div>
+          ) : (
+            <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+              <SecondaryText>{actionWord} Amount</SecondaryText>
+              <Title className="text-right">
+                {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
+                {getAssetDisplay(asset)}
+              </Title>
+            </div>
+          )}
           {detailRows.map((detail, index) => (
             <div
               className="d-flex w-100 flex-row align-items-center justify-content-between mt-4"
