@@ -6,9 +6,10 @@ import useScreenSize from "shared/lib/hooks/useScreenSize";
 import useEagerConnect from "shared/lib/hooks/useEagerConnect";
 import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal";
 import Header from "./Header/Header";
-import Homepage from "../pages/Homepage/Homepage";
+import Homepage from "../pages/Homepage";
 import Footer from "./Footer/Footer";
 import colors from "shared/lib/designSystem/colors";
+import ProfilePage from "../pages/ProfilePage";
 
 const Root = styled.div<{ screenHeight: number }>`
   background-color: ${colors.background.one};
@@ -30,6 +31,9 @@ const RootApp = () => {
         <Switch>
           <Route path="/" exact>
             <Homepage />
+          </Route>
+          <Route path="/profile" exact>
+            <ProfilePage />
           </Route>
         </Switch>
         <Footer />

@@ -11,7 +11,6 @@ import { NavItemProps, MobileMenuOpenProps } from "./types";
 import AccountStatus from "../Wallet/AccountStatus";
 import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
-import { useWeb3React } from "@web3-react/core";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;

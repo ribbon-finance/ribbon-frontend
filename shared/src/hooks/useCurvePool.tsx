@@ -69,7 +69,7 @@ export const useCurvePoolEstimateStETHSwap = (
         swapOutputWithSlippage: amountAfterSlippage(minOut, CurveSwapSlippage),
       });
     })();
-  }, [library, provider]);
+  }, [amount, getEstimate, library, provider]);
 
   return output;
 };
