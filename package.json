@@ -4,7 +4,6 @@
     "shared",
     "landing",
     "webapp",
-    "lbp",
     "nft-drop"
   ],
   "devDependencies": {
