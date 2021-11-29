@@ -66,7 +66,7 @@ const getPriceHistoryFromPeriod = (
  * The calculation shall be calculated based on the start of previous period versus the the start of current period.
  * Each period consist of a week, starting from a friday UTC 10am until the next friday UTC 10am.
  */
-const calculateAPYFromPriceHistory = (
+export const calculateAPYFromPriceHistory = (
   priceHistory: VaultPriceHistory[],
   decimals: number,
   startAtWeekBefore: boolean
