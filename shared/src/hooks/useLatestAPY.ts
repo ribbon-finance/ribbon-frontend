@@ -68,8 +68,7 @@ const getPriceHistoryFromPeriod = (
  */
 export const calculateAPYFromPriceHistory = (
   priceHistory: VaultPriceHistory[],
-  decimals: number,
-  startAtWeekBefore: boolean
+  decimals: number
 ) => {
   const periodStart = moment()
     .isoWeekday("friday")
@@ -82,10 +81,10 @@ export const calculateAPYFromPriceHistory = (
   if (periodStart.isAfter(moment())) {
     periodStart.subtract(1, "week");
   }
-
-  if (startAtWeekBefore) {
-    periodStart.subtract(1, "week");
-  }
+  /**
+   * Subtract 1 week so that calculation account for fees as well
+   */
+  periodStart.subtract(1, "week");
 
   while (true) {
     const priceHistoryFromPeriod = getPriceHistoryFromPeriod(
@@ -135,12 +134,22 @@ export const useLatestAPY = (
     vaultOption,
     vaultVersion
   );
-  let startAtWeekBefore = false;
 
-  switch (vaultOption) {
-    case "rstETH-THETA":
-    case "ryvUSDC-ETH-P-THETA":
-      startAtWeekBefore = true;
+  switch (vaultVersion) {
+    case "v2":
+      switch (vaultOption) {
+        /**
+         * TODO: Temporary hardcode their APY as their subgraph vault performance are being resolved
+         */
+        case "rAAVE-THETA":
+          /**
+           * Notes: Related to overcharging issue
+           * AAVE Vault pricePerShare issue should automatically be resolved on 10th Dec where the APY will interpolate based on the duration from 3rd Dec to 10th Dec
+           */
+          return { fetched: true, res: 8.8334241 };
+        case "rstETH-THETA":
+          return { fetched: true, res: 12.1910215 };
+      }
   }
 
   return {
@@ -149,8 +158,7 @@ export const useLatestAPY = (
       ? 0
       : calculateAPYFromPriceHistory(
           priceHistory,
-          getAssetDecimals(getAssets(vaultOption)),
-          startAtWeekBefore
+          getAssetDecimals(getAssets(vaultOption))
         ),
   };
 };
@@ -169,12 +177,21 @@ export const useLatestAPYs = () => {
             VaultList.map((vaultOption) => {
               const priceHistory = data[version][vaultOption];
 
-              let startAtWeekBefore = false;
-
-              switch (vaultOption) {
-                case "rstETH-THETA":
-                case "ryvUSDC-ETH-P-THETA":
-                  startAtWeekBefore = true;
+              switch (version) {
+                case "v2":
+                  switch (vaultOption) {
+                    /**
+                     * TODO: Temporary hardcode their APY as their subgraph vault performance are being resolved
+                     */
+                    case "rAAVE-THETA":
+                      /**
+                       * Notes: Related to overcharging issue
+                       * AAVE Vault pricePerShare issue should automatically be resolved on 10th Dec where the APY will interpolate based on the duration from 3rd Dec to 10th Dec
+                       */
+                      return [vaultOption, 8.8334241];
+                    case "rstETH-THETA":
+                      return [vaultOption, 12.1910215];
+                  }
               }
 
               return [
@@ -183,8 +200,7 @@ export const useLatestAPYs = () => {
                   ? 0
                   : calculateAPYFromPriceHistory(
                       priceHistory,
-                      getAssetDecimals(getAssets(vaultOption)),
-                      startAtWeekBefore
+                      getAssetDecimals(getAssets(vaultOption))
                     ),
               ];
             })
