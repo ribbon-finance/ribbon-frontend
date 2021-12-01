@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 
-import { PrimaryText, Subtitle, Title } from "shared/lib/designSystem";
+import {
+  PrimaryText,
+  SecondaryText,
+  Subtitle,
+  Title,
+} from "shared/lib/designSystem";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
+import StakingSummaryChart from "./StakingSummaryChart";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
 
 const SummaryContainer = styled.div`
   display: flex;
@@ -20,10 +28,36 @@ const LockupExpiryContainer = styled.div`
   background: ${colors.green}1F;
 `;
 
+const LockupData = styled.div`
+  width: 50%;
+  padding: 16px 24px;
+  border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
+
+  &:nth-child(odd) {
+    border-right: ${theme.border.width} ${theme.border.style} ${colors.border};
+  }
+`;
+
 const StakingSummary = () => {
+  const renderDataTooltip = useCallback(
+    (title: string, explanation: string, learnMoreURL?: string) => (
+      <TooltipExplanation
+        title={title}
+        explanation={explanation}
+        renderContent={({ ref, ...triggerHandler }) => (
+          <HelpInfo containerRef={ref} {...triggerHandler}>
+            i
+          </HelpInfo>
+        )}
+        learnMoreURL={learnMoreURL}
+      />
+    ),
+    []
+  );
+
   return (
-    <div className="d-flex flex-column w-100">
-      <Title className="mt-5" fontSize={18} lineHeight={24}>
+    <div className="d-flex flex-column w-100 mt-5 mb-3">
+      <Title fontSize={18} lineHeight={24}>
         STAKING SUMMARY
       </Title>
       <SummaryContainer>
@@ -73,6 +107,56 @@ const StakingSummary = () => {
         </div>
 
         {/* Graph */}
+        <StakingSummaryChart />
+
+        {/* Stats */}
+        <div className="d-flex flex-wrap">
+          <LockupData>
+            <div className="d-flex align-items-center">
+              <SecondaryText>Locked RBN</SecondaryText>
+              {renderDataTooltip(
+                "Locked RBN",
+                "Locked RBN is the total amount of RBN locked in the staking contract."
+              )}
+            </div>
+            <Title className="mt-1">10,000,000</Title>
+          </LockupData>
+
+          <LockupData>
+            <div className="d-flex align-items-center">
+              <SecondaryText>Unstaked RBN</SecondaryText>
+              {renderDataTooltip(
+                "Locked RBN",
+                "Locked RBN is the total amount of RBN locked in the staking contract."
+              )}
+            </div>
+            <Title className="mt-1">5,000.00</Title>
+          </LockupData>
+
+          <LockupData>
+            <div className="d-flex align-items-center">
+              <SecondaryText>RBN Staking Rewards</SecondaryText>
+              {renderDataTooltip(
+                "Locked RBN",
+                "Locked RBN is the total amount of RBN locked in the staking contract."
+              )}
+            </div>
+            <Title className="mt-1" color={colors.green}>
+              1,273.14
+            </Title>
+          </LockupData>
+
+          <LockupData>
+            <div className="d-flex align-items-center">
+              <SecondaryText>Rewards Booster</SecondaryText>
+              {renderDataTooltip(
+                "Locked RBN",
+                "Locked RBN is the total amount of RBN locked in the staking contract."
+              )}
+            </div>
+            <Title className="mt-1">5.23x</Title>
+          </LockupData>
+        </div>
       </SummaryContainer>
     </div>
   );

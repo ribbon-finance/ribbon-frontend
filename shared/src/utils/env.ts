@@ -30,3 +30,7 @@ export const getDefaultNetworkName = () =>
   isDevelopment() ? "kovan" : "mainnet";
 
 export const getDefaultChainID = () => (isDevelopment() ? 42 : 1);
+
+export const getENSSubgraphURI = () =>
+  process.env.REACT_APP_ENS_SUBGRAPHQL_URL ||
+  "https://api.thegraph.com/subgraphs/name/ensdomains/ens";
