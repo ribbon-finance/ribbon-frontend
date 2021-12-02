@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { isAddress } from "ethers/lib/utils";
 import axios from "axios";
-import { getENSSubgraphURI } from "../utils/env";
+import { getENSSubgraphURI, isDevelopment } from "../utils/env";
 import { useWeb3Context } from "./web3Context";
 import { Provider } from "ethers/node_modules/@ethersproject/providers";
 
@@ -20,10 +20,22 @@ const useENSSearch = (searchString: string) => {
 
   const [result, setResult] = useState<ENSSearchResult>();
   const [loading, setLoading] = useState(false);
-  const [counter, setCounter] = useState(0);
+  const [, setCounter] = useState(0);
 
   const searchResult = useCallback(
     async (_provider: Provider, _searchString: string) => {
+      /**
+       * Kovan does not support ENS
+       */
+      if (isDevelopment()) {
+        setResult(
+          isAddress(_searchString)
+            ? { address: _searchString, texts: [] }
+            : undefined
+        );
+        return;
+      }
+
       setLoading(true);
 
       /**

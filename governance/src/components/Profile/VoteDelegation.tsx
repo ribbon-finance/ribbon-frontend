@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 
@@ -49,11 +49,22 @@ const DelegationButton = styled.div<{ widthType: "fitContent" | "fullWidth" }>`
   background: ${colors.green}1F;
 `;
 
+const DelegationStats = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px;
+  width: 50%;
+
+  &:first-child {
+    border-right: ${theme.border.width} ${theme.border.style} ${colors.border};
+  }
+`;
+
 const VoteDelegation = () => {
   const { account } = useWeb3React();
   const delegation: string | undefined =
     Math.random() < 1
-      ? "0x5555763613a12D8F3e73be831DFf8598089d3dCa"
+      ? "0x5555763613a12D8F3e73be831DFf8598089d3dCa" || undefined
       : undefined;
   const { data } = useENSSearch(delegation || "");
 
@@ -83,7 +94,9 @@ const VoteDelegation = () => {
             Delegated To
           </SecondaryText>
           <Title className="mt-1">
-            {data.labelName || truncateAddress(data.address)}
+            {account?.toLowerCase() === data.address.toLowerCase()
+              ? "SELF"
+              : data.labelName || truncateAddress(data.address)}
           </Title>
         </div>
         <DelegationButton
@@ -91,16 +104,14 @@ const VoteDelegation = () => {
           className="ml-auto"
           widthType="fitContent"
         >
-          <PrimaryText color={colors.green}>
-            Add Your Voting Preferences
-          </PrimaryText>
+          <PrimaryText color={colors.green}>Change Delegate</PrimaryText>
         </DelegationButton>
       </>
     );
-  }, [data]);
+  }, [account, data]);
 
   return (
-    <div className="d-flex flex-column w-100 my-5 mb-3">
+    <div className="d-flex flex-column w-100 mt-5 mb-3">
       <Title fontSize={18} lineHeight={24}>
         VOTE DELEGATION
       </Title>
@@ -109,6 +120,21 @@ const VoteDelegation = () => {
         <VoteDelegationPreferenceContainer>
           {delegationContent}
         </VoteDelegationPreferenceContainer>
+
+        <div className="d-flex my-3">
+          <DelegationStats>
+            <SecondaryText fontSize={12} lineHeight={16}>
+              Your Voting Power (SRBN)
+            </SecondaryText>
+            <Title className="mt-2">5,235.27</Title>
+          </DelegationStats>
+          <DelegationStats>
+            <SecondaryText fontSize={12} lineHeight={16}>
+              Voting Power Received (SRBN)
+            </SecondaryText>
+            <Title className="mt-2">2,500.00</Title>
+          </DelegationStats>
+        </div>
       </VoteDelegationContainer>
     </div>
   );

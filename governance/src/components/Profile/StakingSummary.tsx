@@ -26,6 +26,7 @@ const LockupExpiryContainer = styled.div`
   display: flex;
   padding: 8px 16px;
   background: ${colors.green}1F;
+  border-radius: ${theme.border.radiusSmall};
 `;
 
 const LockupData = styled.div`
