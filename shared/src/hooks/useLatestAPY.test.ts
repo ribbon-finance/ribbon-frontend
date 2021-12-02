@@ -33,44 +33,11 @@ if (pastFriday.isAfter(moment())) {
 }
 
 /**
- * This is a typical case where we estimate APY based on the latest yield generated from the past
- * friday's contract sold
- */
-it("Non yield-token collaterized vault", () => {
-  const priceHistory: VaultPriceHistory[] = [
-    {
-      pricePerShare: basePricePerShare,
-      timestamp: pastFriday
-        .clone()
-        .subtract(1, "weeks")
-        .add(30, "minutes")
-        .unix(),
-    },
-    {
-      pricePerShare: pricePerShareA,
-      timestamp: pastFriday.clone().add(30, "minutes").unix(),
-    },
-    {
-      pricePerShare: pricePerShareAB,
-      timestamp: pastFriday.clone().add(2, "hours").unix(),
-    },
-  ];
-
-  const result = calculateAPYFromPriceHistory(priceHistory, 18, false);
-
-  /**
-   * It should take the latest yield earn, which is 10% increment from last week close short on this
-   * week 10AM UTC and interpolate with 52 weeks
-   */
-  expect(result).toBe((1.1 ** 52 - 1) * 100);
-});
-
-/**
- * This is a typical case for vault with yield-token collaterized where we will estimate APY based on
- * previous whole week performance so yield-token APY are also accounted into the calculation.
+ * This is a typical case for vault where we will estimate APY based on previous whole week
+ * performance so yield-token APY and fees are also accounted into the calculation.
  * This test case test on weeks where previous week are ITM
  */
-it("Yield-token collaterized vault on ITM week", () => {
+it("Vault performance on ITM week", () => {
   const priceHistory: VaultPriceHistory[] = [
     {
       pricePerShare: basePricePerShare,
@@ -90,22 +57,21 @@ it("Yield-token collaterized vault on ITM week", () => {
     },
   ];
 
-  const result = calculateAPYFromPriceHistory(priceHistory, 18, true);
+  const result = calculateAPYFromPriceHistory(priceHistory, 18);
 
   /**
-   * It should take the latest yield earn, which is 5% increment from 10AM UTC previous week and
+   * It should take last round performance, which is 5% increment from 10AM UTC previous week and
    * interpolate with 52 weeks
    */
   expect(result).toBe((1.05 ** 52 - 1) * 100);
 });
 
 /**
- * This is test case for vault with yield-token collaterized where we will estimate APY based on
- * previous profitable whole week performance so yield-token APY are also accounted into the
- * calculation.
+ * This is test case for vault where we will estimate APY based on previous profitable round so that
+ * we get accurate representation of APY.
  * This is mainly due to unable to estimate accurately when option are exercised.
  */
-it("Yield-token collaterized vault on OTM week", () => {
+it("Vault performance on OTM week", () => {
   const priceHistory: VaultPriceHistory[] = [
     {
       pricePerShare: basePricePerShare,
@@ -133,7 +99,7 @@ it("Yield-token collaterized vault on OTM week", () => {
     },
   ];
 
-  const result = calculateAPYFromPriceHistory(priceHistory, 18, true);
+  const result = calculateAPYFromPriceHistory(priceHistory, 18);
 
   /**
    * It should take the latest yield earn, which is 5% increment from 10AM UTC 2 weeks ago and
@@ -143,10 +109,9 @@ it("Yield-token collaterized vault on OTM week", () => {
 });
 
 /**
- * This test case test cases where a non yield-token collaterized vault are less than a week old and
- * without option sold
+ * This test case test cases where a vault is less than a week old and without option sold
  */
-it("Newly created non yield-token collaterized vault with less than a week old, without option sold", () => {
+it("Newly created vault with less than a week old, without option sold", () => {
   const durationFromPastFriday = moment.duration(moment().diff(pastFriday));
   /**
    * A random time between last friday and now where the contract is created
@@ -162,41 +127,15 @@ it("Newly created non yield-token collaterized vault with less than a week old, 
     },
   ];
 
-  const result = calculateAPYFromPriceHistory(priceHistory, 18, false);
+  const result = calculateAPYFromPriceHistory(priceHistory, 18);
 
   expect(result).toBe(0);
 });
 
 /**
- * This test case test cases where a yield-token collaterized vault are less than a week old and
- * without option sold
+ * This test case test cases where a vault is less than a week old and with option sold
  */
-it("Newly created yield-token collaterized vault with less than a week old, without option sold", () => {
-  const durationFromPastFriday = moment.duration(moment().diff(pastFriday));
-  /**
-   * A random time between last friday and now where the contract is created
-   */
-  const contractCreationTime = pastFriday
-    .clone()
-    .add(durationFromPastFriday.asSeconds() / 2, "seconds");
-
-  const priceHistory: VaultPriceHistory[] = [
-    {
-      pricePerShare: basePricePerShare,
-      timestamp: contractCreationTime.unix(),
-    },
-  ];
-
-  const result = calculateAPYFromPriceHistory(priceHistory, 18, true);
-
-  expect(result).toBe(0);
-});
-
-/**
- * This test case test cases where a non yield-token collaterized vault are less than a week old and
- * with option sold
- */
-it("Newly created non yield-token collaterized vault with less than a week old, with option sold", () => {
+it("Newly created vault with less than a week old, with option sold", () => {
   const durationFromPastFriday = moment.duration(moment().diff(pastFriday));
   /**
    * A random time between last friday and now where the contract is created
@@ -219,39 +158,7 @@ it("Newly created non yield-token collaterized vault with less than a week old, 
     },
   ];
 
-  const result = calculateAPYFromPriceHistory(priceHistory, 18, false);
-
-  expect(result).toBe((1.05 ** 52 - 1) * 100);
-});
-
-/**
- * This test case test cases where a yield-token collaterized vault are less than a week old and
- * with option sold
- */
-it("Newly created yield-token collaterized vault with less than a week old, with option sold", () => {
-  const durationFromPastFriday = moment.duration(moment().diff(pastFriday));
-  /**
-   * A random time between last friday and now where the contract is created
-   */
-  const contractCreationTime = pastFriday
-    .clone()
-    .add(durationFromPastFriday.asSeconds() / 2, "seconds");
-  const optionSoldTime = contractCreationTime
-    .clone()
-    .add(durationFromPastFriday.asSeconds() / 4, "seconds");
-
-  const priceHistory: VaultPriceHistory[] = [
-    {
-      pricePerShare: basePricePerShare,
-      timestamp: contractCreationTime.unix(),
-    },
-    {
-      pricePerShare: pricePerShareA,
-      timestamp: optionSoldTime.unix(),
-    },
-  ];
-
-  const result = calculateAPYFromPriceHistory(priceHistory, 18, true);
+  const result = calculateAPYFromPriceHistory(priceHistory, 18);
 
   expect(result).toBe((1.05 ** 52 - 1) * 100);
 });
