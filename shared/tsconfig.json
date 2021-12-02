@@ -16,16 +16,18 @@
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": false,
+    "isolatedModules": true,
     "noEmit": false,
     "outDir": "lib",
     "jsx": "react-jsx",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "strictNullChecks": true,
+    "strictNullChecks": true
   },
-  "include": ["src"],
+  "include": [
+    "src"
+  ],
   "exclude": [
     "node_modules",
     "**/*.test.ts",
@@ -33,5 +35,7 @@
     "**/*.stories.tsx",
     "./src/setupTests.ts"
   ],
-  "files": ["./src/index.ts"]
+  "files": [
+    "./src/index.ts"
+  ]
 }
