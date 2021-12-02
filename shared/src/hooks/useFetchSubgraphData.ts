@@ -51,8 +51,6 @@ const useFetchSubgraphData = () => {
       console.time("Subgraph Data Fetch");
     }
 
-    console.log(vaultPriceHistoryGraphql("v2"));
-
     const responsesAcrossVersions = Object.fromEntries(
       await Promise.all(
         VaultVersionList.map(async (version) => {
