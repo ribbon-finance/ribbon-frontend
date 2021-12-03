@@ -5,7 +5,7 @@ import { VaultList } from "shared/lib/constants/constants";
 
 const useGovernanceActivity = () => {
   return {
-    activities: [...new Array(13)].map((_, index) => {
+    activities: [...new Array(15)].map((_, index) => {
       const randNum = Math.ceil(Math.random() * 5);
 
       switch (randNum) {

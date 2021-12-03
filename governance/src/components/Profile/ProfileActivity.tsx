@@ -2,7 +2,8 @@ import React, { useCallback, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
 import moment from "moment";
-import { formatUnits, parseUnits } from "@ethersproject/units";
+import { formatUnits } from "@ethersproject/units";
+import { useWeb3React } from "@web3-react/core";
 
 import { Title, SecondaryText, BaseLink } from "shared/lib/designSystem";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
@@ -19,11 +20,22 @@ import Pagination from "shared/lib/components/Common/Pagination";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { getAssets, getEtherscanURI } from "shared/lib/constants/constants";
-import { ExternalIcon } from "shared/lib/assets/icons/icons";
-import { getAssetDecimals } from "shared/lib/utils/asset";
+import {
+  getEtherscanURI,
+  getDisplayAssets,
+} from "shared/lib/constants/constants";
+import {
+  CheckIcon,
+  CloseIcon,
+  DelegateIcon,
+  ExternalIcon,
+  StakeIcon,
+  UnstakeIcon,
+} from "shared/lib/assets/icons/icons";
 import { formatAmount } from "shared/lib/utils/math";
 import { productCopies } from "shared/lib/components/Product/productCopies";
+import { getAssetLogo } from "shared/lib/utils/asset";
+import { truncateAddress } from "shared/lib/utils/address";
 
 const ActivityContainer = styled.div`
   display: flex;
@@ -68,6 +80,7 @@ const ExternalLinkIcon = styled(ExternalIcon)`
 const perPage = 5;
 
 const ProfileActivity = () => {
+  const { account } = useWeb3React();
   const { width } = useScreenSize();
   const { activities } = useGovernanceActivity();
   type ActivityType = typeof activities[number];
@@ -108,27 +121,71 @@ const ProfileActivity = () => {
     switch (activity.type) {
       case "allocateVote":
         return `${getVaultColor(activity.vault!)}1F`;
-      case "unstake":
+      case "stake":
         return `${colors.red}1F`;
       case "vote":
-        return activity.vote ? `${colors.green}1F` : `${colors.red}1F`;
+        return activity.vote === "for"
+          ? `${colors.green}1F`
+          : `${colors.red}1F`;
       default:
         return undefined;
     }
   }, []);
 
-  const getActivityTitle = useCallback((activity: ActivityType) => {
+  const renderActivityLogo = useCallback((activity: ActivityType) => {
     switch (activity.type) {
       case "allocateVote":
-        return "ALLOCATED VOTING POWER";
+        const asset = getDisplayAssets(activity.vault!);
+        const Logo = getAssetLogo(asset);
+        switch (asset) {
+          case "WETH":
+            return <Logo height="70%" />;
+          default:
+            return <Logo />;
+        }
       case "vote":
-        return `VOTED ${activity.vote ? "FOR" : "AGAINST"} PROPOSAL ${
-          activity.proposal
-        }`;
-      default:
-        return activity.type;
+        switch (activity.vote) {
+          case "for":
+            return <CheckIcon color={colors.green} />;
+          default:
+            return <CloseIcon color={colors.red} />;
+        }
+      case "stake":
+        return <StakeIcon color={colors.red} />;
+      case "unstake":
+        return <UnstakeIcon />;
+      case "delegate":
+        return <DelegateIcon width="20px" />;
     }
   }, []);
+
+  const getActivityTitle = useCallback(
+    (activity: ActivityType) => {
+      switch (activity.type) {
+        case "allocateVote":
+          return "ALLOCATED VOTING POWER";
+        case "vote":
+          return `VOTED ${
+            activity.vote === "for" ? "FOR" : "AGAINST"
+          } PROPOSAL ${activity.proposal}`;
+        case "stake":
+        case "unstake":
+          return `${activity.type}D`;
+        case "delegate":
+          return (
+            <>
+              DELEGATED VOTES <span style={{ color: colors.text }}>TO</span>{" "}
+              {activity.address === account
+                ? "SELF"
+                : truncateAddress(activity.address!)}
+            </>
+          );
+        default:
+          return activity.type;
+      }
+    },
+    [account]
+  );
 
   const renderActivityData = useCallback((activity: ActivityType) => {
     switch (activity.type) {
@@ -213,9 +270,9 @@ const ProfileActivity = () => {
             .map((activity) => (
               <ActivityContainer>
                 {/* Logo */}
-                <ActivityLogoContainer
-                  color={getActivityLogoColor(activity)}
-                ></ActivityLogoContainer>
+                <ActivityLogoContainer color={getActivityLogoColor(activity)}>
+                  {renderActivityLogo(activity)}
+                </ActivityLogoContainer>
 
                 {/* Title and time */}
                 <div className="d-flex flex-column mr-auto">
