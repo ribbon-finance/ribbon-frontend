@@ -1,9 +1,9 @@
 import React from "react";
 import { Col, Container, Row } from "react-bootstrap";
-import ProfileActivity from "../components/Profile/ProfileActivity";
 
+import ProfileActivity from "../components/Profile/ProfileActivity";
 import StakingSummary from "../components/Profile/StakingSummary";
-import VoteDelegation from "../components/Profile/VoteDelegation";
+import VoteDelegation from "../components/Delegate/VoteDelegation";
 
 const ProfilePage = () => {
   return (

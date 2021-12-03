@@ -82,10 +82,20 @@ export const BaseModalContentColumn = styled.div<{
       : `${props.marginTop === undefined ? 24 : props.marginTop}px`};
 `;
 
+export const BaseModalWarning = styled.div<{ color: string }>`
+  display: flex;
+  align-items: center;
+  margin-top: 24px;
+  padding: 8px;
+  border-radius: ${theme.border.radiusSmall};
+  background: ${(props) => props.color}1F;
+`;
+
 export const Title = styled.span<{
   color?: string;
   fontSize?: number;
   lineHeight?: number;
+  letterSpacing?: number;
 }>`
   color: ${(props) => (props.color ? props.color : colors.primaryText)};
   font-family: VCR, sans-serif;
@@ -94,6 +104,8 @@ export const Title = styled.span<{
   text-transform: uppercase;
   ${(props) => (props.fontSize ? `font-size: ${props.fontSize}px;` : ``)}
   ${(props) => (props.lineHeight ? `line-height: ${props.lineHeight}px;` : ``)}
+  ${(props) =>
+    props.letterSpacing ? `letter-spacing: ${props.letterSpacing}px;` : ""}
 `;
 
 export const Subtitle = styled.span<{
