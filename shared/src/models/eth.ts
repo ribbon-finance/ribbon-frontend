@@ -8,6 +8,7 @@ export const ERC20TokenList = [
   "steth",
   "aave",
   "rbn",
+  "wavax",
   ...FullVaultList,
 ] as const;
 export type ERC20Token = typeof ERC20TokenList[number];

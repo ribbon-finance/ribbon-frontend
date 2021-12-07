@@ -5,6 +5,7 @@ import { DefiScoreProtocol, DefiScoreToken } from "../models/defiScore";
 
 export const AssetsList = [
   "AAVE",
+  "WAVAX",
   "WETH",
   "USDC",
   "WBTC",

@@ -363,7 +363,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         the vault expire{" "}
         <TooltipExplanation
           title="IN-THE-MONEY"
-          explanation="An ETH call option is in-the-money (ITM) if the strike price is below the market price of ETH."
+          explanation="An AAVE call option is in-the-money (ITM) if the strike price is below the market price of AAVE."
           learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
           renderContent={({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
@@ -383,6 +383,61 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           <br />
           <br />
           Stake your rAAVE-THETA tokens in the rAAVE-THETA staking pool to earn
+          $RBN rewards.
+        </>
+      ),
+    },
+  },
+  "rAVAX-THETA": {
+    title: "T-AVAX-C",
+    subtitle: "AVAX Call",
+    description:
+      "Generates yield by running an automated AVAX covered call strategy.",
+    tags: ["COVERED CALL"],
+    strategy: (
+      <>
+        The vault earns yield on its AVAX deposits by running a weekly automated AVAX{" "}
+        <TooltipExplanation
+          title="COVERED CALL"
+          explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
+          learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              covered call
+            </HighlighText>
+          )}
+        />{" "}
+        strategy. The vault reinvests the yield earned back into the strategy,
+        effectively compounding the yields for depositors over time.
+      </>
+    ),
+    vaultRisk: (
+      <>
+        The primary risk for running this covered call strategy is that the
+        vault may incur a weekly loss in the case where the call options sold by
+        the vault expire{" "}
+        <TooltipExplanation
+          title="IN-THE-MONEY"
+          explanation="An AVAX call option is in-the-money (ITM) if the strike price is below the market price of AVAX."
+          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              in-the-money
+            </HighlighText>
+          )}
+        />{" "}
+        (meaning the price of AVAX is above the strike price of the call options
+        minted by the vault).
+      </>
+    ),
+    liquidityMining: {
+      explanation: (
+        <>
+          rAVAX-THETA is a token that represents AVAX deposits in the AVAX Theta
+          Vault (T-AVAX-C).
+          <br />
+          <br />
+          Stake your rAVAX-THETA tokens in the rAVAX-THETA staking pool to earn
           $RBN rewards.
         </>
       ),
