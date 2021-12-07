@@ -194,7 +194,14 @@ export const VaultAddressMap: {
     : {
         v2: v2deployment.mainnet.RibbonThetaVaultAAVECall,
       },
-
+  "rAVAX-THETA": isDevelopment()
+    ? {
+        // FIXME: Update to Avax
+        v2: v2deployment.kovan.RibbonThetaVaultETHCall,
+      }
+    : {
+        v2: v2deployment.mainnet.RibbonThetaVaultAAVECall,
+      },
 };
 
 /**

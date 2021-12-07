@@ -15,7 +15,7 @@ export const getERC20Token = (
     const provider = useSigner ? library.getSigner() : library;
 
     return IERC20Factory.connect(
-      getERC20TokenAddress(token),
+      getERC20TokenAddress(token, 'avax'),
       provider
     );
   }
