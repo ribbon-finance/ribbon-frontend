@@ -87,7 +87,7 @@ const livelyAnimation = (position: "top" | "bottom") => keyframes`
   }
 
   50% {
-    background-position-x: ${position === "top" ? 100 : 0}%; 
+    background-position-x: ${position === "top" ? 100 : 0}%;
   }
 
   100% {
@@ -357,6 +357,8 @@ const HeroSection: React.FC<{
           />
         );
       case "AAVE":
+        return <Logo showBackground />;
+      case "WAVAX":
         return <Logo showBackground />;
       default:
         return <Logo />;
