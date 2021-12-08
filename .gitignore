@@ -120,3 +120,4 @@ dist
 build/
 
 .vercel
+.DS_Store
