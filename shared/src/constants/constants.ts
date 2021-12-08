@@ -194,7 +194,6 @@ export const VaultAddressMap: {
     : {
         v2: v2deployment.mainnet.RibbonThetaVaultAAVECall,
       },
-
 };
 
 /**
@@ -324,7 +323,7 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "rAAVE-THETA": BigNumber.from(3100).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rAAVE-THETA")))
   ),
-  "rAVAX-THETA": BigNumber.from(3100).mul(
+  "rAVAX-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rAVAX-THETA")))
   ),
 };

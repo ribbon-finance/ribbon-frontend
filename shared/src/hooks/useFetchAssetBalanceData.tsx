@@ -49,7 +49,7 @@ const useFetchAssetBalanceData = (
 
     const responses = await Promise.all(
       AssetsList.map(async (asset) => {
-        const balance = await (asset === "WETH"
+        const balance = await (asset === "WETH" || asset === 'WAVAX'
           ? library.getBalance(account!)
           : getERC20Token(
               library,

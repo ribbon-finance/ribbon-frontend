@@ -151,7 +151,8 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
    * Side hooks
    */
   const tokenAllowance = useTokenAllowance(
-    vaultActionForm.depositAsset === "WETH"
+    vaultActionForm.depositAsset === "WETH" ||
+    vaultActionForm.depositAsset === "WAVAX"
       ? undefined
       : ((vaultActionForm.depositAsset?.toLowerCase() ||
           VaultAllowedDepositAssets[
