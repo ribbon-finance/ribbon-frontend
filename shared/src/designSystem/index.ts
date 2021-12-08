@@ -180,7 +180,7 @@ export const BaseInputButton = styled.div`
   top: 50%;
   transform: translate(-16px, -50%);
   right: 0;
-  background: rgba(255, 255, 255, 0.08);
+  background: ${colors.background.four};
   color: ${colors.primaryText};
   border-radius: 4px;
   padding: 8px;

@@ -7,6 +7,7 @@ import {
   VaultMaxDeposit,
   VaultOptions,
   VaultVersion,
+  VaultAllowedDepositAssets,
 } from "shared/lib/constants/constants";
 import {
   ACTIONS,
@@ -16,8 +17,13 @@ import {
 } from "../components/Vault/VaultActionsForm/Modal/types";
 import { initialVaultActionForm, useWebappGlobalState } from "../store/store";
 import useGasPrice from "shared/lib/hooks/useGasPrice";
-import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import {
+  useVaultData,
+  useV2VaultData,
+  useAssetsBalance,
+} from "shared/lib/hooks/web3DataContext";
 import { isETHVault } from "shared/lib/utils/vault";
+import { Assets } from "shared/lib/store/types";
 
 export type VaultActionFormTransferData =
   | {
@@ -58,6 +64,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
       withdrawals: v2Withdrawals,
     },
   } = useV2VaultData(vaultOption);
+  const { data: assetsBalance } = useAssetsBalance();
   const v2VaultBalanceInAsset = v2DepositBalanceInAsset.add(
     v2LockedBalanceInAsset
   );
@@ -181,7 +188,6 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
                 };
             }
             break;
-          // @ts-ignore
           case ACTIONS.withdraw:
             /**
              * Only catch v2 vault and set default withdraw option if not provided
@@ -200,7 +206,20 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
                     : withdrawOption,
               };
             }
-          // eslint-disable-next-line no-fallthrough
+            return {
+              ...actionForm,
+              vaultVersion,
+              inputAmount: "",
+              actionType,
+            };
+          case ACTIONS.deposit:
+            return {
+              ...actionForm,
+              depositAsset: VaultAllowedDepositAssets[vaultOption][0],
+              vaultVersion,
+              inputAmount: "",
+              actionType,
+            };
           default:
             return {
               ...actionForm,
@@ -214,6 +233,31 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
       });
     },
     [setVaultActionForm, vaultOption, withdrawMetadata]
+  );
+
+  /**
+   * Handle deposit asset change
+   */
+  const handleDepositAssetChange = useCallback(
+    (depositAsset: Assets) =>
+      setVaultActionForm((actionForm) => {
+        if (
+          !actionForm.vaultOption ||
+          actionForm.actionType !== ACTIONS.deposit
+        ) {
+          return actionForm;
+        }
+
+        return {
+          ...actionForm,
+          depositAsset: VaultAllowedDepositAssets[
+            actionForm.vaultOption
+          ].includes(depositAsset)
+            ? depositAsset
+            : actionForm.depositAsset,
+        };
+      }),
+    [setVaultActionForm]
   );
 
   /**
@@ -304,11 +348,10 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
               const gasFee = BigNumber.from(gasLimit.toString()).mul(
                 BigNumber.from(gasPrice || "0")
               );
-              const total = BigNumber.from(userAssetBalance);
+              const total = assetsBalance[actionForm.depositAsset!];
               // TODO: Optimize the code to request gas fees only when needed
-              const maxAmount = isETHVault(vaultOption)
-                ? total.sub(gasFee)
-                : total;
+              const maxAmount =
+                actionForm.depositAsset === "WETH" ? total.sub(gasFee) : total;
               const allowedMaxAmount = maxAmount.lte(
                 vaultMaxDepositAmount.sub(v2VaultBalanceInAsset)
               )
@@ -355,6 +398,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
       return actionForm;
     });
   }, [
+    assetsBalance,
     decimals,
     deposits,
     gasPrice,
@@ -377,6 +421,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   return {
     canTransfer,
     handleActionTypeChange,
+    handleDepositAssetChange,
     handleInputChange,
     handleMaxClick,
     resetActionForm,

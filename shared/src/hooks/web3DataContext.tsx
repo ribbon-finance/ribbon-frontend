@@ -12,6 +12,7 @@ import {
   V2VaultData,
   defaultVaultData,
 } from "../models/vault";
+import { Assets } from "../store/types";
 import { getAssetDecimals } from "../utils/asset";
 import useFetchAssetBalanceData, {
   defaultUserAssetBalanceData,
@@ -78,7 +79,6 @@ export const useV2VaultData = (vault: VaultOptions) => {
       asset: getAssets(vault),
       displayAsset: getDisplayAssets(vault),
       decimals: getAssetDecimals(getAssets(vault)),
-      userAssetBalance: contextData.assetBalance.data[getAssets(vault)],
     },
     loading: contextData.v2.loading || contextData.assetBalance.loading,
   };
@@ -91,6 +91,21 @@ export const useStakingPoolData = (vault: VaultOptions) => {
     data: contextData.stakingPool.responses[vault],
     loading: contextData.stakingPool.loading,
   };
+};
+
+export const useAssetBalance = (asset: Assets) => {
+  const contextData = useContext(Web3DataContext);
+
+  return {
+    balance: contextData.assetBalance.data[asset],
+    loading: contextData.assetBalance.loading,
+  };
+};
+
+export const useAssetsBalance = () => {
+  const contextData = useContext(Web3DataContext);
+
+  return contextData.assetBalance;
 };
 
 export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({

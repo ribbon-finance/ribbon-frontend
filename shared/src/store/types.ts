@@ -19,14 +19,15 @@ export type PendingTransaction = {
   status?: "success" | "error";
 } & (
   | {
-      type:
-        | "deposit"
-        | "withdraw"
-        | "withdrawInitiation"
-        | "approval"
-        | "migrate";
+      type: "withdraw" | "withdrawInitiation" | "approval" | "migrate";
       amount: string;
       vault: VaultOptions;
+    }
+  | {
+      type: "deposit";
+      amount: string;
+      vault: VaultOptions;
+      asset: Assets;
     }
   | {
       type: "claim";

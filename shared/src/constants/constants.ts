@@ -168,15 +168,19 @@ export const VaultAddressMap: {
       },
   "rstETH-THETA": isDevelopment()
     ? {
-        // TODO: Replace kovan address
+        /**
+         * We use ETH vault for Kovan preview
+         */
         v2: v2deployment.kovan.RibbonThetaVaultETHCall,
       }
     : {
-        // TODO: Add stETH vault mainnet address
+        v2: v2deployment.mainnet.RibbonThetaVaultSTETHCall,
       },
   "rAAVE-THETA": isDevelopment()
     ? {
-        // TODO: Replace kovan address
+        /**
+         * We use ETH vault for Kovan preview
+         */
         v2: v2deployment.kovan.RibbonThetaVaultETHCall,
       }
     : {
@@ -289,6 +293,17 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
   }
 };
 
+export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
+  {
+    "rAAVE-THETA": ["AAVE"],
+    "rBTC-THETA": ["WBTC"],
+    "rETH-THETA": ["WETH"],
+    "rAVAX-THETA": ["WAVAX"],
+    "rUSDC-ETH-P-THETA": ["USDC"],
+    "rstETH-THETA": ["stETH", "WETH"],
+    "ryvUSDC-ETH-P-THETA": ["USDC"],
+  };
+
 export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "rUSDC-ETH-P-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rUSDC-ETH-P-THETA")))
@@ -381,3 +396,9 @@ export const getERC20TokenAddress = (token: ERC20Token) =>
   isDevelopment()
     ? addresses.kovan.assets[token]
     : addresses.mainnet.assets[token];
+
+export const LidoCurvePoolAddress = isDevelopment()
+  ? ""
+  : addresses.mainnet.lidoCurvePool;
+
+export const CurveSwapSlippage = 0.003;

@@ -83,4 +83,13 @@ const useVaultPriceHistory = (
   };
 };
 
+export const useVaultsPriceHistory = () => {
+  const contextData = useContext(SubgraphDataContext);
+
+  return {
+    data: contextData.vaultPriceHistory,
+    loading: contextData.loading,
+  };
+};
+
 export default useVaultPriceHistory;

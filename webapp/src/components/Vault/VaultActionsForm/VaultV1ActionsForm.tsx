@@ -733,7 +733,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
         return (
           <div className="d-flex flex-column align-items-center p-4">
             <MigrateLogoContainer color={color} className="mt-3">
-              <MigrateIcon color={color} />
+              <MigrateIcon color={color} height={27} />
             </MigrateLogoContainer>
 
             <MigrationTitle className="mt-3">V1 VAULT INACTIVE</MigrationTitle>
@@ -758,7 +758,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
       return (
         <div className="d-flex flex-column align-items-center p-4">
           <MigrateLogoContainer color={color} className="mt-3">
-            <MigrateIcon color={color} />
+            <MigrateIcon color={color} height={27} />
           </MigrateLogoContainer>
 
           <MigrationTitle className="mt-3">MIGRATE TO V2</MigrationTitle>
@@ -866,7 +866,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     ) {
       return (
         <FormContainerExtra variant={variant}>
-          <FormContainerExtraText  color={color}>
+          <FormContainerExtraText color={color}>
             IMPORTANT: Withdrawal fees do not apply for migrations from V1 to V2
           </FormContainerExtraText>
         </FormContainerExtra>

@@ -267,7 +267,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
   },
   "rstETH-THETA": {
     title: "T-stETH-C",
-    subtitle: "ETH Put-Selling",
+    subtitle: "stETH Covered Call",
     description:
       "Generates yield by running an automated stETH-collateralized ETH covered call strategy.",
     tags: ["COVERED CALL"],

@@ -73,8 +73,8 @@ const InfoData = styled(Title)`
   margin-left: auto;
 `;
 
-const FormFooterButton = styled.div`
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+const FormFooterButton = styled.div<{ color: string }>`
+  background: ${(props) => props.color}14;
   border-radius: 100px;
   padding: 10px 16px;
 `;
@@ -378,6 +378,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
         <FormFooterButton
           className="d-flex align-items-center justify-content-center mt-4 mx-3"
           role="button"
+          color={color}
           onClick={() => {
             handleActionTypeChange(ACTIONS.withdraw, "v2", {
               withdrawOption: "complete",
@@ -390,7 +391,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
             <WithdrawButtonLogo color={color} />
           </AssetCircleContainer>
           <SecondaryText className="ml-1" color={colors.primaryText}>
-            Complete your initiated withdrawals
+            Complete your withdrawals
           </SecondaryText>
         </FormFooterButton>
       );

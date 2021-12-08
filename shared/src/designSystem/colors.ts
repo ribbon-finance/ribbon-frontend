@@ -10,6 +10,7 @@ const colors = {
   borderLight: "#2E2C2B",
   text: "#ACACAB",
   primaryText: "#FFFFFF",
+  quaternaryText: "#3F3F44",
   green: "#16CEB9",
   red: "#fc0a54",
   pillBackground: "#151413",

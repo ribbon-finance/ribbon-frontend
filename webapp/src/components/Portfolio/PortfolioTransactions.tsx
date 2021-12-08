@@ -27,7 +27,13 @@ import {
 } from "shared/lib/constants/constants";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
-import { ExternalIcon, MigrateIcon } from "shared/lib/assets/icons/icons";
+import {
+  DepositIcon,
+  ExternalIcon,
+  MigrateIcon,
+  TransferIcon,
+  WithdrawIcon,
+} from "shared/lib/assets/icons/icons";
 import { VaultTransactionType } from "shared/lib/models/vault";
 import { getVaultColor } from "shared/lib/utils/vault";
 import {
@@ -311,11 +317,10 @@ const PortfolioTransactions = () => {
     switch (type) {
       case "deposit":
       case "receive":
-        return "↓";
+        return <DepositIcon width={20} />
       case "withdraw":
       case "instantWithdraw":
-      case "transfer":
-        return "↑";
+        return <WithdrawIcon width={20} />
       case "stake":
         return (
           <StakeOuterCircle>
@@ -326,6 +331,8 @@ const PortfolioTransactions = () => {
         return <StakeCircle type="hollow" />;
       case "migrate":
         return <MigrateIcon width={14} height={14} />;
+      case "transfer":
+        return <TransferIcon width={14} height={14} />;
     }
   }, []);
 
