@@ -31,7 +31,7 @@ const COINGECKO_CURRENCIES = {
   yvUSDC: undefined,
   stETH: "staked-ether",
   AAVE: "aave",
-  WAVAX: "avalanche",
+  WAVAX: "avalanche-2",
 };
 
 export const useFetchAssetsPrice = (
