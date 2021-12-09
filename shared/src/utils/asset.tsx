@@ -16,6 +16,8 @@ export const getAssetDisplay = (asset: Assets): string => {
   switch (asset) {
     case "WETH":
       return "ETH";
+    case "WAVAX":
+      return "AVAX";
     default:
       return asset;
   }

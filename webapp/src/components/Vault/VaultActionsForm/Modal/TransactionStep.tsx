@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { BaseUnderlineLink, PrimaryText } from "shared/lib/designSystem";
 import TrafficLight from "shared/lib/components/Common/TrafficLight";
-import { BLOCKCHAIN_EXPLORER_NAME, CHAINID, getEtherscanURI } from "shared/lib/constants/constants";
+import { BLOCKCHAIN_EXPLORER_NAME, getEtherscanURI } from "shared/lib/constants/constants";
 
 const TrafficLightContainer = styled.div`
   display: flex;
@@ -37,14 +37,14 @@ const TransactionStep: React.FC<TransactionStepProps> = ({ txhash }) => {
         <TrafficLight active={Boolean(txhash)} />
       </TrafficLightContainer>
       <BottomTextContainer>
-        {txhash ? (
+        {chainId && txhash ? (
           <BaseUnderlineLink
-            to={`${getEtherscanURI(chainId as CHAINID)}/tx/${txhash}`}
+            to={`${getEtherscanURI(chainId)}/tx/${txhash}`}
             target="_blank"
             rel="noreferrer noopener"
             className="d-flex"
           >
-            {chainId && <BottomText>View on {BLOCKCHAIN_EXPLORER_NAME[chainId as CHAINID]}</BottomText>}
+            {chainId && <BottomText>View on {BLOCKCHAIN_EXPLORER_NAME[chainId]}</BottomText>}
           </BaseUnderlineLink>
         ) : (
           <BottomText>Confirm this transaction in your wallet</BottomText>

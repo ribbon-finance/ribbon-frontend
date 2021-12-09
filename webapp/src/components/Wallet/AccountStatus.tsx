@@ -33,6 +33,9 @@ import ActionModal from "../Vault/VaultActionsForm/Modal/ActionModal";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import {
+  CHAINID,
+  BLOCKCHAIN_EXPLORER_NAME,
+  BLOCKCHAIN_EXPLORER_URI,
   getAssets,
   VaultList,
   VaultOptions,
@@ -62,7 +65,7 @@ const AccountStatusContainer = styled.div<AccountStatusVariantProps>`
       case "mobile":
         return `
           display: none;
-          
+
           @media (max-width: ${sizes.md}px) {
             display: flex;
             width: 100%;
@@ -294,6 +297,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     library,
     active,
     account,
+    chainId,
   } = useWeb3React();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showActionModal, setShowActionModal] = useState(false);
@@ -368,9 +372,9 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
 
   const handleOpenEtherscan = useCallback(() => {
     if (account) {
-      window.open(`https://etherscan.io/address/${account}`);
+      window.open(`${BLOCKCHAIN_EXPLORER_URI[chainId as CHAINID]}/address/${account}`);
     }
-  }, [account]);
+  }, [account, chainId]);
 
   const handleDisconnect = useCallback(async () => {
     if (connector instanceof WalletConnectConnector) {
@@ -497,7 +501,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
               handleCopyAddress,
               renderCopiedButton()
             )}
-            {renderMenuItem("OPEN IN ETHERSCAN", handleOpenEtherscan)}
+            {renderMenuItem(`OPEN IN ${BLOCKCHAIN_EXPLORER_NAME[chainId as CHAINID]}`, handleOpenEtherscan)}
             {renderMenuItem("DISCONNECT", handleDisconnect)}
           </WalletDesktopMenu>
         </AnimatePresence>
@@ -518,7 +522,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
           handleCopyAddress,
           renderCopiedButton()
         )}
-        {renderMenuItem("OPEN IN ETHERSCAN", handleOpenEtherscan)}
+        {renderMenuItem(`OPEN IN  ${BLOCKCHAIN_EXPLORER_NAME[chainId as CHAINID]}`, handleOpenEtherscan)}
         {renderMenuItem("DISCONNECT", handleDisconnect)}
         <MenuCloseItem role="button" onClick={onCloseMenu}>
           <MenuButton isOpen={true} onToggle={onCloseMenu} />

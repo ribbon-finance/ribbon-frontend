@@ -27,6 +27,9 @@ export const NETWORKS: Record<number, NETWORK_NAMES> = {
   [CHAINID.AVAX_MAINNET]: "avax",
 };
 
+export const isEthNetwork = (chainId: number): boolean =>
+  chainId === CHAINID.ETH_MAINNET || chainId === CHAINID.ETH_KOVAN
+
 export const VaultVersionList = ["v2", "v1"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 
@@ -138,7 +141,7 @@ export const VaultAddressMap: {
   [vault in VaultOptions]: {
     v1?: string;
     v2?: string;
-    chainId?: number;
+    chainId: number;
   }
 } = {
   "rUSDC-ETH-P-THETA": isDevelopment()
@@ -248,21 +251,21 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-AVAX-C": "rAVAX-THETA",
 };
 
-export const BLOCKCHAIN_EXPLORER_NAME: Record<CHAINID, string> = {
+export const BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
   [CHAINID.ETH_MAINNET]: 'Etherscan',
   [CHAINID.ETH_KOVAN]: 'Etherscan',
-  [CHAINID.AVAX_MAINNET]: 'Snowtrace',
-  [CHAINID.AVAX_FUJI]: 'Snowtrace',
+  [CHAINID.AVAX_MAINNET]: 'SnowTrace',
+  [CHAINID.AVAX_FUJI]: 'SnowTrace',
 }
 
-export const BLOCKCHAIN_EXPLORER_URI: Record<CHAINID, string> = {
+export const BLOCKCHAIN_EXPLORER_URI: Record<number, string> = {
   [CHAINID.ETH_MAINNET]: "https://etherscan.io",
   [CHAINID.ETH_KOVAN]: "https://kovan.etherscan.io",
   [CHAINID.AVAX_MAINNET]: "https://snowtrace.io",
   [CHAINID.AVAX_FUJI]: "https://testnet.snowtrace.io",
 }
 
-export const getEtherscanURI = (chainId: CHAINID) => BLOCKCHAIN_EXPLORER_URI[chainId]
+export const getEtherscanURI = (chainId: number) => BLOCKCHAIN_EXPLORER_URI[chainId as CHAINID]
 
 export const getSubgraphURIForVersion = (vaultVersion: VaultVersion) => {
   switch (vaultVersion) {

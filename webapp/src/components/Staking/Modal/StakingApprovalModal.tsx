@@ -135,7 +135,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
               <BaseModalContentColumn marginTop="auto">
                 {chainId && (
                   <BaseUnderlineLink
-                    to={`${getEtherscanURI(chainId as CHAINID)}/tx/${txId}`}
+                    to={`${getEtherscanURI(chainId)}/tx/${txId}`}
                     target="_blank"
                     rel="noreferrer noopener"
                     className="d-flex"
