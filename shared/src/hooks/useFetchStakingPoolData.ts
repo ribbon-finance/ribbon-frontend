@@ -17,7 +17,7 @@ import { getStakingReward } from "./useStakingReward";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 
 const useFetchStakingPoolData = (): StakingPoolData => {
-  const { active, account: web3Account, library } = useWeb3React();
+  const { active, chainId, account: web3Account, library } = useWeb3React();
   const { provider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
@@ -25,7 +25,12 @@ const useFetchStakingPoolData = (): StakingPoolData => {
   const [data, setData] = useState<StakingPoolData>(defaultStakingPoolData);
   const [, setMulticallCounter] = useState(0);
 
+
   const doMulticall = useCallback(async () => {
+    if (!chainId) {
+      return;
+    }
+
     if (!isProduction()) {
       console.time("Staking Pool Data Fetch");
     }
@@ -41,9 +46,12 @@ const useFetchStakingPoolData = (): StakingPoolData => {
 
     const responses = await Promise.all(
       VaultList.map(async (vault) => {
+        const tokenContract = getERC20Token(library || provider, vault, chainId, active);
+        if (!tokenContract) {
+          return { vault };
+        }
         const contract = getStakingReward(library || provider, vault, active);
-        const tokenContract = getERC20Token(library || provider, vault, active);
-        if (!contract || !tokenContract || !VaultLiquidityMiningMap[vault]) {
+        if (!contract || !VaultLiquidityMiningMap[vault]) {
           return { vault };
         }
 
@@ -140,7 +148,7 @@ const useFetchStakingPoolData = (): StakingPoolData => {
     if (!isProduction()) {
       console.timeEnd("Staking Pool Data Fetch");
     }
-  }, [account, active, library, provider]);
+  }, [account, active, chainId, library, provider]);
 
   useEffect(() => {
     doMulticall();

@@ -9,30 +9,27 @@ import { getERC20TokenAddress } from "../constants/constants";
 export const getERC20Token = (
   library: any,
   token: ERC20Token,
+  chainId: number,
   useSigner: boolean = true
 ) => {
-  if (library) {
+  const address = getERC20TokenAddress(token, chainId);
+  if (library && address) {
     const provider = useSigner ? library.getSigner() : library;
-
-    return IERC20Factory.connect(
-      getERC20TokenAddress(token),
-      provider
-    );
+    return IERC20Factory.connect(address, provider);
   }
-
   return undefined;
 };
 
 const useERC20Token = (token: ERC20Token) => {
-  const { active, library } = useWeb3React();
+  const { active, chainId, library } = useWeb3React();
   const { provider } = useWeb3Context();
   const [contract, setContract] = useState<IERC20>();
 
   useEffect(() => {
-    if (provider) {
-      setContract(getERC20Token(library || provider, token, active));
+    if (provider && chainId) {
+      setContract(getERC20Token(library || provider, token, chainId, active));
     }
-  }, [provider, active, library, token]);
+  }, [chainId, provider, active, library, token]);
 
   return contract;
 };

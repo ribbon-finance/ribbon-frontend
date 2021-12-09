@@ -173,7 +173,7 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
   const color = getVaultColor(vaultOption);
   const [depositAssetMenuOpen, setDepositAssetMenuOpen] = useState(false);
 
-  const { library } = useWeb3React();
+  const { chainId, library } = useWeb3React();
   const { provider } = useWeb3Context();
   const { addPendingTransaction } = usePendingTransactions();
 
@@ -191,12 +191,12 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
   const Logo = getAssetLogo(depositAsset);
 
   const tokenContract = useMemo(() => {
-    if (depositAsset === "WETH") {
+    if (depositAsset === "WETH" || depositAsset === 'WAVAX' || !chainId) {
       return;
     }
 
-    return getERC20Token(library, depositAsset.toLowerCase() as ERC20Token);
-  }, [depositAsset, library]);
+    return getERC20Token(library, depositAsset.toLowerCase() as ERC20Token, chainId);
+  }, [chainId, depositAsset, library]);
 
   const [waitingApproval, setWaitingApproval] = useState(false);
   const loadingText = useTextAnimation(waitingApproval, {
