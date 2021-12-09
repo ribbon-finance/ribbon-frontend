@@ -136,7 +136,6 @@ export const isPutVault = (vault: VaultOptions): boolean =>
 
 export const VaultAddressMap: {
   [vault in VaultOptions]: {
-    //FIXME: Use Partial
     v1?: string;
     v2?: string;
     chainId?: number;
@@ -249,8 +248,21 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-AVAX-C": "rAVAX-THETA",
 };
 
-export const getEtherscanURI = () =>
-  isDevelopment() ? "https://kovan.etherscan.io" : "https://etherscan.io";
+export const BLOCKCHAIN_EXPLORER_NAME: Record<CHAINID, string> = {
+  [CHAINID.ETH_MAINNET]: 'Etherscan',
+  [CHAINID.ETH_KOVAN]: 'Etherscan',
+  [CHAINID.AVAX_MAINNET]: 'Snowtrace',
+  [CHAINID.AVAX_FUJI]: 'Snowtrace',
+}
+
+export const BLOCKCHAIN_EXPLORER_URI: Record<CHAINID, string> = {
+  [CHAINID.ETH_MAINNET]: "https://etherscan.io",
+  [CHAINID.ETH_KOVAN]: "https://kovan.etherscan.io",
+  [CHAINID.AVAX_MAINNET]: "https://snowtrace.io",
+  [CHAINID.AVAX_FUJI]: "https://testnet.snowtrace.io",
+}
+
+export const getEtherscanURI = (chainId: CHAINID) => BLOCKCHAIN_EXPLORER_URI[chainId]
 
 export const getSubgraphURIForVersion = (vaultVersion: VaultVersion) => {
   switch (vaultVersion) {

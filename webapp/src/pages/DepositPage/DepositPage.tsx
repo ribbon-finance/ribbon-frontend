@@ -1,5 +1,6 @@
 import React, { ReactNode, useMemo } from "react";
 import { ethers } from "ethers";
+import { useWeb3React } from "@web3-react/core";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
 
@@ -187,6 +188,7 @@ const ContractButtonTitle = styled(Title)`
 
 const DepositPage = () => {
   usePullUp();
+  const { chainId } = useWeb3React();
   const { vaultOption, vaultVersion } = useVaultOption();
   const { status, deposits, vaultLimit } = useVaultData(
     vaultOption || VaultList[0]
@@ -278,9 +280,9 @@ const DepositPage = () => {
 
       <DepositPageContainer className="py-5">
         <div className="row">
-          {VaultAddressMap[vaultOption][vaultVersion] && (
+          {VaultAddressMap[vaultOption][vaultVersion] && chainId && (
             <BaseLink
-              to={`${getEtherscanURI()}/address/${VaultAddressMap[vaultOption][
+              to={`${getEtherscanURI(chainId)}/address/${VaultAddressMap[vaultOption][
                 vaultVersion
               ]!}`}
               target="_blank"

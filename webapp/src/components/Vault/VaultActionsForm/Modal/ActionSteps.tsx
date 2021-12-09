@@ -191,7 +191,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                   : vault.depositYieldToken(amountStr));
                 break;
               default:
-                res = await (asset === "WETH"
+                res = await (asset === "WETH" || asset === "WAVAX"
                   ? vault.depositETH({ value: amountStr })
                   : vault.deposit(amountStr));
             }

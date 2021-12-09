@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from "react";
+import { useWeb3React } from "@web3-react/core";
 import styled from "styled-components";
 import moment from "moment";
 
@@ -92,15 +93,16 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
 
   const { width: screenWidth } = useScreenSize();
   const loadingText = useTextAnimation(assetPriceLoading);
+  const { chainId } = useWeb3React();
 
   const getVaultActivityExternalURL = useCallback((activity: VaultActivity) => {
     switch (activity.type) {
       case "minting":
-        return `${getEtherscanURI()}/tx/${activity.openTxhash}`;
+        return `${getEtherscanURI(chainId || 1)}/tx/${activity.openTxhash}`;
       case "sales":
-        return `${getEtherscanURI()}/tx/${activity.txhash}`;
+        return `${getEtherscanURI(chainId || 1)}/tx/${activity.txhash}`;
     }
-  }, []);
+  }, [chainId]);
 
   const getVaultActivityTableData = useCallback(
     (activity: VaultActivity) => {
