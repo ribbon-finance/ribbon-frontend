@@ -191,7 +191,7 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
   const Logo = getAssetLogo(depositAsset);
 
   const tokenContract = useMemo(() => {
-    if (depositAsset === "WETH" || depositAsset === 'WAVAX' || !chainId) {
+    if (isNativeToken(depositAsset) || !chainId) {
       return;
     }
 

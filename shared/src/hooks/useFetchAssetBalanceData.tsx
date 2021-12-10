@@ -4,6 +4,7 @@ import { BigNumber } from "ethers";
 import { Assets, AssetsList } from "../store/types";
 import { useWeb3React } from "@web3-react/core";
 import { impersonateAddress } from "../utils/development";
+import { isNativeToken } from "../constants/constants";
 import { ERC20Token } from "../models/eth";
 import { getERC20Token } from "./useERC20Token";
 import { isProduction } from "../utils/env";
@@ -54,9 +55,7 @@ const useFetchAssetBalanceData = (
           return { asset, balance: undefined };
         }
 
-        const balance = await (asset === "WETH" || asset === "WAVAX"
-          ? library.getBalance(account!)
-          : token.balanceOf(account!));
+        const balance = await(isNativeToken(asset) ? library.getBalance(account!) : token.balanceOf(account!));
 
         return { asset, balance };
       })

@@ -30,6 +30,9 @@ export const NETWORKS: Record<number, NETWORK_NAMES> = {
 export const isEthNetwork = (chainId: number): boolean =>
   chainId === CHAINID.ETH_MAINNET || chainId === CHAINID.ETH_KOVAN
 
+export const NATIVE_TOKENS = ['WETH', 'WAVAX'];
+export const isNativeToken = (token: string): boolean => NATIVE_TOKENS.includes(token)
+
 export const VaultVersionList = ["v2", "v1"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 
