@@ -198,7 +198,7 @@ const perPage = 6;
 
 const PortfolioTransactions = () => {
   const { transactions, loading } = useTransactions();
-  const { active } = useWeb3React();
+  const { active, chainId } = useWeb3React();
   // const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice();
   const { searchAssetPriceFromTimestamp, loading: assetPricesLoading } =
     useAssetsPriceHistory();
@@ -485,20 +485,23 @@ const PortfolioTransactions = () => {
             </div>
           </TransactionInfo>
 
-          <BaseLink
-            to={`${getEtherscanURI()}/tx/${transaction.txhash}`}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="d-none d-md-block"
-          >
-            <ExternalLink>
-              <ExternalLinkIcon color="white" />
-            </ExternalLink>
-          </BaseLink>
+          {chainId && (
+            <BaseLink
+              to={`${getEtherscanURI(chainId)}/tx/${transaction.txhash}`}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="d-none d-md-block"
+            >
+              <ExternalLink>
+                <ExternalLinkIcon color="white" />
+              </ExternalLink>
+            </BaseLink>
+          )}
         </TransactionContainer>
       ));
   }, [
     active,
+    chainId,
     getTransactionTypeDisplay,
     page,
     processedTransactions,

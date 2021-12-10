@@ -1,10 +1,12 @@
 import React, { useCallback, useMemo, useState } from "react";
+import { useWeb3React } from "@web3-react/core";
 import {
   getAssets,
   getDisplayAssets,
   hasVaultVersion,
   isPutVault,
   VaultList,
+  VaultAddressMap,
   VaultOptions,
   VaultVersion,
   VaultVersionList,
@@ -32,6 +34,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
   variant,
   onVaultPress,
 }) => {
+  const { chainId } = useWeb3React();
   const { width } = useScreenSize();
   const [filterStrategies, setFilterStrategies] = useState<VaultStrategy[]>([]);
   const [filterAssets, setFilterAssets] = useState<Assets[]>([]);
@@ -99,6 +102,10 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
 
   const filteredProducts = useMemo(() => {
     const filteredList = VaultList.filter((vault) => {
+      if (chainId && VaultAddressMap[vault].chainId !== chainId) {
+        return false;
+      }
+
       // Filter for strategies
       if (
         filterStrategies.length &&
@@ -151,7 +158,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
     }
 
     return filteredList;
-  }, [filterAssets, filterStrategies, sort, vaultsDisplayVersion, yieldsData]);
+  }, [chainId, filterAssets, filterStrategies, sort, vaultsDisplayVersion, yieldsData]);
 
   return width > sizes.md ? (
     <DesktopProductCatalogue

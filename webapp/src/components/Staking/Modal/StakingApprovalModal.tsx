@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
+import { useWeb3React } from "@web3-react/core";
 import styled from "styled-components";
 
 import {
@@ -8,6 +9,8 @@ import {
   BaseModalContentColumn,
 } from "shared/lib/designSystem";
 import {
+  CHAINID,
+  BLOCKCHAIN_EXPLORER_NAME,
   getEtherscanURI,
   VaultLiquidityMiningMap,
   VaultOptions,
@@ -45,6 +48,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
   stakingPoolData,
   vaultOption,
 }) => {
+  const { chainId } = useWeb3React();
   const { provider } = useWeb3Context();
   const { addPendingTransaction } = usePendingTransactions();
   const tokenContract = useERC20Token(vaultOption);
@@ -129,20 +133,22 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
               </BaseModalContentColumn>
             ) : (
               <BaseModalContentColumn marginTop="auto">
-                <BaseUnderlineLink
-                  to={`${getEtherscanURI()}/tx/${txId}`}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="d-flex"
-                >
-                  <PrimaryText className="mb-2">View on Etherscan</PrimaryText>
-                </BaseUnderlineLink>
+                {chainId && (
+                  <BaseUnderlineLink
+                    to={`${getEtherscanURI(chainId)}/tx/${txId}`}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="d-flex"
+                  >
+                    <PrimaryText className="mb-2">View on {BLOCKCHAIN_EXPLORER_NAME[chainId as CHAINID]}</PrimaryText>
+                  </BaseUnderlineLink>
+                )}
               </BaseModalContentColumn>
             )}
           </>
         );
     }
-  }, [step, vaultOption, handleApprove, txId, stakingPoolData]);
+  }, [chainId, step, vaultOption, handleApprove, txId, stakingPoolData]);
 
   const modalHeight = useMemo(() => {
     if (step === "info") {

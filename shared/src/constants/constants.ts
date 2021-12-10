@@ -12,12 +12,26 @@ import v1deployment from "./v1Deployments.json";
 import v2deployment from "./v2Deployments.json";
 import addresses from "./externalAddresses.json";
 
-export const NETWORK_NAMES: Record<number, string> = {
-  1: "mainnet",
-  42: "kovan",
-  43113: "fuji",
-  43114: "avax",
+export enum CHAINID {
+  ETH_MAINNET = 1,
+  ETH_KOVAN = 42,
+  AVAX_FUJI = 43113,
+  AVAX_MAINNET = 43114,
+}
+
+export type NETWORK_NAMES  = "mainnet" | "kovan" | "fuji" | "avax";
+export const NETWORKS: Record<number, NETWORK_NAMES> = {
+  [CHAINID.ETH_MAINNET]: "mainnet",
+  [CHAINID.ETH_KOVAN]: "kovan",
+  [CHAINID.AVAX_FUJI]: "fuji",
+  [CHAINID.AVAX_MAINNET]: "avax",
 };
+
+export const isEthNetwork = (chainId: number): boolean =>
+  chainId === CHAINID.ETH_MAINNET || chainId === CHAINID.ETH_KOVAN
+
+export const NATIVE_TOKENS = ['WETH', 'WAVAX'];
+export const isNativeToken = (token: string): boolean => NATIVE_TOKENS.includes(token)
 
 export const VaultVersionList = ["v2", "v1"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
@@ -38,10 +52,9 @@ const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
   "ryvUSDC-ETH-P-THETA",
 ];
+
 // @ts-ignore
-export const VaultList: VaultOptions[] = !isProduction()
-  ? FullVaultList
-  : FullVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
+export const VaultList: VaultOptions[] = !isProduction() ? FullVaultList : FullVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
 
 export const GAS_LIMITS: {
   [vault in VaultOptions]: Partial<{
@@ -135,43 +148,51 @@ export const isPutVault = (vault: VaultOptions): boolean =>
   PutThetaVault.includes(vault);
 
 export const VaultAddressMap: {
-  [vault in VaultOptions]: Partial<
-    {
-      [version in VaultVersion]: string;
-    }
-  >;
+  [vault in VaultOptions]: {
+    v1?: string;
+    v2?: string;
+    chainId: number;
+  }
 } = {
   "rUSDC-ETH-P-THETA": isDevelopment()
     ? {
         v1: v1deployment.kovan.RibbonETHPut,
+        chainId: CHAINID.ETH_KOVAN,
       }
     : {
         v1: v1deployment.mainnet.RibbonETHPut,
+        chainId: CHAINID.ETH_MAINNET,
       },
   "rETH-THETA": isDevelopment()
     ? {
         v1: v1deployment.kovan.RibbonETHCoveredCall,
         v2: v2deployment.kovan.RibbonThetaVaultETHCall,
+        chainId: CHAINID.ETH_KOVAN,
       }
     : {
         v1: v1deployment.mainnet.RibbonETHCoveredCall,
         v2: v2deployment.mainnet.RibbonThetaVaultETHCall,
+        chainId: CHAINID.ETH_MAINNET,
       },
   "rBTC-THETA": isDevelopment()
     ? {
         v1: v1deployment.kovan.RibbonWBTCCoveredCall,
         v2: v2deployment.kovan.RibbonThetaVaultWBTCCall,
+        chainId: CHAINID.ETH_KOVAN,
       }
     : {
         v1: v1deployment.mainnet.RibbonWBTCCoveredCall,
         v2: v2deployment.mainnet.RibbonThetaVaultWBTCCall,
+        chainId: CHAINID.ETH_MAINNET,
       },
   "ryvUSDC-ETH-P-THETA": isDevelopment()
     ? {
         v1: v1deployment.kovan.RibbonYearnETHPut,
+        chainId: CHAINID.ETH_KOVAN,
       }
     : {
         v1: v1deployment.mainnet.RibbonYearnETHPut,
+        chainId: CHAINID.ETH_MAINNET,
       },
   "rstETH-THETA": isDevelopment()
     ? {
@@ -179,9 +200,11 @@ export const VaultAddressMap: {
          * We use ETH vault for Kovan preview
          */
         v2: v2deployment.kovan.RibbonThetaVaultETHCall,
+        chainId: CHAINID.ETH_KOVAN,
       }
     : {
         v2: v2deployment.mainnet.RibbonThetaVaultSTETHCall,
+        chainId: CHAINID.ETH_MAINNET,
       },
   "rAAVE-THETA": isDevelopment()
     ? {
@@ -189,17 +212,20 @@ export const VaultAddressMap: {
          * We use ETH vault for Kovan preview
          */
         v2: v2deployment.kovan.RibbonThetaVaultETHCall,
+        chainId: CHAINID.ETH_KOVAN,
       }
     : {
         v2: v2deployment.mainnet.RibbonThetaVaultAAVECall,
+        chainId: CHAINID.ETH_MAINNET,
       },
   "rAVAX-THETA": isDevelopment()
     ? {
-        // FIXME: Update to Avax
-        v2: v2deployment.kovan.RibbonThetaVaultETHCall,
+        v2: v2deployment.fuji.RibbonThetaVaultETHCall,
+        chainId: CHAINID.AVAX_FUJI,
       }
     : {
-        v2: v2deployment.mainnet.RibbonThetaVaultAAVECall,
+        v2: v2deployment.avax.RibbonThetaVaultETHCall,
+        chainId: CHAINID.AVAX_MAINNET,
       },
 };
 
@@ -235,8 +261,21 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-AVAX-C": "rAVAX-THETA",
 };
 
-export const getEtherscanURI = () =>
-  isDevelopment() ? "https://kovan.etherscan.io" : "https://etherscan.io";
+export const BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
+  [CHAINID.ETH_MAINNET]: 'Etherscan',
+  [CHAINID.ETH_KOVAN]: 'Etherscan',
+  [CHAINID.AVAX_MAINNET]: 'SnowTrace',
+  [CHAINID.AVAX_FUJI]: 'SnowTrace',
+}
+
+export const BLOCKCHAIN_EXPLORER_URI: Record<number, string> = {
+  [CHAINID.ETH_MAINNET]: "https://etherscan.io",
+  [CHAINID.ETH_KOVAN]: "https://kovan.etherscan.io",
+  [CHAINID.AVAX_MAINNET]: "https://snowtrace.io",
+  [CHAINID.AVAX_FUJI]: "https://testnet.snowtrace.io",
+}
+
+export const getEtherscanURI = (chainId: number) => BLOCKCHAIN_EXPLORER_URI[chainId as CHAINID]
 
 export const getSubgraphURIForVersion = (vaultVersion: VaultVersion) => {
   switch (vaultVersion) {
@@ -398,10 +437,12 @@ export const RibbonTokenBalancerPoolAddress = isDevelopment()
   : // TODO: Update Mainnet Address
     "";
 
-export const getERC20TokenAddress = (token: ERC20Token) =>
-  isDevelopment()
-    ? addresses.kovan.assets[token]
-    : addresses.mainnet.assets[token];
+export const getERC20TokenAddress = (token: ERC20Token, chainId: number) => {
+  const network = NETWORKS[chainId];
+  return isDevelopment()
+    ? (addresses[network].assets as any)[token]
+    : (addresses[network].assets as any)[token];
+}
 
 export const LidoCurvePoolAddress = isDevelopment()
   ? ""

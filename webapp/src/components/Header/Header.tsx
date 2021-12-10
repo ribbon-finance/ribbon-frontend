@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { useRouteMatch } from "react-router-dom";
+import { useWeb3React } from "@web3-react/core";
 
 import HeaderLogo from "./HeaderLogo";
 import colors from "shared/lib/designSystem/colors";
@@ -13,7 +14,7 @@ import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import AirdropButton from "../Airdrop/AirdropButton";
 import NotificationButton from "../Notification/NotificationButton";
-import { useWeb3React } from "@web3-react/core";
+import { isEthNetwork } from "shared/lib/constants/constants";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
@@ -134,8 +135,11 @@ const MobileOnly = styled.div`
 `;
 
 const Header = () => {
-  const { active } = useWeb3React();
+  const { active, chainId } = useWeb3React();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const product = useRouteMatch({ path: "/", exact: true });
+  const portfolio = useRouteMatch({ path: "/portfolio", exact: true });
+  const staking = useRouteMatch({ path: "/staking", exact: true });
 
   const onToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -185,21 +189,9 @@ const Header = () => {
       {/* LINKS */}
       <HeaderAbsoluteContainer>
         <LinksContainer>
-          {renderLinkItem(
-            "PRODUCTS",
-            "/",
-            Boolean(useRouteMatch({ path: "/", exact: true }))
-          )}
-          {renderLinkItem(
-            "PORTFOLIO",
-            "/portfolio",
-            Boolean(useRouteMatch({ path: "/portfolio", exact: true }))
-          )}
-          {renderLinkItem(
-            "STAKING",
-            "/staking",
-            Boolean(useRouteMatch({ path: "/staking", exact: true }))
-          )}
+          {renderLinkItem("PRODUCTS", "/", Boolean(product))}
+          {renderLinkItem("PORTFOLIO", "/portfolio", Boolean(portfolio))}
+          {chainId && isEthNetwork(chainId) && renderLinkItem("STAKING", "/staking", Boolean(staking))}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 

@@ -24,7 +24,7 @@ export const vaultAccountsGraphql = (account: string, version: VaultVersion) =>
 
     return (
       acc +
-      `     
+      `
           ${getVaultAccountKey(
             vault
           )}: vaultAccount(id:"${vaultAddress.toLowerCase()}-${account.toLowerCase()}") {

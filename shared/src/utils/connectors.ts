@@ -2,8 +2,11 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { WalletLinkConnector } from "@web3-react/walletlink-connector";
 import { isDevelopment } from "./env";
+import { CHAINID } from "../constants/constants";
 
-const supportedChainIds = isDevelopment() ? [42] : [1]
+const supportedChainIds = isDevelopment() ?
+  [CHAINID.ETH_KOVAN, CHAINID.AVAX_FUJI] :
+  [CHAINID.ETH_MAINNET, CHAINID.AVAX_MAINNET]
 
 export const injectedConnector = new InjectedConnector({
   supportedChainIds,
@@ -18,8 +21,16 @@ export const getWalletConnectConnector = () =>
   new WalletConnectConnector({
     supportedChainIds,
     rpc: isDevelopment()
-      ? { 42: process.env.REACT_APP_TESTNET_URI || "" }
-      : { 1: process.env.REACT_APP_MAINNET_URI || "" },
+      ?
+        {
+          [CHAINID.ETH_KOVAN]: process.env.REACT_APP_TESTNET_URI || "",
+          [CHAINID.AVAX_FUJI]: process.env.REACT_APP_FUJI_URI || "",
+        }
+      :
+        {
+          [CHAINID.ETH_MAINNET]: process.env.REACT_APP_MAINNET_URI || "",
+          [CHAINID.AVAX_MAINNET]: process.env.REACT_APP_AVAX_URI || ""
+        },
     qrcode: true,
     pollingInterval: 5000,
   });

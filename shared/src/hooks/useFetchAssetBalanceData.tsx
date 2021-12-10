@@ -4,6 +4,7 @@ import { BigNumber } from "ethers";
 import { Assets, AssetsList } from "../store/types";
 import { useWeb3React } from "@web3-react/core";
 import { impersonateAddress } from "../utils/development";
+import { isNativeToken } from "../constants/constants";
 import { ERC20Token } from "../models/eth";
 import { getERC20Token } from "./useERC20Token";
 import { isProduction } from "../utils/env";
@@ -33,7 +34,7 @@ const useFetchAssetBalanceData = (
   const [data, setData] = useState<UserAssetBalanceData>(
     defaultUserAssetBalanceData
   );
-  const { library, active, account: web3Account } = useWeb3React();
+  const { library, chainId, active, account: web3Account } = useWeb3React();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
 
@@ -42,19 +43,19 @@ const useFetchAssetBalanceData = (
       console.time("Asset Balance Data Fetch");
     }
 
-    if (!active) {
+    if (!active || !chainId) {
       setData({ ...defaultUserAssetBalanceData, loading: false });
       return;
     }
 
     const responses = await Promise.all(
       AssetsList.map(async (asset) => {
-        const balance = await (asset === "WETH" || asset === 'WAVAX'
-          ? library.getBalance(account!)
-          : getERC20Token(
-              library,
-              asset.toLowerCase() as ERC20Token
-            )!.balanceOf(account!));
+        const token = getERC20Token(library, asset.toLowerCase() as ERC20Token, chainId);
+        if (!token) {
+          return { asset, balance: undefined };
+        }
+
+        const balance = await(isNativeToken(asset) ? library.getBalance(account!) : token.balanceOf(account!));
 
         return { asset, balance };
       })
@@ -70,7 +71,7 @@ const useFetchAssetBalanceData = (
     if (!isProduction()) {
       console.timeEnd("Asset Balance Data Fetch");
     }
-  }, [account, active, library]);
+  }, [account, active, chainId, library]);
 
   /**
    * Fetch on first load and transaction success
