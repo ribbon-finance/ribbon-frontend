@@ -49,6 +49,7 @@ export const GAS_LIMITS: {
     v2: {
       deposit: number;
       withdrawInstantly: number;
+      completeWithdraw: number;
     };
   }>;
 } = {
@@ -60,6 +61,7 @@ export const GAS_LIMITS: {
     v2: {
       deposit: 120000,
       withdrawInstantly: 120000,
+      completeWithdraw: 300000,
     },
   },
   "rBTC-THETA": {
@@ -70,6 +72,7 @@ export const GAS_LIMITS: {
     v2: {
       deposit: 140000,
       withdrawInstantly: 120000,
+      completeWithdraw: 300000,
     },
   },
   "rUSDC-ETH-P-THETA": {
@@ -80,6 +83,7 @@ export const GAS_LIMITS: {
     v2: {
       deposit: 140000,
       withdrawInstantly: 120000,
+      completeWithdraw: 300000,
     },
   },
   "ryvUSDC-ETH-P-THETA": {
@@ -92,18 +96,21 @@ export const GAS_LIMITS: {
     v2: {
       deposit: 170000,
       withdrawInstantly: 130000,
+      completeWithdraw: 400000,
     },
   },
   "rAAVE-THETA": {
     v2: {
       deposit: 380000,
       withdrawInstantly: 130000,
+      completeWithdraw: 300000,
     },
   },
   "rAVAX-THETA": {
     v2: {
       deposit: 380000,
       withdrawInstantly: 130000,
+      completeWithdraw: 300000,
     },
   },
 };
@@ -400,4 +407,4 @@ export const LidoCurvePoolAddress = isDevelopment()
   ? ""
   : addresses.mainnet.lidoCurvePool;
 
-export const CurveSwapSlippage = 0.003;
+export const CurveSwapSlippage = 0.008; // 0.8%
