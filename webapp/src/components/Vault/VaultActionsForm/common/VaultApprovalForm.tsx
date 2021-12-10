@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer";
 
 import {
   getAssets,
+  isNativeToken,
   VaultAddressMap,
   VaultAllowedDepositAssets,
   VaultOptions,

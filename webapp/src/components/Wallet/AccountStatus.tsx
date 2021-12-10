@@ -33,7 +33,6 @@ import ActionModal from "../Vault/VaultActionsForm/Modal/ActionModal";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import {
-  CHAINID,
   BLOCKCHAIN_EXPLORER_NAME,
   BLOCKCHAIN_EXPLORER_URI,
   getAssets,
@@ -371,8 +370,8 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   }, [account]);
 
   const handleOpenEtherscan = useCallback(() => {
-    if (account) {
-      window.open(`${BLOCKCHAIN_EXPLORER_URI[chainId as CHAINID]}/address/${account}`);
+    if (account && chainId) {
+      window.open(`${BLOCKCHAIN_EXPLORER_URI[chainId]}/address/${account}`);
     }
   }, [account, chainId]);
 
@@ -501,7 +500,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
               handleCopyAddress,
               renderCopiedButton()
             )}
-            {renderMenuItem(`OPEN IN ${BLOCKCHAIN_EXPLORER_NAME[chainId as CHAINID]}`, handleOpenEtherscan)}
+            {chainId && renderMenuItem(`OPEN IN ${BLOCKCHAIN_EXPLORER_NAME[chainId]}`, handleOpenEtherscan)}
             {renderMenuItem("DISCONNECT", handleDisconnect)}
           </WalletDesktopMenu>
         </AnimatePresence>
@@ -522,7 +521,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
           handleCopyAddress,
           renderCopiedButton()
         )}
-        {renderMenuItem(`OPEN IN  ${BLOCKCHAIN_EXPLORER_NAME[chainId as CHAINID]}`, handleOpenEtherscan)}
+        {chainId && renderMenuItem(`OPEN IN ${BLOCKCHAIN_EXPLORER_NAME[chainId]}`, handleOpenEtherscan)}
         {renderMenuItem("DISCONNECT", handleDisconnect)}
         <MenuCloseItem role="button" onClick={onCloseMenu}>
           <MenuButton isOpen={true} onToggle={onCloseMenu} />

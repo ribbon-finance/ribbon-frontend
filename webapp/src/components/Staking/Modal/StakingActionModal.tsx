@@ -6,6 +6,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import moment from "moment";
 
 import {
+  BLOCKCHAIN_EXPLORER_NAME,
   getAssets,
   getEtherscanURI,
   VaultOptions,
@@ -471,7 +472,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                     rel="noreferrer noopener"
                     className="d-flex"
                   >
-                    <PrimaryText className="mb-2">View on Etherscan</PrimaryText>
+                    <PrimaryText className="mb-2">View on {BLOCKCHAIN_EXPLORER_NAME[chainId]}</PrimaryText>
                   </BaseUnderlineLink>
                 )}
               </BaseModalContentColumn>
