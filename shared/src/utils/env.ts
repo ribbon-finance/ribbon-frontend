@@ -1,3 +1,18 @@
+export enum CHAINID {
+  ETH_MAINNET = 1,
+  ETH_KOVAN = 42,
+  AVAX_FUJI = 43113,
+  AVAX_MAINNET = 43114,
+}
+
+export const FALLBACK_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-v2-kovan';
+export const SUBGRAPH_URI: Record<number, string> = {
+  [CHAINID.ETH_MAINNET]: process.env.REACT_APP_V2_SUBGRAPHQL_URL || FALLBACK_SUBGRAPH_URL,
+  [CHAINID.ETH_KOVAN]: process.env.REACT_APP_KOVAN_V2_SUBGRAPHQL_URL || FALLBACK_SUBGRAPH_URL,
+  [CHAINID.AVAX_FUJI]: process.env.REACT_APP_FUJI_SUBGRAPHQL_URL || FALLBACK_SUBGRAPH_URL,
+  [CHAINID.AVAX_MAINNET]: process.env.REACT_APP_AVAX_SUBGRAPHQL_URL || FALLBACK_SUBGRAPH_URL,
+};
+
 // We just default to staging by default
 export const isDevelopment = () => !isStaging() && !isProduction();
 
@@ -8,7 +23,6 @@ export const isStaging = () =>
 
 export const isProduction = () =>
   process.env.REACT_APP_VERCEL_GIT_COMMIT_REF === "master";
-
 export const getNodeURI = () =>
   isDevelopment()
     ? process.env.REACT_APP_TESTNET_URI
@@ -19,14 +33,3 @@ export const getSubgraphqlURI = () =>
     ? process.env.REACT_APP_KOVAN_SUBGRAPHQL_URL
     : process.env.REACT_APP_SUBGRAPHQL_URL) ||
   "https://api.thegraph.com/subgraphs/name/kenchangh/ribbon-finance-kovan";
-
-export const getV2SubgraphURI = () =>
-  (isDevelopment()
-    ? process.env.REACT_APP_KOVAN_V2_SUBGRAPHQL_URL
-    : process.env.REACT_APP_V2_SUBGRAPHQL_URL) ||
-  "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-v2-kovan";
-
-export const getDefaultNetworkName = () =>
-  isDevelopment() ? "kovan" : "mainnet";
-
-export const getDefaultChainID = () => (isDevelopment() ? 42 : 1);

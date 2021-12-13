@@ -9,7 +9,6 @@ import {
   BaseModalContentColumn,
 } from "shared/lib/designSystem";
 import {
-  CHAINID,
   BLOCKCHAIN_EXPLORER_NAME,
   getEtherscanURI,
   VaultLiquidityMiningMap,
@@ -140,7 +139,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
                     rel="noreferrer noopener"
                     className="d-flex"
                   >
-                    <PrimaryText className="mb-2">View on {BLOCKCHAIN_EXPLORER_NAME[chainId as CHAINID]}</PrimaryText>
+                    <PrimaryText className="mb-2">View on {BLOCKCHAIN_EXPLORER_NAME[chainId]}</PrimaryText>
                   </BaseUnderlineLink>
                 )}
               </BaseModalContentColumn>

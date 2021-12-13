@@ -248,9 +248,9 @@ const DepositPage = () => {
   /**
    * Redirect to v1 if vault version given is invalid
    */
-  if (!hasVaultVersion(vaultOption, vaultVersion)) {
+  if (chainId && !hasVaultVersion(vaultOption, vaultVersion, chainId)) {
     const availableVaultVersions = VaultVersionList.filter((version) =>
-      hasVaultVersion(vaultOption, version)
+      hasVaultVersion(vaultOption, version, chainId)
     );
 
     if (availableVaultVersions.length <= 0) {
@@ -333,6 +333,7 @@ const HeroSection: React.FC<{
   variant: VaultVersion;
   v1Inactive?: boolean;
 }> = ({ depositCapBar, vaultOption, variant, v1Inactive }) => {
+  const { chainId } = useWeb3React();
   const color = getVaultColor(vaultOption);
 
   const logo = useMemo(() => {
@@ -384,7 +385,7 @@ const HeroSection: React.FC<{
   return (
     <>
       {/* V1 top banner */}
-      {variant === "v1" && hasVaultVersion(vaultOption, "v2") && (
+      {variant === "v1" && chainId && hasVaultVersion(vaultOption, "v2", chainId) && (
         <BannerContainer color={color}>
           <BaseIndicator size={8} color={color} className="mr-2" />
           <PrimaryText
@@ -422,7 +423,7 @@ const HeroSection: React.FC<{
                 ))}
                 <AttributePill className="mr-2 text-uppercase" color={color}>
                   {[...VaultVersionList].map((version) =>
-                    hasVaultVersion(vaultOption, version) ? (
+                    chainId && hasVaultVersion(vaultOption, version, chainId) ? (
                       <BaseLink
                         to={getVaultURI(vaultOption, version)}
                         key={version}
