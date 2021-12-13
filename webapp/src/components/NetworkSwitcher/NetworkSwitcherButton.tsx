@@ -41,13 +41,13 @@ const NetworkSwitcherButton = () => {
   const chainId: CHAINID = ENABLED_CHAINID[networkIndex];
   const Logo = getAssetLogo(CHAINID_TO_NATIVE_TOKENS[chainId]);
 
-  const handleCloseMenu = useCallback(() => {
+  const handleCloseModal = useCallback(() => {
     setShowModal(false);
   }, []);
 
-  useOutsideAlerter(desktopMenuRef, () => {
-    if (width > sizes.md && showModal) handleCloseMenu();
-  });
+  //   useOutsideAlerter(desktopMenuRef, () => {
+  //     if (width > sizes.md && showModal) handleCloseMenu();
+  //   });
 
   return (
     <div className="d-flex position-relative" ref={desktopMenuRef}>

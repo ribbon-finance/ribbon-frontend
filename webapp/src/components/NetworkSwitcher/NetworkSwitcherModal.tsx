@@ -24,19 +24,27 @@ const ModalContainer = styled.div`
 `;
 
 const NetworkContainer = styled.div<{
+  borderColor: string;
   active?: boolean;
 }>`
   display: flex;
   border-radius: 8px;
   padding: 12px 16px;
   align-items: center;
+  justify-content: space-between;
   background: #212127;
   box-sizing: border-box;
   border-radius: 8px;
   margin-bottom: 16px;
 
   ${(props) =>
-    props.active ? "border: 1px solid #627eea;" : "border: 1px solid #212127;"}
+    props.active
+      ? `border: 1px solid ${props.borderColor};`
+      : "border: 1px solid #212127;"}
+`;
+const NetworkNameContainer = styled.div`
+  display: flex;
+  align-items: center;
 `;
 const TitleContainer = styled.div`
   margin-bottom: 32px;
@@ -58,6 +66,8 @@ const Circle = styled.div<{
   height: ${(props) => props.size}px;
   border-radius: ${(props) => props.size / 2}px;
   background-color: ${(props) => props.color};
+`;
+const AssetCircle = styled(Circle)`
   padding: 5px 5px;
 `;
 
@@ -80,13 +90,18 @@ const NetworkSwitcherModal: React.FC<NetworkSwitcherModalProps> = ({
         {ENABLED_CHAINID.map((chainId: CHAINID) => {
           const Logo = getAssetLogo(CHAINID_TO_NATIVE_TOKENS[chainId]);
           const color = getAssetColor(CHAINID_TO_NATIVE_TOKENS[chainId]);
+          const active = currentChainId === chainId;
 
           return (
-            <NetworkContainer active={currentChainId === chainId}>
-              <Circle size={40} color={`${color}1F`}>
-                <Logo height={30} width={30}></Logo>
-              </Circle>
-              <NetworkName>{READABLE_NETWORK_NAMES[chainId]}</NetworkName>
+            <NetworkContainer borderColor={color} active={active}>
+              <NetworkNameContainer>
+                <AssetCircle size={40} color={`${color}1F`}>
+                  <Logo height={30} width={30}></Logo>
+                </AssetCircle>
+                <NetworkName>{READABLE_NETWORK_NAMES[chainId]}</NetworkName>
+              </NetworkNameContainer>
+
+              {active && <Circle size={8} color={`${color}`}></Circle>}
             </NetworkContainer>
           );
         })}
