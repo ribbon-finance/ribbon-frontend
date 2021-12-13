@@ -48,6 +48,7 @@ import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { isPracticallyZero } from "shared/lib/utils/math";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import YourPosition from "shared/lib/components/Vault/YourPosition";
+import AirdropButton from "../Airdrop/AirdropButton";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -420,6 +421,15 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     return <WalletCopyIcon className="far fa-clone" state={copyState} />;
   };
 
+  const renderAirdropButton = () => {
+    return (
+      <MenuItem role="button">
+        <AirdropButton></AirdropButton>
+        <MenuItemText>Claim airdrop</MenuItemText>
+      </MenuItem>
+    );
+  };
+
   const formModal = useMemo(
     () =>
       vault ? (
@@ -500,8 +510,13 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
               handleCopyAddress,
               renderCopiedButton()
             )}
-            {chainId && renderMenuItem(`OPEN IN ${BLOCKCHAIN_EXPLORER_NAME[chainId]}`, handleOpenEtherscan)}
+            {chainId &&
+              renderMenuItem(
+                `OPEN IN ${BLOCKCHAIN_EXPLORER_NAME[chainId]}`,
+                handleOpenEtherscan
+              )}
             {renderMenuItem("DISCONNECT", handleDisconnect)}
+            {renderAirdropButton()}
           </WalletDesktopMenu>
         </AnimatePresence>
       </WalletContainer>
@@ -521,7 +536,11 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
           handleCopyAddress,
           renderCopiedButton()
         )}
-        {chainId && renderMenuItem(`OPEN IN ${BLOCKCHAIN_EXPLORER_NAME[chainId]}`, handleOpenEtherscan)}
+        {chainId &&
+          renderMenuItem(
+            `OPEN IN ${BLOCKCHAIN_EXPLORER_NAME[chainId]}`,
+            handleOpenEtherscan
+          )}
         {renderMenuItem("DISCONNECT", handleDisconnect)}
         <MenuCloseItem role="button" onClick={onCloseMenu}>
           <MenuButton isOpen={true} onToggle={onCloseMenu} />
