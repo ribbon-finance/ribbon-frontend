@@ -1,8 +1,7 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { useWeb3React } from "@web3-react/core";
 import styled from "styled-components";
 
-import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { getAssetColor, getAssetLogo } from "shared/lib/utils/asset";
 import { Title, Subtitle } from "shared/lib/designSystem";
@@ -12,6 +11,7 @@ import {
   CHAINID_TO_NATIVE_TOKENS,
   READABLE_NETWORK_NAMES,
 } from "shared/lib/constants/constants";
+import { switchChains } from "shared/lib/utils/chainSwitching";
 
 interface NetworkSwitcherModalProps {
   show: boolean;
@@ -36,6 +36,7 @@ const NetworkContainer = styled.div<{
   box-sizing: border-box;
   border-radius: 8px;
   margin-bottom: 16px;
+  cursor: pointer;
 
   ${(props) =>
     props.active
@@ -79,6 +80,19 @@ const NetworkSwitcherModal: React.FC<NetworkSwitcherModalProps> = ({
   const handleClose = useCallback(() => {
     onClose();
   }, [onClose]);
+  const { library } = useWeb3React();
+
+  const handleSwitchChain = useCallback(
+    async (chainId: number) => {
+      if (library) {
+        await switchChains(library, chainId);
+
+        // Give it a delay before closing, if not it will show a flash
+        setTimeout(handleClose, 300);
+      }
+    },
+    [library, handleClose]
+  );
 
   return (
     <BasicModal show={show} onClose={handleClose} maxWidth={400} height={260}>
@@ -93,7 +107,11 @@ const NetworkSwitcherModal: React.FC<NetworkSwitcherModalProps> = ({
           const active = currentChainId === chainId;
 
           return (
-            <NetworkContainer borderColor={color} active={active}>
+            <NetworkContainer
+              onClick={() => handleSwitchChain(chainId)}
+              borderColor={color}
+              active={active}
+            >
               <NetworkNameContainer>
                 <AssetCircle size={40} color={`${color}1F`}>
                   <Logo height={30} width={30}></Logo>
