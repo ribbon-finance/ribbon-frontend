@@ -84,14 +84,14 @@ const NetworkSwitcherModal: React.FC<NetworkSwitcherModalProps> = ({
 
   const handleSwitchChain = useCallback(
     async (chainId: number) => {
-      if (library) {
+      if (library && currentChainId !== chainId) {
         await switchChains(library, chainId);
 
         // Give it a delay before closing, if not it will show a flash
         setTimeout(handleClose, 300);
       }
     },
-    [library, handleClose]
+    [library, currentChainId, handleClose]
   );
 
   return (
