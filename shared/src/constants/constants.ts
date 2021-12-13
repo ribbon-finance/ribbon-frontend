@@ -21,14 +21,21 @@ export const NETWORKS: Record<number, NETWORK_NAMES> = {
   [CHAINID.AVAX_MAINNET]: "avax",
 };
 
-// export const ENABLED_NETWORKS: NETWORK_NAMES[] = ["mainnet", "avax"];
-export const ENABLED_NETWORKS: NETWORK_NAMES[] = ["avax"];
-
-export const NETWORK_TO_NATIVE_TOKENS: Record<NETWORK_NAMES, Assets> = {
-  mainnet: "WETH",
-  kovan: "WETH",
-  avax: "WAVAX",
-  fuji: "WAVAX",
+export const ENABLED_CHAINID: CHAINID[] = [
+  CHAINID.ETH_MAINNET,
+  CHAINID.AVAX_MAINNET,
+];
+export const CHAINID_TO_NATIVE_TOKENS: Record<CHAINID, Assets> = {
+  [CHAINID.ETH_MAINNET]: "WETH",
+  [CHAINID.ETH_KOVAN]: "WETH",
+  [CHAINID.AVAX_MAINNET]: "WAVAX",
+  [CHAINID.AVAX_FUJI]: "WAVAX",
+};
+export const READABLE_NETWORK_NAMES: Record<CHAINID, string> = {
+  [CHAINID.ETH_MAINNET]: "Ethereum",
+  [CHAINID.ETH_KOVAN]: "Kovan",
+  [CHAINID.AVAX_MAINNET]: "Avalanche",
+  [CHAINID.AVAX_FUJI]: "Fuji",
 };
 
 export const isEthNetwork = (chainId: number): boolean =>

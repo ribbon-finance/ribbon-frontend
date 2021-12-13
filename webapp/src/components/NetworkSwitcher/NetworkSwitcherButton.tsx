@@ -8,10 +8,11 @@ import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import {
-  NETWORK_NAMES,
-  ENABLED_NETWORKS,
-  NETWORK_TO_NATIVE_TOKENS,
+  CHAINID,
+  ENABLED_CHAINID,
+  CHAINID_TO_NATIVE_TOKENS,
 } from "shared/lib/constants/constants";
+import NetworkSwitcherModal from "./NetworkSwitcherModal";
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -34,28 +35,31 @@ const ButtonContainer = styled.div`
 
 const NetworkSwitcherButton = () => {
   const desktopMenuRef = useRef(null);
-  const [show, setShow] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [networkIndex, setNetworkIndex] = useState(0);
   const { width } = useScreenSize();
-  const networkName: NETWORK_NAMES = ENABLED_NETWORKS[networkIndex];
-  const Logo = getAssetLogo(NETWORK_TO_NATIVE_TOKENS[networkName]);
+  const chainId: CHAINID = ENABLED_CHAINID[networkIndex];
+  const Logo = getAssetLogo(CHAINID_TO_NATIVE_TOKENS[chainId]);
 
   const handleCloseMenu = useCallback(() => {
-    setShow(false);
+    setShowModal(false);
   }, []);
 
   useOutsideAlerter(desktopMenuRef, () => {
-    if (width > sizes.md && show) handleCloseMenu();
+    if (width > sizes.md && showModal) handleCloseMenu();
   });
 
   return (
     <div className="d-flex position-relative" ref={desktopMenuRef}>
-      <ButtonContainer
-        role="button"
-        onClick={() => (show ? handleCloseMenu() : setShow(true))}
-      >
+      <ButtonContainer role="button" onClick={() => setShowModal(true)}>
         <Logo height={32} width={32}></Logo>
       </ButtonContainer>
+
+      <NetworkSwitcherModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        currentChainId={chainId}
+      ></NetworkSwitcherModal>
     </div>
   );
 };
