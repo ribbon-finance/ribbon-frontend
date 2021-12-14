@@ -11,6 +11,7 @@ import {
   VaultVersion,
   VaultVersionList,
 } from "../../constants/constants";
+import { CHAINID } from "../../utils/env";
 
 import sizes from "../../designSystem/sizes";
 import { useLatestAPYs } from "../../hooks/useLatestAPY";
@@ -54,12 +55,8 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
             return [vaultOption, userSelectedVaultsVersion[vaultOption]];
           }
 
-          if (!chainId) {
-            return [vaultOption, userSelectedVaultsVersion[vaultOption]];
-          }
-
           const availableVaultVersions = VaultVersionList.filter((version) =>
-            hasVaultVersion(vaultOption, version, chainId)
+            hasVaultVersion(vaultOption, version, chainId || CHAINID.ETH_MAINNET)
           );
 
           // If vault only has one available version
@@ -106,7 +103,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
 
   const filteredProducts = useMemo(() => {
     const filteredList = VaultList.filter((vault) => {
-      if (!chainId || VaultAddressMap[vault].chainId !== chainId) {
+      if (chainId && VaultAddressMap[vault].chainId !== chainId) {
         return false;
       }
 
