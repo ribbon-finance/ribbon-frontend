@@ -1,5 +1,5 @@
-import React, { ReactNode, useMemo } from "react";
-import { ethers } from "ethers";
+import React, { ReactNode, useEffect, useMemo, useState } from "react";
+import { BigNumber, ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
@@ -16,10 +16,13 @@ import {
 import sizes from "shared/lib/designSystem/sizes";
 import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
+import { CHAINID } from "shared/lib/utils/env";
 import {
+  CHAINID_TO_NATIVE_TOKENS,
   getDisplayAssets,
   getEtherscanURI,
   hasVaultVersion,
+  READABLE_NETWORK_NAMES,
   VaultAddressMap,
   VaultList,
   VaultOptions,
@@ -29,7 +32,11 @@ import {
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { getAssetLogo } from "shared/lib/utils/asset";
+import {
+  getAssetColor,
+  getAssetDisplay,
+  getAssetLogo,
+} from "shared/lib/utils/asset";
 import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
@@ -386,6 +393,12 @@ const HeroSection: React.FC<{
             linkText="Switch to V2"
           ></Banner>
         )}
+
+      {/* Banner to remind users to bridge if they do not have a balance */}
+      {chainId && chainId !== CHAINID.ETH_MAINNET && (
+        <BridgeBanner></BridgeBanner>
+      )}
+
       <HeroContainer className="position-relative" color={color}>
         <DepositPageContainer className="container">
           <div className="row mx-lg-n1 position-relative">
@@ -435,6 +448,41 @@ const HeroSection: React.FC<{
       </HeroContainer>
     </>
   );
+};
+
+const BridgeBanner = () => {
+  const { chainId, library, account } = useWeb3React();
+  // We start with a starting state of 1 so the banner does not show up at the start
+  const [balance, setBalance] = useState<BigNumber>(BigNumber.from(1));
+
+  // Only a few chains have bridges
+  const chainsSupportedForBridging = chainId === CHAINID.AVAX_MAINNET;
+  const currentChainId: CHAINID = chainId as CHAINID;
+
+  useEffect(() => {
+    (async () => {
+      if (library && chainsSupportedForBridging) {
+        const balance = await library.getBalance(account);
+        setBalance(balance);
+      }
+    })();
+  }, [library, account]);
+
+  if (!chainsSupportedForBridging) return null;
+
+  const token = CHAINID_TO_NATIVE_TOKENS[currentChainId];
+  const color = getAssetColor(token);
+  const assetDisplay = getAssetDisplay(token);
+
+  return chainId && balance.isZero() ? (
+    <Banner
+      color={color}
+      message={`You do not have an ${assetDisplay} balance. Bridge your funds to get started.`}
+      linkText="Bridge"
+      linkURI="https://bridge.avax.network/"
+      linkOpensNewTab
+    ></Banner>
+  ) : null;
 };
 
 export default DepositPage;

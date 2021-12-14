@@ -35,9 +35,11 @@ const Homepage = () => {
           linkText={ANNOUNCEMENT.linkText}
           linkURI={ANNOUNCEMENT.linkURI}
           onClick={() => {
-            if (library) {
-              switchChains(library, CHAINID.AVAX_MAINNET);
-            }
+            (async () => {
+              if (library) {
+                await switchChains(library, CHAINID.AVAX_MAINNET);
+              }
+            })();
           }}
         ></Banner>
       )}

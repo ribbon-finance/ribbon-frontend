@@ -24,6 +24,7 @@ interface BannerProps {
   linkURI: string;
   linkText: string;
   onClick?: () => void;
+  linkOpensNewTab?: Boolean;
 }
 
 const Banner: React.FC<BannerProps> = ({
@@ -32,6 +33,7 @@ const Banner: React.FC<BannerProps> = ({
   linkURI,
   linkText,
   onClick = () => {},
+  linkOpensNewTab = false,
 }) => {
   return (
     <BannerContainer color={color}>
@@ -45,7 +47,11 @@ const Banner: React.FC<BannerProps> = ({
         >
           {message}
         </PrimaryText>
-        <BaseLink onClick={onClick} to={linkURI}>
+        <BaseLink
+          onClick={onClick}
+          to={linkURI}
+          {...(linkOpensNewTab ? { target: "_blank" } : {})}
+        >
           <BannerButton color={color} role="button">
             <PrimaryText fontSize={14} lineHeight={20} color={color}>
               {linkText}
