@@ -54,8 +54,12 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
             return [vaultOption, userSelectedVaultsVersion[vaultOption]];
           }
 
+          if (!chainId) {
+            return [vaultOption, userSelectedVaultsVersion[vaultOption]];
+          }
+
           const availableVaultVersions = VaultVersionList.filter((version) =>
-            hasVaultVersion(vaultOption, version)
+            hasVaultVersion(vaultOption, version, chainId)
           );
 
           // If vault only has one available version
@@ -87,7 +91,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
           return [vaultOption, VaultVersionList[0]];
         })
       ) as VaultsDisplayVersion,
-    [userSelectedVaultsVersion, v1VaultsData, v1VaultsDataLoading]
+    [chainId, userSelectedVaultsVersion, v1VaultsData, v1VaultsDataLoading]
   );
 
   const setVaultDisplayVersion = useCallback(
@@ -102,7 +106,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
 
   const filteredProducts = useMemo(() => {
     const filteredList = VaultList.filter((vault) => {
-      if (chainId && VaultAddressMap[vault].chainId !== chainId) {
+      if (!chainId || VaultAddressMap[vault].chainId !== chainId) {
         return false;
       }
 

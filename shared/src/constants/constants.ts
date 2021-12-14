@@ -3,21 +3,15 @@ import { ERC20Token } from "../models/eth";
 import { Assets } from "../store/types";
 import { getAssetDecimals } from "../utils/asset";
 import {
+  CHAINID,
+  SUBGRAPH_URI,
   getSubgraphqlURI,
-  getV2SubgraphURI,
   isDevelopment,
   isProduction,
 } from "../utils/env";
 import v1deployment from "./v1Deployments.json";
 import v2deployment from "./v2Deployments.json";
 import addresses from "./externalAddresses.json";
-
-export enum CHAINID {
-  ETH_MAINNET = 1,
-  ETH_KOVAN = 42,
-  AVAX_FUJI = 43113,
-  AVAX_MAINNET = 43114,
-}
 
 export type NETWORK_NAMES  = "mainnet" | "kovan" | "fuji" | "avax";
 export const NETWORKS: Record<number, NETWORK_NAMES> = {
@@ -236,9 +230,10 @@ export const VaultAddressMap: {
  */
 export const hasVaultVersion = (
   vaultOption: VaultOptions,
-  version: VaultVersion
+  version: VaultVersion,
+  chainId: number,
 ): boolean => {
-  return Boolean(VaultAddressMap[vaultOption][version]);
+  return Boolean(VaultAddressMap[vaultOption][version]) && VaultAddressMap[vaultOption].chainId === chainId;
 };
 
 export const VaultNamesList = [
@@ -277,12 +272,12 @@ export const BLOCKCHAIN_EXPLORER_URI: Record<number, string> = {
 
 export const getEtherscanURI = (chainId: number) => BLOCKCHAIN_EXPLORER_URI[chainId as CHAINID]
 
-export const getSubgraphURIForVersion = (vaultVersion: VaultVersion) => {
+export const getSubgraphURIForVersion = (vaultVersion: VaultVersion, chainId: number) => {
   switch (vaultVersion) {
     case "v1":
       return getSubgraphqlURI();
     case "v2":
-      return getV2SubgraphURI();
+      return SUBGRAPH_URI[chainId];
   }
 };
 

@@ -40,7 +40,7 @@ export const vaultPriceHistoryGraphql = (version: VaultVersion) => {
 };
 
 export const resolveVaultPriceHistorySubgraphResponse = (
-  responses: { [vault in VaultVersion]: any | undefined }
+  responses: { [vault in VaultVersion]: any | undefined },
 ): VaultPriceHistoriesData =>
   Object.fromEntries(
     VaultVersionList.map((version) => [
@@ -85,7 +85,6 @@ const useVaultPriceHistory = (
 
 export const useVaultsPriceHistory = () => {
   const contextData = useContext(SubgraphDataContext);
-
   return {
     data: contextData.vaultPriceHistory,
     loading: contextData.loading,

@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ethers } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
+import { useWeb3React } from "@web3-react/core";
 
 import {
   BaseButton,
@@ -189,6 +190,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     data: { totalBalance: v2Deposits, cap: v2VaultLimit },
     loading: v2DataLoading,
   } = useV2VaultData(vault);
+  const { chainId } = useWeb3React();
   const yieldInfos = useAssetsYield(asset);
   const isLoading = useMemo(() => status === "loading", [status]);
   const [mode, setMode] = useState<"info" | "yield">("info");
@@ -361,7 +363,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
               <div className="d-flex">
                 {/* Version tags */}
                 {VaultVersionList.map((version) =>
-                  hasVaultVersion(vault, version) ? (
+                  chainId && hasVaultVersion(vault, version, chainId) ? (
                     <ProductVersionTag
                       key={version}
                       color={color}
