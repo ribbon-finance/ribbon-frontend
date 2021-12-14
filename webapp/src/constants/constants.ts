@@ -47,7 +47,7 @@ interface Announcement {
 
 export const ANNOUNCEMENT: Announcement | undefined = {
   color: "#E84142",
-  message: "AVAX vaults are open.",
+  message: "AVAX vaults have launched.",
   linkText: "Switch to Avalanche",
   linkURI: "/",
 };
