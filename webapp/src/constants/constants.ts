@@ -50,5 +50,5 @@ export const ANNOUNCEMENT: Announcement | undefined = {
   message:
     "AVAX vaults are open for deposits. Switch to the Avalanche network.",
   linkText: "Switch",
-  linkURI: "/v2/theta-vault/T-AVAX-C",
+  linkURI: "/",
 };

@@ -1,12 +1,15 @@
+import { useWeb3React } from "@web3-react/core";
 import React from "react";
 import { useHistory } from "react-router";
 import Banner from "shared/lib/components/Banner/Banner";
 
 import ProductCatalogue from "shared/lib/components/Product/ProductCatalogue";
+import { CHAINID } from "shared/lib/utils/env";
 import { Title } from "shared/lib/designSystem";
 import sizes from "shared/lib/designSystem/sizes";
 import styled from "styled-components";
 import { ANNOUNCEMENT, getVaultURI } from "../../constants/constants";
+import { switchChains } from "shared/lib/utils/chainSwitching";
 
 const ProductTitle = styled(Title)`
   display: none;
@@ -21,15 +24,21 @@ const ProductTitle = styled(Title)`
 
 const Homepage = () => {
   const history = useHistory();
+  const { library, chainId } = useWeb3React();
   return (
     <>
       <ProductTitle>PRODUCT</ProductTitle>
-      {ANNOUNCEMENT && (
+      {ANNOUNCEMENT && chainId && chainId !== CHAINID.AVAX_MAINNET && (
         <Banner
           color={ANNOUNCEMENT.color}
           message={ANNOUNCEMENT.message}
           linkText={ANNOUNCEMENT.linkText}
           linkURI={ANNOUNCEMENT.linkURI}
+          onClick={() => {
+            if (library) {
+              switchChains(library, CHAINID.AVAX_MAINNET);
+            }
+          }}
         ></Banner>
       )}
       <ProductCatalogue

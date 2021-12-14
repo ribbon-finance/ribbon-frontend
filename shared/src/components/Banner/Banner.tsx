@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import styled from "styled-components";
 import { BaseIndicator, BaseLink, PrimaryText } from "../../designSystem";
 import theme from "../../designSystem/theme";
@@ -23,6 +23,7 @@ interface BannerProps {
   message: string;
   linkURI: string;
   linkText: string;
+  onClick?: () => void;
 }
 
 const Banner: React.FC<BannerProps> = ({
@@ -30,6 +31,7 @@ const Banner: React.FC<BannerProps> = ({
   message,
   linkURI,
   linkText,
+  onClick = () => {},
 }) => {
   return (
     <BannerContainer color={color}>
@@ -43,7 +45,7 @@ const Banner: React.FC<BannerProps> = ({
         >
           {message}
         </PrimaryText>
-        <BaseLink to={linkURI}>
+        <BaseLink onClick={onClick} to={linkURI}>
           <BannerButton color={color} role="button">
             <PrimaryText fontSize={14} lineHeight={20} color={color}>
               {linkText}
