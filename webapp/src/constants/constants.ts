@@ -37,3 +37,17 @@ export const getVaultURI = (
       }`;
   }
 };
+
+interface Announcement {
+  color: string;
+  message: string;
+  linkText: string;
+  linkURI: string;
+}
+
+export const ANNOUNCEMENT: Announcement | undefined = {
+  color: "#E84142",
+  message: "AVAX vaults are open.",
+  linkText: "Switch to Avalanche",
+  linkURI: "/",
+};
