@@ -4,10 +4,8 @@ import styled from "styled-components";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { getAssetLogo } from "shared/lib/utils/asset";
-import {
-  CHAINID,
-  CHAINID_TO_NATIVE_TOKENS,
-} from "shared/lib/constants/constants";
+import { CHAINID } from "shared/lib/utils/env";
+import { CHAINID_TO_NATIVE_TOKENS } from "shared/lib/constants/constants";
 import NetworkSwitcherModal from "./NetworkSwitcherModal";
 import { useWeb3React } from "@web3-react/core";
 

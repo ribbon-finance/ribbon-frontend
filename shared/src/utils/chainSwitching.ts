@@ -1,6 +1,6 @@
 import { providers } from "ethers";
 import { AVALANCHE_MAINNET_PARAMS } from "../constants/chainParameters";
-import { CHAINID } from "../constants/constants";
+import { CHAINID } from "./env";
 
 // This error code indicates that the chain has not been added to MetaMask.
 const UNAVAILABLE_CHAIN_CODE = 4902;

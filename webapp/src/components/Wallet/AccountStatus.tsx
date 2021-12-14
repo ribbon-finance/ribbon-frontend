@@ -35,12 +35,12 @@ import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import {
   BLOCKCHAIN_EXPLORER_NAME,
   BLOCKCHAIN_EXPLORER_URI,
-  CHAINID,
   getAssets,
   VaultList,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
+import { CHAINID } from "shared/lib/utils/env";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { truncateAddress } from "shared/lib/utils/address";
 import { useVaultData } from "shared/lib/hooks/web3DataContext";
