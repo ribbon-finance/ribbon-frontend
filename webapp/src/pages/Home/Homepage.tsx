@@ -4,7 +4,7 @@ import { useHistory } from "react-router";
 import Banner from "shared/lib/components/Banner/Banner";
 
 import ProductCatalogue from "shared/lib/components/Product/ProductCatalogue";
-import { CHAINID } from "shared/lib/utils/env";
+import { isProduction, CHAINID } from "shared/lib/utils/env";
 import { Title } from "shared/lib/designSystem";
 import sizes from "shared/lib/designSystem/sizes";
 import styled from "styled-components";
@@ -28,21 +28,24 @@ const Homepage = () => {
   return (
     <>
       <ProductTitle>PRODUCT</ProductTitle>
-      {ANNOUNCEMENT && chainId && chainId !== CHAINID.AVAX_MAINNET && (
-        <Banner
-          color={ANNOUNCEMENT.color}
-          message={ANNOUNCEMENT.message}
-          linkText={ANNOUNCEMENT.linkText}
-          linkURI={ANNOUNCEMENT.linkURI}
-          onClick={() => {
-            (async () => {
-              if (library) {
-                await switchChains(library, CHAINID.AVAX_MAINNET);
-              }
-            })();
-          }}
-        ></Banner>
-      )}
+      {!isProduction() &&
+        ANNOUNCEMENT &&
+        chainId &&
+        chainId !== CHAINID.AVAX_MAINNET && (
+          <Banner
+            color={ANNOUNCEMENT.color}
+            message={ANNOUNCEMENT.message}
+            linkText={ANNOUNCEMENT.linkText}
+            linkURI={ANNOUNCEMENT.linkURI}
+            onClick={() => {
+              (async () => {
+                if (library) {
+                  await switchChains(library, CHAINID.AVAX_MAINNET);
+                }
+              })();
+            }}
+          ></Banner>
+        )}
       <ProductCatalogue
         variant="webapp"
         onVaultPress={(vault, version) =>

@@ -149,6 +149,11 @@ export const useLatestAPY = (
           return { fetched: true, res: 8.8334241 };
         case "rstETH-THETA":
           return { fetched: true, res: 12.1910215 };
+        /**
+         * TODO: Temporarily hardcode it for the launch because it is inaccurate
+         */
+        case "rAVAX-THETA":
+          return { fetched: true, res: 17.46 };
       }
   }
 
@@ -191,6 +196,11 @@ export const useLatestAPYs = () => {
                       return [vaultOption, 8.8334241];
                     case "rstETH-THETA":
                       return [vaultOption, 12.1910215];
+                    /**
+                     * TODO: Temporarily hardcode it for the launch because it is inaccurate
+                     */
+                    case "rAVAX-THETA":
+                      return [vaultOption, 17.46];
                   }
               }
 
