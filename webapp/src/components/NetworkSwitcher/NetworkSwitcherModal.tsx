@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { getAssetColor, getAssetLogo } from "shared/lib/utils/asset";
-import { Title, Subtitle } from "shared/lib/designSystem";
+import { Title, Subtitle, BaseIndicator } from "shared/lib/designSystem";
 import { CHAINID } from "shared/lib/utils/env";
 import {
   ENABLED_CHAINID,
@@ -56,19 +56,13 @@ const NetworkName = styled(Subtitle)`
   line-height: 24px;
   margin-left: 10px;
 `;
-const Circle = styled.div<{
+const AssetCircle = styled(BaseIndicator)<{
   size: number;
   color: string;
 }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${(props) => props.size}px;
-  height: ${(props) => props.size}px;
-  border-radius: ${(props) => props.size / 2}px;
-  background-color: ${(props) => props.color};
-`;
-const AssetCircle = styled(Circle)`
   padding: 5px 5px;
 `;
 
@@ -119,7 +113,7 @@ const NetworkSwitcherModal: React.FC<NetworkSwitcherModalProps> = ({
                 <NetworkName>{READABLE_NETWORK_NAMES[chainId]}</NetworkName>
               </NetworkNameContainer>
 
-              {active && <Circle size={8} color={`${color}`}></Circle>}
+              {active && <BaseIndicator size={8} color={color}></BaseIndicator>}
             </NetworkContainer>
           );
         })}
