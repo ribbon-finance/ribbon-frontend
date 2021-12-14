@@ -22,7 +22,6 @@ import {
   getDisplayAssets,
   getEtherscanURI,
   hasVaultVersion,
-  READABLE_NETWORK_NAMES,
   VaultAddressMap,
   VaultList,
   VaultOptions,
@@ -466,7 +465,7 @@ const BridgeBanner = () => {
         setBalance(balance);
       }
     })();
-  }, [library, account]);
+  }, [library, account, chainsSupportedForBridging]);
 
   if (!chainsSupportedForBridging) return null;
 
@@ -477,7 +476,7 @@ const BridgeBanner = () => {
   return chainId && balance.isZero() ? (
     <Banner
       color={color}
-      message={`You do not have an ${assetDisplay} balance. Bridge your funds to get started.`}
+      message={`You do not have an ${assetDisplay} balance.`}
       linkText="Bridge"
       linkURI="https://bridge.avax.network/"
       linkOpensNewTab

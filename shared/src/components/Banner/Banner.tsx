@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import styled from "styled-components";
 import { BaseIndicator, BaseLink, PrimaryText } from "../../designSystem";
 import theme from "../../designSystem/theme";
