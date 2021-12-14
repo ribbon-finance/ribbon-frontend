@@ -177,7 +177,7 @@ const useFetchV2VaultData = (): V2VaultData => {
     if (!isProduction()) {
       console.timeEnd("V2 Vault Data Fetch");
     }
-  }, [account, web3Active, library, provider]);
+  }, [account, web3Active, library, provider, chainId]);
 
   useEffect(() => {
     doMulticall();

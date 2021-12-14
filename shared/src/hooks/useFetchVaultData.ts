@@ -146,7 +146,7 @@ const useFetchVaultData = (): VaultData => {
     if (!isProduction()) {
       console.timeEnd("V1 Vault Data Fetch");
     }
-  }, [account, web3Active, library, provider]);
+  }, [account, web3Active, library, provider, chainId]);
 
   useEffect(() => {
     doMulticall();
