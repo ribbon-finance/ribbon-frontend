@@ -42,6 +42,8 @@ import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopAc
 import YourPosition from "shared/lib/components/Vault/YourPosition";
 import { truncateAddress } from "shared/lib/utils/address";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
+import useRedirectOnSwitchChain from "../../hooks/useRedirectOnSwitchChain";
+import useRedirectOnWrongChain from "../../hooks/useRedirectOnWrongChain";
 
 const { formatUnits } = ethers.utils;
 
@@ -187,9 +189,13 @@ const ContractButtonTitle = styled(Title)`
 `;
 
 const DepositPage = () => {
-  usePullUp();
-  const { chainId } = useWeb3React();
   const { vaultOption, vaultVersion } = useVaultOption();
+  const { chainId } = useWeb3React();
+  useRedirectOnSwitchChain(chainId);
+  useRedirectOnWrongChain(vaultOption, chainId);
+
+  usePullUp();
+
   const { status, deposits, vaultLimit } = useVaultData(
     vaultOption || VaultList[0]
   );
@@ -282,9 +288,9 @@ const DepositPage = () => {
         <div className="row">
           {VaultAddressMap[vaultOption][vaultVersion] && chainId && (
             <BaseLink
-              to={`${getEtherscanURI(chainId)}/address/${VaultAddressMap[vaultOption][
-                vaultVersion
-              ]!}`}
+              to={`${getEtherscanURI(chainId)}/address/${VaultAddressMap[
+                vaultOption
+              ][vaultVersion]!}`}
               target="_blank"
               rel="noreferrer noopener"
               className="w-100"

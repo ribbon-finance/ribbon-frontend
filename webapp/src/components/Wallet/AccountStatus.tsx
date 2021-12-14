@@ -35,6 +35,7 @@ import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import {
   BLOCKCHAIN_EXPLORER_NAME,
   BLOCKCHAIN_EXPLORER_URI,
+  CHAINID,
   getAssets,
   VaultList,
   VaultOptions,
@@ -516,7 +517,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
                 handleOpenEtherscan
               )}
             {renderMenuItem("DISCONNECT", handleDisconnect)}
-            {renderAirdropButton()}
+            {chainId === CHAINID.ETH_MAINNET && renderAirdropButton()}
           </WalletDesktopMenu>
         </AnimatePresence>
       </WalletContainer>
