@@ -9,16 +9,18 @@ import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsCont
 import { formatUnits } from "@ethersproject/units";
 import { impersonateAddress } from "shared/lib/utils/development";
 import { useGlobalState } from "shared/lib/store/store";
+import { CHAINID } from "shared/lib/utils/env";
 
 const useAirdrop = () => {
   const web3Context = useWeb3React();
+  const { chainId } = web3Context;
   const account = impersonateAddress ? impersonateAddress : web3Context.account;
   const merkleDistributor = useMerkleDistributor();
   const [airdropInfo, setAirdropInfo] = useGlobalState("airdropInfo");
   const { pendingTransactions } = usePendingTransactions();
 
   const updateAirdropInfo = useCallback(async () => {
-    if (!account || !merkleDistributor) {
+    if (chainId !== CHAINID.ETH_MAINNET || !account || !merkleDistributor) {
       setAirdropInfo(undefined);
       return;
     }
@@ -47,7 +49,7 @@ const useAirdrop = () => {
       breakdown: airdropBreakdown,
       claimed,
     });
-  }, [account, merkleDistributor, setAirdropInfo]);
+  }, [account, merkleDistributor, setAirdropInfo, chainId]);
 
   useEffect(() => {
     if (!airdropInfo || airdropInfo.account !== account) {

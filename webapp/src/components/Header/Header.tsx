@@ -12,7 +12,7 @@ import { NavItemProps, MobileMenuOpenProps } from "./types";
 import AccountStatus from "../Wallet/AccountStatus";
 import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
-import AirdropButton from "../Airdrop/AirdropButton";
+import NetworkSwitcherButton from "../NetworkSwitcher/NetworkSwitcherButton";
 import NotificationButton from "../Notification/NotificationButton";
 import { isEthNetwork } from "shared/lib/constants/constants";
 
@@ -191,13 +191,17 @@ const Header = () => {
         <LinksContainer>
           {renderLinkItem("PRODUCTS", "/", Boolean(product))}
           {renderLinkItem("PORTFOLIO", "/portfolio", Boolean(portfolio))}
-          {chainId && isEthNetwork(chainId) && renderLinkItem("STAKING", "/staking", Boolean(staking))}
+          {chainId &&
+            isEthNetwork(chainId) &&
+            renderLinkItem("STAKING", "/staking", Boolean(staking))}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
-      <HeaderButtonContainer>
-        <AirdropButton />
-      </HeaderButtonContainer>
+      {active && (
+        <HeaderButtonContainer>
+          <NetworkSwitcherButton />
+        </HeaderButtonContainer>
+      )}
 
       {active && (
         <HeaderButtonContainer>
