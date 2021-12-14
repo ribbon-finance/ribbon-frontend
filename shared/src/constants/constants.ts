@@ -25,10 +25,7 @@ export const NETWORKS: Record<number, NETWORK_NAMES> = {
 export const ENABLED_CHAINID: CHAINID[] = isProduction()
   ? [CHAINID.ETH_MAINNET]
   : [CHAINID.ETH_MAINNET, CHAINID.AVAX_MAINNET];
-// export const ENABLED_CHAINID: CHAINID[] = [
-//   CHAINID.AVAX_MAINNET,
-//   CHAINID.ETH_MAINNET,
-// ];
+
 export const CHAINID_TO_NATIVE_TOKENS: Record<CHAINID, Assets> = {
   [CHAINID.ETH_MAINNET]: "WETH",
   [CHAINID.ETH_KOVAN]: "WETH",
