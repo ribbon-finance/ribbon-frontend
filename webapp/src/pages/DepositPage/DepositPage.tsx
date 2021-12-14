@@ -4,12 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
 
-import {
-  BaseIndicator,
-  BaseLink,
-  PrimaryText,
-  Title,
-} from "shared/lib/designSystem";
+import { BaseLink, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import PerformanceSection from "./PerformanceSection";
@@ -44,6 +39,7 @@ import { truncateAddress } from "shared/lib/utils/address";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import useRedirectOnSwitchChain from "../../hooks/useRedirectOnSwitchChain";
 import useRedirectOnWrongChain from "../../hooks/useRedirectOnWrongChain";
+import Banner from "shared/lib/components/Banner/Banner";
 
 const { formatUnits } = ethers.utils;
 
@@ -51,21 +47,6 @@ const DepositPageContainer = styled(Container)`
   @media (min-width: ${sizes.xl}px) {
     max-width: 1140px;
   }
-`;
-
-const BannerContainer = styled.div<{ color: string }>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  background: ${(props) => `${props.color}29`};
-  padding: 12px 0px;
-`;
-
-const BannerButton = styled.div<{ color: string }>`
-  padding: 10px 16px;
-  border: ${theme.border.width} ${theme.border.style} ${(props) => props.color};
-  border-radius: 100px;
 `;
 
 const HeroContainer = styled.div<{ color: string }>`
@@ -391,28 +372,20 @@ const HeroSection: React.FC<{
   return (
     <>
       {/* V1 top banner */}
-      {variant === "v1" && chainId && hasVaultVersion(vaultOption, "v2", chainId) && (
-        <BannerContainer color={color}>
-          <BaseIndicator size={8} color={color} className="mr-2" />
-          <PrimaryText
-            fontSize={14}
-            lineHeight={20}
+      {variant === "v1" &&
+        chainId &&
+        hasVaultVersion(vaultOption, "v2", chainId) && (
+          <Banner
             color={color}
-            className="mr-3"
-          >
-            {v1Inactive
-              ? "V1 vaults are now inactive and do not accept deposits"
-              : "V2 vaults are now live"}
-          </PrimaryText>
-          <BaseLink to={getVaultURI(vaultOption, "v2")}>
-            <BannerButton color={color} role="button">
-              <PrimaryText fontSize={14} lineHeight={20} color={color}>
-                Switch to V2
-              </PrimaryText>
-            </BannerButton>
-          </BaseLink>
-        </BannerContainer>
-      )}
+            message={
+              v1Inactive
+                ? "V1 vaults are now inactive and do not accept deposits"
+                : "V2 vaults are now live"
+            }
+            linkURI={getVaultURI(vaultOption, "v2")}
+            linkText="Switch to V2"
+          ></Banner>
+        )}
       <HeroContainer className="position-relative" color={color}>
         <DepositPageContainer className="container">
           <div className="row mx-lg-n1 position-relative">
@@ -429,7 +402,8 @@ const HeroSection: React.FC<{
                 ))}
                 <AttributePill className="mr-2 text-uppercase" color={color}>
                   {[...VaultVersionList].map((version) =>
-                    chainId && hasVaultVersion(vaultOption, version, chainId) ? (
+                    chainId &&
+                    hasVaultVersion(vaultOption, version, chainId) ? (
                       <BaseLink
                         to={getVaultURI(vaultOption, version)}
                         key={version}

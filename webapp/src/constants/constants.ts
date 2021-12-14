@@ -37,3 +37,18 @@ export const getVaultURI = (
       }`;
   }
 };
+
+interface Announcement {
+  color: string;
+  message: string;
+  linkText: string;
+  linkURI: string;
+}
+
+export const ANNOUNCEMENT: Announcement | undefined = {
+  color: "#E84142",
+  message:
+    "AVAX vaults are open for deposits. Switch to the Avalanche network.",
+  linkText: "Switch",
+  linkURI: "/v2/theta-vault/T-AVAX-C",
+};

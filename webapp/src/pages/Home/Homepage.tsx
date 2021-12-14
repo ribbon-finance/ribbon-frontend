@@ -1,11 +1,12 @@
 import React from "react";
 import { useHistory } from "react-router";
+import Banner from "shared/lib/components/Banner/Banner";
 
 import ProductCatalogue from "shared/lib/components/Product/ProductCatalogue";
 import { Title } from "shared/lib/designSystem";
 import sizes from "shared/lib/designSystem/sizes";
 import styled from "styled-components";
-import { getVaultURI } from "../../constants/constants";
+import { ANNOUNCEMENT, getVaultURI } from "../../constants/constants";
 
 const ProductTitle = styled(Title)`
   display: none;
@@ -23,6 +24,14 @@ const Homepage = () => {
   return (
     <>
       <ProductTitle>PRODUCT</ProductTitle>
+      {ANNOUNCEMENT && (
+        <Banner
+          color={ANNOUNCEMENT.color}
+          message={ANNOUNCEMENT.message}
+          linkText={ANNOUNCEMENT.linkText}
+          linkURI={ANNOUNCEMENT.linkURI}
+        ></Banner>
+      )}
       <ProductCatalogue
         variant="webapp"
         onVaultPress={(vault, version) =>
