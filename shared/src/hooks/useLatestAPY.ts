@@ -16,6 +16,7 @@ import useVaultPriceHistory, {
 import { VaultPriceHistory } from "../models/vault";
 import { getAssetDecimals } from "../utils/asset";
 import useYearnAPIData from "./useYearnAPIData";
+import useLidoAPY from "./useLidoOracle";
 
 const getPriceHistoryFromPeriod = (
   priceHistory: VaultPriceHistory[],
@@ -183,6 +184,7 @@ export const useLatestAPY = (
     vaultVersion
   );
   const { getVaultAPR } = useYearnAPIData();
+  const lidoAPY = useLidoAPY();
 
   switch (vaultVersion) {
     case "v2":
@@ -200,6 +202,9 @@ export const useLatestAPY = (
   switch (vaultOption) {
     case "ryvUSDC-ETH-P-THETA":
       underlyingYieldAPR = getVaultAPR("yvUSDC", "0.3.0") * 100;
+      break;
+    case "rstETH-THETA":
+      underlyingYieldAPR = lidoAPY * 100;
   }
 
   return {
@@ -220,6 +225,7 @@ export default useLatestAPY;
 export const useLatestAPYs = () => {
   const { data, loading } = useVaultsPriceHistory();
   const { getVaultAPR } = useYearnAPIData();
+  const lidoAPY = useLidoAPY();
 
   const latestAPYs = useMemo(
     () =>
@@ -246,6 +252,9 @@ export const useLatestAPYs = () => {
               switch (vaultOption) {
                 case "ryvUSDC-ETH-P-THETA":
                   underlyingYieldAPR = getVaultAPR("yvUSDC", "0.3.0") * 100;
+                  break;
+                case "rstETH-THETA":
+                  underlyingYieldAPR = lidoAPY * 100;
               }
 
               return [
@@ -267,7 +276,7 @@ export const useLatestAPYs = () => {
           [option in VaultOptions]: number;
         };
       },
-    [data, getVaultAPR, loading]
+    [data, getVaultAPR, lidoAPY, loading]
   );
 
   return { fetched: !loading, res: latestAPYs };

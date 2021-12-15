@@ -21,12 +21,18 @@ import useFetchAssetBalanceData, {
 import useFetchStakingPoolData from "./useFetchStakingPoolData";
 import useFetchV2VaultData from "./useFetchV2VaultData";
 import useFetchVaultData from "./useFetchVaultData";
+import {
+  defaultLidoOracleData,
+  LidoOracleData,
+  useFetchLidoOracleData,
+} from "./useLidoOracle";
 
 export type Web3DataContextType = {
   v1: VaultData;
   v2: V2VaultData;
   assetBalance: UserAssetBalanceData;
   stakingPool: StakingPoolData;
+  lidoOracle: LidoOracleData;
 };
 
 export const Web3DataContext = React.createContext<Web3DataContextType>({
@@ -34,6 +40,7 @@ export const Web3DataContext = React.createContext<Web3DataContextType>({
   v2: defaultV2VaultData,
   assetBalance: defaultUserAssetBalanceData,
   stakingPool: defaultStakingPoolData,
+  lidoOracle: defaultLidoOracleData,
 });
 
 export const useVaultsData = () => {
@@ -115,6 +122,7 @@ export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({
   const v2VaultData = useFetchV2VaultData();
   const assetBalance = useFetchAssetBalanceData();
   const stakingPool = useFetchStakingPoolData();
+  const lidoOracle = useFetchLidoOracleData();
 
   return (
     <Web3DataContext.Provider
@@ -123,6 +131,7 @@ export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({
         v2: v2VaultData,
         assetBalance,
         stakingPool,
+        lidoOracle,
       }}
     >
       {children}
