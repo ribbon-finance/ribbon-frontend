@@ -25,8 +25,10 @@ const useGasPrice = () => {
   const [gasPrice, setGasPrice] = useGlobalState("gasPrice");
 
   const fetchGasPrice = useCallback(async () => {
+    if (!chainId) return;
+
     fetchedOnce = true;
-    const response = await axios.get(GAS_URL[chainId || CHAINID.ETH_MAINNET]);
+    const response = await axios.get(GAS_URL[chainId]);
     const data: APIResponse = response.data;
 
     setGasPrice(parseUnits(data.result.FastGasPrice, "gwei").toString());
