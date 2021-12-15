@@ -161,8 +161,6 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     VaultAddressMap[vaultOption].v2
   );
 
-  console.log(tokenAllowance);
-
   /**
    * Default to initial state and process initial state
    */
