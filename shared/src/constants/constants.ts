@@ -467,3 +467,7 @@ export const LidoCurvePoolAddress = isDevelopment()
   : addresses.mainnet.lidoCurvePool;
 
 export const CurveSwapSlippage = 0.008; // 0.8%
+
+export const LidoOracleAddress = isDevelopment()
+  ? ""
+  : addresses.mainnet.lidoOracle;

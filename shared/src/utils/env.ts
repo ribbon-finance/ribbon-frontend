@@ -5,17 +5,19 @@ export enum CHAINID {
   AVAX_MAINNET = 43114,
 }
 
-export const FALLBACK_SUBGRAPH_URL =
-  "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-v2-kovan";
 export const SUBGRAPH_URI: Record<number, string> = {
   [CHAINID.ETH_MAINNET]:
-    process.env.REACT_APP_V2_SUBGRAPHQL_URL || FALLBACK_SUBGRAPH_URL,
+    process.env.REACT_APP_V2_SUBGRAPHQL_URL ||
+    "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-v2",
   [CHAINID.ETH_KOVAN]:
-    process.env.REACT_APP_KOVAN_V2_SUBGRAPHQL_URL || FALLBACK_SUBGRAPH_URL,
+    process.env.REACT_APP_KOVAN_V2_SUBGRAPHQL_URL ||
+    "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-v2-kovan",
   [CHAINID.AVAX_FUJI]:
-    process.env.REACT_APP_FUJI_SUBGRAPHQL_URL || FALLBACK_SUBGRAPH_URL,
+    process.env.REACT_APP_FUJI_SUBGRAPHQL_URL ||
+    "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-avax",
   [CHAINID.AVAX_MAINNET]:
-    process.env.REACT_APP_AVAX_SUBGRAPHQL_URL || FALLBACK_SUBGRAPH_URL,
+    process.env.REACT_APP_AVAX_SUBGRAPHQL_URL ||
+    "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-avax",
 };
 
 // We just default to staging by default

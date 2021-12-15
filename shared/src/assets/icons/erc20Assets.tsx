@@ -255,7 +255,7 @@ export const AAVELogo: React.FC<SVGProps & { showBackground?: boolean }> = ({
       <path
         d="M16 32.125C24.8366 32.125 32 24.9616 32 16.125C32 7.28844 24.8366 0.125 16 0.125C7.16344 0.125 0 7.28844 0 16.125C0 24.9616 7.16344 32.125 16 32.125Z"
         fill="#2EBAC6"
-        fill-opacity="0.08"
+        fillOpacity="0.08"
       />
     )}
     <path
@@ -279,7 +279,7 @@ export const WAVAXLogo: React.FC<SVGProps & { showBackground?: boolean }> = ({
       <path
         d="M104 208C161.438 208 208 161.438 208 104C208 46.5624 161.438 0 104 0C46.5624 0 0 46.5624 0 104C0 161.438 46.5624 208 104 208Z"
         fill="#E84142"
-        fill-opacity="0.12"
+        fillOpacity="0.12"
       />
     )}
     <path
