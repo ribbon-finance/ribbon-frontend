@@ -46,9 +46,10 @@ export const getSubgraphqlURI = () =>
  */
 
 // TODO: Remove the isProduction check when enabling avalanche
-export const ENABLED_CHAINID: CHAINID[] = isProduction()
-  ? [CHAINID.ETH_MAINNET]
-  : [CHAINID.ETH_MAINNET, CHAINID.AVAX_MAINNET];
+export const ENABLED_CHAINID: CHAINID[] = [
+  CHAINID.ETH_MAINNET,
+  CHAINID.AVAX_MAINNET,
+];
 
 const STAKING_ENABLED_CHAINID: CHAINID[] = [CHAINID.ETH_MAINNET];
 
