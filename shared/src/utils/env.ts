@@ -5,12 +5,17 @@ export enum CHAINID {
   AVAX_MAINNET = 43114,
 }
 
-export const FALLBACK_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-v2-kovan';
+export const FALLBACK_SUBGRAPH_URL =
+  "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-v2-kovan";
 export const SUBGRAPH_URI: Record<number, string> = {
-  [CHAINID.ETH_MAINNET]: process.env.REACT_APP_V2_SUBGRAPHQL_URL || FALLBACK_SUBGRAPH_URL,
-  [CHAINID.ETH_KOVAN]: process.env.REACT_APP_KOVAN_V2_SUBGRAPHQL_URL || FALLBACK_SUBGRAPH_URL,
-  [CHAINID.AVAX_FUJI]: process.env.REACT_APP_FUJI_SUBGRAPHQL_URL || FALLBACK_SUBGRAPH_URL,
-  [CHAINID.AVAX_MAINNET]: process.env.REACT_APP_AVAX_SUBGRAPHQL_URL || FALLBACK_SUBGRAPH_URL,
+  [CHAINID.ETH_MAINNET]:
+    process.env.REACT_APP_V2_SUBGRAPHQL_URL || FALLBACK_SUBGRAPH_URL,
+  [CHAINID.ETH_KOVAN]:
+    process.env.REACT_APP_KOVAN_V2_SUBGRAPHQL_URL || FALLBACK_SUBGRAPH_URL,
+  [CHAINID.AVAX_FUJI]:
+    process.env.REACT_APP_FUJI_SUBGRAPHQL_URL || FALLBACK_SUBGRAPH_URL,
+  [CHAINID.AVAX_MAINNET]:
+    process.env.REACT_APP_AVAX_SUBGRAPHQL_URL || FALLBACK_SUBGRAPH_URL,
 };
 
 // We just default to staging by default
@@ -33,3 +38,17 @@ export const getSubgraphqlURI = () =>
     ? process.env.REACT_APP_KOVAN_SUBGRAPHQL_URL
     : process.env.REACT_APP_SUBGRAPHQL_URL) ||
   "https://api.thegraph.com/subgraphs/name/kenchangh/ribbon-finance-kovan";
+
+/**
+ * Multi chain env configs
+ */
+
+// TODO: Remove the isProduction check when enabling avalanche
+export const ENABLED_CHAINID: CHAINID[] = isProduction()
+  ? [CHAINID.ETH_MAINNET]
+  : [CHAINID.ETH_MAINNET, CHAINID.AVAX_MAINNET];
+
+const STAKING_ENABLED_CHAINID: CHAINID[] = [CHAINID.ETH_MAINNET];
+
+export const isStakingEnabledForChainId = (chainId: number | undefined) =>
+  chainId && Boolean(STAKING_ENABLED_CHAINID.includes(chainId));

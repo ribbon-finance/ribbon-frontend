@@ -21,11 +21,6 @@ export const NETWORKS: Record<number, NETWORK_NAMES> = {
   [CHAINID.AVAX_MAINNET]: "avax",
 };
 
-// TODO: Remove the isProduction check when enabling avalanche
-export const ENABLED_CHAINID: CHAINID[] = isProduction()
-  ? [CHAINID.ETH_MAINNET]
-  : [CHAINID.ETH_MAINNET, CHAINID.AVAX_MAINNET];
-
 export const CHAINID_TO_NATIVE_TOKENS: Record<CHAINID, Assets> = {
   [CHAINID.ETH_MAINNET]: "WETH",
   [CHAINID.ETH_KOVAN]: "WETH",

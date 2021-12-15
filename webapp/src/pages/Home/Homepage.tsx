@@ -10,6 +10,7 @@ import sizes from "shared/lib/designSystem/sizes";
 import styled from "styled-components";
 import { ANNOUNCEMENT, getVaultURI } from "../../constants/constants";
 import { switchChains } from "shared/lib/utils/chainSwitching";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
 
 const ProductTitle = styled(Title)`
   display: none;
@@ -25,6 +26,7 @@ const ProductTitle = styled(Title)`
 const Homepage = () => {
   const history = useHistory();
   const { library, chainId } = useWeb3React();
+  const isMobile = useScreenSize().width <= sizes.md;
   return (
     <>
       <ProductTitle>PRODUCT</ProductTitle>
@@ -41,6 +43,10 @@ const Homepage = () => {
               (async () => {
                 if (library) {
                   await switchChains(library, CHAINID.AVAX_MAINNET);
+                  // Mobile wallets normally need to do a hard refresh
+                  if (isMobile) {
+                    window.location.replace("/");
+                  }
                 }
               })();
             }}
