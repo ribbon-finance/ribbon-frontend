@@ -117,7 +117,7 @@ const NetworkSwitcherModal: React.FC<NetworkSwitcherModalProps> = ({
             >
               <NetworkNameContainer>
                 <AssetCircle size={40} color={`${color}1F`}>
-                  <Logo height={30} width={30}></Logo>
+                  <Logo height={28} width={28}></Logo>
                 </AssetCircle>
                 <NetworkName>{READABLE_NETWORK_NAMES[chainId]}</NetworkName>
               </NetworkNameContainer>
