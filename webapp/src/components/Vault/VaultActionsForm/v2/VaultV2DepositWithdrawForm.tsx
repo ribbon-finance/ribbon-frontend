@@ -161,6 +161,8 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     VaultAddressMap[vaultOption].v2
   );
 
+  console.log(tokenAllowance);
+
   /**
    * Default to initial state and process initial state
    */
@@ -208,7 +210,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
   const showTokenApproval = useMemo(() => {
     if (vaultActionForm.actionType === ACTIONS.deposit) {
       return (
-        isNativeToken(
+        !isNativeToken(
           vaultActionForm.depositAsset ||
             VaultAllowedDepositAssets[vaultOption][0]
         ) &&
