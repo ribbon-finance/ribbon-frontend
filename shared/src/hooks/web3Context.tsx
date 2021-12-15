@@ -1,15 +1,16 @@
 import React, { ReactElement, useContext } from "react";
 import { ethers } from "ethers";
 import { BaseProvider } from "@ethersproject/providers";
-import { NODE_URI } from "../utils/env";
+import { CHAINID, NODE_URI } from "../utils/env";
 
 export type Web3ContextData = {
   provider: BaseProvider;
 };
 
-const defaultProvider = ethers.getDefaultProvider(NODE_URI[parseInt(
-  (window as any)?.ethereum?.chainId
-)]);
+// We just default to ETH mainnet
+const defaultProvider = ethers.getDefaultProvider(
+  NODE_URI[CHAINID.ETH_MAINNET]
+);
 
 export const Web3Context = React.createContext<Web3ContextData>({
   provider: defaultProvider,

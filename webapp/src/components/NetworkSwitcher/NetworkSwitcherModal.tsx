@@ -110,6 +110,7 @@ const NetworkSwitcherModal: React.FC<NetworkSwitcherModalProps> = ({
 
           return (
             <NetworkContainer
+              key={chainId}
               onClick={() => handleSwitchChain(chainId)}
               borderColor={color}
               active={active}

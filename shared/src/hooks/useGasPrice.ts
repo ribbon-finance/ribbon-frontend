@@ -3,7 +3,7 @@ import { useCallback, useEffect } from "react";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import { useGlobalState } from "../store/store";
-import { GAS_URL } from "../utils/env";
+import { CHAINID, GAS_URL } from "../utils/env";
 
 const { parseUnits } = ethers.utils;
 
@@ -24,13 +24,9 @@ const useGasPrice = () => {
   const { chainId } = useWeb3React();
   const [gasPrice, setGasPrice] = useGlobalState("gasPrice");
 
-  if (!chainId) {
-    return;
-  }
-
   const fetchGasPrice = useCallback(async () => {
     fetchedOnce = true;
-    const response = await axios.get(GAS_URL[chainId]);
+    const response = await axios.get(GAS_URL[chainId || CHAINID.ETH_MAINNET]);
     const data: APIResponse = response.data;
 
     setGasPrice(parseUnits(data.result.FastGasPrice, "gwei").toString());

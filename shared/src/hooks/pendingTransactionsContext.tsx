@@ -1,3 +1,4 @@
+import { useWeb3React } from "@web3-react/core";
 import React, {
   ReactElement,
   useCallback,
@@ -41,11 +42,11 @@ export const usePendingTransactions = () => {
 export const PendingTransactionsContextProvider: React.FC<{
   children: ReactElement;
 }> = ({ children }) => {
-  const { provider } = useWeb3Context();
   const [pendingTransactions, setPendingTransactions] = useGlobalState(
     "pendingTransactions"
   );
   const [transactionsCounter, setTransactionsCounter] = useState(0);
+  const { library } = useWeb3React();
 
   /**
    * Keep track with first confirmation
@@ -53,10 +54,7 @@ export const PendingTransactionsContextProvider: React.FC<{
   useEffect(() => {
     pendingTransactions.forEach(async (transaction) => {
       if (!transaction.status) {
-        const receipt = await provider.waitForTransaction(
-          transaction.txhash,
-          5
-        );
+        const receipt = await library.waitForTransaction(transaction.txhash, 5);
         setTransactionsCounter((counter) => counter + 1);
         setPendingTransactions((pendingTransactions) =>
           pendingTransactions.map((_transaction) => {
@@ -73,7 +71,7 @@ export const PendingTransactionsContextProvider: React.FC<{
         );
       }
     }, []);
-  }, [pendingTransactions, provider, setPendingTransactions]);
+  }, [pendingTransactions, library, setPendingTransactions]);
 
   return (
     <PendingTransactionsContext.Provider
