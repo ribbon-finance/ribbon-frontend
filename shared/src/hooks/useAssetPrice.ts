@@ -3,12 +3,12 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { Moment } from "moment";
 
 import { Assets, AssetsList } from "../store/types";
-import {
-  AssetPriceContext,
-  AssetPriceResponses,
-  defaultAssetPriceContextData,
-} from "./assetPriceContext";
 import { isProduction } from "../utils/env";
+import {
+  AssetsPriceData,
+  defaultAssetsPriceData,
+  ExternalAPIDataContext,
+} from "./externalAPIDataContext";
 
 const getAssetPricesInUSD = async (
   currencyName: string
@@ -43,7 +43,8 @@ export const useFetchAssetsPrice = (
     pollingFrequency: number;
   } = { poll: true, pollingFrequency: 120000 }
 ) => {
-  const [data, setData] = useState(defaultAssetPriceContextData);
+  const [data, setData] = useState(defaultAssetsPriceData);
+  const [loading, setLoading] = useState(true);
 
   const fetchAssetsPrices = useCallback(async () => {
     if (!isProduction()) {
@@ -65,8 +66,8 @@ export const useFetchAssetsPrice = (
     const todayTimestamp = new Date(new Date().toDateString());
     todayTimestamp.setHours(0 - todayTimestamp.getTimezoneOffset() / 60);
 
-    setData({
-      responses: Object.fromEntries(
+    setData(
+      Object.fromEntries(
         responses
           .map((response) => [
             response.asset,
@@ -94,9 +95,9 @@ export const useFetchAssetsPrice = (
               },
             ],
           ])
-      ) as AssetPriceResponses,
-      loading: false,
-    });
+      ) as AssetsPriceData
+    );
+    setLoading(false);
 
     if (!isProduction()) {
       console.timeEnd("Asset Price Data Fetch");
@@ -119,14 +120,14 @@ export const useFetchAssetsPrice = (
     };
   }, [fetchAssetsPrices, poll, pollingFrequency]);
 
-  return data;
+  return { data, loading };
 };
 
 const useAssetPrice = ({ asset }: { asset: Assets } = { asset: "WETH" }) => {
-  const contextData = useContext(AssetPriceContext);
+  const contextData = useContext(ExternalAPIDataContext);
 
   return {
-    price: contextData.responses[asset].latestPrice,
+    price: contextData.assetsPrice[asset].latestPrice,
     loading: contextData.loading,
   };
 };
@@ -134,13 +135,13 @@ const useAssetPrice = ({ asset }: { asset: Assets } = { asset: "WETH" }) => {
 export default useAssetPrice;
 
 export const useAssetsPrice = () => {
-  const contextData = useContext(AssetPriceContext);
+  const contextData = useContext(ExternalAPIDataContext);
 
   return {
     prices: Object.fromEntries(
       AssetsList.map((asset) => [
         asset,
-        contextData.responses[asset].latestPrice,
+        contextData.assetsPrice[asset].latestPrice,
       ])
     ) as { [asset in Assets]: number },
     loading: contextData.loading,
@@ -148,7 +149,7 @@ export const useAssetsPrice = () => {
 };
 
 export const useAssetsPriceHistory = () => {
-  const contextData = useContext(AssetPriceContext);
+  const contextData = useContext(ExternalAPIDataContext);
 
   /**
    * Search the price of asset with a given date
@@ -158,9 +159,9 @@ export const useAssetsPriceHistory = () => {
       const queryDate = new Date(date.toDateString());
       queryDate.setUTCHours(0);
 
-      return contextData.responses[asset].history[queryDate.valueOf()] || 0;
+      return contextData.assetsPrice[asset].history[queryDate.valueOf()] || 0;
     },
-    [contextData.responses]
+    [contextData.assetsPrice]
   );
 
   /**
@@ -183,7 +184,7 @@ export const useAssetsPriceHistory = () => {
 
   return {
     histories: Object.fromEntries(
-      AssetsList.map((asset) => [asset, contextData.responses[asset].history])
+      AssetsList.map((asset) => [asset, contextData.assetsPrice[asset].history])
     ) as { [asset in Assets]: { [timestamp: number]: number } },
     searchAssetPriceFromDate,
     searchAssetPriceFromMoment,

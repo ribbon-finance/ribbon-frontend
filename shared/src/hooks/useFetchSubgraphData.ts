@@ -48,10 +48,6 @@ const useFetchSubgraphData = () => {
   const { transactionsCounter } = usePendingTransactions();
 
   const doMulticall = useCallback(async () => {
-    if (!chainId) {
-      return;
-    }
-
     if (!isProduction()) {
       console.time("Subgraph Data Fetch");
     }
@@ -59,11 +55,13 @@ const useFetchSubgraphData = () => {
     const responsesAcrossVersions = Object.fromEntries(
       await Promise.all(
         VaultVersionList.map(async (version) => {
-          if (version === 'v1' && !isEthNetwork(chainId)) {
+          if (version === "v1" && chainId && !isEthNetwork(chainId)) {
             return [version, {}];
           }
-          const response = await axios.post(getSubgraphURIForVersion(version, chainId), {
-            query: `{
+          const response = await axios.post(
+            getSubgraphURIForVersion(version, chainId || 1),
+            {
+              query: `{
                 ${
                   account
                     ? `
@@ -77,7 +75,8 @@ const useFetchSubgraphData = () => {
                 ${rbnTokenGraphql(account, version)}
                 ${vaultPriceHistoryGraphql(version)}
               }`.replaceAll(" ", ""),
-          });
+            }
+          );
 
           return [version, response.data.data];
         })
@@ -97,8 +96,12 @@ const useFetchSubgraphData = () => {
         responsesAcrossVersions
       ),
       rbnToken: resolveRBNTokenSubgraphResponse(responsesAcrossVersions),
-      rbnTokenAccount: resolveRBNTokenAccountSubgraphResponse(responsesAcrossVersions),
-      vaultPriceHistory: resolveVaultPriceHistorySubgraphResponse(responsesAcrossVersions),
+      rbnTokenAccount: resolveRBNTokenAccountSubgraphResponse(
+        responsesAcrossVersions
+      ),
+      vaultPriceHistory: resolveVaultPriceHistorySubgraphResponse(
+        responsesAcrossVersions
+      ),
       loading: false,
     }));
 
