@@ -46,11 +46,21 @@ const useFetchSubgraphData = () => {
   const [data, setData] =
     useState<SubgraphDataContextType>(defaultSubgraphData);
   const { transactionsCounter } = usePendingTransactions();
+  const [, setMulticallCounter] = useState(0);
 
   const doMulticall = useCallback(async () => {
     if (!isProduction()) {
       console.time("Subgraph Data Fetch");
     }
+
+    /**
+     * We keep track with counter so to make sure we always only update with the latest info
+     */
+    let currentCounter: number;
+    setMulticallCounter((counter) => {
+      currentCounter = counter + 1;
+      return currentCounter;
+    });
 
     const responsesAcrossVersions = Object.fromEntries(
       await Promise.all(
@@ -83,27 +93,33 @@ const useFetchSubgraphData = () => {
       )
     );
 
-    setData((prev) => ({
-      ...prev,
-      vaultAccounts: resolveVaultAccountsSubgraphResponse(
-        responsesAcrossVersions
-      ),
-      vaultActivities: resolveVaultActivitiesSubgraphResponse(
-        responsesAcrossVersions
-      ),
-      balances: resolveBalancesSubgraphResponse(responsesAcrossVersions),
-      transactions: resolveTransactionsSubgraphResponse(
-        responsesAcrossVersions
-      ),
-      rbnToken: resolveRBNTokenSubgraphResponse(responsesAcrossVersions),
-      rbnTokenAccount: resolveRBNTokenAccountSubgraphResponse(
-        responsesAcrossVersions
-      ),
-      vaultPriceHistory: resolveVaultPriceHistorySubgraphResponse(
-        responsesAcrossVersions
-      ),
-      loading: false,
-    }));
+    setMulticallCounter((counter) => {
+      if (counter === currentCounter) {
+        setData((prev) => ({
+          ...prev,
+          vaultAccounts: resolveVaultAccountsSubgraphResponse(
+            responsesAcrossVersions
+          ),
+          vaultActivities: resolveVaultActivitiesSubgraphResponse(
+            responsesAcrossVersions
+          ),
+          balances: resolveBalancesSubgraphResponse(responsesAcrossVersions),
+          transactions: resolveTransactionsSubgraphResponse(
+            responsesAcrossVersions
+          ),
+          rbnToken: resolveRBNTokenSubgraphResponse(responsesAcrossVersions),
+          rbnTokenAccount: resolveRBNTokenAccountSubgraphResponse(
+            responsesAcrossVersions
+          ),
+          vaultPriceHistory: resolveVaultPriceHistorySubgraphResponse(
+            responsesAcrossVersions
+          ),
+          loading: false,
+        }));
+      }
+
+      return counter;
+    });
 
     if (!isProduction()) {
       console.timeEnd("Subgraph Data Fetch");
