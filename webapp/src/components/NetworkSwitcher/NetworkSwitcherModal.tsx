@@ -94,7 +94,7 @@ const NetworkSwitcherModal: React.FC<NetworkSwitcherModalProps> = ({
         }, 300);
       }
     },
-    [library, currentChainId, handleClose]
+    [library, currentChainId, handleClose, isMobile]
   );
 
   return (
