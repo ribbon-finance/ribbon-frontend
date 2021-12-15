@@ -19,8 +19,6 @@ const basePricePerShare = BigNumber.from((10 ** 18).toString());
 const pricePerShareA = basePricePerShare.mul(105).div(100);
 const pricePerShareAB = pricePerShareA.mul(110).div(100);
 
-console.log(pricePerShareA.toString());
-
 const pastFriday = moment()
   .isoWeekday("friday")
   .utc()
