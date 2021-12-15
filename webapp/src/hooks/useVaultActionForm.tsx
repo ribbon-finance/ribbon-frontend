@@ -351,7 +351,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
               );
               const total = assetsBalance[actionForm.depositAsset!];
               // TODO: Optimize the code to request gas fees only when needed
-              const maxAmount = isNativeToken(actionForm.depositAsset)
+              const maxAmount = isNativeToken(actionForm.depositAsset || "")
                 ? total.sub(gasFee)
                 : total;
               const allowedMaxAmount = maxAmount.lte(
