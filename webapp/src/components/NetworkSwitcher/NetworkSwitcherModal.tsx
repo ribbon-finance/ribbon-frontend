@@ -5,13 +5,14 @@ import styled from "styled-components";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { getAssetColor, getAssetLogo } from "shared/lib/utils/asset";
 import { Title, Subtitle, BaseIndicator } from "shared/lib/designSystem";
-import { CHAINID } from "shared/lib/utils/env";
+import { CHAINID, ENABLED_CHAINID } from "shared/lib/utils/env";
 import {
-  ENABLED_CHAINID,
   CHAINID_TO_NATIVE_TOKENS,
   READABLE_NETWORK_NAMES,
 } from "shared/lib/constants/constants";
 import { switchChains } from "shared/lib/utils/chainSwitching";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
+import sizes from "shared/lib/designSystem/sizes";
 
 interface NetworkSwitcherModalProps {
   show: boolean;
@@ -75,6 +76,7 @@ const NetworkSwitcherModal: React.FC<NetworkSwitcherModalProps> = ({
     onClose();
   }, [onClose]);
   const { library } = useWeb3React();
+  const isMobile = useScreenSize().width <= sizes.md;
 
   const handleSwitchChain = useCallback(
     async (chainId: number) => {
@@ -82,10 +84,16 @@ const NetworkSwitcherModal: React.FC<NetworkSwitcherModalProps> = ({
         await switchChains(library, chainId);
 
         // Give it a delay before closing, if not it will show a flash
-        setTimeout(handleClose, 300);
+        setTimeout(() => {
+          handleClose();
+          // Mobile wallets normally need to do a hard refresh
+          if (isMobile) {
+            window.location.replace("/");
+          }
+        }, 300);
       }
     },
-    [library, currentChainId, handleClose]
+    [library, currentChainId, handleClose, isMobile]
   );
 
   return (
@@ -108,7 +116,7 @@ const NetworkSwitcherModal: React.FC<NetworkSwitcherModalProps> = ({
             >
               <NetworkNameContainer>
                 <AssetCircle size={40} color={`${color}1F`}>
-                  <Logo height={30} width={30}></Logo>
+                  <Logo height={28} width={28}></Logo>
                 </AssetCircle>
                 <NetworkName>{READABLE_NETWORK_NAMES[chainId]}</NetworkName>
               </NetworkNameContainer>
