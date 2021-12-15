@@ -145,13 +145,22 @@ export const calculateAPYFromPriceHistory = (
             underlyingYieldAPR
           );
         case "v2":
+          /**
+           * We first calculate price per share after annualized management fees are charged
+           */
           const endingPricePerShareAfterManagementFees =
             endingPricePerShare *
             (1 -
               parseFloat(VaultFees[vaultOption].v2?.managementFee!) / 100 / 52);
+          /**
+           * Next, we calculate how much performance fees will lower the pricePerShare
+           */
           const performanceFeesImpact =
             (endingPricePerShare - startingPricePerShare) *
-            (parseFloat(VaultFees[vaultOption].v2?.managementFee!) / 100);
+            (parseFloat(VaultFees[vaultOption].v2?.performanceFee!) / 100);
+          /**
+           * Finally, we calculate price per share after both fees
+           */
           const pricePerShareAfterFees =
             endingPricePerShareAfterManagementFees - performanceFeesImpact;
 
