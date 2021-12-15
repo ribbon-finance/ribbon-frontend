@@ -7,7 +7,9 @@ export type Web3ContextData = {
   provider: BaseProvider;
 };
 
-// We just default to ETH mainnet
+// TODO: Fix this in the future
+// Right now we just default to ETH mainnet for the unconnected wallet state
+// This means that we do not show the AVAX vault's details on the app
 const defaultProvider = ethers.getDefaultProvider(
   NODE_URI[CHAINID.ETH_MAINNET]
 );
