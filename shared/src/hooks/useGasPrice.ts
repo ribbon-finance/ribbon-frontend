@@ -27,10 +27,18 @@ const useGasPrice = () => {
   const fetchGasPrice = useCallback(async () => {
     if (!chainId) return;
 
-    fetchedOnce = true;
+    // Snowtrace API wrongly returns Ethereum mainnet gas price
+    // But the good thing is that Avalanche hardcodes gas price to 25 nAVAX (gwei)
+    if (chainId === CHAINID.AVAX_MAINNET) {
+      fetchedOnce = true;
+      setGasPrice(parseUnits("25", "gwei").toString());
+      return;
+    }
+
     const response = await axios.get(GAS_URL[chainId]);
     const data: APIResponse = response.data;
 
+    fetchedOnce = true;
     setGasPrice(parseUnits(data.result.FastGasPrice, "gwei").toString());
   }, [chainId, setGasPrice]);
 

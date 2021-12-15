@@ -8,6 +8,7 @@ import {
   VaultOptions,
   VaultVersion,
   VaultAllowedDepositAssets,
+  isNativeToken,
 } from "shared/lib/constants/constants";
 import {
   ACTIONS,
@@ -350,8 +351,9 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
               );
               const total = assetsBalance[actionForm.depositAsset!];
               // TODO: Optimize the code to request gas fees only when needed
-              const maxAmount =
-                actionForm.depositAsset === "WETH" ? total.sub(gasFee) : total;
+              const maxAmount = isNativeToken(actionForm.depositAsset || "")
+                ? total.sub(gasFee)
+                : total;
               const allowedMaxAmount = maxAmount.lte(
                 vaultMaxDepositAmount.sub(v2VaultBalanceInAsset)
               )
