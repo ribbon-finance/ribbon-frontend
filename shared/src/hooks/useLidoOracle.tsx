@@ -4,7 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { LidoOracleFactory } from "../codegen/LidoOracleFactory";
 import { LidoOracleAddress } from "../constants/constants";
-import { isProduction } from "../utils/env";
+import { CHAINID, isProduction } from "../utils/env";
 import { useWeb3Context } from "./web3Context";
 import { Web3DataContext } from "./web3DataContext";
 
@@ -37,7 +37,7 @@ export const defaultLidoOracleData: LidoOracleData = {
 };
 
 export const useFetchLidoOracleData = () => {
-  const { library, active } = useWeb3React();
+  const { library, active, chainId } = useWeb3React();
   const { provider } = useWeb3Context();
 
   const [data, setData] = useState(defaultLidoOracleData);
@@ -71,8 +71,10 @@ export const useFetchLidoOracleData = () => {
   }, [active, library, provider]);
 
   useEffect(() => {
-    fetchLidoOracleData();
-  }, [fetchLidoOracleData]);
+    if (chainId === CHAINID.ETH_MAINNET) {
+      fetchLidoOracleData();
+    }
+  }, [chainId, fetchLidoOracleData]);
 
   return data;
 };
