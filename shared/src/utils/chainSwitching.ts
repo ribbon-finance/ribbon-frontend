@@ -22,7 +22,12 @@ export const switchChains = async (
       params: [{ chainId: hexChainId }],
     });
   } catch (switchError: any) {
-    if (switchError.code === UNAVAILABLE_CHAIN_CODE) {
+    if (
+      switchError.code === UNAVAILABLE_CHAIN_CODE ||
+      (switchError.data &&
+        switchError.data.originalError &&
+        switchError.data.originalError.code === UNAVAILABLE_CHAIN_CODE)
+    ) {
       if (chainId === CHAINID.AVAX_MAINNET) {
         try {
           await provider.provider.request({
