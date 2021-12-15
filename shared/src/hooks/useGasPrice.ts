@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useCallback, useEffect } from "react";
 import { ethers } from "ethers";
+import { useWeb3React } from "@web3-react/core";
 import { useGlobalState } from "../store/store";
+import { CHAINID, GAS_URL } from "../utils/env";
 
 const { parseUnits } = ethers.utils;
 
@@ -19,18 +21,18 @@ interface APIResponse {
 let fetchedOnce = false;
 
 const useGasPrice = () => {
-  const API_KEY = process.env.REACT_APP_ETHERSCAN_API_KEY;
-  const API_URL = `https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=${API_KEY}`;
-
+  const { chainId } = useWeb3React();
   const [gasPrice, setGasPrice] = useGlobalState("gasPrice");
 
   const fetchGasPrice = useCallback(async () => {
+    if (!chainId) return;
+
     fetchedOnce = true;
-    const response = await axios.get(API_URL);
+    const response = await axios.get(GAS_URL[chainId]);
     const data: APIResponse = response.data;
 
     setGasPrice(parseUnits(data.result.FastGasPrice, "gwei").toString());
-  }, [API_URL, setGasPrice]);
+  }, [chainId, setGasPrice]);
 
   useEffect(() => {
     !fetchedOnce && fetchGasPrice();
