@@ -24,7 +24,7 @@ import PerformanceChart from "webapp/lib/components/PerformanceChart/Performance
 import { HoverInfo } from "webapp/lib/components/PerformanceChart/types";
 import sizes from "shared/lib/designSystem/sizes";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import { getAssets } from "shared/lib/constants/constants";
+import { getAssets } from "../../constants/constants";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { Assets } from "shared/lib/store/types";

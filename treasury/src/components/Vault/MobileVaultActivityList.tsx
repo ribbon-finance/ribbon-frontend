@@ -15,7 +15,7 @@ import {
   getAssets,
   isPutVault,
   VaultOptions,
-} from "shared/lib/constants/constants";
+} from "../../constants/constants";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 
 const VaultActivityRow = styled.div`

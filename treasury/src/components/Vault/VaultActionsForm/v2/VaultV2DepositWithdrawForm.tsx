@@ -10,7 +10,7 @@ import {
   VaultAllowedDepositAssets,
   VaultMaxDeposit,
   VaultOptions,
-} from "shared/lib/constants/constants";
+} from "../../../../constants/constants";
 import { ACTIONS } from "../Modal/types";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { SecondaryText, Title } from "shared/lib/designSystem";

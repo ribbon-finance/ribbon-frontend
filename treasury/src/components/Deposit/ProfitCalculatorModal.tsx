@@ -23,7 +23,7 @@ import colors from "shared/lib/designSystem/colors";
 import ModalContentExtra from "shared/lib/components/Common/ModalContentExtra";
 import { formatUnits } from "@ethersproject/units";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
-import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
+import { VaultOptions, VaultVersion } from "../../constants/constants";
 
 const ChartContainer = styled.div`
   height: 264px;

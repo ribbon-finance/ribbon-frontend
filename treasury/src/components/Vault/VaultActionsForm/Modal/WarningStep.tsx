@@ -5,7 +5,7 @@ import {
   getAssets,
   VaultOptions,
   VaultVersion,
-} from "shared/lib/constants/constants";
+} from "../../../../constants/constants";
 import { WithdrawMetadata } from "../../../../hooks/useVaultActionForm";
 import { ACTIONS, ActionType, V2WithdrawOption } from "./types";
 import colors from "shared/lib/designSystem/colors";

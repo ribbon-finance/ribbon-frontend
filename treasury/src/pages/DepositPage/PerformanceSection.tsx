@@ -7,7 +7,7 @@ import {
   VaultOptions,
   VaultVersion,
   VaultFees,
-} from "shared/lib/constants/constants";
+} from "../../constants/constants";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import VaultPerformanceChart from "./VaultPerformanceChart";

@@ -28,7 +28,7 @@ import {
   VaultAllowedDepositAssets,
   VaultMaxDeposit,
   VaultOptions,
-} from "shared/lib/constants/constants";
+} from "../../../../constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { VaultInputValidationErrorList, VaultValidationErrors } from "../types";

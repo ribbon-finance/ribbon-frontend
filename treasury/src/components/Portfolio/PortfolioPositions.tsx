@@ -28,7 +28,7 @@ import {
   VaultOptions,
   VaultVersion,
   VaultVersionList,
-} from "shared/lib/constants/constants";
+} from "../../constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import { useAllVaultAccounts } from "shared/lib/hooks/useVaultAccounts";
 import { VaultAccount } from "shared/lib/models/vault";

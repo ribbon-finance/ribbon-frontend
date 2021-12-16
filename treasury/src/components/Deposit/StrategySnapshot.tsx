@@ -13,7 +13,7 @@ import {
   getOptionAssets,
   VaultOptions,
   VaultVersion,
-} from "shared/lib/constants/constants";
+} from "../../constants/constants";
 import { BaseButton, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";

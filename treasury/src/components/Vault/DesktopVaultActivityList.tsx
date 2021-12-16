@@ -5,11 +5,11 @@ import moment from "moment";
 
 import {
   getAssets,
-  getEtherscanURI,
   isPutVault,
+  getEtherscanURI,
   getOptionAssets,
   VaultOptions,
-} from "shared/lib/constants/constants";
+} from "../../constants/constants";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { VaultActivity, VaultActivityType } from "shared/lib/models/vault";

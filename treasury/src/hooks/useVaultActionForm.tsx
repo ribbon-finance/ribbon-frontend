@@ -8,7 +8,7 @@ import {
   VaultOptions,
   VaultVersion,
   VaultAllowedDepositAssets,
-} from "shared/lib/constants/constants";
+} from "../constants/constants";
 import {
   ACTIONS,
   ActionType,

@@ -12,7 +12,7 @@ import {
   getAssets,
   VaultOptions,
   VaultVersion,
-} from "shared/lib/constants/constants";
+} from "../../constants/constants";
 import theme from "shared/lib/designSystem/theme";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";

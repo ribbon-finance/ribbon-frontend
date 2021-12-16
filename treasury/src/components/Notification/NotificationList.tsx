@@ -14,7 +14,7 @@ import {
   getAssets,
   getDisplayAssets,
   VaultOptions,
-} from "shared/lib/constants/constants";
+} from "../../constants/constants";
 import colors from "shared/lib/designSystem/colors";
 import { useCallback } from "react";
 import { Notification, NotificationType } from "shared/lib/models/notification";

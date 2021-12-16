@@ -8,7 +8,7 @@ import {
   VaultAddressMap,
   VaultOptions,
   VaultVersion,
-} from "shared/lib/constants/constants";
+} from "../../../constants/constants";
 import { useCallback } from "react";
 import VaultV1ActionsForm from "./VaultV1ActionsForm";
 import VaultV2ActionsForm from "./VaultV2ActionForm";

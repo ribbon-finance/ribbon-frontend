@@ -8,7 +8,7 @@ import {
   WETHLogo,
   WAVAXLogo,
   YVUSDcLogo,
-} from "shared/lib/assets/icons/erc20Assets";
+} from "../assets/icons/erc20Assets";
 import colors from "shared/lib/designSystem/colors";
 import { Assets } from "../store/types";
 

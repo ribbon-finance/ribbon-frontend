@@ -23,7 +23,7 @@ import {
   getAssets,
   VaultNameOptionMap,
   VaultOptions,
-} from "shared/lib/constants/constants";
+} from "../../../../constants/constants";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";

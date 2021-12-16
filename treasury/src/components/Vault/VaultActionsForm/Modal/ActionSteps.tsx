@@ -16,7 +16,7 @@ import {
   LidoCurvePoolAddress,
   VaultAllowedDepositAssets,
   CurveSwapSlippage,
-} from "shared/lib/constants/constants";
+} from "../../../../constants/constants";
 import { isETHVault } from "shared/lib/utils/vault";
 import { amountAfterSlippage } from "shared/lib/utils/math";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";

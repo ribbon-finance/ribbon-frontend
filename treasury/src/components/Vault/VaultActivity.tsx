@@ -16,7 +16,7 @@ import sizes from "shared/lib/designSystem/sizes";
 import MobileVaultActivityList from "./MobileVaultActivityList";
 import { Title } from "shared/lib/designSystem";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
+import { VaultOptions, VaultVersion } from "../../constants/constants";
 import Pagination from "shared/lib/components/Common/Pagination";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLocation } from "react-router-dom";

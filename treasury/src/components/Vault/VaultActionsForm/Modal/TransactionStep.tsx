@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { BaseUnderlineLink, PrimaryText } from "shared/lib/designSystem";
 import TrafficLight from "shared/lib/components/Common/TrafficLight";
-import { BLOCKCHAIN_EXPLORER_NAME, getEtherscanURI } from "shared/lib/constants/constants";
+import { BLOCKCHAIN_EXPLORER_NAME, getEtherscanURI } from "../../../../constants/constants";
 
 const TrafficLightContainer = styled.div`
   display: flex;

@@ -13,7 +13,7 @@ import {
   VaultFees,
   VaultVersion,
   isPutVault,
-} from "shared/lib/constants/constants";
+} from "../../../../constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { capitalize } from "shared/lib/utils/text";

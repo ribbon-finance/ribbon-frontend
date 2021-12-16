@@ -30,7 +30,7 @@ import {
   VaultOptions,
   VaultVersion,
   VaultVersionList,
-} from "shared/lib/constants/constants";
+} from "../../constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";

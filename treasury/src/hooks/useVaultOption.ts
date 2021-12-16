@@ -6,7 +6,7 @@ import {
   VaultNameOptionMap,
   VaultOptions,
   VaultVersion,
-} from "shared/lib/constants/constants";
+} from "../constants/constants";
 
 const useVaultOption = () => {
   const matchv1 = useRouteMatch<{ vaultSymbol: string }>(

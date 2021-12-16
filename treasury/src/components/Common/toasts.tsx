@@ -5,7 +5,7 @@ import {
   getAssets,
   VaultOptions,
   VaultVersion,
-} from "shared/lib/constants/constants";
+} from "../../constants/constants";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { PendingTransaction } from "shared/lib/store/types";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";

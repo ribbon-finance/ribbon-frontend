@@ -7,7 +7,7 @@ import {
   getAssets,
   getDisplayAssets,
   VaultList,
-} from "shared/lib/constants/constants";
+} from "../../../constants/constants";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { getVaultColor } from "shared/lib/utils/vault";
 import {

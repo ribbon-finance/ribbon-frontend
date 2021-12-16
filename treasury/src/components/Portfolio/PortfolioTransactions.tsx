@@ -21,10 +21,10 @@ import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
 import { capitalize } from "shared/lib/utils/text";
 import {
   getAssets,
-  getEtherscanURI,
   VaultNameOptionMap,
   VaultOptions,
-} from "shared/lib/constants/constants";
+  getEtherscanURI,
+} from "../../constants/constants";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
 import {

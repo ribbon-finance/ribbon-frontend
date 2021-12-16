@@ -7,7 +7,7 @@ import ActionSteps from "./ActionSteps";
 import { Steps, STEPS } from "./types";
 import sizes from "shared/lib/designSystem/sizes";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
-import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
+import { VaultOptions, VaultVersion } from "../../../../constants/constants";
 import theme from "shared/lib/designSystem/theme";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 
