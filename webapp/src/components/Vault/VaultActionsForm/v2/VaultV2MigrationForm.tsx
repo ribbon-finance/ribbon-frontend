@@ -6,7 +6,6 @@ import { VaultOptions } from "shared/lib/constants/constants";
 import colors from "shared/lib/designSystem/colors";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import { getAssetDisplay } from "shared/lib/utils/asset";
-import { VaultAccount } from "shared/lib/models/vault";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import { MigrateIcon } from "shared/lib/assets/icons/icons";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -16,6 +15,7 @@ import { ACTIONS } from "../Modal/types";
 import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 
 const MigrateLogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -46,14 +46,14 @@ const FormColumnData = styled(Title)`
 
 interface VaultV2MigrationFormProps {
   vaultOption: VaultOptions;
-  vaultAccount: VaultAccount;
+  migrateSourceVault: VaultOptions;
   onFormSubmit: () => void;
   onHideForm: () => void;
 }
 
 const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
   vaultOption,
-  vaultAccount,
+  migrateSourceVault,
   onFormSubmit,
   onHideForm,
 }) => {
@@ -64,6 +64,8 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
   const color = getVaultColor(vaultOption);
   const { handleActionTypeChange, handleMaxClick } =
     useVaultActionForm(vaultOption);
+  const { vaultAccounts: v1VaultAccounts } = useVaultAccounts("v1");
+  const vaultAccount = v1VaultAccounts[migrateSourceVault]!;
 
   const migrationLimit = useMemo(() => {
     const v2Capacity = cap.sub(totalBalance);
@@ -97,10 +99,15 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
    * Show migration form here
    */
   const handleMigrate = useCallback(() => {
-    handleActionTypeChange(ACTIONS.migrate, "v1");
+    handleActionTypeChange(ACTIONS.migrate, "v1", { migrateSourceVault });
     handleMaxClick();
     onFormSubmit();
-  }, [handleActionTypeChange, handleMaxClick, onFormSubmit]);
+  }, [
+    handleActionTypeChange,
+    handleMaxClick,
+    migrateSourceVault,
+    onFormSubmit,
+  ]);
 
   const errorText = useMemo(() => {
     switch (error) {
