@@ -3,12 +3,12 @@ import styled from "styled-components";
 import { useRouteMatch } from "react-router-dom";
 import { useWeb3React } from "@web3-react/core";
 
-import HeaderLogo from "./HeaderLogo";
+import HeaderLogo from "webapp/lib/components/Header/HeaderLogo";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
 import { Title, BaseLink } from "shared/lib/designSystem";
 import MenuButton from "shared/lib/components/Common/MenuButton";
-import { NavItemProps, MobileMenuOpenProps } from "./types";
+import { NavItemProps, MobileMenuOpenProps } from "webapp/lib/components/Header/types";
 import AccountStatus from "../Wallet/AccountStatus";
 import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
