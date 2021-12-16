@@ -21,7 +21,7 @@ import {
   getAssetDecimals,
   getAssetDisplay,
   getAssetLogo,
-} from "shared/lib/utils/asset";
+} from "../../../../utils/asset";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import {
   getAssets,
@@ -29,7 +29,7 @@ import {
   VaultMaxDeposit,
   VaultOptions,
 } from "../../../../constants/constants";
-import { getVaultColor } from "shared/lib/utils/vault";
+import { getVaultColor } from "../../../../utils/vault";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { VaultInputValidationErrorList, VaultValidationErrors } from "../types";
 import colors from "shared/lib/designSystem/colors";

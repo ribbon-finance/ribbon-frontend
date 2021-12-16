@@ -1,4 +1,4 @@
-import { getAssetDisplay } from "shared/lib/utils/asset";
+import { getAssetDisplay } from "../../utils/asset";
 import { formatAmount } from "shared/lib/utils/math";
 import styled from "styled-components";
 import { Col, Row } from "react-bootstrap";
@@ -7,7 +7,7 @@ import {
     SecondaryText,
     Title,
   } from "shared/lib/designSystem";
-import { Assets } from "shared/lib/store/types";
+import { Assets } from "../../store/types";
 
 const VaultDataCol = styled(Col)`
   margin-top: 20px;

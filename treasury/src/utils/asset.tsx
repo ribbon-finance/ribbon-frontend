@@ -1,23 +1,18 @@
 import React from "react";
 import styled, { StyledComponent } from "styled-components";
 import {
-  AAVELogo,
-  STETHLogo,
   USDCLogo,
   WBTCLogo,
   WETHLogo,
-  WAVAXLogo,
-  YVUSDcLogo,
+  RBNLogo,
 } from "../assets/icons/erc20Assets";
-import colors from "shared/lib/designSystem/colors";
+import colors from "../designSystem/colors";
 import { Assets } from "../store/types";
 
 export const getAssetDisplay = (asset: Assets): string => {
   switch (asset) {
     case "WETH":
       return "ETH";
-    case "WAVAX":
-      return "AVAX";
     default:
       return asset;
   }
@@ -28,8 +23,6 @@ export const getAssetDecimals = (asset: Assets): number => {
     case "WBTC":
       return 8;
     case "USDC":
-    case "yvUSDC":
-      return 6;
     default:
       return 18;
   }
@@ -78,20 +71,6 @@ const ColoredUSDCLogo = styled(USDCLogo)<{ backgroundColor?: string }>`
   }
 `;
 
-const ColoredYVUSDCLogo = styled(YVUSDcLogo)<{ backgroundColor?: string }>`
-  margin: -8px;
-  width: 100%;
-
-  && .background {
-    fill: ${(props) =>
-      props.backgroundColor ? props.backgroundColor : `${colors.asset.USDC}29`};
-  }
-
-  && .content {
-    fill: ${colors.asset.USDC};
-  }
-`;
-
 export const LidoThemedETHLogo = styled(WETHLogo)`
   path {
     fill: ${colors.asset.stETH};
@@ -127,13 +106,7 @@ export const getAssetLogo: (asset: Assets) =>
       return ColoredWBTCLogo;
     case "WETH":
       return WETHLogo;
-    case "yvUSDC":
-      return ColoredYVUSDCLogo;
-    case "stETH":
-      return STETHLogo;
-    case "AAVE":
-      return AAVELogo;
-    case "WAVAX":
-      return WAVAXLogo;
+    case "RBN":
+      return RBNLogo;
   }
 };

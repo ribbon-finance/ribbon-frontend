@@ -21,9 +21,9 @@ import {
   useVaultData,
   useV2VaultData,
   useAssetsBalance,
-} from "shared/lib/hooks/web3DataContext";
+} from "./web3DataContext";
 import { isETHVault } from "shared/lib/utils/vault";
-import { Assets } from "shared/lib/store/types";
+import { Assets } from "../store/types";
 
 export type VaultActionFormTransferData =
   | {
@@ -177,16 +177,6 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
 
         switch (actionType) {
           case ACTIONS.transfer:
-            switch (vaultOption) {
-              case "rUSDC-ETH-P-THETA":
-                return {
-                  ...actionForm,
-                  vaultVersion,
-                  inputAmount: "",
-                  actionType: ACTIONS.transfer,
-                  receiveVault: "ryvUSDC-ETH-P-THETA",
-                };
-            }
             break;
           case ACTIONS.withdraw:
             /**

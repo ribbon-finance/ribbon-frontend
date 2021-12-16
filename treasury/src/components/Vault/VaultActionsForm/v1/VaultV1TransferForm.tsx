@@ -8,7 +8,7 @@ import {
   getAssetDecimals,
   getAssetDisplay,
   getAssetLogo,
-} from "shared/lib/utils/asset";
+} from "../../../../utils/asset";
 import {
   BaseInput,
   BaseInputButton,
@@ -34,7 +34,7 @@ import {
   ConnectWalletButton,
 } from "shared/lib/components/Common/buttons";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import { getVaultColor } from "shared/lib/utils/vault";
+import { getVaultColor } from "../../../../utils/vault";
 
 const TransferToVault = styled.div`
   display: flex;

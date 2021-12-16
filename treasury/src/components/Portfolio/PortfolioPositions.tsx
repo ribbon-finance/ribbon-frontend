@@ -11,7 +11,7 @@ import {
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import useAssetPrice from "shared/lib/hooks/useAssetPrice";
+import useAssetPrice from "../../hooks/useAssetPrice";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { CurrencyType } from "../../pages/Portfolio/types";
 import {
@@ -31,13 +31,13 @@ import {
 } from "../../constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import { useAllVaultAccounts } from "shared/lib/hooks/useVaultAccounts";
-import { VaultAccount } from "shared/lib/models/vault";
+import { VaultAccount } from "../../models/vault";
 import {
   getAssetDecimals,
   getAssetDisplay,
   getAssetLogo,
-} from "shared/lib/utils/asset";
-import { getVaultColor } from "shared/lib/utils/vault";
+} from "../../utils/asset";
+import { getVaultColor } from "../../utils/vault";
 import { getVaultURI } from "../../constants/constants";
 
 const PortfolioPositionsContainer = styled.div`
@@ -242,8 +242,6 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
     switch (displayAsset) {
       case "WETH":
         return <Logo height="70%" />;
-      case "yvUSDC":
-        return <Logo markerConfig={{ height: 16, width: 16 }} />;
       default:
         return <Logo />;
     }

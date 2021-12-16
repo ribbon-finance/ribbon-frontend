@@ -129,162 +129,19 @@ export const USDCLogo: React.FC<SVGProps> = (props) => (
   </svg>
 );
 
-const YVUSDcLogoContainer = styled.div`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-
-  .background {
-    fill: #1c202a;
-  }
-
-  .content {
-    fill: #006ae3;
-  }
-`;
-
-const SideYearnLogo = styled(YearnLogo)<{
-  width: number;
-  height: number;
-  bottom?: string;
-  right?: string;
-  border?: string;
-}>`
-  position: absolute;
-  bottom: ${(props) => (props.bottom ? props.bottom : "0px")};
-  right: ${(props) =>
-    props.right ? props.right : `calc(-${props.width}px * 0.2)`};
-  border-radius: 100px;
-  border: ${(props) =>
-    props.border
-      ? props.border
-      : `${props.width * 0.03}px ${theme.border.style} ${colors.border}`};
-`;
-
-export const YVUSDcLogo: React.FC<
-  SVGProps & {
-    markerConfig?: {
-      height?: number;
-      width?: number;
-      bottom?: string;
-      right?: string;
-      border?: string;
-    };
-  }
-> = ({ markerConfig, ...props }) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const { width, height } = useElementSize(ref);
-  const yearnDimension = Math.min(width, height) * 0.35;
-
-  return (
-    <YVUSDcLogoContainer ref={ref}>
-      <USDCLogo {...props} />
-      <SideYearnLogo
-        width={markerConfig?.height || yearnDimension}
-        height={markerConfig?.width || yearnDimension}
-        bottom={markerConfig?.bottom}
-        right={markerConfig?.right}
-        border={markerConfig?.border}
-      />
-    </YVUSDcLogoContainer>
-  );
-};
-
-export const STETHLogo: React.FC<SVGProps> = (props) => (
-  <svg
-    viewBox="0 0 40 40"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
-    <path
-      d="M11.0533 18.3815L10.7973 18.7743C7.91001 23.2034 8.55481 29.0039 12.3475 32.7201C14.5788 34.9064 17.5032 35.9997 20.4276 36C20.4276 36 20.4276 36 11.0533 18.3815Z"
-      fill="#00A3FF"
-    />
-    <path
-      opacity="0.6"
-      d="M20.4256 23.7363L11.0513 18.3815C20.4256 36 20.4256 36 20.4256 36C20.4256 32.1628 20.4256 27.7659 20.4256 23.7363Z"
-      fill="#00A3FF"
-    />
-    <path
-      opacity="0.6"
-      d="M29.8119 18.3815L30.0679 18.7743C32.9552 23.2034 32.3104 29.0039 28.5176 32.7201C26.2864 34.9064 23.362 35.9997 20.4376 36C20.4376 36 20.4376 36 29.8119 18.3815Z"
-      fill="#00A3FF"
-    />
-    <path
-      opacity="0.2"
-      d="M20.4366 23.7363L29.811 18.3815C20.4367 36 20.4366 36 20.4366 36C20.4366 32.1628 20.4366 27.7659 20.4366 23.7363Z"
-      fill="#00A3FF"
-    />
-    <path
-      opacity="0.2"
-      d="M20.4401 11.7751V21.0104L28.515 16.3957L20.4401 11.7751Z"
-      fill="#00A3FF"
-    />
-    <path
-      opacity="0.6"
-      d="M20.4376 11.7751L12.3568 16.3956L20.4376 21.0104V11.7751Z"
-      fill="#00A3FF"
-    />
-    <path
-      d="M20.4376 4.0067L12.3568 16.3971L20.4376 11.7636V4.0067Z"
-      fill="#00A3FF"
-    />
-    <path
-      opacity="0.6"
-      d="M20.4401 11.7629L28.5212 16.3966L20.4401 4V11.7629Z"
-      fill="#00A3FF"
-    />
-  </svg>
-);
-
-export const AAVELogo: React.FC<SVGProps & { showBackground?: boolean }> = ({
-  showBackground = false,
+export const RBNLogo: React.FC<SVGProps> = ({
   ...props
 }) => (
   <svg
-    viewBox="0 0 32 32"
+    viewBox="0 -55 480 480"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-  >
-    {showBackground && (
-      <path
-        d="M16 32.125C24.8366 32.125 32 24.9616 32 16.125C32 7.28844 24.8366 0.125 16 0.125C7.16344 0.125 0 7.28844 0 16.125C0 24.9616 7.16344 32.125 16 32.125Z"
-        fill="#2EBAC6"
-        fill-opacity="0.08"
-      />
-    )}
+  > 
+    <rect y="-60" width="480" height="480" rx="240" fill="#FC0A54" fill-opacity="0.24"/>
     <path
-      d="M23.0022 22.5003L17.5919 9.41985C17.2867 8.74356 16.8331 8.41367 16.2352 8.41367H15.7568C15.1589 8.41367 14.7053 8.74356 14.4001 9.41985L12.0455 15.1188H10.264C9.73209 15.1229 9.2991 15.5518 9.29498 16.0879V16.1003C9.2991 16.6322 9.73209 17.0652 10.264 17.0693H11.2207L8.97333 22.5003C8.93209 22.6199 8.90735 22.7436 8.90735 22.8714C8.90735 23.1766 9.00219 23.4157 9.17127 23.6013C9.34034 23.7869 9.58364 23.8776 9.88879 23.8776C10.0909 23.8735 10.2847 23.8116 10.4455 23.692C10.6187 23.5724 10.7383 23.3992 10.8331 23.2013L13.3073 17.0652H15.0228C15.5548 17.0611 15.9877 16.6322 15.9919 16.0961V16.0714C15.9877 15.5394 15.5548 15.1065 15.0228 15.1023H14.1073L15.996 10.3972L21.1424 23.1972C21.2372 23.3951 21.3568 23.5683 21.53 23.6879C21.6908 23.8075 21.8888 23.8693 22.0867 23.8735C22.3919 23.8735 22.631 23.7827 22.8042 23.5972C22.9774 23.4116 23.0682 23.1724 23.0682 22.8673C23.0723 22.7436 23.0517 22.6157 23.0022 22.5003Z"
-      fill="#2EBAC6"
-    />
-  </svg>
-);
-
-export const WAVAXLogo: React.FC<SVGProps & { showBackground?: boolean }> = ({
-  showBackground = false,
-  ...props
-}) => (
-  <svg
-    viewBox="0 0 208 208"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
-    {showBackground && (
-      <path
-        d="M104 208C161.438 208 208 161.438 208 104C208 46.5624 161.438 0 104 0C46.5624 0 0 46.5624 0 104C0 161.438 46.5624 208 104 208Z"
-        fill="#E84142"
-        fill-opacity="0.12"
-      />
-    )}
-    <path
-      d="M140.686 106.702C144.289 100.479 150.103 100.479 153.706 106.702L176.144 146.091C179.747 152.315 176.799 157.392 169.593 157.392H124.39C117.265 157.392 114.317 152.315 117.838 146.091L140.686 106.702ZM97.284 30.8724C100.887 24.6488 106.619 24.6488 110.223 30.8724L115.218 39.8803L127.01 60.5984C129.876 66.4945 129.876 73.4551 127.01 79.3512L87.4572 147.893C83.8541 153.461 77.8761 156.983 71.2431 157.392H38.4053C31.199 157.392 28.2509 152.397 31.8541 146.091L97.284 30.8724Z"
-      fill="#E84142"
+      d="M239.401 86.4L33.0012 301.8C33.0012 301.8 30.2809 296.982 27.7146 292.2C26.5577 290.044 25.4321 287.896 24.6012 286.2C23.4505 283.851 23.1372 283.636 22.2012 281.4C21.2309 279.6 19.8012 276 19.8012 276L19.2012 274.2L239.401 43.8L378.601 187.8L238.201 338.4L216.601 318L337.201 187.8L239.401 86.4Z"
+      fill="#FC0A54"
     />
   </svg>
 );

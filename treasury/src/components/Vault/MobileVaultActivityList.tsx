@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
 import moment from "moment";
 
-import { VaultActivity, VaultActivityType } from "shared/lib/models/vault";
+import { VaultActivity, VaultActivityType } from "../../models/vault";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
 import { SecondaryText, Title } from "shared/lib/designSystem";
@@ -16,7 +16,7 @@ import {
   isPutVault,
   VaultOptions,
 } from "../../constants/constants";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
 
 const VaultActivityRow = styled.div`
   display: flex;

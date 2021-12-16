@@ -14,9 +14,9 @@ import {
   VaultVersion,
 } from "../../constants/constants";
 import theme from "shared/lib/designSystem/theme";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
-import { useAssetsPriceHistory } from "shared/lib/hooks/useAssetPrice";
+import { useAssetsPriceHistory } from "../../hooks/useAssetPrice";
 import { assetToFiat } from "shared/lib/utils/math";
 import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import useLatestAPY from "shared/lib/hooks/useLatestAPY";

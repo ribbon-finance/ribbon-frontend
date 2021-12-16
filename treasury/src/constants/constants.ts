@@ -37,24 +37,18 @@ export const VaultVersionList = ["v2", "v1"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 
 export const FullVaultList = [
-  "rAAVE-THETA",
-  "rAVAX-THETA",
-  "rstETH-THETA",
-  "ryvUSDC-ETH-P-THETA",
   "rETH-THETA",
   "rBTC-THETA",
-  "rUSDC-ETH-P-THETA",
+  "rUSDC-ETH-P-THETA"
 ] as const;
-
-export type VaultOptions = typeof FullVaultList[number];
-const ProdExcludeVault: VaultOptions[] = ["rAVAX-THETA"];
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
-  "ryvUSDC-ETH-P-THETA",
 ];
 
+export type VaultOptions = typeof FullVaultList[number];
+
 // @ts-ignore
-export const VaultList: VaultOptions[] = !isProduction() ? FullVaultList : FullVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
+export const VaultList: VaultOptions[] = FullVaultList;
 
 export const GAS_LIMITS: {
   [vault in VaultOptions]: Partial<{
@@ -96,33 +90,6 @@ export const GAS_LIMITS: {
     v2: {
       deposit: 140000,
       withdrawInstantly: 120000,
-      completeWithdraw: 300000,
-    },
-  },
-  "ryvUSDC-ETH-P-THETA": {
-    v1: {
-      deposit: 210000,
-      withdraw: 210000,
-    },
-  },
-  "rstETH-THETA": {
-    v2: {
-      deposit: 170000,
-      withdrawInstantly: 130000,
-      completeWithdraw: 400000,
-    },
-  },
-  "rAAVE-THETA": {
-    v2: {
-      deposit: 380000,
-      withdrawInstantly: 130000,
-      completeWithdraw: 300000,
-    },
-  },
-  "rAVAX-THETA": {
-    v2: {
-      deposit: 380000,
-      withdrawInstantly: 130000,
       completeWithdraw: 300000,
     },
   },
@@ -185,48 +152,6 @@ export const VaultAddressMap: {
         v2: v2deployment.mainnet.RibbonThetaVaultWBTCCall,
         chainId: CHAINID.ETH_MAINNET,
       },
-  "ryvUSDC-ETH-P-THETA": isDevelopment()
-    ? {
-        v1: v1deployment.kovan.RibbonYearnETHPut,
-        chainId: CHAINID.ETH_KOVAN,
-      }
-    : {
-        v1: v1deployment.mainnet.RibbonYearnETHPut,
-        chainId: CHAINID.ETH_MAINNET,
-      },
-  "rstETH-THETA": isDevelopment()
-    ? {
-        /**
-         * We use ETH vault for Kovan preview
-         */
-        v2: v2deployment.kovan.RibbonThetaVaultETHCall,
-        chainId: CHAINID.ETH_KOVAN,
-      }
-    : {
-        v2: v2deployment.mainnet.RibbonThetaVaultSTETHCall,
-        chainId: CHAINID.ETH_MAINNET,
-      },
-  "rAAVE-THETA": isDevelopment()
-    ? {
-        /**
-         * We use ETH vault for Kovan preview
-         */
-        v2: v2deployment.kovan.RibbonThetaVaultETHCall,
-        chainId: CHAINID.ETH_KOVAN,
-      }
-    : {
-        v2: v2deployment.mainnet.RibbonThetaVaultAAVECall,
-        chainId: CHAINID.ETH_MAINNET,
-      },
-  "rAVAX-THETA": isDevelopment()
-    ? {
-        v2: v2deployment.fuji.RibbonThetaVaultETHCall,
-        chainId: CHAINID.AVAX_FUJI,
-      }
-    : {
-        v2: v2deployment.avax.RibbonThetaVaultETHCall,
-        chainId: CHAINID.AVAX_MAINNET,
-      },
 };
 
 /**
@@ -245,20 +170,12 @@ export const VaultNamesList = [
   "T-USDC-P-ETH",
   "T-ETH-C",
   "T-WBTC-C",
-  "T-yvUSDC-P-ETH",
-  "T-stETH-C",
-  "T-AAVE-C",
-  "T-AVAX-C",
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-USDC-P-ETH": "rUSDC-ETH-P-THETA",
   "T-ETH-C": "rETH-THETA",
   "T-WBTC-C": "rBTC-THETA",
-  "T-yvUSDC-P-ETH": "ryvUSDC-ETH-P-THETA",
-  "T-stETH-C": "rstETH-THETA",
-  "T-AAVE-C": "rAAVE-THETA",
-  "T-AVAX-C": "rAVAX-THETA",
 };
 
 export const BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
@@ -289,17 +206,9 @@ export const getSubgraphURIForVersion = (vaultVersion: VaultVersion) => {
 export const getAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
     case "rUSDC-ETH-P-THETA":
-    case "ryvUSDC-ETH-P-THETA":
-      return "USDC";
     case "rETH-THETA":
-    case "rstETH-THETA":
-      return "WETH";
     case "rBTC-THETA":
       return "WBTC";
-    case "rAAVE-THETA":
-      return "AAVE";
-    case "rAVAX-THETA":
-      return "WAVAX";
   }
 };
 
@@ -309,13 +218,7 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
       return "WBTC";
     case "rETH-THETA":
     case "rUSDC-ETH-P-THETA":
-    case "ryvUSDC-ETH-P-THETA":
-    case "rstETH-THETA":
       return "WETH";
-    case "rAAVE-THETA":
-      return "AAVE";
-    case "rAVAX-THETA":
-      return "WAVAX";
   }
 };
 
@@ -327,26 +230,14 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
       return "WETH";
     case "rBTC-THETA":
       return "WBTC";
-    case "ryvUSDC-ETH-P-THETA":
-      return "yvUSDC";
-    case "rstETH-THETA":
-      return "stETH";
-    case "rAAVE-THETA":
-      return "AAVE";
-    case "rAVAX-THETA":
-      return "WAVAX";
   }
 };
 
 export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
   {
-    "rAAVE-THETA": ["AAVE"],
     "rBTC-THETA": ["WBTC"],
     "rETH-THETA": ["WETH"],
-    "rAVAX-THETA": ["WAVAX"],
     "rUSDC-ETH-P-THETA": ["USDC"],
-    "rstETH-THETA": ["stETH", "WETH"],
-    "ryvUSDC-ETH-P-THETA": ["USDC"],
   };
 
 export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
@@ -358,19 +249,6 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   ),
   "rBTC-THETA": BigNumber.from(2000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rBTC-THETA")))
-  ),
-  "ryvUSDC-ETH-P-THETA": BigNumber.from(100000000).mul(
-    BigNumber.from(10).pow(getAssetDecimals(getAssets("ryvUSDC-ETH-P-THETA")))
-  ),
-  // TODO: Confirm max deposit for stETH vault
-  "rstETH-THETA": BigNumber.from(50000).mul(
-    BigNumber.from(10).pow(getAssetDecimals(getAssets("rstETH-THETA")))
-  ),
-  "rAAVE-THETA": BigNumber.from(3100).mul(
-    BigNumber.from(10).pow(getAssetDecimals(getAssets("rAAVE-THETA")))
-  ),
-  "rAVAX-THETA": BigNumber.from(100000000).mul(
-    BigNumber.from(10).pow(getAssetDecimals(getAssets("rAVAX-THETA")))
   ),
 };
 
@@ -398,29 +276,6 @@ export const VaultFees: {
     v1: {
       withdrawalFee: "0.5",
     },
-    v2: {
-      managementFee: "2",
-      performanceFee: "10",
-    },
-  },
-  "ryvUSDC-ETH-P-THETA": {
-    v1: {
-      withdrawalFee: "1.0",
-    },
-  },
-  "rstETH-THETA": {
-    v2: {
-      managementFee: "2",
-      performanceFee: "10",
-    },
-  },
-  "rAAVE-THETA": {
-    v2: {
-      managementFee: "2",
-      performanceFee: "10",
-    },
-  },
-  "rAVAX-THETA": {
     v2: {
       managementFee: "2",
       performanceFee: "10",
@@ -454,18 +309,9 @@ export const getVaultURI = (
   vaultOption: VaultOptions,
   vaultVersion: VaultVersion = "v1"
 ): string => {
-  switch (vaultVersion) {
-    case "v1":
-      return `/theta-vault/${
-        Object.keys(VaultNameOptionMap)[
-          Object.values(VaultNameOptionMap).indexOf(vaultOption)
-        ]
-      }`;
-    case "v2":
-      return `/v2/theta-vault/${
-        Object.keys(VaultNameOptionMap)[
-          Object.values(VaultNameOptionMap).indexOf(vaultOption)
-        ]
-      }`;
-  }
+  return `/treasury/${
+    Object.keys(VaultNameOptionMap)[
+      Object.values(VaultNameOptionMap).indexOf(vaultOption)
+    ]
+  }`;
 };

@@ -6,8 +6,8 @@ import { SecondaryText, Title, PrimaryText } from "shared/lib/designSystem";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { ACTIONS, ActionType, V2WithdrawOption } from "./types";
 import { formatBigNumber } from "shared/lib/utils/math";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
-import { Assets } from "shared/lib/store/types";
+import { getAssetDecimals, getAssetDisplay } from "../../../../utils/asset";
+import { Assets } from "../../../../store/types";
 import {
   VaultOptions,
   VaultFees,
@@ -15,7 +15,7 @@ import {
   isPutVault,
 } from "../../../../constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
-import { getVaultColor } from "shared/lib/utils/vault";
+import { getVaultColor } from "../../../../utils/vault";
 import { capitalize } from "shared/lib/utils/text";
 import {
   DepositIcon,
@@ -109,10 +109,6 @@ const PreviewStep: React.FC<{
     data: { withdrawals: v2Withdrawals },
   } = useV2VaultData(vaultOption);
 
-  const { swapOutput } = useCurvePoolEstimateStETHSwap(
-    vaultOption === "rstETH-THETA",
-    amount
-  );
 
   interface ActionDetail {
     key: string;
@@ -146,21 +142,12 @@ const PreviewStep: React.FC<{
              */
             switch (withdrawOption) {
               case "instant":
-                switch (vaultOption) {
-                  case "rstETH-THETA":
-                    actionDetails.push({
-                      key: "Max Slippage",
-                      value: "0.3%",
-                    });
-                    break;
-                  default:
-                    actionDetails.push({
-                      key: "Strategy",
-                      value: isPutVault(vaultOption)
-                        ? "PUT SELLING"
-                        : "COVERED CALL",
-                    });
-                }
+                actionDetails.push({
+                  key: "Strategy",
+                  value: isPutVault(vaultOption)
+                    ? "PUT SELLING"
+                    : "COVERED CALL",
+                });
             }
         }
         break;
@@ -375,42 +362,6 @@ const PreviewStep: React.FC<{
           let description = <></>;
           let slippage = <></>;
 
-          switch (vaultOption) {
-            case "rstETH-THETA":
-              description = (
-                <PrimaryText
-                  color={colors.text}
-                  fontSize={14}
-                  lineHeight={20}
-                  className="mt-3 text-center"
-                >
-                  To complete your withdrawal the vault will swap your stETH to
-                  ETH on Curve{" "}
-                </PrimaryText>
-              );
-              slippage = (
-                <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
-                  <SecondaryText>Max Slippage</SecondaryText>
-                  <TooltipExplanation
-                    title="SLIPPAGE"
-                    explanation="Slippage refers to the difference between the expected price of a trade and the price at which the trade is executed."
-                    learnMoreURL="https://www.investopedia.com/terms/s/slippage.asp"
-                    renderContent={({ ref, ...triggerHandler }) => (
-                      <HelpInfo
-                        containerRef={ref}
-                        {...triggerHandler}
-                        className="mr-auto"
-                      >
-                        i
-                      </HelpInfo>
-                    )}
-                  />
-
-                  <Title className="text-right">0.3%</Title>
-                </div>
-              );
-          }
-
           return (
             <div className="d-flex flex-column align-items-center">
               {/* Logo */}
@@ -425,26 +376,13 @@ const PreviewStep: React.FC<{
               {description}
 
               {/* Info Preview */}
-              {vaultOption === "rstETH-THETA" ? (
-                <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
-                  <SecondaryText>Estimated Withdraw Amount</SecondaryText>
-                  <Title className="text-right">
-                    {formatBigNumber(
-                      swapOutput.isZero() ? amount : swapOutput,
-                      getAssetDecimals(asset)
-                    )}{" "}
-                    {getAssetDisplay(asset)}
-                  </Title>
-                </div>
-              ) : (
-                <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
-                  <SecondaryText>Withdraw Amount</SecondaryText>
-                  <Title className="text-right">
-                    {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
-                    {getAssetDisplay(asset)}
-                  </Title>
-                </div>
-              )}
+              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+                <SecondaryText>Withdraw Amount</SecondaryText>
+                <Title className="text-right">
+                  {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
+                  {getAssetDisplay(asset)}
+                </Title>
+              </div>
               <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
                 <SecondaryText>Product</SecondaryText>
                 <Title className="text-right">
@@ -500,21 +438,6 @@ const PreviewStep: React.FC<{
           break;
         case ACTIONS.withdraw:
           actionLogo = <WithdrawIcon color={color} width={32} />;
-
-          switch (vaultOption) {
-            case "rstETH-THETA":
-              description = (
-                <PrimaryText
-                  color={colors.text}
-                  fontSize={14}
-                  lineHeight={20}
-                  className="mt-3 text-center"
-                >
-                  To complete your withdrawal the vault will swap your stETH to
-                  ETH on Curve{" "}
-                </PrimaryText>
-              );
-          }
           break;
         case ACTIONS.transfer:
           actionLogo = <TransferIcon color={color} width={32} />;
@@ -532,28 +455,13 @@ const PreviewStep: React.FC<{
           {description}
 
           {/* Info Preview */}
-          {vaultOption === "rstETH-THETA" &&
-          actionType === "withdraw" &&
-          withdrawOption === "instant" ? (
-            <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
-              <SecondaryText>Estimated {actionWord} Amount</SecondaryText>
-              <Title className="text-right">
-                {formatBigNumber(
-                  swapOutput.isZero() ? amount : swapOutput,
-                  getAssetDecimals(asset)
-                )}{" "}
-                {getAssetDisplay(asset)}
-              </Title>
-            </div>
-          ) : (
-            <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+          <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
               <SecondaryText>{actionWord} Amount</SecondaryText>
               <Title className="text-right">
                 {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
                 {getAssetDisplay(asset)}
               </Title>
             </div>
-          )}
           {detailRows.map((detail, index) => (
             <div
               className="d-flex w-100 flex-row align-items-center justify-content-between mt-4"

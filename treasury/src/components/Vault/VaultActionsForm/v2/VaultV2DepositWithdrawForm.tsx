@@ -18,16 +18,16 @@ import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import {
   useV2VaultData,
   useAssetBalance,
-} from "shared/lib/hooks/web3DataContext";
+} from "../../../../hooks/web3DataContext";
 import { ERC20Token } from "shared/lib/models/eth";
-import { isVaultFull } from "shared/lib/utils/vault";
+import { isVaultFull } from "../../../../utils/vault";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import VaultApprovalForm from "../common/VaultApprovalForm";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
 import SwapBTCDropdown from "../common/SwapBTCDropdown";
 import VaultBasicAmountForm from "../common/VaultBasicAmountForm";
-import { getAssetDisplay } from "shared/lib/utils/asset";
+import { getAssetDisplay } from "../../../..//utils/asset";
 import { VaultValidationErrors } from "../types";
 import VaultV2WithdrawForm from "./VaultV2WithdrawForm";
 
@@ -151,8 +151,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
    * Side hooks
    */
   const tokenAllowance = useTokenAllowance(
-    vaultActionForm.depositAsset === "WETH" ||
-    vaultActionForm.depositAsset === "WAVAX"
+    vaultActionForm.depositAsset === "WETH"
       ? undefined
       : ((vaultActionForm.depositAsset?.toLowerCase() ||
           VaultAllowedDepositAssets[

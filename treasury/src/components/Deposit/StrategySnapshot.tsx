@@ -5,9 +5,9 @@ import { Col, Row } from "react-bootstrap";
 import moment from "moment";
 
 import theme from "shared/lib/designSystem/theme";
-import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
+import { useAssetsPrice } from "../../hooks/useAssetPrice";
 import { formatOption } from "shared/lib/utils/math";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
 import {
   getAssets,
   getOptionAssets,
@@ -18,7 +18,7 @@ import { BaseButton, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import StrikeChart from "webapp/lib/components/Deposit/StrikeChart";
-import { getVaultColor } from "shared/lib/utils/vault";
+import { getVaultColor } from "../../utils/vault";
 import ProfitCalculatorModal from "./ProfitCalculatorModal";
 import { formatUnits } from "@ethersproject/units";
 import { useLatestOption } from "shared/lib/hooks/useLatestOption";

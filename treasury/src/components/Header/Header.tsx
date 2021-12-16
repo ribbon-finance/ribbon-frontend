@@ -138,7 +138,6 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const product = useRouteMatch({ path: "/", exact: true });
   const portfolio = useRouteMatch({ path: "/portfolio", exact: true });
-  const staking = useRouteMatch({ path: "/staking", exact: true });
 
   const onToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -188,9 +187,8 @@ const Header = () => {
       {/* LINKS */}
       <HeaderAbsoluteContainer>
         <LinksContainer>
-          {renderLinkItem("PRODUCTS", "/", Boolean(product))}
+          {renderLinkItem("TREASURY", "/", Boolean(product))}
           {renderLinkItem("PORTFOLIO", "/portfolio", Boolean(portfolio))}
-          {chainId && isEthNetwork(chainId) && renderLinkItem("STAKING", "/staking", Boolean(staking))}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
@@ -216,7 +214,7 @@ const Header = () => {
           }}
         >
           {renderLinkItem(
-            "PRODUCTS",
+            "TREASURY",
             "/",
             Boolean(useRouteMatch({ path: "/", exact: true }))
           )}
@@ -224,11 +222,6 @@ const Header = () => {
             "PORTFOLIO",
             "/portfolio",
             Boolean(useRouteMatch({ path: "/portfolio", exact: true }))
-          )}
-          {renderLinkItem(
-            "STAKING",
-            "/staking",
-            Boolean(useRouteMatch({ path: "/staking", exact: true }))
           )}
           {renderLinkItem(
             "DISCORD",

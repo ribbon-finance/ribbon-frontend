@@ -38,14 +38,9 @@ const RootApp = () => {
           <Route path="/" exact>
             <Homepage />
           </Route>
-          <Route path="/theta-vault/:vaultSymbol">
+          <Route path="/treasury/:vaultSymbol">
             <DepositPage />
           </Route>
-          {
-            <Route path="/v2/theta-vault/:vaultSymbol">
-              <DepositPage />
-            </Route>
-          }
           <Route path="/portfolio">
             <PortfolioPage />
           </Route>

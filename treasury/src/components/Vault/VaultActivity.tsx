@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import styled from "styled-components";
 
-import useVaultActivity from "shared/lib/hooks/useVaultActivity";
+import useVaultActivity from "../../hooks/useVaultActivity";
 import { ActivityFilter, activityFilters, SortBy, sortByList } from "webapp/lib/components/Vault/types";
 import VaultActivityHeader from "./VaultActivityHeader";
 import DesktopVaultActivityList from "./DesktopVaultActivityList";

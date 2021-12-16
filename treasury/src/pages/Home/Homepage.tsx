@@ -23,12 +23,6 @@ const Homepage = () => {
   return (
     <>
       <ProductTitle>PRODUCT</ProductTitle>
-      <ProductCatalogue
-        variant="webapp"
-        onVaultPress={(vault, version) =>
-          history.push(getVaultURI(vault, version))
-        }
-      />
     </>
   );
 };

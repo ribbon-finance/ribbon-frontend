@@ -9,7 +9,7 @@ import { getAssetDisplay } from "shared/lib/utils/asset";
 import { VaultAccount } from "shared/lib/models/vault";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import { MigrateIcon } from "shared/lib/assets/icons/icons";
-import { getVaultColor } from "shared/lib/utils/vault";
+import { getVaultColor } from "../../../../utils/vault";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { ACTIONS } from "../Modal/types";

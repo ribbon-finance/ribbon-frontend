@@ -15,8 +15,8 @@ import {
   Subtitle,
   Title,
 } from "shared/lib/designSystem";
-import { Assets } from "shared/lib/store/types";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import { Assets } from "../../store/types";
+import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
 import { assetToFiat, formatOption } from "shared/lib/utils/math";
 import ProfitChart from "webapp/lib/components/Deposit/ProfitChart";
 import colors from "shared/lib/designSystem/colors";

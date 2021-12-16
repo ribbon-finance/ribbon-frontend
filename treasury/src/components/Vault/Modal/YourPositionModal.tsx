@@ -9,7 +9,7 @@ import {
   VaultList,
 } from "../../../constants/constants";
 import BasicModal from "shared/lib/components/Common/BasicModal";
-import { getVaultColor } from "shared/lib/utils/vault";
+import { getVaultColor } from "../../../utils/vault";
 import {
   BaseModalContentColumn,
   SecondaryText,
@@ -21,7 +21,7 @@ import {
   getAssetDecimals,
   getAssetDisplay,
   getAssetLogo,
-} from "shared/lib/utils/asset";
+} from "../../../utils/asset";
 import colors from "shared/lib/designSystem/colors";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 
@@ -32,7 +32,7 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import { useStakingPoolData } from "shared/lib/hooks/web3DataContext";
-import { useGlobalState } from "shared/lib/store/store";
+import { useGlobalState } from "../../../store/store";
 
 const ModalContent = styled(motion.div)`
   display: flex;
@@ -187,70 +187,6 @@ const YourPositionModal: React.FC = () => {
                 <Title className="ml-auto">
                   {formatBigNumber(yieldEarned, decimals)}{" "}
                   {getAssetDisplay(asset)}
-                </Title>
-              </div>
-            </BaseModalContentColumn>
-          </>
-        );
-      case "staking":
-        return (
-          <>
-            {/* Logo */}
-            <BaseModalContentColumn className="mb-4">
-              <AssetCircleContainer size={96} color={color}>
-                <Logo width={48} height={48} />
-              </AssetCircleContainer>
-            </BaseModalContentColumn>
-
-            <CapBar
-              loading={false}
-              current={
-                vaultAccount
-                  ? parseFloat(
-                      formatUnits(vaultAccount.totalStakedBalance, decimals)
-                    )
-                  : 0
-              }
-              cap={
-                vaultAccount
-                  ? parseFloat(formatUnits(vaultAccount.totalBalance, decimals))
-                  : 0
-              }
-              copies={{
-                current: "Staked",
-                cap: "Position",
-              }}
-              labelConfig={{
-                fontSize: 14,
-              }}
-              statsConfig={{
-                fontSize: 14,
-              }}
-              barConfig={{
-                height: 4,
-                extraClassNames: "my-3",
-                radius: 2,
-              }}
-              asset={asset}
-            />
-
-            <BaseModalContentColumn>
-              <div className="d-flex w-100 align-items-center ">
-                <InfoLabel>RBN Earned</InfoLabel>
-                <Title
-                  fontSize={14}
-                  lineHeight={16}
-                  className="ml-auto"
-                  color={colors.products.yield}
-                >
-                  {formatBigNumber(
-                    vaultVersion === "v1"
-                      ? stakingPoolData.claimableRbn
-                      : BigNumber.from(0),
-                    18,
-                    2
-                  )}{" "}
-                  RBN
                 </Title>
               </div>
             </BaseModalContentColumn>

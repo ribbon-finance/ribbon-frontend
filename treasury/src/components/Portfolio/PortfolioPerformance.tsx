@@ -16,8 +16,8 @@ import theme from "shared/lib/designSystem/theme";
 import {
   useAssetsPrice,
   useAssetsPriceHistory,
-} from "shared/lib/hooks/useAssetPrice";
-import useBalances from "shared/lib/hooks/useBalances";
+} from "../../hooks/useAssetPrice";
+import useBalances from "../../hooks/useBalances";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
 import PerformanceChart from "webapp/lib/components/PerformanceChart/PerformanceChart";
@@ -25,9 +25,9 @@ import { HoverInfo } from "webapp/lib/components/PerformanceChart/types";
 import sizes from "shared/lib/designSystem/sizes";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { getAssets } from "../../constants/constants";
-import { getAssetDecimals } from "shared/lib/utils/asset";
+import { getAssetDecimals } from "../../utils/asset";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
-import { Assets } from "shared/lib/store/types";
+import { Assets } from "../../store/types";
 
 const PerformanceContainer = styled.div`
   display: flex;

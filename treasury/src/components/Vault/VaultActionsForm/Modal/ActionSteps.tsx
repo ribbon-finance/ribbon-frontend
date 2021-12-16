@@ -19,7 +19,7 @@ import {
 } from "../../../../constants/constants";
 import { isETHVault } from "shared/lib/utils/vault";
 import { amountAfterSlippage } from "shared/lib/utils/math";
-import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
+import { usePendingTransactions } from "../../../../hooks/pendingTransactionsContext";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
 import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
@@ -185,13 +185,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         let shares: BigNumber;
         switch (vaultActionForm.actionType) {
           case ACTIONS.deposit:
-            switch (vaultOption) {
-              case "rstETH-THETA":
-                res = await(isNativeToken(asset) ? vault.depositETH({ value: amountStr }) : vault.depositYieldToken(amountStr));
-                break;
-              default:
-                res = await(isNativeToken(asset) ? vault.depositETH({ value: amountStr }) : vault.deposit(amountStr));
-            }
+            res = await(isNativeToken(asset) ? vault.depositETH({ value: amountStr }) : vault.deposit(amountStr));
             break;
           case ACTIONS.withdraw:
             /** Handle different version of withdraw separately */
@@ -213,31 +207,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                 switch (vaultActionForm.withdrawOption) {
                   /** Instant withdraw for V2 */
                   case "instant":
-                    switch (vaultActionForm.vaultOption) {
-                      case "rstETH-THETA":
-                        /**
-                         * Default slippage of 0.3%
-                         */
-                        const curvePool = getCurvePool(
-                          library,
-                          LidoCurvePoolAddress
-                        );
-
-                        const minOut = await curvePool.get_dy(
-                          1,
-                          0,
-                          amountAfterSlippage(amount, CurveSwapSlippage),
-                          {
-                            gasLimit: 400000,
-                          }
-                        );
-                        res = await vault.withdrawInstantly(amountStr, minOut, {
-                          gasLimit: 220000,
-                        });
-                        break;
-                      default:
-                        res = await vault.withdrawInstantly(amountStr);
-                    }
+                    res = await vault.withdrawInstantly(amountStr);
                     break;
 
                   /** Initiate withdrawal for v2 */
@@ -248,30 +218,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                     res = await vault.initiateWithdraw(shares);
                     break;
                   case "complete":
-                    switch (vaultActionForm.vaultOption) {
-                      case "rstETH-THETA":
-                        /**
-                         * Default slippage of 0.3%
-                         */
-                        const curvePool = getCurvePool(
-                          library,
-                          LidoCurvePoolAddress
-                        );
-                        const minOut = await curvePool.get_dy(
-                          1,
-                          0,
-                          amountAfterSlippage(amount, CurveSwapSlippage),
-                          {
-                            gasLimit: 400000,
-                          }
-                        );
-                        res = await vault.completeWithdraw(minOut, {
-                          gasLimit: 400000,
-                        });
-                        break;
-                      default:
-                        res = await vault.completeWithdraw();
-                    }
+                    res = await vault.completeWithdraw();
                     break;
                 }
                 break;

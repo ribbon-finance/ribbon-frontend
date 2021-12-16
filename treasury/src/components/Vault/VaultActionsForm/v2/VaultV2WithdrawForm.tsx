@@ -27,8 +27,8 @@ import {
 } from "shared/lib/components/Common/buttons";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { VaultInputValidationErrorList, VaultValidationErrors } from "../types";
-import { getVaultColor } from "shared/lib/utils/vault";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import { getVaultColor } from "../../../../utils/vault";
+import { getAssetDecimals, getAssetDisplay } from "../../../../utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";

@@ -18,11 +18,11 @@ import {
   formatBigNumber,
   formatOption,
 } from "shared/lib/utils/math";
-import { useAssetsPriceHistory } from "shared/lib/hooks/useAssetPrice";
+import { useAssetsPriceHistory } from "../..//hooks/useAssetPrice";
 import sizes from "shared/lib/designSystem/sizes";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
 import TableWithFixedHeader from "shared/lib/components/Common/TableWithFixedHeader";
 
 const VaultActivityIcon = styled.div<{ type: VaultActivityType }>`

@@ -4,13 +4,10 @@ import { VaultOptions } from "../constants/constants";
 import { DefiScoreProtocol, DefiScoreToken } from "shared/lib/models/defiScore";
 
 export const AssetsList = [
-  "AAVE",
-  "WAVAX",
   "WETH",
   "USDC",
   "WBTC",
-  "stETH",
-  "yvUSDC",
+  "RBN"
 ] as const;
 export type Assets = typeof AssetsList[number];
 

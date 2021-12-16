@@ -13,7 +13,7 @@ import { useCallback } from "react";
 import VaultV1ActionsForm from "./VaultV1ActionsForm";
 import VaultV2ActionsForm from "./VaultV2ActionForm";
 import { BaseLink, Title } from "shared/lib/designSystem";
-import { getVaultColor } from "shared/lib/utils/vault";
+import { getVaultColor } from "../../../utils/vault";
 import { truncateAddress } from "shared/lib/utils/address";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 

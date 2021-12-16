@@ -6,15 +6,15 @@ import {
   VaultOptions,
   VaultVersion,
 } from "../../constants/constants";
-import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
-import { PendingTransaction } from "shared/lib/store/types";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import { usePendingTransactions } from "../../hooks/pendingTransactionsContext";
+import { PendingTransaction } from "../../store/types";
+import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import { capitalize } from "shared/lib/utils/text";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import Toast from "shared/lib/components/Common/BaseToast";
 import PendingToast from "webapp/lib/components/Common/PendingToast";
-import { getVaultColor } from "shared/lib/utils/vault";
+import { getVaultColor } from "../../utils/vault";
 import { useV2VaultsData } from "shared/lib/hooks/web3DataContext";
 
 /**

@@ -12,7 +12,7 @@ import colors from "shared/lib/designSystem/colors";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { formatBigNumber } from "shared/lib/utils/math";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import { getAssetDecimals, getAssetDisplay } from "../../../../utils/asset";
 
 const ActionLogoContainer = styled.div`
   display: flex;

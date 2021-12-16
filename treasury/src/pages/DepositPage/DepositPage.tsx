@@ -13,7 +13,7 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import VaultInformation from "../../components/Deposit/VaultInformation";
 import PerformanceSection from "./PerformanceSection";
-import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import { useVaultData, useV2VaultData } from "../../hooks/web3DataContext";
 import {
   formatSignificantDecimals,
   isPracticallyZero,
@@ -33,8 +33,8 @@ import {
 } from "../../constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultOption from "../../hooks/useVaultOption";
-import { getVaultColor } from "shared/lib/utils/vault";
-import { getAssetLogo } from "shared/lib/utils/asset";
+import { getVaultColor } from "../../utils/vault";
+import { getAssetLogo } from "../../utils/asset";
 import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
@@ -341,23 +341,6 @@ const HeroSection: React.FC<{
       case "WBTC":
         return <Logo height="190%" style={{ marginTop: 40 }} />;
       case "USDC":
-      case "yvUSDC":
-        return (
-          <Logo
-            height="180%"
-            style={{
-              marginTop: 40,
-            }}
-            markerConfig={{
-              right: "0px",
-              border: "none",
-            }}
-          />
-        );
-      case "AAVE":
-        return <Logo showBackground />;
-      case "WAVAX":
-        return <Logo showBackground />;
       default:
         return <Logo />;
     }

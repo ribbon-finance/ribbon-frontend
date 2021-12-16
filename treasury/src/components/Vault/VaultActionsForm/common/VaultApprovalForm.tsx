@@ -12,7 +12,7 @@ import {
   VaultOptions,
 } from "../../../../constants/constants";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
-import { getVaultColor } from "shared/lib/utils/vault";
+import { getVaultColor } from "../../../../utils/vault";
 import { getERC20Token } from "shared/lib/hooks/useERC20Token";
 import { ERC20Token } from "shared/lib/models/eth";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
@@ -29,7 +29,7 @@ import {
   getAssetColor,
   getAssetDisplay,
   getAssetLogo,
-} from "shared/lib/utils/asset";
+} from "../../../../utils/asset";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";

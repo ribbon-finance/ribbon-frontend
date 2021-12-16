@@ -10,10 +10,10 @@ import {
 
 const useVaultOption = () => {
   const matchv1 = useRouteMatch<{ vaultSymbol: string }>(
-    "/theta-vault/:vaultSymbol"
+    "/v1/treasury/:vaultSymbol"
   );
   const matchv2 = useRouteMatch<{ vaultSymbol: string }>(
-    "/v2/theta-vault/:vaultSymbol"
+    "/treasury/:vaultSymbol"
   );
   const [vaultOption, vaultVersion] = useMemo((): [
     VaultOptions | undefined,

@@ -10,7 +10,7 @@ import { FormStepProps } from "./types";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
 import { Title, PrimaryText, SecondaryText } from "shared/lib/designSystem";
-import { getVaultColor } from "shared/lib/utils/vault";
+import { getVaultColor } from "../../../utils/vault";
 import VaultV2DepositWithdrawForm from "./v2/VaultV2DepositWithdrawForm";
 import useVaultActionForm from "../../../hooks/useVaultActionForm";
 import { ACTIONS } from "./Modal/types";

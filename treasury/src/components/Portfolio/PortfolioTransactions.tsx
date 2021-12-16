@@ -13,9 +13,9 @@ import {
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import { useAssetsPriceHistory } from "shared/lib/hooks/useAssetPrice";
+import { useAssetsPriceHistory } from "../../hooks/useAssetPrice";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import useTransactions from "shared/lib/hooks/useTransactions";
+import useTransactions from "../../hooks/useTransactions";
 import { CurrencyType } from "../../pages/Portfolio/types";
 import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
 import { capitalize } from "shared/lib/utils/text";
@@ -25,8 +25,8 @@ import {
   VaultOptions,
   getEtherscanURI,
 } from "../../constants/constants";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
-import { Assets } from "shared/lib/store/types";
+import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
+import { Assets } from "../../store/types";
 import {
   DepositIcon,
   ExternalIcon,
@@ -34,8 +34,8 @@ import {
   TransferIcon,
   WithdrawIcon,
 } from "shared/lib/assets/icons/icons";
-import { VaultTransactionType } from "shared/lib/models/vault";
-import { getVaultColor } from "shared/lib/utils/vault";
+import { VaultTransactionType } from "../../models/vault";
+import { getVaultColor } from "../../utils/vault";
 import {
   PortfolioTransactionActivityFilter,
   portfolioTransactionActivityFilters,
