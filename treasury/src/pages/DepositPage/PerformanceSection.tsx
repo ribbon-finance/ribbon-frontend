@@ -11,7 +11,7 @@ import {
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import VaultPerformanceChart from "./VaultPerformanceChart";
-import WeeklyStrategySnapshot from "../../components/Deposit/WeeklyStrategySnapshot";
+import StrategySnapshot from "../../components/Deposit/StrategySnapshot";
 import sizes from "shared/lib/designSystem/sizes";
 
 const Paragraph = styled.div`
@@ -110,7 +110,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
         <>
           <Paragraph>
             <ParagraphHeading>Strategy Snapshot</ParagraphHeading>
-            <WeeklyStrategySnapshot vault={vault} />
+            <StrategySnapshot vault={vault} />
           </Paragraph>
         </>
       )}

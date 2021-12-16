@@ -234,7 +234,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
             <DataNumber>{strikeAPRText}</DataNumber>
           </DataCol>
           <DataCol xs="6">
-            <DataLabel className="d-block">This Week's Performance</DataLabel>
+            <DataLabel className="d-block">Profitability</DataLabel>
             <DataNumber
               variant={KPI ? (KPI.isProfit ? "green" : "red") : undefined}
             >

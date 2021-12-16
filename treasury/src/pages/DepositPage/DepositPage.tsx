@@ -226,7 +226,7 @@ const DepositPage = () => {
       vaultDeposit={totalDepositStr}
       vaultYield={depositLimitStr}
       displayData={
-        !isLoading && totalDepositStr == 0
+        !isLoading && totalDepositStr === 0
           ? { deposit: "---", yield: "---" }
           : undefined
       }

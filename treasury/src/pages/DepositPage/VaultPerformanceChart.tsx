@@ -70,9 +70,7 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
   const { searchAssetPriceFromTimestamp } = useAssetsPriceHistory();
   const latestAPY = useLatestAPY(vaultOption, vaultVersion);
 
-  const [vaultPerformanceTerm, setVaultPerformanceTerm] = useState<
-    "crypto" | "fiat"
-  >("crypto");
+  const vaultPerformanceTerm = "fiat";
   const [monthFilter, setMonthFilter] = useState(false);
   const [chartIndex, setChartIndex] = useState(0);
   const asset = getAssets(vaultOption);
@@ -96,62 +94,35 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
       };
     }
 
-    switch (vaultPerformanceTerm) {
-      case "crypto":
-        return {
-          yields: priceHistory.map((data, index) => {
-            /**
-             * Initial yield as 0
-             */
-            if (index === 0) {
-              return 0;
-            }
+    const fiatPriceHistory = priceHistory.map((pricePoint) => ({
+      timestamp: pricePoint.timestamp,
+      pricePerShare: parseFloat(
+        assetToFiat(
+          pricePoint.pricePerShare,
+          searchAssetPriceFromTimestamp(asset, pricePoint.timestamp * 1000),
+          decimals
+        )
+      ),
+    }));
 
-            const initialPrice = parseFloat(
-              formatUnits(priceHistory[0].pricePerShare, decimals)
-            );
-            const currentPrice = parseFloat(
-              formatUnits(data.pricePerShare, decimals)
-            );
+    return {
+      yields: fiatPriceHistory.map((data, index) => {
+        /**
+         * Initial yield as 0
+         */
+        if (index === 0) {
+          return 0;
+        }
 
-            return ((currentPrice - initialPrice) / initialPrice) * 100;
-          }),
-          timestamps: priceHistory.map(
-            (data) => new Date(data.timestamp * 1000)
-          ),
-        };
+        const initialPrice = fiatPriceHistory[0].pricePerShare;
+        const currentPrice = data.pricePerShare;
 
-      case "fiat":
-        const fiatPriceHistory = priceHistory.map((pricePoint) => ({
-          timestamp: pricePoint.timestamp,
-          pricePerShare: parseFloat(
-            assetToFiat(
-              pricePoint.pricePerShare,
-              searchAssetPriceFromTimestamp(asset, pricePoint.timestamp * 1000),
-              decimals
-            )
-          ),
-        }));
-
-        return {
-          yields: fiatPriceHistory.map((data, index) => {
-            /**
-             * Initial yield as 0
-             */
-            if (index === 0) {
-              return 0;
-            }
-
-            const initialPrice = fiatPriceHistory[0].pricePerShare;
-            const currentPrice = data.pricePerShare;
-
-            return ((currentPrice - initialPrice) / initialPrice) * 100;
-          }),
-          timestamps: fiatPriceHistory.map(
-            (data) => new Date(data.timestamp * 1000)
-          ),
-        };
-    }
+        return ((currentPrice - initialPrice) / initialPrice) * 100;
+      }),
+      timestamps: fiatPriceHistory.map(
+        (data) => new Date(data.timestamp * 1000)
+      ),
+    };
   }, [
     asset,
     decimals,
@@ -170,41 +141,30 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
           const initialPoint = priceHistory[0];
           const latestPoint = priceHistory[priceHistory.length - 1];
 
-          switch (term) {
-            case "crypto":
-              return [
-                term,
-                latestPoint.pricePerShare.gte(initialPoint.pricePerShare)
-                  ? colors.green
-                  : colors.red,
-              ];
-            case "fiat":
-            default:
-              const initialPrice = parseFloat(
-                assetToFiat(
-                  initialPoint.pricePerShare,
-                  searchAssetPriceFromTimestamp(
-                    asset,
-                    initialPoint.timestamp * 1000
-                  ),
-                  decimals
-                )
-              );
-              const latestPrice = parseFloat(
-                assetToFiat(
-                  latestPoint.pricePerShare,
-                  searchAssetPriceFromTimestamp(
-                    asset,
-                    latestPoint.timestamp * 1000
-                  ),
-                  decimals
-                )
-              );
-              return [
-                term,
-                latestPrice >= initialPrice ? colors.green : colors.red,
-              ];
-          }
+          const initialPrice = parseFloat(
+            assetToFiat(
+              initialPoint.pricePerShare,
+              searchAssetPriceFromTimestamp(
+                asset,
+                initialPoint.timestamp * 1000
+              ),
+              decimals
+            )
+          );
+          const latestPrice = parseFloat(
+            assetToFiat(
+              latestPoint.pricePerShare,
+              searchAssetPriceFromTimestamp(
+                asset,
+                latestPoint.timestamp * 1000
+              ),
+              decimals
+            )
+          );
+          return [
+            term,
+            latestPrice >= initialPrice ? colors.green : colors.red,
+          ];
         })
       ) as { [key in "crypto" | "fiat"]: string },
     [asset, decimals, priceHistory, searchAssetPriceFromTimestamp]
@@ -240,48 +200,31 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
             return [term, 0];
           }
 
-          switch (vaultPerformanceTerm) {
-            case "crypto":
-              const prevWeekPrice = parseFloat(
-                formatUnits(prevWeekPoint.pricePerShare, decimals)
-              );
-              const latestPrice = parseFloat(
-                formatUnits(latestPoint.pricePerShare, decimals)
-              );
+          const prevWeekPriceUSD = parseFloat(
+            assetToFiat(
+              prevWeekPoint.pricePerShare,
+              searchAssetPriceFromTimestamp(
+                asset,
+                prevWeekPoint.timestamp * 1000
+              ),
+              decimals
+            )
+          );
+          const latestPriceUSD = parseFloat(
+            assetToFiat(
+              latestPoint.pricePerShare,
+              searchAssetPriceFromTimestamp(
+                asset,
+                latestPoint.timestamp * 1000
+              ),
+              decimals
+            )
+          );
 
-              return [
-                term,
-                ((latestPrice - prevWeekPrice) / prevWeekPrice) * 100,
-              ];
-            case "fiat":
-              const prevWeekPriceUSD = parseFloat(
-                assetToFiat(
-                  prevWeekPoint.pricePerShare,
-                  searchAssetPriceFromTimestamp(
-                    asset,
-                    prevWeekPoint.timestamp * 1000
-                  ),
-                  decimals
-                )
-              );
-              const latestPriceUSD = parseFloat(
-                assetToFiat(
-                  latestPoint.pricePerShare,
-                  searchAssetPriceFromTimestamp(
-                    asset,
-                    latestPoint.timestamp * 1000
-                  ),
-                  decimals
-                )
-              );
-
-              return [
-                term,
-                ((latestPriceUSD - prevWeekPriceUSD) / prevWeekPriceUSD) * 100,
-              ];
-          }
-
-          return [term, 0];
+          return [
+            term,
+            ((latestPriceUSD - prevWeekPriceUSD) / prevWeekPriceUSD) * 100,
+          ];
         })
       ) as { [key in "crypto" | "fiat"]: number },
     [
@@ -315,36 +258,8 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
     <>
       <div className="d-flex align-items-center mb-3">
         <Title fontSize={18} lineHeight={24} className="mr-2">
-          Vault Performance
+          Overall Vault Performance
         </Title>
-        <SegmentControl
-          segments={[
-            {
-              value: "crypto",
-              display: getAssetDisplay(getAssets(vaultOption)),
-              textColor: termThemeColor["crypto"],
-            },
-            {
-              value: "fiat",
-              display: "usd",
-              textColor: termThemeColor["fiat"],
-            },
-          ]}
-          value={vaultPerformanceTerm}
-          onSelect={(value) =>
-            setVaultPerformanceTerm(value as "fiat" | "crypto")
-          }
-          config={{
-            theme: "outline",
-            color: termThemeColor[vaultPerformanceTerm],
-            button: {
-              px: 12,
-              py: 8,
-              fontSize: 12,
-              lineHeight: 16,
-            },
-          }}
-        />
       </div>
       <AnimatePresence exitBeforeEnter>
         <motion.div
@@ -400,8 +315,33 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
           <VaultPerformanceChartSecondaryContainer>
             <VaultPerformanceChartKPI>
               <SecondaryText fontSize={12} lineHeight={16} className="d-block">
-                Projected Yield (APY)
+                Yield Earned
               </SecondaryText>
+              <Title
+                fontSize={16}
+                lineHeight={24}
+                color={colors.green}
+                className="mt-1"
+              >
+                {latestAPY.fetched
+                  ? `+${latestAPY.res.toFixed(2)} USDC`
+                  : "Loading"}
+              </Title>
+            </VaultPerformanceChartKPI>
+            <VaultPerformanceChartKPI>
+              <SecondaryText fontSize={12} lineHeight={16} className="d-block">
+                Expected Future APY
+              </SecondaryText>
+              {/* <Title
+                fontSize={16}
+                lineHeight={24}
+                color={colors.green}
+                className="mt-1"
+              >
+                {`${
+                  prevWeekPerformance[vaultPerformanceTerm] >= 0 ? "+" : ""
+                }${prevWeekPerformance[vaultPerformanceTerm].toFixed(2)}%`}
+              </Title> */}
               <Title
                 fontSize={16}
                 lineHeight={24}
@@ -411,21 +351,6 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
                 {latestAPY.fetched
                   ? `+${latestAPY.res.toFixed(2)}%`
                   : "Loading"}
-              </Title>
-            </VaultPerformanceChartKPI>
-            <VaultPerformanceChartKPI>
-              <SecondaryText fontSize={12} lineHeight={16} className="d-block">
-                Previous Week Performance
-              </SecondaryText>
-              <Title
-                fontSize={16}
-                lineHeight={24}
-                color={colors.green}
-                className="mt-1"
-              >
-                {`${
-                  prevWeekPerformance[vaultPerformanceTerm] >= 0 ? "+" : ""
-                }${prevWeekPerformance[vaultPerformanceTerm].toFixed(2)}%`}
               </Title>
             </VaultPerformanceChartKPI>
           </VaultPerformanceChartSecondaryContainer>
