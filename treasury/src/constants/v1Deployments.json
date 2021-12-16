@@ -1,0 +1,52 @@
+{
+  "kovan": {
+    "DojimaFactory": "0x5A4bD30aD09b2224D01A00CC674A8461b088115C",
+    "RibbonFactoryLogic": "0x0B7D191C7bE317D585C6E58a88AB99784AFd4020",
+    "RibbonFactory": "0x5A53a1C73a8e7e91291817B2D04B4d8468DE172d",
+    "ProtocolAdapterLib": "0x5aB7ac7a17D4a81eBB20B5d455c999Bfc2e11dD5",
+    "RibbonVolatilityLogic": "0xd38baB7A38F2af45C9e42e9079193332e69d34a0",
+    "HegicAdapterLogic": "0x66E2A3d8BD9991AFE001cB299c9B8992baDf1D48",
+    "GammaAdapterLogic": "0xd7d2608f5a35d0FF4a2Db93eCF6EB0Fd8c81ff6F",
+    "RibbonETHCoveredCallLogic": "0x995fd03595f13e4C137B1eeB283C0b211463e985",
+    "RibbonETHCoveredCall": "0xf9AB3aC5Dc1e07FD1ad51C99272E0322d6570b4B",
+    "RibbonWBTCCoveredCallLogic": "0x6034ccD624b55aA7aE493f537e1bDf57F6e9e8BE",
+    "RibbonWBTCCoveredCall": "0xE3BfAC64Ea541B76BaBE5286e3f561AaC4866360",
+    "RibbonETHPutLogic": "0x8d248e264184E4629D42eE36bd4DB60ae1D19e55",
+    "RibbonETHPut": "0x0D92414fc704039635BB072c0A0E7145d29f7c84",
+    "MerkleDistributor": "0x76e7Caa7131581eE6f4c562b7Ca5379AB9024083",
+    "RibbonETHCoveredCallStakingReward": "0x79F653c6eD5e2054ee038F34A3cE7ecAa1d89084",
+    "RibbonWBTCCoveredCallStakingReward": "0x210139dAa8125155b64c69701df6f4E03EcF89f1",
+    "RibbonETHPutStakingReward": "0xa8A4bb7254210aADa78493c3034405C4B3140052",
+    "RibbonToken": "0xfD55C3bB2d78d4FB67EB27807c9FD9B36F5ce592",
+    "RibbonTokenBalancerPool": "0xb51bc4962225bc15916ce515bc28b927ff120286",
+    "RibbonYearnETHPutLogic": "0x01f862bd44d3251F1E2EBE1a2509C5c23c11BfAd",
+    "RibbonYearnETHPut": "0x526624Ac3b2d409816fB95D49a9512e5674b052e"
+  },
+  "development": {
+    "DataProvider": "0xA586074FA4Fe3E546A132a16238abe37951D41fE",
+    "LiquidatorProxy": "0x970e8f18ebfEa0B08810f33a5A40438b9530FBCF",
+    "DojimaFactory": "0xaf5C4C6C7920B4883bC6252e9d9B8fE27187Cf68",
+    "TwinYieldLogic": "0xEC5d4F247aF81A843612eb1371CBCfa88b762119"
+  },
+  "mainnet": {
+    "RibbonFactoryLogic": "0x6e0f736a2a0b81E7D8B7D6Ac3608aC977341bA4F",
+    "RibbonFactory": "0x863dd8Ea9B7472c54CdE1F0e2D5B2bCC8CBf0Cd1",
+    "RibbonVolatilityLogic": "0x7004f9fcdE66E2ecABF408132Cb21Ebbcf53D4B0",
+    "GammaAdapterLogic": "0xCD99B092A5C08c33D09b3e72046A7ab42d8110D1",
+    "HegicAdapterLogic": "0x0bd5Aa838368E91F8959bA0d2a254FfdD09daa8c",
+    "ProtocolAdapterLib": "0x8b49fDd0cb50ba6D5c053d844feE55e5076F8504",
+    "RibbonETHCoveredCallLogic": "0xfe8CF701b0751F840741655213da2b46D8995FD1",
+    "RibbonETHCoveredCall": "0x0FABaF48Bbf864a3947bdd0Ba9d764791a60467A",
+    "RibbonWBTCCoveredCallLogic": "0xb751b286480B52aa00465d57B05DAb26379Da5Ff",
+    "RibbonWBTCCoveredCall": "0x8b5876f5B0Bf64056A89Aa7e97511644758c3E8c",
+    "RibbonETHPutLogic": "0xBC9D2F325fb69307cD07046682D0293551B35Cc1",
+    "RibbonETHPut": "0x16772a7f4a3ca291C21B8AcE76F9332dDFfbb5Ef",
+    "MerkleDistributor": "0x7902e4bfb1eb9F4559d55417Aee1Dc6E4b8cC1Bf",
+    "RibbonETHCoveredCallStakingReward": "0xd46f9546ebAbAAC44DC1B6D0Ac1eeb357D34FBeB",
+    "RibbonWBTCCoveredCallStakingReward": "0x1d27a3A92330693B897db9B1C26290Ba381049b1",
+    "RibbonETHPutStakingReward": "0xe79734461499246b6A8C8e768B96bebd0C891f63",
+    "RibbonToken": "0x6123B0049F904d730dB3C36a31167D9d4121fA6B",
+    "RibbonYearnETHPutLogic": "0x5f0E84f525FF14E1F29176Ad7b0d951E87FA00D2",
+    "RibbonYearnETHPut": "0x8FE74471F198E426e96bE65f40EeD1F8BA96e54f"
+  }
+}
