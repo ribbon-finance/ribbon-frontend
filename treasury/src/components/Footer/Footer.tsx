@@ -6,7 +6,7 @@ import theme from "shared/lib/designSystem/theme";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import useVaultOption from "../../hooks/useVaultOption";
 import AccountStatus from "../Wallet/AccountStatus";
-import DesktopFooter from "./DesktopFooter";
+import DesktopFooter from "webapp/lib/components/Footer/DesktopFooter";
 import { useState } from "react";
 
 const FooterContainer = styled.div<{
