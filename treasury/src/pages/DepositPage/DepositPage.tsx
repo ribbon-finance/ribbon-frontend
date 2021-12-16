@@ -11,7 +11,7 @@ import {
   Title,
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import CapBar from "shared/lib/components/Deposit/CapBar";
+import VaultInformation from "../../components/Deposit/VaultInformation";
 import PerformanceSection from "./PerformanceSection";
 import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import {
@@ -220,20 +220,16 @@ const DepositPage = () => {
     }
   }, [cap, decimals, deposits, totalBalance, vaultLimit, vaultVersion]);
 
-  const depositCapBar = (
-    <CapBar
+  const vaultInformation = (
+    <VaultInformation
       loading={isLoading}
-      current={totalDepositStr}
-      cap={depositLimitStr}
+      vaultDeposit={totalDepositStr}
+      vaultYield={depositLimitStr}
       displayData={
-        vaultVersion === "v1" && !isLoading && vaultLimit.isZero()
-          ? { current: "---", cap: "---" }
+        !isLoading && totalDepositStr == 0
+          ? { deposit: "---", yield: "---" }
           : undefined
       }
-      copies={{
-        current: "Current Vault Deposits",
-        cap: "Max Vault Capacity",
-      }}
       asset={asset}
     />
   );
@@ -270,7 +266,7 @@ const DepositPage = () => {
   return (
     <>
       <HeroSection
-        depositCapBar={depositCapBar}
+        vaultInformation={vaultInformation}
         vaultOption={vaultOption}
         variant={vaultVersion}
         v1Inactive={
@@ -328,11 +324,11 @@ const DepositPage = () => {
 };
 
 const HeroSection: React.FC<{
-  depositCapBar: ReactNode;
+  vaultInformation: ReactNode;
   vaultOption: VaultOptions;
   variant: VaultVersion;
   v1Inactive?: boolean;
-}> = ({ depositCapBar, vaultOption, variant, v1Inactive }) => {
+}> = ({ vaultInformation, vaultOption, variant, v1Inactive }) => {
   const color = getVaultColor(vaultOption);
 
   const logo = useMemo(() => {
@@ -441,7 +437,7 @@ const HeroSection: React.FC<{
 
               <HeroText>{productCopies[vaultOption].title}</HeroText>
 
-              {depositCapBar}
+              {vaultInformation}
             </div>
 
             <SplashImage className="position-absolute col-xl-6">
