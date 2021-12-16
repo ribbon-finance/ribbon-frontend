@@ -18,7 +18,7 @@ import {
 import { Assets } from "shared/lib/store/types";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { assetToFiat, formatOption } from "shared/lib/utils/math";
-import ProfitChart from "./ProfitChart";
+import ProfitChart from "webapp/lib/components/Deposit/ProfitChart";
 import colors from "shared/lib/designSystem/colors";
 import ModalContentExtra from "shared/lib/components/Common/ModalContentExtra";
 import { formatUnits } from "@ethersproject/units";

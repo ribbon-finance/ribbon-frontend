@@ -17,7 +17,7 @@ import {
 import { BaseButton, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import StrikeChart from "./StrikeChart";
+import StrikeChart from "webapp/lib/components/Deposit/StrikeChart";
 import { getVaultColor } from "shared/lib/utils/vault";
 import ProfitCalculatorModal from "./ProfitCalculatorModal";
 import { formatUnits } from "@ethersproject/units";
