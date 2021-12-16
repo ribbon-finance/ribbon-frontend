@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Title } from "shared/lib/designSystem";
 import sizes from "shared/lib/designSystem/sizes";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
-import { SortBy, ActivityFilter, activityFilters, sortByList } from "./types";
+import { SortBy, ActivityFilter, activityFilters, sortByList } from "webapp/lib/components/Vault/types";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
 
 const Header = styled(Title)`
