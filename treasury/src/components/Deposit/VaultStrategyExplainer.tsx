@@ -16,7 +16,7 @@ import useElementSize from "shared/lib/hooks/useElementSize";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import { getAssetDisplay } from "shared/lib/utils/asset";
-import SegmentPagination from "../Common/SegmentPagination";
+import SegmentPagination from "webapp/lib/components/Common/SegmentPagination";
 import StrikeSelection from "./ExplainerGraphic/StrikeSelection";
 import ExpiryChart from "./ExplainerGraphic/ExpiryChart";
 import TradeOffer from "./ExplainerGraphic/TradeOffer";

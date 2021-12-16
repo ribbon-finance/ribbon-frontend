@@ -13,7 +13,7 @@ import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import { capitalize } from "shared/lib/utils/text";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import Toast from "shared/lib/components/Common/BaseToast";
-import PendingToast from "./PendingToast";
+import PendingToast from "webapp/lib/components/Common/PendingToast";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { useV2VaultsData } from "shared/lib/hooks/web3DataContext";
 
