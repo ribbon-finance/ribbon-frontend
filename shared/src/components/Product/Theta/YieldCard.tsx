@@ -234,7 +234,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const ProductInfoContent = useCallback(() => {
     const Logo = getAssetLogo(displayAsset);
 
-    let logo = <Logo />;
+    let logo = <Logo height="100%" />;
 
     switch (displayAsset) {
       case "WETH":
