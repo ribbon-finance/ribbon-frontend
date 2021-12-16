@@ -25,7 +25,6 @@ import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
 import VaultDeposit from "./ExplainerGraphic/VaultDeposit";
 import AlgoStrikeSelection from "./ExplainerGraphic/AlgoStrikeSelection";
-import GnosisAuction from "./ExplainerGraphic/GnosisAuction";
 import { useEffect } from "react";
 
 const ExplainerContainer = styled.div`
@@ -212,8 +211,6 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
               receiveToken="oToken"
             />
           );
-        case "gnosisAuction":
-          return <GnosisAuction vaultOption={vaultOption} />;
         case "gnosisTrade":
           return (
             <TradeOffer

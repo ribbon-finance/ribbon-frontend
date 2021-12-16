@@ -4,27 +4,15 @@ import styled from "styled-components";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import {
-  getAssets,
   VaultOptions,
   VaultVersion,
   VaultFees,
 } from "shared/lib/constants/constants";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import useAssetsYield from "shared/lib/hooks/useAssetsYield";
 import VaultPerformanceChart from "./VaultPerformanceChart";
-import { getAssetDisplay } from "shared/lib/utils/asset";
-import { DefiScoreProtocol } from "shared/lib/models/defiScore";
 import theme from "shared/lib/designSystem/theme";
-import {
-  AAVEIcon,
-  CompoundIcon,
-  DDEXIcon,
-  DYDXIcon,
-  OasisIcon,
-} from "shared/lib/assets/icons/defiApp";
 import WeeklyStrategySnapshot from "../../components/Deposit/WeeklyStrategySnapshot";
-import VaultStrategyExplainer from "../../components/Deposit/VaultStrategyExplainer";
 import sizes from "shared/lib/designSystem/sizes";
 
 const Paragraph = styled.div`
@@ -65,27 +53,6 @@ const Container = styled.div`
   }
 `;
 
-const MarketYield = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 16px;
-  background: ${colors.background.two};
-  border-radius: ${theme.border.radius};
-  padding: 12px 16px;
-
-  &:first-child {
-    margin-top: 0px;
-  }
-`;
-
-const MarketTitle = styled(Title)`
-  margin-left: 8px;
-`;
-
-const MarketYielAPR = styled(Title)`
-  margin-left: auto;
-`;
-
 interface PerformanceSectionProps {
   vault: {
     vaultOption: VaultOptions;
@@ -99,46 +66,6 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
   active,
 }) => {
   const { vaultOption, vaultVersion } = vault;
-  const asset = getAssets(vaultOption);
-  const yieldInfos = useAssetsYield(asset);
-
-  const renderProtocolLogo = useCallback((protocol: DefiScoreProtocol) => {
-    switch (protocol) {
-      case "aave":
-        return <AAVEIcon height="40px" width="40px" />;
-      case "compound":
-        return <CompoundIcon height="40px" width="40px" />;
-      case "ddex":
-        return <DDEXIcon height="40px" width="40px" />;
-      case "dydx":
-        return (
-          <DYDXIcon
-            height="40px"
-            width="40px"
-            style={{ borderRadius: "100px" }}
-          />
-        );
-      case "mcd":
-        return <OasisIcon height="40px" width="40px" />;
-    }
-  }, []);
-
-  const renderYieldInfo = useCallback(
-    ({ protocol, apr }: { protocol: DefiScoreProtocol; apr: number }) => {
-      if (apr < 0.01) {
-        return null;
-      }
-
-      return (
-        <MarketYield key={protocol}>
-          {renderProtocolLogo(protocol)}
-          <MarketTitle>{protocol}</MarketTitle>
-          <MarketYielAPR>{`${apr.toFixed(2)}%`}</MarketYielAPR>
-        </MarketYield>
-      );
-    },
-    [renderProtocolLogo]
-  );
 
   const renderWithdrawalsSection = useCallback(
     (_vaultOption: VaultOptions, _vaultVersion: VaultVersion) => {
@@ -182,16 +109,8 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
     <Container>
       {active && (
         <>
-          <Paragraph className="d-flex flex-column">
-            <ParagraphHeading>Vault Strategy</ParagraphHeading>
-            <ParagraphText className="mb-4">
-              {productCopies[vaultOption].strategy}
-            </ParagraphText>
-            <VaultStrategyExplainer vault={vault} />
-          </Paragraph>
-
           <Paragraph>
-            <ParagraphHeading>Weekly Strategy Snapshot</ParagraphHeading>
+            <ParagraphHeading>Strategy Snapshot</ParagraphHeading>
             <WeeklyStrategySnapshot vault={vault} />
           </Paragraph>
         </>
@@ -200,15 +119,6 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       <Paragraph>
         <VaultPerformanceChart vault={vault} />
       </Paragraph>
-
-      {yieldInfos && (
-        <Paragraph>
-          <ParagraphHeading>
-            MARKET {getAssetDisplay(asset)} YIELDS (APY)
-          </ParagraphHeading>
-          {yieldInfos.map((info) => renderYieldInfo(info))}
-        </Paragraph>
-      )}
 
       {active && (
         <Paragraph>
