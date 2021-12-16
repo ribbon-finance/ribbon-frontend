@@ -12,7 +12,6 @@ import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { TxStatusToast, WithdrawReminderToast } from "./Common/toasts";
 import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal";
 import NotFound from "../pages/NotFound";
-import StakingPage from "../pages/Staking/StakingPage";
 import colors from "shared/lib/designSystem/colors";
 import YourPositionModal from "./Vault/Modal/YourPositionModal";
 
@@ -49,9 +48,6 @@ const RootApp = () => {
           }
           <Route path="/portfolio">
             <PortfolioPage />
-          </Route>
-          <Route path="/staking">
-            <StakingPage />
           </Route>
           <Route>
             <NotFound />
