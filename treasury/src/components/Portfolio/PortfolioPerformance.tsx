@@ -20,8 +20,8 @@ import {
 import useBalances from "shared/lib/hooks/useBalances";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
-import PerformanceChart from "../PerformanceChart/PerformanceChart";
-import { HoverInfo } from "../PerformanceChart/types";
+import PerformanceChart from "webapp/lib/components/PerformanceChart/PerformanceChart";
+import { HoverInfo } from "webapp/lib/components/PerformanceChart/types";
 import sizes from "shared/lib/designSystem/sizes";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { getAssets } from "shared/lib/constants/constants";
