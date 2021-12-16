@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import colors from "shared/lib/designSystem/colors";
 import useElementSize from "shared/lib/hooks/useElementSize";
-import { ChartWaves } from "../../../assets/icons/vaultExplainer/strikeSelection";
+import { ChartWaves } from "webapp/lib/assets/icons/vaultExplainer/strikeSelection";
 
 const ChartWavesContainer = styled.div<{ variant: "top" | "bottom" }>`
   display: flex;
