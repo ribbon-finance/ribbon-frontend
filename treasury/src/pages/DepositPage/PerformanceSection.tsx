@@ -11,7 +11,6 @@ import {
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import VaultPerformanceChart from "./VaultPerformanceChart";
-import theme from "shared/lib/designSystem/theme";
 import WeeklyStrategySnapshot from "../../components/Deposit/WeeklyStrategySnapshot";
 import sizes from "shared/lib/designSystem/sizes";
 
