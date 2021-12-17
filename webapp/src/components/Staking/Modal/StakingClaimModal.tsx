@@ -151,7 +151,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
       .set("minute", 30);
 
     if (endStakeReward.diff(moment()) <= 0) {
-      return "End of Rewards";
+      return "Program Ended";
     }
 
     // Time till next stake reward date
