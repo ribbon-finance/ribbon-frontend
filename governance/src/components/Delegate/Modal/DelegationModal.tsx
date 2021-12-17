@@ -6,6 +6,7 @@ import colors from "shared/lib/designSystem/colors";
 import { BaseModalContentColumn } from "shared/lib/designSystem";
 import { DelegateIcon } from "shared/lib/assets/icons/icons";
 import DelegationModalOption from "./DelegationModalOption";
+import DelegationModalForm from "./DelegationModalForm";
 
 const LogoContainer = styled.div`
   display: flex;
@@ -46,7 +47,12 @@ const DelegationModal: React.FC<DelegationModalProps> = ({ show, onClose }) => {
           />
         );
       case "form":
-        return <></>;
+        return (
+          <DelegationModalForm
+            onBack={() => setMode("options")}
+            onDelegate={() => onClose()}
+          />
+        );
     }
   }, [mode, onClose]);
 

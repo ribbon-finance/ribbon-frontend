@@ -1,4 +1,8 @@
-import { isDevelopment } from "shared/lib/utils/env";
+import { CHAINID, isDevelopment } from "shared/lib/utils/env";
+
+export const GovernanceChainID = isDevelopment()
+  ? CHAINID.ETH_KOVAN
+  : CHAINID.ETH_MAINNET;
 
 export const RibbonOGAddress = isDevelopment()
   ? "0x81Eb8D19277da74BA7a1F804A79e1bC31CeF92C1"

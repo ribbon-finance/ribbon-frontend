@@ -55,8 +55,10 @@ export const ENABLED_CHAINID: CHAINID[] = [
 ];
 
 export const getENSSubgraphURI = () =>
-  process.env.REACT_APP_ENS_SUBGRAPHQL_URL ||
-  "https://api.thegraph.com/subgraphs/name/ensdomains/ens";
+  isDevelopment()
+    ? ""
+    : process.env.REACT_APP_ENS_SUBGRAPHQL_URL ||
+      "https://api.thegraph.com/subgraphs/name/ensdomains/ens";
 
 const STAKING_ENABLED_CHAINID: CHAINID[] = [CHAINID.ETH_MAINNET];
 

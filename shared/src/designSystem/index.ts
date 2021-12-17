@@ -127,9 +127,10 @@ export const PrimaryText = styled(BaseText)<{
   color?: string;
   fontSize?: number;
   lineHeight?: number;
+  fontWeight?: number;
 }>`
   font-style: normal;
-  font-weight: 500;
+  font-weight: ${(props) => props.fontWeight || 500};
   font-size: ${(props) => (props.fontSize ? props.fontSize : 16)}px;
   line-height: ${(props) => (props.lineHeight ? props.lineHeight : 24)}px;
   color: ${(props) => (props.color ? props.color : colors.primaryText)};
@@ -139,10 +140,11 @@ export const SecondaryText = styled.span<{
   color?: string;
   fontSize?: number;
   lineHeight?: number;
+  fontWeight?: number;
 }>`
   font-family: "Inter", sans-serif;
   font-style: normal;
-  font-weight: 500;
+  font-weight: ${(props) => props.fontWeight || 500};
   font-size: ${(props) => (props.fontSize ? props.fontSize : 14)}px;
   line-height: ${(props) => (props.lineHeight ? props.lineHeight : 20)}px;
   color: ${(props) => (props.color ? props.color : colors.text)};
@@ -168,11 +170,15 @@ export const BaseInputContainer = styled.div<{ error?: boolean }>`
   transition: border 0.25s;
 `;
 
-export const BaseInput = styled.input<{ inputWidth?: string }>`
+export const BaseInput = styled.input<{
+  inputWidth?: string;
+  fontSize?: number;
+  lineHeight?: number;
+}>`
   width: ${(props) => props.inputWidth || "80%"};
   height: 100%;
-  font-size: 40px;
-  line-height: 64px;
+  font-size: ${(props) => props.fontSize || 40}px;
+  line-height: ${(props) => props.lineHeight || 64}px;
   color: ${colors.primaryText};
   border: none;
   background: none;

@@ -4,7 +4,6 @@ import styled from "styled-components";
 import {
   BaseModalContentColumn,
   BaseModalWarning,
-  PrimaryText,
   SecondaryText,
   Title,
 } from "shared/lib/designSystem";

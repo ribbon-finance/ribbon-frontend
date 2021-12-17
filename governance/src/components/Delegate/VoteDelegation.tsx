@@ -65,9 +65,9 @@ const VoteDelegation = () => {
   const { account } = useWeb3React();
 
   const delegation: string | undefined =
-    Math.random() < 1
-      ? "0x5555763613a12D8F3e73be831DFf8598089d3dCa" || undefined
-      : undefined;
+    Math.random() < 0.5
+      ? "0x5555763613a12D8F3e73be831DFf8598089d3dCa"
+      : account || undefined;
   const { data } = useENSSearch(delegation || "");
 
   const [showDelegateModal, setShowDelegateModal] = useState(false);

@@ -36,6 +36,7 @@ import { formatAmount } from "shared/lib/utils/math";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import { truncateAddress } from "shared/lib/utils/address";
+import { GovernanceChainID } from "../../constants/constants";
 
 const ActivityContainer = styled.div`
   display: flex;
@@ -289,7 +290,7 @@ const ProfileActivity = () => {
 
                 {/* External Logo */}
                 <BaseLink
-                  to={`${getEtherscanURI()}/tx/${"TODO:"}`}
+                  to={`${getEtherscanURI(GovernanceChainID)}/tx/${"TODO:"}`}
                   target="_blank"
                   rel="noreferrer noopener"
                   className="d-none d-md-block"
