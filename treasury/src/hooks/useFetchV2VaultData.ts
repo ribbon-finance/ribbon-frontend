@@ -10,7 +10,7 @@ import {
   V2VaultData,
   V2VaultDataResponses,
 } from "../models/vault";
-import { useWeb3Context } from "shared/lib/hooks/web3Context";
+import { useWeb3Context } from "../hooks/web3Context";
 import { isProduction } from "shared/lib/utils/env";
 import { getAssetDecimals } from "../utils/asset";
 import { usePendingTransactions } from "./pendingTransactionsContext";

@@ -212,8 +212,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
         case ACTIONS.deposit:
           formExtraText = (
             <>
-              Your deposit will be deployed in the vault’s weekly strategy on
-              Friday at 11am UTC
+              Your deposit will be deployed in the vault’s strategy in the next round
             </>
           );
           break;
@@ -224,7 +223,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
                 <>
                   IMPORTANT: instant withdrawals are only available before 11am
                   UTC on Friday for funds that have not been deployed in the
-                  vault's weekly strategy
+                  vault's strategy
                 </>
               ) : (
                 <>
@@ -243,7 +242,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
               formExtraText = (
                 <>
                   Instant withdrawals are unavailable because your funds have
-                  been deployed in this week’s vault strategy. To withdraw your
+                  been deployed in the vault's strategy. To withdraw your
                   funds you need to initiate a withdrawal using standard
                   withdrawals.
                 </>

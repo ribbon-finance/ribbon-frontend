@@ -28,7 +28,8 @@ const COINGECKO_CURRENCIES = {
   WETH: "ethereum",
   WBTC: "wrapped-bitcoin",
   USDC: "usd-coin",
-  RBN: "ribbon-finance"
+  RBN: "ribbon-finance",
+  BZRX: "bzx-protocol",
 };
 
 export const useFetchAssetsPrice = (

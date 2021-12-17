@@ -47,6 +47,7 @@ const colors = {
     AAVE: "#2EBAC6",
     WAVAX: "#E84142",
     RBN: "#FC0A54",
+    BZRX: "#003CDA",
   },
 };
 

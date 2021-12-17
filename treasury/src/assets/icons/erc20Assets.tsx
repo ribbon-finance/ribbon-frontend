@@ -145,3 +145,23 @@ export const RBNLogo: React.FC<SVGProps> = ({
     />
   </svg>
 );
+
+export const BZRXLogo: React.FC<SVGProps> = ({
+  ...props
+}) => (
+  <svg
+    viewBox="-55 -38 480 480"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  > 
+    <path d="M160 0H120V92H160V0Z" fill="#003CDA"/>
+    <g clip-path="url(#clip0_0_1)">
+    <path d="M0 80C0 36 36 0 80 0H320C364 0 400 36 400 80V320C400 364 364 400 320 400H80C36 400 0 364 0 320V80Z" fill="#003CDA" fill-opacity="0.16" shape-rendering="crispEdges"/>
+    <path d="M227.5 283.5H174.5C144.5 283.5 120 259 120 229V190H160V228.5C160 236.5 166.5 243 174.5 243H227.5C235.5 243 242 236.5 242 228.5V176C242 168 235.5 161.5 227.5 161.5H0V121.5H227.5C257.5 121.5 282 146 282 176V229C282 259 257.5 283.5 227.5 283.5Z" fill="#003CDA"/>
+    </g>
+    <clipPath id="clip0_0_1">
+    <rect width="400" height="400" rx="200" fill="white"/>
+    </clipPath>
+  </svg>
+);

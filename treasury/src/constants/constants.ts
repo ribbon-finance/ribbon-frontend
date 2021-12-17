@@ -132,12 +132,10 @@ export const VaultAddressMap: {
       },
   "rBZRX-TSRY": isDevelopment()
     ? {
-        v1: v1deployment.kovan.RibbonETHCoveredCall,
         v2: v2deployment.kovan.RibbonThetaVaultETHCall,
         chainId: CHAINID.ETH_KOVAN,
       }
     : {
-        v1: v1deployment.mainnet.RibbonETHCoveredCall,
         v2: v2deployment.mainnet.RibbonThetaVaultETHCall,
         chainId: CHAINID.ETH_MAINNET,
       },
@@ -207,6 +205,7 @@ export const getAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
     case "rUSDC-ETH-P-THETA":
     case "rBZRX-TSRY":
+      return "BZRX";
     case "rBTC-THETA":
       return "WBTC";
   }
@@ -217,6 +216,7 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
     case "rBTC-THETA":
       return "WBTC";
     case "rBZRX-TSRY":
+      return "BZRX"
     case "rUSDC-ETH-P-THETA":
       return "WETH";
   }
@@ -227,7 +227,7 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
     case "rUSDC-ETH-P-THETA":
       return "USDC";
     case "rBZRX-TSRY":
-      return "WETH";
+      return "BZRX";
     case "rBTC-THETA":
       return "WBTC";
   }
@@ -236,7 +236,7 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
 export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
   {
     "rBTC-THETA": ["WBTC"],
-    "rBZRX-TSRY": ["WETH"],
+    "rBZRX-TSRY": ["BZRX"],
     "rUSDC-ETH-P-THETA": ["USDC"],
   };
 

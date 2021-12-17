@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { RibbonV2stETHThetaVault, RibbonV2ThetaVault } from "shared/lib/codegen";
 import { RibbonV2ThetaVaultFactory } from "shared/lib/codegen/RibbonV2ThetaVaultFactory";
 import { VaultAddressMap, VaultOptions } from "../constants/constants";
-import { useWeb3Context } from "shared/lib/hooks/web3Context";
+import { useWeb3Context } from "./web3Context";
 
 export const getV2Vault = (
   library: any,
