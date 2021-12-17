@@ -93,7 +93,8 @@
 		"zeroExExchangeV3": "0xDef1C0ded9bec7F1a1670819833240f027b25EfF",
 		"multicall": "0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441",
 		"sushiswap": "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f",
-		"lidoCurvePool": "0xDC24316b9AE028F1497c275EB9192a3Ea0f67022"
+		"lidoCurvePool": "0xDC24316b9AE028F1497c275EB9192a3Ea0f67022",
+		"lidoOracle": "0x442af784A788A5bd6F42A01Ebe9F287a871243fb"
 	},
 	"mainnet-sim": {
 		"assets": {
@@ -102,5 +103,29 @@
 			"wbtc": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
 			"usdc": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
 		}
+	},
+	"avax": {
+		"feeds": {
+			"eth/usd": "0x0A77230d17318075983913bC2145DB16C7366156"
+		},
+		"assets": {
+			"wavax": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+			"rAVAX-THETA": "0x98d03125c62DaE2328D9d3cb32b7B969e6a87787"
+		},
+		"oTokenFactory": "0x25bC1cD298512885F0e452833198BCBb149f66a5",
+		"gammaController": "0x9e3b94819aaF6de606C4Aa844E3215725b997064",
+		"gammaMarginPool": "0xCCF6629aEaB734E621Cc59EBb0297196774fDb9D"
+	},
+	"fuji": {
+		"feeds": {
+			"eth/usd": "0xD9D01A9F7C810EC035C0e42cB9E80Ef44D7f8692"
+		},
+		"assets": {
+			"wavax": "0xD9D01A9F7C810EC035C0e42cB9E80Ef44D7f8692",
+			"rAVAX-THETA": "0x4C075bD4423B74e86C5F50C7d866438B6eF20408"
+		},
+		"oTokenFactory": "0x3aB375D57EbB733E735a17eDFd3F973f6BC5de21",
+		"gammaController": "0x836E115f0580c8350228E073949bf269F7BC4B62",
+		"gammaMarginPool": "0x9EBC603bBf8309E1715a1678B5C13A4aE6c26452"
 	}
 }

@@ -6,6 +6,7 @@ import USDCAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoSt
 import ETHAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/ETH_Algo_Strike_Selection.json";
 import STETHAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/STETH_Algo_Strike_Selection.json";
 import AAVEAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/AAVE_Algo_Strike_Selection.json";
+import AVAXAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/AVAX_Algo_Strike_Selection.json";
 import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 
 interface AlgoStrikeSelectionProps {
@@ -29,6 +30,8 @@ const AlgoStrikeSelection: React.FC<AlgoStrikeSelectionProps> = ({
             return USDCAlgoStrikeSelection;
           case "AAVE":
             return AAVEAlgoStrikeSelection;
+          case "WAVAX":
+            return AVAXAlgoStrikeSelection;
         }
     }
   }, [vaultOption]);

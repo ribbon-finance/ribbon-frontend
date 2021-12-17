@@ -1,10 +1,10 @@
 import { BigNumber } from "ethers";
 
 import { VaultOptions } from "../constants/constants";
-import { DefiScoreProtocol, DefiScoreToken } from "../models/defiScore";
 
 export const AssetsList = [
   "AAVE",
+  "WAVAX",
   "WETH",
   "USDC",
   "WBTC",
@@ -54,15 +54,6 @@ export type PendingTransaction = {
       receiveVault: VaultOptions;
     }
 );
-
-export type AssetYieldsInfo = Array<{
-  protocol: DefiScoreProtocol;
-  apr: number;
-}>;
-
-export type AssetYieldsInfoData = {
-  [token in DefiScoreToken]: AssetYieldsInfo;
-};
 
 export type AirdropInfoData = {
   account: string;

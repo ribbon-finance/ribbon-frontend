@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useWeb3React } from "@web3-react/core";
 import styled from "styled-components";
 
 import ActionModal from "./Modal/ActionModal";
@@ -37,6 +38,7 @@ interface DesktopActionFormProps {
 }
 
 const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
+  const { chainId } = useWeb3React();
   const [showActionModal, setShowActionModal] = useState(false);
 
   const renderForm = useCallback(() => {
@@ -69,9 +71,9 @@ const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
       />
       {renderForm()}
 
-      {VaultAddressMap[vault.vaultOption][vault.vaultVersion] && (
+      {chainId && VaultAddressMap[vault.vaultOption][vault.vaultVersion] && (
         <BaseLink
-          to={`${getEtherscanURI()}/address/${VaultAddressMap[
+          to={`${getEtherscanURI(chainId)}/address/${VaultAddressMap[
             vault.vaultOption
           ][vault.vaultVersion]!}`}
           target="_blank"

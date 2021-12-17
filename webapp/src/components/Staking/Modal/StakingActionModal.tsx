@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useWeb3React } from "@web3-react/core";
 import styled from "styled-components";
 import { formatUnits, parseUnits } from "@ethersproject/units";
 import { BigNumber } from "@ethersproject/bignumber";
 import moment from "moment";
 
 import {
+  BLOCKCHAIN_EXPLORER_NAME,
   getAssets,
   getEtherscanURI,
   VaultOptions,
@@ -125,6 +127,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     "warning" | "form" | "preview" | "walletAction" | "processing"
   >("warning");
   const [input, setInput] = useState("");
+  const { chainId } = useWeb3React();
   const { provider } = useWeb3Context();
   const decimals = getAssetDecimals(getAssets(vaultOption));
   const [error, setError] = useState<
@@ -462,20 +465,23 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               </BaseModalContentColumn>
             ) : (
               <BaseModalContentColumn marginTop="auto">
-                <BaseUnderlineLink
-                  to={`${getEtherscanURI()}/tx/${txId}`}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="d-flex"
-                >
-                  <PrimaryText className="mb-2">View on Etherscan</PrimaryText>
-                </BaseUnderlineLink>
+                {chainId && (
+                  <BaseUnderlineLink
+                    to={`${getEtherscanURI(chainId)}/tx/${txId}`}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="d-flex"
+                  >
+                    <PrimaryText className="mb-2">View on {BLOCKCHAIN_EXPLORER_NAME[chainId]}</PrimaryText>
+                  </BaseUnderlineLink>
+                )}
               </BaseModalContentColumn>
             )}
           </>
         );
     }
   }, [
+    chainId,
     color,
     stake,
     decimals,

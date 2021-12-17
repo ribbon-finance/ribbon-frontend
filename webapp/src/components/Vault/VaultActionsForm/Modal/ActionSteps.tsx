@@ -9,6 +9,7 @@ import TransactionStep from "./TransactionStep";
 import FormStep from "./FormStep";
 import {
   getAssets,
+  isNativeToken,
   VaultAddressMap,
   VaultOptions,
   VaultVersion,
@@ -186,14 +187,10 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
           case ACTIONS.deposit:
             switch (vaultOption) {
               case "rstETH-THETA":
-                res = await (asset === "WETH"
-                  ? vault.depositETH({ value: amountStr })
-                  : vault.depositYieldToken(amountStr));
+                res = await(isNativeToken(asset) ? vault.depositETH({ value: amountStr }) : vault.depositYieldToken(amountStr));
                 break;
               default:
-                res = await (asset === "WETH"
-                  ? vault.depositETH({ value: amountStr })
-                  : vault.deposit(amountStr));
+                res = await(isNativeToken(asset) ? vault.depositETH({ value: amountStr }) : vault.deposit(amountStr));
             }
             break;
           case ACTIONS.withdraw:
@@ -225,11 +222,14 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                           library,
                           LidoCurvePoolAddress
                         );
+
                         const minOut = await curvePool.get_dy(
                           1,
                           0,
                           amountAfterSlippage(amount, CurveSwapSlippage),
-                          { gasLimit: 300000 }
+                          {
+                            gasLimit: 400000,
+                          }
                         );
                         res = await vault.withdrawInstantly(amountStr, minOut, {
                           gasLimit: 220000,
@@ -261,10 +261,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                           1,
                           0,
                           amountAfterSlippage(amount, CurveSwapSlippage),
-                          { gasLimit: 300000 }
+                          {
+                            gasLimit: 400000,
+                          }
                         );
                         res = await vault.completeWithdraw(minOut, {
-                          gasLimit: 300000,
+                          gasLimit: 400000,
                         });
                         break;
                       default:

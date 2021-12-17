@@ -45,6 +45,7 @@ const colors = {
     yvUSDC: "#3E73C4",
     stETH: "#00A3FF",
     AAVE: "#2EBAC6",
+    WAVAX: "#E84142",
   },
 };
 

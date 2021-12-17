@@ -105,8 +105,9 @@ const WalletConnectModal: React.FC = () => {
     account,
     active,
   } = useWeb3React();
-  const [connectingConnector, setConnectingConnector] =
-    useState<connectorType>();
+
+  const [connectingConnector, setConnectingConnector] = useState<connectorType>();
+
   const initializingText = useTextAnimation(Boolean(connectingConnector), {
     texts: [
       "INITIALIZING",
@@ -116,6 +117,7 @@ const WalletConnectModal: React.FC = () => {
     ],
     interval: 250,
   });
+
   const [show, setShow] = useConnectWalletModal();
 
   const onClose = useCallback(() => {

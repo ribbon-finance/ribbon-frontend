@@ -17,10 +17,10 @@ import {
 import { BaseText, Title } from "../../../designSystem";
 import colors from "../../../designSystem/colors";
 import theme from "../../../designSystem/theme";
+import { AssetYieldInfo } from "../../../hooks/externalAPIDataContext";
 import useLatestAPY from "../../../hooks/useLatestAPY";
 import useTextAnimation from "../../../hooks/useTextAnimation";
 import { DefiScoreProtocol } from "../../../models/defiScore";
-import { AssetYieldsInfo } from "../../../store/types";
 import { getAssetDisplay } from "../../../utils/asset";
 import { productCopies } from "../productCopies";
 
@@ -50,7 +50,7 @@ interface YieldComparisonProps {
   config?: {
     background: string;
   };
-  yieldInfos: AssetYieldsInfo;
+  yieldInfos: AssetYieldInfo;
 }
 
 const YieldComparison: React.FC<YieldComparisonProps> = ({
@@ -107,7 +107,7 @@ const YieldComparison: React.FC<YieldComparisonProps> = ({
         .map(
           ({ protocol, apr }: { protocol: DefiScoreProtocol; apr: number }) => {
             if (apr < 0.01) {
-              return <></>;
+              return null;
             }
 
             return (
