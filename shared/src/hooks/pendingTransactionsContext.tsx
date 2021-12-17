@@ -9,7 +9,6 @@ import React, {
 
 import { useGlobalState } from "../store/store";
 import { PendingTransaction } from "../store/types";
-import { useWeb3Context } from "./web3Context";
 
 export type PendingTransactionsContextType = {
   pendingTransactions: PendingTransaction[];

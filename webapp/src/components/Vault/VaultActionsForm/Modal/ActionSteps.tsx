@@ -26,6 +26,7 @@ import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import useV2Vault from "shared/lib/hooks/useV2Vault";
 import WarningStep from "./WarningStep";
 import { getCurvePool } from "shared/lib/hooks/useCurvePool";
+import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 
 export interface ActionStepsProps {
   vault: {
@@ -70,7 +71,11 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     withdrawMetadata.instantWithdrawBalance,
   ]);
   const [txhash, setTxhash] = useState("");
-  const v1Vault = useVault(vaultOption);
+  const v1Vault = useVault(
+    vaultActionForm.actionType === ACTIONS.migrate
+      ? vaultActionForm.migrateSourceVault || vaultOption
+      : vaultOption
+  );
   const v2Vault = useV2Vault(vaultOption);
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
@@ -85,6 +90,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       withdrawals,
     },
   } = useV2VaultData(vaultOption);
+  const { vaultAccounts: v1VaultAccounts } = useVaultAccounts("v1");
 
   const asset = useMemo(() => {
     switch (vaultActionForm.actionType) {
@@ -100,7 +106,10 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const vaultBalanceInAsset = useMemo(() => {
     if (vaultActionForm.actionType === "migrate") {
-      return v1VaultBalanceInAsset;
+      return (
+        v1VaultAccounts[vaultActionForm.migrateSourceVault || vaultOption]
+          ?.totalBalance || BigNumber.from(0)
+      );
     }
     switch (vaultVersion) {
       case "v1":
@@ -113,10 +122,13 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   }, [
     depositBalanceInAsset,
     lockedBalanceInAsset,
+    v1VaultAccounts,
     v1VaultBalanceInAsset,
+    vaultOption,
     vaultVersion,
     withdrawals,
     vaultActionForm.actionType,
+    vaultActionForm.migrateSourceVault,
   ]);
 
   const cleanupEffects = useCallback(() => {
@@ -187,10 +199,14 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
           case ACTIONS.deposit:
             switch (vaultOption) {
               case "rstETH-THETA":
-                res = await(isNativeToken(asset) ? vault.depositETH({ value: amountStr }) : vault.depositYieldToken(amountStr));
+                res = await (isNativeToken(asset)
+                  ? vault.depositETH({ value: amountStr })
+                  : vault.depositYieldToken(amountStr));
                 break;
               default:
-                res = await(isNativeToken(asset) ? vault.depositETH({ value: amountStr }) : vault.deposit(amountStr));
+                res = await (isNativeToken(asset)
+                  ? vault.depositETH({ value: amountStr })
+                  : vault.deposit(amountStr));
             }
             break;
           case ACTIONS.withdraw:
