@@ -66,7 +66,7 @@ export const useFetchAssetsYield = () => {
 const useAssetsYield = (asset: Assets) => {
   const contextData = useContext(ExternalAPIDataContext);
 
-  return contextData.assetsYield[
+  return contextData.assetsYield.data[
     asset === "WETH" ? "eth" : (asset.toLowerCase() as DefiScoreToken)
   ];
 };

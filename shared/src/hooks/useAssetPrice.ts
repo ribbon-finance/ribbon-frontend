@@ -127,8 +127,8 @@ const useAssetPrice = ({ asset }: { asset: Assets } = { asset: "WETH" }) => {
   const contextData = useContext(ExternalAPIDataContext);
 
   return {
-    price: contextData.assetsPrice[asset].latestPrice,
-    loading: contextData.loading,
+    price: contextData.assetsPrice.data[asset].latestPrice,
+    loading: contextData.assetsPrice.loading,
   };
 };
 
@@ -141,10 +141,10 @@ export const useAssetsPrice = () => {
     prices: Object.fromEntries(
       AssetsList.map((asset) => [
         asset,
-        contextData.assetsPrice[asset].latestPrice,
+        contextData.assetsPrice.data[asset].latestPrice,
       ])
     ) as { [asset in Assets]: number },
-    loading: contextData.loading,
+    loading: contextData.assetsPrice.loading,
   };
 };
 
@@ -159,7 +159,9 @@ export const useAssetsPriceHistory = () => {
       const queryDate = new Date(date.toDateString());
       queryDate.setUTCHours(0);
 
-      return contextData.assetsPrice[asset].history[queryDate.valueOf()] || 0;
+      return (
+        contextData.assetsPrice.data[asset].history[queryDate.valueOf()] || 0
+      );
     },
     [contextData.assetsPrice]
   );
@@ -184,11 +186,14 @@ export const useAssetsPriceHistory = () => {
 
   return {
     histories: Object.fromEntries(
-      AssetsList.map((asset) => [asset, contextData.assetsPrice[asset].history])
+      AssetsList.map((asset) => [
+        asset,
+        contextData.assetsPrice.data[asset].history,
+      ])
     ) as { [asset in Assets]: { [timestamp: number]: number } },
     searchAssetPriceFromDate,
     searchAssetPriceFromMoment,
     searchAssetPriceFromTimestamp,
-    loading: contextData.loading,
+    loading: contextData.assetsPrice.loading,
   };
 };
