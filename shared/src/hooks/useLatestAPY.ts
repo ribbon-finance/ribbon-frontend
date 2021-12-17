@@ -90,7 +90,7 @@ export const calculateAPYFromPriceHistory = (
     periodStart.subtract(1, "week");
   }
 
-  let currentWeek = true;
+  let weeksAgo = 0;
 
   while (true) {
     const priceHistoryFromPeriod = getPriceHistoryFromPeriod(
@@ -98,81 +98,83 @@ export const calculateAPYFromPriceHistory = (
       periodStart
     );
 
-    if (!priceHistoryFromPeriod) {
-      return 0;
-    }
+    if (priceHistoryFromPeriod) {
+      const [startingPricePerShare, endingPricePerShare] = [
+        parseFloat(
+          formatUnits(priceHistoryFromPeriod[0].pricePerShare, decimals)
+        ),
+        parseFloat(
+          formatUnits(priceHistoryFromPeriod[1].pricePerShare, decimals)
+        ),
+      ];
 
-    const [startingPricePerShare, endingPricePerShare] = [
-      parseFloat(
-        formatUnits(priceHistoryFromPeriod[0].pricePerShare, decimals)
-      ),
-      parseFloat(
-        formatUnits(priceHistoryFromPeriod[1].pricePerShare, decimals)
-      ),
-    ];
+      console.log(startingPricePerShare, endingPricePerShare);
 
-    /**
-     * If the given period is profitable, we calculate APY
-     */
-    if (endingPricePerShare > startingPricePerShare) {
-      if (!currentWeek) {
-        /**
-         * Fees and underlying yields had been accounted
-         */
-        return (
-          ((1 +
-            (endingPricePerShare - startingPricePerShare) /
-              startingPricePerShare) **
-            52 -
-            1) *
-          100
-        );
-      }
-
-      switch (vaultVersion) {
-        case "v1":
+      /**
+       * If the given period is profitable, we calculate APY
+       */
+      if (endingPricePerShare > startingPricePerShare) {
+        if (weeksAgo > 0) {
           /**
-           * V1 does not have fees that can impact performance
+           * Fees and underlying yields had been accounted
            */
-
           return (
             ((1 +
               (endingPricePerShare - startingPricePerShare) /
                 startingPricePerShare) **
               52 -
               1) *
-              100 +
-            underlyingYieldAPR
+            100
           );
-        case "v2":
-          /**
-           * We first calculate price per share after annualized management fees are charged
-           */
-          const endingPricePerShareAfterManagementFees =
-            endingPricePerShare *
-            (1 -
-              parseFloat(VaultFees[vaultOption].v2?.managementFee!) / 100 / 52);
-          /**
-           * Next, we calculate how much performance fees will lower the pricePerShare
-           */
-          const performanceFeesImpact =
-            (endingPricePerShare - startingPricePerShare) *
-            (parseFloat(VaultFees[vaultOption].v2?.performanceFee!) / 100);
-          /**
-           * Finally, we calculate price per share after both fees
-           */
-          const pricePerShareAfterFees =
-            endingPricePerShareAfterManagementFees - performanceFeesImpact;
+        }
 
-          return (
-            ((1 +
-              (pricePerShareAfterFees - startingPricePerShare) /
-                startingPricePerShare) **
-              52 -
-              1) *
-              100 +
-            underlyingYieldAPR
-          );
+        switch (vaultVersion) {
+          case "v1":
+            /**
+             * V1 does not have fees that can impact performance
+             */
+
+            return (
+              ((1 +
+                (endingPricePerShare - startingPricePerShare) /
+                  startingPricePerShare) **
+                52 -
+                1) *
+                100 +
+              underlyingYieldAPR
+            );
+          case "v2":
+            /**
+             * We first calculate price per share after annualized management fees are charged
+             */
+            const endingPricePerShareAfterManagementFees =
+              endingPricePerShare *
+              (1 -
+                parseFloat(VaultFees[vaultOption].v2?.managementFee!) /
+                  100 /
+                  52);
+            /**
+             * Next, we calculate how much performance fees will lower the pricePerShare
+             */
+            const performanceFeesImpact =
+              (endingPricePerShare - startingPricePerShare) *
+              (parseFloat(VaultFees[vaultOption].v2?.performanceFee!) / 100);
+            /**
+             * Finally, we calculate price per share after both fees
+             */
+            const pricePerShareAfterFees =
+              endingPricePerShareAfterManagementFees - performanceFeesImpact;
+
+            return (
+              ((1 +
+                (pricePerShareAfterFees - startingPricePerShare) /
+                  startingPricePerShare) **
+                52 -
+                1) *
+                100 +
+              underlyingYieldAPR
+            );
+        }
       }
     }
 
@@ -180,7 +182,14 @@ export const calculateAPYFromPriceHistory = (
      * Otherwise, we look for the previous week
      */
     periodStart.subtract(1, "week");
-    currentWeek = false;
+    weeksAgo += 1;
+
+    /**
+     * Prevent searching too far ago
+     */
+    if (weeksAgo >= 5) {
+      return 0;
+    }
   }
 };
 
