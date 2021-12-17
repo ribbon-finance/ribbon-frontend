@@ -23,7 +23,7 @@ import {
   Title,
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
+import { usePendingTransactions } from "../../../../hooks/pendingTransactionsContext";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import {
   getAssetColor,

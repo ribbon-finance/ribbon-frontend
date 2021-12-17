@@ -86,16 +86,16 @@ export const treasuryCopies : {"Treasury" : ProductCopies} = {
 }
 
 export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
-  "rETH-THETA": {
-    title: "T-ETH-C",
-    subtitle: "ETH Covered Call",
+  "rBZRX-TSRY": {
+    title: "T-BZRX-C",
+    subtitle: "BZRX Covered Call",
     description:
-      "Generates yield by running an automated ETH covered call strategy.",
+      "Generates yield by running an automated BZRX covered call strategy.",
     tags: ["COVERED CALL"],
     strategy: (
       <>
-        The vault earns yield on its ETH deposits by running a weekly automated
-        ETH{" "}
+        The vault earns yield on its BZRX deposits by running a weekly automated
+        BZRX{" "}
         <TooltipExplanation
           title="COVERED CALL"
           explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
@@ -125,14 +125,14 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
             </HighlighText>
           )}
         />{" "}
-        (meaning the price of ETH is above the strike price of the call options
+        (meaning the price of BZRX is above the strike price of the call options
         minted by the vault).
       </>
     ),
     liquidityMining: {
       explanation: (
         <>
-          rETH-THETA is a token that represents ETH deposits in the ETH Theta
+          rBZRX-TSRY is a token that represents BZRX deposits in the ETH Theta
           Vault (T-ETH-C).
           <br />
           <br />

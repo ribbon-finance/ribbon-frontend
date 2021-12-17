@@ -36,7 +36,7 @@ import {
 import {
   vaultPriceHistoryGraphql,
   resolveVaultPriceHistorySubgraphResponse,
-} from "shared/lib/hooks/useVaultPerformanceUpdate";
+} from "./useVaultPerformanceUpdate";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 
 const useFetchSubgraphData = () => {

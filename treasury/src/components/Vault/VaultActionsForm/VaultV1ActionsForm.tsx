@@ -15,16 +15,16 @@ import {
   VaultAddressMap,
   VaultMaxDeposit,
 } from "../../../constants/constants";
-import { useVaultData } from "shared/lib/hooks/web3DataContext";
+import { useVaultData } from "../../../hooks/web3DataContext";
 import { getVaultColor, isETHVault, isVaultFull } from "../../../utils/vault";
 import colors from "shared/lib/designSystem/colors";
-import { getAssetDisplay } from "shared/lib/utils/asset";
+import { getAssetDisplay } from "../../../utils/asset";
 import { ERC20Token } from "shared/lib/models/eth";
 import theme from "shared/lib/designSystem/theme";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import SwapBTCDropdown from "./common/SwapBTCDropdown";
-import useVaultActivity from "shared/lib/hooks/useVaultActivity";
+import useVaultActivity from "../../../hooks/useVaultActivity";
 import { VaultActivityMeta, VaultShortPosition } from "shared/lib/models/vault";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";

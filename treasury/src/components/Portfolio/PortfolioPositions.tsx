@@ -29,8 +29,8 @@ import {
   VaultVersion,
   VaultVersionList,
 } from "../../constants/constants";
-import { productCopies } from "shared/lib/components/Product/productCopies";
-import { useAllVaultAccounts } from "shared/lib/hooks/useVaultAccounts";
+import { productCopies } from "../Product/productCopies";
+import { useAllVaultAccounts } from "../../hooks/useVaultAccounts";
 import { VaultAccount } from "../../models/vault";
 import {
   getAssetDecimals,

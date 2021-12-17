@@ -3,7 +3,7 @@ import { BigNumber } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 
 import { ACTIONS, Steps, STEPS } from "./types";
-import useVault from "shared/lib/hooks/useVault";
+import useVault from "../../../../hooks/useVault";
 import PreviewStep from "./PreviewStep";
 import TransactionStep from "./TransactionStep";
 import FormStep from "./FormStep";
@@ -17,13 +17,13 @@ import {
   VaultAllowedDepositAssets,
   CurveSwapSlippage,
 } from "../../../../constants/constants";
-import { isETHVault } from "shared/lib/utils/vault";
+import { isETHVault } from "../../../../utils/vault";
 import { amountAfterSlippage } from "shared/lib/utils/math";
 import { usePendingTransactions } from "../../../../hooks/pendingTransactionsContext";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
-import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
-import useV2Vault from "shared/lib/hooks/useV2Vault";
+import { useVaultData, useV2VaultData } from "../../../../hooks/web3DataContext";
+import useV2Vault from "../../../../hooks/useV2Vault";
 import WarningStep from "./WarningStep";
 import { getCurvePool } from "shared/lib/hooks/useCurvePool";
 

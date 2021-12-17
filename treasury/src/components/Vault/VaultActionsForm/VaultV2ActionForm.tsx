@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useHistory } from "react-router";
 
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
-import { getAssetDisplay } from "shared/lib/utils/asset";
+import { getAssetDisplay } from "../../../utils/asset";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import VaultV2MigrationForm from "./v2/VaultV2MigrationForm";
 import { FormStepProps } from "./types";
@@ -14,7 +14,7 @@ import { getVaultColor } from "../../../utils/vault";
 import VaultV2DepositWithdrawForm from "./v2/VaultV2DepositWithdrawForm";
 import useVaultActionForm from "../../../hooks/useVaultActionForm";
 import { ACTIONS } from "./Modal/types";
-import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import { useV2VaultData } from "../../../hooks/web3DataContext";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { getVaultURI } from "../../../constants/constants";
 import { WithdrawIcon } from "shared/lib/assets/icons/icons";

@@ -23,7 +23,7 @@ import {
   getAssetLogo,
 } from "../../../utils/asset";
 import colors from "shared/lib/designSystem/colors";
-import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
+import useVaultAccounts from "../../../hooks/useVaultAccounts";
 
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
@@ -60,7 +60,6 @@ const YourPositionModal: React.FC = () => {
   const Logo = getAssetLogo(getDisplayAssets(vaultOption));
 
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
-  const { data: stakingPoolData } = useStakingPoolData(vaultOption);
 
   const [mode, setMode] = useState<ModeType>(ModeList[0]);
 
@@ -202,7 +201,6 @@ const YourPositionModal: React.FC = () => {
     mode,
     queuedAmount,
     roi,
-    stakingPoolData.claimableRbn,
     vaultAccount,
     vaultVersion,
     yieldEarned,

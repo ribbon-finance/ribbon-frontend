@@ -42,12 +42,12 @@ import {
 } from "../../constants/constants";
 import { getVaultColor } from "../../utils/vault";
 import { truncateAddress } from "shared/lib/utils/address";
-import { useVaultData } from "shared/lib/hooks/web3DataContext";
+import { useVaultData } from "../../hooks/web3DataContext";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 
 import { isPracticallyZero } from "shared/lib/utils/math";
 import { getAssetDecimals } from "../../utils/asset";
-import YourPosition from "shared/lib/components/Vault/YourPosition";
+import YourPosition from "../../components/Vault/YourPosition";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;

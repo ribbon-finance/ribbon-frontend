@@ -3,9 +3,9 @@ import moment from "moment";
 
 import { getAssets, VaultOptions, VaultVersion } from "../constants/constants";
 import { Notification } from "../models/notification";
-import { useAllVaultActivities } from "shared/lib/hooks/useVaultActivity";
-import { useV2VaultsData } from "shared/lib/hooks/web3DataContext";
-import { useAllVaultAccounts } from "shared/lib/hooks/useVaultAccounts";
+import { useAllVaultActivities } from "./useVaultActivity";
+import { useV2VaultsData } from "./web3DataContext";
+import { useAllVaultAccounts } from "./useVaultAccounts";
 import { isPracticallyZero } from "shared/lib/utils/math";
 import { getAssetDecimals } from "../utils/asset";
 import { useGlobalState } from "../store/store";

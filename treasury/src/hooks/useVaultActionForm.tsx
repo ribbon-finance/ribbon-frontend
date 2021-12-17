@@ -22,7 +22,7 @@ import {
   useV2VaultData,
   useAssetsBalance,
 } from "./web3DataContext";
-import { isETHVault } from "shared/lib/utils/vault";
+import { isETHVault } from "../utils/vault";
 import { Assets } from "../store/types";
 
 export type VaultActionFormTransferData =

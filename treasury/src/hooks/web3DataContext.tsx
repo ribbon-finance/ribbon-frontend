@@ -19,8 +19,8 @@ import useFetchAssetBalanceData, {
   UserAssetBalanceData,
 } from "./useFetchAssetBalanceData";
 import useFetchStakingPoolData from "shared/lib/hooks/useFetchStakingPoolData";
-import useFetchV2VaultData from "shared/lib/hooks/useFetchV2VaultData";
-import useFetchVaultData from "shared/lib/hooks/useFetchVaultData";
+import useFetchV2VaultData from "./useFetchV2VaultData";
+import useFetchVaultData from "./useFetchVaultData";
 
 export type Web3DataContextType = {
   v1: VaultData;
@@ -81,15 +81,6 @@ export const useV2VaultData = (vault: VaultOptions) => {
       decimals: getAssetDecimals(getAssets(vault)),
     },
     loading: contextData.v2.loading || contextData.assetBalance.loading,
-  };
-};
-
-export const useStakingPoolData = (vault: VaultOptions) => {
-  const contextData = useContext(Web3DataContext);
-
-  return {
-    data: contextData.stakingPool.responses[vault],
-    loading: contextData.stakingPool.loading,
   };
 };
 

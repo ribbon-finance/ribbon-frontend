@@ -31,7 +31,7 @@ import {
   VaultVersion,
   VaultVersionList,
 } from "../../constants/constants";
-import { productCopies } from "shared/lib/components/Product/productCopies";
+import { productCopies } from "../../components/Product/productCopies";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "../../utils/vault";
 import { getAssetLogo } from "../../utils/asset";
@@ -39,7 +39,7 @@ import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
 import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopActionForm";
-import YourPosition from "shared/lib/components/Vault/YourPosition";
+import YourPosition from "../../components/Vault/YourPosition";
 import { truncateAddress } from "shared/lib/utils/address";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 

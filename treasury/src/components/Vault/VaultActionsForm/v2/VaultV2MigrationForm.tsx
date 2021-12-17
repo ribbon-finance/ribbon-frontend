@@ -5,7 +5,7 @@ import { BigNumber } from "ethers";
 import { VaultOptions } from "../../../../constants/constants";
 import colors from "shared/lib/designSystem/colors";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
-import { getAssetDisplay } from "shared/lib/utils/asset";
+import { getAssetDisplay } from "../../../../utils/asset";
 import { VaultAccount } from "shared/lib/models/vault";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import { MigrateIcon } from "shared/lib/assets/icons/icons";
@@ -13,7 +13,7 @@ import { getVaultColor } from "../../../../utils/vault";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { ACTIONS } from "../Modal/types";
-import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import { useVaultData, useV2VaultData } from "../../../../hooks/web3DataContext";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 

@@ -10,7 +10,6 @@ import {
 } from "../../constants/constants";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import VaultPerformanceChart from "./VaultPerformanceChart";
 import StrategySnapshot from "../../components/Deposit/StrategySnapshot";
 import sizes from "shared/lib/designSystem/sizes";
 
@@ -114,10 +113,6 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           </Paragraph>
         </>
       )}
-
-      <Paragraph>
-        <VaultPerformanceChart vault={vault} />
-      </Paragraph>
 
       {active && (
         <Paragraph>

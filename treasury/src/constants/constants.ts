@@ -37,7 +37,7 @@ export const VaultVersionList = ["v2", "v1"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 
 export const FullVaultList = [
-  "rETH-THETA",
+  "rBZRX-TSRY",
   "rBTC-THETA",
   "rUSDC-ETH-P-THETA"
 ] as const;
@@ -60,7 +60,7 @@ export const GAS_LIMITS: {
     };
   }>;
 } = {
-  "rETH-THETA": {
+  "rBZRX-TSRY": {
     v1: {
       deposit: 80000,
       withdraw: 100000,
@@ -103,12 +103,12 @@ export const VaultLiquidityMiningMap: Partial<
   ? {
       "rUSDC-ETH-P-THETA": v1deployment.kovan.RibbonETHPutStakingReward,
       "rBTC-THETA": v1deployment.kovan.RibbonWBTCCoveredCallStakingReward,
-      "rETH-THETA": v1deployment.kovan.RibbonETHCoveredCallStakingReward,
+      "rBZRX-TSRY": v1deployment.kovan.RibbonETHCoveredCallStakingReward,
     }
   : {
       "rUSDC-ETH-P-THETA": v1deployment.mainnet.RibbonETHPutStakingReward,
       "rBTC-THETA": v1deployment.mainnet.RibbonWBTCCoveredCallStakingReward,
-      "rETH-THETA": v1deployment.mainnet.RibbonETHCoveredCallStakingReward,
+      "rBZRX-TSRY": v1deployment.mainnet.RibbonETHCoveredCallStakingReward,
     };
 
 export const isPutVault = (vault: VaultOptions): boolean =>
@@ -130,7 +130,7 @@ export const VaultAddressMap: {
         v1: v1deployment.mainnet.RibbonETHPut,
         chainId: CHAINID.ETH_MAINNET,
       },
-  "rETH-THETA": isDevelopment()
+  "rBZRX-TSRY": isDevelopment()
     ? {
         v1: v1deployment.kovan.RibbonETHCoveredCall,
         v2: v2deployment.kovan.RibbonThetaVaultETHCall,
@@ -168,13 +168,13 @@ export const hasVaultVersion = (
 
 export const VaultNamesList = [
   "T-USDC-P-ETH",
-  "T-ETH-C",
+  "T-BZRX-C",
   "T-WBTC-C",
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-USDC-P-ETH": "rUSDC-ETH-P-THETA",
-  "T-ETH-C": "rETH-THETA",
+  "T-BZRX-C": "rBZRX-TSRY",
   "T-WBTC-C": "rBTC-THETA",
 };
 
@@ -206,7 +206,7 @@ export const getSubgraphURIForVersion = (vaultVersion: VaultVersion) => {
 export const getAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
     case "rUSDC-ETH-P-THETA":
-    case "rETH-THETA":
+    case "rBZRX-TSRY":
     case "rBTC-THETA":
       return "WBTC";
   }
@@ -216,7 +216,7 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
     case "rBTC-THETA":
       return "WBTC";
-    case "rETH-THETA":
+    case "rBZRX-TSRY":
     case "rUSDC-ETH-P-THETA":
       return "WETH";
   }
@@ -226,7 +226,7 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
     case "rUSDC-ETH-P-THETA":
       return "USDC";
-    case "rETH-THETA":
+    case "rBZRX-TSRY":
       return "WETH";
     case "rBTC-THETA":
       return "WBTC";
@@ -236,7 +236,7 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
 export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
   {
     "rBTC-THETA": ["WBTC"],
-    "rETH-THETA": ["WETH"],
+    "rBZRX-TSRY": ["WETH"],
     "rUSDC-ETH-P-THETA": ["USDC"],
   };
 
@@ -244,8 +244,8 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "rUSDC-ETH-P-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rUSDC-ETH-P-THETA")))
   ),
-  "rETH-THETA": BigNumber.from(50000).mul(
-    BigNumber.from(10).pow(getAssetDecimals(getAssets("rETH-THETA")))
+  "rBZRX-TSRY": BigNumber.from(50000).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rBZRX-TSRY")))
   ),
   "rBTC-THETA": BigNumber.from(2000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rBTC-THETA")))
@@ -263,7 +263,7 @@ export const VaultFees: {
       withdrawalFee: "1.0",
     },
   },
-  "rETH-THETA": {
+  "rBZRX-TSRY": {
     v1: {
       withdrawalFee: "0.5",
     },

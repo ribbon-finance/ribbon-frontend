@@ -20,7 +20,7 @@ import { useCallback } from "react";
 import { Notification, NotificationType } from "../../models/notification";
 import { formatBigNumber, formatOption } from "shared/lib/utils/math";
 import { getVaultColor } from "../../utils/vault";
-import { productCopies } from "shared/lib/components/Product/productCopies";
+import { productCopies } from "../Product/productCopies";
 import { getVaultURI } from "../../constants/constants";
 import theme from "shared/lib/designSystem/theme";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";

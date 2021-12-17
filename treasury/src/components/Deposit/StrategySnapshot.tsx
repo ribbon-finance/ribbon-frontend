@@ -21,7 +21,7 @@ import StrikeChart from "webapp/lib/components/Deposit/StrikeChart";
 import { getVaultColor } from "../../utils/vault";
 import ProfitCalculatorModal from "./ProfitCalculatorModal";
 import { formatUnits } from "@ethersproject/units";
-import { useLatestOption } from "shared/lib/hooks/useLatestOption";
+import { useLatestOption } from "../../hooks/useLatestOption";
 
 const VaultPerformanceChartContainer = styled.div`
   display: flex;
