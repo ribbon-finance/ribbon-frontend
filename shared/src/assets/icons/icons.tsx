@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 
 type SVGProps = React.SVGAttributes<SVGElement>;
