@@ -23,7 +23,7 @@ const useFetchV2VaultData = (): V2VaultData => {
 
   const [data, setData] = useState<V2VaultData>(defaultV2VaultData);
   const [, setMulticallCounter] = useState(0);
-
+  
   const doMulticall = useCallback(async () => {
     if (!isProduction()) {
       console.time("V2 Vault Data Fetch");

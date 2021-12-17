@@ -2,7 +2,7 @@ import { BigNumber } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
-import { useWeb3Context } from "shared/lib/hooks/web3Context";
+import { useWeb3Context } from "./web3Context";
 import { getVault } from "./useVault";
 import { VaultList } from "../constants/constants";
 import { impersonateAddress } from "shared/lib/utils/development";

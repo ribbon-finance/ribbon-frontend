@@ -187,6 +187,7 @@ const ContractButtonTitle = styled(Title)`
 `;
 
 const DepositPage = () => {
+  
   usePullUp();
   const { chainId } = useWeb3React();
   const { vaultOption, vaultVersion } = useVaultOption();

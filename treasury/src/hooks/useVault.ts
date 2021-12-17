@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { RibbonCoveredCall } from "shared/lib/codegen";
 import { RibbonCoveredCallFactory } from "shared/lib/codegen/RibbonCoveredCallFactory";
 import { VaultAddressMap, VaultOptions } from "../constants/constants";
-import { useWeb3Context } from "shared/lib/hooks/web3Context";
+import { useWeb3Context } from "./web3Context";
 
 export const getVault = (
   library: any,

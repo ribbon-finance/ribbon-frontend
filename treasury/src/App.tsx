@@ -3,12 +3,12 @@ import { useEffect } from "react";
 import smoothscroll from "smoothscroll-polyfill";
 
 import RootApp from "./components/RootApp";
-import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
+import { Web3ContextProvider } from "./hooks/web3Context";
 import { getLibrary } from "shared/lib/utils/getLibrary";
-import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContext";
-import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContext";
-import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTransactionsContext";
-import { AssetPriceContextProvider } from "shared/lib/hooks/assetPriceContext";
+import { Web3DataContextProvider } from "./hooks/web3DataContext";
+import { SubgraphDataContextProvider } from "./hooks/subgraphDataContext";
+import { PendingTransactionsContextProvider } from "./hooks/pendingTransactionsContext";
+import { AssetPriceContextProvider } from "./hooks/assetPriceContext";
 
 function App() {
   useEffect(() => {
