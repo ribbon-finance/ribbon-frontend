@@ -1,5 +1,5 @@
 import { BigNumber } from "@ethersproject/bignumber";
-import { ERC20Token } from "shared/lib/models/eth";
+import { ERC20Token } from "../models/eth";
 import { Assets } from "../store/types";
 import { getAssetDecimals } from "../utils/asset";
 import {
@@ -38,6 +38,7 @@ export type VaultVersion = typeof VaultVersionList[number];
 
 export const FullVaultList = [
   "rBZRX-TSRY",
+  "rPERP-TSRY",
   "rBTC-THETA",
   "rUSDC-ETH-P-THETA"
 ] as const;
@@ -61,6 +62,17 @@ export const GAS_LIMITS: {
   }>;
 } = {
   "rBZRX-TSRY": {
+    v1: {
+      deposit: 80000,
+      withdraw: 100000,
+    },
+    v2: {
+      deposit: 120000,
+      withdrawInstantly: 120000,
+      completeWithdraw: 300000,
+    },
+  },
+  "rPERP-TSRY": {
     v1: {
       deposit: 80000,
       withdraw: 100000,
@@ -132,7 +144,16 @@ export const VaultAddressMap: {
       },
   "rBZRX-TSRY": isDevelopment()
     ? {
-        v2: v2deployment.kovan.RibbonThetaVaultETHCall,
+        v2: v2deployment.kovan.RibbonTreasuryVaultBZRX,
+        chainId: CHAINID.ETH_KOVAN,
+      }
+    : {
+        v2: v2deployment.mainnet.RibbonThetaVaultETHCall,
+        chainId: CHAINID.ETH_MAINNET,
+      },
+  "rPERP-TSRY": isDevelopment()
+    ? {
+        v2: v2deployment.kovan.RibbonTreasuryVaultPERP,
         chainId: CHAINID.ETH_KOVAN,
       }
     : {
@@ -167,12 +188,14 @@ export const hasVaultVersion = (
 export const VaultNamesList = [
   "T-USDC-P-ETH",
   "T-BZRX-C",
+  "T-PERP-C",
   "T-WBTC-C",
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-USDC-P-ETH": "rUSDC-ETH-P-THETA",
   "T-BZRX-C": "rBZRX-TSRY",
+  "T-PERP-C": "rPERP-TSRY",
   "T-WBTC-C": "rBTC-THETA",
 };
 
@@ -206,6 +229,8 @@ export const getAssets = (vault: VaultOptions): Assets => {
     case "rUSDC-ETH-P-THETA":
     case "rBZRX-TSRY":
       return "BZRX";
+    case "rPERP-TSRY":
+      return "PERP";
     case "rBTC-THETA":
       return "WBTC";
   }
@@ -217,6 +242,8 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
       return "WBTC";
     case "rBZRX-TSRY":
       return "BZRX"
+    case "rPERP-TSRY":
+      return "PERP"
     case "rUSDC-ETH-P-THETA":
       return "WETH";
   }
@@ -228,6 +255,8 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
       return "USDC";
     case "rBZRX-TSRY":
       return "BZRX";
+    case "rPERP-TSRY":
+      return "PERP";
     case "rBTC-THETA":
       return "WBTC";
   }
@@ -237,6 +266,7 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
   {
     "rBTC-THETA": ["WBTC"],
     "rBZRX-TSRY": ["BZRX"],
+    "rPERP-TSRY": ["PERP"],
     "rUSDC-ETH-P-THETA": ["USDC"],
   };
 
@@ -249,6 +279,9 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   ),
   "rBTC-THETA": BigNumber.from(2000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rBTC-THETA")))
+  ),
+  "rPERP-TSRY": BigNumber.from(2000).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rPERP-TSRY")))
   ),
 };
 
@@ -264,6 +297,15 @@ export const VaultFees: {
     },
   },
   "rBZRX-TSRY": {
+    v1: {
+      withdrawalFee: "0.5",
+    },
+    v2: {
+      managementFee: "2",
+      performanceFee: "10",
+    },
+  },
+  "rPERP-TSRY": {
     v1: {
       withdrawalFee: "0.5",
     },

@@ -5,8 +5,8 @@ import { Assets, AssetsList } from "../store/types";
 import { useWeb3React } from "@web3-react/core";
 import { impersonateAddress } from "shared/lib/utils/development";
 import { isNativeToken } from "../constants/constants";
-import { ERC20Token } from "shared/lib/models/eth";
-import { getERC20Token } from "shared/lib/hooks/useERC20Token";
+import { ERC20Token } from "../models/eth";
+import { getERC20Token } from "./useERC20Token";
 import { isProduction } from "shared/lib/utils/env";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 

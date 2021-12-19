@@ -30,6 +30,7 @@ const COINGECKO_CURRENCIES = {
   USDC: "usd-coin",
   RBN: "ribbon-finance",
   BZRX: "bzx-protocol",
+  PERP: "perpetual-protocol",
 };
 
 export const useFetchAssetsPrice = (

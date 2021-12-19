@@ -6,6 +6,7 @@ import {
   WETHLogo,
   RBNLogo,
   BZRXLogo,
+  PERPLogo,
 } from "../assets/icons/erc20Assets";
 import colors from "../designSystem/colors";
 import { Assets } from "../store/types";
@@ -111,5 +112,7 @@ export const getAssetLogo: (asset: Assets) =>
       return RBNLogo;
     case "BZRX":
       return BZRXLogo;
+    case "PERP":
+      return PERPLogo;
   }
 };
