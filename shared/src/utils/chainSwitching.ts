@@ -1,5 +1,6 @@
 import { providers } from "ethers";
-import { AVALANCHE_MAINNET_PARAMS } from "../constants/chainParameters";
+import { AVALANCHE_MAINNET_PARAMS, AVALANCHE_TESTNET_PARAMS } from "../constants/chainParameters";
+import { isAvaxNetwork } from "../constants/constants";
 import { CHAINID } from "./env";
 
 // This error code indicates that the chain has not been added to MetaMask.
@@ -28,11 +29,11 @@ export const switchChains = async (
         switchError.data.originalError &&
         switchError.data.originalError.code === UNAVAILABLE_CHAIN_CODE)
     ) {
-      if (chainId === CHAINID.AVAX_MAINNET) {
+      if (isAvaxNetwork(chainId)) {
         try {
           await provider.provider.request({
             method: "wallet_addEthereumChain",
-            params: [AVALANCHE_MAINNET_PARAMS],
+            params: [chainId === CHAINID.AVAX_MAINNET ? AVALANCHE_MAINNET_PARAMS : AVALANCHE_TESTNET_PARAMS],
           });
         } catch (addError) {
           // handle "add" error
