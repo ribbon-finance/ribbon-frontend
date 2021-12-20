@@ -5,15 +5,12 @@ import { BigNumber } from "@ethersproject/bignumber";
 
 import {
   BaseLink,
-  BaseModal,
   BaseModalContentColumn,
-  PrimaryText,
   SecondaryText,
   Title,
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import MenuButton from "shared/lib/components/Common/MenuButton";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import useDelegateLeaderboard from "../../../hooks/useDelegateLeaderboard";
 import useENSSearch from "shared/lib/hooks/useENSSearch";
