@@ -1,16 +1,17 @@
+import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { useWeb3Context } from "shared/lib/hooks/web3Context";
+import { CHAINID } from "../utils/env";
 
 const useENS = (address: string) => {
-  const { provider } = useWeb3Context();
+  const { library, chainId } = useWeb3React();
   const [ensName, setENSName] = useState<string | null>(null);
 
   useEffect(() => {
     const resolveENS = async () => {
-      if (ethers.utils.isAddress(address)) {
-        let ensName = await provider.lookupAddress(address);
-        setENSName(ensName);
+      if (chainId === CHAINID.ETH_MAINNET && ethers.utils.isAddress(address)) {
+        let ensName = await library.lookupAddress(address);
+        if (ensName) setENSName(ensName);
       }
     };
     resolveENS();
