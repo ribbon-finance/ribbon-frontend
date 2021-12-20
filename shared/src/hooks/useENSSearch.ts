@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { isAddress } from "ethers/lib/utils";
 import axios from "axios";
-import { getENSSubgraphURI, isDevelopment } from "../utils/env";
+import { CHAINID, getENSSubgraphURI, isDevelopment } from "../utils/env";
 import { useWeb3Context } from "./web3Context";
 import { Provider } from "ethers/node_modules/@ethersproject/providers";
+import { useWeb3React } from "@web3-react/core";
 
 export interface ENSSearchResult {
   address: string;
@@ -17,6 +18,7 @@ export interface ENSSearchResult {
 
 const useENSSearch = (searchString: string) => {
   const { provider } = useWeb3Context();
+  const { chainId } = useWeb3React();
 
   const [result, setResult] = useState<ENSSearchResult>();
   const [loading, setLoading] = useState(false);
@@ -26,8 +28,9 @@ const useENSSearch = (searchString: string) => {
     async (_provider: Provider, _searchString: string) => {
       /**
        * Kovan does not support ENS
+       * When wallet are not connect, it uses mainnet therefore we can perform search.
        */
-      if (isDevelopment()) {
+      if (isDevelopment() || chainId !== CHAINID.ETH_MAINNET) {
         setResult(
           isAddress(_searchString)
             ? { address: _searchString, texts: [] }
@@ -93,7 +96,7 @@ const useENSSearch = (searchString: string) => {
         return prev;
       });
     },
-    []
+    [chainId]
   );
 
   useEffect(() => {
@@ -101,7 +104,7 @@ const useENSSearch = (searchString: string) => {
   }, [provider, searchResult, searchString]);
 
   /**
-   * Fetch avatar
+   * Lazy Fetch avatar
    */
   useEffect(() => {
     (async () => {
