@@ -16,10 +16,12 @@ import colors from "shared/lib/designSystem/colors";
 import useENSSearch from "shared/lib/hooks/useENSSearch";
 import theme from "shared/lib/designSystem/theme";
 import { ActionButton } from "shared/lib/components/Common/buttons";
+import DelegationModalLeaderboardOverlay from "./DelegationModalLeaderboardOverlay";
 
 const ModalBackButton = styled.div`
   display: flex;
   position: absolute;
+  z-index: 1000;
   align-items: center;
   justify-content: center;
   height: 40px;
@@ -61,6 +63,7 @@ const DelegationModalForm: React.FC<DelegationModalFormProps> = ({
 }) => {
   const [addressInput, setAddressInput] = useState("");
   const [inputError, setInputError] = useState<boolean>(true);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
   const { data: ensSearchResult, loading: ensSearching } =
     useENSSearch(addressInput);
 
@@ -69,12 +72,20 @@ const DelegationModalForm: React.FC<DelegationModalFormProps> = ({
   }, [addressInput, ensSearchResult, ensSearching]);
 
   const canProceed = useMemo(
-    () => Boolean(addressInput && !ensSearching && ensSearchResult?.address),
-    [addressInput, ensSearchResult, ensSearching]
+    () => Boolean(addressInput && ensSearchResult?.address),
+    [addressInput, ensSearchResult]
   );
 
   return (
     <>
+      <DelegationModalLeaderboardOverlay
+        show={showLeaderboard}
+        onLeaderSelected={(address) => {
+          setAddressInput(address);
+          setShowLeaderboard(false);
+        }}
+        onClose={() => setShowLeaderboard(false)}
+      />
       <ModalBackButton role="button" onClick={onBack}>
         <ArrowBack className="fas fa-arrow-left" />
       </ModalBackButton>
@@ -108,7 +119,12 @@ const DelegationModalForm: React.FC<DelegationModalFormProps> = ({
         )}
       </BaseModalContentColumn>
       <BaseModalContentColumn>
-        <DelegateLeaderboardButton fontSize={14} lineHeight={20} role="button">
+        <DelegateLeaderboardButton
+          fontSize={14}
+          lineHeight={20}
+          role="button"
+          onClick={() => setShowLeaderboard(true)}
+        >
           Select delegate leaderboard
         </DelegateLeaderboardButton>
       </BaseModalContentColumn>
