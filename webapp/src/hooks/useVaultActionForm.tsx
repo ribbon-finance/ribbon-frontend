@@ -162,8 +162,10 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
       vaultVersion: VaultVersion,
       {
         withdrawOption,
+        migrateSourceVault,
       }: {
         withdrawOption?: V2WithdrawOption;
+        migrateSourceVault?: VaultOptions;
       } = {}
     ) => {
       setVaultActionForm((actionForm) => {
@@ -217,6 +219,14 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
             return {
               ...actionForm,
               depositAsset: VaultAllowedDepositAssets[vaultOption][0],
+              vaultVersion,
+              inputAmount: "",
+              actionType,
+            };
+          case ACTIONS.migrate:
+            return {
+              ...actionForm,
+              migrateSourceVault: migrateSourceVault || vaultOption,
               vaultVersion,
               inputAmount: "",
               actionType,

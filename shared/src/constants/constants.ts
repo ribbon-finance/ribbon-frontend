@@ -37,12 +37,16 @@ export const READABLE_NETWORK_NAMES: Record<CHAINID, string> = {
 export const isEthNetwork = (chainId: number): boolean =>
   chainId === CHAINID.ETH_MAINNET || chainId === CHAINID.ETH_KOVAN;
 
+export const isAvaxNetwork = (chainId: number): boolean =>
+  chainId === CHAINID.AVAX_MAINNET || chainId === CHAINID.AVAX_FUJI;
+
 export const NATIVE_TOKENS = ["WETH", "WAVAX"];
 export const isNativeToken = (token: string): boolean =>
   NATIVE_TOKENS.includes(token);
 
 export const VaultVersionList = ["v2", "v1"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
+export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">;
 
 export const FullVaultList = [
   "rAAVE-THETA",
@@ -113,6 +117,11 @@ export const GAS_LIMITS: {
     v1: {
       deposit: 210000,
       withdraw: 210000,
+    },
+    v2: {
+      deposit: 140000,
+      withdrawInstantly: 120000,
+      completeWithdraw: 300000,
     },
   },
   "rstETH-THETA": {
@@ -202,6 +211,8 @@ export const VaultAddressMap: {
       }
     : {
         v1: v1deployment.mainnet.RibbonYearnETHPut,
+        // TODO: Uncomment on V2 yvUSDC launch
+        // v2: v2deployment.mainnet.RibbonThetaYearnVaultETHPut,
         chainId: CHAINID.ETH_MAINNET,
       },
   "rstETH-THETA": isDevelopment()
@@ -425,6 +436,10 @@ export const VaultFees: {
     v1: {
       withdrawalFee: "1.0",
     },
+    v2: {
+      managementFee: "2",
+      performanceFee: "10",
+    },
   },
   "rstETH-THETA": {
     v2: {
@@ -443,6 +458,24 @@ export const VaultFees: {
       managementFee: "2",
       performanceFee: "10",
     },
+  },
+};
+
+export const RibbonVaultMigrationMap: Partial<
+  {
+    [vault in VaultOptions]: Partial<
+      { [version in VaultVersionExcludeV1]: Array<VaultOptions> }
+    >;
+  }
+> = {
+  "rBTC-THETA": {
+    v2: ["rBTC-THETA"],
+  },
+  "rETH-THETA": {
+    v2: ["rETH-THETA"],
+  },
+  "ryvUSDC-ETH-P-THETA": {
+    v2: ["ryvUSDC-ETH-P-THETA", "rUSDC-ETH-P-THETA"],
   },
 };
 

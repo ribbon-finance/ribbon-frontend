@@ -31,6 +31,7 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import ActionModal from "../Vault/VaultActionsForm/Modal/ActionModal";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
+import useENS from "shared/lib/hooks/useENS";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import {
   BLOCKCHAIN_EXPLORER_NAME,
@@ -312,6 +313,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
     "hidden"
   );
+  const { ensName } = useENS(account || "");
   const { status, vaultLimit } = useVaultData(
     vault?.vaultOption || VaultList[0]
   );
@@ -409,7 +411,8 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
       <>
         <Indicator connected={active} />
         <WalletButtonText connected={active}>
-          {truncateAddress(account)} <ButtonArrow isOpen={isMenuOpen} />
+          {ensName || truncateAddress(account)}{" "}
+          <ButtonArrow isOpen={isMenuOpen} />
         </WalletButtonText>
       </>
     ) : (

@@ -55,7 +55,7 @@ const useYearnAPIData = () => {
 
   const getVaultAPR = useCallback(
     (symbol: string, version: string) => {
-      const vault = contextData.yearnAPIData.find(
+      const vault = contextData.yearnAPIData.data.find(
         (data) => data.symbol === symbol && data.version === version
       );
       if (!vault) {

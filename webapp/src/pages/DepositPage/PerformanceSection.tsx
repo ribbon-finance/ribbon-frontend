@@ -201,7 +201,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
         <VaultPerformanceChart vault={vault} />
       </Paragraph>
 
-      {yieldInfos && (
+      {yieldInfos && yieldInfos.length && (
         <Paragraph>
           <ParagraphHeading>
             MARKET {getAssetDisplay(asset)} YIELDS (APY)

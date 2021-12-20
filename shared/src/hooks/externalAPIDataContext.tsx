@@ -45,10 +45,9 @@ export type YearnAPIData = Array<{
 }>;
 
 export type ExternalAPIDataContextType = {
-  assetsPrice: AssetsPriceData;
-  assetsYield: AssetsYieldInfoData;
-  yearnAPIData: YearnAPIData;
-  loading: boolean;
+  assetsPrice: { data: AssetsPriceData; loading: boolean };
+  assetsYield: { data: AssetsYieldInfoData; loading: boolean };
+  yearnAPIData: { data: YearnAPIData; loading: boolean };
 };
 
 export const defaultAssetsPriceData = Object.fromEntries(
@@ -65,10 +64,9 @@ export const defaultAssetsYieldData = Object.fromEntries(
 };
 
 export const defaultExternalAPIData: ExternalAPIDataContextType = {
-  assetsPrice: defaultAssetsPriceData,
-  assetsYield: defaultAssetsYieldData,
-  yearnAPIData: [],
-  loading: true,
+  assetsPrice: { data: defaultAssetsPriceData, loading: true },
+  assetsYield: { data: defaultAssetsYieldData, loading: true },
+  yearnAPIData: { data: [], loading: true },
 };
 
 export const ExternalAPIDataContext =
@@ -77,12 +75,9 @@ export const ExternalAPIDataContext =
 export const ExternalAPIDataContextProvider: React.FC<{
   children: ReactElement;
 }> = ({ children }) => {
-  const { data: assetsPrice, loading: assetsPriceLoading } =
-    useFetchAssetsPrice();
-  const { data: assetsYield, loading: assetsYieldLoading } =
-    useFetchAssetsYield();
-  const { data: yearnAPIData, loading: yearnVaultsLoading } =
-    useFetchYearnAPIData();
+  const assetsPrice = useFetchAssetsPrice();
+  const assetsYield = useFetchAssetsYield();
+  const yearnAPIData = useFetchYearnAPIData();
 
   return (
     <ExternalAPIDataContext.Provider
@@ -90,7 +85,6 @@ export const ExternalAPIDataContextProvider: React.FC<{
         assetsPrice,
         assetsYield,
         yearnAPIData,
-        loading: assetsPriceLoading || assetsYieldLoading || yearnVaultsLoading,
       }}
     >
       {children}

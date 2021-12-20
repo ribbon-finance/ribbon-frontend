@@ -31,6 +31,9 @@ REACT_APP_SUBGRAPHQL_URL=https://api.thegraph.com/subgraphs/name/kenchangh/ribbo
 REACT_APP_KOVAN_SUBGRAPHQL_URL=https://api.thegraph.com/subgraphs/name/kenchangh/ribbon-finance-kovan
 REACT_APP_AIRTABLE_API_KEY=keymgnfgwnQHmH4pl
 REACT_APP_AIRTABLE_BASE_ID=app5c70grFW2INfkN
+REACT_APP_AVAX_URI=https://api.avax.network/ext/bc/C/rpc
+REACT_APP_FUJI_URI=https://api.avax-test.network/ext/bc/C/rpc
+REACT_APP_AVAX_SUBGRAPHQL_URL=https://api.thegraph.com/subgraph/name/kenchangh/ribbon-avax
 ```
 
 In order to switch between the development environment and a production environment, we can change the `REACT_APP_VERCEL_GIT_COMMIT_REF` env var.

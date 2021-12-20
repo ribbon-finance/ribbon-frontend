@@ -234,7 +234,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const ProductInfoContent = useCallback(() => {
     const Logo = getAssetLogo(displayAsset);
 
-    let logo = <Logo />;
+    let logo = <Logo height="100%" />;
 
     switch (displayAsset) {
       case "WETH":
@@ -381,7 +381,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
             </TagContainer>
 
             {/* Mode switcher button */}
-            {yieldInfos && (
+            {yieldInfos && yieldInfos.length && (
               <ModeSwitcherContainer
                 role="button"
                 onClick={onSwapMode}
