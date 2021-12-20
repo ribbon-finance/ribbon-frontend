@@ -313,7 +313,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
     "hidden"
   );
-  const { ensName } = useENS(account as string);
+  const { ensName } = useENS(account || "");
   const { status, vaultLimit } = useVaultData(
     vault?.vaultOption || VaultList[0]
   );
