@@ -91,6 +91,8 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
   const { searchAssetPriceFromTimestamp, loading: assetPriceLoading } =
     useAssetsPriceHistory();
 
+  const premiumDecimals = getAssetDecimals("USDC")
+
   const { width: screenWidth } = useScreenSize();
   const loadingText = useTextAnimation(assetPriceLoading);
   const { chainId } = useWeb3React();
@@ -107,10 +109,10 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
   const getVaultActivityTableData = useCallback(
     (activity: VaultActivity) => {
       const currentAssetPrice = searchAssetPriceFromTimestamp(
-        asset,
+        "USDC",
         activity.date.valueOf()
       );
-
+      
       switch (activity.type) {
         case "minting":
           return [
@@ -172,8 +174,8 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
             </>,
             <>
               <VaultPrimaryText variant="green">
-                +{formatBigNumber(activity.premium, decimals)}{" "}
-                {getAssetDisplay(asset)}
+                +{formatBigNumber(activity.premium, premiumDecimals)}{" "}
+                {getAssetDisplay("USDC")}
               </VaultPrimaryText>
               <VaultSecondaryText fontFamily="VCR">
                 {assetPriceLoading
@@ -181,7 +183,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                   : `+${assetToUSD(
                       activity.premium,
                       currentAssetPrice,
-                      decimals
+                      premiumDecimals
                     )}`}
               </VaultSecondaryText>
             </>,

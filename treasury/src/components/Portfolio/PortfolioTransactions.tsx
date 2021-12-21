@@ -25,7 +25,7 @@ import {
   VaultOptions,
   getEtherscanURI,
 } from "../../constants/constants";
-import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
+import { getAssetDecimals, getAssetDisplay, getAssetLogo } from "../../utils/asset";
 import { Assets } from "../../store/types";
 import {
   DepositIcon,
@@ -265,6 +265,8 @@ const PortfolioTransactions = () => {
         case "stake":
         case "unstake":
           return vaultOption;
+        case "distribute":
+          return getAssetDisplay("USDC");
         default:
           return getAssetDisplay(getAssets(vaultOption));
       }
@@ -285,6 +287,7 @@ const PortfolioTransactions = () => {
       switch (type) {
         case "deposit":
         case "receive":
+        case "distribute":
         case "stake":
           prependSymbol = "+";
           break;
@@ -334,6 +337,26 @@ const PortfolioTransactions = () => {
         return <MigrateIcon width={14} height={14} />;
       case "transfer":
         return <TransferIcon width={14} height={14} />;
+      case "distribute":
+        const Logo = getAssetLogo("USDC");
+        return <Logo />
+    }
+  }, []);
+
+  const renderTransactionColor = useCallback((type: VaultTransactionType) => {
+    switch (type) {
+      case "deposit":
+      case "receive":
+      case "stake":
+      case "migrate":
+        return colors.green;
+      case "withdraw":
+      case "instantWithdraw":
+      case "unstake":
+      case "transfer":
+        return colors.red;
+      case "distribute":
+        return "white";
     }
   }, []);
 
@@ -342,6 +365,8 @@ const PortfolioTransactions = () => {
       switch (type) {
         case "instantWithdraw":
           return "Instant Withdraw";
+        case "distribute":
+          return "Yield Paid Out"
         default:
           return capitalize(type);
       }
@@ -390,16 +415,10 @@ const PortfolioTransactions = () => {
             <TransactionInfoRow>
               {/* Title */}
               <TransactionTitle
-                color={getVaultColor(transaction.vault.symbol)}
+                color={renderTransactionColor(transaction.type)}
                 className="mr-auto"
               >
-                {
-                  Object.keys(VaultNameOptionMap)[
-                    Object.values(VaultNameOptionMap).indexOf(
-                      transaction.vault.symbol as VaultOptions
-                    )
-                  ]
-                }
+               {`${getTransactionTypeDisplay(transaction.type)}`}
               </TransactionTitle>
 
               {/* Amount in crypto */}
@@ -408,7 +427,7 @@ const PortfolioTransactions = () => {
                   transaction.amount,
                   transaction.type,
                   "eth",
-                  getAssets(transaction.vault.symbol),
+                  (transaction.type == "distribute") ? "USDC" : getAssets(transaction.vault.symbol),
                   transaction.timestamp
                 )}
               </Title>
@@ -422,7 +441,7 @@ const PortfolioTransactions = () => {
             <TransactionInfoRow>
               {/* Type and Time */}
               <TransactionInfoText className="mr-auto">
-                {`${getTransactionTypeDisplay(transaction.type)} - ${moment(
+                {`${moment(
                   transaction.timestamp,
                   "X"
                 ).fromNow()}`}
@@ -434,7 +453,7 @@ const PortfolioTransactions = () => {
                   transaction.underlyingAmount,
                   transaction.type,
                   "usd",
-                  getAssets(transaction.vault.symbol),
+                  (transaction.type == "distribute") ? "USDC" : getAssets(transaction.vault.symbol),
                   transaction.timestamp
                 )}
               </TransactionSecondaryInfoText>

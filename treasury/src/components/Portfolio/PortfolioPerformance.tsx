@@ -27,6 +27,7 @@ import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import { getAssets } from "../../constants/constants";
 import { getAssetDecimals } from "../../utils/asset";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
+import useVaultAccounts from "../../hooks/useVaultAccounts"
 import { Assets } from "../../store/types";
 
 const PerformanceContainer = styled.div`

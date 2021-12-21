@@ -76,7 +76,7 @@ const useVaultPriceHistory = (
   vaultVersion: VaultVersion
 ) => {
   const contextData = useContext(SubgraphDataContext);
-
+ 
   return {
     priceHistory: contextData.vaultPriceHistory[vaultVersion][vaultOption],
     loading: contextData.loading,

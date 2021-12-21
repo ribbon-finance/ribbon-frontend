@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { formatUnits } from "@ethersproject/units";
 import { AnimatePresence, motion } from "framer-motion";
 import moment from "moment";
+import { BigNumber } from "ethers";
 
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -20,6 +21,11 @@ import { useAssetsPriceHistory } from "../../hooks/useAssetPrice";
 import { assetToFiat } from "shared/lib/utils/math";
 import useVaultPriceHistory from "../../hooks/useVaultPerformanceUpdate";
 import useLatestAPY from "../../hooks/useLatestAPY";
+import { useV2VaultData } from "../../hooks/web3DataContext";
+import useVaultActivity from "../../hooks/useVaultActivity";
+import {
+  formatBigNumber,
+} from "shared/lib/utils/math";
 
 const VaultPerformanceChartContainer = styled.div`
   background: ${colors.background.two};
@@ -75,6 +81,15 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
   const [chartIndex, setChartIndex] = useState(0);
   const asset = getAssets(vaultOption);
   const decimals = getAssetDecimals(asset);
+  const premiumDecimals = getAssetDecimals("USDC");
+  const activities = useVaultActivity(vaultOption, vaultVersion);
+
+  const totalYields = activities.activities.map((activity) => {
+    return (activity.type == "sales")
+      ? Number(activity.premium)
+      :0
+  }).reduce((totalYield, roundlyYield) => totalYield + roundlyYield, 0) 
+  / (10 ** premiumDecimals)  
 
   const { yields, timestamps } = useMemo(() => {
     if (priceHistory.length === 0) {
@@ -323,8 +338,8 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
                 color={colors.green}
                 className="mt-1"
               >
-                {latestAPY.fetched
-                  ? `+${latestAPY.res.toFixed(2)} USDC`
+                {!activities.loading
+                  ? `+${totalYields.toFixed(2)} USDC`
                   : "Loading"}
               </Title>
             </VaultPerformanceChartKPI>

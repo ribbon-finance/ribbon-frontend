@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
+import { BigNumber } from "ethers";
 
 import {
   BaseIndicator,
@@ -34,7 +35,7 @@ import {
 import { productCopies } from "../../components/Product/productCopies";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "../../utils/vault";
-import { getAssetLogo } from "../../utils/asset";
+import { getAssetLogo, getAssetDecimals } from "../../utils/asset";
 import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
@@ -42,6 +43,7 @@ import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopAc
 import YourPosition from "../../components/Vault/YourPosition";
 import { truncateAddress } from "shared/lib/utils/address";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
+import useVaultActivity from "../../hooks/useVaultActivity";
 
 const { formatUnits } = ethers.utils;
 
@@ -199,6 +201,15 @@ const DepositPage = () => {
     loading,
   } = useV2VaultData(vaultOption || VaultList[0]);
   const isLoading = status === "loading" || loading;
+  const premiumDecimals = getAssetDecimals("USDC");
+  const activities = useVaultActivity(vaultOption!, vaultVersion);
+
+  const totalYields = activities.activities.map((activity) => {
+    return (activity.type == "sales")
+      ? Number(activity.premium)
+      :0
+  }).reduce((totalYield, roundlyYield) => totalYield + roundlyYield, 0) 
+  / (10 ** premiumDecimals)  
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {
@@ -225,9 +236,9 @@ const DepositPage = () => {
     <VaultInformation
       loading={isLoading}
       vaultDeposit={totalDepositStr}
-      vaultYield={depositLimitStr}
+      vaultYield={totalYields}
       displayData={
-        !isLoading && depositLimitStr === 0
+        !isLoading && totalYields === 0
           ? { deposit: "---", yield: "---" }
           : undefined
       }
