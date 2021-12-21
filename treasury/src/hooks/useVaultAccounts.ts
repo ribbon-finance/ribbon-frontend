@@ -17,11 +17,11 @@ const getVaultAccountKey = (vault: VaultOptions) =>
 export const vaultAccountsGraphql = (account: string, version: VaultVersion) =>
   VaultList.reduce((acc, vault) => {
     const vaultAddress = VaultAddressMap[vault][version];
-
+    
     if (!vaultAddress) {
       return acc;
     }
-
+    
     return (
       acc +
       `

@@ -23,7 +23,7 @@ import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
 import PerformanceChart from "webapp/lib/components/PerformanceChart/PerformanceChart";
 import { HoverInfo } from "webapp/lib/components/PerformanceChart/types";
 import sizes from "shared/lib/designSystem/sizes";
-import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
+import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import { getAssets } from "../../constants/constants";
 import { getAssetDecimals } from "../../utils/asset";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
@@ -175,7 +175,7 @@ const PortfolioPerformance = () => {
   const { balances: subgraphBalanceUpdates, loading: balanceUpdatesLoading } =
     useBalances(undefined, afterDate ? afterDate.unix() : undefined);
   const loading =
-    assetsPriceLoading || balanceUpdatesLoading || RBNTokenAccountLoading;
+    assetsPriceLoading || balanceUpdatesLoading;
   const animatedLoadingText = useTextAnimation(loading);
 
   /**

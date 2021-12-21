@@ -320,7 +320,7 @@ const PortfolioPositions = () => {
     loading,
   } = useAllVaultAccounts();
   const animatedLoadingText = useTextAnimation(loading);
-
+  
   const filteredVaultAccounts = useMemo(() => {
     return Object.fromEntries(
       VaultList.map((vaultOption) => [

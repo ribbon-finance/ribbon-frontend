@@ -150,7 +150,7 @@ export const BZRXLogo: React.FC<SVGProps> = ({
   ...props
 }) => (
   <svg
-    viewBox="-55 -38 480 480"
+    viewBox="0 0 400 400"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
@@ -170,7 +170,7 @@ export const PERPLogo: React.FC<SVGProps> = ({
   ...props
 }) => (
   <svg
-    viewBox="0 0 800 675"
+    viewBox="0 0 675 675"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}

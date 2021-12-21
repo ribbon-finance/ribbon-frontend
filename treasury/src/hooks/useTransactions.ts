@@ -41,7 +41,7 @@ export const resolveTransactionsSubgraphResponse = (
 
 export const useTransactions = () => {
   const contextData = useContext(SubgraphDataContext);
-
+  
   return {
     transactions: contextData.transactions,
     loading: contextData.loading,

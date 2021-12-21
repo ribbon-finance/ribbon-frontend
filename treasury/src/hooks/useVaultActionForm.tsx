@@ -16,7 +16,7 @@ import {
   V2WithdrawOptionList,
 } from "../components/Vault/VaultActionsForm/Modal/types";
 import { initialVaultActionForm, useWebappGlobalState } from "../store/store";
-import useGasPrice from "shared/lib/hooks/useGasPrice";
+import useGasPrice from "./useGasPrice";
 import {
   useVaultData,
   useV2VaultData,

@@ -12,6 +12,7 @@ import { Assets } from "../../store/types";
 const VaultDataCol = styled(Col)`
   margin-top: 20px;
   margin-bottom: 80px;
+  max-width: 130px;
 `;
 
 const VerticalLineSeparator = styled(Col)`
@@ -50,22 +51,22 @@ const VaultInformation: React.FC<{
 }) => {
     return (
         <Row noGutters>
-        <VaultDataCol xs="3">
-            <VaultDataLabel className="d-block">
-            Vault Deposits
-            </VaultDataLabel>
-            <VaultData>
-                {loading
-                ? "Loading..."
-                : `${
-                    displayDeposit
-                    ? displayDeposit
-                    : `${formatAmount(vaultDeposit)} ${
-                            getAssetDisplay(asset)
-                        }`
-                    }`}
-            </VaultData>
-        </VaultDataCol>
+            <VaultDataCol xs="3">
+                <VaultDataLabel className="d-block">
+                Vault Deposits
+                </VaultDataLabel>
+                <VaultData>
+                    {loading
+                    ? "Loading..."
+                    : `${
+                        displayDeposit
+                        ? displayDeposit
+                        : `${formatAmount(vaultDeposit)} ${
+                                getAssetDisplay(asset)
+                            }`
+                        }`}
+                </VaultData>
+            </VaultDataCol>
         <VerticalLineSeparator xs="1">
         </VerticalLineSeparator>
         <VaultDataCol xs="3">

@@ -37,10 +37,10 @@ export const VaultVersionList = ["v2", "v1"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 
 export const FullVaultList = [
-  "rBZRX-TSRY",
-  "rPERP-TSRY",
   "rBTC-THETA",
-  "rUSDC-ETH-P-THETA"
+  "rUSDC-ETH-P-THETA",
+  "rBZRX-TSRY",
+  "rPERP-TSRY"
 ] as const;
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
@@ -62,10 +62,6 @@ export const GAS_LIMITS: {
   }>;
 } = {
   "rBZRX-TSRY": {
-    v1: {
-      deposit: 80000,
-      withdraw: 100000,
-    },
     v2: {
       deposit: 120000,
       withdrawInstantly: 120000,
@@ -73,10 +69,6 @@ export const GAS_LIMITS: {
     },
   },
   "rPERP-TSRY": {
-    v1: {
-      deposit: 80000,
-      withdraw: 100000,
-    },
     v2: {
       deposit: 120000,
       withdrawInstantly: 120000,
@@ -84,10 +76,6 @@ export const GAS_LIMITS: {
     },
   },
   "rBTC-THETA": {
-    v1: {
-      deposit: 100000,
-      withdraw: 140000,
-    },
     v2: {
       deposit: 140000,
       withdrawInstantly: 120000,
@@ -106,22 +94,6 @@ export const GAS_LIMITS: {
     },
   },
 };
-
-export const VaultLiquidityMiningMap: Partial<
-  {
-    [vault in VaultOptions]: string;
-  }
-> = isDevelopment()
-  ? {
-      "rUSDC-ETH-P-THETA": v1deployment.kovan.RibbonETHPutStakingReward,
-      "rBTC-THETA": v1deployment.kovan.RibbonWBTCCoveredCallStakingReward,
-      "rBZRX-TSRY": v1deployment.kovan.RibbonETHCoveredCallStakingReward,
-    }
-  : {
-      "rUSDC-ETH-P-THETA": v1deployment.mainnet.RibbonETHPutStakingReward,
-      "rBTC-THETA": v1deployment.mainnet.RibbonWBTCCoveredCallStakingReward,
-      "rBZRX-TSRY": v1deployment.mainnet.RibbonETHCoveredCallStakingReward,
-    };
 
 export const isPutVault = (vault: VaultOptions): boolean =>
   PutThetaVault.includes(vault);
@@ -162,12 +134,10 @@ export const VaultAddressMap: {
       },
   "rBTC-THETA": isDevelopment()
     ? {
-        v1: v1deployment.kovan.RibbonWBTCCoveredCall,
         v2: v2deployment.kovan.RibbonThetaVaultWBTCCall,
         chainId: CHAINID.ETH_KOVAN,
       }
     : {
-        v1: v1deployment.mainnet.RibbonWBTCCoveredCall,
         v2: v2deployment.mainnet.RibbonThetaVaultWBTCCall,
         chainId: CHAINID.ETH_MAINNET,
       },
@@ -274,13 +244,13 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "rUSDC-ETH-P-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rUSDC-ETH-P-THETA")))
   ),
-  "rBZRX-TSRY": BigNumber.from(50000).mul(
+  "rBZRX-TSRY": BigNumber.from(1000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rBZRX-TSRY")))
   ),
   "rBTC-THETA": BigNumber.from(2000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rBTC-THETA")))
   ),
-  "rPERP-TSRY": BigNumber.from(2000).mul(
+  "rPERP-TSRY": BigNumber.from(1000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rPERP-TSRY")))
   ),
 };
@@ -297,18 +267,12 @@ export const VaultFees: {
     },
   },
   "rBZRX-TSRY": {
-    v1: {
-      withdrawalFee: "0.5",
-    },
     v2: {
       managementFee: "2",
       performanceFee: "10",
     },
   },
   "rPERP-TSRY": {
-    v1: {
-      withdrawalFee: "0.5",
-    },
     v2: {
       managementFee: "2",
       performanceFee: "10",

@@ -109,6 +109,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
     vaultOption,
     vaultVersion
   );
+
   const asset = getAssets(vaultOption);
   const optionAsset = getOptionAssets(vaultOption);
   const color = getVaultColor(vaultOption);

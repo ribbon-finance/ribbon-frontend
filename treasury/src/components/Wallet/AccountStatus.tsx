@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState,
+  useState
 } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
@@ -43,7 +43,7 @@ import {
 import { getVaultColor } from "../../utils/vault";
 import { truncateAddress } from "shared/lib/utils/address";
 import { useVaultData } from "../../hooks/web3DataContext";
-import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
+import useVaultAccounts from "../../hooks/useVaultAccounts";
 
 import { isPracticallyZero } from "shared/lib/utils/math";
 import { getAssetDecimals } from "../../utils/asset";

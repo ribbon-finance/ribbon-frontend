@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
+import { useHistory } from "react-router";
 
 import {
   BaseIndicator,
@@ -14,6 +15,7 @@ import colors from "shared/lib/designSystem/colors";
 import VaultInformation from "../../components/Deposit/VaultInformation";
 import PerformanceSection from "./PerformanceSection";
 import { useVaultData, useV2VaultData } from "../../hooks/web3DataContext";
+import { useWhitelist } from "../../hooks/useWhitelist";
 import {
   formatSignificantDecimals,
   isPracticallyZero,
@@ -191,7 +193,13 @@ const ContractButtonTitle = styled(Title)`
 
 const DepositPage = () => {
   usePullUp();
-  const { chainId } = useWeb3React();
+  const history = useHistory();
+  const { chainId, account } = useWeb3React();
+  const whitelist = useWhitelist();
+
+  if (whitelist) {
+    history.push("/treasury/" + whitelist)
+  }
   // const vaultOption = "Treasury-RBN";
   // const vaultVersion = "v2";
   // const { status, deposits, vaultLimit } = useVaultData(

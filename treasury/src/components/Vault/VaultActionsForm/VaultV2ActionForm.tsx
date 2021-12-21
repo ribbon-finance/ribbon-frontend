@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router";
 
-import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
+import useVaultAccounts from "../../../hooks/useVaultAccounts";
 import { getAssetDisplay } from "../../../utils/asset";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import VaultV2MigrationForm from "./v2/VaultV2MigrationForm";

@@ -75,7 +75,7 @@ const useFetchSubgraphData = () => {
         })
       )
     );
-
+    
     setData((prev) => ({
       ...prev,
       vaultAccounts: resolveVaultAccountsSubgraphResponse(

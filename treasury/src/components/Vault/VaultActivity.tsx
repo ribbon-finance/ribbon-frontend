@@ -45,6 +45,7 @@ const VaultActivity: React.FC<VaultActivityProps> = ({
   const [activityFilter, setActivityFilter] = useState<ActivityFilter>(
     activityFilters[0]
   );
+  console.log(activities)
   const [sortBy, setSortBy] = useState<SortBy>(sortByList[0]);
   const { width } = useScreenSize();
   const [page, setPage] = useState(1);

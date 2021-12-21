@@ -14,12 +14,12 @@ import {
 import { ACTIONS } from "../Modal/types";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { SecondaryText, Title } from "shared/lib/designSystem";
-import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
+import useTokenAllowance from "../../../../hooks/useTokenAllowance";
 import {
   useV2VaultData,
   useAssetBalance,
 } from "../../../../hooks/web3DataContext";
-import { ERC20Token } from "shared/lib/models/eth";
+import { ERC20Token } from "../../../../models/eth";
 import { isVaultFull } from "../../../../utils/vault";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import VaultApprovalForm from "../common/VaultApprovalForm";

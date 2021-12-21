@@ -138,6 +138,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const product = useRouteMatch({ path: "/", exact: true });
   const portfolio = useRouteMatch({ path: "/portfolio", exact: true });
+  const treasury = useRouteMatch({ path: "/treasury", exact: false });
 
   const onToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -187,7 +188,7 @@ const Header = () => {
       {/* LINKS */}
       <HeaderAbsoluteContainer>
         <LinksContainer>
-          {renderLinkItem("TREASURY", "/", Boolean(product))}
+          {renderLinkItem("TREASURY", "/", Boolean(product) || Boolean(treasury))}
           {renderLinkItem("PORTFOLIO", "/portfolio", Boolean(portfolio))}
         </LinksContainer>
       </HeaderAbsoluteContainer>

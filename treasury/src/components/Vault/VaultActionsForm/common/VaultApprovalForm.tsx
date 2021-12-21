@@ -13,8 +13,8 @@ import {
 } from "../../../../constants/constants";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import { getVaultColor } from "../../../../utils/vault";
-import { getERC20Token } from "shared/lib/hooks/useERC20Token";
-import { ERC20Token } from "shared/lib/models/eth";
+import { getERC20Token } from "../../../../hooks/useERC20Token";
+import { ERC20Token } from "../../../../models/eth";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import {
   BaseLink,

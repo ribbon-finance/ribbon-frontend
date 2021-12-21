@@ -6,7 +6,7 @@ import { VaultOptions } from "../../../../constants/constants";
 import colors from "shared/lib/designSystem/colors";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import { getAssetDisplay } from "../../../../utils/asset";
-import { VaultAccount } from "shared/lib/models/vault";
+import { VaultAccount } from "../../../../models/vault";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import { MigrateIcon } from "shared/lib/assets/icons/icons";
 import { getVaultColor } from "../../../../utils/vault";

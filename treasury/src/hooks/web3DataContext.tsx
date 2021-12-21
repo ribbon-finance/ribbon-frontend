@@ -26,14 +26,12 @@ export type Web3DataContextType = {
   v1: VaultData;
   v2: V2VaultData;
   assetBalance: UserAssetBalanceData;
-  stakingPool: StakingPoolData;
 };
 
 export const Web3DataContext = React.createContext<Web3DataContextType>({
   v1: defaultVaultData,
   v2: defaultV2VaultData,
   assetBalance: defaultUserAssetBalanceData,
-  stakingPool: defaultStakingPoolData,
 });
 
 export const useVaultsData = () => {
@@ -105,15 +103,13 @@ export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({
   const vaultData = useFetchVaultData();
   const v2VaultData = useFetchV2VaultData();
   const assetBalance = useFetchAssetBalanceData();
-  const stakingPool = useFetchStakingPoolData();
-
+  
   return (
     <Web3DataContext.Provider
       value={{
         v1: vaultData,
         v2: v2VaultData,
         assetBalance,
-        stakingPool,
       }}
     >
       {children}
