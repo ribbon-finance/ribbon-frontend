@@ -29,6 +29,7 @@ import { getAssetDecimals } from "../../utils/asset";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import useVaultAccounts from "../../hooks/useVaultAccounts"
 import { Assets } from "../../store/types";
+import useTransactions from "../../hooks/useTransactions";
 
 const PerformanceContainer = styled.div`
   display: flex;
@@ -92,7 +93,7 @@ const ConnectWalletButton = styled(PrimaryText)`
 `;
 
 const KPIColumn = styled.div`
-  width: calc(100% / 3);
+  width: calc(100% / 2);
   padding: 16px;
   display: flex;
   flex-wrap: wrap;
@@ -162,6 +163,7 @@ const PortfolioPerformance = () => {
   const [, setShowConnectWalletModal] = useConnectWalletModal();
   const { data: RBNTokenAccount, loading: RBNTokenAccountLoading } =
     useRBNTokenAccount();
+  const { transactions, loading: transactionsLoading } = useTransactions();
 
   const afterDate = useMemo(() => {
     switch (rangeFilter) {
@@ -176,9 +178,15 @@ const PortfolioPerformance = () => {
   const { balances: subgraphBalanceUpdates, loading: balanceUpdatesLoading } =
     useBalances(undefined, afterDate ? afterDate.unix() : undefined);
   const loading =
-    assetsPriceLoading || balanceUpdatesLoading;
+    assetsPriceLoading || balanceUpdatesLoading || transactionsLoading;
   const animatedLoadingText = useTextAnimation(loading);
 
+  const premiumDecimals = getAssetDecimals("USDC")
+  const totalYield = useMemo(() => {
+    return transactions.filter(transaction => transaction.type === "distribute")
+      .reduce((total, transaction) =>
+        total.add(transaction.amount), BigNumber.from(0))
+  }, [transactions])
   /**
    * We first process and add several additional metrices that is useful for further calculation
    * - Net deposit
@@ -524,7 +532,7 @@ const PortfolioPerformance = () => {
     () => (
       <DepositChartExtra>
         <SecondaryText fontSize={12} className="w-100">
-          Balances
+          Vault Balance
         </SecondaryText>
         <div className="d-flex align-items-center flex-wrap">
           <KPI>
@@ -614,12 +622,12 @@ const PortfolioPerformance = () => {
                   : "red"
               }
             >
-              {renderYieldEarnedText()}
+              ${parseFloat(formatBigNumber(totalYield, premiumDecimals)).toFixed(2)}
             </KPIText>
-            <DepositCurrency>{active && !loading ? "USD" : ""}</DepositCurrency>
+            <DepositCurrency>{active && !loading ? "USDC" : ""}</DepositCurrency>
           </KPI>
         </KPIColumn>
-        <KPIColumn>
+        {/* <KPIColumn>
           <SecondaryText fontSize={12} className="w-100">
             ROI
           </SecondaryText>
@@ -635,7 +643,7 @@ const PortfolioPerformance = () => {
           >
             {renderRoiText()}
           </KPIText>
-        </KPIColumn>
+        </KPIColumn> */}
         <KPIColumn>
           <SecondaryText fontSize={12} color={colors.red} className="w-100">
             $RBN Balance

@@ -33,21 +33,6 @@ export type PendingTransaction = {
       amount: string;
     }
   | {
-      type: "stakingApproval";
-      amount: string;
-      stakeAsset: VaultOptions;
-    }
-  | {
-      type: "stake" | "unstake";
-      amount: string;
-      stakeAsset: VaultOptions;
-    }
-  | {
-      type: "rewardClaim";
-      amount: string;
-      stakeAsset: VaultOptions;
-    }
-  | {
       type: "transfer";
       amount: string;
       transferVault: VaultOptions;

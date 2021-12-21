@@ -33,6 +33,7 @@ import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import { useStakingPoolData } from "shared/lib/hooks/web3DataContext";
 import { useGlobalState } from "../../../store/store";
+import useVaultActivity from "../../../hooks/useVaultActivity";
 
 const ModalContent = styled(motion.div)`
   display: flex;
@@ -53,6 +54,15 @@ const YourPositionModal: React.FC = () => {
     useGlobalState("vaultPositionModal");
   const vaultOption = vaultPositionModal.vaultOption || VaultList[0];
   const vaultVersion = vaultPositionModal.vaultVersion;
+  const premiumDecimals = getAssetDecimals("USDC");
+  const activities = useVaultActivity(vaultOption!, vaultVersion);
+
+  const totalYields = activities.activities.map((activity) => {
+    return (activity.type == "sales")
+      ? Number(activity.premium)
+      :0
+  }).reduce((totalYield, roundlyYield) => totalYield + roundlyYield, 0) 
+  / (10 ** premiumDecimals)  
 
   const color = getVaultColor(vaultOption);
   const asset = getAssets(vaultOption);
@@ -132,13 +142,13 @@ const YourPositionModal: React.FC = () => {
               <Title fontSize={40} lineHeight={40}>
                 {vaultAccount
                   ? formatBigNumber(vaultAccount.totalBalance, decimals)
-                  : "0.00"}
+                  : "0.00"} 
               </Title>
             </BaseModalContentColumn>
             <BaseModalContentColumn marginTop={8}>
-              <Subtitle color={roi >= 0 ? colors.green : colors.red}>
+              {/* <Subtitle color={roi >= 0 ? colors.green : colors.red}>
                 {`${roi >= 0 ? "+" : ""}${parseFloat(roi.toFixed(4))}%`}
-              </Subtitle>
+              </Subtitle> */}
             </BaseModalContentColumn>
 
             {/* Secondary Info */}
@@ -184,8 +194,8 @@ const YourPositionModal: React.FC = () => {
               <div className="d-flex w-100 align-items-center ">
                 <SecondaryText>Yield Earned</SecondaryText>
                 <Title className="ml-auto">
-                  {formatBigNumber(yieldEarned, decimals)}{" "}
-                  {getAssetDisplay(asset)}
+                  {totalYields.toFixed(2)}{" "}
+                  {getAssetDisplay("USDC")}
                 </Title>
               </div>
             </BaseModalContentColumn>
@@ -212,7 +222,7 @@ const YourPositionModal: React.FC = () => {
       onClose={() =>
         setVaultPositionModal((prev) => ({ ...prev, show: false }))
       }
-      height={500}
+      height={400}
       theme={color}
     >
       <>
@@ -241,7 +251,7 @@ const YourPositionModal: React.FC = () => {
           </ModalContent>
         </AnimatePresence>
 
-        <BaseModalContentColumn marginTop="auto" className="mb-2">
+        {/* <BaseModalContentColumn marginTop="auto" className="mb-2">
           <SegmentControl
             segments={ModeList.map((mode) => ({
               value: mode,
@@ -257,7 +267,7 @@ const YourPositionModal: React.FC = () => {
               widthType: "fullWidth",
             }}
           />
-        </BaseModalContentColumn>
+        </BaseModalContentColumn> */}
       </>
     </BasicModal>
   );

@@ -133,6 +133,8 @@ const NotificationList: React.FC<NotificationListProps> = ({
     [typeFilteredNotifications]
   );
 
+  const premiumDecimals = getAssetDecimals("USDC")
+
   /**
    * Ensure empty list does not happen
    */
@@ -189,8 +191,8 @@ const NotificationList: React.FC<NotificationListProps> = ({
           <>
             The vault sold{" "}
             {formatOption(notification.sellAmount).toLocaleString()} options for{" "}
-            {formatBigNumber(notification.premium, decimals)}{" "}
-            {getAssetDisplay(asset)}
+            {formatBigNumber(notification.premium, premiumDecimals)}{" "}
+            {getAssetDisplay("USDC")}
           </>
         );
         break;

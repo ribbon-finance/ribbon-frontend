@@ -22,6 +22,12 @@ import { getVaultColor } from "../../utils/vault";
 import ProfitCalculatorModal from "./ProfitCalculatorModal";
 import { formatUnits } from "@ethersproject/units";
 import { useLatestOption } from "../../hooks/useLatestOption";
+import useVaultActivity from "../../hooks/useVaultActivity";
+import {
+  VaultActivityMeta,
+  VaultOptionTrade,
+  VaultShortPosition,
+} from "../../models/vault";
 
 const VaultPerformanceChartContainer = styled.div`
   display: flex;
@@ -116,8 +122,23 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   const { prices, loading: priceLoading } = useAssetsPrice();
   const loading = priceLoading || optionLoading;
   const [showCalculator, setShowCalculator] = useState(false);
-
+  const { activities, loading: activitiesLoading } = useVaultActivity(vaultOption!, vaultVersion);
+  const premiumDecimals = getAssetDecimals("USDC");
+  
+  const latestSale = activities
+      .filter((activity) => activity.type === "sales")
+      .sort((a, b) => (a.date.valueOf() < b.date.valueOf() ? 1 : -1))[0] as 
+      (VaultOptionTrade & VaultActivityMeta & { type: "sales" });
+  
   const loadingText = useTextAnimation(loading);
+
+  const latestYield = useMemo(() => {
+    if (activitiesLoading) return loadingText;
+    if (!latestSale) return "---";
+
+    return parseFloat(formatUnits(latestSale.premium, premiumDecimals)).toFixed(2);
+
+  }, [currentOption, loadingText, optionLoading]);
 
   const strikeAPRText = useMemo(() => {
     if (optionLoading) return loadingText;
@@ -177,7 +198,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
       isProfit: profit >= 0,
       roi:
         (profit /
-          parseFloat(formatUnits(currentOption.depositAmount, assetDecimals))) *
+          parseFloat(formatUnits(currentOption.depositAmount, 6))) *
         100 *
         0.9,
     };
@@ -190,7 +211,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
 
     return `${KPI.roi.toFixed(2)}%`;
   }, [KPI, loading, loadingText]);
-
+  
   const strikeChart = useMemo(() => {
     if (loading || !prices[optionAsset]) {
       return <Title>{loadingText}</Title>;
@@ -235,11 +256,11 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
             <DataNumber>{strikeAPRText}</DataNumber>
           </DataCol>
           <DataCol xs="6">
-            <DataLabel className="d-block">Profitability</DataLabel>
+            <DataLabel className="d-block">Latest Yield Generated</DataLabel>
             <DataNumber
-              variant={KPI ? (KPI.isProfit ? "green" : "red") : undefined}
+              variant="green"
             >
-              {ProfitabilityText}
+              ${latestYield}
             </DataNumber>
           </DataCol>
           <DataCol xs="6">

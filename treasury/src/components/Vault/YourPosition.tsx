@@ -153,21 +153,21 @@ const YourPosition: React.FC<YourPositionProps> = ({
               </AssetCircleContainer>
               <div className="d-flex flex-column justify-content-center p-2">
                 <PositionInfoText size={10} color={colors.text}>
-                  POSITION ({getAssetDisplay(asset)})
+                  POSITION
                 </PositionInfoText>
                 <div className="d-flex">
                   <PositionInfoText size={14}>
                     {vaultAccount
                       ? formatBigNumber(vaultAccount.totalBalance, decimals)
-                      : "0.00"}
+                      : "0.00"} {getAssetDisplay(asset)}
                   </PositionInfoText>
-                  <PositionInfoText
+                  {/* <PositionInfoText
                     size={10}
                     color={roi >= 0 ? colors.green : colors.red}
                     className="ml-2"
                   >
                     {`${roi >= 0 ? "+" : ""}${parseFloat(roi.toFixed(4))}%`}
-                  </PositionInfoText>
+                  </PositionInfoText> */}
                 </div>
               </div>
               <div className="d-flex align-items-center ml-5 mr-3">

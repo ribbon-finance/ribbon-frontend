@@ -114,10 +114,10 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           </Paragraph>
         </>
       )}
-
+{/* 
       <Paragraph>
         <VaultPerformanceChart vault={vault} />
-      </Paragraph>
+      </Paragraph> */}
 
       {active && (
         <Paragraph>
