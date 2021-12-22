@@ -39,6 +39,7 @@ import {
 } from "../../utils/asset";
 import { getVaultColor } from "../../utils/vault";
 import { getVaultURI } from "../../constants/constants";
+import { impersonateAddress } from "shared/lib/utils/development";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 64px;
@@ -299,7 +300,9 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 };
 
 const PortfolioPositions = () => {
-  const { active } = useWeb3React();
+  const { active: web3Active } = useWeb3React();
+  const active = impersonateAddress ? true : web3Active;
+  
   const {
     data: { v1: v1VaultAccounts, v2: v2VaultAccounts },
     loading,

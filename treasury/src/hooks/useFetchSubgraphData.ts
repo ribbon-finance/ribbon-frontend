@@ -43,6 +43,7 @@ import { usePendingTransactions } from "./pendingTransactionsContext";
 const useFetchSubgraphData = () => {
   const web3Context = useWeb3React();
   const account = impersonateAddress || web3Context.account;
+
   const [data, setData] =
     useState<SubgraphDataContextType>(defaultSubgraphData);
   const { transactionsCounter } = usePendingTransactions();

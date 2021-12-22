@@ -14,6 +14,7 @@ import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import NotificationButton from "../Notification/NotificationButton";
 import { isEthNetwork } from "shared/lib/constants/constants";
+import { impersonateAddress } from "shared/lib/utils/development";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
@@ -134,7 +135,8 @@ const MobileOnly = styled.div`
 `;
 
 const Header = () => {
-  const { active, chainId } = useWeb3React();
+  const { active: web3Active, chainId } = useWeb3React();
+  const active = impersonateAddress ? true : web3Active;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const product = useRouteMatch({ path: "/", exact: true });
   const portfolio = useRouteMatch({ path: "/portfolio", exact: true });

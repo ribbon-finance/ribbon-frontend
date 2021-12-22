@@ -30,6 +30,7 @@ import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import useVaultAccounts from "../../hooks/useVaultAccounts"
 import { Assets } from "../../store/types";
 import useTransactions from "../../hooks/useTransactions";
+import { impersonateAddress } from "shared/lib/utils/development";
 
 const PerformanceContainer = styled.div`
   display: flex;
@@ -154,7 +155,8 @@ const dateFilterOptions = ["1w", "1m", "all"] as const;
 type dateFilterType = typeof dateFilterOptions[number];
 
 const PortfolioPerformance = () => {
-  const { active } = useWeb3React();
+  const { active: web3Active } = useWeb3React();
+  const active = impersonateAddress ? true : web3Active;
   const { prices: assetsPrice, loading: assetsPriceLoading } = useAssetsPrice();
   const { searchAssetPriceFromTimestamp } = useAssetsPriceHistory();
   const [hoveredBalanceUpdateIndex, setHoveredBalanceUpdateIndex] =

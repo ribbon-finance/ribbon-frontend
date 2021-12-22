@@ -10,8 +10,8 @@ import { getAssets, VaultList, VaultNameOptionMap } from "../constants/constants
 import { getV2Vault } from "./useV2Vault";
 
 export const useWhitelist = () => {
-  const { active, account: acc, chainId, library } = useWeb3React();
-  const account = impersonateAddress ? impersonateAddress : acc;
+  const { active, account: web3Account, chainId, library } = useWeb3React();
+  const account = impersonateAddress ? impersonateAddress : web3Account;
   const { provider } = useWeb3Context();
 
   const [whitelisted, setWhitelisted] = useState<String>();
@@ -21,11 +21,13 @@ export const useWhitelist = () => {
       await Promise.all(
         VaultList.map(async (vault) => {
           const contract = getV2Vault(library || provider, vault, active);
+          
           if (!contract) {
             return { vault };
           }
           try {
-            const isWhitelisted = await contract.whitelistMap(acc);
+            const isWhitelisted = await contract.whitelistMap(account);
+            
             if (isWhitelisted) {
               setWhitelisted(
                 Object.keys(VaultNameOptionMap)[
@@ -37,7 +39,7 @@ export const useWhitelist = () => {
       )
     })();
   }, [provider, account]);
-
+  
   return whitelisted;
 };
 

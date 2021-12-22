@@ -46,6 +46,7 @@ import Pagination from "shared/lib/components/Common/Pagination";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
+import { impersonateAddress } from "shared/lib/utils/development";
 
 const PortfolioTransactionsContainer = styled.div`
   margin-top: 64px;
@@ -199,7 +200,8 @@ const perPage = 6;
 const PortfolioTransactions = () => {
   const { transactions, loading } = useTransactions();
   
-  const { active, chainId } = useWeb3React();
+  const { active: web3Active, chainId } = useWeb3React();
+  const active = impersonateAddress ? true : web3Active;
   // const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice();
   const { searchAssetPriceFromTimestamp, loading: assetPricesLoading } =
     useAssetsPriceHistory();

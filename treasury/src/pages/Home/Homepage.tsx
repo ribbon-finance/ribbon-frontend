@@ -148,9 +148,9 @@ const DepositPage = () => {
   const history = useHistory();
   const whitelist = useWhitelist();
 
-  if (whitelist) {
-    history.push("/treasury/" + whitelist)
-  }
+  // if (whitelist) {
+  //   history.push("/treasury/" + whitelist)
+  // }
 
   const vaultInformation = (
     <VaultInformation

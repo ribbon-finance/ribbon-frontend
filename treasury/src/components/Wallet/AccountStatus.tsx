@@ -48,6 +48,7 @@ import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { isPracticallyZero } from "shared/lib/utils/math";
 import { getAssetDecimals } from "../../utils/asset";
 import YourPosition from "../../components/Vault/YourPosition";
+import { impersonateAddress } from "shared/lib/utils/development";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -294,10 +295,14 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     connector,
     deactivate: deactivateWeb3,
     library,
-    active,
-    account,
-    chainId,
+    active: web3Active,
+    account: web3Account,
+    chainId: web3ChainId,
   } = useWeb3React();
+  const account = impersonateAddress || web3Account;
+  const active = impersonateAddress ? true : web3Active;
+  const chainId = impersonateAddress ? 42 : web3ChainId;
+  
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showActionModal, setShowActionModal] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
