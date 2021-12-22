@@ -140,7 +140,7 @@ const StakingOverview = () => {
       .set("minute", 30);
 
     if (endStakeReward.diff(moment()) <= 0) {
-      return "End of Rewards";
+      return "Program Ended";
     }
 
     // Time till next stake reward date
@@ -163,7 +163,7 @@ const StakingOverview = () => {
           The program aims to grow vault adjusted TVL, expand the voting power
           to those who missed out on the airdrop and to distribute the
           governance token to those who have the most skin in the game. The
-          program ends on July 19th, 2021.
+          program ended on July 19th, 2021.
         </OverviewDescription>
         <UnderlineLink
           to="https://ribbonfinance.medium.com/rgp-2-liquidity-mining-program-cc81f0b7a270"

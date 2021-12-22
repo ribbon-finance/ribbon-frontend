@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 
+import { isStakingEnabledForChainId } from "shared/lib/utils/env";
 import {
   getAssets,
   getDisplayAssets,
@@ -33,6 +34,7 @@ import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import { useStakingPoolData } from "shared/lib/hooks/web3DataContext";
 import { useGlobalState } from "shared/lib/store/store";
+import { useWeb3React } from "@web3-react/core";
 
 const ModalContent = styled(motion.div)`
   display: flex;
@@ -45,9 +47,6 @@ const InfoLabel = styled(SecondaryText)`
   line-height: 16px;
 `;
 
-const ModeList = ["deposits", "staking"] as const;
-type ModeType = typeof ModeList[number];
-
 const YourPositionModal: React.FC = () => {
   const [vaultPositionModal, setVaultPositionModal] =
     useGlobalState("vaultPositionModal");
@@ -59,10 +58,15 @@ const YourPositionModal: React.FC = () => {
   const decimals = getAssetDecimals(asset);
   const Logo = getAssetLogo(getDisplayAssets(vaultOption));
 
+  const { chainId } = useWeb3React();
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const { data: stakingPoolData } = useStakingPoolData(vaultOption);
 
-  const [mode, setMode] = useState<ModeType>(ModeList[0]);
+  const ModeList: string[] = isStakingEnabledForChainId(chainId)
+    ? ["deposits", "staking"]
+    : ["deposits"];
+
+  const [mode, setMode] = useState<string>(ModeList[0]);
 
   const roi = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
@@ -307,23 +311,25 @@ const YourPositionModal: React.FC = () => {
           </ModalContent>
         </AnimatePresence>
 
-        <BaseModalContentColumn marginTop="auto" className="mb-2">
-          <SegmentControl
-            segments={ModeList.map((mode) => ({
-              value: mode,
-              display: mode.toUpperCase(),
-            }))}
-            value={mode}
-            onSelect={(value) => {
-              setMode(value as ModeType);
-            }}
-            config={{
-              theme: "outline",
-              color: color,
-              widthType: "fullWidth",
-            }}
-          />
-        </BaseModalContentColumn>
+        {ModeList.length > 1 && (
+          <BaseModalContentColumn marginTop="auto" className="mb-2">
+            <SegmentControl
+              segments={ModeList.map((mode) => ({
+                value: mode,
+                display: mode.toUpperCase(),
+              }))}
+              value={mode}
+              onSelect={(value) => {
+                setMode(value);
+              }}
+              config={{
+                theme: "outline",
+                color: color,
+                widthType: "fullWidth",
+              }}
+            />
+          </BaseModalContentColumn>
+        )}
       </>
     </BasicModal>
   );

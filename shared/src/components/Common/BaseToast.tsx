@@ -114,7 +114,7 @@ const BaseToast: React.FC<ToastProps> = ({
           case "WETH":
             return <AssetLogo height={24} width={24} />;
           default:
-            return <AssetLogo />;
+            return <AssetLogo height="100%" />;
         }
     }
   }, [extra, type]);

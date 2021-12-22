@@ -11,3 +11,4 @@ export type { RibbonStakingRewards } from "./RibbonStakingRewards";
 export type { RibbonV2ThetaVault } from "./RibbonV2ThetaVault";
 export type { RibbonV2stETHThetaVault } from "./RibbonV2stETHThetaVault";
 export type { RibbonTreasuryVault } from "./RibbonTreasuryVault";
+export type { LidoOracle } from "./LidoOracle";

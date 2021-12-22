@@ -8,6 +8,7 @@ import {
   VaultOptions,
   VaultVersion,
   VaultAllowedDepositAssets,
+  isNativeToken,
 } from "shared/lib/constants/constants";
 import {
   ACTIONS,
@@ -161,8 +162,10 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
       vaultVersion: VaultVersion,
       {
         withdrawOption,
+        migrateSourceVault,
       }: {
         withdrawOption?: V2WithdrawOption;
+        migrateSourceVault?: VaultOptions;
       } = {}
     ) => {
       setVaultActionForm((actionForm) => {
@@ -216,6 +219,14 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
             return {
               ...actionForm,
               depositAsset: VaultAllowedDepositAssets[vaultOption][0],
+              vaultVersion,
+              inputAmount: "",
+              actionType,
+            };
+          case ACTIONS.migrate:
+            return {
+              ...actionForm,
+              migrateSourceVault: migrateSourceVault || vaultOption,
               vaultVersion,
               inputAmount: "",
               actionType,
@@ -350,8 +361,9 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
               );
               const total = assetsBalance[actionForm.depositAsset!];
               // TODO: Optimize the code to request gas fees only when needed
-              const maxAmount =
-                actionForm.depositAsset === "WETH" ? total.sub(gasFee) : total;
+              const maxAmount = isNativeToken(actionForm.depositAsset || "")
+                ? total.sub(gasFee)
+                : total;
               const allowedMaxAmount = maxAmount.lte(
                 vaultMaxDepositAmount.sub(v2VaultBalanceInAsset)
               )

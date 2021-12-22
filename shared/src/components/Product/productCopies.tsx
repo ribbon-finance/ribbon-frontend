@@ -285,7 +285,18 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
             </HighlighText>
           )}
         />{" "}
-        strategy, where the call options are collateralized by{" "}
+        strategy where it stakes its ETH deposits in {" "}
+        <TooltipExplanation
+          title="LIDO"
+          explanation="Lido empowers stakers to put their staked assets to use. "
+          learnMoreURL="https://lido.fi"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              Lido
+            </HighlighText>
+          )}
+        />{" "}
+        and then uses its {" "}
         <TooltipExplanation
           title="STETH"
           explanation="stETH is the deposit token that represents a user's share of the their ETH on the Ethereum beacon chain."
@@ -295,8 +306,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
               stETH
             </HighlighText>
           )}
-        />
-        . The vault reinvests the yield earned back into the strategy,
+        />{" "}
+        to collateralize weekly out-of-money ETH call options.
+        The yield earned from both the covered call strategy and the ETH staking rewards are reinvested weekly,
         effectively compounding the yields for depositors over time.
       </>
     ),

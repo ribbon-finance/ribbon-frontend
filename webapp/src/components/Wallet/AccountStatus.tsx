@@ -31,6 +31,7 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import ActionModal from "../Vault/VaultActionsForm/Modal/ActionModal";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
+import useENS from "shared/lib/hooks/useENS";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import {
   BLOCKCHAIN_EXPLORER_NAME,
@@ -40,6 +41,7 @@ import {
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
+import { CHAINID } from "shared/lib/utils/env";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { truncateAddress } from "shared/lib/utils/address";
 import { useVaultData } from "shared/lib/hooks/web3DataContext";
@@ -48,6 +50,8 @@ import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { isPracticallyZero } from "shared/lib/utils/math";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import YourPosition from "shared/lib/components/Vault/YourPosition";
+import AirdropButton from "../Airdrop/AirdropButton";
+import AirdropModal from "../Airdrop/AirdropModal";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -276,6 +280,10 @@ const MenuCloseItem = styled(MenuItem)`
   justify-content: center;
 `;
 
+const AirdropMenuItem = styled(MenuItem)`
+  padding: 8px 8px;
+`;
+
 interface AccountStatusProps {
   vault?: {
     vaultOption: VaultOptions;
@@ -300,10 +308,12 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   } = useWeb3React();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showActionModal, setShowActionModal] = useState(false);
+  const [showAirdropModal, setShowAirdropModal] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
     "hidden"
   );
+  const { ensName } = useENS(account || "");
   const { status, vaultLimit } = useVaultData(
     vault?.vaultOption || VaultList[0]
   );
@@ -357,6 +367,11 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     setIsMenuOpen(false);
   }, []);
 
+  const onShowAirdropModal = useCallback(() => {
+    setIsMenuOpen(false);
+    setShowAirdropModal(true);
+  }, []);
+
   const handleChangeWallet = useCallback(() => {
     setShowConnectModal(true);
     onCloseMenu();
@@ -396,7 +411,8 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
       <>
         <Indicator connected={active} />
         <WalletButtonText connected={active}>
-          {truncateAddress(account)} <ButtonArrow isOpen={isMenuOpen} />
+          {ensName || truncateAddress(account)}{" "}
+          <ButtonArrow isOpen={isMenuOpen} />
         </WalletButtonText>
       </>
     ) : (
@@ -500,8 +516,17 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
               handleCopyAddress,
               renderCopiedButton()
             )}
-            {chainId && renderMenuItem(`OPEN IN ${BLOCKCHAIN_EXPLORER_NAME[chainId]}`, handleOpenEtherscan)}
+            {chainId &&
+              renderMenuItem(
+                `OPEN IN ${BLOCKCHAIN_EXPLORER_NAME[chainId]}`,
+                handleOpenEtherscan
+              )}
             {renderMenuItem("DISCONNECT", handleDisconnect)}
+            {chainId === CHAINID.ETH_MAINNET && (
+              <AirdropMenuItem role="button">
+                <AirdropButton onClick={onShowAirdropModal}></AirdropButton>
+              </AirdropMenuItem>
+            )}
           </WalletDesktopMenu>
         </AnimatePresence>
       </WalletContainer>
@@ -521,14 +546,30 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
           handleCopyAddress,
           renderCopiedButton()
         )}
-        {chainId && renderMenuItem(`OPEN IN ${BLOCKCHAIN_EXPLORER_NAME[chainId]}`, handleOpenEtherscan)}
+        {chainId &&
+          renderMenuItem(
+            `OPEN IN ${BLOCKCHAIN_EXPLORER_NAME[chainId]}`,
+            handleOpenEtherscan
+          )}
         {renderMenuItem("DISCONNECT", handleDisconnect)}
         <MenuCloseItem role="button" onClick={onCloseMenu}>
           <MenuButton isOpen={true} onToggle={onCloseMenu} />
         </MenuCloseItem>
+        {chainId === CHAINID.ETH_MAINNET && (
+          <AirdropMenuItem role="button">
+            <AirdropButton onClick={onShowAirdropModal}></AirdropButton>
+          </AirdropMenuItem>
+        )}
       </WalletMobileOverlayMenu>
 
       {formModal}
+
+      <AirdropModal
+        show={showAirdropModal}
+        onClose={() => {
+          setShowAirdropModal(false);
+        }}
+      />
     </AccountStatusContainer>
   );
 };

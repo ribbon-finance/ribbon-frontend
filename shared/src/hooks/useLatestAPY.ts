@@ -4,6 +4,7 @@ import { formatUnits } from "@ethersproject/units";
 
 import {
   getAssets,
+  VaultFees,
   VaultList,
   VaultOptions,
   VaultVersion,
@@ -14,6 +15,8 @@ import useVaultPriceHistory, {
 } from "./useVaultPerformanceUpdate";
 import { VaultPriceHistory } from "../models/vault";
 import { getAssetDecimals } from "../utils/asset";
+import useYearnAPIData from "./useYearnAPIData";
+import useLidoAPY from "./useLidoOracle";
 
 const getPriceHistoryFromPeriod = (
   priceHistory: VaultPriceHistory[],
@@ -68,7 +71,12 @@ const getPriceHistoryFromPeriod = (
  */
 export const calculateAPYFromPriceHistory = (
   priceHistory: VaultPriceHistory[],
-  decimals: number
+  decimals: number,
+  {
+    vaultOption,
+    vaultVersion,
+  }: { vaultOption: VaultOptions; vaultVersion: VaultVersion },
+  underlyingYieldAPR: number
 ) => {
   const periodStart = moment()
     .isoWeekday("friday")
@@ -81,10 +89,8 @@ export const calculateAPYFromPriceHistory = (
   if (periodStart.isAfter(moment())) {
     periodStart.subtract(1, "week");
   }
-  /**
-   * Subtract 1 week so that calculation account for fees as well
-   */
-  periodStart.subtract(1, "week");
+
+  let weeksAgo = 0;
 
   while (true) {
     const priceHistoryFromPeriod = getPriceHistoryFromPeriod(
@@ -92,37 +98,98 @@ export const calculateAPYFromPriceHistory = (
       periodStart
     );
 
-    if (!priceHistoryFromPeriod) {
-      return 0;
-    }
+    if (priceHistoryFromPeriod) {
+      const [startingPricePerShare, endingPricePerShare] = [
+        parseFloat(
+          formatUnits(priceHistoryFromPeriod[0].pricePerShare, decimals)
+        ),
+        parseFloat(
+          formatUnits(priceHistoryFromPeriod[1].pricePerShare, decimals)
+        ),
+      ];
 
-    const [startingPricePerShare, endingPricePerShare] = [
-      parseFloat(
-        formatUnits(priceHistoryFromPeriod[0].pricePerShare, decimals)
-      ),
-      parseFloat(
-        formatUnits(priceHistoryFromPeriod[1].pricePerShare, decimals)
-      ),
-    ];
+      console.log(startingPricePerShare, endingPricePerShare);
 
-    /**
-     * If the given period is profitable, we calculate APY
-     */
-    if (endingPricePerShare > startingPricePerShare) {
-      return (
-        ((1 +
-          (endingPricePerShare - startingPricePerShare) /
-            startingPricePerShare) **
-          52 -
-          1) *
-        100
-      );
+      /**
+       * If the given period is profitable, we calculate APY
+       */
+      if (endingPricePerShare > startingPricePerShare) {
+        if (weeksAgo > 0) {
+          /**
+           * Fees and underlying yields had been accounted
+           */
+          return (
+            ((1 +
+              (endingPricePerShare - startingPricePerShare) /
+                startingPricePerShare) **
+              52 -
+              1) *
+            100
+          );
+        }
+
+        switch (vaultVersion) {
+          case "v1":
+            /**
+             * V1 does not have fees that can impact performance
+             */
+
+            return (
+              ((1 +
+                (endingPricePerShare - startingPricePerShare) /
+                  startingPricePerShare) **
+                52 -
+                1) *
+                100 +
+              underlyingYieldAPR
+            );
+          case "v2":
+            /**
+             * We first calculate price per share after annualized management fees are charged
+             */
+            const endingPricePerShareAfterManagementFees =
+              endingPricePerShare *
+              (1 -
+                parseFloat(VaultFees[vaultOption].v2?.managementFee!) /
+                  100 /
+                  52);
+            /**
+             * Next, we calculate how much performance fees will lower the pricePerShare
+             */
+            const performanceFeesImpact =
+              (endingPricePerShare - startingPricePerShare) *
+              (parseFloat(VaultFees[vaultOption].v2?.performanceFee!) / 100);
+            /**
+             * Finally, we calculate price per share after both fees
+             */
+            const pricePerShareAfterFees =
+              endingPricePerShareAfterManagementFees - performanceFeesImpact;
+
+            return (
+              ((1 +
+                (pricePerShareAfterFees - startingPricePerShare) /
+                  startingPricePerShare) **
+                52 -
+                1) *
+                100 +
+              underlyingYieldAPR
+            );
+        }
+      }
     }
 
     /**
      * Otherwise, we look for the previous week
      */
     periodStart.subtract(1, "week");
+    weeksAgo += 1;
+
+    /**
+     * Prevent searching too far ago
+     */
+    if (weeksAgo >= 5) {
+      return 0;
+    }
   }
 };
 
@@ -134,22 +201,28 @@ export const useLatestAPY = (
     vaultOption,
     vaultVersion
   );
+  const { getVaultAPR } = useYearnAPIData();
+  const lidoAPY = useLidoAPY();
 
   switch (vaultVersion) {
     case "v2":
       switch (vaultOption) {
         /**
-         * TODO: Temporary hardcode their APY as their subgraph vault performance are being resolved
+         * TODO: Temporarily hardcode it for the launch because it is inaccurate
          */
-        case "rAAVE-THETA":
-          /**
-           * Notes: Related to overcharging issue
-           * AAVE Vault pricePerShare issue should automatically be resolved on 10th Dec where the APY will interpolate based on the duration from 3rd Dec to 10th Dec
-           */
-          return { fetched: true, res: 8.8334241 };
-        case "rstETH-THETA":
-          return { fetched: true, res: 12.1910215 };
+        case "rAVAX-THETA":
+          return { fetched: true, res: 17.46 };
       }
+  }
+
+  let underlyingYieldAPR = 0;
+
+  switch (vaultOption) {
+    case "ryvUSDC-ETH-P-THETA":
+      underlyingYieldAPR = getVaultAPR("yvUSDC", "0.3.0") * 100;
+      break;
+    case "rstETH-THETA":
+      underlyingYieldAPR = lidoAPY * 100;
   }
 
   return {
@@ -158,7 +231,9 @@ export const useLatestAPY = (
       ? 0
       : calculateAPYFromPriceHistory(
           priceHistory,
-          getAssetDecimals(getAssets(vaultOption))
+          getAssetDecimals(getAssets(vaultOption)),
+          { vaultOption, vaultVersion },
+          underlyingYieldAPR
         ),
   };
 };
@@ -167,6 +242,8 @@ export default useLatestAPY;
 
 export const useLatestAPYs = () => {
   const { data, loading } = useVaultsPriceHistory();
+  const { getVaultAPR } = useYearnAPIData();
+  const lidoAPY = useLidoAPY();
 
   const latestAPYs = useMemo(
     () =>
@@ -181,17 +258,21 @@ export const useLatestAPYs = () => {
                 case "v2":
                   switch (vaultOption) {
                     /**
-                     * TODO: Temporary hardcode their APY as their subgraph vault performance are being resolved
+                     * TODO: Temporarily hardcode it for the launch because it is inaccurate
                      */
-                    case "rAAVE-THETA":
-                      /**
-                       * Notes: Related to overcharging issue
-                       * AAVE Vault pricePerShare issue should automatically be resolved on 10th Dec where the APY will interpolate based on the duration from 3rd Dec to 10th Dec
-                       */
-                      return [vaultOption, 8.8334241];
-                    case "rstETH-THETA":
-                      return [vaultOption, 12.1910215];
+                    case "rAVAX-THETA":
+                      return [vaultOption, 17.46];
                   }
+              }
+
+              let underlyingYieldAPR = 0;
+
+              switch (vaultOption) {
+                case "ryvUSDC-ETH-P-THETA":
+                  underlyingYieldAPR = getVaultAPR("yvUSDC", "0.3.0") * 100;
+                  break;
+                case "rstETH-THETA":
+                  underlyingYieldAPR = lidoAPY * 100;
               }
 
               return [
@@ -200,7 +281,9 @@ export const useLatestAPYs = () => {
                   ? 0
                   : calculateAPYFromPriceHistory(
                       priceHistory,
-                      getAssetDecimals(getAssets(vaultOption))
+                      getAssetDecimals(getAssets(vaultOption)),
+                      { vaultOption, vaultVersion: version },
+                      underlyingYieldAPR
                     ),
               ];
             })
@@ -211,7 +294,7 @@ export const useLatestAPYs = () => {
           [option in VaultOptions]: number;
         };
       },
-    [data, loading]
+    [data, getVaultAPR, lidoAPY, loading]
   );
 
   return { fetched: !loading, res: latestAPYs };

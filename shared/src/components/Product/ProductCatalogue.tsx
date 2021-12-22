@@ -11,6 +11,7 @@ import {
   VaultVersion,
   VaultVersionList,
 } from "../../constants/constants";
+import { CHAINID } from "../../utils/env";
 
 import sizes from "../../designSystem/sizes";
 import { useLatestAPYs } from "../../hooks/useLatestAPY";
@@ -55,7 +56,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
           }
 
           const availableVaultVersions = VaultVersionList.filter((version) =>
-            hasVaultVersion(vaultOption, version)
+            hasVaultVersion(vaultOption, version, chainId || CHAINID.ETH_MAINNET)
           );
 
           // If vault only has one available version
@@ -87,7 +88,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
           return [vaultOption, VaultVersionList[0]];
         })
       ) as VaultsDisplayVersion,
-    [userSelectedVaultsVersion, v1VaultsData, v1VaultsDataLoading]
+    [chainId, userSelectedVaultsVersion, v1VaultsData, v1VaultsDataLoading]
   );
 
   const setVaultDisplayVersion = useCallback(

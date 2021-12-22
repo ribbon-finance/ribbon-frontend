@@ -1,8 +1,7 @@
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { WalletLinkConnector } from "@web3-react/walletlink-connector";
-import { isDevelopment } from "./env";
-import { CHAINID } from "../constants/constants";
+import { CHAINID, isDevelopment } from "./env";
 
 const supportedChainIds = isDevelopment() ?
   [CHAINID.ETH_KOVAN, CHAINID.AVAX_FUJI] :

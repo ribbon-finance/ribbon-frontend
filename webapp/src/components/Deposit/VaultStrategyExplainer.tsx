@@ -608,10 +608,18 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           );
         case "gnosisTrade":
           return (
-            <>
-              The {assetUnit} earned from the Gnosis auction is collected by the
-              vault and represents the yield on this strategy.
-            </>
+            collateralAsset === 'stETH' ? (
+              <>
+                The {assetUnit} earned from the Gnosis auction is collected by the
+                vault and represents the primary source of yield on this strategy.
+                The vault also generates yield, in the form of Lido staking rewards, by holding {collateralAsset}.
+              </>
+            ) : (
+              <>
+                The {assetUnit} earned from the Gnosis auction is collected by the
+                vault and represents the yield on this strategy.
+              </>
+            )
           );
         case "tradeOption":
           return (

@@ -15,6 +15,7 @@ interface GlobalStore {
     actionType: ActionType;
     depositAsset?: Assets;
     withdrawOption?: V2WithdrawOption;
+    migrateSourceVault?: VaultOptions;
     receiveVault?: VaultOptions;
   };
 }

@@ -223,7 +223,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
                       values: filterAssets,
                       options: AssetsList.map((asset) => {
                         const Logo = getAssetLogo(asset);
-                        let logo = <Logo />;
+                        let logo = <Logo height="100%" />;
                         switch (asset) {
                           case "WETH":
                             logo = <Logo height="70%" />;

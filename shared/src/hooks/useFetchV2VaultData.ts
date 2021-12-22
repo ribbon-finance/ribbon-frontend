@@ -14,9 +14,15 @@ import { useWeb3Context } from "./web3Context";
 import { isProduction } from "../utils/env";
 import { getAssetDecimals } from "../utils/asset";
 import { usePendingTransactions } from "./pendingTransactionsContext";
+import { isVaultSupportedOnChain } from "../utils/vault";
 
 const useFetchV2VaultData = (): V2VaultData => {
-  const { active, account: web3Account, library } = useWeb3React();
+  const {
+    chainId,
+    active: web3Active,
+    account: web3Account,
+    library,
+  } = useWeb3React();
   const { provider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
@@ -40,6 +46,11 @@ const useFetchV2VaultData = (): V2VaultData => {
 
     const responses = await Promise.all(
       VaultList.map(async (vault) => {
+        // If we don't support the vault on the chainId, we just return the inactive data state
+        const active = Boolean(
+          web3Active && isVaultSupportedOnChain(vault, chainId || 1)
+        );
+
         const contract = getV2Vault(library || provider, vault, active);
         if (!contract) {
           return { vault };
@@ -166,7 +177,7 @@ const useFetchV2VaultData = (): V2VaultData => {
     if (!isProduction()) {
       console.timeEnd("V2 Vault Data Fetch");
     }
-  }, [account, active, library, provider]);
+  }, [account, web3Active, library, provider, chainId]);
 
   useEffect(() => {
     doMulticall();

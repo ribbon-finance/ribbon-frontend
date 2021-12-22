@@ -1,6 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import moment from "moment";
 
+import { VaultFees } from "../constants/constants";
 import { VaultPriceHistory } from "../models/vault";
 import { calculateAPYFromPriceHistory } from "./useLatestAPY";
 
@@ -17,8 +18,6 @@ import { calculateAPYFromPriceHistory } from "./useLatestAPY";
 const basePricePerShare = BigNumber.from((10 ** 18).toString());
 const pricePerShareA = basePricePerShare.mul(105).div(100);
 const pricePerShareAB = pricePerShareA.mul(110).div(100);
-const pricePerShareAF = pricePerShareA.mul(95).div(100);
-const pricePerShareAFB = pricePerShareAF.mul(110).div(100);
 
 const pastFriday = moment()
   .isoWeekday("friday")
@@ -33,11 +32,10 @@ if (pastFriday.isAfter(moment())) {
 }
 
 /**
- * This is a typical case for vault where we will estimate APY based on previous whole week
- * performance so yield-token APY and fees are also accounted into the calculation.
- * This test case test on weeks where previous week are ITM
+ * For V1 vault that does not use yield-token as collateral,
+ * we simply take the latest auction close yield to interpolate the APY
  */
-it("Vault performance on ITM week", () => {
+it("V1 Vault performance (non yield-token collaterized)", () => {
   const priceHistory: VaultPriceHistory[] = [
     {
       pricePerShare: basePricePerShare,
@@ -57,32 +55,29 @@ it("Vault performance on ITM week", () => {
     },
   ];
 
-  const result = calculateAPYFromPriceHistory(priceHistory, 18);
+  const result = calculateAPYFromPriceHistory(
+    priceHistory,
+    18,
+    { vaultOption: "rETH-THETA", vaultVersion: "v1" },
+    0
+  );
 
   /**
-   * It should take last round performance, which is 5% increment from 10AM UTC previous week and
-   * interpolate with 52 weeks
+   * In this case, latest week had gained by 10%,
+   * therefore APY should be annulized of weekly 10% gain
    */
-  expect(result).toBe((1.05 ** 52 - 1) * 100);
+  expect(result).toBe((1.1 ** 52 - 1) * 100);
 });
 
 /**
- * This is test case for vault where we will estimate APY based on previous profitable round so that
- * we get accurate representation of APY.
- * This is mainly due to unable to estimate accurately when option are exercised.
+ * For V1 vault that does use yield-token as collateral,
+ * we take the latest auction close yield to interpolate the APY
+ * and then add underlying yield token yield on top of it
  */
-it("Vault performance on OTM week", () => {
+it("V1 Vault performance (yield-token collaterized)", () => {
   const priceHistory: VaultPriceHistory[] = [
     {
       pricePerShare: basePricePerShare,
-      timestamp: pastFriday
-        .clone()
-        .subtract(2, "weeks")
-        .add(30, "minutes")
-        .unix(),
-    },
-    {
-      pricePerShare: pricePerShareA,
       timestamp: pastFriday
         .clone()
         .subtract(1, "weeks")
@@ -90,75 +85,120 @@ it("Vault performance on OTM week", () => {
         .unix(),
     },
     {
-      pricePerShare: pricePerShareAF,
+      pricePerShare: pricePerShareA,
       timestamp: pastFriday.clone().add(30, "minutes").unix(),
     },
     {
-      pricePerShare: pricePerShareAFB,
+      pricePerShare: pricePerShareAB,
       timestamp: pastFriday.clone().add(2, "hours").unix(),
     },
   ];
 
-  const result = calculateAPYFromPriceHistory(priceHistory, 18);
+  const result = calculateAPYFromPriceHistory(
+    priceHistory,
+    18,
+    { vaultOption: "ryvUSDC-ETH-P-THETA", vaultVersion: "v1" },
+    2
+  );
 
   /**
-   * It should take the latest yield earn, which is 5% increment from 10AM UTC 2 weeks ago and
-   * interpolate with 52 weeks
+   * In this case, latest week had gained by 10%,
+   * therefore APY should be annulized of weekly 10% gain, plus 2% from yield token
    */
-  expect(result).toBe((1.05 ** 52 - 1) * 100);
+  expect(result).toBe((1.1 ** 52 - 1) * 100 + 2);
 });
 
 /**
- * This test case test cases where a vault is less than a week old and without option sold
+ * For V2 vault that does not use yield-token as collateral,
+ * we simply take the latest auction close yield, minus fees and interpolate APY
  */
-it("Newly created vault with less than a week old, without option sold", () => {
-  const durationFromPastFriday = moment.duration(moment().diff(pastFriday));
-  /**
-   * A random time between last friday and now where the contract is created
-   */
-  const contractCreationTime = pastFriday
-    .clone()
-    .add(durationFromPastFriday.asSeconds() / 2, "seconds");
-
+it("V2 Vault performance (non yield-token collaterized)", () => {
+  const vaultOption = "rETH-THETA";
   const priceHistory: VaultPriceHistory[] = [
     {
       pricePerShare: basePricePerShare,
-      timestamp: contractCreationTime.unix(),
-    },
-  ];
-
-  const result = calculateAPYFromPriceHistory(priceHistory, 18);
-
-  expect(result).toBe(0);
-});
-
-/**
- * This test case test cases where a vault is less than a week old and with option sold
- */
-it("Newly created vault with less than a week old, with option sold", () => {
-  const durationFromPastFriday = moment.duration(moment().diff(pastFriday));
-  /**
-   * A random time between last friday and now where the contract is created
-   */
-  const contractCreationTime = pastFriday
-    .clone()
-    .add(durationFromPastFriday.asSeconds() / 2, "seconds");
-  const optionSoldTime = contractCreationTime
-    .clone()
-    .add(durationFromPastFriday.asSeconds() / 4, "seconds");
-
-  const priceHistory: VaultPriceHistory[] = [
-    {
-      pricePerShare: basePricePerShare,
-      timestamp: contractCreationTime.unix(),
+      timestamp: pastFriday.clone().add(30, "minutes").unix(),
     },
     {
       pricePerShare: pricePerShareA,
-      timestamp: optionSoldTime.unix(),
+      timestamp: pastFriday.clone().add(2, "hours").unix(),
     },
   ];
 
-  const result = calculateAPYFromPriceHistory(priceHistory, 18);
+  const result = calculateAPYFromPriceHistory(
+    priceHistory,
+    18,
+    { vaultOption: vaultOption, vaultVersion: "v2" },
+    0
+  );
 
-  expect(result).toBe((1.05 ** 52 - 1) * 100);
+  /**
+   * We first calculate price per share after annualized management fees are charged
+   */
+  const endingPricePerShareAfterManagementFees =
+    1.05 *
+    (1 - parseFloat(VaultFees[vaultOption].v2?.managementFee!) / 100 / 52);
+  /**
+   * Next, we calculate how much performance fees will lower the pricePerShare
+   */
+  const performanceFeesImpact =
+    0.05 * (parseFloat(VaultFees[vaultOption].v2?.performanceFee!) / 100);
+  /**
+   * Finally, we calculate price per share after both fees
+   */
+  const pricePerShareAfterFees =
+    endingPricePerShareAfterManagementFees - performanceFeesImpact;
+
+  /**
+   * In this case, latest week had gained by 10%, therefore APY should be annulized of weekly 10% gain minus fees
+   */
+  expect(result).toBe((pricePerShareAfterFees ** 52 - 1) * 100);
+});
+
+/**
+ * For V2 vault that does use yield-token as collateral,
+ * we take the latest auction close yield, minus fees and interpolate APY,
+ * and add yield token yield
+ */
+it("V2 Vault performance (yield-token collaterized)", () => {
+  const vaultOption = "rstETH-THETA";
+  const priceHistory: VaultPriceHistory[] = [
+    {
+      pricePerShare: basePricePerShare,
+      timestamp: pastFriday.clone().add(30, "minutes").unix(),
+    },
+    {
+      pricePerShare: pricePerShareA,
+      timestamp: pastFriday.clone().add(2, "hours").unix(),
+    },
+  ];
+
+  const result = calculateAPYFromPriceHistory(
+    priceHistory,
+    18,
+    { vaultOption: vaultOption, vaultVersion: "v2" },
+    5
+  );
+
+  /**
+   * We first calculate price per share after annualized management fees are charged
+   */
+  const endingPricePerShareAfterManagementFees =
+    1.05 *
+    (1 - parseFloat(VaultFees[vaultOption].v2?.managementFee!) / 100 / 52);
+  /**
+   * Next, we calculate how much performance fees will lower the pricePerShare
+   */
+  const performanceFeesImpact =
+    0.05 * (parseFloat(VaultFees[vaultOption].v2?.performanceFee!) / 100);
+  /**
+   * Finally, we calculate price per share after both fees
+   */
+  const pricePerShareAfterFees =
+    endingPricePerShareAfterManagementFees - performanceFeesImpact;
+
+  /**
+   * In this case, latest week had gained by 10%, therefore APY should be annulized of weekly 10% gain minus fees
+   */
+  expect(result).toBe((pricePerShareAfterFees ** 52 - 1) * 100 + 5);
 });

@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useCallback, useEffect } from "react";
 import { ethers } from "ethers";
+import { useWeb3React } from "@web3-react/core";
 import { useGlobalState } from "../store/store";
+import { CHAINID, GAS_URL } from "../utils/env";
 
 const { parseUnits } = ethers.utils;
 
@@ -19,18 +21,26 @@ interface APIResponse {
 let fetchedOnce = false;
 
 const useGasPrice = () => {
-  const API_KEY = process.env.REACT_APP_ETHERSCAN_API_KEY;
-  const API_URL = `https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=${API_KEY}`;
-
+  const { chainId } = useWeb3React();
   const [gasPrice, setGasPrice] = useGlobalState("gasPrice");
 
   const fetchGasPrice = useCallback(async () => {
-    fetchedOnce = true;
-    const response = await axios.get(API_URL);
+    if (!chainId) return;
+
+    // Snowtrace API wrongly returns Ethereum mainnet gas price
+    // But the good thing is that Avalanche hardcodes gas price to 25 nAVAX (gwei)
+    if (chainId === CHAINID.AVAX_MAINNET) {
+      fetchedOnce = true;
+      setGasPrice(parseUnits("25", "gwei").toString());
+      return;
+    }
+
+    const response = await axios.get(GAS_URL[chainId]);
     const data: APIResponse = response.data;
 
+    fetchedOnce = true;
     setGasPrice(parseUnits(data.result.FastGasPrice, "gwei").toString());
-  }, [API_URL, setGasPrice]);
+  }, [chainId, setGasPrice]);
 
   useEffect(() => {
     !fetchedOnce && fetchGasPrice();

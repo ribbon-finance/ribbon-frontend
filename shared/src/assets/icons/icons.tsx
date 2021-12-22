@@ -294,16 +294,16 @@ export const DepositIcon: React.FC<SVGPropsWithColor> = ({
     <path
       d="M16 6.66672V25.3334"
       stroke={color || "white"}
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M25.3337 16L16.0003 25.3333L6.66699 16"
       stroke={color || "white"}
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -321,16 +321,16 @@ export const WithdrawIcon: React.FC<SVGPropsWithColor> = ({
     <path
       d="M16 25.3335L16 6.66683"
       stroke={color || "white"}
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M6.66634 16L15.9997 6.66667L25.333 16"
       stroke={color || "white"}
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -376,14 +376,14 @@ export const TransferIcon: React.FC<SVGPropsWithColor> = ({
     <path
       d="M18.3334 1.66663L9.16675 10.8333"
       stroke={color || "white"}
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M18.3334 1.66663L12.5001 18.3333L9.16675 10.8333L1.66675 7.49996L18.3334 1.66663Z"
       stroke={color || "white"}
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
