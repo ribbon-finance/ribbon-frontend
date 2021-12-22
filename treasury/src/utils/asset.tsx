@@ -2,7 +2,6 @@ import React from "react";
 import styled, { StyledComponent } from "styled-components";
 import {
   USDCLogo,
-  WBTCLogo,
   WETHLogo,
   RBNLogo,
   BZRXLogo,
@@ -22,8 +21,6 @@ export const getAssetDisplay = (asset: Assets): string => {
 
 export const getAssetDecimals = (asset: Assets): number => {
   switch (asset) {
-    case "WBTC":
-      return 8;
     case "USDC":
       return 6;
     default:
@@ -52,13 +49,6 @@ export const getAssetDefaultSignificantDecimals = (asset: Assets): number => {
 };
 
 export const getAssetColor = (asset: Assets): string => colors.asset[asset];
-
-const ColoredWBTCLogo = styled(WBTCLogo)`
-  width: 100%;
-  && * {
-    fill: ${colors.asset.WBTC};
-  }
-`;
 
 const ColoredUSDCLogo = styled(USDCLogo)<{ backgroundColor?: string }>`
   margin: -8px;
@@ -105,8 +95,6 @@ export const getAssetLogo: (asset: Assets) =>
   switch (asset) {
     case "USDC":
       return ColoredUSDCLogo;
-    case "WBTC":
-      return ColoredWBTCLogo;
     case "WETH":
       return WETHLogo;
     case "RBN":

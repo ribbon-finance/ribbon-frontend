@@ -26,12 +26,9 @@ import colors from "shared/lib/designSystem/colors";
 import useVaultAccounts from "../../../hooks/useVaultAccounts";
 
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
-import SegmentControl from "shared/lib/components/Common/SegmentControl";
 import { BigNumber } from "ethers";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
-import CapBar from "shared/lib/components/Deposit/CapBar";
-import { useStakingPoolData } from "shared/lib/hooks/web3DataContext";
 import { useGlobalState } from "../../../store/store";
 import useVaultActivity from "../../../hooks/useVaultActivity";
 
@@ -135,7 +132,7 @@ const YourPositionModal: React.FC = () => {
             {/* Position Info */}
             <BaseModalContentColumn marginTop={16}>
               <Subtitle color={colors.text}>
-                POSITION {getAssetDisplay(asset)}
+                POSITION ({getAssetDisplay(asset)})
               </Subtitle>
             </BaseModalContentColumn>
             <BaseModalContentColumn marginTop={8}>
@@ -250,24 +247,6 @@ const YourPositionModal: React.FC = () => {
             {body}
           </ModalContent>
         </AnimatePresence>
-
-        {/* <BaseModalContentColumn marginTop="auto" className="mb-2">
-          <SegmentControl
-            segments={ModeList.map((mode) => ({
-              value: mode,
-              display: mode.toUpperCase(),
-            }))}
-            value={mode}
-            onSelect={(value) => {
-              setMode(value as ModeType);
-            }}
-            config={{
-              theme: "outline",
-              color: color,
-              widthType: "fullWidth",
-            }}
-          />
-        </BaseModalContentColumn> */}
       </>
     </BasicModal>
   );

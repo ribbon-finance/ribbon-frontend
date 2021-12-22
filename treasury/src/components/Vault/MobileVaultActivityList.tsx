@@ -13,7 +13,6 @@ import {
 } from "shared/lib/utils/math";
 import {
   getAssets,
-  isPutVault,
   VaultOptions,
 } from "../../constants/constants";
 import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
@@ -91,7 +90,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
                 O-{asset}-
                 {moment(activity.expiry, "X").format("DD-MMM-YY").toUpperCase()}
                 -{formatOption(activity.strikePrice)}
-                {isPutVault(vaultOption) ? "P" : "C"}
+                {"C"}
               </VaultSecondaryInfoText>
               <VaultActivityInfoRow>
                 <div className="d-flex flex-column">
@@ -124,7 +123,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
                   .format("DD-MMM-YY")
                   .toUpperCase()}
                 -{formatOption(activity.vaultShortPosition.strikePrice)}
-                {isPutVault(vaultOption) ? "P" : "C"}
+                {"C"}
               </VaultSecondaryInfoText>
               <VaultActivityInfoRow>
                 <div className="d-flex flex-column">

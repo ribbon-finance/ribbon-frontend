@@ -262,9 +262,6 @@ const PortfolioTransactions = () => {
   const getTransactionAssetText = useCallback(
     (vaultOption: VaultOptions, type: VaultTransactionType) => {
       switch (type) {
-        case "stake":
-        case "unstake":
-          return vaultOption;
         case "distribute":
           return getAssetDisplay("USDC");
         default:
@@ -288,13 +285,11 @@ const PortfolioTransactions = () => {
         case "deposit":
         case "receive":
         case "distribute":
-        case "stake":
           prependSymbol = "+";
           break;
         case "withdraw":
         case "instantWithdraw":
         case "transfer":
-        case "unstake":
           prependSymbol = "-";
       }
 
@@ -325,14 +320,6 @@ const PortfolioTransactions = () => {
       case "withdraw":
       case "instantWithdraw":
         return <WithdrawIcon width={20} />
-      case "stake":
-        return (
-          <StakeOuterCircle>
-            <StakeCircle type="solid" />
-          </StakeOuterCircle>
-        );
-      case "unstake":
-        return <StakeCircle type="hollow" />;
       case "migrate":
         return <MigrateIcon width={14} height={14} />;
       case "transfer":
@@ -347,12 +334,10 @@ const PortfolioTransactions = () => {
     switch (type) {
       case "deposit":
       case "receive":
-      case "stake":
       case "migrate":
         return colors.green;
       case "withdraw":
       case "instantWithdraw":
-      case "unstake":
       case "transfer":
         return colors.red;
       case "distribute":
@@ -486,7 +471,7 @@ const PortfolioTransactions = () => {
                   transaction.amount,
                   transaction.type,
                   "eth",
-                  getAssets(transaction.vault.symbol),
+                  (transaction.type == "distribute") ? "USDC" : getAssets(transaction.vault.symbol),
                   transaction.timestamp
                 )}
               </TransactionInfoText>

@@ -76,8 +76,6 @@ export type VaultTransactionType =
   | "instantWithdraw"
   | "transfer"
   | "receive"
-  | "stake"
-  | "unstake"
   | "migrate";
 
 export interface VaultTransaction {

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import currency from "currency.js";
 import { Col, Row } from "react-bootstrap";
@@ -14,19 +14,16 @@ import {
   VaultOptions,
   VaultVersion,
 } from "../../constants/constants";
-import { BaseButton, SecondaryText, Title } from "shared/lib/designSystem";
+import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import StrikeChart from "webapp/lib/components/Deposit/StrikeChart";
-import { getVaultColor } from "../../utils/vault";
-import ProfitCalculatorModal from "./ProfitCalculatorModal";
 import { formatUnits } from "@ethersproject/units";
 import { useLatestOption } from "../../hooks/useLatestOption";
 import useVaultActivity from "../../hooks/useVaultActivity";
 import {
   VaultActivityMeta,
   VaultOptionTrade,
-  VaultShortPosition,
 } from "../../models/vault";
 
 const VaultPerformanceChartContainer = styled.div`
@@ -80,26 +77,6 @@ const DataNumber = styled(Title)<{ variant?: "green" | "red" }>`
   }}
 `;
 
-const CalculatorButton = styled(BaseButton)<{ color: string }>`
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  padding: 16px 0px;
-  background: ${(props) => props.color}14;
-  border-radius: 0px 0px ${theme.border.radius} ${theme.border.radius};
-
-  &:hover {
-    opacity: ${theme.hover.opacity};
-  }
-`;
-
-const CalculatorButtonText = styled(Title)<{ color: string }>`
-  font-size: 14px;
-  line-height: 20px;
-  letter-spacing: 1px;
-  color: ${(props) => props.color};
-`;
-
 interface WeeklyStrategySnapshotProps {
   vault: {
     vaultOption: VaultOptions;
@@ -118,10 +95,8 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
 
   const asset = getAssets(vaultOption);
   const optionAsset = getOptionAssets(vaultOption);
-  const color = getVaultColor(vaultOption);
   const { prices, loading: priceLoading } = useAssetsPrice();
   const loading = priceLoading || optionLoading;
-  const [showCalculator, setShowCalculator] = useState(false);
   const { activities, loading: activitiesLoading } = useVaultActivity(vaultOption!, vaultVersion);
   const premiumDecimals = getAssetDecimals("USDC");
   
@@ -203,14 +178,6 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
         0.9,
     };
   }, [loading, currentOption, prices, optionAsset, asset]);
-
-  const ProfitabilityText = useMemo(() => {
-    if (loading) return loadingText;
-
-    if (!KPI) return "---";
-
-    return `${KPI.roi.toFixed(2)}%`;
-  }, [KPI, loading, loadingText]);
   
   const strikeChart = useMemo(() => {
     if (loading || !prices[optionAsset]) {
@@ -256,11 +223,11 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
             <DataNumber>{strikeAPRText}</DataNumber>
           </DataCol>
           <DataCol xs="6">
-            <DataLabel className="d-block">Latest Yield Generated</DataLabel>
+            <DataLabel className="d-block">Latest Yield Earned</DataLabel>
             <DataNumber
-              variant="green"
+              variant={latestYield != "---" ? "green" : undefined}
             >
-              ${latestYield}
+              {latestYield != "---" ? "$"+latestYield : latestYield}
             </DataNumber>
           </DataCol>
           <DataCol xs="6">
@@ -269,28 +236,6 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
           </DataCol>
         </Row>
       </VaultPerformanceChartSecondaryContainer>
-      {currentOption && (
-        <>
-          <CalculatorButton
-            color={color}
-            role="button"
-            onClick={() => setShowCalculator(true)}
-          >
-            <CalculatorButtonText color={color}>
-              OPEN PROFIT CALCULATOR
-            </CalculatorButtonText>
-          </CalculatorButton>
-          <ProfitCalculatorModal
-            vault={vault}
-            show={showCalculator}
-            onClose={() => setShowCalculator(false)}
-            prices={prices}
-            asset={asset}
-            optionAsset={optionAsset}
-            currentOption={currentOption}
-          />
-        </>
-      )}
     </>
   );
 };

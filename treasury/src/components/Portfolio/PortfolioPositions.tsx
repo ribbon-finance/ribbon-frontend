@@ -289,25 +289,10 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
             </PositionInfoRow>
             <KPIContainer>
               <KPIDatas>
-                {/* <KPIRoi variant={calculatedROI >= 0 ? "green" : "red"}>
-                  {calculatedROI >= 0 ? "+" : ""}
-                  {calculatedROI.toFixed(2)}%
-                </KPIRoi> */}
               </KPIDatas>
             </KPIContainer>
           </PositionInfo>
         </PositionMainContainer>
-
-        {/* <PositionStakedContainer>
-          <PositionInfoRow>
-            <PositionInfoText className="flex-grow-1">
-              Staked Amount
-            </PositionInfoText>
-            <PositionSecondaryInfoText>
-              {renderAmountText(vaultAccount.totalStakedBalance, "eth")}
-            </PositionSecondaryInfoText>
-          </PositionInfoRow>
-        </PositionStakedContainer> */}
       </PositionContainer>
     </PositionLink>
   );

@@ -6,7 +6,6 @@ import { DefiScoreProtocol, DefiScoreToken } from "shared/lib/models/defiScore";
 export const AssetsList = [
   "WETH",
   "USDC",
-  "WBTC",
   "RBN",
   "BZRX",
   "PERP"

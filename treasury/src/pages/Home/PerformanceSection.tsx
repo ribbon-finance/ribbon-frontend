@@ -10,7 +10,7 @@ import {
 } from "../../constants/constants";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import StrategySnapshot from "../../components/Deposit/StrategySnapshot";
+import EmptyStrategySnapshot from "../../components/Deposit/EmptyStrategySnapshot";
 import sizes from "shared/lib/designSystem/sizes";
 
 const Paragraph = styled.div`
@@ -67,38 +67,18 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
 
   const renderWithdrawalsSection = useCallback(
     (_vaultOption: VaultOptions, _vaultVersion: VaultVersion) => {
-      switch (_vaultVersion) {
-        case "v1":
-          const withdrawalFee = VaultFees[_vaultOption].v1?.withdrawalFee;
-          return (
-            <>
-              {" "}
-              The vault allocates 90% of the funds deposited towards its
-              strategy and reserves 10% of the funds deposited for withdrawals.
-              If in any given week the 10% withdrawal limit is reached,
-              withdrawals from the vault will be disabled and depositors will
-              have to wait until the following week in order to withdraw their
-              funds.
-              <br />
-              <br />
-              Withdrawing from the vault has a fixed withdrawal fee of{" "}
-              {withdrawalFee}%. This is to encourage longer-term depositors.
-            </>
-          );
-        case "v2":
-          return (
-            <>
-              Once user funds have been used in the vault’s weekly strategy they
-              cannot be withdrawn until the vault closes it’s position the
-              following Friday at 10am UTC.
-              <br />
-              <br />
-              Users can withdraw their funds instantly during the weekly
-              timelock period where the vault closes it’s previous position and
-              opens its new position.{" "}
-            </>
-          );
-      }
+      return (
+        <>
+          Once user funds have been used in the vault’s weekly strategy they
+          cannot be withdrawn until the vault closes it’s position the
+          following Friday at 10am UTC.
+          <br />
+          <br />
+          Users can withdraw their funds instantly during the weekly
+          timelock period where the vault closes it’s previous position and
+          opens its new position.{" "}
+        </>
+      );
     },
     []
   );
@@ -109,7 +89,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
         <>
           <Paragraph>
             <ParagraphHeading>Strategy Snapshot</ParagraphHeading>
-            <StrategySnapshot vault={vault} />
+            <EmptyStrategySnapshot />
           </Paragraph>
         </>
       )}

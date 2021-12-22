@@ -13,19 +13,15 @@ import {
   VaultAddressMap,
   VaultOptions,
   VaultVersion,
-  LidoCurvePoolAddress,
   VaultAllowedDepositAssets,
-  CurveSwapSlippage,
 } from "../../../../constants/constants";
 import { isETHVault } from "../../../../utils/vault";
-import { amountAfterSlippage } from "shared/lib/utils/math";
 import { usePendingTransactions } from "../../../../hooks/pendingTransactionsContext";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
 import { useVaultData, useV2VaultData } from "../../../../hooks/web3DataContext";
 import useV2Vault from "../../../../hooks/useV2Vault";
 import WarningStep from "./WarningStep";
-import { getCurvePool } from "shared/lib/hooks/useCurvePool";
 
 export interface ActionStepsProps {
   vault: {

@@ -3,7 +3,6 @@ import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
-import { BigNumber } from "ethers";
 
 import {
   BaseIndicator,
@@ -212,24 +211,12 @@ const DepositPage = () => {
   / (10 ** premiumDecimals)  
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
-    switch (vaultVersion) {
-      case "v1":
-        return [
-          parseFloat(
-            formatSignificantDecimals(formatUnits(deposits, decimals), 2)
-          ),
-          parseFloat(
-            formatSignificantDecimals(formatUnits(vaultLimit, decimals))
-          ),
-        ];
-      case "v2":
-        return [
-          parseFloat(
-            formatSignificantDecimals(formatUnits(totalBalance, decimals), 2)
-          ),
-          parseFloat(formatSignificantDecimals(formatUnits(cap, decimals))),
-        ];
-    }
+    return [
+      parseFloat(
+        formatSignificantDecimals(formatUnits(totalBalance, decimals), 2)
+      ),
+      parseFloat(formatSignificantDecimals(formatUnits(cap, decimals))),
+    ];
   }, [cap, decimals, deposits, totalBalance, vaultLimit, vaultVersion]);
 
   const vaultInformation = (
@@ -350,8 +337,6 @@ const HeroSection: React.FC<{
     switch (asset) {
       case "WETH":
         return <Logo width="55%" style={{ marginTop: 40 }} />;
-      case "WBTC":
-        return <Logo height="190%" style={{ marginTop: 40 }} />;
       case "USDC":
       default:
         return <Logo />;
