@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
+import { isProduction } from "shared/lib/utils/env";
 
 import {
   BaseIndicator,
@@ -30,6 +31,7 @@ import {
   VaultOptions,
   VaultVersion,
   VaultVersionList,
+  VaultNameOptionMap
 } from "../../constants/constants";
 import { productCopies } from "../../components/Product/productCopies";
 import useVaultOption from "../../hooks/useVaultOption";
@@ -69,12 +71,23 @@ const BannerButton = styled.div<{ color: string }>`
   border-radius: 100px;
 `;
 
+const HeroDescriptionContainer = styled(Container)`
+  @media (min-width: ${sizes.xl}px) {
+    max-width: 1140px;
+  }
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+`;
+
 const HeroContainer = styled.div<{ color: string }>`
   background: linear-gradient(
     96.84deg,
     ${(props) => props.color}29 1.04%,
     ${(props) => props.color}07 98.99%
   );
+  height: 400px;
   padding: 40px 0;
   overflow: hidden;
 `;
@@ -192,7 +205,7 @@ const ContractButtonTitle = styled(Title)`
 const DepositPage = () => {
   
   usePullUp();
-  const { chainId } = useWeb3React();
+  const { active, chainId } = useWeb3React();
   const { vaultOption, vaultVersion } = useVaultOption();
   const { status, deposits, vaultLimit } = useVaultData(
     vaultOption || VaultList[0]
@@ -204,13 +217,19 @@ const DepositPage = () => {
   const isLoading = status === "loading" || loading;
   const premiumDecimals = getAssetDecimals("USDC");
   const activities = useVaultActivity(vaultOption!, vaultVersion);
-  const whitelist = useWhitelist();
+  const web3Whitelist = useWhitelist();
+
+  const whitelist = !isProduction() 
+    ? (active ? "T-PERP-C" : undefined)
+    : web3Whitelist;
 
   const depositForm = useMemo(() => {
     if (!vaultOption) {
       return <TreasuryActionForm variant="desktop"/>
     }
-    return whitelist
+    return whitelist === Object.keys(VaultNameOptionMap)[
+      Object.values(VaultNameOptionMap).indexOf(vaultOption)
+    ]
       ? <DesktopActionForm vault={{ vaultOption, vaultVersion }}/>
       : <TreasuryActionForm variant="desktop"/>
   }, [whitelist])
@@ -397,7 +416,7 @@ const HeroSection: React.FC<{
         </BannerContainer>
       )}
       <HeroContainer className="position-relative" color={color}>
-        <DepositPageContainer className="container">
+        <HeroDescriptionContainer className="container">
           <div className="row mx-lg-n1 position-relative">
             <div style={{ zIndex: 1 }} className="col-xl-6 d-flex flex-column">
               <div className="d-flex flex-row my-3">
@@ -438,7 +457,7 @@ const HeroSection: React.FC<{
               {logo}
             </SplashImage>
           </div>
-        </DepositPageContainer>
+        </HeroDescriptionContainer>
 
         {liveryHeroSection}
       </HeroContainer>

@@ -224,18 +224,6 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
     [asset, assetPrice, animatedLoadingText, assetPriceLoading, decimals]
   );
 
-  const calculatedROI = useMemo(() => {
-    const netProfit = vaultAccount.totalBalance.sub(vaultAccount.totalDeposits);
-
-    return !isPracticallyZero(vaultAccount.totalDeposits, decimals)
-      ? (parseFloat(ethers.utils.formatUnits(netProfit, decimals)) /
-          parseFloat(
-            ethers.utils.formatUnits(vaultAccount.totalDeposits, decimals)
-          )) *
-          100
-      : 0;
-  }, [vaultAccount, decimals]);
-
   const logo = useMemo(() => {
     const displayAsset = getDisplayAssets(vaultAccount.vault.symbol);
     const Logo = getAssetLogo(displayAsset);
@@ -300,8 +288,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 };
 
 const PortfolioPositions = () => {
-  const { active: web3Active } = useWeb3React();
-  const active = impersonateAddress ? true : web3Active;
+  const { active } = useWeb3React();
   
   const {
     data: { v1: v1VaultAccounts, v2: v2VaultAccounts },

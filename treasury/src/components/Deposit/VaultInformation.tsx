@@ -11,7 +11,7 @@ import { Assets } from "../../store/types";
 
 const VaultDataCol = styled(Col)`
   margin-top: 20px;
-  margin-bottom: 80px;
+  margin-bottom: 20px;
   max-width: 130px;
 `;
 

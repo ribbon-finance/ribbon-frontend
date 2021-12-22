@@ -31,6 +31,7 @@ import useVaultAccounts from "../../hooks/useVaultAccounts"
 import { Assets } from "../../store/types";
 import useTransactions from "../../hooks/useTransactions";
 import { impersonateAddress } from "shared/lib/utils/development";
+import { isProduction } from "shared/lib/utils/env";
 
 const PerformanceContainer = styled.div`
   display: flex;
@@ -155,8 +156,7 @@ const dateFilterOptions = ["1w", "1m", "all"] as const;
 type dateFilterType = typeof dateFilterOptions[number];
 
 const PortfolioPerformance = () => {
-  const { active: web3Active } = useWeb3React();
-  const active = impersonateAddress ? true : web3Active;
+  const { active } = useWeb3React();
   const { prices: assetsPrice, loading: assetsPriceLoading } = useAssetsPrice();
   const { searchAssetPriceFromTimestamp } = useAssetsPriceHistory();
   const [hoveredBalanceUpdateIndex, setHoveredBalanceUpdateIndex] =
@@ -185,9 +185,11 @@ const PortfolioPerformance = () => {
 
   const premiumDecimals = getAssetDecimals("USDC")
   const totalYield = useMemo(() => {
-    return transactions.filter(transaction => transaction.type === "distribute")
+    return active
+    ? transactions.filter(transaction => transaction.type === "distribute")
       .reduce((total, transaction) =>
         total.add(transaction.amount), BigNumber.from(0))
+    : BigNumber.from(0);
   }, [transactions])
   /**
    * We first process and add several additional metrices that is useful for further calculation

@@ -1,6 +1,8 @@
 import React, { ReactNode, useMemo } from "react";
 import styled, { keyframes } from "styled-components";
+import { useWeb3React } from "@web3-react/core";
 import { useHistory } from "react-router";
+import { isProduction } from "shared/lib/utils/env";
 
 import {
   BaseLink,
@@ -27,12 +29,23 @@ const DepositPageContainer = styled(Container)`
   }
 `;
 
+const HeroDescriptionContainer = styled(Container)`
+  @media (min-width: ${sizes.xl}px) {
+    max-width: 1140px;
+  }
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+`;
+
 const HeroContainer = styled.div<{ color: string }>`
   background: linear-gradient(
     96.84deg,
     ${(props) => props.color}29 1.04%,
     ${(props) => props.color}07 98.99%
   );
+  height: 400px;
   padding: 40px 0;
   overflow: hidden;
 `;
@@ -126,31 +139,18 @@ const DesktopActionsFormContainer = styled.div`
   }
 `;
 
-const ContractButton = styled.div<{ color: string }>`
-  @media (max-width: ${sizes.md}px) {
-    display: flex;
-    justify-content: center;
-    padding: 10px 16px;
-    background: ${(props) => props.color}14;
-    border-radius: 100px;
-    margin-left: 16px;
-    margin-right: 16px;
-    margin-top: -15px;
-    margin-bottom: 48px;
-  }
-  @media (min-width: ${sizes.md + 1}px) {
-    display: none !important;
-  }
-`;
-
-const DepositPage = () => {
+const HomePage = () => {
   usePullUp();
+  const { active } = useWeb3React();
   const history = useHistory();
-  const whitelist = useWhitelist();
+  const web3Whitelist = useWhitelist();
+  const whitelist = !isProduction() 
+    ? (active ? "T-PERP-C" : undefined)
+    : web3Whitelist;
 
-  // if (whitelist) {
-  //   history.push("/treasury/" + whitelist)
-  // }
+  if (whitelist) {
+    history.push("/treasury/" + whitelist)
+  }
 
   const vaultInformation = (
     <VaultInformation
@@ -213,7 +213,7 @@ const HeroSection: React.FC<{
   return (
     <>
       <HeroContainer className="position-relative" color={color}>
-        <DepositPageContainer className="container">
+        <HeroDescriptionContainer className="container">
           <div className="row mx-lg-n1 position-relative">
             <div style={{ zIndex: 1 }} className="col-xl-6 d-flex flex-column">
               <div className="d-flex flex-row my-3">
@@ -250,7 +250,7 @@ const HeroSection: React.FC<{
               {logo}
             </SplashImage>
           </div>
-        </DepositPageContainer>
+        </HeroDescriptionContainer>
 
         {liveryHeroSection}
       </HeroContainer>
@@ -258,4 +258,4 @@ const HeroSection: React.FC<{
   );
 };
 
-export default DepositPage;
+export default HomePage;

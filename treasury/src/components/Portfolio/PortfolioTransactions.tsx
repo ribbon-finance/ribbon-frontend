@@ -199,9 +199,8 @@ const perPage = 6;
 
 const PortfolioTransactions = () => {
   const { transactions, loading } = useTransactions();
-  
-  const { active: web3Active, chainId } = useWeb3React();
-  const active = impersonateAddress ? true : web3Active;
+
+  const { active, chainId } = useWeb3React();
   // const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice();
   const { searchAssetPriceFromTimestamp, loading: assetPricesLoading } =
     useAssetsPriceHistory();
