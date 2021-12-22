@@ -1,8 +1,12 @@
 import { createGlobalState } from "react-hooks-global-state";
 
-interface GlobalStore {}
+interface GlobalStore {
+  showStakingModal: boolean;
+}
 
-export const initialState: GlobalStore = {};
+export const initialState: GlobalStore = {
+  showStakingModal: false,
+};
 
 export const { useGlobalState: useGovernanceGlobalState } =
   createGlobalState(initialState);

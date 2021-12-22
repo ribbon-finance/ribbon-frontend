@@ -1,11 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 
-import { Title } from "shared/lib/designSystem";
+import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContainer";
-import Logo from "shared/lib/assets/icons/logo";
+import { ThemedLogo } from "shared/lib/assets/icons/logo";
+import { useGovernanceGlobalState } from "../../store/store";
 
 const FABContainer = styled.div`
   display: flex;
@@ -43,16 +44,48 @@ const FABOffsetContainer = styled.div`
   height: ${theme.governance.actionBar.height}px;
 `;
 const StakingFAB = () => {
+  const [, setShow] = useGovernanceGlobalState("showStakingModal");
+
   return (
     <>
       <FABContainer>
-        <div className="d-flex ml-5">
+        <div className="d-flex align-items-center ml-5">
           <AssetCircleContainer size={48} color={colors.red}>
-            <Logo />
+            <ThemedLogo theme={colors.red} />
           </AssetCircleContainer>
+          <div className="d-flex flex-column ml-2">
+            <SecondaryText fontSize={10} lineHeight={16}>
+              Your SRBN / Voting Power
+            </SecondaryText>
+            <Title
+              fontSize={14}
+              lineHeight={16}
+              letterSpacing={1}
+              className="mt-1"
+            >
+              5,000.00
+            </Title>
+          </div>
+        </div>
+        <div className="d-flex flex-column justify-content-center ml-auto">
+          <SecondaryText fontSize={10} lineHeight={16}>
+            Your Locked RBN
+          </SecondaryText>
+          <Title
+            fontSize={14}
+            lineHeight={16}
+            letterSpacing={1}
+            className="mt-1"
+          >
+            10,000.00
+          </Title>
         </div>
         <div className="d-flex ml-auto">
-          <StakingButton color={`${colors.red}1F`} role="button">
+          <StakingButton
+            color={`${colors.red}1F`}
+            role="button"
+            onClick={() => setShow(true)}
+          >
             <Title fontSize={14} lineHeight={24} color={colors.red}>
               Stake
             </Title>

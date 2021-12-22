@@ -1,4 +1,4 @@
-import React, { RefAttributes } from "react";
+import React, { RefAttributes, useEffect } from "react";
 import styled from "styled-components";
 import { Modal } from "react-bootstrap";
 import { AnimatePresence, HTMLMotionProps, motion } from "framer-motion";

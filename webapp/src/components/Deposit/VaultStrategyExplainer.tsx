@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -16,7 +22,6 @@ import useElementSize from "shared/lib/hooks/useElementSize";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import { getAssetDisplay } from "shared/lib/utils/asset";
-import SegmentPagination from "../Common/SegmentPagination";
 import StrikeSelection from "./ExplainerGraphic/StrikeSelection";
 import ExpiryChart from "./ExplainerGraphic/ExpiryChart";
 import TradeOffer from "./ExplainerGraphic/TradeOffer";
@@ -26,7 +31,7 @@ import sizes from "shared/lib/designSystem/sizes";
 import VaultDeposit from "./ExplainerGraphic/VaultDeposit";
 import AlgoStrikeSelection from "./ExplainerGraphic/AlgoStrikeSelection";
 import GnosisAuction from "./ExplainerGraphic/GnosisAuction";
-import { useEffect } from "react";
+import SegmentPagination from "shared/lib/components/Common/SegmentPagination";
 
 const ExplainerContainer = styled.div`
   display: flex;
@@ -607,19 +612,18 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
             </>
           );
         case "gnosisTrade":
-          return (
-            collateralAsset === 'stETH' ? (
-              <>
-                The {assetUnit} earned from the Gnosis auction is collected by the
-                vault and represents the primary source of yield on this strategy.
-                The vault also generates yield, in the form of Lido staking rewards, by holding {collateralAsset}.
-              </>
-            ) : (
-              <>
-                The {assetUnit} earned from the Gnosis auction is collected by the
-                vault and represents the yield on this strategy.
-              </>
-            )
+          return collateralAsset === "stETH" ? (
+            <>
+              The {assetUnit} earned from the Gnosis auction is collected by the
+              vault and represents the primary source of yield on this strategy.
+              The vault also generates yield, in the form of Lido staking
+              rewards, by holding {collateralAsset}.
+            </>
+          ) : (
+            <>
+              The {assetUnit} earned from the Gnosis auction is collected by the
+              vault and represents the yield on this strategy.
+            </>
           );
         case "tradeOption":
           return (

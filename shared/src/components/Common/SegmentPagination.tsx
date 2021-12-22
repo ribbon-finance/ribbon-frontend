@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 
-import { getRange } from "shared/lib/utils/math";
-import colors from "shared/lib/designSystem/colors";
-import theme from "shared/lib/designSystem/theme";
+import colors from "../../designSystem/colors";
+import theme from "../../designSystem/theme";
+import { getRange } from "../../utils/math";
 
 const NavigationButton = styled.div<{ disabled?: boolean }>`
   display: flex;
@@ -67,27 +67,33 @@ interface SegmentPaginationProps {
   page: number;
   total: number;
   onPageClick: (page: number) => void;
+  config?: {
+    showNavigationButton?: boolean;
+  };
 }
 
 const SegmentPagination: React.FC<SegmentPaginationProps> = ({
   page,
   total,
   onPageClick,
+  config: { showNavigationButton = true } = {},
 }) => {
   return (
     <div className="w-100 d-flex align-items-center">
-      <NavigationButton
-        role="button"
-        disabled={page <= 1}
-        onClick={() => {
-          if (page <= 1) {
-            return;
-          }
-          onPageClick(page - 1);
-        }}
-      >
-        <i className="fas fa-arrow-left" />
-      </NavigationButton>
+      {showNavigationButton && (
+        <NavigationButton
+          role="button"
+          disabled={page <= 1}
+          onClick={() => {
+            if (page <= 1) {
+              return;
+            }
+            onPageClick(page - 1);
+          }}
+        >
+          <i className="fas fa-arrow-left" />
+        </NavigationButton>
+      )}
       {getRange(1, total, 1).map((item) => (
         <PaginationItem
           key={item}
@@ -99,18 +105,20 @@ const SegmentPagination: React.FC<SegmentPaginationProps> = ({
           width={`calc((100% - (16px * ${total - 1}))/ ${total})`}
         />
       ))}
-      <NavigationButton
-        role="button"
-        disabled={page >= total}
-        onClick={() => {
-          if (page >= total) {
-            return;
-          }
-          onPageClick(page + 1);
-        }}
-      >
-        <i className="fas fa-arrow-right" />
-      </NavigationButton>
+      {showNavigationButton && (
+        <NavigationButton
+          role="button"
+          disabled={page >= total}
+          onClick={() => {
+            if (page >= total) {
+              return;
+            }
+            onPageClick(page + 1);
+          }}
+        >
+          <i className="fas fa-arrow-right" />
+        </NavigationButton>
+      )}
     </div>
   );
 };
