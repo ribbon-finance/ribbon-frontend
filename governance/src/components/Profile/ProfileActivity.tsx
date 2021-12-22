@@ -217,7 +217,7 @@ const ProfileActivity = () => {
   }, []);
 
   return (
-    <div className="d-flex flex-column w-100 mt-5 mb-3">
+    <div className="d-flex flex-column w-100 mt-5 mb-5">
       {/* Header */}
       <div className="d-flex align-items-center">
         <Title fontSize={18} lineHeight={24} className="mr-4">

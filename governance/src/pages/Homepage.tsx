@@ -12,7 +12,9 @@ const Homepage = () => {
     return (
       height -
       theme.header.height -
-      (width > sizes.lg ? 80 : theme.footer.mobile.height)
+      (width > sizes.lg
+        ? theme.governance.actionBar.height
+        : theme.footer.mobile.height)
     );
   }, [height, width]);
   return (

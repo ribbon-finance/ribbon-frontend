@@ -10,6 +10,7 @@ import Homepage from "../pages/Homepage";
 import Footer from "./Footer/Footer";
 import colors from "shared/lib/designSystem/colors";
 import ProfilePage from "../pages/ProfilePage";
+import StakingFAB from "./FAB/StakingFab";
 
 const Root = styled.div<{ screenHeight: number }>`
   background-color: ${colors.background.one};
@@ -37,6 +38,7 @@ const RootApp = () => {
           </Route>
         </Switch>
         <Footer />
+        <StakingFAB />
       </Router>
     </Root>
   );

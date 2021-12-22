@@ -1,4 +1,5 @@
 import { CHAINID, isDevelopment } from "shared/lib/utils/env";
+import deployment from './deployments.json'
 
 export const GovernanceChainID = isDevelopment()
   ? CHAINID.ETH_KOVAN
@@ -28,3 +29,6 @@ export const getOGNFTOpenseaURI = (tokenId: number) =>
       ? "0xc609bae5588fd92cb98ebaee609d557551606678"
       : RibbonOGAddress
   }/${tokenId}`;
+
+export const GovernanceStakingAddress = isDevelopment() ? deployment.kovan.RBNIncentivisedVotingLockup : ""
+export const GovernanceStakingRewardRedeemerAddress = isDevelopment() ? deployment.kovan.RBNLockupRedeemer : ""

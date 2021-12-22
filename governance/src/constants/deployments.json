@@ -1,0 +1,9 @@
+{
+  "kovan": {
+    "RBNIncentivisedVotingLockup": "0x96BED8C611C92f0c824A8c1D5013a1D49dFE296A",
+    "RBNLockupRedeemer": "0x4BD6AaA1461501b7B15a3a303d4a25d665C12f99"
+  },
+  "mainnet": {
+
+  }
+}
