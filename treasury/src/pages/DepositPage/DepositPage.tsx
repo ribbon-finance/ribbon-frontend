@@ -43,6 +43,8 @@ import YourPosition from "../../components/Vault/YourPosition";
 import { truncateAddress } from "shared/lib/utils/address";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import useVaultActivity from "../../hooks/useVaultActivity";
+import { useWhitelist } from "../../hooks/useWhitelist";
+import TreasuryActionForm from "../../components/Vault/VaultActionsForm/TreasuryActionsForm";
 
 const { formatUnits } = ethers.utils;
 
@@ -202,6 +204,16 @@ const DepositPage = () => {
   const isLoading = status === "loading" || loading;
   const premiumDecimals = getAssetDecimals("USDC");
   const activities = useVaultActivity(vaultOption!, vaultVersion);
+  const whitelist = useWhitelist();
+
+  const depositForm = useMemo(() => {
+    if (!vaultOption) {
+      return <TreasuryActionForm variant="desktop"/>
+    }
+    return whitelist
+      ? <DesktopActionForm vault={{ vaultOption, vaultVersion }}/>
+      : <TreasuryActionForm variant="desktop"/>
+  }, [whitelist])
 
   const totalYields = activities.activities.map((activity) => {
     return (activity.type == "sales")
@@ -218,6 +230,8 @@ const DepositPage = () => {
       parseFloat(formatSignificantDecimals(formatUnits(cap, decimals))),
     ];
   }, [cap, decimals, deposits, totalBalance, vaultLimit, vaultVersion]);
+
+  
 
   const vaultInformation = (
     <VaultInformation
@@ -310,7 +324,7 @@ const DepositPage = () => {
 
           {/* Form for desktop */}
           <DesktopActionsFormContainer className="flex-column col-xl-5 offset-xl-1 col-md-6">
-            <DesktopActionForm vault={{ vaultOption, vaultVersion }} />
+            {depositForm}
           </DesktopActionsFormContainer>
         </div>
         <VaultActivity vault={{ vaultOption, vaultVersion }} />

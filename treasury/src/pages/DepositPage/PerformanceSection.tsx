@@ -88,13 +88,12 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
         case "v2":
           return (
             <>
-              Once user funds have been used in the vault’s weekly strategy they
-              cannot be withdrawn until the vault closes it’s position the
-              following Friday at 10am UTC.
+              Once user funds have been used in the vault's strategy, they
+              cannot be withdrawn until the vault closes its position in the following round.
               <br />
               <br />
-              Users can withdraw their funds instantly during the weekly
-              timelock period where the vault closes it’s previous position and
+              Users can withdraw their funds instantly during the
+              timelock period where the vault closes its previous position and
               opens its new position.{" "}
             </>
           );
@@ -137,12 +136,9 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
             fee.
             <br />
             <br />
-            If the weekly strategy is profitable, the weekly performance fee is
-            charged on the premiums earned and the weekly management fee is
+            The performance fee is
+            charged on the premiums earned in USDC and the management fee is
             charged on the assets managed by the vault.
-            <br />
-            <br />
-            If the weekly strategy is unprofitable, there are no fees charged.
           </ParagraphText>
         </Paragraph>
       )}
@@ -153,45 +149,9 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           {productCopies[vaultOption].vaultRisk}
           <br />
           <br />
-          The Theta Vault smart contracts have been{" "}
-          <Link
-            href="https://github.com/peckshield/publications/blob/master/audit_reports/PeckShield-Audit-Report-Ribbon-v1.0.pdf"
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            audited by Peckshield
-          </Link>
-          ,{" "}
-          <Link
-            href="https://github.com/ribbon-finance/audit/blob/master/reports/Quantstamp%20Theta%20Vault.pdf"
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            Quantstamp
-          </Link>{" "}
-          and{" "}
-          <Link
-            href="https://github.com/ribbon-finance/audit/blob/master/reports/Chainsafe-Ribbon-Audit_April-2021.pdf"
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            ChainSafe
-          </Link>
-          . Despite that, users are advised to exercise caution and only risk
+          The Treasury Vault smart contracts have not been audited. Users are advised to exercise caution and only risk
           funds they can afford to lose.
         </ParagraphText>
-
-        <PrimaryText className="d-block mt-3">
-          <Link
-            href="https://ribbonfinance.medium.com/theta-vault-backtest-results-6e8c59adf38c"
-            target="_blank"
-            rel="noreferrer noopener"
-            className="d-flex"
-          >
-            <span className="mr-2">Read More</span>
-            <ExternalIcon color="white" />
-          </Link>
-        </PrimaryText>
       </Paragraph>
     </Container>
   );

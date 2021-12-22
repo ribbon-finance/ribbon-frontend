@@ -183,7 +183,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
           return (
             <TooltipExplanation
               title="INSTANT WITHDRAWAL"
-              explanation="Instant withdrawals are for funds that have been deposited but not yet deployed in the vault’s weekly strategy. Because these funds haven’t been deployed they can be withdrawn immediately."
+              explanation="Instant withdrawals are for funds that have been deposited but not yet deployed in the vault’s strategy. Because these funds haven’t been deployed they can be withdrawn immediately."
               renderContent={({ ref, ...triggerHandler }) => (
                 <HelpInfo
                   containerRef={ref}
@@ -203,7 +203,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
               explanation={
                 <>
                   Standard withdrawals are for funds that have been deployed in
-                  the vault's weekly strategy and involve a 2-step withdrawal
+                  the vault's strategy and involve a 2-step withdrawal
                   process.
                   <br />
                   <br />
@@ -212,7 +212,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
                   <br />
                   <br />
                   Step 2: Initiated withdrawals are removed from the vault's
-                  pool of investable capital every Friday at 10am UTC and once
+                  pool of investable capital in the following round and once
                   this happens users can complete their withdrawals and remove
                   their funds from the vault.
                 </>
@@ -255,7 +255,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
             <SecondaryText>Instant withdraw limit</SecondaryText>
             <TooltipExplanation
               title="INSTANT WITHDRAW LIMIT"
-              explanation="This is equal to the value of your funds that are currently not invested in the vault’s weekly strategy. These funds can withdrawn from the vault immediately."
+              explanation="This is equal to the value of your funds that are currently not invested in the vault’s strategy. These funds can withdrawn from the vault immediately."
               renderContent={({ ref, ...triggerHandler }) => (
                 <HelpInfo containerRef={ref} {...triggerHandler}>
                   i
