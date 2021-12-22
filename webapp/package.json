@@ -41,6 +41,7 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
+    "libgen": "tsc -w",
     "eject": "react-scripts eject",
     "lint": "eslint --fix --ext .tsx,.ts ."
   },
