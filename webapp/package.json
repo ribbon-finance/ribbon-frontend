@@ -41,7 +41,6 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
-    "prebuild": "yarn clean",
     "libbuild": "tsc --build \"./tsconfig.json\"",
     "libgen": "tsc -w",
     "eject": "react-scripts eject",
