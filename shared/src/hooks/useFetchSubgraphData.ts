@@ -129,7 +129,7 @@ const useFetchSubgraphData = () => {
   useEffect(() => {
     doMulticall();
   }, [doMulticall, transactionsCounter]);
-
+  
   return data;
 };
 
