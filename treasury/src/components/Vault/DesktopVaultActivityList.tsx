@@ -5,7 +5,6 @@ import moment from "moment";
 
 import {
   getAssets,
-  isPutVault,
   getEtherscanURI,
   getOptionAssets,
   VaultOptions,
@@ -127,9 +126,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
             <>
               <VaultPrimaryText>
                 O-{asset} {moment(activity.expiry, "X").format("M/DD")}{" "}
-                {isPutVault(vaultOption)
-                  ? `${getOptionAssets(vaultOption)} PUT`
-                  : "CALL"}
+                {"CALL"}
               </VaultPrimaryText>
               <VaultSecondaryText>
                 Strike {formatOption(activity.strikePrice)}
@@ -159,9 +156,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 {moment(activity.vaultShortPosition.expiry, "X").format(
                   "M/DD"
                 )}{" "}
-                {isPutVault(vaultOption)
-                  ? `${getOptionAssets(vaultOption)} PUT`
-                  : "CALL"}
+                {"CALL"}
               </VaultPrimaryText>
               <VaultSecondaryText>
                 Strike {formatOption(activity.vaultShortPosition.strikePrice)}

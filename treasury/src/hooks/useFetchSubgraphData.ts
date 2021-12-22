@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { useWeb3React } from "@web3-react/core";
-
 import {
-  getSubgraphURIForVersion,
+  getSubgraphqlURI,
+} from "shared/lib/utils/env";
+import {
   VaultVersionList,
 } from "../constants/constants";
 import {
@@ -54,7 +55,11 @@ const useFetchSubgraphData = () => {
     const responsesAcrossVersions = Object.fromEntries(
       await Promise.all(
         VaultVersionList.map(async (version) => {
-          const response = await axios.post(getSubgraphURIForVersion(version), {
+          if (version === "v1") {
+            return [version, {}];
+          }
+
+          const response = await axios.post(getSubgraphqlURI(), {
             query: `{
                 ${
                   account

@@ -97,8 +97,6 @@ export const TxStatusToast = () => {
 
   const getActionTitle = useCallback((_currentTx: PendingTransaction) => {
     switch (_currentTx.type) {
-      case "rewardClaim":
-        return "Reward Claim";
       case "withdrawInitiation":
         return "WITHDRAWAL INITIATED";
       default:
@@ -115,8 +113,6 @@ export const TxStatusToast = () => {
           return `Your ${getAssetDisplay(
             getAssets(_currentTx.vault)
           )} is ready to deposit`;
-        case "stakingApproval":
-          return `Your ${_currentTx.stakeAsset} is ready to stake`;
         case "withdrawInitiation":
           return `Initiated ${amountFormatted} ${getAssetDisplay(
             getAssets(_currentTx.vault)
@@ -131,13 +127,6 @@ export const TxStatusToast = () => {
           return `${amountFormatted} ${getAssetDisplay(
             _currentTx.asset
           )} deposited into ${productCopies[_currentTx.vault].title}`;
-        case "claim":
-        case "rewardClaim":
-          return `${amountFormatted} $RBN claimed`;
-        case "stake":
-          return `${amountFormatted} ${_currentTx.stakeAsset} staked`;
-        case "unstake":
-          return `${amountFormatted} ${_currentTx.stakeAsset} unstaked`;
         case "transfer":
           const receiveVault = _currentTx.receiveVault;
           return `${amountFormatted} ${getAssetDisplay(
@@ -170,8 +159,6 @@ export const TxStatusToast = () => {
                 return `Please try approving ${getAssetDisplay(
                   getAssets(currentTx.vault)
                 )} again`;
-              case "stakingApproval":
-                return `Please try approving ${currentTx.stakeAsset} again`;
               default:
                 return "Please resubmit transaction";
             }
@@ -192,13 +179,9 @@ export const TxStatusToast = () => {
         <Toast
           show={showedPendingTxCounter !== transactionsCounter}
           onClose={() => setShowPendingTxCounter(transactionsCounter)}
-          type={
-            currentTx.type === "claim" || currentTx.type === "rewardClaim"
-              ? "claim"
-              : "success"
-          }
+          type={"success"}
           title={getActionTitle(currentTx) + " success"}
-          subtitle={getSubtitle(currentTx)}
+          subtitle={getSubtitle(currentTx)!}
         />
       );
   }

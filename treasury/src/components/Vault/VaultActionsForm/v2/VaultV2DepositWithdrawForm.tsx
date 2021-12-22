@@ -25,7 +25,6 @@ import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import VaultApprovalForm from "../common/VaultApprovalForm";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
-import SwapBTCDropdown from "../common/SwapBTCDropdown";
 import VaultBasicAmountForm from "../common/VaultBasicAmountForm";
 import { getAssetDisplay } from "../../../..//utils/asset";
 import { VaultValidationErrors } from "../types";
@@ -399,40 +398,6 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     }
   }, [asset, decimals, error, vaultMaxDepositAmount]);
 
-  const swapContainerTrigger = useMemo(() => {
-    switch (asset) {
-      case "WBTC":
-        return (
-          <SwapTriggerContainer>
-            <SwapTriggerButton
-              role="button"
-              onClick={() => setSwapContainerOpen((open) => !open)}
-            >
-              <SwapTriggerButtonText>
-                Swap your BTC or renBTC for wBTC
-              </SwapTriggerButtonText>
-              <ButtonArrow
-                isOpen={swapContainerOpen}
-                color={colors.primaryText}
-              />
-            </SwapTriggerButton>
-          </SwapTriggerContainer>
-        );
-
-      default:
-        return <></>;
-    }
-  }, [asset, swapContainerOpen]);
-
-  const swapContainer = useMemo(() => {
-    switch (asset) {
-      case "WBTC":
-        return <SwapBTCDropdown open={swapContainerOpen} />;
-      default:
-        return <></>;
-    }
-  }, [asset, swapContainerOpen]);
-
   return (
     <>
       <FormTabContainer>
@@ -459,10 +424,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       <div className="d-flex flex-column p-4 w-100">
         {formContent}
         {formInfoText}
-        {swapContainerTrigger}
       </div>
-
-      {swapContainer}
     </>
   );
 };

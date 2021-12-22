@@ -4,7 +4,6 @@ import { BigNumber } from "@ethersproject/bignumber";
 
 import {
   getAssets,
-  isPutVault,
   VaultList,
   VaultOptions,
   VaultVersion,
@@ -50,7 +49,6 @@ export const useLatestOption = (
       ) as (VaultOptionTrade & VaultActivityMeta & { type: "sales" })[];
 
       const decimals = getAssetDecimals(asset);
-      const isPut = isPutVault(vaultOption);
 
       return {
         strike: shortPosition.strikePrice,
@@ -60,12 +58,8 @@ export const useLatestOption = (
           BigNumber.from(0)
         ),
         depositAmount: shortPosition.depositAmount,
-        amount: isPut
-          ? parseFloat(
-              assetToFiat(shortPosition.depositAmount, prices[asset]!, decimals)
-            ) / formatOption(shortPosition.strikePrice)
-          : parseFloat(formatUnits(shortPosition.depositAmount, decimals)),
-        isPut: isPut,
+        amount: parseFloat(formatUnits(shortPosition.depositAmount, decimals)),
+        isPut: false,
       };
     });
   }, [activities, asset, prices, vaultOption]);
@@ -111,7 +105,6 @@ export const useLatestOptions = () => {
                     VaultActivityMeta & { type: "sales" })[];
 
                   const decimals = getAssetDecimals(asset);
-                  const isPut = isPutVault(vaultOption);
 
                   return {
                     strike: shortPosition.strikePrice,
@@ -121,18 +114,10 @@ export const useLatestOptions = () => {
                       BigNumber.from(0)
                     ),
                     depositAmount: shortPosition.depositAmount,
-                    amount: isPut
-                      ? parseFloat(
-                          assetToFiat(
-                            shortPosition.depositAmount,
-                            prices[asset]!,
-                            decimals
-                          )
-                        ) / formatOption(shortPosition.strikePrice)
-                      : parseFloat(
-                          formatUnits(shortPosition.depositAmount, decimals)
-                        ),
-                    isPut: isPut,
+                    amount: parseFloat(
+                      formatUnits(shortPosition.depositAmount, decimals)
+                    ),
+                    isPut: false,
                   };
                 }),
               ];

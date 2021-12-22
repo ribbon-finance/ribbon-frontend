@@ -486,34 +486,6 @@ const PortfolioPerformance = () => {
     );
   }, []);
 
-  const renderYieldEarnedText = useCallback(() => {
-    if (!active) {
-      return "---";
-    }
-
-    if (loading) {
-      return animatedLoadingText;
-    }
-
-    return `${calculatedKPI.yield >= 0 ? "+" : ""}${currency(
-      calculatedKPI.yield.toFixed(2)
-    ).format()}`;
-  }, [active, calculatedKPI, loading, animatedLoadingText]);
-
-  const renderRoiText = useCallback(() => {
-    if (!active) {
-      return "---";
-    }
-
-    if (loading) {
-      return animatedLoadingText;
-    }
-
-    return `${calculatedKPI.roi >= 0 ? "+" : ""}${calculatedKPI.roi.toFixed(
-      2
-    )}%`;
-  }, [active, loading, animatedLoadingText, calculatedKPI]);
-
   const renderRBNBalanceText = useCallback(() => {
     if (!active) {
       return "---";
@@ -627,23 +599,6 @@ const PortfolioPerformance = () => {
             <DepositCurrency>{active && !loading ? "USDC" : ""}</DepositCurrency>
           </KPI>
         </KPIColumn>
-        {/* <KPIColumn>
-          <SecondaryText fontSize={12} className="w-100">
-            ROI
-          </SecondaryText>
-          <KPIText
-            active={active}
-            state={
-              calculatedKPI.roi === 0
-                ? undefined
-                : calculatedKPI.roi > 0
-                ? "green"
-                : "red"
-            }
-          >
-            {renderRoiText()}
-          </KPIText>
-        </KPIColumn> */}
         <KPIColumn>
           <SecondaryText fontSize={12} color={colors.red} className="w-100">
             $RBN Balance

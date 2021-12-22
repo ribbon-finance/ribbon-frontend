@@ -1,44 +1,16 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import styled from "styled-components";
-import { useWeb3React } from "@web3-react/core";
-import { BigNumber, ethers } from "ethers";
-import moment from "moment";
+import { ethers } from "ethers";
 
 import {
-  BaseLink,
   PrimaryText,
-  SecondaryText,
   Title,
 } from "shared/lib/designSystem";
-import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
-import {
-  VaultAddressMap,
-  VaultMaxDeposit,
-} from "shared/lib/constants/constants";
-import { useVaultData } from "shared/lib/hooks/web3DataContext";
-import { getVaultColor, isETHVault, isVaultFull } from "shared/lib/utils/vault";
 import colors from "shared/lib/designSystem/colors";
-import { getAssetDisplay } from "shared/lib/utils/asset";
-import { ERC20Token } from "shared/lib/models/eth";
 import theme from "shared/lib/designSystem/theme";
-import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
-import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
-import SwapBTCDropdown from "./common/SwapBTCDropdown";
-import useVaultActivity from "shared/lib/hooks/useVaultActivity";
-import { VaultActivityMeta, VaultShortPosition } from "shared/lib/models/vault";
-import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import HelpInfo from "shared/lib/components/Common/HelpInfo";
-import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 
-import { FormStepProps, VaultValidationErrors } from "./types";
-import useVaultActionForm from "../../../hooks/useVaultActionForm";
-import { ACTIONS } from "./Modal/types";
 import { WhitelistIcon } from "../../../assets/icons/icons";
-import { ActionButton } from "shared/lib/components/Common/buttons";
-import { getVaultURI } from "../../../constants/constants";
-
-const { parseUnits, formatUnits } = ethers.utils;
 
 const Container = styled.div<{ variant: "desktop" | "mobile" }>`
   display: flex;

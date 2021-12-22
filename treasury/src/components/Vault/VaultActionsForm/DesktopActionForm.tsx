@@ -10,7 +10,6 @@ import {
   VaultVersion,
 } from "../../../constants/constants";
 import { useCallback } from "react";
-import VaultV1ActionsForm from "./VaultV1ActionsForm";
 import VaultV2ActionsForm from "./VaultV2ActionForm";
 import { BaseLink, Title } from "shared/lib/designSystem";
 import { getVaultColor } from "../../../utils/vault";
@@ -42,23 +41,12 @@ const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
   const [showActionModal, setShowActionModal] = useState(false);
 
   const renderForm = useCallback(() => {
-    switch (vault.vaultVersion) {
-      case "v1":
-        return (
-          <VaultV1ActionsForm
-            variant="desktop"
-            vaultOption={vault.vaultOption}
-            onFormSubmit={() => setShowActionModal(true)}
-          />
-        );
-      case "v2":
-        return (
-          <VaultV2ActionsForm
-            vaultOption={vault.vaultOption}
-            onFormSubmit={() => setShowActionModal(true)}
-          />
-        );
-    }
+    return (
+      <VaultV2ActionsForm
+        vaultOption={vault.vaultOption}
+        onFormSubmit={() => setShowActionModal(true)}
+      />
+    );
   }, [vault]);
 
   return (

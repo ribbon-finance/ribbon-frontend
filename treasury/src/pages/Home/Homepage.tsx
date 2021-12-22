@@ -1,52 +1,23 @@
 import React, { ReactNode, useMemo } from "react";
-import { ethers } from "ethers";
-import { useWeb3React } from "@web3-react/core";
 import styled, { keyframes } from "styled-components";
-import { Redirect } from "react-router-dom";
 import { useHistory } from "react-router";
 
 import {
-  BaseIndicator,
   BaseLink,
-  PrimaryText,
   Title,
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import VaultInformation from "../../components/Deposit/VaultInformation";
 import PerformanceSection from "./PerformanceSection";
-import { useVaultData, useV2VaultData } from "../../hooks/web3DataContext";
 import { useWhitelist } from "../../hooks/useWhitelist";
-import {
-  formatSignificantDecimals,
-  isPracticallyZero,
-} from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
-import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
-import {
-  getDisplayAssets,
-  getEtherscanURI,
-  hasVaultVersion,
-  VaultAddressMap,
-  VaultList,
-  VaultOptions,
-  VaultVersion,
-  VaultVersionList,
-} from "../../constants/constants";
 import { treasuryCopies } from "../../components/Product/productCopies";
-import useVaultOption from "../../hooks/useVaultOption";
-import { getVaultColor } from "../../utils/vault";
 import { getAssetLogo } from "../../utils/asset";
 import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
-import { getVaultURI } from "../../constants/constants";
-import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopActionForm";
 import YourPosition from "../../components/Vault/YourPosition";
-import { truncateAddress } from "shared/lib/utils/address";
-import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import TreasuryActionForm from "../../components/Vault/VaultActionsForm/TreasuryActionsForm";
-
-const { formatUnits } = ethers.utils;
 
 const RBNcolor = "#fc0a54";
 
@@ -54,21 +25,6 @@ const DepositPageContainer = styled(Container)`
   @media (min-width: ${sizes.xl}px) {
     max-width: 1140px;
   }
-`;
-
-const BannerContainer = styled.div<{ color: string }>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  background: ${(props) => `${props.color}29`};
-  padding: 12px 0px;
-`;
-
-const BannerButton = styled.div<{ color: string }>`
-  padding: 10px 16px;
-  border: ${theme.border.width} ${theme.border.style} ${(props) => props.color};
-  border-radius: 100px;
 `;
 
 const HeroContainer = styled.div<{ color: string }>`
@@ -187,50 +143,14 @@ const ContractButton = styled.div<{ color: string }>`
   }
 `;
 
-const ContractButtonTitle = styled(Title)`
-  letter-spacing: 1px;
-`;
-
 const DepositPage = () => {
   usePullUp();
   const history = useHistory();
-  const { chainId, account } = useWeb3React();
   const whitelist = useWhitelist();
 
   if (whitelist) {
     history.push("/treasury/" + whitelist)
   }
-  // const vaultOption = "Treasury-RBN";
-  // const vaultVersion = "v2";
-  // const { status, deposits, vaultLimit } = useVaultData(
-  //   vaultOption || VaultList[0]
-  // );
-  // const {
-  //   data: { asset, cap, decimals, totalBalance },
-  //   loading,
-  // } = useV2VaultData(vaultOption || VaultList[0]);
-  // const isLoading = status === "loading" || loading;
-
-  // const [totalDepositStr, depositLimitStr] = useMemo(() => {
-  //   switch (vaultVersion) {
-  //     case "v1":
-  //       return [
-  //         parseFloat(
-  //           formatSignificantDecimals(formatUnits(deposits, decimals), 2)
-  //         ),
-  //         parseFloat(
-  //           formatSignificantDecimals(formatUnits(vaultLimit, decimals))
-  //         ),
-  //       ];
-  //     case "v2":
-  //       return [
-  //         parseFloat(
-  //           formatSignificantDecimals(formatUnits(totalBalance, decimals), 2)
-  //         ),
-  //         parseFloat(formatSignificantDecimals(formatUnits(cap, decimals))),
-  //       ];
-  //   }
-  // }, [cap, decimals, deposits, totalBalance, vaultLimit, vaultVersion]);
 
   const vaultInformation = (
     <VaultInformation
@@ -242,27 +162,6 @@ const DepositPage = () => {
     />
   );
 
-  /**
-  //  * Redirect to v1 if vault version given is invalid
-  //  */
-  // if (!hasVaultVersion(vaultOption, vaultVersion)) {
-  //   const availableVaultVersions = VaultVersionList.filter((version) =>
-  //     hasVaultVersion(vaultOption, version)
-  //   );
-
-  //   if (availableVaultVersions.length <= 0) {
-  //     return <Redirect to="/" />;
-  //   }
-
-  //   return (
-  //     <Redirect
-  //       to={getVaultURI(
-  //         vaultOption,
-  //         availableVaultVersions[availableVaultVersions.length - 1]
-  //       )}
-  //     />
-  //   );
-  // }
   const vaultOption = "rBZRX-TSRY";
   const vaultVersion = "v2";
 
@@ -287,8 +186,6 @@ const DepositPage = () => {
 
       </DepositPageContainer>
 
-      {/* Desktop Position Component */}
-      <YourPosition vault={{ vaultOption, vaultVersion }} variant="desktop" />
     </>
   );
 };

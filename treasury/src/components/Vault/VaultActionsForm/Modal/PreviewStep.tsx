@@ -12,7 +12,6 @@ import {
   VaultOptions,
   VaultFees,
   VaultVersion,
-  isPutVault,
 } from "../../../../constants/constants";
 import { productCopies } from "../../../../components/Product/productCopies";
 import { getVaultColor } from "../../../../utils/vault";
@@ -144,9 +143,7 @@ const PreviewStep: React.FC<{
               case "instant":
                 actionDetails.push({
                   key: "Strategy",
-                  value: isPutVault(vaultOption)
-                    ? "PUT SELLING"
-                    : "COVERED CALL",
+                  value: "COVERED CALL"
                 });
             }
         }
