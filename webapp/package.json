@@ -42,7 +42,7 @@
     "build": "craco build",
     "test": "craco test",
     "libgen": "tsc -w",
-    "libbuild": "tsc --build \"./tsconfig.json\""
+    "libbuild": "tsc --build \"./tsconfig.json\"",
     "eject": "react-scripts eject",
     "lint": "eslint --fix --ext .tsx,.ts ."
   },
