@@ -1,4 +1,4 @@
-import React, { RefAttributes } from "react";
+import React, { RefAttributes, useEffect } from "react";
 import styled from "styled-components";
 import { Modal } from "react-bootstrap";
 import { AnimatePresence, HTMLMotionProps, motion } from "framer-motion";
@@ -115,42 +115,52 @@ const BasicModal: React.FC<BasicModalProps> = ({
   headerBackground = false,
   backgroundColor,
   theme,
-}) => (
-  <StyledModal
-    show={show}
-    centered
-    height={height}
-    maxWidth={maxWidth}
-    onHide={onClose}
-    backdrop
-    theme={theme}
-    backgroundColor={backgroundColor}
-  >
-    <BaseModalHeader>
-      {/* Back button */}
-      {backButton && (
-        <BackButton role="button" onClick={backButton.onClick}>
-          <i className="fas fa-arrow-left" />
-        </BackButton>
-      )}
+}) => {
+  useEffect(() => {
+    if (show) {
+      document.getElementById("root")!.classList.add("backdrop-filter");
+    } else {
+      document.getElementById("root")!.classList.remove("backdrop-filter");
+    }
+  }, [show]);
 
-      {/* Close Button */}
-      {closeButton && (
-        <CloseButton role="button" onClick={onClose}>
-          <MenuButton isOpen onToggle={onClose} size={20} color="#FFFFFFA3" />
-        </CloseButton>
-      )}
-    </BaseModalHeader>
+  return (
+    <StyledModal
+      show={show}
+      centered
+      height={height}
+      maxWidth={maxWidth}
+      onHide={onClose}
+      backdrop
+      theme={theme}
+      backgroundColor={backgroundColor}
+    >
+      <BaseModalHeader>
+        {/* Back button */}
+        {backButton && (
+          <BackButton role="button" onClick={backButton.onClick}>
+            <i className="fas fa-arrow-left" />
+          </BackButton>
+        )}
 
-    <Modal.Body>
-      <AnimatePresence initial={false}>
-        <ModalContent {...animationProps}>
-          {children}
-          {headerBackground && <ModalHeaderBackground />}
-        </ModalContent>
-      </AnimatePresence>
-    </Modal.Body>
-  </StyledModal>
-);
+        {/* Close Button */}
+        {closeButton && (
+          <CloseButton role="button" onClick={onClose}>
+            <MenuButton isOpen onToggle={onClose} size={20} color="#FFFFFFA3" />
+          </CloseButton>
+        )}
+      </BaseModalHeader>
+
+      <Modal.Body>
+        <AnimatePresence initial={false}>
+          <ModalContent {...animationProps}>
+            {children}
+            {headerBackground && <ModalHeaderBackground />}
+          </ModalContent>
+        </AnimatePresence>
+      </Modal.Body>
+    </StyledModal>
+  );
+};
 
 export default BasicModal;
