@@ -37,6 +37,9 @@ export const READABLE_NETWORK_NAMES: Record<CHAINID, string> = {
 export const isEthNetwork = (chainId: number): boolean =>
   chainId === CHAINID.ETH_MAINNET || chainId === CHAINID.ETH_KOVAN;
 
+export const isAvaxNetwork = (chainId: number): boolean =>
+  chainId === CHAINID.AVAX_MAINNET || chainId === CHAINID.AVAX_FUJI;
+
 export const NATIVE_TOKENS = ["WETH", "WAVAX"];
 export const isNativeToken = (token: string): boolean =>
   NATIVE_TOKENS.includes(token);
