@@ -46,6 +46,7 @@ const colors = {
     stETH: "#00A3FF",
     AAVE: "#2EBAC6",
     WAVAX: "#E84142",
+    PERP: "#00BC9A",
   },
 };
 
