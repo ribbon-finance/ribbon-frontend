@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { useGovernanceGlobalState } from "../../store/store";
 import StakingModalExplainer from "./StakingModalExplainer";
+import StakingModalForm from "./StakingModalForm";
 
 const stakingModalModes = [
   "explainer",
@@ -38,6 +39,8 @@ const StakingModal = () => {
     switch (mode) {
       case "explainer":
         return <StakingModalExplainer proceedToForm={() => setMode("form")} />;
+      case "form":
+        return <StakingModalForm />;
       default:
         return <></>;
     }

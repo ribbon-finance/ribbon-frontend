@@ -311,7 +311,8 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
             className="ml-auto"
             color={formExtra.error ? colors.red : undefined}
           >
-            {formExtra.amount && formatBigNumber(formExtra.amount, getAssetDecimals(asset))}{" "}
+            {formExtra.amount &&
+              formatBigNumber(formExtra.amount, getAssetDecimals(asset))}{" "}
             {formExtra.unitDisplay || getAssetDisplay(asset)}
           </Title>
         </div>
@@ -358,7 +359,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
     <>
       <BaseInputLabel>AMOUNT ({getAssetDisplay(asset)})</BaseInputLabel>
       <BaseInputContainer
-        className="position-relative mb-2"
+        className="mb-2"
         error={error ? VaultInputValidationErrorList.includes(error) : false}
       >
         <BaseInput

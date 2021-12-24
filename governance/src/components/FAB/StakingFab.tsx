@@ -7,6 +7,7 @@ import theme from "shared/lib/designSystem/theme";
 import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContainer";
 import { ThemedLogo } from "shared/lib/assets/icons/logo";
 import { useGovernanceGlobalState } from "../../store/store";
+import { useWeb3React } from "@web3-react/core";
 
 const FABContainer = styled.div`
   display: flex;
@@ -44,9 +45,10 @@ const FABOffsetContainer = styled.div`
   height: ${theme.governance.actionBar.height}px;
 `;
 const StakingFAB = () => {
+  const { active } = useWeb3React();
   const [, setShow] = useGovernanceGlobalState("showStakingModal");
 
-  return (
+  return active ? (
     <>
       <FABContainer>
         <div className="d-flex align-items-center ml-5">
@@ -99,6 +101,8 @@ const StakingFAB = () => {
       </FABContainer>
       <FABOffsetContainer />
     </>
+  ) : (
+    <></>
   );
 };
 

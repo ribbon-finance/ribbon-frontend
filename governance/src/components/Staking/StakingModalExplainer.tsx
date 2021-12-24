@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import styled from "styled-components";
 
 import {
   BaseModalContentColumn,
@@ -9,6 +10,30 @@ import {
 import SegmentPagination from "shared/lib/components/Common/SegmentPagination";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import colors from "shared/lib/designSystem/colors";
+import {
+  ProtocolBackstopIcon,
+  VotingPowerIcon,
+} from "shared/lib/assets/icons/icons";
+import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContainer";
+import { ThemedLogo } from "shared/lib/assets/icons/logo";
+import theme from "shared/lib/designSystem/theme";
+
+const ModalBackButton = styled.div`
+  display: flex;
+  position: absolute;
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-radius: 40px;
+`;
+
+const ArrowBack = styled.i`
+  color: ${colors.text};
+  height: 14px;
+`;
 
 interface StakingModalExplainerProps {
   proceedToForm: () => void;
@@ -18,6 +43,26 @@ const StakingModalExplainer: React.FC<StakingModalExplainerProps> = ({
   proceedToForm,
 }) => {
   const [page, setPage] = useState(1);
+
+  const renderLogo = useCallback((_page: number) => {
+    switch (_page) {
+      case 1:
+        return (
+          <AssetCircleContainer
+            size={104}
+            color={colors.red}
+            circleFractionDenominator={3.5}
+          >
+            <ThemedLogo theme={colors.red} />
+          </AssetCircleContainer>
+        );
+      case 2:
+        return <VotingPowerIcon />;
+
+      case 3:
+        return <ProtocolBackstopIcon />;
+    }
+  }, []);
 
   const renderTitle = useCallback((_page: number) => {
     switch (_page) {
@@ -43,8 +88,16 @@ const StakingModalExplainer: React.FC<StakingModalExplainerProps> = ({
 
   return (
     <>
+      {page !== 1 && (
+        <ModalBackButton
+          role="button"
+          onClick={() => setPage((prev) => (prev === 1 ? 1 : prev - 1))}
+        >
+          <ArrowBack className="fas fa-arrow-left" />
+        </ModalBackButton>
+      )}
       <BaseModalContentColumn>
-        <AnimatePresence exitBeforeEnter>
+        <AnimatePresence exitBeforeEnter initial={false}>
           <motion.div
             key={page}
             className="d-flex flex-column h-100"
@@ -57,7 +110,12 @@ const StakingModalExplainer: React.FC<StakingModalExplainerProps> = ({
               ease: "easeInOut",
             }}
           >
-            <div style={{ height: 104, width: 104 }} />
+            <div
+              style={{ height: 104 }}
+              className="d-flex align-items-center justify-content-center"
+            >
+              {renderLogo(page)}
+            </div>
 
             <Title fontSize={22} lineHeight={28} className="text-center mt-3">
               {renderTitle(page)}

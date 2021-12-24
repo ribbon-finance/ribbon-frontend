@@ -2,6 +2,7 @@ import { Web3ReactProvider } from "@web3-react/core";
 import React, { useEffect } from "react";
 import smoothscroll from "smoothscroll-polyfill";
 
+import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContext";
 import RootApp from "./components/RootApp";
 import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
 import { getLibrary } from "shared/lib/utils/getLibrary";
@@ -14,7 +15,9 @@ function App() {
   return (
     <Web3ContextProvider>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <RootApp />
+        <SubgraphDataContextProvider>
+          <RootApp />
+        </SubgraphDataContextProvider>
       </Web3ReactProvider>
     </Web3ContextProvider>
   );

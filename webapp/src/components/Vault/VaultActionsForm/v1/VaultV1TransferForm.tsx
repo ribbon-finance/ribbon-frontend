@@ -212,7 +212,7 @@ const VaultV1TransferForm: React.FC<VaultV1TransferFormProps> = ({
 
       {/* Amount Input */}
       <BaseInputLabel className="mt-4">AMOUNT ({assetDisplay})</BaseInputLabel>
-      <BaseInputContainer className="position-relative" error={Boolean(error)}>
+      <BaseInputContainer error={Boolean(error)}>
         <BaseInput
           type="number"
           className="form-control"

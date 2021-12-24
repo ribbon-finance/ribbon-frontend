@@ -182,7 +182,7 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
             <BaseInputLabel>
               ENTER {getAssetDisplay(optionAsset)} PRICE
             </BaseInputLabel>
-            <BaseInputContainer className="position-relative">
+            <BaseInputContainer>
               <BaseInput
                 type="number"
                 min="0"

@@ -41,18 +41,28 @@ const Circle = styled.div<{
 interface AssetCircleContainerProps {
   size: number;
   color: string;
+  circleFractionDenominator?: number;
 }
 
 const AssetCircleContainer: React.FC<AssetCircleContainerProps> = ({
   size,
   color,
+  circleFractionDenominator = 6,
   children,
 }) => {
   return (
     <Circle size={size} color={color} circleIndex={2}>
-      <Circle size={(size * 5) / 6} color={color} circleIndex={1}>
+      <Circle
+        size={
+          (size * (circleFractionDenominator - 1)) / circleFractionDenominator
+        }
+        color={color}
+        circleIndex={1}
+      >
         <Circle
-          size={(size * 4) / 6}
+          size={
+            (size * (circleFractionDenominator - 2)) / circleFractionDenominator
+          }
           color={color}
           background={`${color}1F`}
           circleIndex={0}
