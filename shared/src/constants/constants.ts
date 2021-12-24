@@ -300,6 +300,8 @@ export const BLOCKCHAIN_EXPLORER_URI: Record<number, string> = {
   [CHAINID.AVAX_FUJI]: "https://testnet.snowtrace.io",
 };
 
+export const AVAX_BRIDGE_URI = "https://bridge.avax.network";
+
 export const getEtherscanURI = (chainId: number) =>
   BLOCKCHAIN_EXPLORER_URI[chainId as CHAINID];
 
