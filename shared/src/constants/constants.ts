@@ -212,7 +212,7 @@ export const VaultAddressMap: {
     : {
         v1: v1deployment.mainnet.RibbonYearnETHPut,
         // TODO: Uncomment on V2 yvUSDC launch
-        // v2: v2deployment.mainnet.RibbonThetaYearnVaultETHPut,
+        v2: v2deployment.mainnet.RibbonThetaYearnVaultETHPut,
         chainId: CHAINID.ETH_MAINNET,
       },
   "rstETH-THETA": isDevelopment()
