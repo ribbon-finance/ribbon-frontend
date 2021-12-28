@@ -15,7 +15,7 @@ const useENS = (address: string) => {
       }
     };
     resolveENS();
-  }, [address]);
+  }, [address, chainId, library]);
 
   return { ensName };
 };
