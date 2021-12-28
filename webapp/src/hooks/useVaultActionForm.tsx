@@ -101,7 +101,11 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   }, [setVaultActionForm, vaultOption]);
 
   const canTransfer = useMemo(() => {
-    return false;
+    switch (vaultOption) {
+      // TODO: Add ETH v2 -> stETH v2 here
+      default:
+        return false;
+    }
   }, [vaultOption]);
 
   const transferData = useMemo((): VaultActionFormTransferData => {

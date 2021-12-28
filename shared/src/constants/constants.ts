@@ -473,7 +473,7 @@ export const RibbonVaultMigrationMap: Partial<
   "rBTC-THETA": {
     v2: ["rBTC-THETA"],
   },
-  "rETH-THETA": {
+  "rstETH-THETA": {
     v2: ["rETH-THETA"],
   },
   "ryvUSDC-ETH-P-THETA": {
