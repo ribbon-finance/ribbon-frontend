@@ -4,7 +4,6 @@ import { useWeb3React } from "@web3-react/core";
 
 import {
   getSubgraphURIForVersion,
-  isEthNetwork,
   VaultVersionList,
 } from "../constants/constants";
 import {
@@ -16,7 +15,7 @@ import {
   resolveVaultAccountsSubgraphResponse,
   vaultAccountsGraphql,
 } from "./useVaultAccounts";
-import { isProduction } from "../utils/env";
+import { isProduction, CHAINID } from "../utils/env";
 import {
   resolveTransactionsSubgraphResponse,
   transactionsGraphql,
@@ -41,7 +40,7 @@ import {
 import { usePendingTransactions } from "./pendingTransactionsContext";
 
 const useFetchSubgraphData = () => {
-  const { account: acc, chainId } = useWeb3React();
+  const { account: acc } = useWeb3React();
   const account = impersonateAddress || acc;
   const [data, setData] =
     useState<SubgraphDataContextType>(defaultSubgraphData);
@@ -62,14 +61,11 @@ const useFetchSubgraphData = () => {
       return currentCounter;
     });
 
-    const responsesAcrossVersions = Object.fromEntries(
-      await Promise.all(
-        VaultVersionList.map(async (version) => {
-          if (version === "v1" && chainId && !isEthNetwork(chainId)) {
-            return [version, {}];
-          }
+    let response = await Promise.all(
+      VaultVersionList.map(async (version) => {
+        const xx = await Promise.all([CHAINID.ETH_MAINNET, CHAINID.AVAX_MAINNET].map(async (cId) => {
           const response = await axios.post(
-            getSubgraphURIForVersion(version, chainId || 1),
+            getSubgraphURIForVersion(version, cId),
             {
               query: `{
                 ${
@@ -81,17 +77,22 @@ const useFetchSubgraphData = () => {
                       `
                     : ""
                 }
-                ${vaultActivitiesGraphql(version)}
+                ${vaultActivitiesGraphql(version, cId)}
                 ${rbnTokenGraphql(account, version)}
-                ${vaultPriceHistoryGraphql(version)}
+                ${vaultPriceHistoryGraphql(version, cId)}
               }`.replaceAll(" ", ""),
             }
           );
-
-          return [version, response.data.data];
-        })
-      )
+          return response.data.data;
+        }));
+        return [version, xx];
+      })
     );
+
+    // FIXME
+    response[0][1] = {...response[0][1][0], ...response[0][1][1]}
+    response[1][1] = {...response[1][1][0], ...response[1][1][1]}
+    const responsesAcrossVersions = Object.fromEntries(response);
 
     setMulticallCounter((counter) => {
       if (counter === currentCounter) {
@@ -124,7 +125,7 @@ const useFetchSubgraphData = () => {
     if (!isProduction()) {
       console.timeEnd("Subgraph Data Fetch");
     }
-  }, [account, chainId]);
+  }, [account]);
 
   useEffect(() => {
     doMulticall();
