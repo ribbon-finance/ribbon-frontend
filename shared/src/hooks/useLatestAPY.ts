@@ -108,6 +108,8 @@ export const calculateAPYFromPriceHistory = (
         ),
       ];
 
+      console.log(startingPricePerShare, endingPricePerShare);
+
       /**
        * If the given period is profitable, we calculate APY
        */
@@ -205,6 +207,11 @@ export const useLatestAPY = (
   switch (vaultVersion) {
     case "v2":
       switch (vaultOption) {
+        /**
+         * TODO: Temporarily hardcode it for the launch because it is inaccurate
+         */
+        case "rAVAX-THETA":
+          return { fetched: true, res: 17.46 };
       }
   }
 
@@ -250,6 +257,11 @@ export const useLatestAPYs = () => {
               switch (version) {
                 case "v2":
                   switch (vaultOption) {
+                    /**
+                     * TODO: Temporarily hardcode it for the launch because it is inaccurate
+                     */
+                    case "rAVAX-THETA":
+                      return [vaultOption, 17.46];
                   }
               }
 
