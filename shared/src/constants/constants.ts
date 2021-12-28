@@ -8,6 +8,7 @@ import {
   getSubgraphqlURI,
   isDevelopment,
   isProduction,
+  isTreasury,
 } from "../utils/env";
 import v1deployment from "./v1Deployments.json";
 import v2deployment from "./v2Deployments.json";
@@ -72,9 +73,11 @@ const PutThetaVault: VaultOptions[] = [
 ];
 
 // @ts-ignore
-export const VaultList: VaultOptions[] = !isProduction()
-  ? RetailVaultList
-  : RetailVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
+export const VaultList: VaultOptions[] = isTreasury()
+  ? TreasuryVaultList
+  : !isProduction()
+    ? RetailVaultList
+    : RetailVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
 
 export const GAS_LIMITS: {
   [vault in VaultOptions]: Partial<{
@@ -263,8 +266,8 @@ export const VaultAddressMap: {
       },
   "rPERP-TSRY": isDevelopment()
     ? {
-      v2: v2deployment.kovan.RibbonTreasuryVaultPERP,
-      chainId: CHAINID.ETH_KOVAN,
+        v2: v2deployment.kovan.RibbonTreasuryVaultPERP,
+        chainId: CHAINID.ETH_KOVAN,
       }
     : {
         v2: v2deployment.mainnet.RibbonTreasuryVaultPERP,
@@ -296,6 +299,7 @@ export const VaultNamesList = [
   "T-stETH-C",
   "T-AAVE-C",
   "T-AVAX-C",
+  "T-PERP-C"
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
@@ -306,6 +310,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-stETH-C": "rstETH-THETA",
   "T-AAVE-C": "rAAVE-THETA",
   "T-AVAX-C": "rAVAX-THETA",
+  "T-PERP-C": "rPERP-TSRY",
 };
 
 export const BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
