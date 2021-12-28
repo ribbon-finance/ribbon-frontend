@@ -15,7 +15,7 @@ import {
   resolveVaultAccountsSubgraphResponse,
   vaultAccountsGraphql,
 } from "./useVaultAccounts";
-import { isProduction, CHAINID } from "../utils/env";
+import { supportedChainIds, isProduction } from "../utils/env";
 import {
   resolveTransactionsSubgraphResponse,
   transactionsGraphql,
@@ -61,38 +61,35 @@ const useFetchSubgraphData = () => {
       return currentCounter;
     });
 
-    let response = await Promise.all(
+    const responsesAcrossVersions = Object.fromEntries(await Promise.all(
       VaultVersionList.map(async (version) => {
-        const xx = await Promise.all([CHAINID.ETH_MAINNET, CHAINID.AVAX_MAINNET].map(async (cId) => {
-          const response = await axios.post(
-            getSubgraphURIForVersion(version, cId),
-            {
-              query: `{
-                ${
-                  account
-                    ? `
-                        ${vaultAccountsGraphql(account, version)}
-                        ${transactionsGraphql(account, version)}
-                        ${balancesGraphql(account, version)}
-                      `
-                    : ""
-                }
-                ${vaultActivitiesGraphql(version, cId)}
-                ${rbnTokenGraphql(account, version)}
-                ${vaultPriceHistoryGraphql(version, cId)}
-              }`.replaceAll(" ", ""),
-            }
-          );
-          return response.data.data;
-        }));
-        return [version, xx];
+        const subgraphResponse = await Promise.all(
+          supportedChainIds.map(async (cId) => {
+            const response = await axios.post(
+              getSubgraphURIForVersion(version, cId),
+              {
+                query: `{
+                  ${
+                    account
+                      ? `
+                          ${vaultAccountsGraphql(account, version)}
+                          ${transactionsGraphql(account, version)}
+                          ${balancesGraphql(account, version)}
+                        `
+                      : ""
+                  }
+                  ${vaultActivitiesGraphql(version, cId)}
+                  ${rbnTokenGraphql(account, version, cId)}
+                  ${vaultPriceHistoryGraphql(version, cId)}
+                }`.replaceAll(" ", ""),
+              }
+            );
+            return response.data.data;
+          })
+        );
+        return [version, subgraphResponse.reduce((acc,cur)=>({...acc,...cur}))];
       })
-    );
-
-    // FIXME
-    response[0][1] = {...response[0][1][0], ...response[0][1][1]}
-    response[1][1] = {...response[1][1][0], ...response[1][1][1]}
-    const responsesAcrossVersions = Object.fromEntries(response);
+    ));
 
     setMulticallCounter((counter) => {
       if (counter === currentCounter) {
