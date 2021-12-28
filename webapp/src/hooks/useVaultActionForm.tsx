@@ -101,12 +101,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   }, [setVaultActionForm, vaultOption]);
 
   const canTransfer = useMemo(() => {
-    switch (vaultOption) {
-      case "rUSDC-ETH-P-THETA":
-        return true;
-      default:
-        return false;
-    }
+    return false;
   }, [vaultOption]);
 
   const transferData = useMemo((): VaultActionFormTransferData => {
