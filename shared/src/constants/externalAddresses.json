@@ -24,7 +24,8 @@
 			"ryvUSDC-ETH-P-THETA": "0x526624Ac3b2d409816fB95D49a9512e5674b052e",
 			"rstETH-THETA": "0x5B8E6eaB6502CC642d00A55F0d8B5f5557c94Bc5",
 			"rAAVE-THETA": "0x5B8E6eaB6502CC642d00A55F0d8B5f5557c94Bc5",
-			"rbn": "0xfD55C3bB2d78d4FB67EB27807c9FD9B36F5ce592"
+			"rbn": "0xfD55C3bB2d78d4FB67EB27807c9FD9B36F5ce592",
+			"perp": "0xd0A1E359811322d97991E03f863a0C30C2cF029C"
 		},
 		"secondary": {
 			"comment": "There is 2 different USDC in Kovan. They are being used in different context. Different USDC are needed depending on contracts.",
