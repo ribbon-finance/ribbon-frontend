@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
-import { CHAINID } from "../utils/env";
+
 import { getAssets, VaultList } from "../constants/constants";
 import { getV2Vault } from "./useV2Vault";
 import { impersonateAddress } from "../utils/development";
@@ -15,16 +15,15 @@ import { isProduction } from "../utils/env";
 import { getAssetDecimals } from "../utils/asset";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { isVaultSupportedOnChain } from "../utils/vault";
-import { isAvaxVault } from "../constants/constants";
 
 const useFetchV2VaultData = (): V2VaultData => {
   const {
     chainId,
     active: web3Active,
     account: web3Account,
+    library,
   } = useWeb3React();
-  const { provider: avaxProvider } = useWeb3Context(isProduction() ? CHAINID.AVAX_MAINNET : CHAINID.AVAX_FUJI);
-  const { provider: ethProvider } = useWeb3Context(isProduction() ? CHAINID.ETH_MAINNET : CHAINID.ETH_KOVAN);
+  const { provider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
 
@@ -52,7 +51,7 @@ const useFetchV2VaultData = (): V2VaultData => {
           web3Active && isVaultSupportedOnChain(vault, chainId || 1)
         );
 
-        const contract = getV2Vault(isAvaxVault(vault) ? avaxProvider : ethProvider, vault, active);
+        const contract = getV2Vault(library || provider, vault, active);
         if (!contract) {
           return { vault };
         }
@@ -178,7 +177,7 @@ const useFetchV2VaultData = (): V2VaultData => {
     if (!isProduction()) {
       console.timeEnd("V2 Vault Data Fetch");
     }
-  }, [account, chainId, web3Active, avaxProvider, ethProvider]);
+  }, [account, web3Active, library, provider, chainId]);
 
   useEffect(() => {
     doMulticall();
