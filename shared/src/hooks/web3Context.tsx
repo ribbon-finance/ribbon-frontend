@@ -17,8 +17,15 @@ const avaxProvider = ethers.getDefaultProvider(NODE_URI[isDevelopment() ? CHAINI
 export const Web3Context = React.createContext<Web3ContextData>({
   provider: defaultProvider,
 });
+export const AvaxWeb3Context = React.createContext<Web3ContextData>({
+  provider: avaxProvider,
+});
 
-export const useWeb3Context = () => useContext(Web3Context);
+export const useWeb3Context = (chainId: CHAINID = CHAINID.ETH_MAINNET) => {
+  let context = Web3Context;
+  if (isAvaxNetwork(chainId)) context = AvaxWeb3Context;
+  return useContext(context);
+};
 
 export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({
   children,

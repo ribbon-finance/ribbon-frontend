@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { isAvaxVault, getAssets, VaultList } from "../constants/constants";
+import { CHAINID, isDevelopment, isProduction } from "../utils/env";
 import { getV2Vault } from "./useV2Vault";
 import { impersonateAddress } from "../utils/development";
 import {
@@ -10,7 +11,6 @@ import {
   V2VaultDataResponses,
 } from "../models/vault";
 import { useWeb3Context } from "./web3Context";
-import { CHAINID, isDevelopment, isProduction } from "../utils/env";
 import { getAssetDecimals } from "../utils/asset";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { isVaultSupportedOnChain } from "../utils/vault";
@@ -45,12 +45,13 @@ const useFetchV2VaultData = (): V2VaultData => {
 
     const responses = await Promise.all(
       VaultList.map(async (vault) => {
-        console.log('vault', vault);
+        const inferProviderFromVault = isAvaxVault(vault) ? avaxProvider : ethProvider;
+        console.log('vault', inferProviderFromVault?._network?.chainId, chainId);
         const active = Boolean(
-          web3Active && isVaultSupportedOnChain(vault, chainId || 1)
+          web3Active && isVaultSupportedOnChain(vault, chainId || inferProviderFromVault?._network?.chainId)
         );
 
-        const contract = getV2Vault(ethProvider, vault, active);
+        const contract = getV2Vault(inferProviderFromVault, vault, active);
         if (!contract) {
           return { vault };
         }
@@ -176,7 +177,7 @@ const useFetchV2VaultData = (): V2VaultData => {
     if (!isProduction()) {
       console.timeEnd("V2 Vault Data Fetch");
     }
-  }, [account, chainId, web3Active, avaxProvider, ethProvider]);
+  }, [account, chainId, web3Active, avaxProvider._network, ethProvider._network]);
 
   useEffect(() => {
     doMulticall();
