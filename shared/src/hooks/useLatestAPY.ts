@@ -108,8 +108,6 @@ export const calculateAPYFromPriceHistory = (
         ),
       ];
 
-      console.log(startingPricePerShare, endingPricePerShare);
-
       /**
        * If the given period is profitable, we calculate APY
        */
