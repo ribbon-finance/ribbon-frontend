@@ -60,19 +60,8 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
   onFormSubmit,
   onHideForm,
 }) => {
-  // We are handling the edge case of migrating 2 v1 vaults
-  // We start from the first index, so if that is migrated,
-  // We expose the second vault
-  const migrationMap = RibbonVaultMigrationMap[vaultOption];
-
-  // We just default to a vault that we know has no v1
-  // to pass in the hook as a no-op to satisfy the rule of hooks
-  const defaultV1VaultOption = "rAVAX-THETA";
-  const v1VaultOptionIndex0 =
-    migrationMap && migrationMap.v2 ? migrationMap.v2[0] : defaultV1VaultOption;
-
   const { vaultMaxWithdrawAmount, asset, decimals } =
-    useVaultData(v1VaultOptionIndex0);
+    useVaultData(migrateSourceVault);
 
   const {
     data: { totalBalance, cap },
