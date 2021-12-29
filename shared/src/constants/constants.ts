@@ -40,9 +40,11 @@ export const isEthNetwork = (chainId: number): boolean =>
 export const isAvaxNetwork = (chainId: number): boolean =>
   chainId === CHAINID.AVAX_MAINNET || chainId === CHAINID.AVAX_FUJI;
 
-export const isEthVault = (vault: string) => isEthNetwork(VaultAddressMap[vault as VaultOptions].chainId);
+export const isEthVault = (vault: string) =>
+  isEthNetwork(VaultAddressMap[vault as VaultOptions].chainId);
 
-export const isAvaxVault = (vault: string) => isAvaxNetwork(VaultAddressMap[vault as VaultOptions].chainId);
+export const isAvaxVault = (vault: string) =>
+  isAvaxNetwork(VaultAddressMap[vault as VaultOptions].chainId);
 
 export const NATIVE_TOKENS = ["WETH", "WAVAX"];
 export const isNativeToken = (token: string): boolean =>
@@ -510,3 +512,9 @@ export const CurveSwapSlippage = 0.008; // 0.8%
 export const LidoOracleAddress = isDevelopment()
   ? ""
   : addresses.mainnet.lidoOracle;
+
+export const SUBGRAPHS_TO_QUERY: [VaultVersion, CHAINID][] = [
+  ["v1", CHAINID.ETH_MAINNET],
+  ["v2", CHAINID.ETH_MAINNET],
+  ["v2", CHAINID.AVAX_MAINNET],
+];
