@@ -82,7 +82,6 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
     useVaultActionForm(vaultOption);
   const { vaultAccounts: v1VaultAccounts } = useVaultAccounts("v1");
   const vaultAccount = v1VaultAccounts[migrateSourceVault]!;
-  console.log(v1VaultAccounts);
 
   const migrationLimit = useMemo(() => {
     const v2Capacity = cap.sub(totalBalance);
