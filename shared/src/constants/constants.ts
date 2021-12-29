@@ -217,8 +217,7 @@ export const VaultAddressMap: {
       }
     : {
         v1: v1deployment.mainnet.RibbonYearnETHPut,
-        // TODO: Uncomment on V2 yvUSDC launch
-        // v2: v2deployment.mainnet.RibbonThetaYearnVaultETHPut,
+        v2: v2deployment.mainnet.RibbonThetaYearnVaultETHPut,
         chainId: CHAINID.ETH_MAINNET,
       },
   "rstETH-THETA": isDevelopment()
@@ -479,12 +478,28 @@ export const RibbonVaultMigrationMap: Partial<
   "rBTC-THETA": {
     v2: ["rBTC-THETA"],
   },
+  // TODO: Once we enable migrations into stETH vault
+  // We can uncomment this
+  // "rstETH-THETA": {
+  //   v2: ["rETH-THETA"],
+  // },
   "rETH-THETA": {
     v2: ["rETH-THETA"],
   },
   "ryvUSDC-ETH-P-THETA": {
     v2: ["ryvUSDC-ETH-P-THETA", "rUSDC-ETH-P-THETA"],
   },
+};
+
+export const v1ToV2MigrationMap: Partial<
+  { [vault in VaultOptions]: VaultOptions }
+> = {
+  "rBTC-THETA": "rBTC-THETA",
+  "rETH-THETA": "rETH-THETA",
+  // TODO: Uncomment this
+  // "rETH-THETA": "rstETH-THETA",
+  "rUSDC-ETH-P-THETA": "ryvUSDC-ETH-P-THETA",
+  "ryvUSDC-ETH-P-THETA": "ryvUSDC-ETH-P-THETA",
 };
 
 export const RibbonTokenAddress = isDevelopment()
