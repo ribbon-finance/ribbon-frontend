@@ -116,7 +116,7 @@ const useFetchSubgraphData = () => {
 
           return [version, mergedResponse];
         })
-      );
+      ) as Record<VaultVersion, any>;
 
     setMulticallCounter((counter) => {
       if (counter === currentCounter) {
