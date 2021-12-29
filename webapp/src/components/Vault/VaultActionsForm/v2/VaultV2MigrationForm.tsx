@@ -2,7 +2,10 @@ import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
 import { BigNumber } from "ethers";
 
-import { VaultOptions } from "shared/lib/constants/constants";
+import {
+  RibbonVaultMigrationMap,
+  VaultOptions,
+} from "shared/lib/constants/constants";
 import colors from "shared/lib/designSystem/colors";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import { getAssetDisplay } from "shared/lib/utils/asset";
@@ -57,7 +60,20 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
   onFormSubmit,
   onHideForm,
 }) => {
-  const { vaultMaxWithdrawAmount, asset, decimals } = useVaultData(vaultOption);
+  // We are handling the edge case of migrating 2 v1 vaults
+  // We start from the first index, so if that is migrated,
+  // We expose the second vault
+  const migrationMap = RibbonVaultMigrationMap[vaultOption];
+
+  // We just default to a vault that we know has no v1
+  // to pass in the hook as a no-op to satisfy the rule of hooks
+  const defaultV1VaultOption = "rAVAX-THETA";
+  const v1VaultOptionIndex0 =
+    migrationMap && migrationMap.v2 ? migrationMap.v2[0] : defaultV1VaultOption;
+
+  const { vaultMaxWithdrawAmount, asset, decimals } =
+    useVaultData(v1VaultOptionIndex0);
+
   const {
     data: { totalBalance, cap },
   } = useV2VaultData(vaultOption);
@@ -66,6 +82,7 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
     useVaultActionForm(vaultOption);
   const { vaultAccounts: v1VaultAccounts } = useVaultAccounts("v1");
   const vaultAccount = v1VaultAccounts[migrateSourceVault]!;
+  console.log(v1VaultAccounts);
 
   const migrationLimit = useMemo(() => {
     const v2Capacity = cap.sub(totalBalance);

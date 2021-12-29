@@ -12,6 +12,7 @@ import {
 } from "shared/lib/designSystem";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import {
+  v1ToV2MigrationMap,
   VaultAddressMap,
   VaultMaxDeposit,
 } from "shared/lib/constants/constants";
@@ -720,7 +721,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     /**
      * Disabled Vault form body
      */
-    if (!isLoadingData && vaultLimit.isZero()) {
+    if (!isLoadingData && !vaultLimit.isZero()) {
       const vaultAccount = vaultAccounts[vaultOption];
       const balanceToMigrate = vaultAccount
         ? vaultAccount.totalBalance
@@ -761,7 +762,9 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
             <MigrateIcon color={color} height={27} />
           </MigrateLogoContainer>
 
-          <MigrationTitle className="mt-3">MIGRATE TO V2</MigrationTitle>
+          <MigrationTitle className="mt-3">
+            MIGRATE TO {vaultOption === "rETH-THETA" ? "T-STETH-C" : ""} V2
+          </MigrationTitle>
 
           <MigrationDescription className="mt-3 text-center">
             You can now move your V1 deposit balance of{" "}
@@ -773,7 +776,10 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
           </MigrationDescription>
 
           {/* Migrate button */}
-          <BaseLink to={getVaultURI(vaultOption, "v2")} className="w-100">
+          <BaseLink
+            to={getVaultURI(v1ToV2MigrationMap[vaultOption]!, "v2")}
+            className="w-100"
+          >
             <ActionButton color={color} className="py-3 mt-4">
               MIGRATE {getAssetDisplay(asset)}
             </ActionButton>
