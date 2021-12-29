@@ -4,6 +4,8 @@ import { useWeb3React } from "@web3-react/core";
 
 import {
   getSubgraphURIForVersion,
+  SUBGRAPHS_TO_QUERY,
+  VaultVersion,
   VaultVersionList,
 } from "../constants/constants";
 import {
@@ -15,7 +17,7 @@ import {
   resolveVaultAccountsSubgraphResponse,
   vaultAccountsGraphql,
 } from "./useVaultAccounts";
-import { supportedChainIds, isProduction } from "../utils/env";
+import { isProduction } from "../utils/env";
 import {
   resolveTransactionsSubgraphResponse,
   transactionsGraphql,
@@ -61,35 +63,60 @@ const useFetchSubgraphData = () => {
       return currentCounter;
     });
 
-    const responsesAcrossVersions = Object.fromEntries(await Promise.all(
-      VaultVersionList.map(async (version) => {
-        const subgraphResponse = await Promise.all(
-          supportedChainIds.map(async (cId) => {
-            const response = await axios.post(
-              getSubgraphURIForVersion(version, cId),
-              {
-                query: `{
-                  ${
-                    account
-                      ? `
-                          ${vaultAccountsGraphql(account, version)}
-                          ${transactionsGraphql(account, version)}
-                          ${balancesGraphql(account, version)}
-                        `
-                      : ""
-                  }
-                  ${vaultActivitiesGraphql(version, cId)}
-                  ${rbnTokenGraphql(account, version, cId)}
-                  ${vaultPriceHistoryGraphql(version, cId)}
-                }`.replaceAll(" ", ""),
-              }
-            );
-            return response.data.data;
-          })
+    const allSubgraphResponses = await Promise.all(
+      SUBGRAPHS_TO_QUERY.map(async ([version, chainId]) => {
+        const response = await axios.post(
+          getSubgraphURIForVersion(version, chainId),
+          {
+            query: `{
+                ${
+                  account
+                    ? `
+                        ${vaultAccountsGraphql(account, version)}
+                        ${transactionsGraphql(account, version)}
+                        ${balancesGraphql(account, version)}
+                      `
+                    : ""
+                }
+                ${vaultActivitiesGraphql(version, chainId)}
+                ${rbnTokenGraphql(account, version, chainId)}
+                ${vaultPriceHistoryGraphql(version, chainId)}
+              }`.replaceAll(" ", ""),
+          }
         );
-        return [version, subgraphResponse.reduce((acc,cur)=>({...acc,...cur}))];
+        return [version, response.data.data];
       })
-    ));
+    );
+
+    // Group all the responses of the same version together
+    // Merge them without overriding the previous properties
+    const responsesAcrossVersions: Record<VaultVersion, any> =
+      Object.fromEntries(
+        VaultVersionList.map((version: VaultVersion) => {
+          const mergedResponse: any = {};
+
+          const responsesForVersion = allSubgraphResponses
+            .filter(([resVersion, _]) => resVersion === version)
+            .map(([_, res]) => res);
+
+          responsesForVersion.forEach((response: any) => {
+            Object.keys(response).forEach((key: string) => {
+              // Null state = [] | null
+              // Non-empty state = [xxx] | {x: 1}
+              const mergedHasProperty =
+                mergedResponse[key] ||
+                (Array.isArray(mergedResponse[key]) &&
+                  mergedResponse[key].length);
+
+              if (!mergedHasProperty) {
+                mergedResponse[key] = response[key];
+              }
+            });
+          });
+
+          return [version, mergedResponse];
+        })
+      ) as Record<VaultVersion, any>;
 
     setMulticallCounter((counter) => {
       if (counter === currentCounter) {
