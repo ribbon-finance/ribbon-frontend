@@ -4,7 +4,6 @@ import { useWeb3React } from "@web3-react/core";
 
 import {
   getSubgraphURIForVersion,
-  isEthNetwork,
   VaultVersionList,
 } from "../constants/constants";
 import {
@@ -16,7 +15,7 @@ import {
   resolveVaultAccountsSubgraphResponse,
   vaultAccountsGraphql,
 } from "./useVaultAccounts";
-import { isProduction } from "../utils/env";
+import { supportedChainIds, isProduction } from "../utils/env";
 import {
   resolveTransactionsSubgraphResponse,
   transactionsGraphql,
@@ -41,7 +40,7 @@ import {
 import { usePendingTransactions } from "./pendingTransactionsContext";
 
 const useFetchSubgraphData = () => {
-  const { account: acc, chainId } = useWeb3React();
+  const { account: acc } = useWeb3React();
   const account = impersonateAddress || acc;
   const [data, setData] =
     useState<SubgraphDataContextType>(defaultSubgraphData);
@@ -62,36 +61,35 @@ const useFetchSubgraphData = () => {
       return currentCounter;
     });
 
-    const responsesAcrossVersions = Object.fromEntries(
-      await Promise.all(
-        VaultVersionList.map(async (version) => {
-          if (version === "v1" && chainId && !isEthNetwork(chainId)) {
-            return [version, {}];
-          }
-          const response = await axios.post(
-            getSubgraphURIForVersion(version, chainId || 1),
-            {
-              query: `{
-                ${
-                  account
-                    ? `
-                        ${vaultAccountsGraphql(account, version)}
-                        ${transactionsGraphql(account, version)}
-                        ${balancesGraphql(account, version)}
-                      `
-                    : ""
-                }
-                ${vaultActivitiesGraphql(version)}
-                ${rbnTokenGraphql(account, version)}
-                ${vaultPriceHistoryGraphql(version)}
-              }`.replaceAll(" ", ""),
-            }
-          );
-
-          return [version, response.data.data];
-        })
-      )
-    );
+    const responsesAcrossVersions = Object.fromEntries(await Promise.all(
+      VaultVersionList.map(async (version) => {
+        const subgraphResponse = await Promise.all(
+          supportedChainIds.map(async (cId) => {
+            const response = await axios.post(
+              getSubgraphURIForVersion(version, cId),
+              {
+                query: `{
+                  ${
+                    account
+                      ? `
+                          ${vaultAccountsGraphql(account, version)}
+                          ${transactionsGraphql(account, version)}
+                          ${balancesGraphql(account, version)}
+                        `
+                      : ""
+                  }
+                  ${vaultActivitiesGraphql(version, cId)}
+                  ${rbnTokenGraphql(account, version, cId)}
+                  ${vaultPriceHistoryGraphql(version, cId)}
+                }`.replaceAll(" ", ""),
+              }
+            );
+            return response.data.data;
+          })
+        );
+        return [version, subgraphResponse.reduce((acc,cur)=>({...acc,...cur}))];
+      })
+    ));
 
     setMulticallCounter((counter) => {
       if (counter === currentCounter) {
@@ -124,7 +122,7 @@ const useFetchSubgraphData = () => {
     if (!isProduction()) {
       console.timeEnd("Subgraph Data Fetch");
     }
-  }, [account, chainId]);
+  }, [account]);
 
   useEffect(() => {
     doMulticall();

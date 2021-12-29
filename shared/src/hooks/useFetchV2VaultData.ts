@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
-
-import { getAssets, VaultList } from "../constants/constants";
+import { isAvaxVault, getAssets, VaultList } from "../constants/constants";
+import { CHAINID, isDevelopment, isProduction } from "../utils/env";
 import { getV2Vault } from "./useV2Vault";
 import { impersonateAddress } from "../utils/development";
 import {
@@ -11,7 +11,6 @@ import {
   V2VaultDataResponses,
 } from "../models/vault";
 import { useWeb3Context } from "./web3Context";
-import { isProduction } from "../utils/env";
 import { getAssetDecimals } from "../utils/asset";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { isVaultSupportedOnChain } from "../utils/vault";
@@ -23,7 +22,8 @@ const useFetchV2VaultData = (): V2VaultData => {
     account: web3Account,
     library,
   } = useWeb3React();
-  const { provider } = useWeb3Context();
+  const { provider: avaxProvider } = useWeb3Context(isDevelopment() ? CHAINID.AVAX_FUJI : CHAINID.AVAX_MAINNET);
+  const { provider: ethProvider } = useWeb3Context(isDevelopment() ? CHAINID.ETH_KOVAN : CHAINID.ETH_MAINNET);
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
 
@@ -46,12 +46,12 @@ const useFetchV2VaultData = (): V2VaultData => {
 
     const responses = await Promise.all(
       VaultList.map(async (vault) => {
-        // If we don't support the vault on the chainId, we just return the inactive data state
+        const inferredProviderFromVault = isAvaxVault(vault) ? avaxProvider : ethProvider;
         const active = Boolean(
-          web3Active && isVaultSupportedOnChain(vault, chainId || 1)
+          web3Active && isVaultSupportedOnChain(vault, chainId || inferredProviderFromVault?._network?.chainId)
         );
 
-        const contract = getV2Vault(library || provider, vault, active);
+        const contract = getV2Vault(library || inferredProviderFromVault, vault, active);
         if (!contract) {
           return { vault };
         }
@@ -177,7 +177,7 @@ const useFetchV2VaultData = (): V2VaultData => {
     if (!isProduction()) {
       console.timeEnd("V2 Vault Data Fetch");
     }
-  }, [account, web3Active, library, provider, chainId]);
+  }, [account, chainId, library, web3Active, avaxProvider, ethProvider]);
 
   useEffect(() => {
     doMulticall();
