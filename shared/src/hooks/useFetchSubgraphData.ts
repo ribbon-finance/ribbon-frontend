@@ -101,15 +101,15 @@ const useFetchSubgraphData = () => {
 
           responsesForVersion.forEach((response: any) => {
             Object.keys(response).forEach((key: string) => {
-              // Null state = [] | null
-              // Non-empty state = [xxx] | {x: 1}
-              const mergedHasProperty =
-                mergedResponse[key] ||
-                (Array.isArray(mergedResponse[key]) &&
-                  mergedResponse[key].length);
-
-              if (!mergedHasProperty) {
+              // Push response if its an array
+              // Otherwise merge without overriding existing property
+              if (!mergedResponse[key]) {
                 mergedResponse[key] = response[key];
+              } else if (
+                Array.isArray(mergedResponse[key]) &&
+                Array.isArray(response[key])
+              ) {
+                mergedResponse[key].push(...response[key]);
               }
             });
           });
