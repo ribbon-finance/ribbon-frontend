@@ -8,6 +8,7 @@
     "RibbonThetaVaultETHCall": "0x9467726c3cFe3f9112Cd0fA3963223d5b8b3C4B1",
     "RibbonThetaVaultLogic": "0x2f7ABA5AF03B3fbC760722e46ee4376Aec2A0Bb0",
     "RibbonThetaVaultWBTCCall": "0x6e08c6659132dB4aF0352c409e4b3067C8E97ac2",
+    "RibbonTreasuryVaultPERP": "0x27b4E71841Db6E4c58a2e64d4C5F9853614fba7D",
     "StrikeSelectionETH": "0xa3Bd562C7315B6f1C5FDf573cBfd4Ab6C8af1D07",
     "StrikeSelectionWBTC": "0x2Cd6e166Fb9DABC50d0b07DdE12e08dDC7a9D5DC",
     "VaultLifecycle": "0x97710Cbae64DE9c3615E64893CD225f6139370cA"
@@ -27,6 +28,7 @@
     "RibbonThetaVaultWBTCCall": "0x65a833afDc250D9d38f8CD9bC2B1E3132dB13B2F",
     "RibbonThetaYearnVaultLogic": "0x403dceC12484C0C1B6816025c80f45A6FDFf1aC6",
     "RibbonThetaYearnVaultETHPut": "0xCc323557c71C0D1D20a1861Dc69c06C5f3cC9624",
+    "RibbonTreasuryVaultPERP": "",
     "StrikeSelectionAAVE": "0xc2b10e716987cCD35d642506Fd546315C0753563",
     "StrikeSelectionETH": "0x39d3799b8ABEfC3d05db5BA3b3B2770146475000",
     "StrikeSelectionWBTC": "0x5E68b6F5C82FC5F3711541CA4A12E01B967Fc641",

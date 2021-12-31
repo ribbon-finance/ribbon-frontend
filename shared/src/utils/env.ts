@@ -31,6 +31,9 @@ export const isStaging = () =>
 export const isProduction = () =>
   process.env.REACT_APP_VERCEL_GIT_COMMIT_REF === "master";
 
+export const isTreasury = () =>
+  process.env.REACT_APP_VAULT_COLLECTION === "treasury";
+
 export const NODE_URI: Record<number, string> = {
   [CHAINID.ETH_MAINNET]: process.env.REACT_APP_MAINNET_URI || "",
   [CHAINID.ETH_KOVAN]: process.env.REACT_APP_TESTNET_URI || "",
