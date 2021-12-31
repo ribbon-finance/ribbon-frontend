@@ -16,17 +16,17 @@ const getVaultActivityKey = (
   type: "shortPositions" | "optionTrades"
 ) => `vaultActivity_${type}_${vault.replace(/-/g, "")}`;
 
-export const vaultActivitiesGraphql = (version: VaultVersion) =>
+export const vaultActivitiesGraphql = (version: VaultVersion, chainId: number) =>
   VaultList.reduce((acc, vault) => {
     const vaultAddress = VaultAddressMap[vault][version]?.toLowerCase();
 
-    if (!vaultAddress) {
+    if (!vaultAddress || VaultAddressMap[vault].chainId !== chainId) {
       return acc;
     }
 
     return (
       acc +
-      `     
+      `
           ${getVaultActivityKey(
             vault,
             "shortPositions"

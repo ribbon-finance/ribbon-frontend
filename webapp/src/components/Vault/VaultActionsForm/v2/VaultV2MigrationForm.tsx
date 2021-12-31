@@ -2,7 +2,10 @@ import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
 import { BigNumber } from "ethers";
 
-import { VaultOptions } from "shared/lib/constants/constants";
+import {
+  RibbonVaultMigrationMap,
+  VaultOptions,
+} from "shared/lib/constants/constants";
 import colors from "shared/lib/designSystem/colors";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import { getAssetDisplay } from "shared/lib/utils/asset";
@@ -57,7 +60,9 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
   onFormSubmit,
   onHideForm,
 }) => {
-  const { vaultMaxWithdrawAmount, asset, decimals } = useVaultData(vaultOption);
+  const { vaultMaxWithdrawAmount, asset, decimals } =
+    useVaultData(migrateSourceVault);
+
   const {
     data: { totalBalance, cap },
   } = useV2VaultData(vaultOption);
