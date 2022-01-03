@@ -23,6 +23,11 @@ const theme = {
       heightWithPosition: 104 + 56,
     },
   },
+  governance: {
+    actionBar: {
+      height: 80,
+    },
+  },
 };
 
 export default theme;

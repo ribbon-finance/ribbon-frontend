@@ -1,4 +1,6 @@
 import React from "react";
+import styled from "styled-components";
+import theme from "../../designSystem/theme";
 
 type SVGProps = React.SVGAttributes<SVGElement>;
 
@@ -236,7 +238,7 @@ export const GalleryIcon: React.FC<SVGProps> = (props) => (
   </svg>
 );
 
-export const CheckIcon: React.FC<SVGProps> = (props) => (
+export const CheckIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
   <svg
     width="20"
     height="20"
@@ -247,7 +249,7 @@ export const CheckIcon: React.FC<SVGProps> = (props) => (
   >
     <path
       d="M16.6667 5L7.50004 14.1667L3.33337 10"
-      stroke="#FFFFFF"
+      stroke={color || "white"}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -424,6 +426,91 @@ export const BellIcon: React.FC<SVGProps> = (props) => (
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const StakeCircle = styled.div<{
+  type: "solid" | "hollow";
+  size: string;
+  color: string;
+}>`
+  display: flex;
+  height: ${(props) => props.size};
+  width: ${(props) => props.size};
+  align-items: center;
+  justify-content: center;
+  border-radius: 100px;
+
+  ${(props) => {
+    switch (props.type) {
+      case "solid":
+        return `
+          background: ${props.color};
+        `;
+      case "hollow":
+        return `
+          border: ${theme.border.width} ${theme.border.style} ${props.color}
+        `;
+    }
+  }}
+`;
+
+export const UnstakeIcon: React.FC<{ color?: string; size?: string }> = ({
+  color,
+  size,
+}) => (
+  <StakeCircle size={size || "30%"} type="hollow" color={color || "white"} />
+);
+
+export const StakeIcon: React.FC<{ color?: string; size?: string }> = ({
+  color,
+  size,
+}) => (
+  <StakeCircle size={size || "50%"} type="hollow" color={color || "#FFFFFF66"}>
+    <StakeCircle
+      size={`${(2 / 3) * 100}%`}
+      type="solid"
+      color={color || "white"}
+    />
+  </StakeCircle>
+);
+
+export const DelegateIcon: React.FC<SVGPropsWithColor> = ({
+  color,
+  ...props
+}) => (
+  <svg
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <rect
+      opacity="0.24"
+      x="0.5"
+      y="8.5"
+      width="11"
+      height="11"
+      rx="2.5"
+      stroke={color || "white"}
+    />
+    <rect
+      opacity="0.56"
+      x="4.5"
+      y="4.5"
+      width="11"
+      height="11"
+      rx="2.5"
+      stroke={color || "white"}
+    />
+    <rect
+      x="8.5"
+      y="0.5"
+      width="11"
+      height="11"
+      rx="2.5"
+      stroke={color || "white"}
     />
   </svg>
 );

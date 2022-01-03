@@ -11,8 +11,12 @@ export type Web3ContextData = {
 // TODO: Fix this in the future
 // Right now we just default to ETH mainnet for the unconnected wallet state
 // This means that we do not show the AVAX vault's details on the app
-const defaultProvider = ethers.getDefaultProvider(NODE_URI[isDevelopment() ? CHAINID.ETH_KOVAN : CHAINID.ETH_MAINNET]);
-const avaxProvider = ethers.getDefaultProvider(NODE_URI[isDevelopment() ? CHAINID.AVAX_FUJI : CHAINID.AVAX_MAINNET]);
+const defaultProvider = ethers.getDefaultProvider(
+  NODE_URI[isDevelopment() ? CHAINID.ETH_KOVAN : CHAINID.ETH_MAINNET]
+);
+const avaxProvider = ethers.getDefaultProvider(
+  NODE_URI[isDevelopment() ? CHAINID.AVAX_FUJI : CHAINID.AVAX_MAINNET]
+);
 
 export const Web3Context = React.createContext<Web3ContextData>({
   provider: defaultProvider,
@@ -31,6 +35,8 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({
   children,
 }) => (
   <Web3Context.Provider value={{ provider: defaultProvider }}>
-    {children}
+    <AvaxWeb3Context.Provider value={{ provider: avaxProvider }}>
+      {children}
+    </AvaxWeb3Context.Provider>
   </Web3Context.Provider>
 );

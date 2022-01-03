@@ -10,6 +10,16 @@ export const formatSignificantDecimals = (
   significantDecimals: number = 6
 ) => parseFloat(parseFloat(num).toFixed(significantDecimals)).toString();
 
+export const formatAmount = (n: number): string => {
+  if (n < 1e4) return `${currency(n, { separator: ",", symbol: "" }).format()}`;
+  if (n >= 1e4 && n < 1e6) return `${parseFloat((n / 1e3).toFixed(2))}K`;
+  if (n >= 1e6 && n < 1e9) return `${parseFloat((n / 1e6).toFixed(2))}M`;
+  if (n >= 1e9 && n < 1e12) return `${parseFloat((n / 1e9).toFixed(2))}B`;
+  if (n >= 1e12) return `${parseFloat((n / 1e12).toFixed(2))}T`;
+
+  return "";
+};
+
 export const formatBigNumber = (
   num: BigNumber,
   decimals: number = 18,
@@ -21,6 +31,13 @@ export const formatBigNumber = (
   return parseFloat(formatUnits(num, decimals)).toLocaleString(undefined, {
     maximumFractionDigits: _significantDecimals,
   });
+};
+
+export const formatBigNumberAmount = (
+  num: BigNumber,
+  decimals: number = 18
+) => {
+  return formatAmount(parseFloat(formatUnits(num, decimals)));
 };
 
 export const toFiat = (etherVal: BigNumber) => {
@@ -72,16 +89,6 @@ export const wmul = (x: BigNumber, y: BigNumber, decimals: number) =>
     .mul(y)
     .add(getWAD(decimals).div(ethers.BigNumber.from("2")))
     .div(getWAD(decimals));
-
-export const formatAmount = (n: number): string => {
-  if (n < 1e4) return `${currency(n, { separator: ",", symbol: "" }).format()}`;
-  if (n >= 1e4 && n < 1e6) return `${parseFloat((n / 1e3).toFixed(2))}K`;
-  if (n >= 1e6 && n < 1e9) return `${parseFloat((n / 1e6).toFixed(2))}M`;
-  if (n >= 1e9 && n < 1e12) return `${parseFloat((n / 1e9).toFixed(2))}B`;
-  if (n >= 1e12) return `${parseFloat((n / 1e12).toFixed(2))}T`;
-
-  return "";
-};
 
 export const annualizedPerformance = (performance: number) =>
   (performance * 0.9 + 1) ** 52 - 1;

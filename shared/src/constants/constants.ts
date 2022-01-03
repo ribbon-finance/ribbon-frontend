@@ -528,8 +528,14 @@ export const LidoOracleAddress = isDevelopment()
   ? ""
   : addresses.mainnet.lidoOracle;
 
-export const SUBGRAPHS_TO_QUERY: [VaultVersion, CHAINID][] = [
-  ["v1", CHAINID.ETH_MAINNET],
-  ["v2", CHAINID.ETH_MAINNET],
-  ["v2", CHAINID.AVAX_MAINNET],
-];
+export const SUBGRAPHS_TO_QUERY: [VaultVersion, CHAINID][] = isDevelopment()
+  ? [
+      ["v1", CHAINID.ETH_KOVAN],
+      ["v2", CHAINID.ETH_KOVAN],
+      ["v2", CHAINID.AVAX_FUJI],
+    ]
+  : [
+      ["v1", CHAINID.ETH_MAINNET],
+      ["v2", CHAINID.ETH_MAINNET],
+      ["v2", CHAINID.AVAX_MAINNET],
+    ];
