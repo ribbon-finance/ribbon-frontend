@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
-import { PrimaryText, Title } from "../../designSystem";
+import { Title } from "../../designSystem";
 import { AnimatePresence, motion } from "framer";
 
 const modes = ["date", "month"] as const;
@@ -50,7 +50,7 @@ const CalendarBodyItem = styled.div<{ mode: Mode }>`
       case "month":
         return `
           width: ${(1 / 3) * 100}%;
-          height: 48px;
+          height: 56px;
         `;
     }
   }}
@@ -220,7 +220,7 @@ const CalendarPicker: React.FC<CalendarPickerProps> = ({
                         </Title>
                       </CalendarBodyItem>
                     ))}
-                    {[...new Array(35)].map((_item, index) => {
+                    {[...new Array(42)].map((_item, index) => {
                       const date = calendarFirstDate.clone().add(index, "d");
                       const inTheSameMonth =
                         date.month() === navigateDate.month();
@@ -334,7 +334,7 @@ const CalendarPicker: React.FC<CalendarPickerProps> = ({
         </motion.div>
       </AnimatePresence>
     ),
-    [maxDate, minDate, mode, navigateDate, selectedDate]
+    [maxDate, minDate, mode, onDateSelected, navigateDate, selectedDate]
   );
 
   return (

@@ -18,7 +18,7 @@ import { CalendarIcon, StakeIcon } from "shared/lib/assets/icons/icons";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import InlineSelectInput from "shared/lib/components/Common/InlineSelectInput";
 import { formatBigNumber } from "shared/lib/utils/math";
-import { duration, Duration } from "moment";
+import moment, { duration, Duration } from "moment";
 import StakingModalFormCalendarOverlay from "./StakingModalFormCalendarOverlay";
 
 const durationSelectOptions = [
@@ -100,7 +100,12 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({}) => {
           setShowCalendarPicker(false);
           setDurationSelectValue(durationSelectOptions[0]);
         }}
-        onDateSelected={() => {}}
+        onDateSelected={(date) => {
+          setShowCalendarPicker(false);
+          setStakeDuration(
+            duration(Math.ceil(date.diff(moment(), "d", true)), "d")
+          );
+        }}
       />
       <BaseModalContentColumn>
         <LogoContainer>
@@ -113,7 +118,7 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({}) => {
         </Title>
       </BaseModalContentColumn>
       <BaseModalContentColumn className="flex-column">
-        <BaseInputLabel>ADDRESS / ENS</BaseInputLabel>
+        <BaseInputLabel>AMOUNT (RBN)</BaseInputLabel>
         <BaseInputContainer error={inputError}>
           <BaseInput
             className="form-control"

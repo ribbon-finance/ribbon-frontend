@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
 import moment, { Moment } from "moment";
@@ -13,6 +13,7 @@ import {
 } from "shared/lib/designSystem";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import CalendarPicker from "shared/lib/components/Common/CalendarPicker";
+import { ActionButton } from "shared/lib/components/Common/buttons";
 
 const ModalOverlay = styled(motion.div)<{ show: boolean }>`
   display: ${(props) => (props.show ? "flex" : "none")};
@@ -42,6 +43,8 @@ interface StakingModalFormCalendarOverlayProps {
 
 const StakingModalFormCalendarOverlay: React.FC<StakingModalFormCalendarOverlayProps> =
   ({ show, onCancel, onDateSelected }) => {
+    const [selectedDate, setSelectedDate] = useState<Moment>();
+
     return (
       <AnimatePresence>
         <ModalOverlay
@@ -56,7 +59,7 @@ const StakingModalFormCalendarOverlay: React.FC<StakingModalFormCalendarOverlayP
             ease: "easeInOut",
           }}
         >
-          <BaseModalContentColumn marginTop={8}>
+          <BaseModalContentColumn marginTop={0}>
             <CloseOverlayButton
               className="mr-auto"
               role="button"
@@ -74,10 +77,11 @@ const StakingModalFormCalendarOverlay: React.FC<StakingModalFormCalendarOverlayP
           {/* Calendar */}
           <BaseModalContentColumn marginTop={34}>
             <CalendarPicker
+              initialValue={selectedDate}
               minDate={moment().add(1, "w")}
               maxDate={moment().add(4, "y")}
               onDateSelected={(date) => {
-                console.log(date);
+                setSelectedDate(date);
               }}
             />
           </BaseModalContentColumn>
@@ -89,6 +93,23 @@ const StakingModalFormCalendarOverlay: React.FC<StakingModalFormCalendarOverlayP
               &#9899; Maximum lockup period: 4 years
             </SecondaryText>
           </BaseModalWarning>
+
+          <BaseModalContentColumn>
+            <ActionButton
+              disabled={!selectedDate}
+              onClick={() => {
+                if (!selectedDate) {
+                  return;
+                }
+
+                onDateSelected(selectedDate);
+              }}
+              className="py-3"
+              color={colors.red}
+            >
+              DONE
+            </ActionButton>
+          </BaseModalContentColumn>
         </ModalOverlay>
       </AnimatePresence>
     );
