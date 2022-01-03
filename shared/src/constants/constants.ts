@@ -8,6 +8,7 @@ import {
   getSubgraphqlURI,
   isDevelopment,
   isProduction,
+  isTreasury,
 } from "../utils/env";
 import v1deployment from "./v1Deployments.json";
 import v2deployment from "./v2Deployments.json";
@@ -54,7 +55,7 @@ export const VaultVersionList = ["v2", "v1"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">;
 
-export const FullVaultList = [
+export const RetailVaultList = [
   "rAAVE-THETA",
   "rAVAX-THETA",
   "rstETH-THETA",
@@ -64,7 +65,13 @@ export const FullVaultList = [
   "rUSDC-ETH-P-THETA",
 ] as const;
 
-export type VaultOptions = typeof FullVaultList[number];
+export const TreasuryVaultList = [
+  "rPERP-TSRY"
+] as const;
+
+const AllVaultOptions = [...RetailVaultList, ...TreasuryVaultList]
+
+export type VaultOptions = typeof AllVaultOptions[number];
 const ProdExcludeVault: VaultOptions[] = [];
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
@@ -72,9 +79,11 @@ const PutThetaVault: VaultOptions[] = [
 ];
 
 // @ts-ignore
-export const VaultList: VaultOptions[] = !isProduction()
-  ? FullVaultList
-  : FullVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
+export const VaultList: VaultOptions[] = isTreasury()
+  ? TreasuryVaultList
+  : !isProduction()
+    ? RetailVaultList
+    : RetailVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
 
 export const GAS_LIMITS: {
   [vault in VaultOptions]: Partial<{
@@ -145,6 +154,13 @@ export const GAS_LIMITS: {
     },
   },
   "rAVAX-THETA": {
+    v2: {
+      deposit: 380000,
+      withdrawInstantly: 130000,
+      completeWithdraw: 300000,
+    },
+  },
+  "rPERP-TSRY": {
     v2: {
       deposit: 380000,
       withdrawInstantly: 130000,
@@ -253,6 +269,15 @@ export const VaultAddressMap: {
         v2: v2deployment.avax.RibbonThetaVaultETHCall,
         chainId: CHAINID.AVAX_MAINNET,
       },
+  "rPERP-TSRY": isDevelopment()
+    ? {
+        v2: v2deployment.kovan.RibbonTreasuryVaultPERP,
+        chainId: CHAINID.ETH_KOVAN,
+      }
+    : {
+        v2: v2deployment.mainnet.RibbonTreasuryVaultPERP,
+        chainId: CHAINID.ETH_MAINNET,
+      },
 };
 
 /**
@@ -279,6 +304,7 @@ export const VaultNamesList = [
   "T-stETH-C",
   "T-AAVE-C",
   "T-AVAX-C",
+  "T-PERP-C"
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
@@ -289,6 +315,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-stETH-C": "rstETH-THETA",
   "T-AAVE-C": "rAAVE-THETA",
   "T-AVAX-C": "rAVAX-THETA",
+  "T-PERP-C": "rPERP-TSRY",
 };
 
 export const BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
@@ -336,6 +363,8 @@ export const getAssets = (vault: VaultOptions): Assets => {
       return "AAVE";
     case "rAVAX-THETA":
       return "WAVAX";
+    case "rPERP-TSRY":
+      return "PERP";
   }
 };
 
@@ -352,6 +381,8 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
       return "AAVE";
     case "rAVAX-THETA":
       return "WAVAX";
+    case "rPERP-TSRY":
+      return "PERP";
   }
 };
 
@@ -371,6 +402,8 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
       return "AAVE";
     case "rAVAX-THETA":
       return "WAVAX";
+    case "rPERP-TSRY":
+      return "PERP";
   }
 };
 
@@ -383,6 +416,7 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "rUSDC-ETH-P-THETA": ["USDC"],
     "rstETH-THETA": ["stETH", "WETH"],
     "ryvUSDC-ETH-P-THETA": ["USDC"],
+    "rPERP-TSRY": ["PERP"]
   };
 
 export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
@@ -407,6 +441,9 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   ),
   "rAVAX-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rAVAX-THETA")))
+  ),
+  "rPERP-TSRY": BigNumber.from(100000000).mul( // Cap still not decided
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rPERP-TSRY")))
   ),
 };
 
@@ -461,6 +498,12 @@ export const VaultFees: {
     },
   },
   "rAVAX-THETA": {
+    v2: {
+      managementFee: "2",
+      performanceFee: "10",
+    },
+  },
+  "rPERP-TSRY": {
     v2: {
       managementFee: "2",
       performanceFee: "10",

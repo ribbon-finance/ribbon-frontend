@@ -32,6 +32,7 @@ const COINGECKO_CURRENCIES = {
   stETH: "staked-ether",
   AAVE: "aave",
   WAVAX: "avalanche-2",
+  PERP: "perpetual-protocol",
 };
 
 export const useFetchAssetsPrice = (

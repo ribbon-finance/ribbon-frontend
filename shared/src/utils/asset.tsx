@@ -8,6 +8,7 @@ import {
   WETHLogo,
   WAVAXLogo,
   YVUSDcLogo,
+  PERPLogo,
 } from "../assets/icons/erc20Assets";
 import colors from "../designSystem/colors";
 import { Assets } from "../store/types";
@@ -135,5 +136,7 @@ export const getAssetLogo: (asset: Assets) =>
       return AAVELogo;
     case "WAVAX":
       return WAVAXLogo;
+    case "PERP":
+      return PERPLogo;
   }
 };
