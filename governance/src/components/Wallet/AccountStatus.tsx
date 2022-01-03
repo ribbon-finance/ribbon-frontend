@@ -24,6 +24,7 @@ import useOutsideAlerter from "shared/lib/hooks/useOutsideAlerter";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import { truncateAddress } from "shared/lib/utils/address";
+import useENSSearch from "shared/lib/hooks/useENSSearch";
 
 const walletButtonWidth = 55;
 
@@ -235,6 +236,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
     "hidden"
   );
+  const { data: ensData } = useENSSearch(account || "");
 
   // Track clicked area outside of desktop menu
   const desktopMenuRef = useRef(null);
@@ -314,7 +316,8 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
       <>
         <Indicator connected={active} />
         <WalletButtonText connected={active}>
-          {truncateAddress(account)} <ButtonArrow isOpen={isMenuOpen} />
+          {ensData?.name || truncateAddress(account)}{" "}
+          <ButtonArrow isOpen={isMenuOpen} />
         </WalletButtonText>
       </>
     ) : (

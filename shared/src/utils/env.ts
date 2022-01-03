@@ -44,9 +44,9 @@ export const getSubgraphqlURI = () =>
     : process.env.REACT_APP_SUBGRAPHQL_URL) ||
   "https://api.thegraph.com/subgraphs/name/kenchangh/ribbon-finance-kovan";
 
-export const supportedChainIds = isDevelopment() ?
-  [CHAINID.ETH_KOVAN, CHAINID.AVAX_FUJI] :
-  [CHAINID.ETH_MAINNET, CHAINID.AVAX_MAINNET]
+export const supportedChainIds = isDevelopment()
+  ? [CHAINID.ETH_KOVAN, CHAINID.AVAX_FUJI]
+  : [CHAINID.ETH_MAINNET, CHAINID.AVAX_MAINNET];
 
 /**
  * Multi chain env configs

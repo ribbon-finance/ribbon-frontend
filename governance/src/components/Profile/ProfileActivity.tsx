@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
 import moment from "moment";
-import { formatUnits } from "@ethersproject/units";
 import { useWeb3React } from "@web3-react/core";
 
 import { Title, SecondaryText, BaseLink } from "shared/lib/designSystem";
@@ -32,7 +31,7 @@ import {
   StakeIcon,
   UnstakeIcon,
 } from "shared/lib/assets/icons/icons";
-import { formatAmount } from "shared/lib/utils/math";
+import { formatBigNumberAmount } from "shared/lib/utils/math";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import { truncateAddress } from "shared/lib/utils/address";
@@ -192,17 +191,13 @@ const ProfileActivity = () => {
     switch (activity.type) {
       case "stake":
       case "unstake":
-        return (
-          <Title>
-            {formatAmount(parseFloat(formatUnits(activity.amount!, 18)))} RBN
-          </Title>
-        );
+        return <Title>{formatBigNumberAmount(activity.amount!)} RBN</Title>;
       case "allocateVote":
         return (
           <>
             <Title>
-              {formatAmount(parseFloat(formatUnits(activity.amount!, 18)))} SRBN
-              / {activity.percentage}%
+              {formatBigNumberAmount(activity.amount!)} SRBN /{" "}
+              {activity.percentage}%
             </Title>
             <SecondaryText
               fontSize={12}

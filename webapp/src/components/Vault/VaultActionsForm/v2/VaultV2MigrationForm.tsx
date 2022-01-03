@@ -2,10 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
 import { BigNumber } from "ethers";
 
-import {
-  RibbonVaultMigrationMap,
-  VaultOptions,
-} from "shared/lib/constants/constants";
+import { VaultOptions } from "shared/lib/constants/constants";
 import colors from "shared/lib/designSystem/colors";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import { getAssetDisplay } from "shared/lib/utils/asset";
