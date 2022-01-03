@@ -251,7 +251,7 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
             </TagContainer>
 
             {/* Mode switcher button */}
-            {yieldInfos && (
+            {Boolean(yieldInfos && yieldInfos.length) && (
               <ModeSwitcherContainer
                 role="button"
                 onClick={onSwapMode}

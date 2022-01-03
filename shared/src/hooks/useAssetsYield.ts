@@ -66,9 +66,18 @@ export const useFetchAssetsYield = () => {
 const useAssetsYield = (asset: Assets) => {
   const contextData = useContext(ExternalAPIDataContext);
 
-  return contextData.assetsYield.data[
-    asset === "WETH" ? "eth" : (asset.toLowerCase() as DefiScoreToken)
-  ];
+  let baseAsset =
+    asset === "WETH" ? "eth" : (asset.toLowerCase() as DefiScoreToken);
+
+  switch (asset) {
+    case "yvUSDC":
+      baseAsset = "usdc";
+      break;
+    case "stETH":
+      baseAsset = "eth";
+  }
+
+  return contextData.assetsYield.data[baseAsset];
 };
 
 export default useAssetsYield;

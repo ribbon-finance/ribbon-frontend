@@ -346,7 +346,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
   },
   "rAAVE-THETA": {
     title: "T-AAVE-C",
-    subtitle: "AAVE Put-Selling",
+    subtitle: "AAVE Covered Call",
     description:
       "Generates yield by running an automated AAVE covered call strategy.",
     tags: ["COVERED CALL"],

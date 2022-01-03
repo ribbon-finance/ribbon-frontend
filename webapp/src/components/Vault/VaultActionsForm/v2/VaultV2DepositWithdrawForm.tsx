@@ -6,15 +6,18 @@ import { useLocation } from "react-router-dom";
 
 import colors from "shared/lib/designSystem/colors";
 import {
+  AVAX_BRIDGE_URI,
   isNativeToken,
+  isAvaxNetwork,
   VaultAddressMap,
   VaultAllowedDepositAssets,
   VaultMaxDeposit,
   VaultOptions,
 } from "shared/lib/constants/constants";
+import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { ACTIONS } from "../Modal/types";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
-import { SecondaryText, Title } from "shared/lib/designSystem";
+import { BaseLink, SecondaryText, Title } from "shared/lib/designSystem";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import {
   useV2VaultData,
@@ -22,15 +25,31 @@ import {
 } from "shared/lib/hooks/web3DataContext";
 import { ERC20Token } from "shared/lib/models/eth";
 import { isVaultFull } from "shared/lib/utils/vault";
+import { getAssetDisplay, getAssetColor } from "shared/lib/utils/asset";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import VaultApprovalForm from "../common/VaultApprovalForm";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
 import SwapBTCDropdown from "../common/SwapBTCDropdown";
 import VaultBasicAmountForm from "../common/VaultBasicAmountForm";
-import { getAssetDisplay } from "shared/lib/utils/asset";
 import { VaultValidationErrors } from "../types";
 import VaultV2WithdrawForm from "./VaultV2WithdrawForm";
+
+const BridgeText = styled.span<{}>`
+  font-size: 14px;
+`;
+
+
+const BridgeButton = styled.div<{ color: string }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 16px;
+  background: ${(props) => props.color}14;
+  border: 1px solid ${(props) => props.color};
+  border-radius: 100px;
+  color: white;
+`;
 
 const FormTabContainer = styled.div`
   display: flex;
@@ -136,7 +155,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     vaultActionForm.depositAsset || asset
   );
   const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
-  const { active } = useWeb3React();
+  const { active, chainId } = useWeb3React();
 
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const isInputNonZero = parseFloat(vaultActionForm.inputAmount) > 0;
@@ -402,6 +421,21 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     }
   }, [asset, decimals, error, vaultMaxDepositAmount]);
 
+  const bridgeAvaxCTA = useMemo(() => {
+    if (vaultActionForm.actionType === ACTIONS.deposit &&
+        vaultActionForm.depositAsset &&
+        chainId && isAvaxNetwork(chainId)) {
+      return (
+        <BaseLink to={AVAX_BRIDGE_URI} target="_blank" rel="noreferrer noopener">
+          <BridgeButton color={getAssetColor(vaultActionForm.depositAsset)}>
+            <BridgeText className="mr-2">Bridge your assets to Avalanche</BridgeText>
+            <ExternalIcon color="white" />
+          </BridgeButton>
+        </BaseLink>
+      );
+    }
+  }, [chainId, vaultActionForm.actionType, vaultActionForm.depositAsset]);
+
   const swapContainerTrigger = useMemo(() => {
     switch (asset) {
       case "WBTC":
@@ -461,6 +495,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
 
       <div className="d-flex flex-column p-4 w-100">
         {formContent}
+        {bridgeAvaxCTA}
         {formInfoText}
         {swapContainerTrigger}
       </div>

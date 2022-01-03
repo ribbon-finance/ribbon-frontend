@@ -23,7 +23,8 @@ The webapp uses environment variables to talk to the blockchain. Copy paste thes
 You will need to have access to a node to fill up `REACT_APP_MAINNET_URI` and `REACT_APP_TESTNET_URI`, we recommend either [Infura](https://infura.io/) or [Alchemy](https://www.alchemyapi.io/).
 
 ```
-REACT_APP_VERCEL_GIT_COMMIT_REF=staging # used to track which branch is used to deploy the app. 'staging' uses mainnet for URLs
+# Used to track which branch is used to deploy the app. 'staging' uses mainnet for URLs
+REACT_APP_VERCEL_GIT_COMMIT_REF=staging
 REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID=your_analytics_id
 REACT_APP_MAINNET_URI=https://mainnet.infura.io/v3/d43d838246464b5690f8b10337b446d7
 REACT_APP_TESTNET_URI=https://kovan.infura.io/v3/d43d838246464b5690f8b10337b446d7

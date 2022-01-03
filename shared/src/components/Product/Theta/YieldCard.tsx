@@ -381,7 +381,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
             </TagContainer>
 
             {/* Mode switcher button */}
-            {yieldInfos && yieldInfos.length && (
+            {Boolean(yieldInfos && yieldInfos.length) && (
               <ModeSwitcherContainer
                 role="button"
                 onClick={onSwapMode}
