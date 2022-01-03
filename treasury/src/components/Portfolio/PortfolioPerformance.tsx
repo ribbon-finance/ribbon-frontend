@@ -193,7 +193,7 @@ const PortfolioPerformance = () => {
     return parseFloat(
       formatSignificantDecimals(formatUnits(yields, premiumDecimals), 2)
     );
-  }, [transactions, active])
+  }, [transactions, active, premiumDecimals])
   /**
    * We first process and add several additional metrices that is useful for further calculation
    * - Net deposit

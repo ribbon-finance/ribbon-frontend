@@ -58,7 +58,7 @@ const YourPositionModal: React.FC = () => {
     return parseFloat(
       formatSignificantDecimals(formatUnits(yields, premiumDecimals), 2)
     );
-  }, [transactions]) 
+  }, [transactions, premiumDecimals]) 
 
   const color = getVaultColor(vaultOption);
   const asset = getAssets(vaultOption);

@@ -23,7 +23,6 @@ import { ERC20Token } from "shared/lib/models/eth";
 import theme from "shared/lib/designSystem/theme";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
-import SwapBTCDropdown from "./common/SwapBTCDropdown";
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
 import { VaultActivityMeta, VaultShortPosition } from "shared/lib/models/vault";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
@@ -702,12 +701,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
   }, [asset, swapContainerOpen]);
 
   const swapContainer = useMemo(() => {
-    switch (asset) {
-      case "WBTC":
-        return <SwapBTCDropdown open={swapContainerOpen} />;
-      default:
-        return <></>;
-    }
+    return <></>;
   }, [asset, swapContainerOpen]);
 
   const handleWithdraw = useCallback(() => {

@@ -14,7 +14,7 @@ import {
 } from "shared/lib/constants/constants";
 import { ACTIONS } from "../Modal/types";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
-import { SecondaryText, Title } from "shared/lib/designSystem";
+import { Title } from "shared/lib/designSystem";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import {
   useV2VaultData,
@@ -24,9 +24,6 @@ import { ERC20Token } from "shared/lib/models/eth";
 import { isVaultFull } from "shared/lib/utils/vault";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import VaultApprovalForm from "../common/VaultApprovalForm";
-import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
-import theme from "shared/lib/designSystem/theme";
-import SwapBTCDropdown from "../common/SwapBTCDropdown";
 import VaultBasicAmountForm from "../common/VaultBasicAmountForm";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import { VaultValidationErrors } from "../types";
@@ -84,25 +81,6 @@ const FormInfoText = styled(Title)`
   line-height: 24px;
   text-align: center;
   color: ${(props) => (props.color ? props.color : colors.text)};
-`;
-
-const SwapTriggerContainer = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-const SwapTriggerButton = styled.div`
-  margin-top: 24px;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: 100px;
-  padding: 8px 16px;
-  width: 300px;
-  display: flex;
-  align-items: center;
-`;
-
-const SwapTriggerButtonText = styled(SecondaryText)`
-  flex: 1;
 `;
 
 interface VaultV2DepositWithdrawFormProps {
@@ -225,7 +203,6 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     vaultActionForm.depositAsset,
     vaultOption,
   ]);
-  const [swapContainerOpen, setSwapContainerOpen] = useState(false);
 
   const error = useMemo((): VaultValidationErrors | undefined => {
     switch (vaultActionForm.actionType) {
@@ -402,40 +379,6 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     }
   }, [asset, decimals, error, vaultMaxDepositAmount]);
 
-  const swapContainerTrigger = useMemo(() => {
-    switch (asset) {
-      case "WBTC":
-        return (
-          <SwapTriggerContainer>
-            <SwapTriggerButton
-              role="button"
-              onClick={() => setSwapContainerOpen((open) => !open)}
-            >
-              <SwapTriggerButtonText>
-                Swap your BTC or renBTC for wBTC
-              </SwapTriggerButtonText>
-              <ButtonArrow
-                isOpen={swapContainerOpen}
-                color={colors.primaryText}
-              />
-            </SwapTriggerButton>
-          </SwapTriggerContainer>
-        );
-
-      default:
-        return <></>;
-    }
-  }, [asset, swapContainerOpen]);
-
-  const swapContainer = useMemo(() => {
-    switch (asset) {
-      case "WBTC":
-        return <SwapBTCDropdown open={swapContainerOpen} />;
-      default:
-        return <></>;
-    }
-  }, [asset, swapContainerOpen]);
-
   return (
     <>
       <FormTabContainer>
@@ -462,10 +405,8 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       <div className="d-flex flex-column p-4 w-100">
         {formContent}
         {formInfoText}
-        {swapContainerTrigger}
       </div>
 
-      {swapContainer}
     </>
   );
 };
