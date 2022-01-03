@@ -57,7 +57,9 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
   onFormSubmit,
   onHideForm,
 }) => {
-  const { vaultMaxWithdrawAmount, asset, decimals } = useVaultData(vaultOption);
+  const { vaultMaxWithdrawAmount, asset, decimals } =
+    useVaultData(migrateSourceVault);
+
   const {
     data: { totalBalance, cap },
   } = useV2VaultData(vaultOption);

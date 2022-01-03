@@ -14,11 +14,11 @@ import { SubgraphDataContext } from "./subgraphDataContext";
 const getVaultPriceHistoryKey = (vault: VaultOptions) =>
   `vaultPriceHistory_${vault.replace(/-/g, "")}`;
 
-export const vaultPriceHistoryGraphql = (version: VaultVersion) => {
+export const vaultPriceHistoryGraphql = (version: VaultVersion, chainId: number) => {
   return VaultList.reduce((acc, vault) => {
     const vaultAddress = VaultAddressMap[vault][version]?.toLowerCase();
 
-    if (!vaultAddress) {
+    if (!vaultAddress || VaultAddressMap[vault].chainId !== chainId) {
       return acc;
     }
 
