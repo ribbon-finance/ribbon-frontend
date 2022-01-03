@@ -1,4 +1,4 @@
-import { FullVaultList } from "../constants/constants";
+import { RetailVaultList, TreasuryVaultList } from "../constants/constants";
 
 export const ERC20TokenList = [
   "weth",
@@ -9,7 +9,9 @@ export const ERC20TokenList = [
   "aave",
   "rbn",
   "wavax",
-  ...FullVaultList,
+  "perp",
+  ...RetailVaultList,
+  ...TreasuryVaultList,
 ] as const;
 export type ERC20Token = typeof ERC20TokenList[number];
 

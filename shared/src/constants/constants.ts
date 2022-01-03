@@ -8,6 +8,7 @@ import {
   getSubgraphqlURI,
   isDevelopment,
   isProduction,
+  isTreasury,
 } from "../utils/env";
 import v1deployment from "./v1Deployments.json";
 import v2deployment from "./v2Deployments.json";
@@ -40,6 +41,12 @@ export const isEthNetwork = (chainId: number): boolean =>
 export const isAvaxNetwork = (chainId: number): boolean =>
   chainId === CHAINID.AVAX_MAINNET || chainId === CHAINID.AVAX_FUJI;
 
+export const isEthVault = (vault: string) =>
+  isEthNetwork(VaultAddressMap[vault as VaultOptions].chainId);
+
+export const isAvaxVault = (vault: string) =>
+  isAvaxNetwork(VaultAddressMap[vault as VaultOptions].chainId);
+
 export const NATIVE_TOKENS = ["WETH", "WAVAX"];
 export const isNativeToken = (token: string): boolean =>
   NATIVE_TOKENS.includes(token);
@@ -48,7 +55,7 @@ export const VaultVersionList = ["v2", "v1"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">;
 
-export const FullVaultList = [
+export const RetailVaultList = [
   "rAAVE-THETA",
   "rAVAX-THETA",
   "rstETH-THETA",
@@ -58,7 +65,13 @@ export const FullVaultList = [
   "rUSDC-ETH-P-THETA",
 ] as const;
 
-export type VaultOptions = typeof FullVaultList[number];
+export const TreasuryVaultList = [
+  "rPERP-TSRY"
+] as const;
+
+const AllVaultOptions = [...RetailVaultList, ...TreasuryVaultList]
+
+export type VaultOptions = typeof AllVaultOptions[number];
 const ProdExcludeVault: VaultOptions[] = [];
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
@@ -66,9 +79,11 @@ const PutThetaVault: VaultOptions[] = [
 ];
 
 // @ts-ignore
-export const VaultList: VaultOptions[] = !isProduction()
-  ? FullVaultList
-  : FullVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
+export const VaultList: VaultOptions[] = isTreasury()
+  ? TreasuryVaultList
+  : !isProduction()
+    ? RetailVaultList
+    : RetailVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
 
 export const GAS_LIMITS: {
   [vault in VaultOptions]: Partial<{
@@ -145,6 +160,13 @@ export const GAS_LIMITS: {
       completeWithdraw: 300000,
     },
   },
+  "rPERP-TSRY": {
+    v2: {
+      deposit: 380000,
+      withdrawInstantly: 130000,
+      completeWithdraw: 300000,
+    },
+  },
 };
 
 export const VaultLiquidityMiningMap: Partial<
@@ -211,8 +233,7 @@ export const VaultAddressMap: {
       }
     : {
         v1: v1deployment.mainnet.RibbonYearnETHPut,
-        // TODO: Uncomment on V2 yvUSDC launch
-        // v2: v2deployment.mainnet.RibbonThetaYearnVaultETHPut,
+        v2: v2deployment.mainnet.RibbonThetaYearnVaultETHPut,
         chainId: CHAINID.ETH_MAINNET,
       },
   "rstETH-THETA": isDevelopment()
@@ -248,6 +269,15 @@ export const VaultAddressMap: {
         v2: v2deployment.avax.RibbonThetaVaultETHCall,
         chainId: CHAINID.AVAX_MAINNET,
       },
+  "rPERP-TSRY": isDevelopment()
+    ? {
+        v2: v2deployment.kovan.RibbonTreasuryVaultPERP,
+        chainId: CHAINID.ETH_KOVAN,
+      }
+    : {
+        v2: v2deployment.mainnet.RibbonTreasuryVaultPERP,
+        chainId: CHAINID.ETH_MAINNET,
+      },
 };
 
 /**
@@ -274,6 +304,7 @@ export const VaultNamesList = [
   "T-stETH-C",
   "T-AAVE-C",
   "T-AVAX-C",
+  "T-PERP-C"
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
@@ -284,6 +315,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-stETH-C": "rstETH-THETA",
   "T-AAVE-C": "rAAVE-THETA",
   "T-AVAX-C": "rAVAX-THETA",
+  "T-PERP-C": "rPERP-TSRY",
 };
 
 export const BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
@@ -299,6 +331,8 @@ export const BLOCKCHAIN_EXPLORER_URI: Record<number, string> = {
   [CHAINID.AVAX_MAINNET]: "https://snowtrace.io",
   [CHAINID.AVAX_FUJI]: "https://testnet.snowtrace.io",
 };
+
+export const AVAX_BRIDGE_URI = "https://bridge.avax.network";
 
 export const getEtherscanURI = (chainId: number) =>
   BLOCKCHAIN_EXPLORER_URI[chainId as CHAINID];
@@ -329,6 +363,8 @@ export const getAssets = (vault: VaultOptions): Assets => {
       return "AAVE";
     case "rAVAX-THETA":
       return "WAVAX";
+    case "rPERP-TSRY":
+      return "PERP";
   }
 };
 
@@ -345,6 +381,8 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
       return "AAVE";
     case "rAVAX-THETA":
       return "WAVAX";
+    case "rPERP-TSRY":
+      return "PERP";
   }
 };
 
@@ -364,6 +402,8 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
       return "AAVE";
     case "rAVAX-THETA":
       return "WAVAX";
+    case "rPERP-TSRY":
+      return "PERP";
   }
 };
 
@@ -376,6 +416,7 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "rUSDC-ETH-P-THETA": ["USDC"],
     "rstETH-THETA": ["stETH", "WETH"],
     "ryvUSDC-ETH-P-THETA": ["USDC"],
+    "rPERP-TSRY": ["PERP"]
   };
 
 export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
@@ -400,6 +441,9 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   ),
   "rAVAX-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rAVAX-THETA")))
+  ),
+  "rPERP-TSRY": BigNumber.from(100000000).mul( // Cap still not decided
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rPERP-TSRY")))
   ),
 };
 
@@ -459,6 +503,12 @@ export const VaultFees: {
       performanceFee: "10",
     },
   },
+  "rPERP-TSRY": {
+    v2: {
+      managementFee: "2",
+      performanceFee: "10",
+    },
+  },
 };
 
 export const RibbonVaultMigrationMap: Partial<
@@ -471,12 +521,28 @@ export const RibbonVaultMigrationMap: Partial<
   "rBTC-THETA": {
     v2: ["rBTC-THETA"],
   },
+  // TODO: Once we enable migrations into stETH vault
+  // We can uncomment this
+  // "rstETH-THETA": {
+  //   v2: ["rETH-THETA"],
+  // },
   "rETH-THETA": {
     v2: ["rETH-THETA"],
   },
   "ryvUSDC-ETH-P-THETA": {
     v2: ["ryvUSDC-ETH-P-THETA", "rUSDC-ETH-P-THETA"],
   },
+};
+
+export const v1ToV2MigrationMap: Partial<
+  { [vault in VaultOptions]: VaultOptions }
+> = {
+  "rBTC-THETA": "rBTC-THETA",
+  "rETH-THETA": "rETH-THETA",
+  // TODO: Uncomment this
+  // "rETH-THETA": "rstETH-THETA",
+  "rUSDC-ETH-P-THETA": "ryvUSDC-ETH-P-THETA",
+  "ryvUSDC-ETH-P-THETA": "ryvUSDC-ETH-P-THETA",
 };
 
 export const RibbonTokenAddress = isDevelopment()
@@ -504,3 +570,15 @@ export const CurveSwapSlippage = 0.008; // 0.8%
 export const LidoOracleAddress = isDevelopment()
   ? ""
   : addresses.mainnet.lidoOracle;
+
+export const SUBGRAPHS_TO_QUERY: [VaultVersion, CHAINID][] = isDevelopment()
+  ? [
+      ["v1", CHAINID.ETH_KOVAN],
+      ["v2", CHAINID.ETH_KOVAN],
+      ["v2", CHAINID.AVAX_FUJI],
+    ]
+  : [
+      ["v1", CHAINID.ETH_MAINNET],
+      ["v2", CHAINID.ETH_MAINNET],
+      ["v2", CHAINID.AVAX_MAINNET],
+    ];

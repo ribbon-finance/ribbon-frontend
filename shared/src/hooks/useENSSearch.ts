@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { isAddress } from "ethers/lib/utils";
 import axios from "axios";
-import { CHAINID, getENSSubgraphURI, isDevelopment } from "../utils/env";
-import { useWeb3Context } from "./web3Context";
 import { Provider } from "ethers/node_modules/@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
+
+import { CHAINID, getENSSubgraphURI, isDevelopment } from "../utils/env";
+import { useWeb3Context } from "./web3Context";
 
 export interface ENSSearchResult {
   address: string;

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { BigNumber } from "ethers";
 
-import { RibbonTokenAddress, VaultVersion } from "../constants/constants";
+import { isEthNetwork, RibbonTokenAddress, VaultVersion } from "../constants/constants";
 import {
   ERC20TokenAccountSubgraphData,
   ERC20TokenSubgraphData,
@@ -10,12 +10,13 @@ import { SubgraphDataContext } from "./subgraphDataContext";
 
 export const rbnTokenGraphql = (
   account: string | null | undefined,
-  vaultVersion: VaultVersion
+  vaultVersion: VaultVersion,
+  chainId: number,
 ) => {
   /**
    * RBN Token graphql is only indexed in V1 subgraph
    */
-  if (vaultVersion !== "v1") {
+  if (vaultVersion !== "v1" || !isEthNetwork(chainId)) {
     return "";
   }
 

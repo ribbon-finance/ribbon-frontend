@@ -132,7 +132,7 @@ const DelegationModalForm: React.FC<DelegationModalFormProps> = ({
         <ActionButton
           disabled={!canProceed}
           onClick={() => onDelegate(ensSearchResult!.address)}
-          className={`py-3`}
+          className="py-3"
           color={colors.red}
         >
           DELEGATE

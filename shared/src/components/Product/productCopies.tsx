@@ -346,7 +346,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
   },
   "rAAVE-THETA": {
     title: "T-AAVE-C",
-    subtitle: "AAVE Put-Selling",
+    subtitle: "AAVE Covered Call",
     description:
       "Generates yield by running an automated AAVE covered call strategy.",
     tags: ["COVERED CALL"],
@@ -453,6 +453,36 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           $RBN rewards.
         </>
       ),
+    },
+  },
+  "rPERP-TSRY": {
+    title: "T-PERP-C",
+    subtitle: "PERP Call",
+    description:
+      "Generates yield by running an automated PERP covered call strategy.",
+    tags: ["COVERED CALL"],
+    strategy: "",
+    vaultRisk: (
+      <>
+        The primary risk for running this covered call strategy is that the
+        vault may incur a weekly loss in the case where the call options sold by
+        the vault expire{" "}
+        <TooltipExplanation
+          title="IN-THE-MONEY"
+          explanation="An PERP call option is in-the-money (ITM) if the strike price is below the market price of PERP."
+          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              in-the-money
+            </HighlighText>
+          )}
+        />{" "}
+        (meaning the price of PERP is above the strike price of the call options
+        minted by the vault).
+      </>
+    ),
+    liquidityMining: {
+      explanation: (<></>),
     },
   },
 };

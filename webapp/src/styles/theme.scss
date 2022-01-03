@@ -6,3 +6,15 @@ $container-max-widths: (
   padding-top: ($spacer * 5) !important;
   padding-bottom: ($spacer * 5) !important;
 }
+
+#root {
+  transition: filter 0.3s ease-in-out;
+}
+
+.backdrop-filter {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  filter: blur(40px);
+}
