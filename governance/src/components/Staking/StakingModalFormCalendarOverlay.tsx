@@ -63,7 +63,9 @@ const StakingModalFormCalendarOverlay: React.FC<StakingModalFormCalendarOverlayP
             <CloseOverlayButton
               className="mr-auto"
               role="button"
-              onClick={onCancel}
+              onClick={() =>
+                selectedDate ? onDateSelected(selectedDate) : onCancel()
+              }
             >
               <ButtonArrow isOpen={false} color={colors.text} />
             </CloseOverlayButton>
@@ -78,8 +80,8 @@ const StakingModalFormCalendarOverlay: React.FC<StakingModalFormCalendarOverlayP
           <BaseModalContentColumn marginTop={34}>
             <CalendarPicker
               initialValue={selectedDate}
-              minDate={moment().add(1, "w")}
-              maxDate={moment().add(4, "y")}
+              minDate={moment().add(7, "d")}
+              maxDate={moment().add(4 * 365, "d")}
               onDateSelected={(date) => {
                 setSelectedDate(date);
               }}

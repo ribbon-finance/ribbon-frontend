@@ -72,10 +72,16 @@ export const BaseModalContentColumn = styled.div<{
       : `${props.marginTop === undefined ? 24 : props.marginTop}px`};
 `;
 
-export const BaseModalWarning = styled.div<{ color: string }>`
+export const BaseModalWarning = styled.div<{
+  color: string;
+  marginTop?: number | "auto";
+}>`
   display: flex;
   align-items: center;
-  margin-top: 24px;
+  margin-top: ${(props) =>
+    props.marginTop === "auto"
+      ? props.marginTop
+      : `${props.marginTop === undefined ? 24 : props.marginTop}px`};
   padding: 8px;
   border-radius: ${theme.border.radiusSmall};
   background: ${(props) => props.color}1F;
