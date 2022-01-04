@@ -163,27 +163,19 @@ const sections = [
             <p>
               The smart contracts are audited by{" "}
               <Link
-                href="https://github.com/peckshield/publications/blob/master/audit_reports/PeckShield-Audit-Report-Ribbon-v1.0.pdf"
+                href="https://blog.openzeppelin.com/ribbon-finance-audit/"
                 target="_blank"
                 rel="noreferrer noopener"
               >
-                Peckshield
-              </Link>
-              ,{" "}
+                OpenZeppelin
+              </Link>{" "}
+              and{" "}
               <Link
-                href="https://github.com/ribbon-finance/audit/blob/master/reports/Chainsafe-Ribbon-Audit_April-2021.pdf"
+                href="https://github.com/ribbon-finance/audit/blob/master/reports/RibbonThetaVault%20V2%20Smart%20Contract%20Review%20And%20Verification.pdf"
                 target="_blank"
                 rel="noreferrer noopener"
               >
                 ChainSafe
-              </Link>{" "}
-              and{" "}
-              <Link
-                href="https://github.com/ribbon-finance/audit/blob/master/reports/Quantstamp%20Theta%20Vault.pdf"
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                Quantstamp
               </Link>
               . Despite that, users are advised to exercise caution and only
               risk funds they can afford to lose.{" "}
