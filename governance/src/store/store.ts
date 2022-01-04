@@ -1,11 +1,21 @@
 import { createGlobalState } from "react-hooks-global-state";
 
 interface GlobalStore {
-  showStakingModal: boolean;
+  stakingModal: {
+    show: boolean;
+    mode: "approve" | "stake";
+    pendingTransaction?: {
+      hash: string;
+      type: "approve" | "stake";
+    };
+  };
 }
 
 export const initialState: GlobalStore = {
-  showStakingModal: false,
+  stakingModal: {
+    show: false,
+    mode: "stake",
+  },
 };
 
 export const { useGlobalState: useGovernanceGlobalState } =

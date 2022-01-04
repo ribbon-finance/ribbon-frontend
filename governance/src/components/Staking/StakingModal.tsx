@@ -1,6 +1,6 @@
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
 import moment, { duration, Duration } from "moment";
-import React, { useEffect, useMemo, useState } from "react";
 
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import useInventizedVotingLockup from "../../hooks/useIncentivizedVotingLockup";
@@ -8,47 +8,71 @@ import { useGovernanceGlobalState } from "../../store/store";
 import StakingModalExplainer from "./StakingModalExplainer";
 import StakingModalForm from "./StakingModalForm";
 import StakingModalPreview from "./StakingModalPreview";
+import { useWeb3Context } from "shared/lib/hooks/web3Context";
+import StakingModalApprove from "./StakingModalApprove";
+import useERC20Token from "shared/lib/hooks/useERC20Token";
+import { IncentivizedVotingLockupAddress } from "../../constants/constants";
+import ModalTransactionContent from "../Shared/ModalTransactionContent";
 
 const stakingModalModes = [
+  "approve",
   "explainer",
   "form",
   "preview",
-  "confirm",
-  "submitted",
+  "transaction",
 ] as const;
 type StakingModalMode = typeof stakingModalModes[number];
+const stakingModesMap: { [key in "approve" | "stake"]: StakingModalMode[] } = {
+  approve: ["approve", "transaction"],
+  stake: ["explainer", "form", "preview", "transaction"],
+};
 
 const stakingModalHeight: { [mode in StakingModalMode]: number } = {
+  approve: 448,
   explainer: 528,
   form: 620,
   preview: 476,
-  confirm: 412,
-  submitted: 412,
+  transaction: 412,
 };
 
 const StakingModal = () => {
-  const [show, setShow] = useGovernanceGlobalState("showStakingModal");
-  const [mode, setMode] = useState<StakingModalMode>(stakingModalModes[0]);
+  const { provider } = useWeb3Context();
+  const [stakingModalState, setStakingModalState] =
+    useGovernanceGlobalState("stakingModal");
+  const [stepNum, setStepNum] = useState<number>(0);
   const [stakingData, setStakingData] = useState<{
     amount: BigNumber;
     duration: Duration;
   }>({ amount: BigNumber.from(0), duration: duration() });
-  const lockupContract = useInventizedVotingLockup();
 
-  /**
-   * Reset modal after close
-   */
+  const lockupContract = useInventizedVotingLockup();
+  const rbnTokenContract = useERC20Token("rbn");
+
   useEffect(() => {
-    if (!show) {
-      setMode(stakingModalModes[0]);
+    /**
+     * Reset step number on modal close, but only when there isn't ongoing transaction
+     */
+    if (!stakingModalState.show && !stakingModalState.pendingTransaction) {
+      setStepNum(0);
     }
-  }, [show]);
+
+    /**
+     * Prevent step number overflow
+     */
+    if (stepNum >= stakingModesMap[stakingModalState.mode].length) {
+      setStepNum(stakingModesMap[stakingModalState.mode].length - 1);
+    }
+  }, [stakingModalState, stepNum]);
 
   /**
    * Prevent to proceed to preview with unallowed data
    */
   useEffect(() => {
-    if (!show || mode !== "preview") {
+    if (
+      stakingModalState.mode !== "stake" ||
+      !stakingModalState.show ||
+      stakingModesMap[stakingModalState.mode][stepNum] !== "preview"
+    ) {
       return;
     }
 
@@ -56,21 +80,95 @@ const StakingModal = () => {
       stakingData.amount.lte(BigNumber.from(0)) ||
       stakingData.duration.asDays() < 7
     ) {
-      setMode("form");
+      setStepNum(stakingModesMap[stakingModalState.mode].indexOf("form"));
     }
-  }, [mode, show, stakingData]);
+  }, [stakingModalState, stakingData, stepNum]);
+
+  /**
+   * Callback for approval
+   */
+  const onApprove = useCallback(async () => {
+    setStepNum(stakingModesMap[stakingModalState.mode].indexOf("transaction"));
+    try {
+      const amount =
+        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+      const tx = await rbnTokenContract.approve(
+        IncentivizedVotingLockupAddress,
+        amount
+      );
+      setStakingModalState((prev) => ({
+        ...prev,
+        pendingTransaction: { hash: tx.hash, type: "approve" },
+      }));
+
+      await provider.waitForTransaction(tx.hash, 5);
+
+      setStakingModalState((prev) => ({
+        ...prev,
+        show: false,
+        pendingTransaction: undefined,
+      }));
+    } catch (e) {
+      setStepNum(stakingModesMap[stakingModalState.mode].indexOf("approve"));
+    }
+  }, [provider, rbnTokenContract, setStakingModalState, stakingModalState]);
+
+  /**
+   * Callback for user staking
+   */
+  const onStake = useCallback(async () => {
+    setStepNum(stakingModesMap[stakingModalState.mode].indexOf("transaction"));
+    try {
+      const tx = await lockupContract.createLock(
+        stakingData.amount,
+        moment().add(stakingData.duration).unix()
+      );
+      setStakingModalState((prev) => ({
+        ...prev,
+        pendingTransaction: { hash: tx.hash, type: "stake" },
+      }));
+
+      await provider.waitForTransaction(tx.hash, 5);
+
+      setStakingModalState((prev) => ({
+        ...prev,
+        show: false,
+        pendingTransaction: undefined,
+      }));
+    } catch (e) {
+      setStepNum(stakingModesMap[stakingModalState.mode].indexOf("preview"));
+    }
+  }, [
+    lockupContract,
+    provider,
+    setStakingModalState,
+    stakingData,
+    stakingModalState.mode,
+  ]);
 
   const modalBody = useMemo(() => {
-    switch (mode) {
+    switch (stakingModesMap[stakingModalState.mode][stepNum]) {
+      case "approve":
+        return <StakingModalApprove onApprove={onApprove} />;
       case "explainer":
-        return <StakingModalExplainer proceedToForm={() => setMode("form")} />;
+        return (
+          <StakingModalExplainer
+            proceedToForm={() =>
+              setStepNum(
+                stakingModesMap[stakingModalState.mode].indexOf("form")
+              )
+            }
+          />
+        );
       case "form":
         return (
           <StakingModalForm
             initialStakingData={stakingData}
             proceedToPreview={(amount, duration) => {
               setStakingData({ amount, duration });
-              setMode("preview");
+              setStepNum(
+                stakingModesMap[stakingModalState.mode].indexOf("preview")
+              );
             }}
           />
         );
@@ -78,37 +176,44 @@ const StakingModal = () => {
         return (
           <StakingModalPreview
             stakingData={stakingData}
-            onConfirm={async () => {
-              setMode("confirm");
-              try {
-                console.log(lockupContract);
-                console.log(
-                  stakingData.amount.toString(),
-                  moment().add(stakingData.duration).unix()
-                );
-                const res = await lockupContract.createLock(
-                  stakingData.amount,
-                  moment().add(stakingData.duration).unix()
-                );
-                setMode("submitted");
-              } catch (e) {
-                console.log(e);
-                setMode("preview");
-              }
-            }}
-            onBack={() => setMode("form")}
+            onConfirm={onStake}
+            onBack={() =>
+              setStepNum(
+                stakingModesMap[stakingModalState.mode].indexOf("form")
+              )
+            }
           />
         );
-      default:
-        return <></>;
+      case "transaction":
+        let title = "Confirm Transaction";
+        if (stakingModalState.pendingTransaction?.hash) {
+          title =
+            stakingModalState.mode === "approve"
+              ? "APPROVING RBN"
+              : "STAKE RBN";
+        }
+
+        return (
+          <ModalTransactionContent
+            title={title}
+            txhash={stakingModalState.pendingTransaction?.hash}
+          />
+        );
     }
-  }, [lockupContract, mode, stakingData]);
+  }, [onApprove, onStake, stakingData, stakingModalState, stepNum]);
 
   return (
     <BasicModal
-      show={show}
-      height={stakingModalHeight[mode]}
-      onClose={() => setShow(false)}
+      show={stakingModalState.show}
+      height={
+        stakingModalHeight[stakingModesMap[stakingModalState.mode][stepNum]]
+      }
+      onClose={() =>
+        setStakingModalState((state) => ({ ...state, show: false }))
+      }
+      headerBackground={
+        stakingModesMap[stakingModalState.mode][stepNum] === "transaction"
+      }
     >
       {modalBody}
     </BasicModal>

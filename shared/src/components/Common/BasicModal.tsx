@@ -79,7 +79,7 @@ const ModalContent = styled(motion.div)`
 `;
 
 const ModalHeaderBackground = styled.div`
-  background: ${colors.background.two};
+  background: ${colors.background.one};
   height: 72px;
   position: absolute;
   top: 0;

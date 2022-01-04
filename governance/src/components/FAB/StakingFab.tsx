@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useWeb3React } from "@web3-react/core";
 
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -7,7 +8,8 @@ import theme from "shared/lib/designSystem/theme";
 import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContainer";
 import { ThemedLogo } from "shared/lib/assets/icons/logo";
 import { useGovernanceGlobalState } from "../../store/store";
-import { useWeb3React } from "@web3-react/core";
+import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
+import { IncentivizedVotingLockupAddress } from "../../constants/constants";
 
 const FABContainer = styled.div`
   display: flex;
@@ -46,7 +48,11 @@ const FABOffsetContainer = styled.div`
 `;
 const StakingFAB = () => {
   const { active } = useWeb3React();
-  const [, setShow] = useGovernanceGlobalState("showStakingModal");
+  const [, setStakingModal] = useGovernanceGlobalState("stakingModal");
+  const rbnAllowance = useTokenAllowance(
+    "rbn",
+    IncentivizedVotingLockupAddress
+  );
 
   return active ? (
     <>
@@ -86,10 +92,15 @@ const StakingFAB = () => {
           <StakingButton
             color={`${colors.red}1F`}
             role="button"
-            onClick={() => setShow(true)}
+            onClick={() =>
+              setStakingModal({
+                show: true,
+                mode: rbnAllowance?.isZero() ? "approve" : "stake",
+              })
+            }
           >
             <Title fontSize={14} lineHeight={24} color={colors.red}>
-              Stake
+              {rbnAllowance?.isZero() ? "Approve" : "Stake"}
             </Title>
           </StakingButton>
           <StakingButton color={`${colors.primaryText}0A`} role="button">
