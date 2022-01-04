@@ -10,10 +10,7 @@ import {
 import SegmentPagination from "shared/lib/components/Common/SegmentPagination";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import colors from "shared/lib/designSystem/colors";
-import {
-  ProtocolBackstopIcon,
-  VotingPowerIcon,
-} from "shared/lib/assets/icons/icons";
+import { VotingPowerIcon } from "shared/lib/assets/icons/icons";
 import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContainer";
 import { ThemedLogo } from "shared/lib/assets/icons/logo";
 import theme from "shared/lib/designSystem/theme";
@@ -33,6 +30,10 @@ const ModalBackButton = styled.div`
 const ArrowBack = styled.i`
   color: ${colors.text};
   height: 14px;
+`;
+
+const DescriptionHighlight = styled.span`
+  color: ${colors.primaryText};
 `;
 
 interface StakingModalExplainerProps {
@@ -58,9 +59,6 @@ const StakingModalExplainer: React.FC<StakingModalExplainerProps> = ({
         );
       case 2:
         return <VotingPowerIcon />;
-
-      case 3:
-        return <ProtocolBackstopIcon />;
     }
   }, []);
 
@@ -70,19 +68,35 @@ const StakingModalExplainer: React.FC<StakingModalExplainerProps> = ({
         return "STAKING RBN";
       case 2:
         return "VOTING POWER";
-      case 3:
-        return "PROTOCOL BACKSTOP";
     }
   }, []);
 
   const renderSubtitle = useCallback((_page: number) => {
     switch (_page) {
       case 1:
-        return "Stake your RBN to participate in governance, vote on future incentive programs and earn staking rewards.";
+        return (
+          <>
+            Stake your RBN to receive{" "}
+            <DescriptionHighlight>
+              vote-escrowed RBN (veRBN)
+            </DescriptionHighlight>
+            and earn{" "}
+            <DescriptionHighlight>staking rewards</DescriptionHighlight>. veRBN
+            lets you participate in governance and vote on future incentive
+            programs.
+          </>
+        );
       case 2:
-        return "The longer you stake your RBN the more SRBN you receive. Your SRBN balance represents your voting power which decreases as you approach the end of your staking period.";
-      case 3:
-        return "All staked RBN will used to help backstop the protocol in the event that the protocol’s smart contracts are hacked or if the vaults incur losses beyond a certain threshold.";
+        return (
+          <>
+            The longer you stake your RBN the more veRBN you receive. Your{" "}
+            <DescriptionHighlight>
+              veRBN balance represents your voting power
+            </DescriptionHighlight>{" "}
+            which decreases linearly as you approach the end of your staking
+            period.
+          </>
+        );
     }
   }, []);
 
@@ -121,7 +135,7 @@ const StakingModalExplainer: React.FC<StakingModalExplainerProps> = ({
               {renderTitle(page)}
             </Title>
 
-            <SecondaryText className="text-center mt-3">
+            <SecondaryText className="text-center mt-3" fontWeight={400}>
               {renderSubtitle(page)}
             </SecondaryText>
           </motion.div>
@@ -131,7 +145,7 @@ const StakingModalExplainer: React.FC<StakingModalExplainerProps> = ({
         <div style={{ width: 120 }}>
           <SegmentPagination
             page={page}
-            total={3}
+            total={2}
             onPageClick={(page) => {
               setPage(page);
             }}
@@ -144,7 +158,7 @@ const StakingModalExplainer: React.FC<StakingModalExplainerProps> = ({
       <BaseModalContentColumn marginTop={40}>
         <ActionButton
           onClick={() =>
-            page === 3 ? proceedToForm() : setPage((prev) => prev + 1)
+            page === 2 ? proceedToForm() : setPage((prev) => prev + 1)
           }
           className={`py-3`}
           color={colors.red}
