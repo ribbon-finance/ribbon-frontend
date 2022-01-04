@@ -122,6 +122,7 @@ export const getAssetLogo: (asset: Assets) =>
   asset
 ) => {
   switch (asset) {
+    case "USDC.e":
     case "USDC":
       return ColoredUSDCLogo;
     case "WBTC":

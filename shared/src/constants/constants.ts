@@ -63,27 +63,27 @@ export const RetailVaultList = [
   "rETH-THETA",
   "rBTC-THETA",
   "rUSDC-ETH-P-THETA",
+  "rUSDC-AVAX-P-THETA",
 ] as const;
 
-export const TreasuryVaultList = [
-  "rPERP-TSRY"
-] as const;
+export const TreasuryVaultList = ["rPERP-TSRY"] as const;
 
-const AllVaultOptions = [...RetailVaultList, ...TreasuryVaultList]
+const AllVaultOptions = [...RetailVaultList, ...TreasuryVaultList];
 
 export type VaultOptions = typeof AllVaultOptions[number];
 const ProdExcludeVault: VaultOptions[] = [];
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
   "ryvUSDC-ETH-P-THETA",
+  "rUSDC-AVAX-P-THETA",
 ];
 
 // @ts-ignore
 export const VaultList: VaultOptions[] = isTreasury()
   ? TreasuryVaultList
   : !isProduction()
-    ? RetailVaultList
-    : RetailVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
+  ? RetailVaultList
+  : RetailVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
 
 export const GAS_LIMITS: {
   [vault in VaultOptions]: Partial<{
@@ -122,6 +122,13 @@ export const GAS_LIMITS: {
       deposit: 120000,
       withdraw: 120000,
     },
+    v2: {
+      deposit: 140000,
+      withdrawInstantly: 120000,
+      completeWithdraw: 300000,
+    },
+  },
+  "rUSDC-AVAX-P-THETA": {
     v2: {
       deposit: 140000,
       withdrawInstantly: 120000,
@@ -203,6 +210,15 @@ export const VaultAddressMap: {
     : {
         v1: v1deployment.mainnet.RibbonETHPut,
         chainId: CHAINID.ETH_MAINNET,
+      },
+  "rUSDC-AVAX-P-THETA": isDevelopment()
+    ? {
+        v2: v2deployment.fuji.RibbonThetaVaultETHPut,
+        chainId: CHAINID.AVAX_FUJI,
+      }
+    : {
+        v2: v2deployment.avax.RibbonThetaVaultETHPut,
+        chainId: CHAINID.AVAX_MAINNET,
       },
   "rETH-THETA": isDevelopment()
     ? {
@@ -304,11 +320,13 @@ export const VaultNamesList = [
   "T-stETH-C",
   "T-AAVE-C",
   "T-AVAX-C",
-  "T-PERP-C"
+  "T-USDC-P-AVAX",
+  "T-PERP-C",
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-USDC-P-ETH": "rUSDC-ETH-P-THETA",
+  "T-USDC-P-AVAX": "rUSDC-AVAX-P-THETA",
   "T-ETH-C": "rETH-THETA",
   "T-WBTC-C": "rBTC-THETA",
   "T-yvUSDC-P-ETH": "ryvUSDC-ETH-P-THETA",
@@ -351,6 +369,8 @@ export const getSubgraphURIForVersion = (
 
 export const getAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
+    case "rUSDC-AVAX-P-THETA":
+      return "USDC.e";
     case "rUSDC-ETH-P-THETA":
     case "ryvUSDC-ETH-P-THETA":
       return "USDC";
@@ -380,6 +400,7 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
     case "rAAVE-THETA":
       return "AAVE";
     case "rAVAX-THETA":
+    case "rUSDC-AVAX-P-THETA":
       return "WAVAX";
     case "rPERP-TSRY":
       return "PERP";
@@ -390,6 +411,8 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
     case "rUSDC-ETH-P-THETA":
       return "USDC";
+    case "rUSDC-AVAX-P-THETA":
+      return "USDC.e";
     case "rETH-THETA":
       return "WETH";
     case "rBTC-THETA":
@@ -414,14 +437,18 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "rETH-THETA": ["WETH"],
     "rAVAX-THETA": ["WAVAX"],
     "rUSDC-ETH-P-THETA": ["USDC"],
+    "rUSDC-AVAX-P-THETA": ["USDC.e"],
     "rstETH-THETA": ["stETH", "WETH"],
     "ryvUSDC-ETH-P-THETA": ["USDC"],
-    "rPERP-TSRY": ["PERP"]
+    "rPERP-TSRY": ["PERP"],
   };
 
 export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "rUSDC-ETH-P-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rUSDC-ETH-P-THETA")))
+  ),
+  "rUSDC-AVAX-P-THETA": BigNumber.from(100000000).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rUSDC-AVAX-P-THETA")))
   ),
   "rETH-THETA": BigNumber.from(50000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rETH-THETA")))
@@ -442,7 +469,8 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "rAVAX-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rAVAX-THETA")))
   ),
-  "rPERP-TSRY": BigNumber.from(100000000).mul( // Cap still not decided
+  "rPERP-TSRY": BigNumber.from(100000000).mul(
+    // Cap still not decided
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rPERP-TSRY")))
   ),
 };
@@ -456,6 +484,12 @@ export const VaultFees: {
   "rUSDC-ETH-P-THETA": {
     v1: {
       withdrawalFee: "1.0",
+    },
+  },
+  "rUSDC-AVAX-P-THETA": {
+    v2: {
+      managementFee: "2",
+      performanceFee: "10",
     },
   },
   "rETH-THETA": {

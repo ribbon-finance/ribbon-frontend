@@ -28,6 +28,7 @@ const COINGECKO_CURRENCIES = {
   WETH: "ethereum",
   WBTC: "wrapped-bitcoin",
   USDC: "usd-coin",
+  "USDC.e": "usd-coin",
   yvUSDC: undefined,
   stETH: "staked-ether",
   AAVE: "aave",
