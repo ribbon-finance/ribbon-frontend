@@ -247,23 +247,15 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           <br />
           The Theta Vault smart contracts have been{" "}
           <Link
-            href="https://github.com/peckshield/publications/blob/master/audit_reports/PeckShield-Audit-Report-Ribbon-v1.0.pdf"
+            href="https://blog.openzeppelin.com/ribbon-finance-audit/"
             target="_blank"
             rel="noreferrer noopener"
           >
-            audited by Peckshield
-          </Link>
-          ,{" "}
-          <Link
-            href="https://github.com/ribbon-finance/audit/blob/master/reports/Quantstamp%20Theta%20Vault.pdf"
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            Quantstamp
+            audited by OpenZeppelin
           </Link>{" "}
           and{" "}
           <Link
-            href="https://github.com/ribbon-finance/audit/blob/master/reports/Chainsafe-Ribbon-Audit_April-2021.pdf"
+            href="https://github.com/ribbon-finance/audit/blob/master/reports/RibbonThetaVault%20V2%20Smart%20Contract%20Review%20And%20Verification.pdf"
             target="_blank"
             rel="noreferrer noopener"
           >
