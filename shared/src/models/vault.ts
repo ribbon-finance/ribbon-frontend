@@ -11,10 +11,24 @@ export interface Vault {
   name: string;
   symbol: VaultOptions;
   numDepositors: number;
-  totalPremiumEarned: number;
-  totalWithdrawalFee: number;
+  totalBalance: BigNumber;
+  // totalPremiumEarned: BigNumber;
+  // totalWithdrawalFee: BigNumber;
   depositors: string[];
 }
+
+export type VaultsSubgraphData = {
+  [version in VaultVersion]: {
+    [option in VaultOptions]: Vault | undefined;
+  };
+};
+
+export const defaultVaultsData: VaultsSubgraphData = Object.fromEntries(
+  VaultVersionList.map((version) => [
+    version,
+    Object.fromEntries(VaultList.map((option) => [option, undefined])),
+  ])
+) as VaultsSubgraphData;
 
 export interface VaultAccount {
   id: string;
@@ -44,7 +58,6 @@ export const defaultVaultAccountsData: VaultAccountsData = Object.fromEntries(
 
 export interface VaultShortPosition {
   id: string;
-  vault: Vault;
   option: string;
   depositAmount: BigNumber;
   mintAmount: BigNumber;
@@ -61,7 +74,6 @@ export interface VaultShortPosition {
 
 export interface VaultOptionTrade {
   id: string;
-  vault: Vault;
   vaultShortPosition: VaultShortPosition;
   sellAmount: BigNumber;
   premium: BigNumber;

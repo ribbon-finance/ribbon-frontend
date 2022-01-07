@@ -15,6 +15,7 @@ import theme from "shared/lib/designSystem/theme";
 import useAssetPrice from "shared/lib/hooks/useAssetPrice";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useTreasuryAccount from "shared/lib/hooks/useTreasuryAccount";
+import useTVL from "shared/lib/hooks/useTVL";
 
 const Content = styled(Row)`
   z-index: 1;
@@ -73,6 +74,7 @@ const OverviewKPI = () => {
     asset: "RBN",
   });
   const { total, loading: treasuryLoading } = useTreasuryAccount();
+  const { totalTVL } = useTVL();
 
   const loadingText = useTextAnimation(assetPriceLoading || treasuryLoading);
 
@@ -117,7 +119,7 @@ const OverviewKPI = () => {
               letterSpacing={1}
               className="mt-2"
             >
-              $160,301,088.12
+              {currency(totalTVL).format()}
             </Title>
           </KPICard>
           <KPICard></KPICard>

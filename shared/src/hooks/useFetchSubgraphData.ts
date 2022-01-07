@@ -40,6 +40,7 @@ import {
   resolveVaultPriceHistorySubgraphResponse,
 } from "./useVaultPerformanceUpdate";
 import { usePendingTransactions } from "./pendingTransactionsContext";
+import { resolveVaultsSubgraphResponse, vaultGraphql } from "./useVaultData";
 
 const useFetchSubgraphData = () => {
   const { account: acc } = useWeb3React();
@@ -78,6 +79,7 @@ const useFetchSubgraphData = () => {
                       `
                     : ""
                 }
+                ${vaultGraphql(version, chainId)}
                 ${vaultActivitiesGraphql(version, chainId)}
                 ${rbnTokenGraphql(account, version, chainId)}
                 ${vaultPriceHistoryGraphql(version, chainId)}
@@ -122,6 +124,7 @@ const useFetchSubgraphData = () => {
       if (counter === currentCounter) {
         setData((prev) => ({
           ...prev,
+          vaults: resolveVaultsSubgraphResponse(responsesAcrossVersions),
           vaultAccounts: resolveVaultAccountsSubgraphResponse(
             responsesAcrossVersions
           ),

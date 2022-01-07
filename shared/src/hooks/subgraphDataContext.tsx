@@ -13,10 +13,13 @@ import {
   VaultAccountsData,
   VaultActivitiesData,
   VaultTransaction,
+  VaultsSubgraphData,
+  defaultVaultsData,
 } from "../models/vault";
 import useFetchSubgraphData from "./useFetchSubgraphData";
 
 export type SubgraphDataContextType = {
+  vaults: VaultsSubgraphData;
   vaultAccounts: VaultAccountsData;
   vaultActivities: VaultActivitiesData;
   balances: BalanceUpdate[];
@@ -28,6 +31,7 @@ export type SubgraphDataContextType = {
 };
 
 export const defaultSubgraphData = {
+  vaults: defaultVaultsData,
   vaultAccounts: defaultVaultAccountsData,
   vaultActivities: defaultVaultActivitiesData,
   balances: [],
