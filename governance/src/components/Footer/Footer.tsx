@@ -1,16 +1,14 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
+import { useLocation } from "react-router";
 
 import sizes from "shared/lib/designSystem/sizes";
 import theme from "shared/lib/designSystem/theme";
 import AccountStatus from "../Wallet/AccountStatus";
 import DesktopFooter from "./DesktopFooter";
-import useScreenSize from "shared/lib/hooks/useScreenSize";
-import { useLocation } from "react-router";
 
-const FooterContainer = styled.div<{
+export const FooterContainer = styled.div<{
   showDesktopFooter: boolean;
-  screenHeight: number;
 }>`
   height: ${(props) =>
     props.showDesktopFooter ? theme.footer.desktop.height : 0}px;
@@ -43,7 +41,6 @@ const MobileFooterOffsetContainer = styled.div`
 `;
 
 const Footer = () => {
-  const { height: screenHeight } = useScreenSize();
   const location = useLocation();
 
   const showDesktopFooter = useMemo(() => {
@@ -57,10 +54,7 @@ const Footer = () => {
 
   return (
     <>
-      <FooterContainer
-        showDesktopFooter={showDesktopFooter}
-        screenHeight={screenHeight}
-      >
+      <FooterContainer showDesktopFooter={showDesktopFooter}>
         {/** Desktop */}
         {showDesktopFooter && <DesktopFooter />}
 

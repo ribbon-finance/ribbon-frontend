@@ -45,9 +45,12 @@ const colors = {
     USDC: "#3E73C4",
     yvUSDC: "#3E73C4",
     stETH: "#00A3FF",
+    wstETH: "#00A3FF",
     AAVE: "#2EBAC6",
     WAVAX: "#E84142",
     PERP: "#00BC9A",
+    RBN: "#fc0a54",
+    LDO: "#00A3FF",
   },
 };
 

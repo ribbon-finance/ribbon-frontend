@@ -24,15 +24,18 @@ const getAssetPricesInUSD = async (
   }));
 };
 
-const COINGECKO_CURRENCIES = {
+const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   WETH: "ethereum",
   WBTC: "wrapped-bitcoin",
   USDC: "usd-coin",
   yvUSDC: undefined,
   stETH: "staked-ether",
+  wstETH: "wrapped-steth",
+  LDO: "lido-dao",
   AAVE: "aave",
   WAVAX: "avalanche-2",
   PERP: "perpetual-protocol",
+  RBN: "ribbon-finance",
 };
 
 export const useFetchAssetsPrice = (
