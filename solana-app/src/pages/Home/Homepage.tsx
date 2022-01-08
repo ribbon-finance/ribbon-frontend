@@ -31,31 +31,12 @@ const Homepage = () => {
   return (
     <>
       <ProductTitle>PRODUCT</ProductTitle>
-      {ANNOUNCEMENT && chainId && !isAvaxNetwork(chainId) && (
-        <Banner
-          color={ANNOUNCEMENT.color}
-          message={ANNOUNCEMENT.message}
-          linkText={ANNOUNCEMENT.linkText}
-          linkURI={ANNOUNCEMENT.linkURI}
-          onClick={() => {
-            (async () => {
-              if (library) {
-                await switchChains(library, isProduction() ? CHAINID.AVAX_MAINNET : CHAINID.AVAX_FUJI);
-                // Mobile wallets normally need to do a hard refresh
-                if (isMobile) {
-                  window.location.replace("/");
-                }
-              }
-            })();
-          }}
-        ></Banner>
-      )}
-      <ProductCatalogue
+      {/* <ProductCatalogue
         variant="webapp"
         onVaultPress={(vault, version) =>
           history.push(getVaultURI(vault, version))
         }
-      />
+      /> */}
     </>
   );
 };
