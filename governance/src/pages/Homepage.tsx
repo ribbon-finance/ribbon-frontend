@@ -10,6 +10,7 @@ import { useWeb3React } from "@web3-react/core";
 import DesktopFooter from "../components/Footer/DesktopFooter";
 import { FooterContainer } from "../components/Footer/Footer";
 import OverviewKPI from "../components/Homepage/OverviewKPI";
+import TVLLeaderboard from "../components/Homepage/TVLLeaderboard";
 
 const FullscreenSection = styled(Container)<{ height: number }>`
   display: flex;
@@ -48,10 +49,9 @@ const Homepage = () => {
             },
             {
               child: (
-                <FullscreenSection
-                  className="w-100"
-                  height={containerHeight}
-                ></FullscreenSection>
+                <FullscreenSection className="w-100" height={containerHeight}>
+                  <TVLLeaderboard />
+                </FullscreenSection>
               ),
             },
             {

@@ -68,8 +68,8 @@ const TotalText = styled(Subtitle)`
   color: ${colors.text};
 `;
 
-const PaginationBar = styled.div`
-  width: 80px;
+const PaginationBar = styled.div<{ width: number }>`
+  width: ${(props) => props.width}px;
   height: 2px;
   background-color: ${colors.background.three};
   position: relative;
@@ -80,6 +80,9 @@ interface PaginationProps {
   total: number;
   setPage: React.Dispatch<React.SetStateAction<number>>;
   variant?: "buttonLeft";
+  config?: {
+    paginationBarWidth?: number;
+  };
 }
 
 const Pagination: React.FC<PaginationProps> = ({
@@ -87,6 +90,7 @@ const Pagination: React.FC<PaginationProps> = ({
   total,
   setPage,
   variant,
+  config: { paginationBarWidth = 80 } = {},
 }) =>
   total > 0 ? (
     <PaginationContainer
@@ -107,7 +111,7 @@ const Pagination: React.FC<PaginationProps> = ({
         <i className="fas fa-arrow-left" />
       </ArrowButton>
       <Subtitle className="ml-5 mr-3">{String(page).padStart(2, "0")}</Subtitle>
-      <PaginationBar>
+      <PaginationBar width={paginationBarWidth}>
         <Frame
           transition={{
             type: "keyframes",
@@ -119,7 +123,7 @@ const Pagination: React.FC<PaginationProps> = ({
           width={0}
           backgroundColor="#FFFFFF"
           animate={{
-            width: (80 * page) / total,
+            width: (paginationBarWidth * page) / total,
           }}
         />
       </PaginationBar>

@@ -44,6 +44,8 @@ const useTVL = () => {
       tvl: number;
     }[];
 
+    vaultTVLs.sort((a, b) => (a.tvl < b.tvl ? 1 : -1));
+
     return vaultTVLs;
   }, [prices, vaults]);
 
