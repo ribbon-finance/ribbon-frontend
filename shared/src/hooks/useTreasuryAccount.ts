@@ -10,34 +10,25 @@ const useTreasuryAccount = () => {
   const { data: balances, loading: balanceLoading } = useTreasuryBalance();
   const { prices, loading: pricesLoading } = useAssetsPrice();
 
-  const accounts = useMemo(
-    () =>
-      Object.fromEntries(
-        (Object.keys(balances) as Assets[]).map((asset) => {
-          return [
-            asset,
-            {
-              balance: balances[asset],
-              value: parseFloat(
-                assetToFiat(
-                  balances[asset],
-                  prices[asset],
-                  getAssetDecimals(asset)
-                )
-              ),
-            },
-          ];
-        })
-      ),
-    [balances, prices]
-  );
+  const accounts = useMemo(() => {
+    const accounts = (Object.keys(balances) as Assets[]).map((asset) => {
+      return {
+        asset,
+        balance: balances[asset],
+        value: parseFloat(
+          assetToFiat(balances[asset], prices[asset], getAssetDecimals(asset))
+        ),
+      };
+    });
+
+    accounts.sort((a, b) => (a.value < b.value ? 1 : -1));
+
+    return accounts;
+  }, [balances, prices]);
 
   return {
     accounts,
-    total: (Object.keys(accounts) as Assets[]).reduce(
-      (acc, curr) => acc + accounts[curr].value,
-      0
-    ),
+    total: accounts.reduce((acc, curr) => acc + curr.value, 0),
     loading: balanceLoading || pricesLoading,
   };
 };

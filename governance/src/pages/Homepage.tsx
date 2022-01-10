@@ -11,6 +11,7 @@ import DesktopFooter from "../components/Footer/DesktopFooter";
 import { FooterContainer } from "../components/Footer/Footer";
 import OverviewKPI from "../components/Homepage/OverviewKPI";
 import TVLLeaderboard from "../components/Homepage/TVLLeaderboard";
+import TreasuryBreakdown from "../components/Homepage/TreasuryBreakdown";
 
 const FullscreenSection = styled(Container)<{ height: number }>`
   display: flex;
@@ -51,6 +52,13 @@ const Homepage = () => {
               child: (
                 <FullscreenSection className="w-100" height={containerHeight}>
                   <TVLLeaderboard />
+                </FullscreenSection>
+              ),
+            },
+            {
+              child: (
+                <FullscreenSection className="w-100" height={containerHeight}>
+                  <TreasuryBreakdown />
                 </FullscreenSection>
               ),
             },
