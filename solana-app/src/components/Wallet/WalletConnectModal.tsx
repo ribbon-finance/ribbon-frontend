@@ -216,7 +216,7 @@ const WalletConnectModal: React.FC = () => {
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={16}>
           <LearnMoreLink
-            to="https://ethereum.org/en/wallets/"
+            to="https://docs.solana.com/wallet-guide"
             target="_blank"
             rel="noopener noreferrer"
             className="w-100"
