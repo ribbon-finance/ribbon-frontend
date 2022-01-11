@@ -25,8 +25,8 @@ export const PhantomIcon: React.FC<IconProps> = (props) => (
         y2="128"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#534BB1" />
-        <stop offset="1" stop-color="#551BF9" />
+        <stop stopColor="#534BB1" />
+        <stop offset="1" stopColor="#551BF9" />
       </linearGradient>
       <linearGradient
         id="phantom1_linear"
@@ -36,8 +36,8 @@ export const PhantomIcon: React.FC<IconProps> = (props) => (
         y2="108"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="white" />
-        <stop offset="1" stop-color="white" stop-opacity="0.82" />
+        <stop stopColor="white" />
+        <stop offset="1" stopColor="white" stopOpacity="0.82" />
       </linearGradient>
     </defs>
   </svg>
@@ -69,8 +69,8 @@ export const SolflareIcon: React.FC<IconProps> = (props) => (
         y2="33.6593"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#FFC10B" />
-        <stop offset="1" stop-color="#FB3F2E" />
+        <stop stopColor="#FFC10B" />
+        <stop offset="1" stopColor="#FB3F2E" />
       </linearGradient>
       <radialGradient
         id="solflare1_linear"
@@ -80,8 +80,8 @@ export const SolflareIcon: React.FC<IconProps> = (props) => (
         gradientUnits="userSpaceOnUse"
         gradientTransform="translate(22.5202 20.6183) rotate(67.5196) scale(13.056 13.1829)"
       >
-        <stop stop-color="#FFC10B" />
-        <stop offset="1" stop-color="#FB3F2E" />
+        <stop stopColor="#FFC10B" />
+        <stop offset="1" stopColor="#FB3F2E" />
       </radialGradient>
     </defs>
   </svg>

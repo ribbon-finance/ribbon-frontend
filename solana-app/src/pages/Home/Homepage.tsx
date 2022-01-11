@@ -2,16 +2,12 @@ import { useWeb3React } from "@web3-react/core";
 import React from "react";
 import { useHistory } from "react-router";
 
-import Banner from "shared/lib/components/Banner/Banner";
 import ProductCatalogue from "shared/lib/components/Product/ProductCatalogue";
-import { CHAINID, isProduction } from "shared/lib/utils/env";
 import { Title } from "shared/lib/designSystem";
 import sizes from "shared/lib/designSystem/sizes";
 import styled from "styled-components";
-import { ANNOUNCEMENT, getVaultURI } from "../../constants/constants";
-import { switchChains } from "shared/lib/utils/chainSwitching";
+import { getVaultURI } from "../../constants/constants";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
-import { isAvaxNetwork } from "shared/lib/constants/constants";
 
 const ProductTitle = styled(Title)`
   display: none;

@@ -1,9 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
 import styled from "styled-components";
-import { InjectedConnector } from "@web3-react/injected-connector";
-import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
-import { WalletLinkConnector } from "@web3-react/walletlink-connector";
 
 import { ConnectorButtonProps, connectorType } from "./types";
 import Indicator from "shared/lib/components/Indicator/Indicator";
@@ -20,6 +16,8 @@ import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { PhantomIcon, SolflareIcon } from "../../assets/icons/wallets";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { WalletName } from "@solana/wallet-adapter-wallets";
 
 const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
   background-color: ${colors.background.three};
@@ -83,17 +81,17 @@ const LearnMoreArrow = styled(BaseText)`
 
 const WalletConnectModal: React.FC = () => {
   const {
-    connector,
-    activate: activateWeb3,
-    library,
-    account,
-    active,
-  } = useWeb3React();
+    wallet,
+    connected: active,
+    connect: activateWeb3,
+    connecting,
+    publicKey: account,
+    select: selectWallet,
+  } = useWallet();
 
-  const [connectingConnector, setConnectingConnector] =
-    useState<connectorType>();
+  const [connectingWallet, setConnectingWallet] = useState<connectorType>();
 
-  const initializingText = useTextAnimation(Boolean(connectingConnector), {
+  const initializingText = useTextAnimation(Boolean(connecting), {
     texts: [
       "INITIALIZING",
       "INITIALIZING .",
@@ -111,58 +109,55 @@ const WalletConnectModal: React.FC = () => {
 
   const handleConnect = useCallback(
     async (type: connectorType) => {
-      setConnectingConnector(type);
+      let walletName: WalletName;
+      switch (type) {
+        case "phantom":
+          walletName = WalletName.Phantom;
+          break;
+        case "solflare":
+          walletName = WalletName.SolflareWeb;
+          break;
+        default:
+          throw new Error(`No wallet ${type}`);
+      }
+      setConnectingWallet(type);
+      selectWallet(walletName);
 
-      // Disconnect wallet if currently connected already
-      if (active && connector instanceof WalletConnectConnector)
-        await connector.close();
-
-      // Connect wallet
-      //   switch (type) {
-      //     case "metamask":
-      //       await activateWeb3(injectedConnector);
-      //       break;
-      //     case "walletConnect":
-      //       await activateWeb3(getWalletConnectConnector());
-      //       break;
-      //     case "walletLink":
-      //       await activateWeb3(walletlinkConnector);
-      //   }
-      setConnectingConnector(undefined);
+      try {
+        await activateWeb3();
+      } catch (e) {}
     },
-    [activateWeb3, connector, active]
+    [selectWallet, activateWeb3]
   );
 
   useEffect(() => {
-    if (library && account) {
+    if (wallet && account) {
       onClose();
     }
-  }, [library, account, onClose]);
+  }, [wallet, account, onClose]);
 
   const getConnectorStatus = useCallback(
-    (connectorType: connectorType) => {
-      // If connected, check if current button is connected
-      if (active) {
-        switch (connectorType) {
+    (type: connectorType) => {
+      if (active && wallet) {
+        switch (type) {
           case "phantom":
-            if (connector instanceof InjectedConnector) return "connected";
+            if (wallet.name === WalletName.Phantom) return "connected";
             break;
           case "solflare":
-            if (connector instanceof WalletConnectConnector) return "connected";
+            if (wallet.name === WalletName.SolflareWeb) return "connected";
             break;
         }
       }
-
-      // Check initializing status
-      switch (connectingConnector) {
-        case undefined:
-          return "normal";
-        case connectorType:
+      // console.log(connecting, connectingWallet);
+      if (connecting && connectingWallet) {
+        if (type === connectingWallet) {
           return "initializing";
+        }
+        return "neglected";
       }
-      return "neglected";
+      return "normal";
     },
-    [active, connector, connectingConnector]
+    [active, wallet, connecting, connectingWallet]
   );
 
   const renderConnectorIcon = useCallback((type: connectorType) => {
@@ -183,7 +178,9 @@ const WalletConnectModal: React.FC = () => {
       >
         {renderConnectorIcon(type)}
         <ConnectorButtonText>
-          {connectingConnector === type ? initializingText : title}
+          {getConnectorStatus(type) === "initializing"
+            ? initializingText
+            : title}
         </ConnectorButtonText>
         {getConnectorStatus(type) === "connected" && (
           <IndicatorContainer>
@@ -194,7 +191,6 @@ const WalletConnectModal: React.FC = () => {
     ),
     [
       active,
-      connectingConnector,
       getConnectorStatus,
       initializingText,
       renderConnectorIcon,

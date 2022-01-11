@@ -10,18 +10,11 @@ import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContex
 import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTransactionsContext";
 import { ExternalAPIDataContextProvider } from "shared/lib/hooks/externalAPIDataContext";
 
-import { Connection, PublicKey } from "@solana/web3.js";
-import { Program, Provider, web3 } from "@project-serum/anchor";
-
 import {
   getPhantomWallet,
   getSolflareWallet,
 } from "@solana/wallet-adapter-wallets";
-import {
-  useWallet,
-  WalletProvider,
-  ConnectionProvider,
-} from "@solana/wallet-adapter-react";
+import { WalletProvider } from "@solana/wallet-adapter-react";
 
 const wallets = [
   /* view list of available wallets at https://github.com/solana-labs/wallet-adapter#wallets */
