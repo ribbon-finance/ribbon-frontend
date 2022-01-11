@@ -1,6 +1,8 @@
 import { BigNumber } from "@ethersproject/bignumber";
-import { ethers, BigNumber as EthersBigNumber } from "ethers";
+import { ethers } from "ethers";
 import currency from "currency.js";
+import { isBigNumberish } from "@ethersproject/bignumber/lib/bignumber";
+
 import { getDefaultSignificantDecimalsFromAssetDecimals } from "./asset";
 
 const { formatUnits } = ethers.utils;
@@ -53,13 +55,12 @@ export const toETH = (bn: BigNumber, precision: number = 4) =>
   parseFloat(ethers.utils.formatEther(bn)).toFixed(precision);
 
 export const assetToFiat = (
-  num: BigNumber | EthersBigNumber | number,
+  num: BigNumber | number,
   assetPrice: number,
   assetDecimal: number = 18,
   precision: number = 2
 ): string =>
-  // @ts-ignore
-  (num instanceof BigNumber || num instanceof EthersBigNumber
+  (isBigNumberish(num)
     ? parseFloat(ethers.utils.formatUnits(num, assetDecimal)) * assetPrice
     : num * assetPrice
   ).toFixed(precision);
