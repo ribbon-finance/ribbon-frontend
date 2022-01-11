@@ -6,6 +6,31 @@ import React, {
   useState,
 } from "react";
 import { useSwipeable } from "react-swipeable";
+import styled from "styled-components";
+
+import colors from "../../designSystem/colors";
+import { useBoundingclientrect } from "../../hooks/useBoundingclientrect";
+
+const IndicatorContainer = styled.div<{ top?: number }>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  left: 40px;
+  top: calc(${(props) => (props.top ? `${props.top}px` : `50%`)} - 120px);
+  height: 240px;
+`;
+
+const Indicator = styled.div<{ active: boolean }>`
+  flex: 1;
+  width: 4px;
+  transition: 0.4s all ease-out;
+  background: ${(props) => (props.active ? "white" : colors.background.four)};
+
+  &:not(:last-child) {
+    margin-bottom: 16px;
+  }
+`;
 
 interface SnapScrollSectionProps {
   height: number;
@@ -19,7 +44,8 @@ interface SnapScrollSectionProps {
 const SnapScrollSection: React.FC<
   React.HTMLAttributes<HTMLDivElement> & SnapScrollSectionProps
 > = ({ items, height, className, ...props }) => {
-  const containerRef = useRef<HTMLDivElement>();
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const containerBoundingRect = useBoundingclientrect(containerRef);
   const itemRefs = useMemo(
     () =>
       [...new Array(items.length)].reduce<any>((acc, _curr, index) => {
@@ -29,12 +55,22 @@ const SnapScrollSection: React.FC<
     [items.length]
   );
 
-  const [, setItemIndex] = useState(0);
+  const [itemIndex, setItemIndex] = useState(0);
   const [scrollEvent, setScrollEvent] = useState<{
     timestamp: number;
     event?: "down" | "up";
     executed: boolean;
   }>({ timestamp: Date.now(), executed: true });
+
+  /**
+   * Scroll to item index
+   */
+  useEffect(() => {
+    containerRef.current?.scrollTo({
+      top: itemRefs[itemIndex].current?.offsetTop,
+      behavior: "smooth",
+    });
+  }, [itemIndex, itemRefs]);
 
   const handleScrollUp = useCallback(() => {
     setItemIndex((curr) => {
@@ -43,16 +79,9 @@ const SnapScrollSection: React.FC<
         return 0;
       }
 
-      const newItemIndex = curr - 1;
-
-      containerRef.current?.scrollTo({
-        top: itemRefs[newItemIndex].current?.offsetTop,
-        behavior: "smooth",
-      });
-
-      return newItemIndex;
+      return curr - 1;
     });
-  }, [itemRefs]);
+  }, []);
 
   const handleScrollDown = useCallback(() => {
     setItemIndex((curr) => {
@@ -61,14 +90,7 @@ const SnapScrollSection: React.FC<
         return Object.keys(itemRefs).length - 1;
       }
 
-      const newItemIndex = curr + 1;
-
-      containerRef.current?.scrollTo({
-        top: itemRefs[newItemIndex].current?.offsetTop,
-        behavior: "smooth",
-      });
-
-      return newItemIndex;
+      return curr + 1;
     });
   }, [itemRefs]);
 
@@ -159,6 +181,28 @@ const SnapScrollSection: React.FC<
       }`}
       style={{ height }}
     >
+      <IndicatorContainer
+        top={
+          containerBoundingRect
+            ? containerBoundingRect.top + containerBoundingRect.height / 2
+            : undefined
+        }
+      >
+        {items.map((item, index) => {
+          if (item.anchor !== false) {
+            return (
+              <Indicator
+                key={index}
+                active={index === itemIndex}
+                role="button"
+                onClick={() => setItemIndex(index)}
+              />
+            );
+          }
+
+          return null;
+        })}
+      </IndicatorContainer>
       {items.map((item, index) => (
         <div
           key={index}
