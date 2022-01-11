@@ -115,7 +115,7 @@ const WalletConnectModal: React.FC = () => {
           walletName = WalletName.Phantom;
           break;
         case "solflare":
-          walletName = WalletName.SolflareWeb;
+          walletName = WalletName.Solflare;
           break;
         default:
           throw new Error(`No wallet ${type}`);
@@ -144,11 +144,10 @@ const WalletConnectModal: React.FC = () => {
             if (wallet.name === WalletName.Phantom) return "connected";
             break;
           case "solflare":
-            if (wallet.name === WalletName.SolflareWeb) return "connected";
+            if (wallet.name === WalletName.Solflare) return "connected";
             break;
         }
       }
-      // console.log(connecting, connectingWallet);
       if (connecting && connectingWallet) {
         if (type === connectingWallet) {
           return "initializing";
