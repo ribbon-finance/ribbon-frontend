@@ -4,9 +4,18 @@ import { Line } from "react-chartjs-2";
 import { ChartOptions } from "chart.js";
 import moment from "moment";
 
-import { HoverInfo } from "./types";
-import { SecondaryText } from "shared/lib/designSystem";
-import colors from "shared/lib/designSystem/colors";
+import colors from "../../designSystem/colors";
+import { SecondaryText } from "../../designSystem";
+
+export type HoverInfo =
+  | {
+      focused: true;
+      xData: Date;
+      yData: number;
+      xPosition: number;
+      index: number;
+    }
+  | { focused: false };
 
 const PerformanceChartContainer = styled.div`
   width: 100%;
@@ -106,11 +115,13 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
 export const Chart: React.FC<{
   dataset: number[];
   labels: Date[];
-  onHover: (hoverInfo: HoverInfo) => void;
+  onHover?: (hoverInfo: HoverInfo) => void;
   borderColor?: string;
   gradientStartColor?: string;
   gradientStopColor?: string;
   pointBackgroundColor?: string;
+  padding?: { top: number; bottom: number };
+  hoverable?: boolean;
 }> = ({
   dataset,
   labels,
@@ -119,13 +130,15 @@ export const Chart: React.FC<{
   gradientStartColor = `${colors.green}3D`,
   gradientStopColor = `${colors.green}00`,
   pointBackgroundColor = colors.green,
+  padding = { top: 20, bottom: 20 },
+  hoverable = true,
 }) => {
   const options = useMemo((): ChartOptions => {
     return {
       maintainAspectRatio: false,
       title: { display: false },
       legend: { display: false },
-      layout: { padding: { top: 20, bottom: 20 } },
+      layout: { padding },
       scales: {
         yAxes: [
           {
@@ -142,7 +155,7 @@ export const Chart: React.FC<{
         mode: "nearest",
       },
       onHover: (_: any, elements: any) => {
-        if (elements && elements.length) {
+        if (elements && elements.length && hoverable) {
           const chartElem = elements[0];
           const chart = chartElem._chart;
           const ctx = chart.ctx;
@@ -167,19 +180,23 @@ export const Chart: React.FC<{
           // now we have to revert to the dot drawing above everything
           ctx.globalCompositeOperation = "source-over";
 
-          onHover({
-            focused: true,
-            xData: labels[chartIndex],
-            yData: dataset[chartIndex],
-            xPosition: x,
-            index: chartIndex,
-          });
+          if (onHover) {
+            onHover({
+              focused: true,
+              xData: labels[chartIndex],
+              yData: dataset[chartIndex],
+              xPosition: x,
+              index: chartIndex,
+            });
+          }
         } else {
-          onHover({ focused: false });
+          if (onHover) {
+            onHover({ focused: false });
+          }
         }
       },
     };
-  }, [dataset, labels, onHover]);
+  }, [dataset, labels, hoverable, padding, onHover]);
 
   const getData = useCallback(
     (canvas: any) => {

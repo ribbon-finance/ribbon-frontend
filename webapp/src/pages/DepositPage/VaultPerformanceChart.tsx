@@ -6,8 +6,9 @@ import moment from "moment";
 
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import PerformanceChart from "../../components/PerformanceChart/PerformanceChart";
-import { HoverInfo } from "../../components/PerformanceChart/types";
+import PerformanceChart, {
+  HoverInfo,
+} from "shared/lib/components/Common/PerformanceChart";
 import {
   getAssets,
   VaultOptions,

@@ -30,9 +30,9 @@ const OverviewBarchart: React.FC<OverviewBarchartProps> = ({
   maxValue,
 }) => {
   const renderBarchartBar = useCallback(
-    (value: number, formattedValue: string, color: string) => {
+    (key: string, value: number, formattedValue: string, color: string) => {
       return (
-        <div className="d-flex align-items-center">
+        <div key={key} className="d-flex align-items-center">
           <Bar color={color} width={maxBarWidth * (value / maxValue)}>
             <div
               style={{
@@ -58,8 +58,9 @@ const OverviewBarchart: React.FC<OverviewBarchartProps> = ({
   return (
     <>
       <div className="d-flex flex-column">
-        {items.map((item) => (
+        {items.map((item, index) => (
           <Subtitle
+            key={index}
             fontSize={14}
             lineHeight={48}
             letterSpacing={1}
@@ -73,8 +74,13 @@ const OverviewBarchart: React.FC<OverviewBarchartProps> = ({
 
       {/* Right bar */}
       <div className="d-flex flex-column ml-4">
-        {items.map((item) =>
-          renderBarchartBar(item.value, item.formattedValue, item.color)
+        {items.map((item, index) =>
+          renderBarchartBar(
+            index.toString(),
+            item.value,
+            item.formattedValue,
+            item.color
+          )
         )}
       </div>
     </>

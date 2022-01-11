@@ -19,11 +19,21 @@ type WidthType = "fullWidth" | "maxContent";
 const SegmentControlContainer = styled.div<{
   theme?: "outline";
   color?: string;
+  backgroundColor?: string;
   widthType: WidthType;
 }>`
   border-radius: ${theme.border.radius};
-  background-color: ${(props) =>
-    props.color ? `${props.color}14` : colors.background.two};
+  background-color: ${(props) => {
+    if (props.backgroundColor) {
+      return props.backgroundColor;
+    }
+
+    if (props.color) {
+      return `${props.color}14`;
+    }
+
+    return colors.background.two;
+  }};
   display: flex;
   position: relative;
 
@@ -169,6 +179,7 @@ interface SegmentControlProps {
   config?: {
     theme?: "outline";
     color?: string;
+    backgroundColor?: string;
     widthType?: WidthType;
     button?: {
       px: number;
@@ -186,6 +197,7 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
   config: {
     theme,
     color,
+    backgroundColor,
     widthType = "maxContent",
     button = { px: 16, py: 12, fontSize: 14, lineHeight: 24 },
   } = {},
@@ -244,6 +256,7 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
         ref={containerRef}
         theme={theme}
         color={color}
+        backgroundColor={backgroundColor}
         widthType={widthType}
       >
         <ActiveBackground
