@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useSwipeable } from "react-swipeable";
 
 interface SnapScrollSectionProps {
   height: number;
@@ -18,7 +19,7 @@ interface SnapScrollSectionProps {
 const SnapScrollSection: React.FC<
   React.HTMLAttributes<HTMLDivElement> & SnapScrollSectionProps
 > = ({ items, height, className, ...props }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>();
   const itemRefs = useMemo(
     () =>
       [...new Array(items.length)].reduce<any>((acc, _curr, index) => {
@@ -71,6 +72,17 @@ const SnapScrollSection: React.FC<
     });
   }, [itemRefs]);
 
+  /**
+   * Handle mobile swipe
+   */
+  const handlers = useSwipeable({
+    onSwipedUp: handleScrollDown,
+    onSwipedDown: handleScrollUp,
+  });
+
+  /**
+   * Handle desktop wheel event
+   */
   const handleWheel = useCallback((e: globalThis.WheelEvent) => {
     setScrollEvent((curr) => {
       const timeNow = Date.now();
@@ -94,8 +106,9 @@ const SnapScrollSection: React.FC<
    */
   useEffect(() => {
     const element = containerRef.current;
+
     if (element) {
-      element.onwheel = handleWheel;
+      element.addEventListener("wheel", handleWheel);
 
       return () => {
         element?.removeEventListener("wheel", handleWheel);
@@ -123,10 +136,24 @@ const SnapScrollSection: React.FC<
     setScrollEvent((curr) => ({ ...curr, executed: true }));
   }, [handleScrollDown, handleScrollUp, scrollEvent]);
 
+  /**
+   * For ref sharing
+   */
+  const refPassthrough = useCallback(
+    (el: HTMLDivElement) => {
+      // call useSwipeable ref prop with el
+      handlers.ref(el);
+
+      // set myRef el so you can access it yourself
+      containerRef.current = el;
+    },
+    [handlers]
+  );
+
   return (
     <div
       {...props}
-      ref={containerRef}
+      ref={refPassthrough}
       className={`d-flex flex-wrap overflow-hidden w-100 position-relative ${
         className || ""
       }`}
