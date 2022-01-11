@@ -120,15 +120,21 @@ const WalletConnectModal: React.FC = () => {
         default:
           throw new Error(`No wallet ${type}`);
       }
-      setConnectingWallet(type);
       selectWallet(walletName);
-
-      try {
-        await activateWeb3();
-      } catch (e) {}
+      setConnectingWallet(type);
     },
-    [selectWallet, activateWeb3]
+    [wallet, selectWallet, activateWeb3]
   );
+
+  useEffect(() => {
+    (async () => {
+      if (connectingWallet) {
+        try {
+          await activateWeb3();
+        } catch (e) {}
+      }
+    })();
+  }, [connectingWallet, activateWeb3]);
 
   useEffect(() => {
     if (wallet && account) {

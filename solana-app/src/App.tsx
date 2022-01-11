@@ -28,7 +28,7 @@ function App() {
   }, []);
 
   return (
-    <WalletProvider wallets={wallets} autoConnect>
+    <WalletProvider wallets={wallets}>
       <Web3ContextProvider>
         <Web3ReactProvider getLibrary={getLibrary}>
           <PendingTransactionsContextProvider>
