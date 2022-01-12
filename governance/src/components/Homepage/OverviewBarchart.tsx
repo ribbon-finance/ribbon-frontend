@@ -59,16 +59,21 @@ const OverviewBarchart: React.FC<OverviewBarchartProps> = ({
     <>
       <div className="d-flex flex-column">
         {items.map((item, index) => (
-          <Subtitle
-            key={index}
-            fontSize={14}
-            lineHeight={48}
-            letterSpacing={1}
-            color={colors.text}
-            className="text-right"
+          <div
+            className="d-flex align-items-center justify-content-end"
+            style={{ height: 48 }}
           >
-            {item.name}
-          </Subtitle>
+            <Subtitle
+              key={index}
+              fontSize={14}
+              lineHeight={20}
+              letterSpacing={1}
+              color={colors.text}
+              className="text-right"
+            >
+              {item.name}
+            </Subtitle>
+          </div>
         ))}
       </div>
 

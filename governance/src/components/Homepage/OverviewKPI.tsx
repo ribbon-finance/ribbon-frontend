@@ -16,6 +16,8 @@ import useAssetPrice from "shared/lib/hooks/useAssetPrice";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useTreasuryAccount from "shared/lib/hooks/useTreasuryAccount";
 import useTVL from "shared/lib/hooks/useTVL";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
+import sizes from "shared/lib/designSystem/sizes";
 
 const Content = styled(Row)`
   z-index: 1;
@@ -70,6 +72,7 @@ const FloatingBackgroundBar = styled.div<{ index: number }>`
 `;
 
 const OverviewKPI = () => {
+  const { width } = useScreenSize();
   const { price: RBNPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: "RBN",
   });
@@ -80,13 +83,26 @@ const OverviewKPI = () => {
 
   return (
     <>
-      <Content className="d-flex w-100 justify-content-center">
+      <Content className="justify-content-center">
         {/* Left text */}
-        <Col lg={5} className="d-flex flex-column justify-content-center">
-          <Title fontSize={56} lineHeight={60} letterSpacing={1}>
+        <Col
+          xs={12}
+          lg={5}
+          className="d-flex flex-column justify-content-center"
+        >
+          <Title
+            fontSize={width >= sizes.lg ? 56 : 48}
+            lineHeight={width >= sizes.lg ? 60 : 56}
+            letterSpacing={1}
+            className={width < sizes.lg ? "text-center" : ""}
+          >
             RIBBON GOVERNANCE
           </Title>
-          <SecondaryText fontSize={16} lineHeight={24} className="mt-4">
+          <SecondaryText
+            fontSize={16}
+            lineHeight={24}
+            className={`mt-4 ${width < sizes.lg ? "text-center" : ""}`}
+          >
             Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam,
             purus sit amet luctus venenatis, lectus
           </SecondaryText>
@@ -95,7 +111,7 @@ const OverviewKPI = () => {
             to="https://google.com"
             target="_blank"
             rel="noreferrer noopener"
-            className="d-flex mt-4"
+            className={`d-flex mt-4 ${width < sizes.lg ? "mx-auto" : ""}`}
           >
             <PrimaryText fontSize={16} lineHeight={24} fontWeight={400}>
               Learn More
@@ -107,7 +123,7 @@ const OverviewKPI = () => {
         {/* Right KPI */}
         <Col
           lg={{ span: 5, offset: 1 }}
-          className="d-flex flex-column justify-content-center"
+          className="d-none d-lg-flex flex-column justify-content-center"
         >
           <KPICard>
             <SecondaryText fontSize={12} lineHeight={16}>

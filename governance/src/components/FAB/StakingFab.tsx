@@ -10,6 +10,7 @@ import { ThemedLogo } from "shared/lib/assets/icons/logo";
 import { useGovernanceGlobalState } from "../../store/store";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import { IncentivizedVotingLockupAddress } from "../../constants/constants";
+import sizes from "shared/lib/designSystem/sizes";
 
 const FABContainer = styled.div`
   display: flex;
@@ -28,6 +29,10 @@ const FABContainer = styled.div`
   @-moz-document url-prefix() {
     background-color: rgba(0, 0, 0, 0.9);
   }
+
+  @media (max-width: ${sizes.md}px) {
+    display: none;
+  }
 `;
 
 const StakingButton = styled.div<{ color: string }>`
@@ -45,6 +50,10 @@ const StakingButton = styled.div<{ color: string }>`
 
 const FABOffsetContainer = styled.div`
   height: ${theme.governance.actionBar.height}px;
+
+  @media (max-width: ${sizes.md}px) {
+    display: none;
+  }
 `;
 const StakingFAB = () => {
   const { active } = useWeb3React();

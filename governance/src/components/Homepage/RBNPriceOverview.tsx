@@ -14,6 +14,8 @@ import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { Chart } from "shared/lib/components/Common/PerformanceChart";
 import useElementSize from "shared/lib/hooks/useElementSize";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
+import sizes from "shared/lib/designSystem/sizes";
 
 const priceRangeList = ["24H", "1W", "1M", "6M", "1Y", "ALL"] as const;
 type PriceRange = typeof priceRangeList[number];
@@ -26,6 +28,7 @@ const SectionLabel = styled.div`
 `;
 
 const RBNPriceOverview = () => {
+  const { width } = useScreenSize();
   const containerRef = useRef<HTMLDivElement>(null);
   const { width: containerWidth } = useElementSize(containerRef);
   const { price: RBNPrice, loading: assetPriceLoading } = useAssetPrice({
@@ -101,7 +104,12 @@ const RBNPriceOverview = () => {
           RBN Price
         </Subtitle>
       </SectionLabel>
-      <Title fontSize={80} lineHeight={96} letterSpacing={1} className="mt-3">
+      <Title
+        fontSize={width >= sizes.lg ? 80 : 64}
+        lineHeight={width >= sizes.lg ? 96 : 72}
+        letterSpacing={1}
+        className="mt-3"
+      >
         {assetPriceLoading ? loadingText : currency(RBNPrice).format()}
       </Title>
 
@@ -130,7 +138,7 @@ const RBNPriceOverview = () => {
             lineHeight={16}
             letterSpacing={1}
             color={priceChanges >= 0 ? colors.green : colors.red}
-            className="mt-2"
+            className={width >= sizes.lg ? "mt-2" : "mt-4"}
           >
             {`${priceChanges >= 0 ? "+" : ""}${(priceChanges * 100).toFixed(
               2
@@ -138,7 +146,14 @@ const RBNPriceOverview = () => {
           </Subtitle>
           <div
             className="mt-5"
-            style={{ height: containerWidth / 15, width: containerWidth / 4 }}
+            style={{
+              height:
+                width >= sizes.lg
+                  ? containerWidth / 15
+                  : containerWidth * 0.9 * 0.25,
+              width:
+                width >= sizes.lg ? containerWidth / 4 : containerWidth * 0.9,
+            }}
           >
             <Chart
               dataset={RBNPrices.map((price) => price.price)}
