@@ -9,9 +9,13 @@ import { useSwipeable } from "react-swipeable";
 import styled from "styled-components";
 
 import colors from "../../designSystem/colors";
+import sizes from "../../designSystem/sizes";
 import { useBoundingclientrect } from "../../hooks/useBoundingclientrect";
+import useScreenSize from "../../hooks/useScreenSize";
+import useElementScroll from "../../hooks/useElementScroll";
+import useElementSize from "../../hooks/useElementSize";
 
-const IndicatorContainer = styled.div<{ top?: number }>`
+const DesktopIndicatorContainer = styled.div<{ top?: number }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -21,7 +25,7 @@ const IndicatorContainer = styled.div<{ top?: number }>`
   height: 240px;
 `;
 
-const Indicator = styled.div<{ active: boolean }>`
+const DesktopIndicatorBar = styled.div<{ active: boolean }>`
   flex: 1;
   width: 4px;
   transition: 0.4s all ease-out;
@@ -30,6 +34,21 @@ const Indicator = styled.div<{ active: boolean }>`
   &:not(:last-child) {
     margin-bottom: 16px;
   }
+`;
+
+const MobileIndicatorContainer = styled.div<{ top?: number }>`
+  display: flex;
+  position: fixed;
+  top: ${(props) => (props.top ? `${props.top}px` : `0`)};
+  height: 4px;
+  width: 100%;
+  background: ${colors.background.two};
+`;
+
+const MobileIndicatorBar = styled.div<{ width: number }>`
+  height: 4px;
+  width: ${(props) => props.width}px;
+  background: white;
 `;
 
 interface SnapScrollSectionProps {
@@ -44,8 +63,14 @@ interface SnapScrollSectionProps {
 const SnapScrollSection: React.FC<
   React.HTMLAttributes<HTMLDivElement> & SnapScrollSectionProps
 > = ({ items, height, className, ...props }) => {
+  const { width } = useScreenSize();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const containerBoundingRect = useBoundingclientrect(containerRef);
+  const {
+    scrollX: { bottom: containerBottom },
+  } = useElementScroll(containerRef);
+  const { scrollHeight: containerScrolleight } = useElementSize(containerRef);
+
   const itemRefs = useMemo(
     () =>
       [...new Array(items.length)].reduce<any>((acc, _curr, index) => {
@@ -61,6 +86,8 @@ const SnapScrollSection: React.FC<
     event?: "down" | "up";
     executed: boolean;
   }>({ timestamp: Date.now(), executed: true });
+
+  console.log(containerBoundingRect);
 
   /**
    * Scroll to item index
@@ -181,28 +208,42 @@ const SnapScrollSection: React.FC<
       }`}
       style={{ height }}
     >
-      <IndicatorContainer
-        top={
-          containerBoundingRect
-            ? containerBoundingRect.top + containerBoundingRect.height / 2
-            : undefined
-        }
-      >
-        {items.map((item, index) => {
-          if (item.anchor !== false) {
-            return (
-              <Indicator
-                key={index}
-                active={index === itemIndex}
-                role="button"
-                onClick={() => setItemIndex(index)}
-              />
-            );
+      {width > sizes.xl ? (
+        <DesktopIndicatorContainer
+          top={
+            containerBoundingRect
+              ? containerBoundingRect.top + containerBoundingRect.height / 2
+              : undefined
           }
+        >
+          {items.map((item, index) => {
+            if (item.anchor !== false) {
+              return (
+                <DesktopIndicatorBar
+                  key={index}
+                  active={index === itemIndex}
+                  role="button"
+                  onClick={() => setItemIndex(index)}
+                />
+              );
+            }
 
-          return null;
-        })}
-      </IndicatorContainer>
+            return null;
+          })}
+        </DesktopIndicatorContainer>
+      ) : (
+        <MobileIndicatorContainer top={containerBoundingRect?.top}>
+          <MobileIndicatorBar
+            width={
+              containerBoundingRect
+                ? containerBoundingRect.width *
+                  ((containerScrolleight - containerBottom) /
+                    containerScrolleight)
+                : 0
+            }
+          />
+        </MobileIndicatorContainer>
+      )}
       {items.map((item, index) => (
         <div
           key={index}
