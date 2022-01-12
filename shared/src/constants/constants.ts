@@ -305,7 +305,6 @@ export const VaultNamesList = [
   "T-AAVE-C",
   "T-AVAX-C",
   "T-PERP-C",
-  "T-SOL-C",
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
@@ -317,7 +316,6 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-AAVE-C": "rAAVE-THETA",
   "T-AVAX-C": "rAVAX-THETA",
   "T-PERP-C": "rPERP-TSRY",
-  "T-SOL-C": "rSOL-THETA",
 };
 
 export const BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
@@ -418,7 +416,7 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "rUSDC-ETH-P-THETA": ["USDC"],
     "rstETH-THETA": ["stETH", "WETH"],
     "ryvUSDC-ETH-P-THETA": ["USDC"],
-    "rPERP-TSRY": ["PERP"],
+    "rPERP-TSRY": ["PERP"]
   };
 
 export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
@@ -444,8 +442,7 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "rAVAX-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rAVAX-THETA")))
   ),
-  "rPERP-TSRY": BigNumber.from(100000000).mul(
-    // Cap still not decided
+  "rPERP-TSRY": BigNumber.from(100000000).mul( // Cap still not decided
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rPERP-TSRY")))
   ),
 };

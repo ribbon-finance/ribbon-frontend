@@ -6,8 +6,7 @@
     "webapp",
     "nft-drop",
     "governance",
-    "treasury",
-    "solana-app"
+    "treasury"
   ],
   "devDependencies": {
     "husky": "^6.0.0"
