@@ -87,8 +87,6 @@ const SnapScrollSection: React.FC<
     executed: boolean;
   }>({ timestamp: Date.now(), executed: true });
 
-  console.log(containerBoundingRect);
-
   /**
    * Scroll to item index
    */
