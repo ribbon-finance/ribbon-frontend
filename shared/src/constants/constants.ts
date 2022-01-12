@@ -304,7 +304,7 @@ export const VaultNamesList = [
   "T-stETH-C",
   "T-AAVE-C",
   "T-AVAX-C",
-  "T-PERP-C",
+  "T-PERP-C"
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
