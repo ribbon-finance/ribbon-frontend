@@ -4,7 +4,7 @@ import {
   getWalletConnectConnector,
   injectedConnector,
   walletlinkConnector,
-} from "shared/src/utils/connectors";
+} from "shared/lib/utils/connectors";
 import { providers } from "ethers";
 import { useCallback } from "react";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
