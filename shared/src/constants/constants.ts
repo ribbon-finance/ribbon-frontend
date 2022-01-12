@@ -65,11 +65,11 @@ export const RetailVaultList = [
   "rUSDC-ETH-P-THETA",
 ] as const;
 
-export const TreasuryVaultList = ["rPERP-TSRY"] as const;
+export const TreasuryVaultList = [
+  "rPERP-TSRY"
+] as const;
 
-export const SolanaVaultList = ["rSOL-THETA"] as const;
-
-const AllVaultOptions = [...RetailVaultList, ...TreasuryVaultList];
+const AllVaultOptions = [...RetailVaultList, ...TreasuryVaultList]
 
 export type VaultOptions = typeof AllVaultOptions[number];
 const ProdExcludeVault: VaultOptions[] = [];
@@ -82,8 +82,8 @@ const PutThetaVault: VaultOptions[] = [
 export const VaultList: VaultOptions[] = isTreasury()
   ? TreasuryVaultList
   : !isProduction()
-  ? RetailVaultList
-  : RetailVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
+    ? RetailVaultList
+    : RetailVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
 
 export const GAS_LIMITS: {
   [vault in VaultOptions]: Partial<{
