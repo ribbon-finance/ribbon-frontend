@@ -1,5 +1,5 @@
 import { BigNumber } from "@ethersproject/bignumber";
-import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "./useWeb3Wallet";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 

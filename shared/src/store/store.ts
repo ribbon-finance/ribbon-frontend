@@ -2,11 +2,9 @@ import { createGlobalState } from "react-hooks-global-state";
 
 import { DesktopViewType } from "../components/Product/types";
 import { VaultOptions, VaultVersion } from "../constants/constants";
-import { PendingTransaction, AirdropInfoData, CHAINS } from "./types";
+import { PendingTransaction, AirdropInfoData } from "./types";
 
 interface GlobalStore {
-  chain: CHAINS;
-
   pendingTransactions: PendingTransaction[];
   showConnectWallet: boolean;
 
@@ -22,7 +20,6 @@ interface GlobalStore {
 }
 
 export const initialState: GlobalStore = {
-  chain: CHAINS.NOT_SELECTED,
   pendingTransactions: [],
   showConnectWallet: false,
   gasPrice: "",

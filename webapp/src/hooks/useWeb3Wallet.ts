@@ -1,15 +1,14 @@
 import { useWeb3React as useWeb3ReactEthereum } from "@web3-react/core";
 import { AbstractConnector } from "@web3-react/abstract-connector";
-import { CHAINS } from "../store/types";
-import { useSelectedChain } from "./useSelectedChain";
 import {
   getWalletConnectConnector,
   injectedConnector,
   walletlinkConnector,
-} from "../utils/connectors";
+} from "shared/src/utils/connectors";
 import { providers } from "ethers";
 import { useCallback } from "react";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
+import { Chains, useChain } from "./chainContext";
 
 interface Web3WalletData {
   chainId: number | undefined;
@@ -35,7 +34,7 @@ enum SolanaWallet {
 type Wallet = EthereumWallet | SolanaWallet;
 
 export const useWeb3Wallet = (): Web3WalletData => {
-  const [chain] = useSelectedChain();
+  const [chain] = useChain();
 
   const {
     chainId: chainIdEth,
@@ -68,7 +67,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
     }
   }, [connectorEth, deactivateEth]);
 
-  if (chain === CHAINS.SOLANA) {
+  if (chain === Chains.Solana) {
     return {
       chainId: 99999,
       active: false,
