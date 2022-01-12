@@ -69,3 +69,10 @@ export type AirdropInfoData = {
   };
   claimed: boolean;
 };
+
+export enum CHAINS {
+  NOT_SELECTED,
+  ETHEREUM,
+  AVALANCHE,
+  SOLANA,
+}

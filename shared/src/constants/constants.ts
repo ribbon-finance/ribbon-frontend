@@ -67,13 +67,9 @@ export const RetailVaultList = [
 
 export const TreasuryVaultList = ["rPERP-TSRY"] as const;
 
-export const SolanaVaultList = ["rSOL-THETA"];
+export const SolanaVaultList = ["rSOL-THETA"] as const;
 
-const AllVaultOptions = [
-  ...RetailVaultList,
-  ...TreasuryVaultList,
-  ...SolanaVaultList,
-];
+const AllVaultOptions = [...RetailVaultList, ...TreasuryVaultList];
 
 export type VaultOptions = typeof AllVaultOptions[number];
 const ProdExcludeVault: VaultOptions[] = [];
@@ -309,6 +305,7 @@ export const VaultNamesList = [
   "T-AAVE-C",
   "T-AVAX-C",
   "T-PERP-C",
+  "T-SOL-C",
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
@@ -320,6 +317,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-AAVE-C": "rAAVE-THETA",
   "T-AVAX-C": "rAVAX-THETA",
   "T-PERP-C": "rPERP-TSRY",
+  "T-SOL-C": "rSOL-THETA",
 };
 
 export const BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
