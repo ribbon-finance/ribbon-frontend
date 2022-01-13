@@ -8,6 +8,7 @@ import {
 import { providers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
+import { Wallet as SolanaWalletInterface } from "@solana/wallet-adapter-wallets";
 import { useWallet as useSolanaWallet } from "@solana/wallet-adapter-react";
 import { WalletName } from "@solana/wallet-adapter-wallets";
 import { Chains, useChain } from "./chainContext";
@@ -26,9 +27,10 @@ interface Web3WalletData {
   activate: (wallet: Wallet) => Promise<void>;
   deactivate: () => Promise<void>;
   account: string | null | undefined;
-  ethereumProvider: providers.Web3Provider | undefined;
   connectingWallet: Wallet | undefined;
   connectedWallet: Wallet | undefined;
+  ethereumProvider: providers.Web3Provider | undefined;
+  solanaWallet: SolanaWalletInterface | undefined;
 }
 
 export const useWeb3Wallet = (): Web3WalletData => {
@@ -80,7 +82,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
     if (connectedSolana) {
       setChain(Chains.Solana);
     }
-  }, [connectedSolana]);
+  }, [connectedSolana, setChain]);
 
   const activate = useCallback(
     async (wallet: Wallet) => {
@@ -163,11 +165,12 @@ export const useWeb3Wallet = (): Web3WalletData => {
       chainId: undefined,
       active: connectedSolana,
       account: publicKeySolana && publicKeySolana.toString(),
-      ethereumProvider: undefined,
       activate,
       deactivate: disconnectSolana,
       connectingWallet,
       connectedWallet,
+      ethereumProvider: undefined,
+      solanaWallet: walletSolana || undefined,
     };
   }
 
@@ -177,9 +180,10 @@ export const useWeb3Wallet = (): Web3WalletData => {
     activate,
     deactivate: deactivateEth,
     account: accountEth,
-    ethereumProvider: libraryEth,
     connectingWallet,
     connectedWallet,
+    ethereumProvider: libraryEth,
+    solanaWallet: undefined,
   };
 };
 

@@ -1,5 +1,4 @@
 import React, { ReactElement, useContext, useState } from "react";
-import useWeb3Wallet from "./useWeb3Wallet";
 
 export enum Chains {
   NotSelected,
