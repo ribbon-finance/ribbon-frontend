@@ -19,7 +19,7 @@ const ChainContext = React.createContext<ChainContextType>({
   setChain: () => {},
 });
 
-export const useChain = () => {
+export const useChain: () => [Chains, (chain: Chains) => void] = () => {
   const { chain, setChain } = useContext(ChainContext);
   const { chainId: ethChainId } = useWeb3React();
 

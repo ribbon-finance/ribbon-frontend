@@ -1,20 +1,9 @@
 import React, { useCallback } from "react";
 import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
 import styled from "styled-components";
-import { SolanaLogo } from "shared/lib/assets/icons/solAssets";
 
-import BasicModal from "shared/lib/components/Common/BasicModal";
-import {
-  getAssetColor,
-  getAssetLogo,
-  LidoThemedETHLogo,
-} from "shared/lib/utils/asset";
+import { getAssetColor, getAssetLogo } from "shared/lib/utils/asset";
 import { Title, Subtitle, BaseIndicator } from "shared/lib/designSystem";
-import { CHAINID, ENABLED_CHAINID } from "shared/lib/utils/env";
-import {
-  CHAINID_TO_NATIVE_TOKENS,
-  READABLE_NETWORK_NAMES,
-} from "shared/lib/constants/constants";
 import { switchChains } from "shared/lib/utils/chainSwitching";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
@@ -80,7 +69,7 @@ const AssetCircle = styled(BaseIndicator)<{
 `;
 
 const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({ onClose }) => {
-  const [currentChain] = useChain();
+  const [currentChain, setChain] = useChain();
   const { chainId: currentChainId } = useWeb3Wallet();
   const handleClose = useCallback(() => {
     onClose();
@@ -106,6 +95,13 @@ const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({ onClose }) => {
     [ethereumProvider, currentChainId, handleClose, isMobile]
   );
 
+  const handleSelectChain = useCallback(
+    (chain: Chains) => {
+      setChain(chain);
+    },
+    [setChain]
+  );
+
   return (
     <ModalContainer>
       <TitleContainer>
@@ -117,6 +113,7 @@ const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({ onClose }) => {
           key={chain}
           chain={chain}
           currentChain={currentChain as Chains}
+          onSelectChain={handleSelectChain}
         ></ChainButton>
       ))}
     </ModalContainer>
@@ -126,22 +123,23 @@ const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({ onClose }) => {
 export const ChainButton: React.FC<{
   chain: Chains;
   currentChain: Chains;
-}> = ({ chain, currentChain }) => {
+  onSelectChain: (chain: Chains) => void;
+}> = ({ chain, currentChain, onSelectChain }) => {
   const Logo = getAssetLogo(CHAINS_TO_NATIVE_TOKENS[chain]);
   const color = getAssetColor(CHAINS_TO_NATIVE_TOKENS[chain]);
   const active = currentChain === chain;
-  console.log(chain, currentChain);
+  const logoSize = chain === Chains.Solana ? 20 : 28;
 
   return (
     <NetworkContainer
       key={chain}
-      onClick={() => {}}
+      onClick={() => onSelectChain(chain)}
       borderColor={color}
       active={active}
     >
       <NetworkNameContainer>
-        <AssetCircle size={40} color={`transparent`}>
-          <Logo height={28} width={28}></Logo>
+        <AssetCircle size={40} color={`${color}1F`}>
+          <Logo height={logoSize} width={logoSize}></Logo>
         </AssetCircle>
         <NetworkName>{READABLE_CHAIN_NAMES[chain]}</NetworkName>
       </NetworkNameContainer>
