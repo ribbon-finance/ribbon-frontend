@@ -6,9 +6,18 @@ import {
   walletlinkConnector,
 } from "shared/lib/utils/connectors";
 import { providers } from "ethers";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
+import { useWallet as useSolanaWallet } from "@solana/wallet-adapter-react";
+import { WalletName } from "@solana/wallet-adapter-wallets";
 import { Chains, useChain } from "./chainContext";
+import {
+  EthereumWallet,
+  isEthereumWallet,
+  isSolanaWallet,
+  SolanaWallet,
+  Wallet,
+} from "../models/wallets";
 
 interface Web3WalletData {
   chainId: number | undefined;
@@ -17,24 +26,15 @@ interface Web3WalletData {
   deactivate: () => Promise<void>;
   account: string | null | undefined;
   ethereumProvider: providers.Web3Provider | undefined;
+  connectingWallet: Wallet | undefined;
+  connectedWallet: Wallet | undefined;
 }
-
-enum EthereumWallet {
-  Metamask = 1,
-  WalletConnect = 2,
-  WalletLink = 3,
-}
-const ETHEREUM_WALLETS = Object.values(EthereumWallet);
-
-enum SolanaWallet {
-  Phantom = 4,
-  Solflare = 5,
-}
-
-type Wallet = EthereumWallet | SolanaWallet;
 
 export const useWeb3Wallet = (): Web3WalletData => {
   const [chain] = useChain();
+
+  const [connectingWallet, setConnectingWallet] = useState<Wallet>();
+  const [connectedWallet, setConnectedWallet] = useState<Wallet>();
 
   const {
     chainId: chainIdEth,
@@ -46,11 +46,40 @@ export const useWeb3Wallet = (): Web3WalletData => {
     connector: connectorEth,
   } = useWeb3ReactEthereum();
 
+  const {
+    wallet: walletSolana,
+    connected: connectedSolana,
+    connect: connectSolana,
+    connecting: connectingSolana,
+    publicKey: account,
+    select: selectWalletSolana,
+  } = useSolanaWallet();
+
   const activate = useCallback(
     async (wallet: Wallet) => {
       if (isEthereumWallet(wallet)) {
         const connector = ethereumConnectors[wallet as EthereumWallet]();
-        await activateEth(connector);
+        setConnectingWallet(wallet);
+        try {
+          await activateEth(connector);
+          setConnectingWallet(undefined);
+          setConnectedWallet(wallet);
+        } catch (e) {
+          setConnectedWallet(undefined);
+        }
+      } else if (isSolanaWallet(wallet)) {
+        let walletName: WalletName = WalletName.Phantom;
+        switch (wallet) {
+          case SolanaWallet.Phantom:
+            walletName = WalletName.Phantom;
+            break;
+          case SolanaWallet.Solflare:
+            walletName = WalletName.Solflare;
+            break;
+        }
+
+        selectWalletSolana(walletName);
+        setConnectingWallet(wallet);
       } else {
         throw new Error("Wallet not supported");
       }
@@ -58,12 +87,29 @@ export const useWeb3Wallet = (): Web3WalletData => {
     [activateEth]
   );
 
+  // This is specifically needed for solana
+  // because you need to implicitly call connect() after you detect a connecting state
+  useEffect(() => {
+    if (connectingWallet && isSolanaWallet(connectingWallet)) {
+      (async () => {
+        try {
+          await connectSolana();
+          setConnectingWallet(undefined);
+          setConnectedWallet(connectingWallet);
+        } catch (e) {
+          setConnectingWallet(undefined);
+        }
+      })();
+    }
+  }, [connectingWallet, connectSolana]);
+
   const deactivate = useCallback(async () => {
     if (connectorEth) {
       if (connectorEth instanceof WalletConnectConnector) {
         await connectorEth.close();
       }
       deactivateEth();
+      setConnectedWallet(undefined);
     }
   }, [connectorEth, deactivateEth]);
 
@@ -75,6 +121,8 @@ export const useWeb3Wallet = (): Web3WalletData => {
       ethereumProvider: undefined,
       activate: () => Promise.resolve(),
       deactivate: () => Promise.resolve(),
+      connectingWallet,
+      connectedWallet,
     };
   }
 
@@ -85,6 +133,8 @@ export const useWeb3Wallet = (): Web3WalletData => {
     deactivate,
     account: accountEth,
     ethereumProvider: libraryEth,
+    connectingWallet,
+    connectedWallet,
   };
 };
 
@@ -93,8 +143,5 @@ const ethereumConnectors: Record<EthereumWallet, () => AbstractConnector> = {
   [EthereumWallet.WalletConnect]: getWalletConnectConnector,
   [EthereumWallet.WalletLink]: () => walletlinkConnector,
 };
-
-const isEthereumWallet = (wallet: Wallet) =>
-  ETHEREUM_WALLETS.includes(wallet as unknown as string);
 
 export default useWeb3Wallet;

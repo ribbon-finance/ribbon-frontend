@@ -1,15 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
 import styled from "styled-components";
-import { InjectedConnector } from "@web3-react/injected-connector";
-import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
-import { WalletLinkConnector } from "@web3-react/walletlink-connector";
-
-import {
-  injectedConnector,
-  getWalletConnectConnector,
-  walletlinkConnector,
-} from "shared/lib/utils/connectors";
 
 import { ConnectorButtonProps, connectorType } from "./types";
 import Indicator from "shared/lib/components/Indicator/Indicator";
@@ -31,6 +21,16 @@ import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { useChain } from "../../hooks/chainContext";
+import {
+  EthereumWallet,
+  ETHEREUM_WALLETS,
+  Wallet,
+  WALLET_TITLES,
+} from "../../models/wallets";
+import useWeb3Wallet from "../../hooks/useWeb3Wallet";
+import { ConnectorButtonStatus } from "./types";
+
+type WalletStatus = "connected" | "neglected" | "initializing";
 
 const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
   background-color: ${colors.background.three};
@@ -99,27 +99,8 @@ const StyledWalletLinkIcon = styled(WalletLinkIcon)`
 `;
 
 const WalletConnectModal: React.FC = () => {
-  const {
-    connector,
-    activate: activateWeb3,
-    library,
-    account,
-    active,
-  } = useWeb3React();
-
-  const [connectingConnector, setConnectingConnector] =
-    useState<connectorType>();
-
-  const initializingText = useTextAnimation(Boolean(connectingConnector), {
-    texts: [
-      "INITIALIZING",
-      "INITIALIZING .",
-      "INITIALIZING ..",
-      "INITIALIZING ...",
-    ],
-    interval: 250,
-  });
-
+  const { activate, account, active, connectingWallet, connectedWallet } =
+    useWeb3Wallet();
   const [show, setShow] = useConnectWalletModal();
 
   const onClose = useCallback(() => {
@@ -127,100 +108,33 @@ const WalletConnectModal: React.FC = () => {
   }, [setShow]);
 
   const handleConnect = useCallback(
-    async (type: connectorType) => {
-      setConnectingConnector(type);
-
-      // Disconnect wallet if currently connected already
-      if (active && connector instanceof WalletConnectConnector)
-        await connector.close();
-
-      // Connect wallet
-      switch (type) {
-        case "metamask":
-          await activateWeb3(injectedConnector);
-          break;
-        case "walletConnect":
-          await activateWeb3(getWalletConnectConnector());
-          break;
-        case "walletLink":
-          await activateWeb3(walletlinkConnector);
-      }
-      setConnectingConnector(undefined);
+    async (wallet: Wallet) => {
+      await activate(wallet);
     },
-    [activateWeb3, connector, active]
+    [activate]
   );
 
   useEffect(() => {
-    if (library && account) {
+    if (active && account) {
       onClose();
     }
-  }, [library, account, onClose]);
+  }, [active, account, onClose]);
 
-  const getConnectorStatus = useCallback(
-    (connectorType: connectorType) => {
-      // If connected, check if current button is connected
-      if (active) {
-        switch (connectorType) {
-          case "metamask":
-            if (connector instanceof InjectedConnector) return "connected";
-            break;
-          case "walletConnect":
-            if (connector instanceof WalletConnectConnector) return "connected";
-            break;
-          case "walletLink":
-            if (connector instanceof WalletLinkConnector) return "connected";
-        }
+  const getWalletStatus = useCallback(
+    (wallet: Wallet): ConnectorButtonStatus => {
+      if (connectedWallet === wallet) {
+        return "connected";
       }
 
-      // Check initializing status
-      switch (connectingConnector) {
-        case undefined:
-          return "normal";
-        case connectorType:
-          return "initializing";
+      if (!connectingWallet) {
+        return "normal";
+      } else if (connectingWallet === wallet) {
+        return "initializing";
       }
+
       return "neglected";
     },
-    [active, connector, connectingConnector]
-  );
-
-  const renderConnectorIcon = useCallback((type: connectorType) => {
-    switch (type) {
-      case "metamask":
-        return <MetamaskIcon height={40} width={40} />;
-      case "walletConnect":
-        return <WalletConnectIcon height={40} width={40} />;
-      case "walletLink":
-        return <StyledWalletLinkIcon height={40} width={40} />;
-    }
-  }, []);
-
-  const renderConnectorButton = useCallback(
-    (type: connectorType, title: string) => (
-      <ConnectorButton
-        role="button"
-        onClick={() => handleConnect(type)}
-        status={getConnectorStatus(type)}
-      >
-        {renderConnectorIcon(type)}
-        <ConnectorButtonText>
-          {connectingConnector === type ? initializingText : title}
-        </ConnectorButtonText>
-        {getConnectorStatus(type) === "connected" && (
-          <IndicatorContainer>
-            <Indicator connected={active} />
-          </IndicatorContainer>
-        )}
-      </ConnectorButton>
-    ),
-    [
-      active,
-      connectingConnector,
-      getConnectorStatus,
-      initializingText,
-      renderConnectorIcon,
-      handleConnect,
-    ]
+    [connectedWallet, connectingWallet]
   );
 
   return (
@@ -229,15 +143,19 @@ const WalletConnectModal: React.FC = () => {
         <BaseModalContentColumn marginTop={8}>
           <Title>CONNECT WALLET</Title>
         </BaseModalContentColumn>
-        <BaseModalContentColumn>
-          {renderConnectorButton("metamask", "METAMASK")}
-        </BaseModalContentColumn>
-        <BaseModalContentColumn marginTop={16}>
-          {renderConnectorButton("walletConnect", "WALLET CONNECT")}
-        </BaseModalContentColumn>
-        <BaseModalContentColumn marginTop={16}>
-          {renderConnectorButton("walletLink", "COINBASE WALLET")}
-        </BaseModalContentColumn>
+
+        {ETHEREUM_WALLETS.map((wallet: Wallet | string, index: number) => {
+          return (
+            <BaseModalContentColumn {...(index === 0 ? {} : { marginTop: 16 })}>
+              <WalletButton
+                wallet={wallet as Wallet}
+                status={getWalletStatus(wallet as Wallet)}
+                onConnect={() => handleConnect(wallet as Wallet)}
+              ></WalletButton>
+            </BaseModalContentColumn>
+          );
+        })}
+
         <BaseModalContentColumn marginTop={16}>
           <LearnMoreLink
             to="https://ethereum.org/en/wallets/"
@@ -252,6 +170,60 @@ const WalletConnectModal: React.FC = () => {
       </>
     </BasicModal>
   );
+};
+
+interface WalletButtonProps {
+  wallet: Wallet;
+  status: ConnectorButtonStatus;
+  onConnect: () => Promise<void>;
+}
+
+const WalletButton: React.FC<WalletButtonProps> = ({
+  wallet,
+  status,
+  onConnect,
+}) => {
+  const initializingText = useTextAnimation(
+    Boolean(status === "initializing"),
+    {
+      texts: [
+        "INITIALIZING",
+        "INITIALIZING .",
+        "INITIALIZING ..",
+        "INITIALIZING ...",
+      ],
+      interval: 250,
+    }
+  );
+
+  const title = WALLET_TITLES[wallet];
+
+  return (
+    <ConnectorButton role="button" onClick={onConnect} status={status}>
+      <WalletIcon wallet={wallet}></WalletIcon>
+      <ConnectorButtonText>
+        {status === "initializing" ? initializingText : title}
+      </ConnectorButtonText>
+      {status === "connected" && (
+        <IndicatorContainer>
+          <Indicator connected={true} />
+        </IndicatorContainer>
+      )}
+    </ConnectorButton>
+  );
+};
+
+const WalletIcon: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
+  switch (wallet) {
+    case EthereumWallet.Metamask:
+      return <MetamaskIcon height={40} width={40} />;
+    case EthereumWallet.WalletConnect:
+      return <WalletConnectIcon height={40} width={40} />;
+    case EthereumWallet.WalletLink:
+      return <StyledWalletLinkIcon height={40} width={40} />;
+    default:
+      return null;
+  }
 };
 
 export default WalletConnectModal;
