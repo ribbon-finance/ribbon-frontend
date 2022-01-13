@@ -42,7 +42,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
     activate: activateEth,
     account: accountEth,
     library: libraryEth,
-    deactivate: deactivateEth,
+    deactivate: _deactivateEth,
     connector: connectorEth,
   } = useWeb3ReactEthereum();
 
@@ -50,6 +50,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
     wallet: walletSolana,
     connected: connectedSolana,
     connect: connectSolana,
+    disconnect: disconnectSolana,
     connecting: connectingSolana,
     publicKey: publicKeySolana,
     select: selectWalletSolana,
@@ -121,24 +122,24 @@ export const useWeb3Wallet = (): Web3WalletData => {
     }
   }, [accountEth, activeEth, connectingWallet]);
 
-  const deactivate = useCallback(async () => {
+  const deactivateEth = useCallback(async () => {
     if (connectorEth) {
       if (connectorEth instanceof WalletConnectConnector) {
         await connectorEth.close();
       }
-      deactivateEth();
+      _deactivateEth();
       setConnectedWallet(undefined);
     }
-  }, [connectorEth, deactivateEth]);
+  }, [connectorEth, _deactivateEth]);
 
   if (chain === Chains.Solana) {
     return {
-      chainId: 99999,
+      chainId: undefined,
       active: connectedSolana,
       account: publicKeySolana && publicKeySolana.toString(),
       ethereumProvider: undefined,
       activate,
-      deactivate: () => Promise.resolve(),
+      deactivate: disconnectSolana,
       connectingWallet,
       connectedWallet,
     };
@@ -148,7 +149,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
     chainId: chainIdEth,
     active: activeEth,
     activate,
-    deactivate,
+    deactivate: deactivateEth,
     account: accountEth,
     ethereumProvider: libraryEth,
     connectingWallet,
