@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { useRouteMatch } from "react-router-dom";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
 
 import HeaderLogo from "./HeaderLogo";
 import colors from "shared/lib/designSystem/colors";
@@ -135,7 +135,7 @@ const MobileOnly = styled.div`
 `;
 
 const Header = () => {
-  const { active, chainId } = useWeb3React();
+  const { active, chainId } = useWeb3Wallet();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const product = useRouteMatch({ path: "/", exact: true });
   const portfolio = useRouteMatch({ path: "/portfolio", exact: true });

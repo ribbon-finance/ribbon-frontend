@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
 import styled from "styled-components";
 
 import BasicModal from "shared/lib/components/Common/BasicModal";
@@ -75,13 +75,13 @@ const NetworkSwitcherModal: React.FC<NetworkSwitcherModalProps> = ({
   const handleClose = useCallback(() => {
     onClose();
   }, [onClose]);
-  const { library } = useWeb3React();
+  const { ethereumProvider } = useWeb3Wallet();
   const isMobile = useScreenSize().width <= sizes.md;
 
   const handleSwitchChain = useCallback(
     async (chainId: number) => {
-      if (library && currentChainId !== chainId) {
-        await switchChains(library, chainId);
+      if (ethereumProvider && currentChainId !== chainId) {
+        await switchChains(ethereumProvider, chainId);
 
         // Give it a delay before closing, if not it will show a flash
         setTimeout(() => {
@@ -93,7 +93,7 @@ const NetworkSwitcherModal: React.FC<NetworkSwitcherModalProps> = ({
         }, 300);
       }
     },
-    [library, currentChainId, handleClose, isMobile]
+    [ethereumProvider, currentChainId, handleClose, isMobile]
   );
 
   return (

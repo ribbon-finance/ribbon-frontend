@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../../../hooks/useWeb3Wallet";
 
 import { ACTIONS, Steps, STEPS } from "./types";
 import useVault from "shared/lib/hooks/useVault";
@@ -48,7 +48,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   onChangeStep,
   skipToPreview = false,
 }) => {
-  const { library } = useWeb3React();
+  const { ethereumProvider } = useWeb3Wallet();
   const { vaultActionForm, resetActionForm, withdrawMetadata } =
     useVaultActionForm(vaultOption);
 
@@ -235,7 +235,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                          * Default slippage of 0.3%
                          */
                         const curvePool = getCurvePool(
-                          library,
+                          ethereumProvider,
                           LidoCurvePoolAddress
                         );
 
@@ -270,7 +270,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                          * Default slippage of 0.3%
                          */
                         const curvePool = getCurvePool(
-                          library,
+                          ethereumProvider,
                           LidoCurvePoolAddress
                         );
                         const minOut = await curvePool.get_dy(

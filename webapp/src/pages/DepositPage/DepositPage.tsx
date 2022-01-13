@@ -1,6 +1,6 @@
 import React, { ReactNode, useMemo } from "react";
 import { ethers } from "ethers";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
 
@@ -9,7 +9,10 @@ import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import PerformanceSection from "./PerformanceSection";
 import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
-import { formatSignificantDecimals, isPracticallyZero } from "shared/lib/utils/math";
+import {
+  formatSignificantDecimals,
+  isPracticallyZero,
+} from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
 import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
@@ -168,7 +171,7 @@ const ContractButtonTitle = styled(Title)`
 
 const DepositPage = () => {
   const { vaultOption, vaultVersion } = useVaultOption();
-  const { chainId } = useWeb3React();
+  const { chainId } = useWeb3Wallet();
   useRedirectOnSwitchChain(chainId);
   useRedirectOnWrongChain(vaultOption, chainId);
 
@@ -317,7 +320,7 @@ const HeroSection: React.FC<{
   variant: VaultVersion;
   v1Inactive?: boolean;
 }> = ({ depositCapBar, vaultOption, variant, v1Inactive }) => {
-  const { chainId } = useWeb3React();
+  const { chainId } = useWeb3Wallet();
   const color = getVaultColor(vaultOption);
 
   const logo = useMemo(() => {

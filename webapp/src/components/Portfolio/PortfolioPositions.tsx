@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
 import { BigNumber, ethers } from "ethers";
 import styled from "styled-components";
 
@@ -316,7 +316,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 };
 
 const PortfolioPositions = () => {
-  const { active } = useWeb3React();
+  const { active } = useWeb3Wallet();
   const {
     data: { v1: v1VaultAccounts, v2: v2VaultAccounts },
     loading,

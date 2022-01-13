@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../../hooks/useWeb3Wallet";
 import styled from "styled-components";
 import { formatUnits, parseUnits } from "@ethersproject/units";
 import { BigNumber } from "@ethersproject/bignumber";
@@ -127,7 +127,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     "warning" | "form" | "preview" | "walletAction" | "processing"
   >("warning");
   const [input, setInput] = useState("");
-  const { chainId } = useWeb3React();
+  const { chainId } = useWeb3Wallet();
   const { provider } = useWeb3Context();
   const decimals = getAssetDecimals(getAssets(vaultOption));
   const [error, setError] = useState<
@@ -472,7 +472,9 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                     rel="noreferrer noopener"
                     className="d-flex"
                   >
-                    <PrimaryText className="mb-2">View on {BLOCKCHAIN_EXPLORER_NAME[chainId]}</PrimaryText>
+                    <PrimaryText className="mb-2">
+                      View on {BLOCKCHAIN_EXPLORER_NAME[chainId]}
+                    </PrimaryText>
                   </BaseUnderlineLink>
                 )}
               </BaseModalContentColumn>
