@@ -8,6 +8,7 @@ import { CHAINS_TO_NATIVE_TOKENS } from "../../constants/constants";
 import NetworkSwitcherModal from "./NetworkSwitcherModal";
 import { Chains, useChain } from "../../hooks/chainContext";
 import WalletConnectModal from "../Wallet/WalletConnectModal";
+import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -30,8 +31,8 @@ const ButtonContainer = styled.div`
 
 const NetworkSwitcherButton = () => {
   const desktopMenuRef = useRef(null);
-  const [showModal, setShowModal] = useState(false);
   const [chain] = useChain();
+  const [, setShowModal] = useConnectWalletModal();
 
   const Logo =
     chain !== Chains.NotSelected
