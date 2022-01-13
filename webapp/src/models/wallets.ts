@@ -3,7 +3,6 @@ export enum EthereumWallet {
   WalletConnect = 2,
   WalletLink = 3,
 }
-console.log(Object.entries(EthereumWallet));
 export const ETHEREUM_WALLETS: EthereumWallet[] = Object.values(
   EthereumWallet
 ).filter((v) => !isNaN(Number(v))) as EthereumWallet[];
