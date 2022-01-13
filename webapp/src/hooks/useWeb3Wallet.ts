@@ -18,6 +18,7 @@ import {
   SolanaWallet,
   Wallet,
 } from "../models/wallets";
+import { CHAINID } from "shared/lib/utils/env";
 
 interface Web3WalletData {
   chainId: number | undefined;
@@ -31,7 +32,7 @@ interface Web3WalletData {
 }
 
 export const useWeb3Wallet = (): Web3WalletData => {
-  const [chain] = useChain();
+  const [chain, setChain] = useChain();
 
   const [connectingWallet, setConnectingWallet] = useState<Wallet>();
   const [connectedWallet, setConnectedWallet] = useState<Wallet>();
@@ -55,6 +56,31 @@ export const useWeb3Wallet = (): Web3WalletData => {
     publicKey: publicKeySolana,
     select: selectWalletSolana,
   } = useSolanaWallet();
+
+  // Chain switching effects
+  // `chain` is a completely different state from the chainId set by the wallet
+  // so we need to refresh it
+  useEffect(() => {
+    switch (chainIdEth) {
+      case CHAINID.ETH_KOVAN:
+      case CHAINID.ETH_MAINNET:
+        setChain(Chains.Ethereum);
+        break;
+      case CHAINID.AVAX_FUJI:
+      case CHAINID.AVAX_MAINNET:
+        setChain(Chains.Avalanche);
+        break;
+      default:
+        break;
+    }
+  }, [chainIdEth, setChain]);
+
+  // Connecting solana wallets
+  useEffect(() => {
+    if (connectedSolana) {
+      setChain(Chains.Solana);
+    }
+  }, [connectedSolana]);
 
   const activate = useCallback(
     async (wallet: Wallet) => {
