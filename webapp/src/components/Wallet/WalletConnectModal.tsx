@@ -1,229 +1,114 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 
-import { ConnectorButtonProps, connectorType } from "./types";
-import Indicator from "shared/lib/components/Indicator/Indicator";
-import {
-  BaseButton,
-  BaseLink,
-  BaseModalContentColumn,
-  BaseText,
-  Title,
-} from "shared/lib/designSystem";
+import { PrimaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import {
-  MetamaskIcon,
-  WalletConnectIcon,
-  WalletLinkIcon,
-} from "shared/lib/assets/icons/connector";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import { useChain } from "../../hooks/chainContext";
-import {
-  EthereumWallet,
-  ETHEREUM_WALLETS,
-  Wallet,
-  WALLET_TITLES,
-} from "../../models/wallets";
-import useWeb3Wallet from "../../hooks/useWeb3Wallet";
-import { ConnectorButtonStatus } from "./types";
+import ConnectWalletBody from "./ConnectWalletBody";
+import ConnectChainBody from "./ConnectChainBody";
 
-type WalletStatus = "connected" | "neglected" | "initializing";
-
-const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
-  background-color: ${colors.background.three};
+const ConnectStepsCircle = styled.div<{ active: boolean; color: string }>`
+  display: flex;
   align-items: center;
-  width: 100%;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  border-radius: 32px;
+  background: ${(props) => props.color}14;
 
-  &:hover {
-    opacity: ${theme.hover.opacity};
-  }
-
-  ${(props) => {
-    switch (props.status) {
-      case "connected":
-        return `
-          border: ${theme.border.width} ${theme.border.style} ${colors.green};
-        `;
-      case "neglected":
-        return `
-          opacity: 0.24;
-
-          &:hover {
-            opacity: 0.24;
-          }
-        `;
-      case "initializing":
-        return `
-          border: ${theme.border.width} ${theme.border.style} ${colors.green};
-
-          &:hover {
-            opacity: 1;
-          }
-        `;
-      default:
-        return ``;
-    }
-  }}
+  ${(props) =>
+    props.active
+      ? `
+          border: ${theme.border.width} ${theme.border.style} ${props.color};
+        `
+      : ``}
 `;
 
-const IndicatorContainer = styled.div`
-  margin-left: auto;
+const ConnectStepsDividerLine = styled.div<{ color: string }>`
+  width: 40px;
+  height: 1px;
+  background: ${(props) => props.color}3D;
+  margin-top: calc((32px - 1px) / 2);
 `;
 
-const ConnectorButtonText = styled(Title)`
-  margin-left: 16px;
-`;
-
-const LearnMoreLink = styled(BaseLink)`
-  &:hover {
-    opacity: ${theme.hover.opacity};
-  }
-`;
-
-const LearnMoreText = styled(BaseText)`
-  text-decoration: underline;
-`;
-
-const LearnMoreArrow = styled(BaseText)`
-  text-decoration: none;
-  margin-left: 5px;
-`;
-
-const StyledWalletLinkIcon = styled(WalletLinkIcon)`
-  path.outerBackground {
-    fill: #0000;
-  }
-`;
+type ConnectSteps = "chain" | "wallet";
 
 const WalletConnectModal: React.FC = () => {
-  const { activate, account, active, connectingWallet, connectedWallet } =
-    useWeb3Wallet();
   const [show, setShow] = useConnectWalletModal();
+  const [step, setStep] = useState<ConnectSteps>("chain");
 
   const onClose = useCallback(() => {
     setShow(false);
   }, [setShow]);
 
-  const handleConnect = useCallback(
-    async (wallet: Wallet) => {
-      await activate(wallet);
-    },
-    [activate]
-  );
-
-  useEffect(() => {
-    if (active && account) {
-      onClose();
-    }
-  }, [active, account, onClose]);
-
-  const getWalletStatus = useCallback(
-    (wallet: Wallet): ConnectorButtonStatus => {
-      if (connectedWallet === wallet) {
-        return "connected";
-      }
-
-      if (!connectingWallet) {
-        return "normal";
-      } else if (connectingWallet === wallet) {
-        return "initializing";
-      }
-
-      return "neglected";
-    },
-    [connectedWallet, connectingWallet]
-  );
-
   return (
-    <BasicModal show={show} onClose={onClose} height={354} maxWidth={500}>
+    <BasicModal show={show} onClose={onClose} height={450} maxWidth={500}>
       <>
-        <BaseModalContentColumn marginTop={8}>
-          <Title>CONNECT WALLET</Title>
-        </BaseModalContentColumn>
+        {step === "chain" ? (
+          <ConnectChainBody onClose={onClose}></ConnectChainBody>
+        ) : (
+          <ConnectWalletBody onClose={onClose}></ConnectWalletBody>
+        )}
 
-        {ETHEREUM_WALLETS.map((wallet: Wallet | string, index: number) => {
-          return (
-            <BaseModalContentColumn {...(index === 0 ? {} : { marginTop: 16 })}>
-              <WalletButton
-                wallet={wallet as Wallet}
-                status={getWalletStatus(wallet as Wallet)}
-                onConnect={() => handleConnect(wallet as Wallet)}
-              ></WalletButton>
-            </BaseModalContentColumn>
-          );
-        })}
-
-        <BaseModalContentColumn marginTop={16}>
-          <LearnMoreLink
-            to="https://ethereum.org/en/wallets/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-100"
-          >
-            <LearnMoreText>Learn more about wallets</LearnMoreText>
-            <LearnMoreArrow>&#8594;</LearnMoreArrow>
-          </LearnMoreLink>
-        </BaseModalContentColumn>
+        <ConnectStepsNav step={step}></ConnectStepsNav>
       </>
     </BasicModal>
   );
 };
 
-interface WalletButtonProps {
-  wallet: Wallet;
-  status: ConnectorButtonStatus;
-  onConnect: () => Promise<void>;
-}
-
-const WalletButton: React.FC<WalletButtonProps> = ({
-  wallet,
-  status,
-  onConnect,
-}) => {
-  const initializingText = useTextAnimation(
-    Boolean(status === "initializing"),
-    {
-      texts: [
-        "INITIALIZING",
-        "INITIALIZING .",
-        "INITIALIZING ..",
-        "INITIALIZING ...",
-      ],
-      interval: 250,
-    }
-  );
-
-  const title = WALLET_TITLES[wallet];
+const ConnectStepsNav: React.FC<{ step: ConnectSteps }> = ({ step }) => {
+  const isChainStep = step === "chain";
+  const color = colors.green;
 
   return (
-    <ConnectorButton role="button" onClick={onConnect} status={status}>
-      <WalletIcon wallet={wallet}></WalletIcon>
-      <ConnectorButtonText>
-        {status === "initializing" ? initializingText : title}
-      </ConnectorButtonText>
-      {status === "connected" && (
-        <IndicatorContainer>
-          <Indicator connected={true} />
-        </IndicatorContainer>
-      )}
-    </ConnectorButton>
+    <div className="d-flex flex-column align-items-center">
+      <div className="d-flex mt-2">
+        <div className="d-flex flex-column align-items-center">
+          <ConnectStepsCircle active={isChainStep} color={color}>
+            <Title
+              fontSize={14}
+              lineHeight={20}
+              color={isChainStep ? color : colors.quaternaryText}
+            >
+              1
+            </Title>
+          </ConnectStepsCircle>
+          <PrimaryText
+            fontSize={11}
+            lineHeight={12}
+            color={isChainStep ? color : colors.quaternaryText}
+            className="mt-2 text-center"
+            style={{ maxWidth: 60 }}
+          >
+            Select Blockchain
+          </PrimaryText>
+        </div>
+        <ConnectStepsDividerLine color={color} />
+        <div className="d-flex flex-column align-items-center">
+          <ConnectStepsCircle active={!isChainStep} color={color}>
+            <Title
+              fontSize={14}
+              lineHeight={20}
+              color={!isChainStep ? color : colors.quaternaryText}
+            >
+              2
+            </Title>
+          </ConnectStepsCircle>
+          <PrimaryText
+            fontSize={11}
+            lineHeight={12}
+            color={!isChainStep ? color : colors.quaternaryText}
+            className="mt-2 text-center mb-4"
+            style={{ maxWidth: 60 }}
+          >
+            Select Wallet
+          </PrimaryText>
+        </div>
+      </div>
+    </div>
   );
-};
-
-const WalletIcon: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
-  switch (wallet) {
-    case EthereumWallet.Metamask:
-      return <MetamaskIcon height={40} width={40} />;
-    case EthereumWallet.WalletConnect:
-      return <WalletConnectIcon height={40} width={40} />;
-    case EthereumWallet.WalletLink:
-      return <StyledWalletLinkIcon height={40} width={40} />;
-    default:
-      return null;
-  }
 };
 
 export default WalletConnectModal;
