@@ -4,6 +4,7 @@ import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import {
   EthereumWallet,
   ETHEREUM_WALLETS,
+  SolanaWallet,
   SOLANA_WALLETS,
   Wallet,
   WALLET_TITLES,
@@ -20,6 +21,8 @@ import {
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import {
   MetamaskIcon,
+  PhantomIcon,
+  SolflareIcon,
   WalletConnectIcon,
   WalletLinkIcon,
 } from "shared/lib/assets/icons/connector";
@@ -28,10 +31,22 @@ import colors from "shared/lib/designSystem/colors";
 import { Chains, useChain } from "../../hooks/chainContext";
 import theme from "shared/lib/designSystem/theme";
 
+const ModalContainer = styled.div`
+  padding: 10px 16px;
+`;
+
+const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32px;
+`;
+
 const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
   background-color: ${colors.background.three};
   align-items: center;
   width: 100%;
+  padding: 12px 16px;
 
   &:hover {
     opacity: ${theme.hover.opacity};
@@ -98,8 +113,7 @@ const ConnectWalletBody: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { activate, account, active, connectingWallet, connectedWallet } =
     useWeb3Wallet();
 
-  // const [chain] = useChain();
-  const chain = +Chains.Ethereum;
+  const [chain] = useChain();
 
   const handleConnect = useCallback(
     async (wallet: Wallet) => {
@@ -145,10 +159,10 @@ const ConnectWalletBody: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   }, [chain]);
 
   return (
-    <>
-      <BaseModalContentColumn marginTop={8}>
-        <Title>CONNECT WALLET</Title>
-      </BaseModalContentColumn>
+    <ModalContainer>
+      <TitleContainer>
+        <Title>Connect Wallet</Title>
+      </TitleContainer>
 
       {wallets.map((wallet: Wallet, index: number) => {
         return (
@@ -173,7 +187,7 @@ const ConnectWalletBody: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           <LearnMoreArrow>&#8594;</LearnMoreArrow>
         </LearnMoreLink>
       </BaseModalContentColumn>
-    </>
+    </ModalContainer>
   );
 };
 
@@ -228,6 +242,10 @@ const WalletIcon: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
       return <WalletConnectIcon height={40} width={40} />;
     case EthereumWallet.WalletLink:
       return <StyledWalletLinkIcon height={40} width={40} />;
+    case SolanaWallet.Phantom:
+      return <PhantomIcon height={40} width={40} />;
+    case SolanaWallet.Solflare:
+      return <SolflareIcon height={40} width={40} />;
     default:
       return null;
   }

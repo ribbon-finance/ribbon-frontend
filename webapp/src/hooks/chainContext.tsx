@@ -38,7 +38,7 @@ export const useChain: () => [Chains, (chain: Chains) => void] = () => {
       default:
         break;
     }
-  }, [ethChainId]);
+  }, [ethChainId, setChain]);
 
   return [chain, setChain];
 };
