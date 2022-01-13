@@ -11,7 +11,6 @@ import { setTimeout } from "timers";
 import { AnimatePresence, motion } from "framer";
 import Davatar from "@davatar/react";
 
-import Indicator from "shared/lib/components/Indicator/Indicator";
 import sizes from "shared/lib/designSystem/sizes";
 import { Title, BaseButton } from "shared/lib/designSystem";
 import { addConnectEvent } from "shared/lib/utils/analytics";
@@ -414,7 +413,6 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   const renderButtonContent = () =>
     active && account ? (
       <>
-        <Indicator connected={active} />
         <Avatar>
           <Davatar address={account} size={20} />
         </Avatar>
