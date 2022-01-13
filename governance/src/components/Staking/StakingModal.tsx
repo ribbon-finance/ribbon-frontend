@@ -3,7 +3,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import moment, { duration, Duration } from "moment";
 
 import BasicModal from "shared/lib/components/Common/BasicModal";
-import useInventizedVotingLockup from "../../hooks/useIncentivizedVotingLockup";
+import useVotingEscrow from "../../hooks/useVotingEscrow";
 import { useGovernanceGlobalState } from "../../store/store";
 import StakingModalExplainer from "./StakingModalExplainer";
 import StakingModalForm from "./StakingModalForm";
@@ -11,7 +11,7 @@ import StakingModalPreview from "./StakingModalPreview";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import StakingModalApprove from "./StakingModalApprove";
 import useERC20Token from "shared/lib/hooks/useERC20Token";
-import { IncentivizedVotingLockupAddress } from "../../constants/constants";
+import { VotingEscrowAddress } from "../../constants/constants";
 import ModalTransactionContent from "../Shared/ModalTransactionContent";
 
 const stakingModalModes = [
@@ -45,7 +45,7 @@ const StakingModal = () => {
     duration: Duration;
   }>({ amount: BigNumber.from(0), duration: duration() });
 
-  const lockupContract = useInventizedVotingLockup();
+  const votingEscrowContract = useVotingEscrow();
   const rbnTokenContract = useERC20Token("rbn");
 
   useEffect(() => {
@@ -92,10 +92,7 @@ const StakingModal = () => {
     try {
       const amount =
         "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-      const tx = await rbnTokenContract.approve(
-        IncentivizedVotingLockupAddress,
-        amount
-      );
+      const tx = await rbnTokenContract.approve(VotingEscrowAddress, amount);
       setStakingModalState((prev) => ({
         ...prev,
         pendingTransaction: { hash: tx.hash, type: "approve" },
@@ -119,7 +116,7 @@ const StakingModal = () => {
   const onStake = useCallback(async () => {
     setStepNum(stakingModesMap[stakingModalState.mode].indexOf("transaction"));
     try {
-      const tx = await lockupContract.createLock(
+      const tx = await votingEscrowContract.create_lock(
         stakingData.amount,
         moment().add(stakingData.duration).unix()
       );
@@ -139,7 +136,7 @@ const StakingModal = () => {
       setStepNum(stakingModesMap[stakingModalState.mode].indexOf("preview"));
     }
   }, [
-    lockupContract,
+    votingEscrowContract,
     provider,
     setStakingModalState,
     stakingData,

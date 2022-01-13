@@ -907,26 +907,26 @@ export const CalendarIcon: React.FC<SVGPropsWithColor> = ({
     <path
       d="M12.6667 2.66666H3.33333C2.59695 2.66666 2 3.26361 2 3.99999V13.3333C2 14.0697 2.59695 14.6667 3.33333 14.6667H12.6667C13.403 14.6667 14 14.0697 14 13.3333V3.99999C14 3.26361 13.403 2.66666 12.6667 2.66666Z"
       stroke={color || "white"}
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M10.6665 1.33334V4.00001"
       stroke={color || "white"}
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M5.3335 1.33334V4.00001"
       stroke={color || "white"}
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M2 6.66666H14"
       stroke={color || "white"}
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -945,15 +945,15 @@ export const WhitelistIcon: React.FC<SVGPropsWithColor> = ({
       d="M36 24H38C38.5304 24 39.0391 24.2107 39.4142 24.5858C39.7893 24.9609 40 25.4696 40 26V40C40 40.5304 39.7893 41.0391 39.4142 41.4142C39.0391 41.7893 38.5304 42 38 42H26C25.4696 42 24.9609 41.7893 24.5858 41.4142C24.2107 41.0391 24 40.5304 24 40V26C24 25.4696 24.2107 24.9609 24.5858 24.5858C24.9609 24.2107 25.4696 24 26 24H28"
       stroke={color || "white"}
       stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M35 22H29C28.4477 22 28 22.4477 28 23V25C28 25.5523 28.4477 26 29 26H35C35.5523 26 36 25.5523 36 25V23C36 22.4477 35.5523 22 35 22Z"
       stroke={color || "white"}
       stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );

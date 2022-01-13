@@ -9,7 +9,7 @@ import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContai
 import { ThemedLogo } from "shared/lib/assets/icons/logo";
 import { useGovernanceGlobalState } from "../../store/store";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
-import { IncentivizedVotingLockupAddress } from "../../constants/constants";
+import { VotingEscrowAddress } from "../../constants/constants";
 
 const FABContainer = styled.div`
   display: flex;
@@ -49,10 +49,7 @@ const FABOffsetContainer = styled.div`
 const StakingFAB = () => {
   const { active } = useWeb3React();
   const [, setStakingModal] = useGovernanceGlobalState("stakingModal");
-  const rbnAllowance = useTokenAllowance(
-    "rbn",
-    IncentivizedVotingLockupAddress
-  );
+  const rbnAllowance = useTokenAllowance("rbn", VotingEscrowAddress);
 
   return active ? (
     <>

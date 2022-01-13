@@ -207,7 +207,7 @@ const CalendarPicker: React.FC<CalendarPickerProps> = ({
                 return (
                   <>
                     {[...new Array(7)].map((_item, index) => (
-                      <CalendarBodyItem mode={mode}>
+                      <CalendarBodyItem key={index} mode={mode}>
                         <Title
                           fontSize={14}
                           lineHeight={16}
@@ -252,7 +252,7 @@ const CalendarPicker: React.FC<CalendarPickerProps> = ({
                       }
 
                       return (
-                        <CalendarBodyItem mode={mode}>
+                        <CalendarBodyItem key={index} mode={mode}>
                           <CalendarBodyButton
                             mode={mode}
                             active={active}
@@ -301,7 +301,7 @@ const CalendarPicker: React.FC<CalendarPickerProps> = ({
                       }
 
                       return (
-                        <CalendarBodyItem mode={mode}>
+                        <CalendarBodyItem key={index} mode={mode}>
                           <CalendarBodyButton
                             mode={mode}
                             active={Boolean(selectedDate?.isSame(month, "M"))}

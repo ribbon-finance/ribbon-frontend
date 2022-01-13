@@ -5,6 +5,10 @@ export const GovernanceChainID = isDevelopment()
   ? CHAINID.ETH_KOVAN
   : CHAINID.ETH_MAINNET;
 
-export const IncentivizedVotingLockupAddress = isDevelopment()
-  ? address.kovan.RBNIncentivisedVotingLockup
+export const VotingEscrowAddress = isDevelopment()
+  ? address.kovan.RBNVotingEscrow
+  : "";
+
+export const VotingEscrowDelegationProxyAddress = isDevelopment()
+  ? address.kovan.RBNVotingEscrowDelegationProxy
   : "";

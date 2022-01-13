@@ -93,6 +93,7 @@ const ModalTransactionContent: React.FC<ModalTransactionContentProps> = ({
           {Boolean(txhash) &&
             [...new Array(6)].map((_item, index) => (
               <FloatingBoxBar
+                key={index}
                 color={`${colors.red}${gapToAlpha(activeBarIndex - index)}`}
               />
             ))}
