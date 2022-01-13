@@ -166,7 +166,10 @@ const ConnectWalletBody: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
       {wallets.map((wallet: Wallet, index: number) => {
         return (
-          <BaseModalContentColumn {...(index === 0 ? {} : { marginTop: 16 })}>
+          <BaseModalContentColumn
+            key={wallet}
+            {...(index === 0 ? {} : { marginTop: 16 })}
+          >
             <WalletButton
               wallet={wallet as Wallet}
               status={getWalletStatus(wallet as Wallet)}
