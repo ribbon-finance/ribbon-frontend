@@ -16,6 +16,7 @@ import {
 
 interface ConnectChainBodyProps {
   onClose: () => void;
+  onSelectChain: (chain: Chains) => void;
 }
 
 const ModalContainer = styled.div`
@@ -68,8 +69,11 @@ const AssetCircle = styled(BaseIndicator)<{
   padding: 5px 5px;
 `;
 
-const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({ onClose }) => {
-  const [currentChain, setChain] = useChain();
+const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({
+  onClose,
+  onSelectChain,
+}) => {
+  const [currentChain] = useChain();
   const { chainId: currentChainId } = useWeb3Wallet();
   const handleClose = useCallback(() => {
     onClose();
@@ -97,9 +101,9 @@ const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({ onClose }) => {
 
   const handleSelectChain = useCallback(
     (chain: Chains) => {
-      setChain(chain);
+      onSelectChain(chain);
     },
-    [setChain]
+    [onSelectChain]
   );
 
   return (
