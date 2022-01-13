@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../../hooks/useWeb3Wallet";
 import styled from "styled-components";
 
 import {
@@ -47,7 +47,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
   stakingPoolData,
   vaultOption,
 }) => {
-  const { chainId } = useWeb3React();
+  const { chainId } = useWeb3Wallet();
   const { provider } = useWeb3Context();
   const { addPendingTransaction } = usePendingTransactions();
   const tokenContract = useERC20Token(vaultOption);
@@ -139,7 +139,9 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
                     rel="noreferrer noopener"
                     className="d-flex"
                   >
-                    <PrimaryText className="mb-2">View on {BLOCKCHAIN_EXPLORER_NAME[chainId]}</PrimaryText>
+                    <PrimaryText className="mb-2">
+                      View on {BLOCKCHAIN_EXPLORER_NAME[chainId]}
+                    </PrimaryText>
                   </BaseUnderlineLink>
                 )}
               </BaseModalContentColumn>

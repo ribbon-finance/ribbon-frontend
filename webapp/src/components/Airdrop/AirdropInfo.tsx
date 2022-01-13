@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
 import styled, { keyframes } from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -151,7 +151,7 @@ interface AirdropInfoProps {
 }
 
 const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
-  const { account } = useWeb3React();
+  const { account } = useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showBreakdown, setShowBreakdown] = useState(false);
   const airdrop = useAirdrop();

@@ -1,5 +1,5 @@
 import { BigNumber } from "@ethersproject/bignumber";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "./useWeb3Wallet";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 
@@ -12,7 +12,7 @@ import { StakingPoolAccount } from "shared/lib/models/staking";
 import { impersonateAddress } from "shared/lib/utils/development";
 
 const useStakingAccount = (vaults: VaultOptions[]) => {
-  const web3Context = useWeb3React();
+  const web3Context = useWeb3Wallet();
   const account = impersonateAddress ? impersonateAddress : web3Context.account;
   // TODO: Global state
   const [stakingAccounts, setStakingAccounts] = useState<{

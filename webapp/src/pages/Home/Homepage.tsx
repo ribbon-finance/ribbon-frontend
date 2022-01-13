@@ -1,4 +1,4 @@
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
 import React from "react";
 import { useHistory } from "react-router";
 
@@ -26,7 +26,7 @@ const ProductTitle = styled(Title)`
 
 const Homepage = () => {
   const history = useHistory();
-  const { library, chainId } = useWeb3React();
+  const { ethereumProvider, chainId } = useWeb3Wallet();
   const isMobile = useScreenSize().width <= sizes.md;
   return (
     <>
@@ -39,8 +39,11 @@ const Homepage = () => {
           linkURI={ANNOUNCEMENT.linkURI}
           onClick={() => {
             (async () => {
-              if (library) {
-                await switchChains(library, isProduction() ? CHAINID.AVAX_MAINNET : CHAINID.AVAX_FUJI);
+              if (ethereumProvider) {
+                await switchChains(
+                  ethereumProvider,
+                  isProduction() ? CHAINID.AVAX_MAINNET : CHAINID.AVAX_FUJI
+                );
                 // Mobile wallets normally need to do a hard refresh
                 if (isMobile) {
                   window.location.replace("/");

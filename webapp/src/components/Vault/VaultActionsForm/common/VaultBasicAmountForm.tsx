@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../../../hooks/useWeb3Wallet";
 import { BigNumber } from "ethers";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer";
@@ -155,7 +155,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
     handleMaxClick,
     vaultActionForm,
   } = useVaultActionForm(vaultOption);
-  const { active } = useWeb3React();
+  const { active } = useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showDepositAssetMenu, setShowDepositAssetMenu] = useState(false);
 
@@ -311,7 +311,8 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
             className="ml-auto"
             color={formExtra.error ? colors.red : undefined}
           >
-            {formExtra.amount && formatBigNumber(formExtra.amount, getAssetDecimals(asset))}{" "}
+            {formExtra.amount &&
+              formatBigNumber(formExtra.amount, getAssetDecimals(asset))}{" "}
             {formExtra.unitDisplay || getAssetDisplay(asset)}
           </Title>
         </div>

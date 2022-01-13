@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "./useWeb3Wallet";
 import { BigNumber } from "@ethersproject/bignumber";
 
 import { AirdropBreakDownType } from "../models/airdrop";
@@ -12,7 +12,7 @@ import { useGlobalState } from "shared/lib/store/store";
 import { CHAINID } from "shared/lib/utils/env";
 
 const useAirdrop = () => {
-  const web3Context = useWeb3React();
+  const web3Context = useWeb3Wallet();
   const { chainId } = web3Context;
   const account = impersonateAddress ? impersonateAddress : web3Context.account;
   const merkleDistributor = useMerkleDistributor();

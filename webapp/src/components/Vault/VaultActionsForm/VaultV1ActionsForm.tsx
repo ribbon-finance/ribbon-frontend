@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../../hooks/useWeb3Wallet";
 import { BigNumber, ethers } from "ethers";
 import moment from "moment";
 
@@ -256,7 +256,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
     vaultActionForm,
   } = useVaultActionForm(vaultOption);
   const { vaultAccounts } = useVaultAccounts("v1");
-  const { active, account } = useWeb3React();
+  const { active, account } = useWeb3Wallet();
 
   // state hooks
   const isLoadingData = status === "loading";

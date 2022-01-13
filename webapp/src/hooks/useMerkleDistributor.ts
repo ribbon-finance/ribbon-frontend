@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "./useWeb3Wallet";
 
 import deployments from "shared/lib/constants/v1Deployments.json";
 import { isDevelopment } from "shared/lib/utils/env";
@@ -7,10 +7,10 @@ import { MerkleDistributorFactory } from "shared/lib/codegen/MerkleDistributorFa
 import { MerkleDistributor } from "shared/lib/codegen";
 
 export const getMerkleDistributor = (
-  library: any
+  ethereumProvider: any
 ): MerkleDistributor | undefined => {
-  if (library) {
-    const provider = library.getSigner();
+  if (ethereumProvider) {
+    const provider = ethereumProvider.getSigner();
     return MerkleDistributorFactory.connect(
       isDevelopment()
         ? deployments.kovan.MerkleDistributor
@@ -23,12 +23,12 @@ export const getMerkleDistributor = (
 };
 
 const useMerkleDistributor = (): MerkleDistributor | undefined => {
-  const { library, active } = useWeb3React();
+  const { ethereumProvider, active } = useWeb3Wallet();
   const [contract, setContract] = useState<MerkleDistributor>();
 
   useEffect(() => {
-    setContract(getMerkleDistributor(library));
-  }, [library, active]);
+    setContract(getMerkleDistributor(ethereumProvider));
+  }, [ethereumProvider, active]);
 
   return contract;
 };

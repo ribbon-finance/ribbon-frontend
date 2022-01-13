@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
 
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import AirdropInfo from "./AirdropInfo";
@@ -19,7 +19,7 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
     "info"
   );
   const merkleDistributor = useMerkleDistributor();
-  const { account } = useWeb3React();
+  const { account } = useWeb3Wallet();
   const { provider } = useWeb3Context();
   const airdrop = useAirdrop();
   const { addPendingTransaction } = usePendingTransactions();

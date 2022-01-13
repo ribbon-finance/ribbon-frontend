@@ -7,7 +7,7 @@ import { getAssetLogo } from "shared/lib/utils/asset";
 import { CHAINID } from "shared/lib/utils/env";
 import { CHAINID_TO_NATIVE_TOKENS } from "shared/lib/constants/constants";
 import NetworkSwitcherModal from "./NetworkSwitcherModal";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -31,7 +31,7 @@ const ButtonContainer = styled.div`
 const NetworkSwitcherButton = () => {
   const desktopMenuRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
-  const { chainId } = useWeb3React();
+  const { chainId } = useWeb3Wallet();
 
   const Logo = chainId
     ? getAssetLogo(CHAINID_TO_NATIVE_TOKENS[chainId as CHAINID])
