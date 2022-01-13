@@ -181,7 +181,11 @@ const ConnectWalletBody: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
       <BaseModalContentColumn marginTop={16}>
         <LearnMoreLink
-          to="https://ethereum.org/en/wallets/"
+          to={
+            chain === Chains.Solana
+              ? "https://docs.solana.com/wallet-guide"
+              : "https://ethereum.org/en/wallets/"
+          }
           target="_blank"
           rel="noopener noreferrer"
           className="w-100"

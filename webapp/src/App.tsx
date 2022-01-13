@@ -25,7 +25,7 @@ function App() {
 
   return (
     <ChainContextProvider>
-      <SolanaWalletProvider wallets={SOLANA_WALLETS}>
+      <SolanaWalletProvider wallets={SOLANA_WALLETS} autoConnect>
         <Web3ContextProvider>
           <Web3ReactProvider getLibrary={getLibrary}>
             <PendingTransactionsContextProvider>
