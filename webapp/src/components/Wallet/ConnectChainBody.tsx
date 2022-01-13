@@ -74,30 +74,9 @@ const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({
   onSelectChain,
 }) => {
   const [currentChain] = useChain();
-  const { chainId: currentChainId } = useWeb3Wallet();
   const handleClose = useCallback(() => {
     onClose();
   }, [onClose]);
-  const { ethereumProvider } = useWeb3Wallet();
-  const isMobile = useScreenSize().width <= sizes.md;
-
-  const handleSwitchChain = useCallback(
-    async (chainId: number) => {
-      if (ethereumProvider && currentChainId !== chainId) {
-        await switchChains(ethereumProvider, chainId);
-
-        // Give it a delay before closing, if not it will show a flash
-        setTimeout(() => {
-          handleClose();
-          // Mobile wallets normally need to do a hard refresh
-          if (isMobile) {
-            window.location.replace("/");
-          }
-        }, 300);
-      }
-    },
-    [ethereumProvider, currentChainId, handleClose, isMobile]
-  );
 
   const handleSelectChain = useCallback(
     (chain: Chains) => {
@@ -112,7 +91,7 @@ const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({
         <Title>Select a blockchain</Title>
       </TitleContainer>
 
-      {ENABLED_CHAINS.map((chain) => (
+      {ENABLED_CHAINS.map((chain: Chains) => (
         <ChainButton
           key={chain}
           chain={chain}
