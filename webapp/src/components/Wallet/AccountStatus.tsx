@@ -9,8 +9,8 @@ import styled from "styled-components";
 import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
 import { setTimeout } from "timers";
 import { AnimatePresence, motion } from "framer";
+import Davatar from "@davatar/react";
 
-import Indicator from "shared/lib/components/Indicator/Indicator";
 import sizes from "shared/lib/designSystem/sizes";
 import { Title, BaseButton } from "shared/lib/designSystem";
 import { addConnectEvent } from "shared/lib/utils/analytics";
@@ -155,6 +155,10 @@ const WalletButtonText = styled(Title)<WalletStatusProps>`
 
     return `color: ${colors.green}`;
   }}
+`;
+
+const Avatar = styled.div`
+  margin-right: 8px;
 `;
 
 const InvestButton = styled(ActionButton)`
@@ -399,7 +403,9 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   const renderButtonContent = () =>
     active && account ? (
       <>
-        <Indicator connected={active} />
+        <Avatar>
+          <Davatar address={account} size={20} />
+        </Avatar>
         <WalletButtonText connected={active}>
           {ensData?.name || truncateAddress(account)}{" "}
           <ButtonArrow isOpen={isMenuOpen} />
