@@ -47,7 +47,7 @@ const colors = {
     AAVE: "#2EBAC6",
     WAVAX: "#E84142",
     PERP: "#00BC9A",
-    SOL: "#DC1FFF",
+    SOL: "#9945FF",
   },
 };
 

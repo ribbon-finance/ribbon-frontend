@@ -12,6 +12,7 @@ import { ANNOUNCEMENT, getVaultURI } from "../../constants/constants";
 import { switchChains } from "shared/lib/utils/chainSwitching";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { isAvaxNetwork } from "shared/lib/constants/constants";
+import { SolanaLogo } from "shared/lib/assets/icons/solAssets";
 
 const ProductTitle = styled(Title)`
   display: none;
@@ -31,6 +32,7 @@ const Homepage = () => {
   return (
     <>
       <ProductTitle>PRODUCT</ProductTitle>
+      <SolanaLogo height={28} width={28}></SolanaLogo>
       {ANNOUNCEMENT && chainId && !isAvaxNetwork(chainId) && (
         <Banner
           color={ANNOUNCEMENT.color}
