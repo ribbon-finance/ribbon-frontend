@@ -1,9 +1,14 @@
 import React, { useCallback } from "react";
 import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
 import styled from "styled-components";
+import { SolanaLogo } from "shared/lib/assets/icons/solAssets";
 
 import BasicModal from "shared/lib/components/Common/BasicModal";
-import { getAssetColor, getAssetLogo } from "shared/lib/utils/asset";
+import {
+  getAssetColor,
+  getAssetLogo,
+  LidoThemedETHLogo,
+} from "shared/lib/utils/asset";
 import { Title, Subtitle, BaseIndicator } from "shared/lib/designSystem";
 import { CHAINID, ENABLED_CHAINID } from "shared/lib/utils/env";
 import {
@@ -13,6 +18,12 @@ import {
 import { switchChains } from "shared/lib/utils/chainSwitching";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
+import { Chains, useChain } from "../../hooks/chainContext";
+import {
+  CHAINS_TO_NATIVE_TOKENS,
+  ENABLED_CHAINS,
+  READABLE_CHAIN_NAMES,
+} from "../../constants/constants";
 
 interface ConnectChainBodyProps {
   onClose: () => void;
@@ -69,6 +80,7 @@ const AssetCircle = styled(BaseIndicator)<{
 `;
 
 const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({ onClose }) => {
+  const [currentChain] = useChain();
   const { chainId: currentChainId } = useWeb3Wallet();
   const handleClose = useCallback(() => {
     onClose();
@@ -100,30 +112,42 @@ const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({ onClose }) => {
         <Title>Select a blockchain</Title>
       </TitleContainer>
 
-      {ENABLED_CHAINID.map((chainId: CHAINID) => {
-        const Logo = getAssetLogo(CHAINID_TO_NATIVE_TOKENS[chainId]);
-        const color = getAssetColor(CHAINID_TO_NATIVE_TOKENS[chainId]);
-        const active = currentChainId === chainId;
-
-        return (
-          <NetworkContainer
-            key={chainId}
-            onClick={() => handleSwitchChain(chainId)}
-            borderColor={color}
-            active={active}
-          >
-            <NetworkNameContainer>
-              <AssetCircle size={40} color={`${color}1F`}>
-                <Logo height={28} width={28}></Logo>
-              </AssetCircle>
-              <NetworkName>{READABLE_NETWORK_NAMES[chainId]}</NetworkName>
-            </NetworkNameContainer>
-
-            {active && <BaseIndicator size={8} color={color}></BaseIndicator>}
-          </NetworkContainer>
-        );
-      })}
+      {ENABLED_CHAINS.map((chain) => (
+        <ChainButton
+          key={chain}
+          chain={chain}
+          currentChain={currentChain as Chains}
+        ></ChainButton>
+      ))}
     </ModalContainer>
+  );
+};
+
+export const ChainButton: React.FC<{
+  chain: Chains;
+  currentChain: Chains;
+}> = ({ chain, currentChain }) => {
+  const Logo = getAssetLogo(CHAINS_TO_NATIVE_TOKENS[chain]);
+  const color = getAssetColor(CHAINS_TO_NATIVE_TOKENS[chain]);
+  const active = currentChain === chain;
+  console.log(chain, currentChain);
+
+  return (
+    <NetworkContainer
+      key={chain}
+      onClick={() => {}}
+      borderColor={color}
+      active={active}
+    >
+      <NetworkNameContainer>
+        <AssetCircle size={40} color={`transparent`}>
+          <Logo height={28} width={28}></Logo>
+        </AssetCircle>
+        <NetworkName>{READABLE_CHAIN_NAMES[chain]}</NetworkName>
+      </NetworkNameContainer>
+
+      {active && <BaseIndicator size={8} color={color}></BaseIndicator>}
+    </NetworkContainer>
   );
 };
 

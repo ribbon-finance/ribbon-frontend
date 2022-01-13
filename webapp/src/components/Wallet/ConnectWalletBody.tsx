@@ -98,7 +98,8 @@ const ConnectWalletBody: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { activate, account, active, connectingWallet, connectedWallet } =
     useWeb3Wallet();
 
-  const [chain] = useChain();
+  // const [chain] = useChain();
+  const chain = +Chains.Ethereum;
 
   const handleConnect = useCallback(
     async (wallet: Wallet) => {
@@ -149,7 +150,7 @@ const ConnectWalletBody: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         <Title>CONNECT WALLET</Title>
       </BaseModalContentColumn>
 
-      {wallets.map((wallet: Wallet | string, index: number) => {
+      {wallets.map((wallet: Wallet, index: number) => {
         return (
           <BaseModalContentColumn {...(index === 0 ? {} : { marginTop: 16 })}>
             <WalletButton

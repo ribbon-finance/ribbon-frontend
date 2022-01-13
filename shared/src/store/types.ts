@@ -11,6 +11,7 @@ export const AssetsList = [
   "stETH",
   "yvUSDC",
   "PERP",
+  "SOL",
 ] as const;
 export type Assets = typeof AssetsList[number];
 

@@ -33,6 +33,7 @@ const COINGECKO_CURRENCIES = {
   AAVE: "aave",
   WAVAX: "avalanche-2",
   PERP: "perpetual-protocol",
+  SOL: "solana",
 };
 
 export const useFetchAssetsPrice = (
