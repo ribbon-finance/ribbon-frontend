@@ -51,7 +51,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
     connected: connectedSolana,
     connect: connectSolana,
     connecting: connectingSolana,
-    publicKey: account,
+    publicKey: publicKeySolana,
     select: selectWalletSolana,
   } = useSolanaWallet();
 
@@ -89,30 +89,37 @@ export const useWeb3Wallet = (): Web3WalletData => {
   // This is specifically needed for solana
   // because you need to implicitly call connect() after you detect a connecting state
   useEffect(() => {
-    if (connectingWallet && isSolanaWallet(connectingWallet)) {
+    if (
+      !connectingSolana &&
+      connectingWallet &&
+      isSolanaWallet(connectingWallet)
+    ) {
       (async () => {
         try {
           await connectSolana();
           setConnectingWallet(undefined);
           setConnectedWallet(connectingWallet);
-        } catch (e) {
-          setConnectingWallet(undefined);
+        } catch (e: unknown) {
+          const error: { name: string } = e as { name: string };
+          if (error.name === "WalletConnectionError") {
+            setConnectingWallet(undefined);
+          }
         }
       })();
     }
-  }, [connectingWallet, connectSolana]);
+  }, [connectingWallet, connectingSolana, connectSolana]);
 
   // setting connected state for eth wallet
   useEffect(() => {
     if (
       connectingWallet &&
       isEthereumWallet(connectingWallet) &&
-      account &&
+      accountEth &&
       activeEth
     ) {
       setConnectedWallet(connectingWallet);
     }
-  }, [account, activeEth, connectingWallet]);
+  }, [accountEth, activeEth, connectingWallet]);
 
   const deactivate = useCallback(async () => {
     if (connectorEth) {
@@ -127,10 +134,10 @@ export const useWeb3Wallet = (): Web3WalletData => {
   if (chain === Chains.Solana) {
     return {
       chainId: 99999,
-      active: false,
-      account: undefined,
+      active: connectedSolana,
+      account: publicKeySolana && publicKeySolana.toString(),
       ethereumProvider: undefined,
-      activate: () => Promise.resolve(),
+      activate,
       deactivate: () => Promise.resolve(),
       connectingWallet,
       connectedWallet,
