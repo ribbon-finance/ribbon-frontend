@@ -63,7 +63,6 @@ export const useWeb3Wallet = (): Web3WalletData => {
         try {
           await activateEth(connector);
           setConnectingWallet(undefined);
-          setConnectedWallet(wallet);
         } catch (e) {
           setConnectedWallet(undefined);
         }
@@ -84,7 +83,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
         throw new Error("Wallet not supported");
       }
     },
-    [activateEth]
+    [activateEth, selectWalletSolana]
   );
 
   // This is specifically needed for solana
@@ -102,6 +101,18 @@ export const useWeb3Wallet = (): Web3WalletData => {
       })();
     }
   }, [connectingWallet, connectSolana]);
+
+  // setting connected state for eth wallet
+  useEffect(() => {
+    if (
+      connectingWallet &&
+      isEthereumWallet(connectingWallet) &&
+      account &&
+      activeEth
+    ) {
+      setConnectedWallet(connectingWallet);
+    }
+  }, [account, activeEth, connectingWallet]);
 
   const deactivate = useCallback(async () => {
     if (connectorEth) {
