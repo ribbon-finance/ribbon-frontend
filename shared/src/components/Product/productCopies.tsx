@@ -285,7 +285,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
             </HighlighText>
           )}
         />{" "}
-        strategy where it stakes its ETH deposits in {" "}
+        strategy where it stakes its ETH deposits in{" "}
         <TooltipExplanation
           title="LIDO"
           explanation="Lido empowers stakers to put their staked assets to use. "
@@ -296,7 +296,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
             </HighlighText>
           )}
         />{" "}
-        and then uses its {" "}
+        and then uses its{" "}
         <TooltipExplanation
           title="STETH"
           explanation="stETH is the deposit token that represents a user's share of the their ETH on the Ethereum beacon chain."
@@ -307,9 +307,10 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
             </HighlighText>
           )}
         />{" "}
-        to collateralize weekly out-of-money ETH call options.
-        The yield earned from both the covered call strategy and the ETH staking rewards are reinvested weekly,
-        effectively compounding the yields for depositors over time.
+        to collateralize weekly out-of-money ETH call options. The yield earned
+        from both the covered call strategy and the ETH staking rewards are
+        reinvested weekly, effectively compounding the yields for depositors
+        over time.
       </>
     ),
     vaultRisk: (
@@ -408,7 +409,8 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     tags: ["COVERED CALL"],
     strategy: (
       <>
-        The vault earns yield on its AVAX deposits by running a weekly automated AVAX{" "}
+        The vault earns yield on its AVAX deposits by running a weekly automated
+        AVAX{" "}
         <TooltipExplanation
           title="COVERED CALL"
           explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
@@ -482,7 +484,63 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
       </>
     ),
     liquidityMining: {
-      explanation: (<></>),
+      explanation: <></>,
+    },
+  },
+  "rSOL-THETA": {
+    title: "T-SOL-C",
+    subtitle: "SOL Covered Call",
+    description:
+      "Generates yield by running an automated SOL covered call strategy.",
+    tags: ["COVERED CALL"],
+    strategy: (
+      <>
+        The vault earns yield on its WBTC deposits by running a weekly automated
+        WBTC{" "}
+        <TooltipExplanation
+          title="COVERED CALL"
+          explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
+          learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              covered call
+            </HighlighText>
+          )}
+        />{" "}
+        strategy. The vault reinvests the yield earned back into the strategy,
+        effectively compounding the yields for depositors over time.
+      </>
+    ),
+    vaultRisk: (
+      <>
+        The primary risk for running this covered call strategy is that the
+        vault may incur a weekly loss in the case where the call options sold by
+        the vault expire{" "}
+        <TooltipExplanation
+          title="IN-THE-MONEY"
+          explanation="An SOL call option is in-the-money (ITM) if the strike price is below the market price of SOL."
+          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              in-the-money
+            </HighlighText>
+          )}
+        />{" "}
+        (meaning the price of SOL is above the strike price of the call options
+        minted by the vault).
+      </>
+    ),
+    liquidityMining: {
+      explanation: (
+        <>
+          rSOL-THETA is a token that represents SOL deposits in the SOL Theta
+          Vault (T-SOL-C).
+          <br />
+          <br />
+          Stake your rSOL-THETA tokens in the rSOL-THETA staking pool to earn
+          $RBN rewards.
+        </>
+      ),
     },
   },
 };

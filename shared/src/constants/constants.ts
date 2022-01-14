@@ -63,6 +63,7 @@ export const RetailVaultList = [
   "rETH-THETA",
   "rBTC-THETA",
   "rUSDC-ETH-P-THETA",
+  "rSOL-THETA",
 ] as const;
 
 export const TreasuryVaultList = ["rPERP-TSRY"] as const;
@@ -159,6 +160,13 @@ export const GAS_LIMITS: {
     },
   },
   "rPERP-TSRY": {
+    v2: {
+      deposit: 380000,
+      withdrawInstantly: 130000,
+      completeWithdraw: 300000,
+    },
+  },
+  "rSOL-THETA": {
     v2: {
       deposit: 380000,
       withdrawInstantly: 130000,
@@ -276,6 +284,16 @@ export const VaultAddressMap: {
         v2: v2deployment.mainnet.RibbonTreasuryVaultPERP,
         chainId: CHAINID.ETH_MAINNET,
       },
+  // FIXME: change with real addresses
+  "rSOL-THETA": isDevelopment()
+    ? {
+        v2: v2deployment.kovan.RibbonTreasuryVaultPERP,
+        chainId: CHAINID.ETH_KOVAN,
+      }
+    : {
+        v2: v2deployment.mainnet.RibbonTreasuryVaultPERP,
+        chainId: CHAINID.ETH_MAINNET,
+      },
 };
 
 /**
@@ -303,6 +321,7 @@ export const VaultNamesList = [
   "T-AAVE-C",
   "T-AVAX-C",
   "T-PERP-C",
+  "T-SOL-C",
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
@@ -314,6 +333,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-AAVE-C": "rAAVE-THETA",
   "T-AVAX-C": "rAVAX-THETA",
   "T-PERP-C": "rPERP-TSRY",
+  "T-SOL-C": "rSOL-THETA",
 };
 
 export const BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
@@ -363,6 +383,8 @@ export const getAssets = (vault: VaultOptions): Assets => {
       return "WAVAX";
     case "rPERP-TSRY":
       return "PERP";
+    case "rSOL-THETA":
+      return "SOL";
   }
 };
 
@@ -381,6 +403,8 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
       return "WAVAX";
     case "rPERP-TSRY":
       return "PERP";
+    case "rSOL-THETA":
+      return "SOL";
   }
 };
 
@@ -402,6 +426,8 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
       return "WAVAX";
     case "rPERP-TSRY":
       return "PERP";
+    case "rSOL-THETA":
+      return "SOL";
   }
 };
 
@@ -415,6 +441,7 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "rstETH-THETA": ["stETH", "WETH"],
     "ryvUSDC-ETH-P-THETA": ["USDC"],
     "rPERP-TSRY": ["PERP"],
+    "rSOL-THETA": ["SOL"],
   };
 
 export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
@@ -443,6 +470,10 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "rPERP-TSRY": BigNumber.from(100000000).mul(
     // Cap still not decided
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rPERP-TSRY")))
+  ),
+  // FIXME: change with real numbers
+  "rSOL-THETA": BigNumber.from(100000000).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rAVAX-THETA")))
   ),
 };
 
@@ -503,6 +534,13 @@ export const VaultFees: {
     },
   },
   "rPERP-TSRY": {
+    v2: {
+      managementFee: "2",
+      performanceFee: "10",
+    },
+  },
+  // FIXME: Change with real values
+  "rSOL-THETA": {
     v2: {
       managementFee: "2",
       performanceFee: "10",
