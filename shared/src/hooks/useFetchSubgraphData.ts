@@ -7,8 +7,6 @@ import {
   SUBGRAPHS_TO_QUERY,
   SubgraphVersion,
   SubgraphVersionList,
-  VaultVersion,
-  VaultVersionList,
 } from "../constants/constants";
 import {
   defaultSubgraphData,
@@ -73,7 +71,7 @@ const useFetchSubgraphData = () => {
         switch (version) {
           case "governance":
             query = `{
-              ${rbnTokenGraphql(account, version, chainId)}
+              ${rbnTokenGraphql(account, version)}
             }`;
             break;
           default:
@@ -89,7 +87,6 @@ const useFetchSubgraphData = () => {
                 }
                 ${vaultGraphql(version, chainId)}
                 ${vaultActivitiesGraphql(version, chainId)}
-                ${rbnTokenGraphql(account, version, chainId)}
                 ${vaultPriceHistoryGraphql(version, chainId)}
               }`.replaceAll(" ", "");
             break;

@@ -587,6 +587,7 @@ export const SUBGRAPHS_TO_QUERY: [SubgraphVersion, CHAINID][] = isDevelopment()
       ["v1", CHAINID.ETH_MAINNET],
       ["v2", CHAINID.ETH_MAINNET],
       ["v2", CHAINID.AVAX_MAINNET],
+      ["governance", CHAINID.ETH_MAINNET],
     ];
 
 export const RibbonTreasuryAddress = {

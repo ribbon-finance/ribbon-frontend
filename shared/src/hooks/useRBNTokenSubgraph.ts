@@ -1,11 +1,7 @@
 import { useContext } from "react";
 import { BigNumber } from "ethers";
 
-import {
-  isEthNetwork,
-  RibbonTokenAddress,
-  SubgraphVersion,
-} from "../constants/constants";
+import { RibbonTokenAddress, SubgraphVersion } from "../constants/constants";
 import {
   ERC20TokenSubgraphData,
   RBNTokenAccountSubgraphData,
@@ -14,37 +10,9 @@ import { SubgraphDataContext } from "./subgraphDataContext";
 
 export const rbnTokenGraphql = (
   account: string | null | undefined,
-  version: SubgraphVersion,
-  chainId: number
+  version: SubgraphVersion
 ) => {
   switch (version) {
-    case "v1":
-      if (isEthNetwork(chainId)) {
-        return account
-          ? `
-              rbnTokenAccount: erc20TokenAccount(id:"${RibbonTokenAddress.toLowerCase()}-${account.toLocaleLowerCase()}") {
-                token {
-                  name
-                  symbol
-                  numHolders
-                  holders
-                  totalSupply
-                }
-                balance
-                account
-              }
-            `
-          : `
-              rbnToken: erc20Token(id:"${RibbonTokenAddress.toLowerCase()}") {
-                name
-                symbol
-                numHolders
-                holders
-                totalSupply
-              }
-            `;
-      }
-      return "";
     case "governance":
       return account
         ? `
@@ -76,9 +44,6 @@ export const rbnTokenGraphql = (
   }
 };
 
-/**
- * Remark: We fetch rbn token subgraph in v1 on subgraph
- */
 export const resolveRBNTokenSubgraphResponse = (
   responses: { [version in SubgraphVersion]: any | undefined }
 ): ERC20TokenSubgraphData | undefined => {
@@ -101,26 +66,6 @@ export const resolveRBNTokenSubgraphResponse = (
     };
   }
 
-  /**
-   * @deprecated
-   * Secondary data soruce from V1 subgraph, phasing out so we can maintain only 1 subgraph
-   */
-  if (responses?.v1.rbnTokenAccount) {
-    return {
-      ...responses.v1.rbnTokenAccount.token,
-      totalSupply: BigNumber.from(
-        responses.v1.rbnTokenAccount.token.totalSupply
-      ),
-    };
-  }
-
-  if (responses?.v1.rbnToken) {
-    return {
-      ...responses.v1.rbnToken,
-      totalSupply: BigNumber.from(responses.v1.rbnToken.totalSupply),
-    };
-  }
-
   return undefined;
 };
 
@@ -136,23 +81,6 @@ export const resolveRBNTokenAccountSubgraphResponse = (
       lockedBalance: BigNumber.from(
         responses.governance.rbnaccount.lockedBalance
       ),
-    };
-  }
-
-  /**
-   * @deprecated
-   */
-  if (responses?.v1.rbnTokenAccount) {
-    return {
-      ...responses.v1.rbnTokenAccount,
-      totalBalance: BigNumber.from(responses.v1.rbnTokenAccount.balance),
-      lockedBalance: BigNumber.from(0),
-      token: {
-        ...responses.v1.rbnTokenAccount.token,
-        totalSupply: BigNumber.from(
-          responses.v1.rbnTokenAccount.token.totalSupply
-        ),
-      },
     };
   }
 
