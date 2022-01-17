@@ -1,6 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { useContext } from "react";
 import {
+  SubgraphVersion,
   VaultAddressMap,
   VaultList,
   VaultOptions,
@@ -36,7 +37,7 @@ export const vaultGraphql = (version: VaultVersion, chainId: number) =>
   }, "");
 
 export const resolveVaultsSubgraphResponse = (
-  responses: { [vault in VaultVersion]: any | undefined }
+  responses: { [version in SubgraphVersion]: any | undefined }
 ): VaultsSubgraphData =>
   Object.fromEntries(
     VaultVersionList.map((version) => [

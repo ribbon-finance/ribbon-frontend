@@ -103,8 +103,8 @@ const OverviewKPI = () => {
             lineHeight={24}
             className={`mt-4 ${width < sizes.lg ? "text-center" : ""}`}
           >
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam,
-            purus sit amet luctus venenatis, lectus
+            The Ribbon Finance Protocol is owned and governed by RBN holders via
+            fully on-chain governance
           </SecondaryText>
           <BaseUnderlineLink
             // TODO: Replace URL

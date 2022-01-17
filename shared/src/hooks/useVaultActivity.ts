@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { BigNumber } from "ethers";
 
 import {
+  SubgraphVersion,
   VaultAddressMap,
   VaultList,
   VaultOptions,
@@ -16,7 +17,10 @@ const getVaultActivityKey = (
   type: "shortPositions" | "optionTrades"
 ) => `vaultActivity_${type}_${vault.replace(/-/g, "")}`;
 
-export const vaultActivitiesGraphql = (version: VaultVersion, chainId: number) =>
+export const vaultActivitiesGraphql = (
+  version: VaultVersion,
+  chainId: number
+) =>
   VaultList.reduce((acc, vault) => {
     const vaultAddress = VaultAddressMap[vault][version]?.toLowerCase();
 
@@ -58,7 +62,7 @@ export const vaultActivitiesGraphql = (version: VaultVersion, chainId: number) =
   }, "");
 
 export const resolveVaultActivitiesSubgraphResponse = (
-  responses: { [vault in VaultVersion]: any | undefined }
+  responses: { [version in SubgraphVersion]: any | undefined }
 ): VaultActivitiesData =>
   Object.fromEntries(
     VaultVersionList.map((version) => [

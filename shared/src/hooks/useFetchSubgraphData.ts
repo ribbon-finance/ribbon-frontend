@@ -5,6 +5,8 @@ import { useWeb3React } from "@web3-react/core";
 import {
   getSubgraphURIForVersion,
   SUBGRAPHS_TO_QUERY,
+  SubgraphVersion,
+  SubgraphVersionList,
   VaultVersion,
   VaultVersionList,
 } from "../constants/constants";
@@ -66,10 +68,16 @@ const useFetchSubgraphData = () => {
 
     const allSubgraphResponses = await Promise.all(
       SUBGRAPHS_TO_QUERY.map(async ([version, chainId]) => {
-        const response = await axios.post(
-          getSubgraphURIForVersion(version, chainId),
-          {
-            query: `{
+        let query;
+
+        switch (version) {
+          case "governance":
+            query = `{
+              ${rbnTokenGraphql(account, version, chainId)}
+            }`;
+            break;
+          default:
+            query = `{
                 ${
                   account
                     ? `
@@ -83,7 +91,14 @@ const useFetchSubgraphData = () => {
                 ${vaultActivitiesGraphql(version, chainId)}
                 ${rbnTokenGraphql(account, version, chainId)}
                 ${vaultPriceHistoryGraphql(version, chainId)}
-              }`.replaceAll(" ", ""),
+              }`.replaceAll(" ", "");
+            break;
+        }
+
+        const response = await axios.post(
+          getSubgraphURIForVersion(version, chainId),
+          {
+            query,
           }
         );
         return [version, response.data.data];
@@ -92,9 +107,9 @@ const useFetchSubgraphData = () => {
 
     // Group all the responses of the same version together
     // Merge them without overriding the previous properties
-    const responsesAcrossVersions: Record<VaultVersion, any> =
+    const responsesAcrossVersions: Record<SubgraphVersion, any> =
       Object.fromEntries(
-        VaultVersionList.map((version: VaultVersion) => {
+        SubgraphVersionList.map((version: SubgraphVersion) => {
           const mergedResponse: any = {};
 
           const responsesForVersion = allSubgraphResponses
@@ -118,7 +133,9 @@ const useFetchSubgraphData = () => {
 
           return [version, mergedResponse];
         })
-      ) as Record<VaultVersion, any>;
+      ) as Record<SubgraphVersion, any>;
+
+    console.log(responsesAcrossVersions);
 
     setMulticallCounter((counter) => {
       if (counter === currentCounter) {

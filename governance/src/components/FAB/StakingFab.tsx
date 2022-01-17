@@ -11,6 +11,10 @@ import { useGovernanceGlobalState } from "../../store/store";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import { VotingEscrowAddress } from "../../constants/constants";
 import sizes from "shared/lib/designSystem/sizes";
+import { useAssetBalance } from "shared/lib/hooks/web3DataContext";
+import { formatBigNumber } from "shared/lib/utils/math";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 
 const FABContainer = styled.div`
   display: flex;
@@ -58,7 +62,12 @@ const FABOffsetContainer = styled.div`
 const StakingFAB = () => {
   const { active } = useWeb3React();
   const [, setStakingModal] = useGovernanceGlobalState("stakingModal");
+
   const rbnAllowance = useTokenAllowance("rbn", VotingEscrowAddress);
+  const { data: rbnAccount, loading: rbnAccountLoading } = useRBNTokenAccount();
+  const { balance: votingPower, loading: votingPowerLoading } =
+    useAssetBalance("veRBN");
+  const loadingText = useTextAnimation(votingPowerLoading || rbnAccountLoading);
 
   return active ? (
     <>
@@ -77,13 +86,13 @@ const StakingFAB = () => {
               letterSpacing={1}
               className="mt-1"
             >
-              5,000.00
+              {votingPowerLoading ? loadingText : formatBigNumber(votingPower)}
             </Title>
           </div>
         </div>
         <div className="d-flex flex-column justify-content-center ml-auto">
           <SecondaryText fontSize={10} lineHeight={16}>
-            Your Locked RBN
+            Staked / Locked RBN
           </SecondaryText>
           <Title
             fontSize={14}
@@ -91,7 +100,24 @@ const StakingFAB = () => {
             letterSpacing={1}
             className="mt-1"
           >
-            10,000.00
+            {rbnAccountLoading || !rbnAccount
+              ? loadingText
+              : formatBigNumber(rbnAccount.lockedBalance)}
+          </Title>
+        </div>
+        <div className="d-flex flex-column justify-content-center ml-auto">
+          <SecondaryText fontSize={10} lineHeight={16}>
+            Unstaked RBN
+          </SecondaryText>
+          <Title
+            fontSize={14}
+            lineHeight={16}
+            letterSpacing={1}
+            className="mt-1"
+          >
+            {rbnAccountLoading || !rbnAccount
+              ? loadingText
+              : formatBigNumber(rbnAccount.walletBalance)}
           </Title>
         </div>
         <div className="d-flex ml-auto">

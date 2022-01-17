@@ -1,75 +1,123 @@
 import { useContext } from "react";
 import { BigNumber } from "ethers";
 
-import { isEthNetwork, RibbonTokenAddress, VaultVersion } from "../constants/constants";
 import {
-  ERC20TokenAccountSubgraphData,
+  isEthNetwork,
+  RibbonTokenAddress,
+  SubgraphVersion,
+} from "../constants/constants";
+import {
   ERC20TokenSubgraphData,
+  RBNTokenAccountSubgraphData,
 } from "../models/token";
 import { SubgraphDataContext } from "./subgraphDataContext";
 
 export const rbnTokenGraphql = (
   account: string | null | undefined,
-  vaultVersion: VaultVersion,
-  chainId: number,
+  version: SubgraphVersion,
+  chainId: number
 ) => {
-  /**
-   * RBN Token graphql is only indexed in V1 subgraph
-   */
-  if (vaultVersion !== "v1" || !isEthNetwork(chainId)) {
-    return "";
+  switch (version) {
+    case "v1":
+      if (isEthNetwork(chainId)) {
+        return account
+          ? `
+              rbnTokenAccount: erc20TokenAccount(id:"${RibbonTokenAddress.toLowerCase()}-${account.toLocaleLowerCase()}") {
+                token {
+                  name
+                  symbol
+                  numHolders
+                  holders
+                  totalSupply
+                }
+                balance
+                account
+              }
+            `
+          : `
+              rbnToken: erc20Token(id:"${RibbonTokenAddress.toLowerCase()}") {
+                name
+                symbol
+                numHolders
+                holders
+                totalSupply
+              }
+            `;
+      }
+      return "";
+    case "governance":
+      return account
+        ? `
+              rbnaccount(id:"${account.toLocaleLowerCase()}") {
+                token {
+                  name
+                  symbol
+                  numHolders
+                  holders
+                  totalSupply
+                }
+                totalBalance
+                lockedBalance
+                lockStartTimestamp
+                lockEndTimestamp
+              }
+            `
+        : `
+              rbntoken(id:"${RibbonTokenAddress.toLowerCase()}") {
+                name
+                symbol
+                numHolders
+                holders
+                totalSupply
+              }
+            `;
+    default:
+      return "";
   }
-
-  return account
-    ? `
-        erc20TokenAccount(id:"${RibbonTokenAddress.toLowerCase()}-${account.toLocaleLowerCase()}") {
-          token {
-            name
-            symbol
-            numHolders
-            holders
-            totalSupply
-          }
-          balance
-          account
-        }
-      `
-    : `
-        erc20Token(id:"${RibbonTokenAddress.toLowerCase()}") {
-          name
-          symbol
-          numHolders
-          holders
-          totalSupply
-        }
-      `;
 };
 
 /**
  * Remark: We fetch rbn token subgraph in v1 on subgraph
  */
 export const resolveRBNTokenSubgraphResponse = (
-  responses: { [vault in VaultVersion]: any | undefined }
+  responses: { [version in SubgraphVersion]: any | undefined }
 ): ERC20TokenSubgraphData | undefined => {
   /**
-   * Check if we fetch erc20TokenAccount
-   */
-  if (responses?.v1.erc20TokenAccount) {
+   * We prioritize data source from governance subgraph
+   * */
+  if (responses?.governance.rbnaccount) {
     return {
-      ...responses.v1.erc20TokenAccount.token,
+      ...responses.governance.rbnaccount.token,
       totalSupply: BigNumber.from(
-        responses.v1.erc20TokenAccount.token.totalSupply
+        responses.governance.rbnaccount.token.totalSupply
       ),
     };
   }
 
-  /**
-   * Else, check if erc20Token is fetched instead
-   */
-  if (responses?.v1.erc20Token) {
+  if (responses?.governance.rbntoken) {
     return {
-      ...responses.v1.erc20Token,
-      totalSupply: BigNumber.from(responses.v1.erc20Token.totalSupply),
+      ...responses.governance.rbntoken,
+      totalSupply: BigNumber.from(responses.governance.rbntoken.totalSupply),
+    };
+  }
+
+  /**
+   * @deprecated
+   * Secondary data soruce from V1 subgraph, phasing out so we can maintain only 1 subgraph
+   */
+  if (responses?.v1.rbnTokenAccount) {
+    return {
+      ...responses.v1.rbnTokenAccount.token,
+      totalSupply: BigNumber.from(
+        responses.v1.rbnTokenAccount.token.totalSupply
+      ),
+    };
+  }
+
+  if (responses?.v1.rbnToken) {
+    return {
+      ...responses.v1.rbnToken,
+      totalSupply: BigNumber.from(responses.v1.rbnToken.totalSupply),
     };
   }
 
@@ -77,16 +125,32 @@ export const resolveRBNTokenSubgraphResponse = (
 };
 
 export const resolveRBNTokenAccountSubgraphResponse = (
-  responses: { [vault in VaultVersion]: any | undefined }
-): ERC20TokenAccountSubgraphData | undefined => {
-  if (responses?.v1.erc20TokenAccount) {
+  responses: { [version in SubgraphVersion]: any | undefined }
+): RBNTokenAccountSubgraphData | undefined => {
+  if (responses?.governance.rbnaccount) {
     return {
-      ...responses.v1.erc20TokenAccount,
-      balance: BigNumber.from(responses.v1.erc20TokenAccount.balance),
+      ...responses.governance.rbnaccount,
+      totalBalance: BigNumber.from(
+        responses.governance.rbnaccount.totalBalance
+      ),
+      lockedBalance: BigNumber.from(
+        responses.governance.rbnaccount.lockedBalance
+      ),
+    };
+  }
+
+  /**
+   * @deprecated
+   */
+  if (responses?.v1.rbnTokenAccount) {
+    return {
+      ...responses.v1.rbnTokenAccount,
+      totalBalance: BigNumber.from(responses.v1.rbnTokenAccount.balance),
+      lockedBalance: BigNumber.from(0),
       token: {
-        ...responses.v1.erc20TokenAccount.token,
+        ...responses.v1.rbnTokenAccount.token,
         totalSupply: BigNumber.from(
-          responses.v1.erc20TokenAccount.token.totalSupply
+          responses.v1.rbnTokenAccount.token.totalSupply
         ),
       },
     };
@@ -108,7 +172,14 @@ export const useRBNTokenAccount = () => {
   const contextData = useContext(SubgraphDataContext);
 
   return {
-    data: contextData.rbnTokenAccount,
+    data: contextData.rbnTokenAccount
+      ? {
+          ...contextData.rbnTokenAccount,
+          walletBalance: contextData.rbnTokenAccount.totalBalance.sub(
+            contextData.rbnTokenAccount.lockedBalance
+          ),
+        }
+      : undefined,
     loading: contextData.loading,
   };
 };

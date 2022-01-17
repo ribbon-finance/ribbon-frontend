@@ -62,6 +62,7 @@ const OverviewBarchart: React.FC<OverviewBarchartProps> = ({
           <div
             className="d-flex align-items-center justify-content-end"
             style={{ height: 48 }}
+            key={index}
           >
             <Subtitle
               key={index}

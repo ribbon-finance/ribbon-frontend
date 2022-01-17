@@ -9,6 +9,7 @@ import {
   isDevelopment,
   isProduction,
   isTreasury,
+  getGovernanceSubgraphURI,
 } from "../utils/env";
 import v1deployment from "./v1Deployments.json";
 import v2deployment from "./v2Deployments.json";
@@ -54,6 +55,9 @@ export const isNativeToken = (token: string): boolean =>
 export const VaultVersionList = ["v2", "v1"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">;
+
+export const SubgraphVersionList = [...VaultVersionList, "governance"] as const;
+export type SubgraphVersion = typeof SubgraphVersionList[number];
 
 export const RetailVaultList = [
   "rAAVE-THETA",
@@ -336,14 +340,16 @@ export const getEtherscanURI = (chainId: number) =>
   BLOCKCHAIN_EXPLORER_URI[chainId as CHAINID];
 
 export const getSubgraphURIForVersion = (
-  vaultVersion: VaultVersion,
+  version: SubgraphVersion,
   chainId: number
 ) => {
-  switch (vaultVersion) {
+  switch (version) {
     case "v1":
       return getSubgraphqlURI();
     case "v2":
       return SUBGRAPH_URI[chainId];
+    case "governance":
+      return getGovernanceSubgraphURI();
   }
 };
 
@@ -570,11 +576,12 @@ export const LidoOracleAddress = isDevelopment()
   ? ""
   : addresses.mainnet.lidoOracle;
 
-export const SUBGRAPHS_TO_QUERY: [VaultVersion, CHAINID][] = isDevelopment()
+export const SUBGRAPHS_TO_QUERY: [SubgraphVersion, CHAINID][] = isDevelopment()
   ? [
       ["v1", CHAINID.ETH_KOVAN],
       ["v2", CHAINID.ETH_KOVAN],
       ["v2", CHAINID.AVAX_FUJI],
+      ["governance", CHAINID.ETH_KOVAN],
     ]
   : [
       ["v1", CHAINID.ETH_MAINNET],

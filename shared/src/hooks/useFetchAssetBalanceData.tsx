@@ -50,12 +50,18 @@ const useFetchAssetBalanceData = (
 
     const responses = await Promise.all(
       AssetsList.map(async (asset) => {
-        const token = getERC20Token(library, asset.toLowerCase() as ERC20Token, chainId);
+        const token = getERC20Token(
+          library,
+          asset.toLowerCase() as ERC20Token,
+          chainId
+        );
         if (!token) {
           return { asset, balance: undefined };
         }
 
-        const balance = await(isNativeToken(asset) ? library.getBalance(account!) : token.balanceOf(account!));
+        const balance = await (isNativeToken(asset)
+          ? library.getBalance(account!)
+          : token.balanceOf(account!));
 
         return { asset, balance };
       })

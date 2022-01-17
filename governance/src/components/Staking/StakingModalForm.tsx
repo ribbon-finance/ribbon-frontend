@@ -108,7 +108,7 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
 
   const inputError = useMemo(() => {
     return Boolean(
-      amountInput && data && parseUnits(amountInput, 18).gt(data.balance)
+      amountInput && data && parseUnits(amountInput, 18).gt(data.walletBalance)
     );
   }, [amountInput, data]);
 
@@ -184,7 +184,7 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
           {active && (
             <BaseInputButton
               onClick={() =>
-                setAmountInput(data ? formatUnits(data.balance) : "0")
+                setAmountInput(data ? formatUnits(data.walletBalance) : "0")
               }
             >
               MAX
@@ -247,7 +247,7 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
             lineHeight={24}
             color={inputError ? colors.red : colors.primaryText}
           >
-            {data ? formatBigNumber(data.balance, 18) : "0"}
+            {data ? formatBigNumber(data.walletBalance, 18) : "0"}
           </Title>
         </div>
       </BaseModalContentColumn>

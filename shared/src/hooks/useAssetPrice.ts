@@ -36,6 +36,7 @@ const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   WAVAX: "avalanche-2",
   PERP: "perpetual-protocol",
   RBN: "ribbon-finance",
+  veRBN: undefined,
 };
 
 export const useFetchAssetsPrice = (

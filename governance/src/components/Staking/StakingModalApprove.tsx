@@ -58,7 +58,11 @@ const StakingModalApprove: React.FC<StakingModalApproveProps> = ({
       </BaseModalContentColumn>
       <BaseModalContentColumn>
         <SecondaryText>
-          Wallet Balance: {data ? formatBigNumber(data.balance) : 0} RBN
+          Wallet Balance:{" "}
+          {data
+            ? formatBigNumber(data.totalBalance.sub(data.walletBalance))
+            : 0}{" "}
+          RBN
         </SecondaryText>
       </BaseModalContentColumn>
     </>

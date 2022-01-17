@@ -2,6 +2,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { useContext } from "react";
 
 import {
+  SubgraphVersion,
   VaultAddressMap,
   VaultList,
   VaultOptions,
@@ -14,7 +15,10 @@ import { SubgraphDataContext } from "./subgraphDataContext";
 const getVaultPriceHistoryKey = (vault: VaultOptions) =>
   `vaultPriceHistory_${vault.replace(/-/g, "")}`;
 
-export const vaultPriceHistoryGraphql = (version: VaultVersion, chainId: number) => {
+export const vaultPriceHistoryGraphql = (
+  version: VaultVersion,
+  chainId: number
+) => {
   return VaultList.reduce((acc, vault) => {
     const vaultAddress = VaultAddressMap[vault][version]?.toLowerCase();
 
@@ -40,7 +44,7 @@ export const vaultPriceHistoryGraphql = (version: VaultVersion, chainId: number)
 };
 
 export const resolveVaultPriceHistorySubgraphResponse = (
-  responses: { [vault in VaultVersion]: any | undefined },
+  responses: { [version in SubgraphVersion]: any | undefined }
 ): VaultPriceHistoriesData =>
   Object.fromEntries(
     VaultVersionList.map((version) => [

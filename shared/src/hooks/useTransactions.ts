@@ -2,7 +2,11 @@ import { useContext } from "react";
 import { BigNumber } from "ethers";
 
 import { VaultTransaction } from "../models/vault";
-import { VaultVersion, VaultVersionList } from "../constants/constants";
+import {
+  SubgraphVersion,
+  VaultVersion,
+  VaultVersionList,
+} from "../constants/constants";
 import { SubgraphDataContext } from "./subgraphDataContext";
 
 export const transactionsGraphql = (account: string, version: VaultVersion) => `
@@ -26,7 +30,7 @@ export const transactionsGraphql = (account: string, version: VaultVersion) => `
 `;
 
 export const resolveTransactionsSubgraphResponse = (
-  responses: { [vault in VaultVersion]: any | undefined }
+  responses: { [version in SubgraphVersion]: any | undefined }
 ): VaultTransaction[] =>
   VaultVersionList.flatMap((version) =>
     responses[version] && responses[version].vaultTransactions

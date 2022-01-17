@@ -50,6 +50,7 @@ const colors = {
     WAVAX: "#E84142",
     PERP: "#00BC9A",
     RBN: "#fc0a54",
+    veRBN: "#fc0a54",
     LDO: "#00A3FF",
   },
 };

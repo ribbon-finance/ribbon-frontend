@@ -10,6 +10,7 @@ export const ERC20TokenList = [
   "ldo",
   "aave",
   "rbn",
+  "verbn",
   "wavax",
   "perp",
   ...RetailVaultList,
@@ -35,6 +36,8 @@ export const getERC20TokenDisplay = (asset: ERC20Token): string => {
       return "yvUSDC";
     case "steth":
       return "stETH";
+    case "verbn":
+      return "veRBN";
     default:
       return asset.toUpperCase();
   }

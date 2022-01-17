@@ -516,7 +516,7 @@ const PortfolioPerformance = () => {
     }
 
     return RBNTokenAccount
-      ? formatBigNumber(RBNTokenAccount.balance, 18)
+      ? formatBigNumber(RBNTokenAccount.totalBalance, 18)
       : "0.00";
   }, [RBNTokenAccount, active, animatedLoadingText, loading]);
 
