@@ -135,8 +135,6 @@ const useFetchSubgraphData = () => {
         })
       ) as Record<SubgraphVersion, any>;
 
-    console.log(responsesAcrossVersions);
-
     setMulticallCounter((counter) => {
       if (counter === currentCounter) {
         setData((prev) => ({

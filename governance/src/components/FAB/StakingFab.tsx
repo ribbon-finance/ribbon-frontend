@@ -100,9 +100,11 @@ const StakingFAB = () => {
             letterSpacing={1}
             className="mt-1"
           >
-            {rbnAccountLoading || !rbnAccount
+            {rbnAccountLoading
               ? loadingText
-              : formatBigNumber(rbnAccount.lockedBalance)}
+              : rbnAccount
+              ? formatBigNumber(rbnAccount.lockedBalance)
+              : "0"}
           </Title>
         </div>
         <div className="d-flex flex-column justify-content-center ml-auto">
@@ -115,9 +117,11 @@ const StakingFAB = () => {
             letterSpacing={1}
             className="mt-1"
           >
-            {rbnAccountLoading || !rbnAccount
+            {rbnAccountLoading
               ? loadingText
-              : formatBigNumber(rbnAccount.walletBalance)}
+              : rbnAccount
+              ? formatBigNumber(rbnAccount.walletBalance)
+              : "0"}
           </Title>
         </div>
         <div className="d-flex ml-auto">
