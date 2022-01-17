@@ -77,12 +77,15 @@ export const useWeb3Wallet = (): Web3WalletData => {
     }
   }, [chainIdEth, setChain]);
 
-  // Connecting solana wallets
+  // Auto-connecting solana wallets
   useEffect(() => {
-    if (connectedSolana) {
+    // If somehow we are already connected to Ethereum,
+    // we don't change the chain to Solana
+    if (connectedSolana && !chainIdEth && walletSolana) {
       setChain(Chains.Solana);
+      setConnectedWallet(getSolanaWallet(walletSolana.name));
     }
-  }, [connectedSolana, setChain]);
+  }, [connectedSolana, setChain, chainIdEth, walletSolana, setConnectedWallet]);
 
   const activate = useCallback(
     async (wallet: Wallet) => {
@@ -191,6 +194,19 @@ const ethereumConnectors: Record<EthereumWallet, () => AbstractConnector> = {
   [EthereumWallet.Metamask]: () => injectedConnector,
   [EthereumWallet.WalletConnect]: getWalletConnectConnector,
   [EthereumWallet.WalletLink]: () => walletlinkConnector,
+};
+
+const getSolanaWallet: (walletName: WalletName) => Wallet = (
+  walletName = WalletName.Phantom
+) => {
+  switch (walletName) {
+    case WalletName.Phantom:
+      return SolanaWallet.Phantom as Wallet;
+    case WalletName.Solflare:
+      return SolanaWallet.Solflare as Wallet;
+    default:
+      return SolanaWallet.Phantom as Wallet;
+  }
 };
 
 export default useWeb3Wallet;
