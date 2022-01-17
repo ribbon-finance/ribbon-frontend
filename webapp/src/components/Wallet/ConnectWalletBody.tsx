@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import {
@@ -30,6 +30,7 @@ import Indicator from "shared/lib/components/Indicator/Indicator";
 import colors from "shared/lib/designSystem/colors";
 import { Chains, useChain } from "../../hooks/chainContext";
 import theme from "shared/lib/designSystem/theme";
+import usePrevious from "../../hooks/usePrevious";
 
 const ModalContainer = styled.div`
   padding: 10px 16px;
@@ -110,8 +111,11 @@ const StyledWalletLinkIcon = styled(WalletLinkIcon)`
 `;
 
 const ConnectWalletBody: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-  const { activate, account, active, connectingWallet, connectedWallet } =
+  const { activate, active, connectingWallet, connectedWallet } =
     useWeb3Wallet();
+
+  // When the user wants to switch between wallets, we need to track that state
+  const prevConnectedWallet = usePrevious<Wallet | undefined>(connectedWallet);
 
   const [chain] = useChain();
 
@@ -123,10 +127,18 @@ const ConnectWalletBody: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   );
 
   useEffect(() => {
-    if (active && account) {
+    const changeWalletsOnSameChain =
+      prevConnectedWallet && prevConnectedWallet !== connectedWallet;
+
+    const connectNewWallet = !prevConnectedWallet && connectedWallet;
+
+    // console.log(prevConnectedWallet, connectedWallet);
+
+    // Change between different wallets on the same network
+    if (changeWalletsOnSameChain || connectNewWallet) {
       onClose();
     }
-  }, [active, account, onClose]);
+  }, [onClose, prevConnectedWallet, connectedWallet]);
 
   const getWalletStatus = useCallback(
     (wallet: Wallet): ConnectorButtonStatus => {

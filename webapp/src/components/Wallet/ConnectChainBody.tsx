@@ -111,7 +111,7 @@ export const ChainButton: React.FC<{
   const Logo = getAssetLogo(CHAINS_TO_NATIVE_TOKENS[chain]);
   const color = getAssetColor(CHAINS_TO_NATIVE_TOKENS[chain]);
   const active = currentChain === chain;
-  const logoSize = chain === Chains.Solana ? 20 : 28;
+  const logoSize = 28;
 
   return (
     <NetworkContainer
