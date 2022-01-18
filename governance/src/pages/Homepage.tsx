@@ -17,6 +17,7 @@ import RBNPriceOverview from "../components/Homepage/RBNPriceOverview";
 const FullscreenSection = styled(Container)<{ height: number }>`
   display: flex;
   align-items: center;
+  justify-content: center;
   position: relative;
   height: ${(props) => `${props.height}px` || "100vh"};
 `;
