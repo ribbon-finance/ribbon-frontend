@@ -364,7 +364,7 @@ const PreviewStep: React.FC<{
                 color={color}
               >
                 <PrimaryText fontSize={14} lineHeight={20} color={color}>
-                  {`You can complete your withdrawal any time after 10am UTC on
+                  {`You can complete your withdrawal any time after 12pm UTC on
                   Friday when your ${getAssetDisplay(
                     asset
                   )} will be removed from the vault’s
