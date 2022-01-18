@@ -6,9 +6,9 @@ export const calculateInitialveRBNAmount = (
   duration: Duration
 ) => {
   const totalDays = duration.asDays();
-  const daysInFourYears = 365 * 4;
+  const daysInTwoYears = 365 * 2;
 
   return rbnAmount
     .mul(BigNumber.from(totalDays))
-    .div(BigNumber.from(daysInFourYears));
+    .div(BigNumber.from(daysInTwoYears));
 };

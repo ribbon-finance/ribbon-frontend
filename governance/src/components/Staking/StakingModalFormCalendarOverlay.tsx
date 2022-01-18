@@ -81,7 +81,7 @@ const StakingModalFormCalendarOverlay: React.FC<StakingModalFormCalendarOverlayP
             <CalendarPicker
               initialValue={selectedDate}
               minDate={moment().add(7, "d")}
-              maxDate={moment().add(4 * 365, "d")}
+              maxDate={moment().add(2 * 365, "d")}
               onDateSelected={(date) => {
                 setSelectedDate(date);
               }}

@@ -31,7 +31,7 @@ const durationSelectOptions = [
   "3M",
   "6M",
   "1Y",
-  "4Y",
+  "2Y",
   "custom",
 ] as const;
 type DurationSelectOption = typeof durationSelectOptions[number];
@@ -53,8 +53,8 @@ const getDurationSelectOptionFromDuration = (
       return "6M";
     case 365:
       return "1Y";
-    case 4 * 365:
-      return "4Y";
+    case 2 * 365:
+      return "2Y";
     default:
       return "custom";
   }
@@ -107,7 +107,6 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
   );
 
   const inputError = useMemo(() => {
-    console.log(data);
     return Boolean(
       amountInput &&
         parseUnits(amountInput, 18).gt(
@@ -140,8 +139,8 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
       case "1Y":
         setStakeDuration(duration(365, "d"));
         break;
-      case "4Y":
-        setStakeDuration(duration(4 * 365, "d"));
+      case "2Y":
+        setStakeDuration(duration(2 * 365, "d"));
         break;
       case "custom":
         setStakeDuration(duration());

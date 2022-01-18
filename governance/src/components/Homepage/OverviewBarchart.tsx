@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import { Subtitle, Title } from "shared/lib/designSystem";
@@ -24,37 +24,38 @@ interface OverviewBarchartProps {
   maxValue: number;
 }
 
+const OverviewBarchartBar: React.FC<{
+  value: number;
+  formattedValue: string;
+  color: string;
+  maxBarWidth: number;
+  maxValue: number;
+}> = ({ value, formattedValue, color, maxBarWidth, maxValue }) => (
+  <div className="d-flex align-items-center">
+    <Bar color={color} width={maxBarWidth * (value / maxValue)}>
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+          height: "100%",
+          width: maxBarWidth * 0.01,
+          maxWidth: "100%",
+          background: color,
+        }}
+      />
+    </Bar>
+    <Title color={color} fontSize={14} lineHeight={20} className="ml-4">
+      {formattedValue}
+    </Title>
+  </div>
+);
+
 const OverviewBarchart: React.FC<OverviewBarchartProps> = ({
   items,
   maxBarWidth,
   maxValue,
 }) => {
-  const renderBarchartBar = useCallback(
-    (key: string, value: number, formattedValue: string, color: string) => {
-      return (
-        <div key={key} className="d-flex align-items-center">
-          <Bar color={color} width={maxBarWidth * (value / maxValue)}>
-            <div
-              style={{
-                position: "absolute",
-                top: 0,
-                right: 0,
-                height: "100%",
-                width: maxBarWidth * 0.01,
-                maxWidth: "100%",
-                background: color,
-              }}
-            />
-          </Bar>
-          <Title color={color} fontSize={14} lineHeight={20} className="ml-4">
-            {formattedValue}
-          </Title>
-        </div>
-      );
-    },
-    [maxBarWidth, maxValue]
-  );
-
   return (
     <>
       <div className="d-flex flex-column">
@@ -80,14 +81,16 @@ const OverviewBarchart: React.FC<OverviewBarchartProps> = ({
 
       {/* Right bar */}
       <div className="d-flex flex-column ml-4">
-        {items.map((item, index) =>
-          renderBarchartBar(
-            index.toString(),
-            item.value,
-            item.formattedValue,
-            item.color
-          )
-        )}
+        {items.map((item, index) => (
+          <OverviewBarchartBar
+            key={index}
+            value={item.value}
+            formattedValue={item.formattedValue}
+            color={item.color}
+            maxBarWidth={maxBarWidth}
+            maxValue={maxValue}
+          />
+        ))}
       </div>
     </>
   );
