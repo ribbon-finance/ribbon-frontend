@@ -103,7 +103,7 @@ const DelegateLeaderButton: React.FC<DelegateLeaderButtonProps> = ({
           {data?.labelName || truncateAddress(address)}
         </Title>
         <SecondaryText fontSize={12} lineHeight={16}>
-          {formatAmount(parseFloat(formatUnits(votes, 18)))} votes &#9899;{" "}
+          {formatAmount(parseFloat(formatUnits(votes, 18)))} votes &#8226;{" "}
           {parseFloat((weight * 100).toFixed(2))}% weight
         </SecondaryText>
       </div>
