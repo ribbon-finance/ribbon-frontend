@@ -185,11 +185,11 @@ const Header = () => {
             "/profile",
             Boolean(useRouteMatch({ path: "/profile", exact: true }))
           )}
-          {renderLinkItem(
+          {/* {renderLinkItem(
             "VOTING",
             "/voting",
             Boolean(useRouteMatch({ path: "/voting", exact: true }))
-          )}
+          )} */}
           {renderLinkItem(
             "FAQS",
             "/faqs",
@@ -214,19 +214,19 @@ const Header = () => {
           }}
         >
           {renderLinkItem(
-            "PRODUCTS",
+            "OVERVIEW",
             "/",
             Boolean(useRouteMatch({ path: "/", exact: true }))
           )}
           {renderLinkItem(
-            "PORTFOLIO",
-            "/portfolio",
-            Boolean(useRouteMatch({ path: "/portfolio", exact: true }))
+            "PROFILE",
+            "/profile",
+            Boolean(useRouteMatch({ path: "/profile", exact: true }))
           )}
           {renderLinkItem(
-            "STAKING",
-            "/staking",
-            Boolean(useRouteMatch({ path: "/staking", exact: true }))
+            "FAQS",
+            "/faqs",
+            Boolean(useRouteMatch({ path: "/faqs", exact: true }))
           )}
           {renderLinkItem(
             "DISCORD",
