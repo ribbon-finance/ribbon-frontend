@@ -90,9 +90,9 @@ const StakingModalFormCalendarOverlay: React.FC<StakingModalFormCalendarOverlayP
 
           <BaseModalWarning color={colors.green}>
             <SecondaryText color={colors.green} className="w-100 text-center">
-              &#9899; Minimum lockup period: 1 week
+              &#8226; Minimum lockup period: 1 week
               <br />
-              &#9899; Maximum lockup period: 4 years
+              &#8226; Maximum lockup period: 4 years
             </SecondaryText>
           </BaseModalWarning>
 
