@@ -48,7 +48,8 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "lint": "eslint --fix --ext .tsx,.ts ."
+    "lint": "eslint --fix --ext .tsx,.ts .",
+    "deploy:staging": "cur=$(git rev-parse --abbrev-ref HEAD) && git checkout staging && git reset --hard $cur && git push -f origin staging && git checkout $cur"
   },
   "eslintConfig": {
     "extends": [

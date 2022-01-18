@@ -165,7 +165,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
             <>
               Once user funds have been used in the vault’s weekly strategy they
               cannot be withdrawn until the vault closes it’s position the
-              following Friday at 10am UTC.
+              following Friday at 12pm UTC.
               <br />
               <br />
               Users can withdraw their funds instantly during the weekly

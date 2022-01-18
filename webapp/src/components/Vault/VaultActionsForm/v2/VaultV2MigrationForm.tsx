@@ -124,7 +124,7 @@ const VaultV2MigrationForm: React.FC<VaultV2MigrationFormProps> = ({
         return (
           <SecondaryText className="mt-3 text-center" color={colors.red}>
             Migrating your {getAssetDisplay(asset)} from V1 to V2 will breach
-            the weekly migration limit. Please try again on Friday at 10am UTC
+            the weekly migration limit. Please try again on Friday at 12pm UTC
             when the weekly migration limit is reset.
           </SecondaryText>
         );
