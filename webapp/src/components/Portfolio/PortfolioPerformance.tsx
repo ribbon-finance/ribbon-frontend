@@ -20,8 +20,9 @@ import {
 import useBalances from "shared/lib/hooks/useBalances";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
-import PerformanceChart from "../PerformanceChart/PerformanceChart";
-import { HoverInfo } from "../PerformanceChart/types";
+import PerformanceChart, {
+  HoverInfo,
+} from "shared/lib/components/Common/PerformanceChart";
 import sizes from "shared/lib/designSystem/sizes";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { getAssets } from "shared/lib/constants/constants";
@@ -515,7 +516,7 @@ const PortfolioPerformance = () => {
     }
 
     return RBNTokenAccount
-      ? formatBigNumber(RBNTokenAccount.balance, 18)
+      ? formatBigNumber(RBNTokenAccount.totalBalance, 18)
       : "0.00";
   }, [RBNTokenAccount, active, animatedLoadingText, loading]);
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import BasicModal from "shared/lib/components/Common/BasicModal";
@@ -7,6 +7,7 @@ import { BaseModalContentColumn } from "shared/lib/designSystem";
 import { DelegateIcon } from "shared/lib/assets/icons/icons";
 import DelegationModalOption from "./DelegationModalOption";
 import DelegationModalForm from "./DelegationModalForm";
+import useVotingEscrowDelegationProxy from "../../../hooks/useVotingEscrowDelegationProxy";
 
 const LogoContainer = styled.div`
   display: flex;
@@ -27,6 +28,7 @@ interface DelegationModalProps {
 }
 
 const DelegationModal: React.FC<DelegationModalProps> = ({ show, onClose }) => {
+  const delegationProxyContract = useVotingEscrowDelegationProxy();
   const [mode, setMode] = useState<DelegationModalMode>(
     delegationModalModes[0]
   );
@@ -37,12 +39,33 @@ const DelegationModal: React.FC<DelegationModalProps> = ({ show, onClose }) => {
     }
   }, [show]);
 
+  const onDelegateSelf = useCallback(async () => {
+    try {
+      await delegationProxyContract.kill_delegation();
+      onClose();
+    } catch (err) {
+      setMode("options");
+    }
+  }, [delegationProxyContract, onClose]);
+
+  const onDelegateAddress = useCallback(
+    async (address: string) => {
+      try {
+        await delegationProxyContract.set_delegation(address);
+        onClose();
+      } catch (err) {
+        setMode("form");
+      }
+    },
+    [delegationProxyContract, onClose]
+  );
+
   const modalContent = useMemo(() => {
     switch (mode) {
       case "options":
         return (
           <DelegationModalOption
-            onDelegateSelf={() => onClose()}
+            onDelegateSelf={onDelegateSelf}
             onDelegateOthers={() => setMode("form")}
           />
         );
@@ -50,11 +73,11 @@ const DelegationModal: React.FC<DelegationModalProps> = ({ show, onClose }) => {
         return (
           <DelegationModalForm
             onBack={() => setMode("options")}
-            onDelegate={() => onClose()}
+            onDelegate={onDelegateAddress}
           />
         );
     }
-  }, [mode, onClose]);
+  }, [mode, onDelegateAddress, onDelegateSelf]);
 
   return (
     <BasicModal show={show} height={583} onClose={onClose}>

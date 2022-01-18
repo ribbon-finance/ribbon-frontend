@@ -406,7 +406,7 @@ export const PlayIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
   </svg>
 );
 
-export const BellIcon: React.FC<SVGProps> = (props) => (
+export const BellIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
   <svg
     viewBox="0 0 16 16"
     fill="none"
@@ -415,14 +415,14 @@ export const BellIcon: React.FC<SVGProps> = (props) => (
   >
     <path
       d="M12 5.33325C12 4.27239 11.5786 3.25497 10.8284 2.50482C10.0783 1.75468 9.06087 1.33325 8 1.33325C6.93913 1.33325 5.92172 1.75468 5.17157 2.50482C4.42143 3.25497 4 4.27239 4 5.33325C4 9.99992 2 11.3333 2 11.3333H14C14 11.3333 12 9.99992 12 5.33325Z"
-      stroke="white"
+      stroke={color || "white"}
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path
       d="M9.15335 14C9.03614 14.2021 8.86791 14.3698 8.6655 14.4864C8.46309 14.6029 8.2336 14.6643 8.00001 14.6643C7.76643 14.6643 7.53694 14.6029 7.33453 14.4864C7.13212 14.3698 6.96389 14.2021 6.84668 14"
-      stroke="white"
+      stroke={color || "white"}
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -515,6 +515,422 @@ export const DelegateIcon: React.FC<SVGPropsWithColor> = ({
   </svg>
 );
 
+export const VotingPowerIcon: React.FC<SVGPropsWithColor> = ({
+  color,
+  ...props
+}) => (
+  <svg
+    width="96"
+    height="100"
+    viewBox="0 0 96 100"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <g opacity="0.08" filter="url(#filter0_d_747_7680)">
+      <rect
+        x="14"
+        y="92"
+        width="6.5"
+        height="64"
+        transform="rotate(-90 14 92)"
+        fill={color || "#FC0A54"}
+      />
+    </g>
+    <g opacity="0.16" filter="url(#filter1_d_747_7680)">
+      <rect
+        x="14"
+        y="81.5"
+        width="6.5"
+        height="64"
+        transform="rotate(-90 14 81.5)"
+        fill={color || "#FC0A54"}
+      />
+    </g>
+    <g opacity="0.32" filter="url(#filter2_d_747_7680)">
+      <rect
+        x="14"
+        y="71"
+        width="6.5"
+        height="64"
+        transform="rotate(-90 14 71)"
+        fill={color || "#FC0A54"}
+      />
+    </g>
+    <g opacity="0.48" filter="url(#filter3_d_747_7680)">
+      <rect
+        x="14"
+        y="60.5"
+        width="6.5"
+        height="64"
+        transform="rotate(-90 14 60.5)"
+        fill={color || "#FC0A54"}
+      />
+    </g>
+    <g opacity="0.56" filter="url(#filter4_d_747_7680)">
+      <rect
+        x="14"
+        y="50"
+        width="6.5"
+        height="64"
+        transform="rotate(-90 14 50)"
+        fill={color || "#FC0A54"}
+      />
+    </g>
+    <g opacity="0.72" filter="url(#filter5_d_747_7680)">
+      <rect
+        x="14"
+        y="39.5"
+        width="6.5"
+        height="64"
+        transform="rotate(-90 14 39.5)"
+        fill={color || "#FC0A54"}
+      />
+    </g>
+    <g opacity="0.88" filter="url(#filter6_d_747_7680)">
+      <rect
+        x="14"
+        y="29"
+        width="6.5"
+        height="64"
+        transform="rotate(-90 14 29)"
+        fill={color || "#FC0A54"}
+      />
+    </g>
+    <g filter="url(#filter7_d_747_7680)">
+      <rect
+        x="14"
+        y="18.5"
+        width="6.5"
+        height="64"
+        transform="rotate(-90 14 18.5)"
+        fill={color || "#FC0A54"}
+      />
+    </g>
+    <defs>
+      <filter
+        id="filter0_d_747_7680"
+        x="0"
+        y="73.5"
+        width="96"
+        height="38.5"
+        filterUnits="userSpaceOnUse"
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feOffset dx="2" dy="4" />
+        <feGaussianBlur stdDeviation="8" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.988235 0 0 0 0 0.0392157 0 0 0 0 0.329412 0 0 0 1 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_747_7680"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_747_7680"
+          result="shape"
+        />
+      </filter>
+      <filter
+        id="filter1_d_747_7680"
+        x="0"
+        y="63"
+        width="96"
+        height="38.5"
+        filterUnits="userSpaceOnUse"
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feOffset dx="2" dy="4" />
+        <feGaussianBlur stdDeviation="8" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.988235 0 0 0 0 0.0392157 0 0 0 0 0.329412 0 0 0 1 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_747_7680"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_747_7680"
+          result="shape"
+        />
+      </filter>
+      <filter
+        id="filter2_d_747_7680"
+        x="0"
+        y="52.5"
+        width="96"
+        height="38.5"
+        filterUnits="userSpaceOnUse"
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feOffset dx="2" dy="4" />
+        <feGaussianBlur stdDeviation="8" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.988235 0 0 0 0 0.0392157 0 0 0 0 0.329412 0 0 0 1 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_747_7680"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_747_7680"
+          result="shape"
+        />
+      </filter>
+      <filter
+        id="filter3_d_747_7680"
+        x="0"
+        y="42"
+        width="96"
+        height="38.5"
+        filterUnits="userSpaceOnUse"
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feOffset dx="2" dy="4" />
+        <feGaussianBlur stdDeviation="8" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.988235 0 0 0 0 0.0392157 0 0 0 0 0.329412 0 0 0 1 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_747_7680"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_747_7680"
+          result="shape"
+        />
+      </filter>
+      <filter
+        id="filter4_d_747_7680"
+        x="0"
+        y="31.5"
+        width="96"
+        height="38.5"
+        filterUnits="userSpaceOnUse"
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feOffset dx="2" dy="4" />
+        <feGaussianBlur stdDeviation="8" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.988235 0 0 0 0 0.0392157 0 0 0 0 0.329412 0 0 0 1 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_747_7680"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_747_7680"
+          result="shape"
+        />
+      </filter>
+      <filter
+        id="filter5_d_747_7680"
+        x="0"
+        y="21"
+        width="96"
+        height="38.5"
+        filterUnits="userSpaceOnUse"
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feOffset dx="2" dy="4" />
+        <feGaussianBlur stdDeviation="8" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.988235 0 0 0 0 0.0392157 0 0 0 0 0.329412 0 0 0 1 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_747_7680"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_747_7680"
+          result="shape"
+        />
+      </filter>
+      <filter
+        id="filter6_d_747_7680"
+        x="0"
+        y="10.5"
+        width="96"
+        height="38.5"
+        filterUnits="userSpaceOnUse"
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feOffset dx="2" dy="4" />
+        <feGaussianBlur stdDeviation="8" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.988235 0 0 0 0 0.0392157 0 0 0 0 0.329412 0 0 0 1 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_747_7680"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_747_7680"
+          result="shape"
+        />
+      </filter>
+      <filter
+        id="filter7_d_747_7680"
+        x="0"
+        y="0"
+        width="96"
+        height="38.5"
+        filterUnits="userSpaceOnUse"
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feOffset dx="2" dy="4" />
+        <feGaussianBlur stdDeviation="8" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.988235 0 0 0 0 0.0392157 0 0 0 0 0.329412 0 0 0 1 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_747_7680"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_747_7680"
+          result="shape"
+        />
+      </filter>
+    </defs>
+  </svg>
+);
+
+export const CalendarIcon: React.FC<SVGPropsWithColor> = ({
+  color,
+  ...props
+}) => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M12.6667 2.66666H3.33333C2.59695 2.66666 2 3.26361 2 3.99999V13.3333C2 14.0697 2.59695 14.6667 3.33333 14.6667H12.6667C13.403 14.6667 14 14.0697 14 13.3333V3.99999C14 3.26361 13.403 2.66666 12.6667 2.66666Z"
+      stroke={color || "white"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M10.6665 1.33334V4.00001"
+      stroke={color || "white"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M5.3335 1.33334V4.00001"
+      stroke={color || "white"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M2 6.66666H14"
+      stroke={color || "white"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 export const WhitelistIcon: React.FC<SVGPropsWithColor> = ({
   color,
   ...props
@@ -524,20 +940,20 @@ export const WhitelistIcon: React.FC<SVGPropsWithColor> = ({
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-  > 
-  <path 
-    d="M36 24H38C38.5304 24 39.0391 24.2107 39.4142 24.5858C39.7893 24.9609 40 25.4696 40 26V40C40 40.5304 39.7893 41.0391 39.4142 41.4142C39.0391 41.7893 38.5304 42 38 42H26C25.4696 42 24.9609 41.7893 24.5858 41.4142C24.2107 41.0391 24 40.5304 24 40V26C24 25.4696 24.2107 24.9609 24.5858 24.5858C24.9609 24.2107 25.4696 24 26 24H28" 
-    stroke={color || "white"}
-    stroke-width="2" 
-    stroke-linecap="round" 
-    stroke-linejoin="round"
-  />
-  <path 
-    d="M35 22H29C28.4477 22 28 22.4477 28 23V25C28 25.5523 28.4477 26 29 26H35C35.5523 26 36 25.5523 36 25V23C36 22.4477 35.5523 22 35 22Z" 
-    stroke={color || "white"}
-    stroke-width="2" 
-    stroke-linecap="round" 
-    stroke-linejoin="round"
-  />
+  >
+    <path
+      d="M36 24H38C38.5304 24 39.0391 24.2107 39.4142 24.5858C39.7893 24.9609 40 25.4696 40 26V40C40 40.5304 39.7893 41.0391 39.4142 41.4142C39.0391 41.7893 38.5304 42 38 42H26C25.4696 42 24.9609 41.7893 24.5858 41.4142C24.2107 41.0391 24 40.5304 24 40V26C24 25.4696 24.2107 24.9609 24.5858 24.5858C24.9609 24.2107 25.4696 24 26 24H28"
+      stroke={color || "white"}
+      stroke-width="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M35 22H29C28.4477 22 28 22.4477 28 23V25C28 25.5523 28.4477 26 29 26H35C35.5523 26 36 25.5523 36 25V23C36 22.4477 35.5523 22 35 22Z"
+      stroke={color || "white"}
+      stroke-width="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );

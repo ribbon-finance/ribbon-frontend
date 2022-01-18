@@ -65,11 +65,9 @@ export const RetailVaultList = [
   "rUSDC-ETH-P-THETA",
 ] as const;
 
-export const TreasuryVaultList = [
-  "rPERP-TSRY"
-] as const;
+export const TreasuryVaultList = ["rPERP-TSRY"] as const;
 
-const AllVaultOptions = [...RetailVaultList, ...TreasuryVaultList]
+const AllVaultOptions = [...RetailVaultList, ...TreasuryVaultList];
 
 export type VaultOptions = typeof AllVaultOptions[number];
 const ProdExcludeVault: VaultOptions[] = [];
@@ -82,8 +80,8 @@ const PutThetaVault: VaultOptions[] = [
 export const VaultList: VaultOptions[] = isTreasury()
   ? TreasuryVaultList
   : !isProduction()
-    ? RetailVaultList
-    : RetailVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
+  ? RetailVaultList
+  : RetailVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
 
 export const GAS_LIMITS: {
   [vault in VaultOptions]: Partial<{
@@ -304,7 +302,7 @@ export const VaultNamesList = [
   "T-stETH-C",
   "T-AAVE-C",
   "T-AVAX-C",
-  "T-PERP-C"
+  "T-PERP-C",
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
@@ -338,10 +336,10 @@ export const getEtherscanURI = (chainId: number) =>
   BLOCKCHAIN_EXPLORER_URI[chainId as CHAINID];
 
 export const getSubgraphURIForVersion = (
-  vaultVersion: VaultVersion,
+  version: VaultVersion,
   chainId: number
 ) => {
-  switch (vaultVersion) {
+  switch (version) {
     case "v1":
       return getSubgraphqlURI();
     case "v2":
@@ -416,7 +414,7 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "rUSDC-ETH-P-THETA": ["USDC"],
     "rstETH-THETA": ["stETH", "WETH"],
     "ryvUSDC-ETH-P-THETA": ["USDC"],
-    "rPERP-TSRY": ["PERP"]
+    "rPERP-TSRY": ["PERP"],
   };
 
 export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
@@ -442,7 +440,8 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "rAVAX-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rAVAX-THETA")))
   ),
-  "rPERP-TSRY": BigNumber.from(100000000).mul( // Cap still not decided
+  "rPERP-TSRY": BigNumber.from(100000000).mul(
+    // Cap still not decided
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rPERP-TSRY")))
   ),
 };
@@ -582,3 +581,8 @@ export const SUBGRAPHS_TO_QUERY: [VaultVersion, CHAINID][] = isDevelopment()
       ["v2", CHAINID.ETH_MAINNET],
       ["v2", CHAINID.AVAX_MAINNET],
     ];
+
+export const RibbonTreasuryAddress = {
+  [CHAINID.ETH_KOVAN]: "0xD380980791079Bd50736Ffe577b8D57A3C196ccd",
+  [CHAINID.ETH_MAINNET]: "0xDAEada3d210D2f45874724BeEa03C7d4BBD41674",
+};

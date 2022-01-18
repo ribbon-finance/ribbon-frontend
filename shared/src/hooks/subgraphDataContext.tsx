@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import {
-  ERC20TokenAccountSubgraphData,
   ERC20TokenSubgraphData,
+  RBNTokenAccountSubgraphData,
 } from "../models/token";
 
 import {
@@ -13,21 +13,36 @@ import {
   VaultAccountsData,
   VaultActivitiesData,
   VaultTransaction,
+  VaultsSubgraphData,
+  defaultVaultsData,
 } from "../models/vault";
-import useFetchSubgraphData from "./useFetchSubgraphData";
+import useFetchGovernanceSubgraphData from "./useFetchGovernanceSubgraphData";
+import useFetchVaultSubgraphData from "./useFetchVaultSubgraphData";
 
-export type SubgraphDataContextType = {
+export type VaultSubgraphDataContextType = {
+  vaults: VaultsSubgraphData;
   vaultAccounts: VaultAccountsData;
   vaultActivities: VaultActivitiesData;
   balances: BalanceUpdate[];
   transactions: VaultTransaction[];
-  rbnToken?: ERC20TokenSubgraphData;
-  rbnTokenAccount?: ERC20TokenAccountSubgraphData;
+
   vaultPriceHistory: VaultPriceHistoriesData;
   loading: boolean;
 };
 
-export const defaultSubgraphData = {
+export type GovernanceSubgraphDataContextType = {
+  rbnToken?: ERC20TokenSubgraphData;
+  rbnTokenAccount?: RBNTokenAccountSubgraphData;
+  loading: boolean;
+};
+
+export type SubgraphDataContextType = {
+  vaultSubgraphData: VaultSubgraphDataContextType;
+  governanceSubgraphData: GovernanceSubgraphDataContextType;
+};
+
+export const defaultVaultSubgraphData: VaultSubgraphDataContextType = {
+  vaults: defaultVaultsData,
   vaultAccounts: defaultVaultAccountsData,
   vaultActivities: defaultVaultActivitiesData,
   balances: [],
@@ -36,15 +51,30 @@ export const defaultSubgraphData = {
   loading: true,
 };
 
-export const SubgraphDataContext =
-  React.createContext<SubgraphDataContextType>(defaultSubgraphData);
+export const defaultGovernanceSubgraphData: GovernanceSubgraphDataContextType =
+  {
+    loading: true,
+  };
+
+export const SubgraphDataContext = React.createContext<SubgraphDataContextType>(
+  {
+    vaultSubgraphData: defaultVaultSubgraphData,
+    governanceSubgraphData: defaultGovernanceSubgraphData,
+  }
+);
 
 export const SubgraphDataContextProvider: React.FC<{ children: ReactElement }> =
   ({ children }) => {
-    const subgraphData = useFetchSubgraphData();
+    const vaultSubgraphData = useFetchVaultSubgraphData();
+    const governanceSubgraphData = useFetchGovernanceSubgraphData();
 
     return (
-      <SubgraphDataContext.Provider value={subgraphData}>
+      <SubgraphDataContext.Provider
+        value={{
+          vaultSubgraphData,
+          governanceSubgraphData,
+        }}
+      >
         {children}
       </SubgraphDataContext.Provider>
     );

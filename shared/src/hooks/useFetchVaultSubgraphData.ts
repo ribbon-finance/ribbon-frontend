@@ -9,8 +9,8 @@ import {
   VaultVersionList,
 } from "../constants/constants";
 import {
-  defaultSubgraphData,
-  SubgraphDataContextType,
+  defaultVaultSubgraphData,
+  VaultSubgraphDataContextType,
 } from "./subgraphDataContext";
 import { impersonateAddress } from "../utils/development";
 import {
@@ -31,21 +31,18 @@ import {
   vaultActivitiesGraphql,
 } from "./useVaultActivity";
 import {
-  rbnTokenGraphql,
-  resolveRBNTokenAccountSubgraphResponse,
-  resolveRBNTokenSubgraphResponse,
-} from "./useRBNTokenSubgraph";
-import {
   vaultPriceHistoryGraphql,
   resolveVaultPriceHistorySubgraphResponse,
 } from "./useVaultPerformanceUpdate";
 import { usePendingTransactions } from "./pendingTransactionsContext";
+import { resolveVaultsSubgraphResponse, vaultGraphql } from "./useVaultData";
 
-const useFetchSubgraphData = () => {
+const useFetchVaultSubgraphData = () => {
   const { account: acc } = useWeb3React();
   const account = impersonateAddress || acc;
-  const [data, setData] =
-    useState<SubgraphDataContextType>(defaultSubgraphData);
+  const [data, setData] = useState<VaultSubgraphDataContextType>(
+    defaultVaultSubgraphData
+  );
   const { transactionsCounter } = usePendingTransactions();
   const [, setMulticallCounter] = useState(0);
 
@@ -60,6 +57,12 @@ const useFetchSubgraphData = () => {
     let currentCounter: number;
     setMulticallCounter((counter) => {
       currentCounter = counter + 1;
+
+      setData((prev) => ({
+        ...prev,
+        loading: true,
+      }));
+
       return currentCounter;
     });
 
@@ -78,8 +81,8 @@ const useFetchSubgraphData = () => {
                       `
                     : ""
                 }
+                ${vaultGraphql(version, chainId)}
                 ${vaultActivitiesGraphql(version, chainId)}
-                ${rbnTokenGraphql(account, version, chainId)}
                 ${vaultPriceHistoryGraphql(version, chainId)}
               }`.replaceAll(" ", ""),
           }
@@ -122,6 +125,7 @@ const useFetchSubgraphData = () => {
       if (counter === currentCounter) {
         setData((prev) => ({
           ...prev,
+          vaults: resolveVaultsSubgraphResponse(responsesAcrossVersions),
           vaultAccounts: resolveVaultAccountsSubgraphResponse(
             responsesAcrossVersions
           ),
@@ -130,10 +134,6 @@ const useFetchSubgraphData = () => {
           ),
           balances: resolveBalancesSubgraphResponse(responsesAcrossVersions),
           transactions: resolveTransactionsSubgraphResponse(
-            responsesAcrossVersions
-          ),
-          rbnToken: resolveRBNTokenSubgraphResponse(responsesAcrossVersions),
-          rbnTokenAccount: resolveRBNTokenAccountSubgraphResponse(
             responsesAcrossVersions
           ),
           vaultPriceHistory: resolveVaultPriceHistorySubgraphResponse(
@@ -158,4 +158,4 @@ const useFetchSubgraphData = () => {
   return data;
 };
 
-export default useFetchSubgraphData;
+export default useFetchVaultSubgraphData;

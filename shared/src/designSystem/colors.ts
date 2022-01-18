@@ -10,6 +10,7 @@ const colors = {
   borderLight: "#2E2C2B",
   text: "#ACACAB",
   primaryText: "#FFFFFF",
+  tertiaryText: "#787883",
   quaternaryText: "#3F3F44",
   green: "#16CEB9",
   red: "#fc0a54",
@@ -44,9 +45,13 @@ const colors = {
     USDC: "#3E73C4",
     yvUSDC: "#3E73C4",
     stETH: "#00A3FF",
+    wstETH: "#00A3FF",
     AAVE: "#2EBAC6",
     WAVAX: "#E84142",
     PERP: "#00BC9A",
+    RBN: "#fc0a54",
+    veRBN: "#fc0a54",
+    LDO: "#00A3FF",
   },
 };
 

@@ -7,13 +7,17 @@ const useElementSize = (
 ) => {
   const [height, setHeight] = useState<number>(0);
   const [width, setWidth] = useState<number>(0);
+  const [scrollHeight, setScrollHeight] = useState<number>(0);
+  const [scrollWidth, setScrollWidth] = useState<number>(0);
 
   const updateDimension = useCallback(() => {
     const element = ref.current;
     if (!element) return;
 
-    setWidth(element.clientWidth);
     setHeight(element.clientHeight);
+    setWidth(element.clientWidth);
+    setScrollHeight(element.scrollHeight);
+    setScrollWidth(element.scrollWidth);
   }, [ref]);
 
   useMutationObserver(
@@ -38,7 +42,7 @@ const useElementSize = (
     return () => window.removeEventListener("resize", resizeCallback);
   }, [updateDimension]);
 
-  return { height, width };
+  return { height, width, scrollHeight, scrollWidth };
 };
 
 export default useElementSize;

@@ -16,7 +16,10 @@ const getVaultActivityKey = (
   type: "shortPositions" | "optionTrades"
 ) => `vaultActivity_${type}_${vault.replace(/-/g, "")}`;
 
-export const vaultActivitiesGraphql = (version: VaultVersion, chainId: number) =>
+export const vaultActivitiesGraphql = (
+  version: VaultVersion,
+  chainId: number
+) =>
   VaultList.reduce((acc, vault) => {
     const vaultAddress = VaultAddressMap[vault][version]?.toLowerCase();
 
@@ -58,7 +61,7 @@ export const vaultActivitiesGraphql = (version: VaultVersion, chainId: number) =
   }, "");
 
 export const resolveVaultActivitiesSubgraphResponse = (
-  responses: { [vault in VaultVersion]: any | undefined }
+  responses: { [version in VaultVersion]: any | undefined }
 ): VaultActivitiesData =>
   Object.fromEntries(
     VaultVersionList.map((version) => [
@@ -110,8 +113,8 @@ export const useAllVaultActivities = () => {
   const contextData = useContext(SubgraphDataContext);
 
   return {
-    activities: contextData.vaultActivities,
-    loading: contextData.loading,
+    activities: contextData.vaultSubgraphData.vaultActivities,
+    loading: contextData.vaultSubgraphData.loading,
   };
 };
 
@@ -122,8 +125,9 @@ const useVaultActivity = (
   const contextData = useContext(SubgraphDataContext);
 
   return {
-    activities: contextData.vaultActivities[vaultVersion][vault],
-    loading: contextData.loading,
+    activities:
+      contextData.vaultSubgraphData.vaultActivities[vaultVersion][vault],
+    loading: contextData.vaultSubgraphData.loading,
   };
 };
 

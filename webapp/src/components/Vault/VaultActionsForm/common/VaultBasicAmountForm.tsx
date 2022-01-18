@@ -359,7 +359,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
     <>
       <BaseInputLabel>AMOUNT ({getAssetDisplay(asset)})</BaseInputLabel>
       <BaseInputContainer
-        className="position-relative mb-2"
+        className="mb-2"
         error={error ? VaultInputValidationErrorList.includes(error) : false}
       >
         <BaseInput

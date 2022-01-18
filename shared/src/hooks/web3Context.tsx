@@ -31,6 +31,14 @@ export const useWeb3Context = (chainId: CHAINID = CHAINID.ETH_MAINNET) => {
   return useContext(context);
 };
 
+export const useETHWeb3Context = () => {
+  return useContext(Web3Context);
+};
+
+export const useAvaxWeb3Context = () => {
+  return useContext(AvaxWeb3Context);
+};
+
 export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({
   children,
 }) => (

@@ -10,6 +10,7 @@ import {
   YVUSDcLogo,
   PERPLogo,
 } from "../assets/icons/erc20Assets";
+import Logo from "../assets/icons/logo";
 import colors from "../designSystem/colors";
 import { Assets } from "../store/types";
 
@@ -131,6 +132,7 @@ export const getAssetLogo: (asset: Assets) =>
     case "yvUSDC":
       return ColoredYVUSDCLogo;
     case "stETH":
+    case "wstETH":
       return STETHLogo;
     case "AAVE":
       return AAVELogo;
@@ -138,5 +140,7 @@ export const getAssetLogo: (asset: Assets) =>
       return WAVAXLogo;
     case "PERP":
       return PERPLogo;
+    default:
+      return Logo;
   }
 };

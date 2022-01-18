@@ -456,7 +456,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
       {/* Input */}
       <BaseInputLabel className="mt-4">AMOUNT ({assetDisplay})</BaseInputLabel>
       <BaseInputContainer
-        className="position-relative mb-2"
+        className="mb-2"
         error={error ? VaultInputValidationErrorList.includes(error) : false}
       >
         <BaseInput

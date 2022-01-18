@@ -263,8 +263,8 @@ const ProfileActivity = () => {
         >
           {processedActivities
             .slice((page - 1) * perPage, page * perPage)
-            .map((activity) => (
-              <ActivityContainer>
+            .map((activity, index) => (
+              <ActivityContainer key={index}>
                 {/* Logo */}
                 <ActivityLogoContainer color={getActivityLogoColor(activity)}>
                   {renderActivityLogo(activity)}

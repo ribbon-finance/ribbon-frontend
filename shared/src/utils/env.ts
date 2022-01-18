@@ -67,6 +67,12 @@ export const getENSSubgraphURI = () =>
     : process.env.REACT_APP_ENS_SUBGRAPHQL_URL ||
       "https://api.thegraph.com/subgraphs/name/ensdomains/ens";
 
+export const getGovernanceSubgraphURI = () =>
+  isDevelopment()
+    ? "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-governance-kovan"
+    : process.env.REACT_APP_GOVERNANCE_SUBGRAPHQL_URL ||
+      "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-governance";
+
 const STAKING_ENABLED_CHAINID: CHAINID[] = [CHAINID.ETH_MAINNET];
 
 export const isStakingEnabledForChainId = (chainId: number | undefined) =>

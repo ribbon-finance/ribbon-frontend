@@ -318,7 +318,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
             <BaseModalContentColumn>
               <div className="d-flex w-100 flex-wrap">
                 <BaseInputLabel>AMOUNT ({vaultOption})</BaseInputLabel>
-                <BaseInputContainer className="position-relative">
+                <BaseInputContainer>
                   <BaseInput
                     type="number"
                     className="form-control"
