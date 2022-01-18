@@ -42,9 +42,9 @@ export const vaultPriceHistoryGraphql = (
   }, "");
 };
 
-export const resolveVaultPriceHistorySubgraphResponse = (
-  responses: { [version in VaultVersion]: any | undefined }
-): VaultPriceHistoriesData =>
+export const resolveVaultPriceHistorySubgraphResponse = (responses: {
+  [version in VaultVersion]: any | undefined;
+}): VaultPriceHistoriesData =>
   Object.fromEntries(
     VaultVersionList.map((version) => [
       version,

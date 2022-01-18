@@ -24,7 +24,10 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 
-import { formatBigNumber, formatSignificantDecimals } from "shared/lib/utils/math";
+import {
+  formatBigNumber,
+  formatSignificantDecimals,
+} from "shared/lib/utils/math";
 import { BigNumber } from "ethers";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
@@ -49,16 +52,19 @@ const YourPositionModal: React.FC = () => {
   const vaultVersion = vaultPositionModal.vaultVersion;
   const premiumDecimals = getAssetDecimals("USDC");
   const { transactions } = useTransactions();
-  
+
   const accountYield = useMemo(() => {
-    const yields =  transactions.filter(transaction => transaction.type === "distribute")
-      .reduce((total, transaction) =>
-        total.add(transaction.amount), BigNumber.from(0))
-    
+    const yields = transactions
+      .filter((transaction) => transaction.type === "distribute")
+      .reduce(
+        (total, transaction) => total.add(transaction.amount),
+        BigNumber.from(0)
+      );
+
     return parseFloat(
       formatSignificantDecimals(formatUnits(yields, premiumDecimals), 2)
     );
-  }, [transactions, premiumDecimals]) 
+  }, [transactions, premiumDecimals]);
 
   const color = getVaultColor(vaultOption);
   const asset = getAssets(vaultOption);
@@ -71,7 +77,7 @@ const YourPositionModal: React.FC = () => {
 
   const vaultAccount = vaultAccounts[vaultOption];
 
-  const [investedInStrategy, queuedAmount ] = useMemo(() => {
+  const [investedInStrategy, queuedAmount] = useMemo(() => {
     switch (vaultVersion) {
       case "v1":
         if (!vaultAccount) {
@@ -116,7 +122,7 @@ const YourPositionModal: React.FC = () => {
               <Title fontSize={40} lineHeight={40}>
                 {vaultAccount
                   ? formatBigNumber(vaultAccount.totalBalance, decimals)
-                  : "0.00"} 
+                  : "0.00"}
               </Title>
             </BaseModalContentColumn>
             <BaseModalContentColumn marginTop={8}>
@@ -168,8 +174,7 @@ const YourPositionModal: React.FC = () => {
               <div className="d-flex w-100 align-items-center ">
                 <SecondaryText>Yield Earned</SecondaryText>
                 <Title className="ml-auto">
-                  {accountYield}{" "}
-                  {getAssetDisplay("USDC")}
+                  {accountYield} {getAssetDisplay("USDC")}
                 </Title>
               </div>
             </BaseModalContentColumn>

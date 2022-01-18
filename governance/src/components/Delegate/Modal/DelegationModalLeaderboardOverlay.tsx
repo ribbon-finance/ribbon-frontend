@@ -117,64 +117,65 @@ interface DelegationModalLeaderboardOverlayProps {
   onClose: () => void;
 }
 
-const DelegationModalLeaderboardOverlay: React.FC<DelegationModalLeaderboardOverlayProps> =
-  ({ show, onLeaderSelected, onClose }) => {
-    const { data } = useDelegateLeaderboard();
+const DelegationModalLeaderboardOverlay: React.FC<
+  DelegationModalLeaderboardOverlayProps
+> = ({ show, onLeaderSelected, onClose }) => {
+  const { data } = useDelegateLeaderboard();
 
-    return (
-      <AnimatePresence>
-        <ModalOverlay
-          key={show.toString()}
-          show={show}
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 50, opacity: 0 }}
-          transition={{
-            duration: 0.25,
-            type: "keyframes",
-            ease: "easeInOut",
-          }}
-        >
-          <BaseModalContentColumn marginTop={8}>
-            <CloseOverlayButton
-              className="mr-auto"
-              role="button"
-              onClick={onClose}
-            >
-              <ButtonArrow isOpen={false} color={colors.text} />
-            </CloseOverlayButton>
+  return (
+    <AnimatePresence>
+      <ModalOverlay
+        key={show.toString()}
+        show={show}
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 50, opacity: 0 }}
+        transition={{
+          duration: 0.25,
+          type: "keyframes",
+          ease: "easeInOut",
+        }}
+      >
+        <BaseModalContentColumn marginTop={8}>
+          <CloseOverlayButton
+            className="mr-auto"
+            role="button"
+            onClick={onClose}
+          >
+            <ButtonArrow isOpen={false} color={colors.text} />
+          </CloseOverlayButton>
+        </BaseModalContentColumn>
+        <BaseModalContentColumn marginTop={5}>
+          <Title fontSize={22} lineHeight={28}>
+            DELEGATE LEADERBOARD
+          </Title>
+        </BaseModalContentColumn>
+        <BaseModalContentColumn marginTop={8}>
+          <SecondaryText>Select a delegate</SecondaryText>
+        </BaseModalContentColumn>
+        {data.map((delegate) => (
+          <BaseModalContentColumn marginTop={16} key={delegate.address}>
+            <DelegateLeaderButton
+              {...delegate}
+              onSelect={() => onLeaderSelected(delegate.address)}
+            />
           </BaseModalContentColumn>
-          <BaseModalContentColumn marginTop={5}>
-            <Title fontSize={22} lineHeight={28}>
-              DELEGATE LEADERBOARD
-            </Title>
-          </BaseModalContentColumn>
-          <BaseModalContentColumn marginTop={8}>
-            <SecondaryText>Select a delegate</SecondaryText>
-          </BaseModalContentColumn>
-          {data.map((delegate) => (
-            <BaseModalContentColumn marginTop={16} key={delegate.address}>
-              <DelegateLeaderButton
-                {...delegate}
-                onSelect={() => onLeaderSelected(delegate.address)}
-              />
-            </BaseModalContentColumn>
-          ))}
-          <BaseModalContentColumn>
-            <BaseLink
-              to="https://google.com"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              <SeeMoreContianer>
-                <SecondaryText>See all</SecondaryText>
-                <ExternalIcon height={16} color={colors.text} />
-              </SeeMoreContianer>
-            </BaseLink>
-          </BaseModalContentColumn>
-        </ModalOverlay>
-      </AnimatePresence>
-    );
-  };
+        ))}
+        <BaseModalContentColumn>
+          <BaseLink
+            to="https://google.com"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            <SeeMoreContianer>
+              <SecondaryText>See all</SecondaryText>
+              <ExternalIcon height={16} color={colors.text} />
+            </SeeMoreContianer>
+          </BaseLink>
+        </BaseModalContentColumn>
+      </ModalOverlay>
+    </AnimatePresence>
+  );
+};
 
 export default DelegationModalLeaderboardOverlay;

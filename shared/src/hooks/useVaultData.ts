@@ -35,9 +35,9 @@ export const vaultGraphql = (version: VaultVersion, chainId: number) =>
     );
   }, "");
 
-export const resolveVaultsSubgraphResponse = (
-  responses: { [version in VaultVersion]: any | undefined }
-): VaultsSubgraphData =>
+export const resolveVaultsSubgraphResponse = (responses: {
+  [version in VaultVersion]: any | undefined;
+}): VaultsSubgraphData =>
   Object.fromEntries(
     VaultVersionList.map((version) => [
       version,

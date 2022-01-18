@@ -22,8 +22,12 @@ const useFetchV2VaultData = (): V2VaultData => {
     account: web3Account,
     library,
   } = useWeb3React();
-  const { provider: avaxProvider } = useWeb3Context(isDevelopment() ? CHAINID.AVAX_FUJI : CHAINID.AVAX_MAINNET);
-  const { provider: ethProvider } = useWeb3Context(isDevelopment() ? CHAINID.ETH_KOVAN : CHAINID.ETH_MAINNET);
+  const { provider: avaxProvider } = useWeb3Context(
+    isDevelopment() ? CHAINID.AVAX_FUJI : CHAINID.AVAX_MAINNET
+  );
+  const { provider: ethProvider } = useWeb3Context(
+    isDevelopment() ? CHAINID.ETH_KOVAN : CHAINID.ETH_MAINNET
+  );
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
 
@@ -46,12 +50,22 @@ const useFetchV2VaultData = (): V2VaultData => {
 
     const responses = await Promise.all(
       VaultList.map(async (vault) => {
-        const inferredProviderFromVault = isAvaxVault(vault) ? avaxProvider : ethProvider;
+        const inferredProviderFromVault = isAvaxVault(vault)
+          ? avaxProvider
+          : ethProvider;
         const active = Boolean(
-          web3Active && isVaultSupportedOnChain(vault, chainId || inferredProviderFromVault?._network?.chainId)
+          web3Active &&
+            isVaultSupportedOnChain(
+              vault,
+              chainId || inferredProviderFromVault?._network?.chainId
+            )
         );
 
-        const contract = getV2Vault(library || inferredProviderFromVault, vault, active);
+        const contract = getV2Vault(
+          library || inferredProviderFromVault,
+          vault,
+          active
+        );
         if (!contract) {
           return { vault };
         }

@@ -20,10 +20,7 @@ import StrikeChart from "./StrikeChart";
 import { formatUnits } from "@ethersproject/units";
 import { useLatestOption } from "shared/lib/hooks/useLatestOption";
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
-import {
-  VaultActivityMeta,
-  VaultOptionTrade,
-} from "shared/lib/models/vault";
+import { VaultActivityMeta, VaultOptionTrade } from "shared/lib/models/vault";
 
 const VaultPerformanceChartContainer = styled.div`
   display: flex;
@@ -83,10 +80,7 @@ interface StrategySnapshotProps {
   };
 }
 
-const StrategySnapshot: React.FC<StrategySnapshotProps> = ({
-  vault
-}) => {
-  
+const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
   const { vaultOption, vaultVersion } = vault;
   const { option: currentOption, loading: optionLoading } = useLatestOption(
     vaultOption,
@@ -96,25 +90,30 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({
   const optionAsset = getOptionAssets(vaultOption);
   const { prices, loading: priceLoading } = useAssetsPrice();
   const loading = priceLoading || optionLoading;
-  const { activities, loading: activitiesLoading } = useVaultActivity(vaultOption!, vaultVersion);
+  const { activities, loading: activitiesLoading } = useVaultActivity(
+    vaultOption!,
+    vaultVersion
+  );
   const premiumDecimals = getAssetDecimals("USDC");
-  
+
   const loadingText = useTextAnimation(loading);
 
   // Get the latest option sale
   const latestSale = useMemo(() => {
     return activities
       .filter((activity) => activity.type === "sales")
-      .sort((a, b) => (a.date.valueOf() < b.date.valueOf() ? 1 : -1))[0] as 
-      (VaultOptionTrade & VaultActivityMeta & { type: "sales" })
-  }, [activities])
+      .sort((a, b) =>
+        a.date.valueOf() < b.date.valueOf() ? 1 : -1
+      )[0] as VaultOptionTrade & VaultActivityMeta & { type: "sales" };
+  }, [activities]);
 
   const latestYield = useMemo(() => {
     if (activitiesLoading) return loadingText;
     if (!latestSale) return "---";
 
-    return parseFloat(formatUnits(latestSale.premium, premiumDecimals)).toFixed(2);
-
+    return parseFloat(formatUnits(latestSale.premium, premiumDecimals)).toFixed(
+      2
+    );
   }, [loadingText, activitiesLoading, latestSale, premiumDecimals]);
 
   const strikeAPRText = useMemo(() => {
@@ -141,7 +140,7 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({
 
     return `${toExpiryDuration.days()}D ${toExpiryDuration.hours()}H ${toExpiryDuration.minutes()}M`;
   }, [currentOption, loadingText, optionLoading]);
-  
+
   const strikeChart = useMemo(() => {
     if (loading || !prices[optionAsset]) {
       return <Title>{loadingText}</Title>;
@@ -171,9 +170,7 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({
             <DataLabel className="d-block">
               Current {getAssetDisplay(optionAsset)} Price
             </DataLabel>
-            <DataNumber
-              variant={undefined}
-            >
+            <DataNumber variant={undefined}>
               {priceLoading
                 ? loadingText
                 : currency(prices[optionAsset]!).format()}
@@ -188,9 +185,15 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({
           <DataCol xs="6">
             <DataLabel className="d-block">Latest Yield Earned</DataLabel>
             <DataNumber
-              variant={(latestYield !== "---" && !activitiesLoading) ? "green" : undefined}
+              variant={
+                latestYield !== "---" && !activitiesLoading
+                  ? "green"
+                  : undefined
+              }
             >
-              {(latestYield !== "---" && !activitiesLoading) ? "$"+latestYield : latestYield}
+              {latestYield !== "---" && !activitiesLoading
+                ? "$" + latestYield
+                : latestYield}
             </DataNumber>
           </DataCol>
           <DataCol xs="6">
@@ -212,28 +215,16 @@ export const EmptyStrategySnapshot: React.FC = () => {
       <VaultPerformanceChartSecondaryContainer>
         <Row noGutters>
           <DataCol xs="6">
-            <DataLabel className="d-block">
-              Current Price
-            </DataLabel>
-            <DataNumber
-              variant={undefined}
-            >
-              {"---"}
-            </DataNumber>
+            <DataLabel className="d-block">Current Price</DataLabel>
+            <DataNumber variant={undefined}>{"---"}</DataNumber>
           </DataCol>
           <DataCol xs="6">
-            <DataLabel className="d-block">
-              Selected Strike Price
-            </DataLabel>
+            <DataLabel className="d-block">Selected Strike Price</DataLabel>
             <DataNumber>{"---"}</DataNumber>
           </DataCol>
           <DataCol xs="6">
             <DataLabel className="d-block">Latest Yield Earned</DataLabel>
-            <DataNumber
-              variant={undefined}
-            >
-              {"---"}
-            </DataNumber>
+            <DataNumber variant={undefined}>{"---"}</DataNumber>
           </DataCol>
           <DataCol xs="6">
             <DataLabel className="d-block">Time to Expiry</DataLabel>
@@ -243,6 +234,6 @@ export const EmptyStrategySnapshot: React.FC = () => {
       </VaultPerformanceChartSecondaryContainer>
     </>
   );
-}
+};
 
 export default StrategySnapshot;

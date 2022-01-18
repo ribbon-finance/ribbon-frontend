@@ -25,18 +25,17 @@ interface ProductCopies {
   };
 }
 
-export const treasuryCopy: ProductCopies  = {
+export const treasuryCopy: ProductCopies = {
   title: "Treasury",
   subtitle: "",
-  description:
-    "Generates yield by running an automated covered call strategy.",
+  description: "Generates yield by running an automated covered call strategy.",
   tags: ["COVERED CALL"],
   strategy: "",
   vaultRisk: (
     <>
-      The primary risk for running this covered call strategy is that the
-      vault may incur a weekly loss in the case where the call options sold by
-      the vault expire{" "}
+      The primary risk for running this covered call strategy is that the vault
+      may incur a weekly loss in the case where the call options sold by the
+      vault expire{" "}
       <TooltipExplanation
         title="IN-THE-MONEY"
         explanation="An call option is in-the-money (ITM) if the strike price is below the market price of its underlying asset."
@@ -47,11 +46,11 @@ export const treasuryCopy: ProductCopies  = {
           </HighlighText>
         )}
       />{" "}
-      (meaning the price of the underlying asset is above the strike price of the call options
-      minted by the vault).
+      (meaning the price of the underlying asset is above the strike price of
+      the call options minted by the vault).
     </>
   ),
   liquidityMining: {
-    explanation: (<></>),
+    explanation: <></>,
   },
 };

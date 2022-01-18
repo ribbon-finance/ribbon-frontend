@@ -18,25 +18,26 @@ export const useWhitelist = () => {
       await Promise.all(
         VaultList.map(async (vault) => {
           const contract = getV2Vault(library || provider, vault, active);
-          
+
           if (!contract) {
             return { vault };
           }
           try {
             const isWhitelisted = await contract.whitelistMap(account);
-            
+
             if (isWhitelisted) {
               setWhitelisted(
                 Object.keys(VaultNameOptionMap)[
-                  Object.values(VaultNameOptionMap).indexOf(vault)]
-              )
+                  Object.values(VaultNameOptionMap).indexOf(vault)
+                ]
+              );
             }
           } catch {}
         })
-      )
+      );
     })();
   }, [provider, account, active, library]);
-  
+
   return whitelisted;
 };
 

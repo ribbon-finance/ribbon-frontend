@@ -106,7 +106,8 @@ const WalletConnectModal: React.FC = () => {
     active,
   } = useWeb3React();
 
-  const [connectingConnector, setConnectingConnector] = useState<connectorType>();
+  const [connectingConnector, setConnectingConnector] =
+    useState<connectorType>();
 
   const initializingText = useTextAnimation(Boolean(connectingConnector), {
     texts: [

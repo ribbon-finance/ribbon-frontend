@@ -5,9 +5,8 @@ const useConnectWalletModal: () => [
   boolean,
   (u: React.SetStateAction<boolean>) => void
 ] = () => {
-  const [showConnectWallet, setShowConnectWallet] = useGlobalState(
-    "showConnectWallet"
-  );
+  const [showConnectWallet, setShowConnectWallet] =
+    useGlobalState("showConnectWallet");
   return [showConnectWallet, setShowConnectWallet];
 };
 

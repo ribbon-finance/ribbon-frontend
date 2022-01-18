@@ -167,11 +167,9 @@ export const GAS_LIMITS: {
   },
 };
 
-export const VaultLiquidityMiningMap: Partial<
-  {
-    [vault in VaultOptions]: string;
-  }
-> = isDevelopment()
+export const VaultLiquidityMiningMap: Partial<{
+  [vault in VaultOptions]: string;
+}> = isDevelopment()
   ? {
       "rUSDC-ETH-P-THETA": v1deployment.kovan.RibbonETHPutStakingReward,
       "rBTC-THETA": v1deployment.kovan.RibbonWBTCCoveredCallStakingReward,
@@ -510,13 +508,11 @@ export const VaultFees: {
   },
 };
 
-export const RibbonVaultMigrationMap: Partial<
-  {
-    [vault in VaultOptions]: Partial<
-      { [version in VaultVersionExcludeV1]: Array<VaultOptions> }
-    >;
-  }
-> = {
+export const RibbonVaultMigrationMap: Partial<{
+  [vault in VaultOptions]: Partial<{
+    [version in VaultVersionExcludeV1]: Array<VaultOptions>;
+  }>;
+}> = {
   "rBTC-THETA": {
     v2: ["rBTC-THETA"],
   },
@@ -533,9 +529,9 @@ export const RibbonVaultMigrationMap: Partial<
   },
 };
 
-export const v1ToV2MigrationMap: Partial<
-  { [vault in VaultOptions]: VaultOptions }
-> = {
+export const v1ToV2MigrationMap: Partial<{
+  [vault in VaultOptions]: VaultOptions;
+}> = {
   "rBTC-THETA": "rBTC-THETA",
   "rETH-THETA": "rETH-THETA",
   // TODO: Uncomment this

@@ -23,9 +23,9 @@ export const balancesGraphql = (account: string, version: VaultVersion) => `
   }
 `;
 
-export const resolveBalancesSubgraphResponse = (
-  responses: { [version in VaultVersion]: any | undefined }
-): BalanceUpdate[] =>
+export const resolveBalancesSubgraphResponse = (responses: {
+  [version in VaultVersion]: any | undefined;
+}): BalanceUpdate[] =>
   VaultVersionList.flatMap((version) =>
     responses[version] && responses[version].balanceUpdates
       ? responses[version].balanceUpdates.reverse().map((item: any) => ({

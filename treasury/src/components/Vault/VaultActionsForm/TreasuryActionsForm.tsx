@@ -2,10 +2,7 @@ import React, { useMemo } from "react";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import styled from "styled-components";
 
-import {
-  PrimaryText,
-  Title,
-} from "shared/lib/designSystem";
+import { PrimaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 
@@ -71,24 +68,27 @@ interface TreasuryActionsFormProps {
 }
 
 const TreasuryActionsForm: React.FC<TreasuryActionsFormProps> = ({
-  variant
+  variant,
 }) => {
   const color = "#fc0a54";
- 
+
   const body = useMemo(() => {
-      return (
-        <div className="d-flex flex-column align-items-center p-4">
-          <WhitelistLogoContainer color={color} className="mt-3">
-            <WhitelistIcon color={color} height={64} />
-          </WhitelistLogoContainer>
+    return (
+      <div className="d-flex flex-column align-items-center p-4">
+        <WhitelistLogoContainer color={color} className="mt-3">
+          <WhitelistIcon color={color} height={64} />
+        </WhitelistLogoContainer>
 
-          <WhitelistTitle className="mt-3">CONNECT TO A WHITELISTED ADDRESS</WhitelistTitle>
+        <WhitelistTitle className="mt-3">
+          CONNECT TO A WHITELISTED ADDRESS
+        </WhitelistTitle>
 
-          <WhitelistDescription className="mx-3 mt-2 text-center">
-            The Ribbon Treasury product is currently in beta and access to the product is limited to pilot partners with whitelisted wallets
-          </WhitelistDescription>
+        <WhitelistDescription className="mx-3 mt-2 text-center">
+          The Ribbon Treasury product is currently in beta and access to the
+          product is limited to pilot partners with whitelisted wallets
+        </WhitelistDescription>
 
-          <PrimaryText className="d-block mt-3 mb-3">
+        <PrimaryText className="d-block mt-3 mb-3">
           <Link
             href="https://ribbonfinance.medium.com/theta-vault-backtest-results-6e8c59adf38c"
             target="_blank"
@@ -99,9 +99,9 @@ const TreasuryActionsForm: React.FC<TreasuryActionsFormProps> = ({
             <ExternalIcon color="white" />
           </Link>
         </PrimaryText>
-        </div>
-      );
-  }, [])
+      </div>
+    );
+  }, []);
 
   return (
     <Container variant={variant}>

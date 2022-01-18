@@ -216,58 +216,58 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
         case ACTIONS.deposit:
           formExtraText = (
             <>
-              Your deposit will be deployed in the vault’s strategy in the next round
+              Your deposit will be deployed in the vault’s strategy in the next
+              round
             </>
           );
           break;
-          case ACTIONS.withdraw:
-            if (!isPracticallyZero(depositBalanceInAsset, decimals)) {
-              formExtraText =
-                vaultActionForm.withdrawOption === "instant" ? (
-                  <>
-                    IMPORTANT: instant withdrawals are only available before 11am
-                    UTC on Friday for funds that have not been deployed in the
-                    vault's strategy
-                  </>
-                ) : (
-                  <>
-                    You can withdraw{" "}
-                    {formatBigNumber(depositBalanceInAsset, decimals)}{" "}
-                    {getAssetDisplay(asset)} immediately via instant withdrawals
-                    because these funds have not yet been deployed in the vault’s
-                    strategy
-                  </>
-                );
-              break;
-            }
-  
-            if (!isPracticallyZero(lockedBalanceInAsset, decimals)) {
-              if (vaultActionForm.withdrawOption === "instant") {
-                formExtraText = (
-                  <>
-                    Instant withdrawals are unavailable because your funds have
-                    been deployed in the vault's strategy. To withdraw your
-                    funds you need to initiate a withdrawal using standard
-                    withdrawals.
-                  </>
-                );
-              }
-              break;
-            }
-  
+        case ACTIONS.withdraw:
+          if (!isPracticallyZero(depositBalanceInAsset, decimals)) {
+            formExtraText =
+              vaultActionForm.withdrawOption === "instant" ? (
+                <>
+                  IMPORTANT: instant withdrawals are only available before 11am
+                  UTC on Friday for funds that have not been deployed in the
+                  vault's strategy
+                </>
+              ) : (
+                <>
+                  You can withdraw{" "}
+                  {formatBigNumber(depositBalanceInAsset, decimals)}{" "}
+                  {getAssetDisplay(asset)} immediately via instant withdrawals
+                  because these funds have not yet been deployed in the vault’s
+                  strategy
+                </>
+              );
             break;
-          case ACTIONS.transfer:
-            formExtraText = (
-              <>
-                Vault transfers are <strong>FREE</strong>: withdrawal fees are
-                waived when you transfer funds between{" "}
-                {vaultActionForm.vaultOption} and
-                {vaultActionForm.receiveVault}
-              </>
-            );
+          }
+
+          if (!isPracticallyZero(lockedBalanceInAsset, decimals)) {
+            if (vaultActionForm.withdrawOption === "instant") {
+              formExtraText = (
+                <>
+                  Instant withdrawals are unavailable because your funds have
+                  been deployed in the vault's strategy. To withdraw your funds
+                  you need to initiate a withdrawal using standard withdrawals.
+                </>
+              );
+            }
             break;
-        }
+          }
+
+          break;
+        case ACTIONS.transfer:
+          formExtraText = (
+            <>
+              Vault transfers are <strong>FREE</strong>: withdrawal fees are
+              waived when you transfer funds between{" "}
+              {vaultActionForm.vaultOption} and
+              {vaultActionForm.receiveVault}
+            </>
+          );
+          break;
       }
+    }
 
     if (!formExtraText) {
       return <></>;

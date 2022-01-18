@@ -187,7 +187,11 @@ const Header = () => {
       {/* LINKS */}
       <HeaderAbsoluteContainer>
         <LinksContainer>
-          {renderLinkItem("TREASURY", "/", Boolean(product) || Boolean(treasury))}
+          {renderLinkItem(
+            "TREASURY",
+            "/",
+            Boolean(product) || Boolean(treasury)
+          )}
           {renderLinkItem("PORTFOLIO", "/portfolio", Boolean(portfolio))}
         </LinksContainer>
       </HeaderAbsoluteContainer>

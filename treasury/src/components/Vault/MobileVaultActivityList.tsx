@@ -11,10 +11,7 @@ import {
   formatOption,
   formatBigNumber,
 } from "shared/lib/utils/math";
-import {
-  getAssets,
-  VaultOptions,
-} from "shared/lib/constants/constants";
+import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 
 const VaultActivityRow = styled.div`

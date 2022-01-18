@@ -196,7 +196,11 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
       return;
     }
 
-    return getERC20Token(library, depositAsset.toLowerCase() as ERC20Token, chainId);
+    return getERC20Token(
+      library,
+      depositAsset.toLowerCase() as ERC20Token,
+      chainId
+    );
   }, [chainId, depositAsset, library]);
 
   const [waitingApproval, setWaitingApproval] = useState(false);

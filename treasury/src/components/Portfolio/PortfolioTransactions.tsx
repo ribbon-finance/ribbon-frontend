@@ -25,7 +25,11 @@ import {
   VaultNameOptionMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
-import { getAssetDecimals, getAssetDisplay, getAssetLogo } from "shared/lib/utils/asset";
+import {
+  getAssetDecimals,
+  getAssetDisplay,
+  getAssetLogo,
+} from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
 import {
   DepositIcon,
@@ -287,17 +291,17 @@ const PortfolioTransactions = () => {
     switch (type) {
       case "deposit":
       case "receive":
-        return <DepositIcon width={20} />
+        return <DepositIcon width={20} />;
       case "withdraw":
       case "instantWithdraw":
-        return <WithdrawIcon width={20} />
+        return <WithdrawIcon width={20} />;
       case "migrate":
         return <MigrateIcon width={14} height={14} />;
       case "transfer":
         return <TransferIcon width={14} height={14} />;
       case "distribute":
         const Logo = getAssetLogo("USDC");
-        return <Logo />
+        return <Logo />;
     }
   }, []);
 
@@ -322,7 +326,7 @@ const PortfolioTransactions = () => {
         case "instantWithdraw":
           return "Instant Withdraw";
         case "distribute":
-          return "Yield Paid Out"
+          return "Yield Paid Out";
         default:
           return capitalize(type);
       }
@@ -374,7 +378,7 @@ const PortfolioTransactions = () => {
                 color={renderTransactionColor(transaction.type)!}
                 className="mr-auto"
               >
-               {`${getTransactionTypeDisplay(transaction.type)}`}
+                {`${getTransactionTypeDisplay(transaction.type)}`}
               </TransactionTitle>
 
               {/* Amount in crypto */}
@@ -383,7 +387,9 @@ const PortfolioTransactions = () => {
                   transaction.amount,
                   transaction.type,
                   "eth",
-                  (transaction.type === "distribute") ? "USDC" : getAssets(transaction.vault.symbol),
+                  transaction.type === "distribute"
+                    ? "USDC"
+                    : getAssets(transaction.vault.symbol),
                   transaction.timestamp
                 )}
               </Title>
@@ -397,10 +403,7 @@ const PortfolioTransactions = () => {
             <TransactionInfoRow>
               {/* Type and Time */}
               <TransactionInfoText className="mr-auto">
-                {`${moment(
-                  transaction.timestamp,
-                  "X"
-                ).fromNow()}`}
+                {`${moment(transaction.timestamp, "X").fromNow()}`}
               </TransactionInfoText>
 
               {/* Amount in USD */}
@@ -409,7 +412,9 @@ const PortfolioTransactions = () => {
                   transaction.underlyingAmount,
                   transaction.type,
                   "usd",
-                  (transaction.type === "distribute") ? "USDC" : getAssets(transaction.vault.symbol),
+                  transaction.type === "distribute"
+                    ? "USDC"
+                    : getAssets(transaction.vault.symbol),
                   transaction.timestamp
                 )}
               </TransactionSecondaryInfoText>
@@ -442,7 +447,9 @@ const PortfolioTransactions = () => {
                   transaction.amount,
                   transaction.type,
                   "eth",
-                  (transaction.type === "distribute") ? "USDC" : getAssets(transaction.vault.symbol),
+                  transaction.type === "distribute"
+                    ? "USDC"
+                    : getAssets(transaction.vault.symbol),
                   transaction.timestamp
                 )}
               </TransactionInfoText>
