@@ -37,6 +37,7 @@ const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   PERP: "perpetual-protocol",
   RBN: "ribbon-finance",
   veRBN: undefined,
+  SOL: "solana",
 };
 
 export const useFetchAssetsPrice = (

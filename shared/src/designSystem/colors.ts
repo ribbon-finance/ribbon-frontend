@@ -52,6 +52,7 @@ const colors = {
     RBN: "#fc0a54",
     veRBN: "#fc0a54",
     LDO: "#00A3FF",
+    SOL: "#14F195",
   },
 };
 
