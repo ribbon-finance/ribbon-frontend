@@ -9,7 +9,6 @@ import {
   isDevelopment,
   isProduction,
   isTreasury,
-  getGovernanceSubgraphURI,
 } from "../utils/env";
 import v1deployment from "./v1Deployments.json";
 import v2deployment from "./v2Deployments.json";
