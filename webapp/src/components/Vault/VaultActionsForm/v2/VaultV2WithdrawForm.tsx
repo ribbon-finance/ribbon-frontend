@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { Frame } from "framer";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../../../hooks/useWeb3Wallet";
 import { BigNumber } from "ethers";
 
 import colors from "shared/lib/designSystem/colors";
@@ -124,7 +124,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
     vaultActionForm,
     withdrawMetadata,
   } = useVaultActionForm(vaultOption);
-  const { active } = useWeb3React();
+  const { active } = useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
 
   const [activeBackgroundState, setActiveBackgroundState] = useState<
@@ -212,7 +212,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
                   <br />
                   <br />
                   Step 2: Initiated withdrawals are removed from the vault's
-                  pool of investable capital every Friday at 10am UTC and once
+                  pool of investable capital every Friday at 12pm UTC and once
                   this happens users can complete their withdrawals and remove
                   their funds from the vault.
                 </>
@@ -302,7 +302,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
                     from the vault’s pool of investable capital.
                     <br />
                     <br />
-                    On Friday at 10am UTC, the vault will close it’s weekly
+                    On Friday at 12pm UTC, the vault will close it’s weekly
                     position and remove the amount of ETH you requested from its
                     pool of investable capital. You can then complete your
                     withdrawal and remove your funds from the vault.

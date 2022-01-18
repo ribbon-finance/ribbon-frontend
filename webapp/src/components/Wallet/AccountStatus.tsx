@@ -6,11 +6,11 @@ import React, {
   useState,
 } from "react";
 import styled from "styled-components";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
 import { setTimeout } from "timers";
 import { AnimatePresence, motion } from "framer";
+import Davatar from "@davatar/react";
 
-import Indicator from "shared/lib/components/Indicator/Indicator";
 import sizes from "shared/lib/designSystem/sizes";
 import { Title, BaseButton } from "shared/lib/designSystem";
 import { addConnectEvent } from "shared/lib/utils/analytics";
@@ -27,7 +27,6 @@ import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import MenuButton from "shared/lib/components/Common/MenuButton";
 import { copyTextToClipboard } from "shared/lib/utils/text";
 import useOutsideAlerter from "shared/lib/hooks/useOutsideAlerter";
-import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import ActionModal from "../Vault/VaultActionsForm/Modal/ActionModal";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
@@ -156,6 +155,10 @@ const WalletButtonText = styled(Title)<WalletStatusProps>`
 
     return `color: ${colors.green}`;
   }}
+`;
+
+const Avatar = styled.div`
+  margin-right: 8px;
 `;
 
 const InvestButton = styled(ActionButton)`
@@ -298,14 +301,8 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   variant,
   showVaultPositionHook,
 }) => {
-  const {
-    connector,
-    deactivate: deactivateWeb3,
-    library,
-    active,
-    account,
-    chainId,
-  } = useWeb3React();
+  const { deactivate, ethereumProvider, active, account, chainId } =
+    useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showActionModal, setShowActionModal] = useState(false);
   const [showAirdropModal, setShowAirdropModal] = useState(false);
@@ -327,10 +324,10 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   });
 
   useEffect(() => {
-    if (library && account) {
+    if (ethereumProvider && account) {
       addConnectEvent("header", account);
     }
-  }, [library, account]);
+  }, [ethereumProvider, account]);
 
   useEffect(() => {
     let timer;
@@ -391,12 +388,9 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   }, [account, chainId]);
 
   const handleDisconnect = useCallback(async () => {
-    if (connector instanceof WalletConnectConnector) {
-      connector.close();
-    }
-    deactivateWeb3();
+    await deactivate();
     onCloseMenu();
-  }, [deactivateWeb3, onCloseMenu, connector]);
+  }, [deactivate, onCloseMenu]);
 
   const onCloseActionsModal = useCallback(() => {
     setShowActionModal(false);
@@ -409,7 +403,9 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   const renderButtonContent = () =>
     active && account ? (
       <>
-        <Indicator connected={active} />
+        <Avatar>
+          <Davatar address={account} size={20} />
+        </Avatar>
         <WalletButtonText connected={active}>
           {ensData?.name || truncateAddress(account)}{" "}
           <ButtonArrow isOpen={isMenuOpen} />

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../../../hooks/useWeb3Wallet";
 import { parseUnits } from "@ethersproject/units";
 import { useLocation } from "react-router-dom";
 
@@ -38,7 +38,6 @@ import VaultV2WithdrawForm from "./VaultV2WithdrawForm";
 const BridgeText = styled.span<{}>`
   font-size: 14px;
 `;
-
 
 const BridgeButton = styled.div<{ color: string }>`
   display: flex;
@@ -155,7 +154,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     vaultActionForm.depositAsset || asset
   );
   const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
-  const { active, chainId } = useWeb3React();
+  const { active, chainId } = useWeb3Wallet();
 
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const isInputNonZero = parseFloat(vaultActionForm.inputAmount) > 0;
@@ -422,13 +421,22 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
   }, [asset, decimals, error, vaultMaxDepositAmount]);
 
   const bridgeAvaxCTA = useMemo(() => {
-    if (vaultActionForm.actionType === ACTIONS.deposit &&
-        vaultActionForm.depositAsset &&
-        chainId && isAvaxNetwork(chainId)) {
+    if (
+      vaultActionForm.actionType === ACTIONS.deposit &&
+      vaultActionForm.depositAsset &&
+      chainId &&
+      isAvaxNetwork(chainId)
+    ) {
       return (
-        <BaseLink to={AVAX_BRIDGE_URI} target="_blank" rel="noreferrer noopener">
+        <BaseLink
+          to={AVAX_BRIDGE_URI}
+          target="_blank"
+          rel="noreferrer noopener"
+        >
           <BridgeButton color={getAssetColor(vaultActionForm.depositAsset)}>
-            <BridgeText className="mr-2">Bridge your assets to Avalanche</BridgeText>
+            <BridgeText className="mr-2">
+              Bridge your assets to Avalanche
+            </BridgeText>
             <ExternalIcon color="white" />
           </BridgeButton>
         </BaseLink>

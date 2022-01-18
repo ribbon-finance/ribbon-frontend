@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
 import styled from "styled-components";
 import moment from "moment";
 
@@ -93,16 +93,19 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
 
   const { width: screenWidth } = useScreenSize();
   const loadingText = useTextAnimation(assetPriceLoading);
-  const { chainId } = useWeb3React();
+  const { chainId } = useWeb3Wallet();
 
-  const getVaultActivityExternalURL = useCallback((activity: VaultActivity) => {
-    switch (activity.type) {
-      case "minting":
-        return `${getEtherscanURI(chainId || 1)}/tx/${activity.openTxhash}`;
-      case "sales":
-        return `${getEtherscanURI(chainId || 1)}/tx/${activity.txhash}`;
-    }
-  }, [chainId]);
+  const getVaultActivityExternalURL = useCallback(
+    (activity: VaultActivity) => {
+      switch (activity.type) {
+        case "minting":
+          return `${getEtherscanURI(chainId || 1)}/tx/${activity.openTxhash}`;
+        case "sales":
+          return `${getEtherscanURI(chainId || 1)}/tx/${activity.txhash}`;
+      }
+    },
+    [chainId]
+  );
 
   const getVaultActivityTableData = useCallback(
     (activity: VaultActivity) => {

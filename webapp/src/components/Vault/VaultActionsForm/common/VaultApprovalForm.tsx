@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../../../hooks/useWeb3Wallet";
 import { AnimatePresence, motion } from "framer";
 
 import {
@@ -174,7 +174,7 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
   const color = getVaultColor(vaultOption);
   const [depositAssetMenuOpen, setDepositAssetMenuOpen] = useState(false);
 
-  const { chainId, library } = useWeb3React();
+  const { chainId, ethereumProvider } = useWeb3Wallet();
   const { provider } = useWeb3Context();
   const { addPendingTransaction } = usePendingTransactions();
 
@@ -196,8 +196,12 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
       return;
     }
 
-    return getERC20Token(library, depositAsset.toLowerCase() as ERC20Token, chainId);
-  }, [chainId, depositAsset, library]);
+    return getERC20Token(
+      ethereumProvider,
+      depositAsset.toLowerCase() as ERC20Token,
+      chainId
+    );
+  }, [chainId, depositAsset, ethereumProvider]);
 
   const [waitingApproval, setWaitingApproval] = useState(false);
   const loadingText = useTextAnimation(waitingApproval, {

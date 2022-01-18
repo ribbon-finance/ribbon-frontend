@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { formatUnits } from "@ethersproject/units";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
 
 import {
   BaseIndicator,
@@ -156,7 +156,7 @@ interface StakingPoolProps {
 }
 
 const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
-  const { active } = useWeb3React();
+  const { active } = useWeb3Wallet();
   const [, setShowConnectWalletModal] = useConnectWalletModal();
   const { data: stakingPoolData } = useStakingPoolData(vaultOption);
   const decimals = getAssetDecimals(getAssets(vaultOption));
