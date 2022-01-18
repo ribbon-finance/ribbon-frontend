@@ -56,9 +56,6 @@ export const VaultVersionList = ["v2", "v1"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">;
 
-export const SubgraphVersionList = [...VaultVersionList, "governance"] as const;
-export type SubgraphVersion = typeof SubgraphVersionList[number];
-
 export const RetailVaultList = [
   "rAAVE-THETA",
   "rAVAX-THETA",
@@ -340,7 +337,7 @@ export const getEtherscanURI = (chainId: number) =>
   BLOCKCHAIN_EXPLORER_URI[chainId as CHAINID];
 
 export const getSubgraphURIForVersion = (
-  version: SubgraphVersion,
+  version: VaultVersion,
   chainId: number
 ) => {
   switch (version) {
@@ -348,8 +345,6 @@ export const getSubgraphURIForVersion = (
       return getSubgraphqlURI();
     case "v2":
       return SUBGRAPH_URI[chainId];
-    case "governance":
-      return getGovernanceSubgraphURI();
   }
 };
 
@@ -576,18 +571,16 @@ export const LidoOracleAddress = isDevelopment()
   ? ""
   : addresses.mainnet.lidoOracle;
 
-export const SUBGRAPHS_TO_QUERY: [SubgraphVersion, CHAINID][] = isDevelopment()
+export const SUBGRAPHS_TO_QUERY: [VaultVersion, CHAINID][] = isDevelopment()
   ? [
       ["v1", CHAINID.ETH_KOVAN],
       ["v2", CHAINID.ETH_KOVAN],
       ["v2", CHAINID.AVAX_FUJI],
-      ["governance", CHAINID.ETH_KOVAN],
     ]
   : [
       ["v1", CHAINID.ETH_MAINNET],
       ["v2", CHAINID.ETH_MAINNET],
       ["v2", CHAINID.AVAX_MAINNET],
-      ["governance", CHAINID.ETH_MAINNET],
     ];
 
 export const RibbonTreasuryAddress = {

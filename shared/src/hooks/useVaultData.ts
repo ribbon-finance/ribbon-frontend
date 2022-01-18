@@ -1,7 +1,6 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { useContext } from "react";
 import {
-  SubgraphVersion,
   VaultAddressMap,
   VaultList,
   VaultOptions,
@@ -37,7 +36,7 @@ export const vaultGraphql = (version: VaultVersion, chainId: number) =>
   }, "");
 
 export const resolveVaultsSubgraphResponse = (
-  responses: { [version in SubgraphVersion]: any | undefined }
+  responses: { [version in VaultVersion]: any | undefined }
 ): VaultsSubgraphData =>
   Object.fromEntries(
     VaultVersionList.map((version) => [
@@ -66,7 +65,7 @@ export const useVaultsSubgraphData = () => {
   const contextData = useContext(SubgraphDataContext);
 
   return {
-    data: contextData.vaults,
-    loading: contextData.loading,
+    data: contextData.vaultSubgraphData.vaults,
+    loading: contextData.vaultSubgraphData.loading,
   };
 };

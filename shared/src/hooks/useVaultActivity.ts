@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { BigNumber } from "ethers";
 
 import {
-  SubgraphVersion,
   VaultAddressMap,
   VaultList,
   VaultOptions,
@@ -62,7 +61,7 @@ export const vaultActivitiesGraphql = (
   }, "");
 
 export const resolveVaultActivitiesSubgraphResponse = (
-  responses: { [version in SubgraphVersion]: any | undefined }
+  responses: { [version in VaultVersion]: any | undefined }
 ): VaultActivitiesData =>
   Object.fromEntries(
     VaultVersionList.map((version) => [
@@ -114,8 +113,8 @@ export const useAllVaultActivities = () => {
   const contextData = useContext(SubgraphDataContext);
 
   return {
-    activities: contextData.vaultActivities,
-    loading: contextData.loading,
+    activities: contextData.vaultSubgraphData.vaultActivities,
+    loading: contextData.vaultSubgraphData.loading,
   };
 };
 
@@ -126,8 +125,9 @@ const useVaultActivity = (
   const contextData = useContext(SubgraphDataContext);
 
   return {
-    activities: contextData.vaultActivities[vaultVersion][vault],
-    loading: contextData.loading,
+    activities:
+      contextData.vaultSubgraphData.vaultActivities[vaultVersion][vault],
+    loading: contextData.vaultSubgraphData.loading,
   };
 };
 

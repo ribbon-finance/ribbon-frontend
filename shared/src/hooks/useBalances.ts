@@ -1,11 +1,7 @@
 import { BigNumber } from "ethers";
 import { useContext } from "react";
 
-import {
-  SubgraphVersion,
-  VaultVersion,
-  VaultVersionList,
-} from "../constants/constants";
+import { VaultVersion, VaultVersionList } from "../constants/constants";
 import { BalanceUpdate } from "../models/vault";
 import { SubgraphDataContext } from "./subgraphDataContext";
 
@@ -28,7 +24,7 @@ export const balancesGraphql = (account: string, version: VaultVersion) => `
 `;
 
 export const resolveBalancesSubgraphResponse = (
-  responses: { [version in SubgraphVersion]: any | undefined }
+  responses: { [version in VaultVersion]: any | undefined }
 ): BalanceUpdate[] =>
   VaultVersionList.flatMap((version) =>
     responses[version] && responses[version].balanceUpdates
@@ -44,7 +40,7 @@ export const resolveBalancesSubgraphResponse = (
 const useBalances = (before?: number, after?: number) => {
   const contextData = useContext(SubgraphDataContext);
 
-  let balances = contextData.balances;
+  let balances = contextData.vaultSubgraphData.balances;
   balances = before
     ? balances.filter((balance) => balance.timestamp <= before)
     : balances;
@@ -54,7 +50,7 @@ const useBalances = (before?: number, after?: number) => {
 
   return {
     balances: balances,
-    loading: contextData.loading,
+    loading: contextData.vaultSubgraphData.loading,
   };
 };
 

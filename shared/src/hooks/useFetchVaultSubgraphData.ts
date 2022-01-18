@@ -5,12 +5,12 @@ import { useWeb3React } from "@web3-react/core";
 import {
   getSubgraphURIForVersion,
   SUBGRAPHS_TO_QUERY,
-  SubgraphVersion,
-  SubgraphVersionList,
+  VaultVersion,
+  VaultVersionList,
 } from "../constants/constants";
 import {
-  defaultSubgraphData,
-  SubgraphDataContextType,
+  defaultVaultSubgraphData,
+  VaultSubgraphDataContextType,
 } from "./subgraphDataContext";
 import { impersonateAddress } from "../utils/development";
 import {
@@ -31,22 +31,18 @@ import {
   vaultActivitiesGraphql,
 } from "./useVaultActivity";
 import {
-  rbnTokenGraphql,
-  resolveRBNTokenAccountSubgraphResponse,
-  resolveRBNTokenSubgraphResponse,
-} from "./useRBNTokenSubgraph";
-import {
   vaultPriceHistoryGraphql,
   resolveVaultPriceHistorySubgraphResponse,
 } from "./useVaultPerformanceUpdate";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { resolveVaultsSubgraphResponse, vaultGraphql } from "./useVaultData";
 
-const useFetchSubgraphData = () => {
+const useFetchVaultSubgraphData = () => {
   const { account: acc } = useWeb3React();
   const account = impersonateAddress || acc;
-  const [data, setData] =
-    useState<SubgraphDataContextType>(defaultSubgraphData);
+  const [data, setData] = useState<VaultSubgraphDataContextType>(
+    defaultVaultSubgraphData
+  );
   const { transactionsCounter } = usePendingTransactions();
   const [, setMulticallCounter] = useState(0);
 
@@ -66,16 +62,10 @@ const useFetchSubgraphData = () => {
 
     const allSubgraphResponses = await Promise.all(
       SUBGRAPHS_TO_QUERY.map(async ([version, chainId]) => {
-        let query;
-
-        switch (version) {
-          case "governance":
-            query = `{
-              ${rbnTokenGraphql(account, version)}
-            }`;
-            break;
-          default:
-            query = `{
+        const response = await axios.post(
+          getSubgraphURIForVersion(version, chainId),
+          {
+            query: `{
                 ${
                   account
                     ? `
@@ -88,14 +78,7 @@ const useFetchSubgraphData = () => {
                 ${vaultGraphql(version, chainId)}
                 ${vaultActivitiesGraphql(version, chainId)}
                 ${vaultPriceHistoryGraphql(version, chainId)}
-              }`.replaceAll(" ", "");
-            break;
-        }
-
-        const response = await axios.post(
-          getSubgraphURIForVersion(version, chainId),
-          {
-            query,
+              }`.replaceAll(" ", ""),
           }
         );
         return [version, response.data.data];
@@ -104,9 +87,9 @@ const useFetchSubgraphData = () => {
 
     // Group all the responses of the same version together
     // Merge them without overriding the previous properties
-    const responsesAcrossVersions: Record<SubgraphVersion, any> =
+    const responsesAcrossVersions: Record<VaultVersion, any> =
       Object.fromEntries(
-        SubgraphVersionList.map((version: SubgraphVersion) => {
+        VaultVersionList.map((version: VaultVersion) => {
           const mergedResponse: any = {};
 
           const responsesForVersion = allSubgraphResponses
@@ -130,7 +113,7 @@ const useFetchSubgraphData = () => {
 
           return [version, mergedResponse];
         })
-      ) as Record<SubgraphVersion, any>;
+      ) as Record<VaultVersion, any>;
 
     setMulticallCounter((counter) => {
       if (counter === currentCounter) {
@@ -145,10 +128,6 @@ const useFetchSubgraphData = () => {
           ),
           balances: resolveBalancesSubgraphResponse(responsesAcrossVersions),
           transactions: resolveTransactionsSubgraphResponse(
-            responsesAcrossVersions
-          ),
-          rbnToken: resolveRBNTokenSubgraphResponse(responsesAcrossVersions),
-          rbnTokenAccount: resolveRBNTokenAccountSubgraphResponse(
             responsesAcrossVersions
           ),
           vaultPriceHistory: resolveVaultPriceHistorySubgraphResponse(
@@ -173,4 +152,4 @@ const useFetchSubgraphData = () => {
   return data;
 };
 
-export default useFetchSubgraphData;
+export default useFetchVaultSubgraphData;

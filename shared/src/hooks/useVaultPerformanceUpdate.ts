@@ -2,7 +2,6 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { useContext } from "react";
 
 import {
-  SubgraphVersion,
   VaultAddressMap,
   VaultList,
   VaultOptions,
@@ -44,7 +43,7 @@ export const vaultPriceHistoryGraphql = (
 };
 
 export const resolveVaultPriceHistorySubgraphResponse = (
-  responses: { [version in SubgraphVersion]: any | undefined }
+  responses: { [version in VaultVersion]: any | undefined }
 ): VaultPriceHistoriesData =>
   Object.fromEntries(
     VaultVersionList.map((version) => [
@@ -82,16 +81,19 @@ const useVaultPriceHistory = (
   const contextData = useContext(SubgraphDataContext);
 
   return {
-    priceHistory: contextData.vaultPriceHistory[vaultVersion][vaultOption],
-    loading: contextData.loading,
+    priceHistory:
+      contextData.vaultSubgraphData.vaultPriceHistory[vaultVersion][
+        vaultOption
+      ],
+    loading: contextData.vaultSubgraphData.loading,
   };
 };
 
 export const useVaultsPriceHistory = () => {
   const contextData = useContext(SubgraphDataContext);
   return {
-    data: contextData.vaultPriceHistory,
-    loading: contextData.loading,
+    data: contextData.vaultSubgraphData.vaultPriceHistory,
+    loading: contextData.vaultSubgraphData.loading,
   };
 };
 

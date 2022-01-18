@@ -2,7 +2,6 @@ import { BigNumber } from "ethers";
 import { useContext } from "react";
 
 import {
-  SubgraphVersion,
   VaultAddressMap,
   VaultList,
   VaultOptions,
@@ -44,7 +43,7 @@ export const vaultAccountsGraphql = (account: string, version: VaultVersion) =>
   }, "");
 
 export const resolveVaultAccountsSubgraphResponse = (
-  responses: { [version in SubgraphVersion]: any | undefined }
+  responses: { [version in VaultVersion]: any | undefined }
 ): VaultAccountsData =>
   Object.fromEntries(
     VaultVersionList.map((version) => [
@@ -95,7 +94,10 @@ export const resolveVaultAccountsSubgraphResponse = (
 export const useAllVaultAccounts = () => {
   const contextData = useContext(SubgraphDataContext);
 
-  return { data: contextData.vaultAccounts, loading: contextData.loading };
+  return {
+    data: contextData.vaultSubgraphData.vaultAccounts,
+    loading: contextData.vaultSubgraphData.loading,
+  };
 };
 
 const useVaultAccounts = (variant: VaultVersion | "all") => {
@@ -109,7 +111,7 @@ const useVaultAccounts = (variant: VaultVersion | "all") => {
             vault,
             VaultVersionList.reduce((acc, version) => {
               const currentVersionVaultAccount =
-                contextData.vaultAccounts[version][vault];
+                contextData.vaultSubgraphData.vaultAccounts[version][vault];
 
               if (!acc) {
                 return currentVersionVaultAccount;
@@ -144,8 +146,8 @@ const useVaultAccounts = (variant: VaultVersion | "all") => {
       };
     default:
       return {
-        vaultAccounts: contextData.vaultAccounts[variant],
-        loading: contextData.loading,
+        vaultAccounts: contextData.vaultSubgraphData.vaultAccounts[variant],
+        loading: contextData.vaultSubgraphData.loading,
       };
   }
 };
