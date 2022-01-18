@@ -8,7 +8,7 @@ export const portfolioTransactionActivityFilters = [
   "unstake",
   "transfer",
   "receive",
-  "distribute"
+  "distribute",
 ] as const;
 export const portfolioTransactionSortByList = [
   "latest first",

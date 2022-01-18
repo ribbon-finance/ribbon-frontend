@@ -9,9 +9,23 @@
     "treasury"
   ],
   "devDependencies": {
-    "husky": "^6.0.0"
+    "husky": "^7.0.4",
+    "lint-staged": "^12.1.7",
+    "prettier": "2.5.1"
   },
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "prettier:all": "prettier --write '*/src/**/*.{ts,tsx}'",
+    "prettier:check": "prettier --check '*/src/**/*.{ts,tsx}'"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*/src/**/*.(ts|tsx)": [
+      "yarn prettier:all"
+    ]
   }
 }

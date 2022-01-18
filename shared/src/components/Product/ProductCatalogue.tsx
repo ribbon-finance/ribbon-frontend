@@ -56,7 +56,11 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
           }
 
           const availableVaultVersions = VaultVersionList.filter((version) =>
-            hasVaultVersion(vaultOption, version, chainId || CHAINID.ETH_MAINNET)
+            hasVaultVersion(
+              vaultOption,
+              version,
+              chainId || CHAINID.ETH_MAINNET
+            )
           );
 
           // If vault only has one available version
@@ -159,7 +163,14 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
     }
 
     return filteredList;
-  }, [chainId, filterAssets, filterStrategies, sort, vaultsDisplayVersion, yieldsData]);
+  }, [
+    chainId,
+    filterAssets,
+    filterStrategies,
+    sort,
+    vaultsDisplayVersion,
+    yieldsData,
+  ]);
 
   return width > sizes.md ? (
     <DesktopProductCatalogue

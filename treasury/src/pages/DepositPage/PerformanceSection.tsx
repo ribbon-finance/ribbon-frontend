@@ -9,9 +9,10 @@ import {
   VaultFees,
 } from "shared/lib/constants/constants";
 import { SecondaryText, Title } from "shared/lib/designSystem";
-import StrategySnapshot, { EmptyStrategySnapshot } from "../../components/Deposit/StrategySnapshot";
+import StrategySnapshot, {
+  EmptyStrategySnapshot,
+} from "../../components/Deposit/StrategySnapshot";
 import sizes from "shared/lib/designSystem/sizes";
-
 
 const Paragraph = styled.div`
   margin-bottom: 64px;
@@ -50,20 +51,18 @@ interface PerformanceSectionProps {
   active: boolean;
 }
 
-
 const PerformanceSection: React.FC<PerformanceSectionProps> = ({
   vault,
   active,
 }) => {
   const renderWithdrawalsSection = (
     <>
-      Once user funds have been used in the vault's strategy, they
-      cannot be withdrawn until the vault closes its position in the following round.
+      Once user funds have been used in the vault's strategy, they cannot be
+      withdrawn until the vault closes its position in the following round.
       <br />
       <br />
-      Users can withdraw their funds instantly during the
-      timelock period where the vault closes its previous position and
-      opens its new position.{" "}
+      Users can withdraw their funds instantly during the timelock period where
+      the vault closes its previous position and opens its new position.{" "}
     </>
   );
 
@@ -74,45 +73,41 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           <>
             <Paragraph>
               <ParagraphHeading>Strategy Snapshot</ParagraphHeading>
-              <EmptyStrategySnapshot/>
+              <EmptyStrategySnapshot />
             </Paragraph>
           </>
         )}
-  
+
         {active && (
           <Paragraph>
             <ParagraphHeading>Withdrawals</ParagraphHeading>
-            <ParagraphText>
-              {renderWithdrawalsSection}
-            </ParagraphText>
+            <ParagraphText>{renderWithdrawalsSection}</ParagraphText>
           </Paragraph>
         )}
-  
-        {(
+
+        {
           <Paragraph>
             <ParagraphHeading>FEE STRUCTURE</ParagraphHeading>
             <ParagraphText>
-              The vault fee structure consists of a{" "}
-              2% annualised management
-              fee and a 10% performance
-              fee.
+              The vault fee structure consists of a 2% annualised management fee
+              and a 10% performance fee.
               <br />
               <br />
-              The performance fee is
-              charged on the premiums earned in USDC and the management fee is
-              charged on the assets managed by the vault.
+              The performance fee is charged on the premiums earned in USDC and
+              the management fee is charged on the assets managed by the vault.
             </ParagraphText>
           </Paragraph>
-        )}
-  
+        }
+
         <Paragraph>
           <ParagraphHeading>Risk</ParagraphHeading>
           <ParagraphText>
             {treasuryCopy.vaultRisk}
-              <br />
-              <br />
-              The Treasury Vault smart contracts have not been audited. Users are advised to exercise caution and only risk
-              funds they can afford to lose.
+            <br />
+            <br />
+            The Treasury Vault smart contracts have not been audited. Users are
+            advised to exercise caution and only risk funds they can afford to
+            lose.
           </ParagraphText>
         </Paragraph>
       </Container>
@@ -127,7 +122,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
         <>
           <Paragraph>
             <ParagraphHeading>Strategy Snapshot</ParagraphHeading>
-            <StrategySnapshot vault={vault}/>
+            <StrategySnapshot vault={vault} />
           </Paragraph>
         </>
       )}
@@ -135,9 +130,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       {active && (
         <Paragraph>
           <ParagraphHeading>Withdrawals</ParagraphHeading>
-          <ParagraphText>
-            {renderWithdrawalsSection}
-          </ParagraphText>
+          <ParagraphText>{renderWithdrawalsSection}</ParagraphText>
         </Paragraph>
       )}
 
@@ -151,9 +144,8 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
             fee.
             <br />
             <br />
-            The performance fee is
-            charged on the premiums earned in USDC and the management fee is
-            charged on the assets managed by the vault.
+            The performance fee is charged on the premiums earned in USDC and
+            the management fee is charged on the assets managed by the vault.
           </ParagraphText>
         </Paragraph>
       )}
@@ -162,10 +154,11 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
         <ParagraphHeading>Risk</ParagraphHeading>
         <ParagraphText>
           {productCopies[vaultOption].vaultRisk}
-            <br />
-            <br />
-            The Treasury Vault smart contracts have not been audited. Users are advised to exercise caution and only risk
-            funds they can afford to lose.
+          <br />
+          <br />
+          The Treasury Vault smart contracts have not been audited. Users are
+          advised to exercise caution and only risk funds they can afford to
+          lose.
         </ParagraphText>
       </Paragraph>
     </Container>

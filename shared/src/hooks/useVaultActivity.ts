@@ -60,9 +60,9 @@ export const vaultActivitiesGraphql = (
     );
   }, "");
 
-export const resolveVaultActivitiesSubgraphResponse = (
-  responses: { [version in VaultVersion]: any | undefined }
-): VaultActivitiesData =>
+export const resolveVaultActivitiesSubgraphResponse = (responses: {
+  [version in VaultVersion]: any | undefined;
+}): VaultActivitiesData =>
   Object.fromEntries(
     VaultVersionList.map((version) => [
       version,

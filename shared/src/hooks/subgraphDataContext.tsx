@@ -63,19 +63,20 @@ export const SubgraphDataContext = React.createContext<SubgraphDataContextType>(
   }
 );
 
-export const SubgraphDataContextProvider: React.FC<{ children: ReactElement }> =
-  ({ children }) => {
-    const vaultSubgraphData = useFetchVaultSubgraphData();
-    const governanceSubgraphData = useFetchGovernanceSubgraphData();
+export const SubgraphDataContextProvider: React.FC<{
+  children: ReactElement;
+}> = ({ children }) => {
+  const vaultSubgraphData = useFetchVaultSubgraphData();
+  const governanceSubgraphData = useFetchGovernanceSubgraphData();
 
-    return (
-      <SubgraphDataContext.Provider
-        value={{
-          vaultSubgraphData,
-          governanceSubgraphData,
-        }}
-      >
-        {children}
-      </SubgraphDataContext.Provider>
-    );
-  };
+  return (
+    <SubgraphDataContext.Provider
+      value={{
+        vaultSubgraphData,
+        governanceSubgraphData,
+      }}
+    >
+      {children}
+    </SubgraphDataContext.Provider>
+  );
+};

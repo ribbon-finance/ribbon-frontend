@@ -19,7 +19,11 @@ import {
 } from "shared/lib/hooks/useAssetPrice";
 import useBalances from "shared/lib/hooks/useBalances";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import { assetToFiat, formatBigNumber, formatSignificantDecimals } from "shared/lib/utils/math";
+import {
+  assetToFiat,
+  formatBigNumber,
+  formatSignificantDecimals,
+} from "shared/lib/utils/math";
 import PerformanceChart from "../PerformanceChart/PerformanceChart";
 import { HoverInfo } from "../PerformanceChart/types";
 import sizes from "shared/lib/designSystem/sizes";
@@ -178,22 +182,28 @@ const PortfolioPerformance = () => {
   const { balances: subgraphBalanceUpdates, loading: balanceUpdatesLoading } =
     useBalances(undefined, afterDate ? afterDate.unix() : undefined);
   const loading =
-    assetsPriceLoading || balanceUpdatesLoading || transactionsLoading || RBNTokenAccountLoading;
+    assetsPriceLoading ||
+    balanceUpdatesLoading ||
+    transactionsLoading ||
+    RBNTokenAccountLoading;
   const animatedLoadingText = useTextAnimation(loading);
 
-  const premiumDecimals = getAssetDecimals("USDC")
+  const premiumDecimals = getAssetDecimals("USDC");
 
   const totalYield = useMemo(() => {
     const yields = active
-    ? transactions.filter(transaction => transaction.type === "distribute")
-      .reduce((total, transaction) =>
-        total.add(transaction.amount), BigNumber.from(0))
-    : BigNumber.from(0);
+      ? transactions
+          .filter((transaction) => transaction.type === "distribute")
+          .reduce(
+            (total, transaction) => total.add(transaction.amount),
+            BigNumber.from(0)
+          )
+      : BigNumber.from(0);
 
     return parseFloat(
       formatSignificantDecimals(formatUnits(yields, premiumDecimals), 2)
     );
-  }, [transactions, active, premiumDecimals])
+  }, [transactions, active, premiumDecimals]);
   /**
    * We first process and add several additional metrices that is useful for further calculation
    * - Net deposit
@@ -603,7 +613,9 @@ const PortfolioPerformance = () => {
             >
               ${totalYield}
             </KPIText>
-            <DepositCurrency>{active && !loading ? "USDC" : ""}</DepositCurrency>
+            <DepositCurrency>
+              {active && !loading ? "USDC" : ""}
+            </DepositCurrency>
           </KPI>
         </KPIColumn>
         <KPIColumn>

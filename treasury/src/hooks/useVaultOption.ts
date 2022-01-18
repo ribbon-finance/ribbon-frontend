@@ -6,7 +6,7 @@ import {
   VaultNameOptionMap,
   VaultOptions,
   VaultVersion,
-  VaultList
+  VaultList,
 } from "shared/lib/constants/constants";
 
 const useVaultOption = () => {
@@ -17,11 +17,14 @@ const useVaultOption = () => {
     VaultOptions | undefined,
     VaultVersion
   ] => {
-    
     if (
       matchv2?.params.vaultSymbol &&
       matchv2.params.vaultSymbol in VaultNameOptionMap &&
-      VaultList.indexOf(VaultNameOptionMap[matchv2?.params.vaultSymbol as VaultName] as typeof VaultList[number]) > -1
+      VaultList.indexOf(
+        VaultNameOptionMap[
+          matchv2?.params.vaultSymbol as VaultName
+        ] as typeof VaultList[number]
+      ) > -1
     ) {
       return [
         VaultNameOptionMap[matchv2?.params.vaultSymbol as VaultName],

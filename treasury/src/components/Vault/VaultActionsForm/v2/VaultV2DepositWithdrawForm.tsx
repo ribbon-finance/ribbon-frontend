@@ -406,7 +406,6 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
         {formContent}
         {formInfoText}
       </div>
-
     </>
   );
 };

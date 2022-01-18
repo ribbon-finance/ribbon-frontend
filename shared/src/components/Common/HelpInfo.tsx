@@ -23,19 +23,16 @@ interface HelpInfoProps {
   color?: string;
 }
 
-const HelpInfo: React.FC<React.HTMLAttributes<HTMLDivElement> & HelpInfoProps> =
-  ({ children, containerRef, color, ...props }) => {
-    return (
-      <HelpContainer color={color} {...props} ref={containerRef}>
-        <SecondaryText
-          fontSize={10}
-          lineHeight={12}
-          color={color || colors.text}
-        >
-          {children}
-        </SecondaryText>
-      </HelpContainer>
-    );
-  };
+const HelpInfo: React.FC<
+  React.HTMLAttributes<HTMLDivElement> & HelpInfoProps
+> = ({ children, containerRef, color, ...props }) => {
+  return (
+    <HelpContainer color={color} {...props} ref={containerRef}>
+      <SecondaryText fontSize={10} lineHeight={12} color={color || colors.text}>
+        {children}
+      </SecondaryText>
+    </HelpContainer>
+  );
+};
 
 export default HelpInfo;

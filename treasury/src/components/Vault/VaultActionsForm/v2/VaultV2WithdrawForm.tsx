@@ -203,8 +203,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
               explanation={
                 <>
                   Standard withdrawals are for funds that have been deployed in
-                  the vault's strategy and involve a 2-step withdrawal
-                  process.
+                  the vault's strategy and involve a 2-step withdrawal process.
                   <br />
                   <br />
                   Step 1: Users need to remove their funds from the vault's pool
@@ -298,13 +297,13 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
                 title="PENDING WITHDRAWALS"
                 explanation={
                   <>
-                    This is the total amount of tokens you’ve requested to withdraw
-                    from the vault’s pool of investable capital.
+                    This is the total amount of tokens you’ve requested to
+                    withdraw from the vault’s pool of investable capital.
                     <br />
                     <br />
                     On the next round's closing, the vault will close its
-                    position and remove the amount of tokens you requested from its
-                    pool of investable capital. You can then complete your
+                    position and remove the amount of tokens you requested from
+                    its pool of investable capital. You can then complete your
                     withdrawal and remove your funds from the vault.
                   </>
                 }

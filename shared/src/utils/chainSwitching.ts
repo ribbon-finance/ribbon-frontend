@@ -1,5 +1,8 @@
 import { providers } from "ethers";
-import { AVALANCHE_MAINNET_PARAMS, AVALANCHE_TESTNET_PARAMS } from "../constants/chainParameters";
+import {
+  AVALANCHE_MAINNET_PARAMS,
+  AVALANCHE_TESTNET_PARAMS,
+} from "../constants/chainParameters";
 import { isAvaxNetwork } from "../constants/constants";
 import { CHAINID } from "./env";
 
@@ -33,7 +36,11 @@ export const switchChains = async (
         try {
           await provider.provider.request({
             method: "wallet_addEthereumChain",
-            params: [chainId === CHAINID.AVAX_MAINNET ? AVALANCHE_MAINNET_PARAMS : AVALANCHE_TESTNET_PARAMS],
+            params: [
+              chainId === CHAINID.AVAX_MAINNET
+                ? AVALANCHE_MAINNET_PARAMS
+                : AVALANCHE_TESTNET_PARAMS,
+            ],
           });
         } catch (addError) {
           // handle "add" error

@@ -2,10 +2,7 @@ import { useWeb3React } from "@web3-react/core";
 import React, { ReactNode, useMemo } from "react";
 import { useHistory } from "react-router";
 
-import {
-  BaseLink,
-  Title,
-} from "shared/lib/designSystem";
+import { BaseLink, Title } from "shared/lib/designSystem";
 import PerformanceSection from "../DepositPage/PerformanceSection";
 import { isProduction } from "shared/lib/utils/env";
 
@@ -24,16 +21,21 @@ const RBNcolor = "#fc0a54";
 
 type SVGProps = React.SVGAttributes<SVGElement>;
 
-export const RBNLogo: React.FC<SVGProps> = ({
-  ...props
-}) => (
+export const RBNLogo: React.FC<SVGProps> = ({ ...props }) => (
   <svg
     viewBox="0 -55 480 480"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-  > 
-    <rect y="-60" width="480" height="480" rx="240" fill="#FC0A54" fill-opacity="0.24"/>
+  >
+    <rect
+      y="-60"
+      width="480"
+      height="480"
+      rx="240"
+      fill="#FC0A54"
+      fill-opacity="0.24"
+    />
     <path
       d="M239.401 86.4L33.0012 301.8C33.0012 301.8 30.2809 296.982 27.7146 292.2C26.5577 290.044 25.4321 287.896 24.6012 286.2C23.4505 283.851 23.1372 283.636 22.2012 281.4C21.2309 279.6 19.8012 276 19.8012 276L19.2012 274.2L239.401 43.8L378.601 187.8L238.201 338.4L216.601 318L337.201 187.8L239.401 86.4Z"
       fill="#FC0A54"
@@ -162,12 +164,14 @@ const HomePage = () => {
   const { active } = useWeb3React();
   const history = useHistory();
   const web3Whitelist = useWhitelist();
-  const whitelist = !isProduction() 
-    ? (active ? "T-PERP-C" : undefined)
+  const whitelist = !isProduction()
+    ? active
+      ? "T-PERP-C"
+      : undefined
     : web3Whitelist;
 
   if (whitelist) {
-    history.push("/treasury/" + whitelist)
+    history.push("/treasury/" + whitelist);
   }
 
   const vaultInformation = (
@@ -182,36 +186,30 @@ const HomePage = () => {
 
   return (
     <>
-      <HeroSection
-        vaultInformation={vaultInformation}
-      />
+      <HeroSection vaultInformation={vaultInformation} />
 
       <DepositPageContainer className="py-5">
         <div className="row">
-          <PerformanceSection
-            active={true}
-          />
+          <PerformanceSection active={true} />
 
           {/* Form for desktop */}
           <DesktopActionsFormContainer className="flex-column col-xl-5 offset-xl-1 col-md-6">
-            <TreasuryActionForm variant="desktop"/>
+            <TreasuryActionForm variant="desktop" />
           </DesktopActionsFormContainer>
         </div>
-
       </DepositPageContainer>
-
     </>
   );
 };
 
 const HeroSection: React.FC<{
   vaultInformation: ReactNode;
-}> = ({vaultInformation}) => {
+}> = ({ vaultInformation }) => {
   const color = RBNcolor;
 
   const logo = useMemo(() => {
     const Logo = RBNLogo;
-    return <Logo />
+    return <Logo />;
   }, []);
 
   const liveryHeroSection = useMemo(() => {
@@ -240,14 +238,8 @@ const HeroSection: React.FC<{
                   </TagPill>
                 ))}
                 <AttributePill className="mr-2 text-uppercase" color={color}>
-                  <BaseLink
-                    to={"/"}
-                    key={"v2"}
-                  >
-                    <AttributeVersionSelector
-                      active={true}
-                      color={color}
-                    >
+                  <BaseLink to={"/"} key={"v2"}>
+                    <AttributeVersionSelector active={true} color={color}>
                       <Title color={color}>v2</Title>
                     </AttributeVersionSelector>
                   </BaseLink>
@@ -272,4 +264,3 @@ const HeroSection: React.FC<{
 };
 
 export default HomePage;
-

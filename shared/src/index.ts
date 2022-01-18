@@ -1,2 +1,2 @@
-const index = {}
+const index = {};
 export default index;

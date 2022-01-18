@@ -133,7 +133,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
     [typeFilteredNotifications]
   );
 
-  const premiumDecimals = getAssetDecimals("USDC")
+  const premiumDecimals = getAssetDecimals("USDC");
 
   /**
    * Ensure empty list does not happen
@@ -157,75 +157,78 @@ const NotificationList: React.FC<NotificationListProps> = ({
     [notificationVaultFilter, typeFilteredNotifications]
   );
 
-  const renderNotificationInfo = useCallback((notification: Notification) => {
-    const asset = getAssets(notification.vault);
-    const decimals = getAssetDecimals(asset);
-    const color = getVaultColor(notification.vault);
+  const renderNotificationInfo = useCallback(
+    (notification: Notification) => {
+      const asset = getAssets(notification.vault);
+      const decimals = getAssetDecimals(asset);
+      const color = getVaultColor(notification.vault);
 
-    const badge = (
-      <NotificationItemVaultPill color={color} className="ml-2">
-        <Subtitle fontSize={10} lineHeight={12} color={color}>
-          {productCopies[notification.vault].title}
-        </Subtitle>
-      </NotificationItemVaultPill>
-    );
+      const badge = (
+        <NotificationItemVaultPill color={color} className="ml-2">
+          <Subtitle fontSize={10} lineHeight={12} color={color}>
+            {productCopies[notification.vault].title}
+          </Subtitle>
+        </NotificationItemVaultPill>
+      );
 
-    let title: string;
-    let body: JSX.Element;
+      let title: string;
+      let body: JSX.Element;
 
-    switch (notification.type) {
-      case "optionMinting":
-        title = "MINTED OPTIONS";
-        body = (
-          <>
-            The vault minted{" "}
-            {formatBigNumber(notification.depositAmount, decimals)} options at a
-            strike price of $
-            {formatOption(notification.strikePrice).toLocaleString()}
-          </>
-        );
-        break;
-      case "optionSale":
-        title = "SOLD OPTIONS";
-        body = (
-          <>
-            The vault sold{" "}
-            {formatOption(notification.sellAmount).toLocaleString()} options for{" "}
-            {formatBigNumber(notification.premium, premiumDecimals)}{" "}
-            {getAssetDisplay("USDC")}
-          </>
-        );
-        break;
-      case "withdrawalReady":
-        title = "WITHDRAWALS READY";
-        body = (
-          <>
-            Your initiated withdrawals of{" "}
-            {formatBigNumber(notification.amount, decimals)}{" "}
-            {getAssetDisplay(asset)} are now ready to withdraw from the vault
-          </>
-        );
-    }
+      switch (notification.type) {
+        case "optionMinting":
+          title = "MINTED OPTIONS";
+          body = (
+            <>
+              The vault minted{" "}
+              {formatBigNumber(notification.depositAmount, decimals)} options at
+              a strike price of $
+              {formatOption(notification.strikePrice).toLocaleString()}
+            </>
+          );
+          break;
+        case "optionSale":
+          title = "SOLD OPTIONS";
+          body = (
+            <>
+              The vault sold{" "}
+              {formatOption(notification.sellAmount).toLocaleString()} options
+              for {formatBigNumber(notification.premium, premiumDecimals)}{" "}
+              {getAssetDisplay("USDC")}
+            </>
+          );
+          break;
+        case "withdrawalReady":
+          title = "WITHDRAWALS READY";
+          body = (
+            <>
+              Your initiated withdrawals of{" "}
+              {formatBigNumber(notification.amount, decimals)}{" "}
+              {getAssetDisplay(asset)} are now ready to withdraw from the vault
+            </>
+          );
+      }
 
-    return (
-      <>
-        <div className="d-flex align-items-center">
-          <Title fontSize={14} lineHeight={24}>
-            {title}
-          </Title>
-          {badge}
-        </div>
-        <PrimaryText
-          fontSize={12}
-          lineHeight={16}
-          color={colors.text}
-          className="mt-1"
-        >
-          {body}
-        </PrimaryText>
-      </>
-    );
-  }, [premiumDecimals]);
+      return (
+        <>
+          <div className="d-flex align-items-center">
+            <Title fontSize={14} lineHeight={24}>
+              {title}
+            </Title>
+            {badge}
+          </div>
+          <PrimaryText
+            fontSize={12}
+            lineHeight={16}
+            color={colors.text}
+            className="mt-1"
+          >
+            {body}
+          </PrimaryText>
+        </>
+      );
+    },
+    [premiumDecimals]
+  );
 
   const getNotificationRedirectQuerystring = useCallback(
     (notification: Notification) => {

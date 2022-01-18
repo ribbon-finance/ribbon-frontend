@@ -89,20 +89,23 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
   const { searchAssetPriceFromTimestamp, loading: assetPriceLoading } =
     useAssetsPriceHistory();
 
-  const premiumDecimals = getAssetDecimals("USDC")
+  const premiumDecimals = getAssetDecimals("USDC");
 
   const { width: screenWidth } = useScreenSize();
   const loadingText = useTextAnimation(assetPriceLoading);
   const { chainId } = useWeb3React();
 
-  const getVaultActivityExternalURL = useCallback((activity: VaultActivity) => {
-    switch (activity.type) {
-      case "minting":
-        return `${getEtherscanURI(chainId || 1)}/tx/${activity.openTxhash}`;
-      case "sales":
-        return `${getEtherscanURI(chainId || 1)}/tx/${activity.txhash}`;
-    }
-  }, [chainId]);
+  const getVaultActivityExternalURL = useCallback(
+    (activity: VaultActivity) => {
+      switch (activity.type) {
+        case "minting":
+          return `${getEtherscanURI(chainId || 1)}/tx/${activity.openTxhash}`;
+        case "sales":
+          return `${getEtherscanURI(chainId || 1)}/tx/${activity.txhash}`;
+      }
+    },
+    [chainId]
+  );
 
   const getVaultActivityTableData = useCallback(
     (activity: VaultActivity) => {
@@ -110,7 +113,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
         "USDC",
         activity.date.valueOf()
       );
-      
+
       switch (activity.type) {
         case "minting":
           return [
@@ -124,8 +127,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
             </>,
             <>
               <VaultPrimaryText>
-                O-{asset} {moment(activity.expiry, "X").format("M/DD")}{" "}
-                {"CALL"}
+                O-{asset} {moment(activity.expiry, "X").format("M/DD")} {"CALL"}
               </VaultPrimaryText>
               <VaultSecondaryText>
                 Strike {formatOption(activity.strikePrice)}

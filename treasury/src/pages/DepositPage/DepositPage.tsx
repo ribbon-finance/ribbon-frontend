@@ -26,7 +26,7 @@ import {
   VaultOptions,
   VaultVersion,
   VaultVersionList,
-  VaultNameOptionMap
+  VaultNameOptionMap,
 } from "shared/lib/constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultOption from "../../hooks/useVaultOption";
@@ -35,7 +35,7 @@ import {
   getAssetColor,
   getAssetDisplay,
   getAssetLogo,
-  getAssetDecimals
+  getAssetDecimals,
 } from "shared/lib/utils/asset";
 import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
@@ -212,35 +212,40 @@ const DepositPage = () => {
   const activities = useVaultActivity(vaultOption!, vaultVersion);
   const web3Whitelist = useWhitelist();
 
-  const whitelist = !isProduction() 
-    ? (active ? "T-PERP-C" : undefined)
+  const whitelist = !isProduction()
+    ? active
+      ? "T-PERP-C"
+      : undefined
     : web3Whitelist;
 
   const depositForm = useMemo(() => {
     if (!vaultOption) {
-      return <TreasuryActionForm variant="desktop"/>
+      return <TreasuryActionForm variant="desktop" />;
     }
-    return whitelist === Object.keys(VaultNameOptionMap)[
-      Object.values(VaultNameOptionMap).indexOf(vaultOption)
-    ]
-      ? <DesktopActionForm vault={{ vaultOption, vaultVersion }}/>
-      : <TreasuryActionForm variant="desktop"/>
-  }, [whitelist, vaultOption, vaultVersion])
+    return whitelist ===
+      Object.keys(VaultNameOptionMap)[
+        Object.values(VaultNameOptionMap).indexOf(vaultOption)
+      ] ? (
+      <DesktopActionForm vault={{ vaultOption, vaultVersion }} />
+    ) : (
+      <TreasuryActionForm variant="desktop" />
+    );
+  }, [whitelist, vaultOption, vaultVersion]);
 
   // Total lifetime yield
   const totalYields = useMemo(() => {
-    const yields = activities.activities.map((activity) => {
-      return (activity.type === "sales")
-          ? Number(activity.premium)
-          : 0
-    }).reduce((totalYield, roundlyYield) => totalYield + roundlyYield, 0) 
+    const yields = activities.activities
+      .map((activity) => {
+        return activity.type === "sales" ? Number(activity.premium) : 0;
+      })
+      .reduce((totalYield, roundlyYield) => totalYield + roundlyYield, 0);
 
     return parseFloat(
       formatSignificantDecimals(formatUnits(yields, premiumDecimals), 2)
     );
-  }, [activities, premiumDecimals])
+  }, [activities, premiumDecimals]);
 
-  const [totalDepositStr ] = useMemo(() => {
+  const [totalDepositStr] = useMemo(() => {
     switch (vaultVersion) {
       case "v1":
         return [

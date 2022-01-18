@@ -257,8 +257,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
               </PositionSecondaryInfoText>
             </PositionInfoRow>
             <KPIContainer>
-              <KPIDatas>
-              </KPIDatas>
+              <KPIDatas></KPIDatas>
             </KPIContainer>
           </PositionInfo>
         </PositionMainContainer>
@@ -269,13 +268,13 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 
 const PortfolioPositions = () => {
   const { active } = useWeb3React();
-  
+
   const {
     data: { v1: v1VaultAccounts, v2: v2VaultAccounts },
     loading,
   } = useAllVaultAccounts();
   const animatedLoadingText = useTextAnimation(loading);
-  
+
   const filteredVaultAccounts = useMemo(() => {
     return Object.fromEntries(
       TreasuryVaultList.map((vaultOption) => [
@@ -302,15 +301,11 @@ const PortfolioPositions = () => {
           })
         ),
       ]).filter((item) => Object.keys(item[1]).length > 0)
-    ) as Partial<
-      {
-        [vault in VaultOptions]: Partial<
-          {
-            [version in VaultVersion]: VaultAccount;
-          }
-        >;
-      }
-    >;
+    ) as Partial<{
+      [vault in VaultOptions]: Partial<{
+        [version in VaultVersion]: VaultAccount;
+      }>;
+    }>;
   }, [v1VaultAccounts, v2VaultAccounts]);
 
   const positionContent = useMemo(() => {

@@ -25,7 +25,6 @@ const useFetchStakingPoolData = (): StakingPoolData => {
   const [data, setData] = useState<StakingPoolData>(defaultStakingPoolData);
   const [, setMulticallCounter] = useState(0);
 
-
   const doMulticall = useCallback(async () => {
     if (!chainId) {
       return;
@@ -46,7 +45,12 @@ const useFetchStakingPoolData = (): StakingPoolData => {
 
     const responses = await Promise.all(
       VaultList.map(async (vault) => {
-        const tokenContract = getERC20Token(library || provider, vault, chainId, active);
+        const tokenContract = getERC20Token(
+          library || provider,
+          vault,
+          chainId,
+          active
+        );
         if (!tokenContract) {
           return { vault };
         }

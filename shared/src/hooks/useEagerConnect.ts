@@ -9,8 +9,8 @@ const useEagerConnect = () => {
   const [tried, setTried] = useState(false);
 
   useEffect(() => {
-    if(tried) {
-      return
+    if (tried) {
+      return;
     }
 
     injectedConnector.isAuthorized().then((isAuthorized: boolean) => {
