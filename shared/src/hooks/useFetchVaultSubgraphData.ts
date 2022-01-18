@@ -57,6 +57,12 @@ const useFetchVaultSubgraphData = () => {
     let currentCounter: number;
     setMulticallCounter((counter) => {
       currentCounter = counter + 1;
+
+      setData((prev) => ({
+        ...prev,
+        loading: true,
+      }));
+
       return currentCounter;
     });
 

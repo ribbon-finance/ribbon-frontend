@@ -107,8 +107,12 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
   );
 
   const inputError = useMemo(() => {
+    console.log(data);
     return Boolean(
-      amountInput && data && parseUnits(amountInput, 18).gt(data.walletBalance)
+      amountInput &&
+        parseUnits(amountInput, 18).gt(
+          data ? data.walletBalance : BigNumber.from(0)
+        )
     );
   }, [amountInput, data]);
 
