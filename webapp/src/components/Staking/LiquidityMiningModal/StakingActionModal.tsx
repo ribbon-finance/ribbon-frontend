@@ -9,7 +9,7 @@ import {
   BLOCKCHAIN_EXPLORER_NAME,
   getAssets,
   getEtherscanURI,
-  VaultOptions,
+  StakingVaultOptions,
 } from "shared/lib/constants/constants";
 import {
   BaseInput,
@@ -111,7 +111,7 @@ interface StakingActionModalProps {
   show: boolean;
   onClose: () => void;
   logo: React.ReactNode;
-  vaultOption: VaultOptions;
+  vaultOption: StakingVaultOptions;
   stakingPoolData: LiquidityMiningPoolResponse;
 }
 

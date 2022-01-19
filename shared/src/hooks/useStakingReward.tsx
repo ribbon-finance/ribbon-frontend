@@ -3,12 +3,15 @@ import { useEffect, useState } from "react";
 
 import { RibbonStakingRewards } from "../codegen";
 import { RibbonStakingRewardsFactory } from "../codegen/RibbonStakingRewardsFactory";
-import { VaultLiquidityMiningMap, VaultOptions } from "../constants/constants";
+import {
+  StakingVaultOptions,
+  VaultLiquidityMiningMap,
+} from "../constants/constants";
 import { useWeb3Context } from "./web3Context";
 
 export const getStakingReward = (
   library: any,
-  vaultOption: VaultOptions,
+  vaultOption: StakingVaultOptions,
   useSigner: boolean = true
 ) => {
   const provider = useSigner ? library.getSigner() : library;
@@ -23,7 +26,7 @@ export const getStakingReward = (
   );
 };
 
-const useStakingReward = (vaultOption: VaultOptions) => {
+const useStakingReward = (vaultOption: StakingVaultOptions) => {
   const { active, library } = useWeb3React();
   const { provider } = useWeb3Context();
   const [stakingReward, setStakingReward] =

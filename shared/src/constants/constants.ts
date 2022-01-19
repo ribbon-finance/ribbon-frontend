@@ -95,12 +95,17 @@ export const RetailVaultList = [
   "rAURORA-THETA",
   "rNEAR-THETA",
   "rUSDC-ETH-P-THETA",
-  "rSOL-THETA",
 ] as const;
+
+export const SolanaVaultList = ["rSOL-THETA"] as const;
 
 export const TreasuryVaultList = ["rPERP-TSRY"] as const;
 
-const AllVaultOptions = [...RetailVaultList, ...TreasuryVaultList];
+const AllVaultOptions = [
+  ...RetailVaultList,
+  ...TreasuryVaultList,
+  ...SolanaVaultList,
+];
 
 export type VaultOptions = typeof AllVaultOptions[number];
 const ProdExcludeVault: VaultOptions[] = [
@@ -114,6 +119,10 @@ const PutThetaVault: VaultOptions[] = [
   "ryvUSDC-ETH-P-THETA",
   "rUSDC-AVAX-P-THETA",
 ];
+
+export const StakingVaultList = RetailVaultList;
+
+export type StakingVaultOptions = typeof StakingVaultList[number];
 
 // @ts-ignore
 export const VaultList: VaultOptions[] = isTreasury()
