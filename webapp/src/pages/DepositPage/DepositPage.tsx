@@ -350,6 +350,8 @@ const HeroSection: React.FC<{
         return <Logo showBackground />;
       case "WAVAX":
         return <Logo showBackground />;
+      case "SOL":
+        return <Logo showBackground height="100%" width="100%" />;
       default:
         return <Logo />;
     }

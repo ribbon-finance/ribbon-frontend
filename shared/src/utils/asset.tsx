@@ -11,6 +11,7 @@ import {
   PERPLogo,
 } from "../assets/icons/erc20Assets";
 import Logo from "../assets/icons/logo";
+import { SolanaLogo } from "../assets/icons/solAssets";
 import colors from "../designSystem/colors";
 import { Assets } from "../store/types";
 
@@ -140,6 +141,8 @@ export const getAssetLogo: (asset: Assets) =>
       return WAVAXLogo;
     case "PERP":
       return PERPLogo;
+    case "SOL":
+      return SolanaLogo;
     default:
       return Logo;
   }

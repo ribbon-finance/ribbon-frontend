@@ -15,6 +15,7 @@ export const AssetsList = [
   "RBN",
   "veRBN",
   "LDO",
+  "SOL",
 ] as const;
 export type Assets = typeof AssetsList[number];
 

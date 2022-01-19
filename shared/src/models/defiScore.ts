@@ -14,6 +14,7 @@ export const DefiScoreTokenList = [
   "usdt",
   "wbtc",
   "zrx",
+  "sol",
 ] as const;
 export type DefiScoreToken = typeof DefiScoreTokenList[number];
 

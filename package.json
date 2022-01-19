@@ -15,6 +15,7 @@
   },
   "scripts": {
     "prepare": "husky install",
+    "prettier:w": "prettier --write",
     "prettier:all": "prettier --write '*/src/**/*.{ts,tsx}'",
     "prettier:check": "prettier --check '*/src/**/*.{ts,tsx}'"
   },
