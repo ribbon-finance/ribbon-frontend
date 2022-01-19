@@ -71,7 +71,7 @@ export const TreasuryVaultList = ["rPERP-TSRY"] as const;
 const AllVaultOptions = [...RetailVaultList, ...TreasuryVaultList];
 
 export type VaultOptions = typeof AllVaultOptions[number];
-const ProdExcludeVault: VaultOptions[] = [];
+const ProdExcludeVault: VaultOptions[] = ["rSOL-THETA"];
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
   "ryvUSDC-ETH-P-THETA",
