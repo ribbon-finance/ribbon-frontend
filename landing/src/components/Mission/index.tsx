@@ -94,12 +94,6 @@ const Mission = () => {
           </MissionSubtitle>
         </Col>
       </MissionSubtitleRow>
-
-      <Row>
-        <Col>
-          <StyledWaves />
-        </Col>
-      </Row>
     </MainContainer>
   );
 };

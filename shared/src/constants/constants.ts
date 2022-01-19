@@ -436,7 +436,7 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "rETH-THETA": ["WETH"],
     "rAVAX-THETA": ["WAVAX"],
     "rUSDC-ETH-P-THETA": ["USDC"],
-    "rstETH-THETA": ["stETH", "WETH"],
+    "rstETH-THETA": ["WETH", "stETH"],
     "ryvUSDC-ETH-P-THETA": ["USDC"],
     "rPERP-TSRY": ["PERP"],
     "rSOL-THETA": ["SOL"],

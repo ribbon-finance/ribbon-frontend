@@ -9,7 +9,6 @@ import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 import useScreenSize from "../../hooks/useScreenSize";
-import { AssetsList } from "../../store/types";
 import {
   getAssetColor,
   getAssetDisplay,
@@ -24,6 +23,7 @@ import SwitchViewButton from "./Shared/SwitchViewButton";
 import YieldFrame from "./Theta/YieldFrame";
 import {
   DesktopViewType,
+  FilterAssets,
   VaultFilterProps,
   VaultsDisplayVersionProps,
   VaultSortBy,
@@ -221,7 +221,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
                       name: "asset",
                       title: "DEPOSIT ASSET",
                       values: filterAssets,
-                      options: AssetsList.map((asset) => {
+                      options: FilterAssets.map((asset) => {
                         const Logo = getAssetLogo(asset);
                         let logo = <Logo height="100%" />;
                         switch (asset) {
