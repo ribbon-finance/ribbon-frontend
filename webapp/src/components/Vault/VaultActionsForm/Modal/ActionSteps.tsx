@@ -22,7 +22,10 @@ import { amountAfterSlippage } from "shared/lib/utils/math";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
-import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import {
+  useVaultData,
+  useV2VaultData,
+} from "../../../../hooks/web3DataContext";
 import useV2Vault from "shared/lib/hooks/useV2Vault";
 import WarningStep from "./WarningStep";
 import { getCurvePool } from "shared/lib/hooks/useCurvePool";
