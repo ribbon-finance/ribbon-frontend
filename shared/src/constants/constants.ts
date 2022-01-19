@@ -99,10 +99,12 @@ export const RetailVaultList = [
 
 export const SolanaVaultList = ["rSOL-THETA"] as const;
 
+const RetailVaultList = [...EVMVaultList, ...SolanaVaultList];
+
 export const TreasuryVaultList = ["rPERP-TSRY"] as const;
 
 const AllVaultOptions = [
-  ...RetailVaultList,
+  ...EVMVaultList,
   ...TreasuryVaultList,
   ...SolanaVaultList,
 ];
@@ -120,7 +122,7 @@ const PutThetaVault: VaultOptions[] = [
   "rUSDC-AVAX-P-THETA",
 ];
 
-export const StakingVaultList = RetailVaultList;
+export const StakingVaultList = EVMVaultList;
 
 export type StakingVaultOptions = typeof StakingVaultList[number];
 

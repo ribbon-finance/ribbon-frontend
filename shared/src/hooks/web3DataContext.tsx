@@ -16,6 +16,8 @@ import {
   VaultData,
   V2VaultData,
   defaultVaultData,
+  defaultSolanaVaultData,
+  SolanaVaultData,
 } from "../models/vault";
 import { Assets } from "../store/types";
 import { getAssetDecimals } from "../utils/asset";
@@ -36,10 +38,12 @@ import useFetchTreasuryBalanceData, {
   TreasuryBalanceData,
 } from "./useFetchTreasuryBalanceData";
 import useFetchLiquidityGaugeV5Data from "./useFetchLiquidityGaugeV5Data";
+import useFetchSolVaultData from "./useFetchSolVaultData";
 
 export type Web3DataContextType = {
   v1: VaultData;
   v2: V2VaultData;
+  solana: SolanaVaultData;
   assetBalance: UserAssetBalanceData;
   liquidityMiningPool: LiquidityMiningPoolData;
   liquidityGaugeV5Pool: LiquidityGaugeV5PoolData;
@@ -50,6 +54,7 @@ export type Web3DataContextType = {
 export const Web3DataContext = React.createContext<Web3DataContextType>({
   v1: defaultVaultData,
   v2: defaultV2VaultData,
+  solana: defaultSolanaVaultData,
   assetBalance: defaultUserAssetBalanceData,
   liquidityMiningPool: defaultLiquidityMiningPoolData,
   liquidityGaugeV5Pool: defaultLiquidityGaugeV5PoolData,
@@ -86,8 +91,8 @@ export const useV2VaultsData = () => {
   const contextData = useContext(Web3DataContext);
 
   return {
-    data: contextData.v2.responses,
-    loading: contextData.v2.loading,
+    data: { ...contextData.v2.responses, ...contextData.solana.responses },
+    loading: contextData.v2.loading && contextData.solana.loading,
   };
 };
 
@@ -158,6 +163,7 @@ export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({
 }) => {
   const vaultData = useFetchVaultData();
   const v2VaultData = useFetchV2VaultData();
+  const solVaultData = useFetchSolVaultData();
   const assetBalance = useFetchAssetBalanceData();
   const liquidityGaugeV5Pool = useFetchLiquidityGaugeV5Data();
   const liquidityMiningPool = useFetchLiquidityMiningData();
@@ -169,6 +175,7 @@ export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({
       value={{
         v1: vaultData,
         v2: v2VaultData,
+        solana: solVaultData,
         assetBalance,
         liquidityGaugeV5Pool,
         liquidityMiningPool,
