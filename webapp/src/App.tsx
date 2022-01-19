@@ -9,6 +9,7 @@ import { WalletProvider as SolanaWalletProvider } from "@solana/wallet-adapter-r
 
 import RootApp from "./components/RootApp";
 import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
+import { ConnectionProvider } from "@solana/wallet-adapter-react";
 import { getLibrary } from "shared/lib/utils/getLibrary";
 import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContext";
 import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContext";
@@ -25,21 +26,23 @@ function App() {
 
   return (
     <ChainContextProvider>
-      <SolanaWalletProvider wallets={SOLANA_WALLETS} autoConnect>
-        <Web3ContextProvider>
-          <Web3ReactProvider getLibrary={getLibrary}>
-            <PendingTransactionsContextProvider>
-              <Web3DataContextProvider>
-                <SubgraphDataContextProvider>
-                  <ExternalAPIDataContextProvider>
-                    <RootApp />
-                  </ExternalAPIDataContextProvider>
-                </SubgraphDataContextProvider>
-              </Web3DataContextProvider>
-            </PendingTransactionsContextProvider>
-          </Web3ReactProvider>
-        </Web3ContextProvider>
-      </SolanaWalletProvider>
+      <ConnectionProvider endpoint="http://127.0.0.1:8899">
+        <SolanaWalletProvider wallets={SOLANA_WALLETS} autoConnect>
+          <Web3ContextProvider>
+            <Web3ReactProvider getLibrary={getLibrary}>
+              <PendingTransactionsContextProvider>
+                <Web3DataContextProvider>
+                  <SubgraphDataContextProvider>
+                    <ExternalAPIDataContextProvider>
+                      <RootApp />
+                    </ExternalAPIDataContextProvider>
+                  </SubgraphDataContextProvider>
+                </Web3DataContextProvider>
+              </PendingTransactionsContextProvider>
+            </Web3ReactProvider>
+          </Web3ContextProvider>
+        </SolanaWalletProvider>
+      </ConnectionProvider>
     </ChainContextProvider>
   );
 }

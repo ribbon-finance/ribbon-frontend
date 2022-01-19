@@ -495,8 +495,8 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     tags: ["COVERED CALL"],
     strategy: (
       <>
-        The vault earns yield on its WBTC deposits by running a weekly automated
-        WBTC{" "}
+        The vault earns yield on its SOL deposits by running a weekly automated
+        SOL{" "}
         <TooltipExplanation
           title="COVERED CALL"
           explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
