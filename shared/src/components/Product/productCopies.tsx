@@ -129,11 +129,11 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     liquidityMining: {
       explanation: (
         <>
-          rWBTC-THETA is a token that represents WBTC deposits in the WBTC Theta
+          rBTC-THETA is a token that represents WBTC deposits in the WBTC Theta
           Vault (T-WBTC-C).
           <br />
           <br />
-          Stake your rWBTC-THETA tokens in the rWBTC-THETA staking pool to earn
+          Stake your rBTC-THETA tokens in the rBTC-THETA staking pool to earn
           $RBN rewards.
         </>
       ),
@@ -539,6 +539,117 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           <br />
           Stake your rSOL-THETA tokens in the rSOL-THETA staking pool to earn
           $RBN rewards.
+        </>
+      ),
+    },
+  },
+  "rNEAR-THETA": {
+    title: "T-WNEAR-C",
+    subtitle: "WNEAR Call",
+    description:
+      "Generates yield by running an automated WNEAR covered call strategy.",
+    tags: ["COVERED CALL"],
+    strategy: (
+      <>
+        The vault earns yield on its WNEAR deposits by running a weekly
+        automated WNEAR{" "}
+        <TooltipExplanation
+          title="COVERED CALL"
+          explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
+          learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              covered call
+            </HighlighText>
+          )}
+        />{" "}
+        strategy. The vault reinvests the yield earned back into the strategy,
+        effectively compounding the yields for depositors over time.
+      </>
+    ),
+    vaultRisk: (
+      <>
+        The primary risk for running this covered call strategy is that the
+        vault may incur a weekly loss in the case where the call options sold by
+        the vault expire{" "}
+        <TooltipExplanation
+          title="IN-THE-MONEY"
+          explanation="An WNEAR call option is in-the-money (ITM) if the strike price is below the market price of WNEAR."
+          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              in-the-money
+            </HighlighText>
+          )}
+        />{" "}
+        (meaning the price of WNEAR is above the strike price of the call
+        options minted by the vault).
+      </>
+    ),
+    liquidityMining: {
+      explanation: (
+        <>
+          rNEAR-THETA is a token that represents WNEAR deposits in the WNEAR
+          Theta Vault (T-WNEAR-C).
+          <br />
+          <br />
+          Stake your rNEAR-THETA tokens in the rNEAR-THETA staking pool to earn
+          $RBN rewards.
+        </>
+      ),
+    },
+  },
+  "rAURORA-THETA": {
+    title: "T-AURORA-C",
+    subtitle: "AURORACall",
+    description:
+      "Generates yield by running an automated AURORA covered call strategy.",
+    tags: ["COVERED CALL"],
+    strategy: (
+      <>
+        The vault earns yield on its AURORA by running a weekly automated AURORA{" "}
+        <TooltipExplanation
+          title="COVERED CALL"
+          explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
+          learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              covered call
+            </HighlighText>
+          )}
+        />{" "}
+        strategy. The vault reinvests the yield earned back into the strategy,
+        effectively compounding the yields for depositors over time.
+      </>
+    ),
+    vaultRisk: (
+      <>
+        The primary risk for running this covered call strategy is that the
+        vault may incur a weekly loss in the case where the call options sold by
+        the vault expire{" "}
+        <TooltipExplanation
+          title="IN-THE-MONEY"
+          explanation="An AURORA call option is in-the-money (ITM) if the strike price is below the market price of AURORA."
+          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              in-the-money
+            </HighlighText>
+          )}
+        />{" "}
+        (meaning the price of AURORA is above the strike price of the call
+        options minted by the vault).
+      </>
+    ),
+    liquidityMining: {
+      explanation: (
+        <>
+          rAURORA-THETA is a token that represents AURORA deposits in the AURORA
+          Theta Vault (T-AURORA-C).
+          <br />
+          <br />
+          Stake your rAURORA-THETA tokens in the rAURORA-THETA staking pool to
+          earn $RBN rewards.
         </>
       ),
     },

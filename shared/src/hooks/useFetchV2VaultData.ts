@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
-import { isAvaxVault, getAssets, VaultList } from "../constants/constants";
+import { getVaultNetwork, getAssets, VaultList } from "../constants/constants";
 import { CHAINID, isDevelopment, isProduction } from "../utils/env";
 import { getV2Vault } from "./useV2Vault";
 import { impersonateAddress } from "../utils/development";
@@ -22,12 +22,15 @@ const useFetchV2VaultData = (): V2VaultData => {
     account: web3Account,
     library,
   } = useWeb3React();
-  const { provider: avaxProvider } = useWeb3Context(
-    isDevelopment() ? CHAINID.AVAX_FUJI : CHAINID.AVAX_MAINNET
-  );
-  const { provider: ethProvider } = useWeb3Context(
-    isDevelopment() ? CHAINID.ETH_KOVAN : CHAINID.ETH_MAINNET
-  );
+  const providers = {
+    ethereum: useWeb3Context(
+      isDevelopment() ? CHAINID.ETH_KOVAN : CHAINID.ETH_MAINNET
+    ).provider,
+    avalanche: useWeb3Context(
+      isDevelopment() ? CHAINID.AVAX_FUJI : CHAINID.AVAX_MAINNET
+    ).provider,
+    aurora: useWeb3Context(CHAINID.AURORA_MAINNET).provider,
+  };
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
 
@@ -50,9 +53,7 @@ const useFetchV2VaultData = (): V2VaultData => {
 
     const responses = await Promise.all(
       VaultList.map(async (vault) => {
-        const inferredProviderFromVault = isAvaxVault(vault)
-          ? avaxProvider
-          : ethProvider;
+        const inferredProviderFromVault = providers[getVaultNetwork(vault)];
         const active = Boolean(
           web3Active &&
             isVaultSupportedOnChain(
@@ -116,7 +117,12 @@ const useFetchV2VaultData = (): V2VaultData => {
           _withdrawals,
         ] = await Promise.all(
           // Default to 0 when error
-          promises.map((p) => p.catch((e) => BigNumber.from(0)))
+          promises.map((p) =>
+            p.catch((e) => {
+              console.log(e);
+              return BigNumber.from(0);
+            })
+          )
         );
 
         const vaultState = (
@@ -191,7 +197,15 @@ const useFetchV2VaultData = (): V2VaultData => {
     if (!isProduction()) {
       console.timeEnd("V2 Vault Data Fetch");
     }
-  }, [account, chainId, library, web3Active, avaxProvider, ethProvider]);
+  }, [
+    account,
+    chainId,
+    library,
+    web3Active,
+    providers.avalanche,
+    providers.ethereum,
+    providers.aurora,
+  ]);
 
   useEffect(() => {
     doMulticall();

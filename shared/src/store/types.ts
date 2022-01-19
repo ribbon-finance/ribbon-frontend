@@ -4,6 +4,8 @@ import { VaultOptions } from "../constants/constants";
 
 export const AssetsList = [
   "AAVE",
+  "AURORA",
+  "WNEAR",
   "WAVAX",
   "WETH",
   "USDC",

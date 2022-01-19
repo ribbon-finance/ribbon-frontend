@@ -103,20 +103,21 @@ const useFetchVaultSubgraphData = () => {
             .map(([_, res]) => res);
 
           responsesForVersion.forEach((response: any) => {
-            Object.keys(response).forEach((key: string) => {
-              // Push response if its an array
-              // Otherwise merge without overriding existing property
-              if (!mergedResponse[key]) {
-                mergedResponse[key] = response[key];
-              } else if (
-                Array.isArray(mergedResponse[key]) &&
-                Array.isArray(response[key])
-              ) {
-                mergedResponse[key].push(...response[key]);
-              }
-            });
+            if (response) {
+              Object.keys(response).forEach((key: string) => {
+                // Push response if its an array
+                // Otherwise merge without overriding existing property
+                if (!mergedResponse[key]) {
+                  mergedResponse[key] = response[key];
+                } else if (
+                  Array.isArray(mergedResponse[key]) &&
+                  Array.isArray(response[key])
+                ) {
+                  mergedResponse[key].push(...response[key]);
+                }
+              });
+            }
           });
-
           return [version, mergedResponse];
         })
       ) as Record<VaultVersion, any>;

@@ -38,6 +38,8 @@ const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   RBN: "ribbon-finance",
   veRBN: undefined,
   SOL: "solana",
+  AURORA: "aurora-near",
+  WNEAR: "wrapped-near",
 };
 
 export const useFetchAssetsPrice = (
