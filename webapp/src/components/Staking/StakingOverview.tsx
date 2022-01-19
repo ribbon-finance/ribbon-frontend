@@ -15,7 +15,7 @@ import {
   OngoingLMVersion,
   VaultLiquidityMiningMap,
   VaultList,
-  VaultOptions,
+  StakingVaultOptions,
 } from "shared/lib/constants/constants";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { BigNumber } from "@ethersproject/bignumber";
@@ -105,7 +105,7 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
   const { data: tokenData, loading: tokenLoading } = useRBNToken();
   const { data: lg5Data, loading: lg5DataLoading } =
     useLiquidityGaugeV5PoolData(
-      Object.keys(VaultLiquidityMiningMap.lg5)[0] as VaultOptions
+      Object.keys(VaultLiquidityMiningMap.lg5)[0] as StakingVaultOptions
     );
 
   const loadingText = useTextAnimation(

@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 
-import { VaultOptions } from "shared/lib/constants/constants";
+import { StakingVaultOptions } from "shared/lib/constants/constants";
 import {
   BaseUnderlineLink,
   BaseModalContentColumn,
@@ -70,7 +70,7 @@ interface StakingClaimModalProps {
   show: boolean;
   onClose: () => void;
   logo: React.ReactNode;
-  vaultOption: VaultOptions;
+  vaultOption: StakingVaultOptions;
   stakingPoolData: LiquidityMiningPoolResponse;
 }
 
