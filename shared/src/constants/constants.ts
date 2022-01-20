@@ -266,11 +266,11 @@ export const VaultAddressMap: {
       },
   "rAVAX-THETA": isDevelopment()
     ? {
-        v2: v2deployment.fuji.RibbonThetaVaultETHCall,
+        v2: v2deployment.fuji.RibbonThetaVaultAVAXCall,
         chainId: CHAINID.AVAX_FUJI,
       }
     : {
-        v2: v2deployment.avax.RibbonThetaVaultETHCall,
+        v2: v2deployment.avax.RibbonThetaVaultAVAXCall,
         chainId: CHAINID.AVAX_MAINNET,
       },
   "rPERP-TSRY": isDevelopment()
