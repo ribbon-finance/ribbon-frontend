@@ -8,7 +8,7 @@ import { BaseLink, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import PerformanceSection from "./PerformanceSection";
-import { useVaultData, useV2VaultData } from "../../hooks/web3DataContext";
+import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import {
   formatSignificantDecimals,
   isPracticallyZero,

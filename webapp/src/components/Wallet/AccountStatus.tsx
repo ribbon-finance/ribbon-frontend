@@ -43,7 +43,7 @@ import {
 import { CHAINID } from "shared/lib/utils/env";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { truncateAddress } from "shared/lib/utils/address";
-import { useVaultData } from "../../hooks/web3DataContext";
+import { useVaultData } from "shared/lib/hooks/web3DataContext";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 
 import { isPracticallyZero } from "shared/lib/utils/math";

@@ -22,7 +22,7 @@ import {
   useVaultData,
   useV2VaultData,
   useAssetsBalance,
-} from "./web3DataContext";
+} from "shared/lib/hooks/web3DataContext";
 import { isETHVault } from "shared/lib/utils/vault";
 import { Assets } from "shared/lib/store/types";
 import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";

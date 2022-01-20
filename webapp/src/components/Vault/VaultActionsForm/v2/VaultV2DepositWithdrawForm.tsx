@@ -22,7 +22,7 @@ import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import {
   useV2VaultData,
   useAssetBalance,
-} from "../../../../hooks/web3DataContext";
+} from "shared/lib/hooks/web3DataContext";
 import { ERC20Token } from "shared/lib/models/eth";
 import { isVaultFull } from "shared/lib/utils/vault";
 import { getAssetDisplay, getAssetColor } from "shared/lib/utils/asset";
