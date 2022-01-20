@@ -16,7 +16,7 @@ import {
   VaultAddressMap,
   VaultMaxDeposit,
 } from "shared/lib/constants/constants";
-import { useVaultData } from "../../../hooks/web3DataContext";
+import { useVaultData } from "shared/lib/hooks/web3DataContext";
 import { getVaultColor, isETHVault, isVaultFull } from "shared/lib/utils/vault";
 import colors from "shared/lib/designSystem/colors";
 import { getAssetDisplay } from "shared/lib/utils/asset";
