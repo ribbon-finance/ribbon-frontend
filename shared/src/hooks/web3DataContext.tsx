@@ -1,4 +1,4 @@
-import React, { ReactElement, useContext } from "react";
+import React, { ReactElement, useContext, useMemo } from "react";
 
 import {
   getAssets,
@@ -90,18 +90,35 @@ export const useVaultData = (vault: VaultOptions) => {
 export const useV2VaultsData = () => {
   const contextData = useContext(Web3DataContext);
 
+  const data = useMemo(
+    () => ({
+      ...contextData.v2.responses,
+      ...contextData.solana.responses,
+    }),
+    [contextData.v2.responses, contextData.solana.responses]
+  );
+
   return {
-    data: { ...contextData.v2.responses, ...contextData.solana.responses },
-    loading: contextData.v2.loading && contextData.solana.loading,
+    data,
+    // be pessimistic for loading, if one is still loading, all will be loading
+    loading: contextData.v2.loading || contextData.solana.loading,
   };
 };
 
 export const useV2VaultData = (vault: VaultOptions) => {
   const contextData = useContext(Web3DataContext);
 
+  const data = useMemo(
+    () => ({
+      ...contextData.v2.responses,
+      ...contextData.solana.responses,
+    }),
+    [contextData.v2.responses, contextData.solana.responses]
+  );
+
   return {
     data: {
-      ...contextData.v2.responses[vault],
+      ...data[vault],
       asset: getAssets(vault),
       displayAsset: getDisplayAssets(vault),
       decimals: getAssetDecimals(getAssets(vault)),

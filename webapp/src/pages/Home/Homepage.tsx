@@ -1,4 +1,4 @@
-import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import React from "react";
 import { useHistory } from "react-router";
 

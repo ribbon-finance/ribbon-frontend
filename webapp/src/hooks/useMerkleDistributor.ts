@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useWeb3Wallet } from "./useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 
 import deployments from "shared/lib/constants/v1Deployments.json";
 import { isDevelopment } from "shared/lib/utils/env";

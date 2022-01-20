@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { useRouteMatch } from "react-router-dom";
-import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 
 import HeaderLogo from "./HeaderLogo";
 import colors from "shared/lib/designSystem/colors";
