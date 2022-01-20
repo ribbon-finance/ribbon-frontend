@@ -58,17 +58,12 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
    */
   const {
     data: {
-      cap: v2Cap,
       depositBalanceInAsset: v2DepositBalanceInAsset,
       lockedBalanceInAsset: v2LockedBalanceInAsset,
-      totalBalance: v2TotalBalance,
       withdrawals: v2Withdrawals,
     },
   } = useV2VaultData(vaultOption);
   const { data: assetsBalance } = useAssetsBalance();
-  const v2VaultBalanceInAsset = v2DepositBalanceInAsset.add(
-    v2LockedBalanceInAsset
-  );
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const receiveVaultData = useVaultData(
     vaultActionForm.receiveVault || vaultOption
@@ -357,32 +352,21 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
               const gasFee = BigNumber.from(gasLimit.toString()).mul(
                 BigNumber.from(gasPrice || "0")
               );
-              const total = assetsBalance[actionForm.depositAsset!];
+              const walletBalance = assetsBalance[actionForm.depositAsset!];
+
               // TODO: Optimize the code to request gas fees only when needed
-              const maxAmount = isNativeToken(actionForm.depositAsset || "")
-                ? total.sub(gasFee)
-                : total;
-              const allowedMaxAmount = maxAmount.lte(
-                vaultMaxDepositAmount.sub(v2VaultBalanceInAsset)
+              const walletMaxAmount = isNativeToken(
+                actionForm.depositAsset || ""
               )
-                ? maxAmount
-                : vaultMaxDepositAmount.sub(v2VaultBalanceInAsset);
-              const userMaxAmount = allowedMaxAmount.isNegative()
-                ? BigNumber.from("0")
-                : allowedMaxAmount;
+                ? walletBalance.sub(gasFee)
+                : walletBalance;
 
-              // Fringe case: if amt of deposit greater than vault limit, return 0
-              const vaultAvailableBalance = v2TotalBalance.gt(v2Cap)
-                ? BigNumber.from("0")
-                : v2Cap.sub(v2TotalBalance);
-
-              // Check if max is vault availableBalance
-              const finalMaxAmount = userMaxAmount.gt(vaultAvailableBalance)
-                ? vaultAvailableBalance
-                : userMaxAmount;
+              /**
+               * We change the behavior to populate with user wallet balance and show error so user adjust the amount manually
+               */
               return {
                 ...actionForm,
-                inputAmount: formatUnits(finalMaxAmount, decimals),
+                inputAmount: formatUnits(walletMaxAmount, decimals),
               };
             case ACTIONS.withdraw:
               switch (actionForm.withdrawOption) {
@@ -416,11 +400,8 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     setVaultActionForm,
     transferData,
     userAssetBalance,
-    v2Cap,
     v2DepositBalanceInAsset,
     v2LockedBalanceInAsset,
-    v2TotalBalance,
-    v2VaultBalanceInAsset,
     v2Withdrawals,
     vaultBalanceInAsset,
     vaultLimit,

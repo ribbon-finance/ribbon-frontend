@@ -113,7 +113,7 @@ export const TxStatusToast = () => {
       switch (_currentTx.type) {
         case "approval":
           return `Your ${getAssetDisplay(
-            getAssets(_currentTx.vault)
+            _currentTx.asset
           )} is ready to deposit`;
         case "stakingApproval":
           return `Your ${_currentTx.stakeAsset} is ready to stake`;
@@ -168,7 +168,7 @@ export const TxStatusToast = () => {
             switch (currentTx.type) {
               case "approval":
                 return `Please try approving ${getAssetDisplay(
-                  getAssets(currentTx.vault)
+                  currentTx.asset
                 )} again`;
               case "stakingApproval":
                 return `Please try approving ${currentTx.stakeAsset} again`;

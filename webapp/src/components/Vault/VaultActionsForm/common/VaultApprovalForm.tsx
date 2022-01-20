@@ -228,6 +228,7 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
           type: "approval",
           amount: amount,
           vault: vaultOption,
+          asset: depositAsset,
         });
 
         // Wait for transaction to be approved
@@ -237,7 +238,14 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
         setWaitingApproval(false);
       }
     }
-  }, [addPendingTransaction, provider, tokenContract, vaultOption, version]);
+  }, [
+    addPendingTransaction,
+    depositAsset,
+    provider,
+    tokenContract,
+    vaultOption,
+    version,
+  ]);
 
   return (
     <>
