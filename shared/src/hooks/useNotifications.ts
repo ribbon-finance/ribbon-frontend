@@ -51,7 +51,6 @@ const useNotifications = () => {
    * Process Notification List Item
    */
   useEffect(() => {
-    console.log(v2VaultsData);
     const notificationList: Notification[] = [];
 
     Object.keys(v2VaultsData).forEach((vaultOption) => {
