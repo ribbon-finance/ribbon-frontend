@@ -266,11 +266,11 @@ export const VaultAddressMap: {
       },
   "rAVAX-THETA": isDevelopment()
     ? {
-        v2: v2deployment.fuji.RibbonThetaVaultETHCall,
+        v2: v2deployment.fuji.RibbonThetaVaultAVAXCall,
         chainId: CHAINID.AVAX_FUJI,
       }
     : {
-        v2: v2deployment.avax.RibbonThetaVaultETHCall,
+        v2: v2deployment.avax.RibbonThetaVaultAVAXCall,
         chainId: CHAINID.AVAX_MAINNET,
       },
   "rPERP-TSRY": isDevelopment()
@@ -436,7 +436,7 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "rETH-THETA": ["WETH"],
     "rAVAX-THETA": ["WAVAX"],
     "rUSDC-ETH-P-THETA": ["USDC"],
-    "rstETH-THETA": ["stETH", "WETH"],
+    "rstETH-THETA": ["WETH", "stETH"],
     "ryvUSDC-ETH-P-THETA": ["USDC"],
     "rPERP-TSRY": ["PERP"],
     "rSOL-THETA": ["SOL"],

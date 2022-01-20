@@ -11,16 +11,23 @@ import PerformanceChart, {
 } from "shared/lib/components/Common/PerformanceChart";
 import {
   getAssets,
+  getDisplayAssets,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import {
+  getAssetDecimals,
+  getAssetDisplay,
+  isYieldAsset,
+} from "shared/lib/utils/asset";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
 import { useAssetsPriceHistory } from "shared/lib/hooks/useAssetPrice";
 import { assetToFiat } from "shared/lib/utils/math";
 import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import useLatestAPY from "shared/lib/hooks/useLatestAPY";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
 
 const VaultPerformanceChartContainer = styled.div`
   background: ${colors.background.two};
@@ -376,9 +383,20 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
               extras={
                 <div className="d-flex align-items-center justify-content-between px-4">
                   <div>
-                    <SecondaryText fontSize={12} className="d-block">
-                      Yield (Cumulative)
-                    </SecondaryText>
+                    <div className="d-flex align-items-center">
+                      <SecondaryText fontSize={12} className="d-block">
+                        Yield (Cumulative)
+                      </SecondaryText>
+                      <TooltipExplanation
+                        title="CUMULATIVE YIELD"
+                        explanation="The sum of the vault’s weekly yield."
+                        renderContent={({ ref, ...triggerHandler }) => (
+                          <HelpInfo containerRef={ref} {...triggerHandler}>
+                            i
+                          </HelpInfo>
+                        )}
+                      />
+                    </div>
                     <Title fontSize={28} lineHeight={36}>
                       {yields.length
                         ? `${(yields[chartIndex] || 0.0).toFixed(2)}%`
@@ -400,9 +418,37 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
           </VaultPerformanceChartContainer>
           <VaultPerformanceChartSecondaryContainer>
             <VaultPerformanceChartKPI>
-              <SecondaryText fontSize={12} lineHeight={16} className="d-block">
-                Projected Yield (APY)
-              </SecondaryText>
+              <div className="d-flex align-items-center">
+                <SecondaryText
+                  fontSize={12}
+                  lineHeight={16}
+                  className="d-block"
+                >
+                  Projected Yield (APY)
+                </SecondaryText>
+                <TooltipExplanation
+                  title="Projected Yield (APY)"
+                  explanation={
+                    <>
+                      Calculated by annualising the current week’s performance:
+                      <br />
+                      <br />
+                      <SecondaryText color={colors.primaryText}>
+                        Projected Yield = ((1+(Curr. Week’s
+                        Performance)^52)-1)*100
+                      </SecondaryText>
+                      <br />
+                      <br />
+                      Fees are included in this calculation.
+                    </>
+                  }
+                  renderContent={({ ref, ...triggerHandler }) => (
+                    <HelpInfo containerRef={ref} {...triggerHandler}>
+                      i
+                    </HelpInfo>
+                  )}
+                />
+              </div>
               <Title
                 fontSize={16}
                 lineHeight={24}
@@ -415,9 +461,60 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
               </Title>
             </VaultPerformanceChartKPI>
             <VaultPerformanceChartKPI>
-              <SecondaryText fontSize={12} lineHeight={16} className="d-block">
-                Previous Week Performance
-              </SecondaryText>
+              <div className="d-flex align-items-center">
+                <SecondaryText
+                  fontSize={12}
+                  lineHeight={16}
+                  className="d-block"
+                >
+                  Previous Week Performance
+                </SecondaryText>
+                <TooltipExplanation
+                  title="Prev Week’s Performance"
+                  explanation={
+                    isYieldAsset(getDisplayAssets(vaultOption)) ? (
+                      <>
+                        The {getAssetDisplay(asset)} premiums earned from
+                        selling options, plus the weekly{" "}
+                        {getAssetDisplay(getDisplayAssets(vaultOption))} staking
+                        yield expressed as a percentage of the amount of{" "}
+                        {getAssetDisplay(getDisplayAssets(vaultOption))} used to
+                        collateralize the options.
+                        <br />
+                        <br />
+                        <SecondaryText color={colors.primaryText}>
+                          Performance = ((Premiums+Staking Yield) / Options
+                          Collateral) * 100
+                        </SecondaryText>
+                        <br />
+                        <br />
+                        Fees are included in this calculation.
+                      </>
+                    ) : (
+                      <>
+                        {" "}
+                        The {getAssetDisplay(asset)} premiums earned from
+                        selling options expressed as a percentage of the amount
+                        of {getAssetDisplay(getDisplayAssets(vaultOption))} used
+                        to collateralize the options.
+                        <br />
+                        <br />
+                        <SecondaryText color={colors.primaryText}>
+                          Performance = (Premiums / Options Collateral) * 100
+                        </SecondaryText>
+                        <br />
+                        <br />
+                        Fees are included in this calculation.
+                      </>
+                    )
+                  }
+                  renderContent={({ ref, ...triggerHandler }) => (
+                    <HelpInfo containerRef={ref} {...triggerHandler}>
+                      i
+                    </HelpInfo>
+                  )}
+                />
+              </div>
               <Title
                 fontSize={16}
                 lineHeight={24}

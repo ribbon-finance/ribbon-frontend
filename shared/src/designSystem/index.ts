@@ -127,7 +127,7 @@ export const PrimaryText = styled(BaseText)<{
   fontWeight?: number;
 }>`
   font-style: normal;
-  font-weight: ${(props) => props.fontWeight || 500};
+  font-weight: ${(props) => props.fontWeight || 400};
   font-size: ${(props) => props.fontSize || 16}px;
   line-height: ${(props) => props.lineHeight || 24}px;
   color: ${(props) => props.color || colors.primaryText};
@@ -141,7 +141,7 @@ export const SecondaryText = styled.span<{
 }>`
   font-family: "Inter", sans-serif;
   font-style: normal;
-  font-weight: ${(props) => props.fontWeight || 500};
+  font-weight: ${(props) => props.fontWeight || 400};
   font-size: ${(props) => props.fontSize || 14}px;
   line-height: ${(props) => props.lineHeight || 20}px;
   color: ${(props) => props.color || colors.text};

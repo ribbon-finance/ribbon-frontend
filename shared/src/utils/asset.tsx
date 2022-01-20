@@ -15,6 +15,17 @@ import { SolanaLogo } from "../assets/icons/solAssets";
 import colors from "../designSystem/colors";
 import { Assets } from "../store/types";
 
+export const isYieldAsset = (asset: Assets): boolean => {
+  switch (asset) {
+    case "stETH":
+    case "wstETH":
+    case "yvUSDC":
+      return true;
+    default:
+      return false;
+  }
+};
+
 export const getAssetDisplay = (asset: Assets): string => {
   switch (asset) {
     case "WETH":
