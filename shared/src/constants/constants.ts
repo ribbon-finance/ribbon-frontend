@@ -119,6 +119,15 @@ const PutThetaVault: VaultOptions[] = [
   "ryvUSDC-ETH-P-THETA",
 ];
 
+export const SolanaAssets = ["SOL"];
+
+export const isSolanaVault = (vaultOption: VaultOptions) => {
+  const list = SolanaVaultList as unknown;
+  return (list as string[]).includes(vaultOption);
+};
+
+export const isSolanaAsset = (asset: Assets) => SolanaAssets.includes(asset);
+
 export const StakingVaultList = EVMVaultList;
 
 export type StakingVaultOptions = typeof StakingVaultList[number];

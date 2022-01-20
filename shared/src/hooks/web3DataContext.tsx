@@ -3,6 +3,7 @@ import React, { ReactElement, useContext, useMemo } from "react";
 import {
   getAssets,
   getDisplayAssets,
+  isSolanaVault,
   VaultOptions,
 } from "../constants/constants";
 import {
@@ -116,6 +117,11 @@ export const useV2VaultData = (vault: VaultOptions) => {
     [contextData.v2.responses, contextData.solana.responses]
   );
 
+  const loading =
+    (isSolanaVault(vault)
+      ? contextData.solana.loading
+      : contextData.v2.loading) || contextData.assetBalance.loading;
+
   return {
     data: {
       ...data[vault],
@@ -123,7 +129,7 @@ export const useV2VaultData = (vault: VaultOptions) => {
       displayAsset: getDisplayAssets(vault),
       decimals: getAssetDecimals(getAssets(vault)),
     },
-    loading: contextData.v2.loading || contextData.assetBalance.loading,
+    loading,
   };
 };
 
