@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { BigNumber, ethers } from "ethers";
 import styled from "styled-components";
 
@@ -347,11 +347,15 @@ const PortfolioPositions = () => {
           })
         ),
       ]).filter((item) => Object.keys(item[1]).length > 0)
-    ) as Partial<{
-      [vault in VaultOptions]: Partial<{
-        [version in VaultVersion]: VaultAccount;
-      }>;
-    }>;
+    ) as Partial<
+      {
+        [vault in VaultOptions]: Partial<
+          {
+            [version in VaultVersion]: VaultAccount;
+          }
+        >;
+      }
+    >;
   }, [v1VaultAccounts, v2VaultAccounts]);
 
   const positionContent = useMemo(() => {

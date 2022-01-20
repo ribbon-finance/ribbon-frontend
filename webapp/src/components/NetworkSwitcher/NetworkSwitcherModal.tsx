@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled from "styled-components";
 
 import BasicModal from "shared/lib/components/Common/BasicModal";

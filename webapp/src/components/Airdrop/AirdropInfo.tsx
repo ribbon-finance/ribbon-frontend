@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled, { keyframes } from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
 

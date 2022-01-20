@@ -34,7 +34,7 @@ import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import { useLiquidityMiningPoolData } from "shared/lib/hooks/web3DataContext";
 import { useGlobalState } from "shared/lib/store/store";
-import { useWeb3Wallet } from "../../../hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 
 const ModalContent = styled(motion.div)`
   display: flex;
