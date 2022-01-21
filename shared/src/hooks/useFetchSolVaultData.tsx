@@ -1,24 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
-import * as anchor from "@project-serum/anchor";
 import { useConnection } from "@solana/wallet-adapter-react";
-import { PublicKey, Keypair } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import {
-  vaultProgramTypes,
   Network,
   Vault,
   Flex,
   FlexClient,
-  flexUtils,
-  VaultClient,
   vaultUtils,
-  vaultTypes,
-  flexProgramTypes,
-  flexTypes,
   types,
-  utils,
   vaultData,
 } from "@zetamarkets/flex-sdk";
-import { DummyWallet } from "@zetamarkets/flex-sdk/dist/common/types";
 import { defaultSolanaVaultData, SolanaVaultData } from "../models/vault";
 import { BigNumber } from "@ethersproject/bignumber";
 import { parseUnits } from "ethers/lib/utils";
@@ -26,8 +17,6 @@ import { getAssetDecimals } from "../utils/asset";
 
 const flexProgramId = "5z75LKcF49JavDVW1hsGceDDBRHkja6RbRsouXQHBBjG";
 const vaultProgramId = "CvtFQpTX8TqVbRQ6UrwPzwnrfrzYkwyEBu74M2vG46sf";
-
-let baseAccount = Keypair.generate();
 
 const useFetchSolVaultData = (): SolanaVaultData => {
   const { connection } = useConnection();
@@ -38,22 +27,9 @@ const useFetchSolVaultData = (): SolanaVaultData => {
     if (!loadedVault) return;
 
     const [vaultAddress] = await vaultUtils.getVaultAddress("TEST_VAULT");
-    const vaultInfo = Vault.getVault(vaultAddress);
-
-    const vaultTokenAccountInfo = await utils.getTokenAccountInfo(
-      connection,
-      vaultInfo.vaultUnderlyingTokenAccount
-    );
 
     const { depositLimit, epochSequenceNumber, totalBalance, pricePerShare } =
       await vaultData.getVaultData(connection, vaultAddress);
-
-    console.log({
-      depositLimit,
-      epochSequenceNumber,
-      totalBalance,
-      pricePerShare,
-    });
 
     setData({
       responses: {
@@ -65,10 +41,12 @@ const useFetchSolVaultData = (): SolanaVaultData => {
             getAssetDecimals("SOL")
           ),
           round: epochSequenceNumber,
+
+          // user connected state
           lockedBalanceInAsset: BigNumber.from(0),
           depositBalanceInAsset: BigNumber.from(0),
           withdrawals: {
-            round: 1,
+            round: 0,
             amount: BigNumber.from(0),
             shares: BigNumber.from(0),
           },
@@ -85,7 +63,7 @@ const useFetchSolVaultData = (): SolanaVaultData => {
   return data;
 };
 
-let loadingOnce = false;
+let loadedOnce = false;
 
 const useFlexVault = () => {
   const { connection } = useConnection();
@@ -93,7 +71,7 @@ const useFlexVault = () => {
 
   useEffect(() => {
     const loadFlexVault = async () => {
-      loadingOnce = true;
+      loadedOnce = true;
 
       await Flex.load(
         new PublicKey(flexProgramId),
@@ -110,7 +88,7 @@ const useFlexVault = () => {
       setLoadedVault(true);
     };
 
-    if (!loadingOnce && !loadedVault && connection) {
+    if (!loadedOnce && !loadedVault && connection) {
       loadFlexVault();
     }
   }, [connection, loadedVault]);
