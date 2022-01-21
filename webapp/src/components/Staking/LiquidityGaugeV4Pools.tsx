@@ -1,7 +1,5 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
-import { formatUnits } from "@ethersproject/units";
-import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
 
 import {
   BaseIndicator,
@@ -9,32 +7,25 @@ import {
   Subtitle,
   Title,
 } from "shared/lib/designSystem";
+import colors from "shared/lib/designSystem/colors";
+import theme from "shared/lib/designSystem/theme";
+import { shimmerKeyframe } from "shared/lib/designSystem/keyframes";
+import sizes from "shared/lib/designSystem/sizes";
 import {
-  getAssets,
   getDisplayAssets,
   VaultLiquidityMiningMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
-import theme from "shared/lib/designSystem/theme";
-import colors from "shared/lib/designSystem/colors";
-import CapBar from "shared/lib/components/Deposit/CapBar";
+import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import { useStakingPoolData } from "shared/lib/hooks/web3DataContext";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
-import { formatBigNumber } from "shared/lib/utils/math";
-import StakingApprovalModal from "./Modal/StakingApprovalModal";
+import { getAssetLogo } from "shared/lib/utils/asset";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
-import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import { productCopies } from "shared/lib/components/Product/productCopies";
-import StakingActionModal from "./Modal/StakingActionModal";
-import sizes from "shared/lib/designSystem/sizes";
-import StakingClaimModal from "./Modal/StakingClaimModal";
-import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { shimmerKeyframe } from "shared/lib/designSystem/keyframes";
-import moment from "moment";
-import { BigNumber } from "ethers";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import { productCopies } from "shared/lib/components/Product/productCopies";
+import CapBar from "shared/lib/components/Deposit/CapBar";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -158,14 +149,7 @@ interface StakingPoolProps {
 const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   const { active } = useWeb3Wallet();
   const [, setShowConnectWalletModal] = useConnectWalletModal();
-  const { data: stakingPoolData } = useStakingPoolData(vaultOption);
-  const decimals = getAssetDecimals(getAssets(vaultOption));
   const { pendingTransactions } = usePendingTransactions();
-
-  const [showApprovalModal, setShowApprovalModal] = useState(false);
-  const [isStakeAction, setIsStakeAction] = useState(true);
-  const [showActionModal, setShowActionModal] = useState(false);
-  const [showClaimModal, setShowClaimModal] = useState(false);
 
   const color = getVaultColor(vaultOption);
   const ongoingTransaction:
@@ -250,55 +234,35 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
       return "---";
     }
 
-    return formatBigNumber(stakingPoolData.unstakedBalance, decimals);
-  }, [active, stakingPoolData, decimals]);
+    return "0";
+  }, [active]);
 
-  // const renderEstimatedRewards = useCallback(() => {
-  //   if (!active || stakingPoolData.currentStake.isZero()) {
-  //     return "---";
+  // const showStakeModal = useMemo(() => {
+  //   if (ongoingTransaction === "stake") {
+  //     /** Always show staking modal when there is ongoing transaction */
+  //     return true;
+  //   } else if (ongoingTransaction === "unstake") {
+  //     /** Likewise with unstaking transaction */
+  //     return false;
   //   }
 
-  //   return formatBigNumber(
-  //     stakingPoolData.currentStake
-  //       .mul(BigNumber.from(10).pow(18))
-  //       .div(stakingPoolData.poolSize)
-  //       .mul(stakingPoolData.poolRewardForDuration)
-  //       .div(BigNumber.from(10).pow(18)),
-  //     0
-  //   );
-  // }, [active, stakingPoolData]);
-
-  const showStakeModal = useMemo(() => {
-    if (ongoingTransaction === "stake") {
-      /** Always show staking modal when there is ongoing transaction */
-      return true;
-    } else if (ongoingTransaction === "unstake") {
-      /** Likewise with unstaking transaction */
-      return false;
-    }
-
-    return isStakeAction;
-  }, [isStakeAction, ongoingTransaction]);
+  //   return isStakeAction;
+  // }, [isStakeAction, ongoingTransaction]);
 
   const rbnPill = useMemo(() => {
-    if (
-      moment(stakingPoolData.periodFinish, "X").diff(moment()) &&
-      stakingPoolData.claimableRbn.isZero()
-    ) {
+    const randNum = Math.random();
+
+    /**
+     * TODO: Below if should represent when earned amount is 0 and there is claimed amount
+     */
+    if (randNum <= 0.5) {
       return (
         <ClaimableTokenPillContainer>
           <ClaimableTokenPill color={color}>
             <BaseIndicator size={8} color={color} className="mr-2" />
             <Subtitle className="mr-2">AMOUNT CLAIMED</Subtitle>
             <ClaimableTokenAmount color={color}>
-              {formatBigNumber(
-                stakingPoolData.claimHistory.reduce(
-                  (acc, curr) => acc.add(curr.amount),
-                  BigNumber.from(0)
-                ),
-                18,
-                2
-              )}
+              {(randNum * 1000).toFixed(2)}
             </ClaimableTokenAmount>
           </ClaimableTokenPill>
         </ClaimableTokenPillContainer>
@@ -311,14 +275,12 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           <BaseIndicator size={8} color={color} className="mr-2" />
           <Subtitle className="mr-2">EARNED $RBN</Subtitle>
           <ClaimableTokenAmount color={color}>
-            {active
-              ? formatBigNumber(stakingPoolData.claimableRbn, 18, 2)
-              : "---"}
+            {active ? (randNum * 1000).toFixed(2) : "---"}
           </ClaimableTokenAmount>
         </ClaimableTokenPill>
       </ClaimableTokenPillContainer>
     );
-  }, [active, color, stakingPoolData]);
+  }, [active, color]);
 
   const stakingPoolButtons = useMemo(() => {
     if (!active) {
@@ -336,38 +298,12 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
       );
     }
 
-    if (
-      !stakingPoolData.claimableRbn.isZero() ||
-      stakingPoolData.claimHistory.length
-    ) {
-      return (
-        <StakingPoolCardFooterButton
-          role="button"
-          color={color}
-          onClick={() => setShowClaimModal(true)}
-          active={ongoingTransaction === "rewardClaim"}
-        >
-          {ongoingTransaction === "rewardClaim"
-            ? primaryActionLoadingText
-            : `${
-                (stakingPoolData.periodFinish &&
-                  moment(stakingPoolData.periodFinish, "X").diff(moment()) >
-                    0) ||
-                stakingPoolData.claimableRbn.isZero()
-                  ? "Claim Info"
-                  : "Unstake & Claim"
-              }`}
-        </StakingPoolCardFooterButton>
-      );
-    }
-
     return (
       <StakingPoolCardFooterButton
         role="button"
         color={color}
         onClick={() => {
-          setShowActionModal(true);
-          setIsStakeAction(false);
+          /** TODO:  */
         }}
         active={ongoingTransaction === "unstake"}
       >
@@ -382,32 +318,10 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
     ongoingTransaction,
     primaryActionLoadingText,
     setShowConnectWalletModal,
-    stakingPoolData,
   ]);
 
   return (
     <>
-      <StakingApprovalModal
-        show={showApprovalModal}
-        onClose={() => setShowApprovalModal(false)}
-        stakingPoolData={stakingPoolData}
-        vaultOption={vaultOption}
-      />
-      <StakingActionModal
-        stake={showStakeModal}
-        show={showActionModal}
-        onClose={() => setShowActionModal(false)}
-        vaultOption={vaultOption}
-        logo={logo}
-        stakingPoolData={stakingPoolData}
-      />
-      <StakingClaimModal
-        show={showClaimModal}
-        onClose={() => setShowClaimModal(false)}
-        vaultOption={vaultOption}
-        logo={logo}
-        stakingPoolData={stakingPoolData}
-      />
       <StakingPoolCard color={color}>
         <div className="d-flex flex-wrap w-100 p-3">
           {/* Card Title */}
@@ -442,10 +356,8 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           <div className="w-100 mt-4">
             <CapBar
               loading={false}
-              current={parseFloat(
-                formatUnits(stakingPoolData.currentStake, decimals)
-              )}
-              cap={parseFloat(formatUnits(stakingPoolData.poolSize, decimals))}
+              current={100}
+              cap={1000}
               copies={{
                 current: "Your Current Stake",
                 cap: "Pool Size",
@@ -479,9 +391,7 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
             <div className="d-flex align-items-center">
               <SecondaryText>Pool rewards </SecondaryText>
             </div>
-            <PoolRewardData className="ml-auto">
-              {formatBigNumber(stakingPoolData.poolRewardForDuration, 18)} RBN
-            </PoolRewardData>
+            <PoolRewardData className="ml-auto">10000 RBN</PoolRewardData>
           </div>
         </div>
         <StakingPoolCardFooter>{stakingPoolButtons}</StakingPoolCardFooter>
@@ -490,17 +400,17 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   );
 };
 
-const StakingPools = () => {
+const LiquidityGaugeV4Pools = () => {
   return (
     <StakingPoolsContainer>
       <Title fontSize={18} lineHeight={24} className="mb-4 w-100">
         STAKING POOLS
       </Title>
-      {Object.keys(VaultLiquidityMiningMap).map((option) => (
+      {Object.keys(VaultLiquidityMiningMap.lg4).map((option) => (
         <StakingPool key={option} vaultOption={option as VaultOptions} />
       ))}
     </StakingPoolsContainer>
   );
 };
 
-export default StakingPools;
+export default LiquidityGaugeV4Pools;

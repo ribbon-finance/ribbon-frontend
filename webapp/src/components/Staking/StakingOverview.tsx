@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
 import moment from "moment";
 import colors from "shared/lib/designSystem/colors";
@@ -7,21 +7,21 @@ import {
   BaseLink,
   PrimaryText,
   SecondaryText,
-  Subtitle,
   Title,
 } from "shared/lib/designSystem";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
-import useStakingPool from "../../hooks/useStakingPool";
 import {
-  VaultLiquidityMiningMap,
+  LiquidityMiningVersion,
+  LiquidityMiningVersionList,
   VaultList,
-  VaultOptions,
 } from "shared/lib/constants/constants";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { BigNumber } from "@ethersproject/bignumber";
 import { formatBigNumber } from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
 import { useRBNToken } from "shared/lib/hooks/useRBNTokenSubgraph";
+import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
+import useLiquidityMiningPools from "shared/lib/hooks/useLiquidityMiningPools";
 
 const OverviewContainer = styled.div`
   display: flex;
@@ -39,17 +39,10 @@ const OverviewInfo = styled.div`
   padding: 24px;
   background: linear-gradient(
     96.84deg,
-    ${colors.green}29 1.04%,
-    ${colors.green}0A 98.99%
+    ${colors.green}0A 1.04%,
+    ${colors.green}02 98.99%
   );
   border-radius: ${theme.border.radius} ${theme.border.radius} 0 0;
-`;
-
-const OverviewTag = styled.div`
-  display: flex;
-  background: #ffffff0a;
-  padding: 8px;
-  border-radius: ${theme.border.radius};
 `;
 
 const OverviewDescription = styled(SecondaryText)`
@@ -96,13 +89,16 @@ const OverviewLabel = styled(SecondaryText)`
   margin-bottom: 8px;
 `;
 
-const StakingOverview = () => {
-  const miningPoolOptionList = useMemo(
-    () => Object.keys(VaultLiquidityMiningMap) as VaultOptions[],
-    []
-  );
-  const { stakingPools, loading: stakingLoading } =
-    useStakingPool(miningPoolOptionList);
+interface StakingOverviewProps {
+  lmVersion: LiquidityMiningVersion;
+  setLmVersion: React.Dispatch<React.SetStateAction<LiquidityMiningVersion>>;
+}
+
+const StakingOverview: React.FC<StakingOverviewProps> = ({
+  lmVersion,
+  setLmVersion,
+}) => {
+  const { stakingPools, loading: stakingLoading } = useLiquidityMiningPools();
   const { data: tokenData, loading: tokenLoading } = useRBNToken();
 
   const loadingText = useTextAnimation(stakingLoading || tokenLoading);
@@ -133,6 +129,9 @@ const StakingOverview = () => {
     return tokenData.numHolders.toLocaleString();
   }, [loadingText, tokenData, tokenLoading]);
 
+  /**
+   * TODO: Add duration for lg4
+   */
   const timeTillProgramsEnd = useMemo(() => {
     const endStakeReward = moment
       .utc("2021-07-17")
@@ -152,18 +151,57 @@ const StakingOverview = () => {
     return `${startTime.days()}D ${startTime.hours()}H ${startTime.minutes()}M`;
   }, []);
 
+  const getLMName = useCallback((_lmVersion: LiquidityMiningVersion) => {
+    switch (_lmVersion) {
+      case "lm":
+        return "LM1 - JUL 2021";
+      case "lg4":
+        return "LM2 - Present";
+    }
+  }, []);
+
+  const getLMTitle = useCallback((_lmVersion: LiquidityMiningVersion) => {
+    switch (_lmVersion) {
+      case "lm":
+        return "Liquidity Mining Program";
+      case "lg4":
+        return "Liquidity Mining Program #2";
+    }
+  }, []);
+
+  const getLMDescription = useCallback((_lmVersion: LiquidityMiningVersion) => {
+    switch (_lmVersion) {
+      case "lm":
+        return `The program aims to grow vault adjusted TVL, expand the voting power
+          to those who missed out on the airdrop and to distribute the
+          governance token to those who have the most skin in the game. The
+          program ended on July 19th, 2021.`;
+      case "lg4":
+        return `Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum facilisis leo, vel fringilla est`;
+    }
+  }, []);
+
   return (
     <OverviewContainer>
       <OverviewInfo>
-        <OverviewTag>
-          <Subtitle>STAKING ON RIBBON</Subtitle>
-        </OverviewTag>
-        <Title className="mt-3 w-100">Liquidity Mining Program</Title>
+        <FilterDropdown
+          options={LiquidityMiningVersionList.map((_version) => ({
+            value: _version,
+            display: getLMName(_version),
+          }))}
+          value={getLMName(lmVersion)}
+          onSelect={(option) => setLmVersion(option as LiquidityMiningVersion)}
+          dropdownMenuConfig={{ horizontalOrientation: "left", topBuffer: 8 }}
+          buttonConfig={{
+            background: `${colors.green}1F`,
+            activeBackground: `${colors.green}2E`,
+            color: colors.green,
+          }}
+        />
+
+        <Title className="mt-3 w-100">{getLMTitle(lmVersion)}</Title>
         <OverviewDescription className="mt-3 w-100">
-          The program aims to grow vault adjusted TVL, expand the voting power
-          to those who missed out on the airdrop and to distribute the
-          governance token to those who have the most skin in the game. The
-          program ended on July 19th, 2021.
+          {getLMDescription(lmVersion)}
         </OverviewDescription>
         <UnderlineLink
           to="https://ribbonfinance.medium.com/rgp-2-liquidity-mining-program-cc81f0b7a270"

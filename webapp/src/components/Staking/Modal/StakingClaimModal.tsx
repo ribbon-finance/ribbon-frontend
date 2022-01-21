@@ -9,7 +9,7 @@ import {
   Title,
   PrimaryText,
 } from "shared/lib/designSystem";
-import { StakingPoolResponse } from "shared/lib/models/staking";
+import { LiquidityMiningPoolResponse } from "shared/lib/models/staking";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { BigNumber } from "@ethersproject/bignumber";
 import moment from "moment";
@@ -71,7 +71,7 @@ interface StakingClaimModalProps {
   onClose: () => void;
   logo: React.ReactNode;
   vaultOption: VaultOptions;
-  stakingPoolData: StakingPoolResponse;
+  stakingPoolData: LiquidityMiningPoolResponse;
 }
 
 const StakingClaimModal: React.FC<StakingClaimModalProps> = ({

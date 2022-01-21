@@ -19,7 +19,7 @@ import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useERC20Token from "shared/lib/hooks/useERC20Token";
-import { StakingPoolResponse } from "shared/lib/models/staking";
+import { LiquidityMiningPoolResponse } from "shared/lib/models/staking";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 
 const FloatingContainer = styled.div`
@@ -37,7 +37,7 @@ const FloatingContainer = styled.div`
 interface StakingApprovalModalProps {
   show: boolean;
   onClose: () => void;
-  stakingPoolData: StakingPoolResponse;
+  stakingPoolData: LiquidityMiningPoolResponse;
   vaultOption: VaultOptions;
 }
 
@@ -65,7 +65,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
 
     try {
       const tx = await tokenContract.approve(
-        VaultLiquidityMiningMap[vaultOption],
+        VaultLiquidityMiningMap.lm[vaultOption],
         amount
       );
 

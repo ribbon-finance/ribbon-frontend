@@ -175,18 +175,37 @@ export const GAS_LIMITS: {
   },
 };
 
-export const VaultLiquidityMiningMap: Partial<{
-  [vault in VaultOptions]: string;
-}> = isDevelopment()
+/**
+ * lm: Liquidity Mining round during July 2021
+ * lg4: Liquidity Gauge V4 from curve.fi
+ */
+export const LiquidityMiningVersionList = ["lg4", "lm"] as const;
+export type LiquidityMiningVersion = typeof LiquidityMiningVersionList[number];
+
+export const VaultLiquidityMiningMap: {
+  [version in LiquidityMiningVersion]: Partial<{
+    [vault in VaultOptions]: string;
+  }>;
+} = isDevelopment()
   ? {
-      "rUSDC-ETH-P-THETA": v1deployment.kovan.RibbonETHPutStakingReward,
-      "rBTC-THETA": v1deployment.kovan.RibbonWBTCCoveredCallStakingReward,
-      "rETH-THETA": v1deployment.kovan.RibbonETHCoveredCallStakingReward,
+      lm: {
+        "rUSDC-ETH-P-THETA": v1deployment.kovan.RibbonETHPutStakingReward,
+        "rBTC-THETA": v1deployment.kovan.RibbonWBTCCoveredCallStakingReward,
+        "rETH-THETA": v1deployment.kovan.RibbonETHCoveredCallStakingReward,
+      },
+      lg4: {
+        "ryvUSDC-ETH-P-THETA": v2deployment.kovan.RibbonETHPutLiquidityGauge,
+        "rETH-THETA": v2deployment.kovan.RibbonETHCoveredCallLiquidityGauge,
+        "rBTC-THETA": v2deployment.kovan.RibbonWBTCCoveredCallLiquidityGauge,
+      },
     }
   : {
-      "rUSDC-ETH-P-THETA": v1deployment.mainnet.RibbonETHPutStakingReward,
-      "rBTC-THETA": v1deployment.mainnet.RibbonWBTCCoveredCallStakingReward,
-      "rETH-THETA": v1deployment.mainnet.RibbonETHCoveredCallStakingReward,
+      lm: {
+        "rUSDC-ETH-P-THETA": v1deployment.mainnet.RibbonETHPutStakingReward,
+        "rBTC-THETA": v1deployment.mainnet.RibbonWBTCCoveredCallStakingReward,
+        "rETH-THETA": v1deployment.mainnet.RibbonETHCoveredCallStakingReward,
+      },
+      lg4: {},
     };
 
 export const isPutVault = (vault: VaultOptions): boolean =>

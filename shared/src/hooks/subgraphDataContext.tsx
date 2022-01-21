@@ -1,5 +1,11 @@
 import React, { ReactElement } from "react";
 import {
+  defaultStakingAccountsData,
+  defaultStakingSubgraphData,
+  StakingPoolAccountsData,
+  StakingPoolsSubgraphData,
+} from "../models/staking";
+import {
   ERC20TokenSubgraphData,
   RBNTokenAccountSubgraphData,
 } from "../models/token";
@@ -25,8 +31,9 @@ export type VaultSubgraphDataContextType = {
   vaultActivities: VaultActivitiesData;
   balances: BalanceUpdate[];
   transactions: VaultTransaction[];
-
   vaultPriceHistory: VaultPriceHistoriesData;
+  stakingPools: StakingPoolsSubgraphData;
+  stakingAccounts: StakingPoolAccountsData;
   loading: boolean;
 };
 
@@ -48,6 +55,8 @@ export const defaultVaultSubgraphData: VaultSubgraphDataContextType = {
   balances: [],
   transactions: [],
   vaultPriceHistory: defaultV2VaultPriceHistoriesData,
+  stakingPools: defaultStakingSubgraphData,
+  stakingAccounts: defaultStakingAccountsData,
   loading: true,
 };
 

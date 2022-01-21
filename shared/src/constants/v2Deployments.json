@@ -11,7 +11,10 @@
     "RibbonTreasuryVaultPERP": "0x27b4E71841Db6E4c58a2e64d4C5F9853614fba7D",
     "StrikeSelectionETH": "0xa3Bd562C7315B6f1C5FDf573cBfd4Ab6C8af1D07",
     "StrikeSelectionWBTC": "0x2Cd6e166Fb9DABC50d0b07DdE12e08dDC7a9D5DC",
-    "VaultLifecycle": "0x97710Cbae64DE9c3615E64893CD225f6139370cA"
+    "VaultLifecycle": "0x97710Cbae64DE9c3615E64893CD225f6139370cA",
+    "RibbonETHPutLiquidityGauge": "0xB8a058dd5E4652ABFE7B7aD370777fDf800dfFD8",
+    "RibbonETHCoveredCallLiquidityGauge": "0xD79c2BE9812fE295cb3807889B19b6e4E1E72316",
+    "RibbonWBTCCoveredCallLiquidityGauge": "0xd679194Ad02958C73D04D02503ff5da9Aa1bD0A6"
   },
   "mainnet": {
     "ManualVolOracle": "0x7c0BFaB993fBD54deaDf43AdFF960E9c9e116399",
