@@ -5,6 +5,12 @@ import {
   VaultVersion,
 } from "shared/lib/constants/constants";
 import { Airdrop, AirdropBreakdown, AirdropProof } from "../models/airdrop";
+import ProofKovanData from "../data/proof-kovan.json";
+import ProofData from "../data/proof.json";
+import AirdropKovanData from "../data/airdrop-kovan.json";
+import AirdropData from "../data/airdrop.json";
+import BreakdownKovanData from "../data/breakdown-kovan.json";
+import BreakdownData from "../data/breakdown.json";
 
 export const proof: AirdropProof = isDevelopment()
   ? require("../data/proof-kovan.json")
