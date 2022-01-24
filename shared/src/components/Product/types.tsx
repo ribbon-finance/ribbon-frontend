@@ -84,3 +84,14 @@ export type VaultsDisplayVersionProps = {
     vaultVersion: VaultVersion
   ) => void;
 };
+
+export const FilterAssets: Assets[] = [
+  "AAVE",
+  "WAVAX",
+  "WETH",
+  "USDC",
+  "WBTC",
+  "stETH",
+  "yvUSDC",
+  "SOL",
+];

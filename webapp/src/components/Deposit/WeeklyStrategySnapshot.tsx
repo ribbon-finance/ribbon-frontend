@@ -10,6 +10,7 @@ import { formatOption } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import {
   getAssets,
+  getDisplayAssets,
   getOptionAssets,
   VaultOptions,
   VaultVersion,
@@ -22,6 +23,8 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import ProfitCalculatorModal from "./ProfitCalculatorModal";
 import { formatUnits } from "@ethersproject/units";
 import { useLatestOption } from "shared/lib/hooks/useLatestOption";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
 
 const VaultPerformanceChartContainer = styled.div`
   display: flex;
@@ -42,6 +45,8 @@ const VaultPerformanceChartSecondaryContainer = styled.div`
 `;
 
 const DataCol = styled(Col)`
+  display: flex;
+  flex-direction: column;
   border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
 
   && {
@@ -56,12 +61,13 @@ const DataCol = styled(Col)`
 const DataLabel = styled(SecondaryText)`
   font-size: 12px;
   line-height: 16px;
-  margin-bottom: 4px;
 `;
 
 const DataNumber = styled(Title)<{ variant?: "green" | "red" }>`
   font-size: 16px;
   line-height: 24px;
+  margin-top: 4px;
+
   ${(props) => {
     switch (props.variant) {
       case "green":
@@ -234,9 +240,36 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
             <DataNumber>{strikeAPRText}</DataNumber>
           </DataCol>
           <DataCol xs="6">
-            <DataLabel className="d-block">This Week's Performance</DataLabel>
+            <div className="d-flex align-items-center">
+              <DataLabel className="d-block">This Week's Performance</DataLabel>
+              <TooltipExplanation
+                title="This Week’s Performance"
+                explanation={
+                  <>
+                    The {getAssetDisplay(asset)} premiums earned from selling
+                    options expressed as a percentage of the amount of{" "}
+                    {getAssetDisplay(getDisplayAssets(vaultOption))} used to
+                    collateralize the options.
+                    <br />
+                    <br />
+                    <SecondaryText color={colors.primaryText}>
+                      Performance = (Premiums / Options Collateral)*100
+                    </SecondaryText>
+                    <br />
+                    <br />
+                    Fees are not included in this calculation.
+                  </>
+                }
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HelpInfo containerRef={ref} {...triggerHandler}>
+                    i
+                  </HelpInfo>
+                )}
+              />
+            </div>
             <DataNumber
               variant={KPI ? (KPI.isProfit ? "green" : "red") : undefined}
+              className="w-100"
             >
               {ProfitabilityText}
             </DataNumber>

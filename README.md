@@ -28,6 +28,7 @@ REACT_APP_VERCEL_GIT_COMMIT_REF=staging
 REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID=your_analytics_id
 REACT_APP_MAINNET_URI=https://mainnet.infura.io/v3/d43d838246464b5690f8b10337b446d7
 REACT_APP_TESTNET_URI=https://kovan.infura.io/v3/d43d838246464b5690f8b10337b446d7
+REACT_APP_AURORA_URI=https://mainnet.aurora.dev
 REACT_APP_SUBGRAPHQL_URL=https://api.thegraph.com/subgraphs/name/kenchangh/ribbon-finance
 REACT_APP_KOVAN_SUBGRAPHQL_URL=https://api.thegraph.com/subgraphs/name/kenchangh/ribbon-finance-kovan
 REACT_APP_AIRTABLE_API_KEY=keymgnfgwnQHmH4pl

@@ -221,7 +221,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         <TooltipExplanation
           title="YVUSDC"
           explanation="yvUSDC is the deposit token that represents a user's share of the USDC yVault."
-          learnMoreURL="https://docs.yearn.finance/yearn-finance/yvaults/vault-tokens"
+          learnMoreURL="https://docs.yearn.finance/getting-started/products/yvaults/vault-tokens"
           renderContent={({ ref, ...triggerHandler }) => (
             <HighlighText ref={ref} {...triggerHandler}>
               yvUSDC

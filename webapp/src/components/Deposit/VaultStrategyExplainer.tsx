@@ -405,7 +405,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                   <TooltipExplanation
                     title={collateralAssetUnit.toUpperCase()}
                     explanation={`${collateralAssetUnit} is the deposit token that represents a user's share of the ${assetUnit} yVault.`}
-                    learnMoreURL="https://docs.yearn.finance/yearn-finance/yvaults/vault-tokens"
+                    learnMoreURL="https://docs.yearn.finance/getting-started/products/yvaults/vault-tokens"
                     renderContent={({ ref, ...triggerHandler }) => (
                       <HighlighText ref={ref} {...triggerHandler}>
                         {collateralAssetUnit}
@@ -416,7 +416,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                   <TooltipExplanation
                     title="YVAULT"
                     explanation="yVaults are Yearn vaults that accept customer deposits and then route them through strategies which seek out the highest yield available in DeFi."
-                    learnMoreURL="https://docs.yearn.finance/yearn-finance/yvaults/overview#what-are-yvaults"
+                    learnMoreURL="https://docs.yearn.finance/getting-started/products/yvaults/overview"
                     renderContent={({ ref, ...triggerHandler }) => (
                       <HighlighText ref={ref} {...triggerHandler}>
                         yVault

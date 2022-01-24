@@ -6,7 +6,6 @@ import colors from "../../designSystem/colors";
 import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
 import { VaultAccount } from "../../models/vault";
-import { AssetsList } from "../../store/types";
 import {
   getAssetColor,
   getAssetDisplay,
@@ -20,6 +19,7 @@ import SwitchViewButton from "./Shared/SwitchViewButton";
 import YieldCard from "./Theta/YieldCard";
 import {
   DesktopViewType,
+  FilterAssets,
   VaultFilterProps,
   VaultsDisplayVersionProps,
   VaultSortBy,
@@ -186,7 +186,7 @@ const ProductCatalogueGridView: React.FC<
             {/* Assets */}
             <MultiselectFilterDropdown
               values={filterAssets}
-              options={AssetsList.map((asset) => {
+              options={FilterAssets.map((asset) => {
                 const Logo = getAssetLogo(asset);
                 let logo = <Logo height="100%" />;
                 switch (asset) {
@@ -224,7 +224,7 @@ const ProductCatalogueGridView: React.FC<
                 name: "asset",
                 title: "DEPOSIT ASSET",
                 values: filterAssets,
-                options: AssetsList.map((asset) => {
+                options: FilterAssets.map((asset) => {
                   const Logo = getAssetLogo(asset);
                   let logo = <Logo height="100%" />;
                   switch (asset) {
