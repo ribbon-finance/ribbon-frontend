@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { getVaultNetwork, getAssets, VaultList } from "../constants/constants";
-import { CHAINID, isDevelopment, isProduction } from "../utils/env";
+import { isProduction } from "../utils/env";
 import { getV2Vault } from "./useV2Vault";
 import { impersonateAddress } from "../utils/development";
 import {
@@ -10,9 +10,9 @@ import {
   V2VaultData,
   V2VaultDataResponses,
 } from "../models/vault";
-import { useWeb3Context } from "./web3Context";
 import { getAssetDecimals } from "../utils/asset";
 import { usePendingTransactions } from "./pendingTransactionsContext";
+import { useEVMWeb3Context } from "./useEVMWeb3Context";
 import { isVaultSupportedOnChain } from "../utils/vault";
 
 const useFetchV2VaultData = (): V2VaultData => {
@@ -22,17 +22,9 @@ const useFetchV2VaultData = (): V2VaultData => {
     account: web3Account,
     library,
   } = useWeb3React();
-  const providers = {
-    ethereum: useWeb3Context(
-      isDevelopment() ? CHAINID.ETH_KOVAN : CHAINID.ETH_MAINNET
-    ).provider,
-    avalanche: useWeb3Context(
-      isDevelopment() ? CHAINID.AVAX_FUJI : CHAINID.AVAX_MAINNET
-    ).provider,
-    aurora: useWeb3Context(CHAINID.AURORA_MAINNET).provider,
-  };
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
+  const { getProviderForNetwork } = useEVMWeb3Context();
 
   const [data, setData] = useState<V2VaultData>(defaultV2VaultData);
   const [, setMulticallCounter] = useState(0);
@@ -53,7 +45,9 @@ const useFetchV2VaultData = (): V2VaultData => {
 
     const responses = await Promise.all(
       VaultList.map(async (vault) => {
-        const inferredProviderFromVault = providers[getVaultNetwork(vault)];
+        const inferredProviderFromVault = getProviderForNetwork(
+          getVaultNetwork(vault)
+        );
         const active = Boolean(
           web3Active &&
             isVaultSupportedOnChain(
@@ -197,15 +191,7 @@ const useFetchV2VaultData = (): V2VaultData => {
     if (!isProduction()) {
       console.timeEnd("V2 Vault Data Fetch");
     }
-  }, [
-    account,
-    chainId,
-    library,
-    web3Active,
-    providers.avalanche,
-    providers.ethereum,
-    providers.aurora,
-  ]);
+  }, [account, chainId, library, web3Active]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     doMulticall();

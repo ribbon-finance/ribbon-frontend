@@ -15,6 +15,9 @@ import v2deployment from "./v2Deployments.json";
 import addresses from "./externalAddresses.json";
 
 export type NETWORK_NAMES = "mainnet" | "kovan" | "fuji" | "avax" | "aurora";
+export type TESTNET_NAMES = "kovan" | "fuji";
+export type MAINNET_NAMES = Exclude<NETWORK_NAMES, "kovan" | "fuji">;
+
 export const NETWORKS: Record<number, NETWORK_NAMES> = {
   [CHAINID.ETH_MAINNET]: "mainnet",
   [CHAINID.ETH_KOVAN]: "kovan",
@@ -56,9 +59,9 @@ export const isAvaxVault = (vault: string) =>
 export const isAuroraVault = (vault: string) =>
   isAuroraNetwork(VaultAddressMap[vault as VaultOptions].chainId);
 
-export const getVaultNetwork = (vault: string) => {
-  if (isEthVault(vault)) return "ethereum";
-  else if (isAvaxVault(vault)) return "avalanche";
+export const getVaultNetwork = (vault: string): MAINNET_NAMES => {
+  if (isEthVault(vault)) return "mainnet";
+  else if (isAvaxVault(vault)) return "avax";
   else if (isAuroraVault(vault)) return "aurora";
   else throw new Error(`Unknown network for ${vault}`);
 };
