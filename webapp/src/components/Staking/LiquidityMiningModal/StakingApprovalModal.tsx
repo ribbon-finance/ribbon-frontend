@@ -21,6 +21,7 @@ import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsCont
 import useERC20Token from "shared/lib/hooks/useERC20Token";
 import { LiquidityMiningPoolResponse } from "shared/lib/models/staking";
 import BasicModal from "shared/lib/components/Common/BasicModal";
+import { getERC20TokenNameFromVault } from "shared/lib/models/eth";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -50,7 +51,9 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
   const { chainId } = useWeb3Wallet();
   const { provider } = useWeb3Context();
   const { addPendingTransaction } = usePendingTransactions();
-  const tokenContract = useERC20Token(vaultOption);
+  const tokenContract = useERC20Token(
+    getERC20TokenNameFromVault(vaultOption, "v1")
+  );
   const [step, setStep] = useState<"info" | "approve" | "approving">("info");
   const [txId, setTxId] = useState("");
 

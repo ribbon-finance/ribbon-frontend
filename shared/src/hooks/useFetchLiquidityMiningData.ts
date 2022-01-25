@@ -15,6 +15,7 @@ import {
 import { getERC20Token } from "./useERC20Token";
 import { getStakingReward } from "./useStakingReward";
 import { usePendingTransactions } from "./pendingTransactionsContext";
+import { getERC20TokenNameFromVault } from "../models/eth";
 
 const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
   const { active, chainId, account: web3Account, library } = useWeb3React();
@@ -33,7 +34,7 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
     }
 
     if (!isProduction()) {
-      console.time("Staking Pool Data Fetch");
+      console.time("Liquidity Mining Pool Data Fetch");
     }
 
     /**
@@ -49,7 +50,7 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
       VaultList.map(async (vault) => {
         const tokenContract = getERC20Token(
           library || provider,
-          vault,
+          getERC20TokenNameFromVault(vault, "v1"),
           chainId,
           active
         );
@@ -110,7 +111,12 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
           claimEvents,
         ] = await Promise.all(
           // Default to 0 when error
-          promises.map((p) => p.catch((e) => BigNumber.from(0)))
+          promises.map((p) =>
+            p.catch((e) => {
+              console.log(e);
+              return BigNumber.from(0);
+            })
+          )
         );
 
         return {
@@ -152,7 +158,7 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
     });
 
     if (!isProduction()) {
-      console.timeEnd("Staking Pool Data Fetch");
+      console.timeEnd("Liquidity Mining Pool Data Fetch");
     }
   }, [account, active, chainId, library, provider]);
 

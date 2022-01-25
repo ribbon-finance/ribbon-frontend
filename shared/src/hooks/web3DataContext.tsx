@@ -6,7 +6,9 @@ import {
   VaultOptions,
 } from "../constants/constants";
 import {
+  defaultLiquidityGaugeV4PoolData,
   defaultLiquidityMiningPoolData,
+  LiquidityGaugeV4PoolData,
   LiquidityMiningPoolData,
 } from "../models/staking";
 import {
@@ -33,12 +35,14 @@ import useFetchTreasuryBalanceData, {
   defaultTreasuryBalanceData,
   TreasuryBalanceData,
 } from "./useFetchTreasuryBalanceData";
+import useFetchLiquidityGaugeV4Data from "./useFetchLiquidityGaugeV4Data";
 
 export type Web3DataContextType = {
   v1: VaultData;
   v2: V2VaultData;
   assetBalance: UserAssetBalanceData;
   liquidityMiningPool: LiquidityMiningPoolData;
+  liquidityGaugeV4Pool: LiquidityGaugeV4PoolData;
   lidoOracle: LidoOracleData;
   treasuryBalance: TreasuryBalanceData;
 };
@@ -48,6 +52,7 @@ export const Web3DataContext = React.createContext<Web3DataContextType>({
   v2: defaultV2VaultData,
   assetBalance: defaultUserAssetBalanceData,
   liquidityMiningPool: defaultLiquidityMiningPoolData,
+  liquidityGaugeV4Pool: defaultLiquidityGaugeV4PoolData,
   lidoOracle: defaultLidoOracleData,
   treasuryBalance: defaultTreasuryBalanceData,
 });
@@ -109,6 +114,15 @@ export const useLiquidityMiningPoolData = (vault: VaultOptions) => {
   };
 };
 
+export const useLiquidityGaugeV4PoolData = (vault: VaultOptions) => {
+  const contextData = useContext(Web3DataContext);
+
+  return {
+    data: contextData.liquidityGaugeV4Pool.responses[vault],
+    loading: contextData.liquidityGaugeV4Pool.loading,
+  };
+};
+
 export const useAssetBalance = (asset: Assets) => {
   const contextData = useContext(Web3DataContext);
 
@@ -136,6 +150,7 @@ export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({
   const vaultData = useFetchVaultData();
   const v2VaultData = useFetchV2VaultData();
   const assetBalance = useFetchAssetBalanceData();
+  const liquidityGaugeV4Pool = useFetchLiquidityGaugeV4Data();
   const liquidityMiningPool = useFetchLiquidityMiningData();
   const lidoOracle = useFetchLidoOracleData();
   const treasuryBalance = useFetchTreasuryBalanceData();
@@ -146,6 +161,7 @@ export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({
         v1: vaultData,
         v2: v2VaultData,
         assetBalance,
+        liquidityGaugeV4Pool,
         liquidityMiningPool,
         lidoOracle,
         treasuryBalance,

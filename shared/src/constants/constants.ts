@@ -194,7 +194,7 @@ export const VaultLiquidityMiningMap: {
         "rETH-THETA": v1deployment.kovan.RibbonETHCoveredCallStakingReward,
       },
       lg4: {
-        "ryvUSDC-ETH-P-THETA": v2deployment.kovan.RibbonETHPutLiquidityGauge,
+        "rUSDC-ETH-P-THETA": v2deployment.kovan.RibbonETHPutLiquidityGauge,
         "rETH-THETA": v2deployment.kovan.RibbonETHCoveredCallLiquidityGauge,
         "rBTC-THETA": v2deployment.kovan.RibbonWBTCCoveredCallLiquidityGauge,
       },
@@ -221,6 +221,7 @@ export const VaultAddressMap: {
   "rUSDC-ETH-P-THETA": isDevelopment()
     ? {
         v1: v1deployment.kovan.RibbonETHPut,
+        v2: v2deployment.kovan.RibbonThetaVaultETHPut,
         chainId: CHAINID.ETH_KOVAN,
       }
     : {

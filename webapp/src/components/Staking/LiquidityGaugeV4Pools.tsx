@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
+import { formatUnits } from "@ethersproject/units";
 
 import {
   BaseIndicator,
@@ -12,13 +13,14 @@ import theme from "shared/lib/designSystem/theme";
 import { shimmerKeyframe } from "shared/lib/designSystem/keyframes";
 import sizes from "shared/lib/designSystem/sizes";
 import {
+  getAssets,
   getDisplayAssets,
   VaultLiquidityMiningMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import { getAssetLogo } from "shared/lib/utils/asset";
+import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { getVaultColor } from "shared/lib/utils/vault";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
@@ -26,6 +28,8 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import CapBar from "shared/lib/components/Deposit/CapBar";
+import { useLiquidityGaugeV4PoolData } from "shared/lib/hooks/web3DataContext";
+import { formatBigNumber } from "shared/lib/utils/math";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -142,14 +146,19 @@ const StakingPoolCardFooterButton = styled(Title)<{
   }
 `;
 
-interface StakingPoolProps {
+interface LiquidityGaugeV4PoolProps {
   vaultOption: VaultOptions;
 }
 
-const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
+const LiquidityGaugeV4Pool: React.FC<LiquidityGaugeV4PoolProps> = ({
+  vaultOption,
+}) => {
   const { active } = useWeb3Wallet();
   const [, setShowConnectWalletModal] = useConnectWalletModal();
   const { pendingTransactions } = usePendingTransactions();
+  const { data: lg4Data, loading: lg4DataLoading } =
+    useLiquidityGaugeV4PoolData(vaultOption);
+  const decimals = getAssetDecimals(getAssets(vaultOption));
 
   const color = getVaultColor(vaultOption);
   const ongoingTransaction:
@@ -234,8 +243,8 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
       return "---";
     }
 
-    return "0";
-  }, [active]);
+    return lg4Data ? formatBigNumber(lg4Data.unstakedBalance, decimals) : 0;
+  }, [active, decimals, lg4Data]);
 
   // const showStakeModal = useMemo(() => {
   //   if (ongoingTransaction === "stake") {
@@ -250,19 +259,17 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   // }, [isStakeAction, ongoingTransaction]);
 
   const rbnPill = useMemo(() => {
-    const randNum = Math.random();
-
     /**
      * TODO: Below if should represent when earned amount is 0 and there is claimed amount
      */
-    if (randNum <= 0.5) {
+    if (!lg4Data || lg4Data.claimableRbn.isZero()) {
       return (
         <ClaimableTokenPillContainer>
           <ClaimableTokenPill color={color}>
             <BaseIndicator size={8} color={color} className="mr-2" />
             <Subtitle className="mr-2">AMOUNT CLAIMED</Subtitle>
             <ClaimableTokenAmount color={color}>
-              {(randNum * 1000).toFixed(2)}
+              {active && lg4Data ? formatBigNumber(lg4Data.claimedRbn) : "---"}
             </ClaimableTokenAmount>
           </ClaimableTokenPill>
         </ClaimableTokenPillContainer>
@@ -275,12 +282,12 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           <BaseIndicator size={8} color={color} className="mr-2" />
           <Subtitle className="mr-2">EARNED $RBN</Subtitle>
           <ClaimableTokenAmount color={color}>
-            {active ? (randNum * 1000).toFixed(2) : "---"}
+            {active ? formatBigNumber(lg4Data.claimableRbn) : "---"}
           </ClaimableTokenAmount>
         </ClaimableTokenPill>
       </ClaimableTokenPillContainer>
     );
-  }, [active, color]);
+  }, [active, color, lg4Data]);
 
   const stakingPoolButtons = useMemo(() => {
     if (!active) {
@@ -299,18 +306,42 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
     }
 
     return (
-      <StakingPoolCardFooterButton
-        role="button"
-        color={color}
-        onClick={() => {
-          /** TODO:  */
-        }}
-        active={ongoingTransaction === "unstake"}
-      >
-        {ongoingTransaction === "unstake"
-          ? primaryActionLoadingText
-          : "Unstake"}
-      </StakingPoolCardFooterButton>
+      <>
+        <StakingPoolCardFooterButton
+          role="button"
+          color={color}
+          onClick={() => {
+            /** TODO:  */
+          }}
+          active={ongoingTransaction === "stake"}
+        >
+          {ongoingTransaction === "stake" ? primaryActionLoadingText : "Stake"}
+        </StakingPoolCardFooterButton>
+        <StakingPoolCardFooterButton
+          role="button"
+          color={color}
+          onClick={() => {
+            /** TODO:  */
+          }}
+          active={ongoingTransaction === "unstake"}
+        >
+          {ongoingTransaction === "unstake"
+            ? primaryActionLoadingText
+            : "Unstake"}
+        </StakingPoolCardFooterButton>
+        <StakingPoolCardFooterButton
+          role="button"
+          color={color}
+          onClick={() => {
+            /** TODO:  */
+          }}
+          active={ongoingTransaction === "rewardClaim"}
+        >
+          {ongoingTransaction === "rewardClaim"
+            ? primaryActionLoadingText
+            : "Claim"}
+        </StakingPoolCardFooterButton>
+      </>
     );
   }, [
     active,
@@ -355,9 +386,17 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           {/* Capbar */}
           <div className="w-100 mt-4">
             <CapBar
-              loading={false}
-              current={100}
-              cap={1000}
+              loading={lg4DataLoading}
+              current={
+                lg4Data
+                  ? parseFloat(formatUnits(lg4Data.currentStake, decimals))
+                  : 0
+              }
+              cap={
+                lg4Data
+                  ? parseFloat(formatUnits(lg4Data.poolSize, decimals))
+                  : 0
+              }
               copies={{
                 current: "Your Current Stake",
                 cap: "Pool Size",
@@ -387,12 +426,12 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
           </div> */}
 
           {/* Pool reward of duration */}
-          <div className="d-flex align-items-center mt-4 w-100">
+          {/* <div className="d-flex align-items-center mt-4 w-100">
             <div className="d-flex align-items-center">
               <SecondaryText>Pool rewards </SecondaryText>
             </div>
             <PoolRewardData className="ml-auto">10000 RBN</PoolRewardData>
-          </div>
+          </div> */}
         </div>
         <StakingPoolCardFooter>{stakingPoolButtons}</StakingPoolCardFooter>
       </StakingPoolCard>
@@ -407,7 +446,10 @@ const LiquidityGaugeV4Pools = () => {
         STAKING POOLS
       </Title>
       {Object.keys(VaultLiquidityMiningMap.lg4).map((option) => (
-        <StakingPool key={option} vaultOption={option as VaultOptions} />
+        <LiquidityGaugeV4Pool
+          key={option}
+          vaultOption={option as VaultOptions}
+        />
       ))}
     </StakingPoolsContainer>
   );
