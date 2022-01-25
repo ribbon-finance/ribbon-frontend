@@ -4,6 +4,7 @@ export enum CHAINID {
   AVAX_FUJI = 43113,
   AVAX_MAINNET = 43114,
   AURORA_MAINNET = 1313161554,
+  AURORA_TESTNET = 1313161555,
 }
 
 export const SUBGRAPH_URI: Record<number, string> = {
@@ -44,6 +45,7 @@ export const NODE_URI: Record<number, string> = {
   [CHAINID.AVAX_MAINNET]: process.env.REACT_APP_AVAX_URI || "",
   [CHAINID.AVAX_FUJI]: process.env.REACT_APP_FUJI_URI || "",
   [CHAINID.AURORA_MAINNET]: process.env.REACT_APP_AURORA_URI || "",
+  [CHAINID.AURORA_MAINNET]: "https://testnet.aurora.dev/",
 };
 
 export const getSubgraphqlURI = () =>
@@ -64,6 +66,7 @@ export const supportedChainIds = isDevelopment()
 export const ENABLED_CHAINID: CHAINID[] = [
   CHAINID.ETH_MAINNET,
   CHAINID.AVAX_MAINNET,
+  CHAINID.AURORA_MAINNET,
 ];
 
 export const isChainIdEnabled = (chainId: number) =>

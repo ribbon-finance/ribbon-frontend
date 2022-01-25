@@ -24,6 +24,7 @@ export const NETWORKS: Record<number, NETWORK_NAMES> = {
   [CHAINID.AVAX_FUJI]: "fuji",
   [CHAINID.AVAX_MAINNET]: "avax",
   [CHAINID.AURORA_MAINNET]: "aurora",
+  [CHAINID.AURORA_TESTNET]: "aurora_testnet",
 };
 
 export const CHAINID_TO_NATIVE_TOKENS: Record<CHAINID, Assets> = {
@@ -32,6 +33,7 @@ export const CHAINID_TO_NATIVE_TOKENS: Record<CHAINID, Assets> = {
   [CHAINID.AVAX_MAINNET]: "WAVAX",
   [CHAINID.AVAX_FUJI]: "WAVAX",
   [CHAINID.AURORA_MAINNET]: "AURORA", // Native token is really WETH
+  [CHAINID.AURORA_TESTNET]: "AURORA", // Native token is really WETH
 };
 export const READABLE_NETWORK_NAMES: Record<CHAINID, string> = {
   [CHAINID.ETH_MAINNET]: "Ethereum",

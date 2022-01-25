@@ -113,7 +113,6 @@ const useFetchV2VaultData = (): V2VaultData => {
           // Default to 0 when error
           promises.map((p) =>
             p.catch((e) => {
-              console.log(e);
               return BigNumber.from(0);
             })
           )
