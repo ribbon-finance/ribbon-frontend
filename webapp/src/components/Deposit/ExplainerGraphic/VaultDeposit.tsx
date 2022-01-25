@@ -7,6 +7,8 @@ import ETHDepositAnimationData from "../../../assets/icons/vaultExplainer/deposi
 import STETHDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/STETH_Deposit.json";
 import AAVEDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/AAVE_Deposit.json";
 import AVAXDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/AVAX_Deposit.json";
+import NEARDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/NEAR_Deposit.json";
+import AURORADepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/AURORA_Deposit.json";
 import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 
 interface VaultDepositProps {
@@ -30,6 +32,10 @@ const VaultDeposit: React.FC<VaultDepositProps> = ({ vaultOption }) => {
             return AAVEDepositAnimationData;
           case "WAVAX":
             return AVAXDepositAnimationData;
+          case "WNEAR":
+            return NEARDepositAnimationData;
+          case "AURORA":
+            return AURORADepositAnimationData;
         }
     }
   }, [vaultOption]);

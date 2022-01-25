@@ -23,8 +23,8 @@ interface Announcement {
 }
 
 export const ANNOUNCEMENT: Announcement | undefined = {
-  color: "#E84142",
-  message: "AVAX vaults have launched.",
-  linkText: "Switch to Avalanche",
+  color: "#FFFFFF",
+  message: "Near vaults have launched.",
+  linkText: "Switch to Aurora",
   linkURI: "/",
 };

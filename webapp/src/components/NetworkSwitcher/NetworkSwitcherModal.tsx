@@ -97,7 +97,7 @@ const NetworkSwitcherModal: React.FC<NetworkSwitcherModalProps> = ({
   );
 
   return (
-    <BasicModal show={show} onClose={handleClose} maxWidth={400} height={260}>
+    <BasicModal show={show} onClose={handleClose} maxWidth={440} height={350}>
       <ModalContainer>
         <TitleContainer>
           <Title>Select a network</Title>

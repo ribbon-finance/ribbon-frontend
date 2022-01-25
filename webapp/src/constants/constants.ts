@@ -1,4 +1,4 @@
-import { isDevelopment } from "shared/lib/utils/env";
+import { CHAINID, isChainIdEnabled, isDevelopment } from "shared/lib/utils/env";
 import {
   VaultNameOptionMap,
   VaultOptions,
@@ -45,9 +45,13 @@ interface Announcement {
   linkURI: string;
 }
 
-export const ANNOUNCEMENT: Announcement | undefined = {
-  color: "#E84142",
-  message: "AVAX vaults have launched.",
-  linkText: "Switch to Avalanche",
-  linkURI: "/",
-};
+export const ANNOUNCEMENT: Announcement | undefined = isChainIdEnabled(
+  CHAINID.AURORA_MAINNET
+)
+  ? {
+      color: "#FFFFFF",
+      message: "Near vaults have launched.",
+      linkText: "Switch to Aurora",
+      linkURI: "/",
+    }
+  : undefined;

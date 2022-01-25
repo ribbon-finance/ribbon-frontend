@@ -4,7 +4,11 @@ import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import { useGlobalState } from "../store/store";
 import { GAS_URL } from "../utils/env";
-import { isAvaxNetwork } from "../constants/constants";
+import {
+  isEthNetwork,
+  isAuroraNetwork,
+  isAvaxNetwork,
+} from "../constants/constants";
 
 const { parseUnits } = ethers.utils;
 
@@ -28,19 +32,21 @@ const useGasPrice = () => {
   const fetchGasPrice = useCallback(async () => {
     if (!chainId) return;
 
-    // Snowtrace API wrongly returns Ethereum mainnet gas price
-    // But the good thing is that Avalanche hardcodes gas price to 25 nAVAX (gwei)
-    if (isAvaxNetwork(chainId)) {
-      fetchedOnce = true;
-      setGasPrice(parseUnits("25", "gwei").toString());
-      return;
+    let gasPrice = "0";
+    if (isEthNetwork(chainId)) {
+      const response = await axios.get(GAS_URL[chainId]);
+      const data: APIResponse = response.data;
+      gasPrice = data.result.FastGasPrice;
+    } else if (isAvaxNetwork(chainId)) {
+      // Snowtrace API wrongly returns Ethereum mainnet gas price
+      // But the good thing is that Avalanche hardcodes gas price to 25 nAVAX (gwei)
+      gasPrice = "25";
+    } else if (isAuroraNetwork(chainId)) {
+      // And Aurora to 0 ETH for gas
+      gasPrice = "0";
     }
-
-    const response = await axios.get(GAS_URL[chainId]);
-    const data: APIResponse = response.data;
-
+    setGasPrice(parseUnits(gasPrice, "gwei").toString());
     fetchedOnce = true;
-    setGasPrice(parseUnits(data.result.FastGasPrice, "gwei").toString());
   }, [chainId, setGasPrice]);
 
   useEffect(() => {
