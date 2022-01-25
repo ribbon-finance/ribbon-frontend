@@ -2,7 +2,11 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
 import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
 
-import { ACTIONS, Steps, STEPS } from "webapp/lib/components/Vault/VaultActionsForm/Modal/types";
+import {
+  ACTIONS,
+  Steps,
+  STEPS,
+} from "webapp/lib/components/Vault/VaultActionsForm/Modal/types";
 import useVault from "shared/lib/hooks/useVault";
 import PreviewStep from "./PreviewStep";
 import TransactionStep from "webapp/lib/components/Vault/VaultActionsForm/Modal/TransactionStep";

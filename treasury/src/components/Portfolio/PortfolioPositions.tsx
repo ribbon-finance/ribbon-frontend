@@ -257,7 +257,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
               </PositionSecondaryInfoText>
             </PositionInfoRow>
             <KPIContainer>
-              <KPIDatas></KPIDatas>            
+              <KPIDatas></KPIDatas>
             </KPIContainer>
           </PositionInfo>
         </PositionMainContainer>

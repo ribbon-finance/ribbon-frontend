@@ -49,7 +49,9 @@ const Image = styled.img`
   margin-right: 16px;
 `;
 
-const ConvertImage = styled.img.attrs({ src: "https://github.com/ribbon-finance/ribbon-frontend/blob/master/webapp/src/assets/img/arrow.svg?raw=true" })`
+const ConvertImage = styled.img.attrs({
+  src: "https://github.com/ribbon-finance/ribbon-frontend/blob/master/webapp/src/assets/img/arrow.svg?raw=true",
+})`
   margin: 0 7px;
 `;
 
@@ -72,7 +74,11 @@ const SwapBTCDropdown: React.FC<SwapBTCDropdownProps> = ({ open }) => {
         rel="noreferrer noopener"
       >
         <DefiCard>
-          <Image src={"https://github.com/ribbon-finance/ribbon-frontend/blob/master/webapp/src/assets/img/badger.png?raw=true"} />
+          <Image
+            src={
+              "https://github.com/ribbon-finance/ribbon-frontend/blob/master/webapp/src/assets/img/badger.png?raw=true"
+            }
+          />
           <Title>BTC</Title>
           <ConvertImage />
           <Title>WBTC</Title>
@@ -85,7 +91,11 @@ const SwapBTCDropdown: React.FC<SwapBTCDropdownProps> = ({ open }) => {
         rel="noreferrer noopener"
       >
         <DefiCard>
-          <Image src={"https://github.com/ribbon-finance/ribbon-frontend/blob/master/webapp/src/assets/img/curve.png?raw=true"} />
+          <Image
+            src={
+              "https://github.com/ribbon-finance/ribbon-frontend/blob/master/webapp/src/assets/img/curve.png?raw=true"
+            }
+          />
           <Title>
             BTC <OrText>OR</OrText> RENBTC
           </Title>

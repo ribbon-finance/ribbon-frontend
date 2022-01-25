@@ -19,7 +19,11 @@ import {
 } from "shared/lib/hooks/useAssetPrice";
 import useBalances from "shared/lib/hooks/useBalances";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import { assetToFiat, formatBigNumber, formatSignificantDecimals } from "shared/lib/utils/math";
+import {
+  assetToFiat,
+  formatBigNumber,
+  formatSignificantDecimals,
+} from "shared/lib/utils/math";
 import PerformanceChart, {
   HoverInfo,
 } from "shared/lib/components/Common/PerformanceChart";
@@ -164,7 +168,7 @@ const PortfolioPerformance = () => {
   const [, setShowConnectWalletModal] = useConnectWalletModal();
   const { data: RBNTokenAccount, loading: RBNTokenAccountLoading } =
     useRBNTokenAccount();
-    const { transactions, loading: transactionsLoading } = useTransactions();
+  const { transactions, loading: transactionsLoading } = useTransactions();
 
   const afterDate = useMemo(() => {
     switch (rangeFilter) {
@@ -179,8 +183,8 @@ const PortfolioPerformance = () => {
   const { balances: subgraphBalanceUpdates, loading: balanceUpdatesLoading } =
     useBalances(undefined, afterDate ? afterDate.unix() : undefined);
   const loading =
-    assetsPriceLoading || 
-    balanceUpdatesLoading || 
+    assetsPriceLoading ||
+    balanceUpdatesLoading ||
     transactionsLoading ||
     RBNTokenAccountLoading;
   const animatedLoadingText = useTextAnimation(loading);
@@ -500,7 +504,6 @@ const PortfolioPerformance = () => {
     );
   }, []);
 
-
   const renderRBNBalanceText = useCallback(() => {
     if (!active) {
       return "---";
@@ -611,7 +614,9 @@ const PortfolioPerformance = () => {
             >
               ${totalYield}
             </KPIText>
-            <DepositCurrency>{active && !loading ? "USDC" : ""}</DepositCurrency>
+            <DepositCurrency>
+              {active && !loading ? "USDC" : ""}
+            </DepositCurrency>
           </KPI>
         </KPIColumn>
         <KPIColumn>

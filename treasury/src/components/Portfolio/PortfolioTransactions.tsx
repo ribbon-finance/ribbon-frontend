@@ -25,7 +25,11 @@ import {
   VaultNameOptionMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
-import { getAssetDecimals, getAssetDisplay, getAssetLogo } from "shared/lib/utils/asset";
+import {
+  getAssetDecimals,
+  getAssetDisplay,
+  getAssetLogo,
+} from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
 import {
   DepositIcon,

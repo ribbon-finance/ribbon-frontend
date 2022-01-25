@@ -184,8 +184,8 @@ const ContractButtonTitle = styled(Title)`
 `;
 
 const DepositPage = () => {
-  const auth = localStorage.getItem("auth")
-  
+  const auth = localStorage.getItem("auth");
+
   const { vaultOption, vaultVersion } = useVaultOption();
   const { chainId } = useWeb3Wallet();
   useRedirectOnSwitchChain(chainId);
@@ -238,7 +238,7 @@ const DepositPage = () => {
         formatSignificantDecimals(formatUnits(yields, premiumDecimals), 2)
       );
     } else {
-      return 0
+      return 0;
     }
   }, [activities, premiumDecimals]);
 
@@ -262,12 +262,10 @@ const DepositPage = () => {
   if (!vaultOption) {
     return <Redirect to="/" />;
   }
-  
 
   if (!auth || !auth.includes(vaultOption)) {
     return <Redirect to="/" />;
   }
-
 
   /**
    * Redirect to v1 if vault version given is invalid

@@ -4,7 +4,11 @@ import { BigNumber } from "ethers";
 
 import { SecondaryText, Title, PrimaryText } from "shared/lib/designSystem";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import { ACTIONS, ActionType, V2WithdrawOption } from "webapp/lib/components/Vault/VaultActionsForm/Modal/types";
+import {
+  ACTIONS,
+  ActionType,
+  V2WithdrawOption,
+} from "webapp/lib/components/Vault/VaultActionsForm/Modal/types";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";

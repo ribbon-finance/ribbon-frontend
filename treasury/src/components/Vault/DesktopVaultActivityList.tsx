@@ -128,7 +128,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
             </>,
             <>
               <VaultPrimaryText>
-              O-{asset} {moment(activity.expiry, "X").format("M/DD")} {"CALL"}
+                O-{asset} {moment(activity.expiry, "X").format("M/DD")} {"CALL"}
               </VaultPrimaryText>
               <VaultSecondaryText>
                 Strike {formatOption(activity.strikePrice)}

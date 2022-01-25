@@ -930,4 +930,3 @@ export const CalendarIcon: React.FC<SVGPropsWithColor> = ({
     />
   </svg>
 );
-

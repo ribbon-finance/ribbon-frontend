@@ -89,9 +89,7 @@ interface StrategySnapshotProps {
   };
 }
 
-const StrategySnapshot: React.FC<StrategySnapshotProps> = ({
-  vault,
-}) => {
+const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
   const { vaultOption, vaultVersion } = vault;
   const { option: currentOption, loading: optionLoading } = useLatestOption(
     vaultOption,

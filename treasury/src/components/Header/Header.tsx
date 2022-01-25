@@ -8,7 +8,10 @@ import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
 import { Title, BaseLink } from "shared/lib/designSystem";
 import MenuButton from "shared/lib/components/Common/MenuButton";
-import { NavItemProps, MobileMenuOpenProps } from "webapp/lib/components/Header/types";
+import {
+  NavItemProps,
+  MobileMenuOpenProps,
+} from "webapp/lib/components/Header/types";
 import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
 import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
@@ -189,7 +192,11 @@ const Header = () => {
       {/* LINKS */}
       <HeaderAbsoluteContainer>
         <LinksContainer>
-          {renderLinkItem("TREASURY", "/", Boolean(product) || Boolean(treasury))}
+          {renderLinkItem(
+            "TREASURY",
+            "/",
+            Boolean(product) || Boolean(treasury)
+          )}
           {renderLinkItem("PORTFOLIO", "/portfolio", Boolean(portfolio))}
         </LinksContainer>
       </HeaderAbsoluteContainer>

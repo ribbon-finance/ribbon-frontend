@@ -164,18 +164,18 @@ const HomePage = () => {
   const { active } = useWeb3React();
   const history = useHistory();
 
-  const auth = localStorage.getItem("auth")
+  const auth = localStorage.getItem("auth");
 
   if (auth) {
-    const vault = JSON.parse(auth).pop()
+    const vault = JSON.parse(auth).pop();
     if (vault) {
-      let vaultName
-        Object.keys(VaultNameOptionMap).filter((name)=>{
-          if (VaultNameOptionMap[name as VaultName] == vault) {
-            vaultName = name
-          }
-        })
-      history.push("/treasury/"+vaultName)
+      let vaultName;
+      Object.keys(VaultNameOptionMap).filter((name) => {
+        if (VaultNameOptionMap[name as VaultName] == vault) {
+          vaultName = name;
+        }
+      });
+      history.push("/treasury/" + vaultName);
     }
   }
 

@@ -26,7 +26,10 @@ import {
   ConnectWalletButton,
 } from "shared/lib/components/Common/buttons";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import { VaultInputValidationErrorList, VaultValidationErrors } from "webapp/lib/components/Vault/VaultActionsForm/types";
+import {
+  VaultInputValidationErrorList,
+  VaultValidationErrors,
+} from "webapp/lib/components/Vault/VaultActionsForm/types";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";

@@ -175,9 +175,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       {active && (
         <Paragraph>
           <ParagraphHeading>Withdrawals</ParagraphHeading>
-          <ParagraphText>
-            {renderWithdrawalsSection}
-          </ParagraphText>
+          <ParagraphText>{renderWithdrawalsSection}</ParagraphText>
         </Paragraph>
       )}
 
@@ -192,7 +190,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
             <br />
             <br />
             The performance fee is charged on the premiums earned in USDC and
-              the management fee is charged on the assets managed by the vault.
+            the management fee is charged on the assets managed by the vault.
           </ParagraphText>
         </Paragraph>
       )}
@@ -200,12 +198,12 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       <Paragraph>
         <ParagraphHeading>Risk</ParagraphHeading>
         <ParagraphText>
-        {treasuryCopy.vaultRisk}
-            <br />
-            <br />
-            The Treasury Vault smart contracts have not been audited. Users are
-            advised to exercise caution and only risk funds they can afford to
-            lose.
+          {treasuryCopy.vaultRisk}
+          <br />
+          <br />
+          The Treasury Vault smart contracts have not been audited. Users are
+          advised to exercise caution and only risk funds they can afford to
+          lose.
         </ParagraphText>
 
         <PrimaryText className="d-block mt-3">

@@ -226,8 +226,8 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
             formExtraText =
               vaultActionForm.withdrawOption === "instant" ? (
                 <>
-                  IMPORTANT: instant withdrawals are only available for funds that have not been deployed in the
-                  vault's strategy
+                  IMPORTANT: instant withdrawals are only available for funds
+                  that have not been deployed in the vault's strategy
                 </>
               ) : (
                 <>

@@ -7,10 +7,12 @@ import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 
 import { AccessIcon } from "../../../assets/icons/icons";
-import { BaseInput, BaseInputContainer, SecondaryText } from "shared/lib/designSystem";
 import {
-  ConnectWalletButton
-} from "shared/lib/components/Common/buttons";
+  BaseInput,
+  BaseInputContainer,
+  SecondaryText,
+} from "shared/lib/designSystem";
+import { ConnectWalletButton } from "shared/lib/components/Common/buttons";
 import { Button } from "shared/lib/components/Common/buttons";
 import { ethers } from "ethers";
 import { hashCode, TreasuryVaultOptions } from "../../../constants/constants";
@@ -30,7 +32,7 @@ export const CodeInput = styled.input<{
   background: none;
   font-family: VCR, sans-serif;
   text-align: center;
-  text-transform:uppercase;
+  text-transform: uppercase;
 
   &:focus::placeholder {
     color: transparent;
@@ -116,30 +118,20 @@ const TreasuryActionsForm: React.FC<TreasuryActionsFormProps> = ({
   variant,
 }) => {
   const color = "#fc0a54";
-  const {
-    handleInputChange,
-    handleSubmission,
-    error,
-    code,
-    globalAccess
-  } = useGlobalAccess()
+  const { handleInputChange, handleSubmission, error, code, globalAccess } =
+    useGlobalAccess();
 
   const body = useMemo(() => {
-    console.log(globalAccess)
+    console.log(globalAccess);
     return (
       <div className="d-flex flex-column align-items-center p-4">
         <WhitelistLogoContainer color={color} className="mt-3">
           <AccessIcon color={color} height={64} />
         </WhitelistLogoContainer>
 
-        <WhitelistTitle className="mt-3">
-          ACCESS CODE REQUIRED
-        </WhitelistTitle>
-        
-        <BaseInputContainer
-        className="mb-2"
-        error={error != ""}
-        >
+        <WhitelistTitle className="mt-3">ACCESS CODE REQUIRED</WhitelistTitle>
+
+        <BaseInputContainer className="mb-2" error={error != ""}>
           <CodeInput
             type="text"
             className="form-control"
@@ -150,7 +142,6 @@ const TreasuryActionsForm: React.FC<TreasuryActionsFormProps> = ({
             inputWidth={"100%"}
             maxLength={6}
           />
-          
         </BaseInputContainer>
         <EnterButton
           onClick={handleSubmission}
@@ -162,13 +153,12 @@ const TreasuryActionsForm: React.FC<TreasuryActionsFormProps> = ({
           ENTER
         </EnterButton>
         {error != "" && (
-          <SecondaryText color={colors.red}>
-            {error}
-          </SecondaryText>
+          <SecondaryText color={colors.red}>{error}</SecondaryText>
         )}
 
         <WhitelistDescription className="mx-3 mt-4 text-center">
-          The Ribbon Treasury product is currently in beta and access to the product is limited to pilot partners. 
+          The Ribbon Treasury product is currently in beta and access to the
+          product is limited to pilot partners.
         </WhitelistDescription>
 
         <PrimaryText className="d-block mt-3 mb-3">

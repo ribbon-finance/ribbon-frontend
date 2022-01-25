@@ -1,5 +1,9 @@
 import { createGlobalState } from "react-hooks-global-state";
-import { VaultName, VaultOptions, VaultVersion } from "shared/lib/constants/constants";
+import {
+  VaultName,
+  VaultOptions,
+  VaultVersion,
+} from "shared/lib/constants/constants";
 import { Assets } from "shared/lib/store/types";
 import {
   ACTIONS,
@@ -35,15 +39,13 @@ export const initialState: GlobalStore = {
 export const { useGlobalState: useWebappGlobalState } =
   createGlobalState(initialState);
 
-
 interface GlobalAccessStore {
-  access: TreasuryVaultOptions[]
+  access: TreasuryVaultOptions[];
 }
 
 export const initialAccessState: GlobalAccessStore = {
-  access: []
+  access: [],
 };
 
 export const { useGlobalState: useGlobalAccessState } =
   createGlobalState(initialAccessState);
-

@@ -3,7 +3,8 @@ import { TreasuryVaultList } from "shared/lib/constants/constants";
 export type TreasuryVaultOptions = typeof TreasuryVaultList[number];
 
 export const hashCode: {
-    [vault in TreasuryVaultOptions]: string
+  [vault in TreasuryVaultOptions]: string;
 } = {
-    "rPERP-TSRY": "0x86658217590fbd9edf0a68c0574d138a341d027a6c2d36c4c9021d0adb149df2"
-}
+  "rPERP-TSRY":
+    "0x86658217590fbd9edf0a68c0574d138a341d027a6c2d36c4c9021d0adb149df2",
+};

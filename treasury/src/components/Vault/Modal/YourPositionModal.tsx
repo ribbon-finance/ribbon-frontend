@@ -26,7 +26,11 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 
-import { formatBigNumber, formatSignificantDecimals, isPracticallyZero } from "shared/lib/utils/math";
+import {
+  formatBigNumber,
+  formatSignificantDecimals,
+  isPracticallyZero,
+} from "shared/lib/utils/math";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
 import { BigNumber } from "ethers";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
