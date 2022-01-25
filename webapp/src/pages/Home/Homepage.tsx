@@ -4,14 +4,14 @@ import { useHistory } from "react-router";
 
 import Banner from "shared/lib/components/Banner/Banner";
 import ProductCatalogue from "shared/lib/components/Product/ProductCatalogue";
-import { CHAINID, isProduction } from "shared/lib/utils/env";
+import { CHAINID } from "shared/lib/utils/env";
 import { Title } from "shared/lib/designSystem";
 import sizes from "shared/lib/designSystem/sizes";
 import styled from "styled-components";
 import { ANNOUNCEMENT, getVaultURI } from "../../constants/constants";
 import { switchChains } from "shared/lib/utils/chainSwitching";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
-import { isAvaxNetwork } from "shared/lib/constants/constants";
+import { isAuroraNetwork } from "shared/lib/constants/constants";
 
 const ProductTitle = styled(Title)`
   display: none;
@@ -31,7 +31,7 @@ const Homepage = () => {
   return (
     <>
       <ProductTitle>PRODUCT</ProductTitle>
-      {ANNOUNCEMENT && chainId && !isAvaxNetwork(chainId) && (
+      {ANNOUNCEMENT && chainId && !isAuroraNetwork(chainId) && (
         <Banner
           color={ANNOUNCEMENT.color}
           message={ANNOUNCEMENT.message}
@@ -40,10 +40,7 @@ const Homepage = () => {
           onClick={() => {
             (async () => {
               if (ethereumProvider) {
-                await switchChains(
-                  ethereumProvider,
-                  isProduction() ? CHAINID.AVAX_MAINNET : CHAINID.AVAX_FUJI
-                );
+                await switchChains(ethereumProvider, CHAINID.AURORA_MAINNET);
                 // Mobile wallets normally need to do a hard refresh
                 if (isMobile) {
                   window.location.replace("/");

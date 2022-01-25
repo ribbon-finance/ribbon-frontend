@@ -3,6 +3,8 @@ export enum CHAINID {
   ETH_KOVAN = 42,
   AVAX_FUJI = 43113,
   AVAX_MAINNET = 43114,
+  AURORA_MAINNET = 1313161554,
+  AURORA_TESTNET = 1313161555,
 }
 
 export const SUBGRAPH_URI: Record<number, string> = {
@@ -18,6 +20,9 @@ export const SUBGRAPH_URI: Record<number, string> = {
   [CHAINID.AVAX_MAINNET]:
     process.env.REACT_APP_AVAX_SUBGRAPHQL_URL ||
     "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-avax",
+  [CHAINID.AURORA_MAINNET]:
+    process.env.REACT_APP_AVAX_SUBGRAPHQL_URL ||
+    "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-aurora",
 };
 
 // We just default to staging by default
@@ -39,6 +44,8 @@ export const NODE_URI: Record<number, string> = {
   [CHAINID.ETH_KOVAN]: process.env.REACT_APP_TESTNET_URI || "",
   [CHAINID.AVAX_MAINNET]: process.env.REACT_APP_AVAX_URI || "",
   [CHAINID.AVAX_FUJI]: process.env.REACT_APP_FUJI_URI || "",
+  [CHAINID.AURORA_MAINNET]: process.env.REACT_APP_AURORA_URI || "",
+  [CHAINID.AURORA_MAINNET]: "https://testnet.aurora.dev/",
 };
 
 export const getSubgraphqlURI = () =>
@@ -48,8 +55,8 @@ export const getSubgraphqlURI = () =>
   "https://api.thegraph.com/subgraphs/name/kenchangh/ribbon-finance-kovan";
 
 export const supportedChainIds = isDevelopment()
-  ? [CHAINID.ETH_KOVAN, CHAINID.AVAX_FUJI]
-  : [CHAINID.ETH_MAINNET, CHAINID.AVAX_MAINNET];
+  ? [CHAINID.ETH_KOVAN, CHAINID.AVAX_FUJI, CHAINID.AURORA_MAINNET]
+  : [CHAINID.ETH_MAINNET, CHAINID.AVAX_MAINNET, CHAINID.AURORA_MAINNET];
 
 /**
  * Multi chain env configs
@@ -59,7 +66,11 @@ export const supportedChainIds = isDevelopment()
 export const ENABLED_CHAINID: CHAINID[] = [
   CHAINID.ETH_MAINNET,
   CHAINID.AVAX_MAINNET,
+  CHAINID.AURORA_MAINNET,
 ];
+
+export const isChainIdEnabled = (chainId: number) =>
+  ENABLED_CHAINID.includes(chainId);
 
 export const getENSSubgraphURI = () =>
   isDevelopment()
