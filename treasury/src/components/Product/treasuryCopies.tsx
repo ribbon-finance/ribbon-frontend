@@ -34,7 +34,7 @@ export const treasuryCopy: ProductCopies = {
   vaultRisk: (
     <>
       The primary risk for running this covered call strategy is that the vault
-      may incur a weekly loss in the case where the call options sold by the
+      may incur a loss in the case where the call options sold by the
       vault expire{" "}
       <TooltipExplanation
         title="IN-THE-MONEY"

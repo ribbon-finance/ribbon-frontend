@@ -12,8 +12,8 @@ import {
   VaultMaxDeposit,
   VaultOptions,
 } from "shared/lib/constants/constants";
-import { ACTIONS } from "../Modal/types";
-import useVaultActionForm from "../../../../hooks/useVaultActionForm";
+import { ACTIONS } from "webapp/lib/components/Vault/VaultActionsForm/Modal/types";
+import useVaultActionForm from "webapp/lib/hooks/useVaultActionForm";
 import { Title } from "shared/lib/designSystem";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import {
@@ -23,10 +23,10 @@ import {
 import { ERC20Token } from "shared/lib/models/eth";
 import { isVaultFull } from "shared/lib/utils/vault";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
-import VaultApprovalForm from "../common/VaultApprovalForm";
-import VaultBasicAmountForm from "../common/VaultBasicAmountForm";
+import VaultApprovalForm from "webapp/lib/components/Vault/VaultActionsForm/common/VaultApprovalForm";
+import VaultBasicAmountForm from "webapp/lib/components/Vault/VaultActionsForm/common/VaultBasicAmountForm";
 import { getAssetDisplay } from "shared/lib/utils/asset";
-import { VaultValidationErrors } from "../types";
+import { VaultValidationErrors } from "webapp/lib/components/Vault/VaultActionsForm/types";
 import VaultV2WithdrawForm from "./VaultV2WithdrawForm";
 
 const FormTabContainer = styled.div`

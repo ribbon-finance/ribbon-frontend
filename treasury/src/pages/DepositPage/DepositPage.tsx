@@ -1,6 +1,6 @@
-import React, { ReactNode, useEffect, useMemo, useState } from "react";
-import { BigNumber, ethers } from "ethers";
-import { useWeb3React } from "@web3-react/core";
+import React, { ReactNode, useEffect, useMemo } from "react";
+import { ethers } from "ethers";
+import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
 
@@ -14,10 +14,8 @@ import {
 } from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
 import VaultActivity from "../../components/Vault/VaultActivity";
-import usePullUp from "../../hooks/usePullUp";
-import { CHAINID } from "shared/lib/utils/env";
+import usePullUp from "webapp/lib/hooks/usePullUp";
 import {
-  CHAINID_TO_NATIVE_TOKENS,
   getDisplayAssets,
   getEtherscanURI,
   hasVaultVersion,
@@ -26,32 +24,25 @@ import {
   VaultOptions,
   VaultVersion,
   VaultVersionList,
-  VaultNameOptionMap,
 } from "shared/lib/constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";
-import {
-  getAssetColor,
-  getAssetDisplay,
-  getAssetLogo,
-  getAssetDecimals,
-} from "shared/lib/utils/asset";
+import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
 import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
-import { getVaultURI } from "../../constants/constants";
+import { getVaultURI } from "webapp/lib/constants/constants";
 import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopActionForm";
 import YourPosition from "../../components/Vault/YourPosition";
 import { truncateAddress } from "shared/lib/utils/address";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
-import useRedirectOnSwitchChain from "../../hooks/useRedirectOnSwitchChain";
-import useRedirectOnWrongChain from "../../hooks/useRedirectOnWrongChain";
+import useRedirectOnSwitchChain from "webapp/lib/hooks/useRedirectOnSwitchChain";
+import useRedirectOnWrongChain from "webapp/lib/hooks/useRedirectOnWrongChain";
 import Banner from "shared/lib/components/Banner/Banner";
-import TreasuryActionForm from "../../components/Vault/VaultActionsForm/TreasuryActionsForm";
 import VaultInformation from "../../components/Deposit/VaultInformation";
+import useGlobalAccess from "../../hooks/useGlobalAccess";
+import { TreasuryVaultOptions } from "../../constants/constants";
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
-import { useWhitelist } from "../../hooks/useWhitelist";
-import { isProduction } from "shared/lib/utils/env";
 
 const { formatUnits } = ethers.utils;
 
@@ -193,8 +184,10 @@ const ContractButtonTitle = styled(Title)`
 `;
 
 const DepositPage = () => {
+  const auth = localStorage.getItem("auth")
+  
   const { vaultOption, vaultVersion } = useVaultOption();
-  const { active, chainId } = useWeb3React();
+  const { chainId } = useWeb3Wallet();
   useRedirectOnSwitchChain(chainId);
   useRedirectOnWrongChain(vaultOption, chainId);
 
@@ -208,44 +201,10 @@ const DepositPage = () => {
     loading,
   } = useV2VaultData(vaultOption || VaultList[0]);
   const isLoading = status === "loading" || loading;
-  const premiumDecimals = getAssetDecimals("USDC");
   const activities = useVaultActivity(vaultOption!, vaultVersion);
-  const web3Whitelist = useWhitelist();
+  const premiumDecimals = getAssetDecimals("USDC");
 
-  const whitelist = !isProduction()
-    ? active
-      ? "T-PERP-C"
-      : undefined
-    : web3Whitelist;
-
-  const depositForm = useMemo(() => {
-    if (!vaultOption) {
-      return <TreasuryActionForm variant="desktop" />;
-    }
-    return whitelist ===
-      Object.keys(VaultNameOptionMap)[
-        Object.values(VaultNameOptionMap).indexOf(vaultOption)
-      ] ? (
-      <DesktopActionForm vault={{ vaultOption, vaultVersion }} />
-    ) : (
-      <TreasuryActionForm variant="desktop" />
-    );
-  }, [whitelist, vaultOption, vaultVersion]);
-
-  // Total lifetime yield
-  const totalYields = useMemo(() => {
-    const yields = activities.activities
-      .map((activity) => {
-        return activity.type === "sales" ? Number(activity.premium) : 0;
-      })
-      .reduce((totalYield, roundlyYield) => totalYield + roundlyYield, 0);
-
-    return parseFloat(
-      formatSignificantDecimals(formatUnits(yields, premiumDecimals), 2)
-    );
-  }, [activities, premiumDecimals]);
-
-  const [totalDepositStr] = useMemo(() => {
+  const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {
       case "v1":
         return [
@@ -265,6 +224,23 @@ const DepositPage = () => {
         ];
     }
   }, [cap, decimals, deposits, totalBalance, vaultLimit, vaultVersion]);
+
+  // Total lifetime yield
+  const totalYields = useMemo(() => {
+    if (activities.activities) {
+      const yields = activities.activities
+        .map((activity) => {
+          return activity.type === "sales" ? Number(activity.premium) : 0;
+        })
+        .reduce((totalYield, roundlyYield) => totalYield + roundlyYield, 0);
+
+      return parseFloat(
+        formatSignificantDecimals(formatUnits(yields, premiumDecimals), 2)
+      );
+    } else {
+      return 0
+    }
+  }, [activities, premiumDecimals]);
 
   const vaultInformation = (
     <VaultInformation
@@ -286,6 +262,12 @@ const DepositPage = () => {
   if (!vaultOption) {
     return <Redirect to="/" />;
   }
+  
+
+  if (!auth || !auth.includes(vaultOption)) {
+    return <Redirect to="/" />;
+  }
+
 
   /**
    * Redirect to v1 if vault version given is invalid
@@ -357,7 +339,7 @@ const DepositPage = () => {
 
           {/* Form for desktop */}
           <DesktopActionsFormContainer className="flex-column col-xl-5 offset-xl-1 col-md-6">
-            {depositForm}
+            <DesktopActionForm vault={{ vaultOption, vaultVersion }} />
           </DesktopActionsFormContainer>
         </div>
         <VaultActivity vault={{ vaultOption, vaultVersion }} />
@@ -375,7 +357,7 @@ const HeroSection: React.FC<{
   variant: VaultVersion;
   v1Inactive?: boolean;
 }> = ({ vaultInformation, vaultOption, variant, v1Inactive }) => {
-  const { chainId } = useWeb3React();
+  const { chainId } = useWeb3Wallet();
   const color = getVaultColor(vaultOption);
 
   const logo = useMemo(() => {
@@ -405,6 +387,8 @@ const HeroSection: React.FC<{
         return <Logo showBackground />;
       case "WAVAX":
         return <Logo showBackground />;
+      case "SOL":
+        return <Logo showBackground height="100%" width="100%" />;
       default:
         return <Logo />;
     }
@@ -441,11 +425,6 @@ const HeroSection: React.FC<{
             linkText="Switch to V2"
           ></Banner>
         )}
-
-      {/* Banner to remind users to bridge if they do not have a balance */}
-      {chainId && chainId !== CHAINID.ETH_MAINNET && (
-        <BridgeBanner></BridgeBanner>
-      )}
 
       <HeroContainer className="position-relative" color={color}>
         <HeroDescriptionContainer className="container">
@@ -496,41 +475,6 @@ const HeroSection: React.FC<{
       </HeroContainer>
     </>
   );
-};
-
-const BridgeBanner = () => {
-  const { chainId, library, account } = useWeb3React();
-  // We start with a starting state of 1 so the banner does not show up at the start
-  const [balance, setBalance] = useState<BigNumber>(BigNumber.from(1));
-
-  // Only a few chains have bridges
-  const chainsSupportedForBridging = chainId === CHAINID.AVAX_MAINNET;
-  const currentChainId: CHAINID = chainId as CHAINID;
-
-  useEffect(() => {
-    (async () => {
-      if (library && chainsSupportedForBridging) {
-        const balance = await library.getBalance(account);
-        setBalance(balance);
-      }
-    })();
-  }, [library, account, chainsSupportedForBridging]);
-
-  if (!chainsSupportedForBridging) return null;
-
-  const token = CHAINID_TO_NATIVE_TOKENS[currentChainId];
-  const color = getAssetColor(token);
-  const assetDisplay = getAssetDisplay(token);
-
-  return chainId && balance.isZero() ? (
-    <Banner
-      color={color}
-      message={`You do not have an ${assetDisplay} balance.`}
-      linkText="Bridge"
-      linkURI="https://bridge.avax.network/"
-      linkOpensNewTab
-    ></Banner>
-  ) : null;
 };
 
 export default DepositPage;

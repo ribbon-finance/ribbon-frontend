@@ -4,7 +4,7 @@ import { BigNumber } from "ethers";
 
 import { SecondaryText, Title, PrimaryText } from "shared/lib/designSystem";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import { ACTIONS, ActionType, V2WithdrawOption } from "./types";
+import { ACTIONS, ActionType, V2WithdrawOption } from "webapp/lib/components/Vault/VaultActionsForm/Modal/types";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
@@ -29,6 +29,7 @@ import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { useCurvePoolEstimateStETHSwap } from "shared/lib/hooks/useCurvePool";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import useLatestAPY from "shared/lib/hooks/useLatestAPY";
 
 const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -103,6 +104,7 @@ const PreviewStep: React.FC<{
   receiveVaultOption,
 }) => {
   const color = getVaultColor(vaultOption);
+  const latestAPY = useLatestAPY(vaultOption, vaultVersion);
   const {
     data: { withdrawals: v2Withdrawals },
   } = useV2VaultData(vaultOption);
@@ -180,6 +182,7 @@ const PreviewStep: React.FC<{
     return details;
   }, [
     actionType,
+    latestAPY,
     receiveVaultOption,
     vaultOption,
     vaultVersion,
@@ -355,7 +358,7 @@ const PreviewStep: React.FC<{
                 color={color}
               >
                 <PrimaryText fontSize={14} lineHeight={20} color={color}>
-                  {`You can complete your withdrawal any time after 10am UTC on
+                  {`You can complete your withdrawal any time after 12pm UTC on
                   Friday when your ${getAssetDisplay(
                     asset
                   )} will be removed from the vault’s
@@ -483,7 +486,8 @@ const PreviewStep: React.FC<{
                   color={color}
                 >
                   <PrimaryText fontSize={14} lineHeight={20} color={color}>
-                    Your funds will be deployed in the vault’s strategy
+                    Your funds will be deployed in the vault’s next weekly
+                    strategy at 11am UTC on Friday
                   </PrimaryText>
                 </WarningContainer>
               );

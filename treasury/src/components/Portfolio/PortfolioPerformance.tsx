@@ -1,5 +1,5 @@
-import { useWeb3React } from "@web3-react/core";
-import { useCallback, useMemo, useState } from "react";
+import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import {
   PrimaryText,
@@ -19,13 +19,10 @@ import {
 } from "shared/lib/hooks/useAssetPrice";
 import useBalances from "shared/lib/hooks/useBalances";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import {
-  assetToFiat,
-  formatBigNumber,
-  formatSignificantDecimals,
-} from "shared/lib/utils/math";
-import PerformanceChart from "../PerformanceChart/PerformanceChart";
-import { HoverInfo } from "../PerformanceChart/types";
+import { assetToFiat, formatBigNumber, formatSignificantDecimals } from "shared/lib/utils/math";
+import PerformanceChart, {
+  HoverInfo,
+} from "shared/lib/components/Common/PerformanceChart";
 import sizes from "shared/lib/designSystem/sizes";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { getAssets } from "shared/lib/constants/constants";
@@ -158,16 +155,16 @@ const dateFilterOptions = ["1w", "1m", "all"] as const;
 type dateFilterType = typeof dateFilterOptions[number];
 
 const PortfolioPerformance = () => {
-  const { active } = useWeb3React();
+  const { active } = useWeb3Wallet();
   const { prices: assetsPrice, loading: assetsPriceLoading } = useAssetsPrice();
   const { searchAssetPriceFromTimestamp } = useAssetsPriceHistory();
   const [hoveredBalanceUpdateIndex, setHoveredBalanceUpdateIndex] =
     useState<number>();
-  const [rangeFilter, setRangeFilter] = useState<dateFilterType>("1m");
+  const [rangeFilter, setRangeFilter] = useState<dateFilterType>("all");
   const [, setShowConnectWalletModal] = useConnectWalletModal();
   const { data: RBNTokenAccount, loading: RBNTokenAccountLoading } =
     useRBNTokenAccount();
-  const { transactions, loading: transactionsLoading } = useTransactions();
+    const { transactions, loading: transactionsLoading } = useTransactions();
 
   const afterDate = useMemo(() => {
     switch (rangeFilter) {
@@ -182,8 +179,8 @@ const PortfolioPerformance = () => {
   const { balances: subgraphBalanceUpdates, loading: balanceUpdatesLoading } =
     useBalances(undefined, afterDate ? afterDate.unix() : undefined);
   const loading =
-    assetsPriceLoading ||
-    balanceUpdatesLoading ||
+    assetsPriceLoading || 
+    balanceUpdatesLoading || 
     transactionsLoading ||
     RBNTokenAccountLoading;
   const animatedLoadingText = useTextAnimation(loading);
@@ -202,8 +199,9 @@ const PortfolioPerformance = () => {
 
     return parseFloat(
       formatSignificantDecimals(formatUnits(yields, premiumDecimals), 2)
-    );
+    ).toFixed(2);
   }, [transactions, active, premiumDecimals]);
+
   /**
    * We first process and add several additional metrices that is useful for further calculation
    * - Net deposit
@@ -272,7 +270,6 @@ const PortfolioPerformance = () => {
 
     return [balances, vaultsBalance];
   }, [subgraphBalanceUpdates]);
-
   /**
    * We process balances into fiat term before perform more processing
    * balances[].balance - Total balance of user portfolio up until that point
@@ -503,6 +500,7 @@ const PortfolioPerformance = () => {
     );
   }, []);
 
+
   const renderRBNBalanceText = useCallback(() => {
     if (!active) {
       return "---";
@@ -513,7 +511,7 @@ const PortfolioPerformance = () => {
     }
 
     return RBNTokenAccount
-      ? formatBigNumber(RBNTokenAccount.balance, 18)
+      ? formatBigNumber(RBNTokenAccount.totalBalance, 18)
       : "0.00";
   }, [RBNTokenAccount, active, animatedLoadingText, loading]);
 
@@ -521,7 +519,7 @@ const PortfolioPerformance = () => {
     () => (
       <DepositChartExtra>
         <SecondaryText fontSize={12} className="w-100">
-          Vault Balance
+          Deposit Balance
         </SecondaryText>
         <div className="d-flex align-items-center flex-wrap">
           <KPI>
@@ -613,12 +611,27 @@ const PortfolioPerformance = () => {
             >
               ${totalYield}
             </KPIText>
-            <DepositCurrency>
-              {active && !loading ? "USDC" : ""}
-            </DepositCurrency>
+            <DepositCurrency>{active && !loading ? "USDC" : ""}</DepositCurrency>
           </KPI>
         </KPIColumn>
         <KPIColumn>
+          {/* <SecondaryText fontSize={12} className="w-100">
+            ROI
+          </SecondaryText>
+          <KPIText
+            active={active}
+            state={
+              calculatedKPI.roi === 0
+                ? undefined
+                : calculatedKPI.roi > 0
+                ? "green"
+                : "red"
+            }
+          >
+            {renderRoiText()}
+          </KPIText>
+        </KPIColumn>
+        <KPIColumn> */}
           <SecondaryText fontSize={12} color={colors.red} className="w-100">
             $RBN Balance
           </SecondaryText>

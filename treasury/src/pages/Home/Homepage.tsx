@@ -8,14 +8,14 @@ import { isProduction } from "shared/lib/utils/env";
 
 import sizes from "shared/lib/designSystem/sizes";
 import styled, { keyframes } from "styled-components";
-import usePullUp from "../../hooks/usePullUp";
+import usePullUp from "webapp/lib/hooks/usePullUp";
 import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
 import TreasuryActionForm from "../../components/Vault/VaultActionsForm/TreasuryActionsForm";
 import VaultInformation from "../../components/Deposit/VaultInformation";
-import { useWhitelist } from "../../hooks/useWhitelist";
 import { treasuryCopy } from "../../components/Product/treasuryCopies";
+import { VaultName, VaultNameOptionMap } from "shared/lib/constants/constants";
 
 const RBNcolor = "#fc0a54";
 
@@ -163,15 +163,20 @@ const HomePage = () => {
   usePullUp();
   const { active } = useWeb3React();
   const history = useHistory();
-  const web3Whitelist = useWhitelist();
-  const whitelist = !isProduction()
-    ? active
-      ? "T-PERP-C"
-      : undefined
-    : web3Whitelist;
 
-  if (whitelist) {
-    history.push("/treasury/" + whitelist);
+  const auth = localStorage.getItem("auth")
+
+  if (auth) {
+    const vault = JSON.parse(auth).pop()
+    if (vault) {
+      let vaultName
+        Object.keys(VaultNameOptionMap).filter((name)=>{
+          if (VaultNameOptionMap[name as VaultName] == vault) {
+            vaultName = name
+          }
+        })
+      history.push("/treasury/"+vaultName)
+    }
   }
 
   const vaultInformation = (

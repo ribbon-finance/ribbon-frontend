@@ -1,18 +1,32 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 
+import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { productCopies } from "shared/lib/components/Product/productCopies";
-import { treasuryCopy } from "../../components/Product/treasuryCopies";
 import {
+  getAssets,
   VaultOptions,
   VaultVersion,
   VaultFees,
 } from "shared/lib/constants/constants";
-import { SecondaryText, Title } from "shared/lib/designSystem";
+import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
+import colors from "shared/lib/designSystem/colors";
+import useAssetsYield from "shared/lib/hooks/useAssetsYield";
+import { getAssetDisplay } from "shared/lib/utils/asset";
+import { DefiScoreProtocol } from "shared/lib/models/defiScore";
+import theme from "shared/lib/designSystem/theme";
+import {
+  AAVEIcon,
+  CompoundIcon,
+  DDEXIcon,
+  DYDXIcon,
+  OasisIcon,
+} from "shared/lib/assets/icons/defiApp";
 import StrategySnapshot, {
   EmptyStrategySnapshot,
 } from "../../components/Deposit/StrategySnapshot";
 import sizes from "shared/lib/designSystem/sizes";
+import { treasuryCopy } from "../../components/Product/treasuryCopies";
 
 const Paragraph = styled.div`
   margin-bottom: 64px;
@@ -32,6 +46,15 @@ const ParagraphText = styled(SecondaryText)`
   line-height: 24px;
 `;
 
+const Link = styled.a`
+  color: ${colors.primaryText};
+  text-decoration: underline;
+
+  &:hover {
+    color: ${colors.primaryText}CC;
+  }
+`;
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -41,6 +64,27 @@ const Container = styled.div`
   @media (max-width: ${sizes.md}px) {
     max-width: unset;
   }
+`;
+
+const MarketYield = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+  background: ${colors.background.two};
+  border-radius: ${theme.border.radius};
+  padding: 12px 16px;
+
+  &:first-child {
+    margin-top: 0px;
+  }
+`;
+
+const MarketTitle = styled(Title)`
+  margin-left: 8px;
+`;
+
+const MarketYielAPR = styled(Title)`
+  margin-left: auto;
 `;
 
 interface PerformanceSectionProps {
@@ -115,6 +159,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
   }
 
   const { vaultOption, vaultVersion } = vault;
+  const asset = getAssets(vaultOption);
 
   return (
     <Container>
@@ -130,7 +175,9 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       {active && (
         <Paragraph>
           <ParagraphHeading>Withdrawals</ParagraphHeading>
-          <ParagraphText>{renderWithdrawalsSection}</ParagraphText>
+          <ParagraphText>
+            {renderWithdrawalsSection}
+          </ParagraphText>
         </Paragraph>
       )}
 
@@ -145,7 +192,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
             <br />
             <br />
             The performance fee is charged on the premiums earned in USDC and
-            the management fee is charged on the assets managed by the vault.
+              the management fee is charged on the assets managed by the vault.
           </ParagraphText>
         </Paragraph>
       )}
@@ -153,13 +200,25 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       <Paragraph>
         <ParagraphHeading>Risk</ParagraphHeading>
         <ParagraphText>
-          {productCopies[vaultOption].vaultRisk}
-          <br />
-          <br />
-          The Treasury Vault smart contracts have not been audited. Users are
-          advised to exercise caution and only risk funds they can afford to
-          lose.
+        {treasuryCopy.vaultRisk}
+            <br />
+            <br />
+            The Treasury Vault smart contracts have not been audited. Users are
+            advised to exercise caution and only risk funds they can afford to
+            lose.
         </ParagraphText>
+
+        <PrimaryText className="d-block mt-3">
+          <Link
+            href="https://ribbonfinance.medium.com/theta-vault-backtest-results-6e8c59adf38c"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="d-flex"
+          >
+            <span className="mr-2">Read More</span>
+            <ExternalIcon color="white" />
+          </Link>
+        </PrimaryText>
       </Paragraph>
     </Container>
   );

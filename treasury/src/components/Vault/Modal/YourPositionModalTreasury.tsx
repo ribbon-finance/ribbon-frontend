@@ -1,9 +1,7 @@
 import React, { useMemo, useState } from "react";
 import styled from "styled-components";
-import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { isStakingEnabledForChainId } from "shared/lib/utils/env";
 import {
   getAssets,
   getDisplayAssets,
@@ -26,16 +24,16 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 
-import { formatBigNumber, formatSignificantDecimals, isPracticallyZero } from "shared/lib/utils/math";
-import SegmentControl from "shared/lib/components/Common/SegmentControl";
+import {
+  formatBigNumber,
+  formatSignificantDecimals,
+} from "shared/lib/utils/math";
 import { BigNumber } from "ethers";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
-import CapBar from "shared/lib/components/Deposit/CapBar";
-import { useStakingPoolData } from "shared/lib/hooks/web3DataContext";
 import { useGlobalState } from "shared/lib/store/store";
-import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
 import useTransactions from "shared/lib/hooks/useTransactions";
+import { formatUnits } from "ethers/lib/utils";
 
 const ModalContent = styled(motion.div)`
   display: flex;

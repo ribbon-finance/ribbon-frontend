@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "styled-components";
 import currency from "currency.js";
 import { Col, Row } from "react-bootstrap";
@@ -9,16 +9,22 @@ import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import { formatOption } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import {
+  getAssets,
+  getDisplayAssets,
   getOptionAssets,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
-import { SecondaryText, Title } from "shared/lib/designSystem";
+import { BaseButton, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import StrikeChart from "./StrikeChart";
+import StrikeChart from "webapp/lib/components/Deposit/StrikeChart";
+import { getVaultColor } from "shared/lib/utils/vault";
+import ProfitCalculatorModal from "webapp/lib/components/Deposit/ProfitCalculatorModal";
 import { formatUnits } from "@ethersproject/units";
 import { useLatestOption } from "shared/lib/hooks/useLatestOption";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
 import { VaultActivityMeta, VaultOptionTrade } from "shared/lib/models/vault";
 
@@ -41,6 +47,8 @@ const VaultPerformanceChartSecondaryContainer = styled.div`
 `;
 
 const DataCol = styled(Col)`
+  display: flex;
+  flex-direction: column;
   border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
 
   && {
@@ -55,12 +63,13 @@ const DataCol = styled(Col)`
 const DataLabel = styled(SecondaryText)`
   font-size: 12px;
   line-height: 16px;
-  margin-bottom: 4px;
 `;
 
 const DataNumber = styled(Title)<{ variant?: "green" | "red" }>`
   font-size: 16px;
   line-height: 24px;
+  margin-top: 4px;
+
   ${(props) => {
     switch (props.variant) {
       case "green":
@@ -80,16 +89,20 @@ interface StrategySnapshotProps {
   };
 }
 
-const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
+const StrategySnapshot: React.FC<StrategySnapshotProps> = ({
+  vault,
+}) => {
   const { vaultOption, vaultVersion } = vault;
   const { option: currentOption, loading: optionLoading } = useLatestOption(
     vaultOption,
     vaultVersion
   );
-
+  const asset = getAssets(vaultOption);
   const optionAsset = getOptionAssets(vaultOption);
+  const color = getVaultColor(vaultOption);
   const { prices, loading: priceLoading } = useAssetsPrice();
   const loading = priceLoading || optionLoading;
+  const [showCalculator, setShowCalculator] = useState(false);
   const { activities, loading: activitiesLoading } = useVaultActivity(
     vaultOption!,
     vaultVersion
@@ -183,7 +196,9 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
             <DataNumber>{strikeAPRText}</DataNumber>
           </DataCol>
           <DataCol xs="6">
-            <DataLabel className="d-block">Latest Yield Earned</DataLabel>
+            <div className="d-flex align-items-center">
+              <DataLabel className="d-block">Latest Yield Earned</DataLabel>
+            </div>
             <DataNumber
               variant={
                 latestYield !== "---" && !activitiesLoading

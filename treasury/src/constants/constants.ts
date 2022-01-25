@@ -1,30 +1,9 @@
-import {
-  VaultNameOptionMap,
-  VaultOptions,
-  VaultVersion,
-} from "shared/lib/constants/constants";
+import { TreasuryVaultList } from "shared/lib/constants/constants";
 
-export const getVaultURI = (
-  vaultOption: VaultOptions,
-  vaultVersion: VaultVersion = "v1"
-): string => {
-  return `/treasury/${
-    Object.keys(VaultNameOptionMap)[
-      Object.values(VaultNameOptionMap).indexOf(vaultOption)
-    ]
-  }`;
-};
+export type TreasuryVaultOptions = typeof TreasuryVaultList[number];
 
-interface Announcement {
-  color: string;
-  message: string;
-  linkText: string;
-  linkURI: string;
+export const hashCode: {
+    [vault in TreasuryVaultOptions]: string
+} = {
+    "rPERP-TSRY": "0x86658217590fbd9edf0a68c0574d138a341d027a6c2d36c4c9021d0adb149df2"
 }
-
-export const ANNOUNCEMENT: Announcement | undefined = {
-  color: "#E84142",
-  message: "AVAX vaults have launched.",
-  linkText: "Switch to Avalanche",
-  linkURI: "/",
-};

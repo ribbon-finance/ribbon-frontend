@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from "react";
-import { useWeb3React } from "@web3-react/core";
-import { BigNumber } from "ethers";
+import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
+import { BigNumber, ethers } from "ethers";
 import styled from "styled-components";
 
 import {
@@ -38,7 +38,7 @@ import {
   getAssetLogo,
 } from "shared/lib/utils/asset";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { getVaultURI } from "../../constants/constants";
+import { getVaultURI } from "webapp/lib/constants/constants";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 64px;
@@ -257,7 +257,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
               </PositionSecondaryInfoText>
             </PositionInfoRow>
             <KPIContainer>
-              <KPIDatas></KPIDatas>
+              <KPIDatas></KPIDatas>            
             </KPIContainer>
           </PositionInfo>
         </PositionMainContainer>
@@ -267,8 +267,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 };
 
 const PortfolioPositions = () => {
-  const { active } = useWeb3React();
-
+  const { active } = useWeb3Wallet();
   const {
     data: { v1: v1VaultAccounts, v2: v2VaultAccounts },
     loading,

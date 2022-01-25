@@ -1,18 +1,20 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { useRouteMatch } from "react-router-dom";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
 
-import HeaderLogo from "./HeaderLogo";
+import HeaderLogo from "webapp/lib/components/Header/HeaderLogo";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
 import { Title, BaseLink } from "shared/lib/designSystem";
 import MenuButton from "shared/lib/components/Common/MenuButton";
-import { NavItemProps, MobileMenuOpenProps } from "./types";
-import AccountStatus from "../Wallet/AccountStatus";
+import { NavItemProps, MobileMenuOpenProps } from "webapp/lib/components/Header/types";
+import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
 import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
-import NotificationButton from "../Notification/NotificationButton";
+import NetworkSwitcherButton from "webapp/lib/components/NetworkSwitcher/NetworkSwitcherButton";
+import NotificationButton from "webapp/lib/components/Notification/NotificationButton";
+import { isEthNetwork } from "shared/lib/constants/constants";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
@@ -133,7 +135,7 @@ const MobileOnly = styled.div`
 `;
 
 const Header = () => {
-  const { active } = useWeb3React();
+  const { active, chainId } = useWeb3Wallet();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const product = useRouteMatch({ path: "/", exact: true });
   const portfolio = useRouteMatch({ path: "/portfolio", exact: true });
@@ -187,11 +189,7 @@ const Header = () => {
       {/* LINKS */}
       <HeaderAbsoluteContainer>
         <LinksContainer>
-          {renderLinkItem(
-            "TREASURY",
-            "/",
-            Boolean(product) || Boolean(treasury)
-          )}
+          {renderLinkItem("TREASURY", "/", Boolean(product) || Boolean(treasury))}
           {renderLinkItem("PORTFOLIO", "/portfolio", Boolean(portfolio))}
         </LinksContainer>
       </HeaderAbsoluteContainer>

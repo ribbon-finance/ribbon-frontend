@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
 import { BigNumber } from "ethers";
 import styled from "styled-components";
 import moment from "moment";
@@ -16,7 +16,7 @@ import theme from "shared/lib/designSystem/theme";
 import { useAssetsPriceHistory } from "shared/lib/hooks/useAssetPrice";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useTransactions from "shared/lib/hooks/useTransactions";
-import { CurrencyType } from "../../pages/Portfolio/types";
+import { CurrencyType } from "webapp/lib/pages/Portfolio/types";
 import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
 import { capitalize } from "shared/lib/utils/text";
 import {
@@ -25,17 +25,15 @@ import {
   VaultNameOptionMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
-import {
-  getAssetDecimals,
-  getAssetDisplay,
-  getAssetLogo,
-} from "shared/lib/utils/asset";
+import { getAssetDecimals, getAssetDisplay, getAssetLogo } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
 import {
   DepositIcon,
   ExternalIcon,
   MigrateIcon,
+  StakeIcon,
   TransferIcon,
+  UnstakeIcon,
   WithdrawIcon,
 } from "shared/lib/assets/icons/icons";
 import { VaultTransactionType } from "shared/lib/models/vault";
@@ -45,7 +43,7 @@ import {
   portfolioTransactionActivityFilters,
   PortfolioTransactionSortBy,
   portfolioTransactionSortByList,
-} from "./types";
+} from "webapp/lib/components/Portfolio/types";
 import Pagination from "shared/lib/components/Common/Pagination";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
@@ -173,8 +171,7 @@ const perPage = 6;
 
 const PortfolioTransactions = () => {
   const { transactions, loading } = useTransactions();
-
-  const { active, chainId } = useWeb3React();
+  const { active, chainId } = useWeb3Wallet();
   // const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice();
   const { searchAssetPriceFromTimestamp, loading: assetPricesLoading } =
     useAssetsPriceHistory();
@@ -237,6 +234,9 @@ const PortfolioTransactions = () => {
   const getTransactionAssetText = useCallback(
     (vaultOption: VaultOptions, type: VaultTransactionType) => {
       switch (type) {
+        case "stake":
+        case "unstake":
+          return vaultOption;
         case "distribute":
           return getAssetDisplay("USDC");
         default:
@@ -260,11 +260,13 @@ const PortfolioTransactions = () => {
         case "deposit":
         case "receive":
         case "distribute":
+        case "stake":
           prependSymbol = "+";
           break;
         case "withdraw":
         case "instantWithdraw":
         case "transfer":
+        case "unstake":
           prependSymbol = "-";
       }
 
@@ -295,6 +297,10 @@ const PortfolioTransactions = () => {
       case "withdraw":
       case "instantWithdraw":
         return <WithdrawIcon width={20} />;
+      case "stake":
+        return <StakeIcon />;
+      case "unstake":
+        return <UnstakeIcon />;
       case "migrate":
         return <MigrateIcon width={14} height={14} />;
       case "transfer":
