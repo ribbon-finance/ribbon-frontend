@@ -122,7 +122,7 @@ const VaultVersionBadge = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
+  width: 85px;
   height: 24px;
   border-radius: ${theme.border.radiusSmall};
   background: ${(props) => props.color}3D;
@@ -221,7 +221,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
       case "v2":
         return (
           <VaultVersionBadge color={color} className="ml-2">
-            <Subtitle>V2</Subtitle>
+            <Subtitle>TREASURY</Subtitle>
           </VaultVersionBadge>
         );
     }

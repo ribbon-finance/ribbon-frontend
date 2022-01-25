@@ -7,7 +7,7 @@ import Homepage from "../pages/Home/Homepage";
 import DepositPage from "../pages/DepositPage/DepositPage";
 import useEagerConnect from "shared/lib/hooks/useEagerConnect";
 import PortfolioPage from "../pages/Portfolio/PortfolioPage";
-import Footer from "webapp/lib/components/Footer/Footer";
+import Footer from "../components/Footer/Footer";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import {
   TxStatusToast,

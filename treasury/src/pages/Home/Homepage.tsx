@@ -159,6 +159,20 @@ const DesktopActionsFormContainer = styled.div`
   }
 `;
 
+const MobileActionsFormContainer = styled.div`
+  display: flex;
+  margin-bottom: 50px;
+  margin-top: -30px;
+
+  @media (max-width: ${sizes.md}px) {
+    padding: 0px 45px 0px 30px;
+  }
+
+  @media (min-width: ${sizes.xl}px) {
+    display: none;
+  }
+`;
+
 const HomePage = () => {
   usePullUp();
   const { active } = useWeb3React();
@@ -195,6 +209,9 @@ const HomePage = () => {
 
       <DepositPageContainer className="py-5">
         <div className="row">
+          <MobileActionsFormContainer className="flex-column p-3">
+            <TreasuryActionForm variant="desktop" />
+          </MobileActionsFormContainer>
           <PerformanceSection active={true} />
 
           {/* Form for desktop */}
@@ -242,13 +259,6 @@ const HeroSection: React.FC<{
                     {tag}
                   </TagPill>
                 ))}
-                <AttributePill className="mr-2 text-uppercase" color={color}>
-                  <BaseLink to={"/"} key={"v2"}>
-                    <AttributeVersionSelector active={true} color={color}>
-                      <Title color={color}>v2</Title>
-                    </AttributeVersionSelector>
-                  </BaseLink>
-                </AttributePill>
               </div>
 
               <HeroText>{"Treasury"}</HeroText>

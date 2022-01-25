@@ -418,24 +418,6 @@ const HeroSection: React.FC<{
                     {tag}
                   </TagPill>
                 ))}
-                <AttributePill className="mr-2 text-uppercase" color={color}>
-                  {[...VaultVersionList].map((version) =>
-                    chainId &&
-                    hasVaultVersion(vaultOption, version, chainId) ? (
-                      <BaseLink
-                        to={getVaultURI(vaultOption, version)}
-                        key={version}
-                      >
-                        <AttributeVersionSelector
-                          active={version === variant}
-                          color={color}
-                        >
-                          <Title color={color}>{version}</Title>
-                        </AttributeVersionSelector>
-                      </BaseLink>
-                    ) : null
-                  )}
-                </AttributePill>
               </div>
 
               <HeroText>{productCopies[vaultOption].title}</HeroText>
