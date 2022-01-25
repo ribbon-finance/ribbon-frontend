@@ -21,11 +21,8 @@ export type NETWORK_NAMES =
   | "avax"
   | "aurora"
   | "aurora-testnet";
-export type TESTNET_NAMES = "kovan" | "fuji";
-export type MAINNET_NAMES = Exclude<
-  NETWORK_NAMES,
-  "kovan" | "fuji" | "aurora-testnet"
->;
+export type TESTNET_NAMES = "kovan" | "fuji" | "aurora-testnet";
+export type MAINNET_NAMES = Exclude<NETWORK_NAMES, TESTNET_NAMES>;
 
 export const NETWORKS: Record<number, NETWORK_NAMES> = {
   [CHAINID.ETH_MAINNET]: "mainnet",
