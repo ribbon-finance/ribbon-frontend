@@ -62,11 +62,11 @@ export const supportedChainIds = isDevelopment()
  * Multi chain env configs
  */
 
-// TODO: Remove the isProduction check when enabling avalanche
 export const ENABLED_CHAINID: CHAINID[] = [
   CHAINID.ETH_MAINNET,
   CHAINID.AVAX_MAINNET,
-  CHAINID.AURORA_MAINNET,
+  // TODO: Add back Aurora when prod
+  // CHAINID.AURORA_MAINNET,
 ];
 
 export const isChainIdEnabled = (chainId: number) =>
