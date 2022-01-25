@@ -190,7 +190,7 @@ const useFetchV2VaultData = (): V2VaultData => {
     if (!isProduction()) {
       console.timeEnd("V2 Vault Data Fetch");
     }
-  }, [account, chainId, library, web3Active]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [account, chainId, library, web3Active, getProviderForNetwork]);
 
   useEffect(() => {
     doMulticall();
