@@ -14,9 +14,18 @@ import v1deployment from "./v1Deployments.json";
 import v2deployment from "./v2Deployments.json";
 import addresses from "./externalAddresses.json";
 
-export type NETWORK_NAMES = "mainnet" | "kovan" | "fuji" | "avax" | "aurora";
+export type NETWORK_NAMES =
+  | "mainnet"
+  | "kovan"
+  | "fuji"
+  | "avax"
+  | "aurora"
+  | "aurora-testnet";
 export type TESTNET_NAMES = "kovan" | "fuji";
-export type MAINNET_NAMES = Exclude<NETWORK_NAMES, "kovan" | "fuji">;
+export type MAINNET_NAMES = Exclude<
+  NETWORK_NAMES,
+  "kovan" | "fuji" | "aurora-testnet"
+>;
 
 export const NETWORKS: Record<number, NETWORK_NAMES> = {
   [CHAINID.ETH_MAINNET]: "mainnet",
@@ -24,7 +33,7 @@ export const NETWORKS: Record<number, NETWORK_NAMES> = {
   [CHAINID.AVAX_FUJI]: "fuji",
   [CHAINID.AVAX_MAINNET]: "avax",
   [CHAINID.AURORA_MAINNET]: "aurora",
-  [CHAINID.AURORA_TESTNET]: "aurora_testnet",
+  [CHAINID.AURORA_TESTNET]: "aurora-testnet",
 };
 
 export const CHAINID_TO_NATIVE_TOKENS: Record<CHAINID, Assets> = {
@@ -41,6 +50,7 @@ export const READABLE_NETWORK_NAMES: Record<CHAINID, string> = {
   [CHAINID.AVAX_MAINNET]: "Avalanche",
   [CHAINID.AVAX_FUJI]: "Fuji",
   [CHAINID.AURORA_MAINNET]: "Aurora",
+  [CHAINID.AURORA_TESTNET]: "Aurora Testnet",
 };
 
 export const isEthNetwork = (chainId: number): boolean =>
