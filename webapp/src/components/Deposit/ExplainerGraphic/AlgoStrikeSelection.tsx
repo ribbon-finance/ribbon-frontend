@@ -8,7 +8,7 @@ import STETHAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoS
 import AAVEAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/AAVE_Algo_Strike_Selection.json";
 import AVAXAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/AVAX_Algo_Strike_Selection.json";
 import NEARAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/NEAR_Algo_Strike_Selection.json";
-import AURORAAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/NEAR_Algo_Strike_Selection.json";
+import AURORAAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/AURORA_Algo_Strike_Selection.json";
 import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 
 interface AlgoStrikeSelectionProps {
