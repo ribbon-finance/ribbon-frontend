@@ -259,6 +259,7 @@ const DepositPage = () => {
   /**
    * Redirect to homepage if no clear vault is chosen
    */
+  
   if (!vaultOption) {
     return <Redirect to="/" />;
   }
@@ -267,27 +268,6 @@ const DepositPage = () => {
     return <Redirect to="/" />;
   }
 
-  /**
-   * Redirect to v1 if vault version given is invalid
-   */
-  if (chainId && !hasVaultVersion(vaultOption, vaultVersion, chainId)) {
-    const availableVaultVersions = VaultVersionList.filter((version) =>
-      hasVaultVersion(vaultOption, version, chainId)
-    );
-
-    if (availableVaultVersions.length <= 0) {
-      return <Redirect to="/" />;
-    }
-
-    return (
-      <Redirect
-        to={getVaultURI(
-          vaultOption,
-          availableVaultVersions[availableVaultVersions.length - 1]
-        )}
-      />
-    );
-  }
 
   return (
     <>
