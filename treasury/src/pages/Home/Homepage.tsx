@@ -168,7 +168,7 @@ const MobileActionsFormContainer = styled.div`
     padding: 0px 45px 0px 30px;
   }
 
-  @media (min-width: ${sizes.xl}px) {
+  @media (min-width: ${sizes.md}px) {
     display: none;
   }
 `;
