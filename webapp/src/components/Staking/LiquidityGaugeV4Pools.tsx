@@ -31,6 +31,7 @@ import CapBar from "shared/lib/components/Deposit/CapBar";
 import { useLiquidityGaugeV4PoolData } from "shared/lib/hooks/web3DataContext";
 import { formatBigNumber } from "shared/lib/utils/math";
 import UnstakingActionModal from "./LiquidityGaugeModal/UnstakingActionModal";
+import ClaimActionModal from "./LiquidityGaugeModal/ClaimActionModal";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -101,11 +102,11 @@ const LogoContainer = styled.div<{ color: string }>`
   background: ${(props) => props.color}29;
 `;
 
-const PoolRewardData = styled(Title)`
-  font-size: 14px;
-  line-height: 20px;
-  color: ${(props) => props.color};
-`;
+// const PoolRewardData = styled(Title)`
+//   font-size: 14px;
+//   line-height: 20px;
+//   color: ${(props) => props.color};
+// `;
 
 const StakingPoolCardFooter = styled.div`
   display: flex;
@@ -190,6 +191,7 @@ const LiquidityGaugeV4Pool: React.FC<LiquidityGaugeV4PoolProps> = ({
   }, [pendingTransactions, vaultOption]);
 
   const [showUnstakeModal, setShowUnstakeModal] = useState(false);
+  const [showClaimModal, setShowClaimModal] = useState(false);
 
   const actionLoadingTextBase = useMemo(() => {
     switch (ongoingTransaction) {
@@ -326,7 +328,7 @@ const LiquidityGaugeV4Pool: React.FC<LiquidityGaugeV4PoolProps> = ({
           role="button"
           color={color}
           onClick={() => {
-            /** TODO:  */
+            setShowClaimModal(true);
           }}
           active={ongoingTransaction === "rewardClaim"}
         >
@@ -351,6 +353,13 @@ const LiquidityGaugeV4Pool: React.FC<LiquidityGaugeV4PoolProps> = ({
         onClose={() => setShowUnstakeModal(false)}
         vaultOption={vaultOption}
         logo={logo}
+        stakingPoolData={lg4Data}
+      />
+      <ClaimActionModal
+        show={showClaimModal}
+        onClose={() => setShowClaimModal(false)}
+        logo={logo}
+        vaultOption={vaultOption}
         stakingPoolData={lg4Data}
       />
       <StakingPoolCard color={color}>

@@ -86,11 +86,6 @@ const InfoData = styled(Title)<{ error?: boolean }>`
   }}
 `;
 
-const Arrow = styled.i<{ color: string }>`
-  font-size: 12px;
-  color: ${(props) => props.color};
-`;
-
 interface UnstakingActionModalProps {
   show: boolean;
   onClose: () => void;
