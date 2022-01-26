@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { formatUnits } from "@ethersproject/units";
 
@@ -30,6 +30,7 @@ import { productCopies } from "shared/lib/components/Product/productCopies";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import { useLiquidityGaugeV4PoolData } from "shared/lib/hooks/web3DataContext";
 import { formatBigNumber } from "shared/lib/utils/math";
+import UnstakingActionModal from "./LiquidityGaugeModal/UnstakingActionModal";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -158,8 +159,8 @@ const LiquidityGaugeV4Pool: React.FC<LiquidityGaugeV4PoolProps> = ({
   const { pendingTransactions } = usePendingTransactions();
   const { data: lg4Data, loading: lg4DataLoading } =
     useLiquidityGaugeV4PoolData(vaultOption);
-  const decimals = getAssetDecimals(getAssets(vaultOption));
 
+  const decimals = getAssetDecimals(getAssets(vaultOption));
   const color = getVaultColor(vaultOption);
   const ongoingTransaction:
     | "stakingApproval"
@@ -188,15 +189,7 @@ const LiquidityGaugeV4Pool: React.FC<LiquidityGaugeV4PoolProps> = ({
       | "rewardClaim";
   }, [pendingTransactions, vaultOption]);
 
-  // const hasAllowance = useMemo(() => {
-  //   if (!tokenAllowance || tokenAllowance.isZero()) {
-  //     return false;
-  //   }
-
-  //   setShowApprovalModal(false);
-
-  //   return true;
-  // }, [tokenAllowance]);
+  const [showUnstakeModal, setShowUnstakeModal] = useState(false);
 
   const actionLoadingTextBase = useMemo(() => {
     switch (ongoingTransaction) {
@@ -321,7 +314,7 @@ const LiquidityGaugeV4Pool: React.FC<LiquidityGaugeV4PoolProps> = ({
           role="button"
           color={color}
           onClick={() => {
-            /** TODO:  */
+            setShowUnstakeModal(true);
           }}
           active={ongoingTransaction === "unstake"}
         >
@@ -353,6 +346,13 @@ const LiquidityGaugeV4Pool: React.FC<LiquidityGaugeV4PoolProps> = ({
 
   return (
     <>
+      <UnstakingActionModal
+        show={showUnstakeModal}
+        onClose={() => setShowUnstakeModal(false)}
+        vaultOption={vaultOption}
+        logo={logo}
+        stakingPoolData={lg4Data}
+      />
       <StakingPoolCard color={color}>
         <div className="d-flex flex-wrap w-100 p-3">
           {/* Card Title */}
