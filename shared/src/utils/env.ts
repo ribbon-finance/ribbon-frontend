@@ -21,7 +21,7 @@ export const SUBGRAPH_URI: Record<number, string> = {
     process.env.REACT_APP_AVAX_SUBGRAPHQL_URL ||
     "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-avax",
   [CHAINID.AURORA_MAINNET]:
-    process.env.REACT_APP_AVAX_SUBGRAPHQL_URL ||
+    process.env.REACT_APP_AURORA_SUBGRAPHQL_URL ||
     "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-aurora",
 };
 
