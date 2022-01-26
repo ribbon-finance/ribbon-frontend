@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import currency from "currency.js";
 import { Col, Row } from "react-bootstrap";
+import ProgressBar from "shared/lib/components/Deposit/ProgressBar";
 
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import {
@@ -12,12 +13,13 @@ import {
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import useAssetPrice from "shared/lib/hooks/useAssetPrice";
+import useAssetPrice, { useAssetInfo } from "shared/lib/hooks/useAssetPrice";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useTreasuryAccount from "shared/lib/hooks/useTreasuryAccount";
 import useTVL from "shared/lib/hooks/useTVL";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
+import { formatAmount } from "shared/lib/utils/math";
 
 const Content = styled(Row)`
   z-index: 1;
@@ -73,6 +75,8 @@ const FloatingBackgroundBar = styled.div<{ index: number }>`
 
 const OverviewKPI = () => {
   const { width } = useScreenSize();
+  const totalStakedRBN = 20000000
+  const { circulating_supply } = useAssetInfo("RBN")
   const { price: RBNPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: "RBN",
   });
@@ -138,7 +142,37 @@ const OverviewKPI = () => {
               {currency(totalTVL).format()}
             </Title>
           </KPICard>
-          <KPICard></KPICard>
+          <KPICard>
+            <div className="d-flex flex-row align-items-center justify-content-between mb-2">
+              <SecondaryText fontSize={12} lineHeight={16}>
+                Total Staked RBN
+              </SecondaryText>
+              <Title
+                fontSize={18}
+                lineHeight={24}
+                letterSpacing={1}
+              >
+                {formatAmount(totalStakedRBN, true)}
+              </Title>
+            </div>
+            <ProgressBar
+              config={{ height: 4, extraClassNames: "my-2", radius: 2 }}
+              percent={circulating_supply ? totalStakedRBN / circulating_supply * 100 : 0}
+              color={colors.green}
+            />
+            <div className="d-flex flex-row align-items-center justify-content-between mt-2">
+              <SecondaryText fontSize={12} lineHeight={16}>
+                RBN Floating Supply
+              </SecondaryText>
+              <Title
+                fontSize={18}
+                lineHeight={24}
+                letterSpacing={1}
+              >
+                {formatAmount(circulating_supply, true)}
+              </Title>
+            </div>
+          </KPICard>
           <KPICard>
             <SecondaryText fontSize={12} lineHeight={16}>
               Ribbon Treasury
