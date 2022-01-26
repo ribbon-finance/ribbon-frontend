@@ -38,7 +38,7 @@ const useGasPrice = () => {
       try {
         const response = await axios.get(GAS_URL[chainId]);
         const data: APIResponse = response.data;
-        gasPrice = data.result.FastGasPrice; 
+        gasPrice = data.result.FastGasPrice;
       } catch (error) {
         fetchedOnce = false;
       }

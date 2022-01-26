@@ -23,7 +23,7 @@ export interface BarConfig {
 }
 interface ProgressBarProps {
   percent: number;
-  config?: BarConfig
+  config?: BarConfig;
   color?: string;
 }
 
@@ -32,9 +32,9 @@ const ProgressBar = ({
   config = {
     height: 16,
     extraClassNames: "my-3",
-    radius: 4
+    radius: 4,
   },
-  color = "#ffffff"
+  color = "#ffffff",
 }: ProgressBarProps) => {
   return (
     <div
@@ -43,14 +43,14 @@ const ProgressBar = ({
       <BackgroundBar height={config.height} radius={config.radius} />
       <ForegroundBar
         height={config.height}
-        style={{ 
+        style={{
           width: `${percent}%`,
-          background: color
-         }}
+          background: color,
+        }}
         radius={config.radius}
       />
     </div>
-  )
-}
+  );
+};
 
-export default ProgressBar
+export default ProgressBar;

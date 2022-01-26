@@ -206,17 +206,16 @@ export const useAssetsPriceHistory = () => {
   };
 };
 
-
 interface AssetInfo {
-  circulating_supply: number
+  circulating_supply: number;
 }
 
 export const useAssetInfo = (asset: Assets) => {
-  const [info, setInfo] = useState<AssetInfo>()
+  const [info, setInfo] = useState<AssetInfo>();
 
   const fetchAssetInfo = useCallback(async () => {
     if (info) {
-      return
+      return;
     }
 
     const apiURL = `${COINGECKO_BASE_URL}/coins/${COINGECKO_CURRENCIES[asset]}`;
@@ -225,17 +224,19 @@ export const useAssetInfo = (asset: Assets) => {
       const { data } = response;
       setInfo({
         circulating_supply: data.market_data.circulating_supply,
-      })
+      });
     } catch (error) {
       !isProduction() && console.log("Asset info fetch error:", error);
     }
-  }, [info, asset])
+  }, [info, asset]);
 
   useEffect(() => {
     fetchAssetInfo();
-  }, [fetchAssetInfo])
+  }, [fetchAssetInfo]);
 
-  return info ?? {
-    circulating_supply: 0
-  }
+  return (
+    info ?? {
+      circulating_supply: 0,
+    }
+  );
 };

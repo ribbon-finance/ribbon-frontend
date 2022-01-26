@@ -26,20 +26,20 @@ export const useFetchAssetsYield = () => {
       const response = await axios.get<DefiScoreOpportunitiesResponse>(
         `https://api.defiscore.io/earn/opportunities`
       );
-  
+
       const yieldInfoObj = Object.fromEntries(
         DefiScoreTokenList.map((token) => [token, new Array(0)])
       ) as AssetsYieldInfoData;
-  
+
       for (let i = 0; i < response.data.data.length; i++) {
         const curr = response.data.data[i];
-  
+
         yieldInfoObj[curr.token].push({
           protocol: curr.protocol,
           apr: parseFloat(curr.aprHistory[curr.aprHistory.length - 1].value),
         });
       }
-  
+
       setData(
         Object.fromEntries(
           Object.keys(yieldInfoObj).map((token) => [

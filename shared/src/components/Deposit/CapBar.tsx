@@ -37,50 +37,51 @@ const CapBar: React.FC<{
   barConfig = { height: 16, extraClassNames: "my-3", radius: 4 },
   asset,
 }) => {
-    let percent = cap > 0 ? current / cap : 0;
-    if (percent < 0) {
-      percent = 0;
-    } else if (percent > 1) {
-      percent = 1;
-    }
-    percent *= 100;
-    current = current > cap ? cap : current;
+  let percent = cap > 0 ? current / cap : 0;
+  if (percent < 0) {
+    percent = 0;
+  } else if (percent > 1) {
+    percent = 1;
+  }
+  percent *= 100;
+  current = current > cap ? cap : current;
 
-    return (
-      <div className="w-100">
-        <div className="d-flex flex-row justify-content-between">
-          <SecondaryText color={colors.text} fontSize={labelConfig.fontSize}>
-            {copies.current}
-          </SecondaryText>
-          <Title fontSize={statsConfig.fontSize} lineHeight={20}>
-            {loading
-              ? "Loading..."
-              : `${displayCurrent
-                ? displayCurrent
-                : `${formatAmount(current)} ${asset ? getAssetDisplay(asset) : ""
-                }`
+  return (
+    <div className="w-100">
+      <div className="d-flex flex-row justify-content-between">
+        <SecondaryText color={colors.text} fontSize={labelConfig.fontSize}>
+          {copies.current}
+        </SecondaryText>
+        <Title fontSize={statsConfig.fontSize} lineHeight={20}>
+          {loading
+            ? "Loading..."
+            : `${
+                displayCurrent
+                  ? displayCurrent
+                  : `${formatAmount(current)} ${
+                      asset ? getAssetDisplay(asset) : ""
+                    }`
               }`}
-          </Title>
-        </div>
-        <ProgressBar
-          percent={percent}
-          config={barConfig}
-        />
-        <div className="d-flex flex-row justify-content-between">
-          <SecondaryText color={colors.text} fontSize={labelConfig.fontSize}>
-            {copies.cap}
-          </SecondaryText>
-          <Title fontSize={statsConfig.fontSize} lineHeight={20}>
-            {loading
-              ? "Loading..."
-              : `${displayCap
-                ? displayCap
-                : `${formatAmount(cap)} ${asset ? getAssetDisplay(asset) : ""
-                }`
-              }`}
-          </Title>
-        </div>
+        </Title>
       </div>
-    );
-  };
+      <ProgressBar percent={percent} config={barConfig} />
+      <div className="d-flex flex-row justify-content-between">
+        <SecondaryText color={colors.text} fontSize={labelConfig.fontSize}>
+          {copies.cap}
+        </SecondaryText>
+        <Title fontSize={statsConfig.fontSize} lineHeight={20}>
+          {loading
+            ? "Loading..."
+            : `${
+                displayCap
+                  ? displayCap
+                  : `${formatAmount(cap)} ${
+                      asset ? getAssetDisplay(asset) : ""
+                    }`
+              }`}
+        </Title>
+      </div>
+    </div>
+  );
+};
 export default CapBar;

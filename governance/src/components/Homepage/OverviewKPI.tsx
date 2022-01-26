@@ -75,8 +75,8 @@ const FloatingBackgroundBar = styled.div<{ index: number }>`
 
 const OverviewKPI = () => {
   const { width } = useScreenSize();
-  const totalStakedRBN = 20000000
-  const { circulating_supply } = useAssetInfo("RBN")
+  const totalStakedRBN = 20000000;
+  const { circulating_supply } = useAssetInfo("RBN");
   const { price: RBNPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: "RBN",
   });
@@ -147,28 +147,24 @@ const OverviewKPI = () => {
               <SecondaryText fontSize={12} lineHeight={16}>
                 Total Staked RBN
               </SecondaryText>
-              <Title
-                fontSize={18}
-                lineHeight={24}
-                letterSpacing={1}
-              >
+              <Title fontSize={18} lineHeight={24} letterSpacing={1}>
                 {formatAmount(totalStakedRBN, true)}
               </Title>
             </div>
             <ProgressBar
               config={{ height: 4, extraClassNames: "my-2", radius: 2 }}
-              percent={circulating_supply ? totalStakedRBN / circulating_supply * 100 : 0}
+              percent={
+                circulating_supply
+                  ? (totalStakedRBN / circulating_supply) * 100
+                  : 0
+              }
               color={colors.green}
             />
             <div className="d-flex flex-row align-items-center justify-content-between mt-2">
               <SecondaryText fontSize={12} lineHeight={16}>
                 RBN Floating Supply
               </SecondaryText>
-              <Title
-                fontSize={18}
-                lineHeight={24}
-                letterSpacing={1}
-              >
+              <Title fontSize={18} lineHeight={24} letterSpacing={1}>
                 {formatAmount(circulating_supply, true)}
               </Title>
             </div>
