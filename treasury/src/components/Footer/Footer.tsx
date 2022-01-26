@@ -59,7 +59,7 @@ const Footer = () => {
   const { height: screenHeight } = useScreenSize();
   const { vaultOption, vaultVersion } = useVaultOption();
   const [showVaultPosition, setShowVaultPosition] = useState(false);
-  console.log(vaultOption)
+  console.log(vaultOption);
   return (
     <>
       <FooterContainer
