@@ -14,8 +14,8 @@ import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import RBNClaimModalContent from "shared/lib/components/Common/RBNClaimModalContent";
 import { getVaultColor } from "shared/lib/utils/vault";
 import BasicModal from "shared/lib/components/Common/BasicModal";
-import { LiquidityGaugeV4PoolResponse } from "shared/lib/models/staking";
-import useLiquidityGaugeV4 from "shared/lib/hooks/useLiquidityGaugeV4";
+import { LiquidityGaugeV5PoolResponse } from "shared/lib/models/staking";
+import useLiquidityGaugeV5 from "shared/lib/hooks/useLiquidityGaugeV5";
 
 const LogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -48,7 +48,7 @@ interface ClaimActionModalProps {
   onClose: () => void;
   logo: React.ReactNode;
   vaultOption: VaultOptions;
-  stakingPoolData?: LiquidityGaugeV4PoolResponse;
+  stakingPoolData?: LiquidityGaugeV5PoolResponse;
 }
 
 const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
@@ -62,7 +62,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
   const [step, setStep] = useState<"info" | "claim" | "claiming" | "claimed">(
     "info"
   );
-  const contract = useLiquidityGaugeV4(vaultOption);
+  const contract = useLiquidityGaugeV5(vaultOption);
   const { addPendingTransaction } = usePendingTransactions();
 
   const handleClose = useCallback(() => {

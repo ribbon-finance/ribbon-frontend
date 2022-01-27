@@ -10,7 +10,7 @@ import {
   VaultOptions,
 } from "shared/lib/constants/constants";
 import { useWeb3Wallet } from "../../../hooks/useWeb3Wallet";
-import { LiquidityGaugeV4PoolResponse } from "shared/lib/models/staking";
+import { LiquidityGaugeV5PoolResponse } from "shared/lib/models/staking";
 import {
   BaseInput,
   BaseInputButton,
@@ -24,7 +24,7 @@ import {
 } from "shared/lib/designSystem";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import { getAssetDecimals } from "shared/lib/utils/asset";
-import useLiquidityGaugeV4 from "shared/lib/hooks/useLiquidityGaugeV4";
+import useLiquidityGaugeV5 from "shared/lib/hooks/useLiquidityGaugeV5";
 import colors from "shared/lib/designSystem/colors";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -91,7 +91,7 @@ interface UnstakingActionModalProps {
   onClose: () => void;
   logo: React.ReactNode;
   vaultOption: VaultOptions;
-  stakingPoolData?: LiquidityGaugeV4PoolResponse;
+  stakingPoolData?: LiquidityGaugeV5PoolResponse;
 }
 
 const UnstakingActionModal: React.FC<UnstakingActionModalProps> = ({
@@ -109,7 +109,7 @@ const UnstakingActionModal: React.FC<UnstakingActionModalProps> = ({
   const { provider } = useWeb3Context();
   const decimals = getAssetDecimals(getAssets(vaultOption));
   const [error, setError] = useState<"insufficient_staked">();
-  const contract = useLiquidityGaugeV4(vaultOption);
+  const contract = useLiquidityGaugeV5(vaultOption);
   const { addPendingTransaction } = usePendingTransactions();
   const [txId, setTxId] = useState("");
 

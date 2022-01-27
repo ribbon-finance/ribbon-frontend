@@ -7,7 +7,7 @@ import {
 } from "shared/lib/constants/constants";
 import StakingOverview from "../../components/Staking/StakingOverview";
 import LiquidityMiningPools from "../../components/Staking/LiquidityMiningPools";
-import LiquidityGaugeV4Pools from "../../components/Staking/LiquidityGaugeV4Pools";
+import LiquidityGaugeV5Pools from "../../components/Staking/LiquidityGaugeV5Pools";
 
 const StakingPage = () => {
   const [lmVersion, setLmVersion] = useState<LiquidityMiningVersion>(
@@ -18,8 +18,8 @@ const StakingPage = () => {
     switch (lmVersion) {
       case "lm":
         return <LiquidityMiningPools />;
-      case "lg4":
-        return <LiquidityGaugeV4Pools />;
+      case "lg5":
+        return <LiquidityGaugeV5Pools />;
     }
   }, [lmVersion]);
 

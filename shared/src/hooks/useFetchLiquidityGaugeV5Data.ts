@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
 import {
-  defaultLiquidityGaugeV4PoolData,
-  LiquidityGaugeV4PoolData,
-  LiquidityGaugeV4PoolResponses,
+  defaultLiquidityGaugeV5PoolData,
+  LiquidityGaugeV5PoolData,
+  LiquidityGaugeV5PoolResponses,
 } from "../models/staking";
 import { impersonateAddress } from "../utils/development";
 import { usePendingTransactions } from "./pendingTransactionsContext";
@@ -16,18 +16,18 @@ import {
   VaultOptions,
 } from "../constants/constants";
 import { BigNumber } from "@ethersproject/bignumber";
-import { getLiquidityGaugeV4 } from "./useLiquidityGaugeV4";
+import { getLiquidityGaugeV5 } from "./useLiquidityGaugeV5";
 import { getERC20Token } from "./useERC20Token";
 import { getERC20TokenNameFromVault } from "../models/eth";
 
-const useFetchLiquidityGaugeV4Data = (): LiquidityGaugeV4PoolData => {
+const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   const { active, chainId, account: web3Account, library } = useWeb3React();
   const { provider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
 
-  const [data, setData] = useState<LiquidityGaugeV4PoolData>(
-    defaultLiquidityGaugeV4PoolData
+  const [data, setData] = useState<LiquidityGaugeV5PoolData>(
+    defaultLiquidityGaugeV5PoolData
   );
   const [, setMulticallCounter] = useState(0);
 
@@ -37,7 +37,7 @@ const useFetchLiquidityGaugeV4Data = (): LiquidityGaugeV4PoolData => {
     }
 
     if (!isProduction()) {
-      console.time("Liquidity Gauge V4 Data Fetch");
+      console.time("Liquidity Gauge V5 Data Fetch");
     }
 
     /**
@@ -50,10 +50,10 @@ const useFetchLiquidityGaugeV4Data = (): LiquidityGaugeV4PoolData => {
     });
 
     const responses = await Promise.all(
-      Object.keys(VaultLiquidityMiningMap.lg4).map(async (_vault) => {
+      Object.keys(VaultLiquidityMiningMap.lg5).map(async (_vault) => {
         const vault = _vault as VaultOptions;
 
-        const contract = getLiquidityGaugeV4(
+        const contract = getLiquidityGaugeV5(
           library || provider,
           vault,
           active
@@ -128,7 +128,7 @@ const useFetchLiquidityGaugeV4Data = (): LiquidityGaugeV4PoolData => {
                 ...response,
               },
             ])
-          ) as LiquidityGaugeV4PoolResponses,
+          ) as LiquidityGaugeV5PoolResponses,
           loading: false,
         }));
       }
@@ -137,7 +137,7 @@ const useFetchLiquidityGaugeV4Data = (): LiquidityGaugeV4PoolData => {
     });
 
     if (!isProduction()) {
-      console.timeEnd("Liquidity Gauge V4 Data Fetch");
+      console.timeEnd("Liquidity Gauge V5 Data Fetch");
     }
   }, [account, active, chainId, library, provider]);
 
@@ -148,4 +148,4 @@ const useFetchLiquidityGaugeV4Data = (): LiquidityGaugeV4PoolData => {
   return data;
 };
 
-export default useFetchLiquidityGaugeV4Data;
+export default useFetchLiquidityGaugeV5Data;

@@ -1,0 +1,14 @@
+{
+  "kovan": {
+    "RBNVotingEscrow": "0x8E75FCac21074AB6E71d6097741bA23fbbA474a4",
+    "RBNVotingEscrowDelegationProxy": "0x0e3Ac2562f5caeC610717be17d6D46baD8fb798C",
+    "RBNVotingTokenMinter": "0xA79d141A1ea7a1962364288075196fbE01C83aCC",
+    "RBNVotingGaugeController": "0x1897D25dc65406F0a534cb6749010b3EdD9f87D9"
+  },
+  "mainnet": {
+    "RBNVotingEscrow": "0x10dAd929A9890B32Db9A5d568B5953FCa5826AC8",
+    "RBNVotingEscrowDelegationProxy": "0xB250A90DbF97E76316D3d421eEC6b1dddF220BD6",
+    "RBNVotingTokenMinter": "0xC8916E90f597D33848c496B62D603b64C7Bbe9bA",
+    "RBNVotingGaugeController": "0x2ce354a659F795cBD30F9247924500f13815da15"
+  }
+}

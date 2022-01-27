@@ -1,36 +1,36 @@
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 
-import { LiquidityGaugeV4 } from "../codegen";
-import { LiquidityGaugeV4Factory } from "../codegen/LiquidityGaugeV4Factory";
+import { LiquidityGaugeV5 } from "../codegen";
+import { LiquidityGaugeV5Factory } from "../codegen/LiquidityGaugeV5Factory";
 import { VaultLiquidityMiningMap, VaultOptions } from "../constants/constants";
 import { useWeb3Context } from "./web3Context";
 
-export const getLiquidityGaugeV4 = (
+export const getLiquidityGaugeV5 = (
   library: any,
   vaultOption: VaultOptions,
   useSigner: boolean = true
 ) => {
   const provider = useSigner ? library.getSigner() : library;
 
-  if (!VaultLiquidityMiningMap.lg4[vaultOption]) {
+  if (!VaultLiquidityMiningMap.lg5[vaultOption]) {
     return null;
   }
 
-  return LiquidityGaugeV4Factory.connect(
-    VaultLiquidityMiningMap.lg4[vaultOption]!,
+  return LiquidityGaugeV5Factory.connect(
+    VaultLiquidityMiningMap.lg5[vaultOption]!,
     provider
   );
 };
 
-const useLiquidityGaugeV4 = (vaultOption: VaultOptions) => {
+const useLiquidityGaugeV5 = (vaultOption: VaultOptions) => {
   const { active, library } = useWeb3React();
   const { provider } = useWeb3Context();
-  const [contract, setContract] = useState<LiquidityGaugeV4 | null>(null);
+  const [contract, setContract] = useState<LiquidityGaugeV5 | null>(null);
 
   useEffect(() => {
     if (provider) {
-      const vault = getLiquidityGaugeV4(
+      const vault = getLiquidityGaugeV5(
         library || provider,
         vaultOption,
         active
@@ -42,4 +42,4 @@ const useLiquidityGaugeV4 = (vaultOption: VaultOptions) => {
   return contract;
 };
 
-export default useLiquidityGaugeV4;
+export default useLiquidityGaugeV5;

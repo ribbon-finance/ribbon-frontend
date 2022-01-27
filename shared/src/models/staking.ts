@@ -41,24 +41,25 @@ export const defaultLiquidityMiningPoolData: LiquidityMiningPoolData = {
   loading: true,
 };
 
-export interface LiquidityGaugeV4PoolResponse {
+export interface LiquidityGaugeV5PoolResponse {
   currentStake: BigNumber;
   poolSize: BigNumber;
   claimableRbn: BigNumber;
   unstakedBalance: BigNumber;
   claimedRbn: BigNumber;
+  poolRewardForDuration: BigNumber;
 }
 
-export type LiquidityGaugeV4PoolResponses = Partial<{
-  [vault in VaultOptions]: LiquidityGaugeV4PoolResponse;
+export type LiquidityGaugeV5PoolResponses = Partial<{
+  [vault in VaultOptions]: LiquidityGaugeV5PoolResponse;
 }>;
 
-export type LiquidityGaugeV4PoolData = {
-  responses: LiquidityGaugeV4PoolResponses;
+export type LiquidityGaugeV5PoolData = {
+  responses: LiquidityGaugeV5PoolResponses;
   loading: boolean;
 };
 
-export const defaultLiquidityGaugeV4PoolData: LiquidityGaugeV4PoolData = {
+export const defaultLiquidityGaugeV5PoolData: LiquidityGaugeV5PoolData = {
   responses: {},
   loading: true,
 };

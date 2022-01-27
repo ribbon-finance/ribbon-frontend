@@ -130,7 +130,7 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
   }, [loadingText, tokenData, tokenLoading]);
 
   /**
-   * TODO: Add duration for lg4
+   * TODO: Add duration for lg5
    */
   const timeTillProgramsEnd = useMemo(() => {
     const endStakeReward = moment
@@ -155,7 +155,7 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
     switch (_lmVersion) {
       case "lm":
         return "LM1 - JUL 2021";
-      case "lg4":
+      case "lg5":
         return "LM2 - Present";
     }
   }, []);
@@ -164,7 +164,7 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
     switch (_lmVersion) {
       case "lm":
         return "Liquidity Mining Program";
-      case "lg4":
+      case "lg5":
         return "Liquidity Mining Program #2";
     }
   }, []);
@@ -176,7 +176,7 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
           to those who missed out on the airdrop and to distribute the
           governance token to those who have the most skin in the game. The
           program ended on July 19th, 2021.`;
-      case "lg4":
+      case "lg5":
         return `Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum facilisis leo, vel fringilla est`;
     }
   }, []);

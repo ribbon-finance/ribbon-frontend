@@ -7,8 +7,8 @@ export const GovernanceChainID = isDevelopment()
 
 export const VotingEscrowAddress = isDevelopment()
   ? address.kovan.RBNVotingEscrow
-  : "";
+  : address.mainnet.RBNVotingEscrow;
 
 export const VotingEscrowDelegationProxyAddress = isDevelopment()
   ? address.kovan.RBNVotingEscrowDelegationProxy
-  : "";
+  : address.mainnet.RBNVotingEscrowDelegationProxy;

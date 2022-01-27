@@ -28,7 +28,7 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import CapBar from "shared/lib/components/Deposit/CapBar";
-import { useLiquidityGaugeV4PoolData } from "shared/lib/hooks/web3DataContext";
+import { useLiquidityGaugeV5PoolData } from "shared/lib/hooks/web3DataContext";
 import { formatBigNumber } from "shared/lib/utils/math";
 import UnstakingActionModal from "./LiquidityGaugeModal/UnstakingActionModal";
 import ClaimActionModal from "./LiquidityGaugeModal/ClaimActionModal";
@@ -148,18 +148,18 @@ const StakingPoolCardFooterButton = styled(Title)<{
   }
 `;
 
-interface LiquidityGaugeV4PoolProps {
+interface LiquidityGaugeV5PoolProps {
   vaultOption: VaultOptions;
 }
 
-const LiquidityGaugeV4Pool: React.FC<LiquidityGaugeV4PoolProps> = ({
+const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
   vaultOption,
 }) => {
   const { active } = useWeb3Wallet();
   const [, setShowConnectWalletModal] = useConnectWalletModal();
   const { pendingTransactions } = usePendingTransactions();
-  const { data: lg4Data, loading: lg4DataLoading } =
-    useLiquidityGaugeV4PoolData(vaultOption);
+  const { data: lg5Data, loading: lg5DataLoading } =
+    useLiquidityGaugeV5PoolData(vaultOption);
 
   const decimals = getAssetDecimals(getAssets(vaultOption));
   const color = getVaultColor(vaultOption);
@@ -238,8 +238,8 @@ const LiquidityGaugeV4Pool: React.FC<LiquidityGaugeV4PoolProps> = ({
       return "---";
     }
 
-    return lg4Data ? formatBigNumber(lg4Data.unstakedBalance, decimals) : 0;
-  }, [active, decimals, lg4Data]);
+    return lg5Data ? formatBigNumber(lg5Data.unstakedBalance, decimals) : 0;
+  }, [active, decimals, lg5Data]);
 
   // const showStakeModal = useMemo(() => {
   //   if (ongoingTransaction === "stake") {
@@ -257,14 +257,14 @@ const LiquidityGaugeV4Pool: React.FC<LiquidityGaugeV4PoolProps> = ({
     /**
      * TODO: Below if should represent when earned amount is 0 and there is claimed amount
      */
-    if (!lg4Data || lg4Data.claimableRbn.isZero()) {
+    if (!lg5Data || lg5Data.claimableRbn.isZero()) {
       return (
         <ClaimableTokenPillContainer>
           <ClaimableTokenPill color={color}>
             <BaseIndicator size={8} color={color} className="mr-2" />
             <Subtitle className="mr-2">AMOUNT CLAIMED</Subtitle>
             <ClaimableTokenAmount color={color}>
-              {active && lg4Data ? formatBigNumber(lg4Data.claimedRbn) : "---"}
+              {active && lg5Data ? formatBigNumber(lg5Data.claimedRbn) : "---"}
             </ClaimableTokenAmount>
           </ClaimableTokenPill>
         </ClaimableTokenPillContainer>
@@ -277,12 +277,12 @@ const LiquidityGaugeV4Pool: React.FC<LiquidityGaugeV4PoolProps> = ({
           <BaseIndicator size={8} color={color} className="mr-2" />
           <Subtitle className="mr-2">EARNED $RBN</Subtitle>
           <ClaimableTokenAmount color={color}>
-            {active ? formatBigNumber(lg4Data.claimableRbn) : "---"}
+            {active ? formatBigNumber(lg5Data.claimableRbn) : "---"}
           </ClaimableTokenAmount>
         </ClaimableTokenPill>
       </ClaimableTokenPillContainer>
     );
-  }, [active, color, lg4Data]);
+  }, [active, color, lg5Data]);
 
   const stakingPoolButtons = useMemo(() => {
     if (!active) {
@@ -353,14 +353,14 @@ const LiquidityGaugeV4Pool: React.FC<LiquidityGaugeV4PoolProps> = ({
         onClose={() => setShowUnstakeModal(false)}
         vaultOption={vaultOption}
         logo={logo}
-        stakingPoolData={lg4Data}
+        stakingPoolData={lg5Data}
       />
       <ClaimActionModal
         show={showClaimModal}
         onClose={() => setShowClaimModal(false)}
         logo={logo}
         vaultOption={vaultOption}
-        stakingPoolData={lg4Data}
+        stakingPoolData={lg5Data}
       />
       <StakingPoolCard color={color}>
         <div className="d-flex flex-wrap w-100 p-3">
@@ -395,15 +395,15 @@ const LiquidityGaugeV4Pool: React.FC<LiquidityGaugeV4PoolProps> = ({
           {/* Capbar */}
           <div className="w-100 mt-4">
             <CapBar
-              loading={lg4DataLoading}
+              loading={lg5DataLoading}
               current={
-                lg4Data
-                  ? parseFloat(formatUnits(lg4Data.currentStake, decimals))
+                lg5Data
+                  ? parseFloat(formatUnits(lg5Data.currentStake, decimals))
                   : 0
               }
               cap={
-                lg4Data
-                  ? parseFloat(formatUnits(lg4Data.poolSize, decimals))
+                lg5Data
+                  ? parseFloat(formatUnits(lg5Data.poolSize, decimals))
                   : 0
               }
               copies={{
@@ -448,14 +448,14 @@ const LiquidityGaugeV4Pool: React.FC<LiquidityGaugeV4PoolProps> = ({
   );
 };
 
-const LiquidityGaugeV4Pools = () => {
+const LiquidityGaugeV5Pools = () => {
   return (
     <StakingPoolsContainer>
       <Title fontSize={18} lineHeight={24} className="mb-4 w-100">
         STAKING POOLS
       </Title>
-      {Object.keys(VaultLiquidityMiningMap.lg4).map((option) => (
-        <LiquidityGaugeV4Pool
+      {Object.keys(VaultLiquidityMiningMap.lg5).map((option) => (
+        <LiquidityGaugeV5Pool
           key={option}
           vaultOption={option as VaultOptions}
         />
@@ -464,4 +464,4 @@ const LiquidityGaugeV4Pools = () => {
   );
 };
 
-export default LiquidityGaugeV4Pools;
+export default LiquidityGaugeV5Pools;

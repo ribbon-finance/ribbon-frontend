@@ -12,6 +12,7 @@ import {
 } from "../utils/env";
 import v1deployment from "./v1Deployments.json";
 import v2deployment from "./v2Deployments.json";
+import governanceDeployment from "./governanceDeployment.json";
 import addresses from "./externalAddresses.json";
 
 export type NETWORK_NAMES = "mainnet" | "kovan" | "fuji" | "avax";
@@ -177,9 +178,9 @@ export const GAS_LIMITS: {
 
 /**
  * lm: Liquidity Mining round during July 2021
- * lg4: Liquidity Gauge V4 from curve.fi
+ * lg5: Liquidity Gauge V4 from curve.fi
  */
-export const LiquidityMiningVersionList = ["lg4", "lm"] as const;
+export const LiquidityMiningVersionList = ["lg5", "lm"] as const;
 export type LiquidityMiningVersion = typeof LiquidityMiningVersionList[number];
 
 export const VaultLiquidityMiningMap: {
@@ -193,7 +194,7 @@ export const VaultLiquidityMiningMap: {
         "rBTC-THETA": v1deployment.kovan.RibbonWBTCCoveredCallStakingReward,
         "rETH-THETA": v1deployment.kovan.RibbonETHCoveredCallStakingReward,
       },
-      lg4: {
+      lg5: {
         "rUSDC-ETH-P-THETA": v2deployment.kovan.RibbonETHPutLiquidityGauge,
         "rETH-THETA": v2deployment.kovan.RibbonETHCoveredCallLiquidityGauge,
         "rBTC-THETA": v2deployment.kovan.RibbonWBTCCoveredCallLiquidityGauge,
@@ -205,7 +206,14 @@ export const VaultLiquidityMiningMap: {
         "rBTC-THETA": v1deployment.mainnet.RibbonWBTCCoveredCallStakingReward,
         "rETH-THETA": v1deployment.mainnet.RibbonETHCoveredCallStakingReward,
       },
-      lg4: {},
+      lg5: {
+        "ryvUSDC-ETH-P-THETA":
+          v2deployment.mainnet.RibbonYearnETHPutLiquidityGauge,
+        "rAAVE-THETA": v2deployment.mainnet.RibbonAAVECoveredCallLiquidityGauge,
+        "rstETH-THETA": v2deployment.mainnet.RibbonSTETHCoveredLiquidityGauge,
+        "rETH-THETA": v2deployment.mainnet.RibbonETHCoveredCallLiquidityGauge,
+        "rBTC-THETA": v2deployment.mainnet.RibbonWBTCCoveredCallLiquidityGauge,
+      },
     };
 
 export const isPutVault = (vault: VaultOptions): boolean =>
@@ -640,3 +648,11 @@ export const RibbonTreasuryAddress = {
   [CHAINID.ETH_KOVAN]: "0xD380980791079Bd50736Ffe577b8D57A3C196ccd",
   [CHAINID.ETH_MAINNET]: "0xDAEada3d210D2f45874724BeEa03C7d4BBD41674",
 };
+
+export const VotingEscrowAddress = isDevelopment()
+  ? governanceDeployment.kovan.RBNVotingEscrow
+  : governanceDeployment.mainnet.RBNVotingEscrow;
+
+export const VotingEscrowDelegationProxyAddress = isDevelopment()
+  ? governanceDeployment.kovan.RBNVotingEscrowDelegationProxy
+  : governanceDeployment.mainnet.RBNVotingEscrowDelegationProxy;
