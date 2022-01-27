@@ -84,7 +84,7 @@ export const VaultVersionList = ["v2", "v1"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">;
 
-export const RetailVaultList = [
+export const EVMVaultList = [
   "rETH-THETA",
   "ryvUSDC-ETH-P-THETA",
   "rstETH-THETA",
