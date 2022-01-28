@@ -6,7 +6,7 @@ import { PrimaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 
-import { AccessIcon } from "../../../assets/icons/icons";
+import Logo from "shared/lib/assets/icons/logo";
 import {
   BaseInput,
   BaseInputContainer,
@@ -59,7 +59,7 @@ const Container = styled.div<{ variant: "desktop" | "mobile" }>`
 `;
 
 export const EnterButton = styled(Button)`
-  background: #fc0a5420;
+  background: #fc0a5424;
   color: #fc0a54;
 
   &:hover {
@@ -110,6 +110,30 @@ const WhitelistDescription = styled(PrimaryText)`
   color: ${colors.text};
 `;
 
+type SVGProps = React.SVGAttributes<SVGElement>;
+
+const RBNLogo: React.FC<SVGProps> = ({ ...props }) => (
+  <svg
+    viewBox="0 -55 480 480"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <rect
+      y="-60"
+      width="480"
+      height="480"
+      rx="240"
+      fill="#FC0A54"
+      fill-opacity="0.24"
+    />
+    <path
+      d="M239.401 86.4L33.0012 301.8C33.0012 301.8 30.2809 296.982 27.7146 292.2C26.5577 290.044 25.4321 287.896 24.6012 286.2C23.4505 283.851 23.1372 283.636 22.2012 281.4C21.2309 279.6 19.8012 276 19.8012 276L19.2012 274.2L239.401 43.8L378.601 187.8L238.201 338.4L216.601 318L337.201 187.8L239.401 86.4Z"
+      fill="#FC0A54"
+    />
+  </svg>
+);
+
 interface TreasuryActionsFormProps {
   variant: "desktop" | "mobile";
 }
@@ -126,7 +150,7 @@ const TreasuryActionsForm: React.FC<TreasuryActionsFormProps> = ({
     return (
       <div className="d-flex flex-column align-items-center p-4">
         <WhitelistLogoContainer color={color} className="mt-3">
-          <AccessIcon color={color} height={64} />
+          <RBNLogo height={64} />
         </WhitelistLogoContainer>
 
         <WhitelistTitle className="mt-3">ACCESS CODE REQUIRED</WhitelistTitle>
