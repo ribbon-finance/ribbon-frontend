@@ -116,7 +116,7 @@ const ConnectWalletBody: React.FC<{
   selectedWallet: Wallet | undefined;
   wallets: Wallet[];
 }> = ({ onSelectWallet, selectedWallet, wallets }) => {
-  const { activate, connectingWallet } = useWeb3Wallet();
+  const { connectingWallet } = useWeb3Wallet();
   const [chain] = useChain();
 
   // FIXME: There are some glitching issues when swapping between EVM & Solana chains

@@ -56,10 +56,13 @@ const WalletConnectModal: React.FC = () => {
     setTimeout(() => setStep("chain"), 300);
   }, [setShow]);
 
-  const handleClickStep = useCallback(async (updatedStep: ConnectSteps) => {
-    await setChain(selectedChain);
-    setStep(updatedStep);
-  }, []);
+  const handleClickStep = useCallback(
+    async (updatedStep: ConnectSteps) => {
+      await setChain(selectedChain);
+      setStep(updatedStep);
+    },
+    [setChain, selectedChain]
+  );
 
   const onActivate = async () => {
     try {

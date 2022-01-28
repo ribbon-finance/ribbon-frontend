@@ -120,7 +120,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
         throw new Error("Wallet not supported");
       }
     },
-    [activateEth, selectWalletSolana]
+    [activateEth, selectWalletSolana, chainIdEth, libraryEth]
   );
 
   // This is specifically needed for solana
