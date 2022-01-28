@@ -148,12 +148,20 @@ const ConnectStepsNav: React.FC<ConnectStepsNavProps> = ({
   return (
     <>
       {isChainStep && (
-        <ConnectStepsButton role="button" disabled={!chain} onClick={() => onClickStep("wallet")}>
+        <ConnectStepsButton
+          role="button"
+          disabled={!chain}
+          onClick={() => onClickStep("wallet")}
+        >
           <ButtonTitle>Next</ButtonTitle>
         </ConnectStepsButton>
       )}
       {!isChainStep && (
-        <ConnectStepsButton role="button" disabled={!walletInChain} onClick={() => onActivate()}>
+        <ConnectStepsButton
+          role="button"
+          disabled={!walletInChain}
+          onClick={() => onActivate()}
+        >
           <ButtonTitle>Connect</ButtonTitle>
         </ConnectStepsButton>
       )}
