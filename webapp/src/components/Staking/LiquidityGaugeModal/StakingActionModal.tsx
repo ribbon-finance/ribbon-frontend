@@ -22,7 +22,6 @@ import {
   Title,
 } from "shared/lib/designSystem";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
-import useLiquidityGaugeV5 from "shared/lib/hooks/useLiquidityGaugeV5";
 import colors from "shared/lib/designSystem/colors";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { getVaultColor } from "shared/lib/utils/vault";
