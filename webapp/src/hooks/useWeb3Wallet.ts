@@ -20,6 +20,7 @@ import {
   Wallet,
 } from "../models/wallets";
 import { CHAINID } from "shared/lib/utils/env";
+import { switchChains } from "shared/lib/utils/chainSwitching";
 
 interface Web3WalletData {
   chainId: number | undefined;
@@ -90,10 +91,14 @@ export const useWeb3Wallet = (): Web3WalletData => {
   const activate = useCallback(
     async (wallet: Wallet) => {
       if (isEthereumWallet(wallet)) {
-        const connector = ethereumConnectors[wallet as EthereumWallet]();
-        setConnectingWallet(wallet);
         try {
+          const connector = ethereumConnectors[wallet as EthereumWallet]();
+          setConnectingWallet(wallet);
           await activateEth(connector);
+
+          // FIXME: We need to switch the chains using the switchChains utils
+          // The correct params are passed but no prompt shows up
+          chainIdEth && switchChains(libraryEth, chainIdEth);
           setConnectingWallet(undefined);
         } catch (e) {
           setConnectedWallet(undefined);
