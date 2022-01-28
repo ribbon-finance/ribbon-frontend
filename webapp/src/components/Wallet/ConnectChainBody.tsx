@@ -8,11 +8,7 @@ import { switchChains } from "shared/lib/utils/chainSwitching";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
 import { Chains, useChain } from "../../hooks/chainContext";
-import {
-  CHAINS_TO_NATIVE_TOKENS,
-  ENABLED_CHAINS,
-  READABLE_CHAIN_NAMES,
-} from "../../constants/constants";
+import { CHAINS_TO_NATIVE_TOKENS, ENABLED_CHAINS, READABLE_CHAIN_NAMES } from "../../constants/constants";
 
 interface ConnectChainBodyProps {
   onClose: () => void;
@@ -38,10 +34,7 @@ const NetworkContainer = styled.div<{
   margin-bottom: 16px;
   cursor: pointer;
 
-  ${(props) =>
-    props.active
-      ? `border: 1px solid ${props.borderColor};`
-      : "border: 1px solid #212127;"}
+  ${(props) => (props.active ? `border: 1px solid ${props.borderColor};` : "border: 1px solid #212127;")}
 `;
 const NetworkNameContainer = styled.div`
   display: flex;
@@ -69,10 +62,11 @@ const AssetCircle = styled(BaseIndicator)<{
   padding: 5px 5px;
 `;
 
-const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({
-  onClose,
-  onSelectChain,
-}) => {
+const NetworkContainerPill = styled(NetworkContainer)`
+  border-radius: 100px;
+`;
+
+const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({ onClose, onSelectChain }) => {
   const [currentChain] = useChain();
   const handleClose = useCallback(() => {
     onClose();
@@ -114,12 +108,7 @@ export const ChainButton: React.FC<{
   const logoSize = 28;
 
   return (
-    <NetworkContainer
-      key={chain}
-      onClick={() => onSelectChain(chain)}
-      borderColor={color}
-      active={active}
-    >
+    <NetworkContainerPill key={chain} onClick={() => onSelectChain(chain)} borderColor={color} active={active}>
       <NetworkNameContainer>
         <AssetCircle size={40} color={`${color}1F`}>
           <Logo height={logoSize} width={logoSize}></Logo>
@@ -128,7 +117,7 @@ export const ChainButton: React.FC<{
       </NetworkNameContainer>
 
       {active && <BaseIndicator size={8} color={color}></BaseIndicator>}
-    </NetworkContainer>
+    </NetworkContainerPill>
   );
 };
 

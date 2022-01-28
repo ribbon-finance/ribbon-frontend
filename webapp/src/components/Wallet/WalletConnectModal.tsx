@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 
-import { PrimaryText, Title } from "shared/lib/designSystem";
+import { BaseButton, PrimaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import BasicModal from "shared/lib/components/Common/BasicModal";
@@ -9,35 +9,12 @@ import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import ConnectWalletBody from "./ConnectWalletBody";
 import ConnectChainBody from "./ConnectChainBody";
 import { Chains, useChain } from "../../hooks/chainContext";
-
-const ConnectStepsCircle = styled.div<{ active: boolean; color: string }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 32px;
-  width: 32px;
-  border-radius: 32px;
-  background: ${(props) => props.color}14;
-
-  ${(props) =>
-    props.active
-      ? `
-          border: ${theme.border.width} ${theme.border.style} ${props.color};
-        `
-      : ``}
-`;
-
-const ConnectStepsDividerLine = styled.div<{ color: string }>`
-  width: 40px;
-  height: 1px;
-  background: ${(props) => props.color}3D;
-  margin-top: calc((32px - 1px) / 2);
-`;
+import { Button } from "shared/lib/components/Common/buttons";
 
 type ConnectSteps = "chain" | "wallet";
 
 const WalletConnectModal: React.FC = () => {
-  const [, setChain] = useChain();
+  const [chain, setChain] = useChain();
   const [show, setShow] = useConnectWalletModal();
   const [step, setStep] = useState<ConnectSteps>("chain");
 
@@ -49,35 +26,20 @@ const WalletConnectModal: React.FC = () => {
   const handleSelectChain = useCallback(
     (chain: Chains) => {
       setChain(chain);
-      setStep("wallet");
     },
     [setChain, setStep]
-  );
-
-  const handleClickStep = useCallback(
-    (changeToStep: ConnectSteps) => {
-      if (changeToStep === step) return;
-      setStep(changeToStep);
-    },
-    [step, setStep]
   );
 
   return (
     <BasicModal show={show} onClose={onClose} height={450} maxWidth={500}>
       <>
         {step === "chain" ? (
-          <ConnectChainBody
-            onClose={onClose}
-            onSelectChain={handleSelectChain}
-          ></ConnectChainBody>
+          <ConnectChainBody onClose={onClose} onSelectChain={handleSelectChain}></ConnectChainBody>
         ) : (
           <ConnectWalletBody onClose={onClose}></ConnectWalletBody>
         )}
 
-        <ConnectStepsNav
-          step={step}
-          onClickStep={handleClickStep}
-        ></ConnectStepsNav>
+        <ConnectStepsNav step={step} chain={chain} setStep={setStep}></ConnectStepsNav>
       </>
     </BasicModal>
   );
@@ -85,73 +47,51 @@ const WalletConnectModal: React.FC = () => {
 
 interface ConnectStepsNavProps {
   step: ConnectSteps;
-  onClickStep: (step: ConnectSteps) => void;
+  chain: Chains;
+  setStep: (step: ConnectSteps) => void;
 }
 
-const ConnectStepsNav: React.FC<ConnectStepsNavProps> = ({
-  step,
-  onClickStep,
-}) => {
+const ConnectStepsButton = styled(BaseButton)<{ disabled?: boolean }>`
+  margin: 0 16px;
+  padding: 16px;
+  color: ${colors.green};
+  justify-content: center;
+  background-color: ${colors.buttons.secondaryBackground};
+
+  ${(props) =>
+    props.disabled
+      ? `
+        opacity: 0.24;
+        cursor: default;
+      `
+      : `
+        &:hover {
+          opacity: ${theme.hover.opacity};
+        }
+      `}
+`;
+
+const ButtonTitle = styled(Title)`
+  color: ${colors.buttons.secondaryText};
+`;
+
+const ConnectStepsNav: React.FC<ConnectStepsNavProps> = ({ step, chain, setStep }) => {
   const isChainStep = step === "chain";
-  const color = colors.green;
+  console.log(chain);
 
   return (
-    <div
-      className="d-flex flex-column align-items-center"
-      style={{ marginTop: "auto", marginBottom: 0 }}
-    >
-      <div className="d-flex mt-2">
-        <div
-          className="d-flex flex-column align-items-center"
-          style={{ cursor: "pointer" }}
-          onClick={() => onClickStep("chain")}
-        >
-          <ConnectStepsCircle active={isChainStep} color={color}>
-            <Title
-              fontSize={14}
-              lineHeight={20}
-              color={isChainStep ? color : colors.quaternaryText}
-            >
-              1
-            </Title>
-          </ConnectStepsCircle>
-          <PrimaryText
-            fontSize={11}
-            lineHeight={12}
-            color={isChainStep ? color : colors.quaternaryText}
-            className="mt-2 text-center"
-            style={{ maxWidth: 60 }}
-          >
-            Select Blockchain
-          </PrimaryText>
-        </div>
-        <ConnectStepsDividerLine color={color} />
-        <div
-          className="d-flex flex-column align-items-center"
-          style={{ cursor: "pointer" }}
-          onClick={() => onClickStep("wallet")}
-        >
-          <ConnectStepsCircle active={!isChainStep} color={color}>
-            <Title
-              fontSize={14}
-              lineHeight={20}
-              color={!isChainStep ? color : colors.quaternaryText}
-            >
-              2
-            </Title>
-          </ConnectStepsCircle>
-          <PrimaryText
-            fontSize={11}
-            lineHeight={12}
-            color={!isChainStep ? color : colors.quaternaryText}
-            className="mt-2 text-center mb-4"
-            style={{ maxWidth: 60 }}
-          >
-            Select Wallet
-          </PrimaryText>
-        </div>
-      </div>
-    </div>
+    <>
+      {isChainStep && (
+        <ConnectStepsButton role="button" disabled={!chain} onClick={() => setStep("wallet")}>
+          <ButtonTitle>Next</ButtonTitle>
+        </ConnectStepsButton>
+      )}
+      {!isChainStep && (
+        <ConnectStepsButton role="button" disabled={!isChainStep}>
+          <ButtonTitle>Connect</ButtonTitle>
+        </ConnectStepsButton>
+      )}
+    </>
   );
 };
 
