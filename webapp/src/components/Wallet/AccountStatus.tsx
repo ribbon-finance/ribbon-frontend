@@ -51,6 +51,7 @@ import { getAssetDecimals } from "shared/lib/utils/asset";
 import YourPosition from "shared/lib/components/Vault/YourPosition";
 import AirdropButton from "../Airdrop/AirdropButton";
 import AirdropModal from "../Airdrop/AirdropModal";
+import { Wallet, isSolanaWallet } from "../../models/wallets";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -301,8 +302,14 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   variant,
   showVaultPositionHook,
 }) => {
-  const { deactivate, ethereumProvider, active, account, chainId } =
-    useWeb3Wallet();
+  const {
+    deactivate,
+    ethereumProvider,
+    active,
+    account,
+    chainId,
+    connectedWallet,
+  } = useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showActionModal, setShowActionModal] = useState(false);
   const [showAirdropModal, setShowAirdropModal] = useState(false);
@@ -401,7 +408,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   };
 
   const renderButtonContent = () =>
-    active && account ? (
+    active && account && !isSolanaWallet(connectedWallet as Wallet) ? (
       <>
         <Avatar>
           <Davatar address={account} size={20} />
