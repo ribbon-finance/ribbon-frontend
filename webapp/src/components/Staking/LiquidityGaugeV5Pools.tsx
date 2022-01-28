@@ -13,14 +13,13 @@ import theme from "shared/lib/designSystem/theme";
 import { shimmerKeyframe } from "shared/lib/designSystem/keyframes";
 import sizes from "shared/lib/designSystem/sizes";
 import {
-  getAssets,
   getDisplayAssets,
   VaultLiquidityMiningMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
+import { getAssetLogo } from "shared/lib/utils/asset";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { getVaultColor } from "shared/lib/utils/vault";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
@@ -36,6 +35,7 @@ import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
 import UnstakingActionModal from "./LiquidityGaugeModal/UnstakingActionModal";
 import ClaimActionModal from "./LiquidityGaugeModal/ClaimActionModal";
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
+import StakingActionModal from "./LiquidityGaugeModal/StakingActionModal";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -202,6 +202,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
       | "rewardClaim";
   }, [pendingTransactions, vaultOption]);
 
+  const [showStakeModal, setShowStakeModal] = useState(false);
   const [showUnstakeModal, setShowUnstakeModal] = useState(false);
   const [showClaimModal, setShowClaimModal] = useState(false);
 
@@ -349,7 +350,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
           role="button"
           color={color}
           onClick={() => {
-            /** TODO:  */
+            setShowStakeModal(true);
           }}
           active={ongoingTransaction === "stake"}
         >
@@ -391,6 +392,13 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
 
   return (
     <>
+      <StakingActionModal
+        show={showStakeModal}
+        onClose={() => setShowStakeModal(false)}
+        vaultOption={vaultOption}
+        logo={logo}
+        stakingPoolData={lg5Data}
+      />
       <UnstakingActionModal
         show={showUnstakeModal}
         onClose={() => setShowUnstakeModal(false)}
