@@ -21,6 +21,7 @@ const FloatingContainer = styled.div<{ height: number }>`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  min-height: 600px;
 
   @media (max-width: ${sizes.md}px) {
     flex-direction: column;
@@ -29,8 +30,6 @@ const FloatingContainer = styled.div<{ height: number }>`
 
 const ActionsFormContainer = styled.div`
   display: flex;
-  margin-bottom: 50px;
-  margin-top: -30px;
   max-width: 460px;
 `;
 
