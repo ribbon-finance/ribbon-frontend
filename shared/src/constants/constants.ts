@@ -184,9 +184,11 @@ export const LiquidityMiningVersionList = ["lg5", "lm"] as const;
 export type LiquidityMiningVersion = typeof LiquidityMiningVersionList[number];
 
 export const VaultLiquidityMiningMap: {
-  [version in LiquidityMiningVersion]: Partial<{
-    [vault in VaultOptions]: string;
-  }>;
+  [version in LiquidityMiningVersion]: Partial<
+    {
+      [vault in VaultOptions]: string;
+    }
+  >;
 } = isDevelopment()
   ? {
       lm: {
@@ -574,11 +576,15 @@ export const VaultFees: {
   },
 };
 
-export const RibbonVaultMigrationMap: Partial<{
-  [vault in VaultOptions]: Partial<{
-    [version in VaultVersionExcludeV1]: Array<VaultOptions>;
-  }>;
-}> = {
+export const RibbonVaultMigrationMap: Partial<
+  {
+    [vault in VaultOptions]: Partial<
+      {
+        [version in VaultVersionExcludeV1]: Array<VaultOptions>;
+      }
+    >;
+  }
+> = {
   "rBTC-THETA": {
     v2: ["rBTC-THETA"],
   },
@@ -595,9 +601,11 @@ export const RibbonVaultMigrationMap: Partial<{
   },
 };
 
-export const v1ToV2MigrationMap: Partial<{
-  [vault in VaultOptions]: VaultOptions;
-}> = {
+export const v1ToV2MigrationMap: Partial<
+  {
+    [vault in VaultOptions]: VaultOptions;
+  }
+> = {
   "rBTC-THETA": "rBTC-THETA",
   "rETH-THETA": "rETH-THETA",
   // TODO: Uncomment this
@@ -656,3 +664,11 @@ export const VotingEscrowAddress = isDevelopment()
 export const VotingEscrowDelegationProxyAddress = isDevelopment()
   ? governanceDeployment.kovan.RBNVotingEscrowDelegationProxy
   : governanceDeployment.mainnet.RBNVotingEscrowDelegationProxy;
+
+export const LiquidityTokenMinterAddress = isDevelopment()
+  ? governanceDeployment.kovan.RBNVotingTokenMinter
+  : governanceDeployment.mainnet.RBNVotingTokenMinter;
+
+export const LiquidityGaugeControllerAddress = isDevelopment()
+  ? governanceDeployment.kovan.RBNVotingGaugeController
+  : governanceDeployment.mainnet.RBNVotingGaugeController;

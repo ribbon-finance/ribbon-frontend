@@ -11,8 +11,8 @@ import StakingModalPreview from "./StakingModalPreview";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import StakingModalApprove from "./StakingModalApprove";
 import useERC20Token from "shared/lib/hooks/useERC20Token";
-import { VotingEscrowAddress } from "../../constants/constants";
 import ModalTransactionContent from "../Shared/ModalTransactionContent";
+import { VotingEscrowAddress } from "shared/lib/constants/constants";
 
 const stakingModalModes = [
   "approve",

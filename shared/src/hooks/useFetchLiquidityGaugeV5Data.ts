@@ -19,12 +19,16 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { getLiquidityGaugeV5 } from "./useLiquidityGaugeV5";
 import { getERC20Token } from "./useERC20Token";
 import { getERC20TokenNameFromVault } from "../models/eth";
+import useLiquidityTokenMinter from "./useLiquidityTokenMinter";
+import useLiquidityGaugeController from "./useLiquidityGaugeController";
 
 const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   const { active, chainId, account: web3Account, library } = useWeb3React();
   const { provider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
+  const minterContract = useLiquidityTokenMinter();
+  const gaugeControllerContract = useLiquidityGaugeController();
 
   const [data, setData] = useState<LiquidityGaugeV5PoolData>(
     defaultLiquidityGaugeV5PoolData
@@ -32,7 +36,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   const [, setMulticallCounter] = useState(0);
 
   const doMulticall = useCallback(async () => {
-    if (!chainId) {
+    if (!chainId || !minterContract || !gaugeControllerContract) {
       return;
     }
 
@@ -49,11 +53,16 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
       return currentCounter;
     });
 
-    const responses = await Promise.all(
+    const minterResponsePromises = Promise.all([
+      minterContract.rate(),
+      minterContract.start_epoch_time(),
+    ]);
+
+    const guageResponsesPromises = Promise.all(
       Object.keys(VaultLiquidityMiningMap.lg5).map(async (_vault) => {
         const vault = _vault as VaultOptions;
 
-        const contract = getLiquidityGaugeV5(
+        const lg5Contract = getLiquidityGaugeV5(
           library || provider,
           vault,
           active
@@ -67,9 +76,13 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
 
         /**
          * 1. Pool size
+         * 2. Relative weight
          */
         const unconnectedPromises: Promise<BigNumber>[] = [
-          contract.totalSupply(),
+          lg5Contract.totalSupply(),
+          gaugeControllerContract["gauge_relative_weight(address)"](
+            VaultLiquidityMiningMap.lg5[vault]!
+          ),
         ];
 
         /**
@@ -81,10 +94,10 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
         const promises = unconnectedPromises.concat(
           active
             ? [
-                contract.balanceOf(account!),
-                contract.claimable_reward(account!, RibbonTokenAddress),
+                lg5Contract.balanceOf(account!),
+                lg5Contract.claimable_reward(account!, RibbonTokenAddress),
                 vaultContract!.balanceOf(account!),
-                contract.claimed_reward(account!, RibbonTokenAddress),
+                lg5Contract.claimed_reward(account!, RibbonTokenAddress),
               ]
             : [
                 // Default value when not connected
@@ -97,6 +110,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
 
         const [
           poolSize,
+          relativeWeight,
           currentStake,
           claimableRbn,
           unstakedBalance,
@@ -109,6 +123,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
         return {
           vault,
           poolSize,
+          relativeWeight,
           currentStake,
           claimableRbn,
           unstakedBalance,
@@ -117,14 +132,21 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
       })
     );
 
+    const guageResponses = await guageResponsesPromises;
+    const [rate, startEpochTime] = await minterResponsePromises;
+
     setMulticallCounter((counter) => {
       if (counter === currentCounter) {
         setData((prev) => ({
           responses: Object.fromEntries(
-            responses.map(({ vault, ...response }) => [
+            guageResponses.map(({ vault, relativeWeight, ...response }) => [
               vault,
               {
                 ...prev.responses[vault],
+                poolRewardForDuration: rate
+                  .mul(relativeWeight)
+                  .div(parseFloat("1")),
+                periodStartTime: parseInt(startEpochTime.toString()),
                 ...response,
               },
             ])
@@ -139,11 +161,21 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
     if (!isProduction()) {
       console.timeEnd("Liquidity Gauge V5 Data Fetch");
     }
-  }, [account, active, chainId, library, provider]);
+  }, [
+    account,
+    active,
+    chainId,
+    library,
+    gaugeControllerContract,
+    minterContract,
+    provider,
+  ]);
 
   useEffect(() => {
     doMulticall();
   }, [doMulticall, transactionsCounter]);
+
+  console.log(data);
 
   return data;
 };

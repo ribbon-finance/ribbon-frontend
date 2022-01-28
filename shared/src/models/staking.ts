@@ -48,11 +48,14 @@ export interface LiquidityGaugeV5PoolResponse {
   unstakedBalance: BigNumber;
   claimedRbn: BigNumber;
   poolRewardForDuration: BigNumber;
+  periodStartTime: number;
 }
 
-export type LiquidityGaugeV5PoolResponses = Partial<{
-  [vault in VaultOptions]: LiquidityGaugeV5PoolResponse;
-}>;
+export type LiquidityGaugeV5PoolResponses = Partial<
+  {
+    [vault in VaultOptions]: LiquidityGaugeV5PoolResponse;
+  }
+>;
 
 export type LiquidityGaugeV5PoolData = {
   responses: LiquidityGaugeV5PoolResponses;
@@ -80,9 +83,11 @@ export interface LiquidityMiningPoolAccount {
   totalBalance: BigNumber;
 }
 
-export type LiquidityMiningPoolsSubgraphData = Partial<{
-  [vault in VaultOptions]: LiquidityMiningPool;
-}>;
+export type LiquidityMiningPoolsSubgraphData = Partial<
+  {
+    [vault in VaultOptions]: LiquidityMiningPool;
+  }
+>;
 
 export interface StakingPoolsSubgraphData {
   lm: LiquidityMiningPoolsSubgraphData;
@@ -90,9 +95,11 @@ export interface StakingPoolsSubgraphData {
 
 export const defaultStakingSubgraphData: StakingPoolsSubgraphData = { lm: {} };
 
-export type LiquidityMiningPoolAccountsData = Partial<{
-  [vault in VaultOptions]: LiquidityMiningPoolAccount;
-}>;
+export type LiquidityMiningPoolAccountsData = Partial<
+  {
+    [vault in VaultOptions]: LiquidityMiningPoolAccount;
+  }
+>;
 export interface StakingPoolAccountsData {
   lm: LiquidityMiningPoolAccountsData;
 }

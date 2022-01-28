@@ -3,7 +3,7 @@ import { useWeb3React } from "@web3-react/core";
 
 import { VotingEscrowFactory } from "shared/lib/codegen/VotingEscrowFactory";
 import { VotingEscrow } from "shared/lib/codegen";
-import { VotingEscrowAddress } from "../constants/constants";
+import { VotingEscrowAddress } from "shared/lib/constants/constants";
 
 export const getVotingEscrow = (library: any): VotingEscrow | undefined => {
   if (library) {
