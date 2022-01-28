@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
+import moment from "moment";
 
 import { VaultOptions } from "shared/lib/constants/constants";
 import {
@@ -16,6 +17,8 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { LiquidityGaugeV5PoolResponse } from "shared/lib/models/staking";
 import useLiquidityGaugeV5 from "shared/lib/hooks/useLiquidityGaugeV5";
+import { useLiquidityGaugeV5PoolData } from "shared/lib/hooks/web3DataContext";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 
 const LogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -62,8 +65,12 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
   const [step, setStep] = useState<"info" | "claim" | "claiming" | "claimed">(
     "info"
   );
+  const { data: lg5Data, loading: lg5DataLoading } =
+    useLiquidityGaugeV5PoolData(vaultOption);
   const contract = useLiquidityGaugeV5(vaultOption);
   const { addPendingTransaction } = usePendingTransactions();
+
+  const loadingText = useTextAnimation(lg5DataLoading);
 
   const handleClose = useCallback(() => {
     onClose();
@@ -79,7 +86,6 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
     setStep("claim");
 
     try {
-      console.log(contract);
       const tx = await contract["claim_rewards()"]();
 
       setStep("claiming");
@@ -99,6 +105,30 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
       setStep("info");
     }
   }, [addPendingTransaction, provider, stakingPoolData, contract, vaultOption]);
+
+  const timeTillNextRewardWeek = useMemo(() => {
+    if (lg5DataLoading) {
+      return loadingText;
+    }
+
+    if (!lg5Data) {
+      return "---";
+    }
+
+    const endStakeReward = moment.unix(lg5Data.periodEndTime);
+
+    if (endStakeReward.diff(moment()) <= 0) {
+      return "Program Ended";
+    }
+
+    // Time till next stake reward date
+    const startTime = moment.duration(
+      endStakeReward.diff(moment()),
+      "milliseconds"
+    );
+
+    return `${startTime.days()}D ${startTime.hours()}H ${startTime.minutes()}M`;
+  }, [lg5Data, lg5DataLoading, loadingText]);
 
   const body = useMemo(() => {
     const color = getVaultColor(vaultOption);
@@ -123,7 +153,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
 
             <InfoColumn>
               <SecondaryText>Time till next reward</SecondaryText>
-              <InfoData>6D 21H 32M</InfoData>
+              <InfoData>{timeTillNextRewardWeek}</InfoData>
             </InfoColumn>
             <InfoColumn>
               <div className="d-flex align-items-center">

@@ -13,7 +13,9 @@ import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import {
   LiquidityMiningVersion,
   LiquidityMiningVersionList,
+  VaultLiquidityMiningMap,
   VaultList,
+  VaultOptions,
 } from "shared/lib/constants/constants";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { BigNumber } from "@ethersproject/bignumber";
@@ -22,6 +24,7 @@ import sizes from "shared/lib/designSystem/sizes";
 import { useRBNToken } from "shared/lib/hooks/useRBNTokenSubgraph";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
 import useLiquidityMiningPools from "shared/lib/hooks/useLiquidityMiningPools";
+import { useLiquidityGaugeV5PoolData } from "shared/lib/hooks/web3DataContext";
 
 const OverviewContainer = styled.div`
   display: flex;
@@ -100,8 +103,14 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
 }) => {
   const { stakingPools, loading: stakingLoading } = useLiquidityMiningPools();
   const { data: tokenData, loading: tokenLoading } = useRBNToken();
+  const { data: lg5Data, loading: lg5DataLoading } =
+    useLiquidityGaugeV5PoolData(
+      Object.keys(VaultLiquidityMiningMap.lg5)[0] as VaultOptions
+    );
 
-  const loadingText = useTextAnimation(stakingLoading || tokenLoading);
+  const loadingText = useTextAnimation(
+    stakingLoading || tokenLoading || lg5DataLoading
+  );
 
   const totalRewardDistributed = useMemo(() => {
     if (stakingLoading) {
@@ -133,10 +142,15 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
    * TODO: Add duration for lg5
    */
   const timeTillProgramsEnd = useMemo(() => {
-    const endStakeReward = moment
-      .utc("2021-07-17")
-      .set("hour", 10)
-      .set("minute", 30);
+    if (lg5DataLoading) {
+      return loadingText;
+    }
+
+    if (!lg5Data) {
+      return "---";
+    }
+
+    const endStakeReward = moment.unix(lg5Data.periodEndTime);
 
     if (endStakeReward.diff(moment()) <= 0) {
       return "Program Ended";
@@ -149,7 +163,7 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
     );
 
     return `${startTime.days()}D ${startTime.hours()}H ${startTime.minutes()}M`;
-  }, []);
+  }, [lg5Data, lg5DataLoading, loadingText]);
 
   const getLMName = useCallback((_lmVersion: LiquidityMiningVersion) => {
     switch (_lmVersion) {

@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
-import { formatUnits } from "@ethersproject/units";
+import { formatUnits, parseUnits } from "@ethersproject/units";
 
 import {
   BaseIndicator,
@@ -28,10 +28,14 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import CapBar from "shared/lib/components/Deposit/CapBar";
-import { useLiquidityGaugeV5PoolData } from "shared/lib/hooks/web3DataContext";
-import { formatBigNumber } from "shared/lib/utils/math";
+import {
+  useLiquidityGaugeV5PoolData,
+  useV2VaultData,
+} from "shared/lib/hooks/web3DataContext";
+import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
 import UnstakingActionModal from "./LiquidityGaugeModal/UnstakingActionModal";
 import ClaimActionModal from "./LiquidityGaugeModal/ClaimActionModal";
+import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -102,11 +106,11 @@ const LogoContainer = styled.div<{ color: string }>`
   background: ${(props) => props.color}29;
 `;
 
-// const PoolRewardData = styled(Title)`
-//   font-size: 14px;
-//   line-height: 20px;
-//   color: ${(props) => props.color};
-// `;
+const PoolRewardData = styled(Title)`
+  font-size: 14px;
+  line-height: 20px;
+  color: ${(props) => props.color};
+`;
 
 const StakingPoolCardFooter = styled.div`
   display: flex;
@@ -160,8 +164,16 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
   const { pendingTransactions } = usePendingTransactions();
   const { data: lg5Data, loading: lg5DataLoading } =
     useLiquidityGaugeV5PoolData(vaultOption);
+  const { prices, loading: assetPricesLoading } = useAssetsPrice();
+  const {
+    data: { asset, decimals, pricePerShare },
+    loading: vaultDataLoading,
+  } = useV2VaultData(vaultOption);
 
-  const decimals = getAssetDecimals(getAssets(vaultOption));
+  const loadingText = useTextAnimation(
+    lg5DataLoading || assetPricesLoading || vaultDataLoading
+  );
+
   const color = getVaultColor(vaultOption);
   const ongoingTransaction:
     | "stakingApproval"
@@ -241,22 +253,53 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
     return lg5Data ? formatBigNumber(lg5Data.unstakedBalance, decimals) : 0;
   }, [active, decimals, lg5Data]);
 
-  // const showStakeModal = useMemo(() => {
-  //   if (ongoingTransaction === "stake") {
-  //     /** Always show staking modal when there is ongoing transaction */
-  //     return true;
-  //   } else if (ongoingTransaction === "unstake") {
-  //     /** Likewise with unstaking transaction */
-  //     return false;
-  //   }
+  const renderPoolReward = useCallback(() => {
+    if (lg5DataLoading) {
+      return loadingText;
+    }
 
-  //   return isStakeAction;
-  // }, [isStakeAction, ongoingTransaction]);
+    return `${
+      lg5Data ? formatBigNumber(lg5Data.poolRewardForDuration) : 0
+    } RBN`;
+  }, [lg5Data, lg5DataLoading, loadingText]);
+
+  const renderBaseAPY = useCallback(() => {
+    if (lg5DataLoading || assetPricesLoading || vaultDataLoading) {
+      return loadingText;
+    }
+
+    if (!lg5Data) {
+      return "0.00%";
+    }
+
+    const poolRewardInUSD = parseFloat(
+      assetToFiat(lg5Data.poolRewardForDuration, prices["RBN"])
+    );
+    const poolSizeInAsset = lg5Data.poolSize
+      .mul(pricePerShare)
+      .div(parseUnits("1", decimals));
+    const poolSizeInUSD = parseFloat(
+      assetToFiat(poolSizeInAsset, prices[asset], decimals)
+    );
+
+    return `${
+      poolSizeInUSD > 0
+        ? (((1 + poolRewardInUSD / poolSizeInUSD) ** 52 - 1) * 100).toFixed(2)
+        : "0.00"
+    }%`;
+  }, [
+    asset,
+    assetPricesLoading,
+    decimals,
+    lg5Data,
+    lg5DataLoading,
+    loadingText,
+    pricePerShare,
+    prices,
+    vaultDataLoading,
+  ]);
 
   const rbnPill = useMemo(() => {
-    /**
-     * TODO: Below if should represent when earned amount is 0 and there is claimed amount
-     */
     if (!lg5Data || lg5Data.claimableRbn.isZero()) {
       return (
         <ClaimableTokenPillContainer>
@@ -424,23 +467,58 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
             />
           </div>
 
-          {/* Estimated pool rewards */}
-          {/* <div className="d-flex align-items-center mt-4 w-100">
+          {/* Pool rewards */}
+          <div className="d-flex align-items-center mt-4 w-100">
             <div className="d-flex align-items-center">
-              <SecondaryText>Your estimated rewards </SecondaryText>
+              <SecondaryText>Pool Rewards</SecondaryText>
+              <TooltipExplanation
+                title="Pool Rewards"
+                explanation={
+                  "Estimated amount of RBN to be distributed for the current period."
+                }
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HelpInfo containerRef={ref} {...triggerHandler}>
+                    i
+                  </HelpInfo>
+                )}
+                // TODO: Update URL
+                learnMoreURL="https://gov.ribbon.finance/t/rgp-2-ribbon-liquidity-mining-program/90"
+              />
             </div>
-            <PoolRewardData className="ml-auto" color={color}>
-              {renderEstimatedRewards()} RBN
+            <PoolRewardData className="ml-auto">
+              {renderPoolReward()}
             </PoolRewardData>
-          </div> */}
+          </div>
 
-          {/* Pool reward of duration */}
-          {/* <div className="d-flex align-items-center mt-4 w-100">
+          {/* Base APY */}
+          <div className="d-flex align-items-center mt-4 w-100">
             <div className="d-flex align-items-center">
-              <SecondaryText>Pool rewards </SecondaryText>
+              <SecondaryText>Base APY</SecondaryText>
+              <TooltipExplanation
+                title="Base APY"
+                explanation={
+                  <>
+                    Base APY are the estimated APY from staking vault tokens.
+                    This does not account additional boost from veRBN holding.
+                    <br />
+                    <br />
+                    Base APY = (1 + ((Pool Reward * RBN Price) / (Pool Size *
+                    Underlying Asset Price))) ^ 52 - 1
+                  </>
+                }
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HelpInfo containerRef={ref} {...triggerHandler}>
+                    i
+                  </HelpInfo>
+                )}
+                // TODO: Update URL
+                learnMoreURL="https://gov.ribbon.finance/t/rgp-2-ribbon-liquidity-mining-program/90"
+              />
             </div>
-            <PoolRewardData className="ml-auto">10000 RBN</PoolRewardData>
-          </div> */}
+            <PoolRewardData className="ml-auto">
+              {renderBaseAPY()}
+            </PoolRewardData>
+          </div>
         </div>
         <StakingPoolCardFooter>{stakingPoolButtons}</StakingPoolCardFooter>
       </StakingPoolCard>

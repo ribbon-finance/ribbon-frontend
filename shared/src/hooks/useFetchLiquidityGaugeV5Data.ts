@@ -55,7 +55,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
 
     const minterResponsePromises = Promise.all([
       minterContract.rate(),
-      minterContract.start_epoch_time(),
+      gaugeControllerContract.time_total(),
     ]);
 
     const guageResponsesPromises = Promise.all(
@@ -133,7 +133,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
     );
 
     const guageResponses = await guageResponsesPromises;
-    const [rate, startEpochTime] = await minterResponsePromises;
+    const [rate, periodEndTime] = await minterResponsePromises;
 
     setMulticallCounter((counter) => {
       if (counter === currentCounter) {
@@ -146,7 +146,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
                 poolRewardForDuration: rate
                   .mul(relativeWeight)
                   .div(parseFloat("1")),
-                periodStartTime: parseInt(startEpochTime.toString()),
+                periodEndTime: parseInt(periodEndTime.toString()),
                 ...response,
               },
             ])
@@ -174,8 +174,6 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   useEffect(() => {
     doMulticall();
   }, [doMulticall, transactionsCounter]);
-
-  console.log(data);
 
   return data;
 };

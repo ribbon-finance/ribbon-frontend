@@ -48,7 +48,7 @@ export interface LiquidityGaugeV5PoolResponse {
   unstakedBalance: BigNumber;
   claimedRbn: BigNumber;
   poolRewardForDuration: BigNumber;
-  periodStartTime: number;
+  periodEndTime: number;
 }
 
 export type LiquidityGaugeV5PoolResponses = Partial<{
