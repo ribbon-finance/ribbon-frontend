@@ -17,8 +17,7 @@ import {
 } from "../constants/constants";
 import { BigNumber } from "@ethersproject/bignumber";
 import { getLiquidityGaugeV5 } from "./useLiquidityGaugeV5";
-import { getERC20Token } from "./useERC20Token";
-import { getERC20TokenNameFromVault } from "../models/eth";
+import { getV2Vault } from "./useV2Vault";
 import useLiquidityTokenMinter from "./useLiquidityTokenMinter";
 import useLiquidityGaugeController from "./useLiquidityGaugeController";
 
@@ -58,7 +57,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
       gaugeControllerContract.time_total(),
     ]);
 
-    const guageResponsesPromises = Promise.all(
+    const gaugeResponsesPromises = Promise.all(
       Object.keys(VaultLiquidityMiningMap.lg5).map(async (_vault) => {
         const vault = _vault as VaultOptions;
 
@@ -67,12 +66,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
           vault,
           active
         )!;
-        const vaultContract = getERC20Token(
-          library || provider,
-          getERC20TokenNameFromVault(vault, "v2"),
-          chainId,
-          active
-        );
+        const vaultContract = getV2Vault(library || provider, vault, active);
 
         /**
          * 1. Pool size
@@ -96,7 +90,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
             ? [
                 lg5Contract.balanceOf(account!),
                 lg5Contract.claimable_reward(account!, RibbonTokenAddress),
-                vaultContract!.balanceOf(account!),
+                vaultContract!.shares(account!),
                 lg5Contract.claimed_reward(account!, RibbonTokenAddress),
               ]
             : [
@@ -132,7 +126,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
       })
     );
 
-    const guageResponses = await guageResponsesPromises;
+    const guageResponses = await gaugeResponsesPromises;
     const [rate, periodEndTime] = await minterResponsePromises;
 
     setMulticallCounter((counter) => {

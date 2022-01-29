@@ -111,12 +111,7 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
           claimEvents,
         ] = await Promise.all(
           // Default to 0 when error
-          promises.map((p) =>
-            p.catch((e) => {
-              console.log(e);
-              return BigNumber.from(0);
-            })
-          )
+          promises.map((p) => p.catch((e) => BigNumber.from(0)))
         );
 
         return {
