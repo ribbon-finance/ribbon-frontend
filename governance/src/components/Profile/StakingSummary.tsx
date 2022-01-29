@@ -63,7 +63,7 @@ const StakingSummary = () => {
       </Title>
       <SummaryContainer>
         {/* Header Info */}
-        <div className="p-4">
+        <div className="pt-4 pl-4 pr-4 pb-2">
           {/* Voting Power Title */}
           <Subtitle fontSize={12} lineHeight={20} color={colors.red}>
             VOTING POWER
