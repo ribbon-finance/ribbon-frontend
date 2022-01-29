@@ -10,7 +10,14 @@ const ChartContainer = styled.div`
   position: relative;
 `;
 
-const StakingSummaryChart = () => {
+interface StakingSummaryChartProps {
+  // When called with undefined, means the hover ended.
+  onHoverVotingPower: (votingPower?: number) => void;
+}
+
+const StakingSummaryChart: React.FC<StakingSummaryChartProps> = ({
+  onHoverVotingPower,
+}) => {
   const dates = [
     new Date(100000000),
     new Date(200000000),
@@ -23,21 +30,18 @@ const StakingSummaryChart = () => {
     new Date(900000000),
     new Date(1000000000),
   ];
-  const votingPowerRbn = [
-    10,
-    9,
-    8,
-    7,
-    6,
-    5,
-    4,
-    3,
-    2,
-    1
-  ];
-  const handleChartHover = useCallback((hoverInfo: HoverInfo) => {
-    // do something
-  }, []);
+  const votingPowerRbn = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+
+  const onHover = useCallback(
+    (hoverInfo: HoverInfo) => {
+      if (hoverInfo.focused) {
+        onHoverVotingPower(hoverInfo.yData);
+      } else {
+        onHoverVotingPower(undefined);
+      }
+    },
+    [onHoverVotingPower]
+  );
 
   return (
     <ChartContainer>
@@ -45,7 +49,7 @@ const StakingSummaryChart = () => {
         lineDecayAfterPointIndex={1}
         dataset={votingPowerRbn}
         labels={dates}
-        onHover={handleChartHover}
+        onHover={onHover}
         gradientStartColor="transparent"
         gradientStopColor="transparent"
         maxGridLines={4}

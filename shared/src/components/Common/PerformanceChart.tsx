@@ -9,12 +9,12 @@ import { SecondaryText } from "../../designSystem";
 
 export type HoverInfo =
   | {
-    focused: true;
-    xData: Date;
-    yData: number;
-    xPosition: number;
-    index: number;
-  }
+      focused: true;
+      xData: Date;
+      yData: number;
+      xPosition: number;
+      index: number;
+    }
   | { focused: false };
 
 const PerformanceChartContainer = styled.div`
@@ -152,188 +152,194 @@ export const Chart: React.FC<{
   padding = { top: 20, bottom: 20 },
   hoverable = true,
 }) => {
-    const options = useMemo((): ChartOptions => {
-      return {
-        maintainAspectRatio: false,
-        title: { display: false },
-        legend: { display: false },
-        layout: { padding },
-        scales: {
-          yAxes: [{ display: false }],
-          xAxes: [
-            {
-              display: !!maxGridLines,
-              gridLines: {
-                drawBorder: false,
-                borderDash: [4, 4],
-                zeroLineBorderDash: [4, 4],
-                color: "#FFFFFF29",
-                zeroLineColor: "#FFFFFF29"
+  const options = useMemo((): ChartOptions => {
+    return {
+      maintainAspectRatio: false,
+      title: { display: false },
+      legend: { display: false },
+      layout: { padding },
+      scales: {
+        yAxes: [{ display: false }],
+        xAxes: [
+          {
+            display: !!maxGridLines,
+            gridLines: {
+              drawBorder: false,
+              borderDash: [4, 4],
+              zeroLineBorderDash: [4, 4],
+              color: "#FFFFFF29",
+              zeroLineColor: "#FFFFFF29",
+            },
+            ticks: {
+              callback: (
+                value: number | string,
+                index: number,
+                values: number[] | string[]
+              ) => {
+                return moment(values[index])
+                  .format("DD MMM YYYY")
+                  .toUpperCase();
               },
-              ticks: {
-                callback: (value: number | string, index: number, values: number[] | string[]) => {
-                  return moment(values[index]).format("DD MMM YYYY").toUpperCase()
-                },
-                maxRotation: 0,
-                maxTicksLimit: maxGridLines
-              }
-            }
-          ],
-        },
-        animation: { duration: 0 },
-        hover: { animationDuration: 0, intersect: false },
-        tooltips: {
-          enabled: false,
-          intersect: false,
-          mode: "nearest",
-        },
-        onHover: (_: any, elements: any) => {
-          if (elements && elements.length && hoverable) {
-            const chartElem = elements[0];
-            const chart = chartElem._chart;
-            const ctx = chart.ctx;
-            const chartIndex = chartElem._index;
+              maxRotation: 0,
+              maxTicksLimit: maxGridLines,
+            },
+          },
+        ],
+      },
+      animation: { duration: 0 },
+      hover: { animationDuration: 0, intersect: false },
+      tooltips: {
+        enabled: false,
+        intersect: false,
+        mode: "nearest",
+      },
+      onHover: (_: any, elements: any) => {
+        if (elements && elements.length && hoverable) {
+          const chartElem = elements[0];
+          const chart = chartElem._chart;
+          const ctx = chart.ctx;
+          const chartIndex = chartElem._index;
 
-            // draw line behind dot
-            ctx.globalCompositeOperation = "destination-over";
-            const x = chartElem._view.x;
-            const topY = chart.scales["y-axis-0"].top;
-            const bottomY = chart.scales["y-axis-0"].bottom;
+          // draw line behind dot
+          ctx.globalCompositeOperation = "destination-over";
+          const x = chartElem._view.x;
+          const topY = chart.scales["y-axis-0"].top;
+          const bottomY = chart.scales["y-axis-0"].bottom;
 
-            ctx.save();
-            ctx.beginPath();
-            ctx.setLineDash([5, 5]);
-            ctx.moveTo(x, topY);
-            ctx.lineTo(x, bottomY);
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = "#ffffff";
-            ctx.stroke();
-            ctx.restore();
+          ctx.save();
+          ctx.beginPath();
+          ctx.setLineDash([5, 5]);
+          ctx.moveTo(x, topY);
+          ctx.lineTo(x, bottomY);
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = "#ffffff";
+          ctx.stroke();
+          ctx.restore();
 
-            // now we have to revert to the dot drawing above everything
-            ctx.globalCompositeOperation = "source-over";
+          // now we have to revert to the dot drawing above everything
+          ctx.globalCompositeOperation = "source-over";
 
-            if (onHover) {
-              onHover({
-                focused: true,
-                xData: labels[chartIndex],
-                yData: dataset[chartIndex],
-                xPosition: x,
-                index: chartIndex,
-              });
-            }
-          } else {
-            if (onHover) {
-              onHover({ focused: false });
-            }
+          if (onHover) {
+            onHover({
+              focused: true,
+              xData: labels[chartIndex],
+              yData: dataset[chartIndex],
+              xPosition: x,
+              index: chartIndex,
+            });
           }
-        },
-      };
-    }, [dataset, labels, hoverable, padding, onHover, maxGridLines]);
-
-    const getData = useCallback(
-      (canvas: any) => {
-        const ctx = canvas.getContext("2d");
-        let gradient = ctx.createLinearGradient(0, 0, 0, 250);
-        gradient.addColorStop(0, gradientStartColor);
-        gradient.addColorStop(1, gradientStopColor);
-
-        const lineShouldDecay = lineDecayAfterPointIndex !== undefined;
-        // Point color is all transparent, EXCEPT on lineDecayAfterPointIndex
-        const pointBgColors = dataset.map((_, i) => {
-          return i === lineDecayAfterPointIndex
-            ? pointBackgroundColor
-            : "rgba(0, 0, 0, 0)";
-        });
-        const pointBorderColors = dataset.map((_, i) => {
-          return i === lineDecayAfterPointIndex
-            ? decayedPointBorderColor
-            : "rgba(0, 0, 0, 0)";
-        });
-        const sharedDatasetOptions = {
-          type: "line",
-          pointRadius: 6,
-          pointHoverRadius: 6,
-          pointBorderWidth: lineShouldDecay ? 8 : 1,
-          pointHoverBorderWidth: lineShouldDecay ? 8 : 1,
-          pointHitRadius: 20,
-          pointBackgroundColor: pointBgColors,
-          pointHoverBackgroundColor: lineShouldDecay
-            ? pointBgColors
-            : pointBackgroundColor,
-          pointBorderColor: lineShouldDecay
-            ? pointBorderColors
-            : "rgba(0, 0, 0, 0)",
-          pointHoverBorderColor: lineShouldDecay
-            ? pointBorderColors
-            : "rgba(0, 0, 0, 0)",
-          tension: 0,
-          fill: "start",
-          backgroundColor: gradient,
-          weight: 1,
-          borderWidth: 2,
-        };
-
-        if (lineShouldDecay) {
-          const datasetBeforeDecay = dataset.slice(
-            0,
-            lineDecayAfterPointIndex! + 1
-          );
-          // Dataset after decay should match the same length of the entire dataset
-          // but with the empty datapoints being `null`
-          let datasetAfterDecay: (number | null)[] = dataset.slice(
-            lineDecayAfterPointIndex!,
-            dataset.length
-          );
-          datasetAfterDecay = [
-            ...Array.from({
-              length: dataset.length - datasetAfterDecay.length,
-            }).map(() => null),
-            ...datasetAfterDecay,
-          ];
-          return {
-            labels,
-            datasets: [
-              {
-                ...sharedDatasetOptions,
-                label: "dataset after decay",
-                data: datasetAfterDecay,
-                borderColor: decayedBorderColor,
-              },
-              {
-                ...sharedDatasetOptions,
-                label: "dataset before decay",
-                data: datasetBeforeDecay,
-                borderColor,
-              },
-            ],
-          };
+        } else {
+          if (onHover) {
+            onHover({ focused: false });
+          }
         }
+      },
+    };
+  }, [dataset, labels, hoverable, padding, onHover, maxGridLines]);
+
+  const getData = useCallback(
+    (canvas: any) => {
+      const ctx = canvas.getContext("2d");
+      let gradient = ctx.createLinearGradient(0, 0, 0, 250);
+      gradient.addColorStop(0, gradientStartColor);
+      gradient.addColorStop(1, gradientStopColor);
+
+      const lineShouldDecay = lineDecayAfterPointIndex !== undefined;
+      // Point color is all transparent, EXCEPT on lineDecayAfterPointIndex
+      const pointBgColors = dataset.map((_, i) => {
+        return i === lineDecayAfterPointIndex
+          ? pointBackgroundColor
+          : "rgba(0, 0, 0, 0)";
+      });
+      const pointBorderColors = dataset.map((_, i) => {
+        return i === lineDecayAfterPointIndex
+          ? decayedPointBorderColor
+          : "rgba(0, 0, 0, 0)";
+      });
+      const sharedDatasetOptions = {
+        type: "line",
+        pointRadius: 6,
+        pointHoverRadius: 6,
+        pointBorderWidth: lineShouldDecay ? 8 : 1,
+        pointHoverBorderWidth: lineShouldDecay ? 8 : 1,
+        pointHitRadius: 20,
+        pointBackgroundColor: pointBgColors,
+        pointHoverBackgroundColor: lineShouldDecay
+          ? pointBgColors
+          : pointBackgroundColor,
+        pointBorderColor: lineShouldDecay
+          ? pointBorderColors
+          : "rgba(0, 0, 0, 0)",
+        pointHoverBorderColor: lineShouldDecay
+          ? pointBorderColors
+          : "rgba(0, 0, 0, 0)",
+        tension: 0,
+        fill: "start",
+        backgroundColor: gradient,
+        weight: 1,
+        borderWidth: 2,
+      };
+
+      if (lineShouldDecay) {
+        const datasetBeforeDecay = dataset.slice(
+          0,
+          lineDecayAfterPointIndex! + 1
+        );
+        // Dataset after decay should match the same length of the entire dataset
+        // but with the empty datapoints being `null`
+        let datasetAfterDecay: (number | null)[] = dataset.slice(
+          lineDecayAfterPointIndex!,
+          dataset.length
+        );
+        datasetAfterDecay = [
+          ...Array.from({
+            length: dataset.length - datasetAfterDecay.length,
+          }).map(() => null),
+          ...datasetAfterDecay,
+        ];
         return {
           labels,
           datasets: [
             {
               ...sharedDatasetOptions,
-              data: dataset,
+              label: "dataset after decay",
+              data: datasetAfterDecay,
+              borderColor: decayedBorderColor,
+            },
+            {
+              ...sharedDatasetOptions,
+              label: "dataset before decay",
+              data: datasetBeforeDecay,
               borderColor,
             },
           ],
         };
-      },
-      [
-        dataset,
+      }
+      return {
         labels,
-        borderColor,
-        decayedBorderColor,
-        decayedPointBorderColor,
-        gradientStartColor,
-        gradientStopColor,
-        pointBackgroundColor,
-        lineDecayAfterPointIndex,
-      ]
-    );
+        datasets: [
+          {
+            ...sharedDatasetOptions,
+            data: dataset,
+            borderColor,
+          },
+        ],
+      };
+    },
+    [
+      dataset,
+      labels,
+      borderColor,
+      decayedBorderColor,
+      decayedPointBorderColor,
+      gradientStartColor,
+      gradientStopColor,
+      pointBackgroundColor,
+      lineDecayAfterPointIndex,
+    ]
+  );
 
-    return <Line type="line" data={getData} options={options}></Line>;
-  };
+  return <Line type="line" data={getData} options={options}></Line>;
+};
 
 export default PerformanceChart;
