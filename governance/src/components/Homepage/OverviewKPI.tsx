@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import currency from "currency.js";
 import { Col, Row } from "react-bootstrap";
 import ProgressBar from "shared/lib/components/Deposit/ProgressBar";
+import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import {
@@ -19,7 +20,9 @@ import useTreasuryAccount from "shared/lib/hooks/useTreasuryAccount";
 import useTVL from "shared/lib/hooks/useTVL";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
-import { formatAmount } from "shared/lib/utils/math";
+import { formatAmount, formatBigNumber } from "shared/lib/utils/math";
+import { BigNumber, utils } from "ethers";
+import { parseUnits } from "ethers/lib/utils";
 
 const Content = styled(Row)`
   z-index: 1;
@@ -75,15 +78,29 @@ const FloatingBackgroundBar = styled.div<{ index: number }>`
 
 const OverviewKPI = () => {
   const { width } = useScreenSize();
-  const totalStakedRBN = 20000000;
-  const { circulating_supply } = useAssetInfo("RBN");
+  const { data: rbnTokenAccount, loading: rbnTokenAccountLoading } =
+    useRBNTokenAccount();
+  const { info, loading: assetInfoLoading } = useAssetInfo("RBN");
   const { price: RBNPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: "RBN",
   });
   const { total, loading: treasuryLoading } = useTreasuryAccount();
   const { totalTVL } = useTVL();
 
-  const loadingText = useTextAnimation(assetPriceLoading || treasuryLoading);
+  const totalRbnStaked: number = useMemo(() => {
+    const formatted = formatBigNumber(
+      rbnTokenAccount?.token.totalStaked || 0,
+      18
+    );
+    return Number(formatted);
+  }, [rbnTokenAccount]);
+
+  const loadingText = useTextAnimation(
+    assetPriceLoading ||
+      treasuryLoading ||
+      rbnTokenAccountLoading ||
+      assetInfoLoading
+  );
 
   return (
     <>
@@ -148,14 +165,16 @@ const OverviewKPI = () => {
                 Total Staked RBN
               </SecondaryText>
               <Title fontSize={18} lineHeight={24} letterSpacing={1}>
-                {formatAmount(totalStakedRBN, true)}
+                {rbnTokenAccountLoading
+                  ? loadingText
+                  : formatAmount(totalRbnStaked || 0, true)}
               </Title>
             </div>
             <ProgressBar
               config={{ height: 4, extraClassNames: "my-2", radius: 2 }}
               percent={
-                circulating_supply
-                  ? (totalStakedRBN / circulating_supply) * 100
+                info.circulating_supply
+                  ? ((totalRbnStaked || 0) / info.circulating_supply) * 100
                   : 0
               }
               color={colors.green}
@@ -165,7 +184,9 @@ const OverviewKPI = () => {
                 RBN Floating Supply
               </SecondaryText>
               <Title fontSize={18} lineHeight={24} letterSpacing={1}>
-                {formatAmount(circulating_supply, true)}
+                {assetInfoLoading
+                  ? loadingText
+                  : formatAmount(info.circulating_supply, true)}
               </Title>
             </div>
           </KPICard>

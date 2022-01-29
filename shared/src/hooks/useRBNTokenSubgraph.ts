@@ -18,6 +18,7 @@ export const rbnTokenGraphql = (account: string | null | undefined) => {
             numHolders
             holders
             totalSupply
+            totalStaked
           }
           totalBalance
           lockedBalance
@@ -32,6 +33,7 @@ export const rbnTokenGraphql = (account: string | null | undefined) => {
           numHolders
           holders
           totalSupply
+          totalStaked
         }
       `;
 };
@@ -46,6 +48,7 @@ export const resolveRBNTokenSubgraphResponse = (
     return {
       ...response.rbnaccount.token,
       totalSupply: BigNumber.from(response.rbnaccount.token.totalSupply),
+      totalStaked: BigNumber.from(response.rbnaccount.token.totalStaked),
     };
   }
 
@@ -53,6 +56,7 @@ export const resolveRBNTokenSubgraphResponse = (
     return {
       ...response.rbntoken,
       totalSupply: BigNumber.from(response.rbntoken.totalSupply),
+      totalStaked: BigNumber.from(response.rbntoken.totalStaked),
     };
   }
 

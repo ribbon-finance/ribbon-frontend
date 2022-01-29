@@ -211,6 +211,7 @@ interface AssetInfo {
 }
 
 export const useAssetInfo = (asset: Assets) => {
+  const [loading, setLoading] = useState(false);
   const [info, setInfo] = useState<AssetInfo>();
 
   const fetchAssetInfo = useCallback(async () => {
@@ -220,6 +221,7 @@ export const useAssetInfo = (asset: Assets) => {
 
     const apiURL = `${COINGECKO_BASE_URL}/coins/${COINGECKO_CURRENCIES[asset]}`;
     try {
+      setLoading(true);
       const response = await axios.get(apiURL);
       const { data } = response;
       setInfo({
@@ -227,6 +229,11 @@ export const useAssetInfo = (asset: Assets) => {
       });
     } catch (error) {
       !isProduction() && console.log("Asset info fetch error:", error);
+      setInfo({
+        circulating_supply: 0,
+      });
+    } finally {
+      setLoading(false);
     }
   }, [info, asset]);
 
@@ -234,9 +241,8 @@ export const useAssetInfo = (asset: Assets) => {
     fetchAssetInfo();
   }, [fetchAssetInfo]);
 
-  return (
-    info ?? {
-      circulating_supply: 0,
-    }
-  );
+  return {
+    info: info || { circulating_supply: 0 },
+    loading,
+  };
 };
