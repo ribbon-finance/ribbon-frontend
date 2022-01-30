@@ -9,6 +9,9 @@ import { useAllVaultAccounts } from "./useVaultAccounts";
 import { isPracticallyZero } from "../utils/math";
 import { getAssetDecimals } from "../utils/asset";
 import { useGlobalState } from "../store/store";
+import { useVaultsPriceHistory } from "./useVaultPerformanceUpdate";
+import { parseUnits } from "ethers/lib/utils";
+import { BigNumber } from "ethers";
 
 const localStorageKey = "notificationLastRead";
 
@@ -16,6 +19,7 @@ const useNotifications = () => {
   const { activities: vaultsActivities } = useAllVaultActivities();
   const { data: v2VaultsData } = useV2VaultsData();
   const { data: vaultAccounts } = useAllVaultAccounts();
+  const { data: priceHistories } = useVaultsPriceHistory();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [lastReadTimestamp, setLastReadTimestamp] = useGlobalState(
@@ -53,7 +57,7 @@ const useNotifications = () => {
       const vaultData = v2VaultsData[vaultOption as VaultOptions];
 
       if (
-        !vaultData.withdrawals.amount.isZero() &&
+        !vaultData.withdrawals.shares.isZero() &&
         vaultData.withdrawals.round !== vaultData.round
       ) {
         const lastWithdrawTime = moment()
@@ -68,6 +72,10 @@ const useNotifications = () => {
           lastWithdrawTime.subtract(1, "week");
         }
 
+        const priceHistory = priceHistories.v2[
+          vaultOption as VaultOptions
+        ].find((history) => history.round === vaultData.withdrawals.round);
+
         notificationList.push({
           /** Calculate how many weeks prior where the withdrawal happened using withdrawal round */
           date: lastWithdrawTime.subtract(
@@ -77,7 +85,14 @@ const useNotifications = () => {
           type: "withdrawalReady",
           vault: vaultOption as VaultOptions,
           vaultVersion: "v2",
-          amount: vaultData.withdrawals.amount,
+          amount: vaultData.withdrawals.shares
+            .mul(priceHistory ? priceHistory.pricePerShare : BigNumber.from(0))
+            .div(
+              parseUnits(
+                "1",
+                getAssetDecimals(getAssets(vaultOption as VaultOptions))
+              )
+            ),
         });
       }
     });

@@ -27,6 +27,8 @@ import useV2Vault from "shared/lib/hooks/useV2Vault";
 import WarningStep from "./WarningStep";
 import { getCurvePool } from "shared/lib/hooks/useCurvePool";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
+import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
+import { getAssetDecimals } from "shared/lib/utils/asset";
 
 export interface ActionStepsProps {
   vault: {
@@ -51,6 +53,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const { ethereumProvider } = useWeb3Wallet();
   const { vaultActionForm, resetActionForm, withdrawMetadata } =
     useVaultActionForm(vaultOption);
+  const { data: priceHistories } = useVaultsPriceHistory();
 
   const firstStep = useMemo(() => {
     if (
@@ -115,13 +118,23 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       case "v1":
         return v1VaultBalanceInAsset;
       case "v2":
+        const priceHistory = priceHistories.v2[
+          vaultOption as VaultOptions
+        ].find((history) => history.round === withdrawals.round);
         return lockedBalanceInAsset
           .add(depositBalanceInAsset)
-          .add(withdrawals.amount);
+          .add(
+            withdrawals.shares
+              .mul(
+                priceHistory ? priceHistory.pricePerShare : BigNumber.from(0)
+              )
+              .div(parseUnits("1", getAssetDecimals(getAssets(vaultOption))))
+          );
     }
   }, [
     depositBalanceInAsset,
     lockedBalanceInAsset,
+    priceHistories.v2,
     v1VaultAccounts,
     v1VaultBalanceInAsset,
     vaultOption,

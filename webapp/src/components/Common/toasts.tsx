@@ -16,6 +16,8 @@ import Toast from "shared/lib/components/Common/BaseToast";
 import PendingToast from "./PendingToast";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { useV2VaultsData } from "shared/lib/hooks/web3DataContext";
+import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
+import { parseUnits } from "ethers/lib/utils";
 
 /**
  * TODO: Temporary disabled
@@ -214,6 +216,7 @@ export const WithdrawReminderToast = () => {
     }[]
   >([]);
   const [showReminderIndex, setShowReminderIndex] = useState<number>(0);
+  const { data: priceHistories } = useVaultsPriceHistory();
 
   /**
    * Find vault that is ready to withdraw
@@ -225,7 +228,7 @@ export const WithdrawReminderToast = () => {
       const decimals = getAssetDecimals(asset);
 
       if (
-        !isPracticallyZero(vaultData.withdrawals.amount, decimals) &&
+        !isPracticallyZero(vaultData.withdrawals.shares, decimals) &&
         vaultData.withdrawals.round !== vaultData.round
       ) {
         /**
@@ -240,15 +243,28 @@ export const WithdrawReminderToast = () => {
           return;
         }
 
+        const priceHistory = priceHistories.v2[vault as VaultOptions].find(
+          (history) => history.round === vaultData.withdrawals.round
+        );
+
         setReminders((curr) =>
           curr.concat({
             vault: { option: vault as VaultOptions, version: "v2" },
-            amount: vaultData.withdrawals.amount,
+            amount: vaultData.withdrawals.shares
+              .mul(
+                priceHistory ? priceHistory.pricePerShare : BigNumber.from(0)
+              )
+              .div(
+                parseUnits(
+                  "1",
+                  getAssetDecimals(getAssets(vault as VaultOptions))
+                )
+              ),
           })
         );
       }
     }, []);
-  }, [data, reminders]);
+  }, [data, priceHistories.v2, reminders]);
 
   /**
    * Make sure index does not goes out of bound

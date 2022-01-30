@@ -34,6 +34,8 @@ import SwapBTCDropdown from "../common/SwapBTCDropdown";
 import VaultBasicAmountForm from "../common/VaultBasicAmountForm";
 import { VaultValidationErrors } from "../types";
 import VaultV2WithdrawForm from "./VaultV2WithdrawForm";
+import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
+import { BigNumber } from "ethers";
 
 const BridgeText = styled.span<{}>`
   font-size: 14px;
@@ -154,6 +156,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     vaultActionForm.depositAsset || asset
   );
   const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
+  const { priceHistory } = useVaultPriceHistory(vaultOption, "v2");
   const { active, chainId } = useWeb3Wallet();
 
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
@@ -161,10 +164,20 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
   const canCompleteWithdraw = useMemo(() => {
     return (
       vaultActionForm.withdrawOption !== "instant" &&
-      !withdrawals.amount.isZero() &&
+      !withdrawals.shares.isZero() &&
       withdrawals.round !== round
     );
   }, [round, vaultActionForm.withdrawOption, withdrawals]);
+  const withdrawalAmount = useMemo(
+    () =>
+      withdrawals.shares
+        .mul(
+          priceHistory.find((history) => history.round === withdrawals.round)
+            ?.pricePerShare || BigNumber.from(0)
+        )
+        .div(parseUnits("1", decimals)),
+    [decimals, priceHistory, withdrawals.round, withdrawals.shares]
+  );
 
   /**
    * Side hooks
@@ -305,7 +318,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
 
                 break;
               case "complete":
-                if (amountBigNumber.gt(withdrawals.amount)) {
+                if (amountBigNumber.gt(withdrawalAmount)) {
                   return "withdrawLimitExceeded";
                 }
                 break;
@@ -333,7 +346,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     vaultActionForm.withdrawOption,
     vaultBalanceInAsset,
     vaultMaxDepositAmount,
-    withdrawals,
+    withdrawalAmount,
   ]);
 
   const formContent = useMemo(() => {
@@ -381,7 +394,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
             onFormSubmit={onFormSubmit}
             depositBalanceInAsset={depositBalanceInAsset}
             lockedBalanceInAsset={lockedBalanceInAsset}
-            initiatedWithdrawAmount={withdrawals.amount}
+            initiatedWithdrawAmount={withdrawalAmount}
             canCompleteWithdraw={canCompleteWithdraw}
           />
         );
@@ -398,7 +411,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     vaultActionForm.actionType,
     vaultActionForm.depositAsset,
     vaultOption,
-    withdrawals.amount,
+    withdrawalAmount,
   ]);
 
   const formInfoText = useMemo(() => {
