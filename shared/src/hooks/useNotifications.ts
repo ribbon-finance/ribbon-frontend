@@ -148,7 +148,7 @@ const useNotifications = () => {
     setNotifications(
       notificationList.sort((a, b) => (a.date.isBefore(b.date) ? 1 : -1))
     );
-  }, [vaultAccounts, vaultsActivities, v2VaultsData]);
+  }, [priceHistories.v2, vaultAccounts, vaultsActivities, v2VaultsData]);
 
   return {
     notifications,
