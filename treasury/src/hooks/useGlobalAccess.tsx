@@ -1,8 +1,6 @@
 import { useCallback, useState } from "react";
 import { ethers } from "ethers";
-import {
-  useGlobalAccessState,
-} from "../store/store";
+import { useGlobalAccessState } from "../store/store";
 import { hashCode, TreasuryVaultOptions } from "../constants/constants";
 import { useHistory } from "react-router-dom";
 import { VaultName, VaultNameOptionMap } from "shared/lib/constants/constants";
@@ -53,7 +51,7 @@ const useGlobalAccess = () => {
         if (VaultNameOptionMap[name as VaultName] === vault) {
           vaultName = name;
         }
-        return null
+        return null;
       });
 
       history.push("/treasury/" + vaultName);

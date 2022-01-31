@@ -194,7 +194,7 @@ const DepositPage = () => {
   const activities = useVaultActivity(vaultOption!, vaultVersion);
   const premiumDecimals = getAssetDecimals("USDC");
 
-  const [totalDepositStr ] = useMemo(() => {
+  const [totalDepositStr] = useMemo(() => {
     switch (vaultVersion) {
       case "v1":
         return [

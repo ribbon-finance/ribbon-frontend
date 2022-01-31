@@ -1,8 +1,5 @@
 import { createGlobalState } from "react-hooks-global-state";
-import {
-  VaultOptions,
-  VaultVersion,
-} from "shared/lib/constants/constants";
+import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
 import { Assets } from "shared/lib/store/types";
 import {
   ACTIONS,

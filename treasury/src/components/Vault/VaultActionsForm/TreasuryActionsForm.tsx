@@ -6,10 +6,7 @@ import { PrimaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 
-import {
-  BaseInputContainer,
-  SecondaryText,
-} from "shared/lib/designSystem";
+import { BaseInputContainer, SecondaryText } from "shared/lib/designSystem";
 import { Button } from "shared/lib/components/Common/buttons";
 import useGlobalAccess from "../../../hooks/useGlobalAccess";
 
@@ -141,7 +138,6 @@ const TreasuryActionsForm: React.FC<TreasuryActionsFormProps> = ({
     useGlobalAccess();
 
   const body = useMemo(() => {
-    
     return (
       <div className="d-flex flex-column align-items-center p-4">
         <WhitelistLogoContainer color={color} className="mt-3">

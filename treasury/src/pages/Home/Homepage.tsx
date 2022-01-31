@@ -45,7 +45,7 @@ const NotFound = () => {
         if (VaultNameOptionMap[name as VaultName] === vault) {
           vaultName = name;
         }
-        return null
+        return null;
       });
       history.push("/treasury/" + vaultName);
     }

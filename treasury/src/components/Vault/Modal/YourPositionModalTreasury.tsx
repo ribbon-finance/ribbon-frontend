@@ -125,8 +125,7 @@ const YourPositionModal: React.FC = () => {
                   : "0.00"}
               </Title>
             </BaseModalContentColumn>
-            <BaseModalContentColumn marginTop={8}>
-            </BaseModalContentColumn>
+            <BaseModalContentColumn marginTop={8}></BaseModalContentColumn>
 
             {/* Secondary Info */}
             <BaseModalContentColumn>
