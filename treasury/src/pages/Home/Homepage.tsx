@@ -1,8 +1,4 @@
-import React, { SVGProps } from "react";
-import styled, { keyframes } from "styled-components";
-
-import Logo from "shared/lib/assets/icons/logo";
-import { Title } from "shared/lib/designSystem";
+import styled from "styled-components";
 import sizes from "shared/lib/designSystem/sizes";
 import theme from "shared/lib/designSystem/theme";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
@@ -46,9 +42,10 @@ const NotFound = () => {
     if (vault) {
       let vaultName;
       Object.keys(VaultNameOptionMap).filter((name) => {
-        if (VaultNameOptionMap[name as VaultName] == vault) {
+        if (VaultNameOptionMap[name as VaultName] === vault) {
           vaultName = name;
         }
+        return null
       });
       history.push("/treasury/" + vaultName);
     }

@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect } from "react";
 import styled from "styled-components";
-import { formatUnits } from "@ethersproject/units";
 
 import {
   getAssets,

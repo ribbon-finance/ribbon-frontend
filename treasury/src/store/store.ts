@@ -1,6 +1,5 @@
 import { createGlobalState } from "react-hooks-global-state";
 import {
-  VaultName,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";

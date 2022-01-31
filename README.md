@@ -65,6 +65,43 @@ yarn start
 
 The webapp should automatically open at http://localhost:3000. Happy building! 🛠👷‍♀️👷‍♂️
 
+### Running the treasury app
+
+To run the treasury app, you need to set the following environment variable
+
+```
+REACT_APP_VAULT_COLLECTION=treasury
+```
+
+To start building, begin with opening 3 terminal windows:
+1. cd `shared`
+2. cd `webapp`
+3. cd `treasury`
+
+We start with running `yarn start` in `shared`.
+
+```
+cd shared/
+yarn start
+```
+
+Continue with running `yarn lib` in `webapp`.
+
+```
+cd webapp/
+yarn lib
+```
+
+
+Now, in the treasury directory, we can start the build server.
+
+```
+cd treasury/
+yarn start
+```
+
+The treasury should automatically open at http://localhost:3000. 
+
 ## Packages
 
 - `shared`: holds all constants, common React components.

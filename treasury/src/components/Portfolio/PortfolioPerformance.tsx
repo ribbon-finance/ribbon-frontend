@@ -1,5 +1,5 @@
 import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
-import React, { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import {
   PrimaryText,
@@ -620,23 +620,6 @@ const PortfolioPerformance = () => {
           </KPI>
         </KPIColumn>
         <KPIColumn>
-          {/* <SecondaryText fontSize={12} className="w-100">
-            ROI
-          </SecondaryText>
-          <KPIText
-            active={active}
-            state={
-              calculatedKPI.roi === 0
-                ? undefined
-                : calculatedKPI.roi > 0
-                ? "green"
-                : "red"
-            }
-          >
-            {renderRoiText()}
-          </KPIText>
-        </KPIColumn>
-        <KPIColumn> */}
           <SecondaryText fontSize={12} color={colors.red} className="w-100">
             $RBN Balance
           </SecondaryText>

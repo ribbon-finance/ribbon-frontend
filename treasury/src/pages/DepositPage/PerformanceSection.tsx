@@ -1,27 +1,14 @@
-import React, { useCallback } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
-import { productCopies } from "shared/lib/components/Product/productCopies";
 import {
-  getAssets,
   VaultOptions,
   VaultVersion,
   VaultFees,
 } from "shared/lib/constants/constants";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import useAssetsYield from "shared/lib/hooks/useAssetsYield";
-import { getAssetDisplay } from "shared/lib/utils/asset";
-import { DefiScoreProtocol } from "shared/lib/models/defiScore";
-import theme from "shared/lib/designSystem/theme";
-import {
-  AAVEIcon,
-  CompoundIcon,
-  DDEXIcon,
-  DYDXIcon,
-  OasisIcon,
-} from "shared/lib/assets/icons/defiApp";
 import StrategySnapshot, {
   EmptyStrategySnapshot,
 } from "../../components/Deposit/StrategySnapshot";
@@ -64,27 +51,6 @@ const Container = styled.div`
   @media (max-width: ${sizes.md}px) {
     max-width: unset;
   }
-`;
-
-const MarketYield = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 16px;
-  background: ${colors.background.two};
-  border-radius: ${theme.border.radius};
-  padding: 12px 16px;
-
-  &:first-child {
-    margin-top: 0px;
-  }
-`;
-
-const MarketTitle = styled(Title)`
-  margin-left: 8px;
-`;
-
-const MarketYielAPR = styled(Title)`
-  margin-left: auto;
 `;
 
 interface PerformanceSectionProps {
@@ -159,7 +125,6 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
   }
 
   const { vaultOption, vaultVersion } = vault;
-  const asset = getAssets(vaultOption);
 
   return (
     <Container>

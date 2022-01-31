@@ -33,7 +33,6 @@ import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { useCurvePoolEstimateStETHSwap } from "shared/lib/hooks/useCurvePool";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
-import useLatestAPY from "shared/lib/hooks/useLatestAPY";
 
 const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -108,7 +107,6 @@ const PreviewStep: React.FC<{
   receiveVaultOption,
 }) => {
   const color = getVaultColor(vaultOption);
-  const latestAPY = useLatestAPY(vaultOption, vaultVersion);
   const {
     data: { withdrawals: v2Withdrawals },
   } = useV2VaultData(vaultOption);
@@ -186,7 +184,6 @@ const PreviewStep: React.FC<{
     return details;
   }, [
     actionType,
-    latestAPY,
     receiveVaultOption,
     vaultOption,
     vaultVersion,
@@ -490,7 +487,7 @@ const PreviewStep: React.FC<{
                   color={color}
                 >
                   <PrimaryText fontSize={14} lineHeight={20} color={color}>
-                    Your funds will be deployed in the vault’s next weekly
+                    Your funds will be deployed in the vault’s next monthly
                     strategy at 11am UTC on Friday
                   </PrimaryText>
                 </WarningContainer>

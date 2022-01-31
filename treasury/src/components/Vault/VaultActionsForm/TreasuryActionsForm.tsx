@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import styled from "styled-components";
 
@@ -6,16 +6,11 @@ import { PrimaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 
-import Logo from "shared/lib/assets/icons/logo";
 import {
-  BaseInput,
   BaseInputContainer,
   SecondaryText,
 } from "shared/lib/designSystem";
-import { ConnectWalletButton } from "shared/lib/components/Common/buttons";
 import { Button } from "shared/lib/components/Common/buttons";
-import { ethers } from "ethers";
-import { hashCode, TreasuryVaultOptions } from "../../../constants/constants";
 import useGlobalAccess from "../../../hooks/useGlobalAccess";
 
 export const CodeInput = styled.input<{
@@ -146,7 +141,7 @@ const TreasuryActionsForm: React.FC<TreasuryActionsFormProps> = ({
     useGlobalAccess();
 
   const body = useMemo(() => {
-    console.log(globalAccess);
+    
     return (
       <div className="d-flex flex-column align-items-center p-4">
         <WhitelistLogoContainer color={color} className="mt-3">
@@ -155,7 +150,7 @@ const TreasuryActionsForm: React.FC<TreasuryActionsFormProps> = ({
 
         <WhitelistTitle className="mt-3">ACCESS CODE REQUIRED</WhitelistTitle>
 
-        <BaseInputContainer className="mb-2" error={error != ""}>
+        <BaseInputContainer className="mb-2" error={error !== ""}>
           <CodeInput
             type="text"
             className="form-control"
@@ -172,11 +167,11 @@ const TreasuryActionsForm: React.FC<TreasuryActionsFormProps> = ({
           type="button"
           color={color}
           className="btn mt-2 py-3 mb-2"
-          disabled={code.length != 6}
+          disabled={code.length !== 6}
         >
           ENTER
         </EnterButton>
-        {error != "" && (
+        {error !== "" && (
           <SecondaryText color={colors.red}>{error}</SecondaryText>
         )}
 
@@ -198,7 +193,7 @@ const TreasuryActionsForm: React.FC<TreasuryActionsFormProps> = ({
         </PrimaryText>
       </div>
     );
-  }, [code, handleInputChange, error, globalAccess]);
+  }, [code, handleInputChange, handleSubmission, error, globalAccess]);
 
   return (
     <Container variant={variant}>

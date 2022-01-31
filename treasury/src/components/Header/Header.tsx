@@ -15,9 +15,7 @@ import {
 import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
 import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
-import NetworkSwitcherButton from "webapp/lib/components/NetworkSwitcher/NetworkSwitcherButton";
 import NotificationButton from "webapp/lib/components/Notification/NotificationButton";
-import { isEthNetwork } from "shared/lib/constants/constants";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
@@ -138,7 +136,7 @@ const MobileOnly = styled.div`
 `;
 
 const Header = () => {
-  const { active, chainId } = useWeb3Wallet();
+  const { active } = useWeb3Wallet();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const product = useRouteMatch({ path: "/", exact: true });
   const portfolio = useRouteMatch({ path: "/portfolio", exact: true });

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import currency from "currency.js";
 import { Col, Row } from "react-bootstrap";
@@ -9,22 +9,16 @@ import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import { formatOption } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import {
-  getAssets,
-  getDisplayAssets,
   getOptionAssets,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
-import { BaseButton, SecondaryText, Title } from "shared/lib/designSystem";
+import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import StrikeChart from "webapp/lib/components/Deposit/StrikeChart";
-import { getVaultColor } from "shared/lib/utils/vault";
-import ProfitCalculatorModal from "webapp/lib/components/Deposit/ProfitCalculatorModal";
 import { formatUnits } from "@ethersproject/units";
 import { useLatestOption } from "shared/lib/hooks/useLatestOption";
-import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
 import { VaultActivityMeta, VaultOptionTrade } from "shared/lib/models/vault";
 
@@ -95,12 +89,10 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
     vaultOption,
     vaultVersion
   );
-  const asset = getAssets(vaultOption);
+
   const optionAsset = getOptionAssets(vaultOption);
-  const color = getVaultColor(vaultOption);
   const { prices, loading: priceLoading } = useAssetsPrice();
   const loading = priceLoading || optionLoading;
-  const [showCalculator, setShowCalculator] = useState(false);
   const { activities, loading: activitiesLoading } = useVaultActivity(
     vaultOption!,
     vaultVersion

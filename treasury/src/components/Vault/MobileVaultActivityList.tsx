@@ -70,7 +70,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
   activities,
   vaultOption,
 }) => {
-  const { asset, decimals } = useMemo(() => {
+  const { asset } = useMemo(() => {
     const asset = getAssets(vaultOption);
     return {
       asset: asset,
@@ -146,7 +146,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
           );
       }
     },
-    [asset, decimals, vaultOption]
+    [asset, vaultOption, premiumDecimals]
   );
 
   return (

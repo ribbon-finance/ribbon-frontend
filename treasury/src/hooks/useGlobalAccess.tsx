@@ -1,14 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { BigNumber, ethers } from "ethers";
-import { formatUnits } from "ethers/lib/utils";
+import { useCallback, useState } from "react";
+import { ethers } from "ethers";
 import {
-  initialAccessState,
   useGlobalAccessState,
-  useWebappGlobalState,
 } from "../store/store";
 import { hashCode, TreasuryVaultOptions } from "../constants/constants";
-import { access } from "fs";
-import { Redirect, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { VaultName, VaultNameOptionMap } from "shared/lib/constants/constants";
 
 const useGlobalAccess = () => {
@@ -32,7 +28,7 @@ const useGlobalAccess = () => {
 
     let vault: TreasuryVaultOptions | undefined;
     for (const [key, value] of Object.entries(hashCode)) {
-      if (value == hash) {
+      if (value === hash) {
         vault = key as TreasuryVaultOptions;
       }
     }
@@ -52,17 +48,19 @@ const useGlobalAccess = () => {
       setError("");
 
       let vaultName;
+
       Object.keys(VaultNameOptionMap).filter((name) => {
-        if (VaultNameOptionMap[name as VaultName] == vault) {
+        if (VaultNameOptionMap[name as VaultName] === vault) {
           vaultName = name;
         }
+        return null
       });
 
       history.push("/treasury/" + vaultName);
     } else {
       setError("Invalid Code");
     }
-  }, [setError, code]);
+  }, [setError, code, history, setGlobalAccess]);
 
   return {
     handleInputChange,

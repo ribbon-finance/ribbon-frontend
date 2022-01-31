@@ -126,9 +126,6 @@ const YourPositionModal: React.FC = () => {
               </Title>
             </BaseModalContentColumn>
             <BaseModalContentColumn marginTop={8}>
-              {/* <Subtitle color={roi >= 0 ? colors.green : colors.red}>
-                {`${roi >= 0 ? "+" : ""}${parseFloat(roi.toFixed(4))}%`}
-              </Subtitle> */}
             </BaseModalContentColumn>
 
             {/* Secondary Info */}

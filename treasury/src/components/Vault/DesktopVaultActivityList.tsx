@@ -197,6 +197,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
       decimals,
       premiumDecimals,
       searchAssetPriceFromTimestamp,
+      vaultOption
     ]
   );
 

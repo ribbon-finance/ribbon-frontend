@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo } from "react";
+import React, { ReactNode, useMemo } from "react";
 import { ethers } from "ethers";
 import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
 import styled, { keyframes } from "styled-components";
@@ -23,7 +23,6 @@ import {
   VaultList,
   VaultOptions,
   VaultVersion,
-  VaultVersionList,
 } from "shared/lib/constants/constants";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultOption from "../../hooks/useVaultOption";
@@ -40,8 +39,6 @@ import useRedirectOnSwitchChain from "webapp/lib/hooks/useRedirectOnSwitchChain"
 import useRedirectOnWrongChain from "webapp/lib/hooks/useRedirectOnWrongChain";
 import Banner from "shared/lib/components/Banner/Banner";
 import VaultInformation from "../../components/Deposit/VaultInformation";
-import useGlobalAccess from "../../hooks/useGlobalAccess";
-import { TreasuryVaultOptions } from "../../constants/constants";
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
 
 const { formatUnits } = ethers.utils;
@@ -129,13 +126,6 @@ const TagPill = styled(AttributePill)`
   padding: 16px;
 `;
 
-const AttributeVersionSelector = styled.div<{ color: string; active: boolean }>`
-  padding: 16px;
-  border-radius: ${theme.border.radiusSmall};
-  border: ${theme.border.width} ${theme.border.style}
-    ${(props) => (props.active ? props.color : "transparent")};
-`;
-
 const SplashImage = styled.div`
   display: flex;
   align-items: center;
@@ -204,7 +194,7 @@ const DepositPage = () => {
   const activities = useVaultActivity(vaultOption!, vaultVersion);
   const premiumDecimals = getAssetDecimals("USDC");
 
-  const [totalDepositStr, depositLimitStr] = useMemo(() => {
+  const [totalDepositStr ] = useMemo(() => {
     switch (vaultVersion) {
       case "v1":
         return [
