@@ -36,6 +36,14 @@ import {
 } from "./useVaultPerformanceUpdate";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { resolveVaultsSubgraphResponse, vaultGraphql } from "./useVaultData";
+import {
+  liquidityMiningPoolGraphql,
+  resolveLiquidityMiningPoolsSubgraphResponse,
+} from "./useLiquidityMiningPools";
+import {
+  liquidityMiningPoolAccountsGraphql,
+  resolveLiquidityMiningPoolAccountsSubgraphResponse,
+} from "./useLiquidityMiningPoolAccounts";
 
 const useFetchVaultSubgraphData = () => {
   const { account: acc } = useWeb3React();
@@ -78,12 +86,14 @@ const useFetchVaultSubgraphData = () => {
                         ${vaultAccountsGraphql(account, version)}
                         ${transactionsGraphql(account, version)}
                         ${balancesGraphql(account, version)}
+                        ${liquidityMiningPoolAccountsGraphql(account, version)}
                       `
                     : ""
                 }
                 ${vaultGraphql(version, chainId)}
                 ${vaultActivitiesGraphql(version, chainId)}
                 ${vaultPriceHistoryGraphql(version, chainId)}
+                ${liquidityMiningPoolGraphql(version, chainId)}
               }`.replaceAll(" ", ""),
           }
         );
@@ -140,6 +150,16 @@ const useFetchVaultSubgraphData = () => {
           vaultPriceHistory: resolveVaultPriceHistorySubgraphResponse(
             responsesAcrossVersions
           ),
+          stakingPools: {
+            lm: resolveLiquidityMiningPoolsSubgraphResponse(
+              responsesAcrossVersions
+            ),
+          },
+          stakingAccounts: {
+            lm: resolveLiquidityMiningPoolAccountsSubgraphResponse(
+              responsesAcrossVersions
+            ),
+          },
           loading: false,
         }));
       }

@@ -1,27 +1,24 @@
 import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
+import moment from "moment";
 
 import { VaultOptions } from "shared/lib/constants/constants";
 import {
-  BaseUnderlineLink,
   BaseModalContentColumn,
   SecondaryText,
   Title,
-  PrimaryText,
 } from "shared/lib/designSystem";
-import { StakingPoolResponse } from "shared/lib/models/staking";
 import { formatBigNumber } from "shared/lib/utils/math";
-import { BigNumber } from "@ethersproject/bignumber";
-import moment from "moment";
-import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import useStakingReward from "shared/lib/hooks/useStakingReward";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import RBNClaimModalContent from "shared/lib/components/Common/RBNClaimModalContent";
 import { getVaultColor } from "shared/lib/utils/vault";
-import ModalContentExtra from "shared/lib/components/Common/ModalContentExtra";
 import BasicModal from "shared/lib/components/Common/BasicModal";
+import { LiquidityGaugeV5PoolResponse } from "shared/lib/models/staking";
+import useLiquidityGaugeV5 from "shared/lib/hooks/useLiquidityGaugeV5";
+import { useLiquidityGaugeV5PoolData } from "shared/lib/hooks/web3DataContext";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 
 const LogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -33,19 +30,10 @@ const LogoContainer = styled.div<{ color: string }>`
   background: ${(props) => props.color}29;
 `;
 
-const AssetTitle = styled(Title)<{ str: string }>`
+const AssetTitle = styled(Title)`
   text-transform: none;
-
-  ${(props) =>
-    props.str.length > 12
-      ? `
-    font-size: 24px;
-    line-height: 36px;
-  `
-      : `
-    font-size: 40px;
-    line-height: 52px;
-  `}
+  font-size: 22px;
+  line-height: 28px;
 `;
 
 const InfoColumn = styled(BaseModalContentColumn)`
@@ -58,23 +46,15 @@ const InfoData = styled(Title)`
   text-transform: none;
 `;
 
-const WarningText = styled(PrimaryText)<{ color: string }>`
-  display: flex;
-  color: ${(props) => props.color};
-  font-size: 14px;
-  line-height: 20px;
-  text-align: center;
-`;
-
-interface StakingClaimModalProps {
+interface ClaimActionModalProps {
   show: boolean;
   onClose: () => void;
   logo: React.ReactNode;
   vaultOption: VaultOptions;
-  stakingPoolData: StakingPoolResponse;
+  stakingPoolData?: LiquidityGaugeV5PoolResponse;
 }
 
-const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
+const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
   show,
   onClose,
   logo,
@@ -85,8 +65,12 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
   const [step, setStep] = useState<"info" | "claim" | "claiming" | "claimed">(
     "info"
   );
-  const stakingReward = useStakingReward(vaultOption);
+  const { data: lg5Data, loading: lg5DataLoading } =
+    useLiquidityGaugeV5PoolData(vaultOption);
+  const contract = useLiquidityGaugeV5(vaultOption);
   const { addPendingTransaction } = usePendingTransactions();
+
+  const loadingText = useTextAnimation(lg5DataLoading);
 
   const handleClose = useCallback(() => {
     onClose();
@@ -96,13 +80,13 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
   }, [onClose, step]);
 
   const handleClaim = useCallback(async () => {
-    if (!stakingReward) {
+    if (!contract || !stakingPoolData) {
       return;
     }
     setStep("claim");
 
     try {
-      const tx = await stakingReward.exit();
+      const tx = await contract["claim_rewards()"]();
 
       setStep("claiming");
 
@@ -120,35 +104,18 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
     } catch (err) {
       setStep("info");
     }
-  }, [
-    addPendingTransaction,
-    provider,
-    stakingPoolData,
-    stakingReward,
-    vaultOption,
-  ]);
+  }, [addPendingTransaction, provider, stakingPoolData, contract, vaultOption]);
 
   const timeTillNextRewardWeek = useMemo(() => {
-    const startDate = moment
-      .utc("2021-06-18")
-      .set("hour", 10)
-      .set("minute", 30);
-
-    let weekCount;
-
-    if (moment().diff(startDate) < 0) {
-      weekCount = 1;
-    } else {
-      weekCount = moment().diff(startDate, "weeks") + 2;
+    if (lg5DataLoading) {
+      return loadingText;
     }
 
-    // Next stake reward date
-    const nextStakeReward = startDate.add(weekCount - 1, "weeks");
+    if (!lg5Data) {
+      return "---";
+    }
 
-    const endStakeReward = moment
-      .utc("2021-07-16")
-      .set("hour", 10)
-      .set("minute", 30);
+    const endStakeReward = moment.unix(lg5Data.periodEndTime);
 
     if (endStakeReward.diff(moment()) <= 0) {
       return "Program Ended";
@@ -156,46 +123,34 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
 
     // Time till next stake reward date
     const startTime = moment.duration(
-      nextStakeReward.diff(moment()),
+      endStakeReward.diff(moment()),
       "milliseconds"
     );
 
     return `${startTime.days()}D ${startTime.hours()}H ${startTime.minutes()}M`;
-  }, []);
+  }, [lg5Data, lg5DataLoading, loadingText]);
 
   const body = useMemo(() => {
     const color = getVaultColor(vaultOption);
     switch (step) {
       case "info":
-        const periodFinish = stakingPoolData.periodFinish
-          ? moment(stakingPoolData.periodFinish, "X")
-          : undefined;
         return (
           <>
             <BaseModalContentColumn>
               <LogoContainer color={color}>{logo}</LogoContainer>
             </BaseModalContentColumn>
-            <BaseModalContentColumn marginTop={8}>
-              <AssetTitle str={vaultOption}>{vaultOption}</AssetTitle>
+            <BaseModalContentColumn marginTop={16}>
+              <AssetTitle>{vaultOption}</AssetTitle>
             </BaseModalContentColumn>
-            <InfoColumn marginTop={40}>
-              <SecondaryText>Unclaimed $RBN</SecondaryText>
-              <InfoData>
-                {formatBigNumber(stakingPoolData.claimableRbn, 18)}
+            <InfoColumn marginTop={24}>
+              <SecondaryText color={color}>Unclaimed RBN</SecondaryText>
+              <InfoData color={color}>
+                {stakingPoolData
+                  ? formatBigNumber(stakingPoolData.claimableRbn, 18)
+                  : 0}
               </InfoData>
             </InfoColumn>
-            <InfoColumn>
-              <SecondaryText>Claimed $RBN</SecondaryText>
-              <InfoData>
-                {formatBigNumber(
-                  stakingPoolData.claimHistory.reduce(
-                    (acc, curr) => acc.add(curr.amount),
-                    BigNumber.from(0)
-                  ),
-                  18
-                )}
-              </InfoData>
-            </InfoColumn>
+
             <InfoColumn>
               <SecondaryText>Time till next reward</SecondaryText>
               <InfoData>{timeTillNextRewardWeek}</InfoData>
@@ -204,61 +159,33 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
               <div className="d-flex align-items-center">
                 <SecondaryText>Pool rewards</SecondaryText>
               </div>
-              <InfoData>
-                {formatBigNumber(stakingPoolData.poolRewardForDuration, 18)} RBN
-              </InfoData>
+              <InfoData>10000 RBN</InfoData>
             </InfoColumn>
-            <BaseModalContentColumn marginTop="auto">
-              <BaseUnderlineLink
-                to="https://ribbonfinance.medium.com/rbn-airdrop-distribution-70b6cb0b870c"
-                target="_blank"
-                rel="noreferrer noopener"
-                className="d-flex align-items-center"
+
+            <BaseModalContentColumn>
+              <ActionButton
+                className="btn py-3 mb-2"
+                onClick={handleClaim}
+                color={color}
+                disabled={
+                  !stakingPoolData || stakingPoolData.claimableRbn.isZero()
+                }
               >
-                <SecondaryText>Read about $RBN</SecondaryText>
-                <ExternalIcon className="ml-1" />
-              </BaseUnderlineLink>
+                ClAIM REWARDS
+              </ActionButton>
             </BaseModalContentColumn>
-            {periodFinish && periodFinish.diff(moment()) > 0 ? (
-              <ModalContentExtra>
-                <WarningText color={color}>
-                  In order to claim your RBN rewards you must remain staked
-                  until the end of the liquidity mining program (
-                  {periodFinish.format("MMM Do, YYYY")}
-                  ).
-                </WarningText>
-              </ModalContentExtra>
-            ) : (
-              <BaseModalContentColumn>
-                <ActionButton
-                  className="btn py-3 mb-2"
-                  onClick={handleClaim}
-                  color={color}
-                  disabled={stakingPoolData.claimableRbn.isZero()}
-                >
-                  {"Unstake & Claim"}
-                </ActionButton>
-              </BaseModalContentColumn>
-            )}
           </>
         );
       default:
         return <RBNClaimModalContent step={step} type="rbn" />;
     }
-  }, [
-    step,
-    logo,
-    vaultOption,
-    stakingPoolData,
-    handleClaim,
-    timeTillNextRewardWeek,
-  ]);
+  }, [step, logo, vaultOption, stakingPoolData, handleClaim]);
 
   return (
     <BasicModal
       show={show}
       onClose={handleClose}
-      height={580}
+      height={step === "info" ? 436 : 580}
       animationProps={{
         key: step,
         transition: {
@@ -294,4 +221,4 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
   );
 };
 
-export default StakingClaimModal;
+export default ClaimActionModal;

@@ -12,6 +12,7 @@ import {
 } from "../utils/env";
 import v1deployment from "./v1Deployments.json";
 import v2deployment from "./v2Deployments.json";
+import governanceDeployment from "./governanceDeployment.json";
 import addresses from "./externalAddresses.json";
 
 export type NETWORK_NAMES =
@@ -223,18 +224,44 @@ export const GAS_LIMITS: {
   },
 };
 
-export const VaultLiquidityMiningMap: Partial<{
-  [vault in VaultOptions]: string;
-}> = isDevelopment()
+/**
+ * lm: Liquidity Mining round during July 2021
+ * lg5: Liquidity Gauge V4 from curve.fi
+ */
+export const LiquidityMiningVersionList = ["lg5", "lm"] as const;
+export type LiquidityMiningVersion = typeof LiquidityMiningVersionList[number];
+
+export const VaultLiquidityMiningMap: {
+  [version in LiquidityMiningVersion]: Partial<{
+    [vault in VaultOptions]: string;
+  }>;
+} = isDevelopment()
   ? {
-      "rUSDC-ETH-P-THETA": v1deployment.kovan.RibbonETHPutStakingReward,
-      "rBTC-THETA": v1deployment.kovan.RibbonWBTCCoveredCallStakingReward,
-      "rETH-THETA": v1deployment.kovan.RibbonETHCoveredCallStakingReward,
+      lm: {
+        "rUSDC-ETH-P-THETA": v1deployment.kovan.RibbonETHPutStakingReward,
+        "rBTC-THETA": v1deployment.kovan.RibbonWBTCCoveredCallStakingReward,
+        "rETH-THETA": v1deployment.kovan.RibbonETHCoveredCallStakingReward,
+      },
+      lg5: {
+        "rUSDC-ETH-P-THETA": v2deployment.kovan.RibbonETHPutLiquidityGauge,
+        "rETH-THETA": v2deployment.kovan.RibbonETHCoveredCallLiquidityGauge,
+        "rBTC-THETA": v2deployment.kovan.RibbonWBTCCoveredCallLiquidityGauge,
+      },
     }
   : {
-      "rUSDC-ETH-P-THETA": v1deployment.mainnet.RibbonETHPutStakingReward,
-      "rBTC-THETA": v1deployment.mainnet.RibbonWBTCCoveredCallStakingReward,
-      "rETH-THETA": v1deployment.mainnet.RibbonETHCoveredCallStakingReward,
+      lm: {
+        "rUSDC-ETH-P-THETA": v1deployment.mainnet.RibbonETHPutStakingReward,
+        "rBTC-THETA": v1deployment.mainnet.RibbonWBTCCoveredCallStakingReward,
+        "rETH-THETA": v1deployment.mainnet.RibbonETHCoveredCallStakingReward,
+      },
+      lg5: {
+        "ryvUSDC-ETH-P-THETA":
+          v2deployment.mainnet.RibbonYearnETHPutLiquidityGauge,
+        "rAAVE-THETA": v2deployment.mainnet.RibbonAAVECoveredCallLiquidityGauge,
+        "rstETH-THETA": v2deployment.mainnet.RibbonSTETHCoveredLiquidityGauge,
+        "rETH-THETA": v2deployment.mainnet.RibbonETHCoveredCallLiquidityGauge,
+        "rBTC-THETA": v2deployment.mainnet.RibbonWBTCCoveredCallLiquidityGauge,
+      },
     };
 
 export const isPutVault = (vault: VaultOptions): boolean =>
@@ -250,6 +277,7 @@ export const VaultAddressMap: {
   "rUSDC-ETH-P-THETA": isDevelopment()
     ? {
         v1: v1deployment.kovan.RibbonETHPut,
+        v2: v2deployment.kovan.RibbonThetaVaultETHPut,
         chainId: CHAINID.ETH_KOVAN,
       }
     : {
@@ -716,3 +744,19 @@ export const RibbonTreasuryAddress = {
   [CHAINID.ETH_KOVAN]: "0xD380980791079Bd50736Ffe577b8D57A3C196ccd",
   [CHAINID.ETH_MAINNET]: "0xDAEada3d210D2f45874724BeEa03C7d4BBD41674",
 };
+
+export const VotingEscrowAddress = isDevelopment()
+  ? governanceDeployment.kovan.RBNVotingEscrow
+  : governanceDeployment.mainnet.RBNVotingEscrow;
+
+export const VotingEscrowDelegationProxyAddress = isDevelopment()
+  ? governanceDeployment.kovan.RBNVotingEscrowDelegationProxy
+  : governanceDeployment.mainnet.RBNVotingEscrowDelegationProxy;
+
+export const LiquidityTokenMinterAddress = isDevelopment()
+  ? governanceDeployment.kovan.RBNVotingTokenMinter
+  : governanceDeployment.mainnet.RBNVotingTokenMinter;
+
+export const LiquidityGaugeControllerAddress = isDevelopment()
+  ? governanceDeployment.kovan.RBNVotingGaugeController
+  : governanceDeployment.mainnet.RBNVotingGaugeController;

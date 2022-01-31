@@ -19,17 +19,17 @@ import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import { useStakingPoolData } from "shared/lib/hooks/web3DataContext";
+import { useLiquidityMiningPoolData } from "shared/lib/hooks/web3DataContext";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
-import StakingApprovalModal from "./Modal/StakingApprovalModal";
+import StakingApprovalModal from "./LiquidityMiningModal/StakingApprovalModal";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import { productCopies } from "shared/lib/components/Product/productCopies";
-import StakingActionModal from "./Modal/StakingActionModal";
+import StakingActionModal from "./LiquidityMiningModal/StakingActionModal";
 import sizes from "shared/lib/designSystem/sizes";
-import StakingClaimModal from "./Modal/StakingClaimModal";
+import StakingClaimModal from "./LiquidityMiningModal/StakingClaimModal";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { shimmerKeyframe } from "shared/lib/designSystem/keyframes";
@@ -158,7 +158,7 @@ interface StakingPoolProps {
 const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   const { active } = useWeb3Wallet();
   const [, setShowConnectWalletModal] = useConnectWalletModal();
-  const { data: stakingPoolData } = useStakingPoolData(vaultOption);
+  const { data: stakingPoolData } = useLiquidityMiningPoolData(vaultOption);
   const decimals = getAssetDecimals(getAssets(vaultOption));
   const { pendingTransactions } = usePendingTransactions();
 
@@ -490,17 +490,17 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   );
 };
 
-const StakingPools = () => {
+const LiquidityMiningPools = () => {
   return (
     <StakingPoolsContainer>
       <Title fontSize={18} lineHeight={24} className="mb-4 w-100">
         STAKING POOLS
       </Title>
-      {Object.keys(VaultLiquidityMiningMap).map((option) => (
+      {Object.keys(VaultLiquidityMiningMap.lm).map((option) => (
         <StakingPool key={option} vaultOption={option as VaultOptions} />
       ))}
     </StakingPoolsContainer>
   );
 };
 
-export default StakingPools;
+export default LiquidityMiningPools;

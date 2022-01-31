@@ -32,7 +32,7 @@ import { BigNumber } from "ethers";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import CapBar from "shared/lib/components/Deposit/CapBar";
-import { useStakingPoolData } from "shared/lib/hooks/web3DataContext";
+import { useLiquidityMiningPoolData } from "shared/lib/hooks/web3DataContext";
 import { useGlobalState } from "shared/lib/store/store";
 import { useWeb3Wallet } from "../../../hooks/useWeb3Wallet";
 
@@ -60,7 +60,7 @@ const YourPositionModal: React.FC = () => {
 
   const { chainId } = useWeb3Wallet();
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
-  const { data: stakingPoolData } = useStakingPoolData(vaultOption);
+  const { data: stakingPoolData } = useLiquidityMiningPoolData(vaultOption);
 
   const ModeList: string[] = isStakingEnabledForChainId(chainId)
     ? ["deposits", "staking"]

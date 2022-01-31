@@ -9,12 +9,12 @@ import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContai
 import { ThemedLogo } from "shared/lib/assets/icons/logo";
 import { useGovernanceGlobalState } from "../../store/store";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
-import { VotingEscrowAddress } from "../../constants/constants";
 import sizes from "shared/lib/designSystem/sizes";
 import { useAssetBalance } from "shared/lib/hooks/web3DataContext";
 import { formatBigNumber } from "shared/lib/utils/math";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
+import { VotingEscrowAddress } from "shared/lib/constants/constants";
 
 const FABContainer = styled.div`
   display: flex;

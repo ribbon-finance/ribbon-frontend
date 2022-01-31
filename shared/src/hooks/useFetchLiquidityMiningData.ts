@@ -8,21 +8,24 @@ import { impersonateAddress } from "../utils/development";
 import { useWeb3Context } from "./web3Context";
 import { isProduction } from "../utils/env";
 import {
-  defaultStakingPoolData,
-  StakingPoolData,
-  StakingPoolResponses,
+  defaultLiquidityMiningPoolData,
+  LiquidityMiningPoolData,
+  LiquidityMiningPoolResponses,
 } from "../models/staking";
 import { getERC20Token } from "./useERC20Token";
 import { getStakingReward } from "./useStakingReward";
 import { usePendingTransactions } from "./pendingTransactionsContext";
+import { getERC20TokenNameFromVault } from "../models/eth";
 
-const useFetchStakingPoolData = (): StakingPoolData => {
+const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
   const { active, chainId, account: web3Account, library } = useWeb3React();
   const { provider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
 
-  const [data, setData] = useState<StakingPoolData>(defaultStakingPoolData);
+  const [data, setData] = useState<LiquidityMiningPoolData>(
+    defaultLiquidityMiningPoolData
+  );
   const [, setMulticallCounter] = useState(0);
 
   const doMulticall = useCallback(async () => {
@@ -31,7 +34,7 @@ const useFetchStakingPoolData = (): StakingPoolData => {
     }
 
     if (!isProduction()) {
-      console.time("Staking Pool Data Fetch");
+      console.time("Liquidity Mining Pool Data Fetch");
     }
 
     /**
@@ -47,7 +50,7 @@ const useFetchStakingPoolData = (): StakingPoolData => {
       VaultList.map(async (vault) => {
         const tokenContract = getERC20Token(
           library || provider,
-          vault,
+          getERC20TokenNameFromVault(vault, "v1"),
           chainId,
           active
         );
@@ -55,7 +58,7 @@ const useFetchStakingPoolData = (): StakingPoolData => {
           return { vault };
         }
         const contract = getStakingReward(library || provider, vault, active);
-        if (!contract || !VaultLiquidityMiningMap[vault]) {
+        if (!contract || !VaultLiquidityMiningMap.lm[vault]) {
           return { vault };
         }
 
@@ -66,7 +69,7 @@ const useFetchStakingPoolData = (): StakingPoolData => {
          * 4. Period finish
          */
         const unconnectedPromises: Promise<BigNumber | Event[] | number>[] = [
-          tokenContract.balanceOf(VaultLiquidityMiningMap[vault]!),
+          tokenContract.balanceOf(VaultLiquidityMiningMap.lm[vault]!),
           contract.getRewardForDuration(),
           contract.lastTimeRewardApplicable(),
           contract.periodFinish(),
@@ -141,7 +144,7 @@ const useFetchStakingPoolData = (): StakingPoolData => {
                 ...response,
               },
             ])
-          ) as StakingPoolResponses,
+          ) as LiquidityMiningPoolResponses,
           loading: false,
         }));
       }
@@ -150,7 +153,7 @@ const useFetchStakingPoolData = (): StakingPoolData => {
     });
 
     if (!isProduction()) {
-      console.timeEnd("Staking Pool Data Fetch");
+      console.timeEnd("Liquidity Mining Pool Data Fetch");
     }
   }, [account, active, chainId, library, provider]);
 
@@ -161,4 +164,4 @@ const useFetchStakingPoolData = (): StakingPoolData => {
   return data;
 };
 
-export default useFetchStakingPoolData;
+export default useFetchLiquidityMiningData;
