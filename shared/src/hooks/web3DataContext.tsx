@@ -5,7 +5,12 @@ import {
   getDisplayAssets,
   VaultOptions,
 } from "../constants/constants";
-import { defaultStakingPoolData, StakingPoolData } from "../models/staking";
+import {
+  defaultLiquidityGaugeV5PoolData,
+  defaultLiquidityMiningPoolData,
+  LiquidityGaugeV5PoolData,
+  LiquidityMiningPoolData,
+} from "../models/staking";
 import {
   defaultV2VaultData,
   VaultData,
@@ -18,7 +23,7 @@ import useFetchAssetBalanceData, {
   defaultUserAssetBalanceData,
   UserAssetBalanceData,
 } from "./useFetchAssetBalanceData";
-import useFetchStakingPoolData from "./useFetchStakingPoolData";
+import useFetchLiquidityMiningData from "./useFetchLiquidityMiningData";
 import useFetchV2VaultData from "./useFetchV2VaultData";
 import useFetchVaultData from "./useFetchVaultData";
 import {
@@ -30,12 +35,14 @@ import useFetchTreasuryBalanceData, {
   defaultTreasuryBalanceData,
   TreasuryBalanceData,
 } from "./useFetchTreasuryBalanceData";
+import useFetchLiquidityGaugeV5Data from "./useFetchLiquidityGaugeV5Data";
 
 export type Web3DataContextType = {
   v1: VaultData;
   v2: V2VaultData;
   assetBalance: UserAssetBalanceData;
-  stakingPool: StakingPoolData;
+  liquidityMiningPool: LiquidityMiningPoolData;
+  liquidityGaugeV5Pool: LiquidityGaugeV5PoolData;
   lidoOracle: LidoOracleData;
   treasuryBalance: TreasuryBalanceData;
 };
@@ -44,7 +51,8 @@ export const Web3DataContext = React.createContext<Web3DataContextType>({
   v1: defaultVaultData,
   v2: defaultV2VaultData,
   assetBalance: defaultUserAssetBalanceData,
-  stakingPool: defaultStakingPoolData,
+  liquidityMiningPool: defaultLiquidityMiningPoolData,
+  liquidityGaugeV5Pool: defaultLiquidityGaugeV5PoolData,
   lidoOracle: defaultLidoOracleData,
   treasuryBalance: defaultTreasuryBalanceData,
 });
@@ -97,12 +105,21 @@ export const useV2VaultData = (vault: VaultOptions) => {
   };
 };
 
-export const useStakingPoolData = (vault: VaultOptions) => {
+export const useLiquidityMiningPoolData = (vault: VaultOptions) => {
   const contextData = useContext(Web3DataContext);
 
   return {
-    data: contextData.stakingPool.responses[vault],
-    loading: contextData.stakingPool.loading,
+    data: contextData.liquidityMiningPool.responses[vault],
+    loading: contextData.liquidityMiningPool.loading,
+  };
+};
+
+export const useLiquidityGaugeV5PoolData = (vault: VaultOptions) => {
+  const contextData = useContext(Web3DataContext);
+
+  return {
+    data: contextData.liquidityGaugeV5Pool.responses[vault],
+    loading: contextData.liquidityGaugeV5Pool.loading,
   };
 };
 
@@ -133,7 +150,8 @@ export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({
   const vaultData = useFetchVaultData();
   const v2VaultData = useFetchV2VaultData();
   const assetBalance = useFetchAssetBalanceData();
-  const stakingPool = useFetchStakingPoolData();
+  const liquidityGaugeV5Pool = useFetchLiquidityGaugeV5Data();
+  const liquidityMiningPool = useFetchLiquidityMiningData();
   const lidoOracle = useFetchLidoOracleData();
   const treasuryBalance = useFetchTreasuryBalanceData();
 
@@ -143,7 +161,8 @@ export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({
         v1: vaultData,
         v2: v2VaultData,
         assetBalance,
-        stakingPool,
+        liquidityGaugeV5Pool,
+        liquidityMiningPool,
         lidoOracle,
         treasuryBalance,
       }}

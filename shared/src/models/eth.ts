@@ -1,4 +1,10 @@
-import { RetailVaultList, TreasuryVaultList } from "../constants/constants";
+import {
+  RetailVaultList,
+  TreasuryVaultList,
+  VaultOptions,
+  VaultVersion,
+  VaultVersionList,
+} from "../constants/constants";
 
 export const ERC20TokenList = [
   "weth",
@@ -13,10 +19,21 @@ export const ERC20TokenList = [
   "verbn",
   "wavax",
   "perp",
-  ...RetailVaultList,
-  ...TreasuryVaultList,
+  ...VaultVersionList.flatMap((version) =>
+    RetailVaultList.map((option) => `${option}-${version}` as const)
+  ),
+  ...VaultVersionList.flatMap((version) =>
+    TreasuryVaultList.map((option) => `${option}-${version}` as const)
+  ),
 ] as const;
 export type ERC20Token = typeof ERC20TokenList[number];
+
+export const getERC20TokenNameFromVault = (
+  vault: VaultOptions,
+  version: VaultVersion
+): ERC20Token => {
+  return `${vault}-${version}` as const;
+};
 
 export const getERC20TokenDecimals = (asset: ERC20Token): number => {
   switch (asset) {

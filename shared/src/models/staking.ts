@@ -2,7 +2,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 
 import { VaultList, VaultOptions } from "../constants/constants";
 
-export interface StakingPoolResponse {
+export interface LiquidityMiningPoolResponse {
   currentStake: BigNumber;
   poolSize: BigNumber;
   lastTimeRewardApplicable?: string;
@@ -15,16 +15,16 @@ export interface StakingPoolResponse {
   unstakedBalance: BigNumber;
 }
 
-export type StakingPoolResponses = {
-  [vault in VaultOptions]: StakingPoolResponse;
+export type LiquidityMiningPoolResponses = {
+  [vault in VaultOptions]: LiquidityMiningPoolResponse;
 };
 
-export type StakingPoolData = {
-  responses: StakingPoolResponses;
+export type LiquidityMiningPoolData = {
+  responses: LiquidityMiningPoolResponses;
   loading: boolean;
 };
 
-export const defaultStakingPoolData: StakingPoolData = {
+export const defaultLiquidityMiningPoolData: LiquidityMiningPoolData = {
   responses: Object.fromEntries(
     VaultList.map((vault) => [
       vault as VaultOptions,
@@ -37,11 +37,35 @@ export const defaultStakingPoolData: StakingPoolData = {
         unstakedBalance: BigNumber.from(0),
       },
     ])
-  ) as StakingPoolResponses,
+  ) as LiquidityMiningPoolResponses,
   loading: true,
 };
 
-export interface StakingPool {
+export interface LiquidityGaugeV5PoolResponse {
+  currentStake: BigNumber;
+  poolSize: BigNumber;
+  claimableRbn: BigNumber;
+  unstakedBalance: BigNumber;
+  claimedRbn: BigNumber;
+  poolRewardForDuration: BigNumber;
+  periodEndTime: number;
+}
+
+export type LiquidityGaugeV5PoolResponses = Partial<{
+  [vault in VaultOptions]: LiquidityGaugeV5PoolResponse;
+}>;
+
+export type LiquidityGaugeV5PoolData = {
+  responses: LiquidityGaugeV5PoolResponses;
+  loading: boolean;
+};
+
+export const defaultLiquidityGaugeV5PoolData: LiquidityGaugeV5PoolData = {
+  responses: {},
+  loading: true,
+};
+
+export interface LiquidityMiningPool {
   id: string;
   numDepositors: number;
   depositors: string[];
@@ -49,10 +73,29 @@ export interface StakingPool {
   totalRewardClaimed: BigNumber;
 }
 
-export interface StakingPoolAccount {
+export interface LiquidityMiningPoolAccount {
   id: string;
-  pool: StakingPool;
+  pool: LiquidityMiningPool;
   account: string;
   totalRewardClaimed: BigNumber;
   totalBalance: BigNumber;
 }
+
+export type LiquidityMiningPoolsSubgraphData = Partial<{
+  [vault in VaultOptions]: LiquidityMiningPool;
+}>;
+
+export interface StakingPoolsSubgraphData {
+  lm: LiquidityMiningPoolsSubgraphData;
+}
+
+export const defaultStakingSubgraphData: StakingPoolsSubgraphData = { lm: {} };
+
+export type LiquidityMiningPoolAccountsData = Partial<{
+  [vault in VaultOptions]: LiquidityMiningPoolAccount;
+}>;
+export interface StakingPoolAccountsData {
+  lm: LiquidityMiningPoolAccountsData;
+}
+
+export const defaultStakingAccountsData: StakingPoolAccountsData = { lm: {} };

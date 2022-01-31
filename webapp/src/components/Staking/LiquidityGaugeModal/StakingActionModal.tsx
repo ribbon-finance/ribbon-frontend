@@ -1,16 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useWeb3Wallet } from "../../../hooks/useWeb3Wallet";
 import styled from "styled-components";
 import { formatUnits, parseUnits } from "@ethersproject/units";
 import { BigNumber } from "@ethersproject/bignumber";
-import moment from "moment";
 
 import {
   BLOCKCHAIN_EXPLORER_NAME,
-  getAssets,
   getEtherscanURI,
   VaultOptions,
 } from "shared/lib/constants/constants";
+import { useWeb3Wallet } from "../../../hooks/useWeb3Wallet";
+import { LiquidityGaugeV5PoolResponse } from "shared/lib/models/staking";
 import {
   BaseInput,
   BaseInputButton,
@@ -19,21 +18,24 @@ import {
   BaseUnderlineLink,
   PrimaryText,
   SecondaryText,
-  Subtitle,
-  Title,
   BaseModalContentColumn,
+  Title,
 } from "shared/lib/designSystem";
-import colors from "shared/lib/designSystem/colors";
-import { StakingPoolResponse } from "shared/lib/models/staking";
-import { getAssetDecimals } from "shared/lib/utils/asset";
-import { formatBigNumber } from "shared/lib/utils/math";
-import { ActionButton } from "shared/lib/components/Common/buttons";
-import useStakingReward from "shared/lib/hooks/useStakingReward";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
-import TrafficLight from "shared/lib/components/Common/TrafficLight";
+import colors from "shared/lib/designSystem/colors";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { getVaultColor } from "shared/lib/utils/vault";
+import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
+import { ActionButton } from "shared/lib/components/Common/buttons";
+import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import BasicModal from "shared/lib/components/Common/BasicModal";
+import {
+  useLiquidityGaugeV5PoolData,
+  useV2VaultData,
+} from "shared/lib/hooks/web3DataContext";
+import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useV2Vault from "shared/lib/hooks/useV2Vault";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -63,19 +65,10 @@ const LogoContainer = styled.div<{ color: string }>`
   font-size: 40px;
 `;
 
-const AssetTitle = styled(Title)<{ str: string }>`
+const AssetTitle = styled(Title)`
   text-transform: none;
-
-  ${(props) =>
-    props.str.length > 12
-      ? `
-    font-size: 24px;
-    line-height: 36px;
-  `
-      : `
-    font-size: 40px;
-    line-height: 52px;
-  `}
+  font-size: 22px;
+  line-height: 28px;
 `;
 
 const InfoColumn = styled(BaseModalContentColumn)`
@@ -97,26 +90,15 @@ const InfoData = styled(Title)<{ error?: boolean }>`
   }}
 `;
 
-const CurrentStakeTitle = styled(Subtitle)`
-  color: ${colors.text};
-`;
-
-const Arrow = styled.i<{ color: string }>`
-  font-size: 12px;
-  color: ${(props) => props.color};
-`;
-
 interface StakingActionModalProps {
-  stake: boolean;
   show: boolean;
   onClose: () => void;
   logo: React.ReactNode;
   vaultOption: VaultOptions;
-  stakingPoolData: StakingPoolResponse;
+  stakingPoolData?: LiquidityGaugeV5PoolResponse;
 }
 
 const StakingActionModal: React.FC<StakingActionModalProps> = ({
-  stake,
   show,
   onClose,
   logo,
@@ -124,20 +106,65 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
   stakingPoolData,
 }) => {
   const [step, setStep] = useState<
-    "warning" | "form" | "preview" | "walletAction" | "processing"
-  >("warning");
+    "form" | "preview" | "walletAction" | "processing"
+  >("form");
   const [input, setInput] = useState("");
   const { chainId } = useWeb3Wallet();
   const { provider } = useWeb3Context();
-  const decimals = getAssetDecimals(getAssets(vaultOption));
-  const [error, setError] = useState<
-    "insufficient_balance" | "insufficient_staked"
-  >();
-  const stakingReward = useStakingReward(vaultOption);
-  const { addPendingTransaction } = usePendingTransactions();
-  const [txId, setTxId] = useState("");
+  const { data: lg5Data, loading: lg5DataLoading } =
+    useLiquidityGaugeV5PoolData(vaultOption);
+  const { prices, loading: assetPricesLoading } = useAssetsPrice();
+  const {
+    data: { asset, decimals, pricePerShare },
+    loading: vaultDataLoading,
+  } = useV2VaultData(vaultOption);
 
+  const loadingText = useTextAnimation(
+    lg5DataLoading || assetPricesLoading || vaultDataLoading
+  );
+  const { addPendingTransaction } = usePendingTransactions();
+  const [error, setError] = useState<"insufficient_balance">();
+  const [txId, setTxId] = useState("");
+  const vaultContract = useV2Vault(vaultOption);
   const color = getVaultColor(vaultOption);
+
+  const [baseAPYText] = useMemo(() => {
+    if (lg5DataLoading || assetPricesLoading || vaultDataLoading) {
+      return [loadingText];
+    }
+
+    if (!lg5Data) {
+      return ["0.00%"];
+    }
+
+    const poolRewardInUSD = parseFloat(
+      assetToFiat(lg5Data.poolRewardForDuration, prices["RBN"])
+    );
+    const poolSizeInAsset = lg5Data.poolSize
+      .mul(pricePerShare)
+      .div(parseUnits("1", decimals));
+    const poolSizeInUSD = parseFloat(
+      assetToFiat(poolSizeInAsset, prices[asset], decimals)
+    );
+
+    return [
+      `${
+        poolSizeInUSD > 0
+          ? (((1 + poolRewardInUSD / poolSizeInUSD) ** 52 - 1) * 100).toFixed(2)
+          : "0.00"
+      }%`,
+    ];
+  }, [
+    asset,
+    assetPricesLoading,
+    decimals,
+    lg5Data,
+    lg5DataLoading,
+    loadingText,
+    pricePerShare,
+    prices,
+    vaultDataLoading,
+  ]);
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -154,18 +181,16 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     []
   );
 
-  const handleMaxPressed = useCallback(
-    () =>
-      stake
-        ? setInput(formatUnits(stakingPoolData.unstakedBalance, decimals))
-        : setInput(formatUnits(stakingPoolData.currentStake, decimals)),
-    [stake, decimals, stakingPoolData]
-  );
+  const handleMaxPressed = useCallback(() => {
+    if (stakingPoolData) {
+      setInput(formatUnits(stakingPoolData.unstakedBalance, decimals));
+    }
+  }, [decimals, stakingPoolData]);
 
   const handleClose = useCallback(() => {
     onClose();
-    if (step === "form" || step === "preview" || step === "walletAction") {
-      setStep("warning");
+    if (step === "preview" || step === "walletAction") {
+      setStep("form");
     }
     if (step !== "processing") {
       setInput("");
@@ -173,15 +198,13 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
   }, [step, onClose]);
 
   const handleActionPressed = useCallback(async () => {
-    if (!stakingReward) {
+    if (!vaultContract) {
       return;
     }
     setStep("walletAction");
 
     try {
-      const tx = stake
-        ? await stakingReward.stake(parseUnits(input, decimals))
-        : await stakingReward.withdraw(parseUnits(input, decimals));
+      const tx = await vaultContract.stake(parseUnits(input, decimals));
 
       setStep("processing");
 
@@ -190,17 +213,18 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
       setTxId(txhash);
       addPendingTransaction({
         txhash,
-        type: stake ? "stake" : "unstake",
+        type: "unstake",
         amount: input,
         stakeAsset: vaultOption,
       });
 
       await provider.waitForTransaction(txhash, 5);
-      setStep("warning");
+      setStep("form");
       setTxId("");
       setInput("");
       onClose();
     } catch (err) {
+      console.log(err);
       setStep("preview");
     }
   }, [
@@ -208,29 +232,10 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     decimals,
     input,
     provider,
-    stakingReward,
+    vaultContract,
     onClose,
     vaultOption,
-    stake,
   ]);
-
-  /**
-   * Check if it's withdraw and before period end
-   */
-  useEffect(() => {
-    if (
-      show &&
-      step === "warning" &&
-      stakingPoolData.periodFinish &&
-      !(!stake && moment(stakingPoolData.periodFinish, "X").diff(moment()) > 0)
-    ) {
-      setStep("form");
-    }
-
-    if (show && !stake) {
-      handleMaxPressed();
-    }
-  }, [handleMaxPressed, show, stake, stakingPoolData, step]);
 
   /**
    * Input Validation
@@ -243,77 +248,35 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
       return;
     }
 
-    /** Check sufficient balance for deposit */
     if (
-      stake &&
+      !stakingPoolData ||
       !stakingPoolData.unstakedBalance.gte(
         BigNumber.from(parseUnits(input, decimals))
       )
     ) {
       setError("insufficient_balance");
-    } else if (
-      !stake &&
-      !stakingPoolData.currentStake.gte(
-        BigNumber.from(parseUnits(input, decimals))
-      )
-    ) {
-      setError("insufficient_staked");
     }
-  }, [decimals, input, stake, stakingPoolData]);
+  }, [decimals, input, stakingPoolData]);
 
   const renderActionButtonText = useCallback(() => {
     switch (error) {
       case "insufficient_balance":
         return "INSUFFICIENT BALANCE";
-      case "insufficient_staked":
-        return "INSUFFICIENT STAKED BALANCE";
       default:
-        return stake ? "STAKE PREVIEW" : "UNSTAKE PREVIEW";
+        return "STAKE PREVIEW";
     }
-  }, [stake, error]);
+  }, [error]);
 
   const body = useMemo(() => {
     switch (step) {
-      case "warning":
-        return (
-          <>
-            <BaseModalContentColumn>
-              <LogoContainer color={colors.red}>!</LogoContainer>
-            </BaseModalContentColumn>
-            <BaseModalContentColumn marginTop={16}>
-              <AssetTitle str="WARNING">WARNING</AssetTitle>
-            </BaseModalContentColumn>
-            <BaseModalContentColumn marginTop={16}>
-              <SecondaryText className="text-center">
-                Your RBN rewards will be forfeited if you unstake your tokens
-                before the end of the program (
-                {moment(stakingPoolData.periodFinish, "X").format(
-                  "MMM Do, YYYY"
-                )}
-                ).
-              </SecondaryText>
-            </BaseModalContentColumn>
-            <BaseModalContentColumn marginTop="auto">
-              <ActionButton
-                className="btn py-3 mb-3"
-                color={color}
-                error={true}
-                disabled={false}
-                onClick={() => setStep("form")}
-              >
-                Continue
-              </ActionButton>
-            </BaseModalContentColumn>
-          </>
-        );
       case "form":
         return (
           <>
             <BaseModalContentColumn>
               <LogoContainer color={color}>{logo}</LogoContainer>
             </BaseModalContentColumn>
-            <BaseModalContentColumn marginTop={8}>
-              <AssetTitle str={vaultOption}>{vaultOption}</AssetTitle>
+            <BaseModalContentColumn marginTop={16}>
+              <AssetTitle>{vaultOption}</AssetTitle>
             </BaseModalContentColumn>
             <BaseModalContentColumn>
               <div className="d-flex w-100 flex-wrap">
@@ -332,36 +295,48 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                 </BaseInputContainer>
               </div>
             </BaseModalContentColumn>
-            {stake ? (
-              <InfoColumn>
-                <SecondaryText>Unstaked Balance</SecondaryText>
-                <InfoData error={Boolean(error)}>
-                  {formatBigNumber(stakingPoolData.unstakedBalance, decimals)}
-                </InfoData>
-              </InfoColumn>
-            ) : (
-              <InfoColumn>
-                <SecondaryText>Your Current Stake</SecondaryText>
-                <InfoData error={Boolean(error)}>
-                  {formatBigNumber(stakingPoolData.currentStake, decimals)}
-                </InfoData>
-              </InfoColumn>
-            )}
+
             <InfoColumn>
-              <SecondaryText>Pool Size</SecondaryText>
-              <InfoData>
-                {formatBigNumber(stakingPoolData.poolSize, decimals)}
+              <SecondaryText>Unstaked Balance</SecondaryText>
+              <InfoData error={Boolean(error)}>
+                {stakingPoolData
+                  ? formatBigNumber(stakingPoolData.unstakedBalance, decimals)
+                  : 0}
               </InfoData>
             </InfoColumn>
-            <InfoColumn>
-              <div className="d-flex align-items-center">
-                <SecondaryText>Pool rewards</SecondaryText>
-              </div>
+
+            <InfoColumn marginTop={16}>
+              <SecondaryText>Current Staked Balance</SecondaryText>
               <InfoData>
-                {formatBigNumber(stakingPoolData.poolRewardForDuration, 18)} RBN
+                {stakingPoolData
+                  ? formatBigNumber(stakingPoolData.currentStake, decimals)
+                  : 0}
               </InfoData>
             </InfoColumn>
-            <BaseModalContentColumn marginTop="auto">
+
+            {/* APY */}
+            <InfoColumn marginTop={16}>
+              <SecondaryText color={color}>APY</SecondaryText>
+              <InfoData color={color}>{baseAPYText}</InfoData>
+            </InfoColumn>
+            <InfoColumn marginTop={4}>
+              <SecondaryText className="ml-2" fontSize={12}>
+                Base Rewards
+              </SecondaryText>
+              <InfoData color={colors.text} fontSize={14}>
+                {baseAPYText}
+              </InfoData>
+            </InfoColumn>
+            <InfoColumn marginTop={4}>
+              <SecondaryText className="ml-2" fontSize={12}>
+                Boosted Rewards (2.5X)
+              </SecondaryText>
+              <InfoData color={colors.text} fontSize={14}>
+                {baseAPYText}
+              </InfoData>
+            </InfoColumn>
+
+            <BaseModalContentColumn>
               <ActionButton
                 className="btn py-3"
                 color={color}
@@ -374,71 +349,55 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
                 {renderActionButtonText()}
               </ActionButton>
             </BaseModalContentColumn>
-            {stake ? (
-              <BaseModalContentColumn marginTop={16} className="mb-2">
-                <CurrentStakeTitle>
-                  Your Current Stake:{" "}
-                  {formatBigNumber(stakingPoolData.currentStake, decimals)}
-                </CurrentStakeTitle>
-              </BaseModalContentColumn>
-            ) : (
-              <BaseModalContentColumn marginTop={16} className="mb-2">
-                <CurrentStakeTitle>
-                  Unstaked Balance:{" "}
-                  {formatBigNumber(stakingPoolData.unstakedBalance, decimals)}
-                </CurrentStakeTitle>
-              </BaseModalContentColumn>
-            )}
           </>
         );
       case "preview":
         return (
           <>
-            <BaseModalContentColumn marginTop={8}>
-              <ModalTitle>{stake ? "STAKE" : "UNSTAKE"} PREVIEW</ModalTitle>
+            <BaseModalContentColumn>
+              <LogoContainer color={color}>{logo}</LogoContainer>
             </BaseModalContentColumn>
-            <BaseModalContentColumn marginTop={48}>
-              <BaseInputLabel>AMOUNT ({vaultOption})</BaseInputLabel>
-            </BaseModalContentColumn>
-            <BaseModalContentColumn marginTop={4}>
-              <Title fontSize={40} lineHeight={52}>
-                {parseFloat(parseFloat(input).toFixed(4))}
-              </Title>
+            <BaseModalContentColumn marginTop={16}>
+              <AssetTitle>STAKE PREVIEW</AssetTitle>
             </BaseModalContentColumn>
             <InfoColumn>
               <SecondaryText>Pool</SecondaryText>
               <InfoData>{vaultOption}</InfoData>
             </InfoColumn>
-            <InfoColumn>
-              <SecondaryText>Your Stake</SecondaryText>
-              <InfoData>
-                {formatBigNumber(stakingPoolData.currentStake, decimals)}
-                <Arrow className="fas fa-arrow-right mx-2" color={color} />
-                {formatBigNumber(
-                  stake
-                    ? stakingPoolData.currentStake.add(
-                        BigNumber.from(parseUnits(input, decimals))
-                      )
-                    : stakingPoolData.currentStake.sub(
-                        BigNumber.from(parseUnits(input, decimals))
-                      ),
-                  decimals
-                )}
+            <InfoColumn marginTop={16}>
+              <SecondaryText>Stake Amount</SecondaryText>
+              <InfoData>{parseFloat(parseFloat(input).toFixed(4))}</InfoData>
+            </InfoColumn>
+
+            {/* APY */}
+            <InfoColumn marginTop={16}>
+              <SecondaryText color={color}>APY</SecondaryText>
+              <InfoData color={color}>{baseAPYText}</InfoData>
+            </InfoColumn>
+            <InfoColumn marginTop={4}>
+              <SecondaryText className="ml-2" fontSize={12}>
+                Base Rewards
+              </SecondaryText>
+              <InfoData color={colors.text} fontSize={14}>
+                {baseAPYText}
               </InfoData>
             </InfoColumn>
-            <InfoColumn>
-              <SecondaryText>Pool rewards</SecondaryText>
-              <InfoData>
-                {formatBigNumber(stakingPoolData.poolRewardForDuration, 18)} RBN
+            <InfoColumn marginTop={4}>
+              <SecondaryText className="ml-2" fontSize={12}>
+                Boosted Rewards (2.5X)
+              </SecondaryText>
+              <InfoData color={colors.text} fontSize={14}>
+                {baseAPYText}
               </InfoData>
             </InfoColumn>
+
             <BaseModalContentColumn marginTop="auto">
               <ActionButton
                 className="btn py-3 mb-2"
                 onClick={handleActionPressed}
                 color={color}
               >
-                {stake ? "STAKE" : "UNSTAKE"} NOW
+                STAKE NOW
               </ActionButton>
             </BaseModalContentColumn>
           </>
@@ -483,9 +442,9 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
         );
     }
   }, [
+    baseAPYText,
     chainId,
     color,
-    stake,
     decimals,
     error,
     handleInputChange,
@@ -500,11 +459,22 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     renderActionButtonText,
   ]);
 
+  const modalHeight = useMemo(() => {
+    switch (step) {
+      case "form":
+        return 554;
+      case "preview":
+        return 436;
+      default:
+        return 424;
+    }
+  }, [step]);
+
   return (
     <BasicModal
       show={show}
       onClose={handleClose}
-      height={step === "form" ? 564 : 424}
+      height={modalHeight}
       backButton={
         step === "preview" ? { onClick: () => setStep("form") } : undefined
       }
@@ -537,7 +507,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               }
             : {},
       }}
-      headerBackground={step !== "warning" && step !== "form"}
+      headerBackground={step !== "form" && step !== "preview"}
     >
       {body}
     </BasicModal>
