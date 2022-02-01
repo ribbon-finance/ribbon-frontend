@@ -12,7 +12,7 @@ import {
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import {
   LiquidityMiningVersion,
-  LiquidityMiningVersionList,
+  OngoingLMVersion,
   VaultLiquidityMiningMap,
   VaultList,
   VaultOptions,
@@ -199,7 +199,7 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
     <OverviewContainer>
       <OverviewInfo>
         <FilterDropdown
-          options={LiquidityMiningVersionList.map((_version) => ({
+          options={OngoingLMVersion.map((_version) => ({
             value: _version,
             display: getLMName(_version),
           }))}

@@ -3,7 +3,7 @@ import { Col, Container, Row } from "react-bootstrap";
 
 import {
   LiquidityMiningVersion,
-  LiquidityMiningVersionList,
+  OngoingLMVersion,
 } from "shared/lib/constants/constants";
 import StakingOverview from "../../components/Staking/StakingOverview";
 import LiquidityMiningPools from "../../components/Staking/LiquidityMiningPools";
@@ -11,7 +11,7 @@ import LiquidityGaugeV5Pools from "../../components/Staking/LiquidityGaugeV5Pool
 
 const StakingPage = () => {
   const [lmVersion, setLmVersion] = useState<LiquidityMiningVersion>(
-    LiquidityMiningVersionList[0]
+    OngoingLMVersion[0]
   );
 
   const pools = useMemo(() => {

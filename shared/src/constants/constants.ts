@@ -228,8 +228,12 @@ export const GAS_LIMITS: {
  * lm: Liquidity Mining round during July 2021
  * lg5: Liquidity Gauge V4 from curve.fi
  */
+
 export const LiquidityMiningVersionList = ["lg5", "lm"] as const;
 export type LiquidityMiningVersion = typeof LiquidityMiningVersionList[number];
+
+// TODO: Add back lg5 when ready
+export const OngoingLMVersion: LiquidityMiningVersion[] = ["lm"];
 
 export const VaultLiquidityMiningMap: {
   [version in LiquidityMiningVersion]: Partial<{
