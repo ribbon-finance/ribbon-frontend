@@ -11,9 +11,8 @@ import { ConnectorButtonProps } from "./types";
 import { ConnectorButtonStatus } from "./types";
 import {
   BaseButton,
-  BaseLink,
+  BaseIndicator,
   BaseModalContentColumn,
-  BaseText,
   Title,
 } from "shared/lib/designSystem";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
@@ -24,11 +23,8 @@ import {
   WalletConnectIcon,
   WalletLinkIcon,
 } from "shared/lib/assets/icons/connector";
-import Indicator from "shared/lib/components/Indicator/Indicator";
 import colors from "shared/lib/designSystem/colors";
-import { useChain } from "../../hooks/chainContext";
 import theme from "shared/lib/designSystem/theme";
-import { Chains } from "../../constants/constants";
 
 const ModalContainer = styled.div`
   padding: 10px 16px;
@@ -79,27 +75,12 @@ const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
   }}
 `;
 
-const IndicatorContainer = styled.div`
+const StyledBaseIndicator = styled(BaseIndicator)`
   margin-left: auto;
 `;
 
 const ConnectorButtonText = styled(Title)`
   margin-left: 16px;
-`;
-
-const LearnMoreLink = styled(BaseLink)`
-  &:hover {
-    opacity: ${theme.hover.opacity};
-  }
-`;
-
-const LearnMoreText = styled(BaseText)`
-  text-decoration: underline;
-`;
-
-const LearnMoreArrow = styled(BaseText)`
-  text-decoration: none;
-  margin-left: 5px;
 `;
 
 const StyledWalletLinkIcon = styled(WalletLinkIcon)`
@@ -110,6 +91,19 @@ const StyledWalletLinkIcon = styled(WalletLinkIcon)`
 
 const ConnectorButtonPill = styled(ConnectorButton)`
   border-radius: 100px;
+  margin-bottom: 16px;
+
+  ${(props) => {
+    switch (props.status) {
+      case "connected":
+      case "initializing":
+        return `
+          border: ${theme.border.width} ${theme.border.style} ${props.color};
+        `;
+      default:
+        return `border: ${theme.border.width} ${theme.border.style} transparent`;
+    }
+  }}
 `;
 
 const ConnectWalletBody: React.FC<{
@@ -118,7 +112,6 @@ const ConnectWalletBody: React.FC<{
   wallets: Wallet[];
 }> = ({ onSelectWallet, selectedWallet, wallets }) => {
   const { connectingWallet } = useWeb3Wallet();
-  const [chain] = useChain();
 
   const getWalletStatus = useCallback(
     (wallet: Wallet): ConnectorButtonStatus => {
@@ -144,10 +137,7 @@ const ConnectWalletBody: React.FC<{
       </TitleContainer>
       {wallets.map((wallet: Wallet, index: number) => {
         return (
-          <BaseModalContentColumn
-            key={wallet}
-            {...(index === 0 ? {} : { marginTop: 16 })}
-          >
+          <BaseModalContentColumn key={index} marginTop={0}>
             <WalletButton
               wallet={wallet as Wallet}
               status={getWalletStatus(wallet as Wallet)}
@@ -156,22 +146,6 @@ const ConnectWalletBody: React.FC<{
           </BaseModalContentColumn>
         );
       })}
-
-      <BaseModalContentColumn marginTop={16}>
-        <LearnMoreLink
-          to={
-            chain === Chains.Solana
-              ? "https://docs.solana.com/wallet-guide"
-              : "https://ethereum.org/en/wallets/"
-          }
-          target="_blank"
-          rel="noopener noreferrer"
-          className="w-100"
-        >
-          <LearnMoreText>Learn more about wallets</LearnMoreText>
-          <LearnMoreArrow>&#8594;</LearnMoreArrow>
-        </LearnMoreLink>
-      </BaseModalContentColumn>
     </ModalContainer>
   );
 };
@@ -204,16 +178,30 @@ const WalletButton: React.FC<WalletButtonProps> = ({
 
   const title = WALLET_TITLES[wallet];
 
+  const walletColors = {
+    [EthereumWallet.Metamask]: colors.wallets.Metamask,
+    [EthereumWallet.WalletConnect]: colors.wallets.WalletConnect,
+    [EthereumWallet.WalletLink]: colors.wallets.WalletLink,
+    [SolanaWallet.Phantom]: colors.wallets.Phantom,
+    [SolanaWallet.Solflare]: colors.wallets.Solflare,
+  };
+
   return (
-    <ConnectorButtonPill role="button" onClick={onConnect} status={status}>
+    <ConnectorButtonPill
+      role="button"
+      onClick={onConnect}
+      status={status}
+      color={walletColors[wallet]}
+    >
       <WalletIcon wallet={wallet}></WalletIcon>
       <ConnectorButtonText>
         {status === "initializing" ? initializingText : title}
       </ConnectorButtonText>
       {status === "connected" && (
-        <IndicatorContainer>
-          <Indicator connected={true} />
-        </IndicatorContainer>
+        <StyledBaseIndicator
+          size={8}
+          color={walletColors[wallet]}
+        ></StyledBaseIndicator>
       )}
     </ConnectorButtonPill>
   );

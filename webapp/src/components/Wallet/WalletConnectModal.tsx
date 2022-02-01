@@ -1,7 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { BaseButton, Title } from "shared/lib/designSystem";
+import {
+  BaseButton,
+  BaseLink,
+  BaseModalContentColumn,
+  BaseText,
+  Title,
+} from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import BasicModal from "shared/lib/components/Common/BasicModal";
@@ -18,6 +24,24 @@ import {
 } from "../../models/wallets";
 import { useWeb3Data } from "../../hooks/useWeb3Wallets";
 import { Chains } from "../../constants/constants";
+
+const LearnMoreLink = styled(BaseLink)`
+  text-align: center;
+  margin-top: 16px;
+
+  &:hover {
+    opacity: ${theme.hover.opacity};
+  }
+`;
+
+const LearnMoreText = styled(BaseText)`
+  text-decoration: underline;
+`;
+
+const LearnMoreArrow = styled(BaseText)`
+  text-decoration: none;
+  margin-left: 5px;
+`;
 
 type ConnectSteps = "chain" | "wallet";
 
@@ -75,7 +99,12 @@ const WalletConnectModal: React.FC = () => {
   };
 
   return (
-    <BasicModal show={show} onClose={onClose} height={450} maxWidth={500}>
+    <BasicModal
+      show={show}
+      onClose={onClose}
+      height={selectedStep === "chain" ? 430 : 480}
+      maxWidth={500}
+    >
       <>
         {selectedStep === "chain" ? (
           <ConnectChainBody
@@ -160,13 +189,30 @@ const ConnectStepsNav: React.FC<ConnectStepsNavProps> = ({
         </ConnectStepsButton>
       )}
       {!isChainStep && (
-        <ConnectStepsButton
-          role="button"
-          disabled={!walletInChain}
-          onClick={() => onActivate()}
-        >
-          <ButtonTitle>Connect</ButtonTitle>
-        </ConnectStepsButton>
+        <>
+          <ConnectStepsButton
+            role="button"
+            disabled={!walletInChain}
+            onClick={() => onActivate()}
+          >
+            <ButtonTitle>Connect</ButtonTitle>
+          </ConnectStepsButton>
+          <BaseModalContentColumn marginTop={16}>
+            <LearnMoreLink
+              to={
+                selectedChain === Chains.Solana
+                  ? "https://docs.solana.com/wallet-guide"
+                  : "https://ethereum.org/en/wallets/"
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-100"
+            >
+              <LearnMoreText>Learn more about wallets</LearnMoreText>
+              <LearnMoreArrow>&#8594;</LearnMoreArrow>
+            </LearnMoreLink>
+          </BaseModalContentColumn>
+        </>
       )}
     </>
   );

@@ -27,6 +27,6 @@ export const WALLET_TITLES = {
   [EthereumWallet.Metamask]: "METAMASK",
   [EthereumWallet.WalletConnect]: "WALLET CONNECT",
   [EthereumWallet.WalletLink]: "COINBASE WALLET",
-  [SolanaWallet.Phantom]: "Phantom",
-  [SolanaWallet.Solflare]: "Solflare",
+  [SolanaWallet.Phantom]: "PHANTOM",
+  [SolanaWallet.Solflare]: "SOLFLARE",
 };

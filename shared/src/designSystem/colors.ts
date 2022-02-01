@@ -56,6 +56,13 @@ const colors = {
     WNEAR: "#FFFFFF",
     AURORA: "#6ED24B",
   },
+  wallets: {
+    Metamask: "#F89D35",
+    WalletConnect: "#5697F5",
+    WalletLink: "#1C55E7",
+    Phantom: "#5442C0",
+    Solflare: "#FC5728",
+  },
 };
 
 export default colors;

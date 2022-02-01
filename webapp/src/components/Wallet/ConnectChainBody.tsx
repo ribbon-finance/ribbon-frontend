@@ -9,6 +9,7 @@ import {
   ENABLED_CHAINS,
   READABLE_CHAIN_NAMES,
 } from "../../constants/constants";
+import theme from "shared/lib/designSystem/theme";
 
 interface ConnectChainBodyProps {
   onClose?: () => void;
@@ -34,6 +35,10 @@ const NetworkContainer = styled.div<{
   border-radius: 8px;
   margin-bottom: 16px;
   cursor: pointer;
+
+  &:hover {
+    opacity: ${theme.hover.opacity};
+  }
 
   ${(props) =>
     props.active
