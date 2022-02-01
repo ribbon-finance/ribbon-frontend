@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import { getAssetColor, getAssetLogo } from "shared/lib/utils/asset";

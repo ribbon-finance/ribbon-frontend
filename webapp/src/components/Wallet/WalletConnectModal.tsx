@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { BaseButton, PrimaryText, Title } from "shared/lib/designSystem";
+import { BaseButton, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import BasicModal from "shared/lib/components/Common/BasicModal";
@@ -15,7 +15,6 @@ import {
   ETHEREUM_WALLETS,
   SOLANA_WALLETS,
   Wallet,
-  WALLET_TITLES,
 } from "../../models/wallets";
 import { useWeb3Data } from "../../hooks/useWeb3Wallets";
 import { Chains } from "../../constants/constants";
@@ -58,12 +57,9 @@ const WalletConnectModal: React.FC = () => {
     setShow(false);
   }, [setShow]);
 
-  const handleClickStep = useCallback(
-    async (updatedStep: ConnectSteps) => {
-      setStep(updatedStep);
-    },
-    [chain]
-  );
+  const handleClickStep = useCallback(async (updatedStep: ConnectSteps) => {
+    setStep(updatedStep);
+  }, []);
 
   const onActivate = async () => {
     try {

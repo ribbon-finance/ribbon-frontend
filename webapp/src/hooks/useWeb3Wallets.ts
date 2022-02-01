@@ -58,18 +58,18 @@ export const useWeb3Data = (): Web3Data => {
     active: isActiveEth,
     activate: activateEth,
     deactivate: deactivateEth,
-    account: accountEth,
+    // account: accountEth,
     library: providerEth,
-    chainId: chainIdEth,
+    // chainId: chainIdEth,
 
     //   connector: connectorEth,
   } = useEVMWallet();
 
   const {
     connected: isActiveSolana,
-    connect: activateSolana,
+    // connect: activateSolana,
     disconnect: deactivateSolana,
-    wallet: accountSolana,
+    // wallet: accountSolana,
 
     //   connecting: connectingSolana,
     //   publicKey: publicKeySolana,
@@ -94,7 +94,7 @@ export const useWeb3Data = (): Web3Data => {
         setChain(activeChainId);
       }
     }
-  }, [isActiveEth, isActiveSolana, activeChainId]);
+  }, [isActiveEth, isActiveSolana, activeChainId, setChain]);
 
   // This useEffect triggers when there is a difference between selected chain and set chain in the ChainContext
   // - When there is a change between EVM chainIds
@@ -116,7 +116,7 @@ export const useWeb3Data = (): Web3Data => {
     if (isEVMChain) {
       setChain(activeChainId);
     }
-  }, [chain, providerEth]);
+  }, [chain, providerEth, activeChainId, setChain]);
 
   // Use this function to update the currently selected chain
   // This will automatically update the ChainContext as well
@@ -161,7 +161,13 @@ export const useWeb3Data = (): Web3Data => {
         console.error(error);
       }
     },
-    [activateEth, selectWalletSolana, providerEth]
+    [
+      providerEth,
+      activateEth,
+      selectWalletSolana,
+      deactivateEth,
+      deactivateSolana,
+    ]
   );
 
   return {

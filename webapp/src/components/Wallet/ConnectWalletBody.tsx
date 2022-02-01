@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import {
