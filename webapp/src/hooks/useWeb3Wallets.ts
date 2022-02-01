@@ -22,8 +22,6 @@ import {
 } from "shared/lib/utils/connectors";
 import { CHAINS_TO_ID } from "../constants/constants";
 import { switchChains } from "shared/lib/utils/chainSwitching";
-import { CHAINID } from "shared/lib/utils/env";
-import { useChains } from "./chainContext2";
 
 interface Data {
   chainId: number;

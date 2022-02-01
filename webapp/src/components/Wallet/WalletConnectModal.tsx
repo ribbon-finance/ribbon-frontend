@@ -19,13 +19,12 @@ import {
 } from "../../models/wallets";
 import { useWeb3Data } from "../../hooks/useWeb3Wallets";
 import { Chains } from "../../constants/constants";
-import { useChains } from "../../hooks/chainContext2";
 
 type ConnectSteps = "chain" | "wallet";
 
 const WalletConnectModal: React.FC = () => {
   const { addNewChain } = useWeb3Data();
-  const [chains] = useChains();
+  const [chain] = useChain();
   const [show, setShow] = useConnectWalletModal();
   const [selectedStep, setStep] = useState<ConnectSteps>("chain");
 
@@ -34,7 +33,7 @@ const WalletConnectModal: React.FC = () => {
 
   // We use these states to preset the state before sending to setChain when clicking the Next button
   const [selectedWallet, setWallet] = useState<Wallet>();
-  const [selectedChain, setWalletChain] = useState<Chains>(chains[0]);
+  const [selectedChain, setWalletChain] = useState<Chains>(chain);
 
   // We update wallets when there is a change of chains
   useEffect(() => {
@@ -63,7 +62,7 @@ const WalletConnectModal: React.FC = () => {
     async (updatedStep: ConnectSteps) => {
       setStep(updatedStep);
     },
-    [chains]
+    [chain]
   );
 
   const onActivate = async () => {
