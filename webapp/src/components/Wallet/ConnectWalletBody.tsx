@@ -3,15 +3,19 @@ import styled from "styled-components";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import {
   EthereumWallet,
-  ETHEREUM_WALLETS,
   SolanaWallet,
-  SOLANA_WALLETS,
   Wallet,
   WALLET_TITLES,
 } from "../../models/wallets";
 import { ConnectorButtonProps } from "./types";
 import { ConnectorButtonStatus } from "./types";
-import { BaseButton, BaseLink, BaseModalContentColumn, BaseText, Title } from "shared/lib/designSystem";
+import {
+  BaseButton,
+  BaseLink,
+  BaseModalContentColumn,
+  BaseText,
+  Title,
+} from "shared/lib/designSystem";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import {
   MetamaskIcon,
@@ -22,9 +26,9 @@ import {
 } from "shared/lib/assets/icons/connector";
 import Indicator from "shared/lib/components/Indicator/Indicator";
 import colors from "shared/lib/designSystem/colors";
-import { Chains, useChain } from "../../hooks/chainContext";
+import { useChain } from "../../hooks/chainContext";
 import theme from "shared/lib/designSystem/theme";
-import usePrevious from "../../hooks/usePrevious";
+import { Chains } from "../../constants/constants";
 
 const ModalContainer = styled.div`
   padding: 10px 16px;
@@ -108,39 +112,17 @@ const ConnectorButtonPill = styled(ConnectorButton)`
   border-radius: 100px;
 `;
 
-const ConnectWalletBody: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-  const { activate, active, connectingWallet, connectedWallet } = useWeb3Wallet();
-
-  // When the user wants to switch between wallets, we need to track that state
-  const prevConnectedWallet = usePrevious<Wallet | undefined>(connectedWallet);
-
+const ConnectWalletBody: React.FC<{
+  onSelectWallet: (wallet: Wallet) => void;
+  selectedWallet: Wallet | undefined;
+  wallets: Wallet[];
+}> = ({ onSelectWallet, selectedWallet, wallets }) => {
+  const { connectingWallet } = useWeb3Wallet();
   const [chain] = useChain();
-
-  const handleConnect = useCallback(
-    async (wallet: Wallet) => {
-      console.log(wallet, chain);
-      await activate(wallet);
-    },
-    [activate]
-  );
-
-  // useEffect(() => {
-  //   const changeWalletsOnSameChain =
-  //     prevConnectedWallet && prevConnectedWallet !== connectedWallet;
-
-  //   const connectNewWallet = !prevConnectedWallet && connectedWallet;
-
-  //   // console.log(prevConnectedWallet, connectedWallet);
-
-  //   // Change between different wallets on the same network
-  //   if (changeWalletsOnSameChain || connectNewWallet) {
-  //     onClose();
-  //   }
-  // }, [onClose, prevConnectedWallet, connectedWallet]);
 
   const getWalletStatus = useCallback(
     (wallet: Wallet): ConnectorButtonStatus => {
-      if (connectedWallet === wallet) {
+      if (selectedWallet === wallet) {
         return "connected";
       }
 
@@ -152,35 +134,24 @@ const ConnectWalletBody: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
       return "neglected";
     },
-    [connectedWallet, connectingWallet]
+    [selectedWallet, connectingWallet]
   );
-
-  const wallets: Wallet[] = useMemo(() => {
-    switch (chain) {
-      case Chains.Ethereum:
-      case Chains.Avalanche:
-        return ETHEREUM_WALLETS;
-      case Chains.Solana:
-        return SOLANA_WALLETS;
-      case Chains.NotSelected:
-      default:
-        return [];
-    }
-  }, [chain]);
 
   return (
     <ModalContainer>
       <TitleContainer>
         <Title>Connect Wallet</Title>
       </TitleContainer>
-
       {wallets.map((wallet: Wallet, index: number) => {
         return (
-          <BaseModalContentColumn key={wallet} {...(index === 0 ? {} : { marginTop: 16 })}>
+          <BaseModalContentColumn
+            key={wallet}
+            {...(index === 0 ? {} : { marginTop: 16 })}
+          >
             <WalletButton
               wallet={wallet as Wallet}
               status={getWalletStatus(wallet as Wallet)}
-              onConnect={() => handleConnect(wallet as Wallet)}
+              onConnect={async () => onSelectWallet(wallet as Wallet)}
             ></WalletButton>
           </BaseModalContentColumn>
         );
@@ -188,7 +159,11 @@ const ConnectWalletBody: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
       <BaseModalContentColumn marginTop={16}>
         <LearnMoreLink
-          to={chain === Chains.Solana ? "https://docs.solana.com/wallet-guide" : "https://ethereum.org/en/wallets/"}
+          to={
+            chain === Chains.Solana
+              ? "https://docs.solana.com/wallet-guide"
+              : "https://ethereum.org/en/wallets/"
+          }
           target="_blank"
           rel="noopener noreferrer"
           className="w-100"
@@ -209,18 +184,32 @@ interface WalletButtonProps {
   onConnect: () => Promise<void>;
 }
 
-const WalletButton: React.FC<WalletButtonProps> = ({ wallet, status, onConnect }) => {
-  const initializingText = useTextAnimation(Boolean(status === "initializing"), {
-    texts: ["INITIALIZING", "INITIALIZING .", "INITIALIZING ..", "INITIALIZING ..."],
-    interval: 250,
-  });
+const WalletButton: React.FC<WalletButtonProps> = ({
+  wallet,
+  status,
+  onConnect,
+}) => {
+  const initializingText = useTextAnimation(
+    Boolean(status === "initializing"),
+    {
+      texts: [
+        "INITIALIZING",
+        "INITIALIZING .",
+        "INITIALIZING ..",
+        "INITIALIZING ...",
+      ],
+      interval: 250,
+    }
+  );
 
   const title = WALLET_TITLES[wallet];
 
   return (
     <ConnectorButtonPill role="button" onClick={onConnect} status={status}>
       <WalletIcon wallet={wallet}></WalletIcon>
-      <ConnectorButtonText>{status === "initializing" ? initializingText : title}</ConnectorButtonText>
+      <ConnectorButtonText>
+        {status === "initializing" ? initializingText : title}
+      </ConnectorButtonText>
       {status === "connected" && (
         <IndicatorContainer>
           <Indicator connected={true} />

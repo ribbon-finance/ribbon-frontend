@@ -12,7 +12,6 @@ import { ANNOUNCEMENT, getVaultURI } from "../../constants/constants";
 import { switchChains } from "shared/lib/utils/chainSwitching";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { isAuroraNetwork } from "shared/lib/constants/constants";
-import { SolanaLogo } from "shared/lib/assets/icons/solAssets";
 
 const ProductTitle = styled(Title)`
   display: none;

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import styled from "styled-components";
 
 import { BaseButton, PrimaryText, Title } from "shared/lib/designSystem";
@@ -8,38 +8,102 @@ import BasicModal from "shared/lib/components/Common/BasicModal";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import ConnectWalletBody from "./ConnectWalletBody";
 import ConnectChainBody from "./ConnectChainBody";
-import { Chains, useChain } from "../../hooks/chainContext";
-import { Button } from "shared/lib/components/Common/buttons";
+import { useChain } from "../../hooks/chainContext";
+import {
+  EthereumWallet,
+  SolanaWallet,
+  ETHEREUM_WALLETS,
+  SOLANA_WALLETS,
+  Wallet,
+  WALLET_TITLES,
+} from "../../models/wallets";
+import { useWeb3Data } from "../../hooks/useWeb3Wallets";
+import { Chains } from "../../constants/constants";
+import { useChains } from "../../hooks/chainContext2";
 
 type ConnectSteps = "chain" | "wallet";
 
 const WalletConnectModal: React.FC = () => {
-  const [chain, setChain] = useChain();
+  const { addNewChain } = useWeb3Data();
+  const [chains] = useChains();
   const [show, setShow] = useConnectWalletModal();
-  const [step, setStep] = useState<ConnectSteps>("chain");
+  const [selectedStep, setStep] = useState<ConnectSteps>("chain");
+
+  // List of wallets dependent on selected chain
+  const [walletList, setWalletList] = useState<Wallet[]>([]);
+
+  // We use these states to preset the state before sending to setChain when clicking the Next button
+  const [selectedWallet, setWallet] = useState<Wallet>();
+  const [selectedChain, setWalletChain] = useState<Chains>(chains[0]);
+
+  // We update wallets when there is a change of chains
+  useEffect(() => {
+    setWalletChain(selectedChain);
+    switch (selectedChain) {
+      case Chains.Ethereum:
+      case Chains.Avalanche:
+        setWalletList(ETHEREUM_WALLETS);
+        break;
+      case Chains.Solana:
+        setWalletList(SOLANA_WALLETS);
+        break;
+      case Chains.NotSelected:
+      default:
+        setWalletList([]);
+        break;
+    }
+  }, [selectedChain]);
 
   const onClose = useCallback(() => {
+    setTimeout(() => setStep("chain"), 100);
     setShow(false);
-    setTimeout(() => setStep("chain"), 300);
   }, [setShow]);
 
-  const handleSelectChain = useCallback(
-    (chain: Chains) => {
-      setChain(chain);
+  const handleClickStep = useCallback(
+    async (updatedStep: ConnectSteps) => {
+      setStep(updatedStep);
     },
-    [setChain, setStep]
+    [chains]
   );
+
+  const onActivate = async () => {
+    try {
+      await addNewChain(
+        selectedWallet as EthereumWallet | SolanaWallet,
+        selectedChain
+      ).then(() => {
+        onClose();
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <BasicModal show={show} onClose={onClose} height={450} maxWidth={500}>
       <>
-        {step === "chain" ? (
-          <ConnectChainBody onClose={onClose} onSelectChain={handleSelectChain}></ConnectChainBody>
+        {selectedStep === "chain" ? (
+          <ConnectChainBody
+            currentChain={selectedChain}
+            onClose={onClose}
+            onSelectChain={setWalletChain}
+          ></ConnectChainBody>
         ) : (
-          <ConnectWalletBody onClose={onClose}></ConnectWalletBody>
+          <ConnectWalletBody
+            wallets={walletList}
+            selectedWallet={selectedWallet}
+            onSelectWallet={setWallet}
+          ></ConnectWalletBody>
         )}
 
-        <ConnectStepsNav step={step} chain={chain} setStep={setStep}></ConnectStepsNav>
+        <ConnectStepsNav
+          selectedChain={selectedChain}
+          wallets={walletList}
+          step={selectedStep}
+          selectedWallet={selectedWallet}
+          onClickStep={handleClickStep}
+          onActivate={onActivate}
+        ></ConnectStepsNav>
       </>
     </BasicModal>
   );
@@ -47,8 +111,11 @@ const WalletConnectModal: React.FC = () => {
 
 interface ConnectStepsNavProps {
   step: ConnectSteps;
-  chain: Chains;
-  setStep: (step: ConnectSteps) => void;
+  selectedChain: Chains;
+  selectedWallet: Wallet | undefined;
+  onClickStep: (step: ConnectSteps) => void;
+  wallets: Wallet[];
+  onActivate: () => void;
 }
 
 const ConnectStepsButton = styled(BaseButton)<{ disabled?: boolean }>`
@@ -57,37 +124,52 @@ const ConnectStepsButton = styled(BaseButton)<{ disabled?: boolean }>`
   color: ${colors.green};
   justify-content: center;
   background-color: ${colors.buttons.secondaryBackground};
-
   ${(props) =>
     props.disabled
       ? `
-        opacity: 0.24;
-        cursor: default;
-      `
+      opacity: 0.24;
+      cursor: default;
+    `
       : `
-        &:hover {
-          opacity: ${theme.hover.opacity};
-        }
-      `}
+      &:hover {
+        opacity: ${theme.hover.opacity};
+      }
+    `}
 `;
 
 const ButtonTitle = styled(Title)`
   color: ${colors.buttons.secondaryText};
 `;
 
-const ConnectStepsNav: React.FC<ConnectStepsNavProps> = ({ step, chain, setStep }) => {
+const ConnectStepsNav: React.FC<ConnectStepsNavProps> = ({
+  step,
+  selectedChain,
+  selectedWallet,
+  wallets,
+  onClickStep,
+  onActivate,
+}) => {
+  // Render the proper wallet list based on the selected wallet
+  const walletInChain = selectedWallet && wallets.includes(selectedWallet);
   const isChainStep = step === "chain";
-  console.log(chain);
 
   return (
     <>
       {isChainStep && (
-        <ConnectStepsButton role="button" disabled={!chain} onClick={() => setStep("wallet")}>
+        <ConnectStepsButton
+          role="button"
+          disabled={!selectedChain}
+          onClick={() => onClickStep("wallet")}
+        >
           <ButtonTitle>Next</ButtonTitle>
         </ConnectStepsButton>
       )}
       {!isChainStep && (
-        <ConnectStepsButton role="button" disabled={!isChainStep}>
+        <ConnectStepsButton
+          role="button"
+          disabled={!walletInChain}
+          onClick={() => onActivate()}
+        >
           <ButtonTitle>Connect</ButtonTitle>
         </ConnectStepsButton>
       )}

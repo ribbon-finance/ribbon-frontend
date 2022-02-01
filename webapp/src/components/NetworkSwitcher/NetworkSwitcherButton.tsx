@@ -1,12 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
-
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { getAssetLogo } from "shared/lib/utils/asset";
-import { CHAINS_TO_NATIVE_TOKENS } from "../../constants/constants";
-import NetworkSwitcherModal from "./NetworkSwitcherModal";
-import { Chains, useChain } from "../../hooks/chainContext";
+import { Chains, CHAINS_TO_NATIVE_TOKENS } from "../../constants/constants";
+import { useChain } from "../../hooks/chainContext";
 import WalletConnectModal from "../Wallet/WalletConnectModal";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 

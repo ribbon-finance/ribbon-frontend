@@ -1,18 +1,19 @@
 import React, { useCallback } from "react";
-import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
 import styled from "styled-components";
 
 import { getAssetColor, getAssetLogo } from "shared/lib/utils/asset";
 import { Title, Subtitle, BaseIndicator } from "shared/lib/designSystem";
-import { switchChains } from "shared/lib/utils/chainSwitching";
-import useScreenSize from "shared/lib/hooks/useScreenSize";
-import sizes from "shared/lib/designSystem/sizes";
-import { Chains, useChain } from "../../hooks/chainContext";
-import { CHAINS_TO_NATIVE_TOKENS, ENABLED_CHAINS, READABLE_CHAIN_NAMES } from "../../constants/constants";
+import {
+  Chains,
+  CHAINS_TO_NATIVE_TOKENS,
+  ENABLED_CHAINS,
+  READABLE_CHAIN_NAMES,
+} from "../../constants/constants";
 
 interface ConnectChainBodyProps {
-  onClose: () => void;
+  onClose?: () => void;
   onSelectChain: (chain: Chains) => void;
+  currentChain: Chains | undefined;
 }
 
 const ModalContainer = styled.div`
@@ -34,7 +35,10 @@ const NetworkContainer = styled.div<{
   margin-bottom: 16px;
   cursor: pointer;
 
-  ${(props) => (props.active ? `border: 1px solid ${props.borderColor};` : "border: 1px solid #212127;")}
+  ${(props) =>
+    props.active
+      ? `border: 1px solid ${props.borderColor};`
+      : "border: 1px solid #212127;"}
 `;
 const NetworkNameContainer = styled.div`
   display: flex;
@@ -61,24 +65,14 @@ const AssetCircle = styled(BaseIndicator)<{
   justify-content: center;
   padding: 5px 5px;
 `;
-
 const NetworkContainerPill = styled(NetworkContainer)`
   border-radius: 100px;
 `;
 
-const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({ onClose, onSelectChain }) => {
-  const [currentChain] = useChain();
-  const handleClose = useCallback(() => {
-    onClose();
-  }, [onClose]);
-
-  const handleSelectChain = useCallback(
-    (chain: Chains) => {
-      onSelectChain(chain);
-    },
-    [onSelectChain]
-  );
-
+const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({
+  onSelectChain,
+  currentChain,
+}) => {
   return (
     <ModalContainer>
       <TitleContainer>
@@ -90,7 +84,7 @@ const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({ onClose, onSelectCh
           key={chain}
           chain={chain}
           currentChain={currentChain as Chains}
-          onSelectChain={handleSelectChain}
+          onSelectChain={() => onSelectChain(chain)}
         ></ChainButton>
       ))}
     </ModalContainer>
@@ -108,7 +102,12 @@ export const ChainButton: React.FC<{
   const logoSize = 28;
 
   return (
-    <NetworkContainerPill key={chain} onClick={() => onSelectChain(chain)} borderColor={color} active={active}>
+    <NetworkContainerPill
+      key={chain}
+      onClick={() => onSelectChain(chain)}
+      borderColor={color}
+      active={active}
+    >
       <NetworkNameContainer>
         <AssetCircle size={40} color={`${color}1F`}>
           <Logo height={logoSize} width={logoSize}></Logo>

@@ -51,7 +51,7 @@ import { getAssetDecimals } from "shared/lib/utils/asset";
 import YourPosition from "shared/lib/components/Vault/YourPosition";
 import AirdropButton from "../Airdrop/AirdropButton";
 import AirdropModal from "../Airdrop/AirdropModal";
-import { Wallet, isSolanaWallet } from "../../models/wallets";
+import { isEthereumWallet, Wallet } from "../../models/wallets";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -407,12 +407,15 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     setShowActionModal(true);
   };
 
-  const renderButtonContent = () =>
-    active && account && !isSolanaWallet(connectedWallet as Wallet) ? (
+  const renderButtonContent = () => {
+    // FIXME: Fix dAvatar for EVM chains
+    return active && account ? (
       <>
-        <Avatar>
-          <Davatar address={account} size={20} />
-        </Avatar>
+        {isEthereumWallet(connectedWallet as Wallet) && (
+          <Avatar>
+            <Davatar address={account} size={20} />
+          </Avatar>
+        )}
         <WalletButtonText connected={active}>
           {ensData?.name || truncateAddress(account)}{" "}
           <ButtonArrow isOpen={isMenuOpen} />
@@ -421,6 +424,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     ) : (
       <WalletButtonText connected={active}>CONNECT WALLET</WalletButtonText>
     );
+  };
 
   const renderMenuItem = (
     title: string,

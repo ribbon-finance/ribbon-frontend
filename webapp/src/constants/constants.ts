@@ -5,7 +5,6 @@ import {
   VaultVersion,
 } from "shared/lib/constants/constants";
 import { Airdrop, AirdropBreakdown, AirdropProof } from "../models/airdrop";
-import { Chains } from "../hooks/chainContext";
 import { Assets } from "shared/lib/store/types";
 
 export const proof: AirdropProof = isDevelopment()
@@ -58,6 +57,13 @@ export const ANNOUNCEMENT: Announcement | undefined = isChainIdEnabled(
     }
   : undefined;
 
+export enum Chains {
+  NotSelected,
+  Ethereum,
+  Avalanche,
+  Solana,
+}
+
 export const READABLE_CHAIN_NAMES: Record<Chains, string> = {
   [Chains.Ethereum]: "Ethereum",
   [Chains.Avalanche]: "Avalanche",
@@ -76,4 +82,11 @@ export const CHAINS_TO_NATIVE_TOKENS: Record<Chains, Assets> = {
   [Chains.Avalanche]: "WAVAX",
   [Chains.Solana]: "SOL",
   [Chains.NotSelected]: "WETH",
+};
+
+export const CHAINS_TO_ID: Record<number, number> = {
+  [Chains.Ethereum]: isDevelopment() ? CHAINID.ETH_KOVAN : CHAINID.ETH_MAINNET,
+  [Chains.Avalanche]: isDevelopment()
+    ? CHAINID.AVAX_FUJI
+    : CHAINID.AVAX_MAINNET,
 };
