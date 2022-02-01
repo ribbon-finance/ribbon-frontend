@@ -4,12 +4,15 @@ import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem";
 import ActionSteps from "./ActionSteps";
-import { Steps, STEPS } from "./types";
+import {
+  Steps,
+  STEPS,
+} from "webapp/lib/components/Vault/VaultActionsForm/Modal/types";
 import sizes from "shared/lib/designSystem/sizes";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
 import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
-import useVaultActionForm from "../../../../hooks/useVaultActionForm";
+import useVaultActionForm from "webapp/lib/hooks/useVaultActionForm";
 
 import { capitalize } from "shared/lib/utils/text";
 

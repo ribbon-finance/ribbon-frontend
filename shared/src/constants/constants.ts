@@ -731,18 +731,22 @@ export const LidoOracleAddress = isDevelopment()
   : addresses.mainnet.lidoOracle;
 
 export const SUBGRAPHS_TO_QUERY: [VaultVersion, CHAINID][] = isDevelopment()
+  ? !isTreasury()
+    ? [
+        ["v1", CHAINID.ETH_KOVAN],
+        ["v2", CHAINID.ETH_KOVAN],
+        ["v2", CHAINID.AVAX_FUJI],
+        ["v2", CHAINID.AURORA_MAINNET],
+      ]
+    : [["v2", CHAINID.ETH_KOVAN]]
+  : !isTreasury()
   ? [
-      ["v1", CHAINID.ETH_KOVAN],
-      ["v2", CHAINID.ETH_KOVAN],
-      ["v2", CHAINID.AVAX_FUJI],
-      ["v2", CHAINID.AURORA_MAINNET],
-    ]
-  : [
       ["v1", CHAINID.ETH_MAINNET],
       ["v2", CHAINID.ETH_MAINNET],
       ["v2", CHAINID.AVAX_MAINNET],
       ["v2", CHAINID.AURORA_MAINNET],
-    ];
+    ]
+  : [["v2", CHAINID.ETH_MAINNET]];
 
 export const RibbonTreasuryAddress = {
   [CHAINID.ETH_KOVAN]: "0xD380980791079Bd50736Ffe577b8D57A3C196ccd",

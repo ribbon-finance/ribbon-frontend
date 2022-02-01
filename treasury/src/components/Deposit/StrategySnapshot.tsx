@@ -16,7 +16,7 @@ import {
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import StrikeChart from "./StrikeChart";
+import StrikeChart from "webapp/lib/components/Deposit/StrikeChart";
 import { formatUnits } from "@ethersproject/units";
 import { useLatestOption } from "shared/lib/hooks/useLatestOption";
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
@@ -41,6 +41,8 @@ const VaultPerformanceChartSecondaryContainer = styled.div`
 `;
 
 const DataCol = styled(Col)`
+  display: flex;
+  flex-direction: column;
   border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
 
   && {
@@ -55,12 +57,13 @@ const DataCol = styled(Col)`
 const DataLabel = styled(SecondaryText)`
   font-size: 12px;
   line-height: 16px;
-  margin-bottom: 4px;
 `;
 
 const DataNumber = styled(Title)<{ variant?: "green" | "red" }>`
   font-size: 16px;
   line-height: 24px;
+  margin-top: 4px;
+
   ${(props) => {
     switch (props.variant) {
       case "green":
@@ -183,7 +186,9 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
             <DataNumber>{strikeAPRText}</DataNumber>
           </DataCol>
           <DataCol xs="6">
-            <DataLabel className="d-block">Latest Yield Earned</DataLabel>
+            <div className="d-flex align-items-center">
+              <DataLabel className="d-block">Latest Yield Earned</DataLabel>
+            </div>
             <DataNumber
               variant={
                 latestYield !== "---" && !activitiesLoading

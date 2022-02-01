@@ -9,7 +9,10 @@ import useEagerConnect from "shared/lib/hooks/useEagerConnect";
 import PortfolioPage from "../pages/Portfolio/PortfolioPage";
 import Footer from "./Footer/Footer";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
-import { TxStatusToast, WithdrawReminderToast } from "./Common/toasts";
+import {
+  TxStatusToast,
+  WithdrawReminderToast,
+} from "webapp/lib/components/Common/toasts";
 import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal";
 import NotFound from "../pages/NotFound";
 import colors from "shared/lib/designSystem/colors";

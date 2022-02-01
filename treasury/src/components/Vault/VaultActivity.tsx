@@ -8,8 +8,13 @@ import React, {
 import styled from "styled-components";
 
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
-import { ActivityFilter, activityFilters, SortBy, sortByList } from "./types";
-import VaultActivityHeader from "./VaultActivityHeader";
+import {
+  ActivityFilter,
+  activityFilters,
+  SortBy,
+  sortByList,
+} from "webapp/lib/components/Vault/types";
+import VaultActivityHeader from "webapp/lib/components/Vault/VaultActivityHeader";
 import DesktopVaultActivityList from "./DesktopVaultActivityList";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
@@ -45,7 +50,6 @@ const VaultActivity: React.FC<VaultActivityProps> = ({
   const [activityFilter, setActivityFilter] = useState<ActivityFilter>(
     activityFilters[0]
   );
-
   const [sortBy, setSortBy] = useState<SortBy>(sortByList[0]);
   const { width } = useScreenSize();
   const [page, setPage] = useState(1);

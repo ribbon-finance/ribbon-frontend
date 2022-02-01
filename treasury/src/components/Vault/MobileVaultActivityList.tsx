@@ -11,7 +11,11 @@ import {
   formatOption,
   formatBigNumber,
 } from "shared/lib/utils/math";
-import { getAssets, VaultOptions } from "shared/lib/constants/constants";
+import {
+  getAssets,
+  isPutVault,
+  VaultOptions,
+} from "shared/lib/constants/constants";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 
 const VaultActivityRow = styled.div`
@@ -66,13 +70,15 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
   activities,
   vaultOption,
 }) => {
-  const { asset, decimals } = useMemo(() => {
+  const { asset } = useMemo(() => {
     const asset = getAssets(vaultOption);
     return {
       asset: asset,
       decimals: getAssetDecimals(asset),
     };
   }, [vaultOption]);
+
+  const premiumDecimals = getAssetDecimals("USDC");
 
   const renderVaultActivity = useCallback(
     (activity: VaultActivity) => {
@@ -87,7 +93,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
                 O-{asset}-
                 {moment(activity.expiry, "X").format("DD-MMM-YY").toUpperCase()}
                 -{formatOption(activity.strikePrice)}
-                {"C"}
+                {isPutVault(vaultOption) ? "P" : "C"}
               </VaultSecondaryInfoText>
               <VaultActivityInfoRow>
                 <div className="d-flex flex-column">
@@ -120,13 +126,13 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
                   .format("DD-MMM-YY")
                   .toUpperCase()}
                 -{formatOption(activity.vaultShortPosition.strikePrice)}
-                {"C"}
+                {isPutVault(vaultOption) ? "P" : "C"}
               </VaultSecondaryInfoText>
               <VaultActivityInfoRow>
                 <div className="d-flex flex-column">
                   <VaultActivityYieldText>
-                    +{formatBigNumber(activity.premium, decimals)}{" "}
-                    {getAssetDisplay(asset)}
+                    +{formatBigNumber(activity.premium, premiumDecimals)}{" "}
+                    {getAssetDisplay("USDC")}
                   </VaultActivityYieldText>
                   <VaultSecondaryInfoText>
                     {moment(activity.timestamp, "X").fromNow()}
@@ -140,7 +146,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
           );
       }
     },
-    [asset, decimals]
+    [asset, vaultOption, premiumDecimals]
   );
 
   return (

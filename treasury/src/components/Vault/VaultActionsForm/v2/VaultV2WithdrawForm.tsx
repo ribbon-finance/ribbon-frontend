@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { Frame } from "framer";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
 import { BigNumber } from "ethers";
 
 import colors from "shared/lib/designSystem/colors";
@@ -18,15 +18,18 @@ import {
   ACTIONS,
   V2WithdrawOption,
   V2WithdrawOptionList,
-} from "../Modal/types";
-import useVaultActionForm from "../../../../hooks/useVaultActionForm";
+} from "webapp/lib/components/Vault/VaultActionsForm/Modal/types";
+import useVaultActionForm from "webapp/lib/hooks/useVaultActionForm";
 import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 import {
   ActionButton,
   ConnectWalletButton,
 } from "shared/lib/components/Common/buttons";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import { VaultInputValidationErrorList, VaultValidationErrors } from "../types";
+import {
+  VaultInputValidationErrorList,
+  VaultValidationErrors,
+} from "webapp/lib/components/Vault/VaultActionsForm/types";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
@@ -124,7 +127,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
     vaultActionForm,
     withdrawMetadata,
   } = useVaultActionForm(vaultOption);
-  const { active } = useWeb3React();
+  const { active } = useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
 
   const [activeBackgroundState, setActiveBackgroundState] = useState<
@@ -276,7 +279,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
               <SecondaryText>Available Limit</SecondaryText>
               <TooltipExplanation
                 title="AVAILABLE LIMIT"
-                explanation="This is equal to the value of your funds currently deployed in the vault's strategy minus the funds you have already initiated for withdrawal."
+                explanation="This is equal to the value of your funds currently deployed in the weekly strategy minus the funds you have already initiated for withdrawal."
                 renderContent={({ ref, ...triggerHandler }) => (
                   <HelpInfo containerRef={ref} {...triggerHandler}>
                     i
@@ -455,7 +458,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
       {/* Input */}
       <BaseInputLabel className="mt-4">AMOUNT ({assetDisplay})</BaseInputLabel>
       <BaseInputContainer
-        className="position-relative mb-2"
+        className="mb-2"
         error={error ? VaultInputValidationErrorList.includes(error) : false}
       >
         <BaseInput

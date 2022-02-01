@@ -5,18 +5,18 @@ import { useHistory } from "react-router";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
-import VaultV2MigrationForm from "./v2/VaultV2MigrationForm";
-import { FormStepProps } from "./types";
+import VaultV2MigrationForm from "webapp/lib/components/Vault/VaultActionsForm/v2/VaultV2MigrationForm";
+import { FormStepProps } from "webapp/lib/components/Vault/VaultActionsForm/types";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
 import { Title, PrimaryText, SecondaryText } from "shared/lib/designSystem";
 import { getVaultColor } from "shared/lib/utils/vault";
 import VaultV2DepositWithdrawForm from "./v2/VaultV2DepositWithdrawForm";
-import useVaultActionForm from "../../../hooks/useVaultActionForm";
-import { ACTIONS } from "./Modal/types";
+import useVaultActionForm from "webapp/lib/hooks/useVaultActionForm";
+import { ACTIONS } from "webapp/lib/components/Vault/VaultActionsForm/Modal/types";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import { getVaultURI } from "../../../constants/constants";
+import { getVaultURI } from "webapp/lib/constants/constants";
 import { WithdrawIcon } from "shared/lib/assets/icons/icons";
 import { RibbonVaultMigrationMap } from "shared/lib/constants/constants";
 
@@ -226,9 +226,8 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
             formExtraText =
               vaultActionForm.withdrawOption === "instant" ? (
                 <>
-                  IMPORTANT: instant withdrawals are only available before 11am
-                  UTC on Friday for funds that have not been deployed in the
-                  vault's strategy
+                  IMPORTANT: instant withdrawals are only available for funds
+                  that have not been deployed in the vault's strategy
                 </>
               ) : (
                 <>
