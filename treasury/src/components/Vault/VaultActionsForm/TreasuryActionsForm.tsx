@@ -134,7 +134,7 @@ const TreasuryActionsForm: React.FC<TreasuryActionsFormProps> = ({
   variant,
 }) => {
   const color = "#fc0a54";
-  const { handleInputChange, handleSubmission, error, code, globalAccess } =
+  const { handleInputChange, handleSubmission, error, code } =
     useGlobalAccess();
 
   const body = useMemo(() => {
@@ -189,7 +189,7 @@ const TreasuryActionsForm: React.FC<TreasuryActionsFormProps> = ({
         </PrimaryText>
       </div>
     );
-  }, [code, handleInputChange, handleSubmission, error, globalAccess]);
+  }, [code, handleInputChange, handleSubmission, error]);
 
   return (
     <Container variant={variant}>
