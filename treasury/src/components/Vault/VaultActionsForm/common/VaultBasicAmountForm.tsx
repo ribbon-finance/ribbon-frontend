@@ -31,7 +31,10 @@ import {
 } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import { VaultInputValidationErrorList, VaultValidationErrors } from "../../types";
+import {
+  VaultInputValidationErrorList,
+  VaultValidationErrors,
+} from "../../types";
 import colors from "shared/lib/designSystem/colors";
 import { formatBigNumber } from "shared/lib/utils/math";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
@@ -139,8 +142,6 @@ interface VaultBasicAmountFormProps {
   onFormSubmit: () => void;
   actionButtonText: string;
 }
-
-
 
 const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
   vaultOption,
@@ -297,7 +298,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
           case "withdrawAmountStaked":
             return "Withdrawal amount staked";
           case "minNotReached":
-            return "Minimum deposit requirement is not met"
+            return "Minimum deposit requirement is not met";
         }
       }
 
@@ -310,24 +311,23 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
     () =>
       formExtra ? (
         <>
-        {formExtra.map((extra) => {
-          return (
-            <div className="d-flex align-items-center mt-3 mb-1">
-              <SecondaryText>{extra.label}</SecondaryText>
-              <Title
-                fontSize={14}
-                lineHeight={24}
-                className="ml-auto"
-                color={extra.error ? colors.red : undefined}
-              >
-                {extra.amount &&
-                  formatBigNumber(extra.amount, getAssetDecimals(asset))}{" "}
-                {extra.unitDisplay || getAssetDisplay(asset)}
-              </Title>
-            </div>
-          )
-          })
-        }
+          {formExtra.map((extra) => {
+            return (
+              <div className="d-flex align-items-center mt-3 mb-1">
+                <SecondaryText>{extra.label}</SecondaryText>
+                <Title
+                  fontSize={14}
+                  lineHeight={24}
+                  className="ml-auto"
+                  color={extra.error ? colors.red : undefined}
+                >
+                  {extra.amount &&
+                    formatBigNumber(extra.amount, getAssetDecimals(asset))}{" "}
+                  {extra.unitDisplay || getAssetDisplay(asset)}
+                </Title>
+              </div>
+            );
+          })}
         </>
       ) : (
         <></>

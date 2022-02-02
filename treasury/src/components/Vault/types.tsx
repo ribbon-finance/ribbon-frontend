@@ -9,7 +9,7 @@ export const VaultValidationErrorList = [
   "allBalanceStaked",
   "withdrawLimitReached",
   "eixstingWithdraw",
-  "minNotReached"
+  "minNotReached",
 ] as const;
 
 export type VaultValidationErrors = typeof VaultValidationErrorList[number];
@@ -21,5 +21,5 @@ export const VaultInputValidationErrorList: Array<VaultValidationErrors> = [
   "withdrawLimitExceeded",
   "withdrawAmountStaked",
   "eixstingWithdraw",
-  "minNotReached"
+  "minNotReached",
 ];

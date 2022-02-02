@@ -35,12 +35,7 @@ const VaultInformation: React.FC<{
   vaultDeposit: number;
   vaultYield: number;
   asset: Assets;
-}> = ({
-  loading,
-  vaultDeposit,
-  vaultYield,
-  asset,
-}) => {
+}> = ({ loading, vaultDeposit, vaultYield, asset }) => {
   return (
     <Row noGutters>
       <VaultDataCol xs="3">
