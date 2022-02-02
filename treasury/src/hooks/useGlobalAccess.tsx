@@ -21,7 +21,7 @@ const useGlobalAccess = () => {
   );
 
   const handleSubmission = useCallback(() => {
-    const hex = ethers.utils.formatBytes32String(code);
+    const hex = ethers.utils.formatBytes32String(code.toUpperCase());
     const hash = ethers.utils.sha256(hex);
 
     let vault: TreasuryVaultOptions | undefined;
