@@ -34,16 +34,11 @@ const VaultInformation: React.FC<{
   loading: boolean;
   vaultDeposit: number;
   vaultYield: number;
-  displayData?: {
-    deposit?: string;
-    yield?: string;
-  };
   asset: Assets;
 }> = ({
   loading,
   vaultDeposit,
   vaultYield,
-  displayData: { deposit: displayDeposit, yield: displayYield } = {},
   asset,
 }) => {
   return (
@@ -54,8 +49,8 @@ const VaultInformation: React.FC<{
           {loading
             ? "Loading..."
             : `${
-                displayDeposit
-                  ? displayDeposit
+                vaultDeposit === 0
+                  ? "---"
                   : `${formatAmount(vaultDeposit)} ${getAssetDisplay(asset)}`
               }`}
         </VaultData>
@@ -67,8 +62,8 @@ const VaultInformation: React.FC<{
           {loading
             ? "Loading..."
             : `${
-                displayYield
-                  ? displayYield
+                vaultYield === 0
+                  ? "---"
                   : `${formatAmount(vaultYield)} ${getAssetDisplay("USDC")}`
               }`}
         </VaultData>
