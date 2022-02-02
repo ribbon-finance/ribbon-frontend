@@ -24,10 +24,14 @@ import { ERC20Token } from "shared/lib/models/eth";
 import { isVaultFull } from "shared/lib/utils/vault";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import VaultApprovalForm from "webapp/lib/components/Vault/VaultActionsForm/common/VaultApprovalForm";
-import VaultBasicAmountForm from "webapp/lib/components/Vault/VaultActionsForm/common/VaultBasicAmountForm";
+import VaultBasicAmountForm from "../common/VaultBasicAmountForm";
 import { getAssetDisplay } from "shared/lib/utils/asset";
-import { VaultValidationErrors } from "webapp/lib/components/Vault/VaultActionsForm/types";
+import { VaultValidationErrors } from "../../types";
 import VaultV2WithdrawForm from "./VaultV2WithdrawForm";
+import {
+  minDeposit,
+  TreasuryVaultOptions,
+} from "../../../../constants/constants";
 
 const FormTabContainer = styled.div`
   display: flex;
@@ -243,6 +247,15 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
               return "capacityOverflow";
             }
 
+            if (
+              amountBigNumber.lt(
+                minDeposit[vaultOption as TreasuryVaultOptions]
+              ) &&
+              lockedBalanceInAsset.isZero()
+            ) {
+              return "minNotReached";
+            }
+
             break;
 
           case ACTIONS.withdraw:
@@ -317,14 +330,37 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
           <VaultBasicAmountForm
             vaultOption={vaultOption}
             error={error}
-            formExtra={{
-              label: "Wallet Balance",
-              amount: userAssetBalance,
-              unitDisplay: getAssetDisplay(
-                vaultActionForm.depositAsset || asset
-              ),
-              error: error === "insufficientBalance",
-            }}
+            formExtra={
+              lockedBalanceInAsset.isZero()
+                ? [
+                    {
+                      label: "Wallet Balance",
+                      amount: userAssetBalance,
+                      unitDisplay: getAssetDisplay(
+                        vaultActionForm.depositAsset || asset
+                      ),
+                      error: error === "insufficientBalance",
+                    },
+                    {
+                      label: "Min. Initial Deposit",
+                      amount: minDeposit[vaultOption as TreasuryVaultOptions],
+                      unitDisplay: getAssetDisplay(
+                        vaultActionForm.depositAsset || asset
+                      ),
+                      error: error === "minNotReached",
+                    },
+                  ]
+                : [
+                    {
+                      label: "Wallet Balance",
+                      amount: userAssetBalance,
+                      unitDisplay: getAssetDisplay(
+                        vaultActionForm.depositAsset || asset
+                      ),
+                      error: error === "insufficientBalance",
+                    },
+                  ]
+            }
             showSwapDepositAsset={
               VaultAllowedDepositAssets[vaultOption].length > 1
             }

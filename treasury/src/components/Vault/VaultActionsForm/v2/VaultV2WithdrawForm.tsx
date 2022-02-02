@@ -29,7 +29,7 @@ import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import {
   VaultInputValidationErrorList,
   VaultValidationErrors,
-} from "webapp/lib/components/Vault/VaultActionsForm/types";
+} from "../../types";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";

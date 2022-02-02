@@ -237,11 +237,6 @@ const DepositPage = () => {
       loading={isLoading}
       vaultDeposit={totalDepositStr}
       vaultYield={totalYields}
-      displayData={
-        !isLoading && totalYields === 0
-          ? { deposit: "---", yield: "---" }
-          : undefined
-      }
       asset={asset}
     />
   );

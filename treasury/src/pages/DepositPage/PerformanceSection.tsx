@@ -166,9 +166,16 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           {treasuryCopy.vaultRisk}
           <br />
           <br />
-          The Treasury Vault smart contracts have not been audited. Users are
-          advised to exercise caution and only risk funds they can afford to
-          lose.
+          The Treasury Vault smart contracts have been{" "}
+          <Link
+            href="https://github.com/ribbon-finance/audit/blob/master/reports/PeckShield-Audit-Report-RibbonTreasuryVault.pdf"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            audited by PeckShield
+          </Link>{" "}
+          . Despite that, users are advised to exercise caution and only risk
+          funds they can afford to lose.
         </ParagraphText>
 
         <PrimaryText className="d-block mt-3">
