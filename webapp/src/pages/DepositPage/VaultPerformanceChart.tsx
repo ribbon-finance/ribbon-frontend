@@ -319,6 +319,8 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
     [yields]
   );
 
+  const isPrevWeekPerfPositive = prevWeekPerformance[vaultPerformanceTerm] >= 0;
+
   return (
     <>
       <div className="d-flex align-items-center mb-3">
@@ -518,12 +520,12 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
               <Title
                 fontSize={16}
                 lineHeight={24}
-                color={colors.green}
+                color={isPrevWeekPerfPositive ? colors.green : colors.red}
                 className="mt-1"
               >
-                {`${
-                  prevWeekPerformance[vaultPerformanceTerm] >= 0 ? "+" : ""
-                }${prevWeekPerformance[vaultPerformanceTerm].toFixed(2)}%`}
+                {`${isPrevWeekPerfPositive ? "+" : ""}${prevWeekPerformance[
+                  vaultPerformanceTerm
+                ].toFixed(2)}%`}
               </Title>
             </VaultPerformanceChartKPI>
           </VaultPerformanceChartSecondaryContainer>

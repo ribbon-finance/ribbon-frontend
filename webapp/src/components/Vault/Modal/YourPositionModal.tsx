@@ -283,7 +283,6 @@ const YourPositionModal: React.FC = () => {
         setVaultPositionModal((prev) => ({ ...prev, show: false }))
       }
       height={500}
-      theme={color}
     >
       <>
         <AnimatePresence initial={false} exitBeforeEnter>

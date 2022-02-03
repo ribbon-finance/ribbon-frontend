@@ -23,7 +23,7 @@ const Tooltip = styled.div`
 `;
 
 const ExplanationTitle = styled(Title)`
-  text-transform: none;
+  text-transform: uppercase;
 `;
 
 const Explanation = styled(SecondaryText)`
