@@ -234,7 +234,7 @@ const TradeTunnel: React.FC<TradeTunnelProps> = ({
         );
       default:
         if (color === colors.asset.stETH && tradeToken === "WETH") {
-          return <ColoredWETHLogo color={color} height="80%" width="80%" />;
+          return <ColoredWETHLogo color={color} height="100%" width="100%" />;
         }
 
         const AssetLogo = getAssetLogo(tradeToken);
@@ -242,8 +242,6 @@ const TradeTunnel: React.FC<TradeTunnelProps> = ({
         if (tradeToken === "yvUSDC") {
           return (
             <AssetLogo
-              height="80%"
-              width="80%"
               markerConfig={{
                 height: ((height * 5) / 6) * 0.35,
                 width: ((height * 5) / 6) * 0.35,
@@ -251,7 +249,10 @@ const TradeTunnel: React.FC<TradeTunnelProps> = ({
             />
           );
         }
-        return <AssetLogo height="80%" width="80%" />;
+        if (tradeToken === "WETH") {
+          return <AssetLogo height="80%" width="80%" />;
+        }
+        return <AssetLogo height="100%" width="100%" />;
     }
   }, [color, height, tradeToken]);
 
