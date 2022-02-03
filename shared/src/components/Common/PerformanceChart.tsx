@@ -27,6 +27,7 @@ interface PerformanceChartProps {
   extras?: React.ReactNode;
   onChartHover: (hoverInfo: HoverInfo) => void;
   themeColor?: string;
+  lineDecayAfterPointIndex?: number;
 }
 
 const PerformanceChart: React.FC<PerformanceChartProps> = ({
@@ -35,6 +36,7 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
   extras,
   onChartHover,
   themeColor = colors.green,
+  lineDecayAfterPointIndex,
 }) => {
   const [date, setDate] = useState<Date | null>(null);
   const [datePosition, setDatePosition] = useState(0);
@@ -64,6 +66,7 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
       <Chart
         dataset={dataset}
         labels={labels}
+        lineDecayAfterPointIndex={lineDecayAfterPointIndex}
         onHover={handleChartHover}
         borderColor={themeColor}
         gradientStartColor={`${themeColor}3D`}
@@ -71,7 +74,7 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
         pointBackgroundColor={themeColor}
       />
     ),
-    [dataset, labels, handleChartHover, themeColor]
+    [dataset, labels, handleChartHover, themeColor, lineDecayAfterPointIndex]
   );
 
   let dateTooltipPosition = datePosition - 15;
@@ -117,9 +120,20 @@ export const Chart: React.FC<{
   labels: Date[];
   onHover?: (hoverInfo: HoverInfo) => void;
   borderColor?: string;
+  decayedPointBorderColor?: string;
+  decayedBorderColor?: string;
   gradientStartColor?: string;
   gradientStopColor?: string;
   pointBackgroundColor?: string;
+
+  // If provided, set the dot (circle) to the data on that index
+  // and decrease the transparency of the line AFTER that specific point
+  lineDecayAfterPointIndex?: number;
+
+  // When set, show the number of grid lines
+  // when unset, hides gridlines and labels
+  maxGridLines?: number;
+
   padding?: { top: number; bottom: number };
   hoverable?: boolean;
 }> = ({
@@ -127,9 +141,14 @@ export const Chart: React.FC<{
   labels,
   onHover,
   borderColor = colors.green,
+  decayedPointBorderColor = `${colors.green}1F`,
+  decayedBorderColor = `${colors.green}3D`,
+
   gradientStartColor = `${colors.green}3D`,
   gradientStopColor = `${colors.green}00`,
   pointBackgroundColor = colors.green,
+  lineDecayAfterPointIndex,
+  maxGridLines,
   padding = { top: 20, bottom: 20 },
   hoverable = true,
 }) => {
@@ -140,12 +159,32 @@ export const Chart: React.FC<{
       legend: { display: false },
       layout: { padding },
       scales: {
-        yAxes: [
+        yAxes: [{ display: false }],
+        xAxes: [
           {
-            display: false,
+            display: !!maxGridLines,
+            gridLines: {
+              drawBorder: false,
+              borderDash: [4, 4],
+              zeroLineBorderDash: [4, 4],
+              color: "#FFFFFF29",
+              zeroLineColor: "#FFFFFF29",
+            },
+            ticks: {
+              callback: (
+                value: number | string,
+                index: number,
+                values: number[] | string[]
+              ) => {
+                return moment(values[index])
+                  .format("DD MMM YYYY")
+                  .toUpperCase();
+              },
+              maxRotation: 0,
+              maxTicksLimit: maxGridLines,
+            },
           },
         ],
-        xAxes: [{ display: false }],
       },
       animation: { duration: 0 },
       hover: { animationDuration: 0, intersect: false },
@@ -196,7 +235,7 @@ export const Chart: React.FC<{
         }
       },
     };
-  }, [dataset, labels, hoverable, padding, onHover]);
+  }, [dataset, labels, hoverable, padding, onHover, maxGridLines]);
 
   const getData = useCallback(
     (canvas: any) => {
@@ -205,25 +244,84 @@ export const Chart: React.FC<{
       gradient.addColorStop(0, gradientStartColor);
       gradient.addColorStop(1, gradientStopColor);
 
+      const lineShouldDecay = lineDecayAfterPointIndex !== undefined;
+      // Point color is all transparent, EXCEPT on lineDecayAfterPointIndex
+      const pointBgColors = dataset.map((_, i) => {
+        return i === lineDecayAfterPointIndex
+          ? pointBackgroundColor
+          : "rgba(0, 0, 0, 0)";
+      });
+      const pointBorderColors = dataset.map((_, i) => {
+        return i === lineDecayAfterPointIndex
+          ? decayedPointBorderColor
+          : "rgba(0, 0, 0, 0)";
+      });
+      const sharedDatasetOptions = {
+        type: "line",
+        pointRadius: 6,
+        pointHoverRadius: 6,
+        pointBorderWidth: lineShouldDecay ? 8 : 1,
+        pointHoverBorderWidth: lineShouldDecay ? 8 : 1,
+        pointHitRadius: 20,
+        pointBackgroundColor: pointBgColors,
+        pointHoverBackgroundColor: lineShouldDecay
+          ? pointBgColors
+          : pointBackgroundColor,
+        pointBorderColor: lineShouldDecay
+          ? pointBorderColors
+          : "rgba(0, 0, 0, 0)",
+        pointHoverBorderColor: lineShouldDecay
+          ? pointBorderColors
+          : "rgba(0, 0, 0, 0)",
+        tension: 0,
+        fill: "start",
+        backgroundColor: gradient,
+        weight: 1,
+        borderWidth: 2,
+      };
+
+      if (lineShouldDecay) {
+        const datasetBeforeDecay = dataset.slice(
+          0,
+          lineDecayAfterPointIndex! + 1
+        );
+        // Dataset after decay should match the same length of the entire dataset
+        // but with the empty datapoints being `null`
+        let datasetAfterDecay: (number | null)[] = dataset.slice(
+          lineDecayAfterPointIndex!,
+          dataset.length
+        );
+        datasetAfterDecay = [
+          ...Array.from({
+            length: dataset.length - datasetAfterDecay.length,
+          }).map(() => null),
+          ...datasetAfterDecay,
+        ];
+        return {
+          labels,
+          datasets: [
+            {
+              ...sharedDatasetOptions,
+              label: "dataset after decay",
+              data: datasetAfterDecay,
+              borderColor: decayedBorderColor,
+            },
+            {
+              ...sharedDatasetOptions,
+              label: "dataset before decay",
+              data: datasetBeforeDecay,
+              borderColor,
+            },
+          ],
+        };
+      }
       return {
         labels,
         datasets: [
           {
+            ...sharedDatasetOptions,
             data: dataset,
-            type: "line",
-            pointRadius: 8,
-            pointBorderWidth: 1,
-            pointHoverRadius: 8,
-            pointHoverBorderWidth: 1,
-            pointHitRadius: 20,
-            pointBackgroundColor: "rgba(0, 0, 0, 0)",
-            pointBorderColor: "rgba(0, 0, 0, 0)",
-            pointHoverBackgroundColor: pointBackgroundColor,
-            pointHoverBorderColor: pointBackgroundColor,
-            tension: 0,
-            fill: "start",
             borderColor,
-            backgroundColor: gradient,
           },
         ],
       };
@@ -232,9 +330,12 @@ export const Chart: React.FC<{
       dataset,
       labels,
       borderColor,
+      decayedBorderColor,
+      decayedPointBorderColor,
       gradientStartColor,
       gradientStopColor,
       pointBackgroundColor,
+      lineDecayAfterPointIndex,
     ]
   );
 

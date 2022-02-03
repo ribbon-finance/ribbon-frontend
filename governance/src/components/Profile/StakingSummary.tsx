@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 
 import {
@@ -39,7 +39,10 @@ const LockupData = styled.div`
   }
 `;
 
+const MOCK_VOTING_POWER = 5235.27;
 const StakingSummary = () => {
+  const [votingPower, setVotingPower] = useState(MOCK_VOTING_POWER);
+
   const renderDataTooltip = useCallback(
     (title: string, explanation: string, learnMoreURL?: string) => (
       <TooltipExplanation
@@ -56,6 +59,10 @@ const StakingSummary = () => {
     []
   );
 
+  const onHoverVotingPower = useCallback((votingPower?: number) => {
+    setVotingPower(votingPower ?? MOCK_VOTING_POWER);
+  }, []);
+
   return (
     <div className="d-flex flex-column w-100 mt-5 mb-3">
       <Title fontSize={18} lineHeight={24}>
@@ -63,7 +70,7 @@ const StakingSummary = () => {
       </Title>
       <SummaryContainer>
         {/* Header Info */}
-        <div className="p-4">
+        <div className="pt-4 pl-4 pr-4 pb-2">
           {/* Voting Power Title */}
           <Subtitle fontSize={12} lineHeight={20} color={colors.red}>
             VOTING POWER
@@ -74,7 +81,7 @@ const StakingSummary = () => {
             {/* sRBN Amount */}
             <div className="d-flex align-items-center">
               <Title fontSize={32} lineHeight={40}>
-                5,235.27
+                {votingPower}
               </Title>
               <Title
                 fontSize={12}
@@ -108,7 +115,7 @@ const StakingSummary = () => {
         </div>
 
         {/* Graph */}
-        <StakingSummaryChart />
+        <StakingSummaryChart onHoverVotingPower={onHoverVotingPower} />
 
         {/* Stats */}
         <div className="d-flex flex-wrap">
