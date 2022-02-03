@@ -122,7 +122,6 @@ export const useWeb3Data = (): Web3Data => {
   // This will automatically update the ChainContext as well
   const addNewChain = useCallback(
     async (wallet: Wallet, chain: Chains) => {
-      console.log(wallet, chain);
       try {
         if (isEthereumWallet(wallet)) {
           setActiveChainId(chain);
@@ -137,7 +136,6 @@ export const useWeb3Data = (): Web3Data => {
             }, 100);
           });
         } else if (isSolanaWallet(wallet)) {
-          console.log("Entering Solana");
           let walletName: WalletName = WalletName.Phantom;
           switch (wallet) {
             case SolanaWallet.Phantom:
@@ -148,11 +146,9 @@ export const useWeb3Data = (): Web3Data => {
               break;
           }
 
-          console.log("Solana wallet", wallet, walletName);
           await deactivateEth();
           setTimeout(() => {
             selectWalletSolana(walletName);
-            // activateSolana();
           }, 100);
         } else {
           throw new Error("Wallet is not supported");

@@ -45,13 +45,7 @@ const NetworkSwitcherButton = () => {
         </ButtonContainer>
       )}
 
-      {/* Since the modal is only shown when button is clicked we just pass in currentChainId=1 */}
       <WalletConnectModal></WalletConnectModal>
-      {/* <NetworkSwitcherModal
-        show={showModal}
-        onClose={() => setShowModal(false)}
-        currentChainId={1}
-      ></NetworkSwitcherModal> */}
     </div>
   );
 };

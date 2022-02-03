@@ -102,7 +102,13 @@ const WalletConnectModal: React.FC = () => {
     <BasicModal
       show={show}
       onClose={onClose}
-      height={selectedStep === "chain" ? 430 : 480}
+      height={
+        selectedStep === "chain"
+          ? 430
+          : selectedChain === Chains.Solana
+          ? 400
+          : 480
+      }
       maxWidth={500}
     >
       <>

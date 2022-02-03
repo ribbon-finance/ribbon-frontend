@@ -51,7 +51,7 @@ import { getAssetDecimals } from "shared/lib/utils/asset";
 import YourPosition from "shared/lib/components/Vault/YourPosition";
 import AirdropButton from "../Airdrop/AirdropButton";
 import AirdropModal from "../Airdrop/AirdropModal";
-import { isEthereumWallet, Wallet } from "../../models/wallets";
+import Indicator from "shared/lib/components/Indicator/Indicator";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -302,14 +302,8 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   variant,
   showVaultPositionHook,
 }) => {
-  const {
-    deactivate,
-    ethereumProvider,
-    active,
-    account,
-    chainId,
-    connectedWallet,
-  } = useWeb3Wallet();
+  const { deactivate, ethereumProvider, active, account, chainId } =
+    useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showActionModal, setShowActionModal] = useState(false);
   const [showAirdropModal, setShowAirdropModal] = useState(false);
@@ -411,10 +405,12 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     // FIXME: Fix dAvatar for EVM chains
     return active && account ? (
       <>
-        {isEthereumWallet(connectedWallet as Wallet) && (
+        {chainId ? (
           <Avatar>
             <Davatar address={account} size={20} />
           </Avatar>
+        ) : (
+          <Indicator connected={active} />
         )}
         <WalletButtonText connected={active}>
           {ensData?.name || truncateAddress(account)}{" "}
