@@ -41,10 +41,6 @@ const LearnMoreLink = styled(BaseLink)`
   }
 `;
 
-const LinkIcon = styled(ExternalIcon)`
-  color: white;
-`;
-
 const LearnMoreText = styled(BaseText)`
   text-decoration: underline;
 `;
@@ -222,7 +218,7 @@ const ConnectStepsNav: React.FC<ConnectStepsNavProps> = ({
               className="w-100"
             >
               <LearnMoreText>Learn more about wallets</LearnMoreText>
-              <LinkIcon height={20} color={colors.text} />
+              <ExternalIcon height={20} color={colors.primaryText} />
             </LearnMoreLink>
           </BaseModalContentColumn>
         </>
