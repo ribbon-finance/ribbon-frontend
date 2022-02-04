@@ -4,7 +4,11 @@ import { BigNumber } from "ethers";
 
 import { SecondaryText, Title, PrimaryText } from "shared/lib/designSystem";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import { ACTIONS, ActionType, V2WithdrawOption } from "./types";
+import {
+  ACTIONS,
+  ActionType,
+  V2WithdrawOption,
+} from "webapp/lib/components/Vault/VaultActionsForm/Modal/types";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
@@ -355,7 +359,7 @@ const PreviewStep: React.FC<{
                 color={color}
               >
                 <PrimaryText fontSize={14} lineHeight={20} color={color}>
-                  {`You can complete your withdrawal any time after 10am UTC on
+                  {`You can complete your withdrawal any time after 12pm UTC on
                   Friday when your ${getAssetDisplay(
                     asset
                   )} will be removed from the vault’s
@@ -483,7 +487,8 @@ const PreviewStep: React.FC<{
                   color={color}
                 >
                   <PrimaryText fontSize={14} lineHeight={20} color={color}>
-                    Your funds will be deployed in the vault’s strategy
+                    Your funds will be deployed in the vault’s next monthly
+                    strategy at 11am UTC on Friday
                   </PrimaryText>
                 </WarningContainer>
               );

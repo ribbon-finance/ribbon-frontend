@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
 import { BigNumber } from "ethers";
 import styled from "styled-components";
 
@@ -38,7 +38,7 @@ import {
   getAssetLogo,
 } from "shared/lib/utils/asset";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { getVaultURI } from "../../constants/constants";
+import { getVaultURI } from "webapp/lib/constants/constants";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 64px;
@@ -122,7 +122,7 @@ const VaultVersionBadge = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
+  width: 85px;
   height: 24px;
   border-radius: ${theme.border.radiusSmall};
   background: ${(props) => props.color}3D;
@@ -221,7 +221,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
       case "v2":
         return (
           <VaultVersionBadge color={color} className="ml-2">
-            <Subtitle>V2</Subtitle>
+            <Subtitle>TREASURY</Subtitle>
           </VaultVersionBadge>
         );
     }
@@ -267,8 +267,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 };
 
 const PortfolioPositions = () => {
-  const { active } = useWeb3React();
-
+  const { active } = useWeb3Wallet();
   const {
     data: { v1: v1VaultAccounts, v2: v2VaultAccounts },
     loading,

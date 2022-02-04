@@ -16,6 +16,8 @@ import Toast from "shared/lib/components/Common/BaseToast";
 import PendingToast from "./PendingToast";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { useV2VaultsData } from "shared/lib/hooks/web3DataContext";
+import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
+import { parseUnits } from "ethers/lib/utils";
 
 /**
  * TODO: Temporary disabled
@@ -214,6 +216,7 @@ export const WithdrawReminderToast = () => {
     }[]
   >([]);
   const [showReminderIndex, setShowReminderIndex] = useState<number>(0);
+  const { data: priceHistories } = useVaultsPriceHistory();
 
   /**
    * Find vault that is ready to withdraw
@@ -223,10 +226,14 @@ export const WithdrawReminderToast = () => {
       const vaultData = data[vault as VaultOptions];
       const asset = getAssets(vault as VaultOptions);
       const decimals = getAssetDecimals(asset);
+      const priceHistory = priceHistories.v2[vault as VaultOptions].find(
+        (history) => history.round === vaultData.withdrawals.round
+      );
 
       if (
-        !isPracticallyZero(vaultData.withdrawals.amount, decimals) &&
-        vaultData.withdrawals.round !== vaultData.round
+        !isPracticallyZero(vaultData.withdrawals.shares, decimals) &&
+        vaultData.withdrawals.round !== vaultData.round &&
+        priceHistory
       ) {
         /**
          * Check if it had already indexed inside reminders
@@ -243,12 +250,19 @@ export const WithdrawReminderToast = () => {
         setReminders((curr) =>
           curr.concat({
             vault: { option: vault as VaultOptions, version: "v2" },
-            amount: vaultData.withdrawals.amount,
+            amount: vaultData.withdrawals.shares
+              .mul(priceHistory.pricePerShare)
+              .div(
+                parseUnits(
+                  "1",
+                  getAssetDecimals(getAssets(vault as VaultOptions))
+                )
+              ),
           })
         );
       }
     }, []);
-  }, [data, reminders]);
+  }, [data, priceHistories.v2, reminders]);
 
   /**
    * Make sure index does not goes out of bound

@@ -5,6 +5,8 @@ export type { CurveLiquidityPool } from "./CurveLiquidityPool";
 export type { IERC20 } from "./IERC20";
 export type { LBPPool } from "./LBPPool";
 export type { LidoOracle } from "./LidoOracle";
+export type { LiquidityGaugeV4 } from "./LiquidityGaugeV4";
+export type { LiquidityGaugeV5 } from "./LiquidityGaugeV5";
 export type { MerkleDistributor } from "./MerkleDistributor";
 export type { RibbonCoveredCall } from "./RibbonCoveredCall";
 export type { RibbonOG } from "./RibbonOG";

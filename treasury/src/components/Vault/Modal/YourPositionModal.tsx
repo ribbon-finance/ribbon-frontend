@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import styled from "styled-components";
+import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 
 import {
@@ -33,7 +34,6 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { useGlobalState } from "shared/lib/store/store";
 import useTransactions from "shared/lib/hooks/useTransactions";
-import { formatUnits } from "ethers/lib/utils";
 
 const ModalContent = styled(motion.div)`
   display: flex;

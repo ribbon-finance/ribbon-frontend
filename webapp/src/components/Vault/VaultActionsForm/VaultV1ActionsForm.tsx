@@ -762,7 +762,16 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
             <MigrateIcon color={color} height={27} />
           </MigrateLogoContainer>
 
-          <MigrationTitle className="mt-3">MIGRATE TO V2</MigrationTitle>
+          <MigrationTitle className="mt-3">
+            {(() => {
+              switch (vaultOption) {
+                case "rUSDC-ETH-P-THETA":
+                  return "SWITCH TO T-YVUSDC-P-ETH";
+                default:
+                  return "MIGRATE TO V2";
+              }
+            })()}
+          </MigrationTitle>
 
           <MigrationDescription className="mt-3 text-center">
             You can now move your V1 deposit balance of{" "}

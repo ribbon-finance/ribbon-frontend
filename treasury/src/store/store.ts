@@ -5,7 +5,8 @@ import {
   ACTIONS,
   ActionType,
   V2WithdrawOption,
-} from "../components/Vault/VaultActionsForm/Modal/types";
+} from "webapp/lib/components/Vault/VaultActionsForm/Modal/types";
+import { TreasuryVaultOptions } from "../constants/constants";
 
 interface GlobalStore {
   vaultActionForm: {
@@ -33,3 +34,14 @@ export const initialState: GlobalStore = {
 
 export const { useGlobalState: useWebappGlobalState } =
   createGlobalState(initialState);
+
+interface GlobalAccessStore {
+  access: TreasuryVaultOptions[];
+}
+
+export const initialAccessState: GlobalAccessStore = {
+  access: [],
+};
+
+export const { useGlobalState: useGlobalAccessState } =
+  createGlobalState(initialAccessState);

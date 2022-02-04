@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
 import styled from "styled-components";
 
 import ActionModal from "./Modal/ActionModal";
@@ -10,7 +10,7 @@ import {
   VaultVersion,
 } from "shared/lib/constants/constants";
 import { useCallback } from "react";
-import VaultV1ActionsForm from "./VaultV1ActionsForm";
+import VaultV1ActionsForm from "webapp/lib/components/Vault/VaultActionsForm/VaultV1ActionsForm";
 import VaultV2ActionsForm from "./VaultV2ActionForm";
 import { BaseLink, Title } from "shared/lib/designSystem";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -38,7 +38,7 @@ interface DesktopActionFormProps {
 }
 
 const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
-  const { chainId } = useWeb3React();
+  const { chainId } = useWeb3Wallet();
   const [showActionModal, setShowActionModal] = useState(false);
 
   const renderForm = useCallback(() => {

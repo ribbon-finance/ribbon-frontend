@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { BigNumber } from "ethers";
-import { formatUnits } from "ethers/lib/utils";
+import { formatUnits, parseUnits } from "ethers/lib/utils";
 
 import {
   GAS_LIMITS,
@@ -25,6 +25,7 @@ import {
 } from "shared/lib/hooks/web3DataContext";
 import { isETHVault } from "shared/lib/utils/vault";
 import { Assets } from "shared/lib/store/types";
+import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 
 export type VaultActionFormTransferData =
   | {
@@ -67,6 +68,10 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const receiveVaultData = useVaultData(
     vaultActionForm.receiveVault || vaultOption
+  );
+  const { priceHistory } = useVaultPriceHistory(
+    vaultOption,
+    vaultActionForm.vaultVersion
   );
 
   /**
@@ -378,7 +383,16 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
                 case "complete":
                   return {
                     ...actionForm,
-                    inputAmount: formatUnits(v2Withdrawals.amount, decimals),
+                    inputAmount: formatUnits(
+                      v2Withdrawals.shares
+                        .mul(
+                          priceHistory.find(
+                            (history) => history.round === v2Withdrawals.round
+                          )?.pricePerShare || BigNumber.from(0)
+                        )
+                        .div(parseUnits("1", decimals)),
+                      decimals
+                    ),
                   };
                 case "standard":
                 default:
@@ -397,6 +411,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     deposits,
     gasPrice,
     maxWithdrawAmount,
+    priceHistory,
     setVaultActionForm,
     transferData,
     userAssetBalance,

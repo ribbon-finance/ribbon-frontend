@@ -13,12 +13,12 @@ export const getStakingReward = (
 ) => {
   const provider = useSigner ? library.getSigner() : library;
 
-  if (!VaultLiquidityMiningMap[vaultOption]) {
+  if (!VaultLiquidityMiningMap.lm[vaultOption]) {
     return null;
   }
 
   return RibbonStakingRewardsFactory.connect(
-    VaultLiquidityMiningMap[vaultOption]!,
+    VaultLiquidityMiningMap.lm[vaultOption]!,
     provider
   );
 };

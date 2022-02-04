@@ -1,12 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
 
-import { ACTIONS, Steps, STEPS } from "./types";
+import {
+  ACTIONS,
+  Steps,
+  STEPS,
+} from "webapp/lib/components/Vault/VaultActionsForm/Modal/types";
 import useVault from "shared/lib/hooks/useVault";
 import PreviewStep from "./PreviewStep";
-import TransactionStep from "./TransactionStep";
-import FormStep from "./FormStep";
+import TransactionStep from "webapp/lib/components/Vault/VaultActionsForm/Modal/TransactionStep";
+import FormStep from "webapp/lib/components/Vault/VaultActionsForm/Modal/FormStep";
 import {
   getAssets,
   isNativeToken,
@@ -20,11 +24,11 @@ import {
 import { isETHVault } from "shared/lib/utils/vault";
 import { amountAfterSlippage } from "shared/lib/utils/math";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
-import useVaultActionForm from "../../../../hooks/useVaultActionForm";
+import useVaultActionForm from "webapp/lib/hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
 import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import useV2Vault from "shared/lib/hooks/useV2Vault";
-import WarningStep from "./WarningStep";
+import WarningStep from "webapp/lib/components/Vault/VaultActionsForm/Modal/WarningStep";
 import { getCurvePool } from "shared/lib/hooks/useCurvePool";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 
@@ -48,7 +52,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   onChangeStep,
   skipToPreview = false,
 }) => {
-  const { library } = useWeb3React();
+  const { ethereumProvider } = useWeb3Wallet();
   const { vaultActionForm, resetActionForm, withdrawMetadata } =
     useVaultActionForm(vaultOption);
 
@@ -235,7 +239,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                          * Default slippage of 0.3%
                          */
                         const curvePool = getCurvePool(
-                          library,
+                          ethereumProvider,
                           LidoCurvePoolAddress
                         );
 
@@ -270,7 +274,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                          * Default slippage of 0.3%
                          */
                         const curvePool = getCurvePool(
-                          library,
+                          ethereumProvider,
                           LidoCurvePoolAddress
                         );
                         const minOut = await curvePool.get_dy(

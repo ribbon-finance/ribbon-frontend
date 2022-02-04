@@ -17,7 +17,7 @@ export const useEVMWeb3Context = () => {
   };
   const getProviderForNetwork = useCallback(
     (network: MAINNET_NAMES) => providers[network],
-    [providers.mainnet, providers.avax, providers.aurora]
+    [providers.mainnet, providers.avax, providers.aurora] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   return {

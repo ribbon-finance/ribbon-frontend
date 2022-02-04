@@ -1,4 +1,4 @@
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
 import { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import {
@@ -24,8 +24,9 @@ import {
   formatBigNumber,
   formatSignificantDecimals,
 } from "shared/lib/utils/math";
-import PerformanceChart from "../PerformanceChart/PerformanceChart";
-import { HoverInfo } from "../PerformanceChart/types";
+import PerformanceChart, {
+  HoverInfo,
+} from "shared/lib/components/Common/PerformanceChart";
 import sizes from "shared/lib/designSystem/sizes";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { getAssets } from "shared/lib/constants/constants";
@@ -158,12 +159,12 @@ const dateFilterOptions = ["1w", "1m", "all"] as const;
 type dateFilterType = typeof dateFilterOptions[number];
 
 const PortfolioPerformance = () => {
-  const { active } = useWeb3React();
+  const { active } = useWeb3Wallet();
   const { prices: assetsPrice, loading: assetsPriceLoading } = useAssetsPrice();
   const { searchAssetPriceFromTimestamp } = useAssetsPriceHistory();
   const [hoveredBalanceUpdateIndex, setHoveredBalanceUpdateIndex] =
     useState<number>();
-  const [rangeFilter, setRangeFilter] = useState<dateFilterType>("1m");
+  const [rangeFilter, setRangeFilter] = useState<dateFilterType>("all");
   const [, setShowConnectWalletModal] = useConnectWalletModal();
   const { data: RBNTokenAccount, loading: RBNTokenAccountLoading } =
     useRBNTokenAccount();
@@ -202,8 +203,9 @@ const PortfolioPerformance = () => {
 
     return parseFloat(
       formatSignificantDecimals(formatUnits(yields, premiumDecimals), 2)
-    );
+    ).toFixed(2);
   }, [transactions, active, premiumDecimals]);
+
   /**
    * We first process and add several additional metrices that is useful for further calculation
    * - Net deposit
@@ -272,7 +274,6 @@ const PortfolioPerformance = () => {
 
     return [balances, vaultsBalance];
   }, [subgraphBalanceUpdates]);
-
   /**
    * We process balances into fiat term before perform more processing
    * balances[].balance - Total balance of user portfolio up until that point
@@ -513,7 +514,7 @@ const PortfolioPerformance = () => {
     }
 
     return RBNTokenAccount
-      ? formatBigNumber(RBNTokenAccount.balance, 18)
+      ? formatBigNumber(RBNTokenAccount.totalBalance, 18)
       : "0.00";
   }, [RBNTokenAccount, active, animatedLoadingText, loading]);
 
@@ -521,7 +522,7 @@ const PortfolioPerformance = () => {
     () => (
       <DepositChartExtra>
         <SecondaryText fontSize={12} className="w-100">
-          Vault Balance
+          Deposit Balance
         </SecondaryText>
         <div className="d-flex align-items-center flex-wrap">
           <KPI>

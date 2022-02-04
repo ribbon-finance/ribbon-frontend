@@ -196,7 +196,6 @@ export interface ConnectedV2VaultData {
   depositBalanceInAsset: BigNumber;
   withdrawals: {
     shares: BigNumber;
-    amount: BigNumber;
     round: number;
   };
 }
@@ -224,7 +223,6 @@ export const defaultV2VaultData: V2VaultData = {
         depositBalanceInAsset: BigNumber.from(0),
         withdrawals: {
           shares: BigNumber.from(0),
-          amount: BigNumber.from(0),
           round: 1,
         },
       },
@@ -235,6 +233,7 @@ export const defaultV2VaultData: V2VaultData = {
 
 export type VaultPriceHistory = {
   pricePerShare: BigNumber;
+  round: number;
   timestamp: number;
 };
 
