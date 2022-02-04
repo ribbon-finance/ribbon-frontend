@@ -237,7 +237,6 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
     const Logo = getAssetLogo(asset);
 
     switch (asset) {
-
       default:
         return <Logo />;
     }

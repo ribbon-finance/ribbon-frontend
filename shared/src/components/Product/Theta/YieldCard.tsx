@@ -239,7 +239,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     switch (displayAsset) {
       case "yvUSDC":
         logo = <Logo markerConfig={{ height: 24, width: 24 }} />;
-      break;
+        break;
     }
 
     return (
