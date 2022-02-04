@@ -3,7 +3,7 @@ import styled from "styled-components";
 import currency from "currency.js";
 import { Col, Row } from "react-bootstrap";
 import ProgressBar from "shared/lib/components/Deposit/ProgressBar";
-import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
+import { useRBNToken, useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import {
@@ -78,8 +78,8 @@ const FloatingBackgroundBar = styled.div<{ index: number }>`
 
 const OverviewKPI = () => {
   const { width } = useScreenSize();
-  const { data: rbnTokenAccount, loading: rbnTokenAccountLoading } =
-    useRBNTokenAccount();
+  const { data: rbnToken, loading: rbnTokenAccountLoading } =
+    useRBNToken();
   const { info, loading: assetInfoLoading } = useAssetInfo("RBN");
   const { price: RBNPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: "RBN",
@@ -89,11 +89,11 @@ const OverviewKPI = () => {
 
   const totalRbnStaked: number = useMemo(() => {
     const formatted = formatBigNumber(
-      rbnTokenAccount?.token.totalStaked || BigNumber.from(0),
+      rbnToken?.totalStaked || BigNumber.from(0),
       18
     );
     return Number(formatted);
-  }, [rbnTokenAccount]);
+  }, [rbnToken]);
 
   const loadingText = useTextAnimation(
     assetPriceLoading ||
