@@ -15,8 +15,8 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { parseUnits } from "ethers/lib/utils";
 import { getAssetDecimals } from "../utils/asset";
 
-const flexProgramId = "5z75LKcF49JavDVW1hsGceDDBRHkja6RbRsouXQHBBjG";
-const vaultProgramId = "CvtFQpTX8TqVbRQ6UrwPzwnrfrzYkwyEBu74M2vG46sf";
+const flexProgramId = "zFLEX6CVSPJgCwnYPYWSJFzYAC3RbP7vSoc75R88P6C";
+const vaultProgramId = "RBN2XNc6JQU6ewFp9TyPq6WznsvNuumzSJkor1nJFcz";
 
 const useFetchSolVaultData = (): SolanaVaultData => {
   const { connection } = useConnection();
