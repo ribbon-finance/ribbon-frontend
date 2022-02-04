@@ -226,10 +226,14 @@ export const WithdrawReminderToast = () => {
       const vaultData = data[vault as VaultOptions];
       const asset = getAssets(vault as VaultOptions);
       const decimals = getAssetDecimals(asset);
+      const priceHistory = priceHistories.v2[vault as VaultOptions].find(
+        (history) => history.round === vaultData.withdrawals.round
+      );
 
       if (
         !isPracticallyZero(vaultData.withdrawals.shares, decimals) &&
-        vaultData.withdrawals.round !== vaultData.round
+        vaultData.withdrawals.round !== vaultData.round &&
+        priceHistory
       ) {
         /**
          * Check if it had already indexed inside reminders
@@ -243,17 +247,11 @@ export const WithdrawReminderToast = () => {
           return;
         }
 
-        const priceHistory = priceHistories.v2[vault as VaultOptions].find(
-          (history) => history.round === vaultData.withdrawals.round
-        );
-
         setReminders((curr) =>
           curr.concat({
             vault: { option: vault as VaultOptions, version: "v2" },
             amount: vaultData.withdrawals.shares
-              .mul(
-                priceHistory ? priceHistory.pricePerShare : BigNumber.from(0)
-              )
+              .mul(priceHistory.pricePerShare)
               .div(
                 parseUnits(
                   "1",
