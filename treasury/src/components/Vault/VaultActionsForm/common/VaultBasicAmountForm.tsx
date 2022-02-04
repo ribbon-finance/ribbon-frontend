@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
 import { BigNumber } from "ethers";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer";
@@ -22,7 +22,7 @@ import {
   getAssetDisplay,
   getAssetLogo,
 } from "shared/lib/utils/asset";
-import useVaultActionForm from "../../../../hooks/useVaultActionForm";
+import useVaultActionForm from "webapp/lib/hooks/useVaultActionForm";
 import {
   getAssets,
   VaultAllowedDepositAssets,
@@ -31,12 +31,15 @@ import {
 } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import { VaultInputValidationErrorList, VaultValidationErrors } from "../types";
+import {
+  VaultInputValidationErrorList,
+  VaultValidationErrors,
+} from "../../types";
 import colors from "shared/lib/designSystem/colors";
 import { formatBigNumber } from "shared/lib/utils/math";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
-import { ACTIONS } from "../Modal/types";
+import { ACTIONS } from "webapp/lib/components/Vault/VaultActionsForm/Modal/types";
 
 const DepositAssetButton = styled.div`
   position: absolute;
@@ -124,15 +127,17 @@ const DepositAssetsDropdownItem = styled.div<{
   }}
 `;
 
+interface FormExtraProps {
+  label: string;
+  amount: BigNumber;
+  unitDisplay?: string;
+  error: boolean;
+}
+
 interface VaultBasicAmountFormProps {
   vaultOption: VaultOptions;
   error?: VaultValidationErrors;
-  formExtra?: {
-    label: string;
-    amount: BigNumber;
-    unitDisplay?: string;
-    error: boolean;
-  };
+  formExtra?: FormExtraProps[];
   showSwapDepositAsset?: boolean;
   onFormSubmit: () => void;
   actionButtonText: string;
@@ -155,7 +160,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
     handleMaxClick,
     vaultActionForm,
   } = useVaultActionForm(vaultOption);
-  const { active } = useWeb3React();
+  const { active } = useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showDepositAssetMenu, setShowDepositAssetMenu] = useState(false);
 
@@ -292,6 +297,8 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
             return "Withdraw limit exceeded";
           case "withdrawAmountStaked":
             return "Withdrawal amount staked";
+          case "minNotReached":
+            return "Minimum deposit requirement is not met";
         }
       }
 
@@ -303,19 +310,25 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
   const formExtraInfo = useMemo(
     () =>
       formExtra ? (
-        <div className="d-flex align-items-center mt-3 mb-1">
-          <SecondaryText>{formExtra.label}</SecondaryText>
-          <Title
-            fontSize={14}
-            lineHeight={24}
-            className="ml-auto"
-            color={formExtra.error ? colors.red : undefined}
-          >
-            {formExtra.amount &&
-              formatBigNumber(formExtra.amount, getAssetDecimals(asset))}{" "}
-            {formExtra.unitDisplay || getAssetDisplay(asset)}
-          </Title>
-        </div>
+        <>
+          {formExtra.map((extra) => {
+            return (
+              <div className="d-flex align-items-center mt-3 mb-1">
+                <SecondaryText>{extra.label}</SecondaryText>
+                <Title
+                  fontSize={14}
+                  lineHeight={24}
+                  className="ml-auto"
+                  color={extra.error ? colors.red : undefined}
+                >
+                  {extra.amount &&
+                    formatBigNumber(extra.amount, getAssetDecimals(asset))}{" "}
+                  {extra.unitDisplay || getAssetDisplay(asset)}
+                </Title>
+              </div>
+            );
+          })}
+        </>
       ) : (
         <></>
       ),
@@ -359,7 +372,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
     <>
       <BaseInputLabel>AMOUNT ({getAssetDisplay(asset)})</BaseInputLabel>
       <BaseInputContainer
-        className="position-relative mb-2"
+        className="mb-2"
         error={error ? VaultInputValidationErrorList.includes(error) : false}
       >
         <BaseInput

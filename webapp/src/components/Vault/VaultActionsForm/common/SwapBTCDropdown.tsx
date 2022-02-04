@@ -6,9 +6,7 @@ import { BaseLink, Title } from "shared/lib/designSystem";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import theme from "shared/lib/designSystem/theme";
 
-import BadgerImg from "../../../../assets/img/badger.png";
-import CurveImg from "../../../../assets/img/curve.png";
-import Arrow from "../../../../assets/img/arrow.svg";
+// import Arrow from "../../../../assets/img/arrow.svg";
 
 const Container = styled.div<{ open: boolean }>`
   width: 100%;
@@ -51,7 +49,9 @@ const Image = styled.img`
   margin-right: 16px;
 `;
 
-const ConvertImage = styled.img.attrs({ src: Arrow })`
+const ConvertImage = styled.img.attrs({
+  src: "https://github.com/ribbon-finance/ribbon-frontend/blob/master/webapp/src/assets/img/arrow.svg?raw=true",
+})`
   margin: 0 7px;
 `;
 
@@ -74,7 +74,11 @@ const SwapBTCDropdown: React.FC<SwapBTCDropdownProps> = ({ open }) => {
         rel="noreferrer noopener"
       >
         <DefiCard>
-          <Image src={BadgerImg} />
+          <Image
+            src={
+              "https://github.com/ribbon-finance/ribbon-frontend/blob/master/webapp/src/assets/img/badger.png?raw=true"
+            }
+          />
           <Title>BTC</Title>
           <ConvertImage />
           <Title>WBTC</Title>
@@ -87,7 +91,11 @@ const SwapBTCDropdown: React.FC<SwapBTCDropdownProps> = ({ open }) => {
         rel="noreferrer noopener"
       >
         <DefiCard>
-          <Image src={CurveImg} />
+          <Image
+            src={
+              "https://github.com/ribbon-finance/ribbon-frontend/blob/master/webapp/src/assets/img/curve.png?raw=true"
+            }
+          />
           <Title>
             BTC <OrText>OR</OrText> RENBTC
           </Title>

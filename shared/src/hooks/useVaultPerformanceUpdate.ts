@@ -36,6 +36,7 @@ export const vaultPriceHistoryGraphql = (
         ) {
           pricePerShare
           timestamp
+          round
         }
       `
     );
@@ -60,6 +61,7 @@ export const resolveVaultPriceHistorySubgraphResponse = (responses: {
                   .map(
                     (history: {
                       pricePerShare: string;
+                      round: number;
                       timestamp: number;
                     }) => ({
                       ...history,

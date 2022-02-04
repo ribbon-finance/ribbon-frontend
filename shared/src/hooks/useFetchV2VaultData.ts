@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
-import { getVaultNetwork, getAssets, VaultList } from "../constants/constants";
+import { getVaultNetwork, VaultList } from "../constants/constants";
 import { isProduction } from "../utils/env";
 import { getV2Vault } from "./useV2Vault";
 import { impersonateAddress } from "../utils/development";
@@ -10,7 +10,6 @@ import {
   V2VaultData,
   V2VaultDataResponses,
 } from "../models/vault";
-import { getAssetDecimals } from "../utils/asset";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { useEVMWeb3Context } from "./useEVMWeb3Context";
 import { isVaultSupportedOnChain } from "../utils/vault";
@@ -165,18 +164,7 @@ const useFetchV2VaultData = (): V2VaultData => {
               {
                 ...prev.responses[vault],
                 ...response,
-                withdrawals: withdrawals
-                  ? {
-                      ...withdrawals,
-                      amount: withdrawals.shares
-                        .mul(response.pricePerShare as BigNumber)
-                        .div(
-                          BigNumber.from(10).pow(
-                            getAssetDecimals(getAssets(vault))
-                          )
-                        ),
-                    }
-                  : prev.responses[vault].withdrawals,
+                withdrawals: withdrawals || prev.responses[vault].withdrawals,
               },
             ])
           ) as V2VaultDataResponses,

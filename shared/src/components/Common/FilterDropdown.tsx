@@ -13,11 +13,11 @@ import { capitalize } from "../../utils/text";
 import ButtonArrow from "./ButtonArrow";
 
 interface FilterDropdownButtonConfig {
-  background: string;
-  activeBackground: string;
-  paddingHorizontal: number;
-  paddingVertical: number;
-  color: string;
+  background?: string;
+  activeBackground?: string;
+  paddingHorizontal?: number;
+  paddingVertical?: number;
+  color?: string;
 }
 
 interface FilterDropdownMenuConfig {
@@ -38,22 +38,23 @@ const FilterButton = styled(BaseButton)<{
   justify-content: center;
   align-items: center;
   padding: ${(props) =>
-    `${props.config.paddingVertical}px ${props.config.paddingHorizontal}px`};
+    `${props.config.paddingVertical || 8}px ${
+      props.config.paddingHorizontal || 12
+    }px`};
   background-color: ${(props) =>
-    props.active ? props.config.activeBackground : props.config.background};
+    props.active
+      ? props.config.activeBackground || colors.background.two
+      : props.config.background || colors.background.two};
 
   &:hover {
-    background-color: ${(props) => props.config.activeBackground};
-
-    span {
-      color: ${colors.primaryText};
-    }
+    background-color: ${(props) =>
+      props.config.activeBackground || colors.background.two};
   }
 `;
 
 const FilterButtonText = styled(Title)<{ config: FilterDropdownButtonConfig }>`
   font-size: 14px;
-  color: ${(props) => props.config.color};
+  color: ${(props) => props.config.color || colors.text};
   text-transform: uppercase;
 `;
 
@@ -140,13 +141,7 @@ const FilterDropdown: React.FC<
   options,
   value,
   onSelect,
-  buttonConfig = {
-    background: colors.background.two,
-    activeBackground: colors.background.two,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    color: `${colors.primaryText}A3`,
-  },
+  buttonConfig = {},
   dropdownMenuConfig = {
     topBuffer: 8,
   },
@@ -204,7 +199,7 @@ const FilterDropdown: React.FC<
         config={buttonConfig}
       >
         <FilterButtonText config={buttonConfig}>
-          {value} <ButtonArrow isOpen={open} />
+          {value} <ButtonArrow isOpen={open} color={buttonConfig.color} />
         </FilterButtonText>
       </FilterButton>
       <AnimatePresence>
@@ -212,7 +207,7 @@ const FilterDropdown: React.FC<
           key={open.toString()}
           isOpen={open}
           verticalOrientation={getVerticalOrientation()}
-          buttonPaddingVertical={buttonConfig.paddingVertical}
+          buttonPaddingVertical={buttonConfig.paddingVertical || 8}
           config={dropdownMenuConfig}
           initial={{
             opacity: 0,
