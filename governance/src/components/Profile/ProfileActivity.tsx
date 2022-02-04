@@ -196,7 +196,7 @@ const ProfileActivity = () => {
         return (
           <>
             <Title>
-              {formatBigNumberAmount(activity.amount!)} SRBN /{" "}
+              {formatBigNumberAmount(activity.amount!)} veRBN /{" "}
               {activity.percentage}%
             </Title>
             <SecondaryText

@@ -12,6 +12,10 @@ import colors from "shared/lib/designSystem/colors";
 import StakingSummaryChart from "./StakingSummaryChart";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
+import { formatBigNumber } from "shared/lib/utils/math";
+import { BigNumber } from "ethers";
+import moment from "moment";
 
 const SummaryContainer = styled.div`
   display: flex;
@@ -41,6 +45,7 @@ const LockupData = styled.div`
 
 const MOCK_VOTING_POWER = 5235.27;
 const StakingSummary = () => {
+  const { data } = useRBNTokenAccount()
   const [votingPower, setVotingPower] = useState(MOCK_VOTING_POWER);
 
   const renderDataTooltip = useCallback(
@@ -76,9 +81,9 @@ const StakingSummary = () => {
             VOTING POWER
           </Subtitle>
 
-          {/* sRBN amount and Expiry */}
+          {/* veRBN amount and Expiry */}
           <div className="d-flex align-items-center mt-1">
-            {/* sRBN Amount */}
+            {/* veRBN Amount */}
             <div className="d-flex align-items-center">
               <Title fontSize={32} lineHeight={40}>
                 {votingPower}
@@ -89,7 +94,7 @@ const StakingSummary = () => {
                 color={colors.text}
                 className="ml-2"
               >
-                sRBN
+                veRBN
               </Title>
             </div>
 
@@ -108,7 +113,11 @@ const StakingSummary = () => {
                 color={colors.green}
                 className="ml-1"
               >
-                January 29th, 2026
+                {
+                  data?.lockEndTimestamp
+                    ? moment(data.lockEndTimestamp * 1000).format("MMMM Do, YYYY")
+                    : "-"
+                }
               </PrimaryText>
             </LockupExpiryContainer>
           </div>
@@ -127,7 +136,9 @@ const StakingSummary = () => {
                 "Locked RBN is the total amount of RBN locked in the staking contract."
               )}
             </div>
-            <Title className="mt-1">10,000,000</Title>
+            <Title className="mt-1">
+              {data ? formatBigNumber(data.lockedBalance) : "-"}
+            </Title>
           </LockupData>
 
           <LockupData>
@@ -138,7 +149,10 @@ const StakingSummary = () => {
                 "Locked RBN is the total amount of RBN locked in the staking contract."
               )}
             </div>
-            <Title className="mt-1">5,000.00</Title>
+            <Title className="mt-1">
+              {/* 5,000.00 */}
+              {data ? formatBigNumber(data.walletBalance) : "-"}
+            </Title>
           </LockupData>
 
           <LockupData>

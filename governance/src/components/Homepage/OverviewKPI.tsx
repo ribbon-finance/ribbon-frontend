@@ -89,7 +89,7 @@ const OverviewKPI = () => {
 
   const totalRbnStaked: number = useMemo(() => {
     const formatted = formatBigNumber(
-      rbnTokenAccount?.token.totalStaked || 0,
+      rbnTokenAccount?.token.totalStaked || BigNumber.from(0),
       18
     );
     return Number(formatted);

@@ -78,7 +78,7 @@ const StakingFAB = () => {
           </AssetCircleContainer>
           <div className="d-flex flex-column ml-2">
             <SecondaryText fontSize={10} lineHeight={16}>
-              Your SRBN / Voting Power
+              Your veRBN / Voting Power
             </SecondaryText>
             <Title
               fontSize={14}
