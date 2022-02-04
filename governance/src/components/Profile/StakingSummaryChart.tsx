@@ -11,44 +11,36 @@ const ChartContainer = styled.div`
 `;
 
 interface StakingSummaryChartProps {
+  dataset: number[];
+  labels: Date[];
+  lineDecayAfterIndex?: number;
   // When called with undefined, means the hover ended.
-  onHoverVotingPower: (votingPower?: number) => void;
+  onHoverDataIndex: (votingPower?: number) => void;
 }
 
 const StakingSummaryChart: React.FC<StakingSummaryChartProps> = ({
-  onHoverVotingPower,
+  dataset,
+  labels,
+  lineDecayAfterIndex,
+  onHoverDataIndex,
 }) => {
-  const dates = [
-    new Date(100000000),
-    new Date(200000000),
-    new Date(300000000),
-    new Date(400000000),
-    new Date(500000000),
-    new Date(600000000),
-    new Date(700000000),
-    new Date(800000000),
-    new Date(900000000),
-    new Date(1000000000),
-  ];
-  const votingPowerRbn = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
-
   const onHover = useCallback(
     (hoverInfo: HoverInfo) => {
       if (hoverInfo.focused) {
-        onHoverVotingPower(hoverInfo.yData);
+        onHoverDataIndex(hoverInfo.index);
       } else {
-        onHoverVotingPower(undefined);
+        onHoverDataIndex(undefined);
       }
     },
-    [onHoverVotingPower]
+    [onHoverDataIndex]
   );
 
   return (
     <ChartContainer>
       <Chart
-        lineDecayAfterPointIndex={1}
-        dataset={votingPowerRbn}
-        labels={dates}
+        lineDecayAfterPointIndex={lineDecayAfterIndex}
+        dataset={dataset}
+        labels={labels}
         onHover={onHover}
         gradientStartColor="transparent"
         gradientStopColor="transparent"

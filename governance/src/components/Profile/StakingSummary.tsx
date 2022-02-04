@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import {
@@ -14,8 +14,9 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { formatBigNumber } from "shared/lib/utils/math";
-import { BigNumber } from "ethers";
 import moment from "moment";
+import { calculateInitialveRBNAmount } from "../../utils/math";
+import { formatUnits } from "ethers/lib/utils";
 
 const SummaryContainer = styled.div`
   display: flex;
@@ -43,10 +44,86 @@ const LockupData = styled.div`
   }
 `;
 
-const MOCK_VOTING_POWER = 5235.27;
 const StakingSummary = () => {
-  const { data } = useRBNTokenAccount()
-  const [votingPower, setVotingPower] = useState(MOCK_VOTING_POWER);
+  const { data } = useRBNTokenAccount();
+  const [hoveredDatapointIndex, setHoveredDatapointIndex] = useState<number>();
+
+  const chartDatapoints:
+    | {
+        // array of veRBN, in number (already divided by 18 decimals)
+        dataset: number[];
+        labels: Date[];
+
+        // The index of dataset + labels that is the voting power of the current timestamp
+        currentVeRbnIndex?: number;
+      }
+    | undefined = useMemo(() => {
+    if (!data || !data.lockStartTimestamp || !data.lockEndTimestamp) {
+      return undefined;
+    }
+
+    // Generate a fixed set of 100 datapoints from start and end duration
+    const totalDatapoints = 100;
+    let dataset: number[] = [];
+    let labels: Date[] = [];
+    for (let i = 0; i < totalDatapoints; i++) {
+      const totalDurationMillis =
+        (data.lockEndTimestamp - data.lockStartTimestamp) * 1000;
+      // Split total duration into chunks of totalDatapoints
+      const incrementDurationMillis =
+        (totalDurationMillis / totalDatapoints) * i;
+
+      // New start timestamp and duration
+      const startTimestampMillis =
+        data.lockStartTimestamp * 1000 + incrementDurationMillis;
+      const duration = data.lockEndTimestamp * 1000 - startTimestampMillis;
+      const veRbnAmount = calculateInitialveRBNAmount(
+        data.lockedBalance,
+        moment.duration(duration)
+      );
+      dataset.push(parseFloat(formatUnits(veRbnAmount, 18)));
+      labels.push(new Date(startTimestampMillis));
+    }
+
+    // Push the current index
+    const now = new Date();
+    const currentRemainingDuration =
+      data.lockEndTimestamp * 1000 - now.getTime();
+    const currentVeRbnAmount = calculateInitialveRBNAmount(
+      data.lockedBalance,
+      moment.duration(currentRemainingDuration)
+    );
+    dataset.push(parseFloat(formatUnits(currentVeRbnAmount, 18)));
+    labels.push(now);
+
+    // Sort dataset and labels
+    dataset = dataset.sort((a, b) => b - a);
+    labels = labels.sort((a, b) => a.getTime() - b.getTime());
+
+    // Get index of the current point
+    const currentVeRbnIndex = labels.findIndex(
+      (label) => label.getTime() === now.getTime()
+    );
+    return {
+      dataset,
+      labels,
+      currentVeRbnIndex:
+        currentVeRbnIndex === -1 ? undefined : currentVeRbnIndex,
+    };
+  }, [data]);
+
+  const displayVeRbnAmount = useMemo(() => {
+    if (chartDatapoints) {
+      return hoveredDatapointIndex === undefined
+        ? chartDatapoints.currentVeRbnIndex
+          ? chartDatapoints.dataset[chartDatapoints.currentVeRbnIndex].toFixed(
+              2
+            )
+          : 0
+        : chartDatapoints.dataset[hoveredDatapointIndex].toFixed(2);
+    }
+    return 0;
+  }, [chartDatapoints, hoveredDatapointIndex]);
 
   const renderDataTooltip = useCallback(
     (title: string, explanation: string, learnMoreURL?: string) => (
@@ -64,8 +141,8 @@ const StakingSummary = () => {
     []
   );
 
-  const onHoverVotingPower = useCallback((votingPower?: number) => {
-    setVotingPower(votingPower ?? MOCK_VOTING_POWER);
+  const onHoverDataIndex = useCallback((index?: number) => {
+    setHoveredDatapointIndex(index);
   }, []);
 
   return (
@@ -86,7 +163,7 @@ const StakingSummary = () => {
             {/* veRBN Amount */}
             <div className="d-flex align-items-center">
               <Title fontSize={32} lineHeight={40}>
-                {votingPower}
+                {displayVeRbnAmount}
               </Title>
               <Title
                 fontSize={12}
@@ -113,18 +190,21 @@ const StakingSummary = () => {
                 color={colors.green}
                 className="ml-1"
               >
-                {
-                  data?.lockEndTimestamp
-                    ? moment(data.lockEndTimestamp * 1000).format("MMMM Do, YYYY")
-                    : "-"
-                }
+                {data?.lockEndTimestamp
+                  ? moment(data.lockEndTimestamp * 1000).format("MMMM Do, YYYY")
+                  : "-"}
               </PrimaryText>
             </LockupExpiryContainer>
           </div>
         </div>
 
         {/* Graph */}
-        <StakingSummaryChart onHoverVotingPower={onHoverVotingPower} />
+        <StakingSummaryChart
+          dataset={chartDatapoints?.dataset || []}
+          labels={chartDatapoints?.labels || []}
+          lineDecayAfterIndex={chartDatapoints?.currentVeRbnIndex}
+          onHoverDataIndex={onHoverDataIndex}
+        />
 
         {/* Stats */}
         <div className="d-flex flex-wrap">
