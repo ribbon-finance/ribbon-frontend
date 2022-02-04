@@ -30,6 +30,8 @@ import { useCurvePoolEstimateStETHSwap } from "shared/lib/hooks/useCurvePool";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import useLatestAPY from "shared/lib/hooks/useLatestAPY";
+import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
+import { parseUnits } from "ethers/lib/utils";
 
 const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -108,6 +110,7 @@ const PreviewStep: React.FC<{
   const {
     data: { withdrawals: v2Withdrawals },
   } = useV2VaultData(vaultOption);
+  const { priceHistory } = useVaultPriceHistory(vaultOption, vaultVersion);
 
   const { swapOutput } = useCurvePoolEstimateStETHSwap(
     vaultOption === "rstETH-THETA",
@@ -337,7 +340,13 @@ const PreviewStep: React.FC<{
                 <SecondaryText>Already Initiated</SecondaryText>
                 <Title className="text-right">
                   {formatBigNumber(
-                    v2Withdrawals.amount,
+                    v2Withdrawals.shares
+                      .mul(
+                        priceHistory.find(
+                          (history) => history.round === v2Withdrawals.round
+                        )?.pricePerShare || BigNumber.from(0)
+                      )
+                      .div(parseUnits("1", getAssetDecimals(asset))),
                     getAssetDecimals(asset)
                   )}{" "}
                   {getAssetDisplay(asset)}
