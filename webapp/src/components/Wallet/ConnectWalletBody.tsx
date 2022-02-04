@@ -37,6 +37,19 @@ const TitleContainer = styled.div`
   margin-bottom: 32px;
 `;
 
+const BackButton = styled(BaseButton)`
+  position: absolute;
+  left: 16px;
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  color: ${colors.text};
+  align-items: center;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+  cursor: pointer;
+`;
+
 const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
   background-color: ${colors.background.three};
   align-items: center;
@@ -108,9 +121,10 @@ const ConnectorButtonPill = styled(ConnectorButton)`
 
 const ConnectWalletBody: React.FC<{
   onSelectWallet: (wallet: Wallet) => void;
+  onBack: () => void;
   selectedWallet: Wallet | undefined;
   wallets: Wallet[];
-}> = ({ onSelectWallet, selectedWallet, wallets }) => {
+}> = ({ onSelectWallet, onBack, selectedWallet, wallets }) => {
   const { connectingWallet } = useWeb3Wallet();
 
   const getWalletStatus = useCallback(
@@ -133,6 +147,10 @@ const ConnectWalletBody: React.FC<{
   return (
     <ModalContainer>
       <TitleContainer>
+        <BackButton
+          onClick={() => onBack()}
+          className="fas fa-arrow-left"
+        ></BackButton>
         <Title>Connect Wallet</Title>
       </TitleContainer>
       {wallets.map((wallet: Wallet, index: number) => {

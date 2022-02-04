@@ -24,23 +24,29 @@ import {
 } from "../../models/wallets";
 import { useWeb3Data } from "../../hooks/useWeb3Wallets";
 import { Chains } from "../../constants/constants";
+import { ExternalIcon } from "shared/lib/assets/icons/icons";
 
 const LearnMoreLink = styled(BaseLink)`
+  display: flex;
   text-align: center;
+  justify-content: center;
   margin-top: 16px;
+
+  > * {
+    margin: auto 0;
+  }
 
   &:hover {
     opacity: ${theme.hover.opacity};
   }
 `;
 
-const LearnMoreText = styled(BaseText)`
-  text-decoration: underline;
+const LinkIcon = styled(ExternalIcon)`
+  color: white;
 `;
 
-const LearnMoreArrow = styled(BaseText)`
-  text-decoration: none;
-  margin-left: 5px;
+const LearnMoreText = styled(BaseText)`
+  text-decoration: underline;
 `;
 
 type ConnectSteps = "chain" | "wallet";
@@ -57,6 +63,10 @@ const WalletConnectModal: React.FC = () => {
   // We use these states to preset the state before sending to setChain when clicking the Next button
   const [selectedWallet, setWallet] = useState<Wallet>();
   const [selectedChain, setWalletChain] = useState<Chains>(chain);
+
+  useEffect(() => {
+    setWalletChain(chain);
+  }, [chain]);
 
   // We update wallets when there is a change of chains
   useEffect(() => {
@@ -77,7 +87,7 @@ const WalletConnectModal: React.FC = () => {
   }, [selectedChain]);
 
   const onClose = useCallback(() => {
-    setTimeout(() => setStep("chain"), 100);
+    setStep("chain");
     setShow(false);
   }, [setShow]);
 
@@ -109,7 +119,7 @@ const WalletConnectModal: React.FC = () => {
           ? 400
           : 480
       }
-      maxWidth={500}
+      maxWidth={343}
     >
       <>
         {selectedStep === "chain" ? (
@@ -122,6 +132,7 @@ const WalletConnectModal: React.FC = () => {
           <ConnectWalletBody
             wallets={walletList}
             selectedWallet={selectedWallet}
+            onBack={() => setStep("chain")}
             onSelectWallet={setWallet}
           ></ConnectWalletBody>
         )}
@@ -215,7 +226,7 @@ const ConnectStepsNav: React.FC<ConnectStepsNavProps> = ({
               className="w-100"
             >
               <LearnMoreText>Learn more about wallets</LearnMoreText>
-              <LearnMoreArrow>&#8594;</LearnMoreArrow>
+              <LinkIcon height={20} color={colors.text} />
             </LearnMoreLink>
           </BaseModalContentColumn>
         </>

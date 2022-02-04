@@ -402,7 +402,6 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   };
 
   const renderButtonContent = () => {
-    // FIXME: Fix dAvatar for EVM chains
     return active && account ? (
       <>
         {chainId ? (
@@ -513,7 +512,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
               duration: 0.2,
             }}
           >
-            {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
+            {/* {renderMenuItem("CHANGE WALLET", handleChangeWallet)} */}
             {renderMenuItem(
               copyState === "hidden" ? "COPY ADDRESS" : "ADDRESS COPIED",
               handleCopyAddress,
