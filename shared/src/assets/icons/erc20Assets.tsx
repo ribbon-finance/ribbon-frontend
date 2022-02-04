@@ -65,42 +65,59 @@ export const WBTCLogo: React.FC<SVGProps> = (props) => (
 
 export const WETHLogo: React.FC<SVGProps> = (props) => (
   <svg
-    viewBox="0 0 296 480"
+    viewBox="0 0 56 56"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
-    <g opacity="0.8">
-      <path
-        opacity="0.6"
-        d="M147.687 177.339L0.444031 244.304L147.687 331.296L294.871 244.304L147.687 177.339Z"
-        fill="#627EEA"
-      />
-    </g>
-    <g opacity="0.65">
-      <path
-        opacity="0.45"
-        d="M0.444031 244.304L147.686 331.296V0L0.444031 244.304Z"
-        fill="#627EEA"
-      />
-    </g>
     <path
-      opacity="0.8"
-      d="M147.687 0V331.296L294.871 244.304L147.687 0Z"
+      d="M0 28C0 12.536 12.536 0 28 0V0C43.464 0 56 12.536 56 28V28C56 43.464 43.464 56 28 56V56C12.536 56 0 43.464 0 28V28Z"
       fill="#627EEA"
+      fill-opacity="0.12"
     />
-    <g opacity="0.65">
+    <g clip-path="url(#clip0_3_22)">
+      <g opacity="0.8">
+        <path
+          opacity="0.6"
+          d="M28.3072 22.7783L16.037 28.3587L28.3072 35.608L40.5726 28.3587L28.3072 22.7783Z"
+          fill="#627EEA"
+        />
+      </g>
+      <g opacity="0.65">
+        <path
+          opacity="0.45"
+          d="M16.037 28.3587L28.3072 35.608V8.00002L16.037 28.3587Z"
+          fill="#627EEA"
+        />
+      </g>
       <path
-        opacity="0.45"
-        d="M0.444031 272.202L147.686 479.638V359.193L0.444031 272.202Z"
+        opacity="0.8"
+        d="M28.3072 8.00002V35.608L40.5725 28.3587L28.3072 8.00002Z"
+        fill="#627EEA"
+      />
+      <g opacity="0.65">
+        <path
+          opacity="0.45"
+          d="M16.037 30.6835L28.3072 47.9698V37.9327L16.037 30.6835Z"
+          fill="#627EEA"
+        />
+      </g>
+      <path
+        opacity="0.8"
+        d="M28.3072 37.9327V47.9698L40.5822 30.6835L28.3072 37.9327Z"
         fill="#627EEA"
       />
     </g>
-    <path
-      opacity="0.8"
-      d="M147.687 359.193V479.638L294.987 272.202L147.687 359.193Z"
-      fill="#627EEA"
-    />
+    <defs>
+      <clipPath id="clip0_3_22">
+        <rect
+          width="24.6096"
+          height="40"
+          fill="white"
+          transform="translate(16 8)"
+        />
+      </clipPath>
+    </defs>
   </svg>
 );
 

@@ -250,7 +250,7 @@ const TradeTunnel: React.FC<TradeTunnelProps> = ({
           );
         }
         if (tradeToken === "WETH") {
-          return <AssetLogo height="80%" width="80%" />;
+          return <AssetLogo height="100%" width="100%" />;
         }
         return <AssetLogo height="100%" width="100%" />;
     }
