@@ -25,9 +25,10 @@ import {
 } from "shared/lib/assets/icons/connector";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
+import { BackIcon } from "shared/lib/assets/icons/icons";
 
 const ModalContainer = styled.div`
-  padding: 10px 16px;
+  padding: 10px 0px;
 `;
 
 const TitleContainer = styled.div`
@@ -40,6 +41,7 @@ const TitleContainer = styled.div`
 const BackButton = styled(BaseButton)`
   position: absolute;
   left: 16px;
+  padding: 0;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   color: ${colors.text};
   align-items: center;
@@ -48,13 +50,20 @@ const BackButton = styled(BaseButton)`
   height: 40px;
   justify-content: center;
   cursor: pointer;
+  opacity: ${theme.hover.opacity};
+  transition: 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
 `;
 
 const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
   background-color: ${colors.background.three};
   align-items: center;
   width: 100%;
-  padding: 12px 16px;
+  padding: 8px 16px;
+  height: 56px;
 
   &:hover {
     opacity: ${theme.hover.opacity};
@@ -147,10 +156,9 @@ const ConnectWalletBody: React.FC<{
   return (
     <ModalContainer>
       <TitleContainer>
-        <BackButton
-          onClick={() => onBack()}
-          className="fas fa-arrow-left"
-        ></BackButton>
+        <BackButton onClick={() => onBack()}>
+          <BackIcon />
+        </BackButton>
         <Title>Connect Wallet</Title>
       </TitleContainer>
       {wallets.map((wallet: Wallet, index: number) => {
@@ -228,15 +236,15 @@ const WalletButton: React.FC<WalletButtonProps> = ({
 const WalletIcon: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
   switch (wallet) {
     case EthereumWallet.Metamask:
-      return <MetamaskIcon height={40} width={40} />;
+      return <MetamaskIcon height={32} width={32} />;
     case EthereumWallet.WalletConnect:
-      return <WalletConnectIcon height={40} width={40} />;
+      return <WalletConnectIcon height={32} width={32} />;
     case EthereumWallet.WalletLink:
-      return <StyledWalletLinkIcon height={40} width={40} />;
+      return <StyledWalletLinkIcon height={32} width={32} />;
     case SolanaWallet.Phantom:
-      return <PhantomIcon height={40} width={40} />;
+      return <PhantomIcon height={32} width={32} />;
     case SolanaWallet.Solflare:
-      return <SolflareIcon height={40} width={40} />;
+      return <SolflareIcon height={32} width={32} />;
     default:
       return null;
   }

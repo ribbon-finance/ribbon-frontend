@@ -18,7 +18,7 @@ interface ConnectChainBodyProps {
 }
 
 const ModalContainer = styled.div`
-  padding: 10px 16px;
+  padding: 10px 0px;
 `;
 
 const NetworkContainer = styled.div<{
@@ -27,7 +27,9 @@ const NetworkContainer = styled.div<{
 }>`
   display: flex;
   border-radius: 8px;
-  padding: 12px 16px;
+  padding: 8px;
+  padding-right: 16px;
+  height: 56px;
   align-items: center;
   justify-content: space-between;
   background: #212127;

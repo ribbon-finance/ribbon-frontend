@@ -22,9 +22,9 @@ import {
   SOLANA_WALLETS,
   Wallet,
 } from "../../models/wallets";
-import { useWeb3Data } from "../../hooks/useWeb3Wallets";
 import { Chains } from "../../constants/constants";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
+import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 
 const LearnMoreLink = styled(BaseLink)`
   display: flex;
@@ -52,7 +52,7 @@ const LearnMoreText = styled(BaseText)`
 type ConnectSteps = "chain" | "wallet";
 
 const WalletConnectModal: React.FC = () => {
-  const { addNewChain } = useWeb3Data();
+  const { activate } = useWeb3Wallet();
   const [chain] = useChain();
   const [show, setShow] = useConnectWalletModal();
   const [selectedStep, setStep] = useState<ConnectSteps>("chain");
@@ -97,7 +97,7 @@ const WalletConnectModal: React.FC = () => {
 
   const onActivate = async () => {
     try {
-      await addNewChain(
+      await activate(
         selectedWallet as EthereumWallet | SolanaWallet,
         selectedChain
       ).then(() => {
@@ -113,11 +113,7 @@ const WalletConnectModal: React.FC = () => {
       show={show}
       onClose={onClose}
       height={
-        selectedStep === "chain"
-          ? 430
-          : selectedChain === Chains.Solana
-          ? 400
-          : 480
+        selectedStep === "chain" || selectedChain === Chains.Solana ? 400 : 450
       }
       maxWidth={343}
     >
@@ -160,7 +156,7 @@ interface ConnectStepsNavProps {
 }
 
 const ConnectStepsButton = styled(BaseButton)<{ disabled?: boolean }>`
-  margin: 0 16px;
+  margin: 0;
   padding: 16px;
   color: ${colors.green};
   justify-content: center;
