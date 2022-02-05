@@ -8,7 +8,7 @@ import {
   CHAINS_TO_NATIVE_TOKENS,
   ENABLED_CHAINS,
   READABLE_CHAIN_NAMES,
-} from "../../constants/constants";
+} from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
 
 interface ConnectChainBodyProps {

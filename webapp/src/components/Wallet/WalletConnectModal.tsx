@@ -14,7 +14,7 @@ import BasicModal from "shared/lib/components/Common/BasicModal";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import ConnectWalletBody from "./ConnectWalletBody";
 import ConnectChainBody from "./ConnectChainBody";
-import { useChain } from "../../hooks/chainContext";
+import { useChain } from "shared/lib/hooks/chainContext";
 import {
   EthereumWallet,
   SolanaWallet,
@@ -22,9 +22,9 @@ import {
   SOLANA_WALLETS,
   Wallet,
 } from "../../models/wallets";
-import { Chains, ENABLED_CHAINS } from "../../constants/constants";
+import { Chains, ENABLED_CHAINS } from "shared/lib/constants/constants";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
-import useWeb3Wallet from "../../hooks/useWeb3Wallet";
+import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 
 const LearnMoreLink = styled(BaseLink)`
   display: flex;

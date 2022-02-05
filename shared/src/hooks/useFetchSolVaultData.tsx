@@ -47,7 +47,6 @@ const useFetchSolVaultData = (): SolanaVaultData => {
           depositBalanceInAsset: BigNumber.from(0),
           withdrawals: {
             round: 0,
-            amount: BigNumber.from(0),
             shares: BigNumber.from(0),
           },
         },

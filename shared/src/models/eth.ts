@@ -1,5 +1,6 @@
 import {
-  RetailVaultList,
+  EVMVaultList,
+  StakingVaultOptions,
   TreasuryVaultList,
   VaultOptions,
   VaultVersion,
@@ -29,7 +30,7 @@ export const ERC20TokenList = [
 export type ERC20Token = typeof ERC20TokenList[number];
 
 export const getERC20TokenNameFromVault = (
-  vault: VaultOptions,
+  vault: StakingVaultOptions,
   version: VaultVersion
 ): ERC20Token => {
   return `${vault}-${version}` as const;

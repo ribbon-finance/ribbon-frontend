@@ -99,7 +99,7 @@ export const EVMVaultList = [
 
 export const SolanaVaultList = ["rSOL-THETA"] as const;
 
-const RetailVaultList = [...EVMVaultList, ...SolanaVaultList];
+export const RetailVaultList = [...EVMVaultList, ...SolanaVaultList];
 
 export const TreasuryVaultList = ["rPERP-TSRY"] as const;
 
@@ -828,3 +828,35 @@ export const LiquidityTokenMinterAddress = isDevelopment()
 export const LiquidityGaugeControllerAddress = isDevelopment()
   ? governanceDeployment.kovan.RBNVotingGaugeController
   : governanceDeployment.mainnet.RBNVotingGaugeController;
+
+export enum Chains {
+  NotSelected,
+  Ethereum,
+  Avalanche,
+  Solana,
+}
+
+export const READABLE_CHAIN_NAMES: Record<Chains, string> = {
+  [Chains.Ethereum]: "Ethereum",
+  [Chains.Avalanche]: "Avalanche",
+  [Chains.Solana]: "Solana",
+  [Chains.NotSelected]: "No Chain Selected",
+};
+
+export const ENABLED_CHAINS: Chains[] = isDevelopment()
+  ? [Chains.Ethereum, Chains.Avalanche, Chains.Solana]
+  : [Chains.Ethereum, Chains.Avalanche];
+
+export const CHAINS_TO_NATIVE_TOKENS: Record<Chains, Assets> = {
+  [Chains.Ethereum]: "WETH",
+  [Chains.Avalanche]: "WAVAX",
+  [Chains.Solana]: "SOL",
+  [Chains.NotSelected]: "WETH",
+};
+
+export const CHAINS_TO_ID: Record<number, number> = {
+  [Chains.Ethereum]: isDevelopment() ? CHAINID.ETH_KOVAN : CHAINID.ETH_MAINNET,
+  [Chains.Avalanche]: isDevelopment()
+    ? CHAINID.AVAX_FUJI
+    : CHAINID.AVAX_MAINNET,
+};
