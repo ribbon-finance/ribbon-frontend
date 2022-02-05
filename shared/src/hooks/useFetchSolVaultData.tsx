@@ -5,9 +5,7 @@ import {
   Network,
   Vault,
   Flex,
-  FlexClient,
   vaultUtils,
-  types,
   vaultData,
 } from "@zetamarkets/flex-sdk";
 import { defaultSolanaVaultData, SolanaVaultData } from "../models/vault";
@@ -36,10 +34,12 @@ const useFetchSolVaultData = (): SolanaVaultData => {
         "rSOL-THETA": {
           totalBalance: BigNumber.from(totalBalance),
           cap: BigNumber.from(depositLimit),
-          pricePerShare: parseUnits(
-            pricePerShare.toFixed(getAssetDecimals("SOL")),
-            getAssetDecimals("SOL")
-          ),
+          pricePerShare: pricePerShare
+            ? parseUnits(
+                pricePerShare.toFixed(getAssetDecimals("SOL")),
+                getAssetDecimals("SOL")
+              )
+            : BigNumber.from(0),
           round: epochSequenceNumber,
 
           // user connected state
@@ -72,16 +72,11 @@ const useFlexVault = () => {
     const loadFlexVault = async () => {
       loadedOnce = true;
 
-      await Flex.load(
-        new PublicKey(flexProgramId),
-        Network.LOCALNET,
-        connection
-      );
-      await FlexClient.load(connection, new types.DummyWallet());
+      await Flex.load(new PublicKey(flexProgramId), Network.DEVNET, connection);
 
       await Vault.load(
         new PublicKey(vaultProgramId),
-        Network.LOCALNET,
+        Network.DEVNET,
         connection
       );
       setLoadedVault(true);

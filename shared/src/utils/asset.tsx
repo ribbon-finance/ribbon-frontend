@@ -49,7 +49,7 @@ export const getAssetDecimals = (asset: Assets): number => {
     case "yvUSDC":
       return 6;
     case "SOL":
-      return 6;
+      return 9;
     default:
       return 18;
   }
