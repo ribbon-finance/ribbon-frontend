@@ -17,7 +17,7 @@ import {
   VaultLiquidityMiningMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
-import useWeb3Wallet from "../../hooks/useWeb3Wallet";
+import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";

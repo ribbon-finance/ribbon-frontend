@@ -179,7 +179,14 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
       default:
         return <RBNClaimModalContent step={step} type="rbn" />;
     }
-  }, [step, logo, vaultOption, stakingPoolData, handleClaim]);
+  }, [
+    step,
+    logo,
+    vaultOption,
+    stakingPoolData,
+    handleClaim,
+    timeTillNextRewardWeek,
+  ]);
 
   return (
     <BasicModal

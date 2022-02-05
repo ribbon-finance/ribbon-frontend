@@ -19,9 +19,9 @@ import {
   SolanaWallet,
   Wallet,
 } from "../models/wallets";
-import { CHAINID } from "shared/lib/utils/env";
+import { CHAINID } from "../utils/env";
 import { CHAINS_TO_ID } from "../constants/constants";
-import { switchChains } from "shared/lib/utils/chainSwitching";
+import { switchChains } from "../utils/chainSwitching";
 
 interface Web3WalletData {
   chainId: number | undefined;

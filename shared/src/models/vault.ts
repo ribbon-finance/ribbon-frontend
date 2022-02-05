@@ -254,7 +254,6 @@ export const defaultSolanaVaultData: SolanaVaultData = {
         depositBalanceInAsset: BigNumber.from(0),
         withdrawals: {
           shares: BigNumber.from(0),
-          amount: BigNumber.from(0),
           round: 1,
         },
       },
