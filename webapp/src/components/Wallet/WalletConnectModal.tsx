@@ -22,7 +22,7 @@ import {
   SOLANA_WALLETS,
   Wallet,
 } from "../../models/wallets";
-import { Chains } from "../../constants/constants";
+import { Chains, ENABLED_CHAINS } from "../../constants/constants";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 
@@ -104,13 +104,38 @@ const WalletConnectModal: React.FC = () => {
     }
   };
 
+  let modalHeightForChain = 0;
+  switch (ENABLED_CHAINS.length) {
+    case 2:
+      modalHeightForChain = 320;
+      break;
+    case 3:
+      modalHeightForChain = 400;
+      break;
+    default:
+      break;
+  }
+
+  let modalHeightForWallets = 0;
+  switch (walletList.length) {
+    case 2:
+      modalHeightForWallets = 400;
+      break;
+    case 3:
+      modalHeightForWallets = 450;
+      break;
+    default:
+      break;
+  }
+
+  const modalHeight =
+    selectedStep === "chain" ? modalHeightForChain : modalHeightForWallets;
+
   return (
     <BasicModal
       show={show}
       onClose={onClose}
-      height={
-        selectedStep === "chain" || selectedChain === Chains.Solana ? 400 : 450
-      }
+      height={modalHeight}
       maxWidth={343}
     >
       <>
