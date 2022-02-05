@@ -13,7 +13,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ribbon-finance/ribbon-frontend.git"
-  },  
+  },
   "dependencies": {
     "@craco/craco": "^6.1.1",
     "@davatar/react": "^1.8.1",
@@ -30,7 +30,6 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@web3-react/core": "^6.1.9",
-    "@zetamarkets/flex-sdk": "0.1.3",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "chart.js": "^2.9.4",
