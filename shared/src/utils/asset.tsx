@@ -15,7 +15,7 @@ import {
 import Logo from "../assets/icons/logo";
 import { SolanaLogo } from "../assets/icons/solAssets";
 import colors from "../designSystem/colors";
-import { Assets } from "../store/types";
+import { Assets, Wallets } from "../store/types";
 
 export const isYieldAsset = (asset: Assets): boolean => {
   switch (asset) {
@@ -74,6 +74,8 @@ export const getAssetDefaultSignificantDecimals = (asset: Assets): number => {
 };
 
 export const getAssetColor = (asset: Assets): string => colors.asset[asset];
+export const getWalletColor = (wallet: Wallets): string =>
+  colors.wallets[wallet];
 
 const ColoredWBTCLogo = styled(WBTCLogo)`
   width: 100%;

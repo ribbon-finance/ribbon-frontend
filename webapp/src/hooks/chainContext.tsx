@@ -17,7 +17,7 @@ const ChainContext = React.createContext<ChainContextType>({
   setChain: () => {},
 });
 
-export const useChain = () => {
+export const useChain: () => [Chains, (chain: Chains) => void] = () => {
   const { chain, setChain } = useContext(ChainContext);
   return [chain, setChain];
 };

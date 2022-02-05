@@ -21,6 +21,15 @@ export const AssetsList = [
 ] as const;
 export type Assets = typeof AssetsList[number];
 
+export const WalletsList = [
+  "Metamask",
+  "WalletConnect",
+  "WalletLink",
+  "Phantom",
+  "Solflare",
+] as const;
+export type Wallets = typeof WalletsList[number];
+
 export type PendingTransaction = {
   txhash: string;
   status?: "success" | "error";

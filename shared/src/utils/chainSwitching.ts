@@ -8,8 +8,11 @@ import {
 import { isAuroraNetwork, isAvaxNetwork } from "../constants/constants";
 import { CHAINID } from "./env";
 
-// This error code indicates that the chain has not been added to MetaMask.
-const UNAVAILABLE_CHAIN_CODE = 4902;
+// This error code indicates that
+enum ChainCodeErrorEnum {
+  UNAVAILABLE = 4902, // chain has not been added to MetaMask
+  CANCELLED = 4001, // switching chain has been cancelled
+}
 
 /**
  * Function copied and modified from https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
@@ -28,11 +31,15 @@ export const switchChains = async (
       params: [{ chainId: hexChainId }],
     });
   } catch (switchError: any) {
+    if (switchError.code === ChainCodeErrorEnum.CANCELLED) {
+      window.location.reload();
+    }
+
     if (
-      switchError.code === UNAVAILABLE_CHAIN_CODE ||
+      switchError.code === ChainCodeErrorEnum.UNAVAILABLE ||
       (switchError.data &&
         switchError.data.originalError &&
-        switchError.data.originalError.code === UNAVAILABLE_CHAIN_CODE)
+        switchError.data.originalError.code === ChainCodeErrorEnum.UNAVAILABLE)
     ) {
       let params: unknown;
 
@@ -62,6 +69,5 @@ export const switchChains = async (
         throw new Error("Network not found");
       }
     }
-    // handle other "switch" errors
   }
 };
