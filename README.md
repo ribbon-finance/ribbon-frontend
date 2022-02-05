@@ -36,6 +36,8 @@ REACT_APP_AIRTABLE_BASE_ID=app5c70grFW2INfkN
 REACT_APP_AVAX_URI=https://api.avax.network/ext/bc/C/rpc
 REACT_APP_FUJI_URI=https://api.avax-test.network/ext/bc/C/rpc
 REACT_APP_AVAX_SUBGRAPHQL_URL=https://api.thegraph.com/subgraph/name/kenchangh/ribbon-avax
+REACT_APP_SOLANA_TESTNET_URI=https://api.devnet.solana.com
+REACT_APP_SOLANA_MAINNET_URI=https://api.mainnet-beta.solana.com
 ```
 
 In order to switch between the development environment and a production environment, we can change the `REACT_APP_VERCEL_GIT_COMMIT_REF` env var.
