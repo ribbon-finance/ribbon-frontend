@@ -26,7 +26,7 @@ function App() {
 
   return (
     <ChainContextProvider>
-      <ConnectionProvider endpoint="http://127.0.0.1:8899">
+      <ConnectionProvider endpoint="https://api.devnet.solana.com">
         <SolanaWalletProvider wallets={SOLANA_WALLETS} autoConnect>
           <Web3ContextProvider>
             <Web3ReactProvider getLibrary={getLibrary}>
