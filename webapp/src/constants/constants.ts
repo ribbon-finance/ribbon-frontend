@@ -6,18 +6,22 @@ import {
 } from "shared/lib/constants/constants";
 import { Airdrop, AirdropBreakdown, AirdropProof } from "../models/airdrop";
 import { Assets } from "shared/lib/store/types";
+import ProofKovanData from "../data/proof-kovan.json";
+import ProofData from "../data/proof.json";
+import AirdropKovanData from "../data/airdrop-kovan.json";
+import AirdropData from "../data/airdrop.json";
+import BreakdownKovanData from "../data/breakdown-kovan.json";
+import BreakdownData from "../data/breakdown.json";
 
-export const proof: AirdropProof = isDevelopment()
-  ? require("../data/proof-kovan.json")
-  : require("../data/proof.json");
+export const proof: AirdropProof = isDevelopment() ? ProofKovanData : ProofData;
 
 export const airdrop: Airdrop = isDevelopment()
-  ? require("../data/airdrop-kovan.json")
-  : require("../data/airdrop.json");
+  ? AirdropKovanData
+  : AirdropData;
 
 export const breakdown: AirdropBreakdown = isDevelopment()
-  ? require("../data/breakdown-kovan.json")
-  : require("../data/breakdown.json");
+  ? BreakdownKovanData
+  : BreakdownData;
 
 export const getVaultURI = (
   vaultOption: VaultOptions,
