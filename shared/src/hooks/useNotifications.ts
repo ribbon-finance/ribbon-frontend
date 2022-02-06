@@ -11,7 +11,6 @@ import { getAssetDecimals } from "../utils/asset";
 import { useGlobalState } from "../store/store";
 import { useVaultsPriceHistory } from "./useVaultPerformanceUpdate";
 import { parseUnits } from "ethers/lib/utils";
-import { BigNumber } from "ethers";
 
 const localStorageKey = "notificationLastRead";
 

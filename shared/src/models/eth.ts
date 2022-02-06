@@ -2,7 +2,6 @@ import {
   EVMVaultList,
   StakingVaultOptions,
   TreasuryVaultList,
-  VaultOptions,
   VaultVersion,
   VaultVersionList,
 } from "../constants/constants";
