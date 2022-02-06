@@ -17,6 +17,7 @@ import {
   LidoCurvePoolAddress,
   VaultAllowedDepositAssets,
   CurveSwapSlippage,
+  getSolanaVaultInstance,
 } from "shared/lib/constants/constants";
 import { isETHVault } from "shared/lib/utils/vault";
 import { amountAfterSlippage } from "shared/lib/utils/math";
@@ -224,9 +225,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
               case "rSOL-THETA":
                 if (loadedVault && data.vaultClient) {
                   await data.vaultClient.depositVault(
-                    new PublicKey(
-                      "LiBBYM1FV2zY92bDd6MYb9QNcEZx3LJc69dwXkpMm6R"
-                    ),
+                    getSolanaVaultInstance(vaultOption),
                     new anchor.BN(amountStr)
                   );
                 }
