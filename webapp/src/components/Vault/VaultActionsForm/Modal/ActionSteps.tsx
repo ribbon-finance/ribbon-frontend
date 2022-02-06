@@ -223,10 +223,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
               case "rSOL-THETA":
                 if (loadedVault && data.vaultClient) {
-                  console.log(amountStr);
                   await data.vaultClient.depositVault(
                     new PublicKey(
-                      "RBN2XNc6JQU6ewFp9TyPq6WznsvNuumzSJkor1nJFcz"
+                      "LiBBYM1FV2zY92bDd6MYb9QNcEZx3LJc69dwXkpMm6R"
                     ),
                     new anchor.BN(amountStr)
                   );
