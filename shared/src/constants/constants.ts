@@ -9,7 +9,9 @@ import {
   isDevelopment,
   isProduction,
   isTreasury,
+  getSolanaAddresses,
 } from "../utils/env";
+import { PublicKey } from "@solana/web3.js";
 import v1deployment from "./v1Deployments.json";
 import v2deployment from "./v2Deployments.json";
 import governanceDeployment from "./governanceDeployment.json";
@@ -859,4 +861,10 @@ export const CHAINS_TO_ID: Record<number, number> = {
   [Chains.Avalanche]: isDevelopment()
     ? CHAINID.AVAX_FUJI
     : CHAINID.AVAX_MAINNET,
+};
+
+export const getSolanaVaultInstance = (vaultOption: VaultOptions) => {
+  const vaults = getSolanaAddresses().vaults as { [key: string]: string };
+  if (vaults[vaultOption]) return new PublicKey(vaults[vaultOption]);
+  throw new Error(`No solana vault ${vaultOption}`);
 };
