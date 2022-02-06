@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
-import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
+import * as anchor from "@project-serum/anchor";
 
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { ACTIONS, Steps, STEPS } from "./types";
 import useVault from "shared/lib/hooks/useVault";
 import PreviewStep from "./PreviewStep";
@@ -27,8 +28,10 @@ import useV2Vault from "shared/lib/hooks/useV2Vault";
 import WarningStep from "./WarningStep";
 import { getCurvePool } from "shared/lib/hooks/useCurvePool";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
+import { useFlexVault } from "shared/lib/hooks/useFlexVault";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { getAssetDecimals } from "shared/lib/utils/asset";
+import { PublicKey } from "@solana/web3.js";
 
 export interface ActionStepsProps {
   vault: {
@@ -54,6 +57,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const { vaultActionForm, resetActionForm, withdrawMetadata } =
     useVaultActionForm(vaultOption);
   const { data: priceHistories } = useVaultsPriceHistory();
+  const { loadedVault, data } = useFlexVault();
 
   const firstStep = useMemo(() => {
     if (
@@ -216,6 +220,19 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                   ? vault.depositETH({ value: amountStr })
                   : vault.depositYieldToken(amountStr));
                 break;
+
+              case "rSOL-THETA":
+                if (loadedVault && data.vaultClient) {
+                  console.log(amountStr);
+                  await data.vaultClient.depositVault(
+                    new PublicKey(
+                      "RBN2XNc6JQU6ewFp9TyPq6WznsvNuumzSJkor1nJFcz"
+                    ),
+                    new anchor.BN(amountStr)
+                  );
+                }
+                break;
+
               default:
                 res = await (isNativeToken(asset)
                   ? vault.depositETH({ value: amountStr })
