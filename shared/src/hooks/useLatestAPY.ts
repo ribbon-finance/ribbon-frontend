@@ -17,6 +17,7 @@ import { VaultPriceHistory } from "../models/vault";
 import { getAssetDecimals } from "../utils/asset";
 import useYearnAPIData from "./useYearnAPIData";
 import useLidoAPY from "./useLidoOracle";
+import { useV2VaultData, useV2VaultsData } from "./web3DataContext";
 
 const getPriceHistoryFromPeriod = (
   priceHistory: VaultPriceHistory[],
@@ -195,10 +196,13 @@ export const useLatestAPY = (
   vaultOption: VaultOptions,
   vaultVersion: VaultVersion
 ) => {
-  const { priceHistory, loading } = useVaultPriceHistory(
-    vaultOption,
-    vaultVersion
-  );
+  const { priceHistory, loading: vaultPriceHistoryLoading } =
+    useVaultPriceHistory(vaultOption, vaultVersion);
+  const {
+    data: { round, pricePerShare },
+    loading: vaultDataLoading,
+  } = useV2VaultData(vaultOption);
+  const loading = vaultPriceHistoryLoading || vaultDataLoading;
   const { getVaultAPR } = useYearnAPIData();
   const lidoAPY = useLidoAPY();
 
@@ -223,7 +227,9 @@ export const useLatestAPY = (
     res: loading
       ? 0
       : calculateAPYFromPriceHistory(
-          priceHistory,
+          priceHistory.map((history) =>
+            history.round === round ? { ...history, pricePerShare } : history
+          ),
           getAssetDecimals(getAssets(vaultOption)),
           { vaultOption, vaultVersion },
           underlyingYieldAPR
@@ -234,7 +240,10 @@ export const useLatestAPY = (
 export default useLatestAPY;
 
 export const useLatestAPYs = () => {
-  const { data, loading } = useVaultsPriceHistory();
+  const { data: vaultsPriceHistory, loading: vaultsPriceHistoryLoading } =
+    useVaultsPriceHistory();
+  const { data: vaultsData, loading: vaultsDataLoading } = useV2VaultsData();
+  const loading = vaultsPriceHistoryLoading || vaultsDataLoading;
   const { getVaultAPR } = useYearnAPIData();
   const lidoAPY = useLidoAPY();
 
@@ -245,7 +254,8 @@ export const useLatestAPYs = () => {
           version,
           Object.fromEntries(
             VaultList.map((vaultOption) => {
-              const priceHistory = data[version][vaultOption];
+              const priceHistory = vaultsPriceHistory[version][vaultOption];
+              const { round, pricePerShare } = vaultsData[vaultOption];
 
               switch (version) {
                 case "v2":
@@ -268,7 +278,11 @@ export const useLatestAPYs = () => {
                 loading
                   ? 0
                   : calculateAPYFromPriceHistory(
-                      priceHistory,
+                      priceHistory.map((history) =>
+                        history.round === round
+                          ? { ...history, pricePerShare }
+                          : history
+                      ),
                       getAssetDecimals(getAssets(vaultOption)),
                       { vaultOption, vaultVersion: version },
                       underlyingYieldAPR
@@ -282,7 +296,7 @@ export const useLatestAPYs = () => {
           [option in VaultOptions]: number;
         };
       },
-    [data, getVaultAPR, lidoAPY, loading]
+    [vaultsData, vaultsPriceHistory, getVaultAPR, lidoAPY, loading]
   );
 
   return { fetched: !loading, res: latestAPYs };
