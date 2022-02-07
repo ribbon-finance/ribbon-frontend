@@ -36,7 +36,7 @@ export const vaultPriceHistoryGraphql = (
         ) {
           pricePerShare
           timestamp
-          round
+          ${version !== "v1" ? "round" : ""}
         }
       `
     );
