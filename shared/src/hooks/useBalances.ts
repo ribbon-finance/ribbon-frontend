@@ -5,7 +5,7 @@ import { VaultVersion, VaultVersionList } from "../constants/constants";
 import { BalanceUpdate } from "../models/vault";
 import { SubgraphDataContext } from "./subgraphDataContext";
 
-export const balancesGraphql = (account: string, version: VaultVersion) => `
+export const balancesGraphql = (account: string) => `
   balanceUpdates(
     where: { account:"${account}" },
     orderBy: timestamp,
