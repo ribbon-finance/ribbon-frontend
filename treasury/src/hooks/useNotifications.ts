@@ -14,6 +14,9 @@ import { isPracticallyZero } from "shared/lib/utils/math";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import { useGlobalState } from "shared/lib/store/store";
 import useTransactions from "shared/lib/hooks/useTransactions";
+import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
+import { parseUnits } from "ethers/lib/utils";
+import { BigNumber } from "ethers";
 
 const localStorageKey = "notificationLastRead";
 
@@ -21,6 +24,7 @@ const useNotifications = () => {
   const { activities: vaultsActivities } = useAllVaultActivities();
   const { data: v2VaultsData } = useV2VaultsData();
   const { data: vaultAccounts } = useAllVaultAccounts();
+  const { data: priceHistories } = useVaultsPriceHistory();
   const { transactions } = useTransactions();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -57,10 +61,14 @@ const useNotifications = () => {
 
     Object.keys(v2VaultsData).forEach((vaultOption) => {
       const vaultData = v2VaultsData[vaultOption as VaultOptions];
+      const priceHistory = priceHistories.v2[vaultOption as VaultOptions].find(
+        (history) => history.round === vaultData.withdrawals.round
+      );
 
       if (
-        !vaultData.withdrawals.amount.isZero() &&
-        vaultData.withdrawals.round !== vaultData.round
+        !vaultData.withdrawals.shares.isZero() &&
+        vaultData.withdrawals.round !== vaultData.round &&
+        priceHistory
       ) {
         const lastWithdrawTime = moment()
           .isoWeekday("friday")
@@ -83,7 +91,14 @@ const useNotifications = () => {
           type: "withdrawalReady",
           vault: vaultOption as VaultOptions,
           vaultVersion: "v2",
-          amount: vaultData.withdrawals.amount,
+          amount: vaultData.withdrawals.shares
+            .mul(priceHistory.pricePerShare)
+            .div(
+              parseUnits(
+                "1",
+                getAssetDecimals(getAssets(vaultOption as VaultOptions))
+              )
+            ),
         });
       }
     });
@@ -153,7 +168,13 @@ const useNotifications = () => {
     setNotifications(
       notificationList.sort((a, b) => (a.date.isBefore(b.date) ? 1 : -1))
     );
-  }, [vaultAccounts, vaultsActivities, v2VaultsData, transactions]);
+  }, [
+    priceHistories.v2,
+    vaultAccounts,
+    vaultsActivities,
+    v2VaultsData,
+    transactions,
+  ]);
 
   return {
     notifications,
