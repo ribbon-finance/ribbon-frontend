@@ -1,5 +1,10 @@
 import { BigNumber, ethers } from "ethers";
-import { TreasuryVaultList, VaultNameOptionMap, VaultOptions, VaultVersion } from "shared/lib/constants/constants";
+import {
+  TreasuryVaultList,
+  VaultNameOptionMap,
+  VaultOptions,
+  VaultVersion,
+} from "shared/lib/constants/constants";
 
 export type TreasuryVaultOptions = typeof TreasuryVaultList[number];
 

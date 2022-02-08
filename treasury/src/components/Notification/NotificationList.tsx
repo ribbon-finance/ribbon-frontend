@@ -206,10 +206,10 @@ const NotificationList: React.FC<NotificationListProps> = ({
         break;
       case "distributePremium":
         title = "PREMIUM DISTRIBUTION";
-        
+
         body = (
           <>
-            The vault distributed {" "}
+            The vault distributed{" "}
             {formatBigNumber(notification.amount, premiumDecimals)}{" "}
             {getAssetDisplay("USDC")} to your address
           </>
@@ -245,7 +245,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
         case "optionSale":
           return `?jumpTo=vaultActivity&activityTimestamp=${notification.date.valueOf()}`;
         case "distributePremium":
-          return ""
+          return "";
       }
     },
     []
@@ -298,9 +298,10 @@ const NotificationList: React.FC<NotificationListProps> = ({
       )}
       <NotificationItems>
         {filteredNotifications.map((notification) => {
-          const Logo = notification.type != "distributePremium"
-            ? getAssetLogo(getDisplayAssets(notification.vault))
-            : getAssetLogo("USDC");
+          const Logo =
+            notification.type !== "distributePremium"
+              ? getAssetLogo(getDisplayAssets(notification.vault))
+              : getAssetLogo("USDC");
 
           return (
             <NotificationItem
@@ -323,14 +324,14 @@ const NotificationList: React.FC<NotificationListProps> = ({
               role="button"
               onClick={() => {
                 onClose();
-                notification.type != "distributePremium"
-                ? history.push(
-                  getVaultURI(notification.vault, notification.vaultVersion) +
-                    getNotificationRedirectQuerystring(notification)
-                )
-                : history.push(
-                  "/portfolio"
-                );
+                notification.type !== "distributePremium"
+                  ? history.push(
+                      getVaultURI(
+                        notification.vault,
+                        notification.vaultVersion
+                      ) + getNotificationRedirectQuerystring(notification)
+                    )
+                  : history.push("/portfolio");
               }}
             >
               <NotificationItemIcon>

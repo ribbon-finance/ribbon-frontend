@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import moment from "moment";
 
-import { getAssets, VaultOptions, VaultVersion } from "shared/lib/constants/constants";
+import {
+  getAssets,
+  VaultOptions,
+  VaultVersion,
+} from "shared/lib/constants/constants";
 import { Notification } from "../models/notification";
 import { useAllVaultActivities } from "shared/lib/hooks/useVaultActivity";
 import { useV2VaultsData } from "shared/lib/hooks/web3DataContext";
@@ -84,17 +88,19 @@ const useNotifications = () => {
       }
     });
 
-    transactions.filter((value) => {
-      return value.type === "distribute"
-    }).forEach((value) => {
-      notificationList.push({
-        date: moment.unix(value.timestamp),
-        type: "distributePremium",
-        vault: value.vault.symbol as VaultOptions,
-        vaultVersion: "v2",
-        amount: value.amount
+    transactions
+      .filter((value) => {
+        return value.type === "distribute";
+      })
+      .forEach((value) => {
+        notificationList.push({
+          date: moment.unix(value.timestamp),
+          type: "distributePremium",
+          vault: value.vault.symbol as VaultOptions,
+          vaultVersion: "v2",
+          amount: value.amount,
+        });
       });
-    })
 
     Object.keys(vaultsActivities).forEach((version) => {
       const vaultVersion = version as VaultVersion;
@@ -147,7 +153,7 @@ const useNotifications = () => {
     setNotifications(
       notificationList.sort((a, b) => (a.date.isBefore(b.date) ? 1 : -1))
     );
-  }, [vaultAccounts, vaultsActivities, v2VaultsData]);
+  }, [vaultAccounts, vaultsActivities, v2VaultsData, transactions]);
 
   return {
     notifications,

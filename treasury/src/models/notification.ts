@@ -7,7 +7,7 @@ export const NotificationTypeList = [
   "optionMinting",
   "optionSale",
   "withdrawalReady",
-  "distributePremium"
+  "distributePremium",
 ] as const;
 export type NotificationType = typeof NotificationTypeList[number];
 
