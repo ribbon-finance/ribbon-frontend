@@ -102,7 +102,6 @@ const LogoContainer = styled.div<{ color: string }>`
   width: 40px;
   height: 40px;
   border-radius: 100px;
-  background: ${(props) => props.color}29;
 `;
 
 const PoolRewardData = styled(Title)`
@@ -238,8 +237,6 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
     const Logo = getAssetLogo(asset);
 
     switch (asset) {
-      case "WETH":
-        return <Logo height="70%" />;
       default:
         return <Logo />;
     }

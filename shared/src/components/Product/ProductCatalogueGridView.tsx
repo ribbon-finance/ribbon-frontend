@@ -188,11 +188,7 @@ const ProductCatalogueGridView: React.FC<
               values={filterAssets}
               options={FilterAssets.map((asset) => {
                 const Logo = getAssetLogo(asset);
-                let logo = <Logo height="100%" />;
-                switch (asset) {
-                  case "WETH":
-                    logo = <Logo height="70%" />;
-                }
+                const logo = <Logo height="100%" />;
                 return {
                   value: asset,
                   display: getAssetDisplay(asset),
@@ -226,11 +222,7 @@ const ProductCatalogueGridView: React.FC<
                 values: filterAssets,
                 options: FilterAssets.map((asset) => {
                   const Logo = getAssetLogo(asset);
-                  let logo = <Logo height="100%" />;
-                  switch (asset) {
-                    case "WETH":
-                      logo = <Logo height="70%" />;
-                  }
+                  const logo = <Logo height="100%" />;
                   return {
                     value: asset,
                     display: getAssetDisplay(asset),

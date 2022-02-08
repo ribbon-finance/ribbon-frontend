@@ -329,7 +329,7 @@ const HeroSection: React.FC<{
 
     switch (asset) {
       case "WETH":
-        return <Logo width="55%" style={{ marginTop: 40 }} />;
+        return <Logo />;
       case "WBTC":
         return <Logo height="190%" style={{ marginTop: 40 }} />;
       case "USDC":

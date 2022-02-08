@@ -51,6 +51,7 @@ import { getAssetDecimals } from "shared/lib/utils/asset";
 import YourPosition from "shared/lib/components/Vault/YourPosition";
 import AirdropButton from "../Airdrop/AirdropButton";
 import AirdropModal from "../Airdrop/AirdropModal";
+import Indicator from "shared/lib/components/Indicator/Indicator";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -400,12 +401,16 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     setShowActionModal(true);
   };
 
-  const renderButtonContent = () =>
-    active && account ? (
+  const renderButtonContent = () => {
+    return active && account ? (
       <>
-        <Avatar>
-          <Davatar address={account} size={20} />
-        </Avatar>
+        {chainId ? (
+          <Avatar>
+            <Davatar address={account} size={20} />
+          </Avatar>
+        ) : (
+          <Indicator connected={active} />
+        )}
         <WalletButtonText connected={active}>
           {ensData?.name || truncateAddress(account)}{" "}
           <ButtonArrow isOpen={isMenuOpen} />
@@ -414,6 +419,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     ) : (
       <WalletButtonText connected={active}>CONNECT WALLET</WalletButtonText>
     );
+  };
 
   const renderMenuItem = (
     title: string,
@@ -506,7 +512,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
               duration: 0.2,
             }}
           >
-            {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
+            {/* {renderMenuItem("CHANGE WALLET", handleChangeWallet)} */}
             {renderMenuItem(
               copyState === "hidden" ? "COPY ADDRESS" : "ADDRESS COPIED",
               handleCopyAddress,

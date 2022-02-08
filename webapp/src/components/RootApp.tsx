@@ -10,7 +10,7 @@ import PortfolioPage from "../pages/Portfolio/PortfolioPage";
 import Footer from "./Footer/Footer";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { TxStatusToast, WithdrawReminderToast } from "./Common/toasts";
-import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal";
+import WalletConnectModal from "./Wallet/WalletConnectModal";
 import NotFound from "../pages/NotFound";
 import StakingPage from "../pages/Staking/StakingPage";
 import colors from "shared/lib/designSystem/colors";

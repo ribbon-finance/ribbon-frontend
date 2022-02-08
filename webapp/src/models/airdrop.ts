@@ -30,5 +30,5 @@ export type AirdropBreakdown = {
 };
 
 export type Airdrop = {
-  [key: string]: number;
+  [key: string]: string;
 };
