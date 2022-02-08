@@ -1,21 +1,29 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
-
 import {
   PrimaryText,
   SecondaryText,
   Subtitle,
   Title,
 } from "shared/lib/designSystem";
+import { useAllLiquidityGaugeV5PoolsData } from "shared/lib/hooks/web3DataContext";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
-import StakingSummaryChart from "./StakingSummaryChart";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { formatBigNumber } from "shared/lib/utils/math";
-import { BigNumber } from "ethers";
 import moment from "moment";
+import { calculateInitialveRBNAmount } from "../../utils/math";
+import { formatUnits } from "ethers/lib/utils";
+import { BigNumber } from "ethers";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import {
+  Chart,
+  HoverInfo,
+} from "shared/lib/components/Common/PerformanceChart";
+import { useWeb3React } from "@web3-react/core";
+import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 
 const SummaryContainer = styled.div`
   display: flex;
@@ -43,10 +51,142 @@ const LockupData = styled.div`
   }
 `;
 
-const MOCK_VOTING_POWER = 5235.27;
+const ChartContainer = styled.div`
+  height: 225px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ConnectWalletButton = styled(PrimaryText)`
+  color: ${colors.green};
+`;
+
 const StakingSummary = () => {
-  const { data } = useRBNTokenAccount()
-  const [votingPower, setVotingPower] = useState(MOCK_VOTING_POWER);
+  const { active } = useWeb3React();
+  const [, setShowConnectWalletModal] = useConnectWalletModal();
+  const { data: rbnTokenAccount, loading: rbnTokenAccountLoading } =
+    useRBNTokenAccount();
+  const { data: liquidityPoolsData, loading: liquidityPoolsDataLoading } =
+    useAllLiquidityGaugeV5PoolsData();
+  const [hoveredDatapointIndex, setHoveredDatapointIndex] = useState<number>();
+
+  const loadingText = useTextAnimation(
+    rbnTokenAccountLoading || liquidityPoolsDataLoading
+  );
+
+  const displayClaimableRbnRewards: string = useMemo(() => {
+    if (liquidityPoolsDataLoading) {
+      return loadingText;
+    }
+    const amount = Object.values(liquidityPoolsData).reduce((prev, current) => {
+      return prev.add(current.claimableRbn);
+    }, BigNumber.from(0));
+    return formatBigNumber(amount);
+  }, [liquidityPoolsData, loadingText, liquidityPoolsDataLoading]);
+
+  const chartDatapoints:
+    | {
+        // array of veRBN, in number (already divided by 18 decimals)
+        dataset: number[];
+        labels: Date[];
+
+        // The index of dataset + labels that is the voting power of the current timestamp
+        currentVeRbnIndex?: number;
+      }
+    | undefined = useMemo(() => {
+    if (
+      !rbnTokenAccount ||
+      !rbnTokenAccount.lockStartTimestamp ||
+      !rbnTokenAccount.lockEndTimestamp
+    ) {
+      return undefined;
+    }
+
+    // Generate a fixed set of 100 datapoints from start and end duration
+    const totalDatapoints = 100;
+    let dataset: number[] = [];
+    let labels: Date[] = [];
+    for (let i = 0; i < totalDatapoints; i++) {
+      const totalDurationMillis =
+        (rbnTokenAccount.lockEndTimestamp -
+          rbnTokenAccount.lockStartTimestamp) *
+        1000;
+      // Split total duration into chunks of totalDatapoints
+      const incrementDurationMillis =
+        (totalDurationMillis / totalDatapoints) * i;
+
+      // New start timestamp and duration
+      const startTimestampMillis =
+        rbnTokenAccount.lockStartTimestamp * 1000 + incrementDurationMillis;
+      const duration =
+        rbnTokenAccount.lockEndTimestamp * 1000 - startTimestampMillis;
+      const veRbnAmount = calculateInitialveRBNAmount(
+        rbnTokenAccount.lockedBalance,
+        moment.duration(duration)
+      );
+      dataset.push(parseFloat(formatUnits(veRbnAmount, 18)));
+      labels.push(new Date(startTimestampMillis));
+    }
+
+    // Push the current index
+    const now = new Date();
+    const currentRemainingDuration =
+      rbnTokenAccount.lockEndTimestamp * 1000 - now.getTime();
+    const currentVeRbnAmount = calculateInitialveRBNAmount(
+      rbnTokenAccount.lockedBalance,
+      moment.duration(currentRemainingDuration)
+    );
+    dataset.push(parseFloat(formatUnits(currentVeRbnAmount, 18)));
+    labels.push(now);
+
+    // Sort dataset and labels
+    dataset = dataset.sort((a, b) => b - a);
+    labels = labels.sort((a, b) => a.getTime() - b.getTime());
+
+    // Get index of the current point
+    const currentVeRbnIndex = labels.findIndex(
+      (label) => label.getTime() === now.getTime()
+    );
+    return {
+      dataset,
+      labels,
+      currentVeRbnIndex:
+        currentVeRbnIndex === -1 ? undefined : currentVeRbnIndex,
+    };
+  }, [rbnTokenAccount]);
+
+  const displayVeRbnAmount = useMemo(() => {
+    if (chartDatapoints) {
+      return hoveredDatapointIndex === undefined
+        ? chartDatapoints.currentVeRbnIndex
+          ? chartDatapoints.dataset[chartDatapoints.currentVeRbnIndex].toFixed(
+              2
+            )
+          : 0
+        : chartDatapoints.dataset[hoveredDatapointIndex].toFixed(2);
+    }
+    return 0;
+  }, [chartDatapoints, hoveredDatapointIndex]);
+
+  const displayLockedRbn = useMemo(() => {
+    if (rbnTokenAccountLoading) {
+      return loadingText;
+    }
+    return rbnTokenAccount
+      ? formatBigNumber(rbnTokenAccount.lockedBalance)
+      : "-";
+  }, [rbnTokenAccount, rbnTokenAccountLoading, loadingText]);
+
+  const displayUnstakedRbn = useMemo(() => {
+    if (rbnTokenAccountLoading) {
+      return loadingText;
+    }
+    return rbnTokenAccount
+      ? formatBigNumber(rbnTokenAccount.walletBalance)
+      : "-";
+  }, [rbnTokenAccount, rbnTokenAccountLoading, loadingText]);
 
   const renderDataTooltip = useCallback(
     (title: string, explanation: string, learnMoreURL?: string) => (
@@ -64,8 +204,12 @@ const StakingSummary = () => {
     []
   );
 
-  const onHoverVotingPower = useCallback((votingPower?: number) => {
-    setVotingPower(votingPower ?? MOCK_VOTING_POWER);
+  const onHoverChart = useCallback((hoverInfo?: HoverInfo) => {
+    if (hoverInfo?.focused) {
+      setHoveredDatapointIndex(hoverInfo.index);
+    } else {
+      setHoveredDatapointIndex(undefined);
+    }
   }, []);
 
   return (
@@ -86,45 +230,66 @@ const StakingSummary = () => {
             {/* veRBN Amount */}
             <div className="d-flex align-items-center">
               <Title fontSize={32} lineHeight={40}>
-                {votingPower}
+                {rbnTokenAccountLoading ? loadingText : displayVeRbnAmount}
               </Title>
-              <Title
-                fontSize={12}
-                lineHeight={16}
-                color={colors.text}
-                className="ml-2"
-              >
-                veRBN
-              </Title>
+              {!rbnTokenAccountLoading && (
+                <Title
+                  fontSize={12}
+                  lineHeight={16}
+                  color={colors.text}
+                  className="ml-2"
+                >
+                  veRBN
+                </Title>
+              )}
             </div>
 
             {/* Expiry Container */}
-            <LockupExpiryContainer className="ml-auto">
-              <PrimaryText
-                fontSize={12}
-                lineHeight={16}
-                color={`${colors.green}A3`}
-              >
-                Lockup ends on
-              </PrimaryText>
-              <PrimaryText
-                fontSize={12}
-                lineHeight={16}
-                color={colors.green}
-                className="ml-1"
-              >
-                {
-                  data?.lockEndTimestamp
-                    ? moment(data.lockEndTimestamp * 1000).format("MMMM Do, YYYY")
-                    : "-"
-                }
-              </PrimaryText>
-            </LockupExpiryContainer>
+            {rbnTokenAccount?.lockEndTimestamp && (
+              <LockupExpiryContainer className="ml-auto">
+                <PrimaryText
+                  fontSize={12}
+                  lineHeight={16}
+                  color={`${colors.green}A3`}
+                >
+                  Lockup ends on
+                </PrimaryText>
+                <PrimaryText
+                  fontSize={12}
+                  lineHeight={16}
+                  color={colors.green}
+                  className="ml-1"
+                >
+                  {moment(rbnTokenAccount.lockEndTimestamp * 1000).format(
+                    "MMMM Do, YYYY"
+                  )}
+                </PrimaryText>
+              </LockupExpiryContainer>
+            )}
           </div>
         </div>
 
         {/* Graph */}
-        <StakingSummaryChart onHoverVotingPower={onHoverVotingPower} />
+        <ChartContainer>
+          {active ? (
+            <Chart
+              lineDecayAfterPointIndex={chartDatapoints?.currentVeRbnIndex}
+              dataset={chartDatapoints?.dataset || []}
+              labels={chartDatapoints?.labels || []}
+              onHover={onHoverChart}
+              gradientStartColor="transparent"
+              gradientStopColor="transparent"
+              maxGridLines={4}
+            />
+          ) : (
+            <ConnectWalletButton
+              role="button"
+              onClick={() => setShowConnectWalletModal(true)}
+            >
+              Connect your wallet
+            </ConnectWalletButton>
+          )}
+        </ChartContainer>
 
         {/* Stats */}
         <div className="d-flex flex-wrap">
@@ -136,9 +301,7 @@ const StakingSummary = () => {
                 "Locked RBN is the total amount of RBN locked in the staking contract."
               )}
             </div>
-            <Title className="mt-1">
-              {data ? formatBigNumber(data.lockedBalance) : "-"}
-            </Title>
+            <Title className="mt-1">{displayLockedRbn}</Title>
           </LockupData>
 
           <LockupData>
@@ -149,10 +312,7 @@ const StakingSummary = () => {
                 "Locked RBN is the total amount of RBN locked in the staking contract."
               )}
             </div>
-            <Title className="mt-1">
-              {/* 5,000.00 */}
-              {data ? formatBigNumber(data.walletBalance) : "-"}
-            </Title>
+            <Title className="mt-1">{displayUnstakedRbn}</Title>
           </LockupData>
 
           <LockupData>
@@ -164,7 +324,7 @@ const StakingSummary = () => {
               )}
             </div>
             <Title className="mt-1" color={colors.green}>
-              1,273.14
+              {displayClaimableRbnRewards}
             </Title>
           </LockupData>
 
@@ -176,7 +336,7 @@ const StakingSummary = () => {
                 "Locked RBN is the total amount of RBN locked in the staking contract."
               )}
             </div>
-            <Title className="mt-1">5.23x</Title>
+            <Title className="mt-1">-{/* 5.23x */}</Title>
           </LockupData>
         </div>
       </SummaryContainer>

@@ -114,6 +114,15 @@ export const useLiquidityMiningPoolData = (vault: VaultOptions) => {
   };
 };
 
+export const useAllLiquidityGaugeV5PoolsData = () => {
+  const contextData = useContext(Web3DataContext);
+
+  return {
+    data: contextData.liquidityGaugeV5Pool.responses,
+    loading: contextData.liquidityGaugeV5Pool.loading,
+  };
+};
+
 export const useLiquidityGaugeV5PoolData = (vault: VaultOptions) => {
   const contextData = useContext(Web3DataContext);
 
