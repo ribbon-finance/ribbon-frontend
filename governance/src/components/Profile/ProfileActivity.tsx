@@ -136,7 +136,8 @@ const ProfileActivity = () => {
     switch (activity.type) {
       case "allocateVote":
         const asset = getDisplayAssets(activity.vault!);
-        return getAssetLogo(asset);
+        const AssetLogo = getAssetLogo(asset);
+        return <AssetLogo />;
       case "vote":
         switch (activity.vote) {
           case "for":
