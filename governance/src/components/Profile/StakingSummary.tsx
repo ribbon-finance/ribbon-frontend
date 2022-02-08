@@ -154,7 +154,7 @@ const StakingSummary = () => {
 
   const displayLockedRbn = useMemo(() => {
     if (!active) {
-      return "---"
+      return "---";
     } else if (rbnTokenAccountLoading) {
       return loadingText;
     }
@@ -165,7 +165,7 @@ const StakingSummary = () => {
 
   const displayUnstakedRbn = useMemo(() => {
     if (!active) {
-      return "---"
+      return "---";
     } else if (rbnTokenAccountLoading) {
       return loadingText;
     }

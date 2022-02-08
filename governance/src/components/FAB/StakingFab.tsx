@@ -77,18 +77,18 @@ const StakingFAB = () => {
       return {
         veRBNAmount: "---",
         stakedRBNAmount: "---",
-        unstakedRBNAmount: "---"
-      }
+        unstakedRBNAmount: "---",
+      };
     } else if (rbnAccountLoading) {
       return {
         veRBNAmount: loadingText,
         stakedRBNAmount: loadingText,
-        unstakedRBNAmount: loadingText
-      }
+        unstakedRBNAmount: loadingText,
+      };
     } else if (rbnAccount) {
-      let veRBNAmount = "0.00"
-      const stakedRBNAmount = formatBigNumber(rbnAccount.lockedBalance)
-      const unstakedRBNAmount = formatBigNumber(rbnAccount.walletBalance)
+      let veRBNAmount = "0.00";
+      const stakedRBNAmount = formatBigNumber(rbnAccount.lockedBalance);
+      const unstakedRBNAmount = formatBigNumber(rbnAccount.walletBalance);
       if (rbnAccount.lockEndTimestamp) {
         const currentRemainingDuration =
           rbnAccount.lockEndTimestamp * 1000 - Date.now();
@@ -101,17 +101,15 @@ const StakingFAB = () => {
       return {
         veRBNAmount,
         stakedRBNAmount,
-        unstakedRBNAmount
-      }
+        unstakedRBNAmount,
+      };
     }
     return {
       veRBNAmount: "0.00",
       stakedRBNAmount: "0.00",
-      unstakedRBNAmount: "0.00"
-    }
-  }, [
-    active, loadingText, rbnAccount, rbnAccountLoading
-  ])
+      unstakedRBNAmount: "0.00",
+    };
+  }, [active, loadingText, rbnAccount, rbnAccountLoading]);
 
   return (
     <>
@@ -184,7 +182,7 @@ const StakingFAB = () => {
       </FABContainer>
       <FABOffsetContainer />
     </>
-  )
+  );
 };
 
 export default StakingFAB;
