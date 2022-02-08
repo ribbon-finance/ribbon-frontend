@@ -16,7 +16,7 @@ import useVaultActionForm from "webapp/lib/hooks/useVaultActionForm";
 import { ACTIONS } from "webapp/lib/components/Vault/VaultActionsForm/Modal/types";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import { getVaultURI } from "webapp/lib/constants/constants";
+import { getVaultURI } from "../../../constants/constants";
 import { WithdrawIcon } from "shared/lib/assets/icons/icons";
 import { RibbonVaultMigrationMap } from "shared/lib/constants/constants";
 

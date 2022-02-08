@@ -47,7 +47,7 @@ import {
   portfolioTransactionActivityFilters,
   PortfolioTransactionSortBy,
   portfolioTransactionSortByList,
-} from "webapp/lib/components/Portfolio/types";
+} from "./types";
 import Pagination from "shared/lib/components/Common/Pagination";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
 import useScreenSize from "shared/lib/hooks/useScreenSize";

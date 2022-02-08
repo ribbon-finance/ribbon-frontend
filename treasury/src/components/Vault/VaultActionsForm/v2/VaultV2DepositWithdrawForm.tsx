@@ -290,6 +290,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
 
     return undefined;
   }, [
+    vaultOption,
     active,
     canCompleteWithdraw,
     cap,
