@@ -428,7 +428,7 @@ const HeroSection: React.FC<{
               {depositCapBar}
             </div>
 
-            <SplashImage className="position-absolute col-xl-6">
+            <SplashImage className="position-absolute col-xl-5">
               {logo}
             </SplashImage>
           </div>
