@@ -119,7 +119,6 @@ const useNotifications = () => {
         activities.forEach((activity) => {
           switch (activity.type) {
             case "minting":
-              console.log(moment(activity.date));
               notificationList.push({
                 date: moment(activity.date),
                 type: "optionMinting",

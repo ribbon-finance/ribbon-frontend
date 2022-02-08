@@ -110,7 +110,6 @@ const NotificationList: React.FC<NotificationListProps> = ({
   filters,
 }) => {
   const { notifications, lastReadTimestamp } = useNotifications();
-
   const history = useHistory();
   const [notificationVaultFilter, setNotificationVaultFilter] = useState<
     VaultOptions | "all"
@@ -123,8 +122,6 @@ const NotificationList: React.FC<NotificationListProps> = ({
       ),
     [filters, notifications]
   );
-
-  console.log(typeFilteredNotifications)
 
   const notificationsVaultList = useMemo(
     () =>
