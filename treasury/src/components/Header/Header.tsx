@@ -15,7 +15,7 @@ import {
 import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
 import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
-import NotificationButton from "webapp/lib/components/Notification/NotificationButton";
+import NotificationButton from "../Notification/NotificationButton";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
