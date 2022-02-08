@@ -22,6 +22,7 @@ export interface BarConfig {
   radius: number;
 }
 interface ProgressBarProps {
+  // Number between 0-100
   percent: number;
   config?: BarConfig;
   color?: string;

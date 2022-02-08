@@ -3,10 +3,7 @@ import styled from "styled-components";
 import currency from "currency.js";
 import { Col, Row } from "react-bootstrap";
 import ProgressBar from "shared/lib/components/Deposit/ProgressBar";
-import {
-  useRBNToken,
-  useRBNTokenAccount,
-} from "shared/lib/hooks/useRBNTokenSubgraph";
+import { useRBNToken } from "shared/lib/hooks/useRBNTokenSubgraph";
 
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import {
@@ -23,9 +20,9 @@ import useTreasuryAccount from "shared/lib/hooks/useTreasuryAccount";
 import useTVL from "shared/lib/hooks/useTVL";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
-import { formatAmount, formatBigNumber } from "shared/lib/utils/math";
-import { BigNumber, utils } from "ethers";
-import { parseUnits } from "ethers/lib/utils";
+import { formatAmount } from "shared/lib/utils/math";
+import { BigNumber } from "ethers";
+import { formatUnits } from "ethers/lib/utils";
 
 const Content = styled(Row)`
   z-index: 1;
@@ -89,20 +86,22 @@ const OverviewKPI = () => {
   const { total, loading: treasuryLoading } = useTreasuryAccount();
   const { totalTVL } = useTVL();
 
-  const totalRbnStaked: number = useMemo(() => {
-    const formatted = formatBigNumber(
-      rbnToken?.totalStaked || BigNumber.from(0),
-      18
-    );
-    return Number(formatted);
-  }, [rbnToken]);
-
   const loadingText = useTextAnimation(
     assetPriceLoading ||
       treasuryLoading ||
       rbnTokenAccountLoading ||
       assetInfoLoading
   );
+
+  const percentageStaked = useMemo(() => {
+    if (info.circulating_supply) {
+      const totalStakedNumber = parseFloat(
+        formatUnits(rbnToken?.totalStaked || BigNumber.from(0), 18)
+      );
+      return (totalStakedNumber / info.circulating_supply) * 100;
+    }
+    return 0;
+  }, [info, rbnToken]);
 
   return (
     <>
@@ -169,16 +168,17 @@ const OverviewKPI = () => {
               <Title fontSize={18} lineHeight={24} letterSpacing={1}>
                 {rbnTokenAccountLoading
                   ? loadingText
-                  : formatAmount(totalRbnStaked || 0, true)}
+                  : formatAmount(
+                      Number(
+                        formatUnits(rbnToken?.totalStaked || BigNumber.from(0))
+                      ),
+                      true
+                    )}
               </Title>
             </div>
             <ProgressBar
               config={{ height: 4, extraClassNames: "my-2", radius: 2 }}
-              percent={
-                info.circulating_supply
-                  ? ((totalRbnStaked || 0) / info.circulating_supply) * 100
-                  : 0
-              }
+              percent={percentageStaked}
               color={colors.green}
             />
             <div className="d-flex flex-row align-items-center justify-content-between mt-2">

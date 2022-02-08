@@ -92,12 +92,13 @@ export const Title = styled.span<{
   fontSize?: number;
   lineHeight?: number;
   letterSpacing?: number;
+  normalCased?: boolean;
 }>`
   color: ${(props) => props.color || colors.primaryText};
   font-family: VCR, sans-serif;
   font-style: normal;
   font-weight: normal;
-  text-transform: uppercase;
+  ${(props) => (!props.normalCased ? `text-transform: uppercase;` : ``)}
   ${(props) => (props.fontSize ? `font-size: ${props.fontSize}px;` : ``)}
   ${(props) => (props.lineHeight ? `line-height: ${props.lineHeight}px;` : ``)}
   ${(props) =>
