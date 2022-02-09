@@ -30,11 +30,16 @@ import {
   useLiquidityGaugeV5PoolData,
   useV2VaultData,
 } from "shared/lib/hooks/web3DataContext";
+import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import { assetToFiat } from "shared/lib/utils/math";
+import {
+  assetToFiat,
+  calculateInitialveRBNAmount,
+} from "shared/lib/utils/math";
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import { BigNumber } from "ethers";
+import moment from "moment";
 
 const ModalContainer = styled(BasicModal)``;
 
@@ -126,41 +131,39 @@ const lockupPeriodDisplay = (key: LockupPeriodKey) => {
   }
 };
 
+const stakingPools = Object.keys(VaultLiquidityMiningMap.lg5) as VaultOptions[];
+const stakingPoolDropdownOptions: StakingPoolOption[] = (
+  Object.keys(VaultLiquidityMiningMap.lg5) as VaultOptions[]
+).map((option) => {
+  const Logo = getAssetLogo(getAssets(option));
+  return {
+    value: option,
+    label: option,
+    logo: (
+      <Logo
+        style={{
+          margin: 0,
+          width: 32,
+          height: 32,
+        }}
+      />
+    ),
+  };
+});
+const lockupDurationOptions = (
+  Object.keys(lockupPeriodToDays) as LockupPeriodKey[]
+).map((key) => {
+  return {
+    display: lockupPeriodDisplay(key),
+    value: key,
+  };
+});
+
 const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
   show,
   onClose,
 }) => {
-  const stakingPools = useMemo(() => {
-    return Object.keys(VaultLiquidityMiningMap.lg5) as VaultOptions[];
-  }, []);
-  const stakingPoolDropdownOptions: StakingPoolOption[] = useMemo(() => {
-    return (Object.keys(VaultLiquidityMiningMap.lg5) as VaultOptions[]).map(
-      (option) => {
-        const Logo = getAssetLogo(getAssets(option));
-        return {
-          value: option,
-          label: option,
-          logo: (
-            <Logo
-              style={{
-                margin: 0,
-                width: 32,
-                height: 32,
-              }}
-            />
-          ),
-        };
-      }
-    );
-  }, []);
-  const lockupDurationOptions = useMemo(() => {
-    return (Object.keys(lockupPeriodToDays) as LockupPeriodKey[]).map((key) => {
-      return {
-        display: lockupPeriodDisplay(key),
-        value: key,
-      };
-    });
-  }, []);
+  const votingEscrowContract = useVotingEscrow();
 
   // INPUTS
   const [currentPool, setCurrentPool] = useState(stakingPools[0]);
@@ -173,8 +176,8 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
   } = useV2VaultData(currentPool);
   const loadingText = useTextAnimation(lg5DataLoading || vaultDataLoading);
 
+  const [totalVeRBN, setTotalVeRBN] = useState<BigNumber>();
   const [stakeInput, setStakeInput] = useState<string>("");
-  // TODO: - Get the default pool size. Also set as the placeholder
   const [poolSizeInput, setPoolSizeInput] = useState<string>("");
   const [rbnLockedInput, setRBNLockedInput] = useState<string>("");
   const [lockupPeriod, setLockupPeriod] = useState<string>(
@@ -185,12 +188,11 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     // TODO: using compound as example
     let working_balances = BigNumber.from("0");
     let working_supply = BigNumber.from("90504513029733694332805320");
-    // 10000000
-    let totalveRBN = BigNumber.from("10000000000000000000000000");
 
     // Staking Pool
     let gaugeBalance = BigNumber.from("0");
     let poolLiquidity = BigNumber.from("0");
+    let rbnLocked = BigNumber.from("0");
 
     // If parseUnits fails, it means the number overflowed.
     // defaults to the largest number when that happens.
@@ -204,9 +206,14 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     } catch (error) {
       poolLiquidity = BigNumber.from(String(Number.MAX_SAFE_INTEGER));
     }
+    try {
+      rbnLocked = parseUnits(rbnLockedInput || "0", decimals);
+    } catch (error) {
+      rbnLocked = BigNumber.from(String(Number.MAX_SAFE_INTEGER));
+    }
 
     // If gauge balance is 0, always returns 0
-    if (gaugeBalance.isZero()) {
+    if (gaugeBalance.isZero() || !totalVeRBN) {
       return 0;
     }
 
@@ -216,14 +223,19 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     const TOKENLESS_PRODUCTION = 40;
 
     let lim = gaugeBalance.mul(TOKENLESS_PRODUCTION).div(100);
-    // TODO: - Use formula from governance branch to get veRBN from RBN + locked duration
-    const veRBN = parseUnits("100", 18);
-    lim = lim.add(
-      L.mul(veRBN)
-        .div(totalveRBN)
-        .mul(100 - TOKENLESS_PRODUCTION)
-        .div(100)
+    const duration = moment.duration(
+      lockupPeriodToDays[lockupPeriod as LockupPeriodKey],
+      "days"
     );
+    const veRBN = calculateInitialveRBNAmount(rbnLocked, duration);
+
+    // lim is the biggest number when totalVeRBN is 0 to prevent division by 0
+    lim = totalVeRBN.isZero()
+      ? BigNumber.from(String(Number.MAX_SAFE_INTEGER))
+      : L.mul(veRBN)
+          .div(totalVeRBN)
+          .mul(100 - TOKENLESS_PRODUCTION)
+          .div(100);
     lim = lim.gt(gaugeBalance) ? gaugeBalance : lim;
 
     let noboost_lim = gaugeBalance.mul(TOKENLESS_PRODUCTION).div(100);
@@ -238,7 +250,14 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
 
     const boost = lhs / rhs;
     return Math.round(boost * 100) / 100;
-  }, [decimals, poolSizeInput, stakeInput]);
+  }, [
+    decimals,
+    poolSizeInput,
+    stakeInput,
+    lockupPeriod,
+    rbnLockedInput,
+    totalVeRBN,
+  ]);
 
   // Initial data
   useEffect(() => {
@@ -246,6 +265,16 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
       setPoolSizeInput(formatUnits(lg5Data.poolSize, decimals));
     }
   }, [lg5Data, decimals]);
+
+  // Fetch totalverbn
+  useEffect(() => {
+    if (votingEscrowContract && !totalVeRBN) {
+      votingEscrowContract["totalSupply()"]().then((totalSupply: BigNumber) => {
+        console.log("FETCHED");
+        setTotalVeRBN(totalSupply);
+      });
+    }
+  }, [votingEscrowContract, totalVeRBN]);
 
   const baseAPY = useMemo(() => {
     if (lg5DataLoading || assetPricesLoading || vaultDataLoading) {
@@ -401,8 +430,8 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
                     Base Rewards
                   </SecondaryText>
                   <TooltipExplanation
-                    title="Rewards Booster"
-                    explanation="The multiplier applied to the base rewards of veRBN holders."
+                    title="Base Rewards"
+                    explanation="The rewards for staking rTokens."
                     renderContent={({ ref, ...triggerHandler }) => (
                       <HelpInfo containerRef={ref} {...triggerHandler}>
                         i
@@ -418,8 +447,8 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
                     Boosted Rewards
                   </SecondaryText>
                   <TooltipExplanation
-                    title="Rewards Booster"
-                    explanation="The multiplier applied to the base rewards of veRBN holders."
+                    title="Boosted Rewards"
+                    explanation="The additional rewards veRBN holders earn for staking their rTokens. Base rewards can be boosted by up to 2.5X."
                     renderContent={({ ref, ...triggerHandler }) => (
                       <HelpInfo containerRef={ref} {...triggerHandler}>
                         i
@@ -427,7 +456,7 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
                     )}
                   />
                 </ContainerWithTooltip>
-                <CalculationData>0.0</CalculationData>
+                <CalculationData>0.00%</CalculationData>
               </SubcalculationColumn>
             </Subcalculations>
             <CalculationColumn>

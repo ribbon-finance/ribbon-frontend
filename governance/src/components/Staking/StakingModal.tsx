@@ -3,7 +3,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import moment, { duration, Duration } from "moment";
 
 import BasicModal from "shared/lib/components/Common/BasicModal";
-import useVotingEscrow from "../../hooks/useVotingEscrow";
+import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
 import { useGovernanceGlobalState } from "../../store/store";
 import StakingModalExplainer from "./StakingModalExplainer";
 import StakingModalForm from "./StakingModalForm";

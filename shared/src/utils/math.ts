@@ -1,3 +1,4 @@
+import { Duration } from "moment";
 import { BigNumber } from "@ethersproject/bignumber";
 import { ethers } from "ethers";
 import currency from "currency.js";
@@ -173,4 +174,16 @@ export const amountAfterSlippage = (
     .parseUnits("1", decimals)
     .sub(ethers.utils.parseUnits(slippage.toFixed(3), decimals));
   return num.mul(discountValue).div(BigNumber.from(10).pow(decimals));
+};
+
+export const calculateInitialveRBNAmount = (
+  rbnAmount: BigNumber,
+  duration: Duration
+) => {
+  const totalHours = Math.round(duration.asHours());
+  const hoursInTwoYears = 365 * 2 * 24;
+  const veRbnAmount = rbnAmount
+    .mul(BigNumber.from(totalHours))
+    .div(BigNumber.from(hoursInTwoYears));
+  return veRbnAmount.isNegative() ? BigNumber.from(0) : veRbnAmount;
 };

@@ -14,7 +14,7 @@ import { formatBigNumber } from "shared/lib/utils/math";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { VotingEscrowAddress } from "shared/lib/constants/constants";
-import { calculateInitialveRBNAmount } from "../../utils/math";
+import { calculateInitialveRBNAmount } from "shared/lib/utils/math";
 import moment from "moment";
 
 const FABContainer = styled.div`
