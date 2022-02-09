@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import BasicModal from "shared/lib/components/Common/BasicModal";
@@ -26,6 +26,15 @@ import StakingPoolDropdown, { StakingPoolOption } from "./StakingPoolDropdown";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
+import {
+  useLiquidityGaugeV5PoolData,
+  useV2VaultData,
+} from "shared/lib/hooks/web3DataContext";
+import { formatUnits, parseUnits } from "ethers/lib/utils";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import { assetToFiat } from "shared/lib/utils/math";
+import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
+import { BigNumber } from "ethers";
 
 const ModalContainer = styled(BasicModal)``;
 
@@ -50,7 +59,7 @@ const CalculationColumn = styled.div`
 `;
 
 const Subcalculations = styled.div`
-  padding: 0 8px 16px 8px;
+  padding: 0 0 16px 8px;
   width: 100%;
 `;
 
@@ -155,15 +164,124 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
 
   // INPUTS
   const [currentPool, setCurrentPool] = useState(stakingPools[0]);
+  const { prices, loading: assetPricesLoading } = useAssetsPrice();
+  const { data: lg5Data, loading: lg5DataLoading } =
+    useLiquidityGaugeV5PoolData(currentPool);
+  const {
+    data: { asset, decimals, pricePerShare },
+    loading: vaultDataLoading,
+  } = useV2VaultData(currentPool);
+  const loadingText = useTextAnimation(lg5DataLoading || vaultDataLoading);
+
   const [stakeInput, setStakeInput] = useState<string>("");
   // TODO: - Get the default pool size. Also set as the placeholder
-  const [poolSizeInput, setPoolSizeInput] = useState<string>("3000");
+  const [poolSizeInput, setPoolSizeInput] = useState<string>("");
   const [rbnLockedInput, setRBNLockedInput] = useState<string>("");
-
-  // Locked duration, in number of days
   const [lockupPeriod, setLockupPeriod] = useState<string>(
     lockupDurationOptions[0].value
   );
+
+  const boostAmount = useMemo(() => {
+    // TODO: using compound as example
+    let working_balances = BigNumber.from("0");
+    let working_supply = BigNumber.from("90504513029733694332805320");
+    // 10000000
+    let totalveRBN = BigNumber.from("10000000000000000000000000");
+
+    // Staking Pool
+    let gaugeBalance = BigNumber.from("0");
+    let poolLiquidity = BigNumber.from("0");
+
+    // If parseUnits fails, it means the number overflowed.
+    // defaults to the largest number when that happens.
+    try {
+      gaugeBalance = parseUnits(stakeInput || "0", decimals);
+    } catch (error) {
+      gaugeBalance = BigNumber.from(String(Number.MAX_SAFE_INTEGER));
+    }
+    try {
+      poolLiquidity = parseUnits(poolSizeInput || "0", decimals);
+    } catch (error) {
+      poolLiquidity = BigNumber.from(String(Number.MAX_SAFE_INTEGER));
+    }
+
+    // If gauge balance is 0, always returns 0
+    if (gaugeBalance.isZero()) {
+      return 0;
+    }
+
+    const L = poolLiquidity.add(gaugeBalance);
+
+    // TODO: - Not sure what this is
+    const TOKENLESS_PRODUCTION = 40;
+
+    let lim = gaugeBalance.mul(TOKENLESS_PRODUCTION).div(100);
+    // TODO: - Use formula from governance branch to get veRBN from RBN + locked duration
+    const veRBN = parseUnits("100", 18);
+    lim = lim.add(
+      L.mul(veRBN)
+        .div(totalveRBN)
+        .mul(100 - TOKENLESS_PRODUCTION)
+        .div(100)
+    );
+    lim = lim.gt(gaugeBalance) ? gaugeBalance : lim;
+
+    let noboost_lim = gaugeBalance.mul(TOKENLESS_PRODUCTION).div(100);
+    let noboost_supply = working_supply.add(noboost_lim).sub(working_balances);
+    let _working_supply = working_supply.add(lim).sub(working_balances);
+
+    const lhs =
+      parseFloat(formatUnits(lim)) / parseFloat(formatUnits(_working_supply));
+    const rhs =
+      parseFloat(formatUnits(noboost_lim)) /
+      parseFloat(formatUnits(noboost_supply));
+
+    const boost = lhs / rhs;
+    return Math.round(boost * 100) / 100;
+  }, [decimals, poolSizeInput, stakeInput]);
+
+  // Initial data
+  useEffect(() => {
+    if (lg5Data) {
+      setPoolSizeInput(formatUnits(lg5Data.poolSize, decimals));
+    }
+  }, [lg5Data, decimals]);
+
+  const baseAPY = useMemo(() => {
+    if (lg5DataLoading || assetPricesLoading || vaultDataLoading) {
+      return loadingText;
+    }
+
+    if (!lg5Data) {
+      return "0.00%";
+    }
+
+    const poolRewardInUSD = parseFloat(
+      assetToFiat(lg5Data.poolRewardForDuration, prices["RBN"])
+    );
+    const poolSizeInAsset = lg5Data.poolSize
+      .mul(pricePerShare)
+      .div(parseUnits("1", decimals));
+    const poolSizeInUSD = parseFloat(
+      assetToFiat(poolSizeInAsset, prices[asset], decimals)
+    );
+
+    return `${
+      poolSizeInUSD > 0
+        ? (((1 + poolRewardInUSD / poolSizeInUSD) ** 52 - 1) * 100).toFixed(2)
+        : "0.00"
+    }%`;
+  }, [
+    asset,
+    assetPricesLoading,
+    decimals,
+    lg5Data,
+    lg5DataLoading,
+    loadingText,
+    pricePerShare,
+    prices,
+    vaultDataLoading,
+  ]);
 
   // Parse input to number
   const parseInput = useCallback((input: string) => {
@@ -171,7 +289,11 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     return isNaN(parsedInput) || parsedInput < 0 ? "" : `${parsedInput}`;
   }, []);
 
-  const onMaxStake = useCallback(() => {}, []);
+  const onMaxStake = useCallback(() => {
+    if (lg5Data) {
+      setStakeInput(formatUnits(lg5Data.unstakedBalance, decimals));
+    }
+  }, [lg5Data, decimals]);
 
   return (
     <ModalContainer show={show} headerBackground height={570} onClose={onClose}>
@@ -213,7 +335,9 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
                 type="number"
                 min="0"
                 className="form-control"
-                placeholder="0"
+                placeholder={
+                  lg5Data ? formatUnits(lg5Data.poolSize, decimals) : "0"
+                }
                 value={poolSizeInput}
                 onChange={(e) => setPoolSizeInput(parseInput(e.target.value))}
               />
@@ -286,7 +410,7 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
                     )}
                   />
                 </ContainerWithTooltip>
-                <CalculationData>0.0</CalculationData>
+                <CalculationData>{baseAPY}</CalculationData>
               </SubcalculationColumn>
               <SubcalculationColumn>
                 <ContainerWithTooltip>
@@ -321,7 +445,7 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
                   )}
                 />
               </ContainerWithTooltip>
-              <CalculationData>0.0</CalculationData>
+              <CalculationData>{boostAmount}</CalculationData>
             </CalculationColumn>
           </CalculationContainer>
         </ModalContentExtra>
