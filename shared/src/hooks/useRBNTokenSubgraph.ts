@@ -8,31 +8,29 @@ import {
 } from "../models/token";
 import { SubgraphDataContext } from "./subgraphDataContext";
 
-export const rbnTokenGraphql = (account: string | null | undefined) => {
-  return `
-    rbntoken(id:"${RibbonTokenAddress.toLowerCase()}") {
-      name
-      symbol
-      numHolders
-      holders
-      totalSupply
-      totalStaked
-    }
-    ${
-      account
-        ? `
-        rbnaccount(id:"${account.toLocaleLowerCase()}") {
-          totalBalance
-          lockedBalance
-          lockStartTimestamp
-          lockEndTimestamp
-        }
-    
-      `
-        : ""
-    }
-  `;
-};
+export const rbnTokenGraphql = (account: string | null | undefined) => `
+  rbntoken(id:"${RibbonTokenAddress.toLowerCase()}") {
+    name
+    symbol
+    numHolders
+    holders
+    totalSupply
+    totalStaked
+  }
+  ${
+    account
+      ? `
+      rbnaccount(id:"${account.toLocaleLowerCase()}") {
+        totalBalance
+        lockedBalance
+        lockStartTimestamp
+        lockEndTimestamp
+      }
+  
+    `
+      : ""
+  }
+`;
 
 export const resolveRBNTokenSubgraphResponse = (
   response: any | undefined

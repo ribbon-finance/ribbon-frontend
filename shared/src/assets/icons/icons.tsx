@@ -476,6 +476,48 @@ export const StakeIcon: React.FC<{ color?: string; size?: string }> = ({
   </StakeCircle>
 );
 
+export const IncreaseStakeTimeIcon: React.FC<{
+  color?: string;
+  size?: string;
+}> = ({ color, size }) => (
+  <StakeCircle
+    size={size || "70%"}
+    type="hollow"
+    color={`${color || "#FFFFFF"}3D`}
+  >
+    <StakeCircle
+      size={size || `${(10 / 13) * 100}%`}
+      type="hollow"
+      color={color || "#FFFFFF"}
+    >
+      <StakeCircle
+        size={size || `${(2 / 3) * 100}%`}
+        type="solid"
+        color={color || "#FFFFFF"}
+      />
+    </StakeCircle>
+  </StakeCircle>
+);
+
+export const IncreaseStakeAmountIcon: React.FC<{
+  color?: string;
+  size?: string;
+}> = ({ color, size }) => (
+  <StakeCircle size={size || "50%"} type="hollow" color={color || "#FFFFFF"}>
+    <StakeCircle
+      size={size || `${(7 / 9) * 100}%`}
+      type="solid"
+      color={`${color || "#FFFFFF"}A3`}
+    >
+      <StakeCircle
+        size={size || `${(4 / 7) * 100}%`}
+        type="solid"
+        color={color || "#FFFFFF"}
+      />
+    </StakeCircle>
+  </StakeCircle>
+);
+
 export const DelegateIcon: React.FC<SVGPropsWithColor> = ({
   color,
   ...props
