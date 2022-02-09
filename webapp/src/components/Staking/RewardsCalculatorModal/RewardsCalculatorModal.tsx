@@ -76,7 +76,7 @@ const StakingPoolContainer = styled.div`
   width: 100%;
 `;
 
-const CalculationData = styled(Title) <{ color?: string }>`
+const CalculationData = styled(Title)<{ color?: string }>`
   color: ${({ color }) => color || colors.primaryText};
 `;
 
@@ -171,15 +171,10 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     return isNaN(parsedInput) || parsedInput < 0 ? "" : `${parsedInput}`;
   }, []);
 
-  const onMaxStake = useCallback(() => { }, []);
+  const onMaxStake = useCallback(() => {}, []);
 
   return (
-    <ModalContainer
-      show={show}
-      headerBackground
-      height={570}
-      onClose={onClose}
-    >
+    <ModalContainer show={show} headerBackground height={570} onClose={onClose}>
       <>
         <ModalColumn marginTop={8}>
           <Title style={{ zIndex: 1 }}>REWARDS CALCULATOR</Title>
