@@ -37,9 +37,9 @@ const getAssetPricesInUSD = async (
   const response = await axios.get(apiURL);
   const { data } = response;
 
-  return data.prices.map((price: number[]) => ({
-    timestamp: price[0],
-    price: price[1],
+  return data.prices.map(([timestamp, price]: number[]) => ({
+    timestamp,
+    price,
   }));
 };
 
