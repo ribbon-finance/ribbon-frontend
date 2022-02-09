@@ -126,7 +126,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
   } = useVaultActionForm(vaultOption);
   const { active } = useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
-  const hasWithdrawOption = vaultOption === "rSOL-THETA";
+  const hasWithdrawOption = vaultOption !== "rSOL-THETA";
   const [activeBackgroundState, setActiveBackgroundState] = useState<
     object | boolean
   >(false);
