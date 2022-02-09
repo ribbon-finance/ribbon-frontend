@@ -10,20 +10,7 @@ import {
   ExternalAPIDataContext,
 } from "./externalAPIDataContext";
 
-const getAssetPricesInUSD = async (
-  currencyName: string
-): Promise<{ price: number; timestamp: number }[]> => {
-  const apiURL = `https://api.coingecko.com/api/v3/coins/${currencyName}/market_chart?vs_currency=usd&days=365&interval=daily`;
-
-  const response = await axios.get(apiURL);
-  const { data } = response;
-
-  return data.prices.map((price: number[]) => ({
-    timestamp: price[0],
-    price: price[1],
-  }));
-};
-
+const COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3";
 const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   WETH: "ethereum",
   WBTC: "wrapped-bitcoin",
@@ -40,6 +27,20 @@ const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   SOL: "solana",
   AURORA: "aurora-near",
   WNEAR: "wrapped-near",
+};
+
+const getAssetPricesInUSD = async (
+  currencyName: string
+): Promise<{ price: number; timestamp: number }[]> => {
+  const apiURL = `${COINGECKO_BASE_URL}/coins/${currencyName}/market_chart?vs_currency=usd&days=365&interval=daily`;
+
+  const response = await axios.get(apiURL);
+  const { data } = response;
+
+  return data.prices.map(([timestamp, price]: number[]) => ({
+    timestamp,
+    price,
+  }));
 };
 
 export const useFetchAssetsPrice = (
@@ -139,7 +140,6 @@ const useAssetPrice = ({ asset }: { asset: Assets } = { asset: "WETH" }) => {
     loading: contextData.assetsPrice.loading,
   };
 };
-
 export default useAssetPrice;
 
 export const useAssetsPrice = () => {
@@ -203,5 +203,46 @@ export const useAssetsPriceHistory = () => {
     searchAssetPriceFromMoment,
     searchAssetPriceFromTimestamp,
     loading: contextData.assetsPrice.loading,
+  };
+};
+
+interface AssetInfo {
+  circulating_supply: number;
+}
+
+export const useAssetInfo = (asset: Assets) => {
+  const [loading, setLoading] = useState(false);
+  const [info, setInfo] = useState<AssetInfo>();
+
+  const fetchAssetInfo = useCallback(async () => {
+    if (info) {
+      return;
+    }
+
+    const apiURL = `${COINGECKO_BASE_URL}/coins/${COINGECKO_CURRENCIES[asset]}`;
+    try {
+      setLoading(true);
+      const response = await axios.get(apiURL);
+      const { data } = response;
+      setInfo({
+        circulating_supply: data.market_data.circulating_supply,
+      });
+    } catch (error) {
+      !isProduction() && console.log("Asset info fetch error:", error);
+      setInfo({
+        circulating_supply: 0,
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [info, asset]);
+
+  useEffect(() => {
+    fetchAssetInfo();
+  }, [fetchAssetInfo]);
+
+  return {
+    info: info || { circulating_supply: 0 },
+    loading,
   };
 };

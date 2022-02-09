@@ -3,7 +3,7 @@ import axios from "axios";
 import { useWeb3React } from "@web3-react/core";
 
 import {
-  defaultVaultSubgraphData,
+  defaultGovernanceSubgraphData,
   GovernanceSubgraphDataContextType,
 } from "./subgraphDataContext";
 import { impersonateAddress } from "../utils/development";
@@ -13,16 +13,18 @@ import {
   resolveRBNTokenAccountSubgraphResponse,
   resolveRBNTokenSubgraphResponse,
 } from "./useRBNTokenSubgraph";
-
 import { usePendingTransactions } from "./pendingTransactionsContext";
-
 import { getGovernanceSubgraphURI } from "../utils/env";
+import {
+  governanceTransactionsGraphql,
+  resolveGovernanceTransactionsSubgraphResponse,
+} from "./useGovernanceTransactions";
 
 const useFetchGovernanceSubgraphData = () => {
   const { account: acc } = useWeb3React();
   const account = impersonateAddress || acc;
   const [data, setData] = useState<GovernanceSubgraphDataContextType>(
-    defaultVaultSubgraphData
+    defaultGovernanceSubgraphData
   );
   const { transactionsCounter } = usePendingTransactions();
   const [, setMulticallCounter] = useState(0);
@@ -50,8 +52,15 @@ const useFetchGovernanceSubgraphData = () => {
     const response = (
       await axios.post(getGovernanceSubgraphURI(), {
         query: `{
-              ${rbnTokenGraphql(account)}
-            }`.replaceAll(" ", ""),
+          ${
+            account
+              ? `
+                  ${governanceTransactionsGraphql(account)}
+                `
+              : ""
+          }
+          ${rbnTokenGraphql(account)}
+        }`.replaceAll(" ", ""),
       })
     ).data.data;
 
@@ -61,7 +70,7 @@ const useFetchGovernanceSubgraphData = () => {
           ...prev,
           rbnToken: resolveRBNTokenSubgraphResponse(response),
           rbnTokenAccount: resolveRBNTokenAccountSubgraphResponse(response),
-
+          transactions: resolveGovernanceTransactionsSubgraphResponse(response),
           loading: false,
         }));
       }

@@ -84,8 +84,8 @@ const useFetchVaultSubgraphData = () => {
                   account
                     ? `
                         ${vaultAccountsGraphql(account, version)}
-                        ${transactionsGraphql(account, version)}
-                        ${balancesGraphql(account, version)}
+                        ${transactionsGraphql(account)}
+                        ${balancesGraphql(account)}
                         ${liquidityMiningPoolAccountsGraphql(account, version)}
                       `
                     : ""

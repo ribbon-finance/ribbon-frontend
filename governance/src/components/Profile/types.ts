@@ -2,9 +2,9 @@ export const profileActivityFilters = [
   "all activity",
   "stake",
   "unstake",
-  "vote",
-  "delegate",
-  "allocate voting power",
+  "increase stake duration",
+  "increase stake amount",
+  "gauge boosting",
 ] as const;
 export const profileActivitySortByList = [
   "latest first",

@@ -232,8 +232,13 @@ export const GAS_LIMITS: {
 export const LiquidityMiningVersionList = ["lg5", "lm"] as const;
 export type LiquidityMiningVersion = typeof LiquidityMiningVersionList[number];
 
-// TODO: Add back lg5 when ready
-export const OngoingLMVersion: LiquidityMiningVersion[] = ["lm"];
+const ProdExcludeLiquidityMiningVersion: LiquidityMiningVersion[] = ["lg5"];
+// @ts-ignore
+export const OngoingLMVersion: LiquidityMiningVersion[] = !isProduction()
+  ? LiquidityMiningVersionList
+  : LiquidityMiningVersionList.filter(
+      (lm) => !ProdExcludeLiquidityMiningVersion.includes(lm)
+    );
 
 export const VaultLiquidityMiningMap: {
   [version in LiquidityMiningVersion]: Partial<{

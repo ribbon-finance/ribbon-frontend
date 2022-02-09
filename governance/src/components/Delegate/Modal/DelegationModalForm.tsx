@@ -145,7 +145,7 @@ const DelegationModalForm: React.FC<DelegationModalFormProps> = ({
           fontWeight={400}
         >
           If you delegate your voting rights to another address you will still
-          remain in control of your sRBN.{" "}
+          remain in control of your veRBN.{" "}
           <BaseLink
             to="https://google.com"
             target="_blank"

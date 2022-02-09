@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 
@@ -10,11 +10,12 @@ import { ThemedLogo } from "shared/lib/assets/icons/logo";
 import { useGovernanceGlobalState } from "../../store/store";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import sizes from "shared/lib/designSystem/sizes";
-import { useAssetBalance } from "shared/lib/hooks/web3DataContext";
 import { formatBigNumber } from "shared/lib/utils/math";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { VotingEscrowAddress } from "shared/lib/constants/constants";
+import { calculateInitialveRBNAmount } from "../../utils/math";
+import moment from "moment";
 
 const FABContainer = styled.div`
   display: flex;
@@ -65,11 +66,52 @@ const StakingFAB = () => {
 
   const rbnAllowance = useTokenAllowance("rbn", VotingEscrowAddress);
   const { data: rbnAccount, loading: rbnAccountLoading } = useRBNTokenAccount();
-  const { balance: votingPower, loading: votingPowerLoading } =
-    useAssetBalance("veRBN");
-  const loadingText = useTextAnimation(votingPowerLoading || rbnAccountLoading);
+  const loadingText = useTextAnimation(rbnAccountLoading);
 
-  return active ? (
+  const fabInfo: {
+    veRBNAmount: string;
+    stakedRBNAmount: string;
+    unstakedRBNAmount: string;
+  } = useMemo(() => {
+    if (!active) {
+      return {
+        veRBNAmount: "---",
+        stakedRBNAmount: "---",
+        unstakedRBNAmount: "---",
+      };
+    } else if (rbnAccountLoading) {
+      return {
+        veRBNAmount: loadingText,
+        stakedRBNAmount: loadingText,
+        unstakedRBNAmount: loadingText,
+      };
+    } else if (rbnAccount) {
+      let veRBNAmount = "0.00";
+      const stakedRBNAmount = formatBigNumber(rbnAccount.lockedBalance);
+      const unstakedRBNAmount = formatBigNumber(rbnAccount.walletBalance);
+      if (rbnAccount.lockEndTimestamp) {
+        const currentRemainingDuration =
+          rbnAccount.lockEndTimestamp * 1000 - Date.now();
+        const amountBn = calculateInitialveRBNAmount(
+          rbnAccount?.lockedBalance,
+          moment.duration(currentRemainingDuration)
+        );
+        veRBNAmount = formatBigNumber(amountBn, 18, 2);
+      }
+      return {
+        veRBNAmount,
+        stakedRBNAmount,
+        unstakedRBNAmount,
+      };
+    }
+    return {
+      veRBNAmount: "0.00",
+      stakedRBNAmount: "0.00",
+      unstakedRBNAmount: "0.00",
+    };
+  }, [active, loadingText, rbnAccount, rbnAccountLoading]);
+
+  return (
     <>
       <FABContainer>
         <div className="d-flex align-items-center ml-5">
@@ -78,7 +120,7 @@ const StakingFAB = () => {
           </AssetCircleContainer>
           <div className="d-flex flex-column ml-2">
             <SecondaryText fontSize={10} lineHeight={16}>
-              Your SRBN / Voting Power
+              Your veRBN / Voting Power
             </SecondaryText>
             <Title
               fontSize={14}
@@ -86,7 +128,7 @@ const StakingFAB = () => {
               letterSpacing={1}
               className="mt-1"
             >
-              {votingPowerLoading ? loadingText : formatBigNumber(votingPower)}
+              {fabInfo.veRBNAmount}
             </Title>
           </div>
         </div>
@@ -100,11 +142,7 @@ const StakingFAB = () => {
             letterSpacing={1}
             className="mt-1"
           >
-            {rbnAccountLoading
-              ? loadingText
-              : rbnAccount
-              ? formatBigNumber(rbnAccount.lockedBalance)
-              : "0"}
+            {fabInfo.stakedRBNAmount}
           </Title>
         </div>
         <div className="d-flex flex-column justify-content-center ml-auto">
@@ -117,11 +155,7 @@ const StakingFAB = () => {
             letterSpacing={1}
             className="mt-1"
           >
-            {rbnAccountLoading
-              ? loadingText
-              : rbnAccount
-              ? formatBigNumber(rbnAccount.walletBalance)
-              : "0"}
+            {fabInfo.unstakedRBNAmount}
           </Title>
         </div>
         <div className="d-flex ml-auto">
@@ -148,8 +182,6 @@ const StakingFAB = () => {
       </FABContainer>
       <FABOffsetContainer />
     </>
-  ) : (
-    <></>
   );
 };
 

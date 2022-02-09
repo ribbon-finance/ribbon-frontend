@@ -32,6 +32,7 @@ const useGasPrice = () => {
   const fetchGasPrice = useCallback(async () => {
     if (!chainId) return;
 
+    fetchedOnce = true;
     let gasPrice = "0";
     if (isEthNetwork(chainId)) {
       const response = await axios.get(GAS_URL[chainId]);
@@ -47,7 +48,6 @@ const useGasPrice = () => {
       gasPrice = "0";
     }
     setGasPrice(parseUnits(gasPrice, "gwei").toString());
-    fetchedOnce = true;
   }, [chainId, setGasPrice]);
 
   useEffect(() => {
