@@ -13,7 +13,6 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import useWeb3Wallet from "./useWeb3Wallet";
 import { isEthereumWallet, isSolanaWallet, Wallet } from "../models/wallets";
-import { Vault, Flex, VaultClient } from "@zetamarkets/flex-sdk";
 
 interface AssetBalance {
   asset: Assets;
