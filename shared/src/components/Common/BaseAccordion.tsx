@@ -13,20 +13,19 @@ import theme from "../../designSystem/theme";
 import ButtonArrow from "./ButtonArrow";
 
 const AccordionItem = styled(Card)`
-  background: ${colors.primaryText}0A;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  background: ${colors.background.three};
   border-radius: ${theme.border.radiusSmall};
+  margin-bottom: 16px;
 `;
 
 const AccordionHeader = styled(Card.Header)`
   display: flex;
   align-items: center;
   position: relative;
-  background-color: ${colors.background.one};
+  background-color: ${colors.background.two};
   padding: 20px 16px;
 
   &&& {
-    border-bottom: ${theme.border.width} ${theme.border.style} ${colors.border};
     border-radius: ${theme.border.radiusSmall};
   }
 
@@ -87,7 +86,7 @@ const BaseAccordion: React.FC<BaseAccordionProps> = ({ items }) => {
   return (
     <Accordion>
       {items.map((item, index) => (
-        <AccordionItem key={index}>
+        <AccordionItem key={index} style={{ border: "none" }}>
           <BaseAccordionToggleWithMenu eventKey={index.toString()}>
             <PrimaryText className="mr-auto">{item.header}</PrimaryText>
           </BaseAccordionToggleWithMenu>

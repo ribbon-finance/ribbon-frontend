@@ -34,10 +34,6 @@ const FABContainer = styled.div`
   @-moz-document url-prefix() {
     background-color: rgba(0, 0, 0, 0.9);
   }
-
-  @media (max-width: ${sizes.md}px) {
-    display: none;
-  }
 `;
 
 const StakingButton = styled.div<{ color: string }>`

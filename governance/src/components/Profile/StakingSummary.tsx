@@ -16,6 +16,7 @@ import {
   HoverInfo,
 } from "shared/lib/components/Common/PerformanceChart";
 import { useWeb3React } from "@web3-react/core";
+import sizes from "shared/lib/designSystem/sizes";
 
 const SummaryContainer = styled.div`
   display: flex;
@@ -26,15 +27,42 @@ const SummaryContainer = styled.div`
   margin-top: 24px;
 `;
 
+const AmountExpiryContainer = styled.div`
+  display: flex;
+  margin-top: 8px;
+  align-items: center;
+
+  @media (max-width: ${sizes.md}px) {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+  }
+`;
+
 const LockupExpiryContainer = styled.div`
   display: flex;
   padding: 8px 16px;
   background: ${colors.green}1F;
   border-radius: ${theme.border.radiusSmall};
+  margin-left: auto;
+
+  @media (max-width: ${sizes.md}px) {
+    margin-left: 0;
+    margin-top: 16px;
+  }
+`;
+
+const LockupContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+
+  @media (max-width: ${sizes.md}px) {
+    flex-direction: column;
+  }
 `;
 
 const LockupData = styled.div`
-  width: 50%;
+  flex: 1;
   padding: 16px 24px;
   border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
 
@@ -218,7 +246,7 @@ const StakingSummary = () => {
           </div>
 
           {/* veRBN amount and Expiry */}
-          <div className="d-flex align-items-center mt-1">
+          <AmountExpiryContainer>
             {/* veRBN Amount */}
             <div className="d-flex align-items-center">
               <Title fontSize={32} lineHeight={40}>
@@ -238,7 +266,7 @@ const StakingSummary = () => {
 
             {/* Expiry Container */}
             {rbnTokenAccount?.lockEndTimestamp && (
-              <LockupExpiryContainer className="ml-auto">
+              <LockupExpiryContainer>
                 <PrimaryText
                   fontSize={12}
                   lineHeight={16}
@@ -258,7 +286,7 @@ const StakingSummary = () => {
                 </PrimaryText>
               </LockupExpiryContainer>
             )}
-          </div>
+          </AmountExpiryContainer>
         </div>
 
         {/* Graph */}
@@ -270,12 +298,12 @@ const StakingSummary = () => {
             onHover={onHoverChart}
             gradientStartColor="transparent"
             gradientStopColor="transparent"
-            maxGridLines={4}
+            maxGridLines={2}
           />
         </ChartContainer>
 
         {/* Stats */}
-        <div className="d-flex flex-wrap">
+        <LockupContainer>
           <LockupData>
             <div className="d-flex align-items-center">
               <SecondaryText>Locked RBN</SecondaryText>
@@ -297,7 +325,7 @@ const StakingSummary = () => {
             </div>
             <Title className="mt-1">{displayUnstakedRbn}</Title>
           </LockupData>
-        </div>
+        </LockupContainer>
       </SummaryContainer>
     </div>
   );

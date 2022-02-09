@@ -56,7 +56,6 @@ const ActivityLogoContainer = styled.div<{ color?: string }>`
   margin-right: 8px;
 
   @media (max-width: ${sizes.md}px) {
-    margin: auto;
     margin-right: 24px;
   }
 `;
