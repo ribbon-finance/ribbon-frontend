@@ -126,7 +126,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
   } = useVaultActionForm(vaultOption);
   const { active } = useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
-
+  const hasWithdrawOption = vaultOption === "rSOL-THETA";
   const [activeBackgroundState, setActiveBackgroundState] = useState<
     object | boolean
   >(false);
@@ -342,7 +342,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
           onClick={() => {
             onFormSubmit();
           }}
-          className="mt-4 py-3"
+          className="mt-4 py-3 mb-0"
           color={color}
         >
           {vaultActionForm.withdrawOption! === "instant"
@@ -356,7 +356,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
       <ConnectWalletButton
         onClick={() => setShowConnectModal(true)}
         type="button"
-        className="mt-4 btn py-3 mb-4"
+        className="mt-4 btn py-3 mb-0"
       >
         Connect Wallet
       </ConnectWalletButton>
@@ -407,54 +407,58 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
   return (
     <>
       {/* Segment Control */}
-      <WithdrawTypeSegmentControlContainer>
-        <WithdrawTypeSegmentControlBackground
-          transition={{
-            type: "keyframes",
-            ease: "easeOut",
-          }}
-          initial={{
-            height: 0,
-            width: 0,
-          }}
-          animate={activeBackgroundState}
-        />
-        {V2WithdrawOptionList.map((withdrawOption) => {
-          /**
-           * Complete withdraw is also consider as standard
-           */
-          const active =
-            vaultActionForm.withdrawOption === withdrawOption ||
-            (withdrawOption === "standard" &&
-              vaultActionForm.withdrawOption === "complete");
-          return (
-            <WithdrawTypeSegmentControl
-              key={withdrawOption}
-              ref={withdrawOptionRefs[withdrawOption]}
-              role="button"
-              onClick={() => {
-                handleActionTypeChange(ACTIONS.withdraw, "v2", {
-                  withdrawOption: withdrawOption,
-                });
-              }}
-            >
-              <WithdrawTypeSegmentControlText
-                active={active}
-                disabled={
-                  withdrawOption !== "instant" &&
-                  !withdrawMetadata.allowStandardWithdraw
-                }
+      {hasWithdrawOption && (
+        <WithdrawTypeSegmentControlContainer>
+          <WithdrawTypeSegmentControlBackground
+            transition={{
+              type: "keyframes",
+              ease: "easeOut",
+            }}
+            initial={{
+              height: 0,
+              width: 0,
+            }}
+            animate={activeBackgroundState}
+          />
+          {V2WithdrawOptionList.map((withdrawOption) => {
+            /**
+             * Complete withdraw is also consider as standard
+             */
+            const active =
+              vaultActionForm.withdrawOption === withdrawOption ||
+              (withdrawOption === "standard" &&
+                vaultActionForm.withdrawOption === "complete");
+            return (
+              <WithdrawTypeSegmentControl
+                key={withdrawOption}
+                ref={withdrawOptionRefs[withdrawOption]}
+                role="button"
+                onClick={() => {
+                  handleActionTypeChange(ACTIONS.withdraw, "v2", {
+                    withdrawOption: withdrawOption,
+                  });
+                }}
               >
-                {withdrawOption}{" "}
-                {renderWithdrawOptionExplanation(withdrawOption, active)}
-              </WithdrawTypeSegmentControlText>
-            </WithdrawTypeSegmentControl>
-          );
-        })}
-      </WithdrawTypeSegmentControlContainer>
+                <WithdrawTypeSegmentControlText
+                  active={active}
+                  disabled={
+                    withdrawOption !== "instant" &&
+                    !withdrawMetadata.allowStandardWithdraw
+                  }
+                >
+                  {withdrawOption}{" "}
+                  {renderWithdrawOptionExplanation(withdrawOption, active)}
+                </WithdrawTypeSegmentControlText>
+              </WithdrawTypeSegmentControl>
+            );
+          })}
+        </WithdrawTypeSegmentControlContainer>
+      )}
 
       {/* Input */}
-      <BaseInputLabel className="mt-4">AMOUNT ({assetDisplay})</BaseInputLabel>
+      <BaseInputLabel className={hasWithdrawOption ? "mt-4" : "mt-0"}>
+        AMOUNT ({assetDisplay})
+      </BaseInputLabel>
       <BaseInputContainer
         className="mb-2"
         error={error ? VaultInputValidationErrorList.includes(error) : false}

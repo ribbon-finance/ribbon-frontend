@@ -341,7 +341,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
         <ActionButton
           disabled={Boolean(error) || !isInputNonZero}
           onClick={onFormSubmit}
-          className={`mt-4 py-3 mb-4`}
+          className={`mt-4 py-3 mb-0`}
           color={color}
         >
           {actionButtonText}
@@ -353,7 +353,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
       <ConnectWalletButton
         onClick={() => setShowConnectModal(true)}
         type="button"
-        className="btn mt-4 py-3 mb-4"
+        className="btn mt-4 mb-0 py-3 mb-0"
       >
         Connect Wallet
       </ConnectWalletButton>

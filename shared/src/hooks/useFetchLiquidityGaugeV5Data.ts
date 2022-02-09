@@ -11,6 +11,7 @@ import { usePendingTransactions } from "./pendingTransactionsContext";
 import { useWeb3Context } from "./web3Context";
 import { isProduction } from "../utils/env";
 import {
+  isEthNetwork,
   RibbonTokenAddress,
   VaultLiquidityMiningMap,
   VaultOptions,
@@ -35,7 +36,12 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   const [, setMulticallCounter] = useState(0);
 
   const doMulticall = useCallback(async () => {
-    if (!chainId || !minterContract || !gaugeControllerContract) {
+    if (
+      !chainId ||
+      !isEthNetwork(chainId) ||
+      !minterContract ||
+      !gaugeControllerContract
+    ) {
       return;
     }
 
