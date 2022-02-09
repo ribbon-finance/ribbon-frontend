@@ -11,43 +11,94 @@ const GovernanceSection = () => {
       <BaseAccordion
         items={[
           {
-            header: "What is Governor Bravo?",
-            body: <FAQBody>TEST</FAQBody>,
-          },
-          {
             header: "What is voting power?",
-            body: <FAQBody>TEST</FAQBody>,
+            body: (
+              <FAQBody>
+                Your voting power is represented by your veRBN balance at any
+                particular point in time. The greater your veRBN balance, the
+                greater your ability to influence the outcome of Ribbon
+                governance proposals and vault incentives programs.
+              </FAQBody>
+            ),
           },
           {
             header: "How do I increase my voting power?",
-            body: <FAQBody>TEST</FAQBody>,
+            body: (
+              <FAQBody>
+                You can increase your voting power by (i) locking up more RBN
+                and / or (i) increasing your lock time.
+              </FAQBody>
+            ),
           },
           {
             header:
               "Do I have to delegate my voting power in order to participate in Ribbon governance?",
-            body: <FAQBody>TEST</FAQBody>,
+            body: (
+              <FAQBody>
+                Yes, you have to delegate your voting power (your veRBN balance)
+                to participate in governance.
+              </FAQBody>
+            ),
           },
           {
             header: "Can I delegate my voting power to myself?",
-            body: <FAQBody>TEST</FAQBody>,
+            body: (
+              <FAQBody>
+                Yes, you can delegate your voting power to yourself.
+              </FAQBody>
+            ),
           },
           {
             header:
               "What happens if someone delegates their voting power to me?",
-            body: <FAQBody>TEST</FAQBody>,
+            body: (
+              <FAQBody>
+                If someone delegates their voting power to you, you will be
+                responsible for participating in governance on their behalf. You
+                will receive an in-app notification if someone delegates their
+                voting power to you.
+              </FAQBody>
+            ),
           },
           {
-            header:
-              "What happens if someone delegates their voting power to me?",
-            body: <FAQBody>TEST</FAQBody>,
+            header: "What are governance proposals?",
+            body: (
+              <FAQBody>
+                Governance proposals are autonomous proposals made by veRBN
+                holders to change the Ribbon Finance protocol. If a proposal
+                receives at least XXX veRBN votes in support of it, the changes
+                to the protocol specified in the proposal are autonomously
+                executed.
+              </FAQBody>
+            ),
           },
           {
             header: "How much veRBN do I need to make a governance proposal?",
-            body: <FAQBody>TEST</FAQBody>,
+            body: (
+              <FAQBody>
+                You must have at least [???] veRBN to make governance proposals.
+              </FAQBody>
+            ),
+          },
+          {
+            header: "What is Governor Bravo?",
+            body: (
+              <FAQBody>
+                Governor Bravo is a governance framework that allows governance
+                proposals to get executed autonomously instead of through loose
+                consensus via a Snapshot vote and multisig execution.
+              </FAQBody>
+            ),
           },
           {
             header: "How do I vote on a governance proposal?",
-            body: <FAQBody>TEST</FAQBody>,
+            body: (
+              <FAQBody>
+                You can vote on governance proposals on Ribbon Finance’s
+                governance page on Tally. All proposals listed on the Ribbon
+                Governance Portal link out directly to Tally.
+              </FAQBody>
+            ),
           },
         ]}
       />

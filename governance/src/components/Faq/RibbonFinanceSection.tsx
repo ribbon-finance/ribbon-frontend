@@ -25,7 +25,16 @@ const RibbonFinanceSection = () => {
         items={[
           {
             header: "What is the Ribbon Finance Protocol?",
-            body: <FAQBody>TEST</FAQBody>,
+            body: (
+              <FAQBody>
+                Ribbon Finance is a structured products protocol that builds
+                DeFi-native financial products through cross-protocol
+                composition. Ribbon’s core product is the Theta Vault, also
+                known as a DeFi Options Vault (DOV), which allows users to
+                generate sustainable yield on their DeFi assets through fully
+                automated covered call and put-selling options strategies.
+              </FAQBody>
+            ),
           },
           {
             header: "What is RBN?",
