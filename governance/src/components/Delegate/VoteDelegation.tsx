@@ -138,13 +138,13 @@ const VoteDelegation = () => {
           <div className="d-flex my-3">
             <DelegationStats>
               <SecondaryText fontSize={12} lineHeight={16}>
-                Your Voting Power (SRBN)
+                Your Voting Power (veRBN)
               </SecondaryText>
               <Title className="mt-2">5,235.27</Title>
             </DelegationStats>
             <DelegationStats>
               <SecondaryText fontSize={12} lineHeight={16}>
-                Voting Power Received (SRBN)
+                Voting Power Received (veRBN)
               </SecondaryText>
               <Title className="mt-2">2,500.00</Title>
             </DelegationStats>

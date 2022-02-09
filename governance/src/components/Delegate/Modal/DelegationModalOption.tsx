@@ -55,7 +55,7 @@ const DelegationModalOption: React.FC<DelegationModalOptionProps> = ({
       </BaseModalContentColumn>
       <BaseModalContentColumn marginTop={8}>
         <SecondaryText className="text-center">
-          Your sRBN enables you to vote on Ribbon governance proposals. You can
+          Your veRBN enables you to vote on Ribbon governance proposals. You can
           delegate your voting power to yourself or to another Ethereum address.
         </SecondaryText>
       </BaseModalContentColumn>
@@ -104,7 +104,7 @@ const DelegationModalOption: React.FC<DelegationModalOptionProps> = ({
       <BaseModalWarning color={colors.green}>
         <SecondaryText color={colors.green} className="text-center">
           If you delegate your voting rights to another address you will still
-          remain in control of your sRBN. Learn more
+          remain in control of your veRBN. Learn more
         </SecondaryText>
       </BaseModalWarning>
     </>

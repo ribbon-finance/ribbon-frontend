@@ -6,6 +6,7 @@ export interface ERC20TokenSubgraphData {
   numHolders: number;
   holders: string[];
   totalSupply: BigNumber;
+  totalStaked?: BigNumber;
 }
 
 export interface IERC20TokenAccountSubgraphData {

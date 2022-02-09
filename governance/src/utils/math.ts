@@ -5,10 +5,10 @@ export const calculateInitialveRBNAmount = (
   rbnAmount: BigNumber,
   duration: Duration
 ) => {
-  const totalDays = duration.asDays();
-  const daysInTwoYears = 365 * 2;
-
-  return rbnAmount
-    .mul(BigNumber.from(totalDays))
-    .div(BigNumber.from(daysInTwoYears));
+  const totalHours = Math.round(duration.asHours());
+  const hoursInTwoYears = 365 * 2 * 24;
+  const veRbnAmount = rbnAmount
+    .mul(BigNumber.from(totalHours))
+    .div(BigNumber.from(hoursInTwoYears));
+  return veRbnAmount.isNegative() ? BigNumber.from(0) : veRbnAmount;
 };

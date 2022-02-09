@@ -8,55 +8,37 @@ import {
 } from "../models/token";
 import { SubgraphDataContext } from "./subgraphDataContext";
 
-export const rbnTokenGraphql = (account: string | null | undefined) => {
-  return account
-    ? `
-        rbnaccount(id:"${account.toLocaleLowerCase()}") {
-          token {
-            name
-            symbol
-            numHolders
-            holders
-            totalSupply
-          }
-          totalBalance
-          lockedBalance
-          lockStartTimestamp
-          lockEndTimestamp
-        }
-      `
-    : `
-        rbntoken(id:"${RibbonTokenAddress.toLowerCase()}") {
-          name
-          symbol
-          numHolders
-          holders
-          totalSupply
-        }
-      `;
-};
+export const rbnTokenGraphql = (account: string | null | undefined) => `
+  rbntoken(id:"${RibbonTokenAddress.toLowerCase()}") {
+    name
+    symbol
+    numHolders
+    holders
+    totalSupply
+    totalStaked
+  }
+  ${
+    account
+      ? `
+      rbnaccount(id:"${account.toLocaleLowerCase()}") {
+        totalBalance
+        lockedBalance
+        lockStartTimestamp
+        lockEndTimestamp
+      }
+  
+    `
+      : ""
+  }
+`;
 
 export const resolveRBNTokenSubgraphResponse = (
   response: any | undefined
 ): ERC20TokenSubgraphData | undefined => {
-  /**
-   * We prioritize data source from governance subgraph
-   * */
-  if (response?.rbnaccount) {
-    return {
-      ...response.rbnaccount.token,
-      totalSupply: BigNumber.from(response.rbnaccount.token.totalSupply),
-    };
-  }
-
-  if (response?.rbntoken) {
-    return {
-      ...response.rbntoken,
-      totalSupply: BigNumber.from(response.rbntoken.totalSupply),
-    };
-  }
-
-  return undefined;
+  return {
+    ...response.rbntoken,
+    totalSupply: BigNumber.from(response.rbntoken.totalSupply),
+  };
 };
 
 export const resolveRBNTokenAccountSubgraphResponse = (
@@ -64,6 +46,9 @@ export const resolveRBNTokenAccountSubgraphResponse = (
 ): RBNTokenAccountSubgraphData | undefined => {
   if (response?.rbnaccount) {
     return {
+      token: {
+        ...response.rbntoken,
+      },
       ...response.rbnaccount,
       totalBalance: BigNumber.from(response.rbnaccount.totalBalance),
       lockedBalance: BigNumber.from(response.rbnaccount.lockedBalance),

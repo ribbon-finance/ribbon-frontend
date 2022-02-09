@@ -12,12 +12,45 @@ export const formatSignificantDecimals = (
   significantDecimals: number = 6
 ) => parseFloat(parseFloat(num).toFixed(significantDecimals)).toString();
 
-export const formatAmount = (n: number): string => {
-  if (n < 1e4) return `${currency(n, { separator: ",", symbol: "" }).format()}`;
-  if (n >= 1e4 && n < 1e6) return `${parseFloat((n / 1e3).toFixed(2))}K`;
-  if (n >= 1e6 && n < 1e9) return `${parseFloat((n / 1e6).toFixed(2))}M`;
-  if (n >= 1e9 && n < 1e12) return `${parseFloat((n / 1e9).toFixed(2))}B`;
-  if (n >= 1e12) return `${parseFloat((n / 1e12).toFixed(2))}T`;
+/**
+ *
+ * @param n Number
+ * @param alwaysShowDecimals Optional.
+ * If true, always show decimals. If false, clip decimals if required.
+ * eg. with n of 10.1000, value of false will return 10.1.
+ * @returns
+ */
+export const formatAmount = (
+  n: number,
+  alwaysShowDecimals?: boolean
+): string => {
+  if (n < 1e4) {
+    return `${currency(n, { separator: ",", symbol: "" }).format()}`;
+  }
+  if (n >= 1e4 && n < 1e6) {
+    const v = alwaysShowDecimals
+      ? (n / 1e3).toFixed(2)
+      : parseFloat((n / 1e3).toFixed(2));
+    return `${v}K`;
+  }
+  if (n >= 1e6 && n < 1e9) {
+    const v = alwaysShowDecimals
+      ? (n / 1e6).toFixed(2)
+      : parseFloat((n / 1e6).toFixed(2));
+    return `${v}M`;
+  }
+  if (n >= 1e9 && n < 1e12) {
+    const v = alwaysShowDecimals
+      ? (n / 1e9).toFixed(2)
+      : parseFloat((n / 1e9).toFixed(2));
+    return `${v}B`;
+  }
+  if (n >= 1e12) {
+    const v = alwaysShowDecimals
+      ? (n / 1e12).toFixed(2)
+      : parseFloat((n / 1e12).toFixed(2));
+    return `${v}T`;
+  }
 
   return "";
 };

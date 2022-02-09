@@ -6,9 +6,9 @@
     "OptionsPremiumPricerWBTC": "0x1775e7Bdd034d2De74a3ef131044395373880dA1",
     "RibbonDeltaVaultETHCall": "0xc3C48b04C46a99C52b8446dA174d6b5dBC7c13a1",
     "RibbonDeltaVaultLogic": "0x4Fc68131041B63aAf05C1f3fB2A4578ac03C36b4",
-    "RibbonThetaVaultETHCall": "0x9467726c3cFe3f9112Cd0fA3963223d5b8b3C4B1",
+    "RibbonThetaVaultETHCall": "0xfaEf8534A499D1a67Cf83B7DeCbcC27BD49dEcFD",
     "RibbonThetaVaultLogic": "0x2f7ABA5AF03B3fbC760722e46ee4376Aec2A0Bb0",
-    "RibbonThetaVaultWBTCCall": "0x6e08c6659132dB4aF0352c409e4b3067C8E97ac2",
+    "RibbonThetaVaultWBTCCall": "0x895D2EA2Ef2C9f4a3c458CCD7C588f8f102118e6",
     "RibbonThetaVaultETHPut": "0xEC1c50724CF7a618C6cdA6CFEa5c9064AFc98E84",
     "RibbonTreasuryVaultLogic": "0xAdb17390640d00744a49f4fB006d6b8493b3A579",
     "RibbonTreasuryVaultPERP": "0x1205dCCd60B85c327479891aa375662014AdCDC2",
@@ -18,8 +18,8 @@
     "VaultLifecycle": "0x97710Cbae64DE9c3615E64893CD225f6139370cA",
     "VaultLifecycleTreasury": "0x5Ed981E32b32548968DC8a722D8D4a559859cc45",
     "RibbonETHPutLiquidityGauge": "0xB8a058dd5E4652ABFE7B7aD370777fDf800dfFD8",
-    "RibbonETHCoveredCallLiquidityGauge": "0xD79c2BE9812fE295cb3807889B19b6e4E1E72316",
-    "RibbonWBTCCoveredCallLiquidityGauge": "0xd679194Ad02958C73D04D02503ff5da9Aa1bD0A6"
+    "RibbonETHCoveredCallLiquidityGauge": "0xaC4495454a564731C085a5fcc522dA1F0Bdd69d4",
+    "RibbonWBTCCoveredCallLiquidityGauge": "0x25938400ea02Bb60432AF0dbB7dfB87f7A20183f"
   },
   "mainnet": {
     "ManualVolOracle": "0x7c0BFaB993fBD54deaDf43AdFF960E9c9e116399",

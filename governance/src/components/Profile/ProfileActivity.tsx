@@ -14,28 +14,22 @@ import {
   profileActivitySortByList,
   ProfileSortByType,
 } from "./types";
-import useGovernanceActivity from "../../hooks/useGovernanceActivity";
 import Pagination from "shared/lib/components/Common/Pagination";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import { getVaultColor } from "shared/lib/utils/vault";
+import { getEtherscanURI } from "shared/lib/constants/constants";
 import {
-  getEtherscanURI,
-  getDisplayAssets,
-} from "shared/lib/constants/constants";
-import {
-  CheckIcon,
-  CloseIcon,
-  DelegateIcon,
   ExternalIcon,
+  IncreaseStakeAmountIcon,
+  IncreaseStakeTimeIcon,
   StakeIcon,
   UnstakeIcon,
 } from "shared/lib/assets/icons/icons";
 import { formatBigNumberAmount } from "shared/lib/utils/math";
-import { productCopies } from "shared/lib/components/Product/productCopies";
-import { getAssetLogo } from "shared/lib/utils/asset";
-import { truncateAddress } from "shared/lib/utils/address";
 import { GovernanceChainID } from "../../constants/constants";
+import useGovernanceTransactions from "shared/lib/hooks/useGovernanceTransactions";
+import { GovernanceTransaction } from "shared/lib/models/governance";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 
 const ActivityContainer = styled.div`
   display: flex;
@@ -43,8 +37,11 @@ const ActivityContainer = styled.div`
   width: 100%;
   background: ${colors.background.two};
   border-radius: ${theme.border.radius};
-  margin-top: 24px;
   padding: 16px;
+
+  &:not(:first-child) {
+    margin-top: 24px;
+  }
 `;
 
 const ActivityLogoContainer = styled.div<{ color?: string }>`
@@ -80,10 +77,12 @@ const ExternalLinkIcon = styled(ExternalIcon)`
 const perPage = 5;
 
 const ProfileActivity = () => {
-  const { account } = useWeb3React();
+  const { active } = useWeb3React();
   const { width } = useScreenSize();
-  const { activities } = useGovernanceActivity();
-  type ActivityType = typeof activities[number];
+  // const { activities } = useGovernanceActivity();
+  const { transactions, loading } = useGovernanceTransactions();
+  // type ActivityType = typeof activities[number];
+  const animatedLoadingText = useTextAnimation(loading);
 
   const [page, setPage] = useState(1);
   const [activityFilter, setActivityFilter] =
@@ -93,18 +92,22 @@ const ProfileActivity = () => {
   );
 
   const processedActivities = useMemo(() => {
-    const filteredActivities = activities.filter((activity) => {
+    const filteredTransactions = transactions.filter((transaction) => {
       switch (activityFilter) {
         case "all activity":
           return true;
-        case "allocate voting power":
-          return activity.type === "allocateVote";
+        case "increase stake duration":
+          return transaction.type === "increaseStakeDuration";
+        case "increase stake amount":
+          return transaction.type === "increaseStakeAmount";
+        case "gauge boosting":
+          return transaction.type === "gaugeBoosting";
         default:
-          return activity.type === activityFilter;
+          return transaction.type === activityFilter;
       }
     });
 
-    filteredActivities.sort((a, b) => {
+    filteredTransactions.sort((a, b) => {
       switch (sortBy) {
         case "latest first":
           return a.timestamp < b.timestamp ? 1 : -1;
@@ -114,101 +117,136 @@ const ProfileActivity = () => {
       }
     });
 
-    return filteredActivities;
-  }, [activities, activityFilter, sortBy]);
+    return filteredTransactions;
+  }, [activityFilter, sortBy, transactions]);
 
-  const getActivityLogoColor = useCallback((activity: ActivityType) => {
-    switch (activity.type) {
-      case "allocateVote":
-        return `${getVaultColor(activity.vault!)}1F`;
-      case "stake":
-        return `${colors.red}1F`;
-      case "vote":
-        return activity.vote === "for"
-          ? `${colors.green}1F`
-          : `${colors.red}1F`;
-      default:
-        return undefined;
-    }
-  }, []);
+  const getActivityLogoColor = useCallback(
+    (transaction: GovernanceTransaction) => {
+      switch (transaction.type) {
+        case "stake":
+        case "increaseStakeAmount":
+        case "increaseStakeDuration":
+          return `${colors.red}1F`;
+        default:
+          return undefined;
+      }
+    },
+    []
+  );
 
-  const renderActivityLogo = useCallback((activity: ActivityType) => {
+  const renderActivityLogo = useCallback((activity: GovernanceTransaction) => {
     switch (activity.type) {
-      case "allocateVote":
-        const asset = getDisplayAssets(activity.vault!);
-        return getAssetLogo(asset);
-      case "vote":
-        switch (activity.vote) {
-          case "for":
-            return <CheckIcon color={colors.green} />;
-          default:
-            return <CloseIcon color={colors.red} />;
-        }
       case "stake":
         return <StakeIcon color={colors.red} />;
       case "unstake":
         return <UnstakeIcon />;
-      case "delegate":
-        return <DelegateIcon width="20px" />;
+      case "increaseStakeDuration":
+        return <IncreaseStakeTimeIcon color={colors.red} />;
+      case "increaseStakeAmount":
+        return <IncreaseStakeAmountIcon color={colors.red} />;
     }
   }, []);
 
-  const getActivityTitle = useCallback(
-    (activity: ActivityType) => {
-      switch (activity.type) {
-        case "allocateVote":
-          return "ALLOCATED VOTING POWER";
-        case "vote":
-          return `VOTED ${
-            activity.vote === "for" ? "FOR" : "AGAINST"
-          } PROPOSAL ${activity.proposal}`;
-        case "stake":
-        case "unstake":
-          return `${activity.type}D`;
-        case "delegate":
-          return (
-            <>
-              DELEGATED VOTES <span style={{ color: colors.text }}>TO</span>{" "}
-              {activity.address === account
-                ? "SELF"
-                : truncateAddress(activity.address!)}
-            </>
-          );
-        default:
-          return activity.type;
-      }
-    },
-    [account]
-  );
+  const getActivityTitle = useCallback((activity: GovernanceTransaction) => {
+    switch (activity.type) {
+      case "stake":
+        return "LOCKED RBN";
+      case "unstake":
+        return "UNLOCKED RBN";
+      case "increaseStakeAmount":
+        return `INCREASED LOCK AMOUNT`;
+      case "increaseStakeDuration":
+        return "INCREASED LOCK TIME";
+      default:
+        return activity.type;
+    }
+  }, []);
 
-  const renderActivityData = useCallback((activity: ActivityType) => {
+  const renderActivityData = useCallback((activity: GovernanceTransaction) => {
     switch (activity.type) {
       case "stake":
       case "unstake":
+      case "increaseStakeAmount":
         return <Title>{formatBigNumberAmount(activity.amount!)} RBN</Title>;
-      case "allocateVote":
-        return (
-          <>
-            <Title>
-              {formatBigNumberAmount(activity.amount!)} SRBN /{" "}
-              {activity.percentage}%
-            </Title>
-            <SecondaryText
-              fontSize={12}
-              lineHeight={16}
-              className="mt-1 text-right"
-            >
-              {productCopies[activity.vault!].title}
-            </SecondaryText>
-          </>
-        );
     }
   }, []);
+
+  const activities = useMemo(() => {
+    if (!active) {
+      return (
+        <SecondaryText fontSize={16} lineHeight={24}>
+          ---
+        </SecondaryText>
+      );
+    }
+
+    if (loading) {
+      return (
+        <SecondaryText fontSize={16} lineHeight={24}>
+          {animatedLoadingText}
+        </SecondaryText>
+      );
+    }
+
+    if (processedActivities.length <= 0) {
+      return (
+        <SecondaryText fontSize={16} lineHeight={24}>
+          You have no transactions
+        </SecondaryText>
+      );
+    }
+
+    return processedActivities
+      .slice((page - 1) * perPage, page * perPage)
+      .map((activity, index) => (
+        <ActivityContainer key={index}>
+          {/* Logo */}
+          <ActivityLogoContainer color={getActivityLogoColor(activity)}>
+            {renderActivityLogo(activity)}
+          </ActivityLogoContainer>
+
+          {/* Title and time */}
+          <div className="d-flex flex-column mr-auto">
+            <Title>{getActivityTitle(activity)}</Title>
+            <SecondaryText fontSize={12} lineHeight={16} className="mt-1">
+              {moment(activity.timestamp, "X").fromNow()}
+            </SecondaryText>
+          </div>
+
+          {/* Data if any */}
+          <div className="d-flex flex-column mr-4">
+            {renderActivityData(activity)}
+          </div>
+
+          {/* External Logo */}
+          <BaseLink
+            to={`${getEtherscanURI(GovernanceChainID)}/tx/${activity.txhash}`}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="d-none d-md-block"
+          >
+            <ExternalLink>
+              <ExternalLinkIcon color="white" />
+            </ExternalLink>
+          </BaseLink>
+        </ActivityContainer>
+      ));
+  }, [
+    active,
+    animatedLoadingText,
+    getActivityLogoColor,
+    getActivityTitle,
+    loading,
+    page,
+    processedActivities,
+    renderActivityData,
+    renderActivityLogo,
+  ]);
 
   return (
     <div className="d-flex flex-column w-100 mt-5 mb-3">
       {/* Header */}
-      <div className="d-flex align-items-center">
+      <div className="d-flex align-items-center mb-4">
         <Title fontSize={18} lineHeight={24} className="mr-4">
           Activity
         </Title>
@@ -255,41 +293,7 @@ const ProfileActivity = () => {
           }}
           className="w-100 mb-5"
         >
-          {processedActivities
-            .slice((page - 1) * perPage, page * perPage)
-            .map((activity, index) => (
-              <ActivityContainer key={index}>
-                {/* Logo */}
-                <ActivityLogoContainer color={getActivityLogoColor(activity)}>
-                  {renderActivityLogo(activity)}
-                </ActivityLogoContainer>
-
-                {/* Title and time */}
-                <div className="d-flex flex-column mr-auto">
-                  <Title>{getActivityTitle(activity)}</Title>
-                  <SecondaryText fontSize={12} lineHeight={16} className="mt-1">
-                    {moment(activity.timestamp, "X").fromNow()}
-                  </SecondaryText>
-                </div>
-
-                {/* Data if any */}
-                <div className="d-flex flex-column mr-4">
-                  {renderActivityData(activity)}
-                </div>
-
-                {/* External Logo */}
-                <BaseLink
-                  to={`${getEtherscanURI(GovernanceChainID)}/tx/${"TODO:"}`}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="d-none d-md-block"
-                >
-                  <ExternalLink>
-                    <ExternalLinkIcon color="white" />
-                  </ExternalLink>
-                </BaseLink>
-              </ActivityContainer>
-            ))}
+          {activities}
         </motion.div>
       </AnimatePresence>
 
