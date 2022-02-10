@@ -31,36 +31,6 @@ const GovernanceSection = () => {
             ),
           },
           {
-            header:
-              "Do I have to delegate my voting power in order to participate in Ribbon governance?",
-            body: (
-              <FAQBody>
-                Yes, you have to delegate your voting power (your veRBN balance)
-                to participate in governance.
-              </FAQBody>
-            ),
-          },
-          {
-            header: "Can I delegate my voting power to myself?",
-            body: (
-              <FAQBody>
-                Yes, you can delegate your voting power to yourself.
-              </FAQBody>
-            ),
-          },
-          {
-            header:
-              "What happens if someone delegates their voting power to me?",
-            body: (
-              <FAQBody>
-                If someone delegates their voting power to you, you will be
-                responsible for participating in governance on their behalf. You
-                will receive an in-app notification if someone delegates their
-                voting power to you.
-              </FAQBody>
-            ),
-          },
-          {
             header: "What are governance proposals?",
             body: (
               <FAQBody>

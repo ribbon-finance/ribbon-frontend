@@ -24,23 +24,38 @@ const VaultSection = () => {
             ),
           },
           {
-            header: "What are vault incentive rounds?",
+            header: "What are vault gauges?",
             body: (
               <FAQBody>
-                Vault incentive programs run over X rounds, where each round is
-                4 weeks long. Prior to the beginning of a new round, veRBN
-                holders can vote on the amount of RBN distributed to each vault
-                for the following round.
+                Each Ribbon vault has a vault gauge (similar to Curve’s
+                liquidity pool gauges). Each week, veRBN holders can vote on the
+                amount of RBN that is distributed to each vault gauge by using
+                their voting power to vote on specific vault gauges. Vault
+                gauges then receive an amount of RBN proportional to the amount
+                of veRBN allocated towards it.
+              </FAQBody>
+            ),
+          },
+          {
+            header: "How do I earn RBN rewards?",
+            body: (
+              <FAQBody>
+                To receive the weekly RBN rewards, you need to stake your
+                rTokens (the tokens that represent your deposits in the vaults)
+                into vault gauges. The rewards you receive depends on the gauge,
+                amount of rTokens you stake in the gauge, your veRBN balance,
+                the total amount staked in the gauge.
               </FAQBody>
             ),
           },
           {
             header:
-              "How is my voting power calculated in each vault incentive round?",
+              "How much voting power can I apply as part of the gauge voting process?",
             body: (
               <FAQBody>
-                Your voting power for the round is your veRBN balance at the
-                start of a round.
+                The amount of voting power you can apply to each vault gauge
+                each week is the equal to your veRBN balance at the start of
+                each week.
               </FAQBody>
             ),
           },
