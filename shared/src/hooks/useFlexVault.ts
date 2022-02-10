@@ -29,7 +29,7 @@ export const useFlexVault = (): FlexVaultData => {
         Vault.load(new PublicKey(solAddress), network, connection),
       ]).then(async () => {
         const [vaultAddress] = await vaultUtils.getVaultAddress("rSOL-THETA");
-        return await Vault.getVault(new PublicKey(vaultAddress));
+        return Vault.getVault(new PublicKey(vaultAddress));
       });
     };
 
@@ -43,7 +43,16 @@ export const useFlexVault = (): FlexVaultData => {
         setFlexVault(vault);
       });
     }
-  }, [connection, flexVault, Flex, Vault]);
+  }, [connection, flexVault, flexAddress, network, solAddress]);
+
+  useEffect(() => {
+    setInterval(async () => {
+      if (Flex.isInitialized && Vault.isInitialized) {
+        const [vaultAddress] = await vaultUtils.getVaultAddress("rSOL-THETA");
+        setFlexVault(Vault.getVault(new PublicKey(vaultAddress)));
+      }
+    }, 1000);
+  }, []);
 
   // FLEX CLIENT HANDLER
   useEffect(() => {

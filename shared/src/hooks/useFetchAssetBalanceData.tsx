@@ -16,7 +16,7 @@ import { isEthereumWallet, isSolanaWallet, Wallet } from "../models/wallets";
 
 interface AssetBalance {
   asset: Assets;
-  balance: BigNumber | undefined
+  balance: BigNumber | undefined;
 }
 
 export type UserAssetBalanceResponses = { [asset in Assets]: BigNumber };
@@ -43,7 +43,13 @@ const useFetchAssetBalanceData = (
   const [data, setData] = useState<UserAssetBalanceData>(
     defaultUserAssetBalanceData
   );
-  const { ethereumProvider, chainId , active, account: web3Account, connectedWallet } = useWeb3Wallet();
+  const {
+    ethereumProvider,
+    chainId,
+    active,
+    account: web3Account,
+    connectedWallet,
+  } = useWeb3Wallet();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
   const { connection } = useConnection();
@@ -62,48 +68,57 @@ const useFetchAssetBalanceData = (
     let ERC20Responses: Array<AssetBalance> = [];
     let SOLResponse: Array<AssetBalance> = [];
 
-    if(isEthereumWallet(connectedWallet as Wallet)) {
+    if (isEthereumWallet(connectedWallet as Wallet)) {
       ERC20Responses = await Promise.all(
-       AssetsList.map(async (asset) => {
-         const token = getERC20Token(
-           ethereumProvider,
-           asset.toLowerCase() as ERC20Token,
-           chainId as number
-         );
-         if (!token) {
-           return { asset, balance: undefined } as AssetBalance;
-         }
- 
-         const balance = await (isNativeToken(asset)
-           ? ethereumProvider?.getBalance(account!)
-           : token.balanceOf(account!));
- 
-         return { asset, balance };
-       })
-     );
+        AssetsList.map(async (asset) => {
+          const token = getERC20Token(
+            ethereumProvider,
+            asset.toLowerCase() as ERC20Token,
+            chainId as number
+          );
+          if (!token) {
+            return { asset, balance: undefined } as AssetBalance;
+          }
+
+          const balance = await (isNativeToken(asset)
+            ? ethereumProvider?.getBalance(account!)
+            : token.balanceOf(account!));
+
+          return { asset, balance };
+        })
+      );
     }
 
-    if(isSolanaWallet(connectedWallet as Wallet)) {
+    if (isSolanaWallet(connectedWallet as Wallet)) {
       // FIXME: Token balance should query based on address of Solana-based tokens
       // const tokenBalance = await connection.getTokenAccountBalance(new PublicKey("So11111111111111111111111111111111111111112"));
       const tokenBalance = await connection.getBalance(publicKey as PublicKey);
       SOLResponse.push({
         asset: "SOL",
-        balance: BigNumber.from(tokenBalance)
+        balance: BigNumber.from(tokenBalance),
       });
     }
 
     setData({
-      data: Object.fromEntries(
-        [...ERC20Responses.map((response) => [response.asset, response.balance]), ...SOLResponse.map((response) => [response.asset, response.balance])]
-      ) as UserAssetBalanceResponses,
+      data: Object.fromEntries([
+        ...ERC20Responses.map((response) => [response.asset, response.balance]),
+        ...SOLResponse.map((response) => [response.asset, response.balance]),
+      ]) as UserAssetBalanceResponses,
       loading: false,
     });
 
     if (!isProduction()) {
       console.timeEnd("Asset Balance Data Fetch");
     }
-  }, [account, active, chainId, ethereumProvider]);
+  }, [
+    account,
+    active,
+    chainId,
+    ethereumProvider,
+    connectedWallet,
+    connection,
+    publicKey,
+  ]);
 
   /**
    * Fetch on first load and transaction success
@@ -131,7 +146,6 @@ const useFetchAssetBalanceData = (
     };
   }, [doMulticall, poll, pollingFrequency]);
 
- 
   return data;
 };
 

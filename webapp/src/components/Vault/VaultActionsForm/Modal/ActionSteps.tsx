@@ -223,10 +223,11 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
               case "rSOL-THETA":
                 if (client) {
-                  res = await client.depositVault(
+                  const txhash = await client.depositVault(
                     getSolanaVaultInstance(vaultOption),
                     new anchor.BN(amountStr)
                   );
+                  res = { hash: txhash };
                 }
                 break;
 
