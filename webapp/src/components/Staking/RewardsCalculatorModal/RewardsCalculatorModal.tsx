@@ -358,7 +358,7 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
             </SmallerInputContainer>
           </div>
           <div className="d-flex flex-column ml-2">
-            <BaseInputLabel>TOTAL POOL SIZE</BaseInputLabel>
+            <BaseInputLabel>TOTAL STAKED</BaseInputLabel>
             <SmallerInputContainer>
               <SmallerInput
                 type="number"

@@ -208,7 +208,7 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
           governance token to those who have the most skin in the game. The
           program ended on July 19th, 2021.`;
       case "lg5":
-        return `Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum facilisis leo, vel fringilla est`;
+        return `The program aims to (i) grow Ribbon TVL and (ii) align incentives between vault depositors and owners of the RBN governance token by distributing 6.5m RBN governance tokens to vault depositors over the course of 6 months.`;
     }
   }, []);
 
