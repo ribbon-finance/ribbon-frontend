@@ -32,7 +32,6 @@ import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { useFlexVault } from "shared/lib/hooks/useFlexVault";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { getAssetDecimals } from "shared/lib/utils/asset";
-import { PublicKey } from "@solana/web3.js";
 
 export interface ActionStepsProps {
   vault: {
@@ -54,11 +53,11 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   onChangeStep,
   skipToPreview = false,
 }) => {
-  const { ethereumProvider } = useWeb3Wallet();
+  const { ethereumProvider, chainId } = useWeb3Wallet();
   const { vaultActionForm, resetActionForm, withdrawMetadata } =
     useVaultActionForm(vaultOption);
   const { data: priceHistories } = useVaultsPriceHistory();
-  const { loadedVault, data } = useFlexVault();
+  const { client } = useFlexVault();
 
   const firstStep = useMemo(() => {
     if (
@@ -223,8 +222,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                 break;
 
               case "rSOL-THETA":
-                if (loadedVault && data.vaultClient) {
-                  await data.vaultClient.depositVault(
+                if (client) {
+                  res = await client.depositVault(
                     getSolanaVaultInstance(vaultOption),
                     new anchor.BN(amountStr)
                   );
@@ -258,6 +257,11 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                   /** Instant withdraw for V2 */
                   case "instant":
                     switch (vaultActionForm.vaultOption) {
+                      case "rSOL-THETA":
+                        if (client) {
+                          // res = await client.removeQueuedDeposit();
+                        }
+                        break;
                       case "rstETH-THETA":
                         /**
                          * Default slippage of 0.3%
@@ -286,10 +290,21 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
                   /** Initiate withdrawal for v2 */
                   case "standard":
-                    shares = amount
-                      .mul(BigNumber.from(10).pow(decimals))
-                      .div(pricePerShare);
-                    res = await vault.initiateWithdraw(shares);
+                    switch (vaultActionForm.vaultOption) {
+                      case "rSOL-THETA":
+                        if (client) {
+                          res = await client.withdrawVault(
+                            getSolanaVaultInstance(vaultOption),
+                            new anchor.BN(amountStr)
+                          );
+                        }
+                        break;
+                      default:
+                        shares = amount
+                          .mul(BigNumber.from(10).pow(decimals))
+                          .div(pricePerShare);
+                        res = await vault.initiateWithdraw(shares);
+                    }
                     break;
                   case "complete":
                     switch (vaultActionForm.vaultOption) {
