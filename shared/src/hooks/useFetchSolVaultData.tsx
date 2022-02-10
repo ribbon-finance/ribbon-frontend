@@ -48,9 +48,12 @@ const useFetchSolVaultData = (): SolanaVaultData => {
             round: epochSequenceNumber,
 
             // user connected state
+            // balance in vault
             lockedBalanceInAsset: BigNumber.from(totalDeposit).sub(
               BigNumber.from(totalWithdraw)
             ),
+            // balance in vault + deposit amount in the queue
+            // lockedBalanceInAsset + sum(deposit amount in queue)
             depositBalanceInAsset: BigNumber.from(totalDeposit).sub(
               BigNumber.from(totalWithdraw)
             ),
@@ -65,7 +68,7 @@ const useFetchSolVaultData = (): SolanaVaultData => {
     };
 
     doMulticall();
-  }, [vault, client]);
+  }, [vault, client, connection]);
 
   useEffect(() => {}, [vault, client, data]);
 
