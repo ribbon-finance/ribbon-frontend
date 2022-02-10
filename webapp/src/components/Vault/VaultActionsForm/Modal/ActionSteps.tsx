@@ -53,7 +53,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   onChangeStep,
   skipToPreview = false,
 }) => {
-  const { ethereumProvider, chainId } = useWeb3Wallet();
+  const { ethereumProvider } = useWeb3Wallet();
   const { vaultActionForm, resetActionForm, withdrawMetadata } =
     useVaultActionForm(vaultOption);
   const { data: priceHistories } = useVaultsPriceHistory();
