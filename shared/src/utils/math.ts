@@ -1,4 +1,4 @@
-import { Duration } from "moment";
+import moment, { Duration } from "moment";
 import { BigNumber } from "@ethersproject/bignumber";
 import { ethers } from "ethers";
 import currency from "currency.js";
@@ -186,4 +186,77 @@ export const calculateInitialveRBNAmount = (
     .mul(BigNumber.from(totalHours))
     .div(BigNumber.from(hoursInTwoYears));
   return veRbnAmount.isNegative() ? BigNumber.from(0) : veRbnAmount;
+};
+
+interface BoostMultiplierCalculationProps {
+  // workingBalance and workingSupply is 18 decimals big number
+  workingBalance: BigNumber;
+  workingSupply: BigNumber;
+  // gauge balance and pool liquidity is BigNumber, with the respective decimals
+  // according to the underlying asset
+  gaugeBalance: BigNumber;
+  poolLiquidity: BigNumber;
+  veRBNAmount: BigNumber;
+  totalVeRBN: BigNumber;
+}
+// Calculates the boost for staking in vault gauges
+export const calculateBoostMultiplier = ({
+  workingBalance,
+  workingSupply,
+  gaugeBalance,
+  poolLiquidity,
+  veRBNAmount,
+  totalVeRBN,
+}: BoostMultiplierCalculationProps) => {
+  // If gauge balance is 0, always returns 0
+  if (gaugeBalance.isZero() || !totalVeRBN) {
+    return 0;
+  } else {
+    const L = poolLiquidity.add(gaugeBalance);
+
+    const TOKENLESS_PRODUCTION = 40;
+
+    let lim = gaugeBalance.mul(TOKENLESS_PRODUCTION).div(100);
+
+    // lim is the biggest number when totalVeRBN is 0 to prevent division by 0
+    console.log("YOUR veRBN", formatUnits(veRBNAmount))
+    console.log("TOTAL veRBN in VotingEscrow", formatUnits(totalVeRBN))
+    lim = totalVeRBN.isZero()
+      ? BigNumber.from(String(Number.MAX_SAFE_INTEGER))
+      : L.mul(veRBNAmount)
+          .div(totalVeRBN)
+          .mul(100 - TOKENLESS_PRODUCTION)
+          .div(100);
+    lim = lim.gt(gaugeBalance) ? gaugeBalance : lim;
+
+    let noboost_lim = gaugeBalance.mul(TOKENLESS_PRODUCTION).div(100);
+    let noboost_supply = workingSupply.add(noboost_lim).sub(workingBalance);
+    let _working_supply = workingSupply.add(lim).sub(workingBalance);
+
+    const lhs =
+      parseFloat(formatUnits(lim)) / parseFloat(formatUnits(_working_supply));
+    const rhs =
+      parseFloat(formatUnits(noboost_lim)) /
+      parseFloat(formatUnits(noboost_supply));
+
+      console.log(lhs, rhs)
+
+
+    // console.log("BOOST INFO", {
+    //   working_balances: workingBalance.toString(),
+    //   working_supply: workingSupply.toString(),
+    //   gaugeBalance: gaugeBalance.toString(),
+    //   poolLiquidity: poolLiquidity.toString(),
+    //   L: L.toString(),
+    //   lim: lim.toString(),
+    //   noboost_lim: noboost_lim.toString(),
+    //   noboost_supply: noboost_supply.toString(),
+    //   veRBN: veRBNAmount.toString(),
+    //   totalVeRBN: totalVeRBN.toString(),
+    // });
+
+
+    const boost = lhs / rhs;
+    return Math.round(boost * 100) / 100;
+  }
 };

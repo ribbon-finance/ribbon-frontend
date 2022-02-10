@@ -35,6 +35,7 @@ import { formatUnits, parseUnits } from "ethers/lib/utils";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import {
   assetToFiat,
+  calculateBoostMultiplier,
   calculateInitialveRBNAmount,
 } from "shared/lib/utils/math";
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
@@ -165,18 +166,23 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
 }) => {
   const votingEscrowContract = useVotingEscrow();
 
-  // INPUTS
-  const [currentPool, setCurrentPool] = useState(stakingPools[0]);
+  // Current Gauge
+  const [currentGauge, setCurrentGauge] = useState(stakingPools[0]);
+
   const { prices, loading: assetPricesLoading } = useAssetsPrice();
   const { data: lg5Data, loading: lg5DataLoading } =
-    useLiquidityGaugeV5PoolData(currentPool);
+    useLiquidityGaugeV5PoolData(currentGauge);
   const {
     data: { asset, decimals, pricePerShare },
     loading: vaultDataLoading,
-  } = useV2VaultData(currentPool);
+  } = useV2VaultData(currentGauge);
+
   const loadingText = useTextAnimation(lg5DataLoading || vaultDataLoading);
 
+  // Used for boost rewards calculation
   const [totalVeRBN, setTotalVeRBN] = useState<BigNumber>();
+
+  // INPUTS
   const [stakeInput, setStakeInput] = useState<string>("");
   const [poolSizeInput, setPoolSizeInput] = useState<string>("");
   const [rbnLockedInput, setRBNLockedInput] = useState<string>("");
@@ -184,7 +190,24 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     lockupDurationOptions[0].value
   );
 
+  // Initial data
+  useEffect(() => {
+    if (lg5Data) {
+      setPoolSizeInput(formatUnits(lg5Data.poolSize, decimals));
+    }
+  }, [lg5Data, decimals]);
+
+  // Fetch totalverbn
+  useEffect(() => {
+    if (votingEscrowContract && !totalVeRBN) {
+      votingEscrowContract["totalSupply()"]().then((totalSupply: BigNumber) => {
+        setTotalVeRBN(totalSupply);
+      });
+    }
+  }, [votingEscrowContract, totalVeRBN]);
+
   const stakeInputHasError = useMemo(() => {
+    return false
     return Number(stakeInput) > Number(poolSizeInput);
   }, [stakeInput, poolSizeInput]);
 
@@ -211,23 +234,17 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     }
   }, [asset, decimals, lg5Data, pricePerShare, prices]);
 
-  const calculateBoostedRewards = useCallback(() => {
-    // TODO: -
-    return 0;
-  }, []);
-
   // =======================================================
   // CALCULATE REWARDS BOOSTER (using formula from CurveDAO)
   // =======================================================
   const calculateRewardsBooster = useCallback(() => {
-    // TODO: using compound as example
-    let working_balances = BigNumber.from("0");
-    let working_supply = BigNumber.from("90504513029733694332805320");
+    let working_balances = lg5Data?.workingBalances || BigNumber.from("0");
+    let working_supply = lg5Data?.workingSupply || BigNumber.from("0");
 
     // Staking Pool
     let gaugeBalance = BigNumber.from("0");
     let poolLiquidity = BigNumber.from("0");
-    let rbnLocked = BigNumber.from("0");
+    let rbnLockedAmount = BigNumber.from("0");
 
     // If parseUnits fails, it means the number overflowed.
     // defaults to the largest number when that happens.
@@ -242,52 +259,26 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
       poolLiquidity = BigNumber.from(String(Number.MAX_SAFE_INTEGER));
     }
     try {
-      rbnLocked = parseUnits(rbnLockedInput || "0", decimals);
+      rbnLockedAmount = parseUnits(rbnLockedInput || "0", 18);
     } catch (error) {
-      rbnLocked = BigNumber.from(String(Number.MAX_SAFE_INTEGER));
+      rbnLockedAmount = BigNumber.from(String(Number.MAX_SAFE_INTEGER));
     }
 
-    // If gauge balance is 0, always returns 0
-    if (gaugeBalance.isZero() || !totalVeRBN) {
-      return 0;
-    } else {
-      const L = poolLiquidity.add(gaugeBalance);
-
-      // TODO: - Not sure what this is
-      const TOKENLESS_PRODUCTION = 40;
-
-      let lim = gaugeBalance.mul(TOKENLESS_PRODUCTION).div(100);
-      const duration = moment.duration(
-        lockupPeriodToDays[lockupPeriod as LockupPeriodKey],
-        "days"
-      );
-      const veRBN = calculateInitialveRBNAmount(rbnLocked, duration);
-
-      // lim is the biggest number when totalVeRBN is 0 to prevent division by 0
-      lim = totalVeRBN.isZero()
-        ? BigNumber.from(String(Number.MAX_SAFE_INTEGER))
-        : L.mul(veRBN)
-            .div(totalVeRBN)
-            .mul(100 - TOKENLESS_PRODUCTION)
-            .div(100);
-      lim = lim.gt(gaugeBalance) ? gaugeBalance : lim;
-
-      let noboost_lim = gaugeBalance.mul(TOKENLESS_PRODUCTION).div(100);
-      let noboost_supply = working_supply
-        .add(noboost_lim)
-        .sub(working_balances);
-      let _working_supply = working_supply.add(lim).sub(working_balances);
-
-      const lhs =
-        parseFloat(formatUnits(lim)) / parseFloat(formatUnits(_working_supply));
-      const rhs =
-        parseFloat(formatUnits(noboost_lim)) /
-        parseFloat(formatUnits(noboost_supply));
-
-      const boost = lhs / rhs;
-      return Math.round(boost * 100) / 100;
-    }
+    const duration = moment.duration(
+      lockupPeriodToDays[lockupPeriod as LockupPeriodKey],
+      "days"
+    );
+    const veRBNAmount = calculateInitialveRBNAmount(rbnLockedAmount, duration);
+    return calculateBoostMultiplier({
+      workingBalance: working_balances,
+      workingSupply: working_supply,
+      gaugeBalance,
+      poolLiquidity,
+      veRBNAmount,
+      totalVeRBN: totalVeRBN || BigNumber.from("0"),
+    });
   }, [
+    lg5Data,
     decimals,
     lockupPeriod,
     poolSizeInput,
@@ -295,6 +286,19 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     stakeInput,
     totalVeRBN,
   ]);
+
+  /**
+   * Calculates the boosted rewards using a base reward and a multiplier
+   * baseRewardsPercent is a number from 0-100. 0 is 0% 100 is 100%
+   */
+  const calculateBoostedRewards = useCallback(
+    (baseRewardsPercent: number, multiplier: number) => {
+      return multiplier > 0
+        ? baseRewardsPercent * multiplier - baseRewardsPercent
+        : 0;
+    },
+    []
+  );
 
   // For display
   const displayRewards = useMemo(() => {
@@ -315,10 +319,11 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
       rewardsBooster = loadingText;
     } else {
       const base = calculateBaseRewards();
-      const boosted = calculateBoostedRewards();
+      const boosterMultiplier = calculateRewardsBooster();
+      const boosted = calculateBoostedRewards(base, boosterMultiplier);
       baseRewards = `${base.toFixed(2)}%`;
       boostedRewards = `${boosted.toFixed(2)}%`;
-      rewardsBooster = String(calculateRewardsBooster());
+      rewardsBooster = String(boosterMultiplier);
       totalAPY = `${(base + boosted).toFixed(2)}%`;
     }
 
@@ -339,27 +344,10 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     calculateRewardsBooster,
   ]);
 
-  // Initial data
-  useEffect(() => {
-    if (lg5Data) {
-      setPoolSizeInput(formatUnits(lg5Data.poolSize, decimals));
-    }
-  }, [lg5Data, decimals]);
-
-  // Fetch totalverbn
-  useEffect(() => {
-    if (votingEscrowContract && !totalVeRBN) {
-      votingEscrowContract["totalSupply()"]().then((totalSupply: BigNumber) => {
-        console.log("FETCHED");
-        setTotalVeRBN(totalSupply);
-      });
-    }
-  }, [votingEscrowContract, totalVeRBN]);
-
   // Parse input to number
   const parseInput = useCallback((input: string) => {
     const parsedInput = parseFloat(input);
-    return isNaN(parsedInput) || parsedInput < 0 ? "" : `${parsedInput}`;
+    return isNaN(parsedInput) || parsedInput < 0 ? "" : input;
   }, []);
 
   const onMaxStake = useCallback(() => {
@@ -369,7 +357,7 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
   }, [lg5Data, decimals]);
 
   return (
-    <ModalContainer show={show} headerBackground height={570} onClose={onClose}>
+    <ModalContainer show={show} headerBackground height={600} onClose={onClose}>
       <>
         <ModalColumn marginTop={8}>
           <Title style={{ zIndex: 1 }}>REWARDS CALCULATOR</Title>
@@ -378,10 +366,10 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
           <StakingPoolContainer>
             <BaseInputLabel>STAKING POOL</BaseInputLabel>
             <StakingPoolDropdown
-              selectedValue={currentPool}
+              selectedValue={currentGauge}
               options={stakingPoolDropdownOptions}
               onSelectOption={(option: string) =>
-                setCurrentPool(option as VaultOptions)
+                setCurrentGauge(option as VaultOptions)
               }
             />
           </StakingPoolContainer>
@@ -430,7 +418,7 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
         <ModalColumn marginTop={16}>
           <div className="d-flex flex-column w-100">
             <BaseInputLabel>RBN LOCKED</BaseInputLabel>
-            <SmallerInputContainer style={{zIndex: 9999}}>
+            <SmallerInputContainer>
               <SmallerInput
                 type="number"
                 min="0"
@@ -462,18 +450,18 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
             </SmallerInputContainer>
           </div>
         </ModalColumn>
-        <ModalContentExtra backgroundColor={colors.background.two}>
+        <ModalContentExtra style={{ backgroundColor: colors.background.two }}>
           <CalculationContainer>
             <CalculationColumn>
               <SecondaryText
                 fontSize={14}
                 fontWeight={500}
                 className="mr-auto"
-                color={colors.asset[getAssets(currentPool)]}
+                color={colors.asset[getAssets(currentGauge)]}
               >
                 APY
               </SecondaryText>
-              <CalculationData color={colors.asset[getAssets(currentPool)]}>
+              <CalculationData color={colors.asset[getAssets(currentGauge)]}>
                 {displayRewards.totalAPY}
               </CalculationData>
             </CalculationColumn>

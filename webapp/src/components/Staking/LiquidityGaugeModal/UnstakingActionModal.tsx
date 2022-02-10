@@ -227,6 +227,8 @@ const UnstakingActionModal: React.FC<UnstakingActionModalProps> = ({
     }
   }, [error]);
 
+  console.log(input)
+
   const body = useMemo(() => {
     switch (step) {
       case "form":

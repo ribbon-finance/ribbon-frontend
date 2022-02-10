@@ -73,9 +73,9 @@ export const WETHLogo: React.FC<SVGProps> = (props) => (
     <path
       d="M0 28C0 12.536 12.536 0 28 0V0C43.464 0 56 12.536 56 28V28C56 43.464 43.464 56 28 56V56C12.536 56 0 43.464 0 28V28Z"
       fill="#627EEA"
-      fill-opacity="0.12"
+      fillOpacity="0.12"
     />
-    <g clip-path="url(#clip0_3_22)">
+    <g clipPath="url(#clip0_3_22)">
       <g opacity="0.8">
         <path
           opacity="0.6"
