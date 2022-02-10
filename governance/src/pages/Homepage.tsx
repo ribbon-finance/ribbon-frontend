@@ -37,6 +37,7 @@ const Homepage = () => {
 
     return sectionHeight;
   }, [active, height, width]);
+
   return (
     <>
       <Container fluid className="d-flex p-0">

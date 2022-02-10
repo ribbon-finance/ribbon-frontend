@@ -104,12 +104,12 @@ const StakingModalPreview: React.FC<StakingModalPreviewProps> = ({
           </Subtitle>
         </div>
       </BaseModalContentColumn>
-      <BaseModalContentColumn>
+      <BaseModalContentColumn marginTop="auto">
         <ActionButton onClick={onConfirm} className="py-3" color={colors.red}>
           Preview Stake
         </ActionButton>
       </BaseModalContentColumn>
-      <BaseModalWarning color={colors.green}>
+      <BaseModalWarning color={colors.green} className="mb-2">
         <PrimaryText
           fontSize={14}
           lineHeight={20}

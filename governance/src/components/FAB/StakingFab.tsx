@@ -14,7 +14,7 @@ import { formatBigNumber } from "shared/lib/utils/math";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { VotingEscrowAddress } from "shared/lib/constants/constants";
-import { calculateInitialveRBNAmount } from "../../utils/math";
+import { useAssetBalance } from "shared/lib/hooks/web3DataContext";
 import moment from "moment";
 
 const FABContainer = styled.div`
@@ -66,8 +66,31 @@ const StakingFAB = () => {
   const [, setUnstakingModal] = useGovernanceGlobalState("unstakingModal");
 
   const rbnAllowance = useTokenAllowance("rbn", VotingEscrowAddress);
+
   const { data: rbnAccount, loading: rbnAccountLoading } = useRBNTokenAccount();
-  const loadingText = useTextAnimation(rbnAccountLoading);
+  const { balance: veRBNBalance, loading: votingPowerLoading } =
+    useAssetBalance("veRBN");
+  const { data: rbnTokenAccount, loading: rbnTokenAccountLoading } =
+    useRBNTokenAccount();
+  const loading =
+    rbnAccountLoading || votingPowerLoading || rbnTokenAccountLoading;
+  const loadingText = useTextAnimation(loading);
+
+  const stakeMode = useMemo(() => {
+    if (rbnAllowance?.isZero()) {
+      return "approve";
+    }
+
+    if (
+      rbnTokenAccount &&
+      rbnTokenAccount.lockEndTimestamp &&
+      moment().isBefore(moment.unix(rbnTokenAccount.lockEndTimestamp))
+    ) {
+      return "increase";
+    }
+
+    return "stake";
+  }, [rbnAllowance, rbnTokenAccount]);
 
   const fabInfo: {
     veRBNAmount: string;
@@ -80,39 +103,28 @@ const StakingFAB = () => {
         stakedRBNAmount: "---",
         unstakedRBNAmount: "---",
       };
-    } else if (rbnAccountLoading) {
+    }
+
+    if (loading) {
       return {
         veRBNAmount: loadingText,
         stakedRBNAmount: loadingText,
         unstakedRBNAmount: loadingText,
       };
-    } else if (rbnAccount) {
-      let veRBNAmount = "0.00";
-      const stakedRBNAmount = formatBigNumber(rbnAccount.lockedBalance);
-      const unstakedRBNAmount = formatBigNumber(rbnAccount.walletBalance);
-      if (rbnAccount.lockEndTimestamp) {
-        const currentRemainingDuration =
-          rbnAccount.lockEndTimestamp * 1000 - Date.now();
-        const amountBn = calculateInitialveRBNAmount(
-          rbnAccount?.lockedBalance,
-          moment.duration(currentRemainingDuration)
-        );
-        veRBNAmount = formatBigNumber(amountBn, 18, 2);
-      }
-      return {
-        veRBNAmount,
-        stakedRBNAmount,
-        unstakedRBNAmount,
-      };
     }
-    return {
-      veRBNAmount: "0.00",
-      stakedRBNAmount: "0.00",
-      unstakedRBNAmount: "0.00",
-    };
-  }, [active, loadingText, rbnAccount, rbnAccountLoading]);
 
-  return (
+    return {
+      veRBNAmount: formatBigNumber(veRBNBalance),
+      stakedRBNAmount: rbnAccount
+        ? formatBigNumber(rbnAccount.lockedBalance)
+        : "0.00",
+      unstakedRBNAmount: rbnAccount
+        ? formatBigNumber(rbnAccount.walletBalance)
+        : "0.00",
+    };
+  }, [active, loading, loadingText, rbnAccount, veRBNBalance]);
+
+  return active ? (
     <>
       <FABContainer>
         <div className="d-flex align-items-center ml-5">
@@ -167,12 +179,12 @@ const StakingFAB = () => {
               setStakingModal((prev) => ({
                 ...prev,
                 show: true,
-                mode: rbnAllowance?.isZero() ? "approve" : "stake",
+                mode: stakeMode,
               }))
             }
           >
             <Title fontSize={14} lineHeight={24} color={colors.red}>
-              {rbnAllowance?.isZero() ? "Approve" : "Stake"}
+              {stakeMode === "approve" ? "Approve" : "Stake"}
             </Title>
           </StakingButton>
           <StakingButton
@@ -191,6 +203,8 @@ const StakingFAB = () => {
       </FABContainer>
       <FABOffsetContainer />
     </>
+  ) : (
+    <></>
   );
 };
 
