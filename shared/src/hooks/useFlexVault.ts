@@ -1,51 +1,62 @@
 import { useEffect, useState } from "react";
 import { useConnection, useAnchorWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import { Vault, Flex, VaultClient } from "@zetamarkets/flex-sdk";
+import { Vault, Flex, VaultClient, vaultUtils } from "@zetamarkets/flex-sdk";
 import useWeb3Wallet from "./useWeb3Wallet";
 import { getSolanaAddresses, getSolanaNetwork } from "../utils/env";
-
-let loadedOnce = false;
+import { Vault as VaultInterface } from "@zetamarkets/flex-sdk/dist/vault/types";
+import { Wallet } from "@zetamarkets/flex-sdk/dist/common/types";
 
 interface FlexVaultData {
-  vaultClient: VaultClient | null;
+  client: VaultClient | null;
+  vault: VaultInterface | null;
 }
 
-export const useFlexVault = () => {
+export const useFlexVault = (): FlexVaultData => {
   const { connection } = useConnection();
-  const [loadedVault, setLoadedVault] = useState(false);
-  const { solanaWallet } = useWeb3Wallet();
   const anchorWallet = useAnchorWallet();
-  const { flex: flexAddress, vault: vaultAddress } = getSolanaAddresses();
+  const network = getSolanaNetwork();
+  const { flex: flexAddress, vault: solAddress } = getSolanaAddresses();
 
-  const [flexVaultData, setFlexVaultData] = useState<FlexVaultData>({
-    vaultClient: null,
-  });
+  const [flexClient, setFlexClient] = useState<VaultClient | null>(null);
+  const [flexVault, setFlexVault] = useState<VaultInterface | null>(null);
 
+  // FLEX VAULT HANDLER
   useEffect(() => {
     const loadFlexVault = async () => {
-      loadedOnce = true;
-
-      const network = getSolanaNetwork();
-      await Flex.load(new PublicKey(flexAddress), network, connection);
-      await Vault.load(new PublicKey(vaultAddress), network, connection);
-
-      setLoadedVault(true);
+      return await Promise.all([
+        Flex.load(new PublicKey(flexAddress), network, connection),
+        Vault.load(new PublicKey(solAddress), network, connection),
+      ]).then(async () => {
+        const [vaultAddress] = await vaultUtils.getVaultAddress("rSOL-THETA");
+        return await Vault.getVault(new PublicKey(vaultAddress));
+      });
     };
 
-    if (!loadedOnce && !loadedVault && connection) {
-      loadFlexVault();
+    if (
+      !Flex.isInitialized &&
+      !Vault.isInitialized &&
+      !flexVault &&
+      connection
+    ) {
+      loadFlexVault().then((vault: VaultInterface) => {
+        setFlexVault(vault);
+      });
     }
-  }, [connection, loadedVault, flexVaultData]);
+  }, [connection, flexVault, Flex, Vault]);
 
+  // FLEX CLIENT HANDLER
   useEffect(() => {
-    if (loadedVault && anchorWallet && solanaWallet) {
-      (async () => {
-        const vaultClient = await VaultClient.load(connection, anchorWallet);
-        setFlexVaultData({ vaultClient });
-      })();
-    }
-  }, [loadedVault, anchorWallet, solanaWallet, connection]);
+    const loadFlexClient = async () => {
+      return await VaultClient.load(connection, anchorWallet as Wallet);
+    };
 
-  return { loadedVault, data: flexVaultData };
+    if (anchorWallet && !flexClient && connection) {
+      loadFlexClient().then((client: VaultClient) => {
+        setFlexClient(client);
+      });
+    }
+  }, [anchorWallet, connection, flexClient]);
+
+  return { vault: flexVault, client: flexClient };
 };

@@ -126,7 +126,6 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
   } = useVaultActionForm(vaultOption);
   const { active } = useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
-  const hasWithdrawOption = vaultOption !== "rSOL-THETA";
   const [activeBackgroundState, setActiveBackgroundState] = useState<
     object | boolean
   >(false);
@@ -407,58 +406,54 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
   return (
     <>
       {/* Segment Control */}
-      {hasWithdrawOption && (
-        <WithdrawTypeSegmentControlContainer>
-          <WithdrawTypeSegmentControlBackground
-            transition={{
-              type: "keyframes",
-              ease: "easeOut",
-            }}
-            initial={{
-              height: 0,
-              width: 0,
-            }}
-            animate={activeBackgroundState}
-          />
-          {V2WithdrawOptionList.map((withdrawOption) => {
-            /**
-             * Complete withdraw is also consider as standard
-             */
-            const active =
-              vaultActionForm.withdrawOption === withdrawOption ||
-              (withdrawOption === "standard" &&
-                vaultActionForm.withdrawOption === "complete");
-            return (
-              <WithdrawTypeSegmentControl
-                key={withdrawOption}
-                ref={withdrawOptionRefs[withdrawOption]}
-                role="button"
-                onClick={() => {
-                  handleActionTypeChange(ACTIONS.withdraw, "v2", {
-                    withdrawOption: withdrawOption,
-                  });
-                }}
+      <WithdrawTypeSegmentControlContainer>
+        <WithdrawTypeSegmentControlBackground
+          transition={{
+            type: "keyframes",
+            ease: "easeOut",
+          }}
+          initial={{
+            height: 0,
+            width: 0,
+          }}
+          animate={activeBackgroundState}
+        />
+        {V2WithdrawOptionList.map((withdrawOption) => {
+          /**
+           * Complete withdraw is also consider as standard
+           */
+          const active =
+            vaultActionForm.withdrawOption === withdrawOption ||
+            (withdrawOption === "standard" &&
+              vaultActionForm.withdrawOption === "complete");
+          return (
+            <WithdrawTypeSegmentControl
+              key={withdrawOption}
+              ref={withdrawOptionRefs[withdrawOption]}
+              role="button"
+              onClick={() => {
+                handleActionTypeChange(ACTIONS.withdraw, "v2", {
+                  withdrawOption: withdrawOption,
+                });
+              }}
+            >
+              <WithdrawTypeSegmentControlText
+                active={active}
+                disabled={
+                  withdrawOption !== "instant" &&
+                  !withdrawMetadata.allowStandardWithdraw
+                }
               >
-                <WithdrawTypeSegmentControlText
-                  active={active}
-                  disabled={
-                    withdrawOption !== "instant" &&
-                    !withdrawMetadata.allowStandardWithdraw
-                  }
-                >
-                  {withdrawOption}{" "}
-                  {renderWithdrawOptionExplanation(withdrawOption, active)}
-                </WithdrawTypeSegmentControlText>
-              </WithdrawTypeSegmentControl>
-            );
-          })}
-        </WithdrawTypeSegmentControlContainer>
-      )}
+                {withdrawOption}{" "}
+                {renderWithdrawOptionExplanation(withdrawOption, active)}
+              </WithdrawTypeSegmentControlText>
+            </WithdrawTypeSegmentControl>
+          );
+        })}
+      </WithdrawTypeSegmentControlContainer>
 
       {/* Input */}
-      <BaseInputLabel className={hasWithdrawOption ? "mt-4" : "mt-0"}>
-        AMOUNT ({assetDisplay})
-      </BaseInputLabel>
+      <BaseInputLabel className="mt-4">AMOUNT ({assetDisplay})</BaseInputLabel>
       <BaseInputContainer
         className="mb-2"
         error={error ? VaultInputValidationErrorList.includes(error) : false}
