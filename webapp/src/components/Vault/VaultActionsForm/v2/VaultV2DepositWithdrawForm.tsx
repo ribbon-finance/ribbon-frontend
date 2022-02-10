@@ -442,6 +442,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     ) {
       return (
         <BaseLink
+          className="mt-4"
           to={AVAX_BRIDGE_URI}
           target="_blank"
           rel="noreferrer noopener"
