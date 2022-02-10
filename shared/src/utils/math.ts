@@ -1,4 +1,4 @@
-import moment, { Duration } from "moment";
+import { Duration } from "moment";
 import { BigNumber } from "@ethersproject/bignumber";
 import { ethers } from "ethers";
 import currency from "currency.js";
@@ -208,55 +208,24 @@ export const calculateBoostMultiplier = ({
   veRBNAmount,
   totalVeRBN,
 }: BoostMultiplierCalculationProps) => {
-  // If gauge balance is 0, always returns 0
-  if (gaugeBalance.isZero() || !totalVeRBN) {
-    return 0;
-  } else {
-    const L = poolLiquidity.add(gaugeBalance);
+  let l = Number(gaugeBalance.toString());
+  const L = Number(poolLiquidity.toString()) + l;
+  const veRBNAmt = parseFloat(formatUnits(veRBNAmount, 18));
+  const totalVeRBNAmt = parseFloat(formatUnits(totalVeRBN, 18));
+  const workingBalanceAmt = Number(workingBalance.toString());
+  const workingSupplyAmt = Number(workingSupply.toString());
 
-    const TOKENLESS_PRODUCTION = 40;
+  const TOKENLESS_PRODUCTION = 40;
 
-    let lim = gaugeBalance.mul(TOKENLESS_PRODUCTION).div(100);
+  let lim = (l * TOKENLESS_PRODUCTION) / 100;
+  lim +=
+    (((L * veRBNAmt) / totalVeRBNAmt) * (100 - TOKENLESS_PRODUCTION)) / 100;
+  lim = Math.min(l, lim);
 
-    // lim is the biggest number when totalVeRBN is 0 to prevent division by 0
-    console.log("YOUR veRBN", formatUnits(veRBNAmount))
-    console.log("TOTAL veRBN in VotingEscrow", formatUnits(totalVeRBN))
-    lim = totalVeRBN.isZero()
-      ? BigNumber.from(String(Number.MAX_SAFE_INTEGER))
-      : L.mul(veRBNAmount)
-          .div(totalVeRBN)
-          .mul(100 - TOKENLESS_PRODUCTION)
-          .div(100);
-    lim = lim.gt(gaugeBalance) ? gaugeBalance : lim;
+  let old_bal = workingBalanceAmt;
+  let noboost_lim = (TOKENLESS_PRODUCTION * l) / 100;
+  let noboost_supply = workingSupplyAmt + noboost_lim - old_bal;
+  let _working_supply = workingSupplyAmt + lim - old_bal;
 
-    let noboost_lim = gaugeBalance.mul(TOKENLESS_PRODUCTION).div(100);
-    let noboost_supply = workingSupply.add(noboost_lim).sub(workingBalance);
-    let _working_supply = workingSupply.add(lim).sub(workingBalance);
-
-    const lhs =
-      parseFloat(formatUnits(lim)) / parseFloat(formatUnits(_working_supply));
-    const rhs =
-      parseFloat(formatUnits(noboost_lim)) /
-      parseFloat(formatUnits(noboost_supply));
-
-      console.log(lhs, rhs)
-
-
-    // console.log("BOOST INFO", {
-    //   working_balances: workingBalance.toString(),
-    //   working_supply: workingSupply.toString(),
-    //   gaugeBalance: gaugeBalance.toString(),
-    //   poolLiquidity: poolLiquidity.toString(),
-    //   L: L.toString(),
-    //   lim: lim.toString(),
-    //   noboost_lim: noboost_lim.toString(),
-    //   noboost_supply: noboost_supply.toString(),
-    //   veRBN: veRBNAmount.toString(),
-    //   totalVeRBN: totalVeRBN.toString(),
-    // });
-
-
-    const boost = lhs / rhs;
-    return Math.round(boost * 100) / 100;
-  }
+  return lim / _working_supply / (noboost_lim / noboost_supply);
 };

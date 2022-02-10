@@ -207,9 +207,8 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
   }, [votingEscrowContract, totalVeRBN]);
 
   const stakeInputHasError = useMemo(() => {
-    return false
-    return Number(stakeInput) > Number(poolSizeInput);
-  }, [stakeInput, poolSizeInput]);
+    return false;
+  }, []);
 
   // ======================
   // CALCULATE BASE REWARDS
@@ -238,6 +237,10 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
   // CALCULATE REWARDS BOOSTER (using formula from CurveDAO)
   // =======================================================
   const calculateRewardsBooster = useCallback(() => {
+    if (!stakeInput || !poolSizeInput) {
+      return 0;
+    }
+
     let working_balances = lg5Data?.workingBalances || BigNumber.from("0");
     let working_supply = lg5Data?.workingSupply || BigNumber.from("0");
 
@@ -323,7 +326,7 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
       const boosted = calculateBoostedRewards(base, boosterMultiplier);
       baseRewards = `${base.toFixed(2)}%`;
       boostedRewards = `${boosted.toFixed(2)}%`;
-      rewardsBooster = String(boosterMultiplier);
+      rewardsBooster = boosterMultiplier ? boosterMultiplier.toFixed(2) : "---";
       totalAPY = `${(base + boosted).toFixed(2)}%`;
     }
 

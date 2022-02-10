@@ -42,6 +42,8 @@ import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useV2Vault from "shared/lib/hooks/useV2Vault";
 import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -75,6 +77,11 @@ const AssetTitle = styled(Title)`
   text-transform: none;
   font-size: 22px;
   line-height: 28px;
+`;
+
+const ContainerWithTooltip = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const InfoColumn = styled(BaseModalContentColumn)`
@@ -163,7 +170,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
       return {
         totalApy: "---",
         baseRewards: "---",
-        boostedMultiplier: "0X",
+        boostedMultiplier: "",
         boostedRewards: "---",
       };
     }
@@ -197,7 +204,9 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     return {
       totalApy: `${(baseRewards + boostedRewards).toFixed(2)}%`,
       baseRewards: `${baseRewards.toFixed(2)}%`,
-      boostedMultiplier: `${boostedMultiplier}X`,
+      boostedMultiplier: boostedMultiplier
+        ? `(${boostedMultiplier.toFixed(2)}X)`
+        : "",
       boostedRewards: `${boostedRewards.toFixed(2)}%`,
     };
   }, [
@@ -379,17 +388,39 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               <InfoData color={color}>{apys.totalApy}</InfoData>
             </InfoColumn>
             <InfoColumn marginTop={4}>
-              <SecondaryText className="ml-2" fontSize={12}>
-                Base Rewards
-              </SecondaryText>
+              <ContainerWithTooltip>
+                <SecondaryText className="ml-2" fontSize={12}>
+                  Base Rewards
+                </SecondaryText>
+                <TooltipExplanation
+                  title="Base Rewards"
+                  explanation="The rewards for staking rTokens."
+                  renderContent={({ ref, ...triggerHandler }) => (
+                    <HelpInfo containerRef={ref} {...triggerHandler}>
+                      i
+                    </HelpInfo>
+                  )}
+                />
+              </ContainerWithTooltip>
               <InfoData color={colors.text} fontSize={14}>
                 {apys.baseRewards}
               </InfoData>
             </InfoColumn>
             <InfoColumn marginTop={4}>
-              <SecondaryText className="ml-2" fontSize={12}>
-                Boosted Rewards ({apys.boostedMultiplier})
-              </SecondaryText>
+              <ContainerWithTooltip>
+                <SecondaryText className="ml-2" fontSize={12}>
+                  Boosted Rewards {apys.boostedMultiplier}
+                </SecondaryText>
+                <TooltipExplanation
+                  title="Boosted Rewards"
+                  explanation="The additional rewards veRBN holders earn for staking their rTokens. Base rewards can be boosted by up to 2.5X."
+                  renderContent={({ ref, ...triggerHandler }) => (
+                    <HelpInfo containerRef={ref} {...triggerHandler}>
+                      i
+                    </HelpInfo>
+                  )}
+                />
+              </ContainerWithTooltip>
               <InfoData color={colors.text} fontSize={14}>
                 {apys.boostedRewards}
               </InfoData>

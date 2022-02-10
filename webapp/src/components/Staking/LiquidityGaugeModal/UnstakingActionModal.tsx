@@ -189,15 +189,6 @@ const UnstakingActionModal: React.FC<UnstakingActionModalProps> = ({
   ]);
 
   /**
-   * Set to max amount by default
-   */
-  useEffect(() => {
-    if (show) {
-      handleMaxPressed();
-    }
-  }, [handleMaxPressed, show, stakingPoolData, step]);
-
-  /**
    * Input Validation
    */
   useEffect(() => {
@@ -226,8 +217,6 @@ const UnstakingActionModal: React.FC<UnstakingActionModalProps> = ({
         return "PREVIEW UNSTAKE";
     }
   }, [error]);
-
-  console.log(input)
 
   const body = useMemo(() => {
     switch (step) {
