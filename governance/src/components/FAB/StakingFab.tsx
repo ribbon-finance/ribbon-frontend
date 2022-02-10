@@ -63,6 +63,7 @@ const FABOffsetContainer = styled.div`
 const StakingFAB = () => {
   const { active } = useWeb3React();
   const [, setStakingModal] = useGovernanceGlobalState("stakingModal");
+  const [, setUnstakingModal] = useGovernanceGlobalState("unstakingModal");
 
   const rbnAllowance = useTokenAllowance("rbn", VotingEscrowAddress);
   const { data: rbnAccount, loading: rbnAccountLoading } = useRBNTokenAccount();
@@ -163,17 +164,25 @@ const StakingFAB = () => {
             color={`${colors.red}1F`}
             role="button"
             onClick={() =>
-              setStakingModal({
+              setStakingModal((prev) => ({
+                ...prev,
                 show: true,
                 mode: rbnAllowance?.isZero() ? "approve" : "stake",
-              })
+              }))
             }
           >
             <Title fontSize={14} lineHeight={24} color={colors.red}>
               {rbnAllowance?.isZero() ? "Approve" : "Stake"}
             </Title>
           </StakingButton>
-          <StakingButton color={`${colors.primaryText}0A`} role="button">
+          <StakingButton
+            color={`${colors.primaryText}0A`}
+            role="button"
+            onClick={() => {
+              console.log("Pressed");
+              setUnstakingModal((prev) => ({ ...prev, show: true }));
+            }}
+          >
             <Title fontSize={14} lineHeight={24} color={colors.text}>
               Unstake
             </Title>

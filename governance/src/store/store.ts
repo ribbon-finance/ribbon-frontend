@@ -9,12 +9,21 @@ interface GlobalStore {
       type: "approve" | "stake";
     };
   };
+  unstakingModal: {
+    show: boolean;
+    pendingTransaction?: {
+      hash: string;
+    };
+  };
 }
 
 export const initialState: GlobalStore = {
   stakingModal: {
     show: false,
     mode: "stake",
+  },
+  unstakingModal: {
+    show: false,
   },
 };
 

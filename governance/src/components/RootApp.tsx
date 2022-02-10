@@ -12,6 +12,7 @@ import colors from "shared/lib/designSystem/colors";
 import ProfilePage from "../pages/ProfilePage";
 import StakingFAB from "./FAB/StakingFab";
 import StakingModal from "./Staking/StakingModal";
+import UnstakingModal from "./Unstaking/UnstakingModal";
 
 const Root = styled.div<{ screenHeight: number }>`
   background-color: ${colors.background.one};
@@ -27,6 +28,7 @@ const RootApp = () => {
     <Root id="appRoot" screenHeight={screenHeight}>
       <WalletConnectModal />
       <StakingModal />
+      <UnstakingModal />
 
       <Router>
         <Header />
