@@ -161,8 +161,8 @@ const StakingModalUpdatePreview: React.FC<StakingModalUpdatePreviewProps> = ({
       </BaseModalContentColumn>
 
       {/* Data rows */}
-      {previewDataRows.map((row) => (
-        <BaseModalContentColumn>
+      {previewDataRows.map((row, index) => (
+        <BaseModalContentColumn key={index}>
           <div className="d-flex w-100 justify-content-between">
             <SecondaryText lineHeight={24}>{row.label}</SecondaryText>
             <Subtitle fontSize={14} lineHeight={24} letterSpacing={1}>
