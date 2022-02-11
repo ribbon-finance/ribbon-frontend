@@ -4,7 +4,7 @@ import {
   getWalletConnectConnector,
   injectedConnector,
   walletlinkConnector,
-} from "shared/lib/utils/connectors";
+} from "../utils/connectors";
 import { providers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
@@ -20,7 +20,7 @@ import {
   Wallet,
 } from "../models/wallets";
 import { CHAINS_TO_ID, ID_TO_CHAINS } from "../constants/constants";
-import { switchChains } from "shared/lib/utils/chainSwitching";
+import { switchChains } from "../utils/chainSwitching";
 
 interface Web3WalletData {
   chainId: number | undefined;
