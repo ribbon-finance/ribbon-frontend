@@ -227,7 +227,5 @@ export const calculateBoostMultiplier = ({
   let noboost_supply = workingSupplyAmt + noboost_lim - old_bal;
   let _working_supply = workingSupplyAmt + lim - old_bal;
 
-  console.log("TOTAL VERBN", veRBNAmt)
-
   return lim / _working_supply / (noboost_lim / noboost_supply);
 };

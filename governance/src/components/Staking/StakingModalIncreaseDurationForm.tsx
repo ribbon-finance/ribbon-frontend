@@ -14,7 +14,11 @@ import {
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
-import { formatBigNumber, formatBigNumberAmount, calculateInitialveRBNAmount } from "shared/lib/utils/math";
+import {
+  formatBigNumber,
+  formatBigNumberAmount,
+  calculateInitialveRBNAmount,
+} from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import StakingModalFormCalendarOverlay from "./StakingModalFormCalendarOverlay";
 import InlineSelectInput from "shared/lib/components/Common/InlineSelectInput";

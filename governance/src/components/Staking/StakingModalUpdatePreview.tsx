@@ -13,7 +13,11 @@ import {
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { StakeIcon } from "shared/lib/assets/icons/icons";
-import { formatBigNumber, formatBigNumberAmount, calculateInitialveRBNAmount } from "shared/lib/utils/math";
+import {
+  formatBigNumber,
+  formatBigNumberAmount,
+  calculateInitialveRBNAmount,
+} from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import theme from "shared/lib/designSystem/theme";
 import { StakingUpdateMode } from "./types";

@@ -250,7 +250,6 @@ export const OngoingLMVersion: LiquidityMiningVersion[] = !isProduction()
       (lm) => !ProdExcludeLiquidityMiningVersion.includes(lm)
     );
 
-
 export const VaultLiquidityMiningMap: {
   [version in LiquidityMiningVersion]: Partial<{
     [vault in VaultOptions]: string;
