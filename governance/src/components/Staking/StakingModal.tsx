@@ -18,6 +18,9 @@ import { StakingUpdateMode } from "./types";
 import StakingModalncreaseAmountForm from "./StakingModalIncreaseAmountForm";
 import StakingModalUpdatePreview from "./StakingModalUpdatePreview";
 import StakingModalIncreaseDurationForm from "./StakingModalIncreaseDurationForm";
+import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
+import { formatBigNumber } from "shared/lib/utils/math";
+import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 
 const stakingModalModes = [
   "approve",
@@ -55,9 +58,11 @@ const StakingModal = () => {
     amount: BigNumber;
     duration: Duration;
   }>({ amount: BigNumber.from(0), duration: duration() });
+  const { data: rbnTokenAccount } = useRBNTokenAccount();
 
   const [stakingUpdateMode, setStakingUpdateMode] =
     useState<StakingUpdateMode>();
+  const { addPendingTransaction } = usePendingTransactions();
 
   const votingEscrowContract = useVotingEscrow();
   const rbnTokenContract = useERC20Token("rbn");
@@ -111,6 +116,11 @@ const StakingModal = () => {
         ...prev,
         pendingTransaction: { hash: tx.hash, type: "approve" },
       }));
+      addPendingTransaction({
+        type: "governanceApproval",
+        txhash: tx.hash,
+        amount: amount,
+      });
 
       await provider.waitForTransaction(tx.hash, 5);
 
@@ -122,7 +132,13 @@ const StakingModal = () => {
     } catch (e) {
       setStepNum(stakingModesMap[stakingModalState.mode].indexOf("approve"));
     }
-  }, [provider, rbnTokenContract, setStakingModalState, stakingModalState]);
+  }, [
+    addPendingTransaction,
+    provider,
+    rbnTokenContract,
+    setStakingModalState,
+    stakingModalState,
+  ]);
 
   /**
    * Callback for user staking
@@ -130,14 +146,21 @@ const StakingModal = () => {
   const onStake = useCallback(async () => {
     setStepNum(stakingModesMap[stakingModalState.mode].indexOf("transaction"));
     try {
+      const expiryMoment = moment().add(stakingData.duration);
       const tx = await votingEscrowContract.create_lock(
         stakingData.amount,
-        moment().add(stakingData.duration).unix()
+        expiryMoment.unix()
       );
       setStakingModalState((prev) => ({
         ...prev,
         pendingTransaction: { hash: tx.hash, type: "stake" },
       }));
+      addPendingTransaction({
+        type: "governanceStake",
+        txhash: tx.hash,
+        amount: formatBigNumber(stakingData.amount),
+        expiry: expiryMoment,
+      });
 
       await provider.waitForTransaction(tx.hash, 5);
 
@@ -150,6 +173,7 @@ const StakingModal = () => {
       setStepNum(stakingModesMap[stakingModalState.mode].indexOf("preview"));
     }
   }, [
+    addPendingTransaction,
     votingEscrowContract,
     provider,
     setStakingModalState,
@@ -163,11 +187,10 @@ const StakingModal = () => {
   const onStakeUpdate = useCallback(async () => {
     setStepNum(stakingModesMap[stakingModalState.mode].indexOf("transaction"));
     try {
+      const expiryMoment = moment().add(stakingData.duration);
       const tx = await (stakingUpdateMode === "increaseAmount"
         ? votingEscrowContract.increase_amount(stakingData.amount)
-        : votingEscrowContract.increase_unlock_time(
-            moment().add(stakingData.duration).unix()
-          ));
+        : votingEscrowContract.increase_unlock_time(expiryMoment.unix()));
       setStakingModalState((prev) => ({
         ...prev,
         pendingTransaction: {
@@ -175,6 +198,21 @@ const StakingModal = () => {
           type: stakingUpdateMode || "increaseAmount",
         },
       }));
+      addPendingTransaction({
+        type:
+          stakingUpdateMode === "increaseAmount"
+            ? "governanceIncreaseAmount"
+            : "governanceIncreaseDuration",
+        txhash: tx.hash,
+        amount: formatBigNumber(
+          stakingUpdateMode === "increaseAmount"
+            ? stakingData.amount.add(
+                rbnTokenAccount?.lockedBalance || BigNumber.from(0)
+              )
+            : rbnTokenAccount?.lockedBalance || BigNumber.from(0)
+        ),
+        expiry: expiryMoment,
+      });
 
       await provider.waitForTransaction(tx.hash, 5);
 
@@ -187,7 +225,9 @@ const StakingModal = () => {
       setStepNum(stakingModesMap[stakingModalState.mode].indexOf("preview"));
     }
   }, [
+    addPendingTransaction,
     provider,
+    rbnTokenAccount,
     setStakingModalState,
     stakingData,
     stakingModalState,

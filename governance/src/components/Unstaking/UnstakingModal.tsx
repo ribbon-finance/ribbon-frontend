@@ -2,8 +2,10 @@ import moment from "moment";
 import React, { useCallback, useMemo, useState } from "react";
 
 import BasicModal from "shared/lib/components/Common/BasicModal";
+import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
+import { formatBigNumber } from "shared/lib/utils/math";
 import useVotingEscrow from "../../hooks/useVotingEscrow";
 import { useGovernanceGlobalState } from "../../store/store";
 import ModalTransactionContent from "../Shared/ModalTransactionContent";
@@ -23,6 +25,7 @@ const UnstakingModal = () => {
     useGovernanceGlobalState("unstakingModal");
   const [stepNum, setStepNum] = useState<number>(0);
   const { data: rbnTokenAccount, loading } = useRBNTokenAccount();
+  const { addPendingTransaction } = usePendingTransactions();
 
   const votingEscrowContract = useVotingEscrow();
 
@@ -47,6 +50,11 @@ const UnstakingModal = () => {
         ...prev,
         pendingTransaction: { hash: tx.hash },
       }));
+      addPendingTransaction({
+        type: "governanceUnstake",
+        txhash: tx.hash,
+        amount: formatBigNumber(rbnTokenAccount.lockedBalance),
+      });
 
       await provider.waitForTransaction(tx.hash, 5);
 
@@ -59,6 +67,7 @@ const UnstakingModal = () => {
       setStepNum(unstakingModalModes.indexOf("preview"));
     }
   }, [
+    addPendingTransaction,
     loading,
     provider,
     rbnTokenAccount,

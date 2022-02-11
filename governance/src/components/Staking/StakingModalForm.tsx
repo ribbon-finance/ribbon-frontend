@@ -87,7 +87,7 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
   proceedToPreview,
 }) => {
   const { active } = useWeb3React();
-  const { data } = useRBNTokenAccount();
+  const { data: rbnTokenAccount } = useRBNTokenAccount();
 
   const [showCalendarPicker, setShowCalendarPicker] = useState(false);
 
@@ -110,10 +110,10 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
     return Boolean(
       amountInput &&
         parseUnits(amountInput, 18).gt(
-          data ? data.walletBalance : BigNumber.from(0)
+          rbnTokenAccount ? rbnTokenAccount.walletBalance : BigNumber.from(0)
         )
     );
-  }, [amountInput, data]);
+  }, [amountInput, rbnTokenAccount]);
 
   const canProceed = useMemo(() => {
     return amountInput && !inputError && stakeDuration.asDays() >= 7;
@@ -185,7 +185,11 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
           {active && (
             <BaseInputButton
               onClick={() =>
-                setAmountInput(data ? formatUnits(data.walletBalance) : "0")
+                setAmountInput(
+                  rbnTokenAccount
+                    ? formatUnits(rbnTokenAccount.walletBalance)
+                    : "0"
+                )
               }
             >
               MAX
@@ -248,7 +252,9 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
             lineHeight={24}
             color={inputError ? colors.red : colors.primaryText}
           >
-            {data ? formatBigNumber(data.walletBalance, 18) : "0"}
+            {rbnTokenAccount
+              ? formatBigNumber(rbnTokenAccount.walletBalance, 18)
+              : "0"}
           </Title>
         </div>
       </BaseModalContentColumn>

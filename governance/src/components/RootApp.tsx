@@ -13,6 +13,7 @@ import ProfilePage from "../pages/ProfilePage";
 import StakingFAB from "./FAB/StakingFab";
 import StakingModal from "./Staking/StakingModal";
 import UnstakingModal from "./Unstaking/UnstakingModal";
+import { TxStatusToast } from "./Common/toast";
 
 const Root = styled.div<{ screenHeight: number }>`
   background-color: ${colors.background.one};
@@ -31,8 +32,8 @@ const RootApp = () => {
       <UnstakingModal />
 
       <Router>
+        <TxStatusToast />
         <Header />
-
         <Switch>
           <Route path="/" exact>
             <Homepage />

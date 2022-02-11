@@ -149,6 +149,8 @@ export const TxStatusToast = () => {
           return `${amountFormatted} migrated to ${
             productCopies[_currentTx.vault].title
           } V2`;
+        default:
+          return "";
       }
     },
     [getAmountFormatted]
