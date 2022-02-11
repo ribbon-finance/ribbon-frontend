@@ -3,13 +3,13 @@ import styled from "styled-components";
 
 import { getAssetColor, getAssetLogo } from "shared/lib/utils/asset";
 import { Title, Subtitle, BaseIndicator } from "shared/lib/designSystem";
+import theme from "shared/lib/designSystem/theme";
 import {
   Chains,
   CHAINS_TO_NATIVE_TOKENS,
   ENABLED_CHAINS,
   READABLE_CHAIN_NAMES,
 } from "shared/lib/constants/constants";
-import theme from "shared/lib/designSystem/theme";
 
 interface ConnectChainBodyProps {
   onClose?: () => void;

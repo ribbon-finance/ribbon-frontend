@@ -4,7 +4,7 @@ import {
   getWalletConnectConnector,
   injectedConnector,
   walletlinkConnector,
-} from "../utils/connectors";
+} from "shared/lib/utils/connectors";
 import { providers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
@@ -19,9 +19,8 @@ import {
   SolanaWallet,
   Wallet,
 } from "../models/wallets";
-import { CHAINID } from "../utils/env";
-import { CHAINS_TO_ID } from "../constants/constants";
-import { switchChains } from "../utils/chainSwitching";
+import { CHAINS_TO_ID, ID_TO_CHAINS } from "../constants/constants";
+import { switchChains } from "shared/lib/utils/chainSwitching";
 
 interface Web3WalletData {
   chainId: number | undefined;
@@ -37,10 +36,9 @@ interface Web3WalletData {
 
 export const useWeb3Wallet = (): Web3WalletData => {
   const [chain, setChain] = useChain();
-
+  const [chainToSwitch, setChainToSwitch] = useState<Chains | null>(null);
   const [connectingWallet, setConnectingWallet] = useState<Wallet>();
   const [connectedWallet, setConnectedWallet] = useState<Wallet>();
-  const [activeChainId, setActiveChainId] = useState<number>(chain);
 
   const {
     chainId: chainIdEth,
@@ -55,68 +53,56 @@ export const useWeb3Wallet = (): Web3WalletData => {
   const {
     wallet: walletSolana,
     connected: isActiveSolana,
-    connect: connectSolana,
     disconnect: deactivateSolana,
-    connecting: connectingSolana,
     publicKey: publicKeySolana,
     select: selectWalletSolana,
   } = useSolanaWallet();
 
-  // This useEffect triggers when there is an attempt to connect a new wallet
+  // This hook manages the entire multi-chain flow
+  // It checks when an active provider is available and sets the global chainContext accordingly
   useEffect(() => {
-    if (isActiveSolana) {
-      // When connecting to a Solana wallet
+    if (isActiveEth && chainIdEth) {
+      setChain(ID_TO_CHAINS[chainIdEth as number]);
+    } else if (isActiveSolana && !chainIdEth) {
       setChain(Chains.Solana);
     }
+  }, [chainIdEth, isActiveEth, isActiveSolana]);
 
-    if (isActiveEth) {
-      // When connecting to an EVM wallet
-      if (activeChainId === CHAINS_TO_ID[Chains.Ethereum]) {
-        setChain(activeChainId);
-      } else if (activeChainId === CHAINS_TO_ID[Chains.Avalanche]) {
-        setChain(activeChainId);
-      }
-    }
-  }, [isActiveEth, isActiveSolana, activeChainId, setChain]);
-
-  // This useEffect triggers when there is a difference between selected chain and set chain in the ChainContext
-  // - When there is a change between EVM chainIds
-  // - We keep track of this using activeChainId, which is used as a comparison against the ChainContext
+  // This hook checks if there is an EVM chainId to switch to
+  // If so, it will prompt switchChains only when a provider is available
   useEffect(() => {
-    const isEVMChain =
-      activeChainId === Chains.Ethereum || activeChainId === Chains.Avalanche;
-
-    // Check if the newly selected chainId is EVM
-    if (isEVMChain && chain !== activeChainId && libraryEth) {
-      // If the new EVM chain is not the currently selected chainId in the context, trigger switchChains
-      switchChains(libraryEth, CHAINS_TO_ID[activeChainId]).then(() => {
-        // Finally, set the chainContext to reference the updated chainId
-        setChain(activeChainId);
+    if (chainToSwitch && libraryEth) {
+      switchChains(libraryEth, CHAINS_TO_ID[chainToSwitch]).then(() => {
+        setChainToSwitch(null);
       });
     }
+  }, [libraryEth, chainToSwitch]);
 
-    // If the newly selected chainId is EVM, always ensure that it is updated in the context
-    if (isEVMChain) {
-      setChain(activeChainId);
+  const deactivateEth = useCallback(async () => {
+    if (connectorEth) {
+      if (connectorEth instanceof WalletConnectConnector) {
+        await connectorEth.close();
+      }
+
+      _deactivateEth();
+      setConnectedWallet(undefined);
     }
-  }, [chain, libraryEth, activeChainId, setChain]);
+  }, [connectorEth, _deactivateEth]);
 
-  // Use this function to update the currently selected chain
-  // This will automatically update the ChainContext as well
   const activate = useCallback(
     async (wallet: Wallet, chain: Chains) => {
+      setConnectingWallet(wallet);
+
       try {
         if (isEthereumWallet(wallet)) {
-          setActiveChainId(chain);
-          const connector = evmConnectors[wallet as EthereumWallet]();
-          await activateEth(connector).then(() => {
-            setTimeout(() => {
-              if (libraryEth && chain) {
-                switchChains(libraryEth, CHAINS_TO_ID[chain]).then(() => {
-                  deactivateSolana();
-                });
-              }
-            }, 100);
+          if (!isActiveEth) {
+            const connector = evmConnectors[wallet as EthereumWallet]();
+            await activateEth(connector);
+          }
+
+          await deactivateSolana().then(() => {
+            setChainToSwitch(chain);
+            setConnectedWallet(wallet as EthereumWallet);
           });
         } else if (isSolanaWallet(wallet)) {
           let walletName: WalletName = WalletName.Phantom;
@@ -129,13 +115,15 @@ export const useWeb3Wallet = (): Web3WalletData => {
               break;
           }
 
-          await _deactivateEth();
-          setTimeout(() => {
+          await deactivateEth().then(() => {
             selectWalletSolana(walletName);
-          }, 100);
+            setConnectedWallet(wallet as SolanaWallet);
+          });
         } else {
           throw new Error("Wallet is not supported");
         }
+
+        setConnectingWallet(undefined);
       } catch (error) {
         console.error(error);
       }
@@ -144,83 +132,10 @@ export const useWeb3Wallet = (): Web3WalletData => {
       libraryEth,
       activateEth,
       selectWalletSolana,
-      _deactivateEth,
+      deactivateEth,
       deactivateSolana,
     ]
   );
-
-  // Chain switching effects
-  // `chain` is a completely different state from the chainId set by the wallet
-  // so we need to refresh it
-  useEffect(() => {
-    switch (chainIdEth) {
-      case CHAINID.ETH_KOVAN:
-      case CHAINID.ETH_MAINNET:
-        setChain(Chains.Ethereum);
-        break;
-      case CHAINID.AVAX_FUJI:
-      case CHAINID.AVAX_MAINNET:
-        setChain(Chains.Avalanche);
-        break;
-      default:
-        break;
-    }
-  }, [chainIdEth, setChain]);
-
-  // Auto-connecting solana wallets
-  useEffect(() => {
-    // If somehow we are already connected to Ethereum,
-    // we don't change the chain to Solana
-    if (isActiveSolana && !chainIdEth && walletSolana) {
-      setChain(Chains.Solana);
-      setConnectedWallet(getSolanaWallet(walletSolana.name));
-    }
-  }, [isActiveSolana, setChain, chainIdEth, walletSolana, setConnectedWallet]);
-
-  // This is specifically needed for solana
-  // because you need to implicitly call connect() after you detect a connecting state
-  useEffect(() => {
-    if (
-      !connectingSolana &&
-      connectingWallet &&
-      isSolanaWallet(connectingWallet)
-    ) {
-      (async () => {
-        try {
-          await connectSolana();
-          setConnectingWallet(undefined);
-          setConnectedWallet(connectingWallet);
-        } catch (e: unknown) {
-          const error: { name: string } = e as { name: string };
-          if (error.name === "WalletConnectionError") {
-            setConnectingWallet(undefined);
-          }
-        }
-      })();
-    }
-  }, [connectingWallet, connectingSolana, connectSolana]);
-
-  // setting connected state for eth wallet
-  useEffect(() => {
-    if (
-      connectingWallet &&
-      isEthereumWallet(connectingWallet) &&
-      accountEth &&
-      isActiveEth
-    ) {
-      setConnectedWallet(connectingWallet);
-    }
-  }, [accountEth, isActiveEth, connectingWallet]);
-
-  const deactivateEth = useCallback(async () => {
-    if (connectorEth) {
-      if (connectorEth instanceof WalletConnectConnector) {
-        await connectorEth.close();
-      }
-      _deactivateEth();
-      setConnectedWallet(undefined);
-    }
-  }, [connectorEth, _deactivateEth]);
 
   if (chain === Chains.Solana) {
     return {
@@ -253,19 +168,6 @@ const evmConnectors: Record<EthereumWallet, () => AbstractConnector> = {
   [EthereumWallet.Metamask]: () => injectedConnector,
   [EthereumWallet.WalletConnect]: getWalletConnectConnector,
   [EthereumWallet.WalletLink]: () => walletlinkConnector,
-};
-
-const getSolanaWallet: (walletName: WalletName) => Wallet = (
-  walletName = WalletName.Phantom
-) => {
-  switch (walletName) {
-    case WalletName.Phantom:
-      return SolanaWallet.Phantom as Wallet;
-    case WalletName.Solflare:
-      return SolanaWallet.Solflare as Wallet;
-    default:
-      return SolanaWallet.Phantom as Wallet;
-  }
 };
 
 export default useWeb3Wallet;

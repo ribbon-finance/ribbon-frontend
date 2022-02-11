@@ -823,6 +823,13 @@ export const CHAINS_TO_ID: Record<number, number> = {
     : CHAINID.AVAX_MAINNET,
 };
 
+export const ID_TO_CHAINS: Record<number, number> = {
+  [CHAINID.ETH_KOVAN]: Chains.Ethereum,
+  [CHAINID.ETH_MAINNET]: Chains.Ethereum,
+  [CHAINID.AVAX_FUJI]: Chains.Avalanche,
+  [CHAINID.AVAX_MAINNET]: Chains.Avalanche,
+};
+
 export const getSolanaVaultInstance = (vaultOption: VaultOptions) => {
   const vaults = getSolanaAddresses().vaults as { [key: string]: string };
   if (vaults[vaultOption]) return new PublicKey(vaults[vaultOption]);
