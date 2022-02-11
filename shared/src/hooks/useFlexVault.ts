@@ -16,7 +16,7 @@ export const useFlexVault = (): FlexVaultData => {
   const { connection } = useConnection();
   const anchorWallet = useAnchorWallet();
   const network = getSolanaNetwork();
-  const { flex: flexAddress, vault: solAddress } = getSolanaAddresses();
+  const { flex: flexAddress, vault: vaultProgramId } = getSolanaAddresses();
 
   const [flexClient, setFlexClient] = useState<VaultClient | null>(null);
   const [flexVault, setFlexVault] = useState<VaultInterface | null>(null);
@@ -26,7 +26,7 @@ export const useFlexVault = (): FlexVaultData => {
     const loadFlexVault = async () => {
       return await Promise.all([
         Flex.load(new PublicKey(flexAddress), network, connection),
-        Vault.load(new PublicKey(solAddress), network, connection),
+        Vault.load(new PublicKey(vaultProgramId), network, connection),
       ]).then(async () => {
         const [vaultAddress] = await vaultUtils.getVaultAddress("rSOL-THETA");
         return Vault.getVault(new PublicKey(vaultAddress));
@@ -43,7 +43,7 @@ export const useFlexVault = (): FlexVaultData => {
         setFlexVault(vault);
       });
     }
-  }, [connection, flexVault, flexAddress, network, solAddress]);
+  }, [connection, flexVault, flexAddress, network, vaultProgramId]);
 
   useEffect(() => {
     setInterval(async () => {
