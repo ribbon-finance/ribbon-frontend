@@ -107,7 +107,7 @@ const ProdExcludeVault: VaultOptions[] = [
   "rSOL-THETA",
   "rNEAR-THETA",
   "rAURORA-THETA",
-  "rUSDC-ETH-P-THETA",
+  "rUSDC-AVAX-P-THETA",
 ];
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",

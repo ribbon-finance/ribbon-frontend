@@ -9,7 +9,7 @@ import {
 import { impersonateAddress } from "../utils/development";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { useWeb3Context } from "./web3Context";
-import { isProduction } from "../utils/env";
+import { CHAINID, isProduction } from "../utils/env";
 import {
   RibbonTokenAddress,
   VaultLiquidityMiningMap,
@@ -51,6 +51,11 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
       currentCounter = counter + 1;
       return currentCounter;
     });
+
+    // TODO: Make this chain agnostic, for now we only enable when user connected to ETH
+    if (chainId !== CHAINID.ETH_MAINNET && chainId !== CHAINID.ETH_KOVAN) {
+      return;
+    }
 
     const minterResponsePromises = Promise.all([
       minterContract.rate(),
