@@ -29,6 +29,8 @@ import {
   assetToFiat,
   calculateBoostMultiplier,
   formatBigNumber,
+  calculateBaseRewards,
+  calculateBoostedRewards,
 } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import TrafficLight from "shared/lib/components/Common/TrafficLight";
@@ -185,10 +187,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
       assetToFiat(poolSizeInAsset, prices[asset], decimals)
     );
 
-    const baseRewards =
-      poolSizeInUSD > 0
-        ? ((1 + poolRewardInUSD / poolSizeInUSD) ** 52 - 1) * 100
-        : 0;
+    const baseRewards = calculateBaseRewards(poolSizeInUSD, poolRewardInUSD);
     const boostedMultiplier = calculateBoostMultiplier({
       workingBalance: lg5Data.workingBalances,
       workingSupply: lg5Data.workingSupply,
@@ -197,9 +196,10 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
       veRBNAmount: votingPower,
       totalVeRBN: totalVeRBN || BigNumber.from("0"),
     });
-
-    const boostedRewards =
-      boostedMultiplier > 0 ? baseRewards * boostedMultiplier - baseRewards : 0;
+    const boostedRewards = calculateBoostedRewards(
+      baseRewards,
+      boostedMultiplier
+    );
 
     return {
       totalApy: `${(baseRewards + boostedRewards).toFixed(2)}%`,

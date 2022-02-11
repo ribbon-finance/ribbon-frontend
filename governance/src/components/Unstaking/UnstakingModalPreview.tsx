@@ -51,11 +51,11 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
     }
 
     return `${
-      rbnTokenAccount?.lockedBalance
-        ? formatBigNumber(rbnTokenAccount?.lockedBalance)
+      rbnTokenAccount && rbnTokenAccount.lockedBalance
+        ? formatBigNumber(rbnTokenAccount.lockedBalance)
         : "0"
     } RBN`;
-  }, [loading, loadingText, rbnTokenAccount?.lockedBalance]);
+  }, [loading, loadingText, rbnTokenAccount]);
 
   const lockupExpiryDisplay = useMemo(() => {
     if (loading) {

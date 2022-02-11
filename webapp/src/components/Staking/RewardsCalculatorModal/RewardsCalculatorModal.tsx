@@ -37,6 +37,8 @@ import {
   assetToFiat,
   calculateBoostMultiplier,
   calculateInitialveRBNAmount,
+  calculateBaseRewards,
+  calculateBoostedRewards,
 } from "shared/lib/utils/math";
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import { BigNumber } from "ethers";
@@ -213,30 +215,30 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
   // ======================
   // CALCULATE BASE REWARDS
   // ======================
-  const calculateBaseRewards = useCallback(() => {
-    if (!lg5Data) {
-      return 0;
-    } else {
-      const poolRewardInUSD = parseFloat(
-        assetToFiat(lg5Data.poolRewardForDuration, prices["RBN"])
-      );
-      const poolSizeInAsset = lg5Data.poolSize
-        .mul(pricePerShare)
-        .div(parseUnits("1", decimals));
-      const poolSizeInUSD = parseFloat(
-        assetToFiat(poolSizeInAsset, prices[asset], decimals)
-      );
+  // const calculateBaseRewards = useCallback(() => {
+  //   if (!lg5Data) {
+  //     return 0;
+  //   } else {
+  //     const poolRewardInUSD = parseFloat(
+  //       assetToFiat(lg5Data.poolRewardForDuration, prices["RBN"])
+  //     );
+  //     const poolSizeInAsset = lg5Data.poolSize
+  //       .mul(pricePerShare)
+  //       .div(parseUnits("1", decimals));
+  //     const poolSizeInUSD = parseFloat(
+  //       assetToFiat(poolSizeInAsset, prices[asset], decimals)
+  //     );
 
-      return poolSizeInUSD > 0
-        ? ((1 + poolRewardInUSD / poolSizeInUSD) ** 52 - 1) * 100
-        : 0;
-    }
-  }, [asset, decimals, lg5Data, pricePerShare, prices]);
+  //     return poolSizeInUSD > 0
+  //       ? ((1 + poolRewardInUSD / poolSizeInUSD) ** 52 - 1) * 100
+  //       : 0;
+  //   }
+  // }, [asset, decimals, lg5Data, pricePerShare, prices]);
 
   // =======================================================
   // CALCULATE REWARDS BOOSTER (using formula from CurveDAO)
   // =======================================================
-  const calculateRewardsBooster = useCallback(() => {
+  const getRewardsBooster = useCallback(() => {
     if (!stakeInput || !poolSizeInput) {
       return 0;
     }
@@ -290,19 +292,6 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     totalVeRBN,
   ]);
 
-  /**
-   * Calculates the boosted rewards using a base reward and a multiplier
-   * baseRewardsPercent is a number from 0-100. 0 is 0% 100 is 100%
-   */
-  const calculateBoostedRewards = useCallback(
-    (baseRewardsPercent: number, multiplier: number) => {
-      return multiplier > 0
-        ? baseRewardsPercent * multiplier - baseRewardsPercent
-        : 0;
-    },
-    []
-  );
-
   // For display
   const displayRewards = useMemo(() => {
     let totalAPY: string;
@@ -321,8 +310,20 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
       boostedRewards = loadingText;
       rewardsBooster = loadingText;
     } else {
-      const base = calculateBaseRewards();
-      const boosterMultiplier = calculateRewardsBooster();
+      let base = 0;
+      if (lg5Data) {
+        const poolRewardInUSD = parseFloat(
+          assetToFiat(lg5Data.poolRewardForDuration, prices["RBN"])
+        );
+        const poolSizeInAsset = lg5Data.poolSize
+          .mul(pricePerShare)
+          .div(parseUnits("1", decimals));
+        const poolSizeInUSD = parseFloat(
+          assetToFiat(poolSizeInAsset, prices[asset], decimals)
+        );
+        base = calculateBaseRewards(poolSizeInUSD, poolRewardInUSD);
+      }
+      const boosterMultiplier = getRewardsBooster();
       const boosted = calculateBoostedRewards(base, boosterMultiplier);
       baseRewards = `${base.toFixed(2)}%`;
       boostedRewards = `${boosted.toFixed(2)}%`;
@@ -337,14 +338,17 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
       rewardsBooster,
     };
   }, [
+    asset,
+    decimals,
+    lg5Data,
+    pricePerShare,
+    prices,
     stakeInputHasError,
     lg5DataLoading,
     assetPricesLoading,
     vaultDataLoading,
     loadingText,
-    calculateBaseRewards,
-    calculateBoostedRewards,
-    calculateRewardsBooster,
+    getRewardsBooster,
   ]);
 
   // Parse input to number

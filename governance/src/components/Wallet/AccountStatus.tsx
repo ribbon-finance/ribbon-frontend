@@ -36,6 +36,7 @@ import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import { VotingEscrowAddress } from "shared/lib/constants/constants";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import moment from "moment";
+import { BigNumber } from "ethers";
 
 const walletButtonWidth = 55;
 
@@ -281,7 +282,8 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
     active,
     account,
   } = useWeb3React();
-  const rbnAllowance = useTokenAllowance("rbn", VotingEscrowAddress);
+  const rbnAllowance =
+    useTokenAllowance("rbn", VotingEscrowAddress) || BigNumber.from(0);
   const { data: rbnTokenAccount } = useRBNTokenAccount();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -294,7 +296,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   const [, setUnstakingModal] = useGovernanceGlobalState("unstakingModal");
 
   const stakeMode = useMemo(() => {
-    if (rbnAllowance?.isZero()) {
+    if (rbnAllowance.isZero()) {
       return "approve";
     }
 
@@ -437,7 +439,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
             }
           >
             <Title fontSize={14} color={colors.red}>
-              {rbnAllowance?.isZero() ? "Approve" : "Stake"}
+              {stakeMode === "approve" ? "Approve" : "Stake"}
             </Title>
           </MobileStakingButton>
           <MobileStakingButton

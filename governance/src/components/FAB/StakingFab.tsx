@@ -16,6 +16,7 @@ import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { VotingEscrowAddress } from "shared/lib/constants/constants";
 import { useAssetBalance } from "shared/lib/hooks/web3DataContext";
 import moment from "moment";
+import { BigNumber } from "ethers";
 
 const FABContainer = styled.div`
   display: flex;
@@ -65,7 +66,8 @@ const StakingFAB = () => {
   const [, setStakingModal] = useGovernanceGlobalState("stakingModal");
   const [, setUnstakingModal] = useGovernanceGlobalState("unstakingModal");
 
-  const rbnAllowance = useTokenAllowance("rbn", VotingEscrowAddress);
+  const rbnAllowance =
+    useTokenAllowance("rbn", VotingEscrowAddress) || BigNumber.from(0);
 
   const { data: rbnTokenAccount, loading: rbnTokenAccountLoading } =
     useRBNTokenAccount();
@@ -75,7 +77,7 @@ const StakingFAB = () => {
   const loadingText = useTextAnimation(loading);
 
   const stakeMode = useMemo(() => {
-    if (rbnAllowance?.isZero()) {
+    if (rbnAllowance.isZero()) {
       return "approve";
     }
 
