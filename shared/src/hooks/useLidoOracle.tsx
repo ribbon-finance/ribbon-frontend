@@ -1,11 +1,10 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { formatUnits } from "@ethersproject/units";
-import { useWeb3React } from "@web3-react/core";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { LidoOracleFactory } from "../codegen/LidoOracleFactory";
 import { LidoOracleAddress } from "../constants/constants";
-import { CHAINID, isProduction } from "../utils/env";
-import { useWeb3Context } from "./web3Context";
+import { isProduction } from "../utils/env";
+import { useETHWeb3Context } from "./web3Context";
 import { Web3DataContext } from "./web3DataContext";
 
 export const getLidoOracle = (library: any, useSigner: boolean = true) => {
@@ -37,8 +36,7 @@ export const defaultLidoOracleData: LidoOracleData = {
 };
 
 export const useFetchLidoOracleData = () => {
-  const { library, active, chainId } = useWeb3React();
-  const { provider } = useWeb3Context();
+  const { provider } = useETHWeb3Context();
 
   const [data, setData] = useState(defaultLidoOracleData);
 
@@ -47,7 +45,7 @@ export const useFetchLidoOracleData = () => {
       console.time("Lido Oracle Data Fetch");
     }
 
-    const contract = getLidoOracle(library || provider, active);
+    const contract = getLidoOracle(provider, false);
 
     if (!contract) {
       setData((prev) => ({ ...prev, loading: false }));
@@ -68,13 +66,11 @@ export const useFetchLidoOracleData = () => {
     if (!isProduction()) {
       console.timeEnd("Lido Oracle Data Fetch");
     }
-  }, [active, library, provider]);
+  }, [provider]);
 
   useEffect(() => {
-    if (chainId === CHAINID.ETH_MAINNET) {
-      fetchLidoOracleData();
-    }
-  }, [chainId, fetchLidoOracleData]);
+    fetchLidoOracleData();
+  }, [fetchLidoOracleData]);
 
   return data;
 };
