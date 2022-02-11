@@ -11,7 +11,7 @@ import RootApp from "./components/RootApp";
 import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
 import { ConnectionProvider } from "@solana/wallet-adapter-react";
 import { getLibrary } from "shared/lib/utils/getLibrary";
-import { getSolanaClusterURI } from "shared/lib/utils/env";
+import { getSolanaClusterURI, isProduction } from "shared/lib/utils/env";
 import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContext";
 import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContext";
 import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTransactionsContext";
@@ -28,7 +28,11 @@ function App() {
   return (
     <ChainContextProvider>
       <ConnectionProvider endpoint={getSolanaClusterURI()}>
-        <SolanaWalletProvider wallets={SOLANA_WALLETS} autoConnect>
+        {/* TODO: We only enable autoConnect when Solana is production ready as to not prompt the user */}
+        <SolanaWalletProvider
+          wallets={SOLANA_WALLETS}
+          autoConnect={!isProduction()}
+        >
           <Web3ContextProvider>
             <Web3ReactProvider getLibrary={getLibrary}>
               <PendingTransactionsContextProvider>

@@ -53,11 +53,17 @@ export const NODE_URI: Record<number, string> = {
 
 // TODO: Don't hardcode to devnet
 export const getSolanaClusterURI: () => string = () =>
-  process.env.REACT_APP_SOLANA_TESTNET_URI || "https://api.devnet.solana.com";
+  isDevelopment()
+    ? process.env.REACT_APP_SOLANA_TESTNET_URI ||
+      "https://api.devnet.solana.com"
+    : process.env.REACT_APP_SOLANA_MAINNET_URI ||
+      "https://solana-api.projectserum.com";
 
-export const getSolanaAddresses = () => SolanaDeployments.devnet;
+export const getSolanaAddresses = () =>
+  isDevelopment() ? SolanaDeployments.devnet : SolanaDeployments.mainnet;
 
-export const getSolanaNetwork = () => Network.DEVNET;
+export const getSolanaNetwork = () =>
+  isDevelopment() ? Network.DEVNET : Network.MAINNET;
 
 export const getSubgraphqlURI = () =>
   (isDevelopment()
