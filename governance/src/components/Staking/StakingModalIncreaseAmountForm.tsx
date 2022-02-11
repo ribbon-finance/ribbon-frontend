@@ -162,7 +162,7 @@ const StakingModalncreaseAmountForm: React.FC<
             color={expiryInFuture ? colors.primaryText : colors.red}
             lineHeight={24}
           >
-            {expiryMoment.format("MMMM, Do YYYY")}
+            {expiryMoment.format("MMM, Do YYYY")}
           </Title>
         </div>
       </BaseModalContentColumn>

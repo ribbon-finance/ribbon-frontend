@@ -15,8 +15,9 @@ import ModalTransactionContent from "../Shared/ModalTransactionContent";
 import { VotingEscrowAddress } from "shared/lib/constants/constants";
 import StakeUpdatePicker from "./StakingModalUpdatePicker";
 import { StakingUpdateMode } from "./types";
-import StakingModalncreaseAmountForm from "./StakingModalncreaseAmountForm";
+import StakingModalncreaseAmountForm from "./StakingModalIncreaseAmountForm";
 import StakingModalUpdatePreview from "./StakingModalUpdatePreview";
+import StakingModalIncreaseDurationForm from "./StakingModalIncreaseDurationForm";
 
 const stakingModalModes = [
   "approve",
@@ -250,7 +251,19 @@ const StakingModal = () => {
                   />
                 );
               case "increaseDuration":
-                return <></>;
+                return (
+                  <StakingModalIncreaseDurationForm
+                    initialStakingData={stakingData}
+                    proceedToPreview={(amount, duration) => {
+                      setStakingData({ amount, duration });
+                      setStepNum(
+                        stakingModesMap[stakingModalState.mode].indexOf(
+                          "preview"
+                        )
+                      );
+                    }}
+                  />
+                );
               default:
                 return <></>;
             }

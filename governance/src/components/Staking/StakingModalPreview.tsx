@@ -86,7 +86,7 @@ const StakingModalPreview: React.FC<StakingModalPreviewProps> = ({
         <div className="d-flex w-100 justify-content-between">
           <SecondaryText lineHeight={24}>Lockup Expiry</SecondaryText>
           <Subtitle fontSize={14} lineHeight={24} letterSpacing={1}>
-            {moment().add(stakingData.duration).format("MMMM, Do YYYY")}
+            {moment().add(stakingData.duration).format("MMM, Do YYYY")}
           </Subtitle>
         </div>
       </BaseModalContentColumn>

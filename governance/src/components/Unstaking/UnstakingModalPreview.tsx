@@ -66,9 +66,7 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
       return "---";
     }
 
-    return moment
-      .unix(rbnTokenAccount.lockEndTimestamp)
-      .format("MMMM, Do YYYY");
+    return moment.unix(rbnTokenAccount.lockEndTimestamp).format("MMM, Do YYYY");
   }, [loading, loadingText, rbnTokenAccount?.lockEndTimestamp]);
 
   return (

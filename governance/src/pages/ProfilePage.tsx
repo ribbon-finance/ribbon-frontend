@@ -19,7 +19,6 @@ const ProfilePage = () => {
     if (width <= sizes.lg && active) {
       sectionHeight -= theme.footer.mobile.height;
     } else if (active) {
-      console.log("deduct");
       sectionHeight -= theme.governance.actionBar.height;
     }
 

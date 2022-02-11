@@ -70,7 +70,7 @@ const StakingModalUpdatePreview: React.FC<StakingModalUpdatePreviewProps> = ({
       case "increaseAmount":
         return "LOCK INCREASE PREVIEW";
       case "increaseDuration":
-        return "LOCK TIME INCREASE PREVIEW";
+        return "NEW LOCK TIME PREVIEW";
     }
   }, [stakingUpdateMode]);
 
@@ -95,10 +95,27 @@ const StakingModalUpdatePreview: React.FC<StakingModalUpdatePreviewProps> = ({
         previewDataRows.push(totalLockedRow);
         previewDataRows.push({
           label: "Lockup Expiry",
-          data: moment().add(stakingData.duration).format("MMMM, Do YYYY"),
+          data: moment().add(stakingData.duration).format("MMM, Do YYYY"),
         });
         break;
       case "increaseDuration":
+        const expiryMoment =
+          rbnTokenAccount && rbnTokenAccount.lockEndTimestamp
+            ? moment.unix(rbnTokenAccount.lockEndTimestamp)
+            : moment();
+        const durationToExpiry = moment.duration(expiryMoment.diff(moment()));
+
+        previewDataRows.push({
+          label: "Lockup Increased By",
+          data: stakingData.duration
+            .clone()
+            .subtract(durationToExpiry)
+            .humanize(),
+        });
+        previewDataRows.push({
+          label: "New Lockup Expiry",
+          data: moment().add(stakingData.duration).format("MMM, Do YYYY"),
+        });
         previewDataRows.push(totalLockedRow);
         break;
     }
@@ -138,7 +155,7 @@ const StakingModalUpdatePreview: React.FC<StakingModalUpdatePreviewProps> = ({
         </LogoContainer>
       </BaseModalContentColumn>
       <BaseModalContentColumn marginTop={16}>
-        <Title fontSize={22} lineHeight={28}>
+        <Title fontSize={22} lineHeight={28} className="text-center">
           {title}
         </Title>
       </BaseModalContentColumn>

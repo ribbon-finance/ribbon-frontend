@@ -191,7 +191,6 @@ const StakingFAB = () => {
             color={`${colors.primaryText}0A`}
             role="button"
             onClick={() => {
-              console.log("Pressed");
               setUnstakingModal((prev) => ({ ...prev, show: true }));
             }}
           >
