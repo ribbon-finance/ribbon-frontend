@@ -9,7 +9,7 @@ import {
 import { impersonateAddress } from "../utils/development";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { useWeb3Context } from "./web3Context";
-import { isProduction } from "../utils/env";
+import { CHAINID, isProduction } from "../utils/env";
 import {
   RibbonTokenAddress,
   VaultLiquidityMiningMap,
@@ -20,6 +20,7 @@ import { getLiquidityGaugeV5 } from "./useLiquidityGaugeV5";
 import { getV2Vault } from "./useV2Vault";
 import useLiquidityTokenMinter from "./useLiquidityTokenMinter";
 import useLiquidityGaugeController from "./useLiquidityGaugeController";
+import { constants } from "ethers";
 
 const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   const { active, chainId, account: web3Account, library } = useWeb3React();
@@ -52,6 +53,11 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
       return currentCounter;
     });
 
+    // TODO: Make this chain agnostic, for now we only enable when user connected to ETH
+    if (chainId !== CHAINID.ETH_MAINNET && chainId !== CHAINID.ETH_KOVAN) {
+      return;
+    }
+
     const minterResponsePromises = Promise.all([
       minterContract.rate(),
       gaugeControllerContract.time_total(),
@@ -74,6 +80,8 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
          */
         const unconnectedPromises: Promise<BigNumber>[] = [
           lg5Contract.totalSupply(),
+          lg5Contract.working_balances(account ?? constants.AddressZero),
+          lg5Contract.working_supply(),
           gaugeControllerContract["gauge_relative_weight(address)"](
             VaultLiquidityMiningMap.lg5[vault]!
           ),
@@ -104,6 +112,8 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
 
         const [
           poolSize,
+          workingBalances,
+          workingSupply,
           relativeWeight,
           currentStake,
           claimableRbn,
@@ -117,6 +127,8 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
         return {
           vault,
           poolSize,
+          workingBalances,
+          workingSupply,
           relativeWeight,
           currentStake,
           claimableRbn,

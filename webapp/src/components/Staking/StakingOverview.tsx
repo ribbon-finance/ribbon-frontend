@@ -1,12 +1,14 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import moment from "moment";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import {
+  BaseButton,
   BaseLink,
   PrimaryText,
   SecondaryText,
+  Subtitle,
   Title,
 } from "shared/lib/designSystem";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
@@ -25,6 +27,7 @@ import { useRBNToken } from "shared/lib/hooks/useRBNTokenSubgraph";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
 import useLiquidityMiningPools from "shared/lib/hooks/useLiquidityMiningPools";
 import { useLiquidityGaugeV5PoolData } from "shared/lib/hooks/web3DataContext";
+import RewardsCalculatorModal from "./RewardsCalculatorModal/RewardsCalculatorModal";
 
 const OverviewContainer = styled.div`
   display: flex;
@@ -33,6 +36,8 @@ const OverviewContainer = styled.div`
   margin-top: 48px;
   background: ${colors.background.two};
   border-radius: ${theme.border.radius};
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 `;
 
 const OverviewInfo = styled.div`
@@ -92,6 +97,17 @@ const OverviewLabel = styled(SecondaryText)`
   margin-bottom: 8px;
 `;
 
+const RewardsCalculatorButon = styled(BaseButton)`
+  width: 100%;
+  padding: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  background-color: ${colors.green}1F;
+  &:hover {
+    background-color: ${colors.green}2E;
+  }
+`;
+
 interface StakingOverviewProps {
   lmVersion: LiquidityMiningVersion;
   setLmVersion: React.Dispatch<React.SetStateAction<LiquidityMiningVersion>>;
@@ -107,6 +123,7 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
     useLiquidityGaugeV5PoolData(
       Object.keys(VaultLiquidityMiningMap.lg5)[0] as VaultOptions
     );
+  const [showRewardsCalculator, setShowRewardsCalculator] = useState(false);
 
   const loadingText = useTextAnimation(
     stakingLoading || tokenLoading || lg5DataLoading
@@ -191,59 +208,81 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
           governance token to those who have the most skin in the game. The
           program ended on July 19th, 2021.`;
       case "lg5":
-        return `Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum facilisis leo, vel fringilla est`;
+        return `The program aims to (i) grow Ribbon TVL and (ii) align incentives between vault depositors and owners of the RBN governance token by distributing 6.5m RBN governance tokens to vault depositors over the course of 6 months.`;
     }
   }, []);
 
   return (
-    <OverviewContainer>
-      <OverviewInfo>
-        <FilterDropdown
-          options={OngoingLMVersion.map((_version) => ({
-            value: _version,
-            display: getLMName(_version),
-          }))}
-          value={getLMName(lmVersion)}
-          onSelect={(option) => setLmVersion(option as LiquidityMiningVersion)}
-          dropdownMenuConfig={{ horizontalOrientation: "left", topBuffer: 8 }}
-          buttonConfig={{
-            background: `${colors.green}1F`,
-            activeBackground: `${colors.green}2E`,
-            color: colors.green,
-          }}
-        />
+    <div>
+      <OverviewContainer>
+        <OverviewInfo>
+          <FilterDropdown
+            options={OngoingLMVersion.map((_version) => ({
+              value: _version,
+              display: getLMName(_version),
+            }))}
+            value={getLMName(lmVersion)}
+            onSelect={(option) =>
+              setLmVersion(option as LiquidityMiningVersion)
+            }
+            dropdownMenuConfig={{ horizontalOrientation: "left", topBuffer: 8 }}
+            buttonConfig={{
+              background: `${colors.green}1F`,
+              activeBackground: `${colors.green}2E`,
+              color: colors.green,
+            }}
+          />
 
-        <Title className="mt-3 w-100">{getLMTitle(lmVersion)}</Title>
-        <OverviewDescription className="mt-3 w-100">
-          {getLMDescription(lmVersion)}
-        </OverviewDescription>
-        <UnderlineLink
-          to="https://ribbonfinance.medium.com/rgp-2-liquidity-mining-program-cc81f0b7a270"
-          target="_blank"
-          rel="noreferrer noopener"
-          className="d-flex mt-4"
-        >
-          <PrimaryText fontSize={14} className="mr-2">
-            Learn more about our liquidity mining program
-          </PrimaryText>
-          <ExternalIcon color="white" />
-        </UnderlineLink>
-      </OverviewInfo>
-      <OverviewKPIContainer>
-        <OverviewKPI>
-          <OverviewLabel>$RBN Distributed</OverviewLabel>
-          <Title>{totalRewardDistributed}</Title>
-        </OverviewKPI>
-        <OverviewKPI>
-          <OverviewLabel>No. of $RBN Holders</OverviewLabel>
-          <Title>{numHolderText}</Title>
-        </OverviewKPI>
-        <OverviewKPI>
-          <OverviewLabel>Time till programs end</OverviewLabel>
-          <Title>{timeTillProgramsEnd}</Title>
-        </OverviewKPI>
-      </OverviewKPIContainer>
-    </OverviewContainer>
+          <Title className="mt-3 w-100">{getLMTitle(lmVersion)}</Title>
+          <OverviewDescription className="mt-3 w-100">
+            {getLMDescription(lmVersion)}
+          </OverviewDescription>
+          <UnderlineLink
+            to="https://ribbonfinance.medium.com/rgp-2-liquidity-mining-program-cc81f0b7a270"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="d-flex mt-4"
+          >
+            <PrimaryText fontSize={14} className="mr-2">
+              Learn more about our liquidity mining program
+            </PrimaryText>
+            <ExternalIcon color="white" />
+          </UnderlineLink>
+        </OverviewInfo>
+        <OverviewKPIContainer>
+          <OverviewKPI>
+            <OverviewLabel>$RBN Distributed</OverviewLabel>
+            <Title>{totalRewardDistributed}</Title>
+          </OverviewKPI>
+          <OverviewKPI>
+            <OverviewLabel>No. of $RBN Holders</OverviewLabel>
+            <Title>{numHolderText}</Title>
+          </OverviewKPI>
+          <OverviewKPI>
+            <OverviewLabel>Time till programs end</OverviewLabel>
+            <Title>{timeTillProgramsEnd}</Title>
+          </OverviewKPI>
+        </OverviewKPIContainer>
+      </OverviewContainer>
+      {
+        // TODO: - Rewards calculator is only applicable for LM2 (liquidity gauge v5 [lg5]), for now
+        lmVersion === "lg5" && (
+          <RewardsCalculatorButon
+            role="button"
+            className="d-flex justify-content-center"
+            onClick={() => setShowRewardsCalculator(true)}
+          >
+            <Subtitle color={colors.buttons.secondaryText} fontSize={14}>
+              OPEN REWARDS CALCULATOR
+            </Subtitle>
+          </RewardsCalculatorButon>
+        )
+      }
+      <RewardsCalculatorModal
+        show={showRewardsCalculator}
+        onClose={() => setShowRewardsCalculator(false)}
+      />
+    </div>
   );
 };
 

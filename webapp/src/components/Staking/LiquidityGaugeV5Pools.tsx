@@ -459,7 +459,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
               }
               copies={{
                 current: "Your Current Stake",
-                cap: "Pool Size",
+                cap: "Total Staked",
               }}
               labelConfig={{
                 fontSize: 14,
@@ -480,7 +480,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
             <div className="d-flex align-items-center">
               <SecondaryText>Pool Rewards</SecondaryText>
               <TooltipExplanation
-                title="Pool Rewards"
+                title="Gauge Rewards"
                 explanation={
                   "Estimated amount of RBN to be distributed for the current period."
                 }
@@ -538,7 +538,7 @@ const LiquidityGaugeV5Pools = () => {
   return (
     <StakingPoolsContainer>
       <Title fontSize={18} lineHeight={24} className="mb-4 w-100">
-        STAKING POOLS
+        VAULT GAUGES
       </Title>
       {Object.keys(VaultLiquidityMiningMap.lg5).map((option) => (
         <LiquidityGaugeV5Pool
