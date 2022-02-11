@@ -67,13 +67,11 @@ const StakingFAB = () => {
 
   const rbnAllowance = useTokenAllowance("rbn", VotingEscrowAddress);
 
-  const { data: rbnAccount, loading: rbnAccountLoading } = useRBNTokenAccount();
-  const { balance: veRBNBalance, loading: votingPowerLoading } =
-    useAssetBalance("veRBN");
   const { data: rbnTokenAccount, loading: rbnTokenAccountLoading } =
     useRBNTokenAccount();
-  const loading =
-    rbnAccountLoading || votingPowerLoading || rbnTokenAccountLoading;
+  const { balance: veRBNBalance, loading: votingPowerLoading } =
+    useAssetBalance("veRBN");
+  const loading = rbnTokenAccountLoading || votingPowerLoading;
   const loadingText = useTextAnimation(loading);
 
   const stakeMode = useMemo(() => {
@@ -115,14 +113,14 @@ const StakingFAB = () => {
 
     return {
       veRBNAmount: formatBigNumber(veRBNBalance),
-      stakedRBNAmount: rbnAccount
-        ? formatBigNumber(rbnAccount.lockedBalance)
+      stakedRBNAmount: rbnTokenAccount
+        ? formatBigNumber(rbnTokenAccount.lockedBalance)
         : "0.00",
-      unstakedRBNAmount: rbnAccount
-        ? formatBigNumber(rbnAccount.walletBalance)
+      unstakedRBNAmount: rbnTokenAccount
+        ? formatBigNumber(rbnTokenAccount.walletBalance)
         : "0.00",
     };
-  }, [active, loading, loadingText, rbnAccount, veRBNBalance]);
+  }, [active, loading, loadingText, rbnTokenAccount, veRBNBalance]);
 
   return active ? (
     <>

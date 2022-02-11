@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { setTimeout } from "timers";
@@ -25,6 +31,11 @@ import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import { truncateAddress } from "shared/lib/utils/address";
 import useENSSearch from "shared/lib/hooks/useENSSearch";
+import { useGovernanceGlobalState } from "../../store/store";
+import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
+import { VotingEscrowAddress } from "shared/lib/constants/constants";
+import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
+import moment from "moment";
 
 const walletButtonWidth = 55;
 
@@ -52,8 +63,9 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
           @media (max-width: ${sizes.md}px) {
             display: flex;
             align-items: unset;
-            padding-top: 16px;
+            padding: 16px 16px 0 16px;
             width: 100%;
+            background-color: ${colors.background.two};
           }
         `;
     }
@@ -78,6 +90,7 @@ const WalletButton = styled(BaseButton)<WalletButtonProps>`
         justify-content: center;
         padding: 14px 16px;
         width: ${props.showInvestButton ? `${walletButtonWidth}%` : "90%"};
+        background-color: ${props.connected ? "#08090E" : `${colors.green}14`};
       `;
       case "desktop":
         return ``;
@@ -219,6 +232,43 @@ const MenuCloseItem = styled(MenuItem)`
   justify-content: center;
 `;
 
+const StakeUnstakeContainer = styled.div`
+  display: none;
+
+  @media (max-width: ${sizes.md}px) {
+    display: flex;
+    padding-left: 8px;
+  }
+`;
+
+const MobileStakingButton = styled(BaseButton)<{
+  variant: "stake" | "unstake";
+}>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: fit-content;
+  width: 80px;
+  background: ${({ variant }) =>
+    variant === "stake" ? `${colors.red}1F` : "rgba(255, 255, 255, 0.08)"};
+  color: ${({ variant }) => (variant === "stake" ? colors.red : "white")};
+  padding: 14px 0;
+  border-radius: 8px;
+
+  margin-left: ${({ variant }) => (variant === "stake" ? "0" : "8px")};
+
+  &:hover {
+    opacity: ${theme.hover.opacity};
+  }
+`;
+
+// No arrows on mobile
+const GovernanceButtonArrow = styled(ButtonArrow)`
+  @media (max-width: ${sizes.md}px) {
+    display: none;
+  }
+`;
+
 interface AccountStatusProps {
   variant: "desktop" | "mobile";
 }
@@ -231,12 +281,33 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
     active,
     account,
   } = useWeb3React();
+  const rbnAllowance = useTokenAllowance("rbn", VotingEscrowAddress);
+  const { data: rbnTokenAccount } = useRBNTokenAccount();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
     "hidden"
   );
   const { data: ensData } = useENSSearch(account || "");
+
+  const [, setStakingModal] = useGovernanceGlobalState("stakingModal");
+  const [, setUnstakingModal] = useGovernanceGlobalState("unstakingModal");
+
+  const stakeMode = useMemo(() => {
+    if (rbnAllowance?.isZero()) {
+      return "approve";
+    }
+
+    if (
+      rbnTokenAccount &&
+      rbnTokenAccount.lockEndTimestamp &&
+      moment().isBefore(moment.unix(rbnTokenAccount.lockEndTimestamp))
+    ) {
+      return "increase";
+    }
+
+    return "stake";
+  }, [rbnAllowance, rbnTokenAccount]);
 
   // Track clicked area outside of desktop menu
   const desktopMenuRef = useRef(null);
@@ -317,7 +388,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
         <Indicator connected={active} />
         <WalletButtonText connected={active}>
           {ensData?.name || truncateAddress(account)}{" "}
-          <ButtonArrow isOpen={isMenuOpen} />
+          <GovernanceButtonArrow isOpen={isMenuOpen} />
         </WalletButtonText>
       </>
     ) : (
@@ -353,6 +424,32 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
         >
           {renderButtonContent()}
         </WalletButton>
+        <StakeUnstakeContainer>
+          <MobileStakingButton
+            role="button"
+            variant="stake"
+            onClick={() =>
+              setStakingModal((prev) => ({
+                ...prev,
+                show: true,
+                mode: stakeMode,
+              }))
+            }
+          >
+            <Title fontSize={14} color={colors.red}>
+              {rbnAllowance?.isZero() ? "Approve" : "Stake"}
+            </Title>
+          </MobileStakingButton>
+          <MobileStakingButton
+            role="button"
+            variant="unstake"
+            onClick={() => {
+              setUnstakingModal((prev) => ({ ...prev, show: true }));
+            }}
+          >
+            <Title fontSize={14}>Unstake</Title>
+          </MobileStakingButton>
+        </StakeUnstakeContainer>
 
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>
           {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
