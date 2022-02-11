@@ -145,7 +145,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
 
   const [error, setError] = useState<"insufficient_balance">();
   const [txId, setTxId] = useState("");
-  const [totalVeRBN, setTotalVeRBN] = useState(BigNumber.from(0));
+  const [totalVeRBN, setTotalVeRBN] = useState<BigNumber>();
 
   const vaultContract = useV2Vault(vaultOption);
   const color = getVaultColor(vaultOption);
@@ -195,7 +195,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
       gaugeBalance: parseUnits(input || "0", decimals),
       poolLiquidity: lg5Data.poolSize,
       veRBNAmount: votingPower,
-      totalVeRBN,
+      totalVeRBN: totalVeRBN || BigNumber.from("0"),
     });
 
     const boostedRewards =
