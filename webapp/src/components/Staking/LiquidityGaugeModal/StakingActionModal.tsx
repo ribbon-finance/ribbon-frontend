@@ -25,11 +25,8 @@ import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import colors from "shared/lib/designSystem/colors";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { getVaultColor } from "shared/lib/utils/vault";
-import {
-  assetToFiat,
-  calculateBoostMultiplier,
-  formatBigNumber,
-} from "shared/lib/utils/math";
+import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
+import { calculateBoostMultiplier } from "shared/lib/utils/governanceMath";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import BasicModal from "shared/lib/components/Common/BasicModal";

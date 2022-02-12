@@ -22,7 +22,7 @@ import InlineSelectInput from "shared/lib/components/Common/InlineSelectInput";
 import { formatBigNumber, formatBigNumberAmount } from "shared/lib/utils/math";
 import moment, { duration, Duration } from "moment";
 import StakingModalFormCalendarOverlay from "./StakingModalFormCalendarOverlay";
-import { calculateInitialveRBNAmount } from "shared/lib/utils/math";
+import { calculateInitialveRBNAmount } from "shared/lib/utils/governanceMath";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 
 const durationSelectOptions = [

@@ -14,14 +14,11 @@ import {
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
-import {
-  formatBigNumber,
-  formatBigNumberAmount,
-  calculateInitialveRBNAmount,
-} from "shared/lib/utils/math";
+import { formatBigNumber, formatBigNumberAmount } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import StakingModalFormCalendarOverlay from "./StakingModalFormCalendarOverlay";
 import InlineSelectInput from "shared/lib/components/Common/InlineSelectInput";
+import { calculateInitialveRBNAmount } from "shared/lib/utils/governanceMath";
 
 const durationSelectOptions = ["1W", "1M", "3M", "6M", "1Y", "custom"] as const;
 type DurationSelectOption = typeof durationSelectOptions[number];
@@ -45,6 +42,23 @@ const getDurationSelectOptionFromDuration = (
       return "1Y";
     default:
       return "custom";
+  }
+};
+
+const getDaysFromDurationSelectOption = (option: DurationSelectOption) => {
+  switch (option) {
+    case "1W":
+      return 7;
+    case "1M":
+      return 30;
+    case "3M":
+      return 91;
+    case "6M":
+      return 182;
+    case "1Y":
+      return 365;
+    default:
+      return 0;
   }
 };
 
@@ -106,22 +120,10 @@ const StakingModalIncreaseDurationForm: React.FC<
    * We update the stake duration to the correct one that account for current time
    */
   useEffect(() => {
-    switch (durationSelectValue) {
-      case "1W":
-        setStakeDuration(durationToExpiry.clone().add(duration(7, "d")));
-        break;
-      case "1M":
-        setStakeDuration(durationToExpiry.clone().add(duration(30, "d")));
-        break;
-      case "3M":
-        setStakeDuration(durationToExpiry.clone().add(duration(91, "d")));
-        break;
-      case "6M":
-        setStakeDuration(durationToExpiry.clone().add(duration(182, "d")));
-        break;
-      case "1Y":
-        setStakeDuration(durationToExpiry.clone().add(duration(365, "d")));
-        break;
+    let days = getDaysFromDurationSelectOption(durationSelectValue);
+
+    if (days !== 0) {
+      setStakeDuration(durationToExpiry.clone().add(duration(days, "d")));
     }
   }, [durationSelectValue, durationToExpiry]);
 

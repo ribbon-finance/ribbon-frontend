@@ -18,11 +18,8 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
-import {
-  formatBigNumber,
-  formatBigNumberAmount,
-  calculateInitialveRBNAmount,
-} from "shared/lib/utils/math";
+import { formatBigNumber, formatBigNumberAmount } from "shared/lib/utils/math";
+import { calculateInitialveRBNAmount } from "shared/lib/utils/governanceMath";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 
 const LogoContainer = styled.div`

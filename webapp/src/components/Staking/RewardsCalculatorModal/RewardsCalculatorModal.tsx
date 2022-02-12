@@ -34,10 +34,10 @@ import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import {
-  assetToFiat,
+  calculateBaseRewards as _calculateBaseRewards,
   calculateBoostMultiplier,
   calculateInitialveRBNAmount,
-} from "shared/lib/utils/math";
+} from "shared/lib/utils/governanceMath";
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import { BigNumber } from "ethers";
 import moment from "moment";
@@ -210,26 +210,18 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     return false;
   }, []);
 
-  // ======================
-  // CALCULATE BASE REWARDS
-  // ======================
   const calculateBaseRewards = useCallback(() => {
     if (!lg5Data) {
       return 0;
     } else {
-      const poolRewardInUSD = parseFloat(
-        assetToFiat(lg5Data.poolRewardForDuration, prices["RBN"])
-      );
-      const poolSizeInAsset = lg5Data.poolSize
-        .mul(pricePerShare)
-        .div(parseUnits("1", decimals));
-      const poolSizeInUSD = parseFloat(
-        assetToFiat(poolSizeInAsset, prices[asset], decimals)
-      );
-
-      return poolSizeInUSD > 0
-        ? ((1 + poolRewardInUSD / poolSizeInUSD) ** 52 - 1) * 100
-        : 0;
+      return _calculateBaseRewards({
+        poolSize: lg5Data.poolSize,
+        poolReward: lg5Data.poolRewardForDuration,
+        pricePerShare,
+        decimals,
+        assetPrice: prices[asset],
+        rbnPrice: prices["RBN"],
+      });
     }
   }, [asset, decimals, lg5Data, pricePerShare, prices]);
 
