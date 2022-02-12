@@ -25,11 +25,12 @@ import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import colors from "shared/lib/designSystem/colors";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { formatBigNumber } from "shared/lib/utils/math";
 import {
   calculateBaseRewards,
   calculateBoostMultiplier,
+  calculateBoostedRewards,
 } from "shared/lib/utils/governanceMath";
+import { formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import BasicModal from "shared/lib/components/Common/BasicModal";
@@ -192,9 +193,10 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
       veRBNAmount: votingPower,
       totalVeRBN: totalVeRBN || BigNumber.from("0"),
     });
-
-    const boostedRewards =
-      boostedMultiplier > 0 ? baseRewards * boostedMultiplier - baseRewards : 0;
+    const boostedRewards = calculateBoostedRewards(
+      baseRewards,
+      boostedMultiplier
+    );
 
     return {
       totalApy: `${(baseRewards + boostedRewards).toFixed(2)}%`,

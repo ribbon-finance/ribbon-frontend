@@ -1,7 +1,11 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { parseUnits } from "ethers/lib/utils";
 
-import { calculateBoostMultiplier } from "./math";
+import {
+  calculateBaseRewards,
+  calculateBoostedRewards,
+  calculateBoostMultiplier,
+} from "./math";
 
 /**
  * For V1 vault that does not use yield-token as collateral,
@@ -65,4 +69,30 @@ it("Min boost should be 1x", () => {
     totalVeRBN: parseUnits("100000000000", 18),
   });
   expect(Number(multiplier.toFixed(2))).toEqual(1);
+});
+
+it("Boosted rewards should be correct", () => {
+  const boostedRewards0 = calculateBoostedRewards(0, 1.7);
+  const boostedRewards1 = calculateBoostedRewards(10, 1.5);
+  const boostedRewards2 = calculateBoostedRewards(20, 2.5);
+  const boostedRewards3 = calculateBoostedRewards(40, 1.04);
+
+  expect(boostedRewards0.toFixed(2)).toEqual("0.00");
+  expect(boostedRewards1.toFixed(2)).toEqual("5.00");
+  expect(boostedRewards2.toFixed(2)).toEqual("30.00");
+  expect(boostedRewards3.toFixed(2)).toEqual("1.60");
+});
+
+it("Base rewards should be correct", () => {
+  const baseRewards0 = calculateBaseRewards(100, 30);
+  const baseRewards1 = calculateBaseRewards(2000, 1);
+  const baseRewards2 = calculateBaseRewards(2000, 0);
+  // Pool size should logically be larger than pool rewards
+  // when rewards is larger than size we get some ridiculously large number
+  const baseRewards3 = calculateBaseRewards(1, 10);
+
+  expect(baseRewards0.toFixed(2)).toEqual("84149938.68");
+  expect(baseRewards1.toFixed(2)).toEqual("2.63");
+  expect(baseRewards2.toFixed(2)).toEqual("0.00");
+  expect(baseRewards3.toFixed(2)).toEqual("1.4204293198443133e+56");
 });

@@ -27,6 +27,16 @@ interface BaseRewardsCalculationProps {
   rbnPrice: number;
 }
 
+/**
+ * Given pool size and rewards, calculate the base APY percentage
+ * @param poolSize pool size (pool size should be larger than pool reward)
+ * @param poolReward pool reward
+ * @param pricePerShare price per share of the vault
+ * @param decimals decimals of the vault
+ * @param assetPrice price of the vault asset
+ * @param rbnPrice Ribbon price
+ * @returns APY percentage, eg. 40 (40%)
+ */
 export const calculateBaseRewards = ({
   poolSize,
   poolReward,
@@ -88,4 +98,19 @@ export const calculateBoostMultiplier = ({
   let _working_supply = workingSupplyAmt + lim - old_bal;
 
   return lim / _working_supply / (noboost_lim / noboost_supply);
+};
+
+/**
+ * Given the base rewards and multiplier, calculates the boosted rewards percentage
+ * @param baseRewardsPercentage APY in percentage. Commonly the result from calculateBaseRewards(). eg. 10 (10%)
+ * @param boostedMultiplier Multiplier. Commonly the result from calculateBoostMultiplier(). eg. 1.5 (1.5x)
+ * @returns The boosted rewards percentage. eg. 5 (5%)
+ */
+export const calculateBoostedRewards = (
+  baseRewardsPercentage: number,
+  boostedMultiplier: number
+) => {
+  return boostedMultiplier > 0
+    ? baseRewardsPercentage * boostedMultiplier - baseRewardsPercentage
+    : 0;
 };

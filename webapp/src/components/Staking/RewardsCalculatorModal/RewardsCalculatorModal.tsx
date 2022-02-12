@@ -34,9 +34,10 @@ import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import {
-  calculateBaseRewards as _calculateBaseRewards,
+  calculateBaseRewards,
   calculateBoostMultiplier,
   calculateInitialveRBNAmount,
+  calculateBoostedRewards,
 } from "shared/lib/utils/governanceMath";
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import { BigNumber } from "ethers";
@@ -210,25 +211,10 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     return false;
   }, []);
 
-  const calculateBaseRewards = useCallback(() => {
-    if (!lg5Data) {
-      return 0;
-    } else {
-      return _calculateBaseRewards({
-        poolSize: lg5Data.poolSize,
-        poolReward: lg5Data.poolRewardForDuration,
-        pricePerShare,
-        decimals,
-        assetPrice: prices[asset],
-        rbnPrice: prices["RBN"],
-      });
-    }
-  }, [asset, decimals, lg5Data, pricePerShare, prices]);
-
   // =======================================================
   // CALCULATE REWARDS BOOSTER (using formula from CurveDAO)
   // =======================================================
-  const calculateRewardsBooster = useCallback(() => {
+  const getRewardsBooster = useCallback(() => {
     if (!stakeInput || !poolSizeInput) {
       return 0;
     }
@@ -282,19 +268,6 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     totalVeRBN,
   ]);
 
-  /**
-   * Calculates the boosted rewards using a base reward and a multiplier
-   * baseRewardsPercent is a number from 0-100. 0 is 0% 100 is 100%
-   */
-  const calculateBoostedRewards = useCallback(
-    (baseRewardsPercent: number, multiplier: number) => {
-      return multiplier > 0
-        ? baseRewardsPercent * multiplier - baseRewardsPercent
-        : 0;
-    },
-    []
-  );
-
   // For display
   const displayRewards = useMemo(() => {
     let totalAPY: string;
@@ -313,8 +286,18 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
       boostedRewards = loadingText;
       rewardsBooster = loadingText;
     } else {
-      const base = calculateBaseRewards();
-      const boosterMultiplier = calculateRewardsBooster();
+      let base = 0;
+      if (lg5Data) {
+        base = calculateBaseRewards({
+          poolSize: lg5Data.poolSize,
+          poolReward: lg5Data.poolRewardForDuration,
+          pricePerShare,
+          decimals,
+          assetPrice: prices[asset],
+          rbnPrice: prices["RBN"],
+        });
+      }
+      const boosterMultiplier = getRewardsBooster();
       const boosted = calculateBoostedRewards(base, boosterMultiplier);
       baseRewards = `${base.toFixed(2)}%`;
       boostedRewards = `${boosted.toFixed(2)}%`;
@@ -329,14 +312,17 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
       rewardsBooster,
     };
   }, [
+    asset,
+    decimals,
+    lg5Data,
+    pricePerShare,
+    prices,
     stakeInputHasError,
     lg5DataLoading,
     assetPricesLoading,
     vaultDataLoading,
     loadingText,
-    calculateBaseRewards,
-    calculateBoostedRewards,
-    calculateRewardsBooster,
+    getRewardsBooster,
   ]);
 
   // Parse input to number
