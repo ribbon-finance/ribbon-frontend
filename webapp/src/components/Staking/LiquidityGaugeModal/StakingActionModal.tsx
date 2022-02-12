@@ -26,7 +26,10 @@ import colors from "shared/lib/designSystem/colors";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
-import { calculateBoostMultiplier } from "shared/lib/utils/governanceMath";
+import {
+  calculateBaseRewards,
+  calculateBoostMultiplier,
+} from "shared/lib/utils/governanceMath";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import BasicModal from "shared/lib/components/Common/BasicModal";
@@ -172,20 +175,15 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
       };
     }
 
-    const poolRewardInUSD = parseFloat(
-      assetToFiat(lg5Data.poolRewardForDuration, prices["RBN"])
-    );
-    const poolSizeInAsset = lg5Data.poolSize
-      .mul(pricePerShare)
-      .div(parseUnits("1", decimals));
-    const poolSizeInUSD = parseFloat(
-      assetToFiat(poolSizeInAsset, prices[asset], decimals)
-    );
+    const baseRewards = calculateBaseRewards({
+      poolSize: lg5Data.poolSize,
+      poolReward: lg5Data.poolRewardForDuration,
+      pricePerShare,
+      decimals,
+      assetPrice: prices[asset],
+      rbnPrice: prices["RBN"],
+    });
 
-    const baseRewards =
-      poolSizeInUSD > 0
-        ? ((1 + poolRewardInUSD / poolSizeInUSD) ** 52 - 1) * 100
-        : 0;
     const boostedMultiplier = calculateBoostMultiplier({
       workingBalance: lg5Data.workingBalances,
       workingSupply: lg5Data.workingSupply,
