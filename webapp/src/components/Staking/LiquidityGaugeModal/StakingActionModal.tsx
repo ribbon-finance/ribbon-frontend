@@ -25,7 +25,7 @@ import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import colors from "shared/lib/designSystem/colors";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 import {
   calculateBaseRewards,
   calculateBoostMultiplier,
