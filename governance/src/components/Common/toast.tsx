@@ -51,9 +51,9 @@ export const TxStatusToast = () => {
       case "governanceStake":
         return "RBN LOCKED";
       case "governanceIncreaseAmount":
-        return "STAKE INCREASED";
+        return "LOCK INCREASED";
       case "governanceIncreaseDuration":
-        return "STAKE DURATION INCREASED";
+        return "LOCK DURATION INCREASED";
       case "governanceUnstake":
         return "RBN UNLOCKED";
       default:
@@ -64,7 +64,7 @@ export const TxStatusToast = () => {
   const getSubtitle = useCallback((_currentTx: PendingTransaction) => {
     switch (_currentTx.type) {
       case "governanceApproval":
-        return "Your RBN is ready to stake";
+        return "Your RBN is ready to lock";
       case "governanceStake":
       case "governanceIncreaseAmount":
       case "governanceIncreaseDuration":
