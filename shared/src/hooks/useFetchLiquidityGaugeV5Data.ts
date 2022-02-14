@@ -99,7 +99,10 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
                 lg5Contract.balanceOf(account!),
                 lg5Contract.claimable_reward(account!, RibbonTokenAddress),
                 vaultContract!.shares(account!),
-                minterContract.minted(account!, VaultLiquidityMiningMap.lg5[vault]!)
+                minterContract.minted(
+                  account!,
+                  VaultLiquidityMiningMap.lg5[vault]!
+                ),
               ]
             : [
                 // Default value when not connected
