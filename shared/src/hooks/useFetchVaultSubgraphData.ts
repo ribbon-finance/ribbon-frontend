@@ -4,7 +4,6 @@ import { useWeb3React } from "@web3-react/core";
 
 import {
   Chains,
-  CHAINS_TO_ID,
   getSubgraphURIForVersion,
   SUBGRAPHS_TO_QUERY,
   VaultVersion,
@@ -46,7 +45,6 @@ import {
   liquidityMiningPoolAccountsGraphql,
   resolveLiquidityMiningPoolAccountsSubgraphResponse,
 } from "./useLiquidityMiningPoolAccounts";
-import { isEVMChain } from "../utils/chains";
 
 const useFetchVaultSubgraphData = () => {
   const { account: acc } = useWeb3React();
@@ -82,7 +80,7 @@ const useFetchVaultSubgraphData = () => {
         const response = await axios.post(
           getSubgraphURIForVersion(version, chain),
           {
-            query: `{
+            query: `${chain === Chains.Solana ? "query" : ""} {
                   ${
                     account
                       ? `
@@ -96,13 +94,38 @@ const useFetchVaultSubgraphData = () => {
                         `
                       : ""
                   }
-                  ${vaultGraphql(version, chainId)}
-                  ${vaultActivitiesGraphql(version, chainId)}
-                  ${vaultPriceHistoryGraphql(version, chainId)}
-                  ${liquidityMiningPoolGraphql(version, chainId)}
+                  ${vaultGraphql(version, chain)}
+                  ${vaultActivitiesGraphql(version, chain)}
+                  ${
+                    chain === Chains.Solana
+                      ? ""
+                      : vaultPriceHistoryGraphql(version, chain)
+                  }
+                  ${liquidityMiningPoolGraphql(version, chain)}
                 }`.replaceAll(" ", ""),
           }
         );
+        if (chain === Chains.Solana) {
+          console.log(
+            `${chain === Chains.Solana ? "query" : ""} {
+              ${
+                account
+                  ? `
+                      ${vaultAccountsGraphql(account, version)}
+                      ${transactionsGraphql(account)}
+                      ${balancesGraphql(account)}
+                      ${liquidityMiningPoolAccountsGraphql(account, version)}
+                    `
+                  : ""
+              }
+              ${vaultGraphql(version, chain)}
+              ${vaultActivitiesGraphql(version, chain)}
+              ${vaultPriceHistoryGraphql(version, chain)}
+              ${liquidityMiningPoolGraphql(version, chain)}
+            }`.replaceAll(" ", "")
+          );
+          console.log(response);
+        }
         return [version, response.data.data];
       })
     );
