@@ -8,7 +8,7 @@ import moment from "moment";
 import {
   getExplorerName,
   getAssets,
-  getEtherscanURI,
+  getExplorerURI,
   StakingVaultOptions,
 } from "shared/lib/constants/constants";
 import {
@@ -468,7 +468,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               <BaseModalContentColumn marginTop="auto">
                 {chainId && (
                   <BaseUnderlineLink
-                    to={`${getEtherscanURI(chain)}/tx/${txId}`}
+                    to={`${getExplorerURI(chain)}/tx/${txId}`}
                     target="_blank"
                     rel="noreferrer noopener"
                     className="d-flex"

@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import ActionModal from "./Modal/ActionModal";
 import {
-  getEtherscanURI,
+  getExplorerURI,
   VaultAddressMap,
   VaultOptions,
   VaultVersion,
@@ -73,7 +73,7 @@ const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
 
       {chainId && VaultAddressMap[vault.vaultOption][vault.vaultVersion] && (
         <BaseLink
-          to={`${getEtherscanURI(chain)}/address/${VaultAddressMap[
+          to={`${getExplorerURI(chain)}/address/${VaultAddressMap[
             vault.vaultOption
           ][vault.vaultVersion]!}`}
           target="_blank"

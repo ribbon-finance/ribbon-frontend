@@ -10,7 +10,7 @@ import {
 } from "shared/lib/designSystem";
 import {
   getExplorerName,
-  getEtherscanURI,
+  getExplorerURI,
   VaultLiquidityMiningMap,
   StakingVaultOptions,
 } from "shared/lib/constants/constants";
@@ -138,7 +138,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
               <BaseModalContentColumn marginTop="auto">
                 {chainId && (
                   <BaseUnderlineLink
-                    to={`${getEtherscanURI(chain)}/tx/${txId}`}
+                    to={`${getExplorerURI(chain)}/tx/${txId}`}
                     target="_blank"
                     rel="noreferrer noopener"
                     className="d-flex"

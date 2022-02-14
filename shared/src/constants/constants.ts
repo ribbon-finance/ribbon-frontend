@@ -510,8 +510,11 @@ export const getExplorerName = (chain: Chains) => {
   return EVM_BLOCKCHAIN_EXPLORER_NAME[CHAINS_TO_ID[chain]];
 };
 
-// FIXME: Rename to getExplorerURI to avoid confusion
-export const getEtherscanURI = (chain: Chains) => {
+// Left here for compatibility purposes
+export const getEtherscanURI = (chainId: number) =>
+  EVM_BLOCKCHAIN_EXPLORER_URI[chainId as CHAINID];
+
+export const getExplorerURI = (chain: Chains) => {
   if (chain === Chains.Solana) {
     return "https://solscan.io";
   }

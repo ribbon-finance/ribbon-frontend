@@ -5,7 +5,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 
 import {
   getAssets,
-  getEtherscanURI,
+  getExplorerURI,
   VaultOptions,
 } from "shared/lib/constants/constants";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
@@ -334,7 +334,7 @@ const UnstakingActionModal: React.FC<UnstakingActionModalProps> = ({
               <BaseModalContentColumn marginTop="auto">
                 {chainId && (
                   <BaseUnderlineLink
-                    to={`${getEtherscanURI(chain)}/tx/${txId}`}
+                    to={`${getExplorerURI(chain)}/tx/${txId}`}
                     target="_blank"
                     rel="noreferrer noopener"
                     className="d-flex"

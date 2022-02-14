@@ -35,7 +35,7 @@ import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import {
   getExplorerName,
   getAssets,
-  getEtherscanURI,
+  getExplorerURI,
   VaultList,
   VaultOptions,
   VaultVersion,
@@ -386,7 +386,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
 
   const handleOpenEtherscan = useCallback(() => {
     if (account && chain) {
-      window.open(`${getEtherscanURI(chain)}/address/${account}`);
+      window.open(`${getExplorerURI(chain)}/address/${account}`);
     }
   }, [account, chain]);
 
@@ -550,9 +550,9 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
           handleCopyAddress,
           renderCopiedButton()
         )}
-        {chainId &&
+        {chain !== Chains.NotSelected &&
           renderMenuItem(
-            `OPEN IN ${BLOCKCHAIN_EXPLORER_NAME[chainId]}`,
+            `OPEN IN ${getExplorerName(chain)}`,
             handleOpenEtherscan
           )}
         {renderMenuItem("DISCONNECT", handleDisconnect)}
