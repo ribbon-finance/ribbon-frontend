@@ -109,7 +109,11 @@ export const getUserWithdrawQueueAmount = async (
     withdrawQueueNodes.map((node) => connection.getBalance(node))
   );
 
-  console.log("Total withdrawals", totalWithdrawal.length),
-    totalWithdrawal.reduce((val, acc) => (acc += val), 0);
+  console.log(
+    "Total withdrawals",
+    totalWithdrawal.length,
+    totalWithdrawal.reduce((val, acc) => (acc += val), 0)
+  );
+
   return BigNumber.from(totalWithdrawal.reduce((val, acc) => (acc += val), 0));
 };
