@@ -156,7 +156,7 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
         100 *
         0.9,
     };
-  }, [asset, currentOption, input, hoverPrice, optionAsset, prices]);
+  }, [chain, asset, currentOption, input, hoverPrice, optionAsset, prices]);
 
   const toExpiryText = useMemo(() => {
     const toExpiryDuration = moment.duration(

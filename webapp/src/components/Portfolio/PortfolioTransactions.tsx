@@ -470,6 +470,7 @@ const PortfolioTransactions = () => {
         </TransactionContainer>
       ));
   }, [
+    chain,
     active,
     chainId,
     getTransactionTypeDisplay,

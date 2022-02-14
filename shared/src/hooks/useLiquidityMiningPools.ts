@@ -3,7 +3,6 @@ import { useContext } from "react";
 
 import {
   Chains,
-  isEthNetwork,
   VaultLiquidityMiningMap,
   VaultOptions,
   VaultVersion,

@@ -484,6 +484,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
         );
     }
   }, [
+    chain,
     chainId,
     color,
     stake,

@@ -28,6 +28,13 @@ export type NETWORK_NAMES =
 export type TESTNET_NAMES = "kovan" | "fuji" | "aurora-testnet";
 export type MAINNET_NAMES = Exclude<NETWORK_NAMES, TESTNET_NAMES>;
 
+export enum Chains {
+  NotSelected,
+  Ethereum,
+  Avalanche,
+  Solana,
+}
+
 export const NETWORKS: Record<number, NETWORK_NAMES> = {
   [CHAINID.ETH_MAINNET]: "mainnet",
   [CHAINID.ETH_KOVAN]: "kovan",
@@ -835,13 +842,6 @@ export const LiquidityTokenMinterAddress = isDevelopment()
 export const LiquidityGaugeControllerAddress = isDevelopment()
   ? governanceDeployment.kovan.RBNVotingGaugeController
   : governanceDeployment.mainnet.RBNVotingGaugeController;
-
-export enum Chains {
-  NotSelected,
-  Ethereum,
-  Avalanche,
-  Solana,
-}
 
 export const READABLE_CHAIN_NAMES: Record<Chains, string> = {
   [Chains.Ethereum]: "Ethereum",

@@ -132,7 +132,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
     if (!currentOption) return "---";
 
     return currency(formatOptionStrike(currentOption.strike, chain)).format();
-  }, [currentOption, loadingText, optionLoading]);
+  }, [chain, currentOption, loadingText, optionLoading]);
 
   const toExpiryText = useMemo(() => {
     if (optionLoading) return loadingText;
@@ -189,7 +189,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
         100 *
         0.9,
     };
-  }, [loading, currentOption, prices, optionAsset, asset]);
+  }, [chain, loading, currentOption, prices, optionAsset, asset]);
 
   const ProfitabilityText = useMemo(() => {
     if (loading) return loadingText;
@@ -215,7 +215,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
         profitable={KPI ? KPI.isProfit : true}
       />
     );
-  }, [prices, currentOption, optionAsset, KPI, loading, loadingText]);
+  }, [chain, prices, currentOption, optionAsset, KPI, loading, loadingText]);
 
   return (
     <>

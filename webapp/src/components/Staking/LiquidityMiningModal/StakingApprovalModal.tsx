@@ -153,7 +153,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
           </>
         );
     }
-  }, [chainId, step, vaultOption, handleApprove, txId, stakingPoolData]);
+  }, [chain, chainId, step, vaultOption, handleApprove, txId, stakingPoolData]);
 
   const modalHeight = useMemo(() => {
     if (step === "info") {
