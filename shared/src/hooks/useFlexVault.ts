@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import { useConnection, useAnchorWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { Vault, Flex, VaultClient, vaultUtils } from "@zetamarkets/flex-sdk";
-import useWeb3Wallet from "./useWeb3Wallet";
-import { getSolanaAddresses, getSolanaNetwork } from "../utils/env";
+import {
+  getSolanaAddresses,
+  getSolanaNetwork,
+  isProduction,
+} from "../utils/env";
 import { Vault as VaultInterface } from "@zetamarkets/flex-sdk/dist/vault/types";
 import { Wallet } from "@zetamarkets/flex-sdk/dist/common/types";
 
@@ -20,6 +23,30 @@ export const useFlexVault = (): FlexVaultData => {
 
   const [flexClient, setFlexClient] = useState<VaultClient | null>(null);
   const [flexVault, setFlexVault] = useState<VaultInterface | null>(null);
+
+  // FLEX VAULT INITIALIZER
+  useEffect(() => {
+    if (!isProduction()) {
+      console.time("SOL Vault Data Fetch");
+    }
+
+    const pollingInterval = flexVault ? 10000 : 1000;
+
+    const setVault = setInterval(async () => {
+      if (Flex.isInitialized && Vault.isInitialized) {
+        const [vaultAddress] = await vaultUtils.getVaultAddress("rSOL-THETA");
+        setFlexVault(Vault.getVault(new PublicKey(vaultAddress)));
+      }
+    }, pollingInterval);
+
+    return () => {
+      if (!isProduction()) {
+        console.timeEnd("SOL Vault Data Fetch");
+      }
+
+      clearInterval(setVault);
+    };
+  }, []);
 
   // FLEX VAULT HANDLER
   useEffect(() => {
@@ -44,15 +71,6 @@ export const useFlexVault = (): FlexVaultData => {
       });
     }
   }, [connection, flexVault, flexAddress, network, vaultProgramId]);
-
-  useEffect(() => {
-    setInterval(async () => {
-      if (Flex.isInitialized && Vault.isInitialized) {
-        const [vaultAddress] = await vaultUtils.getVaultAddress("rSOL-THETA");
-        setFlexVault(Vault.getVault(new PublicKey(vaultAddress)));
-      }
-    }, 1000);
-  }, []);
 
   // FLEX CLIENT HANDLER
   useEffect(() => {
