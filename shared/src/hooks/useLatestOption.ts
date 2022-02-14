@@ -99,6 +99,7 @@ export const useLatestOptions = () => {
               if (sortedActivities.length <= 0) {
                 return [vaultOption, []];
               }
+              const chain = getVaultChain(vaultOption);
 
               return [
                 vaultOption,
@@ -130,7 +131,7 @@ export const useLatestOptions = () => {
                             prices[asset]!,
                             decimals
                           )
-                        ) / formatOptionStrike(shortPosition.strikePrice)
+                        ) / formatOptionStrike(shortPosition.strikePrice, chain)
                       : parseFloat(
                           formatUnits(shortPosition.depositAmount, decimals)
                         ),
