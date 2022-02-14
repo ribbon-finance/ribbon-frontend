@@ -9,6 +9,7 @@ import {
   isPutVault,
   getOptionAssets,
   VaultOptions,
+  getVaultChain,
 } from "shared/lib/constants/constants";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -16,7 +17,8 @@ import { VaultActivity, VaultActivityType } from "shared/lib/models/vault";
 import {
   assetToUSD,
   formatBigNumber,
-  formatOption,
+  formatOptionAmount,
+  formatOptionStrike,
 } from "shared/lib/utils/math";
 import { useAssetsPriceHistory } from "shared/lib/hooks/useAssetPrice";
 import sizes from "shared/lib/designSystem/sizes";
@@ -89,13 +91,13 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
       decimals: getAssetDecimals(asset),
     };
   }, [vaultOption]);
+  const chain = getVaultChain(vaultOption);
 
   const { searchAssetPriceFromTimestamp, loading: assetPriceLoading } =
     useAssetsPriceHistory();
 
   const { width: screenWidth } = useScreenSize();
   const loadingText = useTextAnimation(assetPriceLoading);
-  const [chain] = useChain();
 
   const getVaultActivityExternalURL = useCallback(
     (activity: VaultActivity) => {
@@ -139,7 +141,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                   : "CALL"}
               </VaultPrimaryText>
               <VaultSecondaryText>
-                Strike {formatOption(activity.strikePrice)}
+                Strike {formatOptionStrike(activity.strikePrice, chain)}
               </VaultSecondaryText>
             </>,
             <VaultPrimaryText>
@@ -171,12 +173,19 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                   : "CALL"}
               </VaultPrimaryText>
               <VaultSecondaryText>
-                Strike {formatOption(activity.vaultShortPosition.strikePrice)}
+                Strike{" "}
+                {formatOptionStrike(
+                  activity.vaultShortPosition.strikePrice,
+                  chain
+                )}
               </VaultSecondaryText>
             </>,
             <>
               <VaultPrimaryText>
-                {formatOption(activity.sellAmount).toLocaleString()}
+                {formatOptionAmount(
+                  activity.sellAmount,
+                  chain
+                ).toLocaleString()}
               </VaultPrimaryText>
             </>,
             <>
