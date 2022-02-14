@@ -99,16 +99,23 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
                 lg5Contract.balanceOf(account!),
                 lg5Contract.claimable_reward(account!, RibbonTokenAddress),
                 vaultContract!.shares(account!),
-                lg5Contract.claimed_reward(account!, RibbonTokenAddress),
               ]
             : [
                 // Default value when not connected
                 Promise.resolve(BigNumber.from(0)),
                 Promise.resolve(BigNumber.from(0)),
                 Promise.resolve(BigNumber.from(0)),
-                Promise.resolve(BigNumber.from(0)),
               ]
         );
+
+        // Add minted amount (RBN Claimed)
+        if (VaultLiquidityMiningMap.lg5[vault]) {
+          promises.push(
+            active
+              ? minterContract.minted(account!, vault)
+              : Promise.resolve(BigNumber.from(0))
+          );
+        }
 
         const [
           poolSize,
