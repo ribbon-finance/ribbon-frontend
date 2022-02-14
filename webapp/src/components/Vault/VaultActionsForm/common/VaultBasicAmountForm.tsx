@@ -21,6 +21,7 @@ import {
   getAssetDecimals,
   getAssetDisplay,
   getAssetLogo,
+  getChainByAsset,
 } from "shared/lib/utils/asset";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import {
@@ -37,6 +38,7 @@ import { formatBigNumber } from "shared/lib/utils/math";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
 import { ACTIONS } from "../Modal/types";
+import { useChain } from "shared/lib/hooks/chainContext";
 
 const DepositAssetButton = styled.div`
   position: absolute;
@@ -156,6 +158,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
     vaultActionForm,
   } = useVaultActionForm(vaultOption);
   const { active } = useWeb3Wallet();
+  const [chain] = useChain();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showDepositAssetMenu, setShowDepositAssetMenu] = useState(false);
 
@@ -323,7 +326,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
   );
 
   const renderButton = useCallback(() => {
-    if (active) {
+    if (active && getChainByAsset(asset) === chain) {
       return (
         <ActionButton
           disabled={Boolean(error) || !isInputNonZero}
@@ -347,6 +350,8 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
     );
   }, [
     active,
+    asset,
+    chain,
     actionButtonText,
     color,
     error,
