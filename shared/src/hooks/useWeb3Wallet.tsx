@@ -71,10 +71,13 @@ export const useWeb3Wallet = (): Web3WalletData => {
   // This hook checks if there is an EVM chainId to switch to
   // If so, it will prompt switchChains only when a provider is available
   useEffect(() => {
+    const onSwitchChains = async () => {
+      await switchChains(libraryEth, CHAINS_TO_ID[chainToSwitch as Chains]);
+      setChainToSwitch(null);
+    };
+
     if (chainToSwitch && libraryEth) {
-      switchChains(libraryEth, CHAINS_TO_ID[chainToSwitch]).then(() => {
-        setChainToSwitch(null);
-      });
+      onSwitchChains();
     }
   }, [libraryEth, chainToSwitch]);
 
@@ -100,10 +103,9 @@ export const useWeb3Wallet = (): Web3WalletData => {
             await activateEth(connector);
           }
 
-          await deactivateSolana().then(() => {
-            setChainToSwitch(chain);
-            setConnectedWallet(wallet as EthereumWallet);
-          });
+          await deactivateSolana();
+          setChainToSwitch(chain);
+          setConnectedWallet(wallet as EthereumWallet);
         } else if (isSolanaWallet(wallet)) {
           let walletName: WalletName = WalletName.Phantom;
           switch (wallet) {
@@ -115,10 +117,9 @@ export const useWeb3Wallet = (): Web3WalletData => {
               break;
           }
 
-          await deactivateEth().then(() => {
-            selectWalletSolana(walletName);
-            setConnectedWallet(wallet as SolanaWallet);
-          });
+          await deactivateEth();
+          selectWalletSolana(walletName);
+          setConnectedWallet(wallet as SolanaWallet);
         } else {
           throw new Error("Wallet is not supported");
         }
