@@ -47,7 +47,9 @@ export const TxStatusToast = () => {
   const getActionTitle = useCallback((_currentTx: PendingTransaction) => {
     switch (_currentTx.type) {
       case "governanceApproval":
-        return "RBN STAKED";
+        return "RBN APPROVED";
+      case "governanceStake":
+        return "RBN LOCKED";
       case "governanceIncreaseAmount":
         return "STAKE INCREASED";
       case "governanceIncreaseDuration":
@@ -66,7 +68,7 @@ export const TxStatusToast = () => {
       case "governanceStake":
       case "governanceIncreaseAmount":
       case "governanceIncreaseDuration":
-        return `${_currentTx.amount} RBN staked till ${_currentTx.expiry.format(
+        return `${_currentTx.amount} RBN Locked till ${_currentTx.expiry.format(
           "MMM, Do YYYY"
         )}`;
       case "governanceUnstake":

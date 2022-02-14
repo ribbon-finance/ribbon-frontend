@@ -65,7 +65,7 @@ const StakingModalExplainer: React.FC<StakingModalExplainerProps> = ({
   const renderTitle = useCallback((_page: number) => {
     switch (_page) {
       case 1:
-        return "STAKING RBN";
+        return "LOCKING RBN";
       case 2:
         return "VOTING POWER";
     }
@@ -76,25 +76,24 @@ const StakingModalExplainer: React.FC<StakingModalExplainerProps> = ({
       case 1:
         return (
           <>
-            Stake your RBN to receive{" "}
+            Lock your RBN to receive{" "}
             <DescriptionHighlight>
-              vote-escrowed RBN (veRBN)
+              vote-escrowed RBN (veRBN).
             </DescriptionHighlight>
-            and earn{" "}
-            <DescriptionHighlight>staking rewards</DescriptionHighlight>. veRBN
-            lets you participate in governance and vote on future incentive
-            programs.
+            veRBN allows you to earn boosted liquidity mining rewards, vote on
+            vault guage incentives, participate in governance and earn protocol
+            fees.
           </>
         );
       case 2:
         return (
           <>
-            The longer you stake your RBN the more veRBN you receive. Your{" "}
+            The longer you lock your RBN the more veRBN you receive. Your{" "}
             <DescriptionHighlight>
               veRBN balance represents your voting power
             </DescriptionHighlight>{" "}
-            which decreases linearly as you approach the end of your staking
-            period.
+            which decreases linearly as the remaining time until the RBN lockup
+            expiry decreases.
           </>
         );
     }

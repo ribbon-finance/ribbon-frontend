@@ -15,7 +15,7 @@ const unstakingModalModes = ["preview", "transaction"] as const;
 type UnstakingModalMode = typeof unstakingModalModes[number];
 
 const stakingModalHeight: { [mode in UnstakingModalMode]: number } = {
-  preview: 350,
+  preview: 428,
   transaction: 412,
 };
 

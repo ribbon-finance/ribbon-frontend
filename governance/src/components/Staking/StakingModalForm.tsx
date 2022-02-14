@@ -167,7 +167,7 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
       </BaseModalContentColumn>
       <BaseModalContentColumn>
         <Title fontSize={22} lineHeight={28}>
-          STAKE YOUR RBN
+          LOCK YOUR RBN
         </Title>
       </BaseModalContentColumn>
       <BaseModalContentColumn className="flex-column">
@@ -299,7 +299,7 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
           className="py-3 mb-2"
           color={colors.red}
         >
-          Preview Stake
+          Preview Lock
         </ActionButton>
       </BaseModalContentColumn>
     </>

@@ -163,7 +163,7 @@ const OverviewKPI = () => {
           <KPICard>
             <div className="d-flex flex-row align-items-center justify-content-between mb-2">
               <SecondaryText fontSize={12} lineHeight={16}>
-                Total Staked RBN
+                Total Locked RBN
               </SecondaryText>
               <Title fontSize={18} lineHeight={24} letterSpacing={1}>
                 {rbnTokenAccountLoading

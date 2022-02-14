@@ -51,7 +51,7 @@ const RibbonFinanceSection = () => {
                   rel="noreferrer noopener"
                   className="d-NONE d-md-block"
                 >
-                  0x6123B0049F904d730dB3C36a31167D9d4121fA6B
+                  View Contract
                 </Link>
               </FAQBody>
             ),

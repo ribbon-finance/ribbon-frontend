@@ -306,24 +306,28 @@ const StakingSummary = () => {
         <LockupContainer>
           <LockupData>
             <div className="d-flex align-items-center">
-              <SecondaryText>Locked RBN</SecondaryText>
+              <SecondaryText fontSize={12}>Locked RBN</SecondaryText>
               {renderDataTooltip(
                 "Locked RBN",
                 "The amount of RBN locked up in the governance contract. The longer you lock up RBN the more veRBN (voting power) you receive."
               )}
             </div>
-            <Title className="mt-1">{displayLockedRbn}</Title>
+            <Title fontSize={16} className="mt-1">
+              {displayLockedRbn}
+            </Title>
           </LockupData>
 
           <LockupData>
             <div className="d-flex align-items-center">
-              <SecondaryText>Unlocked RBN Balance</SecondaryText>
+              <SecondaryText fontSize={12}>Unlocked RBN Balance</SecondaryText>
               {renderDataTooltip(
                 "Unlocked RBN Balance",
                 "The amount of RBN that has not been locked in the governance contract."
               )}
             </div>
-            <Title className="mt-1">{displayUnstakedRbn}</Title>
+            <Title fontSize={16} className="mt-1">
+              {displayUnstakedRbn}
+            </Title>
           </LockupData>
         </LockupContainer>
       </SummaryContainer>

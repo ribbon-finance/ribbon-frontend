@@ -3,6 +3,8 @@ import styled from "styled-components";
 
 import {
   BaseModalContentColumn,
+  BaseModalWarning,
+  PrimaryText,
   SecondaryText,
   Subtitle,
   Title,
@@ -97,16 +99,28 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
           </Subtitle>
         </div>
       </BaseModalContentColumn>
-      <BaseModalContentColumn>
+      <BaseModalContentColumn marginTop="auto" className="mb-4">
         <ActionButton
           onClick={onUnstake}
           className="py-3"
           color={colors.red}
           disabled={!canUnstake}
         >
-          Unlock RBN
+          CONFIRM UNLOCK
         </ActionButton>
       </BaseModalContentColumn>
+      <BaseModalWarning color={colors.green} className="mb-2" marginTop={0}>
+        <PrimaryText
+          fontSize={14}
+          lineHeight={20}
+          color={colors.green}
+          fontWeight={400}
+          className="text-center"
+        >
+          IMPORTANT: You cannot unlock your RBN until the lockup expires on{" "}
+          {lockupExpiryDisplay}
+        </PrimaryText>
+      </BaseModalWarning>
     </>
   );
 };
