@@ -412,7 +412,7 @@ export const VaultAddressMap: {
       },
   // FIXME: change with real addresses
   "rSOL-THETA": {
-    v2: getSolanaAddresses().vault,
+    v2: getSolanaAddresses().vaults["rSOL-THETA"],
     chainId: 99999999, // we stub this out with a fake chainid
   },
   "rNEAR-THETA": {

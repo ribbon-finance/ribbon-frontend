@@ -3,6 +3,7 @@ import { useContext } from "react";
 import {
   Chains,
   CHAINS_TO_ID,
+  isSolanaVault,
   VaultAddressMap,
   VaultList,
   VaultOptions,
@@ -10,19 +11,24 @@ import {
   VaultVersionList,
 } from "../constants/constants";
 import { VaultsSubgraphData } from "../models/vault";
+import { isEVMChain } from "../utils/chains";
 import { SubgraphDataContext } from "./subgraphDataContext";
 
 const getVaultKey = (vault: VaultOptions) => `vault_${vault.replace(/-/g, "")}`;
 
 export const vaultGraphql = (version: VaultVersion, chain: Chains) =>
   VaultList.reduce((acc, vault) => {
-    const vaultAddress = VaultAddressMap[vault][version]?.toLowerCase();
+    let vaultAddress = VaultAddressMap[vault][version];
 
     if (
-      !vaultAddress ||
-      VaultAddressMap[vault].chainId !== CHAINS_TO_ID[chain]
+      !isSolanaVault(vault) &&
+      (!vaultAddress || VaultAddressMap[vault].chainId !== CHAINS_TO_ID[chain])
     ) {
       return acc;
+    }
+
+    if (isEVMChain(chain)) {
+      vaultAddress = vaultAddress?.toLowerCase();
     }
 
     return (
