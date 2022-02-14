@@ -10,6 +10,7 @@ import {
   isProduction,
   isTreasury,
   getSolanaAddresses,
+  SOLANA_SUBGRAPH,
 } from "../utils/env";
 import { PublicKey } from "@solana/web3.js";
 import v1deployment from "./v1Deployments.json";
@@ -410,15 +411,10 @@ export const VaultAddressMap: {
         chainId: CHAINID.ETH_MAINNET,
       },
   // FIXME: change with real addresses
-  "rSOL-THETA": isDevelopment()
-    ? {
-        v2: v2deployment.kovan.RibbonTreasuryVaultPERP,
-        chainId: CHAINID.ETH_KOVAN,
-      }
-    : {
-        v2: v2deployment.mainnet.RibbonTreasuryVaultPERP,
-        chainId: CHAINID.ETH_MAINNET,
-      },
+  "rSOL-THETA": {
+    v2: getSolanaAddresses().vault,
+    chainId: 99999999, // we stub this out with a fake chainid
+  },
   "rNEAR-THETA": {
     v2: v2deployment.aurora.RibbonThetaVaultWNEARCall,
     chainId: CHAINID.AURORA_MAINNET,
@@ -498,13 +494,21 @@ export const getEtherscanURI = (chainId: number) =>
 
 export const getSubgraphURIForVersion = (
   version: VaultVersion,
-  chainId: number
+  chain: Chains
 ) => {
   switch (version) {
     case "v1":
       return getSubgraphqlURI();
     case "v2":
-      return SUBGRAPH_URI[chainId];
+      switch (chain) {
+        case Chains.Ethereum:
+        case Chains.Avalanche:
+          return SUBGRAPH_URI[CHAINS_TO_ID[chain]];
+        case Chains.Solana:
+          return SOLANA_SUBGRAPH;
+        default:
+          throw new Error("No found subgraph");
+      }
   }
 };
 
@@ -792,24 +796,6 @@ export const LidoOracleAddress = isDevelopment()
   ? ""
   : addresses.mainnet.lidoOracle;
 
-export const SUBGRAPHS_TO_QUERY: [VaultVersion, CHAINID][] = isDevelopment()
-  ? !isTreasury()
-    ? [
-        ["v1", CHAINID.ETH_KOVAN],
-        ["v2", CHAINID.ETH_KOVAN],
-        ["v2", CHAINID.AVAX_FUJI],
-        ["v2", CHAINID.AURORA_MAINNET],
-      ]
-    : [["v2", CHAINID.ETH_KOVAN]]
-  : !isTreasury()
-  ? [
-      ["v1", CHAINID.ETH_MAINNET],
-      ["v2", CHAINID.ETH_MAINNET],
-      ["v2", CHAINID.AVAX_MAINNET],
-      ["v2", CHAINID.AURORA_MAINNET],
-    ]
-  : [["v2", CHAINID.ETH_MAINNET]];
-
 export const RibbonTreasuryAddress = {
   [CHAINID.ETH_KOVAN]: "0xD380980791079Bd50736Ffe577b8D57A3C196ccd",
   [CHAINID.ETH_MAINNET]: "0xDAEada3d210D2f45874724BeEa03C7d4BBD41674",
@@ -875,3 +861,33 @@ export const getSolanaVaultInstance = (vaultOption: VaultOptions) => {
   if (vaults[vaultOption]) return new PublicKey(vaults[vaultOption]);
   throw new Error(`No solana vault ${vaultOption}`);
 };
+
+const WEBAPP_SUBGRAPHS: [VaultVersion, Chains][] = [
+  ["v1", Chains.Ethereum],
+  ["v2", Chains.Avalanche],
+  ["v2", Chains.Solana],
+];
+
+const TREASURY_SUBGRAPHS: [VaultVersion, Chains][] = [["v2", Chains.Ethereum]];
+
+export const SUBGRAPHS_TO_QUERY: [VaultVersion, Chains][] = isTreasury()
+  ? TREASURY_SUBGRAPHS
+  : WEBAPP_SUBGRAPHS;
+
+// export const SUBGRAPHS_TO_QUERY: [VaultVersion, CHAINID][] = isDevelopment()
+//   ? !isTreasury()
+//     ? [
+//         ["v1", CHAINID.ETH_KOVAN],
+//         ["v2", CHAINID.ETH_KOVAN],
+//         ["v2", CHAINID.AVAX_FUJI],
+//         ["v2", CHAINID.AURORA_MAINNET],
+//       ]
+//     : [["v2", CHAINID.ETH_KOVAN]]
+//   : !isTreasury()
+//   ? [
+//       ["v1", CHAINID.ETH_MAINNET],
+//       ["v2", CHAINID.ETH_MAINNET],
+//       ["v2", CHAINID.AVAX_MAINNET],
+//       ["v2", CHAINID.AURORA_MAINNET],
+//     ]
+//   : [["v2", CHAINID.ETH_MAINNET]];
