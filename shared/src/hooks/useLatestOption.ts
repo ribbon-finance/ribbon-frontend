@@ -17,7 +17,7 @@ import {
 } from "../models/vault";
 import { getAssetDecimals } from "../utils/asset";
 import useVaultActivity, { useAllVaultActivities } from "./useVaultActivity";
-import { assetToFiat, formatOption } from "../utils/math";
+import { assetToFiat, formatOptionStrike } from "../utils/math";
 import { useAssetsPrice } from "./useAssetPrice";
 import { formatUnits } from "@ethersproject/units";
 
@@ -63,7 +63,7 @@ export const useLatestOption = (
         amount: isPut
           ? parseFloat(
               assetToFiat(shortPosition.depositAmount, prices[asset]!, decimals)
-            ) / formatOption(shortPosition.strikePrice)
+            ) / formatOptionStrike(shortPosition.strikePrice)
           : parseFloat(formatUnits(shortPosition.depositAmount, decimals)),
         isPut: isPut,
       };
@@ -128,7 +128,7 @@ export const useLatestOptions = () => {
                             prices[asset]!,
                             decimals
                           )
-                        ) / formatOption(shortPosition.strikePrice)
+                        ) / formatOptionStrike(shortPosition.strikePrice)
                       : parseFloat(
                           formatUnits(shortPosition.depositAmount, decimals)
                         ),
