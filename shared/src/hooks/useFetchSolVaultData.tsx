@@ -50,7 +50,7 @@ const useFetchSolVaultData = (): SolanaVaultData => {
             // user connected state
             // balance in vault
             lockedBalanceInAsset: BigNumber.from(totalDeposit).sub(
-              BigNumber.from(totalWithdraw)
+              BigNumber.from(0)
             ),
             // balance in vault + deposit amount in the queue
             // lockedBalanceInAsset + sum(deposit amount in queue)
@@ -69,8 +69,6 @@ const useFetchSolVaultData = (): SolanaVaultData => {
 
     doMulticall();
   }, [vault, client, connection]);
-
-  useEffect(() => {}, [vault, client, data]);
 
   return data || defaultSolanaVaultData;
 };
