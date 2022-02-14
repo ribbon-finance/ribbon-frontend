@@ -12,6 +12,8 @@ import colors from "shared/lib/designSystem/colors";
 import ProfilePage from "../pages/ProfilePage";
 import StakingFAB from "./FAB/StakingFab";
 import StakingModal from "./Staking/StakingModal";
+import sizes from "shared/lib/designSystem/sizes";
+import Faqs from "../pages/Faqs";
 
 const Root = styled.div<{ screenHeight: number }>`
   background-color: ${colors.background.one};
@@ -21,7 +23,7 @@ const Root = styled.div<{ screenHeight: number }>`
 
 const RootApp = () => {
   useEagerConnect();
-  const { height: screenHeight } = useScreenSize();
+  const { height: screenHeight, width: screenWidth } = useScreenSize();
 
   return (
     <Root id="appRoot" screenHeight={screenHeight}>
@@ -38,9 +40,13 @@ const RootApp = () => {
           <Route path="/profile" exact>
             <ProfilePage />
           </Route>
+          <Route path="/faqs" exact>
+            <Faqs />
+          </Route>
         </Switch>
         <Footer />
-        <StakingFAB />
+        {/* Only load staking FAB if not on mobile. Staking buttons is in Footer if on mobile */}
+        {screenWidth >= sizes.md && <StakingFAB />}
       </Router>
     </Root>
   );

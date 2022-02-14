@@ -1,4 +1,5 @@
 import React, { ReactElement } from "react";
+import { GovernanceTransaction } from "../models/governance";
 import {
   defaultStakingAccountsData,
   defaultStakingSubgraphData,
@@ -40,6 +41,7 @@ export type VaultSubgraphDataContextType = {
 export type GovernanceSubgraphDataContextType = {
   rbnToken?: ERC20TokenSubgraphData;
   rbnTokenAccount?: RBNTokenAccountSubgraphData;
+  transactions: GovernanceTransaction[];
   loading: boolean;
 };
 
@@ -62,6 +64,7 @@ export const defaultVaultSubgraphData: VaultSubgraphDataContextType = {
 
 export const defaultGovernanceSubgraphData: GovernanceSubgraphDataContextType =
   {
+    transactions: [],
     loading: true,
   };
 

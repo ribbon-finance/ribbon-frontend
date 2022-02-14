@@ -49,6 +49,16 @@ const _abi = [
         name: "_gnosisEasyAuction",
         type: "address",
       },
+      {
+        internalType: "address",
+        name: "_uniswapRouter",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_uniswapFactory",
+        type: "address",
+      },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
@@ -111,12 +121,6 @@ const _abi = [
         internalType: "uint256",
         name: "newCap",
         type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "manager",
-        type: "address",
       },
     ],
     name: "CapSet",
@@ -559,6 +563,32 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "UNISWAP_FACTORY",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "UNISWAP_ROUTER",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "USDC",
     outputs: [
       {
@@ -899,59 +929,76 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "_owner",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "_keeper",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "_feeRecipient",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "_managementFee",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "_performanceFee",
-        type: "uint256",
-      },
-      {
-        internalType: "string",
-        name: "_tokenName",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "_tokenSymbol",
-        type: "string",
-      },
-      {
-        internalType: "address",
-        name: "_optionsPremiumPricer",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "_strikeSelection",
-        type: "address",
-      },
-      {
-        internalType: "uint32",
-        name: "_premiumDiscount",
-        type: "uint32",
-      },
-      {
-        internalType: "uint256",
-        name: "_auctionDuration",
-        type: "uint256",
+        components: [
+          {
+            internalType: "address",
+            name: "_owner",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "_keeper",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "_feeRecipient",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "_managementFee",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "_performanceFee",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "_tokenName",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "_tokenSymbol",
+            type: "string",
+          },
+          {
+            internalType: "address",
+            name: "_optionsPremiumPricer",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "_strikeSelection",
+            type: "address",
+          },
+          {
+            internalType: "uint32",
+            name: "_premiumDiscount",
+            type: "uint32",
+          },
+          {
+            internalType: "uint256",
+            name: "_auctionDuration",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "_isUsdcAuction",
+            type: "bool",
+          },
+          {
+            internalType: "bytes",
+            name: "_swapPath",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct RibbonThetaVault.InitParams",
+        name: "_initParams",
+        type: "tuple",
       },
       {
         components: [
@@ -1011,6 +1058,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "isUsdcAuction",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "keeper",
     outputs: [
       {
@@ -1024,12 +1084,38 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "lastQueuedWithdrawAmount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "lastStrikeOverrideRound",
     outputs: [
       {
         internalType: "uint16",
         name: "",
         type: "uint16",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "liquidityGauge",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -1296,6 +1382,19 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "newLiquidityGauge",
+        type: "address",
+      },
+    ],
+    name: "setLiquidityGauge",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "newManagementFee",
         type: "uint256",
@@ -1387,6 +1486,32 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "bytes",
+        name: "newSwapPath",
+        type: "bytes",
+      },
+    ],
+    name: "setSwapPath",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "minAmountOut",
+        type: "uint256",
+      },
+    ],
+    name: "settleAuctionAndSwap",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "account",
         type: "address",
@@ -1428,6 +1553,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "numShares",
+        type: "uint256",
+      },
+    ],
+    name: "stake",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "startAuction",
     outputs: [],
@@ -1442,6 +1580,19 @@ const _abi = [
         internalType: "address",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "swapPath",
+    outputs: [
+      {
+        internalType: "bytes",
+        name: "",
+        type: "bytes",
       },
     ],
     stateMutability: "view",

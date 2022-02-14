@@ -1,27 +1,10 @@
 import React from "react";
-import styled from "styled-components";
 import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import { Assets } from "../../store/types";
 import { getAssetDisplay } from "../../utils/asset";
 import { formatAmount } from "../../utils/math";
-
-const BackgroundBar = styled.div<{ height: number; radius: number }>`
-  height: ${(props) => props.height}px;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: ${(props) => props.radius}px;
-`;
-
-const ForegroundBar = styled.div<{ height: number; radius: number }>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: ${(props) => props.height}px;
-  background: #ffffff;
-  border-radius: ${(props) => props.radius}px;
-  width: 100%;
-`;
+import ProgressBar, { BarConfig } from "./ProgressBar";
 
 const CapBar: React.FC<{
   loading: boolean;
@@ -41,11 +24,7 @@ const CapBar: React.FC<{
   statsConfig?: {
     fontSize: number;
   };
-  barConfig?: {
-    height: number;
-    extraClassNames: string;
-    radius: number;
-  };
+  barConfig?: BarConfig;
   asset?: Assets;
 }> = ({
   loading,
@@ -85,18 +64,7 @@ const CapBar: React.FC<{
               }`}
         </Title>
       </div>
-
-      <div
-        className={`d-flex flex-row position-relative ${barConfig.extraClassNames}`}
-      >
-        <BackgroundBar height={barConfig.height} radius={barConfig.radius} />
-        <ForegroundBar
-          height={barConfig.height}
-          style={{ width: `${percent}%` }}
-          radius={barConfig.radius}
-        />
-      </div>
-
+      <ProgressBar percent={percent} config={barConfig} />
       <div className="d-flex flex-row justify-content-between">
         <SecondaryText color={colors.text} fontSize={labelConfig.fontSize}>
           {copies.cap}

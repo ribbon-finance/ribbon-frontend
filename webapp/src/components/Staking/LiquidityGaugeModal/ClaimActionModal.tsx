@@ -182,10 +182,10 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
   }, [
     step,
     logo,
+    timeTillNextRewardWeek,
     vaultOption,
     stakingPoolData,
     handleClaim,
-    timeTillNextRewardWeek,
   ]);
 
   return (

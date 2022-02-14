@@ -457,6 +457,62 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
       ),
     },
   },
+  "rUSDC-AVAX-P-THETA": {
+    title: "T-USDC-P-AVAX",
+    subtitle: "AVAX Put-Selling",
+    description:
+      "Generates yield by running an automated USDC-collateralized AVAX put selling strategy.",
+    tags: ["PUT-SELLING"],
+    strategy: (
+      <>
+        T-USDC-P-AVAX earns yield on its USDC deposits by running a weekly
+        automated AVAX{" "}
+        <TooltipExplanation
+          title="PUT OPTION"
+          explanation="A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
+          learnMoreURL="https://www.investopedia.com/terms/p/putoption.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              put-selling
+            </HighlighText>
+          )}
+        />{" "}
+        strategy, where the put options are collateralized by USDC.
+      </>
+    ),
+    vaultRisk: (
+      <>
+        The primary risk for running this put selling strategy is that the vault
+        may incur a weekly loss in the case where the put options sold by the
+        vault expire{" "}
+        <TooltipExplanation
+          title="IN-THE-MONEY"
+          explanation="An AVAX put option is in-the-money (ITM) if the strike price is above the market price of AVAX."
+          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlighText ref={ref} {...triggerHandler}>
+              in-the-money
+            </HighlighText>
+          )}
+        />{" "}
+        (meaning the price of AVAX is below the strike price of the put options
+        minted by the vault). Such a situation is expected to happen less than
+        5% of the time.
+      </>
+    ),
+    liquidityMining: {
+      explanation: (
+        <>
+          rUSDC-AVAX-P-THETA is a token that represents USDC deposits in the
+          AVAX Put Theta Vault (T-USDC-P-AVAX).
+          <br />
+          <br />
+          Stake your rUSDC-AVAX-P-THETA tokens in the rUSDC-AVAX-P-THETA staking
+          pool to earn $RBN rewards.
+        </>
+      ),
+    },
+  },
   "rPERP-TSRY": {
     title: "T-PERP-C",
     subtitle: "PERP Call",
