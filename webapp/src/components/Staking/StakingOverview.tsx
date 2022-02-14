@@ -23,7 +23,10 @@ import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { BigNumber } from "@ethersproject/bignumber";
 import { formatBigNumber } from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
-import { useRBNToken } from "shared/lib/hooks/useRBNTokenSubgraph";
+import {
+  useRBNToken,
+  useRbnTokenDistributed,
+} from "shared/lib/hooks/useRBNTokenSubgraph";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
 import useLiquidityMiningPools from "shared/lib/hooks/useLiquidityMiningPools";
 import { useLiquidityGaugeV5PoolData } from "shared/lib/hooks/web3DataContext";
@@ -119,6 +122,8 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
 }) => {
   const { stakingPools, loading: stakingLoading } = useLiquidityMiningPools();
   const { data: tokenData, loading: tokenLoading } = useRBNToken();
+  const { data: rbnTokenDistributedLg5, loading: rbnTokenDistributedLoading } =
+    useRbnTokenDistributed();
   const { data: lg5Data, loading: lg5DataLoading } =
     useLiquidityGaugeV5PoolData(
       Object.keys(VaultLiquidityMiningMap.lg5)[0] as VaultOptions
@@ -126,26 +131,39 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
   const [showRewardsCalculator, setShowRewardsCalculator] = useState(false);
 
   const loadingText = useTextAnimation(
-    stakingLoading || tokenLoading || lg5DataLoading
+    stakingLoading ||
+      tokenLoading ||
+      lg5DataLoading ||
+      rbnTokenDistributedLoading
   );
 
   const totalRewardDistributed = useMemo(() => {
-    if (stakingLoading) {
-      return loadingText;
-    }
-
-    let totalDistributed = BigNumber.from(0);
-
-    for (let i = 0; i < VaultList.length; i++) {
-      const stakingPool = stakingPools[VaultList[i]];
-      if (!stakingPool) {
-        continue;
+    if (lmVersion === "lm") {
+      if (stakingLoading) {
+        return loadingText;
       }
-      totalDistributed = totalDistributed.add(stakingPool.totalRewardClaimed);
-    }
 
-    return formatBigNumber(totalDistributed, 18);
-  }, [stakingLoading, loadingText, stakingPools]);
+      let totalDistributed = BigNumber.from(0);
+
+      for (let i = 0; i < VaultList.length; i++) {
+        const stakingPool = stakingPools[VaultList[i]];
+        if (!stakingPool) {
+          continue;
+        }
+        totalDistributed = totalDistributed.add(stakingPool.totalRewardClaimed);
+      }
+      return formatBigNumber(totalDistributed, 18);
+    } else if (lmVersion === "lg5") {
+      return formatBigNumber(rbnTokenDistributedLg5, 18);
+    }
+    return BigNumber.from(0);
+  }, [
+    stakingLoading,
+    loadingText,
+    stakingPools,
+    lmVersion,
+    rbnTokenDistributedLg5,
+  ]);
 
   const numHolderText = useMemo(() => {
     if (tokenLoading || !tokenData) {

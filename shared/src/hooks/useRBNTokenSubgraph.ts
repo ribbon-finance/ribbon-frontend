@@ -1,7 +1,10 @@
 import { useContext } from "react";
 import { BigNumber } from "ethers";
 
-import { RibbonTokenAddress } from "../constants/constants";
+import {
+  RibbonTokenAddress,
+  VaultLiquidityMiningMap,
+} from "../constants/constants";
 import {
   ERC20TokenSubgraphData,
   RBNTokenAccountSubgraphData,
@@ -17,6 +20,14 @@ export const rbnTokenGraphql = (account: string | null | undefined) => `
     totalSupply
     totalStaked
   }
+  tokenMinterDistributions(where: { id_in: [
+    ${Object.values(VaultLiquidityMiningMap.lg5)
+      .map((address) => `"${address.toLowerCase()}"`)
+      .join(", ")}
+  ]}) {
+    id
+    amount
+  }
   ${
     account
       ? `
@@ -26,7 +37,6 @@ export const rbnTokenGraphql = (account: string | null | undefined) => `
         lockStartTimestamp
         lockEndTimestamp
       }
-  
     `
       : ""
   }
@@ -58,6 +68,22 @@ export const resolveRBNTokenAccountSubgraphResponse = (
   return undefined;
 };
 
+export const resolveRbnDistributedSubgraphResponse = (
+  response: any | undefined
+): BigNumber => {
+  if (response?.tokenMinterDistributions) {
+    const distributionsPerGauge = response.tokenMinterDistributions as {
+      id: string;
+      amount: string;
+    }[];
+    return distributionsPerGauge.reduce((prev, dist) => {
+      return prev.add(BigNumber.from(dist.amount));
+    }, BigNumber.from(0));
+  }
+
+  return BigNumber.from(0);
+};
+
 export const useRBNToken = () => {
   const contextData = useContext(SubgraphDataContext);
 
@@ -80,6 +106,14 @@ export const useRBNTokenAccount = () => {
             ),
         }
       : undefined,
+    loading: contextData.governanceSubgraphData.loading,
+  };
+};
+
+export const useRbnTokenDistributed = () => {
+  const contextData = useContext(SubgraphDataContext);
+  return {
+    data: contextData.governanceSubgraphData.rbnTokenDistributedLg5,
     loading: contextData.governanceSubgraphData.loading,
   };
 };
