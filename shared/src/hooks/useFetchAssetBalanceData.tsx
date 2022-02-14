@@ -68,7 +68,7 @@ const useFetchAssetBalanceData = (
     let ERC20Responses: Array<AssetBalance> = [];
     let SOLResponse: Array<AssetBalance> = [];
 
-    if (isEthereumWallet(connectedWallet as Wallet)) {
+    if (isEthereumWallet(connectedWallet as Wallet) && ethereumProvider) {
       ERC20Responses = await Promise.all(
         AssetsList.map(async (asset) => {
           const token = getERC20Token(
@@ -81,7 +81,7 @@ const useFetchAssetBalanceData = (
           }
 
           const balance = await (isNativeToken(asset)
-            ? ethereumProvider?.getBalance(account!)
+            ? ethereumProvider.getBalance(account!)
             : token.balanceOf(account!));
 
           return { asset, balance };
@@ -99,11 +99,12 @@ const useFetchAssetBalanceData = (
       });
     }
 
+    const responses = [...ERC20Responses, ...SOLResponse];
+
     setData({
-      data: Object.fromEntries([
-        ...ERC20Responses.map((response) => [response.asset, response.balance]),
-        ...SOLResponse.map((response) => [response.asset, response.balance]),
-      ]) as UserAssetBalanceResponses,
+      data: Object.fromEntries(
+        responses.map((response) => [response.asset, response.balance])
+      ) as UserAssetBalanceResponses,
       loading: false,
     });
 
