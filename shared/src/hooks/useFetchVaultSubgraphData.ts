@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-import { useWeb3React } from "@web3-react/core";
 
 import {
   Chains,
@@ -45,9 +44,10 @@ import {
   liquidityMiningPoolAccountsGraphql,
   resolveLiquidityMiningPoolAccountsSubgraphResponse,
 } from "./useLiquidityMiningPoolAccounts";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 const useFetchVaultSubgraphData = () => {
-  const { account: acc } = useWeb3React();
+  const { account: acc } = useWeb3Wallet();
   const account = impersonateAddress || acc;
   const [data, setData] = useState<VaultSubgraphDataContextType>(
     defaultVaultSubgraphData
@@ -85,8 +85,12 @@ const useFetchVaultSubgraphData = () => {
                     account
                       ? `
                           ${vaultAccountsGraphql(account, version)}
-                          ${transactionsGraphql(account)}
-                          ${balancesGraphql(account)}
+                          ${transactionsGraphql(account, chain)}
+                          ${
+                            chain === Chains.Solana
+                              ? ""
+                              : balancesGraphql(account, chain)
+                          }
                           ${liquidityMiningPoolAccountsGraphql(
                             account,
                             version
@@ -112,15 +116,19 @@ const useFetchVaultSubgraphData = () => {
                 account
                   ? `
                       ${vaultAccountsGraphql(account, version)}
-                      ${transactionsGraphql(account)}
-                      ${balancesGraphql(account)}
+                      ${transactionsGraphql(account, chain)}
+                      ${balancesGraphql(account, chain)}
                       ${liquidityMiningPoolAccountsGraphql(account, version)}
                     `
                   : ""
               }
               ${vaultGraphql(version, chain)}
               ${vaultActivitiesGraphql(version, chain)}
-              ${vaultPriceHistoryGraphql(version, chain)}
+              ${
+                chain === Chains.Solana
+                  ? ""
+                  : vaultPriceHistoryGraphql(version, chain)
+              }
               ${liquidityMiningPoolGraphql(version, chain)}
             }`.replaceAll(" ", "")
           );

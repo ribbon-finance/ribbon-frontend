@@ -48,6 +48,7 @@ import Pagination from "shared/lib/components/Common/Pagination";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
+import { useChain } from "shared/lib/hooks/chainContext";
 
 const PortfolioTransactionsContainer = styled.div`
   margin-top: 64px;
