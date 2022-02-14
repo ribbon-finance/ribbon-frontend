@@ -24,6 +24,7 @@ import useScreenSize from "shared/lib/hooks/useScreenSize";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import TableWithFixedHeader from "shared/lib/components/Common/TableWithFixedHeader";
+import { Chains, useChain } from "shared/lib/hooks/chainContext";
 
 const VaultActivityIcon = styled.div<{ type: VaultActivityType }>`
   display: flex;
@@ -88,23 +89,28 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
       decimals: getAssetDecimals(asset),
     };
   }, [vaultOption]);
+
   const { searchAssetPriceFromTimestamp, loading: assetPriceLoading } =
     useAssetsPriceHistory();
 
   const { width: screenWidth } = useScreenSize();
   const loadingText = useTextAnimation(assetPriceLoading);
-  const { chainId } = useWeb3Wallet();
+  const [chain] = useChain();
 
   const getVaultActivityExternalURL = useCallback(
     (activity: VaultActivity) => {
       switch (activity.type) {
         case "minting":
-          return `${getEtherscanURI(chainId || 1)}/tx/${activity.openTxhash}`;
+          return `${getEtherscanURI(chain || Chains.Ethereum)}/tx/${
+            activity.openTxhash
+          }`;
         case "sales":
-          return `${getEtherscanURI(chainId || 1)}/tx/${activity.txhash}`;
+          return `${getEtherscanURI(chain || Chains.Ethereum)}/tx/${
+            activity.txhash
+          }`;
       }
     },
-    [chainId]
+    [chain]
   );
 
   const getVaultActivityTableData = useCallback(

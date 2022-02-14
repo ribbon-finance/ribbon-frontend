@@ -171,6 +171,7 @@ const perPage = 6;
 
 const PortfolioTransactions = () => {
   const { transactions, loading } = useTransactions();
+  const [chain] = useChain();
   const { active, chainId } = useWeb3Wallet();
   // const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice();
   const { searchAssetPriceFromTimestamp, loading: assetPricesLoading } =
@@ -456,7 +457,7 @@ const PortfolioTransactions = () => {
 
           {chainId && (
             <BaseLink
-              to={`${getEtherscanURI(chainId)}/tx/${transaction.txhash}`}
+              to={`${getEtherscanURI(chain)}/tx/${transaction.txhash}`}
               target="_blank"
               rel="noreferrer noopener"
               className="d-none d-md-block"

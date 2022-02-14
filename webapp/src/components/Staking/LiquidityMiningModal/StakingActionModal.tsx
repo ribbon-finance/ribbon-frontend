@@ -6,7 +6,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import moment from "moment";
 
 import {
-  BLOCKCHAIN_EXPLORER_NAME,
+  getExplorerName,
   getAssets,
   getEtherscanURI,
   StakingVaultOptions,
@@ -127,6 +127,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     "warning" | "form" | "preview" | "walletAction" | "processing"
   >("warning");
   const [input, setInput] = useState("");
+  const [chain] = useChain();
   const { chainId } = useWeb3Wallet();
   const { provider } = useWeb3Context();
   const decimals = getAssetDecimals(getAssets(vaultOption));
@@ -467,13 +468,13 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               <BaseModalContentColumn marginTop="auto">
                 {chainId && (
                   <BaseUnderlineLink
-                    to={`${getEtherscanURI(chainId)}/tx/${txId}`}
+                    to={`${getEtherscanURI(chain)}/tx/${txId}`}
                     target="_blank"
                     rel="noreferrer noopener"
                     className="d-flex"
                   >
                     <PrimaryText className="mb-2">
-                      View on {BLOCKCHAIN_EXPLORER_NAME[chainId]}
+                      View on {getExplorerName(chain)}
                     </PrimaryText>
                   </BaseUnderlineLink>
                 )}

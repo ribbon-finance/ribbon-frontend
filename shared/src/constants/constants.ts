@@ -72,6 +72,13 @@ export const isAvaxVault = (vault: string) =>
 export const isAuroraVault = (vault: string) =>
   isAuroraNetwork(VaultAddressMap[vault as VaultOptions].chainId);
 
+export const getVaultChain = (vault: string): Chains => {
+  if (isEthVault(vault)) return Chains.Ethereum;
+  else if (isAvaxVault(vault)) return Chains.Avalanche;
+  else if (isSolanaVault(vault)) return Chains.Solana;
+  else throw new Error(`Unknown network for ${vault}`);
+};
+
 export const getVaultNetwork = (vault: string): MAINNET_NAMES => {
   if (isEthVault(vault)) return "mainnet";
   else if (isAvaxVault(vault)) return "avax";
@@ -127,7 +134,7 @@ const PutThetaVault: VaultOptions[] = [
 
 export const SolanaAssets = ["SOL"];
 
-export const isSolanaVault = (vaultOption: VaultOptions) => {
+export const isSolanaVault = (vaultOption: string) => {
   const list = SolanaVaultList as unknown;
   return (list as string[]).includes(vaultOption);
 };
@@ -471,7 +478,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-WNEAR-C": "rNEAR-THETA",
 };
 
-export const BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
+export const EVM_BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
   [CHAINID.ETH_MAINNET]: "Etherscan",
   [CHAINID.ETH_KOVAN]: "Etherscan",
   [CHAINID.AVAX_MAINNET]: "SnowTrace",
@@ -479,7 +486,7 @@ export const BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
   [CHAINID.AURORA_MAINNET]: "BlockScout",
 };
 
-export const BLOCKCHAIN_EXPLORER_URI: Record<number, string> = {
+export const EVM_BLOCKCHAIN_EXPLORER_URI: Record<number, string> = {
   [CHAINID.ETH_MAINNET]: "https://etherscan.io",
   [CHAINID.ETH_KOVAN]: "https://kovan.etherscan.io",
   [CHAINID.AVAX_MAINNET]: "https://snowtrace.io",
@@ -489,8 +496,20 @@ export const BLOCKCHAIN_EXPLORER_URI: Record<number, string> = {
 
 export const AVAX_BRIDGE_URI = "https://bridge.avax.network";
 
-export const getEtherscanURI = (chainId: number) =>
-  BLOCKCHAIN_EXPLORER_URI[chainId as CHAINID];
+export const getExplorerName = (chain: Chains) => {
+  if (chain === Chains.Solana) {
+    return "Solscan";
+  }
+  return EVM_BLOCKCHAIN_EXPLORER_NAME[CHAINS_TO_ID[chain]];
+};
+
+// FIXME: Rename to getExplorerURI to avoid confusion
+export const getEtherscanURI = (chain: Chains) => {
+  if (chain === Chains.Solana) {
+    return "https://solscan.io";
+  }
+  return EVM_BLOCKCHAIN_EXPLORER_URI[CHAINS_TO_ID[chain]];
+};
 
 export const getSubgraphURIForVersion = (
   version: VaultVersion,

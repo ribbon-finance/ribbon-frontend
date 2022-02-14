@@ -17,6 +17,7 @@ import sizes from "shared/lib/designSystem/sizes";
 import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
 import {
+  getVaultChain,
   getDisplayAssets,
   getEtherscanURI,
   hasVaultVersion,
@@ -267,11 +268,11 @@ const DepositPage = () => {
 
       <DepositPageContainer className="py-5">
         <div className="row">
-          {VaultAddressMap[vaultOption][vaultVersion] && chainId && (
+          {VaultAddressMap[vaultOption][vaultVersion] && (
             <BaseLink
-              to={`${getEtherscanURI(chainId)}/address/${VaultAddressMap[
-                vaultOption
-              ][vaultVersion]!}`}
+              to={`${getEtherscanURI(
+                getVaultChain(vaultOption)
+              )}/address/${VaultAddressMap[vaultOption][vaultVersion]!}`}
               target="_blank"
               rel="noreferrer noopener"
               className="w-100"
