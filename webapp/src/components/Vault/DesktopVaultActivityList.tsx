@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo } from "react";
-import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled from "styled-components";
 import moment from "moment";
 
@@ -26,7 +25,7 @@ import useScreenSize from "shared/lib/hooks/useScreenSize";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import TableWithFixedHeader from "shared/lib/components/Common/TableWithFixedHeader";
-import { Chains, useChain } from "shared/lib/hooks/chainContext";
+import { Chains } from "shared/lib/hooks/chainContext";
 
 const VaultActivityIcon = styled.div<{ type: VaultActivityType }>`
   display: flex;
@@ -207,6 +206,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
       }
     },
     [
+      chain,
       assetPriceLoading,
       screenWidth,
       loadingText,

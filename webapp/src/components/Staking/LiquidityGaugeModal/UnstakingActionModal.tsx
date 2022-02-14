@@ -341,6 +341,7 @@ const UnstakingActionModal: React.FC<UnstakingActionModalProps> = ({
         );
     }
   }, [
+    chain,
     chainId,
     color,
     decimals,

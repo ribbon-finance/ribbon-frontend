@@ -151,7 +151,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
           );
       }
     },
-    [asset, decimals, vaultOption]
+    [chain, asset, decimals, vaultOption]
   );
 
   return (
