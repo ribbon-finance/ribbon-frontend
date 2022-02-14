@@ -119,11 +119,11 @@ export const useWeb3Wallet = (): Web3WalletData => {
 
           await deactivateEth();
           selectWalletSolana(walletName);
-          setConnectedWallet(wallet as SolanaWallet);
         } else {
           throw new Error("Wallet is not supported");
         }
 
+        setConnectedWallet(wallet as SolanaWallet);
         setConnectingWallet(undefined);
       } catch (error) {
         console.error(error);

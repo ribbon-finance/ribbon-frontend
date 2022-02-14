@@ -1,5 +1,4 @@
 import { BigNumber } from "ethers";
-
 import { VaultOptions } from "../constants/constants";
 
 export const AssetsList = [

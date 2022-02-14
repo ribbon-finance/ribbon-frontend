@@ -12,7 +12,8 @@ import { usePendingTransactions } from "./pendingTransactionsContext";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import useWeb3Wallet from "./useWeb3Wallet";
-import { isEthereumWallet, isSolanaWallet, Wallet } from "../models/wallets";
+import { isEVMChain, isSolanaChain } from "../utils/chains";
+import { useChain } from "./chainContext";
 
 interface AssetBalance {
   asset: Assets;
@@ -54,6 +55,7 @@ const useFetchAssetBalanceData = (
   const { transactionsCounter } = usePendingTransactions();
   const { connection } = useConnection();
   const { publicKey } = useWallet();
+  const [chain] = useChain();
 
   const doMulticall = useCallback(async () => {
     if (!isProduction()) {
@@ -68,7 +70,7 @@ const useFetchAssetBalanceData = (
     let ERC20Responses: Array<AssetBalance> = [];
     let SOLResponse: Array<AssetBalance> = [];
 
-    if (isEthereumWallet(connectedWallet as Wallet) && ethereumProvider) {
+    if (isEVMChain(chain) && ethereumProvider) {
       ERC20Responses = await Promise.all(
         AssetsList.map(async (asset) => {
           const token = getERC20Token(
@@ -89,7 +91,7 @@ const useFetchAssetBalanceData = (
       );
     }
 
-    if (isSolanaWallet(connectedWallet as Wallet)) {
+    if (isSolanaChain(chain)) {
       // FIXME: Token balance should query based on address of Solana-based tokens
       // const tokenBalance = await connection.getTokenAccountBalance(new PublicKey("So11111111111111111111111111111111111111112"));
       const tokenBalance = await connection.getBalance(publicKey as PublicKey);
