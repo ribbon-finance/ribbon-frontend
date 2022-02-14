@@ -5,6 +5,7 @@ import { useWeb3React } from "@web3-react/core";
 import {
   getSubgraphURIForVersion,
   SUBGRAPHS_TO_QUERY,
+  VaultOptions,
   VaultVersion,
   VaultVersionList,
 } from "../constants/constants";
@@ -73,6 +74,50 @@ const useFetchVaultSubgraphData = () => {
 
       return currentCounter;
     });
+
+    const url = "https://immense-fox-30.hasura.app/v1/graphql";
+
+    const vault = "rSOLTHETA";
+    const vaultAddress = "2YNj4egax5WV1zSgq9hwJFNzHSYZo2rU7S8BZuMdQMKW";
+
+    const getVaultActivityKey = (
+      vault: VaultOptions,
+      type: "shortPositions" | "optionTrades"
+    ) => `vaultActivity_${type}_${vault.replace(/-/g, "")}`;
+
+    const response = await axios.post(url, {
+      query: `query {
+        vault
+
+        ${getVaultActivityKey(
+          vault,
+          "shortPositions"
+        )}: vaultShortPositions (where: { vault_in: ["${vaultAddress}"] }){
+          id
+          depositAmount
+          mintAmount
+          strikePrice
+          openedAt
+          openTxhash
+          expiry
+        }
+        ${getVaultActivityKey(
+          vault,
+          "optionTrades"
+        )}:vaultOptionTrades (where: { vault_in: ["${vaultAddress}"] }) {
+          vaultShortPosition {
+            id
+            strikePrice
+            expiry
+          }
+          sellAmount
+          premium
+          timestamp
+          txhash
+        }
+      }`,
+    });
+    console.log(response);
 
     const allSubgraphResponses = await Promise.all(
       SUBGRAPHS_TO_QUERY.map(async ([version, chainId]) => {
