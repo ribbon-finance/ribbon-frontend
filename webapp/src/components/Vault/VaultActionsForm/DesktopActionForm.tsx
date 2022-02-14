@@ -73,7 +73,7 @@ const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
 
       {chainId && VaultAddressMap[vault.vaultOption][vault.vaultVersion] && (
         <BaseLink
-          to={`${getEtherscanURI(chainId)}/address/${VaultAddressMap[
+          to={`${getEtherscanURI(chain)}/address/${VaultAddressMap[
             vault.vaultOption
           ][vault.vaultVersion]!}`}
           target="_blank"

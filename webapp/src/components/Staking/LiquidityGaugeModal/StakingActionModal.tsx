@@ -4,7 +4,7 @@ import { formatUnits, parseUnits } from "@ethersproject/units";
 import { BigNumber } from "@ethersproject/bignumber";
 
 import {
-  BLOCKCHAIN_EXPLORER_NAME,
+  getExplorerName,
   getEtherscanURI,
   VaultOptions,
 } from "shared/lib/constants/constants";
@@ -36,6 +36,7 @@ import {
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useV2Vault from "shared/lib/hooks/useV2Vault";
+import { useChain } from "shared/lib/hooks/chainContext";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -109,6 +110,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     "form" | "preview" | "walletAction" | "processing"
   >("form");
   const [input, setInput] = useState("");
+  const [chain] = useChain();
   const { chainId } = useWeb3Wallet();
   const { provider } = useWeb3Context();
   const { data: lg5Data, loading: lg5DataLoading } =
@@ -426,13 +428,13 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               <BaseModalContentColumn marginTop="auto">
                 {chainId && (
                   <BaseUnderlineLink
-                    to={`${getEtherscanURI(chainId)}/tx/${txId}`}
+                    to={`${getEtherscanURI(chain)}/tx/${txId}`}
                     target="_blank"
                     rel="noreferrer noopener"
                     className="d-flex"
                   >
                     <PrimaryText className="mb-2">
-                      View on {BLOCKCHAIN_EXPLORER_NAME[chainId]}
+                      View on {getExplorerName(chain)}
                     </PrimaryText>
                   </BaseUnderlineLink>
                 )}

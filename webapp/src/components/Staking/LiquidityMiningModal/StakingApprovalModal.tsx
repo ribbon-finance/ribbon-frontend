@@ -9,7 +9,7 @@ import {
   BaseModalContentColumn,
 } from "shared/lib/designSystem";
 import {
-  BLOCKCHAIN_EXPLORER_NAME,
+  getExplorerName,
   getEtherscanURI,
   VaultLiquidityMiningMap,
   StakingVaultOptions,
@@ -48,6 +48,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
   stakingPoolData,
   vaultOption,
 }) => {
+  const [chain] = useChain();
   const { chainId } = useWeb3Wallet();
   const { provider } = useWeb3Context();
   const { addPendingTransaction } = usePendingTransactions();
@@ -137,13 +138,13 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
               <BaseModalContentColumn marginTop="auto">
                 {chainId && (
                   <BaseUnderlineLink
-                    to={`${getEtherscanURI(chainId)}/tx/${txId}`}
+                    to={`${getEtherscanURI(chain)}/tx/${txId}`}
                     target="_blank"
                     rel="noreferrer noopener"
                     className="d-flex"
                   >
                     <PrimaryText className="mb-2">
-                      View on {BLOCKCHAIN_EXPLORER_NAME[chainId]}
+                      View on {getExplorerName(chain)}
                     </PrimaryText>
                   </BaseUnderlineLink>
                 )}
