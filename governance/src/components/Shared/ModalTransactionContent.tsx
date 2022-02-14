@@ -8,10 +8,7 @@ import {
   PrimaryText,
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import {
-  BLOCKCHAIN_EXPLORER_NAME,
-  getEtherscanURI,
-} from "shared/lib/constants/constants";
+import { getEtherscanURI } from "shared/lib/constants/constants";
 import { useWeb3React } from "@web3-react/core";
 
 const barAnimationTime = 500;
@@ -115,9 +112,7 @@ const ModalTransactionContent: React.FC<ModalTransactionContentProps> = ({
               rel="noreferrer noopener"
               className="d-flex"
             >
-              <PrimaryText className="mb-2">
-                View on {BLOCKCHAIN_EXPLORER_NAME[chainId]}
-              </PrimaryText>
+              <PrimaryText className="mb-2">View on Etherscan</PrimaryText>
             </BaseUnderlineLink>
           )}
         </BaseModalContentColumn>

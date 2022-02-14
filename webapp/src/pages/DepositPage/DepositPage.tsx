@@ -19,7 +19,7 @@ import usePullUp from "../../hooks/usePullUp";
 import {
   getVaultChain,
   getDisplayAssets,
-  getEtherscanURI,
+  getExplorerURI,
   hasVaultVersion,
   VaultAddressMap,
   VaultList,
@@ -270,7 +270,7 @@ const DepositPage = () => {
         <div className="row">
           {VaultAddressMap[vaultOption][vaultVersion] && (
             <BaseLink
-              to={`${getEtherscanURI(
+              to={`${getExplorerURI(
                 getVaultChain(vaultOption)
               )}/address/${VaultAddressMap[vaultOption][vaultVersion]!}`}
               target="_blank"

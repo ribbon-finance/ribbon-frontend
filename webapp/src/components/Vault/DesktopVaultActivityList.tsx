@@ -4,7 +4,7 @@ import moment from "moment";
 
 import {
   getAssets,
-  getEtherscanURI,
+  getExplorerURI,
   isPutVault,
   getOptionAssets,
   VaultOptions,
@@ -102,11 +102,11 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
     (activity: VaultActivity) => {
       switch (activity.type) {
         case "minting":
-          return `${getEtherscanURI(chain || Chains.Ethereum)}/tx/${
+          return `${getExplorerURI(chain || Chains.Ethereum)}/tx/${
             activity.openTxhash
           }`;
         case "sales":
-          return `${getEtherscanURI(chain || Chains.Ethereum)}/tx/${
+          return `${getExplorerURI(chain || Chains.Ethereum)}/tx/${
             activity.txhash
           }`;
       }

@@ -21,7 +21,7 @@ import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
 import { capitalize } from "shared/lib/utils/text";
 import {
   getAssets,
-  getEtherscanURI,
+  getExplorerURI,
   VaultNameOptionMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
@@ -458,7 +458,7 @@ const PortfolioTransactions = () => {
 
           {chainId && (
             <BaseLink
-              to={`${getEtherscanURI(chain)}/tx/${transaction.txhash}`}
+              to={`${getExplorerURI(chain)}/tx/${transaction.txhash}`}
               target="_blank"
               rel="noreferrer noopener"
               className="d-none d-md-block"

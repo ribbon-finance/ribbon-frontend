@@ -4,7 +4,7 @@ import { BaseUnderlineLink, PrimaryText } from "shared/lib/designSystem";
 import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import {
   getExplorerName,
-  getEtherscanURI,
+  getExplorerURI,
   Chains,
 } from "shared/lib/constants/constants";
 import { useChain } from "shared/lib/hooks/chainContext";
@@ -43,7 +43,7 @@ const TransactionStep: React.FC<TransactionStepProps> = ({ txhash }) => {
       <BottomTextContainer>
         {chain !== Chains.NotSelected && txhash ? (
           <BaseUnderlineLink
-            to={`${getEtherscanURI(chain)}/tx/${txhash}`}
+            to={`${getExplorerURI(chain)}/tx/${txhash}`}
             target="_blank"
             rel="noreferrer noopener"
             className="d-flex"
