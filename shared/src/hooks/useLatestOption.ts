@@ -4,6 +4,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 
 import {
   getAssets,
+  getVaultChain,
   isPutVault,
   VaultList,
   VaultOptions,
@@ -31,6 +32,7 @@ export const useLatestOption = (
     vaultVersion
   );
   const { prices, loading: assetPriceLoading } = useAssetsPrice();
+  const chain = getVaultChain(vaultOption);
 
   const optionHistory = useMemo(() => {
     const sortedActivities = activities
@@ -63,7 +65,7 @@ export const useLatestOption = (
         amount: isPut
           ? parseFloat(
               assetToFiat(shortPosition.depositAmount, prices[asset]!, decimals)
-            ) / formatOptionStrike(shortPosition.strikePrice)
+            ) / formatOptionStrike(shortPosition.strikePrice, chain)
           : parseFloat(formatUnits(shortPosition.depositAmount, decimals)),
         isPut: isPut,
       };
