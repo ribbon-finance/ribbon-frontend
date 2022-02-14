@@ -19,7 +19,7 @@ import {
   CurveSwapSlippage,
   getSolanaVaultInstance,
 } from "shared/lib/constants/constants";
-import { isETHVault } from "shared/lib/utils/vault";
+import { getUserWithdrawQueueNodes, isETHVault } from "shared/lib/utils/vault";
 import { amountAfterSlippage } from "shared/lib/utils/math";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
@@ -32,6 +32,9 @@ import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { useFlexVault } from "shared/lib/hooks/useFlexVault";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { getAssetDecimals } from "shared/lib/utils/asset";
+import { vaultUtils } from "@zetamarkets/flex-sdk";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
 
 export interface ActionStepsProps {
   vault: {
@@ -54,10 +57,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   skipToPreview = false,
 }) => {
   const { ethereumProvider } = useWeb3Wallet();
+  const { client } = useFlexVault();
+  const { publicKey } = useWallet();
+
   const { vaultActionForm, resetActionForm, withdrawMetadata } =
     useVaultActionForm(vaultOption);
   const { data: priceHistories } = useVaultsPriceHistory();
-  const { client } = useFlexVault();
 
   const firstStep = useMemo(() => {
     if (
@@ -260,7 +265,20 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                     switch (vaultActionForm.vaultOption) {
                       case "rSOL-THETA":
                         if (client) {
-                          // res = await client.removeQueuedDeposit();
+                          const [vaultAddress] =
+                            await vaultUtils.getVaultAddress("rSOL-THETA");
+                          const depositNodes = getUserWithdrawQueueNodes(
+                            vault,
+                            publicKey as PublicKey
+                          );
+                          const pendingRes = await Promise.all(
+                            depositNodes.map((node) =>
+                              client.removeQueuedDeposit(vaultAddress, node)
+                            )
+                          );
+
+                          console.log(pendingRes);
+                          res = { hash: pendingRes[0] };
                         }
                         break;
                       case "rstETH-THETA":

@@ -21,7 +21,7 @@ const useRedirectOnSwitchChain = (selectedChain: Chains) => {
         history.push("/");
       }, 500);
     }
-  }, [currentChain, selectedChain, history, isHomePage]);
+  }, [currentChain, selectedChain, history, isHomePage, active]);
 };
 
 export default useRedirectOnSwitchChain;

@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import { BigNumber } from "ethers";
 
 import { Assets, AssetsList } from "../store/types";
-import { useWeb3React } from "@web3-react/core";
 import { impersonateAddress } from "../utils/development";
 import { isNativeToken } from "../constants/constants";
 import { ERC20Token } from "../models/eth";

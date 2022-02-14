@@ -1,3 +1,4 @@
+import { vaultUtils } from "@zetamarkets/flex-sdk";
 import { BigNumber } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
 import {
@@ -6,6 +7,9 @@ import {
   VaultOptions,
 } from "../constants/constants";
 import { getAssetColor } from "./asset";
+import { PublicKey } from "@solana/web3.js";
+import { vaultTypes } from "@zetamarkets/flex-sdk";
+import * as anchor from "@project-serum/anchor";
 
 export const isVaultFull = (
   deposits: BigNumber,
@@ -28,3 +32,84 @@ export const isETHVault = (vault: VaultOptions) =>
 
 export const getVaultColor = (vault: VaultOptions) =>
   getAssetColor(getDisplayAssets(vault));
+
+/*** SOLANA-ONLY UTILS ***/
+export const isEqualsToUserAddress = (
+  userKey: PublicKey,
+  nodeKey: PublicKey
+): boolean => {
+  return userKey.equals(nodeKey);
+};
+
+export const getUserDepositQueueNodes = (
+  vault: vaultTypes.Vault,
+  userKey: PublicKey
+): PublicKey[] => {
+  const depositQueueNodes: PublicKey[] = [];
+
+  if (vault) {
+    vault.depositQueue.forEach((deposit) => {
+      if (
+        deposit?.info?.userKey &&
+        isEqualsToUserAddress(userKey, deposit.info.userKey)
+      ) {
+        depositQueueNodes.push(deposit.address);
+      }
+    });
+  }
+
+  return depositQueueNodes;
+};
+
+export const getUserDepositQueueAmount = async (
+  vault: vaultTypes.Vault,
+  connection: anchor.web3.Connection,
+  userKey: PublicKey
+): Promise<BigNumber> => {
+  const depositQueueNodes = getUserDepositQueueNodes(vault, userKey);
+  const totalDeposits = await Promise.all(
+    depositQueueNodes.map((node) => connection.getBalance(node))
+  );
+
+  console.log(
+    "Total deposits",
+    totalDeposits.length,
+    totalDeposits.reduce((val, acc) => (acc += val), 0)
+  );
+  return BigNumber.from(totalDeposits.reduce((val, acc) => (acc += val), 0));
+};
+
+export const getUserWithdrawQueueNodes = (
+  vault: vaultTypes.Vault,
+  userKey: PublicKey
+): PublicKey[] => {
+  const withdrawQueueNodes: PublicKey[] = [];
+
+  if (vault) {
+    vault.withdrawalQueue.forEach((withdraw) => {
+      if (
+        withdraw?.info?.userKey &&
+        isEqualsToUserAddress(userKey, withdraw.info.userKey)
+      ) {
+        withdrawQueueNodes.push(withdraw.address);
+      }
+    });
+  }
+
+  return withdrawQueueNodes;
+};
+
+export const getUserWithdrawQueueAmount = async (
+  vault: vaultTypes.Vault,
+  connection: anchor.web3.Connection,
+  userKey: PublicKey
+): Promise<BigNumber> => {
+  const withdrawQueueNodes = getUserWithdrawQueueNodes(vault, userKey);
+  const totalWithdrawal = await Promise.all(
+    withdrawQueueNodes.map((node) => connection.getBalance(node))
+  );
+
+  console.log("Total withdrawals", totalWithdrawal.length),
+    totalWithdrawal.reduce((val, acc) => (acc += val), 0);
+  return BigNumber.from(totalWithdrawal.reduce((val, acc) => (acc += val), 0));
+};
