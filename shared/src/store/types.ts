@@ -1,4 +1,5 @@
 import { BigNumber } from "ethers";
+import { Moment } from "moment";
 
 import { VaultOptions } from "../constants/constants";
 
@@ -69,6 +70,21 @@ export type PendingTransaction = {
       amount: string;
       transferVault: VaultOptions;
       receiveVault: VaultOptions;
+    }
+  /**
+   * Governance transaction
+   */
+  | {
+      type:
+        | "governanceStake"
+        | "governanceIncreaseAmount"
+        | "governanceIncreaseDuration";
+      amount: string;
+      expiry: Moment;
+    }
+  | {
+      type: "governanceApproval" | "governanceUnstake";
+      amount: string;
     }
 );
 

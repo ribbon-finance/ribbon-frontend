@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { setTimeout } from "timers";
@@ -28,6 +34,9 @@ import useENSSearch from "shared/lib/hooks/useENSSearch";
 import { useGovernanceGlobalState } from "../../store/store";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import { VotingEscrowAddress } from "shared/lib/constants/constants";
+import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
+import moment from "moment";
+import { BigNumber } from "ethers";
 
 const walletButtonWidth = 55;
 
@@ -273,14 +282,34 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
     active,
     account,
   } = useWeb3React();
-  const rbnAllowance = useTokenAllowance("rbn", VotingEscrowAddress);
+  const rbnAllowance =
+    useTokenAllowance("rbn", VotingEscrowAddress) || BigNumber.from(0);
+  const { data: rbnTokenAccount } = useRBNTokenAccount();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
     "hidden"
   );
   const { data: ensData } = useENSSearch(account || "");
+
   const [, setStakingModal] = useGovernanceGlobalState("stakingModal");
+  const [, setUnstakingModal] = useGovernanceGlobalState("unstakingModal");
+
+  const stakeMode = useMemo(() => {
+    if (rbnAllowance.isZero()) {
+      return "approve";
+    }
+
+    if (
+      rbnTokenAccount &&
+      rbnTokenAccount.lockEndTimestamp &&
+      moment().isBefore(moment.unix(rbnTokenAccount.lockEndTimestamp))
+    ) {
+      return "increase";
+    }
+
+    return "stake";
+  }, [rbnAllowance, rbnTokenAccount]);
 
   // Track clicked area outside of desktop menu
   const desktopMenuRef = useRef(null);
@@ -401,18 +430,25 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
           <MobileStakingButton
             role="button"
             variant="stake"
-            onClick={() => {
-              setStakingModal({
+            onClick={() =>
+              setStakingModal((prev) => ({
+                ...prev,
                 show: true,
-                mode: rbnAllowance?.isZero() ? "approve" : "stake",
-              });
-            }}
+                mode: stakeMode,
+              }))
+            }
           >
             <Title fontSize={14} color={colors.red}>
-              {rbnAllowance?.isZero() ? "Approve" : "Stake"}
+              {stakeMode === "approve" ? "Approve" : "Stake"}
             </Title>
           </MobileStakingButton>
-          <MobileStakingButton role="button" variant="unstake">
+          <MobileStakingButton
+            role="button"
+            variant="unstake"
+            onClick={() => {
+              setUnstakingModal((prev) => ({ ...prev, show: true }));
+            }}
+          >
             <Title fontSize={14}>Unstake</Title>
           </MobileStakingButton>
         </StakeUnstakeContainer>

@@ -85,6 +85,7 @@ const IconCircle = styled.div<StatusProps & { color?: string }>`
 interface ToastProps extends BootstrapToastProps, StatusProps {
   title: string;
   subtitle: string;
+  icon?: JSX.Element;
   extra?: {
     vaultOption: VaultOptions;
   };
@@ -94,10 +95,15 @@ const BaseToast: React.FC<ToastProps> = ({
   type,
   title,
   subtitle,
+  icon: _icon,
   extra,
   ...props
 }) => {
   const icon = useMemo(() => {
+    if (_icon) {
+      return _icon;
+    }
+
     switch (type) {
       case "success":
         return <SuccessIcon color={colors.green} />;
@@ -117,7 +123,7 @@ const BaseToast: React.FC<ToastProps> = ({
             return <AssetLogo height="100%" />;
         }
     }
-  }, [extra, type]);
+  }, [extra, _icon, type]);
 
   // When the caller doesnt specify the `show` variable
   // it means that the caller doesnt want to control the state of the Toast

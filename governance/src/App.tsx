@@ -8,6 +8,7 @@ import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
 import { getLibrary } from "shared/lib/utils/getLibrary";
 import { ExternalAPIDataContextProvider } from "shared/lib/hooks/externalAPIDataContext";
 import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContext";
+import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTransactionsContext";
 
 function App() {
   useEffect(() => {
@@ -17,13 +18,15 @@ function App() {
   return (
     <Web3ContextProvider>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <Web3DataContextProvider>
-          <SubgraphDataContextProvider>
-            <ExternalAPIDataContextProvider>
-              <RootApp />
-            </ExternalAPIDataContextProvider>
-          </SubgraphDataContextProvider>
-        </Web3DataContextProvider>
+        <PendingTransactionsContextProvider>
+          <Web3DataContextProvider>
+            <SubgraphDataContextProvider>
+              <ExternalAPIDataContextProvider>
+                <RootApp />
+              </ExternalAPIDataContextProvider>
+            </SubgraphDataContextProvider>
+          </Web3DataContextProvider>
+        </PendingTransactionsContextProvider>
       </Web3ReactProvider>
     </Web3ContextProvider>
   );

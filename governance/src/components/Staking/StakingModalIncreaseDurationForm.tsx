@@ -1,13 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { useWeb3React } from "@web3-react/core";
-import { formatUnits, parseUnits } from "@ethersproject/units";
-import { BigNumber } from "@ethersproject/bignumber";
+import { BigNumber } from "ethers";
+import moment, { duration, Duration } from "moment";
 
+import { CalendarIcon, StakeIcon } from "shared/lib/assets/icons/icons";
 import {
-  BaseInput,
-  BaseInputButton,
-  BaseInputContainer,
   BaseInputLabel,
   BaseModalContentColumn,
   BaseModalWarning,
@@ -16,24 +13,14 @@ import {
   Title,
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import { CalendarIcon, StakeIcon } from "shared/lib/assets/icons/icons";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
-import InlineSelectInput from "shared/lib/components/Common/InlineSelectInput";
 import { formatBigNumber, formatBigNumberAmount } from "shared/lib/utils/math";
-import moment, { duration, Duration } from "moment";
-import StakingModalFormCalendarOverlay from "./StakingModalFormCalendarOverlay";
-import { calculateInitialveRBNAmount } from "shared/lib/utils/governanceMath";
 import { ActionButton } from "shared/lib/components/Common/buttons";
+import StakingModalFormCalendarOverlay from "./StakingModalFormCalendarOverlay";
+import InlineSelectInput from "shared/lib/components/Common/InlineSelectInput";
+import { calculateInitialveRBNAmount } from "shared/lib/utils/governanceMath";
 
-const durationSelectOptions = [
-  "1W",
-  "1M",
-  "3M",
-  "6M",
-  "1Y",
-  "2Y",
-  "custom",
-] as const;
+const durationSelectOptions = ["1W", "1M", "3M", "6M", "1Y", "custom"] as const;
 type DurationSelectOption = typeof durationSelectOptions[number];
 const durationSelectOptionsExcludeCustom = durationSelectOptions.filter(
   (option) => option !== "custom"
@@ -42,7 +29,7 @@ const durationSelectOptionsExcludeCustom = durationSelectOptions.filter(
 const getDurationSelectOptionFromDuration = (
   duration: Duration
 ): DurationSelectOption => {
-  switch (duration.asDays()) {
+  switch (Math.floor(duration.asDays())) {
     case 7:
       return "1W";
     case 30:
@@ -53,10 +40,25 @@ const getDurationSelectOptionFromDuration = (
       return "6M";
     case 365:
       return "1Y";
-    case 2 * 365:
-      return "2Y";
     default:
       return "custom";
+  }
+};
+
+const getDaysFromDurationSelectOption = (option: DurationSelectOption) => {
+  switch (option) {
+    case "1W":
+      return 7;
+    case "1M":
+      return 30;
+    case "3M":
+      return 91;
+    case "6M":
+      return 182;
+    case "1Y":
+      return 365;
+    default:
+      return 0;
   }
 };
 
@@ -74,7 +76,7 @@ const StakingWarningHighlight = styled.strong`
   color: ${colors.green};
 `;
 
-interface StakingModalFormProps {
+interface StakingModalIncreaseDurationFormProps {
   initialStakingData: {
     amount: BigNumber;
     duration: Duration;
@@ -82,68 +84,48 @@ interface StakingModalFormProps {
   proceedToPreview: (amount: BigNumber, duration: Duration) => void;
 }
 
-const StakingModalForm: React.FC<StakingModalFormProps> = ({
-  initialStakingData,
-  proceedToPreview,
-}) => {
-  const { active } = useWeb3React();
+const StakingModalIncreaseDurationForm: React.FC<
+  StakingModalIncreaseDurationFormProps
+> = ({ initialStakingData, proceedToPreview }) => {
   const { data: rbnTokenAccount } = useRBNTokenAccount();
 
-  const [showCalendarPicker, setShowCalendarPicker] = useState(false);
+  const [expiryMoment, durationToExpiry] = useMemo(() => {
+    const expiryMoment =
+      rbnTokenAccount && rbnTokenAccount.lockEndTimestamp
+        ? moment.unix(rbnTokenAccount.lockEndTimestamp)
+        : moment();
 
-  const [amountInput, setAmountInput] = useState(
-    initialStakingData.amount.isZero()
-      ? ""
-      : formatUnits(initialStakingData.amount)
-  );
+    return [expiryMoment, moment.duration(expiryMoment.diff(moment()))];
+  }, [rbnTokenAccount]);
+
+  const [showCalendarPicker, setShowCalendarPicker] = useState(false);
   const [durationSelectValue, setDurationSelectValue] =
     useState<DurationSelectOption>(
       initialStakingData.duration.asDays() === 0
         ? durationSelectOptions[0]
-        : getDurationSelectOptionFromDuration(initialStakingData.duration)
+        : getDurationSelectOptionFromDuration(
+            initialStakingData.duration.clone().subtract(durationToExpiry)
+          )
     );
   const [stakeDuration, setStakeDuration] = useState<Duration>(
     initialStakingData.duration
   );
 
-  const inputError = useMemo(() => {
-    return Boolean(
-      amountInput &&
-        parseUnits(amountInput, 18).gt(
-          rbnTokenAccount ? rbnTokenAccount.walletBalance : BigNumber.from(0)
-        )
-    );
-  }, [amountInput, rbnTokenAccount]);
-
-  const canProceed = useMemo(() => {
-    return amountInput && !inputError && stakeDuration.asDays() >= 7;
-  }, [amountInput, inputError, stakeDuration]);
+  const expiryInFuture = useMemo(
+    () => expiryMoment.isAfter(moment()),
+    [expiryMoment]
+  );
 
   /**
-   * Update stake duration value
+   * We update the stake duration to the correct one that account for current time
    */
   useEffect(() => {
-    switch (durationSelectValue) {
-      case "1W":
-        setStakeDuration(duration(7, "d"));
-        break;
-      case "1M":
-        setStakeDuration(duration(30, "d"));
-        break;
-      case "3M":
-        setStakeDuration(duration(91, "d"));
-        break;
-      case "6M":
-        setStakeDuration(duration(182, "d"));
-        break;
-      case "1Y":
-        setStakeDuration(duration(365, "d"));
-        break;
-      case "2Y":
-        setStakeDuration(duration(2 * 365, "d"));
-        break;
+    let days = getDaysFromDurationSelectOption(durationSelectValue);
+
+    if (days !== 0) {
+      setStakeDuration(durationToExpiry.clone().add(duration(days, "d")));
     }
-  }, [durationSelectValue]);
+  }, [durationSelectValue, durationToExpiry]);
 
   return (
     <>
@@ -159,6 +141,7 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
             duration(Math.ceil(date.diff(moment(), "d", true)), "d")
           );
         }}
+        minDate={expiryMoment.clone().add(7, "d")}
       />
       <BaseModalContentColumn>
         <LogoContainer>
@@ -167,48 +150,15 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
       </BaseModalContentColumn>
       <BaseModalContentColumn>
         <Title fontSize={22} lineHeight={28}>
-          STAKE YOUR RBN
+          INCREASE YOUR LOCK TIME
         </Title>
       </BaseModalContentColumn>
+
+      {/* Calender Slider */}
       <BaseModalContentColumn className="flex-column">
-        <BaseInputLabel>AMOUNT (RBN)</BaseInputLabel>
-        <BaseInputContainer error={inputError}>
-          <BaseInput
-            className="form-control"
-            placeholder="0"
-            type="number"
-            value={amountInput}
-            onChange={(e) => setAmountInput(e.target.value)}
-            fontSize={32}
-            lineHeight={32}
-          />
-          {active && (
-            <BaseInputButton
-              onClick={() =>
-                setAmountInput(
-                  rbnTokenAccount
-                    ? formatUnits(rbnTokenAccount.walletBalance)
-                    : "0"
-                )
-              }
-            >
-              MAX
-            </BaseInputButton>
-          )}
-        </BaseInputContainer>
-        {inputError && (
-          <SecondaryText
-            fontSize={12}
-            lineHeight={16}
-            color={colors.red}
-            className="mt-2"
-          >
-            Insufficient unstaked RBN balance
-          </SecondaryText>
-        )}
-      </BaseModalContentColumn>
-      <BaseModalContentColumn className="flex-column">
-        <BaseInputLabel className="mb-2">LOCKUP TIME</BaseInputLabel>
+        <BaseInputLabel className="mb-2">
+          INCrEASE LOCK TIME TIME BY
+        </BaseInputLabel>
         <InlineSelectInput
           options={[
             durationSelectOptionsExcludeCustom.map((text) => ({
@@ -247,13 +197,21 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
       </BaseModalContentColumn>
       <BaseModalContentColumn>
         <div className="d-flex justify-content-between w-100">
-          <SecondaryText lineHeight={24}>Unstaked RBN</SecondaryText>
+          <SecondaryText lineHeight={24}>Current Lockup Expiry</SecondaryText>
           <Title
+            color={expiryInFuture ? colors.primaryText : colors.red}
             lineHeight={24}
-            color={inputError ? colors.red : colors.primaryText}
           >
+            {expiryMoment.format("MMM, Do YYYY")}
+          </Title>
+        </div>
+      </BaseModalContentColumn>
+      <BaseModalContentColumn>
+        <div className="d-flex justify-content-between w-100">
+          <SecondaryText lineHeight={24}>Locked RBN</SecondaryText>
+          <Title lineHeight={24}>
             {rbnTokenAccount
-              ? formatBigNumber(rbnTokenAccount.walletBalance, 18)
+              ? formatBigNumber(rbnTokenAccount.lockedBalance, 18)
               : "0"}
           </Title>
         </div>
@@ -264,46 +222,57 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
           className="w-100 text-center"
           fontWeight={400}
         >
-          {amountInput ? (
-            <>
-              Your voting power of{" "}
-              <StakingWarningHighlight>
-                {formatBigNumberAmount(
+          <>
+            Locking up your RBN till{" "}
+            <StakingWarningHighlight>
+              {moment().add(stakeDuration).format("MMMM, Do YYYY")}
+            </StakingWarningHighlight>{" "}
+            increases your voting power by{" "}
+            <StakingWarningHighlight>
+              {formatBigNumberAmount(
+                calculateInitialveRBNAmount(
+                  rbnTokenAccount?.lockedBalance || BigNumber.from(0),
+                  stakeDuration
+                ).sub(
                   calculateInitialveRBNAmount(
-                    parseUnits(amountInput, 18),
-                    stakeDuration
+                    rbnTokenAccount?.lockedBalance || BigNumber.from(0),
+                    durationToExpiry
                   )
-                )}{" "}
-                veRBN
-              </StakingWarningHighlight>{" "}
-              decays linearly over time and expires on{" "}
-              <StakingWarningHighlight>
-                {moment().add(stakeDuration).format("MMM, Do YYYY")}
-              </StakingWarningHighlight>
-            </>
-          ) : (
-            <>Enter an amount to view your voting power</>
-          )}
+                )
+              )}{" "}
+              veRBN
+            </StakingWarningHighlight>{" "}
+            to a total of{" "}
+            <StakingWarningHighlight>
+              {formatBigNumberAmount(
+                calculateInitialveRBNAmount(
+                  rbnTokenAccount?.lockedBalance || BigNumber.from(0),
+                  stakeDuration
+                )
+              )}{" "}
+              veRNB
+            </StakingWarningHighlight>
+          </>
         </SecondaryText>
       </BaseModalWarning>
-      <BaseModalContentColumn marginTop="auto">
+      <BaseModalContentColumn>
         <ActionButton
-          disabled={!canProceed}
+          disabled={!expiryInFuture}
           onClick={() => {
-            if (!canProceed) {
+            if (!expiryInFuture) {
               return;
             }
 
-            proceedToPreview(parseUnits(amountInput, 18), stakeDuration);
+            proceedToPreview(BigNumber.from(0), stakeDuration);
           }}
-          className="py-3 mb-2"
+          className="py-3 mb-3"
           color={colors.red}
         >
-          Preview Stake
+          PREVIEW LOCK TIME INCREASE
         </ActionButton>
       </BaseModalContentColumn>
     </>
   );
 };
 
-export default StakingModalForm;
+export default StakingModalIncreaseDurationForm;

@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 
 import { LiquidityTokenMinter } from "../codegen/LiquidityTokenMinter";
 import { LiquidityTokenMinterFactory } from "../codegen/LiquidityTokenMinterFactory";
-import { LiquidityTokenMinterAddress } from "../constants/constants";
-import { useWeb3Context } from "./web3Context";
+import {
+  isEthNetwork,
+  LiquidityTokenMinterAddress,
+} from "../constants/constants";
+import { useETHWeb3Context } from "./web3Context";
 
 export const getLiquidityTokenMinter = (
   library: any,
@@ -19,15 +22,18 @@ export const getLiquidityTokenMinter = (
 };
 
 const useLiquidityTokenMinter = () => {
-  const { active, library } = useWeb3React();
-  const { provider } = useWeb3Context();
+  const { active, chainId, library } = useWeb3React();
+  const { provider } = useETHWeb3Context();
   const [contract, setContract] = useState<LiquidityTokenMinter | null>(null);
 
   useEffect(() => {
-    if (provider) {
-      setContract(getLiquidityTokenMinter(library || provider, active));
+    if (active && chainId && isEthNetwork(chainId)) {
+      setContract(getLiquidityTokenMinter(library, active));
+      return;
     }
-  }, [provider, active, library]);
+
+    setContract(getLiquidityTokenMinter(provider, false));
+  }, [provider, chainId, active, library]);
 
   return contract;
 };

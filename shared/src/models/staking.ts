@@ -44,6 +44,8 @@ export const defaultLiquidityMiningPoolData: LiquidityMiningPoolData = {
 export interface LiquidityGaugeV5PoolResponse {
   currentStake: BigNumber;
   poolSize: BigNumber;
+  workingBalances: BigNumber;
+  workingSupply: BigNumber;
   claimableRbn: BigNumber;
   unstakedBalance: BigNumber;
   claimedRbn: BigNumber;

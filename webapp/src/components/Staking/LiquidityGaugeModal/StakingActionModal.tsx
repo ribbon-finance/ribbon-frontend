@@ -25,17 +25,26 @@ import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import colors from "shared/lib/designSystem/colors";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
+import {
+  calculateBaseRewards,
+  calculateBoostMultiplier,
+  calculateBoostedRewards,
+} from "shared/lib/utils/governanceMath";
+import { formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import {
+  useAssetBalance,
   useLiquidityGaugeV5PoolData,
   useV2VaultData,
 } from "shared/lib/hooks/web3DataContext";
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useV2Vault from "shared/lib/hooks/useV2Vault";
+import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -69,6 +78,11 @@ const AssetTitle = styled(Title)`
   text-transform: none;
   font-size: 22px;
   line-height: 28px;
+`;
+
+const ContainerWithTooltip = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const InfoColumn = styled(BaseModalContentColumn)`
@@ -111,6 +125,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
   const [input, setInput] = useState("");
   const { chainId } = useWeb3Wallet();
   const { provider } = useWeb3Context();
+  const votingEscrowContract = useVotingEscrow();
   const { data: lg5Data, loading: lg5DataLoading } =
     useLiquidityGaugeV5PoolData(vaultOption);
   const { prices, loading: assetPricesLoading } = useAssetsPrice();
@@ -118,42 +133,79 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     data: { asset, decimals, pricePerShare },
     loading: vaultDataLoading,
   } = useV2VaultData(vaultOption);
+  const { balance: votingPower, loading: votingPowerLoading } =
+    useAssetBalance("veRBN");
 
   const loadingText = useTextAnimation(
-    lg5DataLoading || assetPricesLoading || vaultDataLoading
+    lg5DataLoading ||
+      assetPricesLoading ||
+      vaultDataLoading ||
+      votingPowerLoading
   );
   const { addPendingTransaction } = usePendingTransactions();
+
   const [error, setError] = useState<"insufficient_balance">();
   const [txId, setTxId] = useState("");
+  const [totalVeRBN, setTotalVeRBN] = useState<BigNumber>();
+
   const vaultContract = useV2Vault(vaultOption);
   const color = getVaultColor(vaultOption);
 
-  const [baseAPYText] = useMemo(() => {
+  // APY, base rewards, and boosted rewards
+  const apys: {
+    totalApy: string;
+    baseRewards: string;
+    boostedMultiplier: string;
+    boostedRewards: string;
+  } = useMemo(() => {
     if (lg5DataLoading || assetPricesLoading || vaultDataLoading) {
-      return [loadingText];
+      return {
+        totalApy: loadingText,
+        baseRewards: loadingText,
+        boostedMultiplier: loadingText,
+        boostedRewards: loadingText,
+      };
     }
 
-    if (!lg5Data) {
-      return ["0.00%"];
+    if (!lg5Data || error) {
+      return {
+        totalApy: "---",
+        baseRewards: "---",
+        boostedMultiplier: "",
+        boostedRewards: "---",
+      };
     }
 
-    const poolRewardInUSD = parseFloat(
-      assetToFiat(lg5Data.poolRewardForDuration, prices["RBN"])
-    );
-    const poolSizeInAsset = lg5Data.poolSize
-      .mul(pricePerShare)
-      .div(parseUnits("1", decimals));
-    const poolSizeInUSD = parseFloat(
-      assetToFiat(poolSizeInAsset, prices[asset], decimals)
+    const baseRewards = calculateBaseRewards({
+      poolSize: lg5Data.poolSize,
+      poolReward: lg5Data.poolRewardForDuration,
+      pricePerShare,
+      decimals,
+      assetPrice: prices[asset],
+      rbnPrice: prices["RBN"],
+    });
+
+    const boostedMultiplier = calculateBoostMultiplier({
+      workingBalance: lg5Data.workingBalances,
+      workingSupply: lg5Data.workingSupply,
+      gaugeBalance: parseUnits(input || "0", decimals),
+      poolLiquidity: lg5Data.poolSize,
+      veRBNAmount: votingPower,
+      totalVeRBN: totalVeRBN || BigNumber.from("0"),
+    });
+    const boostedRewards = calculateBoostedRewards(
+      baseRewards,
+      boostedMultiplier
     );
 
-    return [
-      `${
-        poolSizeInUSD > 0
-          ? (((1 + poolRewardInUSD / poolSizeInUSD) ** 52 - 1) * 100).toFixed(2)
-          : "0.00"
-      }%`,
-    ];
+    return {
+      totalApy: `${(baseRewards + boostedRewards).toFixed(2)}%`,
+      baseRewards: `${baseRewards.toFixed(2)}%`,
+      boostedMultiplier: boostedMultiplier
+        ? `(${boostedMultiplier.toFixed(2)}X)`
+        : "",
+      boostedRewards: `${boostedRewards.toFixed(2)}%`,
+    };
   }, [
     asset,
     assetPricesLoading,
@@ -164,6 +216,10 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     pricePerShare,
     prices,
     vaultDataLoading,
+    error,
+    input,
+    totalVeRBN,
+    votingPower,
   ]);
 
   const handleInputChange = useCallback(
@@ -236,6 +292,15 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     onClose,
     vaultOption,
   ]);
+
+  // Fetch totalverbn
+  useEffect(() => {
+    if (votingEscrowContract && !totalVeRBN) {
+      votingEscrowContract["totalSupply()"]().then((totalSupply: BigNumber) => {
+        setTotalVeRBN(totalSupply);
+      });
+    }
+  }, [votingEscrowContract, totalVeRBN]);
 
   /**
    * Input Validation
@@ -317,22 +382,44 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
             {/* APY */}
             <InfoColumn marginTop={16}>
               <SecondaryText color={color}>APY</SecondaryText>
-              <InfoData color={color}>{baseAPYText}</InfoData>
+              <InfoData color={color}>{apys.totalApy}</InfoData>
             </InfoColumn>
             <InfoColumn marginTop={4}>
-              <SecondaryText className="ml-2" fontSize={12}>
-                Base Rewards
-              </SecondaryText>
+              <ContainerWithTooltip>
+                <SecondaryText className="ml-2" fontSize={12}>
+                  Base Rewards
+                </SecondaryText>
+                <TooltipExplanation
+                  title="Base Rewards"
+                  explanation="The rewards for staking rTokens."
+                  renderContent={({ ref, ...triggerHandler }) => (
+                    <HelpInfo containerRef={ref} {...triggerHandler}>
+                      i
+                    </HelpInfo>
+                  )}
+                />
+              </ContainerWithTooltip>
               <InfoData color={colors.text} fontSize={14}>
-                {baseAPYText}
+                {apys.baseRewards}
               </InfoData>
             </InfoColumn>
             <InfoColumn marginTop={4}>
-              <SecondaryText className="ml-2" fontSize={12}>
-                Boosted Rewards (2.5X)
-              </SecondaryText>
+              <ContainerWithTooltip>
+                <SecondaryText className="ml-2" fontSize={12}>
+                  Boosted Rewards {apys.boostedMultiplier}
+                </SecondaryText>
+                <TooltipExplanation
+                  title="Boosted Rewards"
+                  explanation="The additional rewards veRBN holders earn for staking their rTokens. Base rewards can be boosted by up to 2.5X."
+                  renderContent={({ ref, ...triggerHandler }) => (
+                    <HelpInfo containerRef={ref} {...triggerHandler}>
+                      i
+                    </HelpInfo>
+                  )}
+                />
+              </ContainerWithTooltip>
               <InfoData color={colors.text} fontSize={14}>
-                {baseAPYText}
+                {apys.boostedRewards}
               </InfoData>
             </InfoColumn>
 
@@ -372,22 +459,22 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
             {/* APY */}
             <InfoColumn marginTop={16}>
               <SecondaryText color={color}>APY</SecondaryText>
-              <InfoData color={color}>{baseAPYText}</InfoData>
+              <InfoData color={color}>{apys.totalApy}</InfoData>
             </InfoColumn>
             <InfoColumn marginTop={4}>
               <SecondaryText className="ml-2" fontSize={12}>
                 Base Rewards
               </SecondaryText>
               <InfoData color={colors.text} fontSize={14}>
-                {baseAPYText}
+                {apys.baseRewards}
               </InfoData>
             </InfoColumn>
             <InfoColumn marginTop={4}>
               <SecondaryText className="ml-2" fontSize={12}>
-                Boosted Rewards (2.5X)
+                Boosted Rewards ({apys.boostedMultiplier})
               </SecondaryText>
               <InfoData color={colors.text} fontSize={14}>
-                {baseAPYText}
+                {apys.boostedRewards}
               </InfoData>
             </InfoColumn>
 
@@ -442,7 +529,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
         );
     }
   }, [
-    baseAPYText,
+    apys,
     chainId,
     color,
     decimals,

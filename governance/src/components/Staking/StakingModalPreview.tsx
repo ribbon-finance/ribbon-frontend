@@ -14,7 +14,7 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import { StakeIcon } from "shared/lib/assets/icons/icons";
 import { formatBigNumber, formatBigNumberAmount } from "shared/lib/utils/math";
-import { calculateInitialveRBNAmount } from "../../utils/math";
+import { calculateInitialveRBNAmount } from "shared/lib/utils/governanceMath";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import theme from "shared/lib/designSystem/theme";
 
@@ -86,7 +86,7 @@ const StakingModalPreview: React.FC<StakingModalPreviewProps> = ({
         <div className="d-flex w-100 justify-content-between">
           <SecondaryText lineHeight={24}>Lockup Expiry</SecondaryText>
           <Subtitle fontSize={14} lineHeight={24} letterSpacing={1}>
-            {moment().add(stakingData.duration).format("MMMM, Do YYYY")}
+            {moment().add(stakingData.duration).format("MMM, Do YYYY")}
           </Subtitle>
         </div>
       </BaseModalContentColumn>
@@ -104,12 +104,12 @@ const StakingModalPreview: React.FC<StakingModalPreviewProps> = ({
           </Subtitle>
         </div>
       </BaseModalContentColumn>
-      <BaseModalContentColumn>
+      <BaseModalContentColumn marginTop="auto">
         <ActionButton onClick={onConfirm} className="py-3" color={colors.red}>
           Preview Stake
         </ActionButton>
       </BaseModalContentColumn>
-      <BaseModalWarning color={colors.green}>
+      <BaseModalWarning color={colors.green} className="mb-2">
         <PrimaryText
           fontSize={14}
           lineHeight={20}

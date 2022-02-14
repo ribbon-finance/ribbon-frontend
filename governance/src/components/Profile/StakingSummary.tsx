@@ -3,12 +3,12 @@ import styled from "styled-components";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
+import { calculateInitialveRBNAmount } from "shared/lib/utils/governanceMath";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { formatBigNumber } from "shared/lib/utils/math";
 import moment from "moment";
-import { calculateInitialveRBNAmount } from "../../utils/math";
 import { formatUnits } from "ethers/lib/utils";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import {
