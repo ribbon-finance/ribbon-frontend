@@ -45,8 +45,12 @@ export const vaultPriceHistoryGraphql = (
               ? `where: { vaultId: {_in: ["${vaultAddress}"]} },`
               : `where: { vault_in: ["${vaultAddress}"] },`
           }
-          orderBy: timestamp,
-          orderDirection: desc,
+          ${
+            chain === Chains.Solana
+              ? `order_by: { timestamp: desc },`
+              : `orderBy: timestamp,
+                 orderDirection: desc,`
+          }
           first: 1000
         ) {
           pricePerShare
