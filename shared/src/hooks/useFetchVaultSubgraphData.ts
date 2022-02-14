@@ -75,9 +75,9 @@ const useFetchVaultSubgraphData = () => {
       return currentCounter;
     });
 
-    const url = "https://immense-fox-30.hasura.app/v1/graphql";
+    const url = "https://ribbon-solana.hasura.app/v1/graphql";
 
-    const vault = "rSOLTHETA";
+    const vault = "rSOL-THETA";
     const vaultAddress = "2YNj4egax5WV1zSgq9hwJFNzHSYZo2rU7S8BZuMdQMKW";
 
     const getVaultActivityKey = (
@@ -87,12 +87,10 @@ const useFetchVaultSubgraphData = () => {
 
     const response = await axios.post(url, {
       query: `query {
-        vault
-
         ${getVaultActivityKey(
           vault,
           "shortPositions"
-        )}: vaultShortPositions (where: { vault_in: ["${vaultAddress}"] }){
+        )}: vaultShortPositions (where: { vaultId:{_in: ["${vaultAddress}"]} }){
           id
           depositAmount
           mintAmount
@@ -104,7 +102,7 @@ const useFetchVaultSubgraphData = () => {
         ${getVaultActivityKey(
           vault,
           "optionTrades"
-        )}:vaultOptionTrades (where: { vault_in: ["${vaultAddress}"] }) {
+        )}:vaultOptionTrades (where: { vaultId:{_in: ["${vaultAddress}"] }}) {
           vaultShortPosition {
             id
             strikePrice

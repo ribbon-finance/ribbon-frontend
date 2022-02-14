@@ -474,6 +474,8 @@ export const AVAX_BRIDGE_URI = "https://bridge.avax.network";
 export const getEtherscanURI = (chainId: number) =>
   BLOCKCHAIN_EXPLORER_URI[chainId as CHAINID];
 
+SUBGRAPHS_TO_QUERY;
+
 export const getSubgraphURIForVersion = (
   version: VaultVersion,
   chainId: number
@@ -770,7 +772,7 @@ export const LidoOracleAddress = isDevelopment()
   ? ""
   : addresses.mainnet.lidoOracle;
 
-export const SUBGRAPHS_TO_QUERY: [VaultVersion, CHAINID][] = isDevelopment()
+export const subgraphs: [VaultVersion, CHAINID][] = isDevelopment()
   ? !isTreasury()
     ? [
         ["v1", CHAINID.ETH_KOVAN],
@@ -787,6 +789,10 @@ export const SUBGRAPHS_TO_QUERY: [VaultVersion, CHAINID][] = isDevelopment()
       ["v2", CHAINID.AURORA_MAINNET],
     ]
   : [["v2", CHAINID.ETH_MAINNET]];
+
+export const SUBGRAPHS_TO_QUERY = subgraphs.map(([version, chainId]) =>
+  getSubgraphURIForVersion(version, chainId)
+);
 
 export const RibbonTreasuryAddress = {
   [CHAINID.ETH_KOVAN]: "0xD380980791079Bd50736Ffe577b8D57A3C196ccd",
