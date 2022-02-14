@@ -1,6 +1,8 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { useContext } from "react";
 import {
+  Chains,
+  CHAINS_TO_ID,
   VaultAddressMap,
   VaultList,
   VaultOptions,
@@ -12,11 +14,14 @@ import { SubgraphDataContext } from "./subgraphDataContext";
 
 const getVaultKey = (vault: VaultOptions) => `vault_${vault.replace(/-/g, "")}`;
 
-export const vaultGraphql = (version: VaultVersion, chainId: number) =>
+export const vaultGraphql = (version: VaultVersion, chain: Chains) =>
   VaultList.reduce((acc, vault) => {
     const vaultAddress = VaultAddressMap[vault][version]?.toLowerCase();
 
-    if (!vaultAddress || VaultAddressMap[vault].chainId !== chainId) {
+    if (
+      !vaultAddress ||
+      VaultAddressMap[vault].chainId !== CHAINS_TO_ID[chain]
+    ) {
       return acc;
     }
 
