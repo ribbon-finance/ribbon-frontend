@@ -197,7 +197,7 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
               }
             >
               {latestYield !== "---" && !activitiesLoading
-                ? "$" + latestYield
+                ? currency(latestYield).format()
                 : latestYield}
             </DataNumber>
           </DataCol>
