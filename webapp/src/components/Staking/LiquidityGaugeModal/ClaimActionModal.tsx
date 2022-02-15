@@ -175,7 +175,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
 
     const totalPoolRewards = lg5Data
       ? parseFloat(formatBigNumber(lg5Data.poolRewardForDuration))
-      : 0;
+      : undefined;
     const boost = calculateBoostedMultipler(
       lg5Data?.currentStake || BigNumber.from(0)
     );
@@ -204,7 +204,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
     }
 
     return {
-      totalPoolRewards: `${totalPoolRewards} RBN`,
+      totalPoolRewards: totalPoolRewards === undefined ? "-" : `${totalPoolRewards} RBN`,
       baseRewards,
       boostedRewardsMultiplier: boost ? `(${boost.toFixed(2)}X)` : "",
       boostedRewardsAmount: boostedRewards,

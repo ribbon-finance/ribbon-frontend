@@ -11,6 +11,27 @@ import {
 } from "../models/token";
 import { SubgraphDataContext } from "./subgraphDataContext";
 
+export interface RBNTokenSubgraphResponse {
+  rbntoken: {
+    name: string;
+    symbol: string;
+    numHolders: number;
+    holders: string[];
+    totalSupply: string;
+    totalStaked?: string;
+  };
+}
+
+export interface RBNTokenAccountSubgraphResponse
+  extends RBNTokenSubgraphResponse {
+  rbnaccount?: {
+    totalBalance: string;
+    lockedBalance: string;
+    lockStartTimestamp?: string;
+    lockEndTimestamp?: string;
+  };
+}
+
 export const rbnTokenGraphql = (account: string | null | undefined) => `
   rbntoken(id:"${RibbonTokenAddress.toLowerCase()}") {
     name
@@ -43,25 +64,38 @@ export const rbnTokenGraphql = (account: string | null | undefined) => `
 `;
 
 export const resolveRBNTokenSubgraphResponse = (
-  response: any | undefined
+  response?: RBNTokenSubgraphResponse
 ): ERC20TokenSubgraphData | undefined => {
-  return {
-    ...response.rbntoken,
-    totalSupply: BigNumber.from(response.rbntoken.totalSupply),
-  };
+  if (response) {
+    const { rbntoken } = response;
+    const { totalSupply, totalStaked, ...others } = rbntoken;
+    return {
+      ...others,
+      totalStaked: totalStaked ? BigNumber.from(totalStaked) : undefined,
+      totalSupply: BigNumber.from(totalSupply),
+    };
+  }
+  return undefined;
 };
 
 export const resolveRBNTokenAccountSubgraphResponse = (
-  response: any | undefined
+  response?: RBNTokenAccountSubgraphResponse
 ): RBNTokenAccountSubgraphData | undefined => {
   if (response?.rbnaccount) {
+    const { rbnaccount, ...others } = response;
     return {
-      token: {
-        ...response.rbntoken,
-      },
-      ...response.rbnaccount,
-      totalBalance: BigNumber.from(response.rbnaccount.totalBalance),
-      lockedBalance: BigNumber.from(response.rbnaccount.lockedBalance),
+      ...rbnaccount,
+      token: resolveRBNTokenSubgraphResponse(others)!,
+      lockStartTimestamp:
+        rbnaccount.lockStartTimestamp === undefined
+          ? undefined
+          : Number(rbnaccount.lockStartTimestamp),
+      lockEndTimestamp:
+        rbnaccount.lockEndTimestamp === undefined
+          ? undefined
+          : Number(rbnaccount.lockEndTimestamp),
+      totalBalance: BigNumber.from(rbnaccount.totalBalance),
+      lockedBalance: BigNumber.from(rbnaccount.lockedBalance),
     };
   }
 
