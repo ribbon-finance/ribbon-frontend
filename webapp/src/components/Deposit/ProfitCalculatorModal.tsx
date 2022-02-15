@@ -17,13 +17,17 @@ import {
 } from "shared/lib/designSystem";
 import { Assets } from "shared/lib/store/types";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
-import { assetToFiat, formatOption } from "shared/lib/utils/math";
+import { assetToFiat, formatOptionStrike } from "shared/lib/utils/math";
 import ProfitChart from "./ProfitChart";
 import colors from "shared/lib/designSystem/colors";
 import ModalContentExtra from "shared/lib/components/Common/ModalContentExtra";
 import { formatUnits } from "@ethersproject/units";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
-import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
+import {
+  VaultOptions,
+  VaultVersion,
+  getVaultChain,
+} from "shared/lib/constants/constants";
 
 const ChartContainer = styled.div`
   height: 264px;
@@ -102,6 +106,7 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
   const [hoverPrice, setHoverPrice] = useState<number>();
   const [chartHovering, setChartHovering] = useState(false);
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
+  const chain = getVaultChain(vaultOption);
 
   const handleInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const parsedInput = parseFloat(e.target.value);
@@ -119,7 +124,8 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
       calculatePrice = hoverPrice;
     }
 
-    const higherStrike = formatOption(currentOption.strike) > calculatePrice;
+    const higherStrike =
+      formatOptionStrike(currentOption.strike, chain) > calculatePrice;
     const isExercisedRange = currentOption.isPut ? higherStrike : !higherStrike;
     const assetDecimals = getAssetDecimals(asset);
     let profit: number;
@@ -127,14 +133,16 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
     if (!isExercisedRange) {
       profit = parseFloat(formatUnits(currentOption.premium, assetDecimals));
     } else if (currentOption.isPut) {
-      const exerciseCost = formatOption(currentOption.strike) - calculatePrice;
+      const exerciseCost =
+        formatOptionStrike(currentOption.strike, chain) - calculatePrice;
 
       profit =
         parseFloat(formatUnits(currentOption.premium, assetDecimals)) -
         currentOption.amount * exerciseCost;
     } else {
       profit =
-        (currentOption.amount * formatOption(currentOption.strike)) /
+        (currentOption.amount *
+          formatOptionStrike(currentOption.strike, chain)) /
           calculatePrice -
         currentOption.amount +
         parseFloat(formatUnits(currentOption.premium, assetDecimals));
@@ -148,7 +156,7 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
         100 *
         0.9,
     };
-  }, [asset, currentOption, input, hoverPrice, optionAsset, prices]);
+  }, [chain, asset, currentOption, input, hoverPrice, optionAsset, prices]);
 
   const toExpiryText = useMemo(() => {
     const toExpiryDuration = moment.duration(
@@ -209,7 +217,7 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
             onMouseLeave={() => setChartHovering(false)}
           >
             <ProfitChart
-              strike={formatOption(currentOption.strike)}
+              strike={formatOptionStrike(currentOption.strike, chain)}
               price={
                 hoverPrice
                   ? hoverPrice
@@ -243,7 +251,9 @@ const ProfitCalculatorModal: React.FC<ProfitCalculatorProps> = ({
           ) : (
             <StrikeLabel>
               STRIKE PRICE:{" "}
-              {currency(formatOption(currentOption.strike)).format()}
+              {currency(
+                formatOptionStrike(currentOption.strike, chain)
+              ).format()}
             </StrikeLabel>
           )}
         </BaseModalContentColumn>

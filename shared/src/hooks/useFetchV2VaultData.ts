@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
-import { getVaultNetwork, VaultList } from "../constants/constants";
+import { EVMVaultList, getVaultNetwork } from "../constants/constants";
 import { isProduction } from "../utils/env";
 import { getV2Vault } from "./useV2Vault";
 import { impersonateAddress } from "../utils/development";
@@ -43,7 +43,7 @@ const useFetchV2VaultData = (): V2VaultData => {
     });
 
     const responses = await Promise.all(
-      VaultList.map(async (vault) => {
+      EVMVaultList.map(async (vault) => {
         const inferredProviderFromVault = getProviderForNetwork(
           getVaultNetwork(vault)
         );
