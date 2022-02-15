@@ -8,6 +8,7 @@ import {
   VaultAddressMap,
   VaultOptions,
   VaultVersion,
+  getVaultChain,
 } from "shared/lib/constants/constants";
 import { useCallback } from "react";
 import VaultV1ActionsForm from "./VaultV1ActionsForm";
@@ -71,11 +72,13 @@ const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
       />
       {renderForm()}
 
-      {chainId && VaultAddressMap[vault.vaultOption][vault.vaultVersion] && (
+      {VaultAddressMap[vault.vaultOption][vault.vaultVersion] && (
         <BaseLink
-          to={`${getExplorerURI(chain)}/address/${VaultAddressMap[
-            vault.vaultOption
-          ][vault.vaultVersion]!}`}
+          to={`${getExplorerURI(
+            getVaultChain(vault.vaultOption)
+          )}/address/${VaultAddressMap[vault.vaultOption][
+            vault.vaultVersion
+          ]!}`}
           target="_blank"
           rel="noreferrer noopener"
           className="w-100"

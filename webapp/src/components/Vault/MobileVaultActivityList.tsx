@@ -93,7 +93,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
               <VaultSecondaryInfoText>
                 O-{asset}-
                 {moment(activity.expiry, "X").format("DD-MMM-YY").toUpperCase()}
-                -{formatOptionStrike(activity.strikePrice)}
+                -{formatOptionStrike(activity.strikePrice, chain)}
                 {isPutVault(vaultOption) ? "P" : "C"}
               </VaultSecondaryInfoText>
               <VaultActivityInfoRow>

@@ -6,6 +6,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import {
   getAssets,
   getExplorerURI,
+  getExplorerName,
   VaultOptions,
 } from "shared/lib/constants/constants";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";

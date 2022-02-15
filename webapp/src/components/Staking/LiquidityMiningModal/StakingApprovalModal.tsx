@@ -22,6 +22,7 @@ import useERC20Token from "shared/lib/hooks/useERC20Token";
 import { LiquidityMiningPoolResponse } from "shared/lib/models/staking";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { getERC20TokenNameFromVault } from "shared/lib/models/eth";
+import { useChain } from "shared/lib/hooks/chainContext";
 
 const FloatingContainer = styled.div`
   display: flex;

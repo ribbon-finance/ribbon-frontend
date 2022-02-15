@@ -114,6 +114,11 @@ export const ethToUSD = (
   precision: number = 2
 ): string => assetToUSD(num, ethPrice, 18, precision);
 
+// Left here for Ribbon Treasury to use
+export const formatOption = (bn: BigNumber): number => {
+  return parseFloat(ethers.utils.formatUnits(bn, 8));
+};
+
 export const formatOptionAmount = (bn: BigNumber, chain: Chains): number => {
   if (isEVMChain(chain)) {
     return parseFloat(ethers.utils.formatUnits(bn, 8));

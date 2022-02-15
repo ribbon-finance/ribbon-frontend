@@ -48,9 +48,7 @@ const TransactionStep: React.FC<TransactionStepProps> = ({ txhash }) => {
             rel="noreferrer noopener"
             className="d-flex"
           >
-            {chain !== Chains.NotSelected && (
-              <BottomText>View on {getExplorerName(chain)}</BottomText>
-            )}
+            {<BottomText>View on {getExplorerName(chain)}</BottomText>}
           </BaseUnderlineLink>
         ) : (
           <BottomText>Confirm this transaction in your wallet</BottomText>

@@ -34,6 +34,7 @@ import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { getVaultColor } from "shared/lib/utils/vault";
 import BasicModal from "shared/lib/components/Common/BasicModal";
+import { useChain } from "shared/lib/hooks/chainContext";
 
 const FloatingContainer = styled.div`
   display: flex;
