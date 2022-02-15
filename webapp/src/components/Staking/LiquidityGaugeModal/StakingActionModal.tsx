@@ -25,21 +25,12 @@ import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import colors from "shared/lib/designSystem/colors";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { getVaultColor } from "shared/lib/utils/vault";
-import {
-  calculateBaseRewards,
-  calculateBoostMultiplier,
-  calculateBoostedRewards,
-} from "shared/lib/utils/governanceMath";
+import { calculateBoostedRewards } from "shared/lib/utils/governanceMath";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import BasicModal from "shared/lib/components/Common/BasicModal";
-import {
-  useAssetBalance,
-  useLiquidityGaugeV5PoolData,
-  useV2VaultData,
-} from "shared/lib/hooks/web3DataContext";
-import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
+import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useV2Vault from "shared/lib/hooks/useV2Vault";
 import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
@@ -110,6 +101,11 @@ interface StakingActionModalProps {
   logo: React.ReactNode;
   vaultOption: VaultOptions;
   stakingPoolData?: LiquidityGaugeV5PoolResponse;
+
+  // APYs
+  apysLoading?: boolean;
+  baseAPY: number;
+  calculateBoostedMultipler: (stakedAmount: BigNumber) => number;
 }
 
 const StakingActionModal: React.FC<StakingActionModalProps> = ({
@@ -118,6 +114,10 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
   logo,
   vaultOption,
   stakingPoolData,
+
+  apysLoading,
+  baseAPY,
+  calculateBoostedMultipler,
 }) => {
   const [step, setStep] = useState<
     "form" | "preview" | "walletAction" | "processing"
@@ -126,22 +126,12 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
   const { chainId } = useWeb3Wallet();
   const { provider } = useWeb3Context();
   const votingEscrowContract = useVotingEscrow();
-  const { data: lg5Data, loading: lg5DataLoading } =
-    useLiquidityGaugeV5PoolData(vaultOption);
-  const { prices, loading: assetPricesLoading } = useAssetsPrice();
   const {
-    data: { asset, decimals, pricePerShare },
+    data: { decimals },
     loading: vaultDataLoading,
   } = useV2VaultData(vaultOption);
-  const { balance: votingPower, loading: votingPowerLoading } =
-    useAssetBalance("veRBN");
 
-  const loadingText = useTextAnimation(
-    lg5DataLoading ||
-      assetPricesLoading ||
-      vaultDataLoading ||
-      votingPowerLoading
-  );
+  const loadingText = useTextAnimation(vaultDataLoading);
   const { addPendingTransaction } = usePendingTransactions();
 
   const [error, setError] = useState<"insufficient_balance">();
@@ -158,7 +148,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     boostedMultiplier: string;
     boostedRewards: string;
   } = useMemo(() => {
-    if (lg5DataLoading || assetPricesLoading || vaultDataLoading) {
+    if (apysLoading) {
       return {
         totalApy: loadingText,
         baseRewards: loadingText,
@@ -167,7 +157,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
       };
     }
 
-    if (!lg5Data || error) {
+    if (error) {
       return {
         totalApy: "---",
         baseRewards: "---",
@@ -176,50 +166,27 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
       };
     }
 
-    const baseRewards = calculateBaseRewards({
-      poolSize: lg5Data.poolSize,
-      poolReward: lg5Data.poolRewardForDuration,
-      pricePerShare,
-      decimals,
-      assetPrice: prices[asset],
-      rbnPrice: prices["RBN"],
-    });
-
-    const boostedMultiplier = calculateBoostMultiplier({
-      workingBalance: lg5Data.workingBalances,
-      workingSupply: lg5Data.workingSupply,
-      gaugeBalance: parseUnits(input || "0", decimals),
-      poolLiquidity: lg5Data.poolSize,
-      veRBNAmount: votingPower,
-      totalVeRBN: totalVeRBN || BigNumber.from("0"),
-    });
-    const boostedRewards = calculateBoostedRewards(
-      baseRewards,
-      boostedMultiplier
+    const boostedMultiplier = calculateBoostedMultipler(
+      parseUnits(input || "0", decimals)
     );
+    const boostedRewards = calculateBoostedRewards(baseAPY, boostedMultiplier);
 
     return {
-      totalApy: `${(baseRewards + boostedRewards).toFixed(2)}%`,
-      baseRewards: `${baseRewards.toFixed(2)}%`,
+      totalApy: `${(baseAPY + boostedRewards).toFixed(2)}%`,
+      baseRewards: `${baseAPY.toFixed(2)}%`,
       boostedMultiplier: boostedMultiplier
         ? `(${boostedMultiplier.toFixed(2)}X)`
         : "",
       boostedRewards: `${boostedRewards.toFixed(2)}%`,
     };
   }, [
-    asset,
-    assetPricesLoading,
+    apysLoading,
+    baseAPY,
+    calculateBoostedMultipler,
     decimals,
-    lg5Data,
-    lg5DataLoading,
     loadingText,
-    pricePerShare,
-    prices,
-    vaultDataLoading,
     error,
     input,
-    totalVeRBN,
-    votingPower,
   ]);
 
   const handleInputChange = useCallback(

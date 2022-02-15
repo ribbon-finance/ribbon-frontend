@@ -10,6 +10,7 @@ import { impersonateAddress } from "../utils/development";
 import { isProduction } from "../utils/env";
 import {
   rbnTokenGraphql,
+  resolveRbnDistributedSubgraphResponse,
   resolveRBNTokenAccountSubgraphResponse,
   resolveRBNTokenSubgraphResponse,
 } from "./useRBNTokenSubgraph";
@@ -70,6 +71,9 @@ const useFetchGovernanceSubgraphData = () => {
           ...prev,
           rbnToken: resolveRBNTokenSubgraphResponse(response),
           rbnTokenAccount: resolveRBNTokenAccountSubgraphResponse(response),
+          // Total RBN token distributed from Liquidity Gauge
+          rbnTokenDistributedLg5:
+            resolveRbnDistributedSubgraphResponse(response),
           transactions: resolveGovernanceTransactionsSubgraphResponse(response),
           loading: false,
         }));

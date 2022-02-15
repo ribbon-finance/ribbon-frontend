@@ -1,3 +1,4 @@
+import { BigNumber } from "ethers";
 import React, { ReactElement } from "react";
 import { GovernanceTransaction } from "../models/governance";
 import {
@@ -41,6 +42,8 @@ export type VaultSubgraphDataContextType = {
 export type GovernanceSubgraphDataContextType = {
   rbnToken?: ERC20TokenSubgraphData;
   rbnTokenAccount?: RBNTokenAccountSubgraphData;
+  // Total amount of RBN distributed from LiquidityGaugev5 across all gauges
+  rbnTokenDistributedLg5: BigNumber;
   transactions: GovernanceTransaction[];
   loading: boolean;
 };
@@ -64,6 +67,7 @@ export const defaultVaultSubgraphData: VaultSubgraphDataContextType = {
 
 export const defaultGovernanceSubgraphData: GovernanceSubgraphDataContextType =
   {
+    rbnTokenDistributedLg5: BigNumber.from(0),
     transactions: [],
     loading: true,
   };

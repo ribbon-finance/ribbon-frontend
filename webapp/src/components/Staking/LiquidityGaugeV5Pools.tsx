@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { formatUnits, parseUnits } from "@ethersproject/units";
+import { formatUnits } from "@ethersproject/units";
 
 import {
   BaseIndicator,
@@ -28,14 +28,21 @@ import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import {
+  useAssetBalance,
   useLiquidityGaugeV5PoolData,
   useV2VaultData,
 } from "shared/lib/hooks/web3DataContext";
-import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 import UnstakingActionModal from "./LiquidityGaugeModal/UnstakingActionModal";
 import ClaimActionModal from "./LiquidityGaugeModal/ClaimActionModal";
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import StakingActionModal from "./LiquidityGaugeModal/StakingActionModal";
+import {
+  calculateBaseRewards,
+  calculateBoostMultiplier,
+} from "shared/lib/utils/governanceMath";
+import { BigNumber } from "ethers";
+import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -154,10 +161,12 @@ const StakingPoolCardFooterButton = styled(Title)<{
 
 interface LiquidityGaugeV5PoolProps {
   vaultOption: VaultOptions;
+  totalVeRBN?: BigNumber;
 }
 
 const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
   vaultOption,
+  totalVeRBN,
 }) => {
   const { active } = useWeb3Wallet();
   const [, setShowConnectWalletModal] = useConnectWalletModal();
@@ -169,6 +178,8 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
     data: { asset, decimals, pricePerShare },
     loading: vaultDataLoading,
   } = useV2VaultData(vaultOption);
+  const { balance: votingPower, loading: votingPowerLoading } =
+    useAssetBalance("veRBN");
 
   const loadingText = useTextAnimation(
     lg5DataLoading || assetPricesLoading || vaultDataLoading
@@ -246,6 +257,43 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
     }
   }, [vaultOption]);
 
+  const baseAPY = useMemo(() => {
+    if (!lg5Data) {
+      return 0;
+    }
+    const rewards = calculateBaseRewards({
+      poolSize: lg5Data.poolSize,
+      poolReward: lg5Data.poolRewardForDuration,
+      pricePerShare,
+      decimals,
+      assetPrice: prices[asset],
+      rbnPrice: prices["RBN"],
+    });
+
+    return rewards;
+  }, [asset, decimals, lg5Data, pricePerShare, prices]);
+
+  /**
+   * Calculates the boosted multiplier
+   */
+  const calculateBoostedMultipler = useCallback(
+    (stakedBalance: BigNumber) => {
+      if (!lg5Data) {
+        return 0;
+      }
+      const boostedMultiplier = calculateBoostMultiplier({
+        workingBalance: lg5Data.workingBalances,
+        workingSupply: lg5Data.workingSupply,
+        gaugeBalance: stakedBalance,
+        poolLiquidity: lg5Data.poolSize,
+        veRBNAmount: votingPower,
+        totalVeRBN: totalVeRBN || BigNumber.from("0"),
+      });
+      return boostedMultiplier;
+    },
+    [lg5Data, totalVeRBN, votingPower]
+  );
+
   const renderUnstakeBalance = useCallback(() => {
     if (!active) {
       return "---";
@@ -263,42 +311,6 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
       lg5Data ? formatBigNumber(lg5Data.poolRewardForDuration) : 0
     } RBN`;
   }, [lg5Data, lg5DataLoading, loadingText]);
-
-  const renderBaseAPY = useCallback(() => {
-    if (lg5DataLoading || assetPricesLoading || vaultDataLoading) {
-      return loadingText;
-    }
-
-    if (!lg5Data) {
-      return "0.00%";
-    }
-
-    const poolRewardInUSD = parseFloat(
-      assetToFiat(lg5Data.poolRewardForDuration, prices["RBN"])
-    );
-    const poolSizeInAsset = lg5Data.poolSize
-      .mul(pricePerShare)
-      .div(parseUnits("1", decimals));
-    const poolSizeInUSD = parseFloat(
-      assetToFiat(poolSizeInAsset, prices[asset], decimals)
-    );
-
-    return `${
-      poolSizeInUSD > 0
-        ? (((1 + poolRewardInUSD / poolSizeInUSD) ** 52 - 1) * 100).toFixed(2)
-        : "0.00"
-    }%`;
-  }, [
-    asset,
-    assetPricesLoading,
-    decimals,
-    lg5Data,
-    lg5DataLoading,
-    loadingText,
-    pricePerShare,
-    prices,
-    vaultDataLoading,
-  ]);
 
   const rbnPill = useMemo(() => {
     if (!lg5Data || lg5Data.claimableRbn.isZero()) {
@@ -398,6 +410,9 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
         vaultOption={vaultOption}
         logo={logo}
         stakingPoolData={lg5Data}
+        apysLoading={lg5DataLoading || votingPowerLoading}
+        baseAPY={baseAPY}
+        calculateBoostedMultipler={calculateBoostedMultipler}
       />
       <UnstakingActionModal
         show={showUnstakeModal}
@@ -412,6 +427,9 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
         logo={logo}
         vaultOption={vaultOption}
         stakingPoolData={lg5Data}
+        apysLoading={lg5DataLoading || votingPowerLoading}
+        baseAPY={baseAPY}
+        calculateBoostedMultipler={calculateBoostedMultipler}
       />
       <StakingPoolCard color={color}>
         <div className="d-flex flex-wrap w-100 p-3">
@@ -524,7 +542,9 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
               />
             </div>
             <PoolRewardData className="ml-auto">
-              {renderBaseAPY()}
+              {lg5DataLoading || assetPricesLoading || vaultDataLoading
+                ? loadingText
+                : `${baseAPY.toFixed(2)}%`}
             </PoolRewardData>
           </div>
         </div>
@@ -535,6 +555,18 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
 };
 
 const LiquidityGaugeV5Pools = () => {
+  const votingEscrowContract = useVotingEscrow();
+  const [totalVeRBN, setTotalVeRBN] = useState<BigNumber>();
+
+  // Fetch totalverbn
+  useEffect(() => {
+    if (votingEscrowContract && !totalVeRBN) {
+      votingEscrowContract["totalSupply()"]().then((totalSupply: BigNumber) => {
+        setTotalVeRBN(totalSupply);
+      });
+    }
+  }, [votingEscrowContract, totalVeRBN]);
+
   return (
     <StakingPoolsContainer>
       <Title fontSize={18} lineHeight={24} className="mb-4 w-100">
@@ -544,6 +576,7 @@ const LiquidityGaugeV5Pools = () => {
         <LiquidityGaugeV5Pool
           key={option}
           vaultOption={option as VaultOptions}
+          totalVeRBN={totalVeRBN}
         />
       ))}
     </StakingPoolsContainer>
