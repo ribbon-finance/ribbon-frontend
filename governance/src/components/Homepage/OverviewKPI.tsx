@@ -232,7 +232,7 @@ const OverviewKPI = () => {
           loop
         />
       </FloatingBackgroundContainer>
-      <FloatingBackgroundContainer backgroundColor="#00000066" />
+      <FloatingBackgroundContainer backgroundColor="#000000CC" />
     </>
   );
 };
