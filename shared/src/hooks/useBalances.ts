@@ -1,15 +1,23 @@
 import { BigNumber } from "ethers";
 import { useContext } from "react";
 
-import { VaultVersion, VaultVersionList } from "../constants/constants";
+import { Chains, VaultVersion, VaultVersionList } from "../constants/constants";
 import { BalanceUpdate } from "../models/vault";
 import { SubgraphDataContext } from "./subgraphDataContext";
 
-export const balancesGraphql = (account: string) => `
+export const balancesGraphql = (account: string, chain: Chains) => `
   balanceUpdates(
-    where: { account:"${account}" },
-    orderBy: timestamp,
-    orderDirection: desc,
+    ${
+      chain === Chains.Solana
+        ? `where:{account:{_in:"${account}"}}`
+        : `where:{account:"${account}"}`
+    },
+    ${
+      chain === Chains.Solana
+        ? `order_by: { timestamp: desc },`
+        : `orderBy: timestamp,
+           orderDirection: desc,`
+    }
     first: 1000
   ) {
     vault {

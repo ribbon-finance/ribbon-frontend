@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-import { useWeb3React } from "@web3-react/core";
 
 import {
+  Chains,
   getSubgraphURIForVersion,
   SUBGRAPHS_TO_QUERY,
   VaultVersion,
@@ -44,9 +44,10 @@ import {
   liquidityMiningPoolAccountsGraphql,
   resolveLiquidityMiningPoolAccountsSubgraphResponse,
 } from "./useLiquidityMiningPoolAccounts";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 const useFetchVaultSubgraphData = () => {
-  const { account: acc } = useWeb3React();
+  const { account: acc } = useWeb3Wallet();
   const account = impersonateAddress || acc;
   const [data, setData] = useState<VaultSubgraphDataContextType>(
     defaultVaultSubgraphData
@@ -75,28 +76,64 @@ const useFetchVaultSubgraphData = () => {
     });
 
     const allSubgraphResponses = await Promise.all(
-      SUBGRAPHS_TO_QUERY.map(async ([version, chainId]) => {
+      SUBGRAPHS_TO_QUERY.map(async ([version, chain]) => {
         const response = await axios.post(
-          getSubgraphURIForVersion(version, chainId),
+          getSubgraphURIForVersion(version, chain),
           {
-            query: `{
-                ${
-                  account
-                    ? `
-                        ${vaultAccountsGraphql(account, version)}
-                        ${transactionsGraphql(account)}
-                        ${balancesGraphql(account)}
-                        ${liquidityMiningPoolAccountsGraphql(account, version)}
-                      `
-                    : ""
-                }
-                ${vaultGraphql(version, chainId)}
-                ${vaultActivitiesGraphql(version, chainId)}
-                ${vaultPriceHistoryGraphql(version, chainId)}
-                ${liquidityMiningPoolGraphql(version, chainId)}
-              }`.replaceAll(" ", ""),
+            query: `${chain === Chains.Solana ? "query" : ""} {
+                  ${
+                    account
+                      ? `
+                          ${vaultAccountsGraphql(account, version)}
+                          ${transactionsGraphql(account, chain)}
+                          ${
+                            chain === Chains.Solana
+                              ? ""
+                              : balancesGraphql(account, chain)
+                          }
+                          ${liquidityMiningPoolAccountsGraphql(
+                            account,
+                            version
+                          )}
+                        `
+                      : ""
+                  }
+                  ${vaultGraphql(version, chain)}
+                  ${vaultActivitiesGraphql(version, chain)}
+                  ${
+                    chain === Chains.Solana
+                      ? ""
+                      : vaultPriceHistoryGraphql(version, chain)
+                  }
+                  ${liquidityMiningPoolGraphql(version, chain)}
+                }`.replaceAll(" ", ""),
           }
         );
+        if (chain === Chains.Solana) {
+          console.log(
+            `${chain === Chains.Solana ? "query" : ""} {
+              ${
+                account
+                  ? `
+                      ${vaultAccountsGraphql(account, version)}
+                      ${transactionsGraphql(account, chain)}
+                      ${balancesGraphql(account, chain)}
+                      ${liquidityMiningPoolAccountsGraphql(account, version)}
+                    `
+                  : ""
+              }
+              ${vaultGraphql(version, chain)}
+              ${vaultActivitiesGraphql(version, chain)}
+              ${
+                chain === Chains.Solana
+                  ? ""
+                  : vaultPriceHistoryGraphql(version, chain)
+              }
+              ${liquidityMiningPoolGraphql(version, chain)}
+            }`.replaceAll(" ", "")
+          );
+          console.log(response);
+        }
         return [version, response.data.data];
       })
     );

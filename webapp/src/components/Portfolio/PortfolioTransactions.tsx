@@ -21,7 +21,7 @@ import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
 import { capitalize } from "shared/lib/utils/text";
 import {
   getAssets,
-  getEtherscanURI,
+  getExplorerURI,
   VaultNameOptionMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
@@ -48,6 +48,7 @@ import Pagination from "shared/lib/components/Common/Pagination";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
+import { useChain } from "shared/lib/hooks/chainContext";
 
 const PortfolioTransactionsContainer = styled.div`
   margin-top: 64px;
@@ -171,6 +172,7 @@ const perPage = 6;
 
 const PortfolioTransactions = () => {
   const { transactions, loading } = useTransactions();
+  const [chain] = useChain();
   const { active, chainId } = useWeb3Wallet();
   // const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice();
   const { searchAssetPriceFromTimestamp, loading: assetPricesLoading } =
@@ -456,7 +458,7 @@ const PortfolioTransactions = () => {
 
           {chainId && (
             <BaseLink
-              to={`${getEtherscanURI(chainId)}/tx/${transaction.txhash}`}
+              to={`${getExplorerURI(chain)}/tx/${transaction.txhash}`}
               target="_blank"
               rel="noreferrer noopener"
               className="d-none d-md-block"
@@ -469,6 +471,7 @@ const PortfolioTransactions = () => {
         </TransactionContainer>
       ));
   }, [
+    chain,
     active,
     chainId,
     getTransactionTypeDisplay,
