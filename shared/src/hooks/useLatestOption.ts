@@ -4,7 +4,6 @@ import { BigNumber } from "@ethersproject/bignumber";
 
 import {
   getAssets,
-  getVaultChain,
   isPutVault,
   VaultList,
   VaultOptions,
@@ -18,7 +17,7 @@ import {
 } from "../models/vault";
 import { getAssetDecimals } from "../utils/asset";
 import useVaultActivity, { useAllVaultActivities } from "./useVaultActivity";
-import { assetToFiat, formatOptionStrike } from "../utils/math";
+import { assetToFiat, formatOption } from "../utils/math";
 import { useAssetsPrice } from "./useAssetPrice";
 import { formatUnits } from "@ethersproject/units";
 
@@ -32,7 +31,6 @@ export const useLatestOption = (
     vaultVersion
   );
   const { prices, loading: assetPriceLoading } = useAssetsPrice();
-  const chain = getVaultChain(vaultOption);
 
   const optionHistory = useMemo(() => {
     const sortedActivities = activities
@@ -65,7 +63,7 @@ export const useLatestOption = (
         amount: isPut
           ? parseFloat(
               assetToFiat(shortPosition.depositAmount, prices[asset]!, decimals)
-            ) / formatOptionStrike(shortPosition.strikePrice, chain)
+            ) / formatOption(shortPosition.strikePrice)
           : parseFloat(formatUnits(shortPosition.depositAmount, decimals)),
         isPut: isPut,
       };
@@ -99,7 +97,6 @@ export const useLatestOptions = () => {
               if (sortedActivities.length <= 0) {
                 return [vaultOption, []];
               }
-              const chain = getVaultChain(vaultOption);
 
               return [
                 vaultOption,
@@ -131,7 +128,7 @@ export const useLatestOptions = () => {
                             prices[asset]!,
                             decimals
                           )
-                        ) / formatOptionStrike(shortPosition.strikePrice, chain)
+                        ) / formatOption(shortPosition.strikePrice)
                       : parseFloat(
                           formatUnits(shortPosition.depositAmount, decimals)
                         ),

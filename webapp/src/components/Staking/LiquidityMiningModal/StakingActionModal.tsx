@@ -6,9 +6,9 @@ import { BigNumber } from "@ethersproject/bignumber";
 import moment from "moment";
 
 import {
-  getExplorerName,
+  BLOCKCHAIN_EXPLORER_NAME,
   getAssets,
-  getExplorerURI,
+  getEtherscanURI,
   StakingVaultOptions,
 } from "shared/lib/constants/constants";
 import {
@@ -34,7 +34,6 @@ import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { getVaultColor } from "shared/lib/utils/vault";
 import BasicModal from "shared/lib/components/Common/BasicModal";
-import { useChain } from "shared/lib/hooks/chainContext";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -128,7 +127,6 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     "warning" | "form" | "preview" | "walletAction" | "processing"
   >("warning");
   const [input, setInput] = useState("");
-  const [chain] = useChain();
   const { chainId } = useWeb3Wallet();
   const { provider } = useWeb3Context();
   const decimals = getAssetDecimals(getAssets(vaultOption));
@@ -469,13 +467,13 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               <BaseModalContentColumn marginTop="auto">
                 {chainId && (
                   <BaseUnderlineLink
-                    to={`${getExplorerURI(chain)}/tx/${txId}`}
+                    to={`${getEtherscanURI(chainId)}/tx/${txId}`}
                     target="_blank"
                     rel="noreferrer noopener"
                     className="d-flex"
                   >
                     <PrimaryText className="mb-2">
-                      View on {getExplorerName(chain)}
+                      View on {BLOCKCHAIN_EXPLORER_NAME[chainId]}
                     </PrimaryText>
                   </BaseUnderlineLink>
                 )}
@@ -485,7 +483,6 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
         );
     }
   }, [
-    chain,
     chainId,
     color,
     stake,

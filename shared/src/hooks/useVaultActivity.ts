@@ -2,8 +2,6 @@ import { useContext } from "react";
 import { BigNumber } from "ethers";
 
 import {
-  CHAINS_TO_ID,
-  isSolanaVault,
   VaultAddressMap,
   VaultList,
   VaultOptions,
@@ -12,40 +10,30 @@ import {
 } from "../constants/constants";
 import { VaultActivitiesData } from "../models/vault";
 import { SubgraphDataContext } from "./subgraphDataContext";
-import { Chains } from "./chainContext";
-import { isEVMChain } from "../utils/chains";
 
 const getVaultActivityKey = (
   vault: VaultOptions,
   type: "shortPositions" | "optionTrades"
 ) => `vaultActivity_${type}_${vault.replace(/-/g, "")}`;
 
-export const vaultActivitiesGraphql = (version: VaultVersion, chain: Chains) =>
+export const vaultActivitiesGraphql = (
+  version: VaultVersion,
+  chainId: number
+) =>
   VaultList.reduce((acc, vault) => {
-    let vaultAddress = VaultAddressMap[vault][version];
+    const vaultAddress = VaultAddressMap[vault][version]?.toLowerCase();
 
-    if (
-      !isSolanaVault(vault) &&
-      (!vaultAddress || VaultAddressMap[vault].chainId !== CHAINS_TO_ID[chain])
-    ) {
+    if (!vaultAddress || VaultAddressMap[vault].chainId !== chainId) {
       return acc;
-    }
-
-    if (isEVMChain(chain)) {
-      vaultAddress = vaultAddress?.toLowerCase();
     }
 
     return (
       acc +
       `
-          ${getVaultActivityKey(vault, "shortPositions")}:
-          vaultShortPositions
-          ${
-            isSolanaVault(vault)
-              ? `(where: { vaultId: {_in: ["${vaultAddress}"] }})`
-              : `(where: { vault_in: ["${vaultAddress}"] })`
-          }
-          {
+          ${getVaultActivityKey(
+            vault,
+            "shortPositions"
+          )}: vaultShortPositions (where: { vault_in: ["${vaultAddress}"] }){
             id
             depositAmount
             mintAmount
@@ -54,14 +42,10 @@ export const vaultActivitiesGraphql = (version: VaultVersion, chain: Chains) =>
             openTxhash
             expiry
           }
-
-          ${getVaultActivityKey(vault, "optionTrades")}:
-          vaultOptionTrades ${
-            isSolanaVault(vault)
-              ? `(where: { vaultId: {_in: ["${vaultAddress}"] }})`
-              : `(where: { vault_in: ["${vaultAddress}"] })`
-          }
-          {
+          ${getVaultActivityKey(
+            vault,
+            "optionTrades"
+          )}:vaultOptionTrades (where: { vault_in: ["${vaultAddress}"] }) {
             vaultShortPosition {
               id
               strikePrice

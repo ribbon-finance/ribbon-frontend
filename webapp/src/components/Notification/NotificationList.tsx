@@ -11,7 +11,6 @@ import {
   getAssetLogo,
 } from "shared/lib/utils/asset";
 import {
-  getVaultChain,
   getAssets,
   getDisplayAssets,
   VaultOptions,
@@ -19,11 +18,7 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import { useCallback } from "react";
 import { Notification, NotificationType } from "shared/lib/models/notification";
-import {
-  formatBigNumber,
-  formatOptionStrike,
-  formatOptionAmount,
-} from "shared/lib/utils/math";
+import { formatBigNumber, formatOption } from "shared/lib/utils/math";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import { getVaultURI } from "../../constants/constants";
@@ -164,7 +159,6 @@ const NotificationList: React.FC<NotificationListProps> = ({
     const asset = getAssets(notification.vault);
     const decimals = getAssetDecimals(asset);
     const color = getVaultColor(notification.vault);
-    const chain = getVaultChain(notification.vault);
 
     const badge = (
       <NotificationItemVaultPill color={color} className="ml-2">
@@ -185,10 +179,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
             The vault minted{" "}
             {formatBigNumber(notification.depositAmount, decimals)} options at a
             strike price of $
-            {formatOptionStrike(
-              notification.strikePrice,
-              chain
-            ).toLocaleString()}
+            {formatOption(notification.strikePrice).toLocaleString()}
           </>
         );
         break;
@@ -197,11 +188,8 @@ const NotificationList: React.FC<NotificationListProps> = ({
         body = (
           <>
             The vault sold{" "}
-            {formatOptionAmount(
-              notification.sellAmount,
-              chain
-            ).toLocaleString()}{" "}
-            options for {formatBigNumber(notification.premium, decimals)}{" "}
+            {formatOption(notification.sellAmount).toLocaleString()} options for{" "}
+            {formatBigNumber(notification.premium, decimals)}{" "}
             {getAssetDisplay(asset)}
           </>
         );

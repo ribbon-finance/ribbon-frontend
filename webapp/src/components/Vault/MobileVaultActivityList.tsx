@@ -8,15 +8,13 @@ import colors from "shared/lib/designSystem/colors";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import {
   formatSignificantDecimals,
-  formatOptionStrike,
-  formatOptionAmount,
+  formatOption,
   formatBigNumber,
 } from "shared/lib/utils/math";
 import {
   getAssets,
   isPutVault,
   VaultOptions,
-  getVaultChain,
 } from "shared/lib/constants/constants";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 
@@ -79,7 +77,6 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
       decimals: getAssetDecimals(asset),
     };
   }, [vaultOption]);
-  const chain = getVaultChain(vaultOption);
 
   const renderVaultActivity = useCallback(
     (activity: VaultActivity) => {
@@ -93,7 +90,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
               <VaultSecondaryInfoText>
                 O-{asset}-
                 {moment(activity.expiry, "X").format("DD-MMM-YY").toUpperCase()}
-                -{formatOptionStrike(activity.strikePrice, chain)}
+                -{formatOption(activity.strikePrice)}
                 {isPutVault(vaultOption) ? "P" : "C"}
               </VaultSecondaryInfoText>
               <VaultActivityInfoRow>
@@ -116,7 +113,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
                 SOLD{" "}
                 {parseFloat(
                   formatSignificantDecimals(
-                    formatOptionAmount(activity.sellAmount, chain).toFixed(6)
+                    formatOption(activity.sellAmount).toFixed(6)
                   )
                 ).toLocaleString()}{" "}
                 CONTRACTS
@@ -126,11 +123,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
                 {moment(activity.vaultShortPosition.expiry, "X")
                   .format("DD-MMM-YY")
                   .toUpperCase()}
-                -
-                {formatOptionStrike(
-                  activity.vaultShortPosition.strikePrice,
-                  chain
-                )}
+                -{formatOption(activity.vaultShortPosition.strikePrice)}
                 {isPutVault(vaultOption) ? "P" : "C"}
               </VaultSecondaryInfoText>
               <VaultActivityInfoRow>
@@ -151,7 +144,7 @@ const MobileVaultActivityList: React.FC<MobileVaultActivityListProps> = ({
           );
       }
     },
-    [chain, asset, decimals, vaultOption]
+    [asset, decimals, vaultOption]
   );
 
   return (

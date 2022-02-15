@@ -4,11 +4,10 @@ import styled from "styled-components";
 
 import ActionModal from "./Modal/ActionModal";
 import {
-  getExplorerURI,
+  getEtherscanURI,
   VaultAddressMap,
   VaultOptions,
   VaultVersion,
-  getVaultChain,
 } from "shared/lib/constants/constants";
 import { useCallback } from "react";
 import VaultV1ActionsForm from "./VaultV1ActionsForm";
@@ -72,13 +71,11 @@ const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
       />
       {renderForm()}
 
-      {VaultAddressMap[vault.vaultOption][vault.vaultVersion] && (
+      {chainId && VaultAddressMap[vault.vaultOption][vault.vaultVersion] && (
         <BaseLink
-          to={`${getExplorerURI(
-            getVaultChain(vault.vaultOption)
-          )}/address/${VaultAddressMap[vault.vaultOption][
-            vault.vaultVersion
-          ]!}`}
+          to={`${getEtherscanURI(chainId)}/address/${VaultAddressMap[
+            vault.vaultOption
+          ][vault.vaultVersion]!}`}
           target="_blank"
           rel="noreferrer noopener"
           className="w-100"

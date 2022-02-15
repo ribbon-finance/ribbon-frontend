@@ -3,11 +3,7 @@ import { useEffect, useState } from "react";
 import { RibbonV2stETHThetaVault, RibbonV2ThetaVault } from "../codegen";
 import { RibbonV2ThetaVaultFactory } from "../codegen/RibbonV2ThetaVaultFactory";
 import { RibbonV2stETHThetaVaultFactory } from "../codegen/RibbonV2stETHThetaVaultFactory";
-import {
-  isSolanaVault,
-  VaultAddressMap,
-  VaultOptions,
-} from "../constants/constants";
+import { VaultAddressMap, VaultOptions } from "../constants/constants";
 import { useWeb3Context } from "./web3Context";
 
 export const getV2Vault = (
@@ -43,7 +39,6 @@ const useV2Vault = (vaultOption: VaultOptions) => {
   >(null);
 
   useEffect(() => {
-    if (isSolanaVault(vaultOption)) return;
     const vault = getV2Vault(library || provider, vaultOption, active);
     setVault(vault);
   }, [active, library, provider, vaultOption]);

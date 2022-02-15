@@ -1,14 +1,14 @@
 import React, { useCallback, useMemo } from "react";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled from "styled-components";
 import moment from "moment";
 
 import {
   getAssets,
-  getExplorerURI,
+  getEtherscanURI,
   isPutVault,
   getOptionAssets,
   VaultOptions,
-  getVaultChain,
 } from "shared/lib/constants/constants";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -16,8 +16,7 @@ import { VaultActivity, VaultActivityType } from "shared/lib/models/vault";
 import {
   assetToUSD,
   formatBigNumber,
-  formatOptionAmount,
-  formatOptionStrike,
+  formatOption,
 } from "shared/lib/utils/math";
 import { useAssetsPriceHistory } from "shared/lib/hooks/useAssetPrice";
 import sizes from "shared/lib/designSystem/sizes";
@@ -25,7 +24,6 @@ import useScreenSize from "shared/lib/hooks/useScreenSize";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import TableWithFixedHeader from "shared/lib/components/Common/TableWithFixedHeader";
-import { Chains } from "shared/lib/hooks/chainContext";
 
 const VaultActivityIcon = styled.div<{ type: VaultActivityType }>`
   display: flex;
@@ -90,28 +88,23 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
       decimals: getAssetDecimals(asset),
     };
   }, [vaultOption]);
-  const chain = getVaultChain(vaultOption);
-
   const { searchAssetPriceFromTimestamp, loading: assetPriceLoading } =
     useAssetsPriceHistory();
 
   const { width: screenWidth } = useScreenSize();
   const loadingText = useTextAnimation(assetPriceLoading);
+  const { chainId } = useWeb3Wallet();
 
   const getVaultActivityExternalURL = useCallback(
     (activity: VaultActivity) => {
       switch (activity.type) {
         case "minting":
-          return `${getExplorerURI(chain || Chains.Ethereum)}/tx/${
-            activity.openTxhash
-          }`;
+          return `${getEtherscanURI(chainId || 1)}/tx/${activity.openTxhash}`;
         case "sales":
-          return `${getExplorerURI(chain || Chains.Ethereum)}/tx/${
-            activity.txhash
-          }`;
+          return `${getEtherscanURI(chainId || 1)}/tx/${activity.txhash}`;
       }
     },
-    [chain]
+    [chainId]
   );
 
   const getVaultActivityTableData = useCallback(
@@ -140,7 +133,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                   : "CALL"}
               </VaultPrimaryText>
               <VaultSecondaryText>
-                Strike {formatOptionStrike(activity.strikePrice, chain)}
+                Strike {formatOption(activity.strikePrice)}
               </VaultSecondaryText>
             </>,
             <VaultPrimaryText>
@@ -172,19 +165,12 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                   : "CALL"}
               </VaultPrimaryText>
               <VaultSecondaryText>
-                Strike{" "}
-                {formatOptionStrike(
-                  activity.vaultShortPosition.strikePrice,
-                  chain
-                )}
+                Strike {formatOption(activity.vaultShortPosition.strikePrice)}
               </VaultSecondaryText>
             </>,
             <>
               <VaultPrimaryText>
-                {formatOptionAmount(
-                  activity.sellAmount,
-                  chain
-                ).toLocaleString()}
+                {formatOption(activity.sellAmount).toLocaleString()}
               </VaultPrimaryText>
             </>,
             <>
@@ -206,7 +192,6 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
       }
     },
     [
-      chain,
       assetPriceLoading,
       screenWidth,
       loadingText,

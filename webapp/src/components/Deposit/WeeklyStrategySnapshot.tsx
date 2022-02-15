@@ -6,7 +6,7 @@ import moment from "moment";
 
 import theme from "shared/lib/designSystem/theme";
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
-import { formatOptionStrike } from "shared/lib/utils/math";
+import { formatOption } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import {
   getAssets,
@@ -14,7 +14,6 @@ import {
   getOptionAssets,
   VaultOptions,
   VaultVersion,
-  getVaultChain,
 } from "shared/lib/constants/constants";
 import { BaseButton, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -122,7 +121,6 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   const { prices, loading: priceLoading } = useAssetsPrice();
   const loading = priceLoading || optionLoading;
   const [showCalculator, setShowCalculator] = useState(false);
-  const chain = getVaultChain(vaultOption);
 
   const loadingText = useTextAnimation(loading);
 
@@ -131,8 +129,8 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
 
     if (!currentOption) return "---";
 
-    return currency(formatOptionStrike(currentOption.strike, chain)).format();
-  }, [chain, currentOption, loadingText, optionLoading]);
+    return currency(formatOption(currentOption.strike)).format();
+  }, [currentOption, loadingText, optionLoading]);
 
   const toExpiryText = useMemo(() => {
     if (optionLoading) return loadingText;
@@ -157,7 +155,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
     }
 
     const higherStrike =
-      formatOptionStrike(currentOption.strike, chain) > prices[optionAsset]!;
+      formatOption(currentOption.strike) > prices[optionAsset]!;
     const isExercisedRange = currentOption.isPut ? higherStrike : !higherStrike;
     const assetDecimals = getAssetDecimals(asset);
 
@@ -167,15 +165,14 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
       profit = parseFloat(formatUnits(currentOption.premium, assetDecimals));
     } else if (currentOption.isPut) {
       const exerciseCost =
-        formatOptionStrike(currentOption.strike, chain) - prices[optionAsset]!;
+        formatOption(currentOption.strike) - prices[optionAsset]!;
 
       profit =
         parseFloat(formatUnits(currentOption.premium, assetDecimals)) -
         currentOption.amount * exerciseCost;
     } else {
       profit =
-        (currentOption.amount *
-          formatOptionStrike(currentOption.strike, chain)) /
+        (currentOption.amount * formatOption(currentOption.strike)) /
           prices[optionAsset]! -
         currentOption.amount +
         parseFloat(formatUnits(currentOption.premium, assetDecimals));
@@ -189,7 +186,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
         100 *
         0.9,
     };
-  }, [chain, loading, currentOption, prices, optionAsset, asset]);
+  }, [loading, currentOption, prices, optionAsset, asset]);
 
   const ProfitabilityText = useMemo(() => {
     if (loading) return loadingText;
@@ -211,11 +208,11 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
     return (
       <StrikeChart
         current={prices[optionAsset] || 0}
-        strike={formatOptionStrike(currentOption.strike, chain)}
+        strike={formatOption(currentOption.strike)}
         profitable={KPI ? KPI.isProfit : true}
       />
     );
-  }, [chain, prices, currentOption, optionAsset, KPI, loading, loadingText]);
+  }, [prices, currentOption, optionAsset, KPI, loading, loadingText]);
 
   return (
     <>

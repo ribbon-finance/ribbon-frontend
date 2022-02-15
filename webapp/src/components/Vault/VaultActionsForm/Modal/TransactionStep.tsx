@@ -1,13 +1,12 @@
 import React from "react";
 import styled from "styled-components";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { BaseUnderlineLink, PrimaryText } from "shared/lib/designSystem";
 import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import {
-  getExplorerName,
-  getExplorerURI,
-  Chains,
+  BLOCKCHAIN_EXPLORER_NAME,
+  getEtherscanURI,
 } from "shared/lib/constants/constants";
-import { useChain } from "shared/lib/hooks/chainContext";
 
 const TrafficLightContainer = styled.div`
   display: flex;
@@ -34,21 +33,25 @@ interface TransactionStepProps {
 }
 
 const TransactionStep: React.FC<TransactionStepProps> = ({ txhash }) => {
-  const [chain] = useChain();
+  const { chainId } = useWeb3Wallet();
   return (
     <>
       <TrafficLightContainer>
         <TrafficLight active={Boolean(txhash)} />
       </TrafficLightContainer>
       <BottomTextContainer>
-        {chain !== Chains.NotSelected && txhash ? (
+        {chainId && txhash ? (
           <BaseUnderlineLink
-            to={`${getExplorerURI(chain)}/tx/${txhash}`}
+            to={`${getEtherscanURI(chainId)}/tx/${txhash}`}
             target="_blank"
             rel="noreferrer noopener"
             className="d-flex"
           >
-            {<BottomText>View on {getExplorerName(chain)}</BottomText>}
+            {chainId && (
+              <BottomText>
+                View on {BLOCKCHAIN_EXPLORER_NAME[chainId]}
+              </BottomText>
+            )}
           </BaseUnderlineLink>
         ) : (
           <BottomText>Confirm this transaction in your wallet</BottomText>
