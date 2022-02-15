@@ -23,8 +23,13 @@ const useFetchSolVaultData = (): SolanaVaultData => {
       if (!vault) return;
 
       const [vaultAddress] = await vaultUtils.getVaultAddress("rSOL-THETA");
-      const { depositLimit, epochSequenceNumber, totalBalance, pricePerShare } =
-        await vaultData.getVaultData(connection, vaultAddress);
+      const {
+        depositLimit,
+        epochSequenceNumber,
+        totalBalance,
+        pricePerShare,
+        vaultUserData,
+      } = await vaultData.getVaultData(connection, vaultAddress);
 
       const totalQueueDeposit = await getUserDepositQueueAmount(
         vault,
@@ -37,10 +42,15 @@ const useFetchSolVaultData = (): SolanaVaultData => {
         publicKey as PublicKey
       );
 
-      const lockedBalanceInAsset = totalQueueDeposit.sub(totalQueueWithdrawal);
-      const depositBalanceInAsset = totalQueueDeposit;
+      const userData = vaultUserData.find(
+        (d) =>
+          d.user.equals(publicKey as PublicKey) && d.vault.equals(vaultAddress)
+      );
 
-      console.log(vault);
+      const lockedBalanceInAsset = BigNumber.from(
+        Math.floor(userData?.lockedUnderlyingAmount ?? 0)
+      );
+      const depositBalanceInAsset = totalQueueDeposit;
 
       setData({
         responses: {
