@@ -110,6 +110,7 @@ export const Subtitle = styled.span<{
   fontSize?: number;
   lineHeight?: number;
   letterSpacing?: number;
+  normalCased?: boolean;
 }>`
   color: ${(props) => props.color || colors.primaryText};
   font-family: VCR, sans-serif;
@@ -118,7 +119,7 @@ export const Subtitle = styled.span<{
   font-size: ${(props) => props.fontSize || 12}px;
   ${(props) => (props.lineHeight ? `line-height: ${props.lineHeight}px;` : ``)}
   letter-spacing: ${(props) => props.letterSpacing || 1.5}px;
-  text-transform: uppercase;
+  ${(props) => (!props.normalCased ? `text-transform: uppercase;` : ``)}
 `;
 
 export const PrimaryText = styled(BaseText)<{
@@ -189,6 +190,10 @@ export const BaseInput = styled.input<{
     border: none;
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
     border: rgba(255, 255, 255, 0);
+  }
+
+  &:disabled {
+    background-color: transparent !important;
   }
 `;
 

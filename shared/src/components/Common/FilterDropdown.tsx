@@ -127,17 +127,18 @@ const MenuItemText = styled(Title)`
   line-height: 20px;
 `;
 
-interface FilterDropdownProps {
+type FilterDropdownProps = Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onSelect"
+> & {
   options: Array<string | { display: string; value: string }>;
   value: string;
   onSelect: (option: string) => void;
   buttonConfig?: FilterDropdownButtonConfig;
   dropdownMenuConfig?: FilterDropdownMenuConfig;
-}
+};
 
-const FilterDropdown: React.FC<
-  FilterDropdownProps & React.HTMLAttributes<HTMLDivElement>
-> = ({
+const FilterDropdown: React.FC<FilterDropdownProps> = ({
   options,
   value,
   onSelect,

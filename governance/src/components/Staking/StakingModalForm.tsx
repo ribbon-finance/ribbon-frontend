@@ -22,7 +22,7 @@ import InlineSelectInput from "shared/lib/components/Common/InlineSelectInput";
 import { formatBigNumber, formatBigNumberAmount } from "shared/lib/utils/math";
 import moment, { duration, Duration } from "moment";
 import StakingModalFormCalendarOverlay from "./StakingModalFormCalendarOverlay";
-import { calculateInitialveRBNAmount } from "../../utils/math";
+import { calculateInitialveRBNAmount } from "shared/lib/utils/governanceMath";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 
 const durationSelectOptions = [
@@ -87,7 +87,7 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
   proceedToPreview,
 }) => {
   const { active } = useWeb3React();
-  const { data } = useRBNTokenAccount();
+  const { data: rbnTokenAccount } = useRBNTokenAccount();
 
   const [showCalendarPicker, setShowCalendarPicker] = useState(false);
 
@@ -110,10 +110,10 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
     return Boolean(
       amountInput &&
         parseUnits(amountInput, 18).gt(
-          data ? data.walletBalance : BigNumber.from(0)
+          rbnTokenAccount ? rbnTokenAccount.walletBalance : BigNumber.from(0)
         )
     );
-  }, [amountInput, data]);
+  }, [amountInput, rbnTokenAccount]);
 
   const canProceed = useMemo(() => {
     return amountInput && !inputError && stakeDuration.asDays() >= 7;
@@ -142,8 +142,6 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
       case "2Y":
         setStakeDuration(duration(2 * 365, "d"));
         break;
-      case "custom":
-        setStakeDuration(duration());
     }
   }, [durationSelectValue]);
 
@@ -187,7 +185,11 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
           {active && (
             <BaseInputButton
               onClick={() =>
-                setAmountInput(data ? formatUnits(data.walletBalance) : "0")
+                setAmountInput(
+                  rbnTokenAccount
+                    ? formatUnits(rbnTokenAccount.walletBalance)
+                    : "0"
+                )
               }
             >
               MAX
@@ -250,7 +252,9 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
             lineHeight={24}
             color={inputError ? colors.red : colors.primaryText}
           >
-            {data ? formatBigNumber(data.walletBalance, 18) : "0"}
+            {rbnTokenAccount
+              ? formatBigNumber(rbnTokenAccount.walletBalance, 18)
+              : "0"}
           </Title>
         </div>
       </BaseModalContentColumn>
@@ -274,7 +278,7 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
               </StakingWarningHighlight>{" "}
               decays linearly over time and expires on{" "}
               <StakingWarningHighlight>
-                {moment().add(stakeDuration).format("MMMM, Do YYYY")}
+                {moment().add(stakeDuration).format("MMM, Do YYYY")}
               </StakingWarningHighlight>
             </>
           ) : (

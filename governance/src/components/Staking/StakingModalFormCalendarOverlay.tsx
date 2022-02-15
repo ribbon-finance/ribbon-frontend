@@ -39,11 +39,12 @@ interface StakingModalFormCalendarOverlayProps {
   show: boolean;
   onCancel: () => void;
   onDateSelected: (date: Moment) => void;
+  minDate?: Moment;
 }
 
 const StakingModalFormCalendarOverlay: React.FC<
   StakingModalFormCalendarOverlayProps
-> = ({ show, onCancel, onDateSelected }) => {
+> = ({ show, onCancel, onDateSelected, minDate }) => {
   const [selectedDate, setSelectedDate] = useState<Moment>();
 
   return (
@@ -81,7 +82,7 @@ const StakingModalFormCalendarOverlay: React.FC<
         <BaseModalContentColumn marginTop={34}>
           <CalendarPicker
             initialValue={selectedDate}
-            minDate={moment().add(7, "d")}
+            minDate={minDate || moment().add(7, "d")}
             maxDate={moment().add(2 * 365, "d")}
             onDateSelected={(date) => {
               setSelectedDate(date);
@@ -93,7 +94,7 @@ const StakingModalFormCalendarOverlay: React.FC<
           <SecondaryText color={colors.green} className="w-100 text-center">
             &#8226; Minimum lockup period: 1 week
             <br />
-            &#8226; Maximum lockup period: 4 years
+            &#8226; Maximum lockup period: 2 years
           </SecondaryText>
         </BaseModalWarning>
 

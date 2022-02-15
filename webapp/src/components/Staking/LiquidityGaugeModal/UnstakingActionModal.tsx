@@ -191,15 +191,6 @@ const UnstakingActionModal: React.FC<UnstakingActionModalProps> = ({
   ]);
 
   /**
-   * Set to max amount by default
-   */
-  useEffect(() => {
-    if (show) {
-      handleMaxPressed();
-    }
-  }, [handleMaxPressed, show, stakingPoolData, step]);
-
-  /**
    * Input Validation
    */
   useEffect(() => {

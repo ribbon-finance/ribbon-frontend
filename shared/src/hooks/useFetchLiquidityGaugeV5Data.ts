@@ -21,6 +21,7 @@ import { getLiquidityGaugeV5 } from "./useLiquidityGaugeV5";
 import { getV2Vault } from "./useV2Vault";
 import useLiquidityTokenMinter from "./useLiquidityTokenMinter";
 import useLiquidityGaugeController from "./useLiquidityGaugeController";
+import { constants } from "ethers";
 
 const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   const { active, chainId, account: web3Account, library } = useWeb3React();
@@ -85,6 +86,8 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
          */
         const unconnectedPromises: Promise<BigNumber>[] = [
           lg5Contract.totalSupply(),
+          lg5Contract.working_balances(account ?? constants.AddressZero),
+          lg5Contract.working_supply(),
           gaugeControllerContract["gauge_relative_weight(address)"](
             VaultLiquidityMiningMap.lg5[vault]!
           ),
@@ -102,7 +105,10 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
                 lg5Contract.balanceOf(account!),
                 lg5Contract.claimable_reward(account!, RibbonTokenAddress),
                 vaultContract!.shares(account!),
-                lg5Contract.claimed_reward(account!, RibbonTokenAddress),
+                minterContract.minted(
+                  account!,
+                  VaultLiquidityMiningMap.lg5[vault]!
+                ),
               ]
             : [
                 // Default value when not connected
@@ -113,8 +119,12 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
               ]
         );
 
+        // Add minted amount (RBN Claimed)
+
         const [
           poolSize,
+          workingBalances,
+          workingSupply,
           relativeWeight,
           currentStake,
           claimableRbn,
@@ -128,6 +138,8 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
         return {
           vault,
           poolSize,
+          workingBalances,
+          workingSupply,
           relativeWeight,
           currentStake,
           claimableRbn,

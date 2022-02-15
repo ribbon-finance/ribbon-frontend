@@ -14,8 +14,9 @@ import { formatBigNumber } from "shared/lib/utils/math";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { VotingEscrowAddress } from "shared/lib/constants/constants";
-import { calculateInitialveRBNAmount } from "../../utils/math";
+import { useAssetBalance } from "shared/lib/hooks/web3DataContext";
 import moment from "moment";
+import { BigNumber } from "ethers";
 
 const FABContainer = styled.div`
   display: flex;
@@ -33,6 +34,10 @@ const FABContainer = styled.div`
    **/
   @-moz-document url-prefix() {
     background-color: rgba(0, 0, 0, 0.9);
+  }
+
+  @media (max-width: ${sizes.md}px) {
+    display: none;
   }
 `;
 
@@ -59,10 +64,33 @@ const FABOffsetContainer = styled.div`
 const StakingFAB = () => {
   const { active } = useWeb3React();
   const [, setStakingModal] = useGovernanceGlobalState("stakingModal");
+  const [, setUnstakingModal] = useGovernanceGlobalState("unstakingModal");
 
-  const rbnAllowance = useTokenAllowance("rbn", VotingEscrowAddress);
-  const { data: rbnAccount, loading: rbnAccountLoading } = useRBNTokenAccount();
-  const loadingText = useTextAnimation(rbnAccountLoading);
+  const rbnAllowance =
+    useTokenAllowance("rbn", VotingEscrowAddress) || BigNumber.from(0);
+
+  const { data: rbnTokenAccount, loading: rbnTokenAccountLoading } =
+    useRBNTokenAccount();
+  const { balance: veRBNBalance, loading: votingPowerLoading } =
+    useAssetBalance("veRBN");
+  const loading = rbnTokenAccountLoading || votingPowerLoading;
+  const loadingText = useTextAnimation(loading);
+
+  const stakeMode = useMemo(() => {
+    if (rbnAllowance.isZero()) {
+      return "approve";
+    }
+
+    if (
+      rbnTokenAccount &&
+      rbnTokenAccount.lockEndTimestamp &&
+      moment().isBefore(moment.unix(rbnTokenAccount.lockEndTimestamp))
+    ) {
+      return "increase";
+    }
+
+    return "stake";
+  }, [rbnAllowance, rbnTokenAccount]);
 
   const fabInfo: {
     veRBNAmount: string;
@@ -75,39 +103,28 @@ const StakingFAB = () => {
         stakedRBNAmount: "---",
         unstakedRBNAmount: "---",
       };
-    } else if (rbnAccountLoading) {
+    }
+
+    if (loading) {
       return {
         veRBNAmount: loadingText,
         stakedRBNAmount: loadingText,
         unstakedRBNAmount: loadingText,
       };
-    } else if (rbnAccount) {
-      let veRBNAmount = "0.00";
-      const stakedRBNAmount = formatBigNumber(rbnAccount.lockedBalance);
-      const unstakedRBNAmount = formatBigNumber(rbnAccount.walletBalance);
-      if (rbnAccount.lockEndTimestamp) {
-        const currentRemainingDuration =
-          rbnAccount.lockEndTimestamp * 1000 - Date.now();
-        const amountBn = calculateInitialveRBNAmount(
-          rbnAccount?.lockedBalance,
-          moment.duration(currentRemainingDuration)
-        );
-        veRBNAmount = formatBigNumber(amountBn, 18, 2);
-      }
-      return {
-        veRBNAmount,
-        stakedRBNAmount,
-        unstakedRBNAmount,
-      };
     }
-    return {
-      veRBNAmount: "0.00",
-      stakedRBNAmount: "0.00",
-      unstakedRBNAmount: "0.00",
-    };
-  }, [active, loadingText, rbnAccount, rbnAccountLoading]);
 
-  return (
+    return {
+      veRBNAmount: formatBigNumber(veRBNBalance),
+      stakedRBNAmount: rbnTokenAccount
+        ? formatBigNumber(rbnTokenAccount.lockedBalance)
+        : "0.00",
+      unstakedRBNAmount: rbnTokenAccount
+        ? formatBigNumber(rbnTokenAccount.walletBalance)
+        : "0.00",
+    };
+  }, [active, loading, loadingText, rbnTokenAccount, veRBNBalance]);
+
+  return active ? (
     <>
       <FABContainer>
         <div className="d-flex align-items-center ml-5">
@@ -159,17 +176,24 @@ const StakingFAB = () => {
             color={`${colors.red}1F`}
             role="button"
             onClick={() =>
-              setStakingModal({
+              setStakingModal((prev) => ({
+                ...prev,
                 show: true,
-                mode: rbnAllowance?.isZero() ? "approve" : "stake",
-              })
+                mode: stakeMode,
+              }))
             }
           >
             <Title fontSize={14} lineHeight={24} color={colors.red}>
-              {rbnAllowance?.isZero() ? "Approve" : "Stake"}
+              {stakeMode === "approve" ? "Approve" : "Stake"}
             </Title>
           </StakingButton>
-          <StakingButton color={`${colors.primaryText}0A`} role="button">
+          <StakingButton
+            color={`${colors.primaryText}0A`}
+            role="button"
+            onClick={() => {
+              setUnstakingModal((prev) => ({ ...prev, show: true }));
+            }}
+          >
             <Title fontSize={14} lineHeight={24} color={colors.text}>
               Unstake
             </Title>
@@ -178,6 +202,8 @@ const StakingFAB = () => {
       </FABContainer>
       <FABOffsetContainer />
     </>
+  ) : (
+    <></>
   );
 };
 

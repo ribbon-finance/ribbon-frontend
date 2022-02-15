@@ -16,9 +16,12 @@ import useVaultActionForm from "webapp/lib/hooks/useVaultActionForm";
 import { ACTIONS } from "webapp/lib/components/Vault/VaultActionsForm/Modal/types";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import { getVaultURI } from "webapp/lib/constants/constants";
+import { getVaultURI } from "../../../constants/constants";
 import { WithdrawIcon } from "shared/lib/assets/icons/icons";
 import { RibbonVaultMigrationMap } from "shared/lib/constants/constants";
+import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
+import { BigNumber } from "ethers";
+import { parseUnits } from "ethers/lib/utils";
 
 const FormContainer = styled.div`
   display: flex;
@@ -68,6 +71,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
       withdrawals,
     },
   } = useV2VaultData(vaultOption);
+  const { priceHistory } = useVaultPriceHistory(vaultOption, "v2");
   const [hideMigrationForm, setHideMigrationForm] = useState(false);
   const [hideCompleteWithdrawReminder, setHideCompleteWithdrawReminder] =
     useState(false);
@@ -75,6 +79,16 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
   const color = getVaultColor(vaultOption);
   const { vaultActionForm, handleActionTypeChange } =
     useVaultActionForm(vaultOption);
+  const withdrawalAmount = useMemo(
+    () =>
+      withdrawals.shares
+        .mul(
+          priceHistory.find((history) => history.round === withdrawals.round)
+            ?.pricePerShare || BigNumber.from(0)
+        )
+        .div(parseUnits("1", decimals)),
+    [decimals, priceHistory, withdrawals.round, withdrawals.shares]
+  );
 
   const migrateSourceVault = useMemo(
     () =>
@@ -94,7 +108,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
   const canCompleteWithdraw = useMemo(() => {
     return (
       vaultActionForm.withdrawOption !== "instant" &&
-      !withdrawals.amount.isZero() &&
+      !withdrawals.shares.isZero() &&
       withdrawals.round !== round
     );
   }, [round, vaultActionForm.withdrawOption, withdrawals]);
@@ -148,7 +162,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
             color={colors.text}
           >
             You can now complete your withdrawal of{" "}
-            {formatBigNumber(withdrawals.amount, decimals)}{" "}
+            {formatBigNumber(withdrawalAmount, decimals)}{" "}
             {getAssetDisplay(asset)} from the vault.
           </PrimaryText>
 
@@ -199,7 +213,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
     history,
     onFormSubmit,
     vaultOption,
-    withdrawals.amount,
+    withdrawalAmount,
   ]);
 
   const formExtra = useMemo(() => {

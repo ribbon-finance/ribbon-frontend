@@ -12,6 +12,8 @@ import colors from "shared/lib/designSystem/colors";
 import ProfilePage from "../pages/ProfilePage";
 import StakingFAB from "./FAB/StakingFab";
 import StakingModal from "./Staking/StakingModal";
+import UnstakingModal from "./Unstaking/UnstakingModal";
+import { TxStatusToast } from "./Common/toast";
 import sizes from "shared/lib/designSystem/sizes";
 import Faqs from "../pages/Faqs";
 
@@ -29,10 +31,11 @@ const RootApp = () => {
     <Root id="appRoot" screenHeight={screenHeight}>
       <WalletConnectModal />
       <StakingModal />
+      <UnstakingModal />
 
       <Router>
+        <TxStatusToast />
         <Header />
-
         <Switch>
           <Route path="/" exact>
             <Homepage />

@@ -34,7 +34,7 @@ import {
 } from "shared/lib/utils/asset";
 import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
-import { getVaultURI } from "webapp/lib/constants/constants";
+import { getVaultURI } from "../../constants/constants";
 import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopActionForm";
 import YourPosition from "../../components/Vault/YourPosition";
 import { truncateAddress } from "shared/lib/utils/address";
