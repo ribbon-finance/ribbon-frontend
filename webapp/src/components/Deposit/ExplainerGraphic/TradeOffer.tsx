@@ -314,7 +314,7 @@ const TradeOffer: React.FC<TradeOfferProps> = ({
   const renderParty = (party?: string) => {
     if (!party) {
       return (
-        <Logo
+        <ColoredLogo
           width={`${height * 0.75 * 0.3}px`}
           height={`${height * 0.75 * 0.3}px`}
           color={color}
@@ -351,7 +351,6 @@ const TradeOffer: React.FC<TradeOfferProps> = ({
   return (
     <div
       ref={ref}
-      style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
       className="d-flex flex-column w-100 h-100 align-items-center justify-content-center"
     >
       <TargetContainer className="position-relative">

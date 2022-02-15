@@ -32,9 +32,9 @@ import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { useFlexVault } from "shared/lib/hooks/useFlexVault";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { getAssetDecimals } from "shared/lib/utils/asset";
-import { vaultUtils } from "@zetamarkets/flex-sdk";
+import { vaultUtils, vaultInstructions, utils } from "@zetamarkets/flex-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { PublicKey } from "@solana/web3.js";
+import { PublicKey, Transaction } from "@solana/web3.js";
 
 export interface ActionStepsProps {
   vault: {
@@ -57,7 +57,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   skipToPreview = false,
 }) => {
   const { ethereumProvider } = useWeb3Wallet();
-  const { client } = useFlexVault();
+  const { client, vault } = useFlexVault();
   const { publicKey } = useWallet();
 
   const { vaultActionForm, resetActionForm, withdrawMetadata } =
@@ -271,14 +271,29 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                             vault,
                             publicKey as PublicKey
                           );
-                          const pendingRes = await Promise.all(
-                            depositNodes.map((node) =>
-                              client.removeQueuedDeposit(vaultAddress, node)
-                            )
-                          );
 
-                          console.log(pendingRes);
-                          res = { hash: pendingRes[0] };
+                          console.log(vault);
+
+                          const tx = new Transaction();
+                          const userUnderlyingTokenAddress =
+                            await utils.getAssociatedTokenAddress(
+                              vault,
+                              publicKey as PublicKey
+                            );
+
+                          depositNodes.forEach((node) => {
+                            tx.add(
+                              vaultInstructions.removeQueuedDepositIx(
+                                publicKey as PublicKey,
+                                userUnderlyingTokenAddress,
+                                vault,
+                                node,
+                                []
+                              )
+                            );
+                          });
+
+                          // res = { hash: pendingRes[0] };
                         }
                         break;
                       case "rstETH-THETA":

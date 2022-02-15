@@ -32,7 +32,6 @@ import VaultDeposit from "./ExplainerGraphic/VaultDeposit";
 import AlgoStrikeSelection from "./ExplainerGraphic/AlgoStrikeSelection";
 import GnosisAuction from "./ExplainerGraphic/GnosisAuction";
 import SegmentPagination from "shared/lib/components/Common/SegmentPagination";
-import { Assets } from "shared/lib/store/types";
 
 const ExplainerContainer = styled.div`
   display: flex;
@@ -154,13 +153,13 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
             !NonCollateralSwapExclusionExplanationStepList.includes(item)
         );
     }
-  }, [vaultOption, vaultVersion]);
+  }, [vaultVersion, displayAsset]);
 
   const [step, setStep] = useState<ExplanationStep>(
     currentVaultExplanationStepList[0]
   );
 
-  const getOfferParty = () => {
+  const getOfferParty = useCallback(() => {
     switch (vaultVersion) {
       case "v1":
         return "MARKET MAKER";
@@ -168,9 +167,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
       default:
         return "OPTION BUYER";
     }
-  };
+  }, [vaultVersion]);
 
-  const getVaultIcon = () => {
+  const getVaultIcon = useCallback(() => {
     switch (displayAsset) {
       case "SOL":
         return "Zeta FLEX";
@@ -179,27 +178,33 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
       default:
         return "Opyn Vault";
     }
-  };
+  }, [displayAsset]);
 
-  const getVaultTarget = (includeVault: boolean = true) => {
-    switch (asset) {
-      case "SOL":
-        return `Zeta FLEX ${includeVault ? "vault" : ""}`.trim();
-      case "yvUSDC":
-        return `Yearn ${includeVault ? "vault" : ""}`.trim();
-      default:
-        return `Opyn ${includeVault ? "vault" : ""}`.trim();
-    }
-  };
+  const getVaultTarget = useCallback(
+    (includeVault: boolean = true) => {
+      switch (asset) {
+        case "SOL":
+          return `Zeta FLEX ${includeVault ? "vault" : ""}`.trim();
+        case "yvUSDC":
+          return `Yearn ${includeVault ? "vault" : ""}`.trim();
+        default:
+          return `Opyn ${includeVault ? "vault" : ""}`.trim();
+      }
+    },
+    [asset]
+  );
 
-  const getAuctionTarget = (includeAuction: boolean = true) => {
-    switch (asset) {
-      case "SOL":
-        return `Zeta FLEX ${includeAuction ? "Auction" : ""}`.trim();
-      default:
-        return `Gnosis ${includeAuction ? "Auction" : ""}`.trim();
-    }
-  };
+  const getAuctionTarget = useCallback(
+    (includeAuction: boolean = true) => {
+      switch (asset) {
+        case "SOL":
+          return `Zeta FLEX ${includeAuction ? "Auction" : ""}`.trim();
+        default:
+          return `Gnosis ${includeAuction ? "Auction" : ""}`.trim();
+      }
+    },
+    [asset]
+  );
 
   /**
    * Prevent wrong step showing up when change vault version
@@ -294,7 +299,17 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           );
       }
     },
-    [asset, color, isPut, vaultOption, vaultVersion]
+    [
+      asset,
+      color,
+      isPut,
+      displayAsset,
+      vaultOption,
+      getAuctionTarget,
+      getOfferParty,
+      getVaultIcon,
+      getVaultTarget,
+    ]
   );
 
   const renderTitle = useCallback(
@@ -331,7 +346,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           return `${getOfferParty()} EXERCISES OPTIONS`;
       }
     },
-    [asset, isPut, vaultOption, vaultVersion]
+    [asset, isPut, getAuctionTarget, getOfferParty, getVaultTarget]
   );
 
   const renderDescription = useCallback(
@@ -936,7 +951,16 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           );
       }
     },
-    [asset, isPut, isYearn, optionAsset, vaultOption, vaultVersion]
+    [
+      asset,
+      isPut,
+      isYearn,
+      optionAsset,
+      getAuctionTarget,
+      getVaultTarget,
+      vaultOption,
+      vaultVersion,
+    ]
   );
 
   const infoSection = useMemo(() => {
