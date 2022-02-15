@@ -204,7 +204,8 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
     }
 
     return {
-      totalPoolRewards: totalPoolRewards === undefined ? "-" : `${totalPoolRewards} RBN`,
+      totalPoolRewards:
+        totalPoolRewards === undefined ? "-" : `${totalPoolRewards} RBN`,
       baseRewards,
       boostedRewardsMultiplier: boost ? `(${boost.toFixed(2)}X)` : "",
       boostedRewardsAmount: boostedRewards,
