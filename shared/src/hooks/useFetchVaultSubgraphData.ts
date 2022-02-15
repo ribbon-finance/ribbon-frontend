@@ -86,11 +86,7 @@ const useFetchVaultSubgraphData = () => {
                       ? `
                           ${vaultAccountsGraphql(account, version)}
                           ${transactionsGraphql(account, chain)}
-                          ${
-                            chain === Chains.Solana
-                              ? ""
-                              : balancesGraphql(account, chain)
-                          }
+                          ${balancesGraphql(account, chain)}
                           ${liquidityMiningPoolAccountsGraphql(
                             account,
                             version
@@ -100,11 +96,7 @@ const useFetchVaultSubgraphData = () => {
                   }
                   ${vaultGraphql(version, chain)}
                   ${vaultActivitiesGraphql(version, chain)}
-                  ${
-                    chain === Chains.Solana
-                      ? ""
-                      : vaultPriceHistoryGraphql(version, chain)
-                  }
+                  ${vaultPriceHistoryGraphql(version, chain)}
                   ${liquidityMiningPoolGraphql(version, chain)}
                 }`.replaceAll(" ", ""),
           }

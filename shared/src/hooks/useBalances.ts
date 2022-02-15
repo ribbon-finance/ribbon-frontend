@@ -18,7 +18,7 @@ export const balancesGraphql = (account: string, chain: Chains) => `
         : `orderBy: timestamp,
            orderDirection: desc,`
     }
-    first: 1000
+    ${chain === Chains.Solana ? "limit: 1000" : "first: 1000"}
   ) {
     vault {
       symbol

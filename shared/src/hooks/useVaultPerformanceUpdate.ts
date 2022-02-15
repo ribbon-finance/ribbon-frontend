@@ -51,7 +51,7 @@ export const vaultPriceHistoryGraphql = (
               : `orderBy: timestamp,
                  orderDirection: desc,`
           }
-          first: 1000
+          ${chain === Chains.Solana ? "limit: 1000" : "first: 1000"}
         ) {
           pricePerShare
           timestamp
