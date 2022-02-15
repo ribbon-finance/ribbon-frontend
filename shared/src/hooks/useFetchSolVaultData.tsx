@@ -42,15 +42,11 @@ const useFetchSolVaultData = (): SolanaVaultData => {
         publicKey as PublicKey
       );
 
-      console.log("q withdraw", totalQueueWithdrawal)
-      console.log("q deposit", totalQueueDeposit)
 
       const userData = vaultUserData.find(
         (d) =>
-          d.user && d.vault && d.user.equals(publicKey as PublicKey) && d.vault.equals(vaultAddress)
+        publicKey && vaultAddress && d?.user.equals(publicKey as PublicKey) && d?.vault.equals(vaultAddress)
       );
-
-      console.log("user", userData)
 
       const lockedBalanceInAsset = BigNumber.from(
         Math.floor(userData?.lockedUnderlyingAmount ?? 0)

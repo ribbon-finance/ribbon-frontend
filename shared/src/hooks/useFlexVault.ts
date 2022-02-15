@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useConnection, useAnchorWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import { Vault, Flex, VaultClient, vaultUtils } from "@zetamarkets/flex-sdk";
+import { Vault, Flex, VaultClient, vaultUtils, vaultTypes } from "@zetamarkets/flex-sdk";
 import {
   getSolanaAddresses,
   getSolanaNetwork,
@@ -12,7 +12,7 @@ import { Wallet } from "@zetamarkets/flex-sdk/dist/common/types";
 
 interface FlexVaultData {
   client: VaultClient | null;
-  vault: VaultInterface | null;
+  vault: vaultTypes.Vault | null;
   update: () => void;
 }
 
@@ -23,7 +23,7 @@ export const useFlexVault = (): FlexVaultData => {
   const { flex: flexAddress, vault: vaultProgramId } = getSolanaAddresses();
 
   const [flexClient, setFlexClient] = useState<VaultClient | null>(null);
-  const [flexVault, setFlexVault] = useState<VaultInterface | null>(null);
+  const [flexVault, setFlexVault] = useState<vaultTypes.Vault | null>(null);
 
   // FLEX VAULT INITIALIZER
   useEffect(() => {

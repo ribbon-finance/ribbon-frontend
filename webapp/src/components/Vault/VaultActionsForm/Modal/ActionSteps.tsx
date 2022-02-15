@@ -39,6 +39,7 @@ import {
 } from "@solana/wallet-adapter-react";
 import { PublicKey, Transaction } from "@solana/web3.js";
 import * as anchor from "@project-serum/anchor";
+import { vaultTypes, Program } from "@zetamarkets/flex-sdk";
 
 export interface ActionStepsProps {
   vault: {
@@ -61,7 +62,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   skipToPreview = false,
 }) => {
   const { ethereumProvider } = useWeb3Wallet();
-  const { client } = useFlexVault();
+  const { client, vault: flexVault } = useFlexVault();
   const anchorWallet = useAnchorWallet();
   const { publicKey } = useWallet();
   const { connection } = useConnection();
@@ -272,43 +273,61 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                     switch (vaultActionForm.vaultOption) {
                       case "rSOL-THETA":
                         if (client) {
-                          const depositNodes = getUserWithdrawQueueNodes(
-                            vault,
+                          const depositNodes = await getUserWithdrawQueueNodes(
+                            flexVault as vaultTypes.Vault,
                             publicKey as PublicKey
-                            );
-                            
+                          );
 
-                          const tx = new Transaction();
                           const userUnderlyingTokenAddress =
                             await utils.getAssociatedTokenAddress(
-                              vault,
+                              flexVault?.underlyingMint as PublicKey,
                               publicKey as PublicKey
                             );
 
-                          depositNodes.forEach((node) => {
-                            tx.add(
-                              vaultInstructions.removeQueuedDepositIx(
-                                publicKey as PublicKey,
-                                userUnderlyingTokenAddress,
-                                vault,
-                                node,
-                                []
-                              )
-                            );
-                          });
+                          let tx = new Transaction();
+                          tx.add(
+                            vaultInstructions.removeQueuedDepositIx(
+                              publicKey as PublicKey,
+                              userUnderlyingTokenAddress,
+                              flexVault as vaultTypes.Vault,
+                              depositNodes[0],
+                              []
+                            )
+                          );
+
+                          console.log(tx);
+                          // depositNodes.forEach((node) => {
+                          //   tx.add(
+                          //     vaultInstructions.removeQueuedDepositIx(
+                          //       publicKey as PublicKey,
+                          //       userUnderlyingTokenAddress,
+                          //       flexVault as vaultTypes.Vault,
+                          //       node,
+                          //       []
+                          //     )
+                          //   );
+                          // });
 
                           const provider = new anchor.Provider(
                             connection,
                             anchorWallet as AnchorWallet,
                             utils.defaultCommitment()
                           );
+
+                          const test = await provider.simulate(tx);
+
+                          console.log(test);
+                          // const test = await connection.simulateTransaction(tx);
+                          // console.log("prov", provider);
+                          // console.log("tx", tx);
+
                           const txhash = await utils.processTransaction(
-                            vault,
+                            Program.VAULT,
                             provider,
                             tx
                           );
 
-                          res = { hash: txhash };
+                          res = { hash: txhash || tx.recentBlockhash };
                         }
                         break;
                       case "rstETH-THETA":
