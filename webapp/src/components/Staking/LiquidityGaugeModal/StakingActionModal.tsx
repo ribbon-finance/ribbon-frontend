@@ -33,7 +33,6 @@ import BasicModal from "shared/lib/components/Common/BasicModal";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import useV2Vault from "shared/lib/hooks/useV2Vault";
-import { useChain } from "shared/lib/hooks/chainContext";
 import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
