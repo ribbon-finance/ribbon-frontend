@@ -38,7 +38,7 @@ export const isEqualsToUserAddress = (
   userKey: PublicKey,
   nodeKey: PublicKey
 ): boolean => {
-  return userKey.equals(nodeKey);
+  return userKey?.equals(nodeKey);
 };
 
 export const getUserDepositQueueNodes = (

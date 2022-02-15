@@ -40,8 +40,6 @@ const useFetchSolVaultData = (): SolanaVaultData => {
       const lockedBalanceInAsset = totalQueueDeposit.sub(totalQueueWithdrawal);
       const depositBalanceInAsset = totalQueueDeposit;
 
-      console.log(vault);
-
       setData({
         responses: {
           "rSOL-THETA": {

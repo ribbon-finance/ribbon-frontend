@@ -32,6 +32,7 @@ import VaultDeposit from "./ExplainerGraphic/VaultDeposit";
 import AlgoStrikeSelection from "./ExplainerGraphic/AlgoStrikeSelection";
 import GnosisAuction from "./ExplainerGraphic/GnosisAuction";
 import SegmentPagination from "shared/lib/components/Common/SegmentPagination";
+import { Assets } from "shared/lib/store/types";
 
 const ExplainerContainer = styled.div`
   display: flex;
@@ -64,7 +65,7 @@ const InfoDescription = styled(SecondaryText)`
   font-weight: 400;
 `;
 
-const HighlighText = styled.span`
+const HighlightedText = styled.span`
   color: ${colors.primaryText};
   cursor: help;
 
@@ -93,32 +94,33 @@ const NonCollateralSwapExclusionExplanationStepList: ExplanationStep[] = [
   "swapCollateralAsset",
 ];
 
-const ExplanatioStepMap: { [version in VaultVersion]: Array<ExplanationStep> } =
-  {
-    v1: [
-      "deposit",
-      "swapCollateralAsset",
-      "strikeSelection",
-      "mintOption",
-      "tradeOption",
-      "expiryA",
-      "settlementA",
-      "expiryB",
-      "settlementB",
-    ],
-    v2: [
-      "deposit",
-      "swapCollateralAsset",
-      "algoStrikeSelection",
-      "mintOption",
-      "gnosisAuction",
-      "gnosisTrade",
-      "expiryA",
-      "settlementA",
-      "expiryB",
-      "settlementB",
-    ],
-  };
+const ExplanationStepMap: {
+  [version in VaultVersion]: Array<ExplanationStep>;
+} = {
+  v1: [
+    "deposit",
+    "swapCollateralAsset",
+    "strikeSelection",
+    "mintOption",
+    "tradeOption",
+    "expiryA",
+    "settlementA",
+    "expiryB",
+    "settlementB",
+  ],
+  v2: [
+    "deposit",
+    "swapCollateralAsset",
+    "algoStrikeSelection",
+    "mintOption",
+    "gnosisAuction",
+    "gnosisTrade",
+    "expiryA",
+    "settlementA",
+    "expiryB",
+    "settlementB",
+  ],
+};
 
 interface VaultStrategyExplainerProps {
   vault: {
@@ -135,18 +137,19 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
   const { width: sectionWidth } = useElementSize(containerRef);
   const color = getVaultColor(vaultOption);
   const asset = getAssets(vaultOption);
+  const displayAsset = getDisplayAssets(vaultOption);
   const optionAsset = getOptionAssets(vaultOption);
   const isPut = isPutVault(vaultOption);
 
   const isYearn = getDisplayAssets(vaultOption) === "yvUSDC";
 
   const currentVaultExplanationStepList = useMemo(() => {
-    switch (getDisplayAssets(vaultOption)) {
+    switch (displayAsset) {
       case "yvUSDC":
       case "stETH":
-        return ExplanatioStepMap[vaultVersion];
+        return ExplanationStepMap[vaultVersion];
       default:
-        return ExplanatioStepMap[vaultVersion].filter(
+        return ExplanationStepMap[vaultVersion].filter(
           (item) =>
             !NonCollateralSwapExclusionExplanationStepList.includes(item)
         );
@@ -156,6 +159,47 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
   const [step, setStep] = useState<ExplanationStep>(
     currentVaultExplanationStepList[0]
   );
+
+  const getOfferParty = () => {
+    switch (vaultVersion) {
+      case "v1":
+        return "MARKET MAKER";
+      case "v2":
+      default:
+        return "OPTION BUYER";
+    }
+  };
+
+  const getVaultIcon = () => {
+    switch (displayAsset) {
+      case "SOL":
+        return "Zeta FLEX";
+      case "yvUSDC":
+        return "Yearn Vault";
+      default:
+        return "Opyn Vault";
+    }
+  };
+
+  const getVaultTarget = (includeVault: boolean = true) => {
+    switch (asset) {
+      case "SOL":
+        return `Zeta FLEX ${includeVault ? "vault" : ""}`.trim();
+      case "yvUSDC":
+        return `Yearn ${includeVault ? "vault" : ""}`.trim();
+      default:
+        return `Opyn ${includeVault ? "vault" : ""}`.trim();
+    }
+  };
+
+  const getAuctionTarget = (includeAuction: boolean = true) => {
+    switch (asset) {
+      case "SOL":
+        return `Zeta FLEX ${includeAuction ? "Auction" : ""}`.trim();
+      default:
+        return `Gnosis ${includeAuction ? "Auction" : ""}`.trim();
+    }
+  };
 
   /**
    * Prevent wrong step showing up when change vault version
@@ -182,26 +226,16 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
 
   const renderGraphic = useCallback(
     (s: ExplanationStep) => {
-      const collateralAsset = getDisplayAssets(vaultOption);
       switch (s) {
         case "deposit":
           return <VaultDeposit vaultOption={vaultOption} />;
         case "swapCollateralAsset":
-          let tradeTarget: string = "";
-          switch (getDisplayAssets(vaultOption)) {
-            case "stETH":
-              tradeTarget = "LIDO";
-              break;
-            case "yvUSDC":
-              tradeTarget = "Yearn Vault";
-              break;
-          }
           return (
             <TradeOffer
               color={color}
-              tradeTarget={tradeTarget}
+              tradeTarget={getVaultIcon()}
               offerToken={asset}
-              receiveToken={collateralAsset}
+              receiveToken={displayAsset}
             />
           );
         case "algoStrikeSelection":
@@ -212,8 +246,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           return (
             <TradeOffer
               color={color}
-              tradeTarget="Opyn Vault"
-              offerToken={collateralAsset}
+              // tradeTarget={getVaultIcon()}
+              tradeTarget={getVaultTarget()}
+              offerToken={displayAsset}
               receiveToken="oToken"
             />
           );
@@ -223,7 +258,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           return (
             <TradeOffer
               color={color}
-              tradeTarget="Gnosis"
+              tradeTarget={getAuctionTarget(false)}
               receiveToken={asset}
             />
           );
@@ -242,30 +277,19 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           return (
             <TradeOffer
               color={color}
-              tradeTarget="Opyn Vault"
-              receiveToken={collateralAsset}
+              tradeTarget={getVaultTarget()}
+              receiveToken={displayAsset}
             />
           );
         case "expiryB":
           return <ExpiryChart higherPrice={!isPut} isOTM={false} />;
         case "settlementB":
-          let offerParty;
-
-          switch (vaultVersion) {
-            case "v1":
-              offerParty = "MARKET MAKER";
-              break;
-            case "v2":
-            default:
-              offerParty = "OPTION BUYER";
-          }
-
           return (
             <TradeOffer
               color={color}
-              offerParty={offerParty}
-              tradeTarget="Opyn Vault"
-              receiveToken={collateralAsset}
+              offerParty={getOfferParty()}
+              tradeTarget={getVaultTarget()}
+              receiveToken={displayAsset}
             />
           );
       }
@@ -277,26 +301,22 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
     (s: ExplanationStep) => {
       switch (s) {
         case "deposit":
-          return "VAULT Receives DEPOSITS";
+          return "VAULT RECEIVES DEPOSITS";
         case "swapCollateralAsset":
-          let collateralTarget: string = "";
-          switch (getDisplayAssets(vaultOption)) {
-            case "stETH":
-              collateralTarget = "LIDO";
-              break;
-            case "yvUSDC":
-              collateralTarget = "YEARN";
-              break;
-          }
-          return `DEPOSITS ${getAssetDisplay(asset)} IN ${collateralTarget}`;
+          return `DEPOSITS ${getAssetDisplay(asset)} IN ${getVaultTarget()}`;
         case "algoStrikeSelection":
-          return "ALGORITHMIC STRIKE SELECTION";
+          switch (asset) {
+            case "SOL":
+              return "MANAGER SELECTS STRIKE";
+            default:
+              return "ALGORITHMIC STRIKE SELECTION";
+          }
         case "strikeSelection":
           return "MANAGER SELECTS STRIKE AND EXPIRY";
         case "mintOption":
           return "VAULT MINTS OPTIONS";
         case "gnosisAuction":
-          return "VAULT SELLS OPTIONS VIA GNOSIS AUCTION";
+          return `VAULT SELLS OPTIONS VIA ${getAuctionTarget().toUpperCase()}`;
         case "gnosisTrade":
           return "VAULT COLLECTS YIELDS";
         case "tradeOption":
@@ -308,18 +328,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
         case "expiryB":
           return `STRIKE IS ${isPut ? "ABOVE" : "BELOW"} MARKET PRICE`;
         case "settlementB":
-          let offerParty;
-
-          switch (vaultVersion) {
-            case "v1":
-              offerParty = "MARKET MAKER";
-              break;
-            case "v2":
-            default:
-              offerParty = "OPTION BUYER";
-          }
-
-          return `${offerParty} EXERCISEs OPTIONS`;
+          return `${getOfferParty()} EXERCISES OPTIONS`;
       }
     },
     [asset, isPut, vaultOption, vaultVersion]
@@ -376,20 +385,20 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                     explanation={`${collateralAssetUnit} is the deposit token that represents a user's share of the their ETH on the Ethereum beacon chain.`}
                     learnMoreURL="https://lido.fi/ethereum"
                     renderContent={({ ref, ...triggerHandler }) => (
-                      <HighlighText ref={ref} {...triggerHandler}>
+                      <HighlightedText ref={ref} {...triggerHandler}>
                         {collateralAssetUnit}
-                      </HighlighText>
+                      </HighlightedText>
                     )}
                   />{" "}
                   by depositing {assetUnit} into the{" "}
                   <TooltipExplanation
                     title="LIDO"
-                    explanation="Lido is a defi asset staking protocol."
+                    explanation="Lido is a DeFi asset staking protocol."
                     learnMoreURL="https://lido.fi"
                     renderContent={({ ref, ...triggerHandler }) => (
-                      <HighlighText ref={ref} {...triggerHandler}>
+                      <HighlightedText ref={ref} {...triggerHandler}>
                         Lido
-                      </HighlighText>
+                      </HighlightedText>
                     )}
                   />{" "}
                   smart contracts. By converting {assetUnit} into{" "}
@@ -407,9 +416,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                     explanation={`${collateralAssetUnit} is the deposit token that represents a user's share of the ${assetUnit} yVault.`}
                     learnMoreURL="https://docs.yearn.finance/getting-started/products/yvaults/vault-tokens"
                     renderContent={({ ref, ...triggerHandler }) => (
-                      <HighlighText ref={ref} {...triggerHandler}>
+                      <HighlightedText ref={ref} {...triggerHandler}>
                         {collateralAssetUnit}
-                      </HighlighText>
+                      </HighlightedText>
                     )}
                   />{" "}
                   by depositing {assetUnit} into the Yearn {assetUnit}{" "}
@@ -418,9 +427,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                     explanation="yVaults are Yearn vaults that accept customer deposits and then route them through strategies which seek out the highest yield available in DeFi."
                     learnMoreURL="https://docs.yearn.finance/getting-started/products/yvaults/overview"
                     renderContent={({ ref, ...triggerHandler }) => (
-                      <HighlighText ref={ref} {...triggerHandler}>
+                      <HighlightedText ref={ref} {...triggerHandler}>
                         yVault
-                      </HighlighText>
+                      </HighlightedText>
                     )}
                   />
                   . By converting {assetUnit} into {collateralAssetUnit}, the
@@ -432,71 +441,143 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
 
           return <></>;
         case "algoStrikeSelection":
-          return (
-            <>
-              The vault algorithmically selects the optimal{" "}
-              <TooltipExplanation
-                title="STRIKE PRICE"
-                explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
-                learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
-                renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
-                    strike price
-                  </HighlighText>
-                )}
-              />{" "}
-              for the{" "}
-              <TooltipExplanation
-                title={isPut ? "PUT OPTION" : "COVERED CALL"}
-                explanation={
-                  isPut
-                    ? "A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
-                    : "A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
-                }
-                learnMoreURL={
-                  isPut
-                    ? "https://www.investopedia.com/terms/p/putoption.asp"
-                    : "https://www.investopedia.com/terms/c/coveredcall.asp"
-                }
-                renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
-                    {optionAssetUnit} {isPut ? "put" : "call"} options
-                  </HighlighText>
-                )}
-              />
-              .
-            </>
-          );
+          switch (asset) {
+            case "SOL":
+              return (
+                <>
+                  The vault's{" "}
+                  <TooltipExplanation
+                    title="STRIKE PRICE"
+                    explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
+                    learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HighlightedText ref={ref} {...triggerHandler}>
+                        strike price
+                      </HighlightedText>
+                    )}
+                  />{" "}
+                  is selected by a permissioned manager for the{" "}
+                  <TooltipExplanation
+                    title={isPut ? "PUT OPTION" : "COVERED CALL"}
+                    explanation={
+                      isPut
+                        ? "A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
+                        : "A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
+                    }
+                    learnMoreURL={
+                      isPut
+                        ? "https://www.investopedia.com/terms/p/putoption.asp"
+                        : "https://www.investopedia.com/terms/c/coveredcall.asp"
+                    }
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HighlightedText ref={ref} {...triggerHandler}>
+                        {optionAssetUnit} {isPut ? "put" : "call"} options
+                      </HighlightedText>
+                    )}
+                  />
+                  .
+                </>
+              );
+            default:
+              return (
+                <>
+                  The vault algorithmically selects the optimal{" "}
+                  <TooltipExplanation
+                    title="STRIKE PRICE"
+                    explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
+                    learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HighlightedText ref={ref} {...triggerHandler}>
+                        strike price
+                      </HighlightedText>
+                    )}
+                  />{" "}
+                  for the{" "}
+                  <TooltipExplanation
+                    title={isPut ? "PUT OPTION" : "COVERED CALL"}
+                    explanation={
+                      isPut
+                        ? "A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
+                        : "A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
+                    }
+                    learnMoreURL={
+                      isPut
+                        ? "https://www.investopedia.com/terms/p/putoption.asp"
+                        : "https://www.investopedia.com/terms/c/coveredcall.asp"
+                    }
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HighlightedText ref={ref} {...triggerHandler}>
+                        {optionAssetUnit} {isPut ? "put" : "call"} options
+                      </HighlightedText>
+                    )}
+                  />
+                  .
+                </>
+              );
+          }
         case "strikeSelection":
-          return (
-            <>
-              Before minting {optionAssetUnit} {isPut ? "put" : "call"} option
-              on{" "}
-              <TooltipExplanation
-                title="OPYN"
-                explanation="Opyn is a DeFi options protocol."
-                learnMoreURL="https://www.opyn.co/"
-                renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
-                    Opyn
-                  </HighlighText>
-                )}
-              />
-              , the vault manager must choose the{" "}
-              <TooltipExplanation
-                title="STRIKE PRICE"
-                explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
-                learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
-                renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
-                    strike price
-                  </HighlighText>
-                )}
-              />{" "}
-              for the options. Currently the role of the vault manager is played
-              by the Ribbon team.
-            </>
-          );
+          switch (asset) {
+            case "SOL":
+              return (
+                <>
+                  Before minting {optionAssetUnit} {isPut ? "put" : "call"}{" "}
+                  option on{" "}
+                  <TooltipExplanation
+                    title="Zeta FLEX"
+                    explanation="Zeta Markets is a DeFi options protocol."
+                    learnMoreURL="https://zetamarkets.gitbook.io/zeta/zeta-flex"
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HighlightedText ref={ref} {...triggerHandler}>
+                        Zeta FLEX
+                      </HighlightedText>
+                    )}
+                  />
+                  , the vault manager must choose the{" "}
+                  <TooltipExplanation
+                    title="STRIKE PRICE"
+                    explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
+                    learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HighlightedText ref={ref} {...triggerHandler}>
+                        strike price
+                      </HighlightedText>
+                    )}
+                  />{" "}
+                  for the options. Currently the role of the vault manager is
+                  played by the Ribbon team.
+                </>
+              );
+            default:
+              return (
+                <>
+                  Before minting {optionAssetUnit} {isPut ? "put" : "call"}{" "}
+                  option on{" "}
+                  <TooltipExplanation
+                    title="OPYN"
+                    explanation="Opyn is a DeFi options protocol."
+                    learnMoreURL="https://www.opyn.co/"
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HighlightedText ref={ref} {...triggerHandler}>
+                        Opyn
+                      </HighlightedText>
+                    )}
+                  />
+                  , the vault manager must choose the{" "}
+                  <TooltipExplanation
+                    title="STRIKE PRICE"
+                    explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
+                    learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HighlightedText ref={ref} {...triggerHandler}>
+                        strike price
+                      </HighlightedText>
+                    )}
+                  />{" "}
+                  for the options. Currently the role of the vault manager is
+                  played by the Ribbon team.
+                </>
+              );
+          }
         case "mintOption":
           switch (vaultVersion) {
             case "v1":
@@ -508,9 +589,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                     explanation="A European option is a version of an options contract that limits execution to its expiration date."
                     learnMoreURL="https://www.investopedia.com/terms/e/europeanoption.asp"
                     renderContent={({ ref, ...triggerHandler }) => (
-                      <HighlighText ref={ref} {...triggerHandler}>
+                      <HighlightedText ref={ref} {...triggerHandler}>
                         European
-                      </HighlighText>
+                      </HighlightedText>
                     )}
                   />{" "}
                   <TooltipExplanation
@@ -526,9 +607,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                         : "https://www.investopedia.com/terms/c/coveredcall.asp"
                     }
                     renderContent={({ ref, ...triggerHandler }) => (
-                      <HighlighText ref={ref} {...triggerHandler}>
+                      <HighlightedText ref={ref} {...triggerHandler}>
                         {optionAssetUnit} {isPut ? "put" : "call"} options
-                      </HighlighText>
+                      </HighlightedText>
                     )}
                   />{" "}
                   by depositing {collateralAssetUnit} as collateral in an{" "}
@@ -537,92 +618,146 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                     explanation="Opyn is a DeFi options protocol."
                     learnMoreURL="https://www.opyn.co/"
                     renderContent={({ ref, ...triggerHandler }) => (
-                      <HighlighText ref={ref} {...triggerHandler}>
+                      <HighlightedText ref={ref} {...triggerHandler}>
                         Opyn
-                      </HighlighText>
+                      </HighlightedText>
                     )}
                   />{" "}
                   vault and setting a strike price (selected by the manager) and
                   expiry date (the following Friday). In return, the vault
-                  receives oTokens from the Opyn vault which represent the{" "}
-                  {optionAssetUnit} {isPut ? "put" : "call"} options.
+                  receives oTokens from the {getVaultTarget()} which represent
+                  the {optionAssetUnit} {isPut ? "put" : "call"} options.
                 </>
               );
             case "v2":
             default:
-              return (
-                <>
-                  Every Friday at 11am UTC, the vault mints{" "}
-                  <TooltipExplanation
-                    title="EUROPEAN OPTIONS"
-                    explanation="A European option is a version of an options contract that limits execution to its expiration date."
-                    learnMoreURL="https://www.investopedia.com/terms/e/europeanoption.asp"
-                    renderContent={({ ref, ...triggerHandler }) => (
-                      <HighlighText ref={ref} {...triggerHandler}>
-                        European
-                      </HighlighText>
-                    )}
-                  />{" "}
-                  <TooltipExplanation
-                    title={isPut ? "PUT OPTION" : "COVERED CALL"}
-                    explanation={
-                      isPut
-                        ? "A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
-                        : "A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
-                    }
-                    learnMoreURL={
-                      isPut
-                        ? "https://www.investopedia.com/terms/p/putoption.asp"
-                        : "https://www.investopedia.com/terms/c/coveredcall.asp"
-                    }
-                    renderContent={({ ref, ...triggerHandler }) => (
-                      <HighlighText ref={ref} {...triggerHandler}>
-                        {optionAssetUnit} {isPut ? "put" : "call"} options
-                      </HighlighText>
-                    )}
-                  />{" "}
-                  by depositing its {collateralAssetUnit} balance as collateral
-                  in an{" "}
-                  <TooltipExplanation
-                    title="OPYN"
-                    explanation="Opyn is a DeFi options protocol."
-                    learnMoreURL="https://www.opyn.co/"
-                    renderContent={({ ref, ...triggerHandler }) => (
-                      <HighlighText ref={ref} {...triggerHandler}>
-                        Opyn
-                      </HighlighText>
-                    )}
-                  />{" "}
-                  vault. The vault sets the strike price to the value determined
-                  by its selection algorithm and the expiry date to the
-                  following Friday. In return, the vault receives oTokens from
-                  the Opyn vault, each of which represent an {optionAssetUnit}{" "}
-                  {isPut ? "put" : "call"} option.
-                </>
-              );
+              switch (asset) {
+                case "SOL":
+                  return (
+                    <>
+                      Every Friday at 11am UTC, the vault mints{" "}
+                      <TooltipExplanation
+                        title="EUROPEAN OPTIONS"
+                        explanation="A European option is a version of an options contract that limits execution to its expiration date."
+                        learnMoreURL="https://www.investopedia.com/terms/e/europeanoption.asp"
+                        renderContent={({ ref, ...triggerHandler }) => (
+                          <HighlightedText ref={ref} {...triggerHandler}>
+                            European
+                          </HighlightedText>
+                        )}
+                      />{" "}
+                      <TooltipExplanation
+                        title={isPut ? "PUT OPTION" : "COVERED CALL"}
+                        explanation={
+                          isPut
+                            ? "A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
+                            : "A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
+                        }
+                        learnMoreURL={
+                          isPut
+                            ? "https://www.investopedia.com/terms/p/putoption.asp"
+                            : "https://www.investopedia.com/terms/c/coveredcall.asp"
+                        }
+                        renderContent={({ ref, ...triggerHandler }) => (
+                          <HighlightedText ref={ref} {...triggerHandler}>
+                            {optionAssetUnit} {isPut ? "put" : "call"} options
+                          </HighlightedText>
+                        )}
+                      />{" "}
+                      by depositing its {collateralAssetUnit} balance as
+                      collateral in a{" "}
+                      <TooltipExplanation
+                        title="Zeta FLEX"
+                        explanation="Zeta FLEX is a product by Zeta Markets, a DeFi options protocol."
+                        learnMoreURL="https://zetamarkets.gitbook.io/zeta/zeta-flex"
+                        renderContent={({ ref, ...triggerHandler }) => (
+                          <HighlightedText ref={ref} {...triggerHandler}>
+                            Zeta FLEX
+                          </HighlightedText>
+                        )}
+                      />{" "}
+                      vault. The vault sets the strike price to the value
+                      determined by the manager and the expiry date to the
+                      following Friday. In return, the vault receives oTokens
+                      from the {getVaultTarget()}, each of which represent a{" "}
+                      {optionAssetUnit} {isPut ? "put" : "call"} option.
+                    </>
+                  );
+                default:
+                  return (
+                    <>
+                      Every Friday at 11am UTC, the vault mints{" "}
+                      <TooltipExplanation
+                        title="EUROPEAN OPTIONS"
+                        explanation="A European option is a version of an options contract that limits execution to its expiration date."
+                        learnMoreURL="https://www.investopedia.com/terms/e/europeanoption.asp"
+                        renderContent={({ ref, ...triggerHandler }) => (
+                          <HighlightedText ref={ref} {...triggerHandler}>
+                            European
+                          </HighlightedText>
+                        )}
+                      />{" "}
+                      <TooltipExplanation
+                        title={isPut ? "PUT OPTION" : "COVERED CALL"}
+                        explanation={
+                          isPut
+                            ? "A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
+                            : "A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
+                        }
+                        learnMoreURL={
+                          isPut
+                            ? "https://www.investopedia.com/terms/p/putoption.asp"
+                            : "https://www.investopedia.com/terms/c/coveredcall.asp"
+                        }
+                        renderContent={({ ref, ...triggerHandler }) => (
+                          <HighlightedText ref={ref} {...triggerHandler}>
+                            {optionAssetUnit} {isPut ? "put" : "call"} options
+                          </HighlightedText>
+                        )}
+                      />{" "}
+                      by depositing its {collateralAssetUnit} balance as
+                      collateral in an{" "}
+                      <TooltipExplanation
+                        title="OPYN"
+                        explanation="Opyn is a DeFi options protocol."
+                        learnMoreURL="https://www.opyn.co/"
+                        renderContent={({ ref, ...triggerHandler }) => (
+                          <HighlightedText ref={ref} {...triggerHandler}>
+                            Opyn
+                          </HighlightedText>
+                        )}
+                      />{" "}
+                      vault. The vault sets the strike price to the value
+                      determined by its selection algorithm and the expiry date
+                      to the following Friday. In return, the vault receives
+                      oTokens from the Opyn vault, each of which represent an{" "}
+                      {optionAssetUnit} {isPut ? "put" : "call"} option.
+                    </>
+                  );
+              }
           }
         case "gnosisAuction":
           return (
             <>
-              The vault sells the newly minted options via a Gnosis batch
-              auction. The vault first sets a minimum price for the options and
-              then opens up bidding to anyone in the world. Participants whose
-              bid is greater than or equal to the final clearing price receive
-              the auctioned oTokens.
+              The vault sells the newly minted options via a{" "}
+              {getAuctionTarget(false)} batch auction. The vault first sets a
+              minimum price for the options and then opens up bidding to anyone
+              in the world. Participants whose bid is greater than or equal to
+              the final clearing price receive the auctioned oTokens.
             </>
           );
         case "gnosisTrade":
           return collateralAsset === "stETH" ? (
             <>
-              The {assetUnit} earned from the Gnosis auction is collected by the
-              vault and represents the primary source of yield on this strategy.
-              The vault also generates yield, in the form of Lido staking
-              rewards, by holding {collateralAsset}.
+              The {assetUnit} earned from the {getAuctionTarget()} is collected
+              by the vault and represents the primary source of yield on this
+              strategy. The vault also generates yield, in the form of Lido
+              staking rewards, by holding {collateralAsset}.
             </>
           ) : (
             <>
-              The {assetUnit} earned from the Gnosis auction is collected by the
-              vault and represents the yield on this strategy.
+              The {assetUnit} earned from the {getAuctionTarget()} is collected
+              by the vault and represents the yield on this strategy.
             </>
           );
         case "tradeOption":
@@ -634,9 +769,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                 explanation="A market maker (MM) is a firm or individual who actively quotes two-sided markets in a security, providing bids and offers (known as asks) along with the market size of each."
                 learnMoreURL="https://www.investopedia.com/terms/m/marketmaker.asp"
                 renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
+                  <HighlightedText ref={ref} {...triggerHandler}>
                     market makers
-                  </HighlighText>
+                  </HighlightedText>
                 )}
               />{" "}
               for a fee (the market price of the option, also known as the{" "}
@@ -645,9 +780,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                 explanation="The option premium is the current market price of an option contract."
                 learnMoreURL="https://www.investopedia.com/terms/o/option-premium.asp"
                 renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
+                  <HighlightedText ref={ref} {...triggerHandler}>
                     option premium
-                  </HighlighText>
+                  </HighlightedText>
                 )}
               />
               ) - the sale is done{" "}
@@ -656,9 +791,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                 explanation="Over-the-counter (OTC) refers to the process of how tokens are traded via a broker-dealer network as opposed to on a centralized exchange."
                 learnMoreURL="https://www.investopedia.com/terms/o/otc.asp"
                 renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
+                  <HighlightedText ref={ref} {...triggerHandler}>
                     OTC
-                  </HighlighText>
+                  </HighlightedText>
                 )}
               />{" "}
               via{" "}
@@ -667,9 +802,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                 explanation="Airswap is a DeFi peer-to-peer trading protocol."
                 learnMoreURL="https://www.airswap.io/"
                 renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
+                  <HighlightedText ref={ref} {...triggerHandler}>
                     Airswap
-                  </HighlighText>
+                  </HighlightedText>
                 )}
               />
               .{" "}
@@ -692,9 +827,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                 explanation="An expiration date in derivatives is the last day that derivative contracts, such as options or futures, are valid."
                 learnMoreURL="https://www.investopedia.com/terms/e/expirationdate.asp"
                 renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
+                  <HighlightedText ref={ref} {...triggerHandler}>
                     expiry
-                  </HighlighText>
+                  </HighlightedText>
                 )}
               />
               , if the strike price is {isPut ? "lower" : "higher"} than the
@@ -708,9 +843,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                 } the market price of ${optionAssetUnit}.`}
                 learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
                 renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
+                  <HighlightedText ref={ref} {...triggerHandler}>
                     out-of-the-money
-                  </HighlighText>
+                  </HighlightedText>
                 )}
               />
               . In this situation the oTokens held by the {optionBuyerParty}{" "}
@@ -730,13 +865,13 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                 } the market price of ${optionAssetUnit}.`}
                 learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
                 renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
+                  <HighlightedText ref={ref} {...triggerHandler}>
                     out-of-the-money
-                  </HighlighText>
+                  </HighlightedText>
                 )}
               />
               , the {collateralAssetUnit} used to collateralize the options in
-              the Opyn vault is returned back to the Ribbon vault.
+              the {getVaultTarget()} is returned back to the Ribbon vault.
             </>
           );
         case "expiryB":
@@ -748,9 +883,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                 explanation="An expiration date in derivatives is the last day that derivative contracts, such as options or futures, are valid."
                 learnMoreURL="https://www.investopedia.com/terms/e/expirationdate.asp"
                 renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
+                  <HighlightedText ref={ref} {...triggerHandler}>
                     expiry
-                  </HighlighText>
+                  </HighlightedText>
                 )}
               />
               , if the strike price is {isPut ? "higher" : "lower"} than the
@@ -764,9 +899,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                 } the market price of ${optionAssetUnit}.`}
                 learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
                 renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
+                  <HighlightedText ref={ref} {...triggerHandler}>
                     in-the-money
-                  </HighlighText>
+                  </HighlightedText>
                 )}
               />
               . In this situation the {optionBuyerParty} can exercise their
@@ -786,17 +921,17 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                 } the market price of ${optionAssetUnit}.`}
                 learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
                 renderContent={({ ref, ...triggerHandler }) => (
-                  <HighlighText ref={ref} {...triggerHandler}>
+                  <HighlightedText ref={ref} {...triggerHandler}>
                     in-the-money
-                  </HighlighText>
+                  </HighlightedText>
                 )}
               />
               , option holders exercise their options by withdrawing{" "}
-              {collateralAssetUnit} from the Opyn vault. The amount withdrawn is
-              equal to the difference between the price of {optionAssetUnit} and
-              the strike price at expiry from the Opyn vault. Any{" "}
-              {collateralAssetUnit} left over is returned back to the Ribbon
-              vault.
+              {collateralAssetUnit} from the {getVaultTarget()}. The amount
+              withdrawn is equal to the difference between the price of{" "}
+              {optionAssetUnit} and the strike price at expiry from the{" "}
+              {getVaultTarget()}. Any {collateralAssetUnit} left over is
+              returned back to the Ribbon vault.
             </>
           );
       }

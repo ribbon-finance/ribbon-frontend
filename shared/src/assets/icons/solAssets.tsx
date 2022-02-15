@@ -2,10 +2,7 @@ import React from "react";
 
 type SVGProps = React.SVGAttributes<SVGElement>;
 
-export const SolanaLogo: React.FC<SVGProps & { showBackground?: boolean }> = ({
-  showBackground = false,
-  ...props
-}) => (
+export const SolanaLogo: React.FC<SVGProps> = (props) => (
   <svg
     width="41"
     height="32"
