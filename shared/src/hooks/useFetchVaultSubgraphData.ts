@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import { useWeb3React } from "@web3-react/core";
 
 import {
-  Chains,
   getSubgraphURIForVersion,
   SUBGRAPHS_TO_QUERY,
   VaultVersion,
@@ -44,10 +44,9 @@ import {
   liquidityMiningPoolAccountsGraphql,
   resolveLiquidityMiningPoolAccountsSubgraphResponse,
 } from "./useLiquidityMiningPoolAccounts";
-import useWeb3Wallet from "./useWeb3Wallet";
 
 const useFetchVaultSubgraphData = () => {
-  const { account: acc } = useWeb3Wallet();
+  const { account: acc } = useWeb3React();
   const account = impersonateAddress || acc;
   const [data, setData] = useState<VaultSubgraphDataContextType>(
     defaultVaultSubgraphData
@@ -76,37 +75,26 @@ const useFetchVaultSubgraphData = () => {
     });
 
     const allSubgraphResponses = await Promise.all(
-      SUBGRAPHS_TO_QUERY.map(async ([version, chain]) => {
+      SUBGRAPHS_TO_QUERY.map(async ([version, chainId]) => {
         const response = await axios.post(
-          getSubgraphURIForVersion(version, chain),
+          getSubgraphURIForVersion(version, chainId),
           {
-            query: `${chain === Chains.Solana ? "query" : ""} {
-                  ${
-                    account
-                      ? `
-                          ${vaultAccountsGraphql(account, version)}
-                          ${transactionsGraphql(account, chain)}
-                          ${
-                            chain === Chains.Solana
-                              ? ""
-                              : balancesGraphql(account, chain)
-                          }
-                          ${liquidityMiningPoolAccountsGraphql(
-                            account,
-                            version
-                          )}
-                        `
-                      : ""
-                  }
-                  ${vaultGraphql(version, chain)}
-                  ${vaultActivitiesGraphql(version, chain)}
-                  ${
-                    chain === Chains.Solana
-                      ? ""
-                      : vaultPriceHistoryGraphql(version, chain)
-                  }
-                  ${liquidityMiningPoolGraphql(version, chain)}
-                }`.replaceAll(" ", ""),
+            query: `{
+                ${
+                  account
+                    ? `
+                        ${vaultAccountsGraphql(account, version)}
+                        ${transactionsGraphql(account)}
+                        ${balancesGraphql(account)}
+                        ${liquidityMiningPoolAccountsGraphql(account, version)}
+                      `
+                    : ""
+                }
+                ${vaultGraphql(version, chainId)}
+                ${vaultActivitiesGraphql(version, chainId)}
+                ${vaultPriceHistoryGraphql(version, chainId)}
+                ${liquidityMiningPoolGraphql(version, chainId)}
+              }`.replaceAll(" ", ""),
           }
         );
         return [version, response.data.data];

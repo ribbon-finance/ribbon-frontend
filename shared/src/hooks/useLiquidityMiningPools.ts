@@ -2,22 +2,21 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { useContext } from "react";
 
 import {
-  Chains,
+  isEthNetwork,
   VaultLiquidityMiningMap,
   VaultOptions,
   VaultVersion,
 } from "../constants/constants";
 import { LiquidityMiningPoolsSubgraphData } from "../models/staking";
-import { isEVMChain } from "../utils/chains";
 import { SubgraphDataContext } from "./subgraphDataContext";
 
 const getLMPoolKey = (vault: VaultOptions) => `lm_${vault.replace(/-/g, "")}`;
 
 export const liquidityMiningPoolGraphql = (
   version: VaultVersion,
-  chain: Chains
+  chainId: number
 ) =>
-  version === "v1" && isEVMChain(chain)
+  version === "v1" && isEthNetwork(chainId)
     ? Object.keys(VaultLiquidityMiningMap.lm).reduce(
         (acc, curr) =>
           acc +

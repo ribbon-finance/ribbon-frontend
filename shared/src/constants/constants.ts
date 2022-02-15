@@ -10,7 +10,6 @@ import {
   isProduction,
   isTreasury,
   getSolanaAddresses,
-  SOLANA_SUBGRAPH,
 } from "../utils/env";
 import { PublicKey } from "@solana/web3.js";
 import v1deployment from "./v1Deployments.json";
@@ -27,13 +26,6 @@ export type NETWORK_NAMES =
   | "aurora-testnet";
 export type TESTNET_NAMES = "kovan" | "fuji" | "aurora-testnet";
 export type MAINNET_NAMES = Exclude<NETWORK_NAMES, TESTNET_NAMES>;
-
-export enum Chains {
-  NotSelected,
-  Ethereum,
-  Avalanche,
-  Solana,
-}
 
 export const NETWORKS: Record<number, NETWORK_NAMES> = {
   [CHAINID.ETH_MAINNET]: "mainnet",
@@ -78,13 +70,6 @@ export const isAvaxVault = (vault: string) =>
 
 export const isAuroraVault = (vault: string) =>
   isAuroraNetwork(VaultAddressMap[vault as VaultOptions].chainId);
-
-export const getVaultChain = (vault: string): Chains => {
-  if (isEthVault(vault)) return Chains.Ethereum;
-  else if (isAvaxVault(vault)) return Chains.Avalanche;
-  else if (isSolanaVault(vault)) return Chains.Solana;
-  else throw new Error(`Unknown network for ${vault}`);
-};
 
 export const getVaultNetwork = (vault: string): MAINNET_NAMES => {
   if (isEthVault(vault)) return "mainnet";
@@ -141,7 +126,7 @@ const PutThetaVault: VaultOptions[] = [
 
 export const SolanaAssets = ["SOL"];
 
-export const isSolanaVault = (vaultOption: string) => {
+export const isSolanaVault = (vaultOption: VaultOptions) => {
   const list = SolanaVaultList as unknown;
   return (list as string[]).includes(vaultOption);
 };
@@ -425,10 +410,15 @@ export const VaultAddressMap: {
         chainId: CHAINID.ETH_MAINNET,
       },
   // FIXME: change with real addresses
-  "rSOL-THETA": {
-    v2: getSolanaAddresses().vaults["rSOL-THETA"],
-    chainId: 99999999, // we stub this out with a fake chainid
-  },
+  "rSOL-THETA": isDevelopment()
+    ? {
+        v2: v2deployment.kovan.RibbonTreasuryVaultPERP,
+        chainId: CHAINID.ETH_KOVAN,
+      }
+    : {
+        v2: v2deployment.mainnet.RibbonTreasuryVaultPERP,
+        chainId: CHAINID.ETH_MAINNET,
+      },
   "rNEAR-THETA": {
     v2: v2deployment.aurora.RibbonThetaVaultWNEARCall,
     chainId: CHAINID.AURORA_MAINNET,
@@ -485,7 +475,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-WNEAR-C": "rNEAR-THETA",
 };
 
-export const EVM_BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
+export const BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
   [CHAINID.ETH_MAINNET]: "Etherscan",
   [CHAINID.ETH_KOVAN]: "Etherscan",
   [CHAINID.AVAX_MAINNET]: "SnowTrace",
@@ -493,7 +483,7 @@ export const EVM_BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
   [CHAINID.AURORA_MAINNET]: "BlockScout",
 };
 
-export const EVM_BLOCKCHAIN_EXPLORER_URI: Record<number, string> = {
+export const BLOCKCHAIN_EXPLORER_URI: Record<number, string> = {
   [CHAINID.ETH_MAINNET]: "https://etherscan.io",
   [CHAINID.ETH_KOVAN]: "https://kovan.etherscan.io",
   [CHAINID.AVAX_MAINNET]: "https://snowtrace.io",
@@ -503,41 +493,18 @@ export const EVM_BLOCKCHAIN_EXPLORER_URI: Record<number, string> = {
 
 export const AVAX_BRIDGE_URI = "https://bridge.avax.network";
 
-export const getExplorerName = (chain: Chains) => {
-  if (chain === Chains.Solana) {
-    return "Solscan";
-  }
-  return EVM_BLOCKCHAIN_EXPLORER_NAME[CHAINS_TO_ID[chain]];
-};
-
-// Left here for compatibility purposes
 export const getEtherscanURI = (chainId: number) =>
-  EVM_BLOCKCHAIN_EXPLORER_URI[chainId as CHAINID];
-
-export const getExplorerURI = (chain: Chains) => {
-  if (chain === Chains.Solana) {
-    return "https://solscan.io";
-  }
-  return EVM_BLOCKCHAIN_EXPLORER_URI[CHAINS_TO_ID[chain]];
-};
+  BLOCKCHAIN_EXPLORER_URI[chainId as CHAINID];
 
 export const getSubgraphURIForVersion = (
   version: VaultVersion,
-  chain: Chains
+  chainId: number
 ) => {
   switch (version) {
     case "v1":
       return getSubgraphqlURI();
     case "v2":
-      switch (chain) {
-        case Chains.Ethereum:
-        case Chains.Avalanche:
-          return SUBGRAPH_URI[CHAINS_TO_ID[chain]];
-        case Chains.Solana:
-          return SOLANA_SUBGRAPH;
-        default:
-          throw new Error("No found subgraph");
-      }
+      return SUBGRAPH_URI[chainId];
   }
 };
 
@@ -825,6 +792,24 @@ export const LidoOracleAddress = isDevelopment()
   ? ""
   : addresses.mainnet.lidoOracle;
 
+export const SUBGRAPHS_TO_QUERY: [VaultVersion, CHAINID][] = isDevelopment()
+  ? !isTreasury()
+    ? [
+        ["v1", CHAINID.ETH_KOVAN],
+        ["v2", CHAINID.ETH_KOVAN],
+        ["v2", CHAINID.AVAX_FUJI],
+        ["v2", CHAINID.AURORA_MAINNET],
+      ]
+    : [["v2", CHAINID.ETH_KOVAN]]
+  : !isTreasury()
+  ? [
+      ["v1", CHAINID.ETH_MAINNET],
+      ["v2", CHAINID.ETH_MAINNET],
+      ["v2", CHAINID.AVAX_MAINNET],
+      ["v2", CHAINID.AURORA_MAINNET],
+    ]
+  : [["v2", CHAINID.ETH_MAINNET]];
+
 export const RibbonTreasuryAddress = {
   [CHAINID.ETH_KOVAN]: "0xD380980791079Bd50736Ffe577b8D57A3C196ccd",
   [CHAINID.ETH_MAINNET]: "0xDAEada3d210D2f45874724BeEa03C7d4BBD41674",
@@ -845,6 +830,13 @@ export const LiquidityTokenMinterAddress = isDevelopment()
 export const LiquidityGaugeControllerAddress = isDevelopment()
   ? governanceDeployment.kovan.RBNVotingGaugeController
   : governanceDeployment.mainnet.RBNVotingGaugeController;
+
+export enum Chains {
+  NotSelected,
+  Ethereum,
+  Avalanche,
+  Solana,
+}
 
 export const READABLE_CHAIN_NAMES: Record<Chains, string> = {
   [Chains.Ethereum]: "Ethereum",
@@ -883,33 +875,3 @@ export const getSolanaVaultInstance = (vaultOption: VaultOptions) => {
   if (vaults[vaultOption]) return new PublicKey(vaults[vaultOption]);
   throw new Error(`No solana vault ${vaultOption}`);
 };
-
-const WEBAPP_SUBGRAPHS: [VaultVersion, Chains][] = [
-  ["v1", Chains.Ethereum],
-  ["v2", Chains.Avalanche],
-  ["v2", Chains.Solana],
-];
-
-const TREASURY_SUBGRAPHS: [VaultVersion, Chains][] = [["v2", Chains.Ethereum]];
-
-export const SUBGRAPHS_TO_QUERY: [VaultVersion, Chains][] = isTreasury()
-  ? TREASURY_SUBGRAPHS
-  : WEBAPP_SUBGRAPHS;
-
-// export const SUBGRAPHS_TO_QUERY: [VaultVersion, CHAINID][] = isDevelopment()
-//   ? !isTreasury()
-//     ? [
-//         ["v1", CHAINID.ETH_KOVAN],
-//         ["v2", CHAINID.ETH_KOVAN],
-//         ["v2", CHAINID.AVAX_FUJI],
-//         ["v2", CHAINID.AURORA_MAINNET],
-//       ]
-//     : [["v2", CHAINID.ETH_KOVAN]]
-//   : !isTreasury()
-//   ? [
-//       ["v1", CHAINID.ETH_MAINNET],
-//       ["v2", CHAINID.ETH_MAINNET],
-//       ["v2", CHAINID.AVAX_MAINNET],
-//       ["v2", CHAINID.AURORA_MAINNET],
-//     ]
-//   : [["v2", CHAINID.ETH_MAINNET]];
