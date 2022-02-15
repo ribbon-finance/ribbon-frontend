@@ -434,6 +434,11 @@ const StakeCircle = styled.div<{
   type: "solid" | "hollow";
   size: string;
   color: string;
+  border?: {
+    width?: string;
+    style?: string;
+    color?: string;
+  };
 }>`
   display: flex;
   height: ${(props) => props.size};
@@ -450,7 +455,9 @@ const StakeCircle = styled.div<{
         `;
       case "hollow":
         return `
-          border: ${theme.border.width} ${theme.border.style} ${props.color}
+          border: ${props?.border?.width || theme.border.width} ${
+          props?.border?.style || theme.border.style
+        } ${props?.border?.color || props.color}
         `;
     }
   }}
@@ -460,7 +467,12 @@ export const UnstakeIcon: React.FC<{ color?: string; size?: string }> = ({
   color,
   size,
 }) => (
-  <StakeCircle size={size || "30%"} type="hollow" color={color || "white"} />
+  <StakeCircle
+    size={size || "30%"}
+    type="hollow"
+    color={color || "white"}
+    border={{ width: "2px" }}
+  />
 );
 
 export const StakeIcon: React.FC<{ color?: string; size?: string }> = ({

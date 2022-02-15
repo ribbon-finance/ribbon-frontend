@@ -1,82 +1,73 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Container } from "react-bootstrap";
 import styled from "styled-components";
 
 import useScreenSize from "shared/lib/hooks/useScreenSize";
-import sizes from "shared/lib/designSystem/sizes";
-import theme from "shared/lib/designSystem/theme";
 import SnapScrollSection from "shared/lib/components/Common/SnapScrollSection";
-import { useWeb3React } from "@web3-react/core";
 import DesktopFooter from "../components/Footer/DesktopFooter";
 import { FooterContainer } from "../components/Footer/Footer";
 import OverviewKPI from "../components/Homepage/OverviewKPI";
 import TVLLeaderboard from "../components/Homepage/TVLLeaderboard";
 import TreasuryBreakdown from "../components/Homepage/TreasuryBreakdown";
 import RBNPriceOverview from "../components/Homepage/RBNPriceOverview";
+import theme from "shared/lib/designSystem/theme";
 
-const FullscreenSection = styled(Container)<{ height: number }>`
+const FullscreenSection = styled(Container)`
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  height: ${(props) => `${props.height}px` || "100vh"};
+  height: 100vh;
 `;
 
 const Homepage = () => {
-  const { active } = useWeb3React();
-  const { height, width } = useScreenSize();
-
-  const containerHeight = useMemo(() => {
-    let sectionHeight = height - theme.header.height;
-
-    if (width <= sizes.lg && active) {
-      sectionHeight -= theme.footer.mobile.height;
-    } else if (active) {
-      sectionHeight -= theme.governance.actionBar.height;
-    }
-
-    return sectionHeight;
-  }, [active, height, width]);
+  const { height } = useScreenSize();
 
   return (
     <>
       <Container fluid className="d-flex p-0">
         <SnapScrollSection
-          height={containerHeight}
+          height={height}
           items={[
             {
               child: (
-                <FullscreenSection className="w-100" height={containerHeight}>
+                <FullscreenSection className="w-100">
                   <OverviewKPI />
                 </FullscreenSection>
               ),
             },
             {
               child: (
-                <FullscreenSection className="w-100" height={containerHeight}>
+                <FullscreenSection className="w-100">
                   <TVLLeaderboard />
                 </FullscreenSection>
               ),
             },
             {
               child: (
-                <FullscreenSection className="w-100" height={containerHeight}>
+                <FullscreenSection className="w-100">
                   <TreasuryBreakdown />
                 </FullscreenSection>
               ),
             },
             {
               child: (
-                <FullscreenSection className="w-100" height={containerHeight}>
+                <FullscreenSection className="w-100">
                   <RBNPriceOverview />
                 </FullscreenSection>
               ),
             },
             {
               child: (
-                <FooterContainer showDesktopFooter={true}>
-                  <DesktopFooter />
-                </FooterContainer>
+                <div className="d-flex flex-wrap w-100">
+                  <FooterContainer showDesktopFooter={true}>
+                    <DesktopFooter />
+                  </FooterContainer>
+                  <div
+                    style={{ height: theme.governance.actionBar.height }}
+                    className="w-100"
+                  />
+                </div>
               ),
               anchor: false,
             },

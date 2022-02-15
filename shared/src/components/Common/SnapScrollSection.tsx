@@ -201,10 +201,10 @@ const SnapScrollSection: React.FC<
     <div
       {...props}
       ref={refPassthrough}
-      className={`d-flex flex-wrap overflow-hidden w-100 position-relative ${
+      className={`d-flex flex-wrap overflow-hidden w-100 position-fixed ${
         className || ""
       }`}
-      style={{ height }}
+      style={{ height, top: 0, left: 0 }}
     >
       {width > sizes.xl ? (
         <DesktopIndicatorContainer
