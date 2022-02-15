@@ -38,7 +38,7 @@ import {
   getAssetLogo,
 } from "shared/lib/utils/asset";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { getVaultURI } from "webapp/lib/constants/constants";
+import { getVaultURI } from "../../constants/constants";
 
 const PortfolioPositionsContainer = styled.div`
   margin-top: 64px;
