@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled from "styled-components";
 
 import ActionModal from "./Modal/ActionModal";
@@ -39,7 +38,6 @@ interface DesktopActionFormProps {
 }
 
 const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
-  const { chainId } = useWeb3Wallet();
   const [showActionModal, setShowActionModal] = useState(false);
 
   const renderForm = useCallback(() => {

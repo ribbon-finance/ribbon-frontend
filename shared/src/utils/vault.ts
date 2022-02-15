@@ -1,4 +1,3 @@
-import { vaultUtils } from "@zetamarkets/flex-sdk";
 import { BigNumber } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
 import {
@@ -71,11 +70,6 @@ export const getUserDepositQueueAmount = async (
     depositQueueNodes.map((node) => connection.getBalance(node))
   );
 
-  console.log(
-    "Total deposits",
-    totalDeposits.length,
-    totalDeposits.reduce((val, acc) => (acc += val), 0)
-  );
   return BigNumber.from(totalDeposits.reduce((val, acc) => (acc += val), 0));
 };
 
@@ -107,12 +101,6 @@ export const getUserWithdrawQueueAmount = async (
   const withdrawQueueNodes = getUserWithdrawQueueNodes(vault, userKey);
   const totalWithdrawal = await Promise.all(
     withdrawQueueNodes.map((node) => connection.getBalance(node))
-  );
-
-  console.log(
-    "Total withdrawals",
-    totalWithdrawal.length,
-    totalWithdrawal.reduce((val, acc) => (acc += val), 0)
   );
 
   return BigNumber.from(totalWithdrawal.reduce((val, acc) => (acc += val), 0));
