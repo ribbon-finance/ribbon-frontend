@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
-import sizes from "shared/lib/designSystem/sizes";
+import sizes from "../../designSystem/sizes";
 
 interface BarConfig {
   width: number;
