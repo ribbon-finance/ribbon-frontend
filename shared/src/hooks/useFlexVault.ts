@@ -13,6 +13,7 @@ import { Wallet } from "@zetamarkets/flex-sdk/dist/common/types";
 interface FlexVaultData {
   client: VaultClient | null;
   vault: VaultInterface | null;
+  update: () => void;
 }
 
 export const useFlexVault = (): FlexVaultData => {
@@ -85,5 +86,9 @@ export const useFlexVault = (): FlexVaultData => {
     }
   }, [anchorWallet, connection, flexClient]);
 
-  return { vault: flexVault, client: flexClient };
+  const update = () => {
+    if (Flex) Flex.updateState();
+  };
+
+  return { vault: flexVault, client: flexClient, update } as FlexVaultData;
 };

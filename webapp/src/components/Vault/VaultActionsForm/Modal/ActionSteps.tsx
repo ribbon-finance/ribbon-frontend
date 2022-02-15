@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
-import * as anchor from "@project-serum/anchor";
-
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { ACTIONS, Steps, STEPS } from "./types";
 import useVault from "shared/lib/hooks/useVault";
@@ -32,9 +30,15 @@ import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { useFlexVault } from "shared/lib/hooks/useFlexVault";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { getAssetDecimals } from "shared/lib/utils/asset";
-import { vaultUtils, vaultInstructions, utils } from "@zetamarkets/flex-sdk";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { vaultInstructions, utils } from "@zetamarkets/flex-sdk";
+import {
+  useConnection,
+  useWallet,
+  useAnchorWallet,
+  AnchorWallet,
+} from "@solana/wallet-adapter-react";
 import { PublicKey, Transaction } from "@solana/web3.js";
+import * as anchor from "@project-serum/anchor";
 
 export interface ActionStepsProps {
   vault: {
@@ -57,8 +61,10 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   skipToPreview = false,
 }) => {
   const { ethereumProvider } = useWeb3Wallet();
-  const { client, vault } = useFlexVault();
+  const { client, update } = useFlexVault();
+  const anchorWallet = useAnchorWallet();
   const { publicKey } = useWallet();
+  const { connection } = useConnection();
 
   const { vaultActionForm, resetActionForm, withdrawMetadata } =
     useVaultActionForm(vaultOption);
@@ -232,6 +238,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                     getSolanaVaultInstance(vaultOption),
                     new anchor.BN(amountStr)
                   );
+
                   res = { hash: txhash };
                 }
                 break;
@@ -265,14 +272,11 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                     switch (vaultActionForm.vaultOption) {
                       case "rSOL-THETA":
                         if (client) {
-                          const [vaultAddress] =
-                            await vaultUtils.getVaultAddress("rSOL-THETA");
                           const depositNodes = getUserWithdrawQueueNodes(
                             vault,
                             publicKey as PublicKey
-                          );
-
-                          console.log(vault);
+                            );
+                            
 
                           const tx = new Transaction();
                           const userUnderlyingTokenAddress =
@@ -293,7 +297,18 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                             );
                           });
 
-                          // res = { hash: pendingRes[0] };
+                          const provider = new anchor.Provider(
+                            connection,
+                            anchorWallet as AnchorWallet,
+                            utils.defaultCommitment()
+                          );
+                          const txhash = await utils.processTransaction(
+                            vault,
+                            provider,
+                            tx
+                          );
+
+                          res = { hash: txhash };
                         }
                         break;
                       case "rstETH-THETA":
@@ -327,10 +342,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                     switch (vaultActionForm.vaultOption) {
                       case "rSOL-THETA":
                         if (client) {
-                          res = await client.withdrawVault(
+                          const txhash = await client.withdrawVault(
                             getSolanaVaultInstance(vaultOption),
                             new anchor.BN(amountStr)
                           );
+
+                          res = { hash: txhash };
                         }
                         break;
                       default:

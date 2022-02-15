@@ -14,6 +14,7 @@ import { isEVMChain, isSolanaChain } from "../utils/chains";
 import { useChain } from "./chainContext";
 import useWeb3Wallet from "./useWeb3Wallet";
 import { useConnection } from "@solana/wallet-adapter-react";
+import { useFlexVault } from "./useFlexVault";
 
 export type PendingTransactionsContextType = {
   pendingTransactions: PendingTransaction[];
@@ -52,6 +53,7 @@ export const PendingTransactionsContextProvider: React.FC<{
   const [transactionsCounter, setTransactionsCounter] = useState(0);
   const { ethereumProvider } = useWeb3Wallet();
   const [chain] = useChain();
+  const { update } = useFlexVault();
   const { connection } = useConnection();
 
   /**
@@ -95,6 +97,8 @@ export const PendingTransactionsContextProvider: React.FC<{
             };
           })
         );
+
+        if(isSolanaChain(chain)) update();
       }
     }, []);
   }, [pendingTransactions, ethereumProvider, setPendingTransactions]);
