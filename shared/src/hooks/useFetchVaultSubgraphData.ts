@@ -101,31 +101,6 @@ const useFetchVaultSubgraphData = () => {
                 }`.replaceAll(" ", ""),
           }
         );
-        if (chain === Chains.Solana) {
-          console.log(
-            `${chain === Chains.Solana ? "query" : ""} {
-              ${
-                account
-                  ? `
-                      ${vaultAccountsGraphql(account, version)}
-                      ${transactionsGraphql(account, chain)}
-                      ${balancesGraphql(account, chain)}
-                      ${liquidityMiningPoolAccountsGraphql(account, version)}
-                    `
-                  : ""
-              }
-              ${vaultGraphql(version, chain)}
-              ${vaultActivitiesGraphql(version, chain)}
-              ${
-                chain === Chains.Solana
-                  ? ""
-                  : vaultPriceHistoryGraphql(version, chain)
-              }
-              ${liquidityMiningPoolGraphql(version, chain)}
-            }`.replaceAll(" ", "")
-          );
-          console.log(response);
-        }
         return [version, response.data.data];
       })
     );
