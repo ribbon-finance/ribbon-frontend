@@ -52,7 +52,7 @@ const StakingModal = () => {
   const { provider } = useWeb3Context();
   const [stakingModalState, setStakingModalState] =
     useGovernanceGlobalState("stakingModal");
-  const [stepNum, setStepNum] = useState<number>(3);
+  const [stepNum, setStepNum] = useState<number>(0);
   const [stakingData, setStakingData] = useState<{
     amount: BigNumber;
     duration: Duration;
@@ -343,15 +343,13 @@ const StakingModal = () => {
         let title = "Confirm Transaction";
         if (stakingModalState.pendingTransaction?.hash) {
           title =
-            stakingModalState.mode === "approve"
-              ? "APPROVING RBN"
-              : "STAKE RBN";
+            stakingModalState.mode === "approve" ? "APPROVING RBN" : "LOCK RBN";
         }
 
         return (
           <ModalTransactionContent
             title={title}
-            txhash={stakingModalState.pendingTransaction?.hash || "asd"}
+            txhash={stakingModalState.pendingTransaction?.hash}
           />
         );
     }

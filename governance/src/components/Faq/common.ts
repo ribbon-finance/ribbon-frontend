@@ -9,7 +9,7 @@ export const Header = styled(Title)`
 
 export const FAQBody = styled.div`
   padding: 8px;
-  color: ${colors.text};
+  color: ${colors.primaryText};
 `;
 
 export const Link = styled(BaseLink)`

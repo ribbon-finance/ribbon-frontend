@@ -149,7 +149,7 @@ const OverviewKPI = () => {
               Protocol TVL
             </SecondaryText>
             <Title
-              fontSize={18}
+              fontSize={16}
               lineHeight={24}
               letterSpacing={1}
               className="mt-2"
@@ -162,7 +162,7 @@ const OverviewKPI = () => {
               <SecondaryText fontSize={12} lineHeight={16}>
                 Total Locked RBN
               </SecondaryText>
-              <Title fontSize={18} lineHeight={24} letterSpacing={1}>
+              <Title fontSize={16} lineHeight={24} letterSpacing={1}>
                 {rbnTokenAccountLoading
                   ? loadingText
                   : formatAmount(
@@ -182,7 +182,7 @@ const OverviewKPI = () => {
               <SecondaryText fontSize={12} lineHeight={16}>
                 RBN Floating Supply
               </SecondaryText>
-              <Title fontSize={18} lineHeight={24} letterSpacing={1}>
+              <Title fontSize={16} lineHeight={24} letterSpacing={1}>
                 {assetInfoLoading
                   ? loadingText
                   : formatAmount(info.circulating_supply, true)}
@@ -194,7 +194,7 @@ const OverviewKPI = () => {
               Ribbon Treasury
             </SecondaryText>
             <Title
-              fontSize={18}
+              fontSize={16}
               lineHeight={24}
               letterSpacing={1}
               className="mt-2"
@@ -207,7 +207,7 @@ const OverviewKPI = () => {
               RBN Price
             </SecondaryText>
             <Title
-              fontSize={18}
+              fontSize={16}
               lineHeight={24}
               letterSpacing={1}
               className="mt-2"
@@ -232,7 +232,7 @@ const OverviewKPI = () => {
           loop
         />
       </FloatingBackgroundContainer>
-      <FloatingBackgroundContainer backgroundColor="#00000066" />
+      <FloatingBackgroundContainer backgroundColor="#FFFFFF0A" />
     </>
   );
 };

@@ -23,6 +23,7 @@ const DesktopIndicatorContainer = styled.div<{ top?: number }>`
   left: 40px;
   top: calc(${(props) => (props.top ? `${props.top}px` : `50%`)} - 120px);
   height: 240px;
+  z-index: 1000;
 `;
 
 const DesktopIndicatorBar = styled.div<{ active: boolean }>`

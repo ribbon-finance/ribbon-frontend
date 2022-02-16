@@ -82,7 +82,7 @@ const UnstakingModal = () => {
       case "transaction":
         return (
           <ModalTransactionContent
-            title="UNSTAKING RBN"
+            title="UNLOCKING RBN"
             txhash={unstakingModalState.pendingTransaction?.hash}
           />
         );
