@@ -23,7 +23,7 @@ import SwitchViewButton from "./Shared/SwitchViewButton";
 import YieldFrame from "./Theta/YieldFrame";
 import {
   DesktopViewType,
-  FilterAssets,
+  getFilterAssets,
   VaultFilterProps,
   VaultsDisplayVersionProps,
   VaultSortBy,
@@ -32,6 +32,7 @@ import {
 } from "./types";
 import YourPosition from "../Vault/YourPosition";
 import { useWeb3React } from "@web3-react/core";
+import { useChain } from "../../hooks/chainContext";
 
 const FullscreenContainer = styled(Container)<{ height: number }>`
   padding-top: 24px;
@@ -119,6 +120,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
   vaultsDisplayVersion,
   setVaultDisplayVersion,
 }) => {
+  const [chain] = useChain();
   const { active } = useWeb3React();
   const { height } = useScreenSize();
   const [page, setPage] = useState(1);
@@ -221,7 +223,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
                       name: "asset",
                       title: "DEPOSIT ASSET",
                       values: filterAssets,
-                      options: FilterAssets.map((asset) => {
+                      options: getFilterAssets(chain).map((asset) => {
                         const Logo = getAssetLogo(asset);
                         let logo = <Logo height="100%" />;
                         switch (asset) {

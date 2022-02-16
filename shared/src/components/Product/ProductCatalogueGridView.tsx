@@ -19,7 +19,7 @@ import SwitchViewButton from "./Shared/SwitchViewButton";
 import YieldCard from "./Theta/YieldCard";
 import {
   DesktopViewType,
-  FilterAssets,
+  getFilterAssets,
   VaultFilterProps,
   VaultsDisplayVersionProps,
   VaultSortBy,
@@ -27,6 +27,7 @@ import {
   VaultStrategyList,
 } from "./types";
 import { VaultOptions, VaultVersion } from "../../constants/constants";
+import { useChain } from "../../hooks/chainContext";
 
 const FilterContainer = styled.div`
   display: flex;
@@ -109,6 +110,7 @@ const ProductCatalogueGridView: React.FC<
   vaultsDisplayVersion,
   setVaultDisplayVersion,
 }) => {
+  const [chain] = useChain();
   const productResults = useMemo(() => {
     if (!filteredProducts.length) {
       return (
@@ -186,7 +188,7 @@ const ProductCatalogueGridView: React.FC<
             {/* Assets */}
             <MultiselectFilterDropdown
               values={filterAssets}
-              options={FilterAssets.map((asset) => {
+              options={getFilterAssets(chain).map((asset) => {
                 const Logo = getAssetLogo(asset);
                 const logo = <Logo height="100%" />;
                 return {
@@ -220,7 +222,7 @@ const ProductCatalogueGridView: React.FC<
                 name: "asset",
                 title: "DEPOSIT ASSET",
                 values: filterAssets,
-                options: FilterAssets.map((asset) => {
+                options: getFilterAssets(chain).map((asset) => {
                   const Logo = getAssetLogo(asset);
                   const logo = <Logo height="100%" />;
                   return {
