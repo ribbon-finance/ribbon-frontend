@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
-import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 
 import {
   ACTIONS,

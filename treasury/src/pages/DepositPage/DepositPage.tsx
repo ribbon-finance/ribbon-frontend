@@ -1,6 +1,6 @@
 import React, { ReactNode, useMemo } from "react";
 import { ethers } from "ethers";
-import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
 
