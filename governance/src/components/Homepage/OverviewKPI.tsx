@@ -220,7 +220,7 @@ const OverviewKPI = () => {
       <FloatingBackgroundContainer>
         <ReactPlayer
           key="video-player"
-          url="https://storage.googleapis.com/ribbon-bucket/verbn/veRBN_launch_A_prores_v04.mp4"
+          url="https://storage.googleapis.com/ribbon-bucket/verbn/launch.mp4"
           playing={true}
           width={videoWidth}
           height={videoHeight}
