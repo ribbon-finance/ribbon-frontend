@@ -225,49 +225,46 @@ export const WithdrawReminderToast = () => {
    * Find vault that is ready to withdraw
    */
   useEffect(() => {
-    Object.keys(data)
-      .filter((k) => VaultList.includes(k as VaultOptions))
-      .forEach((vault) => {
-        const vaultData = data[vault as VaultOptions];
-        const asset = getAssets(vault as VaultOptions);
-        const decimals = getAssetDecimals(asset);
-        const priceHistory = priceHistories.v2[vault as VaultOptions].find(
-          (history) => history.round === vaultData.withdrawals.round
-        );
+    VaultList.forEach((vault) => {
+      const vaultData = data[vault as VaultOptions];
+      const asset = getAssets(vault as VaultOptions);
+      const decimals = getAssetDecimals(asset);
+      const priceHistory = priceHistories.v2[vault as VaultOptions].find(
+        (history) => history.round === vaultData.withdrawals.round
+      );
 
+      if (
+        !isPracticallyZero(vaultData.withdrawals.shares, decimals) &&
+        vaultData.withdrawals.round !== vaultData.round &&
+        priceHistory
+      ) {
+        /**
+         * Check if it had already indexed inside reminders
+         */
         if (
-          !isPracticallyZero(vaultData.withdrawals.shares, decimals) &&
-          vaultData.withdrawals.round !== vaultData.round &&
-          priceHistory
+          reminders.find(
+            (reminder) =>
+              reminder.vault.option === vault && reminder.vault.version === "v2"
+          )
         ) {
-          /**
-           * Check if it had already indexed inside reminders
-           */
-          if (
-            reminders.find(
-              (reminder) =>
-                reminder.vault.option === vault &&
-                reminder.vault.version === "v2"
-            )
-          ) {
-            return;
-          }
-
-          setReminders((curr) =>
-            curr.concat({
-              vault: { option: vault as VaultOptions, version: "v2" },
-              amount: vaultData.withdrawals.shares
-                .mul(priceHistory.pricePerShare)
-                .div(
-                  parseUnits(
-                    "1",
-                    getAssetDecimals(getAssets(vault as VaultOptions))
-                  )
-                ),
-            })
-          );
+          return;
         }
-      }, []);
+
+        setReminders((curr) =>
+          curr.concat({
+            vault: { option: vault as VaultOptions, version: "v2" },
+            amount: vaultData.withdrawals.shares
+              .mul(priceHistory.pricePerShare)
+              .div(
+                parseUnits(
+                  "1",
+                  getAssetDecimals(getAssets(vault as VaultOptions))
+                )
+              ),
+          })
+        );
+      }
+    }, []);
   }, [data, priceHistories.v2, reminders]);
 
   /**
