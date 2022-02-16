@@ -40,7 +40,6 @@ import useFetchTreasuryBalanceData, {
 } from "./useFetchTreasuryBalanceData";
 import useFetchLiquidityGaugeV5Data from "./useFetchLiquidityGaugeV5Data";
 import useFetchSolVaultData from "./useFetchSolVaultData";
-import { isProduction } from "../utils/env";
 
 export type Web3DataContextType = {
   v1: VaultData;

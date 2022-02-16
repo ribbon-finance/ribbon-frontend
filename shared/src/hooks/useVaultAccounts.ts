@@ -2,7 +2,6 @@ import { BigNumber } from "ethers";
 import { useContext } from "react";
 
 import {
-  isEthVault,
   isSolanaVault,
   VaultAddressMap,
   VaultList,

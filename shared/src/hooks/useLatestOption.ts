@@ -70,7 +70,7 @@ export const useLatestOption = (
         isPut: isPut,
       };
     });
-  }, [activities, asset, prices, vaultOption]);
+  }, [chain, activities, asset, prices, vaultOption]);
 
   return {
     option: optionHistory.length > 0 ? optionHistory[0] : undefined,

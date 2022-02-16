@@ -16,7 +16,6 @@ import { BaseLink, Title } from "shared/lib/designSystem";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { truncateAddress } from "shared/lib/utils/address";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
-import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 
 const ContractButton = styled.div<{ color: string }>`
   display: flex;
@@ -40,7 +39,6 @@ interface DesktopActionFormProps {
 
 const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
   const [showActionModal, setShowActionModal] = useState(false);
-  const { chainId } = useWeb3Wallet();
 
   const renderForm = useCallback(() => {
     switch (vault.vaultVersion) {
