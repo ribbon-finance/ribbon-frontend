@@ -285,6 +285,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                             );
 
                           let tx = new Transaction();
+
                           tx.add(
                             vaultInstructions.removeQueuedDepositIx(
                               publicKey as PublicKey,
@@ -295,7 +296,6 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                             )
                           );
 
-                          console.log(tx);
                           // depositNodes.forEach((node) => {
                           //   tx.add(
                           //     vaultInstructions.removeQueuedDepositIx(
@@ -315,11 +315,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                           );
 
                           const test = await provider.simulate(tx);
-
                           console.log(test);
-                          // const test = await connection.simulateTransaction(tx);
-                          // console.log("prov", provider);
-                          // console.log("tx", tx);
 
                           const txhash = await utils.processTransaction(
                             Program.VAULT,

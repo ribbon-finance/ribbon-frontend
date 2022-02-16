@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { useConnection, useAnchorWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import { Vault, Flex, VaultClient, vaultUtils, vaultTypes } from "@zetamarkets/flex-sdk";
+import {
+  Vault,
+  Flex,
+  VaultClient,
+  vaultUtils,
+  vaultTypes,
+} from "@zetamarkets/flex-sdk";
 import {
   getSolanaAddresses,
   getSolanaNetwork,
@@ -31,7 +37,7 @@ export const useFlexVault = (): FlexVaultData => {
       console.time("SOL Vault Data Fetch");
     }
 
-    const pollingInterval = flexVault ? 10000 : 1000;
+    const pollingInterval = flexVault ? 10000 : 3000;
 
     const setVault = setInterval(async () => {
       if (Flex.isInitialized && Vault.isInitialized) {

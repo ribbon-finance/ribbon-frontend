@@ -60,10 +60,6 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
     });
 
     // TODO: Make this chain agnostic, for now we only enable when user connected to ETH
-    if (chainId !== CHAINID.ETH_MAINNET && chainId !== CHAINID.ETH_KOVAN) {
-      return;
-    }
-
     const minterResponsePromises = Promise.all([
       minterContract.rate(),
       gaugeControllerContract.time_total(),

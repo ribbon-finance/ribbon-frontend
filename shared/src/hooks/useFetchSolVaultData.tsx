@@ -42,10 +42,12 @@ const useFetchSolVaultData = (): SolanaVaultData => {
         publicKey as PublicKey
       );
 
-
       const userData = vaultUserData.find(
         (d) =>
-        publicKey && vaultAddress && d?.user.equals(publicKey as PublicKey) && d?.vault.equals(vaultAddress)
+          publicKey &&
+          vaultAddress &&
+          d?.user.equals(publicKey as PublicKey) &&
+          d?.vault.equals(vaultAddress)
       );
 
       const lockedBalanceInAsset = BigNumber.from(
