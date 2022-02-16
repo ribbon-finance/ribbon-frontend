@@ -85,6 +85,7 @@ export interface VaultOptionTrade {
 export type VaultTransactionType =
   | "deposit"
   | "withdraw"
+  | "initiateWithdraw"
   | "instantWithdraw"
   | "transfer"
   | "receive"

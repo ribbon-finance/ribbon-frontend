@@ -263,6 +263,7 @@ const PortfolioTransactions = () => {
           prependSymbol = "+";
           break;
         case "withdraw":
+        case "initiateWithdraw":
         case "instantWithdraw":
         case "transfer":
         case "unstake":
@@ -294,6 +295,7 @@ const PortfolioTransactions = () => {
       case "receive":
         return <DepositIcon width={20} />;
       case "withdraw":
+      case "initiateWithdraw":
       case "instantWithdraw":
         return <WithdrawIcon width={20} />;
       case "stake":
@@ -312,6 +314,8 @@ const PortfolioTransactions = () => {
       switch (type) {
         case "instantWithdraw":
           return "Instant Withdraw";
+        case "initiateWithdraw":
+          return "Initiate Withdraw";
         default:
           return capitalize(type);
       }
