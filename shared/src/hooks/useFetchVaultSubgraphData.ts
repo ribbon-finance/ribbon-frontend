@@ -77,30 +77,30 @@ const useFetchVaultSubgraphData = () => {
 
     const allSubgraphResponses = await Promise.all(
       SUBGRAPHS_TO_QUERY.map(async ([version, chain]) => {
+        const query = `${chain === Chains.Solana ? "query" : ""} {
+          ${
+            account
+              ? `
+                  ${vaultAccountsGraphql(account, version)}
+                  ${transactionsGraphql(account, chain)}
+                  ${balancesGraphql(account, chain)}
+                  ${liquidityMiningPoolAccountsGraphql(account, version)}
+                `
+              : ""
+          }
+          ${vaultGraphql(version, chain)}
+          ${vaultActivitiesGraphql(version, chain)}
+          ${vaultPriceHistoryGraphql(version, chain)}
+          ${liquidityMiningPoolGraphql(version, chain)}
+        }`.replaceAll(" ", "");
+
         const response = await axios.post(
           getSubgraphURIForVersion(version, chain),
           {
-            query: `${chain === Chains.Solana ? "query" : ""} {
-                  ${
-                    account
-                      ? `
-                          ${vaultAccountsGraphql(account, version)}
-                          ${transactionsGraphql(account, chain)}
-                          ${balancesGraphql(account, chain)}
-                          ${liquidityMiningPoolAccountsGraphql(
-                            account,
-                            version
-                          )}
-                        `
-                      : ""
-                  }
-                  ${vaultGraphql(version, chain)}
-                  ${vaultActivitiesGraphql(version, chain)}
-                  ${vaultPriceHistoryGraphql(version, chain)}
-                  ${liquidityMiningPoolGraphql(version, chain)}
-                }`.replaceAll(" ", ""),
+            query,
           }
         );
+        console.log(query, response);
         return [version, response.data.data];
       })
     );

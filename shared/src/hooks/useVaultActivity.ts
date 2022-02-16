@@ -13,7 +13,7 @@ import {
 } from "../constants/constants";
 import { VaultActivitiesData } from "../models/vault";
 import { SubgraphDataContext } from "./subgraphDataContext";
-import { isEVMChain } from "../utils/chains";
+import { isEVMChain, isSolanaChain } from "../utils/chains";
 
 const getVaultActivityKey = (
   vault: VaultOptions,
@@ -41,7 +41,7 @@ export const vaultActivitiesGraphql = (version: VaultVersion, chain: Chains) =>
           ${getVaultActivityKey(vault, "shortPositions")}:
           vaultShortPositions
           ${
-            isSolanaVault(vault)
+            isSolanaChain(chain)
               ? `(where: { vaultId: {_in: ["${vaultAddress}"] }})`
               : `(where: { vault_in: ["${vaultAddress}"] })`
           }
@@ -57,7 +57,7 @@ export const vaultActivitiesGraphql = (version: VaultVersion, chain: Chains) =>
 
           ${getVaultActivityKey(vault, "optionTrades")}:
           vaultOptionTrades ${
-            isSolanaVault(vault)
+            isSolanaChain(chain)
               ? `(where: { vaultId: {_in: ["${vaultAddress}"] }})`
               : `(where: { vault_in: ["${vaultAddress}"] })`
           }

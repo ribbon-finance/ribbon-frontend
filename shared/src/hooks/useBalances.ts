@@ -3,22 +3,23 @@ import { useContext } from "react";
 
 import { Chains, VaultVersion, VaultVersionList } from "../constants/constants";
 import { BalanceUpdate } from "../models/vault";
+import { isSolanaChain } from "../utils/chains";
 import { SubgraphDataContext } from "./subgraphDataContext";
 
 export const balancesGraphql = (account: string, chain: Chains) => `
   balanceUpdates(
     ${
-      chain === Chains.Solana
+      isSolanaChain(chain)
         ? `where:{account:{_eq:"${account}"}}`
         : `where:{account:"${account}"}`
     },
     ${
-      chain === Chains.Solana
+      isSolanaChain(chain)
         ? `order_by: { timestamp: desc },`
         : `orderBy: timestamp,
            orderDirection: desc,`
     }
-    ${chain === Chains.Solana ? "limit: 1000" : "first: 1000"}
+    ${isSolanaChain(chain) ? "limit: 1000" : "first: 1000"}
   ) {
     vault {
       symbol

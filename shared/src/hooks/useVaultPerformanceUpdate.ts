@@ -12,7 +12,7 @@ import {
   VaultVersionList,
 } from "../constants/constants";
 import { VaultPriceHistoriesData } from "../models/vault";
-import { isEVMChain } from "../utils/chains";
+import { isEVMChain, isSolanaChain } from "../utils/chains";
 import { SubgraphDataContext } from "./subgraphDataContext";
 
 const getVaultPriceHistoryKey = (vault: VaultOptions) =>
@@ -41,17 +41,17 @@ export const vaultPriceHistoryGraphql = (
       `
         ${getVaultPriceHistoryKey(vault)}: vaultPerformanceUpdates(
           ${
-            isSolanaVault(vault)
+            isSolanaChain(chain)
               ? `where: { vaultId: {_in: ["${vaultAddress}"]} },`
               : `where: { vault_in: ["${vaultAddress}"] },`
           }
           ${
-            chain === Chains.Solana
+            isSolanaChain(chain)
               ? `order_by: { timestamp: desc },`
               : `orderBy: timestamp,
                  orderDirection: desc,`
           }
-          ${chain === Chains.Solana ? "limit: 1000" : "first: 1000"}
+          ${isSolanaChain(chain) ? "limit: 1000" : "first: 1000"}
         ) {
           pricePerShare
           timestamp

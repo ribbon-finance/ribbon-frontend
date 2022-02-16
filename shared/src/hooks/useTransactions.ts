@@ -4,16 +4,17 @@ import { BigNumber } from "ethers";
 import { VaultTransaction } from "../models/vault";
 import { Chains, VaultVersion, VaultVersionList } from "../constants/constants";
 import { SubgraphDataContext } from "./subgraphDataContext";
+import { isSolanaChain } from "../utils/chains";
 
 export const transactionsGraphql = (account: string, chain: Chains) => `
   vaultTransactions(
     ${
-      chain === Chains.Solana
+      isSolanaChain(chain)
         ? `where:{address:{_eq:"${account}"}}`
         : `where:{address:"${account}"}`
     },
     ${
-      chain === Chains.Solana
+      isSolanaChain(chain)
         ? `order_by: { timestamp: desc }`
         : `orderBy: timestamp,
            orderDirection: desc`
