@@ -886,6 +886,7 @@ export const getSolanaVaultInstance = (vaultOption: VaultOptions) => {
 
 const WEBAPP_SUBGRAPHS: [VaultVersion, Chains][] = [
   ["v1", Chains.Ethereum],
+  ["v2", Chains.Ethereum],
   ["v2", Chains.Avalanche],
   ["v2", Chains.Solana],
 ];

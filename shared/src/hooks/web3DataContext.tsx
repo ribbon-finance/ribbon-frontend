@@ -95,8 +95,7 @@ export const useV2VaultsData = () => {
   const data = useMemo(
     () => ({
       ...contextData.v2.responses,
-      // TODO: @leonkho Remove the isProduction() check to fetch solana data on prod
-      ...(isProduction() ? {} : contextData.solana.responses),
+      ...contextData.solana.responses,
     }),
     [contextData.v2.responses, contextData.solana.responses]
   );
