@@ -139,7 +139,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
     const currentRef =
       withdrawOptionRefs[
         vaultActionForm.withdrawOption! === "complete"
-          ? "stamdard"
+          ? "standard"
           : vaultActionForm.withdrawOption!
       ]?.current;
 

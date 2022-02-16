@@ -135,11 +135,22 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   const withdrawMetadata = useMemo((): WithdrawMetadata => {
     switch (vaultActionForm.vaultVersion) {
       case "v2":
-        return {
-          allowStandardWithdraw:
-            !v2LockedBalanceInAsset.isZero() || !v2Withdrawals.shares.isZero(),
-          instantWithdrawBalance: v2DepositBalanceInAsset,
-        };
+        switch (vaultOption) {
+          case "rSOL-THETA":
+            return {
+              allowStandardWithdraw:
+                !v2LockedBalanceInAsset.isZero() ||
+                !v2Withdrawals.shares.isZero(),
+              instantWithdrawBalance: BigNumber.from(0),
+            };
+          default:
+            return {
+              allowStandardWithdraw:
+                !v2LockedBalanceInAsset.isZero() ||
+                !v2Withdrawals.shares.isZero(),
+              instantWithdrawBalance: v2DepositBalanceInAsset,
+            };
+        }
     }
 
     return {};
@@ -148,6 +159,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     v2LockedBalanceInAsset,
     v2Withdrawals.shares,
     vaultActionForm.vaultVersion,
+    vaultOption,
   ]);
 
   /**
@@ -201,8 +213,10 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
                 inputAmount: "",
                 actionType,
                 withdrawOption:
-                  !withdrawMetadata.allowStandardWithdraw &&
-                  withdrawOption === "standard"
+                  vaultOption === "rSOL-THETA"
+                    ? "standard"
+                    : !withdrawMetadata.allowStandardWithdraw &&
+                      withdrawOption === "standard"
                     ? "instant"
                     : withdrawOption,
               };

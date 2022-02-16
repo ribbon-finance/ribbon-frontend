@@ -17,7 +17,7 @@ import {
   CurveSwapSlippage,
   getSolanaVaultInstance,
 } from "shared/lib/constants/constants";
-import { getUserWithdrawQueueNodes, isETHVault } from "shared/lib/utils/vault";
+import { isETHVault } from "shared/lib/utils/vault";
 import { amountAfterSlippage } from "shared/lib/utils/math";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
@@ -30,16 +30,7 @@ import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { useFlexVault } from "shared/lib/hooks/useFlexVault";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { getAssetDecimals } from "shared/lib/utils/asset";
-import { vaultInstructions, utils } from "@zetamarkets/flex-sdk";
-import {
-  useConnection,
-  useWallet,
-  useAnchorWallet,
-  AnchorWallet,
-} from "@solana/wallet-adapter-react";
-import { PublicKey, Transaction } from "@solana/web3.js";
 import * as anchor from "@project-serum/anchor";
-import { vaultTypes, Program } from "@zetamarkets/flex-sdk";
 
 export interface ActionStepsProps {
   vault: {
@@ -62,11 +53,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   skipToPreview = false,
 }) => {
   const { ethereumProvider } = useWeb3Wallet();
-  const { client, vault: flexVault } = useFlexVault();
-  const anchorWallet = useAnchorWallet();
-  const { publicKey } = useWallet();
-  const { connection } = useConnection();
-
+  const { client } = useFlexVault();
   const { vaultActionForm, resetActionForm, withdrawMetadata } =
     useVaultActionForm(vaultOption);
   const { data: priceHistories } = useVaultsPriceHistory();
@@ -272,60 +259,53 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                   case "instant":
                     switch (vaultActionForm.vaultOption) {
                       case "rSOL-THETA":
-                        if (client) {
-                          const depositNodes = await getUserWithdrawQueueNodes(
-                            flexVault as vaultTypes.Vault,
-                            publicKey as PublicKey
-                          );
+                        return;
+                      // if (client) {
+                      //   const depositNodes = await getUserWithdrawQueueNodes(
+                      //     flexVault as vaultTypes.Vault,
+                      //     publicKey as PublicKey
+                      //   );
 
-                          const userUnderlyingTokenAddress =
-                            await utils.getAssociatedTokenAddress(
-                              flexVault?.underlyingMint as PublicKey,
-                              publicKey as PublicKey
-                            );
+                      //   const userUnderlyingTokenAddress =
+                      //     await utils.getAssociatedTokenAddress(
+                      //       flexVault?.underlyingMint as PublicKey,
+                      //       publicKey as PublicKey
+                      //     );
 
-                          let tx = new Transaction();
+                      //   let tx = new Transaction();
 
-                          tx.add(
-                            vaultInstructions.removeQueuedDepositIx(
-                              publicKey as PublicKey,
-                              userUnderlyingTokenAddress,
-                              flexVault as vaultTypes.Vault,
-                              depositNodes[0],
-                              []
-                            )
-                          );
+                      //   await client.removeQueuedDeposit(
+                      //     (flexVault as vaultTypes.Vault)
+                      //       .address as PublicKey,
+                      //     depositNodes[0]
+                      //   );
 
-                          // depositNodes.forEach((node) => {
-                          //   tx.add(
-                          //     vaultInstructions.removeQueuedDepositIx(
-                          //       publicKey as PublicKey,
-                          //       userUnderlyingTokenAddress,
-                          //       flexVault as vaultTypes.Vault,
-                          //       node,
-                          //       []
-                          //     )
-                          //   );
-                          // });
+                      //   depositNodes.forEach((node) => {
+                      //     tx.add(
+                      //       vaultInstructions.removeQueuedDepositIx(
+                      //         publicKey as PublicKey,
+                      //         userUnderlyingTokenAddress,
+                      //         flexVault as vaultTypes.Vault,
+                      //         node,
+                      //         []
+                      //       )
+                      //     );
+                      //   });
 
-                          const provider = new anchor.Provider(
-                            connection,
-                            anchorWallet as AnchorWallet,
-                            utils.defaultCommitment()
-                          );
+                      //   const provider = new anchor.Provider(
+                      //     connection,
+                      //     anchorWallet as AnchorWallet,
+                      //     utils.defaultCommitment()
+                      //   );
 
-                          const test = await provider.simulate(tx);
-                          console.log(test);
+                      //   const txhash = await utils.processTransaction(
+                      //     Program.VAULT,
+                      //     provider,
+                      //     tx
+                      //   );
 
-                          const txhash = await utils.processTransaction(
-                            Program.VAULT,
-                            provider,
-                            tx
-                          );
-
-                          res = { hash: txhash || tx.recentBlockhash };
-                        }
-                        break;
+                      //   res = { hash: txhash || tx.recentBlockhash };
+                      // }
                       case "rstETH-THETA":
                         /**
                          * Default slippage of 0.3%
