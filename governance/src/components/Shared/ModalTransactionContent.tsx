@@ -15,6 +15,12 @@ import {
 import { useWeb3React } from "@web3-react/core";
 
 const barAnimationTime = 500;
+const barRowsNum = 6;
+/**
+ * Ratio denominated as follow
+ * total animation time : delay time
+ */
+const animationDelayRatio = 4;
 
 const FloatingBoxContainer = styled.div`
   display: flex;
@@ -53,7 +59,9 @@ const ModalTransactionContent: React.FC<ModalTransactionContentProps> = ({
   txhash,
 }) => {
   const { chainId } = useWeb3React();
-  const [activeBarIndex, setActiveBarIndex] = useState<number>(6 * 4 - 1);
+  const [activeBarIndex, setActiveBarIndex] = useState<number>(
+    barRowsNum * animationDelayRatio - 1
+  );
 
   useEffect(() => {
     const animationInterval = setInterval(() => {
