@@ -37,7 +37,7 @@ export const isStaging = () =>
   process.env.REACT_APP_VERCEL_GIT_COMMIT_REF === "staging";
 
 export const isProduction = () =>
-  process.env.REACT_APP_VERCEL_GIT_COMMIT_REF === "master";
+  process.env.REACT_APP_VERCEL_GIT_COMMIT_REF !== "master";
 
 export const isTreasury = () =>
   process.env.REACT_APP_VAULT_COLLECTION === "treasury";
