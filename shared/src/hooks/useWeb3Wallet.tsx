@@ -11,7 +11,7 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { Wallet as SolanaWalletInterface } from "@solana/wallet-adapter-wallets";
 import { useWallet as useSolanaWallet } from "@solana/wallet-adapter-react";
 import { WalletName } from "@solana/wallet-adapter-wallets";
-import { Chains, useChain } from "./chainContext";
+import { useChain } from "./chainContext";
 import {
   EthereumWallet,
   isEthereumWallet,
@@ -19,7 +19,7 @@ import {
   SolanaWallet,
   Wallet,
 } from "../models/wallets";
-import { CHAINS_TO_ID, ID_TO_CHAINS } from "../constants/constants";
+import { Chains, CHAINS_TO_ID, ID_TO_CHAINS } from "../constants/constants";
 import { switchChains } from "../utils/chainSwitching";
 
 interface Web3WalletData {
@@ -66,7 +66,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
     } else if (isActiveSolana && !chainIdEth) {
       setChain(Chains.Solana);
     }
-  }, [chainIdEth, isActiveEth, isActiveSolana]);
+  }, [chainIdEth, isActiveEth, isActiveSolana, setChain]);
 
   // This hook checks if there is an EVM chainId to switch to
   // If so, it will prompt switchChains only when a provider is available
@@ -130,11 +130,11 @@ export const useWeb3Wallet = (): Web3WalletData => {
       }
     },
     [
-      libraryEth,
       activateEth,
-      selectWalletSolana,
       deactivateEth,
       deactivateSolana,
+      isActiveEth,
+      selectWalletSolana,
     ]
   );
 

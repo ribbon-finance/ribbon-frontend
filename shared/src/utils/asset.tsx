@@ -14,9 +14,8 @@ import {
 } from "../assets/icons/erc20Assets";
 import Logo from "../assets/icons/logo";
 import { SolanaLogo } from "../assets/icons/solAssets";
-import { VaultOptions } from "../constants/constants";
+import { Chains, VaultOptions } from "../constants/constants";
 import colors from "../designSystem/colors";
-import { Chains } from "../hooks/chainContext";
 import { Assets, Wallets } from "../store/types";
 
 export const isYieldAsset = (asset: Assets): boolean => {

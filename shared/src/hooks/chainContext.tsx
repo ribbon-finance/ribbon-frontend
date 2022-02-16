@@ -1,11 +1,5 @@
 import React, { ReactElement, useContext, useState } from "react";
-
-export enum Chains {
-  NotSelected,
-  Ethereum,
-  Avalanche,
-  Solana,
-}
+import { Chains } from "../constants/constants";
 
 interface ChainContextType {
   chain: Chains;

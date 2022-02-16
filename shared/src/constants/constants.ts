@@ -78,7 +78,7 @@ export const getVaultNetwork = (vault: string): MAINNET_NAMES => {
   else throw new Error(`Unknown network for ${vault}`);
 };
 
-export const NATIVE_TOKENS = ["WETH", "WAVAX"];
+export const NATIVE_TOKENS = ["WETH", "WAVAX", "SOL"];
 export const isNativeToken = (token: string): boolean =>
   NATIVE_TOKENS.includes(token);
 
