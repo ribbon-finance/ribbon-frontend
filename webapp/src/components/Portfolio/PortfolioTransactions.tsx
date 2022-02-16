@@ -22,6 +22,7 @@ import { capitalize } from "shared/lib/utils/text";
 import {
   getAssets,
   getExplorerURI,
+  getVaultChain,
   VaultNameOptionMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
@@ -48,7 +49,6 @@ import Pagination from "shared/lib/components/Common/Pagination";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
-import { useChain } from "shared/lib/hooks/chainContext";
 
 const PortfolioTransactionsContainer = styled.div`
   margin-top: 64px;
@@ -172,8 +172,7 @@ const perPage = 6;
 
 const PortfolioTransactions = () => {
   const { transactions, loading } = useTransactions();
-  const [chain] = useChain();
-  const { active, chainId } = useWeb3Wallet();
+  const { active } = useWeb3Wallet();
   // const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice();
   const { searchAssetPriceFromTimestamp, loading: assetPricesLoading } =
     useAssetsPriceHistory();
@@ -460,9 +459,11 @@ const PortfolioTransactions = () => {
             </div>
           </TransactionInfo>
 
-          {chainId && (
+          {
             <BaseLink
-              to={`${getExplorerURI(chain)}/tx/${transaction.txhash}`}
+              to={`${getExplorerURI(
+                getVaultChain(transaction.vault.symbol)
+              )}/tx/${transaction.txhash}`}
               target="_blank"
               rel="noreferrer noopener"
               className="d-none d-md-block"
@@ -471,13 +472,11 @@ const PortfolioTransactions = () => {
                 <ExternalLinkIcon color="white" />
               </ExternalLink>
             </BaseLink>
-          )}
+          }
         </TransactionContainer>
       ));
   }, [
-    chain,
     active,
-    chainId,
     getTransactionTypeDisplay,
     page,
     processedTransactions,
