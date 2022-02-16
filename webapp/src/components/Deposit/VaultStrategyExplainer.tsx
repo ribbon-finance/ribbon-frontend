@@ -13,6 +13,7 @@ import {
   getDisplayAssets,
   getOptionAssets,
   isPutVault,
+  isSolanaVault,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
@@ -752,6 +753,17 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
               }
           }
         case "gnosisAuction":
+          if (isSolanaVault(vaultOption)) {
+            return (
+              <>
+                The vault sells the newly minted options via a Zeta FLEX batch
+                auction. The vault first sets a minimum price for the options
+                and then opens up bidding to anyone in the world. The best bid
+                is selected by the manager and the swap between the option
+                tokens and the premium is atomically executed on-chain.
+              </>
+            );
+          }
           return (
             <>
               The vault sells the newly minted options via a{" "}
