@@ -19,7 +19,7 @@ export const useChain: () => [Chains, (chain: Chains) => void] = () => {
 export const ChainContextProvider: React.FC<{
   children: ReactElement;
 }> = ({ children }) => {
-  const [chain, setChain] = useState(Chains.NotSelected);
+  const [chain, setChain] = useState(Chains.Ethereum);
 
   return (
     <ChainContext.Provider value={{ chain, setChain }}>
