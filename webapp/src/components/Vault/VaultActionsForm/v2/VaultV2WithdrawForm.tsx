@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { Frame } from "framer";
+import { Frame, TargetAndTransition } from "framer";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { BigNumber } from "ethers";
 
@@ -126,9 +126,9 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
   } = useVaultActionForm(vaultOption);
   const { active } = useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
-  const [activeBackgroundState, setActiveBackgroundState] = useState<
-    object | boolean
-  >(false);
+
+  const [activeBackgroundState, setActiveBackgroundState] =
+    useState<TargetAndTransition>();
   const isInputNonZero = parseFloat(vaultActionForm.inputAmount) > 0;
 
   useEffect(() => {
@@ -413,8 +413,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
             ease: "easeOut",
           }}
           initial={{
-            height: 0,
-            width: 0,
+            height: "100%",
           }}
           animate={activeBackgroundState}
         />
