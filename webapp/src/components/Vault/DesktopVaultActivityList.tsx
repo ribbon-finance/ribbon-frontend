@@ -3,6 +3,7 @@ import styled from "styled-components";
 import moment from "moment";
 
 import {
+  Chains,
   getAssets,
   getExplorerURI,
   isPutVault,
@@ -25,7 +26,6 @@ import useScreenSize from "shared/lib/hooks/useScreenSize";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import TableWithFixedHeader from "shared/lib/components/Common/TableWithFixedHeader";
-import { Chains } from "shared/lib/hooks/chainContext";
 
 const VaultActivityIcon = styled.div<{ type: VaultActivityType }>`
   display: flex;

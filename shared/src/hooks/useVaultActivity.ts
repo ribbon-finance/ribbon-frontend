@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { BigNumber } from "ethers";
 
 import {
+  Chains,
   CHAINS_TO_ID,
   isSolanaVault,
   VaultAddressMap,
@@ -12,7 +13,6 @@ import {
 } from "../constants/constants";
 import { VaultActivitiesData } from "../models/vault";
 import { SubgraphDataContext } from "./subgraphDataContext";
-import { Chains } from "./chainContext";
 import { isEVMChain } from "../utils/chains";
 
 const getVaultActivityKey = (

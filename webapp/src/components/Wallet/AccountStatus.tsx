@@ -33,6 +33,7 @@ import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import useENSSearch from "shared/lib/hooks/useENSSearch";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import {
+  Chains,
   getExplorerName,
   getAssets,
   getExplorerURI,
@@ -52,7 +53,7 @@ import YourPosition from "shared/lib/components/Vault/YourPosition";
 import AirdropButton from "../Airdrop/AirdropButton";
 import AirdropModal from "../Airdrop/AirdropModal";
 import Indicator from "shared/lib/components/Indicator/Indicator";
-import { Chains, useChain } from "shared/lib/hooks/chainContext";
+import { useChain } from "shared/lib/hooks/chainContext";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
