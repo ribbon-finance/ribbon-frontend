@@ -90,7 +90,6 @@ const InfoData = styled(Title)<{ error?: boolean }>`
         color: ${colors.red};
       `;
     }
-
     return ``;
   }}
 `;

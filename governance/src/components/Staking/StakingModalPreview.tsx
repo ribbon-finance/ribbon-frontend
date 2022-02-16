@@ -71,12 +71,12 @@ const StakingModalPreview: React.FC<StakingModalPreviewProps> = ({
       </BaseModalContentColumn>
       <BaseModalContentColumn marginTop={16}>
         <Title fontSize={22} lineHeight={28}>
-          Staking Preview
+          Lock Preview
         </Title>
       </BaseModalContentColumn>
       <BaseModalContentColumn>
         <div className="d-flex w-100 justify-content-between">
-          <SecondaryText lineHeight={24}>Stake Amount</SecondaryText>
+          <SecondaryText lineHeight={24}>Lock Amount</SecondaryText>
           <Subtitle fontSize={14} lineHeight={24} letterSpacing={1}>
             {formatBigNumber(stakingData.amount)} RBN
           </Subtitle>
@@ -106,7 +106,7 @@ const StakingModalPreview: React.FC<StakingModalPreviewProps> = ({
       </BaseModalContentColumn>
       <BaseModalContentColumn marginTop="auto">
         <ActionButton onClick={onConfirm} className="py-3" color={colors.red}>
-          Preview Stake
+          Lock RBN
         </ActionButton>
       </BaseModalContentColumn>
       <BaseModalWarning color={colors.green} className="mb-2">

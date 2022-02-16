@@ -38,7 +38,7 @@ const StakingModalApprove: React.FC<StakingModalApproveProps> = ({
           fontWeight={400}
           className="text-center"
         >
-          Before you continue, Ribbon first needs your permission to stake your
+          Before you continue, Ribbon first needs your permission to lock your
           RBN
         </SecondaryText>
       </BaseModalContentColumn>
@@ -52,7 +52,12 @@ const StakingModalApprove: React.FC<StakingModalApproveProps> = ({
         </BaseUnderlineLink>
       </BaseModalContentColumn>
       <BaseModalContentColumn marginTop={40}>
-        <ActionButton className="py-3" color={colors.red} onClick={onApprove}>
+        <ActionButton
+          className="py-3"
+          color={colors.red}
+          onClick={onApprove}
+          disabled={!data || data.walletBalance.isZero()}
+        >
           APPROVE RBN
         </ActionButton>
       </BaseModalContentColumn>

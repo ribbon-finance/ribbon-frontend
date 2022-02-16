@@ -15,6 +15,12 @@ import {
 import { useWeb3React } from "@web3-react/core";
 
 const barAnimationTime = 500;
+const barRowsNum = 6;
+/**
+ * Ratio denominated as follow
+ * total animation time : delay time
+ */
+const animationDelayRatio = 4;
 
 const FloatingBoxContainer = styled.div`
   display: flex;
@@ -33,7 +39,6 @@ const FloatingBox = styled.div`
   width: 200px;
   height: 240px;
   margin-top: 32px;
-  background: ${colors.background.three};
 `;
 
 const FloatingBoxBar = styled.div<{ color: string }>`
@@ -54,11 +59,13 @@ const ModalTransactionContent: React.FC<ModalTransactionContentProps> = ({
   txhash,
 }) => {
   const { chainId } = useWeb3React();
-  const [activeBarIndex, setActiveBarIndex] = useState<number>(0);
+  const [activeBarIndex, setActiveBarIndex] = useState<number>(
+    barRowsNum * animationDelayRatio - 1
+  );
 
   useEffect(() => {
     const animationInterval = setInterval(() => {
-      setActiveBarIndex((prev) => (prev + 1) % (6 * 4 || prev + 1));
+      setActiveBarIndex((prev) => (prev - 1 < 0 ? 6 * 4 - 1 : prev - 1));
     }, barAnimationTime / 6);
 
     return () => clearInterval(animationInterval);
@@ -67,19 +74,19 @@ const ModalTransactionContent: React.FC<ModalTransactionContentProps> = ({
   const gapToAlpha = useCallback((gap: number) => {
     switch (gap) {
       case 0:
-        return "FF";
+        return "0A";
       case 1:
-        return "A3";
+        return "14";
       case 2:
-        return "7A";
+        return "29";
       case 3:
         return "3D";
       case 4:
-        return "29";
+        return "7A";
       case 5:
-        return "14";
+        return "A3";
       case 6:
-        return "0A";
+        return "FF";
     }
   }, []);
 

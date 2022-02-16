@@ -23,6 +23,7 @@ const DesktopIndicatorContainer = styled.div<{ top?: number }>`
   left: 40px;
   top: calc(${(props) => (props.top ? `${props.top}px` : `50%`)} - 120px);
   height: 240px;
+  z-index: 1000;
 `;
 
 const DesktopIndicatorBar = styled.div<{ active: boolean }>`
@@ -70,6 +71,7 @@ const SnapScrollSection: React.FC<
     scrollX: { bottom: containerBottom },
   } = useElementScroll(containerRef);
   const { scrollHeight: containerScrolleight } = useElementSize(containerRef);
+  const [, setLastWheelEventTime] = useState(0);
 
   const itemRefs = useMemo(
     () =>
@@ -85,7 +87,7 @@ const SnapScrollSection: React.FC<
     timestamp: number;
     event?: "down" | "up";
     executed: boolean;
-  }>({ timestamp: Date.now(), executed: true });
+  }>({ timestamp: 0, executed: true });
 
   /**
    * Scroll to item index
@@ -131,20 +133,31 @@ const SnapScrollSection: React.FC<
    * Handle desktop wheel event
    */
   const handleWheel = useCallback((e: globalThis.WheelEvent) => {
-    setScrollEvent((curr) => {
-      const timeNow = Date.now();
-      /**
-       * Accept a scroll event every 500ms
-       */
-      if (timeNow - 500 <= curr.timestamp || e.deltaY === 0) {
-        return curr;
-      }
+    // Ignore small delta movement
+    if (e.deltaY > -25 && e.deltaY < 25) {
+      console.log(e.deltaY);
+      return;
+    }
 
-      return {
-        timestamp: timeNow,
-        event: e.deltaY > 0 ? "down" : "up",
-        executed: false,
-      };
+    setLastWheelEventTime((_lastWheelEventTime) => {
+      // We make sure the current event are not continuity of the last event fired
+      if (e.timeStamp - _lastWheelEventTime > 50) {
+        setScrollEvent((curr) => {
+          /**
+           * Accept a scroll event every 500ms
+           */
+          if (e.timeStamp - 500 <= curr.timestamp || e.deltaY === 0) {
+            return curr;
+          }
+
+          return {
+            timestamp: e.timeStamp,
+            event: e.deltaY > 0 ? "down" : "up",
+            executed: false,
+          };
+        });
+      }
+      return e.timeStamp;
     });
   }, []);
 
@@ -201,10 +214,10 @@ const SnapScrollSection: React.FC<
     <div
       {...props}
       ref={refPassthrough}
-      className={`d-flex flex-wrap overflow-hidden w-100 position-relative ${
+      className={`d-flex flex-wrap overflow-hidden w-100 position-fixed ${
         className || ""
       }`}
-      style={{ height }}
+      style={{ height, top: 0, left: 0 }}
     >
       {width > sizes.xl ? (
         <DesktopIndicatorContainer

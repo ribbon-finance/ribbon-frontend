@@ -2,9 +2,12 @@ import React, { useMemo } from "react";
 import styled from "styled-components";
 import currency from "currency.js";
 import { Col, Row } from "react-bootstrap";
-import ProgressBar from "shared/lib/components/Deposit/ProgressBar";
-import { useRBNToken } from "shared/lib/hooks/useRBNTokenSubgraph";
+import ReactPlayer from "react-player";
+import { BigNumber } from "ethers";
+import { formatUnits } from "ethers/lib/utils";
 
+import { useRBNToken } from "shared/lib/hooks/useRBNTokenSubgraph";
+import ProgressBar from "shared/lib/components/Deposit/ProgressBar";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import {
   BaseUnderlineLink,
@@ -21,8 +24,6 @@ import useTVL from "shared/lib/hooks/useTVL";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
 import { formatAmount } from "shared/lib/utils/math";
-import { BigNumber } from "ethers";
-import { formatUnits } from "ethers/lib/utils";
 
 const Content = styled(Row)`
   z-index: 1;
@@ -41,43 +42,21 @@ const KPICard = styled.div`
   }
 `;
 
-const FloatingBackgroundContainer = styled.div`
+const FloatingBackgroundContainer = styled.div<{ backgroundColor?: string }>`
   position: absolute;
-  justify-content: space-between;
   display: flex;
-  top: 20%;
-  left: 10%;
-  height: 60%;
-  width: 80%;
-  filter: blur(60px);
-`;
-
-const FloatingBackgroundBar = styled.div<{ index: number }>`
+  align-items: center;
+  justify-content: center;
+  top: 0;
   height: 100%;
-  width: 14%;
-  background: ${colors.red};
-  box-shadow: 2px 4px 40px ${colors.red};
-  opacity: ${(props) => {
-    switch (props.index) {
-      case 0:
-        return 0.08;
-      case 1:
-        return 0.16;
-      case 2:
-        return 0.24;
-      case 3:
-        return 0.4;
-      case 4:
-        return 0.64;
-
-      default:
-        return 1;
-    }
-  }};
+  width: 100vw;
+  overflow: hidden;
+  ${(props) =>
+    props.backgroundColor ? `background: ${props.backgroundColor};` : ""};
 `;
 
 const OverviewKPI = () => {
-  const { width } = useScreenSize();
+  const { width, height } = useScreenSize();
   const { data: rbnToken, loading: rbnTokenAccountLoading } = useRBNToken();
   const { info, loading: assetInfoLoading } = useAssetInfo("RBN");
   const { price: RBNPrice, loading: assetPriceLoading } = useAssetPrice({
@@ -102,6 +81,24 @@ const OverviewKPI = () => {
     }
     return 0;
   }, [info, rbnToken]);
+
+  const [videoWidth, videoHeight] = useMemo(() => {
+    /**
+     * Screen size exactly 16:9
+     */
+    if (width / height === 16 / 9) {
+      return [width, height];
+    }
+
+    /**
+     * If screen are longer than 16:9
+     */
+    if (width / height > 16 / 9) {
+      return [width, width * (9 / 16)];
+    }
+
+    return [height * (16 / 9), height];
+  }, [height, width]);
 
   return (
     <>
@@ -152,7 +149,7 @@ const OverviewKPI = () => {
               Protocol TVL
             </SecondaryText>
             <Title
-              fontSize={18}
+              fontSize={16}
               lineHeight={24}
               letterSpacing={1}
               className="mt-2"
@@ -163,9 +160,9 @@ const OverviewKPI = () => {
           <KPICard>
             <div className="d-flex flex-row align-items-center justify-content-between mb-2">
               <SecondaryText fontSize={12} lineHeight={16}>
-                Total Staked RBN
+                Total Locked RBN
               </SecondaryText>
-              <Title fontSize={18} lineHeight={24} letterSpacing={1}>
+              <Title fontSize={16} lineHeight={24} letterSpacing={1}>
                 {rbnTokenAccountLoading
                   ? loadingText
                   : formatAmount(
@@ -185,7 +182,7 @@ const OverviewKPI = () => {
               <SecondaryText fontSize={12} lineHeight={16}>
                 RBN Floating Supply
               </SecondaryText>
-              <Title fontSize={18} lineHeight={24} letterSpacing={1}>
+              <Title fontSize={16} lineHeight={24} letterSpacing={1}>
                 {assetInfoLoading
                   ? loadingText
                   : formatAmount(info.circulating_supply, true)}
@@ -197,7 +194,7 @@ const OverviewKPI = () => {
               Ribbon Treasury
             </SecondaryText>
             <Title
-              fontSize={18}
+              fontSize={16}
               lineHeight={24}
               letterSpacing={1}
               className="mt-2"
@@ -210,7 +207,7 @@ const OverviewKPI = () => {
               RBN Price
             </SecondaryText>
             <Title
-              fontSize={18}
+              fontSize={16}
               lineHeight={24}
               letterSpacing={1}
               className="mt-2"
@@ -221,10 +218,21 @@ const OverviewKPI = () => {
         </Col>
       </Content>
       <FloatingBackgroundContainer>
-        {[...new Array(6)].map((_item, index) => (
-          <FloatingBackgroundBar key={index} index={index} />
-        ))}
+        <ReactPlayer
+          key="video-player"
+          url="https://storage.googleapis.com/ribbon-bucket/verbn/launch.mp4"
+          playing={true}
+          width={videoWidth}
+          height={videoHeight}
+          style={{
+            minWidth: videoWidth,
+            minHeight: videoHeight,
+          }}
+          muted
+          loop
+        />
       </FloatingBackgroundContainer>
+      <FloatingBackgroundContainer backgroundColor="#FFFFFF0A" />
     </>
   );
 };

@@ -128,9 +128,13 @@ const StakingFAB = () => {
     <>
       <FABContainer>
         <div className="d-flex align-items-center ml-5">
-          <AssetCircleContainer size={48} color={colors.red}>
-            <ThemedLogo theme={colors.red} />
-          </AssetCircleContainer>
+          {veRBNBalance.isZero() ? (
+            <ThemedLogo width={32} theme={colors.red} className="mr-2" />
+          ) : (
+            <AssetCircleContainer size={48} color={colors.red}>
+              <ThemedLogo theme={colors.red} />
+            </AssetCircleContainer>
+          )}
           <div className="d-flex flex-column ml-2">
             <SecondaryText fontSize={10} lineHeight={16}>
               Your veRBN / Voting Power
@@ -147,7 +151,7 @@ const StakingFAB = () => {
         </div>
         <div className="d-flex flex-column justify-content-center ml-auto">
           <SecondaryText fontSize={10} lineHeight={16}>
-            Staked / Locked RBN
+            Locked RBN
           </SecondaryText>
           <Title
             fontSize={14}
@@ -160,7 +164,7 @@ const StakingFAB = () => {
         </div>
         <div className="d-flex flex-column justify-content-center ml-auto">
           <SecondaryText fontSize={10} lineHeight={16}>
-            Unstaked RBN
+            Unlocked RBN
           </SecondaryText>
           <Title
             fontSize={14}
@@ -184,7 +188,7 @@ const StakingFAB = () => {
             }
           >
             <Title fontSize={14} lineHeight={24} color={colors.red}>
-              {stakeMode === "approve" ? "Approve" : "Stake"}
+              LOCK RBN
             </Title>
           </StakingButton>
           <StakingButton
@@ -195,7 +199,7 @@ const StakingFAB = () => {
             }}
           >
             <Title fontSize={14} lineHeight={24} color={colors.text}>
-              Unstake
+              UNLOCK RBN
             </Title>
           </StakingButton>
         </div>

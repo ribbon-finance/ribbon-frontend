@@ -84,6 +84,8 @@ const StakingSummary = () => {
   const { data: rbnTokenAccount, loading: rbnTokenAccountLoading } =
     useRBNTokenAccount();
   const [hoveredDatapointIndex, setHoveredDatapointIndex] = useState<number>();
+  const [hoveredDateStr, setHoveredDateStr] = useState<string>("");
+  const [hoveredDatePosition, setHoveredDatePosition] = useState(0);
 
   const loadingText = useTextAnimation(rbnTokenAccountLoading);
 
@@ -220,11 +222,36 @@ const StakingSummary = () => {
 
   const onHoverChart = useCallback((hoverInfo?: HoverInfo) => {
     if (hoverInfo?.focused) {
+      setHoveredDateStr(moment(hoverInfo.xData).format("ddd, MMMM Do"));
+      setHoveredDatePosition(hoverInfo.xPosition);
       setHoveredDatapointIndex(hoverInfo.index);
     } else {
+      setHoveredDateStr("");
+      setHoveredDatePosition(0);
       setHoveredDatapointIndex(undefined);
     }
   }, []);
+
+  const dateTooltipPosition = useMemo(() => {
+    let _dateTooltipPosition = hoveredDatePosition - 15;
+    if (hoveredDatapointIndex === 0) {
+      _dateTooltipPosition = hoveredDatePosition;
+    } else if (
+      hoveredDatapointIndex &&
+      chartDatapoints &&
+      hoveredDatapointIndex + 1 >
+        chartDatapoints.dataset.length - chartDatapoints.dataset.length * 0.15
+    ) {
+      _dateTooltipPosition =
+        hoveredDatePosition -
+        110 *
+          (1 -
+            (chartDatapoints.dataset.length - (hoveredDatapointIndex + 1)) /
+              (chartDatapoints.dataset.length * 0.15));
+    }
+
+    return _dateTooltipPosition;
+  }, [chartDatapoints, hoveredDatapointIndex, hoveredDatePosition]);
 
   return (
     <div className="d-flex flex-column w-100 mt-5 mb-3">
@@ -290,40 +317,59 @@ const StakingSummary = () => {
         </div>
 
         {/* Graph */}
-        <ChartContainer>
-          <Chart
-            lineDecayAfterPointIndex={chartDatapoints?.currentVeRbnIndex}
-            dataset={chartDatapoints?.dataset || []}
-            labels={chartDatapoints?.labels || []}
-            onHover={onHoverChart}
-            gradientStartColor="transparent"
-            gradientStopColor="transparent"
-            maxGridLines={2}
-          />
-        </ChartContainer>
+        <div className="position-relative pb-4">
+          <ChartContainer>
+            <Chart
+              lineDecayAfterPointIndex={chartDatapoints?.currentVeRbnIndex}
+              dataset={chartDatapoints?.dataset || []}
+              labels={chartDatapoints?.labels || []}
+              onHover={onHoverChart}
+              gradientStartColor="transparent"
+              gradientStopColor="transparent"
+              maxGridLines={0}
+            />
+          </ChartContainer>
+          {hoveredDatapointIndex ? (
+            <SecondaryText
+              fontSize={12}
+              lineHeight={16}
+              className="position-absolute"
+              style={{
+                whiteSpace: "nowrap",
+                left: dateTooltipPosition,
+              }}
+            >
+              {hoveredDateStr}
+            </SecondaryText>
+          ) : undefined}
+        </div>
 
         {/* Stats */}
         <LockupContainer>
           <LockupData>
             <div className="d-flex align-items-center">
-              <SecondaryText>Locked RBN</SecondaryText>
+              <SecondaryText fontSize={12}>Locked RBN</SecondaryText>
               {renderDataTooltip(
                 "Locked RBN",
                 "The amount of RBN locked up in the governance contract. The longer you lock up RBN the more veRBN (voting power) you receive."
               )}
             </div>
-            <Title className="mt-1">{displayLockedRbn}</Title>
+            <Title fontSize={16} className="mt-1">
+              {displayLockedRbn}
+            </Title>
           </LockupData>
 
           <LockupData>
             <div className="d-flex align-items-center">
-              <SecondaryText>Unlocked RBN Balance</SecondaryText>
+              <SecondaryText fontSize={12}>Unlocked RBN Balance</SecondaryText>
               {renderDataTooltip(
                 "Unlocked RBN Balance",
                 "The amount of RBN that has not been locked in the governance contract."
               )}
             </div>
-            <Title className="mt-1">{displayUnstakedRbn}</Title>
+            <Title fontSize={16} className="mt-1">
+              {displayUnstakedRbn}
+            </Title>
           </LockupData>
         </LockupContainer>
       </SummaryContainer>

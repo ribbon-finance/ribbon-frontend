@@ -10,7 +10,7 @@ import {
 import Logo from "shared/lib/assets/icons/logo";
 import { useNFTDropData } from "../../hooks/nftDataContext";
 import { useNFTDropGlobalState } from "../../store/store";
-import DesktopNFTFrameAnimatingBar from "./DesktopNFTFrameAnimatingBar";
+import BackgroundAnimatingBar from "shared/lib/components/Common/BackgroundAnimatingBar";
 
 const Frame = styled.div<{ width: number; height: number }>`
   display: flex;
@@ -124,7 +124,7 @@ const NFTFrame: React.FC<NFTFrameProps> = ({
         />
       </Frame>
       {nftDropData.colorway !== undefined && (
-        <DesktopNFTFrameAnimatingBar
+        <BackgroundAnimatingBar
           color={getThemeColorFromColorway(nftDropData.colorway)}
           height={(height * 6) / 11}
           width={animatingWidth}

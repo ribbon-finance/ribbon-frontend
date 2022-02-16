@@ -15,7 +15,7 @@ const unstakingModalModes = ["preview", "transaction"] as const;
 type UnstakingModalMode = typeof unstakingModalModes[number];
 
 const stakingModalHeight: { [mode in UnstakingModalMode]: number } = {
-  preview: 350,
+  preview: 428,
   transaction: 412,
 };
 
@@ -82,7 +82,7 @@ const UnstakingModal = () => {
       case "transaction":
         return (
           <ModalTransactionContent
-            title="UNSTAKING RBN"
+            title="UNLOCKING RBN"
             txhash={unstakingModalState.pendingTransaction?.hash}
           />
         );
