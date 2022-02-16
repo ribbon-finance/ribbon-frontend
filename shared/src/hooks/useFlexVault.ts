@@ -53,7 +53,7 @@ export const useFlexVault = (): FlexVaultData => {
 
       clearInterval(setVault);
     };
-  }, []);
+  }, [flexVault]);
 
   // FLEX VAULT HANDLER
   useEffect(() => {

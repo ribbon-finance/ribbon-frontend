@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import { providers } from "ethers";
 import React, {
   ReactElement,
@@ -101,7 +100,14 @@ export const PendingTransactionsContextProvider: React.FC<{
         if (isSolanaChain(chain)) update();
       }
     }, []);
-  }, [pendingTransactions, ethereumProvider, setPendingTransactions]);
+  }, [
+    chain,
+    connection,
+    update,
+    pendingTransactions,
+    ethereumProvider,
+    setPendingTransactions,
+  ]);
 
   return (
     <PendingTransactionsContext.Provider

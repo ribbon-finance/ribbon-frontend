@@ -80,7 +80,7 @@ const useFetchSolVaultData = (): SolanaVaultData => {
     };
 
     doMulticall();
-  }, [vault, client, connection]);
+  }, [publicKey, vault, client, connection]);
 
   return data || defaultSolanaVaultData;
 };

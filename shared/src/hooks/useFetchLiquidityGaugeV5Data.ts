@@ -9,7 +9,7 @@ import {
 import { impersonateAddress } from "../utils/development";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { useWeb3Context } from "./web3Context";
-import { CHAINID, isProduction } from "../utils/env";
+import { isProduction } from "../utils/env";
 import {
   isEthNetwork,
   RibbonTokenAddress,
