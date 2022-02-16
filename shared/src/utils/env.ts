@@ -51,7 +51,6 @@ export const NODE_URI: Record<number, string> = {
   [CHAINID.AURORA_MAINNET]: "https://testnet.aurora.dev/",
 };
 
-// TODO: Don't hardcode to devnet
 export const getSolanaClusterURI: () => string = () =>
   isDevelopment()
     ? process.env.REACT_APP_SOLANA_TESTNET_URI ||

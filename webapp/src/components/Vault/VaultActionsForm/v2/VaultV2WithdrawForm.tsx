@@ -135,7 +135,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
     const currentRef =
       withdrawOptionRefs[
         vaultActionForm.withdrawOption! === "complete"
-          ? "stamdard"
+          ? "standard"
           : vaultActionForm.withdrawOption!
       ]?.current;
 
@@ -182,7 +182,11 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
           return (
             <TooltipExplanation
               title="INSTANT WITHDRAWAL"
-              explanation="Instant withdrawals are for funds that have been deposited but not yet deployed in the vault’s weekly strategy. Because these funds haven’t been deployed they can be withdrawn immediately."
+              explanation={
+                vaultOption === "rSOL-THETA"
+                  ? "Instant withdrawals are currently disabled on the SOL vault. However, it is currently in the process of being implemented by the Zeta team and will be available in the near future."
+                  : "Instant withdrawals are for funds that have been deposited but not yet deployed in the vault’s weekly strategy. Because these funds haven’t been deployed they can be withdrawn immediately."
+              }
               renderContent={({ ref, ...triggerHandler }) => (
                 <HelpInfo
                   containerRef={ref}
@@ -229,7 +233,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
           );
       }
     },
-    []
+    [vaultOption]
   );
 
   const renderErrorText = useCallback((_error: VaultValidationErrors) => {
@@ -439,8 +443,10 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
               <WithdrawTypeSegmentControlText
                 active={active}
                 disabled={
-                  withdrawOption !== "instant" &&
-                  !withdrawMetadata.allowStandardWithdraw
+                  vaultOption === "rSOL-THETA" && withdrawOption !== "standard"
+                    ? true
+                    : withdrawOption !== "instant" &&
+                      !withdrawMetadata.allowStandardWithdraw
                 }
               >
                 {withdrawOption}{" "}
