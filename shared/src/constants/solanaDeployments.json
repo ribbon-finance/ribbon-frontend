@@ -1,0 +1,16 @@
+{
+  "devnet": {
+    "flex": "zFLEX6CVSPJgCwnYPYWSJFzYAC3RbP7vSoc75R88P6C",
+    "vault": "RBN2XNc6JQU6ewFp9TyPq6WznsvNuumzSJkor1nJFcz",
+    "vaults": {
+      "rSOL-THETA": "2YNj4egax5WV1zSgq9hwJFNzHSYZo2rU7S8BZuMdQMKW"
+    }
+  },
+  "mainnet": {
+    "flex": "zFLEX6CVSPJgCwnYPYWSJFzYAC3RbP7vSoc75R88P6C",
+    "vault": "RBN2XNc6JQU6ewFp9TyPq6WznsvNuumzSJkor1nJFcz",
+    "vaults": {
+      "rSOL-THETA": "2YNj4egax5WV1zSgq9hwJFNzHSYZo2rU7S8BZuMdQMKW"
+    }
+  }
+}

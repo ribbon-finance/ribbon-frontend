@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { useWeb3Wallet } from "../../../../hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { parseUnits } from "@ethersproject/units";
 import { useLocation } from "react-router-dom";
 
@@ -442,6 +442,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     ) {
       return (
         <BaseLink
+          className="mt-4"
           to={AVAX_BRIDGE_URI}
           target="_blank"
           rel="noreferrer noopener"

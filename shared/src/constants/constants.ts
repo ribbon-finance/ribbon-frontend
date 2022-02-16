@@ -9,7 +9,9 @@ import {
   isDevelopment,
   isProduction,
   isTreasury,
+  getSolanaAddresses,
 } from "../utils/env";
+import { PublicKey } from "@solana/web3.js";
 import v1deployment from "./v1Deployments.json";
 import v2deployment from "./v2Deployments.json";
 import governanceDeployment from "./governanceDeployment.json";
@@ -76,7 +78,7 @@ export const getVaultNetwork = (vault: string): MAINNET_NAMES => {
   else throw new Error(`Unknown network for ${vault}`);
 };
 
-export const NATIVE_TOKENS = ["WETH", "WAVAX"];
+export const NATIVE_TOKENS = ["WETH", "WAVAX", "SOL"];
 export const isNativeToken = (token: string): boolean =>
   NATIVE_TOKENS.includes(token);
 
@@ -84,7 +86,7 @@ export const VaultVersionList = ["v2", "v1"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">;
 
-export const RetailVaultList = [
+export const EVMVaultList = [
   "rETH-THETA",
   "ryvUSDC-ETH-P-THETA",
   "rstETH-THETA",
@@ -95,12 +97,19 @@ export const RetailVaultList = [
   "rAURORA-THETA",
   "rNEAR-THETA",
   "rUSDC-ETH-P-THETA",
-  "rSOL-THETA",
 ] as const;
+
+export const SolanaVaultList = ["rSOL-THETA"] as const;
+
+export const RetailVaultList = [...EVMVaultList, ...SolanaVaultList];
 
 export const TreasuryVaultList = ["rPERP-TSRY"] as const;
 
-const AllVaultOptions = [...RetailVaultList, ...TreasuryVaultList];
+const AllVaultOptions = [
+  ...EVMVaultList,
+  ...TreasuryVaultList,
+  ...SolanaVaultList,
+];
 
 export type VaultOptions = typeof AllVaultOptions[number];
 const ProdExcludeVault: VaultOptions[] = [
@@ -114,6 +123,19 @@ const PutThetaVault: VaultOptions[] = [
   "ryvUSDC-ETH-P-THETA",
   "rUSDC-AVAX-P-THETA",
 ];
+
+export const SolanaAssets = ["SOL"];
+
+export const isSolanaVault = (vaultOption: VaultOptions) => {
+  const list = SolanaVaultList as unknown;
+  return (list as string[]).includes(vaultOption);
+};
+
+export const isSolanaAsset = (asset: Assets) => SolanaAssets.includes(asset);
+
+export const StakingVaultList = EVMVaultList;
+
+export type StakingVaultOptions = typeof StakingVaultList[number];
 
 // @ts-ignore
 export const VaultList: VaultOptions[] = isTreasury()
@@ -808,3 +830,48 @@ export const LiquidityTokenMinterAddress = isDevelopment()
 export const LiquidityGaugeControllerAddress = isDevelopment()
   ? governanceDeployment.kovan.RBNVotingGaugeController
   : governanceDeployment.mainnet.RBNVotingGaugeController;
+
+export enum Chains {
+  NotSelected,
+  Ethereum,
+  Avalanche,
+  Solana,
+}
+
+export const READABLE_CHAIN_NAMES: Record<Chains, string> = {
+  [Chains.Ethereum]: "Ethereum",
+  [Chains.Avalanche]: "Avalanche",
+  [Chains.Solana]: "Solana",
+  [Chains.NotSelected]: "No Chain Selected",
+};
+
+export const ENABLED_CHAINS: Chains[] = isProduction()
+  ? [Chains.Ethereum, Chains.Avalanche]
+  : [Chains.Ethereum, Chains.Avalanche, Chains.Solana];
+
+export const CHAINS_TO_NATIVE_TOKENS: Record<Chains, Assets> = {
+  [Chains.Ethereum]: "WETH",
+  [Chains.Avalanche]: "WAVAX",
+  [Chains.Solana]: "SOL",
+  [Chains.NotSelected]: "WETH",
+};
+
+export const CHAINS_TO_ID: Record<number, number> = {
+  [Chains.Ethereum]: isDevelopment() ? CHAINID.ETH_KOVAN : CHAINID.ETH_MAINNET,
+  [Chains.Avalanche]: isDevelopment()
+    ? CHAINID.AVAX_FUJI
+    : CHAINID.AVAX_MAINNET,
+};
+
+export const ID_TO_CHAINS: Record<number, number> = {
+  [CHAINID.ETH_KOVAN]: Chains.Ethereum,
+  [CHAINID.ETH_MAINNET]: Chains.Ethereum,
+  [CHAINID.AVAX_FUJI]: Chains.Avalanche,
+  [CHAINID.AVAX_MAINNET]: Chains.Avalanche,
+};
+
+export const getSolanaVaultInstance = (vaultOption: VaultOptions) => {
+  const vaults = getSolanaAddresses().vaults as { [key: string]: string };
+  if (vaults[vaultOption]) return new PublicKey(vaults[vaultOption]);
+  throw new Error(`No solana vault ${vaultOption}`);
+};

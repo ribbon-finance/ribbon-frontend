@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Chains,
   VaultList,
   VaultOptions,
   VaultVersion,
@@ -85,13 +86,15 @@ export type VaultsDisplayVersionProps = {
   ) => void;
 };
 
-export const FilterAssets: Assets[] = [
-  "AAVE",
-  "WAVAX",
-  "WETH",
-  "USDC",
-  "WBTC",
-  "stETH",
-  "yvUSDC",
-  "SOL",
-];
+export const getFilterAssets = (chain: Chains): Assets[] => {
+  switch (chain) {
+    case Chains.Ethereum:
+      return ["AAVE", "WETH", "USDC", "WBTC", "stETH", "yvUSDC"];
+    case Chains.Avalanche:
+      return ["WAVAX"];
+    case Chains.Solana:
+      return ["SOL"];
+  }
+
+  return [];
+};

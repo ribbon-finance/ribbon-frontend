@@ -1,6 +1,6 @@
 import React, { ReactNode, useMemo } from "react";
 import { ethers } from "ethers";
-import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
 
@@ -27,7 +27,11 @@ import {
 import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
+import {
+  getAssetDecimals,
+  getAssetLogo,
+  getChainByVaultOption,
+} from "shared/lib/utils/asset";
 import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
@@ -178,7 +182,6 @@ const DepositPage = () => {
 
   const { vaultOption, vaultVersion } = useVaultOption();
   const { chainId } = useWeb3Wallet();
-  useRedirectOnSwitchChain(chainId);
   useRedirectOnWrongChain(vaultOption, chainId);
 
   usePullUp();
@@ -190,6 +193,7 @@ const DepositPage = () => {
     data: { asset, cap, decimals, totalBalance },
     loading,
   } = useV2VaultData(vaultOption || VaultList[0]);
+  useRedirectOnSwitchChain(getChainByVaultOption(vaultOption as VaultOptions));
   const isLoading = status === "loading" || loading;
   const activities = useVaultActivity(vaultOption!, vaultVersion);
   const premiumDecimals = getAssetDecimals("USDC");

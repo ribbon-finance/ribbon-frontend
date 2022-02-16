@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { useWeb3Wallet } from "../../../../hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { BigNumber } from "ethers";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer";
@@ -21,6 +21,7 @@ import {
   getAssetDecimals,
   getAssetDisplay,
   getAssetLogo,
+  getChainByAsset,
 } from "shared/lib/utils/asset";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import {
@@ -37,6 +38,7 @@ import { formatBigNumber } from "shared/lib/utils/math";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
 import { ACTIONS } from "../Modal/types";
+import { useChain } from "shared/lib/hooks/chainContext";
 
 const DepositAssetButton = styled.div`
   position: absolute;
@@ -156,6 +158,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
     vaultActionForm,
   } = useVaultActionForm(vaultOption);
   const { active } = useWeb3Wallet();
+  const [chain] = useChain();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showDepositAssetMenu, setShowDepositAssetMenu] = useState(false);
 
@@ -323,12 +326,12 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
   );
 
   const renderButton = useCallback(() => {
-    if (active) {
+    if (active && getChainByAsset(asset) === chain) {
       return (
         <ActionButton
           disabled={Boolean(error) || !isInputNonZero}
           onClick={onFormSubmit}
-          className={`mt-4 py-3 mb-4`}
+          className={`mt-4 py-3 mb-0`}
           color={color}
         >
           {actionButtonText}
@@ -340,13 +343,15 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
       <ConnectWalletButton
         onClick={() => setShowConnectModal(true)}
         type="button"
-        className="btn mt-4 py-3 mb-4"
+        className="btn mt-4 mb-0 py-3"
       >
         Connect Wallet
       </ConnectWalletButton>
     );
   }, [
     active,
+    asset,
+    chain,
     actionButtonText,
     color,
     error,

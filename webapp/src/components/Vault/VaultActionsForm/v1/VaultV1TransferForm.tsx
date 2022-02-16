@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
 import { BigNumber } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
-import { useWeb3Wallet } from "../../../../hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 
 import {
   getAssetDecimals,

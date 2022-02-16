@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { Frame } from "framer";
-import { useWeb3Wallet } from "webapp/lib/hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { BigNumber } from "ethers";
 
 import colors from "shared/lib/designSystem/colors";
@@ -139,7 +139,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
     const currentRef =
       withdrawOptionRefs[
         vaultActionForm.withdrawOption! === "complete"
-          ? "stamdard"
+          ? "standard"
           : vaultActionForm.withdrawOption!
       ]?.current;
 

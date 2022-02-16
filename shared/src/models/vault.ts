@@ -1,5 +1,6 @@
 import { BigNumber } from "ethers";
 import {
+  SolanaVaultList,
   VaultList,
   VaultOptions,
   VaultVersion,
@@ -204,6 +205,15 @@ export type V2VaultDataResponse = UnconnectedV2VaultData & ConnectedV2VaultData;
 export type V2VaultDataResponses = {
   [vault in VaultOptions]: V2VaultDataResponse;
 };
+type SolanaVaultOptions = typeof SolanaVaultList[number];
+
+export type SolanaVaultDataResponses = {
+  [vault in SolanaVaultOptions]: V2VaultDataResponse;
+};
+export type SolanaVaultData = {
+  responses: SolanaVaultDataResponses;
+  loading: boolean;
+};
 
 export type V2VaultData = {
   responses: V2VaultDataResponses;
@@ -228,6 +238,27 @@ export const defaultV2VaultData: V2VaultData = {
       },
     ])
   ) as V2VaultDataResponses,
+  loading: true,
+};
+
+export const defaultSolanaVaultData: SolanaVaultData = {
+  responses: Object.fromEntries(
+    SolanaVaultList.map((vault) => [
+      vault as SolanaVaultOptions,
+      {
+        totalBalance: BigNumber.from(0),
+        cap: BigNumber.from(0),
+        pricePerShare: BigNumber.from(0),
+        round: 1,
+        lockedBalanceInAsset: BigNumber.from(0),
+        depositBalanceInAsset: BigNumber.from(0),
+        withdrawals: {
+          shares: BigNumber.from(0),
+          round: 1,
+        },
+      },
+    ])
+  ) as SolanaVaultDataResponses,
   loading: true,
 };
 

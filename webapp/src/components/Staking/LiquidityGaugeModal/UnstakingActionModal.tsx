@@ -9,7 +9,7 @@ import {
   getEtherscanURI,
   VaultOptions,
 } from "shared/lib/constants/constants";
-import { useWeb3Wallet } from "../../../hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { LiquidityGaugeV5PoolResponse } from "shared/lib/models/staking";
 import {
   BaseInput,

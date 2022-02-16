@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
 import {
   getAssets,
   getDisplayAssets,
@@ -30,12 +29,16 @@ import {
   VaultSortByList,
   VaultStrategy,
 } from "./types";
+import useWeb3Wallet from "../../hooks/useWeb3Wallet";
+import { getChainByVaultOption } from "../../utils/asset";
+import { useChain } from "../../hooks/chainContext";
 
 const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
   variant,
   onVaultPress,
 }) => {
-  const { chainId } = useWeb3React();
+  const [chain] = useChain();
+  const { chainId } = useWeb3Wallet();
   const { width } = useScreenSize();
   const [filterStrategies, setFilterStrategies] = useState<VaultStrategy[]>([]);
   const [filterAssets, setFilterAssets] = useState<Assets[]>([]);
@@ -107,7 +110,10 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
 
   const filteredProducts = useMemo(() => {
     const filteredList = VaultList.filter((vault) => {
-      if (chainId && VaultAddressMap[vault].chainId !== chainId) {
+      if (
+        getChainByVaultOption(vault) !== chain ||
+        (chainId && VaultAddressMap[vault].chainId !== chainId)
+      ) {
         return false;
       }
 
@@ -164,6 +170,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
 
     return filteredList;
   }, [
+    chain,
     chainId,
     filterAssets,
     filterStrategies,

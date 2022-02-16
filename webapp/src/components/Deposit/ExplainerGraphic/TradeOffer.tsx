@@ -9,7 +9,7 @@ import { Assets } from "shared/lib/store/types";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import { MoneyLogo } from "../../../assets/icons/vaultExplainer/tradeOffer";
 import sizes from "shared/lib/designSystem/sizes";
-import { GnosisLogo } from "shared/lib/assets/icons/defiApp";
+import { GnosisLogo, FlexLogo } from "shared/lib/assets/icons/defiApp";
 import { WETHLogo } from "shared/lib/assets/icons/erc20Assets";
 
 const TargetContainer = styled.div`
@@ -44,6 +44,12 @@ const ColoredLogo = styled(Logo)<{ color: string }>`
 `;
 
 const ColoredGnosisLogo = styled(GnosisLogo)<{ color: string }>`
+  g {
+    fill: ${(props) => props.color};
+  }
+`;
+
+const ColoredZetaFlexLogo = styled(FlexLogo)<{ color: string }>`
   g {
     fill: ${(props) => props.color};
   }
@@ -200,6 +206,16 @@ const ColoredWETHLogo = styled(WETHLogo)<{ color: string }>`
   }
 `;
 
+const StyledTitle = styled(Title)<{
+  color: string;
+  fontSize: number;
+}>`
+  color: ${(props) => props.color};
+  font-size: ${(props) => props.fontSize};
+  width: 90px;
+  text-align: center;
+`;
+
 type OfferTokenType = "oToken" | "money" | Assets;
 
 interface TradeTunnelProps {
@@ -217,7 +233,6 @@ const TradeTunnel: React.FC<TradeTunnelProps> = ({
 }) => {
   const ref = useRef(null);
   const { height, width } = useElementSize(ref);
-
   const token = useMemo(() => {
     switch (tradeToken) {
       case "oToken":
@@ -248,11 +263,11 @@ const TradeTunnel: React.FC<TradeTunnelProps> = ({
               }}
             />
           );
-        }
-        if (tradeToken === "WETH") {
+        } else if (tradeToken === "SOL") {
+          return <AssetLogo />;
+        } else {
           return <AssetLogo height="100%" width="100%" />;
         }
-        return <AssetLogo height="100%" width="100%" />;
     }
   }, [color, height, tradeToken]);
 
@@ -316,15 +331,19 @@ const TradeOffer: React.FC<TradeOfferProps> = ({
             color={color}
           />
         );
+      case "zeta flex":
+        return (
+          <ColoredZetaFlexLogo
+            width={`${height * 0.75 * 0.23}px`}
+            height={`${height * 0.75 * 0.23}px`}
+            color={"red"}
+          />
+        );
       default:
         return (
-          <Title
-            color={color}
-            fontSize={height * 0.75 * 0.1}
-            lineHeight={height * 0.75 * 0.1 * 1.2}
-          >
+          <StyledTitle color={color} fontSize={height * 0.75 * 0.1}>
             {party}
-          </Title>
+          </StyledTitle>
         );
     }
   };

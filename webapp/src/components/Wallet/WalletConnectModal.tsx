@@ -14,7 +14,7 @@ import BasicModal from "shared/lib/components/Common/BasicModal";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import ConnectWalletBody from "./ConnectWalletBody";
 import ConnectChainBody from "./ConnectChainBody";
-import { useChain } from "../../hooks/chainContext";
+import { useChain } from "shared/lib/hooks/chainContext";
 import {
   EthereumWallet,
   SolanaWallet,
@@ -22,9 +22,9 @@ import {
   SOLANA_WALLETS,
   Wallet,
 } from "../../models/wallets";
-import { Chains, ENABLED_CHAINS } from "../../constants/constants";
+import { Chains, ENABLED_CHAINS } from "shared/lib/constants/constants";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
-import useWeb3Wallet from "../../hooks/useWeb3Wallet";
+import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 
 const LearnMoreLink = styled(BaseLink)`
   display: flex;
@@ -48,7 +48,7 @@ const LearnMoreText = styled(BaseText)`
 type ConnectSteps = "chain" | "wallet";
 
 const WalletConnectModal: React.FC = () => {
-  const { activate } = useWeb3Wallet();
+  const { activate, connectingWallet } = useWeb3Wallet();
   const [chain] = useChain();
   const [show, setShow] = useConnectWalletModal();
   const [selectedStep, setStep] = useState<ConnectSteps>("chain");
@@ -58,29 +58,7 @@ const WalletConnectModal: React.FC = () => {
 
   // We use these states to preset the state before sending to setChain when clicking the Next button
   const [selectedWallet, setWallet] = useState<Wallet>();
-  const [selectedChain, setWalletChain] = useState<Chains>(chain);
-
-  useEffect(() => {
-    setWalletChain(chain);
-  }, [chain]);
-
-  // We update wallets when there is a change of chains
-  useEffect(() => {
-    setWalletChain(selectedChain);
-    switch (selectedChain) {
-      case Chains.Ethereum:
-      case Chains.Avalanche:
-        setWalletList(ETHEREUM_WALLETS);
-        break;
-      case Chains.Solana:
-        setWalletList(SOLANA_WALLETS);
-        break;
-      case Chains.NotSelected:
-      default:
-        setWalletList([]);
-        break;
-    }
-  }, [selectedChain]);
+  const [selectedChain, setChain] = useState<Chains>(chain);
 
   const onClose = useCallback(() => {
     setStep("chain");
@@ -91,16 +69,39 @@ const WalletConnectModal: React.FC = () => {
     setStep(updatedStep);
   }, []);
 
+  // On initialize, set list of wallets based on connected chain
+  useEffect(() => {
+    setChain(chain);
+    onClose();
+  }, [chain, onClose]);
+
+  // We update wallets when there is a change of chains
+  useEffect(() => {
+    setChain(selectedChain);
+    switch (selectedChain) {
+      case Chains.Ethereum:
+      case Chains.Avalanche:
+        setWalletList(ETHEREUM_WALLETS);
+        break;
+      case Chains.Solana:
+        setWalletList(SOLANA_WALLETS);
+        break;
+      default:
+        setWalletList([]);
+        break;
+    }
+  }, [selectedChain]);
+
   const onActivate = async () => {
-    try {
-      await activate(
-        selectedWallet as EthereumWallet | SolanaWallet,
-        selectedChain
-      ).then(() => {
-        onClose();
-      });
-    } catch (error) {
-      console.error(error);
+    if (selectedWallet && selectedChain) {
+      try {
+        await activate(
+          selectedWallet as EthereumWallet | SolanaWallet,
+          selectedChain
+        );
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -143,11 +144,12 @@ const WalletConnectModal: React.FC = () => {
           <ConnectChainBody
             currentChain={selectedChain}
             onClose={onClose}
-            onSelectChain={setWalletChain}
+            onSelectChain={setChain}
           ></ConnectChainBody>
         ) : (
           <ConnectWalletBody
             wallets={walletList}
+            connectingWallet={connectingWallet}
             selectedWallet={selectedWallet}
             onBack={() => setStep("chain")}
             onSelectWallet={setWallet}

@@ -5,11 +5,20 @@ import { VaultOptions } from "../../constants/constants";
 import colors from "../../designSystem/colors";
 import TooltipExplanation from "../Common/TooltipExplanation";
 
-const HighlighText = styled.span`
+const HighlightedText = styled.span`
   color: ${colors.primaryText};
   cursor: help;
 
   poin &:hover {
+    color: ${colors.primaryText}CC;
+  }
+`;
+
+const Link = styled.a`
+  color: ${colors.primaryText};
+  text-decoration: underline;
+
+  &:hover {
     color: ${colors.primaryText}CC;
   }
 `;
@@ -25,6 +34,41 @@ interface ProductCopies {
     explanation: React.ReactNode;
   };
 }
+
+export const vaultAudit = (vaultOption: VaultOptions) => {
+  if (vaultOption === "rSOL-THETA") {
+    return (
+      <>
+        The Flex Vault smart contracts are pending audit and so should be
+        considered as beta software. Users are advised to exercise caution and
+        only risk funds they can afford to lose.{" "}
+      </>
+    );
+  } else {
+    return (
+      <>
+        The Theta Vault smart contracts have been{" "}
+        <Link
+          href="https://blog.openzeppelin.com/ribbon-finance-audit/"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          audited by OpenZeppelin
+        </Link>{" "}
+        and{" "}
+        <Link
+          href="https://github.com/ribbon-finance/audit/blob/master/reports/RibbonThetaVault%20V2%20Smart%20Contract%20Review%20And%20Verification.pdf"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          ChainSafe
+        </Link>
+        . Despite that, users are advised to exercise caution and only risk
+        funds they can afford to lose.
+      </>
+    );
+  }
+};
 
 export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
   "rETH-THETA": {
@@ -42,9 +86,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
           learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               covered call
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         strategy. The vault reinvests the yield earned back into the strategy,
@@ -61,9 +105,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="An ETH call option is in-the-money (ITM) if the strike price is below the market price of ETH."
           learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               in-the-money
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         (meaning the price of ETH is above the strike price of the call options
@@ -98,9 +142,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
           learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               covered call
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         strategy. The vault reinvests the yield earned back into the strategy,
@@ -117,9 +161,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="An WBTC call option is in-the-money (ITM) if the strike price is below the market price of WBTC."
           learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               in-the-money
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         (meaning the price of WBTC is above the strike price of the call options
@@ -154,9 +198,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
           learnMoreURL="https://www.investopedia.com/terms/p/putoption.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               put-selling
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         strategy, where the put options are collateralized by USDC. The vault
@@ -174,9 +218,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="An ETH put option is in-the-money (ITM) if the strike price is above the market price of ETH."
           learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               in-the-money
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         (meaning the price of ETH is below the strike price of the put options
@@ -212,9 +256,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
           learnMoreURL="https://www.investopedia.com/terms/p/putoption.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               put-selling
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         strategy, where the put options are collateralized by{" "}
@@ -223,9 +267,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="yvUSDC is the deposit token that represents a user's share of the USDC yVault."
           learnMoreURL="https://docs.yearn.finance/getting-started/products/yvaults/vault-tokens"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               yvUSDC
-            </HighlighText>
+            </HighlightedText>
           )}
         />
         . The vault reinvests the yield it earns back into the strategy,
@@ -242,9 +286,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="An ETH put option is in-the-money (ITM) if the strike price is above the market price of ETH."
           learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               in-the-money
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         (meaning the price of ETH is below the strike price of the put options
@@ -280,9 +324,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
           learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               covered call
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         strategy where it stakes its ETH deposits in{" "}
@@ -291,9 +335,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="Lido empowers stakers to put their staked assets to use. "
           learnMoreURL="https://lido.fi"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               Lido
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         and then uses its{" "}
@@ -302,9 +346,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="stETH is the deposit token that represents a user's share of the their ETH on the Ethereum beacon chain."
           learnMoreURL="https://lido.fi/ethereum"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               stETH
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         to collateralize weekly out-of-money ETH call options. The yield earned
@@ -323,9 +367,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="An ETH call option is in-the-money (ITM) if the strike price is below the market price of ETH."
           learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               in-the-money
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         (meaning the price of ETH is above the strike price of the call options
@@ -360,9 +404,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
           learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               covered call
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         strategy. The vault reinvests the yield earned back into the strategy,
@@ -379,9 +423,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="An AAVE call option is in-the-money (ITM) if the strike price is below the market price of AAVE."
           learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               in-the-money
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         (meaning the price of AAVE is above the strike price of the call options
@@ -416,9 +460,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
           learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               covered call
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         strategy. The vault reinvests the yield earned back into the strategy,
@@ -435,9 +479,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="An AVAX call option is in-the-money (ITM) if the strike price is below the market price of AVAX."
           learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               in-the-money
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         (meaning the price of AVAX is above the strike price of the call options
@@ -472,9 +516,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
           learnMoreURL="https://www.investopedia.com/terms/p/putoption.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               put-selling
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         strategy, where the put options are collateralized by USDC.
@@ -490,9 +534,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="An AVAX put option is in-the-money (ITM) if the strike price is above the market price of AVAX."
           learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               in-the-money
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         (meaning the price of AVAX is below the strike price of the put options
@@ -530,9 +574,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="An PERP call option is in-the-money (ITM) if the strike price is below the market price of PERP."
           learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               in-the-money
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         (meaning the price of PERP is above the strike price of the call options
@@ -551,16 +595,16 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     tags: ["COVERED CALL"],
     strategy: (
       <>
-        The vault earns yield on its WBTC deposits by running a weekly automated
-        WBTC{" "}
+        The vault earns yield on its SOL deposits by running a weekly automated
+        SOL{" "}
         <TooltipExplanation
           title="COVERED CALL"
           explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
           learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               covered call
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         strategy. The vault reinvests the yield earned back into the strategy,
@@ -574,12 +618,12 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         the vault expire{" "}
         <TooltipExplanation
           title="IN-THE-MONEY"
-          explanation="An SOL call option is in-the-money (ITM) if the strike price is below the market price of SOL."
+          explanation="A SOL call option is in-the-money (ITM) if the strike price is below the market price of SOL."
           learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               in-the-money
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         (meaning the price of SOL is above the strike price of the call options
@@ -614,9 +658,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
           learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               covered call
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         strategy. The vault reinvests the yield earned back into the strategy,
@@ -633,9 +677,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="An WNEAR call option is in-the-money (ITM) if the strike price is below the market price of WNEAR."
           learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               in-the-money
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         (meaning the price of WNEAR is above the strike price of the call
@@ -669,9 +713,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
           learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               covered call
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         strategy. The vault reinvests the yield earned back into the strategy,
@@ -688,9 +732,9 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
           explanation="An AURORA call option is in-the-money (ITM) if the strike price is below the market price of AURORA."
           learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
           renderContent={({ ref, ...triggerHandler }) => (
-            <HighlighText ref={ref} {...triggerHandler}>
+            <HighlightedText ref={ref} {...triggerHandler}>
               in-the-money
-            </HighlighText>
+            </HighlightedText>
           )}
         />{" "}
         (meaning the price of AURORA is above the strike price of the call

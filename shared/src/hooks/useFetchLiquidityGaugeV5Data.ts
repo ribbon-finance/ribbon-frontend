@@ -9,8 +9,9 @@ import {
 import { impersonateAddress } from "../utils/development";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { useWeb3Context } from "./web3Context";
-import { CHAINID, isProduction } from "../utils/env";
+import { isProduction } from "../utils/env";
 import {
+  isEthNetwork,
   RibbonTokenAddress,
   VaultLiquidityMiningMap,
   VaultOptions,
@@ -36,7 +37,12 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   const [, setMulticallCounter] = useState(0);
 
   const doMulticall = useCallback(async () => {
-    if (!chainId || !minterContract || !gaugeControllerContract) {
+    if (
+      !chainId ||
+      !isEthNetwork(chainId) ||
+      !minterContract ||
+      !gaugeControllerContract
+    ) {
       return;
     }
 
@@ -54,10 +60,6 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
     });
 
     // TODO: Make this chain agnostic, for now we only enable when user connected to ETH
-    if (chainId !== CHAINID.ETH_MAINNET && chainId !== CHAINID.ETH_KOVAN) {
-      return;
-    }
-
     const minterResponsePromises = Promise.all([
       minterContract.rate(),
       gaugeControllerContract.time_total(),

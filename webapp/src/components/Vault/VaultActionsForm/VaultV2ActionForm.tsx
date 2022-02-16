@@ -236,7 +236,10 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
           );
           break;
         case ACTIONS.withdraw:
-          if (!isPracticallyZero(depositBalanceInAsset, decimals)) {
+          if (
+            !isPracticallyZero(depositBalanceInAsset, decimals) &&
+            vaultActionForm.vaultOption !== "rSOL-THETA"
+          ) {
             formExtraText =
               vaultActionForm.withdrawOption === "instant" ? (
                 <>
@@ -314,8 +317,6 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
   return (
     <>
       <FormContainer>{content}</FormContainer>
-
-      {/* Extra */}
       {formExtra}
     </>
   );

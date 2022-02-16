@@ -9,7 +9,7 @@ import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContext";
 import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContext";
 import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTransactionsContext";
 import { ExternalAPIDataContextProvider } from "shared/lib/hooks/externalAPIDataContext";
-import { ChainContextProvider } from "webapp/lib/hooks/chainContext";
+import { ChainContextProvider } from "shared/lib/hooks/chainContext";
 
 function App() {
   useEffect(() => {

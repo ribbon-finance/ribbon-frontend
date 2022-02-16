@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useWeb3Wallet } from "../../../../hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { BaseUnderlineLink, PrimaryText } from "shared/lib/designSystem";
 import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import {

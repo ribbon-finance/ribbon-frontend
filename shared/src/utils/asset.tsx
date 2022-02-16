@@ -14,6 +14,7 @@ import {
 } from "../assets/icons/erc20Assets";
 import Logo from "../assets/icons/logo";
 import { SolanaLogo } from "../assets/icons/solAssets";
+import { Chains, VaultOptions } from "../constants/constants";
 import colors from "../designSystem/colors";
 import { Assets, Wallets } from "../store/types";
 
@@ -25,6 +26,41 @@ export const isYieldAsset = (asset: Assets): boolean => {
       return true;
     default:
       return false;
+  }
+};
+
+export const getChainByAsset = (asset: Assets): Chains => {
+  switch (asset) {
+    case "SOL":
+      return Chains.Solana;
+    case "WAVAX":
+      return Chains.Avalanche;
+    default:
+      return Chains.Ethereum;
+  }
+};
+
+export const getChainByVaultOption = (vault: VaultOptions): Chains => {
+  switch (vault) {
+    case "rETH-THETA":
+    case "ryvUSDC-ETH-P-THETA":
+    case "rUSDC-ETH-P-THETA":
+    case "rstETH-THETA":
+    case "rBTC-THETA":
+    case "rAAVE-THETA":
+      return Chains.Ethereum;
+
+    case "rAVAX-THETA":
+    case "rUSDC-AVAX-P-THETA":
+      return Chains.Avalanche;
+
+    case "rSOL-THETA":
+      return Chains.Solana;
+
+    case "rAURORA-THETA":
+    case "rNEAR-THETA":
+    default:
+      return Chains.NotSelected;
   }
 };
 
@@ -48,6 +84,8 @@ export const getAssetDecimals = (asset: Assets): number => {
     case "USDC":
     case "yvUSDC":
       return 6;
+    case "SOL":
+      return 9;
     default:
       return 18;
   }

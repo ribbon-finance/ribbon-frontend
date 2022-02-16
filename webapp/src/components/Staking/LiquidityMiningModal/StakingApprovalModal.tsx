@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { useWeb3Wallet } from "../../../hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled from "styled-components";
 
 import {
@@ -12,7 +12,7 @@ import {
   BLOCKCHAIN_EXPLORER_NAME,
   getEtherscanURI,
   VaultLiquidityMiningMap,
-  VaultOptions,
+  StakingVaultOptions,
 } from "shared/lib/constants/constants";
 import StakingApprovalModalInfo from "./StakingApprovalModalInfo";
 import TrafficLight from "shared/lib/components/Common/TrafficLight";
@@ -39,7 +39,7 @@ interface StakingApprovalModalProps {
   show: boolean;
   onClose: () => void;
   stakingPoolData: LiquidityMiningPoolResponse;
-  vaultOption: VaultOptions;
+  vaultOption: StakingVaultOptions;
 }
 
 const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({

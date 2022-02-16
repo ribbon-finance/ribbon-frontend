@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
-import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import {
   EthereumWallet,
   SolanaWallet,
@@ -132,10 +131,15 @@ const ConnectWalletBody: React.FC<{
   onSelectWallet: (wallet: Wallet) => void;
   onBack: () => void;
   selectedWallet: Wallet | undefined;
+  connectingWallet: Wallet | undefined;
   wallets: Wallet[];
-}> = ({ onSelectWallet, onBack, selectedWallet, wallets }) => {
-  const { connectingWallet } = useWeb3Wallet();
-
+}> = ({
+  onSelectWallet,
+  onBack,
+  selectedWallet,
+  connectingWallet,
+  wallets,
+}) => {
   const getWalletStatus = useCallback(
     (wallet: Wallet): ConnectorButtonStatus => {
       if (selectedWallet === wallet) {
@@ -203,7 +207,6 @@ const WalletButton: React.FC<WalletButtonProps> = ({
   );
 
   const title = WALLET_TITLES[wallet];
-
   const walletColors = {
     [EthereumWallet.Metamask]: colors.wallets.Metamask,
     [EthereumWallet.WalletConnect]: colors.wallets.WalletConnect,

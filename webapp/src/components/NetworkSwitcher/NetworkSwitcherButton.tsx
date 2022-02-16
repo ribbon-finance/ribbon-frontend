@@ -3,8 +3,11 @@ import styled from "styled-components";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { getAssetLogo } from "shared/lib/utils/asset";
-import { Chains, CHAINS_TO_NATIVE_TOKENS } from "../../constants/constants";
-import { useChain } from "../../hooks/chainContext";
+import {
+  Chains,
+  CHAINS_TO_NATIVE_TOKENS,
+} from "shared/lib/constants/constants";
+import { useChain } from "shared/lib/hooks/chainContext";
 import WalletConnectModal from "../Wallet/WalletConnectModal";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 

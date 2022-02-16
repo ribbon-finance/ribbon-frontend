@@ -1,4 +1,4 @@
-import { useWeb3React } from "@web3-react/core";
+import { providers } from "ethers";
 import React, {
   ReactElement,
   useCallback,
@@ -9,6 +9,11 @@ import React, {
 
 import { useGlobalState } from "../store/store";
 import { PendingTransaction } from "../store/types";
+import { isEVMChain, isSolanaChain } from "../utils/chains";
+import { useChain } from "./chainContext";
+import useWeb3Wallet from "./useWeb3Wallet";
+import { useConnection } from "@solana/wallet-adapter-react";
+import { useFlexVault } from "./useFlexVault";
 
 export type PendingTransactionsContextType = {
   pendingTransactions: PendingTransaction[];
@@ -45,7 +50,10 @@ export const PendingTransactionsContextProvider: React.FC<{
     "pendingTransactions"
   );
   const [transactionsCounter, setTransactionsCounter] = useState(0);
-  const { library } = useWeb3React();
+  const { ethereumProvider } = useWeb3Wallet();
+  const [chain] = useChain();
+  const { update } = useFlexVault();
+  const { connection } = useConnection();
 
   /**
    * Keep track with first confirmation
@@ -53,7 +61,27 @@ export const PendingTransactionsContextProvider: React.FC<{
   useEffect(() => {
     pendingTransactions.forEach(async (transaction) => {
       if (!transaction.status) {
-        const receipt = await library.waitForTransaction(transaction.txhash, 5);
+        let receipt: any;
+
+        if (isEVMChain(chain)) {
+          receipt = await (
+            ethereumProvider as providers.Web3Provider
+          ).waitForTransaction(transaction.txhash, 5);
+        } else if (isSolanaChain(chain)) {
+          receipt = await connection.confirmTransaction(
+            transaction.txhash,
+            "confirmed"
+          );
+        }
+
+        const getTransactionStatus = () => {
+          if (isEVMChain(chain)) {
+            return receipt.status ? "success" : "error";
+          } else if (isSolanaChain(chain)) {
+            return receipt.value.err ? "error" : "success";
+          }
+        };
+
         setTransactionsCounter((counter) => counter + 1);
         setPendingTransactions((pendingTransactions) =>
           pendingTransactions.map((_transaction) => {
@@ -64,13 +92,22 @@ export const PendingTransactionsContextProvider: React.FC<{
             return {
               ..._transaction,
               firstConfirmation: true,
-              status: receipt.status ? "success" : "error",
+              status: getTransactionStatus(),
             };
           })
         );
+
+        if (isSolanaChain(chain)) update();
       }
     }, []);
-  }, [pendingTransactions, library, setPendingTransactions]);
+  }, [
+    chain,
+    connection,
+    update,
+    pendingTransactions,
+    ethereumProvider,
+    setPendingTransactions,
+  ]);
 
   return (
     <PendingTransactionsContext.Provider

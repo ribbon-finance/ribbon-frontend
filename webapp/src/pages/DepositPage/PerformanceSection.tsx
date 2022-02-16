@@ -2,7 +2,10 @@ import React, { useCallback } from "react";
 import styled from "styled-components";
 
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
-import { productCopies } from "shared/lib/components/Product/productCopies";
+import {
+  productCopies,
+  vaultAudit,
+} from "shared/lib/components/Product/productCopies";
 import {
   getAssets,
   VaultOptions,
@@ -245,24 +248,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           {productCopies[vaultOption].vaultRisk}
           <br />
           <br />
-          The Theta Vault smart contracts have been{" "}
-          <Link
-            href="https://blog.openzeppelin.com/ribbon-finance-audit/"
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            audited by OpenZeppelin
-          </Link>{" "}
-          and{" "}
-          <Link
-            href="https://github.com/ribbon-finance/audit/blob/master/reports/RibbonThetaVault%20V2%20Smart%20Contract%20Review%20And%20Verification.pdf"
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            ChainSafe
-          </Link>
-          . Despite that, users are advised to exercise caution and only risk
-          funds they can afford to lose.
+          {vaultAudit(vaultOption)}
         </ParagraphText>
 
         <PrimaryText className="d-block mt-3">

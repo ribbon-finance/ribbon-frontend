@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { formatUnits } from "@ethersproject/units";
-import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 
 import {
   BaseIndicator,
@@ -13,7 +13,7 @@ import {
   getAssets,
   getDisplayAssets,
   VaultLiquidityMiningMap,
-  VaultOptions,
+  StakingVaultOptions,
 } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
@@ -151,7 +151,7 @@ const StakingPoolCardFooterButton = styled(Title)<{
 `;
 
 interface StakingPoolProps {
-  vaultOption: VaultOptions;
+  vaultOption: StakingVaultOptions;
 }
 
 const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
@@ -493,8 +493,8 @@ const LiquidityMiningPools = () => {
       <Title fontSize={18} lineHeight={24} className="mb-4 w-100">
         STAKING POOLS
       </Title>
-      {Object.keys(VaultLiquidityMiningMap.lm).map((option) => (
-        <StakingPool key={option} vaultOption={option as VaultOptions} />
+      {Object.keys(VaultLiquidityMiningMap).map((option) => (
+        <StakingPool key={option} vaultOption={option as StakingVaultOptions} />
       ))}
     </StakingPoolsContainer>
   );

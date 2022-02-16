@@ -3,7 +3,10 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber, Event } from "ethers";
 import moment from "moment";
 
-import { VaultLiquidityMiningMap, VaultList } from "../constants/constants";
+import {
+  VaultLiquidityMiningMap,
+  StakingVaultList,
+} from "../constants/constants";
 import { impersonateAddress } from "../utils/development";
 import { useWeb3Context } from "./web3Context";
 import { isProduction } from "../utils/env";
@@ -47,7 +50,7 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
     });
 
     const responses = await Promise.all(
-      VaultList.map(async (vault) => {
+      StakingVaultList.map(async (vault) => {
         const tokenContract = getERC20Token(
           library || provider,
           getERC20TokenNameFromVault(vault, "v1"),

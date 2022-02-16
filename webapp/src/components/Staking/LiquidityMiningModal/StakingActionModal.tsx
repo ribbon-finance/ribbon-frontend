@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useWeb3Wallet } from "../../../hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled from "styled-components";
 import { formatUnits, parseUnits } from "@ethersproject/units";
 import { BigNumber } from "@ethersproject/bignumber";
@@ -9,7 +9,7 @@ import {
   BLOCKCHAIN_EXPLORER_NAME,
   getAssets,
   getEtherscanURI,
-  VaultOptions,
+  StakingVaultOptions,
 } from "shared/lib/constants/constants";
 import {
   BaseInput,
@@ -111,7 +111,7 @@ interface StakingActionModalProps {
   show: boolean;
   onClose: () => void;
   logo: React.ReactNode;
-  vaultOption: VaultOptions;
+  vaultOption: StakingVaultOptions;
   stakingPoolData: LiquidityMiningPoolResponse;
 }
 

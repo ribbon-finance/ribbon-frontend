@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { useWeb3Wallet } from "./useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { BigNumber } from "@ethersproject/bignumber";
 
 import { AirdropBreakDownType } from "../models/airdrop";

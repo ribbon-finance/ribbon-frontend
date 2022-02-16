@@ -9,6 +9,7 @@ import AAVEGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuctio
 import AVAXGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/AVAX_Gnosis_Auction.json";
 import NEARGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/NEAR_Gnosis_Auction.json";
 import AURORAGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/AURORA_Gnosis_Auction.json";
+import SOLFLEXAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/SOL_FLEX_Auction.json";
 import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 
 interface GnosisAuctionProps {
@@ -36,6 +37,8 @@ const GnosisAuction: React.FC<GnosisAuctionProps> = ({ vaultOption }) => {
             return NEARGnosisAuction;
           case "AURORA":
             return AURORAGnosisAuction;
+          case "SOL":
+            return SOLFLEXAuction;
         }
     }
   }, [vaultOption]);

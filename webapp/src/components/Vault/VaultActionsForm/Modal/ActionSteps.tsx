@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
-import { useWeb3Wallet } from "../../../../hooks/useWeb3Wallet";
-
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { ACTIONS, Steps, STEPS } from "./types";
 import useVault from "shared/lib/hooks/useVault";
 import PreviewStep from "./PreviewStep";
@@ -16,6 +15,7 @@ import {
   LidoCurvePoolAddress,
   VaultAllowedDepositAssets,
   CurveSwapSlippage,
+  getSolanaVaultInstance,
 } from "shared/lib/constants/constants";
 import { isETHVault } from "shared/lib/utils/vault";
 import { amountAfterSlippage } from "shared/lib/utils/math";
@@ -27,8 +27,10 @@ import useV2Vault from "shared/lib/hooks/useV2Vault";
 import WarningStep from "./WarningStep";
 import { getCurvePool } from "shared/lib/hooks/useCurvePool";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
+import { useFlexVault } from "shared/lib/hooks/useFlexVault";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { getAssetDecimals } from "shared/lib/utils/asset";
+import * as anchor from "@project-serum/anchor";
 
 export interface ActionStepsProps {
   vault: {
@@ -51,6 +53,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   skipToPreview = false,
 }) => {
   const { ethereumProvider } = useWeb3Wallet();
+  const { client } = useFlexVault();
   const { vaultActionForm, resetActionForm, withdrawMetadata } =
     useVaultActionForm(vaultOption);
   const { data: priceHistories } = useVaultsPriceHistory();
@@ -216,6 +219,18 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                   ? vault.depositETH({ value: amountStr })
                   : vault.depositYieldToken(amountStr));
                 break;
+
+              case "rSOL-THETA":
+                if (client) {
+                  const txhash = await client.depositVault(
+                    getSolanaVaultInstance(vaultOption),
+                    new anchor.BN(amountStr)
+                  );
+
+                  res = { hash: txhash };
+                }
+                break;
+
               default:
                 res = await (isNativeToken(asset)
                   ? vault.depositETH({ value: amountStr })
@@ -243,6 +258,54 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                   /** Instant withdraw for V2 */
                   case "instant":
                     switch (vaultActionForm.vaultOption) {
+                      case "rSOL-THETA":
+                        return;
+                      // if (client) {
+                      //   const depositNodes = await getUserWithdrawQueueNodes(
+                      //     flexVault as vaultTypes.Vault,
+                      //     publicKey as PublicKey
+                      //   );
+
+                      //   const userUnderlyingTokenAddress =
+                      //     await utils.getAssociatedTokenAddress(
+                      //       flexVault?.underlyingMint as PublicKey,
+                      //       publicKey as PublicKey
+                      //     );
+
+                      //   let tx = new Transaction();
+
+                      //   await client.removeQueuedDeposit(
+                      //     (flexVault as vaultTypes.Vault)
+                      //       .address as PublicKey,
+                      //     depositNodes[0]
+                      //   );
+
+                      //   depositNodes.forEach((node) => {
+                      //     tx.add(
+                      //       vaultInstructions.removeQueuedDepositIx(
+                      //         publicKey as PublicKey,
+                      //         userUnderlyingTokenAddress,
+                      //         flexVault as vaultTypes.Vault,
+                      //         node,
+                      //         []
+                      //       )
+                      //     );
+                      //   });
+
+                      //   const provider = new anchor.Provider(
+                      //     connection,
+                      //     anchorWallet as AnchorWallet,
+                      //     utils.defaultCommitment()
+                      //   );
+
+                      //   const txhash = await utils.processTransaction(
+                      //     Program.VAULT,
+                      //     provider,
+                      //     tx
+                      //   );
+
+                      //   res = { hash: txhash || tx.recentBlockhash };
+                      // }
                       case "rstETH-THETA":
                         /**
                          * Default slippage of 0.3%
@@ -271,10 +334,23 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
                   /** Initiate withdrawal for v2 */
                   case "standard":
-                    shares = amount
-                      .mul(BigNumber.from(10).pow(decimals))
-                      .div(pricePerShare);
-                    res = await vault.initiateWithdraw(shares);
+                    switch (vaultActionForm.vaultOption) {
+                      case "rSOL-THETA":
+                        if (client) {
+                          const txhash = await client.withdrawVault(
+                            getSolanaVaultInstance(vaultOption),
+                            new anchor.BN(amountStr)
+                          );
+
+                          res = { hash: txhash };
+                        }
+                        break;
+                      default:
+                        shares = amount
+                          .mul(BigNumber.from(10).pow(decimals))
+                          .div(pricePerShare);
+                        res = await vault.initiateWithdraw(shares);
+                    }
                     break;
                   case "complete":
                     switch (vaultActionForm.vaultOption) {

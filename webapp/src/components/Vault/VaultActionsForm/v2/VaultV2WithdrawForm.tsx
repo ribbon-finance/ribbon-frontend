@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { Frame } from "framer";
-import { useWeb3Wallet } from "../../../../hooks/useWeb3Wallet";
+import { Frame, TargetAndTransition } from "framer";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { BigNumber } from "ethers";
 
 import colors from "shared/lib/designSystem/colors";
@@ -127,16 +127,15 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
   const { active } = useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
 
-  const [activeBackgroundState, setActiveBackgroundState] = useState<
-    object | boolean
-  >(false);
+  const [activeBackgroundState, setActiveBackgroundState] =
+    useState<TargetAndTransition>();
   const isInputNonZero = parseFloat(vaultActionForm.inputAmount) > 0;
 
   useEffect(() => {
     const currentRef =
       withdrawOptionRefs[
         vaultActionForm.withdrawOption! === "complete"
-          ? "stamdard"
+          ? "standard"
           : vaultActionForm.withdrawOption!
       ]?.current;
 
@@ -183,7 +182,11 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
           return (
             <TooltipExplanation
               title="INSTANT WITHDRAWAL"
-              explanation="Instant withdrawals are for funds that have been deposited but not yet deployed in the vault’s weekly strategy. Because these funds haven’t been deployed they can be withdrawn immediately."
+              explanation={
+                vaultOption === "rSOL-THETA"
+                  ? "Instant withdrawals are currently disabled on the SOL vault. However, it is currently in the process of being implemented by the Zeta team and will be available in the near future."
+                  : "Instant withdrawals are for funds that have been deposited but not yet deployed in the vault’s weekly strategy. Because these funds haven’t been deployed they can be withdrawn immediately."
+              }
               renderContent={({ ref, ...triggerHandler }) => (
                 <HelpInfo
                   containerRef={ref}
@@ -230,7 +233,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
           );
       }
     },
-    []
+    [vaultOption]
   );
 
   const renderErrorText = useCallback((_error: VaultValidationErrors) => {
@@ -342,7 +345,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
           onClick={() => {
             onFormSubmit();
           }}
-          className="mt-4 py-3"
+          className="mt-4 py-3 mb-0"
           color={color}
         >
           {vaultActionForm.withdrawOption! === "instant"
@@ -356,7 +359,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
       <ConnectWalletButton
         onClick={() => setShowConnectModal(true)}
         type="button"
-        className="mt-4 btn py-3 mb-4"
+        className="mt-4 btn py-3 mb-0"
       >
         Connect Wallet
       </ConnectWalletButton>
@@ -414,8 +417,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
             ease: "easeOut",
           }}
           initial={{
-            height: 0,
-            width: 0,
+            height: "100%",
           }}
           animate={activeBackgroundState}
         />
@@ -441,8 +443,10 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
               <WithdrawTypeSegmentControlText
                 active={active}
                 disabled={
-                  withdrawOption !== "instant" &&
-                  !withdrawMetadata.allowStandardWithdraw
+                  vaultOption === "rSOL-THETA" && withdrawOption !== "standard"
+                    ? true
+                    : withdrawOption !== "instant" &&
+                      !withdrawMetadata.allowStandardWithdraw
                 }
               >
                 {withdrawOption}{" "}

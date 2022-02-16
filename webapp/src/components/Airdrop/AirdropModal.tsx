@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { useWeb3Wallet } from "../../hooks/useWeb3Wallet";
+import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import AirdropInfo from "./AirdropInfo";

@@ -2,13 +2,23 @@ import { useCallback, useEffect, useState } from "react";
 import { BigNumber } from "ethers";
 
 import { Assets, AssetsList } from "../store/types";
-import { useWeb3React } from "@web3-react/core";
 import { impersonateAddress } from "../utils/development";
-import { isNativeToken } from "../constants/constants";
+import { Chains, isNativeToken } from "../constants/constants";
 import { ERC20Token } from "../models/eth";
 import { getERC20Token } from "./useERC20Token";
 import { isProduction } from "../utils/env";
 import { usePendingTransactions } from "./pendingTransactionsContext";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
+import useWeb3Wallet from "./useWeb3Wallet";
+import { isEVMChain, isSolanaChain } from "../utils/chains";
+import { useChain } from "./chainContext";
+import { getChainByAsset } from "../utils/asset";
+
+interface AssetBalance {
+  asset: Assets;
+  balance: BigNumber | undefined;
+}
 
 export type UserAssetBalanceResponses = { [asset in Assets]: BigNumber };
 export type UserAssetBalanceData = {
@@ -34,50 +44,110 @@ const useFetchAssetBalanceData = (
   const [data, setData] = useState<UserAssetBalanceData>(
     defaultUserAssetBalanceData
   );
-  const { library, chainId, active, account: web3Account } = useWeb3React();
+  const {
+    ethereumProvider,
+    chainId,
+    active,
+    account: web3Account,
+  } = useWeb3Wallet();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
+  const { connection } = useConnection();
+  const { publicKey } = useWallet();
+  const [chain] = useChain();
 
   const doMulticall = useCallback(async () => {
     if (!isProduction()) {
       console.time("Asset Balance Data Fetch");
     }
 
-    if (!active || !chainId) {
+    if (!active) {
       setData({ ...defaultUserAssetBalanceData, loading: false });
       return;
     }
 
-    const responses = await Promise.all(
+    const responses: Array<AssetBalance> = await Promise.all(
       AssetsList.map(async (asset) => {
-        const token = getERC20Token(
-          library,
-          asset.toLowerCase() as ERC20Token,
-          chainId
-        );
-        if (!token) {
-          return { asset, balance: undefined };
+        const defaultResponse = {
+          asset,
+          balance: undefined,
+        };
+
+        switch (getChainByAsset(asset)) {
+          /**
+           * EVM Chain
+           */
+          case Chains.Ethereum:
+          case Chains.Avalanche:
+            /**
+             * Return default response if it is not eth chain
+             */
+            if (isEVMChain(chain) && ethereumProvider) {
+              const token = getERC20Token(
+                ethereumProvider,
+                asset.toLowerCase() as ERC20Token,
+                chainId as number
+              );
+              if (token) {
+                const balance = await (isNativeToken(asset)
+                  ? ethereumProvider.getBalance(account!)
+                  : token.balanceOf(account!));
+                return { asset, balance };
+              }
+            }
+
+            return defaultResponse;
+
+          /**
+           * Solana Chain
+           */
+          case Chains.Solana:
+            if (isSolanaChain(chain)) {
+              if (isNativeToken(asset)) {
+                // FIXME: Token balance should query based on address of Solana-based tokens
+                // const tokenBalance = await connection.getTokenAccountBalance(new PublicKey("So11111111111111111111111111111111111111112"));
+                const tokenBalance = await connection.getBalance(
+                  publicKey as PublicKey
+                );
+                return {
+                  asset,
+                  balance: BigNumber.from(tokenBalance),
+                };
+              }
+            }
+
+            return defaultResponse;
         }
 
-        const balance = await (isNativeToken(asset)
-          ? library.getBalance(account!)
-          : token.balanceOf(account!));
-
-        return { asset, balance };
+        return defaultResponse;
       })
     );
 
-    setData({
+    setData((prevData) => ({
       data: Object.fromEntries(
-        responses.map((response) => [response.asset, response.balance])
+        responses.map(({ asset, balance }) => [
+          asset,
+          /**
+           * We fall back to previous value if balance is undefined
+           */
+          balance || prevData.data[asset],
+        ])
       ) as UserAssetBalanceResponses,
       loading: false,
-    });
+    }));
 
     if (!isProduction()) {
       console.timeEnd("Asset Balance Data Fetch");
     }
-  }, [account, active, chainId, library]);
+  }, [
+    account,
+    active,
+    chain,
+    chainId,
+    ethereumProvider,
+    connection,
+    publicKey,
+  ]);
 
   /**
    * Fetch on first load and transaction success

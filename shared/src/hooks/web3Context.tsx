@@ -8,13 +8,10 @@ export type Web3ContextData = {
   provider: BaseProvider;
 };
 
-// TODO: Fix this in the future
-// Right now we just default to ETH mainnet for the unconnected wallet state
-// This means that we do not show the AVAX vault's details on the app
-const defaultProvider = ethers.getDefaultProvider(
+const defaultProvider = new ethers.providers.StaticJsonRpcProvider(
   NODE_URI[isDevelopment() ? CHAINID.ETH_KOVAN : CHAINID.ETH_MAINNET]
 );
-const avaxProvider = ethers.getDefaultProvider(
+const avaxProvider = new ethers.providers.StaticJsonRpcProvider(
   NODE_URI[isDevelopment() ? CHAINID.AVAX_FUJI : CHAINID.AVAX_MAINNET]
 );
 const auroraProvider = ethers.getDefaultProvider(

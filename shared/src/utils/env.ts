@@ -1,3 +1,6 @@
+import { Network } from "@zetamarkets/flex-sdk";
+import SolanaDeployments from "../constants/solanaDeployments.json";
+
 export enum CHAINID {
   ETH_MAINNET = 1,
   ETH_KOVAN = 42,
@@ -47,6 +50,19 @@ export const NODE_URI: Record<number, string> = {
   [CHAINID.AURORA_MAINNET]: process.env.REACT_APP_AURORA_URI || "",
   [CHAINID.AURORA_MAINNET]: "https://testnet.aurora.dev/",
 };
+
+export const getSolanaClusterURI: () => string = () =>
+  isDevelopment()
+    ? process.env.REACT_APP_SOLANA_TESTNET_URI ||
+      "https://api.devnet.solana.com"
+    : process.env.REACT_APP_SOLANA_MAINNET_URI ||
+      "https://solana-api.projectserum.com";
+
+export const getSolanaAddresses = () =>
+  isDevelopment() ? SolanaDeployments.devnet : SolanaDeployments.mainnet;
+
+export const getSolanaNetwork = () =>
+  isDevelopment() ? Network.DEVNET : Network.MAINNET;
 
 export const getSubgraphqlURI = () =>
   (isDevelopment()
