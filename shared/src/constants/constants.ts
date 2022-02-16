@@ -896,21 +896,3 @@ const TREASURY_SUBGRAPHS: [VaultVersion, Chains][] = [["v2", Chains.Ethereum]];
 export const SUBGRAPHS_TO_QUERY: [VaultVersion, Chains][] = isTreasury()
   ? TREASURY_SUBGRAPHS
   : WEBAPP_SUBGRAPHS;
-
-// export const SUBGRAPHS_TO_QUERY: [VaultVersion, CHAINID][] = isDevelopment()
-//   ? !isTreasury()
-//     ? [
-//         ["v1", CHAINID.ETH_KOVAN],
-//         ["v2", CHAINID.ETH_KOVAN],
-//         ["v2", CHAINID.AVAX_FUJI],
-//         ["v2", CHAINID.AURORA_MAINNET],
-//       ]
-//     : [["v2", CHAINID.ETH_KOVAN]]
-//   : !isTreasury()
-//   ? [
-//       ["v1", CHAINID.ETH_MAINNET],
-//       ["v2", CHAINID.ETH_MAINNET],
-//       ["v2", CHAINID.AVAX_MAINNET],
-//       ["v2", CHAINID.AURORA_MAINNET],
-//     ]
-//   : [["v2", CHAINID.ETH_MAINNET]];
