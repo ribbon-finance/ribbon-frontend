@@ -98,7 +98,7 @@ export const PendingTransactionsContextProvider: React.FC<{
           })
         );
 
-        if(isSolanaChain(chain)) update();
+        if (isSolanaChain(chain)) update();
       }
     }, []);
   }, [pendingTransactions, ethereumProvider, setPendingTransactions]);
