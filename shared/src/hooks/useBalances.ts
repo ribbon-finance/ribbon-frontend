@@ -9,7 +9,7 @@ export const balancesGraphql = (account: string, chain: Chains) => `
   balanceUpdates(
     ${
       chain === Chains.Solana
-        ? `where:{account:{_in:"${account}"}}`
+        ? `where:{account:{_eq:"${account}"}}`
         : `where:{account:"${account}"}`
     },
     ${

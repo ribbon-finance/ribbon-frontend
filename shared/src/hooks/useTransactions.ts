@@ -9,7 +9,7 @@ export const transactionsGraphql = (account: string, chain: Chains) => `
   vaultTransactions(
     ${
       chain === Chains.Solana
-        ? `where:{address:{_in:"${account}"}}`
+        ? `where:{address:{_eq:"${account}"}}`
         : `where:{address:"${account}"}`
     },
     ${
