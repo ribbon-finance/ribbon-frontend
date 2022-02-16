@@ -493,7 +493,7 @@ const LiquidityMiningPools = () => {
       <Title fontSize={18} lineHeight={24} className="mb-4 w-100">
         STAKING POOLS
       </Title>
-      {Object.keys(VaultLiquidityMiningMap).map((option) => (
+      {Object.keys(VaultLiquidityMiningMap.lm).map((option) => (
         <StakingPool key={option} vaultOption={option as StakingVaultOptions} />
       ))}
     </StakingPoolsContainer>
