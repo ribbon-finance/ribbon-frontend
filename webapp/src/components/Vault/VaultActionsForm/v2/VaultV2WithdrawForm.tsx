@@ -336,6 +336,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
 
     return <></>;
   }, [
+    vaultOption,
     asset,
     assetDisplay,
     depositBalanceInAsset,

@@ -179,7 +179,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           );
       }
     },
-    []
+    [vaultOption]
   );
 
   return (
