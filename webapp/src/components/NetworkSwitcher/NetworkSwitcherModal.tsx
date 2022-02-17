@@ -64,7 +64,6 @@ const AssetCircle = styled(BaseIndicator)<{
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 5px 5px;
 `;
 
 const NetworkSwitcherModal: React.FC<NetworkSwitcherModalProps> = ({
@@ -109,6 +108,7 @@ const NetworkSwitcherModal: React.FC<NetworkSwitcherModalProps> = ({
           const Logo = getAssetLogo(CHAINID_TO_NATIVE_TOKENS[chainId]);
           const color = getAssetColor(CHAINID_TO_NATIVE_TOKENS[chainId]);
           const active = currentChainId === chainId;
+          const logoSize = 40;
 
           return (
             <NetworkContainer
@@ -119,7 +119,11 @@ const NetworkSwitcherModal: React.FC<NetworkSwitcherModalProps> = ({
             >
               <NetworkNameContainer>
                 <AssetCircle size={40} color={`${color}1F`}>
-                  <Logo height={28} width={28}></Logo>
+                  <Logo
+                    style={{ padding: 0 }}
+                    height={logoSize}
+                    width={logoSize}
+                  ></Logo>
                 </AssetCircle>
                 <NetworkName>{READABLE_NETWORK_NAMES[chainId]}</NetworkName>
               </NetworkNameContainer>

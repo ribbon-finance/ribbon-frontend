@@ -21,7 +21,7 @@ const LightBar = styled.div<{
   width: 100%;
   background: ${(props) =>
     props.active ? colors.products[props.product] : "#FFFFFF0A"};
-  box-shadow: 8px 16px 80px
+  box-shadow: 0px 0px 70px
     ${(props) => (props.active ? colors.products[props.product] : "none")};
   border-radius: 2px;
   ${(props) =>

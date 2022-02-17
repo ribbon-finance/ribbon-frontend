@@ -34,7 +34,7 @@ const NetworkSwitcherButton = () => {
   const desktopMenuRef = useRef(null);
   const [chain] = useChain();
   const [, setShowModal] = useConnectWalletModal();
-
+  const logoSize = 40;
   const Logo =
     chain !== Chains.NotSelected
       ? getAssetLogo(CHAINS_TO_NATIVE_TOKENS[chain])
@@ -44,7 +44,11 @@ const NetworkSwitcherButton = () => {
     <div className="d-flex position-relative" ref={desktopMenuRef}>
       {chain !== Chains.NotSelected && (
         <ButtonContainer role="button" onClick={() => setShowModal(true)}>
-          <Logo height={32} width={32}></Logo>
+          <Logo
+            style={{ padding: 0 }}
+            height={logoSize}
+            width={logoSize}
+          ></Logo>
         </ButtonContainer>
       )}
 
