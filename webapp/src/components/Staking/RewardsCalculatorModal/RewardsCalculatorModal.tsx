@@ -16,7 +16,6 @@ import {
   lockupPeriodToDays,
 } from "shared/lib/models/lockupPeriod";
 import colors from "shared/lib/designSystem/colors";
-import ModalContentExtra from "shared/lib/components/Common/ModalContentExtra";
 import {
   getAssets,
   VaultLiquidityMiningMap,
@@ -56,7 +55,7 @@ const CalculationContainer = styled.div`
 const CalculationColumn = styled.div`
   display: flex;
   width: 100%;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   align-items: center;
   justify-content: space-between;
 
@@ -71,7 +70,7 @@ const Subcalculations = styled.div`
 `;
 
 const SubcalculationColumn = styled(CalculationColumn)`
-  margin-bottom: 0;
+  margin-bottom: 4px;
 `;
 
 const ContainerWithTooltip = styled.div`
@@ -338,7 +337,7 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
   }, [lg5Data, decimals]);
 
   return (
-    <ModalContainer show={show} headerBackground height={508} onClose={onClose}>
+    <ModalContainer show={show} headerBackground height={532} onClose={onClose}>
       <>
         <ModalColumn marginTop={8}>
           <Title style={{ zIndex: 1 }}>REWARDS CALCULATOR</Title>
@@ -424,14 +423,23 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
                 }}
                 dropdownMenuConfig={{
                   horizontalOrientation: "right",
-                  topBuffer: 16,
+                  topBuffer: 8,
+                  backgroundColor: colors.background.three,
+                }}
+                menuItemConfig={{
+                  firstItemPaddingTop: "8px",
+                  lastItemPaddingBottom: "8px",
+                }}
+                menuItemTextConfig={{
+                  fontSize: 12,
+                  lineHeight: 16,
                 }}
                 className="flex-grow-1"
               />
             </SmallerInputContainer>
           </div>
         </ModalColumn>
-        <ModalContentExtra style={{ backgroundColor: colors.background.two }}>
+        <ModalColumn marginTop={32}>
           <CalculationContainer>
             <CalculationColumn>
               <SecondaryText
@@ -502,7 +510,7 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
               <CalculationData>{displayRewards.rewardsBooster}</CalculationData>
             </CalculationColumn>
           </CalculationContainer>
-        </ModalContentExtra>
+        </ModalColumn>
       </>
     </ModalContainer>
   );
