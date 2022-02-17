@@ -23,6 +23,18 @@ interface FilterDropdownButtonConfig {
 interface FilterDropdownMenuConfig {
   horizontalOrientation?: "left" | "right";
   topBuffer: number;
+  backgroundColor?: string;
+}
+
+interface MenuItemConfig {
+  firstItemPaddingTop?: string;
+  lastItemPaddingBottom?: string;
+  padding?: string;
+}
+
+interface MenuItemTextConfig {
+  fontSize?: number;
+  lineHeight?: number;
 }
 
 const Filter = styled.div`
@@ -90,7 +102,9 @@ const FilterDropdownMenu = styled(motion.div)<{
             }
           })()}
           width: fit-content;
-          background-color: ${colors.background.two};
+          background-color: ${
+            props.config.backgroundColor || colors.background.two
+          };
           border-radius: ${theme.border.radius};
         `
       : `
@@ -98,19 +112,20 @@ const FilterDropdownMenu = styled(motion.div)<{
         `}
 `;
 
-const MenuItem = styled.div`
-  padding: 8px 16px;
-  padding-right: 66px;
+const MenuItem = styled.div<MenuItemConfig>`
+  padding: ${(props) => props.padding || "8px 66px 8px 16px"};
   opacity: 1;
   display: flex;
   align-items: center;
 
   &:first-child {
-    padding-top: 16px;
+    padding-top: ${(props) =>
+      props.firstItemPaddingTop ? props.firstItemPaddingTop : "16px"};
   }
 
   &:last-child {
-    padding-bottom: 16px;
+    padding-bottom: ${(props) =>
+      props.lastItemPaddingBottom ? props.lastItemPaddingBottom : "16px"};
   }
 
   &:hover {
@@ -123,8 +138,6 @@ const MenuItem = styled.div`
 const MenuItemText = styled(Title)`
   color: ${colors.primaryText}A3;
   white-space: nowrap;
-  font-size: 14px;
-  line-height: 20px;
 `;
 
 type FilterDropdownProps = Omit<
@@ -136,6 +149,8 @@ type FilterDropdownProps = Omit<
   onSelect: (option: string) => void;
   buttonConfig?: FilterDropdownButtonConfig;
   dropdownMenuConfig?: FilterDropdownMenuConfig;
+  menuItemConfig?: MenuItemConfig;
+  menuItemTextConfig?: MenuItemTextConfig;
 };
 
 const FilterDropdown: React.FC<FilterDropdownProps> = ({
@@ -146,6 +161,8 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   dropdownMenuConfig = {
     topBuffer: 8,
   },
+  menuItemConfig,
+  menuItemTextConfig,
   ...props
 }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -159,11 +176,16 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
 
   const renderMenuItem = useCallback(
     (title: string, onClick: () => void) => (
-      <MenuItem onClick={onClick} role="button" key={title}>
-        <MenuItemText>{title}</MenuItemText>
+      <MenuItem onClick={onClick} role="button" key={title} {...menuItemConfig}>
+        <MenuItemText
+          fontSize={menuItemTextConfig?.fontSize || 14}
+          lineHeight={menuItemTextConfig?.lineHeight || 20}
+        >
+          {title}
+        </MenuItemText>
       </MenuItem>
     ),
-    []
+    [menuItemConfig, menuItemTextConfig]
   );
 
   const getVerticalOrientation = useCallback(() => {

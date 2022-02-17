@@ -265,7 +265,7 @@ export const defaultSolanaVaultData: SolanaVaultData = {
 
 export type VaultPriceHistory = {
   pricePerShare: BigNumber;
-  round: number;
+  round?: number;
   timestamp: number;
 };
 
