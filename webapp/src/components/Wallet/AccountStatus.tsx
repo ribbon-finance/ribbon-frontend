@@ -304,7 +304,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   variant,
   showVaultPositionHook,
 }) => {
-  const [chain] = useChain();
+  const [chain, setChain] = useChain();
   const { deactivate, ethereumProvider, active, account, chainId } =
     useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
@@ -393,6 +393,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
 
   const handleDisconnect = useCallback(async () => {
     await deactivate();
+    setChain(Chains.NotSelected);
     onCloseMenu();
   }, [deactivate, onCloseMenu]);
 
