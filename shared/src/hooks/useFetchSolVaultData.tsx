@@ -20,7 +20,7 @@ const useFetchSolVaultData = (): SolanaVaultData => {
 
   useEffect(() => {
     const doMulticall = async () => {
-      if (!vault || !client || !connection) return;
+      if (!vault || !connection) return;
 
       const [vaultAddress] = await vaultUtils.getVaultAddress("rSOL-THETA");
       const {
@@ -38,29 +38,35 @@ const useFetchSolVaultData = (): SolanaVaultData => {
         depositQueueAmounts.reduce((partialSum, a) => partialSum + a, 0)
       );
 
-      const totalQueueDeposit = await getUserDepositQueueAmount(
-        vault,
-        connection,
-        publicKey as PublicKey
-      );
-      const totalQueueWithdrawal = await getUserWithdrawQueueAmount(
-        vault,
-        connection,
-        publicKey as PublicKey
-      );
+      let lockedBalanceInAsset = BigNumber.from(0);
+      let depositBalanceInAsset = BigNumber.from(0);
+      let totalQueueWithdrawal = BigNumber.from(0);
 
-      const userData = vaultUserData.find(
-        (d) =>
-          publicKey &&
-          vaultAddress &&
-          d?.user.equals(publicKey as PublicKey) &&
-          d?.vault.equals(vaultAddress)
-      );
+      if (publicKey) {
+        const totalQueueDeposit = await getUserDepositQueueAmount(
+          vault,
+          connection,
+          publicKey as PublicKey
+        );
+        totalQueueWithdrawal = await getUserWithdrawQueueAmount(
+          vault,
+          connection,
+          publicKey as PublicKey
+        );
 
-      const lockedBalanceInAsset = BigNumber.from(
-        Math.floor(userData?.lockedUnderlyingAmount ?? 0)
-      );
-      const depositBalanceInAsset = totalQueueDeposit;
+        const userData = vaultUserData.find(
+          (d) =>
+            publicKey &&
+            vaultAddress &&
+            d?.user.equals(publicKey as PublicKey) &&
+            d?.vault.equals(vaultAddress)
+        );
+
+        lockedBalanceInAsset = BigNumber.from(
+          Math.floor(userData?.lockedUnderlyingAmount ?? 0)
+        );
+        depositBalanceInAsset = totalQueueDeposit;
+      }
 
       setData({
         responses: {
@@ -76,11 +82,13 @@ const useFetchSolVaultData = (): SolanaVaultData => {
                 )
               : BigNumber.from(0),
             round: epochSequenceNumber,
+
+            // user-connected state
             lockedBalanceInAsset,
             depositBalanceInAsset,
             withdrawals: {
-              round: epochSequenceNumber,
-              shares: BigNumber.from(totalQueueWithdrawal),
+              round: totalQueueWithdrawal.isZero() ? 0 : epochSequenceNumber,
+              shares: totalQueueWithdrawal,
             },
           },
         },
