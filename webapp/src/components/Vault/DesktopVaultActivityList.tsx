@@ -1,14 +1,15 @@
 import React, { useCallback, useMemo } from "react";
-import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled from "styled-components";
 import moment from "moment";
 
 import {
+  Chains,
   getAssets,
-  getEtherscanURI,
+  getExplorerURI,
   isPutVault,
   getOptionAssets,
   VaultOptions,
+  getVaultChain,
 } from "shared/lib/constants/constants";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -16,7 +17,8 @@ import { VaultActivity, VaultActivityType } from "shared/lib/models/vault";
 import {
   assetToUSD,
   formatBigNumber,
-  formatOption,
+  formatOptionAmount,
+  formatOptionStrike,
 } from "shared/lib/utils/math";
 import { useAssetsPriceHistory } from "shared/lib/hooks/useAssetPrice";
 import sizes from "shared/lib/designSystem/sizes";
@@ -88,23 +90,28 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
       decimals: getAssetDecimals(asset),
     };
   }, [vaultOption]);
+  const chain = getVaultChain(vaultOption);
+
   const { searchAssetPriceFromTimestamp, loading: assetPriceLoading } =
     useAssetsPriceHistory();
 
   const { width: screenWidth } = useScreenSize();
   const loadingText = useTextAnimation(assetPriceLoading);
-  const { chainId } = useWeb3Wallet();
 
   const getVaultActivityExternalURL = useCallback(
     (activity: VaultActivity) => {
       switch (activity.type) {
         case "minting":
-          return `${getEtherscanURI(chainId || 1)}/tx/${activity.openTxhash}`;
+          return `${getExplorerURI(chain || Chains.Ethereum)}/tx/${
+            activity.openTxhash
+          }`;
         case "sales":
-          return `${getEtherscanURI(chainId || 1)}/tx/${activity.txhash}`;
+          return `${getExplorerURI(chain || Chains.Ethereum)}/tx/${
+            activity.txhash
+          }`;
       }
     },
-    [chainId]
+    [chain]
   );
 
   const getVaultActivityTableData = useCallback(
@@ -133,7 +140,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                   : "CALL"}
               </VaultPrimaryText>
               <VaultSecondaryText>
-                Strike {formatOption(activity.strikePrice)}
+                Strike {formatOptionStrike(activity.strikePrice, chain)}
               </VaultSecondaryText>
             </>,
             <VaultPrimaryText>
@@ -165,12 +172,19 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                   : "CALL"}
               </VaultPrimaryText>
               <VaultSecondaryText>
-                Strike {formatOption(activity.vaultShortPosition.strikePrice)}
+                Strike{" "}
+                {formatOptionStrike(
+                  activity.vaultShortPosition.strikePrice,
+                  chain
+                )}
               </VaultSecondaryText>
             </>,
             <>
               <VaultPrimaryText>
-                {formatOption(activity.sellAmount).toLocaleString()}
+                {formatOptionAmount(
+                  activity.sellAmount,
+                  chain
+                ).toLocaleString()}
               </VaultPrimaryText>
             </>,
             <>
@@ -192,6 +206,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
       }
     },
     [
+      chain,
       assetPriceLoading,
       screenWidth,
       loadingText,

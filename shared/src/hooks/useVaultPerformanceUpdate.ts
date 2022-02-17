@@ -2,6 +2,9 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { useContext } from "react";
 
 import {
+  Chains,
+  CHAINS_TO_ID,
+  isSolanaVault,
   VaultAddressMap,
   VaultList,
   VaultOptions,
@@ -9,6 +12,7 @@ import {
   VaultVersionList,
 } from "../constants/constants";
 import { VaultPriceHistoriesData } from "../models/vault";
+import { isEVMChain, isSolanaChain } from "../utils/chains";
 import { SubgraphDataContext } from "./subgraphDataContext";
 
 const getVaultPriceHistoryKey = (vault: VaultOptions) =>
@@ -16,23 +20,38 @@ const getVaultPriceHistoryKey = (vault: VaultOptions) =>
 
 export const vaultPriceHistoryGraphql = (
   version: VaultVersion,
-  chainId: number
+  chain: Chains
 ) => {
   return VaultList.reduce((acc, vault) => {
-    const vaultAddress = VaultAddressMap[vault][version]?.toLowerCase();
+    let vaultAddress = VaultAddressMap[vault][version];
 
-    if (!vaultAddress || VaultAddressMap[vault].chainId !== chainId) {
+    if (
+      !isSolanaVault(vault) &&
+      (!vaultAddress || VaultAddressMap[vault].chainId !== CHAINS_TO_ID[chain])
+    ) {
       return acc;
+    }
+
+    if (isEVMChain(chain)) {
+      vaultAddress = vaultAddress?.toLowerCase();
     }
 
     return (
       acc +
       `
         ${getVaultPriceHistoryKey(vault)}: vaultPerformanceUpdates(
-          where: { vault_in: ["${vaultAddress}"] },
-          orderBy: timestamp,
-          orderDirection: desc,
-          first: 1000
+          ${
+            isSolanaChain(chain)
+              ? `where: { vaultId: {_in: ["${vaultAddress}"]} },`
+              : `where: { vault_in: ["${vaultAddress}"] },`
+          }
+          ${
+            isSolanaChain(chain)
+              ? `order_by: { timestamp: desc },`
+              : `orderBy: timestamp,
+                 orderDirection: desc,`
+          }
+          ${isSolanaChain(chain) ? "limit: 1000" : "first: 1000"}
         ) {
           pricePerShare
           timestamp

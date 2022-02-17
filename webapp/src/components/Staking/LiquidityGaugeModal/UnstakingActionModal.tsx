@@ -4,9 +4,9 @@ import { formatUnits, parseUnits } from "@ethersproject/units";
 import { BigNumber } from "@ethersproject/bignumber";
 
 import {
-  BLOCKCHAIN_EXPLORER_NAME,
   getAssets,
-  getEtherscanURI,
+  getExplorerURI,
+  getExplorerName,
   VaultOptions,
 } from "shared/lib/constants/constants";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
@@ -32,6 +32,7 @@ import { formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import BasicModal from "shared/lib/components/Common/BasicModal";
+import { useChain } from "shared/lib/hooks/chainContext";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -104,6 +105,7 @@ const UnstakingActionModal: React.FC<UnstakingActionModalProps> = ({
   const [step, setStep] = useState<
     "form" | "preview" | "walletAction" | "processing"
   >("form");
+  const [chain] = useChain();
   const [input, setInput] = useState("");
   const { chainId } = useWeb3Wallet();
   const { provider } = useWeb3Context();
@@ -324,13 +326,13 @@ const UnstakingActionModal: React.FC<UnstakingActionModalProps> = ({
               <BaseModalContentColumn marginTop="auto">
                 {chainId && (
                   <BaseUnderlineLink
-                    to={`${getEtherscanURI(chainId)}/tx/${txId}`}
+                    to={`${getExplorerURI(chain)}/tx/${txId}`}
                     target="_blank"
                     rel="noreferrer noopener"
                     className="d-flex"
                   >
                     <PrimaryText className="mb-2">
-                      View on {BLOCKCHAIN_EXPLORER_NAME[chainId]}
+                      View on {getExplorerName(chain)}
                     </PrimaryText>
                   </BaseUnderlineLink>
                 )}
@@ -340,6 +342,7 @@ const UnstakingActionModal: React.FC<UnstakingActionModalProps> = ({
         );
     }
   }, [
+    chain,
     chainId,
     color,
     decimals,

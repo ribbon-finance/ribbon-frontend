@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import moment from "moment";
 
-import { getAssets, VaultOptions, VaultVersion } from "../constants/constants";
+import {
+  getAssets,
+  VaultList,
+  VaultOptions,
+  VaultVersion,
+} from "../constants/constants";
 import { Notification } from "../models/notification";
 import { useAllVaultActivities } from "./useVaultActivity";
 import { useV2VaultsData } from "./web3DataContext";
@@ -52,7 +57,7 @@ const useNotifications = () => {
   useEffect(() => {
     const notificationList: Notification[] = [];
 
-    Object.keys(v2VaultsData).forEach((vaultOption) => {
+    VaultList.forEach((vaultOption) => {
       const vaultData = v2VaultsData[vaultOption as VaultOptions];
       const priceHistory = priceHistories.v2[vaultOption as VaultOptions].find(
         (history) => history.round === vaultData.withdrawals.round

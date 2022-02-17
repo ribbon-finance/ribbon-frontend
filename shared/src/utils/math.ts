@@ -4,6 +4,8 @@ import currency from "currency.js";
 import { isBigNumberish } from "@ethersproject/bignumber/lib/bignumber";
 
 import { getDefaultSignificantDecimalsFromAssetDecimals } from "./asset";
+import { isEVMChain } from "./chains";
+import { Chains } from "../constants/constants";
 
 const { formatUnits } = ethers.utils;
 
@@ -112,8 +114,24 @@ export const ethToUSD = (
   precision: number = 2
 ): string => assetToUSD(num, ethPrice, 18, precision);
 
-export const formatOption = (bn: BigNumber): number =>
-  parseFloat(ethers.utils.formatUnits(bn, 8));
+// Left here for Ribbon Treasury to use
+export const formatOption = (bn: BigNumber): number => {
+  return parseFloat(ethers.utils.formatUnits(bn, 8));
+};
+
+export const formatOptionAmount = (bn: BigNumber, chain: Chains): number => {
+  if (isEVMChain(chain)) {
+    return parseFloat(ethers.utils.formatUnits(bn, 8));
+  }
+  return parseFloat(ethers.utils.formatUnits(bn, 4));
+};
+
+export const formatOptionStrike = (bn: BigNumber, chain: Chains): number => {
+  if (isEVMChain(chain)) {
+    return parseFloat(ethers.utils.formatUnits(bn, 8));
+  }
+  return parseFloat(ethers.utils.formatUnits(bn, 6));
+};
 
 export const getWAD = (decimals: number): BigNumber =>
   ethers.utils.parseUnits("1", decimals);

@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   getAssets,
+  VaultList,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
@@ -224,7 +225,7 @@ export const WithdrawReminderToast = () => {
    * Find vault that is ready to withdraw
    */
   useEffect(() => {
-    Object.keys(data).forEach((vault) => {
+    VaultList.forEach((vault) => {
       const vaultData = data[vault as VaultOptions];
       const asset = getAssets(vault as VaultOptions);
       const decimals = getAssetDecimals(asset);

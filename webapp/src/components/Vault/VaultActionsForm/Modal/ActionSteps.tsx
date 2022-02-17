@@ -16,6 +16,7 @@ import {
   VaultAllowedDepositAssets,
   CurveSwapSlippage,
   getSolanaVaultInstance,
+  isSolanaVault,
 } from "shared/lib/constants/constants";
 import { isETHVault } from "shared/lib/utils/vault";
 import { amountAfterSlippage } from "shared/lib/utils/math";
@@ -204,7 +205,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const handleClickConfirmButton = async () => {
     const vault = vaultActionForm.vaultVersion === "v1" ? v1Vault : v2Vault;
 
-    if (vault !== null) {
+    if (vault !== null || (isSolanaVault(vaultOption) && client !== null)) {
       // check illegal state transition
       if (step !== STEPS.confirmationStep - 1) return;
       onChangeStep(STEPS.confirmationStep);

@@ -21,7 +21,8 @@ import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
 import { capitalize } from "shared/lib/utils/text";
 import {
   getAssets,
-  getEtherscanURI,
+  getExplorerURI,
+  getVaultChain,
   VaultNameOptionMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
@@ -171,7 +172,7 @@ const perPage = 6;
 
 const PortfolioTransactions = () => {
   const { transactions, loading } = useTransactions();
-  const { active, chainId } = useWeb3Wallet();
+  const { active } = useWeb3Wallet();
   // const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice();
   const { searchAssetPriceFromTimestamp, loading: assetPricesLoading } =
     useAssetsPriceHistory();
@@ -261,6 +262,7 @@ const PortfolioTransactions = () => {
           prependSymbol = "+";
           break;
         case "withdraw":
+        case "initiateWithdraw":
         case "instantWithdraw":
         case "transfer":
         case "unstake":
@@ -292,6 +294,7 @@ const PortfolioTransactions = () => {
       case "receive":
         return <DepositIcon width={20} />;
       case "withdraw":
+      case "initiateWithdraw":
       case "instantWithdraw":
         return <WithdrawIcon width={20} />;
       case "stake":
@@ -310,6 +313,8 @@ const PortfolioTransactions = () => {
       switch (type) {
         case "instantWithdraw":
           return "Instant Withdraw";
+        case "initiateWithdraw":
+          return "Initiate Withdraw";
         default:
           return capitalize(type);
       }
@@ -454,9 +459,11 @@ const PortfolioTransactions = () => {
             </div>
           </TransactionInfo>
 
-          {chainId && (
+          {
             <BaseLink
-              to={`${getEtherscanURI(chainId)}/tx/${transaction.txhash}`}
+              to={`${getExplorerURI(
+                getVaultChain(transaction.vault.symbol)
+              )}/tx/${transaction.txhash}`}
               target="_blank"
               rel="noreferrer noopener"
               className="d-none d-md-block"
@@ -465,12 +472,11 @@ const PortfolioTransactions = () => {
                 <ExternalLinkIcon color="white" />
               </ExternalLink>
             </BaseLink>
-          )}
+          }
         </TransactionContainer>
       ));
   }, [
     active,
-    chainId,
     getTransactionTypeDisplay,
     page,
     processedTransactions,

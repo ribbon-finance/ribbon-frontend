@@ -9,8 +9,8 @@ import {
   BaseModalContentColumn,
 } from "shared/lib/designSystem";
 import {
-  BLOCKCHAIN_EXPLORER_NAME,
-  getEtherscanURI,
+  getExplorerName,
+  getExplorerURI,
   VaultLiquidityMiningMap,
   StakingVaultOptions,
 } from "shared/lib/constants/constants";
@@ -22,6 +22,7 @@ import useERC20Token from "shared/lib/hooks/useERC20Token";
 import { LiquidityMiningPoolResponse } from "shared/lib/models/staking";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { getERC20TokenNameFromVault } from "shared/lib/models/eth";
+import { useChain } from "shared/lib/hooks/chainContext";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -48,6 +49,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
   stakingPoolData,
   vaultOption,
 }) => {
+  const [chain] = useChain();
   const { chainId } = useWeb3Wallet();
   const { provider } = useWeb3Context();
   const { addPendingTransaction } = usePendingTransactions();
@@ -137,13 +139,13 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
               <BaseModalContentColumn marginTop="auto">
                 {chainId && (
                   <BaseUnderlineLink
-                    to={`${getEtherscanURI(chainId)}/tx/${txId}`}
+                    to={`${getExplorerURI(chain)}/tx/${txId}`}
                     target="_blank"
                     rel="noreferrer noopener"
                     className="d-flex"
                   >
                     <PrimaryText className="mb-2">
-                      View on {BLOCKCHAIN_EXPLORER_NAME[chainId]}
+                      View on {getExplorerName(chain)}
                     </PrimaryText>
                   </BaseUnderlineLink>
                 )}
@@ -152,7 +154,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
           </>
         );
     }
-  }, [chainId, step, vaultOption, handleApprove, txId, stakingPoolData]);
+  }, [chain, chainId, step, vaultOption, handleApprove, txId, stakingPoolData]);
 
   const modalHeight = useMemo(() => {
     if (step === "info") {

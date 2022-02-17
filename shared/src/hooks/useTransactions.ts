@@ -2,14 +2,23 @@ import { useContext } from "react";
 import { BigNumber } from "ethers";
 
 import { VaultTransaction } from "../models/vault";
-import { VaultVersion, VaultVersionList } from "../constants/constants";
+import { Chains, VaultVersion, VaultVersionList } from "../constants/constants";
 import { SubgraphDataContext } from "./subgraphDataContext";
+import { isSolanaChain } from "../utils/chains";
 
-export const transactionsGraphql = (account: string) => `
+export const transactionsGraphql = (account: string, chain: Chains) => `
   vaultTransactions(
-    where:{address:"${account}"},
-    orderBy: timestamp,
-    orderDirection: desc
+    ${
+      isSolanaChain(chain)
+        ? `where:{address:{_eq:"${account}"}}`
+        : `where:{address:"${account}"}`
+    },
+    ${
+      isSolanaChain(chain)
+        ? `order_by: { timestamp: desc }`
+        : `orderBy: timestamp,
+           orderDirection: desc`
+    }
   ) {
     id
     type

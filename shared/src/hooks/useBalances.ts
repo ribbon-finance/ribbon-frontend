@@ -1,16 +1,25 @@
 import { BigNumber } from "ethers";
 import { useContext } from "react";
 
-import { VaultVersion, VaultVersionList } from "../constants/constants";
+import { Chains, VaultVersion, VaultVersionList } from "../constants/constants";
 import { BalanceUpdate } from "../models/vault";
+import { isSolanaChain } from "../utils/chains";
 import { SubgraphDataContext } from "./subgraphDataContext";
 
-export const balancesGraphql = (account: string) => `
+export const balancesGraphql = (account: string, chain: Chains) => `
   balanceUpdates(
-    where: { account:"${account}" },
-    orderBy: timestamp,
-    orderDirection: desc,
-    first: 1000
+    ${
+      isSolanaChain(chain)
+        ? `where:{account:{_eq:"${account}"}}`
+        : `where:{account:"${account}"}`
+    },
+    ${
+      isSolanaChain(chain)
+        ? `order_by: { timestamp: desc },`
+        : `orderBy: timestamp,
+           orderDirection: desc,`
+    }
+    ${isSolanaChain(chain) ? "limit: 1000" : "first: 1000"}
   ) {
     vault {
       symbol

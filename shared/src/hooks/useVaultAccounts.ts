@@ -2,6 +2,7 @@ import { BigNumber } from "ethers";
 import { useContext } from "react";
 
 import {
+  isSolanaVault,
   VaultAddressMap,
   VaultList,
   VaultOptions,
@@ -16,10 +17,14 @@ const getVaultAccountKey = (vault: VaultOptions) =>
 
 export const vaultAccountsGraphql = (account: string, version: VaultVersion) =>
   VaultList.reduce((acc, vault) => {
-    const vaultAddress = VaultAddressMap[vault][version];
+    let vaultAddress = VaultAddressMap[vault][version];
 
     if (!vaultAddress) {
       return acc;
+    }
+    if (!isSolanaVault(vault)) {
+      vaultAddress = vaultAddress.toLowerCase();
+      account = account.toLowerCase();
     }
 
     return (
@@ -27,7 +32,7 @@ export const vaultAccountsGraphql = (account: string, version: VaultVersion) =>
       `
           ${getVaultAccountKey(
             vault
-          )}: vaultAccount(id:"${vaultAddress.toLowerCase()}-${account.toLowerCase()}") {
+          )}: vaultAccount(id:"${vaultAddress}-${account}") {
             totalDeposits
             totalYieldEarned
             totalBalance
