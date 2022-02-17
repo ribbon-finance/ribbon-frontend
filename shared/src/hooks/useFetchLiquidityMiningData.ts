@@ -141,7 +141,7 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
         setData((prev) => ({
           responses: {
             ...data.responses,
-            ...Object.fromEntries(
+            ...(Object.fromEntries(
               responses.map(({ vault, ...response }) => [
                 vault,
                 {
@@ -149,7 +149,7 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
                   ...response,
                 },
               ])
-            ) as LiquidityMiningPoolResponses,
+            ) as LiquidityMiningPoolResponses),
           },
           loading: false,
         }));
