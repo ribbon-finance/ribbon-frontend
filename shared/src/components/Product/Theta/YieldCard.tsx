@@ -36,6 +36,10 @@ import YieldComparison from "./YieldComparison";
 import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
 import useAssetsYield from "../../../hooks/useAssetsYield";
 import useLatestAPY from "../../../hooks/useLatestAPY";
+import {
+  animatedGradientKeyframe,
+  shimmerKeyframe,
+} from "../../../designSystem/keyframes";
 
 const { formatUnits } = ethers.utils;
 
@@ -48,7 +52,7 @@ const ProductCard = styled(motion.div)<{ color: string }>`
   flex-direction: column;
   flex-wrap: wrap;
   background-color: ${colors.background.two};
-  border: 2px ${theme.border.style} ${(props) => props.color}00;
+  border: 2px ${theme.border.style} black;
   border-radius: ${theme.border.radius};
   transition: 0.25s box-shadow ease-out, 0.25s border ease-out;
   width: 290px;
@@ -62,7 +66,7 @@ const ProductCard = styled(motion.div)<{ color: string }>`
   }
 
   &:hover {
-    box-shadow: ${(props) => props.color}66 8px 16px 80px;
+    box-shadow: ${(props) => props.color}66 0px 0px 70px;
     border: 2px ${theme.border.style} ${(props) => props.color};
   }
 `;
@@ -79,10 +83,16 @@ const TopContainer = styled.div<{ color: string }>`
   border-radius: ${theme.border.radius} ${theme.border.radius} 0px 0px;
 
   background: linear-gradient(
-    96.84deg,
-    ${(props) => props.color}29 1.04%,
-    ${(props) => props.color}14 98.99%
+    270deg,
+    ${(props) => props.color}10 1.04%,
+    ${(props) => props.color}30 98.99%
   );
+
+  background-size: 400% 400%;
+
+  -webkit-animation: ${animatedGradientKeyframe} 5s ease infinite;
+  -moz-animation: ${animatedGradientKeyframe} 5s ease infinite;
+  animation: ${animatedGradientKeyframe} 5s ease infinite;
 `;
 
 const TagContainer = styled.div`
@@ -131,7 +141,7 @@ const ProductAssetLogoContainer = styled.div<{ color: string }>`
   width: 56px;
   margin-top: calc(-56px / 2);
   background-color: ${colors.background.one};
-  border: 1.5px ${theme.border.style} ${colors.background.one};
+  border: 2px ${theme.border.style} ${colors.background.one};
   border-radius: 100px;
   position: relative;
 
@@ -239,6 +249,9 @@ const YieldCard: React.FC<YieldCardProps> = ({
     switch (displayAsset) {
       case "yvUSDC":
         logo = <Logo markerConfig={{ height: 24, width: 24 }} />;
+        break;
+      case "SOL":
+        logo = <Logo style={{ padding: 0 }} />;
         break;
     }
 

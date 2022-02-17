@@ -474,11 +474,11 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                   />{" "}
                   is selected by a permissioned manager for the{" "}
                   <TooltipExplanation
-                    title={isPut ? "PUT OPTION" : "COVERED CALL"}
+                    title={isPut ? "PUT OPTION" : "CALL OPTION"}
                     explanation={
                       isPut
                         ? "A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
-                        : "A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
+                        : "A call option is a financial contract that gives the option buyer the right but not the obligation to buy an asset at the strike price at a specific point in time."
                     }
                     learnMoreURL={
                       isPut
@@ -695,9 +695,10 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                       />{" "}
                       vault. The vault sets the strike price to the value
                       determined by the manager and the expiry date to the
-                      following Friday. In return, the vault receives oTokens
-                      from the {getVaultTarget()}, each of which represent a{" "}
-                      {optionAssetUnit} {isPut ? "put" : "call"} option.
+                      following Friday. In return, the vault receives option
+                      tokens from the {getVaultTarget()}, each of which
+                      represent a {optionAssetUnit} {isPut ? "put" : "call"}{" "}
+                      option.
                     </>
                   );
                 default:
@@ -876,8 +877,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                   </HighlightedText>
                 )}
               />
-              . In this situation the oTokens held by the {optionBuyerParty}{" "}
-              expire worthless.
+              . In this situation the{" "}
+              {asset === "SOL" ? "option tokens" : "oTokens"} held by the{" "}
+              {optionBuyerParty} expire worthless.
             </>
           );
         case "settlementA":

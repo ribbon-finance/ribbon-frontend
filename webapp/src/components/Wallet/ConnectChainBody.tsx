@@ -70,7 +70,6 @@ const AssetCircle = styled(BaseIndicator)<{
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 5px 5px;
 `;
 const NetworkContainerPill = styled(NetworkContainer)`
   border-radius: 100px;
@@ -106,7 +105,7 @@ export const ChainButton: React.FC<{
   const Logo = getAssetLogo(CHAINS_TO_NATIVE_TOKENS[chain]);
   const color = getAssetColor(CHAINS_TO_NATIVE_TOKENS[chain]);
   const active = currentChain === chain;
-  const logoSize = 28;
+  const logoSize = 40;
 
   return (
     <NetworkContainerPill
@@ -116,8 +115,12 @@ export const ChainButton: React.FC<{
       active={active}
     >
       <NetworkNameContainer>
-        <AssetCircle size={40} color={`${color}1F`}>
-          <Logo height={logoSize} width={logoSize}></Logo>
+        <AssetCircle size={logoSize} color={`${color}1F`}>
+          <Logo
+            style={{ padding: 0 }}
+            height={logoSize}
+            width={logoSize}
+          ></Logo>
         </AssetCircle>
         <NetworkName>{READABLE_CHAIN_NAMES[chain]}</NetworkName>
       </NetworkNameContainer>

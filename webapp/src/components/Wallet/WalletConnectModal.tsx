@@ -61,8 +61,9 @@ const WalletConnectModal: React.FC = () => {
   const [selectedChain, setChain] = useState<Chains>(chain);
 
   const onClose = useCallback(() => {
-    setStep("chain");
     setShow(false);
+
+    setStep("chain");
   }, [setShow]);
 
   const handleClickStep = useCallback(async (updatedStep: ConnectSteps) => {
@@ -99,6 +100,8 @@ const WalletConnectModal: React.FC = () => {
           selectedWallet as EthereumWallet | SolanaWallet,
           selectedChain
         );
+
+        onClose();
       } catch (error) {
         console.error(error);
       }

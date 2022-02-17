@@ -45,7 +45,7 @@ const Frame = styled(motion.div)<{ color: string }>`
 
   &:hover {
     padding: 16px;
-    box-shadow: ${(props) => props.color}66 8px 16px 80px;
+    box-shadow: ${(props) => props.color}66 0px 0px 70px;
     border: 2px ${theme.border.style} ${(props) => props.color};
   }
 `;
