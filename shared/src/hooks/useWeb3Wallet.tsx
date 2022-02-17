@@ -21,15 +21,14 @@ import {
 } from "../models/wallets";
 import { Chains, CHAINS_TO_ID, ID_TO_CHAINS } from "../constants/constants";
 import { switchChains } from "../utils/chainSwitching";
+import { useGlobalState } from "../store/store";
 
 interface Web3WalletData {
   chainId: number | undefined;
   active: boolean;
-  activate: (wallet: Wallet, chain: Chains) => Promise<void>;
+  activate: (chain: Chains) => Promise<void>;
   deactivate: () => Promise<void>;
   account: string | null | undefined;
-  connectingWallet: Wallet | undefined;
-  connectedWallet: Wallet | undefined;
   ethereumProvider: providers.Web3Provider | undefined;
   solanaWallet: SolanaWalletInterface | undefined;
 }
@@ -37,8 +36,7 @@ interface Web3WalletData {
 export const useWeb3Wallet = (): Web3WalletData => {
   const [chain, setChain] = useChain();
   const [chainToSwitch, setChainToSwitch] = useState<Chains | null>(null);
-  const [connectingWallet, setConnectingWallet] = useState<Wallet>();
-  const [connectedWallet, setConnectedWallet] = useState<Wallet>();
+  const [globalWallet, setWallet] = useGlobalState("wallet");
 
   const {
     chainId: chainIdEth,
@@ -88,27 +86,23 @@ export const useWeb3Wallet = (): Web3WalletData => {
       }
 
       _deactivateEth();
-      setConnectedWallet(undefined);
     }
   }, [connectorEth, _deactivateEth]);
 
   const activate = useCallback(
-    async (wallet: Wallet, chain: Chains) => {
-      setConnectingWallet(wallet);
-
+    async (newChain: Chains) => {
       try {
-        if (isEthereumWallet(wallet)) {
-          if (!isActiveEth) {
-            const connector = evmConnectors[wallet as EthereumWallet]();
-            await activateEth(connector);
-          }
-
-          await deactivateSolana();
-          setChainToSwitch(chain);
-          setConnectedWallet(wallet as EthereumWallet);
-        } else if (isSolanaWallet(wallet)) {
+        if (isEthereumWallet(globalWallet.connectingWallet as EthereumWallet)) {
+          const connector =
+            evmConnectors[globalWallet.connectingWallet as EthereumWallet]();
+          await activateEth(connector);
+          deactivateSolana();
+          setChainToSwitch(newChain);
+        } else if (
+          isSolanaWallet(globalWallet.connectingWallet as SolanaWallet)
+        ) {
           let walletName: WalletName = WalletName.Phantom;
-          switch (wallet) {
+          switch (globalWallet.connectingWallet) {
             case SolanaWallet.Phantom:
               walletName = WalletName.Phantom;
               break;
@@ -122,19 +116,23 @@ export const useWeb3Wallet = (): Web3WalletData => {
         } else {
           throw new Error("Wallet is not supported");
         }
-
-        setConnectedWallet(wallet as SolanaWallet);
-        setConnectingWallet(undefined);
       } catch (error) {
         console.error(error);
       }
+
+      setWallet({
+        connectingWallet: undefined,
+        connectedWallet: globalWallet.connectingWallet,
+      });
     },
     [
       activateEth,
       deactivateEth,
       deactivateSolana,
-      isActiveEth,
       selectWalletSolana,
+      setWallet,
+      globalWallet,
+      isActiveEth,
     ]
   );
 
@@ -145,8 +143,6 @@ export const useWeb3Wallet = (): Web3WalletData => {
       account: publicKeySolana && publicKeySolana.toString(),
       activate,
       deactivate: deactivateSolana,
-      connectingWallet,
-      connectedWallet,
       ethereumProvider: undefined,
       solanaWallet: walletSolana || undefined,
     };
@@ -158,8 +154,6 @@ export const useWeb3Wallet = (): Web3WalletData => {
     activate,
     deactivate: deactivateEth,
     account: accountEth,
-    connectingWallet,
-    connectedWallet,
     ethereumProvider: libraryEth,
     solanaWallet: undefined,
   };

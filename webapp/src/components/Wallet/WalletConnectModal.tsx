@@ -25,6 +25,7 @@ import {
 import { Chains, ENABLED_CHAINS } from "shared/lib/constants/constants";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
+import { useGlobalState } from "shared/lib/store/store";
 
 const LearnMoreLink = styled(BaseLink)`
   display: flex;
@@ -48,7 +49,7 @@ const LearnMoreText = styled(BaseText)`
 type ConnectSteps = "chain" | "wallet";
 
 const WalletConnectModal: React.FC = () => {
-  const { activate, connectingWallet } = useWeb3Wallet();
+  const { activate } = useWeb3Wallet();
   const [chain] = useChain();
   const [show, setShow] = useConnectWalletModal();
   const [selectedStep, setStep] = useState<ConnectSteps>("chain");
@@ -57,7 +58,7 @@ const WalletConnectModal: React.FC = () => {
   const [walletList, setWalletList] = useState<Wallet[]>([]);
 
   // We use these states to preset the state before sending to setChain when clicking the Next button
-  const [selectedWallet, setWallet] = useState<Wallet>();
+  const [globalWallet] = useGlobalState("wallet");
   const [selectedChain, setChain] = useState<Chains>(chain);
 
   const onClose = useCallback(() => {
@@ -94,13 +95,13 @@ const WalletConnectModal: React.FC = () => {
   }, [selectedChain]);
 
   const onActivate = async () => {
-    if (selectedWallet && selectedChain) {
-      try {
-        await activate(
-          selectedWallet as EthereumWallet | SolanaWallet,
-          selectedChain
-        );
+    if (globalWallet.connectingWallet && selectedChain) {
+      if (selectedChain === chain) {
+        return onClose();
+      }
 
+      try {
+        await activate(selectedChain);
         onClose();
       } catch (error) {
         console.error(error);
@@ -152,10 +153,7 @@ const WalletConnectModal: React.FC = () => {
         ) : (
           <ConnectWalletBody
             wallets={walletList}
-            connectingWallet={connectingWallet}
-            selectedWallet={selectedWallet}
             onBack={() => setStep("chain")}
-            onSelectWallet={setWallet}
           ></ConnectWalletBody>
         )}
 
@@ -163,7 +161,6 @@ const WalletConnectModal: React.FC = () => {
           selectedChain={selectedChain}
           wallets={walletList}
           step={selectedStep}
-          selectedWallet={selectedWallet}
           onClickStep={handleClickStep}
           onActivate={onActivate}
         ></ConnectStepsNav>
@@ -175,7 +172,6 @@ const WalletConnectModal: React.FC = () => {
 interface ConnectStepsNavProps {
   step: ConnectSteps;
   selectedChain: Chains;
-  selectedWallet: Wallet | undefined;
   onClickStep: (step: ConnectSteps) => void;
   wallets: Wallet[];
   onActivate: () => void;
@@ -207,13 +203,14 @@ const ButtonTitle = styled(Title)`
 const ConnectStepsNav: React.FC<ConnectStepsNavProps> = ({
   step,
   selectedChain,
-  selectedWallet,
   wallets,
   onClickStep,
   onActivate,
 }) => {
   // Render the proper wallet list based on the selected wallet
-  const walletInChain = selectedWallet && wallets.includes(selectedWallet);
+  const [wallet] = useGlobalState("wallet");
+  const walletInChain =
+    wallet.connectingWallet && wallets.includes(wallet.connectingWallet);
   const isChainStep = step === "chain";
 
   return (

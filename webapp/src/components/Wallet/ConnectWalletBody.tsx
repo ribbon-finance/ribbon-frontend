@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import {
   EthereumWallet,
@@ -25,6 +25,7 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { BackIcon } from "shared/lib/assets/icons/icons";
+import { useGlobalState } from "shared/lib/store/store";
 
 const ModalContainer = styled.div`
   padding: 10px 0px;
@@ -128,33 +129,30 @@ const ConnectorButtonPill = styled(ConnectorButton)`
 `;
 
 const ConnectWalletBody: React.FC<{
-  onSelectWallet: (wallet: Wallet) => void;
   onBack: () => void;
-  selectedWallet: Wallet | undefined;
-  connectingWallet: Wallet | undefined;
   wallets: Wallet[];
-}> = ({
-  onSelectWallet,
-  onBack,
-  selectedWallet,
-  connectingWallet,
-  wallets,
-}) => {
+}> = ({ onBack, wallets }) => {
+  const [globalWallet, setWallet] = useGlobalState("wallet");
   const getWalletStatus = useCallback(
     (wallet: Wallet): ConnectorButtonStatus => {
-      if (selectedWallet === wallet) {
+      if (globalWallet.connectingWallet === wallet) {
         return "connected";
       }
 
-      if (!connectingWallet) {
-        return "normal";
-      } else if (connectingWallet === wallet) {
-        return "initializing";
+      if (
+        globalWallet.connectedWallet === wallet &&
+        globalWallet.connectingWallet
+      ) {
+        return "neglected";
+      }
+
+      if (globalWallet.connectedWallet === wallet) {
+        return "connected";
       }
 
       return "neglected";
     },
-    [selectedWallet, connectingWallet]
+    [globalWallet.connectedWallet, globalWallet.connectingWallet]
   );
 
   return (
@@ -171,7 +169,9 @@ const ConnectWalletBody: React.FC<{
             <WalletButton
               wallet={wallet as Wallet}
               status={getWalletStatus(wallet as Wallet)}
-              onConnect={async () => onSelectWallet(wallet as Wallet)}
+              onConnect={async () =>
+                setWallet((prev) => ({ ...prev, connectingWallet: wallet }))
+              }
             ></WalletButton>
           </BaseModalContentColumn>
         );

@@ -2,6 +2,7 @@ import { createGlobalState } from "react-hooks-global-state";
 
 import { DesktopViewType } from "../components/Product/types";
 import { VaultOptions, VaultVersion } from "../constants/constants";
+import { EthereumWallet, SolanaWallet } from "../models/wallets";
 import { PendingTransaction, AirdropInfoData } from "./types";
 
 interface GlobalStore {
@@ -17,6 +18,10 @@ interface GlobalStore {
     vaultVersion: VaultVersion;
   };
   notificationLastReadTimestamp?: number;
+  wallet: {
+    connectedWallet?: EthereumWallet | SolanaWallet;
+    connectingWallet?: EthereumWallet | SolanaWallet;
+  };
 }
 
 export const initialState: GlobalStore = {
@@ -30,6 +35,10 @@ export const initialState: GlobalStore = {
     vaultVersion: "v1" as VaultVersion,
   },
   notificationLastReadTimestamp: undefined,
+  wallet: {
+    connectedWallet: undefined,
+    connectingWallet: undefined,
+  },
 };
 
 export const { useGlobalState } = createGlobalState(initialState);
