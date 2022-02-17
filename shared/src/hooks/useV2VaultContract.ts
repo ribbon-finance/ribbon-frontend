@@ -50,4 +50,4 @@ const useV2VaultContract = (vaultOption: VaultOptions) => {
 
   return vault;
 };
-export default useV2Vault;
+export default useV2VaultContract;
