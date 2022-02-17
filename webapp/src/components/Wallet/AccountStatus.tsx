@@ -395,7 +395,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     await deactivate();
     setChain(Chains.NotSelected);
     onCloseMenu();
-  }, [deactivate, onCloseMenu]);
+  }, [deactivate, setChain, onCloseMenu]);
 
   const onCloseActionsModal = useCallback(() => {
     setShowActionModal(false);
