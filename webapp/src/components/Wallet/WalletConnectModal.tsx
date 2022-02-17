@@ -15,13 +15,7 @@ import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import ConnectWalletBody from "./ConnectWalletBody";
 import ConnectChainBody from "./ConnectChainBody";
 import { useChain } from "shared/lib/hooks/chainContext";
-import {
-  EthereumWallet,
-  SolanaWallet,
-  ETHEREUM_WALLETS,
-  SOLANA_WALLETS,
-  Wallet,
-} from "../../models/wallets";
+import { ETHEREUM_WALLETS, SOLANA_WALLETS, Wallet } from "../../models/wallets";
 import { Chains, ENABLED_CHAINS } from "shared/lib/constants/constants";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
@@ -63,7 +57,6 @@ const WalletConnectModal: React.FC = () => {
 
   const onClose = useCallback(() => {
     setShow(false);
-
     setStep("chain");
   }, [setShow]);
 
