@@ -116,7 +116,7 @@ export const EVMVaultList = [
 
 export const SolanaVaultList = ["rSOL-THETA"] as const;
 
-export const RetailVaultList = [...EVMVaultList, ...SolanaVaultList];
+export const RetailVaultList = [...SolanaVaultList, ...EVMVaultList];
 
 export const TreasuryVaultList = ["rPERP-TSRY"] as const;
 
@@ -128,7 +128,6 @@ const AllVaultOptions = [
 
 export type VaultOptions = typeof AllVaultOptions[number];
 const ProdExcludeVault: VaultOptions[] = [
-  "rSOL-THETA",
   "rNEAR-THETA",
   "rAURORA-THETA",
   "rUSDC-AVAX-P-THETA",
@@ -853,9 +852,11 @@ export const READABLE_CHAIN_NAMES: Record<Chains, string> = {
   [Chains.NotSelected]: "No Chain Selected",
 };
 
-export const ENABLED_CHAINS: Chains[] = isProduction()
-  ? [Chains.Ethereum, Chains.Avalanche]
-  : [Chains.Ethereum, Chains.Avalanche, Chains.Solana];
+export const ENABLED_CHAINS: Chains[] = [
+  Chains.Ethereum,
+  Chains.Avalanche,
+  Chains.Solana,
+];
 
 export const CHAINS_TO_NATIVE_TOKENS: Record<Chains, Assets> = {
   [Chains.Ethereum]: "WETH",

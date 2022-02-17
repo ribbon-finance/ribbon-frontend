@@ -29,10 +29,7 @@ function App() {
     <ChainContextProvider>
       <ConnectionProvider endpoint={getSolanaClusterURI()}>
         {/* TODO: We only enable autoConnect when Solana is production ready as to not prompt the user */}
-        <SolanaWalletProvider
-          wallets={SOLANA_WALLETS}
-          autoConnect={!isProduction()}
-        >
+        <SolanaWalletProvider wallets={SOLANA_WALLETS} autoConnect={true}>
           <Web3ContextProvider>
             <Web3ReactProvider getLibrary={getLibrary}>
               <PendingTransactionsContextProvider>
