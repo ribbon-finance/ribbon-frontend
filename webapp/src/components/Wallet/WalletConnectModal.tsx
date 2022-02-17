@@ -89,15 +89,19 @@ const WalletConnectModal: React.FC = () => {
 
   const onActivate = async () => {
     if (globalWallet.connectingWallet && selectedChain) {
-      if (selectedChain === chain) {
+      // Disregard the same flows and close modal
+      if (
+        selectedChain === chain &&
+        globalWallet.connectedWallet === globalWallet.connectingWallet
+      ) {
         return onClose();
-      }
-
-      try {
-        await activate(selectedChain);
-        onClose();
-      } catch (error) {
-        console.error(error);
+      } else {
+        try {
+          await activate(selectedChain);
+          onClose();
+        } catch (error) {
+          console.error(error);
+        }
       }
     }
   };

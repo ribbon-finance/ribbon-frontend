@@ -91,39 +91,49 @@ export const useWeb3Wallet = (): Web3WalletData => {
 
   const activate = useCallback(
     async (newChain: Chains) => {
-      try {
-        if (isEthereumWallet(globalWallet.connectingWallet as EthereumWallet)) {
-          const connector =
-            evmConnectors[globalWallet.connectingWallet as EthereumWallet]();
+      if (isEthereumWallet(globalWallet.connectingWallet as EthereumWallet)) {
+        const connector =
+          evmConnectors[globalWallet.connectingWallet as EthereumWallet]();
+
+        setWallet({
+          connectingWallet: undefined,
+          connectedWallet: globalWallet.connectingWallet,
+        });
+
+        try {
           await activateEth(connector);
           deactivateSolana();
           setChainToSwitch(newChain);
-        } else if (
-          isSolanaWallet(globalWallet.connectingWallet as SolanaWallet)
-        ) {
-          let walletName: WalletName = WalletName.Phantom;
-          switch (globalWallet.connectingWallet) {
-            case SolanaWallet.Phantom:
-              walletName = WalletName.Phantom;
-              break;
-            case SolanaWallet.Solflare:
-              walletName = WalletName.Solflare;
-              break;
-          }
+        } catch (error) {
+          console.error(error);
+        }
+      } else if (
+        isSolanaWallet(globalWallet.connectingWallet as SolanaWallet)
+      ) {
+        let walletName: WalletName = WalletName.Phantom;
+        switch (globalWallet.connectingWallet) {
+          case SolanaWallet.Phantom:
+            walletName = WalletName.Phantom;
+            break;
+          case SolanaWallet.Solflare:
+            walletName = WalletName.Solflare;
+            break;
+        }
 
+        setWallet({
+          connectingWallet: undefined,
+          connectedWallet: globalWallet.connectingWallet,
+        });
+
+        try {
           await deactivateEth();
           selectWalletSolana(walletName);
-        } else {
-          throw new Error("Wallet is not supported");
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
+      } else {
+        throw new Error("Wallet is not supported");
       }
-
-      setWallet({
-        connectingWallet: undefined,
-        connectedWallet: globalWallet.connectingWallet,
-      });
     },
     [
       activateEth,
