@@ -68,11 +68,6 @@ const ProductCard = styled(motion.div)<{ color: string }>`
   &:hover {
     box-shadow: ${(props) => props.color}66 0px 0px 70px;
     border: 2px ${theme.border.style} ${(props) => props.color};
-
-    -webkit-animation: ${(props) => shimmerKeyframe(props.color)} 5s ease
-      infinite;
-    -moz-animation: ${(props) => shimmerKeyframe(props.color)} 5s ease infinite;
-    animation: ${(props) => shimmerKeyframe(props.color)} 5s ease infinite;
   }
 `;
 
