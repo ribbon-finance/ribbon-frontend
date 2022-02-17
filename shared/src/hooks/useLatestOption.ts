@@ -4,6 +4,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 
 import {
   getAssets,
+  getVaultChain,
   isPutVault,
   VaultList,
   VaultOptions,
@@ -17,7 +18,7 @@ import {
 } from "../models/vault";
 import { getAssetDecimals } from "../utils/asset";
 import useVaultActivity, { useAllVaultActivities } from "./useVaultActivity";
-import { assetToFiat, formatOption } from "../utils/math";
+import { assetToFiat, formatOptionStrike } from "../utils/math";
 import { useAssetsPrice } from "./useAssetPrice";
 import { formatUnits } from "@ethersproject/units";
 
@@ -31,6 +32,7 @@ export const useLatestOption = (
     vaultVersion
   );
   const { prices, loading: assetPriceLoading } = useAssetsPrice();
+  const chain = getVaultChain(vaultOption);
 
   const optionHistory = useMemo(() => {
     const sortedActivities = activities
@@ -63,12 +65,12 @@ export const useLatestOption = (
         amount: isPut
           ? parseFloat(
               assetToFiat(shortPosition.depositAmount, prices[asset]!, decimals)
-            ) / formatOption(shortPosition.strikePrice)
+            ) / formatOptionStrike(shortPosition.strikePrice, chain)
           : parseFloat(formatUnits(shortPosition.depositAmount, decimals)),
         isPut: isPut,
       };
     });
-  }, [activities, asset, prices, vaultOption]);
+  }, [chain, activities, asset, prices, vaultOption]);
 
   return {
     option: optionHistory.length > 0 ? optionHistory[0] : undefined,
@@ -97,6 +99,7 @@ export const useLatestOptions = () => {
               if (sortedActivities.length <= 0) {
                 return [vaultOption, []];
               }
+              const chain = getVaultChain(vaultOption);
 
               return [
                 vaultOption,
@@ -128,7 +131,7 @@ export const useLatestOptions = () => {
                             prices[asset]!,
                             decimals
                           )
-                        ) / formatOption(shortPosition.strikePrice)
+                        ) / formatOptionStrike(shortPosition.strikePrice, chain)
                       : parseFloat(
                           formatUnits(shortPosition.depositAmount, decimals)
                         ),

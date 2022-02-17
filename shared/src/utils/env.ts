@@ -28,13 +28,15 @@ export const SUBGRAPH_URI: Record<number, string> = {
     "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-aurora",
 };
 
+export const SOLANA_SUBGRAPH = "https://ribbon-solana.hasura.app/v1/graphql";
+
 // We just default to staging by default
 export const isDevelopment = () => !isStaging() && !isProduction();
 
 // We use the same environment for development and staging
 // But we still need a switch to only show dev features locally
 export const isStaging = () =>
-  process.env.REACT_APP_VERCEL_GIT_COMMIT_REF === "staging";
+  process.env.REACT_APP_VERCEL_GIT_COMMIT_REF !== "staging";
 
 export const isProduction = () =>
   process.env.REACT_APP_VERCEL_GIT_COMMIT_REF === "master";

@@ -17,8 +17,9 @@ import sizes from "shared/lib/designSystem/sizes";
 import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "../../hooks/usePullUp";
 import {
+  getVaultChain,
   getDisplayAssets,
-  getEtherscanURI,
+  getExplorerURI,
   hasVaultVersion,
   VaultAddressMap,
   VaultList,
@@ -267,11 +268,11 @@ const DepositPage = () => {
 
       <DepositPageContainer className="py-5">
         <div className="row">
-          {VaultAddressMap[vaultOption][vaultVersion] && chainId && (
+          {VaultAddressMap[vaultOption][vaultVersion] && (
             <BaseLink
-              to={`${getEtherscanURI(chainId)}/address/${VaultAddressMap[
-                vaultOption
-              ][vaultVersion]!}`}
+              to={`${getExplorerURI(
+                getVaultChain(vaultOption)
+              )}/address/${VaultAddressMap[vaultOption][vaultVersion]!}`}
               target="_blank"
               rel="noreferrer noopener"
               className="w-100"
@@ -351,7 +352,7 @@ const HeroSection: React.FC<{
       case "WAVAX":
         return <Logo showBackground />;
       case "SOL":
-        return <Logo showBackground height="100%" width="100%" />;
+        return <Logo height="100%" width="100%" />;
       default:
         return <Logo />;
     }

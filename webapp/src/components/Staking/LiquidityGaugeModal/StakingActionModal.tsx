@@ -4,8 +4,8 @@ import { formatUnits, parseUnits } from "@ethersproject/units";
 import { BigNumber } from "@ethersproject/bignumber";
 
 import {
-  BLOCKCHAIN_EXPLORER_NAME,
-  getEtherscanURI,
+  getExplorerName,
+  getExplorerURI,
   VaultOptions,
 } from "shared/lib/constants/constants";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
@@ -36,6 +36,7 @@ import useV2Vault from "shared/lib/hooks/useV2Vault";
 import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import { useChain } from "shared/lib/hooks/chainContext";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -122,6 +123,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     "form" | "preview" | "walletAction" | "processing"
   >("form");
   const [input, setInput] = useState("");
+  const [chain] = useChain();
   const { chainId } = useWeb3Wallet();
   const { provider } = useWeb3Context();
   const votingEscrowContract = useVotingEscrow();
@@ -479,13 +481,13 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               <BaseModalContentColumn marginTop="auto">
                 {chainId && (
                   <BaseUnderlineLink
-                    to={`${getEtherscanURI(chainId)}/tx/${txId}`}
+                    to={`${getExplorerURI(chain)}/tx/${txId}`}
                     target="_blank"
                     rel="noreferrer noopener"
                     className="d-flex"
                   >
                     <PrimaryText className="mb-2">
-                      View on {BLOCKCHAIN_EXPLORER_NAME[chainId]}
+                      View on {getExplorerName(chain)}
                     </PrimaryText>
                   </BaseUnderlineLink>
                 )}
@@ -496,6 +498,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     }
   }, [
     apys,
+    chain,
     chainId,
     color,
     decimals,

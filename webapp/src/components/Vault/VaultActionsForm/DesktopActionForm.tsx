@@ -3,10 +3,11 @@ import styled from "styled-components";
 
 import ActionModal from "./Modal/ActionModal";
 import {
-  getEtherscanURI,
+  getExplorerURI,
   VaultAddressMap,
   VaultOptions,
   VaultVersion,
+  getVaultChain,
 } from "shared/lib/constants/constants";
 import { useCallback } from "react";
 import VaultV1ActionsForm from "./VaultV1ActionsForm";
@@ -15,7 +16,6 @@ import { BaseLink, Title } from "shared/lib/designSystem";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { truncateAddress } from "shared/lib/utils/address";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
-import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 
 const ContractButton = styled.div<{ color: string }>`
   display: flex;
@@ -39,7 +39,6 @@ interface DesktopActionFormProps {
 
 const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
   const [showActionModal, setShowActionModal] = useState(false);
-  const { chainId } = useWeb3Wallet();
 
   const renderForm = useCallback(() => {
     switch (vault.vaultVersion) {
@@ -71,11 +70,13 @@ const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
       />
       {renderForm()}
 
-      {chainId && VaultAddressMap[vault.vaultOption][vault.vaultVersion] && (
+      {VaultAddressMap[vault.vaultOption][vault.vaultVersion] && (
         <BaseLink
-          to={`${getEtherscanURI(chainId)}/address/${VaultAddressMap[
-            vault.vaultOption
-          ][vault.vaultVersion]!}`}
+          to={`${getExplorerURI(
+            getVaultChain(vault.vaultOption)
+          )}/address/${VaultAddressMap[vault.vaultOption][
+            vault.vaultVersion
+          ]!}`}
           target="_blank"
           rel="noreferrer noopener"
           className="w-100"

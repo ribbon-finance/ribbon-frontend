@@ -33,9 +33,10 @@ import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import useENSSearch from "shared/lib/hooks/useENSSearch";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import {
-  BLOCKCHAIN_EXPLORER_NAME,
-  BLOCKCHAIN_EXPLORER_URI,
+  Chains,
+  getExplorerName,
   getAssets,
+  getExplorerURI,
   VaultList,
   VaultOptions,
   VaultVersion,
@@ -52,6 +53,7 @@ import YourPosition from "shared/lib/components/Vault/YourPosition";
 import AirdropButton from "../Airdrop/AirdropButton";
 import AirdropModal from "../Airdrop/AirdropModal";
 import Indicator from "shared/lib/components/Indicator/Indicator";
+import { useChain } from "shared/lib/hooks/chainContext";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -302,6 +304,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   variant,
   showVaultPositionHook,
 }) => {
+  const [chain] = useChain();
   const { deactivate, ethereumProvider, active, account, chainId } =
     useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
@@ -383,10 +386,10 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   }, [account]);
 
   const handleOpenEtherscan = useCallback(() => {
-    if (account && chainId) {
-      window.open(`${BLOCKCHAIN_EXPLORER_URI[chainId]}/address/${account}`);
+    if (account && chain) {
+      window.open(`${getExplorerURI(chain)}/address/${account}`);
     }
-  }, [account, chainId]);
+  }, [account, chain]);
 
   const handleDisconnect = useCallback(async () => {
     await deactivate();
@@ -518,9 +521,9 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
               handleCopyAddress,
               renderCopiedButton()
             )}
-            {chainId &&
+            {chain !== Chains.NotSelected &&
               renderMenuItem(
-                `OPEN IN ${BLOCKCHAIN_EXPLORER_NAME[chainId]}`,
+                `OPEN IN ${getExplorerName(chain)}`,
                 handleOpenEtherscan
               )}
             {renderMenuItem("DISCONNECT", handleDisconnect)}
@@ -548,9 +551,9 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
           handleCopyAddress,
           renderCopiedButton()
         )}
-        {chainId &&
+        {chain !== Chains.NotSelected &&
           renderMenuItem(
-            `OPEN IN ${BLOCKCHAIN_EXPLORER_NAME[chainId]}`,
+            `OPEN IN ${getExplorerName(chain)}`,
             handleOpenEtherscan
           )}
         {renderMenuItem("DISCONNECT", handleDisconnect)}
