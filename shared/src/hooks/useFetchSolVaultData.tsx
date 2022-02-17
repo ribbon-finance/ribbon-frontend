@@ -31,6 +31,13 @@ const useFetchSolVaultData = (): SolanaVaultData => {
         vaultUserData,
       } = await vaultData.getVaultData(connection, vaultAddress);
 
+      const depositQueueAmounts = await Promise.all(
+        vault.depositQueue.map((node) => connection.getBalance(node.address))
+      );
+      const totalVaultQueuedDeposits = BigNumber.from(
+        depositQueueAmounts.reduce((partialSum, a) => partialSum + a, 0)
+      );
+
       const totalQueueDeposit = await getUserDepositQueueAmount(
         vault,
         connection,
@@ -58,7 +65,9 @@ const useFetchSolVaultData = (): SolanaVaultData => {
       setData({
         responses: {
           "rSOL-THETA": {
-            totalBalance: BigNumber.from(totalBalance),
+            totalBalance: BigNumber.from(totalBalance).add(
+              totalVaultQueuedDeposits
+            ),
             cap: BigNumber.from(depositLimit),
             pricePerShare: pricePerShare
               ? parseUnits(
