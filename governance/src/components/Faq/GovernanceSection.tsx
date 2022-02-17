@@ -43,7 +43,8 @@ const GovernanceSection = () => {
             header: "How much veRBN do I need to make a governance proposal?",
             body: (
               <FAQBody>
-                You must have at least [???] veRBN to make governance proposals.
+                You must have at least 62,500 veRBN to make governance
+                proposals.
               </FAQBody>
             ),
           },

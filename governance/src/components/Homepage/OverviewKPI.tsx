@@ -34,7 +34,8 @@ const KPICard = styled.div`
   flex-direction: column;
   width: 100%;
   padding: 16px;
-  background: ${colors.background.two};
+  background: #ffffff0a;
+  backdrop-filter: blur(40px);
   border-radius: ${theme.border.radius};
 
   &:not(:first-child) {
@@ -232,7 +233,7 @@ const OverviewKPI = () => {
           loop
         />
       </FloatingBackgroundContainer>
-      <FloatingBackgroundContainer backgroundColor="#FFFFFF0A" />
+      <FloatingBackgroundContainer backgroundColor="#000000E0" />
     </>
   );
 };
