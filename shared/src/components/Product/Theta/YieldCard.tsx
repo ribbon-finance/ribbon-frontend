@@ -85,16 +85,14 @@ const TopContainer = styled.div<{ color: string }>`
   background: linear-gradient(
     270deg,
     ${(props) => props.color}10 1.04%,
-    ${(props) => props.color}25 98.99%
+    ${(props) => props.color}30 98.99%
   );
 
-  ${ProductCard}:hover & {
-    background-size: 400% 400%;
+  background-size: 400% 400%;
 
-    -webkit-animation: ${animatedGradientKeyframe} 5s ease infinite;
-    -moz-animation: ${animatedGradientKeyframe} 5s ease infinite;
-    animation: ${animatedGradientKeyframe} 5s ease infinite;
-  }
+  -webkit-animation: ${animatedGradientKeyframe} 5s ease infinite;
+  -moz-animation: ${animatedGradientKeyframe} 5s ease infinite;
+  animation: ${animatedGradientKeyframe} 5s ease infinite;
 `;
 
 const TagContainer = styled.div`
