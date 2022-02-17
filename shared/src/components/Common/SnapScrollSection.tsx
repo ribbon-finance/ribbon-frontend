@@ -135,7 +135,6 @@ const SnapScrollSection: React.FC<
   const handleWheel = useCallback((e: globalThis.WheelEvent) => {
     // Ignore small delta movement
     if (e.deltaY > -25 && e.deltaY < 25) {
-      console.log(e.deltaY);
       return;
     }
 
