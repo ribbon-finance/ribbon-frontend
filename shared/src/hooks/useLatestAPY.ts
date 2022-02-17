@@ -65,6 +65,30 @@ const getPriceHistoryFromPeriod = (
 };
 
 /**
+ * We return [n-1 round price history, n round price history]
+ * @param priceHistory Price history objects
+ * @param round Round number in question
+ * @returns 2 price point for calculating APY, or undefined
+ */
+const getPriceHistoryFromRound = (
+  priceHistory: VaultPriceHistory[],
+  round: number
+): [VaultPriceHistory, VaultPriceHistory] | undefined => {
+  const currRoundPriceHistory = priceHistory.find(
+    (history) => history.round === round
+  );
+  const prevRoundPriceHistory = priceHistory.find(
+    (history) => history.round === round - 1
+  );
+
+  if (!currRoundPriceHistory || !prevRoundPriceHistory) {
+    return undefined;
+  }
+
+  return [prevRoundPriceHistory, currRoundPriceHistory];
+};
+
+/**
  * To calculate APY, we first find a week that has not been exercised.
  * This is to remove accounting of losses into calculating APY.
  * The calculation shall be calculated based on the start of previous period versus the the start of current period.
@@ -79,59 +103,55 @@ export const calculateAPYFromPriceHistory = (
   }: { vaultOption: VaultOptions; vaultVersion: VaultVersion },
   underlyingYieldAPR: number
 ) => {
-  const periodStart = moment()
-    .isoWeekday("friday")
-    .utc()
-    .set("hour", 10)
-    .set("minute", 0)
-    .set("second", 0)
-    .set("millisecond", 0);
+  switch (vaultVersion) {
+    case "v1":
+      const periodStart = moment()
+        .isoWeekday("friday")
+        .utc()
+        .set("hour", 10)
+        .set("minute", 0)
+        .set("second", 0)
+        .set("millisecond", 0);
 
-  if (periodStart.isAfter(moment())) {
-    periodStart.subtract(1, "week");
-  }
+      if (periodStart.isAfter(moment())) {
+        periodStart.subtract(1, "week");
+      }
 
-  let weeksAgo = 0;
+      let weeksAgo = 0;
 
-  while (true) {
-    const priceHistoryFromPeriod = getPriceHistoryFromPeriod(
-      priceHistory,
-      periodStart
-    );
+      while (true) {
+        const priceHistoryFromPeriod = getPriceHistoryFromPeriod(
+          priceHistory,
+          periodStart
+        );
 
-    if (priceHistoryFromPeriod) {
-      const [startingPricePerShare, endingPricePerShare] = [
-        parseFloat(
-          formatUnits(priceHistoryFromPeriod[0].pricePerShare, decimals)
-        ),
-        parseFloat(
-          formatUnits(priceHistoryFromPeriod[1].pricePerShare, decimals)
-        ),
-      ];
+        if (priceHistoryFromPeriod) {
+          const [startingPricePerShare, endingPricePerShare] = [
+            parseFloat(
+              formatUnits(priceHistoryFromPeriod[0].pricePerShare, decimals)
+            ),
+            parseFloat(
+              formatUnits(priceHistoryFromPeriod[1].pricePerShare, decimals)
+            ),
+          ];
 
-      /**
-       * If the given period is profitable, we calculate APY
-       */
-      if (endingPricePerShare > startingPricePerShare) {
-        if (weeksAgo > 0) {
           /**
-           * Fees and underlying yields had been accounted
+           * If the given period is profitable, we calculate APY
            */
-          return (
-            ((1 +
-              (endingPricePerShare - startingPricePerShare) /
-                startingPricePerShare) **
-              52 -
-              1) *
-            100
-          );
-        }
-
-        switch (vaultVersion) {
-          case "v1":
-            /**
-             * V1 does not have fees that can impact performance
-             */
+          if (endingPricePerShare > startingPricePerShare) {
+            if (weeksAgo > 0) {
+              /**
+               * Fees and underlying yields had been accounted
+               */
+              return (
+                ((1 +
+                  (endingPricePerShare - startingPricePerShare) /
+                    startingPricePerShare) **
+                  52 -
+                  1) *
+                100
+              );
+            }
 
             return (
               ((1 +
@@ -142,7 +162,71 @@ export const calculateAPYFromPriceHistory = (
                 100 +
               underlyingYieldAPR
             );
-          case "v2":
+          }
+        }
+
+        /**
+         * Otherwise, we look for the previous week
+         */
+        periodStart.subtract(1, "week");
+        weeksAgo += 1;
+
+        /**
+         * Prevent searching too far ago
+         */
+        if (weeksAgo >= 5) {
+          return 0;
+        }
+      }
+    default:
+      let biggestRound = priceHistory[0]?.round || 0;
+
+      priceHistory.forEach((history) => {
+        if (history.round && history.round > biggestRound) {
+          biggestRound = history.round;
+        }
+      });
+
+      if (biggestRound <= 0) {
+        return 0;
+      }
+
+      let currRound = biggestRound;
+
+      while (true) {
+        const priceHistoryFromPeriod = getPriceHistoryFromRound(
+          priceHistory,
+          currRound
+        );
+
+        if (priceHistoryFromPeriod) {
+          const [startingPricePerShare, endingPricePerShare] = [
+            parseFloat(
+              formatUnits(priceHistoryFromPeriod[0].pricePerShare, decimals)
+            ),
+            parseFloat(
+              formatUnits(priceHistoryFromPeriod[1].pricePerShare, decimals)
+            ),
+          ];
+
+          /**
+           * If the given period is profitable, we calculate APY
+           */
+          if (endingPricePerShare > startingPricePerShare) {
+            if (currRound !== biggestRound) {
+              /**
+               * Fees and underlying yields had been accounted
+               */
+              return (
+                ((1 +
+                  (endingPricePerShare - startingPricePerShare) /
+                    startingPricePerShare) **
+                  52 -
+                  1) *
+                100
+              );
+            }
+
             /**
              * We first calculate price per share after annualized management fees are charged
              */
@@ -173,22 +257,18 @@ export const calculateAPYFromPriceHistory = (
                 100 +
               underlyingYieldAPR
             );
+          }
+        }
+
+        currRound -= 1;
+
+        /**
+         * Prevent searching too far ago
+         */
+        if (currRound <= 1) {
+          return 0;
         }
       }
-    }
-
-    /**
-     * Otherwise, we look for the previous week
-     */
-    periodStart.subtract(1, "week");
-    weeksAgo += 1;
-
-    /**
-     * Prevent searching too far ago
-     */
-    if (weeksAgo >= 5) {
-      return 0;
-    }
   }
 };
 
@@ -228,7 +308,9 @@ export const useLatestAPY = (
       ? 0
       : calculateAPYFromPriceHistory(
           priceHistory.map((history) =>
-            history.round === round ? { ...history, pricePerShare } : history
+            history.round === round && pricePerShare.gte(history.pricePerShare)
+              ? { ...history, pricePerShare }
+              : history
           ),
           getAssetDecimals(getAssets(vaultOption)),
           { vaultOption, vaultVersion },
@@ -279,7 +361,8 @@ export const useLatestAPYs = () => {
                   ? 0
                   : calculateAPYFromPriceHistory(
                       priceHistory.map((history) =>
-                        history.round === round
+                        history.round === round &&
+                        pricePerShare.gte(history.pricePerShare)
                           ? { ...history, pricePerShare }
                           : history
                       ),
