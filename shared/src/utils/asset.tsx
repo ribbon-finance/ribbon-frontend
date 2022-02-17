@@ -99,6 +99,8 @@ export const getDefaultSignificantDecimalsFromAssetDecimals = (
       return 6;
     case 8:
       return 5;
+    case 9:
+      return 4;
     case 6:
     default:
       return 2;
