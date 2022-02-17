@@ -6,6 +6,7 @@ import {
   VaultVersion,
 } from "../../constants/constants";
 import { Assets } from "../../store/types";
+import { getChainByAsset } from "../../utils/asset";
 
 export const ProductList = [
   "yield",
@@ -87,14 +88,31 @@ export type VaultsDisplayVersionProps = {
 };
 
 export const getFilterAssets = (chain: Chains): Assets[] => {
+  const assetFilterList: Assets[] = [
+    "AAVE",
+    "WETH",
+    "USDC",
+    "WBTC",
+    "stETH",
+    "yvUSDC",
+    "WAVAX",
+    "SOL",
+  ];
+
   switch (chain) {
     case Chains.Ethereum:
-      return ["AAVE", "WETH", "USDC", "WBTC", "stETH", "yvUSDC"];
+      return assetFilterList.filter(
+        (asset) => getChainByAsset(asset) === Chains.Ethereum
+      );
     case Chains.Avalanche:
-      return ["WAVAX"];
+      return assetFilterList.filter(
+        (asset) => getChainByAsset(asset) === Chains.Avalanche
+      );
     case Chains.Solana:
-      return ["SOL"];
+      return assetFilterList.filter(
+        (asset) => getChainByAsset(asset) === Chains.Solana
+      );
+    case Chains.NotSelected:
+      return assetFilterList;
   }
-
-  return [];
 };
