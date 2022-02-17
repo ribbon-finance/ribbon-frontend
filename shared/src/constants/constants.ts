@@ -852,9 +852,11 @@ export const READABLE_CHAIN_NAMES: Record<Chains, string> = {
   [Chains.NotSelected]: "No Chain Selected",
 };
 
-export const ENABLED_CHAINS: Chains[] = isProduction()
-  ? [Chains.Ethereum, Chains.Avalanche]
-  : [Chains.Ethereum, Chains.Avalanche, Chains.Solana];
+export const ENABLED_CHAINS: Chains[] = [
+  Chains.Ethereum,
+  Chains.Avalanche,
+  Chains.Solana,
+];
 
 export const CHAINS_TO_NATIVE_TOKENS: Record<Chains, Assets> = {
   [Chains.Ethereum]: "WETH",
