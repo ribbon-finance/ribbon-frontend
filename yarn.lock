@@ -3761,10 +3761,10 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@zetamarkets/flex-sdk@0.2.7":
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/@zetamarkets/flex-sdk/-/flex-sdk-0.2.7.tgz#47339e5d0dcd1b8b669dba5e6d4637d85383e20e"
-  integrity sha512-GPS+9rzFqccz04FQObWwgkrmIgJALcaiQPiAkbmIsDitqLLfLz4AMBCLmOZY1sVsAxRgRbIX/ea5dJz4Yb1hvA==
+"@zetamarkets/flex-sdk@0.2.11":
+  version "0.2.11"
+  resolved "https://registry.yarnpkg.com/@zetamarkets/flex-sdk/-/flex-sdk-0.2.11.tgz#4fe774e23c308a2ea0c4ff153e1f7a6cb217a663"
+  integrity sha512-7nZUnGEyg37NJkDnTP9s0AvwRTlcITepJTep6WmvbgbZcbOSE6t9cF39bstg78VIWHx86J/drpOZ4eSehaii6w==
   dependencies:
     "@project-serum/anchor" "0.18.2"
     "@solana/spl-token" "0.1.6"
