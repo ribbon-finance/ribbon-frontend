@@ -27,7 +27,7 @@ import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsCont
 import useVaultActionForm from "webapp/lib/hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
 import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
-import useV2Vault from "shared/lib/hooks/useV2Vault";
+import useV2VaultContract from "shared/lib/hooks/useV2VaultContract";
 import WarningStep from "webapp/lib/components/Vault/VaultActionsForm/Modal/WarningStep";
 import { getCurvePool } from "shared/lib/hooks/useCurvePool";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
@@ -83,7 +83,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       ? vaultActionForm.migrateSourceVault || vaultOption
       : vaultOption
   );
-  const v2Vault = useV2Vault(vaultOption);
+  const v2Vault = useV2VaultContract(vaultOption);
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
   const { vaultBalanceInAsset: v1VaultBalanceInAsset } =
