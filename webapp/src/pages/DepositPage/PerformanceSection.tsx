@@ -172,9 +172,9 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
               following Friday at 12pm UTC.
               <br />
               <br />
-              Users can withdraw their funds instantly during the weekly
-              timelock period where the vault closes it’s previous position and
-              opens its new position.{" "}
+              {isSolanaVault(vaultOption)
+                ? "Funds scheduled for withdrawal are automatically credited to their accounts once the vault rolls over its position."
+                : "Users can withdraw their funds instantly during the weekly timelock period where the vault closes it’s previous position and opens its new position."}{" "}
             </>
           );
       }
