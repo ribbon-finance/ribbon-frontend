@@ -15,16 +15,17 @@ import { SubgraphDataContext } from "./subgraphDataContext";
 const getVaultAccountKey = (vault: VaultOptions) =>
   `vaultAccount_${vault.replace(/-/g, "")}`;
 
-export const vaultAccountsGraphql = (account: string, version: VaultVersion) =>
+export const vaultAccountsGraphql = (_account: string, version: VaultVersion) =>
   VaultList.reduce((acc, vault) => {
     let vaultAddress = VaultAddressMap[vault][version];
+    let account = `${_account}`;
 
     if (!vaultAddress) {
       return acc;
     }
     if (!isSolanaVault(vault)) {
       vaultAddress = vaultAddress.toLowerCase();
-      account = account.toLowerCase();
+      account = _account.toLowerCase();
     }
 
     return (
