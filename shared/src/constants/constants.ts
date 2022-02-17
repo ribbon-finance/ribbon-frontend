@@ -116,7 +116,7 @@ export const EVMVaultList = [
 
 export const SolanaVaultList = ["rSOL-THETA"] as const;
 
-export const RetailVaultList = [...EVMVaultList, ...SolanaVaultList];
+export const RetailVaultList = [...SolanaVaultList, ...EVMVaultList];
 
 export const TreasuryVaultList = ["rPERP-TSRY"] as const;
 
@@ -128,7 +128,6 @@ const AllVaultOptions = [
 
 export type VaultOptions = typeof AllVaultOptions[number];
 const ProdExcludeVault: VaultOptions[] = [
-  "rSOL-THETA",
   "rNEAR-THETA",
   "rAURORA-THETA",
   "rUSDC-AVAX-P-THETA",
