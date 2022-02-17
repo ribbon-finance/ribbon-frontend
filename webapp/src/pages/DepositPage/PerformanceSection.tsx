@@ -11,6 +11,7 @@ import {
   VaultOptions,
   VaultVersion,
   VaultFees,
+  isSolanaVault,
 } from "shared/lib/constants/constants";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -237,7 +238,9 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
             charged on the assets managed by the vault.
             <br />
             <br />
-            If the weekly strategy is unprofitable, there are no fees charged.
+            {isSolanaVault(vaultOption)
+              ? "If the weekly strategy is unprofitable, performance fees are not charged."
+              : "If the weekly strategy is unprofitable, there are no fees charged."}
           </ParagraphText>
         </Paragraph>
       )}
