@@ -20,7 +20,11 @@ import {
   V2WithdrawOptionList,
 } from "../Modal/types";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
-import { getAssets, VaultOptions } from "shared/lib/constants/constants";
+import {
+  getAssets,
+  isSolanaVault,
+  VaultOptions,
+} from "shared/lib/constants/constants";
 import {
   ActionButton,
   ConnectWalletButton,
@@ -301,14 +305,18 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
                 title="PENDING WITHDRAWALS"
                 explanation={
                   <>
-                    This is the total amount of ETH you’ve requested to withdraw
-                    from the vault’s pool of investable capital.
+                    This is the total amount of {assetDisplay} you’ve requested
+                    to withdraw from the vault’s pool of investable capital.
                     <br />
                     <br />
                     On Friday at 12pm UTC, the vault will close it’s weekly
-                    position and remove the amount of ETH you requested from its
-                    pool of investable capital. You can then complete your
-                    withdrawal and remove your funds from the vault.
+                    position and remove the amount of {assetDisplay} you
+                    requested from its pool of investable capital.
+                    <br />
+                    <br />
+                    {isSolanaVault(vaultOption)
+                      ? "The funds are automatically credited to your account once the vault is rolled over."
+                      : "You can then complete your withdrawal and remove your funds from the vault."}
                   </>
                 }
                 renderContent={({ ref, ...triggerHandler }) => (
@@ -328,6 +336,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
 
     return <></>;
   }, [
+    vaultOption,
     asset,
     assetDisplay,
     depositBalanceInAsset,

@@ -32,7 +32,7 @@ import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import useV2Vault from "shared/lib/hooks/useV2Vault";
+import useV2VaultContract from "shared/lib/hooks/useV2VaultContract";
 import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
@@ -139,7 +139,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
   const [txId, setTxId] = useState("");
   const [totalVeRBN, setTotalVeRBN] = useState<BigNumber>();
 
-  const vaultContract = useV2Vault(vaultOption);
+  const vaultContract = useV2VaultContract(vaultOption);
   const color = getVaultColor(vaultOption);
 
   // APY, base rewards, and boosted rewards

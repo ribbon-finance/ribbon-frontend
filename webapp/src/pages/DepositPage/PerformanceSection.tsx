@@ -11,6 +11,7 @@ import {
   VaultOptions,
   VaultVersion,
   VaultFees,
+  isSolanaVault,
 } from "shared/lib/constants/constants";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -171,14 +172,14 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
               following Friday at 12pm UTC.
               <br />
               <br />
-              Users can withdraw their funds instantly during the weekly
-              timelock period where the vault closes it’s previous position and
-              opens its new position.{" "}
+              {isSolanaVault(vaultOption)
+                ? "Funds scheduled for withdrawal are automatically credited to their accounts once the vault rolls over its position."
+                : "Users can withdraw their funds instantly during the weekly timelock period where the vault closes it’s previous position and opens its new position."}{" "}
             </>
           );
       }
     },
-    []
+    [vaultOption]
   );
 
   return (
@@ -237,7 +238,9 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
             charged on the assets managed by the vault.
             <br />
             <br />
-            If the weekly strategy is unprofitable, there are no fees charged.
+            {isSolanaVault(vaultOption)
+              ? "If the weekly strategy is unprofitable, performance fees are not charged."
+              : "If the weekly strategy is unprofitable, there are no fees charged."}
           </ParagraphText>
         </Paragraph>
       )}

@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   getAssets,
+  isSolanaVault,
   VaultList,
   VaultOptions,
   VaultVersion,
@@ -121,6 +122,13 @@ export const TxStatusToast = () => {
         case "stakingApproval":
           return `Your ${_currentTx.stakeAsset} is ready to stake`;
         case "withdrawInitiation":
+          if (isSolanaVault(_currentTx.vault)) {
+            return `Initiated ${amountFormatted} ${getAssetDisplay(
+              getAssets(_currentTx.vault)
+            )} withdrawal from ${
+              productCopies[_currentTx.vault].title
+            }. Your funds are automatically credited after 12pm UTC on Friday.`;
+          }
           return `Initiated ${amountFormatted} ${getAssetDisplay(
             getAssets(_currentTx.vault)
           )} withdrawal from ${

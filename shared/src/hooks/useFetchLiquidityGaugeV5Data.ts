@@ -18,7 +18,7 @@ import {
 } from "../constants/constants";
 import { BigNumber } from "@ethersproject/bignumber";
 import { getLiquidityGaugeV5 } from "./useLiquidityGaugeV5";
-import { getV2Vault } from "./useV2Vault";
+import { getV2VaultContract } from "./useV2VaultContract";
 import useLiquidityTokenMinter from "./useLiquidityTokenMinter";
 import useLiquidityGaugeController from "./useLiquidityGaugeController";
 import { constants } from "ethers";
@@ -74,7 +74,11 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
           vault,
           active
         )!;
-        const vaultContract = getV2Vault(library || provider, vault, active);
+        const vaultContract = getV2VaultContract(
+          library || provider,
+          vault,
+          active
+        );
 
         /**
          * 1. Pool size

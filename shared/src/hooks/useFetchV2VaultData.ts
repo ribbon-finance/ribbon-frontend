@@ -3,7 +3,7 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { EVMVaultList, getVaultNetwork } from "../constants/constants";
 import { isProduction } from "../utils/env";
-import { getV2Vault } from "./useV2Vault";
+import { getV2VaultContract } from "./useV2VaultContract";
 import { impersonateAddress } from "../utils/development";
 import {
   defaultV2VaultData,
@@ -55,7 +55,7 @@ const useFetchV2VaultData = (): V2VaultData => {
             )
         );
 
-        const contract = getV2Vault(
+        const contract = getV2VaultContract(
           library || inferredProviderFromVault,
           vault,
           active

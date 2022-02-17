@@ -10,7 +10,7 @@ import {
 } from "../constants/constants";
 import { useWeb3Context } from "./web3Context";
 
-export const getV2Vault = (
+export const getV2VaultContract = (
   library: any,
   vaultOption: VaultOptions,
   useSigner: boolean = true
@@ -35,7 +35,7 @@ export const getV2Vault = (
   }
 };
 
-const useV2Vault = (vaultOption: VaultOptions) => {
+const useV2VaultContract = (vaultOption: VaultOptions) => {
   const { active, library } = useWeb3React();
   const { provider } = useWeb3Context();
   const [vault, setVault] = useState<
@@ -44,10 +44,10 @@ const useV2Vault = (vaultOption: VaultOptions) => {
 
   useEffect(() => {
     if (isSolanaVault(vaultOption)) return;
-    const vault = getV2Vault(library || provider, vaultOption, active);
+    const vault = getV2VaultContract(library || provider, vaultOption, active);
     setVault(vault);
   }, [active, library, provider, vaultOption]);
 
   return vault;
 };
-export default useV2Vault;
+export default useV2VaultContract;
