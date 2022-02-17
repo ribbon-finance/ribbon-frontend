@@ -641,8 +641,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                   />{" "}
                   vault and setting a strike price (selected by the manager) and
                   expiry date (the following Friday). In return, the vault
-                  receives oTokens from the {getVaultTarget()} which represent
-                  the {optionAssetUnit} {isPut ? "put" : "call"} options.
+                  receives option tokens from the {getVaultTarget()} which
+                  represent the {optionAssetUnit} {isPut ? "put" : "call"}{" "}
+                  options.
                 </>
               );
             case "v2":
