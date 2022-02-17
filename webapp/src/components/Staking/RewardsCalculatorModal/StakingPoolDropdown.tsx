@@ -42,6 +42,7 @@ const StakingPoolMenu = styled(motion.div)<{ isOpen: boolean }>`
         width: 100%;
         background-color: ${colors.background.three};
         border-radius: ${theme.border.radius};
+        box-shadow: 2px 4px 40px rgba(0, 0, 0, 0.64);
       `
       : `
         display: none;

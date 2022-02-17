@@ -13,8 +13,6 @@ import useElementSize from "shared/lib/hooks/useElementSize";
 import { getVaultColor } from "shared/lib/utils/vault";
 import OverviewBarchart from "./OverviewBarchart";
 import useTextAnimation from "shared/lib/hooks/useTextAnimation";
-import useScreenSize from "shared/lib/hooks/useScreenSize";
-import sizes from "shared/lib/designSystem/sizes";
 
 const perPage = 3;
 
@@ -26,7 +24,6 @@ const SectionLabel = styled.div`
 `;
 
 const TVLLeaderboard = () => {
-  const { width } = useScreenSize();
   const containerRef = useRef<HTMLDivElement>(null);
   const { width: containerWidth } = useElementSize(containerRef);
   const { data, totalTVL, loading: TVLLoading } = useTVL();
@@ -64,12 +61,7 @@ const TVLLeaderboard = () => {
           Total Value Locked
         </Subtitle>
       </SectionLabel>
-      <Title
-        fontSize={width >= sizes.lg ? 80 : 64}
-        lineHeight={width >= sizes.lg ? 96 : 72}
-        letterSpacing={1}
-        className="mt-3"
-      >
+      <Title fontSize={56} lineHeight={64} letterSpacing={1} className="mt-3">
         {TVLLoading ? loadingText : `$${formatAmount(totalTVL)}`}
       </Title>
 

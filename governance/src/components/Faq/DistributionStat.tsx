@@ -40,7 +40,7 @@ const DistributionStat: React.FC<DistributionStatProps> = ({
   return (
     <Container>
       <CircularProgress percentage={startingPercentage} />
-      <Label fontSize={14} color={colors.green}>
+      <Label fontSize={14} color={colors.primaryText}>
         {title}
       </Label>
     </Container>

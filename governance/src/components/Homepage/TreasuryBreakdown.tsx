@@ -21,8 +21,6 @@ import {
 } from "shared/lib/constants/constants";
 import { CHAINID, isDevelopment } from "shared/lib/utils/env";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
-import useScreenSize from "shared/lib/hooks/useScreenSize";
-import sizes from "shared/lib/designSystem/sizes";
 
 const SectionLabel = styled.div`
   display: flex;
@@ -32,7 +30,6 @@ const SectionLabel = styled.div`
 `;
 
 const TreasuryBreakdown = () => {
-  const { width } = useScreenSize();
   const containerRef = useRef<HTMLDivElement>(null);
   const { width: containerWidth } = useElementSize(containerRef);
   const { accounts, total, loading: treasuryLoading } = useTreasuryAccount();
@@ -55,12 +52,7 @@ const TreasuryBreakdown = () => {
           Ribbon Treasury
         </Subtitle>
       </SectionLabel>
-      <Title
-        fontSize={width >= sizes.lg ? 80 : 64}
-        lineHeight={width >= sizes.lg ? 96 : 72}
-        letterSpacing={1}
-        className="mt-3"
-      >
+      <Title fontSize={56} lineHeight={64} letterSpacing={1} className="mt-3">
         {treasuryLoading ? loadingText : `$${formatAmount(total)}`}
       </Title>
 
@@ -91,7 +83,7 @@ const TreasuryBreakdown = () => {
         className="d-flex align-items-center mt-5"
       >
         <SecondaryText fontSize={12} lineHeight={16} fontWeight={400}>
-          View Address
+          View Contract
         </SecondaryText>
         <ExternalIcon
           width={16}

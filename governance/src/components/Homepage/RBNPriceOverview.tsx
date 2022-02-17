@@ -104,12 +104,7 @@ const RBNPriceOverview = () => {
           RBN Price
         </Subtitle>
       </SectionLabel>
-      <Title
-        fontSize={width >= sizes.lg ? 80 : 64}
-        lineHeight={width >= sizes.lg ? 96 : 72}
-        letterSpacing={1}
-        className="mt-3"
-      >
+      <Title fontSize={56} lineHeight={64} letterSpacing={1} className="mt-3">
         {assetPriceLoading ? loadingText : currency(RBNPrice).format()}
       </Title>
 

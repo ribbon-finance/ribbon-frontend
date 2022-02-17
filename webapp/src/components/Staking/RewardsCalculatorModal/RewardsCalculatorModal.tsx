@@ -338,7 +338,7 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
   }, [lg5Data, decimals]);
 
   return (
-    <ModalContainer show={show} headerBackground height={600} onClose={onClose}>
+    <ModalContainer show={show} headerBackground height={508} onClose={onClose}>
       <>
         <ModalColumn marginTop={8}>
           <Title style={{ zIndex: 1 }}>REWARDS CALCULATOR</Title>

@@ -9,6 +9,7 @@ import {
   VaultOptions,
   VaultVersion,
   VaultVersionList,
+  Chains,
 } from "../../constants/constants";
 import { CHAINID } from "../../utils/env";
 
@@ -111,8 +112,9 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
   const filteredProducts = useMemo(() => {
     const filteredList = VaultList.filter((vault) => {
       if (
-        getChainByVaultOption(vault) !== chain ||
-        (chainId && VaultAddressMap[vault].chainId !== chainId)
+        chain !== Chains.NotSelected &&
+        (getChainByVaultOption(vault) !== chain ||
+          (chainId && VaultAddressMap[vault].chainId !== chainId))
       ) {
         return false;
       }
