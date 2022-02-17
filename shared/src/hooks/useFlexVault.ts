@@ -90,7 +90,7 @@ export const useFlexVault = (): FlexVaultData => {
         setFlexClient(client);
       });
     }
-  }, []);
+  }, [connection, flexClient]);
 
   // FLEX CLIENT HANDLER
   useEffect(() => {

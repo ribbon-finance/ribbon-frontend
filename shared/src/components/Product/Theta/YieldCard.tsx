@@ -36,10 +36,7 @@ import YieldComparison from "./YieldComparison";
 import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
 import useAssetsYield from "../../../hooks/useAssetsYield";
 import useLatestAPY from "../../../hooks/useLatestAPY";
-import {
-  animatedGradientKeyframe,
-  shimmerKeyframe,
-} from "../../../designSystem/keyframes";
+import { animatedGradientKeyframe } from "../../../designSystem/keyframes";
 
 const { formatUnits } = ethers.utils;
 
