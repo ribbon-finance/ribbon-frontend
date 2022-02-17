@@ -426,32 +426,34 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
         >
           {renderButtonContent()}
         </WalletButton>
-        <StakeUnstakeContainer>
-          <MobileStakingButton
-            role="button"
-            variant="stake"
-            onClick={() =>
-              setStakingModal((prev) => ({
-                ...prev,
-                show: true,
-                mode: stakeMode,
-              }))
-            }
-          >
-            <Title fontSize={14} color={colors.red}>
-              {stakeMode === "approve" ? "Approve" : "Stake"}
-            </Title>
-          </MobileStakingButton>
-          <MobileStakingButton
-            role="button"
-            variant="unstake"
-            onClick={() => {
-              setUnstakingModal((prev) => ({ ...prev, show: true }));
-            }}
-          >
-            <Title fontSize={14}>Unstake</Title>
-          </MobileStakingButton>
-        </StakeUnstakeContainer>
+        {active && account && (
+          <StakeUnstakeContainer>
+            <MobileStakingButton
+              role="button"
+              variant="stake"
+              onClick={() =>
+                setStakingModal((prev) => ({
+                  ...prev,
+                  show: true,
+                  mode: stakeMode,
+                }))
+              }
+            >
+              <Title fontSize={14} color={colors.red}>
+                {stakeMode === "approve" ? "Approve" : "Lock"}
+              </Title>
+            </MobileStakingButton>
+            <MobileStakingButton
+              role="button"
+              variant="unstake"
+              onClick={() => {
+                setUnstakingModal((prev) => ({ ...prev, show: true }));
+              }}
+            >
+              <Title fontSize={14}>UNLOCK</Title>
+            </MobileStakingButton>
+          </StakeUnstakeContainer>
+        )}
 
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>
           {renderMenuItem("CHANGE WALLET", handleChangeWallet)}

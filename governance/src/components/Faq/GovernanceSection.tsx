@@ -35,10 +35,7 @@ const GovernanceSection = () => {
             body: (
               <FAQBody>
                 Governance proposals are autonomous proposals made by veRBN
-                holders to change the Ribbon Finance protocol. If a proposal
-                receives at least XXX veRBN votes in support of it, the changes
-                to the protocol specified in the proposal are autonomously
-                executed.
+                holders to change the Ribbon Finance protocol.
               </FAQBody>
             ),
           },
