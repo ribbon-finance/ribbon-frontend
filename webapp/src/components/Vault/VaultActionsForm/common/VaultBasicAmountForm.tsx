@@ -39,6 +39,8 @@ import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
 import { ACTIONS } from "../Modal/types";
 import { useChain } from "shared/lib/hooks/chainContext";
+import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import { useFlexVault } from "shared/lib/hooks/useFlexVault";
 
 const DepositAssetButton = styled.div`
   position: absolute;
@@ -150,6 +152,8 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
 }) => {
   // const asset = getAssets(vaultOption);
   const color = getVaultColor(vaultOption);
+  const loadingText = useTextAnimation();
+  const { client } = useFlexVault();
 
   const {
     handleInputChange,
@@ -327,16 +331,29 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
 
   const renderButton = useCallback(() => {
     if (active && getChainByAsset(asset) === chain) {
-      return (
-        <ActionButton
-          disabled={Boolean(error) || !isInputNonZero}
-          onClick={onFormSubmit}
-          className={`mt-4 py-3 mb-0`}
-          color={color}
-        >
-          {actionButtonText}
-        </ActionButton>
-      );
+      if (vaultOption === "rSOL-THETA") {
+        return (
+          <ActionButton
+            disabled={Boolean(error) || !isInputNonZero || !client}
+            onClick={onFormSubmit}
+            className={`mt-4 py-3 mb-0`}
+            color={color}
+          >
+            {client ? actionButtonText : loadingText}
+          </ActionButton>
+        );
+      } else {
+        return (
+          <ActionButton
+            disabled={Boolean(error) || !isInputNonZero}
+            onClick={onFormSubmit}
+            className={`mt-4 py-3 mb-0`}
+            color={color}
+          >
+            {actionButtonText}
+          </ActionButton>
+        );
+      }
     }
 
     return (
@@ -358,6 +375,9 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
     isInputNonZero,
     onFormSubmit,
     setShowConnectModal,
+    client,
+    loadingText,
+    vaultOption,
   ]);
 
   return (
