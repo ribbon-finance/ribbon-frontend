@@ -182,7 +182,6 @@ const DepositPage = () => {
 
   const { vaultOption, vaultVersion } = useVaultOption();
   const { chainId } = useWeb3Wallet();
-  useRedirectOnWrongChain(vaultOption, chainId);
 
   usePullUp();
 
@@ -193,7 +192,7 @@ const DepositPage = () => {
     data: { asset, cap, decimals, totalBalance },
     loading,
   } = useV2VaultData(vaultOption || VaultList[0]);
-  useRedirectOnSwitchChain(getChainByVaultOption(vaultOption as VaultOptions));
+
   const isLoading = status === "loading" || loading;
   const activities = useVaultActivity(vaultOption!, vaultVersion);
   const premiumDecimals = getAssetDecimals("USDC");
