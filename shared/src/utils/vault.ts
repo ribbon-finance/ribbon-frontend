@@ -8,7 +8,6 @@ import {
 import { getAssetColor } from "./asset";
 import { PublicKey } from "@solana/web3.js";
 import { vaultTypes } from "@zetamarkets/flex-sdk";
-import * as anchor from "@project-serum/anchor";
 
 export const isVaultFull = (
   deposits: BigNumber,
@@ -62,15 +61,16 @@ export const getUserDepositQueueNodes = (
 
 export const getUserDepositQueueAmount = async (
   vault: vaultTypes.Vault,
-  connection: anchor.web3.Connection,
   userKey: PublicKey
 ): Promise<BigNumber> => {
-  const depositQueueNodes = getUserDepositQueueNodes(vault, userKey);
-  const totalDeposits = await Promise.all(
-    depositQueueNodes.map((node) => connection.getBalance(node))
+  const depositNodes = vault.depositQueue.filter((node) =>
+    node.info.userKey.equals(userKey)
   );
 
-  return BigNumber.from(totalDeposits.reduce((val, acc) => (acc += val), 0));
+  return depositNodes.reduce(
+    (acc, node) => acc.add(BigNumber.from(node.info.amount.toString())),
+    BigNumber.from(0)
+  );
 };
 
 export const getUserWithdrawQueueNodes = (
@@ -95,13 +95,14 @@ export const getUserWithdrawQueueNodes = (
 
 export const getUserWithdrawQueueAmount = async (
   vault: vaultTypes.Vault,
-  connection: anchor.web3.Connection,
   userKey: PublicKey
 ): Promise<BigNumber> => {
-  const withdrawQueueNodes = getUserWithdrawQueueNodes(vault, userKey);
-  const totalWithdrawal = await Promise.all(
-    withdrawQueueNodes.map((node) => connection.getBalance(node))
+  const withdrawalNodes = vault.withdrawalQueue.filter((node) =>
+    node.info.userKey.equals(userKey)
   );
 
-  return BigNumber.from(totalWithdrawal.reduce((val, acc) => (acc += val), 0));
+  return withdrawalNodes.reduce(
+    (acc, node) => acc.add(BigNumber.from(node.info.amount.toString())),
+    BigNumber.from(0)
+  );
 };
