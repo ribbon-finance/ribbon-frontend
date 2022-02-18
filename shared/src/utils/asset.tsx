@@ -14,6 +14,7 @@ import {
   WBTCLogo,
   WETHLogo,
   WAVAXLogo,
+  SAVAXLogo,
   YVUSDcLogo,
   PERPLogo,
   WNEARLogo,
@@ -28,6 +29,7 @@ import { Assets, Wallets } from "../store/types";
 
 export const isYieldAsset = (asset: Assets): boolean => {
   switch (asset) {
+    case "sAVAX":
     case "stETH":
     case "wstETH":
     case "yvUSDC":
@@ -42,6 +44,7 @@ export const getChainByAsset = (asset: Assets): Chains => {
     case "SOL":
       return Chains.Solana;
     case "WAVAX":
+    case "sAVAX":
       return Chains.Avalanche;
     default:
       return Chains.Ethereum;
@@ -59,6 +62,7 @@ export const getChainByVaultOption = (vault: VaultOptions): Chains => {
       return Chains.Ethereum;
 
     case "rAVAX-THETA":
+    case "rsAVAX-THETA":
     case "rUSDC-AVAX-P-THETA":
       return Chains.Avalanche;
 
@@ -204,6 +208,8 @@ export const getAssetLogo: (asset: Assets) =>
       return AAVELogo;
     case "WAVAX":
       return WAVAXLogo;
+    case "sAVAX":
+      return SAVAXLogo;
     case "PERP":
       return PERPLogo;
     case "SOL":

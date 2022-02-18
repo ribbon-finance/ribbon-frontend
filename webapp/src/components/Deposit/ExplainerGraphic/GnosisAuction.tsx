@@ -7,6 +7,7 @@ import ETHGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction
 import STETHGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/STETH_Gnosis_Auction.json";
 import AAVEGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/AAVE_Gnosis_Auction.json";
 import AVAXGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/AVAX_Gnosis_Auction.json";
+import SAVAXGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/SAVAX_Gnosis_Auction.json";
 import NEARGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/NEAR_Gnosis_Auction.json";
 import AURORAGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/AURORA_Gnosis_Auction.json";
 import SOLFLEXAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/SOL_FLEX_Auction.json";
@@ -33,6 +34,8 @@ const GnosisAuction: React.FC<GnosisAuctionProps> = ({ vaultOption }) => {
             return AAVEGnosisAuction;
           case "WAVAX":
             return AVAXGnosisAuction;
+          case "sAVAX":
+            return SAVAXGnosisAuction;
           case "WNEAR":
             return NEARGnosisAuction;
           case "AURORA":
