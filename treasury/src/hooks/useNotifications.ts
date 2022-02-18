@@ -3,6 +3,7 @@ import moment from "moment";
 
 import {
   getAssets,
+  VaultList,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
@@ -58,49 +59,53 @@ const useNotifications = () => {
   useEffect(() => {
     const notificationList: Notification[] = [];
 
-    Object.keys(v2VaultsData).forEach((vaultOption) => {
-      const vaultData = v2VaultsData[vaultOption as VaultOptions];
-      const priceHistory = priceHistories.v2[vaultOption as VaultOptions].find(
-        (history) => history.round === vaultData.withdrawals.round
-      );
+    Object.keys(v2VaultsData)
+      .filter((value) => {
+        return VaultList.includes(value as VaultOptions);
+      })
+      .forEach((vaultOption) => {
+        const vaultData = v2VaultsData[vaultOption as VaultOptions];
+        const priceHistory = priceHistories.v2[
+          vaultOption as VaultOptions
+        ].find((history) => history.round === vaultData.withdrawals.round);
 
-      if (
-        !vaultData.withdrawals.shares.isZero() &&
-        vaultData.withdrawals.round !== vaultData.round &&
-        priceHistory
-      ) {
-        const lastWithdrawTime = moment()
-          .isoWeekday("friday")
-          .utc()
-          .set("hour", 11)
-          .set("minute", 0)
-          .set("second", 0)
-          .set("millisecond", 0);
+        if (
+          !vaultData.withdrawals.shares.isZero() &&
+          vaultData.withdrawals.round !== vaultData.round &&
+          priceHistory
+        ) {
+          const lastWithdrawTime = moment()
+            .isoWeekday("friday")
+            .utc()
+            .set("hour", 11)
+            .set("minute", 0)
+            .set("second", 0)
+            .set("millisecond", 0);
 
-        if (lastWithdrawTime.isAfter(moment())) {
-          lastWithdrawTime.subtract(1, "week");
-        }
+          if (lastWithdrawTime.isAfter(moment())) {
+            lastWithdrawTime.subtract(1, "week");
+          }
 
-        notificationList.push({
-          /** Calculate how many weeks prior where the withdrawal happened using withdrawal round */
-          date: lastWithdrawTime.subtract(
-            vaultData.round - vaultData.withdrawals.round - 1,
-            "week"
-          ),
-          type: "withdrawalReady",
-          vault: vaultOption as VaultOptions,
-          vaultVersion: "v2",
-          amount: vaultData.withdrawals.shares
-            .mul(priceHistory.pricePerShare)
-            .div(
-              parseUnits(
-                "1",
-                getAssetDecimals(getAssets(vaultOption as VaultOptions))
-              )
+          notificationList.push({
+            /** Calculate how many weeks prior where the withdrawal happened using withdrawal round */
+            date: lastWithdrawTime.subtract(
+              vaultData.round - vaultData.withdrawals.round - 1,
+              "week"
             ),
-        });
-      }
-    });
+            type: "withdrawalReady",
+            vault: vaultOption as VaultOptions,
+            vaultVersion: "v2",
+            amount: vaultData.withdrawals.shares
+              .mul(priceHistory.pricePerShare)
+              .div(
+                parseUnits(
+                  "1",
+                  getAssetDecimals(getAssets(vaultOption as VaultOptions))
+                )
+              ),
+          });
+        }
+      });
 
     transactions
       .filter((value) => {
