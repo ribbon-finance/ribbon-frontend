@@ -162,6 +162,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
                 ...prev.responses[vault],
                 poolRewardForDuration: rate
                   .mul(86400 * 7)
+                  .mul(relativeWeight)
                   // Relative weight is in percentage, but normalized to 1e18, so we need to divide it
                   .div(BigNumber.from(10).pow(18)),
                 periodEndTime: parseInt(periodEndTime.toString()),
