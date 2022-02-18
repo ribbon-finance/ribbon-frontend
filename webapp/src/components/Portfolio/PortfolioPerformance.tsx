@@ -174,7 +174,7 @@ const PortfolioPerformance = () => {
 
   // Fetch balances update
   const { balances: subgraphBalanceUpdates, loading: balanceUpdatesLoading } =
-    useBalances(undefined, afterDate ? afterDate.unix() : undefined);
+    useBalances();
   const loading =
     assetsPriceLoading || balanceUpdatesLoading || RBNTokenAccountLoading;
   const animatedLoadingText = useTextAnimation(loading);
@@ -263,9 +263,6 @@ const PortfolioPerformance = () => {
     vaultTotalYieldEarned,
     vaultBalanceInAsset,
   } = useMemo(() => {
-    let totalYieldEarned = 0;
-    let totalDeposit = 0;
-
     /**
      * We reverse and interpolate the portfolio balance, and reverse back
      */
@@ -277,10 +274,6 @@ const PortfolioPerformance = () => {
     } = Object.fromEntries(
       Object.keys(vaultsBalance).map((key) => [key, { ...vaultsBalance[key] }])
     );
-    const reversedProcessedBalanceUpdates = [
-      ...processedBalanceUpdates,
-    ].reverse();
-
     const balances: {
       balance: number;
       netDeposit: number;
@@ -288,9 +281,19 @@ const PortfolioPerformance = () => {
       timestamp: number;
     }[] = [];
 
-    for (let i = 0; i < reversedProcessedBalanceUpdates.length; i++) {
+    const balancesFromTimeframe = afterDate
+      ? processedBalanceUpdates.filter(
+          (balance) => balance.timestamp >= afterDate.unix()
+        )
+      : processedBalanceUpdates;
+
+    let totalYieldEarned = 0;
+    let totalDeposit = 0;
+
+    // Loop from end to start
+    for (let i = balancesFromTimeframe.length - 1; i > 0; i--) {
       const { netDeposit, netYield, timestamp, ...balanceUpdate } =
-        reversedProcessedBalanceUpdates[i];
+        balancesFromTimeframe[i];
 
       /**
        * Calculate balance amount
@@ -338,15 +341,14 @@ const PortfolioPerformance = () => {
       totalYieldEarned += netYieldEarned;
       totalDeposit += netFiatDeposit;
 
-      balances.push({
+      // Add to balances from the start
+      balances.unshift({
         balance: balanceAmount,
         netDeposit: netFiatDeposit,
         netYield: netYieldEarned,
         timestamp,
       });
     }
-
-    balances.reverse();
 
     const currentFiatBalance = Object.keys(vaultsBalance).reduce(
       (acc, curr) => {
@@ -413,6 +415,7 @@ const PortfolioPerformance = () => {
     processedBalanceUpdates,
     searchAssetPriceFromTimestamp,
     vaultsBalance,
+    afterDate,
   ]);
 
   const calculatedKPI = useMemo(() => {
