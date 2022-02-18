@@ -39,26 +39,6 @@ export const isEqualsToUserAddress = (
   return userKey?.equals(nodeKey);
 };
 
-export const getUserDepositQueueNodes = (
-  vault: vaultTypes.Vault,
-  userKey: PublicKey
-): PublicKey[] => {
-  const depositQueueNodes: PublicKey[] = [];
-
-  if (vault) {
-    vault.depositQueue.forEach((deposit) => {
-      if (
-        deposit?.info?.userKey &&
-        isEqualsToUserAddress(userKey, deposit.info.userKey)
-      ) {
-        depositQueueNodes.push(deposit.address);
-      }
-    });
-  }
-
-  return depositQueueNodes;
-};
-
 export const getUserDepositQueueAmount = async (
   vault: vaultTypes.Vault,
   userKey: PublicKey
@@ -71,26 +51,6 @@ export const getUserDepositQueueAmount = async (
     (acc, node) => acc.add(BigNumber.from(node.info.amount.toString())),
     BigNumber.from(0)
   );
-};
-
-export const getUserWithdrawQueueNodes = (
-  vault: vaultTypes.Vault,
-  userKey: PublicKey
-): PublicKey[] => {
-  const withdrawQueueNodes: PublicKey[] = [];
-
-  if (vault) {
-    vault.withdrawalQueue.forEach((withdraw) => {
-      if (
-        withdraw?.info?.userKey &&
-        isEqualsToUserAddress(userKey, withdraw.info.userKey)
-      ) {
-        withdrawQueueNodes.push(withdraw.address);
-      }
-    });
-  }
-
-  return withdrawQueueNodes;
 };
 
 export const getUserWithdrawQueueAmount = async (

@@ -261,52 +261,6 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                     switch (vaultActionForm.vaultOption) {
                       case "rSOL-THETA":
                         return;
-                      // if (client) {
-                      //   const depositNodes = await getUserWithdrawQueueNodes(
-                      //     flexVault as vaultTypes.Vault,
-                      //     publicKey as PublicKey
-                      //   );
-
-                      //   const userUnderlyingTokenAddress =
-                      //     await utils.getAssociatedTokenAddress(
-                      //       flexVault?.underlyingMint as PublicKey,
-                      //       publicKey as PublicKey
-                      //     );
-
-                      //   let tx = new Transaction();
-
-                      //   await client.removeQueuedDeposit(
-                      //     (flexVault as vaultTypes.Vault)
-                      //       .address as PublicKey,
-                      //     depositNodes[0]
-                      //   );
-
-                      //   depositNodes.forEach((node) => {
-                      //     tx.add(
-                      //       vaultInstructions.removeQueuedDepositIx(
-                      //         publicKey as PublicKey,
-                      //         userUnderlyingTokenAddress,
-                      //         flexVault as vaultTypes.Vault,
-                      //         node,
-                      //         []
-                      //       )
-                      //     );
-                      //   });
-
-                      //   const provider = new anchor.Provider(
-                      //     connection,
-                      //     anchorWallet as AnchorWallet,
-                      //     utils.defaultCommitment()
-                      //   );
-
-                      //   const txhash = await utils.processTransaction(
-                      //     Program.VAULT,
-                      //     provider,
-                      //     tx
-                      //   );
-
-                      //   res = { hash: txhash || tx.recentBlockhash };
-                      // }
                       case "rstETH-THETA":
                         /**
                          * Default slippage of 0.3%
