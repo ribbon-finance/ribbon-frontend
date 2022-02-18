@@ -31,11 +31,11 @@ const useFetchSolVaultData = (): SolanaVaultData => {
         vaultUserData,
       } = await vaultData.getVaultData(connection, vaultAddress);
 
-      const depositQueueAmounts = await Promise.all(
-        vault.depositQueue.map((node) => connection.getBalance(node.address))
-      );
       const totalVaultQueuedDeposits = BigNumber.from(
-        depositQueueAmounts.reduce((partialSum, a) => partialSum + a, 0)
+        vault.depositQueue.reduce(
+          (partialSum, a) => partialSum.add(a.info.amount.toString()),
+          BigNumber.from(0)
+        )
       );
 
       let lockedBalanceInAsset = BigNumber.from(0);
