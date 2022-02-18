@@ -33,14 +33,16 @@ const useFetchSolVaultData = (): SolanaVaultData => {
 
       let lockedBalanceInAsset = BigNumber.from(0);
       let depositBalanceInAsset = BigNumber.from(0);
+      let totalQueuedWithdrawals = BigNumber.from(0);
       const totalQueuedDeposits = BigNumber.from(vault.totalQueuedDeposits);
-      const totalQueuedWithdrawals = await getUserWithdrawQueueAmount(
-        vault,
-        publicKey as PublicKey
-      );
 
       if (publicKey) {
-        depositBalanceInAsset = await getUserDepositQueueAmount(
+        totalQueuedWithdrawals = getUserWithdrawQueueAmount(
+          vault,
+          publicKey as PublicKey
+        );
+
+        depositBalanceInAsset = getUserDepositQueueAmount(
           vault,
           publicKey as PublicKey
         );

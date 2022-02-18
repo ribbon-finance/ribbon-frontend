@@ -39,10 +39,10 @@ export const isEqualsToUserAddress = (
   return userKey?.equals(nodeKey);
 };
 
-export const getUserDepositQueueAmount = async (
+export const getUserDepositQueueAmount = (
   vault: vaultTypes.Vault,
   userKey: PublicKey
-): Promise<BigNumber> => {
+): BigNumber => {
   const depositNodes = vault.depositQueue.filter((node) =>
     node.info.userKey.equals(userKey)
   );
@@ -53,10 +53,10 @@ export const getUserDepositQueueAmount = async (
   );
 };
 
-export const getUserWithdrawQueueAmount = async (
+export const getUserWithdrawQueueAmount = (
   vault: vaultTypes.Vault,
   userKey: PublicKey
-): Promise<BigNumber> => {
+): BigNumber => {
   const withdrawalNodes = vault.withdrawalQueue.filter((node) =>
     node.info.userKey.equals(userKey)
   );
