@@ -18,6 +18,7 @@ import { getAssetDecimals } from "../utils/asset";
 import useYearnAPIData from "./useYearnAPIData";
 import useLidoAPY from "./useLidoOracle";
 import { useV2VaultData, useV2VaultsData } from "./web3DataContext";
+import { apyFromPricePerShare } from "../utils/math";
 
 const getPriceHistoryFromPeriod = (
   priceHistory: VaultPriceHistory[],
@@ -117,13 +118,9 @@ export const calculateAPYFromPriceHistory = (
           /**
            * Fees and underlying yields had been accounted
            */
-          return (
-            ((1 +
-              (endingPricePerShare - startingPricePerShare) /
-                startingPricePerShare) **
-              52 -
-              1) *
-            100
+          return apyFromPricePerShare(
+            startingPricePerShare,
+            endingPricePerShare
           );
         }
 
@@ -132,14 +129,8 @@ export const calculateAPYFromPriceHistory = (
             /**
              * V1 does not have fees that can impact performance
              */
-
             return (
-              ((1 +
-                (endingPricePerShare - startingPricePerShare) /
-                  startingPricePerShare) **
-                52 -
-                1) *
-                100 +
+              apyFromPricePerShare(startingPricePerShare, endingPricePerShare) +
               underlyingYieldAPR
             );
           case "v2":
@@ -165,13 +156,10 @@ export const calculateAPYFromPriceHistory = (
               endingPricePerShareAfterManagementFees - performanceFeesImpact;
 
             return (
-              ((1 +
-                (pricePerShareAfterFees - startingPricePerShare) /
-                  startingPricePerShare) **
-                52 -
-                1) *
-                100 +
-              underlyingYieldAPR
+              apyFromPricePerShare(
+                startingPricePerShare,
+                pricePerShareAfterFees
+              ) + underlyingYieldAPR
             );
         }
       }

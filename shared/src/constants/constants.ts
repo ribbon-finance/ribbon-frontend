@@ -680,6 +680,7 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
 export const VaultFees: {
   [vault in VaultOptions]: Partial<{
     v1: { withdrawalFee: string };
+    // managementFee and performanceFee in %, eg. 10 (10%)
     v2: { managementFee: string; performanceFee: string };
   }>;
 } = {

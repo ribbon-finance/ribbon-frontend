@@ -192,3 +192,19 @@ export const amountAfterSlippage = (
     .sub(ethers.utils.parseUnits(slippage.toFixed(3), decimals));
   return num.mul(discountValue).div(BigNumber.from(10).pow(decimals));
 };
+
+/**
+ * Given the pricePerShare from 2 different weeks,
+ * calculate the APY.
+ * This function assumes the 2 pricePerShares are 1 week apart,
+ * with weekly compounding.
+ */
+export const apyFromPricePerShare = (
+  startPricePerShare: number,
+  endPricePerShare: number
+) => {
+  const decimals =
+    (1 + (endPricePerShare - startPricePerShare) / startPricePerShare) ** 52 -
+    1;
+  return decimals * 100;
+};
