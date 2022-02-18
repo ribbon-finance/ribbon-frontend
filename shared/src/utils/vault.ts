@@ -48,7 +48,7 @@ export const getUserDepositQueueAmount = (
   );
 
   return depositNodes.reduce(
-    (acc, node) => acc.add(BigNumber.from(node.info.amount.toString())),
+    (acc, node) => acc.add(BigNumber.from(node.info.amount.toNumber())),
     BigNumber.from(0)
   );
 };
@@ -62,7 +62,7 @@ export const getUserWithdrawQueueAmount = (
   );
 
   return withdrawalNodes.reduce(
-    (acc, node) => acc.add(BigNumber.from(node.info.amount.toString())),
+    (acc, node) => acc.add(BigNumber.from(node.info.amount.toNumber())),
     BigNumber.from(0)
   );
 };
