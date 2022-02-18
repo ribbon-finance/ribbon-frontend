@@ -8,7 +8,7 @@ import React, {
 import { Frame } from "framer";
 import styled from "styled-components";
 
-import theme from "../../designSystem/theme";
+import designTheme from "../../designSystem/theme";
 import colors from "../../designSystem/colors";
 import { Subtitle } from "../../designSystem";
 import useElementScroll from "../../hooks/useElementScroll";
@@ -22,7 +22,7 @@ const SegmentControlContainer = styled.div<{
   backgroundColor?: string;
   widthType: WidthType;
 }>`
-  border-radius: ${theme.border.radius};
+  border-radius: ${designTheme.border.radius};
   background-color: ${(props) => {
     if (props.backgroundColor) {
       return props.backgroundColor;
@@ -57,6 +57,8 @@ const SegmentControlContainer = styled.div<{
     }
   }}
 
+  overflow-y: auto;
+
   /* Firefox */
   scrollbar-width: none;
 
@@ -86,7 +88,7 @@ const ContainerScrollIndicator = styled.div<{
   justify-content: center;
   align-items: center;
   background: linear-gradient(270deg, #08090e 40.63%, rgba(8, 9, 14, 0) 100%);
-  border-radius: ${theme.border.radius};
+  border-radius: ${designTheme.border.radius};
   z-index: 2;
   transition: 0.2s all ease-out;
   top: 0;
@@ -113,13 +115,13 @@ const ActiveBackground = styled(Frame)<{
   theme?: "outline";
   color?: string;
 }>`
-  border-radius: ${theme.border.radius} !important;
+  border-radius: ${designTheme.border.radius} !important;
   ${(props) => {
     switch (props.theme) {
       case "outline":
         return `
           transition: 0.25s border ease-out;
-          border: ${theme.border.width} ${theme.border.style} 
+          border: ${designTheme.border.width} ${designTheme.border.style} 
             ${props.color ? props.color : colors.primaryText};
           background-color: transparent !important;
         `;
@@ -228,7 +230,10 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
         left: currentCurrency.offsetLeft,
         top: currentCurrency.offsetTop,
         height: currentCurrency.clientHeight,
-        width: currentCurrency.clientWidth,
+        width:
+          theme === "outline"
+            ? currentCurrency.clientWidth - 1
+            : currentCurrency.clientWidth,
       });
     };
     handleResize();
@@ -238,7 +243,7 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [value, controlRefs]);
+  }, [value, controlRefs, theme]);
 
   const handleScrollLeft = useCallback(() => {
     containerRef.current?.scrollBy({ left: -width, behavior: "smooth" });
