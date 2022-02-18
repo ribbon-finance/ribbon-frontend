@@ -331,7 +331,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
 
   const renderButton = useCallback(() => {
     if (active && getChainByAsset(asset) === chain) {
-      if(vaultOption === "rSOL-THETA") {
+      if (vaultOption === "rSOL-THETA") {
         return (
           <ActionButton
             disabled={Boolean(error) || !isInputNonZero || !client}
@@ -343,7 +343,6 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
           </ActionButton>
         );
       } else {
-
         return (
           <ActionButton
             disabled={Boolean(error) || !isInputNonZero}
@@ -378,7 +377,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
     setShowConnectModal,
     client,
     loadingText,
-    vaultOption
+    vaultOption,
   ]);
 
   return (
