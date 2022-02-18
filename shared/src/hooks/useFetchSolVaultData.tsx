@@ -7,6 +7,10 @@ import { parseUnits } from "ethers/lib/utils";
 import { getAssetDecimals } from "../utils/asset";
 import { useFlexVault } from "./useFlexVault";
 import { PublicKey } from "@solana/web3.js";
+import {
+  getUserDepositQueueAmount,
+  getUserWithdrawQueueAmount,
+} from "../utils/vault";
 
 const useFetchSolVaultData = (): SolanaVaultData => {
   const { connection } = useConnection();
@@ -28,12 +32,21 @@ const useFetchSolVaultData = (): SolanaVaultData => {
       } = await vaultData.getVaultData(connection, vaultAddress);
 
       let lockedBalanceInAsset = BigNumber.from(0);
+      let depositBalanceInAsset = BigNumber.from(0);
+      let totalQueuedWithdrawals = BigNumber.from(0);
       const totalQueuedDeposits = BigNumber.from(vault.totalQueuedDeposits);
-      const totalQueuedWithdrawals = BigNumber.from(
-        vault.totalQueuedWithdrawals
-      );
 
       if (publicKey) {
+        totalQueuedWithdrawals = getUserWithdrawQueueAmount(
+          vault,
+          publicKey as PublicKey
+        );
+
+        depositBalanceInAsset = getUserDepositQueueAmount(
+          vault,
+          publicKey as PublicKey
+        );
+
         const userData = vaultUserData.find(
           (d) =>
             publicKey &&
@@ -62,7 +75,7 @@ const useFetchSolVaultData = (): SolanaVaultData => {
 
             // user-connected state
             lockedBalanceInAsset,
-            depositBalanceInAsset: BigNumber.from(totalQueuedDeposits),
+            depositBalanceInAsset: BigNumber.from(depositBalanceInAsset),
             withdrawals: {
               round: BigNumber.from(totalQueuedWithdrawals).isZero()
                 ? 0
