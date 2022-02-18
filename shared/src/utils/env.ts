@@ -57,7 +57,8 @@ export const getSolanaClusterURI: () => string = () =>
   isDevelopment()
     ? process.env.REACT_APP_SOLANA_TESTNET_URI ||
       "https://api.devnet.solana.com"
-    : process.env.REACT_APP_SOLANA_MAINNET_URI || "https://flex.rpcpool.com";
+    : process.env.REACT_APP_SOLANA_MAINNET_URI ||
+      "https://solana-api.projectserum.com";
 
 export const getSolanaAddresses = () =>
   isDevelopment() ? SolanaDeployments.devnet : SolanaDeployments.mainnet;
