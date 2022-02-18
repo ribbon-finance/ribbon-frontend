@@ -57,8 +57,6 @@ const SegmentControlContainer = styled.div<{
     }
   }}
 
-  overflow-y: auto;
-
   /* Firefox */
   scrollbar-width: none;
 
@@ -265,7 +263,7 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
             ease: "easeOut",
           }}
           initial={{
-            height: 0,
+            height: "100%",
             width: 0,
           }}
           animate={activeBackgroundState}

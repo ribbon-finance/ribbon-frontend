@@ -8,14 +8,14 @@ import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
 
 const FooterContainer = styled.div`
-  display: flex;
   height: 52px;
   width: 100%;
   flex-wrap: nowrap;
   border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
+  display: none;
 
-  @media (max-width: ${sizes.lg}px) {
-    display: none;
+  @media (min-width: ${sizes.xxl}px) {
+    display: flex;
   }
 `;
 
@@ -40,7 +40,7 @@ const LinkItem = styled.div`
 const MobileFooter = styled.div`
   border-top: 1px solid ${colors.borderDark};
 
-  @media (min-width: ${sizes.lg}px) {
+  @media (min-width: ${sizes.xxl}px) {
     display: none;
   }
 `;
@@ -56,12 +56,12 @@ const MobileFooterCol = styled(Col)`
   justify-content: center;
   padding: 0;
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.xxl}px) {
     padding-top: 27px;
     padding-bottom: 27px;
   }
 
-  @media (min-width: ${sizes.lg}px) {
+  @media (min-width: ${sizes.xxl}px) {
     && {
       max-width: unset;
       flex: unset;

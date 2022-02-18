@@ -140,7 +140,7 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
       if (counter === currentCounter) {
         setData((prev) => ({
           responses: {
-            ...data.responses,
+            ...prev.responses,
             ...(Object.fromEntries(
               responses.map(({ vault, ...response }) => [
                 vault,
@@ -161,7 +161,7 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
     if (!isProduction()) {
       console.timeEnd("Liquidity Mining Pool Data Fetch");
     }
-  }, [data, account, active, chainId, library, provider]);
+  }, [account, active, chainId, library, provider]);
 
   useEffect(() => {
     doMulticall();
