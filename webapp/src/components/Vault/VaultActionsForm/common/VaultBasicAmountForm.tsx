@@ -376,6 +376,9 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
     isInputNonZero,
     onFormSubmit,
     setShowConnectModal,
+    client,
+    loadingText,
+    vaultOption
   ]);
 
   return (
