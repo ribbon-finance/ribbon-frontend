@@ -13,7 +13,7 @@ const useFetchSolVaultData = (): SolanaVaultData => {
   const { vault, client } = useFlexVault();
   const { publicKey } = useWallet();
   const [data, setData] = useState<SolanaVaultData>();
-  
+
   useEffect(() => {
     const doMulticall = async () => {
       if (!vault || !connection) return;
@@ -26,10 +26,12 @@ const useFetchSolVaultData = (): SolanaVaultData => {
         pricePerShare,
         vaultUserData,
       } = await vaultData.getVaultData(connection, vaultAddress);
-      
+
       let lockedBalanceInAsset = BigNumber.from(0);
-      const totalQueuedDeposits = BigNumber.from(vault.totalQueuedDeposits)
-      const totalQueuedWithdrawals =BigNumber.from(vault.totalQueuedWithdrawals)
+      const totalQueuedDeposits = BigNumber.from(vault.totalQueuedDeposits);
+      const totalQueuedWithdrawals = BigNumber.from(
+        vault.totalQueuedWithdrawals
+      );
 
       if (publicKey) {
         const userData = vaultUserData.find(
@@ -43,7 +45,7 @@ const useFetchSolVaultData = (): SolanaVaultData => {
         lockedBalanceInAsset = BigNumber.from(
           Math.floor(userData?.lockedUnderlyingAmount ?? 0)
         );
-       }
+      }
 
       setData({
         responses: {
@@ -62,7 +64,9 @@ const useFetchSolVaultData = (): SolanaVaultData => {
             lockedBalanceInAsset,
             depositBalanceInAsset: BigNumber.from(totalQueuedDeposits),
             withdrawals: {
-              round: BigNumber.from(totalQueuedWithdrawals).isZero() ? 0 : epochSequenceNumber,
+              round: BigNumber.from(totalQueuedWithdrawals).isZero()
+                ? 0
+                : epochSequenceNumber,
               shares: BigNumber.from(totalQueuedWithdrawals),
             },
           },
