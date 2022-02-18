@@ -16,7 +16,6 @@ import { useGlobalState } from "shared/lib/store/store";
 import useTransactions from "shared/lib/hooks/useTransactions";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { parseUnits } from "ethers/lib/utils";
-import { BigNumber } from "ethers";
 
 const localStorageKey = "notificationLastRead";
 
