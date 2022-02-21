@@ -127,8 +127,7 @@ const OverviewKPI = () => {
             fully on-chain governance
           </SecondaryText>
           <BaseUnderlineLink
-            // TODO: Replace URL
-            to="https://google.com"
+            to="https://gov.ribbon.finance/t/rgp-9-ribbonomics/486"
             target="_blank"
             rel="noreferrer noopener"
             className={`d-flex mt-4 ${width < sizes.lg ? "mx-auto" : ""}`}
@@ -233,7 +232,7 @@ const OverviewKPI = () => {
           loop
         />
       </FloatingBackgroundContainer>
-      <FloatingBackgroundContainer backgroundColor="#000000E0" />
+      <FloatingBackgroundContainer backgroundColor="#000000CC" />
     </>
   );
 };

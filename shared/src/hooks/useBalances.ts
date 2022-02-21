@@ -46,19 +46,11 @@ export const resolveBalancesSubgraphResponse = (responses: {
       : []
   ).sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1));
 
-const useBalances = (before?: number, after?: number) => {
+const useBalances = () => {
   const contextData = useContext(SubgraphDataContext);
-
-  let balances = contextData.vaultSubgraphData.balances;
-  balances = before
-    ? balances.filter((balance) => balance.timestamp <= before)
-    : balances;
-  balances = after
-    ? balances.filter((balance) => balance.timestamp >= after)
-    : balances;
-
+  const balances = contextData.vaultSubgraphData.balances;
   return {
-    balances: balances,
+    balances,
     loading: contextData.vaultSubgraphData.loading,
   };
 };

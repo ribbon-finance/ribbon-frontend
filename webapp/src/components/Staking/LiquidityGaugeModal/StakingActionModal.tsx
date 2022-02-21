@@ -237,7 +237,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
       setTxId(txhash);
       addPendingTransaction({
         txhash,
-        type: "unstake",
+        type: "stake",
         amount: input,
         stakeAsset: vaultOption,
       });
