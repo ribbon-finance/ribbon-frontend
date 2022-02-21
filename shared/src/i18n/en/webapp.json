@@ -1,0 +1,26 @@
+{
+  "VaultStrategyExplainer": {
+    "StrikePrice": {
+      "title": "STRIKE PRICE",
+      "explanation": "A strike price is the set price at which an option contract can be bought or sold when it is exercised.",
+      "learnMoreURL": "https://www.investopedia.com/terms/s/strikeprice.asp"
+    },
+    "Call": {
+      "explanation": "A call option is a financial contract that gives the option buyer the right but not the obligation to buy an asset at the strike price at a specific point in time.",
+      "learnMoreURL": "https://www.investopedia.com/terms/c/coveredcall.asp"
+    },
+    "Put": {
+      "explanation": "A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put.",
+      "learnMoreURL": "https://www.investopedia.com/terms/p/putoption.asp"
+    },
+    "Lido": {
+      "title": "Lido",
+      "explanation": "Lido is a DeFi asset staking protocol.",
+      "learnMoreURL": "https://lido.fi"
+    },
+    "stETH": {
+      "explanation": "{{collateralAssetUnit}} is the deposit token that represents a user's share of the their ETH on the Ethereum beacon chain.",
+      "learnMoreURL": "webapp:VaultStrategyExplainer:stETH:explanation"
+    }
+  }
+}
