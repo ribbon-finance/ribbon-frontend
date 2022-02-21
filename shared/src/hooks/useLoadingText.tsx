@@ -1,16 +1,13 @@
 import styled, { keyframes } from "styled-components";
-import colors from "../designSystem/colors";
 
 const flashing = () => keyframes`
  0%,
  100% {
     opacity: 0;
-    // width: 100%;
   }
   
   50% {
     opacity: 1;
-    // width: 0%;
   }
 }`;
 
@@ -24,7 +21,7 @@ const Dot = styled.span<{ index: number }>`
   display: inline;
 `;
 
-const useTextAnimation = (text: string = "Loading") => {
+const useLoadingText = (text: string = "Loading") => {
   return (
     <span>
       {text}
@@ -37,4 +34,4 @@ const useTextAnimation = (text: string = "Loading") => {
   );
 };
 
-export default useTextAnimation;
+export default useLoadingText;

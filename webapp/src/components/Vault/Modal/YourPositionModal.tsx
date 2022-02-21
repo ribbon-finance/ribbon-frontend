@@ -123,14 +123,14 @@ const YourPositionModal: React.FC = () => {
             {/* Logo */}
             <BaseModalContentColumn>
               <AssetCircleContainer size={96} color={color}>
-                <Logo width={48} height={48} />
+                <Logo width={"100%"} height={"100%"} />
               </AssetCircleContainer>
             </BaseModalContentColumn>
 
             {/* Position Info */}
             <BaseModalContentColumn marginTop={16}>
               <Subtitle color={colors.text}>
-                POSITION {getAssetDisplay(asset)}
+                POSITION ({getAssetDisplay(asset)})
               </Subtitle>
             </BaseModalContentColumn>
             <BaseModalContentColumn marginTop={8}>

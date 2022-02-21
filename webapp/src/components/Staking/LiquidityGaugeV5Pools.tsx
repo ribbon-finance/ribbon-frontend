@@ -22,7 +22,7 @@ import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { getVaultColor } from "shared/lib/utils/vault";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { productCopies } from "shared/lib/components/Product/productCopies";
@@ -181,7 +181,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
   const { balance: votingPower, loading: votingPowerLoading } =
     useAssetBalance("veRBN");
 
-  const loadingText = useTextAnimation();
+  const loadingText = useLoadingText();
 
   const color = getVaultColor(vaultOption);
   const ongoingTransaction:
@@ -230,7 +230,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
     }
   }, [ongoingTransaction]);
 
-  const primaryActionLoadingText = useTextAnimation(actionLoadingTextBase);
+  const primaryActionLoadingText = useLoadingText(actionLoadingTextBase);
 
   const logo = useMemo(() => {
     const asset = getDisplayAssets(vaultOption);

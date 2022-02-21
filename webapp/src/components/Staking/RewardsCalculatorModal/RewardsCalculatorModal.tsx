@@ -31,7 +31,7 @@ import {
 } from "shared/lib/hooks/web3DataContext";
 import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import {
   calculateBaseRewards,
   calculateBoostMultiplier,
@@ -177,7 +177,7 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     loading: vaultDataLoading,
   } = useV2VaultData(currentGauge);
 
-  const loadingText = useTextAnimation();
+  const loadingText = useLoadingText();
 
   // Used for boost rewards calculation
   const [totalVeRBN, setTotalVeRBN] = useState<BigNumber>();

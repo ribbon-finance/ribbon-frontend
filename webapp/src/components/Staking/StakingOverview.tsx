@@ -19,7 +19,7 @@ import {
   VaultList,
   StakingVaultOptions,
 } from "shared/lib/constants/constants";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { BigNumber } from "@ethersproject/bignumber";
 import { formatBigNumber } from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
@@ -130,7 +130,7 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
     );
   const [showRewardsCalculator, setShowRewardsCalculator] = useState(false);
 
-  const loadingText = useTextAnimation();
+  const loadingText = useLoadingText();
 
   const totalRewardDistributed = useMemo(() => {
     if (lmVersion === "lm") {

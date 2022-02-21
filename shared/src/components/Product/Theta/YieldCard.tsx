@@ -19,7 +19,7 @@ import {
   formatSignificantDecimals,
   isPracticallyZero,
 } from "../../../utils/math";
-import useTextAnimation from "../../../hooks/useTextAnimation";
+import useLoadingText from "../../../hooks/useLoadingText";
 import {
   hasVaultVersion,
   VaultOptions,
@@ -247,7 +247,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
 
   const latestAPY = useLatestAPY(vault, vaultVersion);
 
-  const loadingText = useTextAnimation();
+  const loadingText = useLoadingText();
   const perfStr = latestAPY.fetched
     ? `${latestAPY.res.toFixed(2)}%`
     : loadingText;

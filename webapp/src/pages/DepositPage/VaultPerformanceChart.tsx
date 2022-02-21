@@ -28,7 +28,7 @@ import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import useLatestAPY from "shared/lib/hooks/useLatestAPY";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 
 const VaultPerformanceChartContainer = styled.div`
   background: ${colors.background.two};
@@ -321,7 +321,7 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
   );
 
   const isPrevWeekPerfPositive = prevWeekPerformance[vaultPerformanceTerm] >= 0;
-  const loadingText = useTextAnimation();
+  const loadingText = useLoadingText();
 
   return (
     <>

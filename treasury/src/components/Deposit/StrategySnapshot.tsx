@@ -15,7 +15,7 @@ import {
 } from "shared/lib/constants/constants";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import StrikeChart from "webapp/lib/components/Deposit/StrikeChart";
 import { formatUnits } from "@ethersproject/units";
 import { useLatestOption } from "shared/lib/hooks/useLatestOption";
@@ -99,7 +99,7 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
   );
   const premiumDecimals = getAssetDecimals("USDC");
 
-  const loadingText = useTextAnimation();
+  const loadingText = useLoadingText();
 
   // Get the latest option sale
   const latestSale = useMemo(() => {

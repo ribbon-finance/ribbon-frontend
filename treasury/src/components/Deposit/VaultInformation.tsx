@@ -5,7 +5,7 @@ import { Col, Row } from "react-bootstrap";
 
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import { Assets } from "shared/lib/store/types";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 
 const VaultDataCol = styled(Col)`
   margin-top: 20px;
@@ -31,7 +31,7 @@ const VaultData = styled(Title)`
   line-height: 24px;
 `;
 
-const loadingText = useTextAnimation();
+const loadingText = useLoadingText();
 
 const VaultInformation: React.FC<{
   loading: boolean;

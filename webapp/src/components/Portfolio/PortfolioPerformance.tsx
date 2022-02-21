@@ -18,7 +18,7 @@ import {
   useAssetsPriceHistory,
 } from "shared/lib/hooks/useAssetPrice";
 import useBalances from "shared/lib/hooks/useBalances";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { assetToFiat, formatBigNumber } from "shared/lib/utils/math";
 import PerformanceChart, {
   HoverInfo,
@@ -177,7 +177,7 @@ const PortfolioPerformance = () => {
     useBalances(undefined, afterDate ? afterDate.unix() : undefined);
   const loading =
     assetsPriceLoading || balanceUpdatesLoading || RBNTokenAccountLoading;
-  const animatedLoadingText = useTextAnimation();
+  const animatedLoadingText = useLoadingText();
 
   /**
    * We first process and add several additional metrices that is useful for further calculation

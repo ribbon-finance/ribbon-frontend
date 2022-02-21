@@ -11,7 +11,7 @@ import { useGovernanceGlobalState } from "../../store/store";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import sizes from "shared/lib/designSystem/sizes";
 import { formatBigNumber } from "shared/lib/utils/math";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { VotingEscrowAddress } from "shared/lib/constants/constants";
 import { useAssetBalance } from "shared/lib/hooks/web3DataContext";
@@ -74,7 +74,7 @@ const StakingFAB = () => {
   const { balance: veRBNBalance, loading: votingPowerLoading } =
     useAssetBalance("veRBN");
   const loading = rbnTokenAccountLoading || votingPowerLoading;
-  const loadingText = useTextAnimation(loading);
+  const loadingText = useLoadingText(loading);
 
   const stakeMode = useMemo(() => {
     if (rbnAllowance.isZero()) {
