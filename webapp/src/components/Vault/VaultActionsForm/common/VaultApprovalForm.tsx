@@ -204,10 +204,7 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
   }, [chainId, depositAsset, ethereumProvider]);
 
   const [waitingApproval, setWaitingApproval] = useState(false);
-  const loadingText = useTextAnimation(waitingApproval, {
-    texts: ["Approving", "Approving .", "Approving ..", "Approving ..."],
-    interval: 250,
-  });
+  const loadingText = useTextAnimation("Approving");
 
   const handleApproveToken = useCallback(async () => {
     setWaitingApproval(true);

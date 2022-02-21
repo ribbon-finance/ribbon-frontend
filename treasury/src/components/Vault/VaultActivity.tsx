@@ -53,7 +53,7 @@ const VaultActivity: React.FC<VaultActivityProps> = ({
   const [sortBy, setSortBy] = useState<SortBy>(sortByList[0]);
   const { width } = useScreenSize();
   const [page, setPage] = useState(1);
-  const loadingText = useTextAnimation(loading);
+  const loadingText = useTextAnimation();
 
   /**
    * Default to initial state and process initial state

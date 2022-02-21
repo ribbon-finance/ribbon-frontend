@@ -177,7 +177,7 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     loading: vaultDataLoading,
   } = useV2VaultData(currentGauge);
 
-  const loadingText = useTextAnimation(lg5DataLoading || vaultDataLoading);
+  const loadingText = useTextAnimation();
 
   // Used for boost rewards calculation
   const [totalVeRBN, setTotalVeRBN] = useState<BigNumber>();
@@ -269,10 +269,10 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
 
   // For display
   const displayRewards = useMemo(() => {
-    let totalAPY: string;
-    let baseRewards: string;
-    let boostedRewards: string;
-    let rewardsBooster: string;
+    let totalAPY: JSX.Element | string;
+    let baseRewards: JSX.Element | string;
+    let boostedRewards: JSX.Element | string;
+    let rewardsBooster: JSX.Element | string;
 
     if (stakeInputHasError) {
       totalAPY = "---";

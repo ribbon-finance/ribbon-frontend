@@ -65,7 +65,7 @@ const YieldComparison: React.FC<YieldComparisonProps> = ({
 
   const latestAPY = useLatestAPY(vault, vaultVersion);
 
-  const loadingText = useTextAnimation(!latestAPY.fetched);
+  const loadingText = useTextAnimation();
   const perfStr = latestAPY.fetched
     ? `${latestAPY.res.toFixed(2)}%`
     : loadingText;

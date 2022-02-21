@@ -33,7 +33,7 @@ const TreasuryBreakdown = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { width: containerWidth } = useElementSize(containerRef);
   const { accounts, total, loading: treasuryLoading } = useTreasuryAccount();
-  const loadingText = useTextAnimation(treasuryLoading);
+  const loadingText = useTextAnimation();
 
   const chainId = isDevelopment() ? CHAINID.ETH_KOVAN : CHAINID.ETH_MAINNET;
 

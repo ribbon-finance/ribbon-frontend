@@ -179,7 +179,7 @@ const PortfolioTransactions = () => {
   // const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice();
   const { searchAssetPriceFromTimestamp, loading: assetPricesLoading } =
     useAssetsPriceHistory();
-  const animatedLoadingText = useTextAnimation(loading || assetPricesLoading);
+  const animatedLoadingText = useTextAnimation();
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<PortfolioTransactionSortBy>(
     portfolioTransactionSortByList[0]

@@ -35,7 +35,7 @@ const RBNPriceOverview = () => {
     asset: "RBN",
   });
   const { histories } = useAssetsPriceHistory();
-  const loadingText = useTextAnimation(assetPriceLoading);
+  const loadingText = useTextAnimation();
 
   const [range, setRange] = useState<PriceRange>("1M");
 

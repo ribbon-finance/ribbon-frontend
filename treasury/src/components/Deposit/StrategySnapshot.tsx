@@ -99,7 +99,7 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
   );
   const premiumDecimals = getAssetDecimals("USDC");
 
-  const loadingText = useTextAnimation(loading);
+  const loadingText = useTextAnimation();
 
   // Get the latest option sale
   const latestSale = useMemo(() => {

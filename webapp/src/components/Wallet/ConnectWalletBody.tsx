@@ -193,18 +193,7 @@ const WalletButton: React.FC<WalletButtonProps> = ({
   status,
   onConnect,
 }) => {
-  const initializingText = useTextAnimation(
-    Boolean(status === "initializing"),
-    {
-      texts: [
-        "INITIALIZING",
-        "INITIALIZING .",
-        "INITIALIZING ..",
-        "INITIALIZING ...",
-      ],
-      interval: 250,
-    }
-  );
+  const initializingText = useTextAnimation();
 
   const title = WALLET_TITLES[wallet];
   const walletColors = {

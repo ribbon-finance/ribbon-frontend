@@ -96,7 +96,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
     useAssetsPriceHistory();
 
   const { width: screenWidth } = useScreenSize();
-  const loadingText = useTextAnimation(assetPriceLoading);
+  const loadingText = useTextAnimation();
 
   const getVaultActivityExternalURL = useCallback(
     (activity: VaultActivity) => {

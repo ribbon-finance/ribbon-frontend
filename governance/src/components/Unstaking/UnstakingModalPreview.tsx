@@ -35,7 +35,7 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
   onUnstake,
 }) => {
   const { data: rbnTokenAccount, loading } = useRBNTokenAccount();
-  const loadingText = useTextAnimation(loading);
+  const loadingText = useTextAnimation();
 
   const canUnstake = useMemo(() => {
     if (loading || !rbnTokenAccount || !rbnTokenAccount.lockEndTimestamp) {

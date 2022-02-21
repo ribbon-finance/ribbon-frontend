@@ -181,9 +181,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
   const { balance: votingPower, loading: votingPowerLoading } =
     useAssetBalance("veRBN");
 
-  const loadingText = useTextAnimation(
-    lg5DataLoading || assetPricesLoading || vaultDataLoading
-  );
+  const loadingText = useTextAnimation();
 
   const color = getVaultColor(vaultOption);
   const ongoingTransaction:
@@ -232,18 +230,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
     }
   }, [ongoingTransaction]);
 
-  const primaryActionLoadingText = useTextAnimation(
-    Boolean(ongoingTransaction),
-    {
-      texts: [
-        actionLoadingTextBase,
-        `${actionLoadingTextBase} .`,
-        `${actionLoadingTextBase} ..`,
-        `${actionLoadingTextBase} ...`,
-      ],
-      interval: 250,
-    }
-  );
+  const primaryActionLoadingText = useTextAnimation(actionLoadingTextBase);
 
   const logo = useMemo(() => {
     const asset = getDisplayAssets(vaultOption);

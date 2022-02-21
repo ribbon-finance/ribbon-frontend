@@ -97,7 +97,7 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
     [status, v2DataLoading]
   );
   const latestAPY = useLatestAPY(vault, vaultVersion);
-  const loadingText = useTextAnimation(!latestAPY.fetched);
+  const loadingText = useTextAnimation();
   const perfStr = latestAPY.fetched
     ? `${latestAPY.res.toFixed(2)}%`
     : loadingText;

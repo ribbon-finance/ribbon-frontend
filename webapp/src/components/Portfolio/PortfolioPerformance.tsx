@@ -177,7 +177,7 @@ const PortfolioPerformance = () => {
     useBalances(undefined, afterDate ? afterDate.unix() : undefined);
   const loading =
     assetsPriceLoading || balanceUpdatesLoading || RBNTokenAccountLoading;
-  const animatedLoadingText = useTextAnimation(loading);
+  const animatedLoadingText = useTextAnimation();
 
   /**
    * We first process and add several additional metrices that is useful for further calculation

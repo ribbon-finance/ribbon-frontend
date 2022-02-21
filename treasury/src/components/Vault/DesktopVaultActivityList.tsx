@@ -92,7 +92,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
     useAssetsPriceHistory();
 
   const { width: screenWidth } = useScreenSize();
-  const loadingText = useTextAnimation(assetPriceLoading);
+  const loadingText = useTextAnimation();
   const { chainId } = useWeb3Wallet();
   const premiumDecimals = getAssetDecimals("USDC");
 

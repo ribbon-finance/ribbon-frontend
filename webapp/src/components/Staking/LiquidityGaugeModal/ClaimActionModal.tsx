@@ -90,7 +90,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
   const minterContract = useLiquidityTokenMinter();
   const { addPendingTransaction } = usePendingTransactions();
 
-  const loadingText = useTextAnimation(lg5DataLoading);
+  const loadingText = useTextAnimation();
 
   const handleClose = useCallback(() => {
     onClose();
@@ -159,10 +159,10 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
   }, [lg5Data, lg5DataLoading, loadingText]);
 
   const rewards: {
-    totalPoolRewards: string;
-    baseRewards: string;
-    boostedRewardsMultiplier: string;
-    boostedRewardsAmount: string;
+    totalPoolRewards: JSX.Element | string;
+    baseRewards: JSX.Element | string;
+    boostedRewardsMultiplier: JSX.Element | string;
+    boostedRewardsAmount: JSX.Element | string;
   } = useMemo(() => {
     if (apysLoading) {
       return {

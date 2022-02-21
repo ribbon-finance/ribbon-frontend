@@ -27,7 +27,7 @@ const TVLLeaderboard = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { width: containerWidth } = useElementSize(containerRef);
   const { data, totalTVL, loading: TVLLoading } = useTVL();
-  const loadingText = useTextAnimation(TVLLoading);
+  const loadingText = useTextAnimation();
 
   const [page, setPage] = useState(1);
 

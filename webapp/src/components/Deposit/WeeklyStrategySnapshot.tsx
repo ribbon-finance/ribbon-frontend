@@ -124,7 +124,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   const [showCalculator, setShowCalculator] = useState(false);
   const chain = getVaultChain(vaultOption);
 
-  const loadingText = useTextAnimation(loading);
+  const loadingText = useTextAnimation();
 
   const strikeAPRText = useMemo(() => {
     if (optionLoading) return loadingText;

@@ -81,7 +81,7 @@ const ProfileActivity = () => {
   // const { activities } = useGovernanceActivity();
   const { transactions, loading } = useGovernanceTransactions();
   // type ActivityType = typeof activities[number];
-  const animatedLoadingText = useTextAnimation(loading);
+  const animatedLoadingText = useTextAnimation();
 
   const [page, setPage] = useState(1);
   const [activityFilter, setActivityFilter] =

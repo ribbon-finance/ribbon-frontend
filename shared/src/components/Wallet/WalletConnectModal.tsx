@@ -109,15 +109,7 @@ const WalletConnectModal: React.FC = () => {
   const [connectingConnector, setConnectingConnector] =
     useState<connectorType>();
 
-  const initializingText = useTextAnimation(Boolean(connectingConnector), {
-    texts: [
-      "INITIALIZING",
-      "INITIALIZING .",
-      "INITIALIZING ..",
-      "INITIALIZING ...",
-    ],
-    interval: 250,
-  });
+  const initializingText = useTextAnimation();
 
   const [show, setShow] = useConnectWalletModal();
 

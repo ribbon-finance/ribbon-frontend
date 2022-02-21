@@ -66,12 +66,7 @@ const OverviewKPI = () => {
   const { total, loading: treasuryLoading } = useTreasuryAccount();
   const { totalTVL } = useTVL();
 
-  const loadingText = useTextAnimation(
-    assetPriceLoading ||
-      treasuryLoading ||
-      rbnTokenAccountLoading ||
-      assetInfoLoading
-  );
+  const loadingText = useTextAnimation();
 
   const percentageStaked = useMemo(() => {
     if (info.circulating_supply) {

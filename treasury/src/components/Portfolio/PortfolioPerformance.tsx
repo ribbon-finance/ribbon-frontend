@@ -187,7 +187,7 @@ const PortfolioPerformance = () => {
     balanceUpdatesLoading ||
     transactionsLoading ||
     RBNTokenAccountLoading;
-  const animatedLoadingText = useTextAnimation(loading);
+  const animatedLoadingText = useTextAnimation();
 
   const premiumDecimals = getAssetDecimals("USDC");
 

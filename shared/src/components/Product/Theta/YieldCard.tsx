@@ -67,7 +67,7 @@ const ProductAssetLogoContainer = styled.div<{ color: string }>`
   }
 `;
 
-const TopContainer = styled.div<{ color: string; index: number }>`
+const TopContainer = styled.div<{ color: string }>`
   display: flex;
   position: relative;
   justify-content: space-between;
@@ -77,7 +77,6 @@ const TopContainer = styled.div<{ color: string; index: number }>`
   padding: 16px;
   margin-bottom: 0;
   border-radius: ${theme.border.radius} ${theme.border.radius} 0px 0px;
-  animation-delay: calc(${(props) => props.index} * 1000s);
 
   background: linear-gradient(
     270deg,
@@ -115,8 +114,8 @@ const ProductCard = styled(motion.div)<{ color: string }>`
     border: 2px ${theme.border.style} ${(props) => props.color};
 
     ${ProductAssetLogoContainer} {
-      transition: 0.25s border ease-out;
-      border: 2px ${theme.border.style} ${(props) => props.color}80;
+      transition: 0.25s border ease-in-out;
+      border: 2px ${theme.border.style} ${(props) => props.color};
     }
 
     ${TopContainer} {
@@ -248,7 +247,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
 
   const latestAPY = useLatestAPY(vault, vaultVersion);
 
-  const loadingText = useTextAnimation(!latestAPY.fetched);
+  const loadingText = useTextAnimation();
   const perfStr = latestAPY.fetched
     ? `${latestAPY.res.toFixed(2)}%`
     : loadingText;

@@ -87,7 +87,7 @@ const StakingSummary = () => {
   const [hoveredDateStr, setHoveredDateStr] = useState<string>("");
   const [hoveredDatePosition, setHoveredDatePosition] = useState(0);
 
-  const loadingText = useTextAnimation(rbnTokenAccountLoading);
+  const loadingText = useTextAnimation();
 
   const chartDatapoints:
     | {
