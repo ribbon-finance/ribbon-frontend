@@ -149,7 +149,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
               onClick={setShowPositionModal}
             >
               <AssetCircleContainer color={color} size={48}>
-                <Logo width={20} height={20} />
+                <Logo width={"100%"} height={"100%"} />
               </AssetCircleContainer>
               <div className="d-flex flex-column justify-content-center p-2">
                 <PositionInfoText size={10} color={colors.text}>
@@ -180,7 +180,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
         return (
           <MobileContainer color={color} onClick={setShowPositionModal}>
             <AssetCircleContainer color={color} size={48}>
-              <Logo width={20} height={20} />
+              <Logo width={"100%"} height={"100%"} />
             </AssetCircleContainer>
             <div className="d-flex flex-column justify-content-center p-2">
               <PositionInfoText size={10} color={colors.text}>
