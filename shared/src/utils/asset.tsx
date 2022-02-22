@@ -1,6 +1,13 @@
 import React from "react";
 import styled, { StyledComponent } from "styled-components";
 import {
+  MetamaskIcon,
+  PhantomIcon,
+  SolflareIcon,
+  WalletConnectIcon,
+  WalletLinkIcon,
+} from "../assets/icons/connector";
+import {
   AAVELogo,
   STETHLogo,
   USDCLogo,
@@ -16,6 +23,7 @@ import Logo from "../assets/icons/logo";
 import { SolanaLogo } from "../assets/icons/solAssets";
 import { Chains, VaultOptions } from "../constants/constants";
 import colors from "../designSystem/colors";
+import { EthereumWallet, SolanaWallet } from "../models/wallets";
 import { Assets, Wallets } from "../store/types";
 
 export const isYieldAsset = (asset: Assets): boolean => {
@@ -206,5 +214,22 @@ export const getAssetLogo: (asset: Assets) =>
       return AURORALogo;
     default:
       return Logo;
+  }
+};
+
+export const getWalletLogo = (wallet: EthereumWallet | SolanaWallet) => {
+  switch (wallet) {
+    case EthereumWallet.Metamask:
+      return <MetamaskIcon width={40} height={40} />;
+    case EthereumWallet.WalletConnect:
+      return <WalletConnectIcon width={40} height={40} />;
+    case EthereumWallet.WalletLink:
+      return <WalletLinkIcon width={40} height={40} />;
+    case SolanaWallet.Phantom:
+      return <PhantomIcon width={40} height={40} />;
+    case SolanaWallet.Solflare:
+      return <SolflareIcon width={40} height={40} />;
+    default:
+      return null;
   }
 };
