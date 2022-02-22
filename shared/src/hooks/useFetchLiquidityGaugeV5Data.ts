@@ -12,7 +12,6 @@ import { useWeb3Context } from "./web3Context";
 import { isProduction } from "../utils/env";
 import {
   isEthNetwork,
-  RibbonTokenAddress,
   VaultLiquidityMiningMap,
   VaultOptions,
 } from "../constants/constants";
