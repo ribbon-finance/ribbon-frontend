@@ -31,7 +31,6 @@ const VaultData = styled(Title)`
   line-height: 24px;
 `;
 
-const loadingText = useLoadingText();
 
 const VaultInformation: React.FC<{
   loading: boolean;
@@ -39,6 +38,8 @@ const VaultInformation: React.FC<{
   vaultYield: number;
   asset: Assets;
 }> = ({ loading, vaultDeposit, vaultYield, asset }) => {
+  const loadingText = useLoadingText();
+  
   return (
     <Row noGutters>
       <VaultDataCol xs="3">
