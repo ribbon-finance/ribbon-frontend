@@ -39,7 +39,6 @@ const VaultInformation: React.FC<{
   asset: Assets;
 }> = ({ loading, vaultDeposit, vaultYield, asset }) => {
   const loadingText = useLoadingText();
-  
   return (
     <Row noGutters>
       <VaultDataCol xs="3">
