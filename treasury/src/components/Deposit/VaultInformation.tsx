@@ -31,7 +31,6 @@ const VaultData = styled(Title)`
   line-height: 24px;
 `;
 
-
 const VaultInformation: React.FC<{
   loading: boolean;
   vaultDeposit: number;
