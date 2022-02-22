@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -132,6 +133,7 @@ interface VaultStrategyExplainerProps {
 const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
   vault: { vaultOption, vaultVersion },
 }) => {
+  const { t } = useTranslation(["webapp"]);
   const containerRef = useRef(null);
   const { width } = useScreenSize();
   const { width: sectionWidth } = useElementSize(containerRef);
@@ -398,8 +400,13 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                   balance into{" "}
                   <TooltipExplanation
                     title={collateralAssetUnit.toUpperCase()}
-                    explanation={`${collateralAssetUnit} is the deposit token that represents a user's share of the their ETH on the Ethereum beacon chain.`}
-                    learnMoreURL="https://lido.fi/ethereum"
+                    explanation={t(
+                      "webapp:VaultStrategyExplainer:stETH:explanation",
+                      { collateralAssetUnit }
+                    )}
+                    learnMoreURL={t(
+                      "webapp:VaultStrategyExplainer:stETH:learnMoreURL"
+                    )}
                     renderContent={({ ref, ...triggerHandler }) => (
                       <HighlightedText ref={ref} {...triggerHandler}>
                         {collateralAssetUnit}
@@ -408,12 +415,16 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                   />{" "}
                   by depositing {assetUnit} into the{" "}
                   <TooltipExplanation
-                    title="LIDO"
-                    explanation="Lido is a DeFi asset staking protocol."
-                    learnMoreURL="https://lido.fi"
+                    title={t("webapp:VaultStrategyExplainer:Lido:title")}
+                    explanation={t(
+                      "webapp:VaultStrategyExplainer:Lido:explanation"
+                    )}
+                    learnMoreURL={t(
+                      "webapp:VaultStrategyExplainer:Lido:learnMoreURL"
+                    )}
                     renderContent={({ ref, ...triggerHandler }) => (
                       <HighlightedText ref={ref} {...triggerHandler}>
-                        Lido
+                        {t("webapp:VaultStrategyExplainer:Lido:title")}
                       </HighlightedText>
                     )}
                   />{" "}
@@ -463,9 +474,13 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                 <>
                   The vault's{" "}
                   <TooltipExplanation
-                    title="STRIKE PRICE"
-                    explanation="A strike price is the set price at which an option contract can be bought or sold when it is exercised."
-                    learnMoreURL="https://www.investopedia.com/terms/s/strikeprice.asp"
+                    title={t("webapp:VaultStrategyExplainer:StrikePrice:title")}
+                    explanation={t(
+                      "webapp:VaultStrategyExplainer:StrikePrice:explanation"
+                    )}
+                    learnMoreURL={t(
+                      "webapp:VaultStrategyExplainer:StrikePrice:learnMoreURL"
+                    )}
                     renderContent={({ ref, ...triggerHandler }) => (
                       <HighlightedText ref={ref} {...triggerHandler}>
                         strike price
@@ -477,13 +492,13 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                     title={isPut ? "PUT OPTION" : "CALL OPTION"}
                     explanation={
                       isPut
-                        ? "A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put."
-                        : "A call option is a financial contract that gives the option buyer the right but not the obligation to buy an asset at the strike price at a specific point in time."
+                        ? t("webapp:VaultStrategyExplainer:Put:explanation")
+                        : t("webapp:VaultStrategyExplainer:Call:explanation")
                     }
                     learnMoreURL={
                       isPut
-                        ? "https://www.investopedia.com/terms/p/putoption.asp"
-                        : "https://www.investopedia.com/terms/c/coveredcall.asp"
+                        ? t("webapp:VaultStrategyExplainer:Put:learnMoreURL")
+                        : t("webapp:VaultStrategyExplainer:Call:learnMoreURL")
                     }
                     renderContent={({ ref, ...triggerHandler }) => (
                       <HighlightedText ref={ref} {...triggerHandler}>
@@ -975,6 +990,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
       getVaultTarget,
       vaultOption,
       vaultVersion,
+      t,
     ]
   );
 
