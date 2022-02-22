@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Web3ReactProvider } from "@web3-react/core";
+import { ConnectionProvider } from "@solana/wallet-adapter-react";
 
 import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
 import { getLibrary } from "shared/lib/utils/getLibrary";
@@ -20,6 +21,7 @@ import PolicyPage from "./pages/PolicyPage";
 import TermsPage from "./pages/TermsPage";
 import FAQPage from "./pages/FAQ";
 import colors from "shared/lib/designSystem/colors";
+import { getSolanaClusterURI } from "shared/lib/utils/env";
 
 const Body = styled.div`
   background-color: ${colors.background.one};
@@ -30,46 +32,48 @@ const MainContent = styled.div``;
 function App() {
   return (
     <ChainContextProvider>
-      <Web3ContextProvider>
-        <Web3ReactProvider getLibrary={getLibrary}>
-          <Web3DataContextProvider>
-            <SubgraphDataContextProvider>
-              <ExternalAPIDataContextProvider>
-                <Body>
-                  <Router>
-                    <Header />
+      <ConnectionProvider endpoint={getSolanaClusterURI()}>
+        <Web3ContextProvider>
+          <Web3ReactProvider getLibrary={getLibrary}>
+            <Web3DataContextProvider>
+              <SubgraphDataContextProvider>
+                <ExternalAPIDataContextProvider>
+                  <Body>
+                    <Router>
+                      <Header />
 
-                    <Switch>
-                      <Route path="/" exact>
-                        <Hero />
-                        <MainContent>
-                          <ProductCarousel />
-                          <Mission />
-                          <Investors />
-                        </MainContent>
-                      </Route>
+                      <Switch>
+                        <Route path="/" exact>
+                          <Hero />
+                          <MainContent>
+                            <ProductCarousel />
+                            <Mission />
+                            <Investors />
+                          </MainContent>
+                        </Route>
 
-                      <Route path="/policy">
-                        <PolicyPage></PolicyPage>
-                      </Route>
+                        <Route path="/policy">
+                          <PolicyPage></PolicyPage>
+                        </Route>
 
-                      <Route path="/terms">
-                        <TermsPage></TermsPage>
-                      </Route>
+                        <Route path="/terms">
+                          <TermsPage></TermsPage>
+                        </Route>
 
-                      <Route path="/faq">
-                        <FAQPage></FAQPage>
-                      </Route>
-                    </Switch>
+                        <Route path="/faq">
+                          <FAQPage></FAQPage>
+                        </Route>
+                      </Switch>
 
-                    <Footer />
-                  </Router>
-                </Body>
-              </ExternalAPIDataContextProvider>
-            </SubgraphDataContextProvider>
-          </Web3DataContextProvider>
-        </Web3ReactProvider>
-      </Web3ContextProvider>
+                      <Footer />
+                    </Router>
+                  </Body>
+                </ExternalAPIDataContextProvider>
+              </SubgraphDataContextProvider>
+            </Web3DataContextProvider>
+          </Web3ReactProvider>
+        </Web3ContextProvider>
+      </ConnectionProvider>
     </ChainContextProvider>
   );
 }
