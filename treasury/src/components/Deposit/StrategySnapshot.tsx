@@ -113,9 +113,9 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
   const latestYield = useMemo(() => {
     if (activitiesLoading) return loadingText;
 
-    return currency(parseFloat(formatUnits(latestSale.premium, premiumDecimals)).toFixed(
-      2
-    )).format()
+    return currency(
+      parseFloat(formatUnits(latestSale.premium, premiumDecimals)).toFixed(2)
+    ).format();
   }, [loadingText, activitiesLoading, latestSale, premiumDecimals]);
 
   const strikeAPRText = useMemo(() => {
@@ -188,7 +188,7 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
             <div className="d-flex align-items-center">
               <DataLabel className="d-block">Latest Yield Earned</DataLabel>
             </div>
-            <DataNumber variant={!latestSale ? "green": undefined}>
+            <DataNumber variant={!latestSale ? "green" : undefined}>
               {!latestSale ? "---" : latestYield}
             </DataNumber>
           </DataCol>
