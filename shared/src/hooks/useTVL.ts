@@ -17,24 +17,24 @@ interface VaultTVLs {
 }
 
 const useTVL = () => {
-  const { data: v2VaultsData, loading: v2VaultsLoading } = useV2VaultsData()
-  const { data: v1VaultsData, loading: v1VaultsLoading } = useVaultsData()
+  const { data: v2VaultsData, loading: v2VaultsLoading } = useV2VaultsData();
+  const { data: v1VaultsData, loading: v1VaultsLoading } = useVaultsData();
 
   const { prices, loading: pricesLoading } = useAssetsPrice();
 
   const vaultsTVL = useMemo(() => {
-    const vaultTVLs: VaultTVLs[] = []
+    const vaultTVLs: VaultTVLs[] = [];
 
     VaultList.forEach((vaultOption) => {
       const asset = getAssets(vaultOption);
 
       // First get the v1 with non zero tvl
-      const v1Vault = v1VaultsData[vaultOption]
+      const v1Vault = v1VaultsData[vaultOption];
       if (!v1Vault.deposits.isZero()) {
         vaultTVLs.push({
           vault: {
             option: vaultOption,
-            version: "v1"
+            version: "v1",
           },
           tvl: parseFloat(
             assetToFiat(
@@ -43,16 +43,16 @@ const useTVL = () => {
               getAssetDecimals(asset)
             )
           ),
-        })
+        });
       }
 
       // Then get the v2 with non zero tvl
-      const v2Vault = v2VaultsData[vaultOption]
+      const v2Vault = v2VaultsData[vaultOption];
       if (!v2Vault.totalBalance.isZero()) {
         vaultTVLs.push({
           vault: {
             option: vaultOption,
-            version: "v2"
+            version: "v2",
           },
           tvl: parseFloat(
             assetToFiat(
@@ -61,9 +61,9 @@ const useTVL = () => {
               getAssetDecimals(asset)
             )
           ),
-        })
+        });
       }
-    })
+    });
 
     // Sort it from highest tvl to lowest
     vaultTVLs.sort((a, b) => (a.tvl < b.tvl ? 1 : -1));
