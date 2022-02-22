@@ -20,7 +20,7 @@ import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
 import MobileVaultActivityList from "./MobileVaultActivityList";
 import { Title } from "shared/lib/designSystem";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
 import Pagination from "shared/lib/components/Common/Pagination";
 import { AnimatePresence, motion } from "framer-motion";
@@ -53,7 +53,7 @@ const VaultActivity: React.FC<VaultActivityProps> = ({
   const [sortBy, setSortBy] = useState<SortBy>(sortByList[0]);
   const { width } = useScreenSize();
   const [page, setPage] = useState(1);
-  const loadingText = useTextAnimation(loading);
+  const loadingText = useLoadingText();
 
   /**
    * Default to initial state and process initial state

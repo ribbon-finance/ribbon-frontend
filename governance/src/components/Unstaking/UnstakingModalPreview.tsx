@@ -13,7 +13,7 @@ import colors from "shared/lib/designSystem/colors";
 import { UnstakeIcon } from "shared/lib/assets/icons/icons";
 import moment from "moment";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 
@@ -35,7 +35,7 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
   onUnstake,
 }) => {
   const { data: rbnTokenAccount, loading } = useRBNTokenAccount();
-  const loadingText = useTextAnimation(loading);
+  const loadingText = useLoadingText();
 
   const canUnstake = useMemo(() => {
     if (loading || !rbnTokenAccount || !rbnTokenAccount.lockEndTimestamp) {

@@ -12,7 +12,7 @@ import { productCopies } from "shared/lib/components/Product/productCopies";
 import useElementSize from "shared/lib/hooks/useElementSize";
 import { getVaultColor } from "shared/lib/utils/vault";
 import OverviewBarchart from "./OverviewBarchart";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 
 const perPage = 3;
 
@@ -27,7 +27,7 @@ const TVLLeaderboard = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { width: containerWidth } = useElementSize(containerRef);
   const { data, totalTVL, loading: TVLLoading } = useTVL();
-  const loadingText = useTextAnimation(TVLLoading);
+  const loadingText = useLoadingText();
 
   const [page, setPage] = useState(1);
 

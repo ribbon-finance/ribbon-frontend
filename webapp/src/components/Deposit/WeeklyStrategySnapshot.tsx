@@ -18,7 +18,7 @@ import {
 } from "shared/lib/constants/constants";
 import { BaseButton, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import StrikeChart from "./StrikeChart";
 import ProfitCalculatorModal from "./ProfitCalculatorModal";
 import { formatUnits } from "@ethersproject/units";
@@ -122,7 +122,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   const [showCalculator, setShowCalculator] = useState(false);
   const chain = getVaultChain(vaultOption);
 
-  const loadingText = useTextAnimation(loading);
+  const loadingText = useLoadingText();
 
   const strikeAPRText = useMemo(() => {
     if (optionLoading) return loadingText;

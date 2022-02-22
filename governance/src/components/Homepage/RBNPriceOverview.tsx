@@ -10,7 +10,7 @@ import { Subtitle, Title } from "shared/lib/designSystem";
 import useAssetPrice, {
   useAssetsPriceHistory,
 } from "shared/lib/hooks/useAssetPrice";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { Chart } from "shared/lib/components/Common/PerformanceChart";
 import useElementSize from "shared/lib/hooks/useElementSize";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
@@ -35,7 +35,7 @@ const RBNPriceOverview = () => {
     asset: "RBN",
   });
   const { histories } = useAssetsPriceHistory();
-  const loadingText = useTextAnimation(assetPriceLoading);
+  const loadingText = useLoadingText();
 
   const [range, setRange] = useState<PriceRange>("1M");
 

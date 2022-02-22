@@ -29,7 +29,7 @@ import { formatBigNumberAmount } from "shared/lib/utils/math";
 import { GovernanceChainID } from "../../constants/constants";
 import useGovernanceTransactions from "shared/lib/hooks/useGovernanceTransactions";
 import { GovernanceTransaction } from "shared/lib/models/governance";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 
 const ActivityContainer = styled.div`
   display: flex;
@@ -81,7 +81,7 @@ const ProfileActivity = () => {
   // const { activities } = useGovernanceActivity();
   const { transactions, loading } = useGovernanceTransactions();
   // type ActivityType = typeof activities[number];
-  const animatedLoadingText = useTextAnimation(loading);
+  const animatedLoadingText = useLoadingText();
 
   const [page, setPage] = useState(1);
   const [activityFilter, setActivityFilter] =

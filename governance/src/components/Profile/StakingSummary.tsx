@@ -10,7 +10,7 @@ import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { formatBigNumber } from "shared/lib/utils/math";
 import moment from "moment";
 import { formatUnits } from "ethers/lib/utils";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import {
   Chart,
   HoverInfo,
@@ -87,7 +87,7 @@ const StakingSummary = () => {
   const [hoveredDateStr, setHoveredDateStr] = useState<string>("");
   const [hoveredDatePosition, setHoveredDatePosition] = useState(0);
 
-  const loadingText = useTextAnimation(rbnTokenAccountLoading);
+  const loadingText = useLoadingText();
 
   const chartDatapoints:
     | {

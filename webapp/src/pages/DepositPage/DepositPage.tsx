@@ -329,30 +329,24 @@ const HeroSection: React.FC<{
     const Logo = getAssetLogo(asset);
 
     switch (asset) {
-      case "WETH":
-        return <Logo />;
       case "WBTC":
-        return <Logo height="190%" style={{ marginTop: 40 }} />;
+      case "SOL":
       case "USDC":
+        return <Logo height="200%" width="200%" />;
+      case "AAVE":
+      case "WAVAX":
+        return <Logo showBackground />;
       case "yvUSDC":
         return (
           <Logo
-            height="180%"
-            style={{
-              marginTop: 40,
-            }}
+            height="200%"
+            width="200%"
             markerConfig={{
               right: "0px",
               border: "none",
             }}
           />
         );
-      case "AAVE":
-        return <Logo showBackground />;
-      case "WAVAX":
-        return <Logo showBackground />;
-      case "SOL":
-        return <Logo height="100%" width="100%" />;
       default:
         return <Logo />;
     }

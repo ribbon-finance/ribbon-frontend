@@ -14,7 +14,7 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { useAssetsPriceHistory } from "shared/lib/hooks/useAssetPrice";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import useTransactions from "shared/lib/hooks/useTransactions";
 import { CurrencyType } from "../../pages/Portfolio/types";
 import { assetToUSD, formatBigNumber } from "shared/lib/utils/math";
@@ -176,7 +176,7 @@ const PortfolioTransactions = () => {
   // const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice();
   const { searchAssetPriceFromTimestamp, loading: assetPricesLoading } =
     useAssetsPriceHistory();
-  const animatedLoadingText = useTextAnimation(loading || assetPricesLoading);
+  const animatedLoadingText = useLoadingText();
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<PortfolioTransactionSortBy>(
     portfolioTransactionSortByList[0]

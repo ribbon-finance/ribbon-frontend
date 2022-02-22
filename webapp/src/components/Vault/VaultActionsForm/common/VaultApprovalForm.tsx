@@ -15,7 +15,7 @@ import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { getERC20Token } from "shared/lib/hooks/useERC20Token";
 import { ERC20Token } from "shared/lib/models/eth";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import {
   BaseLink,
   PrimaryText,
@@ -203,10 +203,7 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
   }, [chainId, depositAsset, ethereumProvider]);
 
   const [waitingApproval, setWaitingApproval] = useState(false);
-  const loadingText = useTextAnimation(waitingApproval, {
-    texts: ["Approving", "Approving .", "Approving ..", "Approving ..."],
-    interval: 250,
-  });
+  const loadingText = useLoadingText("Approving");
 
   const handleApproveToken = useCallback(async () => {
     setWaitingApproval(true);

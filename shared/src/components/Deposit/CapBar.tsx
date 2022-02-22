@@ -1,10 +1,13 @@
 import React from "react";
 import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
+import useLoadingText from "../../hooks/useLoadingText";
 import { Assets } from "../../store/types";
 import { getAssetDisplay } from "../../utils/asset";
 import { formatAmount } from "../../utils/math";
 import ProgressBar, { BarConfig } from "./ProgressBar";
+
+const loadingText = useLoadingText();
 
 const CapBar: React.FC<{
   loading: boolean;
@@ -54,7 +57,7 @@ const CapBar: React.FC<{
         </SecondaryText>
         <Title fontSize={statsConfig.fontSize} lineHeight={20}>
           {loading
-            ? "Loading..."
+            ? loadingText
             : `${
                 displayCurrent
                   ? displayCurrent
@@ -71,7 +74,7 @@ const CapBar: React.FC<{
         </SecondaryText>
         <Title fontSize={statsConfig.fontSize} lineHeight={20}>
           {loading
-            ? "Loading..."
+            ? loadingText
             : `${
                 displayCap
                   ? displayCap

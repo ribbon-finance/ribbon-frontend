@@ -19,7 +19,7 @@ import colors from "../../../designSystem/colors";
 import theme from "../../../designSystem/theme";
 import { AssetYieldInfo } from "../../../hooks/externalAPIDataContext";
 import useLatestAPY from "../../../hooks/useLatestAPY";
-import useTextAnimation from "../../../hooks/useTextAnimation";
+import useLoadingText from "../../../hooks/useLoadingText";
 import { DefiScoreProtocol } from "../../../models/defiScore";
 import { getAssetDisplay } from "../../../utils/asset";
 import { productCopies } from "../productCopies";
@@ -65,7 +65,7 @@ const YieldComparison: React.FC<YieldComparisonProps> = ({
 
   const latestAPY = useLatestAPY(vault, vaultVersion);
 
-  const loadingText = useTextAnimation(!latestAPY.fetched);
+  const loadingText = useLoadingText();
   const perfStr = latestAPY.fetched
     ? `${latestAPY.res.toFixed(2)}%`
     : loadingText;

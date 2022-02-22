@@ -5,6 +5,7 @@ import { Col, Row } from "react-bootstrap";
 
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import { Assets } from "shared/lib/store/types";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 
 const VaultDataCol = styled(Col)`
   margin-top: 20px;
@@ -36,13 +37,14 @@ const VaultInformation: React.FC<{
   vaultYield: number;
   asset: Assets;
 }> = ({ loading, vaultDeposit, vaultYield, asset }) => {
+  const loadingText = useLoadingText();
   return (
     <Row noGutters>
       <VaultDataCol xs="3">
         <VaultDataLabel className="d-block">Vault Deposits</VaultDataLabel>
         <VaultData>
           {loading
-            ? "Loading..."
+            ? loadingText
             : `${
                 vaultDeposit === 0
                   ? "---"
@@ -55,7 +57,7 @@ const VaultInformation: React.FC<{
         <VaultDataLabel className="d-block">Yield Earned</VaultDataLabel>
         <VaultData>
           {loading
-            ? "Loading..."
+            ? loadingText
             : `${
                 vaultYield === 0
                   ? "---"

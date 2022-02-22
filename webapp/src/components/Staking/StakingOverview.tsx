@@ -19,7 +19,7 @@ import {
   VaultList,
   StakingVaultOptions,
 } from "shared/lib/constants/constants";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { BigNumber } from "@ethersproject/bignumber";
 import { formatBigNumber } from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
@@ -130,16 +130,11 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
     );
   const [showRewardsCalculator, setShowRewardsCalculator] = useState(false);
 
-  const loadingText = useTextAnimation(
-    stakingLoading ||
-      tokenLoading ||
-      lg5DataLoading ||
-      rbnTokenDistributedLoading
-  );
+  const loadingText = useLoadingText();
 
   const totalRewardDistributed = useMemo(() => {
     if (lmVersion === "lm") {
-      if (stakingLoading) {
+      if (stakingLoading || rbnTokenDistributedLoading) {
         return loadingText;
       }
 
@@ -163,6 +158,7 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
     stakingPools,
     lmVersion,
     rbnTokenDistributedLg5,
+    rbnTokenDistributedLoading,
   ]);
 
   const numHolderText = useMemo(() => {

@@ -15,7 +15,7 @@ import {
 } from "shared/lib/constants/constants";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import StrikeChart from "webapp/lib/components/Deposit/StrikeChart";
 import { formatUnits } from "@ethersproject/units";
 import { useLatestOption } from "shared/lib/hooks/useLatestOption";
@@ -99,7 +99,7 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
   );
   const premiumDecimals = getAssetDecimals("USDC");
 
-  const loadingText = useTextAnimation(loading);
+  const loadingText = useLoadingText();
 
   // Get the latest option sale
   const latestSale = useMemo(() => {
@@ -112,11 +112,10 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
 
   const latestYield = useMemo(() => {
     if (activitiesLoading) return loadingText;
-    if (!latestSale) return "---";
 
-    return parseFloat(formatUnits(latestSale.premium, premiumDecimals)).toFixed(
-      2
-    );
+    return currency(
+      parseFloat(formatUnits(latestSale.premium, premiumDecimals)).toFixed(2)
+    ).format();
   }, [loadingText, activitiesLoading, latestSale, premiumDecimals]);
 
   const strikeAPRText = useMemo(() => {
@@ -189,16 +188,8 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
             <div className="d-flex align-items-center">
               <DataLabel className="d-block">Latest Yield Earned</DataLabel>
             </div>
-            <DataNumber
-              variant={
-                latestYield !== "---" && !activitiesLoading
-                  ? "green"
-                  : undefined
-              }
-            >
-              {latestYield !== "---" && !activitiesLoading
-                ? currency(latestYield).format()
-                : latestYield}
+            <DataNumber variant={!latestSale ? "green" : undefined}>
+              {!latestSale ? "---" : latestYield}
             </DataNumber>
           </DataCol>
           <DataCol xs="6">

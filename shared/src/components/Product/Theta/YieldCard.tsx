@@ -19,7 +19,7 @@ import {
   formatSignificantDecimals,
   isPracticallyZero,
 } from "../../../utils/math";
-import useTextAnimation from "../../../hooks/useTextAnimation";
+import useLoadingText from "../../../hooks/useLoadingText";
 import {
   hasVaultVersion,
   VaultOptions,
@@ -44,6 +44,53 @@ const CardContainer = styled.div`
   perspective: 2000px;
 `;
 
+const ProductAssetLogoContainer = styled.div<{ color: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  width: 56px;
+  margin-top: calc(-56px / 2);
+  background-color: ${colors.background.one};
+  border: 2px ${theme.border.style} ${colors.background.two};
+  border-radius: 50%;
+  position: relative;
+
+  &:before {
+    display: block;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    content: " ";
+    background: ${(props) => props.color}29;
+    border-radius: 50%;
+  }
+`;
+
+const TopContainer = styled.div<{ color: string }>`
+  display: flex;
+  position: relative;
+  justify-content: space-between;
+  width: calc(100% + 32px);
+  height: 120px;
+  margin: -16px;
+  padding: 16px;
+  margin-bottom: 0;
+  border-radius: ${theme.border.radius} ${theme.border.radius} 0px 0px;
+
+  background: linear-gradient(
+    270deg,
+    ${(props) => props.color}05 1.04%,
+    ${(props) => props.color}30 98.99%
+  );
+
+  background-size: 200% 200%;
+
+  -webkit-animation: ${animatedGradientKeyframe} 5s ease infinite;
+  -moz-animation: ${animatedGradientKeyframe} 5s ease infinite;
+  animation: ${animatedGradientKeyframe} 5s ease infinite;
+`;
+
 const ProductCard = styled(motion.div)<{ color: string }>`
   display: flex;
   flex-direction: column;
@@ -65,31 +112,26 @@ const ProductCard = styled(motion.div)<{ color: string }>`
   &:hover {
     box-shadow: ${(props) => props.color}66 0px 0px 70px;
     border: 2px ${theme.border.style} ${(props) => props.color};
+
+    ${ProductAssetLogoContainer} {
+      transition: 0.25s border ease-in-out;
+      border: 2px ${theme.border.style} ${(props) => props.color};
+    }
+
+    ${TopContainer} {
+      background: linear-gradient(
+        270deg,
+        ${(props) => props.color}15 1.04%,
+        ${(props) => props.color}45 98.99%
+      );
+
+      background-size: 200% 200%;
+
+      -webkit-animation: ${animatedGradientKeyframe} 5s ease infinite;
+      -moz-animation: ${animatedGradientKeyframe} 5s ease infinite;
+      animation: ${animatedGradientKeyframe} 5s ease infinite;
+    }
   }
-`;
-
-const TopContainer = styled.div<{ color: string }>`
-  display: flex;
-  position: relative;
-  justify-content: space-between;
-  width: calc(100% + 32px);
-  height: 120px;
-  margin: -16px;
-  padding: 16px;
-  margin-bottom: 0;
-  border-radius: ${theme.border.radius} ${theme.border.radius} 0px 0px;
-
-  background: linear-gradient(
-    270deg,
-    ${(props) => props.color}10 1.04%,
-    ${(props) => props.color}30 98.99%
-  );
-
-  background-size: 400% 400%;
-
-  -webkit-animation: ${animatedGradientKeyframe} 5s ease infinite;
-  -moz-animation: ${animatedGradientKeyframe} 5s ease infinite;
-  animation: ${animatedGradientKeyframe} 5s ease infinite;
 `;
 
 const TagContainer = styled.div`
@@ -128,29 +170,6 @@ const ProductInfo = styled.div`
   flex-wrap: wrap;
   flex-direction: column;
   flex: 1;
-`;
-
-const ProductAssetLogoContainer = styled.div<{ color: string }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 56px;
-  width: 56px;
-  margin-top: calc(-56px / 2);
-  background-color: ${colors.background.one};
-  border: 2px ${theme.border.style} ${colors.background.one};
-  border-radius: 100px;
-  position: relative;
-
-  &:before {
-    display: block;
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    content: " ";
-    background: ${(props) => props.color}29;
-    border-radius: 100px;
-  }
 `;
 
 const ProductDescription = styled(SecondaryText)`
@@ -228,7 +247,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
 
   const latestAPY = useLatestAPY(vault, vaultVersion);
 
-  const loadingText = useTextAnimation(!latestAPY.fetched);
+  const loadingText = useLoadingText();
   const perfStr = latestAPY.fetched
     ? `${latestAPY.res.toFixed(2)}%`
     : loadingText;

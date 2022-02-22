@@ -14,7 +14,7 @@ import {
   BaseModalContentColumn,
   Title,
 } from "shared/lib/designSystem";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import {
   MetamaskIcon,
   PhantomIcon,
@@ -193,18 +193,7 @@ const WalletButton: React.FC<WalletButtonProps> = ({
   status,
   onConnect,
 }) => {
-  const initializingText = useTextAnimation(
-    Boolean(status === "initializing"),
-    {
-      texts: [
-        "INITIALIZING",
-        "INITIALIZING .",
-        "INITIALIZING ..",
-        "INITIALIZING ...",
-      ],
-      interval: 250,
-    }
-  );
+  const initializingText = useLoadingText();
 
   const title = WALLET_TITLES[wallet];
   const walletColors = {

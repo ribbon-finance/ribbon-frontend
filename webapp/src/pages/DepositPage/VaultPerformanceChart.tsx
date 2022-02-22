@@ -28,6 +28,7 @@ import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import useLatestAPY from "shared/lib/hooks/useLatestAPY";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 
 const VaultPerformanceChartContainer = styled.div`
   background: ${colors.background.two};
@@ -320,6 +321,7 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
   );
 
   const isPrevWeekPerfPositive = prevWeekPerformance[vaultPerformanceTerm] >= 0;
+  const loadingText = useLoadingText();
 
   return (
     <>
@@ -402,7 +404,7 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
                     <Title fontSize={28} lineHeight={36}>
                       {yields.length
                         ? `${(yields[chartIndex] || 0.0).toFixed(2)}%`
-                        : "Loading"}
+                        : loadingText}
                     </Title>
                   </div>
                   <div>
@@ -459,7 +461,7 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
               >
                 {latestAPY.fetched
                   ? `+${latestAPY.res.toFixed(2)}%`
-                  : "Loading"}
+                  : loadingText}
               </Title>
             </VaultPerformanceChartKPI>
             <VaultPerformanceChartKPI>
