@@ -52,7 +52,7 @@ const ProductAssetLogoContainer = styled.div<{ color: string }>`
   width: 56px;
   margin-top: calc(-56px / 2);
   background-color: ${colors.background.one};
-  border: 2px ${theme.border.style} ${colors.background.two};
+  border: 2px ${theme.border.style} transparent;
   border-radius: 50%;
   position: relative;
 
@@ -91,7 +91,7 @@ const TopContainer = styled.div<{ color: string }>`
   animation: ${animatedGradientKeyframe} 5s ease infinite;
 `;
 
-const ProductCard = styled(motion.div)<{ color: string }>`
+const ProductCard = styled(motion.div)<{ color: string; vault: VaultOptions }>`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -115,7 +115,10 @@ const ProductCard = styled(motion.div)<{ color: string }>`
 
     ${ProductAssetLogoContainer} {
       transition: 0.25s border ease-in-out;
-      border: 2px ${theme.border.style} ${(props) => props.color};
+
+      ${(props) =>
+        props.vault !== "rBTC-THETA" &&
+        ` border: 2px ${theme.border.style} ${props.color}`};
     }
 
     ${TopContainer} {
@@ -377,6 +380,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
           onClick={() => onVaultPress(vault, vaultVersion)}
           role="button"
           color={color}
+          vault={vault}
         >
           <TopContainer color={color}>
             {/* Tags */}

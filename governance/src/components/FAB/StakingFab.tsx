@@ -74,7 +74,7 @@ const StakingFAB = () => {
   const { balance: veRBNBalance, loading: votingPowerLoading } =
     useAssetBalance("veRBN");
   const loading = rbnTokenAccountLoading || votingPowerLoading;
-  const loadingText = useLoadingText(loading);
+  const loadingText = useLoadingText();
 
   const stakeMode = useMemo(() => {
     if (rbnAllowance.isZero()) {
@@ -93,9 +93,9 @@ const StakingFAB = () => {
   }, [rbnAllowance, rbnTokenAccount]);
 
   const fabInfo: {
-    veRBNAmount: string;
-    stakedRBNAmount: string;
-    unstakedRBNAmount: string;
+    veRBNAmount: JSX.Element | string;
+    stakedRBNAmount: JSX.Element | string;
+    unstakedRBNAmount: JSX.Element | string;
   } = useMemo(() => {
     if (!active) {
       return {

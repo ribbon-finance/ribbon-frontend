@@ -93,6 +93,8 @@ const BackgroundText = styled(Title)`
   font-size: 240px;
   color: ${colors.primaryText}14;
   white-space: nowrap;
+  text-align: center;
+  width: 100%;
 `;
 
 interface DesktopProductCatalogueGridViewProps {

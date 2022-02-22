@@ -15,16 +15,10 @@ import {
   Title,
 } from "shared/lib/designSystem";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
-import {
-  MetamaskIcon,
-  PhantomIcon,
-  SolflareIcon,
-  WalletConnectIcon,
-  WalletLinkIcon,
-} from "shared/lib/assets/icons/connector";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { BackIcon } from "shared/lib/assets/icons/icons";
+import { getWalletLogo } from "shared/lib/utils/asset";
 
 const ModalContainer = styled.div`
   padding: 10px 0px;
@@ -61,7 +55,8 @@ const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
   background-color: ${colors.background.three};
   align-items: center;
   width: 100%;
-  padding: 8px 16px;
+  padding: 8px;
+  padding-right: 16px;
   height: 56px;
 
   &:hover {
@@ -102,12 +97,6 @@ const StyledBaseIndicator = styled(BaseIndicator)`
 
 const ConnectorButtonText = styled(Title)`
   margin-left: 16px;
-`;
-
-const StyledWalletLinkIcon = styled(WalletLinkIcon)`
-  path.outerBackground {
-    fill: #0000;
-  }
 `;
 
 const ConnectorButtonPill = styled(ConnectorButton)`
@@ -193,9 +182,8 @@ const WalletButton: React.FC<WalletButtonProps> = ({
   status,
   onConnect,
 }) => {
-  const initializingText = useLoadingText();
-
-  const title = WALLET_TITLES[wallet];
+  const initializingText = useLoadingText("Initializing");
+  const walletTitle = WALLET_TITLES[wallet];
   const walletColors = {
     [EthereumWallet.Metamask]: colors.wallets.Metamask,
     [EthereumWallet.WalletConnect]: colors.wallets.WalletConnect,
@@ -211,9 +199,9 @@ const WalletButton: React.FC<WalletButtonProps> = ({
       status={status}
       color={walletColors[wallet]}
     >
-      <WalletIcon wallet={wallet}></WalletIcon>
+      {getWalletLogo(wallet)}
       <ConnectorButtonText>
-        {status === "initializing" ? initializingText : title}
+        {status === "initializing" ? initializingText : walletTitle}
       </ConnectorButtonText>
       {status === "connected" && (
         <StyledBaseIndicator
@@ -223,21 +211,4 @@ const WalletButton: React.FC<WalletButtonProps> = ({
       )}
     </ConnectorButtonPill>
   );
-};
-
-const WalletIcon: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
-  switch (wallet) {
-    case EthereumWallet.Metamask:
-      return <MetamaskIcon height={32} width={32} />;
-    case EthereumWallet.WalletConnect:
-      return <WalletConnectIcon height={32} width={32} />;
-    case EthereumWallet.WalletLink:
-      return <StyledWalletLinkIcon height={32} width={32} />;
-    case SolanaWallet.Phantom:
-      return <PhantomIcon height={32} width={32} />;
-    case SolanaWallet.Solflare:
-      return <SolflareIcon height={32} width={32} />;
-    default:
-      return null;
-  }
 };
