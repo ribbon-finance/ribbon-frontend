@@ -26,6 +26,7 @@ const colors = {
     primary: "#fc0a54",
     error: "rgba(252, 10, 84, 0.16)",
     secondaryBackground: "rgba(22, 206, 185, 0.08)",
+    secondaryBackground2: "rgba(22, 206, 185, 0.12)",
     secondaryText: "#16ceb9",
   },
   vaultActivity: {

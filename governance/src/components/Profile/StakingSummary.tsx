@@ -118,11 +118,10 @@ const StakingSummary = () => {
     const totalDatapoints = 100;
     let dataset: number[] = [];
     let labels: Date[] = [];
-    for (let i = 0; i < totalDatapoints; i++) {
-      const totalDurationMillis =
-        (rbnTokenAccount.lockEndTimestamp -
-          rbnTokenAccount.lockStartTimestamp) *
-        1000;
+    const totalDurationMillis =
+      (rbnTokenAccount.lockEndTimestamp - rbnTokenAccount.lockStartTimestamp) *
+      1000;
+    for (let i = 0; i <= totalDatapoints; i++) {
       // Split total duration into chunks of totalDatapoints
       const incrementDurationMillis =
         (totalDurationMillis / totalDatapoints) * i;

@@ -10,7 +10,11 @@ import {
 } from "shared/lib/constants/constants";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { PendingTransaction } from "shared/lib/store/types";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import {
+  getAssetDecimals,
+  getAssetDisplay,
+  getChainByVaultOption,
+} from "shared/lib/utils/asset";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import { capitalize } from "shared/lib/utils/text";
 import { productCopies } from "shared/lib/components/Product/productCopies";
@@ -20,6 +24,7 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import { useV2VaultsData } from "shared/lib/hooks/web3DataContext";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { parseUnits } from "ethers/lib/utils";
+import { useChain } from "shared/lib/hooks/chainContext";
 
 /**
  * TODO: Temporary disabled
@@ -219,6 +224,7 @@ export const TxStatusToast = () => {
 
 export const WithdrawReminderToast = () => {
   const { data } = useV2VaultsData();
+  const [chain] = useChain();
   const [reminders, setReminders] = useState<
     {
       vault: { option: VaultOptions; version: VaultVersion };
@@ -234,6 +240,10 @@ export const WithdrawReminderToast = () => {
    */
   useEffect(() => {
     VaultList.forEach((vault) => {
+      // Ignore if the chain is not the current chain
+      if (getChainByVaultOption(vault) !== chain) {
+        return;
+      }
       const vaultData = data[vault as VaultOptions];
       const asset = getAssets(vault as VaultOptions);
       const decimals = getAssetDecimals(asset);
@@ -273,7 +283,7 @@ export const WithdrawReminderToast = () => {
         );
       }
     }, []);
-  }, [data, priceHistories.v2, reminders]);
+  }, [data, priceHistories.v2, reminders, chain]);
 
   /**
    * Make sure index does not goes out of bound

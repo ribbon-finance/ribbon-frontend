@@ -46,7 +46,6 @@ const ApprovalIcon = styled.div<{ color: string }>`
   align-items: center;
   width: 64px;
   height: 64px;
-  padding: 8px;
   border-radius: 100px;
   background-color: ${(props) => props.color}29;
 `;

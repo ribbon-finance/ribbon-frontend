@@ -282,7 +282,7 @@ const YourPositionModal: React.FC = () => {
       onClose={() =>
         setVaultPositionModal((prev) => ({ ...prev, show: false }))
       }
-      height={500}
+      height={ModeList.length > 1 ? 500 : 420}
     >
       <>
         <AnimatePresence initial={false} exitBeforeEnter>

@@ -86,7 +86,7 @@ const CalculatorButton = styled(BaseButton)<{ color: string }>`
   justify-content: center;
   width: 100%;
   padding: 16px 0px;
-  background: ${(props) => props.color}14;
+  background: ${(props) => props.color};
   border-radius: 0px 0px ${theme.border.radius} ${theme.border.radius};
 
   &:hover {
@@ -118,7 +118,6 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   );
   const asset = getAssets(vaultOption);
   const optionAsset = getOptionAssets(vaultOption);
-  const color = getVaultColor(vaultOption);
   const { prices, loading: priceLoading } = useAssetsPrice();
   const loading = priceLoading || optionLoading;
   const [showCalculator, setShowCalculator] = useState(false);
@@ -286,11 +285,11 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
       {currentOption && (
         <>
           <CalculatorButton
-            color={color}
+            color={colors.buttons.secondaryBackground2}
             role="button"
             onClick={() => setShowCalculator(true)}
           >
-            <CalculatorButtonText color={color}>
+            <CalculatorButtonText color={colors.buttons.secondaryText}>
               OPEN PROFIT CALCULATOR
             </CalculatorButtonText>
           </CalculatorButton>

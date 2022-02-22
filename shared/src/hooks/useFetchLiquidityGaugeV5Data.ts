@@ -95,16 +95,16 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
 
         /**
          * 1. Current stake
-         * 2. Claimable rbn
-         * 3. Unstaked Balance
+         * 2. Unstaked Balance
+         * 3. Integrate Fraction (total mintable $RBN over the lifetime. To get the claimable amount, take this value and minus the claimed RBN [minted])
          * 4. Claimed rbn
          */
         const promises = unconnectedPromises.concat(
           active
             ? [
                 lg5Contract.balanceOf(account!),
-                lg5Contract.claimable_reward(account!, RibbonTokenAddress),
                 vaultContract!.shares(account!),
+                lg5Contract.integrate_fraction(account!),
                 minterContract.minted(
                   account!,
                   VaultLiquidityMiningMap.lg5[vault]!
@@ -116,10 +116,9 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
                 Promise.resolve(BigNumber.from(0)),
                 Promise.resolve(BigNumber.from(0)),
                 Promise.resolve(BigNumber.from(0)),
+                Promise.resolve(BigNumber.from(0)),
               ]
         );
-
-        // Add minted amount (RBN Claimed)
 
         const [
           poolSize,
@@ -127,8 +126,8 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
           workingSupply,
           relativeWeight,
           currentStake,
-          claimableRbn,
           unstakedBalance,
+          integrateFraction,
           claimedRbn,
         ] = await Promise.all(
           // Default to 0 when error
@@ -142,8 +141,8 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
           workingSupply,
           relativeWeight,
           currentStake,
-          claimableRbn,
           unstakedBalance,
+          integrateFraction,
           claimedRbn,
         };
       })
@@ -156,18 +155,23 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
       if (counter === currentCounter) {
         setData((prev) => ({
           responses: Object.fromEntries(
-            guageResponses.map(({ vault, relativeWeight, ...response }) => [
-              vault,
-              {
-                ...prev.responses[vault],
-                poolRewardForDuration: rate
-                  .mul(relativeWeight)
-                  // Relative weight is in percentage, but normalized to 1e18, so we need to divide it
-                  .div(BigNumber.from(10).pow(18)),
-                periodEndTime: parseInt(periodEndTime.toString()),
-                ...response,
-              },
-            ])
+            guageResponses.map(
+              ({ vault, relativeWeight, integrateFraction, ...response }) => [
+                vault,
+                {
+                  ...prev.responses[vault],
+                  claimableRbn: integrateFraction.sub(response.claimedRbn),
+                  poolRewardForDuration: rate
+                    // Rate is RBN/second. There is 86400 is seconds in a day. Each period is 1 week.
+                    .mul(86400 * 7)
+                    .mul(relativeWeight)
+                    // Relative weight is in percentage, but normalized to 1e18, so we need to divide it
+                    .div(BigNumber.from(10).pow(18)),
+                  periodEndTime: parseInt(periodEndTime.toString()),
+                  ...response,
+                },
+              ]
+            )
           ) as LiquidityGaugeV5PoolResponses,
           loading: false,
         }));
