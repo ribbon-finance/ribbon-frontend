@@ -181,7 +181,7 @@ const PortfolioPerformance = () => {
 
   // Fetch balances update
   const { balances: subgraphBalanceUpdates, loading: balanceUpdatesLoading } =
-    useBalances(undefined, afterDate ? afterDate.unix() : undefined);
+    useBalances();
   const loading =
     assetsPriceLoading ||
     balanceUpdatesLoading ||
