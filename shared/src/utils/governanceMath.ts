@@ -18,6 +18,23 @@ export const calculateInitialveRBNAmount = (
   return veRbnAmount.isNegative() ? BigNumber.from(0) : veRbnAmount;
 };
 
+export const calculateEarlyUnlockPenaltyPercentage = (
+  remainingDuration: Duration
+) => {
+  const hoursRemaining = Math.round(remainingDuration.asHours());
+  const hoursInTwoyears = 365 * 2 * 24;
+  return Math.min(0.75, hoursRemaining / hoursInTwoyears);
+};
+
+export const calculateEarlyUnlockPenalty = (
+  lockedAmount: BigNumber,
+  remainingDuration: Duration
+) => {
+  const penalty = calculateEarlyUnlockPenaltyPercentage(remainingDuration);
+
+  return lockedAmount.mul(Math.round(penalty * 100)).div(100);
+};
+
 interface BaseRewardsCalculationProps {
   poolSize: BigNumber;
   poolReward: BigNumber;

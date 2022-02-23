@@ -11,11 +11,16 @@ import { useGovernanceGlobalState } from "../../store/store";
 import ModalTransactionContent from "../Shared/ModalTransactionContent";
 import UnstakingModalPreview from "./UnstakingModalPreview";
 
-const unstakingModalModes = ["preview", "transaction"] as const;
-type UnstakingModalMode = typeof unstakingModalModes[number];
+const unstakingModes = ["preview", "transaction"] as const;
+type UnstakingMode = typeof unstakingModes[number];
+const unstakingScenarios = ["early", "default"] as const;
+type UnstakingScenario = typeof unstakingScenarios[number];
 
-const stakingModalHeight: { [mode in UnstakingModalMode]: number } = {
-  preview: 428,
+const stakingModalHeight: {
+  preview: { [scenario in UnstakingScenario]: number };
+  transaction: number;
+} = {
+  preview: { early: 478, default: 350 },
   transaction: 412,
 };
 
@@ -37,13 +42,12 @@ const UnstakingModal = () => {
       loading ||
       !votingEscrowContract ||
       !rbnTokenAccount ||
-      !rbnTokenAccount.lockEndTimestamp ||
-      !moment().isSameOrAfter(moment.unix(rbnTokenAccount.lockEndTimestamp))
+      !rbnTokenAccount.lockEndTimestamp
     ) {
       return;
     }
 
-    setStepNum(unstakingModalModes.indexOf("transaction"));
+    setStepNum(unstakingModes.indexOf("transaction"));
     try {
       const tx = await votingEscrowContract.withdraw();
       setUnstakingModalState((prev) => ({
@@ -64,7 +68,7 @@ const UnstakingModal = () => {
         pendingTransaction: undefined,
       }));
     } catch (e) {
-      setStepNum(unstakingModalModes.indexOf("preview"));
+      setStepNum(unstakingModes.indexOf("preview"));
     }
   }, [
     addPendingTransaction,
@@ -76,7 +80,7 @@ const UnstakingModal = () => {
   ]);
 
   const modalBody = useMemo(() => {
-    switch (unstakingModalModes[stepNum]) {
+    switch (unstakingModes[stepNum]) {
       case "preview":
         return <UnstakingModalPreview onUnstake={onUnstake} />;
       case "transaction":
@@ -90,14 +94,33 @@ const UnstakingModal = () => {
     return <></>;
   }, [onUnstake, stepNum, unstakingModalState]);
 
+  const [unstakingMode, unstakingScenario] = useMemo((): [
+    UnstakingMode,
+    UnstakingScenario
+  ] => {
+    let scenario: UnstakingScenario = "default";
+
+    if (
+      rbnTokenAccount?.lockEndTimestamp &&
+      !moment().isSameOrAfter(moment.unix(rbnTokenAccount.lockEndTimestamp))
+    ) {
+      scenario = "early";
+    }
+    return [unstakingModes[stepNum], scenario];
+  }, [rbnTokenAccount?.lockEndTimestamp, stepNum]);
+
   return (
     <BasicModal
       show={unstakingModalState.show}
-      height={stakingModalHeight[unstakingModalModes[stepNum]]}
+      height={
+        unstakingMode !== "preview"
+          ? stakingModalHeight[unstakingMode]
+          : stakingModalHeight[unstakingMode][unstakingScenario]
+      }
       onClose={() =>
         setUnstakingModalState((state) => ({ ...state, show: false }))
       }
-      headerBackground={unstakingModalModes[stepNum] === "transaction"}
+      headerBackground={unstakingModes[stepNum] === "transaction"}
     >
       {modalBody}
     </BasicModal>
