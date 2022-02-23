@@ -1,7 +1,23 @@
 {
-  "title": "Welcome to react using react-i18next and typescript 4.1",
-  "description": {
-    "part1": "This is an example using multiple namespaces.",
-    "part2": "😉"
+  "ProductCopies": {
+    "calldescription": "Generates yield by running an automated {{asset}} covered call strategy.",
+    "putdescription": "Generates yield by running an automated {{asset}} put selling strategy.",
+    "callstrategy": "The vault earns yield on its {{asset}} deposits by running a weekly automated covered call strategy. The vault reinvests the yield earned back into the strategy, effectively compounding the yields for depositors over time.",
+    "putstrategy": "{{vault}} earns yield on its {{collateralAsset}} deposits by running a weekly automated {{asset}} put-selling strategy, where the put options are collateralized by {{collateralAsset}}. The vault reinvests the yield it earns back into the strategy, effectively compounding the yields for depositors over time.",
+    "rAVAX-THETA": {
+      "title": "T-AVAX-C"
+    },
+    "rETH-THETA": {
+      "title": "T-ETH-C"
+    },
+    "ryvUSDC-ETH-P-THETA": {
+      "title": "T-yvUSDC-P-ETH"
+    },
+    "rUSDC-ETH-P-THETA": {
+      "title": "T-USDC-P-ETH"
+    },
+    "rSOL-THETA": {
+      "title": "T-SOL-C"
+    }
   }
 }
