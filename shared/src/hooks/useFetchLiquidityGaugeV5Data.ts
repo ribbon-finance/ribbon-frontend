@@ -21,6 +21,7 @@ import { getV2VaultContract } from "./useV2VaultContract";
 import useLiquidityTokenMinter from "./useLiquidityTokenMinter";
 import useLiquidityGaugeController from "./useLiquidityGaugeController";
 import { constants } from "ethers";
+import { parseUnits } from "ethers/lib/utils";
 
 const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   const { active, chainId, account: web3Account, library } = useWeb3React();
@@ -159,6 +160,8 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
                 vault,
                 {
                   ...prev.responses[vault],
+                  // TODO: - integrateFraction is only updated when checkpoint is called.
+                  // So we'll need to calculate this manually
                   claimableRbn: integrateFraction.sub(response.claimedRbn),
                   poolRewardForDuration: rate
                     // Rate is RBN/second. There is 86400 is seconds in a day. Each period is 1 week.
