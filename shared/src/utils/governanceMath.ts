@@ -118,15 +118,15 @@ export const calculateBoostedRewards = (
 
 interface ClaimableRbnCalculationProps {
   periodTimestamp: number; // period timestamp of current period, LG5.period_timestamp[period]
-  integrate_inv_supply: BigNumber; // integrate_inv_supply of the current period, LG5.integrate_inv_supply[period]
-  integrate_fraction: BigNumber; // LG5.integrate_fraction[addr]
-  integrate_inv_supply_of: BigNumber; // LG5.integrate_inv_supply_of[addr]
-  future_epoch_time: number; // LG5.future_epoch_time
+  integrateInvSupply: BigNumber; // integrate_inv_supply of the current period, LG5.integrate_inv_supply[period]
+  integrateFraction: BigNumber; // LG5.integrate_fraction[addr]
+  integrateInvSupplyOf: BigNumber; // LG5.integrate_inv_supply_of[addr]
+  futureEpochTime: number; // LG5.future_epoch_time
   inflation_rate: BigNumber; // LG5.inflation_rate
   minterRate: BigNumber; // MinterContract.rate
   isKilled: boolean; // LG5.is_killed
-  working_supply: BigNumber; // LG5.working_suppply
-  working_balance: BigNumber; // LG5.working_balances[addr]
+  workingSupply: BigNumber; // LG5.working_suppply
+  workingBalance: BigNumber; // LG5.working_balances[addr]
   mintedRBN: BigNumber; // amount of RBN minted. From MinterContract.minted[account][gauge]
   gaugeContractAddress: string;
   gaugeControllerContract: LiquidityGaugeController;
@@ -134,15 +134,15 @@ interface ClaimableRbnCalculationProps {
 
 export const calculateClaimableRbn = async ({
   periodTimestamp,
-  integrate_inv_supply,
-  integrate_fraction,
-  integrate_inv_supply_of,
-  future_epoch_time,
+  integrateInvSupply,
+  integrateFraction,
+  integrateInvSupplyOf,
+  futureEpochTime,
   inflation_rate,
   minterRate,
   isKilled,
-  working_supply,
-  working_balance,
+  workingSupply,
+  workingBalance,
   mintedRBN,
   gaugeContractAddress,
   gaugeControllerContract,
@@ -154,10 +154,10 @@ export const calculateClaimableRbn = async ({
     return Number(number.toFixed(0));
   };
 
-  let _integrate_inv_supply = integrate_inv_supply;
+  let _integrate_inv_supply = integrateInvSupply;
   let rate = inflation_rate;
   let new_rate = rate;
-  const prev_future_epoch = future_epoch_time;
+  const prev_future_epoch = futureEpochTime;
 
   if (currentTime >= prev_future_epoch) {
     new_rate = minterRate;
@@ -183,13 +183,7 @@ export const calculateClaimableRbn = async ({
         "gauge_relative_weight(address,uint256)"
       ](gaugeContractAddress, trimDecimals(prev_week_time / WEEK) * WEEK);
 
-      console.log({
-        gauge: gaugeContractAddress,
-        relativeWeightTime: trimDecimals(prev_week_time / WEEK) * WEEK,
-        w: w.toString(),
-      });
-
-      if (working_supply.gt(0)) {
+      if (workingSupply.gt(0)) {
         if (
           prev_future_epoch >= prev_week_time &&
           prev_future_epoch < week_time &&
@@ -199,18 +193,18 @@ export const calculateClaimableRbn = async ({
             rate
               .mul(w)
               .mul(prev_future_epoch - prev_week_time)
-              .div(working_supply)
+              .div(workingSupply)
           );
           rate = new_rate;
           _integrate_inv_supply = _integrate_inv_supply.add(
             rate
               .mul(w)
               .mul(week_time - prev_future_epoch)
-              .div(working_supply)
+              .div(workingSupply)
           );
         } else {
           _integrate_inv_supply = _integrate_inv_supply.add(
-            new_rate.mul(w).mul(dt).div(working_supply)
+            new_rate.mul(w).mul(dt).div(workingSupply)
           );
           // On precisions of the calculation
           // rate ~= 10e18
@@ -227,23 +221,10 @@ export const calculateClaimableRbn = async ({
       week_time = Math.min(week_time + WEEK, currentTime);
     }
   }
-
-  // Update user - specific integrals
-  // _working_balance: uint256 = self.working_balances[addr]
-  // self.integrate_fraction[addr] += _working_balance * (_integrate_inv_supply - self.integrate_inv_supply_of[addr]) / 10 ** 18
-  // self.integrate_inv_supply_of[addr] = _integrate_inv_supply
-  // self.integrate_checkpoint_of[addr] = block.timestamp
-  console.log("invSupp", _integrate_inv_supply.toString());
-  integrate_fraction = integrate_fraction.add(
-    working_balance
-      .mul(integrate_inv_supply.sub(integrate_inv_supply_of))
+  integrateFraction = integrateFraction.add(
+    workingBalance
+      .mul(integrateInvSupply.sub(integrateInvSupplyOf))
       .div(parseUnits("1", 18))
   );
-  console.log("intr", integrate_fraction.toString());
-  const totalMint = integrate_fraction.add(
-    working_balance
-      .mul(integrate_inv_supply.sub(integrate_inv_supply_of))
-      .div(parseUnits("1", 18))
-  );
-  return totalMint.sub(mintedRBN);
+  return integrateFraction.sub(mintedRBN);
 };

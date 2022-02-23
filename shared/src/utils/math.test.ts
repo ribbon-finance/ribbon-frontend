@@ -7,7 +7,7 @@ import {
   calculateBaseRewards,
   calculateBoostedRewards,
   calculateBoostMultiplier,
-  calculateClaimableRbn
+  calculateClaimableRbn,
 } from "./governanceMath";
 
 /**
@@ -111,36 +111,36 @@ it("Should calculate claimable RBN amount", async () => {
   const controllerContract = LiquidityGaugeControllerFactory.connect(
     "0x1897D25dc65406F0a534cb6749010b3EdD9f87D9",
     new providers.AlchemyProvider("kovan", "qtBrk7Td-rz5trQucLDn7tyY9nyNt9Ao")
-  )
+  );
   // const result = await calculateClaimableRbn({
   //   periodTimestamp: 1645611644,
-  //   integrate_inv_supply: BigNumber.from("756825236148384688349460"),
-  //   integrate_fraction: BigNumber.from("24137357007092246788726"),
-  //   integrate_inv_supply_of: BigNumber.from("756825236148384688349460"),
-  //   future_epoch_time: 1645923256,
+  //   integrateInvSupply: BigNumber.from("756825236148384688349460"),
+  //   integrateFraction: BigNumber.from("24137357007092246788726"),
+  //   integrateInvSupplyOf: BigNumber.from("756825236148384688349460"),
+  //   futureEpochTime: 1645923256,
   //   inflation_rate: BigNumber.from("761033399470899470"),
   //   minterRate: BigNumber.from("761033399470899470"),
   //   isKilled: false,
-  //   working_supply: BigNumber.from("44928461131414151"),
-  //   working_balance: BigNumber.from("28928461131414151"),
+  //   workingSupply: BigNumber.from("44928461131414151"),
+  //   workingBalance: BigNumber.from("28928461131414151"),
   //   mintedRBN: BigNumber.from("6170583036185114560390"),
   //   gaugeContractAddress: "0xaC4495454a564731C085a5fcc522dA1F0Bdd69d4",
   //   gaugeControllerContract: controllerContract
   // })
   const result = await calculateClaimableRbn({
     periodTimestamp: 1645611644,
-    integrate_inv_supply: BigNumber.from("756825236148384688349460"),
-    integrate_fraction: BigNumber.from("2767682163702311463282"),
-    integrate_inv_supply_of: BigNumber.from("140218215759955115497677"),
-    future_epoch_time: 1645923256,
+    integrateInvSupply: BigNumber.from("756825236148384688349460"),
+    integrateFraction: BigNumber.from("2767682163702311463282"),
+    integrateInvSupplyOf: BigNumber.from("140218215759955115497677"),
+    futureEpochTime: 1645923256,
     inflation_rate: BigNumber.from("761033399470899470"),
     minterRate: BigNumber.from("761033399470899470"),
     isKilled: false,
-    working_supply: BigNumber.from("44928461131414151"),
-    working_balance: BigNumber.from("16000000000000000"),
-    mintedRBN: BigNumber.from("6170583036185114560390"),
+    workingSupply: BigNumber.from("44928461131414151"),
+    workingBalance: BigNumber.from("16000000000000000"),
+    mintedRBN: BigNumber.from("2648373947544176317057"),
     gaugeContractAddress: "0xaC4495454a564731C085a5fcc522dA1F0Bdd69d4",
-    gaugeControllerContract: controllerContract
-  })
-  console.log("RESULT: ", result.toString())
+    gaugeControllerContract: controllerContract,
+  });
+  console.log("RESULT: ", result.toString());
 }, 100000);
