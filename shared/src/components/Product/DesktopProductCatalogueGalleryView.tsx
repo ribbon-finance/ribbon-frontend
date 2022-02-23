@@ -3,8 +3,13 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
 import Marquee from "react-fast-marquee/dist";
-
-import { VaultOptions, VaultVersion } from "../../constants/constants";
+import { useTranslation } from "react-i18next";
+import {
+  VaultOptions,
+  VaultVersion,
+  getAssets,
+  isPutVault,
+} from "../../constants/constants";
 import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
@@ -124,6 +129,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
 }) => {
   const [chain] = useChain();
   const { active } = useWeb3React();
+  const { t } = useTranslation();
   const { height } = useScreenSize();
   const [page, setPage] = useState(1);
   const [currentVault, setCurrentVault] = useState<VaultOptions | undefined>(
@@ -157,17 +163,23 @@ const DesktopProductCatalogueGalleryView: React.FC<
       );
     }
 
+    const asset = getAssets(currentVault);
+
     return (
       <VaultInfo>
         {/* Title */}
         <Title fontSize={48} lineHeight={56} className="w-100">
-          {productCopies[currentVault].title}
+          {t(`shared:ProductCopies:${currentVault}:title`)}
+          {/*productCopies[currentVault].title*/}
         </Title>
 
         <VaultSecondaryInfo>
           {/* Description */}
           <SecondaryText className="mt-3">
-            {productCopies[currentVault].description}
+            {isPutVault(currentVault)
+              ? t("shared:ProductCopies:putstrategy", { asset })
+              : t("shared:ProductCopies:callstrategy", { asset })}
+            {/*productCopies[currentVault].description*/}
           </SecondaryText>
 
           {active && (
