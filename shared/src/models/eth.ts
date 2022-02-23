@@ -18,6 +18,7 @@ export const ERC20TokenList = [
   "rbn",
   "verbn",
   "wavax",
+  "savax",
   "perp",
   ...VaultVersionList.flatMap((version) =>
     EVMVaultList.map((option) => `${option}-${version}` as const)

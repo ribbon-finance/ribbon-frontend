@@ -21,6 +21,7 @@ const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   LDO: "lido-dao",
   AAVE: "aave",
   WAVAX: "avalanche-2",
+  sAVAX: "benqi-liquid-staked-avax",
   PERP: "perpetual-protocol",
   RBN: "ribbon-finance",
   veRBN: undefined,
