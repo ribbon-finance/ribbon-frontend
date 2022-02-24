@@ -86,26 +86,26 @@ it("Boosted rewards should be correct", () => {
   expect(boostedRewards3.toFixed(2)).toEqual("1.60");
 });
 
-// it("Base rewards should be correct", () => {
-//   const baseRewards0 = calculateBaseRewards({
-//     poolSize,
-//     poolReward,
-//     pricePerShare,
-//     decimals,
-//     assetPrice,
-//     rbnPrice,
-//   });
-//   const baseRewards1 = calculateBaseRewards(2000, 1);
-//   const baseRewards2 = calculateBaseRewards(2000, 0);
-//   // Pool size should logically be larger than pool rewards
-//   // when rewards is larger than size we get some ridiculously large number
-//   const baseRewards3 = calculateBaseRewards(1, 10);
-
-//   expect(baseRewards0.toFixed(2)).toEqual("84149938.68");
-//   expect(baseRewards1.toFixed(2)).toEqual("2.63");
-//   expect(baseRewards2.toFixed(2)).toEqual("0.00");
-//   expect(baseRewards3.toFixed(2)).toEqual("1.4204293198443133e+56");
-// });
+it("Base rewards should be correct", () => {
+  const baseRewards0 = calculateBaseRewards({
+    poolSize: BigNumber.from("111000000000000000"),
+    poolReward: BigNumber.from("118780129032258064346046"),
+    pricePerShare: BigNumber.from("1000000000000000000"),
+    decimals: 18,
+    assetPrice: 2568.91135996858,
+    rbnPrice: 1.3238686374851516,
+  });
+  const baseRewards1 = calculateBaseRewards({
+    poolSize: BigNumber.from("111000000000000000"),
+    poolReward: BigNumber.from("11878012903225806434"),
+    pricePerShare: BigNumber.from("1000000000000000000"),
+    decimals: 18,
+    assetPrice: 2568.91135996858,
+    rbnPrice: 1.3238686374851516,
+  });
+  expect(baseRewards0.toFixed(2)).toEqual("3.978424792019947e+144");
+  expect(baseRewards1.toFixed(2)).toEqual("1528.87");
+});
 
 it("Should calculate claimable RBN amount", async () => {
   const controllerContract = LiquidityGaugeControllerFactory.connect(
