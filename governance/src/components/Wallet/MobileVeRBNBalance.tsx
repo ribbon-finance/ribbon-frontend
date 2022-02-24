@@ -11,6 +11,9 @@ import styled from "styled-components";
 const Container = styled.div.attrs({
   className: "d-flex justify-content-between align-items-center px-3 py-2",
 })`
+  height: 56px;
+  background: ${colors.red};
+  background: linear-gradient(135deg, ${colors.red}14 0%, ${colors.red}05 100%);
   @media (min-width: ${sizes.md}px) {
     display: none !important;
   }
