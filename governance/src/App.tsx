@@ -2,6 +2,7 @@ import { Web3ReactProvider } from "@web3-react/core";
 import React, { useEffect } from "react";
 import smoothscroll from "smoothscroll-polyfill";
 import { ConnectionProvider } from "@solana/wallet-adapter-react";
+import "shared/lib/i18n/config";
 
 import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContext";
 import RootApp from "./components/RootApp";

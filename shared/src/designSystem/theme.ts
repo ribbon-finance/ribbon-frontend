@@ -12,7 +12,7 @@ const theme = {
     style: "solid",
   },
   header: {
-    height: 72,
+    height: 80,
   },
   footer: {
     desktop: {
@@ -26,6 +26,11 @@ const theme = {
   governance: {
     actionBar: {
       height: 80,
+    },
+    footer: {
+      mobile: {
+        height: 164,
+      },
     },
   },
 };

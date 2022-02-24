@@ -6,6 +6,7 @@ import sizes from "shared/lib/designSystem/sizes";
 import theme from "shared/lib/designSystem/theme";
 import AccountStatus from "../Wallet/AccountStatus";
 import DesktopFooter from "./DesktopFooter";
+import MobileVeRBNBalance from "../Wallet/MobileVeRBNBalance";
 
 export const FooterContainer = styled.div<{
   showDesktopFooter: boolean;
@@ -14,6 +15,7 @@ export const FooterContainer = styled.div<{
     props.showDesktopFooter ? theme.footer.desktop.height : 0}px;
   width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   backdrop-filter: blur(40px);
   /**
@@ -29,14 +31,14 @@ export const FooterContainer = styled.div<{
     position: fixed;
     top: unset;
     bottom: 0px;
-    height: ${theme.footer.mobile.height}px;
+    height: ${theme.governance.footer.mobile.height}px;
     z-index: 5;
   }
 `;
 
 const MobileFooterOffsetContainer = styled.div`
   @media (max-width: ${sizes.md}px) {
-    height: ${theme.footer.mobile.height}px;
+    height: ${theme.governance.footer.mobile.height}px;
   }
 `;
 
@@ -59,6 +61,7 @@ const Footer = () => {
         {showDesktopFooter && <DesktopFooter />}
 
         {/** Mobile */}
+        <MobileVeRBNBalance />
         <AccountStatus variant="mobile" />
       </FooterContainer>
       <MobileFooterOffsetContainer />
