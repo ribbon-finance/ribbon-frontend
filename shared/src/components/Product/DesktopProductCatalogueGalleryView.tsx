@@ -163,7 +163,6 @@ const DesktopProductCatalogueGalleryView: React.FC<
     }
 
     const asset = getAssets(currentVault);
-    console.log("asdf", isPutVault(currentVault), currentVault);
 
     return (
       <VaultInfo>

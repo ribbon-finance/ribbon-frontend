@@ -325,7 +325,6 @@ const HeroSection: React.FC<{
   const { t, ready } = useTranslation();
   const { chainId } = useWeb3Wallet();
   const color = getVaultColor(vaultOption);
-  console.log(ready);
 
   const logo = useMemo(() => {
     const asset = getDisplayAssets(vaultOption);
