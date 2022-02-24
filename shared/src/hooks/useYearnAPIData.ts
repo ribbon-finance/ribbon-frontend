@@ -10,7 +10,7 @@ export const useFetchYearnAPIData = () => {
 
   const fetchYearnAPIData = useCallback(async () => {
     if (!isProduction()) {
-      console.time("Yearn API Data Fetch");
+      console.time("Yearn API Data Fetch"); // eslint-disable-line
     }
 
     const response = await axios.get(
@@ -39,7 +39,7 @@ export const useFetchYearnAPIData = () => {
     setLoading(false);
 
     if (!isProduction()) {
-      console.timeEnd("Yearn API Data Fetch");
+      console.timeEnd("Yearn API Data Fetch"); // eslint-disable-line
     }
   }, []);
 
