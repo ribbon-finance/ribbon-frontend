@@ -22,7 +22,6 @@ import {
 import FilterDropdown from "../Common/FilterDropdown";
 import FullscreenMultiselectFilters from "../Common/FullscreenMultiselectFilters";
 import Pagination from "../Common/Pagination";
-import { productCopies } from "./productCopies";
 import EmptyResult from "./Shared/EmptyResult";
 import SwitchViewButton from "./Shared/SwitchViewButton";
 import YieldFrame from "./Theta/YieldFrame";
@@ -171,16 +170,14 @@ const DesktopProductCatalogueGalleryView: React.FC<
         {/* Title */}
         <Title fontSize={48} lineHeight={56} className="w-100">
           {t(`shared:ProductCopies:${currentVault}:title`)}
-          {/*productCopies[currentVault].title*/}
         </Title>
 
         <VaultSecondaryInfo>
           {/* Description */}
           <SecondaryText className="mt-3">
             {isPutVault(currentVault)
-              ? t("shared:ProductCopies:putstrategy", { asset })
-              : t("shared:ProductCopies:callstrategy", { asset })}
-            {/*productCopies[currentVault].description*/}
+              ? t("shared:ProductCopies:PutStrategy", { asset })
+              : t("shared:ProductCopies:CallStrategy", { asset })}
           </SecondaryText>
 
           {active && (
@@ -201,6 +198,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
   }, [
     active,
     currentVault,
+    t,
     setFilterAssets,
     setFilterStrategies,
     vaultsDisplayVersion,
@@ -385,7 +383,9 @@ const DesktopProductCatalogueGalleryView: React.FC<
           >
             <Marquee gradient={false} speed={75}>
               <BackgroundText>
-                {currentVault ? productCopies[currentVault].title : ""}
+                {currentVault
+                  ? t(`shared:ProductCopies:${currentVault}:title`)
+                  : ""}
               </BackgroundText>
             </Marquee>
           </motion.div>

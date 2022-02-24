@@ -1,23 +1,60 @@
 {
   "ProductCopies": {
-    "calldescription": "Generates yield by running an automated {{asset}} covered call strategy.",
-    "putdescription": "Generates yield by running an automated {{asset}} put selling strategy.",
-    "callstrategy": "The vault earns yield on its {{asset}} deposits by running a weekly automated covered call strategy. The vault reinvests the yield earned back into the strategy, effectively compounding the yields for depositors over time.",
-    "putstrategy": "{{vault}} earns yield on its {{collateralAsset}} deposits by running a weekly automated {{asset}} put-selling strategy, where the put options are collateralized by {{collateralAsset}}. The vault reinvests the yield it earns back into the strategy, effectively compounding the yields for depositors over time.",
+    "CallDescription": "Generates yield by running an automated {{asset}} covered call strategy.",
+    "PutDescription": "Generates yield by running an automated {{asset}} put selling strategy.",
+    "CallStrategy": "The vault earns yield on its {{asset}} deposits by running a weekly automated covered call strategy. The vault reinvests the yield earned back into the strategy, effectively compounding the yields for depositors over time.",
+    "PutStrategy": "{{vault}} earns yield on its {{collateralAsset}} deposits by running a weekly automated {{asset}} put-selling strategy, where the put options are collateralized by {{collateralAsset}}. The vault reinvests the yield it earns back into the strategy, effectively compounding the yields for depositors over time.",
     "rAVAX-THETA": {
-      "title": "T-AVAX-C"
+      "title": "T-AVAX-C",
+      "subtitle": "AVAX Covered Call"
     },
     "rETH-THETA": {
-      "title": "T-ETH-C"
+      "title": "T-ETH-C",
+      "subtitle": "ETH Covered Call"
     },
     "ryvUSDC-ETH-P-THETA": {
-      "title": "T-yvUSDC-P-ETH"
+      "title": "T-yvUSDC-P-ETH",
+      "subtitle": "ETH Put-Selling"
     },
     "rUSDC-ETH-P-THETA": {
-      "title": "T-USDC-P-ETH"
+      "title": "T-USDC-P-ETH",
+      "subtitle": "ETH Put-Selling"
     },
     "rSOL-THETA": {
-      "title": "T-SOL-C"
+      "title": "T-SOL-C",
+      "subtitle": "SOL Covered Call"
+    },
+    "rBTC-THETA": {
+      "title": "T-WBTC-C",
+      "subtitle": "WBTC Covered Call"
+    },
+    "rstETH-THETA": {
+      "title": "T-stETH-C",
+      "subtitle": "stETH Covered Call"
+    },
+    "rAURORA-THETA": {
+      "title": "T-AURORA-C",
+      "subtitle": "AURORA Covered Call"
+    },
+    "rNEAR-THETA": {
+      "title": "T-WNEAR-C",
+      "subtitle": "WNEAR Covered Call"
+    },
+    "rAAVE-THETA": {
+      "title": "T-AAVE-C",
+      "subtitle": "AAVE Covered Call"
+    },
+    "rsAVAX-THETA": {
+      "title": "T-sAVAX-C",
+      "subtitle": "sAVAX Covered Call"
+    },
+    "rUSDC-AVAX-P-THETA": {
+      "title": "T-USDC-P-AVAX",
+      "subtitle": "AVAX Put-Selling"
+    },
+    "rPERP-TSRY": {
+      "title": "T-PERP-C",
+      "subtitle": "PERP Covered Call"
     }
   }
 }

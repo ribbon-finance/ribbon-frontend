@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { BaseLink, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -321,8 +322,10 @@ const HeroSection: React.FC<{
   variant: VaultVersion;
   v1Inactive?: boolean;
 }> = ({ depositCapBar, vaultOption, variant, v1Inactive }) => {
+  const { t, ready } = useTranslation();
   const { chainId } = useWeb3Wallet();
   const color = getVaultColor(vaultOption);
+  console.log(ready);
 
   const logo = useMemo(() => {
     const asset = getDisplayAssets(vaultOption);
@@ -418,7 +421,9 @@ const HeroSection: React.FC<{
                 </AttributePill>
               </div>
 
-              <HeroText>{productCopies[vaultOption].title}</HeroText>
+              <HeroText>
+                {t(`shared:ProductCopies:${vaultOption}:title`)}
+              </HeroText>
 
               {depositCapBar}
             </div>
