@@ -501,6 +501,86 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
       ),
     },
   },
+  "rsAVAX-THETA": {
+    title: "T-sAVAX-C",
+    subtitle: "sAVAX Call",
+    description:
+      "Generates yield by running an automated sAVAX covered call strategy.",
+    tags: ["COVERED CALL"],
+    strategy: (
+      <>
+        The vault earns yield on its sAVAX deposits by running a weekly
+        automated AVAX{" "}
+        <TooltipExplanation
+          title="COVERED CALL"
+          explanation="A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security."
+          learnMoreURL="https://www.investopedia.com/terms/c/coveredcall.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlightedText ref={ref} {...triggerHandler}>
+              covered call
+            </HighlightedText>
+          )}
+        />{" "}
+        strategy where it stakes its AVAX deposits in{" "}
+        <TooltipExplanation
+          title="BENQI"
+          explanation="BENQI is a decentralized non-custodial liquidity market protocol on Avalanche, enabling users to effortlessly lend, borrow, and earn interest with their assets."
+          learnMoreURL="https://benqi.fi"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlightedText ref={ref} {...triggerHandler}>
+              BENQI
+            </HighlightedText>
+          )}
+        />{" "}
+        and then uses its{" "}
+        <TooltipExplanation
+          title="SAVAX"
+          explanation="sAVAX is the deposit token that represents a user's share of the their AVAX on the Avalanche blockchain."
+          learnMoreURL="https://staking.benqi.fi/stake"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlightedText ref={ref} {...triggerHandler}>
+              sAVAX
+            </HighlightedText>
+          )}
+        />{" "}
+        to collateralize weekly out-of-money AVAX call options. The yield earned
+        from both the covered call strategy and the AVAX staking rewards are
+        reinvested weekly, effectively compounding the yields for depositors
+        over time.
+      </>
+    ),
+    vaultRisk: (
+      <>
+        The primary risk for running this covered call strategy is that the
+        vault may incur a weekly loss in the case where the call options sold by
+        the vault expire{" "}
+        <TooltipExplanation
+          title="IN-THE-MONEY"
+          explanation="An sAVAX call option is in-the-money (ITM) if the strike price is below the market price of sAVAX."
+          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlightedText ref={ref} {...triggerHandler}>
+              in-the-money
+            </HighlightedText>
+          )}
+        />{" "}
+        (meaning the price of sAVAX is above the strike price of the call
+        options minted by the vault).
+      </>
+    ),
+    liquidityMining: {
+      explanation: (
+        <>
+          rsAVAX-THETA is a token that represents sAVAX deposits in the sAVAX
+          Theta Vault (T-sAVAX-C).
+          <br />
+          <br />
+          Stake your rsAVAX-THETA tokens in the rsAVAX-THETA staking pool to
+          earn $RBN rewards.
+        </>
+      ),
+    },
+  },
   "rUSDC-AVAX-P-THETA": {
     title: "T-USDC-P-AVAX",
     subtitle: "AVAX Put-Selling",

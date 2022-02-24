@@ -18,7 +18,7 @@ import {
   useAssetsPriceHistory,
 } from "shared/lib/hooks/useAssetPrice";
 import useBalances from "shared/lib/hooks/useBalances";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import {
   assetToFiat,
   formatBigNumber,
@@ -181,13 +181,13 @@ const PortfolioPerformance = () => {
 
   // Fetch balances update
   const { balances: subgraphBalanceUpdates, loading: balanceUpdatesLoading } =
-    useBalances(undefined, afterDate ? afterDate.unix() : undefined);
+    useBalances();
   const loading =
     assetsPriceLoading ||
     balanceUpdatesLoading ||
     transactionsLoading ||
     RBNTokenAccountLoading;
-  const animatedLoadingText = useTextAnimation(loading);
+  const animatedLoadingText = useLoadingText();
 
   const premiumDecimals = getAssetDecimals("USDC");
 

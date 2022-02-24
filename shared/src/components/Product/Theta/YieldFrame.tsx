@@ -14,7 +14,7 @@ import {
 import theme from "../../../designSystem/theme";
 import useAssetsYield from "../../../hooks/useAssetsYield";
 import useLatestAPY from "../../../hooks/useLatestAPY";
-import useTextAnimation from "../../../hooks/useTextAnimation";
+import useLoadingText from "../../../hooks/useLoadingText";
 import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
 import { getAssetLogo } from "../../../utils/asset";
 import { formatSignificantDecimals } from "../../../utils/math";
@@ -97,7 +97,7 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
     [status, v2DataLoading]
   );
   const latestAPY = useLatestAPY(vault, vaultVersion);
-  const loadingText = useTextAnimation(!latestAPY.fetched);
+  const loadingText = useLoadingText();
   const perfStr = latestAPY.fetched
     ? `${latestAPY.res.toFixed(2)}%`
     : loadingText;

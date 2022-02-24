@@ -8,6 +8,7 @@ export const AssetsList = [
   "AURORA",
   "WNEAR",
   "WAVAX",
+  "sAVAX",
   "WETH",
   "USDC",
   "WBTC",

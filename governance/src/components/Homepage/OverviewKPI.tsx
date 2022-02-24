@@ -18,7 +18,7 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import useAssetPrice, { useAssetInfo } from "shared/lib/hooks/useAssetPrice";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import useTreasuryAccount from "shared/lib/hooks/useTreasuryAccount";
 import useTVL from "shared/lib/hooks/useTVL";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
@@ -66,12 +66,7 @@ const OverviewKPI = () => {
   const { total, loading: treasuryLoading } = useTreasuryAccount();
   const { totalTVL } = useTVL();
 
-  const loadingText = useTextAnimation(
-    assetPriceLoading ||
-      treasuryLoading ||
-      rbnTokenAccountLoading ||
-      assetInfoLoading
-  );
+  const loadingText = useLoadingText();
 
   const percentageStaked = useMemo(() => {
     if (info.circulating_supply) {

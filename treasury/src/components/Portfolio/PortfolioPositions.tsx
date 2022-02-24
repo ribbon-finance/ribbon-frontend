@@ -12,7 +12,7 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import useAssetPrice from "shared/lib/hooks/useAssetPrice";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { CurrencyType } from "../../pages/Portfolio/types";
 import {
   assetToUSD,
@@ -182,7 +182,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   const { price: assetPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: asset,
   });
-  const animatedLoadingText = useTextAnimation(assetPriceLoading);
+  const animatedLoadingText = useLoadingText();
   const vaultName =
     Object.keys(VaultNameOptionMap)[
       Object.values(VaultNameOptionMap).indexOf(vaultAccount.vault.symbol)
@@ -272,7 +272,7 @@ const PortfolioPositions = () => {
     data: { v1: v1VaultAccounts, v2: v2VaultAccounts },
     loading,
   } = useAllVaultAccounts();
-  const animatedLoadingText = useTextAnimation(loading);
+  const animatedLoadingText = useLoadingText();
 
   const filteredVaultAccounts = useMemo(() => {
     return Object.fromEntries(

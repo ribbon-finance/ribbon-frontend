@@ -27,7 +27,7 @@ import {
   WalletConnectIcon,
   WalletLinkIcon,
 } from "../../assets/icons/connector";
-import useTextAnimation from "../../hooks/useTextAnimation";
+import useLoadingText from "../../hooks/useLoadingText";
 import BasicModal from "../Common/BasicModal";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 
@@ -109,15 +109,7 @@ const WalletConnectModal: React.FC = () => {
   const [connectingConnector, setConnectingConnector] =
     useState<connectorType>();
 
-  const initializingText = useTextAnimation(Boolean(connectingConnector), {
-    texts: [
-      "INITIALIZING",
-      "INITIALIZING .",
-      "INITIALIZING ..",
-      "INITIALIZING ...",
-    ],
-    interval: 250,
-  });
+  const initializingText = useLoadingText();
 
   const [show, setShow] = useConnectWalletModal();
 

@@ -11,7 +11,7 @@ import {
 } from "shared/lib/designSystem";
 import useTreasuryAccount from "shared/lib/hooks/useTreasuryAccount";
 import { formatAmount } from "shared/lib/utils/math";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import OverviewBarchart from "./OverviewBarchart";
 import { getAssetColor, getAssetDisplay } from "shared/lib/utils/asset";
 import useElementSize from "shared/lib/hooks/useElementSize";
@@ -33,7 +33,7 @@ const TreasuryBreakdown = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { width: containerWidth } = useElementSize(containerRef);
   const { accounts, total, loading: treasuryLoading } = useTreasuryAccount();
-  const loadingText = useTextAnimation(treasuryLoading);
+  const loadingText = useLoadingText();
 
   const chainId = isDevelopment() ? CHAINID.ETH_KOVAN : CHAINID.ETH_MAINNET;
 

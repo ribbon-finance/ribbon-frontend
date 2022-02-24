@@ -31,7 +31,7 @@ import { ActionButton } from "shared/lib/components/Common/buttons";
 import TrafficLight from "shared/lib/components/Common/TrafficLight";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import useV2VaultContract from "shared/lib/hooks/useV2VaultContract";
 import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
@@ -132,7 +132,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     loading: vaultDataLoading,
   } = useV2VaultData(vaultOption);
 
-  const loadingText = useTextAnimation(vaultDataLoading);
+  const loadingText = useLoadingText();
   const { addPendingTransaction } = usePendingTransactions();
 
   const [error, setError] = useState<"insufficient_balance">();
@@ -144,10 +144,10 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
 
   // APY, base rewards, and boosted rewards
   const apys: {
-    totalApy: string;
-    baseRewards: string;
-    boostedMultiplier: string;
-    boostedRewards: string;
+    totalApy: JSX.Element | string;
+    baseRewards: JSX.Element | string;
+    boostedMultiplier: JSX.Element | string;
+    boostedRewards: JSX.Element | string;
   } = useMemo(() => {
     if (apysLoading) {
       return {
@@ -525,6 +525,8 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
         return 424;
     }
   }, [step]);
+
+  if (vaultDataLoading) return loadingText;
 
   return (
     <BasicModal

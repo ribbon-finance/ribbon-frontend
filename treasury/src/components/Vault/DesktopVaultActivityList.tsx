@@ -21,7 +21,7 @@ import {
 import { useAssetsPriceHistory } from "shared/lib/hooks/useAssetPrice";
 import sizes from "shared/lib/designSystem/sizes";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import TableWithFixedHeader from "shared/lib/components/Common/TableWithFixedHeader";
 
@@ -92,7 +92,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
     useAssetsPriceHistory();
 
   const { width: screenWidth } = useScreenSize();
-  const loadingText = useTextAnimation(assetPriceLoading);
+  const loadingText = useLoadingText();
   const { chainId } = useWeb3Wallet();
   const premiumDecimals = getAssetDecimals("USDC");
 

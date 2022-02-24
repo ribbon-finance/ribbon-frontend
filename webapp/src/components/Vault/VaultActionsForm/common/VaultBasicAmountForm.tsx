@@ -39,7 +39,7 @@ import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
 import { ACTIONS } from "../Modal/types";
 import { useChain } from "shared/lib/hooks/chainContext";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { useFlexVault } from "shared/lib/hooks/useFlexVault";
 
 const DepositAssetButton = styled.div`
@@ -152,7 +152,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
 }) => {
   // const asset = getAssets(vaultOption);
   const color = getVaultColor(vaultOption);
-  const loadingText = useTextAnimation();
+  const loadingText = useLoadingText();
   const { client } = useFlexVault();
 
   const {

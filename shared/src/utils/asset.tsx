@@ -1,12 +1,20 @@
 import React from "react";
 import styled, { StyledComponent } from "styled-components";
 import {
+  MetamaskIcon,
+  PhantomIcon,
+  SolflareIcon,
+  WalletConnectIcon,
+  WalletLinkIcon,
+} from "../assets/icons/connector";
+import {
   AAVELogo,
   STETHLogo,
   USDCLogo,
   WBTCLogo,
   WETHLogo,
   WAVAXLogo,
+  SAVAXLogo,
   YVUSDcLogo,
   PERPLogo,
   WNEARLogo,
@@ -16,10 +24,12 @@ import Logo from "../assets/icons/logo";
 import { SolanaLogo } from "../assets/icons/solAssets";
 import { Chains, VaultOptions } from "../constants/constants";
 import colors from "../designSystem/colors";
+import { EthereumWallet, SolanaWallet } from "../models/wallets";
 import { Assets, Wallets } from "../store/types";
 
 export const isYieldAsset = (asset: Assets): boolean => {
   switch (asset) {
+    case "sAVAX":
     case "stETH":
     case "wstETH":
     case "yvUSDC":
@@ -34,6 +44,7 @@ export const getChainByAsset = (asset: Assets): Chains => {
     case "SOL":
       return Chains.Solana;
     case "WAVAX":
+    case "sAVAX":
       return Chains.Avalanche;
     default:
       return Chains.Ethereum;
@@ -51,6 +62,7 @@ export const getChainByVaultOption = (vault: VaultOptions): Chains => {
       return Chains.Ethereum;
 
     case "rAVAX-THETA":
+    case "rsAVAX-THETA":
     case "rUSDC-AVAX-P-THETA":
       return Chains.Avalanche;
 
@@ -196,6 +208,8 @@ export const getAssetLogo: (asset: Assets) =>
       return AAVELogo;
     case "WAVAX":
       return WAVAXLogo;
+    case "sAVAX":
+      return SAVAXLogo;
     case "PERP":
       return PERPLogo;
     case "SOL":
@@ -206,5 +220,22 @@ export const getAssetLogo: (asset: Assets) =>
       return AURORALogo;
     default:
       return Logo;
+  }
+};
+
+export const getWalletLogo = (wallet: EthereumWallet | SolanaWallet) => {
+  switch (wallet) {
+    case EthereumWallet.Metamask:
+      return <MetamaskIcon width={40} height={40} />;
+    case EthereumWallet.WalletConnect:
+      return <WalletConnectIcon width={40} height={40} />;
+    case EthereumWallet.WalletLink:
+      return <WalletLinkIcon width={40} height={40} />;
+    case SolanaWallet.Phantom:
+      return <PhantomIcon width={40} height={40} />;
+    case SolanaWallet.Solflare:
+      return <SolflareIcon width={40} height={40} />;
+    default:
+      return null;
   }
 };

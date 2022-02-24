@@ -21,7 +21,7 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { LiquidityGaugeV5PoolResponse } from "shared/lib/models/staking";
 import { useLiquidityGaugeV5PoolData } from "shared/lib/hooks/web3DataContext";
-import useTextAnimation from "shared/lib/hooks/useTextAnimation";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import colors from "shared/lib/designSystem/colors";
@@ -90,7 +90,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
   const minterContract = useLiquidityTokenMinter();
   const { addPendingTransaction } = usePendingTransactions();
 
-  const loadingText = useTextAnimation(lg5DataLoading);
+  const loadingText = useLoadingText();
 
   const handleClose = useCallback(() => {
     onClose();
@@ -159,10 +159,10 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
   }, [lg5Data, lg5DataLoading, loadingText]);
 
   const rewards: {
-    totalPoolRewards: string;
-    baseRewards: string;
-    boostedRewardsMultiplier: string;
-    boostedRewardsAmount: string;
+    totalPoolRewards: JSX.Element | string;
+    baseRewards: JSX.Element | string;
+    boostedRewardsMultiplier: JSX.Element | string;
+    boostedRewardsAmount: JSX.Element | string;
   } = useMemo(() => {
     if (apysLoading) {
       return {
