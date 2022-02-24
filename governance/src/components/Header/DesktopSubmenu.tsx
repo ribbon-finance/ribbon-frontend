@@ -56,7 +56,7 @@ const MenuContainer = styled.div<MenuContainerProps>`
 `;
 
 const DesktopSubmenu = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const history = useHistory();
 
   const desktopSubmenuRef = useRef(null);

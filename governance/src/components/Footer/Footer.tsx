@@ -1,18 +1,13 @@
-import React, { useMemo } from "react";
+import React from "react";
 import styled from "styled-components";
-import { useLocation } from "react-router";
 
 import sizes from "shared/lib/designSystem/sizes";
 import theme from "shared/lib/designSystem/theme";
 import AccountStatus from "../Wallet/AccountStatus";
-import DesktopFooter from "./DesktopFooter";
 import MobileVeRBNBalance from "../Wallet/MobileVeRBNBalance";
 
-export const FooterContainer = styled.div<{
-  showDesktopFooter: boolean;
-}>`
-  height: ${(props) =>
-    props.showDesktopFooter ? theme.footer.desktop.height : 0}px;
+export const FooterContainer = styled.div`
+  height: 0px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -43,23 +38,9 @@ const MobileFooterOffsetContainer = styled.div`
 `;
 
 const Footer = () => {
-  const location = useLocation();
-
-  const showDesktopFooter = useMemo(() => {
-    switch (location.pathname) {
-      case "/":
-        return false;
-      default:
-        return true;
-    }
-  }, [location.pathname]);
-
   return (
     <>
-      <FooterContainer showDesktopFooter={showDesktopFooter}>
-        {/** Desktop */}
-        {showDesktopFooter && <DesktopFooter />}
-
+      <FooterContainer>
         {/** Mobile */}
         <MobileVeRBNBalance />
         <AccountStatus variant="mobile" />
