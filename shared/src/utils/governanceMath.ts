@@ -30,9 +30,9 @@ export const calculateEarlyUnlockPenalty = (
   lockedAmount: BigNumber,
   remainingDuration: Duration
 ) => {
-  const penalty = calculateEarlyUnlockPenaltyPercentage(remainingDuration);
-
-  return lockedAmount.mul(Math.round(penalty * 100)).div(100);
+  const penaltyPercent =
+    calculateEarlyUnlockPenaltyPercentage(remainingDuration);
+  return lockedAmount.mul(Math.round(penaltyPercent * 10000)).div(10000);
 };
 
 interface BaseRewardsCalculationProps {

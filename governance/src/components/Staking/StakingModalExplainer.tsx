@@ -79,7 +79,7 @@ const StakingModalExplainer: React.FC<StakingModalExplainerProps> = ({
             Lock your RBN to receive{" "}
             <DescriptionHighlight>
               vote-escrowed RBN (veRBN).
-            </DescriptionHighlight>
+            </DescriptionHighlight>{" "}
             veRBN allows you to earn boosted liquidity mining rewards, vote on
             vault guage incentives, participate in governance and earn protocol
             fees.

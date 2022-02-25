@@ -78,11 +78,7 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
         ? moment.unix(rbnTokenAccount.lockEndTimestamp)
         : undefined;
 
-    if (
-      rbnTokenAccount &&
-      expiryMoment &&
-      !momentNow.isSameOrAfter(expiryMoment)
-    ) {
+    if (rbnTokenAccount && expiryMoment && momentNow.isBefore(expiryMoment)) {
       return moment.duration(expiryMoment.diff(momentNow));
     }
   }, [rbnTokenAccount]);
@@ -97,12 +93,11 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
 
   const earlyUnlockPenaltyAmountDisplay = useMemo(() => {
     if (rbnTokenAccount && earlyUnlockDuration) {
-      return formatBigNumber(
-        calculateEarlyUnlockPenalty(
-          rbnTokenAccount.lockedBalance,
-          earlyUnlockDuration
-        )
+      const penalty = calculateEarlyUnlockPenalty(
+        rbnTokenAccount.lockedBalance,
+        earlyUnlockDuration
       );
+      return formatBigNumber(penalty);
     }
   }, [earlyUnlockDuration, rbnTokenAccount]);
 
@@ -205,8 +200,8 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
             fontWeight={400}
             className="text-center"
           >
-            IMPORTANT: Unlocking your RBN early will result in a penalty of RBN
-            {earlyUnlockPenaltyAmountDisplay}
+            IMPORTANT: Unlocking your RBN early will result in a{" "}
+            <b>penalty of RBN {earlyUnlockPenaltyAmountDisplay}</b>
           </PrimaryText>
         </BaseModalWarning>
       )}

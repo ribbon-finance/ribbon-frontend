@@ -10,6 +10,7 @@ import { formatBigNumber } from "shared/lib/utils/math";
 import { useGovernanceGlobalState } from "../../store/store";
 import ModalTransactionContent from "../Shared/ModalTransactionContent";
 import UnstakingModalPreview from "./UnstakingModalPreview";
+import { calculateEarlyUnlockPenalty } from "shared/lib/utils/governanceMath";
 
 const unstakingModes = ["preview", "transaction"] as const;
 type UnstakingMode = typeof unstakingModes[number];
@@ -48,16 +49,44 @@ const UnstakingModal = () => {
     }
 
     setStepNum(unstakingModes.indexOf("transaction"));
+
+    const momentNow = moment();
+    const expiryMoment =
+      rbnTokenAccount && rbnTokenAccount.lockEndTimestamp
+        ? moment.unix(rbnTokenAccount.lockEndTimestamp)
+        : undefined;
+
+    // Early Unlock
+    const durationToExpiry =
+      expiryMoment && momentNow.isBefore(expiryMoment)
+        ? moment.duration(expiryMoment.diff(momentNow))
+        : undefined;
+
     try {
-      const tx = await votingEscrowContract.withdraw();
+      // Is early unlock
+      const tx = durationToExpiry
+        ? await votingEscrowContract.force_withdraw()
+        : await votingEscrowContract.withdraw();
+
       setUnstakingModalState((prev) => ({
         ...prev,
         pendingTransaction: { hash: tx.hash },
       }));
+
       addPendingTransaction({
         type: "governanceUnstake",
         txhash: tx.hash,
-        amount: formatBigNumber(rbnTokenAccount.lockedBalance),
+        amount: formatBigNumber(
+          // If is early unlock, minus the penalty amount
+          durationToExpiry
+            ? rbnTokenAccount.lockedBalance.sub(
+                calculateEarlyUnlockPenalty(
+                  rbnTokenAccount.lockedBalance,
+                  durationToExpiry
+                )
+              )
+            : rbnTokenAccount.lockedBalance
+        ),
       });
 
       await provider.waitForTransaction(tx.hash, 5);
