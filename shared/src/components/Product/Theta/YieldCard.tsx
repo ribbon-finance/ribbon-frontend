@@ -287,8 +287,8 @@ const YieldCard: React.FC<YieldCardProps> = ({
         </Title>
         <ProductDescription>
           {isPutVault(vault)
-            ? t("shared:ProductCopies:PutDescription", { asset })
-            : t("shared:ProductCopies:CallDescription", { asset })}
+            ? t("shared:ProductCopies:Put:description", { asset })
+            : t("shared:ProductCopies:Call:description", { asset })}
         </ProductDescription>
         <Title
           color={`${colors.primaryText}A3`}

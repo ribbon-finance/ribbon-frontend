@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
+import { useTranslation, Trans } from "react-i18next";
 
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import {
@@ -12,6 +13,7 @@ import {
   VaultVersion,
   VaultFees,
   isSolanaVault,
+  isPutVault,
 } from "shared/lib/constants/constants";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -19,6 +21,7 @@ import useAssetsYield from "shared/lib/hooks/useAssetsYield";
 import VaultPerformanceChart from "./VaultPerformanceChart";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import { DefiScoreProtocol } from "shared/lib/models/defiScore";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import theme from "shared/lib/designSystem/theme";
 import {
   AAVEIcon,
@@ -90,6 +93,15 @@ const MarketYielAPR = styled(Title)`
   margin-left: auto;
 `;
 
+const HighlightedText = styled.span`
+  color: ${colors.primaryText};
+  cursor: help;
+
+  poin &:hover {
+    color: ${colors.primaryText}CC;
+  }
+`;
+
 interface PerformanceSectionProps {
   vault: {
     vaultOption: VaultOptions;
@@ -103,6 +115,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
   active,
 }) => {
   const { vaultOption, vaultVersion } = vault;
+  const { t } = useTranslation();
   const asset = getAssets(vaultOption);
   const yieldInfos = useAssetsYield(asset);
 
@@ -182,6 +195,8 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
     [vaultOption]
   );
 
+  const putVault = isPutVault(vault.vaultOption);
+
   return (
     <Container>
       {active && (
@@ -189,7 +204,33 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           <Paragraph className="d-flex flex-column">
             <ParagraphHeading>Vault Strategy</ParagraphHeading>
             <ParagraphText className="mb-4">
-              {productCopies[vaultOption].strategy}
+              <Trans i18nKey="shared:ProductCopies:Call:strategy">
+                {{ asset }}
+                <TooltipExplanation
+                  title={
+                    putVault
+                      ? t("shared:ProductCopies:Put:text")
+                      : t("shared:ProductCopies:Call:text")
+                  }
+                  explanation={
+                    putVault
+                      ? t("shared:ProductCopies:Put:explanation")
+                      : t("shared:ProductCopies:Call:explanation")
+                  }
+                  learnMoreURL={
+                    putVault
+                      ? t("shared:ProductCopies:Put:learnMoreUrl")
+                      : t("shared:ProductCopies:Call:learnMoreUrl")
+                  }
+                  renderContent={({ ref, ...triggerHandler }) => (
+                    <HighlightedText ref={ref} {...triggerHandler}>
+                      {putVault
+                        ? t("shared:ProductCopies:Put:text")
+                        : t("shared:ProductCopies:Call:text")}
+                    </HighlightedText>
+                  )}
+                />
+              </Trans>
             </ParagraphText>
             <VaultStrategyExplainer vault={vault} />
           </Paragraph>
