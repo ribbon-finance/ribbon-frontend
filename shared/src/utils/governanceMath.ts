@@ -117,6 +117,7 @@ export const calculateBoostedRewards = (
 };
 
 interface ClaimableRbnCalculationProps {
+  currentDate: Date;
   periodTimestamp: number; // period timestamp of current period, LG5.period_timestamp[period]
   integrateInvSupply: BigNumber; // integrate_inv_supply of the current period, LG5.integrate_inv_supply[period]
   integrateFraction: BigNumber; // LG5.integrate_fraction[addr]
@@ -133,6 +134,7 @@ interface ClaimableRbnCalculationProps {
 }
 
 export const calculateClaimableRbn = async ({
+  currentDate,
   periodTimestamp,
   integrateInvSupply,
   integrateFraction,
@@ -148,7 +150,7 @@ export const calculateClaimableRbn = async ({
   gaugeControllerContract,
 }: ClaimableRbnCalculationProps) => {
   const WEEK = 604800;
-  const currentTime = Math.round(Date.now() / 1000);
+  const currentTime = Math.round(currentDate.getTime() / 1000);
 
   const trimDecimals = (number: number) => {
     return Number(number.toFixed(0));
@@ -223,7 +225,7 @@ export const calculateClaimableRbn = async ({
   }
   integrateFraction = integrateFraction.add(
     workingBalance
-      .mul(integrateInvSupply.sub(integrateInvSupplyOf))
+      .mul(_integrate_inv_supply.sub(integrateInvSupplyOf))
       .div(parseUnits("1", 18))
   );
   return integrateFraction.sub(mintedRBN);

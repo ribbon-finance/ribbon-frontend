@@ -1,7 +1,8 @@
-import { BigNumber } from "@ethersproject/bignumber";
-import { providers } from "ethers";
+import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
+import { CallOverrides } from "@ethersproject/contracts";
 import { parseUnits } from "ethers/lib/utils";
-import { LiquidityGaugeControllerFactory } from "../codegen/LiquidityGaugeControllerFactory";
+import { LiquidityGaugeController } from "../codegen/LiquidityGaugeController";
+
 
 import {
   calculateBaseRewards,
@@ -108,39 +109,39 @@ it("Base rewards should be correct", () => {
 });
 
 it("Should calculate claimable RBN amount", async () => {
-  const controllerContract = LiquidityGaugeControllerFactory.connect(
-    "0x1897D25dc65406F0a534cb6749010b3EdD9f87D9",
-    new providers.AlchemyProvider("kovan", "qtBrk7Td-rz5trQucLDn7tyY9nyNt9Ao")
-  );
-  // const result = await calculateClaimableRbn({
-  //   periodTimestamp: 1645611644,
-  //   integrateInvSupply: BigNumber.from("756825236148384688349460"),
-  //   integrateFraction: BigNumber.from("24137357007092246788726"),
-  //   integrateInvSupplyOf: BigNumber.from("756825236148384688349460"),
-  //   futureEpochTime: 1645923256,
-  //   inflation_rate: BigNumber.from("761033399470899470"),
-  //   minterRate: BigNumber.from("761033399470899470"),
-  //   isKilled: false,
-  //   workingSupply: BigNumber.from("44928461131414151"),
-  //   workingBalance: BigNumber.from("28928461131414151"),
-  //   mintedRBN: BigNumber.from("6170583036185114560390"),
-  //   gaugeContractAddress: "0xaC4495454a564731C085a5fcc522dA1F0Bdd69d4",
-  //   gaugeControllerContract: controllerContract
-  // })
+  // const controllerContract = LiquidityGaugeControllerFactory.connect(
+  //   "0x1897D25dc65406F0a534cb6749010b3EdD9f87D9",
+  //   new providers.AlchemyProvider("kovan", "qtBrk7Td-rz5trQucLDn7tyY9nyNt9Ao")
+  // );
+  class MockGaugeController {
+    "gauge_relative_weight(address,uint256)"(
+      addr: string,
+      time: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber> {
+      return Promise.resolve(BigNumber.from("258064516129032258"));
+    }
+  }
+
+  const mockContract = new MockGaugeController() as LiquidityGaugeController
   const result = await calculateClaimableRbn({
-    periodTimestamp: 1645611644,
-    integrateInvSupply: BigNumber.from("756825236148384688349460"),
-    integrateFraction: BigNumber.from("2767682163702311463282"),
-    integrateInvSupplyOf: BigNumber.from("140218215759955115497677"),
+    currentDate: new Date(1645764677297),
+    periodTimestamp: 1645677264,
+    integrateInvSupply: BigNumber.from("901203333833025818578828"),
+    integrateFraction: BigNumber.from("28313754145663697906898"),
+    integrateInvSupplyOf: BigNumber.from("901203333833025818578828"),
     futureEpochTime: 1645923256,
     inflation_rate: BigNumber.from("761033399470899470"),
     minterRate: BigNumber.from("761033399470899470"),
     isKilled: false,
-    workingSupply: BigNumber.from("44928461131414151"),
-    workingBalance: BigNumber.from("16000000000000000"),
-    mintedRBN: BigNumber.from("2648373947544176317057"),
+    workingSupply: BigNumber.from("44911094102448064"),
+    workingBalance: BigNumber.from("28911094102448064"),
+    mintedRBN: BigNumber.from("28313754145663697906898"),
     gaugeContractAddress: "0xaC4495454a564731C085a5fcc522dA1F0Bdd69d4",
-    gaugeControllerContract: controllerContract,
+    gaugeControllerContract: mockContract,
   });
+
+  // 9985 $RBN
+  expect(result.toString()).toEqual("11051441462736454437032");
   console.log("RESULT: ", result.toString());
 }, 100000);

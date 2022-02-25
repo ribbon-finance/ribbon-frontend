@@ -159,6 +159,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
         const vaultAddress = VaultLiquidityMiningMap.lg5[vault];
         const claimableRbn = vaultAddress
           ? await calculateClaimableRbn({
+              currentDate: new Date(),
               periodTimestamp: periodTimestamp.toNumber(),
               integrateInvSupply,
               integrateFraction,
