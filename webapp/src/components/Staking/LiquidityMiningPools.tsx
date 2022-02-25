@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { formatUnits } from "@ethersproject/units";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
+import { useTranslation } from "react-i18next";
 
 import {
   BaseIndicator,
@@ -14,6 +15,8 @@ import {
   getDisplayAssets,
   VaultLiquidityMiningMap,
   StakingVaultOptions,
+  getOptionAssets,
+  isPutVault,
 } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
@@ -21,12 +24,15 @@ import CapBar from "shared/lib/components/Deposit/CapBar";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { useLiquidityMiningPoolData } from "shared/lib/hooks/web3DataContext";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
-import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
+import {
+  getAssetDecimals,
+  getAssetDisplay,
+  getAssetLogo,
+} from "shared/lib/utils/asset";
 import { formatBigNumber } from "shared/lib/utils/math";
 import StakingApprovalModal from "./LiquidityMiningModal/StakingApprovalModal";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import { productCopies } from "shared/lib/components/Product/productCopies";
 import StakingActionModal from "./LiquidityMiningModal/StakingActionModal";
 import sizes from "shared/lib/designSystem/sizes";
 import StakingClaimModal from "./LiquidityMiningModal/StakingClaimModal";
@@ -158,8 +164,10 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
   const { active } = useWeb3Wallet();
   const [, setShowConnectWalletModal] = useConnectWalletModal();
   const { data: stakingPoolData } = useLiquidityMiningPoolData(vaultOption);
-  const decimals = getAssetDecimals(getAssets(vaultOption));
+  const asset = getAssets(vaultOption);
+  const decimals = getAssetDecimals(asset);
   const { pendingTransactions } = usePendingTransactions();
+  const { t } = useTranslation();
 
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [isStakeAction, setIsStakeAction] = useState(true);
@@ -405,7 +413,23 @@ const StakingPool: React.FC<StakingPoolProps> = ({ vaultOption }) => {
                 <TooltipExplanation
                   title={vaultOption}
                   explanation={
-                    productCopies[vaultOption].liquidityMining.explanation
+                    <>
+                      {t("shared:TooltipExplanations:rToken", {
+                        rTokenSymbol: vaultOption,
+                        depositAsset: getAssetDisplay(asset),
+                        vaultType: `${getAssetDisplay(
+                          getOptionAssets(vaultOption)
+                        )} ${isPutVault(vaultOption) ? "Put" : ""} Theta Vault`,
+                        tokenTitle: t(
+                          `shared:ProductCopies:${vaultOption}:title`
+                        ),
+                      })}
+                      <br />
+                      <br />
+                      {t("webapp:LiquidityPool:rTokenCTA", {
+                        rToken: vaultOption,
+                      })}
+                    </>
                   }
                   renderContent={({ ref, ...triggerHandler }) => (
                     <HelpInfo containerRef={ref} {...triggerHandler}>

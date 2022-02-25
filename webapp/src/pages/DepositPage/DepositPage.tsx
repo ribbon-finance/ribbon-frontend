@@ -322,7 +322,7 @@ const HeroSection: React.FC<{
   variant: VaultVersion;
   v1Inactive?: boolean;
 }> = ({ depositCapBar, vaultOption, variant, v1Inactive }) => {
-  const { t, ready } = useTranslation();
+  const { t } = useTranslation();
   const { chainId } = useWeb3Wallet();
   const color = getVaultColor(vaultOption);
 

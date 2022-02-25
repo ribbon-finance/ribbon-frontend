@@ -24,15 +24,9 @@ const Link = styled.a`
 `;
 
 interface ProductCopies {
-  title: string;
-  subtitle: string;
-  description: string;
   tags: string[];
   strategy: React.ReactNode;
   vaultRisk: React.ReactNode;
-  liquidityMining: {
-    explanation: React.ReactNode;
-  };
 }
 
 export const vaultAudit = (vaultOption: VaultOptions) => {
@@ -72,10 +66,6 @@ export const vaultAudit = (vaultOption: VaultOptions) => {
 
 export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
   "rETH-THETA": {
-    title: "T-ETH-C",
-    subtitle: "ETH Covered Call",
-    description:
-      "Generates yield by running an automated ETH covered call strategy.",
     tags: ["COVERED CALL"],
     strategy: (
       <>
@@ -114,24 +104,8 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         minted by the vault).
       </>
     ),
-    liquidityMining: {
-      explanation: (
-        <>
-          rETH-THETA is a token that represents ETH deposits in the ETH Theta
-          Vault (T-ETH-C).
-          <br />
-          <br />
-          Stake your rETH-THETA tokens in the rETH-THETA staking pool to earn
-          $RBN rewards.
-        </>
-      ),
-    },
   },
   "rBTC-THETA": {
-    title: "T-WBTC-C",
-    subtitle: "WBTC Covered Call",
-    description:
-      "Generates yield by running an automated WBTC covered call strategy.",
     tags: ["COVERED CALL"],
     strategy: (
       <>
@@ -170,24 +144,8 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         minted by the vault).
       </>
     ),
-    liquidityMining: {
-      explanation: (
-        <>
-          rBTC-THETA is a token that represents WBTC deposits in the WBTC Theta
-          Vault (T-WBTC-C).
-          <br />
-          <br />
-          Stake your rBTC-THETA tokens in the rBTC-THETA staking pool to earn
-          $RBN rewards.
-        </>
-      ),
-    },
   },
   "rUSDC-ETH-P-THETA": {
-    title: "T-USDC-P-ETH",
-    subtitle: "ETH Put-Selling",
-    description:
-      "Generates yield by running an automated ETH put selling strategy.",
     tags: ["PUT-SELLING"],
     strategy: (
       <>
@@ -228,24 +186,8 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         5% of the time.
       </>
     ),
-    liquidityMining: {
-      explanation: (
-        <>
-          rUSDC-ETH-P-THETA is a token that represents USDC deposits in the ETH
-          Put Theta Vault (T-USDC-P-ETH).
-          <br />
-          <br />
-          Stake your rUSDC-ETH-P-THETA tokens in the rUSDC-ETH-P-THETA staking
-          pool to earn $RBN rewards.
-        </>
-      ),
-    },
   },
   "ryvUSDC-ETH-P-THETA": {
-    title: "T-yvUSDC-P-ETH",
-    subtitle: "ETH Put-Selling",
-    description:
-      "Generates yield by running an automated yvUSDC-collateralized ETH put selling strategy.",
     tags: ["PUT-SELLING"],
     strategy: (
       <>
@@ -296,24 +238,8 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         5% of the time.
       </>
     ),
-    liquidityMining: {
-      explanation: (
-        <>
-          ryvUSDC-ETH-P-THETA is a token that represents USDC deposits in the
-          ETH Put Theta Vault (T-yvUSDC-P-ETH).
-          <br />
-          <br />
-          Stake your ryvUSDC-ETH-P-THETA tokens in the ryvUSDC-ETH-P-THETA
-          staking pool to earn $RBN rewards.
-        </>
-      ),
-    },
   },
   "rstETH-THETA": {
-    title: "T-stETH-C",
-    subtitle: "stETH Covered Call",
-    description:
-      "Generates yield by running an automated stETH-collateralized ETH covered call strategy.",
     tags: ["COVERED CALL"],
     strategy: (
       <>
@@ -376,24 +302,8 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         minted by the vault).
       </>
     ),
-    liquidityMining: {
-      explanation: (
-        <>
-          rstETH-THETA is a token that represents ETH deposits in the ETH Theta
-          Vault (T-stETH-THETA).
-          <br />
-          <br />
-          Stake your rstETH-THETA tokens in the rstETH-THETA staking pool to
-          earn $RBN rewards.
-        </>
-      ),
-    },
   },
   "rAAVE-THETA": {
-    title: "T-AAVE-C",
-    subtitle: "AAVE Covered Call",
-    description:
-      "Generates yield by running an automated AAVE covered call strategy.",
     tags: ["COVERED CALL"],
     strategy: (
       <>
@@ -432,24 +342,8 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         minted by the vault).
       </>
     ),
-    liquidityMining: {
-      explanation: (
-        <>
-          rAAVE-THETA is a token that represents AAVE deposits in the AAVE Theta
-          Vault (T-AAVE-C).
-          <br />
-          <br />
-          Stake your rAAVE-THETA tokens in the rAAVE-THETA staking pool to earn
-          $RBN rewards.
-        </>
-      ),
-    },
   },
   "rAVAX-THETA": {
-    title: "T-AVAX-C",
-    subtitle: "AVAX Call",
-    description:
-      "Generates yield by running an automated AVAX covered call strategy.",
     tags: ["COVERED CALL"],
     strategy: (
       <>
@@ -488,24 +382,8 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         minted by the vault).
       </>
     ),
-    liquidityMining: {
-      explanation: (
-        <>
-          rAVAX-THETA is a token that represents AVAX deposits in the AVAX Theta
-          Vault (T-AVAX-C).
-          <br />
-          <br />
-          Stake your rAVAX-THETA tokens in the rAVAX-THETA staking pool to earn
-          $RBN rewards.
-        </>
-      ),
-    },
   },
   "rsAVAX-THETA": {
-    title: "T-sAVAX-C",
-    subtitle: "sAVAX Call",
-    description:
-      "Generates yield by running an automated sAVAX covered call strategy.",
     tags: ["COVERED CALL"],
     strategy: (
       <>
@@ -568,24 +446,8 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         options minted by the vault).
       </>
     ),
-    liquidityMining: {
-      explanation: (
-        <>
-          rsAVAX-THETA is a token that represents sAVAX deposits in the sAVAX
-          Theta Vault (T-sAVAX-C).
-          <br />
-          <br />
-          Stake your rsAVAX-THETA tokens in the rsAVAX-THETA staking pool to
-          earn $RBN rewards.
-        </>
-      ),
-    },
   },
   "rUSDC-AVAX-P-THETA": {
-    title: "T-USDC-P-AVAX",
-    subtitle: "AVAX Put-Selling",
-    description:
-      "Generates yield by running an automated USDC-collateralized AVAX put selling strategy.",
     tags: ["PUT-SELLING"],
     strategy: (
       <>
@@ -624,24 +486,8 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         5% of the time.
       </>
     ),
-    liquidityMining: {
-      explanation: (
-        <>
-          rUSDC-AVAX-P-THETA is a token that represents USDC deposits in the
-          AVAX Put Theta Vault (T-USDC-P-AVAX).
-          <br />
-          <br />
-          Stake your rUSDC-AVAX-P-THETA tokens in the rUSDC-AVAX-P-THETA staking
-          pool to earn $RBN rewards.
-        </>
-      ),
-    },
   },
   "rPERP-TSRY": {
-    title: "T-PERP-C",
-    subtitle: "PERP Call",
-    description:
-      "Generates yield by running an automated PERP covered call strategy.",
     tags: ["COVERED CALL"],
     strategy: "",
     vaultRisk: (
@@ -663,15 +509,8 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         minted by the vault).
       </>
     ),
-    liquidityMining: {
-      explanation: <></>,
-    },
   },
   "rSOL-THETA": {
-    title: "T-SOL-C",
-    subtitle: "SOL Covered Call",
-    description:
-      "Generates yield by running an automated SOL covered call strategy.",
     tags: ["COVERED CALL"],
     strategy: (
       <>
@@ -710,24 +549,8 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         minted by the vault).
       </>
     ),
-    liquidityMining: {
-      explanation: (
-        <>
-          rSOL-THETA is a token that represents SOL deposits in the SOL Theta
-          Vault (T-SOL-C).
-          <br />
-          <br />
-          Stake your rSOL-THETA tokens in the rSOL-THETA staking pool to earn
-          $RBN rewards.
-        </>
-      ),
-    },
   },
   "rNEAR-THETA": {
-    title: "T-WNEAR-C",
-    subtitle: "WNEAR Call",
-    description:
-      "Generates yield by running an automated WNEAR covered call strategy.",
     tags: ["COVERED CALL"],
     strategy: (
       <>
@@ -766,24 +589,8 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         options minted by the vault).
       </>
     ),
-    liquidityMining: {
-      explanation: (
-        <>
-          rNEAR-THETA is a token that represents WNEAR deposits in the WNEAR
-          Theta Vault (T-WNEAR-C).
-          <br />
-          <br />
-          Stake your rNEAR-THETA tokens in the rNEAR-THETA staking pool to earn
-          $RBN rewards.
-        </>
-      ),
-    },
   },
   "rAURORA-THETA": {
-    title: "T-AURORA-C",
-    subtitle: "AURORACall",
-    description:
-      "Generates yield by running an automated AURORA covered call strategy.",
     tags: ["COVERED CALL"],
     strategy: (
       <>
@@ -821,17 +628,5 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         options minted by the vault).
       </>
     ),
-    liquidityMining: {
-      explanation: (
-        <>
-          rAURORA-THETA is a token that represents AURORA deposits in the AURORA
-          Theta Vault (T-AURORA-C).
-          <br />
-          <br />
-          Stake your rAURORA-THETA tokens in the rAURORA-THETA staking pool to
-          earn $RBN rewards.
-        </>
-      ),
-    },
   },
 };

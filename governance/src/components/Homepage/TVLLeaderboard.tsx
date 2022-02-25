@@ -25,11 +25,10 @@ const SectionLabel = styled.div`
 
 const TVLLeaderboard = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { t, ready, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { width: containerWidth } = useElementSize(containerRef);
   const { data, totalTVL, loading: TVLLoading } = useTVL();
   const loadingText = useLoadingText();
-  console.log(t, ready, i18n);
 
   const [page, setPage] = useState(1);
 

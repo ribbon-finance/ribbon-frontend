@@ -22,5 +22,8 @@
       "explanation": "{{collateralAssetUnit}} is the deposit token that represents a user's share of the their ETH on the Ethereum beacon chain.",
       "learnMoreURL": "webapp:VaultStrategyExplainer:stETH:explanation"
     }
+  },
+  "LiquidityPool": {
+    "rTokenCTA": "Stake your {{rToken}} tokens in the {{rToken}} staking pool to earn $RBN rewards."
   }
 }

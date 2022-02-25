@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { formatUnits } from "@ethersproject/units";
+import { useTranslation } from "react-i18next";
 
 import {
   BaseIndicator,
@@ -14,18 +15,19 @@ import { shimmerKeyframe } from "shared/lib/designSystem/keyframes";
 import sizes from "shared/lib/designSystem/sizes";
 import {
   getDisplayAssets,
+  getOptionAssets,
+  isPutVault,
   VaultLiquidityMiningMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import { getAssetLogo } from "shared/lib/utils/asset";
+import { getAssetDisplay, getAssetLogo } from "shared/lib/utils/asset";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { getVaultColor } from "shared/lib/utils/vault";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
-import { productCopies } from "shared/lib/components/Product/productCopies";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import {
   useAssetBalance,
@@ -171,6 +173,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
   const { active } = useWeb3Wallet();
   const [, setShowConnectWalletModal] = useConnectWalletModal();
   const { pendingTransactions } = usePendingTransactions();
+  const { t } = useTranslation();
   const { data: lg5Data, loading: lg5DataLoading } =
     useLiquidityGaugeV5PoolData(vaultOption);
   const { prices, loading: assetPricesLoading } = useAssetsPrice();
@@ -429,7 +432,23 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
                 <TooltipExplanation
                   title={vaultOption}
                   explanation={
-                    productCopies[vaultOption].liquidityMining.explanation
+                    <>
+                      {t("shared:TooltipExplanations:rToken", {
+                        rTokenSymbol: vaultOption,
+                        depositAsset: getAssetDisplay(asset),
+                        vaultType: `${getAssetDisplay(
+                          getOptionAssets(vaultOption)
+                        )} ${isPutVault(vaultOption) ? "Put" : ""} Theta Vault`,
+                        tokenTitle: t(
+                          `shared:ProductCopies:${vaultOption}:title`
+                        ),
+                      })}
+                      <br />
+                      <br />
+                      {t("webapp:LiquidityPool:rTokenCTA", {
+                        rToken: vaultOption,
+                      })}
+                    </>
                   }
                   renderContent={({ ref, ...triggerHandler }) => (
                     <HelpInfo containerRef={ref} {...triggerHandler}>

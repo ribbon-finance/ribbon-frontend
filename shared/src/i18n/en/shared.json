@@ -65,5 +65,8 @@
       "title": "T-PERP-C",
       "subtitle": "PERP Covered Call"
     }
+  },
+  "TooltipExplanations": {
+    "rToken": "{{rTokenSymbol}} is a token that represents {{depositAsset}} deposits in the {{vaultType}} ({{tokenTitle}})."
   }
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { motion } from "framer";
+import { useTranslation } from "react-i18next";
 
 import useNotifications from "../../hooks/useNotifications";
 import { PrimaryText, Subtitle, Title } from "shared/lib/designSystem";
@@ -20,7 +21,6 @@ import { useCallback } from "react";
 import { Notification, NotificationType } from "../../models/notification";
 import { formatBigNumber, formatOption } from "shared/lib/utils/math";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { productCopies } from "shared/lib/components/Product/productCopies";
 import { getVaultURI } from "../../constants/constants";
 import theme from "shared/lib/designSystem/theme";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
@@ -111,6 +111,8 @@ const NotificationList: React.FC<NotificationListProps> = ({
 }) => {
   const { notifications, lastReadTimestamp } = useNotifications();
   const history = useHistory();
+  const { t } = useTranslation();
+
   const [notificationVaultFilter, setNotificationVaultFilter] = useState<
     VaultOptions | "all"
   >("all");
@@ -163,7 +165,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
     const badge = (
       <NotificationItemVaultPill color={color} className="ml-2">
         <Subtitle fontSize={10} lineHeight={12} color={color}>
-          {productCopies[notification.vault].title}
+          {t(`shared:ProductCopies:${notification.vault}:title`)}
         </Subtitle>
       </NotificationItemVaultPill>
     );
@@ -282,7 +284,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
                         fontSize={14}
                         lineHeight={24}
                       >
-                        {productCopies[vault].title}
+                        {t(`shared:ProductCopies:${vault}:title`)}
                       </Title>
                     </span>
                   ),

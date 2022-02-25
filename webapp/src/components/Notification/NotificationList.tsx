@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { motion } from "framer";
+import { useTranslation } from "react-i18next";
 
 import useNotifications from "shared/lib/hooks/useNotifications";
 import { PrimaryText, Subtitle, Title } from "shared/lib/designSystem";
@@ -28,7 +29,6 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import { getVaultURI } from "../../constants/constants";
 import theme from "shared/lib/designSystem/theme";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
-import { useTranslation } from "react-i18next";
 
 const VaultFilterSection = styled.div`
   border-bottom: ${theme.border.width} ${theme.border.style} ${colors.border};
