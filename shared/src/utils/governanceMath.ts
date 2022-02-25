@@ -3,6 +3,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { ethers } from "ethers";
 import { assetToFiat } from "./math";
 import { parseUnits } from "ethers/lib/utils";
+import { LiquidityGaugeController } from "../codegen/LiquidityGaugeController";
 
 const { formatUnits } = ethers.utils;
 
@@ -113,4 +114,119 @@ export const calculateBoostedRewards = (
   return boostedMultiplier > 0
     ? baseRewardsPercentage * boostedMultiplier - baseRewardsPercentage
     : 0;
+};
+
+interface ClaimableRbnCalculationProps {
+  currentDate: Date;
+  periodTimestamp: number; // period timestamp of current period, LG5.period_timestamp[period]
+  integrateInvSupply: BigNumber; // integrate_inv_supply of the current period, LG5.integrate_inv_supply[period]
+  integrateFraction: BigNumber; // LG5.integrate_fraction[addr]
+  integrateInvSupplyOf: BigNumber; // LG5.integrate_inv_supply_of[addr]
+  futureEpochTime: number; // LG5.future_epoch_time
+  inflation_rate: BigNumber; // LG5.inflation_rate
+  minterRate: BigNumber; // MinterContract.rate
+  isKilled: boolean; // LG5.is_killed
+  workingSupply: BigNumber; // LG5.working_suppply
+  workingBalance: BigNumber; // LG5.working_balances[addr]
+  mintedRBN: BigNumber; // amount of RBN minted. From MinterContract.minted[account][gauge]
+  gaugeContractAddress: string;
+  gaugeControllerContract: LiquidityGaugeController;
+}
+
+export const calculateClaimableRbn = async ({
+  currentDate,
+  periodTimestamp,
+  integrateInvSupply,
+  integrateFraction,
+  integrateInvSupplyOf,
+  futureEpochTime,
+  inflation_rate,
+  minterRate,
+  isKilled,
+  workingSupply,
+  workingBalance,
+  mintedRBN,
+  gaugeContractAddress,
+  gaugeControllerContract,
+}: ClaimableRbnCalculationProps) => {
+  const WEEK = 604800;
+  const currentTime = Math.round(currentDate.getTime() / 1000);
+
+  const trimDecimals = (number: number) => {
+    return Number(number.toFixed(0));
+  };
+
+  let _integrate_inv_supply = integrateInvSupply;
+  let rate = inflation_rate;
+  let new_rate = rate;
+  const prev_future_epoch = futureEpochTime;
+
+  if (currentTime >= prev_future_epoch) {
+    new_rate = minterRate;
+  }
+
+  if (isKilled) {
+    // Stop distributing inflation as soon as killed
+    rate = BigNumber.from(0);
+    new_rate = BigNumber.from(0);
+  }
+
+  //  Update integral of 1 / supply
+  if (currentTime > periodTimestamp) {
+    let prev_week_time = periodTimestamp;
+    let week_time = Math.min(
+      trimDecimals((periodTimestamp + WEEK) / WEEK) * WEEK,
+      currentTime
+    );
+
+    for (let i = 0; i < 500; i++) {
+      const dt = week_time - prev_week_time;
+      const w = await gaugeControllerContract[
+        "gauge_relative_weight(address,uint256)"
+      ](gaugeContractAddress, trimDecimals(prev_week_time / WEEK) * WEEK);
+
+      if (workingSupply.gt(0)) {
+        if (
+          prev_future_epoch >= prev_week_time &&
+          prev_future_epoch < week_time &&
+          rate !== new_rate
+        ) {
+          _integrate_inv_supply = _integrate_inv_supply.add(
+            rate
+              .mul(w)
+              .mul(prev_future_epoch - prev_week_time)
+              .div(workingSupply)
+          );
+          rate = new_rate;
+          _integrate_inv_supply = _integrate_inv_supply.add(
+            rate
+              .mul(w)
+              .mul(week_time - prev_future_epoch)
+              .div(workingSupply)
+          );
+        } else {
+          _integrate_inv_supply = _integrate_inv_supply.add(
+            new_rate.mul(w).mul(dt).div(workingSupply)
+          );
+          // On precisions of the calculation
+          // rate ~= 10e18
+          // last_weight > 0.01 * 1e18 = 1e16(if pool weight is 1 %)
+          // _working_supply ~= TVL * 1e18 ~= 1e26($100M for example)
+          // The largest loss is at dt = 1
+          // Loss is 1e-9 - acceptable
+        }
+      }
+      if (week_time === currentTime) {
+        break;
+      }
+      prev_week_time = week_time;
+      week_time = Math.min(week_time + WEEK, currentTime);
+    }
+  }
+  integrateFraction = integrateFraction.add(
+    workingBalance
+      .mul(_integrate_inv_supply.sub(integrateInvSupplyOf))
+      .div(parseUnits("1", 18))
+  );
+  return integrateFraction.sub(mintedRBN);
 };

@@ -116,6 +116,13 @@ interface StakingOverviewProps {
   setLmVersion: React.Dispatch<React.SetStateAction<LiquidityMiningVersion>>;
 }
 
+interface LMInfo {
+  title: string;
+  description: string;
+  link: string;
+  countdownTitle: string;
+}
+
 const StakingOverview: React.FC<StakingOverviewProps> = ({
   lmVersion,
   setLmVersion,
@@ -169,10 +176,7 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
     return tokenData.numHolders.toLocaleString();
   }, [loadingText, tokenData, tokenLoading]);
 
-  /**
-   * TODO: Add duration for lg5
-   */
-  const timeTillProgramsEnd = useMemo(() => {
+  const countdownText = useMemo(() => {
     if (lg5DataLoading) {
       return loadingText;
     }
@@ -205,26 +209,27 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
     }
   }, []);
 
-  const getLMTitle = useCallback((_lmVersion: LiquidityMiningVersion) => {
-    switch (_lmVersion) {
+  const lmInfo: LMInfo = useMemo(() => {
+    switch (lmVersion) {
       case "lm":
-        return "Liquidity Mining Program";
-      case "lg5":
-        return "Liquidity Mining Program #2";
-    }
-  }, []);
-
-  const getLMDescription = useCallback((_lmVersion: LiquidityMiningVersion) => {
-    switch (_lmVersion) {
-      case "lm":
-        return `The program aims to grow vault adjusted TVL, expand the voting power
+        return {
+          title: "Liquidity Mining Program",
+          description: `The program aims to grow vault adjusted TVL, expand the voting power
           to those who missed out on the airdrop and to distribute the
           governance token to those who have the most skin in the game. The
-          program ended on July 19th, 2021.`;
+          program ended on July 19th, 2021.`,
+          link: "https://ribbonfinance.medium.com/rgp-2-liquidity-mining-program-cc81f0b7a270",
+          countdownTitle: "Time till programs end",
+        };
       case "lg5":
-        return `The program aims to (i) grow Ribbon TVL and (ii) align incentives between vault depositors and owners of the RBN governance token by distributing 6.5m RBN governance tokens to vault depositors over the course of 6 months.`;
+        return {
+          title: "Liquidity Mining Program #2",
+          description: `The program aims to (i) grow Ribbon TVL and (ii) align incentives between vault depositors and owners of the RBN governance token by distributing 6.5m RBN governance tokens to vault depositors over the course of 6 months.`,
+          link: "https://gov.ribbon.finance/t/rgp-9-ribbonomics/486",
+          countdownTitle: "Time till next reward",
+        };
     }
-  }, []);
+  }, [lmVersion]);
 
   return (
     <div>
@@ -247,12 +252,12 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
             }}
           />
 
-          <Title className="mt-3 w-100">{getLMTitle(lmVersion)}</Title>
+          <Title className="mt-3 w-100">{lmInfo.title}</Title>
           <OverviewDescription className="mt-3 w-100">
-            {getLMDescription(lmVersion)}
+            {lmInfo.description}
           </OverviewDescription>
           <UnderlineLink
-            to="https://ribbonfinance.medium.com/rgp-2-liquidity-mining-program-cc81f0b7a270"
+            to={lmInfo.link}
             target="_blank"
             rel="noreferrer noopener"
             className="d-flex mt-4"
@@ -273,13 +278,13 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
             <Title>{numHolderText}</Title>
           </OverviewKPI>
           <OverviewKPI>
-            <OverviewLabel>Time till programs end</OverviewLabel>
-            <Title>{timeTillProgramsEnd}</Title>
+            <OverviewLabel>{lmInfo.countdownTitle}</OverviewLabel>
+            <Title>{countdownText}</Title>
           </OverviewKPI>
         </OverviewKPIContainer>
       </OverviewContainer>
       {
-        // TODO: - Rewards calculator is only applicable for LM2 (liquidity gauge v5 [lg5]), for now
+        // Rewards calculator is only applicable for LM2 (liquidity gauge v5 [lg5]), for now
         lmVersion === "lg5" && (
           <RewardsCalculatorButon
             role="button"

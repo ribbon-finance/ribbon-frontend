@@ -168,13 +168,13 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
       return {
         totalPoolRewards: loadingText,
         baseRewards: loadingText,
-        boostedRewardsMultiplier: loadingText,
+        boostedRewardsMultiplier: "",
         boostedRewardsAmount: loadingText,
       };
     }
 
     const totalPoolRewards = lg5Data
-      ? parseFloat(formatBigNumber(lg5Data.poolRewardForDuration))
+      ? formatBigNumber(lg5Data.poolRewardForDuration)
       : undefined;
     const boost = calculateBoostedMultipler(
       lg5Data?.currentStake || BigNumber.from(0)
