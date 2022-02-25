@@ -20,7 +20,7 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 
 const FABContainer = styled.div.attrs({
-  className: "d-flex align-items-center"
+  className: "d-flex align-items-center",
 })`
   position: fixed;
   bottom: 0px;
@@ -47,13 +47,13 @@ const VerticalDivider = styled.div`
   background-color: ${colors.border};
   width: 1px;
   height: 32px;
-`
+`;
 
 const StakingButtonsContainer = styled.div.attrs({
-  className: "d-flex ml-auto"
+  className: "d-flex ml-auto",
 })`
   height: 100%;
-`
+`;
 
 const StakingButton = styled.div<{ color: string }>`
   display: flex;
@@ -179,7 +179,7 @@ const StakingFAB = () => {
             </Title>
           </div>
         </div>
-        <VerticalDivider/>
+        <VerticalDivider />
         <div className="d-flex flex-column align-items-center justify-content-center flex-grow-1">
           <SecondaryText fontSize={10} lineHeight={16}>
             <div className="d-flex">
@@ -199,7 +199,7 @@ const StakingFAB = () => {
             {fabInfo.stakedRBNAmount}
           </Title>
         </div>
-        <VerticalDivider/>
+        <VerticalDivider />
         <div className="d-flex flex-column align-items-center justify-content-center flex-grow-1">
           <SecondaryText fontSize={10} lineHeight={16}>
             <div className="d-flex">
