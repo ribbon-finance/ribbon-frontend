@@ -3,7 +3,6 @@ import { CallOverrides } from "@ethersproject/contracts";
 import { parseUnits } from "ethers/lib/utils";
 import { LiquidityGaugeController } from "../codegen/LiquidityGaugeController";
 
-
 import {
   calculateBaseRewards,
   calculateBoostedRewards,
@@ -123,7 +122,7 @@ it("Should calculate claimable RBN amount", async () => {
     }
   }
 
-  const mockContract = new MockGaugeController() as LiquidityGaugeController
+  const mockContract = new MockGaugeController() as LiquidityGaugeController;
   const result = await calculateClaimableRbn({
     currentDate: new Date(1645764677297),
     periodTimestamp: 1645677264,
