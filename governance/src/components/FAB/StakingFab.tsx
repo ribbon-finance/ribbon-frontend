@@ -19,8 +19,9 @@ import { BigNumber } from "ethers";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 
-const FABContainer = styled.div`
-  display: flex;
+const FABContainer = styled.div.attrs({
+  className: "d-flex align-items-center"
+})`
   position: fixed;
   bottom: 0px;
   z-index: 1000;
@@ -41,6 +42,18 @@ const FABContainer = styled.div`
     display: none;
   }
 `;
+
+const VerticalDivider = styled.div`
+  background-color: ${colors.border};
+  width: 1px;
+  height: 32px;
+`
+
+const StakingButtonsContainer = styled.div.attrs({
+  className: "d-flex ml-auto"
+})`
+  height: 100%;
+`
 
 const StakingButton = styled.div<{ color: string }>`
   display: flex;
@@ -145,7 +158,7 @@ const StakingFAB = () => {
   return active ? (
     <>
       <FABContainer>
-        <div className="d-flex align-items-center ml-5">
+        <div className="d-flex align-items-center justify-content-center flex-grow-1">
           <div className="d-flex flex-column ml-2">
             <SecondaryText fontSize={10} lineHeight={16}>
               <div className="d-flex">
@@ -166,7 +179,8 @@ const StakingFAB = () => {
             </Title>
           </div>
         </div>
-        <div className="d-flex flex-column justify-content-center ml-auto">
+        <VerticalDivider/>
+        <div className="d-flex flex-column align-items-center justify-content-center flex-grow-1">
           <SecondaryText fontSize={10} lineHeight={16}>
             <div className="d-flex">
               {t("shared:TooltipExplanations:lockedRBN:title")}
@@ -185,7 +199,8 @@ const StakingFAB = () => {
             {fabInfo.stakedRBNAmount}
           </Title>
         </div>
-        <div className="d-flex flex-column justify-content-center ml-auto">
+        <VerticalDivider/>
+        <div className="d-flex flex-column align-items-center justify-content-center flex-grow-1">
           <SecondaryText fontSize={10} lineHeight={16}>
             <div className="d-flex">
               {t("shared:TooltipExplanations:unlockedRBN:fabTitle")}
@@ -204,7 +219,7 @@ const StakingFAB = () => {
             {fabInfo.unstakedRBNAmount}
           </Title>
         </div>
-        <div className="d-flex ml-auto">
+        <StakingButtonsContainer>
           <StakingButton
             color={`${colors.red}1F`}
             role="button"
@@ -231,7 +246,7 @@ const StakingFAB = () => {
               UNLOCK RBN
             </Title>
           </StakingButton>
-        </div>
+        </StakingButtonsContainer>
       </FABContainer>
       <FABOffsetContainer />
     </>
