@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
 import { useTranslation, Trans } from "react-i18next";
 
@@ -9,17 +9,19 @@ import {
 } from "shared/lib/components/Product/productCopies";
 import {
   getAssets,
+  getDisplayAssets,
   VaultOptions,
   VaultVersion,
   VaultFees,
   isSolanaVault,
   isPutVault,
+  getOptionAssets,
 } from "shared/lib/constants/constants";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import useAssetsYield from "shared/lib/hooks/useAssetsYield";
 import VaultPerformanceChart from "./VaultPerformanceChart";
-import { getAssetDisplay } from "shared/lib/utils/asset";
+import { getAssetDisplay, isYieldAsset } from "shared/lib/utils/asset";
 import { DefiScoreProtocol } from "shared/lib/models/defiScore";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import theme from "shared/lib/designSystem/theme";
@@ -195,52 +197,126 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
     [vaultOption]
   );
 
-  const putVault = isPutVault(vault.vaultOption);
+  const vaultStrategyContent = useMemo(() => {
+    const putVault = isPutVault(vault.vaultOption);
+
+    const basei18NKey = putVault
+      ? "shared:ProductCopies:Put"
+      : "shared:ProductCopies:Call";
+    const i18nParams = putVault
+      ? {
+          asset: getAssetDisplay(asset),
+          optionAsset: getAssetDisplay(getOptionAssets(vault.vaultOption)),
+          vault: t(`shared:ProductCopies:${vault.vaultOption}:title`),
+        }
+      : { asset: getAssetDisplay(asset) };
+
+    if (isYieldAsset(getDisplayAssets(vault.vaultOption))) {
+      /**
+       * Return stratey for vault collaterized by yield asset
+       */
+      return putVault ? (
+        <Trans
+          i18nKey={`${basei18NKey}:strategy:yieldAssetCollateral`}
+          values={i18nParams}
+          components={[
+            <TooltipExplanation
+              title={t(`${basei18NKey}:text`)}
+              explanation={t(`${basei18NKey}:explanation`)}
+              learnMoreURL={t(`${basei18NKey}:learnMoreURL`)}
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  {t(`${basei18NKey}:text`)}
+                </HighlightedText>
+              )}
+            />,
+            <TooltipExplanation
+              title="YVUSDC"
+              explanation="yvUSDC is the deposit token that represents a user's share of the USDC yVault."
+              learnMoreURL="https://docs.yearn.finance/getting-started/products/yvaults/vault-tokens"
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  yvUSDC
+                </HighlightedText>
+              )}
+            />,
+          ]}
+        />
+      ) : (
+        <Trans
+          i18nKey={`${basei18NKey}:strategy:yieldAssetCollateral`}
+          values={i18nParams}
+          components={[
+            <TooltipExplanation
+              title={t(`${basei18NKey}:text`)}
+              explanation={t(`${basei18NKey}:explanation`)}
+              learnMoreURL={t(`${basei18NKey}:learnMoreURL`)}
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  {t(`${basei18NKey}:text`)}
+                </HighlightedText>
+              )}
+            />,
+            <TooltipExplanation
+              title="LIDO"
+              explanation="Lido empowers stakers to put their staked assets to use. "
+              learnMoreURL="https://lido.fi"
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  Lido
+                </HighlightedText>
+              )}
+            />,
+            <TooltipExplanation
+              title="STETH"
+              explanation="stETH is the deposit token that represents a user's share of the their ETH on the Ethereum beacon chain."
+              learnMoreURL="https://lido.fi/ethereum"
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  stETH
+                </HighlightedText>
+              )}
+            />,
+          ]}
+        />
+      );
+    }
+
+    /**
+     * Default Vault
+     */
+    return (
+      <Trans
+        i18nKey={`${basei18NKey}:strategy:default`}
+        values={i18nParams}
+        components={[
+          <TooltipExplanation
+            title={t(`${basei18NKey}:text`)}
+            explanation={t(`${basei18NKey}:explanation`)}
+            learnMoreURL={t(`${basei18NKey}:learnMoreURL`)}
+            renderContent={({ ref, ...triggerHandler }) => (
+              <HighlightedText ref={ref} {...triggerHandler}>
+                {t(`${basei18NKey}:text`)}
+              </HighlightedText>
+            )}
+          />,
+        ]}
+      />
+    );
+  }, [asset, t, vault.vaultOption]);
 
   return (
     <Container>
-      {active && (
-        <>
-          <Paragraph className="d-flex flex-column">
-            <ParagraphHeading>Vault Strategy</ParagraphHeading>
-            <ParagraphText className="mb-4">
-              <Trans i18nKey="shared:ProductCopies:Call:strategy">
-                {{ asset }}
-                <TooltipExplanation
-                  title={
-                    putVault
-                      ? t("shared:ProductCopies:Put:text")
-                      : t("shared:ProductCopies:Call:text")
-                  }
-                  explanation={
-                    putVault
-                      ? t("shared:ProductCopies:Put:explanation")
-                      : t("shared:ProductCopies:Call:explanation")
-                  }
-                  learnMoreURL={
-                    putVault
-                      ? t("shared:ProductCopies:Put:learnMoreUrl")
-                      : t("shared:ProductCopies:Call:learnMoreUrl")
-                  }
-                  renderContent={({ ref, ...triggerHandler }) => (
-                    <HighlightedText ref={ref} {...triggerHandler}>
-                      {putVault
-                        ? t("shared:ProductCopies:Put:text")
-                        : t("shared:ProductCopies:Call:text")}
-                    </HighlightedText>
-                  )}
-                />
-              </Trans>
-            </ParagraphText>
-            <VaultStrategyExplainer vault={vault} />
-          </Paragraph>
+      <Paragraph className="d-flex flex-column">
+        <ParagraphHeading>Vault Strategy</ParagraphHeading>
+        <ParagraphText className="mb-4">{vaultStrategyContent}</ParagraphText>
+        <VaultStrategyExplainer vault={vault} />
+      </Paragraph>
 
-          <Paragraph>
-            <ParagraphHeading>Weekly Strategy Snapshot</ParagraphHeading>
-            <WeeklyStrategySnapshot vault={vault} />
-          </Paragraph>
-        </>
-      )}
+      <Paragraph>
+        <ParagraphHeading>Weekly Strategy Snapshot</ParagraphHeading>
+        <WeeklyStrategySnapshot vault={vault} />
+      </Paragraph>
 
       <Paragraph>
         <VaultPerformanceChart vault={vault} />
