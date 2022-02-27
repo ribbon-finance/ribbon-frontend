@@ -21,7 +21,11 @@ import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import useAssetsYield from "shared/lib/hooks/useAssetsYield";
 import VaultPerformanceChart from "./VaultPerformanceChart";
-import { getAssetDisplay, isYieldAsset } from "shared/lib/utils/asset";
+import {
+  getAssetDisplay,
+  getYieldAssetUnderlying,
+  isYieldAsset,
+} from "shared/lib/utils/asset";
 import { DefiScoreProtocol } from "shared/lib/models/defiScore";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import theme from "shared/lib/designSystem/theme";
@@ -35,6 +39,7 @@ import {
 import WeeklyStrategySnapshot from "../../components/Deposit/WeeklyStrategySnapshot";
 import VaultStrategyExplainer from "../../components/Deposit/VaultStrategyExplainer";
 import sizes from "shared/lib/designSystem/sizes";
+import { Assets } from "shared/lib/store/types";
 
 const Paragraph = styled.div`
   margin-bottom: 64px;
@@ -197,8 +202,117 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
     [vaultOption]
   );
 
+  const rendersYieldAssetProviderTooltips = useCallback(
+    (_asset: Assets) => {
+      switch (_asset) {
+        case "stETH":
+          return (
+            <TooltipExplanation
+              title={t("webapp:VaultStrategyExplainer:Lido:title")}
+              explanation={t("webapp:VaultStrategyExplainer:Lido:explanation")}
+              learnMoreURL={t(
+                "webapp:VaultStrategyExplainer:Lido:learnMoreURL"
+              )}
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  Lido
+                </HighlightedText>
+              )}
+            />
+          );
+        case "sAVAX":
+          return (
+            <TooltipExplanation
+              title={t("webapp:VaultStrategyExplainer:Benqi:title")}
+              explanation={t("webapp:VaultStrategyExplainer:Benqi:explanation")}
+              learnMoreURL={t(
+                "webapp:VaultStrategyExplainer:Benqi:learnMoreURL"
+              )}
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  Benqi
+                </HighlightedText>
+              )}
+            />
+          );
+        default:
+          return <></>;
+      }
+    },
+    [t]
+  );
+
+  const rendersYieldAssetTooltips = useCallback(
+    (_asset: Assets) => {
+      const collateralAssetUnit = getAssetDisplay(_asset);
+
+      switch (_asset) {
+        case "stETH":
+          return (
+            <TooltipExplanation
+              title={collateralAssetUnit}
+              explanation={t(
+                "webapp:VaultStrategyExplainer:stETH:explanation",
+                { collateralAssetUnit }
+              )}
+              learnMoreURL={t(
+                "webapp:VaultStrategyExplainer:stETH:learnMoreURL"
+              )}
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  {collateralAssetUnit}
+                </HighlightedText>
+              )}
+            />
+          );
+        case "sAVAX":
+          return (
+            <TooltipExplanation
+              title={collateralAssetUnit}
+              explanation={t("webapp:VaultStrategyExplainer:sAVAX:explanation")}
+              learnMoreURL={t(
+                "webapp:VaultStrategyExplainer:sAVAX:learnMoreURL"
+              )}
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  {collateralAssetUnit}
+                </HighlightedText>
+              )}
+            />
+          );
+        case "yvUSDC":
+          return (
+            <TooltipExplanation
+              title={collateralAssetUnit}
+              explanation={t(
+                "webapp:VaultStrategyExplainer:yvToken:explanation",
+                {
+                  collateralAssetUnit,
+                  assetUnit: getAssetDisplay(
+                    getYieldAssetUnderlying(_asset) || _asset
+                  ),
+                }
+              )}
+              learnMoreURL={t(
+                "webapp:VaultStrategyExplainer:yvToken:learnMoreURL"
+              )}
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  {collateralAssetUnit}
+                </HighlightedText>
+              )}
+            />
+          );
+        default:
+          return <></>;
+      }
+    },
+    [t]
+  );
+
   const vaultStrategyContent = useMemo(() => {
     const putVault = isPutVault(vault.vaultOption);
+    const collateralAsset = getDisplayAssets(vault.vaultOption);
 
     const basei18NKey = putVault
       ? "shared:ProductCopies:Put"
@@ -211,7 +325,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
         }
       : { asset: getAssetDisplay(asset) };
 
-    if (isYieldAsset(getDisplayAssets(vault.vaultOption))) {
+    if (isYieldAsset(collateralAsset)) {
       /**
        * Return stratey for vault collaterized by yield asset
        */
@@ -230,16 +344,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
                 </HighlightedText>
               )}
             />,
-            <TooltipExplanation
-              title="YVUSDC"
-              explanation="yvUSDC is the deposit token that represents a user's share of the USDC yVault."
-              learnMoreURL="https://docs.yearn.finance/getting-started/products/yvaults/vault-tokens"
-              renderContent={({ ref, ...triggerHandler }) => (
-                <HighlightedText ref={ref} {...triggerHandler}>
-                  yvUSDC
-                </HighlightedText>
-              )}
-            />,
+            rendersYieldAssetTooltips(collateralAsset),
           ]}
         />
       ) : (
@@ -257,26 +362,8 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
                 </HighlightedText>
               )}
             />,
-            <TooltipExplanation
-              title="LIDO"
-              explanation="Lido empowers stakers to put their staked assets to use. "
-              learnMoreURL="https://lido.fi"
-              renderContent={({ ref, ...triggerHandler }) => (
-                <HighlightedText ref={ref} {...triggerHandler}>
-                  Lido
-                </HighlightedText>
-              )}
-            />,
-            <TooltipExplanation
-              title="STETH"
-              explanation="stETH is the deposit token that represents a user's share of the their ETH on the Ethereum beacon chain."
-              learnMoreURL="https://lido.fi/ethereum"
-              renderContent={({ ref, ...triggerHandler }) => (
-                <HighlightedText ref={ref} {...triggerHandler}>
-                  stETH
-                </HighlightedText>
-              )}
-            />,
+            rendersYieldAssetProviderTooltips(collateralAsset),
+            rendersYieldAssetTooltips(collateralAsset),
           ]}
         />
       );
@@ -303,7 +390,13 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
         ]}
       />
     );
-  }, [asset, t, vault.vaultOption]);
+  }, [
+    asset,
+    rendersYieldAssetProviderTooltips,
+    rendersYieldAssetTooltips,
+    t,
+    vault.vaultOption,
+  ]);
 
   return (
     <Container>
