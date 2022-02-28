@@ -3,10 +3,7 @@ import styled from "styled-components";
 import { useTranslation, Trans } from "react-i18next";
 
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
-import {
-  productCopies,
-  vaultAudit,
-} from "shared/lib/components/Product/productCopies";
+import { vaultAudit } from "shared/lib/components/Product/productCopies";
 import {
   getAssets,
   getDisplayAssets,
@@ -120,6 +117,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
   const { t } = useTranslation();
   const asset = getAssets(vaultOption);
   const yieldInfos = useAssetsYield(asset);
+  const optionAsset = getOptionAssets(vaultOption);
 
   const renderProtocolLogo = useCallback((protocol: DefiScoreProtocol) => {
     switch (protocol) {
@@ -206,7 +204,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
     const i18nParams = putVault
       ? {
           asset: getAssetDisplay(asset),
-          optionAsset: getAssetDisplay(getOptionAssets(vault.vaultOption)),
+          optionAsset: getAssetDisplay(optionAsset),
           vault: t(`shared:ProductCopies:${vault.vaultOption}:title`),
         }
       : { asset: getAssetDisplay(asset) };
@@ -303,7 +301,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
         ]}
       />
     );
-  }, [asset, t, vault.vaultOption]);
+  }, [asset, optionAsset, t, vault.vaultOption]);
 
   return (
     <Container>
@@ -365,7 +363,45 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       <Paragraph>
         <ParagraphHeading>Risk</ParagraphHeading>
         <ParagraphText>
-          {productCopies[vaultOption].vaultRisk}
+          <Trans
+            i18nKey={`shared:ProductCopies:${
+              isPutVault(vaultOption) ? "Put" : "Call"
+            }:vaultRisk`}
+            values={{
+              optionAsset: getAssetDisplay(optionAsset),
+            }}
+            components={[
+              <TooltipExplanation
+                title={t("shared:TooltipExplanations:InTheMoney:title")}
+                explanation={t(
+                  "shared:TooltipExplanations:InTheMoney:explanation",
+                  {
+                    optionAsset: getAssetDisplay(optionAsset),
+                    optionType: isPutVault(vaultOption) ? "put" : "call",
+                    exercisedDirection: isPutVault(vaultOption)
+                      ? "above"
+                      : "below",
+                  }
+                )}
+                learnMoreURL={t(
+                  "shared:TooltipExplanations:InTheMoney:learnMoreURL"
+                )}
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HighlightedText ref={ref} {...triggerHandler}>
+                    {t(
+                      "shared:TooltipExplanations:InTheMoney:title"
+                    ).toLowerCase()}
+                  </HighlightedText>
+                )}
+              />,
+            ]}
+          />
+          {/* {t(
+            `shared:ProductCopies:${
+              isPutVault(vaultOption) ? "Put" : "Call"
+            }:vaultRisk`,
+            { optionAsset: getAssetDisplay(getOptionAssets(vaultOption)) }
+          )} */}
           <br />
           <br />
           {vaultAudit(vaultOption)}

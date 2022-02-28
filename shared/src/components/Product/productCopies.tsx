@@ -26,7 +26,6 @@ const Link = styled.a`
 interface ProductCopies {
   tags: string[];
   strategy: React.ReactNode;
-  vaultRisk: React.ReactNode;
 }
 
 export const vaultAudit = (vaultOption: VaultOptions) => {
@@ -85,25 +84,6 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         effectively compounding the yields for depositors over time.
       </>
     ),
-    vaultRisk: (
-      <>
-        The primary risk for running this covered call strategy is that the
-        vault may incur a weekly loss in the case where the call options sold by
-        the vault expire{" "}
-        <TooltipExplanation
-          title="IN-THE-MONEY"
-          explanation="An ETH call option is in-the-money (ITM) if the strike price is below the market price of ETH."
-          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlightedText ref={ref} {...triggerHandler}>
-              in-the-money
-            </HighlightedText>
-          )}
-        />{" "}
-        (meaning the price of ETH is above the strike price of the call options
-        minted by the vault).
-      </>
-    ),
   },
   "rBTC-THETA": {
     tags: ["COVERED CALL"],
@@ -123,25 +103,6 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         />{" "}
         strategy. The vault reinvests the yield earned back into the strategy,
         effectively compounding the yields for depositors over time.
-      </>
-    ),
-    vaultRisk: (
-      <>
-        The primary risk for running this covered call strategy is that the
-        vault may incur a weekly loss in the case where the call options sold by
-        the vault expire{" "}
-        <TooltipExplanation
-          title="IN-THE-MONEY"
-          explanation="An WBTC call option is in-the-money (ITM) if the strike price is below the market price of WBTC."
-          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlightedText ref={ref} {...triggerHandler}>
-              in-the-money
-            </HighlightedText>
-          )}
-        />{" "}
-        (meaning the price of WBTC is above the strike price of the call options
-        minted by the vault).
       </>
     ),
   },
@@ -164,26 +125,6 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         strategy, where the put options are collateralized by USDC. The vault
         reinvests the yield it earns back into the strategy, effectively
         compounding the yields for depositors over time.
-      </>
-    ),
-    vaultRisk: (
-      <>
-        The primary risk for running this put selling strategy is that the vault
-        may incur a weekly loss in the case where the put options sold by the
-        vault expire{" "}
-        <TooltipExplanation
-          title="IN-THE-MONEY"
-          explanation="An ETH put option is in-the-money (ITM) if the strike price is above the market price of ETH."
-          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlightedText ref={ref} {...triggerHandler}>
-              in-the-money
-            </HighlightedText>
-          )}
-        />{" "}
-        (meaning the price of ETH is below the strike price of the put options
-        minted by the vault). Such a situation is expected to happen less than
-        5% of the time.
       </>
     ),
   },
@@ -216,26 +157,6 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         />
         . The vault reinvests the yield it earns back into the strategy,
         effectively compounding the yields for depositors over time.
-      </>
-    ),
-    vaultRisk: (
-      <>
-        The primary risk for running this put selling strategy is that the vault
-        may incur a weekly loss in the case where the put options sold by the
-        vault expire{" "}
-        <TooltipExplanation
-          title="IN-THE-MONEY"
-          explanation="An ETH put option is in-the-money (ITM) if the strike price is above the market price of ETH."
-          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlightedText ref={ref} {...triggerHandler}>
-              in-the-money
-            </HighlightedText>
-          )}
-        />{" "}
-        (meaning the price of ETH is below the strike price of the put options
-        minted by the vault). Such a situation is expected to happen less than
-        5% of the time.
       </>
     ),
   },
@@ -283,25 +204,6 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         over time.
       </>
     ),
-    vaultRisk: (
-      <>
-        The primary risk for running this covered call strategy is that the
-        vault may incur a weekly loss in the case where the call options sold by
-        the vault expire{" "}
-        <TooltipExplanation
-          title="IN-THE-MONEY"
-          explanation="An ETH call option is in-the-money (ITM) if the strike price is below the market price of ETH."
-          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlightedText ref={ref} {...triggerHandler}>
-              in-the-money
-            </HighlightedText>
-          )}
-        />{" "}
-        (meaning the price of ETH is above the strike price of the call options
-        minted by the vault).
-      </>
-    ),
   },
   "rAAVE-THETA": {
     tags: ["COVERED CALL"],
@@ -323,25 +225,6 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         effectively compounding the yields for depositors over time.
       </>
     ),
-    vaultRisk: (
-      <>
-        The primary risk for running this covered call strategy is that the
-        vault may incur a weekly loss in the case where the call options sold by
-        the vault expire{" "}
-        <TooltipExplanation
-          title="IN-THE-MONEY"
-          explanation="An AAVE call option is in-the-money (ITM) if the strike price is below the market price of AAVE."
-          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlightedText ref={ref} {...triggerHandler}>
-              in-the-money
-            </HighlightedText>
-          )}
-        />{" "}
-        (meaning the price of AAVE is above the strike price of the call options
-        minted by the vault).
-      </>
-    ),
   },
   "rAVAX-THETA": {
     tags: ["COVERED CALL"],
@@ -361,25 +244,6 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         />{" "}
         strategy. The vault reinvests the yield earned back into the strategy,
         effectively compounding the yields for depositors over time.
-      </>
-    ),
-    vaultRisk: (
-      <>
-        The primary risk for running this covered call strategy is that the
-        vault may incur a weekly loss in the case where the call options sold by
-        the vault expire{" "}
-        <TooltipExplanation
-          title="IN-THE-MONEY"
-          explanation="An AVAX call option is in-the-money (ITM) if the strike price is below the market price of AVAX."
-          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlightedText ref={ref} {...triggerHandler}>
-              in-the-money
-            </HighlightedText>
-          )}
-        />{" "}
-        (meaning the price of AVAX is above the strike price of the call options
-        minted by the vault).
       </>
     ),
   },
@@ -427,25 +291,6 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         over time.
       </>
     ),
-    vaultRisk: (
-      <>
-        The primary risk for running this covered call strategy is that the
-        vault may incur a weekly loss in the case where the call options sold by
-        the vault expire{" "}
-        <TooltipExplanation
-          title="IN-THE-MONEY"
-          explanation="An sAVAX call option is in-the-money (ITM) if the strike price is below the market price of sAVAX."
-          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlightedText ref={ref} {...triggerHandler}>
-              in-the-money
-            </HighlightedText>
-          )}
-        />{" "}
-        (meaning the price of sAVAX is above the strike price of the call
-        options minted by the vault).
-      </>
-    ),
   },
   "rUSDC-AVAX-P-THETA": {
     tags: ["PUT-SELLING"],
@@ -466,49 +311,10 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         strategy, where the put options are collateralized by USDC.
       </>
     ),
-    vaultRisk: (
-      <>
-        The primary risk for running this put selling strategy is that the vault
-        may incur a weekly loss in the case where the put options sold by the
-        vault expire{" "}
-        <TooltipExplanation
-          title="IN-THE-MONEY"
-          explanation="An AVAX put option is in-the-money (ITM) if the strike price is above the market price of AVAX."
-          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlightedText ref={ref} {...triggerHandler}>
-              in-the-money
-            </HighlightedText>
-          )}
-        />{" "}
-        (meaning the price of AVAX is below the strike price of the put options
-        minted by the vault). Such a situation is expected to happen less than
-        5% of the time.
-      </>
-    ),
   },
   "rPERP-TSRY": {
     tags: ["COVERED CALL"],
     strategy: "",
-    vaultRisk: (
-      <>
-        The primary risk for running this covered call strategy is that the
-        vault may incur a weekly loss in the case where the call options sold by
-        the vault expire{" "}
-        <TooltipExplanation
-          title="IN-THE-MONEY"
-          explanation="An PERP call option is in-the-money (ITM) if the strike price is below the market price of PERP."
-          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlightedText ref={ref} {...triggerHandler}>
-              in-the-money
-            </HighlightedText>
-          )}
-        />{" "}
-        (meaning the price of PERP is above the strike price of the call options
-        minted by the vault).
-      </>
-    ),
   },
   "rSOL-THETA": {
     tags: ["COVERED CALL"],
@@ -528,25 +334,6 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         />{" "}
         strategy. The vault reinvests the yield earned back into the strategy,
         effectively compounding the yields for depositors over time.
-      </>
-    ),
-    vaultRisk: (
-      <>
-        The primary risk for running this covered call strategy is that the
-        vault may incur a weekly loss in the case where the call options sold by
-        the vault expire{" "}
-        <TooltipExplanation
-          title="IN-THE-MONEY"
-          explanation="A SOL call option is in-the-money (ITM) if the strike price is below the market price of SOL."
-          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlightedText ref={ref} {...triggerHandler}>
-              in-the-money
-            </HighlightedText>
-          )}
-        />{" "}
-        (meaning the price of SOL is above the strike price of the call options
-        minted by the vault).
       </>
     ),
   },
@@ -570,25 +357,6 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         effectively compounding the yields for depositors over time.
       </>
     ),
-    vaultRisk: (
-      <>
-        The primary risk for running this covered call strategy is that the
-        vault may incur a weekly loss in the case where the call options sold by
-        the vault expire{" "}
-        <TooltipExplanation
-          title="IN-THE-MONEY"
-          explanation="An WNEAR call option is in-the-money (ITM) if the strike price is below the market price of WNEAR."
-          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlightedText ref={ref} {...triggerHandler}>
-              in-the-money
-            </HighlightedText>
-          )}
-        />{" "}
-        (meaning the price of WNEAR is above the strike price of the call
-        options minted by the vault).
-      </>
-    ),
   },
   "rAURORA-THETA": {
     tags: ["COVERED CALL"],
@@ -607,25 +375,6 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
         />{" "}
         strategy. The vault reinvests the yield earned back into the strategy,
         effectively compounding the yields for depositors over time.
-      </>
-    ),
-    vaultRisk: (
-      <>
-        The primary risk for running this covered call strategy is that the
-        vault may incur a weekly loss in the case where the call options sold by
-        the vault expire{" "}
-        <TooltipExplanation
-          title="IN-THE-MONEY"
-          explanation="An AURORA call option is in-the-money (ITM) if the strike price is below the market price of AURORA."
-          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlightedText ref={ref} {...triggerHandler}>
-              in-the-money
-            </HighlightedText>
-          )}
-        />{" "}
-        (meaning the price of AURORA is above the strike price of the call
-        options minted by the vault).
       </>
     ),
   },
