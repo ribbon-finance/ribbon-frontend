@@ -158,26 +158,24 @@ const StakingFAB = () => {
   return active ? (
     <>
       <FABContainer>
-        <div className="d-flex align-items-center justify-content-center flex-grow-1">
-          <div className="d-flex flex-column ml-2">
-            <SecondaryText fontSize={10} lineHeight={16}>
-              <div className="d-flex">
-                {t("shared:TooltipExplanations:veRBN:fabTitle")}
-                {renderDataTooltip(
-                  t("shared:TooltipExplanations:veRBN:fabTitle"),
-                  t("shared:TooltipExplanations:veRBN:description")
-                )}
-              </div>
-            </SecondaryText>
-            <Title
-              fontSize={14}
-              lineHeight={16}
-              letterSpacing={1}
-              className="mt-1"
-            >
-              {fabInfo.veRBNAmount}
-            </Title>
-          </div>
+        <div className="d-flex flex-column align-items-center justify-content-center flex-grow-1">
+          <SecondaryText fontSize={10} lineHeight={16}>
+            <div className="d-flex">
+              {t("shared:TooltipExplanations:veRBN:fabTitle")}
+              {renderDataTooltip(
+                t("shared:TooltipExplanations:veRBN:fabTitle"),
+                t("shared:TooltipExplanations:veRBN:description")
+              )}
+            </div>
+          </SecondaryText>
+          <Title
+            fontSize={14}
+            lineHeight={16}
+            letterSpacing={1}
+            className="mt-1"
+          >
+            {fabInfo.veRBNAmount}
+          </Title>
         </div>
         <VerticalDivider />
         <div className="d-flex flex-column align-items-center justify-content-center flex-grow-1">
