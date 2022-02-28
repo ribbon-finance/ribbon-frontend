@@ -177,10 +177,10 @@ const StakingSummary = () => {
           ? chartDatapoints.dataset[chartDatapoints.currentVeRbnIndex].toFixed(
               4
             )
-          : "0.00"
-        : chartDatapoints.dataset[hoveredDatapointIndex].toFixed(2);
+          : "0.0000"
+        : chartDatapoints.dataset[hoveredDatapointIndex].toFixed(4);
     }
-    return "0.00";
+    return "0.0000";
   }, [chartDatapoints, hoveredDatapointIndex, active]);
 
   const displayLockedRbn = useMemo(() => {
