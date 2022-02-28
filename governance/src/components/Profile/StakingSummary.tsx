@@ -9,7 +9,7 @@ import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { formatBigNumber } from "shared/lib/utils/math";
 import moment from "moment";
-import { formatUnits } from "ethers/lib/utils";
+import { formatUnits, parseUnits } from "ethers/lib/utils";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import {
   Chart,
@@ -174,13 +174,23 @@ const StakingSummary = () => {
     } else if (chartDatapoints) {
       return hoveredDatapointIndex === undefined
         ? chartDatapoints.currentVeRbnIndex
-          ? chartDatapoints.dataset[chartDatapoints.currentVeRbnIndex].toFixed(
-              4
+          ? formatBigNumber(
+              parseUnits(
+                String(
+                  chartDatapoints.dataset[chartDatapoints.currentVeRbnIndex]
+                )
+              ),
+              18,
+              5
             )
-          : "0.0000"
-        : chartDatapoints.dataset[hoveredDatapointIndex].toFixed(4);
+          : "0.00"
+        : formatBigNumber(
+            parseUnits(String(chartDatapoints.dataset[hoveredDatapointIndex])),
+            18,
+            5
+          );
     }
-    return "0.0000";
+    return "0.00";
   }, [chartDatapoints, hoveredDatapointIndex, active]);
 
   const displayLockedRbn = useMemo(() => {
@@ -190,7 +200,7 @@ const StakingSummary = () => {
       return loadingText;
     }
     return rbnTokenAccount
-      ? formatBigNumber(rbnTokenAccount.lockedBalance)
+      ? formatBigNumber(rbnTokenAccount.lockedBalance, 18, 5)
       : "0.00";
   }, [active, rbnTokenAccount, rbnTokenAccountLoading, loadingText]);
 
@@ -201,7 +211,7 @@ const StakingSummary = () => {
       return loadingText;
     }
     return rbnTokenAccount
-      ? formatBigNumber(rbnTokenAccount.walletBalance)
+      ? formatBigNumber(rbnTokenAccount.walletBalance, 18, 5)
       : "0.00";
   }, [active, rbnTokenAccount, rbnTokenAccountLoading, loadingText]);
 

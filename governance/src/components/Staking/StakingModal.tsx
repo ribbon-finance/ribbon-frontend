@@ -343,7 +343,9 @@ const StakingModal = () => {
         let title = "Confirm Transaction";
         if (stakingModalState.pendingTransaction?.hash) {
           title =
-            stakingModalState.mode === "approve" ? "APPROVING RBN" : "LOCK RBN";
+            stakingModalState.mode === "approve"
+              ? "APPROVING RBN"
+              : "LOCKING RBN";
         }
 
         return (
