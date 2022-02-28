@@ -46,11 +46,11 @@
     "VaultLifecycle": "0x35a3e0F233587F6E515bcE363E0a5E42cD69EcC0",
     "VaultLifecycleSTETH": "0x2C5dD86B524DDe4C9b2D0F36D72bDEc7EA089BF1",
     "VaultLifecycleTreasury": "0xb8a80d9520D23fBfe6F822510E320CbB45Ff590D",
-    "RibbonYearnETHPutLiquidityGauge": "0xEef6288057f3F258BFC540D91462653DCA3B2Aac",
-    "RibbonAAVECoveredCallLiquidityGauge": "0x12Dc10F72a64ce07d2b3D41420f2276f8c560919",
-    "RibbonSTETHCoveredLiquidityGauge": "0xAF23AdB205169A5DF1dB7321BF1A8D7DeA2F8ABd",
-    "RibbonETHCoveredCallLiquidityGauge": "0x78b6dd0cD4697f9a62851323BeA8a3b3Bf213241",
-    "RibbonWBTCCoveredCallLiquidityGauge": "0xE53851c18E01Ca5F8537246F37Fb7De048619892"
+    "RibbonYearnETHPutLiquidityGauge": "0xa8A9699161f266f7E79080ca0b65210820BE8732",
+    "RibbonAAVECoveredCallLiquidityGauge": "0x98c371567b8A196518dcb4A4383387A2C7339382",
+    "RibbonSTETHCoveredLiquidityGauge": "0x4e079dCA26A4fE2586928c1319b20b1bf9f9be72",
+    "RibbonETHCoveredCallLiquidityGauge": "0x9038403C3F7C6B5Ca361C82448DAa48780D7C8Bd",
+    "RibbonWBTCCoveredCallLiquidityGauge": "0x8913EAb16a302dE3E498BbA39940e7A55c0B9325"
   },
   "fuji": {
     "ManualVolOracle": "0x8c58dDE5156DE3b3Fb93664DccBc1BeB1d5Ac923",
