@@ -9,13 +9,12 @@ import NotificationView from "./NotificationView";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
 import useNotifications from "shared/lib/hooks/useNotifications";
+import HeaderButtonContainer from "shared/lib/components/Common/HeaderButtonContainer";
 
 const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: ${theme.border.radius};
-  background: ${colors.background.two};
   height: 48px;
   width: 48px;
 
@@ -56,7 +55,7 @@ const NotificationButton = () => {
   });
 
   return (
-    <div className="d-flex position-relative" ref={desktopMenuRef}>
+    <HeaderButtonContainer containerRef={desktopMenuRef}>
       <ButtonContainer
         role="button"
         onClick={() => (show ? handleCloseMenu() : setShow(true))}
@@ -69,7 +68,7 @@ const NotificationButton = () => {
         ) && <UnreadIndicator />}
       </ButtonContainer>
       <NotificationView show={show} onClose={handleCloseMenu} />
-    </div>
+    </HeaderButtonContainer>
   );
 };
 

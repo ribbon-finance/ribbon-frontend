@@ -49,13 +49,8 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
       case "desktop":
         return `
         display: flex;
-        padding-right: 4px;
         z-index: 1000;
         position: relative;
-
-        @media (max-width: ${sizes.lg}px) {
-          padding-right: 40px;
-        }
 
         @media (max-width: ${sizes.md}px) {
           display: none;
@@ -66,6 +61,7 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
           display: none;
 
           @media (max-width: ${sizes.md}px) {
+            flex: 1;
             display: flex;
             align-items: unset;
             padding: 16px 16px 0 16px;

@@ -12,6 +12,7 @@ import AccountStatus from "../Wallet/AccountStatus";
 import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import DesktopSubmenu from "./DesktopSubmenu";
+import RibbonClaimButton from "./RibbonClaimButton";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
@@ -117,11 +118,18 @@ const SecondaryMobileNavItem = styled.div`
   }
 `;
 
+const HeaderButtonsContainer = styled.div`
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-gap: 4px;
+`;
+
 const MobileOnly = styled.div`
   display: none;
 
   @media (max-width: ${sizes.lg}px) {
     display: flex;
+    padding-left: 16px;
   }
 `;
 
@@ -194,8 +202,11 @@ const Header = () => {
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
-      <AccountStatus variant="desktop" />
-      <DesktopSubmenu />
+      <HeaderButtonsContainer>
+        <RibbonClaimButton />
+        <AccountStatus variant="desktop" />
+        <DesktopSubmenu />
+      </HeaderButtonsContainer>
 
       {/* MOBILE MENU */}
       <MobileOnly>

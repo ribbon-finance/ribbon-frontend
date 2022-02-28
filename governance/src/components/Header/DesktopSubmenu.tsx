@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import HeaderButtonContainer from "shared/lib/components/Common/HeaderButtonContainer";
 import sizes from "shared/lib/designSystem/sizes";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
@@ -26,8 +27,6 @@ const MenuButton = styled(BaseButton).attrs({
 })`
   width: 48px;
   height: 48px;
-  background-color: ${colors.background.three};
-  border-radius: 8px;
   padding: 0;
   padding-bottom: 12px;
   color: ${colors.primaryText};
@@ -75,10 +74,12 @@ const DesktopSubmenu = () => {
   }, []);
 
   return (
-    <Container ref={desktopSubmenuRef}>
-      <MenuButton role="button" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-        ...
-      </MenuButton>
+    <Container>
+      <HeaderButtonContainer containerRef={desktopSubmenuRef}>
+        <MenuButton role="button" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          ...
+        </MenuButton>
+      </HeaderButtonContainer>
       <MenuContainer isMenuOpen={isMenuOpen}>
         <MenuItem title="FAQ" onClick={openFAQ} />
         <MenuItem
