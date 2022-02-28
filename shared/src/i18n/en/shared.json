@@ -79,7 +79,8 @@
     "rToken": "{{rTokenSymbol}} is a token that represents {{depositAsset}} deposits in the {{vaultType}} ({{tokenTitle}}).",
     "InTheMoney": {
       "title": "IN-THE-MONEY",
-      "explanation": "An {{optionAsset}} {{optionType}} option is in-the-money (ITM) if the strike price is {{exercisedDirection}} the market price of {{optionAsset}}."
+      "explanation": "An {{optionAsset}} {{optionType}} option is in-the-money (ITM) if the strike price is {{exercisedDirection}} the market price of {{optionAsset}}.",
+      "learnMoreURL": "https://www.investopedia.com/terms/i/inthemoney.asp"
     }
   }
 }
