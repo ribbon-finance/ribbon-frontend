@@ -8,7 +8,8 @@
         "yieldAssetCollateral": "The vault earns yield on its {{asset}} deposits by running a weekly automated {{asset}} <0></0> strategy where it stakes its {{asset}} deposits in <1></1> and then uses its <2></2> to collateralize weekly out-of-money {{asset}} call options. The yield earned from both the covered call strategy and the {{asset}} staking rewards are reinvested weekly, effectively compounding the yields for depositors over time."
       },
       "explanation": "A covered call refers to a financial transaction in which the investor selling call options owns an equivalent amount of the underlying security.",
-      "learnMoreURL": "https://www.investopedia.com/terms/c/coveredcall.asp"
+      "learnMoreURL": "https://www.investopedia.com/terms/c/coveredcall.asp",
+      "vaultRisk": " The primary risk for running this covered call strategy is that the vault may incur a weekly loss in the case where the call options sold by the vault expire <0></0> (meaning the price of {{optionAsset}} is above the strike price of the call options minted by the vault)."
     },
     "Put": {
       "text": "put-selling",
@@ -18,7 +19,8 @@
         "yieldAssetCollateral": "{{vault}} earns yield on its {{asset}} deposits by running a weekly automated {{optionAsset}} <0></0> strategy, where the put options are collateralized by <1></1>. The vault reinvests the yield it earns back into the strategy, effectively compounding the yields for depositors over time."
       },
       "explanation": "A put option is a derivative instrument which gives the holder the right to sell an asset, at a specified price, by a specified date to the writer of the put.",
-      "learnMoreURL": "https://www.investopedia.com/terms/p/putoption.asp"
+      "learnMoreURL": "https://www.investopedia.com/terms/p/putoption.asp",
+      "vaultRisk": "The primary risk for running this put selling strategy is that the vault may incur a weekly loss in the case where the put options sold by the vault expire <0></0> (meaning the price of {{optionAsset}} is below the strike price of the put options minted by the vault). Such a situation is expected to happen less than 5% of the time."
     },
     "rAVAX-THETA": {
       "title": "T-AVAX-C",
@@ -74,6 +76,11 @@
     }
   },
   "TooltipExplanations": {
-    "rToken": "{{rTokenSymbol}} is a token that represents {{depositAsset}} deposits in the {{vaultType}} ({{tokenTitle}})."
+    "rToken": "{{rTokenSymbol}} is a token that represents {{depositAsset}} deposits in the {{vaultType}} ({{tokenTitle}}).",
+    "InTheMoney": {
+      "title": "IN-THE-MONEY",
+      "explanation": "An {{optionAsset}} {{optionType}} option is in-the-money (ITM) if the strike price is {{exercisedDirection}} the market price of {{optionAsset}}.",
+      "learnMoreURL": "https://www.investopedia.com/terms/i/inthemoney.asp"
+    }
   }
 }

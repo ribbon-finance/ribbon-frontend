@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { BigNumber } from "ethers";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
 import {
   BaseLink,
