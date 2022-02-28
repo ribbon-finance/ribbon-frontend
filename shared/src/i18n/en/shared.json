@@ -1,7 +1,18 @@
 {
-  "title": "Welcome to react using react-i18next and typescript 4.1",
-  "description": {
-    "part1": "This is an example using multiple namespaces.",
-    "part2": "😉"
+  "TooltipExplanations": {
+    "veRBN": {
+      "stakingSummaryTitle": "Your Voting Power",
+      "fabTitle": "Voting Power (veRBN)",
+      "description": "Your veRBN balance represents your voting power. The longer you lock your RBN the more veRBN you receive. Your voting power decreases linearly as the remaining time until the RBN lockup expiry decreases."
+    },
+    "lockedRBN": {
+      "title": "Locked RBN",
+      "description": "The amount of RBN locked up in the governance contract. The longer you lock up RBN the more veRBN (voting power) you receive."
+    },
+    "unlockedRBN": {
+      "stakingSummaryTitle": "Unlocked RBN Balance",
+      "fabTitle": "Unlocked RBN",
+      "description": "The amount of RBN that has not been locked in the governance contract."
+    }
   }
 }

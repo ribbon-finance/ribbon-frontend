@@ -17,7 +17,7 @@ const ProfilePage = () => {
       height - theme.header.height - theme.footer.desktop.height;
 
     if (width <= sizes.lg && active) {
-      sectionHeight -= theme.footer.mobile.height;
+      sectionHeight -= theme.governance.footer.mobile.height;
     } else if (active) {
       sectionHeight -= theme.governance.actionBar.height;
     }

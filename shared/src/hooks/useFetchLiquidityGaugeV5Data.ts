@@ -64,6 +64,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
       minterContract.rate(),
       gaugeControllerContract.time_total(),
     ]);
+    const [rate, periodEndTime] = await minterResponsePromises;
 
     const gaugeResponsesPromises = Promise.all(
       Object.keys(VaultLiquidityMiningMap.lg5).map(async (_vault) => {
@@ -189,9 +190,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
         };
       })
     );
-
     const guageResponses = await gaugeResponsesPromises;
-    const [rate, periodEndTime] = await minterResponsePromises;
 
     setMulticallCounter((counter) => {
       if (counter === currentCounter) {
