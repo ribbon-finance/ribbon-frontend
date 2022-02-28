@@ -5,12 +5,16 @@ import Col from "react-bootstrap/Col";
 
 import { Title, BaseText } from "../../designSystem";
 import { Container } from "react-bootstrap";
+import Paradigm from "../../img/Investors/paradigm.svg";
 import DCP from "../../img/Investors/dcp.svg";
-import Scalar from "../../img/Investors/scalar.svg";
 import Nascent from "../../img/Investors/nascent.svg";
 import Coinbase from "../../img/Investors/coinbase.svg";
-import FreeCo from "../../img/Investors/freeCo.svg";
+import Ethereal from "../../img/Investors/ethereal.svg";
+import Scalar from "../../img/Investors/scalar.svg";
+import Alliance from "../../img/Investors/alliance.svg";
+
 import colors from "shared/lib/designSystem/colors";
+import sizes from "shared/lib/designSystem/sizes";
 
 const MainContainer = styled(Container)`
   padding-top: 80px;
@@ -31,18 +35,79 @@ const InvestorCard = styled.div`
 
 const InvestorRow = styled(Row)`
   margin-top: 64px;
+
+  @media (min-width: ${sizes.xxl}px) {
+    > {
+      &:not(:nth-child(4n)) {
+        ${InvestorCard} {
+          margin-right: 16px;
+        }
+      }
+    }
+  }
+
+  @media (min-width: ${sizes.md}px) {
+    > {
+      &:not(:nth-child(3n)) {
+        ${InvestorCard} {
+          margin-right: 16px;
+        }
+      }
+    }
+  }
 `;
 
 const InvestorLogo = styled.img``;
 
 const InvestorText = styled(BaseText)`
-  font-weight: 600;
+  font-family: VCR;
+  text-transform: uppercase;
   font-size: 16px;
   line-height: 24px;
   text-align: center;
-  text-transform: capitalize;
   color: ${colors.primaryText};
 `;
+
+interface InvestorAsset {
+  src: string;
+  alt?: string;
+  isText?: boolean;
+}
+
+const investorList: Array<InvestorAsset> = [
+  {
+    src: Paradigm,
+    alt: "paradigm",
+  },
+  {
+    src: DCP,
+    alt: "dcp",
+  },
+  {
+    src: Ethereal,
+    alt: "ethereal",
+  },
+  {
+    src: Coinbase,
+    alt: "coinbase",
+  },
+  {
+    src: Nascent,
+    alt: "nascent",
+  },
+  {
+    src: "Robot Ventures",
+    isText: true,
+  },
+  {
+    src: Scalar,
+    alt: "scalar",
+  },
+  {
+    src: Alliance,
+    alt: "alliance",
+  },
+];
 
 const Investors = () => {
   return (
@@ -53,47 +118,22 @@ const Investors = () => {
         </Col>
       </Row>
       <Container>
-        <InvestorRow>
-          <Col xl={3} md={4} sm={12} xs={12}>
-            <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorLogo src={DCP} />
-            </InvestorCard>
-          </Col>
-          <Col xl={3} md={4} sm={12} xs={12}>
-            <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorLogo src={Nascent} />
-            </InvestorCard>
-          </Col>
-          <Col xl={3} md={4} sm={12} xs={12}>
-            <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorLogo src={Coinbase} />
-            </InvestorCard>
-          </Col>
-          <Col xl={3} md={4} sm={12} xs={12}>
-            <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorLogo src={Scalar} />
-            </InvestorCard>
-          </Col>
-          <Col xl={3} md={4} sm={12} xs={12}>
-            <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorLogo src={FreeCo} />
-            </InvestorCard>
-          </Col>
-          <Col xl={3} md={4} sm={12} xs={12}>
-            <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorText>Joseph Lubin</InvestorText>
-            </InvestorCard>
-          </Col>
-          <Col xl={3} md={4} sm={12} xs={12}>
-            <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorText>Defi Alliance</InvestorText>
-            </InvestorCard>
-          </Col>
-          <Col xl={3} md={4} sm={12} xs={12}>
-            <InvestorCard className="d-flex justify-content-center align-items-center">
-              <InvestorText>Kain Warwick</InvestorText>
-            </InvestorCard>
-          </Col>
+        <InvestorRow noGutters>
+          {investorList.map((investor) => {
+            return investor.isText ? (
+              <Col xl={3} md={4} sm={12} xs={12}>
+                <InvestorCard className="d-flex justify-content-center align-items-center">
+                  <InvestorText>{investor.src}</InvestorText>
+                </InvestorCard>
+              </Col>
+            ) : (
+              <Col xl={3} md={4} sm={12} xs={12}>
+                <InvestorCard className="d-flex justify-content-center align-items-center">
+                  <InvestorLogo src={investor.src} alt={investor.alt} />
+                </InvestorCard>
+              </Col>
+            );
+          })}
         </InvestorRow>
       </Container>
     </MainContainer>
