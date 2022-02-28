@@ -175,7 +175,7 @@ const StakingSummary = () => {
       return hoveredDatapointIndex === undefined
         ? chartDatapoints.currentVeRbnIndex
           ? chartDatapoints.dataset[chartDatapoints.currentVeRbnIndex].toFixed(
-              2
+              4
             )
           : "0.00"
         : chartDatapoints.dataset[hoveredDatapointIndex].toFixed(2);
