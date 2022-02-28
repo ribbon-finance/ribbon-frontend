@@ -111,6 +111,7 @@ const DesktopFooter = () => {
     <>
       <FooterContainer>
         <LeftContainer>
+          {renderLinkItem("GOVERNANCE", "https://vote.ribbon.finance", true)}
           {renderLinkItem("FAQS", "/faq")}
           {renderLinkItem("BLOG", "https://medium.com/@ribbonfinance", true)}
           {renderLinkItem("TERMS", "/terms")}
@@ -134,6 +135,7 @@ const DesktopFooter = () => {
 
       <MobileFooter>
         <MobileFooterRow>
+          {renderLinkItem("GOVERNANCE", "https://vote.ribbon.finance", true)}
           {renderLinkItem("FAQS", "/faq")}
           {renderLinkItem("BLOG", "https://medium.com/@ribbonfinance", true)}
           {renderLinkItem("TERMS", "/terms")}
