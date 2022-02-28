@@ -21,6 +21,7 @@ import { getV2VaultContract } from "./useV2VaultContract";
 import useLiquidityTokenMinter from "./useLiquidityTokenMinter";
 import useLiquidityGaugeController from "./useLiquidityGaugeController";
 import { constants } from "ethers";
+import { calculateClaimableRbn } from "../utils/governanceMath";
 
 const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   const { active, chainId, account: web3Account, library } = useWeb3React();
@@ -83,6 +84,8 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
          * 1. Pool size
          * 2. Relative weight
          */
+        const period = await lg5Contract.period();
+        const isKilled = await lg5Contract.is_killed();
         const unconnectedPromises: Promise<BigNumber>[] = [
           lg5Contract.totalSupply(),
           lg5Contract.working_balances(account ?? constants.AddressZero),
@@ -90,6 +93,12 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
           gaugeControllerContract["gauge_relative_weight(address)"](
             VaultLiquidityMiningMap.lg5[vault]!
           ),
+
+          // To calculate claimable rbn
+          lg5Contract.period_timestamp(period),
+          lg5Contract.integrate_inv_supply(period),
+          lg5Contract.future_epoch_time(),
+          lg5Contract.inflation_rate(),
         ];
 
         /**
@@ -108,9 +117,13 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
                   account!,
                   VaultLiquidityMiningMap.lg5[vault]!
                 ),
+
+                // To calculate claimable rbn
+                lg5Contract.integrate_inv_supply_of(account!),
               ]
             : [
                 // Default value when not connected
+                Promise.resolve(BigNumber.from(0)),
                 Promise.resolve(BigNumber.from(0)),
                 Promise.resolve(BigNumber.from(0)),
                 Promise.resolve(BigNumber.from(0)),
@@ -124,14 +137,44 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
           workingBalances,
           workingSupply,
           relativeWeight,
+
+          // Calculate claimable rbn
+          periodTimestamp,
+          integrateInvSupply,
+          futureEpochTime,
+          inflationRate,
+
           currentStake,
           unstakedBalance,
           integrateFraction,
           claimedRbn,
+
+          // Also to calculate claimable rbn
+          integrateInvSupplyOf,
         ] = await Promise.all(
           // Default to 0 when error
           promises.map((p) => p.catch((e) => BigNumber.from(0)))
         );
+
+        const vaultAddress = VaultLiquidityMiningMap.lg5[vault];
+        const claimableRbn = vaultAddress
+          ? await calculateClaimableRbn({
+              currentDate: new Date(),
+              periodTimestamp: periodTimestamp.toNumber(),
+              integrateInvSupply,
+              integrateFraction,
+              integrateInvSupplyOf,
+              futureEpochTime: futureEpochTime.toNumber(),
+              inflation_rate: inflationRate,
+              minterRate: rate,
+              isKilled,
+              workingSupply,
+              workingBalance: workingBalances,
+              mintedRBN: claimedRbn,
+              gaugeContractAddress: vaultAddress,
+              gaugeControllerContract,
+            })
+          : BigNumber.from(0);
 
         return {
           vault,
@@ -141,8 +184,8 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
           relativeWeight,
           currentStake,
           unstakedBalance,
-          integrateFraction,
           claimedRbn,
+          claimableRbn,
         };
       })
     );
@@ -155,21 +198,23 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
         setData((prev) => ({
           responses: Object.fromEntries(
             guageResponses.map(
-              ({ vault, relativeWeight, integrateFraction, ...response }) => [
-                vault,
-                {
-                  ...prev.responses[vault],
-                  claimableRbn: integrateFraction.sub(response.claimedRbn),
-                  poolRewardForDuration: rate
-                    // Rate is RBN/second. There is 86400 is seconds in a day. Each period is 1 week.
-                    .mul(86400 * 7)
-                    .mul(relativeWeight)
-                    // Relative weight is in percentage, but normalized to 1e18, so we need to divide it
-                    .div(BigNumber.from(10).pow(18)),
-                  periodEndTime: parseInt(periodEndTime.toString()),
-                  ...response,
-                },
-              ]
+              ({ vault, relativeWeight, claimableRbn, ...response }) => {
+                return [
+                  vault,
+                  {
+                    ...prev.responses[vault],
+                    claimableRbn,
+                    poolRewardForDuration: rate
+                      // Rate is RBN/second. There is 86400 is seconds in a day. Each period is 1 week.
+                      .mul(86400 * 7)
+                      .mul(relativeWeight)
+                      // Relative weight is in percentage, but normalized to 1e18, so we need to divide it
+                      .div(BigNumber.from(10).pow(18)),
+                    periodEndTime: parseInt(periodEndTime.toString()),
+                    ...response,
+                  },
+                ];
+              }
             )
           ) as LiquidityGaugeV5PoolResponses,
           loading: false,
