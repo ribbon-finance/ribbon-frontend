@@ -21,8 +21,7 @@ export type AssetsPriceData = {
 
 export type AssetsTickerData = {
   [asset in Assets]: {
-    name: string;
-    logo: string;
+    asset: string;
     price: number;
     dailyChange: number;
   };
@@ -70,8 +69,7 @@ export const defaultAssetTickerData = Object.fromEntries(
   AssetsList.map((asset) => [
     asset,
     {
-      name: asset,
-      logo: asset,
+      asset,
       price: 0,
       dailyChange: 0,
     },

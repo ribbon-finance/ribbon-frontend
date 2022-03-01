@@ -73,8 +73,7 @@ export const useTickerData = (
         responses.map((response) => [
           response.asset,
           {
-            name: response.asset,
-            logo: response.asset,
+            asset: response.asset,
             price: response.data.usd,
             dailyChange: response.data.dailyChange,
           },
