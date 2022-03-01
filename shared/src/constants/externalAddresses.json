@@ -131,7 +131,7 @@
 		"oTokenFactory": "0x25bC1cD298512885F0e452833198BCBb149f66a5",
 		"gammaController": "0x9e3b94819aaF6de606C4Aa844E3215725b997064",
 		"gammaMarginPool": "0xCCF6629aEaB734E621Cc59EBb0297196774fDb9D",
-		"sAvaxDepositHelper": "0xADCADfA827B3fFA096c1860820608a39e777f176"
+		"sAvaxDepositHelper": "0x084a82fe209f014b3cb6D5986B2C65B584168303"
 	},
 	"fuji": {
 		"feeds": {
@@ -146,7 +146,7 @@
 		"oTokenFactory": "0x3aB375D57EbB733E735a17eDFd3F973f6BC5de21",
 		"gammaController": "0x836E115f0580c8350228E073949bf269F7BC4B62",
 		"gammaMarginPool": "0x9EBC603bBf8309E1715a1678B5C13A4aE6c26452",
-		"sAvaxDepositHelper": "0x3EC8Ac694134389eB851037Dcb05CBAA1a88d7Ce"
+		"sAvaxDepositHelper": "0x13F20ed881f7ED97C5EA34B33C9305D7f7D00fd3"
 	},
 	"aurora": {
 		"feeds": {
