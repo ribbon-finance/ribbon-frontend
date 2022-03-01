@@ -36,7 +36,7 @@ const InvestorCard = styled.div`
 const InvestorRow = styled(Row)`
   margin-top: 64px;
 
-  @media (min-width: ${sizes.xxl}px) {
+  @media (min-width: ${sizes.xl}px) {
     > {
       &:not(:nth-child(4n)) {
         ${InvestorCard} {
