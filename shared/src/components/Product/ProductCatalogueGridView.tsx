@@ -50,11 +50,15 @@ const FilterContainer = styled.div`
 
 const YieldCardsContainer = styled.ul`
   display: flex;
-  width: calc(320px * 3);
+  width: calc(320px * 4);
   flex-wrap: wrap;
   justify-content: flex-start;
   margin-bottom: 40px;
   padding-inline-start: 0;
+
+  @media (max-width: ${sizes.xl}px) {
+    width: calc(320px * 3);
+  }
 
   @media (max-width: ${sizes.lg}px) {
     width: calc(320px * 2);
