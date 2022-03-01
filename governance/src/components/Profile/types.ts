@@ -1,9 +1,9 @@
 export const profileActivityFilters = [
   "all activity",
-  "stake",
-  "unstake",
-  "increase stake duration",
-  "increase stake amount",
+  "lock",
+  "unlock",
+  "increase lock duration",
+  "increase lock amount",
   "gauge boosting",
 ] as const;
 export const profileActivitySortByList = [

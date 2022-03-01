@@ -10,7 +10,7 @@ import {
 import SegmentPagination from "shared/lib/components/Common/SegmentPagination";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import colors from "shared/lib/designSystem/colors";
-import { VotingPowerIcon } from "shared/lib/assets/icons/icons";
+import { VotingPowerIcon, VeRBNIcon } from "shared/lib/assets/icons/icons";
 import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContainer";
 import { ThemedLogo } from "shared/lib/assets/icons/logo";
 import theme from "shared/lib/designSystem/theme";
@@ -48,15 +48,7 @@ const StakingModalExplainer: React.FC<StakingModalExplainerProps> = ({
   const renderLogo = useCallback((_page: number) => {
     switch (_page) {
       case 1:
-        return (
-          <AssetCircleContainer
-            size={104}
-            color={colors.red}
-            circleFractionDenominator={3.5}
-          >
-            <ThemedLogo theme={colors.red} />
-          </AssetCircleContainer>
-        );
+        return <VeRBNIcon />;
       case 2:
         return <VotingPowerIcon />;
     }
@@ -82,7 +74,11 @@ const StakingModalExplainer: React.FC<StakingModalExplainerProps> = ({
             </DescriptionHighlight>{" "}
             veRBN allows you to earn boosted liquidity mining rewards, vote on
             vault guage incentives, participate in governance and earn protocol
-            fees.
+            fees.{" "}
+            <DescriptionHighlight>
+              Unlocking RBN early results in a penalty
+            </DescriptionHighlight>{" "}
+            of up to 75% of your RBN.
           </>
         );
       case 2:

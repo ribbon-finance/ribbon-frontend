@@ -1,4 +1,4 @@
-import { BigNumber } from "@ethersproject/bignumber";
+import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { ethers } from "ethers";
 import currency from "currency.js";
 import { isBigNumberish } from "@ethersproject/bignumber/lib/bignumber";
@@ -58,7 +58,7 @@ export const formatAmount = (
 };
 
 export const formatBigNumber = (
-  num: BigNumber,
+  num: BigNumberish,
   decimals: number = 18,
   significantDecimals?: number
 ) => {

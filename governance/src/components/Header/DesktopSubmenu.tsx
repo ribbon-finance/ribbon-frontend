@@ -67,10 +67,12 @@ const DesktopSubmenu = () => {
   });
 
   const openFAQ = useCallback(() => {
+    setIsMenuOpen(false);
     history.push("/faqs");
   }, [history]);
 
   const openLink = useCallback((link) => {
+    setIsMenuOpen(false);
     window.open(link);
   }, []);
 

@@ -95,12 +95,16 @@ const ProfileActivity = () => {
       switch (activityFilter) {
         case "all activity":
           return true;
-        case "increase stake duration":
+        case "increase lock duration":
           return transaction.type === "increaseStakeDuration";
-        case "increase stake amount":
+        case "increase lock amount":
           return transaction.type === "increaseStakeAmount";
         case "gauge boosting":
           return transaction.type === "gaugeBoosting";
+        case "lock":
+          return transaction.type === "stake";
+        case "unlock":
+          return transaction.type === "unstake";
         default:
           return transaction.type === activityFilter;
       }

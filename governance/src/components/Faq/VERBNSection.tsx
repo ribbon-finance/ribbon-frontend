@@ -62,6 +62,19 @@ const VERBNSection = () => {
               </FAQBody>
             ),
           },
+          {
+            header: "Can I unlock my RBN early?",
+            body: (
+              <FAQBody>
+                You can unlock your RBN early, however, you will have to pay a
+                penalty. The penalty is calculated by taking the minimum between
+                0.75 and (time left until unlock) / 2 years. For example, if you
+                have 1 year left on your lock, the penalty is min(.75, 1/2) =
+                0.5. So the penalty is 50%. All penalties will be redistributed
+                to the remaining lockers pro-rata.
+              </FAQBody>
+            ),
+          },
         ]}
       />
     </Section>
