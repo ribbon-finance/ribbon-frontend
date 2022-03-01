@@ -27,8 +27,6 @@ const Body = styled.div`
   background-color: ${colors.background.one};
 `;
 
-const MainContent = styled.div``;
-
 function App() {
   return (
     <ChainContextProvider>
@@ -45,11 +43,9 @@ function App() {
                       <Switch>
                         <Route path="/" exact>
                           <Hero />
-                          <MainContent>
-                            <ProductCarousel />
-                            <Mission />
-                            <Investors />
-                          </MainContent>
+                          <ProductCarousel />
+                          <Mission />
+                          <Investors />
                         </Route>
 
                         <Route path="/policy">

@@ -6,7 +6,6 @@ import { Container } from "react-bootstrap";
 
 import { Title, BaseText } from "../../designSystem";
 import sizes from "../../designSystem/sizes";
-import theme from "../../designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
 
 const MainContainer = styled(Container)`
@@ -20,23 +19,8 @@ const MissionTitleRow = styled(Row)`
 `;
 
 const MissionSubtitleRow = styled(Row)`
-  margin-top: 40px;
+  margin-top: 24px;
   justify-content: center;
-`;
-
-const MissionPill = styled.div`
-  padding: 8px 16px;
-  border-radius: ${theme.border.radius};
-  background: ${colors.products.yield}29;
-`;
-
-const MissionText = styled(BaseText)`
-  font-family: VCR;
-  font-size: 12px;
-  line-height: 16px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: ${colors.products.yield};
 `;
 
 const MissionTitle = styled(Title)`
@@ -59,17 +43,42 @@ const MissionSubtitle = styled(BaseText)`
   text-align: center;
 `;
 
+const MissionFactor = styled(Row)`
+  font-size: 16px;
+  color: ${colors.text};
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(4px);
+  border-radius: 6px;
+  padding: 18px 0px;
+  text-align: center;
+
+  > div {
+    padding: 0px 24px;
+
+    &:not(:last-child) {
+      border-right: 2px solid ${colors.background.three};
+    }
+  }
+`;
+
+const FactorTitle = styled.div`
+  font-size: 12px;
+  margin-bottom: 4px;
+`;
+
+const FactorAmount = styled.div`
+  font-family: VCR;
+  color: ${colors.primaryText};
+`;
+
 const Mission = () => {
   return (
     <MainContainer>
-      <div className="d-flex justify-content-center w-100">
-        <MissionPill>
-          <MissionText>Our Mission</MissionText>
-        </MissionPill>
-      </div>
       <MissionTitleRow fluid>
-        <Col xs={11} lg={10} xl={6} className="d-flex">
-          <MissionTitle>Bringing Structured Products to DeFi</MissionTitle>
+        <Col xs={12} lg={10} xl={8} className="d-flex">
+          <MissionTitle>
+            Multichain Decentralised Structured Products
+          </MissionTitle>
         </Col>
       </MissionTitleRow>
 
@@ -82,6 +91,25 @@ const Mission = () => {
             developers to create arbitrary structured products through combining
             various DeFi derivatives.
           </MissionSubtitle>
+        </Col>
+      </MissionSubtitleRow>
+
+      <MissionSubtitleRow>
+        <Col xs={12} md={6}>
+          <MissionFactor>
+            <Col xs={12} md={4}>
+              <FactorTitle>Total Value Locked</FactorTitle>
+              <FactorAmount>$200M</FactorAmount>
+            </Col>
+            <Col xs={12} md={4}>
+              <FactorTitle>Notional Options Sold</FactorTitle>
+              <FactorAmount>$3.2B</FactorAmount>
+            </Col>
+            <Col xs={12} md={4}>
+              <FactorTitle>Protocol Revenue</FactorTitle>
+              <FactorAmount>$100.5K</FactorAmount>
+            </Col>
+          </MissionFactor>
         </Col>
       </MissionSubtitleRow>
     </MainContainer>

@@ -1,29 +1,18 @@
-import React from "react";
+import React, { useEffect, useContext } from "react";
 import styled from "styled-components";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import { Row, Col } from "react-bootstrap";
 import { Title, PrimaryText, Button } from "../../designSystem";
 import { Container } from "react-bootstrap";
+import { AnimatePresence, motion } from "framer";
+import Marquee from "react-fast-marquee/dist";
 
 import sizes from "../../designSystem/sizes";
 import colors from "shared/lib/designSystem/colors";
-import theme from "../../designSystem/theme";
-
-const ColorColumn = styled(Col)<{
-  activeColor: string;
-}>`
-  height: 640px;
-  transition: background-color 200ms ease-out, box-shadow 200ms ease-out;
-  border-radius: 0px 0px ${theme.border.radius} ${theme.border.radius};
-
-  &:hover {
-    background-color: ${(p) => p.activeColor};
-    box-shadow: 8px 16px 120px ${(p) => p.activeColor};
-  }
-`;
+import { ExternalAPIDataContext } from "shared/lib/hooks/externalAPIDataContext";
 
 const MainContainer = styled(Container)`
   height: 640px;
+  position: relative;
 
   @media (max-width: ${sizes.md}px) {
     height: 540px;
@@ -40,22 +29,6 @@ const ButtonContainer = styled.div`
 
 const SubTitle = styled(PrimaryText)`
   color: ${colors.primaryText};
-`;
-
-const BackgroundContainer = styled(Row)`
-  position: absolute;
-  top: 0px;
-  bottom: 0px;
-  right: 0px;
-  left: 0px;
-
-  @media (max-width: ${sizes.md}px) {
-    display: none;
-  }
-`;
-
-const HeroContainer = styled(Container)`
-  position: relative;
 `;
 
 const TextContainer = styled(Row)`
@@ -80,16 +53,7 @@ const TitleContainerMobile = styled.div`
 
 const TitleSmall = styled(Title)`
   font-size: 48px;
-`;
-
-const TitleAlt = styled(Title)`
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 2px white;
-`;
-
-const TitleAltSmall = styled(TitleSmall)`
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 2px white;
+  margin: auto;
 `;
 
 const CTAButton = styled(Button)`
@@ -99,36 +63,38 @@ const CTAButton = styled(Button)`
   }
 `;
 
+const Ticker = styled.div`
+  width: 100%;
+  height: fit-content;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: ${colors.background.three};
+
+  p {
+    margin: auto 0;
+  }
+`;
+
 const Hero = () => {
   return (
     <MainContainer fluid>
-      <HeroContainer fluid style={{ position: "relative" }}>
-        <BackgroundContainer>
-          <ColorColumn activeColor={colors.red} />
-          <ColorColumn activeColor={colors.products.volatility} />
-          <ColorColumn activeColor={colors.green} />
-          <ColorColumn activeColor={colors.products.capitalAccumulation} />
-        </BackgroundContainer>
-      </HeroContainer>
-
+      <PriceTicker />
       <TextContainer fluid>
         <Col>
           <TitleContainer>
-            <Title>
-              Sustainable <TitleAlt>Alpha</TitleAlt> <br></br>For Everyone
-            </Title>
+            <Title>Ribbon Finance</Title>
           </TitleContainer>
 
           <TitleContainerMobile>
-            <TitleSmall>
-              Sustainable <TitleAltSmall>Alpha</TitleAltSmall> For Everyone
-            </TitleSmall>
+            <TitleSmall>Ribbon Finance</TitleSmall>
           </TitleContainerMobile>
 
           <SubtitleContainer>
             <SubTitle>
-              Earn yield on your cryptoassets with DeFi's first structured
-              products protocol.
+              Earn <strong>Sustainable Yield</strong> through
+              <br />
+              Decentralized Options Vaults
             </SubTitle>
           </SubtitleContainer>
           <ButtonContainer>
@@ -146,4 +112,39 @@ const Hero = () => {
   );
 };
 
+const PriceTicker = () => {
+  const { tickerData } = useContext(ExternalAPIDataContext);
+
+  useEffect(() => {
+    console.log(tickerData);
+  }, [tickerData]);
+
+  return (
+    <Ticker>
+      <AnimatePresence exitBeforeEnter>
+        <motion.div
+          className="d-flex justify-content-end mt-auto mb-auto"
+          transition={{
+            duration: 0.25,
+            type: "keyframes",
+            ease: "easeOut",
+          }}
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+        >
+          <Marquee gradient={false} speed={75}>
+            <p>hi</p>
+          </Marquee>
+        </motion.div>
+      </AnimatePresence>
+    </Ticker>
+  );
+};
 export default Hero;
