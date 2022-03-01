@@ -129,7 +129,7 @@ const AllVaultOptions = [
 
 export type VaultOptions = typeof AllVaultOptions[number];
 const ProdExcludeVault: VaultOptions[] = [
-  // "rsAVAX-THETA",
+  "rsAVAX-THETA",
   "rNEAR-THETA",
   "rAURORA-THETA",
   "rUSDC-AVAX-P-THETA",
