@@ -102,13 +102,13 @@ export type VaultVersion = typeof VaultVersionList[number];
 export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">;
 
 export const EVMVaultList = [
+  "rsAVAX-THETA",
+  "rUSDC-AVAX-P-THETA",
   "rETH-THETA",
   "ryvUSDC-ETH-P-THETA",
   "rstETH-THETA",
   "rBTC-THETA",
   "rAVAX-THETA",
-  "rsAVAX-THETA",
-  "rUSDC-AVAX-P-THETA",
   "rAAVE-THETA",
   "rAURORA-THETA",
   "rNEAR-THETA",
@@ -128,12 +128,7 @@ const AllVaultOptions = [
 ];
 
 export type VaultOptions = typeof AllVaultOptions[number];
-const ProdExcludeVault: VaultOptions[] = [
-  "rsAVAX-THETA",
-  "rNEAR-THETA",
-  "rAURORA-THETA",
-  "rUSDC-AVAX-P-THETA",
-];
+const ProdExcludeVault: VaultOptions[] = ["rNEAR-THETA", "rAURORA-THETA"];
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
   "ryvUSDC-ETH-P-THETA",
