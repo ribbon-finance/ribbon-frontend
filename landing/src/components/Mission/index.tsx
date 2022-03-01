@@ -8,11 +8,6 @@ import { Title, BaseText } from "../../designSystem";
 import sizes from "../../designSystem/sizes";
 import colors from "shared/lib/designSystem/colors";
 
-const MainContainer = styled(Container)`
-  padding-top: 80px;
-  padding-bottom: 80px;
-`;
-
 const MissionTitleRow = styled(Row)`
   margin-top: 40px;
   justify-content: center;
@@ -73,7 +68,7 @@ const FactorAmount = styled.div`
 
 const Mission = () => {
   return (
-    <MainContainer>
+    <Container>
       <MissionTitleRow fluid>
         <Col xs={12} lg={10} xl={8} className="d-flex">
           <MissionTitle>
@@ -112,7 +107,7 @@ const Mission = () => {
           </MissionFactor>
         </Col>
       </MissionSubtitleRow>
-    </MainContainer>
+    </Container>
   );
 };
 

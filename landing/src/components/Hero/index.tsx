@@ -234,6 +234,7 @@ const PriceTicker = () => {
       <AnimatePresence exitBeforeEnter>
         <motion.div
           transition={{
+            delay: 1,
             duration: 0.25,
             type: "keyframes",
             ease: "easeOut",
@@ -248,7 +249,7 @@ const PriceTicker = () => {
             opacity: 0,
           }}
         >
-          <Marquee gradient={false} speed={75}>
+          <Marquee gradient={false} speed={75} delay={1}>
             {Object.values(tickerData.data).map((token) => {
               const Logo = getAssetLogo(token.asset as Assets);
               return (

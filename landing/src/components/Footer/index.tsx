@@ -7,6 +7,8 @@ import colors from "shared/lib/designSystem/colors";
 
 const FooterContainer = styled(Row)`
   width: 100%;
+  padding-top: 80px;
+  padding-bottom: 160px;
 `;
 
 const LinkItem = styled.div`

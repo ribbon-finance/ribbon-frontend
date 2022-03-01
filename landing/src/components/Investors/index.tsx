@@ -16,11 +16,6 @@ import Alliance from "../../img/Investors/alliance.svg";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
 
-const MainContainer = styled(Container)`
-  padding-top: 80px;
-  padding-bottom: 160px;
-`;
-
 const InvestorsTitle = styled(Title)`
   font-size: 24px;
   line-height: 32px;
@@ -111,8 +106,8 @@ const investorList: Array<InvestorAsset> = [
 
 const Investors = () => {
   return (
-    <MainContainer fluid>
-      <Row className="d-flex justify-content-center">
+    <Container fluid>
+      <Row className="w-100 mx-0">
         <Col className="d-flex justify-content-center">
           <InvestorsTitle>Our Investors</InvestorsTitle>
         </Col>
@@ -136,7 +131,7 @@ const Investors = () => {
           })}
         </InvestorRow>
       </Container>
-    </MainContainer>
+    </Container>
   );
 };
 
