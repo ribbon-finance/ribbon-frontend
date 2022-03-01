@@ -95,5 +95,6 @@
       "stakingSummaryTitle": "Unlocked RBN Balance",
       "fabTitle": "Unlocked RBN",
       "description": "The amount of RBN that has not been locked in the governance contract."
+    }
   }
 }
