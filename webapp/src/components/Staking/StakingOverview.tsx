@@ -177,28 +177,38 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
   }, [loadingText, tokenData, tokenLoading]);
 
   const countdownText = useMemo(() => {
-    if (lg5DataLoading) {
-      return loadingText;
+    switch (lmVersion) {
+      case "lm":
+        // LM already ended since
+        // const endStakeReward = moment
+        // .utc("2021-07-17")
+        // .set("hour", 10)
+        // .set("minute", 30);
+        return "Program Ended";
+      case "lg5":
+        if (lg5DataLoading) {
+          return loadingText;
+        }
+
+        if (!lg5Data) {
+          return "---";
+        }
+
+        const endStakeReward = moment.unix(lg5Data.periodEndTime);
+
+        if (endStakeReward.diff(moment()) <= 0) {
+          return "Program Ended";
+        }
+
+        // Time till next stake reward date
+        const startTime = moment.duration(
+          endStakeReward.diff(moment()),
+          "milliseconds"
+        );
+
+        return `${startTime.days()}D ${startTime.hours()}H ${startTime.minutes()}M`;
     }
-
-    if (!lg5Data) {
-      return "---";
-    }
-
-    const endStakeReward = moment.unix(lg5Data.periodEndTime);
-
-    if (endStakeReward.diff(moment()) <= 0) {
-      return "Program Ended";
-    }
-
-    // Time till next stake reward date
-    const startTime = moment.duration(
-      endStakeReward.diff(moment()),
-      "milliseconds"
-    );
-
-    return `${startTime.days()}D ${startTime.hours()}H ${startTime.minutes()}M`;
-  }, [lg5Data, lg5DataLoading, loadingText]);
+  }, [lg5Data, lg5DataLoading, loadingText, lmVersion]);
 
   const getLMName = useCallback((_lmVersion: LiquidityMiningVersion) => {
     switch (_lmVersion) {

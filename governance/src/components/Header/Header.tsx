@@ -11,6 +11,7 @@ import { NavItemProps, MobileMenuOpenProps } from "./types";
 import AccountStatus from "../Wallet/AccountStatus";
 import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
+import DesktopSubmenu from "./DesktopSubmenu";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
@@ -84,7 +85,7 @@ const LinksContainer = styled.div`
 const NavItem = styled.div<NavItemProps>`
   display: flex;
   align-items: center;
-  padding: 0px 28px;
+  padding: 0px 16px;
   height: 100%;
   opacity: ${(props) => (props.isSelected ? "1" : "0.48")};
 
@@ -190,15 +191,11 @@ const Header = () => {
             "/voting",
             Boolean(useRouteMatch({ path: "/voting", exact: true }))
           )} */}
-          {renderLinkItem(
-            "FAQS",
-            "/faqs",
-            Boolean(useRouteMatch({ path: "/faqs", exact: true }))
-          )}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
       <AccountStatus variant="desktop" />
+      <DesktopSubmenu />
 
       {/* MOBILE MENU */}
       <MobileOnly>

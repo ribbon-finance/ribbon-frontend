@@ -16,6 +16,12 @@ import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
+import {
+  calculateEarlyUnlockPenalty,
+  calculateEarlyUnlockPenaltyPercentage,
+} from "shared/lib/utils/governanceMath";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
 
 const LogoContainer = styled.div`
   display: flex;
@@ -38,13 +44,7 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
   const loadingText = useLoadingText();
 
   const canUnstake = useMemo(() => {
-    if (loading || !rbnTokenAccount || !rbnTokenAccount.lockEndTimestamp) {
-      return false;
-    }
-
-    return moment().isSameOrAfter(
-      moment.unix(rbnTokenAccount.lockEndTimestamp)
-    );
+    return !loading && rbnTokenAccount && rbnTokenAccount.lockEndTimestamp;
   }, [loading, rbnTokenAccount]);
 
   const lockupAmountDisplay = useMemo(() => {
@@ -71,6 +71,36 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
     return moment.unix(rbnTokenAccount.lockEndTimestamp).format("MMM, Do YYYY");
   }, [loading, loadingText, rbnTokenAccount?.lockEndTimestamp]);
 
+  const earlyUnlockDuration = useMemo(() => {
+    const momentNow = moment();
+    const expiryMoment =
+      rbnTokenAccount && rbnTokenAccount.lockEndTimestamp
+        ? moment.unix(rbnTokenAccount.lockEndTimestamp)
+        : undefined;
+
+    if (rbnTokenAccount && expiryMoment && momentNow.isBefore(expiryMoment)) {
+      return moment.duration(expiryMoment.diff(momentNow));
+    }
+  }, [rbnTokenAccount]);
+
+  const earlyUnlockPenaltyPercentageDisplay = useMemo(() => {
+    if (earlyUnlockDuration) {
+      return `${(
+        calculateEarlyUnlockPenaltyPercentage(earlyUnlockDuration) * 100
+      ).toFixed(2)}%`;
+    }
+  }, [earlyUnlockDuration]);
+
+  const earlyUnlockPenaltyAmountDisplay = useMemo(() => {
+    if (rbnTokenAccount && earlyUnlockDuration) {
+      const penalty = calculateEarlyUnlockPenalty(
+        rbnTokenAccount.lockedBalance,
+        earlyUnlockDuration
+      );
+      return formatBigNumber(penalty);
+    }
+  }, [earlyUnlockDuration, rbnTokenAccount]);
+
   return (
     <>
       <BaseModalContentColumn>
@@ -84,9 +114,23 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
         </Title>
       </BaseModalContentColumn>
       <BaseModalContentColumn>
-        <div className="d-flex w-100 justify-content-between">
-          <SecondaryText lineHeight={24}>Lockup Amount</SecondaryText>
-          <Subtitle fontSize={14} lineHeight={24} letterSpacing={1}>
+        <div className="d-flex w-100 align-items-center">
+          <SecondaryText lineHeight={24}>RBN Available to Unlock</SecondaryText>
+          <TooltipExplanation
+            title="RBN AVAILABLE TO UNLOCK"
+            explanation="The amount of locked RBN that you can now unlock."
+            renderContent={({ ref, ...triggerHandler }) => (
+              <HelpInfo containerRef={ref} {...triggerHandler}>
+                i
+              </HelpInfo>
+            )}
+          />
+          <Subtitle
+            fontSize={14}
+            lineHeight={24}
+            letterSpacing={1}
+            className="ml-auto"
+          >
             {lockupAmountDisplay}
           </Subtitle>
         </div>
@@ -99,28 +143,68 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
           </Subtitle>
         </div>
       </BaseModalContentColumn>
-      <BaseModalContentColumn marginTop="auto" className="mb-4">
+      {earlyUnlockPenaltyPercentageDisplay ? (
+        <BaseModalContentColumn>
+          <div className="d-flex w-100 align-items-center">
+            <SecondaryText lineHeight={24}>Early Unlock Penalty</SecondaryText>
+            <TooltipExplanation
+              title="EARLY UNLOCK PENALTY"
+              explanation={
+                <>
+                  The penalty incurred for unlocking RBN before the lockup
+                  expiry date.
+                  <br />
+                  <br />
+                  The penalty is calculated by taking the minimum between 0.75
+                  and (time left until unlock) / 2 years. For example, if you
+                  have 1 year left on your lock, the penalty is min(.75, 1/2) =
+                  0.5. So the penalty is 50%. All penalties will be
+                  redistributed to the remaining lockers pro-rata.
+                </>
+              }
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HelpInfo containerRef={ref} {...triggerHandler}>
+                  i
+                </HelpInfo>
+              )}
+            />
+            <Subtitle
+              fontSize={14}
+              lineHeight={24}
+              letterSpacing={1}
+              className="ml-auto"
+            >
+              {earlyUnlockPenaltyPercentageDisplay}
+            </Subtitle>
+          </div>
+        </BaseModalContentColumn>
+      ) : (
+        <></>
+      )}
+      <BaseModalContentColumn marginTop="auto" className="mb-2">
         <ActionButton
           onClick={onUnstake}
           className="py-3"
           color={colors.red}
           disabled={!canUnstake}
         >
-          CONFIRM UNLOCK
+          {earlyUnlockDuration ? "CONFIRM EARLY UNLOCK" : "CONFIRM UNLOCK"}
         </ActionButton>
       </BaseModalContentColumn>
-      <BaseModalWarning color={colors.green} className="mb-2" marginTop={0}>
-        <PrimaryText
-          fontSize={14}
-          lineHeight={20}
-          color={colors.green}
-          fontWeight={400}
-          className="text-center"
-        >
-          IMPORTANT: You cannot unlock your RBN until the lockup expires on{" "}
-          {lockupExpiryDisplay}
-        </PrimaryText>
-      </BaseModalWarning>
+      {earlyUnlockPenaltyAmountDisplay && (
+        <BaseModalWarning color={colors.green} className="mb-2" marginTop={16}>
+          <PrimaryText
+            fontSize={14}
+            lineHeight={20}
+            color={colors.green}
+            fontWeight={400}
+            className="text-center"
+          >
+            IMPORTANT: Unlocking your RBN early will result in a{" "}
+            <b>penalty of RBN {earlyUnlockPenaltyAmountDisplay}</b>
+          </PrimaryText>
+        </BaseModalWarning>
+      )}
     </>
   );
 };

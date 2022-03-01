@@ -21,8 +21,8 @@ const _abi = [
     name: "CommitOwnership",
     inputs: [
       {
-        type: "address",
         name: "admin",
+        type: "address",
         indexed: false,
       },
     ],
@@ -33,8 +33,20 @@ const _abi = [
     name: "ApplyOwnership",
     inputs: [
       {
-        type: "address",
         name: "admin",
+        type: "address",
+        indexed: false,
+      },
+    ],
+    anonymous: false,
+    type: "event",
+  },
+  {
+    name: "FundsUnlocked",
+    inputs: [
+      {
+        name: "funds_unlocked",
+        type: "bool",
         indexed: false,
       },
     ],
@@ -45,28 +57,33 @@ const _abi = [
     name: "Deposit",
     inputs: [
       {
+        name: "deposit_from",
         type: "address",
+        indexed: true,
+      },
+      {
         name: "provider",
+        type: "address",
         indexed: true,
       },
       {
-        type: "uint256",
         name: "value",
+        type: "uint256",
         indexed: false,
       },
       {
-        type: "uint256",
         name: "locktime",
+        type: "uint256",
         indexed: true,
       },
       {
-        type: "int128",
         name: "type",
+        type: "int128",
         indexed: false,
       },
       {
-        type: "uint256",
         name: "ts",
+        type: "uint256",
         indexed: false,
       },
     ],
@@ -77,18 +94,18 @@ const _abi = [
     name: "Withdraw",
     inputs: [
       {
-        type: "address",
         name: "provider",
+        type: "address",
         indexed: true,
       },
       {
-        type: "uint256",
         name: "value",
+        type: "uint256",
         indexed: false,
       },
       {
-        type: "uint256",
         name: "ts",
+        type: "uint256",
         indexed: false,
       },
     ],
@@ -99,13 +116,13 @@ const _abi = [
     name: "Supply",
     inputs: [
       {
-        type: "uint256",
         name: "prevSupply",
+        type: "uint256",
         indexed: false,
       },
       {
-        type: "uint256",
         name: "supply",
+        type: "uint256",
         indexed: false,
       },
     ],
@@ -113,531 +130,604 @@ const _abi = [
     type: "event",
   },
   {
-    outputs: [],
-    inputs: [
-      {
-        type: "address",
-        name: "token_addr",
-      },
-      {
-        type: "string",
-        name: "_name",
-      },
-      {
-        type: "string",
-        name: "_symbol",
-      },
-      {
-        type: "address",
-        name: "_admin",
-      },
-    ],
     stateMutability: "nonpayable",
     type: "constructor",
+    inputs: [
+      {
+        name: "token_addr",
+        type: "address",
+      },
+      {
+        name: "_name",
+        type: "string",
+      },
+      {
+        name: "_symbol",
+        type: "string",
+      },
+      {
+        name: "_admin",
+        type: "address",
+      },
+    ],
+    outputs: [],
   },
   {
+    stateMutability: "nonpayable",
+    type: "function",
+    name: "set_reward_pool",
+    inputs: [
+      {
+        name: "addr",
+        type: "address",
+      },
+    ],
+    outputs: [],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
     name: "commit_transfer_ownership",
-    outputs: [],
     inputs: [
       {
-        type: "address",
         name: "addr",
+        type: "address",
       },
     ],
-    stateMutability: "nonpayable",
-    type: "function",
+    outputs: [],
   },
   {
+    stateMutability: "nonpayable",
+    type: "function",
     name: "apply_transfer_ownership",
-    outputs: [],
     inputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    outputs: [],
   },
   {
+    stateMutability: "nonpayable",
+    type: "function",
     name: "commit_smart_wallet_checker",
-    outputs: [],
     inputs: [
       {
-        type: "address",
         name: "addr",
+        type: "address",
       },
     ],
-    stateMutability: "nonpayable",
-    type: "function",
+    outputs: [],
   },
   {
+    stateMutability: "nonpayable",
+    type: "function",
     name: "apply_smart_wallet_checker",
-    outputs: [],
     inputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    outputs: [],
   },
   {
+    stateMutability: "nonpayable",
+    type: "function",
+    name: "set_funds_unlocked",
+    inputs: [
+      {
+        name: "_funds_unlocked",
+        type: "bool",
+      },
+    ],
+    outputs: [],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
     name: "get_last_user_slope",
-    outputs: [
-      {
-        type: "int128",
-        name: "",
-      },
-    ],
     inputs: [
       {
-        type: "address",
         name: "addr",
+        type: "address",
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    outputs: [
+      {
+        name: "",
+        type: "int128",
+      },
+    ],
   },
   {
+    stateMutability: "view",
+    type: "function",
     name: "user_point_history__ts",
-    outputs: [
-      {
-        type: "uint256",
-        name: "",
-      },
-    ],
     inputs: [
       {
-        type: "address",
         name: "_addr",
+        type: "address",
       },
       {
-        type: "uint256",
         name: "_idx",
+        type: "uint256",
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+      },
+    ],
   },
   {
+    stateMutability: "view",
+    type: "function",
     name: "locked__end",
-    outputs: [
-      {
-        type: "uint256",
-        name: "",
-      },
-    ],
     inputs: [
       {
-        type: "address",
         name: "_addr",
+        type: "address",
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+      },
+    ],
   },
   {
+    stateMutability: "nonpayable",
+    type: "function",
     name: "checkpoint",
-    outputs: [],
     inputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    outputs: [],
   },
   {
+    stateMutability: "nonpayable",
+    type: "function",
     name: "deposit_for",
-    outputs: [],
     inputs: [
       {
-        type: "address",
         name: "_addr",
+        type: "address",
       },
       {
-        type: "uint256",
         name: "_value",
+        type: "uint256",
       },
     ],
-    stateMutability: "nonpayable",
-    type: "function",
+    outputs: [],
   },
   {
+    stateMutability: "nonpayable",
+    type: "function",
     name: "create_lock",
-    outputs: [],
     inputs: [
       {
-        type: "uint256",
         name: "_value",
+        type: "uint256",
       },
       {
-        type: "uint256",
         name: "_unlock_time",
+        type: "uint256",
       },
     ],
-    stateMutability: "nonpayable",
-    type: "function",
+    outputs: [],
   },
   {
+    stateMutability: "nonpayable",
+    type: "function",
     name: "increase_amount",
-    outputs: [],
     inputs: [
       {
-        type: "uint256",
         name: "_value",
+        type: "uint256",
       },
     ],
-    stateMutability: "nonpayable",
-    type: "function",
+    outputs: [],
   },
   {
+    stateMutability: "nonpayable",
+    type: "function",
     name: "increase_unlock_time",
-    outputs: [],
     inputs: [
       {
-        type: "uint256",
         name: "_unlock_time",
+        type: "uint256",
       },
     ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    name: "withdraw",
     outputs: [],
-    inputs: [],
+  },
+  {
     stateMutability: "nonpayable",
     type: "function",
+    name: "withdraw",
+    inputs: [],
+    outputs: [],
   },
   {
-    name: "balanceOf",
-    outputs: [
-      {
-        type: "uint256",
-        name: "",
-      },
-    ],
-    inputs: [
-      {
-        type: "address",
-        name: "addr",
-      },
-    ],
+    stateMutability: "nonpayable",
+    type: "function",
+    name: "force_withdraw",
+    inputs: [],
+    outputs: [],
+  },
+  {
     stateMutability: "view",
     type: "function",
-  },
-  {
     name: "balanceOf",
-    outputs: [
-      {
-        type: "uint256",
-        name: "",
-      },
-    ],
     inputs: [
       {
-        type: "address",
         name: "addr",
+        type: "address",
+      },
+    ],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+      },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    name: "balanceOf",
+    inputs: [
+      {
+        name: "addr",
+        type: "address",
       },
       {
-        type: "uint256",
         name: "_t",
+        type: "uint256",
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+      },
+    ],
   },
   {
+    stateMutability: "view",
+    type: "function",
     name: "getPriorVotes",
-    outputs: [
-      {
-        type: "uint256",
-        name: "",
-      },
-    ],
     inputs: [
       {
-        type: "address",
         name: "addr",
+        type: "address",
       },
       {
-        type: "uint256",
         name: "_block",
+        type: "uint256",
       },
     ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    name: "totalSupply",
     outputs: [
       {
-        type: "uint256",
         name: "",
+        type: "uint256",
       },
     ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    name: "totalSupply",
     inputs: [],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    name: "totalSupply",
     outputs: [
       {
-        type: "uint256",
         name: "",
+        type: "uint256",
       },
     ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    name: "totalSupply",
     inputs: [
       {
-        type: "uint256",
         name: "t",
+        type: "uint256",
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+      },
+    ],
   },
   {
+    stateMutability: "view",
+    type: "function",
     name: "totalSupplyAt",
-    outputs: [
-      {
-        type: "uint256",
-        name: "",
-      },
-    ],
     inputs: [
       {
-        type: "uint256",
         name: "_block",
+        type: "uint256",
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+      },
+    ],
   },
   {
+    stateMutability: "view",
+    type: "function",
     name: "token",
+    inputs: [],
     outputs: [
       {
-        type: "address",
         name: "",
+        type: "address",
       },
     ],
-    inputs: [],
-    stateMutability: "view",
-    type: "function",
   },
   {
+    stateMutability: "view",
+    type: "function",
     name: "supply",
+    inputs: [],
     outputs: [
       {
-        type: "uint256",
         name: "",
+        type: "uint256",
       },
     ],
-    inputs: [],
-    stateMutability: "view",
-    type: "function",
   },
   {
+    stateMutability: "view",
+    type: "function",
     name: "locked",
-    outputs: [
-      {
-        type: "int128",
-        name: "amount",
-      },
-      {
-        type: "uint256",
-        name: "end",
-      },
-    ],
     inputs: [
       {
-        type: "address",
         name: "arg0",
+        type: "address",
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        components: [
+          {
+            name: "amount",
+            type: "int128",
+          },
+          {
+            name: "end",
+            type: "uint256",
+          },
+        ],
+      },
+    ],
   },
   {
+    stateMutability: "view",
+    type: "function",
     name: "epoch",
+    inputs: [],
     outputs: [
       {
-        type: "uint256",
         name: "",
+        type: "uint256",
       },
     ],
-    inputs: [],
-    stateMutability: "view",
-    type: "function",
   },
   {
+    stateMutability: "view",
+    type: "function",
     name: "point_history",
-    outputs: [
-      {
-        type: "int128",
-        name: "bias",
-      },
-      {
-        type: "int128",
-        name: "slope",
-      },
-      {
-        type: "uint256",
-        name: "ts",
-      },
-      {
-        type: "uint256",
-        name: "blk",
-      },
-    ],
     inputs: [
       {
-        type: "uint256",
         name: "arg0",
+        type: "uint256",
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        components: [
+          {
+            name: "bias",
+            type: "int128",
+          },
+          {
+            name: "slope",
+            type: "int128",
+          },
+          {
+            name: "ts",
+            type: "uint256",
+          },
+          {
+            name: "blk",
+            type: "uint256",
+          },
+        ],
+      },
+    ],
   },
   {
+    stateMutability: "view",
+    type: "function",
     name: "user_point_history",
-    outputs: [
-      {
-        type: "int128",
-        name: "bias",
-      },
-      {
-        type: "int128",
-        name: "slope",
-      },
-      {
-        type: "uint256",
-        name: "ts",
-      },
-      {
-        type: "uint256",
-        name: "blk",
-      },
-    ],
     inputs: [
       {
-        type: "address",
         name: "arg0",
+        type: "address",
       },
       {
-        type: "uint256",
         name: "arg1",
+        type: "uint256",
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        components: [
+          {
+            name: "bias",
+            type: "int128",
+          },
+          {
+            name: "slope",
+            type: "int128",
+          },
+          {
+            name: "ts",
+            type: "uint256",
+          },
+          {
+            name: "blk",
+            type: "uint256",
+          },
+        ],
+      },
+    ],
   },
   {
+    stateMutability: "view",
+    type: "function",
     name: "user_point_epoch",
-    outputs: [
-      {
-        type: "uint256",
-        name: "",
-      },
-    ],
     inputs: [
       {
-        type: "address",
         name: "arg0",
+        type: "address",
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+      },
+    ],
   },
   {
+    stateMutability: "view",
+    type: "function",
     name: "slope_changes",
-    outputs: [
-      {
-        type: "int128",
-        name: "",
-      },
-    ],
     inputs: [
       {
-        type: "uint256",
         name: "arg0",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    name: "name",
-    outputs: [
-      {
-        type: "string",
-        name: "",
-      },
-    ],
-    inputs: [],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    name: "symbol",
-    outputs: [
-      {
-        type: "string",
-        name: "",
-      },
-    ],
-    inputs: [],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    name: "decimals",
-    outputs: [
-      {
         type: "uint256",
-        name: "",
       },
     ],
-    inputs: [],
-    stateMutability: "view",
-    type: "function",
+    outputs: [
+      {
+        name: "",
+        type: "int128",
+      },
+    ],
   },
   {
+    stateMutability: "view",
+    type: "function",
+    name: "name",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "string",
+      },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    name: "symbol",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "string",
+      },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    name: "decimals",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+      },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
     name: "future_smart_wallet_checker",
+    inputs: [],
     outputs: [
       {
-        type: "address",
         name: "",
+        type: "address",
       },
     ],
-    inputs: [],
-    stateMutability: "view",
-    type: "function",
   },
   {
+    stateMutability: "view",
+    type: "function",
     name: "smart_wallet_checker",
+    inputs: [],
     outputs: [
       {
-        type: "address",
         name: "",
+        type: "address",
       },
     ],
-    inputs: [],
-    stateMutability: "view",
-    type: "function",
   },
   {
+    stateMutability: "view",
+    type: "function",
     name: "admin",
+    inputs: [],
     outputs: [
       {
-        type: "address",
         name: "",
+        type: "address",
       },
     ],
-    inputs: [],
-    stateMutability: "view",
-    type: "function",
   },
   {
-    name: "future_admin",
-    outputs: [
-      {
-        type: "address",
-        name: "",
-      },
-    ],
-    inputs: [],
     stateMutability: "view",
     type: "function",
+    name: "future_admin",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "address",
+      },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    name: "is_unlocked",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "bool",
+      },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    name: "reward_pool",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "address",
+      },
+    ],
   },
 ];

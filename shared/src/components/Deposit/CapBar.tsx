@@ -7,8 +7,6 @@ import { getAssetDisplay } from "../../utils/asset";
 import { formatAmount } from "../../utils/math";
 import ProgressBar, { BarConfig } from "./ProgressBar";
 
-const loadingText = useLoadingText();
-
 const CapBar: React.FC<{
   loading: boolean;
   current: number;
@@ -40,6 +38,8 @@ const CapBar: React.FC<{
   barConfig = { height: 16, extraClassNames: "my-3", radius: 4 },
   asset,
 }) => {
+  const loadingText = useLoadingText();
+
   let percent = cap > 0 ? current / cap : 0;
   if (percent < 0) {
     percent = 0;

@@ -9,7 +9,7 @@ import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { formatBigNumber } from "shared/lib/utils/math";
 import moment from "moment";
-import { formatUnits } from "ethers/lib/utils";
+import { formatUnits, parseUnits } from "ethers/lib/utils";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import {
   Chart,
@@ -17,6 +17,7 @@ import {
 } from "shared/lib/components/Common/PerformanceChart";
 import { useWeb3React } from "@web3-react/core";
 import sizes from "shared/lib/designSystem/sizes";
+import { useTranslation } from "react-i18next";
 
 const SummaryContainer = styled.div`
   display: flex;
@@ -81,6 +82,7 @@ const ChartContainer = styled.div`
 
 const StakingSummary = () => {
   const { active } = useWeb3React();
+  const { t } = useTranslation();
   const { data: rbnTokenAccount, loading: rbnTokenAccountLoading } =
     useRBNTokenAccount();
   const [hoveredDatapointIndex, setHoveredDatapointIndex] = useState<number>();
@@ -172,11 +174,21 @@ const StakingSummary = () => {
     } else if (chartDatapoints) {
       return hoveredDatapointIndex === undefined
         ? chartDatapoints.currentVeRbnIndex
-          ? chartDatapoints.dataset[chartDatapoints.currentVeRbnIndex].toFixed(
-              2
+          ? formatBigNumber(
+              parseUnits(
+                String(
+                  chartDatapoints.dataset[chartDatapoints.currentVeRbnIndex]
+                )
+              ),
+              18,
+              5
             )
           : "0.00"
-        : chartDatapoints.dataset[hoveredDatapointIndex].toFixed(2);
+        : formatBigNumber(
+            parseUnits(String(chartDatapoints.dataset[hoveredDatapointIndex])),
+            18,
+            5
+          );
     }
     return "0.00";
   }, [chartDatapoints, hoveredDatapointIndex, active]);
@@ -188,7 +200,7 @@ const StakingSummary = () => {
       return loadingText;
     }
     return rbnTokenAccount
-      ? formatBigNumber(rbnTokenAccount.lockedBalance)
+      ? formatBigNumber(rbnTokenAccount.lockedBalance, 18, 5)
       : "0.00";
   }, [active, rbnTokenAccount, rbnTokenAccountLoading, loadingText]);
 
@@ -199,7 +211,7 @@ const StakingSummary = () => {
       return loadingText;
     }
     return rbnTokenAccount
-      ? formatBigNumber(rbnTokenAccount.walletBalance)
+      ? formatBigNumber(rbnTokenAccount.walletBalance, 18, 5)
       : "0.00";
   }, [active, rbnTokenAccount, rbnTokenAccountLoading, loadingText]);
 
@@ -263,11 +275,11 @@ const StakingSummary = () => {
           {/* Voting Power Title */}
           <div className="d-flex align-items-center mt-1">
             <PrimaryText fontSize={12} lineHeight={20} color={colors.red}>
-              Your Voting Power
+              {t("shared:TooltipExplanations:veRBN:stakingSummaryTitle")}
             </PrimaryText>
             {renderDataTooltip(
-              "Your Voting Power",
-              "Your veRBN balance represents your voting power. The longer you lock your RBN the more veRBN you receive. Your voting power decreases linearly as the remaining time until the RBN lockup expiry decreases."
+              t("shared:TooltipExplanations:veRBN:stakingSummaryTitle"),
+              t("shared:TooltipExplanations:veRBN:description")
             )}
           </div>
 
@@ -347,10 +359,12 @@ const StakingSummary = () => {
         <LockupContainer>
           <LockupData>
             <div className="d-flex align-items-center">
-              <SecondaryText fontSize={12}>Locked RBN</SecondaryText>
+              <SecondaryText fontSize={12}>
+                {t("shared:TooltipExplanations:lockedRBN:title")}
+              </SecondaryText>
               {renderDataTooltip(
-                "Locked RBN",
-                "The amount of RBN locked up in the governance contract. The longer you lock up RBN the more veRBN (voting power) you receive."
+                t("shared:TooltipExplanations:lockedRBN:title"),
+                t("shared:TooltipExplanations:lockedRBN:description")
               )}
             </div>
             <Title fontSize={16} className="mt-1">
@@ -360,10 +374,14 @@ const StakingSummary = () => {
 
           <LockupData>
             <div className="d-flex align-items-center">
-              <SecondaryText fontSize={12}>Unlocked RBN Balance</SecondaryText>
+              <SecondaryText fontSize={12}>
+                {t(
+                  "shared:TooltipExplanations:unlockedRBN:stakingSummaryTitle"
+                )}
+              </SecondaryText>
               {renderDataTooltip(
-                "Unlocked RBN Balance",
-                "The amount of RBN that has not been locked in the governance contract."
+                t("shared:TooltipExplanations:unlockedRBN:stakingSummaryTitle"),
+                t("shared:TooltipExplanations:unlockedRBN:description")
               )}
             </div>
             <Title fontSize={16} className="mt-1">

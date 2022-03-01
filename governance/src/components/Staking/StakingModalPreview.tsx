@@ -117,8 +117,8 @@ const StakingModalPreview: React.FC<StakingModalPreviewProps> = ({
           fontWeight={400}
           className="text-center"
         >
-          IMPORTANT: <strong>veRBN</strong> is not transferrable and your RBN
-          will be locked up till expiry
+          IMPORTANT: <strong>veRBN</strong> is not transferrable and unlocking
+          RBN early results in a penalty of up to 75% of your RBN
         </PrimaryText>
       </BaseModalWarning>
     </>

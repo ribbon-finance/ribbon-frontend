@@ -68,8 +68,8 @@ const StakeUpdatePicker: React.FC<StakeUpdatePickerProps> = ({ onSelect }) => {
       </BaseModalContentColumn>
       <BaseModalContentColumn marginTop={12}>
         <SecondaryText className="text-center" fontWeight={400}>
-          Increase your veRBN balance by staking more RBN and / or increasing
-          the lock time for your staked RBN balance
+          Increase your veRBN balance by locking more RBN and / or increasing
+          the lock time for your locked RBN balance
         </SecondaryText>
       </BaseModalContentColumn>
       <BaseModalContentColumn>

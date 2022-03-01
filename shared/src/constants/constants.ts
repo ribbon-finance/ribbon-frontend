@@ -653,7 +653,7 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "rBTC-THETA": ["WBTC"],
     "rETH-THETA": ["WETH"],
     "rAVAX-THETA": ["WAVAX"],
-    "rsAVAX-THETA": ["sAVAX"],
+    "rsAVAX-THETA": ["WAVAX", "sAVAX"],
     "rUSDC-ETH-P-THETA": ["USDC"],
     "rUSDC-AVAX-P-THETA": ["USDC"],
     "rstETH-THETA": ["WETH", "stETH"],
