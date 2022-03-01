@@ -114,10 +114,8 @@ const LogoContainer = styled.div`
 const TickerContainer = styled.div`
   display: flex;
   height: fit-content;
-  border-right: 2px solid ${colors.border};
-  width: 100%;
+  width: fit-content;
   padding: 0 16px;
-  justify-content: center;
 
   > {
     &:not(:last-child) {
@@ -138,6 +136,13 @@ const TickerPrice = styled(Title)`
   line-height: 16px;
   margin: auto 0;
   color: ${colors.primaryText};
+`;
+
+const TickerDivider = styled.div`
+  display: block;
+  height: 16px;
+  width: 2px;
+  background: ${colors.border};
 `;
 
 const TickerChange = styled(Title)<{ percentage: number }>`
@@ -247,17 +252,20 @@ const PriceTicker = () => {
             {Object.values(tickerData.data).map((token) => {
               const Logo = getAssetLogo(token.asset as Assets);
               return (
-                <TickerContainer>
-                  <LogoContainer>
-                    <Logo showBackground />
-                  </LogoContainer>
-                  <TickerTitle>{token.asset}</TickerTitle>
-                  <TickerPrice>${token.price.toFixed(2)}</TickerPrice>
-                  <TickerChange percentage={token.dailyChange}>
-                    {token.dailyChange > 0 && "+"}
-                    {token.dailyChange.toFixed(2)}%
-                  </TickerChange>
-                </TickerContainer>
+                <>
+                  <TickerContainer>
+                    <LogoContainer>
+                      <Logo showBackground />
+                    </LogoContainer>
+                    <TickerTitle>{token.asset}</TickerTitle>
+                    <TickerPrice>${token.price.toFixed(2)}</TickerPrice>
+                    <TickerChange percentage={token.dailyChange}>
+                      {token.dailyChange > 0 && "+"}
+                      {token.dailyChange.toFixed(2)}%
+                    </TickerChange>
+                  </TickerContainer>
+                  <TickerDivider />
+                </>
               );
             })}
           </Marquee>
