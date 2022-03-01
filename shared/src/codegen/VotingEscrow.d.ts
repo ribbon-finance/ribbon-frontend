@@ -22,10 +22,12 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface VotingEscrowInterface extends ethers.utils.Interface {
   functions: {
+    "set_reward_pool(address)": FunctionFragment;
     "commit_transfer_ownership(address)": FunctionFragment;
     "apply_transfer_ownership()": FunctionFragment;
     "commit_smart_wallet_checker(address)": FunctionFragment;
     "apply_smart_wallet_checker()": FunctionFragment;
+    "set_funds_unlocked(bool)": FunctionFragment;
     "get_last_user_slope(address)": FunctionFragment;
     "user_point_history__ts(address,uint256)": FunctionFragment;
     "locked__end(address)": FunctionFragment;
@@ -35,6 +37,7 @@ interface VotingEscrowInterface extends ethers.utils.Interface {
     "increase_amount(uint256)": FunctionFragment;
     "increase_unlock_time(uint256)": FunctionFragment;
     "withdraw()": FunctionFragment;
+    "force_withdraw()": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "getPriorVotes(address,uint256)": FunctionFragment;
     "totalSupply()": FunctionFragment;
@@ -54,8 +57,14 @@ interface VotingEscrowInterface extends ethers.utils.Interface {
     "smart_wallet_checker()": FunctionFragment;
     "admin()": FunctionFragment;
     "future_admin()": FunctionFragment;
+    "is_unlocked()": FunctionFragment;
+    "reward_pool()": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "set_reward_pool",
+    values: [string]
+  ): string;
   encodeFunctionData(
     functionFragment: "commit_transfer_ownership",
     values: [string]
@@ -71,6 +80,10 @@ interface VotingEscrowInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "apply_smart_wallet_checker",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "set_funds_unlocked",
+    values: [boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "get_last_user_slope",
@@ -102,6 +115,10 @@ interface VotingEscrowInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "withdraw", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "force_withdraw",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
     functionFragment: "getPriorVotes",
@@ -151,7 +168,19 @@ interface VotingEscrowInterface extends ethers.utils.Interface {
     functionFragment: "future_admin",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "is_unlocked",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "reward_pool",
+    values?: undefined
+  ): string;
 
+  decodeFunctionResult(
+    functionFragment: "set_reward_pool",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "commit_transfer_ownership",
     data: BytesLike
@@ -166,6 +195,10 @@ interface VotingEscrowInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "apply_smart_wallet_checker",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "set_funds_unlocked",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -198,6 +231,10 @@ interface VotingEscrowInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "force_withdraw",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getPriorVotes",
@@ -247,17 +284,27 @@ interface VotingEscrowInterface extends ethers.utils.Interface {
     functionFragment: "future_admin",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "is_unlocked",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "reward_pool",
+    data: BytesLike
+  ): Result;
 
   events: {
     "CommitOwnership(address)": EventFragment;
     "ApplyOwnership(address)": EventFragment;
-    "Deposit(address,uint256,uint256,int128,uint256)": EventFragment;
+    "FundsUnlocked(bool)": EventFragment;
+    "Deposit(address,address,uint256,uint256,int128,uint256)": EventFragment;
     "Withdraw(address,uint256,uint256)": EventFragment;
     "Supply(uint256,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "CommitOwnership"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApplyOwnership"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "FundsUnlocked"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Supply"): EventFragment;
@@ -277,6 +324,16 @@ export class VotingEscrow extends Contract {
   interface: VotingEscrowInterface;
 
   functions: {
+    set_reward_pool(
+      addr: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "set_reward_pool(address)"(
+      addr: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     commit_transfer_ownership(
       addr: string,
       overrides?: Overrides
@@ -310,6 +367,16 @@ export class VotingEscrow extends Contract {
     ): Promise<ContractTransaction>;
 
     "apply_smart_wallet_checker()"(
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    set_funds_unlocked(
+      _funds_unlocked: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "set_funds_unlocked(bool)"(
+      _funds_unlocked: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -409,6 +476,10 @@ export class VotingEscrow extends Contract {
 
     "withdraw()"(overrides?: Overrides): Promise<ContractTransaction>;
 
+    force_withdraw(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "force_withdraw()"(overrides?: Overrides): Promise<ContractTransaction>;
+
     "balanceOf(address)"(
       addr: string,
       overrides?: CallOverrides
@@ -485,20 +556,14 @@ export class VotingEscrow extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<{
-      amount: BigNumber;
-      end: BigNumber;
-      0: BigNumber;
-      1: BigNumber;
+      0: { amount: BigNumber; end: BigNumber; 0: BigNumber; 1: BigNumber };
     }>;
 
     "locked(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<{
-      amount: BigNumber;
-      end: BigNumber;
-      0: BigNumber;
-      1: BigNumber;
+      0: { amount: BigNumber; end: BigNumber; 0: BigNumber; 1: BigNumber };
     }>;
 
     epoch(overrides?: CallOverrides): Promise<{
@@ -513,28 +578,32 @@ export class VotingEscrow extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      bias: BigNumber;
-      slope: BigNumber;
-      ts: BigNumber;
-      blk: BigNumber;
-      0: BigNumber;
-      1: BigNumber;
-      2: BigNumber;
-      3: BigNumber;
+      0: {
+        bias: BigNumber;
+        slope: BigNumber;
+        ts: BigNumber;
+        blk: BigNumber;
+        0: BigNumber;
+        1: BigNumber;
+        2: BigNumber;
+        3: BigNumber;
+      };
     }>;
 
     "point_history(uint256)"(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      bias: BigNumber;
-      slope: BigNumber;
-      ts: BigNumber;
-      blk: BigNumber;
-      0: BigNumber;
-      1: BigNumber;
-      2: BigNumber;
-      3: BigNumber;
+      0: {
+        bias: BigNumber;
+        slope: BigNumber;
+        ts: BigNumber;
+        blk: BigNumber;
+        0: BigNumber;
+        1: BigNumber;
+        2: BigNumber;
+        3: BigNumber;
+      };
     }>;
 
     user_point_history(
@@ -542,14 +611,16 @@ export class VotingEscrow extends Contract {
       arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      bias: BigNumber;
-      slope: BigNumber;
-      ts: BigNumber;
-      blk: BigNumber;
-      0: BigNumber;
-      1: BigNumber;
-      2: BigNumber;
-      3: BigNumber;
+      0: {
+        bias: BigNumber;
+        slope: BigNumber;
+        ts: BigNumber;
+        blk: BigNumber;
+        0: BigNumber;
+        1: BigNumber;
+        2: BigNumber;
+        3: BigNumber;
+      };
     }>;
 
     "user_point_history(address,uint256)"(
@@ -557,14 +628,16 @@ export class VotingEscrow extends Contract {
       arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      bias: BigNumber;
-      slope: BigNumber;
-      ts: BigNumber;
-      blk: BigNumber;
-      0: BigNumber;
-      1: BigNumber;
-      2: BigNumber;
-      3: BigNumber;
+      0: {
+        bias: BigNumber;
+        slope: BigNumber;
+        ts: BigNumber;
+        blk: BigNumber;
+        0: BigNumber;
+        1: BigNumber;
+        2: BigNumber;
+        3: BigNumber;
+      };
     }>;
 
     user_point_epoch(
@@ -650,7 +723,33 @@ export class VotingEscrow extends Contract {
     "future_admin()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
+
+    is_unlocked(overrides?: CallOverrides): Promise<{
+      0: boolean;
+    }>;
+
+    "is_unlocked()"(overrides?: CallOverrides): Promise<{
+      0: boolean;
+    }>;
+
+    reward_pool(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "reward_pool()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
   };
+
+  set_reward_pool(
+    addr: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "set_reward_pool(address)"(
+    addr: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   commit_transfer_ownership(
     addr: string,
@@ -683,6 +782,16 @@ export class VotingEscrow extends Contract {
   ): Promise<ContractTransaction>;
 
   "apply_smart_wallet_checker()"(
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  set_funds_unlocked(
+    _funds_unlocked: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "set_funds_unlocked(bool)"(
+    _funds_unlocked: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -767,6 +876,10 @@ export class VotingEscrow extends Contract {
 
   "withdraw()"(overrides?: Overrides): Promise<ContractTransaction>;
 
+  force_withdraw(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "force_withdraw()"(overrides?: Overrides): Promise<ContractTransaction>;
+
   "balanceOf(address)"(
     addr: string,
     overrides?: CallOverrides
@@ -818,22 +931,12 @@ export class VotingEscrow extends Contract {
   locked(
     arg0: string,
     overrides?: CallOverrides
-  ): Promise<{
-    amount: BigNumber;
-    end: BigNumber;
-    0: BigNumber;
-    1: BigNumber;
-  }>;
+  ): Promise<{ amount: BigNumber; end: BigNumber; 0: BigNumber; 1: BigNumber }>;
 
   "locked(address)"(
     arg0: string,
     overrides?: CallOverrides
-  ): Promise<{
-    amount: BigNumber;
-    end: BigNumber;
-    0: BigNumber;
-    1: BigNumber;
-  }>;
+  ): Promise<{ amount: BigNumber; end: BigNumber; 0: BigNumber; 1: BigNumber }>;
 
   epoch(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -942,7 +1045,22 @@ export class VotingEscrow extends Contract {
 
   "future_admin()"(overrides?: CallOverrides): Promise<string>;
 
+  is_unlocked(overrides?: CallOverrides): Promise<boolean>;
+
+  "is_unlocked()"(overrides?: CallOverrides): Promise<boolean>;
+
+  reward_pool(overrides?: CallOverrides): Promise<string>;
+
+  "reward_pool()"(overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
+    set_reward_pool(addr: string, overrides?: CallOverrides): Promise<void>;
+
+    "set_reward_pool(address)"(
+      addr: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     commit_transfer_ownership(
       addr: string,
       overrides?: CallOverrides
@@ -970,6 +1088,16 @@ export class VotingEscrow extends Contract {
     apply_smart_wallet_checker(overrides?: CallOverrides): Promise<void>;
 
     "apply_smart_wallet_checker()"(overrides?: CallOverrides): Promise<void>;
+
+    set_funds_unlocked(
+      _funds_unlocked: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "set_funds_unlocked(bool)"(
+      _funds_unlocked: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     get_last_user_slope(
       addr: string,
@@ -1051,6 +1179,10 @@ export class VotingEscrow extends Contract {
     withdraw(overrides?: CallOverrides): Promise<void>;
 
     "withdraw()"(overrides?: CallOverrides): Promise<void>;
+
+    force_withdraw(overrides?: CallOverrides): Promise<void>;
+
+    "force_withdraw()"(overrides?: CallOverrides): Promise<void>;
 
     "balanceOf(address)"(
       addr: string,
@@ -1229,6 +1361,14 @@ export class VotingEscrow extends Contract {
     future_admin(overrides?: CallOverrides): Promise<string>;
 
     "future_admin()"(overrides?: CallOverrides): Promise<string>;
+
+    is_unlocked(overrides?: CallOverrides): Promise<boolean>;
+
+    "is_unlocked()"(overrides?: CallOverrides): Promise<boolean>;
+
+    reward_pool(overrides?: CallOverrides): Promise<string>;
+
+    "reward_pool()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -1236,7 +1376,10 @@ export class VotingEscrow extends Contract {
 
     ApplyOwnership(admin: null): EventFilter;
 
+    FundsUnlocked(funds_unlocked: null): EventFilter;
+
     Deposit(
+      deposit_from: string | null,
       provider: string | null,
       value: null,
       locktime: BigNumberish | null,
@@ -1250,6 +1393,13 @@ export class VotingEscrow extends Contract {
   };
 
   estimateGas: {
+    set_reward_pool(addr: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "set_reward_pool(address)"(
+      addr: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     commit_transfer_ownership(
       addr: string,
       overrides?: Overrides
@@ -1277,6 +1427,16 @@ export class VotingEscrow extends Contract {
     apply_smart_wallet_checker(overrides?: Overrides): Promise<BigNumber>;
 
     "apply_smart_wallet_checker()"(overrides?: Overrides): Promise<BigNumber>;
+
+    set_funds_unlocked(
+      _funds_unlocked: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "set_funds_unlocked(bool)"(
+      _funds_unlocked: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     get_last_user_slope(
       addr: string,
@@ -1358,6 +1518,10 @@ export class VotingEscrow extends Contract {
     withdraw(overrides?: Overrides): Promise<BigNumber>;
 
     "withdraw()"(overrides?: Overrides): Promise<BigNumber>;
+
+    force_withdraw(overrides?: Overrides): Promise<BigNumber>;
+
+    "force_withdraw()"(overrides?: Overrides): Promise<BigNumber>;
 
     "balanceOf(address)"(
       addr: string,
@@ -1489,9 +1653,27 @@ export class VotingEscrow extends Contract {
     future_admin(overrides?: CallOverrides): Promise<BigNumber>;
 
     "future_admin()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    is_unlocked(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "is_unlocked()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    reward_pool(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "reward_pool()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    set_reward_pool(
+      addr: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "set_reward_pool(address)"(
+      addr: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     commit_transfer_ownership(
       addr: string,
       overrides?: Overrides
@@ -1525,6 +1707,16 @@ export class VotingEscrow extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "apply_smart_wallet_checker()"(
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    set_funds_unlocked(
+      _funds_unlocked: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "set_funds_unlocked(bool)"(
+      _funds_unlocked: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1611,6 +1803,10 @@ export class VotingEscrow extends Contract {
     withdraw(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "withdraw()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    force_withdraw(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "force_withdraw()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "balanceOf(address)"(
       addr: string,
@@ -1751,5 +1947,13 @@ export class VotingEscrow extends Contract {
     future_admin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "future_admin()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    is_unlocked(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "is_unlocked()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    reward_pool(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "reward_pool()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }
