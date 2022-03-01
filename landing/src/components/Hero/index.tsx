@@ -1,18 +1,22 @@
-import React, { useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { Row, Col } from "react-bootstrap";
 import { Title, PrimaryText, Button } from "../../designSystem";
 import { Container } from "react-bootstrap";
 import { AnimatePresence, motion } from "framer";
 import Marquee from "react-fast-marquee/dist";
-
+import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "../../designSystem/sizes";
 import colors from "shared/lib/designSystem/colors";
 import { ExternalAPIDataContext } from "shared/lib/hooks/externalAPIDataContext";
+import { getAssetLogo } from "shared/lib/utils/asset";
+import { Assets } from "shared/lib/store/types";
+import ReactPlayer from "react-player";
 
 const MainContainer = styled(Container)`
-  height: 640px;
+  height: 780px;
   position: relative;
+  background: transparent;
 
   @media (max-width: ${sizes.md}px) {
     height: 540px;
@@ -36,6 +40,11 @@ const TextContainer = styled(Row)`
   height: 100%;
   align-items: center;
   text-align: center;
+  background: transparent;
+
+  > * {
+    z-index: 1;
+  }
 `;
 
 const TitleContainer = styled.div`
@@ -69,14 +78,98 @@ const Ticker = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  background: ${colors.background.three};
+  padding: 8px 0;
+  background: ${colors.background.two};
+  z-index: 1;
 
   p {
     margin: auto 0;
   }
+
+  .marquee {
+    display: flex;
+    min-height: 24px;
+    height: fit-content;
+    justify-content: space-around;
+  }
+
+  .marquee-container {
+    overflow: hidden;
+    height: fit-content;
+  }
+`;
+
+const LogoContainer = styled.div`
+  display: flex;
+  height: 24px;
+
+  > svg {
+    height: 24px;
+    width: 24px;
+    padding: 0 !important;
+    margin: auto 0;
+  }
+`;
+
+const TickerContainer = styled.div`
+  display: flex;
+  height: fit-content;
+  border-right: 2px solid ${colors.border};
+  width: 100%;
+  padding: 0 16px;
+  justify-content: center;
+
+  > {
+    &:not(:last-child) {
+      margin-right: 8px;
+    }
+  }
+`;
+
+const TickerTitle = styled(Title)`
+  font-size: 12px;
+  line-height: 16px;
+  margin: auto 0;
+  color: ${colors.tertiaryText};
+`;
+
+const TickerPrice = styled(Title)`
+  font-size: 12px;
+  line-height: 16px;
+  margin: auto 0;
+  color: ${colors.primaryText};
+`;
+
+const TickerChange = styled(Title)<{ percentage: number }>`
+  font-size: 12px;
+  line-height: 16px;
+  margin: auto 0;
+  color: ${(props) =>
+    props.percentage === 0
+      ? colors.tertiaryText
+      : props.percentage > 0
+      ? colors.green
+      : colors.red};
+`;
+
+const FloatingBackgroundContainer = styled.div<{ backgroundColor?: string }>`
+  position: absolute;
+  top: 40px;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  ${(props) =>
+    props.backgroundColor ? `background: ${props.backgroundColor};` : ""};
 `;
 
 const Hero = () => {
+  const { video } = useScreenSize();
+
   return (
     <MainContainer fluid>
       <PriceTicker />
@@ -108,6 +201,22 @@ const Hero = () => {
           </ButtonContainer>
         </Col>
       </TextContainer>
+      <FloatingBackgroundContainer>
+        <ReactPlayer
+          key="video-player"
+          url="https://storage.googleapis.com/ribbon-bucket/verbn/launch.mp4"
+          playing={true}
+          width={video.width}
+          height={video.height}
+          style={{
+            minWidth: video.width,
+            minHeight: video.height,
+          }}
+          muted
+          loop
+        />
+      </FloatingBackgroundContainer>
+      <FloatingBackgroundContainer backgroundColor="#000000CC" />
     </MainContainer>
   );
 };
@@ -115,15 +224,10 @@ const Hero = () => {
 const PriceTicker = () => {
   const { tickerData } = useContext(ExternalAPIDataContext);
 
-  useEffect(() => {
-    console.log(tickerData);
-  }, [tickerData]);
-
   return (
     <Ticker>
       <AnimatePresence exitBeforeEnter>
         <motion.div
-          className="d-flex justify-content-end mt-auto mb-auto"
           transition={{
             duration: 0.25,
             type: "keyframes",
@@ -140,7 +244,22 @@ const PriceTicker = () => {
           }}
         >
           <Marquee gradient={false} speed={75}>
-            <p>hi</p>
+            {Object.values(tickerData.data).map((token) => {
+              const Logo = getAssetLogo(token.asset as Assets);
+              return (
+                <TickerContainer>
+                  <LogoContainer>
+                    <Logo showBackground />
+                  </LogoContainer>
+                  <TickerTitle>{token.asset}</TickerTitle>
+                  <TickerPrice>${token.price.toFixed(2)}</TickerPrice>
+                  <TickerChange percentage={token.dailyChange}>
+                    {token.dailyChange > 0 && "+"}
+                    {token.dailyChange.toFixed(2)}%
+                  </TickerChange>
+                </TickerContainer>
+              );
+            })}
           </Marquee>
         </motion.div>
       </AnimatePresence>

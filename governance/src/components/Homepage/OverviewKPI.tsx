@@ -57,7 +57,7 @@ const FloatingBackgroundContainer = styled.div<{ backgroundColor?: string }>`
 `;
 
 const OverviewKPI = () => {
-  const { width, height } = useScreenSize();
+  const { width, height, video } = useScreenSize();
   const { data: rbnToken, loading: rbnTokenAccountLoading } = useRBNToken();
   const { info, loading: assetInfoLoading } = useAssetInfo("RBN");
   const { price: RBNPrice, loading: assetPriceLoading } = useAssetPrice({
@@ -77,24 +77,6 @@ const OverviewKPI = () => {
     }
     return 0;
   }, [info, rbnToken]);
-
-  const [videoWidth, videoHeight] = useMemo(() => {
-    /**
-     * Screen size exactly 16:9
-     */
-    if (width / height === 16 / 9) {
-      return [width, height];
-    }
-
-    /**
-     * If screen are longer than 16:9
-     */
-    if (width / height > 16 / 9) {
-      return [width, width * (9 / 16)];
-    }
-
-    return [height * (16 / 9), height];
-  }, [height, width]);
 
   return (
     <>
@@ -217,11 +199,11 @@ const OverviewKPI = () => {
           key="video-player"
           url="https://storage.googleapis.com/ribbon-bucket/verbn/launch.mp4"
           playing={true}
-          width={videoWidth}
-          height={videoHeight}
+          width={video.width}
+          height={video.height}
           style={{
-            minWidth: videoWidth,
-            minHeight: videoHeight,
+            minWidth: video.width,
+            minHeight: video.height,
           }}
           muted
           loop
