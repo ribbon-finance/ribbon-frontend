@@ -564,8 +564,9 @@ export const getAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
     case "rUSDC-ETH-P-THETA":
     case "ryvUSDC-ETH-P-THETA":
-    case "rUSDC-AVAX-P-THETA":
       return "USDC";
+    case "rUSDC-AVAX-P-THETA":
+      return "USDC.e";
     case "rETH-THETA":
     case "rstETH-THETA":
       return "WETH";
@@ -618,8 +619,9 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
 export const getDisplayAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
     case "rUSDC-ETH-P-THETA":
-    case "rUSDC-AVAX-P-THETA":
       return "USDC";
+    case "rUSDC-AVAX-P-THETA":
+      return "USDC.e";
     case "rETH-THETA":
       return "WETH";
     case "rBTC-THETA":
@@ -655,7 +657,7 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "rAVAX-THETA": ["WAVAX"],
     "rsAVAX-THETA": ["WAVAX", "sAVAX"],
     "rUSDC-ETH-P-THETA": ["USDC"],
-    "rUSDC-AVAX-P-THETA": ["USDC"],
+    "rUSDC-AVAX-P-THETA": ["USDC.e"],
     "rstETH-THETA": ["WETH", "stETH"],
     "ryvUSDC-ETH-P-THETA": ["USDC"],
     "rPERP-TSRY": ["PERP"],

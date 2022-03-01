@@ -29,6 +29,7 @@ const VaultDeposit: React.FC<VaultDepositProps> = ({ vaultOption }) => {
           case "WBTC":
             return WBTCDepositAnimationData;
           case "USDC":
+          case "USDC.e":
             return USDCDepositAnimationData;
           case "AAVE":
             return AAVEDepositAnimationData;
