@@ -28,7 +28,6 @@ import {
   VaultVersionList,
   isPutVault,
 } from "../../../constants/constants";
-import { productCopies } from "../productCopies";
 import { BarChartIcon, GlobeIcon } from "../../../assets/icons/icons";
 import { getAssetDisplay, getAssetLogo } from "../../../utils/asset";
 import { getVaultColor } from "../../../utils/vault";
@@ -392,11 +391,11 @@ const YieldCard: React.FC<YieldCardProps> = ({
             {/* Tags */}
             <TagContainer>
               {/* Product tags */}
-              {productCopies[vault].tags.map((tag) => (
-                <ProductTag key={tag} color={color}>
-                  <Subtitle>{tag}</Subtitle>
-                </ProductTag>
-              ))}
+              <ProductTag color={color}>
+                <Subtitle>
+                  {isPutVault(vault) ? "PUT-SELLING" : "COVERED CALL"}
+                </Subtitle>
+              </ProductTag>
               <div className="d-flex">
                 {/* Version tags */}
                 {VaultVersionList.map((version) =>

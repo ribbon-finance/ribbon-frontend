@@ -20,12 +20,12 @@ import {
   getDisplayAssets,
   getEtherscanURI,
   hasVaultVersion,
+  isPutVault,
   VaultAddressMap,
   VaultList,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
-import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
@@ -386,15 +386,9 @@ const HeroSection: React.FC<{
           <div className="row mx-lg-n1 position-relative">
             <div style={{ zIndex: 1 }} className="col-xl-6 d-flex flex-column">
               <div className="d-flex flex-row my-3">
-                {productCopies[vaultOption].tags.map((tag) => (
-                  <TagPill
-                    className="mr-2 text-uppercase"
-                    key={tag}
-                    color={color}
-                  >
-                    {tag}
-                  </TagPill>
-                ))}
+                <TagPill className="mr-2 text-uppercase" color={color}>
+                  {isPutVault(vaultOption) ? "PUT-SELLING" : "COVERED CALL"}
+                </TagPill>
               </div>
 
               <HeroText>

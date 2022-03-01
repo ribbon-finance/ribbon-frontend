@@ -13,10 +13,6 @@ const Link = styled.a`
   }
 `;
 
-interface ProductCopies {
-  tags: string[];
-}
-
 export const vaultAudit = (vaultOption: VaultOptions) => {
   if (vaultOption === "rSOL-THETA") {
     return (
@@ -50,46 +46,4 @@ export const vaultAudit = (vaultOption: VaultOptions) => {
       </>
     );
   }
-};
-
-export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
-  "rETH-THETA": {
-    tags: ["COVERED CALL"],
-  },
-  "rBTC-THETA": {
-    tags: ["COVERED CALL"],
-  },
-  "rUSDC-ETH-P-THETA": {
-    tags: ["PUT-SELLING"],
-  },
-  "ryvUSDC-ETH-P-THETA": {
-    tags: ["PUT-SELLING"],
-  },
-  "rstETH-THETA": {
-    tags: ["COVERED CALL"],
-  },
-  "rAAVE-THETA": {
-    tags: ["COVERED CALL"],
-  },
-  "rAVAX-THETA": {
-    tags: ["COVERED CALL"],
-  },
-  "rsAVAX-THETA": {
-    tags: ["COVERED CALL"],
-  },
-  "rUSDC-AVAX-P-THETA": {
-    tags: ["PUT-SELLING"],
-  },
-  "rPERP-TSRY": {
-    tags: [],
-  },
-  "rNEAR-THETA": {
-    tags: ["COVERED CALL"],
-  },
-  "rAURORA-THETA": {
-    tags: ["COVERED CALL"],
-  },
-  "rSOL-THETA": {
-    tags: ["COVERED CALL"],
-  },
 };
