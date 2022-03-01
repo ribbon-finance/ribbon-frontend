@@ -48,11 +48,11 @@ const FilterContainer = styled.div`
   }
 `;
 
-const YieldCardsContainer = styled.ul`
+const YieldCardsContainer = styled.ul<{ isCentered: boolean }>`
   display: flex;
   width: calc(320px * 4);
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: ${(props) => (props.isCentered ? "center" : "flex-start")};
   margin-bottom: 40px;
   padding-inline-start: 0;
 
@@ -128,7 +128,7 @@ const ProductCatalogueGridView: React.FC<
     }
 
     return (
-      <YieldCardsContainer>
+      <YieldCardsContainer isCentered={filteredProducts.length < 4}>
         {filteredProducts.map((vault) => (
           <YieldCardContainer
             key={vault}
