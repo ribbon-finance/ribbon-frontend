@@ -1,3 +1,4 @@
+import React from "react";
 import styled, { keyframes } from "styled-components";
 
 const flashing = () => keyframes`
@@ -21,7 +22,7 @@ const Dot = styled.span<{ delay: number }>`
   display: inline;
 `;
 
-const useLoadingText = (text: string = "Loading") => {
+export const LoadingText: React.FC<{ text: string }> = ({ text }) => {
   return (
     <span>
       {text}
@@ -33,6 +34,10 @@ const useLoadingText = (text: string = "Loading") => {
       </Dots>
     </span>
   );
+};
+
+const useLoadingText = (text: string = "Loading") => {
+  return <LoadingText text={text} />;
 };
 
 export default useLoadingText;
