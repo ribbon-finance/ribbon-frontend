@@ -66,7 +66,7 @@ export const PendingTransactionsContextProvider: React.FC<{
         if (isEVMChain(chain)) {
           receipt = await (
             ethereumProvider as providers.Web3Provider
-          ).waitForTransaction(transaction.txhash, 5);
+          ).waitForTransaction(transaction.txhash, 1);
         } else if (isSolanaChain(chain)) {
           receipt = await connection.confirmTransaction(
             transaction.txhash,
