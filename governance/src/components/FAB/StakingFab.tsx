@@ -28,6 +28,9 @@ const FABContainer = styled.div.attrs({
   height: ${theme.governance.actionBar.height}px;
   width: 100%;
 
+  border-top: 1px solid ${colors.border};
+  border-bottom: 1px solid ${colors.border};
+
   backdrop-filter: blur(40px);
   /**
    * Firefox desktop come with default flag to have backdrop-filter disabled

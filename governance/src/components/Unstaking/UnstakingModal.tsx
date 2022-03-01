@@ -120,7 +120,6 @@ const UnstakingModal = () => {
           />
         );
     }
-    return <></>;
   }, [onUnstake, stepNum, unstakingModalState]);
 
   const [unstakingMode, unstakingScenario] = useMemo((): [
