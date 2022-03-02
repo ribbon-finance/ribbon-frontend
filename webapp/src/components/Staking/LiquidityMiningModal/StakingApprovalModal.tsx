@@ -87,7 +87,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
       });
 
       // Wait for transaction to be approved
-      await provider.waitForTransaction(txhash, 5);
+      await provider.waitForTransaction(txhash, 2);
       setStep("info");
       setTxId("");
       onClose();
