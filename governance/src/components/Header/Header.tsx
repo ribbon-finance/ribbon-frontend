@@ -186,11 +186,13 @@ const Header = () => {
             "/profile",
             Boolean(useRouteMatch({ path: "/profile", exact: true }))
           )}
-          {/* {renderLinkItem(
-            "VOTING",
-            "/voting",
-            Boolean(useRouteMatch({ path: "/voting", exact: true }))
-          )} */}
+          {renderLinkItem(
+            "STAKING",
+            "https://app.ribbon.finance/staking",
+            false,
+            true,
+            true
+          )}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
