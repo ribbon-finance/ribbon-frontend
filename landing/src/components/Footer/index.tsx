@@ -89,6 +89,16 @@ const links = {
       external: true,
     },
     {
+      title: "GOVERNANCE PORTAL",
+      to: "https://vote.ribbon.finance",
+      external: true,
+    },
+    {
+      title: "SNAPSHOT",
+      to: "https://snapshot.org/#/rbn.eth",
+      external: true,
+    },
+    {
       title: "MEDIA KIT",
       to: "/ribbon_media_kit.zip",
       external: true,
@@ -96,11 +106,6 @@ const links = {
     },
   ] as Array<Link>,
   data: [
-    {
-      title: "SNAPSHOT",
-      to: "https://snapshot.org/#/rbn.eth",
-      external: true,
-    },
     {
       title: "TOKEN TERMINAL",
       to: "https://www.tokenterminal.com/terminal/projects/ribbon-finance",
