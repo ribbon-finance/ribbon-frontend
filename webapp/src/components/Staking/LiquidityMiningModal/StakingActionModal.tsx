@@ -197,7 +197,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
         stakeAsset: vaultOption,
       });
 
-      await provider.waitForTransaction(txhash, 5);
+      await provider.waitForTransaction(txhash, 2);
       setStep("warning");
       setTxId("");
       setInput("");
