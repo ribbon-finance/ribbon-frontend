@@ -14,7 +14,7 @@ import { Assets } from "shared/lib/store/types";
 import ReactPlayer from "react-player";
 
 const MainContainer = styled(Container)`
-  height: 780px;
+  height: calc(100vh - 70px);
   position: relative;
   background: transparent;
 
@@ -221,7 +221,7 @@ const Hero = () => {
           loop
         />
       </FloatingBackgroundContainer>
-      <FloatingBackgroundContainer backgroundColor="#000000CC" />
+      <FloatingBackgroundContainer backgroundColor="#000000AA" />
     </MainContainer>
   );
 };
