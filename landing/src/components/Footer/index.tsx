@@ -4,11 +4,17 @@ import styled from "styled-components";
 
 import { BaseLink, Title } from "../../designSystem";
 import colors from "shared/lib/designSystem/colors";
+import sizes from "../../designSystem/sizes";
 
 const FooterContainer = styled(Row)`
   width: 100%;
-  padding-top: 80px;
-  padding-bottom: 160px;
+  padding: 80px 0;
+
+  > * {
+    @media (max-width: ${sizes.md}px) {
+      margin-bottom: 40px;
+    }
+  }
 `;
 
 const LinkItem = styled.div`
