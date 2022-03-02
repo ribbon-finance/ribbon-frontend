@@ -863,6 +863,10 @@ export const RibbonTreasuryAddress = {
   [CHAINID.ETH_MAINNET]: "0xDAEada3d210D2f45874724BeEa03C7d4BBD41674",
 };
 
+export const VERBNRewardsAddress = isDevelopment()
+  ? governanceDeployment.kovan.VERBNRewards
+  : governanceDeployment.mainnet.VERBNRewards;
+
 export const VotingEscrowAddress = isDevelopment()
   ? governanceDeployment.kovan.RBNVotingEscrow
   : governanceDeployment.mainnet.RBNVotingEscrow;

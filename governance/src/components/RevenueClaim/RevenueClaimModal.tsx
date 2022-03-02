@@ -1,13 +1,20 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "styled-components";
-import { ReactComponent as RevenueClaimIcon } from "../../assets/icons/revenueClaim.svg";
+import { useTranslation, Trans } from "react-i18next";
 
+import { ReactComponent as RevenueClaimIcon } from "../../assets/icons/revenueClaim.svg";
 import BasicModal from "shared/lib/components/Common/BasicModal";
-import { Title } from "shared/lib/designSystem";
+import {
+  BaseModalWarning,
+  SecondaryText,
+  Title,
+} from "shared/lib/designSystem";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import NumberInput from "shared/lib/components/Inputs/NumberInput";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import ToggleRowItem from "./ToggleRowItem";
+import { ActionButton } from "shared/lib/components/Common/buttons";
+import colors from "shared/lib/designSystem/colors";
 
 const ModalContainer = styled(BasicModal)``;
 
@@ -18,6 +25,10 @@ const ModalColumn = styled.div<{ marginTop?: number | "auto" }>`
     props.marginTop === "auto"
       ? props.marginTop
       : `${props.marginTop === undefined ? 24 : props.marginTop}px`};
+`;
+
+const WarningHighlight = styled.strong`
+  color: ${colors.green};
 `;
 
 const LogoContainer = styled.div.attrs({
@@ -39,13 +50,21 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
   onClose,
 }) => {
   const loadingText = useLoadingText();
+  const { t } = useTranslation();
+
+  // TODO: - Retrieve vault revenue
+  // TODO: - Retrieve Share of unlock penalty
 
   const [claimVaultRevenue, setClaimVaultRevenue] = useState(false);
   const [claimUnlockPenalty, setClaimUnlockPenalty] = useState(false);
   const [lockToVERBN, setlockToVERBN] = useState(false);
 
+  const canProceed = useMemo(() => {
+    return true;
+  }, []);
+
   return (
-    <ModalContainer show={show} headerBackground height={532} onClose={onClose}>
+    <ModalContainer show={show} headerBackground height={576} onClose={onClose}>
       <>
         <ModalColumn marginTop={8}>
           <Title style={{ zIndex: 1 }}>CLAIM RIBBON REVENUE</Title>
@@ -71,7 +90,7 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
             }}
           />
         </ModalColumn>
-        <ModalColumn marginTop={16}>
+        <ModalColumn marginTop={24}>
           <NumberInput
             size="s"
             leftContent={
@@ -94,10 +113,23 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
         </ModalColumn>
         <ModalColumn marginTop={24}>
           <ToggleRowItem
-            title="Claim Vault Revenue"
+            title={t("governance:TooltipExplanations:claimVaultRevenue:title")}
             tooltip={{
-              title: "Claim Vault Revenue",
-              explanation: "TEST",
+              title: t(
+                "governance:TooltipExplanations:claimVaultRevenue:title"
+              ),
+              explanation: (
+                <>
+                  {t(
+                    "governance:TooltipExplanations:claimVaultRevenue:description"
+                  )}
+                  <br />
+                  <br />
+                  {t(
+                    "governance:TooltipExplanations:claimRibbonRevenueAllYesDescription"
+                  )}
+                </>
+              ),
             }}
             isChecked={claimVaultRevenue}
             onChecked={setClaimVaultRevenue}
@@ -105,10 +137,23 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
         </ModalColumn>
         <ModalColumn marginTop={16}>
           <ToggleRowItem
-            title="Claim Unlock Penalty"
+            title={t("governance:TooltipExplanations:claimUnlockPenalty:title")}
             tooltip={{
-              title: "Claim Unlock Penalty",
-              explanation: "TEST",
+              title: t(
+                "governance:TooltipExplanations:claimUnlockPenalty:title"
+              ),
+              explanation: (
+                <>
+                  {t(
+                    "governance:TooltipExplanations:claimUnlockPenalty:description"
+                  )}
+                  <br />
+                  <br />
+                  {t(
+                    "governance:TooltipExplanations:claimRibbonRevenueAllYesDescription"
+                  )}
+                </>
+              ),
             }}
             isChecked={claimUnlockPenalty}
             onChecked={setClaimUnlockPenalty}
@@ -116,15 +161,49 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
         </ModalColumn>
         <ModalColumn marginTop={16}>
           <ToggleRowItem
-            title="Lock to veRBN"
+            title={t("governance:TooltipExplanations:lockToVERBN:title")}
             tooltip={{
-              title: "Lock to veRBN",
-              explanation: "TEST",
+              title: t("governance:TooltipExplanations:lockToVERBN:title"),
+              explanation: (
+                <>
+                  {t("governance:TooltipExplanations:lockToVERBN:description")}
+                  <br />
+                  <br />
+                  {t(
+                    "governance:TooltipExplanations:claimRibbonRevenueAllYesDescription"
+                  )}
+                </>
+              ),
             }}
             isChecked={lockToVERBN}
             onChecked={setlockToVERBN}
           />
         </ModalColumn>
+        <ModalColumn marginTop="auto">
+          <ActionButton
+            disabled={!canProceed}
+            onClick={() => {
+              if (!canProceed) {
+                return;
+              }
+              // TODO:
+            }}
+            className="py-3 mb-2"
+            color={colors.red}
+          >
+            {t("shared:ActionButtons:previewClaim")}
+          </ActionButton>
+        </ModalColumn>
+        <BaseModalWarning color={colors.green}>
+          <SecondaryText
+            color={`${colors.green}A3`}
+            className="w-100 text-center"
+            fontWeight={400}
+          >
+            {t("governance:WarningMessages:timeTilNextRevenueDistribution")}{": "}
+            <WarningHighlight>6D 12H 12M</WarningHighlight>
+          </SecondaryText>
+        </BaseModalWarning>
       </>
     </ModalContainer>
   );

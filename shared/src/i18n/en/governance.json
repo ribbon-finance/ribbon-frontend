@@ -1,0 +1,20 @@
+{
+  "TooltipExplanations": {
+    "claimRibbonRevenueAllYesDescription": "If you select “yes” for all three fields, the claim transaction will take all three actions in the single transaction.",
+    "claimVaultRevenue": {
+      "title": "Claim Vault Revenue",
+      "description": "Selecting “yes” will allow you to claim your share of the Ribbon vault revenues in the claim transaction."
+    },
+    "claimUnlockPenalty": {
+      "title": "Claim Unlock Penalty",
+      "description": "Selecting “yes” will allow you to claim your share of the RBN generated from the early unlock penalty in the claim transaction. The early unlock penalty is applied to veRBN unlocks that take place before their lockup expiry."
+    },
+    "lockToVERBN": {
+      "title": "Lock to veRBN",
+      "description": "Selecting “yes” will allow you to lock the RBN from your share of the early unlock penalty in the claim transaction."
+    }
+  },
+  "WarningMessages": {
+    "timeTilNextRevenueDistribution": "Time till next distribution of Ribbon revenue"
+  }
+}

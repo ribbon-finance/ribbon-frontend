@@ -17,6 +17,7 @@ const InputContainer = styled(BaseInputContainer).attrs({
   className: "d-flex flex-row flex-grow-1",
 })`
   padding: 10px 0;
+  margin-top: 0;
 `;
 
 const Input = styled(BaseInput)``;

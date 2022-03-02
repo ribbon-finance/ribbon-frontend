@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
@@ -13,7 +14,7 @@ interface ToggleRowItemProps {
   title: string;
   tooltip?: {
     title: string;
-    explanation: string;
+    explanation: ReactNode;
   };
   isChecked: boolean;
   onChecked: (checked: boolean) => void;
@@ -29,7 +30,7 @@ const ToggleRowItem: React.FC<ToggleRowItemProps> = ({
     {
       value: "true",
       display: "YES",
-      textColor: isChecked ? colors.red : colors.tertiaryText,
+      textColor: isChecked ? colors.green : colors.tertiaryText,
     },
     {
       value: "false",
@@ -61,7 +62,7 @@ const ToggleRowItem: React.FC<ToggleRowItemProps> = ({
           onSelect={(value) => onChecked(value === "true")}
           config={{
             theme: "outline",
-            color: colors.red,
+            color: isChecked ? colors.green : colors.red,
             backgroundColor: colors.background.three,
             button: {
               px: 12,
