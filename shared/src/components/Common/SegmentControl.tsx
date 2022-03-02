@@ -136,14 +136,17 @@ const ActiveBackground = styled(Frame)<{
   }}
 `;
 
-const SegmentControlButton = styled.div<{
+const SegmentControlButton = styled.div.attrs({
+  className: "d-flex align-items-center justify-content-center",
+})<{
   widthType: WidthType;
   px: number;
   py: number;
+  spacingBetweenButtons?: boolean;
 }>`
   padding: ${(props) => `${props.py}px ${props.px}px`};
   z-index: 1;
-  margin-right: 4px;
+  margin-right: ${(props) => (props.spacingBetweenButtons ? "4px" : "0")};
 
   &:last-child {
     margin-right: 0px;
@@ -284,6 +287,7 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
             widthType={widthType}
             px={button.px}
             py={button.py}
+            spacingBetweenButtons={theme !== "outline"}
           >
             <SegmentControlButtonText
               color={segment.textColor ?? color}

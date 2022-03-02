@@ -4,7 +4,8 @@ import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { useState } from "react";
 import { BaseButton } from "shared/lib/designSystem";
-import {ReactComponent as RevenueClaimIcon}  from "shared/lib/assets/icons/revenueClaim.svg";
+import { ReactComponent as RevenueClaimIcon } from "../../assets/icons/revenueClaim.svg";
+import RevenueClaimModal from "../RevenueClaim/RevenueClaimModal";
 
 const Button = styled(BaseButton).attrs({
   className: "d-flex align-items-center justify-content-center",
@@ -12,7 +13,6 @@ const Button = styled(BaseButton).attrs({
   width: 48px;
   height: 48px;
   padding: 0;
-  padding-bottom: 12px;
   color: ${colors.primaryText};
   font-weight: bold;
   font-size: 24px;
@@ -28,8 +28,12 @@ const RibbonClaimButton = () => {
   return (
     <HeaderButtonContainer>
       <Button role="button" onClick={() => setClaimModalOpen(!claimModalOpen)}>
-
+        <RevenueClaimIcon />
       </Button>
+      <RevenueClaimModal
+        show={claimModalOpen}
+        onClose={() => setClaimModalOpen(false)}
+      />
     </HeaderButtonContainer>
   );
 };
