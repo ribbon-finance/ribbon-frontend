@@ -13,13 +13,18 @@ const MainContainer = styled(Container)`
 `;
 
 const MissionTitleRow = styled(Row)`
+  margin: 0;
   margin-top: 40px;
+  text-align: center;
   justify-content: center;
+  width: 100%;
 `;
 
 const MissionSubtitleRow = styled(Row)`
+  margin: 0;
   margin-top: 24px;
   justify-content: center;
+  width: 100%;
 `;
 
 const MissionTitle = styled(Title)`
@@ -36,6 +41,7 @@ const MissionTitle = styled(Title)`
 `;
 
 const MissionSubtitle = styled(BaseText)`
+  display: flex;
   font-size: 16px;
   line-height: 24px;
   color: ${colors.text};
@@ -50,12 +56,25 @@ const MissionFactor = styled(Row)`
   border-radius: 6px;
   padding: 18px 0px;
   text-align: center;
+  width: 100%;
+  margin: 0;
 
   > div {
     padding: 0px 24px;
 
-    &:not(:last-child) {
-      border-right: 2px solid ${colors.background.three};
+    @media (min-width: ${sizes.md}px) {
+      &:not(:last-child) {
+        border-right: 2px solid ${colors.background.three};
+      }
+    }
+  }
+
+  @media (max-width: ${sizes.sm}px) {
+    padding: 0;
+
+    > div {
+      padding: 18px 0;
+      border-bottom: 1px solid ${colors.background.three};
     }
   }
 `;
@@ -74,41 +93,47 @@ const Mission = () => {
   return (
     <MainContainer>
       <MissionTitleRow fluid>
-        <Col xs={12} lg={10} xl={8} className="d-flex">
-          <MissionTitle>
-            Multichain Decentralised Structured Products
-          </MissionTitle>
+        <Col xs={12} lg={10} xl={8}>
+          <Container>
+            <MissionTitle>
+              Multichain Decentralised Structured Products
+            </MissionTitle>
+          </Container>
         </Col>
       </MissionTitleRow>
 
       <MissionSubtitleRow>
-        <Col xs={12} md={8} xl={6} className="d-flex">
-          <MissionSubtitle>
-            Ribbon uses financial engineering to create structured products that
-            deliver sustainable yield. Ribbon's first product focuses on yield
-            through automated options strategies. The protocol also allows
-            developers to create arbitrary structured products through combining
-            various DeFi derivatives.
-          </MissionSubtitle>
+        <Col md={12} xl={6}>
+          <Container>
+            <MissionSubtitle>
+              Ribbon uses financial engineering to create structured products
+              that deliver sustainable yield. Ribbon's first product focuses on
+              yield through automated options strategies. The protocol also
+              allows developers to create arbitrary structured products through
+              combining various DeFi derivatives.
+            </MissionSubtitle>
+          </Container>
         </Col>
       </MissionSubtitleRow>
 
       <MissionSubtitleRow>
-        <Col xs={12} md={6}>
-          <MissionFactor>
-            <Col xs={12} md={4}>
-              <FactorTitle>Total Value Locked</FactorTitle>
-              <FactorAmount>$200M</FactorAmount>
-            </Col>
-            <Col xs={12} md={4}>
-              <FactorTitle>Notional Options Sold</FactorTitle>
-              <FactorAmount>$3.2B</FactorAmount>
-            </Col>
-            <Col xs={12} md={4}>
-              <FactorTitle>Protocol Revenue</FactorTitle>
-              <FactorAmount>$100.5K</FactorAmount>
-            </Col>
-          </MissionFactor>
+        <Col xs={12} md={12} lg={6}>
+          <Container>
+            <MissionFactor>
+              <Col xs={12} md={4}>
+                <FactorTitle>Total Value Locked</FactorTitle>
+                <FactorAmount>$200M</FactorAmount>
+              </Col>
+              <Col xs={12} md={4}>
+                <FactorTitle>Notional Options Sold</FactorTitle>
+                <FactorAmount>$3.2B</FactorAmount>
+              </Col>
+              <Col xs={12} md={4}>
+                <FactorTitle>Protocol Revenue</FactorTitle>
+                <FactorAmount>$100.5K</FactorAmount>
+              </Col>
+            </MissionFactor>
+          </Container>
         </Col>
       </MissionSubtitleRow>
     </MainContainer>

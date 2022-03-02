@@ -24,6 +24,10 @@ import colors from "shared/lib/designSystem/colors";
 import { getSolanaClusterURI } from "shared/lib/utils/env";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
+import github from "./img/Footer/github.svg";
+import discord from "./img/Footer/discord.svg";
+import twitter from "./img/Footer/twitter.svg";
+import sizes from "./designSystem/sizes";
 
 const Body = styled.div`
   background-color: ${colors.background.one};
@@ -38,12 +42,24 @@ const MainContainer = styled.div`
 const StickyFooter = styled.div`
   width: 100%;
   height: fit-content;
+  justify-content: space-between;
   position: sticky;
   bottom: 0;
   display: flex;
 
   > * {
+    display: flex;
     margin: auto;
+    width: 100%;
+    justify-content: center;
+
+    &:first-child {
+      justify-content: flex-start;
+    }
+
+    &:last-child {
+      justify-content: flex-end;
+    }
   }
 `;
 
@@ -86,7 +102,15 @@ function App() {
                       <Footer />
                     </Router>
                     <StickyFooter>
-                      <Scroller />
+                      <div>
+                        <p>Hi</p>
+                      </div>
+                      <div>
+                        <Scroller />
+                      </div>
+                      <div>
+                        <SocialMedia />
+                      </div>
                     </StickyFooter>
                   </Body>
                 </ExternalAPIDataContextProvider>
@@ -112,8 +136,9 @@ const Progress = styled(CircularProgressbar)`
   }
 `;
 
-const Shadow = styled.div<{ highlight: boolean }>`
+const ProgressContainer = styled.div<{ highlight: boolean }>`
   height: fit-content;
+  width: fit-content;
   margin-bottom: 24px;
   border-radius: 50%;
 
@@ -138,7 +163,7 @@ const Scroller = () => {
   }, [height]);
 
   return (
-    <Shadow highlight={progress > 99}>
+    <ProgressContainer highlight={progress > 99}>
       <Progress
         value={progress}
         styles={buildStyles({
@@ -152,12 +177,61 @@ const Scroller = () => {
           pathTransitionDuration: 0.25,
 
           // Colors
-          pathColor: progress > 99 ? colors.red : `#ffffff75`,
-          trailColor: "#00000000",
+          pathColor: progress > 99 ? colors.red : `#ffffff`,
+          trailColor: "#1C1C22",
           backgroundColor: "#00000000",
         })}
       />
-    </Shadow>
+    </ProgressContainer>
+  );
+};
+
+const Socials = styled.div`
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(40px);
+  border-radius: 100px;
+  margin-bottom: 24px;
+  margin-right: 24px;
+
+  @media (max-width: ${sizes.md}px) {
+    display: none;
+  }
+`;
+
+const SocialButton = styled.button`
+  justify-content: center;
+  cursor: pointer;
+  margin: 0 $spacing-2;
+  transition: 0.5s;
+  background: none;
+  border: none;
+  padding: 20px;
+
+  &:hover {
+    transition: 0.5s;
+
+    > img {
+      width: 24px;
+      height: 24px;
+      transition: 0.75s;
+      filter: brightness(3);
+    }
+  }
+`;
+
+const SocialMedia = () => {
+  return (
+    <Socials>
+      <SocialButton>
+        <img src={github} alt="github" />
+      </SocialButton>
+      <SocialButton>
+        <img src={discord} alt="discord" />
+      </SocialButton>
+      <SocialButton>
+        <img src={twitter} alt="twitter" />
+      </SocialButton>
+    </Socials>
   );
 };
 
