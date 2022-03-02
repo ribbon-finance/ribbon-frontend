@@ -89,7 +89,7 @@ const UnstakingModal = () => {
         ),
       });
 
-      await provider.waitForTransaction(tx.hash, 5);
+      await provider.waitForTransaction(tx.hash, 2);
 
       setUnstakingModalState((prev) => ({
         ...prev,

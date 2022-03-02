@@ -115,7 +115,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
         stakeAsset: vaultOption,
       });
 
-      await provider.waitForTransaction(txhash, 5);
+      await provider.waitForTransaction(txhash, 2);
       setStep("claimed");
     } catch (err) {
       setStep("info");

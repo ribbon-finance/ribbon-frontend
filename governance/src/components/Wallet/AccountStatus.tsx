@@ -52,6 +52,10 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
         z-index: 1000;
         position: relative;
 
+        @media (max-width: ${sizes.lg}px) {
+          padding-right: 40px;
+        }
+
         @media (max-width: ${sizes.md}px) {
           display: none;
         }

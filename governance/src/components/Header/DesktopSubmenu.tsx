@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import HeaderButtonContainer from "shared/lib/components/Common/HeaderButtonContainer";
 import sizes from "shared/lib/designSystem/sizes";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
@@ -27,6 +26,8 @@ const MenuButton = styled(BaseButton).attrs({
 })`
   width: 48px;
   height: 48px;
+  background-color: ${colors.background.three};
+  border-radius: 8px;
   padding: 0;
   padding-bottom: 12px;
   color: ${colors.primaryText};
@@ -66,20 +67,20 @@ const DesktopSubmenu = () => {
   });
 
   const openFAQ = useCallback(() => {
+    setIsMenuOpen(false);
     history.push("/faqs");
   }, [history]);
 
   const openLink = useCallback((link) => {
+    setIsMenuOpen(false);
     window.open(link);
   }, []);
 
   return (
-    <Container>
-      <HeaderButtonContainer containerRef={desktopSubmenuRef}>
-        <MenuButton role="button" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          ...
-        </MenuButton>
-      </HeaderButtonContainer>
+    <Container ref={desktopSubmenuRef}>
+      <MenuButton role="button" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+        ...
+      </MenuButton>
       <MenuContainer isMenuOpen={isMenuOpen}>
         <MenuItem title="FAQ" onClick={openFAQ} />
         <MenuItem

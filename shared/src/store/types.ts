@@ -11,6 +11,7 @@ export const AssetsList = [
   "sAVAX",
   "WETH",
   "USDC",
+  "USDC.e",
   "WBTC",
   "stETH",
   "wstETH",

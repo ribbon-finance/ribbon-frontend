@@ -129,12 +129,12 @@ const StakingFAB = () => {
     }
 
     return {
-      veRBNAmount: formatBigNumber(veRBNBalance),
+      veRBNAmount: formatBigNumber(veRBNBalance, 18, 5),
       stakedRBNAmount: rbnTokenAccount
-        ? formatBigNumber(rbnTokenAccount.lockedBalance)
+        ? formatBigNumber(rbnTokenAccount.lockedBalance, 18, 5)
         : "0.00",
       unstakedRBNAmount: rbnTokenAccount
-        ? formatBigNumber(rbnTokenAccount.walletBalance)
+        ? formatBigNumber(rbnTokenAccount.walletBalance, 18, 5)
         : "0.00",
     };
   }, [active, loading, loadingText, rbnTokenAccount, veRBNBalance]);

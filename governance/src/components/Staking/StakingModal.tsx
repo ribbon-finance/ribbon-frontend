@@ -121,7 +121,7 @@ const StakingModal = () => {
         amount: amount,
       });
 
-      await provider.waitForTransaction(tx.hash, 5);
+      await provider.waitForTransaction(tx.hash, 2);
 
       setStakingModalState((prev) => ({
         ...prev,
@@ -161,7 +161,7 @@ const StakingModal = () => {
         expiry: expiryMoment,
       });
 
-      await provider.waitForTransaction(tx.hash, 5);
+      await provider.waitForTransaction(tx.hash, 2);
 
       setStakingModalState((prev) => ({
         ...prev,
@@ -213,7 +213,7 @@ const StakingModal = () => {
         expiry: expiryMoment,
       });
 
-      await provider.waitForTransaction(tx.hash, 5);
+      await provider.waitForTransaction(tx.hash, 2);
 
       setStakingModalState((prev) => ({
         ...prev,
@@ -343,7 +343,9 @@ const StakingModal = () => {
         let title = "Confirm Transaction";
         if (stakingModalState.pendingTransaction?.hash) {
           title =
-            stakingModalState.mode === "approve" ? "APPROVING RBN" : "LOCK RBN";
+            stakingModalState.mode === "approve"
+              ? "APPROVING RBN"
+              : "LOCKING RBN";
         }
 
         return (
