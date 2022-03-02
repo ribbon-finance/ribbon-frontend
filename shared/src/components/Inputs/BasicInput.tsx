@@ -32,7 +32,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   fontSize?: number;
   lineHeight?: number;
 }
-interface NumberInputProps {
+interface BasicInputProps {
   leftContent?: React.ReactNode;
   size?: "xs" | "s" | "m" | "l";
   rightButtonProps?: {
@@ -47,7 +47,7 @@ interface NumberInputProps {
   inputProps: InputProps;
 }
 
-const NumberInput: React.FC<NumberInputProps> = ({
+const BasicInput: React.FC<BasicInputProps> = ({
   size = "s",
   rightButtonProps,
   inputProps,
@@ -93,8 +93,6 @@ const NumberInput: React.FC<NumberInputProps> = ({
     return style;
   }, [sizeSpecificProps, inputProps, labelProps]);
 
-  console.log(inputProps);
-
   return (
     <Container>
       {!labelProps.isInside && (
@@ -129,4 +127,4 @@ const NumberInput: React.FC<NumberInputProps> = ({
   );
 };
 
-export default NumberInput;
+export default BasicInput;

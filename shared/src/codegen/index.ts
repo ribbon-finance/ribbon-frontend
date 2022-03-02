@@ -15,3 +15,4 @@ export type { RibbonV2ThetaVault } from "./RibbonV2ThetaVault";
 export type { RibbonV2stETHThetaVault } from "./RibbonV2stETHThetaVault";
 export type { VotingEscrow } from "./VotingEscrow";
 export type { VotingEscrowDelegationProxy } from "./VotingEscrowDelegationProxy";
+export type { VeRBNRewards } from "./VeRBNRewards";

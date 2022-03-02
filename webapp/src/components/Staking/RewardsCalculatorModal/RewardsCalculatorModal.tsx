@@ -8,9 +8,8 @@ import {
   SecondaryText,
   Title,
   BaseInput,
-  BaseInputButton,
 } from "shared/lib/designSystem";
-import NumberInput from "shared/lib/components/Inputs/NumberInput";
+import BasicInput from "shared/lib/components/Inputs/BasicInput";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import {
   LockupPeriodKey,
@@ -356,7 +355,7 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
           </StakingPoolContainer>
         </ModalColumn>
         <ModalColumn marginTop={16}>
-          <NumberInput
+          <BasicInput
             size="xs"
             rightButtonProps={{
               text: "MAX",
@@ -373,7 +372,7 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
             }}
           />
           <div className="mr-2" />
-          <NumberInput
+          <BasicInput
             size="xs"
             rightButtonProps={{
               text: "MAX",
