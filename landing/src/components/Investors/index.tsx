@@ -12,6 +12,7 @@ import Coinbase from "../../img/Investors/coinbase.svg";
 import Ethereal from "../../img/Investors/ethereal.svg";
 import Scalar from "../../img/Investors/scalar.svg";
 import Alliance from "../../img/Investors/alliance.svg";
+import Robot from "../../img/Investors/robot.svg";
 
 import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
@@ -24,8 +25,17 @@ const InvestorsTitle = styled(Title)`
 const InvestorCard = styled.div`
   background: ${colors.background.two};
   border-radius: 8px;
+  border: 2px solid transparent;
   margin-bottom: 16px;
   height: 120px;
+  transition: 0.2s ease-in;
+
+  &:hover {
+    transition: 0.2s;
+    border: 2px solid ${colors.red};
+    background-color: ${colors.red}12 !important;
+    box-shadow: 2px 4px 80px ${colors.red}50 !important;
+  }
 `;
 
 const InvestorRow = styled(Row)`
@@ -91,8 +101,8 @@ const investorList: Array<InvestorAsset> = [
     alt: "nascent",
   },
   {
-    src: "Robot Ventures",
-    isText: true,
+    src: Robot,
+    alt: "robot",
   },
   {
     src: Scalar,
