@@ -88,12 +88,11 @@ export const PendingTransactionsContextProvider: React.FC<{
             if (_transaction.txhash !== transaction.txhash) {
               return _transaction;
             }
-
-            return {
+            const pendingTx: PendingTransaction = {
               ..._transaction,
-              firstConfirmation: true,
               status: getTransactionStatus(),
             };
+            return pendingTx;
           })
         );
 
