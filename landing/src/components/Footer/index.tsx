@@ -17,9 +17,16 @@ const FooterContainer = styled(Row)`
   }
 `;
 
-const LinkItem = styled.div`
-  opacity: 0.48;
+const LinkContainer = styled(BaseLink)`
+  display: flex;
+  margin: auto;
   margin-top: 40px;
+  width: fit-content;
+`;
+
+const LinkItem = styled.div`
+  width: fit-content;
+  opacity: 0.48;
   text-align: center;
 
   &:hover {
@@ -123,7 +130,7 @@ const LinkList: FC<{ links: Array<Link> }> = ({ links }) => (
   <>
     {links.map((link) => {
       return (
-        <BaseLink
+        <LinkContainer
           to={link.to}
           target={link.external ? "_blank" : undefined}
           rel={link.external ? "noreferrer noopener" : undefined}
@@ -132,7 +139,7 @@ const LinkList: FC<{ links: Array<Link> }> = ({ links }) => (
           <LinkItem>
             <LinkItemText>{link.title}</LinkItemText>
           </LinkItem>
-        </BaseLink>
+        </LinkContainer>
       );
     })}
   </>

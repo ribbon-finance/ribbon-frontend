@@ -207,12 +207,15 @@ const SocialButton = styled.button`
   border: none;
   padding: 20px;
 
+  img {
+    width: 24px;
+    height: 24px;
+  }
+
   &:hover {
     transition: 0.5s;
 
     > img {
-      width: 24px;
-      height: 24px;
       transition: 0.75s;
       filter: brightness(3);
     }
