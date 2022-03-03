@@ -16,6 +16,11 @@ import Robot from "../../img/Investors/robot.svg";
 
 import colors from "shared/lib/designSystem/colors";
 
+const MainContainer = styled(Container)`
+  padding-top: 80px;
+  padding-bottom: 80px;
+`;
+
 const InvestorsTitle = styled(Title)`
   font-size: 24px;
   line-height: 32px;
@@ -96,7 +101,7 @@ const investorList: Array<InvestorAsset> = [
 
 const Investors = () => {
   return (
-    <Container fluid>
+    <MainContainer fluid>
       <Row className="w-100 mx-0">
         <Col className="d-flex justify-content-center">
           <InvestorsTitle>Our Investors</InvestorsTitle>
@@ -121,7 +126,7 @@ const Investors = () => {
           })}
         </InvestorRow>
       </Container>
-    </Container>
+    </MainContainer>
   );
 };
 

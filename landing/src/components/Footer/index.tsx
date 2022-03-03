@@ -9,6 +9,7 @@ import sizes from "../../designSystem/sizes";
 const FooterContainer = styled(Row)`
   width: 100%;
   padding: 80px 0;
+  margin-bottom: 20px;
 
   > * {
     @media (max-width: ${sizes.md}px) {
