@@ -288,8 +288,13 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
       let base = 0;
       if (lg5Data) {
         let poolLiquidity = BigNumber.from("0");
+        // If parseUnits fails, it means the number overflowed.
+        // defaults to the largest number when that happens.
         try {
-          poolLiquidity = parseUnits(poolSizeInput || "0", decimals);
+          const yourStake = parseUnits(stakeInput || "0", decimals);
+          poolLiquidity = parseUnits(poolSizeInput || "0", decimals).add(
+            yourStake
+          );
         } catch (error) {
           poolLiquidity = BigNumber.from(String(Number.MAX_SAFE_INTEGER));
         }
@@ -328,7 +333,8 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     vaultDataLoading,
     loadingText,
     getRewardsBooster,
-    poolSizeInput
+    poolSizeInput,
+    stakeInput,
   ]);
 
   // Parse input to number
