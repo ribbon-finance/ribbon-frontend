@@ -15,7 +15,6 @@ import Alliance from "../../img/Investors/alliance.svg";
 import Robot from "../../img/Investors/robot.svg";
 
 import colors from "shared/lib/designSystem/colors";
-import sizes from "shared/lib/designSystem/sizes";
 
 const InvestorsTitle = styled(Title)`
   font-size: 24px;
@@ -26,9 +25,9 @@ const InvestorCard = styled.div`
   background: ${colors.background.two};
   border-radius: 8px;
   border: 2px solid transparent;
-  margin-bottom: 16px;
   height: 120px;
   transition: 0.2s ease-in;
+  margin: 0 8px 16px 8px;
 
   &:hover {
     transition: 0.2s;
@@ -39,27 +38,8 @@ const InvestorCard = styled.div`
 `;
 
 const InvestorRow = styled(Row)`
+  margin: auto;
   margin-top: 64px;
-
-  @media (min-width: ${sizes.xl}px) {
-    > {
-      &:not(:nth-child(4n)) {
-        ${InvestorCard} {
-          margin-right: 16px;
-        }
-      }
-    }
-  }
-
-  @media (min-width: ${sizes.md}px) {
-    > {
-      &:not(:nth-child(3n)) {
-        ${InvestorCard} {
-          margin-right: 16px;
-        }
-      }
-    }
-  }
 `;
 
 const InvestorLogo = styled.img``;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Web3ReactProvider } from "@web3-react/core";
 import { ConnectionProvider } from "@solana/wallet-adapter-react";
@@ -150,35 +150,31 @@ const ProgressContainer = styled.div<{ highlight: boolean }>`
     props.highlight &&
     `
     transition: 0.2s;
-    box-shadow: 0px 0px 20px ${colors.red} !important;
+    box-shadow: 0px 0px 40px rgba(252, 10, 84, 0.64) !important;
   `};
 `;
 
-const ProgressLogo = styled(motion.div)`
+const ProgressLogo = styled(motion.div)<{ dimensions: number; margin: number }>`
   position: absolute;
-  transform: translateX(22px) translateY(22px);
+  transform: translateX(${(props) => props.margin}px)
+    translateY(${(props) => props.margin}px);
   left: 0;
   top: 0;
   display: flex;
 
   > * {
     animation: 2s fadeInDown;
-    height: 20px;
-    width: 20px;
+    height: ${(props) => props.dimensions}px;
+    width: ${(props) => props.dimensions}px;
   }
 `;
 
 const Scroller = () => {
   const { height } = useScreenSize();
-  const [progress, setProgress] = useState<number>(100);
+  const [progress, setProgress] = useState<number>(0);
 
   useEffect(() => {
-    setTimeout(() => {
-      setProgress(0);
-    }, 2000);
-
     window.addEventListener("scroll", () => {
-      console.log("Hi");
       setProgress(
         (window.scrollY / (document.body.clientHeight - height)) * 100
       );
@@ -208,6 +204,8 @@ const Scroller = () => {
 
       {progress > 99 && (
         <ProgressLogo
+          dimensions={32}
+          margin={16}
           transition={{
             duration: 0.5,
             type: "keyframes",
@@ -228,6 +226,8 @@ const Scroller = () => {
       )}
       {progress <= 99 && (
         <ProgressLogo
+          dimensions={20}
+          margin={22}
           transition={{
             duration: 0.5,
             type: "keyframes",

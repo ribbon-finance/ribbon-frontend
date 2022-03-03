@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Container } from "react-bootstrap";
@@ -10,11 +10,11 @@ import colors from "shared/lib/designSystem/colors";
 
 const MainContainer = styled(Container)`
   padding: 80px 0;
+  position: relative;
 `;
 
 const MissionTitleRow = styled(Row)`
   margin: 0;
-  margin-top: 40px;
   text-align: center;
   justify-content: center;
   width: 100%;
@@ -69,7 +69,7 @@ const MissionFactor = styled(Row)`
     }
   }
 
-  @media (max-width: ${sizes.sm}px) {
+  @media (max-width: ${sizes.md}px) {
     padding: 0;
 
     > div {
@@ -89,9 +89,48 @@ const FactorAmount = styled.div`
   color: ${colors.primaryText};
 `;
 
+const Frame = styled.div`
+  display: none;
+
+  @media (min-width: ${sizes.md}px) {
+    position: absolute;
+    display: flex;
+    background: #333;
+    top: 80px;
+    height: calc(100% - 160px);
+    width: 100%;
+    filter: blur(30px);
+  }
+`;
+
+const glow = keyframes`
+  0% {
+    background: ${colors.red};
+    box-shadow: 2px 4px 40px ${colors.red};
+  }
+
+  20% {
+    background: black;
+  }
+`;
+
+const Bar = styled.div<{ delay: number }>`
+  width: calc(100% / 10);
+  height: 100%;
+  background: black;
+
+  animation: 4s ${glow} infinite;
+  animation-delay: ${(props) => props.delay}s;
+`;
+
 const Mission = () => {
   return (
     <MainContainer>
+      <Frame>
+        {[0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5].map((i) => (
+          <Bar key={i} delay={i}></Bar>
+        ))}
+      </Frame>
       <MissionTitleRow fluid>
         <Col xs={12} lg={10} xl={8}>
           <Container>
