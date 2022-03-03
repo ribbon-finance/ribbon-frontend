@@ -45,6 +45,7 @@ export const getChainByAsset = (asset: Assets): Chains => {
       return Chains.Solana;
     case "WAVAX":
     case "sAVAX":
+    case "USDC.e":
       return Chains.Avalanche;
     default:
       return Chains.Ethereum;
@@ -94,6 +95,7 @@ export const getAssetDecimals = (asset: Assets): number => {
     case "WBTC":
       return 8;
     case "USDC":
+    case "USDC.e":
     case "yvUSDC":
       return 6;
     case "SOL":
@@ -194,6 +196,7 @@ export const getAssetLogo: (asset: Assets) =>
 ) => {
   switch (asset) {
     case "USDC":
+    case "USDC.e":
       return ColoredUSDCLogo;
     case "WBTC":
       return ColoredWBTCLogo;

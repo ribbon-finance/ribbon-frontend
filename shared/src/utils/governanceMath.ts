@@ -11,12 +11,33 @@ export const calculateInitialveRBNAmount = (
   rbnAmount: BigNumber,
   duration: Duration
 ) => {
-  const totalHours = Math.round(duration.asHours());
-  const hoursInTwoYears = 365 * 2 * 24;
+  const totalMinutes = Math.round(duration.asMinutes());
+  const minutesInTwoYears = 2 * 365 * 24 * 60;
   const veRbnAmount = rbnAmount
-    .mul(BigNumber.from(totalHours))
-    .div(BigNumber.from(hoursInTwoYears));
+    .mul(BigNumber.from(totalMinutes))
+    .div(BigNumber.from(minutesInTwoYears));
   return veRbnAmount.isNegative() ? BigNumber.from(0) : veRbnAmount;
+};
+
+export const calculateEarlyUnlockPenaltyPercentage = (
+  remainingDuration: Duration
+) => {
+  const minutesRemaining = Math.round(remainingDuration.asMinutes());
+  const minutesInTwoyears = 2 * 365 * 24 * 60;
+  return Math.min(0.75, minutesRemaining / minutesInTwoyears);
+};
+
+export const calculateEarlyUnlockPenalty = (
+  lockedAmount: BigNumber,
+  remainingDuration: Duration
+) => {
+  const penaltyPercent =
+    calculateEarlyUnlockPenaltyPercentage(remainingDuration);
+  // Multiply and divide by 10,000 to preserve the accuracy, because BigNumber will remove
+  // all decimals.
+  // Eg. If penaltyPercent is 0.34, it will be 0 when converted to BigNumber
+  // then lockedAmount.mul(0) will be 0.
+  return lockedAmount.mul(Math.round(penaltyPercent * 10000)).div(10000);
 };
 
 interface BaseRewardsCalculationProps {

@@ -171,7 +171,7 @@ const UnstakingActionModal: React.FC<UnstakingActionModalProps> = ({
         stakeAsset: vaultOption,
       });
 
-      await provider.waitForTransaction(txhash, 5);
+      await provider.waitForTransaction(txhash, 2);
       setStep("form");
       setTxId("");
       setInput("");

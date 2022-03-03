@@ -1,14 +1,16 @@
 {
   "kovan": {
-    "RBNVotingEscrow": "0x8E75FCac21074AB6E71d6097741bA23fbbA474a4",
+    "RBNVotingEscrow": "0x75F024aa6ca8f7eec23465388a661209f735B0DF",
     "RBNVotingEscrowDelegationProxy": "0x0e3Ac2562f5caeC610717be17d6D46baD8fb798C",
     "RBNVotingTokenMinter": "0xA79d141A1ea7a1962364288075196fbE01C83aCC",
-    "RBNVotingGaugeController": "0x1897D25dc65406F0a534cb6749010b3EdD9f87D9"
+    "RBNVotingGaugeController": "0x1897D25dc65406F0a534cb6749010b3EdD9f87D9",
+    "VERBNRewards": "0x03ABC5A33C5E4eBf731a7C2e99D1d4a8D8D09589"
   },
   "mainnet": {
-    "RBNVotingEscrow": "0x10dAd929A9890B32Db9A5d568B5953FCa5826AC8",
-    "RBNVotingEscrowDelegationProxy": "0xB250A90DbF97E76316D3d421eEC6b1dddF220BD6",
-    "RBNVotingTokenMinter": "0xC8916E90f597D33848c496B62D603b64C7Bbe9bA",
-    "RBNVotingGaugeController": "0x2ce354a659F795cBD30F9247924500f13815da15"
+    "RBNVotingEscrow": "0x19854C9A5fFa8116f48f984bDF946fB9CEa9B5f7",
+    "RBNVotingEscrowDelegationProxy": "0x1929605B714517b76bB733198E0f3C3D4ab08608",
+    "RBNVotingTokenMinter": "0x5B0655F938A72052c46d2e94D206ccB6FF625A3A",
+    "RBNVotingGaugeController": "0x0cb9cc35cEFa5622E8d25aF36dD56DE142eF6415",
+    "VERBNRewards": "0x88f0110E9Fa61aaCa84cCE7203c8A702681Ab33e"
   }
 }

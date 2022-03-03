@@ -24,6 +24,20 @@ const getPriceHistoryFromPeriod = (
   priceHistory: VaultPriceHistory[],
   periodStart: Moment
 ): [VaultPriceHistory, VaultPriceHistory] | undefined => {
+  /**
+   * Does not procees if price history length is lesser than or equal to 2
+   */
+  if (priceHistory.length <= 2) {
+    /**
+     * If only 2 points, return them
+     */
+    if (priceHistory.length === 2) {
+      return [priceHistory[0], priceHistory[1]];
+    }
+
+    return undefined;
+  }
+
   const [periodStartTimestamp, periodEndTimestamp, nextPeriodEndTimestamp] = [
     periodStart.unix(),
     periodStart.clone().add(1, "week").unix(),

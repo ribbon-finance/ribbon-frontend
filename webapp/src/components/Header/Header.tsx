@@ -240,6 +240,13 @@ const Header = () => {
             Boolean(useRouteMatch({ path: "/staking", exact: true }))
           )}
           {renderLinkItem(
+            "GOVERNANCE",
+            "https://vote.ribbon.finance",
+            false,
+            false,
+            true
+          )}
+          {renderLinkItem(
             "DISCORD",
             "http://tiny.cc/ribbon-discord",
             false,

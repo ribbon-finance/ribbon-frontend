@@ -24,7 +24,6 @@ import {
 } from "shared/lib/components/Wallet/types";
 import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
-import MenuButton from "shared/lib/components/Common/MenuButton";
 import { copyTextToClipboard } from "shared/lib/utils/text";
 import useOutsideAlerter from "shared/lib/hooks/useOutsideAlerter";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
@@ -37,6 +36,7 @@ import { VotingEscrowAddress } from "shared/lib/constants/constants";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import moment from "moment";
 import { BigNumber } from "ethers";
+import { MenuCloseItem, MenuItem } from "../Header/MenuItem";
 
 const walletButtonWidth = 55;
 
@@ -49,9 +49,13 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
       case "desktop":
         return `
         display: flex;
-        padding-right: 40px;
+        padding-right: 4px;
         z-index: 1000;
         position: relative;
+
+        @media (max-width: ${sizes.lg}px) {
+          padding-right: 40px;
+        }
 
         @media (max-width: ${sizes.md}px) {
           display: none;
@@ -63,6 +67,7 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
 
           @media (max-width: ${sizes.md}px) {
             display: flex;
+            flex: 1;
             align-items: unset;
             padding: 16px 16px 0 16px;
             width: 100%;
@@ -77,7 +82,7 @@ const WalletButton = styled(BaseButton)<WalletButtonProps>`
   background-color: ${(props) =>
     props.connected ? colors.background.two : `${colors.green}14`};
   align-items: center;
-  height: fit-content;
+  height: 48px;
 
   &:hover {
     opacity: ${theme.hover.opacity};
@@ -123,7 +128,7 @@ const WalletDesktopMenu = styled.div<MenuStateProps>`
     props.isMenuOpen
       ? `
           position: absolute;
-          right: 40px;
+          right: 0px;
           top: 64px;
           width: fit-content;
           background-color: ${colors.background.two};
@@ -158,46 +163,6 @@ const WalletMobileOverlayMenu = styled(
   }}
 `;
 
-const MenuItem = styled.div`
-  padding: 8px 16px;
-  padding-right: 38px;
-  opacity: 1;
-  display: flex;
-  align-items: center;
-
-  &:first-child {
-    padding-top: 16px;
-  }
-
-  &:last-child {
-    padding-bottom: 16px;
-  }
-
-  &:hover {
-    span {
-      color: ${colors.primaryText};
-    }
-  }
-
-  @media (max-width: ${sizes.md}px) {
-    margin: unset;
-    && {
-      padding: 28px;
-    }
-  }
-`;
-
-const MenuItemText = styled(Title)`
-  color: ${colors.primaryText}A3;
-  white-space: nowrap;
-  font-size: 14px;
-  line-height: 20px;
-
-  @media (max-width: ${sizes.md}px) {
-    font-size: 24px;
-  }
-`;
-
 const WalletCopyIcon = styled.i<WalletCopyIconProps>`
   color: white;
   margin-left: 8px;
@@ -222,15 +187,6 @@ const WalletCopyIcon = styled.i<WalletCopyIconProps>`
         `;
     }
   }}
-`;
-
-const MenuCloseItem = styled(MenuItem)`
-  position: absolute;
-  bottom: 50px;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: center;
 `;
 
 const StakeUnstakeContainer = styled.div`
@@ -397,19 +353,6 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
       <WalletButtonText connected={active}>CONNECT WALLET</WalletButtonText>
     );
 
-  const renderMenuItem = (
-    title: string,
-    onClick?: () => void,
-    extra?: React.ReactNode
-  ) => {
-    return (
-      <MenuItem onClick={onClick} role="button">
-        <MenuItemText>{title}</MenuItemText>
-        {extra}
-      </MenuItem>
-    );
-  };
-
   const renderCopiedButton = () => {
     return <WalletCopyIcon className="far fa-clone" state={copyState} />;
   };
@@ -456,14 +399,14 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
         )}
 
         <WalletDesktopMenu isMenuOpen={isMenuOpen}>
-          {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
-          {renderMenuItem(
-            copyState === "hidden" ? "COPY ADDRESS" : "ADDRESS COPIED",
-            handleCopyAddress,
-            renderCopiedButton()
-          )}
-          {renderMenuItem("OPEN IN ETHERSCAN", handleOpenEtherscan)}
-          {renderMenuItem("DISCONNECT", handleDisconnect)}
+          <MenuItem title="CHANGE WALLET" onClick={handleChangeWallet} />
+          <MenuItem
+            title={copyState === "hidden" ? "COPY ADDRESS" : "ADDRESS COPIED"}
+            onClick={handleCopyAddress}
+            extra={renderCopiedButton()}
+          />
+          <MenuItem title="OPEN IN ETHERSCAN" onClick={handleOpenEtherscan} />
+          <MenuItem title="DISCONNECT" onClick={handleDisconnect} />
         </WalletDesktopMenu>
       </WalletContainer>
 
@@ -476,17 +419,15 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
         mountRoot="div#root"
         overflowOnOpen={false}
       >
-        {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
-        {renderMenuItem(
-          copyState === "hidden" ? "COPY ADDRESS" : "ADDRESS COPIED",
-          handleCopyAddress,
-          renderCopiedButton()
-        )}
-        {renderMenuItem("OPEN IN ETHERSCAN", handleOpenEtherscan)}
-        {renderMenuItem("DISCONNECT", handleDisconnect)}
-        <MenuCloseItem role="button" onClick={onCloseMenu}>
-          <MenuButton isOpen={true} onToggle={onCloseMenu} />
-        </MenuCloseItem>
+        <MenuItem title="CHANGE WALLET" onClick={handleChangeWallet} />
+        <MenuItem
+          title={copyState === "hidden" ? "COPY ADDRESS" : "ADDRESS COPIED"}
+          onClick={handleCopyAddress}
+          extra={renderCopiedButton()}
+        />
+        <MenuItem title="OPEN IN ETHERSCAN" onClick={handleOpenEtherscan} />
+        <MenuItem title="DISCONNECT" onClick={handleDisconnect} />
+        <MenuCloseItem onClose={onCloseMenu} />
       </WalletMobileOverlayMenu>
     </>
   );

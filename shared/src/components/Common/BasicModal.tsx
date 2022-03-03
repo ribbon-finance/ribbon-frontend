@@ -24,6 +24,7 @@ const StyledModal = styled(BaseModal)<{
     transition: min-height 0.25s;
     min-height: ${(props) => props.height}px;
     overflow: hidden;
+    border: 1px solid ${colors.border};
 
     ${(props) =>
       props.theme

@@ -1036,3 +1036,164 @@ export const BackIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
     />
   </svg>
 );
+
+export const VeRBNIcon: React.FC<SVGPropsWithColor> = () => (
+  <svg
+    width="114"
+    height="114"
+    viewBox="0 0 114 114"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect
+      x="23"
+      y="21"
+      width="64"
+      height="64"
+      rx="32"
+      fill="#FC0A54"
+      fill-opacity="0.16"
+    />
+    <path
+      d="M54.9201 40.52L27.4001 69.24C27.4001 69.24 27.0374 68.5976 26.6952 67.96C26.5409 67.6726 26.3909 67.3862 26.2801 67.16C26.1266 66.8468 26.0849 66.8182 25.9601 66.52C25.8307 66.28 25.6401 65.8 25.6401 65.8L25.5601 65.56L54.9201 34.84L73.4801 54.04L54.7601 74.12L51.8801 71.4L67.9601 54.04L54.9201 40.52Z"
+      fill="#FC0A54"
+    />
+    <g opacity="0.24" filter="url(#filter0_d_1293_32)">
+      <rect
+        x="19"
+        y="17"
+        width="72"
+        height="72"
+        rx="36"
+        stroke="#FC0A54"
+        stroke-width="2"
+      />
+    </g>
+    <g opacity="0.12" filter="url(#filter1_d_1293_32)">
+      <rect
+        x="15"
+        y="13"
+        width="80"
+        height="80"
+        rx="40"
+        stroke="#FC0A54"
+        stroke-width="2"
+      />
+    </g>
+    <g filter="url(#filter2_d_1293_32)">
+      <rect
+        x="23"
+        y="21"
+        width="64"
+        height="64"
+        rx="32"
+        stroke="#FC0A54"
+        stroke-width="2"
+      />
+    </g>
+    <defs>
+      <filter
+        id="filter0_d_1293_32"
+        x="4"
+        y="4"
+        width="106"
+        height="106"
+        filterUnits="userSpaceOnUse"
+        color-interpolation-filters="sRGB"
+      >
+        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feOffset dx="2" dy="4" />
+        <feGaussianBlur stdDeviation="8" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.988235 0 0 0 0 0.0392157 0 0 0 0 0.329412 0 0 0 1 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_1293_32"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_1293_32"
+          result="shape"
+        />
+      </filter>
+      <filter
+        id="filter1_d_1293_32"
+        x="0"
+        y="0"
+        width="114"
+        height="114"
+        filterUnits="userSpaceOnUse"
+        color-interpolation-filters="sRGB"
+      >
+        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feOffset dx="2" dy="4" />
+        <feGaussianBlur stdDeviation="8" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.988235 0 0 0 0 0.0392157 0 0 0 0 0.329412 0 0 0 1 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_1293_32"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_1293_32"
+          result="shape"
+        />
+      </filter>
+      <filter
+        id="filter2_d_1293_32"
+        x="8"
+        y="8"
+        width="98"
+        height="98"
+        filterUnits="userSpaceOnUse"
+        color-interpolation-filters="sRGB"
+      >
+        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feOffset dx="2" dy="4" />
+        <feGaussianBlur stdDeviation="8" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.988235 0 0 0 0 0.0392157 0 0 0 0 0.329412 0 0 0 0.64 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_1293_32"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_1293_32"
+          result="shape"
+        />
+      </filter>
+    </defs>
+  </svg>
+);

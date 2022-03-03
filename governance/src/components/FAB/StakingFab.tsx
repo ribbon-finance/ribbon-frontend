@@ -1,30 +1,40 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
+import { useTranslation } from "react-i18next";
 
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContainer";
-import { ThemedLogo } from "shared/lib/assets/icons/logo";
 import { useGovernanceGlobalState } from "../../store/store";
+import {
+  GovernanceApproveUnstakeTransactions,
+  GovernanceStakeTransactions,
+} from "shared/lib/store/types";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import sizes from "shared/lib/designSystem/sizes";
 import { formatBigNumber } from "shared/lib/utils/math";
-import useLoadingText from "shared/lib/hooks/useLoadingText";
+import useLoadingText, { LoadingText } from "shared/lib/hooks/useLoadingText";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { VotingEscrowAddress } from "shared/lib/constants/constants";
 import { useAssetBalance } from "shared/lib/hooks/web3DataContext";
 import moment from "moment";
 import { BigNumber } from "ethers";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 
-const FABContainer = styled.div`
-  display: flex;
+const FABContainer = styled.div.attrs({
+  className: "d-flex align-items-center",
+})`
   position: fixed;
   bottom: 0px;
   z-index: 1000;
   height: ${theme.governance.actionBar.height}px;
   width: 100%;
+
+  border-top: 1px solid ${colors.border};
+  border-bottom: 1px solid ${colors.border};
 
   backdrop-filter: blur(40px);
   /**
@@ -39,6 +49,18 @@ const FABContainer = styled.div`
   @media (max-width: ${sizes.md}px) {
     display: none;
   }
+`;
+
+const VerticalDivider = styled.div`
+  background-color: ${colors.border};
+  width: 1px;
+  height: 32px;
+`;
+
+const StakingButtonsContainer = styled.div.attrs({
+  className: "d-flex ml-auto",
+})`
+  height: 100%;
 `;
 
 const StakingButton = styled.div<{ color: string }>`
@@ -63,6 +85,7 @@ const FABOffsetContainer = styled.div`
 `;
 const StakingFAB = () => {
   const { active } = useWeb3React();
+  const { t } = useTranslation();
   const [, setStakingModal] = useGovernanceGlobalState("stakingModal");
   const [, setUnstakingModal] = useGovernanceGlobalState("unstakingModal");
 
@@ -75,6 +98,7 @@ const StakingFAB = () => {
     useAssetBalance("veRBN");
   const loading = rbnTokenAccountLoading || votingPowerLoading;
   const loadingText = useLoadingText();
+  const { pendingTransactions } = usePendingTransactions();
 
   const stakeMode = useMemo(() => {
     if (rbnAllowance.isZero()) {
@@ -114,44 +138,91 @@ const StakingFAB = () => {
     }
 
     return {
-      veRBNAmount: formatBigNumber(veRBNBalance),
+      veRBNAmount: formatBigNumber(veRBNBalance, 18, 5),
       stakedRBNAmount: rbnTokenAccount
-        ? formatBigNumber(rbnTokenAccount.lockedBalance)
+        ? formatBigNumber(rbnTokenAccount.lockedBalance, 18, 5)
         : "0.00",
       unstakedRBNAmount: rbnTokenAccount
-        ? formatBigNumber(rbnTokenAccount.walletBalance)
+        ? formatBigNumber(rbnTokenAccount.walletBalance, 18, 5)
         : "0.00",
     };
   }, [active, loading, loadingText, rbnTokenAccount, veRBNBalance]);
 
+  const lockButtonContent = useMemo(() => {
+    const stakeIncreaseOrApprovalTypes: string[] = [
+      ...GovernanceStakeTransactions,
+      GovernanceApproveUnstakeTransactions[0],
+    ];
+    const pendingTx = pendingTransactions.find(
+      (tx) => stakeIncreaseOrApprovalTypes.includes(tx.type) && !tx.status
+    );
+    if (pendingTx) {
+      if (pendingTx.type === "governanceApproval") {
+        return <LoadingText text="APPROVING RBN" />;
+      }
+      return <LoadingText text="LOCKING RBN" />;
+    }
+    return "LOCK RBN";
+  }, [pendingTransactions]);
+
+  const unlockButtonContent = useMemo(() => {
+    const isPending = pendingTransactions.find(
+      (tx) => tx.type === "governanceUnstake" && !tx.status
+    );
+    if (isPending) {
+      return <LoadingText text="UNLOCKING RBN" />;
+    }
+    return "UNLOCK RBN";
+  }, [pendingTransactions]);
+
+  const renderDataTooltip = useCallback(
+    (title: string, explanation: string, learnMoreURL?: string) => (
+      <TooltipExplanation
+        title={title}
+        explanation={explanation}
+        renderContent={({ ref, ...triggerHandler }) => (
+          <HelpInfo containerRef={ref} {...triggerHandler}>
+            i
+          </HelpInfo>
+        )}
+        learnMoreURL={learnMoreURL}
+      />
+    ),
+    []
+  );
+
   return active ? (
     <>
       <FABContainer>
-        <div className="d-flex align-items-center ml-5">
-          {veRBNBalance.isZero() ? (
-            <ThemedLogo width={32} theme={colors.red} className="mr-2" />
-          ) : (
-            <AssetCircleContainer size={48} color={colors.red}>
-              <ThemedLogo theme={colors.red} />
-            </AssetCircleContainer>
-          )}
-          <div className="d-flex flex-column ml-2">
-            <SecondaryText fontSize={10} lineHeight={16}>
-              Your veRBN / Voting Power
-            </SecondaryText>
-            <Title
-              fontSize={14}
-              lineHeight={16}
-              letterSpacing={1}
-              className="mt-1"
-            >
-              {fabInfo.veRBNAmount}
-            </Title>
-          </div>
-        </div>
-        <div className="d-flex flex-column justify-content-center ml-auto">
+        <div className="d-flex flex-column align-items-center justify-content-center flex-grow-1">
           <SecondaryText fontSize={10} lineHeight={16}>
-            Locked RBN
+            <div className="d-flex">
+              {t("shared:TooltipExplanations:veRBN:fabTitle")}
+              {renderDataTooltip(
+                t("shared:TooltipExplanations:veRBN:fabTitle"),
+                t("shared:TooltipExplanations:veRBN:description")
+              )}
+            </div>
+          </SecondaryText>
+          <Title
+            fontSize={14}
+            lineHeight={16}
+            letterSpacing={1}
+            className="mt-1"
+          >
+            {fabInfo.veRBNAmount}
+          </Title>
+        </div>
+        <VerticalDivider />
+        <div className="d-flex flex-column align-items-center justify-content-center flex-grow-1">
+          <SecondaryText fontSize={10} lineHeight={16}>
+            <div className="d-flex">
+              {t("shared:TooltipExplanations:lockedRBN:title")}
+              {renderDataTooltip(
+                t("shared:TooltipExplanations:lockedRBN:title"),
+                t("shared:TooltipExplanations:lockedRBN:description")
+              )}
+            </div>
           </SecondaryText>
           <Title
             fontSize={14}
@@ -162,9 +233,16 @@ const StakingFAB = () => {
             {fabInfo.stakedRBNAmount}
           </Title>
         </div>
-        <div className="d-flex flex-column justify-content-center ml-auto">
+        <VerticalDivider />
+        <div className="d-flex flex-column align-items-center justify-content-center flex-grow-1">
           <SecondaryText fontSize={10} lineHeight={16}>
-            Unlocked RBN
+            <div className="d-flex">
+              {t("shared:TooltipExplanations:unlockedRBN:fabTitle")}
+              {renderDataTooltip(
+                t("shared:TooltipExplanations:unlockedRBN:fabTitle"),
+                t("shared:TooltipExplanations:unlockedRBN:description")
+              )}
+            </div>
           </SecondaryText>
           <Title
             fontSize={14}
@@ -175,7 +253,7 @@ const StakingFAB = () => {
             {fabInfo.unstakedRBNAmount}
           </Title>
         </div>
-        <div className="d-flex ml-auto">
+        <StakingButtonsContainer>
           <StakingButton
             color={`${colors.red}1F`}
             role="button"
@@ -188,7 +266,7 @@ const StakingFAB = () => {
             }
           >
             <Title fontSize={14} lineHeight={24} color={colors.red}>
-              LOCK RBN
+              {lockButtonContent}
             </Title>
           </StakingButton>
           <StakingButton
@@ -199,10 +277,10 @@ const StakingFAB = () => {
             }}
           >
             <Title fontSize={14} lineHeight={24} color={colors.text}>
-              UNLOCK RBN
+              {unlockButtonContent}
             </Title>
           </StakingButton>
-        </div>
+        </StakingButtonsContainer>
       </FABContainer>
       <FABOffsetContainer />
     </>
