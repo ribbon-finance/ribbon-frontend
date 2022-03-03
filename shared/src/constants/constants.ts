@@ -932,12 +932,12 @@ export const SUBGRAPHS_TO_QUERY: [VaultVersion, Chains][] = isTreasury()
   ? TREASURY_SUBGRAPHS
   : WEBAPP_SUBGRAPHS;
 
-  
 export const COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3";
 export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   WETH: "ethereum",
   WBTC: "wrapped-bitcoin",
   USDC: "usd-coin",
+  "USDC.e": "usd-coin",
   yvUSDC: undefined,
   stETH: "staked-ether",
   wstETH: "wrapped-steth",
