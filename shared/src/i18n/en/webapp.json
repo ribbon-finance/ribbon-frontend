@@ -22,5 +22,15 @@
       "explanation": "{{collateralAssetUnit}} is the deposit token that represents a user's share of the their ETH on the Ethereum beacon chain.",
       "learnMoreURL": "webapp:VaultStrategyExplainer:stETH:explanation"
     }
+  },
+  "TooltipExplanations": {
+    "baseAPY": {
+      "title": "Base APY",
+      "description": "Base APY are the estimated APY from staking vault tokens. This does not account additional boost from veRBN holding."
+    },
+    "poolRewards": {
+      "title": "Pool Rewards",
+      "description": "Estimated amount of RBN to be distributed for the current period."
+    }
   }
 }
