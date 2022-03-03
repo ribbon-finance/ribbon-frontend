@@ -169,7 +169,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
   vaultOption,
   totalVeRBN,
 }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const { active } = useWeb3Wallet();
   const [, setShowConnectWalletModal] = useConnectWalletModal();
   const { pendingTransactions } = usePendingTransactions();
@@ -485,10 +485,14 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
           {/* Pool rewards */}
           <div className="d-flex align-items-center mt-4 w-100">
             <div className="d-flex align-items-center">
-              <SecondaryText>{t("webapp:TooltipExplanations:poolRewards:title")}</SecondaryText>
+              <SecondaryText>
+                {t("webapp:TooltipExplanations:poolRewards:title")}
+              </SecondaryText>
               <TooltipExplanation
                 title={t("webapp:TooltipExplanations:poolRewards:title")}
-                explanation={t("webapp:TooltipExplanations:poolRewards:description")}
+                explanation={t(
+                  "webapp:TooltipExplanations:poolRewards:description"
+                )}
                 renderContent={({ ref, ...triggerHandler }) => (
                   <HelpInfo containerRef={ref} {...triggerHandler}>
                     i
@@ -504,10 +508,14 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
           {/* Base APY */}
           <div className="d-flex align-items-center mt-4 w-100">
             <div className="d-flex align-items-center">
-              <SecondaryText>{t("webapp:TooltipExplanations:baseAPY:title")}</SecondaryText>
+              <SecondaryText>
+                {t("webapp:TooltipExplanations:baseAPY:title")}
+              </SecondaryText>
               <TooltipExplanation
                 title={t("webapp:TooltipExplanations:baseAPY:title")}
-                explanation={t("webapp:TooltipExplanations:baseAPY:description")}
+                explanation={t(
+                  "webapp:TooltipExplanations:baseAPY:description"
+                )}
                 renderContent={({ ref, ...triggerHandler }) => (
                   <HelpInfo containerRef={ref} {...triggerHandler}>
                     i
