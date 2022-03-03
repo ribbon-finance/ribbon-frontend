@@ -243,7 +243,7 @@ const Scroller = () => {
             opacity: 0,
           }}
         >
-          <img src={globe} />
+          <img alt="scroll-indicator" src={globe} />
         </ProgressLogo>
       )}
     </ProgressContainer>
