@@ -54,7 +54,7 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
 
     return `${
       rbnTokenAccount && rbnTokenAccount.lockedBalance
-        ? formatBigNumber(rbnTokenAccount.lockedBalance)
+        ? formatBigNumber(rbnTokenAccount.lockedBalance, 18, 2)
         : "0"
     } RBN`;
   }, [loading, loadingText, rbnTokenAccount]);

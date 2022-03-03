@@ -7,10 +7,14 @@ import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { useGovernanceGlobalState } from "../../store/store";
+import {
+  GovernanceApproveUnstakeTransactions,
+  GovernanceStakeTransactions,
+} from "shared/lib/store/types";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import sizes from "shared/lib/designSystem/sizes";
 import { formatBigNumber } from "shared/lib/utils/math";
-import useLoadingText from "shared/lib/hooks/useLoadingText";
+import useLoadingText, { LoadingText } from "shared/lib/hooks/useLoadingText";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { VotingEscrowAddress } from "shared/lib/constants/constants";
 import { useAssetBalance } from "shared/lib/hooks/web3DataContext";
@@ -18,6 +22,7 @@ import moment from "moment";
 import { BigNumber } from "ethers";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 
 const FABContainer = styled.div.attrs({
   className: "d-flex align-items-center",
@@ -27,6 +32,9 @@ const FABContainer = styled.div.attrs({
   z-index: 1000;
   height: ${theme.governance.actionBar.height}px;
   width: 100%;
+
+  border-top: 1px solid ${colors.border};
+  border-bottom: 1px solid ${colors.border};
 
   backdrop-filter: blur(40px);
   /**
@@ -90,6 +98,7 @@ const StakingFAB = () => {
     useAssetBalance("veRBN");
   const loading = rbnTokenAccountLoading || votingPowerLoading;
   const loadingText = useLoadingText();
+  const { pendingTransactions } = usePendingTransactions();
 
   const stakeMode = useMemo(() => {
     if (rbnAllowance.isZero()) {
@@ -138,6 +147,33 @@ const StakingFAB = () => {
         : "0.00",
     };
   }, [active, loading, loadingText, rbnTokenAccount, veRBNBalance]);
+
+  const lockButtonContent = useMemo(() => {
+    const stakeIncreaseOrApprovalTypes: string[] = [
+      ...GovernanceStakeTransactions,
+      GovernanceApproveUnstakeTransactions[0],
+    ];
+    const pendingTx = pendingTransactions.find(
+      (tx) => stakeIncreaseOrApprovalTypes.includes(tx.type) && !tx.status
+    );
+    if (pendingTx) {
+      if (pendingTx.type === "governanceApproval") {
+        return <LoadingText text="APPROVING RBN" />;
+      }
+      return <LoadingText text="LOCKING RBN" />;
+    }
+    return "LOCK RBN";
+  }, [pendingTransactions]);
+
+  const unlockButtonContent = useMemo(() => {
+    const isPending = pendingTransactions.find(
+      (tx) => tx.type === "governanceUnstake" && !tx.status
+    );
+    if (isPending) {
+      return <LoadingText text="UNLOCKING RBN" />;
+    }
+    return "UNLOCK RBN";
+  }, [pendingTransactions]);
 
   const renderDataTooltip = useCallback(
     (title: string, explanation: string, learnMoreURL?: string) => (
@@ -230,7 +266,7 @@ const StakingFAB = () => {
             }
           >
             <Title fontSize={14} lineHeight={24} color={colors.red}>
-              LOCK RBN
+              {lockButtonContent}
             </Title>
           </StakingButton>
           <StakingButton
@@ -241,7 +277,7 @@ const StakingFAB = () => {
             }}
           >
             <Title fontSize={14} lineHeight={24} color={colors.text}>
-              UNLOCK RBN
+              {unlockButtonContent}
             </Title>
           </StakingButton>
         </StakingButtonsContainer>
