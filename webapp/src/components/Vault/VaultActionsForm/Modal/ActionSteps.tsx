@@ -27,6 +27,7 @@ import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import useV2VaultContract from "shared/lib/hooks/useV2VaultContract";
 import WarningStep from "./WarningStep";
 import { getCurvePool } from "shared/lib/hooks/useCurvePool";
+import { depositSAVAX } from "shared/lib/hooks/useSAVAXDeposit";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { useFlexVault } from "shared/lib/hooks/useFlexVault";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
@@ -230,6 +231,13 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
                   res = { hash: txhash };
                 }
+                break;
+
+              case "rsAVAX-THETA":
+                res =
+                  asset === "WAVAX"
+                    ? await depositSAVAX(ethereumProvider, amountStr)
+                    : await vault.deposit(amountStr);
                 break;
 
               default:

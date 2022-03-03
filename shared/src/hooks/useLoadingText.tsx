@@ -6,7 +6,7 @@ const flashing = () => keyframes`
  100% {
     opacity: 0;
   }
-  
+
   50% {
     opacity: 1;
   }
@@ -29,7 +29,9 @@ export const LoadingText: React.FC<{ text: string }> = ({ text }) => {
       <Dots>
         {/* Here we insert the delay values to map the respective dots */}
         {[0.3, 0.6, 0.9].map((value) => (
-          <Dot delay={value}>.</Dot>
+          <Dot key={value} delay={value}>
+            .
+          </Dot>
         ))}
       </Dots>
     </span>

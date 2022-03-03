@@ -589,7 +589,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
     tags: ["PUT-SELLING"],
     strategy: (
       <>
-        T-USDC-P-AVAX earns yield on its USDC deposits by running a weekly
+        T-USDC-P-AVAX earns yield on its USDC.e deposits by running a weekly
         automated AVAX{" "}
         <TooltipExplanation
           title="PUT OPTION"
@@ -601,7 +601,7 @@ export const productCopies: { [vault in VaultOptions]: ProductCopies } = {
             </HighlightedText>
           )}
         />{" "}
-        strategy, where the put options are collateralized by USDC.
+        strategy, where the put options are collateralized by USDC.e.
       </>
     ),
     vaultRisk: (
