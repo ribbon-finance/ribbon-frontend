@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Web3ReactProvider } from "@web3-react/core";
 import { ConnectionProvider } from "@solana/wallet-adapter-react";
@@ -27,7 +27,10 @@ import useScreenSize from "shared/lib/hooks/useScreenSize";
 import github from "./img/Footer/github.svg";
 import discord from "./img/Footer/discord.svg";
 import twitter from "./img/Footer/twitter.svg";
+import globe from "./img/Footer/globe.svg";
 import sizes from "./designSystem/sizes";
+import { AppLogo } from "shared/lib/assets/icons/logo";
+import { motion } from "framer";
 
 const Body = styled.div`
   background-color: ${colors.background.one};
@@ -141,6 +144,7 @@ const ProgressContainer = styled.div<{ highlight: boolean }>`
   width: fit-content;
   margin-bottom: 24px;
   border-radius: 50%;
+  position: relative;
 
   ${(props) =>
     props.highlight &&
@@ -150,12 +154,31 @@ const ProgressContainer = styled.div<{ highlight: boolean }>`
   `};
 `;
 
+const ProgressLogo = styled(motion.div)`
+  position: absolute;
+  transform: translateX(22px) translateY(22px);
+  left: 0;
+  top: 0;
+  display: flex;
+
+  > * {
+    animation: 2s fadeInDown;
+    height: 20px;
+    width: 20px;
+  }
+`;
+
 const Scroller = () => {
   const { height } = useScreenSize();
-  const [progress, setProgress] = useState<number>(0);
+  const [progress, setProgress] = useState<number>(100);
 
   useEffect(() => {
+    setTimeout(() => {
+      setProgress(0);
+    }, 2000);
+
     window.addEventListener("scroll", () => {
+      console.log("Hi");
       setProgress(
         (window.scrollY / (document.body.clientHeight - height)) * 100
       );
@@ -178,10 +201,51 @@ const Scroller = () => {
 
           // Colors
           pathColor: progress > 99 ? colors.red : `#ffffff`,
-          trailColor: "#1C1C22",
+          trailColor: "#1C1C22AA",
           backgroundColor: "#00000000",
         })}
       />
+
+      {progress > 99 && (
+        <ProgressLogo
+          transition={{
+            duration: 0.5,
+            type: "keyframes",
+            ease: "easeInOut",
+          }}
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+        >
+          <AppLogo />
+        </ProgressLogo>
+      )}
+      {progress <= 99 && (
+        <ProgressLogo
+          transition={{
+            duration: 0.5,
+            type: "keyframes",
+            ease: "easeInOut",
+          }}
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+        >
+          <img src={globe} />
+        </ProgressLogo>
+      )}
     </ProgressContainer>
   );
 };
