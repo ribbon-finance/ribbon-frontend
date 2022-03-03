@@ -166,7 +166,7 @@ const StakingModalncreaseAmountForm: React.FC<
           </Title>
         </div>
       </BaseModalContentColumn>
-      <BaseModalWarning color={colors.green}>
+      <BaseModalWarning color={colors.green} marginTop="auto">
         <SecondaryText
           color={`${colors.green}A3`}
           className="w-100 text-center"
@@ -214,11 +214,11 @@ const StakingModalncreaseAmountForm: React.FC<
               </StakingWarningHighlight>
             </>
           ) : (
-            <>Enter an amount to view your voting power</>
+            <>Enter an amount to see the change in your voting power</>
           )}
         </SecondaryText>
       </BaseModalWarning>
-      <BaseModalContentColumn marginTop="auto">
+      <BaseModalContentColumn>
         <ActionButton
           disabled={!canProceed}
           onClick={() => {
@@ -231,7 +231,7 @@ const StakingModalncreaseAmountForm: React.FC<
           className="py-3 mb-2"
           color={colors.red}
         >
-          Preview Stake Increase
+          Preview Lock Increase
         </ActionButton>
       </BaseModalContentColumn>
     </>

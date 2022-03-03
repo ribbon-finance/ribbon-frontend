@@ -33,6 +33,21 @@ export const WalletsList = [
 ] as const;
 export type Wallets = typeof WalletsList[number];
 
+export const GovernanceStakeTransactions = [
+  "governanceStake",
+  "governanceIncreaseAmount",
+  "governanceIncreaseDuration",
+] as const;
+export type GovernanceStakeTransactionsType =
+  typeof GovernanceStakeTransactions[number];
+
+export const GovernanceApproveUnstakeTransactions = [
+  "governanceApproval",
+  "governanceUnstake",
+] as const;
+export type GovernanceApproveUnstakeTransactionsType =
+  typeof GovernanceApproveUnstakeTransactions[number];
+
 export type PendingTransaction = {
   txhash: string;
   status?: "success" | "error";
@@ -77,15 +92,12 @@ export type PendingTransaction = {
    * Governance transaction
    */
   | {
-      type:
-        | "governanceStake"
-        | "governanceIncreaseAmount"
-        | "governanceIncreaseDuration";
+      type: GovernanceStakeTransactionsType;
       amount: string;
       expiry: Moment;
     }
   | {
-      type: "governanceApproval" | "governanceUnstake";
+      type: GovernanceApproveUnstakeTransactionsType;
       amount: string;
     }
 );

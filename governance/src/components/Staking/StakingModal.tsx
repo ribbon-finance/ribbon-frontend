@@ -43,8 +43,8 @@ const stakingModalHeight: { [mode in StakingModalMode]: number } = {
   approve: 448,
   explainer: 528,
   picker: 426,
-  form: 620,
-  preview: 524,
+  form: 648,
+  preview: 544,
   transaction: 412,
 };
 
