@@ -27,6 +27,36 @@ import colors from "../designSystem/colors";
 import { EthereumWallet, SolanaWallet } from "../models/wallets";
 import { Assets, Wallets } from "../store/types";
 
+export const assetFilterList: Assets[] = [
+  "AAVE",
+  "WETH",
+  "stETH",
+  "USDC",
+  "yvUSDC",
+  "WBTC",
+  "WAVAX",
+  "sAVAX",
+  "SOL",
+];
+
+export const getIntegralAsset = (derivative: Assets): Assets => {
+  switch (derivative) {
+    // Per design, we only consider USDC.e and USDC the same asset.
+    // We consider stETH/ETH, sAVAX/AVAX, and yvUSDC/USDC differet assets.
+    /*
+    case "stETH":
+      return "ETH"
+    case "sAVAX":
+      return "WAVAX";
+    case "yvUSDC":
+    */
+    case "USDC.e":
+      return "USDC";
+    default:
+      return derivative;
+  }
+};
+
 export const isYieldAsset = (asset: Assets): boolean => {
   switch (asset) {
     case "sAVAX":

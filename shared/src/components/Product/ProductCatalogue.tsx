@@ -31,7 +31,7 @@ import {
   VaultStrategy,
 } from "./types";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
-import { getChainByVaultOption } from "../../utils/asset";
+import { getChainByVaultOption, getIntegralAsset } from "../../utils/asset";
 import { useChain } from "../../hooks/chainContext";
 
 const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
@@ -130,10 +130,12 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
       }
 
       // Filter for assets
+      const asset = getAssets(vault);
       if (
         filterAssets.length &&
-        !filterAssets.includes(getAssets(vault)) &&
-        !filterAssets.includes(getDisplayAssets(vault))
+        !filterAssets.includes(asset) &&
+        !filterAssets.includes(getDisplayAssets(vault)) &&
+        !filterAssets.includes(getIntegralAsset(asset))
       ) {
         return false;
       }
