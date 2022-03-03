@@ -236,7 +236,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
   const logo = useMemo(() => {
     const asset = getDisplayAssets(vaultOption);
     const Logo = getAssetLogo(asset);
-    return <Logo />
+    return <Logo />;
   }, [vaultOption]);
 
   const baseAPY = useMemo(() => {
