@@ -7,6 +7,10 @@ import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { useGovernanceGlobalState } from "../../store/store";
+import {
+  GovernanceApproveUnstakeTransactions,
+  GovernanceStakeTransactions,
+} from "shared/lib/store/types";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import sizes from "shared/lib/designSystem/sizes";
 import { formatBigNumber } from "shared/lib/utils/math";
@@ -145,14 +149,12 @@ const StakingFAB = () => {
   }, [active, loading, loadingText, rbnTokenAccount, veRBNBalance]);
 
   const lockButtonContent = useMemo(() => {
+    const stakeIncreaseOrApprovalTypes: string[] = [
+      ...GovernanceStakeTransactions,
+      GovernanceApproveUnstakeTransactions[0],
+    ];
     const pendingTx = pendingTransactions.find(
-      (tx) =>
-        [
-          "governanceStake",
-          "governanceIncreaseAmount",
-          "governanceIncreaseDuration",
-          "governanceApproval",
-        ].includes(tx.type) && !tx.status
+      (tx) => stakeIncreaseOrApprovalTypes.includes(tx.type) && !tx.status
     );
     if (pendingTx) {
       if (pendingTx.type === "governanceApproval") {
