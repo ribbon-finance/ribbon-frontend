@@ -14,7 +14,6 @@ import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { VotingEscrowAddress } from "shared/lib/constants/constants";
 import { useAssetBalance } from "shared/lib/hooks/web3DataContext";
-import moment from "moment";
 import { BigNumber } from "ethers";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
@@ -55,16 +54,16 @@ const StakingButtonsContainer = styled.div.attrs({
   height: 100%;
 `;
 
-const StakingButton = styled.div<{ color: string }>`
+const StakingButton = styled.div<{ color: string; isDisabled?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
   width: 160px;
-  background: ${(props) => props.color};
-
+  background: ${(props) =>
+    props.isDisabled ? colors.background.two : props.color};
   &:hover {
-    opacity: ${theme.hover.opacity};
+    opacity: ${(props) => (props.isDisabled ? 1 : theme.hover.opacity)};
   }
 `;
 
@@ -91,21 +90,27 @@ const StakingFAB = () => {
   const loading = rbnTokenAccountLoading || votingPowerLoading;
   const loadingText = useLoadingText();
 
+  // Lock already ended, user can no longer increase stake duration,
+  // and must unlock RBN before locking more.
+  const lockExpired = useMemo(() => {
+    return Boolean(
+      rbnTokenAccount?.lockEndTimestamp &&
+        Date.now() > rbnTokenAccount.lockEndTimestamp * 1000
+    );
+  }, [rbnTokenAccount]);
+
   const stakeMode = useMemo(() => {
     if (rbnAllowance.isZero()) {
       return "approve";
     }
 
-    if (
-      rbnTokenAccount &&
-      rbnTokenAccount.lockEndTimestamp &&
-      moment().isBefore(moment.unix(rbnTokenAccount.lockEndTimestamp))
-    ) {
+    // If has current locked RBN and it has not expired, user can only increase
+    if (rbnTokenAccount && rbnTokenAccount.lockEndTimestamp && !lockExpired) {
       return "increase";
     }
 
     return "stake";
-  }, [rbnAllowance, rbnTokenAccount]);
+  }, [rbnAllowance, rbnTokenAccount, lockExpired]);
 
   const fabInfo: {
     veRBNAmount: JSX.Element | string;
@@ -221,17 +226,37 @@ const StakingFAB = () => {
           <StakingButton
             color={`${colors.red}1F`}
             role="button"
-            onClick={() =>
-              setStakingModal((prev) => ({
-                ...prev,
-                show: true,
-                mode: stakeMode,
-              }))
-            }
+            onClick={() => {
+              if (!lockExpired) {
+                setStakingModal((prev) => ({
+                  ...prev,
+                  show: true,
+                  mode: stakeMode,
+                }));
+              }
+            }}
+            isDisabled={lockExpired}
           >
-            <Title fontSize={14} lineHeight={24} color={colors.red}>
+            <Title
+              fontSize={14}
+              lineHeight={24}
+              color={lockExpired ? colors.tertiaryText : colors.red}
+            >
               LOCK RBN
             </Title>
+            {lockExpired && (
+              <TooltipExplanation
+                title={"LOCK RBN"}
+                explanation={
+                  "You need to unlock your existing tokens first before you can lock again."
+                }
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HelpInfo containerRef={ref} {...triggerHandler}>
+                    i
+                  </HelpInfo>
+                )}
+              />
+            )}
           </StakingButton>
           <StakingButton
             color={`${colors.primaryText}0A`}
