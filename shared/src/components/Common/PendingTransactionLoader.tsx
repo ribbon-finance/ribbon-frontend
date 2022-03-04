@@ -39,7 +39,6 @@ const FloatingBoxBar = styled.div<{
   background: ${(props) => props.color};
   box-shadow: 2px 4px 40px ${(props) => props.color};
   opacity: 0;
-  animation: ${cascadeFade} 2s ease-out forwards infinite;
   animation: ${(props) => props.barAnimationTime + 1500}ms ${cascadeFade}
     ease-in-out forwards infinite;
   animation-delay: ${(props) =>
@@ -58,14 +57,11 @@ interface PendingTransactionLoaderProps {
 
 const PendingTransactionLoader: React.FC<PendingTransactionLoaderProps> = ({
   color = colors.red,
-  // active,
+  active,
   animationTimeMs = 500,
   numberOfBars = 6,
   width = "200px",
 }) => {
-  // TODO: - REMOVE
-  const active = true;
-
   return (
     <Container width={width}>
       <FloatingBox>

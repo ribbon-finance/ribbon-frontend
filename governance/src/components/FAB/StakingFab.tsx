@@ -32,8 +32,7 @@ const FABContainer = styled.div.attrs({
   height: ${theme.governance.actionBar.height}px;
   width: 100%;
 
-  // border-top: 1px solid ${colors.borderDark2};
-  border-top: 1px solid #0d0d13;
+  border-top: 1px solid ${colors.borderDark2};
   border-bottom: 1px solid ${colors.border};
 
   backdrop-filter: blur(40px);
