@@ -32,7 +32,7 @@ const useFetchGovernanceSubgraphData = () => {
 
   const doMulticall = useCallback(async () => {
     if (!isProduction()) {
-      console.time("Subgraph Data Fetch");
+      console.time("Subgraph Data Fetch"); // eslint-disable-line
     }
 
     /**
@@ -83,7 +83,7 @@ const useFetchGovernanceSubgraphData = () => {
     });
 
     if (!isProduction()) {
-      console.timeEnd("Subgraph Data Fetch");
+      console.timeEnd("Subgraph Data Fetch"); // eslint-disable-line
     }
   }, [account]);
 

@@ -56,12 +56,6 @@
     "lint": "eslint --fix --ext .tsx,.ts .",
     "codegen": "typechain --target=ethers-v5 --outDir src/codegen 'src/constants/abis/*.json'"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",

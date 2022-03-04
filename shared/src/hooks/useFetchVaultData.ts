@@ -31,7 +31,7 @@ const useFetchVaultData = (): VaultData => {
 
   const doMulticall = useCallback(async () => {
     if (!isProduction()) {
-      console.time("V1 Vault Data Fetch");
+      console.time("V1 Vault Data Fetch"); // eslint-disable-line
     }
 
     /**
@@ -144,7 +144,7 @@ const useFetchVaultData = (): VaultData => {
     });
 
     if (!isProduction()) {
-      console.timeEnd("V1 Vault Data Fetch");
+      console.timeEnd("V1 Vault Data Fetch"); // eslint-disable-line
     }
   }, [account, web3Active, library, provider, chainId]);
 
