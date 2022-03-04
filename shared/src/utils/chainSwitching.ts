@@ -63,7 +63,7 @@ export const switchChains = async (
           });
         } catch (addError) {
           // handle "add" error
-          console.error("Add network error");
+          console.error("Add network error"); // eslint-disable-line
         }
       } else {
         throw new Error("Network not found");

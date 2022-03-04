@@ -47,7 +47,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
     }
 
     if (!isProduction()) {
-      console.time("Liquidity Gauge V5 Data Fetch");
+      console.time("Liquidity Gauge V5 Data Fetch"); // eslint-disable-line
     }
 
     /**
@@ -224,7 +224,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
     });
 
     if (!isProduction()) {
-      console.timeEnd("Liquidity Gauge V5 Data Fetch");
+      console.timeEnd("Liquidity Gauge V5 Data Fetch"); // eslint-disable-line
     }
   }, [
     account,

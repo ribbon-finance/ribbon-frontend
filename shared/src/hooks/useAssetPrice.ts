@@ -59,7 +59,7 @@ export const useFetchAssetsPrice = (
 
   const fetchAssetsPrices = useCallback(async () => {
     if (!isProduction()) {
-      console.time("Asset Price Data Fetch");
+      console.time("Asset Price Data Fetch"); // eslint-disable-line
     }
 
     const responses = await Promise.all(
@@ -111,7 +111,7 @@ export const useFetchAssetsPrice = (
     setLoading(false);
 
     if (!isProduction()) {
-      console.timeEnd("Asset Price Data Fetch");
+      console.timeEnd("Asset Price Data Fetch"); // eslint-disable-line
     }
   }, []);
 
@@ -230,7 +230,7 @@ export const useAssetInfo = (asset: Assets) => {
         circulating_supply: data.market_data.circulating_supply,
       });
     } catch (error) {
-      !isProduction() && console.log("Asset info fetch error:", error);
+      !isProduction() && console.log("Asset info fetch error:", error); // eslint-disable-line
       setInfo({
         circulating_supply: 0,
       });

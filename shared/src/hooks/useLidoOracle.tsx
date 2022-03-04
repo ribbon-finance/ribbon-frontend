@@ -42,7 +42,7 @@ export const useFetchLidoOracleData = () => {
 
   const fetchLidoOracleData = useCallback(async () => {
     if (!isProduction()) {
-      console.time("Lido Oracle Data Fetch");
+      console.time("Lido Oracle Data Fetch"); // eslint-disable-line
     }
 
     const contract = getLidoOracle(provider, false);
@@ -64,7 +64,7 @@ export const useFetchLidoOracleData = () => {
     });
 
     if (!isProduction()) {
-      console.timeEnd("Lido Oracle Data Fetch");
+      console.timeEnd("Lido Oracle Data Fetch"); // eslint-disable-line
     }
   }, [provider]);
 
