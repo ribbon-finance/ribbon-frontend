@@ -102,13 +102,13 @@ export type VaultVersion = typeof VaultVersionList[number];
 export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">;
 
 export const EVMVaultList = [
+  "rsAVAX-THETA",
+  "rUSDC-AVAX-P-THETA",
   "rETH-THETA",
   "ryvUSDC-ETH-P-THETA",
   "rstETH-THETA",
   "rBTC-THETA",
   "rAVAX-THETA",
-  "rsAVAX-THETA",
-  "rUSDC-AVAX-P-THETA",
   "rAAVE-THETA",
   "rAURORA-THETA",
   "rNEAR-THETA",
@@ -128,12 +128,7 @@ const AllVaultOptions = [
 ];
 
 export type VaultOptions = typeof AllVaultOptions[number];
-const ProdExcludeVault: VaultOptions[] = [
-  "rsAVAX-THETA",
-  "rNEAR-THETA",
-  "rAURORA-THETA",
-  "rUSDC-AVAX-P-THETA",
-];
+const ProdExcludeVault: VaultOptions[] = ["rNEAR-THETA", "rAURORA-THETA"];
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
   "ryvUSDC-ETH-P-THETA",
@@ -564,8 +559,9 @@ export const getAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
     case "rUSDC-ETH-P-THETA":
     case "ryvUSDC-ETH-P-THETA":
+      return "yvUSDC";
     case "rUSDC-AVAX-P-THETA":
-      return "USDC";
+      return "USDC.e";
     case "rETH-THETA":
     case "rstETH-THETA":
       return "WETH";
@@ -618,8 +614,9 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
 export const getDisplayAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
     case "rUSDC-ETH-P-THETA":
-    case "rUSDC-AVAX-P-THETA":
       return "USDC";
+    case "rUSDC-AVAX-P-THETA":
+      return "USDC.e";
     case "rETH-THETA":
       return "WETH";
     case "rBTC-THETA":
@@ -653,9 +650,9 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "rBTC-THETA": ["WBTC"],
     "rETH-THETA": ["WETH"],
     "rAVAX-THETA": ["WAVAX"],
-    "rsAVAX-THETA": ["sAVAX"],
+    "rsAVAX-THETA": ["WAVAX", "sAVAX"],
     "rUSDC-ETH-P-THETA": ["USDC"],
-    "rUSDC-AVAX-P-THETA": ["USDC"],
+    "rUSDC-AVAX-P-THETA": ["USDC.e"],
     "rstETH-THETA": ["WETH", "stETH"],
     "ryvUSDC-ETH-P-THETA": ["USDC"],
     "rPERP-TSRY": ["PERP"],

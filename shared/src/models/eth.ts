@@ -9,6 +9,7 @@ import {
 export const ERC20TokenList = [
   "weth",
   "usdc",
+  "usdc.e",
   "wbtc",
   "yvusdc",
   "steth",

@@ -9,7 +9,7 @@ import {
 import { getAssetDecimals } from "../utils/asset";
 import { assetToFiat } from "../utils/math";
 import { useAssetsPrice } from "./useAssetPrice";
-import { useV2VaultsData, useVaultsData } from "./web3DataContext";
+import { useVaultsSubgraphData } from "./useVaultData";
 
 interface VaultTVLs {
   vault: { option: VaultOptions; version: VaultVersion };
@@ -17,9 +17,7 @@ interface VaultTVLs {
 }
 
 const useTVL = () => {
-  const { data: v2VaultsData, loading: v2VaultsLoading } = useV2VaultsData();
-  const { data: v1VaultsData, loading: v1VaultsLoading } = useVaultsData();
-
+  const { data, loading } = useVaultsSubgraphData();
   const { prices, loading: pricesLoading } = useAssetsPrice();
 
   const vaultsTVL = useMemo(() => {
@@ -29,8 +27,8 @@ const useTVL = () => {
       const asset = getAssets(vaultOption);
 
       // First get the v1 with non zero tvl
-      const v1Vault = v1VaultsData[vaultOption];
-      if (!v1Vault.deposits.isZero()) {
+      const v1Vault = data.v1[vaultOption];
+      if (v1Vault && !v1Vault.totalBalance.isZero()) {
         vaultTVLs.push({
           vault: {
             option: vaultOption,
@@ -38,7 +36,7 @@ const useTVL = () => {
           },
           tvl: parseFloat(
             assetToFiat(
-              v1Vault.deposits,
+              v1Vault.totalBalance,
               prices[asset],
               getAssetDecimals(asset)
             )
@@ -47,8 +45,8 @@ const useTVL = () => {
       }
 
       // Then get the v2 with non zero tvl
-      const v2Vault = v2VaultsData[vaultOption];
-      if (!v2Vault.totalBalance.isZero()) {
+      const v2Vault = data.v2[vaultOption];
+      if (v2Vault && !v2Vault.totalBalance.isZero()) {
         vaultTVLs.push({
           vault: {
             option: vaultOption,
@@ -69,12 +67,12 @@ const useTVL = () => {
     vaultTVLs.sort((a, b) => (a.tvl < b.tvl ? 1 : -1));
 
     return vaultTVLs;
-  }, [prices, v1VaultsData, v2VaultsData]);
+  }, [prices, data]);
 
   return {
     data: vaultsTVL,
     totalTVL: vaultsTVL.reduce((acc, curr) => acc + curr.tvl, 0),
-    loading: v2VaultsLoading || v1VaultsLoading || pricesLoading,
+    loading: loading || pricesLoading,
   };
 };
 

@@ -34,7 +34,7 @@ const useFetchV2VaultData = (): V2VaultData => {
 
   const doMulticall = useCallback(async () => {
     if (!isProduction()) {
-      console.time("V2 Vault Data Fetch");
+      console.time("V2 Vault Data Fetch"); // eslint-disable-line
     }
 
     /**
@@ -182,7 +182,7 @@ const useFetchV2VaultData = (): V2VaultData => {
     });
 
     if (!isProduction()) {
-      console.timeEnd("V2 Vault Data Fetch");
+      console.timeEnd("V2 Vault Data Fetch"); // eslint-disable-line
     }
   }, [account, chainId, library, web3Active, getProviderForNetwork]);
 

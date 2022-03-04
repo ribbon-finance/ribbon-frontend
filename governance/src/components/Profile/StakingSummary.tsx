@@ -331,7 +331,9 @@ const StakingSummary = () => {
         <div className="position-relative pb-4">
           <ChartContainer>
             <Chart
-              lineDecayAfterPointIndex={chartDatapoints?.currentVeRbnIndex}
+              lineDecayAfterPointIndex={
+                hoveredDatapointIndex || chartDatapoints?.currentVeRbnIndex
+              }
               dataset={chartDatapoints?.dataset || []}
               labels={chartDatapoints?.labels || []}
               onHover={onHoverChart}

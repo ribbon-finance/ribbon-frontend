@@ -89,7 +89,7 @@ const UnstakingModal = () => {
         ),
       });
 
-      await provider.waitForTransaction(tx.hash, 5);
+      await provider.waitForTransaction(tx.hash, 2);
 
       setUnstakingModalState((prev) => ({
         ...prev,
@@ -120,7 +120,6 @@ const UnstakingModal = () => {
           />
         );
     }
-    return <></>;
   }, [onUnstake, stepNum, unstakingModalState]);
 
   const [unstakingMode, unstakingScenario] = useMemo((): [

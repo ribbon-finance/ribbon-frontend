@@ -31,6 +31,7 @@ const AlgoStrikeSelection: React.FC<AlgoStrikeSelectionProps> = ({
           case "WBTC":
             return WBTCAlgoStrikeSelection;
           case "USDC":
+          case "USDC.e":
             return USDCAlgoStrikeSelection;
           case "AAVE":
             return AAVEAlgoStrikeSelection;

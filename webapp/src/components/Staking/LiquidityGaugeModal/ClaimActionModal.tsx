@@ -121,7 +121,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
         stakeAsset: vaultOption,
       });
 
-      await provider.waitForTransaction(txhash, 5);
+      await provider.waitForTransaction(txhash, 2);
       setStep("claimed");
     } catch (err) {
       setStep("info");
@@ -242,7 +242,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
               </InfoData>
             </InfoColumn>
 
-            <InfoColumn marginTop={8}>
+            <InfoColumn marginTop={4}>
               <div className="d-flex align-items-center">
                 <SecondaryText
                   className="ml-2"
@@ -263,7 +263,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
               </div>
               <InfoData color={labelColor}>{rewards.baseRewards}</InfoData>
             </InfoColumn>
-            <InfoColumn marginTop={8}>
+            <InfoColumn marginTop={4}>
               <div className="d-flex align-items-center">
                 <SecondaryText
                   className="ml-2"
@@ -287,13 +287,13 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
               </InfoData>
             </InfoColumn>
 
-            <InfoColumn>
+            <InfoColumn marginTop={16}>
               <SecondaryText color={labelColor}>
                 Time Till Next Reward
               </SecondaryText>
               <InfoData>{timeTillNextRewardWeek}</InfoData>
             </InfoColumn>
-            <InfoColumn>
+            <InfoColumn marginTop={16}>
               <div className="d-flex align-items-center">
                 <SecondaryText color={labelColor}>
                   Total Pool Rewards

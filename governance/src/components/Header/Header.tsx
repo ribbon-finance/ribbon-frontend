@@ -17,7 +17,7 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
   position: sticky;
   top: 0;
-  border-bottom: 1px solid ${colors.border};
+  border-bottom: 1px solid ${colors.borderDark2};
 
   @media (max-width: ${sizes.lg}px) {
     padding: 16px 24px;

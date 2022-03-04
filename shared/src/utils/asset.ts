@@ -1,13 +1,6 @@
 import React from "react";
 import styled, { StyledComponent } from "styled-components";
 import {
-  MetamaskIcon,
-  PhantomIcon,
-  SolflareIcon,
-  WalletConnectIcon,
-  WalletLinkIcon,
-} from "../assets/icons/connector";
-import {
   AAVELogo,
   STETHLogo,
   USDCLogo,
@@ -24,8 +17,37 @@ import Logo from "../assets/icons/logo";
 import { SolanaLogo } from "../assets/icons/solAssets";
 import { Chains, VaultOptions } from "../constants/constants";
 import colors from "../designSystem/colors";
-import { EthereumWallet, SolanaWallet } from "../models/wallets";
 import { Assets, Wallets } from "../store/types";
+
+export const assetFilterList: Assets[] = [
+  "AAVE",
+  "WETH",
+  "stETH",
+  "USDC",
+  "yvUSDC",
+  "WBTC",
+  "WAVAX",
+  "sAVAX",
+  "SOL",
+];
+
+export const getIntegralAsset = (derivative: Assets): Assets => {
+  switch (derivative) {
+    // Per design, we only consider USDC.e and USDC the same asset.
+    // We consider stETH/ETH, sAVAX/AVAX, and yvUSDC/USDC differet assets.
+    /*
+    case "stETH":
+      return "ETH"
+    case "sAVAX":
+      return "WAVAX";
+    case "yvUSDC":
+    */
+    case "USDC.e":
+      return "USDC";
+    default:
+      return derivative;
+  }
+};
 
 export const isYieldAsset = (asset: Assets): boolean => {
   switch (asset) {
@@ -57,6 +79,7 @@ export const getChainByAsset = (asset: Assets): Chains => {
       return Chains.Solana;
     case "WAVAX":
     case "sAVAX":
+    case "USDC.e":
       return Chains.Avalanche;
     default:
       return Chains.Ethereum;
@@ -106,6 +129,7 @@ export const getAssetDecimals = (asset: Assets): number => {
     case "WBTC":
       return 8;
     case "USDC":
+    case "USDC.e":
     case "yvUSDC":
       return 6;
     case "SOL":
@@ -206,6 +230,7 @@ export const getAssetLogo: (asset: Assets) =>
 ) => {
   switch (asset) {
     case "USDC":
+    case "USDC.e":
       return ColoredUSDCLogo;
     case "WBTC":
       return ColoredWBTCLogo;
@@ -232,22 +257,5 @@ export const getAssetLogo: (asset: Assets) =>
       return AURORALogo;
     default:
       return Logo;
-  }
-};
-
-export const getWalletLogo = (wallet: EthereumWallet | SolanaWallet) => {
-  switch (wallet) {
-    case EthereumWallet.Metamask:
-      return <MetamaskIcon width={40} height={40} />;
-    case EthereumWallet.WalletConnect:
-      return <WalletConnectIcon width={40} height={40} />;
-    case EthereumWallet.WalletLink:
-      return <WalletLinkIcon width={40} height={40} />;
-    case SolanaWallet.Phantom:
-      return <PhantomIcon width={40} height={40} />;
-    case SolanaWallet.Solflare:
-      return <SolflareIcon width={40} height={40} />;
-    default:
-      return null;
   }
 };

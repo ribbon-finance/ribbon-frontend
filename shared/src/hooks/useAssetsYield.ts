@@ -19,7 +19,7 @@ export const useFetchAssetsYield = () => {
 
   const fetchAssetsYield = useCallback(async () => {
     if (!isProduction()) {
-      console.time("Asset Yield Data Fetch");
+      console.time("Asset Yield Data Fetch"); // eslint-disable-line
     }
 
     try {
@@ -51,11 +51,11 @@ export const useFetchAssetsYield = () => {
         ) as AssetsYieldInfoData
       );
       if (!isProduction()) {
-        console.timeEnd("Asset Yield Data Fetch");
+        console.timeEnd("Asset Yield Data Fetch"); // eslint-disable-line
       }
     } catch (error) {
       if (!isProduction()) {
-        console.timeEnd("Asset Yield Data Fetch FAILED");
+        console.timeEnd("Asset Yield Data Fetch FAILED"); // eslint-disable-line
       }
     } finally {
       setLoading(false);

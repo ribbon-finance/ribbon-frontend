@@ -53,7 +53,7 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
         amount: airdrop.total.toLocaleString(),
       });
 
-      await provider.waitForTransaction(txhash, 5);
+      await provider.waitForTransaction(txhash, 2);
       setStep("claimed");
     } catch (err) {
       setStep("info");

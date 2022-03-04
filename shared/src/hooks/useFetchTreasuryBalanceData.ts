@@ -40,7 +40,7 @@ const useFetchTreasuryBalanceData = () => {
 
   const doMulticall = useCallback(async () => {
     if (!isProduction()) {
-      console.time("Treasury Balance Data Fetch");
+      console.time("Treasury Balance Data Fetch"); // eslint-disable-line
     }
 
     const responses = await Promise.all(
@@ -76,7 +76,7 @@ const useFetchTreasuryBalanceData = () => {
     }));
 
     if (!isProduction()) {
-      console.timeEnd("Treasury Balance Data Fetch");
+      console.timeEnd("Treasury Balance Data Fetch"); // eslint-disable-line
     }
   }, [queryChainId, provider]);
 

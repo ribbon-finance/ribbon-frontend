@@ -37,7 +37,7 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
     }
 
     if (!isProduction()) {
-      console.time("Liquidity Mining Pool Data Fetch");
+      console.time("Liquidity Mining Pool Data Fetch"); // eslint-disable-line
     }
 
     /**
@@ -159,7 +159,7 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
     });
 
     if (!isProduction()) {
-      console.timeEnd("Liquidity Mining Pool Data Fetch");
+      console.timeEnd("Liquidity Mining Pool Data Fetch"); // eslint-disable-line
     }
   }, [account, active, chainId, library, provider]);
 
