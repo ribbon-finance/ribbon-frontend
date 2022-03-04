@@ -32,7 +32,7 @@ const LightBar = styled.div<{
   }
 `;
 
-interface TrafficLightProps {
+interface PendingTransactionLoaderProps {
   active: boolean;
   interval?: number;
   lightBarConfig?: {
@@ -42,7 +42,7 @@ interface TrafficLightProps {
   };
 }
 
-const TrafficLight: React.FC<TrafficLightProps> = ({
+const PendingTransactionLoader: React.FC<PendingTransactionLoaderProps> = ({
   active,
   interval = 350,
   lightBarConfig = {
@@ -84,4 +84,4 @@ const TrafficLight: React.FC<TrafficLightProps> = ({
   );
 };
 
-export default TrafficLight;
+export default PendingTransactionLoader;
