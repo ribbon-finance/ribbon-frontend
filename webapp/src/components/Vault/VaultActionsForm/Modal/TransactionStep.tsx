@@ -31,14 +31,19 @@ const BottomText = styled(PrimaryText)`
 
 interface TransactionStepProps {
   txhash?: string;
+  color?: string;
 }
 
-const TransactionStep: React.FC<TransactionStepProps> = ({ txhash }) => {
+const TransactionStep: React.FC<TransactionStepProps> = ({ txhash, color }) => {
   const [chain] = useChain();
   return (
     <>
       <TransactionPendingContainer>
-        <PendingTransactionLoader active={Boolean(txhash)} />
+        <PendingTransactionLoader
+          active={Boolean(txhash)}
+          numberOfBars={5}
+          color={color}
+        />
       </TransactionPendingContainer>
       <BottomTextContainer>
         {chain !== Chains.NotSelected && txhash ? (

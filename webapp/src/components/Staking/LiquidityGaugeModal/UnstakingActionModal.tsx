@@ -314,7 +314,10 @@ const UnstakingActionModal: React.FC<UnstakingActionModalProps> = ({
               </ModalTitle>
             </BaseModalContentColumn>
             <FloatingContainer>
-              <PendingTransactionLoader active={step === "processing"} />
+              <PendingTransactionLoader
+                active={step === "processing"}
+                color={color}
+              />
             </FloatingContainer>
             {step === "walletAction" ? (
               <BaseModalContentColumn marginTop="auto">

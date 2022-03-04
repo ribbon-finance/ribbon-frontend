@@ -31,7 +31,7 @@ import { depositSAVAX } from "shared/lib/hooks/useSAVAXDeposit";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { useFlexVault } from "shared/lib/hooks/useFlexVault";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
-import { getAssetDecimals } from "shared/lib/utils/asset";
+import { getAssetColor, getAssetDecimals } from "shared/lib/utils/asset";
 import * as anchor from "@project-serum/anchor";
 
 export interface ActionStepsProps {
@@ -452,8 +452,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         withdrawOption={vaultActionForm.withdrawOption}
       />
     ),
-    2: <TransactionStep />,
-    3: <TransactionStep txhash={txhash} />,
+    2: <TransactionStep color={getAssetColor(asset)} />,
+    3: <TransactionStep txhash={txhash} color={getAssetColor(asset)} />,
   };
 
   return <>{stepComponents[step]}</>;

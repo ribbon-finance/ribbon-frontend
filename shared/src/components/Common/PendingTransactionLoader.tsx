@@ -1,85 +1,85 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-
+import React from "react";
+import styled, { keyframes } from "styled-components";
 import colors from "../../designSystem/colors";
-import { ProductList, ProductType } from "../Product/types";
 
-const Container = styled.div<{ width: number }>`
+const Container = styled.div<{ width: string }>`
   display: flex;
   flex-wrap: wrap;
-  width: ${(props) => props.width}px;
+  width: ${(props) => props.width};
 `;
 
-const LightBar = styled.div<{
-  height: number;
-  spacing: number;
-  active: boolean;
-  product: ProductType;
-  interval: number;
-}>`
-  height: ${(props) => props.height}px;
+const FloatingBox = styled.div`
+  display: flex;
+  flex-wrap: wrap;
   width: 100%;
-  background: ${(props) =>
-    props.active ? colors.products[props.product] : "#FFFFFF0A"};
-  box-shadow: 0px 0px 70px
-    ${(props) => (props.active ? colors.products[props.product] : "none")};
-  border-radius: 2px;
-  ${(props) =>
-    `transition: background ${props.interval}ms ease-in-out, box-shadow ${props.interval}ms ease-in-out;`}
+  height: 100%;
+  margin-top: 32px;
+`;
 
-  &:not(:first-child) {
-    margin-top: ${(props) => props.spacing}px;
+const cascadeFade = keyframes`
+  0% {
+    opacity: 0;
   }
+  5% {
+    opacity: 1;
+  }
+  35% {
+    opacity: 0;
+  }
+`;
+
+const FloatingBoxBar = styled.div<{
+  color: string;
+  barAnimationTime: number;
+  numberOfBars: number;
+  index: number;
+}>`
+  width: 100%;
+  height: 40px;
+  background: ${(props) => props.color};
+  box-shadow: 2px 4px 40px ${(props) => props.color};
+  opacity: 0;
+  animation: ${cascadeFade} 2s ease-out forwards infinite;
+  animation: ${(props) => props.barAnimationTime + 1500}ms ${cascadeFade}
+    ease-in-out forwards infinite;
+  animation-delay: ${(props) =>
+    ((props.numberOfBars - props.index) * props.barAnimationTime) /
+    props.numberOfBars}ms;
 `;
 
 interface PendingTransactionLoaderProps {
   active: boolean;
-  interval?: number;
-  lightBarConfig?: {
-    width: number;
-    height: number;
-    spacing: number;
-  };
+  animationTimeMs?: number;
+  numberOfBars?: number;
+  width?: string;
+  // Color of the bars, defaults to ribbon red
+  color?: string;
 }
 
 const PendingTransactionLoader: React.FC<PendingTransactionLoaderProps> = ({
-  active,
-  interval = 350,
-  lightBarConfig = {
-    width: 200,
-    height: 16,
-    spacing: 24,
-  },
+  color = colors.red,
+  // active,
+  animationTimeMs = 500,
+  numberOfBars = 6,
+  width = "200px",
 }) => {
-  const [activeIndex, setActiveIndex] = useState<number>();
-
-  useEffect(() => {
-    if (!active) {
-      setActiveIndex(undefined);
-      return;
-    }
-
-    const timeInterval = setInterval(() => {
-      setActiveIndex((curr) => {
-        return curr !== undefined ? (curr + 1) % 4 : 0;
-      });
-    }, interval);
-
-    return () => clearInterval(timeInterval);
-  }, [active, interval]);
+  // TODO: - REMOVE
+  const active = true;
 
   return (
-    <Container width={lightBarConfig.width}>
-      {ProductList.map((product, index) => (
-        <LightBar
-          key={index}
-          height={lightBarConfig.height}
-          spacing={lightBarConfig.spacing}
-          product={product}
-          active={activeIndex === index}
-          interval={interval}
-        />
-      ))}
+    <Container width={width}>
+      <FloatingBox>
+        {active &&
+          [...new Array(numberOfBars)].map((_item, index) => (
+            <FloatingBoxBar
+              key={index}
+              color={color}
+              barAnimationTime={animationTimeMs}
+              numberOfBars={numberOfBars}
+              index={index}
+            />
+          ))}
+      </FloatingBox>
     </Container>
   );
 };
