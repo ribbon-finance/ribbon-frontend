@@ -103,15 +103,11 @@ it("Base rewards should be correct", () => {
     assetPrice: 2568.91135996858,
     rbnPrice: 1.3238686374851516,
   });
-  expect(baseRewards0.toFixed(2)).toEqual("3.978424792019947e+144");
-  expect(baseRewards1.toFixed(2)).toEqual("1528.87");
+  expect(baseRewards0.toFixed(2)).toEqual("2867600.59");
+  expect(baseRewards1.toFixed(2)).toEqual("286.67");
 });
 
 it("Should calculate claimable RBN amount", async () => {
-  // const controllerContract = LiquidityGaugeControllerFactory.connect(
-  //   "0x1897D25dc65406F0a534cb6749010b3EdD9f87D9",
-  //   new providers.AlchemyProvider("kovan", "qtBrk7Td-rz5trQucLDn7tyY9nyNt9Ao")
-  // );
   class MockGaugeController {
     "gauge_relative_weight(address,uint256)"(
       addr: string,
