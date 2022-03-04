@@ -6,6 +6,7 @@ const colors = {
     four: "#26262B",
   },
   borderDark: "#1F1F1F",
+  borderDark2: "#0D0D13",
   border: "#1C1C22",
   borderLight: "#2E2C2B",
   text: "#ACACAB",

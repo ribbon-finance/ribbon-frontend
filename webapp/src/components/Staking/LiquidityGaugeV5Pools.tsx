@@ -111,7 +111,6 @@ const LogoContainer = styled.div<{ color: string }>`
   width: 40px;
   height: 40px;
   border-radius: 100px;
-  background: ${(props) => props.color}29;
 `;
 
 const PoolRewardData = styled(Title)`
@@ -237,13 +236,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
   const logo = useMemo(() => {
     const asset = getDisplayAssets(vaultOption);
     const Logo = getAssetLogo(asset);
-
-    switch (asset) {
-      case "WETH":
-        return <Logo height="70%" />;
-      default:
-        return <Logo />;
-    }
+    return <Logo />;
   }, [vaultOption]);
 
   const baseAPY = useMemo(() => {

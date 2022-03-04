@@ -43,6 +43,10 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
       !minterContract ||
       !gaugeControllerContract
     ) {
+      setData({
+        ...defaultLiquidityGaugeV5PoolData,
+        loading: false,
+      });
       return;
     }
 

@@ -28,7 +28,7 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import { calculateBoostedRewards } from "shared/lib/utils/governanceMath";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import TrafficLight from "shared/lib/components/Common/TrafficLight";
+import PendingTransactionLoader from "shared/lib/components/Common/PendingTransactionLoader";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
@@ -61,7 +61,6 @@ const LogoContainer = styled.div<{ color: string }>`
   width: 64px;
   height: 64px;
   border-radius: 100px;
-  background: ${(props) => props.color}29;
   color: ${(props) => props.color};
   font-size: 40px;
 `;
@@ -469,7 +468,10 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               </ModalTitle>
             </BaseModalContentColumn>
             <FloatingContainer>
-              <TrafficLight active={step === "processing"} />
+              <PendingTransactionLoader
+                active={step === "processing"}
+                color={color}
+              />
             </FloatingContainer>
             {step === "walletAction" ? (
               <BaseModalContentColumn marginTop="auto">
@@ -526,7 +528,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     }
   }, [step]);
 
-  if (vaultDataLoading) return loadingText;
+  if (vaultDataLoading) return null;
 
   return (
     <BasicModal

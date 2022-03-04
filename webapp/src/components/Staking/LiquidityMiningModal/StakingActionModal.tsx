@@ -30,7 +30,7 @@ import { formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import useStakingReward from "shared/lib/hooks/useStakingReward";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
-import TrafficLight from "shared/lib/components/Common/TrafficLight";
+import PendingTransactionLoader from "shared/lib/components/Common/PendingTransactionLoader";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { getVaultColor } from "shared/lib/utils/vault";
 import BasicModal from "shared/lib/components/Common/BasicModal";
@@ -457,7 +457,10 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               </ModalTitle>
             </BaseModalContentColumn>
             <FloatingContainer>
-              <TrafficLight active={step === "processing"} />
+              <PendingTransactionLoader
+                active={step === "processing"}
+                color={color}
+              />
             </FloatingContainer>
             {step === "walletAction" ? (
               <BaseModalContentColumn marginTop="auto">

@@ -76,7 +76,8 @@ export const calculateBaseRewards = ({
   );
 
   return poolSizeInUSD > 0
-    ? ((1 + poolRewardInUSD / poolSizeInUSD) ** 52 - 1) * 100
+    ? // Not compounded
+      (poolRewardInUSD / poolSizeInUSD) * 52 * 100
     : 0;
 };
 
