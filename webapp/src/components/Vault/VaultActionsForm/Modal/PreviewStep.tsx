@@ -26,7 +26,6 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
-import { useCurvePoolEstimateStETHSwap } from "shared/lib/hooks/useCurvePool";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import useLatestAPY from "shared/lib/hooks/useLatestAPY";
@@ -442,10 +441,7 @@ const PreviewStep: React.FC<{
                 <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
                   <SecondaryText>Estimated Withdraw Amount</SecondaryText>
                   <Title className="text-right">
-                    {formatBigNumber(
-                      swapOutput.isZero() ? amount : swapOutput,
-                      getAssetDecimals(asset)
-                    )}{" "}
+                    {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
                     {getAssetDisplay(asset)}
                   </Title>
                 </div>
