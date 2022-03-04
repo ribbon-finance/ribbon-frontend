@@ -24,7 +24,6 @@ export const assetFilterList: Assets[] = [
   "WETH",
   "stETH",
   "USDC",
-  "yvUSDC",
   "WBTC",
   "WAVAX",
   "sAVAX",
