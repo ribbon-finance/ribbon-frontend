@@ -32,7 +32,8 @@ const FABContainer = styled.div.attrs({
   height: ${theme.governance.actionBar.height}px;
   width: 100%;
 
-  border-top: 1px solid ${colors.border};
+  // border-top: 1px solid ${colors.borderDark2};
+  border-top: 1px solid #0d0d13;
   border-bottom: 1px solid ${colors.border};
 
   backdrop-filter: blur(40px);
@@ -282,11 +283,10 @@ const StakingFAB = () => {
             </Title>
             {lockExpired && (
               <TooltipExplanation
-                title={"LOCK RBN"}
-                // TODO: - Move this to i18n
-                explanation={
-                  "Because your lockup period has expired, you need to unlock your existing tokens first before you can lock again."
-                }
+                title={t("governance:TooltipExplanations:lockRBN:title")}
+                explanation={t(
+                  "governance:TooltipExplanations:lockRBN:description"
+                )}
                 renderContent={({ ref, ...triggerHandler }) => (
                   <HelpInfo containerRef={ref} {...triggerHandler}>
                     i
