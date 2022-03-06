@@ -80,18 +80,6 @@ export const useFlexVault = (): FlexVaultData => {
     }
   }, [connection, flexVault, flexAddress, network, vaultProgramId]);
 
-  useEffect(() => {
-    const loadFlexClient = async () => {
-      return await VaultClient.load(connection, new types.DummyWallet());
-    };
-
-    if (!flexClient && connection) {
-      loadFlexClient().then((client: VaultClient) => {
-        setFlexClient(client);
-      });
-    }
-  }, [connection, flexClient]);
-
   // FLEX CLIENT HANDLER
   useEffect(() => {
     const loadFlexClient = async () => {
