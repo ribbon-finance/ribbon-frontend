@@ -168,6 +168,13 @@ const FloatingBackgroundContainer = styled.div<{ backgroundColor?: string }>`
   height: 100%;
   width: 100%;
   overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  }
+
   ${(props) =>
     props.backgroundColor ? `background: ${props.backgroundColor};` : ""};
 `;
@@ -207,6 +214,7 @@ const Hero = () => {
         </Col>
       </TextContainer>
       <FloatingBackgroundContainer>
+        <img src="https://storage.googleapis.com/ribbon-landing/fallback2.png" />
         <ReactPlayer
           key="video-player"
           url="https://storage.googleapis.com/ribbon-bucket/verbn/launch.mp4"
@@ -249,7 +257,7 @@ const PriceTicker = () => {
             opacity: 0,
           }}
         >
-          <Marquee gradient={false} speed={75} delay={1}>
+          <Marquee pauseOnHover gradient={false} speed={75} delay={1}>
             {Object.values(tickerData.data).map((token) => {
               const Logo = getAssetLogo(token.asset as Assets);
               return (

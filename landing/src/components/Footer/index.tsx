@@ -9,6 +9,7 @@ import sizes from "../../designSystem/sizes";
 const FooterContainer = styled(Row)`
   width: 100%;
   padding: 80px 0;
+  justify-content: center;
   margin-bottom: 20px;
 
   > * {
@@ -150,15 +151,15 @@ const Footer = () => {
   return (
     <>
       <FooterContainer fluid noGutters>
-        <Col xs={12} md={4}>
+        <Col xs={12} md={3}>
           <FooterTitle>About</FooterTitle>
           <LinkList links={links.about} />
         </Col>
-        <Col xs={12} md={4}>
+        <Col xs={12} md={3}>
           <FooterTitle>Community</FooterTitle>
           <LinkList links={links.community} />
         </Col>
-        <Col xs={12} md={4}>
+        <Col xs={12} md={3}>
           <FooterTitle>Data</FooterTitle>
           <LinkList links={links.data} />
         </Col>

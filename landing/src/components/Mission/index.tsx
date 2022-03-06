@@ -105,11 +105,13 @@ const Frame = styled.div`
 
 const glow = keyframes`
   0% {
-    background: ${colors.red};
+    border-left: 10px solid ${colors.red};
+    border-right: 10px solid ${colors.red};
     box-shadow: 2px 4px 40px ${colors.red};
+    background: ${colors.red}cc;
   }
 
-  20% {
+  25% {
     background: black;
   }
 `;
