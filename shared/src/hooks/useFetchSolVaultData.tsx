@@ -11,6 +11,7 @@ import {
   getUserDepositQueueAmount,
   getUserWithdrawQueueAmount,
 } from "../utils/vault";
+import { getSolanaVaultInstance } from "../constants/constants";
 
 const useFetchSolVaultData = (): SolanaVaultData => {
   const { connection } = useConnection();
@@ -23,13 +24,8 @@ const useFetchSolVaultData = (): SolanaVaultData => {
       if (!vault || !connection) return;
 
       const [vaultAddress] = await vaultUtils.getVaultAddress("rSOL-THETA");
-      const {
-        depositLimit,
-        epochSequenceNumber,
-        totalBalance,
-        pricePerShare,
-        vaultUserData,
-      } = await vaultData.getVaultData(connection, vaultAddress);
+      const { depositLimit, epochSequenceNumber, totalBalance, pricePerShare } =
+        await vaultData.getVaultData(connection, vaultAddress);
 
       let lockedBalanceInAsset = BigNumber.from(0);
       let depositBalanceInAsset = BigNumber.from(0);
@@ -47,17 +43,15 @@ const useFetchSolVaultData = (): SolanaVaultData => {
           publicKey as PublicKey
         );
 
-        const userData = vaultUserData.find(
-          (d) =>
-            publicKey &&
-            vaultAddress &&
-            d?.user.equals(publicKey as PublicKey) &&
-            d?.vault.equals(vaultAddress)
-        );
+        lockedBalanceInAsset = BigNumber.from(0);
 
-        lockedBalanceInAsset = BigNumber.from(
-          Math.floor(userData?.lockedUnderlyingAmount ?? 0)
-        );
+        if (client) {
+          lockedBalanceInAsset = BigNumber.from(
+            client.getRedeemableTokenAmount(
+              getSolanaVaultInstance("rSOL-THETA")
+            ) || 0
+          );
+        }
       }
 
       setData({
