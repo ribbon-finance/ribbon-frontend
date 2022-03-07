@@ -438,7 +438,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
             </InfoColumn>
             <InfoColumn marginTop={4}>
               <SecondaryText className="ml-2" fontSize={12}>
-                Boosted Rewards ({apys.boostedMultiplier})
+                Boosted Rewards {apys.boostedMultiplier}
               </SecondaryText>
               <InfoData color={colors.text} fontSize={14}>
                 {apys.boostedRewards}
