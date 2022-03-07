@@ -282,7 +282,7 @@ export const GAS_LIMITS: {
 export const LiquidityMiningVersionList = ["lg5", "lm"] as const;
 export type LiquidityMiningVersion = typeof LiquidityMiningVersionList[number];
 
-const ProdExcludeLiquidityMiningVersion: LiquidityMiningVersion[] = ["lg5"];
+const ProdExcludeLiquidityMiningVersion: LiquidityMiningVersion[] = [];
 // @ts-ignore
 export const OngoingLMVersion: LiquidityMiningVersion[] = !isProduction()
   ? LiquidityMiningVersionList
@@ -559,7 +559,7 @@ export const getAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
     case "rUSDC-ETH-P-THETA":
     case "ryvUSDC-ETH-P-THETA":
-      return "yvUSDC";
+      return "USDC";
     case "rUSDC-AVAX-P-THETA":
       return "USDC.e";
     case "rETH-THETA":

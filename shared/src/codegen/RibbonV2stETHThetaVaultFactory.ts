@@ -585,6 +585,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "STETH",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "STETH_ETH_CRV_POOL",
     outputs: [
       {
@@ -1103,6 +1116,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "liquidityGauge",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "managementFee",
     outputs: [
       {
@@ -1369,6 +1395,19 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "newLiquidityGauge",
+        type: "address",
+      },
+    ],
+    name: "setLiquidityGauge",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "newManagementFee",
         type: "uint256",
@@ -1490,6 +1529,19 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "numShares",
+        type: "uint256",
+      },
+    ],
+    name: "stake",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -1710,7 +1762,7 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "minETHOut",
+        name: "",
         type: "uint256",
       },
     ],
