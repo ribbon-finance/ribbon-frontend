@@ -956,7 +956,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
         case "settlementB":
           return (
             <>
-              When the call options expire{" "}
+              When the {isPut ? "put" : "call"} options expire{" "}
               <TooltipExplanation
                 title="IN-THE-MONEY"
                 explanation={`An ${optionAssetUnit} ${
