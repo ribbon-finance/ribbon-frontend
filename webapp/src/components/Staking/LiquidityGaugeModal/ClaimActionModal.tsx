@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import moment from "moment";
-
+import { useTranslation } from "react-i18next";
 import {
   VaultLiquidityMiningMap,
   VaultOptions,
@@ -11,6 +11,7 @@ import {
   SecondaryText,
   Title,
 } from "shared/lib/designSystem";
+import { titleCase } from "shared/lib/utils/text";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
@@ -80,6 +81,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
   baseAPY,
   calculateBoostedMultipler,
 }) => {
+  const { t } = useTranslation();
   const { provider } = useWeb3Context();
   const [step, setStep] = useState<"info" | "claim" | "claiming" | "claimed">(
     "info"
@@ -289,7 +291,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
 
             <InfoColumn marginTop={16}>
               <SecondaryText color={labelColor}>
-                Time Till Next Reward
+                {titleCase(t("webapp:LiquidityMining:timeTillNextEpoch"))}
               </SecondaryText>
               <InfoData>{timeTillNextRewardWeek}</InfoData>
             </InfoColumn>
@@ -327,6 +329,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
     stakingPoolData,
     handleClaim,
     rewards,
+    t,
   ]);
 
   return (

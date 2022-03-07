@@ -13,3 +13,8 @@ export const copyTextToClipboard = (text: string) => {
 
 export const capitalize = (str: string) =>
   str.charAt(0).toUpperCase() + str.substring(1);
+
+export const titleCase = (str: string) => {
+  const words = str.split(" ");
+  return words.map((word) => capitalize(word)).join(" ");
+};
