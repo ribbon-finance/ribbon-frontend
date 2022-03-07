@@ -52,7 +52,6 @@ const DesktopFooter = () => {
   return (
     <FooterContainer>
       <LeftContainer>
-        {renderLinkItem("GOVERNANCE", "https://vote.ribbon.finance")}
         {renderLinkItem("FAQ", "https://ribbon.finance/faq")}
         {renderLinkItem("BLOG", "https://medium.com/@ribbonfinance")}
         {renderLinkItem("TERMS", "https://ribbon.finance/terms")}
