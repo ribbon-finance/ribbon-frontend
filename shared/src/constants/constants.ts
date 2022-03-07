@@ -282,7 +282,7 @@ export const GAS_LIMITS: {
 export const LiquidityMiningVersionList = ["lg5", "lm"] as const;
 export type LiquidityMiningVersion = typeof LiquidityMiningVersionList[number];
 
-const ProdExcludeLiquidityMiningVersion: LiquidityMiningVersion[] = ["lg5"];
+const ProdExcludeLiquidityMiningVersion: LiquidityMiningVersion[] = [];
 // @ts-ignore
 export const OngoingLMVersion: LiquidityMiningVersion[] = !isProduction()
   ? LiquidityMiningVersionList
