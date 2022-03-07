@@ -17,7 +17,7 @@ import {
 } from "shared/lib/models/lockupPeriod";
 import colors from "shared/lib/designSystem/colors";
 import {
-  getAssets,
+  getDisplayAssets,
   VaultLiquidityMiningMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
@@ -136,18 +136,19 @@ const stakingPools = Object.keys(VaultLiquidityMiningMap.lg5) as VaultOptions[];
 const stakingPoolDropdownOptions: StakingPoolOption[] = (
   Object.keys(VaultLiquidityMiningMap.lg5) as VaultOptions[]
 ).map((option) => {
-  const Logo = getAssetLogo(getAssets(option));
+  const Logo = getAssetLogo(getDisplayAssets(option));
   return {
     value: option,
     label: option,
     logo: (
-      <Logo
+      <div
         style={{
-          margin: 0,
           width: 32,
           height: 32,
         }}
-      />
+      >
+        <Logo />
+      </div>
     ),
   };
 });
@@ -459,11 +460,13 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
                 fontSize={14}
                 fontWeight={500}
                 className="mr-auto"
-                color={colors.asset[getAssets(currentGauge)]}
+                color={colors.asset[getDisplayAssets(currentGauge)]}
               >
                 APY
               </SecondaryText>
-              <CalculationData color={colors.asset[getAssets(currentGauge)]}>
+              <CalculationData
+                color={colors.asset[getDisplayAssets(currentGauge)]}
+              >
                 {displayRewards.totalAPY}
               </CalculationData>
             </CalculationColumn>
