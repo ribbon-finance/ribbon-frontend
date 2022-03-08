@@ -32,7 +32,11 @@ import { useFlexVault } from "shared/lib/hooks/useFlexVault";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { getAssetColor, getAssetDecimals } from "shared/lib/utils/asset";
 import * as anchor from "@project-serum/anchor";
-import { RibbonCoveredCall, RibbonV2stETHThetaVault, RibbonV2ThetaVault } from "shared/lib/codegen";
+import {
+  RibbonCoveredCall,
+  RibbonV2stETHThetaVault,
+  RibbonV2ThetaVault,
+} from "shared/lib/codegen";
 
 export interface ActionStepsProps {
   vault: {
@@ -204,7 +208,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   }, [pendingTransactions, txhash, handleClose, step]);
 
   const handleClickConfirmButton = async () => {
-    const vault = (vaultActionForm.vaultVersion === "v1" ? v1Vault : v2Vault);
+    const vault = vaultActionForm.vaultVersion === "v1" ? v1Vault : v2Vault;
 
     if (vault !== null || (isSolanaVault(vaultOption) && client !== null)) {
       // check illegal state transition
@@ -218,8 +222,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
             switch (vaultOption) {
               case "rstETH-THETA":
                 res = await (isNativeToken(asset)
-                  ? (vault as RibbonV2ThetaVault).depositETH({ value: amountStr })
-                  : (vault as RibbonV2stETHThetaVault).depositYieldToken(amountStr));
+                  ? (vault as RibbonV2ThetaVault).depositETH({
+                      value: amountStr,
+                    })
+                  : (vault as RibbonV2stETHThetaVault).depositYieldToken(
+                      amountStr
+                    ));
                 break;
 
               case "rSOL-THETA":
@@ -237,13 +245,15 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                 res =
                   asset === "WAVAX"
                     ? await depositSAVAX(ethereumProvider, amountStr)
-                    : await  (vault as RibbonV2ThetaVault).deposit(amountStr);
+                    : await (vault as RibbonV2ThetaVault).deposit(amountStr);
                 break;
 
               default:
                 res = await (isNativeToken(asset)
-                  ?  (vault as RibbonV2ThetaVault).depositETH({ value: amountStr })
-                  :  (vault as RibbonV2ThetaVault).deposit(amountStr));
+                  ? (vault as RibbonV2ThetaVault).depositETH({
+                      value: amountStr,
+                    })
+                  : (vault as RibbonV2ThetaVault).deposit(amountStr));
             }
             break;
           case ACTIONS.withdraw:
@@ -253,18 +263,18 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                * V1 withdraw
                */
               case "v1":
-                const v1Vault = vault as RibbonCoveredCall
-                shares = await  v1Vault.assetAmountToShares(amountStr);
+                const v1Vault = vault as RibbonCoveredCall;
+                shares = await v1Vault.assetAmountToShares(amountStr);
                 res = await (isETHVault(vaultOption)
-                  ?  v1Vault.withdrawETH(shares)
-                  :  v1Vault.withdraw(shares));
+                  ? v1Vault.withdrawETH(shares)
+                  : v1Vault.withdraw(shares));
                 break;
 
               /**
                * V2 withdraw
                */
               case "v2":
-                const v2Vault = vault as RibbonV2ThetaVault
+                const v2Vault = vault as RibbonV2ThetaVault;
                 switch (vaultActionForm.withdrawOption) {
                   /** Instant withdraw for V2 */
                   case "instant":
@@ -289,7 +299,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                           }
                         );
                         // Special for RibbonV2stETH vault
-                        res = await (vault as RibbonV2stETHThetaVault).withdrawInstantly(amountStr, minOut, {
+                        res = await (
+                          vault as RibbonV2stETHThetaVault
+                        ).withdrawInstantly(amountStr, minOut, {
                           gasLimit: 220000,
                         });
                         break;
@@ -337,7 +349,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                           }
                         );
                         // Special for RibbonV2stETH vault
-                        res = await (vault as RibbonV2stETHThetaVault).completeWithdraw(minOut, {
+                        res = await (
+                          vault as RibbonV2stETHThetaVault
+                        ).completeWithdraw(minOut, {
                           gasLimit: 400000,
                         });
                         break;

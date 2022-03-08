@@ -199,14 +199,14 @@ const _abi = [
         type: "address",
       },
     ],
-    outputs: []
+    outputs: [],
   },
   {
     stateMutability: "nonpayable",
     type: "function",
     name: "apply_transfer_ownership",
     inputs: [],
-    outputs: []
+    outputs: [],
   },
   {
     stateMutability: "nonpayable",
@@ -218,7 +218,7 @@ const _abi = [
         type: "bool",
       },
     ],
-    outputs: []
+    outputs: [],
   },
   {
     stateMutability: "view",
@@ -235,7 +235,7 @@ const _abi = [
         name: "",
         type: "int128",
       },
-    ]
+    ],
   },
   {
     stateMutability: "nonpayable",
@@ -251,7 +251,7 @@ const _abi = [
         type: "int128",
       },
     ],
-    outputs: []
+    outputs: [],
   },
   {
     stateMutability: "nonpayable",
@@ -271,14 +271,14 @@ const _abi = [
         type: "uint256",
       },
     ],
-    outputs: []
+    outputs: [],
   },
   {
     stateMutability: "nonpayable",
     type: "function",
     name: "checkpoint",
     inputs: [],
-    outputs: []
+    outputs: [],
   },
   {
     stateMutability: "nonpayable",
@@ -290,7 +290,7 @@ const _abi = [
         type: "address",
       },
     ],
-    outputs: []
+    outputs: [],
   },
   {
     stateMutability: "view",
@@ -307,7 +307,7 @@ const _abi = [
         name: "",
         type: "uint256",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -328,7 +328,7 @@ const _abi = [
         name: "",
         type: "uint256",
       },
-    ]
+    ],
   },
   {
     stateMutability: "nonpayable",
@@ -345,7 +345,7 @@ const _abi = [
         name: "",
         type: "uint256",
       },
-    ]
+    ],
   },
   {
     stateMutability: "nonpayable",
@@ -366,7 +366,7 @@ const _abi = [
         name: "",
         type: "uint256",
       },
-    ]
+    ],
   },
   {
     stateMutability: "nonpayable",
@@ -378,7 +378,7 @@ const _abi = [
         type: "string",
       },
     ],
-    outputs: []
+    outputs: [],
   },
   {
     stateMutability: "nonpayable",
@@ -394,7 +394,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    outputs: []
+    outputs: [],
   },
   {
     stateMutability: "nonpayable",
@@ -410,7 +410,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    outputs: []
+    outputs: [],
   },
   {
     stateMutability: "nonpayable",
@@ -426,7 +426,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    outputs: []
+    outputs: [],
   },
   {
     stateMutability: "nonpayable",
@@ -442,7 +442,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    outputs: []
+    outputs: [],
   },
   {
     stateMutability: "view",
@@ -459,7 +459,7 @@ const _abi = [
         name: "",
         type: "uint256",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -476,7 +476,7 @@ const _abi = [
         name: "",
         type: "uint256",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -488,7 +488,7 @@ const _abi = [
         name: "",
         type: "uint256",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -505,7 +505,7 @@ const _abi = [
         name: "",
         type: "uint256",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -517,7 +517,7 @@ const _abi = [
         name: "",
         type: "address",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -529,7 +529,7 @@ const _abi = [
         name: "",
         type: "address",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -541,7 +541,7 @@ const _abi = [
         name: "",
         type: "address",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -553,7 +553,7 @@ const _abi = [
         name: "",
         type: "address",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -565,7 +565,7 @@ const _abi = [
         name: "",
         type: "address",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -577,7 +577,7 @@ const _abi = [
         name: "",
         type: "int128",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -589,7 +589,7 @@ const _abi = [
         name: "",
         type: "int128",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -606,7 +606,7 @@ const _abi = [
         name: "",
         type: "string",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -623,7 +623,7 @@ const _abi = [
         name: "",
         type: "address",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -658,7 +658,7 @@ const _abi = [
           },
         ],
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -675,7 +675,7 @@ const _abi = [
         name: "",
         type: "uint256",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -696,7 +696,7 @@ const _abi = [
         name: "",
         type: "uint256",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -727,7 +727,7 @@ const _abi = [
           },
         ],
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -744,7 +744,7 @@ const _abi = [
         name: "",
         type: "uint256",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -775,7 +775,7 @@ const _abi = [
           },
         ],
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -792,7 +792,7 @@ const _abi = [
         name: "",
         type: "uint256",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -809,7 +809,7 @@ const _abi = [
         name: "",
         type: "uint256",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -821,7 +821,7 @@ const _abi = [
         name: "",
         type: "uint256",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -842,7 +842,7 @@ const _abi = [
         name: "",
         type: "uint256",
       },
-    ]
+    ],
   },
   {
     stateMutability: "view",
@@ -859,7 +859,7 @@ const _abi = [
         name: "",
         type: "uint256",
       },
-    ]
+    ],
   },
 ];
 

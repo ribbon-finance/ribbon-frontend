@@ -173,7 +173,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "integrate_checkpoint",
@@ -185,7 +185,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "user_checkpoint",
@@ -202,7 +202,7 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "claimable_tokens",
@@ -219,7 +219,7 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "claimed_reward",
@@ -240,7 +240,7 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "claimable_reward",
@@ -261,7 +261,7 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "set_rewards_receiver",
@@ -273,7 +273,7 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "claim_rewards",
@@ -320,7 +320,7 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "deposit",
@@ -417,7 +417,7 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "transferFrom",
@@ -442,7 +442,7 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "approve",
@@ -463,7 +463,7 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "increaseAllowance",
@@ -484,7 +484,7 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "decreaseAllowance",
@@ -505,7 +505,7 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "add_reward",
@@ -521,7 +521,7 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "set_reward_distributor",
@@ -537,7 +537,7 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "deposit_reward_token",
@@ -553,7 +553,7 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "set_killed",
@@ -565,7 +565,7 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "commit_transfer_ownership",
@@ -577,14 +577,14 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "accept_transfer_ownership",
     outputs: [],
     inputs: [],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "minter",
@@ -596,7 +596,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "crv_token",
@@ -608,7 +608,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "controller",
@@ -620,7 +620,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "voting_escrow",
@@ -632,7 +632,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "veboost_proxy",
@@ -644,7 +644,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "lp_token",
@@ -656,7 +656,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "future_epoch_time",
@@ -668,7 +668,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "balanceOf",
@@ -685,7 +685,7 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "totalSupply",
@@ -697,7 +697,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "allowance",
@@ -718,7 +718,7 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "name",
@@ -730,7 +730,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "symbol",
@@ -742,7 +742,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "working_balances",
@@ -759,7 +759,7 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "working_supply",
@@ -771,7 +771,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "period",
@@ -783,7 +783,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "period_timestamp",
@@ -800,7 +800,7 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "integrate_inv_supply",
@@ -817,7 +817,7 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "integrate_inv_supply_of",
@@ -834,7 +834,7 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "integrate_checkpoint_of",
@@ -851,7 +851,7 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "integrate_fraction",
@@ -868,7 +868,7 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "inflation_rate",
@@ -880,7 +880,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "reward_count",
@@ -892,7 +892,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "reward_tokens",
@@ -909,7 +909,7 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "reward_data",
@@ -946,7 +946,7 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "rewards_receiver",
@@ -963,7 +963,7 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "reward_integral_for",
@@ -984,7 +984,7 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "admin",
@@ -996,7 +996,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "future_admin",
@@ -1008,7 +1008,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "is_killed",
@@ -1020,7 +1020,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
 ];
 

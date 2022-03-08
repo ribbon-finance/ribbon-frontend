@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
-import { VotingEscrowDelegationProxy, VotingEscrowDelegationProxy__factory } from "shared/lib/codegen";
+import {
+  VotingEscrowDelegationProxy,
+  VotingEscrowDelegationProxy__factory,
+} from "shared/lib/codegen";
 import { VotingEscrowDelegationProxyAddress } from "shared/lib/constants/constants";
 
 export const getVotingEscrowDelegationProxy = (

@@ -107,7 +107,7 @@ const StakingModal = () => {
    */
   const onApprove = useCallback(async () => {
     if (!rbnTokenContract) {
-      return
+      return;
     }
 
     setStepNum(stakingModesMap[stakingModalState.mode].indexOf("transaction"));
@@ -148,9 +148,9 @@ const StakingModal = () => {
    */
   const onStake = useCallback(async () => {
     if (!votingEscrowContract) {
-      return
+      return;
     }
-    
+
     setStepNum(stakingModesMap[stakingModalState.mode].indexOf("transaction"));
     try {
       const expiryMoment = moment().add(stakingData.duration);
@@ -193,7 +193,7 @@ const StakingModal = () => {
    */
   const onStakeUpdate = useCallback(async () => {
     if (!votingEscrowContract) {
-      return
+      return;
     }
 
     setStepNum(stakingModesMap[stakingModalState.mode].indexOf("transaction"));
