@@ -16,7 +16,7 @@ import DesktopSubmenu from "./DesktopSubmenu";
 // Close button for temp banner
 const CloseButton = styled.div`
   position: absolute;
-  right: 8px;
+  right: 12px;
   padding-top: 3px;
 `;
 
@@ -24,7 +24,7 @@ const TempLMBanner = styled.div.attrs({
   className: "d-flex align-items-center justify-content-center",
 })`
   position: fixed;
-  height: 32px;
+  height: 48px;
   width: 100%;
   color: ${colors.primaryText};
   background-color: ${colors.background.three};
