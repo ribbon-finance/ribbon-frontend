@@ -40,6 +40,10 @@ export const vaultGraphql = (version: VaultVersion, chain: Chains) =>
             symbol
             totalBalance
             totalPremiumEarned
+            totalFeeCollected
+            totalNotionalVolume
+            underlyingAsset
+            underlyingSymbol
           }
 
         `

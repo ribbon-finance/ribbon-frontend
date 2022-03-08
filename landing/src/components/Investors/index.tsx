@@ -13,8 +13,8 @@ import Ethereal from "../../img/Investors/ethereal.svg";
 import Scalar from "../../img/Investors/scalar.svg";
 import Alliance from "../../img/Investors/alliance.svg";
 import Robot from "../../img/Investors/robot.svg";
-
 import colors from "shared/lib/designSystem/colors";
+import { motion } from "framer-motion";
 
 const MainContainer = styled(Container)`
   padding-top: 80px;
@@ -111,16 +111,21 @@ const Investors = () => {
         <InvestorRow noGutters>
           {investorList.map((investor) => {
             return investor.isText ? (
+              //https://codesandbox.io/s/framer-motion-animate-in-view-gqcc8?file=/src/index.js
               <Col xl={3} md={4} sm={12} xs={12}>
-                <InvestorCard className="d-flex justify-content-center align-items-center">
-                  <InvestorText>{investor.src}</InvestorText>
-                </InvestorCard>
+                <motion.div initial="hidden">
+                  <InvestorCard className="d-flex justify-content-center align-items-center">
+                    <InvestorText>{investor.src}</InvestorText>
+                  </InvestorCard>
+                </motion.div>
               </Col>
             ) : (
               <Col xl={3} md={4} sm={12} xs={12}>
-                <InvestorCard className="d-flex justify-content-center align-items-center">
-                  <InvestorLogo src={investor.src} alt={investor.alt} />
-                </InvestorCard>
+                <motion.div initial="hidden">
+                  <InvestorCard className="d-flex justify-content-center align-items-center">
+                    <InvestorLogo src={investor.src} alt={investor.alt} />
+                  </InvestorCard>
+                </motion.div>
               </Col>
             );
           })}

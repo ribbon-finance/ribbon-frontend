@@ -214,7 +214,6 @@ const Hero = () => {
         </Col>
       </TextContainer>
       <FloatingBackgroundContainer>
-        <img src="https://storage.googleapis.com/ribbon-landing/fallback2.png" />
         <ReactPlayer
           key="video-player"
           url="https://storage.googleapis.com/ribbon-bucket/verbn/launch.mp4"

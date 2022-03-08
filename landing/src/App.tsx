@@ -106,7 +106,7 @@ function App() {
                     </Router>
                     <StickyFooter>
                       <div>
-                        <p>Hi</p>
+                        <TVL />
                       </div>
                       <div>
                         <Scroller />
@@ -300,6 +300,10 @@ const SocialMedia = () => {
       </SocialButton>
     </Socials>
   );
+};
+
+const TVL = () => {
+  return <p>Hi</p>;
 };
 
 export default App;

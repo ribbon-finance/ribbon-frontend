@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -7,6 +7,10 @@ import { Container } from "react-bootstrap";
 import { Title, BaseText } from "../../designSystem";
 import sizes from "../../designSystem/sizes";
 import colors from "shared/lib/designSystem/colors";
+import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
+import { BigNumber } from "ethers";
+import useTVL from "shared/lib/hooks/useTVL";
+import currency from "currency.js";
 
 const MainContainer = styled(Container)`
   padding: 80px 0;
@@ -126,6 +130,38 @@ const Bar = styled.div<{ delay: number }>`
 `;
 
 const Mission = () => {
+  const { vaultSubgraphData } = useContext(SubgraphDataContext);
+  const { data, totalTVL } = useTVL();
+  const [notional, setNotional] = useState<BigNumber>(BigNumber.from(0));
+  const [revenue, setRevenue] = useState<BigNumber>(BigNumber.from(0));
+
+  useEffect(() => {
+    console.log(totalTVL);
+  }, [totalTVL]);
+
+  useEffect(() => {
+    const revenue: BigNumber[] = [];
+    const notional: BigNumber[] = [];
+
+    [
+      ...Object.values(vaultSubgraphData.vaults.v1),
+      ...Object.values(vaultSubgraphData.vaults.v2),
+    ].forEach((vault) => {
+      if (vault && vault.totalWithdrawalFee) {
+        console.log(vault.totalWithdrawalFee);
+        revenue.push(vault.totalWithdrawalFee);
+      }
+
+      if (vault && vault.totalNotionalVolume)
+        notional.push(vault.totalNotionalVolume);
+    });
+
+    setNotional(
+      notional.reduce((acc, curr) => acc.add(curr), BigNumber.from(0))
+    );
+    setRevenue(revenue.reduce((acc, curr) => acc.add(curr), BigNumber.from(0)));
+  }, [vaultSubgraphData]);
+
   return (
     <MainContainer>
       <Frame>
@@ -163,15 +199,19 @@ const Mission = () => {
             <MissionFactor>
               <Col xs={12} md={4}>
                 <FactorTitle>Total Value Locked</FactorTitle>
-                <FactorAmount>$200M</FactorAmount>
+                <FactorAmount>{currency(totalTVL).format()}</FactorAmount>
               </Col>
               <Col xs={12} md={4}>
                 <FactorTitle>Notional Options Sold</FactorTitle>
-                <FactorAmount>$3.2B</FactorAmount>
+                <FactorAmount>
+                  {currency(notional.toString()).format()}
+                </FactorAmount>
               </Col>
               <Col xs={12} md={4}>
                 <FactorTitle>Protocol Revenue</FactorTitle>
-                <FactorAmount>$100.5K</FactorAmount>
+                <FactorAmount>
+                  {currency(revenue.toString()).format()}
+                </FactorAmount>
               </Col>
             </MissionFactor>
           </Container>
