@@ -29,7 +29,7 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
       return;
     }
 
-    if (!merkleDistributor) {
+    if (!merkleDistributor || !account) {
       return;
     }
 
