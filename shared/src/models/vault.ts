@@ -39,6 +39,8 @@ export interface VaultAccount {
   totalYieldEarned: BigNumber;
   totalDeposits: BigNumber;
   totalBalance: BigNumber;
+  // Number of shares
+  shares: BigNumber;
   totalStakedShares: BigNumber;
   totalStakedBalance: BigNumber;
   totalPendingDeposit: BigNumber;

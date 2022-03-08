@@ -92,11 +92,11 @@ const useFetchV2VaultData = (): V2VaultData => {
          * 3. Withdrawals
          */
         const promises = unconnectedPromises.concat(
-          active
+          active && account
             ? [
-                contract.depositReceipts(account!),
-                contract.accountVaultBalance(account!),
-                contract.withdrawals(account!),
+                contract.depositReceipts(account),
+                contract.accountVaultBalance(account),
+                contract.withdrawals(account),
               ]
             : [
                 // Default value when not connected

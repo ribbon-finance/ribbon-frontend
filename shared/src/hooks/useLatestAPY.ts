@@ -204,16 +204,10 @@ export const useLatestAPY = (
     data: { round, pricePerShare },
     loading: vaultDataLoading,
   } = useV2VaultData(vaultOption);
+
   const loading = vaultPriceHistoryLoading || vaultDataLoading;
   const { getVaultAPR } = useYearnAPIData();
   const lidoAPY = useLidoAPY();
-
-  switch (vaultVersion) {
-    case "v2":
-      switch (vaultOption) {
-      }
-  }
-
   let underlyingYieldAPR = 0;
 
   switch (vaultOption) {
@@ -229,9 +223,13 @@ export const useLatestAPY = (
     res: loading
       ? 0
       : calculateAPYFromPriceHistory(
-          priceHistory.map((history) =>
-            history.round === round ? { ...history, pricePerShare } : history
-          ),
+          vaultVersion === "v2"
+            ? priceHistory.map((history) =>
+                history.round === round
+                  ? { ...history, pricePerShare }
+                  : history
+              )
+            : priceHistory,
           getAssetDecimals(getAssets(vaultOption)),
           { vaultOption, vaultVersion },
           underlyingYieldAPR
@@ -259,12 +257,6 @@ export const useLatestAPYs = () => {
               const priceHistory = vaultsPriceHistory[version][vaultOption];
               const { round, pricePerShare } = vaultsData[vaultOption];
 
-              switch (version) {
-                case "v2":
-                  switch (vaultOption) {
-                  }
-              }
-
               let underlyingYieldAPR = 0;
 
               switch (vaultOption) {
@@ -280,11 +272,14 @@ export const useLatestAPYs = () => {
                 loading
                   ? 0
                   : calculateAPYFromPriceHistory(
-                      priceHistory.map((history) =>
-                        history.round === round
-                          ? { ...history, pricePerShare }
-                          : history
-                      ),
+                      // If version is v2, use the latest pricePerShare from contract
+                      version === "v2"
+                        ? priceHistory.map((history) =>
+                            history.round === round
+                              ? { ...history, pricePerShare }
+                              : history
+                          )
+                        : priceHistory,
                       getAssetDecimals(getAssets(vaultOption)),
                       { vaultOption, vaultVersion: version },
                       underlyingYieldAPR
