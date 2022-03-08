@@ -13,6 +13,7 @@ import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import DesktopSubmenu from "./DesktopSubmenu";
 import RibbonClaimButton from "./RibbonClaimButton";
+import { isProduction } from "shared/lib/utils/env";
 
 // Close button for temp banner
 const CloseButton = styled.div`
@@ -35,7 +36,7 @@ const TempLMBanner = styled.div.attrs({
 
 const HeaderContainer = styled.div.attrs({
   className: "d-flex flex-column justify-content-center",
-}) <MobileMenuOpenProps>`
+})<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
   position: sticky;
   top: 0;
@@ -230,7 +231,7 @@ const Header = () => {
           </HeaderAbsoluteContainer>
 
           <HeaderButtonsContainer>
-            <RibbonClaimButton />
+            {!isProduction() && <RibbonClaimButton />}
             <AccountStatus variant="desktop" />
             <DesktopSubmenu />
           </HeaderButtonsContainer>
