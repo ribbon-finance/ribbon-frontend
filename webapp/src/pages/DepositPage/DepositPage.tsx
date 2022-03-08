@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { BaseLink, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -26,8 +27,8 @@ import {
   VaultOptions,
   VaultVersion,
   VaultVersionList,
+  isPutVault,
 } from "shared/lib/constants/constants";
-import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { getAssetLogo, getChainByVaultOption } from "shared/lib/utils/asset";
@@ -321,6 +322,7 @@ const HeroSection: React.FC<{
   variant: VaultVersion;
   v1Inactive?: boolean;
 }> = ({ depositCapBar, vaultOption, variant, v1Inactive }) => {
+  const { t } = useTranslation();
   const { chainId } = useWeb3Wallet();
   const color = getVaultColor(vaultOption);
 
@@ -389,15 +391,9 @@ const HeroSection: React.FC<{
           <div className="row mx-lg-n1 position-relative">
             <div style={{ zIndex: 1 }} className="col-xl-6 d-flex flex-column">
               <div className="d-flex flex-row my-3">
-                {productCopies[vaultOption].tags.map((tag) => (
-                  <TagPill
-                    className="mr-2 text-uppercase"
-                    key={tag}
-                    color={color}
-                  >
-                    {tag}
-                  </TagPill>
-                ))}
+                <TagPill className="mr-2 text-uppercase" color={color}>
+                  {isPutVault(vaultOption) ? "PUT-SELLING" : "COVERED CALL"}
+                </TagPill>
                 <AttributePill className="mr-2 text-uppercase" color={color}>
                   {[...VaultVersionList].map((version) =>
                     chainId &&
@@ -418,7 +414,9 @@ const HeroSection: React.FC<{
                 </AttributePill>
               </div>
 
-              <HeroText>{productCopies[vaultOption].title}</HeroText>
+              <HeroText>
+                {t(`shared:ProductCopies:${vaultOption}:title`)}
+              </HeroText>
 
               {depositCapBar}
             </div>

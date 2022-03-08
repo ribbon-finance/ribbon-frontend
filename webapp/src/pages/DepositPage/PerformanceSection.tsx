@@ -1,24 +1,30 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
+import { useTranslation, Trans } from "react-i18next";
 
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
-import {
-  productCopies,
-  vaultAudit,
-} from "shared/lib/components/Product/productCopies";
+import { vaultAudit } from "shared/lib/components/Product/productCopies";
 import {
   getAssets,
+  getDisplayAssets,
   VaultOptions,
   VaultVersion,
   VaultFees,
   isSolanaVault,
+  isPutVault,
+  getOptionAssets,
 } from "shared/lib/constants/constants";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import useAssetsYield from "shared/lib/hooks/useAssetsYield";
 import VaultPerformanceChart from "./VaultPerformanceChart";
-import { getAssetDisplay } from "shared/lib/utils/asset";
+import {
+  getAssetDisplay,
+  getYieldAssetUnderlying,
+  isYieldAsset,
+} from "shared/lib/utils/asset";
 import { DefiScoreProtocol } from "shared/lib/models/defiScore";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import theme from "shared/lib/designSystem/theme";
 import {
   AAVEIcon,
@@ -30,6 +36,7 @@ import {
 import WeeklyStrategySnapshot from "../../components/Deposit/WeeklyStrategySnapshot";
 import VaultStrategyExplainer from "../../components/Deposit/VaultStrategyExplainer";
 import sizes from "shared/lib/designSystem/sizes";
+import { Assets } from "shared/lib/store/types";
 
 const Paragraph = styled.div`
   margin-bottom: 64px;
@@ -90,6 +97,15 @@ const MarketYielAPR = styled(Title)`
   margin-left: auto;
 `;
 
+const HighlightedText = styled.span`
+  color: ${colors.primaryText};
+  cursor: help;
+
+  poin &:hover {
+    color: ${colors.primaryText}CC;
+  }
+`;
+
 interface PerformanceSectionProps {
   vault: {
     vaultOption: VaultOptions;
@@ -103,8 +119,10 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
   active,
 }) => {
   const { vaultOption, vaultVersion } = vault;
+  const { t } = useTranslation();
   const asset = getAssets(vaultOption);
   const yieldInfos = useAssetsYield(asset);
+  const optionAsset = getOptionAssets(vaultOption);
 
   const renderProtocolLogo = useCallback((protocol: DefiScoreProtocol) => {
     switch (protocol) {
@@ -182,24 +200,215 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
     [vaultOption]
   );
 
+  const rendersYieldAssetProviderTooltips = useCallback(
+    (_asset: Assets) => {
+      switch (_asset) {
+        case "stETH":
+          return (
+            <TooltipExplanation
+              title={t("webapp:VaultStrategyExplainer:Lido:title")}
+              explanation={t("webapp:VaultStrategyExplainer:Lido:explanation")}
+              learnMoreURL={t(
+                "webapp:VaultStrategyExplainer:Lido:learnMoreURL"
+              )}
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  Lido
+                </HighlightedText>
+              )}
+            />
+          );
+        case "sAVAX":
+          return (
+            <TooltipExplanation
+              title={t("webapp:VaultStrategyExplainer:Benqi:title")}
+              explanation={t("webapp:VaultStrategyExplainer:Benqi:explanation")}
+              learnMoreURL={t(
+                "webapp:VaultStrategyExplainer:Benqi:learnMoreURL"
+              )}
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  Benqi
+                </HighlightedText>
+              )}
+            />
+          );
+        default:
+          return <></>;
+      }
+    },
+    [t]
+  );
+
+  const rendersYieldAssetTooltips = useCallback(
+    (_asset: Assets) => {
+      const collateralAssetUnit = getAssetDisplay(_asset);
+
+      switch (_asset) {
+        case "stETH":
+          return (
+            <TooltipExplanation
+              title={collateralAssetUnit}
+              explanation={t(
+                "webapp:VaultStrategyExplainer:stETH:explanation",
+                { collateralAssetUnit }
+              )}
+              learnMoreURL={t(
+                "webapp:VaultStrategyExplainer:stETH:learnMoreURL"
+              )}
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  {collateralAssetUnit}
+                </HighlightedText>
+              )}
+            />
+          );
+        case "sAVAX":
+          return (
+            <TooltipExplanation
+              title={collateralAssetUnit}
+              explanation={t("webapp:VaultStrategyExplainer:sAVAX:explanation")}
+              learnMoreURL={t(
+                "webapp:VaultStrategyExplainer:sAVAX:learnMoreURL"
+              )}
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  {collateralAssetUnit}
+                </HighlightedText>
+              )}
+            />
+          );
+        case "yvUSDC":
+          return (
+            <TooltipExplanation
+              title={collateralAssetUnit}
+              explanation={t(
+                "webapp:VaultStrategyExplainer:yvToken:explanation",
+                {
+                  collateralAssetUnit,
+                  assetUnit: getAssetDisplay(
+                    getYieldAssetUnderlying(_asset) || _asset
+                  ),
+                }
+              )}
+              learnMoreURL={t(
+                "webapp:VaultStrategyExplainer:yvToken:learnMoreURL"
+              )}
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  {collateralAssetUnit}
+                </HighlightedText>
+              )}
+            />
+          );
+        default:
+          return <></>;
+      }
+    },
+    [t]
+  );
+
+  const vaultStrategyContent = useMemo(() => {
+    const putVault = isPutVault(vault.vaultOption);
+    const collateralAsset = getDisplayAssets(vault.vaultOption);
+
+    const basei18NKey = putVault
+      ? "shared:ProductCopies:Put"
+      : "shared:ProductCopies:Call";
+    const i18nParams = putVault
+      ? {
+          asset: getAssetDisplay(asset),
+          optionAsset: getAssetDisplay(optionAsset),
+          vault: t(`shared:ProductCopies:${vault.vaultOption}:title`),
+        }
+      : { asset: getAssetDisplay(asset) };
+
+    if (isYieldAsset(collateralAsset)) {
+      /**
+       * Return stratey for vault collaterized by yield asset
+       */
+      return putVault ? (
+        <Trans
+          i18nKey={`${basei18NKey}:strategy:yieldAssetCollateral`}
+          values={i18nParams}
+          components={[
+            <TooltipExplanation
+              title={t(`${basei18NKey}:text`)}
+              explanation={t(`${basei18NKey}:explanation`)}
+              learnMoreURL={t(`${basei18NKey}:learnMoreURL`)}
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  {t(`${basei18NKey}:text`)}
+                </HighlightedText>
+              )}
+            />,
+            rendersYieldAssetTooltips(collateralAsset),
+          ]}
+        />
+      ) : (
+        <Trans
+          i18nKey={`${basei18NKey}:strategy:yieldAssetCollateral`}
+          values={i18nParams}
+          components={[
+            <TooltipExplanation
+              title={t(`${basei18NKey}:text`)}
+              explanation={t(`${basei18NKey}:explanation`)}
+              learnMoreURL={t(`${basei18NKey}:learnMoreURL`)}
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  {t(`${basei18NKey}:text`)}
+                </HighlightedText>
+              )}
+            />,
+            rendersYieldAssetProviderTooltips(collateralAsset),
+            rendersYieldAssetTooltips(collateralAsset),
+          ]}
+        />
+      );
+    }
+
+    /**
+     * Default Vault
+     */
+    return (
+      <Trans
+        i18nKey={`${basei18NKey}:strategy:default`}
+        values={i18nParams}
+        components={[
+          <TooltipExplanation
+            title={t(`${basei18NKey}:text`)}
+            explanation={t(`${basei18NKey}:explanation`)}
+            learnMoreURL={t(`${basei18NKey}:learnMoreURL`)}
+            renderContent={({ ref, ...triggerHandler }) => (
+              <HighlightedText ref={ref} {...triggerHandler}>
+                {t(`${basei18NKey}:text`)}
+              </HighlightedText>
+            )}
+          />,
+        ]}
+      />
+    );
+  }, [
+    asset,
+    optionAsset,
+    rendersYieldAssetProviderTooltips,
+    rendersYieldAssetTooltips,
+    t,
+    vault.vaultOption,
+  ]);
+
   return (
     <Container>
-      {active && (
-        <>
-          <Paragraph className="d-flex flex-column">
-            <ParagraphHeading>Vault Strategy</ParagraphHeading>
-            <ParagraphText className="mb-4">
-              {productCopies[vaultOption].strategy}
-            </ParagraphText>
-            <VaultStrategyExplainer vault={vault} />
-          </Paragraph>
+      <Paragraph className="d-flex flex-column">
+        <ParagraphHeading>Vault Strategy</ParagraphHeading>
+        <ParagraphText className="mb-4">{vaultStrategyContent}</ParagraphText>
+        <VaultStrategyExplainer vault={vault} />
+      </Paragraph>
 
-          <Paragraph>
-            <ParagraphHeading>Weekly Strategy Snapshot</ParagraphHeading>
-            <WeeklyStrategySnapshot vault={vault} />
-          </Paragraph>
-        </>
-      )}
+      <Paragraph>
+        <ParagraphHeading>Weekly Strategy Snapshot</ParagraphHeading>
+        <WeeklyStrategySnapshot vault={vault} />
+      </Paragraph>
 
       <Paragraph>
         <VaultPerformanceChart vault={vault} />
@@ -248,7 +457,45 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       <Paragraph>
         <ParagraphHeading>Risk</ParagraphHeading>
         <ParagraphText>
-          {productCopies[vaultOption].vaultRisk}
+          <Trans
+            i18nKey={`shared:ProductCopies:${
+              isPutVault(vaultOption) ? "Put" : "Call"
+            }:vaultRisk`}
+            values={{
+              optionAsset: getAssetDisplay(optionAsset),
+            }}
+            components={[
+              <TooltipExplanation
+                title={t("shared:TooltipExplanations:InTheMoney:title")}
+                explanation={t(
+                  "shared:TooltipExplanations:InTheMoney:explanation",
+                  {
+                    optionAsset: getAssetDisplay(optionAsset),
+                    optionType: isPutVault(vaultOption) ? "put" : "call",
+                    exercisedDirection: isPutVault(vaultOption)
+                      ? "above"
+                      : "below",
+                  }
+                )}
+                learnMoreURL={t(
+                  "shared:TooltipExplanations:InTheMoney:learnMoreURL"
+                )}
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HighlightedText ref={ref} {...triggerHandler}>
+                    {t(
+                      "shared:TooltipExplanations:InTheMoney:title"
+                    ).toLowerCase()}
+                  </HighlightedText>
+                )}
+              />,
+            ]}
+          />
+          {/* {t(
+            `shared:ProductCopies:${
+              isPutVault(vaultOption) ? "Put" : "Call"
+            }:vaultRisk`,
+            { optionAsset: getAssetDisplay(getOptionAssets(vaultOption)) }
+          )} */}
           <br />
           <br />
           {vaultAudit(vaultOption)}

@@ -419,11 +419,11 @@ export const VaultAddressMap: {
       },
   "rUSDC-AVAX-P-THETA": isDevelopment()
     ? {
-        v2: v2deployment.avax.RibbonThetaVaultETHPut,
+        v2: v2deployment.avax.RibbonThetaVaultAVAXPut,
         chainId: CHAINID.AVAX_FUJI,
       }
     : {
-        v2: v2deployment.avax.RibbonThetaVaultETHPut,
+        v2: v2deployment.avax.RibbonThetaVaultAVAXPut,
         chainId: CHAINID.AVAX_MAINNET,
       },
 

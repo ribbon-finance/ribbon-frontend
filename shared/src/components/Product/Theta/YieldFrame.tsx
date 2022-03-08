@@ -4,7 +4,11 @@ import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { BarChartIcon, GlobeIcon } from "../../../assets/icons/icons";
 
-import { VaultOptions, VaultVersion } from "../../../constants/constants";
+import {
+  isPutVault,
+  VaultOptions,
+  VaultVersion,
+} from "../../../constants/constants";
 import {
   BaseButton,
   SecondaryText,
@@ -20,7 +24,6 @@ import { getAssetLogo } from "../../../utils/asset";
 import { formatSignificantDecimals } from "../../../utils/math";
 import { getVaultColor } from "../../../utils/vault";
 import CapBar from "../../Deposit/CapBar";
-import { productCopies } from "../productCopies";
 import YieldComparison from "./YieldComparison";
 
 const FrameContainer = styled.div`
@@ -243,11 +246,11 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
           <div className="d-flex w-100">
             {/* Tags */}
             <TagContainer>
-              {productCopies[vault].tags.map((tag) => (
-                <ProductTag key={tag} color={color}>
-                  <Subtitle>{tag}</Subtitle>
-                </ProductTag>
-              ))}
+              <ProductTag color={color}>
+                <Subtitle>
+                  {isPutVault(vault) ? "PUT-SELLING" : "COVERED CALL"}
+                </Subtitle>
+              </ProductTag>
             </TagContainer>
 
             {/* Mode switcher button */}

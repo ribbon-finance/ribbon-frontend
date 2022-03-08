@@ -20,8 +20,24 @@
     },
     "stETH": {
       "explanation": "{{collateralAssetUnit}} is the deposit token that represents a user's share of the their ETH on the Ethereum beacon chain.",
-      "learnMoreURL": "webapp:VaultStrategyExplainer:stETH:explanation"
+      "learnMoreURL": "https://lido.fi/ethereum"
+    },
+    "Benqi": {
+      "title": "Benqi",
+      "explanation": "BENQI is a decentralized non-custodial liquidity market protocol on Avalanche, enabling users to effortlessly lend, borrow, and earn interest with their assets.",
+      "learnMoreURL": "https://benqi.fi"
+    },
+    "sAVAX": {
+      "explanation": "sAVAX is the deposit token that represents a user's share of the their AVAX on the Avalanche blockchain.",
+      "learnMoreURL": "https://staking.benqi.fi/stake"
+    },
+    "yvToken": {
+      "explanation": "{{collateralAssetUnit}} is the deposit token that represents a user's share of the {{assetUnit}} yVault.",
+      "learnMoreURL": "https://docs.yearn.finance/getting-started/products/yvaults/vault-tokens"
     }
+  },
+  "LiquidityPool": {
+    "rTokenCTA": "Stake your {{rToken}} tokens in the {{rToken}} staking pool to earn $RBN rewards."
   },
   "TooltipExplanations": {
     "baseAPY": {

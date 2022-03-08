@@ -138,5 +138,5 @@ it("Should calculate claimable RBN amount", async () => {
 
   // 9985 $RBN
   expect(result.toString()).toEqual("11051441462736454437032");
-  console.log("RESULT: ", result.toString());
+  // console.log("RESULT: ", result.toString());
 }, 100000);

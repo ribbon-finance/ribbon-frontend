@@ -133,7 +133,7 @@ interface VaultStrategyExplainerProps {
 const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
   vault: { vaultOption, vaultVersion },
 }) => {
-  const { t } = useTranslation(["webapp"]);
+  const { t } = useTranslation();
   const containerRef = useRef(null);
   const { width } = useScreenSize();
   const { width: sectionWidth } = useElementSize(containerRef);

@@ -60,6 +60,18 @@ export const isYieldAsset = (asset: Assets): boolean => {
   }
 };
 
+export const getYieldAssetUnderlying = (asset: Assets): Assets | undefined => {
+  switch (asset) {
+    case "sAVAX":
+      return "WAVAX";
+    case "stETH":
+    case "wstETH":
+      return "WETH";
+    case "yvUSDC":
+      return "USDC";
+  }
+};
+
 export const getChainByAsset = (asset: Assets): Chains => {
   switch (asset) {
     case "SOL":
