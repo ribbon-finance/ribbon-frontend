@@ -1,13 +1,6 @@
 import React from "react";
 import styled, { StyledComponent } from "styled-components";
 import {
-  MetamaskIcon,
-  PhantomIcon,
-  SolflareIcon,
-  WalletConnectIcon,
-  WalletLinkIcon,
-} from "../assets/icons/connector";
-import {
   AAVELogo,
   STETHLogo,
   USDCLogo,
@@ -24,8 +17,36 @@ import Logo from "../assets/icons/logo";
 import { SolanaLogo } from "../assets/icons/solAssets";
 import { Chains, VaultOptions } from "../constants/constants";
 import colors from "../designSystem/colors";
-import { EthereumWallet, SolanaWallet } from "../models/wallets";
 import { Assets, Wallets } from "../store/types";
+
+export const assetFilterList: Assets[] = [
+  "AAVE",
+  "WETH",
+  "stETH",
+  "USDC",
+  "WBTC",
+  "WAVAX",
+  "sAVAX",
+  "SOL",
+];
+
+export const getIntegralAsset = (derivative: Assets): Assets => {
+  switch (derivative) {
+    // Per design, we only consider USDC.e and USDC the same asset.
+    // We consider stETH/ETH, sAVAX/AVAX, and yvUSDC/USDC differet assets.
+    /*
+    case "stETH":
+      return "ETH"
+    case "sAVAX":
+      return "WAVAX";
+    case "yvUSDC":
+    */
+    case "USDC.e":
+      return "USDC";
+    default:
+      return derivative;
+  }
+};
 
 export const isYieldAsset = (asset: Assets): boolean => {
   switch (asset) {
@@ -36,6 +57,18 @@ export const isYieldAsset = (asset: Assets): boolean => {
       return true;
     default:
       return false;
+  }
+};
+
+export const getYieldAssetUnderlying = (asset: Assets): Assets | undefined => {
+  switch (asset) {
+    case "sAVAX":
+      return "WAVAX";
+    case "stETH":
+    case "wstETH":
+      return "WETH";
+    case "yvUSDC":
+      return "USDC";
   }
 };
 
@@ -223,22 +256,5 @@ export const getAssetLogo: (asset: Assets) =>
       return AURORALogo;
     default:
       return Logo;
-  }
-};
-
-export const getWalletLogo = (wallet: EthereumWallet | SolanaWallet) => {
-  switch (wallet) {
-    case EthereumWallet.Metamask:
-      return <MetamaskIcon width={40} height={40} />;
-    case EthereumWallet.WalletConnect:
-      return <WalletConnectIcon width={40} height={40} />;
-    case EthereumWallet.WalletLink:
-      return <WalletLinkIcon width={40} height={40} />;
-    case SolanaWallet.Phantom:
-      return <PhantomIcon width={40} height={40} />;
-    case SolanaWallet.Solflare:
-      return <SolflareIcon width={40} height={40} />;
-    default:
-      return null;
   }
 };

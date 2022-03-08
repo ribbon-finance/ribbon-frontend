@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { BaseUnderlineLink, PrimaryText } from "shared/lib/designSystem";
-import TrafficLight from "shared/lib/components/Common/TrafficLight";
+import PendingTransactionLoader from "shared/lib/components/Common/PendingTransactionLoader";
 import {
   getExplorerName,
   getExplorerURI,
@@ -9,7 +9,7 @@ import {
 } from "shared/lib/constants/constants";
 import { useChain } from "shared/lib/hooks/chainContext";
 
-const TrafficLightContainer = styled.div`
+const TransactionPendingContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,15 +31,20 @@ const BottomText = styled(PrimaryText)`
 
 interface TransactionStepProps {
   txhash?: string;
+  color?: string;
 }
 
-const TransactionStep: React.FC<TransactionStepProps> = ({ txhash }) => {
+const TransactionStep: React.FC<TransactionStepProps> = ({ txhash, color }) => {
   const [chain] = useChain();
   return (
     <>
-      <TrafficLightContainer>
-        <TrafficLight active={Boolean(txhash)} />
-      </TrafficLightContainer>
+      <TransactionPendingContainer>
+        <PendingTransactionLoader
+          active={Boolean(txhash)}
+          numberOfBars={5}
+          color={color}
+        />
+      </TransactionPendingContainer>
       <BottomTextContainer>
         {chain !== Chains.NotSelected && txhash ? (
           <BaseUnderlineLink

@@ -29,7 +29,7 @@ const ActionsFormContainer = styled.div`
   max-width: 460px;
 `;
 
-const NotFound = () => {
+const Homepage = () => {
   const { height } = useScreenSize();
 
   usePullUp();
@@ -59,4 +59,4 @@ const NotFound = () => {
   );
 };
 
-export default NotFound;
+export default Homepage;

@@ -11,8 +11,6 @@ import SegmentPagination from "shared/lib/components/Common/SegmentPagination";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import colors from "shared/lib/designSystem/colors";
 import { VotingPowerIcon, VeRBNIcon } from "shared/lib/assets/icons/icons";
-import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContainer";
-import { ThemedLogo } from "shared/lib/assets/icons/logo";
 import theme from "shared/lib/designSystem/theme";
 
 const ModalBackButton = styled.div`

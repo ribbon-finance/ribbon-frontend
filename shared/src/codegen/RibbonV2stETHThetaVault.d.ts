@@ -30,6 +30,7 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     "MARGIN_POOL()": FunctionFragment;
     "OTOKEN_FACTORY()": FunctionFragment;
     "PERIOD()": FunctionFragment;
+    "STETH()": FunctionFragment;
     "STETH_ETH_CRV_POOL()": FunctionFragment;
     "USDC()": FunctionFragment;
     "WETH()": FunctionFragment;
@@ -59,6 +60,7 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     "keeper()": FunctionFragment;
     "lastQueuedWithdrawAmount()": FunctionFragment;
     "lastStrikeOverrideRound()": FunctionFragment;
+    "liquidityGauge()": FunctionFragment;
     "managementFee()": FunctionFragment;
     "maxRedeem()": FunctionFragment;
     "name()": FunctionFragment;
@@ -80,6 +82,7 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     "setAuctionDuration(uint256)": FunctionFragment;
     "setCap(uint256)": FunctionFragment;
     "setFeeRecipient(address)": FunctionFragment;
+    "setLiquidityGauge(address)": FunctionFragment;
     "setManagementFee(uint256)": FunctionFragment;
     "setNewKeeper(address)": FunctionFragment;
     "setPerformanceFee(uint256)": FunctionFragment;
@@ -88,6 +91,7 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     "setStrikeSelectionOrPricer(address,bool)": FunctionFragment;
     "shareBalances(address)": FunctionFragment;
     "shares(address)": FunctionFragment;
+    "stake(uint256)": FunctionFragment;
     "startAuction()": FunctionFragment;
     "strikeSelection()": FunctionFragment;
     "symbol()": FunctionFragment;
@@ -122,6 +126,7 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "PERIOD", values?: undefined): string;
+  encodeFunctionData(functionFragment: "STETH", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "STETH_ETH_CRV_POOL",
     values?: undefined
@@ -238,6 +243,10 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "liquidityGauge",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "managementFee",
     values?: undefined
   ): string;
@@ -313,6 +322,10 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "setLiquidityGauge",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setManagementFee",
     values: [BigNumberish]
   ): string;
@@ -341,6 +354,7 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "shares", values: [string]): string;
+  encodeFunctionData(functionFragment: "stake", values: [BigNumberish]): string;
   encodeFunctionData(
     functionFragment: "startAuction",
     values?: undefined
@@ -407,6 +421,7 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "PERIOD", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "STETH", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "STETH_ETH_CRV_POOL",
     data: BytesLike
@@ -488,6 +503,10 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "liquidityGauge",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "managementFee",
     data: BytesLike
   ): Result;
@@ -554,6 +573,10 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setLiquidityGauge",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setManagementFee",
     data: BytesLike
   ): Result;
@@ -582,6 +605,7 @@ interface RibbonV2stETHThetaVaultInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "shares", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "stake", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "startAuction",
     data: BytesLike
@@ -735,6 +759,14 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     "PERIOD()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
+    }>;
+
+    STETH(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "STETH()"(overrides?: CallOverrides): Promise<{
+      0: string;
     }>;
 
     STETH_ETH_CRV_POOL(overrides?: CallOverrides): Promise<{
@@ -1055,6 +1087,14 @@ export class RibbonV2stETHThetaVault extends Contract {
       0: number;
     }>;
 
+    liquidityGauge(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "liquidityGauge()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
     managementFee(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
@@ -1231,6 +1271,16 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    setLiquidityGauge(
+      newLiquidityGauge: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setLiquidityGauge(address)"(
+      newLiquidityGauge: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     setManagementFee(
       newManagementFee: BigNumberish,
       overrides?: Overrides
@@ -1326,6 +1376,16 @@ export class RibbonV2stETHThetaVault extends Contract {
     ): Promise<{
       0: BigNumber;
     }>;
+
+    stake(
+      numShares: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "stake(uint256)"(
+      numShares: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     startAuction(overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -1465,13 +1525,13 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     withdrawInstantly(
       amount: BigNumberish,
-      minETHOut: BigNumberish,
+      arg1: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "withdrawInstantly(uint256,uint256)"(
       amount: BigNumberish,
-      minETHOut: BigNumberish,
+      arg1: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1523,6 +1583,10 @@ export class RibbonV2stETHThetaVault extends Contract {
   PERIOD(overrides?: CallOverrides): Promise<BigNumber>;
 
   "PERIOD()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  STETH(overrides?: CallOverrides): Promise<string>;
+
+  "STETH()"(overrides?: CallOverrides): Promise<string>;
 
   STETH_ETH_CRV_POOL(overrides?: CallOverrides): Promise<string>;
 
@@ -1773,6 +1837,10 @@ export class RibbonV2stETHThetaVault extends Contract {
 
   "lastStrikeOverrideRound()"(overrides?: CallOverrides): Promise<number>;
 
+  liquidityGauge(overrides?: CallOverrides): Promise<string>;
+
+  "liquidityGauge()"(overrides?: CallOverrides): Promise<string>;
+
   managementFee(overrides?: CallOverrides): Promise<BigNumber>;
 
   "managementFee()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1901,6 +1969,16 @@ export class RibbonV2stETHThetaVault extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  setLiquidityGauge(
+    newLiquidityGauge: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setLiquidityGauge(address)"(
+    newLiquidityGauge: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   setManagementFee(
     newManagementFee: BigNumberish,
     overrides?: Overrides
@@ -1989,6 +2067,16 @@ export class RibbonV2stETHThetaVault extends Contract {
     account: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  stake(
+    numShares: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "stake(uint256)"(
+    numShares: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   startAuction(overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -2108,13 +2196,13 @@ export class RibbonV2stETHThetaVault extends Contract {
 
   withdrawInstantly(
     amount: BigNumberish,
-    minETHOut: BigNumberish,
+    arg1: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "withdrawInstantly(uint256,uint256)"(
     amount: BigNumberish,
-    minETHOut: BigNumberish,
+    arg1: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2166,6 +2254,10 @@ export class RibbonV2stETHThetaVault extends Contract {
     PERIOD(overrides?: CallOverrides): Promise<BigNumber>;
 
     "PERIOD()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    STETH(overrides?: CallOverrides): Promise<string>;
+
+    "STETH()"(overrides?: CallOverrides): Promise<string>;
 
     STETH_ETH_CRV_POOL(overrides?: CallOverrides): Promise<string>;
 
@@ -2413,6 +2505,10 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     "lastStrikeOverrideRound()"(overrides?: CallOverrides): Promise<number>;
 
+    liquidityGauge(overrides?: CallOverrides): Promise<string>;
+
+    "liquidityGauge()"(overrides?: CallOverrides): Promise<string>;
+
     managementFee(overrides?: CallOverrides): Promise<BigNumber>;
 
     "managementFee()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2535,6 +2631,16 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setLiquidityGauge(
+      newLiquidityGauge: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setLiquidityGauge(address)"(
+      newLiquidityGauge: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setManagementFee(
       newManagementFee: BigNumberish,
       overrides?: CallOverrides
@@ -2620,6 +2726,13 @@ export class RibbonV2stETHThetaVault extends Contract {
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    stake(numShares: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    "stake(uint256)"(
+      numShares: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     startAuction(overrides?: CallOverrides): Promise<void>;
 
@@ -2739,13 +2852,13 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     withdrawInstantly(
       amount: BigNumberish,
-      minETHOut: BigNumberish,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "withdrawInstantly(uint256,uint256)"(
       amount: BigNumberish,
-      minETHOut: BigNumberish,
+      arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2878,6 +2991,10 @@ export class RibbonV2stETHThetaVault extends Contract {
     PERIOD(overrides?: CallOverrides): Promise<BigNumber>;
 
     "PERIOD()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    STETH(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "STETH()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     STETH_ETH_CRV_POOL(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -3114,6 +3231,10 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     "lastStrikeOverrideRound()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    liquidityGauge(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "liquidityGauge()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     managementFee(overrides?: CallOverrides): Promise<BigNumber>;
 
     "managementFee()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -3222,6 +3343,16 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    setLiquidityGauge(
+      newLiquidityGauge: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setLiquidityGauge(address)"(
+      newLiquidityGauge: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     setManagementFee(
       newManagementFee: BigNumberish,
       overrides?: Overrides
@@ -3298,6 +3429,13 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    stake(numShares: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
+
+    "stake(uint256)"(
+      numShares: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     startAuction(overrides?: Overrides): Promise<BigNumber>;
 
     "startAuction()"(overrides?: Overrides): Promise<BigNumber>;
@@ -3368,13 +3506,13 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     withdrawInstantly(
       amount: BigNumberish,
-      minETHOut: BigNumberish,
+      arg1: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "withdrawInstantly(uint256,uint256)"(
       amount: BigNumberish,
-      minETHOut: BigNumberish,
+      arg1: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3422,6 +3560,10 @@ export class RibbonV2stETHThetaVault extends Contract {
     PERIOD(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "PERIOD()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    STETH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "STETH()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     STETH_ETH_CRV_POOL(
       overrides?: CallOverrides
@@ -3683,6 +3825,12 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    liquidityGauge(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "liquidityGauge()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     managementFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "managementFee()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -3813,6 +3961,16 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    setLiquidityGauge(
+      newLiquidityGauge: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setLiquidityGauge(address)"(
+      newLiquidityGauge: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     setManagementFee(
       newManagementFee: BigNumberish,
       overrides?: Overrides
@@ -3895,6 +4053,16 @@ export class RibbonV2stETHThetaVault extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    stake(
+      numShares: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "stake(uint256)"(
+      numShares: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     startAuction(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "startAuction()"(overrides?: Overrides): Promise<PopulatedTransaction>;
@@ -3967,13 +4135,13 @@ export class RibbonV2stETHThetaVault extends Contract {
 
     withdrawInstantly(
       amount: BigNumberish,
-      minETHOut: BigNumberish,
+      arg1: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "withdrawInstantly(uint256,uint256)"(
       amount: BigNumberish,
-      minETHOut: BigNumberish,
+      arg1: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

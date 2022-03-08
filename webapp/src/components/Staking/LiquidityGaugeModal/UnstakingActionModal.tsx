@@ -30,7 +30,7 @@ import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsCont
 import { getVaultColor } from "shared/lib/utils/vault";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import TrafficLight from "shared/lib/components/Common/TrafficLight";
+import PendingTransactionLoader from "shared/lib/components/Common/PendingTransactionLoader";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { useChain } from "shared/lib/hooks/chainContext";
 
@@ -314,7 +314,10 @@ const UnstakingActionModal: React.FC<UnstakingActionModalProps> = ({
               </ModalTitle>
             </BaseModalContentColumn>
             <FloatingContainer>
-              <TrafficLight active={step === "processing"} />
+              <PendingTransactionLoader
+                active={step === "processing"}
+                color={color}
+              />
             </FloatingContainer>
             {step === "walletAction" ? (
               <BaseModalContentColumn marginTop="auto">

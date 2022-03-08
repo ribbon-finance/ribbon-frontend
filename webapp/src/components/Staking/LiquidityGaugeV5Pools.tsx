@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { formatUnits } from "@ethersproject/units";
 
@@ -14,18 +15,19 @@ import { shimmerKeyframe } from "shared/lib/designSystem/keyframes";
 import sizes from "shared/lib/designSystem/sizes";
 import {
   getDisplayAssets,
+  getOptionAssets,
+  isPutVault,
   VaultLiquidityMiningMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
-import { getAssetLogo } from "shared/lib/utils/asset";
+import { getAssetDisplay, getAssetLogo } from "shared/lib/utils/asset";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { getVaultColor } from "shared/lib/utils/vault";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
-import { productCopies } from "shared/lib/components/Product/productCopies";
 import CapBar from "shared/lib/components/Deposit/CapBar";
 import {
   useAssetBalance,
@@ -110,7 +112,6 @@ const LogoContainer = styled.div<{ color: string }>`
   width: 40px;
   height: 40px;
   border-radius: 100px;
-  background: ${(props) => props.color}29;
 `;
 
 const PoolRewardData = styled(Title)`
@@ -168,6 +169,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
   vaultOption,
   totalVeRBN,
 }) => {
+  const { t } = useTranslation();
   const { active } = useWeb3Wallet();
   const [, setShowConnectWalletModal] = useConnectWalletModal();
   const { pendingTransactions } = usePendingTransactions();
@@ -235,13 +237,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
   const logo = useMemo(() => {
     const asset = getDisplayAssets(vaultOption);
     const Logo = getAssetLogo(asset);
-
-    switch (asset) {
-      case "WETH":
-        return <Logo height="70%" />;
-      default:
-        return <Logo />;
-    }
+    return <Logo />;
   }, [vaultOption]);
 
   const baseAPY = useMemo(() => {
@@ -429,7 +425,23 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
                 <TooltipExplanation
                   title={vaultOption}
                   explanation={
-                    productCopies[vaultOption].liquidityMining.explanation
+                    <>
+                      {t("shared:TooltipExplanations:rToken", {
+                        rTokenSymbol: vaultOption,
+                        depositAsset: getAssetDisplay(asset),
+                        vaultType: `${getAssetDisplay(
+                          getOptionAssets(vaultOption)
+                        )} ${isPutVault(vaultOption) ? "Put" : ""} Theta Vault`,
+                        tokenTitle: t(
+                          `shared:ProductCopies:${vaultOption}:title`
+                        ),
+                      })}
+                      <br />
+                      <br />
+                      {t("webapp:LiquidityPool:rTokenCTA", {
+                        rToken: vaultOption,
+                      })}
+                    </>
                   }
                   renderContent={({ ref, ...triggerHandler }) => (
                     <HelpInfo containerRef={ref} {...triggerHandler}>
@@ -483,19 +495,19 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
           {/* Pool rewards */}
           <div className="d-flex align-items-center mt-4 w-100">
             <div className="d-flex align-items-center">
-              <SecondaryText>Pool Rewards</SecondaryText>
+              <SecondaryText>
+                {t("webapp:TooltipExplanations:poolRewards:title")}
+              </SecondaryText>
               <TooltipExplanation
-                title="Gauge Rewards"
-                explanation={
-                  "Estimated amount of RBN to be distributed for the current period."
-                }
+                title={t("webapp:TooltipExplanations:poolRewards:title")}
+                explanation={t(
+                  "webapp:TooltipExplanations:poolRewards:description"
+                )}
                 renderContent={({ ref, ...triggerHandler }) => (
                   <HelpInfo containerRef={ref} {...triggerHandler}>
                     i
                   </HelpInfo>
                 )}
-                // TODO: Update URL
-                learnMoreURL="https://gov.ribbon.finance/t/rgp-2-ribbon-liquidity-mining-program/90"
               />
             </div>
             <PoolRewardData className="ml-auto">
@@ -506,26 +518,19 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
           {/* Base APY */}
           <div className="d-flex align-items-center mt-4 w-100">
             <div className="d-flex align-items-center">
-              <SecondaryText>Base APY</SecondaryText>
+              <SecondaryText>
+                {t("webapp:TooltipExplanations:baseAPY:title")}
+              </SecondaryText>
               <TooltipExplanation
-                title="Base APY"
-                explanation={
-                  <>
-                    Base APY are the estimated APY from staking vault tokens.
-                    This does not account additional boost from veRBN holding.
-                    <br />
-                    <br />
-                    Base APY = (1 + ((Pool Reward * RBN Price) / (Pool Size *
-                    Underlying Asset Price))) ^ 52 - 1
-                  </>
-                }
+                title={t("webapp:TooltipExplanations:baseAPY:title")}
+                explanation={t(
+                  "webapp:TooltipExplanations:baseAPY:description"
+                )}
                 renderContent={({ ref, ...triggerHandler }) => (
                   <HelpInfo containerRef={ref} {...triggerHandler}>
                     i
                   </HelpInfo>
                 )}
-                // TODO: Update URL
-                learnMoreURL="https://gov.ribbon.finance/t/rgp-2-ribbon-liquidity-mining-program/90"
               />
             </div>
             <PoolRewardData className="ml-auto">

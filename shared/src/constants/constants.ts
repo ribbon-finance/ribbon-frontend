@@ -282,7 +282,7 @@ export const GAS_LIMITS: {
 export const LiquidityMiningVersionList = ["lg5", "lm"] as const;
 export type LiquidityMiningVersion = typeof LiquidityMiningVersionList[number];
 
-const ProdExcludeLiquidityMiningVersion: LiquidityMiningVersion[] = ["lg5"];
+const ProdExcludeLiquidityMiningVersion: LiquidityMiningVersion[] = [];
 // @ts-ignore
 export const OngoingLMVersion: LiquidityMiningVersion[] = !isProduction()
   ? LiquidityMiningVersionList
@@ -419,11 +419,11 @@ export const VaultAddressMap: {
       },
   "rUSDC-AVAX-P-THETA": isDevelopment()
     ? {
-        v2: v2deployment.avax.RibbonThetaVaultETHPut,
+        v2: v2deployment.avax.RibbonThetaVaultAVAXPut,
         chainId: CHAINID.AVAX_FUJI,
       }
     : {
-        v2: v2deployment.avax.RibbonThetaVaultETHPut,
+        v2: v2deployment.avax.RibbonThetaVaultAVAXPut,
         chainId: CHAINID.AVAX_MAINNET,
       },
 

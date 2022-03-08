@@ -16,5 +16,9 @@
   },
   "WarningMessages": {
     "timeTilNextRevenueDistribution": "Time till next distribution of Ribbon revenue"
+  },
+  "lockRBN": {
+    "title": "Lock RBN",
+    "description": "Because your lockup period has expired, you need to unlock your existing tokens first before you can lock again."
   }
 }

@@ -15,6 +15,7 @@ import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import NetworkSwitcherButton from "../NetworkSwitcher/NetworkSwitcherButton";
 import NotificationButton from "../Notification/NotificationButton";
 import { isEthNetwork } from "shared/lib/constants/constants";
+import ExternalLinkIcon from "shared/lib/assets/icons/externalLink";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
@@ -22,7 +23,7 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
   top: 0;
   border-bottom: 1px solid ${colors.border};
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.xl}px) {
     padding: 16px 24px;
     border-bottom: none;
   }
@@ -64,7 +65,7 @@ const LogoContainer = styled.div`
   margin-right: auto;
   z-index: 1000;
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.xl}px) {
     padding-left: 0;
   }
 `;
@@ -82,7 +83,7 @@ const HeaderAbsoluteContainer = styled.div`
   width: 100%;
   justify-content: center;
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.xl}px) {
     display: none;
   }
 `;
@@ -91,9 +92,9 @@ const LinksContainer = styled.div`
   display: flex;
 `;
 
-const NavItem = styled.div<NavItemProps>`
-  display: flex;
-  align-items: center;
+const NavItem = styled.div.attrs({
+  className: "d-flex align-items-center justify-content-center",
+})<NavItemProps>`
   padding: 0px 28px;
   height: 100%;
   opacity: ${(props) => (props.isSelected ? "1" : "0.48")};
@@ -102,7 +103,7 @@ const NavItem = styled.div<NavItemProps>`
     opacity: ${(props) => (props.isSelected ? theme.hover.opacity : "1")};
   }
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.xl}px) {
     padding: 0px 0px 40px 48px;
   }
 `;
@@ -112,7 +113,7 @@ const NavLinkText = styled(Title)`
   font-size: 14px;
   line-height: 20px;
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.xl}px) {
     font-size: 24px;
   }
 `;
@@ -120,7 +121,7 @@ const NavLinkText = styled(Title)`
 const SecondaryMobileNavItem = styled.div`
   display: none;
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.xl}px) {
     display: flex;
     padding: 0px 0px 24px 48px;
   }
@@ -129,7 +130,7 @@ const SecondaryMobileNavItem = styled.div`
 const MobileOnly = styled.div`
   display: none;
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.xl}px) {
     display: flex;
   }
 `;
@@ -164,6 +165,13 @@ const Header = () => {
         {primary ? (
           <NavItem isSelected={isSelected}>
             <NavLinkText>{title}</NavLinkText>
+            {external && (
+              <ExternalLinkIcon
+                style={{
+                  marginLeft: 6,
+                }}
+              />
+            )}
           </NavItem>
         ) : (
           <SecondaryMobileNavItem>
@@ -194,6 +202,13 @@ const Header = () => {
           {chainId &&
             isEthNetwork(chainId) &&
             renderLinkItem("STAKING", "/staking", Boolean(staking))}
+          {renderLinkItem(
+            "GOVERNANCE",
+            "https://vote.ribbon.finance/",
+            Boolean(portfolio),
+            true,
+            true
+          )}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
@@ -243,7 +258,7 @@ const Header = () => {
             "GOVERNANCE",
             "https://vote.ribbon.finance",
             false,
-            false,
+            true,
             true
           )}
           {renderLinkItem(

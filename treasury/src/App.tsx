@@ -10,6 +10,7 @@ import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContex
 import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTransactionsContext";
 import { ExternalAPIDataContextProvider } from "shared/lib/hooks/externalAPIDataContext";
 import { ChainContextProvider } from "shared/lib/hooks/chainContext";
+import "shared/lib/i18n/config";
 
 function App() {
   useEffect(() => {

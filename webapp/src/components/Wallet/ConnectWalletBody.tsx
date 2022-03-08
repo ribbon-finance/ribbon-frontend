@@ -18,7 +18,7 @@ import useLoadingText from "shared/lib/hooks/useLoadingText";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { BackIcon } from "shared/lib/assets/icons/icons";
-import { getWalletLogo } from "shared/lib/utils/asset";
+import WalletLogo from "shared/lib/components/Wallet/WalletLogo";
 
 const ModalContainer = styled.div`
   padding: 10px 0px;
@@ -199,7 +199,7 @@ const WalletButton: React.FC<WalletButtonProps> = ({
       status={status}
       color={walletColors[wallet]}
     >
-      {getWalletLogo(wallet)}
+      <WalletLogo wallet={wallet} />
       <ConnectorButtonText>
         {status === "initializing" ? initializingText : walletTitle}
       </ConnectorButtonText>

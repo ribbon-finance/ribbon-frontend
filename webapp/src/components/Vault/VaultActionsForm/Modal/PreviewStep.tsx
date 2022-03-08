@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
 import { BigNumber } from "ethers";
+import { useTranslation } from "react-i18next";
 
 import { SecondaryText, Title, PrimaryText } from "shared/lib/designSystem";
 import { ActionButton } from "shared/lib/components/Common/buttons";
@@ -14,7 +15,6 @@ import {
   VaultVersion,
   isPutVault,
 } from "shared/lib/constants/constants";
-import { productCopies } from "shared/lib/components/Product/productCopies";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { capitalize } from "shared/lib/utils/text";
 import {
@@ -105,6 +105,7 @@ const PreviewStep: React.FC<{
   vaultVersion,
   receiveVaultOption,
 }) => {
+  const { t } = useTranslation();
   const color = getVaultColor(vaultOption);
   const latestAPY = useLatestAPY(vaultOption, vaultVersion);
   const {
@@ -171,11 +172,11 @@ const PreviewStep: React.FC<{
         actionDetails.push(
           {
             key: "Transfer To",
-            value: productCopies[receiveVaultOption!].title,
+            value: t(`shared:ProductCopies:${receiveVaultOption!}:title`),
           },
           {
             key: "Transfer From",
-            value: productCopies[vaultOption].title,
+            value: t(`shared:ProductCopies:${vaultOption}:title`),
           },
           {
             key: "Transfer Fee",
@@ -185,7 +186,7 @@ const PreviewStep: React.FC<{
     }
 
     const details: ActionDetail[] = [
-      { key: "Product", value: productCopies[vaultOption].title },
+      { key: "Product", value: t(`shared:ProductCopies:${vaultOption}:title`) },
       ...actionDetails,
     ];
     return details;
@@ -193,6 +194,7 @@ const PreviewStep: React.FC<{
     actionType,
     latestAPY,
     receiveVaultOption,
+    t,
     vaultOption,
     vaultVersion,
     withdrawOption,
@@ -297,7 +299,7 @@ const PreviewStep: React.FC<{
           <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
             <SecondaryText>Product</SecondaryText>
             <Title className="text-right">
-              {productCopies[vaultOption].title}
+              {t(`shared:ProductCopies:${vaultOption}:title`)}
             </Title>
           </div>
           <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4 mb-4 mb-md-5 mb-lg-auto">
@@ -355,7 +357,7 @@ const PreviewStep: React.FC<{
               <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
                 <SecondaryText>Product</SecondaryText>
                 <Title className="text-right">
-                  {productCopies[vaultOption].title}
+                  {t(`shared:ProductCopies:${vaultOption}:title`)}
                 </Title>
               </div>
 
@@ -459,7 +461,7 @@ const PreviewStep: React.FC<{
               <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
                 <SecondaryText>Product</SecondaryText>
                 <Title className="text-right">
-                  {productCopies[vaultOption].title}
+                  {t(`shared:ProductCopies:${vaultOption}:title`)}
                 </Title>
               </div>
               {slippage}

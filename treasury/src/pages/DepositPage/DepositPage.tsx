@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { BaseLink, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -19,19 +20,15 @@ import {
   getDisplayAssets,
   getEtherscanURI,
   hasVaultVersion,
+  isPutVault,
   VaultAddressMap,
   VaultList,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
-import { productCopies } from "shared/lib/components/Product/productCopies";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";
-import {
-  getAssetDecimals,
-  getAssetLogo,
-  getChainByVaultOption,
-} from "shared/lib/utils/asset";
+import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
 import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
@@ -39,8 +36,6 @@ import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopAc
 import YourPosition from "../../components/Vault/YourPosition";
 import { truncateAddress } from "shared/lib/utils/address";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
-import useRedirectOnSwitchChain from "webapp/lib/hooks/useRedirectOnSwitchChain";
-import useRedirectOnWrongChain from "webapp/lib/hooks/useRedirectOnWrongChain";
 import Banner from "shared/lib/components/Banner/Banner";
 import VaultInformation from "../../components/Deposit/VaultInformation";
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
@@ -322,6 +317,7 @@ const HeroSection: React.FC<{
   variant: VaultVersion;
   v1Inactive?: boolean;
 }> = ({ vaultInformation, vaultOption, variant, v1Inactive }) => {
+  const { t } = useTranslation();
   const { chainId } = useWeb3Wallet();
   const color = getVaultColor(vaultOption);
 
@@ -390,18 +386,14 @@ const HeroSection: React.FC<{
           <div className="row mx-lg-n1 position-relative">
             <div style={{ zIndex: 1 }} className="col-xl-6 d-flex flex-column">
               <div className="d-flex flex-row my-3">
-                {productCopies[vaultOption].tags.map((tag) => (
-                  <TagPill
-                    className="mr-2 text-uppercase"
-                    key={tag}
-                    color={color}
-                  >
-                    {tag}
-                  </TagPill>
-                ))}
+                <TagPill className="mr-2 text-uppercase" color={color}>
+                  {isPutVault(vaultOption) ? "PUT-SELLING" : "COVERED CALL"}
+                </TagPill>
               </div>
 
-              <HeroText>{productCopies[vaultOption].title}</HeroText>
+              <HeroText>
+                {t(`shared:ProductCopies:${vaultOption}:title`)}
+              </HeroText>
 
               {vaultInformation}
             </div>

@@ -15,6 +15,7 @@ const useVaultOption = () => {
   const matchv2 = useRouteMatch<{ vaultSymbol: string }>(
     "/v2/theta-vault/:vaultSymbol"
   );
+
   const [vaultOption, vaultVersion] = useMemo((): [
     VaultOptions | undefined,
     VaultVersion

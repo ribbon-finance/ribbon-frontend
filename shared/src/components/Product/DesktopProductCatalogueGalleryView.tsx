@@ -3,8 +3,13 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
 import Marquee from "react-fast-marquee/dist";
-
-import { VaultOptions, VaultVersion } from "../../constants/constants";
+import { useTranslation } from "react-i18next";
+import {
+  VaultOptions,
+  VaultVersion,
+  getAssets,
+  isPutVault,
+} from "../../constants/constants";
 import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
@@ -17,7 +22,6 @@ import {
 import FilterDropdown from "../Common/FilterDropdown";
 import FullscreenMultiselectFilters from "../Common/FullscreenMultiselectFilters";
 import Pagination from "../Common/Pagination";
-import { productCopies } from "./productCopies";
 import EmptyResult from "./Shared/EmptyResult";
 import SwitchViewButton from "./Shared/SwitchViewButton";
 import YieldFrame from "./Theta/YieldFrame";
@@ -124,6 +128,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
 }) => {
   const [chain] = useChain();
   const { active } = useWeb3React();
+  const { t } = useTranslation();
   const { height } = useScreenSize();
   const [page, setPage] = useState(1);
   const [currentVault, setCurrentVault] = useState<VaultOptions | undefined>(
@@ -157,17 +162,21 @@ const DesktopProductCatalogueGalleryView: React.FC<
       );
     }
 
+    const asset = getAssets(currentVault);
+
     return (
       <VaultInfo>
         {/* Title */}
         <Title fontSize={48} lineHeight={56} className="w-100">
-          {productCopies[currentVault].title}
+          {t(`shared:ProductCopies:${currentVault}:title`)}
         </Title>
 
         <VaultSecondaryInfo>
           {/* Description */}
           <SecondaryText className="mt-3">
-            {productCopies[currentVault].description}
+            {isPutVault(currentVault)
+              ? t("shared:ProductCopies:PutStrategy", { asset })
+              : t("shared:ProductCopies:CallStrategy", { asset })}
           </SecondaryText>
 
           {active && (
@@ -188,6 +197,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
   }, [
     active,
     currentVault,
+    t,
     setFilterAssets,
     setFilterStrategies,
     vaultsDisplayVersion,
@@ -372,7 +382,9 @@ const DesktopProductCatalogueGalleryView: React.FC<
           >
             <Marquee gradient={false} speed={75}>
               <BackgroundText>
-                {currentVault ? productCopies[currentVault].title : ""}
+                {currentVault
+                  ? t(`shared:ProductCopies:${currentVault}:title`)
+                  : ""}
               </BackgroundText>
             </Marquee>
           </motion.div>

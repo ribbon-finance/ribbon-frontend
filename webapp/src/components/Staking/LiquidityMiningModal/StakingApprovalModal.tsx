@@ -15,7 +15,7 @@ import {
   StakingVaultOptions,
 } from "shared/lib/constants/constants";
 import StakingApprovalModalInfo from "./StakingApprovalModalInfo";
-import TrafficLight from "shared/lib/components/Common/TrafficLight";
+import PendingTransactionLoader from "shared/lib/components/Common/PendingTransactionLoader";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useERC20Token from "shared/lib/hooks/useERC20Token";
@@ -127,7 +127,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
               </Title>
             </BaseModalContentColumn>
             <FloatingContainer>
-              <TrafficLight active={step === "approving"} />
+              <PendingTransactionLoader active={step === "approving"} />
             </FloatingContainer>
             {step === "approve" ? (
               <BaseModalContentColumn marginTop="auto">

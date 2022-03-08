@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
@@ -8,7 +9,6 @@ import { Subtitle, Title } from "shared/lib/designSystem";
 import useTVL from "shared/lib/hooks/useTVL";
 import Pagination from "shared/lib/components/Common/Pagination";
 import { formatAmount } from "shared/lib/utils/math";
-import { productCopies } from "shared/lib/components/Product/productCopies";
 import useElementSize from "shared/lib/hooks/useElementSize";
 import { getVaultColor } from "shared/lib/utils/vault";
 import OverviewBarchart from "./OverviewBarchart";
@@ -25,6 +25,7 @@ const SectionLabel = styled.div`
 
 const TVLLeaderboard = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
   const { width: containerWidth } = useElementSize(containerRef);
   const { data, totalTVL, loading: TVLLoading } = useTVL();
   const loadingText = useLoadingText();
@@ -92,9 +93,9 @@ const TVLLeaderboard = () => {
             >
               <OverviewBarchart
                 items={pagedVaults.map((vault) => ({
-                  name: `${productCopies[vault.vault.option].title} ${
-                    vault.vault.version
-                  }`,
+                  name: `${t(
+                    `shared:ProductCopies:${vault.vault.option}:title`
+                  )} ${vault.vault.version}`,
                   value: vault.tvl,
                   formattedValue: `$${formatAmount(vault.tvl)}`,
                   color: getVaultColor(vault.vault.option),

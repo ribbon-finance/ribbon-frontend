@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { BigNumber, ethers } from "ethers";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import {
@@ -29,7 +30,6 @@ import {
   VaultVersion,
   VaultVersionList,
 } from "shared/lib/constants/constants";
-import { productCopies } from "shared/lib/components/Product/productCopies";
 import { useAllVaultAccounts } from "shared/lib/hooks/useVaultAccounts";
 import { VaultAccount } from "shared/lib/models/vault";
 import {
@@ -198,6 +198,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   const asset = getAssets(vaultAccount.vault.symbol);
   const decimals = getAssetDecimals(asset);
   const color = getVaultColor(vaultAccount.vault.symbol);
+  const { t } = useTranslation();
   const { price: assetPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: asset,
   });
@@ -279,7 +280,9 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
             <PositionInfoRow>
               {/* Subtitle */}
               <PositionInfoText>
-                {productCopies[vaultAccount.vault.symbol].subtitle}
+                {t(
+                  `shared:ProductCopies:${[vaultAccount.vault.symbol]}:subtitle`
+                )}
               </PositionInfoText>
 
               {/* Amount in Fiat */}

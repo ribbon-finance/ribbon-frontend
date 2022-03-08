@@ -1,5 +1,6 @@
 import { BigNumber } from "ethers";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   getAssets,
@@ -17,7 +18,6 @@ import {
 } from "shared/lib/utils/asset";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import { capitalize } from "shared/lib/utils/text";
-import { productCopies } from "shared/lib/components/Product/productCopies";
 import Toast from "shared/lib/components/Common/BaseToast";
 import PendingToast from "./PendingToast";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -63,6 +63,7 @@ type TxStatuses = "processing" | "success" | "error" | undefined;
 
 export const TxStatusToast = () => {
   const { pendingTransactions, transactionsCounter } = usePendingTransactions();
+  const { t } = useTranslation();
 
   const [showedPendingTxCounter, setShowPendingTxCounter] =
     useState(transactionsCounter);
@@ -130,23 +131,27 @@ export const TxStatusToast = () => {
           if (isSolanaVault(_currentTx.vault)) {
             return `Initiated ${amountFormatted} ${getAssetDisplay(
               getAssets(_currentTx.vault)
-            )} withdrawal from ${
-              productCopies[_currentTx.vault].title
-            }. Your funds are automatically credited after 12pm UTC on Friday.`;
+            )} withdrawal from ${t(
+              `shared:ProductCopies:${_currentTx.vault}:title`
+            )}. Your funds are automatically credited after 12pm UTC on Friday.`;
           }
           return `Initiated ${amountFormatted} ${getAssetDisplay(
             getAssets(_currentTx.vault)
-          )} withdrawal from ${
-            productCopies[_currentTx.vault].title
-          }. You can complete your withdrawal any time after 12pm UTC on Friday.`;
+          )} withdrawal from ${t(
+            `shared:ProductCopies:${_currentTx.vault}:title`
+          )}. You can complete your withdrawal any time after 12pm UTC on Friday.`;
         case "withdraw":
           return `${amountFormatted} ${getAssetDisplay(
             getAssets(_currentTx.vault)
-          )} withdrawn from ${productCopies[_currentTx.vault].title}`;
+          )} withdrawn from ${t(
+            `shared:ProductCopies:${_currentTx.vault}:title`
+          )}`;
         case "deposit":
           return `${amountFormatted} ${getAssetDisplay(
             _currentTx.asset
-          )} deposited into ${productCopies[_currentTx.vault].title}`;
+          )} deposited into ${t(
+            `shared:ProductCopies:${_currentTx.vault}:title`
+          )}`;
         case "claim":
         case "rewardClaim":
           return `${amountFormatted} $RBN claimed`;
@@ -158,16 +163,16 @@ export const TxStatusToast = () => {
           const receiveVault = _currentTx.receiveVault;
           return `${amountFormatted} ${getAssetDisplay(
             getAssets(receiveVault)
-          )} transferred to ${productCopies[receiveVault].title}`;
+          )} transferred to ${t(`shared:ProductCopies:${receiveVault}:title`)}`;
         case "migrate":
-          return `${amountFormatted} migrated to ${
-            productCopies[_currentTx.vault].title
-          } V2`;
+          return `${amountFormatted} migrated to ${t(
+            `shared:ProductCopies:${_currentTx.vault}:title`
+          )} V2`;
         default:
           return "";
       }
     },
-    [getAmountFormatted]
+    [getAmountFormatted, t]
   );
 
   if (!status || !currentTx) {
@@ -225,6 +230,8 @@ export const TxStatusToast = () => {
 export const WithdrawReminderToast = () => {
   const { data } = useV2VaultsData();
   const [chain] = useChain();
+  const { t } = useTranslation();
+
   const [reminders, setReminders] = useState<
     {
       vault: { option: VaultOptions; version: VaultVersion };
@@ -318,7 +325,9 @@ export const WithdrawReminderToast = () => {
           getAssetDecimals(getAssets(currentReminder.vault.option))
         )} ${getAssetDisplay(
           getAssets(currentReminder.vault.option)
-        )} from the ${productCopies[currentReminder.vault.option].title} vault`}
+        )} from the ${t(
+          `shared:ProductCopies:${currentReminder.vault.option}:title`
+        )} vault`}
         extra={{ vaultOption: currentReminder.vault.option }}
       />
     );

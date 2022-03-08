@@ -35,7 +35,7 @@ export const useFlexVault = (): FlexVaultData => {
   // FLEX VAULT INITIALIZER
   useEffect(() => {
     if (!isProduction()) {
-      console.time("SOL Vault Data Fetch");
+      console.time("SOL Vault Data Fetch"); // eslint-disable-line
     }
 
     const pollingInterval = flexVault ? 10000 : 3000;
@@ -49,7 +49,7 @@ export const useFlexVault = (): FlexVaultData => {
 
     return () => {
       if (!isProduction()) {
-        console.timeEnd("SOL Vault Data Fetch");
+        console.timeEnd("SOL Vault Data Fetch"); // eslint-disable-line
       }
 
       clearInterval(setVault);
@@ -79,18 +79,6 @@ export const useFlexVault = (): FlexVaultData => {
       });
     }
   }, [connection, flexVault, flexAddress, network, vaultProgramId]);
-
-  useEffect(() => {
-    const loadFlexClient = async () => {
-      return await VaultClient.load(connection, new types.DummyWallet());
-    };
-
-    if (!flexClient && connection) {
-      loadFlexClient().then((client: VaultClient) => {
-        setFlexClient(client);
-      });
-    }
-  }, [connection, flexClient]);
 
   // FLEX CLIENT HANDLER
   useEffect(() => {

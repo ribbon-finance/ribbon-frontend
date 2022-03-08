@@ -58,7 +58,7 @@ const useFetchAssetBalanceData = (
 
   const doMulticall = useCallback(async () => {
     if (!isProduction()) {
-      console.time("Asset Balance Data Fetch");
+      console.time("Asset Balance Data Fetch"); // eslint-disable-line
     }
 
     if (!active) {
@@ -137,7 +137,7 @@ const useFetchAssetBalanceData = (
     }));
 
     if (!isProduction()) {
-      console.timeEnd("Asset Balance Data Fetch");
+      console.timeEnd("Asset Balance Data Fetch"); // eslint-disable-line
     }
   }, [
     account,
