@@ -100,6 +100,11 @@ export type PendingTransaction = {
       type: GovernanceApproveUnstakeTransactionsType;
       amount: string;
     }
+  | {
+      type: "protocolRevenueClaim";
+      amountUSDC: string;
+      amountRBN: string;
+    }
 );
 
 export type AirdropInfoData = {

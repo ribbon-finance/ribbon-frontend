@@ -14,6 +14,7 @@ import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import DesktopSubmenu from "./DesktopSubmenu";
 import RibbonClaimButton from "./RibbonClaimButton";
 import { isProduction } from "shared/lib/utils/env";
+import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 
 // Close button for temp banner
 const CloseButton = styled.div`
@@ -31,7 +32,7 @@ const TempLMBanner = styled.div.attrs({
   color: ${colors.primaryText};
   background-color: ${colors.background.three};
   font-size: 14px;
-  z-index: 1000;
+  z-index: 900;
 `;
 
 const HeaderContainer = styled.div.attrs({
@@ -162,6 +163,7 @@ const MobileOnly = styled.div`
 `;
 
 const Header = () => {
+  const { active } = useWeb3Wallet();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showBanner, setShowBanner] = useState(true);
 
@@ -231,7 +233,7 @@ const Header = () => {
           </HeaderAbsoluteContainer>
 
           <HeaderButtonsContainer>
-            {!isProduction() && <RibbonClaimButton />}
+            {Boolean(!isProduction() && active) && <RibbonClaimButton />}
             <AccountStatus variant="desktop" />
             <DesktopSubmenu />
           </HeaderButtonsContainer>

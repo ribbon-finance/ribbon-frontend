@@ -7,33 +7,15 @@ import {
   BaseModalContentColumn,
   BaseModalWarning,
   PrimaryText,
-  SecondaryText,
-  Subtitle,
   Title,
 } from "shared/lib/designSystem";
+import ModalBackButton from "shared/lib/components/Common/ModalBackButton";
+import ModalInfoColumn from "shared/lib/components/Common/ModalInfoColumn";
 import colors from "shared/lib/designSystem/colors";
 import { StakeIcon } from "shared/lib/assets/icons/icons";
 import { formatBigNumber, formatBigNumberAmount } from "shared/lib/utils/math";
 import { calculateInitialveRBNAmount } from "shared/lib/utils/governanceMath";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import theme from "shared/lib/designSystem/theme";
-
-const ModalBackButton = styled.div`
-  display: flex;
-  position: absolute;
-  z-index: 1000;
-  align-items: center;
-  justify-content: center;
-  height: 40px;
-  width: 40px;
-  border: ${theme.border.width} ${theme.border.style} ${colors.border};
-  border-radius: 40px;
-`;
-
-const ArrowBack = styled.i`
-  color: ${colors.text};
-  height: 14px;
-`;
 
 const LogoContainer = styled.div`
   display: flex;
@@ -61,9 +43,7 @@ const StakingModalPreview: React.FC<StakingModalPreviewProps> = ({
 }) => {
   return (
     <>
-      <ModalBackButton role="button" onClick={onBack}>
-        <ArrowBack className="fas fa-arrow-left" />
-      </ModalBackButton>
+      <ModalBackButton onBack={onBack} />
       <BaseModalContentColumn>
         <LogoContainer>
           <StakeIcon size="32px" color={colors.red} />
@@ -74,36 +54,21 @@ const StakingModalPreview: React.FC<StakingModalPreviewProps> = ({
           Lock Preview
         </Title>
       </BaseModalContentColumn>
-      <BaseModalContentColumn>
-        <div className="d-flex w-100 justify-content-between">
-          <SecondaryText lineHeight={24}>Lock Amount</SecondaryText>
-          <Subtitle fontSize={14} lineHeight={24} letterSpacing={1}>
-            {formatBigNumber(stakingData.amount)} RBN
-          </Subtitle>
-        </div>
-      </BaseModalContentColumn>
-      <BaseModalContentColumn>
-        <div className="d-flex w-100 justify-content-between">
-          <SecondaryText lineHeight={24}>Lockup Expiry</SecondaryText>
-          <Subtitle fontSize={14} lineHeight={24} letterSpacing={1}>
-            {moment().add(stakingData.duration).format("MMM, Do YYYY")}
-          </Subtitle>
-        </div>
-      </BaseModalContentColumn>
-      <BaseModalContentColumn>
-        <div className="d-flex w-100 justify-content-between">
-          <SecondaryText lineHeight={24}>Initial Voting Power</SecondaryText>
-          <Subtitle fontSize={14} lineHeight={24} letterSpacing={1}>
-            {formatBigNumberAmount(
-              calculateInitialveRBNAmount(
-                stakingData.amount,
-                stakingData.duration
-              )
-            )}{" "}
-            veRBN
-          </Subtitle>
-        </div>
-      </BaseModalContentColumn>
+      <ModalInfoColumn
+        marginTop={48}
+        label="Lock Amount"
+        data={`${formatBigNumber(stakingData.amount)} RBN`}
+      />
+      <ModalInfoColumn
+        label="Lockup Expiry"
+        data={moment().add(stakingData.duration).format("MMM, Do YYYY")}
+      />
+      <ModalInfoColumn
+        label="Initial Voting Power"
+        data={`${formatBigNumberAmount(
+          calculateInitialveRBNAmount(stakingData.amount, stakingData.duration)
+        )} veRBN`}
+      />
       <BaseModalContentColumn marginTop="auto">
         <ActionButton onClick={onConfirm} className="py-3" color={colors.red}>
           Lock RBN

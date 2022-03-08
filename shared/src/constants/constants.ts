@@ -867,6 +867,10 @@ export const VERBNRewardsAddress = isDevelopment()
   ? governanceDeployment.kovan.VERBNRewards
   : governanceDeployment.mainnet.VERBNRewards;
 
+export const FeeDistributorAddress = isDevelopment()
+  ? governanceDeployment.kovan.FeeDistributor
+  : governanceDeployment.mainnet.FeeDistributor;
+
 export const VotingEscrowAddress = isDevelopment()
   ? governanceDeployment.kovan.RBNVotingEscrow
   : governanceDeployment.mainnet.RBNVotingEscrow;
