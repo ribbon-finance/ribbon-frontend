@@ -499,6 +499,19 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-WNEAR-C": "rNEAR-THETA",
 };
 
+// Reverse lookup for VaultNameOptionMap
+export const vaultOptionToName = (option: VaultOptions) => {
+  const match = Object.entries(VaultNameOptionMap).find(
+    ([name, optionName]) => {
+      return optionName === option;
+    }
+  );
+  if (match) {
+    return match[0] as VaultName;
+  }
+  return undefined;
+};
+
 export const EVM_BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
   [CHAINID.ETH_MAINNET]: "Etherscan",
   [CHAINID.ETH_KOVAN]: "Etherscan",
