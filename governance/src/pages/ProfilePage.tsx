@@ -7,6 +7,7 @@ import theme from "shared/lib/designSystem/theme";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import ProfileActivity from "../components/Profile/ProfileActivity";
 import StakingSummary from "../components/Profile/StakingSummary";
+import TemporaryStakingBanner from "../components/TemporaryStakingBanner";
 
 const ProfilePage = () => {
   const { active } = useWeb3React();
@@ -26,14 +27,17 @@ const ProfilePage = () => {
   }, [active, height, width]);
 
   return (
-    <Container style={{ minHeight: containerHeight }}>
-      <Row className="justify-content-center">
-        <Col sm="11" md="9" lg="7" className="d-flex flex-wrap">
-          <StakingSummary />
-          <ProfileActivity />
-        </Col>
-      </Row>
-    </Container>
+    <>
+      <TemporaryStakingBanner />
+      <Container style={{ minHeight: containerHeight }}>
+        <Row className="justify-content-center">
+          <Col sm="11" md="9" lg="7" className="d-FLEX flex-wrap">
+            <StakingSummary />
+            <ProfileActivity />
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 };
 
