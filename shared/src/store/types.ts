@@ -100,6 +100,10 @@ export type PendingTransaction = {
       type: GovernanceApproveUnstakeTransactionsType;
       amount: string;
     }
+  | {
+      // Apply veBoost to the current user
+      type: "userCheckpoint";
+    }
 );
 
 export type AirdropInfoData = {

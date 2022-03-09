@@ -51,6 +51,6 @@
   },
   "LiquidityMining": {
     "timeTillNextEpoch": "Time till next epoch",
-    "stakingWarningMessage": "If you stake rTokens before locking your RBN, your boosted rewards won't be applied until you claim RBN rewards or increase your stake."
+    "stakingWarningMessage": "If you stake rTokens before locking your RBN, your boosted rewards won't be applied until you apply boost or claim RBN rewards."
   }
 }

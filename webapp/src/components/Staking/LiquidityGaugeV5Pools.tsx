@@ -45,6 +45,7 @@ import {
 } from "shared/lib/utils/governanceMath";
 import { BigNumber } from "ethers";
 import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
+import ApplyBoostModal from "./LiquidityGaugeModal/ApplyBoostModal";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -190,13 +191,18 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
     | "stakingApproval"
     | "stake"
     | "unstake"
+    | "userCheckpoint"
     | "rewardClaim"
     | undefined = useMemo(() => {
     const ongoingPendingTx = pendingTransactions.find(
       (currentTx) =>
-        ["stakingApproval", "stake", "unstake", "rewardClaim"].includes(
-          currentTx.type
-        ) &&
+        [
+          "stakingApproval",
+          "stake",
+          "unstake",
+          "userCheckpoint",
+          "rewardClaim",
+        ].includes(currentTx.type) &&
         // @ts-ignore
         currentTx.stakeAsset === vaultOption &&
         !currentTx.status
@@ -210,12 +216,14 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
       | "stakingApproval"
       | "stake"
       | "unstake"
+      | "userCheckpoint"
       | "rewardClaim";
   }, [pendingTransactions, vaultOption]);
 
   const [showStakeModal, setShowStakeModal] = useState(false);
   const [showUnstakeModal, setShowUnstakeModal] = useState(false);
   const [showClaimModal, setShowClaimModal] = useState(false);
+  const [showApplyBoost, setShowApplyBoost] = useState(false);
 
   const actionLoadingTextBase = useMemo(() => {
     switch (ongoingTransaction) {
@@ -227,6 +235,8 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
         return "Unstaking";
       case "rewardClaim":
         return "Claiming";
+      case "userCheckpoint":
+        return "Applying Boost";
       default:
         return "Loading";
     }
@@ -366,6 +376,16 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
         <StakingPoolCardFooterButton
           role="button"
           color={color}
+          onClick={() => setShowApplyBoost(true)}
+          active={ongoingTransaction === "unstake"}
+        >
+          {ongoingTransaction === "userCheckpoint"
+            ? primaryActionLoadingText
+            : "Apply Boost"}
+        </StakingPoolCardFooterButton>
+        <StakingPoolCardFooterButton
+          role="button"
+          color={color}
           onClick={() => {
             setShowClaimModal(true);
           }}
@@ -403,6 +423,11 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
         vaultOption={vaultOption}
         logo={logo}
         stakingPoolData={lg5Data}
+      />
+      <ApplyBoostModal
+        show={showApplyBoost}
+        onClose={() => setShowApplyBoost(false)}
+        vaultOption={vaultOption}
       />
       <ClaimActionModal
         show={showClaimModal}
