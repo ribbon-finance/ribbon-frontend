@@ -95,7 +95,7 @@ const LinksContainer = styled.div`
 const NavItem = styled.div.attrs({
   className: "d-flex align-items-center justify-content-center",
 })<NavItemProps>`
-  padding: 0px 28px;
+  padding: 0px 16px;
   height: 100%;
   opacity: ${(props) => (props.isSelected ? "1" : "0.48")};
 
