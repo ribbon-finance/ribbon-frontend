@@ -33,7 +33,6 @@ const FABContainer = styled.div.attrs({
   width: 100%;
 
   border-top: 1px solid ${colors.borderDark2};
-  border-bottom: 1px solid ${colors.border};
 
   backdrop-filter: blur(40px);
   /**

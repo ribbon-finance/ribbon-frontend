@@ -147,7 +147,7 @@ const stakingPoolDropdownOptions: StakingPoolOption[] = (
           height: 32,
         }}
       >
-        <Logo />
+        <Logo style={{ margin: 0 }} />
       </div>
     ),
   };

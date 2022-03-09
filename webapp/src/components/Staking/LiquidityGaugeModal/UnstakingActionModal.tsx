@@ -57,7 +57,6 @@ const LogoContainer = styled.div<{ color: string }>`
   width: 64px;
   height: 64px;
   border-radius: 100px;
-  background: ${(props) => props.color}29;
   color: ${(props) => props.color};
   font-size: 40px;
 `;
