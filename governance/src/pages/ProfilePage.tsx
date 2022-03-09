@@ -28,7 +28,7 @@ const ProfilePage = () => {
   return (
     <Container style={{ minHeight: containerHeight }}>
       <Row className="justify-content-center">
-        <Col sm="11" md="9" lg="7" className="d-FLEX flex-wrap">
+        <Col sm="11" md="9" lg="7" className="d-flex flex-wrap">
           <StakingSummary />
           <ProfileActivity />
         </Col>
