@@ -16,6 +16,7 @@ import UnstakingModal from "./Unstaking/UnstakingModal";
 import { TxStatusToast } from "./Common/toast";
 import sizes from "shared/lib/designSystem/sizes";
 import Faqs from "../pages/Faqs";
+import VotingPage from "../pages/VotingPage";
 
 const Root = styled.div<{ screenHeight: number }>`
   background-color: ${colors.background.one};
@@ -45,6 +46,9 @@ const RootApp = () => {
           </Route>
           <Route path="/faqs" exact>
             <Faqs />
+          </Route>
+          <Route path="/voting" exact>
+            <VotingPage />
           </Route>
         </Switch>
         <Footer />
