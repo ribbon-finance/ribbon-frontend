@@ -5,7 +5,7 @@ import {
   SecondaryText,
   Title,
   PrimaryText,
-} from "shared/lib/designSystem";
+} from "../../designSystem";
 
 const InfoColumn = styled(BaseModalContentColumn).attrs({
   className: "d-flex w-100 align-items-center justify-content-between",
