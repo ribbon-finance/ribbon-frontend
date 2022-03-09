@@ -205,7 +205,7 @@ const Header = () => {
           {renderLinkItem(
             "GOVERNANCE",
             "https://vote.ribbon.finance/",
-            Boolean(portfolio),
+            false,
             true,
             true
           )}
