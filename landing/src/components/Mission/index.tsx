@@ -11,6 +11,7 @@ import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
 import { BigNumber } from "ethers";
 import useTVL from "shared/lib/hooks/useTVL";
 import currency from "currency.js";
+import { formatAmount, formatBigNumberAmount } from "shared/lib/utils/math";
 
 const MainContainer = styled(Container)`
   padding: 80px 0;
@@ -132,8 +133,8 @@ const Bar = styled.div<{ delay: number }>`
 const Mission = () => {
   const { vaultSubgraphData } = useContext(SubgraphDataContext);
   const { data, totalTVL } = useTVL();
-  const [notional, setNotional] = useState<BigNumber>(BigNumber.from(0));
-  const [revenue, setRevenue] = useState<BigNumber>(BigNumber.from(0));
+  const [notional, setNotional] = useState<string>("0");
+  const [revenue, setRevenue] = useState<string>("0");
 
   useEffect(() => {
     console.log(totalTVL);
@@ -143,12 +144,8 @@ const Mission = () => {
     const revenue: BigNumber[] = [];
     const notional: BigNumber[] = [];
 
-    [
-      ...Object.values(vaultSubgraphData.vaults.v1),
-      ...Object.values(vaultSubgraphData.vaults.v2),
-    ].forEach((vault) => {
+    Object.values(vaultSubgraphData.vaults.v1).forEach((vault) => {
       if (vault && vault.totalWithdrawalFee) {
-        console.log(vault.totalWithdrawalFee);
         revenue.push(vault.totalWithdrawalFee);
       }
 
@@ -156,10 +153,29 @@ const Mission = () => {
         notional.push(vault.totalNotionalVolume);
     });
 
+    Object.values(vaultSubgraphData.vaults.v2).forEach((vault) => {
+      if (vault && vault.totalFeeCollected) {
+        revenue.push(vault.totalFeeCollected);
+      }
+
+      if (vault && vault.totalNotionalVolume)
+        notional.push(vault.totalNotionalVolume);
+    });
+
+    console.log(vaultSubgraphData.vaults);
+
     setNotional(
-      notional.reduce((acc, curr) => acc.add(curr), BigNumber.from(0))
+      formatBigNumberAmount(
+        notional.reduce((acc, curr) => acc.add(curr), BigNumber.from(0)),
+        16
+      )
     );
-    setRevenue(revenue.reduce((acc, curr) => acc.add(curr), BigNumber.from(0)));
+    setRevenue(
+      formatBigNumberAmount(
+        revenue.reduce((acc, curr) => acc.add(curr), BigNumber.from(0)),
+        16
+      )
+    );
   }, [vaultSubgraphData]);
 
   return (
@@ -199,19 +215,15 @@ const Mission = () => {
             <MissionFactor>
               <Col xs={12} md={4}>
                 <FactorTitle>Total Value Locked</FactorTitle>
-                <FactorAmount>{currency(totalTVL).format()}</FactorAmount>
+                <FactorAmount>${formatAmount(totalTVL)}</FactorAmount>
               </Col>
               <Col xs={12} md={4}>
                 <FactorTitle>Notional Options Sold</FactorTitle>
-                <FactorAmount>
-                  {currency(notional.toString()).format()}
-                </FactorAmount>
+                <FactorAmount>${notional}</FactorAmount>
               </Col>
               <Col xs={12} md={4}>
                 <FactorTitle>Protocol Revenue</FactorTitle>
-                <FactorAmount>
-                  {currency(revenue.toString()).format()}
-                </FactorAmount>
+                <FactorAmount>${revenue}</FactorAmount>
               </Col>
             </MissionFactor>
           </Container>

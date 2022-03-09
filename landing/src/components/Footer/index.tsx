@@ -130,9 +130,10 @@ const links = {
 
 const LinkList: FC<{ links: Array<Link> }> = ({ links }) => (
   <>
-    {links.map((link) => {
+    {links.map((link, i) => {
       return (
         <LinkContainer
+          key={i}
           to={link.to}
           target={link.external ? "_blank" : undefined}
           rel={link.external ? "noreferrer noopener" : undefined}

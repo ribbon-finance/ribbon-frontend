@@ -88,9 +88,12 @@ const Ticker = styled.div`
 
   .marquee {
     display: flex;
-    min-height: 24px;
     height: fit-content;
     justify-content: space-around;
+
+    > * {
+      height: 24px;
+    }
   }
 
   .marquee-container {
@@ -257,10 +260,10 @@ const PriceTicker = () => {
           }}
         >
           <Marquee pauseOnHover gradient={false} speed={75} delay={1}>
-            {Object.values(tickerData.data).map((token) => {
+            {Object.values(tickerData.data).map((token, i) => {
               const Logo = getAssetLogo(token.asset as Assets);
               return (
-                <>
+                <div key={i}>
                   <TickerContainer>
                     <LogoContainer>
                       <Logo showBackground />
@@ -273,7 +276,7 @@ const PriceTicker = () => {
                     </TickerChange>
                   </TickerContainer>
                   <TickerDivider />
-                </>
+                </div>
               );
             })}
           </Marquee>

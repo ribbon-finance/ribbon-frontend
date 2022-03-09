@@ -109,10 +109,10 @@ const Investors = () => {
       </Row>
       <Container>
         <InvestorRow noGutters>
-          {investorList.map((investor) => {
+          {investorList.map((investor, i) => {
             return investor.isText ? (
               //https://codesandbox.io/s/framer-motion-animate-in-view-gqcc8?file=/src/index.js
-              <Col xl={3} md={4} sm={12} xs={12}>
+              <Col key={i} xl={3} md={4} sm={12} xs={12}>
                 <motion.div initial="hidden">
                   <InvestorCard className="d-flex justify-content-center align-items-center">
                     <InvestorText>{investor.src}</InvestorText>
@@ -120,7 +120,7 @@ const Investors = () => {
                 </motion.div>
               </Col>
             ) : (
-              <Col xl={3} md={4} sm={12} xs={12}>
+              <Col key={i} xl={3} md={4} sm={12} xs={12}>
                 <motion.div initial="hidden">
                   <InvestorCard className="d-flex justify-content-center align-items-center">
                     <InvestorLogo src={investor.src} alt={investor.alt} />

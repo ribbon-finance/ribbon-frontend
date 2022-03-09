@@ -19,7 +19,7 @@ interface VaultTVLs {
 const useTVL = () => {
   const { data, loading } = useVaultsSubgraphData();
   const { prices, loading: pricesLoading } = useAssetsPrice();
-
+  console.log(data);
   const vaultsTVL = useMemo(() => {
     const vaultTVLs: VaultTVLs[] = [];
 
