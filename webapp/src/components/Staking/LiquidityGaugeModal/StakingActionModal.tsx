@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { formatUnits, parseUnits } from "@ethersproject/units";
 import { BigNumber } from "@ethersproject/bignumber";
+import { useTranslation } from "react-i18next";
 
 import {
   getExplorerName,
@@ -37,6 +38,7 @@ import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { useChain } from "shared/lib/hooks/chainContext";
+import WarningModalContent from "../../Vault/VaultActionsForm/Modal/WarningModalContent";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -118,9 +120,10 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
   baseAPY,
   calculateBoostedMultipler,
 }) => {
+  const { t } = useTranslation();
   const [step, setStep] = useState<
-    "form" | "preview" | "walletAction" | "processing"
-  >("form");
+    "warning" | "form" | "preview" | "walletAction" | "processing"
+  >("warning");
   const [input, setInput] = useState("");
   const [chain] = useChain();
   const { chainId } = useWeb3Wallet();
@@ -212,8 +215,8 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
 
   const handleClose = useCallback(() => {
     onClose();
-    if (step === "preview" || step === "walletAction") {
-      setStep("form");
+    if (step === "form" || step === "preview" || step === "walletAction") {
+      setStep("warning");
     }
     if (step !== "processing") {
       setInput("");
@@ -301,6 +304,18 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
 
   const body = useMemo(() => {
     switch (step) {
+      case "warning":
+        return (
+          <BaseModalContentColumn>
+            <WarningModalContent
+              descriptionText={t(
+                "webapp:LiquidityMining:stakingWarningMessage"
+              )}
+              onButtonClick={() => setStep("form")}
+              color={color}
+            />
+          </BaseModalContentColumn>
+        );
       case "form":
         return (
           <>
@@ -499,6 +514,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
         );
     }
   }, [
+    t,
     apys,
     chain,
     chainId,
@@ -519,6 +535,8 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
 
   const modalHeight = useMemo(() => {
     switch (step) {
+      case "warning":
+        return 344;
       case "form":
         return 554;
       case "preview":
@@ -567,7 +585,9 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               }
             : {},
       }}
-      headerBackground={step !== "form" && step !== "preview"}
+      headerBackground={
+        step !== "warning" && step !== "form" && step !== "preview"
+      }
     >
       {body}
     </BasicModal>

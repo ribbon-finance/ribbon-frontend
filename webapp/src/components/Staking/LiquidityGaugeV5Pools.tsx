@@ -301,7 +301,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
         <ClaimableTokenPillContainer>
           <ClaimableTokenPill color={color}>
             <BaseIndicator size={8} color={color} className="mr-2" />
-            <Subtitle className="mr-2">AMOUNT CLAIMED</Subtitle>
+            <Subtitle className="mr-2">RBN CLAIMED</Subtitle>
             <ClaimableTokenAmount color={color}>
               {active && lg5Data ? formatBigNumber(lg5Data.claimedRbn) : "---"}
             </ClaimableTokenAmount>

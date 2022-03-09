@@ -45,8 +45,12 @@
       "description": "Base APY are the estimated APY from staking vault tokens. This does not account additional boost from veRBN holding."
     },
     "poolRewards": {
-      "title": "Pool Rewards",
-      "description": "Estimated amount of RBN to be distributed for the current period."
+      "title": "Weekly Pool Rewards",
+      "description": "Estimated amount of RBN to be distributed for the current week."
     }
+  },
+  "LiquidityMining": {
+    "timeTillNextEpoch": "Time till next epoch",
+    "stakingWarningMessage": "If you stake rTokens before locking your RBN, your boosted rewards won't be applied until you claim RBN rewards or increase your stake."
   }
 }
