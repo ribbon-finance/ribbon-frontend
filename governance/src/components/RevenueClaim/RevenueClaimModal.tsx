@@ -53,7 +53,7 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
   useEffect(() => {
     if (veRBNRewards && account) {
       veRBNRewards.rewards(account).then((rewards: BigNumber) => {
-        setVaultRevenue(() => rewards);
+        setUnlockPenalty(() => rewards);
       });
     }
   }, [veRBNRewards, account]);
@@ -76,10 +76,12 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
       txhash:
         "0xc4006e01a847d1a0ce7349cc9b92391d1bef7f5e76f8f8d56479197f6d07175a",
       amountUSDC: vaultRevenue
-        ? formatBigNumberAmount(vaultRevenue, getAssetDecimals("USDC"))
+        // ? formatBigNumberAmount(vaultRevenue, getAssetDecimals("USDC"))
+        ? "100.23K"
         : "0",
       amountRBN: unlockPenalty
-        ? formatBigNumberAmount(unlockPenalty, getAssetDecimals("RBN"))
+        // ? formatBigNumberAmount(unlockPenalty, getAssetDecimals("RBN"))
+        ? "100.23K"
         : "0",
     };
     addPendingTransaction(pendingTx);
