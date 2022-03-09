@@ -98,7 +98,7 @@ const PositionStakedContainer = styled(PositionMainContainer)`
   z-index: 1;
 `;
 
-const LogoContainer = styled.div<{ color: string }>`
+const LogoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -106,7 +106,6 @@ const LogoContainer = styled.div<{ color: string }>`
   width: 40px;
   height: 40px;
   border-radius: 100px;
-  background: ${(props) => props.color}29;
 `;
 
 const PositionInfo = styled.div`
@@ -265,7 +264,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
     <PositionLink to={getVaultURI(vaultAccount.vault.symbol, vaultVersion)}>
       <PositionContainer color={color}>
         <PositionMainContainer>
-          <LogoContainer color={color}>{logo}</LogoContainer>
+          <LogoContainer>{logo}</LogoContainer>
           <PositionInfo>
             <PositionInfoRow>
               {/* Title */}

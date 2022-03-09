@@ -104,7 +104,7 @@ const ClaimableTokenAmount = styled(Subtitle)<{ color: string }>`
   margin-left: auto;
 `;
 
-const LogoContainer = styled.div<{ color: string }>`
+const LogoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -418,7 +418,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
         <div className="d-flex flex-wrap w-100 p-3">
           {/* Card Title */}
           <div className="d-flex align-items-center">
-            <LogoContainer color={color}>{logo}</LogoContainer>
+            <LogoContainer>{logo}</LogoContainer>
             <div className="d-flex flex-column">
               <div className="d-flex align-items-center">
                 <StakingPoolTitle>{vaultOption}</StakingPoolTitle>
