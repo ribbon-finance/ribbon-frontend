@@ -175,8 +175,8 @@ const DesktopProductCatalogueGalleryView: React.FC<
           {/* Description */}
           <SecondaryText className="mt-3">
             {isPutVault(currentVault)
-              ? t("shared:ProductCopies:PutStrategy", { asset })
-              : t("shared:ProductCopies:CallStrategy", { asset })}
+              ? t("shared:ProductCopies:Put:description", { asset })
+              : t("shared:ProductCopies:Call:description", { asset })}
           </SecondaryText>
 
           {active && (
