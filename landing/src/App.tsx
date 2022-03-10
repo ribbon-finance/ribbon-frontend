@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Web3ReactProvider } from "@web3-react/core";

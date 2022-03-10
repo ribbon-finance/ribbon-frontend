@@ -15,7 +15,7 @@ import {
 import { Assets } from "shared/lib/store/types";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import styled from "styled-components";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "../../designSystem/sizes";
 import useTVL from "shared/lib/hooks/useTVL";
@@ -337,12 +337,10 @@ const TVL = () => {
       selectedChain.vaults.includes(tvl.vault.option)
     );
 
-    console.log(selectedVaults);
-
     setTVL(
       formatAmount(selectedVaults.reduce((acc, curr) => acc + curr.tvl, 0))
     );
-  }, [data]);
+  }, [data, selectedChain]);
 
   const onSetChain = (nextChain: boolean = false) => {
     const currentIndex = chains.findIndex(
