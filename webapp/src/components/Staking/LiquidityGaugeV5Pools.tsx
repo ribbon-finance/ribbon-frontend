@@ -43,10 +43,9 @@ import {
   calculateBaseRewards,
   calculateBoostMultiplier,
 } from "shared/lib/utils/governanceMath";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
 import ApplyBoostModal from "./LiquidityGaugeModal/ApplyBoostModal";
-import useLiquidityGaugeV5 from "shared/lib/hooks/useLiquidityGaugeV5";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -95,10 +94,9 @@ const ClaimableTokenPillContainer = styled.div`
 const ClaimableTokenPill = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
-  padding: 8px 12px;
-  border: ${theme.border.width} ${theme.border.style} ${(props) => props.color};
-  background: ${(props) => props.color}14;
-  border-radius: 100px;
+  padding: 6px 12px;
+  background: ${(props) => props.color}1F;
+  border-radius: 8px;
 `;
 
 const ClaimableTokenAmount = styled(Subtitle)<{ color: string }>`
@@ -165,21 +163,20 @@ const StakingPoolCardFooterButton = styled(Title)<{
 interface LiquidityGaugeV5PoolProps {
   vaultOption: VaultOptions;
   totalVeRBN?: BigNumber;
-  latestRBNLockedBlockNumber?: number;
+  latestRBNLockedBlockTimestamp?: number;
 }
 
 const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
   vaultOption,
   totalVeRBN,
-  latestRBNLockedBlockNumber,
+  latestRBNLockedBlockTimestamp: latestRBNLockedBlockNumber,
 }) => {
   const { t } = useTranslation();
-  const { active, account } = useWeb3Wallet();
+  const { active } = useWeb3Wallet();
   const [, setShowConnectWalletModal] = useConnectWalletModal();
   const { pendingTransactions } = usePendingTransactions();
   const { data: lg5Data, loading: lg5DataLoading } =
     useLiquidityGaugeV5PoolData(vaultOption);
-  const gaugeContract = useLiquidityGaugeV5(vaultOption);
 
   const { prices, loading: assetPricesLoading } = useAssetsPrice();
   const {
@@ -190,10 +187,6 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
     useAssetBalance("veRBN");
 
   const loadingText = useLoadingText();
-
-  // Block number of the latest stake event
-  const [latestStakeBlockNumber, setLatestStakeBlockNumber] =
-    useState<number>();
 
   // MODALS
   const [showStakeModal, setShowStakeModal] = useState(false);
@@ -254,21 +247,6 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
 
   const primaryActionLoadingText = useLoadingText(actionLoadingTextBase);
 
-  useEffect(() => {
-    if (account && latestStakeBlockNumber === undefined && gaugeContract) {
-      const depositFilter = gaugeContract.filters.Deposit(account);
-      gaugeContract
-        .queryFilter(depositFilter)
-        .then((depositEvents) => {
-          const latestDeposit = depositEvents[depositEvents.length - 1];
-          setLatestStakeBlockNumber(latestDeposit?.blockNumber || 0);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [latestStakeBlockNumber, gaugeContract, account]);
-
   const logo = useMemo(() => {
     const asset = getDisplayAssets(vaultOption);
     const Logo = getAssetLogo(asset);
@@ -280,11 +258,19 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
   // If the difference is positive, means user staked AFTER locking RBN (No need apply boost)
   // If negative, means user staked BEFORE locking RBN (Need apply boost)
   const canApplyBoost = useMemo(() => {
-    if (latestStakeBlockNumber && latestRBNLockedBlockNumber) {
-      return latestStakeBlockNumber - latestRBNLockedBlockNumber < 0;
+    if (
+      lg5Data &&
+      lg5Data.currentStake.gt(0) &&
+      lg5Data.integrateCheckpointOf.gt(0) &&
+      latestRBNLockedBlockNumber
+    ) {
+      return (
+        lg5Data.integrateCheckpointOf.toNumber() - latestRBNLockedBlockNumber <
+        0
+      );
     }
     return false;
-  }, [latestStakeBlockNumber, latestRBNLockedBlockNumber]);
+  }, [lg5Data, latestRBNLockedBlockNumber]);
 
   const baseAPY = useMemo(() => {
     if (!lg5Data) {
@@ -616,7 +602,7 @@ const LiquidityGaugeV5Pools = () => {
   const [totalVeRBN, setTotalVeRBN] = useState<BigNumber>();
 
   // The latest block number that user has locked, increase lock amt, or increase lock duration
-  const [latestRBNLockedBlockNumber, setLatestRBNLockedBlockNumber] =
+  const [latestRBNLockedBlockTimestamp, setLatestRBNLockedBlockTimestamp] =
     useState<number>();
 
   // Fetch totalverbn
@@ -633,20 +619,26 @@ const LiquidityGaugeV5Pools = () => {
     if (
       account &&
       votingEscrowContract &&
-      latestRBNLockedBlockNumber === undefined
+      latestRBNLockedBlockTimestamp === undefined
     ) {
       const depositFilter = votingEscrowContract.filters.Deposit(account);
       votingEscrowContract
         .queryFilter(depositFilter)
-        .then((depositEvents) => {
+        .then(async (depositEvents) => {
           const latestDeposit = depositEvents[depositEvents.length - 1];
-          setLatestRBNLockedBlockNumber(latestDeposit?.blockNumber || 0);
+          if (latestDeposit) {
+            const block = await latestDeposit.getBlock();
+            console.log("Last lock RBN", block.timestamp);
+            setLatestRBNLockedBlockTimestamp(block.timestamp);
+          } else {
+            setLatestRBNLockedBlockTimestamp(0);
+          }
         })
         .catch((err) => {
           console.log(err);
         });
     }
-  }, [account, votingEscrowContract, latestRBNLockedBlockNumber]);
+  }, [account, votingEscrowContract, latestRBNLockedBlockTimestamp]);
 
   return (
     <StakingPoolsContainer>
@@ -658,7 +650,7 @@ const LiquidityGaugeV5Pools = () => {
           key={option}
           vaultOption={option as VaultOptions}
           totalVeRBN={totalVeRBN}
-          latestRBNLockedBlockNumber={latestRBNLockedBlockNumber}
+          latestRBNLockedBlockTimestamp={latestRBNLockedBlockTimestamp}
         />
       ))}
     </StakingPoolsContainer>

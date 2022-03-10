@@ -51,6 +51,9 @@ export interface LiquidityGaugeV5PoolResponse {
   claimedRbn: BigNumber;
   poolRewardForDuration: BigNumber;
   periodEndTime: number;
+
+  // Block timestamp of the last time integrate_checkpoint was called
+  integrateCheckpointOf: BigNumber;
 }
 
 export type LiquidityGaugeV5PoolResponses = Partial<{

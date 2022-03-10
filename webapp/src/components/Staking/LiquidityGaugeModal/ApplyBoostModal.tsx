@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import {
@@ -12,6 +12,7 @@ import {
   PrimaryText,
   BaseModalContentColumn,
   Title,
+  SecondaryText,
 } from "shared/lib/designSystem";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import useLiquidityGaugeV5 from "shared/lib/hooks/useLiquidityGaugeV5";
@@ -20,6 +21,8 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import PendingTransactionLoader from "shared/lib/components/Common/PendingTransactionLoader";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { useChain } from "shared/lib/hooks/chainContext";
+import { ActionButton } from "shared/lib/components/Common/buttons";
+import BoostIcon from "./BoostIcon";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -43,6 +46,13 @@ interface ApplyBoostModalProps {
   vaultOption: VaultOptions;
 }
 
+type Step = "info" | "transaction";
+type StepToHeight = { [key in Step]: number };
+const stepHeight: StepToHeight = {
+  info: 380,
+  transaction: 424,
+};
+
 // Calls user_checkpoint and shows a transaction loading screen
 const ApplyBoostModal: React.FC<ApplyBoostModalProps> = ({
   show,
@@ -54,11 +64,13 @@ const ApplyBoostModal: React.FC<ApplyBoostModalProps> = ({
   const { provider } = useWeb3Context();
   const contract = useLiquidityGaugeV5(vaultOption);
   const { addPendingTransaction } = usePendingTransactions();
+
+  const [step, setStep] = useState<Step>("info");
   const [txHash, setTxHash] = useState("");
 
   const color = getVaultColor(vaultOption);
 
-  const handleApplyBoost = useCallback(async () => {
+  const onApplyBoost = useCallback(async () => {
     if (!contract || !account) {
       return;
     }
@@ -82,17 +94,87 @@ const ApplyBoostModal: React.FC<ApplyBoostModalProps> = ({
     }
   }, [account, addPendingTransaction, provider, contract, onClose]);
 
-  useEffect(() => {
-    if (show && !txHash) {
-      handleApplyBoost();
+  const modalContent = useMemo(() => {
+    switch (step) {
+      case "info":
+        return (
+          <div className="d-flex flex-column align-items-center justify-content-center flex-grow">
+            <BoostIcon color={color} />
+
+            {/* <PendingTransactionLoader
+              active
+              color={color}
+              width="64px"
+              barHeight={6.5}
+              numberOfBars={8}
+            /> */}
+
+            {/* Title */}
+            <Title className="mt-3 text-center" fontSize={28}>
+              {vaultOption}
+            </Title>
+
+            {/* Description */}
+            <SecondaryText className="mt-2 text-center">
+              You earned an additional boost to your liquidity mining rewards
+              from increasing your veRBN balance
+            </SecondaryText>
+
+            <ActionButton
+              onClick={onApplyBoost}
+              className="py-3 mt-auto mb-3"
+              color={color}
+            >
+              APPLY BOOST
+            </ActionButton>
+          </div>
+        );
+      case "transaction":
+        return (
+          <>
+            <BaseModalContentColumn marginTop={8}>
+              <ModalTitle>
+                {!txHash ? "CONFIRM Transaction" : "TRANSACTION PENDING"}
+              </ModalTitle>
+            </BaseModalContentColumn>
+            <FloatingContainer>
+              <PendingTransactionLoader
+                active={Boolean(txHash)}
+                color={color}
+              />
+            </FloatingContainer>
+            {!txHash ? (
+              <BaseModalContentColumn marginTop="auto">
+                <PrimaryText className="mb-2">
+                  Confirm this transaction in your wallet
+                </PrimaryText>
+              </BaseModalContentColumn>
+            ) : (
+              <BaseModalContentColumn marginTop="auto">
+                {chainId && (
+                  <BaseUnderlineLink
+                    to={`${getExplorerURI(chain)}/tx/${txHash}`}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="d-flex"
+                  >
+                    <PrimaryText className="mb-2">
+                      View on {getExplorerName(chain)}
+                    </PrimaryText>
+                  </BaseUnderlineLink>
+                )}
+              </BaseModalContentColumn>
+            )}
+          </>
+        );
     }
-  }, [show, txHash, handleApplyBoost]);
+  }, [chain, chainId, color, step, txHash, vaultOption, onApplyBoost]);
 
   return (
     <BasicModal
       show={show}
       onClose={onClose}
-      height={424}
+      height={stepHeight[step]}
       animationProps={{
         transition: {
           duration: 0.25,
@@ -112,40 +194,9 @@ const ApplyBoostModal: React.FC<ApplyBoostModalProps> = ({
           opacity: 0,
         },
       }}
-      headerBackground
+      headerBackground={step !== "info"}
     >
-      <>
-        <BaseModalContentColumn marginTop={8}>
-          <ModalTitle>
-            {!txHash ? "CONFIRM Transaction" : "TRANSACTION PENDING"}
-          </ModalTitle>
-        </BaseModalContentColumn>
-        <FloatingContainer>
-          <PendingTransactionLoader active={Boolean(txHash)} color={color} />
-        </FloatingContainer>
-        {!txHash ? (
-          <BaseModalContentColumn marginTop="auto">
-            <PrimaryText className="mb-2">
-              Confirm this transaction in your wallet
-            </PrimaryText>
-          </BaseModalContentColumn>
-        ) : (
-          <BaseModalContentColumn marginTop="auto">
-            {chainId && (
-              <BaseUnderlineLink
-                to={`${getExplorerURI(chain)}/tx/${txHash}`}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="d-flex"
-              >
-                <PrimaryText className="mb-2">
-                  View on {getExplorerName(chain)}
-                </PrimaryText>
-              </BaseUnderlineLink>
-            )}
-          </BaseModalContentColumn>
-        )}
-      </>
+      {modalContent}
     </BasicModal>
   );
 };

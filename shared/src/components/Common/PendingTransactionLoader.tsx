@@ -33,9 +33,10 @@ const FloatingBoxBar = styled.div<{
   barAnimationTime: number;
   numberOfBars: number;
   index: number;
+  height?: number;
 }>`
   width: 100%;
-  height: 40px;
+  height: ${(props) => props.height || 40}px;
   background: ${(props) => props.color};
   box-shadow: 2px 4px 40px ${(props) => props.color};
   opacity: 0;
@@ -53,6 +54,7 @@ interface PendingTransactionLoaderProps {
   width?: string;
   // Color of the bars, defaults to ribbon red
   color?: string;
+  barHeight?: number;
 }
 
 const PendingTransactionLoader: React.FC<PendingTransactionLoaderProps> = ({
@@ -61,6 +63,7 @@ const PendingTransactionLoader: React.FC<PendingTransactionLoaderProps> = ({
   animationTimeMs = 500,
   numberOfBars = 6,
   width = "200px",
+  barHeight,
 }) => {
   return (
     <Container width={width}>
@@ -73,6 +76,7 @@ const PendingTransactionLoader: React.FC<PendingTransactionLoaderProps> = ({
               barAnimationTime={animationTimeMs}
               numberOfBars={numberOfBars}
               index={index}
+              height={barHeight}
             />
           ))}
       </FloatingBox>
