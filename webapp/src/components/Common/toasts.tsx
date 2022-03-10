@@ -102,6 +102,8 @@ export const TxStatusToast = () => {
           BigNumber.from(_currentTx.amount),
           getAssetDecimals(getAssets(_currentTx.transferVault))
         );
+      case "userCheckpoint":
+        return undefined;
       default:
         return _currentTx.amount;
     }
