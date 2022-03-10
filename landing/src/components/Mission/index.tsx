@@ -217,9 +217,7 @@ const Mission = () => {
       <MissionTitleRow fluid>
         <Col xs={12} lg={10} xl={8}>
           <Container>
-            <MissionTitle>
-              Multichain Decentralised Structured Products
-            </MissionTitle>
+            <MissionTitle>Decentralised Structured Products</MissionTitle>
           </Container>
         </Col>
       </MissionTitleRow>
@@ -228,11 +226,9 @@ const Mission = () => {
         <Col md={12} xl={6}>
           <Container>
             <MissionSubtitle>
-              Ribbon uses financial engineering to create structured products
-              that deliver sustainable yield. Ribbon's first product focuses on
-              yield through automated options strategies. The protocol also
-              allows developers to create arbitrary structured products through
-              combining various DeFi derivatives.
+              The Ribbon Protocol uses derivatives like options to generate
+              sustainable, risk-adjusted yield. Users just deposit their assets,
+              and let the smart contracts do the rest.
             </MissionSubtitle>
           </Container>
         </Col>

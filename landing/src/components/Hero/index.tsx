@@ -285,4 +285,5 @@ const PriceTicker = () => {
     </Ticker>
   );
 };
+
 export default Hero;
