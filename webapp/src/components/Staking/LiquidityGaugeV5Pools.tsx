@@ -43,9 +43,10 @@ import {
   calculateBaseRewards,
   calculateBoostMultiplier,
 } from "shared/lib/utils/governanceMath";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
 import ApplyBoostModal from "./LiquidityGaugeModal/ApplyBoostModal";
+import useLiquidityGaugeV5 from "shared/lib/hooks/useLiquidityGaugeV5";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -164,18 +165,22 @@ const StakingPoolCardFooterButton = styled(Title)<{
 interface LiquidityGaugeV5PoolProps {
   vaultOption: VaultOptions;
   totalVeRBN?: BigNumber;
+  latestRBNLockedBlockNumber?: number;
 }
 
 const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
   vaultOption,
   totalVeRBN,
+  latestRBNLockedBlockNumber,
 }) => {
   const { t } = useTranslation();
-  const { active } = useWeb3Wallet();
+  const { active, account } = useWeb3Wallet();
   const [, setShowConnectWalletModal] = useConnectWalletModal();
   const { pendingTransactions } = usePendingTransactions();
   const { data: lg5Data, loading: lg5DataLoading } =
     useLiquidityGaugeV5PoolData(vaultOption);
+  const gaugeContract = useLiquidityGaugeV5(vaultOption);
+
   const { prices, loading: assetPricesLoading } = useAssetsPrice();
   const {
     data: { asset, decimals, pricePerShare },
@@ -185,6 +190,16 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
     useAssetBalance("veRBN");
 
   const loadingText = useLoadingText();
+
+  // Block number of the latest stake event
+  const [latestStakeBlockNumber, setLatestStakeBlockNumber] =
+    useState<number>();
+
+  // MODALS
+  const [showStakeModal, setShowStakeModal] = useState(false);
+  const [showUnstakeModal, setShowUnstakeModal] = useState(false);
+  const [showClaimModal, setShowClaimModal] = useState(false);
+  const [showApplyBoost, setShowApplyBoost] = useState(false);
 
   const color = getVaultColor(vaultOption);
   const ongoingTransaction:
@@ -220,11 +235,6 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
       | "rewardClaim";
   }, [pendingTransactions, vaultOption]);
 
-  const [showStakeModal, setShowStakeModal] = useState(false);
-  const [showUnstakeModal, setShowUnstakeModal] = useState(false);
-  const [showClaimModal, setShowClaimModal] = useState(false);
-  const [showApplyBoost, setShowApplyBoost] = useState(false);
-
   const actionLoadingTextBase = useMemo(() => {
     switch (ongoingTransaction) {
       case "stake":
@@ -244,11 +254,37 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
 
   const primaryActionLoadingText = useLoadingText(actionLoadingTextBase);
 
+  useEffect(() => {
+    if (account && latestStakeBlockNumber === undefined && gaugeContract) {
+      const depositFilter = gaugeContract.filters.Deposit(account);
+      gaugeContract
+        .queryFilter(depositFilter)
+        .then((depositEvents) => {
+          const latestDeposit = depositEvents[depositEvents.length - 1];
+          setLatestStakeBlockNumber(latestDeposit?.blockNumber || 0);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [latestStakeBlockNumber, gaugeContract, account]);
+
   const logo = useMemo(() => {
     const asset = getDisplayAssets(vaultOption);
     const Logo = getAssetLogo(asset);
     return <Logo />;
   }, [vaultOption]);
+
+  // Check the block number difference between
+  // latest rToken stake - latest lock veRBN
+  // If the difference is positive, means user staked AFTER locking RBN (No need apply boost)
+  // If negative, means user staked BEFORE locking RBN (Need apply boost)
+  const canApplyBoost = useMemo(() => {
+    if (latestStakeBlockNumber && latestRBNLockedBlockNumber) {
+      return latestStakeBlockNumber - latestRBNLockedBlockNumber < 0;
+    }
+    return false;
+  }, [latestStakeBlockNumber, latestRBNLockedBlockNumber]);
 
   const baseAPY = useMemo(() => {
     if (!lg5Data) {
@@ -376,16 +412,6 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
         <StakingPoolCardFooterButton
           role="button"
           color={color}
-          onClick={() => setShowApplyBoost(true)}
-          active={ongoingTransaction === "unstake"}
-        >
-          {ongoingTransaction === "userCheckpoint"
-            ? primaryActionLoadingText
-            : "Apply Boost"}
-        </StakingPoolCardFooterButton>
-        <StakingPoolCardFooterButton
-          role="button"
-          color={color}
           onClick={() => {
             setShowClaimModal(true);
           }}
@@ -395,6 +421,18 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
             ? primaryActionLoadingText
             : "Claim"}
         </StakingPoolCardFooterButton>
+        {canApplyBoost && (
+          <StakingPoolCardFooterButton
+            role="button"
+            color={color}
+            onClick={() => setShowApplyBoost(true)}
+            active
+          >
+            {ongoingTransaction === "userCheckpoint"
+              ? primaryActionLoadingText
+              : "Apply Boost"}
+          </StakingPoolCardFooterButton>
+        )}
       </>
     );
   }, [
@@ -403,6 +441,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
     ongoingTransaction,
     primaryActionLoadingText,
     setShowConnectWalletModal,
+    canApplyBoost,
   ]);
 
   return (
@@ -572,8 +611,13 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
 };
 
 const LiquidityGaugeV5Pools = () => {
+  const { account } = useWeb3Wallet();
   const votingEscrowContract = useVotingEscrow();
   const [totalVeRBN, setTotalVeRBN] = useState<BigNumber>();
+
+  // The latest block number that user has locked, increase lock amt, or increase lock duration
+  const [latestRBNLockedBlockNumber, setLatestRBNLockedBlockNumber] =
+    useState<number>();
 
   // Fetch totalverbn
   useEffect(() => {
@@ -583,6 +627,26 @@ const LiquidityGaugeV5Pools = () => {
       });
     }
   }, [votingEscrowContract, totalVeRBN]);
+
+  // Fetch the latest `Deposit` event emitted by voting escrow contract
+  useEffect(() => {
+    if (
+      account &&
+      votingEscrowContract &&
+      latestRBNLockedBlockNumber === undefined
+    ) {
+      const depositFilter = votingEscrowContract.filters.Deposit(account);
+      votingEscrowContract
+        .queryFilter(depositFilter)
+        .then((depositEvents) => {
+          const latestDeposit = depositEvents[depositEvents.length - 1];
+          setLatestRBNLockedBlockNumber(latestDeposit?.blockNumber || 0);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [account, votingEscrowContract, latestRBNLockedBlockNumber]);
 
   return (
     <StakingPoolsContainer>
@@ -594,6 +658,7 @@ const LiquidityGaugeV5Pools = () => {
           key={option}
           vaultOption={option as VaultOptions}
           totalVeRBN={totalVeRBN}
+          latestRBNLockedBlockNumber={latestRBNLockedBlockNumber}
         />
       ))}
     </StakingPoolsContainer>
