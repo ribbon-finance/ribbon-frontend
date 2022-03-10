@@ -10,8 +10,11 @@ import colors from "shared/lib/designSystem/colors";
 import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
 import { BigNumber } from "ethers";
 import useTVL from "shared/lib/hooks/useTVL";
-import currency from "currency.js";
 import { formatAmount, formatBigNumberAmount } from "shared/lib/utils/math";
+import { ExternalAPIDataContext } from "shared/lib/hooks/externalAPIDataContext";
+import { Assets } from "shared/lib/store/types";
+import { getAssetDecimals } from "shared/lib/utils/asset";
+import { formatUnits } from "ethers/lib/utils";
 
 const MainContainer = styled(Container)`
   padding: 80px 0;
@@ -132,21 +135,33 @@ const Bar = styled.div<{ delay: number }>`
 
 const Mission = () => {
   const { vaultSubgraphData } = useContext(SubgraphDataContext);
-  const { data, totalTVL } = useTVL();
+  const { assetsPrice } = useContext(ExternalAPIDataContext);
+  const { totalTVL } = useTVL();
   const [notional, setNotional] = useState<string>("0");
   const [revenue, setRevenue] = useState<string>("0");
 
   useEffect(() => {
-    console.log(totalTVL);
-  }, [totalTVL]);
-
-  useEffect(() => {
-    const revenue: BigNumber[] = [];
+    const revenue: number[] = [];
     const notional: BigNumber[] = [];
 
     Object.values(vaultSubgraphData.vaults.v1).forEach((vault) => {
-      if (vault && vault.totalWithdrawalFee) {
-        revenue.push(vault.totalWithdrawalFee);
+      if (
+        vault &&
+        vault.totalWithdrawalFee &&
+        BigNumber.from(vault.totalWithdrawalFee).gt(0)
+      ) {
+        const assetPrice =
+          assetsPrice.data[vault.underlyingSymbol as Assets].latestPrice;
+        const assetDecimal = getAssetDecimals(vault.underlyingSymbol as Assets);
+
+        if (assetDecimal && assetPrice && assetPrice > 0) {
+          revenue.push(
+            Math.round(
+              parseFloat(formatUnits(vault.totalWithdrawalFee, assetDecimal)) *
+                assetPrice
+            )
+          );
+        }
       }
 
       if (vault && vault.totalNotionalVolume)
@@ -154,15 +169,28 @@ const Mission = () => {
     });
 
     Object.values(vaultSubgraphData.vaults.v2).forEach((vault) => {
-      if (vault && vault.totalFeeCollected) {
-        revenue.push(vault.totalFeeCollected);
+      if (
+        vault &&
+        vault.totalFeeCollected &&
+        BigNumber.from(vault.totalFeeCollected).gt(0)
+      ) {
+        const assetPrice =
+          assetsPrice.data[vault.underlyingSymbol as Assets].latestPrice;
+        const assetDecimal = getAssetDecimals(vault.underlyingSymbol as Assets);
+
+        if (assetDecimal && assetPrice && assetPrice > 0) {
+          revenue.push(
+            Math.round(
+              parseFloat(formatUnits(vault.totalFeeCollected, assetDecimal)) *
+                assetPrice
+            )
+          );
+        }
       }
 
       if (vault && vault.totalNotionalVolume)
         notional.push(vault.totalNotionalVolume);
     });
-
-    console.log(vaultSubgraphData.vaults);
 
     setNotional(
       formatBigNumberAmount(
@@ -170,13 +198,14 @@ const Mission = () => {
         16
       )
     );
+
     setRevenue(
-      formatBigNumberAmount(
-        revenue.reduce((acc, curr) => acc.add(curr), BigNumber.from(0)),
-        16
+      formatAmount(
+        revenue.reduce((acc, curr) => acc + curr, 0),
+        true
       )
     );
-  }, [vaultSubgraphData]);
+  }, [vaultSubgraphData, assetsPrice]);
 
   return (
     <MainContainer>
