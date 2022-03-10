@@ -44,12 +44,24 @@ const StyledToast = styled(BootstrapToast)<StatusProps>`
   }
 `;
 
-const Body = styled(BootstrapToast.Body)`
+const Body = styled(BootstrapToast.Body)<{ clickable?: boolean }>`
   height: 100%;
   background: ${colors.background.two};
   border-radius: 8px;
   display: flex;
   padding: 16px;
+
+  ${({ clickable }) => {
+    if (clickable) {
+      return `
+        cursor: pointer;
+        &:hover {
+          background: ${colors.background.three};
+        }
+      `;
+    }
+    return "";
+  }}}
 
   @media (max-width: ${sizes.lg}px) {
     width: 100%;
@@ -89,6 +101,7 @@ interface ToastProps extends BootstrapToastProps, StatusProps {
   extra?: {
     vaultOption: VaultOptions;
   };
+  onClick?: () => void;
 }
 
 const BaseToast: React.FC<ToastProps> = ({
@@ -97,6 +110,7 @@ const BaseToast: React.FC<ToastProps> = ({
   subtitle,
   icon: _icon,
   extra,
+  onClick,
   ...props
 }) => {
   const icon = useMemo(() => {
@@ -143,7 +157,7 @@ const BaseToast: React.FC<ToastProps> = ({
       onClose={onClose}
       {...props}
     >
-      <Body>
+      <Body clickable={Boolean(onClick)} onClick={onClick}>
         <IconCircle
           type={type}
           color={
