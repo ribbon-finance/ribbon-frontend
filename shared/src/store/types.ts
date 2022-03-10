@@ -103,6 +103,7 @@ export type PendingTransaction = {
   | {
       // Apply veBoost to the current user
       type: "userCheckpoint";
+      vault: VaultOptions;
     }
 );
 

@@ -22,7 +22,6 @@ import PendingTransactionLoader from "shared/lib/components/Common/PendingTransa
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { useChain } from "shared/lib/hooks/chainContext";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import BoostIcon from "./BoostIcon";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -38,6 +37,12 @@ const FloatingContainer = styled.div`
 
 const ModalTitle = styled(Title)`
   z-index: 2;
+`;
+
+const BoostModalContent = styled.div.attrs({
+  className: "d-flex flex-column align-items-center",
+})`
+  flex: 1;
 `;
 
 interface ApplyBoostModalProps {
@@ -70,10 +75,17 @@ const ApplyBoostModal: React.FC<ApplyBoostModalProps> = ({
 
   const color = getVaultColor(vaultOption);
 
+  const onCloseModal = useCallback(() => {
+    setStep("info");
+    onClose();
+  }, [onClose]);
+
   const onApplyBoost = useCallback(async () => {
     if (!contract || !account) {
       return;
     }
+
+    setStep("transaction");
 
     try {
       const tx = await contract.user_checkpoint(account);
@@ -83,34 +95,41 @@ const ApplyBoostModal: React.FC<ApplyBoostModalProps> = ({
       addPendingTransaction({
         txhash,
         type: "userCheckpoint",
+        vault: vaultOption,
       });
 
       await provider.waitForTransaction(txhash, 2);
       setTxHash("");
+      onCloseModal();
     } catch (err) {
+      setStep("info");
       console.log(err);
-    } finally {
-      onClose();
     }
-  }, [account, addPendingTransaction, provider, contract, onClose]);
+  }, [
+    account,
+    addPendingTransaction,
+    provider,
+    contract,
+    onCloseModal,
+    vaultOption,
+  ]);
 
   const modalContent = useMemo(() => {
     switch (step) {
       case "info":
         return (
-          <div className="d-flex flex-column align-items-center justify-content-center flex-grow">
-            <BoostIcon color={color} />
-
-            {/* <PendingTransactionLoader
+          <BoostModalContent>
+            <PendingTransactionLoader
               active
+              animationType="alwaysShow"
               color={color}
               width="64px"
               barHeight={6.5}
               numberOfBars={8}
-            /> */}
+            />
 
             {/* Title */}
-            <Title className="mt-3 text-center" fontSize={28}>
+            <Title className="mt-5 text-center" fontSize={28}>
               {vaultOption}
             </Title>
 
@@ -122,12 +141,12 @@ const ApplyBoostModal: React.FC<ApplyBoostModalProps> = ({
 
             <ActionButton
               onClick={onApplyBoost}
-              className="py-3 mt-auto mb-3"
+              className="py-3 mt-auto mb-1"
               color={color}
             >
               APPLY BOOST
             </ActionButton>
-          </div>
+          </BoostModalContent>
         );
       case "transaction":
         return (
@@ -173,9 +192,10 @@ const ApplyBoostModal: React.FC<ApplyBoostModalProps> = ({
   return (
     <BasicModal
       show={show}
-      onClose={onClose}
+      onClose={onCloseModal}
       height={stepHeight[step]}
       animationProps={{
+        key: step,
         transition: {
           duration: 0.25,
           type: "keyframes",
