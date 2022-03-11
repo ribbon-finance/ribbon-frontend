@@ -60,7 +60,8 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
   const [txId, setTxId] = useState("");
 
   const handleApprove = useCallback(async () => {
-    if (!tokenContract) {
+    const approveToAddress = VaultLiquidityMiningMap.lm[vaultOption];
+    if (!tokenContract || !approveToAddress) {
       return;
     }
 
@@ -70,7 +71,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
 
     try {
       const tx = await tokenContract.approve(
-        VaultLiquidityMiningMap.lm[vaultOption],
+        approveToAddress,
         amount
       );
 
