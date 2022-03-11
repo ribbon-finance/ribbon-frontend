@@ -17,14 +17,13 @@ import { LiquidityMiningPoolResponse } from "shared/lib/models/staking";
 import colors from "shared/lib/designSystem/colors";
 import ModalContentExtra from "shared/lib/components/Common/ModalContentExtra";
 
-const LogoContainer = styled.div<{ color: string }>`
+const LogoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 64px;
   height: 64px;
   border-radius: 100px;
-  background: ${(props) => props.color}29;
 `;
 
 const ApproveAssetTitle = styled(Title)<{ str: string }>`

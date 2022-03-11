@@ -22,6 +22,7 @@ import TermsPage from "./pages/TermsPage";
 import FAQPage from "./pages/FAQ";
 import colors from "shared/lib/designSystem/colors";
 import { getSolanaClusterURI } from "shared/lib/utils/env";
+import "shared/lib/i18n/config";
 
 const Body = styled.div`
   background-color: ${colors.background.one};

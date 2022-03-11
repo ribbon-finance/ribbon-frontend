@@ -124,7 +124,7 @@ const MenuItem = styled.div<{ color: string; active: boolean }>`
   }}
 `;
 
-const LogoContainer = styled.div<{ color: string }>`
+const LogoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,7 +132,6 @@ const LogoContainer = styled.div<{ color: string }>`
   width: 40px;
   margin: -12px;
   margin-right: 8px;
-  background: ${(props) => props.color}29;
   border-radius: 100px;
 `;
 
@@ -232,11 +231,7 @@ const MultiselectFilterDropdown: React.FC<
           color={option.color}
           active={active}
         >
-          {option.logo ? (
-            <LogoContainer color={option.color}>{option.logo}</LogoContainer>
-          ) : (
-            <></>
-          )}
+          {option.logo ? <LogoContainer>{option.logo}</LogoContainer> : <></>}
           <MenuItemText color={active ? textColor : colors.primaryText}>
             {option.display}
           </MenuItemText>

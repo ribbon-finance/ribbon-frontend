@@ -13,25 +13,6 @@ import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import DesktopSubmenu from "./DesktopSubmenu";
 
-// Close button for temp banner
-const CloseButton = styled.div`
-  position: absolute;
-  right: 12px;
-  padding-top: 3px;
-`;
-
-const TempLMBanner = styled.div.attrs({
-  className: "d-flex align-items-center justify-content-center",
-})`
-  position: fixed;
-  height: 48px;
-  width: 100%;
-  color: ${colors.primaryText};
-  background-color: ${colors.background.three};
-  font-size: 14px;
-  z-index: 1000;
-`;
-
 const HeaderContainer = styled.div.attrs({
   className: "d-flex flex-column justify-content-center",
 })<MobileMenuOpenProps>`
@@ -154,7 +135,6 @@ const MobileOnly = styled.div`
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showBanner, setShowBanner] = useState(true);
 
   const onToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -305,28 +285,6 @@ const Header = () => {
           </MobileOnly>
         </InnerContainer>
       </HeaderContainer>
-      {showBanner && (
-        <TempLMBanner>
-          The liquidity mining program is now live. Stake your rTokens at&nbsp;
-          <b>
-            <a
-              href="https://app.ribbon.finance/staking"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              app.ribbon.finance
-            </a>
-          </b>
-          <CloseButton>
-            <MenuButton
-              isOpen
-              onToggle={() => setShowBanner(false)}
-              size={20}
-              color="#FFFFFFA3"
-            />
-          </CloseButton>
-        </TempLMBanner>
-      )}
     </>
   );
 };

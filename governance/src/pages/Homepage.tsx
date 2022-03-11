@@ -8,6 +8,7 @@ import OverviewKPI from "../components/Homepage/OverviewKPI";
 import TVLLeaderboard from "../components/Homepage/TVLLeaderboard";
 import TreasuryBreakdown from "../components/Homepage/TreasuryBreakdown";
 import RBNPriceOverview from "../components/Homepage/RBNPriceOverview";
+import TemporaryStakingBanner from "../components/TemporaryStakingBanner";
 
 const FullscreenSection = styled(Container)`
   display: flex;
@@ -22,6 +23,7 @@ const Homepage = () => {
 
   return (
     <>
+      <TemporaryStakingBanner />
       <Container fluid className="d-flex p-0">
         <SnapScrollSection
           height={height}

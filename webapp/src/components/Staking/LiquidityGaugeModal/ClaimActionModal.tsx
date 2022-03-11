@@ -30,14 +30,13 @@ import { BigNumber } from "ethers";
 import { calculateBoostedRewards } from "shared/lib/utils/governanceMath";
 import { formatUnits } from "ethers/lib/utils";
 
-const LogoContainer = styled.div<{ color: string }>`
+const LogoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 64px;
   height: 64px;
   border-radius: 100px;
-  background: ${(props) => props.color}29;
 `;
 
 const AssetTitle = styled(Title)`
@@ -230,7 +229,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
         return (
           <>
             <BaseModalContentColumn>
-              <LogoContainer color={color}>{logo}</LogoContainer>
+              <LogoContainer>{logo}</LogoContainer>
             </BaseModalContentColumn>
             <BaseModalContentColumn marginTop={16}>
               <AssetTitle>{vaultOption}</AssetTitle>
