@@ -7,6 +7,8 @@ import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
 import theme from "shared/lib/designSystem/theme";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
+import GaugeVoting from "../components/GaugeVoting/GaugeVoting";
+import { AnimatePresence, motion } from "framer-motion";
 
 const SegmentControlContainer = styled.div`
   border-radius: ${theme.border.radius};
@@ -30,6 +32,16 @@ const ExplanationContainer = styled.div.attrs({
   font-size: 12px;
 `;
 
+const Section = styled(Row)`
+  margin-top: 40px;
+`;
+
+const Column = styled(Col).attrs({
+  sm: "11",
+  md: "9",
+  lg: "7",
+})``;
+
 const Tabs = ["Gauge Voting", "Proposals"] as const;
 type TabType = typeof Tabs[number];
 
@@ -41,8 +53,8 @@ const VotingPage = () => {
 
   return (
     <Container>
-      <Row className="justify-content-center mt-5">
-        <Col sm="11" md="9" lg="7" className="d-flex flex-wrap">
+      <Section className="justify-content-center">
+        <Column className="d-flex flex-wrap">
           <SegmentControlContainer>
             <SegmentControl
               segments={Tabs.map((tab) => ({
@@ -58,7 +70,6 @@ const VotingPage = () => {
               config={{
                 backgroundColor: colors.background.two,
                 hideBorderRadius: true,
-                // widthType: width >= sizes.md ? "fullWidth" : "maxContent",
                 widthType: "fullWidth",
               }}
             />
@@ -66,8 +77,40 @@ const VotingPage = () => {
               How does gauge voting work?
             </ExplanationContainer>
           </SegmentControlContainer>
-        </Col>
-      </Row>
+        </Column>
+      </Section>
+      <Section>
+        <AnimatePresence initial={false} exitBeforeEnter>
+          <motion.div
+            key={currentTab}
+            transition={{
+              duration: 0.25,
+              type: "keyframes",
+              ease: "easeInOut",
+            }}
+            initial={{
+              y: 50,
+              opacity: 0,
+            }}
+            animate={{
+              y: 0,
+              opacity: 1,
+            }}
+            exit={{
+              y: 50,
+              opacity: 0,
+            }}
+            className="w-100 mb-5"
+          >
+            {currentTab === "Gauge Voting" ? (
+              <GaugeVoting />
+            ) : (
+              // TODO: - Proposals
+              <></>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </Section>
     </Container>
   );
 };

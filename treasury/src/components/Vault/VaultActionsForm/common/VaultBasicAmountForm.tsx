@@ -247,6 +247,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
                   const Logo = getAssetLogo(depositAsset);
                   return (
                     <DepositAssetsDropdownItem
+                      key={depositAsset}
                       color={getAssetColor(depositAsset)}
                       active={depositAsset === vaultActionForm.depositAsset}
                       onClick={() => handleDepositAssetChange(depositAsset)}
@@ -313,7 +314,10 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
         <>
           {formExtra.map((extra) => {
             return (
-              <div className="d-flex align-items-center mt-3 mb-1">
+              <div
+                className="d-flex align-items-center mt-3 mb-1"
+                key={JSON.stringify(extra)}
+              >
                 <SecondaryText>{extra.label}</SecondaryText>
                 <Title
                   fontSize={14}
