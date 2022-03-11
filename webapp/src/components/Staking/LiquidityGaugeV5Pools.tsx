@@ -634,7 +634,7 @@ const LiquidityGaugeV5Pools = () => {
           } else {
             setLatestRBNLockedBlockTimestamp(0);
           }
-        })
+        });
     }
   }, [account, votingEscrowContract, latestRBNLockedBlockTimestamp]);
 
