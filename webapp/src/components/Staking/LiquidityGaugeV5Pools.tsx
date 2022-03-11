@@ -46,7 +46,6 @@ import {
 import { BigNumber } from "ethers";
 import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
 import ApplyBoostModal from "./LiquidityGaugeModal/ApplyBoostModal";
-import { DepositEvent } from "shared/lib/codegen/VotingEscrow";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -625,7 +624,7 @@ const LiquidityGaugeV5Pools = () => {
       const depositFilter = votingEscrowContract.filters.Deposit(account);
       votingEscrowContract
         .queryFilter(depositFilter)
-        .then(async (depositEvents: DepositEvent[]) => {
+        .then(async (depositEvents: any[]) => {
           const latestDeposit = depositEvents[depositEvents.length - 1];
           if (latestDeposit) {
             const block = await latestDeposit.getBlock();
