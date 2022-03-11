@@ -206,17 +206,14 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
   const loadingText = useLoadingText("Approving");
 
   const handleApproveToken = useCallback(async () => {
-    const approveToAddress = VaultAddressMap[vaultOption][version]
+    const approveToAddress = VaultAddressMap[vaultOption][version];
     if (tokenContract && approveToAddress) {
       setWaitingApproval(true);
       const amount =
         "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 
       try {
-        const tx = await tokenContract.approve(
-          approveToAddress,
-          amount
-        );
+        const tx = await tokenContract.approve(approveToAddress, amount);
 
         const txhash = tx.hash;
 

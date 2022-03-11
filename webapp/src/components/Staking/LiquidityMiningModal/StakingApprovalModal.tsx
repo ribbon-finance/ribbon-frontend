@@ -70,10 +70,7 @@ const StakingApprovalModal: React.FC<StakingApprovalModalProps> = ({
       "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 
     try {
-      const tx = await tokenContract.approve(
-        approveToAddress,
-        amount
-      );
+      const tx = await tokenContract.approve(approveToAddress, amount);
 
       setStep("approving");
 

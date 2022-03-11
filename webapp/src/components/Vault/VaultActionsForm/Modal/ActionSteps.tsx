@@ -32,7 +32,11 @@ import { useFlexVault } from "shared/lib/hooks/useFlexVault";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { getAssetColor, getAssetDecimals } from "shared/lib/utils/asset";
 import * as anchor from "@project-serum/anchor";
-import { RibbonCoveredCall, RibbonV2stETHThetaVault, RibbonV2ThetaVault } from "shared/lib/codegen";
+import {
+  RibbonCoveredCall,
+  RibbonV2stETHThetaVault,
+  RibbonV2ThetaVault,
+} from "shared/lib/codegen";
 
 export interface ActionStepsProps {
   vault: {
@@ -219,11 +223,11 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
               case "rstETH-THETA":
                 res = await (isNativeToken(asset)
                   ? (vault as RibbonV2ThetaVault).depositETH({
-                    value: amountStr,
-                  })
+                      value: amountStr,
+                    })
                   : (vault as RibbonV2stETHThetaVault).depositYieldToken(
-                    amountStr
-                  ));
+                      amountStr
+                    ));
                 break;
 
               case "rSOL-THETA":
@@ -242,15 +246,15 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                   asset === "WAVAX"
                     ? await depositSAVAX(ethereumProvider, amountStr)
                     : await (vault as RibbonV2ThetaVault).depositETH({
-                      value: amountStr,
-                    })
+                        value: amountStr,
+                      });
                 break;
 
               default:
                 res = await (isNativeToken(asset)
                   ? (vault as RibbonV2ThetaVault).depositETH({
-                    value: amountStr,
-                  })
+                      value: amountStr,
+                    })
                   : (vault as RibbonV2ThetaVault).deposit(amountStr));
             }
             break;

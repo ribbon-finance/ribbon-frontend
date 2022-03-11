@@ -32,7 +32,11 @@ import { getCurvePool } from "shared/lib/hooks/useCurvePool";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { getAssetColor, getAssetDecimals } from "shared/lib/utils/asset";
-import { RibbonCoveredCall, RibbonV2stETHThetaVault, RibbonV2ThetaVault } from "shared/lib/codegen";
+import {
+  RibbonCoveredCall,
+  RibbonV2stETHThetaVault,
+  RibbonV2ThetaVault,
+} from "shared/lib/codegen";
 
 export interface ActionStepsProps {
   vault: {
@@ -218,20 +222,19 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
               case "rstETH-THETA":
                 res = await (isNativeToken(asset)
                   ? (vault as RibbonV2ThetaVault).depositETH({
-                    value: amountStr,
-                  })
+                      value: amountStr,
+                    })
                   : (vault as RibbonV2stETHThetaVault).depositYieldToken(
-                    amountStr
-                  ));
+                      amountStr
+                    ));
 
                 break;
               default:
                 res = await (isNativeToken(asset)
                   ? (vault as RibbonV2ThetaVault).depositETH({
-                    value: amountStr,
-                  })
+                      value: amountStr,
+                    })
                   : (vault as RibbonV2ThetaVault).deposit(amountStr));
-
             }
             break;
           case ACTIONS.withdraw:
