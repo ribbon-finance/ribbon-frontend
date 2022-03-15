@@ -102,6 +102,8 @@ export const TxStatusToast = () => {
           BigNumber.from(_currentTx.amount),
           getAssetDecimals(getAssets(_currentTx.transferVault))
         );
+      case "userCheckpoint":
+        return undefined;
       default:
         return _currentTx.amount;
     }
@@ -113,6 +115,8 @@ export const TxStatusToast = () => {
         return "Reward Claim";
       case "withdrawInitiation":
         return "WITHDRAWAL INITIATED";
+      case "userCheckpoint":
+        return "Apply Boost";
       default:
         return `${capitalize(_currentTx.type)}`;
     }
@@ -170,6 +174,8 @@ export const TxStatusToast = () => {
           return `${amountFormatted} migrated to ${t(
             `shared:ProductCopies:${_currentTx.vault}:title`
           )} V2`;
+        case "userCheckpoint":
+          return `veRBN boost applied to ${_currentTx.vault}`;
         default:
           return "";
       }
