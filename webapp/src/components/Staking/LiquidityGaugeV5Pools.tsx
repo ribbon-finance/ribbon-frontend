@@ -629,7 +629,6 @@ const LiquidityGaugeV5Pools = () => {
           const latestDeposit = depositEvents[depositEvents.length - 1];
           if (latestDeposit) {
             const block = await latestDeposit.getBlock();
-            console.log("Last lock RBN", block.timestamp);
             setLatestRBNLockedBlockTimestamp(block.timestamp);
           } else {
             setLatestRBNLockedBlockTimestamp(0);
