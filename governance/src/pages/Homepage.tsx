@@ -28,7 +28,7 @@ const Homepage = () => {
         link={{
           link: "https://app.ribbon.finance/staking",
           text: "app.ribbon.finance",
-          external: true
+          external: true,
         }}
       />
       <Container fluid className="d-flex p-0">
