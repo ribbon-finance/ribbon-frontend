@@ -1,7 +1,7 @@
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import React from "react";
 import { useHistory } from "react-router";
-
+import TemporaryStakingBanner from "shared/lib/components/Banner/TemporaryStakingBanner";
 import Banner from "shared/lib/components/Banner/Banner";
 import ProductCatalogue from "shared/lib/components/Product/ProductCatalogue";
 import { CHAINID } from "shared/lib/utils/env";
@@ -30,6 +30,15 @@ const Homepage = () => {
   const isMobile = useScreenSize().width <= sizes.md;
   return (
     <>
+      <TemporaryStakingBanner
+        containerStyle={{ position: "relative" }}
+        descriptionText="The liquidity mining program is now live. Stake your rTokens"
+        link={{
+          link: "/staking",
+          text: "here",
+          external: false
+        }}
+      />
       <ProductTitle>PRODUCT</ProductTitle>
       {ANNOUNCEMENT && chainId && !isAuroraNetwork(chainId) && (
         <Banner

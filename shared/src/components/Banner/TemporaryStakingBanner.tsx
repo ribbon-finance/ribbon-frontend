@@ -1,9 +1,9 @@
 import React from "react";
-import colors from "shared/lib/designSystem/colors";
+import colors from "../../designSystem/colors";
 import styled from "styled-components";
-import { BaseIndicator, BaseLink, PrimaryText } from "shared/lib/designSystem";
-import { ExternalIcon } from "shared/lib/assets/icons/icons";
-import sizes from "shared/lib/designSystem/sizes";
+import { BaseIndicator, BaseLink, PrimaryText } from "../../designSystem";
+import { ExternalIcon } from "../../assets/icons/icons";
+import sizes from "../../designSystem/sizes";
 
 const BannerContainer = styled.div<{ color: string }>`
   position: absolute;
@@ -20,7 +20,7 @@ const RightContainer = styled.div.attrs({
   className: "d-flex align-items-center",
 })`
   @media (max-width: ${sizes.md}px) {
-    flex-direction: column;
+    // flex-direction: column;
     padding-left: 16px;
     width: 80vw;
   }
@@ -44,15 +44,29 @@ const Icon = styled(ExternalIcon)`
   height: 21px;
 `;
 
+interface TemporaryStakingBannerProps {
+  containerStyle?: React.CSSProperties;
+  descriptionText: string;
+  link: {
+    text: string
+    link: string
+    external?: boolean
+  }
+}
+
 // Temporary banner to point user to staking page
 // Once voting/delegation is activated, we won't need this component anymore,
 // and can be removed
-const TemporaryStakingBanner: React.FC = () => {
+const TemporaryStakingBanner: React.FC<TemporaryStakingBannerProps> = ({
+  containerStyle,
+  descriptionText,
+  link
+}) => {
   const color = colors.green;
   return (
-    <BannerContainer color={color}>
+    <BannerContainer color={color} style={containerStyle}>
       <>
-        <BaseIndicator size={8} color={color} className="mr-2" />
+        {/* <BaseIndicator size={8} color={color} className="mr-2" /> */}
         <RightContainer>
           <PrimaryText
             fontSize={14}
@@ -61,13 +75,13 @@ const TemporaryStakingBanner: React.FC = () => {
             className="mr-1"
             style={{ textAlign: "center" }}
           >
-            The liquidity mining program is now live. Stake your rTokens at
+            {descriptionText}
           </PrimaryText>
-          <Link to="https://app.ribbon.finance/staking" target="_blank">
+          <Link to={link.link} target={link.external ? "_blank" : undefined}>
             <LinkText fontSize={14} lineHeight={20} color={color}>
-              app.ribbon.finance
+              {link.text}
             </LinkText>
-            <Icon color={color} />
+            {link.external && <Icon color={color} />}
           </Link>
         </RightContainer>
       </>
