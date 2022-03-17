@@ -170,7 +170,10 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     }
 
     const boostedMultiplier = calculateBoostedMultipler(
-      parseUnits(input || "0", decimals)
+      // Boosted multiplier needs to factor in the current staked amount.
+      parseUnits(input || "0", decimals).add(
+        stakingPoolData?.currentStake || BigNumber.from(0)
+      )
     );
     const boostedRewards = calculateBoostedRewards(baseAPY, boostedMultiplier);
 
@@ -190,6 +193,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     loadingText,
     error,
     input,
+    stakingPoolData,
   ]);
 
   const handleInputChange = useCallback(
@@ -388,11 +392,14 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
             <InfoColumn marginTop={4}>
               <ContainerWithTooltip>
                 <SecondaryText className="ml-2" fontSize={12}>
-                  Boosted Rewards {apys.boostedMultiplier}
+                  {t("webapp:TooltipExplanations:boostedRewards:title")}{" "}
+                  {apys.boostedMultiplier}
                 </SecondaryText>
                 <TooltipExplanation
-                  title="Boosted Rewards"
-                  explanation="The additional rewards veRBN holders earn for staking their rTokens. Base rewards can be boosted by up to 2.5X."
+                  title={t("webapp:TooltipExplanations:boostedRewards:title")}
+                  explanation={t(
+                    "webapp:TooltipExplanations:boostedRewards:description"
+                  )}
                   renderContent={({ ref, ...triggerHandler }) => (
                     <HelpInfo containerRef={ref} {...triggerHandler}>
                       i

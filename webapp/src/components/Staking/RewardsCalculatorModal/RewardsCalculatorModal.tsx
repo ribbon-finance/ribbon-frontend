@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import {
@@ -166,6 +167,7 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
   onClose,
 }) => {
   const votingEscrowContract = useVotingEscrow();
+  const { t } = useTranslation();
 
   // Current Gauge
   const [currentGauge, setCurrentGauge] = useState(stakingPools[0]);
@@ -491,11 +493,13 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
               <SubcalculationColumn>
                 <ContainerWithTooltip>
                   <SecondaryText fontSize={12} className="mr-auto">
-                    Boosted Rewards
+                    {t("webapp:TooltipExplanations:boostedRewards:title")}
                   </SecondaryText>
                   <TooltipExplanation
-                    title="Boosted Rewards"
-                    explanation="The additional rewards veRBN holders earn for staking their rTokens. Base rewards can be boosted by up to 2.5X."
+                    title={t("webapp:TooltipExplanations:boostedRewards:title")}
+                    explanation={t(
+                      "webapp:TooltipExplanations:boostedRewards:description"
+                    )}
                     renderContent={({ ref, ...triggerHandler }) => (
                       <HelpInfo containerRef={ref} {...triggerHandler}>
                         i

@@ -47,6 +47,10 @@
     "poolRewards": {
       "title": "Weekly Pool Rewards",
       "description": "Estimated amount of RBN to be distributed for the current week."
+    },
+    "boostedRewards": {
+      "title": "Boosted Rewards",
+      "description": "The additional rewards veRBN holders earn for staking their rTokens. Base rewards can be boosted by up to 2.5X."
     }
   },
   "LiquidityMining": {

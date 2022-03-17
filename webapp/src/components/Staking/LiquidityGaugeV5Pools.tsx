@@ -42,6 +42,7 @@ import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import StakingActionModal from "./LiquidityGaugeModal/StakingActionModal";
 import {
   calculateBaseRewards,
+  calculateBoostedRewards,
   calculateBoostMultiplier,
 } from "shared/lib/utils/governanceMath";
 import { BigNumber } from "ethers";
@@ -289,9 +290,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
     return rewards;
   }, [asset, decimals, lg5Data, pricePerShare, prices]);
 
-  /**
-   * Calculates the boosted multiplier
-   */
+  // Calculated boosted multiplier
   const calculateBoostedMultipler = useCallback(
     (stakedBalance: BigNumber) => {
       if (!lg5Data) {
@@ -309,6 +308,44 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
     },
     [lg5Data, totalVeRBN, votingPower]
   );
+
+  // Multiplier and percentage
+  const boostInfo = useMemo(() => {
+    if (!lg5Data) {
+      return {
+        multiplier: 0,
+        percent: 0,
+      };
+    }
+    const multiplier = calculateBoostedMultipler(lg5Data.currentStake);
+    const percent = calculateBoostedRewards(baseAPY, multiplier);
+    return {
+      multiplier: multiplier || 0,
+      percent: percent || 0,
+    };
+  }, [lg5Data, calculateBoostedMultipler, baseAPY]);
+
+  // UI Display
+  const boostDisplayInfo = useMemo(() => {
+    if (!active) {
+      return {
+        multiplier: "",
+        percent: "---",
+      };
+    }
+    if (lg5DataLoading) {
+      return {
+        multiplier: "",
+        percent: loadingText,
+      };
+    }
+    return {
+      multiplier: boostInfo.multiplier
+        ? `(${boostInfo.multiplier.toFixed(2)}X)`
+        : "",
+      percent: boostInfo.percent ? `${boostInfo.percent.toFixed(2)}%` : "0.00%",
+    };
+  }, [active, lg5DataLoading, loadingText, boostInfo]);
 
   const renderUnstakeBalance = useCallback(() => {
     if (!active) {
@@ -463,7 +500,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
         stakingPoolData={lg5Data}
         apysLoading={lg5DataLoading || votingPowerLoading}
         baseAPY={baseAPY}
-        calculateBoostedMultipler={calculateBoostedMultipler}
+        boostInfo={boostInfo}
       />
       <StakingPoolCard color={color}>
         <div className="d-flex flex-wrap w-100 p-3">
@@ -588,6 +625,32 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
               {lg5DataLoading || assetPricesLoading || vaultDataLoading
                 ? loadingText
                 : `${baseAPY.toFixed(2)}%`}
+            </PoolRewardData>
+          </div>
+
+          {/* Boost */}
+          <div className="d-flex align-items-center mt-4 w-100">
+            <div className="d-flex align-items-center">
+              <SecondaryText>
+                {t("webapp:TooltipExplanations:boostedRewards:title")}{" "}
+                {boostDisplayInfo.multiplier}
+              </SecondaryText>
+              <TooltipExplanation
+                title={t("webapp:TooltipExplanations:boostedRewards:title")}
+                explanation={t(
+                  "webapp:TooltipExplanations:boostedRewards:description"
+                )}
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HelpInfo containerRef={ref} {...triggerHandler}>
+                    i
+                  </HelpInfo>
+                )}
+              />
+            </div>
+            <PoolRewardData className="ml-auto">
+              {lg5DataLoading || assetPricesLoading || vaultDataLoading
+                ? loadingText
+                : boostDisplayInfo.percent}
             </PoolRewardData>
           </div>
         </div>
