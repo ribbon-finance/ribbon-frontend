@@ -245,9 +245,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                 res =
                   asset === "WAVAX"
                     ? await depositSAVAX(ethereumProvider, amountStr)
-                    : await (vault as RibbonV2ThetaVault).depositETH({
-                        value: amountStr,
-                      });
+                    : await (vault as RibbonV2ThetaVault).deposit(amountStr);
                 break;
 
               default:
