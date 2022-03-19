@@ -21,8 +21,8 @@ const BannerButton = styled.div<{ color: string }>`
 interface BannerProps {
   color: string;
   message: string;
-  linkURI: string;
-  linkText: string;
+  linkURI?: string;
+  linkText?: string;
   onClick?: () => void;
   linkOpensNewTab?: Boolean;
 }
@@ -47,17 +47,19 @@ const Banner: React.FC<BannerProps> = ({
         >
           {message}
         </PrimaryText>
-        <BaseLink
-          onClick={onClick}
-          to={linkURI}
-          {...(linkOpensNewTab ? { target: "_blank" } : {})}
-        >
-          <BannerButton color={color} role="button">
-            <PrimaryText fontSize={14} lineHeight={20} color={color}>
-              {linkText}
-            </PrimaryText>
-          </BannerButton>
-        </BaseLink>
+        {linkURI && linkText && (
+          <BaseLink
+            onClick={onClick}
+            to={linkURI}
+            {...(linkOpensNewTab ? { target: "_blank" } : {})}
+          >
+            <BannerButton color={color} role="button">
+              <PrimaryText fontSize={14} lineHeight={20} color={color}>
+                {linkText}
+              </PrimaryText>
+            </BannerButton>
+          </BaseLink>
+        )}
       </>
     </BannerContainer>
   );
