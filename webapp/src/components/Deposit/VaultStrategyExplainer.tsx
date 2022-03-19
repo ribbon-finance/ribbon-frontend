@@ -142,7 +142,6 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
   const displayAsset = getDisplayAssets(vaultOption);
   const optionAsset = getOptionAssets(vaultOption);
   const isPut = isPutVault(vaultOption);
-  console.log(displayAsset);
   const isYearn = getDisplayAssets(vaultOption) === "yvUSDC";
 
   const currentVaultExplanationStepList = useMemo(() => {
