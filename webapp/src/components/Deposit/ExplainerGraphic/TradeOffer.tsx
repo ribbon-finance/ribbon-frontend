@@ -234,7 +234,6 @@ const TradeTunnel: React.FC<TradeTunnelProps> = ({
   const ref = useRef(null);
   const { height, width } = useElementSize(ref);
   const token = useMemo(() => {
-    console.log(tradeToken);
     switch (tradeToken) {
       case "oToken":
         return (
