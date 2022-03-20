@@ -50,7 +50,8 @@
     "RibbonAAVECoveredCallLiquidityGauge": "0x98c371567b8A196518dcb4A4383387A2C7339382",
     "RibbonSTETHCoveredLiquidityGauge": "0x4e079dCA26A4fE2586928c1319b20b1bf9f9be72",
     "RibbonETHCoveredCallLiquidityGauge": "0x9038403C3F7C6B5Ca361C82448DAa48780D7C8Bd",
-    "RibbonWBTCCoveredCallLiquidityGauge": "0x8913EAb16a302dE3E498BbA39940e7A55c0B9325"
+    "RibbonWBTCCoveredCallLiquidityGauge": "0x8913EAb16a302dE3E498BbA39940e7A55c0B9325",
+    "RibbonThetaVaultAPECall": "0xc0cF10Dd710aefb209D9dc67bc746510ffd98A53"
   },
   "fuji": {
     "ManualVolOracle": "0x8c58dDE5156DE3b3Fb93664DccBc1BeB1d5Ac923",

@@ -53,7 +53,7 @@ const ProductAssetLogoContainer = styled.div<{ color: string }>`
   width: 56px;
   margin-top: calc(-56px / 2);
   background-color: ${colors.background.one};
-  border: 2px ${theme.border.style} transparent;
+  border: 2px ${theme.border.style} ${colors.background.two};
   border-radius: 50%;
   position: relative;
 
@@ -97,7 +97,7 @@ const ProductCard = styled(motion.div)<{ color: string; vault: VaultOptions }>`
   flex-direction: column;
   flex-wrap: wrap;
   background-color: ${colors.background.two};
-  border: 2px ${theme.border.style} black;
+  border: 2px ${theme.border.style} ${colors.background.two};
   border-radius: ${theme.border.radius};
   transition: 0.25s box-shadow ease-out, 0.25s border ease-out;
   width: 290px;
@@ -113,14 +113,6 @@ const ProductCard = styled(motion.div)<{ color: string; vault: VaultOptions }>`
   &:hover {
     box-shadow: ${(props) => props.color}66 0px 0px 70px;
     border: 2px ${theme.border.style} ${(props) => props.color};
-
-    ${ProductAssetLogoContainer} {
-      transition: 0.25s border ease-in-out;
-
-      ${(props) =>
-        props.vault !== "rBTC-THETA" &&
-        ` border: 2px ${theme.border.style} ${props.color}`};
-    }
 
     ${TopContainer} {
       background: linear-gradient(

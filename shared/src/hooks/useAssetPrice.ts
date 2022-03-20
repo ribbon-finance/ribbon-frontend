@@ -29,6 +29,7 @@ const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   SOL: "solana",
   AURORA: "aurora-near",
   WNEAR: "wrapped-near",
+  APE: "apecoin",
 };
 
 const getAssetPricesInUSD = async (

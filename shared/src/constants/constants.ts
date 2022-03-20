@@ -113,6 +113,7 @@ export const EVMVaultList = [
   "rAURORA-THETA",
   "rNEAR-THETA",
   "rUSDC-ETH-P-THETA",
+  "rAPE-THETA",
 ] as const;
 
 export const SolanaVaultList = ["rSOL-THETA"] as const;
@@ -266,6 +267,13 @@ export const GAS_LIMITS: {
     },
   },
   "rAURORA-THETA": {
+    v2: {
+      deposit: 380000,
+      withdrawInstantly: 130000,
+      completeWithdraw: 300000,
+    },
+  },
+  "rAPE-THETA": {
     v2: {
       deposit: 380000,
       withdrawInstantly: 130000,
@@ -449,6 +457,10 @@ export const VaultAddressMap: {
     v2: v2deployment.aurora.RibbonThetaVaultAURORACall,
     chainId: CHAINID.AURORA_MAINNET,
   },
+  "rAPE-THETA": {
+    v2: v2deployment.mainnet.RibbonThetaVaultAPECall,
+    chainId: CHAINID.ETH_MAINNET,
+  },
 };
 
 /**
@@ -481,6 +493,7 @@ export const VaultNamesList = [
   "T-SOL-C",
   "T-WNEAR-C",
   "T-AURORA-C",
+  "T-APE-C",
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
@@ -497,6 +510,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-SOL-C": "rSOL-THETA",
   "T-AURORA-C": "rAURORA-THETA",
   "T-WNEAR-C": "rNEAR-THETA",
+  "T-APE-C": "rAPE-THETA",
 };
 
 // Reverse lookup for VaultNameOptionMap
@@ -594,6 +608,8 @@ export const getAssets = (vault: VaultOptions): Assets => {
       return "AURORA";
     case "rNEAR-THETA":
       return "WNEAR";
+    case "rAPE-THETA":
+      return "APE";
   }
 };
 
@@ -621,6 +637,8 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
       return "AURORA";
     case "rNEAR-THETA":
       return "WNEAR";
+    case "rAPE-THETA":
+      return "APE";
   }
 };
 
@@ -652,6 +670,8 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
       return "AURORA";
     case "rNEAR-THETA":
       return "WNEAR";
+    case "rAPE-THETA":
+      return "APE";
   }
 };
 
@@ -670,6 +690,7 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "ryvUSDC-ETH-P-THETA": ["USDC"],
     "rPERP-TSRY": ["PERP"],
     "rSOL-THETA": ["SOL"],
+    "rAPE-THETA": ["APE"],
   };
 
 export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
@@ -714,6 +735,9 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   ),
   "rAURORA-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rAURORA-THETA")))
+  ),
+  "rAPE-THETA": BigNumber.from(100000000).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rAPE-THETA")))
   ),
 };
 
@@ -806,6 +830,12 @@ export const VaultFees: {
     },
   },
   "rNEAR-THETA": {
+    v2: {
+      managementFee: "2",
+      performanceFee: "10",
+    },
+  },
+  "rAPE-THETA": {
     v2: {
       managementFee: "2",
       performanceFee: "10",

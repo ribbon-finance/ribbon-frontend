@@ -1,185 +1,181 @@
 {
-	"kovan": {
-		"feeds": {
-			"dai/eth": "0x22B58f1EbEDfCA50feF632bD73368b2FdA96D541",
-			"eth/usd": "0x9326BFA02ADD2366b30bacB125260Af641031331",
-			"link/eth": "0xa36085f69e2889c224210f603d836748e7dc0088",
-			"usdc/eth": "0x986b5E1e1755e3C2440e960477f25201B0a8bbD4"
-		},
-		"assets": {
-			"dai": "0x1528F3FCc26d13F7079325Fb78D9442607781c8C",
-			"link": "0xa36085f69e2889c224210f603d836748e7dc0088",
-			"eth": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-			"weth": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
-			"usdc": "0x7e6edA50d1c833bE936492BF42C1BF376239E9e2",
-			"wbtc": "0xa5efee8c0d466349da48ece3da9edcba0466aacc",
-			"yvweth": "0x1E0E04C1c5c57328fcB83dEd981e304812c36962",
-			"yvusdc": "0x9d54311cCaA9C0d4ee6BD60cB82A40F4B942c8b3",
-			"steth": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
-			"wsteth": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
-			"ldo": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
-			"aave": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
-			"rETH-THETA-v1": "0xfaEf8534A499D1a67Cf83B7DeCbcC27BD49dEcFD",
-			"rBTC-THETA-v1": "0x895D2EA2Ef2C9f4a3c458CCD7C588f8f102118e6",
-			"rUSDC-ETH-P-THETA-v1": "0x0D92414fc704039635BB072c0A0E7145d29f7c84",
-			"ryvUSDC-ETH-P-THETA-v1": "0x526624Ac3b2d409816fB95D49a9512e5674b052e",
-			"rETH-THETA-v2": "0x9467726c3cFe3f9112Cd0fA3963223d5b8b3C4B1",
-			"rBTC-THETA-v2": "0x6e08c6659132dB4aF0352c409e4b3067C8E97ac2",
-			"rUSDC-ETH-P-THETA-v2": "0xEC1c50724CF7a618C6cdA6CFEa5c9064AFc98E84",
-			"rstETH-THETA-v2": "0x9467726c3cFe3f9112Cd0fA3963223d5b8b3C4B1",
-			"rAAVE-THETA-v2": "0x9467726c3cFe3f9112Cd0fA3963223d5b8b3C4B1",
-			"rPERP-TSRY-v2": "0x27b4E71841Db6E4c58a2e64d4C5F9853614fba7D",
-			"rbn": "0x80Ba81056BA048c82b7b01eB8bffE342fDe1998D",
-			"verbn": "0x75F024aa6ca8f7eec23465388a661209f735B0DF",
-			"perp": "0xd0A1E359811322d97991E03f863a0C30C2cF029C"
-		},
-		"secondary": {
-			"comment": "There is 2 different USDC in Kovan. They are being used in different context. Different USDC are needed depending on contracts.",
-			"usdc": [
-				{
-					"name": "Old Opyn USDC",
-					"address": "0xF5Cb5408B40E819e7Db5347664Be03B52AcCAC9d",
-					"usage": [
-						"yvUSDC",
-						"Liquidity Mining Pool"
-					]
-				},
-				{
-					"name": "New Opyn",
-					"address": "0x7e6edA50d1c833bE936492BF42C1BF376239E9e2",
-					"usage": [
-						"New theta vault, v2"
-					]
-				}
-			]
-		},
-		"yearnRegistry": "0x26a6F436EAa4Db308eF9A3Bbe46Cc495F39C366D",
-		"thetaRegistry": "0x3b8AF76FACd2032F02Add76f6993740b3964479f",
-		"airswapSwap": "0x79fb4604f2D7bD558Cda0DFADb7d61D98b28CA9f",
-		"oTokenFactory": "0xb9D17Ab06e27f63d0FD75099d5874a194eE623e2",
-		"gammaController": "0xdEE7D0f8CcC0f7AC7e45Af454e5e7ec1552E8e4e",
-		"gammaMarginPool": "0x8c7C60d766951c5C570bBb7065C993070061b795",
-		"balancerFactory": "0x8f7F78080219d4066A8036ccD30D588B416a40DB",
-		"uniswapV2Router": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
-		"zeroExExchangeV3": "0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97",
-		"multicall": "0x2cc8688c5f75e365aaeeb4ea8d6a480405a48d2a"
-	},
-	"mainnet": {
-		"feeds": {
-			"dai/eth": "0x22B58f1EbEDfCA50feF632bD73368b2FdA96D541",
-			"eth/usd": "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419",
-			"link/eth": "0xa36085f69e2889c224210f603d836748e7dc0088",
-			"usdc/eth": "0x986b5E1e1755e3C2440e960477f25201B0a8bbD4"
-		},
-		"assets": {
-			"eth": "0x0000000000000000000000000000000000000000",
-			"weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-			"wbtc": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
-			"usdc": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-			"yvweth": "0xa9fe4601811213c340e850ea305481aff02f5b28",
-			"yvusdc": "0x5f18C75AbDAe578b483E5F43f12a39cF75b973a9",
-			"steth": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
-			"wsteth": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
-			"ldo": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
-			"aave": "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9",
-			"sushiLp": "0x9a13867048e01c663ce8ce2fe0cdae69ff9f35e3",
-			"digg": "0x798d1be841a82a273720ce31c822c61a67a601c3",
-			"rETH-THETA-v1": "0x0FABaF48Bbf864a3947bdd0Ba9d764791a60467A",
-			"rBTC-THETA-v1": "0x8b5876f5B0Bf64056A89Aa7e97511644758c3E8c",
-			"rUSDC-ETH-P-THETA-v1": "0x16772a7f4a3ca291C21B8AcE76F9332dDFfbb5Ef",
-			"ryvUSDC-ETH-P-THETA-v1": "0x8FE74471F198E426e96bE65f40EeD1F8BA96e54f",
-			"rETH-THETA-v2": "0x25751853Eab4D0eB3652B5eB6ecB102A2789644B",
-			"rBTC-THETA-v2": "0x65a833afDc250D9d38f8CD9bC2B1E3132dB13B2F",
-			"ryvUSDC-ETH-P-THETA-v2": "0xCc323557c71C0D1D20a1861Dc69c06C5f3cC9624",
-			"rstETH-THETA-v2": "0x53773E034d9784153471813dacAFF53dBBB78E8c",
-			"rAAVE-THETA-v2": "0xe63151A0Ed4e5fafdc951D877102cf0977Abd365",
-			"rbn": "0x6123B0049F904d730dB3C36a31167D9d4121fA6B",
-			"verbn": "0x19854C9A5fFa8116f48f984bDF946fB9CEa9B5f7",
-			"perp": "0xbc396689893d065f41bc2c6ecbee5e0085233447"
-		},
-		"yearnRegistry": "0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804",
-		"airswapSwap": "0x4572f2554421Bd64Bef1c22c8a81840E8D496BeA",
-		"oTokenFactory": "0x7C06792Af1632E77cb27a558Dc0885338F4Bdf8E",
-		"gammaController": "0x4ccc2339F87F6c59c6893E1A678c2266cA58dC72",
-		"gammaMarginPool": "0x5934807cC0654d46755eBd2848840b616256C6Ef",
-		"uniswapV2Router": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
-		"zeroExExchangeV3": "0xDef1C0ded9bec7F1a1670819833240f027b25EfF",
-		"multicall": "0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441",
-		"sushiswap": "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f",
-		"lidoCurvePool": "0xDC24316b9AE028F1497c275EB9192a3Ea0f67022",
-		"lidoOracle": "0x442af784A788A5bd6F42A01Ebe9F287a871243fb"
-	},
-	"mainnet-sim": {
-		"assets": {
-			"eth": "0x0000000000000000000000000000000000000000",
-			"weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-			"wbtc": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
-			"usdc": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
-		}
-	},
-	"avax": {
-		"feeds": {
-			"eth/usd": "0x0A77230d17318075983913bC2145DB16C7366156"
-		},
-		"assets": {
-			"usdc.e": "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
-			"wavax": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-			"savax": "0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE",
-			"rAVAX-THETA": "0x98d03125c62DaE2328D9d3cb32b7B969e6a87787",
-			"rsAVAX-THETA": "0x6BF686d99A4cE17798C45d09C21181fAc29A9fb3"
-		},
-		"oTokenFactory": "0x25bC1cD298512885F0e452833198BCBb149f66a5",
-		"gammaController": "0x9e3b94819aaF6de606C4Aa844E3215725b997064",
-		"gammaMarginPool": "0xCCF6629aEaB734E621Cc59EBb0297196774fDb9D",
-		"sAvaxDepositHelper": "0x084a82fe209f014b3cb6D5986B2C65B584168303"
-	},
-	"fuji": {
-		"feeds": {
-			"eth/usd": "0xD9D01A9F7C810EC035C0e42cB9E80Ef44D7f8692"
-		},
-		"assets": {
-			"wavax": "0xD9D01A9F7C810EC035C0e42cB9E80Ef44D7f8692",
-			"savax": "0x83eC1001526Da4cbD55a032d17b3B5914bE7c0C8",
-			"rAVAX-THETA": "0x4C075bD4423B74e86C5F50C7d866438B6eF20408",
-			"rsAVAX-THETA": "0x4f62BFd896bD484bC45663DEc5A28B85817E7a0E"
-		},
-		"oTokenFactory": "0x3aB375D57EbB733E735a17eDFd3F973f6BC5de21",
-		"gammaController": "0x836E115f0580c8350228E073949bf269F7BC4B62",
-		"gammaMarginPool": "0x9EBC603bBf8309E1715a1678B5C13A4aE6c26452",
-		"sAvaxDepositHelper": "0x13F20ed881f7ED97C5EA34B33C9305D7f7D00fd3"
-	},
-	"aurora": {
-		"feeds": {
-			"eth/usd": "0x713C55D48C88499528d72EE9B4251e6c34303103",
-			"wnear/usd": "0x72a35EC838652F9aD4F1C0ac50ea1A0298438CeA",
-			"aurora/usd": "0x4Ba0A4fF7Ea6021C20Fc40fc816B773bBd4720c4"
-		},
-		"assets": {
-			"aurora": "0x8BEc47865aDe3B172A928df8f990Bc7f2A3b9f79",
-			"weth": "0xC9BdeEd33CD01541e1eeD10f90519d2C06Fe3feB",
-			"wnear": "0xC42C30aC6Cc15faC9bD938618BcaA1a1FaE8501d",
-			"rNEAR-THETA": "0x7796d6B1706855303655EB12F54FaE294c468a66",
-			"rAURORA-THETA": "0xC5DB388DB490f88A81be75c32d60F28579556145"
-		},
-		"oTokenFactory": "0xE9B615dA05caf4Bd549697D293e23290E85C0535",
-		"gammaController": "0x1bb7deb83b26b61eba9be241905c3cf2bff60ad9",
-		"gammaMarginPool": "0x7df8a0E1573d78bBDB78a497E4F583755a62d8a8"
-	},
-	"aurora-testnet": {
-		"feeds": {
-			"eth/usd": "0x713C55D48C88499528d72EE9B4251e6c34303103",
-			"wnear/usd": "0x72a35EC838652F9aD4F1C0ac50ea1A0298438CeA",
-			"aurora/usd": "0x4Ba0A4fF7Ea6021C20Fc40fc816B773bBd4720c4"
-		},
-		"assets": {
-			"aurora": "0x8BEc47865aDe3B172A928df8f990Bc7f2A3b9f79",
-			"weth": "0xC9BdeEd33CD01541e1eeD10f90519d2C06Fe3feB",
-			"wnear": "0xC42C30aC6Cc15faC9bD938618BcaA1a1FaE8501d",
-			"rNEAR-THETA": "0x7796d6B1706855303655EB12F54FaE294c468a66",
-			"rAURORA-THETA": "0xC5DB388DB490f88A81be75c32d60F28579556145"
-		},
-		"oTokenFactory": "0xE9B615dA05caf4Bd549697D293e23290E85C0535",
-		"gammaController": "0x1bb7deb83b26b61eba9be241905c3cf2bff60ad9",
-		"gammaMarginPool": "0x7df8a0E1573d78bBDB78a497E4F583755a62d8a8"
-	}
+  "kovan": {
+    "feeds": {
+      "dai/eth": "0x22B58f1EbEDfCA50feF632bD73368b2FdA96D541",
+      "eth/usd": "0x9326BFA02ADD2366b30bacB125260Af641031331",
+      "link/eth": "0xa36085f69e2889c224210f603d836748e7dc0088",
+      "usdc/eth": "0x986b5E1e1755e3C2440e960477f25201B0a8bbD4"
+    },
+    "assets": {
+      "dai": "0x1528F3FCc26d13F7079325Fb78D9442607781c8C",
+      "link": "0xa36085f69e2889c224210f603d836748e7dc0088",
+      "eth": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "weth": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
+      "usdc": "0x7e6edA50d1c833bE936492BF42C1BF376239E9e2",
+      "wbtc": "0xa5efee8c0d466349da48ece3da9edcba0466aacc",
+      "yvweth": "0x1E0E04C1c5c57328fcB83dEd981e304812c36962",
+      "yvusdc": "0x9d54311cCaA9C0d4ee6BD60cB82A40F4B942c8b3",
+      "steth": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
+      "wsteth": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
+      "ldo": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
+      "aave": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
+      "rETH-THETA-v1": "0xfaEf8534A499D1a67Cf83B7DeCbcC27BD49dEcFD",
+      "rBTC-THETA-v1": "0x895D2EA2Ef2C9f4a3c458CCD7C588f8f102118e6",
+      "rUSDC-ETH-P-THETA-v1": "0x0D92414fc704039635BB072c0A0E7145d29f7c84",
+      "ryvUSDC-ETH-P-THETA-v1": "0x526624Ac3b2d409816fB95D49a9512e5674b052e",
+      "rETH-THETA-v2": "0x9467726c3cFe3f9112Cd0fA3963223d5b8b3C4B1",
+      "rBTC-THETA-v2": "0x6e08c6659132dB4aF0352c409e4b3067C8E97ac2",
+      "rUSDC-ETH-P-THETA-v2": "0xEC1c50724CF7a618C6cdA6CFEa5c9064AFc98E84",
+      "rstETH-THETA-v2": "0x9467726c3cFe3f9112Cd0fA3963223d5b8b3C4B1",
+      "rAAVE-THETA-v2": "0x9467726c3cFe3f9112Cd0fA3963223d5b8b3C4B1",
+      "rPERP-TSRY-v2": "0x27b4E71841Db6E4c58a2e64d4C5F9853614fba7D",
+      "rbn": "0x80Ba81056BA048c82b7b01eB8bffE342fDe1998D",
+      "verbn": "0x75F024aa6ca8f7eec23465388a661209f735B0DF",
+      "perp": "0xd0A1E359811322d97991E03f863a0C30C2cF029C"
+    },
+    "secondary": {
+      "comment": "There is 2 different USDC in Kovan. They are being used in different context. Different USDC are needed depending on contracts.",
+      "usdc": [
+        {
+          "name": "Old Opyn USDC",
+          "address": "0xF5Cb5408B40E819e7Db5347664Be03B52AcCAC9d",
+          "usage": ["yvUSDC", "Liquidity Mining Pool"]
+        },
+        {
+          "name": "New Opyn",
+          "address": "0x7e6edA50d1c833bE936492BF42C1BF376239E9e2",
+          "usage": ["New theta vault, v2"]
+        }
+      ]
+    },
+    "yearnRegistry": "0x26a6F436EAa4Db308eF9A3Bbe46Cc495F39C366D",
+    "thetaRegistry": "0x3b8AF76FACd2032F02Add76f6993740b3964479f",
+    "airswapSwap": "0x79fb4604f2D7bD558Cda0DFADb7d61D98b28CA9f",
+    "oTokenFactory": "0xb9D17Ab06e27f63d0FD75099d5874a194eE623e2",
+    "gammaController": "0xdEE7D0f8CcC0f7AC7e45Af454e5e7ec1552E8e4e",
+    "gammaMarginPool": "0x8c7C60d766951c5C570bBb7065C993070061b795",
+    "balancerFactory": "0x8f7F78080219d4066A8036ccD30D588B416a40DB",
+    "uniswapV2Router": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+    "zeroExExchangeV3": "0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97",
+    "multicall": "0x2cc8688c5f75e365aaeeb4ea8d6a480405a48d2a"
+  },
+  "mainnet": {
+    "feeds": {
+      "dai/eth": "0x22B58f1EbEDfCA50feF632bD73368b2FdA96D541",
+      "eth/usd": "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419",
+      "link/eth": "0xa36085f69e2889c224210f603d836748e7dc0088",
+      "usdc/eth": "0x986b5E1e1755e3C2440e960477f25201B0a8bbD4"
+    },
+    "assets": {
+      "eth": "0x0000000000000000000000000000000000000000",
+      "weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      "wbtc": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+      "usdc": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "yvweth": "0xa9fe4601811213c340e850ea305481aff02f5b28",
+      "yvusdc": "0x5f18C75AbDAe578b483E5F43f12a39cF75b973a9",
+      "steth": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+      "wsteth": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+      "ldo": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
+      "aave": "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9",
+      "sushiLp": "0x9a13867048e01c663ce8ce2fe0cdae69ff9f35e3",
+      "digg": "0x798d1be841a82a273720ce31c822c61a67a601c3",
+      "rETH-THETA-v1": "0x0FABaF48Bbf864a3947bdd0Ba9d764791a60467A",
+      "rBTC-THETA-v1": "0x8b5876f5B0Bf64056A89Aa7e97511644758c3E8c",
+      "rUSDC-ETH-P-THETA-v1": "0x16772a7f4a3ca291C21B8AcE76F9332dDFfbb5Ef",
+      "ryvUSDC-ETH-P-THETA-v1": "0x8FE74471F198E426e96bE65f40EeD1F8BA96e54f",
+      "rETH-THETA-v2": "0x25751853Eab4D0eB3652B5eB6ecB102A2789644B",
+      "rBTC-THETA-v2": "0x65a833afDc250D9d38f8CD9bC2B1E3132dB13B2F",
+      "ryvUSDC-ETH-P-THETA-v2": "0xCc323557c71C0D1D20a1861Dc69c06C5f3cC9624",
+      "rstETH-THETA-v2": "0x53773E034d9784153471813dacAFF53dBBB78E8c",
+      "rAAVE-THETA-v2": "0xe63151A0Ed4e5fafdc951D877102cf0977Abd365",
+      "rbn": "0x6123B0049F904d730dB3C36a31167D9d4121fA6B",
+      "verbn": "0x19854C9A5fFa8116f48f984bDF946fB9CEa9B5f7",
+      "perp": "0xbc396689893d065f41bc2c6ecbee5e0085233447",
+      "ape": "0x4d224452801ACEd8B2F0aebE155379bb5D594381"
+    },
+    "yearnRegistry": "0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804",
+    "airswapSwap": "0x4572f2554421Bd64Bef1c22c8a81840E8D496BeA",
+    "oTokenFactory": "0x7C06792Af1632E77cb27a558Dc0885338F4Bdf8E",
+    "gammaController": "0x4ccc2339F87F6c59c6893E1A678c2266cA58dC72",
+    "gammaMarginPool": "0x5934807cC0654d46755eBd2848840b616256C6Ef",
+    "uniswapV2Router": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+    "zeroExExchangeV3": "0xDef1C0ded9bec7F1a1670819833240f027b25EfF",
+    "multicall": "0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441",
+    "sushiswap": "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f",
+    "lidoCurvePool": "0xDC24316b9AE028F1497c275EB9192a3Ea0f67022",
+    "lidoOracle": "0x442af784A788A5bd6F42A01Ebe9F287a871243fb"
+  },
+  "mainnet-sim": {
+    "assets": {
+      "eth": "0x0000000000000000000000000000000000000000",
+      "weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      "wbtc": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+      "usdc": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+    }
+  },
+  "avax": {
+    "feeds": {
+      "eth/usd": "0x0A77230d17318075983913bC2145DB16C7366156"
+    },
+    "assets": {
+      "usdc.e": "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
+      "wavax": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+      "savax": "0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE",
+      "rAVAX-THETA": "0x98d03125c62DaE2328D9d3cb32b7B969e6a87787",
+      "rsAVAX-THETA": "0x6BF686d99A4cE17798C45d09C21181fAc29A9fb3"
+    },
+    "oTokenFactory": "0x25bC1cD298512885F0e452833198BCBb149f66a5",
+    "gammaController": "0x9e3b94819aaF6de606C4Aa844E3215725b997064",
+    "gammaMarginPool": "0xCCF6629aEaB734E621Cc59EBb0297196774fDb9D",
+    "sAvaxDepositHelper": "0x084a82fe209f014b3cb6D5986B2C65B584168303"
+  },
+  "fuji": {
+    "feeds": {
+      "eth/usd": "0xD9D01A9F7C810EC035C0e42cB9E80Ef44D7f8692"
+    },
+    "assets": {
+      "wavax": "0xD9D01A9F7C810EC035C0e42cB9E80Ef44D7f8692",
+      "savax": "0x83eC1001526Da4cbD55a032d17b3B5914bE7c0C8",
+      "rAVAX-THETA": "0x4C075bD4423B74e86C5F50C7d866438B6eF20408",
+      "rsAVAX-THETA": "0x4f62BFd896bD484bC45663DEc5A28B85817E7a0E"
+    },
+    "oTokenFactory": "0x3aB375D57EbB733E735a17eDFd3F973f6BC5de21",
+    "gammaController": "0x836E115f0580c8350228E073949bf269F7BC4B62",
+    "gammaMarginPool": "0x9EBC603bBf8309E1715a1678B5C13A4aE6c26452",
+    "sAvaxDepositHelper": "0x13F20ed881f7ED97C5EA34B33C9305D7f7D00fd3"
+  },
+  "aurora": {
+    "feeds": {
+      "eth/usd": "0x713C55D48C88499528d72EE9B4251e6c34303103",
+      "wnear/usd": "0x72a35EC838652F9aD4F1C0ac50ea1A0298438CeA",
+      "aurora/usd": "0x4Ba0A4fF7Ea6021C20Fc40fc816B773bBd4720c4"
+    },
+    "assets": {
+      "aurora": "0x8BEc47865aDe3B172A928df8f990Bc7f2A3b9f79",
+      "weth": "0xC9BdeEd33CD01541e1eeD10f90519d2C06Fe3feB",
+      "wnear": "0xC42C30aC6Cc15faC9bD938618BcaA1a1FaE8501d",
+      "rNEAR-THETA": "0x7796d6B1706855303655EB12F54FaE294c468a66",
+      "rAURORA-THETA": "0xC5DB388DB490f88A81be75c32d60F28579556145"
+    },
+    "oTokenFactory": "0xE9B615dA05caf4Bd549697D293e23290E85C0535",
+    "gammaController": "0x1bb7deb83b26b61eba9be241905c3cf2bff60ad9",
+    "gammaMarginPool": "0x7df8a0E1573d78bBDB78a497E4F583755a62d8a8"
+  },
+  "aurora-testnet": {
+    "feeds": {
+      "eth/usd": "0x713C55D48C88499528d72EE9B4251e6c34303103",
+      "wnear/usd": "0x72a35EC838652F9aD4F1C0ac50ea1A0298438CeA",
+      "aurora/usd": "0x4Ba0A4fF7Ea6021C20Fc40fc816B773bBd4720c4"
+    },
+    "assets": {
+      "aurora": "0x8BEc47865aDe3B172A928df8f990Bc7f2A3b9f79",
+      "weth": "0xC9BdeEd33CD01541e1eeD10f90519d2C06Fe3feB",
+      "wnear": "0xC42C30aC6Cc15faC9bD938618BcaA1a1FaE8501d",
+      "rNEAR-THETA": "0x7796d6B1706855303655EB12F54FaE294c468a66",
+      "rAURORA-THETA": "0xC5DB388DB490f88A81be75c32d60F28579556145"
+    },
+    "oTokenFactory": "0xE9B615dA05caf4Bd549697D293e23290E85C0535",
+    "gammaController": "0x1bb7deb83b26b61eba9be241905c3cf2bff60ad9",
+    "gammaMarginPool": "0x7df8a0E1573d78bBDB78a497E4F583755a62d8a8"
+  }
 }
