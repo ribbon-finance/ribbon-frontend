@@ -258,10 +258,15 @@ const DepositPage = () => {
 
   return (
     <>
-      <Banner
-        message={"This is an experimental vault, please use at your own risk!"}
-        color={colors.red}
-      />
+      {vaultOption === "rAPE-THETA" && (
+        <Banner
+          message={
+            "This is an experimental vault, please use at your own risk!"
+          }
+          color={colors.red}
+        />
+      )}
+      
       <HeroSection
         depositCapBar={depositCapBar}
         vaultOption={vaultOption}
