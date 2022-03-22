@@ -20,6 +20,7 @@ import colors from "shared/lib/designSystem/colors";
 import sizes from "../../designSystem/sizes";
 import useTVL from "shared/lib/hooks/useTVL";
 import { formatAmount } from "shared/lib/utils/math";
+import { BaseLink } from "../../designSystem";
 
 const StickyFooterContainer = styled.div`
   width: 100%;
@@ -209,15 +210,33 @@ const SocialButton = styled.button`
 const SocialMedia = () => {
   return (
     <Socials>
-      <SocialButton>
-        <img src={github} alt="github" />
-      </SocialButton>
-      <SocialButton>
-        <img src={discord} alt="discord" />
-      </SocialButton>
-      <SocialButton>
-        <img src={twitter} alt="twitter" />
-      </SocialButton>
+      <BaseLink
+        to="https://github.com/ribbon-finance"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        <SocialButton>
+          <img src={github} alt="github" />
+        </SocialButton>
+      </BaseLink>
+      <BaseLink
+        to="https://discord.com/invite/ribbon-finance"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        <SocialButton>
+          <img src={discord} alt="discord" />
+        </SocialButton>
+      </BaseLink>
+      <BaseLink
+        to="https://twitter.com/ribbonfinance"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        <SocialButton>
+          <img src={twitter} alt="twitter" />
+        </SocialButton>
+      </BaseLink>
     </Socials>
   );
 };

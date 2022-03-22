@@ -235,7 +235,7 @@ const Mission = () => {
       </MissionSubtitleRow>
 
       <MissionSubtitleRow>
-        <Col xs={12} md={12} lg={6}>
+        <Col xs={12} md={12} lg={8}>
           <Container>
             <MissionFactor>
               <Col xs={12} md={4}>
