@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { ethers } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
 import { useWeb3React } from "@web3-react/core";
+import { useTranslation } from "react-i18next";
 
 import {
   BaseButton,
@@ -25,8 +26,8 @@ import {
   VaultOptions,
   VaultVersion,
   VaultVersionList,
+  isPutVault,
 } from "../../../constants/constants";
-import { productCopies } from "../productCopies";
 import { BarChartIcon, GlobeIcon } from "../../../assets/icons/icons";
 import { getAssetDisplay, getAssetLogo } from "../../../utils/asset";
 import { getVaultColor } from "../../../utils/vault";
@@ -52,7 +53,7 @@ const ProductAssetLogoContainer = styled.div<{ color: string }>`
   width: 56px;
   margin-top: calc(-56px / 2);
   background-color: ${colors.background.one};
-  border: 2px ${theme.border.style} transparent;
+  border: 2px ${theme.border.style} ${colors.background.two};
   border-radius: 50%;
   position: relative;
 
@@ -96,7 +97,7 @@ const ProductCard = styled(motion.div)<{ color: string; vault: VaultOptions }>`
   flex-direction: column;
   flex-wrap: wrap;
   background-color: ${colors.background.two};
-  border: 2px ${theme.border.style} black;
+  border: 2px ${theme.border.style} ${colors.background.two};
   border-radius: ${theme.border.radius};
   transition: 0.25s box-shadow ease-out, 0.25s border ease-out;
   width: 290px;
@@ -112,14 +113,6 @@ const ProductCard = styled(motion.div)<{ color: string; vault: VaultOptions }>`
   &:hover {
     box-shadow: ${(props) => props.color}66 0px 0px 70px;
     border: 2px ${theme.border.style} ${(props) => props.color};
-
-    ${ProductAssetLogoContainer} {
-      transition: 0.25s border ease-in-out;
-
-      ${(props) =>
-        props.vault !== "rBTC-THETA" &&
-        ` border: 2px ${theme.border.style} ${props.color}`};
-    }
 
     ${TopContainer} {
       background: linear-gradient(
@@ -220,6 +213,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     loading: v2DataLoading,
   } = useV2VaultData(vault);
   const { chainId } = useWeb3React();
+  const { t } = useTranslation();
   const yieldInfos = useAssetsYield(asset);
   const isLoading = useMemo(() => status === "loading", [status]);
   const [mode, setMode] = useState<"info" | "yield">("info");
@@ -280,10 +274,14 @@ const YieldCard: React.FC<YieldCardProps> = ({
           {logo}
         </ProductAssetLogoContainer>
         <Title fontSize={28} lineHeight={40} className="w-100 my-2">
-          {productCopies[vault].title}
+          {t(`shared:ProductCopies:${vault}:title`)}
         </Title>
         <ProductDescription>
-          {productCopies[vault].description}
+          {isPutVault(vault)
+            ? t("shared:ProductCopies:Put:description", { asset: displayAsset })
+            : t("shared:ProductCopies:Call:description", {
+                asset: displayAsset,
+              })}
         </ProductDescription>
         <Title
           color={`${colors.primaryText}A3`}
@@ -325,6 +323,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     v2DataLoading,
     vault,
     vaultVersion,
+    t,
   ]);
 
   const modalContentExtra = useMemo(() => {
@@ -386,11 +385,11 @@ const YieldCard: React.FC<YieldCardProps> = ({
             {/* Tags */}
             <TagContainer>
               {/* Product tags */}
-              {productCopies[vault].tags.map((tag) => (
-                <ProductTag key={tag} color={color}>
-                  <Subtitle>{tag}</Subtitle>
-                </ProductTag>
-              ))}
+              <ProductTag color={color}>
+                <Subtitle>
+                  {isPutVault(vault) ? "PUT-SELLING" : "COVERED CALL"}
+                </Subtitle>
+              </ProductTag>
               <div className="d-flex">
                 {/* Version tags */}
                 {VaultVersionList.map((version) =>

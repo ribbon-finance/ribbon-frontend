@@ -105,16 +105,18 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
   const latestSale = useMemo(() => {
     return activities
       .filter((activity) => activity.type === "sales")
-      .sort((a, b) =>
-        a.date.valueOf() < b.date.valueOf() ? 1 : -1
-      )[0] as VaultOptionTrade & VaultActivityMeta & { type: "sales" };
+      .sort((a, b) => (a.date.valueOf() < b.date.valueOf() ? 1 : -1))[0] as
+      | (VaultOptionTrade & VaultActivityMeta & { type: "sales" })
+      | undefined;
   }, [activities]);
 
   const latestYield = useMemo(() => {
     if (activitiesLoading) return loadingText;
 
     return currency(
-      parseFloat(formatUnits(latestSale.premium, premiumDecimals)).toFixed(2)
+      parseFloat(
+        latestSale ? formatUnits(latestSale.premium, premiumDecimals) : "0"
+      ).toFixed(2)
     ).format();
   }, [loadingText, activitiesLoading, latestSale, premiumDecimals]);
 

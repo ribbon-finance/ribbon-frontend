@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import moment from "moment";
-
+import { useTranslation } from "react-i18next";
 import {
   VaultLiquidityMiningMap,
   VaultOptions,
@@ -11,6 +11,7 @@ import {
   SecondaryText,
   Title,
 } from "shared/lib/designSystem";
+import { titleCase } from "shared/lib/utils/text";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
@@ -25,18 +26,15 @@ import useLoadingText from "shared/lib/hooks/useLoadingText";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import colors from "shared/lib/designSystem/colors";
-import { BigNumber } from "ethers";
-import { calculateBoostedRewards } from "shared/lib/utils/governanceMath";
 import { formatUnits } from "ethers/lib/utils";
 
-const LogoContainer = styled.div<{ color: string }>`
+const LogoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 64px;
   height: 64px;
   border-radius: 100px;
-  background: ${(props) => props.color}29;
 `;
 
 const AssetTitle = styled(Title)`
@@ -65,7 +63,10 @@ interface ClaimActionModalProps {
   // APYs
   apysLoading?: boolean;
   baseAPY: number;
-  calculateBoostedMultipler: (stakedAmount: BigNumber) => number;
+  boostInfo: {
+    multiplier: number;
+    percent: number;
+  };
 }
 
 const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
@@ -78,8 +79,9 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
   // APYs
   apysLoading,
   baseAPY,
-  calculateBoostedMultipler,
+  boostInfo,
 }) => {
+  const { t } = useTranslation();
   const { provider } = useWeb3Context();
   const [step, setStep] = useState<"info" | "claim" | "claiming" | "claimed">(
     "info"
@@ -146,7 +148,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
     const endStakeReward = moment.unix(lg5Data.periodEndTime);
 
     if (endStakeReward.diff(moment()) <= 0) {
-      return "Program Ended";
+      return "Now";
     }
 
     // Time till next stake reward date
@@ -176,16 +178,12 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
     const totalPoolRewards = lg5Data
       ? formatBigNumber(lg5Data.poolRewardForDuration)
       : undefined;
-    const boost = calculateBoostedMultipler(
-      lg5Data?.currentStake || BigNumber.from(0)
-    );
-    const boostPercentage = calculateBoostedRewards(baseAPY, boost);
 
     // Split unclaimed RBN into its share of base rewards and boosted rewards
     let baseRewards = "---";
     let boostedRewards = "---";
     if (stakingPoolData) {
-      const totalPercentage = boostPercentage + baseAPY;
+      const totalPercentage = boostInfo.percent + baseAPY;
       const unclaimedRbn = parseFloat(
         formatUnits(stakingPoolData.claimableRbn, 18)
       );
@@ -196,7 +194,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
           )
         : "0";
       boostedRewards = totalPercentage
-        ? ((unclaimedRbn * boostPercentage) / totalPercentage).toLocaleString(
+        ? ((unclaimedRbn * boostInfo.percent) / totalPercentage).toLocaleString(
             undefined,
             { maximumFractionDigits: 2 }
           )
@@ -207,17 +205,12 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
       totalPoolRewards:
         totalPoolRewards === undefined ? "-" : `${totalPoolRewards} RBN`,
       baseRewards,
-      boostedRewardsMultiplier: boost ? `(${boost.toFixed(2)}X)` : "",
+      boostedRewardsMultiplier: boostInfo.multiplier
+        ? `(${boostInfo.multiplier.toFixed(2)}X)`
+        : "",
       boostedRewardsAmount: boostedRewards,
     };
-  }, [
-    loadingText,
-    lg5Data,
-    apysLoading,
-    baseAPY,
-    calculateBoostedMultipler,
-    stakingPoolData,
-  ]);
+  }, [loadingText, lg5Data, apysLoading, baseAPY, stakingPoolData, boostInfo]);
 
   const body = useMemo(() => {
     const color = getVaultColor(vaultOption);
@@ -228,7 +221,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
         return (
           <>
             <BaseModalContentColumn>
-              <LogoContainer color={color}>{logo}</LogoContainer>
+              <LogoContainer>{logo}</LogoContainer>
             </BaseModalContentColumn>
             <BaseModalContentColumn marginTop={16}>
               <AssetTitle>{vaultOption}</AssetTitle>
@@ -242,7 +235,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
               </InfoData>
             </InfoColumn>
 
-            <InfoColumn marginTop={8}>
+            <InfoColumn marginTop={4}>
               <div className="d-flex align-items-center">
                 <SecondaryText
                   className="ml-2"
@@ -263,18 +256,21 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
               </div>
               <InfoData color={labelColor}>{rewards.baseRewards}</InfoData>
             </InfoColumn>
-            <InfoColumn marginTop={8}>
+            <InfoColumn marginTop={4}>
               <div className="d-flex align-items-center">
                 <SecondaryText
                   className="ml-2"
                   fontSize={12}
                   color={labelColor}
                 >
-                  Boosted Rewards {rewards.boostedRewardsMultiplier}
+                  {t("webapp:TooltipExplanations:boostedRewards:title")}{" "}
+                  {rewards.boostedRewardsMultiplier}
                 </SecondaryText>
                 <TooltipExplanation
-                  title="Boosted Rewards"
-                  explanation="The additional rewards veRBN holders earn for staking their rTokens. Base rewards can be boosted by up to 2.5X."
+                  title={t("webapp:TooltipExplanations:boostedRewards:title")}
+                  explanation={t(
+                    "webapp:TooltipExplanations:boostedRewards:description"
+                  )}
                   renderContent={({ ref, ...triggerHandler }) => (
                     <HelpInfo containerRef={ref} {...triggerHandler}>
                       i
@@ -287,13 +283,13 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
               </InfoData>
             </InfoColumn>
 
-            <InfoColumn>
+            <InfoColumn marginTop={16}>
               <SecondaryText color={labelColor}>
-                Time Till Next Reward
+                {titleCase(t("webapp:LiquidityMining:timeTillNextEpoch"))}
               </SecondaryText>
               <InfoData>{timeTillNextRewardWeek}</InfoData>
             </InfoColumn>
-            <InfoColumn>
+            <InfoColumn marginTop={16}>
               <div className="d-flex align-items-center">
                 <SecondaryText color={labelColor}>
                   Total Pool Rewards
@@ -327,6 +323,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
     stakingPoolData,
     handleClaim,
     rewards,
+    t,
   ]);
 
   return (

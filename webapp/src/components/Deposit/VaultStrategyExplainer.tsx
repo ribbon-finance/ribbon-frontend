@@ -133,7 +133,7 @@ interface VaultStrategyExplainerProps {
 const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
   vault: { vaultOption, vaultVersion },
 }) => {
-  const { t } = useTranslation(["webapp"]);
+  const { t } = useTranslation();
   const containerRef = useRef(null);
   const { width } = useScreenSize();
   const { width: sectionWidth } = useElementSize(containerRef);
@@ -142,7 +142,6 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
   const displayAsset = getDisplayAssets(vaultOption);
   const optionAsset = getOptionAssets(vaultOption);
   const isPut = isPutVault(vaultOption);
-
   const isYearn = getDisplayAssets(vaultOption) === "yvUSDC";
 
   const currentVaultExplanationStepList = useMemo(() => {
@@ -956,7 +955,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
         case "settlementB":
           return (
             <>
-              When the call options expire{" "}
+              When the {isPut ? "put" : "call"} options expire{" "}
               <TooltipExplanation
                 title="IN-THE-MONEY"
                 explanation={`An ${optionAssetUnit} ${

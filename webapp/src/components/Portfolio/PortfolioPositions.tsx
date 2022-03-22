@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { BigNumber, ethers } from "ethers";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import {
@@ -29,7 +30,6 @@ import {
   VaultVersion,
   VaultVersionList,
 } from "shared/lib/constants/constants";
-import { productCopies } from "shared/lib/components/Product/productCopies";
 import { useAllVaultAccounts } from "shared/lib/hooks/useVaultAccounts";
 import { VaultAccount } from "shared/lib/models/vault";
 import {
@@ -98,7 +98,7 @@ const PositionStakedContainer = styled(PositionMainContainer)`
   z-index: 1;
 `;
 
-const LogoContainer = styled.div<{ color: string }>`
+const LogoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -106,7 +106,6 @@ const LogoContainer = styled.div<{ color: string }>`
   width: 40px;
   height: 40px;
   border-radius: 100px;
-  background: ${(props) => props.color}29;
 `;
 
 const PositionInfo = styled.div`
@@ -198,6 +197,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   const asset = getAssets(vaultAccount.vault.symbol);
   const decimals = getAssetDecimals(asset);
   const color = getVaultColor(vaultAccount.vault.symbol);
+  const { t } = useTranslation();
   const { price: assetPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: asset,
   });
@@ -264,7 +264,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
     <PositionLink to={getVaultURI(vaultAccount.vault.symbol, vaultVersion)}>
       <PositionContainer color={color}>
         <PositionMainContainer>
-          <LogoContainer color={color}>{logo}</LogoContainer>
+          <LogoContainer>{logo}</LogoContainer>
           <PositionInfo>
             <PositionInfoRow>
               {/* Title */}
@@ -279,7 +279,9 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
             <PositionInfoRow>
               {/* Subtitle */}
               <PositionInfoText>
-                {productCopies[vaultAccount.vault.symbol].subtitle}
+                {t(
+                  `shared:ProductCopies:${[vaultAccount.vault.symbol]}:subtitle`
+                )}
               </PositionInfoText>
 
               {/* Amount in Fiat */}

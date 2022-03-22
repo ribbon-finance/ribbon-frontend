@@ -9,10 +9,28 @@ import {
   defaultAssetsPriceData,
   ExternalAPIDataContext,
 } from "./externalAPIDataContext";
-import {
-  COINGECKO_BASE_URL,
-  COINGECKO_CURRENCIES,
-} from "../constants/constants";
+
+const COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3";
+const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
+  WETH: "ethereum",
+  WBTC: "wrapped-bitcoin",
+  USDC: "usd-coin",
+  "USDC.e": "usd-coin",
+  yvUSDC: undefined,
+  stETH: "staked-ether",
+  wstETH: "wrapped-steth",
+  LDO: "lido-dao",
+  AAVE: "aave",
+  WAVAX: "avalanche-2",
+  sAVAX: "benqi-liquid-staked-avax",
+  PERP: "perpetual-protocol",
+  RBN: "ribbon-finance",
+  veRBN: undefined,
+  SOL: "solana",
+  AURORA: "aurora-near",
+  WNEAR: "wrapped-near",
+  APE: "apecoin",
+};
 
 const getAssetPricesInUSD = async (
   currencyName: string
@@ -42,7 +60,7 @@ export const useFetchAssetsPrice = (
 
   const fetchAssetsPrices = useCallback(async () => {
     if (!isProduction()) {
-      console.time("Asset Price Data Fetch");
+      console.time("Asset Price Data Fetch"); // eslint-disable-line
     }
 
     const responses = await Promise.all(
@@ -94,7 +112,7 @@ export const useFetchAssetsPrice = (
     setLoading(false);
 
     if (!isProduction()) {
-      console.timeEnd("Asset Price Data Fetch");
+      console.timeEnd("Asset Price Data Fetch"); // eslint-disable-line
     }
   }, []);
 
@@ -213,7 +231,7 @@ export const useAssetInfo = (asset: Assets) => {
         circulating_supply: data.market_data.circulating_supply,
       });
     } catch (error) {
-      !isProduction() && console.log("Asset info fetch error:", error);
+      !isProduction() && console.log("Asset info fetch error:", error); // eslint-disable-line
       setInfo({
         circulating_supply: 0,
       });

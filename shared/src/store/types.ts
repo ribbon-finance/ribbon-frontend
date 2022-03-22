@@ -21,6 +21,7 @@ export const AssetsList = [
   "veRBN",
   "LDO",
   "SOL",
+  "APE",
 ] as const;
 export type Assets = typeof AssetsList[number];
 
@@ -99,6 +100,11 @@ export type PendingTransaction = {
   | {
       type: GovernanceApproveUnstakeTransactionsType;
       amount: string;
+    }
+  | {
+      // Apply veBoost to the current user
+      type: "userCheckpoint";
+      vault: VaultOptions;
     }
 );
 

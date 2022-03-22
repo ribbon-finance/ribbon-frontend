@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import {
@@ -17,7 +18,7 @@ import {
 } from "shared/lib/models/lockupPeriod";
 import colors from "shared/lib/designSystem/colors";
 import {
-  getAssets,
+  getDisplayAssets,
   VaultLiquidityMiningMap,
   VaultOptions,
 } from "shared/lib/constants/constants";
@@ -136,18 +137,19 @@ const stakingPools = Object.keys(VaultLiquidityMiningMap.lg5) as VaultOptions[];
 const stakingPoolDropdownOptions: StakingPoolOption[] = (
   Object.keys(VaultLiquidityMiningMap.lg5) as VaultOptions[]
 ).map((option) => {
-  const Logo = getAssetLogo(getAssets(option));
+  const Logo = getAssetLogo(getDisplayAssets(option));
   return {
     value: option,
     label: option,
     logo: (
-      <Logo
+      <div
         style={{
-          margin: 0,
           width: 32,
           height: 32,
         }}
-      />
+      >
+        <Logo style={{ margin: 0 }} />
+      </div>
     ),
   };
 });
@@ -165,6 +167,7 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
   onClose,
 }) => {
   const votingEscrowContract = useVotingEscrow();
+  const { t } = useTranslation();
 
   // Current Gauge
   const [currentGauge, setCurrentGauge] = useState(stakingPools[0]);
@@ -287,8 +290,19 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     } else {
       let base = 0;
       if (lg5Data) {
+        let poolLiquidity = BigNumber.from("0");
+        // If parseUnits fails, it means the number overflowed.
+        // defaults to the largest number when that happens.
+        try {
+          const yourStake = parseUnits(stakeInput || "0", decimals);
+          poolLiquidity = parseUnits(poolSizeInput || "0", decimals).add(
+            yourStake
+          );
+        } catch (error) {
+          poolLiquidity = BigNumber.from(String(Number.MAX_SAFE_INTEGER));
+        }
         base = calculateBaseRewards({
-          poolSize: lg5Data.poolSize,
+          poolSize: poolLiquidity,
           poolReward: lg5Data.poolRewardForDuration,
           pricePerShare,
           decimals,
@@ -322,6 +336,8 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     vaultDataLoading,
     loadingText,
     getRewardsBooster,
+    poolSizeInput,
+    stakeInput,
   ]);
 
   // Parse input to number
@@ -446,11 +462,13 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
                 fontSize={14}
                 fontWeight={500}
                 className="mr-auto"
-                color={colors.asset[getAssets(currentGauge)]}
+                color={colors.asset[getDisplayAssets(currentGauge)]}
               >
                 APY
               </SecondaryText>
-              <CalculationData color={colors.asset[getAssets(currentGauge)]}>
+              <CalculationData
+                color={colors.asset[getDisplayAssets(currentGauge)]}
+              >
                 {displayRewards.totalAPY}
               </CalculationData>
             </CalculationColumn>
@@ -475,11 +493,13 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
               <SubcalculationColumn>
                 <ContainerWithTooltip>
                   <SecondaryText fontSize={12} className="mr-auto">
-                    Boosted Rewards
+                    {t("webapp:TooltipExplanations:boostedRewards:title")}
                   </SecondaryText>
                   <TooltipExplanation
-                    title="Boosted Rewards"
-                    explanation="The additional rewards veRBN holders earn for staking their rTokens. Base rewards can be boosted by up to 2.5X."
+                    title={t("webapp:TooltipExplanations:boostedRewards:title")}
+                    explanation={t(
+                      "webapp:TooltipExplanations:boostedRewards:description"
+                    )}
                     renderContent={({ ref, ...triggerHandler }) => (
                       <HelpInfo containerRef={ref} {...triggerHandler}>
                         i

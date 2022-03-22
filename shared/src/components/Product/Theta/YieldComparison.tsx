@@ -1,5 +1,7 @@
 import React, { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
+
 import {
   AAVEIcon,
   CompoundIcon,
@@ -8,7 +10,6 @@ import {
   OasisIcon,
 } from "../../../assets/icons/defiApp";
 import Logo from "../../../assets/icons/logo";
-
 import {
   getAssets,
   VaultOptions,
@@ -22,7 +23,6 @@ import useLatestAPY from "../../../hooks/useLatestAPY";
 import useLoadingText from "../../../hooks/useLoadingText";
 import { DefiScoreProtocol } from "../../../models/defiScore";
 import { getAssetDisplay } from "../../../utils/asset";
-import { productCopies } from "../productCopies";
 
 const YieldComparisonCard = styled.div<{ background: string }>`
   display: flex;
@@ -62,6 +62,7 @@ const YieldComparison: React.FC<YieldComparisonProps> = ({
   yieldInfos,
 }) => {
   const asset = getAssets(vault);
+  const { t } = useTranslation();
 
   const latestAPY = useLatestAPY(vault, vaultVersion);
 
@@ -93,7 +94,7 @@ const YieldComparison: React.FC<YieldComparisonProps> = ({
       <YieldComparisonCard background={config.background}>
         <Logo height="24" width="24" />
         <Title fontSize={14} lineHeight={24} className="ml-2">
-          {productCopies[vault].title}
+          {t(`shared:ProductCopies:${vault}:title`)}
         </Title>
         <Title fontSize={14} lineHeight={24} className="ml-auto">
           {perfStr}

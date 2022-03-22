@@ -30,10 +30,10 @@ const RootApp = () => {
     <Root id="appRoot" screenHeight={screenHeight}>
       <WalletConnectModal />
       <YourPositionModal />
-      <WithdrawReminderToast />
 
       <Router>
         <Header />
+        <WithdrawReminderToast />
         <TxStatusToast />
         <Switch>
           <Route path="/" exact>
@@ -42,11 +42,9 @@ const RootApp = () => {
           <Route path="/theta-vault/:vaultSymbol">
             <DepositPage />
           </Route>
-          {
-            <Route path="/v2/theta-vault/:vaultSymbol">
-              <DepositPage />
-            </Route>
-          }
+          <Route path="/v2/theta-vault/:vaultSymbol">
+            <DepositPage />
+          </Route>
           <Route path="/portfolio">
             <PortfolioPage />
           </Route>

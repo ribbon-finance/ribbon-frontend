@@ -250,7 +250,7 @@ const StakingModalIncreaseDurationForm: React.FC<
                   stakeDuration
                 )
               )}{" "}
-              veRNB
+              veRBN
             </StakingWarningHighlight>
           </>
         </SecondaryText>

@@ -210,7 +210,7 @@ const StakingModalncreaseAmountForm: React.FC<
                     durationToExpiry
                   )
                 )}{" "}
-                veRNB
+                veRBN
               </StakingWarningHighlight>
             </>
           ) : (

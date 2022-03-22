@@ -126,7 +126,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
         setConnectedWallet(wallet as SolanaWallet);
         setConnectingWallet(undefined);
       } catch (error) {
-        console.error(error);
+        console.error(error); // eslint-disable-line
       }
     },
     [

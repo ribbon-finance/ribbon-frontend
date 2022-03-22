@@ -20,7 +20,41 @@
     },
     "stETH": {
       "explanation": "{{collateralAssetUnit}} is the deposit token that represents a user's share of the their ETH on the Ethereum beacon chain.",
-      "learnMoreURL": "webapp:VaultStrategyExplainer:stETH:explanation"
+      "learnMoreURL": "https://lido.fi/ethereum"
+    },
+    "Benqi": {
+      "title": "Benqi",
+      "explanation": "BENQI is a decentralized non-custodial liquidity market protocol on Avalanche, enabling users to effortlessly lend, borrow, and earn interest with their assets.",
+      "learnMoreURL": "https://benqi.fi"
+    },
+    "sAVAX": {
+      "explanation": "sAVAX is the deposit token that represents a user's share of the their AVAX on the Avalanche blockchain.",
+      "learnMoreURL": "https://staking.benqi.fi/stake"
+    },
+    "yvToken": {
+      "explanation": "{{collateralAssetUnit}} is the deposit token that represents a user's share of the {{assetUnit}} yVault.",
+      "learnMoreURL": "https://docs.yearn.finance/getting-started/products/yvaults/vault-tokens"
     }
+  },
+  "LiquidityPool": {
+    "rTokenCTA": "Stake your {{rToken}} tokens in the {{rToken}} staking pool to earn $RBN rewards."
+  },
+  "TooltipExplanations": {
+    "baseAPY": {
+      "title": "Base APY",
+      "description": "Base APY are the estimated APY from staking vault tokens. This does not account additional boost from veRBN holding."
+    },
+    "poolRewards": {
+      "title": "Weekly Pool Rewards",
+      "description": "Estimated amount of RBN to be distributed for the current week."
+    },
+    "boostedRewards": {
+      "title": "Boosted Rewards",
+      "description": "The additional rewards veRBN holders earn for staking their rTokens. Base rewards can be boosted by up to 2.5X."
+    }
+  },
+  "LiquidityMining": {
+    "timeTillNextEpoch": "Time till next epoch",
+    "stakingWarningMessage": "If you stake rTokens before locking your RBN, your boosted rewards won't be applied until you apply boost or claim RBN rewards."
   }
 }

@@ -30,6 +30,7 @@ const GnosisAuction: React.FC<GnosisAuctionProps> = ({ vaultOption }) => {
             return WBTCGnosisAuction;
           case "USDC":
           case "USDC.e":
+          case "APE":
             return USDCGnosisAuction;
           case "AAVE":
             return AAVEGnosisAuction;

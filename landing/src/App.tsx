@@ -23,6 +23,7 @@ import FAQPage from "./pages/FAQ";
 import colors from "shared/lib/designSystem/colors";
 import { getSolanaClusterURI } from "shared/lib/utils/env";
 import StickyFooter from "./components/StickyFooter/StickyFooter";
+import "shared/lib/i18n/config";
 
 const Body = styled.div`
   background-color: ${colors.background.one};

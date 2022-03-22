@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { formatUnits, parseUnits } from "@ethersproject/units";
 import { BigNumber } from "@ethersproject/bignumber";
+import { useTranslation } from "react-i18next";
 
 import {
   getExplorerName,
@@ -28,7 +29,7 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import { calculateBoostedRewards } from "shared/lib/utils/governanceMath";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import TrafficLight from "shared/lib/components/Common/TrafficLight";
+import PendingTransactionLoader from "shared/lib/components/Common/PendingTransactionLoader";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
@@ -37,6 +38,7 @@ import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { useChain } from "shared/lib/hooks/chainContext";
+import WarningModalContent from "../../Vault/VaultActionsForm/Modal/WarningModalContent";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -61,7 +63,6 @@ const LogoContainer = styled.div<{ color: string }>`
   width: 64px;
   height: 64px;
   border-radius: 100px;
-  background: ${(props) => props.color}29;
   color: ${(props) => props.color};
   font-size: 40px;
 `;
@@ -119,9 +120,10 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
   baseAPY,
   calculateBoostedMultipler,
 }) => {
+  const { t } = useTranslation();
   const [step, setStep] = useState<
-    "form" | "preview" | "walletAction" | "processing"
-  >("form");
+    "warning" | "form" | "preview" | "walletAction" | "processing"
+  >("warning");
   const [input, setInput] = useState("");
   const [chain] = useChain();
   const { chainId } = useWeb3Wallet();
@@ -168,7 +170,10 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     }
 
     const boostedMultiplier = calculateBoostedMultipler(
-      parseUnits(input || "0", decimals)
+      // Boosted multiplier needs to factor in the current staked amount.
+      parseUnits(input || "0", decimals).add(
+        stakingPoolData?.currentStake || BigNumber.from(0)
+      )
     );
     const boostedRewards = calculateBoostedRewards(baseAPY, boostedMultiplier);
 
@@ -188,6 +193,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     loadingText,
     error,
     input,
+    stakingPoolData,
   ]);
 
   const handleInputChange = useCallback(
@@ -213,8 +219,8 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
 
   const handleClose = useCallback(() => {
     onClose();
-    if (step === "preview" || step === "walletAction") {
-      setStep("form");
+    if (step === "form" || step === "preview" || step === "walletAction") {
+      setStep("warning");
     }
     if (step !== "processing") {
       setInput("");
@@ -302,6 +308,18 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
 
   const body = useMemo(() => {
     switch (step) {
+      case "warning":
+        return (
+          <BaseModalContentColumn>
+            <WarningModalContent
+              descriptionText={t(
+                "webapp:LiquidityMining:stakingWarningMessage"
+              )}
+              onButtonClick={() => setStep("form")}
+              color={color}
+            />
+          </BaseModalContentColumn>
+        );
       case "form":
         return (
           <>
@@ -374,11 +392,14 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
             <InfoColumn marginTop={4}>
               <ContainerWithTooltip>
                 <SecondaryText className="ml-2" fontSize={12}>
-                  Boosted Rewards {apys.boostedMultiplier}
+                  {t("webapp:TooltipExplanations:boostedRewards:title")}{" "}
+                  {apys.boostedMultiplier}
                 </SecondaryText>
                 <TooltipExplanation
-                  title="Boosted Rewards"
-                  explanation="The additional rewards veRBN holders earn for staking their rTokens. Base rewards can be boosted by up to 2.5X."
+                  title={t("webapp:TooltipExplanations:boostedRewards:title")}
+                  explanation={t(
+                    "webapp:TooltipExplanations:boostedRewards:description"
+                  )}
                   renderContent={({ ref, ...triggerHandler }) => (
                     <HelpInfo containerRef={ref} {...triggerHandler}>
                       i
@@ -439,7 +460,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
             </InfoColumn>
             <InfoColumn marginTop={4}>
               <SecondaryText className="ml-2" fontSize={12}>
-                Boosted Rewards ({apys.boostedMultiplier})
+                Boosted Rewards {apys.boostedMultiplier}
               </SecondaryText>
               <InfoData color={colors.text} fontSize={14}>
                 {apys.boostedRewards}
@@ -469,7 +490,10 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               </ModalTitle>
             </BaseModalContentColumn>
             <FloatingContainer>
-              <TrafficLight active={step === "processing"} />
+              <PendingTransactionLoader
+                active={step === "processing"}
+                color={color}
+              />
             </FloatingContainer>
             {step === "walletAction" ? (
               <BaseModalContentColumn marginTop="auto">
@@ -497,6 +521,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
         );
     }
   }, [
+    t,
     apys,
     chain,
     chainId,
@@ -517,6 +542,8 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
 
   const modalHeight = useMemo(() => {
     switch (step) {
+      case "warning":
+        return 344;
       case "form":
         return 554;
       case "preview":
@@ -526,7 +553,7 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     }
   }, [step]);
 
-  if (vaultDataLoading) return loadingText;
+  if (vaultDataLoading) return null;
 
   return (
     <BasicModal
@@ -565,7 +592,9 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
               }
             : {},
       }}
-      headerBackground={step !== "form" && step !== "preview"}
+      headerBackground={
+        step !== "warning" && step !== "form" && step !== "preview"
+      }
     >
       {body}
     </BasicModal>

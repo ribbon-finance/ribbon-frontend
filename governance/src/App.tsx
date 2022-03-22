@@ -13,6 +13,7 @@ import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContext";
 import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTransactionsContext";
 import { ChainContextProvider } from "shared/lib/hooks/chainContext";
 import { getSolanaClusterURI } from "shared/lib/utils/env";
+import "shared/lib/i18n/config";
 
 function App() {
   useEffect(() => {

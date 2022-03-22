@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { motion } from "framer";
+import { useTranslation } from "react-i18next";
 
 import useNotifications from "../../hooks/useNotifications";
 import { PrimaryText, Subtitle, Title } from "shared/lib/designSystem";
@@ -20,7 +21,6 @@ import { useCallback } from "react";
 import { Notification, NotificationType } from "../../models/notification";
 import { formatBigNumber, formatOption } from "shared/lib/utils/math";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { productCopies } from "shared/lib/components/Product/productCopies";
 import { getVaultURI } from "../../constants/constants";
 import theme from "shared/lib/designSystem/theme";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
@@ -111,6 +111,8 @@ const NotificationList: React.FC<NotificationListProps> = ({
 }) => {
   const { notifications, lastReadTimestamp } = useNotifications();
   const history = useHistory();
+  const { t } = useTranslation();
+
   const [notificationVaultFilter, setNotificationVaultFilter] = useState<
     VaultOptions | "all"
   >("all");
@@ -155,86 +157,89 @@ const NotificationList: React.FC<NotificationListProps> = ({
     [notificationVaultFilter, typeFilteredNotifications]
   );
 
-  const renderNotificationInfo = useCallback((notification: Notification) => {
-    const asset = getAssets(notification.vault);
-    const decimals = getAssetDecimals(asset);
-    const color = getVaultColor(notification.vault);
+  const renderNotificationInfo = useCallback(
+    (notification: Notification) => {
+      const asset = getAssets(notification.vault);
+      const decimals = getAssetDecimals(asset);
+      const color = getVaultColor(notification.vault);
 
-    const badge = (
-      <NotificationItemVaultPill color={color} className="ml-2">
-        <Subtitle fontSize={10} lineHeight={12} color={color}>
-          {productCopies[notification.vault].title}
-        </Subtitle>
-      </NotificationItemVaultPill>
-    );
+      const badge = (
+        <NotificationItemVaultPill color={color} className="ml-2">
+          <Subtitle fontSize={10} lineHeight={12} color={color}>
+            {t(`shared:ProductCopies:${notification.vault}:title`)}
+          </Subtitle>
+        </NotificationItemVaultPill>
+      );
 
-    let title: string;
-    let body: JSX.Element;
-    const premiumDecimals = getAssetDecimals("USDC");
-    switch (notification.type) {
-      case "optionMinting":
-        title = "MINTED OPTIONS";
-        body = (
-          <>
-            The vault minted{" "}
-            {formatBigNumber(notification.depositAmount, decimals)} options at a
-            strike price of $
-            {formatOption(notification.strikePrice).toLocaleString()}
-          </>
-        );
-        break;
-      case "optionSale":
-        title = "SOLD OPTIONS";
-        body = (
-          <>
-            The vault sold{" "}
-            {formatOption(notification.sellAmount).toLocaleString()} options for{" "}
-            {formatBigNumber(notification.premium, premiumDecimals)}{" "}
-            {getAssetDisplay("USDC")}
-          </>
-        );
-        break;
-      case "withdrawalReady":
-        title = "WITHDRAWALS READY";
-        body = (
-          <>
-            Your initiated withdrawals of{" "}
-            {formatBigNumber(notification.amount, decimals)}{" "}
-            {getAssetDisplay(asset)} are now ready to withdraw from the vault
-          </>
-        );
-        break;
-      case "distributePremium":
-        title = "PREMIUM DISTRIBUTION";
+      let title: string;
+      let body: JSX.Element;
+      const premiumDecimals = getAssetDecimals("USDC");
+      switch (notification.type) {
+        case "optionMinting":
+          title = "MINTED OPTIONS";
+          body = (
+            <>
+              The vault minted{" "}
+              {formatBigNumber(notification.depositAmount, decimals)} options at
+              a strike price of $
+              {formatOption(notification.strikePrice).toLocaleString()}
+            </>
+          );
+          break;
+        case "optionSale":
+          title = "SOLD OPTIONS";
+          body = (
+            <>
+              The vault sold{" "}
+              {formatOption(notification.sellAmount).toLocaleString()} options
+              for {formatBigNumber(notification.premium, premiumDecimals)}{" "}
+              {getAssetDisplay("USDC")}
+            </>
+          );
+          break;
+        case "withdrawalReady":
+          title = "WITHDRAWALS READY";
+          body = (
+            <>
+              Your initiated withdrawals of{" "}
+              {formatBigNumber(notification.amount, decimals)}{" "}
+              {getAssetDisplay(asset)} are now ready to withdraw from the vault
+            </>
+          );
+          break;
+        case "distributePremium":
+          title = "PREMIUM DISTRIBUTION";
 
-        body = (
-          <>
-            The vault transferred{" "}
-            {formatBigNumber(notification.amount, premiumDecimals)}{" "}
-            {getAssetDisplay("USDC")} to your address
-          </>
-        );
-    }
+          body = (
+            <>
+              The vault transferred{" "}
+              {formatBigNumber(notification.amount, premiumDecimals)}{" "}
+              {getAssetDisplay("USDC")} to your address
+            </>
+          );
+      }
 
-    return (
-      <>
-        <div className="d-flex align-items-center">
-          <Title fontSize={14} lineHeight={24}>
-            {title}
-          </Title>
-          {badge}
-        </div>
-        <PrimaryText
-          fontSize={12}
-          lineHeight={16}
-          color={colors.text}
-          className="mt-1"
-        >
-          {body}
-        </PrimaryText>
-      </>
-    );
-  }, []);
+      return (
+        <>
+          <div className="d-flex align-items-center">
+            <Title fontSize={14} lineHeight={24}>
+              {title}
+            </Title>
+            {badge}
+          </div>
+          <PrimaryText
+            fontSize={12}
+            lineHeight={16}
+            color={colors.text}
+            className="mt-1"
+          >
+            {body}
+          </PrimaryText>
+        </>
+      );
+    },
+    [t]
+  );
 
   const getNotificationRedirectQuerystring = useCallback(
     (notification: Notification) => {
@@ -282,7 +287,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
                         fontSize={14}
                         lineHeight={24}
                       >
-                        {productCopies[vault].title}
+                        {t(`shared:ProductCopies:${vault}:title`)}
                       </Title>
                     </span>
                   ),

@@ -106,6 +106,10 @@ const StakingModal = () => {
    * Callback for approval
    */
   const onApprove = useCallback(async () => {
+    if (!rbnTokenContract) {
+      return;
+    }
+
     setStepNum(stakingModesMap[stakingModalState.mode].indexOf("transaction"));
     try {
       const amount =
@@ -143,6 +147,10 @@ const StakingModal = () => {
    * Callback for user staking
    */
   const onStake = useCallback(async () => {
+    if (!votingEscrowContract) {
+      return;
+    }
+
     setStepNum(stakingModesMap[stakingModalState.mode].indexOf("transaction"));
     try {
       const expiryMoment = moment().add(stakingData.duration);
@@ -184,6 +192,10 @@ const StakingModal = () => {
    * Callback for stake update
    */
   const onStakeUpdate = useCallback(async () => {
+    if (!votingEscrowContract) {
+      return;
+    }
+
     setStepNum(stakingModesMap[stakingModalState.mode].indexOf("transaction"));
     try {
       const expiryMoment = moment().add(stakingData.duration);
