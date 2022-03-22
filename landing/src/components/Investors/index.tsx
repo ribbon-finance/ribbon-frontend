@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -111,7 +110,6 @@ const Investors = () => {
         <InvestorRow noGutters>
           {investorList.map((investor, i) => {
             return investor.isText ? (
-              //https://codesandbox.io/s/framer-motion-animate-in-view-gqcc8?file=/src/index.js
               <Col key={i} xl={3} md={4} sm={12} xs={12}>
                 <motion.div initial="hidden">
                   <InvestorCard className="d-flex justify-content-center align-items-center">
