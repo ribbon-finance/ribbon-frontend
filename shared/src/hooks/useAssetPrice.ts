@@ -9,28 +9,10 @@ import {
   defaultAssetsPriceData,
   ExternalAPIDataContext,
 } from "./externalAPIDataContext";
-
-const COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3";
-const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
-  WETH: "ethereum",
-  WBTC: "wrapped-bitcoin",
-  USDC: "usd-coin",
-  "USDC.e": "usd-coin",
-  yvUSDC: undefined,
-  stETH: "staked-ether",
-  wstETH: "wrapped-steth",
-  LDO: "lido-dao",
-  AAVE: "aave",
-  WAVAX: "avalanche-2",
-  sAVAX: "benqi-liquid-staked-avax",
-  PERP: "perpetual-protocol",
-  RBN: "ribbon-finance",
-  veRBN: undefined,
-  SOL: "solana",
-  AURORA: "aurora-near",
-  WNEAR: "wrapped-near",
-  APE: "apecoin",
-};
+import {
+  COINGECKO_BASE_URL,
+  COINGECKO_CURRENCIES,
+} from "../constants/constants";
 
 const getAssetPricesInUSD = async (
   currencyName: string
