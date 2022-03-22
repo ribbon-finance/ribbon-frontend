@@ -321,6 +321,7 @@ const TVLContainer = styled.div`
 `;
 
 const CurrentTVL = styled.div`
+  width: 180px;
   background: rgba(255, 255, 255, 0.04);
   padding: 8px;
   backdrop-filter: blur(40px);
