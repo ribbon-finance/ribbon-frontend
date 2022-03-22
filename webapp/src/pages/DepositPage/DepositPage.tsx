@@ -266,7 +266,7 @@ const DepositPage = () => {
           color={colors.red}
         />
       )}
-      
+
       <HeroSection
         depositCapBar={depositCapBar}
         vaultOption={vaultOption}
