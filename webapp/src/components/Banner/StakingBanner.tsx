@@ -1,15 +1,13 @@
-import TemporaryStakingBanner from "shared/lib/components/Banner/TemporaryStakingBanner";
+import Banner from "shared/lib/components/Banner/Banner";
+import colors from "shared/lib/designSystem/colors";
 
 const StakingBanner: React.FC = () => {
   return (
-    <TemporaryStakingBanner
-      containerStyle={{ position: "relative" }}
-      descriptionText="The liquidity mining program is now live. Stake your rTokens"
-      link={{
-        link: "/staking",
-        text: "here",
-        external: false,
-      }}
+    <Banner
+      color={colors.green}
+      message="The liquidity mining program is live. Stake your rTokens to earn RBN rewards."
+      linkURI="/staking"
+      linkText="Start Staking"
     />
   );
 };
