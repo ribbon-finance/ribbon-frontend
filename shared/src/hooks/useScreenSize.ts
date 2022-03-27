@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const useScreenSize = () => {
   const [height, setHeight] = useState<number>(0);
@@ -24,7 +24,25 @@ const useScreenSize = () => {
     });
   }, [updateWidth, updateHeight]);
 
-  return { height, width };
+  const [videoWidth, videoHeight] = useMemo(() => {
+    /**
+     * Screen size exactly 16:9
+     */
+    if (width / height === 16 / 9) {
+      return [width, height];
+    }
+
+    /**
+     * If screen are longer than 16:9
+     */
+    if (width / height > 16 / 9) {
+      return [width, width * (9 / 16)];
+    }
+
+    return [height * (16 / 9), height];
+  }, [height, width]);
+
+  return { height, width, video: { width: videoWidth, height: videoHeight } };
 };
 
 export default useScreenSize;
