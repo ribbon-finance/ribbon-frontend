@@ -447,7 +447,11 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
           target="_blank"
           rel="noreferrer noopener"
         >
-          <BridgeButton color={getAssetColor(vaultActionForm.depositAsset)}>
+          <BridgeButton
+            color={getAssetColor(
+              vaultOption === "rsAVAX-THETA" ? "sAVAX" : "WAVAX"
+            )}
+          >
             <BridgeText className="mr-2">
               Bridge your assets to Avalanche
             </BridgeText>
@@ -456,7 +460,12 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
         </BaseLink>
       );
     }
-  }, [chainId, vaultActionForm.actionType, vaultActionForm.depositAsset]);
+  }, [
+    chainId,
+    vaultActionForm.actionType,
+    vaultActionForm.depositAsset,
+    vaultOption,
+  ]);
 
   const swapContainerTrigger = useMemo(() => {
     switch (asset) {
