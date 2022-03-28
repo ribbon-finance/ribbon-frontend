@@ -53,9 +53,9 @@ const ProductAssetLogoContainer = styled.div<{ color: string }>`
   width: 56px;
   margin-top: calc(-56px / 2);
   background-color: ${colors.background.one};
-  border: 2px ${theme.border.style} ${colors.background.two};
   border-radius: 50%;
   position: relative;
+  box-shadow: 0px 0px 0px 2px ${colors.background.two};
 
   &:before {
     display: block;
