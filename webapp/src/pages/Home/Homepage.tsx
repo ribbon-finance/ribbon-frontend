@@ -1,7 +1,6 @@
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import React from "react";
 import { useHistory } from "react-router";
-
 import Banner from "shared/lib/components/Banner/Banner";
 import ProductCatalogue from "shared/lib/components/Product/ProductCatalogue";
 import { CHAINID } from "shared/lib/utils/env";
@@ -12,6 +11,7 @@ import { ANNOUNCEMENT, getVaultURI } from "../../constants/constants";
 import { switchChains } from "shared/lib/utils/chainSwitching";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { isAuroraNetwork } from "shared/lib/constants/constants";
+import StakingBanner from "../../components/Banner/StakingBanner";
 
 const ProductTitle = styled(Title)`
   display: none;
@@ -30,6 +30,7 @@ const Homepage = () => {
   const isMobile = useScreenSize().width <= sizes.md;
   return (
     <>
+      <StakingBanner />
       <ProductTitle>PRODUCT</ProductTitle>
       {ANNOUNCEMENT && chainId && !isAuroraNetwork(chainId) && (
         <Banner
