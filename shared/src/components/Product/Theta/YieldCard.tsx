@@ -214,12 +214,13 @@ const SubTitle = styled.div`
   margin-top: 12px;
 `;
 
-const Range = styled.div`
+const RangeContainer = styled.div`
   width: 100%;
   height: 4px;
   background: ${colors.background.four};
   position: relative;
   margin-bottom: 24px;
+  border-radius: 10px;
 `;
 
 const RangeCenter = styled.div`
@@ -265,6 +266,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const isLoading = useMemo(() => status === "loading", [status]);
   const [mode, setMode] = useState<"info" | "yield">("info");
   const color = getVaultColor(vault);
+  const { strikePrice, currentPrice } = useStrikePrice(vault, vaultVersion);
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {
@@ -301,9 +303,40 @@ const YieldCard: React.FC<YieldCardProps> = ({
     setMode((prev) => (prev === "info" ? "yield" : "info"));
   }, []);
 
-  const StrikeWidget = () => {
-    const { strikePrice, currentPrice } = useStrikePrice(vault, vaultVersion);
+  const Range: React.FC<{
+    vault: VaultOptions;
+    isLeft: boolean;
+    strike: number;
+    price: number;
+  }> = ({ vault, isLeft = true, strike, price }) => {
+    const color = () => {
+      if (isLeft) {
+        return isPutVault(vault) ? colors.green : colors.red;
+      } else {
+        return isPutVault(vault) ? colors.red : colors.green;
+      }
+    };
 
+    return (
+      <div
+        style={{
+          width: "100%",
+          position: "absolute",
+          left: isLeft ? 0 : "50%",
+        }}
+      >
+        <div
+          style={{
+            width: "50%",
+            height: "4px",
+            backgroundColor: color(),
+          }}
+        ></div>
+      </div>
+    );
+  };
+
+  const StrikeWidget = useCallback(() => {
     return (
       <>
         <StrikeContainer>
@@ -316,12 +349,24 @@ const YieldCard: React.FC<YieldCardProps> = ({
             <StrikePrice>{currentPrice()}</StrikePrice>
           </div>
         </StrikeContainer>
-        <Range>
+        <RangeContainer>
+          <Range
+            isLeft
+            vault={vault}
+            strike={strikePrice(false) as number}
+            price={currentPrice(false) as number}
+          />
           <RangeCenter />
-        </Range>
+          <Range
+            isLeft={false}
+            vault={vault}
+            strike={strikePrice(false) as number}
+            price={currentPrice(false) as number}
+          />
+        </RangeContainer>
       </>
     );
-  };
+  }, [strikePrice, currentPrice, vault]);
 
   const ProductInfoContent = useCallback(() => {
     const Logo = getAssetLogo(displayAsset);
@@ -381,6 +426,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     vault,
     vaultVersion,
     t,
+    StrikeWidget,
   ]);
 
   const modalContentExtra = useMemo(() => {

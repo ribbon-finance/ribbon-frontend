@@ -50,7 +50,7 @@ const useStrikePrice = (
       if (formatted) {
         return currency(prices[optionAsset]!).format();
       } else {
-        return prices[optionAsset].toFixed(2);
+        return Number(prices[optionAsset].toFixed(2));
       }
     },
     [priceLoading, loadingText, optionAsset, prices]
