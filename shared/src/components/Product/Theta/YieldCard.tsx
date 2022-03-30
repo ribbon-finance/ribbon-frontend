@@ -27,6 +27,9 @@ import {
   VaultVersion,
   VaultVersionList,
   isPutVault,
+  isEthVault,
+  isAvaxVault,
+  isSolanaVault,
 } from "../../../constants/constants";
 import { BarChartIcon, GlobeIcon } from "../../../assets/icons/icons";
 import { getAssetDisplay, getAssetLogo } from "../../../utils/asset";
@@ -38,6 +41,9 @@ import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
 import useAssetsYield from "../../../hooks/useAssetsYield";
 import useLatestAPY from "../../../hooks/useLatestAPY";
 import { animatedGradientKeyframe } from "../../../designSystem/keyframes";
+import { ETHMonoLogo } from "../../../assets/icons/vaultMonoLogos";
+import { AVAXMonoLogo } from "../../../assets/icons/vaultMonoLogos";
+import { SOLMonoLogo } from "../../../assets/icons/vaultMonoLogos";
 
 const { formatUnits } = ethers.utils;
 
@@ -80,7 +86,7 @@ const TopContainer = styled.div<{ color: string }>`
   border-radius: ${theme.border.radius} ${theme.border.radius} 0px 0px;
 
   background: linear-gradient(
-    270deg,
+    90deg,
     ${(props) => props.color}05 1.04%,
     ${(props) => props.color}30 98.99%
   );
@@ -116,7 +122,7 @@ const ProductCard = styled(motion.div)<{ color: string; vault: VaultOptions }>`
 
     ${TopContainer} {
       background: linear-gradient(
-        270deg,
+        90deg,
         ${(props) => props.color}15 1.04%,
         ${(props) => props.color}45 98.99%
       );
@@ -357,6 +363,24 @@ const YieldCard: React.FC<YieldCardProps> = ({
     );
   }, [asset, decimals, vaultAccount, vaultBalanceInAsset, vaultVersion]);
 
+  const vaultLogo = useMemo(() => {
+    let logo;
+
+    if (isEthVault(vault)) logo = <ETHMonoLogo />;
+    else if (isAvaxVault(vault)) logo = <AVAXMonoLogo />;
+    else if (isSolanaVault(vault)) logo = <SOLMonoLogo />;
+
+    if (logo) {
+      return (
+        <ProductTag className="p-1" color={color}>
+          <Subtitle>{logo}</Subtitle>
+        </ProductTag>
+      );
+    } else {
+      return null;
+    }
+  }, [vault]);
+
   return (
     <CardContainer>
       <AnimatePresence exitBeforeEnter initial={false}>
@@ -390,6 +414,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
                   {isPutVault(vault) ? "PUT-SELLING" : "COVERED CALL"}
                 </Subtitle>
               </ProductTag>
+              {vaultLogo}
               <div className="d-flex">
                 {/* Version tags */}
                 {VaultVersionList.map((version) =>
