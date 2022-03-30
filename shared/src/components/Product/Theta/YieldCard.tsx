@@ -40,6 +40,7 @@ import YieldComparison from "./YieldComparison";
 import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
 import useAssetsYield from "../../../hooks/useAssetsYield";
 import useLatestAPY from "../../../hooks/useLatestAPY";
+import useStrikePrice from "../../../hooks/useStrikePrice";
 import { animatedGradientKeyframe } from "../../../designSystem/keyframes";
 import { ETHMonoLogo } from "../../../assets/icons/vaultMonoLogos";
 import { AVAXMonoLogo } from "../../../assets/icons/vaultMonoLogos";
@@ -107,7 +108,6 @@ const ProductCard = styled(motion.div)<{ color: string; vault: VaultOptions }>`
   border-radius: ${theme.border.radius};
   transition: 0.25s box-shadow ease-out, 0.25s border ease-out;
   width: 290px;
-  min-height: 492px;
   position: relative;
   height: 100%;
   padding: 16px;
@@ -174,11 +174,6 @@ const ProductInfo = styled.div`
   flex: 1;
 `;
 
-const ProductDescription = styled(SecondaryText)`
-  line-height: 1.5;
-  margin-bottom: auto;
-`;
-
 const ModeSwitcherContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
@@ -188,6 +183,52 @@ const ModeSwitcherContainer = styled.div<{ color: string }>`
   border-radius: 100px;
   background: ${(props) => props.color}14;
   z-index: 1;
+`;
+
+const StrikeContainer = styled.div`
+  display: flex;
+
+  > div {
+    width: 50%;
+    font-size: 12px;
+    color: ${colors.tertiaryText};
+
+    &:not(:first-child) {
+      padding-left: 8px;
+    }
+  }
+`;
+
+const StrikeTitle = styled.div``;
+
+const StrikePrice = styled.div`
+  color: ${colors.primaryText};
+  font-family: VCR;
+  font-size: 14px;
+`;
+
+const SubTitle = styled.div`
+  width: 100%;
+  font-size: 12px;
+  color: ${colors.tertiaryText};
+  margin-top: 12px;
+`;
+
+const Range = styled.div`
+  width: 100%;
+  height: 4px;
+  background: ${colors.background.four};
+  position: relative;
+  margin-bottom: 24px;
+`;
+
+const RangeCenter = styled.div`
+  width: 1px;
+  height: 8px;
+  background: white;
+  position: absolute;
+  top: -2px;
+  left: 50%;
 `;
 
 interface YieldCardProps {
@@ -260,6 +301,28 @@ const YieldCard: React.FC<YieldCardProps> = ({
     setMode((prev) => (prev === "info" ? "yield" : "info"));
   }, []);
 
+  const StrikeWidget = () => {
+    const { strikePrice, currentPrice } = useStrikePrice(vault, vaultVersion);
+
+    return (
+      <>
+        <StrikeContainer>
+          <div>
+            <StrikeTitle>Weekly Strike Price</StrikeTitle>
+            <StrikePrice>{strikePrice()}</StrikePrice>
+          </div>
+          <div>
+            <StrikeTitle>Current Price</StrikeTitle>
+            <StrikePrice>{currentPrice()}</StrikePrice>
+          </div>
+        </StrikeContainer>
+        <Range>
+          <RangeCenter />
+        </Range>
+      </>
+    );
+  };
+
   const ProductInfoContent = useCallback(() => {
     const Logo = getAssetLogo(displayAsset);
 
@@ -282,23 +345,11 @@ const YieldCard: React.FC<YieldCardProps> = ({
         <Title fontSize={28} lineHeight={40} className="w-100 my-2">
           {t(`shared:ProductCopies:${vault}:title`)}
         </Title>
-        <ProductDescription>
-          {isPutVault(vault)
-            ? t("shared:ProductCopies:Put:description", { asset: displayAsset })
-            : t("shared:ProductCopies:Call:description", {
-                asset: displayAsset,
-              })}
-        </ProductDescription>
-        <Title
-          color={`${colors.primaryText}A3`}
-          fontSize={12}
-          className="w-100"
-        >
-          Current Projected Yield (APY)
-        </Title>
+        <SubTitle>Total Projected Yield (APY)</SubTitle>
         <Title fontSize={24} className="w-100 mt-1 mb-4">
           {perfStr}
         </Title>
+        <StrikeWidget />
         <CapBar
           loading={vaultVersion === "v1" ? isLoading : v2DataLoading}
           current={totalDepositStr}
@@ -379,7 +430,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     } else {
       return null;
     }
-  }, [vault]);
+  }, [vault, color]);
 
   return (
     <CardContainer>

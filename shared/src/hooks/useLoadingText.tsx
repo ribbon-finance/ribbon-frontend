@@ -39,7 +39,7 @@ export const LoadingText: React.FC<{ text: string }> = ({ text }) => {
 };
 
 const useLoadingText = (text: string = "Loading") => {
-  return <LoadingText text={text} />;
+  return <LoadingText text={text.toUpperCase()} />;
 };
 
 export default useLoadingText;
