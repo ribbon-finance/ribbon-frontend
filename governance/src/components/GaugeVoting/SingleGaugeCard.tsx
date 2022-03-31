@@ -10,6 +10,8 @@ import { getAssetColor, getAssetLogo } from "shared/lib/utils/asset";
 import { useMemo } from "react";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import GaugeStat from "./GaugeStat";
+import { formatAmount } from "shared/lib/utils/math";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 
 const CardContainer = styled.div`
   position: relative;
@@ -60,11 +62,15 @@ const VoteButton = styled(ActionButton)`
 
 interface SingleGaugeCardProps {
   vaultOption: VaultOptions;
+  tvl?: number;
+  loading?: boolean
 }
 
-const SingleGaugeCard: React.FC<SingleGaugeCardProps> = ({ vaultOption }) => {
+const SingleGaugeCard: React.FC<SingleGaugeCardProps> = ({ vaultOption, tvl, loading }) => {
   const displayAsset = getDisplayAssets(vaultOption);
   const color = getAssetColor(displayAsset);
+
+  const loadingText = useLoadingText()
 
   const assetLogo = useMemo(() => {
     const Logo = getAssetLogo(displayAsset);
@@ -90,7 +96,7 @@ const SingleGaugeCard: React.FC<SingleGaugeCardProps> = ({ vaultOption }) => {
           <TitleContainer>
             <Title>{vaultOptionToName(vaultOption)}</Title>
             <SecondaryText fontSize={12} lineHeight={16}>
-              TVL: $123
+              TVL: {loading ? loadingText : `${formatAmount(tvl || 0)}`}
             </SecondaryText>
           </TitleContainer>
         </Header>

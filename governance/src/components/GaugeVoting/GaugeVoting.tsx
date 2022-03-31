@@ -43,6 +43,7 @@ import {
   getChainByAsset,
   getWalletColor,
 } from "shared/lib/utils/asset";
+import useTVL from "shared/lib/hooks/useTVL";
 
 const ActivityContainer = styled.div`
   display: flex;
@@ -143,6 +144,8 @@ const GaugeVoting = () => {
   const { transactions, loading } = useGovernanceTransactions();
   // type ActivityType = typeof activities[number];
   const animatedLoadingText = useLoadingText();
+
+  const { data: tvlData, loading: tvlLoading } = useTVL()
 
   // FILTERS
   const [filteredNetworks, setFilteredNetworks] = useState(
@@ -319,6 +322,8 @@ const GaugeVoting = () => {
               <SingleGaugeCard
                 key={gauge}
                 vaultOption={gauge as VaultOptions}
+                loading={tvlLoading}
+                tvl={tvlData.find((tvl) => tvl.vault.option === gauge as VaultOptions)?.tvl}
               />
             ))}
           </Gauges>
