@@ -199,7 +199,7 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
         const endStakeReward = moment.unix(lg5Data.periodEndTime);
 
         if (endStakeReward.diff(moment()) <= 0) {
-          return "Program Ended";
+          return "Now";
         }
 
         // Time till next stake reward date

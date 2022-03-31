@@ -7,8 +7,8 @@ import { VaultNameOptionMap } from "shared/lib/constants/constants";
 
 import { Title } from "../../designSystem";
 
-const ProductCarouselContainer = styled(Container)`
-  padding-top: 160px;
+const MainContainer = styled(Container)`
+  padding-top: 80px;
   padding-bottom: 80px;
 `;
 
@@ -20,8 +20,8 @@ const CarouselTitle = styled(Title)`
 
 const ProductCarousel = () => {
   return (
-    <ProductCarouselContainer fluid>
-      <Row className="d-flex justify-content-center">
+    <MainContainer fluid>
+      <Row className="d-flex justify-content-center w-100 mx-0">
         <CarouselTitle>Our Products</CarouselTitle>
         <ProductCatalogue
           variant="landing"
@@ -38,7 +38,7 @@ const ProductCarousel = () => {
           }
         />
       </Row>
-    </ProductCarouselContainer>
+    </MainContainer>
   );
 };
 

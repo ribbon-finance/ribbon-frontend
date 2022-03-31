@@ -47,10 +47,14 @@
     "poolRewards": {
       "title": "Weekly Pool Rewards",
       "description": "Estimated amount of RBN to be distributed for the current week."
+    },
+    "boostedRewards": {
+      "title": "Boosted Rewards",
+      "description": "The additional rewards veRBN holders earn for staking their rTokens. Base rewards can be boosted by up to 2.5X."
     }
   },
   "LiquidityMining": {
     "timeTillNextEpoch": "Time till next epoch",
-    "stakingWarningMessage": "If you stake rTokens before locking your RBN, your boosted rewards won't be applied until you claim RBN rewards or increase your stake."
+    "stakingWarningMessage": "If you stake rTokens before locking your RBN, your boosted rewards won't be applied until you apply boost or claim RBN rewards."
   }
 }

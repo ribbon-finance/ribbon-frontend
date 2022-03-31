@@ -1,6 +1,4 @@
 import React from "react";
-import styled from "styled-components";
-
 import {
   getAssets,
   VaultOptions,
@@ -8,28 +6,9 @@ import {
 } from "shared/lib/constants/constants";
 import { WithdrawMetadata } from "../../../../hooks/useVaultActionForm";
 import { ACTIONS, ActionType, V2WithdrawOption } from "./types";
-import colors from "shared/lib/designSystem/colors";
-import { SecondaryText, Title } from "shared/lib/designSystem";
-import { ActionButton } from "shared/lib/components/Common/buttons";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import WarningModalContent from "./WarningModalContent";
-
-const ActionLogoContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 100px;
-  background: ${colors.red}14;
-`;
-
-const FormTitle = styled(Title)`
-  font-size: 22px;
-  line-height: 28px;
-  letter-spacing: 1px;
-`;
 
 interface WarningStepProps {
   actionType: ActionType;

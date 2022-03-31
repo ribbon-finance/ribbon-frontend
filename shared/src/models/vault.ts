@@ -13,8 +13,11 @@ export interface Vault {
   symbol: VaultOptions;
   numDepositors: number;
   totalBalance: BigNumber;
-  // totalPremiumEarned: BigNumber;
-  // totalWithdrawalFee: BigNumber;
+  totalNotionalVolume: BigNumber;
+  totalWithdrawalFee?: BigNumber; // v1
+  totalFeeCollected?: BigNumber; // v2
+  underlyingAsset: string;
+  underlyingSymbol: string;
   depositors: string[];
 }
 

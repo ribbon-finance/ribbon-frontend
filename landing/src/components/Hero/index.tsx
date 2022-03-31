@@ -1,29 +1,22 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import { Row, Col } from "react-bootstrap";
 import { Title, PrimaryText, Button } from "../../designSystem";
 import { Container } from "react-bootstrap";
-
+import { AnimatePresence, motion } from "framer";
+import Marquee from "react-fast-marquee/dist";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "../../designSystem/sizes";
 import colors from "shared/lib/designSystem/colors";
-import theme from "../../designSystem/theme";
-
-const ColorColumn = styled(Col)<{
-  activeColor: string;
-}>`
-  height: 640px;
-  transition: background-color 200ms ease-out, box-shadow 200ms ease-out;
-  border-radius: 0px 0px ${theme.border.radius} ${theme.border.radius};
-
-  &:hover {
-    background-color: ${(p) => p.activeColor};
-    box-shadow: 8px 16px 120px ${(p) => p.activeColor};
-  }
-`;
+import { ExternalAPIDataContext } from "shared/lib/hooks/externalAPIDataContext";
+import { getAssetLogo } from "shared/lib/utils/asset";
+import { Assets } from "shared/lib/store/types";
+import ReactPlayer from "react-player";
 
 const MainContainer = styled(Container)`
-  height: 640px;
+  height: calc(100vh - 70px);
+  position: relative;
+  background: transparent;
 
   @media (max-width: ${sizes.md}px) {
     height: 540px;
@@ -42,27 +35,16 @@ const SubTitle = styled(PrimaryText)`
   color: ${colors.primaryText};
 `;
 
-const BackgroundContainer = styled(Row)`
-  position: absolute;
-  top: 0px;
-  bottom: 0px;
-  right: 0px;
-  left: 0px;
-
-  @media (max-width: ${sizes.md}px) {
-    display: none;
-  }
-`;
-
-const HeroContainer = styled(Container)`
-  position: relative;
-`;
-
 const TextContainer = styled(Row)`
   pointer-events: none;
   height: 100%;
   align-items: center;
   text-align: center;
+  background: transparent;
+
+  > * {
+    z-index: 1;
+  }
 `;
 
 const TitleContainer = styled.div`
@@ -80,16 +62,7 @@ const TitleContainerMobile = styled.div`
 
 const TitleSmall = styled(Title)`
   font-size: 48px;
-`;
-
-const TitleAlt = styled(Title)`
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 2px white;
-`;
-
-const TitleAltSmall = styled(TitleSmall)`
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 2px white;
+  margin: auto;
 `;
 
 const CTAButton = styled(Button)`
@@ -99,36 +72,137 @@ const CTAButton = styled(Button)`
   }
 `;
 
+const Ticker = styled.div`
+  width: 100%;
+  height: fit-content;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 8px 0;
+  background: ${colors.background.two};
+  z-index: 1;
+
+  p {
+    margin: auto 0;
+  }
+
+  .marquee {
+    display: flex;
+    height: fit-content;
+    justify-content: space-around;
+
+    > * {
+      height: 24px;
+    }
+  }
+
+  .marquee-container {
+    overflow: hidden;
+    height: fit-content;
+  }
+`;
+
+const LogoContainer = styled.div`
+  display: flex;
+  height: 24px;
+
+  > svg {
+    height: 24px;
+    width: 24px;
+    padding: 0 !important;
+    margin: auto 0;
+  }
+`;
+
+const TickerContainer = styled.div`
+  display: flex;
+  height: fit-content;
+  width: fit-content;
+  padding: 0 16px;
+
+  > {
+    &:not(:last-child) {
+      margin-right: 8px;
+    }
+  }
+`;
+
+const TickerTitle = styled(Title)`
+  font-size: 12px;
+  line-height: 16px;
+  margin: auto 0;
+  color: ${colors.tertiaryText};
+`;
+
+const TickerPrice = styled(Title)`
+  font-size: 12px;
+  line-height: 16px;
+  margin: auto 0;
+  color: ${colors.primaryText};
+`;
+
+const TickerDivider = styled.div`
+  display: block;
+  height: 16px;
+  width: 2px;
+  background: ${colors.border};
+`;
+
+const TickerChange = styled(Title)<{ percentage: number }>`
+  font-size: 12px;
+  line-height: 16px;
+  margin: auto 0;
+  color: ${(props) =>
+    props.percentage === 0
+      ? colors.tertiaryText
+      : props.percentage > 0
+      ? colors.green
+      : colors.red};
+`;
+
+const FloatingBackgroundContainer = styled.div<{ backgroundColor?: string }>`
+  position: absolute;
+  top: 40px;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  }
+
+  ${(props) =>
+    props.backgroundColor ? `background: ${props.backgroundColor};` : ""};
+`;
+
 const Hero = () => {
+  const { video } = useScreenSize();
+
   return (
     <MainContainer fluid>
-      <HeroContainer fluid style={{ position: "relative" }}>
-        <BackgroundContainer>
-          <ColorColumn activeColor={colors.red} />
-          <ColorColumn activeColor={colors.products.volatility} />
-          <ColorColumn activeColor={colors.green} />
-          <ColorColumn activeColor={colors.products.capitalAccumulation} />
-        </BackgroundContainer>
-      </HeroContainer>
-
+      <PriceTicker />
       <TextContainer fluid>
         <Col>
           <TitleContainer>
-            <Title>
-              Sustainable <TitleAlt>Alpha</TitleAlt> <br></br>For Everyone
-            </Title>
+            <Title>Ribbon Finance</Title>
           </TitleContainer>
 
           <TitleContainerMobile>
-            <TitleSmall>
-              Sustainable <TitleAltSmall>Alpha</TitleAltSmall> For Everyone
-            </TitleSmall>
+            <TitleSmall>Ribbon Finance</TitleSmall>
           </TitleContainerMobile>
 
           <SubtitleContainer>
             <SubTitle>
-              Earn yield on your cryptoassets with DeFi's first structured
-              products protocol.
+              Earn <strong>Sustainable Yield</strong> through
+              <br />
+              Decentralized Options Vaults
             </SubTitle>
           </SubtitleContainer>
           <ButtonContainer>
@@ -142,7 +216,73 @@ const Hero = () => {
           </ButtonContainer>
         </Col>
       </TextContainer>
+      <FloatingBackgroundContainer>
+        <ReactPlayer
+          key="video-player"
+          url="https://player.vimeo.com/video/690719326?h=4fa0a1c59a"
+          playing={true}
+          width={video.width}
+          height={video.height}
+          style={{
+            minWidth: video.width,
+            minHeight: video.height,
+          }}
+          muted
+          loop
+        />
+      </FloatingBackgroundContainer>
+      <FloatingBackgroundContainer backgroundColor="#000000AA" />
     </MainContainer>
+  );
+};
+
+const PriceTicker = () => {
+  const { tickerData } = useContext(ExternalAPIDataContext);
+
+  return (
+    <Ticker>
+      <AnimatePresence exitBeforeEnter>
+        <motion.div
+          transition={{
+            delay: 1,
+            duration: 0.25,
+            type: "keyframes",
+            ease: "easeOut",
+          }}
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+        >
+          <Marquee pauseOnHover gradient={false} speed={75} delay={1}>
+            {Object.values(tickerData.data).map((token, i) => {
+              const Logo = getAssetLogo(token.asset as Assets);
+              return (
+                <div key={i}>
+                  <TickerContainer>
+                    <LogoContainer>
+                      <Logo showBackground />
+                    </LogoContainer>
+                    <TickerTitle>{token.asset}</TickerTitle>
+                    <TickerPrice>${token.price.toFixed(2)}</TickerPrice>
+                    <TickerChange percentage={token.dailyChange}>
+                      {token.dailyChange > 0 && "+"}
+                      {token.dailyChange.toFixed(2)}%
+                    </TickerChange>
+                  </TickerContainer>
+                  <TickerDivider />
+                </div>
+              );
+            })}
+          </Marquee>
+        </motion.div>
+      </AnimatePresence>
+    </Ticker>
   );
 };
 

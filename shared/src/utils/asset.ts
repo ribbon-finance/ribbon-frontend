@@ -12,6 +12,7 @@ import {
   PERPLogo,
   WNEARLogo,
   AURORALogo,
+  APELogo,
 } from "../assets/icons/erc20Assets";
 import Logo from "../assets/icons/logo";
 import { SolanaLogo } from "../assets/icons/solAssets";
@@ -93,6 +94,7 @@ export const getChainByVaultOption = (vault: VaultOptions): Chains => {
     case "rstETH-THETA":
     case "rBTC-THETA":
     case "rAAVE-THETA":
+    case "rAPE-THETA":
       return Chains.Ethereum;
 
     case "rAVAX-THETA":
@@ -254,6 +256,8 @@ export const getAssetLogo: (asset: Assets) =>
       return WNEARLogo;
     case "AURORA":
       return AURORALogo;
+    case "APE":
+      return APELogo;
     default:
       return Logo;
   }

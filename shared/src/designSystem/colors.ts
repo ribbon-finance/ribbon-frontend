@@ -59,6 +59,7 @@ const colors = {
     SOL: "#14F195",
     WNEAR: "#FFFFFF",
     AURORA: "#6ED24B",
+    APE: "#0054F9",
   },
   wallets: {
     Metamask: "#F89D35",

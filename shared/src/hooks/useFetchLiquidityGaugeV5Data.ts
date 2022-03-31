@@ -113,18 +113,21 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
          * 4. Claimed rbn
          */
         const promises = unconnectedPromises.concat(
-          active
+          account
             ? [
-                lg5Contract.balanceOf(account!),
-                vaultContract!.shares(account!),
-                lg5Contract.integrate_fraction(account!),
+                lg5Contract.balanceOf(account),
+                vaultContract!.shares(account),
+                lg5Contract.integrate_fraction(account),
                 minterContract.minted(
-                  account!,
+                  account,
                   VaultLiquidityMiningMap.lg5[vault]!
                 ),
 
                 // To calculate claimable rbn
-                lg5Contract.integrate_inv_supply_of(account!),
+                lg5Contract.integrate_inv_supply_of(account),
+
+                // Block timestamp of the last time integrate_checkpoint was called
+                lg5Contract.integrate_checkpoint_of(account),
               ]
             : [
                 // Default value when not connected
@@ -156,6 +159,9 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
 
           // Also to calculate claimable rbn
           integrateInvSupplyOf,
+
+          // Block timestamp of the last time integrate_checkpoint was called
+          integrateCheckpointOf,
         ] = await Promise.all(
           // Default to 0 when error
           promises.map((p) => p.catch((e) => BigNumber.from(0)))
@@ -191,6 +197,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
           unstakedBalance,
           claimedRbn,
           claimableRbn,
+          integrateCheckpointOf,
         };
       })
     );

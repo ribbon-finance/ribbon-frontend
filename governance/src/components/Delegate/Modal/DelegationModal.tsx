@@ -41,7 +41,7 @@ const DelegationModal: React.FC<DelegationModalProps> = ({ show, onClose }) => {
 
   const onDelegateSelf = useCallback(async () => {
     try {
-      await delegationProxyContract.kill_delegation();
+      await delegationProxyContract?.kill_delegation();
       onClose();
     } catch (err) {
       setMode("options");
@@ -51,7 +51,7 @@ const DelegationModal: React.FC<DelegationModalProps> = ({ show, onClose }) => {
   const onDelegateAddress = useCallback(
     async (address: string) => {
       try {
-        await delegationProxyContract.set_delegation(address);
+        await delegationProxyContract?.set_delegation(address);
         onClose();
       } catch (err) {
         setMode("form");

@@ -25,11 +25,7 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
   const { addPendingTransaction } = usePendingTransactions();
 
   const claimAirdrop = useCallback(async () => {
-    if (!airdrop) {
-      return;
-    }
-
-    if (!merkleDistributor) {
+    if (!airdrop || !merkleDistributor || !account) {
       return;
     }
 

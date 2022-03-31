@@ -44,6 +44,7 @@ const Link = styled.a`
   font-weight: 400;
   color: rgba(255, 255, 255, 0.64);
   text-decoration: underline !important;
+  overflow-wrap: anywhere;
 `;
 
 const sections = [
