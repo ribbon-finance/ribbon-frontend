@@ -73,6 +73,10 @@
     "rPERP-TSRY": {
       "title": "T-PERP-C",
       "subtitle": "PERP Covered Call"
+    },
+    "rAPE-THETA": {
+      "title": "T-APE-C",
+      "subtitle": "APE Covered Call"
     }
   },
   "TooltipExplanations": {

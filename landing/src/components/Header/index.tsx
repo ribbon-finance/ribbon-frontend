@@ -201,8 +201,9 @@ const Header = () => {
           <ItemWithDropdown
             variant="desktop"
             dropdownItems={[
-              { text: "Blog", link: "https://ribbonfinance.medium.com" },
               { text: "FAQs", link: "/faq" },
+              { text: "Blog", link: "https://ribbonfinance.medium.com" },
+              { text: "Docs", link: "https://docs.ribbon.finance" },
               { text: "Terms", link: "/terms" },
               { text: "Policy", link: "/policy" },
             ]}
@@ -213,16 +214,35 @@ const Header = () => {
           <ItemWithDropdown
             variant="desktop"
             dropdownItems={[
+              { text: "Github", link: "https://github.com/ribbon-finance" },
               { text: "Discord", link: "http://discord.ribbon.finance" },
               { text: "Twitter", link: "https://twitter.com/ribbonfinance" },
-              { text: "Github", link: "https://github.com/ribbon-finance" },
+              {
+                text: "Governance Portal",
+                link: "https://vote.ribbon.finance",
+              },
               { text: "Snapshot", link: "https://snapshot.org/#/rbn.eth" },
+              { text: "Media Kit", link: "/ribbon_media_kit.zip" },
             ]}
           >
             Community
           </ItemWithDropdown>
 
-          {renderLinkItem("DOCS", "https://docs.ribbon.finance", false)}
+          <ItemWithDropdown
+            variant="desktop"
+            dropdownItems={[
+              {
+                text: "Token Terminal",
+                link: "https://www.tokenterminal.com/terminal/projects/ribbon-finance",
+              },
+              {
+                text: "Defi Llama",
+                link: "https://defillama.com/protocol/ribbon-finance",
+              },
+            ]}
+          >
+            Data
+          </ItemWithDropdown>
         </LinksContainer>
       </HeaderAbsoluteContainer>
 

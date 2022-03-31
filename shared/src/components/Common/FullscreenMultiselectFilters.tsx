@@ -58,7 +58,7 @@ const FilterHeader = styled.div`
   width: 100%;
   height: 80px;
   align-items: center;
-  background: ${colors.pillBackground};
+  background: ${colors.background.two};
 `;
 
 const ClearButton = styled(SecondaryText)`

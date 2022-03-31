@@ -11,6 +11,7 @@ import SAVAXAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoS
 import NEARAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/NEAR_Algo_Strike_Selection.json";
 import AURORAAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/AURORA_Algo_Strike_Selection.json";
 import SOLAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/SOL_Algo_Strike_Selection.json";
+import APEAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/APE_Algo_Strike_Selection.json";
 import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 
 interface AlgoStrikeSelectionProps {
@@ -45,6 +46,8 @@ const AlgoStrikeSelection: React.FC<AlgoStrikeSelectionProps> = ({
             return AURORAAlgoStrikeSelection;
           case "SOL":
             return SOLAlgoStrikeSelection;
+          case "APE":
+            return APEAlgoStrikeSelection;
         }
     }
   }, [vaultOption]);
