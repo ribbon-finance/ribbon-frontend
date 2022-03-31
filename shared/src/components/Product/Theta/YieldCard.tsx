@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ethers } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
-import { useWeb3React } from "@web3-react/core";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -44,6 +43,7 @@ import { animatedGradientKeyframe } from "../../../designSystem/keyframes";
 import { ETHMonoLogo } from "../../../assets/icons/vaultMonoLogos";
 import { AVAXMonoLogo } from "../../../assets/icons/vaultMonoLogos";
 import { SOLMonoLogo } from "../../../assets/icons/vaultMonoLogos";
+import useWeb3Wallet from "../../../hooks/useWeb3Wallet";
 
 const { formatUnits } = ethers.utils;
 
@@ -107,7 +107,6 @@ const ProductCard = styled(motion.div)<{ color: string; vault: VaultOptions }>`
   border-radius: ${theme.border.radius};
   transition: 0.25s box-shadow ease-out, 0.25s border ease-out;
   width: 290px;
-  min-height: 492px;
   position: relative;
   height: 100%;
   padding: 16px;
@@ -177,6 +176,7 @@ const ProductInfo = styled.div`
 const ProductDescription = styled(SecondaryText)`
   line-height: 1.5;
   margin-bottom: auto;
+  min-height: 70px;
 `;
 
 const ModeSwitcherContainer = styled.div<{ color: string }>`
@@ -218,7 +218,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     data: { totalBalance: v2Deposits, cap: v2VaultLimit },
     loading: v2DataLoading,
   } = useV2VaultData(vault);
-  const { chainId } = useWeb3React();
+  const { chainId } = useWeb3Wallet();
   const { t } = useTranslation();
   const yieldInfos = useAssetsYield(asset);
   const isLoading = useMemo(() => status === "loading", [status]);
@@ -338,30 +338,43 @@ const YieldCard: React.FC<YieldCardProps> = ({
       !isPracticallyZero(vaultBalanceInAsset, decimals)
     ) {
       return (
-        <div className="d-flex w-100 justify-content-center">
-          <SecondaryText fontSize={12} color={colors.primaryText}>
-            Funds ready for migration to V2
-          </SecondaryText>
-        </div>
+        <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
+          <div className="d-flex w-100 justify-content-center">
+            <SecondaryText fontSize={12} color={colors.primaryText}>
+              Funds ready for migration to V2
+            </SecondaryText>
+          </div>
+        </ModalContentExtra>
       );
     }
 
-    return (
-      <div className="d-flex align-items-center w-100">
-        <SecondaryText fontSize={12} className="mr-auto">
-          Your Position
-        </SecondaryText>
-        <Title fontSize={14}>
-          {vaultAccount
-            ? `${formatBigNumber(
-                vaultAccount.totalBalance,
-                decimals
-              )} ${getAssetDisplay(asset)}`
-            : "---"}
-        </Title>
-      </div>
-    );
-  }, [asset, decimals, vaultAccount, vaultBalanceInAsset, vaultVersion]);
+    if (chainId) {
+      return (
+        <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
+          <div className="d-flex align-items-center w-100">
+            <SecondaryText fontSize={12} className="mr-auto">
+              Your Position
+            </SecondaryText>
+            <Title fontSize={14}>
+              {vaultAccount
+                ? `${formatBigNumber(
+                    vaultAccount.totalBalance,
+                    decimals
+                  )} ${getAssetDisplay(asset)}`
+                : "---"}
+            </Title>
+          </div>
+        </ModalContentExtra>
+      );
+    }
+  }, [
+    chainId,
+    asset,
+    decimals,
+    vaultAccount,
+    vaultBalanceInAsset,
+    vaultVersion,
+  ]);
 
   const vaultLogo = useMemo(() => {
     let logo;
@@ -461,9 +474,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
               <ProductInfoContent />
             )}
           </ProductInfo>
-          <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
-            {modalContentExtra}
-          </ModalContentExtra>
+          {modalContentExtra}
         </ProductCard>
       </AnimatePresence>
     </CardContainer>

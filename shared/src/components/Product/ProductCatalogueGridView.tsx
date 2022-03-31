@@ -71,7 +71,6 @@ const YieldCardsContainer = styled.ul<{ isCentered: boolean }>`
 `;
 
 const YieldCardContainer = styled(motion.li)`
-  height: 492px;
   margin: 40px 15px 0px 15px;
   margin-block-end: 0px;
   list-style-type: none;
