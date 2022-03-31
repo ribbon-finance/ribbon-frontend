@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import React, { useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
@@ -6,9 +5,9 @@ import SegmentControl from "shared/lib/components/Common/SegmentControl";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
 import theme from "shared/lib/designSystem/theme";
-import useScreenSize from "shared/lib/hooks/useScreenSize";
 import GaugeVoting from "../components/GaugeVoting/GaugeVoting";
 import { AnimatePresence, motion } from "framer-motion";
+import { SecondaryText, Title } from "shared/lib/designSystem";
 
 const SegmentControlContainer = styled.div`
   border-radius: ${theme.border.radius};
@@ -32,6 +31,26 @@ const ExplanationContainer = styled.div.attrs({
   font-size: 12px;
 `;
 
+const VotingOverview = styled.div.attrs({
+  className: "d-flex justify-content-center",
+})`
+  padding-top: 40px;
+`;
+const VotingOverviewRow = styled.div.attrs({
+  className: "d-flex",
+})`
+  background-color: ${colors.primaryText}0A;
+
+  @media (max-width: ${sizes.md}px) {
+    flex-direction: column;
+  }
+`;
+const VotingOverviewCol = styled(Col).attrs({
+  className: "d-flex flex-column align-items-center text-center",
+})`
+  padding: 16px;
+`;
+
 const Section = styled(Row)`
   margin-top: 40px;
 `;
@@ -46,10 +65,7 @@ const Tabs = ["Gauge Voting", "Proposals"] as const;
 type TabType = typeof Tabs[number];
 
 const VotingPage = () => {
-  const { active } = useWeb3React();
   const [currentTab, setCurrentTab] = useState<TabType>("Gauge Voting");
-
-  const { width } = useScreenSize();
 
   return (
     <Container>
@@ -79,6 +95,32 @@ const VotingPage = () => {
           </SegmentControlContainer>
         </Column>
       </Section>
+
+      <VotingOverview>
+        <Container>
+          <VotingOverviewRow>
+            <VotingOverviewCol>
+              <SecondaryText fontSize={12} color={colors.tertiaryText}>
+                Total Votes This Round (veRBN)
+              </SecondaryText>
+              <Title fontSize={14}>15.2M</Title>
+            </VotingOverviewCol>
+            <VotingOverviewCol>
+              <SecondaryText fontSize={12} color={colors.tertiaryText}>
+                RBN Incentives Per Round
+              </SecondaryText>
+              <Title fontSize={14}>15.2M</Title>
+            </VotingOverviewCol>
+            <VotingOverviewCol>
+              <SecondaryText fontSize={12} color={colors.tertiaryText}>
+                Time To Next Round
+              </SecondaryText>
+              <Title fontSize={14}>15.2M</Title>
+            </VotingOverviewCol>
+          </VotingOverviewRow>
+        </Container>
+      </VotingOverview>
+
       <Section>
         <AnimatePresence initial={false} exitBeforeEnter>
           <motion.div

@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
 import moment from "moment";
 import { useWeb3React } from "@web3-react/core";
+import MultiselectFilterDropdown from "shared/lib/components/Common/MultiselectFilterDropdown";
 
 import { Title, SecondaryText, BaseLink } from "shared/lib/designSystem";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
@@ -14,6 +15,7 @@ import theme from "shared/lib/designSystem/theme";
 import {
   Chains,
   ENABLED_CHAINS,
+  getDisplayAssets,
   getEtherscanURI,
   READABLE_CHAIN_NAMES,
   VaultLiquidityMiningMap,
@@ -34,6 +36,7 @@ import { GovernanceTransaction } from "shared/lib/models/governance";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { CHAINID } from "shared/lib/utils/env";
 import SingleGaugeCard from "./SingleGaugeCard";
+import { getAssetColor, getAssetLogo } from "shared/lib/utils/asset";
 
 const ActivityContainer = styled.div`
   display: flex;
@@ -81,9 +84,18 @@ const Gauges = styled.div`
 
 const TopPaginationContainer = styled.div.attrs({
   className: "ml-auto",
-})``;
+})`
+  // Don't show top pagination when on mobile
+  @media (max-width: ${sizes.md}px) {
+    display: none;
+  }
+`;
 
-const perPage = 5;
+const VotingActivityHeader = styled.div.attrs({
+  className: "d-flex align-items-center"
+})`
+  margin-top: 64px;
+`
 
 const allNetworks = [
   {
@@ -103,16 +115,20 @@ const allNetworks = [
   // }),
 ];
 
-const ethGauges = Object.keys(VaultLiquidityMiningMap.lg5).map((option) => ({
-  display: vaultOptionToName(option as VaultOptions) || option,
-  value: vaultOptionToName(option as VaultOptions) || option,
-}));
+const ethGauges = Object.keys(VaultLiquidityMiningMap.lg5).map((option) => {
+  const displayAsset = getDisplayAssets(option as VaultOptions)
+  const Logo = getAssetLogo(displayAsset);
+  let logo = <Logo height="100%" />;
+  return {
+    display: vaultOptionToName(option as VaultOptions) || option,
+    value: vaultOptionToName(option as VaultOptions) || option,
+    color: getAssetColor(displayAsset),
+    textColor: colors.primaryText,
+    logo,
+  }
+});
 
 const allGauges = [
-  {
-    display: "All Gauges",
-    value: "All Gauges",
-  },
   ...ethGauges,
 ];
 
@@ -126,12 +142,13 @@ const GaugeVoting = () => {
 
   // FILTERS
   const [filteredNetwork, setFilteredNetwork] = useState(allNetworks[0].value);
-  const [filteredGauges, setFilteredGauges] = useState(allGauges[0].value);
+  const [filteredGauges, setFilteredGauges] = useState(allGauges.map((gauge) => gauge.value));
+  const [filteredActivityGauges, setFilteredActivityGauges] = useState(allGauges.map((gauge) => gauge.value));
   const [page, setPage] = useState(1);
 
   return (
     <div className="d-flex flex-column w-100 px-4">
-      {/* Header */}
+      {/* VAULT GAUGES */}
       <div className="d-flex align-items-center mb-4">
         <Title fontSize={18} lineHeight={24} className="mr-4">
           Vault Gauges
@@ -145,11 +162,17 @@ const GaugeVoting = () => {
             topBuffer: 8,
           }}
         />
-        <FilterDropdown
+        {/* <FilterDropdown
           options={allGauges}
           value={filteredGauges}
           onSelect={setFilteredGauges}
           className="ml-3"
+        /> */}
+        <MultiselectFilterDropdown
+          values={filteredGauges}
+          options={allGauges}
+          title="Gauges"
+          onSelect={(values) => setFilteredGauges(values as string[])}
         />
         <TopPaginationContainer>
           <Pagination
@@ -162,7 +185,6 @@ const GaugeVoting = () => {
           />
         </TopPaginationContainer>
       </div>
-
       <AnimatePresence initial={false} exitBeforeEnter>
         <motion.div
           key={page}
@@ -193,8 +215,19 @@ const GaugeVoting = () => {
           </Gauges>
         </motion.div>
       </AnimatePresence>
-
       <Pagination page={page} total={6} setPage={setPage} />
+
+      {/* VOTING ACTIVITY */}
+      <VotingActivityHeader>
+        <Title fontSize={18} lineHeight={24} className="mr-4">
+          VOTING ACTIVITY
+        </Title>
+        {/* <FilterDropdown
+          options={allGauges}
+          value={filteredActivityGauges}
+          onSelect={setFilteredActivityGauges}
+        /> */}
+      </VotingActivityHeader>
     </div>
   );
 };
