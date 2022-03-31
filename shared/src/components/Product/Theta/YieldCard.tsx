@@ -294,7 +294,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
           fontSize={12}
           className="w-100"
         >
-          Current Projected Yield (APY)
+          {t("shared:YieldCard:currentProjectedYield")}
         </Title>
         <Title fontSize={24} className="w-100 mt-1 mb-4">
           {perfStr}
@@ -341,7 +341,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
         <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
           <div className="d-flex w-100 justify-content-center">
             <SecondaryText fontSize={12} color={colors.primaryText}>
-              Funds ready for migration to V2
+              {t("shared:YieldCard:fundsReadyForMigration")}
             </SecondaryText>
           </div>
         </ModalContentExtra>
@@ -353,7 +353,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
         <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
           <div className="d-flex align-items-center w-100">
             <SecondaryText fontSize={12} className="mr-auto">
-              Your Position
+              {t("shared:YieldCard:yourPosition")}
             </SecondaryText>
             <Title fontSize={14}>
               {vaultAccount
@@ -389,8 +389,6 @@ const YieldCard: React.FC<YieldCardProps> = ({
           <Subtitle>{logo}</Subtitle>
         </ProductTag>
       );
-    } else {
-      return null;
     }
   }, [vault]);
 
