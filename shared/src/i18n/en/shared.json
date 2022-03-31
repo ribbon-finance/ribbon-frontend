@@ -100,5 +100,20 @@
       "fabTitle": "Unlocked RBN",
       "description": "The amount of RBN that has not been locked in the governance contract."
     }
+  },
+  "YieldCard": {
+    "currentProjectedYield": "Current Projected Yield (APY)",
+    "fundsReadyForMigration": "Funds ready for migration to v2",
+    "yourPosition": "Your Position"
+  },
+  "VaultV2DepositWithdrawForm": {
+    "currentlyFull": "The Vault is currently full",
+    "maxDeposit": {
+      "explanation": "This vault has a max deposit of {{maxDeposit}} {{asset}} per depositor"
+    },
+    "bridgeAvalanche": "Bridge your assets to Avalanche",
+    "swapBTC": "Swap your BTC or renBTC for wBTC",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw"
   }
 }
