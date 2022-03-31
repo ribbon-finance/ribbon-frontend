@@ -4,6 +4,7 @@ import styled from "styled-components";
 import moment from "moment";
 import { useWeb3React } from "@web3-react/core";
 import MultiselectFilterDropdown from "shared/lib/components/Common/MultiselectFilterDropdown";
+import { chunk } from "lodash";
 
 import { Title, SecondaryText, BaseLink } from "shared/lib/designSystem";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
@@ -36,7 +37,12 @@ import { GovernanceTransaction } from "shared/lib/models/governance";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { CHAINID } from "shared/lib/utils/env";
 import SingleGaugeCard from "./SingleGaugeCard";
-import { getAssetColor, getAssetLogo } from "shared/lib/utils/asset";
+import {
+  getAssetColor,
+  getAssetLogo,
+  getChainByAsset,
+  getWalletColor,
+} from "shared/lib/utils/asset";
 
 const ActivityContainer = styled.div`
   display: flex;
@@ -92,19 +98,16 @@ const TopPaginationContainer = styled.div.attrs({
 `;
 
 const VotingActivityHeader = styled.div.attrs({
-  className: "d-flex align-items-center"
+  className: "d-flex align-items-center",
 })`
   margin-top: 64px;
-`
+`;
 
 const allNetworks = [
   {
-    display: "All Networks",
-    value: "All Networks",
-  },
-  {
     display: READABLE_CHAIN_NAMES[Chains.Ethereum],
     value: READABLE_CHAIN_NAMES[Chains.Ethereum],
+    color: "",
   },
   // ONLY ETH CHAIN AVAILABLE FOR NOW.
   // ...ENABLED_CHAINS.map((chain) => {
@@ -116,21 +119,22 @@ const allNetworks = [
 ];
 
 const ethGauges = Object.keys(VaultLiquidityMiningMap.lg5).map((option) => {
-  const displayAsset = getDisplayAssets(option as VaultOptions)
+  const displayAsset = getDisplayAssets(option as VaultOptions);
   const Logo = getAssetLogo(displayAsset);
   let logo = <Logo height="100%" />;
   return {
     display: vaultOptionToName(option as VaultOptions) || option,
-    value: vaultOptionToName(option as VaultOptions) || option,
+    value: option,
     color: getAssetColor(displayAsset),
     textColor: colors.primaryText,
     logo,
-  }
+  };
 });
 
-const allGauges = [
-  ...ethGauges,
-];
+const allGauges = [...ethGauges];
+
+const GAUGES_PER_PAGE = 9;
+const ACTIVITIES_PER_PAGE = 10;
 
 const GaugeVoting = () => {
   const { active } = useWeb3React();
@@ -141,10 +145,101 @@ const GaugeVoting = () => {
   const animatedLoadingText = useLoadingText();
 
   // FILTERS
-  const [filteredNetwork, setFilteredNetwork] = useState(allNetworks[0].value);
-  const [filteredGauges, setFilteredGauges] = useState(allGauges.map((gauge) => gauge.value));
-  const [filteredActivityGauges, setFilteredActivityGauges] = useState(allGauges.map((gauge) => gauge.value));
-  const [page, setPage] = useState(1);
+  const [filteredNetworks, setFilteredNetworks] = useState(
+    allNetworks.map(({ value }) => value)
+  );
+  const [filteredGauges, setFilteredGauges] = useState(
+    allGauges.map(({ value }) => value)
+  );
+  const [filteredActivityGauges, setFilteredActivityGauges] = useState(
+    allGauges.map(({ value }) => value)
+  );
+
+  // PAGINATION
+  const [gaugesPage, setGaugesPage] = useState(1);
+  const totalGaugePages = useMemo(() => {
+    return Math.ceil(filteredGauges.length / GAUGES_PER_PAGE);
+  }, [filteredGauges]);
+
+  const filteredGaugesForPage = useMemo(() => {
+    return chunk(filteredGauges, GAUGES_PER_PAGE)[gaugesPage - 1] || [];
+  }, [filteredGauges, gaugesPage]);
+
+  const processedActivities = useMemo(() => {
+    return [];
+  }, []);
+
+  // const activities = useMemo(() => {
+  //   if (!active) {
+  //     return (
+  //       <SecondaryText fontSize={16} lineHeight={24}>
+  //         ---
+  //       </SecondaryText>
+  //     );
+  //   }
+
+  //   if (loading) {
+  //     return (
+  //       <SecondaryText fontSize={16} lineHeight={24}>
+  //         {animatedLoadingText}
+  //       </SecondaryText>
+  //     );
+  //   }
+
+  //   if (processedActivities.length <= 0) {
+  //     return (
+  //       <SecondaryText fontSize={16} lineHeight={24}>
+  //         You have no transactions
+  //       </SecondaryText>
+  //     );
+  //   }
+
+  //   return processedActivities
+  //     .slice((page - 1) * perPage, page * perPage)
+  //     .map((activity, index) => (
+  //       <ActivityContainer key={index}>
+  //         {/* Logo */}
+  //         <ActivityLogoContainer color={getActivityLogoColor(activity)}>
+  //           {renderActivityLogo(activity)}
+  //         </ActivityLogoContainer>
+
+  //         {/* Title and time */}
+  //         <div className="d-flex flex-column mr-auto">
+  //           <Title>{getActivityTitle(activity)}</Title>
+  //           <SecondaryText fontSize={12} lineHeight={16} className="mt-1">
+  //             {moment(activity.timestamp, "X").fromNow()}
+  //           </SecondaryText>
+  //         </div>
+
+  //         {/* Data if any */}
+  //         <div className="d-flex flex-column mr-4">
+  //           {renderActivityData(activity)}
+  //         </div>
+
+  //         {/* External Logo */}
+  //         <BaseLink
+  //           to={`${getEtherscanURI(GovernanceChainID)}/tx/${activity.txhash}`}
+  //           target="_blank"
+  //           rel="noreferrer noopener"
+  //           className="d-none d-md-block"
+  //         >
+  //           <ExternalLink>
+  //             <ExternalLinkIcon color="white" />
+  //           </ExternalLink>
+  //         </BaseLink>
+  //       </ActivityContainer>
+  //     ));
+  // }, [
+  //   active,
+  //   animatedLoadingText,
+  //   getActivityLogoColor,
+  //   getActivityTitle,
+  //   loading,
+  //   page,
+  //   processedActivities,
+  //   renderActivityData,
+  //   renderActivityLogo,
+  // ]);
 
   return (
     <div className="d-flex flex-column w-100 px-4">
@@ -153,32 +248,44 @@ const GaugeVoting = () => {
         <Title fontSize={18} lineHeight={24} className="mr-4">
           Vault Gauges
         </Title>
-        <FilterDropdown
+        <MultiselectFilterDropdown
+          values={filteredNetworks}
           options={allNetworks}
-          value={filteredNetwork}
-          onSelect={setFilteredNetwork}
-          dropdownMenuConfig={{
-            horizontalOrientation: width > sizes.md ? "right" : "left",
-            topBuffer: 8,
+          title="Networks"
+          onSelect={(values) => setFilteredNetworks(values as string[])}
+          buttonConfig={{
+            background: colors.background.two,
+            activeBackground: colors.background.three,
+            paddingHorizontal: 8,
+            paddingVertical: 8,
+            color: `${colors.primaryText}A3`,
           }}
         />
-        {/* <FilterDropdown
-          options={allGauges}
-          value={filteredGauges}
-          onSelect={setFilteredGauges}
-          className="ml-3"
-        /> */}
         <MultiselectFilterDropdown
+          mode="compact"
           values={filteredGauges}
           options={allGauges}
           title="Gauges"
-          onSelect={(values) => setFilteredGauges(values as string[])}
+          // Only set if values is available
+          onSelect={(values) =>
+            (values as string[]).length
+              ? setFilteredGauges(values as string[])
+              : filteredGauges
+          }
+          buttonConfig={{
+            background: colors.background.two,
+            activeBackground: colors.background.three,
+            paddingHorizontal: 8,
+            paddingVertical: 8,
+            color: `${colors.primaryText}A3`,
+          }}
+          className="ml-3"
         />
         <TopPaginationContainer>
           <Pagination
-            page={page}
-            total={6}
-            setPage={setPage}
+            page={gaugesPage}
+            total={totalGaugePages}
+            setPage={setGaugesPage}
             config={{
               hidePageNumbers: true,
             }}
@@ -187,7 +294,7 @@ const GaugeVoting = () => {
       </div>
       <AnimatePresence initial={false} exitBeforeEnter>
         <motion.div
-          key={page}
+          key={gaugesPage}
           transition={{
             duration: 0.25,
             type: "keyframes",
@@ -208,26 +315,67 @@ const GaugeVoting = () => {
           className="w-100 mb-5"
         >
           <Gauges>
-            <SingleGaugeCard vaultOption="ryvUSDC-ETH-P-THETA" />
-            <SingleGaugeCard vaultOption="rBTC-THETA" />
-            <SingleGaugeCard vaultOption="rAAVE-THETA" />
-            <SingleGaugeCard vaultOption="rAVAX-THETA" />
+            {filteredGaugesForPage.map((gauge) => (
+              <SingleGaugeCard
+                key={gauge}
+                vaultOption={gauge as VaultOptions}
+              />
+            ))}
           </Gauges>
         </motion.div>
       </AnimatePresence>
-      <Pagination page={page} total={6} setPage={setPage} />
+      <Pagination
+        page={gaugesPage}
+        total={totalGaugePages}
+        setPage={setGaugesPage}
+      />
 
       {/* VOTING ACTIVITY */}
       <VotingActivityHeader>
         <Title fontSize={18} lineHeight={24} className="mr-4">
           VOTING ACTIVITY
         </Title>
-        {/* <FilterDropdown
+        <MultiselectFilterDropdown
+          mode="compact"
+          values={filteredActivityGauges}
           options={allGauges}
-          value={filteredActivityGauges}
-          onSelect={setFilteredActivityGauges}
-        /> */}
+          title="Gauges"
+          onSelect={(values) => setFilteredActivityGauges(values as string[])}
+          buttonConfig={{
+            background: colors.background.two,
+            activeBackground: colors.background.three,
+            paddingHorizontal: 8,
+            paddingVertical: 8,
+            color: `${colors.primaryText}A3`,
+          }}
+        />
       </VotingActivityHeader>
+      <AnimatePresence initial={false} exitBeforeEnter>
+        <motion.div
+          key={gaugesPage}
+          transition={{
+            duration: 0.25,
+            type: "keyframes",
+            ease: "easeInOut",
+          }}
+          initial={{
+            y: 50,
+            opacity: 0,
+          }}
+          animate={{
+            y: 0,
+            opacity: 1,
+          }}
+          exit={{
+            y: 50,
+            opacity: 0,
+          }}
+          className="w-100 mb-5"
+        >
+          {/* TODO: - Activities */}
+          {/* {activities} */}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 };
