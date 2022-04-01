@@ -9,12 +9,19 @@ import {
 
 const StakingBanner: React.FC = () => {
   const { account } = useWeb3Wallet();
-  const { data: v2Vaults } = useV2VaultsData();
-  const { data: gaugeData } = useAllLiquidityGaugeV5PoolsData();
+  const { data: v2Vaults, loading: v2VaultsLoading } = useV2VaultsData();
+  const { data: gaugeData, loading: gaugeDataLoading } =
+    useAllLiquidityGaugeV5PoolsData();
 
   // Only shows banner when user has rToken but have never staked
   const shouldShowBanner = useMemo(() => {
-    if (!account || !v2Vaults || !gaugeData) {
+    if (
+      !account ||
+      !v2Vaults ||
+      !gaugeData ||
+      v2VaultsLoading ||
+      gaugeDataLoading
+    ) {
       return false;
     }
 
@@ -35,7 +42,7 @@ const StakingBanner: React.FC = () => {
     }
 
     return true;
-  }, [account, v2Vaults, gaugeData]);
+  }, [account, v2Vaults, gaugeData, gaugeDataLoading, v2VaultsLoading]);
 
   return shouldShowBanner ? (
     <Banner
