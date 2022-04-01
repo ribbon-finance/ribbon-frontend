@@ -178,7 +178,7 @@ const SaveButton = styled(BaseButton)`
   border-radius: ${theme.border.radius};
 `;
 
-interface DropdownOption {
+export interface DropdownOption {
   value: string;
   display: string;
   color: string;

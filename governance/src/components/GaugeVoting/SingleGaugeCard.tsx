@@ -63,14 +63,18 @@ const VoteButton = styled(ActionButton)`
 interface SingleGaugeCardProps {
   vaultOption: VaultOptions;
   tvl?: number;
-  loading?: boolean
+  loading?: boolean;
 }
 
-const SingleGaugeCard: React.FC<SingleGaugeCardProps> = ({ vaultOption, tvl, loading }) => {
+const SingleGaugeCard: React.FC<SingleGaugeCardProps> = ({
+  vaultOption,
+  tvl,
+  loading,
+}) => {
   const displayAsset = getDisplayAssets(vaultOption);
   const color = getAssetColor(displayAsset);
 
-  const loadingText = useLoadingText()
+  const loadingText = useLoadingText();
 
   const assetLogo = useMemo(() => {
     const Logo = getAssetLogo(displayAsset);
