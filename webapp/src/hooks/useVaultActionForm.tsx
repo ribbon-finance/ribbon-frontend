@@ -22,6 +22,7 @@ import {
   useVaultData,
   useV2VaultData,
   useAssetsBalance,
+  useAllLiquidityGaugeV5PoolsData,
 } from "shared/lib/hooks/web3DataContext";
 import { isETHVault } from "shared/lib/utils/vault";
 import { Assets } from "shared/lib/store/types";
@@ -37,6 +38,8 @@ export type VaultActionFormTransferData =
 export type WithdrawMetadata = {
   allowStandardWithdraw?: boolean;
   instantWithdrawBalance?: BigNumber;
+  // Check if all rTokens are staked, and show messaging
+  allTokensStaked?: boolean;
 };
 
 const useVaultActionForm = (vaultOption: VaultOptions) => {
@@ -64,6 +67,13 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
       withdrawals: v2Withdrawals,
     },
   } = useV2VaultData(vaultOption);
+
+  /**
+   * V2 Staked balance
+   * Used to find out if user have 0 withdrawals, but have staked balance, and show messaging
+   */
+  const { data: liquidityGaugeV5Data } = useAllLiquidityGaugeV5PoolsData();
+
   const { data: assetsBalance } = useAssetsBalance();
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const receiveVaultData = useVaultData(
@@ -144,11 +154,15 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
               instantWithdrawBalance: BigNumber.from(0),
             };
           default:
+            const lockedBalanceIsZero = v2LockedBalanceInAsset.isZero();
+            const stakedAmountExists = liquidityGaugeV5Data[vaultOption]
+              ? !liquidityGaugeV5Data[vaultOption]?.currentStake.isZero()
+              : false;
             return {
               allowStandardWithdraw:
-                !v2LockedBalanceInAsset.isZero() ||
-                !v2Withdrawals.shares.isZero(),
+                !lockedBalanceIsZero || !v2Withdrawals.shares.isZero(),
               instantWithdrawBalance: v2DepositBalanceInAsset,
+              allTokensStaked: lockedBalanceIsZero && stakedAmountExists,
             };
         }
     }
@@ -160,6 +174,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
     v2Withdrawals.shares,
     vaultActionForm.vaultVersion,
     vaultOption,
+    liquidityGaugeV5Data,
   ]);
 
   /**
