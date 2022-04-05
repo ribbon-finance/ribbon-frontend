@@ -59,6 +59,7 @@ const useStrikePrice = (
   return {
     strikePrice,
     currentPrice,
+    isLoading: optionLoading || priceLoading,
   };
 };
 

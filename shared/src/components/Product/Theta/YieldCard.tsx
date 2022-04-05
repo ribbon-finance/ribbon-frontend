@@ -313,7 +313,11 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const isLoading = useMemo(() => status === "loading", [status]);
   const [mode, setMode] = useState<"info" | "yield">("info");
   const color = getVaultColor(vault);
-  const { strikePrice, currentPrice } = useStrikePrice(vault, vaultVersion);
+  const {
+    strikePrice,
+    currentPrice,
+    isLoading: priceLoading,
+  } = useStrikePrice(vault, vaultVersion);
   const latestAPY = useLatestAPY(vault, vaultVersion);
   const { data: lg5Data, loading: lg5DataLoading } =
     useLiquidityGaugeV5PoolData(vault);
@@ -420,7 +424,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     const strike = strikePrice(false);
     const current = currentPrice(false);
 
-    if (strike === current) {
+    if (strike === current || priceLoading) {
       return colors.primaryText;
     } else {
       if (isPutVault(vault)) {
@@ -430,7 +434,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
         return current < strike ? colors.green : colors.red;
       }
     }
-  }, [strikePrice, currentPrice, vault, colors, isPutVault]);
+  }, [strikePrice, currentPrice, priceLoading, vault, colors, isPutVault]);
 
   const StrikeWidget = useCallback(() => {
     return (
