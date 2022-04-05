@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { BaseButton } from "shared/lib/designSystem";
 import useOutsideAlerter from "shared/lib/hooks/useOutsideAlerter";
 import DesktopFloatingMenu from "shared/lib/components/Menu/DesktopFloatingMenu";
-import { MenuItem } from "./MenuItem";
+import { MenuItem } from "shared/lib/components/Menu/MenuItem";
 import { useHistory } from "react-router-dom";
 
 const Container = styled.div`

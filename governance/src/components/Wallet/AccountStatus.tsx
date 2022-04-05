@@ -35,7 +35,7 @@ import { VotingEscrowAddress } from "shared/lib/constants/constants";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import moment from "moment";
 import { BigNumber } from "ethers";
-import { MenuCloseItem, MenuItem } from "../Header/MenuItem";
+import { MenuCloseItem, MenuItem } from "shared/lib/components/Menu/MenuItem";
 import DesktopFloatingMenu from "shared/lib/components/Menu/DesktopFloatingMenu";
 
 const walletButtonWidth = 55;

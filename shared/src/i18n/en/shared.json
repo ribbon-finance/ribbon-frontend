@@ -115,5 +115,12 @@
     "swapBTC": "Swap your BTC or renBTC for wBTC",
     "deposit": "Deposit",
     "withdraw": "Withdraw"
+  },
+  "WarningModal": {
+    "leavingSite": "LEAVING SITE",
+    "redacted": {
+      "message": "All vault gauge voting is done using Redacted Cartel's gauge voting interface.",
+      "proceed": "CONTINUE TO REDACTED CARTEL"
+    }
   }
 }
