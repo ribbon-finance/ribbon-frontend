@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { parseUnits } from "@ethersproject/units";
 import { useLocation } from "react-router-dom";
-
 import colors from "shared/lib/designSystem/colors";
 import {
   AVAX_BRIDGE_URI,
@@ -38,7 +37,7 @@ import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { BigNumber } from "ethers";
 import { useTranslation } from "react-i18next";
 
-const BridgeText = styled.span<{}>`
+const BridgeText = styled.span`
   font-size: 14px;
 `;
 
@@ -437,7 +436,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
           </FormInfoText>
         );
     }
-  }, [asset, decimals, error, vaultMaxDepositAmount]);
+  }, [asset, decimals, error, vaultMaxDepositAmount, t]);
 
   const bridgeAvaxCTA = useMemo(() => {
     if (
@@ -453,11 +452,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
           target="_blank"
           rel="noreferrer noopener"
         >
-          <BridgeButton
-            color={getAssetColor(
-              vaultOption === "rsAVAX-THETA" ? "sAVAX" : "WAVAX"
-            )}
-          >
+          <BridgeButton color={avalancheColor}>
             <BridgeText className="mr-2">
               {t("shared:VaultV2DepositWithdrawForm:bridgeAvalanche")}
             </BridgeText>
@@ -470,7 +465,8 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     chainId,
     vaultActionForm.actionType,
     vaultActionForm.depositAsset,
-    vaultOption,
+    avalancheColor,
+    t,
   ]);
 
   const swapContainerTrigger = useMemo(() => {
@@ -496,7 +492,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       default:
         return <></>;
     }
-  }, [asset, swapContainerOpen]);
+  }, [asset, swapContainerOpen, t]);
 
   const swapContainer = useMemo(() => {
     switch (asset) {

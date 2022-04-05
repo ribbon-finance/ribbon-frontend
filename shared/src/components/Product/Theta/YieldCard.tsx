@@ -231,6 +231,7 @@ const RangeCenter = styled.div`
   position: absolute;
   top: -2px;
   left: 50%;
+  z-index: 100;
 `;
 
 const TotalYieldTitle = styled.div`
