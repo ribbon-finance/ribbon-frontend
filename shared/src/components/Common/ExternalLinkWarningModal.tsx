@@ -1,7 +1,7 @@
 import React from "react";
-import colors from "shared/lib/designSystem/colors";
-import { SecondaryText, Title } from "shared/lib/designSystem";
-import { ActionButton } from "shared/lib/components/Common/buttons";
+import colors from "../../designSystem/colors";
+import { SecondaryText, Title } from "../../designSystem";
+import { ActionButton } from "../../components/Common/buttons";
 import BasicModal from "./BasicModal";
 import { BaseModalContentColumn } from "../../designSystem";
 import { useTranslation } from "react-i18next";
