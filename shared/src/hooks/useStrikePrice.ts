@@ -5,10 +5,10 @@ import {
   getVaultChain,
   VaultOptions,
   VaultVersion,
-} from "shared/lib/constants/constants";
-import { useLatestOption } from "shared/lib/hooks/useLatestOption";
-import useLoadingText from "shared/lib/hooks/useLoadingText";
-import { formatOptionStrike } from "shared/lib/utils/math";
+} from "../constants/constants";
+import { useLatestOption } from "../hooks/useLatestOption";
+import useLoadingText from "../hooks/useLoadingText";
+import { formatOptionStrike } from "../utils/math";
 import { useAssetsPrice } from "./useAssetPrice";
 
 const useStrikePrice = (
