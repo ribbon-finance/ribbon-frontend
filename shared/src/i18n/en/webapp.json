@@ -64,5 +64,8 @@
   "LiquidityMining": {
     "timeTillNextEpoch": "Time till next epoch",
     "stakingWarningMessage": "If you stake rTokens before locking your RBN, your boosted rewards won't be applied until you apply boost or claim RBN rewards."
+  },
+  "Withdrawals": {
+    "AllrTokensStakedError": "You have staked all your {{rToken}} tokens. You must unstake your {{rToken}} tokens before you can withdraw from the vault"
   }
 }
