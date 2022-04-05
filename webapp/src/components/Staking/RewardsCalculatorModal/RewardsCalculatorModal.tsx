@@ -23,8 +23,6 @@ import {
   VaultOptions,
 } from "shared/lib/constants/constants";
 import StakingPoolDropdown, { StakingPoolOption } from "./StakingPoolDropdown";
-import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
 import {
   useLiquidityGaugeV5PoolData,
@@ -42,42 +40,9 @@ import {
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import { BigNumber } from "ethers";
 import moment from "moment";
+import APYTable from "../APYTable";
 
 const ModalContainer = styled(BasicModal)``;
-
-const CalculationContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  flex: 1;
-  align-items: center;
-  align-content: center;
-`;
-
-const CalculationColumn = styled.div`
-  display: flex;
-  width: 100%;
-  margin-bottom: 8px;
-  align-items: center;
-  justify-content: space-between;
-
-  &:last-child {
-    margin-bottom: unset;
-  }
-`;
-
-const Subcalculations = styled.div`
-  padding: 0 0 16px 8px;
-  width: 100%;
-`;
-
-const SubcalculationColumn = styled(CalculationColumn)`
-  margin-bottom: 4px;
-`;
-
-const ContainerWithTooltip = styled.div`
-  display: flex;
-  align-items: center;
-`;
 
 const ModalColumn = styled.div<{ marginTop?: number | "auto" }>`
   display: flex;
@@ -90,10 +55,6 @@ const ModalColumn = styled.div<{ marginTop?: number | "auto" }>`
 
 const StakingPoolContainer = styled.div`
   width: 100%;
-`;
-
-const CalculationData = styled(Title)<{ color?: string }>`
-  color: ${({ color }) => color || colors.primaryText};
 `;
 
 const SmallerInputContainer = styled(BaseInputContainer)`
@@ -456,80 +417,45 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
           </div>
         </ModalColumn>
         <ModalColumn marginTop={32}>
-          <CalculationContainer>
-            <CalculationColumn>
-              <SecondaryText
-                fontSize={14}
-                fontWeight={500}
-                className="mr-auto"
-                color={colors.asset[getDisplayAssets(currentGauge)]}
-              >
-                APY
-              </SecondaryText>
-              <CalculationData
-                color={colors.asset[getDisplayAssets(currentGauge)]}
-              >
-                {displayRewards.totalAPY}
-              </CalculationData>
-            </CalculationColumn>
-            <Subcalculations>
-              <SubcalculationColumn>
-                <ContainerWithTooltip>
-                  <SecondaryText fontSize={12} className="mr-auto">
-                    Base Rewards
-                  </SecondaryText>
-                  <TooltipExplanation
-                    title="Base Rewards"
-                    explanation="The rewards for staking rTokens."
-                    renderContent={({ ref, ...triggerHandler }) => (
-                      <HelpInfo containerRef={ref} {...triggerHandler}>
-                        i
-                      </HelpInfo>
-                    )}
-                  />
-                </ContainerWithTooltip>
-                <CalculationData>{displayRewards.baseRewards}</CalculationData>
-              </SubcalculationColumn>
-              <SubcalculationColumn>
-                <ContainerWithTooltip>
-                  <SecondaryText fontSize={12} className="mr-auto">
-                    {t("webapp:TooltipExplanations:boostedRewards:title")}
-                  </SecondaryText>
-                  <TooltipExplanation
-                    title={t("webapp:TooltipExplanations:boostedRewards:title")}
-                    explanation={t(
-                      "webapp:TooltipExplanations:boostedRewards:description"
-                    )}
-                    renderContent={({ ref, ...triggerHandler }) => (
-                      <HelpInfo containerRef={ref} {...triggerHandler}>
-                        i
-                      </HelpInfo>
-                    )}
-                  />
-                </ContainerWithTooltip>
-                <CalculationData>
-                  {displayRewards.boostedRewards}
-                </CalculationData>
-              </SubcalculationColumn>
-            </Subcalculations>
-            <CalculationColumn>
-              <ContainerWithTooltip>
-                <SecondaryText fontSize={14} className="mr-auto">
-                  Rewards Booster
-                </SecondaryText>
-                <TooltipExplanation
-                  title="Rewards Booster"
-                  explanation="The multiplier applied to the base rewards of veRBN holders."
-                  renderContent={({ ref, ...triggerHandler }) => (
-                    <HelpInfo containerRef={ref} {...triggerHandler}>
-                      i
-                    </HelpInfo>
-                  )}
-                />
-              </ContainerWithTooltip>
-              <CalculationData>{displayRewards.rewardsBooster}</CalculationData>
-            </CalculationColumn>
-          </CalculationContainer>
+          <APYTable
+            color={colors.asset[getDisplayAssets(currentGauge)]}
+            overallAPY={{
+              title: "APY",
+              value: displayRewards.totalAPY,
+            }}
+            baseAPY={{
+              title: t("webapp:TooltipExplanations:baseRewards:title"),
+              value: displayRewards.baseRewards,
+              tooltip: {
+                title: t("webapp:TooltipExplanations:baseRewards:title"),
+                explanation: t(
+                  "webapp:TooltipExplanations:baseRewards:description"
+                ),
+              },
+            }}
+            boostedAPY={{
+              title: t("webapp:TooltipExplanations:boostedRewards:title"),
+              value: displayRewards.boostedRewards,
+              tooltip: {
+                title: t("webapp:TooltipExplanations:boostedRewards:title"),
+                explanation: t(
+                  "webapp:TooltipExplanations:boostedRewards:description"
+                ),
+              },
+            }}
+            extras={[
+              {
+                title: t("webapp:TooltipExplanations:rewardsBooster:title"),
+                value: displayRewards.rewardsBooster,
+                tooltip: {
+                  title: t("webapp:TooltipExplanations:rewardsBooster:title"),
+                  explanation: t(
+                    "webapp:TooltipExplanations:rewardsBooster:description"
+                  ),
+                },
+              },
+            ]}
+          />
         </ModalColumn>
       </>
     </ModalContainer>

@@ -37,6 +37,7 @@ import { formatBigNumber } from "shared/lib/utils/math";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContainer";
+import { useTranslation } from "react-i18next";
 
 const WithdrawTypeSegmentControlContainer = styled.div`
   display: flex;
@@ -90,6 +91,11 @@ const WithdrawButtonLogo = styled.div<{ color: string }>`
   background: ${(props) => props.color};
 `;
 
+const AllTokenStakedMessage = styled.div`
+  padding-top: 16px;
+  text-align: center;
+`;
+
 interface VaultV2WithdrawFormProps {
   vaultOption: VaultOptions;
   error?: VaultValidationErrors;
@@ -109,6 +115,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
   initiatedWithdrawAmount,
   canCompleteWithdraw,
 }) => {
+  const { t } = useTranslation();
   const asset = getAssets(vaultOption);
   const assetDisplay = getAssetDisplay(asset);
   const color = getVaultColor(vaultOption);
@@ -407,13 +414,27 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
           </SecondaryText>
         </FormFooterButton>
       );
+    } else if (withdrawMetadata.allTokensStaked) {
+      return (
+        <AllTokenStakedMessage>
+          <SecondaryText color={colors.red}>
+            {t("webapp:Withdrawals:AllrTokensStakedError", {
+              rToken: vaultOption,
+            })}
+          </SecondaryText>
+        </AllTokenStakedMessage>
+      );
     }
+    return null;
   }, [
     canCompleteWithdraw,
     color,
     handleActionTypeChange,
     handleMaxClick,
     onFormSubmit,
+    withdrawMetadata,
+    vaultOption,
+    t,
   ]);
 
   return (

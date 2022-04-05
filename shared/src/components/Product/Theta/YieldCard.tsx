@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ethers } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
-import { useWeb3React } from "@web3-react/core";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -308,7 +307,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     data: { totalBalance: v2Deposits, cap: v2VaultLimit },
     loading: v2DataLoading,
   } = useV2VaultData(vault);
-  const { chainId } = useWeb3React();
+  const { chainId } = useWeb3Wallet();
   const { t } = useTranslation();
   const yieldInfos = useAssetsYield(asset);
   const isLoading = useMemo(() => status === "loading", [status]);
@@ -563,30 +562,43 @@ const YieldCard: React.FC<YieldCardProps> = ({
       !isPracticallyZero(vaultBalanceInAsset, decimals)
     ) {
       return (
-        <div className="d-flex w-100 justify-content-center">
-          <SecondaryText fontSize={12} color={colors.primaryText}>
-            Funds ready for migration to V2
-          </SecondaryText>
-        </div>
+        <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
+          <div className="d-flex w-100 justify-content-center">
+            <SecondaryText fontSize={12} color={colors.primaryText}>
+              {t("shared:YieldCard:fundsReadyForMigration")}
+            </SecondaryText>
+          </div>
+        </ModalContentExtra>
       );
     }
 
-    return (
-      <div className="d-flex align-items-center w-100">
-        <SecondaryText fontSize={12} className="mr-auto">
-          Your Position
-        </SecondaryText>
-        <Title fontSize={14}>
-          {vaultAccount
-            ? `${formatBigNumber(
-                vaultAccount.totalBalance,
-                decimals
-              )} ${getAssetDisplay(asset)}`
-            : "---"}
-        </Title>
-      </div>
-    );
-  }, [asset, decimals, vaultAccount, vaultBalanceInAsset, vaultVersion]);
+    if (chainId) {
+      return (
+        <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
+          <div className="d-flex align-items-center w-100">
+            <SecondaryText fontSize={12} className="mr-auto">
+              {t("shared:YieldCard:yourPosition")}
+            </SecondaryText>
+            <Title fontSize={14}>
+              {vaultAccount
+                ? `${formatBigNumber(
+                    vaultAccount.totalBalance,
+                    decimals
+                  )} ${getAssetDisplay(asset)}`
+                : "---"}
+            </Title>
+          </div>
+        </ModalContentExtra>
+      );
+    }
+  }, [
+    chainId,
+    asset,
+    decimals,
+    vaultAccount,
+    vaultBalanceInAsset,
+    vaultVersion,
+  ]);
 
   const vaultLogo = useMemo(() => {
     let logo;
@@ -686,9 +698,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
               <ProductInfoContent />
             )}
           </ProductInfo>
-          <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
-            {modalContentExtra}
-          </ModalContentExtra>
+          {modalContentExtra}
         </ProductCard>
       </AnimatePresence>
     </CardContainer>

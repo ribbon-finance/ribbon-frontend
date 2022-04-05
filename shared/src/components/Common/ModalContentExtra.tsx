@@ -10,7 +10,7 @@ interface StyleConfig {
 }
 
 const EndingBorder = styled.div<{ config?: StyleConfig }>`
-  height: 16px;
+  height: 24px;
   margin: ${(props) => props.config?.my ?? "0"}px
     ${(props) => props.config?.mx ?? "-16"}px
     ${(props) => props.config?.my ?? "0"}px
