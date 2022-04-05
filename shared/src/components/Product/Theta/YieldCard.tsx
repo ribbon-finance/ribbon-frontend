@@ -199,8 +199,6 @@ const StrikeContainer = styled.div`
 
   > div {
     width: 50%;
-    font-size: 12px;
-    color: ${colors.tertiaryText};
 
     &:not(:first-child) {
       padding-left: 8px;
@@ -208,19 +206,15 @@ const StrikeContainer = styled.div`
   }
 `;
 
-const StrikeTitle = styled.div``;
-
-const StrikePrice = styled.div`
-  color: ${colors.primaryText};
+const StrikePrice = styled.div<{ color: string }>`
+  color: ${(props) => props.color};
   font-family: VCR;
   font-size: 14px;
 `;
 
-const SubTitle = styled.div`
-  width: 100%;
+const StrikeTitle = styled.div`
   font-size: 12px;
   color: ${colors.tertiaryText};
-  margin-top: 12px;
 `;
 
 const RangeContainer = styled.div`
@@ -239,6 +233,51 @@ const RangeCenter = styled.div`
   position: absolute;
   top: -2px;
   left: 50%;
+`;
+
+const TotalYieldTitle = styled.div`
+  display: flex;
+  font-size: 14px;
+  width: 100%;
+  color: ${colors.tertiaryText};
+  margin-top: 8px;
+
+  > * {
+    margin: auto 0;
+    margin-left: 8px;
+  }
+`;
+
+const YieldExplainerTitle = styled.div<{ color: string }>`
+  color: ${(props) => props.color};
+  fontsize: 14px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+
+  > span {
+    &:last-child {
+      font-family: VCR;
+    }
+  }
+`;
+
+const YieldExplainerStat = styled.div`
+  fontsize: 14px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  margin-left: 8px;
+
+  > span {
+    &:first-child {
+      margin-left: 8px;
+    }
+
+    &:last-child {
+      font-family: VCR;
+    }
+  }
 `;
 
 interface YieldCardProps {
@@ -276,6 +315,42 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const [mode, setMode] = useState<"info" | "yield">("info");
   const color = getVaultColor(vault);
   const { strikePrice, currentPrice } = useStrikePrice(vault, vaultVersion);
+  const latestAPY = useLatestAPY(vault, vaultVersion);
+  const { data: lg5Data, loading: lg5DataLoading } =
+    useLiquidityGaugeV5PoolData(vault);
+  const {
+    data: { pricePerShare },
+  } = useV2VaultData(vault);
+  const { prices } = useAssetsPrice();
+
+  const loadingText = useLoadingText();
+
+  const baseAPY = useMemo(() => {
+    if (!lg5Data) {
+      return 0;
+    }
+    const rewards = calculateBaseRewards({
+      poolSize: lg5Data.poolSize,
+      poolReward: lg5Data.poolRewardForDuration,
+      pricePerShare,
+      decimals,
+      assetPrice: prices[asset],
+      rbnPrice: prices["RBN"],
+    });
+
+    return rewards;
+  }, [asset, decimals, lg5Data, pricePerShare, prices]);
+
+  const totalProjectedYield =
+    latestAPY.fetched && !lg5DataLoading
+      ? `${(latestAPY.res + baseAPY).toFixed(2)}%`
+      : loadingText;
+  const vaultYield = latestAPY.fetched
+    ? `${latestAPY.res.toFixed(2)}%`
+    : loadingText;
+  const baseStakingYield = !lg5DataLoading
+    ? `${baseAPY.toFixed(2)}%`
+    : loadingText;
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {
@@ -300,38 +375,6 @@ const YieldCard: React.FC<YieldCardProps> = ({
     }
   }, [decimals, deposits, v2Deposits, v2VaultLimit, vaultLimit, vaultVersion]);
 
-  const latestAPY = useLatestAPY(vault, vaultVersion);
-
-  const loadingText = useLoadingText();
-  const perfStr = latestAPY.fetched
-    ? `${latestAPY.res.toFixed(2)}%`
-    : loadingText;
-
-  const { data: lg5Data } = useLiquidityGaugeV5PoolData(vault);
-
-  const {
-    data: { pricePerShare },
-    loading: vaultDataLoading,
-  } = useV2VaultData(vault);
-
-  const { prices } = useAssetsPrice();
-
-  const baseAPY = useMemo(() => {
-    if (!lg5Data) {
-      return 0;
-    }
-    const rewards = calculateBaseRewards({
-      poolSize: lg5Data.poolSize,
-      poolReward: lg5Data.poolRewardForDuration,
-      pricePerShare,
-      decimals,
-      assetPrice: prices[asset],
-      rbnPrice: prices["RBN"],
-    });
-
-    return rewards;
-  }, [asset, decimals, lg5Data, pricePerShare, prices]);
-
   const onSwapMode = useCallback((e) => {
     e.stopPropagation();
     setMode((prev) => (prev === "info" ? "yield" : "info"));
@@ -345,9 +388,13 @@ const YieldCard: React.FC<YieldCardProps> = ({
   }> = ({ vault, isLeft = true, strike, price }) => {
     const color = () => {
       if (isLeft) {
-        return isPutVault(vault) ? colors.green : colors.red;
+        return isPutVault(vault)
+          ? colors.background.one
+          : colors.background.one;
       } else {
-        return isPutVault(vault) ? colors.red : colors.green;
+        return isPutVault(vault)
+          ? colors.background.one
+          : colors.background.one;
       }
     };
 
@@ -370,17 +417,35 @@ const YieldCard: React.FC<YieldCardProps> = ({
     );
   };
 
+  const strikePriceColor = useMemo(() => {
+    const strike = strikePrice(false);
+    const current = currentPrice(false);
+
+    if (strike === current) {
+      return colors.primaryText;
+    } else {
+      if (isPutVault(vault)) {
+        return current > strike ? colors.green : colors.red;
+      } else {
+        console.log(vault, current < strike, current, strike);
+        return current < strike ? colors.green : colors.red;
+      }
+    }
+  }, [strikePrice, currentPrice, vault, colors, isPutVault]);
+
   const StrikeWidget = useCallback(() => {
     return (
       <>
         <StrikeContainer>
           <div>
-            <StrikeTitle>Weekly Strike Price</StrikeTitle>
-            <StrikePrice>{strikePrice()}</StrikePrice>
+            <StrikeTitle>{t("shared:YieldCard:weeklyStrikePrice")}</StrikeTitle>
+            <StrikePrice color={colors.primaryText}>
+              {strikePrice()}
+            </StrikePrice>
           </div>
           <div>
-            <StrikeTitle>Current Price</StrikeTitle>
-            <StrikePrice>{currentPrice()}</StrikePrice>
+            <StrikeTitle>{t("shared:YieldCard:currentPrice")}</StrikeTitle>
+            <StrikePrice color={strikePriceColor}>{currentPrice()}</StrikePrice>
           </div>
         </StrikeContainer>
         <RangeContainer>
@@ -424,23 +489,36 @@ const YieldCard: React.FC<YieldCardProps> = ({
         <Title fontSize={28} lineHeight={40} className="w-100 my-2">
           {t(`shared:ProductCopies:${vault}:title`)}
         </Title>
-        <Title
-          color={`${colors.primaryText}A3`}
-          fontSize={12}
-          className="w-100 d-flex"
-        >
+        <TotalYieldTitle>
           {t("shared:YieldCard:totalProjectedYield")}
           <TooltipExplanation
-            explanation={<p>Total Projected Yield</p>}
+            explanation={
+              <>
+                <YieldExplainerTitle color={color}>
+                  <span>{t("shared:YieldCard:totalProjectedYield")}</span>
+                  <span>{totalProjectedYield}</span>
+                </YieldExplainerTitle>
+                <YieldExplainerStat>
+                  <span>{t("shared:YieldCard:vaultYield")}</span>
+                  <span>{vaultYield}</span>
+                </YieldExplainerStat>
+                <YieldExplainerStat>
+                  <span>{t("shared:YieldCard:baseStakingYield")}</span>
+                  <span>{baseStakingYield}</span>
+                </YieldExplainerStat>
+                <br />
+                <p>{t("shared:YieldCard:yieldExplainerDesc")}</p>
+              </>
+            }
             renderContent={({ ref, ...triggerHandler }) => (
               <HelpInfo containerRef={ref} {...triggerHandler}>
                 i
               </HelpInfo>
             )}
           />
-        </Title>
-        <Title fontSize={24} className="w-100 mt-1 mb-4">
-          {perfStr} + {`${baseAPY.toFixed(2)}%`}
+        </TotalYieldTitle>
+        <Title fontSize={24} className="w-100 mt-1 mb-3">
+          {totalProjectedYield}
         </Title>
         <StrikeWidget />
         <CapBar
@@ -468,7 +546,9 @@ const YieldCard: React.FC<YieldCardProps> = ({
     depositLimitStr,
     displayAsset,
     isLoading,
-    perfStr,
+    totalProjectedYield,
+    vaultYield,
+    baseStakingYield,
     totalDepositStr,
     v2DataLoading,
     vault,
