@@ -48,6 +48,7 @@ import {
 import { BigNumber } from "ethers";
 import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
 import ApplyBoostModal from "./LiquidityGaugeModal/ApplyBoostModal";
+import APYTable from "./APYTable";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -72,9 +73,9 @@ const StakingPoolCard = styled.div<{ color: string }>`
   }
 `;
 
-const StakingPoolTitle = styled(Title)`
-  text-transform: none;
-`;
+const StakingPoolDataRow = styled.div.attrs({
+  className: "d-flex align-items-center mt-4 w-100",
+})``;
 
 const StakingPoolSubtitle = styled(SecondaryText)`
   font-size: 12px;
@@ -188,6 +189,11 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
   const { balance: votingPower, loading: votingPowerLoading } =
     useAssetBalance("veRBN");
 
+  const isAllLoading =
+    lg5DataLoading ||
+    assetPricesLoading ||
+    vaultDataLoading ||
+    votingPowerLoading;
   const loadingText = useLoadingText();
 
   // MODALS
@@ -331,21 +337,26 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
       return {
         multiplier: "",
         percent: "---",
+        totalAPY: "---",
       };
     }
-    if (lg5DataLoading) {
+    if (isAllLoading) {
       return {
         multiplier: "",
         percent: loadingText,
+        totalAPY: loadingText,
       };
     }
+
+    const totalAPY = boostInfo.percent + baseAPY;
     return {
       multiplier: boostInfo.multiplier
         ? `(${boostInfo.multiplier.toFixed(2)}X)`
         : "",
       percent: boostInfo.percent ? `${boostInfo.percent.toFixed(2)}%` : "0.00%",
+      totalAPY: totalAPY ? `${totalAPY.toFixed(2)}%` : "0.00%",
     };
-  }, [active, lg5DataLoading, loadingText, boostInfo]);
+  }, [active, isAllLoading, loadingText, boostInfo, baseAPY]);
 
   const renderUnstakeBalance = useCallback(() => {
     if (!active) {
@@ -476,7 +487,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
         vaultOption={vaultOption}
         logo={logo}
         stakingPoolData={lg5Data}
-        apysLoading={lg5DataLoading || votingPowerLoading}
+        apysLoading={isAllLoading}
         baseAPY={baseAPY}
         calculateBoostedMultipler={calculateBoostedMultipler}
       />
@@ -498,7 +509,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
         logo={logo}
         vaultOption={vaultOption}
         stakingPoolData={lg5Data}
-        apysLoading={lg5DataLoading || votingPowerLoading}
+        apysLoading={isAllLoading}
         baseAPY={baseAPY}
         boostInfo={boostInfo}
       />
@@ -509,7 +520,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
             <LogoContainer>{logo}</LogoContainer>
             <div className="d-flex flex-column">
               <div className="d-flex align-items-center">
-                <StakingPoolTitle>{vaultOption}</StakingPoolTitle>
+                <Title normalCased>{vaultOption}</Title>
                 <TooltipExplanation
                   title={vaultOption}
                   explanation={
@@ -581,7 +592,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
           </div>
 
           {/* Pool rewards */}
-          <div className="d-flex align-items-center mt-4 w-100">
+          <StakingPoolDataRow>
             <div className="d-flex align-items-center">
               <SecondaryText>
                 {t("webapp:TooltipExplanations:poolRewards:title")}
@@ -601,58 +612,39 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
             <PoolRewardData className="ml-auto">
               {renderPoolReward()}
             </PoolRewardData>
-          </div>
+          </StakingPoolDataRow>
 
-          {/* Base APY */}
-          <div className="d-flex align-items-center mt-4 w-100">
-            <div className="d-flex align-items-center">
-              <SecondaryText>
-                {t("webapp:TooltipExplanations:baseAPY:title")}
-              </SecondaryText>
-              <TooltipExplanation
-                title={t("webapp:TooltipExplanations:baseAPY:title")}
-                explanation={t(
-                  "webapp:TooltipExplanations:baseAPY:description"
-                )}
-                renderContent={({ ref, ...triggerHandler }) => (
-                  <HelpInfo containerRef={ref} {...triggerHandler}>
-                    i
-                  </HelpInfo>
-                )}
-              />
-            </div>
-            <PoolRewardData className="ml-auto">
-              {lg5DataLoading || assetPricesLoading || vaultDataLoading
-                ? loadingText
-                : `${baseAPY.toFixed(2)}%`}
-            </PoolRewardData>
-          </div>
-
-          {/* Boost */}
-          <div className="d-flex align-items-center mt-4 w-100">
-            <div className="d-flex align-items-center">
-              <SecondaryText>
-                {t("webapp:TooltipExplanations:boostedRewards:title")}{" "}
-                {boostDisplayInfo.multiplier}
-              </SecondaryText>
-              <TooltipExplanation
-                title={t("webapp:TooltipExplanations:boostedRewards:title")}
-                explanation={t(
-                  "webapp:TooltipExplanations:boostedRewards:description"
-                )}
-                renderContent={({ ref, ...triggerHandler }) => (
-                  <HelpInfo containerRef={ref} {...triggerHandler}>
-                    i
-                  </HelpInfo>
-                )}
-              />
-            </div>
-            <PoolRewardData className="ml-auto">
-              {lg5DataLoading || assetPricesLoading || vaultDataLoading
-                ? loadingText
-                : boostDisplayInfo.percent}
-            </PoolRewardData>
-          </div>
+          <StakingPoolDataRow>
+            <APYTable
+              color={color}
+              overallAPY={{
+                title: "APY",
+                value: boostDisplayInfo.totalAPY,
+              }}
+              baseAPY={{
+                title: t("webapp:TooltipExplanations:baseAPY:title"),
+                value: isAllLoading ? loadingText : `${baseAPY.toFixed(2)}%`,
+                tooltip: {
+                  title: t("webapp:TooltipExplanations:baseAPY:title"),
+                  explanation: t(
+                    "webapp:TooltipExplanations:baseAPY:description"
+                  ),
+                },
+              }}
+              boostedAPY={{
+                title: `${t(
+                  "webapp:TooltipExplanations:boostedRewards:title"
+                )} ${boostDisplayInfo.multiplier}`,
+                value: boostDisplayInfo.percent,
+                tooltip: {
+                  title: t("webapp:TooltipExplanations:boostedRewards:title"),
+                  explanation: t(
+                    "webapp:TooltipExplanations:boostedRewards:description"
+                  ),
+                },
+              }}
+            />
+          </StakingPoolDataRow>
         </div>
         <StakingPoolCardFooter>{stakingPoolButtons}</StakingPoolCardFooter>
       </StakingPoolCard>

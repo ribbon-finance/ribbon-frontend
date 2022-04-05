@@ -48,6 +48,14 @@
       "title": "Weekly Pool Rewards",
       "description": "Estimated amount of RBN to be distributed for the current week."
     },
+    "baseRewards": {
+      "title": "Base Rewards",
+      "description": "The rewards for staking rTokens."
+    },
+    "rewardsBooster": {
+      "title": "Rewards Booster",
+      "description": "The multiplier applied to the base rewards of veRBN holders."
+    },
     "boostedRewards": {
       "title": "Boosted Rewards",
       "description": "The additional rewards veRBN holders earn for staking their rTokens. Base rewards can be boosted by up to 2.5X."
