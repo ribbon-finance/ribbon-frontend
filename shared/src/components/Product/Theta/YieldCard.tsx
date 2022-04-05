@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ethers } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
-import { useWeb3React } from "@web3-react/core";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -27,6 +26,9 @@ import {
   VaultVersion,
   VaultVersionList,
   isPutVault,
+  isEthVault,
+  isAvaxVault,
+  isSolanaVault,
 } from "../../../constants/constants";
 import { BarChartIcon, GlobeIcon } from "../../../assets/icons/icons";
 import { getAssetDisplay, getAssetLogo } from "../../../utils/asset";
@@ -38,6 +40,10 @@ import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
 import useAssetsYield from "../../../hooks/useAssetsYield";
 import useLatestAPY from "../../../hooks/useLatestAPY";
 import { animatedGradientKeyframe } from "../../../designSystem/keyframes";
+import { ETHMonoLogo } from "../../../assets/icons/vaultMonoLogos";
+import { AVAXMonoLogo } from "../../../assets/icons/vaultMonoLogos";
+import { SOLMonoLogo } from "../../../assets/icons/vaultMonoLogos";
+import useWeb3Wallet from "../../../hooks/useWeb3Wallet";
 
 const { formatUnits } = ethers.utils;
 
@@ -53,9 +59,9 @@ const ProductAssetLogoContainer = styled.div<{ color: string }>`
   width: 56px;
   margin-top: calc(-56px / 2);
   background-color: ${colors.background.one};
-  border: 2px ${theme.border.style} ${colors.background.two};
   border-radius: 50%;
   position: relative;
+  box-shadow: 0px 0px 0px 2px ${colors.background.two};
 
   &:before {
     display: block;
@@ -80,7 +86,7 @@ const TopContainer = styled.div<{ color: string }>`
   border-radius: ${theme.border.radius} ${theme.border.radius} 0px 0px;
 
   background: linear-gradient(
-    270deg,
+    90deg,
     ${(props) => props.color}05 1.04%,
     ${(props) => props.color}30 98.99%
   );
@@ -101,7 +107,6 @@ const ProductCard = styled(motion.div)<{ color: string; vault: VaultOptions }>`
   border-radius: ${theme.border.radius};
   transition: 0.25s box-shadow ease-out, 0.25s border ease-out;
   width: 290px;
-  min-height: 492px;
   position: relative;
   height: 100%;
   padding: 16px;
@@ -116,7 +121,7 @@ const ProductCard = styled(motion.div)<{ color: string; vault: VaultOptions }>`
 
     ${TopContainer} {
       background: linear-gradient(
-        270deg,
+        90deg,
         ${(props) => props.color}15 1.04%,
         ${(props) => props.color}45 98.99%
       );
@@ -171,6 +176,7 @@ const ProductInfo = styled.div`
 const ProductDescription = styled(SecondaryText)`
   line-height: 1.5;
   margin-bottom: auto;
+  min-height: 70px;
 `;
 
 const ModeSwitcherContainer = styled.div<{ color: string }>`
@@ -212,7 +218,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     data: { totalBalance: v2Deposits, cap: v2VaultLimit },
     loading: v2DataLoading,
   } = useV2VaultData(vault);
-  const { chainId } = useWeb3React();
+  const { chainId } = useWeb3Wallet();
   const { t } = useTranslation();
   const yieldInfos = useAssetsYield(asset);
   const isLoading = useMemo(() => status === "loading", [status]);
@@ -288,7 +294,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
           fontSize={12}
           className="w-100"
         >
-          Current Projected Yield (APY)
+          {t("shared:YieldCard:currentProjectedYield")}
         </Title>
         <Title fontSize={24} className="w-100 mt-1 mb-4">
           {perfStr}
@@ -332,30 +338,59 @@ const YieldCard: React.FC<YieldCardProps> = ({
       !isPracticallyZero(vaultBalanceInAsset, decimals)
     ) {
       return (
-        <div className="d-flex w-100 justify-content-center">
-          <SecondaryText fontSize={12} color={colors.primaryText}>
-            Funds ready for migration to V2
-          </SecondaryText>
-        </div>
+        <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
+          <div className="d-flex w-100 justify-content-center">
+            <SecondaryText fontSize={12} color={colors.primaryText}>
+              {t("shared:YieldCard:fundsReadyForMigration")}
+            </SecondaryText>
+          </div>
+        </ModalContentExtra>
       );
     }
 
-    return (
-      <div className="d-flex align-items-center w-100">
-        <SecondaryText fontSize={12} className="mr-auto">
-          Your Position
-        </SecondaryText>
-        <Title fontSize={14}>
-          {vaultAccount
-            ? `${formatBigNumber(
-                vaultAccount.totalBalance,
-                decimals
-              )} ${getAssetDisplay(asset)}`
-            : "---"}
-        </Title>
-      </div>
-    );
-  }, [asset, decimals, vaultAccount, vaultBalanceInAsset, vaultVersion]);
+    if (chainId) {
+      return (
+        <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
+          <div className="d-flex align-items-center w-100">
+            <SecondaryText fontSize={12} className="mr-auto">
+              {t("shared:YieldCard:yourPosition")}
+            </SecondaryText>
+            <Title fontSize={14}>
+              {vaultAccount
+                ? `${formatBigNumber(
+                    vaultAccount.totalBalance,
+                    decimals
+                  )} ${getAssetDisplay(asset)}`
+                : "---"}
+            </Title>
+          </div>
+        </ModalContentExtra>
+      );
+    }
+  }, [
+    chainId,
+    asset,
+    decimals,
+    vaultAccount,
+    vaultBalanceInAsset,
+    vaultVersion,
+  ]);
+
+  const vaultLogo = useMemo(() => {
+    let logo;
+
+    if (isEthVault(vault)) logo = <ETHMonoLogo />;
+    else if (isAvaxVault(vault)) logo = <AVAXMonoLogo />;
+    else if (isSolanaVault(vault)) logo = <SOLMonoLogo />;
+
+    if (logo) {
+      return (
+        <ProductTag className="p-1" color={color}>
+          <Subtitle>{logo}</Subtitle>
+        </ProductTag>
+      );
+    }
+  }, [vault]);
 
   return (
     <CardContainer>
@@ -390,6 +425,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
                   {isPutVault(vault) ? "PUT-SELLING" : "COVERED CALL"}
                 </Subtitle>
               </ProductTag>
+              {vaultLogo}
               <div className="d-flex">
                 {/* Version tags */}
                 {VaultVersionList.map((version) =>
@@ -436,9 +472,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
               <ProductInfoContent />
             )}
           </ProductInfo>
-          <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
-            {modalContentExtra}
-          </ModalContentExtra>
+          {modalContentExtra}
         </ProductCard>
       </AnimatePresence>
     </CardContainer>

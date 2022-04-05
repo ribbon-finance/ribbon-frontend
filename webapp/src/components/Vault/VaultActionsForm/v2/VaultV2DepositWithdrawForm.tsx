@@ -36,6 +36,7 @@ import { VaultValidationErrors } from "../types";
 import VaultV2WithdrawForm from "./VaultV2WithdrawForm";
 import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { BigNumber } from "ethers";
+import { useTranslation } from "react-i18next";
 
 const BridgeText = styled.span<{}>`
   font-size: 14px;
@@ -158,9 +159,13 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
   const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
   const { priceHistory } = useVaultPriceHistory(vaultOption, "v2");
   const { active, chainId } = useWeb3Wallet();
-
+  const { t } = useTranslation();
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const isInputNonZero = parseFloat(vaultActionForm.inputAmount) > 0;
+  const avalancheColor = getAssetColor(
+    vaultOption === "rsAVAX-THETA" ? "sAVAX" : "WAVAX"
+  );
+
   const canCompleteWithdraw = useMemo(() => {
     return (
       vaultActionForm.withdrawOption !== "instant" &&
@@ -419,15 +424,16 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       case "vaultFull":
         return (
           <FormInfoText color={colors.red}>
-            The Vault is currently full
+            {t("shared:VaultV2DepositWithdrawForm:currentlyFull")}
           </FormInfoText>
         );
       case "maxDeposited":
         return (
           <FormInfoText color={colors.red}>
-            This vault has a max deposit of{" "}
-            {formatBigNumber(vaultMaxDepositAmount, decimals)} $
-            {getAssetDisplay(asset)} per depositor
+            {t("shared:VaultV2DepositWithdrawForm:maxDeposit:explanation", {
+              maxDeposit: formatBigNumber(vaultMaxDepositAmount, decimals),
+              asset: getAssetDisplay(asset),
+            })}
           </FormInfoText>
         );
     }
@@ -447,16 +453,21 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
           target="_blank"
           rel="noreferrer noopener"
         >
-          <BridgeButton color={getAssetColor(vaultActionForm.depositAsset)}>
+          <BridgeButton color={avalancheColor}>
             <BridgeText className="mr-2">
-              Bridge your assets to Avalanche
+              {t("shared:VaultV2DepositWithdrawForm:bridgeAvalanche")}
             </BridgeText>
             <ExternalIcon color="white" />
           </BridgeButton>
         </BaseLink>
       );
     }
-  }, [chainId, vaultActionForm.actionType, vaultActionForm.depositAsset]);
+  }, [
+    chainId,
+    vaultActionForm.actionType,
+    vaultActionForm.depositAsset,
+    vaultOption,
+  ]);
 
   const swapContainerTrigger = useMemo(() => {
     switch (asset) {
@@ -468,7 +479,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
               onClick={() => setSwapContainerOpen((open) => !open)}
             >
               <SwapTriggerButtonText>
-                Swap your BTC or renBTC for wBTC
+                {t("shared:VaultV2DepositWithdrawForm:swapBTC")}
               </SwapTriggerButtonText>
               <ButtonArrow
                 isOpen={swapContainerOpen}
@@ -500,7 +511,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
           onClick={() => handleActionTypeChange(ACTIONS.deposit, "v2")}
         >
           <FormTabTitle active={vaultActionForm.actionType === ACTIONS.deposit}>
-            Deposit
+            {t("shared:VaultV2DepositWithdrawForm:deposit")}
           </FormTabTitle>
         </FormTab>
         <FormTab
@@ -510,7 +521,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
           <FormTabTitle
             active={vaultActionForm.actionType === ACTIONS.withdraw}
           >
-            Withdraw
+            {t("shared:VaultV2DepositWithdrawForm:withdraw")}
           </FormTabTitle>
         </FormTab>
       </FormTabContainer>
