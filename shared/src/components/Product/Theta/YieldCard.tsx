@@ -37,7 +37,11 @@ import { getVaultColor } from "../../../utils/vault";
 import ModalContentExtra from "../../Common/ModalContentExtra";
 import { VaultAccount } from "../../../models/vault";
 import YieldComparison from "./YieldComparison";
-import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
+import {
+  useLiquidityGaugeV5PoolData,
+  useV2VaultData,
+  useVaultData,
+} from "../../../hooks/web3DataContext";
 import useAssetsYield from "../../../hooks/useAssetsYield";
 import useLatestAPY from "../../../hooks/useLatestAPY";
 import useStrikePrice from "../../../hooks/useStrikePrice";
@@ -45,6 +49,11 @@ import { animatedGradientKeyframe } from "../../../designSystem/keyframes";
 import { ETHMonoLogo } from "../../../assets/icons/vaultMonoLogos";
 import { AVAXMonoLogo } from "../../../assets/icons/vaultMonoLogos";
 import { SOLMonoLogo } from "../../../assets/icons/vaultMonoLogos";
+import useWeb3Wallet from "../../../hooks/useWeb3Wallet";
+import TooltipExplanation from "../../Common/TooltipExplanation";
+import HelpInfo from "../../Common/HelpInfo";
+import { calculateBaseRewards } from "../../../utils/governanceMath";
+import { useAssetsPrice } from "../../../hooks/useAssetPrice";
 
 const { formatUnits } = ethers.utils;
 
@@ -298,6 +307,31 @@ const YieldCard: React.FC<YieldCardProps> = ({
     ? `${latestAPY.res.toFixed(2)}%`
     : loadingText;
 
+  const { data: lg5Data } = useLiquidityGaugeV5PoolData(vault);
+
+  const {
+    data: { pricePerShare },
+    loading: vaultDataLoading,
+  } = useV2VaultData(vault);
+
+  const { prices } = useAssetsPrice();
+
+  const baseAPY = useMemo(() => {
+    if (!lg5Data) {
+      return 0;
+    }
+    const rewards = calculateBaseRewards({
+      poolSize: lg5Data.poolSize,
+      poolReward: lg5Data.poolRewardForDuration,
+      pricePerShare,
+      decimals,
+      assetPrice: prices[asset],
+      rbnPrice: prices["RBN"],
+    });
+
+    return rewards;
+  }, [asset, decimals, lg5Data, pricePerShare, prices]);
+
   const onSwapMode = useCallback((e) => {
     e.stopPropagation();
     setMode((prev) => (prev === "info" ? "yield" : "info"));
@@ -390,9 +424,23 @@ const YieldCard: React.FC<YieldCardProps> = ({
         <Title fontSize={28} lineHeight={40} className="w-100 my-2">
           {t(`shared:ProductCopies:${vault}:title`)}
         </Title>
-        <SubTitle>Total Projected Yield (APY)</SubTitle>
+        <Title
+          color={`${colors.primaryText}A3`}
+          fontSize={12}
+          className="w-100 d-flex"
+        >
+          {t("shared:YieldCard:totalProjectedYield")}
+          <TooltipExplanation
+            explanation={<p>Total Projected Yield</p>}
+            renderContent={({ ref, ...triggerHandler }) => (
+              <HelpInfo containerRef={ref} {...triggerHandler}>
+                i
+              </HelpInfo>
+            )}
+          />
+        </Title>
         <Title fontSize={24} className="w-100 mt-1 mb-4">
-          {perfStr}
+          {perfStr} + {`${baseAPY.toFixed(2)}%`}
         </Title>
         <StrikeWidget />
         <CapBar
