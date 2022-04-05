@@ -4,7 +4,6 @@ import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-
 import { BaseLink, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import PerformanceSection from "./PerformanceSection";
@@ -366,20 +365,18 @@ const HeroSection: React.FC<{
   return (
     <>
       {/* V1 top banner */}
-      {variant === "v1" &&
-        chainId &&
-        hasVaultVersion(vaultOption, "v2", chainId) && (
-          <Banner
-            color={color}
-            message={
-              v1Inactive
-                ? "V1 vaults are now inactive and do not accept deposits"
-                : "V2 vaults are now live"
-            }
-            linkURI={getVaultURI(vaultOption, "v2")}
-            linkText="Switch to V2"
-          ></Banner>
-        )}
+      {variant === "v1" && hasVaultVersion(vaultOption, "v2") && (
+        <Banner
+          color={color}
+          message={
+            v1Inactive
+              ? "V1 vaults are now inactive and do not accept deposits"
+              : "V2 vaults are now live"
+          }
+          linkURI={getVaultURI(vaultOption, "v2")}
+          linkText="Switch to V2"
+        ></Banner>
+      )}
 
       <HeroContainer className="position-relative" color={color}>
         <HeroDescriptionContainer className="container">

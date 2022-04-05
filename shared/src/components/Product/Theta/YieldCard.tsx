@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { ethers } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
-
 import {
   BaseButton,
   Title,
@@ -659,7 +658,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
               <div className="d-flex">
                 {/* Version tags */}
                 {VaultVersionList.map((version) =>
-                  chainId && hasVaultVersion(vault, version, chainId) ? (
+                  hasVaultVersion(vault, version) ? (
                     <ProductVersionTag
                       key={version}
                       color={color}
