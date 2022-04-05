@@ -8,7 +8,6 @@ import React, {
 import styled from "styled-components";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { setTimeout } from "timers";
-import { AnimatePresence, motion } from "framer";
 import Davatar from "@davatar/react";
 
 import sizes from "shared/lib/designSystem/sizes";
@@ -19,7 +18,6 @@ import {
   WalletStatusProps,
   AccountStatusVariantProps,
   WalletButtonProps,
-  MenuStateProps,
   WalletCopyIconProps,
 } from "shared/lib/components/Wallet/types";
 import theme from "shared/lib/designSystem/theme";
@@ -32,6 +30,7 @@ import ActionModal from "../Vault/VaultActionsForm/Modal/ActionModal";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import useENSSearch from "shared/lib/hooks/useENSSearch";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
+import DesktopFloatingMenu from "shared/lib/components/Menu/DesktopFloatingMenu";
 import {
   Chains,
   getExplorerName,
@@ -169,26 +168,6 @@ const InvestButton = styled(ActionButton)`
   width: ${investButtonWidth}%;
   height: 48px;
   border-radius: ${theme.border.radius};
-`;
-
-const WalletDesktopMenu = styled(motion.div)<MenuStateProps>`
-  ${(props) =>
-    props.isMenuOpen
-      ? `
-          position: absolute;
-          right: 40px;
-          top: 64px;
-          width: fit-content;
-          background-color: ${colors.background.two};
-          border-radius: ${theme.border.radius};
-        `
-      : `
-          display: none;
-        `}
-
-  @media (max-width: ${sizes.md}px) {
-    display: none;
-  }
 `;
 
 const WalletMobileOverlayMenu = styled(
@@ -495,46 +474,25 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
               : "Invest"}
           </InvestButton>
         )}
-        <AnimatePresence>
-          <WalletDesktopMenu
-            key={isMenuOpen.toString()}
-            isMenuOpen={isMenuOpen}
-            initial={{
-              opacity: 0,
-              y: 20,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            exit={{
-              opacity: 0,
-              y: 20,
-            }}
-            transition={{
-              type: "keyframes",
-              duration: 0.2,
-            }}
-          >
-            {/* {renderMenuItem("CHANGE WALLET", handleChangeWallet)} */}
-            {renderMenuItem(
-              copyState === "hidden" ? "COPY ADDRESS" : "ADDRESS COPIED",
-              handleCopyAddress,
-              renderCopiedButton()
+        <DesktopFloatingMenu isOpen={isMenuOpen} containerStyle={{ right: 40 }}>
+          {/* {renderMenuItem("CHANGE WALLET", handleChangeWallet)} */}
+          {renderMenuItem(
+            copyState === "hidden" ? "COPY ADDRESS" : "ADDRESS COPIED",
+            handleCopyAddress,
+            renderCopiedButton()
+          )}
+          {chain !== Chains.NotSelected &&
+            renderMenuItem(
+              `OPEN IN ${getExplorerName(chain)}`,
+              handleOpenEtherscan
             )}
-            {chain !== Chains.NotSelected &&
-              renderMenuItem(
-                `OPEN IN ${getExplorerName(chain)}`,
-                handleOpenEtherscan
-              )}
-            {renderMenuItem("DISCONNECT", handleDisconnect)}
-            {chainId === CHAINID.ETH_MAINNET && (
-              <AirdropMenuItem role="button">
-                <AirdropButton onClick={onShowAirdropModal}></AirdropButton>
-              </AirdropMenuItem>
-            )}
-          </WalletDesktopMenu>
-        </AnimatePresence>
+          {renderMenuItem("DISCONNECT", handleDisconnect)}
+          {chainId === CHAINID.ETH_MAINNET && (
+            <AirdropMenuItem role="button">
+              <AirdropButton onClick={onShowAirdropModal}></AirdropButton>
+            </AirdropMenuItem>
+          )}
+        </DesktopFloatingMenu>
       </WalletContainer>
 
       {/* Mobile Menu */}

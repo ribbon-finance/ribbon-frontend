@@ -37,6 +37,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   const [, setMulticallCounter] = useState(0);
 
   const doMulticall = useCallback(async () => {
+    // TODO: Make this chain agnostic, for now we only enable when user connected to ETH
     if (
       !chainId ||
       !isEthNetwork(chainId) ||
@@ -63,7 +64,10 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
       return currentCounter;
     });
 
-    // TODO: Make this chain agnostic, for now we only enable when user connected to ETH
+    setData({
+      ...defaultLiquidityGaugeV5PoolData,
+      loading: true,
+    });
     const minterResponsePromises = Promise.all([
       minterContract.rate(),
       gaugeControllerContract.time_total(),
