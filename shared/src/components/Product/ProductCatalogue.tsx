@@ -96,7 +96,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
           return [vaultOption, VaultVersionList[0]];
         })
       ) as VaultsDisplayVersion,
-    [chainId, userSelectedVaultsVersion, v1VaultsData, v1VaultsDataLoading]
+    [userSelectedVaultsVersion, v1VaultsData, v1VaultsDataLoading]
   );
 
   const setVaultDisplayVersion = useCallback(

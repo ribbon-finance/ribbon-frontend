@@ -271,8 +271,6 @@ const chains: Array<Chain> = [
       "rstETH-THETA",
       "rBTC-THETA",
       "rAAVE-THETA",
-      "rAURORA-THETA",
-      "rNEAR-THETA",
       "rUSDC-ETH-P-THETA",
     ],
   },

@@ -50,14 +50,6 @@
       "title": "T-stETH-C",
       "subtitle": "stETH Covered Call"
     },
-    "rAURORA-THETA": {
-      "title": "T-AURORA-C",
-      "subtitle": "AURORA Covered Call"
-    },
-    "rNEAR-THETA": {
-      "title": "T-WNEAR-C",
-      "subtitle": "WNEAR Covered Call"
-    },
     "rAAVE-THETA": {
       "title": "T-AAVE-C",
       "subtitle": "AAVE Covered Call"
