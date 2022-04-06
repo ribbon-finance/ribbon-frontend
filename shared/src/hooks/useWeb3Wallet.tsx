@@ -158,7 +158,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
     active: isActiveEth,
     activate,
     deactivate: deactivateEth,
-    account: impersonateAddress ? impersonateAddress : accountEth,
+    account: impersonateAddress ?? accountEth,
     connectingWallet,
     connectedWallet,
     ethereumProvider: libraryEth,
