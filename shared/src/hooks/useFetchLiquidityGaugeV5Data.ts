@@ -64,6 +64,11 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
     });
 
     // TODO: Make this chain agnostic, for now we only enable when user connected to ETH
+    // Make sure loading is turned on before fetching
+    setData({
+      ...defaultLiquidityGaugeV5PoolData,
+      loading: true,
+    });
     const minterResponsePromises = Promise.all([
       minterContract.rate(),
       gaugeControllerContract.time_total(),
