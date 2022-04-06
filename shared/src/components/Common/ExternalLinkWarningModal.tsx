@@ -9,12 +9,16 @@ import { useTranslation } from "react-i18next";
 interface ExternalLinkWarningModalProps {
   onClose: () => void;
   show: boolean;
+  message: string;
+  continueText: string;
   onContinue: () => void;
 }
 
 const ExternalLinkWarningModal: React.FC<ExternalLinkWarningModalProps> = ({
   onClose,
   show,
+  message,
+  continueText,
   onContinue,
 }) => {
   const { t } = useTranslation();
@@ -37,7 +41,7 @@ const ExternalLinkWarningModal: React.FC<ExternalLinkWarningModalProps> = ({
               textAlign: "center",
             }}
           >
-            {t("shared:WarningModal:redacted:message")}
+            {message}
           </SecondaryText>
         </BaseModalContentColumn>
         <ActionButton
@@ -45,7 +49,7 @@ const ExternalLinkWarningModal: React.FC<ExternalLinkWarningModalProps> = ({
           className="mt-auto py-3 mb-2"
           color={colors.green}
         >
-          {t("shared:WarningModal:redacted:proceed")}
+          {continueText}
         </ActionButton>
       </>
     </BasicModal>

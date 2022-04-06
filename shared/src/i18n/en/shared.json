@@ -118,9 +118,13 @@
   },
   "WarningModal": {
     "leavingSite": "LEAVING SITE",
-    "redacted": {
+    "gaugeVoting": {
       "message": "All vault gauge voting is done using Redacted Cartel's gauge voting interface.",
       "proceed": "CONTINUE TO REDACTED CARTEL"
+    },
+    "governanceProposal": {
+      "message": "All governance proposal voting is done using the Ribbon Finance governance dashboard on Snapshot.",
+      "proceed": "CONTINUE To SNAPSHOT"
     }
   }
 }

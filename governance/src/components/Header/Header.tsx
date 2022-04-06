@@ -18,6 +18,7 @@ import DesktopSubmenu from "./DesktopSubmenu";
 import DesktopFloatingMenu from "shared/lib/components/Menu/DesktopFloatingMenu";
 import { MenuItem } from "shared/lib/components/Menu/MenuItem";
 import useOutsideAlerter from "shared/lib/hooks/useOutsideAlerter";
+import { useTranslation } from "react-i18next";
 
 const HeaderContainer = styled.div.attrs({
   className: "d-flex flex-column justify-content-center",
@@ -153,6 +154,8 @@ const Header = () => {
   const [votingMenuOpen, setVotingMenuOpen] = useState(false);
   const [votingLinkType, setVotingLinkType] = useState<VotingLinkType>();
 
+  const { t } = useTranslation();
+
   // Track clicked area outside of desktop menu
   const votingMenuRef = useRef(null);
   useOutsideAlerter(votingMenuRef, () => {
@@ -220,9 +223,18 @@ const Header = () => {
     <>
       <HeaderContainer isMenuOpen={isMenuOpen}>
         <ExternalLinkWarningModal
-          show={Boolean(votingLinkType)}
+          show={votingLinkType === "gaugeVoting"}
           onClose={() => setVotingLinkType(undefined)}
           onContinue={onContinueToVotingLink}
+          message={t("shared:WarningModal:gaugeVoting:message")}
+          continueText={t("shared:WarningModal:gaugeVoting:proceed")}
+        />
+        <ExternalLinkWarningModal
+          show={votingLinkType === "proposal"}
+          onClose={() => setVotingLinkType(undefined)}
+          onContinue={onContinueToVotingLink}
+          message={t("shared:WarningModal:governanceProposal:message")}
+          continueText={t("shared:WarningModal:governanceProposal:proceed")}
         />
 
         <InnerContainer>
