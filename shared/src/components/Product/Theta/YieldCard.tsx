@@ -463,7 +463,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
           <div>
             <StrikeTitle>{t("shared:YieldCard:weeklyStrikePrice")}</StrikeTitle>
             <StrikePrice color={colors.primaryText}>
-              {strikePrice()}
+              {vaultVersion === "v2" ? strikePrice() : "N/A"}
             </StrikePrice>
           </div>
           <div>
@@ -542,7 +542,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
         </TotalYieldTitle>
         <BoostWrapper>
           {totalProjectedYield}{" "}
-          {baseAPY > 0 && (
+          {baseAPY > 0 && vaultVersion === "v2" && (
             <BoostIcon color={color} backgroundColor={`${color}25`} />
           )}
         </BoostWrapper>
