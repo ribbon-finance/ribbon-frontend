@@ -226,6 +226,7 @@ const RangeContainer = styled.div`
   position: relative;
   margin-bottom: 24px;
   border-radius: 10px;
+  overflow: hidden;
 `;
 
 const RangeCenter = styled.div`
@@ -418,8 +419,8 @@ const YieldCard: React.FC<YieldCardProps> = ({
     };
 
     const range = isPutVault(vault)
-      ? ((strike * 2 - price) / (strike * 2)) * 50
-      : ((strike - price) / strike) * 50;
+      ? Math.min(((strike * 2 - price) / (strike * 1.2)) * 50, 50)
+      : Math.min(((price * 2 - strike) / (price * 1.2)) * 50, 50);
 
     return (
       <div
@@ -487,7 +488,13 @@ const YieldCard: React.FC<YieldCardProps> = ({
           </div>
           <div>
             <StrikeTitle>{t("shared:YieldCard:currentPrice")}</StrikeTitle>
-            <StrikePrice color={strikePriceColor}>{currentPrice()}</StrikePrice>
+            <StrikePrice
+              color={
+                vaultVersion === "v2" ? strikePriceColor : colors.primaryText
+              }
+            >
+              {currentPrice()}
+            </StrikePrice>
           </div>
         </StrikeContainer>
         <RangeContainer>
