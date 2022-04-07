@@ -19,6 +19,9 @@ import { ActionButton } from "shared/lib/components/Common/buttons";
 import StakingModalFormCalendarOverlay from "./StakingModalFormCalendarOverlay";
 import InlineSelectInput from "shared/lib/components/Common/InlineSelectInput";
 import { calculateInitialveRBNAmount } from "shared/lib/utils/governanceMath";
+import { useTranslation } from "react-i18next";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
 
 const durationSelectOptions = ["1W", "1M", "3M", "6M", "1Y", "custom"] as const;
 type DurationSelectOption = typeof durationSelectOptions[number];
@@ -87,6 +90,7 @@ interface StakingModalIncreaseDurationFormProps {
 const StakingModalIncreaseDurationForm: React.FC<
   StakingModalIncreaseDurationFormProps
 > = ({ initialStakingData, proceedToPreview }) => {
+  const { t } = useTranslation();
   const { data: rbnTokenAccount } = useRBNTokenAccount();
 
   const [expiryMoment, durationToExpiry] = useMemo(() => {
@@ -164,14 +168,14 @@ const StakingModalIncreaseDurationForm: React.FC<
       </BaseModalContentColumn>
       <BaseModalContentColumn>
         <Title fontSize={22} lineHeight={28}>
-          INCREASE YOUR LOCK TIME
+          {t("governance:IncreaseLockTimeModal:increaseYourLockTime")}
         </Title>
       </BaseModalContentColumn>
 
       {/* Calender Slider */}
       <BaseModalContentColumn className="flex-column">
         <BaseInputLabel className="mb-2">
-          INCREASE LOCK TIME TIME BY
+          {t("governance:IncreaseLockTimeModal:increaseLockTimeBy")}
         </BaseInputLabel>
         <InlineSelectInput
           options={[
@@ -213,7 +217,9 @@ const StakingModalIncreaseDurationForm: React.FC<
       </BaseModalContentColumn>
       <BaseModalContentColumn>
         <div className="d-flex justify-content-between w-100">
-          <SecondaryText lineHeight={24}>Current Lockup Expiry</SecondaryText>
+          <SecondaryText lineHeight={24}>
+            {t("governance:IncreaseLockTimeModal:currentLockupExpiry")}
+          </SecondaryText>
           <Title
             color={expiryInFuture ? colors.primaryText : colors.red}
             lineHeight={24}
@@ -224,7 +230,22 @@ const StakingModalIncreaseDurationForm: React.FC<
       </BaseModalContentColumn>
       <BaseModalContentColumn>
         <div className="d-flex justify-content-between w-100">
-          <SecondaryText lineHeight={24}>Locked RBN</SecondaryText>
+          <div className="d-flex align-items-center">
+            <SecondaryText lineHeight={24}>
+              {t("shared:TooltipExplanations:lockedRBN:title")}
+            </SecondaryText>
+            <TooltipExplanation
+              title={t("shared:TooltipExplanations:lockedRBN:title")}
+              explanation={t(
+                "shared:TooltipExplanations:lockedRBN:description"
+              )}
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HelpInfo containerRef={ref} {...triggerHandler}>
+                  i
+                </HelpInfo>
+              )}
+            />
+          </div>
           <Title lineHeight={24}>
             {rbnTokenAccount
               ? formatBigNumber(rbnTokenAccount.lockedBalance, 18)
@@ -240,17 +261,29 @@ const StakingModalIncreaseDurationForm: React.FC<
         >
           {lockupDurationExceedsMaximum ? (
             <>
-              The maximum lockup period is{" "}
-              <StakingWarningHighlight>2 years</StakingWarningHighlight>. Please
-              decrease your lock time.
+              {`${t(
+                "governance:IncreaseLockTimeModal:maximumLockupMessage:1"
+              )} `}
+              <StakingWarningHighlight>
+                {`${t(
+                  "governance:IncreaseLockTimeModal:maximumLockupMessage:2"
+                )} `}
+              </StakingWarningHighlight>
+              {`${t(
+                "governance:IncreaseLockTimeModal:maximumLockupMessage:3"
+              )} `}
             </>
           ) : (
             <>
-              Locking up your RBN till{" "}
+              {`${t(
+                "governance:IncreaseLockTimeModal:lockupSummaryMessage:1"
+              )} `}
               <StakingWarningHighlight>
                 {moment().add(stakeDuration).format("MMMM, Do YYYY")}
               </StakingWarningHighlight>{" "}
-              increases your voting power by{" "}
+              {`${t(
+                "governance:IncreaseLockTimeModal:lockupSummaryMessage:2"
+              )} `}
               <StakingWarningHighlight>
                 {formatBigNumberAmount(
                   calculateInitialveRBNAmount(
@@ -265,7 +298,9 @@ const StakingModalIncreaseDurationForm: React.FC<
                 )}{" "}
                 veRBN
               </StakingWarningHighlight>{" "}
-              to a total of{" "}
+              {`${t(
+                "governance:IncreaseLockTimeModal:lockupSummaryMessage:3"
+              )} `}
               <StakingWarningHighlight>
                 {formatBigNumberAmount(
                   calculateInitialveRBNAmount(
@@ -292,7 +327,7 @@ const StakingModalIncreaseDurationForm: React.FC<
           className="py-3 mb-3"
           color={colors.red}
         >
-          PREVIEW LOCK TIME INCREASE
+          {`${t("governance:IncreaseLockTimeModal:previewLockTimeIncrease")} `}
         </ActionButton>
       </BaseModalContentColumn>
     </>
