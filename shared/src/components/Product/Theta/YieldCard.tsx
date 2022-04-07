@@ -29,7 +29,11 @@ import {
   isAvaxVault,
   isSolanaVault,
 } from "../../../constants/constants";
-import { BarChartIcon, GlobeIcon } from "../../../assets/icons/icons";
+import {
+  BarChartIcon,
+  BoostIcon,
+  GlobeIcon,
+} from "../../../assets/icons/icons";
 import { getAssetDisplay, getAssetLogo } from "../../../utils/asset";
 import { getVaultColor } from "../../../utils/vault";
 import ModalContentExtra from "../../Common/ModalContentExtra";
@@ -279,6 +283,22 @@ const YieldExplainerStat = styled.div`
   }
 `;
 
+const BoostWrapper = styled(Title)`
+  font-size: 24px;
+  width: 100%;
+  margin-top: 4px;
+  margin-bottom: 16px;
+  display: flex;
+
+  > * {
+    margin: auto 0;
+  }
+
+  svg {
+    margin-left: 12px;
+  }
+`;
+
 interface YieldCardProps {
   vault: VaultOptions;
   vaultVersion: VaultVersion;
@@ -520,9 +540,12 @@ const YieldCard: React.FC<YieldCardProps> = ({
             )}
           />
         </TotalYieldTitle>
-        <Title fontSize={24} className="w-100 mt-1 mb-3">
-          {totalProjectedYield}
-        </Title>
+        <BoostWrapper>
+          {totalProjectedYield}{" "}
+          {baseAPY > 0 && (
+            <BoostIcon color={color} backgroundColor={`${color}25`} />
+          )}
+        </BoostWrapper>
         <StrikeWidget />
         <CapBar
           loading={vaultVersion === "v1" ? isLoading : v2DataLoading}

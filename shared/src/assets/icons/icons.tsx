@@ -6,6 +6,7 @@ type SVGProps = React.SVGAttributes<SVGElement>;
 
 export interface SVGPropsWithColor extends SVGProps {
   color?: string;
+  backgroundColor?: string;
 }
 export interface IconProps extends SVGPropsWithColor {
   containerStyle?: React.CSSProperties;
@@ -1195,5 +1196,22 @@ export const VeRBNIcon: React.FC<SVGPropsWithColor> = () => (
         />
       </filter>
     </defs>
+  </svg>
+);
+
+export const BoostIcon: React.FC<SVGPropsWithColor> = ({
+  color,
+  backgroundColor,
+  ...props
+}) => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="24" height="24" rx="12" fill={backgroundColor} />
+    <path d="M13 6L7 13.2H12.4L11.8 18L17.8 10.8H12.4L13 6Z" fill={color} />
   </svg>
 );
