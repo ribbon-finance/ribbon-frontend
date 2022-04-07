@@ -411,15 +411,15 @@ const YieldCard: React.FC<YieldCardProps> = ({
   }> = ({ vault, isLeft = true, strike, price }) => {
     const color = () => {
       if (isLeft) {
-        return isPutVault(vault)
-          ? colors.background.one
-          : colors.background.one;
+        return isPutVault(vault) ? `${colors.red}25` : `${colors.green}25`;
       } else {
-        return isPutVault(vault)
-          ? colors.background.one
-          : colors.background.one;
+        return isPutVault(vault) ? `${colors.green}25` : `${colors.red}25`;
       }
     };
+
+    const range = isPutVault(vault)
+      ? ((strike * 2 - price) / (strike * 2)) * 50
+      : ((strike - price) / strike) * 50;
 
     return (
       <div
@@ -431,7 +431,8 @@ const YieldCard: React.FC<YieldCardProps> = ({
       >
         <div
           style={{
-            width: "50%",
+            width: `${range}%`,
+            marginLeft: !isPutVault(vault) && isLeft ? `${50 - range}%` : `0%`,
             height: "4px",
             backgroundColor: color(),
           }}
@@ -456,6 +457,24 @@ const YieldCard: React.FC<YieldCardProps> = ({
     }
   }, [strikePrice, currentPrice, priceLoading, vault, colors, isPutVault]);
 
+  const displayRange = (isLeft: boolean = true) => {
+    const strike = strikePrice(false);
+    const current = currentPrice(false);
+    const OTM = isPutVault(vault) ? strike < current : current > strike;
+
+    if (vaultVersion === "v1") return false;
+
+    if (isLeft && !OTM) {
+      return true;
+    } else if (isLeft && OTM) {
+      return false;
+    } else if (!isLeft && OTM) {
+      return true;
+    } else if (!isLeft && !OTM) {
+      return false;
+    }
+  };
+
   const StrikeWidget = useCallback(() => {
     return (
       <>
@@ -472,19 +491,27 @@ const YieldCard: React.FC<YieldCardProps> = ({
           </div>
         </StrikeContainer>
         <RangeContainer>
-          <Range
-            isLeft
-            vault={vault}
-            strike={strikePrice(false) as number}
-            price={currentPrice(false) as number}
-          />
+          {displayRange() && (
+            <Range
+              isLeft
+              vault={vault}
+              strike={strikePrice(false) as number}
+              price={currentPrice(false) as number}
+              // price={strikePrice(false) as number}
+              // strike={currentPrice(false) as number}
+            />
+          )}
           <RangeCenter />
-          <Range
-            isLeft={false}
-            vault={vault}
-            strike={strikePrice(false) as number}
-            price={currentPrice(false) as number}
-          />
+          {displayRange(false) && (
+            <Range
+              isLeft={false}
+              vault={vault}
+              strike={strikePrice(false) as number}
+              price={currentPrice(false) as number}
+              // price={strikePrice(false) as number}
+              // strike={currentPrice(false) as number}
+            />
+          )}
         </RangeContainer>
       </>
     );
