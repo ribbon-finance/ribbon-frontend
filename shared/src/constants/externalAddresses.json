@@ -143,39 +143,5 @@
     "gammaController": "0x836E115f0580c8350228E073949bf269F7BC4B62",
     "gammaMarginPool": "0x9EBC603bBf8309E1715a1678B5C13A4aE6c26452",
     "sAvaxDepositHelper": "0x13F20ed881f7ED97C5EA34B33C9305D7f7D00fd3"
-  },
-  "aurora": {
-    "feeds": {
-      "eth/usd": "0x713C55D48C88499528d72EE9B4251e6c34303103",
-      "wnear/usd": "0x72a35EC838652F9aD4F1C0ac50ea1A0298438CeA",
-      "aurora/usd": "0x4Ba0A4fF7Ea6021C20Fc40fc816B773bBd4720c4"
-    },
-    "assets": {
-      "aurora": "0x8BEc47865aDe3B172A928df8f990Bc7f2A3b9f79",
-      "weth": "0xC9BdeEd33CD01541e1eeD10f90519d2C06Fe3feB",
-      "wnear": "0xC42C30aC6Cc15faC9bD938618BcaA1a1FaE8501d",
-      "rNEAR-THETA": "0x7796d6B1706855303655EB12F54FaE294c468a66",
-      "rAURORA-THETA": "0xC5DB388DB490f88A81be75c32d60F28579556145"
-    },
-    "oTokenFactory": "0xE9B615dA05caf4Bd549697D293e23290E85C0535",
-    "gammaController": "0x1bb7deb83b26b61eba9be241905c3cf2bff60ad9",
-    "gammaMarginPool": "0x7df8a0E1573d78bBDB78a497E4F583755a62d8a8"
-  },
-  "aurora-testnet": {
-    "feeds": {
-      "eth/usd": "0x713C55D48C88499528d72EE9B4251e6c34303103",
-      "wnear/usd": "0x72a35EC838652F9aD4F1C0ac50ea1A0298438CeA",
-      "aurora/usd": "0x4Ba0A4fF7Ea6021C20Fc40fc816B773bBd4720c4"
-    },
-    "assets": {
-      "aurora": "0x8BEc47865aDe3B172A928df8f990Bc7f2A3b9f79",
-      "weth": "0xC9BdeEd33CD01541e1eeD10f90519d2C06Fe3feB",
-      "wnear": "0xC42C30aC6Cc15faC9bD938618BcaA1a1FaE8501d",
-      "rNEAR-THETA": "0x7796d6B1706855303655EB12F54FaE294c468a66",
-      "rAURORA-THETA": "0xC5DB388DB490f88A81be75c32d60F28579556145"
-    },
-    "oTokenFactory": "0xE9B615dA05caf4Bd549697D293e23290E85C0535",
-    "gammaController": "0x1bb7deb83b26b61eba9be241905c3cf2bff60ad9",
-    "gammaMarginPool": "0x7df8a0E1573d78bBDB78a497E4F583755a62d8a8"
   }
 }

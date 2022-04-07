@@ -8,8 +8,6 @@ import STETHDepositAnimationData from "../../../assets/icons/vaultExplainer/depo
 import AAVEDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/AAVE_Deposit.json";
 import AVAXDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/AVAX_Deposit.json";
 import SAVAXDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/SAVAX_Deposit.json";
-import NEARDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/NEAR_Deposit.json";
-import AURORADepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/AURORA_Deposit.json";
 import APEDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/APE_Deposit.json";
 import SOLDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/SOL_Deposit.json";
 import { getAssets, VaultOptions } from "shared/lib/constants/constants";
@@ -38,10 +36,6 @@ const VaultDeposit: React.FC<VaultDepositProps> = ({ vaultOption }) => {
             return AVAXDepositAnimationData;
           case "sAVAX":
             return SAVAXDepositAnimationData;
-          case "WNEAR":
-            return NEARDepositAnimationData;
-          case "AURORA":
-            return AURORADepositAnimationData;
           case "APE":
             return APEDepositAnimationData;
           case "SOL":

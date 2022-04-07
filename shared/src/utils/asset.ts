@@ -10,8 +10,6 @@ import {
   SAVAXLogo,
   YVUSDcLogo,
   PERPLogo,
-  WNEARLogo,
-  AURORALogo,
   APELogo,
 } from "../assets/icons/erc20Assets";
 import Logo from "../assets/icons/logo";
@@ -105,8 +103,6 @@ export const getChainByVaultOption = (vault: VaultOptions): Chains => {
     case "rSOL-THETA":
       return Chains.Solana;
 
-    case "rAURORA-THETA":
-    case "rNEAR-THETA":
     default:
       return Chains.NotSelected;
   }
@@ -125,8 +121,6 @@ export const getAssetDisplay = (asset: Assets): string => {
 
 export const getAssetDecimals = (asset: Assets): number => {
   switch (asset) {
-    case "WNEAR":
-      return 24;
     case "WBTC":
       return 8;
     case "USDC":
@@ -252,10 +246,6 @@ export const getAssetLogo: (asset: Assets) =>
       return PERPLogo;
     case "SOL":
       return SolanaLogo;
-    case "WNEAR":
-      return WNEARLogo;
-    case "AURORA":
-      return AURORALogo;
     case "APE":
       return APELogo;
     default:

@@ -11,13 +11,10 @@ export const useEVMWeb3Context = () => {
     avax: useWeb3Context(
       isDevelopment() ? CHAINID.AVAX_FUJI : CHAINID.AVAX_MAINNET
     ).provider,
-    aurora: useWeb3Context(
-      isDevelopment() ? CHAINID.AURORA_MAINNET : CHAINID.AURORA_TESTNET
-    ).provider,
   };
   const getProviderForNetwork = useCallback(
     (network: MAINNET_NAMES) => providers[network],
-    [providers.mainnet, providers.avax, providers.aurora] // eslint-disable-line react-hooks/exhaustive-deps
+    [providers.mainnet, providers.avax] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   return {

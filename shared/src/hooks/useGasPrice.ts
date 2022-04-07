@@ -4,11 +4,7 @@ import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import { useGlobalState } from "../store/store";
 import { GAS_URL } from "../utils/env";
-import {
-  isEthNetwork,
-  isAuroraNetwork,
-  isAvaxNetwork,
-} from "../constants/constants";
+import { isEthNetwork, isAvaxNetwork } from "../constants/constants";
 
 const { parseUnits } = ethers.utils;
 
@@ -43,9 +39,6 @@ const useGasPrice = () => {
       // Snowtrace API wrongly returns Ethereum mainnet gas price
       // But the good thing is that Avalanche hardcodes gas price to 25 nAVAX (gwei)
       gasPrice = "25";
-    } else if (isAuroraNetwork(chainId)) {
-      // And Aurora to 0 ETH for gas
-      gasPrice = "0";
     }
     setGasPrice(parseUnits(gasPrice, "gwei").toString());
   }, [chainId, setGasPrice]);
