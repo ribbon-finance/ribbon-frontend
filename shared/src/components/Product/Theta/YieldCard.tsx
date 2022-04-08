@@ -404,43 +404,109 @@ const YieldCard: React.FC<YieldCardProps> = ({
     setMode((prev) => (prev === "info" ? "yield" : "info"));
   }, []);
 
-  const Range: React.FC<{
-    vault: VaultOptions;
-    isLeft: boolean;
-    strike: number;
-    price: number;
-  }> = ({ vault, isLeft = true, strike, price }) => {
-    const color = () => {
-      if (isLeft) {
-        return isPutVault(vault) ? `${colors.red}25` : `${colors.green}25`;
-      } else {
-        return isPutVault(vault) ? `${colors.green}25` : `${colors.red}25`;
+  const displayRange = useCallback(
+    (isLeft: boolean = true, strike: number, current: number) => {
+      // const strike = strikePrice(false) as number;
+      // const price = currentPrice(false) as number;
+      const OTM = isPutVault(vault) ? strike < current : current > strike;
+
+      if (priceLoading) return false;
+
+      if (vaultVersion === "v1") return false;
+
+      if (strike === current) return false;
+
+      if (isLeft && !OTM) {
+        return true;
+      } else if (isLeft && OTM) {
+        return false;
+      } else if (!isLeft && OTM) {
+        return true;
+      } else if (!isLeft && !OTM) {
+        return false;
       }
-    };
+    },
+    [priceLoading, vault, vaultVersion]
+  );
 
-    const range = isPutVault(vault)
-      ? Math.min(((strike * 2 - price) / (strike * 1.2)) * 50, 50)
-      : Math.min(((price * 2 - strike) / (price * 1.2)) * 50, 50);
+  const Range = useCallback(
+    ({ vault }) => {
+      // const strike = strikePrice(false) as number;
+      // const price = currentPrice(false) as number;
+      const strike = 100;
+      const current = 100;
 
-    return (
-      <div
-        style={{
-          width: "100%",
-          position: "absolute",
-          left: isLeft ? 0 : "50%",
-        }}
-      >
+      let range: number = 0;
+
+      if (isPutVault(vault)) {
+        const min = strike * 1.2;
+        const diff = min - strike;
+        const max = strike - diff;
+
+        if (current > strike) {
+          range = ((current - strike) / diff) * 100;
+        } else {
+          range = ((current - max) / diff) * 100;
+        }
+      } else {
+        const max = strike * 1.2;
+        const diff = max - strike;
+        const min = strike - diff;
+
+        if (current > strike) {
+          range = ((current - strike) / diff) * 100;
+        } else {
+          range = ((current - min) / diff) * 100;
+        }
+      }
+
+      return (
         <div
           style={{
-            width: `${range}%`,
-            marginLeft: !isPutVault(vault) && isLeft ? `${50 - range}%` : `0%`,
-            height: "4px",
-            backgroundColor: color(),
+            width: "100%",
+            position: "absolute",
+            display: "flex",
           }}
-        ></div>
-      </div>
-    );
-  };
+        >
+          <div
+            style={{
+              flex: 1,
+              height: "4px",
+            }}
+          >
+            <div
+              style={{
+                marginLeft: "auto",
+                width: displayRange(true, strike, current) ? `${range}%` : 0,
+                height: "100%",
+                backgroundColor: isPutVault(vault)
+                  ? `${colors.red}30`
+                  : `${colors.green}30`,
+              }}
+            />
+          </div>
+          <div
+            style={{
+              flex: 1,
+              height: "4px",
+            }}
+          >
+            <div
+              style={{
+                marginRight: "auto",
+                width: displayRange(false, strike, current) ? `${range}%` : 0,
+                height: "100%",
+                backgroundColor: isPutVault(vault)
+                  ? `${colors.green}30`
+                  : `${colors.red}30`,
+              }}
+            />
+          </div>
+        </div>
+      );
+    },
+    [displayRange]
+  );
 
   const strikePriceColor = useMemo(() => {
     const strike = strikePrice(false);
@@ -452,29 +518,10 @@ const YieldCard: React.FC<YieldCardProps> = ({
       if (isPutVault(vault)) {
         return current > strike ? colors.green : colors.red;
       } else {
-        console.log(vault, current < strike, current, strike);
         return current < strike ? colors.green : colors.red;
       }
     }
-  }, [strikePrice, currentPrice, priceLoading, vault, colors, isPutVault]);
-
-  const displayRange = (isLeft: boolean = true) => {
-    const strike = strikePrice(false);
-    const current = currentPrice(false);
-    const OTM = isPutVault(vault) ? strike < current : current > strike;
-
-    if (vaultVersion === "v1") return false;
-
-    if (isLeft && !OTM) {
-      return true;
-    } else if (isLeft && OTM) {
-      return false;
-    } else if (!isLeft && OTM) {
-      return true;
-    } else if (!isLeft && !OTM) {
-      return false;
-    }
-  };
+  }, [strikePrice, currentPrice, priceLoading, vault]);
 
   const StrikeWidget = useCallback(() => {
     return (
@@ -498,31 +545,20 @@ const YieldCard: React.FC<YieldCardProps> = ({
           </div>
         </StrikeContainer>
         <RangeContainer>
-          {displayRange() && (
-            <Range
-              isLeft
-              vault={vault}
-              strike={strikePrice(false) as number}
-              price={currentPrice(false) as number}
-              // price={strikePrice(false) as number}
-              // strike={currentPrice(false) as number}
-            />
-          )}
+          <Range vault={vault} />
           <RangeCenter />
-          {displayRange(false) && (
-            <Range
-              isLeft={false}
-              vault={vault}
-              strike={strikePrice(false) as number}
-              price={currentPrice(false) as number}
-              // price={strikePrice(false) as number}
-              // strike={currentPrice(false) as number}
-            />
-          )}
         </RangeContainer>
       </>
     );
-  }, [strikePrice, currentPrice, vault]);
+  }, [
+    t,
+    vaultVersion,
+    strikePrice,
+    strikePriceColor,
+    currentPrice,
+    Range,
+    vault,
+  ]);
 
   const ProductInfoContent = useCallback(() => {
     const Logo = getAssetLogo(displayAsset);
@@ -601,20 +637,21 @@ const YieldCard: React.FC<YieldCardProps> = ({
       </>
     );
   }, [
-    asset,
-    color,
-    depositLimitStr,
     displayAsset,
-    isLoading,
+    color,
+    t,
+    vault,
     totalProjectedYield,
     vaultYield,
     baseStakingYield,
-    totalDepositStr,
-    v2DataLoading,
-    vault,
+    baseAPY,
     vaultVersion,
-    t,
     StrikeWidget,
+    isLoading,
+    v2DataLoading,
+    totalDepositStr,
+    depositLimitStr,
+    asset,
   ]);
 
   const modalContentExtra = useMemo(() => {
@@ -653,12 +690,13 @@ const YieldCard: React.FC<YieldCardProps> = ({
       );
     }
   }, [
-    chainId,
-    asset,
-    decimals,
-    vaultAccount,
-    vaultBalanceInAsset,
     vaultVersion,
+    vaultBalanceInAsset,
+    decimals,
+    chainId,
+    t,
+    vaultAccount,
+    asset,
   ]);
 
   const vaultLogo = useMemo(() => {
