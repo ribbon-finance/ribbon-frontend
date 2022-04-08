@@ -310,6 +310,14 @@ const Header = () => {
             false,
             true
           )}
+
+          {renderLinkItem(
+            "AUCTIONS",
+            "https://auction.ribbon.finance",
+            false,
+            false,
+            true
+          )}
         </MobileOverlayMenu>
       </MobileOnly>
     </HeaderContainer>
