@@ -431,10 +431,10 @@ const YieldCard: React.FC<YieldCardProps> = ({
 
   const Range = useCallback(
     ({ vault }) => {
-      // const strike = strikePrice(false) as number;
-      // const price = currentPrice(false) as number;
-      const strike = 100;
-      const current = 100;
+      const strike = strikePrice(false) as number;
+      const current = currentPrice(false) as number;
+      // const strike = 100;
+      // const current = 100;
 
       let range: number = 0;
 
