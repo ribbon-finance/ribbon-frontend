@@ -168,14 +168,13 @@ const Header = () => {
     setIsMenuOpen(!isMenuOpen);
   }, [isMenuOpen]);
 
-  // TODO: - Replace this with actual link
   const onContinueToVotingLink = useCallback(() => {
     switch (votingLinkType) {
       case "gaugeVoting":
-        window.open("https://google.com");
+        window.open("https://hiddenhand.finance/ribbon");
         break;
       case "proposal":
-        window.open("https://google.com");
+        window.open("https://snapshot.org/#/rbn.eth");
         break;
     }
     setVotingLinkType(undefined);
