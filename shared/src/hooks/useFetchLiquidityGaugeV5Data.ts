@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
-
 import {
   defaultLiquidityGaugeV5PoolData,
   LiquidityGaugeV5PoolData,
@@ -10,11 +8,7 @@ import { impersonateAddress } from "../utils/development";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { useWeb3Context } from "./web3Context";
 import { isProduction } from "../utils/env";
-import {
-  isEthNetwork,
-  VaultLiquidityMiningMap,
-  VaultOptions,
-} from "../constants/constants";
+import { VaultLiquidityMiningMap, VaultOptions } from "../constants/constants";
 import { BigNumber } from "@ethersproject/bignumber";
 import { getLiquidityGaugeV5 } from "./useLiquidityGaugeV5";
 import { getV2VaultContract } from "./useV2VaultContract";
@@ -22,9 +16,10 @@ import useLiquidityTokenMinter from "./useLiquidityTokenMinter";
 import useLiquidityGaugeController from "./useLiquidityGaugeController";
 import { constants } from "ethers";
 import { calculateClaimableRbn } from "../utils/governanceMath";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
-  const { active, chainId, account: web3Account, library } = useWeb3React();
+  const { active, account: web3Account, ethereumProvider } = useWeb3Wallet();
   const { provider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
@@ -37,12 +32,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   const [, setMulticallCounter] = useState(0);
 
   const doMulticall = useCallback(async () => {
-    if (
-      !chainId ||
-      !isEthNetwork(chainId) ||
-      !minterContract ||
-      !gaugeControllerContract
-    ) {
+    if (!minterContract || !gaugeControllerContract) {
       setData({
         ...defaultLiquidityGaugeV5PoolData,
         loading: false,
@@ -80,12 +70,12 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
         const vault = _vault as VaultOptions;
 
         const lg5Contract = getLiquidityGaugeV5(
-          library || provider,
+          ethereumProvider || provider,
           vault,
           active
         )!;
         const vaultContract = getV2VaultContract(
-          library || provider,
+          ethereumProvider || provider,
           vault,
           active
         );
@@ -245,8 +235,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   }, [
     account,
     active,
-    chainId,
-    library,
+    ethereumProvider,
     gaugeControllerContract,
     minterContract,
     provider,

@@ -1,9 +1,8 @@
 import React, { useCallback, useMemo, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { ethers } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
-
 import {
   BaseButton,
   Title,
@@ -30,20 +29,33 @@ import {
   isAvaxVault,
   isSolanaVault,
 } from "../../../constants/constants";
-import { BarChartIcon, GlobeIcon } from "../../../assets/icons/icons";
+import {
+  BarChartIcon,
+  BoostIcon,
+  GlobeIcon,
+} from "../../../assets/icons/icons";
 import { getAssetDisplay, getAssetLogo } from "../../../utils/asset";
 import { getVaultColor } from "../../../utils/vault";
 import ModalContentExtra from "../../Common/ModalContentExtra";
 import { VaultAccount } from "../../../models/vault";
 import YieldComparison from "./YieldComparison";
-import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
+import {
+  useLiquidityGaugeV5PoolData,
+  useV2VaultData,
+  useVaultData,
+} from "../../../hooks/web3DataContext";
 import useAssetsYield from "../../../hooks/useAssetsYield";
 import useLatestAPY from "../../../hooks/useLatestAPY";
+import useStrikePrice from "../../../hooks/useStrikePrice";
 import { animatedGradientKeyframe } from "../../../designSystem/keyframes";
 import { ETHMonoLogo } from "../../../assets/icons/vaultMonoLogos";
 import { AVAXMonoLogo } from "../../../assets/icons/vaultMonoLogos";
 import { SOLMonoLogo } from "../../../assets/icons/vaultMonoLogos";
 import useWeb3Wallet from "../../../hooks/useWeb3Wallet";
+import TooltipExplanation from "../../Common/TooltipExplanation";
+import HelpInfo from "../../Common/HelpInfo";
+import { calculateBaseRewards } from "../../../utils/governanceMath";
+import { useAssetsPrice } from "../../../hooks/useAssetPrice";
 
 const { formatUnits } = ethers.utils;
 
@@ -173,12 +185,6 @@ const ProductInfo = styled.div`
   flex: 1;
 `;
 
-const ProductDescription = styled(SecondaryText)`
-  line-height: 1.5;
-  margin-bottom: auto;
-  min-height: 70px;
-`;
-
 const ModeSwitcherContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
@@ -188,6 +194,161 @@ const ModeSwitcherContainer = styled.div<{ color: string }>`
   border-radius: 100px;
   background: ${(props) => props.color}14;
   z-index: 1;
+`;
+
+const StrikeContainer = styled.div`
+  display: flex;
+
+  > div {
+    width: 50%;
+
+    &:not(:first-child) {
+      padding-left: 8px;
+    }
+  }
+`;
+
+const StrikePrice = styled.div<{ color: string }>`
+  color: ${(props) => props.color};
+  font-family: VCR;
+  font-size: 14px;
+`;
+
+const StrikeTitle = styled.div`
+  font-size: 12px;
+  color: ${colors.tertiaryText};
+`;
+
+const RangeContainer = styled.div`
+  width: 100%;
+  height: 4px;
+  background: ${colors.background.four};
+  position: relative;
+  margin-bottom: 24px;
+  border-radius: 10px;
+`;
+
+const RangeCenter = styled.div`
+  width: 1px;
+  height: 8px;
+  background: white;
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  z-index: 100;
+`;
+
+const TotalYieldTitle = styled.div`
+  display: flex;
+  font-size: 14px;
+  width: 100%;
+  color: ${colors.tertiaryText};
+  margin-top: 8px;
+
+  > * {
+    margin: auto 0;
+    margin-left: 8px;
+  }
+`;
+
+const YieldExplainerTitle = styled.div<{ color: string }>`
+  color: ${(props) => props.color};
+  fontsize: 14px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+
+  > span {
+    &:last-child {
+      font-family: VCR;
+    }
+  }
+`;
+
+const YieldExplainerStat = styled.div`
+  fontsize: 14px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  margin-left: 8px;
+
+  > span {
+    &:first-child {
+      margin-left: 8px;
+    }
+
+    &:last-child {
+      font-family: VCR;
+    }
+  }
+`;
+
+const BoostWrapper = styled(Title)`
+  font-size: 24px;
+  width: 100%;
+  margin-top: 4px;
+  margin-bottom: 16px;
+  display: flex;
+
+  > * {
+    margin: auto 0;
+  }
+
+  svg {
+    margin-left: 12px;
+  }
+`;
+
+const StrikeBarContainer = styled.div`
+  width: 100%;
+  position: absolute;
+  display: flex;
+`;
+
+const StrikeBar = styled.div`
+  flex: 1;
+  height: 4px;
+`;
+
+const StrikeBarBG = styled.div<{
+  width: string;
+  // Color in hex
+  color: string;
+  isLeft?: boolean;
+}>`
+  position: relative;
+  width: ${(props) => props.width};
+  height: 100%;
+  background-color: ${(props) => `${props.color}30`};
+  ${(props) =>
+    props.isLeft
+      ? css`
+          margin-left: auto;
+        `
+      : css`
+          margin-right: auto;
+        `}
+`;
+
+const StrikeDot = styled.div<{
+  color: string;
+  hide: boolean;
+  isLeft?: boolean;
+}>`
+  position: absolute;
+  height: 4px;
+  width: ${(props) => (props.hide ? 0 : "4px")};
+  border-radius: 2px;
+  margin-left: -2px;
+  background-color ${(props) => props.color};
+  ${(props) =>
+    props.isLeft
+      ? css`
+          left: 0px;
+        `
+      : css`
+          right: 0px;
+        `}
 `;
 
 interface YieldCardProps {
@@ -224,6 +385,47 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const isLoading = useMemo(() => status === "loading", [status]);
   const [mode, setMode] = useState<"info" | "yield">("info");
   const color = getVaultColor(vault);
+  const {
+    strikePrice,
+    currentPrice,
+    isLoading: priceLoading,
+  } = useStrikePrice(vault, vaultVersion);
+  const latestAPY = useLatestAPY(vault, vaultVersion);
+  const { data: lg5Data, loading: lg5DataLoading } =
+    useLiquidityGaugeV5PoolData(vault);
+  const {
+    data: { pricePerShare },
+  } = useV2VaultData(vault);
+  const { prices } = useAssetsPrice();
+
+  const loadingText = useLoadingText();
+
+  const baseAPY = useMemo(() => {
+    if (!lg5Data) {
+      return 0;
+    }
+    const rewards = calculateBaseRewards({
+      poolSize: lg5Data.poolSize,
+      poolReward: lg5Data.poolRewardForDuration,
+      pricePerShare,
+      decimals,
+      assetPrice: prices[asset],
+      rbnPrice: prices["RBN"],
+    });
+
+    return rewards;
+  }, [asset, decimals, lg5Data, pricePerShare, prices]);
+
+  const totalProjectedYield =
+    latestAPY.fetched && !lg5DataLoading
+      ? `${(latestAPY.res + baseAPY).toFixed(2)}%`
+      : loadingText;
+  const vaultYield = latestAPY.fetched
+    ? `${latestAPY.res.toFixed(2)}%`
+    : loadingText;
+  const baseStakingYield = !lg5DataLoading
+    ? `${baseAPY.toFixed(2)}%`
+    : loadingText;
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {
@@ -248,17 +450,136 @@ const YieldCard: React.FC<YieldCardProps> = ({
     }
   }, [decimals, deposits, v2Deposits, v2VaultLimit, vaultLimit, vaultVersion]);
 
-  const latestAPY = useLatestAPY(vault, vaultVersion);
-
-  const loadingText = useLoadingText();
-  const perfStr = latestAPY.fetched
-    ? `${latestAPY.res.toFixed(2)}%`
-    : loadingText;
-
   const onSwapMode = useCallback((e) => {
     e.stopPropagation();
     setMode((prev) => (prev === "info" ? "yield" : "info"));
   }, []);
+
+  const displayRange = useCallback(
+    (isLeft: boolean = true, strike: number, current: number) => {
+      const OTM = isPutVault(vault) ? strike < current : current > strike;
+
+      if (priceLoading) return false;
+
+      if (vaultVersion === "v1") return false;
+
+      if (strike === current) return false;
+
+      if (isLeft && !OTM) {
+        return true;
+      } else if (isLeft && OTM) {
+        return false;
+      } else if (!isLeft && OTM) {
+        return true;
+      } else if (!isLeft && !OTM) {
+        return false;
+      }
+    },
+    [priceLoading, vault, vaultVersion]
+  );
+
+  const Range = useCallback(
+    ({ vault }) => {
+      const strike = strikePrice(false) as number;
+      const current = currentPrice(false) as number;
+
+      const strikePriceWithExtraMargin = strike * 1.2;
+      const diff = strikePriceWithExtraMargin - strike;
+      // Range is the width of the bar.
+      // Calculate by taking the difference between current price and strike price,
+      // divided by the total number of units of the bar on one side.
+      const range = Math.min(
+        (Math.abs(current - strike) / diff) * 100,
+        // Maximum is 100%
+        100
+      );
+
+      const leftBarColor = isPutVault(vault) ? colors.red : colors.green;
+      const rightBarColor = isPutVault(vault) ? colors.green : colors.red;
+
+      return (
+        <StrikeBarContainer>
+          <StrikeBar>
+            <StrikeBarBG
+              isLeft
+              width={displayRange(true, strike, current) ? `${range}%` : "0"}
+              color={leftBarColor}
+            >
+              <StrikeDot
+                isLeft
+                hide={displayRange(true, strike, current) ? false : true}
+                color={leftBarColor}
+              />
+            </StrikeBarBG>
+          </StrikeBar>
+          <StrikeBar>
+            <StrikeBarBG
+              width={displayRange(false, strike, current) ? `${range}%` : "0"}
+              color={rightBarColor}
+            >
+              <StrikeDot
+                hide={displayRange(false, strike, current) ? false : true}
+                color={rightBarColor}
+              />
+            </StrikeBarBG>
+          </StrikeBar>
+        </StrikeBarContainer>
+      );
+    },
+    [displayRange, currentPrice, strikePrice]
+  );
+
+  const strikePriceColor = useMemo(() => {
+    const strike = strikePrice(false);
+    const current = currentPrice(false);
+
+    if (strike === current || priceLoading) {
+      return colors.primaryText;
+    } else {
+      if (isPutVault(vault)) {
+        return current > strike ? colors.green : colors.red;
+      } else {
+        return current < strike ? colors.green : colors.red;
+      }
+    }
+  }, [strikePrice, currentPrice, priceLoading, vault]);
+
+  const StrikeWidget = useCallback(() => {
+    return (
+      <>
+        <StrikeContainer>
+          <div>
+            <StrikeTitle>{t("shared:YieldCard:weeklyStrikePrice")}</StrikeTitle>
+            <StrikePrice color={colors.primaryText}>
+              {vaultVersion === "v2" ? strikePrice() : "N/A"}
+            </StrikePrice>
+          </div>
+          <div>
+            <StrikeTitle>{t("shared:YieldCard:currentPrice")}</StrikeTitle>
+            <StrikePrice
+              color={
+                vaultVersion === "v2" ? strikePriceColor : colors.primaryText
+              }
+            >
+              {currentPrice()}
+            </StrikePrice>
+          </div>
+        </StrikeContainer>
+        <RangeContainer>
+          <Range vault={vault} />
+          <RangeCenter />
+        </RangeContainer>
+      </>
+    );
+  }, [
+    t,
+    vaultVersion,
+    strikePrice,
+    strikePriceColor,
+    currentPrice,
+    Range,
+    vault,
+  ]);
 
   const ProductInfoContent = useCallback(() => {
     const Logo = getAssetLogo(displayAsset);
@@ -282,23 +603,41 @@ const YieldCard: React.FC<YieldCardProps> = ({
         <Title fontSize={28} lineHeight={40} className="w-100 my-2">
           {t(`shared:ProductCopies:${vault}:title`)}
         </Title>
-        <ProductDescription>
-          {isPutVault(vault)
-            ? t("shared:ProductCopies:Put:description", { asset: displayAsset })
-            : t("shared:ProductCopies:Call:description", {
-                asset: displayAsset,
-              })}
-        </ProductDescription>
-        <Title
-          color={`${colors.primaryText}A3`}
-          fontSize={12}
-          className="w-100"
-        >
-          {t("shared:YieldCard:currentProjectedYield")}
-        </Title>
-        <Title fontSize={24} className="w-100 mt-1 mb-4">
-          {perfStr}
-        </Title>
+        <TotalYieldTitle>
+          {t("shared:YieldCard:totalProjectedYield")}
+          <TooltipExplanation
+            explanation={
+              <>
+                <YieldExplainerTitle color={color}>
+                  <span>{t("shared:YieldCard:totalProjectedYield")}</span>
+                  <span>{totalProjectedYield}</span>
+                </YieldExplainerTitle>
+                <YieldExplainerStat>
+                  <span>{t("shared:YieldCard:vaultYield")}</span>
+                  <span>{vaultYield}</span>
+                </YieldExplainerStat>
+                <YieldExplainerStat>
+                  <span>{t("shared:YieldCard:baseStakingYield")}</span>
+                  <span>{baseStakingYield}</span>
+                </YieldExplainerStat>
+                <br />
+                <p>{t("shared:YieldCard:yieldExplainerDesc")}</p>
+              </>
+            }
+            renderContent={({ ref, ...triggerHandler }) => (
+              <HelpInfo containerRef={ref} {...triggerHandler}>
+                i
+              </HelpInfo>
+            )}
+          />
+        </TotalYieldTitle>
+        <BoostWrapper>
+          {totalProjectedYield}{" "}
+          {baseAPY > 0 && vaultVersion === "v2" && (
+            <BoostIcon color={color} backgroundColor={`${color}25`} />
+          )}
+        </BoostWrapper>
+        <StrikeWidget />
         <CapBar
           loading={vaultVersion === "v1" ? isLoading : v2DataLoading}
           current={totalDepositStr}
@@ -319,17 +658,21 @@ const YieldCard: React.FC<YieldCardProps> = ({
       </>
     );
   }, [
-    asset,
-    color,
-    depositLimitStr,
     displayAsset,
-    isLoading,
-    perfStr,
-    totalDepositStr,
-    v2DataLoading,
-    vault,
-    vaultVersion,
+    color,
     t,
+    vault,
+    totalProjectedYield,
+    vaultYield,
+    baseStakingYield,
+    baseAPY,
+    vaultVersion,
+    StrikeWidget,
+    isLoading,
+    v2DataLoading,
+    totalDepositStr,
+    depositLimitStr,
+    asset,
   ]);
 
   const modalContentExtra = useMemo(() => {
@@ -368,12 +711,13 @@ const YieldCard: React.FC<YieldCardProps> = ({
       );
     }
   }, [
-    chainId,
-    asset,
-    decimals,
-    vaultAccount,
-    vaultBalanceInAsset,
     vaultVersion,
+    vaultBalanceInAsset,
+    decimals,
+    chainId,
+    t,
+    vaultAccount,
+    asset,
   ]);
 
   const vaultLogo = useMemo(() => {
@@ -389,8 +733,10 @@ const YieldCard: React.FC<YieldCardProps> = ({
           <Subtitle>{logo}</Subtitle>
         </ProductTag>
       );
+    } else {
+      return null;
     }
-  }, [vault]);
+  }, [vault, color]);
 
   return (
     <CardContainer>
@@ -429,7 +775,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
               <div className="d-flex">
                 {/* Version tags */}
                 {VaultVersionList.map((version) =>
-                  chainId && hasVaultVersion(vault, version, chainId) ? (
+                  hasVaultVersion(vault, version) ? (
                     <ProductVersionTag
                       key={version}
                       color={color}

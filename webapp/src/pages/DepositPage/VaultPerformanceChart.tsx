@@ -29,6 +29,7 @@ import useLatestAPY from "shared/lib/hooks/useLatestAPY";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
+import { useTranslation } from "react-i18next";
 
 const VaultPerformanceChartContainer = styled.div`
   background: ${colors.background.two};
@@ -75,6 +76,7 @@ interface VaultPerformanceChartProps {
 const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
   vault: { vaultOption, vaultVersion },
 }) => {
+  const { t } = useTranslation();
   const { priceHistory } = useVaultPriceHistory(vaultOption, vaultVersion);
   const { searchAssetPriceFromTimestamp } = useAssetsPriceHistory();
   const latestAPY = useLatestAPY(vaultOption, vaultVersion);
@@ -428,22 +430,34 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
                   lineHeight={16}
                   className="d-block"
                 >
-                  Projected Yield (APY)
+                  {t("webapp:TooltipExplanations:vaultPerformance:title")}
                 </SecondaryText>
                 <TooltipExplanation
-                  title="Projected Yield (APY)"
+                  title={t("webapp:TooltipExplanations:vaultPerformance:title")}
                   explanation={
                     <>
-                      Calculated by annualising the current week’s performance:
+                      {t(
+                        "webapp:TooltipExplanations:vaultPerformance:description"
+                      )}
                       <br />
                       <br />
                       <SecondaryText color={colors.primaryText}>
-                        Projected Yield = ((1+(Curr. Week’s
-                        Performance)^52)-1)*100
+                        {t(
+                          "webapp:TooltipExplanations:vaultPerformance:weeklyYield"
+                        )}
                       </SecondaryText>
                       <br />
                       <br />
-                      Fees are included in this calculation.
+                      <SecondaryText color={colors.primaryText}>
+                        {t(
+                          "webapp:TooltipExplanations:vaultPerformance:projectedYield"
+                        )}
+                      </SecondaryText>
+                      <br />
+                      <br />
+                      {t(
+                        "webapp:TooltipExplanations:vaultPerformance:feesIncluded"
+                      )}
                     </>
                   }
                   renderContent={({ ref, ...triggerHandler }) => (

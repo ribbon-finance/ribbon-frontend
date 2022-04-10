@@ -52,7 +52,10 @@ const CapBar: React.FC<{
   return (
     <div className="w-100">
       <div className="d-flex flex-row justify-content-between">
-        <SecondaryText color={colors.text} fontSize={labelConfig.fontSize}>
+        <SecondaryText
+          color={colors.tertiaryText}
+          fontSize={labelConfig.fontSize}
+        >
           {copies.current}
         </SecondaryText>
         <Title fontSize={statsConfig.fontSize} lineHeight={20}>
@@ -69,7 +72,10 @@ const CapBar: React.FC<{
       </div>
       <ProgressBar percent={percent} config={barConfig} />
       <div className="d-flex flex-row justify-content-between">
-        <SecondaryText color={colors.text} fontSize={labelConfig.fontSize}>
+        <SecondaryText
+          color={colors.tertiaryText}
+          fontSize={labelConfig.fontSize}
+        >
           {copies.cap}
         </SecondaryText>
         <Title fontSize={statsConfig.fontSize} lineHeight={20}>

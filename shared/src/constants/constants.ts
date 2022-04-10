@@ -427,13 +427,9 @@ export const VaultAddressMap: {
  */
 export const hasVaultVersion = (
   vaultOption: VaultOptions,
-  version: VaultVersion,
-  chainId: number
+  version: VaultVersion
 ): boolean => {
-  return (
-    Boolean(VaultAddressMap[vaultOption][version]) &&
-    VaultAddressMap[vaultOption].chainId === chainId
-  );
+  return Boolean(VaultAddressMap[vaultOption][version]);
 };
 
 export const VaultNamesList = [

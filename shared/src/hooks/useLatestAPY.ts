@@ -20,6 +20,12 @@ import useLidoAPY from "./useLidoOracle";
 import { useV2VaultData, useV2VaultsData } from "./web3DataContext";
 import { apyFromPricePerShare } from "../utils/math";
 
+/**
+ *
+ * @param priceHistory
+ * @param periodStart
+ * @returns
+ */
 const getPriceHistoryFromPeriod = (
   priceHistory: VaultPriceHistory[],
   periodStart: Moment
@@ -60,7 +66,7 @@ const getPriceHistoryFromPeriod = (
    */
   if (!priceHistoryInPeriod.length || !priceHistoryInNextPeriod.length) {
     /**
-     * If combined length is more than 2, we simply return the first and second
+     * If combined length is more than or equals to 2, we simply return the first and second
      */
     if (priceHistoryInPeriod.length + priceHistoryInNextPeriod.length >= 2) {
       const combinedPriceHistory = [
@@ -107,6 +113,7 @@ export const calculateAPYFromPriceHistory = (
   }
 
   let weeksAgo = 0;
+  const apys: number[] = [];
 
   while (true) {
     const priceHistoryFromPeriod = getPriceHistoryFromPeriod(
@@ -124,74 +131,77 @@ export const calculateAPYFromPriceHistory = (
         ),
       ];
 
-      /**
-       * If the given period is profitable, we calculate APY
-       */
+      // Only includes weeks that is positive
       if (endingPricePerShare > startingPricePerShare) {
         if (weeksAgo > 0) {
           /**
            * Fees and underlying yields had been accounted
            */
-          return apyFromPricePerShare(
-            startingPricePerShare,
-            endingPricePerShare
-          );
-        }
-
-        switch (vaultVersion) {
-          case "v1":
-            /**
-             * V1 does not have fees that can impact performance
-             */
-            return (
-              apyFromPricePerShare(startingPricePerShare, endingPricePerShare) +
+          apys.push(
+            apyFromPricePerShare(startingPricePerShare, endingPricePerShare) +
               underlyingYieldAPR
-            );
-          case "v2":
-            /**
-             * We first calculate price per share after annualized management fees are charged
-             */
-            const endingPricePerShareAfterManagementFees =
-              endingPricePerShare *
-              (1 -
-                parseFloat(VaultFees[vaultOption].v2?.managementFee!) /
-                  100 /
-                  52);
-            /**
-             * Next, we calculate how much performance fees will lower the pricePerShare
-             */
-            const performanceFeesImpact =
-              (endingPricePerShare - startingPricePerShare) *
-              (parseFloat(VaultFees[vaultOption].v2?.performanceFee!) / 100);
-            /**
-             * Finally, we calculate price per share after both fees
-             */
-            const pricePerShareAfterFees =
-              endingPricePerShareAfterManagementFees - performanceFeesImpact;
+          );
+        } else {
+          switch (vaultVersion) {
+            case "v1":
+              /**
+               * V1 does not have fees that can impact performance
+               */
+              apys.push(
+                apyFromPricePerShare(
+                  startingPricePerShare,
+                  endingPricePerShare
+                ) + underlyingYieldAPR
+              );
+              break;
+            case "v2":
+              /**
+               * We first calculate price per share after annualized management fees are charged
+               */
+              const endingPricePerShareAfterManagementFees =
+                endingPricePerShare *
+                (1 -
+                  parseFloat(VaultFees[vaultOption].v2?.managementFee!) /
+                    100 /
+                    52);
+              /**
+               * Next, we calculate how much performance fees will lower the pricePerShare
+               */
+              const performanceFeesImpact =
+                (endingPricePerShare - startingPricePerShare) *
+                (parseFloat(VaultFees[vaultOption].v2?.performanceFee!) / 100);
+              /**
+               * Finally, we calculate price per share after both fees
+               */
+              const pricePerShareAfterFees =
+                endingPricePerShareAfterManagementFees - performanceFeesImpact;
 
-            return (
-              apyFromPricePerShare(
-                startingPricePerShare,
-                pricePerShareAfterFees
-              ) + underlyingYieldAPR
-            );
+              apys.push(
+                apyFromPricePerShare(
+                  startingPricePerShare,
+                  pricePerShareAfterFees
+                ) + underlyingYieldAPR
+              );
+              break;
+          }
         }
       }
     }
 
-    /**
-     * Otherwise, we look for the previous week
-     */
+    // Continue to previous week
     periodStart.subtract(1, "week");
     weeksAgo += 1;
 
     /**
      * Prevent searching too far ago
      */
-    if (weeksAgo >= 5) {
-      return 0;
+    if (weeksAgo >= 4) {
+      break;
     }
   }
+
+  // Calculate average apy
+  return apys.reduce((acc, curr) => acc + curr, 0) / apys.length || 0;
 };
 
 export const useLatestAPY = (
@@ -208,12 +218,6 @@ export const useLatestAPY = (
   const { getVaultAPR } = useYearnAPIData();
   const lidoAPY = useLidoAPY();
 
-  switch (vaultVersion) {
-    case "v2":
-      switch (vaultOption) {
-      }
-  }
-
   let underlyingYieldAPR = 0;
 
   switch (vaultOption) {
@@ -222,6 +226,7 @@ export const useLatestAPY = (
       break;
     case "rstETH-THETA":
       underlyingYieldAPR = lidoAPY * 100;
+      break;
   }
 
   return {

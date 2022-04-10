@@ -5,7 +5,7 @@ import { OverlayTriggerRenderProps } from "react-bootstrap/esm/OverlayTrigger";
 import TooltipExplanationContent from "./TooltipExplanationContent";
 
 interface TooltipExplanationProps {
-  title: string;
+  title?: string;
   explanation: React.ReactNode;
   learnMoreURL?: string;
   renderContent: (

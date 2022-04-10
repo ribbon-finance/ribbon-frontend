@@ -11,8 +11,6 @@ import {
   VaultVersionList,
   Chains,
 } from "../../constants/constants";
-import { CHAINID } from "../../utils/env";
-
 import sizes from "../../designSystem/sizes";
 import { useLatestAPYs } from "../../hooks/useLatestAPY";
 import useScreenSize from "../../hooks/useScreenSize";
@@ -60,11 +58,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
           }
 
           const availableVaultVersions = VaultVersionList.filter((version) =>
-            hasVaultVersion(
-              vaultOption,
-              version,
-              chainId || CHAINID.ETH_MAINNET
-            )
+            hasVaultVersion(vaultOption, version)
           );
 
           // If vault only has one available version
