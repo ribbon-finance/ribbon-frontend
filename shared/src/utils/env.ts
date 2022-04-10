@@ -31,7 +31,7 @@ export const isDevelopment = () => !isStaging() && !isProduction();
 // We use the same environment for development and staging
 // But we still need a switch to only show dev features locally
 export const isStaging = () =>
-  process.env.REACT_APP_VERCEL_GIT_COMMIT_REF !== "staging";
+  process.env.REACT_APP_VERCEL_GIT_COMMIT_REF === "staging";
 
 export const isProduction = () =>
   process.env.REACT_APP_VERCEL_GIT_COMMIT_REF === "master";
