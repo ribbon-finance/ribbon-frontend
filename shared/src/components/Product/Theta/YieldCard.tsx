@@ -320,7 +320,14 @@ const StrikeBarBG = styled.div<{
   width: ${(props) => props.width};
   height: 100%;
   background-color: ${(props) => `${props.color}30`};
-  ${(props) => props.isLeft ? css`margin-left: auto;` : css`margin-right: auto;`}
+  ${(props) =>
+    props.isLeft
+      ? css`
+          margin-left: auto;
+        `
+      : css`
+          margin-right: auto;
+        `}
 `;
 
 const StrikeDot = styled.div<{
@@ -334,7 +341,14 @@ const StrikeDot = styled.div<{
   border-radius: 2px;
   margin-left: -2px;
   background-color ${(props) => props.color};
-  ${(props) => props.isLeft ? css`left: 0px;` : css`right: 0px;`}
+  ${(props) =>
+    props.isLeft
+      ? css`
+          left: 0px;
+        `
+      : css`
+          right: 0px;
+        `}
 `;
 
 interface YieldCardProps {
@@ -480,8 +494,8 @@ const YieldCard: React.FC<YieldCardProps> = ({
         100
       );
 
-      const leftBarColor = isPutVault(vault) ? colors.red : colors.green
-      const rightBarColor = isPutVault(vault) ? colors.green : colors.red
+      const leftBarColor = isPutVault(vault) ? colors.red : colors.green;
+      const rightBarColor = isPutVault(vault) ? colors.green : colors.red;
 
       return (
         <StrikeBarContainer>
@@ -491,7 +505,11 @@ const YieldCard: React.FC<YieldCardProps> = ({
               width={displayRange(true, strike, current) ? `${range}%` : "0"}
               color={leftBarColor}
             >
-              <StrikeDot isLeft hide={displayRange(true, strike, current) ? false : true} color={leftBarColor} />
+              <StrikeDot
+                isLeft
+                hide={displayRange(true, strike, current) ? false : true}
+                color={leftBarColor}
+              />
             </StrikeBarBG>
           </StrikeBar>
           <StrikeBar>
@@ -499,7 +517,10 @@ const YieldCard: React.FC<YieldCardProps> = ({
               width={displayRange(false, strike, current) ? `${range}%` : "0"}
               color={rightBarColor}
             >
-              <StrikeDot hide={displayRange(false, strike, current) ? false : true} color={rightBarColor} />
+              <StrikeDot
+                hide={displayRange(false, strike, current) ? false : true}
+                color={rightBarColor}
+              />
             </StrikeBarBG>
           </StrikeBar>
         </StrikeBarContainer>
