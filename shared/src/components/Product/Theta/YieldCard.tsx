@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { ethers } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -226,7 +226,6 @@ const RangeContainer = styled.div`
   position: relative;
   margin-bottom: 24px;
   border-radius: 10px;
-  overflow: hidden;
 `;
 
 const RangeCenter = styled.div`
@@ -298,6 +297,44 @@ const BoostWrapper = styled(Title)`
   svg {
     margin-left: 12px;
   }
+`;
+
+const StrikeBarContainer = styled.div`
+  width: 100%;
+  position: absolute;
+  display: flex;
+`;
+
+const StrikeBar = styled.div`
+  flex: 1;
+  height: 4px;
+`;
+
+const StrikeBarBG = styled.div<{
+  width: string;
+  // Color in hex
+  color: string;
+  isLeft?: boolean;
+}>`
+  position: relative;
+  width: ${(props) => props.width};
+  height: 100%;
+  background-color: ${(props) => `${props.color}30`};
+  ${(props) => props.isLeft ? css`margin-left: auto;` : css`margin-right: auto;`}
+`;
+
+const StrikeDot = styled.div<{
+  color: string;
+  hide: boolean;
+  isLeft?: boolean;
+}>`
+  position: absolute;
+  height: 4px;
+  width: ${(props) => (props.hide ? 0 : "4px")};
+  border-radius: 2px;
+  margin-left: -2px;
+  background-color ${(props) => props.color};
+  ${(props) => props.isLeft ? css`left: 0px;` : css`right: 0px;`}
 `;
 
 interface YieldCardProps {
@@ -406,8 +443,6 @@ const YieldCard: React.FC<YieldCardProps> = ({
 
   const displayRange = useCallback(
     (isLeft: boolean = true, strike: number, current: number) => {
-      // const strike = strikePrice(false) as number;
-      // const price = currentPrice(false) as number;
       const OTM = isPutVault(vault) ? strike < current : current > strike;
 
       if (priceLoading) return false;
@@ -433,79 +468,44 @@ const YieldCard: React.FC<YieldCardProps> = ({
     ({ vault }) => {
       const strike = strikePrice(false) as number;
       const current = currentPrice(false) as number;
-      // const strike = 100;
-      // const current = 100;
 
-      let range: number = 0;
+      const strikePriceWithExtraMargin = strike * 1.2;
+      const diff = strikePriceWithExtraMargin - strike;
+      // Range is the width of the bar.
+      // Calculate by taking the difference between current price and strike price,
+      // divided by the total number of units of the bar on one side.
+      const range = Math.min(
+        (Math.abs(current - strike) / diff) * 100,
+        // Maximum is 100%
+        100
+      );
 
-      if (isPutVault(vault)) {
-        const min = strike * 1.2;
-        const diff = min - strike;
-        const max = strike - diff;
-
-        if (current > strike) {
-          range = ((current - strike) / diff) * 100;
-        } else {
-          range = ((current - max) / diff) * 100;
-        }
-      } else {
-        const max = strike * 1.2;
-        const diff = max - strike;
-        const min = strike - diff;
-
-        if (current > strike) {
-          range = ((current - strike) / diff) * 100;
-        } else {
-          range = ((current - min) / diff) * 100;
-        }
-      }
+      const leftBarColor = isPutVault(vault) ? colors.red : colors.green
+      const rightBarColor = isPutVault(vault) ? colors.green : colors.red
 
       return (
-        <div
-          style={{
-            width: "100%",
-            position: "absolute",
-            display: "flex",
-          }}
-        >
-          <div
-            style={{
-              flex: 1,
-              height: "4px",
-            }}
-          >
-            <div
-              style={{
-                marginLeft: "auto",
-                width: displayRange(true, strike, current) ? `${range}%` : 0,
-                height: "100%",
-                backgroundColor: isPutVault(vault)
-                  ? `${colors.red}30`
-                  : `${colors.green}30`,
-              }}
-            />
-          </div>
-          <div
-            style={{
-              flex: 1,
-              height: "4px",
-            }}
-          >
-            <div
-              style={{
-                marginRight: "auto",
-                width: displayRange(false, strike, current) ? `${range}%` : 0,
-                height: "100%",
-                backgroundColor: isPutVault(vault)
-                  ? `${colors.green}30`
-                  : `${colors.red}30`,
-              }}
-            />
-          </div>
-        </div>
+        <StrikeBarContainer>
+          <StrikeBar>
+            <StrikeBarBG
+              isLeft
+              width={displayRange(true, strike, current) ? `${range}%` : "0"}
+              color={leftBarColor}
+            >
+              <StrikeDot isLeft hide={displayRange(true, strike, current) ? false : true} color={leftBarColor} />
+            </StrikeBarBG>
+          </StrikeBar>
+          <StrikeBar>
+            <StrikeBarBG
+              width={displayRange(false, strike, current) ? `${range}%` : "0"}
+              color={rightBarColor}
+            >
+              <StrikeDot hide={displayRange(false, strike, current) ? false : true} color={rightBarColor} />
+            </StrikeBarBG>
+          </StrikeBar>
+        </StrikeBarContainer>
       );
     },
-    [displayRange]
+    [displayRange, currentPrice, strikePrice]
   );
 
   const strikePriceColor = useMemo(() => {
