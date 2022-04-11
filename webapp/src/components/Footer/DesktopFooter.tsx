@@ -56,6 +56,7 @@ const DesktopFooter = () => {
         {renderLinkItem("BLOG", "https://medium.com/@ribbonfinance")}
         {renderLinkItem("TERMS", "https://ribbon.finance/terms")}
         {renderLinkItem("POLICY", "https://ribbon.finance/policy")}
+        {renderLinkItem("AUCTIONS", "https://auction.ribbon.finance")}
       </LeftContainer>
       <LinksContainer>
         {renderLinkItem("DISCORD", "http://discord.ribbon.finance")}

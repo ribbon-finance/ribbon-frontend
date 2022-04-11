@@ -1,7 +1,7 @@
 import React, { ReactNode, useMemo } from "react";
 import { ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { Redirect } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -303,7 +303,6 @@ const HeroSection: React.FC<{
   v1Inactive?: boolean;
 }> = ({ vaultInformation, vaultOption, variant, v1Inactive }) => {
   const { t } = useTranslation();
-  const { chainId } = useWeb3Wallet();
   const color = getVaultColor(vaultOption);
 
   const logo = useMemo(() => {
@@ -355,20 +354,18 @@ const HeroSection: React.FC<{
   return (
     <>
       {/* V1 top banner */}
-      {variant === "v1" &&
-        chainId &&
-        hasVaultVersion(vaultOption, "v2", chainId) && (
-          <Banner
-            color={color}
-            message={
-              v1Inactive
-                ? "V1 vaults are now inactive and do not accept deposits"
-                : "V2 vaults are now live"
-            }
-            linkURI={getVaultURI(vaultOption, "v2")}
-            linkText="Switch to V2"
-          ></Banner>
-        )}
+      {variant === "v1" && hasVaultVersion(vaultOption, "v2") && (
+        <Banner
+          color={color}
+          message={
+            v1Inactive
+              ? "V1 vaults are now inactive and do not accept deposits"
+              : "V2 vaults are now live"
+          }
+          linkURI={getVaultURI(vaultOption, "v2")}
+          linkText="Switch to V2"
+        ></Banner>
+      )}
 
       <HeroContainer className="position-relative" color={color}>
         <HeroDescriptionContainer className="container">

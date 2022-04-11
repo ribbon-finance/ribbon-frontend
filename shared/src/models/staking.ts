@@ -42,11 +42,14 @@ export const defaultLiquidityMiningPoolData: LiquidityMiningPoolData = {
 };
 
 export interface LiquidityGaugeV5PoolResponse {
+  // Current stake is in rTokens term, NOT in asset term. To get in asset terms, multiply by the current price per share.
   currentStake: BigNumber;
+  // Pool size is in rTokens term, NOT in asset term. To get in asset terms, multiply by the current price per share.
   poolSize: BigNumber;
   workingBalances: BigNumber;
   workingSupply: BigNumber;
   claimableRbn: BigNumber;
+  // This is also in rTokens term
   unstakedBalance: BigNumber;
   claimedRbn: BigNumber;
   poolRewardForDuration: BigNumber;

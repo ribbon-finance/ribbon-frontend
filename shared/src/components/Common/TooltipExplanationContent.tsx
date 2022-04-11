@@ -38,7 +38,7 @@ const LearnMoreLink = styled(BaseLink)`
 `;
 
 interface OverlayTooltipExplanationProps {
-  title: string;
+  title?: string;
   explanation: React.ReactNode;
   learnMoreURL?: string;
   overlayInjectedProps: OverlayInjectedProps;
@@ -57,7 +57,7 @@ const OverlayTooltipExplanation: React.FC<OverlayTooltipExplanationProps> = ({
     onMouseOver={() => setShow(true)}
     onMouseOut={() => setShow(false)}
   >
-    <ExplanationTitle>{title}</ExplanationTitle>
+    {title && <ExplanationTitle>{title}</ExplanationTitle>}
     <Explanation>{explanation}</Explanation>
     {learnMoreURL && (
       <LearnMoreLink

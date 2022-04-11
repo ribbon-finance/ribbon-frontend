@@ -57,8 +57,6 @@ const colors = {
     veRBN: "#fc0a54",
     LDO: "#00A3FF",
     SOL: "#14F195",
-    WNEAR: "#FFFFFF",
-    AURORA: "#6ED24B",
     APE: "#0054F9",
   },
   wallets: {

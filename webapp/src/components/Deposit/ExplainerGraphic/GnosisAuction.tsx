@@ -8,8 +8,6 @@ import STETHGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAucti
 import AAVEGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/AAVE_Gnosis_Auction.json";
 import AVAXGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/AVAX_Gnosis_Auction.json";
 import SAVAXGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/SAVAX_Gnosis_Auction.json";
-import NEARGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/NEAR_Gnosis_Auction.json";
-import AURORAGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/AURORA_Gnosis_Auction.json";
 import APEGnosisAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/APE_Gnosis_Auction.json";
 import SOLFLEXAuction from "../../../assets/icons/vaultExplainer/gnosisAuction/SOL_FLEX_Auction.json";
 import { getAssets, VaultOptions } from "shared/lib/constants/constants";
@@ -38,10 +36,6 @@ const GnosisAuction: React.FC<GnosisAuctionProps> = ({ vaultOption }) => {
             return AVAXGnosisAuction;
           case "sAVAX":
             return SAVAXGnosisAuction;
-          case "WNEAR":
-            return NEARGnosisAuction;
-          case "AURORA":
-            return AURORAGnosisAuction;
           case "APE":
             return APEGnosisAuction;
           case "SOL":

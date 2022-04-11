@@ -2,10 +2,8 @@ import { providers } from "ethers";
 import {
   AVALANCHE_MAINNET_PARAMS,
   AVALANCHE_TESTNET_PARAMS,
-  AURORA_MAINNET_PARAMS,
-  AURORA_TESTNET_PARAMS,
 } from "../constants/chainParameters";
-import { isAuroraNetwork, isAvaxNetwork } from "../constants/constants";
+import { isAvaxNetwork } from "../constants/constants";
 import { CHAINID } from "./env";
 
 // This error code indicates that
@@ -48,11 +46,6 @@ export const switchChains = async (
           chainId === CHAINID.AVAX_MAINNET
             ? AVALANCHE_MAINNET_PARAMS
             : AVALANCHE_TESTNET_PARAMS;
-      } else if (isAuroraNetwork(chainId)) {
-        params =
-          chainId === CHAINID.AURORA_MAINNET
-            ? AURORA_MAINNET_PARAMS
-            : AURORA_TESTNET_PARAMS;
       }
 
       if (params) {

@@ -48,13 +48,31 @@
       "title": "Weekly Pool Rewards",
       "description": "Estimated amount of RBN to be distributed for the current week."
     },
+    "baseRewards": {
+      "title": "Base Rewards",
+      "description": "The rewards for staking rTokens."
+    },
+    "rewardsBooster": {
+      "title": "Rewards Booster",
+      "description": "The multiplier applied to the base rewards of veRBN holders."
+    },
     "boostedRewards": {
       "title": "Boosted Rewards",
       "description": "The additional rewards veRBN holders earn for staking their rTokens. Base rewards can be boosted by up to 2.5X."
+    },
+    "vaultPerformance": {
+      "title": "Projected Yield (APY)",
+      "description": "Calculated by getting the average of the past 4 week's annualised performance:",
+      "weeklyYield": "Weekly Yield = ((1+(Curr. Week’s Performance)^52)-1)*100",
+      "projectedYield": "Projected Yield (APY) = Average of Past 4 Week's Weekly Yield (in the money weeks are excluded)",
+      "feesIncluded": "Fees are included in this calculation."
     }
   },
   "LiquidityMining": {
     "timeTillNextEpoch": "Time till next epoch",
     "stakingWarningMessage": "If you stake rTokens before locking your RBN, your boosted rewards won't be applied until you apply boost or claim RBN rewards."
+  },
+  "Withdrawals": {
+    "AllrTokensStakedError": "You have staked all your {{rToken}} tokens. You must unstake your {{rToken}} tokens before you can withdraw from the vault"
   }
 }

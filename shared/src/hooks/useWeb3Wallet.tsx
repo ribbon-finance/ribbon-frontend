@@ -21,6 +21,7 @@ import {
 } from "../models/wallets";
 import { Chains, CHAINS_TO_ID, ID_TO_CHAINS } from "../constants/constants";
 import { switchChains } from "../utils/chainSwitching";
+import { impersonateAddress } from "../utils/development";
 
 interface Web3WalletData {
   chainId: number | undefined;
@@ -157,7 +158,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
     active: isActiveEth,
     activate,
     deactivate: deactivateEth,
-    account: accountEth,
+    account: impersonateAddress ?? accountEth,
     connectingWallet,
     connectedWallet,
     ethereumProvider: libraryEth,

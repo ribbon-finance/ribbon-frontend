@@ -4,5 +4,41 @@
       "title": "Lock RBN",
       "description": "Because your lockup period has expired, you need to unlock your existing tokens first before you can lock again."
     }
+  },
+  "IncreaseLockTimeModal": {
+    "increaseYourLockTime": "INCREASE YOUR LOCK TIME",
+    "increaseLockTimeBy": "INCREASE LOCK TIME TIME BY",
+    "previewLockTimeIncrease": "PREVIEW LOCK TIME INCREASE",
+    "currentLockupExpiry": "Current Lockup Expiry",
+    "lockedRBN": "Locked RBN",
+    "maximumLockupMessage": {
+      "1": "The maximum lockup period is",
+      "2": "2 years.",
+      "3": "Please decrease your lock time."
+    },
+    "lockupSummaryMessage": {
+      "1": "Locking up your RBN till",
+      "2": "increases your voting power by",
+      "3": "to a total of"
+    }
+  },
+  "IncreaseLockPreviewModal": {
+    "lockIncreasePreview": "LOCK INCREASE PREVIEW",
+    "increaseLockBy": "Increase Lock By",
+    "lockupExpiry": "Lockup Expiry",
+    "increaseLockAmount": "INCREASE LOCK AMOUNT",
+
+    "newLockTimePreview": "NEW LOCK TIME PREVIEW",
+    "lockupIncreasedBy": "Lockup Increased By",
+    "newLockupExpiry": "New Lockup Expiry",
+    "totalLocked": "Total Locked",
+    "votingPower": "Voting Power",
+    "increaseLockTime": "INCREASE LOCK TIME",
+
+    "lockupPreviewWarning": {
+      "1": "IMPORTANT:",
+      "2": "veRBN",
+      "3": "is not transferrable and unlocking RBN early results in a penalty of up to 75% of your RBN"
+    }
   }
 }
