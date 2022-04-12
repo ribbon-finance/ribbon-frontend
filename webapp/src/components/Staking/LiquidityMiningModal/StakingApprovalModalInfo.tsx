@@ -105,7 +105,7 @@ const StakingApprovalModalInfo: React.FC<StakingApprovalModalInfoProps> = ({
       </BaseModalContentColumn>
       <BaseModalContentColumn marginTop={16}>
         <BaseUnderlineLink
-          to="https://ribbon.finance/faq"
+          to="https://docs.ribbon.finance/faq"
           target="_blank"
           rel="noreferrer noopener"
           className="d-flex"

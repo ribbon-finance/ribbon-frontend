@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Link, Redirect, Route, Switch } from "react-router-dom";
 import { Web3ReactProvider } from "@web3-react/core";
 import { ConnectionProvider } from "@solana/wallet-adapter-react";
 
@@ -19,7 +19,6 @@ import Footer from "./components/Footer";
 import Investors from "./components/Investors";
 import PolicyPage from "./pages/PolicyPage";
 import TermsPage from "./pages/TermsPage";
-import FAQPage from "./pages/FAQ";
 import colors from "shared/lib/designSystem/colors";
 import { getSolanaClusterURI } from "shared/lib/utils/env";
 import StickyFooter from "./components/StickyFooter/StickyFooter";
@@ -64,10 +63,6 @@ function App() {
 
                         <Route path="/terms">
                           <TermsPage></TermsPage>
-                        </Route>
-
-                        <Route path="/faq">
-                          <FAQPage></FAQPage>
                         </Route>
                       </Switch>
 

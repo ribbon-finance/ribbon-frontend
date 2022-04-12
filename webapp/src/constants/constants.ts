@@ -1,4 +1,4 @@
-import { CHAINID, isChainIdEnabled, isDevelopment } from "shared/lib/utils/env";
+import { isDevelopment } from "shared/lib/utils/env";
 import {
   VaultNameOptionMap,
   VaultOptions,
