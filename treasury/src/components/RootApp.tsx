@@ -14,7 +14,7 @@ import {
   WithdrawReminderToast,
 } from "webapp/lib/components/Common/toasts";
 import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal";
-import NotFound from "../pages/NotFound";
+import NotFound from "shared/lib/pages/NotFound";
 import colors from "shared/lib/designSystem/colors";
 import YourPositionModal from "./Vault/Modal/YourPositionModal";
 

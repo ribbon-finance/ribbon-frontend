@@ -11,8 +11,8 @@ import Footer from "./Footer/Footer";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { TxStatusToast, WithdrawReminderToast } from "./Common/toasts";
 import WalletConnectModal from "./Wallet/WalletConnectModal";
-import NotFound from "../pages/NotFound";
 import StakingPage from "../pages/Staking/StakingPage";
+import NotFound from "shared/lib/pages/NotFound";
 import colors from "shared/lib/designSystem/colors";
 import YourPositionModal from "./Vault/Modal/YourPositionModal";
 

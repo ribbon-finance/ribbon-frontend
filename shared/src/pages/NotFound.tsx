@@ -1,10 +1,11 @@
+import React from "react";
 import styled, { keyframes } from "styled-components";
 
-import Logo from "shared/lib/assets/icons/logo";
-import { Title } from "shared/lib/designSystem";
-import sizes from "shared/lib/designSystem/sizes";
-import theme from "shared/lib/designSystem/theme";
-import useScreenSize from "shared/lib/hooks/useScreenSize";
+import Logo from "../assets/icons/logo";
+import { Title } from "../designSystem";
+import sizes from "../designSystem/sizes";
+import theme from "../designSystem/theme";
+import useScreenSize from "../hooks/useScreenSize";
 
 const FloatingContainer = styled.div<{ height: number }>`
   width: 100%;
