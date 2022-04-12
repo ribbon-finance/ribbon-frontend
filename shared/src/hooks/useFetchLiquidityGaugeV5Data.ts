@@ -41,10 +41,11 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   const [, setMulticallCounter] = useState(0);
 
   const doMulticall = useCallback(async () => {
+    chainId && console.log(isEthNetwork(chainId));
     if (
-      !chainId ||
-      !isEthNetwork(chainId) ||
-      !minterContract || 
+      // If a wallet is connected and its NOT ETH, dont fetch
+      (chainId && !isEthNetwork(chainId)) ||
+      !minterContract ||
       !gaugeControllerContract
     ) {
       setData({
@@ -253,6 +254,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
     gaugeControllerContract,
     minterContract,
     provider,
+    chainId,
   ]);
 
   useEffect(() => {
