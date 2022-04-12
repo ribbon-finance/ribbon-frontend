@@ -123,5 +123,13 @@
       "message": "All governance proposal voting is done using the Ribbon Finance governance dashboard on Snapshot.",
       "proceed": "CONTINUE To SNAPSHOT"
     }
+  },
+  "Navigation": {
+    "discord": "Discord",
+    "twitter": "Twitter",
+    "github": "Github",
+    "blog": "Blog",
+    "terms": "Terms",
+    "policy": "Policy"
   }
 }

@@ -185,8 +185,32 @@ const Header = () => {
     to: string,
     isSelected: boolean,
     primary: boolean = true,
-    external: boolean = false
+    external: boolean = false,
+    onClick?: () => void
   ) => {
+    const Item = primary ? (
+      <NavItem isSelected={isSelected} onClick={onClick}>
+        <NavLinkText>{title}</NavLinkText>
+        {external && (
+          <ExternalLinkIcon
+            style={{
+              marginLeft: 6,
+            }}
+          />
+        )}
+      </NavItem>
+    ) : (
+      <SecondaryMobileNavItem onClick={onClick}>
+        <Title fontSize={18} color={`${colors.primaryText}7A`}>
+          {title}
+        </Title>
+      </SecondaryMobileNavItem>
+    );
+
+    if (onClick) {
+      return Item;
+    }
+
     return (
       <BaseLink
         to={to}
@@ -196,24 +220,7 @@ const Header = () => {
           if (!external) setIsMenuOpen(false);
         }}
       >
-        {primary ? (
-          <NavItem isSelected={isSelected}>
-            <NavLinkText>{title}</NavLinkText>
-            {external && (
-              <ExternalLinkIcon
-                style={{
-                  marginLeft: 6,
-                }}
-              />
-            )}
-          </NavItem>
-        ) : (
-          <SecondaryMobileNavItem>
-            <Title fontSize={18} color={`${colors.primaryText}7A`}>
-              {title}
-            </Title>
-          </SecondaryMobileNavItem>
-        )}
+        {Item}
       </BaseLink>
     );
   };
@@ -246,12 +253,12 @@ const Header = () => {
           <HeaderAbsoluteContainer>
             <LinksContainer>
               {renderLinkItem(
-                "OVERVIEW",
+                t("governance:Navigation:overview"),
                 "/",
                 Boolean(useRouteMatch({ path: "/", exact: true }))
               )}
               {renderLinkItem(
-                "PROFILE",
+                t("governance:Navigation:profile"),
                 "/profile",
                 Boolean(useRouteMatch({ path: "/profile", exact: true }))
               )}
@@ -269,12 +276,12 @@ const Header = () => {
                   }}
                 >
                   <MenuItem
-                    title="GAUGE VOTING"
+                    title={t("governance:Navigation:gaugeVoting")}
                     onClick={() => setVotingLinkType("gaugeVoting")}
                     extra={<ExternalLinkIcon style={{ marginLeft: 8 }} />}
                   />
                   <MenuItem
-                    title="GOVERNANCE PROPOSAL"
+                    title={t("governance:Navigation:governanceProposal")}
                     onClick={() => setVotingLinkType("proposal")}
                     extra={<ExternalLinkIcon style={{ marginLeft: 8 }} />}
                   />
@@ -300,65 +307,73 @@ const Header = () => {
               }}
             >
               {renderLinkItem(
-                "OVERVIEW",
+                t("governance:Navigation:overview"),
                 "/",
                 Boolean(useRouteMatch({ path: "/", exact: true }))
               )}
               {renderLinkItem(
-                "PROFILE",
+                t("governance:Navigation:profile"),
                 "/profile",
                 Boolean(useRouteMatch({ path: "/profile", exact: true }))
               )}
-              {renderLinkItem("VOTING", "/profile", false, true, true)}
               {renderLinkItem(
-                "FAQS",
+                t("governance:Navigation:gaugeVoting"),
+                "/profile",
+                false,
+                true,
+                true,
+                () => setVotingLinkType("gaugeVoting")
+              )}
+              {renderLinkItem(
+                t("governance:Navigation:governanceProposal"),
+                "/profile",
+                false,
+                true,
+                true,
+                () => setVotingLinkType("proposal")
+              )}
+              {renderLinkItem(
+                t("governance:Navigation:faqs"),
                 "/faqs",
                 Boolean(useRouteMatch({ path: "/faqs", exact: true }))
               )}
               {renderLinkItem(
-                "DISCORD",
+                t("shared:Navigation:discord"),
                 "http://tiny.cc/ribbon-discord",
                 false,
                 false,
                 true
               )}
               {renderLinkItem(
-                "TWITTER",
+                t("shared:Navigation:twitter"),
                 "https://twitter.com/ribbonfinance",
                 false,
                 false,
                 true
               )}
               {renderLinkItem(
-                "GITHUB",
+                t("shared:Navigation:github"),
                 "https://github.com/ribbon-finance",
                 false,
                 false,
                 true
               )}
               {renderLinkItem(
-                "FAQS",
-                "https://ribbon.finance/faq",
-                false,
-                false,
-                true
-              )}
-              {renderLinkItem(
-                "BLOG",
+                t("shared:Navigation:blog"),
                 "https://medium.com/@ribbonfinance",
                 false,
                 false,
                 true
               )}
               {renderLinkItem(
-                "TERMS",
+                t("shared:Navigation:terms"),
                 "https://ribbon.finance/terms",
                 false,
                 false,
                 true
               )}
               {renderLinkItem(
-                "POLICY",
+                t("shared:Navigation:policy"),
                 "https://ribbon.finance/policy",
                 false,
                 false,
