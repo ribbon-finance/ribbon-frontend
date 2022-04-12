@@ -62,7 +62,7 @@ const links = {
     {
       title: "FAQ",
       to: "https://docs.ribbon.finance/faq",
-      external: true
+      external: true,
     },
     {
       title: "BLOG",

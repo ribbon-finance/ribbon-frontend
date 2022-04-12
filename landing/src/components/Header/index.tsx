@@ -269,7 +269,13 @@ const Header = () => {
           style={{ paddingTop: 40 }}
         >
           {renderLinkItem("START EARNING", "https://app.ribbon.finance", true)}
-          {renderLinkItem("FAQ", "https://docs.ribbon.finance/faq", false, false, true)}
+          {renderLinkItem(
+            "FAQ",
+            "https://docs.ribbon.finance/faq",
+            false,
+            false,
+            true
+          )}
           {renderLinkItem(
             "BLOG",
             "https://medium.com/@ribbonfinance",
