@@ -1,6 +1,4 @@
 import React, { ReactElement } from "react";
-import { getDisplayAssets } from "../constants/constants";
-
 import {
   DefiScoreProtocol,
   DefiScoreToken,

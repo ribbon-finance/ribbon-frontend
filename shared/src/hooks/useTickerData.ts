@@ -42,13 +42,11 @@ export const useTickerData = (
 
   // Show only vault-based assets
   const excludedAssets: Assets[] = [];
-  VaultList.map((vault) => {
-    excludedAssets.push(getAssets(vault));
-  });
+  VaultList.map((vault) => excludedAssets.push(getAssets(vault)));
 
   const fetchAssetTickers = useCallback(async () => {
     if (!isProduction()) {
-      console.time("Ticker Data Fetch");
+      console.time("Ticker Data Fetch"); // eslint-disable-line
     }
 
     const responses = await Promise.all(
@@ -84,9 +82,9 @@ export const useTickerData = (
     setLoading(false);
 
     if (!isProduction()) {
-      console.timeEnd("Ticker Data Fetch");
+      console.timeEnd("Ticker Data Fetch"); // eslint-disable-line
     }
-  }, []);
+  }, []); // eslint-disable-line
 
   useEffect(() => {
     fetchAssetTickers();

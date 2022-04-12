@@ -711,13 +711,13 @@ const YieldCard: React.FC<YieldCardProps> = ({
       );
     }
   }, [
-    vaultVersion,
-    vaultBalanceInAsset,
+    asset,
     decimals,
     chainId,
-    t,
     vaultAccount,
-    asset,
+    vaultBalanceInAsset,
+    vaultVersion,
+    t,
   ]);
 
   const vaultLogo = useMemo(() => {
@@ -736,7 +736,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     } else {
       return null;
     }
-  }, [vault, color]);
+  }, [color, vault]);
 
   return (
     <CardContainer>

@@ -16,6 +16,7 @@ import {
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { ACTIONS } from "../Modal/types";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
+import useVaultQueue from "shared/lib/hooks/useVaultQueue";
 import { BaseLink, SecondaryText, Title } from "shared/lib/designSystem";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import {
@@ -37,11 +38,11 @@ import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { BigNumber } from "ethers";
 import { useTranslation } from "react-i18next";
 
-const BridgeText = styled.span`
+const CtaText = styled.span`
   font-size: 14px;
 `;
 
-const BridgeButton = styled.div<{ color: string }>`
+const CtaButton = styled.div<{ color: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -438,6 +439,35 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     }
   }, [asset, decimals, error, vaultMaxDepositAmount, t]);
 
+  const [, queueTransfer] = useVaultQueue(vaultOption);
+  const transferQueueCTA = useMemo(() => {
+    let stakedAsset;
+    switch (vaultOption) {
+      case "rETH-THETA":
+        stakedAsset = "sAVAX";
+        break;
+      case "rAVAX-THETA":
+        stakedAsset = "sAVAX";
+        break;
+    }
+    switch (vaultOption) {
+      case "rETH-THETA":
+      case "rAVAX-THETA":
+        return (
+          <BaseLink className="mt-4" onClick={() => {}}>
+            <CtaButton
+              color={getAssetColor(asset)}
+              onClick={() => queueTransfer()}
+            >
+              <CtaText>
+                {t("webapp:VaultQueue:transferTo", { asset: stakedAsset })}
+              </CtaText>
+            </CtaButton>
+          </BaseLink>
+        );
+    }
+  }, [asset, queueTransfer, vaultOption, t]);
+
   const bridgeAvaxCTA = useMemo(() => {
     if (
       vaultActionForm.actionType === ACTIONS.deposit &&
@@ -452,20 +482,20 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
           target="_blank"
           rel="noreferrer noopener"
         >
-          <BridgeButton color={avalancheColor}>
-            <BridgeText className="mr-2">
+          <CtaButton color={avalancheColor}>
+            <CtaText className="mr-2">
               {t("shared:VaultV2DepositWithdrawForm:bridgeAvalanche")}
-            </BridgeText>
+            </CtaText>
             <ExternalIcon color="white" />
-          </BridgeButton>
+          </CtaButton>
         </BaseLink>
       );
     }
   }, [
+    avalancheColor,
     chainId,
     vaultActionForm.actionType,
     vaultActionForm.depositAsset,
-    avalancheColor,
     t,
   ]);
 
@@ -529,6 +559,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       <div className="d-flex flex-column p-4 w-100">
         {formContent}
         {bridgeAvaxCTA}
+        {transferQueueCTA}
         {formInfoText}
         {swapContainerTrigger}
       </div>

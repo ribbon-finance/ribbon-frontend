@@ -6,5 +6,8 @@
   "rules": {
     "no-console": "error",
   },
-  "ignorePatterns": ["lib/"]
+  "ignorePatterns": ["lib/"],
+  "plugins": [
+      "only-error"
+  ]
 }

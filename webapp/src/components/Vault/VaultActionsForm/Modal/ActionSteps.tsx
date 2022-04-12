@@ -24,6 +24,7 @@ import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
 import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import useV2VaultContract from "shared/lib/hooks/useV2VaultContract";
+import useVaultQueue from "shared/lib/hooks/useVaultQueue";
 import WarningStep from "./WarningStep";
 import { getCurvePool } from "shared/lib/hooks/useCurvePool";
 import { depositSAVAX } from "shared/lib/hooks/useSAVAXDeposit";
@@ -89,6 +90,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       : vaultOption
   );
   const v2Vault = useV2VaultContract(vaultOption);
+  const [, queueTransfer] = useVaultQueue(vaultOption);
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
   const { vaultBalanceInAsset: v1VaultBalanceInAsset } =
@@ -327,7 +329,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                         shares = amount
                           .mul(BigNumber.from(10).pow(decimals))
                           .div(pricePerShare);
-                        res = await v2Vault.initiateWithdraw(shares);
+                        res = await queueTransfer(amount);
                     }
                     break;
                   case "complete":

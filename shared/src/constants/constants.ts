@@ -42,6 +42,7 @@ export const CHAINID_TO_NATIVE_TOKENS: Record<CHAINID, Assets> = {
   [CHAINID.AVAX_MAINNET]: "WAVAX",
   [CHAINID.AVAX_FUJI]: "WAVAX",
 };
+
 export const READABLE_NETWORK_NAMES: Record<CHAINID, string> = {
   [CHAINID.ETH_MAINNET]: "Ethereum",
   [CHAINID.ETH_KOVAN]: "Kovan",
@@ -801,9 +802,7 @@ export const RibbonTokenBalancerPoolAddress = isDevelopment()
 
 export const getERC20TokenAddress = (token: ERC20Token, chainId: number) => {
   const network = NETWORKS[chainId];
-  return isDevelopment()
-    ? (addresses[network].assets as any)[token]
-    : (addresses[network].assets as any)[token];
+  return (addresses[network].assets as any)[token];
 };
 
 export const LidoCurvePoolAddress = isDevelopment()
@@ -819,6 +818,11 @@ export const LidoOracleAddress = isDevelopment()
 export const RibbonTreasuryAddress = {
   [CHAINID.ETH_KOVAN]: "0xD380980791079Bd50736Ffe577b8D57A3C196ccd",
   [CHAINID.ETH_MAINNET]: "0xDAEada3d210D2f45874724BeEa03C7d4BBD41674",
+};
+
+export const VaultQueueAddress: Record<number, string> = {
+  [CHAINID.ETH_MAINNET]: addresses.mainnet.vaultQueue,
+  [CHAINID.AVAX_MAINNET]: addresses.avax.vaultQueue,
 };
 
 export const VotingEscrowAddress = isDevelopment()
@@ -889,6 +893,13 @@ const TREASURY_SUBGRAPHS: [VaultVersion, Chains][] = [["v2", Chains.Ethereum]];
 export const SUBGRAPHS_TO_QUERY: [VaultVersion, Chains][] = isTreasury()
   ? TREASURY_SUBGRAPHS
   : WEBAPP_SUBGRAPHS;
+
+// VaultQueue
+export enum TransferType {
+  TRANSFER = 0,
+  WITHDRAWAL = 1,
+  SKIP_ROUND = 2,
+}
 
 export const COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3";
 export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
