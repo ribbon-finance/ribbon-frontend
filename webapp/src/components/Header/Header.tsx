@@ -283,8 +283,8 @@ const Header = () => {
             true
           )}
           {renderLinkItem(
-            "FAQS",
-            "https://ribbon.finance/faq",
+            "FAQ",
+            "https://docs.ribbon.finance/faq",
             false,
             false,
             true

@@ -60,8 +60,9 @@ interface Link {
 const links = {
   about: [
     {
-      title: "FAQS",
-      to: "/faq",
+      title: "FAQ",
+      to: "https://docs.ribbon.finance/faq",
+      external: true,
     },
     {
       title: "BLOG",

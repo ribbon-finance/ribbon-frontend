@@ -312,7 +312,7 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
         {getAssetDisplay(depositAsset)} in the vault’s strategy.
       </ApprovalDescription>
       <ApprovalHelp
-        to="https://ribbon.finance/faq"
+        to="https://docs.ribbon.finance/faq"
         target="__blank"
         rel="noreferrer noopener"
       >

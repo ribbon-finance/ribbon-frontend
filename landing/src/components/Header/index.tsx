@@ -201,7 +201,7 @@ const Header = () => {
           <ItemWithDropdown
             variant="desktop"
             dropdownItems={[
-              { text: "FAQs", link: "/faq" },
+              { text: "FAQ", link: "https://docs.ribbon.finance/faq" },
               { text: "Blog", link: "https://ribbonfinance.medium.com" },
               { text: "Docs", link: "https://docs.ribbon.finance" },
               { text: "Terms", link: "/terms" },
@@ -269,7 +269,13 @@ const Header = () => {
           style={{ paddingTop: 40 }}
         >
           {renderLinkItem("START EARNING", "https://app.ribbon.finance", true)}
-          {renderLinkItem("FAQs", "/faq", false, false, true)}
+          {renderLinkItem(
+            "FAQ",
+            "https://docs.ribbon.finance/faq",
+            false,
+            false,
+            true
+          )}
           {renderLinkItem(
             "BLOG",
             "https://medium.com/@ribbonfinance",
