@@ -564,7 +564,8 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
             `OPEN IN ${getExplorerName(chain)}`,
             handleOpenEtherscan
           )}
-        {renderMenuItem("DISCONNECT", handleDisconnect)}
+        {/* Only shows disconnect if not embedded in ledger live */}
+        {!isLedgerLive && renderMenuItem("DISCONNECT", handleDisconnect)}
         <MenuCloseItem role="button" onClick={onCloseMenu}>
           <MenuButton isOpen={true} onToggle={onCloseMenu} />
         </MenuCloseItem>

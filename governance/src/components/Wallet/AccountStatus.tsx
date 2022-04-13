@@ -431,7 +431,10 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
           extra={renderCopiedButton()}
         />
         <MenuItem title="OPEN IN ETHERSCAN" onClick={handleOpenEtherscan} />
-        <MenuItem title="DISCONNECT" onClick={handleDisconnect} />
+        {/* Only shows disconnect if not embedded in ledger live */}
+        {!isLedgerLive && (
+          <MenuItem title="DISCONNECT" onClick={handleDisconnect} />
+        )}
         <MenuCloseItem onClose={onCloseMenu} />
       </WalletMobileOverlayMenu>
     </>
