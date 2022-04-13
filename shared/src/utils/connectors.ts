@@ -1,11 +1,18 @@
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { WalletLinkConnector } from "@web3-react/walletlink-connector";
+import LedgerHQFrameConnector from "web3-ledgerhq-frame-connector";
 import { CHAINID, isDevelopment, supportedChainIds } from "./env";
 
 export const injectedConnector = new InjectedConnector({
   supportedChainIds,
 });
+
+export const ledgerConnector = new LedgerHQFrameConnector();
+// {
+// targetOrigin?: string;
+// timeoutMilliseconds?: number;
+// }
 
 /**
  * A bug causes wallet connect connector to stuck forever upon second invoke

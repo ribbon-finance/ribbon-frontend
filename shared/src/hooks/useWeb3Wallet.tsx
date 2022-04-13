@@ -3,6 +3,7 @@ import { AbstractConnector } from "@web3-react/abstract-connector";
 import {
   getWalletConnectConnector,
   injectedConnector,
+  ledgerConnector,
   walletlinkConnector,
 } from "../utils/connectors";
 import { providers } from "ethers";
@@ -22,6 +23,7 @@ import {
 import { Chains, CHAINS_TO_ID, ID_TO_CHAINS } from "../constants/constants";
 import { switchChains } from "../utils/chainSwitching";
 import { impersonateAddress } from "../utils/development";
+import { isLedgerDappBrowserProvider } from "web3-ledgerhq-frame-connector";
 
 interface Web3WalletData {
   chainId: number | undefined;
@@ -33,6 +35,9 @@ interface Web3WalletData {
   connectedWallet: Wallet | undefined;
   ethereumProvider: providers.Web3Provider | undefined;
   solanaWallet: SolanaWalletInterface | undefined;
+
+  // True if is embeded in ledger live
+  isLedgerLive: boolean;
 }
 
 export const useWeb3Wallet = (): Web3WalletData => {
@@ -150,6 +155,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
       connectedWallet,
       ethereumProvider: undefined,
       solanaWallet: walletSolana || undefined,
+      isLedgerLive: false,
     };
   }
 
@@ -163,11 +169,13 @@ export const useWeb3Wallet = (): Web3WalletData => {
     connectedWallet,
     ethereumProvider: libraryEth,
     solanaWallet: undefined,
+    isLedgerLive: isLedgerDappBrowserProvider(),
   };
 };
 
 const evmConnectors: Record<EthereumWallet, () => AbstractConnector> = {
   [EthereumWallet.Metamask]: () => injectedConnector,
+  [EthereumWallet.Ledger]: () => ledgerConnector,
   [EthereumWallet.WalletConnect]: getWalletConnectConnector,
   [EthereumWallet.WalletLink]: () => walletlinkConnector,
 };

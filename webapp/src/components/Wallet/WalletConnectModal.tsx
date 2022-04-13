@@ -21,7 +21,7 @@ import {
   ETHEREUM_WALLETS,
   SOLANA_WALLETS,
   Wallet,
-} from "../../models/wallets";
+} from "shared/lib/models/wallets";
 import { Chains, ENABLED_CHAINS } from "shared/lib/constants/constants";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
