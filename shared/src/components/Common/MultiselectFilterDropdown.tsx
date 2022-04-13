@@ -97,15 +97,34 @@ const FilterDropdownMenu = styled(motion.div)<{
         `}
 `;
 
-const MenuItem = styled.div<{ color: string; active: boolean }>`
+const MenuItemsContainer = styled.div<{ horizontal?: boolean }>`
+  ${(props) =>
+    props.horizontal &&
+    `
+      display: flex;
+      width: 440px;
+      flex-wrap: wrap;
+      margin-left: -16px;
+`}
+`;
+
+type MultiselectFilterMode = "compact" | "default";
+
+const MenuItem = styled.div<{
+  color: string;
+  active: boolean;
+  mode?: MultiselectFilterMode;
+}>`
   display: flex;
   align-items: center;
-  width: 256px;
-  padding: 14px 16px;
-  opacity: 0.48;
+  width: ${(props) => (props.mode === "compact" ? "auto" : "256px")};
+  padding: ${(props) => (props.mode === "compact" ? "6px 16px" : "14px 16px")};
+  opacity: ${(props) => (props.mode === "compact" ? "0.64" : "0.48")};
   border-radius: 100px;
-  background: ${(props) => `${props.color}14`};
+  background: ${(props) =>
+    props.mode === "compact" ? colors.background.three : `${props.color}14`};
   margin-bottom: 16px;
+  margin-left: ${(props) => (props.mode === "compact" ? "16px" : "0")};
   border: ${theme.border.width} ${theme.border.style} transparent;
   transition: border 150ms;
 
@@ -124,12 +143,12 @@ const MenuItem = styled.div<{ color: string; active: boolean }>`
   }}
 `;
 
-const LogoContainer = styled.div`
+const LogoContainer = styled.div<{ mode?: MultiselectFilterMode }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 40px;
-  width: 40px;
+  width: ${(props) => (props.mode === "compact" ? "24px" : "40px")};
+  height: ${(props) => (props.mode === "compact" ? "24px" : "40px")};
   margin: -12px;
   margin-right: 8px;
   border-radius: 100px;
@@ -159,7 +178,7 @@ const SaveButton = styled(BaseButton)`
   border-radius: ${theme.border.radius};
 `;
 
-interface DropdownOption {
+export interface DropdownOption {
   value: string;
   display: string;
   color: string;
@@ -174,6 +193,8 @@ interface MultiselectFilterDropdownProps {
   onSelect: (option: string[]) => void;
   buttonConfig?: FilterDropdownButtonConfig;
   dropdownMenuConfig?: FilterDropdownMenuConfig;
+
+  mode?: MultiselectFilterMode;
 }
 
 const MultiselectFilterDropdown: React.FC<
@@ -183,6 +204,7 @@ const MultiselectFilterDropdown: React.FC<
   options,
   title,
   onSelect,
+  mode = "default",
   buttonConfig = {
     background: colors.background.two,
     activeBackground: colors.background.three,
@@ -219,6 +241,7 @@ const MultiselectFilterDropdown: React.FC<
       const textColor = option.textColor ? option.textColor : option.color;
       return (
         <MenuItem
+          mode={mode}
           onClick={() => {
             setSelected((currSelected) =>
               currSelected.includes(option.value)
@@ -231,17 +254,21 @@ const MultiselectFilterDropdown: React.FC<
           color={option.color}
           active={active}
         >
-          {option.logo ? <LogoContainer>{option.logo}</LogoContainer> : <></>}
+          {option.logo ? (
+            <LogoContainer mode={mode}>{option.logo}</LogoContainer>
+          ) : (
+            <></>
+          )}
           <MenuItemText color={active ? textColor : colors.primaryText}>
             {option.display}
           </MenuItemText>
-          {active && (
+          {Boolean(active && mode === "default") && (
             <StyledCheckButton color={textColor} className="ml-auto" />
           )}
         </MenuItem>
       );
     },
-    [selected]
+    [selected, mode]
   );
 
   const getVerticalOrientation = useCallback(() => {
@@ -307,7 +334,9 @@ const MultiselectFilterDropdown: React.FC<
             duration: 0.2,
           }}
         >
-          {options.map((filterOption) => renderMenuItem(filterOption))}
+          <MenuItemsContainer horizontal={mode === "compact"}>
+            {options.map((filterOption) => renderMenuItem(filterOption))}
+          </MenuItemsContainer>
           <SaveButton
             role="button"
             onClick={() => {

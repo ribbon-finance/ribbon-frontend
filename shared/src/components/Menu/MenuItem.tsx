@@ -1,8 +1,9 @@
-import MenuButton from "shared/lib/components/Common/MenuButton";
-import { Title } from "shared/lib/designSystem";
-import colors from "shared/lib/designSystem/colors";
-import sizes from "shared/lib/designSystem/sizes";
+import MenuButton from "../../components/Common/MenuButton";
+import { Title } from "../../designSystem";
+import colors from "../../designSystem/colors";
+import sizes from "../../designSystem/sizes";
 import styled from "styled-components";
+import theme from "../../designSystem/theme";
 
 const Container = styled.div`
   padding: 8px 16px;
@@ -19,9 +20,14 @@ const Container = styled.div`
     padding-bottom: 16px;
   }
 
+  // Doing this allows us to change child opacity
+  // without affecting the container background
+  > * {
+    opacity: ${theme.hover.opacity};
+  }
   &:hover {
-    span {
-      color: ${colors.primaryText};
+    > * {
+      opacity: 1;
     }
   }
 
@@ -34,7 +40,7 @@ const Container = styled.div`
 `;
 
 const MenuItemText = styled(Title)`
-  color: ${colors.primaryText}A3;
+  color: ${colors.primaryText};
   white-space: nowrap;
   font-size: 14px;
   line-height: 20px;

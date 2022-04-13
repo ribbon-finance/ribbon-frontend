@@ -1,12 +1,13 @@
 import React, { ReactNode, useMemo } from "react";
 import { ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { Redirect } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { BaseLink, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
+import LiveryBar from "shared/lib/components/Deposit/LiveryBar";
 import PerformanceSection from "./PerformanceSection";
 import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import {
@@ -50,6 +51,20 @@ const DepositPageContainer = styled(Container)`
   }
 `;
 
+const AbsoluteContainer = styled.div<{ position: "top" | "bottom" }>`
+  position: absolute;
+  left: 0;
+  right: 0;
+  ${({ position }) => {
+    if (position === "top") {
+      return "top: 0;";
+    } else if (position === "bottom") {
+      return "bottom: 0;";
+    }
+    return "";
+  }}
+`;
+
 const HeroContainer = styled.div<{ color: string }>`
   background: linear-gradient(
     96.84deg,
@@ -64,36 +79,6 @@ const HeroText = styled(Title)`
   font-size: 56px;
   line-height: 64px;
   margin-bottom: 24px;
-`;
-
-const livelyAnimation = (position: "top" | "bottom") => keyframes`
-  0% {
-    background-position-x: ${position === "top" ? 0 : 100}%;
-  }
-
-  50% {
-    background-position-x: ${position === "top" ? 100 : 0}%;
-  }
-
-  100% {
-    background-position-x: ${position === "top" ? 0 : 100}%;
-  }
-`;
-
-const LiveryBar = styled.div<{ color: string; position: "top" | "bottom" }>`
-  position: absolute;
-  ${(props) => props.position}: 0;
-  left: 0;
-  width: 100%;
-  height: 8px;
-  background: ${(props) => `linear-gradient(
-    270deg,
-    ${props.color}00 15%,
-    ${props.color} 50%,
-    ${props.color}00 85%
-  )`};
-  background-size: 200%;
-  animation: 10s ${(props) => livelyAnimation(props.position)} linear infinite;
 `;
 
 const AttributePill = styled.div<{ color: string }>`
@@ -366,8 +351,12 @@ const HeroSection: React.FC<{
       case "v2":
         return (
           <>
-            <LiveryBar color={color} position="top" />
-            <LiveryBar color={color} position="bottom" />
+            <AbsoluteContainer position="top">
+              <LiveryBar color={color} animationStyle="rightToLeft" />
+            </AbsoluteContainer>
+            <AbsoluteContainer position="bottom">
+              <LiveryBar color={color} animationStyle="leftToRight" />
+            </AbsoluteContainer>
           </>
         );
       default:

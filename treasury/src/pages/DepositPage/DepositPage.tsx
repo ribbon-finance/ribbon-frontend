@@ -1,9 +1,11 @@
 import React, { ReactNode, useMemo } from "react";
 import { ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { Redirect } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+
+import LiveryBar from "shared/lib/components/Deposit/LiveryBar";
 import { BaseLink, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import PerformanceSection from "./PerformanceSection";
@@ -74,34 +76,18 @@ const HeroText = styled(Title)`
   margin-bottom: 24px;
 `;
 
-const livelyAnimation = (position: "top" | "bottom") => keyframes`
-  0% {
-    background-position-x: ${position === "top" ? 0 : 100}%;
-  }
-
-  50% {
-    background-position-x: ${position === "top" ? 100 : 0}%;
-  }
-
-  100% {
-    background-position-x: ${position === "top" ? 0 : 100}%;
-  }
-`;
-
-const LiveryBar = styled.div<{ color: string; position: "top" | "bottom" }>`
+const AbsoluteContainer = styled.div<{ position: "top" | "bottom" }>`
   position: absolute;
-  ${(props) => props.position}: 0;
   left: 0;
-  width: 100%;
-  height: 8px;
-  background: ${(props) => `linear-gradient(
-    270deg,
-    ${props.color}00 15%,
-    ${props.color} 50%,
-    ${props.color}00 85%
-  )`};
-  background-size: 200%;
-  animation: 10s ${(props) => livelyAnimation(props.position)} linear infinite;
+  right: 0;
+  ${({ position }) => {
+    if (position === "top") {
+      return "top: 0;";
+    } else if (position === "bottom") {
+      return "bottom: 0;";
+    }
+    return "";
+  }}
 `;
 
 const AttributePill = styled.div<{ color: string }>`
@@ -317,7 +303,6 @@ const HeroSection: React.FC<{
   v1Inactive?: boolean;
 }> = ({ vaultInformation, vaultOption, variant, v1Inactive }) => {
   const { t } = useTranslation();
-  const { chainId } = useWeb3Wallet();
   const color = getVaultColor(vaultOption);
 
   const logo = useMemo(() => {
@@ -353,8 +338,12 @@ const HeroSection: React.FC<{
       case "v2":
         return (
           <>
-            <LiveryBar color={color} position="top" />
-            <LiveryBar color={color} position="bottom" />
+            <AbsoluteContainer position="top">
+              <LiveryBar color={color} animationStyle="rightToLeft" />
+            </AbsoluteContainer>
+            <AbsoluteContainer position="bottom">
+              <LiveryBar color={color} animationStyle="leftToRight" />
+            </AbsoluteContainer>
           </>
         );
       default:

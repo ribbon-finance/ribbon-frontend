@@ -1,6 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from "react-router-dom";
 import { Web3ReactProvider } from "@web3-react/core";
 import { ConnectionProvider } from "@solana/wallet-adapter-react";
 
@@ -66,6 +71,9 @@ function App() {
                         </Route>
                       </Switch>
 
+                      <Route>
+                        <Redirect to="/" />
+                      </Route>
                       <Footer />
                     </Router>
                     <StickyFooter />
