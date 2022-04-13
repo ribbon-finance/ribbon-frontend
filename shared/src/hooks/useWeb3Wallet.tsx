@@ -34,8 +34,8 @@ interface Web3WalletData {
   connectingWallet: Wallet | undefined;
   connectedWallet: Wallet | undefined;
   ethereumProvider: providers.Web3Provider | undefined;
+  ethereumConnector?: AbstractConnector;
   solanaWallet: SolanaWalletInterface | undefined;
-
   // True if is embeded in ledger live
   isLedgerLive: boolean;
 }
@@ -154,6 +154,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
       connectingWallet,
       connectedWallet,
       ethereumProvider: undefined,
+      ethereumConnector: undefined,
       solanaWallet: walletSolana || undefined,
       isLedgerLive: false,
     };
@@ -168,6 +169,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
     connectingWallet,
     connectedWallet,
     ethereumProvider: libraryEth,
+    ethereumConnector: connectorEth,
     solanaWallet: undefined,
     isLedgerLive: isLedgerDappBrowserProvider(),
   };
@@ -175,7 +177,6 @@ export const useWeb3Wallet = (): Web3WalletData => {
 
 const evmConnectors: Record<EthereumWallet, () => AbstractConnector> = {
   [EthereumWallet.Metamask]: () => injectedConnector,
-  [EthereumWallet.Ledger]: () => ledgerConnector,
   [EthereumWallet.WalletConnect]: getWalletConnectConnector,
   [EthereumWallet.WalletLink]: () => walletlinkConnector,
 };

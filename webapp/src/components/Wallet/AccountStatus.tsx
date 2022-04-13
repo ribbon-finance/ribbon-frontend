@@ -305,8 +305,14 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   showVaultPositionHook,
 }) => {
   const [chain, setChain] = useChain();
-  const { deactivate, ethereumProvider, active, account, chainId } =
-    useWeb3Wallet();
+  const {
+    deactivate,
+    ethereumProvider,
+    active,
+    account,
+    chainId,
+    isLedgerLive,
+  } = useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showActionModal, setShowActionModal] = useState(false);
   const [showAirdropModal, setShowAirdropModal] = useState(false);
@@ -527,7 +533,8 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
                 `OPEN IN ${getExplorerName(chain)}`,
                 handleOpenEtherscan
               )}
-            {renderMenuItem("DISCONNECT", handleDisconnect)}
+            {/* Only shows disconnect if not embedded in ledger live */}
+            {!isLedgerLive && renderMenuItem("DISCONNECT", handleDisconnect)}
             {chainId === CHAINID.ETH_MAINNET && (
               <AirdropMenuItem role="button">
                 <AirdropButton onClick={onShowAirdropModal}></AirdropButton>

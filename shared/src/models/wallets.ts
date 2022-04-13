@@ -2,7 +2,6 @@ export enum EthereumWallet {
   Metamask = 1,
   WalletConnect = 2,
   WalletLink = 3,
-  Ledger = 4,
 }
 export const ETHEREUM_WALLETS: EthereumWallet[] = Object.values(
   EthereumWallet
