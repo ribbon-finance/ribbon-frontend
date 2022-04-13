@@ -8,11 +8,10 @@ export const injectedConnector = new InjectedConnector({
   supportedChainIds,
 });
 
-export const ledgerConnector = new LedgerHQFrameConnector();
-// {
-// targetOrigin?: string;
-// timeoutMilliseconds?: number;
-// }
+// Only receive messages from platform.apps.ledger.com
+export const ledgerConnector = new LedgerHQFrameConnector({
+  targetOrigin: "https://platform.apps.ledger.com",
+});
 
 /**
  * A bug causes wallet connect connector to stuck forever upon second invoke
