@@ -21,7 +21,7 @@ import {
   ETHEREUM_WALLETS,
   SOLANA_WALLETS,
   Wallet,
-} from "../../models/wallets";
+} from "shared/lib/models/wallets";
 import { Chains, ENABLED_CHAINS } from "shared/lib/constants/constants";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
@@ -48,7 +48,7 @@ const LearnMoreText = styled(BaseText)`
 type ConnectSteps = "chain" | "wallet";
 
 const WalletConnectModal: React.FC = () => {
-  const { activate, connectingWallet } = useWeb3Wallet();
+  const { activate, connectingWallet, isLedgerLive } = useWeb3Wallet();
   const [chain] = useChain();
   const [show, setShow] = useConnectWalletModal();
   const [selectedStep, setStep] = useState<ConnectSteps>("chain");
@@ -148,6 +148,7 @@ const WalletConnectModal: React.FC = () => {
             currentChain={selectedChain}
             onClose={onClose}
             onSelectChain={setChain}
+            availableChains={isLedgerLive ? [Chains.Ethereum] : ENABLED_CHAINS}
           ></ConnectChainBody>
         ) : (
           <ConnectWalletBody
@@ -166,6 +167,8 @@ const WalletConnectModal: React.FC = () => {
           selectedWallet={selectedWallet}
           onClickStep={handleClickStep}
           onActivate={onActivate}
+          isLedgerLive={isLedgerLive}
+          onClose={onClose}
         ></ConnectStepsNav>
       </>
     </BasicModal>
@@ -177,12 +180,17 @@ interface ConnectStepsNavProps {
   selectedChain: Chains;
   selectedWallet: Wallet | undefined;
   onClickStep: (step: ConnectSteps) => void;
+  onClose: () => void;
   wallets: Wallet[];
   onActivate: () => void;
+
+  // If is ledger live, handle differently
+  isLedgerLive?: boolean;
 }
 
 const ConnectStepsButton = styled(BaseButton)<{ disabled?: boolean }>`
   margin: 0;
+  margin-top: auto;
   padding: 16px;
   color: ${colors.green};
   justify-content: center;
@@ -211,6 +219,8 @@ const ConnectStepsNav: React.FC<ConnectStepsNavProps> = ({
   wallets,
   onClickStep,
   onActivate,
+  isLedgerLive,
+  onClose,
 }) => {
   // Render the proper wallet list based on the selected wallet
   const walletInChain = selectedWallet && wallets.includes(selectedWallet);
@@ -222,9 +232,9 @@ const ConnectStepsNav: React.FC<ConnectStepsNavProps> = ({
         <ConnectStepsButton
           role="button"
           disabled={!selectedChain}
-          onClick={() => onClickStep("wallet")}
+          onClick={isLedgerLive ? () => onClose() : () => onClickStep("wallet")}
         >
-          <ButtonTitle>Next</ButtonTitle>
+          <ButtonTitle>{isLedgerLive ? "Done" : "Next"}</ButtonTitle>
         </ConnectStepsButton>
       )}
       {!isChainStep && (

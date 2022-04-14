@@ -2235,6 +2235,13 @@
     "@ledgerhq/errors" "^6.10.0"
     events "^3.3.0"
 
+"@ledgerhq/iframe-provider@0":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/iframe-provider/-/iframe-provider-0.4.2.tgz#2b63892bb3ab9a0719d2b00488be18b176ad6b7e"
+  integrity sha512-RbdwvQow/ITLk0TLb6c3M7y8IyjopIGXhhuUEMjqTU6PZhAL9Gl7TzH8INit9x9cOeG2WCuV+ZbHQ2oWsLfJ+A==
+  dependencies:
+    eventemitter3 "^4.0.0"
+
 "@ledgerhq/logs@^6.10.0":
   version "6.10.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-6.10.0.tgz#c012c1ecc1a0e53d50e6af381618dca5268461c1"
@@ -3556,7 +3563,7 @@
   dependencies:
     "@walletconnect/window-getters" "^1.0.0"
 
-"@web3-react/abstract-connector@^6.0.7":
+"@web3-react/abstract-connector@6", "@web3-react/abstract-connector@^6.0.7":
   version "6.0.7"
   resolved "https://registry.yarnpkg.com/@web3-react/abstract-connector/-/abstract-connector-6.0.7.tgz#401b3c045f1e0fab04256311be49d5144e9badc6"
   integrity sha512-RhQasA4Ox8CxUC0OENc1AJJm8UTybu/oOCM61Zjg6y0iF7Z0sqv1Ai1VdhC33hrQpA8qSBgoXN9PaP8jKmtdqg==
@@ -3583,7 +3590,7 @@
     "@web3-react/types" "^6.0.7"
     tiny-warning "^1.0.3"
 
-"@web3-react/types@^6.0.7":
+"@web3-react/types@6", "@web3-react/types@^6.0.7":
   version "6.0.7"
   resolved "https://registry.yarnpkg.com/@web3-react/types/-/types-6.0.7.tgz#34a6204224467eedc6123abaf55fbb6baeb2809f"
   integrity sha512-ofGmfDhxmNT1/P/MgVa8IKSkCStFiyvXe+U5tyZurKdrtTDFU+wJ/LxClPDtFerWpczNFPUSrKcuhfPX1sI6+A==
@@ -14733,6 +14740,11 @@ timsort@^0.3.0:
   resolved "https://registry.yarnpkg.com/timsort/-/timsort-0.3.0.tgz#405411a8e7e6339fe64db9a234de11dc31e02bd4"
   integrity sha1-QFQRqOfmM5/mTbmiNN4R3DHgK9Q=
 
+tiny-invariant@1:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/tiny-invariant/-/tiny-invariant-1.2.0.tgz#a1141f86b672a9148c72e978a19a73b9b94a15a9"
+  integrity sha512-1Uhn/aqw5C6RI4KejVeTg6mIS7IqxnLJ8Mv2tV5rTc0qWobay7pDUz6Wi392Cnc8ak1H0F2cjoRzb2/AW4+Fvg==
+
 tiny-invariant@^1.0.2, tiny-invariant@^1.0.6:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/tiny-invariant/-/tiny-invariant-1.1.0.tgz#634c5f8efdc27714b7f386c35e6760991d230875"
@@ -15410,6 +15422,16 @@ web-vitals@^1.0.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/web-vitals/-/web-vitals-1.1.2.tgz#06535308168986096239aa84716e68b4c6ae6d1c"
   integrity sha512-PFMKIY+bRSXlMxVAQ+m2aw9c/ioUYfDgrYot0YUa+/xa0sakubWhSDyxAKwzymvXVdF4CZI71g06W+mqhzu6ig==
+
+web3-ledgerhq-frame-connector@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/web3-ledgerhq-frame-connector/-/web3-ledgerhq-frame-connector-1.0.1.tgz#7554fb5e9d1da19e1ab24e434dbc4d0c012c0527"
+  integrity sha512-AnSISDK0csoi2V/dMAjcomK8ZbFAYk22KArSoG/chDKlvLgxBgXafWheQPgV7540Efd/wMbtcjo4NotY2M3nDA==
+  dependencies:
+    "@ledgerhq/iframe-provider" "0"
+    "@web3-react/abstract-connector" "6"
+    "@web3-react/types" "6"
+    tiny-invariant "1"
 
 web3-provider-engine@16.0.1:
   version "16.0.1"

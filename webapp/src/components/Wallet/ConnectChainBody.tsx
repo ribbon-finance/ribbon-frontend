@@ -15,6 +15,7 @@ interface ConnectChainBodyProps {
   onClose?: () => void;
   onSelectChain: (chain: Chains) => void;
   currentChain: Chains | undefined;
+  availableChains?: Chains[];
 }
 
 const ModalContainer = styled.div`
@@ -78,6 +79,7 @@ const NetworkContainerPill = styled(NetworkContainer)`
 const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({
   onSelectChain,
   currentChain,
+  availableChains = ENABLED_CHAINS,
 }) => {
   return (
     <ModalContainer>
@@ -85,7 +87,7 @@ const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({
         <Title>Select a blockchain</Title>
       </TitleContainer>
 
-      {ENABLED_CHAINS.map((chain: Chains) => (
+      {availableChains.map((chain: Chains) => (
         <ChainButton
           key={chain}
           chain={chain}

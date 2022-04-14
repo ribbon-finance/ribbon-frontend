@@ -3,6 +3,7 @@ import { AbstractConnector } from "@web3-react/abstract-connector";
 import {
   getWalletConnectConnector,
   injectedConnector,
+  ledgerConnector,
   walletlinkConnector,
 } from "../utils/connectors";
 import { providers } from "ethers";
@@ -22,6 +23,7 @@ import {
 import { Chains, CHAINS_TO_ID, ID_TO_CHAINS } from "../constants/constants";
 import { switchChains } from "../utils/chainSwitching";
 import { impersonateAddress } from "../utils/development";
+import { isLedgerDappBrowserProvider } from "web3-ledgerhq-frame-connector";
 
 interface Web3WalletData {
   chainId: number | undefined;
@@ -32,7 +34,10 @@ interface Web3WalletData {
   connectingWallet: Wallet | undefined;
   connectedWallet: Wallet | undefined;
   ethereumProvider: providers.Web3Provider | undefined;
+  ethereumConnector?: AbstractConnector;
   solanaWallet: SolanaWalletInterface | undefined;
+  // True if is embeded in ledger live
+  isLedgerLive: boolean;
 }
 
 export const useWeb3Wallet = (): Web3WalletData => {
@@ -149,7 +154,9 @@ export const useWeb3Wallet = (): Web3WalletData => {
       connectingWallet,
       connectedWallet,
       ethereumProvider: undefined,
+      ethereumConnector: undefined,
       solanaWallet: walletSolana || undefined,
+      isLedgerLive: false,
     };
   }
 
@@ -162,7 +169,9 @@ export const useWeb3Wallet = (): Web3WalletData => {
     connectingWallet,
     connectedWallet,
     ethereumProvider: libraryEth,
+    ethereumConnector: connectorEth,
     solanaWallet: undefined,
+    isLedgerLive: isLedgerDappBrowserProvider(),
   };
 };
 

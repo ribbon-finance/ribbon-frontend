@@ -6,7 +6,6 @@ import React, {
   useState,
 } from "react";
 import styled from "styled-components";
-import { useWeb3React } from "@web3-react/core";
 import { setTimeout } from "timers";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
@@ -35,6 +34,7 @@ import { VotingEscrowAddress } from "shared/lib/constants/constants";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import moment from "moment";
 import { BigNumber } from "ethers";
+import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import { MenuCloseItem, MenuItem } from "shared/lib/components/Menu/MenuItem";
 import DesktopFloatingMenu from "shared/lib/components/Menu/DesktopFloatingMenu";
 
@@ -212,12 +212,13 @@ interface AccountStatusProps {
 
 const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   const {
-    connector,
+    ethereumConnector,
     deactivate: deactivateWeb3,
-    library,
+    ethereumProvider,
+    isLedgerLive,
     active,
     account,
-  } = useWeb3React();
+  } = useWeb3Wallet();
   const rbnAllowance =
     useTokenAllowance("rbn", VotingEscrowAddress) || BigNumber.from(0);
   const { data: rbnTokenAccount } = useRBNTokenAccount();
@@ -254,10 +255,10 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   });
 
   useEffect(() => {
-    if (library && account) {
+    if (ethereumProvider && account) {
       addConnectEvent("header", account);
     }
-  }, [library, account]);
+  }, [ethereumProvider, account]);
 
   useEffect(() => {
     let timer;
@@ -313,12 +314,12 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   }, [account]);
 
   const handleDisconnect = useCallback(async () => {
-    if (connector instanceof WalletConnectConnector) {
-      connector.close();
+    if (ethereumConnector instanceof WalletConnectConnector) {
+      ethereumConnector.close();
     }
     deactivateWeb3();
     onCloseMenu();
-  }, [deactivateWeb3, onCloseMenu, connector]);
+  }, [deactivateWeb3, onCloseMenu, ethereumConnector]);
 
   const renderButtonContent = () =>
     active && account ? (
@@ -386,7 +387,10 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
             extra={renderCopiedButton()}
           />
           <MenuItem title="OPEN IN ETHERSCAN" onClick={handleOpenEtherscan} />
-          <MenuItem title="DISCONNECT" onClick={handleDisconnect} />
+          {/* Only shows disconnect if not embedded in ledger live */}
+          {!isLedgerLive && (
+            <MenuItem title="DISCONNECT" onClick={handleDisconnect} />
+          )}
         </DesktopFloatingMenu>
       </WalletContainer>
 
@@ -406,7 +410,10 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
           extra={renderCopiedButton()}
         />
         <MenuItem title="OPEN IN ETHERSCAN" onClick={handleOpenEtherscan} />
-        <MenuItem title="DISCONNECT" onClick={handleDisconnect} />
+        {/* Only shows disconnect if not embedded in ledger live */}
+        {!isLedgerLive && (
+          <MenuItem title="DISCONNECT" onClick={handleDisconnect} />
+        )}
         <MenuCloseItem onClose={onCloseMenu} />
       </WalletMobileOverlayMenu>
     </>

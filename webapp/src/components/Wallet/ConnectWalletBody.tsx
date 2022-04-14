@@ -5,7 +5,7 @@ import {
   SolanaWallet,
   Wallet,
   WALLET_TITLES,
-} from "../../models/wallets";
+} from "shared/lib/models/wallets";
 import { ConnectorButtonProps } from "./types";
 import { ConnectorButtonStatus } from "./types";
 import {
