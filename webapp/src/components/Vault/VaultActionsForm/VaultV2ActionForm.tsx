@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router";
-
+import { useTranslation, Trans } from "react-i18next";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
@@ -60,6 +60,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
   onFormSubmit,
 }) => {
   const history = useHistory();
+  const { t } = useTranslation();
   const { vaultAccounts: v1VaultAccounts } = useVaultAccounts("v1");
   const {
     data: {
@@ -216,108 +217,61 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
     withdrawalAmount,
   ]);
 
-  const formExtra = useMemo(() => {
-    let formExtraText: JSX.Element | undefined = undefined;
-
-    if (migrateSourceVault && !hideMigrationForm) {
-      formExtraText = (
-        <>
-          IMPORTANT: Withdrawal fees do not apply for migrations from V1 to V2
-        </>
-      );
-    } else if (!canCompleteWithdraw || hideCompleteWithdrawReminder) {
-      switch (vaultActionForm.actionType) {
-        case ACTIONS.deposit:
-          formExtraText = (
-            <>
-              Your deposit will be deployed in the vault’s weekly strategy on
-              Friday at 11am UTC
-            </>
-          );
-          break;
-        case ACTIONS.withdraw:
-          if (
-            !isPracticallyZero(depositBalanceInAsset, decimals) &&
-            vaultActionForm.vaultOption !== "rSOL-THETA"
-          ) {
-            formExtraText =
-              vaultActionForm.withdrawOption === "instant" ? (
-                <>
-                  IMPORTANT: instant withdrawals are only available before 11am
-                  UTC on Friday for funds that have not been deployed in the
-                  vault's weekly strategy
-                </>
-              ) : (
-                <>
-                  You can withdraw{" "}
-                  {formatBigNumber(depositBalanceInAsset, decimals)}{" "}
-                  {getAssetDisplay(asset)} immediately via instant withdrawals
-                  because these funds have not yet been deployed in the vault’s
-                  strategy
-                </>
-              );
-            break;
-          }
-
-          if (!isPracticallyZero(lockedBalanceInAsset, decimals)) {
-            if (vaultActionForm.withdrawOption === "instant") {
-              formExtraText = (
-                <>
-                  Instant withdrawals are unavailable because your funds have
-                  been deployed in this week’s vault strategy. To withdraw your
-                  funds you need to initiate a withdrawal using standard
-                  withdrawals.
-                </>
-              );
-            }
-            break;
-          }
-
-          break;
-        case ACTIONS.transfer:
-          formExtraText = (
-            <>
-              Vault transfers are <strong>FREE</strong>: withdrawal fees are
-              waived when you transfer funds between{" "}
-              {vaultActionForm.vaultOption} and
-              {vaultActionForm.receiveVault}
-            </>
-          );
-          break;
-      }
-    }
-
-    if (!formExtraText) {
-      return <></>;
-    }
-
+  const FormExtra = () => {
     return (
       <FormExtraContainer>
         <PrimaryText fontSize={14} lineHeight={20} color={color}>
-          {formExtraText}
+          {migrateSourceVault &&
+            !hideMigrationForm &&
+            t("webapp:VaultV2ActionForm:migrationFees")}
+          {(!canCompleteWithdraw || hideCompleteWithdrawReminder) &&
+            {
+              [ACTIONS.deposit]: t("webapp:VaultV2ActionForm:actions:deposit"),
+              [ACTIONS.withdraw]: () => {
+                if (
+                  !isPracticallyZero(depositBalanceInAsset, decimals) &&
+                  vaultActionForm.vaultOption !== "rSOL-THETA"
+                ) {
+                  return vaultActionForm.withdrawOption === "instant"
+                    ? t(
+                        "webapp:VaultV2ActionForm:actions:withdraw:instantNotice"
+                      )
+                    : t("webapp:VaultV2ActionForm:actions:withdraw:available", {
+                        amount: formatBigNumber(
+                          depositBalanceInAsset,
+                          decimals
+                        ),
+                        asset: getAssetDisplay(asset),
+                      });
+                }
+                if (!isPracticallyZero(lockedBalanceInAsset, decimals)) {
+                  if (vaultActionForm.withdrawOption === "instant") {
+                    return t("webapp:VaultV2ActionForm:actions:unavailable");
+                  }
+                }
+                return;
+              },
+              [ACTIONS.transfer]: (
+                <Trans
+                  i18nKey="webapp:VaultV2ActionForm:actions:transfer"
+                  values={{
+                    srcVault: vaultActionForm.vaultOption,
+                    dstVault: vaultActionForm.receiveVault,
+                  }}
+                >
+                  <strong></strong>
+                </Trans>
+              ),
+            }[vaultActionForm.actionType]}
         </PrimaryText>
       </FormExtraContainer>
     );
-  }, [
-    asset,
-    canCompleteWithdraw,
-    migrateSourceVault,
-    color,
-    decimals,
-    depositBalanceInAsset,
-    hideCompleteWithdrawReminder,
-    hideMigrationForm,
-    lockedBalanceInAsset,
-    vaultActionForm.actionType,
-    vaultActionForm.receiveVault,
-    vaultActionForm.vaultOption,
-    vaultActionForm.withdrawOption,
-  ]);
+  };
 
   return (
     <>
       <FormContainer>{content}</FormContainer>
-      {formExtra}
+      <FormExtra />
     </>
   );
 };

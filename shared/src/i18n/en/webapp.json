@@ -77,6 +77,32 @@
   },
   "VaultQueue": {
     "transferTo": "Transfer to {{asset}} vault"
+  },
+  "VaultV2ActionForm": {
+    "migrationFees": "IMPORTANT: Withdrawal fees do not apply for migrations from V1 to V2",
+    "actions": {
+      "deposit": "Your deposit will be deployed in the vault’s weekly strategy on Friday at 11am UTC",
+      "withdraw": {
+        "instantNotice": "IMPORTANT: instant withdrawals are only available before 11am UTC on Friday for funds that have not been deployed in the vault's weekly strategy",
+        "available": "You can withdraw {{amount}} {{asset}} immediately via instant withdrawals because these funds have not yet been deployed in the vault's strategy",
+        "unavailable": "Instant withdrawals are unavailable because your funds have been deployed in this week’s vault strategy. To withdraw your funds you need to initiate a withdrawal using standard withdrawals."
+      },
+      "transfer": "Vault transfers are <0>FREE</0>: withdrawal fees are waived when you transfer funds between {{srcVault}} and {{dstVault}}"
+    }
+  },
+  "VaultV2TransferForm": {
+    "transferTo": "Transfer to",
+    "previewTransfer": "Preview Transfer",
+    "availableCapacity": "Available Capacity ({{asset}}): {{amount}}",
+    "availableLimit": "Available Limit",
+    "availableLimitTooltip": {
+      "title": "Available Transfer Limit",
+      "explanation": "TODO"
+    },
+    "weeklyTransferLimit": "Weekly Transfer Limit",
+    "weeklyTransferLimitTooltip": {
+      "title": "Pending Transfers",
+      "explanation": "TODO"
+    }
   }
-
 }

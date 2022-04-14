@@ -112,6 +112,9 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
 
   const canTransfer = useMemo(() => {
     switch (vaultOption) {
+      case "rETH-THETA":
+      case "rAVAX-THETA":
+        return true;
       default:
         return false;
     }
@@ -206,6 +209,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
         switch (actionType) {
           case ACTIONS.transfer:
             switch (vaultOption) {
+              case "rAVAX-THETA":
               case "rUSDC-ETH-P-THETA":
                 return {
                   ...actionForm,

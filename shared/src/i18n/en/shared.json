@@ -111,6 +111,7 @@
     "bridgeAvalanche": "Bridge your assets to Avalanche",
     "swapBTC": "Swap your BTC or renBTC for wBTC",
     "deposit": "Deposit",
-    "withdraw": "Withdraw"
+    "withdraw": "Withdraw",
+    "transfer": "Transfer"
   }
 }

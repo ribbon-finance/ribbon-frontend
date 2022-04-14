@@ -16,7 +16,6 @@ import {
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { ACTIONS } from "../Modal/types";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
-import useVaultQueue from "shared/lib/hooks/useVaultQueue";
 import { BaseLink, SecondaryText, Title } from "shared/lib/designSystem";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import {
@@ -34,6 +33,7 @@ import SwapBTCDropdown from "../common/SwapBTCDropdown";
 import VaultBasicAmountForm from "../common/VaultBasicAmountForm";
 import { VaultValidationErrors } from "../types";
 import VaultV2WithdrawForm from "./VaultV2WithdrawForm";
+import VaultV2TransferForm from "./VaultV2TransferForm";
 import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { BigNumber } from "ethers";
 import { useTranslation } from "react-i18next";
@@ -138,8 +138,12 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
   /**
    * Primary hooks
    */
-  const { handleActionTypeChange, vaultActionForm, handleMaxClick } =
-    useVaultActionForm(vaultOption);
+  const {
+    canTransfer,
+    handleActionTypeChange,
+    vaultActionForm,
+    handleMaxClick,
+  } = useVaultActionForm(vaultOption);
   const {
     data: {
       asset,
@@ -403,6 +407,18 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
             canCompleteWithdraw={canCompleteWithdraw}
           />
         );
+      case ACTIONS.transfer:
+        return (
+          <VaultV2TransferForm
+            vaultOption={vaultOption}
+            error={error}
+            onFormSubmit={onFormSubmit}
+            depositBalanceInAsset={depositBalanceInAsset}
+            lockedBalanceInAsset={lockedBalanceInAsset}
+            initiatedWithdrawAmount={withdrawalAmount}
+            canCompleteWithdraw={canCompleteWithdraw}
+          />
+        );
     }
   }, [
     asset,
@@ -438,35 +454,6 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
         );
     }
   }, [asset, decimals, error, vaultMaxDepositAmount, t]);
-
-  const [, queueTransfer] = useVaultQueue(vaultOption);
-  const transferQueueCTA = useMemo(() => {
-    let stakedAsset;
-    switch (vaultOption) {
-      case "rETH-THETA":
-        stakedAsset = "sAVAX";
-        break;
-      case "rAVAX-THETA":
-        stakedAsset = "sAVAX";
-        break;
-    }
-    switch (vaultOption) {
-      case "rETH-THETA":
-      case "rAVAX-THETA":
-        return (
-          <BaseLink className="mt-4" onClick={() => {}}>
-            <CtaButton
-              color={getAssetColor(asset)}
-              onClick={() => queueTransfer()}
-            >
-              <CtaText>
-                {t("webapp:VaultQueue:transferTo", { asset: stakedAsset })}
-              </CtaText>
-            </CtaButton>
-          </BaseLink>
-        );
-    }
-  }, [asset, queueTransfer, vaultOption, t]);
 
   const bridgeAvaxCTA = useMemo(() => {
     if (
@@ -554,12 +541,23 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
             {t("shared:VaultV2DepositWithdrawForm:withdraw")}
           </FormTabTitle>
         </FormTab>
+        {canTransfer && (
+          <FormTab
+            active={vaultActionForm.actionType === ACTIONS.transfer}
+            onClick={() => handleActionTypeChange(ACTIONS.transfer, "v2")}
+          >
+            <FormTabTitle
+              active={vaultActionForm.actionType === ACTIONS.transfer}
+            >
+              {t("shared:VaultV2DepositWithdrawForm:transfer")}
+            </FormTabTitle>
+          </FormTab>
+        )}
       </FormTabContainer>
 
       <div className="d-flex flex-column p-4 w-100">
         {formContent}
         {bridgeAvaxCTA}
-        {transferQueueCTA}
         {formInfoText}
         {swapContainerTrigger}
       </div>
