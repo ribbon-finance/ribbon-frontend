@@ -8,7 +8,11 @@ import { impersonateAddress } from "../utils/development";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { useWeb3Context } from "./web3Context";
 import { isProduction } from "../utils/env";
-import { VaultLiquidityMiningMap, VaultOptions } from "../constants/constants";
+import {
+  isEthNetwork,
+  VaultLiquidityMiningMap,
+  VaultOptions,
+} from "../constants/constants";
 import { BigNumber } from "@ethersproject/bignumber";
 import { getLiquidityGaugeV5 } from "./useLiquidityGaugeV5";
 import { getV2VaultContract } from "./useV2VaultContract";
@@ -19,7 +23,12 @@ import { calculateClaimableRbn } from "../utils/governanceMath";
 import useWeb3Wallet from "./useWeb3Wallet";
 
 const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
-  const { active, account: web3Account, ethereumProvider } = useWeb3Wallet();
+  const {
+    active,
+    account: web3Account,
+    ethereumProvider,
+    chainId,
+  } = useWeb3Wallet();
   const { provider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
@@ -32,7 +41,12 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   const [, setMulticallCounter] = useState(0);
 
   const doMulticall = useCallback(async () => {
-    if (!minterContract || !gaugeControllerContract) {
+    if (
+      // If a wallet is connected and its NOT ETH, dont fetch
+      (chainId && !isEthNetwork(chainId)) ||
+      !minterContract ||
+      !gaugeControllerContract
+    ) {
       setData({
         ...defaultLiquidityGaugeV5PoolData,
         loading: false,
@@ -239,6 +253,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
     gaugeControllerContract,
     minterContract,
     provider,
+    chainId,
   ]);
 
   useEffect(() => {

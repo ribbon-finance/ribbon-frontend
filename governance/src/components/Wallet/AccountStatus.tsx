@@ -18,7 +18,6 @@ import {
   WalletStatusProps,
   AccountStatusVariantProps,
   WalletButtonProps,
-  MenuStateProps,
   WalletCopyIconProps,
 } from "shared/lib/components/Wallet/types";
 import theme from "shared/lib/designSystem/theme";
@@ -35,8 +34,9 @@ import { VotingEscrowAddress } from "shared/lib/constants/constants";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import moment from "moment";
 import { BigNumber } from "ethers";
-import { MenuCloseItem, MenuItem } from "../Header/MenuItem";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
+import { MenuCloseItem, MenuItem } from "shared/lib/components/Menu/MenuItem";
+import DesktopFloatingMenu from "shared/lib/components/Menu/DesktopFloatingMenu";
 
 const walletButtonWidth = 55;
 
@@ -121,26 +121,6 @@ const WalletButtonText = styled(Title)<WalletStatusProps>`
 
     return `color: ${colors.green}`;
   }}
-`;
-
-const WalletDesktopMenu = styled.div<MenuStateProps>`
-  ${(props) =>
-    props.isMenuOpen
-      ? `
-          position: absolute;
-          right: 0px;
-          top: 64px;
-          width: fit-content;
-          background-color: ${colors.background.two};
-          border-radius: ${theme.border.radius};
-        `
-      : `
-          display: none;
-        `}
-
-  @media (max-width: ${sizes.md}px) {
-    display: none;
-  }
 `;
 
 const WalletMobileOverlayMenu = styled(
@@ -399,7 +379,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
           </StakeUnstakeContainer>
         )}
 
-        <WalletDesktopMenu isMenuOpen={isMenuOpen}>
+        <DesktopFloatingMenu isOpen={isMenuOpen}>
           <MenuItem title="CHANGE WALLET" onClick={handleChangeWallet} />
           <MenuItem
             title={copyState === "hidden" ? "COPY ADDRESS" : "ADDRESS COPIED"}
@@ -407,12 +387,11 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
             extra={renderCopiedButton()}
           />
           <MenuItem title="OPEN IN ETHERSCAN" onClick={handleOpenEtherscan} />
-
           {/* Only shows disconnect if not embedded in ledger live */}
           {!isLedgerLive && (
             <MenuItem title="DISCONNECT" onClick={handleDisconnect} />
           )}
-        </WalletDesktopMenu>
+        </DesktopFloatingMenu>
       </WalletContainer>
 
       {/* Mobile Menu */}

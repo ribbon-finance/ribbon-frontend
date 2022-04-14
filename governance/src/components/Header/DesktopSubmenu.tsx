@@ -5,12 +5,9 @@ import theme from "shared/lib/designSystem/theme";
 import { useCallback, useRef, useState } from "react";
 import { BaseButton } from "shared/lib/designSystem";
 import useOutsideAlerter from "shared/lib/hooks/useOutsideAlerter";
-import { MenuItem } from "./MenuItem";
+import DesktopFloatingMenu from "shared/lib/components/Menu/DesktopFloatingMenu";
+import { MenuItem } from "shared/lib/components/Menu/MenuItem";
 import { useHistory } from "react-router-dom";
-
-interface MenuContainerProps {
-  isMenuOpen: boolean;
-}
 
 const Container = styled.div`
   z-index: 1000;
@@ -39,22 +36,6 @@ const MenuButton = styled(BaseButton).attrs({
   }
 `;
 
-const MenuContainer = styled.div<MenuContainerProps>`
-  ${(props) =>
-    props.isMenuOpen
-      ? `
-          position: absolute;
-          right: 40px;
-          top: 80px;
-          width: 160px;
-          background-color: ${colors.background.two};
-          border-radius: ${theme.border.radius};
-        `
-      : `
-          display: none;
-        `}
-`;
-
 const DesktopSubmenu = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const history = useHistory();
@@ -81,7 +62,12 @@ const DesktopSubmenu = () => {
       <MenuButton role="button" onClick={() => setIsMenuOpen(!isMenuOpen)}>
         ...
       </MenuButton>
-      <MenuContainer isMenuOpen={isMenuOpen}>
+      <DesktopFloatingMenu
+        isOpen={isMenuOpen}
+        containerStyle={{
+          right: 40,
+        }}
+      >
         <MenuItem title="FAQ" onClick={openFAQ} />
         <MenuItem
           title="DISCORD"
@@ -107,7 +93,7 @@ const DesktopSubmenu = () => {
           title="POLICY"
           onClick={() => openLink("https://ribbon.finance/policy")}
         />
-      </MenuContainer>
+      </DesktopFloatingMenu>
     </Container>
   );
 };

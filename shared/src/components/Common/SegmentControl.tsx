@@ -21,8 +21,10 @@ const SegmentControlContainer = styled.div<{
   color?: string;
   backgroundColor?: string;
   widthType: WidthType;
+  hideBorderRadius?: boolean;
 }>`
-  border-radius: ${designTheme.border.radius};
+  border-radius: ${({ hideBorderRadius }) =>
+    hideBorderRadius ? "0" : designTheme.border.radius};
   background-color: ${(props) => {
     if (props.backgroundColor) {
       return props.backgroundColor;
@@ -187,6 +189,7 @@ interface SegmentControlProps {
       fontSize: number;
       lineHeight: number;
     };
+    hideBorderRadius?: boolean;
   };
 }
 
@@ -200,6 +203,7 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
     backgroundColor,
     widthType = "maxContent",
     button = { px: 16, py: 12, fontSize: 14, lineHeight: 24 },
+    hideBorderRadius,
   } = {},
 }) => {
   const controlRefs = useMemo(
@@ -261,6 +265,7 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
         color={color}
         backgroundColor={backgroundColor}
         widthType={widthType}
+        hideBorderRadius={hideBorderRadius}
       >
         <ActiveBackground
           transition={{

@@ -9,6 +9,7 @@ import Header from "./Header/Header";
 import Homepage from "../pages/Homepage";
 import Footer from "./Footer/Footer";
 import colors from "shared/lib/designSystem/colors";
+import NotFound from "shared/lib/pages/NotFound";
 import ProfilePage from "../pages/ProfilePage";
 import StakingFAB from "./FAB/StakingFab";
 import StakingModal from "./Staking/StakingModal";
@@ -45,6 +46,9 @@ const RootApp = () => {
           </Route>
           <Route path="/faqs" exact>
             <Faqs />
+          </Route>
+          <Route>
+            <NotFound />
           </Route>
         </Switch>
         <Footer />

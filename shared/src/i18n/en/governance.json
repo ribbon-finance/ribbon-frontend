@@ -40,5 +40,13 @@
       "2": "veRBN",
       "3": "is not transferrable and unlocking RBN early results in a penalty of up to 75% of your RBN"
     }
+  },
+  "Navigation": {
+    "overview": "Overview",
+    "profile": "Profile",
+    "voting": "Voting",
+    "gaugeVoting": "Gauge Voting",
+    "governanceProposal": "Governance Proposal",
+    "faqs": "Faqs"
   }
 }
