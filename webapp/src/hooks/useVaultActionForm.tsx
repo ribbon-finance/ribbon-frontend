@@ -113,10 +113,11 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   const canTransfer = useMemo(() => {
     switch (vaultOption) {
       case "rETH-THETA":
+        return "rstETH-THETA";
       case "rAVAX-THETA":
-        return true;
+        return "rsAVAX-THETA";
       default:
-        return false;
+        return undefined;
     }
   }, [vaultOption]);
 
@@ -216,7 +217,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
                   vaultVersion,
                   inputAmount: "",
                   actionType: ACTIONS.transfer,
-                  receiveVault: "ryvUSDC-ETH-P-THETA",
+                  receiveVault: canTransfer,
                 };
             }
             break;
@@ -274,7 +275,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
         return actionForm;
       });
     },
-    [setVaultActionForm, vaultOption, withdrawMetadata]
+    [canTransfer, setVaultActionForm, vaultOption, withdrawMetadata]
   );
 
   /**

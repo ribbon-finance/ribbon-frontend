@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { TargetAndTransition } from "framer";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-import { BigNumber } from "ethers";
+import { BigNumber, utils } from "ethers";
 import colors from "shared/lib/designSystem/colors";
 import {
   BaseInput,
@@ -19,6 +19,7 @@ import {
   ActionButton,
   ConnectWalletButton,
 } from "shared/lib/components/Common/buttons";
+import useV2VaultContract from "shared/lib/hooks/useV2VaultContract";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { VaultInputValidationErrorList, VaultValidationErrors } from "../types";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -27,7 +28,10 @@ import {
   getAssetDisplay,
   getAssetLogo,
 } from "shared/lib/utils/asset";
-import { formatBigNumber } from "shared/lib/utils/math";
+import {
+  formatSignificantDecimals,
+  formatBigNumber,
+} from "shared/lib/utils/math";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContainer";
@@ -99,15 +103,18 @@ const VaultV2TransferForm: React.FC<VaultV2WithdrawFormProps> = ({
   );
 
   const {
+    canTransfer,
     handleActionTypeChange,
     handleInputChange,
     handleMaxClick,
     vaultActionForm,
     withdrawMetadata,
   } = useVaultActionForm(vaultOption);
+
+  const dstV2Vault = useV2VaultContract(canTransfer);
   const { active } = useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
-
+  const [dstV2VaultCap, setDstV2VaultCap] = useState("0");
   const [, setActiveBackgroundState] = useState<TargetAndTransition>();
   const isInputNonZero = parseFloat(vaultActionForm.inputAmount) > 0;
 
@@ -154,6 +161,23 @@ const VaultV2TransferForm: React.FC<VaultV2WithdrawFormProps> = ({
     handleActionTypeChange,
     vaultActionForm.withdrawOption,
   ]);
+
+  useEffect(() => {
+    const fetchCap = async () => {
+      if (dstV2Vault) {
+        const cap = parseFloat(
+          formatSignificantDecimals(
+            utils.formatUnits(
+              await dstV2Vault.cap(),
+              await dstV2Vault.decimals()
+            )
+          )
+        );
+        setDstV2VaultCap(cap);
+      }
+    };
+    fetchCap();
+  }, [dstV2Vault]);
 
   const RenderErrorText = (error: VaultValidationErrors) => {
     if (VaultInputValidationErrorList.includes(_error)) {
@@ -236,7 +260,7 @@ const VaultV2TransferForm: React.FC<VaultV2WithdrawFormProps> = ({
           className="mt-4 py-3 mb-0"
           color={color}
         >
-          {t("webapp:VaultV2TransferForm:weeklyTransferLimit")}
+          {t("webapp:VaultV2TransferForm:previewTransfer")}
         </ActionButton>
       );
     }
@@ -314,11 +338,13 @@ const VaultV2TransferForm: React.FC<VaultV2WithdrawFormProps> = ({
       <TransferInfoContainer>
         <Logo className="pl-2 mr-3" showBackground width="58" height="58" />
         <div>
-          <Title className="d-block">{vaultOption}</Title>
+          <Title normalCased className="d-block">
+            {canTransfer}
+          </Title>
           <SecondaryText>
             {t("webapp:VaultV2TransferForm:availableCapacity", {
               asset,
-              amount: 1000000,
+              amount: dstV2VaultCap.toString(),
             })}
           </SecondaryText>
         </div>
@@ -346,7 +372,7 @@ const VaultV2TransferForm: React.FC<VaultV2WithdrawFormProps> = ({
         </SecondaryText>
       )}
       {formExtraInfo}
-      <renderButton />
+      {renderButton()}
       {formFooter}
     </>
   );

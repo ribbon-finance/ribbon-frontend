@@ -90,7 +90,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       : vaultOption
   );
   const v2Vault = useV2VaultContract(vaultOption);
-  const [, queueTransfer] = useVaultQueue(vaultOption);
+  const [, queueTransfer, queueWithdrawal] = useVaultQueue(vaultOption);
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
   const { vaultBalanceInAsset: v1VaultBalanceInAsset } =
@@ -366,7 +366,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
             }
             break;
           case ACTIONS.transfer:
-            // Transfer action is not currently used at all
+            res = await queueWithdrawal(amount);
+            console.log("queueWithdrawal", res);
             break;
           case ACTIONS.migrate:
             res = await (vault as RibbonCoveredCall).migrate();

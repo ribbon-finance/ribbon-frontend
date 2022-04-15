@@ -45,18 +45,18 @@ const useVaultQueue = (vaultOption: any) => {
     }
   }, [active, chainId, library, provider]);
 
-  const queueTransfer = async () => {
+  const queueTransfer = async (amount: BigNumber) => {
     if (!v2Vault || !account) {
       return;
     }
 
     let vaultBalance = await v2Vault.balanceOf(account);
-    if (tokenAllowance.gt(vaultBalance)) {
+    if (amount.gt(vaultBalance)) {
       await v2Vault.maxRedeem();
       vaultBalance = await v2Vault.balanceOf(account);
     }
 
-    if (vaultBalance.gt(tokenAllowance)) {
+    if (amount.gt(tokenAllowance)) {
       await v2Vault.approve(VaultQueueAddress[chainId!], vaultBalance);
     }
 
