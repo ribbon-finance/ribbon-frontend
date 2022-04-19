@@ -1,6 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from "react-router-dom";
 import { Web3ReactProvider } from "@web3-react/core";
 import { ConnectionProvider } from "@solana/wallet-adapter-react";
 
@@ -19,15 +24,20 @@ import Footer from "./components/Footer";
 import Investors from "./components/Investors";
 import PolicyPage from "./pages/PolicyPage";
 import TermsPage from "./pages/TermsPage";
-import FAQPage from "./pages/FAQ";
 import colors from "shared/lib/designSystem/colors";
 import { getSolanaClusterURI } from "shared/lib/utils/env";
+import StickyFooter from "./components/StickyFooter/StickyFooter";
+import "shared/lib/i18n/config";
 
 const Body = styled.div`
   background-color: ${colors.background.one};
 `;
 
-const MainContent = styled.div``;
+const MainContainer = styled.div`
+  > * {
+    margin-bottom: 80px;
+  }
+`;
 
 function App() {
   return (
@@ -44,12 +54,12 @@ function App() {
 
                       <Switch>
                         <Route path="/" exact>
-                          <Hero />
-                          <MainContent>
+                          <MainContainer>
+                            <Hero />
                             <ProductCarousel />
                             <Mission />
                             <Investors />
-                          </MainContent>
+                          </MainContainer>
                         </Route>
 
                         <Route path="/policy">
@@ -59,14 +69,14 @@ function App() {
                         <Route path="/terms">
                           <TermsPage></TermsPage>
                         </Route>
-
-                        <Route path="/faq">
-                          <FAQPage></FAQPage>
-                        </Route>
                       </Switch>
 
+                      <Route>
+                        <Redirect to="/" />
+                      </Route>
                       <Footer />
                     </Router>
+                    <StickyFooter />
                   </Body>
                 </ExternalAPIDataContextProvider>
               </SubgraphDataContextProvider>

@@ -82,6 +82,7 @@ interface PaginationProps {
   variant?: "buttonLeft";
   config?: {
     paginationBarWidth?: number;
+    hidePageNumbers?: boolean;
   };
 }
 
@@ -90,7 +91,7 @@ const Pagination: React.FC<PaginationProps> = ({
   total,
   setPage,
   variant,
-  config: { paginationBarWidth = 80 } = {},
+  config: { paginationBarWidth = 80, hidePageNumbers = false } = {},
 }) =>
   total > 0 ? (
     <PaginationContainer
@@ -110,26 +111,35 @@ const Pagination: React.FC<PaginationProps> = ({
       >
         <i className="fas fa-arrow-left" />
       </ArrowButton>
-      <Subtitle className="ml-5 mr-3">{String(page).padStart(2, "0")}</Subtitle>
-      <PaginationBar width={paginationBarWidth}>
-        <Frame
-          transition={{
-            type: "keyframes",
-            ease: "easeOut",
-          }}
-          top={0}
-          left={0}
-          height={2}
-          width={0}
-          backgroundColor="#FFFFFF"
-          animate={{
-            width: (paginationBarWidth * page) / total,
-          }}
-        />
-      </PaginationBar>
-      <TotalText className="mr-5 ml-3">
-        {String(total).padStart(2, "0")}
-      </TotalText>
+      {hidePageNumbers ? (
+        // Just for spacing between the arrows
+        <div className="pl-4" />
+      ) : (
+        <>
+          <Subtitle className="ml-5 mr-3">
+            {String(page).padStart(2, "0")}
+          </Subtitle>
+          <PaginationBar width={paginationBarWidth}>
+            <Frame
+              transition={{
+                type: "keyframes",
+                ease: "easeOut",
+              }}
+              top={0}
+              left={0}
+              height={2}
+              width={0}
+              backgroundColor="#FFFFFF"
+              animate={{
+                width: (paginationBarWidth * page) / total,
+              }}
+            />
+          </PaginationBar>
+          <TotalText className="mr-5 ml-3">
+            {String(total).padStart(2, "0")}
+          </TotalText>
+        </>
+      )}
       <ArrowButton
         role="button"
         disabled={page >= total}

@@ -1,0 +1,36 @@
+{
+  "id": "ribbon-finance",
+  "name": "Ribbon Finance",
+  "url": "https://platform.apps.ledger.com/app/dapp-browser?dappName=Ribbon%20Finance&nanoApp=Ribbon%20Finance&url=https%3A%2F%2Fapp.ribbon.finance%2F%3Fembed%3Dtrue",
+  "homepageUrl": "https://ribbon.finance/",
+  "icon": "https://vote.ribbon.finance/logo512.png",
+  "platform": "all",
+  "apiVersion": "0.0.1",
+  "manifestVersion": "1",
+  "branch": "stable",
+  "categories": [
+    "staking",
+    "defi",
+    "options"
+  ],
+  "currencies": [
+    "ethereum",
+    "ribbon",
+    "rbn",
+    "wbtc",
+    "steth",
+    "usdc"
+  ],
+  "content": {
+    "shortDescription": {
+      "en": "Deposit into Ribbon vaults to earn yields on your asset."
+    },
+    "description": {
+      "en": "Ribbon Finance is the first crypto structured products protocol on Ethereum. Use Theta Vault to earn yield on BTC, ETH, USDC, and more."
+    }
+  },
+  "permissions": [],
+  "domains": [
+    "https://*"
+  ]
+}

@@ -19,6 +19,7 @@ import theme from "shared/lib/designSystem/theme";
 import { StakingUpdateMode } from "./types";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
 import { calculateInitialveRBNAmount } from "shared/lib/utils/governanceMath";
+import { useTranslation } from "react-i18next";
 
 const ModalBackButton = styled.div`
   display: flex;
@@ -63,22 +64,23 @@ const StakingModalUpdatePreview: React.FC<StakingModalUpdatePreviewProps> = ({
   onConfirm,
   onBack,
 }) => {
+  const { t } = useTranslation();
   const { data: rbnTokenAccount } = useRBNTokenAccount();
 
   const title = useMemo(() => {
     switch (stakingUpdateMode) {
       case "increaseAmount":
-        return "LOCK INCREASE PREVIEW";
+        return t("governance:IncreaseLockPreviewModal:lockIncreasePreview");
       case "increaseDuration":
-        return "NEW LOCK TIME PREVIEW";
+        return t("governance:IncreaseLockPreviewModal:newLockTimePreview");
     }
-  }, [stakingUpdateMode]);
+  }, [stakingUpdateMode, t]);
 
   const previewDataRows = useMemo(() => {
     const previewDataRows: { label: string; data: string }[] = [];
 
     const totalLockedRow = {
-      label: "Total Locked",
+      label: t("governance:IncreaseLockPreviewModal:totalLocked"),
       data: `${formatBigNumber(
         stakingData.amount.add(
           rbnTokenAccount?.lockedBalance || BigNumber.from(0)
@@ -89,12 +91,12 @@ const StakingModalUpdatePreview: React.FC<StakingModalUpdatePreviewProps> = ({
     switch (stakingUpdateMode) {
       case "increaseAmount":
         previewDataRows.push({
-          label: "Increase Lock By",
+          label: t("governance:IncreaseLockPreviewModal:increaseLockBy"),
           data: `${formatBigNumber(stakingData.amount)} RBN`,
         });
         previewDataRows.push(totalLockedRow);
         previewDataRows.push({
-          label: "Lockup Expiry",
+          label: t("governance:IncreaseLockPreviewModal:lockupExpiry"),
           data: moment().add(stakingData.duration).format("MMM, Do YYYY"),
         });
         break;
@@ -106,14 +108,14 @@ const StakingModalUpdatePreview: React.FC<StakingModalUpdatePreviewProps> = ({
         const durationToExpiry = moment.duration(expiryMoment.diff(moment()));
 
         previewDataRows.push({
-          label: "Lockup Increased By",
+          label: t("governance:IncreaseLockPreviewModal:lockupIncreasedBy"),
           data: stakingData.duration
             .clone()
             .subtract(durationToExpiry)
             .humanize(),
         });
         previewDataRows.push({
-          label: "New Lockup Expiry",
+          label: t("governance:IncreaseLockPreviewModal:newLockupExpiry"),
           data: moment().add(stakingData.duration).format("MMM, Do YYYY"),
         });
         previewDataRows.push(totalLockedRow);
@@ -121,7 +123,7 @@ const StakingModalUpdatePreview: React.FC<StakingModalUpdatePreviewProps> = ({
     }
 
     previewDataRows.push({
-      label: "Voting Power",
+      label: t("governance:IncreaseLockPreviewModal:votingPower"),
       data: `${formatBigNumberAmount(
         calculateInitialveRBNAmount(
           stakingData.amount.add(
@@ -133,16 +135,16 @@ const StakingModalUpdatePreview: React.FC<StakingModalUpdatePreviewProps> = ({
     });
 
     return previewDataRows;
-  }, [rbnTokenAccount, stakingData, stakingUpdateMode]);
+  }, [rbnTokenAccount, stakingData, stakingUpdateMode, t]);
 
   const buttonText = useMemo(() => {
     switch (stakingUpdateMode) {
       case "increaseAmount":
-        return "INCREASE LOCK AMOUNT";
+        return t("governance:IncreaseLockPreviewModal:increaseLockAmount");
       case "increaseDuration":
-        return "INCREASE LOCK TIME";
+        return t("governance:IncreaseLockPreviewModal:increaseLockTime");
     }
-  }, [stakingUpdateMode]);
+  }, [stakingUpdateMode, t]);
 
   return (
     <>
@@ -185,8 +187,15 @@ const StakingModalUpdatePreview: React.FC<StakingModalUpdatePreviewProps> = ({
           fontWeight={400}
           className="text-center"
         >
-          IMPORTANT: <strong>veRBN</strong> is not transferrable and unlocking
-          RBN early results in a penalty of up to 75% of your RBN
+          {`${t(
+            "governance:IncreaseLockPreviewModal:lockupPreviewWarning:1"
+          )} `}
+          <strong>
+            {t("governance:IncreaseLockPreviewModal:lockupPreviewWarning:2")}
+          </strong>
+          {` ${t(
+            "governance:IncreaseLockPreviewModal:lockupPreviewWarning:3"
+          )}`}
         </PrimaryText>
       </BaseModalWarning>
     </>

@@ -1,13 +1,13 @@
 import React, { ReactNode, useMemo } from "react";
 import { ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { Redirect } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-
 import { BaseLink, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import CapBar from "shared/lib/components/Deposit/CapBar";
+import LiveryBar from "shared/lib/components/Deposit/LiveryBar";
 import PerformanceSection from "./PerformanceSection";
 import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import {
@@ -51,6 +51,20 @@ const DepositPageContainer = styled(Container)`
   }
 `;
 
+const AbsoluteContainer = styled.div<{ position: "top" | "bottom" }>`
+  position: absolute;
+  left: 0;
+  right: 0;
+  ${({ position }) => {
+    if (position === "top") {
+      return "top: 0;";
+    } else if (position === "bottom") {
+      return "bottom: 0;";
+    }
+    return "";
+  }}
+`;
+
 const HeroContainer = styled.div<{ color: string }>`
   background: linear-gradient(
     96.84deg,
@@ -65,36 +79,6 @@ const HeroText = styled(Title)`
   font-size: 56px;
   line-height: 64px;
   margin-bottom: 24px;
-`;
-
-const livelyAnimation = (position: "top" | "bottom") => keyframes`
-  0% {
-    background-position-x: ${position === "top" ? 0 : 100}%;
-  }
-
-  50% {
-    background-position-x: ${position === "top" ? 100 : 0}%;
-  }
-
-  100% {
-    background-position-x: ${position === "top" ? 0 : 100}%;
-  }
-`;
-
-const LiveryBar = styled.div<{ color: string; position: "top" | "bottom" }>`
-  position: absolute;
-  ${(props) => props.position}: 0;
-  left: 0;
-  width: 100%;
-  height: 8px;
-  background: ${(props) => `linear-gradient(
-    270deg,
-    ${props.color}00 15%,
-    ${props.color} 50%,
-    ${props.color}00 85%
-  )`};
-  background-size: 200%;
-  animation: 10s ${(props) => livelyAnimation(props.position)} linear infinite;
 `;
 
 const AttributePill = styled.div<{ color: string }>`
@@ -237,9 +221,9 @@ const DepositPage = () => {
   /**
    * Redirect to v1 if vault version given is invalid
    */
-  if (chainId && !hasVaultVersion(vaultOption, vaultVersion, chainId)) {
+  if (!hasVaultVersion(vaultOption, vaultVersion)) {
     const availableVaultVersions = VaultVersionList.filter((version) =>
-      hasVaultVersion(vaultOption, version, chainId)
+      hasVaultVersion(vaultOption, version)
     );
 
     if (availableVaultVersions.length <= 0) {
@@ -258,6 +242,15 @@ const DepositPage = () => {
 
   return (
     <>
+      {vaultOption === "rAPE-THETA" && (
+        <Banner
+          message={
+            "This is an experimental vault, please use at your own risk!"
+          }
+          color={colors.red}
+        />
+      )}
+
       <HeroSection
         depositCapBar={depositCapBar}
         vaultOption={vaultOption}
@@ -323,7 +316,6 @@ const HeroSection: React.FC<{
   v1Inactive?: boolean;
 }> = ({ depositCapBar, vaultOption, variant, v1Inactive }) => {
   const { t } = useTranslation();
-  const { chainId } = useWeb3Wallet();
   const color = getVaultColor(vaultOption);
 
   const logo = useMemo(() => {
@@ -359,8 +351,12 @@ const HeroSection: React.FC<{
       case "v2":
         return (
           <>
-            <LiveryBar color={color} position="top" />
-            <LiveryBar color={color} position="bottom" />
+            <AbsoluteContainer position="top">
+              <LiveryBar color={color} animationStyle="rightToLeft" />
+            </AbsoluteContainer>
+            <AbsoluteContainer position="bottom">
+              <LiveryBar color={color} animationStyle="leftToRight" />
+            </AbsoluteContainer>
           </>
         );
       default:
@@ -371,20 +367,18 @@ const HeroSection: React.FC<{
   return (
     <>
       {/* V1 top banner */}
-      {variant === "v1" &&
-        chainId &&
-        hasVaultVersion(vaultOption, "v2", chainId) && (
-          <Banner
-            color={color}
-            message={
-              v1Inactive
-                ? "V1 vaults are now inactive and do not accept deposits"
-                : "V2 vaults are now live"
-            }
-            linkURI={getVaultURI(vaultOption, "v2")}
-            linkText="Switch to V2"
-          ></Banner>
-        )}
+      {variant === "v1" && hasVaultVersion(vaultOption, "v2") && (
+        <Banner
+          color={color}
+          message={
+            v1Inactive
+              ? "V1 vaults are now inactive and do not accept deposits"
+              : "V2 vaults are now live"
+          }
+          linkURI={getVaultURI(vaultOption, "v2")}
+          linkText="Switch to V2"
+        ></Banner>
+      )}
 
       <HeroContainer className="position-relative" color={color}>
         <DepositPageContainer className="container">
@@ -396,8 +390,7 @@ const HeroSection: React.FC<{
                 </TagPill>
                 <AttributePill className="mr-2 text-uppercase" color={color}>
                   {[...VaultVersionList].map((version) =>
-                    chainId &&
-                    hasVaultVersion(vaultOption, version, chainId) ? (
+                    hasVaultVersion(vaultOption, version) ? (
                       <BaseLink
                         to={getVaultURI(vaultOption, version)}
                         key={version}

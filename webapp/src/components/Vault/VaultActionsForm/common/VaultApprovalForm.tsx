@@ -206,16 +206,13 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
   const loadingText = useLoadingText("Approving");
 
   const handleApproveToken = useCallback(async () => {
-    const approveToContractAddress = VaultAddressMap[vaultOption][version];
-    if (tokenContract && approveToContractAddress) {
+    const approveToAddress = VaultAddressMap[vaultOption][version];
+    if (tokenContract && approveToAddress) {
       setWaitingApproval(true);
       const amount =
         "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
       try {
-        const tx = await tokenContract.approve(
-          approveToContractAddress,
-          amount
-        );
+        const tx = await tokenContract.approve(approveToAddress, amount);
 
         const txhash = tx.hash;
 
@@ -314,7 +311,7 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
         {getAssetDisplay(depositAsset)} in the vault’s strategy.
       </ApprovalDescription>
       <ApprovalHelp
-        to="https://ribbon.finance/faq"
+        to="https://docs.ribbon.finance/faq"
         target="__blank"
         rel="noreferrer noopener"
       >

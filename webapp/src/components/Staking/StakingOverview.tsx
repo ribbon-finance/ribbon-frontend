@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import {
@@ -127,6 +128,7 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
   lmVersion,
   setLmVersion,
 }) => {
+  const { t } = useTranslation();
   const { stakingPools, loading: stakingLoading } = useLiquidityMiningPools();
   const { data: tokenData, loading: tokenLoading } = useRBNToken();
   const { data: rbnTokenDistributedLg5, loading: rbnTokenDistributedLoading } =
@@ -197,7 +199,7 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
         const endStakeReward = moment.unix(lg5Data.periodEndTime);
 
         if (endStakeReward.diff(moment()) <= 0) {
-          return "Program Ended";
+          return "Now";
         }
 
         // Time till next stake reward date
@@ -236,10 +238,10 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
           title: "Liquidity Mining Program #2",
           description: `The program aims to (i) grow Ribbon TVL and (ii) align incentives between vault depositors and owners of the RBN governance token by distributing 6.5m RBN governance tokens to vault depositors over the course of 6 months.`,
           link: "https://gov.ribbon.finance/t/rgp-9-ribbonomics/486",
-          countdownTitle: "Time till next reward",
+          countdownTitle: t("webapp:LiquidityMining:timeTillNextEpoch"),
         };
     }
-  }, [lmVersion]);
+  }, [lmVersion, t]);
 
   return (
     <div>

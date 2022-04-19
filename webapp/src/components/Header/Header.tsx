@@ -95,7 +95,7 @@ const LinksContainer = styled.div`
 const NavItem = styled.div.attrs({
   className: "d-flex align-items-center justify-content-center",
 })<NavItemProps>`
-  padding: 0px 28px;
+  padding: 0px 16px;
   height: 100%;
   opacity: ${(props) => (props.isSelected ? "1" : "0.48")};
 
@@ -205,7 +205,7 @@ const Header = () => {
           {renderLinkItem(
             "GOVERNANCE",
             "https://vote.ribbon.finance/",
-            Boolean(portfolio),
+            false,
             true,
             true
           )}
@@ -283,8 +283,8 @@ const Header = () => {
             true
           )}
           {renderLinkItem(
-            "FAQS",
-            "https://ribbon.finance/faq",
+            "FAQ",
+            "https://docs.ribbon.finance/faq",
             false,
             false,
             true
@@ -306,6 +306,14 @@ const Header = () => {
           {renderLinkItem(
             "POLICY",
             "https://ribbon.finance/policy",
+            false,
+            false,
+            true
+          )}
+
+          {renderLinkItem(
+            "AUCTIONS",
+            "https://auction.ribbon.finance",
             false,
             false,
             true

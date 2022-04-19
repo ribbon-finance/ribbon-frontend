@@ -29,7 +29,7 @@
     "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/walletconnect-connector": "^6.2.4",
     "@web3-react/walletlink-connector": "^6.2.2",
-    "@zetamarkets/flex-sdk": "0.2.12",
+    "@zetamarkets/flex-sdk": "0.4.0",
     "currency.js": "^2.0.3",
     "ethers": "5.4.0",
     "framer-motion": "^4.1.11",
@@ -44,7 +44,8 @@
     "react-swipeable": "^6.2.0",
     "styled-components": "^5.2.3",
     "typescript": "^4.1.2",
-    "web-vitals": "^1.0.1"
+    "web-vitals": "^1.0.1",
+    "web3-ledgerhq-frame-connector": "^1.0.1"
   },
   "scripts": {
     "start": "tsc -w",

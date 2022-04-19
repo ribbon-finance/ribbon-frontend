@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { LiquidityGaugeV5 } from "../codegen";
 import { LiquidityGaugeV5Factory } from "../codegen/LiquidityGaugeV5Factory";
 import { VaultLiquidityMiningMap, VaultOptions } from "../constants/constants";
-import { useWeb3Context } from "./web3Context";
+import { useETHWeb3Context } from "./web3Context";
 
 export const getLiquidityGaugeV5 = (
   library: any,
@@ -25,7 +25,7 @@ export const getLiquidityGaugeV5 = (
 
 const useLiquidityGaugeV5 = (vaultOption: VaultOptions) => {
   const { active, library } = useWeb3React();
-  const { provider } = useWeb3Context();
+  const { provider } = useETHWeb3Context();
   const [contract, setContract] = useState<LiquidityGaugeV5 | null>(null);
 
   useEffect(() => {

@@ -11,8 +11,8 @@ import Footer from "./Footer/Footer";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { TxStatusToast, WithdrawReminderToast } from "./Common/toasts";
 import WalletConnectModal from "./Wallet/WalletConnectModal";
-import NotFound from "../pages/NotFound";
 import StakingPage from "../pages/Staking/StakingPage";
+import NotFound from "shared/lib/pages/NotFound";
 import colors from "shared/lib/designSystem/colors";
 import YourPositionModal from "./Vault/Modal/YourPositionModal";
 
@@ -30,10 +30,10 @@ const RootApp = () => {
     <Root id="appRoot" screenHeight={screenHeight}>
       <WalletConnectModal />
       <YourPositionModal />
-      <WithdrawReminderToast />
 
       <Router>
         <Header />
+        <WithdrawReminderToast />
         <TxStatusToast />
         <Switch>
           <Route path="/" exact>
@@ -42,11 +42,9 @@ const RootApp = () => {
           <Route path="/theta-vault/:vaultSymbol">
             <DepositPage />
           </Route>
-          {
-            <Route path="/v2/theta-vault/:vaultSymbol">
-              <DepositPage />
-            </Route>
-          }
+          <Route path="/v2/theta-vault/:vaultSymbol">
+            <DepositPage />
+          </Route>
           <Route path="/portfolio">
             <PortfolioPage />
           </Route>

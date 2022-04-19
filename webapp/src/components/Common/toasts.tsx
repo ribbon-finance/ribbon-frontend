@@ -7,6 +7,7 @@ import {
   isSolanaVault,
   VaultList,
   VaultOptions,
+  vaultOptionToName,
   VaultVersion,
 } from "shared/lib/constants/constants";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
@@ -25,6 +26,7 @@ import { useV2VaultsData } from "shared/lib/hooks/web3DataContext";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { parseUnits } from "ethers/lib/utils";
 import { useChain } from "shared/lib/hooks/chainContext";
+import { useHistory } from "react-router-dom";
 
 /**
  * TODO: Temporary disabled
@@ -100,6 +102,8 @@ export const TxStatusToast = () => {
           BigNumber.from(_currentTx.amount),
           getAssetDecimals(getAssets(_currentTx.transferVault))
         );
+      case "userCheckpoint":
+        return undefined;
       default:
         return _currentTx.amount;
     }
@@ -111,6 +115,8 @@ export const TxStatusToast = () => {
         return "Reward Claim";
       case "withdrawInitiation":
         return "WITHDRAWAL INITIATED";
+      case "userCheckpoint":
+        return "Apply Boost";
       default:
         return `${capitalize(_currentTx.type)}`;
     }
@@ -168,6 +174,8 @@ export const TxStatusToast = () => {
           return `${amountFormatted} migrated to ${t(
             `shared:ProductCopies:${_currentTx.vault}:title`
           )} V2`;
+        case "userCheckpoint":
+          return `veRBN boost applied to ${_currentTx.vault}`;
         default:
           return "";
       }
@@ -231,6 +239,7 @@ export const WithdrawReminderToast = () => {
   const { data } = useV2VaultsData();
   const [chain] = useChain();
   const { t } = useTranslation();
+  const history = useHistory();
 
   const [reminders, setReminders] = useState<
     {
@@ -304,31 +313,48 @@ export const WithdrawReminderToast = () => {
     }
   }, [reminders, showReminderIndex]);
 
+  const onClose = useCallback(() => {
+    setReminders((curr) => {
+      return curr.map((reminder, index) =>
+        index === showReminderIndex ? { ...reminder, shown: true } : reminder
+      );
+    });
+  }, [showReminderIndex]);
+
+  const navigateToVaultPage = useCallback(
+    (option: VaultOptions, version: VaultVersion) => {
+      onClose();
+      const versionRoute = version === "v1" ? "" : `${version}/`;
+      // Eg. If version is v1, then "/theta-vault/T-ETH-C"
+      // If v2, then "/v2/theta-vault/T-ETH-C"
+      const vaultName = vaultOptionToName(option);
+      const fullRoute = `/${versionRoute}theta-vault/${vaultName}`;
+      history.push(fullRoute);
+    },
+    [onClose, history]
+  );
+
   if (reminders.filter((reminder) => !reminder.shown).length > 0) {
     const currentReminder = reminders[showReminderIndex];
+    const { amount, vault } = currentReminder;
+    const { option, version } = vault;
+
     return (
       <Toast
         show
-        onClose={() =>
-          setReminders((curr) =>
-            curr.map((reminder, index) =>
-              index === showReminderIndex
-                ? { ...reminder, shown: true }
-                : reminder
-            )
-          )
-        }
+        onClose={onClose}
         type="reminder"
         title="COMPLETE YOUR WITHDRAWALS"
         subtitle={`You can now complete your withdrawal of ${formatBigNumber(
-          currentReminder.amount,
-          getAssetDecimals(getAssets(currentReminder.vault.option))
-        )} ${getAssetDisplay(
-          getAssets(currentReminder.vault.option)
-        )} from the ${t(
-          `shared:ProductCopies:${currentReminder.vault.option}:title`
+          amount,
+          getAssetDecimals(getAssets(option))
+        )} ${getAssetDisplay(getAssets(option))} from the ${t(
+          `shared:ProductCopies:${option}:title`
         )} vault`}
-        extra={{ vaultOption: currentReminder.vault.option }}
+        extra={{ vaultOption: option }}
+        onClick={() => {
+          navigateToVaultPage(option, version);
+        }}
       />
     );
   }

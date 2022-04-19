@@ -285,6 +285,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                         break;
                       default:
                         res = await v2Vault.withdrawInstantly(amountStr);
+                        break;
                     }
                     break;
 
@@ -322,6 +323,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                         break;
                       default:
                         res = await v2Vault.completeWithdraw();
+                        break;
                     }
                     break;
                 }

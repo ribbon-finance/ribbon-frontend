@@ -21,7 +21,14 @@ const useFetchSolVaultData = (): SolanaVaultData => {
 
   useEffect(() => {
     const doMulticall = async () => {
-      if (!vault || !connection) return;
+      // Should always set loading to false when no vault and no conection
+      if (!vault || !connection) {
+        setData({
+          ...defaultSolanaVaultData,
+          loading: false,
+        });
+        return;
+      }
 
       const [vaultAddress] = await vaultUtils.getVaultAddress("rSOL-THETA");
       const { depositLimit, epochSequenceNumber, totalBalance, pricePerShare } =

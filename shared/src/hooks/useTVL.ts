@@ -65,7 +65,6 @@ const useTVL = () => {
 
     // Sort it from highest tvl to lowest
     vaultTVLs.sort((a, b) => (a.tvl < b.tvl ? 1 : -1));
-
     return vaultTVLs;
   }, [prices, data]);
 

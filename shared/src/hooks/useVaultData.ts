@@ -33,16 +33,35 @@ export const vaultGraphql = (version: VaultVersion, chain: Chains) =>
 
     return (
       acc +
-      `
+      (version === "v1"
+        ? `
           ${getVaultKey(vault)}: vault(id: "${vaultAddress}" ){
             id
             name
             symbol
             totalBalance
             totalPremiumEarned
+            totalWithdrawalFee
+            totalNotionalVolume
+            underlyingAsset
+            underlyingSymbol
           }
 
         `
+        : `
+          ${getVaultKey(vault)}: vault(id: "${vaultAddress}" ){
+            id
+            name
+            symbol
+            totalBalance
+            totalPremiumEarned
+            totalFeeCollected
+            totalNotionalVolume
+            underlyingAsset
+            underlyingSymbol
+          }
+
+        `)
     );
   }, "");
 

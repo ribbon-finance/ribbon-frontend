@@ -1,10 +1,16 @@
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { WalletLinkConnector } from "@web3-react/walletlink-connector";
+import LedgerHQFrameConnector from "web3-ledgerhq-frame-connector";
 import { CHAINID, isDevelopment, supportedChainIds } from "./env";
 
 export const injectedConnector = new InjectedConnector({
   supportedChainIds,
+});
+
+// Only receive messages from platform.apps.ledger.com
+export const ledgerConnector = new LedgerHQFrameConnector({
+  targetOrigin: "https://platform.apps.ledger.com",
 });
 
 /**
@@ -19,12 +25,10 @@ export const getWalletConnectConnector = () =>
       ? {
           [CHAINID.ETH_KOVAN]: process.env.REACT_APP_TESTNET_URI || "",
           [CHAINID.AVAX_FUJI]: process.env.REACT_APP_FUJI_URI || "",
-          [CHAINID.AURORA_MAINNET]: process.env.REACT_APP_AURORA_URI || "",
         }
       : {
           [CHAINID.ETH_MAINNET]: process.env.REACT_APP_MAINNET_URI || "",
           [CHAINID.AVAX_MAINNET]: process.env.REACT_APP_AVAX_URI || "",
-          [CHAINID.AURORA_MAINNET]: process.env.REACT_APP_AURORA_URI || "",
         },
     qrcode: true,
     pollingInterval: 5000,

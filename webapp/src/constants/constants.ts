@@ -1,4 +1,4 @@
-import { CHAINID, isChainIdEnabled, isDevelopment } from "shared/lib/utils/env";
+import { isDevelopment } from "shared/lib/utils/env";
 import {
   VaultNameOptionMap,
   VaultOptions,
@@ -41,21 +41,3 @@ export const getVaultURI = (
       }`;
   }
 };
-
-interface Announcement {
-  color: string;
-  message: string;
-  linkText: string;
-  linkURI: string;
-}
-
-export const ANNOUNCEMENT: Announcement | undefined = isChainIdEnabled(
-  CHAINID.AURORA_MAINNET
-)
-  ? {
-      color: "#FFFFFF",
-      message: "Near vaults have launched.",
-      linkText: "Switch to Aurora",
-      linkURI: "/",
-    }
-  : undefined;

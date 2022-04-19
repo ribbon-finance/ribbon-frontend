@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
-
 import {
   defaultLiquidityGaugeV5PoolData,
   LiquidityGaugeV5PoolData,
@@ -22,9 +20,15 @@ import useLiquidityTokenMinter from "./useLiquidityTokenMinter";
 import useLiquidityGaugeController from "./useLiquidityGaugeController";
 import { constants } from "ethers";
 import { calculateClaimableRbn } from "../utils/governanceMath";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
-  const { active, chainId, account: web3Account, library } = useWeb3React();
+  const {
+    active,
+    account: web3Account,
+    ethereumProvider,
+    chainId,
+  } = useWeb3Wallet();
   const { provider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
@@ -38,8 +42,8 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
 
   const doMulticall = useCallback(async () => {
     if (
-      !chainId ||
-      !isEthNetwork(chainId) ||
+      // If a wallet is connected and its NOT ETH, dont fetch
+      (chainId && !isEthNetwork(chainId)) ||
       !minterContract ||
       !gaugeControllerContract
     ) {
@@ -64,6 +68,11 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
     });
 
     // TODO: Make this chain agnostic, for now we only enable when user connected to ETH
+    // Make sure loading is turned on before fetching
+    setData({
+      ...defaultLiquidityGaugeV5PoolData,
+      loading: true,
+    });
     const minterResponsePromises = Promise.all([
       minterContract.rate(),
       gaugeControllerContract.time_total(),
@@ -75,12 +84,12 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
         const vault = _vault as VaultOptions;
 
         const lg5Contract = getLiquidityGaugeV5(
-          library || provider,
+          ethereumProvider || provider,
           vault,
           active
         )!;
         const vaultContract = getV2VaultContract(
-          library || provider,
+          ethereumProvider || provider,
           vault,
           active
         );
@@ -113,18 +122,21 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
          * 4. Claimed rbn
          */
         const promises = unconnectedPromises.concat(
-          active
+          account
             ? [
-                lg5Contract.balanceOf(account!),
-                vaultContract!.shares(account!),
-                lg5Contract.integrate_fraction(account!),
+                lg5Contract.balanceOf(account),
+                vaultContract!.shares(account),
+                lg5Contract.integrate_fraction(account),
                 minterContract.minted(
-                  account!,
+                  account,
                   VaultLiquidityMiningMap.lg5[vault]!
                 ),
 
                 // To calculate claimable rbn
-                lg5Contract.integrate_inv_supply_of(account!),
+                lg5Contract.integrate_inv_supply_of(account),
+
+                // Block timestamp of the last time integrate_checkpoint was called
+                lg5Contract.integrate_checkpoint_of(account),
               ]
             : [
                 // Default value when not connected
@@ -156,6 +168,9 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
 
           // Also to calculate claimable rbn
           integrateInvSupplyOf,
+
+          // Block timestamp of the last time integrate_checkpoint was called
+          integrateCheckpointOf,
         ] = await Promise.all(
           // Default to 0 when error
           promises.map((p) => p.catch((e) => BigNumber.from(0)))
@@ -191,6 +206,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
           unstakedBalance,
           claimedRbn,
           claimableRbn,
+          integrateCheckpointOf,
         };
       })
     );
@@ -233,11 +249,11 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   }, [
     account,
     active,
-    chainId,
-    library,
+    ethereumProvider,
     gaugeControllerContract,
     minterContract,
     provider,
+    chainId,
   ]);
 
   useEffect(() => {

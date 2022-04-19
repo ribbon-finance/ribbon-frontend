@@ -5,8 +5,6 @@ import { VaultOptions } from "../constants/constants";
 
 export const AssetsList = [
   "AAVE",
-  "AURORA",
-  "WNEAR",
   "WAVAX",
   "sAVAX",
   "WETH",
@@ -21,6 +19,7 @@ export const AssetsList = [
   "veRBN",
   "LDO",
   "SOL",
+  "APE",
 ] as const;
 export type Assets = typeof AssetsList[number];
 
@@ -104,7 +103,12 @@ export type PendingTransaction = {
       type: "protocolRevenueClaim";
       amountUSDC: string;
       amountRBN: string;
-    }
+  }
+  | {
+    // Apply veBoost to the current user
+    type: "userCheckpoint";
+    vault: VaultOptions;
+  }
 );
 
 export type AirdropInfoData = {

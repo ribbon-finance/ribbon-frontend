@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from "react";
 import styled from "styled-components";
-import { AnimatePresence, motion } from "framer";
 
 import { SecondaryText, Subtitle, Title } from "shared/lib/designSystem";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
@@ -15,28 +14,13 @@ import {
   NotificationType,
   NotificationTypeList,
 } from "shared/lib/models/notification";
+import DesktopFloatingMenu from "shared/lib/components/Menu/DesktopFloatingMenu";
 
-const NotificatioNDropdown = styled(motion.div)<{ isOpen: boolean }>`
-  ${(props) =>
-    props.isOpen
-      ? `
-          display: flex;
-          flex-direction: column;
-          width: 343px;
-          height: 596px;
-          position: absolute;
-          right: -180px;
-          top: 64px;
-          background-color: ${colors.background.two};
-          border-radius: ${theme.border.radius};
-        `
-      : `
-          display: none;
-        `}
-
-  @media (max-width: ${sizes.md}px) {
-    display: none;
-  }
+const NotificationContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 343px;
+  height: 596px;
 `;
 
 const MobileModalContentContainer = styled.div`
@@ -63,19 +47,6 @@ const TopRightButtonContainer = styled.div`
   width: 40px;
   border: ${theme.border.width} ${theme.border.style} ${colors.border};
   border-radius: 20px;
-`;
-
-const SettingsContainer = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: ${theme.border.radius};
-  background: ${colors.background.two};
-  z-index: 10;
 `;
 
 const MenuItem = styled.div<{ active: boolean }>`
@@ -143,113 +114,82 @@ const NotificationView: React.FC<NotificationViewProps> = ({
         </div>
 
         {/* Settings */}
-        <AnimatePresence>
-          {showSettings && (
-            <SettingsContainer
-              transition={{
-                duration: 0.25,
-                type: "keyframes",
-                ease: "easeInOut",
-              }}
-              initial={{
-                y: 100,
-                opacity: 0,
-              }}
-              animate={{
-                y: 0,
-                opacity: 1,
-              }}
-              exit={{
-                y: 100,
-                opacity: 0,
-              }}
+        <DesktopFloatingMenu
+          isOpen={showSettings}
+          containerStyle={{
+            top: 0,
+            width: "100%",
+            height: "100%",
+            left: 0,
+            zIndex: 10,
+          }}
+          transition={{
+            moveY: 100,
+          }}
+        >
+          <NotificationHeader>
+            <Subtitle fontSize={14} lineHeight={24}>
+              NOTIFICATIONS Settings
+            </Subtitle>
+            <TopRightButtonContainer
+              role="button"
+              onClick={() => setShowSettings(false)}
             >
-              <NotificationHeader>
-                <Subtitle fontSize={14} lineHeight={24}>
-                  NOTIFICATIONS Settings
-                </Subtitle>
-                <TopRightButtonContainer
-                  role="button"
-                  onClick={() => setShowSettings(false)}
-                >
-                  <ButtonArrow isOpen={false} color={colors.text} />
-                </TopRightButtonContainer>
-              </NotificationHeader>
-              <div className="d-flex flex-column p-3">
-                <SecondaryText fontSize={14} lineHeight={20} className="mt-2">
-                  Select the notifications you would like to see
-                </SecondaryText>
-                {NotificationTypeList.map((type) => {
-                  let title = "";
-                  switch (type) {
-                    case "optionMinting":
-                      title = "MINTED OPTIONS";
-                      break;
-                    case "optionSale":
-                      title = "SOLD OPTIONS";
-                      break;
-                    case "withdrawalReady":
-                      title = "WITHDRAWALS READY";
-                      break;
-                  }
+              <ButtonArrow isOpen={false} color={colors.text} />
+            </TopRightButtonContainer>
+          </NotificationHeader>
+          <div className="d-flex flex-column p-3">
+            <SecondaryText fontSize={14} lineHeight={20} className="mt-2">
+              Select the notifications you would like to see
+            </SecondaryText>
+            {NotificationTypeList.map((type) => {
+              let title = "";
+              switch (type) {
+                case "optionMinting":
+                  title = "MINTED OPTIONS";
+                  break;
+                case "optionSale":
+                  title = "SOLD OPTIONS";
+                  break;
+                case "withdrawalReady":
+                  title = "WITHDRAWALS READY";
+                  break;
+              }
 
-                  return (
-                    <MenuItem
-                      onClick={() =>
-                        setFilters((prev) =>
-                          prev.includes(type)
-                            ? prev.filter((item) => item !== type)
-                            : prev.concat(type)
-                        )
-                      }
-                      role="button"
-                      active={filters.includes(type)}
-                    >
-                      <Title fontSize={14} lineHeight={20}>
-                        {title}
-                      </Title>
-                      <StyledCheckButton
-                        color={`${colors.green}${
-                          filters.includes(type) ? "FF" : "00"
-                        }`}
-                        className="ml-auto"
-                      />
-                    </MenuItem>
-                  );
-                })}
-              </div>
-            </SettingsContainer>
-          )}
-        </AnimatePresence>
+              return (
+                <MenuItem
+                  onClick={() =>
+                    setFilters((prev) =>
+                      prev.includes(type)
+                        ? prev.filter((item) => item !== type)
+                        : prev.concat(type)
+                    )
+                  }
+                  role="button"
+                  active={filters.includes(type)}
+                >
+                  <Title fontSize={14} lineHeight={20}>
+                    {title}
+                  </Title>
+                  <StyledCheckButton
+                    color={`${colors.green}${
+                      filters.includes(type) ? "FF" : "00"
+                    }`}
+                    className="ml-auto"
+                  />
+                </MenuItem>
+              );
+            })}
+          </div>
+        </DesktopFloatingMenu>
       </div>
     );
   }, [filters, onClose, setFilters, showSettings]);
 
   return width > sizes.md ? (
-    <AnimatePresence>
-      <NotificatioNDropdown
-        key={show.toString()}
-        isOpen={show}
-        initial={{
-          opacity: 0,
-          y: 30,
-        }}
-        animate={{
-          opacity: 1,
-          y: 0,
-        }}
-        exit={{
-          opacity: 0,
-          y: 30,
-        }}
-        transition={{
-          type: "keyframes",
-          duration: 0.2,
-        }}
-      >
-        {content}
-      </NotificatioNDropdown>
-    </AnimatePresence>
+    <DesktopFloatingMenu isOpen={show}>
+      <NotificationContainer>{content}</NotificationContainer>
+    </DesktopFloatingMenu>
   ) : (
     <BasicModal
       show={show}

@@ -6,6 +6,7 @@ import PortfolioPerformance from "../../components/Portfolio/PortfolioPerformanc
 import PortfolioPositions from "../../components/Portfolio/PortfolioPositions";
 import PortfolioTransactions from "../../components/Portfolio/PortfolioTransactions";
 import { Title } from "shared/lib/designSystem";
+import StakingBanner from "../../components/Banner/StakingBanner";
 
 const PerformanceTitle = styled(Title)`
   font-size: 18px;
@@ -14,16 +15,19 @@ const PerformanceTitle = styled(Title)`
 
 const PortfolioPage = () => {
   return (
-    <Container>
-      <Row className="justify-content-center">
-        <Col sm="11" md="9" lg="7" className="d-flex flex-wrap">
-          <PerformanceTitle>PORTFOLIO SUMMARY</PerformanceTitle>
-          <PortfolioPerformance />
-          <PortfolioPositions />
-          <PortfolioTransactions />
-        </Col>
-      </Row>
-    </Container>
+    <>
+      <StakingBanner />
+      <Container>
+        <Row className="justify-content-center">
+          <Col sm="11" md="9" lg="7" className="d-flex flex-wrap">
+            <PerformanceTitle>PORTFOLIO SUMMARY</PerformanceTitle>
+            <PortfolioPerformance />
+            <PortfolioPositions />
+            <PortfolioTransactions />
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 };
 
