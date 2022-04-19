@@ -418,13 +418,19 @@ const YieldCard: React.FC<YieldCardProps> = ({
 
   const totalProjectedYield =
     latestAPY.fetched && !lg5DataLoading
-      ? `${(latestAPY.res + baseAPY).toFixed(2)}%`
+      ? vaultVersion === "v2"
+        ? `${(latestAPY.res + baseAPY).toFixed(2)}%`
+        : "0%"
       : loadingText;
   const vaultYield = latestAPY.fetched
-    ? `${latestAPY.res.toFixed(2)}%`
+    ? vaultVersion === "v2"
+      ? `${latestAPY.res.toFixed(2)}%`
+      : "0%"
     : loadingText;
   const baseStakingYield = !lg5DataLoading
-    ? `${baseAPY.toFixed(2)}%`
+    ? vaultVersion === "v2"
+      ? `${baseAPY.toFixed(2)}%`
+      : "0%"
     : loadingText;
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
