@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import BasicModal from "shared/lib/components/Common/BasicModal";
-import useVeRBNRewards from "../../hooks/useVERBNRewards";
+import usePenaltyRewards from "../../hooks/usePenaltyRewards";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import { BigNumber } from "ethers";
 import RevenueClaimForm from "./RevenueClaimForm";
@@ -29,7 +29,7 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
   onClose,
 }) => {
   const { account, ethereumProvider } = useWeb3Wallet();
-  const veRBNRewards = useVeRBNRewards();
+  const penaltyRewards = usePenaltyRewards();
 
   // TODO: - Retrieve vault revenue
   // TODO: - Retrieve Share of unlock penalty
@@ -51,12 +51,12 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
 
   // Fetch rewards
   useEffect(() => {
-    if (veRBNRewards && account) {
-      veRBNRewards.rewards(account).then((rewards: BigNumber) => {
+    if (penaltyRewards && account) {
+      penaltyRewards["claimable()"]().then((rewards: BigNumber) => {
         setUnlockPenalty(() => rewards);
       });
     }
-  }, [veRBNRewards, account]);
+  }, [penaltyRewards, account]);
 
   // Fetch penalty
   useEffect(() => {

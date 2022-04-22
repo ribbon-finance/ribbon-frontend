@@ -1082,7 +1082,9 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
     optionAuctionID(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    optionState(overrides?: CallOverrides): Promise<
+    optionState(
+      overrides?: CallOverrides
+    ): Promise<
       [string, string, number] & {
         nextOption: string;
         currentOption: string;
@@ -1236,7 +1238,9 @@ export interface RibbonV2ThetaVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    vaultParams(overrides?: CallOverrides): Promise<
+    vaultParams(
+      overrides?: CallOverrides
+    ): Promise<
       [boolean, number, string, string, BigNumber, BigNumber] & {
         isPut: boolean;
         decimals: number;
@@ -1247,7 +1251,9 @@ export interface RibbonV2ThetaVault extends BaseContract {
       }
     >;
 
-    vaultState(overrides?: CallOverrides): Promise<
+    vaultState(
+      overrides?: CallOverrides
+    ): Promise<
       [number, BigNumber, BigNumber, BigNumber, BigNumber] & {
         round: number;
         lockedAmount: BigNumber;
@@ -1409,7 +1415,9 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
   optionAuctionID(overrides?: CallOverrides): Promise<BigNumber>;
 
-  optionState(overrides?: CallOverrides): Promise<
+  optionState(
+    overrides?: CallOverrides
+  ): Promise<
     [string, string, number] & {
       nextOption: string;
       currentOption: string;
@@ -1563,7 +1571,9 @@ export interface RibbonV2ThetaVault extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  vaultParams(overrides?: CallOverrides): Promise<
+  vaultParams(
+    overrides?: CallOverrides
+  ): Promise<
     [boolean, number, string, string, BigNumber, BigNumber] & {
       isPut: boolean;
       decimals: number;
@@ -1574,7 +1584,9 @@ export interface RibbonV2ThetaVault extends BaseContract {
     }
   >;
 
-  vaultState(overrides?: CallOverrides): Promise<
+  vaultState(
+    overrides?: CallOverrides
+  ): Promise<
     [number, BigNumber, BigNumber, BigNumber, BigNumber] & {
       round: number;
       lockedAmount: BigNumber;
@@ -1723,7 +1735,9 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
     optionAuctionID(overrides?: CallOverrides): Promise<BigNumber>;
 
-    optionState(overrides?: CallOverrides): Promise<
+    optionState(
+      overrides?: CallOverrides
+    ): Promise<
       [string, string, number] & {
         nextOption: string;
         currentOption: string;
@@ -1859,7 +1873,9 @@ export interface RibbonV2ThetaVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    vaultParams(overrides?: CallOverrides): Promise<
+    vaultParams(
+      overrides?: CallOverrides
+    ): Promise<
       [boolean, number, string, string, BigNumber, BigNumber] & {
         isPut: boolean;
         decimals: number;
@@ -1870,7 +1886,9 @@ export interface RibbonV2ThetaVault extends BaseContract {
       }
     >;
 
-    vaultState(overrides?: CallOverrides): Promise<
+    vaultState(
+      overrides?: CallOverrides
+    ): Promise<
       [number, BigNumber, BigNumber, BigNumber, BigNumber] & {
         round: number;
         lockedAmount: BigNumber;

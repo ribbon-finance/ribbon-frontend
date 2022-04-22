@@ -302,7 +302,7 @@ const Header = () => {
           </HeaderAbsoluteContainer>
 
           <HeaderButtonsContainer>
-            {Boolean(!isProduction() && active) && <RibbonClaimButton />}
+            <RibbonClaimButton />
             <AccountStatus variant="desktop" />
             <DesktopSubmenu />
           </HeaderButtonsContainer>

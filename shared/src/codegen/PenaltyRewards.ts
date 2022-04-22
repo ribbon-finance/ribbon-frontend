@@ -9,7 +9,6 @@ import {
   CallOverrides,
   ContractTransaction,
   Overrides,
-  PayableOverrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -18,8 +17,8 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export interface FeeDistributorInterface extends utils.Interface {
-  contractName: "FeeDistributor";
+export interface PenaltyRewardsInterface extends utils.Interface {
+  contractName: "PenaltyRewards";
   functions: {
     "checkpoint_token()": FunctionFragment;
     "ve_for_at(address,uint256)": FunctionFragment;
@@ -27,7 +26,8 @@ export interface FeeDistributorInterface extends utils.Interface {
     "claimable()": FunctionFragment;
     "claim()": FunctionFragment;
     "claim_many(address[20])": FunctionFragment;
-    "burn(address,uint256)": FunctionFragment;
+    "updateReward(address)": FunctionFragment;
+    "donate(uint256)": FunctionFragment;
     "commit_admin(address)": FunctionFragment;
     "apply_admin()": FunctionFragment;
     "toggle_allow_checkpoint_token()": FunctionFragment;
@@ -70,8 +70,12 @@ export interface FeeDistributorInterface extends utils.Interface {
     values: [string[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "burn",
-    values: [string, BigNumberish]
+    functionFragment: "updateReward",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "donate",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "commit_admin",
@@ -158,7 +162,11 @@ export interface FeeDistributorInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "claimable", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "claim_many", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "updateReward",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "donate", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "commit_admin",
     data: BytesLike
@@ -276,13 +284,13 @@ export type ClaimedEvent = TypedEvent<
 
 export type ClaimedEventFilter = TypedEventFilter<ClaimedEvent>;
 
-export interface FeeDistributor extends BaseContract {
-  contractName: "FeeDistributor";
+export interface PenaltyRewards extends BaseContract {
+  contractName: "PenaltyRewards";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: FeeDistributorInterface;
+  interface: PenaltyRewardsInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -339,10 +347,14 @@ export interface FeeDistributor extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    burn(
-      _coin: string,
+    updateReward(
+      _addr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    donate(
       _amount: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     commit_admin(
@@ -447,10 +459,14 @@ export interface FeeDistributor extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  burn(
-    _coin: string,
+  updateReward(
+    _addr: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  donate(
     _amount: BigNumberish,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   commit_admin(
@@ -540,11 +556,9 @@ export interface FeeDistributor extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    burn(
-      _coin: string,
-      _amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+    updateReward(_addr: string, overrides?: CallOverrides): Promise<boolean>;
+
+    donate(_amount: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
     commit_admin(_addr: string, overrides?: CallOverrides): Promise<void>;
 
@@ -665,10 +679,14 @@ export interface FeeDistributor extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    burn(
-      _coin: string,
+    updateReward(
+      _addr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    donate(
       _amount: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     commit_admin(
@@ -768,10 +786,14 @@ export interface FeeDistributor extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    burn(
-      _coin: string,
+    updateReward(
+      _addr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    donate(
       _amount: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     commit_admin(
