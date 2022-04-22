@@ -64,5 +64,10 @@
     "gaugeVoting": "Gauge Voting",
     "governanceProposal": "Governance Proposal",
     "faqs": "Faqs"
+  },
+  "RevenueClaim": {
+    "claimRibbonRevenue": "CLAIM RIBBON REVENUE",
+    "vaultRevenue": "VAULT REVENUE",
+    "shareOfUnlockPenalty": "SHARE OF UNLOCK PENALTY"
   }
 }

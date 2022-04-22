@@ -654,7 +654,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
 
 const LiquidityGaugeV5Pools = () => {
   const { account } = useWeb3Wallet();
-  const votingEscrowContract: VotingEscrow = useVotingEscrow();
+  const votingEscrowContract = useVotingEscrow();
   const [totalVeRBN, setTotalVeRBN] = useState<BigNumber>();
 
   // The latest block number that user has locked, increase lock amt, or increase lock duration

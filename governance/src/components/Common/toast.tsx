@@ -45,7 +45,7 @@ export const TxStatusToast = () => {
       case "protocolRevenueClaim":
         return <RevenueClaimIcon width="100%" height="100%" />;
     }
-    return undefined
+    return undefined;
   }, []);
 
   const getActionTitle = useCallback((_currentTx: PendingTransaction) => {
@@ -61,7 +61,7 @@ export const TxStatusToast = () => {
       case "governanceUnstake":
         return "RBN UNLOCKED";
       case "protocolRevenueClaim":
-        return "PROTOCOL REVENUE CLAIMED"
+        return "PROTOCOL REVENUE CLAIMED";
       default:
         return `${capitalize(_currentTx.type)}`;
     }
@@ -80,7 +80,7 @@ export const TxStatusToast = () => {
       case "governanceUnstake":
         return `${_currentTx.amount} RBN unlocked`;
       case "protocolRevenueClaim":
-        return `Claimed USDC ${_currentTx.amountUSDC} and RBN ${_currentTx.amountUSDC}`
+        return `Claimed USDC ${_currentTx.amountUSDC} and RBN ${_currentTx.amountUSDC}`;
       default:
         return "";
     }

@@ -103,12 +103,12 @@ export type PendingTransaction = {
       type: "protocolRevenueClaim";
       amountUSDC: string;
       amountRBN: string;
-  }
+    }
   | {
-    // Apply veBoost to the current user
-    type: "userCheckpoint";
-    vault: VaultOptions;
-  }
+      // Apply veBoost to the current user
+      type: "userCheckpoint";
+      vault: VaultOptions;
+    }
 );
 
 export type AirdropInfoData = {

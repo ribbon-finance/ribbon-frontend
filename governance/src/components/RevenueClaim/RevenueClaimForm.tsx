@@ -84,7 +84,9 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
   return (
     <>
       <ModalColumn marginTop={8}>
-        <Title style={{ zIndex: 1 }}>CLAIM RIBBON REVENUE</Title>
+        <Title style={{ zIndex: 1 }}>
+          {t("governance:RevenueClaim:claimRibbonRevenue")}
+        </Title>
       </ModalColumn>
       <ModalColumn marginTop={40}>
         <BasicInput
@@ -95,7 +97,7 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
             </LogoContainer>
           }
           labelProps={{
-            text: "VAULT REVENUE",
+            text: t("governance:RevenueClaim:vaultRevenue"),
             isInside: true,
           }}
           inputProps={{
@@ -117,7 +119,7 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
             </LogoContainer>
           }
           labelProps={{
-            text: "SHARE OF UNLOCK PENALTY",
+            text: t("governance:RevenueClaim:shareOfUnlockPenalty"),
             isInside: true,
           }}
           inputProps={{
