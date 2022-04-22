@@ -104,6 +104,7 @@ export const TxStatusToast = () => {
         );
       case "userCheckpoint":
         return undefined;
+      case "protocolPenaltyClaim":
       case "protocolRevenueClaim":
         return undefined;
       default:
