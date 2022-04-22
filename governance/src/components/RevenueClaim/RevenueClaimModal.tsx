@@ -2,14 +2,16 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import usePenaltyRewards from "../../hooks/usePenaltyRewards";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
+import { formatBigNumberAmount } from "shared/lib/utils/math";
+import { getAssetDecimals } from "shared/lib/utils/asset";
 import { BigNumber } from "ethers";
 import RevenueClaimForm from "./RevenueClaimForm";
 import RevenueClaimPreview from "./RevenueClaimPreview";
 import ModalTransactionContent from "../Shared/ModalTransactionContent";
 import { PendingTransaction } from "shared/lib/store/types";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
-import { formatBigNumberAmount } from "shared/lib/utils/math";
-import { getAssetDecimals } from "shared/lib/utils/asset";
+import { ClaimType } from "./model";
+import useFeeDistributor from "../../hooks/useFeeDistributor";
 
 interface RewardsCalculatorModalProps {
   show: boolean;
@@ -18,11 +20,6 @@ interface RewardsCalculatorModalProps {
 
 const revenueClaimModes = ["form", "preview", "transaction"] as const;
 type RevenueModalMode = typeof revenueClaimModes[number];
-const revenueClaimModalHeight: { [mode in RevenueModalMode]: number } = {
-  form: 576,
-  preview: 398,
-  transaction: 412,
-};
 
 const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
   show,
@@ -30,11 +27,13 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
 }) => {
   const { account, ethereumProvider } = useWeb3Wallet();
   const penaltyRewards = usePenaltyRewards();
+  const feeDistributor = useFeeDistributor();
 
   // TODO: - Retrieve vault revenue
   // TODO: - Retrieve Share of unlock penalty
 
   // CURRENT STEP
+  const [claimType, setClaimType] = useState<ClaimType>("revenue");
   const [currentMode, setCurrentMode] = useState<RevenueModalMode>("form");
   const { addPendingTransaction } = usePendingTransactions();
   const [currentPendingTransaction, setCurrentPendingTransaction] =
@@ -43,11 +42,8 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
   // CONTRACT VALUES
   const [vaultRevenue, setVaultRevenue] = useState<BigNumber>();
   const [unlockPenalty, setUnlockPenalty] = useState<BigNumber>();
-
-  // FORM TOGGLE
-  const [claimVaultRevenue, setClaimVaultRevenue] = useState(false);
-  const [claimUnlockPenalty, setClaimUnlockPenalty] = useState(false);
-  const [lockToVERBN, setlockToVERBN] = useState(false);
+  const [nextRevenueDistributionDate, setNextRevenueDistributionDate] =
+    useState<Date>();
 
   // Fetch rewards
   useEffect(() => {
@@ -55,13 +51,22 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
       penaltyRewards["claimable()"]().then((rewards: BigNumber) => {
         setUnlockPenalty(() => rewards);
       });
+      penaltyRewards.last_token_time().then((time: BigNumber) => {
+        // Weekly distributions, so add 7 days
+        const seconds = time.toNumber() + 86400;
+        setNextRevenueDistributionDate(new Date(seconds * 1000));
+      });
     }
   }, [penaltyRewards, account]);
 
   // Fetch penalty
   useEffect(() => {
-    // TODO: - Retrieve penalty
-  }, [account]);
+    if (feeDistributor && account) {
+      feeDistributor["claimable()"]().then((rewards: BigNumber) => {
+        setVaultRevenue(() => rewards);
+      });
+    }
+  }, [feeDistributor, account]);
 
   const onModalClose = useCallback(() => {
     setCurrentMode("form");
@@ -70,49 +75,72 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
 
   const onClaim = useCallback(async () => {
     setCurrentMode("transaction");
-    // TODO: - FeeDistributor.claim()
-    const pendingTx: PendingTransaction = {
-      type: "protocolRevenueClaim",
-      txhash:
-        "0xc4006e01a847d1a0ce7349cc9b92391d1bef7f5e76f8f8d56479197f6d07175a",
-      amountUSDC: vaultRevenue
-        ? // ? formatBigNumberAmount(vaultRevenue, getAssetDecimals("USDC"))
-          "100.23K"
-        : "0",
-      amountRBN: unlockPenalty
-        ? // ? formatBigNumberAmount(unlockPenalty, getAssetDecimals("RBN"))
-          "100.23K"
-        : "0",
-    };
-    addPendingTransaction(pendingTx);
 
-    // await ethereumProvider?.waitForTransaction(pendingTx.txhash, 2)
+    try {
+      let pendingTx: PendingTransaction | undefined = undefined;
+      if (claimType === "revenue" && feeDistributor) {
+        const tx = await feeDistributor["claim()"]();
+        pendingTx = {
+          type: "protocolRevenueClaim",
+          txhash: tx.hash,
+          amountUSDC: vaultRevenue
+            ? formatBigNumberAmount(vaultRevenue, getAssetDecimals("USDC"))
+            : "0",
+        };
+      } else if (claimType === "penalty" && penaltyRewards) {
+        const tx = await penaltyRewards["claim()"]();
+        pendingTx = {
+          type: "protocolPenaltyClaim",
+          txhash: tx.hash,
+          amountRBN: unlockPenalty
+            ? formatBigNumberAmount(unlockPenalty, getAssetDecimals("RBN"))
+            : "0",
+        };
+      }
 
-    // TODO: - Testing code. Actually wait for tx hash in the future
-    setTimeout(() => {
-      setCurrentPendingTransaction(pendingTx);
-      setTimeout(() => {
+      if (pendingTx) {
+        addPendingTransaction(pendingTx);
+        setCurrentPendingTransaction(pendingTx);
+        await ethereumProvider?.waitForTransaction(pendingTx.txhash, 2);
         setCurrentPendingTransaction(undefined);
         onModalClose();
-      }, 3000);
-    }, 2000);
-  }, [addPendingTransaction, onModalClose, vaultRevenue, unlockPenalty]);
+      }
+    } catch (error) {
+      // Revert to previous step on error.
+      setCurrentMode("preview");
+    }
+  }, [
+    addPendingTransaction,
+    onModalClose,
+    vaultRevenue,
+    unlockPenalty,
+    claimType,
+    ethereumProvider,
+    feeDistributor,
+    penaltyRewards,
+  ]);
+
+  const revenueClaimModalHeight = useMemo(() => {
+    switch (currentMode) {
+      case "form":
+        return claimType === "penalty" ? 328 : 410;
+      case "preview":
+        return 340;
+      case "transaction":
+        return 412;
+    }
+  }, [currentMode, claimType]);
 
   const modalContent = useMemo(() => {
     switch (currentMode) {
       case "form":
         return (
           <RevenueClaimForm
+            claimType={claimType}
+            onClaimTypeChange={(value) => setClaimType(value)}
             vaultRevenue={vaultRevenue}
             unlockPenalty={unlockPenalty}
-            toggleProps={{
-              claimVaultRevenue,
-              setClaimVaultRevenue,
-              claimUnlockPenalty,
-              setClaimUnlockPenalty,
-              lockToVERBN,
-              setlockToVERBN,
-            }}
+            nextDistributionDate={nextRevenueDistributionDate}
             onPreviewClaim={() => setCurrentMode("preview")}
           />
         );
@@ -121,9 +149,9 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
           <RevenueClaimPreview
             onBack={() => setCurrentMode("form")}
             onClaim={onClaim}
-            claimVaultRevenue={claimVaultRevenue}
-            claimUnlockPenalty={claimUnlockPenalty}
-            lockToVERBN={lockToVERBN}
+            claimType={claimType}
+            vaultRevenue={vaultRevenue}
+            unlockPenalty={unlockPenalty}
           />
         );
       case "transaction":
@@ -139,17 +167,16 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
     currentMode,
     vaultRevenue,
     unlockPenalty,
-    claimVaultRevenue,
-    claimUnlockPenalty,
-    lockToVERBN,
     onClaim,
+    claimType,
+    nextRevenueDistributionDate,
   ]);
 
   return (
     <BasicModal
       show={show}
       headerBackground={currentMode === "form" || currentMode === "transaction"}
-      height={revenueClaimModalHeight[currentMode]}
+      height={revenueClaimModalHeight}
       onClose={onModalClose}
       animationProps={{
         key: currentMode,

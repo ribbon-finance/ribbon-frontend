@@ -43,6 +43,7 @@ export const TxStatusToast = () => {
       case "governanceUnstake":
         return <ThemedLogo theme={colors.red} />;
       case "protocolRevenueClaim":
+      case "protocolPenaltyClaim":
         return <RevenueClaimIcon width="100%" height="100%" />;
     }
     return undefined;
@@ -60,6 +61,8 @@ export const TxStatusToast = () => {
         return "LOCK DURATION INCREASED";
       case "governanceUnstake":
         return "RBN UNLOCKED";
+      case "protocolPenaltyClaim":
+        return "UNLOCK PENALTY CLAIMED";
       case "protocolRevenueClaim":
         return "PROTOCOL REVENUE CLAIMED";
       default:
@@ -79,8 +82,10 @@ export const TxStatusToast = () => {
         )}`;
       case "governanceUnstake":
         return `${_currentTx.amount} RBN unlocked`;
+      case "protocolPenaltyClaim":
+        return `Claimed RBN ${_currentTx.amountRBN}`;
       case "protocolRevenueClaim":
-        return `Claimed USDC ${_currentTx.amountUSDC} and RBN ${_currentTx.amountUSDC}`;
+        return `Claimed USDC ${_currentTx.amountUSDC}`;
       default:
         return "";
     }

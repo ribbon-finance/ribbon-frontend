@@ -43,14 +43,12 @@
     "increaseLockBy": "Increase Lock By",
     "lockupExpiry": "Lockup Expiry",
     "increaseLockAmount": "INCREASE LOCK AMOUNT",
-
     "newLockTimePreview": "NEW LOCK TIME PREVIEW",
     "lockupIncreasedBy": "Lockup Increased By",
     "newLockupExpiry": "New Lockup Expiry",
     "totalLocked": "Total Locked",
     "votingPower": "Voting Power",
     "increaseLockTime": "INCREASE LOCK TIME",
-
     "lockupPreviewWarning": {
       "1": "IMPORTANT:",
       "2": "veRBN",
@@ -67,7 +65,12 @@
   },
   "RevenueClaim": {
     "claimRibbonRevenue": "CLAIM RIBBON REVENUE",
-    "vaultRevenue": "VAULT REVENUE",
-    "shareOfUnlockPenalty": "SHARE OF UNLOCK PENALTY"
+    "vaultRevenue": "VAULT REVENUE EARNED",
+    "shareOfUnlockPenalty": "SHARE OF UNLOCK PENALTY",
+    "protocolRevenueClaim": "PROTOCOL REVENUE CLAIM",
+    "unlockPenaltyClaim": "UNLOCK PENALTY CLAIM",
+    "penaltyDistribution": "Penalty Distribution (RBN)",
+    "protocolFees": "Protocol Fees (USDC)",
+    "claimRevenue": "CLAIM REVENUE"
   }
 }

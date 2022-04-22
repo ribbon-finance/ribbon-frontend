@@ -11,10 +11,13 @@ import { ReactComponent as RevenueClaimIcon } from "../../assets/icons/revenueCl
 import { formatUnits } from "ethers/lib/utils";
 import { useMemo } from "react";
 import { BigNumber } from "ethers";
-import ToggleRowItem from "./ToggleRowItem";
 import { useTranslation } from "react-i18next";
 import colors from "shared/lib/designSystem/colors";
 import { ActionButton } from "shared/lib/components/Common/buttons";
+import { ClaimType } from "./model";
+import SegmentControl from "shared/lib/components/Common/SegmentControl";
+import moment from "moment";
+import { isProduction } from "shared/lib/utils/env";
 
 const LogoContainer = styled.div.attrs({
   className: "d-flex align-items-center justify-content-center",
@@ -37,17 +40,12 @@ const Highlight = styled.span`
 const USDCLogo = getAssetLogo("USDC");
 
 interface RevenueClaimFormProps {
+  claimType: ClaimType;
+  onClaimTypeChange: (claimType: ClaimType) => void;
+
   vaultRevenue?: BigNumber;
   unlockPenalty?: BigNumber;
-
-  toggleProps: {
-    claimVaultRevenue: boolean;
-    setClaimVaultRevenue: (checked: boolean) => void;
-    claimUnlockPenalty: boolean;
-    setClaimUnlockPenalty: (checked: boolean) => void;
-    lockToVERBN: boolean;
-    setlockToVERBN: (checked: boolean) => void;
-  };
+  nextDistributionDate?: Date;
 
   onPreviewClaim: () => void;
 }
@@ -55,31 +53,61 @@ interface RevenueClaimFormProps {
 const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
   vaultRevenue,
   unlockPenalty,
-  toggleProps,
   onPreviewClaim,
+  claimType,
+  nextDistributionDate,
+  onClaimTypeChange,
 }) => {
   const { t } = useTranslation();
 
-  const {
-    claimVaultRevenue,
-    setClaimVaultRevenue,
-    claimUnlockPenalty,
-    setClaimUnlockPenalty,
-    lockToVERBN,
-    setlockToVERBN,
-  } = toggleProps;
+  const timeRemainingToDistribution = useMemo(() => {
+    if (nextDistributionDate) {
+      const toNextDist = moment.duration(
+        moment(nextDistributionDate).diff(moment()),
+        "milliseconds"
+      );
 
+      console.log(nextDistributionDate, toNextDist);
+
+      if (toNextDist.asMilliseconds() <= 0) {
+        return "Now";
+      }
+
+      return `${toNextDist.days()}D ${toNextDist.hours()}H ${toNextDist.minutes()}M`;
+    }
+  }, [nextDistributionDate]);
+
+  // On staging/dev, allow claiming 0
+  // Contract call will work, but user will receive nothing (0).
+  // This is disabled on prod to prevent users from wasting gas.
   const canProceed = useMemo(() => {
-    return true;
-    return (
-      (vaultRevenue && vaultRevenue?.gt(0)) ||
-      (unlockPenalty && unlockPenalty?.gt(0))
-    );
-  }, [vaultRevenue, unlockPenalty]);
+    if (!isProduction()) {
+      return true;
+    }
+    if (claimType === "penalty") {
+      return unlockPenalty && unlockPenalty?.gt(0);
+    }
+    return vaultRevenue && vaultRevenue?.gt(0);
+  }, [vaultRevenue, unlockPenalty, claimType]);
 
-  const canClaim = useMemo(() => {
-    return canProceed && (claimVaultRevenue || claimUnlockPenalty);
-  }, [canProceed, claimVaultRevenue, claimUnlockPenalty]);
+  const displayValues = useMemo(() => {
+    if (claimType === "penalty") {
+      return {
+        Logo: RevenueClaimIcon,
+        label: t("governance:RevenueClaim:shareOfUnlockPenalty"),
+        input: unlockPenalty
+          ? parseFloat(formatUnits(unlockPenalty, 18)).toFixed(2)
+          : "---",
+      };
+    }
+    return {
+      Logo: USDCLogo,
+      label: t("governance:RevenueClaim:vaultRevenue"),
+      input: vaultRevenue
+        ? parseFloat(formatUnits(vaultRevenue, 8)).toFixed(2)
+        : "---",
+    };
+  }, [claimType, t, unlockPenalty, vaultRevenue]);
 
   return (
     <>
@@ -88,45 +116,56 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
           {t("governance:RevenueClaim:claimRibbonRevenue")}
         </Title>
       </ModalColumn>
-      <ModalColumn marginTop={40}>
-        <BasicInput
-          size="s"
-          leftContent={
-            <LogoContainer>
-              <USDCLogo width="100%" height="100%" />
-            </LogoContainer>
-          }
-          labelProps={{
-            text: t("governance:RevenueClaim:vaultRevenue"),
-            isInside: true,
-          }}
-          inputProps={{
-            type: "text",
-            value: vaultRevenue
-              ? parseFloat(formatUnits(vaultRevenue, 8)).toFixed(2)
-              : "---",
-            contentEditable: false,
-            disabled: true,
-          }}
-        />
+      <ModalColumn marginTop={24}>
+        <div className="pt-4">
+          <SegmentControl
+            segments={[
+              {
+                display: "VAULT REVENUE",
+                value: "revenue",
+                textColor:
+                  claimType === "revenue" ? colors.green : colors.tertiaryText,
+              },
+              {
+                display: "UNLOCK PENALTY",
+                value: "penalty",
+                textColor:
+                  claimType === "penalty" ? colors.green : colors.tertiaryText,
+              },
+            ]}
+            value={claimType}
+            onSelect={(value) => {
+              onClaimTypeChange(value as ClaimType);
+            }}
+            config={{
+              theme: "outline",
+              color: colors.green,
+              backgroundColor: colors.background.three,
+              button: {
+                px: 18,
+                py: 10,
+                fontSize: 14,
+                lineHeight: 20,
+              },
+            }}
+          />
+        </div>
       </ModalColumn>
       <ModalColumn marginTop={24}>
         <BasicInput
           size="s"
           leftContent={
             <LogoContainer>
-              <RevenueClaimIcon width="100%" height="100%" />
+              {<displayValues.Logo width="100%" height="100%" />}
             </LogoContainer>
           }
           labelProps={{
-            text: t("governance:RevenueClaim:shareOfUnlockPenalty"),
+            text: displayValues.label,
             isInside: true,
           }}
           inputProps={{
             type: "text",
-            value: unlockPenalty
-              ? parseFloat(formatUnits(unlockPenalty, 18)).toFixed(2)
-              : "---",
+            value: displayValues.input,
             contentEditable: false,
             disabled: true,
           }}
@@ -134,100 +173,34 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
       </ModalColumn>
       <DisableUI isDisabled={!canProceed}>
         <ModalColumn marginTop={24}>
-          <ToggleRowItem
-            title={t("governance:TooltipExplanations:claimVaultRevenue:title")}
-            tooltip={{
-              title: t(
-                "governance:TooltipExplanations:claimVaultRevenue:title"
-              ),
-              explanation: (
-                <>
-                  {t(
-                    "governance:TooltipExplanations:claimVaultRevenue:description"
-                  )}
-                  <br />
-                  <br />
-                  {t(
-                    "governance:TooltipExplanations:claimRibbonRevenueAllYesDescription"
-                  )}
-                </>
-              ),
-            }}
-            isChecked={claimVaultRevenue}
-            onChecked={setClaimVaultRevenue}
-          />
-        </ModalColumn>
-        <ModalColumn marginTop={16}>
-          <ToggleRowItem
-            title={t("governance:TooltipExplanations:claimUnlockPenalty:title")}
-            tooltip={{
-              title: t(
-                "governance:TooltipExplanations:claimUnlockPenalty:title"
-              ),
-              explanation: (
-                <>
-                  {t(
-                    "governance:TooltipExplanations:claimUnlockPenalty:description"
-                  )}
-                  <br />
-                  <br />
-                  {t(
-                    "governance:TooltipExplanations:claimRibbonRevenueAllYesDescription"
-                  )}
-                </>
-              ),
-            }}
-            isChecked={claimUnlockPenalty}
-            onChecked={setClaimUnlockPenalty}
-          />
-        </ModalColumn>
-        <ModalColumn marginTop={16}>
-          <ToggleRowItem
-            title={t("governance:TooltipExplanations:lockToVERBN:title")}
-            tooltip={{
-              title: t("governance:TooltipExplanations:lockToVERBN:title"),
-              explanation: (
-                <>
-                  {t("governance:TooltipExplanations:lockToVERBN:description")}
-                  <br />
-                  <br />
-                  {t(
-                    "governance:TooltipExplanations:claimRibbonRevenueAllYesDescription"
-                  )}
-                </>
-              ),
-            }}
-            isChecked={lockToVERBN}
-            onChecked={setlockToVERBN}
-          />
-        </ModalColumn>
-        <ModalColumn marginTop={24}>
           <ActionButton
-            disabled={!canClaim}
+            disabled={!canProceed}
             onClick={() => {
-              if (!canClaim) {
+              if (!canProceed) {
                 return;
               }
               onPreviewClaim();
             }}
             className="py-3 mb-2"
-            color={colors.red}
+            color={claimType === "penalty" ? colors.red : colors.asset.USDC}
           >
             {t("shared:ActionButtons:previewClaim")}
           </ActionButton>
         </ModalColumn>
       </DisableUI>
-      <BaseModalWarning color={colors.green}>
-        <SecondaryText
-          color={`${colors.green}A3`}
-          className="w-100 text-center"
-          fontWeight={400}
-        >
-          {t("governance:WarningMessages:timeTilNextRevenueDistribution")}
-          {": "}
-          <Highlight>6D 12H 12M</Highlight>
-        </SecondaryText>
-      </BaseModalWarning>
+      {claimType === "revenue" && (
+        <BaseModalWarning color={colors.green}>
+          <SecondaryText
+            color={`${colors.green}A3`}
+            className="w-100 text-center"
+            fontWeight={400}
+          >
+            {t("governance:WarningMessages:timeTilNextRevenueDistribution")}
+            {": "}
+            <Highlight>{timeRemainingToDistribution}</Highlight>
+          </SecondaryText>
+        </BaseModalWarning>
+      )}
     </>
   );
 };

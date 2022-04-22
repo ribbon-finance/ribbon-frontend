@@ -4,8 +4,8 @@
     "RBNVotingEscrowDelegationProxy": "0x0e3Ac2562f5caeC610717be17d6D46baD8fb798C",
     "RBNVotingTokenMinter": "0xA79d141A1ea7a1962364288075196fbE01C83aCC",
     "RBNVotingGaugeController": "0x1897D25dc65406F0a534cb6749010b3EdD9f87D9",
-    "RBNPenaltyRewards": "0x03ABC5A33C5E4eBf731a7C2e99D1d4a8D8D09589",
-    "RBNFeeDistributor": "0x1532704EE02c7AC48F216c4b28D2E652dCA85950"
+    "RBNPenaltyRewards": "",
+    "RBNFeeDistributor": ""
   },
   "mainnet": {
     "RBNVotingEscrow": "0x19854C9A5fFa8116f48f984bDF946fB9CEa9B5f7",

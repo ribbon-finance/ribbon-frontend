@@ -126,7 +126,7 @@ const _abi = [
     outputs: [],
     inputs: [],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "ve_for_at",
@@ -147,14 +147,14 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "checkpoint_total_supply",
     outputs: [],
     inputs: [],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "claimable",
@@ -229,7 +229,7 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "burn",
@@ -250,7 +250,7 @@ const _abi = [
       },
     ],
     stateMutability: "payable",
-    type: "function"
+    type: "function",
   },
   {
     name: "commit_admin",
@@ -262,28 +262,28 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "apply_admin",
     outputs: [],
     inputs: [],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "toggle_allow_checkpoint_token",
     outputs: [],
     inputs: [],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "kill_me",
     outputs: [],
     inputs: [],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "recover_balance",
@@ -300,7 +300,7 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     name: "start_time",
@@ -312,7 +312,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "time_cursor",
@@ -324,7 +324,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "time_cursor_of",
@@ -341,7 +341,7 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "user_epoch_of",
@@ -358,7 +358,7 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "last_token_time",
@@ -370,7 +370,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "tokens_per_week",
@@ -387,7 +387,7 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "voting_escrow",
@@ -399,7 +399,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "token",
@@ -411,7 +411,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "total_received",
@@ -423,7 +423,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "token_last_balance",
@@ -435,7 +435,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "ve_supply",
@@ -452,7 +452,7 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "admin",
@@ -464,7 +464,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "future_admin",
@@ -476,7 +476,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "can_checkpoint_token",
@@ -488,7 +488,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "emergency_return",
@@ -500,7 +500,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
   {
     name: "is_killed",
@@ -512,7 +512,7 @@ const _abi = [
     ],
     inputs: [],
     stateMutability: "view",
-    type: "function"
+    type: "function",
   },
 ];
 
