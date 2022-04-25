@@ -59,7 +59,9 @@ const RevenueClaimPreview: React.FC<RevenueClaimPreviewProps> = ({
           label={t("governance:RevenueClaim:penaltyDistribution")}
           data={
             unlockPenalty
-              ? parseFloat(formatUnits(unlockPenalty, getAssetDecimals("RBN"))).toFixed(2)
+              ? parseFloat(
+                  formatUnits(unlockPenalty, getAssetDecimals("RBN"))
+                ).toFixed(2)
               : "---"
           }
         />
@@ -68,7 +70,9 @@ const RevenueClaimPreview: React.FC<RevenueClaimPreviewProps> = ({
           label={t("governance:RevenueClaim:protocolFees")}
           data={
             vaultRevenue
-              ? parseFloat(formatUnits(vaultRevenue, getAssetDecimals("WETH"))).toFixed(2)
+              ? parseFloat(
+                  formatUnits(vaultRevenue, getAssetDecimals("WETH"))
+                ).toFixed(2)
               : "---"
           }
         />

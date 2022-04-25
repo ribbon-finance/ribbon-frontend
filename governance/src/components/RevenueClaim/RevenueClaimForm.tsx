@@ -36,10 +36,10 @@ const DisableUI = styled.div<{ isDisabled?: boolean }>`
 `;
 
 const SegmentControlTitleContainer = styled.div.attrs({
-  className: "d-flex align-items-center justify-content-center"
+  className: "d-flex align-items-center justify-content-center",
 })`
-width: 156px;
-`
+  width: 156px;
+`;
 
 const Highlight = styled.span`
   color: ${colors.green};
@@ -100,7 +100,9 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
         Logo: RevenueClaimIcon,
         label: t("governance:RevenueClaim:shareOfUnlockPenalty"),
         input: unlockPenalty
-          ? parseFloat(formatUnits(unlockPenalty, getAssetDecimals("RBN"))).toFixed(2)
+          ? parseFloat(
+              formatUnits(unlockPenalty, getAssetDecimals("RBN"))
+            ).toFixed(2)
           : "---",
       };
     }
@@ -108,7 +110,9 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
       Logo: getAssetLogo("WETH"),
       label: t("governance:RevenueClaim:vaultRevenueEarned"),
       input: vaultRevenue
-        ? parseFloat(formatUnits(vaultRevenue, getAssetDecimals("WETH"))).toFixed(2)
+        ? parseFloat(
+            formatUnits(vaultRevenue, getAssetDecimals("WETH"))
+          ).toFixed(2)
         : "---",
     };
   }, [claimType, t, unlockPenalty, vaultRevenue]);
@@ -139,8 +143,12 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
                   <SegmentControlTitleContainer>
                     {t("governance:RevenueClaim:unlockPenalty")}
                     <TooltipExplanation
-                      title={t("governance:TooltipExplanations:unlockPenalty.title")}
-                      explanation={t("governance:TooltipExplanations:unlockPenalty.description")}
+                      title={t(
+                        "governance:TooltipExplanations:unlockPenalty.title"
+                      )}
+                      explanation={t(
+                        "governance:TooltipExplanations:unlockPenalty.description"
+                      )}
                       renderContent={({ ref, ...triggerHandler }) => (
                         <HelpInfo containerRef={ref} {...triggerHandler}>
                           i
