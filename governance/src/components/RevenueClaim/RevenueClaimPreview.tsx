@@ -9,6 +9,7 @@ import ModalInfoColumn from "shared/lib/components/Common/ModalInfoColumn";
 import { ClaimType } from "./model";
 import { BigNumber } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
+import { getAssetDecimals } from "shared/lib/utils/asset";
 
 const LogoContainer = styled.div`
   display: flex;
@@ -58,7 +59,7 @@ const RevenueClaimPreview: React.FC<RevenueClaimPreviewProps> = ({
           label={t("governance:RevenueClaim:penaltyDistribution")}
           data={
             unlockPenalty
-              ? parseFloat(formatUnits(unlockPenalty, 18)).toFixed(2)
+              ? parseFloat(formatUnits(unlockPenalty, getAssetDecimals("RBN"))).toFixed(2)
               : "---"
           }
         />
@@ -67,7 +68,7 @@ const RevenueClaimPreview: React.FC<RevenueClaimPreviewProps> = ({
           label={t("governance:RevenueClaim:protocolFees")}
           data={
             vaultRevenue
-              ? parseFloat(formatUnits(vaultRevenue, 8)).toFixed(2)
+              ? parseFloat(formatUnits(vaultRevenue, getAssetDecimals("WETH"))).toFixed(2)
               : "---"
           }
         />
@@ -76,7 +77,7 @@ const RevenueClaimPreview: React.FC<RevenueClaimPreviewProps> = ({
         <ActionButton
           className="mb-2"
           onClick={onClaim}
-          color={claimType === "penalty" ? colors.red : colors.asset.USDC}
+          color={claimType === "penalty" ? colors.red : colors.asset.WETH}
         >
           {t("governance:RevenueClaim:claimRevenue")}
         </ActionButton>

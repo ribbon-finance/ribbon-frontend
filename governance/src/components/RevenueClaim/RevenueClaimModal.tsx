@@ -177,6 +177,7 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
       show={show}
       headerBackground={currentMode === "form" || currentMode === "transaction"}
       height={revenueClaimModalHeight}
+      maxWidth={416}
       onClose={onModalClose}
       animationProps={{
         key: currentMode,

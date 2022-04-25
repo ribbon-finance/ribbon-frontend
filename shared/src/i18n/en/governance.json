@@ -12,6 +12,10 @@
     "lockToVERBN": {
       "title": "Lock to veRBN",
       "description": "Selecting “yes” will allow you to lock the RBN from your share of the early unlock penalty in the claim transaction."
+    },
+    "unlockPenalty": {
+      "title": "Unlock Penalty",
+      "description": "Your share of the unlock penalty (in $RBN) collected from veRBN lockers who unlocks their tokens before the lockup expiry."
     }
   },
   "WarningMessages": {
@@ -64,8 +68,10 @@
     "faqs": "Faqs"
   },
   "RevenueClaim": {
+    "unlockPenalty": "Unlock Penalty",
+    "vaultRevenue": "Vault Revenue",
     "claimRibbonRevenue": "CLAIM RIBBON REVENUE",
-    "vaultRevenue": "VAULT REVENUE EARNED",
+    "vaultRevenueEarned": "VAULT REVENUE EARNED",
     "shareOfUnlockPenalty": "SHARE OF UNLOCK PENALTY",
     "protocolRevenueClaim": "PROTOCOL REVENUE CLAIM",
     "unlockPenaltyClaim": "UNLOCK PENALTY CLAIM",

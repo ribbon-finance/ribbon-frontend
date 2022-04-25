@@ -6,7 +6,7 @@ import {
   Title,
 } from "shared/lib/designSystem";
 import { ModalColumn } from "./shared";
-import { getAssetLogo } from "shared/lib/utils/asset";
+import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
 import { ReactComponent as RevenueClaimIcon } from "../../assets/icons/revenueClaim.svg";
 import { formatUnits } from "ethers/lib/utils";
 import { useMemo } from "react";
@@ -18,6 +18,8 @@ import { ClaimType } from "./model";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
 import moment from "moment";
 import { isProduction } from "shared/lib/utils/env";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
 
 const LogoContainer = styled.div.attrs({
   className: "d-flex align-items-center justify-content-center",
@@ -33,11 +35,15 @@ const DisableUI = styled.div<{ isDisabled?: boolean }>`
   pointer-events: ${({ isDisabled }) => (isDisabled ? "none" : "auto")};
 `;
 
+const SegmentControlTitleContainer = styled.div.attrs({
+  className: "d-flex align-items-center justify-content-center"
+})`
+width: 156px;
+`
+
 const Highlight = styled.span`
   color: ${colors.green};
 `;
-
-const USDCLogo = getAssetLogo("USDC");
 
 interface RevenueClaimFormProps {
   claimType: ClaimType;
@@ -96,15 +102,15 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
         Logo: RevenueClaimIcon,
         label: t("governance:RevenueClaim:shareOfUnlockPenalty"),
         input: unlockPenalty
-          ? parseFloat(formatUnits(unlockPenalty, 18)).toFixed(2)
+          ? parseFloat(formatUnits(unlockPenalty, getAssetDecimals("RBN"))).toFixed(2)
           : "---",
       };
     }
     return {
-      Logo: USDCLogo,
-      label: t("governance:RevenueClaim:vaultRevenue"),
+      Logo: getAssetLogo("WETH"),
+      label: t("governance:RevenueClaim:vaultRevenueEarned"),
       input: vaultRevenue
-        ? parseFloat(formatUnits(vaultRevenue, 8)).toFixed(2)
+        ? parseFloat(formatUnits(vaultRevenue, getAssetDecimals("WETH"))).toFixed(2)
         : "---",
     };
   }, [claimType, t, unlockPenalty, vaultRevenue]);
@@ -121,13 +127,30 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
           <SegmentControl
             segments={[
               {
-                display: "VAULT REVENUE",
+                display: (
+                  <SegmentControlTitleContainer>
+                    {t("governance:RevenueClaim:vaultRevenue")}
+                  </SegmentControlTitleContainer>
+                ),
                 value: "revenue",
                 textColor:
                   claimType === "revenue" ? colors.green : colors.tertiaryText,
               },
               {
-                display: "UNLOCK PENALTY",
+                display: (
+                  <SegmentControlTitleContainer>
+                    {t("governance:RevenueClaim:unlockPenalty")}
+                    <TooltipExplanation
+                      title={t("governance:TooltipExplanations:unlockPenalty.title")}
+                      explanation={t("governance:TooltipExplanations:unlockPenalty.description")}
+                      renderContent={({ ref, ...triggerHandler }) => (
+                        <HelpInfo containerRef={ref} {...triggerHandler}>
+                          i
+                        </HelpInfo>
+                      )}
+                    />
+                  </SegmentControlTitleContainer>
+                ),
                 value: "penalty",
                 textColor:
                   claimType === "penalty" ? colors.green : colors.tertiaryText,
@@ -182,7 +205,7 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
               onPreviewClaim();
             }}
             className="py-3 mb-2"
-            color={claimType === "penalty" ? colors.red : colors.asset.USDC}
+            color={claimType === "penalty" ? colors.red : colors.asset.WETH}
           >
             {t("shared:ActionButtons:previewClaim")}
           </ActionButton>
