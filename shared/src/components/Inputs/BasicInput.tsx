@@ -72,7 +72,6 @@ const BasicInput: React.FC<BasicInputProps> = ({
         props.lineHeight = 28;
         break;
       default:
-        // TODO: - Fill up rest of sizes later
         props.containerHeight = "64px";
         props.fontSize = "22px";
         props.lineHeight = 28;

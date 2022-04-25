@@ -73,8 +73,6 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
         "milliseconds"
       );
 
-      console.log(nextDistributionDate, toNextDist);
-
       if (toNextDist.asMilliseconds() <= 0) {
         return "Now";
       }
