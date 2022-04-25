@@ -99,6 +99,15 @@ export type PendingTransaction = {
       type: GovernanceApproveUnstakeTransactionsType;
       amount: string;
     }
+  // Revenue Claim transaction
+  | {
+      type: "protocolRevenueClaim";
+      amountUSDC: string;
+    }
+  | {
+      type: "protocolPenaltyClaim";
+      amountRBN: string;
+    }
   | {
       // Apply veBoost to the current user
       type: "userCheckpoint";

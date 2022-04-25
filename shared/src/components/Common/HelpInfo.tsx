@@ -16,6 +16,7 @@ const HelpContainer = styled.div<{ color?: string }>`
   border-radius: 100px;
   margin-left: 8px;
   z-index: 1;
+  text-transform: none;
 `;
 
 interface HelpInfoProps {

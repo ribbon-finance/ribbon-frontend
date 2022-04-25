@@ -9,6 +9,7 @@ import Toast from "shared/lib/components/Common/BaseToast";
 import Logo, { ThemedLogo } from "shared/lib/assets/icons/logo";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
+import { ReactComponent as RevenueClaimIcon } from "../../assets/icons/revenueClaim.svg";
 
 const ThemedLogoWithBorder = styled(ThemedLogo)`
   border: ${theme.border.width} ${theme.border.style} ${colors.red};
@@ -41,7 +42,11 @@ export const TxStatusToast = () => {
         return <ThemedLogoWithBorder theme={colors.red} />;
       case "governanceUnstake":
         return <ThemedLogo theme={colors.red} />;
+      case "protocolRevenueClaim":
+      case "protocolPenaltyClaim":
+        return <RevenueClaimIcon width="100%" height="100%" />;
     }
+    return undefined;
   }, []);
 
   const getActionTitle = useCallback((_currentTx: PendingTransaction) => {
@@ -56,6 +61,10 @@ export const TxStatusToast = () => {
         return "LOCK DURATION INCREASED";
       case "governanceUnstake":
         return "RBN UNLOCKED";
+      case "protocolPenaltyClaim":
+        return "UNLOCK PENALTY CLAIMED";
+      case "protocolRevenueClaim":
+        return "PROTOCOL REVENUE CLAIMED";
       default:
         return `${capitalize(_currentTx.type)}`;
     }
@@ -73,6 +82,10 @@ export const TxStatusToast = () => {
         )}`;
       case "governanceUnstake":
         return `${_currentTx.amount} RBN unlocked`;
+      case "protocolPenaltyClaim":
+        return `Claimed RBN ${_currentTx.amountRBN}`;
+      case "protocolRevenueClaim":
+        return `Claimed USDC ${_currentTx.amountUSDC}`;
       default:
         return "";
     }

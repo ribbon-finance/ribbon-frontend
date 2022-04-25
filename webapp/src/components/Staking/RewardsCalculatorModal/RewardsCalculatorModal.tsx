@@ -9,8 +9,8 @@ import {
   SecondaryText,
   Title,
   BaseInput,
-  BaseInputButton,
 } from "shared/lib/designSystem";
+import BasicInput from "shared/lib/components/Inputs/BasicInput";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import {
   LockupPeriodKey,
@@ -332,35 +332,41 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
           </StakingPoolContainer>
         </ModalColumn>
         <ModalColumn marginTop={16}>
-          <div className="d-flex flex-column mr-2">
-            <BaseInputLabel>YOUR STAKE</BaseInputLabel>
-            <SmallerInputContainer error={stakeInputHasError}>
-              <SmallerInput
-                type="number"
-                min="0"
-                className="form-control"
-                placeholder="0"
-                value={stakeInput}
-                onChange={(e) => setStakeInput(parseInput(e.target.value))}
-              />
-              <BaseInputButton onClick={onMaxStake}>MAX</BaseInputButton>
-            </SmallerInputContainer>
-          </div>
-          <div className="d-flex flex-column ml-2">
-            <BaseInputLabel>TOTAL STAKED</BaseInputLabel>
-            <SmallerInputContainer>
-              <SmallerInput
-                type="number"
-                min="0"
-                className="form-control"
-                placeholder={
-                  lg5Data ? formatUnits(lg5Data.poolSize, decimals) : "0"
-                }
-                value={poolSizeInput}
-                onChange={(e) => setPoolSizeInput(parseInput(e.target.value))}
-              />
-            </SmallerInputContainer>
-          </div>
+          <BasicInput
+            size="xs"
+            rightButtonProps={{
+              text: "MAX",
+              onClick: onMaxStake,
+            }}
+            inputProps={{
+              min: "0",
+              placeholder: "0",
+              value: stakeInput,
+              onChange: (e) => setStakeInput(parseInput(e.target.value)),
+            }}
+            labelProps={{
+              text: "YOUR STAKE",
+            }}
+          />
+          <div className="mr-2" />
+          <BasicInput
+            size="xs"
+            rightButtonProps={{
+              text: "MAX",
+              onClick: onMaxStake,
+            }}
+            inputProps={{
+              min: "0",
+              placeholder: lg5Data
+                ? formatUnits(lg5Data.poolSize, decimals)
+                : "0",
+              value: poolSizeInput,
+              onChange: (e) => setPoolSizeInput(parseInput(e.target.value)),
+            }}
+            labelProps={{
+              text: "TOTAL STAKED",
+            }}
+          />
         </ModalColumn>
         {stakeInputHasError && (
           <SecondaryText

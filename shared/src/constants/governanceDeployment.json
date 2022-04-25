@@ -4,13 +4,15 @@
     "RBNVotingEscrowDelegationProxy": "0x0e3Ac2562f5caeC610717be17d6D46baD8fb798C",
     "RBNVotingTokenMinter": "0xA79d141A1ea7a1962364288075196fbE01C83aCC",
     "RBNVotingGaugeController": "0x1897D25dc65406F0a534cb6749010b3EdD9f87D9",
-    "VERBNRewards": "0x03ABC5A33C5E4eBf731a7C2e99D1d4a8D8D09589"
+    "RBNPenaltyRewards": "",
+    "RBNFeeDistributor": ""
   },
   "mainnet": {
     "RBNVotingEscrow": "0x19854C9A5fFa8116f48f984bDF946fB9CEa9B5f7",
     "RBNVotingEscrowDelegationProxy": "0x1929605B714517b76bB733198E0f3C3D4ab08608",
     "RBNVotingTokenMinter": "0x5B0655F938A72052c46d2e94D206ccB6FF625A3A",
     "RBNVotingGaugeController": "0x0cb9cc35cEFa5622E8d25aF36dD56DE142eF6415",
-    "VERBNRewards": "0x88f0110E9Fa61aaCa84cCE7203c8A702681Ab33e"
+    "RBNPenaltyRewards": "0x43277C92F9936aeb5d6A2713a44Cd2f096f171cC",
+    "RBNFeeDistributor": "0xd086C9356A5683192B10d93d4d92D8fCBa705692"
   }
 }

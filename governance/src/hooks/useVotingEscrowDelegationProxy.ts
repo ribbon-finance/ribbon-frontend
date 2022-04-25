@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
-import { VotingEscrowDelegationProxyFactory } from "shared/lib/codegen/VotingEscrowDelegationProxyFactory";
-import { VotingEscrowDelegationProxy } from "shared/lib/codegen";
+import {
+  VotingEscrowDelegationProxy,
+  VotingEscrowDelegationProxy__factory,
+} from "shared/lib/codegen";
 import { VotingEscrowDelegationProxyAddress } from "shared/lib/constants/constants";
 
 export const getVotingEscrowDelegationProxy = (
@@ -10,7 +12,7 @@ export const getVotingEscrowDelegationProxy = (
 ): VotingEscrowDelegationProxy | undefined => {
   if (library) {
     const provider = library.getSigner();
-    return VotingEscrowDelegationProxyFactory.connect(
+    return VotingEscrowDelegationProxy__factory.connect(
       VotingEscrowDelegationProxyAddress,
       provider
     );

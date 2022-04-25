@@ -11,7 +11,6 @@ import {
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import { VotingEscrow } from "shared/lib/codegen";
 import { shimmerKeyframe } from "shared/lib/designSystem/keyframes";
 import sizes from "shared/lib/designSystem/sizes";
 import {
@@ -654,7 +653,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
 
 const LiquidityGaugeV5Pools = () => {
   const { account } = useWeb3Wallet();
-  const votingEscrowContract: VotingEscrow = useVotingEscrow();
+  const votingEscrowContract = useVotingEscrow();
   const [totalVeRBN, setTotalVeRBN] = useState<BigNumber>();
 
   // The latest block number that user has locked, increase lock amt, or increase lock duration

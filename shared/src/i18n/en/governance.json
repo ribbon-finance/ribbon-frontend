@@ -1,9 +1,29 @@
 {
   "TooltipExplanations": {
-    "lockRBN": {
-      "title": "Lock RBN",
-      "description": "Because your lockup period has expired, you need to unlock your existing tokens first before you can lock again."
+    "claimRibbonRevenueAllYesDescription": "If you select “yes” for all three fields, the claim transaction will take all three actions in the single transaction.",
+    "claimVaultRevenue": {
+      "title": "Claim Vault Revenue",
+      "description": "Selecting “yes” will allow you to claim your share of the Ribbon vault revenues in the claim transaction."
+    },
+    "claimUnlockPenalty": {
+      "title": "Claim Unlock Penalty",
+      "description": "Selecting “yes” will allow you to claim your share of the RBN generated from the early unlock penalty in the claim transaction. The early unlock penalty is applied to veRBN unlocks that take place before their lockup expiry."
+    },
+    "lockToVERBN": {
+      "title": "Lock to veRBN",
+      "description": "Selecting “yes” will allow you to lock the RBN from your share of the early unlock penalty in the claim transaction."
+    },
+    "unlockPenalty": {
+      "title": "Unlock Penalty",
+      "description": "Your share of the unlock penalty (in $RBN) collected from veRBN lockers who unlocks their tokens before the lockup expiry."
     }
+  },
+  "WarningMessages": {
+    "timeTilNextRevenueDistribution": "Time till next distribution of Ribbon revenue"
+  },
+  "lockRBN": {
+    "title": "Lock RBN",
+    "description": "Because your lockup period has expired, you need to unlock your existing tokens first before you can lock again."
   },
   "IncreaseLockTimeModal": {
     "increaseYourLockTime": "INCREASE YOUR LOCK TIME",
@@ -27,14 +47,12 @@
     "increaseLockBy": "Increase Lock By",
     "lockupExpiry": "Lockup Expiry",
     "increaseLockAmount": "INCREASE LOCK AMOUNT",
-
     "newLockTimePreview": "NEW LOCK TIME PREVIEW",
     "lockupIncreasedBy": "Lockup Increased By",
     "newLockupExpiry": "New Lockup Expiry",
     "totalLocked": "Total Locked",
     "votingPower": "Voting Power",
     "increaseLockTime": "INCREASE LOCK TIME",
-
     "lockupPreviewWarning": {
       "1": "IMPORTANT:",
       "2": "veRBN",
@@ -48,5 +66,17 @@
     "gaugeVoting": "Gauge Voting",
     "governanceProposal": "Governance Proposal",
     "faqs": "Faqs"
+  },
+  "RevenueClaim": {
+    "unlockPenalty": "Unlock Penalty",
+    "vaultRevenue": "Vault Revenue",
+    "claimRibbonRevenue": "CLAIM RIBBON REVENUE",
+    "vaultRevenueEarned": "VAULT REVENUE EARNED",
+    "shareOfUnlockPenalty": "SHARE OF UNLOCK PENALTY",
+    "protocolRevenueClaim": "PROTOCOL REVENUE CLAIM",
+    "unlockPenaltyClaim": "UNLOCK PENALTY CLAIM",
+    "penaltyDistribution": "Penalty Distribution (RBN)",
+    "protocolFees": "Protocol Fees (USDC)",
+    "claimRevenue": "CLAIM REVENUE"
   }
 }

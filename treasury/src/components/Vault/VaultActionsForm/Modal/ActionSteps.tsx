@@ -227,7 +227,6 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                   : (vault as RibbonV2stETHThetaVault).depositYieldToken(
                       amountStr
                     ));
-
                 break;
               default:
                 res = await (isNativeToken(asset)

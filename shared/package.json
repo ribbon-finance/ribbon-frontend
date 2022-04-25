@@ -55,7 +55,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint --fix --ext .tsx,.ts .",
-    "codegen": "typechain --target=ethers-v5 --outDir src/codegen 'src/constants/abis/*.json'"
+    "codegen": "typechain --target=ethers-v5 --out-dir src/codegen 'src/constants/abis/*.json'"
   },
   "browserslist": {
     "production": [
@@ -70,9 +70,9 @@
     ]
   },
   "devDependencies": {
-    "@typechain/ethers-v5": "^2.0.0",
+    "@typechain/ethers-v5": "^9.0.0",
     "@types/react-router-dom": "^5.1.7",
     "@types/styled-components": "^5.1.9",
-    "typechain": "^4.0.0"
+    "typechain": "^7.0.0"
   }
 }

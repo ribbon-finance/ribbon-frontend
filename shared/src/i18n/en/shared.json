@@ -93,6 +93,9 @@
       "description": "The amount of RBN that has not been locked in the governance contract."
     }
   },
+  "ActionButtons": {
+    "previewClaim": "Preview Claim"
+  },
   "YieldCard": {
     "totalProjectedYield": "Total Projected Yield (APY)",
     "fundsReadyForMigration": "Funds ready for migration to v2",

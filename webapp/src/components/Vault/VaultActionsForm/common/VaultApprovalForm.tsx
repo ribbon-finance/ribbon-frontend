@@ -211,7 +211,6 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
       setWaitingApproval(true);
       const amount =
         "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-
       try {
         const tx = await tokenContract.approve(approveToAddress, amount);
 

@@ -134,7 +134,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
       type="button"
       color={color}
       error={error}
-      className={`btn ${className}`}
+      className={`btn py-3 ${className}`}
       variant={variant}
     >
       {link !== "" ? (

@@ -15,6 +15,9 @@ import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import { NavItemProps, MobileMenuOpenProps } from "./types";
 import AccountStatus from "../Wallet/AccountStatus";
 import DesktopSubmenu from "./DesktopSubmenu";
+import RibbonClaimButton from "./RibbonClaimButton";
+import { isProduction } from "shared/lib/utils/env";
+import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import DesktopFloatingMenu from "shared/lib/components/Menu/DesktopFloatingMenu";
 import { MenuItem } from "shared/lib/components/Menu/MenuItem";
 import useOutsideAlerter from "shared/lib/hooks/useOutsideAlerter";
@@ -139,17 +142,25 @@ const SecondaryMobileNavItem = styled.div`
   }
 `;
 
+const HeaderButtonsContainer = styled.div`
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-gap: 4px;
+`;
+
 const MobileOnly = styled.div`
   display: none;
 
   @media (max-width: ${sizes.lg}px) {
     display: flex;
+    padding-left: 16px;
   }
 `;
 
 type VotingLinkType = "proposal" | "gaugeVoting";
 
 const Header = () => {
+  const { active } = useWeb3Wallet();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [votingMenuOpen, setVotingMenuOpen] = useState(false);
   const [votingLinkType, setVotingLinkType] = useState<VotingLinkType>();
@@ -290,8 +301,11 @@ const Header = () => {
             </LinksContainer>
           </HeaderAbsoluteContainer>
 
-          <AccountStatus variant="desktop" />
-          <DesktopSubmenu />
+          <HeaderButtonsContainer>
+            <RibbonClaimButton />
+            <AccountStatus variant="desktop" />
+            <DesktopSubmenu />
+          </HeaderButtonsContainer>
 
           {/* MOBILE MENU */}
           <MobileOnly>

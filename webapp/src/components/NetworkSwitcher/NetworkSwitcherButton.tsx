@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
+import HeaderButtonContainer from "shared/lib/components/Common/HeaderButtonContainer";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { getAssetLogo } from "shared/lib/utils/asset";
@@ -15,8 +16,6 @@ const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: ${theme.border.radius};
-  background: ${colors.background.two};
   height: 48px;
   width: 48px;
   padding: 8px 8px;
@@ -31,7 +30,6 @@ const ButtonContainer = styled.div`
 `;
 
 const NetworkSwitcherButton = () => {
-  const desktopMenuRef = useRef(null);
   const [chain] = useChain();
   const [, setShowModal] = useConnectWalletModal();
   const logoSize = 40;
@@ -41,7 +39,7 @@ const NetworkSwitcherButton = () => {
       : () => null;
 
   return (
-    <div className="d-flex position-relative" ref={desktopMenuRef}>
+    <HeaderButtonContainer>
       {chain !== Chains.NotSelected && (
         <ButtonContainer role="button" onClick={() => setShowModal(true)}>
           <Logo
@@ -53,7 +51,7 @@ const NetworkSwitcherButton = () => {
       )}
 
       <WalletConnectModal></WalletConnectModal>
-    </div>
+    </HeaderButtonContainer>
   );
 };
 

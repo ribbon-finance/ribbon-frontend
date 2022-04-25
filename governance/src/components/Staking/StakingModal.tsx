@@ -66,6 +66,10 @@ const StakingModal = () => {
   const votingEscrowContract = useVotingEscrow();
   const rbnTokenContract = useERC20Token("rbn");
 
+  const currentStep = useMemo(() => {
+    return stakingModesMap[stakingModalState.mode][stepNum];
+  }, [stakingModalState.mode, stepNum]);
+
   useEffect(() => {
     /**
      * Reset step number on modal close, but only when there isn't ongoing transaction
@@ -89,7 +93,7 @@ const StakingModal = () => {
     if (
       stakingModalState.mode !== "stake" ||
       !stakingModalState.show ||
-      stakingModesMap[stakingModalState.mode][stepNum] !== "preview"
+      currentStep !== "preview"
     ) {
       return;
     }
@@ -100,7 +104,7 @@ const StakingModal = () => {
     ) {
       setStepNum(stakingModesMap[stakingModalState.mode].indexOf("form"));
     }
-  }, [stakingModalState, stakingData, stepNum]);
+  }, [stakingModalState, stakingData, stepNum, currentStep]);
 
   /**
    * Callback for approval
@@ -247,7 +251,7 @@ const StakingModal = () => {
   ]);
 
   const modalBody = useMemo(() => {
-    switch (stakingModesMap[stakingModalState.mode][stepNum]) {
+    switch (currentStep) {
       case "approve":
         return <StakingModalApprove onApprove={onApprove} />;
       case "explainer":
@@ -368,27 +372,43 @@ const StakingModal = () => {
         );
     }
   }, [
+    currentStep,
     onApprove,
     onStake,
     onStakeUpdate,
     stakingData,
     stakingUpdateMode,
     stakingModalState,
-    stepNum,
   ]);
 
   return (
     <BasicModal
       show={stakingModalState.show}
-      height={
-        stakingModalHeight[stakingModesMap[stakingModalState.mode][stepNum]]
-      }
+      height={stakingModalHeight[currentStep]}
       onClose={() =>
         setStakingModalState((state) => ({ ...state, show: false }))
       }
-      headerBackground={
-        stakingModesMap[stakingModalState.mode][stepNum] === "transaction"
-      }
+      headerBackground={currentStep === "transaction"}
+      animationProps={{
+        key: currentStep,
+        transition: {
+          duration: 0.25,
+          type: "keyframes",
+          ease: "easeInOut",
+        },
+        initial: {
+          x: 50,
+          opacity: 0,
+        },
+        animate: {
+          x: 0,
+          opacity: 1,
+        },
+        exit: {
+          x: -50,
+          opacity: 0,
+        },
+      }}
     >
       {modalBody}
     </BasicModal>
