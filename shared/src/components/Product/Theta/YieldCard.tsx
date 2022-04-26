@@ -240,7 +240,7 @@ const RangeCenter = styled.div`
 
 const TotalYieldTitle = styled.div`
   display: flex;
-  font-size: 14px;
+  font-size: 12px;
   width: 100%;
   color: ${colors.tertiaryText};
   margin-top: 8px;
