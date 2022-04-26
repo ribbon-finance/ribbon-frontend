@@ -32,7 +32,7 @@ const ButtonContainer = styled.div`
 `;
 
 const SubTitle = styled(PrimaryText)`
-  color: ${colors.primaryText};
+  color: ${colors.text};
 `;
 
 const TextContainer = styled(Row)`
@@ -200,7 +200,7 @@ const Hero = () => {
 
           <SubtitleContainer>
             <SubTitle>
-              Earn <strong>Sustainable Yield</strong> through
+              Earn <span>Sustainable Yield</span> through
               <br />
               Decentralized Options Vaults
             </SubTitle>
