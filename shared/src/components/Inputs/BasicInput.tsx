@@ -6,6 +6,8 @@ import {
   BaseInputContainer,
   BaseInputLabel,
 } from "../../designSystem";
+import HelpInfo from "../Common/HelpInfo";
+import TooltipExplanation from "../Common/TooltipExplanation";
 
 const Container = styled.div.attrs({
   className: "d-flex flex-column flex-grow-1",
@@ -22,6 +24,9 @@ const InputContainer = styled(BaseInputContainer).attrs({
 
 const Input = styled(BaseInput)``;
 
+const LabelContainer = styled.div.attrs({
+  className: "d-flex align-items-center",
+})``;
 const InsideInputLabel = styled(BaseInputLabel)`
   padding: 0 8px;
 `;
@@ -43,6 +48,7 @@ interface BasicInputProps {
     text: string;
     // Label inside the input itself
     isInside?: boolean;
+    accessoryComponent?: React.ReactNode;
   };
   inputProps: InputProps;
 }
@@ -95,7 +101,10 @@ const BasicInput: React.FC<BasicInputProps> = ({
   return (
     <Container>
       {!labelProps.isInside && (
-        <BaseInputLabel>{labelProps.text}</BaseInputLabel>
+        <LabelContainer>
+          <BaseInputLabel>{labelProps.text}</BaseInputLabel>
+          {labelProps.accessoryComponent && labelProps.accessoryComponent}
+        </LabelContainer>
       )}
       <InputContainer
         style={{
@@ -106,7 +115,10 @@ const BasicInput: React.FC<BasicInputProps> = ({
         {leftContent}
         <InputContent>
           {labelProps.isInside && (
-            <InsideInputLabel>{labelProps.text}</InsideInputLabel>
+            <LabelContainer>
+              <InsideInputLabel>{labelProps.text}</InsideInputLabel>
+              {labelProps.accessoryComponent && labelProps.accessoryComponent}
+            </LabelContainer>
           )}
           <Input
             type="number"
