@@ -38,7 +38,7 @@ const DisableUI = styled.div<{ isDisabled?: boolean }>`
 const SegmentControlTitleContainer = styled.div.attrs({
   className: "d-flex align-items-center justify-content-center",
 })`
-  width: 156px;
+  width: 142px;
 `;
 
 const Highlight = styled.span`
@@ -142,19 +142,6 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
                 display: (
                   <SegmentControlTitleContainer>
                     {t("governance:RevenueClaim:unlockPenalty")}
-                    <TooltipExplanation
-                      title={t(
-                        "governance:TooltipExplanations:unlockPenalty.title"
-                      )}
-                      explanation={t(
-                        "governance:TooltipExplanations:unlockPenalty.description"
-                      )}
-                      renderContent={({ ref, ...triggerHandler }) => (
-                        <HelpInfo containerRef={ref} {...triggerHandler}>
-                          i
-                        </HelpInfo>
-                      )}
-                    />
                   </SegmentControlTitleContainer>
                 ),
                 value: "penalty",
@@ -171,7 +158,7 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
               color: colors.green,
               backgroundColor: colors.background.three,
               button: {
-                px: 18,
+                px: 6,
                 py: 10,
                 fontSize: 14,
                 lineHeight: 20,
@@ -191,6 +178,23 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
           labelProps={{
             text: displayValues.label,
             isInside: true,
+            accessoryComponent: (
+              <TooltipExplanation
+                title={t("governance:TooltipExplanations:unlockPenalty.title")}
+                explanation={t(
+                  "governance:TooltipExplanations:unlockPenalty.description"
+                )}
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HelpInfo
+                    containerRef={ref}
+                    {...triggerHandler}
+                    style={{ marginLeft: "0px" }}
+                  >
+                    i
+                  </HelpInfo>
+                )}
+              />
+            ),
           }}
           inputProps={{
             type: "text",
