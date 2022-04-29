@@ -582,9 +582,7 @@ export interface LidoOracle extends BaseContract {
 
     getExpectedEpochId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    getLastCompletedReportDelta(
-      overrides?: CallOverrides
-    ): Promise<
+    getLastCompletedReportDelta(overrides?: CallOverrides): Promise<
       [BigNumber, BigNumber, BigNumber] & {
         postTotalPooledEther: BigNumber;
         preTotalPooledEther: BigNumber;
@@ -598,9 +596,7 @@ export interface LidoOracle extends BaseContract {
 
     MANAGE_MEMBERS(overrides?: CallOverrides): Promise<[string]>;
 
-    getCurrentFrame(
-      overrides?: CallOverrides
-    ): Promise<
+    getCurrentFrame(overrides?: CallOverrides): Promise<
       [BigNumber, BigNumber, BigNumber] & {
         frameEpochId: BigNumber;
         frameStartTime: BigNumber;
@@ -686,9 +682,7 @@ export interface LidoOracle extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    getBeaconSpec(
-      overrides?: CallOverrides
-    ): Promise<
+    getBeaconSpec(overrides?: CallOverrides): Promise<
       [BigNumber, BigNumber, BigNumber, BigNumber] & {
         epochsPerFrame: BigNumber;
         slotsPerEpoch: BigNumber;
@@ -754,9 +748,7 @@ export interface LidoOracle extends BaseContract {
 
   getExpectedEpochId(overrides?: CallOverrides): Promise<BigNumber>;
 
-  getLastCompletedReportDelta(
-    overrides?: CallOverrides
-  ): Promise<
+  getLastCompletedReportDelta(overrides?: CallOverrides): Promise<
     [BigNumber, BigNumber, BigNumber] & {
       postTotalPooledEther: BigNumber;
       preTotalPooledEther: BigNumber;
@@ -770,9 +762,7 @@ export interface LidoOracle extends BaseContract {
 
   MANAGE_MEMBERS(overrides?: CallOverrides): Promise<string>;
 
-  getCurrentFrame(
-    overrides?: CallOverrides
-  ): Promise<
+  getCurrentFrame(overrides?: CallOverrides): Promise<
     [BigNumber, BigNumber, BigNumber] & {
       frameEpochId: BigNumber;
       frameStartTime: BigNumber;
@@ -858,9 +848,7 @@ export interface LidoOracle extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  getBeaconSpec(
-    overrides?: CallOverrides
-  ): Promise<
+  getBeaconSpec(overrides?: CallOverrides): Promise<
     [BigNumber, BigNumber, BigNumber, BigNumber] & {
       epochsPerFrame: BigNumber;
       slotsPerEpoch: BigNumber;
@@ -926,9 +914,7 @@ export interface LidoOracle extends BaseContract {
 
     getExpectedEpochId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getLastCompletedReportDelta(
-      overrides?: CallOverrides
-    ): Promise<
+    getLastCompletedReportDelta(overrides?: CallOverrides): Promise<
       [BigNumber, BigNumber, BigNumber] & {
         postTotalPooledEther: BigNumber;
         preTotalPooledEther: BigNumber;
@@ -942,9 +928,7 @@ export interface LidoOracle extends BaseContract {
 
     MANAGE_MEMBERS(overrides?: CallOverrides): Promise<string>;
 
-    getCurrentFrame(
-      overrides?: CallOverrides
-    ): Promise<
+    getCurrentFrame(overrides?: CallOverrides): Promise<
       [BigNumber, BigNumber, BigNumber] & {
         frameEpochId: BigNumber;
         frameStartTime: BigNumber;
@@ -1021,9 +1005,7 @@ export interface LidoOracle extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    getBeaconSpec(
-      overrides?: CallOverrides
-    ): Promise<
+    getBeaconSpec(overrides?: CallOverrides): Promise<
       [BigNumber, BigNumber, BigNumber, BigNumber] & {
         epochsPerFrame: BigNumber;
         slotsPerEpoch: BigNumber;
