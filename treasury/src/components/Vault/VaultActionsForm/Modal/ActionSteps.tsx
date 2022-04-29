@@ -299,25 +299,10 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                   case "complete":
                     switch (vaultActionForm.vaultOption) {
                       case "rstETH-THETA":
-                        /**
-                         * Default slippage of 0.3%
-                         */
-                        const curvePool = getCurvePool(
-                          ethereumProvider,
-                          LidoCurvePoolAddress
-                        );
-                        const minOut = await curvePool.get_dy(
-                          1,
-                          0,
-                          amountAfterSlippage(amount, CurveSwapSlippage),
-                          {
-                            gasLimit: 400000,
-                          }
-                        );
                         // Special for RibbonV2stETH vault
                         res = await (
                           vault as RibbonV2stETHThetaVault
-                        ).completeWithdraw(minOut, {
+                        ).completeWithdraw({
                           gasLimit: 400000,
                         });
                         break;
