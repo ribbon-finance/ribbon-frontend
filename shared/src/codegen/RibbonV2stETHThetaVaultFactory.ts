@@ -775,13 +775,7 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "minETHOut",
-        type: "uint256",
-      },
-    ],
+    inputs: [],
     name: "completeWithdraw",
     outputs: [],
     stateMutability: "nonpayable",
