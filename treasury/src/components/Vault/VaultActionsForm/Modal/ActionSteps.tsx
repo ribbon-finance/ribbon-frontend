@@ -16,9 +16,7 @@ import {
   isNativeToken,
   VaultOptions,
   VaultVersion,
-  LidoCurvePoolAddress,
   VaultAllowedDepositAssets,
-  CurveSwapSlippage,
 } from "shared/lib/constants/constants";
 import { isETHVault } from "shared/lib/utils/vault";
 import { amountAfterSlippage } from "shared/lib/utils/math";
@@ -28,7 +26,6 @@ import { parseUnits } from "@ethersproject/units";
 import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import useV2VaultContract from "shared/lib/hooks/useV2VaultContract";
 import WarningStep from "webapp/lib/components/Vault/VaultActionsForm/Modal/WarningStep";
-import { getCurvePool } from "shared/lib/hooks/useCurvePool";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { getAssetColor, getAssetDecimals } from "shared/lib/utils/asset";
@@ -260,26 +257,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                   case "instant":
                     switch (vaultActionForm.vaultOption) {
                       case "rstETH-THETA":
-                        /**
-                         * Default slippage of 0.3%
-                         */
-                        const curvePool = getCurvePool(
-                          ethereumProvider,
-                          LidoCurvePoolAddress
-                        );
-
-                        const minOut = await curvePool.get_dy(
-                          1,
-                          0,
-                          amountAfterSlippage(amount, CurveSwapSlippage),
-                          {
-                            gasLimit: 400000,
-                          }
-                        );
-                        // Special for RibbonV2stETH vault
                         res = await (
                           vault as RibbonV2stETHThetaVault
-                        ).withdrawInstantly(amountStr, minOut, {
+                        ).withdrawInstantly(amountStr, 0, {
                           gasLimit: 220000,
                         });
                         break;

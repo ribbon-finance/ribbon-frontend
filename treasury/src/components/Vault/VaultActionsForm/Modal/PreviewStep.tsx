@@ -30,9 +30,6 @@ import {
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
-import { useCurvePoolEstimateStETHSwap } from "shared/lib/hooks/useCurvePool";
-import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { parseUnits } from "ethers/lib/utils";
 
@@ -114,11 +111,6 @@ const PreviewStep: React.FC<{
     data: { withdrawals: v2Withdrawals },
   } = useV2VaultData(vaultOption);
   const { priceHistory } = useVaultPriceHistory(vaultOption, vaultVersion);
-
-  const { swapOutput } = useCurvePoolEstimateStETHSwap(
-    vaultOption === "rstETH-THETA",
-    amount
-  );
 
   interface ActionDetail {
     key: string;
@@ -380,45 +372,6 @@ const PreviewStep: React.FC<{
             </div>
           );
         case "complete":
-          let description = <></>;
-          let slippage = <></>;
-
-          switch (vaultOption) {
-            case "rstETH-THETA":
-              description = (
-                <PrimaryText
-                  color={colors.text}
-                  fontSize={14}
-                  lineHeight={20}
-                  className="mt-3 text-center"
-                >
-                  To complete your withdrawal the vault will swap your stETH to
-                  ETH on Curve{" "}
-                </PrimaryText>
-              );
-              slippage = (
-                <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
-                  <SecondaryText>Max Slippage</SecondaryText>
-                  <TooltipExplanation
-                    title="SLIPPAGE"
-                    explanation="Slippage refers to the difference between the expected price of a trade and the price at which the trade is executed."
-                    learnMoreURL="https://www.investopedia.com/terms/s/slippage.asp"
-                    renderContent={({ ref, ...triggerHandler }) => (
-                      <HelpInfo
-                        containerRef={ref}
-                        {...triggerHandler}
-                        className="mr-auto"
-                      >
-                        i
-                      </HelpInfo>
-                    )}
-                  />
-
-                  <Title className="text-right">0.3%</Title>
-                </div>
-              );
-          }
-
           return (
             <div className="d-flex flex-column align-items-center">
               {/* Logo */}
@@ -430,36 +383,21 @@ const PreviewStep: React.FC<{
               <FormTitle className="mt-3 text-center">
                 COMPLETE WITHDRAWAL
               </FormTitle>
-              {description}
 
               {/* Info Preview */}
-              {vaultOption === "rstETH-THETA" ? (
-                <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
-                  <SecondaryText>Estimated Withdraw Amount</SecondaryText>
-                  <Title className="text-right">
-                    {formatBigNumber(
-                      swapOutput.isZero() ? amount : swapOutput,
-                      getAssetDecimals(asset)
-                    )}{" "}
-                    {getAssetDisplay(asset)}
-                  </Title>
-                </div>
-              ) : (
-                <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
-                  <SecondaryText>Withdraw Amount</SecondaryText>
-                  <Title className="text-right">
-                    {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
-                    {getAssetDisplay(asset)}
-                  </Title>
-                </div>
-              )}
+              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+                <SecondaryText>Withdraw Amount</SecondaryText>
+                <Title className="text-right">
+                  {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
+                  {getAssetDisplay(asset)}
+                </Title>
+              </div>
               <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
                 <SecondaryText>Product</SecondaryText>
                 <Title className="text-right">
                   {t(`shared:ProductCopies:${vaultOption}:title`)}
                 </Title>
               </div>
-              {slippage}
 
               {/* Migrate Button */}
               <ActionButton
@@ -508,24 +446,10 @@ const PreviewStep: React.FC<{
           break;
         case ACTIONS.withdraw:
           actionLogo = <WithdrawIcon color={color} width={32} />;
-
-          switch (vaultOption) {
-            case "rstETH-THETA":
-              description = (
-                <PrimaryText
-                  color={colors.text}
-                  fontSize={14}
-                  lineHeight={20}
-                  className="mt-3 text-center"
-                >
-                  To complete your withdrawal the vault will swap your stETH to
-                  ETH on Curve{" "}
-                </PrimaryText>
-              );
-          }
           break;
         case ACTIONS.transfer:
           actionLogo = <TransferIcon color={color} width={32} />;
+          break;
       }
 
       return (
@@ -546,10 +470,7 @@ const PreviewStep: React.FC<{
             <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
               <SecondaryText>Estimated {actionWord} Amount</SecondaryText>
               <Title className="text-right">
-                {formatBigNumber(
-                  swapOutput.isZero() ? amount : swapOutput,
-                  getAssetDecimals(asset)
-                )}{" "}
+                {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
                 {getAssetDisplay(asset)}
               </Title>
             </div>
