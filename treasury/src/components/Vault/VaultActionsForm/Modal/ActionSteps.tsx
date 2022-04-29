@@ -257,7 +257,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                   case "instant":
                     switch (vaultActionForm.vaultOption) {
                       case "rstETH-THETA":
-                        res = await vault.withdrawInstantly(amountStr, 0, {
+                        res = await (
+                          vault as RibbonV2stETHThetaVault
+                        ).withdrawInstantly(amountStr, 0, {
                           gasLimit: 220000,
                         });
                         break;
