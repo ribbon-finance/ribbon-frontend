@@ -174,6 +174,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 261,
   },
   {
     name: "integrate_checkpoint",
@@ -186,6 +187,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 1997,
   },
   {
     name: "user_checkpoint",
@@ -203,6 +205,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 2498454,
   },
   {
     name: "claimable_tokens",
@@ -220,6 +223,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 2417612,
   },
   {
     name: "claimed_reward",
@@ -241,6 +245,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 1769,
   },
   {
     name: "claimable_reward",
@@ -262,6 +267,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 10176,
   },
   {
     name: "set_rewards_receiver",
@@ -274,6 +280,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 35706,
   },
   {
     name: "claim_rewards",
@@ -321,6 +328,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 2502510,
   },
   {
     name: "deposit",
@@ -418,6 +426,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 15091771,
   },
   {
     name: "transferFrom",
@@ -443,6 +452,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 15128421,
   },
   {
     name: "approve",
@@ -464,6 +474,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 38214,
   },
   {
     name: "increaseAllowance",
@@ -485,6 +496,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 39458,
   },
   {
     name: "decreaseAllowance",
@@ -506,6 +518,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 39482,
   },
   {
     name: "add_reward",
@@ -522,6 +535,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 109404,
   },
   {
     name: "set_reward_distributor",
@@ -538,6 +552,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 38390,
   },
   {
     name: "deposit_reward_token",
@@ -554,6 +569,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 1410952,
   },
   {
     name: "set_killed",
@@ -566,6 +582,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 36908,
   },
   {
     name: "commit_transfer_ownership",
@@ -578,6 +595,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 38288,
   },
   {
     name: "accept_transfer_ownership",
@@ -585,6 +603,7 @@ const _abi = [
     inputs: [],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 38233,
   },
   {
     name: "minter",
@@ -597,6 +616,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 1841,
   },
   {
     name: "crv_token",
@@ -609,6 +629,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 1871,
   },
   {
     name: "controller",
@@ -621,6 +642,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 1901,
   },
   {
     name: "voting_escrow",
@@ -633,6 +655,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 1931,
   },
   {
     name: "veboost_proxy",
@@ -645,6 +668,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 1961,
   },
   {
     name: "lp_token",
@@ -657,6 +681,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 1991,
   },
   {
     name: "future_epoch_time",
@@ -669,6 +694,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2021,
   },
   {
     name: "balanceOf",
@@ -686,6 +712,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 2266,
   },
   {
     name: "totalSupply",
@@ -698,6 +725,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2081,
   },
   {
     name: "allowance",
@@ -719,6 +747,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 2541,
   },
   {
     name: "name",
@@ -731,6 +760,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 8543,
   },
   {
     name: "symbol",
@@ -743,6 +773,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 7596,
   },
   {
     name: "working_balances",
@@ -760,6 +791,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 2416,
   },
   {
     name: "working_supply",
@@ -772,6 +804,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2231,
   },
   {
     name: "period",
@@ -784,6 +817,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2261,
   },
   {
     name: "period_timestamp",
@@ -801,6 +835,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 2400,
   },
   {
     name: "integrate_inv_supply",
@@ -818,6 +853,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 2430,
   },
   {
     name: "integrate_inv_supply_of",
@@ -835,6 +871,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 2566,
   },
   {
     name: "integrate_checkpoint_of",
@@ -852,6 +889,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 2596,
   },
   {
     name: "integrate_fraction",
@@ -869,6 +907,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 2626,
   },
   {
     name: "inflation_rate",
@@ -881,6 +920,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2441,
   },
   {
     name: "reward_count",
@@ -893,6 +933,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2471,
   },
   {
     name: "reward_tokens",
@@ -910,6 +951,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 2610,
   },
   {
     name: "reward_data",
@@ -947,6 +989,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 7908,
   },
   {
     name: "rewards_receiver",
@@ -964,6 +1007,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 2776,
   },
   {
     name: "reward_integral_for",
@@ -985,6 +1029,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 3021,
   },
   {
     name: "admin",
@@ -997,6 +1042,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2621,
   },
   {
     name: "future_admin",
@@ -1009,6 +1055,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2651,
   },
   {
     name: "is_killed",
@@ -1021,6 +1068,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2681,
   },
 ];
 
