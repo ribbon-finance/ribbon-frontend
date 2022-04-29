@@ -68,7 +68,7 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
     "cap()": FunctionFragment;
     "collateralToken()": FunctionFragment;
     "commitAndClose()": FunctionFragment;
-    "completeWithdraw(uint256)": FunctionFragment;
+    "completeWithdraw()": FunctionFragment;
     "currentOption()": FunctionFragment;
     "currentOtokenPremium()": FunctionFragment;
     "decimals()": FunctionFragment;
@@ -190,7 +190,7 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "completeWithdraw",
-    values: [BigNumberish]
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "currentOption",
@@ -938,7 +938,6 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
     ): Promise<ContractTransaction>;
 
     completeWithdraw(
-      minETHOut: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -1266,7 +1265,6 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
   ): Promise<ContractTransaction>;
 
   completeWithdraw(
-    minETHOut: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1589,10 +1587,7 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
 
     commitAndClose(overrides?: CallOverrides): Promise<void>;
 
-    completeWithdraw(
-      minETHOut: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    completeWithdraw(overrides?: CallOverrides): Promise<void>;
 
     currentOption(overrides?: CallOverrides): Promise<string>;
 
@@ -2076,7 +2071,6 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
     ): Promise<BigNumber>;
 
     completeWithdraw(
-      minETHOut: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -2375,7 +2369,6 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     completeWithdraw(
-      minETHOut: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
