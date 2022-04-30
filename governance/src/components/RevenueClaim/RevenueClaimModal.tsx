@@ -48,7 +48,7 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
   // Fetch rewards
   useEffect(() => {
     if (penaltyRewards && account) {
-      penaltyRewards["claimable()"]().then((rewards: BigNumber) => {
+      penaltyRewards.callStatic["claim()"]().then((rewards: BigNumber) => {
         setUnlockPenalty(() => rewards);
       });
       penaltyRewards.last_token_time().then((time: BigNumber) => {
@@ -62,7 +62,7 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
   // Fetch penalty
   useEffect(() => {
     if (feeDistributor && account) {
-      feeDistributor["claimable()"]().then((rewards: BigNumber) => {
+      feeDistributor.callStatic["claim()"]().then((rewards: BigNumber) => {
         setVaultRevenue(() => rewards);
       });
     }
@@ -83,8 +83,8 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
         pendingTx = {
           type: "protocolRevenueClaim",
           txhash: tx.hash,
-          amountUSDC: vaultRevenue
-            ? formatBigNumberAmount(vaultRevenue, getAssetDecimals("USDC"))
+          amountETH: vaultRevenue
+            ? formatBigNumberAmount(vaultRevenue, getAssetDecimals("WETH"))
             : "0",
         };
       } else if (claimType === "penalty" && penaltyRewards) {

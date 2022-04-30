@@ -157,35 +157,6 @@ const _abi = [
     type: "function",
   },
   {
-    name: "claimable",
-    outputs: [
-      {
-        type: "uint256",
-        name: "",
-      },
-    ],
-    inputs: [],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    name: "claimable",
-    outputs: [
-      {
-        type: "uint256",
-        name: "",
-      },
-    ],
-    inputs: [
-      {
-        type: "address",
-        name: "addr",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     name: "claim",
     outputs: [
       {
@@ -300,6 +271,18 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    name: "recover_eth_balance",
+    outputs: [
+      {
+        type: "bool",
+        name: "",
+      },
+    ],
+    inputs: [],
+    stateMutability: "payable",
     type: "function",
   },
   {

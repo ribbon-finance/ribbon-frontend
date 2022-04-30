@@ -102,7 +102,7 @@ export type PendingTransaction = {
   // Revenue Claim transaction
   | {
       type: "protocolRevenueClaim";
-      amountUSDC: string;
+      amountETH: string;
     }
   | {
       type: "protocolPenaltyClaim";

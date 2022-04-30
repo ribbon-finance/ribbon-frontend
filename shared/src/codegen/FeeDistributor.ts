@@ -24,7 +24,6 @@ export interface FeeDistributorInterface extends utils.Interface {
     "checkpoint_token()": FunctionFragment;
     "ve_for_at(address,uint256)": FunctionFragment;
     "checkpoint_total_supply()": FunctionFragment;
-    "claimable()": FunctionFragment;
     "claim()": FunctionFragment;
     "claim_many(address[20])": FunctionFragment;
     "burn(address,uint256)": FunctionFragment;
@@ -33,6 +32,7 @@ export interface FeeDistributorInterface extends utils.Interface {
     "toggle_allow_checkpoint_token()": FunctionFragment;
     "kill_me()": FunctionFragment;
     "recover_balance(address)": FunctionFragment;
+    "recover_eth_balance()": FunctionFragment;
     "start_time()": FunctionFragment;
     "time_cursor()": FunctionFragment;
     "time_cursor_of(address)": FunctionFragment;
@@ -63,7 +63,6 @@ export interface FeeDistributorInterface extends utils.Interface {
     functionFragment: "checkpoint_total_supply",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "claimable", values?: undefined): string;
   encodeFunctionData(functionFragment: "claim", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "claim_many",
@@ -89,6 +88,10 @@ export interface FeeDistributorInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "recover_balance",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "recover_eth_balance",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "start_time",
@@ -155,7 +158,6 @@ export interface FeeDistributorInterface extends utils.Interface {
     functionFragment: "checkpoint_total_supply",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "claimable", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "claim_many", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
@@ -174,6 +176,10 @@ export interface FeeDistributorInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "kill_me", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "recover_balance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "recover_eth_balance",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "start_time", data: BytesLike): Result;
@@ -318,13 +324,6 @@ export interface FeeDistributor extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "claimable()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "claimable(address)"(
-      addr: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     "claim()"(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -365,6 +364,10 @@ export interface FeeDistributor extends BaseContract {
     recover_balance(
       _coin: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    recover_eth_balance(
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     start_time(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -426,13 +429,6 @@ export interface FeeDistributor extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "claimable()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "claimable(address)"(
-    addr: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   "claim()"(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -473,6 +469,10 @@ export interface FeeDistributor extends BaseContract {
   recover_balance(
     _coin: string,
     overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  recover_eth_balance(
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   start_time(overrides?: CallOverrides): Promise<BigNumber>;
@@ -521,13 +521,6 @@ export interface FeeDistributor extends BaseContract {
 
     checkpoint_total_supply(overrides?: CallOverrides): Promise<void>;
 
-    "claimable()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "claimable(address)"(
-      addr: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     "claim()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     "claim(address)"(
@@ -555,6 +548,8 @@ export interface FeeDistributor extends BaseContract {
     kill_me(overrides?: CallOverrides): Promise<void>;
 
     recover_balance(_coin: string, overrides?: CallOverrides): Promise<boolean>;
+
+    recover_eth_balance(overrides?: CallOverrides): Promise<boolean>;
 
     start_time(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -644,13 +639,6 @@ export interface FeeDistributor extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "claimable()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "claimable(address)"(
-      addr: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     "claim()"(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -691,6 +679,10 @@ export interface FeeDistributor extends BaseContract {
     recover_balance(
       _coin: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    recover_eth_balance(
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     start_time(overrides?: CallOverrides): Promise<BigNumber>;
@@ -747,13 +739,6 @@ export interface FeeDistributor extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "claimable()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "claimable(address)"(
-      addr: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     "claim()"(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -794,6 +779,10 @@ export interface FeeDistributor extends BaseContract {
     recover_balance(
       _coin: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    recover_eth_balance(
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     start_time(overrides?: CallOverrides): Promise<PopulatedTransaction>;
