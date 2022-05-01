@@ -178,23 +178,26 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
           labelProps={{
             text: displayValues.label,
             isInside: true,
-            accessoryComponent: (
-              <TooltipExplanation
-                title={t("governance:TooltipExplanations:unlockPenalty.title")}
-                explanation={t(
-                  "governance:TooltipExplanations:unlockPenalty.description"
-                )}
-                renderContent={({ ref, ...triggerHandler }) => (
-                  <HelpInfo
-                    containerRef={ref}
-                    {...triggerHandler}
-                    style={{ marginLeft: "0px" }}
-                  >
-                    i
-                  </HelpInfo>
-                )}
-              />
-            ),
+            accessoryComponent:
+              claimType === "penalty" ? (
+                <TooltipExplanation
+                  title={t(
+                    "governance:TooltipExplanations:unlockPenalty.title"
+                  )}
+                  explanation={t(
+                    "governance:TooltipExplanations:unlockPenalty.description"
+                  )}
+                  renderContent={({ ref, ...triggerHandler }) => (
+                    <HelpInfo
+                      containerRef={ref}
+                      {...triggerHandler}
+                      style={{ marginLeft: "0px" }}
+                    >
+                      i
+                    </HelpInfo>
+                  )}
+                />
+              ) : undefined,
           }}
           inputProps={{
             type: "text",
