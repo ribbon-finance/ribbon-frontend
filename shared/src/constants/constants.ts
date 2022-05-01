@@ -806,12 +806,6 @@ export const getERC20TokenAddress = (token: ERC20Token, chainId: number) => {
     : (addresses[network].assets as any)[token];
 };
 
-export const LidoCurvePoolAddress = isDevelopment()
-  ? ""
-  : addresses.mainnet.lidoCurvePool;
-
-export const CurveSwapSlippage = 0.008; // 0.8%
-
 export const LidoOracleAddress = isDevelopment()
   ? ""
   : addresses.mainnet.lidoOracle;
