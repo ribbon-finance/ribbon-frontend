@@ -76,7 +76,7 @@
     "protocolRevenueClaim": "PROTOCOL REVENUE CLAIM",
     "unlockPenaltyClaim": "UNLOCK PENALTY CLAIM",
     "penaltyDistribution": "Penalty Distribution (RBN)",
-    "protocolFees": "Protocol Fees (USDC)",
+    "protocolFees": "Protocol Fees (ETH)",
     "claimRevenue": "CLAIM REVENUE"
   }
 }
