@@ -51,11 +51,6 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
       penaltyRewards.callStatic["claim()"]().then((rewards: BigNumber) => {
         setUnlockPenalty(() => rewards);
       });
-      penaltyRewards.last_token_time().then((time: BigNumber) => {
-        // Weekly distributions, so add 7 days
-        const seconds = time.toNumber() + 86400;
-        setNextRevenueDistributionDate(new Date(seconds * 1000));
-      });
     }
   }, [penaltyRewards, account]);
 
@@ -64,6 +59,11 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
     if (feeDistributor && account) {
       feeDistributor.callStatic["claim()"]().then((rewards: BigNumber) => {
         setVaultRevenue(() => rewards);
+      });
+      feeDistributor.last_token_time().then((time: BigNumber) => {
+        // Weekly distributions, so add 7 days
+        const seconds = time.toNumber() + (86400 * 7);
+        setNextRevenueDistributionDate(new Date(seconds * 1000));
       });
     }
   }, [feeDistributor, account]);
