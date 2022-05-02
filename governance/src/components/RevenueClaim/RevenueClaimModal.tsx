@@ -62,7 +62,7 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
       });
       feeDistributor.last_token_time().then((time: BigNumber) => {
         // Weekly distributions, so add 7 days
-        const seconds = time.toNumber() + (86400 * 7);
+        const seconds = time.toNumber() + 86400 * 7;
         setNextRevenueDistributionDate(new Date(seconds * 1000));
       });
     }
