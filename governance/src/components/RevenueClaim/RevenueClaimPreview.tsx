@@ -38,6 +38,9 @@ const RevenueClaimPreview: React.FC<RevenueClaimPreviewProps> = ({
   vaultRevenue,
 }) => {
   const { t } = useTranslation();
+  const vaultRevenueNum = vaultRevenue
+    ? parseFloat(formatUnits(vaultRevenue, getAssetDecimals("WETH")))
+    : undefined;
 
   return (
     <>
@@ -69,11 +72,11 @@ const RevenueClaimPreview: React.FC<RevenueClaimPreviewProps> = ({
         <ModalInfoColumn
           label={t("governance:RevenueClaim:protocolFees")}
           data={
-            vaultRevenue
-              ? parseFloat(
-                  formatUnits(vaultRevenue, getAssetDecimals("WETH"))
-                ).toFixed(2)
-              : "---"
+            vaultRevenueNum === undefined
+              ? "---"
+              : vaultRevenueNum < 0.0001
+              ? "<0.0001"
+              : vaultRevenueNum?.toFixed(4)
           }
         />
       )}

@@ -85,7 +85,7 @@ export const TxStatusToast = () => {
       case "protocolPenaltyClaim":
         return `Claimed RBN ${_currentTx.amountRBN}`;
       case "protocolRevenueClaim":
-        return `Claimed USDC ${_currentTx.amountUSDC}`;
+        return `Claimed ETH ${_currentTx.amountETH}`;
       default:
         return "";
     }

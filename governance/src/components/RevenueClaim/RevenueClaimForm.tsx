@@ -106,14 +106,20 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
           : "---",
       };
     }
+
+    const vaultRevenueNum = vaultRevenue
+      ? parseFloat(formatUnits(vaultRevenue, getAssetDecimals("WETH")))
+      : undefined;
+
     return {
       Logo: getAssetLogo("WETH"),
       label: t("governance:RevenueClaim:vaultRevenueEarned"),
-      input: vaultRevenue
-        ? parseFloat(
-            formatUnits(vaultRevenue, getAssetDecimals("WETH"))
-          ).toFixed(2)
-        : "---",
+      input:
+        vaultRevenueNum === undefined
+          ? "---"
+          : vaultRevenueNum < 0.0001
+          ? "<0.0001"
+          : vaultRevenueNum?.toFixed(4),
     };
   }, [claimType, t, unlockPenalty, vaultRevenue]);
 
@@ -178,23 +184,26 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
           labelProps={{
             text: displayValues.label,
             isInside: true,
-            accessoryComponent: (
-              <TooltipExplanation
-                title={t("governance:TooltipExplanations:unlockPenalty.title")}
-                explanation={t(
-                  "governance:TooltipExplanations:unlockPenalty.description"
-                )}
-                renderContent={({ ref, ...triggerHandler }) => (
-                  <HelpInfo
-                    containerRef={ref}
-                    {...triggerHandler}
-                    style={{ marginLeft: "0px" }}
-                  >
-                    i
-                  </HelpInfo>
-                )}
-              />
-            ),
+            accessoryComponent:
+              claimType === "penalty" ? (
+                <TooltipExplanation
+                  title={t(
+                    "governance:TooltipExplanations:unlockPenalty.title"
+                  )}
+                  explanation={t(
+                    "governance:TooltipExplanations:unlockPenalty.description"
+                  )}
+                  renderContent={({ ref, ...triggerHandler }) => (
+                    <HelpInfo
+                      containerRef={ref}
+                      {...triggerHandler}
+                      style={{ marginLeft: "0px" }}
+                    >
+                      i
+                    </HelpInfo>
+                  )}
+                />
+              ) : undefined,
           }}
           inputProps={{
             type: "text",
