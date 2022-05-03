@@ -16,8 +16,6 @@ import { NavItemProps, MobileMenuOpenProps } from "./types";
 import AccountStatus from "../Wallet/AccountStatus";
 import DesktopSubmenu from "./DesktopSubmenu";
 import RibbonClaimButton from "./RibbonClaimButton";
-import { isProduction } from "shared/lib/utils/env";
-import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import DesktopFloatingMenu from "shared/lib/components/Menu/DesktopFloatingMenu";
 import { MenuItem } from "shared/lib/components/Menu/MenuItem";
 import useOutsideAlerter from "shared/lib/hooks/useOutsideAlerter";
@@ -160,7 +158,6 @@ const MobileOnly = styled.div`
 type VotingLinkType = "proposal" | "gaugeVoting";
 
 const Header = () => {
-  const { active } = useWeb3Wallet();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [votingMenuOpen, setVotingMenuOpen] = useState(false);
   const [votingLinkType, setVotingLinkType] = useState<VotingLinkType>();

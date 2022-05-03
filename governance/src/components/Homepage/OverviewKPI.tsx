@@ -57,7 +57,7 @@ const FloatingBackgroundContainer = styled.div<{ backgroundColor?: string }>`
 `;
 
 const OverviewKPI = () => {
-  const { width, height, video } = useScreenSize();
+  const { width, video } = useScreenSize();
   const { data: rbnToken, loading: rbnTokenAccountLoading } = useRBNToken();
   const { info, loading: assetInfoLoading } = useAssetInfo("RBN");
   const { price: RBNPrice, loading: assetPriceLoading } = useAssetPrice({

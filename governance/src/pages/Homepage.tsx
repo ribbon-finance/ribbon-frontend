@@ -23,14 +23,7 @@ const Homepage = () => {
 
   return (
     <>
-      <TemporaryStakingBanner
-        descriptionText="The liquidity mining program is now live. Stake your rTokens at"
-        link={{
-          link: "https://app.ribbon.finance/staking",
-          text: "app.ribbon.finance",
-          external: true,
-        }}
-      />
+      <TemporaryStakingBanner descriptionText="To claim your share of protocol revenue, click the veRBN logo above." />
       <Container fluid className="d-flex p-0">
         <SnapScrollSection
           height={height}

@@ -1,7 +1,5 @@
-import React, { useRef } from "react";
 import styled from "styled-components";
 import HeaderButtonContainer from "shared/lib/components/Common/HeaderButtonContainer";
-import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import {
