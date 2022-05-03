@@ -50,7 +50,7 @@ const Icon = styled(ExternalIcon)`
 interface TemporaryStakingBannerProps {
   containerStyle?: React.CSSProperties;
   descriptionText: string;
-  link: {
+  link?: {
     text: string;
     link: string;
     external?: boolean;
@@ -79,19 +79,24 @@ const TemporaryStakingBanner: React.FC<TemporaryStakingBannerProps> = ({
             style={{ textAlign: "center" }}
           >
             {descriptionText}{" "}
-            <Link to={link.link} target={link.external ? "_blank" : undefined}>
-              <LinkText fontSize={14} lineHeight={20} color={color}>
-                {link.text}
-                {link.external && (
-                  <Icon
-                    containerStyle={{
-                      display: "inherit",
-                    }}
-                    color={color}
-                  />
-                )}
-              </LinkText>
-            </Link>
+            {link && (
+              <Link
+                to={link.link}
+                target={link.external ? "_blank" : undefined}
+              >
+                <LinkText fontSize={14} lineHeight={20} color={color}>
+                  {link.text}
+                  {link.external && (
+                    <Icon
+                      containerStyle={{
+                        display: "inherit",
+                      }}
+                      color={color}
+                    />
+                  )}
+                </LinkText>
+              </Link>
+            )}
           </PrimaryText>
         </RightContainer>
       </>
