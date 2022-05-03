@@ -17,14 +17,36 @@ import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContex
 import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTransactionsContext";
 import { ExternalAPIDataContextProvider } from "shared/lib/hooks/externalAPIDataContext";
 import { ChainContextProvider } from "shared/lib/hooks/chainContext";
+import { GeofenceCountry, useGeofence } from "shared/lib/hooks/useGeofence";
+import TextPreview from "shared/lib/components/TextPreview/TextPreview";
+import { LoadingText } from "shared/lib/hooks/useLoadingText";
 import "shared/lib/i18n/config";
 
 const SOLANA_WALLETS = [getPhantomWallet(), getSolflareWallet()];
 
 function App() {
+  const { loading, rejected } = useGeofence(GeofenceCountry.SINGAPORE);
+
   useEffect(() => {
     smoothscroll.polyfill();
   }, []);
+
+  if (loading) {
+    return (
+      <TextPreview>
+        <LoadingText>Ribbon Finance</LoadingText>
+      </TextPreview>
+    );
+  } else if (!loading && rejected) {
+    return (
+      <TextPreview>
+        You are not allowed to access this website.
+        <br />
+        Visit <a href="https://ribbon.finance">ribbon.finance</a> for more
+        details.
+      </TextPreview>
+    );
+  }
 
   return (
     <ChainContextProvider>

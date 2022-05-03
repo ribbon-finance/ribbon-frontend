@@ -22,10 +22,13 @@ const Dot = styled.span<{ delay: number }>`
   display: inline;
 `;
 
-export const LoadingText: React.FC<{ text: string }> = ({ text }) => {
+export const LoadingText: React.FC<{ text?: string }> = ({
+  text,
+  children,
+}) => {
   return (
     <span>
-      {text}
+      {text || children}
       <Dots>
         {/* Here we insert the delay values to map the respective dots */}
         {[0.3, 0.6, 0.9].map((value) => (

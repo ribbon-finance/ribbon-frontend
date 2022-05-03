@@ -13,12 +13,33 @@ import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContext";
 import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTransactionsContext";
 import { ChainContextProvider } from "shared/lib/hooks/chainContext";
 import { getSolanaClusterURI } from "shared/lib/utils/env";
+import { GeofenceCountry, useGeofence } from "shared/lib/hooks/useGeofence";
+import TextPreview from "shared/lib/components/TextPreview/TextPreview";
+import { LoadingText } from "shared/lib/hooks/useLoadingText";
 import "shared/lib/i18n/config";
 
 function App() {
+  const { loading, rejected } = useGeofence(GeofenceCountry.SINGAPORE);
   useEffect(() => {
     smoothscroll.polyfill();
   }, []);
+
+  if (loading) {
+    return (
+      <TextPreview>
+        <LoadingText>Ribbon Finance Governance</LoadingText>
+      </TextPreview>
+    );
+  } else if (!loading && rejected) {
+    return (
+      <TextPreview>
+        You are not allowed to access this website.
+        <br />
+        Visit <a href="https://ribbon.finance">ribbon.finance</a> for more
+        details.
+      </TextPreview>
+    );
+  }
 
   return (
     <ChainContextProvider>
