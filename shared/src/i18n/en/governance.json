@@ -16,14 +16,14 @@
     "unlockPenalty": {
       "title": "Unlock Penalty",
       "description": "Your share of the unlock penalty (in $RBN) collected from veRBN lockers who unlocks their tokens before the lockup expiry."
+    },
+    "lockRBN": {
+      "title": "Lock RBN",
+      "description": "Because your lockup period has expired, you need to unlock your existing tokens first before you can lock again."
     }
   },
   "WarningMessages": {
     "timeTilNextRevenueDistribution": "Time till next distribution of Ribbon revenue"
-  },
-  "lockRBN": {
-    "title": "Lock RBN",
-    "description": "Because your lockup period has expired, you need to unlock your existing tokens first before you can lock again."
   },
   "IncreaseLockTimeModal": {
     "increaseYourLockTime": "INCREASE YOUR LOCK TIME",
