@@ -111,15 +111,21 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
       ? parseFloat(formatUnits(vaultRevenue, getAssetDecimals("WETH")))
       : undefined;
 
+    let vaultRevenueDisplay = "---";
+    if (vaultRevenueNum === undefined) {
+      vaultRevenueDisplay = "---";
+    } else if (vaultRevenueNum <= 0) {
+      vaultRevenueDisplay = "0.00";
+    } else if (vaultRevenueNum < 0.0001) {
+      vaultRevenueDisplay = "<0.0001";
+    } else {
+      vaultRevenueDisplay = vaultRevenueNum?.toFixed(4);
+    }
+
     return {
       Logo: getAssetLogo("WETH"),
       label: t("governance:RevenueClaim:vaultRevenueEarned"),
-      input:
-        vaultRevenueNum === undefined
-          ? "---"
-          : vaultRevenueNum < 0.0001
-          ? "<0.0001"
-          : vaultRevenueNum?.toFixed(4),
+      input: vaultRevenueDisplay,
     };
   }, [claimType, t, unlockPenalty, vaultRevenue]);
 
