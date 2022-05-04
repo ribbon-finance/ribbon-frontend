@@ -134,5 +134,12 @@
     "blog": "Blog",
     "terms": "Terms",
     "policy": "Policy"
+  },
+  "GeoblockWarning": {
+    "title": "You are not allowed to access this website.",
+    "visit": "Visit",
+    "url": "https://www.ribbon.finance/terms",
+    "termsAndConditions": "terms and conditions",
+    "forMoreDetails": "for more details"
   }
 }
