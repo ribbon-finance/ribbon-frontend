@@ -44,7 +44,15 @@ export const TxStatusToast = () => {
         return <ThemedLogo theme={colors.red} />;
       case "protocolRevenueClaim":
       case "protocolPenaltyClaim":
-        return <RevenueClaimIcon width="100%" height="100%" />;
+        return (
+          <RevenueClaimIcon
+            width="100%"
+            height="100%"
+            style={{
+              backgroundColor: colors.background.two,
+            }}
+          />
+        );
     }
     return undefined;
   }, []);

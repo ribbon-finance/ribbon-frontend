@@ -42,6 +42,17 @@ const RevenueClaimPreview: React.FC<RevenueClaimPreviewProps> = ({
     ? parseFloat(formatUnits(vaultRevenue, getAssetDecimals("WETH")))
     : undefined;
 
+  let vaultRevenueDisplay = "---";
+  if (vaultRevenueNum === undefined) {
+    vaultRevenueDisplay = "---";
+  } else if (vaultRevenueNum <= 0) {
+    vaultRevenueDisplay = "0.00";
+  } else if (vaultRevenueNum < 0.0001) {
+    vaultRevenueDisplay = "<0.0001";
+  } else {
+    vaultRevenueDisplay = vaultRevenueNum?.toFixed(4);
+  }
+
   return (
     <>
       <ModalBackButton onBack={onBack} />
@@ -71,13 +82,7 @@ const RevenueClaimPreview: React.FC<RevenueClaimPreviewProps> = ({
       ) : (
         <ModalInfoColumn
           label={t("governance:RevenueClaim:protocolFees")}
-          data={
-            vaultRevenueNum === undefined
-              ? "---"
-              : vaultRevenueNum < 0.0001
-              ? "<0.0001"
-              : vaultRevenueNum?.toFixed(4)
-          }
+          data={vaultRevenueDisplay}
         />
       )}
       <BaseModalContentColumn marginTop="auto">

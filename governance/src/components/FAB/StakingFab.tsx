@@ -118,7 +118,7 @@ const StakingFAB = () => {
     }
 
     return "stake";
-  }, [rbnAllowance, rbnTokenAccount, lockExpired]);
+  }, [rbnTokenAccount, lockExpired]);
 
   const fabInfo: {
     veRBNAmount: JSX.Element | string;

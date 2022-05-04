@@ -45,17 +45,7 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
   const [nextRevenueDistributionDate, setNextRevenueDistributionDate] =
     useState<Date>();
 
-  // Fetch rewards
-  useEffect(() => {
-    if (penaltyRewards && account) {
-      penaltyRewards.callStatic["claim()"]().then((rewards: BigNumber) => {
-        setUnlockPenalty(() => rewards);
-      });
-    }
-  }, [penaltyRewards, account]);
-
-  // Fetch penalty
-  useEffect(() => {
+  const fetchClaimableRewards = useCallback(() => {
     if (feeDistributor && account) {
       feeDistributor.callStatic["claim()"]().then((rewards: BigNumber) => {
         setVaultRevenue(() => rewards);
@@ -66,7 +56,24 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
         setNextRevenueDistributionDate(new Date(seconds * 1000));
       });
     }
-  }, [feeDistributor, account]);
+  }, [account, feeDistributor]);
+
+  const fetchClaimablePenalty = useCallback(() => {
+    if (penaltyRewards && account) {
+      penaltyRewards.callStatic["claim()"]().then((rewards: BigNumber) => {
+        setUnlockPenalty(() => rewards);
+      });
+    }
+  }, [account, penaltyRewards]);
+
+  // Fetch penalty and fee distribution
+  useEffect(() => {
+    fetchClaimableRewards();
+  }, [fetchClaimableRewards]);
+
+  useEffect(() => {
+    fetchClaimablePenalty();
+  }, [fetchClaimablePenalty]);
 
   const onModalClose = useCallback(() => {
     setCurrentMode("form");
@@ -102,6 +109,10 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
         addPendingTransaction(pendingTx);
         setCurrentPendingTransaction(pendingTx);
         await ethereumProvider?.waitForTransaction(pendingTx.txhash, 2);
+
+        // On transaction completes, refetch
+        fetchClaimableRewards();
+        fetchClaimablePenalty();
         setCurrentPendingTransaction(undefined);
         onModalClose();
       }
@@ -118,6 +129,8 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
     ethereumProvider,
     feeDistributor,
     penaltyRewards,
+    fetchClaimablePenalty,
+    fetchClaimableRewards,
   ]);
 
   const revenueClaimModalHeight = useMemo(() => {
