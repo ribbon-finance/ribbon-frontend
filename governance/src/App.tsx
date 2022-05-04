@@ -15,12 +15,11 @@ import { ChainContextProvider } from "shared/lib/hooks/chainContext";
 import { getSolanaClusterURI } from "shared/lib/utils/env";
 import { GeofenceCountry, useGeofence } from "shared/lib/hooks/useGeofence";
 import TextPreview from "shared/lib/components/TextPreview/TextPreview";
+import Geoblocked from "shared/lib/components/Geoblocked/Geoblocked";
 import { LoadingText } from "shared/lib/hooks/useLoadingText";
 import "shared/lib/i18n/config";
-import { useTranslation } from "react-i18next";
 
 function App() {
-  const { t } = useTranslation();
   const { loading, rejected } = useGeofence(GeofenceCountry.SINGAPORE);
   useEffect(() => {
     smoothscroll.polyfill();
@@ -33,17 +32,7 @@ function App() {
       </TextPreview>
     );
   } else if (!loading && rejected) {
-    return (
-      <TextPreview>
-        {t("shared:GeoblockWarning:title")}
-        <br />
-        {t("shared:GeoblockWarning:visit")}{" "}
-        <a href={t("shared:GeoblockWarning:url")}>
-          {t("shared:GeoblockWarning:termsAndConditions")}
-        </a>{" "}
-        {t("shared:GeoblockWarning:forMoreDetails")}.
-      </TextPreview>
-    );
+    return <Geoblocked />;
   }
 
   return (
