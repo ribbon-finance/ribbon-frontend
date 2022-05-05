@@ -136,7 +136,7 @@
     "policy": "Policy"
   },
   "GeoblockWarning": {
-    "title": "You are not allowed to access this website.",
+    "title": "You are not allowed to use Ribbon due to the restricted jurisdiction.",
     "visit": "Visit",
     "url": "https://www.ribbon.finance/terms",
     "termsAndConditions": "terms and conditions",

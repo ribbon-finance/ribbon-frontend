@@ -16,10 +16,9 @@ export const useGeofence = (country: GeofenceCountry) => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get("https://ipapi.co/json")
+      .get("https://ipapi.co/country")
       .then(({ data }) => {
-        const { country_code } = data;
-        if (country_code === country) {
+        if (data === country) {
           setRejected(true);
         } else {
           setRejected(false);
@@ -27,7 +26,7 @@ export const useGeofence = (country: GeofenceCountry) => {
       })
       .catch((e) => {
         // Geofence failed. Should we default to rejected or ok?
-        setRejected(true);
+        setRejected(false);
       })
       .finally(() => {
         setLoading(false);
