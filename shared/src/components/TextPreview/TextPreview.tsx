@@ -1,5 +1,6 @@
 // Preview screen to show before loading the actual screen
 
+import { CSSProperties } from "react";
 import styled from "styled-components";
 import { Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
@@ -11,10 +12,13 @@ const Container = styled.div.attrs({
   height: 100vh;
 `;
 
-const TextPreview: React.FC = ({ children }) => {
+const TextPreview: React.FC<{ titleStyle?: CSSProperties }> = ({
+  children,
+  titleStyle,
+}) => {
   return (
     <Container>
-      <Title fontSize={24} color={colors.primaryText}>
+      <Title style={titleStyle} fontSize={24} color={colors.primaryText}>
         {children}
       </Title>
     </Container>

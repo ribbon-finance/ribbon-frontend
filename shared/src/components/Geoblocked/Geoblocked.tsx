@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import styled, { keyframes } from "styled-components";
 import Logo from "../../assets/icons/logo";
 import sizes from "../../designSystem/sizes";
+import useScreenSize from "../../hooks/useScreenSize";
 import TextPreview from "../TextPreview/TextPreview";
 
 const rotate = keyframes`
@@ -31,24 +32,36 @@ const LogoContainer = styled.div`
 
 const Container = styled.div.attrs({
   className: "d-flex align-items-center justify-content-center",
-})``;
+})`
+  padding: 0 100px;
+`;
 
 const Geoblocked = () => {
   const { t } = useTranslation();
+  const { width } = useScreenSize();
+  const isMobile = width < sizes.md;
 
   return (
     <Container>
-      <LogoContainer>
-        <RotatingLogo height={80} width={80} />
-      </LogoContainer>
-      <TextPreview>
-        {t("shared:GeoblockWarning:title")}
-        <br />
-        {t("shared:GeoblockWarning:visit")}{" "}
-        <a href={t("shared:GeoblockWarning:url")}>
-          {t("shared:GeoblockWarning:termsAndConditions")}
-        </a>{" "}
-        {t("shared:GeoblockWarning:forMoreDetails")}.
+      <TextPreview
+        titleStyle={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: isMobile ? "column" : "row",
+        }}
+      >
+        <LogoContainer>
+          <RotatingLogo height={80} width={80} />
+        </LogoContainer>
+        <span>
+          {t("shared:GeoblockWarning:title")}{" "}
+          {t("shared:GeoblockWarning:visit")}{" "}
+          <a href={t("shared:GeoblockWarning:url")}>
+            {t("shared:GeoblockWarning:termsAndConditions")}
+          </a>{" "}
+          {t("shared:GeoblockWarning:forMoreDetails")}.
+        </span>
       </TextPreview>
     </Container>
   );

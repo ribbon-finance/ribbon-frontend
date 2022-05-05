@@ -69,11 +69,12 @@ function App() {
                         <Route path="/terms">
                           <TermsPage></TermsPage>
                         </Route>
+
+                        <Route>
+                          <Redirect to="/" />
+                        </Route>
                       </Switch>
 
-                      <Route>
-                        <Redirect to="/" />
-                      </Route>
                       <Footer />
                     </Router>
                     <StickyFooter />
