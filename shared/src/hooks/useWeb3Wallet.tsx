@@ -3,7 +3,6 @@ import { AbstractConnector } from "@web3-react/abstract-connector";
 import {
   getWalletConnectConnector,
   injectedConnector,
-  ledgerConnector,
   walletlinkConnector,
 } from "../utils/connectors";
 import { providers } from "ethers";
