@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
-import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-
 import {
   ACTIONS,
   Steps,
@@ -19,7 +17,6 @@ import {
   VaultAllowedDepositAssets,
 } from "shared/lib/constants/constants";
 import { isETHVault } from "shared/lib/utils/vault";
-import { amountAfterSlippage } from "shared/lib/utils/math";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useVaultActionForm from "webapp/lib/hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
@@ -55,7 +52,6 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   onChangeStep,
   skipToPreview = false,
 }) => {
-  const { ethereumProvider } = useWeb3Wallet();
   const { vaultActionForm, resetActionForm, withdrawMetadata } =
     useVaultActionForm(vaultOption);
   const { data: priceHistories } = useVaultsPriceHistory();
