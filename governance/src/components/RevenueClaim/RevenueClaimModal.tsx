@@ -12,6 +12,7 @@ import { PendingTransaction } from "shared/lib/store/types";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { ClaimType } from "./model";
 import useFeeDistributor from "../../hooks/useFeeDistributor";
+import moment from "moment";
 
 interface RewardsCalculatorModalProps {
   show: boolean;
@@ -42,18 +43,23 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
   // CONTRACT VALUES
   const [vaultRevenue, setVaultRevenue] = useState<BigNumber>();
   const [unlockPenalty, setUnlockPenalty] = useState<BigNumber>();
-  const [nextRevenueDistributionDate, setNextRevenueDistributionDate] =
-    useState<Date>();
+
+  const nextRevenueDistributionDate = useMemo(() => {
+    let nearestFriday = moment()
+      .zone("+0800")
+      .isoWeekday("friday")
+      .hours(18)
+      .minutes(0)
+      .seconds(0);
+    nearestFriday =
+      nearestFriday < moment() ? nearestFriday.add(1, "week") : nearestFriday;
+    return nearestFriday.toDate();
+  }, []);
 
   const fetchClaimableRewards = useCallback(() => {
     if (feeDistributor && account) {
       feeDistributor.callStatic["claim()"]().then((rewards: BigNumber) => {
         setVaultRevenue(() => rewards);
-      });
-      feeDistributor.last_token_time().then((time: BigNumber) => {
-        // Weekly distributions, so add 7 days
-        const seconds = time.toNumber() + 86400 * 7;
-        setNextRevenueDistributionDate(new Date(seconds * 1000));
       });
     }
   }, [account, feeDistributor]);
