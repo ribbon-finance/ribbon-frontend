@@ -12,6 +12,7 @@ import {
   VaultAllowedDepositAssets,
   VaultMaxDeposit,
   VaultOptions,
+  isDisabledVault,
 } from "shared/lib/constants/constants";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { ACTIONS } from "../Modal/types";
@@ -357,7 +358,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     /**
      * Approval before deposit
      */
-    if (showTokenApproval) {
+    if (showTokenApproval && !isDisabledVault(vaultOption)) {
       return (
         <VaultApprovalForm
           vaultOption={vaultOption}

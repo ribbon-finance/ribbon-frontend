@@ -13,6 +13,7 @@ import {
   isSolanaVault,
   isPutVault,
   getOptionAssets,
+  isDisabledVault,
 } from "shared/lib/constants/constants";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -405,10 +406,12 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
         <VaultStrategyExplainer vault={vault} />
       </Paragraph>
 
-      <Paragraph>
-        <ParagraphHeading>Weekly Strategy Snapshot</ParagraphHeading>
-        <WeeklyStrategySnapshot vault={vault} />
-      </Paragraph>
+      {isDisabledVault(vault.vaultOption) ? null : (
+        <Paragraph>
+          <ParagraphHeading>Weekly Strategy Snapshot</ParagraphHeading>
+          <WeeklyStrategySnapshot vault={vault} />
+        </Paragraph>
+      )}
 
       <Paragraph>
         <VaultPerformanceChart vault={vault} />

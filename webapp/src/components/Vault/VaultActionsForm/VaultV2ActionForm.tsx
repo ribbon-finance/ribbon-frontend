@@ -18,7 +18,10 @@ import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { getVaultURI } from "../../../constants/constants";
 import { WithdrawIcon } from "shared/lib/assets/icons/icons";
-import { RibbonVaultMigrationMap } from "shared/lib/constants/constants";
+import {
+  RibbonVaultMigrationMap,
+  isDisabledVault,
+} from "shared/lib/constants/constants";
 import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { BigNumber } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
@@ -228,12 +231,17 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
     } else if (!canCompleteWithdraw || hideCompleteWithdrawReminder) {
       switch (vaultActionForm.actionType) {
         case ACTIONS.deposit:
-          formExtraText = (
-            <>
-              Your deposit will be deployed in the vault’s weekly strategy on
-              Friday at 11am UTC
-            </>
-          );
+          if (isDisabledVault(vaultOption)) {
+            formExtraText = undefined;
+          } else {
+            formExtraText = (
+              <>
+                Your deposit will be deployed in the vault’s weekly strategy on
+                Friday at 11am UTC
+              </>
+            );
+          }
+
           break;
         case ACTIONS.withdraw:
           if (
