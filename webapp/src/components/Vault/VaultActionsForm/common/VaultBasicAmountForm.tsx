@@ -9,6 +9,7 @@ import {
   BaseInputButton,
   BaseInputContainer,
   BaseInputLabel,
+  PrimaryText,
   SecondaryText,
   Title,
 } from "shared/lib/designSystem";
@@ -29,18 +30,20 @@ import {
   VaultAllowedDepositAssets,
   VaultMaxDeposit,
   VaultOptions,
+  isDisabledVault,
 } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { VaultInputValidationErrorList, VaultValidationErrors } from "../types";
 import colors from "shared/lib/designSystem/colors";
-import { formatBigNumber } from "shared/lib/utils/math";
+import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
 import { ACTIONS } from "../Modal/types";
 import { useChain } from "shared/lib/hooks/chainContext";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { useFlexVault } from "shared/lib/hooks/useFlexVault";
+import { MigrateIcon } from "shared/lib/assets/icons/icons";
 
 const DepositAssetButton = styled.div`
   position: absolute;
@@ -126,6 +129,28 @@ const DepositAssetsDropdownItem = styled.div<{
       }
     `;
   }}
+`;
+
+const InactiveLogoContainer = styled.div<{ color: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 100px;
+  background: ${(props) => props.color}14;
+`;
+
+const InactiveTitle = styled(Title)`
+  font-size: 22px;
+  line-height: 28px;
+  letter-spacing: 1px;
+`;
+
+const InactiveDescription = styled(PrimaryText)`
+  font-size: 14px;
+  line-height: 20px;
+  color: ${colors.text};
 `;
 
 interface VaultBasicAmountFormProps {
@@ -380,8 +405,26 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
     vaultOption,
   ]);
 
+  if (isDisabledVault(vaultOption)) {
+    return (
+      <div className="d-flex flex-column align-items-center p-4">
+        <InactiveLogoContainer color={color} className="mt-3">
+          <MigrateIcon color={color} height={27} />
+        </InactiveLogoContainer>
+
+        <InactiveTitle className="mt-3">VAULT IS INACTIVE</InactiveTitle>
+
+        <InactiveDescription className="mx-3 mt-2 text-center">
+          The vault is inactive and does not accept new deposits. If you are a
+          depositor, you can withdraw your assets.
+        </InactiveDescription>
+      </div>
+    );
+  }
+
   return (
     <>
+      test
       <BaseInputLabel>AMOUNT ({getAssetDisplay(asset)})</BaseInputLabel>
       <BaseInputContainer
         className="mb-2"

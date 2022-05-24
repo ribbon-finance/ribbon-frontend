@@ -83,7 +83,6 @@ export type VaultVersion = typeof VaultVersionList[number];
 export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">;
 
 export const EVMVaultList = [
-  "rAPE-THETA",
   "rsAVAX-THETA",
   "rUSDC-AVAX-P-THETA",
   "rETH-THETA",
@@ -92,6 +91,7 @@ export const EVMVaultList = [
   "rBTC-THETA",
   "rAVAX-THETA",
   "rAAVE-THETA",
+  "rAPE-THETA",
   "rUSDC-ETH-P-THETA",
 ] as const;
 
@@ -910,4 +910,10 @@ export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   veRBN: undefined,
   SOL: "solana",
   APE: "apecoin",
+};
+
+const DISABLED_VAULTS: VaultOptions[] = ["rAPE-THETA"];
+
+export const isDisabledVault = (vaultOption: VaultOptions) => {
+  return DISABLED_VAULTS.includes(vaultOption);
 };
