@@ -36,7 +36,7 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import { VaultInputValidationErrorList, VaultValidationErrors } from "../types";
 import colors from "shared/lib/designSystem/colors";
-import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
 import { ACTIONS } from "../Modal/types";
