@@ -28,6 +28,7 @@ import {
   isEthVault,
   isAvaxVault,
   isSolanaVault,
+  isDisabledVault,
 } from "../../../constants/constants";
 import {
   BarChartIcon,
@@ -416,19 +417,21 @@ const YieldCard: React.FC<YieldCardProps> = ({
     return rewards;
   }, [asset, decimals, lg5Data, pricePerShare, prices]);
 
+  const isActiveVault = vaultVersion === "v2" && !isDisabledVault(vault);
+
   const totalProjectedYield =
     latestAPY.fetched && !lg5DataLoading
-      ? vaultVersion === "v2"
+      ? isActiveVault
         ? `${(latestAPY.res + baseAPY).toFixed(2)}%`
         : "0%"
       : loadingText;
   const vaultYield = latestAPY.fetched
-    ? vaultVersion === "v2"
+    ? isActiveVault
       ? `${latestAPY.res.toFixed(2)}%`
       : "0%"
     : loadingText;
   const baseStakingYield = !lg5DataLoading
-    ? vaultVersion === "v2"
+    ? isActiveVault
       ? `${baseAPY.toFixed(2)}%`
       : "0%"
     : loadingText;
@@ -557,7 +560,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
           <div>
             <StrikeTitle>{t("shared:YieldCard:weeklyStrikePrice")}</StrikeTitle>
             <StrikePrice color={colors.primaryText}>
-              {vaultVersion === "v2" ? strikePrice() : "N/A"}
+              {isActiveVault ? strikePrice() : "N/A"}
             </StrikePrice>
           </div>
           <div>
