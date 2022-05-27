@@ -45,17 +45,14 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
   const [unlockPenalty, setUnlockPenalty] = useState<BigNumber>();
 
   const nextRevenueDistributionDate = useMemo(() => {
-    let nearestThursday = moment()
-      .utc()
-      .isoWeekday("thursday")
-      .hours(0)
-      .minutes(0)
-      .seconds(0);
-    nearestThursday =
-      nearestThursday < moment()
-        ? nearestThursday.add(1, "week")
-        : nearestThursday;
-    return nearestThursday.toDate();
+    let nearestFriday = moment()
+      .utcOffset("+0800")
+      .day(5)
+      .set({ hour: 0, minute: 0, second: 0 });
+
+    nearestFriday =
+      nearestFriday < moment() ? nearestFriday.add(1, "week") : nearestFriday;
+    return nearestFriday.toDate();
   }, []);
 
   const fetchClaimableRewards = useCallback(() => {
