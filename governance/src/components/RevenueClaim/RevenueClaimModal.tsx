@@ -48,12 +48,10 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
     let nearestFriday = moment()
       .utcOffset("+0800")
       .day(5)
-      .set({ hour: 0, minute: 0, second: 0 })
+      .set({ hour: 0, minute: 0, second: 0 });
 
     nearestFriday =
-      nearestFriday < moment()
-        ? nearestFriday.add(1, "week")
-        : nearestFriday;
+      nearestFriday < moment() ? nearestFriday.add(1, "week") : nearestFriday;
     return nearestFriday.toDate();
   }, []);
 
