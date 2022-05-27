@@ -307,6 +307,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
       </FormExtraContainer>
     );
   }, [
+    vaultOption,
     asset,
     canCompleteWithdraw,
     migrateSourceVault,
