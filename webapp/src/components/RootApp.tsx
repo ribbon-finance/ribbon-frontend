@@ -15,7 +15,7 @@ import StakingPage from "../pages/Staking/StakingPage";
 import NotFound from "shared/lib/pages/NotFound";
 import colors from "shared/lib/designSystem/colors";
 import YourPositionModal from "./Vault/Modal/YourPositionModal";
-
+import PausePositionModal from "./Vault/Modal/PausePositionModal";
 const Root = styled.div<{ screenHeight: number }>`
   background-color: ${colors.background.one};
   min-height: ${(props) =>
@@ -30,7 +30,7 @@ const RootApp = () => {
     <Root id="appRoot" screenHeight={screenHeight}>
       <WalletConnectModal />
       <YourPositionModal />
-
+      <PausePositionModal />
       <Router>
         <Header />
         <WithdrawReminderToast />

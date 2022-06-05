@@ -92,28 +92,36 @@ const YourPositionModal: React.FC = () => {
 
   const vaultAccount = vaultAccounts[vaultOption];
 
-  const [investedInStrategy, queuedAmount, yieldEarned] = useMemo(() => {
-    switch (vaultVersion) {
-      case "v1":
-        if (!vaultAccount) {
-          return [BigNumber.from(0), undefined, BigNumber.from(0)];
-        }
-        return [
-          vaultAccount.totalBalance,
-          undefined,
-          vaultAccount.totalYieldEarned,
-        ];
-      case "v2":
-        if (!vaultAccount) {
-          return [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)];
-        }
-        return [
-          vaultAccount.totalBalance.sub(vaultAccount.totalPendingDeposit),
-          vaultAccount.totalPendingDeposit,
-          vaultAccount.totalYieldEarned,
-        ];
-    }
-  }, [vaultAccount, vaultVersion]);
+  const [investedInStrategy, queuedAmount, pausedAmount, yieldEarned] =
+    useMemo(() => {
+      switch (vaultVersion) {
+        case "v1":
+          if (!vaultAccount) {
+            return [BigNumber.from(0), undefined, undefined, BigNumber.from(0)];
+          }
+          return [
+            vaultAccount.totalBalance,
+            undefined,
+            undefined,
+            vaultAccount.totalYieldEarned,
+          ];
+        case "v2":
+          if (!vaultAccount) {
+            return [
+              BigNumber.from(0),
+              BigNumber.from(0),
+              BigNumber.from(0),
+              BigNumber.from(0),
+            ];
+          }
+          return [
+            vaultAccount.totalBalance.sub(vaultAccount.totalPendingDeposit),
+            vaultAccount.totalPendingDeposit,
+            BigNumber.from(0), //placeholder for paused amount
+            vaultAccount.totalYieldEarned,
+          ];
+      }
+    }, [vaultAccount, vaultVersion]);
 
   const body = useMemo(() => {
     switch (mode) {
@@ -180,6 +188,26 @@ const YourPositionModal: React.FC = () => {
                   />
                   <Title className="ml-auto">
                     {formatBigNumber(queuedAmount, decimals)}{" "}
+                    {getAssetDisplay(asset)}
+                  </Title>
+                </div>
+              </BaseModalContentColumn>
+            )}
+            {pausedAmount && (
+              <BaseModalContentColumn>
+                <div className="d-flex w-100 align-items-center ">
+                  <SecondaryText>Paused</SecondaryText>
+                  <TooltipExplanation
+                    title="PAUSED"
+                    explanation="The amount that is currently paused and not invested in the vault's strategy."
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HelpInfo containerRef={ref} {...triggerHandler}>
+                        i
+                      </HelpInfo>
+                    )}
+                  />
+                  <Title className="ml-auto">
+                    {formatBigNumber(pausedAmount, decimals)}{" "}
                     {getAssetDisplay(asset)}
                   </Title>
                 </div>
@@ -269,6 +297,7 @@ const YourPositionModal: React.FC = () => {
     investedInStrategy,
     mode,
     queuedAmount,
+    pausedAmount,
     roi,
     stakingPoolData.claimableRbn,
     vaultAccount,
@@ -282,7 +311,7 @@ const YourPositionModal: React.FC = () => {
       onClose={() =>
         setVaultPositionModal((prev) => ({ ...prev, show: false }))
       }
-      height={ModeList.length > 1 ? 500 : 420}
+      height={ModeList.length > 1 ? 550 : 470}
     >
       <>
         <AnimatePresence initial={false} exitBeforeEnter>

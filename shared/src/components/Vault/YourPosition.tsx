@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { formatUnits } from "@ethersproject/units";
 
@@ -18,12 +18,10 @@ import {
 } from "../../utils/asset";
 import { Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
-import ButtonArrow from "../../components/Common/ButtonArrow";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { formatBigNumber, isPracticallyZero } from "../../utils/math";
 import sizes from "../../designSystem/sizes";
 import { useGlobalState } from "../../store/store";
-
 const DesktopContainer = styled.div`
   display: flex;
   position: sticky;
@@ -38,7 +36,6 @@ const DesktopContainer = styled.div`
 
 const MobileContainer = styled.div<{ color: string }>`
   display: none;
-
   @media (max-width: ${sizes.md}px) {
     display: flex;
     width: 100%;
@@ -53,7 +50,6 @@ const MobileContainer = styled.div<{ color: string }>`
 
 const FloatingPositionCard = styled.div<{ color: string }>`
   display: flex;
-  border-radius: ${theme.border.radius};
   padding: 4px;
   backdrop-filter: blur(32px);
   background: linear-gradient(
@@ -64,6 +60,23 @@ const FloatingPositionCard = styled.div<{ color: string }>`
 `;
 
 const PositionInfoText = styled(Title)<{ size: number }>`
+  letter-spacing: 1px;
+  font-size: ${(props) => props.size}px;
+  line-height: 16px;
+`;
+
+const PauseButton = styled.div<{ color: string }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  height: 32px;
+  border: ${theme.border.width} ${theme.border.style} ${(props) => props.color};
+  border-radius: 4px;
+  padding: 0px 8px;
+`;
+
+const PauseButtonText = styled(Title)<{ size: number }>`
   letter-spacing: 1px;
   font-size: ${(props) => props.size}px;
   line-height: 16px;
@@ -89,21 +102,20 @@ const YourPosition: React.FC<YourPositionProps> = ({
   const asset = getAssets(vaultOption);
   const decimals = getAssetDecimals(asset);
   const Logo = getAssetLogo(getDisplayAssets(vaultOption));
-
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const [, setVaultPositionModal] = useGlobalState("vaultPositionModal");
-
-  const roi = useMemo(() => {
+  const [, setVaultPauseModal] = useGlobalState("vaultPauseModal");
+  const [roi, isPaused] = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
 
     if (
       !vaultAccount ||
       isPracticallyZero(vaultAccount.totalDeposits, decimals)
     ) {
-      return 0;
+      return [0, false]; //placeholder isPaused is always false
     }
 
-    return (
+    return [
       (parseFloat(
         formatUnits(
           vaultAccount.totalBalance.sub(vaultAccount.totalDeposits),
@@ -111,8 +123,9 @@ const YourPosition: React.FC<YourPositionProps> = ({
         )
       ) /
         parseFloat(formatUnits(vaultAccount.totalDeposits, decimals))) *
-      100
-    );
+        100,
+      false,
+    ]; //placeholder isPaused is always false
   }, [vaultAccounts, vaultOption, decimals]);
 
   const vaultAccount = vaultAccounts[vaultOption];
@@ -135,6 +148,18 @@ const YourPosition: React.FC<YourPositionProps> = ({
     });
   }, [setVaultPositionModal, vaultOption, vaultVersion]);
 
+  // todo:
+  // new PauseModal or ActionModal?
+  const setShowPauseModal = useCallback(
+    (e) => {
+      e.stopPropagation();
+      setVaultPauseModal({
+        show: true,
+      });
+    },
+    [setVaultPauseModal, vaultOption, vaultVersion]
+  );
+
   if (
     alwaysShowPosition ||
     (vaultAccount && !isPracticallyZero(vaultAccount.totalBalance, decimals))
@@ -153,7 +178,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
               </AssetCircleContainer>
               <div className="d-flex flex-column justify-content-center p-2">
                 <PositionInfoText size={10} color={colors.text}>
-                  POSITION ({getAssetDisplay(asset)})
+                  position ({getAssetDisplay(asset)})
                 </PositionInfoText>
                 <div className="d-flex">
                   <PositionInfoText size={14}>
@@ -170,8 +195,18 @@ const YourPosition: React.FC<YourPositionProps> = ({
                   </PositionInfoText>
                 </div>
               </div>
-              <div className="d-flex align-items-center ml-5 mr-3">
-                <ButtonArrow isOpen={false} color={colors.text} />
+              <div className="d-flex align-items-center ml-4 mr-3">
+                <PauseButton
+                  color={color}
+                  role="button"
+                  onClick={(e) => {
+                    setShowPauseModal(e);
+                  }}
+                >
+                  <PauseButtonText color={color} size={12}>
+                    {isPaused ? "RESUME" : "PAUSE"}
+                  </PauseButtonText>
+                </PauseButton>
               </div>
             </FloatingPositionCard>
           </DesktopContainer>
@@ -184,7 +219,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
             </AssetCircleContainer>
             <div className="d-flex flex-column justify-content-center p-2">
               <PositionInfoText size={10} color={colors.text}>
-                POSITION ({getAssetDisplay(asset)})
+                position ({getAssetDisplay(asset)})
               </PositionInfoText>
               <div className="d-flex">
                 <PositionInfoText size={14}>
@@ -202,7 +237,17 @@ const YourPosition: React.FC<YourPositionProps> = ({
               </div>
             </div>
             <div className="d-flex align-items-center ml-auto mr-3">
-              <ButtonArrow isOpen={false} color={colors.text} />
+              <PauseButton
+                color={color}
+                role="button"
+                onClick={(e) => {
+                  setShowPauseModal(e);
+                }}
+              >
+                <PauseButtonText color={color} size={12}>
+                  {isPaused ? "resume" : "pause"}
+                </PauseButtonText>
+              </PauseButton>
             </div>
           </MobileContainer>
         );

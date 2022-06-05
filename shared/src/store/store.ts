@@ -16,6 +16,9 @@ interface GlobalStore {
     vaultOption?: VaultOptions;
     vaultVersion: VaultVersion;
   };
+  vaultPauseModal: {
+    show: boolean;
+  };
   notificationLastReadTimestamp?: number;
 }
 
@@ -28,6 +31,9 @@ export const initialState: GlobalStore = {
   vaultPositionModal: {
     show: false,
     vaultVersion: "v1" as VaultVersion,
+  },
+  vaultPauseModal: {
+    show: false,
   },
   notificationLastReadTimestamp: undefined,
 };
