@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import styled from "styled-components";
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-
+import { useTranslation } from "react-i18next";
 import { isStakingEnabledForChainId } from "shared/lib/utils/env";
 import {
   getAssets,
@@ -28,7 +28,7 @@ import { BigNumber } from "ethers";
 import { useLiquidityMiningPoolData } from "shared/lib/hooks/web3DataContext";
 import { useGlobalState } from "shared/lib/store/store";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-import { DepositIcon } from "shared/lib/assets/icons/icons";
+import { PauseIcon } from "shared/lib/assets/icons/icons";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -65,14 +65,14 @@ const PausePositionModal: React.FC = () => {
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
 
   const vaultAccount = vaultAccounts[vaultOption];
-
+  const { t } = useTranslation();
   const body = useMemo(() => {
     return (
       <>
         {/* Logo */}
         <BaseModalContentColumn>
           <ActionLogoContainer color={color}>
-            <DepositIcon color={color} width={32} />
+            <PauseIcon color={color} width={32} />
           </ActionLogoContainer>
         </BaseModalContentColumn>
         {/* Position Info */}
@@ -84,10 +84,7 @@ const PausePositionModal: React.FC = () => {
           <BaseModalContentColumn marginTop={8}>
             {/* Description */}
             <SecondaryText className=" text-center">
-              Pausing your position will result in your funds being removed from
-              vault's investable pool of funds. While your position is paused
-              you will not be exposed to the returns from the vault's weekly
-              strategy. You can resume your position at any time.
+              {t("shared:ProductCopies:Pause:explanation")}
             </SecondaryText>
           </BaseModalContentColumn>
         </div>
@@ -130,7 +127,7 @@ const PausePositionModal: React.FC = () => {
     <BasicModal
       show={vaultPauseModal.show}
       onClose={() => setVaultPauseModal((prev) => ({ ...prev, show: false }))}
-      height={500}
+      height={495}
     >
       {body}
     </BasicModal>
