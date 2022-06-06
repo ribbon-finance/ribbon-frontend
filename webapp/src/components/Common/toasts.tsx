@@ -179,6 +179,10 @@ export const TxStatusToast = () => {
           )} V2`;
         case "userCheckpoint":
           return `veRBN boost applied to ${_currentTx.vault}`;
+        case "pause":
+          return `Your position has been paused`;
+        case "resume":
+          return `Your position has been resumed`;
         default:
           return "";
       }
@@ -231,7 +235,19 @@ export const TxStatusToast = () => {
               ? "claim"
               : "success"
           }
-          title={getActionTitle(currentTx) + " success"}
+          title={(() => {
+            switch (currentTx.type) {
+              case "pause":
+                return `position paused`;
+              case "resume":
+                return `position resumed`;
+              default:
+                return getActionTitle(currentTx) + " success";
+            }
+          })()}
+          // title={currentTx.type === "pause"
+          // ? "position paused"
+          // : getActionTitle(currentTx) + " success"}
           subtitle={getSubtitle(currentTx)}
         />
       );
