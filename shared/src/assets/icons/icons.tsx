@@ -391,27 +391,26 @@ export const TransferIcon: React.FC<SVGPropsWithColor> = ({
   </svg>
 );
 
-// todo: add pause svg
 export const PauseIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
   <svg
-    viewBox="0 0 32 32"
+    viewBox="0 0 64 64"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
     <path
-      d="M16 6.66672V25.3334"
+      d="M28 38V26"
       stroke={color || "white"}
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
     <path
-      d="M25.3337 16L16.0003 25.3333L6.66699 16"
+      d="M36 38V26"
       stroke={color || "white"}
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
   </svg>
 );

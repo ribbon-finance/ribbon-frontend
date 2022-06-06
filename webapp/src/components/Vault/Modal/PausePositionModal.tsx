@@ -72,7 +72,7 @@ const PausePositionModal: React.FC = () => {
         {/* Logo */}
         <BaseModalContentColumn>
           <ActionLogoContainer color={color}>
-            <PauseIcon color={color} width={32} />
+            <PauseIcon color={color} width={64} />
           </ActionLogoContainer>
         </BaseModalContentColumn>
         {/* Position Info */}
@@ -121,7 +121,7 @@ const PausePositionModal: React.FC = () => {
         </div>
       </>
     );
-  }, [asset, color, decimals]);
+  }, [t, asset, color]);
 
   return (
     <BasicModal
