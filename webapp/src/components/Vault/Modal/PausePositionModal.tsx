@@ -14,73 +14,117 @@ import { getVaultColor } from "shared/lib/utils/vault";
 import {
   BaseModalContentColumn,
   SecondaryText,
-  Subtitle,
   Title,
 } from "shared/lib/designSystem";
-import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContainer";
 import {
   getAssetDecimals,
   getAssetDisplay,
   getAssetLogo,
 } from "shared/lib/utils/asset";
-import colors from "shared/lib/designSystem/colors";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
-
+import theme from "shared/lib/designSystem/theme";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
-import SegmentControl from "shared/lib/components/Common/SegmentControl";
 import { BigNumber } from "ethers";
-import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import HelpInfo from "shared/lib/components/Common/HelpInfo";
-import CapBar from "shared/lib/components/Deposit/CapBar";
 import { useLiquidityMiningPoolData } from "shared/lib/hooks/web3DataContext";
 import { useGlobalState } from "shared/lib/store/store";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-
-const ModalContent = styled(motion.div)`
+import { DepositIcon } from "shared/lib/assets/icons/icons";
+import { ActionButton } from "shared/lib/components/Common/buttons";
+const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 1000px;
+  background: ${(props) => props.color}14;
 `;
 
-const InfoLabel = styled(SecondaryText)`
-  line-height: 16px;
+const TextContainer = styled.div`
+  border-radius: 4px;
+  background: #1c1c22;
+  padding: 16px 16px 16px 16px;
+`;
+
+const FormTitle = styled(Title)`
+  font-size: 22px;
+  line-height: 28px;
 `;
 
 const PausePositionModal: React.FC = () => {
   const [vaultPauseModal, setVaultPauseModal] =
     useGlobalState("vaultPauseModal");
+  const vaultOption = vaultPauseModal.vaultOption || VaultList[0];
+  const vaultVersion = vaultPauseModal.vaultVersion;
+
+  const color = getVaultColor(vaultOption);
+  const asset = getAssets(vaultOption);
+  const decimals = getAssetDecimals(asset);
+
+  const { chainId } = useWeb3Wallet();
+  const { vaultAccounts } = useVaultAccounts(vaultVersion);
+
+  const vaultAccount = vaultAccounts[vaultOption];
+
   const body = useMemo(() => {
     return (
       <>
         {/* Logo */}
-        <BaseModalContentColumn></BaseModalContentColumn>
-
+        <BaseModalContentColumn>
+          <ActionLogoContainer color={color}>
+            <DepositIcon color={color} width={32} />
+          </ActionLogoContainer>
+        </BaseModalContentColumn>
         {/* Position Info */}
-        <BaseModalContentColumn marginTop={16}>
-          <Subtitle color={colors.text}>Placeholder Modal</Subtitle>
-        </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={8}>
-          <Title fontSize={40} lineHeight={40}></Title>
+          {/* Title */}
+          <FormTitle className="mt-2 text-center">PAUSE POSITION</FormTitle>
         </BaseModalContentColumn>
-        <BaseModalContentColumn marginTop={8}></BaseModalContentColumn>
-
+        <div className="pl-2 pr-2">
+          <BaseModalContentColumn marginTop={8}>
+            {/* Description */}
+            <SecondaryText className=" text-center">
+              Pausing your position will result in your funds being removed from
+              vault's investable pool of funds. While your position is paused
+              you will not be exposed to the returns from the vault's weekly
+              strategy. You can resume your position at any time.
+            </SecondaryText>
+          </BaseModalContentColumn>
+        </div>
         {/* Secondary Info */}
-        <BaseModalContentColumn>
-          <div className="d-flex w-100 align-items-center ">
-            <SecondaryText></SecondaryText>
-            <Title className="ml-auto"></Title>
-          </div>
-        </BaseModalContentColumn>
-        <BaseModalContentColumn>
-          <div className="d-flex w-100 align-items-center ">
-            <SecondaryText></SecondaryText>
-            <Title className="ml-auto"></Title>
-          </div>
-        </BaseModalContentColumn>
+        <div className="mt-4">
+          <TextContainer>
+            <BaseModalContentColumn marginTop={0}>
+              <div className="d-flex w-100 align-items-center ">
+                <SecondaryText fontWeight={500} color="#FFFFFF7A">
+                  Position
+                </SecondaryText>
+                <Title fontSize={14} className="ml-auto">
+                  16.00{/*placeholder*/} {getAssetDisplay(asset)}
+                </Title>
+              </div>
+            </BaseModalContentColumn>
+            <BaseModalContentColumn marginTop={16}>
+              <div className="d-flex w-100 align-items-center ">
+                <SecondaryText fontWeight={500} color="#FFFFFF7A">
+                  Paused From
+                </SecondaryText>
+                <Title fontSize={14} className="ml-auto">
+                  03 MAY, 2022{/*placeholder*/}
+                </Title>
+              </div>
+            </BaseModalContentColumn>
+          </TextContainer>
+        </div>
+        <div className="mt-4">
+          {/* Button */}
+          <ActionButton className="btn py-3 mb-4" color={color}>
+            Confirm
+          </ActionButton>
+        </div>
       </>
     );
-  }, []);
+  }, [asset, color, decimals]);
 
   return (
     <BasicModal
@@ -88,36 +132,7 @@ const PausePositionModal: React.FC = () => {
       onClose={() => setVaultPauseModal((prev) => ({ ...prev, show: false }))}
       height={500}
     >
-      <>
-        <AnimatePresence initial={false} exitBeforeEnter>
-          <ModalContent
-            initial={{
-              x: 100,
-              opacity: 0,
-            }}
-            animate={{
-              x: 0,
-              opacity: 1,
-            }}
-            exit={{
-              x: 100,
-              opacity: 0,
-            }}
-            transition={{
-              duration: 0.15,
-              type: "keyframes",
-              ease: "easeOut",
-            }}
-          >
-            {body}
-          </ModalContent>
-        </AnimatePresence>
-
-        <BaseModalContentColumn
-          marginTop="auto"
-          className="mb-2"
-        ></BaseModalContentColumn>
-      </>
+      {body}
     </BasicModal>
   );
 };

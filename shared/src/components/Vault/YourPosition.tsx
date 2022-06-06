@@ -98,6 +98,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
   onShowHook,
   alwaysShowPosition = false,
 }) => {
+  const vault = { vaultOption, vaultVersion };
   const color = getVaultColor(vaultOption);
   const asset = getAssets(vaultOption);
   const decimals = getAssetDecimals(asset);
@@ -105,6 +106,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const [, setVaultPositionModal] = useGlobalState("vaultPositionModal");
   const [, setVaultPauseModal] = useGlobalState("vaultPauseModal");
+
   const [roi, isPaused] = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
 
@@ -148,13 +150,13 @@ const YourPosition: React.FC<YourPositionProps> = ({
     });
   }, [setVaultPositionModal, vaultOption, vaultVersion]);
 
-  // todo:
-  // new PauseModal or ActionModal?
   const setShowPauseModal = useCallback(
     (e) => {
       e.stopPropagation();
       setVaultPauseModal({
         show: true,
+        vaultOption,
+        vaultVersion,
       });
     },
     [setVaultPauseModal, vaultOption, vaultVersion]
