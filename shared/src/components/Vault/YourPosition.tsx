@@ -143,7 +143,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
       ) /
         parseFloat(formatUnits(vaultAccount.totalDeposits, decimals))) *
         100,
-      true,
+      false,
     ]; //placeholder isPaused is always false
   }, [vaultAccounts, vaultOption, decimals]);
 

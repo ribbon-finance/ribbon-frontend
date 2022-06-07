@@ -1,5 +1,6 @@
-import React, { useMemo, useState, useCallback, useEffect } from "react";
+import React, { useMemo, useState, useCallback } from "react";
 import styled from "styled-components";
+import moment from "moment";
 import { useTranslation } from "react-i18next";
 import { formatUnits, parseUnits } from "@ethersproject/units";
 import {
@@ -28,6 +29,8 @@ import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsCont
 import { useChain } from "shared/lib/hooks/chainContext";
 import { RibbonV2ThetaVault } from "shared/lib/codegen";
 import useV2VaultContract from "shared/lib/hooks/useV2VaultContract";
+import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
+import { useLatestOption } from "shared/lib/hooks/useLatestOption";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -70,6 +73,11 @@ const ResumePositionModal: React.FC = () => {
   const [vaultResumeModal, setVaultResumeModal] =
     useGlobalState("vaultResumeModal");
   const vaultOption = vaultResumeModal.vaultOption || VaultList[0];
+  const vaultVersion = vaultResumeModal.vaultVersion;
+  const { option: currentOption, loading: optionLoading } = useLatestOption(
+    vaultOption,
+    vaultVersion
+  );
   const color = getVaultColor(vaultOption);
   const asset = getAssets(vaultOption);
   const decimals = getAssetDecimals(asset);
@@ -83,6 +91,18 @@ const ResumePositionModal: React.FC = () => {
   const { addPendingTransaction } = usePendingTransactions();
   const [txId, setTxId] = useState("");
   const contract = useV2VaultContract(vaultOption) as RibbonV2ThetaVault;
+
+  const expiryTime = useMemo(() => {
+    if (!currentOption) {
+      return;
+    }
+
+    let nextOptionTime = currentOption.expiry;
+
+    return `${nextOptionTime.format("DD")} ${nextOptionTime.format(
+      "MMM"
+    )}, ${nextOptionTime.year()}`;
+  }, [currentOption]);
 
   const handleClose = useCallback(() => {
     setVaultResumeModal((prev) => ({ ...prev, show: false }));
@@ -180,7 +200,7 @@ const ResumePositionModal: React.FC = () => {
                       Resume From
                     </SecondaryText>
                     <Title fontSize={14} className="ml-auto">
-                      03 MAY, 2022{/*placeholder*/}
+                      {expiryTime}
                     </Title>
                   </div>
                 </BaseModalContentColumn>
@@ -232,7 +252,6 @@ const ResumePositionModal: React.FC = () => {
                   >
                     <PrimaryText className="mb-2">
                       View on {getExplorerName(chain)}{" "}
-                      {console.log(`${getExplorerURI(chain)}/tx/${txId}`)}
                     </PrimaryText>
                   </BaseUnderlineLink>
                 )}
@@ -241,7 +260,17 @@ const ResumePositionModal: React.FC = () => {
           </>
         );
     }
-  }, [asset, t, color, handleActionPressed, step, chain, chainId, txId]);
+  }, [
+    asset,
+    expiryTime,
+    t,
+    color,
+    handleActionPressed,
+    step,
+    chain,
+    chainId,
+    txId,
+  ]);
 
   return (
     <BasicModal

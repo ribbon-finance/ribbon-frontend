@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
+import moment from "moment";
 import { useTranslation } from "react-i18next";
 import { formatUnits, parseUnits } from "@ethersproject/units";
 import {
@@ -17,6 +18,7 @@ import {
   BaseModalContentColumn,
   Title,
 } from "shared/lib/designSystem";
+import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { useGlobalState } from "shared/lib/store/store";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
@@ -28,6 +30,8 @@ import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsCont
 import { useChain } from "shared/lib/hooks/chainContext";
 import { RibbonV2ThetaVault } from "shared/lib/codegen";
 import useV2VaultContract from "shared/lib/hooks/useV2VaultContract";
+import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
+import { useLatestOption } from "shared/lib/hooks/useLatestOption";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -70,6 +74,12 @@ const PausePositionModal: React.FC = () => {
   const [vaultPauseModal, setVaultPauseModal] =
     useGlobalState("vaultPauseModal");
   const vaultOption = vaultPauseModal.vaultOption || VaultList[0];
+  const vaultVersion = vaultPauseModal.vaultVersion;
+  const { option: currentOption, loading: optionLoading } = useLatestOption(
+    vaultOption,
+    vaultVersion
+  );
+
   const color = getVaultColor(vaultOption);
   const asset = getAssets(vaultOption);
   const decimals = getAssetDecimals(asset);
@@ -83,6 +93,20 @@ const PausePositionModal: React.FC = () => {
   const { addPendingTransaction } = usePendingTransactions();
   const [txId, setTxId] = useState("");
   const contract = useV2VaultContract(vaultOption) as RibbonV2ThetaVault;
+  const { vaultAccounts } = useVaultAccounts(vaultVersion);
+  const vaultAccount = vaultAccounts[vaultOption];
+
+  const expiryTime = useMemo(() => {
+    if (!currentOption) {
+      return;
+    }
+
+    let nextOptionTime = currentOption.expiry;
+
+    return `${nextOptionTime.format("DD")} ${nextOptionTime.format(
+      "MMM"
+    )}, ${nextOptionTime.year()}`;
+  }, [currentOption]);
 
   const handleClose = useCallback(() => {
     setVaultPauseModal((prev) => ({ ...prev, show: false }));
@@ -168,7 +192,10 @@ const PausePositionModal: React.FC = () => {
                       Position
                     </SecondaryText>
                     <Title fontSize={14} className="ml-auto">
-                      16.00{/*placeholder*/} {getAssetDisplay(asset)}
+                      {vaultAccount
+                        ? formatBigNumber(vaultAccount.totalBalance, decimals)
+                        : "0.00"}{" "}
+                      {getAssetDisplay(asset)}
                     </Title>
                   </div>
                 </BaseModalContentColumn>
@@ -178,7 +205,7 @@ const PausePositionModal: React.FC = () => {
                       Paused From
                     </SecondaryText>
                     <Title fontSize={14} className="ml-auto">
-                      03 MAY, 2022{/*placeholder*/}
+                      {expiryTime}
                     </Title>
                   </div>
                 </BaseModalContentColumn>
@@ -187,7 +214,7 @@ const PausePositionModal: React.FC = () => {
             <div className="mt-4">
               {/* Button */}
               <ActionButton
-                className="btn py-3 mb-4"
+                className="sbtn py-3 mb-4"
                 color={color}
                 onClick={handleActionPressed}
               >
@@ -239,7 +266,19 @@ const PausePositionModal: React.FC = () => {
           </>
         );
     }
-  }, [asset, t, color, handleActionPressed, step, chain, chainId, txId]);
+  }, [
+    asset,
+    decimals,
+    expiryTime,
+    vaultAccount,
+    t,
+    color,
+    handleActionPressed,
+    step,
+    chain,
+    chainId,
+    txId,
+  ]);
 
   return (
     <BasicModal
