@@ -415,30 +415,51 @@ export const PauseIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
   </svg>
 );
 
+export const WidgetPauseIcon: React.FC<SVGPropsWithColor> = ({
+  color,
+  ...props
+}) => (
+  <svg
+    viewBox="0 0 34 34"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M14.3335 21V13"
+      stroke={color || "white"}
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M19.6665 21V13"
+      stroke={color || "white"}
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+
 // todo: add resume svg
 export const ResumeIcon: React.FC<SVGPropsWithColor> = ({
   color,
   ...props
 }) => (
   <svg
-    viewBox="0 0 32 32"
+    viewBox="0 0 64 64"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
     <path
-      d="M16 6.66672V25.3334"
-      stroke={color || "white"}
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M25.3337 16L16.0003 25.3333L6.66699 16"
-      stroke={color || "white"}
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      d="M26.166 24.5L37.8327 32L26.166 39.5V24.5Z"
+      fill="#627EEA"
+      stroke="#627EEA"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
   </svg>
 );

@@ -22,6 +22,7 @@ import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { formatBigNumber, isPracticallyZero } from "../../utils/math";
 import sizes from "../../designSystem/sizes";
 import { useGlobalState } from "../../store/store";
+import { WidgetPauseIcon } from "shared/lib/assets/icons/icons";
 const DesktopContainer = styled.div`
   display: flex;
   position: sticky;
@@ -46,6 +47,21 @@ const MobileContainer = styled.div<{ color: string }>`
     );
     padding: 4px 16px;
   }
+`;
+
+const ActionLogoContainer = styled.div<{
+  size: number;
+  color: string;
+}>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: ${(props) => props.size}px;
+  width: ${(props) => props.size}px;
+  border: ${theme.border.width} ${theme.border.style} ${(props) => props.color};
+  border-radius: 1000px;
+  padding: 2px 2px 2px 2px;
+  background: ${(props) => props.color}29;
 `;
 
 const FloatingPositionCard = styled.div<{ color: string }>`
@@ -74,6 +90,7 @@ const PauseButton = styled.div<{ color: string }>`
   border: ${theme.border.width} ${theme.border.style} ${(props) => props.color};
   border-radius: 4px;
   padding: 0px 8px;
+  background: ${(props) => props.color}29;
 `;
 
 const PauseButtonText = styled(Title)<{ size: number }>`
@@ -98,7 +115,6 @@ const YourPosition: React.FC<YourPositionProps> = ({
   onShowHook,
   alwaysShowPosition = false,
 }) => {
-  const vault = { vaultOption, vaultVersion };
   const color = getVaultColor(vaultOption);
   const asset = getAssets(vaultOption);
   const decimals = getAssetDecimals(asset);
@@ -106,6 +122,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const [, setVaultPositionModal] = useGlobalState("vaultPositionModal");
   const [, setVaultPauseModal] = useGlobalState("vaultPauseModal");
+  const [, setVaultResumeModal] = useGlobalState("vaultResumeModal");
 
   const [roi, isPaused] = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
@@ -114,7 +131,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
       !vaultAccount ||
       isPracticallyZero(vaultAccount.totalDeposits, decimals)
     ) {
-      return [0, false]; //placeholder isPaused is always false
+      return [0, true]; //placeholder isPaused is always false
     }
 
     return [
@@ -126,7 +143,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
       ) /
         parseFloat(formatUnits(vaultAccount.totalDeposits, decimals))) *
         100,
-      false,
+      true,
     ]; //placeholder isPaused is always false
   }, [vaultAccounts, vaultOption, decimals]);
 
@@ -162,6 +179,18 @@ const YourPosition: React.FC<YourPositionProps> = ({
     [setVaultPauseModal, vaultOption, vaultVersion]
   );
 
+  const setShowResumeModal = useCallback(
+    (e) => {
+      e.stopPropagation();
+      setVaultResumeModal({
+        show: true,
+        vaultOption,
+        vaultVersion,
+      });
+    },
+    [setVaultResumeModal, vaultOption, vaultVersion]
+  );
+
   if (
     alwaysShowPosition ||
     (vaultAccount && !isPracticallyZero(vaultAccount.totalBalance, decimals))
@@ -175,9 +204,18 @@ const YourPosition: React.FC<YourPositionProps> = ({
               role="button"
               onClick={setShowPositionModal}
             >
-              <AssetCircleContainer color={color} size={48}>
-                <Logo width={"100%"} height={"100%"} />
-              </AssetCircleContainer>
+              {isPaused ? (
+                <div className="d-flex flex-column justify-content-center p-2">
+                  <ActionLogoContainer color={color} size={32}>
+                    <WidgetPauseIcon color={color} width={32} />
+                  </ActionLogoContainer>
+                </div>
+              ) : (
+                <AssetCircleContainer color={color} size={48}>
+                  <Logo width={"100%"} height={"100%"} />
+                </AssetCircleContainer>
+              )}
+
               <div className="d-flex flex-column justify-content-center p-2">
                 <PositionInfoText size={10} color={colors.text}>
                   position ({getAssetDisplay(asset)})
@@ -202,7 +240,11 @@ const YourPosition: React.FC<YourPositionProps> = ({
                   color={color}
                   role="button"
                   onClick={(e) => {
-                    setShowPauseModal(e);
+                    if (isPaused) {
+                      setShowResumeModal(e);
+                    } else {
+                      setShowPauseModal(e);
+                    }
                   }}
                 >
                   <PauseButtonText color={color} size={12}>
@@ -216,9 +258,17 @@ const YourPosition: React.FC<YourPositionProps> = ({
       case "mobile":
         return (
           <MobileContainer color={color} onClick={setShowPositionModal}>
-            <AssetCircleContainer color={color} size={48}>
-              <Logo width={"100%"} height={"100%"} />
-            </AssetCircleContainer>
+            <div className="d-flex flex-column justify-content-center p-2">
+              {isPaused ? (
+                <ActionLogoContainer color={color} size={32}>
+                  <WidgetPauseIcon color={color} width={"100%"} />
+                </ActionLogoContainer>
+              ) : (
+                <AssetCircleContainer color={color} size={48}>
+                  <Logo width={"100%"} height={"100%"} />
+                </AssetCircleContainer>
+              )}
+            </div>
             <div className="d-flex flex-column justify-content-center p-2">
               <PositionInfoText size={10} color={colors.text}>
                 position ({getAssetDisplay(asset)})
@@ -243,7 +293,11 @@ const YourPosition: React.FC<YourPositionProps> = ({
                 color={color}
                 role="button"
                 onClick={(e) => {
-                  setShowPauseModal(e);
+                  if (isPaused) {
+                    setShowResumeModal(e);
+                  } else {
+                    setShowPauseModal(e);
+                  }
                 }}
               >
                 <PauseButtonText color={color} size={12}>
