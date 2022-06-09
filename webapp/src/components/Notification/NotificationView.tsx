@@ -158,6 +158,7 @@ const NotificationView: React.FC<NotificationViewProps> = ({
 
               return (
                 <MenuItem
+                  key={title}
                   onClick={() =>
                     setFilters((prev) =>
                       prev.includes(type)

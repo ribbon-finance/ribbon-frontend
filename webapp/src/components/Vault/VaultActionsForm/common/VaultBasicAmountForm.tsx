@@ -424,7 +424,6 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
 
   return (
     <>
-      test
       <BaseInputLabel>AMOUNT ({getAssetDisplay(asset)})</BaseInputLabel>
       <BaseInputContainer
         className="mb-2"
