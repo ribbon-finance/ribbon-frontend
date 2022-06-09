@@ -318,10 +318,10 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       : "shared:ProductCopies:Call";
     const i18nParams = putVault
       ? {
-          asset: getAssetDisplay(asset),
-          optionAsset: getAssetDisplay(optionAsset),
-          vault: t(`shared:ProductCopies:${vault.vaultOption}:title`),
-        }
+        asset: getAssetDisplay(asset),
+        optionAsset: getAssetDisplay(optionAsset),
+        vault: t(`shared:ProductCopies:${vault.vaultOption}:title`),
+      }
       : { asset: getAssetDisplay(asset) };
 
     if (isYieldAsset(collateralAsset)) {
@@ -461,9 +461,8 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
         <ParagraphHeading>Risk</ParagraphHeading>
         <ParagraphText>
           <Trans
-            i18nKey={`shared:ProductCopies:${
-              isPutVault(vaultOption) ? "Put" : "Call"
-            }:vaultRisk`}
+            i18nKey={`shared:ProductCopies:${isPutVault(vaultOption) ? "Put" : "Call"
+              }:vaultRisk`}
             values={{
               optionAsset: getAssetDisplay(optionAsset),
             }}
@@ -506,7 +505,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
 
         <PrimaryText className="d-block mt-3">
           <Link
-            href="https://ribbonfinance.medium.com/theta-vault-backtest-results-6e8c59adf38c"
+            href="https://www.research.ribbon.finance/blog/theta-vault-backtest-results"
             target="_blank"
             rel="noreferrer noopener"
             className="d-flex"
