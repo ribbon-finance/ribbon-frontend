@@ -143,11 +143,11 @@ const OverviewKPI = () => {
                 {rbnTokenAccountLoading
                   ? loadingText
                   : formatAmount(
-                    Number(
-                      formatUnits(rbnToken?.totalStaked || BigNumber.from(0))
-                    ),
-                    true
-                  )}
+                      Number(
+                        formatUnits(rbnToken?.totalStaked || BigNumber.from(0))
+                      ),
+                      true
+                    )}
               </Title>
             </div>
             <ProgressBar

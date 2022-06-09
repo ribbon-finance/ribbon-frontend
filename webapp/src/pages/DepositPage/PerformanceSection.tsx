@@ -318,10 +318,10 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       : "shared:ProductCopies:Call";
     const i18nParams = putVault
       ? {
-        asset: getAssetDisplay(asset),
-        optionAsset: getAssetDisplay(optionAsset),
-        vault: t(`shared:ProductCopies:${vault.vaultOption}:title`),
-      }
+          asset: getAssetDisplay(asset),
+          optionAsset: getAssetDisplay(optionAsset),
+          vault: t(`shared:ProductCopies:${vault.vaultOption}:title`),
+        }
       : { asset: getAssetDisplay(asset) };
 
     if (isYieldAsset(collateralAsset)) {
@@ -461,8 +461,9 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
         <ParagraphHeading>Risk</ParagraphHeading>
         <ParagraphText>
           <Trans
-            i18nKey={`shared:ProductCopies:${isPutVault(vaultOption) ? "Put" : "Call"
-              }:vaultRisk`}
+            i18nKey={`shared:ProductCopies:${
+              isPutVault(vaultOption) ? "Put" : "Call"
+            }:vaultRisk`}
             values={{
               optionAsset: getAssetDisplay(optionAsset),
             }}

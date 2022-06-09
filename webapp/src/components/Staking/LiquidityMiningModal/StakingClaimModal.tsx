@@ -33,7 +33,7 @@ const LogoContainer = styled.div<{ color: string }>`
   background: ${(props) => props.color}29;
 `;
 
-const AssetTitle = styled(Title) <{ str: string }>`
+const AssetTitle = styled(Title)<{ str: string }>`
   text-transform: none;
 
   ${(props) =>
@@ -58,7 +58,7 @@ const InfoData = styled(Title)`
   text-transform: none;
 `;
 
-const WarningText = styled(PrimaryText) <{ color: string }>`
+const WarningText = styled(PrimaryText)<{ color: string }>`
   display: flex;
   color: ${(props) => props.color};
   font-size: 14px;
@@ -269,23 +269,23 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
         initial:
           step === "info" || step === "claim"
             ? {
-              x: 50,
-              opacity: 0,
-            }
+                x: 50,
+                opacity: 0,
+              }
             : {},
         animate:
           step === "info" || step === "claim"
             ? {
-              x: 0,
-              opacity: 1,
-            }
+                x: 0,
+                opacity: 1,
+              }
             : {},
         exit:
           step === "info"
             ? {
-              x: -50,
-              opacity: 0,
-            }
+                x: -50,
+                opacity: 0,
+              }
             : {},
       }}
     >
