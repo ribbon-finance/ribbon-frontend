@@ -9,9 +9,7 @@ export const injectedConnector = new InjectedConnector({
 });
 
 // Only receive messages from platform.apps.ledger.com
-export const ledgerConnector = new LedgerHQFrameConnector({
-  targetOrigin: "https://platform.apps.ledger.com",
-});
+export const ledgerConnector = new LedgerHQFrameConnector();
 
 /**
  * A bug causes wallet connect connector to stuck forever upon second invoke
