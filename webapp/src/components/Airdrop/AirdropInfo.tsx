@@ -176,7 +176,7 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ onClaim }) => {
   const readMore = useMemo(
     () => (
       <LearnMoreLink
-        to="https://ribbonfinance.medium.com/rbn-airdrop-distribution-70b6cb0b870c"
+        to="https://www.research.ribbon.finance/blog/rbn-airdrop-distribution"
         target="_blank"
         rel="noreferrer noopener"
       >

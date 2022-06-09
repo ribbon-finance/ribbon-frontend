@@ -180,7 +180,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
 
         <PrimaryText className="d-block mt-3">
           <Link
-            href="https://ribbonfinance.medium.com/theta-vault-backtest-results-6e8c59adf38c"
+            href="https://www.research.ribbon.finance/blog/theta-vault-backtest-results"
             target="_blank"
             rel="noreferrer noopener"
             className="d-flex"

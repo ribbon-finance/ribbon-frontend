@@ -230,7 +230,7 @@ const StakingOverview: React.FC<StakingOverviewProps> = ({
           to those who missed out on the airdrop and to distribute the
           governance token to those who have the most skin in the game. The
           program ended on July 19th, 2021.`,
-          link: "https://ribbonfinance.medium.com/rgp-2-liquidity-mining-program-cc81f0b7a270",
+          link: "https://www.research.ribbon.finance/blog/rgp-2-liquidity-mining-program",
           countdownTitle: "Time till programs end",
         };
       case "lg5":

@@ -68,7 +68,7 @@ const InfoModal = () => {
         <BaseModalContentColumn>
           {/* TODO: Update Link */}
           <ReadMoreLink
-            to="https://ribbonfinance.medium.com/ribbon-og-nft-1aaef40b8e6e"
+            to="https://www.research.ribbon.finance/blog/ribbon-og-nft"
             target="_blank"
             rel="noreferrer noopener"
             className="d-flex mr-auto"

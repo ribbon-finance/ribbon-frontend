@@ -202,7 +202,7 @@ const Header = () => {
             variant="desktop"
             dropdownItems={[
               { text: "FAQ", link: "https://docs.ribbon.finance/faq" },
-              { text: "Blog", link: "https://ribbonfinance.medium.com" },
+              { text: "Blog", link: "https://research.ribbon.finance" },
               { text: "Docs", link: "https://docs.ribbon.finance" },
               { text: "Terms", link: "/terms" },
               { text: "Policy", link: "/policy" },

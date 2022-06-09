@@ -7,7 +7,6 @@ import {
   VaultClient,
   vaultUtils,
   vaultTypes,
-  types,
 } from "@zetamarkets/flex-sdk";
 import {
   getSolanaAddresses,

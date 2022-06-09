@@ -104,7 +104,7 @@ const OverviewKPI = () => {
             fully on-chain governance
           </SecondaryText>
           <BaseUnderlineLink
-            to="https://ribbonfinance.medium.com/verbn-is-live-d88a36933413"
+            to="https://www.research.ribbon.finance/blog/verbn-is-live"
             target="_blank"
             rel="noreferrer noopener"
             className={`d-flex mt-4 ${width < sizes.lg ? "mx-auto" : ""}`}

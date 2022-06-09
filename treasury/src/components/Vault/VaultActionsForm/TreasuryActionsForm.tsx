@@ -178,7 +178,7 @@ const TreasuryActionsForm: React.FC<TreasuryActionsFormProps> = ({
 
         <PrimaryText className="d-block mt-3 mb-3">
           <Link
-            href="https://ribbonfinance.medium.com/ribbon-treasury-ee311f7ce7d8"
+            href="https://www.research.ribbon.finance/blog/ribbon-treasury"
             target="_blank"
             rel="noreferrer noopener"
             className="d-flex"

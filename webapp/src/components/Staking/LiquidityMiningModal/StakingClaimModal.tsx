@@ -210,7 +210,7 @@ const StakingClaimModal: React.FC<StakingClaimModalProps> = ({
             </InfoColumn>
             <BaseModalContentColumn marginTop="auto">
               <BaseUnderlineLink
-                to="https://ribbonfinance.medium.com/rbn-airdrop-distribution-70b6cb0b870c"
+                to="https://www.research.ribbon.finance/blog/rbn-airdrop-distribution"
                 target="_blank"
                 rel="noreferrer noopener"
                 className="d-flex align-items-center"
