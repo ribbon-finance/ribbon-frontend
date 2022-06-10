@@ -839,6 +839,10 @@ export const LiquidityGaugeControllerAddress = isDevelopment()
   ? governanceDeployment.kovan.RBNVotingGaugeController
   : governanceDeployment.mainnet.RBNVotingGaugeController;
 
+export const RibbonVaultPauserAddress = isDevelopment()
+  ? v2deployment.kovan.RibbonVaultPauser
+  : v2deployment.mainnet.RibbonVaultPauser;
+
 export const READABLE_CHAIN_NAMES: Record<Chains, string> = {
   [Chains.Ethereum]: "Ethereum",
   [Chains.Avalanche]: "Avalanche",

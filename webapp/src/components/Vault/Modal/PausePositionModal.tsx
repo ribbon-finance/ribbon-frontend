@@ -1,8 +1,6 @@
-import React, { useMemo, useState, useCallback, useEffect } from "react";
+import React, { useMemo, useState, useCallback } from "react";
 import styled from "styled-components";
-import moment from "moment";
 import { useTranslation } from "react-i18next";
-import { formatUnits, parseUnits } from "@ethersproject/units";
 import {
   getAssets,
   VaultList,
@@ -18,7 +16,7 @@ import {
   BaseModalContentColumn,
   Title,
 } from "shared/lib/designSystem";
-import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { useGlobalState } from "shared/lib/store/store";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
@@ -75,11 +73,7 @@ const PausePositionModal: React.FC = () => {
     useGlobalState("vaultPauseModal");
   const vaultOption = vaultPauseModal.vaultOption || VaultList[0];
   const vaultVersion = vaultPauseModal.vaultVersion;
-  const { option: currentOption, loading: optionLoading } = useLatestOption(
-    vaultOption,
-    vaultVersion
-  );
-
+  const { option: currentOption } = useLatestOption(vaultOption, vaultVersion);
   const color = getVaultColor(vaultOption);
   const asset = getAssets(vaultOption);
   const decimals = getAssetDecimals(asset);
@@ -96,7 +90,16 @@ const PausePositionModal: React.FC = () => {
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const vaultAccount = vaultAccounts[vaultOption];
 
-  const expiryTime = useMemo(() => {
+  const pauseAmount = useMemo(() => {
+    if (!vaultAccount) {
+      return;
+    }
+
+    return formatBigNumber(vaultAccount.totalBalance, decimals);
+  }, [vaultAccount, decimals]);
+
+  // get the date of next option expiry
+  const expiryDate = useMemo(() => {
     if (!currentOption) {
       return;
     }
@@ -121,13 +124,11 @@ const PausePositionModal: React.FC = () => {
     setStep("walletAction");
 
     try {
-      if (!contract) {
+      if (!contract || !pauseAmount) {
         return;
       }
-      let amountStr = parseUnits("0.000001", decimals).toString();
-      const tx = await contract.depositETH({
-        value: amountStr,
-      });
+
+      const tx = await contract.pausePosition();
       setStep("processing");
 
       const txhash = tx.hash;
@@ -136,7 +137,7 @@ const PausePositionModal: React.FC = () => {
       addPendingTransaction({
         txhash: txhash,
         type: "pause",
-        amount: amountStr,
+        amount: pauseAmount.toString(),
         vault: vaultOption,
         asset: asset,
       });
@@ -152,8 +153,8 @@ const PausePositionModal: React.FC = () => {
   }, [
     asset,
     contract,
+    pauseAmount,
     addPendingTransaction,
-    decimals,
     provider,
     vaultOption,
     handleClose,
@@ -192,9 +193,7 @@ const PausePositionModal: React.FC = () => {
                       Position
                     </SecondaryText>
                     <Title fontSize={14} className="ml-auto">
-                      {vaultAccount
-                        ? formatBigNumber(vaultAccount.totalBalance, decimals)
-                        : "0.00"}{" "}
+                      {vaultAccount ? pauseAmount : "0.00"}{" "}
                       {getAssetDisplay(asset)}
                     </Title>
                   </div>
@@ -205,7 +204,7 @@ const PausePositionModal: React.FC = () => {
                       Paused From
                     </SecondaryText>
                     <Title fontSize={14} className="ml-auto">
-                      {expiryTime}
+                      {expiryDate}
                     </Title>
                   </div>
                 </BaseModalContentColumn>
@@ -214,7 +213,7 @@ const PausePositionModal: React.FC = () => {
             <div className="mt-4">
               {/* Button */}
               <ActionButton
-                className="sbtn py-3 mb-4"
+                className="btn py-3 mb-4"
                 color={color}
                 onClick={handleActionPressed}
               >
@@ -268,8 +267,8 @@ const PausePositionModal: React.FC = () => {
     }
   }, [
     asset,
-    decimals,
-    expiryTime,
+    pauseAmount,
+    expiryDate,
     vaultAccount,
     t,
     color,

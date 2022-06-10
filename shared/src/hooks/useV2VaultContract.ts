@@ -1,7 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 import { RibbonV2stETHThetaVault, RibbonV2ThetaVault } from "../codegen";
-import { RibbonV2ThetaVaultFactory } from "../codegen/RibbonV2ThetaVaultFactory";
+import { RibbonV2ThetaVault__factory } from "../codegen/factories/RibbonV2ThetaVault__factory";
 import { RibbonV2stETHThetaVaultFactory } from "../codegen/RibbonV2stETHThetaVaultFactory";
 import {
   isSolanaVault,
@@ -28,7 +28,7 @@ export const getV2VaultContract = (
         provider
       );
     default:
-      return RibbonV2ThetaVaultFactory.connect(
+      return RibbonV2ThetaVault__factory.connect(
         VaultAddressMap[vaultOption].v2!,
         provider
       );

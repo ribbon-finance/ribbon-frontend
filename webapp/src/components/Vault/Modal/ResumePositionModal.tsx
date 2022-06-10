@@ -1,13 +1,13 @@
-import React, { useMemo, useState, useCallback } from "react";
+import React, { useMemo, useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
-import moment from "moment";
 import { useTranslation } from "react-i18next";
-import { formatUnits, parseUnits } from "@ethersproject/units";
+import { formatUnits } from "@ethersproject/units";
 import {
   getAssets,
   VaultList,
   getExplorerURI,
   getExplorerName,
+  VaultAddressMap,
 } from "shared/lib/constants/constants";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -27,10 +27,10 @@ import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import PendingTransactionLoader from "shared/lib/components/Common/PendingTransactionLoader";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { useChain } from "shared/lib/hooks/chainContext";
-import { RibbonV2ThetaVault } from "shared/lib/codegen";
-import useV2VaultContract from "shared/lib/hooks/useV2VaultContract";
-import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
+import { RibbonVaultPauser } from "shared/lib/codegen";
+import useVaultPauser from "shared/lib/hooks/useV2VaultPauserContract";
 import { useLatestOption } from "shared/lib/hooks/useLatestOption";
+import { isPracticallyZero } from "shared/lib/utils/math";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -74,24 +74,38 @@ const ResumePositionModal: React.FC = () => {
     useGlobalState("vaultResumeModal");
   const vaultOption = vaultResumeModal.vaultOption || VaultList[0];
   const vaultVersion = vaultResumeModal.vaultVersion;
-  const { option: currentOption, loading: optionLoading } = useLatestOption(
-    vaultOption,
-    vaultVersion
-  );
+  const { option: currentOption } = useLatestOption(vaultOption, vaultVersion);
   const color = getVaultColor(vaultOption);
   const asset = getAssets(vaultOption);
   const decimals = getAssetDecimals(asset);
   const { chainId } = useWeb3Wallet();
   const { provider } = useWeb3Context();
+  const [chain] = useChain();
   const { t } = useTranslation();
   const [step, setStep] = useState<"preview" | "walletAction" | "processing">(
     "preview"
   );
-  const [chain] = useChain();
+  const { account } = useWeb3Wallet();
   const { addPendingTransaction } = usePendingTransactions();
   const [txId, setTxId] = useState("");
-  const contract = useV2VaultContract(vaultOption) as RibbonV2ThetaVault;
+  const contract = useVaultPauser() as RibbonVaultPauser;
+  const [resumeAmount, setResumeAmount] = useState(0);
+  const vaultAddress = VaultAddressMap[vaultOption][vaultVersion];
 
+  // get the paused position to be resumed
+  useEffect(() => {
+    if (contract && vaultAddress && account) {
+      contract.getPausePosition(vaultAddress, account).then((amount: any) => {
+        setResumeAmount(
+          isPracticallyZero(amount[1], decimals)
+            ? 0
+            : parseFloat(formatUnits(amount[1], decimals))
+        );
+      });
+    }
+  }, [contract, vaultAddress, account, decimals]);
+
+  // get the date of next option expiry
   const expiryTime = useMemo(() => {
     if (!currentOption) {
       return;
@@ -117,22 +131,20 @@ const ResumePositionModal: React.FC = () => {
     setStep("walletAction");
 
     try {
-      if (!contract) {
+      if (!contract || !vaultAddress) {
         return;
       }
-      let amountStr = parseUnits("0.000001", decimals).toString();
-      const tx = await contract.depositETH({
-        value: amountStr,
-      });
-      setStep("processing");
 
+      const tx = await contract.resumePosition(vaultAddress);
+
+      setStep("processing");
       const txhash = tx.hash;
       setTxId(txhash.toString());
 
       addPendingTransaction({
         txhash: txhash,
         type: "resume",
-        amount: amountStr,
+        amount: resumeAmount.toString(),
         vault: vaultOption,
         asset: asset,
       });
@@ -149,7 +161,8 @@ const ResumePositionModal: React.FC = () => {
     asset,
     contract,
     addPendingTransaction,
-    decimals,
+    resumeAmount,
+    vaultAddress,
     provider,
     vaultOption,
     handleClose,
@@ -190,7 +203,7 @@ const ResumePositionModal: React.FC = () => {
                       Position
                     </SecondaryText>
                     <Title fontSize={14} className="ml-auto">
-                      16.00{/*placeholder*/} {getAssetDisplay(asset)}
+                      {resumeAmount} {getAssetDisplay(asset)}
                     </Title>
                   </div>
                 </BaseModalContentColumn>
@@ -262,6 +275,7 @@ const ResumePositionModal: React.FC = () => {
     }
   }, [
     asset,
+    resumeAmount,
     expiryTime,
     t,
     color,

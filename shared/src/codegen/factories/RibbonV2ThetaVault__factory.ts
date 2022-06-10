@@ -39,17 +39,7 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "_gnosisEasyAuction",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "_uniswapRouter",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "_uniswapFactory",
+        name: "_swapContract",
         type: "address",
       },
     ],
@@ -206,37 +196,6 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "auctioningToken",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "biddingToken",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "auctionCounter",
-        type: "uint256",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "manager",
-        type: "address",
-      },
-    ],
-    name: "InitiateGnosisAuction",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
         name: "account",
         type: "address",
       },
@@ -298,6 +257,55 @@ const _abi = [
       },
     ],
     name: "ManagementFeeSet",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "swapId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "seller",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "oToken",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "biddingToken",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "minPrice",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "minBidSize",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "totalSize",
+        type: "uint256",
+      },
+    ],
+    name: "NewOffer",
     type: "event",
   },
   {
@@ -504,19 +512,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "GNOSIS_EASY_AUCTION",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "MARGIN_POOL",
     outputs: [
       {
@@ -556,20 +551,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "UNISWAP_FACTORY",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "UNISWAP_ROUTER",
+    name: "SWAP_CONTRACT",
     outputs: [
       {
         internalType: "address",
@@ -727,7 +709,14 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "commitAndClose",
+    name: "closeRound",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "commitNextOption",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -735,6 +724,13 @@ const _abi = [
   {
     inputs: [],
     name: "completeWithdraw",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "createOffer",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -755,6 +751,19 @@ const _abi = [
   {
     inputs: [],
     name: "currentOtokenPremium",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "currentQueuedWithdrawShares",
     outputs: [
       {
         internalType: "uint256",
@@ -973,23 +982,8 @@ const _abi = [
             name: "_premiumDiscount",
             type: "uint32",
           },
-          {
-            internalType: "uint256",
-            name: "_auctionDuration",
-            type: "uint256",
-          },
-          {
-            internalType: "bool",
-            name: "_isUsdcAuction",
-            type: "bool",
-          },
-          {
-            internalType: "bytes",
-            name: "_swapPath",
-            type: "bytes",
-          },
         ],
-        internalType: "struct RibbonThetaVault.InitParams",
+        internalType: "struct RibbonThetaVaultWithSwap.InitParams",
         name: "_initParams",
         type: "tuple",
       },
@@ -1047,19 +1041,6 @@ const _abi = [
     name: "initiateWithdraw",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "isUsdcAuction",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {
@@ -1224,6 +1205,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "optionsPurchaseQueue",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "overriddenStrikePrice",
     outputs: [
       {
@@ -1246,6 +1240,13 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "pausePosition",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -1401,6 +1402,19 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "uint256",
+        name: "minPrice",
+        type: "uint256",
+      },
+    ],
+    name: "setMinPrice",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "newKeeper",
         type: "address",
@@ -1479,12 +1493,12 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "bytes",
-        name: "newSwapPath",
-        type: "bytes",
+        internalType: "address",
+        name: "newVaultPauser",
+        type: "address",
       },
     ],
-    name: "setSwapPath",
+    name: "setVaultPauser",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -1492,12 +1506,59 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "minAmountOut",
-        type: "uint256",
+        components: [
+          {
+            internalType: "uint256",
+            name: "swapId",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "nonce",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "signerWallet",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "sellAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "buyAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "referrer",
+            type: "address",
+          },
+          {
+            internalType: "uint8",
+            name: "v",
+            type: "uint8",
+          },
+          {
+            internalType: "bytes32",
+            name: "r",
+            type: "bytes32",
+          },
+          {
+            internalType: "bytes32",
+            name: "s",
+            type: "bytes32",
+          },
+        ],
+        internalType: "struct ISwap.Bid[]",
+        name: "bids",
+        type: "tuple[]",
       },
     ],
-    name: "settleAuctionAndSwap",
+    name: "settleOffer",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -1560,32 +1621,12 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "startAuction",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "strikeSelection",
     outputs: [
       {
         internalType: "address",
         name: "",
         type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "swapPath",
-    outputs: [
-      {
-        internalType: "bytes",
-        name: "",
-        type: "bytes",
       },
     ],
     stateMutability: "view",
@@ -1742,6 +1783,19 @@ const _abi = [
         internalType: "uint104",
         name: "cap",
         type: "uint104",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "vaultPauser",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
     stateMutability: "view",
