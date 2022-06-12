@@ -37,15 +37,15 @@ export const initialState: GlobalStore = {
   airdropInfo: undefined,
   vaultPositionModal: {
     show: false,
-    vaultVersion: "v1" as VaultVersion,
+    vaultVersion: "v2" as VaultVersion,
   },
   vaultPauseModal: {
     show: false,
-    vaultVersion: "v1" as VaultVersion,
+    vaultVersion: "v2" as VaultVersion,
   },
   vaultResumeModal: {
     show: false,
-    vaultVersion: "v1" as VaultVersion,
+    vaultVersion: "v2" as VaultVersion,
   },
   notificationLastReadTimestamp: undefined,
 };

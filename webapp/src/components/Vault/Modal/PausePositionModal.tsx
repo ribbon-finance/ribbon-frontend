@@ -89,10 +89,10 @@ const PausePositionModal: React.FC = () => {
   const contract = useV2VaultContract(vaultOption) as RibbonV2ThetaVault;
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const vaultAccount = vaultAccounts[vaultOption];
-
+  
   const pauseAmount = useMemo(() => {
     if (!vaultAccount) {
-      return;
+      return "0";
     }
 
     return formatBigNumber(vaultAccount.totalBalance, decimals);
@@ -127,7 +127,6 @@ const PausePositionModal: React.FC = () => {
       if (!contract || !pauseAmount) {
         return;
       }
-
       const tx = await contract.pausePosition();
       setStep("processing");
 
