@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import { ethers } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
@@ -29,6 +29,7 @@ import {
   isAvaxVault,
   isSolanaVault,
   isDisabledVault,
+  VaultAddressMap,
 } from "../../../constants/constants";
 import {
   BarChartIcon,
@@ -57,7 +58,8 @@ import TooltipExplanation from "../../Common/TooltipExplanation";
 import HelpInfo from "../../Common/HelpInfo";
 import { calculateBaseRewards } from "../../../utils/governanceMath";
 import { useAssetsPrice } from "../../../hooks/useAssetPrice";
-
+import { RibbonVaultPauser } from "shared/lib/codegen";
+import useVaultPauser from "shared/lib/hooks/useV2VaultPauserContract";
 const { formatUnits } = ethers.utils;
 
 const CardContainer = styled.div`
@@ -684,6 +686,53 @@ const YieldCard: React.FC<YieldCardProps> = ({
     asset,
   ]);
 
+  const { account } = useWeb3Wallet();
+  const contract = useVaultPauser() as RibbonVaultPauser;
+  const vaultAddress = VaultAddressMap[vault][vaultVersion];
+  const [pausedAmount, setPausedAmount] = useState(0);
+  const [positionState, setPositionState] = useState<
+    "position" | "paused" | "partiallyPaused"
+  >("position");
+
+  // temporary: set the paused amount and canResume bool;
+  // to be replaced with subgraph data
+  useEffect(() => {
+    if (contract && vaultAddress && account) {
+      contract.getPausePosition(vaultAddress, account).then((value: any) => {
+        setPausedAmount(
+          isPracticallyZero(value[1], decimals)
+            ? 0
+            : parseFloat(formatUnits(value[1], decimals))
+        );
+      });
+    }
+  }, [contract, vaultAddress, account, decimals]);
+
+  // set state of user's position
+  useMemo(() => {
+    if (
+      pausedAmount > 0 &&
+      vaultAccount &&
+      isPracticallyZero(vaultAccount.totalDeposits, decimals)
+    ) {
+      setPositionState("paused");
+    }
+    if (
+      pausedAmount === 0 &&
+      vaultAccount &&
+      !isPracticallyZero(vaultAccount.totalDeposits, decimals)
+    ) {
+      setPositionState("position");
+    }
+    if (
+      pausedAmount > 0 &&
+      vaultAccount &&
+      isPracticallyZero(vaultAccount.totalDeposits, decimals)
+    ) {
+      setPositionState("partiallyPaused");
+    }
+  }, [vaultAccount, decimals, pausedAmount]);
+
   const modalContentExtra = useMemo(() => {
     if (
       vaultVersion === "v2" &&
@@ -704,8 +753,15 @@ const YieldCard: React.FC<YieldCardProps> = ({
       return (
         <ModalContentExtra style={{ paddingTop: 14 + 16, paddingBottom: 14 }}>
           <div className="d-flex align-items-center w-100">
-            <SecondaryText fontSize={12} className="mr-auto">
-              {t("shared:YieldCard:yourPosition")}
+            <SecondaryText
+              color={positionState === "position" ? undefined : color}
+              fontSize={12}
+              className="mr-auto"
+            >
+              {positionState === "position" &&
+                t("shared:YieldCard:yourPosition")}
+              {positionState === "paused" && "Position Paused"}
+              {positionState === "partiallyPaused" && "Partially Paused"}
             </SecondaryText>
             <Title fontSize={14}>
               {vaultAccount
@@ -727,6 +783,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     t,
     vaultAccount,
     asset,
+    positionState,
   ]);
 
   const vaultLogo = useMemo(() => {

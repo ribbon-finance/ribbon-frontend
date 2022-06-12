@@ -89,7 +89,7 @@ const PausePositionModal: React.FC = () => {
   const contract = useV2VaultContract(vaultOption) as RibbonV2ThetaVault;
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const vaultAccount = vaultAccounts[vaultOption];
-  
+
   const pauseAmount = useMemo(() => {
     if (!vaultAccount) {
       return "0";

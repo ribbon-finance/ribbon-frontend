@@ -18,10 +18,7 @@ import {
   Title,
 } from "shared/lib/designSystem";
 import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContainer";
-import {
-  getAssetDisplay,
-  getAssetLogo,
-} from "shared/lib/utils/asset";
+import { getAssetDisplay, getAssetLogo } from "shared/lib/utils/asset";
 import colors from "shared/lib/designSystem/colors";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 
