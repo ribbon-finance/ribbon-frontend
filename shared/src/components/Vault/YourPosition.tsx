@@ -168,7 +168,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
   vault: { vaultOption, vaultVersion },
   variant,
   onShowHook,
-  alwaysShowPosition = false,
+  alwaysShowPosition = true,
 }) => {
   const color = getVaultColor(vaultOption);
   const Logo = getAssetLogo(getDisplayAssets(vaultOption));
@@ -190,7 +190,8 @@ const YourPosition: React.FC<YourPositionProps> = ({
   const contract = useVaultPauser() as RibbonVaultPauser;
   const vaultAddress = VaultAddressMap[vaultOption][vaultVersion];
 
-  // temporary: set paused amount and canResume;
+  // temporary: set the paused amount and canResume bool;
+  // to be replaced with subgraph data
   useEffect(() => {
     if (contract && vaultAddress && account) {
       contract.getPausePosition(vaultAddress, account).then((value: any) => {
@@ -202,7 +203,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
         setCanResume(value[0] < round);
       });
     }
-  }, [contract, vaultAddress, account, position, decimals]);
+  }, [contract, vaultAddress, account, position, decimals, round]);
 
   const [roi, isPaused, hasPausedAndBalance] = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
@@ -262,13 +263,10 @@ const YourPosition: React.FC<YourPositionProps> = ({
     [setVaultPauseModal, vaultOption, vaultVersion]
   );
 
-  const setPositionState = useCallback(
-    (e, positionChange) => {
-      e.stopPropagation();
-      setPosition(positionChange);
-    },
-    [position]
-  );
+  const setPositionState = useCallback((e, positionChange) => {
+    e.stopPropagation();
+    setPosition(positionChange);
+  }, []);
 
   const setShowResumeModal = useCallback(
     (e) => {
@@ -301,12 +299,15 @@ const YourPosition: React.FC<YourPositionProps> = ({
                       ease: "easeInOut",
                     }}
                     initial={{
+                      x: 100,
                       opacity: 0,
                     }}
                     animate={{
+                      x: 0,
                       opacity: 1,
                     }}
                     exit={{
+                      x: -100,
                       opacity: 0,
                     }}
                   >
@@ -347,7 +348,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
                         show={true}
                         role="button"
                         onClick={(e) => {
-                            setShowPauseModal(e);
+                          setShowPauseModal(e);
                         }}
                       >
                         <PauseButtonText color={color} size={12}>
@@ -392,14 +393,18 @@ const YourPosition: React.FC<YourPositionProps> = ({
                       ease: "easeInOut",
                     }}
                     initial={{
+                      x: 100,
                       opacity: 0,
                     }}
                     animate={{
+                      x: 0,
                       opacity: 1,
                     }}
                     exit={{
+                      x: -100,
                       opacity: 0,
-                    }}>
+                    }}
+                  >
                     <PositionBox role="button" onClick={setShowPositionModal}>
                       <div className="d-flex justify-content-center">
                         <AssetCircleContainer color={color} size={48}>
@@ -437,7 +442,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
                         show={true}
                         role="button"
                         onClick={(e) => {
-                            setShowPauseModal(e);
+                          setShowPauseModal(e);
                         }}
                       >
                         <PauseButtonText color={color} size={12}>
@@ -472,7 +477,21 @@ const YourPosition: React.FC<YourPositionProps> = ({
       }
     }
     return <></>;
-  }, [position, vaultAccount, hasPausedAndBalance]);
+  }, [
+    position,
+    vaultAccount,
+    hasPausedAndBalance,
+    Logo,
+    alwaysShowPosition,
+    asset,
+    color,
+    decimals,
+    roi,
+    setPositionState,
+    setShowPauseModal,
+    setShowPositionModal,
+    variant,
+  ]);
 
   const pausedPositionWidget = useMemo(() => {
     switch (variant) {
@@ -489,12 +508,15 @@ const YourPosition: React.FC<YourPositionProps> = ({
                     ease: "easeInOut",
                   }}
                   initial={{
+                    x: 100,
                     opacity: 0,
                   }}
                   animate={{
+                    x: 0,
                     opacity: 1,
                   }}
                   exit={{
+                    x: -100,
                     opacity: 0,
                   }}
                 >
@@ -521,7 +543,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
                       show={true}
                       role="button"
                       onClick={(e) => {
-                          setShowResumeModal(e);
+                        setShowResumeModal(e);
                       }}
                     >
                       <PauseButtonText color={color} size={12}>
@@ -557,7 +579,6 @@ const YourPosition: React.FC<YourPositionProps> = ({
         return (
           <MobileContainer color={color}>
             <MobileFloatingPositionCard color={color}>
-
               <AnimatePresence exitBeforeEnter initial={false}>
                 <motion.div
                   key={"m-pause"}
@@ -567,20 +588,24 @@ const YourPosition: React.FC<YourPositionProps> = ({
                     ease: "easeInOut",
                   }}
                   initial={{
+                    x: 100,
                     opacity: 0,
                   }}
                   animate={{
+                    x: 0,
                     opacity: 1,
                   }}
                   exit={{
+                    x: -100,
                     opacity: 0,
-                  }}>
-            <PositionBox role="button" onClick={setShowPositionModal}>
-                      <div className="d-flex justify-content-center p-2">
-                        <ActionLogoContainer color={color} size={32}>
-                          <WidgetPauseIcon color={color} width={"100%"} />
-                        </ActionLogoContainer>
-                      </div>
+                  }}
+                >
+                  <PositionBox role="button" onClick={setShowPositionModal}>
+                    <div className="d-flex justify-content-center p-2">
+                      <ActionLogoContainer color={color} size={32}>
+                        <WidgetPauseIcon color={color} width={"100%"} />
+                      </ActionLogoContainer>
+                    </div>
                     <PositionContainer color={color}>
                       <div className="d-flex flex-column justify-content-center p-2">
                         <PositionInfoText size={10} color={colors.text}>
@@ -607,14 +632,14 @@ const YourPosition: React.FC<YourPositionProps> = ({
                       show={true}
                       role="button"
                       onClick={(e) => {
-                          setShowResumeModal(e);
+                        setShowResumeModal(e);
                       }}
                     >
                       <PauseButtonText color={color} size={12}>
                         {isPaused ? "RESUME" : "PAUSE"}
                       </PauseButtonText>
                     </PauseButton>
-                    </PositionBox>
+                  </PositionBox>
                 </motion.div>
               </AnimatePresence>
               <TabContainer show={hasPausedAndBalance}>
@@ -639,10 +664,20 @@ const YourPosition: React.FC<YourPositionProps> = ({
             </MobileFloatingPositionCard>
           </MobileContainer>
         );
-
-        return <></>;
     }
-  }, [pausedAmount, vaultAccount, position, hasPausedAndBalance]);
+  }, [
+    position,
+    pausedAmount,
+    hasPausedAndBalance,
+    asset,
+    color,
+    isPaused,
+    roi,
+    setPositionState,
+    setShowPositionModal,
+    setShowResumeModal,
+    variant,
+  ]);
 
   const render = useMemo(() => {
     // if (!vaultAccount) {
@@ -671,7 +706,14 @@ const YourPosition: React.FC<YourPositionProps> = ({
           return pausedPositionWidget;
       }
     }
-  }, [pausedAmount, vaultAccount, position]);
+  }, [
+    vaultAccount,
+    position,
+    decimals,
+    isPaused,
+    pausedPositionWidget,
+    positionWidget,
+  ]);
 
   return render;
 };
