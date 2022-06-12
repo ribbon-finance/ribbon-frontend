@@ -30,7 +30,8 @@ import { useChain } from "shared/lib/hooks/chainContext";
 import { RibbonVaultPauser } from "shared/lib/codegen";
 import useVaultPauser from "shared/lib/hooks/useV2VaultPauserContract";
 import { useLatestOption } from "shared/lib/hooks/useLatestOption";
-import { isPracticallyZero } from "shared/lib/utils/math";
+import { isPracticallyZero, formatBigNumber } from "shared/lib/utils/math";
+import { BigNumber } from "ethers";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -89,18 +90,16 @@ const ResumePositionModal: React.FC = () => {
   const { addPendingTransaction } = usePendingTransactions();
   const [txId, setTxId] = useState("");
   const contract = useVaultPauser() as RibbonVaultPauser;
-  const [resumeAmount, setResumeAmount] = useState(0);
+  const [resumeAmount, setResumeAmount] = useState(BigNumber.from(0));
   const vaultAddress = VaultAddressMap[vaultOption][vaultVersion];
 
   // get the paused position to be resumed
+  // temporary: set the paused amount and canResume bool;
+  // to be replaced with subgraph data
   useEffect(() => {
     if (contract && vaultAddress && account) {
-      contract.getPausePosition(vaultAddress, account).then((amount: any) => {
-        setResumeAmount(
-          isPracticallyZero(amount[1], decimals)
-            ? 0
-            : parseFloat(formatUnits(amount[1], decimals))
-        );
+      contract.getPausePosition(vaultAddress, account).then((res) => {
+        setResumeAmount(res[1]);
       });
     }
   }, [contract, vaultAddress, account, decimals]);
@@ -203,7 +202,8 @@ const ResumePositionModal: React.FC = () => {
                       Position
                     </SecondaryText>
                     <Title fontSize={14} className="ml-auto">
-                      {resumeAmount} {getAssetDisplay(asset)}
+                      {formatBigNumber(resumeAmount, decimals)}{" "}
+                      {getAssetDisplay(asset)}
                     </Title>
                   </div>
                 </BaseModalContentColumn>
@@ -277,6 +277,7 @@ const ResumePositionModal: React.FC = () => {
     asset,
     resumeAmount,
     expiryTime,
+    decimals,
     t,
     color,
     handleActionPressed,

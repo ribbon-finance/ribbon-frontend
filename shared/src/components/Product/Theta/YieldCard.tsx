@@ -60,6 +60,8 @@ import { calculateBaseRewards } from "../../../utils/governanceMath";
 import { useAssetsPrice } from "../../../hooks/useAssetPrice";
 import { RibbonVaultPauser } from "shared/lib/codegen";
 import useVaultPauser from "shared/lib/hooks/useV2VaultPauserContract";
+import { BigNumber } from "ethers";
+
 const { formatUnits } = ethers.utils;
 
 const CardContainer = styled.div`
@@ -587,6 +589,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     vaultVersion,
     strikePrice,
     strikePriceColor,
+    isActiveVault,
     currentPrice,
     Range,
     vault,
@@ -689,7 +692,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const { account } = useWeb3Wallet();
   const contract = useVaultPauser() as RibbonVaultPauser;
   const vaultAddress = VaultAddressMap[vault][vaultVersion];
-  const [pausedAmount, setPausedAmount] = useState(0);
+  const [pausedAmount, setPausedAmount] = useState(BigNumber.from(0));
   const [positionState, setPositionState] = useState<
     "position" | "paused" | "partiallyPaused"
   >("position");
@@ -698,35 +701,31 @@ const YieldCard: React.FC<YieldCardProps> = ({
   // to be replaced with subgraph data
   useEffect(() => {
     if (contract && vaultAddress && account) {
-      contract.getPausePosition(vaultAddress, account).then((value: any) => {
-        setPausedAmount(
-          isPracticallyZero(value[1], decimals)
-            ? 0
-            : parseFloat(formatUnits(value[1], decimals))
-        );
+      contract.getPausePosition(vaultAddress, account).then((res) => {
+        setPausedAmount(res[1]);
       });
     }
   }, [contract, vaultAddress, account, decimals]);
 
   // set state of user's position
   useMemo(() => {
+    if (!vaultAccount) {
+      return;
+    }
     if (
-      pausedAmount > 0 &&
-      vaultAccount &&
+      !isPracticallyZero(pausedAmount, decimals) &&
       isPracticallyZero(vaultAccount.totalDeposits, decimals)
     ) {
       setPositionState("paused");
     }
     if (
-      pausedAmount === 0 &&
-      vaultAccount &&
+      isPracticallyZero(pausedAmount, decimals) &&
       !isPracticallyZero(vaultAccount.totalDeposits, decimals)
     ) {
       setPositionState("position");
     }
     if (
-      pausedAmount > 0 &&
-      vaultAccount &&
+      !isPracticallyZero(pausedAmount, decimals) &&
       isPracticallyZero(vaultAccount.totalDeposits, decimals)
     ) {
       setPositionState("partiallyPaused");
@@ -781,6 +780,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     decimals,
     chainId,
     t,
+    color,
     vaultAccount,
     asset,
     positionState,

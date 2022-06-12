@@ -30,6 +30,7 @@ import { RibbonV2ThetaVault } from "shared/lib/codegen";
 import useV2VaultContract from "shared/lib/hooks/useV2VaultContract";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { useLatestOption } from "shared/lib/hooks/useLatestOption";
+import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 
 const FloatingContainer = styled.div`
   display: flex;
@@ -89,14 +90,17 @@ const PausePositionModal: React.FC = () => {
   const contract = useV2VaultContract(vaultOption) as RibbonV2ThetaVault;
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const vaultAccount = vaultAccounts[vaultOption];
+  const {
+    data: { lockedBalanceInAsset },
+  } = useV2VaultData(vaultOption);
 
   const pauseAmount = useMemo(() => {
     if (!vaultAccount) {
       return "0";
     }
 
-    return formatBigNumber(vaultAccount.totalBalance, decimals);
-  }, [vaultAccount, decimals]);
+    return formatBigNumber(lockedBalanceInAsset, decimals);
+  }, [vaultAccount, lockedBalanceInAsset, decimals]);
 
   // get the date of next option expiry
   const expiryDate = useMemo(() => {

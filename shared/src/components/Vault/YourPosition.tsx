@@ -23,6 +23,8 @@ import { RibbonVaultPauser } from "shared/lib/codegen";
 import useVaultPauser from "shared/lib/hooks/useV2VaultPauserContract";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { AnimatePresence, motion } from "framer-motion";
+import { BigNumber } from "ethers";
+import ButtonArrow from "../Common/ButtonArrow";
 
 const DesktopContainer = styled.div`
   display: flex;
@@ -176,17 +178,18 @@ const YourPosition: React.FC<YourPositionProps> = ({
   const [, setVaultPositionModal] = useGlobalState("vaultPositionModal");
   const [, setVaultPauseModal] = useGlobalState("vaultPauseModal");
   const [, setVaultResumeModal] = useGlobalState("vaultResumeModal");
-  const [pausedAmount, setPausedAmount] = useState(0);
+  const [pausedAmount, setPausedAmount] = useState(BigNumber.from(0));
   // todo: disable pause and resume buttons
   const [canResume, setCanResume] = useState(false);
-  const [widgetState, setPositionWidget] = useState<
-    "position" | "pausedPosition"
-  >("position");
+  const [canPause, setCanPause] = useState(false);
+  const [widgetState, setPositionWidget] = useState<"position" | "paused">(
+    "position"
+  );
   const [positionState, setPositionState] = useState<
     "position" | "paused" | "partiallyPaused"
-  >("position");
+  >("partiallyPaused");
   const {
-    data: { asset, round, decimals },
+    data: { asset, lockedBalanceInAsset, round, decimals },
   } = useV2VaultData(vaultOption);
 
   const { account } = useWeb3Wallet();
@@ -197,37 +200,34 @@ const YourPosition: React.FC<YourPositionProps> = ({
   // to be replaced with subgraph data
   useEffect(() => {
     if (contract && vaultAddress && account) {
-      contract.getPausePosition(vaultAddress, account).then((value: any) => {
-        setPausedAmount(
-          isPracticallyZero(value[1], decimals)
-            ? 0
-            : parseFloat(formatUnits(value[1], decimals))
-        );
-        setCanResume(value[0] < round);
+      contract.getPausePosition(vaultAddress, account).then((res) => {
+        setPausedAmount(res[1]);
+        setCanResume(res[0] < round);
+        setCanPause(!isPracticallyZero(lockedBalanceInAsset, decimals));
       });
     }
-  }, [contract, vaultAddress, account, decimals, round]);
+  }, [contract, vaultAddress, account, lockedBalanceInAsset, decimals, round]);
 
   // set state of user's position
   useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
+    if (!vaultAccount) {
+      return;
+    }
     if (
-      pausedAmount > 0 &&
-      vaultAccount &&
+      !isPracticallyZero(pausedAmount, decimals) &&
       isPracticallyZero(vaultAccount.totalDeposits, decimals)
     ) {
       setPositionState("paused");
     }
     if (
-      pausedAmount === 0 &&
-      vaultAccount &&
+      isPracticallyZero(pausedAmount, decimals) &&
       !isPracticallyZero(vaultAccount.totalDeposits, decimals)
     ) {
       setPositionState("position");
     }
     if (
-      pausedAmount > 0 &&
-      vaultAccount &&
+      !isPracticallyZero(pausedAmount, decimals) &&
       isPracticallyZero(vaultAccount.totalDeposits, decimals)
     ) {
       setPositionState("partiallyPaused");
@@ -324,15 +324,12 @@ const YourPosition: React.FC<YourPositionProps> = ({
                       ease: "easeInOut",
                     }}
                     initial={{
-                      x: 100,
                       opacity: 0,
                     }}
                     animate={{
-                      x: 0,
                       opacity: 1,
                     }}
                     exit={{
-                      x: -100,
                       opacity: 0,
                     }}
                   >
@@ -368,18 +365,24 @@ const YourPosition: React.FC<YourPositionProps> = ({
                           </div>
                         </div>
                       </PositionContainer>
-                      <ActionButton
-                        color={color}
-                        show={true}
-                        role="button"
-                        onClick={(e) => {
-                          setShowPauseModal(e);
-                        }}
-                      >
-                        <ActionButtonText color={color} size={12}>
-                          PAUSE
-                        </ActionButtonText>
-                      </ActionButton>
+                      {canPause ? (
+                        <ActionButton
+                          color={color}
+                          show={true}
+                          role="button"
+                          onClick={(e) => {
+                            setShowPauseModal(e);
+                          }}
+                        >
+                          <ActionButtonText color={color} size={12}>
+                            PAUSE
+                          </ActionButtonText>
+                        </ActionButton>
+                      ) : (
+                        <div className="d-flex align-items-center ml-auto mr-3">
+                          <ButtonArrow isOpen={false} color={colors.text} />
+                        </div>
+                      )}
                     </PositionBox>
                   </motion.div>
                 </AnimatePresence>
@@ -396,9 +399,9 @@ const YourPosition: React.FC<YourPositionProps> = ({
                     marginLeft={12}
                     color={colors.text}
                     role="button"
-                    selected={widgetState === "pausedPosition"}
+                    selected={widgetState === "paused"}
                     onClick={(e) => {
-                      setPositionWidgetHandler(e, "pausedPosition");
+                      setPositionWidgetHandler(e, "paused");
                     }}
                   ></TabButton>
                 </TabContainer>
@@ -418,15 +421,12 @@ const YourPosition: React.FC<YourPositionProps> = ({
                       ease: "easeInOut",
                     }}
                     initial={{
-                      x: 100,
                       opacity: 0,
                     }}
                     animate={{
-                      x: 0,
                       opacity: 1,
                     }}
                     exit={{
-                      x: -100,
                       opacity: 0,
                     }}
                   >
@@ -462,18 +462,24 @@ const YourPosition: React.FC<YourPositionProps> = ({
                           </div>
                         </div>
                       </PositionContainer>
-                      <ActionButton
-                        color={color}
-                        show={true}
-                        role="button"
-                        onClick={(e) => {
-                          setShowPauseModal(e);
-                        }}
-                      >
-                        <ActionButtonText color={color} size={12}>
-                          PAUSE
-                        </ActionButtonText>
-                      </ActionButton>
+                      {canPause ? (
+                        <ActionButton
+                          color={color}
+                          show={true}
+                          role="button"
+                          onClick={(e) => {
+                            setShowPauseModal(e);
+                          }}
+                        >
+                          <ActionButtonText color={color} size={12}>
+                            PAUSE
+                          </ActionButtonText>
+                        </ActionButton>
+                      ) : (
+                        <div className="d-flex align-items-center ml-auto mr-3">
+                          <ButtonArrow isOpen={false} color={colors.text} />
+                        </div>
+                      )}
                     </PositionBox>
                   </motion.div>
                 </AnimatePresence>
@@ -490,9 +496,9 @@ const YourPosition: React.FC<YourPositionProps> = ({
                     marginLeft={12}
                     color={colors.text}
                     role="button"
-                    selected={widgetState === "pausedPosition"}
+                    selected={widgetState === "paused"}
                     onClick={(e) => {
-                      setPositionWidgetHandler(e, "pausedPosition");
+                      setPositionWidgetHandler(e, "paused");
                     }}
                   ></TabButton>
                 </TabContainer>
@@ -509,6 +515,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
     vaultAccount,
     Logo,
     alwaysShowPosition,
+    canPause,
     asset,
     color,
     decimals,
@@ -533,15 +540,12 @@ const YourPosition: React.FC<YourPositionProps> = ({
                     ease: "easeInOut",
                   }}
                   initial={{
-                    x: 100,
                     opacity: 0,
                   }}
                   animate={{
-                    x: 0,
                     opacity: 1,
                   }}
                   exit={{
-                    x: -100,
                     opacity: 0,
                   }}
                 >
@@ -558,23 +562,29 @@ const YourPosition: React.FC<YourPositionProps> = ({
                         </PositionInfoText>
                         <div className="d-flex">
                           <PositionInfoText size={14}>
-                            {pausedAmount}
+                            {formatBigNumber(pausedAmount, decimals)}
                           </PositionInfoText>
                         </div>
                       </div>
                     </PositionContainer>
-                    <ActionButton
-                      color={color}
-                      show={true}
-                      role="button"
-                      onClick={(e) => {
-                        setShowResumeModal(e);
-                      }}
-                    >
-                      <ActionButtonText color={color} size={12}>
-                        PAUSE
-                      </ActionButtonText>
-                    </ActionButton>
+                    {canResume ? (
+                      <ActionButton
+                        color={color}
+                        show={true}
+                        role="button"
+                        onClick={(e) => {
+                          setShowResumeModal(e);
+                        }}
+                      >
+                        <ActionButtonText color={color} size={12}>
+                          RESUME
+                        </ActionButtonText>
+                      </ActionButton>
+                    ) : (
+                      <div className="d-flex align-items-center ml-auto mr-3">
+                        <ButtonArrow isOpen={false} color={colors.text} />
+                      </div>
+                    )}
                   </PositionBox>
                 </motion.div>
               </AnimatePresence>
@@ -591,9 +601,9 @@ const YourPosition: React.FC<YourPositionProps> = ({
                   marginLeft={12}
                   color={colors.text}
                   role="button"
-                  selected={widgetState === "pausedPosition"}
+                  selected={widgetState === "paused"}
                   onClick={(e) => {
-                    setPositionWidgetHandler(e, "pausedPosition");
+                    setPositionWidgetHandler(e, "paused");
                   }}
                 ></TabButton>
               </TabContainer>
@@ -613,15 +623,12 @@ const YourPosition: React.FC<YourPositionProps> = ({
                     ease: "easeInOut",
                   }}
                   initial={{
-                    x: 100,
                     opacity: 0,
                   }}
                   animate={{
-                    x: 0,
                     opacity: 1,
                   }}
                   exit={{
-                    x: -100,
                     opacity: 0,
                   }}
                 >
@@ -638,7 +645,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
                         </PositionInfoText>
                         <div className="d-flex">
                           <PositionInfoText size={14}>
-                            {pausedAmount}
+                            {formatBigNumber(pausedAmount, decimals)}
                           </PositionInfoText>
                           <PositionInfoText
                             size={10}
@@ -652,18 +659,24 @@ const YourPosition: React.FC<YourPositionProps> = ({
                         </div>
                       </div>
                     </PositionContainer>
-                    <ActionButton
-                      color={color}
-                      show={true}
-                      role="button"
-                      onClick={(e) => {
-                        setShowResumeModal(e);
-                      }}
-                    >
-                      <ActionButtonText color={color} size={12}>
-                        PAUSE
-                      </ActionButtonText>
-                    </ActionButton>
+                    {canResume ? (
+                      <ActionButton
+                        color={color}
+                        show={true}
+                        role="button"
+                        onClick={(e) => {
+                          setShowResumeModal(e);
+                        }}
+                      >
+                        <ActionButtonText color={color} size={12}>
+                          RESUME
+                        </ActionButtonText>
+                      </ActionButton>
+                    ) : (
+                      <div className="d-flex align-items-center ml-auto mr-3">
+                        <ButtonArrow isOpen={false} color={colors.text} />
+                      </div>
+                    )}
                   </PositionBox>
                 </motion.div>
               </AnimatePresence>
@@ -680,9 +693,9 @@ const YourPosition: React.FC<YourPositionProps> = ({
                   marginLeft={12}
                   color={colors.text}
                   role="button"
-                  selected={widgetState === "pausedPosition"}
+                  selected={widgetState === "paused"}
                   onClick={(e) => {
-                    setPositionWidgetHandler(e, "pausedPosition");
+                    setPositionWidgetHandler(e, "paused");
                   }}
                 ></TabButton>
               </TabContainer>
@@ -695,6 +708,8 @@ const YourPosition: React.FC<YourPositionProps> = ({
     widgetState,
     setPositionWidgetHandler,
     pausedAmount,
+    canResume,
+    decimals,
     asset,
     color,
     roi,
@@ -704,9 +719,9 @@ const YourPosition: React.FC<YourPositionProps> = ({
   ]);
 
   const render = useMemo(() => {
-    if (!vaultAccount) {
-      return <></>;
-    }
+    // if (!vaultAccount) {
+    //   return <></>;
+    // }
     // return paused widget if account has paused balance and no vault balance
     switch (positionState) {
       case "position":
@@ -717,7 +732,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
         switch (widgetState) {
           case "position":
             return positionWidget;
-          case "pausedPosition":
+          case "paused":
             return pausedPositionWidget;
         }
     }
