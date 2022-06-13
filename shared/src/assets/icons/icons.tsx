@@ -455,8 +455,8 @@ export const ResumeIcon: React.FC<SVGPropsWithColor> = ({
   >
     <path
       d="M26.166 24.5L37.8327 32L26.166 39.5V24.5Z"
-      fill="#627EEA"
-      stroke="#627EEA"
+      fill={color || "white"}
+      stroke={color || "white"}
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
