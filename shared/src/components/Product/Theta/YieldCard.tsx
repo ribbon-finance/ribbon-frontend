@@ -58,8 +58,8 @@ import TooltipExplanation from "../../Common/TooltipExplanation";
 import HelpInfo from "../../Common/HelpInfo";
 import { calculateBaseRewards } from "../../../utils/governanceMath";
 import { useAssetsPrice } from "../../../hooks/useAssetPrice";
-import { RibbonVaultPauser } from "shared/lib/codegen";
-import useVaultPauser from "shared/lib/hooks/useV2VaultPauserContract";
+import { RibbonVaultPauser } from "../../../codegen";
+import useVaultPauser from "../../../hooks/useV2VaultPauserContract";
 import { BigNumber } from "ethers";
 
 const { formatUnits } = ethers.utils;
