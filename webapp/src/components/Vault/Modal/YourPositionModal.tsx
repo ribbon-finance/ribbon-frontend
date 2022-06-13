@@ -50,7 +50,7 @@ const InfoLabel = styled(SecondaryText)`
 const YourPositionModal: React.FC = () => {
   const [vaultPositionModal, setVaultPositionModal] =
     useGlobalState("vaultPositionModal");
-  const [pausedAmount, setPausedAmount] = useState(0);
+  const [pausedAmount, setPausedAmount] = useState(BigNumber.from(0));
   const { account } = useWeb3Wallet();
   const contract = useVaultPauser() as RibbonVaultPauser;
 
@@ -77,15 +77,12 @@ const YourPositionModal: React.FC = () => {
     },
   } = useV2VaultData(vaultOption);
 
-  // temporary: set paused amount;
+  // temporary: set the paused amount and canResume bool;
+  // to be replaced with subgraph data
   useEffect(() => {
     if (contract && vaultAddress && account) {
-      contract.getPausePosition(vaultAddress, account).then((amount: any) => {
-        setPausedAmount(
-          isPracticallyZero(amount[1], decimals)
-            ? 0
-            : parseFloat(formatUnits(amount[1], decimals))
-        );
+      contract.getPausePosition(vaultAddress, account).then((res) => {
+        setPausedAmount(res[1]);
       });
     }
   }, [contract, vaultAddress, account, decimals]);
@@ -224,7 +221,8 @@ const YourPositionModal: React.FC = () => {
                   )}
                 />
                 <Title className="ml-auto">
-                  {pausedAmount} {getAssetDisplay(asset)}
+                  {formatBigNumber(pausedAmount, decimals)}{" "}
+                  {getAssetDisplay(asset)}
                 </Title>
               </div>
             </BaseModalContentColumn>
