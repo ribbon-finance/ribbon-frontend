@@ -712,22 +712,18 @@ const YieldCard: React.FC<YieldCardProps> = ({
     if (!vaultAccount) {
       return;
     }
-    if (
-      !isPracticallyZero(pausedAmount, decimals) &&
-      isPracticallyZero(vaultAccount.totalDeposits, decimals)
-    ) {
+    const isPaused = !isPracticallyZero(pausedAmount, decimals);
+    const hasBalanceAfterPause = !isPracticallyZero(
+      vaultAccount.totalDeposits.sub(pausedAmount),
+      decimals
+    );
+    if (isPaused && !hasBalanceAfterPause) {
       setPositionState("paused");
     }
-    if (
-      isPracticallyZero(pausedAmount, decimals) &&
-      !isPracticallyZero(vaultAccount.totalDeposits, decimals)
-    ) {
+    if (!isPaused && hasBalanceAfterPause) {
       setPositionState("position");
     }
-    if (
-      !isPracticallyZero(pausedAmount, decimals) &&
-      isPracticallyZero(vaultAccount.totalDeposits, decimals)
-    ) {
+    if (isPaused && hasBalanceAfterPause) {
       setPositionState("partiallyPaused");
     }
   }, [vaultAccount, decimals, pausedAmount]);
