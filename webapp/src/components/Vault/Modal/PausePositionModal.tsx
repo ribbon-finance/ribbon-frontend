@@ -285,7 +285,7 @@ const PausePositionModal: React.FC = () => {
   return (
     <BasicModal
       show={vaultPauseModal.show}
-      onClose={() => handleClose()}
+      onClose={handleClose}
       height={495}
       animationProps={{
         key: step,

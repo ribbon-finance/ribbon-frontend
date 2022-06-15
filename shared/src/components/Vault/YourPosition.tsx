@@ -200,13 +200,23 @@ const YourPosition: React.FC<YourPositionProps> = ({
   // to be replaced with subgraph data
   useEffect(() => {
     if (contract && vaultAddress && account) {
-      contract.getPausePosition(vaultAddress, account).then((res) => {
-        setPausedAmount(res[1]);
-        setCanResume(res[0] < round);
-        setCanPause(!isPracticallyZero(lockedBalanceInAsset, decimals));
-      });
+      contract
+        .getPausePosition(vaultAddress, account)
+        .then(([pauseRound, pauseAmount]) => {
+          setPausedAmount(pauseAmount);
+          setCanResume(pauseRound !== 0 && pauseRound < round); // edge case round returns 0
+          setCanPause(!isPracticallyZero(lockedBalanceInAsset, decimals));
+        });
     }
-  }, [contract, vaultAddress, account, lockedBalanceInAsset, decimals, round]);
+  }, [
+    contract,
+    canResume,
+    vaultAddress,
+    account,
+    lockedBalanceInAsset,
+    decimals,
+    round,
+  ]);
 
   // set state of user's position
   useMemo(() => {

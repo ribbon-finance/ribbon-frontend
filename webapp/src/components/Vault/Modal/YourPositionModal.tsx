@@ -66,15 +66,7 @@ const YourPositionModal: React.FC = () => {
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const { data: stakingPoolData } = useLiquidityMiningPoolData(vaultOption);
   const {
-    data: {
-      asset,
-      decimals,
-      depositBalanceInAsset,
-      // lockedBalanceInAsset,
-      // round,
-      // totalBalance,
-      // withdrawals,
-    },
+    data: { asset, decimals, depositBalanceInAsset },
   } = useV2VaultData(vaultOption);
 
   // temporary: set the paused amount and canResume bool;

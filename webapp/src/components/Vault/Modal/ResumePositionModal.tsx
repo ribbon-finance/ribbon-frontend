@@ -98,9 +98,11 @@ const ResumePositionModal: React.FC = () => {
   // to be replaced with subgraph data
   useEffect(() => {
     if (contract && vaultAddress && account) {
-      contract.getPausePosition(vaultAddress, account).then((res) => {
-        setResumeAmount(res[1]);
-      });
+      contract
+        .getPausePosition(vaultAddress, account)
+        .then(([, pauseAmount]) => {
+          setResumeAmount(pauseAmount);
+        });
     }
   }, [contract, vaultAddress, account, decimals]);
 
@@ -290,7 +292,7 @@ const ResumePositionModal: React.FC = () => {
   return (
     <BasicModal
       show={vaultResumeModal.show}
-      onClose={() => handleClose()}
+      onClose={handleClose}
       height={435}
       animationProps={{
         key: step,
