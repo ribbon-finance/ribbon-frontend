@@ -701,7 +701,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     if (contract && vaultAddress && account && !isSolanaVault(vault)) {
       contract
         .getPausePosition(vaultAddress, account)
-        .then(([pauseRound, pauseAmount]) => {
+        .then(([, pauseAmount]) => {
           setPausedAmount(pauseAmount);
         });
     }
@@ -726,7 +726,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     if (isPaused && hasBalanceAfterPause) {
       setPositionState("partiallyPaused");
     }
-  }, [positionState, vaultAccount, decimals, pausedAmount]);
+  }, [vaultAccount, decimals, pausedAmount]);
 
   const modalContentExtra = useMemo(() => {
     if (
