@@ -151,7 +151,10 @@ const YourPositionModal: React.FC = () => {
             <BaseModalContentColumn marginTop={8}>
               <Title fontSize={40} lineHeight={40}>
                 {vaultAccount
-                  ? formatBigNumber(vaultAccount.totalBalance, decimals)
+                  ? formatBigNumber(
+                      vaultAccount.totalBalance.add(pausedAmount),
+                      decimals
+                    )
                   : "0.00"}
               </Title>
             </BaseModalContentColumn>
