@@ -705,7 +705,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
         setPausedAmount(res[1]);
       });
     }
-  }, [contract, vaultAddress, account, decimals]);
+  }, [vault, contract, vaultAddress, account, decimals]);
 
   // set state of user's position
   useMemo(() => {

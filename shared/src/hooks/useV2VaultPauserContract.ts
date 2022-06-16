@@ -31,7 +31,7 @@ const useVaultPauser = (chainId: CHAINID): RibbonVaultPauser | undefined => {
     if (pauser) {
       setContract(pauser);
     }
-  }, [library, active]);
+  }, [library, active, chainId]);
 
   return contract;
 };
