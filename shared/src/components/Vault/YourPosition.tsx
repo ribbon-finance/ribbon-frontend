@@ -200,7 +200,6 @@ const YourPosition: React.FC<YourPositionProps> = ({
   // to be replaced with subgraph data
   useEffect(() => {
     if (contract && vaultAddress && account) {
-      console.log(vaultAddress, account);
       contract
         .getPausePosition(vaultAddress, account)
         .then(([pauseRound, pauseAmount]) => {

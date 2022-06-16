@@ -401,16 +401,16 @@ export const PauseIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
     <path
       d="M28 38V26"
       stroke={color || "white"}
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M36 38V26"
       stroke={color || "white"}
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -428,16 +428,16 @@ export const WidgetPauseIcon: React.FC<SVGPropsWithColor> = ({
     <path
       d="M14.3335 21V13"
       stroke={color || "white"}
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M19.6665 21V13"
       stroke={color || "white"}
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -457,9 +457,9 @@ export const ResumeIcon: React.FC<SVGPropsWithColor> = ({
       d="M26.166 24.5L37.8327 32L26.166 39.5V24.5Z"
       fill={color || "white"}
       stroke={color || "white"}
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
