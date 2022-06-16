@@ -16,6 +16,16 @@ interface GlobalStore {
     vaultOption?: VaultOptions;
     vaultVersion: VaultVersion;
   };
+  vaultPauseModal: {
+    show: boolean;
+    vaultOption?: VaultOptions;
+    vaultVersion: VaultVersion;
+  };
+  vaultResumeModal: {
+    show: boolean;
+    vaultOption?: VaultOptions;
+    vaultVersion: VaultVersion;
+  };
   notificationLastReadTimestamp?: number;
 }
 
@@ -27,7 +37,15 @@ export const initialState: GlobalStore = {
   airdropInfo: undefined,
   vaultPositionModal: {
     show: false,
-    vaultVersion: "v1" as VaultVersion,
+    vaultVersion: "v2" as VaultVersion,
+  },
+  vaultPauseModal: {
+    show: false,
+    vaultVersion: "v2" as VaultVersion,
+  },
+  vaultResumeModal: {
+    show: false,
+    vaultVersion: "v2" as VaultVersion,
   },
   notificationLastReadTimestamp: undefined,
 };

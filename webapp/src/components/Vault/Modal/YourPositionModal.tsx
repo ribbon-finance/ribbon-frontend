@@ -1,13 +1,14 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import styled from "styled-components";
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { isStakingEnabledForChainId } from "shared/lib/utils/env";
 import {
-  getAssets,
   getDisplayAssets,
   VaultList,
+  VaultAddressMap,
+  isSolanaVault,
 } from "shared/lib/constants/constants";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -18,11 +19,7 @@ import {
   Title,
 } from "shared/lib/designSystem";
 import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContainer";
-import {
-  getAssetDecimals,
-  getAssetDisplay,
-  getAssetLogo,
-} from "shared/lib/utils/asset";
+import { getAssetDisplay, getAssetLogo } from "shared/lib/utils/asset";
 import colors from "shared/lib/designSystem/colors";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 
@@ -32,10 +29,14 @@ import { BigNumber } from "ethers";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import CapBar from "shared/lib/components/Deposit/CapBar";
-import { useLiquidityMiningPoolData } from "shared/lib/hooks/web3DataContext";
+import {
+  useLiquidityMiningPoolData,
+  useV2VaultData,
+} from "shared/lib/hooks/web3DataContext";
 import { useGlobalState } from "shared/lib/store/store";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-
+import { RibbonVaultPauser } from "shared/lib/codegen";
+import useVaultPauser from "shared/lib/hooks/useV2VaultPauserContract";
 const ModalContent = styled(motion.div)`
   display: flex;
   flex-direction: column;
@@ -50,27 +51,41 @@ const InfoLabel = styled(SecondaryText)`
 const YourPositionModal: React.FC = () => {
   const [vaultPositionModal, setVaultPositionModal] =
     useGlobalState("vaultPositionModal");
+  const [pausedAmount, setPausedAmount] = useState(BigNumber.from(0));
+  const { account, chainId } = useWeb3Wallet();
+  const contract = useVaultPauser(chainId || 1) as RibbonVaultPauser;
+
+  // get the paused position to be resumed
+
   const vaultOption = vaultPositionModal.vaultOption || VaultList[0];
   const vaultVersion = vaultPositionModal.vaultVersion;
-
+  const vaultAddress = VaultAddressMap[vaultOption][vaultVersion];
   const color = getVaultColor(vaultOption);
-  const asset = getAssets(vaultOption);
-  const decimals = getAssetDecimals(asset);
   const Logo = getAssetLogo(getDisplayAssets(vaultOption));
 
-  const { chainId } = useWeb3Wallet();
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const { data: stakingPoolData } = useLiquidityMiningPoolData(vaultOption);
+  const {
+    data: { asset, decimals, depositBalanceInAsset },
+  } = useV2VaultData(vaultOption);
+
+  // temporary: set the paused amount and canResume bool;
+  // to be replaced with subgraph data
+  useEffect(() => {
+    if (contract && vaultAddress && account && !isSolanaVault(vaultOption)) {
+      contract.getPausePosition(vaultAddress, account).then((res) => {
+        setPausedAmount(res[1]);
+      });
+    }
+  }, [contract, vaultAddress, account, decimals, vaultOption]);
 
   const ModeList: string[] = isStakingEnabledForChainId(chainId)
     ? ["deposits", "staking"]
     : ["deposits"];
 
   const [mode, setMode] = useState<string>(ModeList[0]);
-
   const roi = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
-
     if (
       !vaultAccount ||
       isPracticallyZero(vaultAccount.totalDeposits, decimals)
@@ -136,7 +151,10 @@ const YourPositionModal: React.FC = () => {
             <BaseModalContentColumn marginTop={8}>
               <Title fontSize={40} lineHeight={40}>
                 {vaultAccount
-                  ? formatBigNumber(vaultAccount.totalBalance, decimals)
+                  ? formatBigNumber(
+                      vaultAccount.totalBalance.add(pausedAmount),
+                      decimals
+                    )
                   : "0.00"}
               </Title>
             </BaseModalContentColumn>
@@ -179,12 +197,30 @@ const YourPositionModal: React.FC = () => {
                     )}
                   />
                   <Title className="ml-auto">
-                    {formatBigNumber(queuedAmount, decimals)}{" "}
+                    {formatBigNumber(depositBalanceInAsset, decimals)}{" "}
                     {getAssetDisplay(asset)}
                   </Title>
                 </div>
               </BaseModalContentColumn>
             )}
+            <BaseModalContentColumn>
+              <div className="d-flex w-100 align-items-center ">
+                <SecondaryText>Paused</SecondaryText>
+                <TooltipExplanation
+                  title="PAUSED"
+                  explanation="The amount that is currently paused and not invested in the vault's strategy."
+                  renderContent={({ ref, ...triggerHandler }) => (
+                    <HelpInfo containerRef={ref} {...triggerHandler}>
+                      i
+                    </HelpInfo>
+                  )}
+                />
+                <Title className="ml-auto">
+                  {formatBigNumber(pausedAmount, decimals)}{" "}
+                  {getAssetDisplay(asset)}
+                </Title>
+              </div>
+            </BaseModalContentColumn>
             <BaseModalContentColumn>
               <div className="d-flex w-100 align-items-center ">
                 <SecondaryText>Yield Earned</SecondaryText>
@@ -267,8 +303,10 @@ const YourPositionModal: React.FC = () => {
     color,
     decimals,
     investedInStrategy,
+    depositBalanceInAsset,
     mode,
     queuedAmount,
+    pausedAmount,
     roi,
     stakingPoolData.claimableRbn,
     vaultAccount,
@@ -282,7 +320,7 @@ const YourPositionModal: React.FC = () => {
       onClose={() =>
         setVaultPositionModal((prev) => ({ ...prev, show: false }))
       }
-      height={ModeList.length > 1 ? 500 : 420}
+      height={ModeList.length > 1 ? 550 : 470}
     >
       <>
         <AnimatePresence initial={false} exitBeforeEnter>

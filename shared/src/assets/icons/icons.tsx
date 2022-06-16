@@ -391,6 +391,79 @@ export const TransferIcon: React.FC<SVGPropsWithColor> = ({
   </svg>
 );
 
+export const PauseIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
+  <svg
+    viewBox="0 0 64 64"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M28 38V26"
+      stroke={color || "white"}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M36 38V26"
+      stroke={color || "white"}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const WidgetPauseIcon: React.FC<SVGPropsWithColor> = ({
+  color,
+  ...props
+}) => (
+  <svg
+    viewBox="0 0 34 34"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M14.3335 21V13"
+      stroke={color || "white"}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M19.6665 21V13"
+      stroke={color || "white"}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+// todo: add resume svg
+export const ResumeIcon: React.FC<SVGPropsWithColor> = ({
+  color,
+  ...props
+}) => (
+  <svg
+    viewBox="0 0 64 64"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M26.166 24.5L37.8327 32L26.166 39.5V24.5Z"
+      fill={color || "white"}
+      stroke={color || "white"}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 export const PlayIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
   <svg
     width="60"

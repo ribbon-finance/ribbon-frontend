@@ -18,7 +18,7 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export declare namespace RibbonThetaVault {
+export declare namespace RibbonThetaVaultWithSwap {
   export type InitParamsStruct = {
     _owner: string;
     _keeper: string;
@@ -30,9 +30,6 @@ export declare namespace RibbonThetaVault {
     _optionsPremiumPricer: string;
     _strikeSelection: string;
     _premiumDiscount: BigNumberish;
-    _auctionDuration: BigNumberish;
-    _isUsdcAuction: boolean;
-    _swapPath: BytesLike;
   };
 
   export type InitParamsStructOutput = [
@@ -45,10 +42,7 @@ export declare namespace RibbonThetaVault {
     string,
     string,
     string,
-    number,
-    BigNumber,
-    boolean,
-    string
+    number
   ] & {
     _owner: string;
     _keeper: string;
@@ -60,9 +54,6 @@ export declare namespace RibbonThetaVault {
     _optionsPremiumPricer: string;
     _strikeSelection: string;
     _premiumDiscount: number;
-    _auctionDuration: BigNumber;
-    _isUsdcAuction: boolean;
-    _swapPath: string;
   };
 }
 
@@ -93,17 +84,51 @@ export declare namespace Vault {
   };
 }
 
+export declare namespace ISwap {
+  export type BidStruct = {
+    swapId: BigNumberish;
+    nonce: BigNumberish;
+    signerWallet: string;
+    sellAmount: BigNumberish;
+    buyAmount: BigNumberish;
+    referrer: string;
+    v: BigNumberish;
+    r: BytesLike;
+    s: BytesLike;
+  };
+
+  export type BidStructOutput = [
+    BigNumber,
+    BigNumber,
+    string,
+    BigNumber,
+    BigNumber,
+    string,
+    number,
+    string,
+    string
+  ] & {
+    swapId: BigNumber;
+    nonce: BigNumber;
+    signerWallet: string;
+    sellAmount: BigNumber;
+    buyAmount: BigNumber;
+    referrer: string;
+    v: number;
+    r: string;
+    s: string;
+  };
+}
+
 export interface RibbonV2ThetaVaultInterface extends utils.Interface {
   contractName: "RibbonV2ThetaVault";
   functions: {
     "DELAY()": FunctionFragment;
     "GAMMA_CONTROLLER()": FunctionFragment;
-    "GNOSIS_EASY_AUCTION()": FunctionFragment;
     "MARGIN_POOL()": FunctionFragment;
     "OTOKEN_FACTORY()": FunctionFragment;
     "PERIOD()": FunctionFragment;
-    "UNISWAP_FACTORY()": FunctionFragment;
-    "UNISWAP_ROUTER()": FunctionFragment;
+    "SWAP_CONTRACT()": FunctionFragment;
     "USDC()": FunctionFragment;
     "WETH()": FunctionFragment;
     "accountVaultBalance(address)": FunctionFragment;
@@ -113,10 +138,13 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
     "balanceOf(address)": FunctionFragment;
     "burnRemainingOTokens()": FunctionFragment;
     "cap()": FunctionFragment;
-    "commitAndClose()": FunctionFragment;
+    "closeRound()": FunctionFragment;
+    "commitNextOption()": FunctionFragment;
     "completeWithdraw()": FunctionFragment;
+    "createOffer()": FunctionFragment;
     "currentOption()": FunctionFragment;
     "currentOtokenPremium()": FunctionFragment;
+    "currentQueuedWithdrawShares()": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
     "deposit(uint256)": FunctionFragment;
@@ -126,9 +154,8 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
     "feeRecipient()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "initRounds(uint256)": FunctionFragment;
-    "initialize((address,address,address,uint256,uint256,string,string,address,address,uint32,uint256,bool,bytes),(bool,uint8,address,address,uint56,uint104))": FunctionFragment;
+    "initialize((address,address,address,uint256,uint256,string,string,address,address,uint32),(bool,uint8,address,address,uint56,uint104))": FunctionFragment;
     "initiateWithdraw(uint256)": FunctionFragment;
-    "isUsdcAuction()": FunctionFragment;
     "keeper()": FunctionFragment;
     "lastQueuedWithdrawAmount()": FunctionFragment;
     "lastStrikeOverrideRound()": FunctionFragment;
@@ -141,8 +168,10 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
     "optionAuctionID()": FunctionFragment;
     "optionState()": FunctionFragment;
     "optionsPremiumPricer()": FunctionFragment;
+    "optionsPurchaseQueue()": FunctionFragment;
     "overriddenStrikePrice()": FunctionFragment;
     "owner()": FunctionFragment;
+    "pausePosition()": FunctionFragment;
     "performanceFee()": FunctionFragment;
     "premiumDiscount()": FunctionFragment;
     "pricePerShare()": FunctionFragment;
@@ -155,20 +184,19 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
     "setFeeRecipient(address)": FunctionFragment;
     "setLiquidityGauge(address)": FunctionFragment;
     "setManagementFee(uint256)": FunctionFragment;
+    "setMinPrice(uint256)": FunctionFragment;
     "setNewKeeper(address)": FunctionFragment;
     "setOptionsPremiumPricer(address)": FunctionFragment;
     "setPerformanceFee(uint256)": FunctionFragment;
     "setPremiumDiscount(uint256)": FunctionFragment;
     "setStrikePrice(uint128)": FunctionFragment;
     "setStrikeSelection(address)": FunctionFragment;
-    "setSwapPath(bytes)": FunctionFragment;
-    "settleAuctionAndSwap(uint256)": FunctionFragment;
+    "setVaultPauser(address)": FunctionFragment;
+    "settleOffer((uint256,uint256,address,uint256,uint256,address,uint8,bytes32,bytes32)[])": FunctionFragment;
     "shareBalances(address)": FunctionFragment;
     "shares(address)": FunctionFragment;
     "stake(uint256)": FunctionFragment;
-    "startAuction()": FunctionFragment;
     "strikeSelection()": FunctionFragment;
-    "swapPath()": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalBalance()": FunctionFragment;
     "totalPending()": FunctionFragment;
@@ -177,6 +205,7 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "vaultParams()": FunctionFragment;
+    "vaultPauser()": FunctionFragment;
     "vaultState()": FunctionFragment;
     "withdrawInstantly(uint256)": FunctionFragment;
     "withdrawals(address)": FunctionFragment;
@@ -185,10 +214,6 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "DELAY", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "GAMMA_CONTROLLER",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "GNOSIS_EASY_AUCTION",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -201,11 +226,7 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "PERIOD", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "UNISWAP_FACTORY",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "UNISWAP_ROUTER",
+    functionFragment: "SWAP_CONTRACT",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "USDC", values?: undefined): string;
@@ -233,11 +254,19 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "cap", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "commitAndClose",
+    functionFragment: "closeRound",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "commitNextOption",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "completeWithdraw",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "createOffer",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -246,6 +275,10 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "currentOtokenPremium",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "currentQueuedWithdrawShares",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
@@ -283,15 +316,11 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [RibbonThetaVault.InitParamsStruct, Vault.VaultParamsStruct]
+    values: [RibbonThetaVaultWithSwap.InitParamsStruct, Vault.VaultParamsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "initiateWithdraw",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isUsdcAuction",
-    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "keeper", values?: undefined): string;
   encodeFunctionData(
@@ -333,10 +362,18 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "optionsPurchaseQueue",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "overriddenStrikePrice",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "pausePosition",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "performanceFee",
     values?: undefined
@@ -386,6 +423,10 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "setMinPrice",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setNewKeeper",
     values: [string]
   ): string;
@@ -410,12 +451,12 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "setSwapPath",
-    values: [BytesLike]
+    functionFragment: "setVaultPauser",
+    values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "settleAuctionAndSwap",
-    values: [BigNumberish]
+    functionFragment: "settleOffer",
+    values: [ISwap.BidStruct[]]
   ): string;
   encodeFunctionData(
     functionFragment: "shareBalances",
@@ -424,14 +465,9 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "shares", values: [string]): string;
   encodeFunctionData(functionFragment: "stake", values: [BigNumberish]): string;
   encodeFunctionData(
-    functionFragment: "startAuction",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "strikeSelection",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "swapPath", values?: undefined): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalBalance",
@@ -462,6 +498,10 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "vaultPauser",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "vaultState",
     values?: undefined
   ): string;
@@ -477,10 +517,6 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "GNOSIS_EASY_AUCTION",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "MARGIN_POOL",
     data: BytesLike
   ): Result;
@@ -490,11 +526,7 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "PERIOD", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "UNISWAP_FACTORY",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "UNISWAP_ROUTER",
+    functionFragment: "SWAP_CONTRACT",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "USDC", data: BytesLike): Result;
@@ -515,12 +547,17 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "cap", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "closeRound", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "commitAndClose",
+    functionFragment: "commitNextOption",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "completeWithdraw",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "createOffer",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -529,6 +566,10 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "currentOtokenPremium",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "currentQueuedWithdrawShares",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
@@ -555,10 +596,6 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "initiateWithdraw",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isUsdcAuction",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "keeper", data: BytesLike): Result;
@@ -598,10 +635,18 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "optionsPurchaseQueue",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "overriddenStrikePrice",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "pausePosition",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "performanceFee",
     data: BytesLike
@@ -645,6 +690,10 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setMinPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setNewKeeper",
     data: BytesLike
   ): Result;
@@ -669,11 +718,11 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setSwapPath",
+    functionFragment: "setVaultPauser",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "settleAuctionAndSwap",
+    functionFragment: "settleOffer",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -683,14 +732,9 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "shares", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "stake", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "startAuction",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "strikeSelection",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "swapPath", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalBalance",
@@ -717,6 +761,10 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
     functionFragment: "vaultParams",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "vaultPauser",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "vaultState", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "withdrawInstantly",
@@ -734,10 +782,10 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
     "CloseShort(address,uint256,address)": EventFragment;
     "CollectVaultFees(uint256,uint256,uint256,address)": EventFragment;
     "Deposit(address,uint256,uint256)": EventFragment;
-    "InitiateGnosisAuction(address,address,uint256,address)": EventFragment;
     "InitiateWithdraw(address,uint256,uint256)": EventFragment;
     "InstantWithdraw(address,uint256,uint256)": EventFragment;
     "ManagementFeeSet(uint256,uint256)": EventFragment;
+    "NewOffer(uint256,address,address,address,uint256,uint256,uint256)": EventFragment;
     "NewOptionStrikeSelected(uint256,uint256)": EventFragment;
     "OpenShort(address,uint256,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
@@ -754,10 +802,10 @@ export interface RibbonV2ThetaVaultInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "CloseShort"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "CollectVaultFees"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "InitiateGnosisAuction"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "InitiateWithdraw"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "InstantWithdraw"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ManagementFeeSet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "NewOffer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "NewOptionStrikeSelected"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OpenShort"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
@@ -817,19 +865,6 @@ export type DepositEvent = TypedEvent<
 
 export type DepositEventFilter = TypedEventFilter<DepositEvent>;
 
-export type InitiateGnosisAuctionEvent = TypedEvent<
-  [string, string, BigNumber, string],
-  {
-    auctioningToken: string;
-    biddingToken: string;
-    auctionCounter: BigNumber;
-    manager: string;
-  }
->;
-
-export type InitiateGnosisAuctionEventFilter =
-  TypedEventFilter<InitiateGnosisAuctionEvent>;
-
 export type InitiateWithdrawEvent = TypedEvent<
   [string, BigNumber, BigNumber],
   { account: string; shares: BigNumber; round: BigNumber }
@@ -852,6 +887,21 @@ export type ManagementFeeSetEvent = TypedEvent<
 
 export type ManagementFeeSetEventFilter =
   TypedEventFilter<ManagementFeeSetEvent>;
+
+export type NewOfferEvent = TypedEvent<
+  [BigNumber, string, string, string, BigNumber, BigNumber, BigNumber],
+  {
+    swapId: BigNumber;
+    seller: string;
+    oToken: string;
+    biddingToken: string;
+    minPrice: BigNumber;
+    minBidSize: BigNumber;
+    totalSize: BigNumber;
+  }
+>;
+
+export type NewOfferEventFilter = TypedEventFilter<NewOfferEvent>;
 
 export type NewOptionStrikeSelectedEvent = TypedEvent<
   [BigNumber, BigNumber],
@@ -945,17 +995,13 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
     GAMMA_CONTROLLER(overrides?: CallOverrides): Promise<[string]>;
 
-    GNOSIS_EASY_AUCTION(overrides?: CallOverrides): Promise<[string]>;
-
     MARGIN_POOL(overrides?: CallOverrides): Promise<[string]>;
 
     OTOKEN_FACTORY(overrides?: CallOverrides): Promise<[string]>;
 
     PERIOD(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    UNISWAP_FACTORY(overrides?: CallOverrides): Promise<[string]>;
-
-    UNISWAP_ROUTER(overrides?: CallOverrides): Promise<[string]>;
+    SWAP_CONTRACT(overrides?: CallOverrides): Promise<[string]>;
 
     USDC(overrides?: CallOverrides): Promise<[string]>;
 
@@ -988,7 +1034,11 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
     cap(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    commitAndClose(
+    closeRound(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    commitNextOption(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -996,9 +1046,17 @@ export interface RibbonV2ThetaVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    createOffer(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     currentOption(overrides?: CallOverrides): Promise<[string]>;
 
     currentOtokenPremium(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    currentQueuedWithdrawShares(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
@@ -1048,7 +1106,7 @@ export interface RibbonV2ThetaVault extends BaseContract {
     ): Promise<ContractTransaction>;
 
     initialize(
-      _initParams: RibbonThetaVault.InitParamsStruct,
+      _initParams: RibbonThetaVaultWithSwap.InitParamsStruct,
       _vaultParams: Vault.VaultParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -1057,8 +1115,6 @@ export interface RibbonV2ThetaVault extends BaseContract {
       numShares: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    isUsdcAuction(overrides?: CallOverrides): Promise<[boolean]>;
 
     keeper(overrides?: CallOverrides): Promise<[string]>;
 
@@ -1092,9 +1148,15 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
     optionsPremiumPricer(overrides?: CallOverrides): Promise<[string]>;
 
+    optionsPurchaseQueue(overrides?: CallOverrides): Promise<[string]>;
+
     overriddenStrikePrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
+
+    pausePosition(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     performanceFee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -1145,6 +1207,11 @@ export interface RibbonV2ThetaVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setMinPrice(
+      minPrice: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setNewKeeper(
       newKeeper: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1175,13 +1242,13 @@ export interface RibbonV2ThetaVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setSwapPath(
-      newSwapPath: BytesLike,
+    setVaultPauser(
+      newVaultPauser: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    settleAuctionAndSwap(
-      minAmountOut: BigNumberish,
+    settleOffer(
+      bids: ISwap.BidStruct[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -1202,13 +1269,7 @@ export interface RibbonV2ThetaVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    startAuction(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     strikeSelection(overrides?: CallOverrides): Promise<[string]>;
-
-    swapPath(overrides?: CallOverrides): Promise<[string]>;
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
@@ -1247,6 +1308,8 @@ export interface RibbonV2ThetaVault extends BaseContract {
       }
     >;
 
+    vaultPauser(overrides?: CallOverrides): Promise<[string]>;
+
     vaultState(overrides?: CallOverrides): Promise<
       [number, BigNumber, BigNumber, BigNumber, BigNumber] & {
         round: number;
@@ -1272,17 +1335,13 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
   GAMMA_CONTROLLER(overrides?: CallOverrides): Promise<string>;
 
-  GNOSIS_EASY_AUCTION(overrides?: CallOverrides): Promise<string>;
-
   MARGIN_POOL(overrides?: CallOverrides): Promise<string>;
 
   OTOKEN_FACTORY(overrides?: CallOverrides): Promise<string>;
 
   PERIOD(overrides?: CallOverrides): Promise<BigNumber>;
 
-  UNISWAP_FACTORY(overrides?: CallOverrides): Promise<string>;
-
-  UNISWAP_ROUTER(overrides?: CallOverrides): Promise<string>;
+  SWAP_CONTRACT(overrides?: CallOverrides): Promise<string>;
 
   USDC(overrides?: CallOverrides): Promise<string>;
 
@@ -1315,7 +1374,11 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
   cap(overrides?: CallOverrides): Promise<BigNumber>;
 
-  commitAndClose(
+  closeRound(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  commitNextOption(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1323,9 +1386,15 @@ export interface RibbonV2ThetaVault extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  createOffer(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   currentOption(overrides?: CallOverrides): Promise<string>;
 
   currentOtokenPremium(overrides?: CallOverrides): Promise<BigNumber>;
+
+  currentQueuedWithdrawShares(overrides?: CallOverrides): Promise<BigNumber>;
 
   decimals(overrides?: CallOverrides): Promise<number>;
 
@@ -1375,7 +1444,7 @@ export interface RibbonV2ThetaVault extends BaseContract {
   ): Promise<ContractTransaction>;
 
   initialize(
-    _initParams: RibbonThetaVault.InitParamsStruct,
+    _initParams: RibbonThetaVaultWithSwap.InitParamsStruct,
     _vaultParams: Vault.VaultParamsStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1384,8 +1453,6 @@ export interface RibbonV2ThetaVault extends BaseContract {
     numShares: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  isUsdcAuction(overrides?: CallOverrides): Promise<boolean>;
 
   keeper(overrides?: CallOverrides): Promise<string>;
 
@@ -1419,9 +1486,15 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
   optionsPremiumPricer(overrides?: CallOverrides): Promise<string>;
 
+  optionsPurchaseQueue(overrides?: CallOverrides): Promise<string>;
+
   overriddenStrikePrice(overrides?: CallOverrides): Promise<BigNumber>;
 
   owner(overrides?: CallOverrides): Promise<string>;
+
+  pausePosition(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   performanceFee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1472,6 +1545,11 @@ export interface RibbonV2ThetaVault extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setMinPrice(
+    minPrice: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   setNewKeeper(
     newKeeper: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -1502,13 +1580,13 @@ export interface RibbonV2ThetaVault extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setSwapPath(
-    newSwapPath: BytesLike,
+  setVaultPauser(
+    newVaultPauser: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  settleAuctionAndSwap(
-    minAmountOut: BigNumberish,
+  settleOffer(
+    bids: ISwap.BidStruct[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1529,13 +1607,7 @@ export interface RibbonV2ThetaVault extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  startAuction(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   strikeSelection(overrides?: CallOverrides): Promise<string>;
-
-  swapPath(overrides?: CallOverrides): Promise<string>;
 
   symbol(overrides?: CallOverrides): Promise<string>;
 
@@ -1574,6 +1646,8 @@ export interface RibbonV2ThetaVault extends BaseContract {
     }
   >;
 
+  vaultPauser(overrides?: CallOverrides): Promise<string>;
+
   vaultState(overrides?: CallOverrides): Promise<
     [number, BigNumber, BigNumber, BigNumber, BigNumber] & {
       round: number;
@@ -1599,17 +1673,13 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
     GAMMA_CONTROLLER(overrides?: CallOverrides): Promise<string>;
 
-    GNOSIS_EASY_AUCTION(overrides?: CallOverrides): Promise<string>;
-
     MARGIN_POOL(overrides?: CallOverrides): Promise<string>;
 
     OTOKEN_FACTORY(overrides?: CallOverrides): Promise<string>;
 
     PERIOD(overrides?: CallOverrides): Promise<BigNumber>;
 
-    UNISWAP_FACTORY(overrides?: CallOverrides): Promise<string>;
-
-    UNISWAP_ROUTER(overrides?: CallOverrides): Promise<string>;
+    SWAP_CONTRACT(overrides?: CallOverrides): Promise<string>;
 
     USDC(overrides?: CallOverrides): Promise<string>;
 
@@ -1640,13 +1710,19 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
     cap(overrides?: CallOverrides): Promise<BigNumber>;
 
-    commitAndClose(overrides?: CallOverrides): Promise<void>;
+    closeRound(overrides?: CallOverrides): Promise<void>;
+
+    commitNextOption(overrides?: CallOverrides): Promise<void>;
 
     completeWithdraw(overrides?: CallOverrides): Promise<void>;
+
+    createOffer(overrides?: CallOverrides): Promise<void>;
 
     currentOption(overrides?: CallOverrides): Promise<string>;
 
     currentOtokenPremium(overrides?: CallOverrides): Promise<BigNumber>;
+
+    currentQueuedWithdrawShares(overrides?: CallOverrides): Promise<BigNumber>;
 
     decimals(overrides?: CallOverrides): Promise<number>;
 
@@ -1691,7 +1767,7 @@ export interface RibbonV2ThetaVault extends BaseContract {
     ): Promise<void>;
 
     initialize(
-      _initParams: RibbonThetaVault.InitParamsStruct,
+      _initParams: RibbonThetaVaultWithSwap.InitParamsStruct,
       _vaultParams: Vault.VaultParamsStruct,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1700,8 +1776,6 @@ export interface RibbonV2ThetaVault extends BaseContract {
       numShares: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    isUsdcAuction(overrides?: CallOverrides): Promise<boolean>;
 
     keeper(overrides?: CallOverrides): Promise<string>;
 
@@ -1733,9 +1807,13 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
     optionsPremiumPricer(overrides?: CallOverrides): Promise<string>;
 
+    optionsPurchaseQueue(overrides?: CallOverrides): Promise<string>;
+
     overriddenStrikePrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<string>;
+
+    pausePosition(overrides?: CallOverrides): Promise<void>;
 
     performanceFee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1776,6 +1854,11 @@ export interface RibbonV2ThetaVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setMinPrice(
+      minPrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setNewKeeper(newKeeper: string, overrides?: CallOverrides): Promise<void>;
 
     setOptionsPremiumPricer(
@@ -1803,13 +1886,13 @@ export interface RibbonV2ThetaVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setSwapPath(
-      newSwapPath: BytesLike,
+    setVaultPauser(
+      newVaultPauser: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    settleAuctionAndSwap(
-      minAmountOut: BigNumberish,
+    settleOffer(
+      bids: ISwap.BidStruct[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1827,11 +1910,7 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
     stake(numShares: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    startAuction(overrides?: CallOverrides): Promise<void>;
-
     strikeSelection(overrides?: CallOverrides): Promise<string>;
-
-    swapPath(overrides?: CallOverrides): Promise<string>;
 
     symbol(overrides?: CallOverrides): Promise<string>;
 
@@ -1869,6 +1948,8 @@ export interface RibbonV2ThetaVault extends BaseContract {
         cap: BigNumber;
       }
     >;
+
+    vaultPauser(overrides?: CallOverrides): Promise<string>;
 
     vaultState(overrides?: CallOverrides): Promise<
       [number, BigNumber, BigNumber, BigNumber, BigNumber] & {
@@ -1950,19 +2031,6 @@ export interface RibbonV2ThetaVault extends BaseContract {
       round?: null
     ): DepositEventFilter;
 
-    "InitiateGnosisAuction(address,address,uint256,address)"(
-      auctioningToken?: string | null,
-      biddingToken?: string | null,
-      auctionCounter?: null,
-      manager?: string | null
-    ): InitiateGnosisAuctionEventFilter;
-    InitiateGnosisAuction(
-      auctioningToken?: string | null,
-      biddingToken?: string | null,
-      auctionCounter?: null,
-      manager?: string | null
-    ): InitiateGnosisAuctionEventFilter;
-
     "InitiateWithdraw(address,uint256,uint256)"(
       account?: string | null,
       shares?: null,
@@ -1993,6 +2061,25 @@ export interface RibbonV2ThetaVault extends BaseContract {
       managementFee?: null,
       newManagementFee?: null
     ): ManagementFeeSetEventFilter;
+
+    "NewOffer(uint256,address,address,address,uint256,uint256,uint256)"(
+      swapId?: null,
+      seller?: null,
+      oToken?: null,
+      biddingToken?: null,
+      minPrice?: null,
+      minBidSize?: null,
+      totalSize?: null
+    ): NewOfferEventFilter;
+    NewOffer(
+      swapId?: null,
+      seller?: null,
+      oToken?: null,
+      biddingToken?: null,
+      minPrice?: null,
+      minBidSize?: null,
+      totalSize?: null
+    ): NewOfferEventFilter;
 
     "NewOptionStrikeSelected(uint256,uint256)"(
       strikePrice?: null,
@@ -2080,17 +2167,13 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
     GAMMA_CONTROLLER(overrides?: CallOverrides): Promise<BigNumber>;
 
-    GNOSIS_EASY_AUCTION(overrides?: CallOverrides): Promise<BigNumber>;
-
     MARGIN_POOL(overrides?: CallOverrides): Promise<BigNumber>;
 
     OTOKEN_FACTORY(overrides?: CallOverrides): Promise<BigNumber>;
 
     PERIOD(overrides?: CallOverrides): Promise<BigNumber>;
 
-    UNISWAP_FACTORY(overrides?: CallOverrides): Promise<BigNumber>;
-
-    UNISWAP_ROUTER(overrides?: CallOverrides): Promise<BigNumber>;
+    SWAP_CONTRACT(overrides?: CallOverrides): Promise<BigNumber>;
 
     USDC(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2123,7 +2206,11 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
     cap(overrides?: CallOverrides): Promise<BigNumber>;
 
-    commitAndClose(
+    closeRound(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    commitNextOption(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -2131,9 +2218,15 @@ export interface RibbonV2ThetaVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    createOffer(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     currentOption(overrides?: CallOverrides): Promise<BigNumber>;
 
     currentOtokenPremium(overrides?: CallOverrides): Promise<BigNumber>;
+
+    currentQueuedWithdrawShares(overrides?: CallOverrides): Promise<BigNumber>;
 
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2177,7 +2270,7 @@ export interface RibbonV2ThetaVault extends BaseContract {
     ): Promise<BigNumber>;
 
     initialize(
-      _initParams: RibbonThetaVault.InitParamsStruct,
+      _initParams: RibbonThetaVaultWithSwap.InitParamsStruct,
       _vaultParams: Vault.VaultParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -2186,8 +2279,6 @@ export interface RibbonV2ThetaVault extends BaseContract {
       numShares: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    isUsdcAuction(overrides?: CallOverrides): Promise<BigNumber>;
 
     keeper(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2215,9 +2306,15 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
     optionsPremiumPricer(overrides?: CallOverrides): Promise<BigNumber>;
 
+    optionsPurchaseQueue(overrides?: CallOverrides): Promise<BigNumber>;
+
     overriddenStrikePrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    pausePosition(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     performanceFee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2268,6 +2365,11 @@ export interface RibbonV2ThetaVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setMinPrice(
+      minPrice: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     setNewKeeper(
       newKeeper: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -2298,13 +2400,13 @@ export interface RibbonV2ThetaVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setSwapPath(
-      newSwapPath: BytesLike,
+    setVaultPauser(
+      newVaultPauser: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    settleAuctionAndSwap(
-      minAmountOut: BigNumberish,
+    settleOffer(
+      bids: ISwap.BidStruct[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -2320,13 +2422,7 @@ export interface RibbonV2ThetaVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    startAuction(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     strikeSelection(overrides?: CallOverrides): Promise<BigNumber>;
-
-    swapPath(overrides?: CallOverrides): Promise<BigNumber>;
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2356,6 +2452,8 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
     vaultParams(overrides?: CallOverrides): Promise<BigNumber>;
 
+    vaultPauser(overrides?: CallOverrides): Promise<BigNumber>;
+
     vaultState(overrides?: CallOverrides): Promise<BigNumber>;
 
     withdrawInstantly(
@@ -2371,19 +2469,13 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
     GAMMA_CONTROLLER(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    GNOSIS_EASY_AUCTION(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     MARGIN_POOL(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     OTOKEN_FACTORY(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     PERIOD(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    UNISWAP_FACTORY(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    UNISWAP_ROUTER(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    SWAP_CONTRACT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     USDC(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -2419,7 +2511,11 @@ export interface RibbonV2ThetaVault extends BaseContract {
 
     cap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    commitAndClose(
+    closeRound(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    commitNextOption(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2427,9 +2523,17 @@ export interface RibbonV2ThetaVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    createOffer(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     currentOption(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     currentOtokenPremium(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    currentQueuedWithdrawShares(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2475,7 +2579,7 @@ export interface RibbonV2ThetaVault extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     initialize(
-      _initParams: RibbonThetaVault.InitParamsStruct,
+      _initParams: RibbonThetaVaultWithSwap.InitParamsStruct,
       _vaultParams: Vault.VaultParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -2484,8 +2588,6 @@ export interface RibbonV2ThetaVault extends BaseContract {
       numShares: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
-
-    isUsdcAuction(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     keeper(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -2519,11 +2621,19 @@ export interface RibbonV2ThetaVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    optionsPurchaseQueue(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     overriddenStrikePrice(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    pausePosition(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     performanceFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -2574,6 +2684,11 @@ export interface RibbonV2ThetaVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setMinPrice(
+      minPrice: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     setNewKeeper(
       newKeeper: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -2604,13 +2719,13 @@ export interface RibbonV2ThetaVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setSwapPath(
-      newSwapPath: BytesLike,
+    setVaultPauser(
+      newVaultPauser: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    settleAuctionAndSwap(
-      minAmountOut: BigNumberish,
+    settleOffer(
+      bids: ISwap.BidStruct[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2629,13 +2744,7 @@ export interface RibbonV2ThetaVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    startAuction(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     strikeSelection(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    swapPath(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -2664,6 +2773,8 @@ export interface RibbonV2ThetaVault extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     vaultParams(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    vaultPauser(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     vaultState(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

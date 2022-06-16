@@ -22,6 +22,12 @@
       "learnMoreURL": "https://www.investopedia.com/terms/p/putoption.asp",
       "vaultRisk": "The primary risk for running this put selling strategy is that the vault may incur a weekly loss in the case where the put options sold by the vault expire <0></0> (meaning the price of {{optionAsset}} is below the strike price of the put options minted by the vault). Such a situation is expected to happen less than 5% of the time."
     },
+    "Pause": {
+      "explanation": "Pausing your position will result in your funds being removed from the vault's investable pool of funds. While your position is paused you will not be exposed to the returns from the vault's weekly strategy. You can resume your position at any time."
+    },
+    "Resume": {
+      "explanation": "Resuming your position will result in your funds being deployed in the vault’s next weekly strategy."
+    },
     "rAVAX-THETA": {
       "title": "T-AVAX-C",
       "subtitle": "AVAX Covered Call"

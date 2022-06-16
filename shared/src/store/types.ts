@@ -87,6 +87,18 @@ export type PendingTransaction = {
       transferVault: VaultOptions;
       receiveVault: VaultOptions;
     }
+  | {
+      type: "pause";
+      amount: string;
+      vault: VaultOptions;
+      asset: Assets;
+    }
+  | {
+      type: "resume";
+      amount: string;
+      vault: VaultOptions;
+      asset: Assets;
+    }
   /**
    * Governance transaction
    */
