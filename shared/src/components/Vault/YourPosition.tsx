@@ -226,7 +226,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
     }
     const isPaused = !isPracticallyZero(pausedAmount, decimals);
     const hasBalanceAfterPause = !isPracticallyZero(
-      vaultAccount.totalDeposits.sub(pausedAmount),
+      vaultAccount.totalBalance,
       decimals
     );
     if (isPaused && !hasBalanceAfterPause) {
@@ -238,7 +238,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
     if (isPaused && hasBalanceAfterPause) {
       setPositionState("partiallyPaused");
     }
-  }, [vaultAccounts, vaultOption, decimals, pausedAmount]);
+  }, [positionState, vaultAccounts, vaultOption, decimals, pausedAmount]);
 
   const roi = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
