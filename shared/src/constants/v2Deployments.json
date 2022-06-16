@@ -68,7 +68,8 @@
     "RibbonThetaVaultWBTCCall": "0x815C3CA3F72906b4BACE0dA2A54F540EB8CEd965",
     "StrikeSelectionETH": "0xE19d1bB9fea8337E7e28Aa23f17954fdE0707081",
     "StrikeSelectionWBTC": "0xc3FC1dEac3214621b015353a0a623778425ef067",
-    "VaultLifecycle": "0x853cC5f4780D81e4e5C3649C2d1ad968338517da"
+    "VaultLifecycle": "0x853cC5f4780D81e4e5C3649C2d1ad968338517da",
+    "RibbonVaultPauser": "0xf08d6a9c2C5a2Dc9B8645c5Ac0b529D4046D19aa"
   },
   "avax": {
     "ManualVolOracle": "0xFdA869C4A950bFD2e393dDD45D2062Dd4aEE0bB3",
@@ -83,6 +84,7 @@
     "RibbonThetaVaultWBTCCall": "0xB7EC3BecB9EA9946f4C055F6De73e7638Ce4f480",
     "StrikeSelectionETH": "0x05351bd699860cE7c7282eb4Ac3c92f188E3DBED",
     "StrikeSelectionWBTC": "0x6c2Bd3FF7C5d7c3cF782860fc1d88cdf438ccf7b",
-    "VaultLifecycle": "0xe0854DDD162ffE4E2fF1DB6E62b544521cB9223e"
+    "VaultLifecycle": "0xe0854DDD162ffE4E2fF1DB6E62b544521cB9223e",
+    "RibbonVaultPauser": "0xf08d6a9c2C5a2Dc9B8645c5Ac0b529D4046D19aa"
   }
 }

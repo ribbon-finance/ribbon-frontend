@@ -1,7 +1,6 @@
 import React, { useMemo, useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
-import { formatUnits } from "@ethersproject/units";
 import {
   getAssets,
   VaultList,
@@ -31,7 +30,7 @@ import { useChain } from "shared/lib/hooks/chainContext";
 import { RibbonVaultPauser } from "shared/lib/codegen";
 import useVaultPauser from "shared/lib/hooks/useV2VaultPauserContract";
 import { useLatestOption } from "shared/lib/hooks/useLatestOption";
-import { isPracticallyZero, formatBigNumber } from "shared/lib/utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 import { BigNumber } from "ethers";
 
 const FloatingContainer = styled.div`
@@ -90,7 +89,7 @@ const ResumePositionModal: React.FC = () => {
   const { account } = useWeb3Wallet();
   const { addPendingTransaction } = usePendingTransactions();
   const [txId, setTxId] = useState("");
-  const contract = useVaultPauser() as RibbonVaultPauser;
+  const contract = useVaultPauser(chainId || 1) as RibbonVaultPauser;
   const [resumeAmount, setResumeAmount] = useState(BigNumber.from(0));
   const vaultAddress = VaultAddressMap[vaultOption][vaultVersion];
 
@@ -105,7 +104,7 @@ const ResumePositionModal: React.FC = () => {
           setResumeAmount(pauseAmount);
         });
     }
-  }, [contract, vaultAddress, account, decimals]);
+  }, [contract, vaultAddress, account, decimals, vaultOption]);
 
   // get the date of next option expiry
   const expiryTime = useMemo(() => {

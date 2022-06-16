@@ -52,8 +52,8 @@ const YourPositionModal: React.FC = () => {
   const [vaultPositionModal, setVaultPositionModal] =
     useGlobalState("vaultPositionModal");
   const [pausedAmount, setPausedAmount] = useState(BigNumber.from(0));
-  const { account } = useWeb3Wallet();
-  const contract = useVaultPauser() as RibbonVaultPauser;
+  const { account, chainId } = useWeb3Wallet();
+  const contract = useVaultPauser(chainId || 1) as RibbonVaultPauser;
 
   // get the paused position to be resumed
 
@@ -63,7 +63,6 @@ const YourPositionModal: React.FC = () => {
   const color = getVaultColor(vaultOption);
   const Logo = getAssetLogo(getDisplayAssets(vaultOption));
 
-  const { chainId } = useWeb3Wallet();
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const { data: stakingPoolData } = useLiquidityMiningPoolData(vaultOption);
   const {
@@ -78,7 +77,7 @@ const YourPositionModal: React.FC = () => {
         setPausedAmount(res[1]);
       });
     }
-  }, [contract, vaultAddress, account, decimals]);
+  }, [contract, vaultAddress, account, decimals, vaultOption]);
 
   const ModeList: string[] = isStakingEnabledForChainId(chainId)
     ? ["deposits", "staking"]

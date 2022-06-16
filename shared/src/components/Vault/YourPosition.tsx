@@ -192,8 +192,8 @@ const YourPosition: React.FC<YourPositionProps> = ({
     data: { asset, lockedBalanceInAsset, round, decimals },
   } = useV2VaultData(vaultOption);
 
-  const { account } = useWeb3Wallet();
-  const contract = useVaultPauser() as RibbonVaultPauser;
+  const { account, chainId } = useWeb3Wallet();
+  const contract = useVaultPauser(chainId || 1) as RibbonVaultPauser;
   const vaultAddress = VaultAddressMap[vaultOption][vaultVersion];
 
   // temporary: set the paused amount and canResume bool;

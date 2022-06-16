@@ -690,7 +690,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
   ]);
 
   const { account } = useWeb3Wallet();
-  const contract = useVaultPauser() as RibbonVaultPauser;
+  const contract = useVaultPauser(chainId || 1) as RibbonVaultPauser;
   const vaultAddress = VaultAddressMap[vault][vaultVersion];
   const [pausedAmount, setPausedAmount] = useState(BigNumber.from(0));
   const [positionState, setPositionState] = useState<
