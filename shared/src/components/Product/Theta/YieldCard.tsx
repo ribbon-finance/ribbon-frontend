@@ -697,15 +697,15 @@ const YieldCard: React.FC<YieldCardProps> = ({
     "position" | "paused" | "partiallyPaused"
   >("position");
 
-  // temporary: set the paused amount and canResume bool;
-  // to be replaced with subgraph data
   useEffect(() => {
     if (contract && vaultAddress && account && !isSolanaVault(vault)) {
-      contract.getPausePosition(vaultAddress, account).then((res) => {
-        setPausedAmount(res[1]);
-      });
+      contract
+        .getPausePosition(vaultAddress, account)
+        .then(([pauseRound, pauseAmount]) => {
+          setPausedAmount(pauseAmount);
+        });
     }
-  }, [vault, contract, vaultAddress, account, decimals]);
+  }, [contract, vaultAddress, account, decimals]);
 
   // set state of user's position
   useMemo(() => {
@@ -714,7 +714,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     }
     const isPaused = !isPracticallyZero(pausedAmount, decimals);
     const hasBalanceAfterPause = !isPracticallyZero(
-      vaultAccount.totalDeposits.sub(pausedAmount),
+      vaultAccount.totalBalance,
       decimals
     );
     if (isPaused && !hasBalanceAfterPause) {
@@ -726,7 +726,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     if (isPaused && hasBalanceAfterPause) {
       setPositionState("partiallyPaused");
     }
-  }, [vaultAccount, decimals, pausedAmount]);
+  }, [positionState, vaultAccount, decimals, pausedAmount]);
 
   const modalContentExtra = useMemo(() => {
     if (
@@ -761,7 +761,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
             <Title fontSize={14}>
               {vaultAccount
                 ? `${formatBigNumber(
-                    vaultAccount.totalBalance,
+                    vaultAccount.totalBalance.add(pausedAmount),
                     decimals
                   )} ${getAssetDisplay(asset)}`
                 : "---"}
