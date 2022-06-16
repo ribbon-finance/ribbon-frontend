@@ -700,7 +700,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
   // temporary: set the paused amount and canResume bool;
   // to be replaced with subgraph data
   useEffect(() => {
-    if (contract && vaultAddress && account) {
+    if (contract && vaultAddress && account && !isSolanaVault(vault)) {
       contract.getPausePosition(vaultAddress, account).then((res) => {
         setPausedAmount(res[1]);
       });

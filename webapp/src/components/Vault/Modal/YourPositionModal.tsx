@@ -8,6 +8,7 @@ import {
   getDisplayAssets,
   VaultList,
   VaultAddressMap,
+  isSolanaVault,
 } from "shared/lib/constants/constants";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -72,7 +73,7 @@ const YourPositionModal: React.FC = () => {
   // temporary: set the paused amount and canResume bool;
   // to be replaced with subgraph data
   useEffect(() => {
-    if (contract && vaultAddress && account) {
+    if (contract && vaultAddress && account && !isSolanaVault(vaultOption)) {
       contract.getPausePosition(vaultAddress, account).then((res) => {
         setPausedAmount(res[1]);
       });
