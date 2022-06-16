@@ -226,7 +226,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
     }
     const isPaused = !isPracticallyZero(pausedAmount, decimals);
     const hasBalanceAfterPause = !isPracticallyZero(
-      vaultAccount.totalDeposits.sub(pausedAmount),
+      vaultAccount.totalBalance,
       decimals
     );
     if (isPaused && !hasBalanceAfterPause) {
@@ -354,7 +354,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
                             <PositionInfoText size={14}>
                               {vaultAccount
                                 ? formatBigNumber(
-                                    vaultAccount.totalBalance,
+                                    vaultAccount.totalBalance.add(pausedAmount),
                                     decimals
                                   )
                                 : "0.00"}
