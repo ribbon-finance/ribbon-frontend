@@ -354,7 +354,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
                             <PositionInfoText size={14}>
                               {vaultAccount
                                 ? formatBigNumber(
-                                    vaultAccount.totalBalance,
+                                    vaultAccount.totalBalance.add(pausedAmount),
                                     decimals
                                   )
                                 : "0.00"}
