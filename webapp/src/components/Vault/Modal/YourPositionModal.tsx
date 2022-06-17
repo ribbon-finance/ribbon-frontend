@@ -54,9 +54,6 @@ const YourPositionModal: React.FC = () => {
   const [pausedAmount, setPausedAmount] = useState(BigNumber.from(0));
   const { account, chainId } = useWeb3Wallet();
   const contract = useVaultPauser(chainId || 1) as RibbonVaultPauser;
-
-  // get the paused position to be resumed
-
   const vaultOption = vaultPositionModal.vaultOption || VaultList[0];
   const vaultVersion = vaultPositionModal.vaultVersion;
   const vaultAddress = VaultAddressMap[vaultOption][vaultVersion];
@@ -69,13 +66,13 @@ const YourPositionModal: React.FC = () => {
     data: { asset, decimals, depositBalanceInAsset },
   } = useV2VaultData(vaultOption);
 
-  // temporary: set the paused amount and canResume bool;
-  // to be replaced with subgraph data
   useEffect(() => {
     if (contract && vaultAddress && account && !isSolanaVault(vaultOption)) {
-      contract.getPausePosition(vaultAddress, account).then((res) => {
-        setPausedAmount(res[1]);
-      });
+      contract
+        .getPausePosition(vaultAddress, account)
+        .then(([, pauseAmount]) => {
+          setPausedAmount(pauseAmount);
+        });
     }
   }, [contract, vaultAddress, account, decimals, vaultOption]);
 
@@ -84,6 +81,7 @@ const YourPositionModal: React.FC = () => {
     : ["deposits"];
 
   const [mode, setMode] = useState<string>(ModeList[0]);
+
   const roi = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
     if (
@@ -96,14 +94,18 @@ const YourPositionModal: React.FC = () => {
     return (
       (parseFloat(
         formatUnits(
-          vaultAccount.totalBalance.sub(vaultAccount.totalDeposits),
+          vaultAccount.totalBalance
+            .add(pausedAmount)
+            .sub(vaultAccount.totalDeposits),
           decimals
         )
       ) /
-        parseFloat(formatUnits(vaultAccount.totalDeposits, decimals))) *
+        parseFloat(
+          formatUnits(vaultAccount.totalDeposits.add(pausedAmount), decimals)
+        )) *
       100
     );
-  }, [vaultAccounts, vaultOption, decimals]);
+  }, [pausedAmount, vaultAccounts, vaultOption, decimals]);
 
   const vaultAccount = vaultAccounts[vaultOption];
 
