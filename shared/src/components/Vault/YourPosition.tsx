@@ -179,7 +179,6 @@ const YourPosition: React.FC<YourPositionProps> = ({
   const [, setVaultPauseModal] = useGlobalState("vaultPauseModal");
   const [, setVaultResumeModal] = useGlobalState("vaultResumeModal");
   const [pausedAmount, setPausedAmount] = useState(BigNumber.from(0));
-  // todo: disable pause and resume buttons
   const [canResume, setCanResume] = useState(false);
   const [canPause, setCanPause] = useState(false);
   const [widgetState, setWidgetState] = useState<"position" | "paused">(
@@ -196,8 +195,6 @@ const YourPosition: React.FC<YourPositionProps> = ({
   const contract = useVaultPauser(chainId || 1) as RibbonVaultPauser;
   const vaultAddress = VaultAddressMap[vaultOption][vaultVersion];
 
-  // temporary: set the paused amount and canResume bool;
-  // to be replaced with subgraph data
   useEffect(() => {
     if (contract && vaultAddress && account) {
       contract
@@ -242,7 +239,6 @@ const YourPosition: React.FC<YourPositionProps> = ({
 
   const roi = useMemo(() => {
     const vaultAccount = vaultAccounts[vaultOption];
-
     if (
       !vaultAccount ||
       isPracticallyZero(vaultAccount.totalDeposits, decimals)
@@ -253,14 +249,18 @@ const YourPosition: React.FC<YourPositionProps> = ({
     return (
       (parseFloat(
         formatUnits(
-          vaultAccount.totalBalance.sub(vaultAccount.totalDeposits),
+          vaultAccount.totalBalance
+            .add(pausedAmount)
+            .sub(vaultAccount.totalDeposits),
           decimals
         )
       ) /
-        parseFloat(formatUnits(vaultAccount.totalDeposits, decimals))) *
+        parseFloat(
+          formatUnits(vaultAccount.totalDeposits.add(pausedAmount), decimals)
+        )) *
       100
     );
-  }, [vaultAccounts, vaultOption, decimals]);
+  }, [pausedAmount, vaultAccounts, vaultOption, decimals]);
 
   const vaultAccount = vaultAccounts[vaultOption];
 
@@ -451,7 +451,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
                             <PositionInfoText size={14}>
                               {vaultAccount
                                 ? formatBigNumber(
-                                    vaultAccount.totalBalance,
+                                    vaultAccount.totalBalance.add(pausedAmount),
                                     decimals
                                   )
                                 : "0.00"}
