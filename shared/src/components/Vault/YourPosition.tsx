@@ -202,7 +202,10 @@ const YourPosition: React.FC<YourPositionProps> = ({
         .then(([pauseRound, pauseAmount]) => {
           setPausedAmount(pauseAmount);
           setCanResume(pauseRound !== 0 && pauseRound < round); // edge case round returns 0
-          setCanPause(!isPracticallyZero(lockedBalanceInAsset, decimals));
+          setCanPause(
+            isPracticallyZero(pauseAmount, decimals) &&
+              !isPracticallyZero(lockedBalanceInAsset, decimals)
+          );
         });
     }
   }, [
