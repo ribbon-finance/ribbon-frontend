@@ -346,12 +346,10 @@ export const SAVAXLogo: React.FC<SVGProps & { showBackground?: boolean }> = ({
 
 // TODO: -
 export const RETHLogo: React.FC<SVGProps & { showBackground?: boolean }> = ({
-  showBackground = false,
+  showBackground = true,
   ...props
 }) => (
   <svg
-    width="56"
-    height="56"
     viewBox="0 0 56 56"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
