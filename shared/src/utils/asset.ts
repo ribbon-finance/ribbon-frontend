@@ -11,6 +11,7 @@ import {
   YVUSDcLogo,
   PERPLogo,
   APELogo,
+  RETHLogo,
 } from "../assets/icons/erc20Assets";
 import Logo from "../assets/icons/logo";
 import { SolanaLogo } from "../assets/icons/solAssets";
@@ -51,6 +52,7 @@ export const isYieldAsset = (asset: Assets): boolean => {
   switch (asset) {
     case "sAVAX":
     case "stETH":
+    case "rETH":
     case "wstETH":
     case "yvUSDC":
       return true;
@@ -90,6 +92,7 @@ export const getChainByVaultOption = (vault: VaultOptions): Chains => {
     case "ryvUSDC-ETH-P-THETA":
     case "rUSDC-ETH-P-THETA":
     case "rstETH-THETA":
+    case "rrETH-THETA":
     case "rBTC-THETA":
     case "rAAVE-THETA":
     case "rAPE-THETA":
@@ -236,6 +239,8 @@ export const getAssetLogo: (asset: Assets) =>
     case "stETH":
     case "wstETH":
       return STETHLogo;
+    case "rETH":
+      return RETHLogo;
     case "AAVE":
       return AAVELogo;
     case "WAVAX":

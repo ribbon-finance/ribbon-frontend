@@ -1,14 +1,7 @@
 import React, { ReactElement } from "react";
-import { getDisplayAssets } from "../constants/constants";
 
-import {
-  DefiScoreProtocol,
-  DefiScoreToken,
-  DefiScoreTokenList,
-} from "../models/defiScore";
 import { Assets, AssetsList } from "../store/types";
 import { useFetchAssetsPrice } from "./useAssetPrice";
-import { useFetchAssetsYield } from "./useAssetsYield";
 import { useFetchYearnAPIData } from "./useYearnAPIData";
 import { useTickerData } from "./useTickerData";
 
@@ -25,15 +18,6 @@ export type AssetsTickerData = {
     price: number;
     dailyChange: number;
   };
-};
-
-export type AssetYieldInfo = Array<{
-  protocol: DefiScoreProtocol;
-  apr: number;
-}>;
-
-export type AssetsYieldInfoData = {
-  [token in DefiScoreToken]: AssetYieldInfo;
 };
 
 export type YearnAPIData = Array<{
@@ -56,7 +40,6 @@ export type YearnAPIData = Array<{
 
 export type ExternalAPIDataContextType = {
   assetsPrice: { data: AssetsPriceData; loading: boolean };
-  assetsYield: { data: AssetsYieldInfoData; loading: boolean };
   yearnAPIData: { data: YearnAPIData; loading: boolean };
   tickerData: { data: AssetsTickerData; loading: boolean };
 };
@@ -76,18 +59,8 @@ export const defaultAssetTickerData = Object.fromEntries(
   ])
 ) as AssetsTickerData;
 
-export const defaultAssetsYieldData = Object.fromEntries(
-  DefiScoreTokenList.map((token) => [token, new Array(0)])
-) as {
-  [token in DefiScoreToken]: Array<{
-    protocol: DefiScoreProtocol;
-    apr: number;
-  }>;
-};
-
 export const defaultExternalAPIData: ExternalAPIDataContextType = {
   assetsPrice: { data: defaultAssetsPriceData, loading: true },
-  assetsYield: { data: defaultAssetsYieldData, loading: true },
   yearnAPIData: { data: [], loading: true },
   tickerData: { data: defaultAssetTickerData, loading: true },
 };
@@ -99,7 +72,6 @@ export const ExternalAPIDataContextProvider: React.FC<{
   children: ReactElement;
 }> = ({ children }) => {
   const assetsPrice = useFetchAssetsPrice();
-  const assetsYield = useFetchAssetsYield();
   const yearnAPIData = useFetchYearnAPIData();
   const tickerData = useTickerData();
 
@@ -107,7 +79,6 @@ export const ExternalAPIDataContextProvider: React.FC<{
     <ExternalAPIDataContext.Provider
       value={{
         assetsPrice,
-        assetsYield,
         yearnAPIData,
         tickerData,
       }}

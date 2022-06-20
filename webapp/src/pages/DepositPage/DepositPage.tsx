@@ -155,6 +155,123 @@ const ContractButtonTitle = styled(Title)`
   letter-spacing: 1px;
 `;
 
+const HeroSection: React.FC<{
+  depositCapBar: ReactNode;
+  vaultOption: VaultOptions;
+  variant: VaultVersion;
+  v1Inactive?: boolean;
+}> = ({ depositCapBar, vaultOption, variant, v1Inactive }) => {
+  const { t } = useTranslation();
+  const color = getVaultColor(vaultOption);
+
+  const logo = useMemo(() => {
+    const asset = getDisplayAssets(vaultOption);
+    const Logo = getAssetLogo(asset);
+
+    switch (asset) {
+      case "WBTC":
+      case "SOL":
+      case "USDC":
+        return <Logo height="200%" width="200%" />;
+      case "AAVE":
+      case "WAVAX":
+        return <Logo showBackground />;
+      case "yvUSDC":
+        return (
+          <Logo
+            height="200%"
+            width="200%"
+            markerConfig={{
+              right: "0px",
+              border: "none",
+            }}
+          />
+        );
+      default:
+        return <Logo />;
+    }
+  }, [vaultOption]);
+
+  const liveryHeroSection = useMemo(() => {
+    switch (variant) {
+      case "v2":
+        return (
+          <>
+            <AbsoluteContainer position="top">
+              <LiveryBar color={color} animationStyle="rightToLeft" />
+            </AbsoluteContainer>
+            <AbsoluteContainer position="bottom">
+              <LiveryBar color={color} animationStyle="leftToRight" />
+            </AbsoluteContainer>
+          </>
+        );
+      default:
+        return <></>;
+    }
+  }, [color, variant]);
+
+  return (
+    <>
+      {/* V1 top banner */}
+      {variant === "v1" && hasVaultVersion(vaultOption, "v2") && (
+        <Banner
+          color={color}
+          message={
+            v1Inactive
+              ? "V1 vaults are now inactive and do not accept deposits"
+              : "V2 vaults are now live"
+          }
+          linkURI={getVaultURI(vaultOption, "v2")}
+          linkText="Switch to V2"
+        ></Banner>
+      )}
+
+      <HeroContainer className="position-relative" color={color}>
+        <DepositPageContainer className="container">
+          <div className="row mx-lg-n1 position-relative">
+            <div style={{ zIndex: 1 }} className="col-xl-6 d-flex flex-column">
+              <div className="d-flex flex-row my-3">
+                <TagPill className="mr-2 text-uppercase" color={color}>
+                  {isPutVault(vaultOption) ? "PUT-SELLING" : "COVERED CALL"}
+                </TagPill>
+                <AttributePill className="mr-2 text-uppercase" color={color}>
+                  {[...VaultVersionList].map((version) =>
+                    hasVaultVersion(vaultOption, version) ? (
+                      <BaseLink
+                        to={getVaultURI(vaultOption, version)}
+                        key={version}
+                      >
+                        <AttributeVersionSelector
+                          active={version === variant}
+                          color={color}
+                        >
+                          <Title color={color}>{version}</Title>
+                        </AttributeVersionSelector>
+                      </BaseLink>
+                    ) : null
+                  )}
+                </AttributePill>
+              </div>
+
+              <HeroText>
+                {t(`shared:ProductCopies:${vaultOption}:title`)}
+              </HeroText>
+
+              {depositCapBar}
+            </div>
+
+            <SplashImage className="position-absolute col-xl-5">
+              {logo}
+            </SplashImage>
+          </div>
+        </DepositPageContainer>
+
+        {liveryHeroSection}
+      </HeroContainer>
+    </>
+  );
+};
+
 const DepositPage = () => {
   const { vaultOption, vaultVersion } = useVaultOption();
   const { chainId } = useWeb3Wallet();
@@ -305,123 +422,6 @@ const DepositPage = () => {
 
       {/* Desktop Position Component */}
       <YourPosition vault={{ vaultOption, vaultVersion }} variant="desktop" />
-    </>
-  );
-};
-
-const HeroSection: React.FC<{
-  depositCapBar: ReactNode;
-  vaultOption: VaultOptions;
-  variant: VaultVersion;
-  v1Inactive?: boolean;
-}> = ({ depositCapBar, vaultOption, variant, v1Inactive }) => {
-  const { t } = useTranslation();
-  const color = getVaultColor(vaultOption);
-
-  const logo = useMemo(() => {
-    const asset = getDisplayAssets(vaultOption);
-    const Logo = getAssetLogo(asset);
-
-    switch (asset) {
-      case "WBTC":
-      case "SOL":
-      case "USDC":
-        return <Logo height="200%" width="200%" />;
-      case "AAVE":
-      case "WAVAX":
-        return <Logo showBackground />;
-      case "yvUSDC":
-        return (
-          <Logo
-            height="200%"
-            width="200%"
-            markerConfig={{
-              right: "0px",
-              border: "none",
-            }}
-          />
-        );
-      default:
-        return <Logo />;
-    }
-  }, [vaultOption]);
-
-  const liveryHeroSection = useMemo(() => {
-    switch (variant) {
-      case "v2":
-        return (
-          <>
-            <AbsoluteContainer position="top">
-              <LiveryBar color={color} animationStyle="rightToLeft" />
-            </AbsoluteContainer>
-            <AbsoluteContainer position="bottom">
-              <LiveryBar color={color} animationStyle="leftToRight" />
-            </AbsoluteContainer>
-          </>
-        );
-      default:
-        return <></>;
-    }
-  }, [color, variant]);
-
-  return (
-    <>
-      {/* V1 top banner */}
-      {variant === "v1" && hasVaultVersion(vaultOption, "v2") && (
-        <Banner
-          color={color}
-          message={
-            v1Inactive
-              ? "V1 vaults are now inactive and do not accept deposits"
-              : "V2 vaults are now live"
-          }
-          linkURI={getVaultURI(vaultOption, "v2")}
-          linkText="Switch to V2"
-        ></Banner>
-      )}
-
-      <HeroContainer className="position-relative" color={color}>
-        <DepositPageContainer className="container">
-          <div className="row mx-lg-n1 position-relative">
-            <div style={{ zIndex: 1 }} className="col-xl-6 d-flex flex-column">
-              <div className="d-flex flex-row my-3">
-                <TagPill className="mr-2 text-uppercase" color={color}>
-                  {isPutVault(vaultOption) ? "PUT-SELLING" : "COVERED CALL"}
-                </TagPill>
-                <AttributePill className="mr-2 text-uppercase" color={color}>
-                  {[...VaultVersionList].map((version) =>
-                    hasVaultVersion(vaultOption, version) ? (
-                      <BaseLink
-                        to={getVaultURI(vaultOption, version)}
-                        key={version}
-                      >
-                        <AttributeVersionSelector
-                          active={version === variant}
-                          color={color}
-                        >
-                          <Title color={color}>{version}</Title>
-                        </AttributeVersionSelector>
-                      </BaseLink>
-                    ) : null
-                  )}
-                </AttributePill>
-              </div>
-
-              <HeroText>
-                {t(`shared:ProductCopies:${vaultOption}:title`)}
-              </HeroText>
-
-              {depositCapBar}
-            </div>
-
-            <SplashImage className="position-absolute col-xl-5">
-              {logo}
-            </SplashImage>
-          </div>
-        </DepositPageContainer>
-
-        {liveryHeroSection}
-      </HeroContainer>
     </>
   );
 };

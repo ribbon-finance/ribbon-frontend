@@ -56,6 +56,10 @@
       "title": "T-stETH-C",
       "subtitle": "stETH Covered Call"
     },
+    "rrETH-THETA": {
+      "title": "T-rETH-C",
+      "subtitle": "rETH Covered Call"
+    },
     "rAAVE-THETA": {
       "title": "T-AAVE-C",
       "subtitle": "AAVE Covered Call"

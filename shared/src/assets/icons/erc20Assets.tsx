@@ -307,6 +307,70 @@ export const SAVAXLogo: React.FC<SVGProps & { showBackground?: boolean }> = ({
   </svg>
 );
 
+// TODO: -
+export const RETHLogo: React.FC<SVGProps & { showBackground?: boolean }> = ({
+  showBackground = true,
+  ...props
+}) => (
+  <svg
+    viewBox="0 0 56 56"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    {showBackground && (
+      <path
+        d="M0 28C0 12.536 12.536 0 28 0C43.464 0 56 12.536 56 28C56 43.464 43.464 56 28 56C12.536 56 0 43.464 0 28Z"
+        fill="#EF4444"
+        fill-opacity="0.16"
+      />
+    )}
+    <g clip-path="url(#clip0_316_62)">
+      <g opacity="0.8">
+        <path
+          opacity="0.6"
+          d="M27.9226 22.5172L15.0389 28.3766L27.9226 35.9884L40.8012 28.3766L27.9226 22.5172Z"
+          fill="#EF4444"
+        />
+      </g>
+      <g opacity="0.65">
+        <path
+          opacity="0.45"
+          d="M15.0389 28.3766L27.9226 35.9883V7L15.0389 28.3766Z"
+          fill="#EF4444"
+        />
+      </g>
+      <path
+        opacity="0.8"
+        d="M27.9222 7V35.9883L40.8008 28.3766L27.9222 7Z"
+        fill="#EF4444"
+      />
+      <g opacity="0.65">
+        <path
+          opacity="0.45"
+          d="M15.0389 30.8177L27.9226 48.9683V38.4294L15.0389 30.8177Z"
+          fill="#EF4444"
+        />
+      </g>
+      <path
+        opacity="0.8"
+        d="M27.9222 38.4294V48.9683L40.811 30.8176L27.9222 38.4294Z"
+        fill="#EF4444"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_316_62">
+        <rect
+          width="25.8401"
+          height="42"
+          fill="white"
+          transform="translate(15 7)"
+        />
+      </clipPath>
+    </defs>
+  </svg>
+);
+
 export const PERPLogo: React.FC<SVGProps> = ({ ...props }) => (
   <svg
     viewBox="0 0 675 675"
