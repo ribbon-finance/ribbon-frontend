@@ -27,7 +27,7 @@ const FrameContainer = styled.div`
   perspective: 2000px;
 `;
 
-const Frame = styled(motion.div) <{ color: string }>`
+const Frame = styled(motion.div)<{ color: string }>`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -55,7 +55,7 @@ const TagContainer = styled.div`
   margin-right: auto;
 `;
 
-const ProductTag = styled(BaseButton) <{ color: string }>`
+const ProductTag = styled(BaseButton)<{ color: string }>`
   background: ${(props) => props.color}29;
   padding: 8px;
   margin-right: 4px;
@@ -165,7 +165,15 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
         </div>
       </>
     );
-  }, [logo, asset, color, perfStr, isLoading, totalDepositStr, depositLimitStr]);
+  }, [
+    logo,
+    asset,
+    color,
+    perfStr,
+    isLoading,
+    totalDepositStr,
+    depositLimitStr,
+  ]);
 
   return (
     <FrameContainer

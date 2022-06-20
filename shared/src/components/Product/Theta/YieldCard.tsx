@@ -109,7 +109,7 @@ const TopContainer = styled.div<{ color: string }>`
   animation: ${animatedGradientKeyframe} 5s ease infinite;
 `;
 
-const ProductCard = styled(motion.div) <{ color: string; vault: VaultOptions }>`
+const ProductCard = styled(motion.div)<{ color: string; vault: VaultOptions }>`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -153,14 +153,14 @@ const TagContainer = styled.div`
   align-self: baseline;
 `;
 
-const ProductTag = styled(BaseButton) <{ color: string }>`
+const ProductTag = styled(BaseButton)<{ color: string }>`
   background: ${(props) => props.color}29;
   padding: 8px;
   margin-right: 4px;
   border-radius: ${theme.border.radiusSmall};
 `;
 
-const ProductVersionTag = styled(ProductTag) <{ active: boolean }>`
+const ProductVersionTag = styled(ProductTag)<{ active: boolean }>`
   margin-right: 0px;
   border: ${theme.border.width} ${theme.border.style}
     ${(props) => `${props.color}${props.active ? "" : "00"}`};
@@ -739,16 +739,27 @@ const YieldCard: React.FC<YieldCardProps> = ({
             <Title fontSize={14}>
               {vaultAccount
                 ? `${formatBigNumber(
-                  vaultAccount.totalBalance.add(pausedAmount),
-                  decimals
-                )} ${getAssetDisplay(asset)}`
+                    vaultAccount.totalBalance.add(pausedAmount),
+                    decimals
+                  )} ${getAssetDisplay(asset)}`
                 : "---"}
             </Title>
           </div>
         </ModalContentExtra>
       );
     }
-  }, [vaultVersion, vaultBalanceInAsset, decimals, chainId, t, positionState, color, vaultAccount, pausedAmount, asset]);
+  }, [
+    vaultVersion,
+    vaultBalanceInAsset,
+    decimals,
+    chainId,
+    t,
+    positionState,
+    color,
+    vaultAccount,
+    pausedAmount,
+    asset,
+  ]);
 
   const vaultLogo = useMemo(() => {
     let logo;
