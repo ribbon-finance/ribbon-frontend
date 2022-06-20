@@ -31,22 +31,16 @@ import {
   isDisabledVault,
   VaultAddressMap,
 } from "../../../constants/constants";
-import {
-  BarChartIcon,
-  BoostIcon,
-  GlobeIcon,
-} from "../../../assets/icons/icons";
+import { BoostIcon } from "../../../assets/icons/icons";
 import { getAssetDisplay, getAssetLogo } from "../../../utils/asset";
 import { getVaultColor } from "../../../utils/vault";
 import ModalContentExtra from "../../Common/ModalContentExtra";
 import { VaultAccount } from "../../../models/vault";
-import YieldComparison from "./YieldComparison";
 import {
   useLiquidityGaugeV5PoolData,
   useV2VaultData,
   useVaultData,
 } from "../../../hooks/web3DataContext";
-import useAssetsYield from "../../../hooks/useAssetsYield";
 import useLatestAPY from "../../../hooks/useLatestAPY";
 import useStrikePrice from "../../../hooks/useStrikePrice";
 import { animatedGradientKeyframe } from "../../../designSystem/keyframes";
@@ -115,7 +109,7 @@ const TopContainer = styled.div<{ color: string }>`
   animation: ${animatedGradientKeyframe} 5s ease infinite;
 `;
 
-const ProductCard = styled(motion.div)<{ color: string; vault: VaultOptions }>`
+const ProductCard = styled(motion.div) <{ color: string; vault: VaultOptions }>`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -159,14 +153,14 @@ const TagContainer = styled.div`
   align-self: baseline;
 `;
 
-const ProductTag = styled(BaseButton)<{ color: string }>`
+const ProductTag = styled(BaseButton) <{ color: string }>`
   background: ${(props) => props.color}29;
   padding: 8px;
   margin-right: 4px;
   border-radius: ${theme.border.radiusSmall};
 `;
 
-const ProductVersionTag = styled(ProductTag)<{ active: boolean }>`
+const ProductVersionTag = styled(ProductTag) <{ active: boolean }>`
   margin-right: 0px;
   border: ${theme.border.width} ${theme.border.style}
     ${(props) => `${props.color}${props.active ? "" : "00"}`};
@@ -188,17 +182,6 @@ const ProductInfo = styled.div`
   flex-wrap: wrap;
   flex-direction: column;
   flex: 1;
-`;
-
-const ModeSwitcherContainer = styled.div<{ color: string }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 100px;
-  background: ${(props) => props.color}14;
-  z-index: 1;
 `;
 
 const StrikeContainer = styled.div`
@@ -386,9 +369,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
   } = useV2VaultData(vault);
   const { chainId } = useWeb3Wallet();
   const { t } = useTranslation();
-  const yieldInfos = useAssetsYield(asset);
   const isLoading = useMemo(() => status === "loading", [status]);
-  const [mode, setMode] = useState<"info" | "yield">("info");
   const color = getVaultColor(vault);
   const {
     strikePrice,
@@ -462,11 +443,6 @@ const YieldCard: React.FC<YieldCardProps> = ({
         ];
     }
   }, [decimals, deposits, v2Deposits, v2VaultLimit, vaultLimit, vaultVersion]);
-
-  const onSwapMode = useCallback((e) => {
-    e.stopPropagation();
-    setMode((prev) => (prev === "info" ? "yield" : "info"));
-  }, []);
 
   const displayRange = useCallback(
     (isLeft: boolean = true, strike: number, current: number) => {
@@ -707,7 +683,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
           setPausedAmount(pauseAmount);
         });
     }
-  }, [contract, vaultAddress, account, decimals]);
+  }, [contract, vaultAddress, account, decimals, vault]);
 
   // set state of user's position
   useMemo(() => {
@@ -763,26 +739,16 @@ const YieldCard: React.FC<YieldCardProps> = ({
             <Title fontSize={14}>
               {vaultAccount
                 ? `${formatBigNumber(
-                    vaultAccount.totalBalance.add(pausedAmount),
-                    decimals
-                  )} ${getAssetDisplay(asset)}`
+                  vaultAccount.totalBalance.add(pausedAmount),
+                  decimals
+                )} ${getAssetDisplay(asset)}`
                 : "---"}
             </Title>
           </div>
         </ModalContentExtra>
       );
     }
-  }, [
-    vaultVersion,
-    vaultBalanceInAsset,
-    decimals,
-    chainId,
-    t,
-    color,
-    vaultAccount,
-    asset,
-    positionState,
-  ]);
+  }, [vaultVersion, vaultBalanceInAsset, decimals, chainId, t, positionState, color, vaultAccount, pausedAmount, asset]);
 
   const vaultLogo = useMemo(() => {
     let logo;
@@ -806,7 +772,6 @@ const YieldCard: React.FC<YieldCardProps> = ({
     <CardContainer>
       <AnimatePresence exitBeforeEnter initial={false}>
         <ProductCard
-          key={mode}
           transition={{
             duration: 0.1,
             type: "keyframes",
@@ -855,32 +820,9 @@ const YieldCard: React.FC<YieldCardProps> = ({
                 )}
               </div>
             </TagContainer>
-
-            {/* Mode switcher button */}
-            {Boolean(yieldInfos && yieldInfos.length) && (
-              <ModeSwitcherContainer
-                role="button"
-                onClick={onSwapMode}
-                color={color}
-              >
-                {mode === "info" ? (
-                  <GlobeIcon color={color} />
-                ) : (
-                  <BarChartIcon color={color} />
-                )}
-              </ModeSwitcherContainer>
-            )}
           </TopContainer>
           <ProductInfo>
-            {mode === "yield" && yieldInfos ? (
-              <YieldComparison
-                vault={vault}
-                vaultVersion={vaultVersion}
-                yieldInfos={yieldInfos}
-              />
-            ) : (
-              <ProductInfoContent />
-            )}
+            <ProductInfoContent />
           </ProductInfo>
           {modalContentExtra}
         </ProductCard>
