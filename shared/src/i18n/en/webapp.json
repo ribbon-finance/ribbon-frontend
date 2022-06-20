@@ -66,6 +66,11 @@
       "weeklyYield": "Weekly Yield = ((1+(Curr. Week’s Performance)^52)-1)*100",
       "projectedYield": "Projected Yield (APY) = Average of Past 4 Week's Weekly Yield (in the money weeks are excluded)",
       "feesIncluded": "Fees are included in this calculation."
+    },
+    "rocketPool": {
+      "title": "Rocket Pool (RETH)",
+      "description": "Newly minted rETH is only transferrable after ~24 hours.",
+      "learnMoreURL": "https://dao.rocketpool.net/t/remove-reth-lock-after-mint/339"
     }
   },
   "LiquidityMining": {
