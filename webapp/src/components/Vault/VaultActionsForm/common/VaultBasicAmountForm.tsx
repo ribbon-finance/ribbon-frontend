@@ -44,6 +44,7 @@ import { useChain } from "shared/lib/hooks/chainContext";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { useFlexVault } from "shared/lib/hooks/useFlexVault";
 import { MigrateIcon } from "shared/lib/assets/icons/icons";
+import moment from "moment";
 
 const DepositAssetButton = styled.div`
   position: absolute;
@@ -204,6 +205,32 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
   }, [vaultActionForm.actionType, vaultActionForm.depositAsset, vaultOption]);
 
   const isInputNonZero = parseFloat(vaultActionForm.inputAmount) > 0;
+
+  const isRETHVaultAndDepositingETH = useMemo(() => {
+    return (
+      vaultOption === "rrETH-THETA" && vaultActionForm.depositAsset === "WETH"
+    );
+  }, [vaultActionForm.depositAsset, vaultOption]);
+
+  // Disable ETH deposits 24 hours before the weekly auctions
+  // IF its RETH vault
+  const disableETHDepositRETHVault = useMemo(() => {
+    if (isRETHVaultAndDepositingETH) {
+      // 24 hours before auctions
+      let upcomingThursday1030am = moment()
+        .utcOffset("+0000")
+        .day(4)
+        .set({ hour: 11, minute: 0, second: 0 });
+
+      upcomingThursday1030am =
+        upcomingThursday1030am < moment()
+          ? upcomingThursday1030am.add(1, "week")
+          : upcomingThursday1030am;
+
+      return Date.now() > upcomingThursday1030am.toDate().getTime();
+    }
+    return false;
+  }, [isRETHVaultAndDepositingETH]);
 
   const renderDepositAssetButton = useMemo(() => {
     if (active && showSwapDepositAsset && vaultActionForm.depositAsset) {
@@ -367,6 +394,22 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
             {client ? actionButtonText : loadingText}
           </ActionButton>
         );
+      } else if (vaultOption === "rrETH-THETA") {
+        return (
+          <ActionButton
+            disabled={
+              Boolean(error) ||
+              !isInputNonZero ||
+              !client ||
+              disableETHDepositRETHVault
+            }
+            onClick={onFormSubmit}
+            className={`mt-4 py-3 mb-0`}
+            color={color}
+          >
+            {disableETHDepositRETHVault ? "Deposit Disabled" : actionButtonText}
+          </ActionButton>
+        );
       } else {
         return (
           <ActionButton
@@ -394,15 +437,16 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
     active,
     asset,
     chain,
-    actionButtonText,
-    color,
+    vaultOption,
     error,
     isInputNonZero,
-    onFormSubmit,
-    setShowConnectModal,
     client,
+    onFormSubmit,
+    color,
+    actionButtonText,
     loadingText,
-    vaultOption,
+    disableETHDepositRETHVault,
+    setShowConnectModal,
   ]);
 
   if (isDisabledVault(vaultOption)) {
@@ -450,6 +494,17 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
       )}
       {formExtraInfo}
       {renderButton()}
+      {isRETHVaultAndDepositingETH && (
+        <PrimaryText
+          fontSize={14}
+          lineHeight={20}
+          style={{ paddingTop: 16 }}
+          color={disableETHDepositRETHVault ? colors.red : undefined}
+        >
+          Due to the nature of Rocket pool, users must deposit ETH at least 24
+          hours before the weekly auction.
+        </PrimaryText>
+      )}
     </>
   );
 };
