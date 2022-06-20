@@ -52,6 +52,7 @@ const colors = {
     AAVE: "#2EBAC6",
     WAVAX: "#E84142",
     sAVAX: "#11BAF0",
+    rETH: "#EF4444",
     PERP: "#00BC9A",
     RBN: "#fc0a54",
     veRBN: "#fc0a54",

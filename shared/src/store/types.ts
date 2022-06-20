@@ -12,6 +12,7 @@ export const AssetsList = [
   "USDC.e",
   "WBTC",
   "stETH",
+  "rETH",
   "wstETH",
   "yvUSDC",
   "PERP",

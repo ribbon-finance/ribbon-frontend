@@ -5,6 +5,7 @@ import WBTCAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoSt
 import USDCAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/USDC_Algo_Strike_Selection.json";
 import ETHAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/ETH_Algo_Strike_Selection.json";
 import STETHAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/STETH_Algo_Strike_Selection.json";
+import RETHAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/RETH_Algo_Strike_Selection.json";
 import AAVEAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/AAVE_Algo_Strike_Selection.json";
 import AVAXAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/AVAX_Algo_Strike_Selection.json";
 import SAVAXAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/SAVAX_Algo_Strike_Selection.json";
@@ -23,6 +24,8 @@ const AlgoStrikeSelection: React.FC<AlgoStrikeSelectionProps> = ({
     switch (vaultOption) {
       case "rstETH-THETA":
         return STETHAlgoStrikeSelection;
+      case "rrETH-THETA":
+        return RETHAlgoStrikeSelection;
       default:
         switch (getAssets(vaultOption)) {
           case "WETH":

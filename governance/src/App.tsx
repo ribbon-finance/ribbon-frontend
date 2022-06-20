@@ -17,7 +17,6 @@ import { GeofenceCountry, useGeofence } from "shared/lib/hooks/useGeofence";
 import TextPreview from "shared/lib/components/TextPreview/TextPreview";
 import Geoblocked from "shared/lib/components/Geoblocked/Geoblocked";
 import { LoadingText } from "shared/lib/hooks/useLoadingText";
-import "shared/lib/i18n/config";
 
 function App() {
   const { loading, rejected } = useGeofence(GeofenceCountry.SINGAPORE);

@@ -13,6 +13,7 @@ export const ERC20TokenList = [
   "wbtc",
   "yvusdc",
   "steth",
+  "reth",
   "wsteth",
   "ldo",
   "aave",
