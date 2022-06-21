@@ -103,7 +103,7 @@ export const calculateAPYFromPriceHistory = (
   let newPriceHistory = priceHistory;
 
   // Ignore apy calculation for specific avax vaults
-  let roundToIgnore: number | undefined = undefined
+  let roundToIgnore: number | undefined = undefined;
   if (vaultOption === "rUSDC-AVAX-P-THETA") {
     // Ignore priceHistory from round 16, if round 16 is the latest round
     roundToIgnore = 16;
