@@ -406,9 +406,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
         return (
           <ActionButton
             disabled={
-              Boolean(error) ||
-              !isInputNonZero ||
-              disableETHDepositRETHVault
+              Boolean(error) || !isInputNonZero || disableETHDepositRETHVault
             }
             onClick={onFormSubmit}
             className={`mt-4 py-3 mb-0`}
