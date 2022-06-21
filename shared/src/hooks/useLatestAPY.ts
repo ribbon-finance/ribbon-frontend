@@ -100,6 +100,29 @@ export const calculateAPYFromPriceHistory = (
   }: { vaultOption: VaultOptions; vaultVersion: VaultVersion },
   underlyingYieldAPR: number
 ) => {
+  let newPriceHistory = priceHistory;
+
+  // Ignore apy calculation for specific avax vaults
+  let roundToIgnore: number | undefined = undefined;
+  if (vaultOption === "rUSDC-AVAX-P-THETA") {
+    // Ignore priceHistory from round 16, if round 16 is the latest round
+    roundToIgnore = 16;
+  } else if (vaultOption === "rAVAX-THETA") {
+    roundToIgnore = 30;
+  } else if (vaultOption === "rsAVAX-THETA") {
+    roundToIgnore = 18;
+  }
+
+  // Fix for avax apys
+  if (roundToIgnore) {
+    newPriceHistory =
+      priceHistory[priceHistory.length - 1]?.round === roundToIgnore
+        ? priceHistory.filter((h) => {
+            return h.round !== roundToIgnore;
+          })
+        : priceHistory;
+  }
+
   const periodStart = moment()
     .isoWeekday("friday")
     .utc()
@@ -117,7 +140,7 @@ export const calculateAPYFromPriceHistory = (
 
   while (true) {
     const priceHistoryFromPeriod = getPriceHistoryFromPeriod(
-      priceHistory,
+      newPriceHistory,
       periodStart
     );
 

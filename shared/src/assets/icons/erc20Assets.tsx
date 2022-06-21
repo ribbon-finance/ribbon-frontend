@@ -307,7 +307,6 @@ export const SAVAXLogo: React.FC<SVGProps & { showBackground?: boolean }> = ({
   </svg>
 );
 
-// TODO: -
 export const RETHLogo: React.FC<SVGProps & { showBackground?: boolean }> = ({
   showBackground = true,
   ...props
@@ -322,10 +321,10 @@ export const RETHLogo: React.FC<SVGProps & { showBackground?: boolean }> = ({
       <path
         d="M0 28C0 12.536 12.536 0 28 0C43.464 0 56 12.536 56 28C56 43.464 43.464 56 28 56C12.536 56 0 43.464 0 28Z"
         fill="#EF4444"
-        fill-opacity="0.16"
+        fillOpacity="0.16"
       />
     )}
-    <g clip-path="url(#clip0_316_62)">
+    <g clipPath="url(#clip0_316_62)">
       <g opacity="0.8">
         <path
           opacity="0.6"
