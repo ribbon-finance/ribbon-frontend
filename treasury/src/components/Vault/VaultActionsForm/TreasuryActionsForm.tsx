@@ -154,7 +154,7 @@ const TreasuryActionsForm: React.FC<TreasuryActionsFormProps> = ({
   const color = "#fc0a54";
   const { handleInputChange, handleSubmission, error, code } =
     useGlobalAccess();
-    const { video } = useScreenSize();
+  const { video } = useScreenSize();
 
   const body = useMemo(() => {
     return (
