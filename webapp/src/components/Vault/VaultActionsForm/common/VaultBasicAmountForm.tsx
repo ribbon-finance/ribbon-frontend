@@ -408,7 +408,6 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
             disabled={
               Boolean(error) ||
               !isInputNonZero ||
-              !client ||
               disableETHDepositRETHVault
             }
             onClick={onFormSubmit}
