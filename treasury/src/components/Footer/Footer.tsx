@@ -60,14 +60,13 @@ const Footer = () => {
   const { vaultOption, vaultVersion } = useVaultOption();
   const [showVaultPosition, setShowVaultPosition] = useState(false);
 
+  // TODO: If active page is root, render access treasury button
   return (
     <>
       <FooterContainer
         screenHeight={screenHeight}
         showVaultPosition={showVaultPosition}
       >
-        {/** Desktop */}
-        <DesktopFooter />
 
         {/** Mobile */}
         <AccountStatus
