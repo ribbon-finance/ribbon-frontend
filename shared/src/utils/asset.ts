@@ -28,6 +28,7 @@ export const assetFilterList: Assets[] = [
   "WAVAX",
   "sAVAX",
   "SOL",
+  "rETH",
 ];
 
 export const getIntegralAsset = (derivative: Assets): Assets => {
