@@ -3,5 +3,5 @@ export interface NavItemProps {
 }
 
 export interface MobileMenuOpenProps {
-  isMenuOpen?: boolean;
+  isMenuOpen: boolean;
 }

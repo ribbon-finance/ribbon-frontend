@@ -17,7 +17,7 @@ const FooterContainer = styled.div<{
   width: 100%;
   display: flex;
   justify-content: center;
-  backdrop-filter: blur(40px);
+  // backdrop-filter: blur(40px);
   /**
    * Firefox desktop come with default flag to have backdrop-filter disabled
    * Firefox Android also currently has bug where backdrop-filter is not being applied

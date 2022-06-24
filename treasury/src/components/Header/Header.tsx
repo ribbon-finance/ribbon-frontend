@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useRouteMatch } from "react-router-dom";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
@@ -7,14 +7,13 @@ import HeaderLogo from "webapp/lib/components/Header/HeaderLogo";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
 import { Title, BaseLink } from "shared/lib/designSystem";
-import {
-  MobileMenuOpenProps,
-} from "webapp/lib/components/Header/types";
+import { MobileMenuOpenProps } from "webapp/lib/components/Header/types";
 import theme from "shared/lib/designSystem/theme";
 import { ConnectWalletButton } from "shared/lib/components/Common/buttons";
 import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
+import { AccessModal } from "../AccessModal/AccessModal";
 
-const HeaderContainer = styled.div<MobileMenuOpenProps>`
+const HeaderContainer = styled.div<{ isMenuOpen?: boolean }>`
   height: ${theme.header.height}px;
   position: sticky;
   top: 0;
@@ -75,26 +74,38 @@ const OpenTreasuryButton = styled(ConnectWalletButton)`
   margin-right: 40px;
   line-height: 20px;
   border-radius: 8px;
+  cursor: pointer;
 `;
 
 const Header = () => {
+  const [showAccessModal, setAccessModal] = useState<boolean>(false);
   // const product = useRouteMatch({ path: "/", exact: true });
   // const portfolio = useRouteMatch({ path: "/portfolio", exact: true });
   // const treasury = useRouteMatch({ path: "/treasury", exact: false });
 
-  return (
-    <HeaderContainer
-      className="d-flex align-items-center"
-    >
-      {/* LOGO */}
-      <LogoContainer>
-        <HeaderLogo />
-      </LogoContainer>
+  useEffect(() => {
+    console.log(showAccessModal);
+  }, [showAccessModal]);
 
-      {/* TODO: Check if active page is root to determine which button to be rendered */}
-      <AccountStatus variant="desktop" />
-      <OpenTreasuryButton>Open Treasury</OpenTreasuryButton>
-    </HeaderContainer>
+  return (
+    <>
+      <AccessModal
+        show={showAccessModal}
+        onClose={() => setAccessModal(false)}
+      />
+      <HeaderContainer className="d-flex align-items-center">
+        {/* LOGO */}
+        <LogoContainer>
+          <HeaderLogo />
+        </LogoContainer>
+
+        {/* TODO: Check if active page is root to determine which button to be rendered */}
+        <AccountStatus variant="desktop" />
+        <OpenTreasuryButton role="button" onClick={() => setAccessModal(true)}>
+          Open Treasury
+        </OpenTreasuryButton>
+      </HeaderContainer>
+    </>
   );
 };
 
