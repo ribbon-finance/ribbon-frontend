@@ -6,7 +6,7 @@ import theme from "shared/lib/designSystem/theme";
 import { ConnectWalletButton } from "shared/lib/components/Common/buttons";
 import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
 import { AccessModal } from "../AccessModal/AccessModal";
-import { useGlobalAccessState, useWebappGlobalState } from "../../store/store";
+import { useWebappGlobalState } from "../../store/store";
 
 const HeaderContainer = styled.div<{ isMenuOpen?: boolean }>`
   height: ${theme.header.height}px;
