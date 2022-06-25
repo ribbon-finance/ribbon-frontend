@@ -153,16 +153,54 @@ const progress = keyframes`
   }
 `;
 
-const animation = css`
-  animation: 3s ${progress} infinite;
+const animation = css<{ interval: number }>`
+  animation: ${(props) => props.interval}s ${progress} infinite;
   background: white;
 `;
 
-const StepProgress = styled.div<{ active: boolean }>`
+const StepProgress = styled.div<{ active: boolean; interval: number }>`
   height: 4px;
   transition: 0.2s;
 
   ${(props) => (props.active ? animation : "width: 0%")};
+`;
+
+const livelyAnimation = (position: "top" | "bottom") => keyframes`
+  0% {
+    background-position-x: ${position === "top" ? 0 : 100}%;
+  }
+
+  50% {
+    background-position-x: ${position === "top" ? 100 : 0}%; 
+  }
+
+  100% {
+    background-position-x: ${position === "top" ? 0 : 100}%;
+  }
+`;
+
+const FrameBar = styled.div<{
+  position: "top" | "bottom";
+  height: number;
+}>`
+  position: absolute;
+  width: 100%;
+  height: ${(props) => props.height}px;
+  background: ${(props) => `linear-gradient(
+    270deg,
+    ${colors.asset.veRBN}00 5%,
+    ${colors.asset.veRBN} 50%,
+    ${colors.asset.veRBN}00 95%
+  )`};
+  background-size: 200%;
+  animation: 10s ${(props) => livelyAnimation(props.position)} linear infinite;
+  ${(props) => {
+    if (props.position === "top") {
+      return `top: ${theme.header.height}px;`;
+    } else {
+      return `bottom: 0px`;
+    }
+  }};
 `;
 
 interface Step {
@@ -178,6 +216,7 @@ const Homepage = () => {
   const auth = localStorage.getItem("auth");
   const [footerRef, setFooterRef] = useState<HTMLDivElement | null>(null);
   const [activeStep, setActiveStep] = useState<number>(0);
+  const interval = 5;
 
   useEffect(() => {
     const stepTimer = setTimeout(() => {
@@ -186,7 +225,7 @@ const Homepage = () => {
       } else {
         setActiveStep(0);
       }
-    }, 3000);
+    }, interval * 1000);
 
     return () => clearTimeout(stepTimer);
   });
@@ -229,6 +268,7 @@ const Homepage = () => {
 
   return (
     <HomepageContainer>
+      <FrameBar position="top" height={4} />
       <FloatingContainer footerHeight={footerRef?.offsetHeight}>
         <PlayerContainer
           key="video-player"
@@ -272,11 +312,12 @@ const Homepage = () => {
             <StepTitle active={activeStep === i}>{step.title}</StepTitle>
             <StepContent active={activeStep === i}>{step.content}</StepContent>
             <StepProgressContainer>
-              <StepProgress active={activeStep === i} />
+              <StepProgress interval={interval} active={activeStep === i} />
             </StepProgressContainer>
           </StepContainer>
         ))}
       </LandingSteps>
+      <FrameBar position="bottom" height={4} />
     </HomepageContainer>
   );
 };
