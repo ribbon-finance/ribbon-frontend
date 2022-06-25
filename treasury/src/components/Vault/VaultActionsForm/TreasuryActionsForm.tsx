@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import styled from "styled-components";
+import ReactPlayer from "react-player";
 
 import { PrimaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -9,6 +10,7 @@ import theme from "shared/lib/designSystem/theme";
 import { BaseInputContainer, SecondaryText } from "shared/lib/designSystem";
 import { Button } from "shared/lib/components/Common/buttons";
 import useGlobalAccess from "../../../hooks/useGlobalAccess";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
 
 export const CodeInput = styled.input<{
   inputWidth?: string;
@@ -41,6 +43,7 @@ export const CodeInput = styled.input<{
 const Container = styled.div<{ variant: "desktop" | "mobile" }>`
   display: flex;
   flex-direction: column;
+  align-items: center;
   ${(props) =>
     props.variant === "mobile" &&
     `
@@ -60,6 +63,7 @@ export const EnterButton = styled(Button)`
 `;
 
 const FormContainer = styled.div`
+  z-index: 1;
   font-family: VCR, sans-serif;
   color: #f3f3f3;
   width: 100%;
@@ -102,6 +106,20 @@ const WhitelistDescription = styled(PrimaryText)`
   color: ${colors.text};
 `;
 
+const FloatingBackgroundContainer = styled.div<{ backgroundColor?: string }>`
+  pointer-events: none;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  height: 100%;
+  width: 100vw;
+  overflow: hidden;
+  ${(props) =>
+    props.backgroundColor ? `background: ${props.backgroundColor};` : ""};
+`;
+
 type SVGProps = React.SVGAttributes<SVGElement>;
 
 const RBNLogo: React.FC<SVGProps> = ({ ...props }) => (
@@ -136,6 +154,7 @@ const TreasuryActionsForm: React.FC<TreasuryActionsFormProps> = ({
   const color = "#fc0a54";
   const { handleInputChange, handleSubmission, error, code } =
     useGlobalAccess();
+  const { video } = useScreenSize();
 
   const body = useMemo(() => {
     return (
@@ -189,11 +208,27 @@ const TreasuryActionsForm: React.FC<TreasuryActionsFormProps> = ({
         </PrimaryText>
       </div>
     );
-  }, [code, handleInputChange, handleSubmission, error]);
+  }, [error, code, handleInputChange, handleSubmission]);
 
   return (
     <Container variant={variant}>
       <FormContainer>{body}</FormContainer>
+      <FloatingBackgroundContainer>
+        <ReactPlayer
+          key="video-player"
+          url="https://player.vimeo.com/video/722230744?h=772ecba04a&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+          playing={true}
+          width={video.width}
+          height={video.height}
+          style={{
+            minWidth: video.width,
+            minHeight: video.height,
+          }}
+          muted
+          loop
+        />
+      </FloatingBackgroundContainer>
+      <FloatingBackgroundContainer backgroundColor="#000000CC" />
     </Container>
   );
 };

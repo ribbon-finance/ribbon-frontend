@@ -103,24 +103,21 @@ export const calculateAPYFromPriceHistory = (
   let newPriceHistory = priceHistory;
 
   // Ignore apy calculation for specific avax vaults
-  let roundToIgnore: number | undefined = undefined;
+  // Ignore priceHistory before round 16
+  let ignoreRoundsBefore: number | undefined = undefined;
   if (vaultOption === "rUSDC-AVAX-P-THETA") {
-    // Ignore priceHistory from round 16, if round 16 is the latest round
-    roundToIgnore = 16;
+    ignoreRoundsBefore = 16;
   } else if (vaultOption === "rAVAX-THETA") {
-    roundToIgnore = 30;
+    ignoreRoundsBefore = 30;
   } else if (vaultOption === "rsAVAX-THETA") {
-    roundToIgnore = 18;
+    ignoreRoundsBefore = 18;
   }
 
   // Fix for avax apys
-  if (roundToIgnore) {
-    newPriceHistory =
-      priceHistory[priceHistory.length - 1]?.round === roundToIgnore
-        ? priceHistory.filter((h) => {
-            return h.round !== roundToIgnore;
-          })
-        : priceHistory;
+  if (ignoreRoundsBefore) {
+    newPriceHistory = priceHistory.filter((h) => {
+      return (h.round || 0) >= ignoreRoundsBefore!;
+    });
   }
 
   const periodStart = moment()
