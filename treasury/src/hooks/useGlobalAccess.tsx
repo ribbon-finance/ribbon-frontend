@@ -60,7 +60,7 @@ const useGlobalAccess = () => {
     } else {
       setError("Invalid Code");
     }
-  }, [setError, code, history, setGlobalAccess, setAccessModal, localStorage]);
+  }, [setError, code, history, setGlobalAccess, setAccessModal]);
 
   return {
     handleInputChange,

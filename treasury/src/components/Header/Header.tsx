@@ -79,7 +79,7 @@ const OpenTreasuryButton = styled(ConnectWalletButton)`
 
 const Header = () => {
   const [, setAccessModal] = useWebappGlobalState("isAccessModalVisible");
-  const [globalAccess] = useGlobalAccessState("access");
+  const hasAccess = localStorage.getItem("auth");
   // const product = useRouteMatch({ path: "/", exact: true });
   // const portfolio = useRouteMatch({ path: "/portfolio", exact: true });
   // const treasury = useRouteMatch({ path: "/treasury", exact: false });
@@ -93,7 +93,7 @@ const Header = () => {
           <HeaderLogo />
         </LogoContainer>
 
-        {globalAccess.length > 0 ? (
+        {hasAccess ? (
           <AccountStatus variant="desktop" />
         ) : (
           <OpenTreasuryButton

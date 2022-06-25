@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import sizes from "shared/lib/designSystem/sizes";
 import theme from "shared/lib/designSystem/theme";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
@@ -8,7 +8,7 @@ import { VaultName, VaultNameOptionMap } from "shared/lib/constants/constants";
 import ReactPlayer from "react-player";
 import colors from "shared/lib/designSystem/colors";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const HomepageContainer = styled.div`
   display: flex;
@@ -111,26 +111,60 @@ const LandingSteps = styled.div<{ totalSteps: number }>`
   }
 `;
 
-const Step = styled.div`
+const StepContainer = styled.div`
   width: 300px;
-  border-bottom: 4px solid ${colors.background.four};
+  position: relative;
 
   &:not(:last-of-type) {
     margin-right: 50px;
   }
 `;
 
-const StepTitle = styled.h6`
-  color: ${colors.primaryText};
+const StepTitle = styled.h6<{ active: boolean }>`
+  transition: 0.2s;
+  color: ${(props) =>
+    props.active ? colors.primaryText : colors.quaternaryText};
   font-family: VCR;
   text-align: center;
 `;
 
-const StepContent = styled.p`
-  color: ${colors.text};
+const StepContent = styled.p<{ active: boolean }>`
+  transition: 0.2s;
+  color: ${(props) => (props.active ? colors.text : colors.quaternaryText)};
   text-align: center;
   font-size: 14px;
 `;
+
+const StepProgressContainer = styled.div`
+  position: absolute;
+  bottom: 0px;
+  height: 4px;
+  background: ${colors.background.four};
+  width: 100%;
+`;
+
+const progress = keyframes`
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: 100%;
+  }
+`;
+
+const animation = css`
+  animation: 3s ${progress} infinite;
+  background: white;
+`;
+
+const StepProgress = styled.div<{ active: boolean }>`
+  height: 4px;
+  transition: 0.2s;
+
+  ${(props) => (props.active ? animation : "width: 0%")};
+`;
+
 interface Step {
   title: string;
   content: string;
@@ -143,6 +177,19 @@ const Homepage = () => {
   const { video } = useScreenSize();
   const auth = localStorage.getItem("auth");
   const [footerRef, setFooterRef] = useState<HTMLDivElement | null>(null);
+  const [activeStep, setActiveStep] = useState<number>(0);
+
+  useEffect(() => {
+    const stepTimer = setTimeout(() => {
+      if (activeStep < steps.length - 1) {
+        setActiveStep(activeStep + 1);
+      } else {
+        setActiveStep(0);
+      }
+    }, 3000);
+
+    return () => clearTimeout(stepTimer);
+  });
 
   const steps: Step[] = [
     {
@@ -185,7 +232,7 @@ const Homepage = () => {
       <FloatingContainer footerHeight={footerRef?.offsetHeight}>
         <PlayerContainer
           key="video-player"
-          url="https://player.vimeo.com/video/722230744?h=772ecba04a&badge=0&autopause=0&player_id=0&app_id=58479"
+          url="https://player.vimeo.com/video/722230744"
           playing={true}
           width={"100vw"}
           height={video.height}
@@ -220,11 +267,14 @@ const Homepage = () => {
         </LandingContent>
       </FloatingContainer>
       <LandingSteps ref={onSetFooterRef} totalSteps={steps.length}>
-        {steps.map((step) => (
-          <Step>
-            <StepTitle>{step.title}</StepTitle>
-            <StepContent>{step.content}</StepContent>
-          </Step>
+        {steps.map((step, i) => (
+          <StepContainer>
+            <StepTitle active={activeStep === i}>{step.title}</StepTitle>
+            <StepContent active={activeStep === i}>{step.content}</StepContent>
+            <StepProgressContainer>
+              <StepProgress active={activeStep === i} />
+            </StepProgressContainer>
+          </StepContainer>
         ))}
       </LandingSteps>
     </HomepageContainer>

@@ -25,14 +25,7 @@ const StyledModal = styled(BaseModal)<{
     min-height: ${(props) => props.height}px;
     overflow: hidden;
     border: 1px solid ${colors.border};
-
-    ${(props) =>
-      props.theme
-        ? `
-            background-color: ${props.theme}0A;
-          `
-        : ``}}
-  }
+    ${(props) => props.theme && `background-color: ${props.theme}0A;`}
 `;
 
 const BackButton = styled.div`
