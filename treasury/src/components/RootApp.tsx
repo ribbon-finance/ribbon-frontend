@@ -17,9 +17,8 @@ import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal"
 import NotFound from "shared/lib/pages/NotFound";
 
 const Root = styled.div<{ screenHeight: number }>`
-  min-height: ${(props) =>
-    props.screenHeight ? `${props.screenHeight}px` : `100vh`};
-    background: transparent;
+  max-height: 100vh;
+  background: transparent;
 `;
 
 const RootApp = () => {

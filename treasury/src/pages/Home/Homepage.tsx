@@ -8,16 +8,26 @@ import { VaultName, VaultNameOptionMap } from "shared/lib/constants/constants";
 import ReactPlayer from "react-player";
 import colors from "shared/lib/designSystem/colors";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
+import { useCallback, useMemo, useRef, useState } from "react";
 
-const FloatingContainer = styled.div`
+const HomepageContainer = styled.div`
+  display: flex;
+  justify-content: space-around;
   width: 100%;
-  height: 100%;
-  max-height: calc(100vh - ${theme.header.height}px);
+`;
+
+const FloatingContainer = styled.div<{ footerHeight?: number }>`
+  width: 100%;
+  height: calc(
+    100vh - ${theme.header.height}px -
+      ${(props) => (props.footerHeight ? props.footerHeight + 48 : 48)}px
+  );
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   min-height: 600px;
+  position: relative;
 
   @media (max-width: ${sizes.md}px) {
     flex-direction: column;
@@ -90,11 +100,67 @@ const AccessLink = styled.a`
   }
 `;
 
+const LandingSteps = styled.div<{ totalSteps: number }>`
+  position: absolute;
+  bottom: 48px;
+  display: flex;
+  transition: 0.2s;
+
+  @media (max-width: calc(1000px + 160px)) {
+    display: none;
+  }
+`;
+
+const Step = styled.div`
+  width: 300px;
+  border-bottom: 4px solid ${colors.background.four};
+
+  &:not(:last-of-type) {
+    margin-right: 50px;
+  }
+`;
+
+const StepTitle = styled.h6`
+  color: ${colors.primaryText};
+  font-family: VCR;
+  text-align: center;
+`;
+
+const StepContent = styled.p`
+  color: ${colors.text};
+  text-align: center;
+  font-size: 14px;
+`;
+interface Step {
+  title: string;
+  content: string;
+  interval?: number;
+}
+
 const Homepage = () => {
   usePullUp();
   const history = useHistory();
-
+  const { video } = useScreenSize();
   const auth = localStorage.getItem("auth");
+  const [footerRef, setFooterRef] = useState<HTMLDivElement | null>(null);
+
+  const steps: Step[] = [
+    {
+      title: "01",
+      content:
+        "Diversify your DAO's treasury holdings by earning premiums in stables",
+    },
+    {
+      title: "02",
+      content:
+        "Customise your covered call strike selection methodology, tenor and premium currency",
+    },
+    {
+      title: "03",
+      content:
+        "Leverage Ribbon's network of market makers to boostrap a market",
+    },
+  ];
 
   if (auth) {
     const vault = JSON.parse(auth).pop();
@@ -110,11 +176,13 @@ const Homepage = () => {
     }
   }
 
-  const { video } = useScreenSize();
+  const onSetFooterRef = useCallback((ref) => {
+    setFooterRef(ref);
+  }, []);
 
   return (
-    <>
-      <FloatingContainer>
+    <HomepageContainer>
+      <FloatingContainer footerHeight={footerRef?.offsetHeight}>
         <PlayerContainer
           key="video-player"
           url="https://player.vimeo.com/video/722230744?h=772ecba04a&badge=0&autopause=0&player_id=0&app_id=58479"
@@ -123,6 +191,7 @@ const Homepage = () => {
           height={video.height}
           style={{
             maxWidth: "100vw",
+            maxHeight: "100vh",
           }}
           config={{ vimeo: { playerOptions: { background: true } } }}
           muted
@@ -150,7 +219,15 @@ const Homepage = () => {
           </ProductText>
         </LandingContent>
       </FloatingContainer>
-    </>
+      <LandingSteps ref={onSetFooterRef} totalSteps={steps.length}>
+        {steps.map((step) => (
+          <Step>
+            <StepTitle>{step.title}</StepTitle>
+            <StepContent>{step.content}</StepContent>
+          </Step>
+        ))}
+      </LandingSteps>
+    </HomepageContainer>
   );
 };
 
