@@ -7,6 +7,7 @@ import { useHistory } from "react-router-dom";
 import { VaultName, VaultNameOptionMap } from "shared/lib/constants/constants";
 import ReactPlayer from "react-player";
 import colors from "shared/lib/designSystem/colors";
+import { ExternalIcon } from "shared/lib/assets/icons/icons";
 
 const FloatingContainer = styled.div`
   width: 100%;
@@ -24,9 +25,8 @@ const FloatingContainer = styled.div`
 `;
 
 const PlayerContainer = styled(ReactPlayer)`
-  // height: 100%;
-  // max-height: calc(100vh - ${theme.header.height}px);
   height: 400px;
+  width: 100%;
   position: absolute;
   pointer-events: none !important;
   z-index: -1;
@@ -48,20 +48,45 @@ const LandingContent = styled.div`
 
   p {
     font-size: 16px;
-    color: ${colors.tertiaryText};
+    color: ${colors.text};
+  }
+`;
+
+const ProductText = styled.p`
+  font-size: 10px !important;
+
+  > * {
+    display: inline-flex;
   }
 
-  button {
-    font-size: 14px;
-    color: ${colors.primaryText};
-    padding: 8px 16px;
-    background: none;
-    border: 1px solid white;
-    border-radius: 6px;
-    display: block;
-    margin: auto;
-    font-family: VCR;
-    text-transform: uppercase;
+  a {
+    color: ${colors.text};
+    text-decoration: underline;
+
+    span {
+      display: block;
+      margin-left: 4px;
+    }
+  }
+`;
+
+const AccessLink = styled.a`
+  font-size: 14px;
+  color: ${colors.primaryText};
+  padding: 8px 16px;
+  background: none;
+  border: 1px solid white;
+  border-radius: 6px;
+  display: block;
+  margin: auto;
+  font-family: VCR;
+  text-transform: uppercase;
+  width: fit-content;
+
+  &:hover {
+    background-color: ${colors.primaryText};
+    color: black;
+    text-decoration: none;
   }
 `;
 
@@ -94,20 +119,35 @@ const Homepage = () => {
           key="video-player"
           url="https://player.vimeo.com/video/722230744?h=772ecba04a&badge=0&autopause=0&player_id=0&app_id=58479"
           playing={true}
-          width={video.width}
+          width={"100vw"}
           height={video.height}
           style={{
-            minWidth: video.width,
-            minHeight: video.height,
+            maxWidth: "100vw",
           }}
+          config={{ vimeo: { playerOptions: { background: true } } }}
           muted
           loop
         />
         <LandingContent>
           <h1>Treasury</h1>
           <p>Earn yield on your protocol's native token</p>
-          <button>Apply for access</button>
-          <a>A product by Ribbon Finance</a>
+          <AccessLink
+            href="https://d9gte6lu2ax.typeform.com/to/ZaNFY9zP"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Apply for access
+          </AccessLink>
+          <ProductText>
+            A product by{" "}
+            <a
+              href="https://ribbon.finance"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Ribbon Finance <ExternalIcon height={12} width={12} />
+            </a>
+          </ProductText>
         </LandingContent>
       </FloatingContainer>
     </>

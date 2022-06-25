@@ -1,11 +1,13 @@
-import BasicModal from "shared/lib/components/Common/BasicModal"
-import TreasuryActionsForm from "../Vault/VaultActionsForm/TreasuryActionsForm"
+import BasicModal from "shared/lib/components/Common/BasicModal";
+import { useWebappGlobalState } from "../../store/store";
+import TreasuryActionsForm from "../Vault/VaultActionsForm/TreasuryActionsForm";
 
-interface AccessModalProps {
-    show: boolean;
-    onClose: () => void;
-}
+export const AccessModal: React.FC = () => {
+const [isAccessModalVisible, setAccessModal] = useWebappGlobalState("isAccessModalVisible");
 
-export const AccessModal: React.FC<AccessModalProps> = ({ show, onClose }) => {
-    return <BasicModal show={show} height={580} onClose={onClose}><TreasuryActionsForm variant="desktop"/></BasicModal>
-}
+  return (
+    <BasicModal show={isAccessModalVisible} height={516} maxWidth={428} onClose={() => setAccessModal(false)}>
+      <TreasuryActionsForm variant="desktop" />
+    </BasicModal>
+  );
+};

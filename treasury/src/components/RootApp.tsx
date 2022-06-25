@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 
@@ -19,6 +19,7 @@ import NotFound from "shared/lib/pages/NotFound";
 const Root = styled.div<{ screenHeight: number }>`
   min-height: ${(props) =>
     props.screenHeight ? `${props.screenHeight}px` : `100vh`};
+    background: transparent;
 `;
 
 const RootApp = () => {
