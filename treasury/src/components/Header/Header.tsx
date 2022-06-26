@@ -7,13 +7,13 @@ import { ConnectWalletButton } from "shared/lib/components/Common/buttons";
 import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
 import { AccessModal } from "../AccessModal/AccessModal";
 import { useWebappGlobalState } from "../../store/store";
+import { Title } from "shared/lib/designSystem";
 
 const HeaderContainer = styled.div<{ isMenuOpen?: boolean }>`
   height: ${theme.header.height}px;
   position: sticky;
   top: 0;
   border-bottom: 1px solid ${colors.border};
-  background: black;
 
   @media (max-width: ${sizes.lg}px) {
     padding: 16px 24px;
@@ -67,23 +67,59 @@ const OpenTreasuryButton = styled(ConnectWalletButton)`
   width: fit-content;
   border: none;
   padding: 12px 16px;
-  margin-right: 40px;
   line-height: 20px;
   border-radius: 8px;
   cursor: pointer;
   z-index: 100;
+  
+  @media (min-width: ${sizes.lg}px) {
+    margin-right: 40px;
+  }
+
+  @media (max-width: ${sizes.md}px) {
+    display: none;
+  }
 
   &:hover {
     opacity: 0.64;
   }
 `;
 
+const HeaderAbsoluteContainer = styled.div`
+  position: absolute;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  left:0;
+`;
+
+const LinksContainer = styled.div`
+  display: flex;
+`;
+
+const NavItem = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0px 28px;
+  height: 100%;
+  `;
+  
+  const NavLinkText = styled(Title)`
+  letter-spacing: 1.5px;
+  font-size: 14px;
+  line-height: 20px;
+  cursor: pointer;
+  opacity: 0.48;
+
+  &:hover {
+    opacity: 1;
+  }
+`
+
 const Header = () => {
   const [, setAccessModal] = useWebappGlobalState("isAccessModalVisible");
   const hasAccess = localStorage.getItem("auth");
-  // const product = useRouteMatch({ path: "/", exact: true });
-  // const portfolio = useRouteMatch({ path: "/portfolio", exact: true });
-  // const treasury = useRouteMatch({ path: "/treasury", exact: false });
 
   return (
     <>
@@ -93,6 +129,14 @@ const Header = () => {
         <LogoContainer>
           <HeaderLogo />
         </LogoContainer>
+
+        <HeaderAbsoluteContainer>
+        <LinksContainer>
+          <NavItem onClick={() => null}>
+            <NavLinkText>Info</NavLinkText>
+          </NavItem>
+        </LinksContainer>
+      </HeaderAbsoluteContainer>
 
         {hasAccess ? (
           <AccountStatus variant="desktop" />

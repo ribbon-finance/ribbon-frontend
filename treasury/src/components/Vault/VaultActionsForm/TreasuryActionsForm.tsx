@@ -44,6 +44,8 @@ const Container = styled.div<{ variant: "desktop" | "mobile" }>`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: -16px;
+  
   ${(props) =>
     props.variant === "mobile" &&
     `

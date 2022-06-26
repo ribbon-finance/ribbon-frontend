@@ -144,18 +144,33 @@ const StepProgressContainer = styled.div`
 `;
 
 const progress = keyframes`
-  from {
+  0% {
     width: 0%;
+    left: 0;
   }
 
-  to {
+  25% {
+    left: 0;
+  }
+
+  50% {
     width: 100%;
+  }
+
+  75% {
+    right: 0;
+  }
+
+  100% {
+    width: 0%;
+    right: 0;
   }
 `;
 
 const animation = css<{ interval: number }>`
   animation: ${(props) => props.interval}s ${progress} infinite;
   background: white;
+  position: absolute;
 `;
 
 const StepProgress = styled.div<{ active: boolean; interval: number }>`
