@@ -8,6 +8,8 @@ import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
 import { AccessModal } from "../AccessModal/AccessModal";
 import { useWebappGlobalState } from "../../store/store";
 import { Title } from "shared/lib/designSystem";
+import { InfoModal } from "../InfoModal/InfoModal";
+import { useState } from "react";
 
 const HeaderContainer = styled.div<{ isMenuOpen?: boolean }>`
   height: ${theme.header.height}px;
@@ -71,7 +73,7 @@ const OpenTreasuryButton = styled(ConnectWalletButton)`
   border-radius: 8px;
   cursor: pointer;
   z-index: 100;
-  
+
   @media (min-width: ${sizes.lg}px) {
     margin-right: 40px;
   }
@@ -91,7 +93,7 @@ const HeaderAbsoluteContainer = styled.div`
   height: 100%;
   width: 100%;
   justify-content: center;
-  left:0;
+  left: 0;
 `;
 
 const LinksContainer = styled.div`
@@ -103,9 +105,9 @@ const NavItem = styled.div`
   align-items: center;
   padding: 0px 28px;
   height: 100%;
-  `;
-  
-  const NavLinkText = styled(Title)`
+`;
+
+const NavLinkText = styled(Title)`
   letter-spacing: 1.5px;
   font-size: 14px;
   line-height: 20px;
@@ -115,15 +117,20 @@ const NavItem = styled.div`
   &:hover {
     opacity: 1;
   }
-`
+`;
 
 const Header = () => {
   const [, setAccessModal] = useWebappGlobalState("isAccessModalVisible");
+  const [isInfoModalVisible, setInfoModal] = useState<boolean>(false);
   const hasAccess = localStorage.getItem("auth");
 
   return (
     <>
       <AccessModal />
+      <InfoModal
+        isVisible={isInfoModalVisible}
+        setShow={(set) => setInfoModal(set)}
+      />
       <HeaderContainer className="d-flex align-items-center">
         {/* LOGO */}
         <LogoContainer>
@@ -131,12 +138,12 @@ const Header = () => {
         </LogoContainer>
 
         <HeaderAbsoluteContainer>
-        <LinksContainer>
-          <NavItem onClick={() => null}>
-            <NavLinkText>Info</NavLinkText>
-          </NavItem>
-        </LinksContainer>
-      </HeaderAbsoluteContainer>
+          <LinksContainer>
+            <NavItem onClick={() => setInfoModal(true)}>
+              <NavLinkText>Info</NavLinkText>
+            </NavItem>
+          </LinksContainer>
+        </HeaderAbsoluteContainer>
 
         {hasAccess ? (
           <AccountStatus variant="desktop" />

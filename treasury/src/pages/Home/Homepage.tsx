@@ -14,6 +14,7 @@ const HomepageContainer = styled.div`
   display: flex;
   justify-content: space-around;
   width: 100%;
+  height: calc(100vh - ${theme.header.height}px);
 `;
 
 const FloatingContainer = styled.div<{ footerHeight?: number }>`
