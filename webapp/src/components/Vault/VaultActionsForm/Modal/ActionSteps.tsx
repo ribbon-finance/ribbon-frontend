@@ -25,14 +25,17 @@ import WarningStep from "./WarningStep";
 import { depositSAVAX } from "shared/lib/hooks/useSAVAXDeposit";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { useFlexVault } from "shared/lib/hooks/useFlexVault";
+import useLidoCurvePool from "shared/lib/hooks/useLidoCurvePool";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { getAssetColor, getAssetDecimals } from "shared/lib/utils/asset";
+import { RibbonV2stETHThetaVaultFactory } from "shared/lib/codegen/RibbonV2stETHThetaVaultFactory";
 import * as anchor from "@project-serum/anchor";
 import {
   RibbonCoveredCall,
   RibbonV2stETHThetaVault,
   RibbonV2ThetaVault,
 } from "shared/lib/codegen";
+import { amountAfterSlippage } from "shared/lib/utils/math";
 
 export interface ActionStepsProps {
   vault: {
@@ -85,6 +88,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       : vaultOption
   );
   const v2Vault = useV2VaultContract(vaultOption);
+  const { contract, getEncodedExchangeData } = useLidoCurvePool()
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
   const { vaultBalanceInAsset: v1VaultBalanceInAsset } =
@@ -216,15 +220,46 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         switch (vaultActionForm.actionType) {
           case ACTIONS.deposit:
             switch (vaultOption) {
-              case "rstETH-THETA":
-                res = await (isNativeToken(asset)
-                  ? (vault as RibbonV2ThetaVault).depositETH({
-                      value: amountStr,
-                    })
-                  : (vault as RibbonV2stETHThetaVault).depositYieldToken(
-                      amountStr
-                    ));
+              case "rstETH-THETA": {
+                if (isNativeToken(asset)) {
+                  res = await (vault as RibbonV2ThetaVault).depositETH({
+                    value: amountStr,
+                  });
+                } else {
+                  // Swap ETH to stETH on Curve before depositing
+                  if (contract) {
+                    // 1. Get min_dy
+                    const minOut = await contract.get_dy(
+                      1,
+                      0,
+                      amountAfterSlippage(amount, 0.05),
+                      {
+                        gasLimit: 400000,
+                      }
+                    );
+
+                    // 2. Encoded exchange tx
+                    const encodedExchangeTx = getEncodedExchangeData(
+                      0,
+                      1,
+                      amount,
+                      minOut
+                    );
+
+                    // 3. Encoded vault deposit tx
+
+                    // 4. Pass both encoded fun into multicall
+
+                    // 5. Wait for tx
+
+                  }
+
+                  res = await (
+                    vault as RibbonV2stETHThetaVault
+                  ).depositYieldToken(amountStr);
+                }
                 break;
+              }
 
               case "rSOL-THETA":
                 if (client) {
@@ -247,8 +282,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
               default:
                 res = await (isNativeToken(asset)
                   ? (vault as RibbonV2ThetaVault).depositETH({
-                      value: amountStr,
-                    })
+                    value: amountStr,
+                  })
                   : (vault as RibbonV2ThetaVault).deposit(amountStr));
             }
             break;

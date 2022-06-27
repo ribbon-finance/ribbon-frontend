@@ -844,6 +844,10 @@ export const LidoOracleAddress = isDevelopment()
   ? ""
   : addresses.mainnet.lidoOracle;
 
+export const CurveLidoPoolAddress = isDevelopment()
+  ? ""
+  : addresses.mainnet.lidoCurvePool;
+
 export const RibbonTreasuryAddress = {
   [CHAINID.ETH_KOVAN]: "0xD380980791079Bd50736Ffe577b8D57A3C196ccd",
   [CHAINID.ETH_MAINNET]: "0xDAEada3d210D2f45874724BeEa03C7d4BBD41674",
