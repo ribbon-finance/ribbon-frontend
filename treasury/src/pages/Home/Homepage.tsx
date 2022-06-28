@@ -9,7 +9,6 @@ import ReactPlayer from "react-player";
 import colors from "shared/lib/designSystem/colors";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { useCallback, useEffect, useState } from "react";
-import { FrameBar } from "../../components/FrameBar/FrameBar";
 
 const HomepageContainer = styled.div`
   display: flex;

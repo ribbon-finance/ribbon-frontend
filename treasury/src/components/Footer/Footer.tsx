@@ -6,9 +6,10 @@ import theme from "shared/lib/designSystem/theme";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import useVaultOption from "../../hooks/useVaultOption";
 import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
-import DesktopFooter from "webapp/lib/components/Footer/DesktopFooter";
 import { useState } from "react";
 import { FrameBar } from "../FrameBar/FrameBar";
+import { OpenTreasuryButton } from "../Header/Header";
+import { useWebappGlobalState } from "../../store/store";
 
 const FooterContainer = styled.div<{
   screenHeight: number;
@@ -17,7 +18,7 @@ const FooterContainer = styled.div<{
   width: 100%;
   display: flex;
   justify-content: center;
-  // backdrop-filter: blur(40px);
+  backdrop-filter: blur(40px);
   /**
    * Firefox desktop come with default flag to have backdrop-filter disabled
    * Firefox Android also currently has bug where backdrop-filter is not being applied
@@ -58,6 +59,8 @@ const Footer = () => {
   const { height: screenHeight, width } = useScreenSize();
   const { vaultOption, vaultVersion } = useVaultOption();
   const [showVaultPosition, setShowVaultPosition] = useState(false);
+  const hasAccess = localStorage.getItem("auth");
+  const [, setAccessModal] = useWebappGlobalState("isAccessModalVisible");
 
   // TODO: If active page is root, render access treasury button
   return (
@@ -66,14 +69,23 @@ const Footer = () => {
         screenHeight={screenHeight}
         showVaultPosition={showVaultPosition}
       >
-        <FrameBar bottom={width <= sizes.md ? 104 : 0} height={4} />
+        {!hasAccess && <FrameBar bottom={width <= sizes.md ? 104 : 0} height={4} />}
         {/** Mobile */}
-        <AccountStatus
-          variant="mobile"
-          vault={vaultOption ? { vaultOption, vaultVersion } : undefined}
-          showVaultPositionHook={setShowVaultPosition}
-          showAirdropButton={false}
-        />
+        {
+          !hasAccess ? <OpenTreasuryButton
+            variant="mobile"
+            role="button"
+            onClick={() => setAccessModal(true)}
+          >
+            Open Treasury
+          </OpenTreasuryButton> :
+            <AccountStatus
+              variant="mobile"
+              vault={vaultOption ? { vaultOption, vaultVersion } : undefined}
+              showVaultPositionHook={setShowVaultPosition}
+              showAirdropButton={false}
+            />
+        }
       </FooterContainer>
       <MobileFooterOffsetContainer showVaultPosition={showVaultPosition} />
     </>

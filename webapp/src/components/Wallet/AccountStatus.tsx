@@ -495,7 +495,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
               handleOpenEtherscan
             )}
           {!isLedgerLive && renderMenuItem("DISCONNECT", handleDisconnect)}
-          {chainId === CHAINID.ETH_MAINNET && (
+          {chainId === CHAINID.ETH_MAINNET && showAirdropButton && (
             <AirdropMenuItem role="button">
               <AirdropButton onClick={onShowAirdropModal}></AirdropButton>
             </AirdropMenuItem>

@@ -65,7 +65,7 @@ const LogoContainer = styled.div`
   }
 `;
 
-const OpenTreasuryButton = styled(ConnectWalletButton)`
+export const OpenTreasuryButton = styled(ConnectWalletButton) <{ variant: "desktop" | "mobile" }>`
   font-size: 14px;
   width: fit-content;
   border: none;
@@ -74,13 +74,20 @@ const OpenTreasuryButton = styled(ConnectWalletButton)`
   border-radius: 8px;
   cursor: pointer;
   z-index: 100;
+  height: fit-content;
+
+  ${props => props.variant === "mobile" && `
+    margin: 16px;
+    width: 100%;
+  `};
 
   @media (min-width: ${sizes.lg}px) {
-    margin-right: 40px;
+    ${props => props.variant === "desktop" && "margin-right: 40px"};
+    ${props => props.variant === "mobile" && "display: none"};
   }
 
   @media (max-width: ${sizes.md}px) {
-    display: none;
+    ${props => props.variant === "desktop" && "display: none"};
   }
 
   &:hover {
@@ -147,16 +154,17 @@ const Header = () => {
         </HeaderAbsoluteContainer>
 
         {hasAccess ? (
-          <AccountStatus variant="desktop" />
+          <AccountStatus variant="desktop" showAirdropButton={false} />
         ) : (
           <OpenTreasuryButton
+            variant="desktop"
             role="button"
             onClick={() => setAccessModal(true)}
           >
             Open Treasury
           </OpenTreasuryButton>
         )}
-        <FrameBar bottom={0} height={4} />
+        {!hasAccess && <FrameBar bottom={0} height={4} />}
       </HeaderContainer>
     </>
   );
