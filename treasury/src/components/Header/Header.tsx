@@ -10,6 +10,7 @@ import { useWebappGlobalState } from "../../store/store";
 import { Title } from "shared/lib/designSystem";
 import { InfoModal } from "../InfoModal/InfoModal";
 import { useState } from "react";
+import { FrameBar } from "../FrameBar/FrameBar";
 
 const HeaderContainer = styled.div<{ isMenuOpen?: boolean }>`
   height: ${theme.header.height}px;
@@ -155,6 +156,7 @@ const Header = () => {
             Open Treasury
           </OpenTreasuryButton>
         )}
+        <FrameBar bottom={0} height={4} />
       </HeaderContainer>
     </>
   );

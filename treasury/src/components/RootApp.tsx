@@ -6,7 +6,7 @@ import Homepage from "../pages/Home/Homepage";
 import DepositPage from "../pages/DepositPage/DepositPage";
 import useEagerConnect from "shared/lib/hooks/useEagerConnect";
 import PortfolioPage from "../pages/Portfolio/PortfolioPage";
-// import Footer from "./Footer/Footer";
+import Footer from "./Footer/Footer";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import {
   TxStatusToast,
@@ -46,7 +46,7 @@ const RootApp = () => {
             <NotFound />
           </Route>
         </Switch>
-        {/* <Footer /> */}
+        <Footer />
       </Router>
     </Root>
   );

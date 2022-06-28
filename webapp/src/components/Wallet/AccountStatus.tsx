@@ -115,7 +115,7 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
   }}
 `;
 
-const WalletButton = styled(BaseButton)<WalletButtonProps>`
+const WalletButton = styled(BaseButton) <WalletButtonProps>`
   background-color: ${(props) =>
     props.connected ? colors.background.two : `${colors.green}14`};
   align-items: center;
@@ -140,7 +140,7 @@ const WalletButton = styled(BaseButton)<WalletButtonProps>`
   }}
 `;
 
-const WalletButtonText = styled(Title)<WalletStatusProps>`
+const WalletButtonText = styled(Title) <WalletStatusProps>`
   font-size: 14px;
   line-height: 20px;
 
@@ -172,7 +172,7 @@ const InvestButton = styled(ActionButton)`
 
 const WalletMobileOverlayMenu = styled(
   MobileOverlayMenu
-)<AccountStatusVariantProps>`
+) <AccountStatusVariantProps>`
   display: none;
 
   ${(props) => {
@@ -276,12 +276,14 @@ interface AccountStatusProps {
   };
   variant: "desktop" | "mobile";
   showVaultPositionHook?: (show: boolean) => void;
+  showAirdropButton?: boolean;
 }
 
 const AccountStatus: React.FC<AccountStatusProps> = ({
   vault,
   variant,
   showVaultPositionHook,
+  showAirdropButton = true
 }) => {
   const [chain, setChain] = useChain();
   const {
@@ -469,13 +471,13 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
             {(status !== "loading" &&
               vault.vaultVersion === "v1" &&
               vaultLimit.isZero()) ||
-            (!v1VaultAccountsLoading &&
-              vault.vaultVersion === "v2" &&
-              v1VaultAccounts[vault.vaultOption] &&
-              !isPracticallyZero(
-                v1VaultAccounts[vault.vaultOption]!.totalBalance,
-                getAssetDecimals(getAssets(vault.vaultOption))
-              ))
+              (!v1VaultAccountsLoading &&
+                vault.vaultVersion === "v2" &&
+                v1VaultAccounts[vault.vaultOption] &&
+                !isPracticallyZero(
+                  v1VaultAccounts[vault.vaultOption]!.totalBalance,
+                  getAssetDecimals(getAssets(vault.vaultOption))
+                ))
               ? "Migrate"
               : "Invest"}
           </InvestButton>
@@ -526,7 +528,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
         <MenuCloseItem role="button" onClick={onCloseMenu}>
           <MenuButton isOpen={true} onToggle={onCloseMenu} />
         </MenuCloseItem>
-        {chainId === CHAINID.ETH_MAINNET && (
+        {chainId === CHAINID.ETH_MAINNET && showAirdropButton && (
           <AirdropMenuItem role="button">
             <AirdropButton onClick={onShowAirdropModal}></AirdropButton>
           </AirdropMenuItem>

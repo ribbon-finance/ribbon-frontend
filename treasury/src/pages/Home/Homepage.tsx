@@ -9,6 +9,7 @@ import ReactPlayer from "react-player";
 import colors from "shared/lib/designSystem/colors";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { useCallback, useEffect, useState } from "react";
+import { FrameBar } from "../../components/FrameBar/FrameBar";
 
 const HomepageContainer = styled.div`
   display: flex;
@@ -183,44 +184,6 @@ const StepProgress = styled.div<{ active: boolean; interval: number }>`
   ${(props) => (props.active ? animation : "width: 0%")};
 `;
 
-const livelyAnimation = (position: "top" | "bottom") => keyframes`
-  0% {
-    background-position-x: ${position === "top" ? 0 : 100}%;
-  }
-
-  50% {
-    background-position-x: ${position === "top" ? 100 : 0}%; 
-  }
-
-  100% {
-    background-position-x: ${position === "top" ? 0 : 100}%;
-  }
-`;
-
-const FrameBar = styled.div<{
-  position: "top" | "bottom";
-  height: number;
-}>`
-  position: absolute;
-  width: 100%;
-  height: ${(props) => props.height}px;
-  background: ${(props) => `linear-gradient(
-    270deg,
-    ${colors.asset.veRBN}00 5%,
-    ${colors.asset.veRBN} 50%,
-    ${colors.asset.veRBN}00 95%
-  )`};
-  background-size: 200%;
-  animation: 10s ${(props) => livelyAnimation(props.position)} linear infinite;
-  ${(props) => {
-    if (props.position === "top") {
-      return `top: ${theme.header.height}px;`;
-    } else {
-      return `bottom: 0px`;
-    }
-  }};
-`;
-
 interface Step {
   title: string;
   content: string;
@@ -286,7 +249,6 @@ const Homepage = () => {
 
   return (
     <HomepageContainer>
-      <FrameBar position="top" height={4} />
       <FloatingContainer footerHeight={footerRef?.offsetHeight}>
         <PlayerContainer
           key="video-player"
@@ -335,7 +297,7 @@ const Homepage = () => {
           </StepContainer>
         ))}
       </LandingSteps>
-      <FrameBar position="bottom" height={4} />
+
     </HomepageContainer>
   );
 };
