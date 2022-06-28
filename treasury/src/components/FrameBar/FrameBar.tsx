@@ -16,8 +16,8 @@ const livelyAnimation = (position: "top" | "bottom") => keyframes`
 `;
 
 export const FrameBar = styled.div<{
-    bottom: number;
-    height: number;
+  bottom: number;
+  height: number;
 }>`
   position: absolute;
   width: 100%;

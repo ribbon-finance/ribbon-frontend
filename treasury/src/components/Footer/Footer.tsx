@@ -30,8 +30,9 @@ const FooterContainer = styled.div<{
 
   ${(props) => `
     position: sticky;
-    top: calc(${props.screenHeight ? `${props.screenHeight}px` : `100%`} - ${theme.footer.desktop.height
-    }px);
+    top: calc(${props.screenHeight ? `${props.screenHeight}px` : `100%`} - ${
+    theme.footer.desktop.height
+  }px);
   `}
 
   @media (max-width: ${sizes.md}px) {
@@ -39,9 +40,9 @@ const FooterContainer = styled.div<{
     top: unset;
     bottom: 0px;
     height: ${(props) =>
-    props.showVaultPosition
-      ? theme.footer.mobile.heightWithPosition
-      : theme.footer.mobile.height}px;
+      props.showVaultPosition
+        ? theme.footer.mobile.heightWithPosition
+        : theme.footer.mobile.height}px;
     z-index: 5;
   }
 `;
@@ -49,9 +50,9 @@ const FooterContainer = styled.div<{
 const MobileFooterOffsetContainer = styled.div<{ showVaultPosition: boolean }>`
   @media (max-width: ${sizes.md}px) {
     height: ${(props) =>
-    props.showVaultPosition
-      ? theme.footer.mobile.heightWithPosition
-      : theme.footer.mobile.height}px;
+      props.showVaultPosition
+        ? theme.footer.mobile.heightWithPosition
+        : theme.footer.mobile.height}px;
   }
 `;
 
@@ -69,23 +70,26 @@ const Footer = () => {
         screenHeight={screenHeight}
         showVaultPosition={showVaultPosition}
       >
-        {!hasAccess && <FrameBar bottom={width <= sizes.md ? 104 : 0} height={4} />}
+        {!hasAccess && (
+          <FrameBar bottom={width <= sizes.md ? 104 : 0} height={4} />
+        )}
         {/** Mobile */}
-        {
-          !hasAccess ? <OpenTreasuryButton
+        {!hasAccess ? (
+          <OpenTreasuryButton
             variant="mobile"
             role="button"
             onClick={() => setAccessModal(true)}
           >
             Open Treasury
-          </OpenTreasuryButton> :
-            <AccountStatus
-              variant="mobile"
-              vault={vaultOption ? { vaultOption, vaultVersion } : undefined}
-              showVaultPositionHook={setShowVaultPosition}
-              showAirdropButton={false}
-            />
-        }
+          </OpenTreasuryButton>
+        ) : (
+          <AccountStatus
+            variant="mobile"
+            vault={vaultOption ? { vaultOption, vaultVersion } : undefined}
+            showVaultPositionHook={setShowVaultPosition}
+            showAirdropButton={false}
+          />
+        )}
       </FooterContainer>
       <MobileFooterOffsetContainer showVaultPosition={showVaultPosition} />
     </>

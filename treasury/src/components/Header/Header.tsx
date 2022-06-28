@@ -65,7 +65,9 @@ const LogoContainer = styled.div`
   }
 `;
 
-export const OpenTreasuryButton = styled(ConnectWalletButton) <{ variant: "desktop" | "mobile" }>`
+export const OpenTreasuryButton = styled(ConnectWalletButton)<{
+  variant: "desktop" | "mobile";
+}>`
   font-size: 14px;
   width: fit-content;
   border: none;
@@ -76,21 +78,23 @@ export const OpenTreasuryButton = styled(ConnectWalletButton) <{ variant: "deskt
   z-index: 100;
   height: fit-content;
 
-  ${props => props.variant === "mobile" && `
+  ${(props) =>
+    props.variant === "mobile" &&
+    `
     margin: 16px;
     width: 100%;
   `};
 
   @media (min-width: ${sizes.lg}px) {
-    ${props => props.variant === "desktop" && "margin-right: 40px"};
+    ${(props) => props.variant === "desktop" && "margin-right: 40px"};
   }
-  
+
   @media (min-width: ${sizes.md}px) {
-    ${props => props.variant === "mobile" && "display: none"};
+    ${(props) => props.variant === "mobile" && "display: none"};
   }
 
   @media (max-width: ${sizes.md}px) {
-    ${props => props.variant === "desktop" && "display: none"};
+    ${(props) => props.variant === "desktop" && "display: none"};
   }
 
   &:hover {

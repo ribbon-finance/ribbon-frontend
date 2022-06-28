@@ -296,7 +296,6 @@ const Homepage = () => {
           </StepContainer>
         ))}
       </LandingSteps>
-
     </HomepageContainer>
   );
 };
