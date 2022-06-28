@@ -67,7 +67,6 @@ const Footer = () => {
         screenHeight={screenHeight}
         showVaultPosition={showVaultPosition}
       >
-
         {/** Mobile */}
         <AccountStatus
           variant="mobile"

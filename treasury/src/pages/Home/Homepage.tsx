@@ -148,22 +148,24 @@ const progress = keyframes`
   0% {
     width: 0%;
     left: 0;
+    right: unset;
   }
 
-  25% {
-    left: 0;
-  }
-
-  50% {
+  80% {
     width: 100%;
+    left: 0;
+    right: 0;
   }
 
-  75% {
+  85% {
+    width: 100%;
+    left: auto;
     right: 0;
   }
 
   100% {
     width: 0%;
+    left: auto;
     right: 0;
   }
 `;
