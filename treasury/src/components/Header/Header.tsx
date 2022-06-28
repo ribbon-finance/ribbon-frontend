@@ -83,6 +83,9 @@ export const OpenTreasuryButton = styled(ConnectWalletButton) <{ variant: "deskt
 
   @media (min-width: ${sizes.lg}px) {
     ${props => props.variant === "desktop" && "margin-right: 40px"};
+  }
+  
+  @media (min-width: ${sizes.md}px) {
     ${props => props.variant === "mobile" && "display: none"};
   }
 

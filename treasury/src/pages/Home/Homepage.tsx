@@ -257,7 +257,7 @@ const Homepage = () => {
           height={video.height}
           style={{
             maxWidth: "100vw",
-            maxHeight: "100vh",
+            maxHeight: `calc(100vh - ${theme.header}px)`,
           }}
           config={{ vimeo: { playerOptions: { background: true } } }}
           muted
