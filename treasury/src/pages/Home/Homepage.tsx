@@ -36,7 +36,7 @@ const FloatingContainer = styled.div<{ footerHeight?: number }>`
 `;
 
 const PlayerContainer = styled(ReactPlayer)`
-  height: 400px;
+  height: calc(100vh - ${theme.header.height}px);
   width: 100%;
   position: absolute;
   pointer-events: none !important;
@@ -253,12 +253,8 @@ const Homepage = () => {
           key="video-player"
           url="https://player.vimeo.com/video/722230744"
           playing={true}
+          height={video.height - theme.header.height}
           width={"100vw"}
-          height={video.height}
-          style={{
-            maxWidth: "100vw",
-            maxHeight: `calc(100vh - ${theme.header}px)`,
-          }}
           config={{ vimeo: { playerOptions: { background: true } } }}
           muted
           loop
