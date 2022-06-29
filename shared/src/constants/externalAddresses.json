@@ -55,7 +55,6 @@
     "oTokenFactory": "0xb9D17Ab06e27f63d0FD75099d5874a194eE623e2",
     "gammaController": "0xdEE7D0f8CcC0f7AC7e45Af454e5e7ec1552E8e4e",
     "gammaMarginPool": "0x8c7C60d766951c5C570bBb7065C993070061b795",
-    "balancerFactory": "0x8f7F78080219d4066A8036ccD30D588B416a40DB",
     "uniswapV2Router": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
     "zeroExExchangeV3": "0x4eacd0aF335451709e1e7B570B8Ea68EdEC8bc97",
     "multicall": "0x2cc8688c5f75e365aaeeb4ea8d6a480405a48d2a"
@@ -105,7 +104,8 @@
     "multicall": "0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441",
     "sushiswap": "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f",
     "lidoCurvePool": "0xDC24316b9AE028F1497c275EB9192a3Ea0f67022",
-    "lidoOracle": "0x442af784A788A5bd6F42A01Ebe9F287a871243fb"
+    "lidoOracle": "0x442af784A788A5bd6F42A01Ebe9F287a871243fb",
+    "stETHDepositHelper": "0x07f36cf3c834e423536680f560b6bad0319f5411"
   },
   "mainnet-sim": {
     "assets": {

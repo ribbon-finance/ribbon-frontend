@@ -25,6 +25,8 @@ import WarningStep from "./WarningStep";
 import { depositSAVAX } from "shared/lib/hooks/useSAVAXDeposit";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { useFlexVault } from "shared/lib/hooks/useFlexVault";
+import useLidoCurvePool from "shared/lib/hooks/useLidoCurvePool";
+import useSTETHDepositHelper from "shared/lib/hooks/useSTETHDepositHelper";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { getAssetColor, getAssetDecimals } from "shared/lib/utils/asset";
 import * as anchor from "@project-serum/anchor";
@@ -33,6 +35,7 @@ import {
   RibbonV2stETHThetaVault,
   RibbonV2ThetaVault,
 } from "shared/lib/codegen";
+import { amountAfterSlippage } from "shared/lib/utils/math";
 
 export interface ActionStepsProps {
   vault: {
@@ -85,6 +88,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       : vaultOption
   );
   const v2Vault = useV2VaultContract(vaultOption);
+  const lidoCurveContract = useLidoCurvePool();
+  const stETHDepositHelper = useSTETHDepositHelper();
+
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
   const { vaultBalanceInAsset: v1VaultBalanceInAsset } =
@@ -203,6 +209,19 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     }
   }, [pendingTransactions, txhash, handleClose, step]);
 
+  const handleSwapCurveAndDepositSTETH = useCallback(async () => {
+    if (lidoCurveContract) {
+      // 1. Get steth rate
+      const stETHAmount = await lidoCurveContract.get_dy(0, 1, amount, {
+        gasLimit: 400000,
+      });
+      // 2. Subtract 0.5% slippage to get min steth
+      const slippage = 0.005;
+      const minSTETHAmount = amountAfterSlippage(stETHAmount, slippage);
+      return stETHDepositHelper?.deposit(minSTETHAmount, { value: amount });
+    }
+  }, [amount, lidoCurveContract, stETHDepositHelper]);
+
   const handleClickConfirmButton = async () => {
     const vault = vaultActionForm.vaultVersion === "v1" ? v1Vault : v2Vault;
 
@@ -216,15 +235,16 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         switch (vaultActionForm.actionType) {
           case ACTIONS.deposit:
             switch (vaultOption) {
-              case "rstETH-THETA":
-                res = await (isNativeToken(asset)
-                  ? (vault as RibbonV2ThetaVault).depositETH({
-                      value: amountStr,
-                    })
-                  : (vault as RibbonV2stETHThetaVault).depositYieldToken(
-                      amountStr
-                    ));
+              case "rstETH-THETA": {
+                if (isNativeToken(asset)) {
+                  res = await handleSwapCurveAndDepositSTETH();
+                } else {
+                  res = await (
+                    vault as RibbonV2stETHThetaVault
+                  ).depositYieldToken(amountStr);
+                }
                 break;
+              }
 
               case "rSOL-THETA":
                 if (client) {

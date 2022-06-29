@@ -556,8 +556,9 @@ export const getAssets = (vault: VaultOptions): Assets => {
     case "rUSDC-AVAX-P-THETA":
       return "USDC.e";
     case "rETH-THETA":
-    case "rstETH-THETA":
       return "WETH";
+    case "rstETH-THETA":
+      return "stETH";
     case "rrETH-THETA":
       return "rETH";
     case "rBTC-THETA":
@@ -828,11 +829,6 @@ export const RibbonTokenAddress = isDevelopment()
   ? v1deployment.kovan.RibbonToken
   : v1deployment.mainnet.RibbonToken;
 
-export const RibbonTokenBalancerPoolAddress = isDevelopment()
-  ? v1deployment.kovan.RibbonTokenBalancerPool
-  : // TODO: Update Mainnet Address
-    "";
-
 export const getERC20TokenAddress = (token: ERC20Token, chainId: number) => {
   const network = NETWORKS[chainId];
   return isDevelopment()
@@ -843,6 +839,14 @@ export const getERC20TokenAddress = (token: ERC20Token, chainId: number) => {
 export const LidoOracleAddress = isDevelopment()
   ? ""
   : addresses.mainnet.lidoOracle;
+
+export const STETHDepositHelperAddress = isDevelopment()
+  ? ""
+  : addresses.mainnet.stETHDepositHelper;
+
+export const CurveLidoPoolAddress = isDevelopment()
+  ? ""
+  : addresses.mainnet.lidoCurvePool;
 
 export const RibbonTreasuryAddress = {
   [CHAINID.ETH_KOVAN]: "0xD380980791079Bd50736Ffe577b8D57A3C196ccd",
