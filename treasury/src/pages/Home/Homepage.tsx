@@ -61,10 +61,9 @@ const PlayerContainer = styled(ReactPlayer)`
   > div {
     overflow: hidden;
   }
-  
+
   iframe {
     transform: scale(1.5);
-
   }
 `;
 
@@ -285,7 +284,7 @@ interface Step {
 const Homepage = () => {
   usePullUp();
   const history = useHistory();
-  const { video, width } = useScreenSize();
+  const { width } = useScreenSize();
   const auth = localStorage.getItem("auth");
   const [footerRef, setFooterRef] = useState<HTMLDivElement | null>(null);
   const [activeStep, setActiveStep] = useState<number>(0);
