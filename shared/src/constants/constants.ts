@@ -556,8 +556,9 @@ export const getAssets = (vault: VaultOptions): Assets => {
     case "rUSDC-AVAX-P-THETA":
       return "USDC.e";
     case "rETH-THETA":
-    case "rstETH-THETA":
       return "WETH";
+    case "rstETH-THETA":
+      return "stETH";
     case "rrETH-THETA":
       return "rETH";
     case "rBTC-THETA":
