@@ -240,7 +240,7 @@ const scroll = keyframes`
   100% {
     transform: translateY(0);
   }
-`
+`;
 
 const ScrollText = styled.div`
   display: none;
