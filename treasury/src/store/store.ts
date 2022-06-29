@@ -9,6 +9,7 @@ import {
 import { TreasuryVaultOptions } from "../constants/constants";
 
 interface GlobalStore {
+  isAccessModalVisible: boolean;
   vaultActionForm: {
     vaultOption?: VaultOptions;
     vaultVersion: VaultVersion;
@@ -29,6 +30,7 @@ export const initialVaultActionForm = {
 };
 
 export const initialState: GlobalStore = {
+  isAccessModalVisible: false,
   vaultActionForm: initialVaultActionForm,
 };
 

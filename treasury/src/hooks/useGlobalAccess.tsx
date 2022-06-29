@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { ethers } from "ethers";
-import { useGlobalAccessState } from "../store/store";
+import { useGlobalAccessState, useWebappGlobalState } from "../store/store";
 import { hashCode, TreasuryVaultOptions } from "../constants/constants";
 import { useHistory } from "react-router-dom";
 import { VaultName, VaultNameOptionMap } from "shared/lib/constants/constants";
@@ -8,6 +8,7 @@ import { VaultName, VaultNameOptionMap } from "shared/lib/constants/constants";
 const useGlobalAccess = () => {
   const history = useHistory();
   const [globalAccess, setGlobalAccess] = useGlobalAccessState("access");
+  const [, setAccessModal] = useWebappGlobalState("isAccessModalVisible");
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
 
@@ -55,10 +56,11 @@ const useGlobalAccess = () => {
       });
 
       history.push("/treasury/" + vaultName);
+      setAccessModal(false);
     } else {
       setError("Invalid Code");
     }
-  }, [setError, code, history, setGlobalAccess]);
+  }, [setError, code, history, setGlobalAccess, setAccessModal]);
 
   return {
     handleInputChange,

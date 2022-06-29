@@ -276,12 +276,14 @@ interface AccountStatusProps {
   };
   variant: "desktop" | "mobile";
   showVaultPositionHook?: (show: boolean) => void;
+  showAirdropButton?: boolean;
 }
 
 const AccountStatus: React.FC<AccountStatusProps> = ({
   vault,
   variant,
   showVaultPositionHook,
+  showAirdropButton = true,
 }) => {
   const [chain, setChain] = useChain();
   const {
@@ -493,7 +495,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
               handleOpenEtherscan
             )}
           {!isLedgerLive && renderMenuItem("DISCONNECT", handleDisconnect)}
-          {chainId === CHAINID.ETH_MAINNET && (
+          {chainId === CHAINID.ETH_MAINNET && showAirdropButton && (
             <AirdropMenuItem role="button">
               <AirdropButton onClick={onShowAirdropModal}></AirdropButton>
             </AirdropMenuItem>
@@ -526,7 +528,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
         <MenuCloseItem role="button" onClick={onCloseMenu}>
           <MenuButton isOpen={true} onToggle={onCloseMenu} />
         </MenuCloseItem>
-        {chainId === CHAINID.ETH_MAINNET && (
+        {chainId === CHAINID.ETH_MAINNET && showAirdropButton && (
           <AirdropMenuItem role="button">
             <AirdropButton onClick={onShowAirdropModal}></AirdropButton>
           </AirdropMenuItem>

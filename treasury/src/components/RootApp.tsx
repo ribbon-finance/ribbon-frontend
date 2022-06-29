@@ -1,4 +1,3 @@
-import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 
@@ -15,13 +14,10 @@ import {
 } from "webapp/lib/components/Common/toasts";
 import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal";
 import NotFound from "shared/lib/pages/NotFound";
-import colors from "shared/lib/designSystem/colors";
-import YourPositionModal from "./Vault/Modal/YourPositionModal";
 
 const Root = styled.div<{ screenHeight: number }>`
-  background-color: ${colors.background.one};
-  min-height: ${(props) =>
-    props.screenHeight ? `${props.screenHeight}px` : `100vh`};
+  max-height: 100vh;
+  background: transparent;
 `;
 
 const RootApp = () => {
@@ -31,7 +27,6 @@ const RootApp = () => {
   return (
     <Root id="appRoot" screenHeight={screenHeight}>
       <WalletConnectModal />
-      <YourPositionModal />
       <WithdrawReminderToast />
 
       <Router>

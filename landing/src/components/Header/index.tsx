@@ -10,6 +10,7 @@ import { NavItemProps, MobileMenuOpenProps } from "./types";
 import theme from "../../designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import ItemWithDropdown from "./ItemWithDropdown";
+import ExternalLinkIcon from "shared/lib/assets/icons/externalLink";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
@@ -27,11 +28,14 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
   // for the header nav. To get around that, just set 'none'
   ${(props) => {
     if (props.isMenuOpen) {
-      return null;
+      return `
+      @media (min-width: ${sizes.md}px) {
+        backdrop-filter: none
+      }`;
     }
 
     return `
-      backdrop-filter: blur(40px);
+    backdrop-filter: blur(40px);
       /**
        * Firefox desktop come with default flag to have backdrop-filter disabled
        * Firefox Android also currently has bug where backdrop-filter is not being applied
@@ -72,7 +76,6 @@ const LinksContainer = styled.div`
 const NavItem = styled.div<NavItemProps>`
   display: flex;
   align-items: center;
-  padding: 0px 28px;
   height: 100%;
   opacity: ${(props) => (props.isSelected ? "1" : "0.48")};
 
@@ -81,7 +84,9 @@ const NavItem = styled.div<NavItemProps>`
   }
 
   @media (max-width: ${sizes.md}px) {
-    padding: 0px 0px 40px 48px;
+    &:not(:last-of-type) {
+      padding: 0px 16px;
+    }
   }
 `;
 
@@ -176,6 +181,13 @@ const Header = () => {
         {primary ? (
           <NavItem isSelected={isSelected}>
             <NavLinkText>{title}</NavLinkText>
+            {external && (
+              <ExternalLinkIcon
+                style={{
+                  marginLeft: 6,
+                }}
+              />
+            )}
           </NavItem>
         ) : (
           <SecondaryMobileNavItem>
@@ -243,6 +255,14 @@ const Header = () => {
           >
             Data
           </ItemWithDropdown>
+
+          {renderLinkItem(
+            "TREASURY",
+            "https://treasury.ribbon.finance/",
+            false,
+            true,
+            true
+          )}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 

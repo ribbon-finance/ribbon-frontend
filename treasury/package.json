@@ -37,6 +37,7 @@
     "react-hooks-global-state": "^1.0.1",
     "react-i18next": "^11.15.5",
     "react-lottie": "^1.2.3",
+    "react-player": "^2.10.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "shared": "^0.1.0",
