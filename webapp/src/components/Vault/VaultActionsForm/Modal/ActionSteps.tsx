@@ -28,7 +28,6 @@ import { useFlexVault } from "shared/lib/hooks/useFlexVault";
 import useLidoCurvePool from "shared/lib/hooks/useLidoCurvePool";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { getAssetColor, getAssetDecimals } from "shared/lib/utils/asset";
-import { RibbonV2stETHThetaVaultFactory } from "shared/lib/codegen/RibbonV2stETHThetaVaultFactory";
 import * as anchor from "@project-serum/anchor";
 import {
   RibbonCoveredCall,
@@ -88,7 +87,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       : vaultOption
   );
   const v2Vault = useV2VaultContract(vaultOption);
-  const { contract, getEncodedExchangeData } = useLidoCurvePool()
+  const lidoCurveContract = useLidoCurvePool()
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
   const { vaultBalanceInAsset: v1VaultBalanceInAsset } =
@@ -207,6 +206,26 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     }
   }, [pendingTransactions, txhash, handleClose, step]);
 
+  const handleSwapCurveAndDepositSTETH = useCallback(async () => {
+    if (lidoCurveContract) {
+      // 1. Get steth rate
+      const stETHAmount = await lidoCurveContract.get_dy(
+        0,
+        1,
+        amount,
+        {
+          gasLimit: 400000,
+        }
+      );
+      // 2. Subtract 0.5% slippage to get min steth
+      const slippage = 0.005;
+      const minSTETHAmount = amountAfterSlippage(stETHAmount, slippage);
+      
+      // TODO: - 
+      // 3. Call stETHDepositHelper.deposit(minSTETHAmount)
+    }
+  }, [amount, lidoCurveContract])
+
   const handleClickConfirmButton = async () => {
     const vault = vaultActionForm.vaultVersion === "v1" ? v1Vault : v2Vault;
 
@@ -222,38 +241,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
             switch (vaultOption) {
               case "rstETH-THETA": {
                 if (isNativeToken(asset)) {
-                  res = await (vault as RibbonV2ThetaVault).depositETH({
-                    value: amountStr,
-                  });
-                } else {
                   // Swap ETH to stETH on Curve before depositing
-                  if (contract) {
-                    // 1. Get min_dy
-                    const minOut = await contract.get_dy(
-                      1,
-                      0,
-                      amountAfterSlippage(amount, 0.05),
-                      {
-                        gasLimit: 400000,
-                      }
-                    );
-
-                    // 2. Encoded exchange tx
-                    const encodedExchangeTx = getEncodedExchangeData(
-                      0,
-                      1,
-                      amount,
-                      minOut
-                    );
-
-                    // 3. Encoded vault deposit tx
-
-                    // 4. Pass both encoded fun into multicall
-
-                    // 5. Wait for tx
-
-                  }
-
+                  res = await handleSwapCurveAndDepositSTETH()
+                  // res = await (vault as RibbonV2ThetaVault).depositETH({
+                  //   value: amountStr,
+                  // });
+                } else {
                   res = await (
                     vault as RibbonV2stETHThetaVault
                   ).depositYieldToken(amountStr);

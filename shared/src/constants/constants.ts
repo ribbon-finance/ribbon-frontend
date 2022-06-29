@@ -828,11 +828,6 @@ export const RibbonTokenAddress = isDevelopment()
   ? v1deployment.kovan.RibbonToken
   : v1deployment.mainnet.RibbonToken;
 
-export const RibbonTokenBalancerPoolAddress = isDevelopment()
-  ? v1deployment.kovan.RibbonTokenBalancerPool
-  : // TODO: Update Mainnet Address
-    "";
-
 export const getERC20TokenAddress = (token: ERC20Token, chainId: number) => {
   const network = NETWORKS[chainId];
   return isDevelopment()
@@ -843,6 +838,10 @@ export const getERC20TokenAddress = (token: ERC20Token, chainId: number) => {
 export const LidoOracleAddress = isDevelopment()
   ? ""
   : addresses.mainnet.lidoOracle;
+
+export const STETHDepositHelperAddress = isDevelopment()
+  ? ""
+  : addresses.mainnet.stETHDepositHelper;
 
 export const CurveLidoPoolAddress = isDevelopment()
   ? ""
