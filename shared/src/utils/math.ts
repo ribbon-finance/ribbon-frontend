@@ -194,3 +194,17 @@ export const apyFromPricePerShare = (
     1;
   return decimals * 100;
 };
+
+export const amountAfterSlippage = (
+  num: BigNumber,
+  slippage: number, // this is a float
+  decimals: number = 18
+) => {
+  if (slippage >= 1.0) {
+    throw new Error("Slippage cannot exceed 100%");
+  }
+  const discountValue = ethers.utils
+    .parseUnits("1", decimals)
+    .sub(ethers.utils.parseUnits(slippage.toFixed(3), decimals));
+  return num.mul(discountValue).div(BigNumber.from(10).pow(decimals));
+};
