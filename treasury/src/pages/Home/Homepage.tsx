@@ -46,11 +46,26 @@ const FloatingContainer = styled.div<{ footerHeight?: number }>`
 `;
 
 const PlayerContainer = styled(ReactPlayer)`
-  height: calc(100vh - ${theme.header.height}px);
   width: 100%;
   position: absolute;
   pointer-events: none !important;
   z-index: -1;
+  top: 0px;
+
+  // > div {
+  //   margin-top: 64px;
+  //   height: calc(100vh - ${theme.header.height}px);
+  // }
+
+  // iframe {
+  > div {
+    overflow: hidden;
+  }
+  
+  iframe {
+    transform: scale(1.5);
+
+  }
 `;
 
 const LandingContent = styled.div`
@@ -256,7 +271,7 @@ const ScrollText = styled.div`
 
   img {
     display: block;
-    margin-left: -4px;
+    margin-left: 4px;
     animation: 2s ${scroll} infinite;
   }
 `;
@@ -333,8 +348,12 @@ const Homepage = () => {
           key="video-player"
           url="https://player.vimeo.com/video/722230744"
           playing={true}
-          height={video.height - theme.header.height}
+          height={"calc(100vh - 80px)"}
           width={"100vw"}
+          // style={{
+          //   overflow: 'hidden',
+          //   transform: 'scale(1.5)'
+          // }}
           config={{ vimeo: { playerOptions: { background: true } } }}
           muted
           loop
