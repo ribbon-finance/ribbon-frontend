@@ -140,11 +140,9 @@ const StepContainer = styled.div`
   }
 
   @media (max-width: ${sizes.lg}px) {
-    
     margin: auto;
 
     &:not(:last-of-type) {
-
       margin-bottom: 80px;
     }
   }
@@ -158,7 +156,7 @@ const StepTitle = styled.h6<{ active: boolean }>`
   text-align: center;
 
   @media (max-width: ${sizes.md}px) {
-    color: ${colors.primaryText}
+    color: ${colors.primaryText};
   }
 `;
 
@@ -169,7 +167,7 @@ const StepContent = styled.p<{ active: boolean }>`
   font-size: 14px;
 
   @media (max-width: ${sizes.md}px) {
-    color: ${colors.text}
+    color: ${colors.text};
   }
 `;
 
@@ -185,7 +183,7 @@ const StepProgressContainer = styled.div`
   }
 
   @media (max-width: ${sizes.md}px) {
-    color: ${colors.text}
+    color: ${colors.text};
   }
 `;
 
