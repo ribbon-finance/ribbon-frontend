@@ -9,6 +9,7 @@ import ReactPlayer from "react-player";
 import colors from "shared/lib/designSystem/colors";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { useCallback, useEffect, useState } from "react";
+import Chevron from "../../img/scroll-chevron.svg";
 
 const HomepageContainer = styled.div`
   display: flex;
@@ -54,6 +55,7 @@ const PlayerContainer = styled(ReactPlayer)`
 
 const LandingContent = styled.div`
   text-align: center;
+  position: relative;
 
   > *:not(:last-child) {
     margin-bottom: 16px !important;
@@ -213,7 +215,7 @@ const progress = keyframes`
   }
 `;
 
-const animation = css<{ interval: number }>`
+const stepAnimation = css<{ interval: number }>`
   animation: ${(props) => props.interval}s ${progress} infinite;
   background: white;
   position: absolute;
@@ -223,7 +225,40 @@ const StepProgress = styled.div<{ active: boolean; interval: number }>`
   height: 4px;
   transition: 0.2s;
 
-  ${(props) => (props.active ? animation : "width: 0%")};
+  ${(props) => (props.active ? stepAnimation : "width: 0%")};
+`;
+
+const scroll = keyframes`
+  0% {
+    transform: translateY(0);
+  }
+
+  75% {
+    transform: translateY(16px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+`
+
+const ScrollText = styled.div`
+  display: none;
+
+  @media (max-width: calc(${sizes.md}px + 100px)) {
+    display: initial;
+    position: absolute;
+    bottom: 104px;
+    margin: 0;
+    color: ${colors.text};
+    font-size: 12px;
+  }
+
+  img {
+    display: block;
+    margin-left: -4px;
+    animation: 2s ${scroll} infinite;
+  }
 `;
 
 interface Step {
@@ -325,6 +360,9 @@ const Homepage = () => {
             </a>
           </ProductText>
         </LandingContent>
+        <ScrollText>
+          Scroll <img src={Chevron} alt="chevron" />
+        </ScrollText>
       </FloatingContainer>
       <LandingSteps ref={onSetFooterRef} totalSteps={steps.length}>
         {steps.map((step, i) => (
