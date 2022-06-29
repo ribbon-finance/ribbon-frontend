@@ -55,7 +55,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #030309 !important;
+  background-color: black !important;
 }
 
 body :not(input):not(textarea):not([contenteditable="true"]) {
@@ -117,5 +117,5 @@ $placeholder-color: rgba(255, 255, 255, 0.64);
 }
 
 .modal-backdrop.show {
-  opacity: 0
+  opacity: 0;
 }
