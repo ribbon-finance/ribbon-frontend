@@ -20,6 +20,7 @@ export type { RibbonV2ThetaVault } from "./RibbonV2ThetaVault";
 export type { RibbonVaultPauser } from "./RibbonVaultPauser";
 export type { SAVAXDepositHelper } from "./SAVAXDepositHelper";
 export type { StakedAvax } from "./StakedAvax";
+export type { STETHDepositHelper } from "./STETHDepositHelper";
 export type { VotingEscrow } from "./VotingEscrow";
 export type { VotingEscrowDelegationProxy } from "./VotingEscrowDelegationProxy";
 
@@ -42,5 +43,6 @@ export { RibbonV2ThetaVault__factory } from "./factories/RibbonV2ThetaVault__fac
 export { RibbonVaultPauser__factory } from "./factories/RibbonVaultPauser__factory";
 export { SAVAXDepositHelper__factory } from "./factories/SAVAXDepositHelper__factory";
 export { StakedAvax__factory } from "./factories/StakedAvax__factory";
+export { STETHDepositHelper__factory } from "./factories/STETHDepositHelper__factory";
 export { VotingEscrow__factory } from "./factories/VotingEscrow__factory";
 export { VotingEscrowDelegationProxy__factory } from "./factories/VotingEscrowDelegationProxy__factory";

@@ -1,13 +1,15 @@
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
-import { CurveLidoPool, CurveLidoPool__factory } from "../codegen";
+import { STETHDepositHelper, STETHDepositHelper__factory } from "../codegen";
 import { STETHDepositHelperAddress } from "../constants/constants";
 
 export const getSTETHDepositHelper = (library: any) => {
   if (library) {
     const provider = library.getSigner();
-    // TODO: - Change to steth deposit helper
-    return CurveLidoPool__factory.connect(STETHDepositHelperAddress, provider);
+    return STETHDepositHelper__factory.connect(
+      STETHDepositHelperAddress,
+      provider
+    );
   }
 
   return undefined;
@@ -15,12 +17,11 @@ export const getSTETHDepositHelper = (library: any) => {
 
 const useSTETHDepositHelper = () => {
   const { library, active } = useWeb3React();
-  // TODO: - Change to deposit helper type
-  const [depositHelper, setDepositHelper] = useState<CurveLidoPool>();
+  const [depositHelper, setDepositHelper] = useState<STETHDepositHelper>();
 
   useEffect(() => {
-    const pool = getSTETHDepositHelper(library);
-    setDepositHelper(pool);
+    const helper = getSTETHDepositHelper(library);
+    setDepositHelper(helper);
   }, [active, library]);
 
   return depositHelper;
