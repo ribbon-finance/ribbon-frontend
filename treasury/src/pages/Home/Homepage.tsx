@@ -15,6 +15,13 @@ const HomepageContainer = styled.div`
   justify-content: space-around;
   width: 100%;
   height: calc(100vh - ${theme.header.height}px);
+
+  @media (max-width: ${sizes.md}px) {
+    // display: block;
+    // position: relative;
+    // height: calc(100vh - ${theme.header.height}px + 120px);
+    height: 100%;
+  }
 `;
 
 const FloatingContainer = styled.div<{ footerHeight?: number }>`
@@ -32,6 +39,8 @@ const FloatingContainer = styled.div<{ footerHeight?: number }>`
 
   @media (max-width: ${sizes.md}px) {
     flex-direction: column;
+    height: fit-content;
+    display: flex;
   }
 `;
 
@@ -60,6 +69,10 @@ const LandingContent = styled.div`
   p {
     font-size: 16px;
     color: ${colors.text};
+  }
+
+  @media (max-width: ${sizes.md}px) {
+    margin: auto;
   }
 `;
 
@@ -107,8 +120,12 @@ const LandingSteps = styled.div<{ totalSteps: number }>`
   display: flex;
   transition: 0.2s;
 
-  @media (max-width: calc(1000px + 160px)) {
-    display: none;
+  @media (max-width: calc(${sizes.md}px + 100px)) {
+    display: block;
+    // bottom: 120px;
+    top: calc(${theme.header.height}px + 600px);
+    height: fit-content;
+    padding-bottom: calc(120px + 104px);
   }
 `;
 
@@ -116,8 +133,20 @@ const StepContainer = styled.div`
   width: 300px;
   position: relative;
 
-  &:not(:last-of-type) {
-    margin-right: 50px;
+  @media (min-width: ${sizes.lg}px) {
+    &:not(:last-of-type) {
+      margin-right: 50px;
+    }
+  }
+
+  @media (max-width: ${sizes.lg}px) {
+    
+    margin: auto;
+
+    &:not(:last-of-type) {
+
+      margin-bottom: 80px;
+    }
   }
 `;
 
@@ -127,6 +156,10 @@ const StepTitle = styled.h6<{ active: boolean }>`
     props.active ? colors.primaryText : colors.quaternaryText};
   font-family: VCR;
   text-align: center;
+
+  @media (max-width: ${sizes.md}px) {
+    color: ${colors.primaryText}
+  }
 `;
 
 const StepContent = styled.p<{ active: boolean }>`
@@ -134,6 +167,10 @@ const StepContent = styled.p<{ active: boolean }>`
   color: ${(props) => (props.active ? colors.text : colors.quaternaryText)};
   text-align: center;
   font-size: 14px;
+
+  @media (max-width: ${sizes.md}px) {
+    color: ${colors.text}
+  }
 `;
 
 const StepProgressContainer = styled.div`
@@ -142,6 +179,14 @@ const StepProgressContainer = styled.div`
   height: 4px;
   background: ${colors.background.four};
   width: 100%;
+
+  @media (max-width: calc(${sizes.md}px + 100px)) {
+    display: none;
+  }
+
+  @media (max-width: ${sizes.md}px) {
+    color: ${colors.text}
+  }
 `;
 
 const progress = keyframes`
@@ -192,22 +237,24 @@ interface Step {
 const Homepage = () => {
   usePullUp();
   const history = useHistory();
-  const { video } = useScreenSize();
+  const { video, width } = useScreenSize();
   const auth = localStorage.getItem("auth");
   const [footerRef, setFooterRef] = useState<HTMLDivElement | null>(null);
   const [activeStep, setActiveStep] = useState<number>(0);
   const interval = 5;
 
   useEffect(() => {
-    const stepTimer = setTimeout(() => {
-      if (activeStep < steps.length - 1) {
-        setActiveStep(activeStep + 1);
-      } else {
-        setActiveStep(0);
-      }
-    }, interval * 1000);
+    if (width > sizes.md) {
+      const stepTimer = setTimeout(() => {
+        if (activeStep < steps.length - 1) {
+          setActiveStep(activeStep + 1);
+        } else {
+          setActiveStep(0);
+        }
+      }, interval * 1000);
 
-    return () => clearTimeout(stepTimer);
+      return () => clearTimeout(stepTimer);
+    }
   });
 
   const steps: Step[] = [
