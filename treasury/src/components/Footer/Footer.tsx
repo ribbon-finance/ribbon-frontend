@@ -30,9 +30,8 @@ const FooterContainer = styled.div<{
 
   ${(props) => `
     position: sticky;
-    top: calc(${props.screenHeight ? `${props.screenHeight}px` : `100%`} - ${
-    theme.footer.desktop.height
-  }px);
+    top: calc(${props.screenHeight ? `${props.screenHeight}px` : `100%`} - ${theme.footer.desktop.height
+    }px);
   `}
 
   @media (max-width: ${sizes.md}px) {
@@ -40,9 +39,9 @@ const FooterContainer = styled.div<{
     top: unset;
     bottom: 0px;
     height: ${(props) =>
-      props.showVaultPosition
-        ? theme.footer.mobile.heightWithPosition
-        : theme.footer.mobile.height}px;
+    props.showVaultPosition
+      ? theme.footer.mobile.heightWithPosition
+      : theme.footer.mobile.height}px;
     z-index: 5;
   }
 `;
@@ -50,9 +49,9 @@ const FooterContainer = styled.div<{
 const MobileFooterOffsetContainer = styled.div<{ showVaultPosition: boolean }>`
   @media (max-width: ${sizes.md}px) {
     height: ${(props) =>
-      props.showVaultPosition
-        ? theme.footer.mobile.heightWithPosition
-        : theme.footer.mobile.height}px;
+    props.showVaultPosition
+      ? theme.footer.mobile.heightWithPosition
+      : theme.footer.mobile.height}px;
   }
 `;
 
@@ -63,7 +62,6 @@ const Footer = () => {
   const hasAccess = localStorage.getItem("auth");
   const [, setAccessModal] = useWebappGlobalState("isAccessModalVisible");
 
-  // TODO: If active page is root, render access treasury button
   return (
     <>
       <FooterContainer
