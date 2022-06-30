@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
+import { formatUnits } from "ethers/lib/utils";
 import { ACTIONS, Steps, STEPS } from "./types";
 import useVault from "shared/lib/hooks/useVault";
 import PreviewStep from "./PreviewStep";
@@ -35,7 +36,7 @@ import {
   RibbonV2stETHThetaVault,
   RibbonV2ThetaVault,
 } from "shared/lib/codegen";
-import { amountAfterSlippage } from "shared/lib/utils/math";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 
 export interface ActionStepsProps {
   vault: {
@@ -82,13 +83,18 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     withdrawMetadata.instantWithdrawBalance,
   ]);
   const [txhash, setTxhash] = useState("");
+
+  // Keep track of the min stETH exchanged
+  const loadingText = useLoadingText();
+  const [minSTETHAmount, setMinSTETHAmount] = useState<BigNumber | undefined>();
+
   const v1Vault = useVault(
     vaultActionForm.actionType === ACTIONS.migrate
       ? vaultActionForm.migrateSourceVault || vaultOption
       : vaultOption
   );
   const v2Vault = useV2VaultContract(vaultOption);
-  const lidoCurveContract = useLidoCurvePool();
+  const { contract, getMinSTETHAmount } = useLidoCurvePool();
   const stETHDepositHelper = useSTETHDepositHelper();
 
   const { pendingTransactions, addPendingTransaction } =
@@ -155,6 +161,15 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     vaultActionForm.migrateSourceVault,
   ]);
 
+  const [amount, amountStr] = useMemo(() => {
+    try {
+      const amount = parseUnits(vaultActionForm.inputAmount || "0", decimals);
+      return [amount, amount.toString()];
+    } catch (err) {
+      return [BigNumber.from(0), "0"];
+    }
+  }, [decimals, vaultActionForm.inputAmount]);
+
   const cleanupEffects = useCallback(() => {
     setTxhash("");
 
@@ -187,14 +202,19 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show, firstStep, skipToPreview]);
 
-  const [amount, amountStr] = useMemo(() => {
-    try {
-      const amount = parseUnits(vaultActionForm.inputAmount || "0", decimals);
-      return [amount, amount.toString()];
-    } catch (err) {
-      return [BigNumber.from(0), "0"];
+  useEffect(() => {
+    // Fetch stETH rate
+    if (vaultOption === "rstETH-THETA" && isNativeToken(asset)) {
+      if (!amount.isZero()) {
+        setMinSTETHAmount(undefined);
+        getMinSTETHAmount(amount).then((amt) => {
+          setMinSTETHAmount(amt);
+        });
+        return;
+      }
+      setMinSTETHAmount(BigNumber.from(0));
     }
-  }, [decimals, vaultActionForm.inputAmount]);
+  }, [amount, asset, getMinSTETHAmount, vaultOption]);
 
   useEffect(() => {
     // we check that the txhash and check if it had succeed
@@ -210,17 +230,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   }, [pendingTransactions, txhash, handleClose, step]);
 
   const handleSwapCurveAndDepositSTETH = useCallback(async () => {
-    if (lidoCurveContract) {
-      // 1. Get steth rate
-      const stETHAmount = await lidoCurveContract.get_dy(0, 1, amount, {
-        gasLimit: 400000,
-      });
-      // 2. Subtract 0.5% slippage to get min steth
-      const slippage = 0.005;
-      const minSTETHAmount = amountAfterSlippage(stETHAmount, slippage);
+    // Subtract 0.5% slippage from exchange rate to get min steth
+    const minSTETHAmount = await getMinSTETHAmount(amount);
+    if (contract && minSTETHAmount) {
       return stETHDepositHelper?.deposit(minSTETHAmount, { value: amount });
     }
-  }, [amount, lidoCurveContract, stETHDepositHelper]);
+  }, [amount, contract, getMinSTETHAmount, stETHDepositHelper]);
 
   const handleClickConfirmButton = async () => {
     const vault = vaultActionForm.vaultVersion === "v1" ? v1Vault : v2Vault;
@@ -448,6 +463,11 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         vaultVersion={vaultVersion}
         receiveVaultOption={vaultActionForm.receiveVault}
         withdrawOption={vaultActionForm.withdrawOption}
+        estimatedSTETHDepositAmount={
+          minSTETHAmount
+            ? `~${parseFloat(formatUnits(minSTETHAmount, 18)).toFixed(4)} stETH`
+            : loadingText
+        }
       />
     ),
     2: <TransactionStep color={getAssetColor(asset)} />,

@@ -71,6 +71,11 @@
       "title": "Rocket Pool (RETH)",
       "description": "Newly minted rETH is only transferrable after ~24 hours.",
       "learnMoreURL": "https://dao.rocketpool.net/t/remove-reth-lock-after-mint/339"
+    },
+    "stETHExchangeRate": {
+      "title": "Estimated Deposit",
+      "description": "When depositing, Ribbon automatically swaps the ETH to stETH on Curve Finance for a better rate.",
+      "learnMoreURL": "https://curve.fi/steth"
     }
   },
   "LiquidityMining": {
