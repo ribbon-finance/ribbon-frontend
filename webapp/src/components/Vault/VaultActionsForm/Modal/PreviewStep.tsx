@@ -14,6 +14,7 @@ import {
   VaultFees,
   VaultVersion,
   isPutVault,
+  isNativeToken,
 } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { capitalize } from "shared/lib/utils/text";
@@ -29,6 +30,8 @@ import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import useLatestAPY from "shared/lib/hooks/useLatestAPY";
 import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { parseUnits } from "ethers/lib/utils";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 
 const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -81,6 +84,11 @@ const WarningContainer = styled.div<{ color: string }>`
   border-radius: ${theme.border.radiusSmall};
 `;
 
+const DetailWithTooltipContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 const PreviewStep: React.FC<{
   actionType: ActionType;
   withdrawOption?: V2WithdrawOption;
@@ -91,6 +99,7 @@ const PreviewStep: React.FC<{
   vaultOption: VaultOptions;
   vaultVersion: VaultVersion;
   receiveVaultOption?: VaultOptions;
+  estimatedSTETHDepositAmount?: string | JSX.Element;
 }> = ({
   actionType,
   withdrawOption,
@@ -101,6 +110,7 @@ const PreviewStep: React.FC<{
   vaultOption,
   vaultVersion,
   receiveVaultOption,
+  estimatedSTETHDepositAmount,
 }) => {
   const { t } = useTranslation();
   const color = getVaultColor(vaultOption);
@@ -495,6 +505,37 @@ const PreviewStep: React.FC<{
               </Title>
             </div>
           )}
+          {vaultOption === "rstETH-THETA" &&
+            actionType === "deposit" &&
+            isNativeToken(asset) &&
+            estimatedSTETHDepositAmount && (
+              <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+                <DetailWithTooltipContainer>
+                  <SecondaryText>
+                    {t("webapp:TooltipExplanations:stETHExchangeRate:title")}
+                  </SecondaryText>
+                  <TooltipExplanation
+                    title={t(
+                      "webapp:TooltipExplanations:stETHExchangeRate:title"
+                    )}
+                    explanation={t(
+                      "webapp:TooltipExplanations:stETHExchangeRate:description"
+                    )}
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HelpInfo containerRef={ref} {...triggerHandler}>
+                        i
+                      </HelpInfo>
+                    )}
+                    learnMoreURL={t(
+                      "webapp:TooltipExplanations:stETHExchangeRate:learnMoreURL"
+                    )}
+                  />
+                </DetailWithTooltipContainer>
+                <Title className="text-right">
+                  {estimatedSTETHDepositAmount}
+                </Title>
+              </div>
+            )}
           {detailRows.map((detail, index) => (
             <div
               className="d-flex w-100 flex-row align-items-center justify-content-between mt-4"
