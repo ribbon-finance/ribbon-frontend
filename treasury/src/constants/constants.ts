@@ -13,10 +13,13 @@ export const hashCode: {
 } = {
   "rPERP-TSRY":
     "0x86658217590fbd9edf0a68c0574d138a341d027a6c2d36c4c9021d0adb149df2",
+  "rBAL-TSRY":
+    "0x7c63a217c290a6c8fe3107c122460c39fce1cd883d513582bd6e1a7b3ad5e021",
 };
 
 export const minDeposit: { [vault in TreasuryVaultOptions]: BigNumber } = {
   "rPERP-TSRY": ethers.utils.parseEther("500"),
+  "rBAL-TSRY": ethers.utils.parseEther("500"),
 };
 
 export const getVaultURI = (

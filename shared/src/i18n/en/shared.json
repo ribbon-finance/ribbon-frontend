@@ -76,6 +76,10 @@
       "title": "T-PERP-C",
       "subtitle": "PERP Covered Call"
     },
+    "rBAL-TSRY": {
+      "title": "T-BAL-C",
+      "subtitle": "BAL Covered Call"
+    },
     "rAPE-THETA": {
       "title": "T-APE-C",
       "subtitle": "APE Covered Call"
