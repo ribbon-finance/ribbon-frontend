@@ -19,7 +19,7 @@ export const hashCode: {
 
 export const minDeposit: { [vault in TreasuryVaultOptions]: BigNumber } = {
   "rPERP-TSRY": ethers.utils.parseEther("500"),
-  "rBAL-TSRY": ethers.utils.parseEther("500"),
+  "rBAL-TSRY": ethers.utils.parseEther("100"),
 };
 
 export const getVaultURI = (
