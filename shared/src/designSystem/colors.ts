@@ -54,6 +54,7 @@ const colors = {
     sAVAX: "#11BAF0",
     rETH: "#EF4444",
     PERP: "#00BC9A",
+    BAL: "#FFFFFF",
     RBN: "#fc0a54",
     veRBN: "#fc0a54",
     LDO: "#00A3FF",

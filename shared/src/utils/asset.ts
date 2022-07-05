@@ -10,6 +10,7 @@ import {
   SAVAXLogo,
   YVUSDcLogo,
   PERPLogo,
+  BALLogo,
   APELogo,
   RETHLogo,
 } from "../assets/icons/erc20Assets";
@@ -250,6 +251,8 @@ export const getAssetLogo: (asset: Assets) =>
       return SAVAXLogo;
     case "PERP":
       return PERPLogo;
+    case "BAL":
+      return BALLogo;
     case "SOL":
       return SolanaLogo;
     case "APE":
