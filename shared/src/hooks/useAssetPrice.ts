@@ -14,7 +14,7 @@ import {
   COINGECKO_CURRENCIES,
 } from "../constants/constants";
 
-const getAssetPricesInUSD = async (
+const getHistoricalAssetPricesInUSD = async (
   currencyName: string
 ): Promise<{ price: number; timestamp: number }[]> => {
   const apiURL = `${COINGECKO_BASE_URL}/coins/${currencyName}/market_chart?vs_currency=usd&days=365&interval=daily`;
@@ -26,6 +26,21 @@ const getAssetPricesInUSD = async (
     timestamp,
     price,
   }));
+};
+
+interface SimplePriceAPI {
+  [key: string]: {
+    usd: number;
+  };
+}
+
+const getLatestPrices = async (assets: string[]): Promise<SimplePriceAPI> => {
+  const ids = assets.join(",");
+  const apiURL = `${COINGECKO_BASE_URL}/simple/price?ids=${ids}&vs_currencies=usd`;
+
+  const response = await axios.get(apiURL);
+  const { data } = response;
+  return data;
 };
 
 export const useFetchAssetsPrice = (
@@ -45,17 +60,21 @@ export const useFetchAssetsPrice = (
       console.time("Asset Price Data Fetch"); // eslint-disable-line
     }
 
+    const assetsBarUSDC = [...AssetsList].filter((asset) => asset !== "USDC");
+    const coinIds = assetsBarUSDC
+      .map((a) => COINGECKO_CURRENCIES[a] as string)
+      .filter(Boolean);
+
     const responses = await Promise.all(
-      [...AssetsList]
-        .filter((asset) => asset !== "USDC")
-        .map(async (asset) => {
-          const currencyName = COINGECKO_CURRENCIES[asset];
-          return {
-            asset,
-            data: currencyName ? await getAssetPricesInUSD(currencyName) : [],
-          };
-        })
+      assetsBarUSDC.map(async (asset, idx) => {
+        const coinId = COINGECKO_CURRENCIES[asset];
+        return {
+          asset: assetsBarUSDC[idx],
+          data: coinId ? await getHistoricalAssetPricesInUSD(coinId) : [],
+        };
+      })
     );
+    const latestPrices = await getLatestPrices(coinIds);
 
     const todayTimestamp = new Date(new Date().toDateString());
     todayTimestamp.setHours(0 - todayTimestamp.getTimezoneOffset() / 60);
@@ -66,10 +85,10 @@ export const useFetchAssetsPrice = (
           .map((response) => [
             response.asset,
             {
-              latestPrice:
-                response.data.length > 0
-                  ? response.data[response.data.length - 1].price
-                  : 0,
+              latestPrice: COINGECKO_CURRENCIES[response.asset]
+                ? latestPrices[COINGECKO_CURRENCIES[response.asset] as string]
+                    .usd
+                : 0,
               history: Object.fromEntries(
                 response.data.map((item) => [item.timestamp, item.price])
               ),
