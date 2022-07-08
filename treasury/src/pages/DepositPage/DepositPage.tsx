@@ -203,7 +203,7 @@ const DepositPage = () => {
     if (activities.activities) {
       const yields = activities.activities
         .map((activity) => {
-          return activity.type === "sales" ? Number(activity.premium) : 0;
+          return activity.type === "sales" ? Number(activity.premium) * 0.9 : 0;
         })
         .reduce((totalYield, roundlyYield) => totalYield + roundlyYield, 0);
 
