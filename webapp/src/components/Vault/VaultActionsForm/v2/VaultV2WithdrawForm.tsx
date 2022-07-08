@@ -22,6 +22,7 @@ import {
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import {
   getAssets,
+  isAvaxVault,
   isSolanaVault,
   VaultOptions,
 } from "shared/lib/constants/constants";
@@ -354,6 +355,11 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
   ]);
 
   const renderButton = useCallback(() => {
+    // TODO: - Temp disabled withdrawals for AVAX vaults
+    if (isAvaxVault(vaultOption)) {
+      return null;
+    }
+
     if (active) {
       return (
         <ActionButton
@@ -389,6 +395,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
     onFormSubmit,
     setShowConnectModal,
     vaultActionForm.withdrawOption,
+    vaultOption,
   ]);
 
   const formFooter = useMemo(() => {
@@ -438,7 +445,27 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
   ]);
 
   return (
-    <>
+    <div style={{ position: "relative" }}>
+      {/* TODO: - Temp */}
+      {isAvaxVault(vaultOption) && (
+        <div
+          style={{
+            position: "absolute",
+            backgroundColor: "rgba(18,18,24,0.9)",
+            top: -24,
+            left: -24,
+            bottom: -24,
+            right: -24,
+            zIndex: 999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Title>Withdrawals Temporarily Disabled</Title>
+        </div>
+      )}
+
       {/* Segment Control */}
       <WithdrawTypeSegmentControlContainer>
         <WithdrawTypeSegmentControlBackground
@@ -513,7 +540,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
       {formExtraInfo}
       {renderButton()}
       {formFooter}
-    </>
+    </div>
   );
 };
 
