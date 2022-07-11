@@ -91,9 +91,9 @@ export const TxStatusToast = () => {
       case "governanceUnstake":
         return `${_currentTx.amount} RBN unlocked`;
       case "protocolPenaltyClaim":
-        return `Claimed RBN ${_currentTx.amountRBN}`;
+        return `Claimed ${_currentTx.amountRBN} RBN`;
       case "protocolRevenueClaim":
-        return `Claimed ETH ${_currentTx.amountETH}`;
+        return `Claimed ${_currentTx.amountETH} ETH`;
       default:
         return "";
     }
