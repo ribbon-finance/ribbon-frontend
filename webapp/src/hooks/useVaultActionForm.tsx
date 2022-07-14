@@ -212,7 +212,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
                   vaultVersion,
                   inputAmount: "",
                   actionType: ACTIONS.transfer,
-                  receiveVault: "rUSDC-ETH-P-THETA-v2",
+                  receiveVault: "ryvUSDC-ETH-P-THETA",
                 };
             }
             break;

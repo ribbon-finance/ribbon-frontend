@@ -371,6 +371,10 @@ const PortfolioTransactions = () => {
                     Object.values(VaultNameOptionMap).indexOf(
                       transaction.vault.symbol as VaultOptions
                     )
+                  ] === "T-yvUSDC-P-ETH" ? "T-USDC-P-ETH" : Object.keys(VaultNameOptionMap)[
+                    Object.values(VaultNameOptionMap).indexOf(
+                      transaction.vault.symbol as VaultOptions
+                    )
                   ]
                 }
               </TransactionTitle>

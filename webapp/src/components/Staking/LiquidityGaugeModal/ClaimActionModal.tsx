@@ -224,7 +224,7 @@ const ClaimActionModal: React.FC<ClaimActionModalProps> = ({
               <LogoContainer>{logo}</LogoContainer>
             </BaseModalContentColumn>
             <BaseModalContentColumn marginTop={16}>
-              <AssetTitle>{vaultOption}</AssetTitle>
+              <AssetTitle>{vaultOption === "ryvUSDC-ETH-P-THETA" ? "rUSDC-ETH-P-THETA": vaultOption}</AssetTitle>
             </BaseModalContentColumn>
             <InfoColumn marginTop={24}>
               <SecondaryText color={color}>Unclaimed RBN</SecondaryText>

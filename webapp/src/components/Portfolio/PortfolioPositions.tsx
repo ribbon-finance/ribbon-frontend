@@ -268,7 +268,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
           <PositionInfo>
             <PositionInfoRow>
               {/* Title */}
-              <StyledTitle>{vaultName}</StyledTitle>
+              <StyledTitle>{vaultName === "T-yvUSDC-P-ETH" ? "T-USDC-P-ETH": vaultName}</StyledTitle>
               {vaultBadge}
 
               {/* Amount in Vault Token */}
