@@ -766,7 +766,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
             {(() => {
               switch (vaultOption) {
                 case "rUSDC-ETH-P-THETA":
-                  return "SWITCH TO T-YVUSDC-P-ETH";
+                  return "SWITCH TO T-USDC-P-ETH-v2";
                 default:
                   return "MIGRATE TO V2";
               }
@@ -893,7 +893,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
             <FormContainerExtraText color={color}>
               Vault transfers are <strong>FREE</strong>: withdrawal fees are
               waived when you transfer funds between T-USDC-P-ETH and
-              T-yvUSDC-P-ETH
+              T-USDC-P-ETH-v2
             </FormContainerExtraText>
           </FormContainerExtra>
         );

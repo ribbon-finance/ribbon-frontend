@@ -15,7 +15,6 @@ import useVaultPriceHistory, {
 } from "./useVaultPerformanceUpdate";
 import { VaultPriceHistory } from "../models/vault";
 import { getAssetDecimals } from "../utils/asset";
-import useYearnAPIData from "./useYearnAPIData";
 import useLidoAPY from "./useLidoOracle";
 import { useV2VaultData, useV2VaultsData } from "./web3DataContext";
 import { apyFromPricePerShare } from "../utils/math";
@@ -235,15 +234,12 @@ export const useLatestAPY = (
     loading: vaultDataLoading,
   } = useV2VaultData(vaultOption);
   const loading = vaultPriceHistoryLoading || vaultDataLoading;
-  const { getVaultAPR } = useYearnAPIData();
+  //const { getVaultAPR } = useYearnAPIData();
   const lidoAPY = useLidoAPY();
 
   let underlyingYieldAPR = 0;
 
   switch (vaultOption) {
-    case "ryvUSDC-ETH-P-THETA":
-      underlyingYieldAPR = getVaultAPR("yvUSDC", "0.3.0") * 100;
-      break;
     case "rstETH-THETA":
       underlyingYieldAPR = lidoAPY * 100;
       break;
@@ -271,7 +267,7 @@ export const useLatestAPYs = () => {
     useVaultsPriceHistory();
   const { data: vaultsData, loading: vaultsDataLoading } = useV2VaultsData();
   const loading = vaultsPriceHistoryLoading || vaultsDataLoading;
-  const { getVaultAPR } = useYearnAPIData();
+  //const { getVaultAPR } = useYearnAPIData();
   const lidoAPY = useLidoAPY();
 
   const latestAPYs = useMemo(
@@ -293,9 +289,6 @@ export const useLatestAPYs = () => {
               let underlyingYieldAPR = 0;
 
               switch (vaultOption) {
-                case "ryvUSDC-ETH-P-THETA":
-                  underlyingYieldAPR = getVaultAPR("yvUSDC", "0.3.0") * 100;
-                  break;
                 case "rstETH-THETA":
                   underlyingYieldAPR = lidoAPY * 100;
               }
@@ -323,7 +316,7 @@ export const useLatestAPYs = () => {
           [option in VaultOptions]: number;
         };
       },
-    [vaultsData, vaultsPriceHistory, getVaultAPR, lidoAPY, loading]
+    [vaultsData, vaultsPriceHistory, lidoAPY, loading]
   );
 
   return { fetched: !loading, res: latestAPYs };

@@ -97,7 +97,7 @@ it("V1 Vault performance (yield-token collaterized)", () => {
   const result = calculateAPYFromPriceHistory(
     priceHistory,
     18,
-    { vaultOption: "ryvUSDC-ETH-P-THETA", vaultVersion: "v1" },
+    { vaultOption: "rUSDC-ETH-P-THETA-v2", vaultVersion: "v1" },
     2
   );
 
