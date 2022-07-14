@@ -234,7 +234,7 @@ export const useLatestAPY = (
     loading: vaultDataLoading,
   } = useV2VaultData(vaultOption);
   const loading = vaultPriceHistoryLoading || vaultDataLoading;
-  //const { getVaultAPR } = useYearnAPIData();
+
   const lidoAPY = useLidoAPY();
 
   let underlyingYieldAPR = 0;
@@ -267,7 +267,7 @@ export const useLatestAPYs = () => {
     useVaultsPriceHistory();
   const { data: vaultsData, loading: vaultsDataLoading } = useV2VaultsData();
   const loading = vaultsPriceHistoryLoading || vaultsDataLoading;
-  //const { getVaultAPR } = useYearnAPIData();
+
   const lidoAPY = useLidoAPY();
 
   const latestAPYs = useMemo(
