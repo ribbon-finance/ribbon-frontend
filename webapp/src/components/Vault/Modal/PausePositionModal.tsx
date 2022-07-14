@@ -131,9 +131,9 @@ const PausePositionModal: React.FC = () => {
       if (!contract || !pauseAmount) {
         return;
       }
-      console.log(contract);
+      
       const tx = await contract.pausePosition();
-      console.log('reached')
+
       setStep("processing");
 
       const txhash = tx.hash;
