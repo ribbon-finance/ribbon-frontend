@@ -228,11 +228,21 @@ const UnstakingActionModal: React.FC<UnstakingActionModalProps> = ({
               <LogoContainer color={color}>{logo}</LogoContainer>
             </BaseModalContentColumn>
             <BaseModalContentColumn marginTop={16}>
-              <AssetTitle>{vaultOption === "ryvUSDC-ETH-P-THETA" ? "rUSDC-ETH-P-THETA": vaultOption}</AssetTitle>
+              <AssetTitle>
+                {vaultOption === "ryvUSDC-ETH-P-THETA"
+                  ? "rUSDC-ETH-P-THETA"
+                  : vaultOption}
+              </AssetTitle>
             </BaseModalContentColumn>
             <BaseModalContentColumn>
               <div className="d-flex w-100 flex-wrap">
-                <BaseInputLabel>AMOUNT ({vaultOption === "ryvUSDC-ETH-P-THETA" ? "rUSDC-ETH-P-THETA": vaultOption})</BaseInputLabel>
+                <BaseInputLabel>
+                  AMOUNT (
+                  {vaultOption === "ryvUSDC-ETH-P-THETA"
+                    ? "rUSDC-ETH-P-THETA"
+                    : vaultOption}
+                  )
+                </BaseInputLabel>
                 <BaseInputContainer>
                   <BaseInput
                     type="number"

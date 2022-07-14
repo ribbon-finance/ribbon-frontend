@@ -519,9 +519,17 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
             <LogoContainer>{logo}</LogoContainer>
             <div className="d-flex flex-column">
               <div className="d-flex align-items-center">
-                <Title normalCased>{vaultOption === "ryvUSDC-ETH-P-THETA" ? "rUSDC-ETH-P-THETA": vaultOption}</Title>
+                <Title normalCased>
+                  {vaultOption === "ryvUSDC-ETH-P-THETA"
+                    ? "rUSDC-ETH-P-THETA"
+                    : vaultOption}
+                </Title>
                 <TooltipExplanation
-                  title={vaultOption === "ryvUSDC-ETH-P-THETA" ? "rUSDC-ETH-P-THETA": vaultOption}
+                  title={
+                    vaultOption === "ryvUSDC-ETH-P-THETA"
+                      ? "rUSDC-ETH-P-THETA"
+                      : vaultOption
+                  }
                   explanation={
                     <>
                       {t("shared:TooltipExplanations:rToken", {

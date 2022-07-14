@@ -131,7 +131,7 @@ const PausePositionModal: React.FC = () => {
       if (!contract || !pauseAmount) {
         return;
       }
-      
+
       const tx = await contract.pausePosition();
 
       setStep("processing");

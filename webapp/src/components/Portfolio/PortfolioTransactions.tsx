@@ -366,17 +366,17 @@ const PortfolioTransactions = () => {
                 color={getVaultColor(transaction.vault.symbol)}
                 className="mr-auto"
               >
-                {
-                  Object.keys(VaultNameOptionMap)[
-                    Object.values(VaultNameOptionMap).indexOf(
-                      transaction.vault.symbol as VaultOptions
-                    )
-                  ] === "T-yvUSDC-P-ETH" ? "T-USDC-P-ETH" : Object.keys(VaultNameOptionMap)[
-                    Object.values(VaultNameOptionMap).indexOf(
-                      transaction.vault.symbol as VaultOptions
-                    )
-                  ]
-                }
+                {Object.keys(VaultNameOptionMap)[
+                  Object.values(VaultNameOptionMap).indexOf(
+                    transaction.vault.symbol as VaultOptions
+                  )
+                ] === "T-yvUSDC-P-ETH"
+                  ? "T-USDC-P-ETH"
+                  : Object.keys(VaultNameOptionMap)[
+                      Object.values(VaultNameOptionMap).indexOf(
+                        transaction.vault.symbol as VaultOptions
+                      )
+                    ]}
               </TransactionTitle>
 
               {/* Amount in crypto */}
