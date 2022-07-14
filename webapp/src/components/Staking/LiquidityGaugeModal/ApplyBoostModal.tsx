@@ -130,7 +130,9 @@ const ApplyBoostModal: React.FC<ApplyBoostModalProps> = ({
 
             {/* Title */}
             <Title className="mt-5 text-center" fontSize={28}>
-              {vaultOption}
+              {vaultOption === "ryvUSDC-ETH-P-THETA"
+                ? "rUSDC-ETH-P-THETA"
+                : vaultOption}
             </Title>
 
             {/* Description */}

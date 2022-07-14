@@ -637,7 +637,7 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
     case "rBTC-THETA":
       return "WBTC";
     case "ryvUSDC-ETH-P-THETA":
-      return "yvUSDC";
+      return "USDC";
     case "rstETH-THETA":
       return "stETH";
     case "rrETH-THETA":
