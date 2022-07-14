@@ -7,7 +7,7 @@ import moment from "moment";
 import theme from "shared/lib/designSystem/theme";
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import { formatOption } from "shared/lib/utils/math";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import { getAssetDisplay } from "shared/lib/utils/asset";
 import {
   getOptionAssets,
   VaultOptions,
@@ -17,10 +17,9 @@ import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import StrikeChart from "webapp/lib/components/Deposit/StrikeChart";
-import { formatUnits } from "@ethersproject/units";
 import { useLatestOption } from "shared/lib/hooks/useLatestOption";
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
-import { VaultActivityMeta, VaultOptionTrade } from "shared/lib/models/vault";
+import { getLatestYieldEarnedFromActivities } from "../../utils";
 
 const VaultPerformanceChartContainer = styled.div`
   display: flex;
@@ -97,28 +96,17 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
     vaultOption!,
     vaultVersion
   );
-  const premiumDecimals = getAssetDecimals("USDC");
 
   const loadingText = useLoadingText();
 
-  // Get the latest option sale
-  const latestSale = useMemo(() => {
-    return activities
-      .filter((activity) => activity.type === "sales")
-      .sort((a, b) => (a.date.valueOf() < b.date.valueOf() ? 1 : -1))[0] as
-      | (VaultOptionTrade & VaultActivityMeta & { type: "sales" })
-      | undefined;
-  }, [activities]);
-
   const latestYield = useMemo(() => {
     if (activitiesLoading) return loadingText;
-
-    return currency(
-      parseFloat(
-        latestSale ? formatUnits(latestSale.premium, premiumDecimals) : "0"
-      ).toFixed(2)
-    ).format();
-  }, [loadingText, activitiesLoading, latestSale, premiumDecimals]);
+    const yieldEarned = getLatestYieldEarnedFromActivities(activities);
+    if (yieldEarned !== undefined) {
+      return currency(yieldEarned).format();
+    }
+    return undefined;
+  }, [activitiesLoading, loadingText, activities]);
 
   const strikeAPRText = useMemo(() => {
     if (optionLoading) return loadingText;
@@ -190,8 +178,10 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
             <div className="d-flex align-items-center">
               <DataLabel className="d-block">Latest Yield Earned</DataLabel>
             </div>
-            <DataNumber variant={!latestSale ? "green" : undefined}>
-              {!latestSale ? "---" : latestYield}
+            <DataNumber
+              variant={latestYield !== undefined ? "green" : undefined}
+            >
+              {latestYield === undefined ? "---" : latestYield}
             </DataNumber>
           </DataCol>
           <DataCol xs="6">

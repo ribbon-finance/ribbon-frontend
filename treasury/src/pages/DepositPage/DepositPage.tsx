@@ -29,7 +29,7 @@ import {
 } from "shared/lib/constants/constants";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
+import { getAssetLogo } from "shared/lib/utils/asset";
 import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
@@ -40,6 +40,7 @@ import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import Banner from "shared/lib/components/Banner/Banner";
 import VaultInformation from "../../components/Deposit/VaultInformation";
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
+import { getPremiumsAfterFeesFromVaultActivities } from "../../utils";
 
 const { formatUnits } = ethers.utils;
 
@@ -175,7 +176,6 @@ const DepositPage = () => {
 
   const isLoading = status === "loading" || loading;
   const activities = useVaultActivity(vaultOption!, vaultVersion);
-  const premiumDecimals = getAssetDecimals("USDC");
 
   const [totalDepositStr] = useMemo(() => {
     switch (vaultVersion) {
@@ -201,19 +201,11 @@ const DepositPage = () => {
   // Total lifetime yield
   const totalYields = useMemo(() => {
     if (activities.activities) {
-      const yields = activities.activities
-        .map((activity) => {
-          return activity.type === "sales" ? Number(activity.premium) * 0.9 : 0;
-        })
-        .reduce((totalYield, roundlyYield) => totalYield + roundlyYield, 0);
-
-      return parseFloat(
-        formatSignificantDecimals(formatUnits(yields, premiumDecimals), 2)
-      );
+      return getPremiumsAfterFeesFromVaultActivities(activities.activities);
     } else {
       return 0;
     }
-  }, [activities, premiumDecimals]);
+  }, [activities]);
 
   const vaultInformation = (
     <VaultInformation
