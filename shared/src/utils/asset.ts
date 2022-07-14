@@ -90,7 +90,7 @@ export const getChainByAsset = (asset: Assets): Chains => {
 export const getChainByVaultOption = (vault: VaultOptions): Chains => {
   switch (vault) {
     case "rETH-THETA":
-    case "rUSDC-ETH-P-THETA-v2":
+    case "ryvUSDC-ETH-P-THETA":
     case "rUSDC-ETH-P-THETA":
     case "rstETH-THETA":
     case "rrETH-THETA":

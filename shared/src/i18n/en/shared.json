@@ -36,8 +36,8 @@
       "title": "T-ETH-C",
       "subtitle": "ETH Covered Call"
     },
-    "rUSDC-ETH-P-THETA-v2": {
-      "title": "T-USDC-P-ETH-v2",
+    "ryvUSDC-ETH-P-THETA": {
+      "title": "T-USDC-P-ETH",
       "subtitle": "ETH Put-Selling"
     },
     "rUSDC-ETH-P-THETA": {

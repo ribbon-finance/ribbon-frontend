@@ -267,7 +267,7 @@ const chains: Array<Chain> = [
     logo: "WETH",
     vaults: [
       "rETH-THETA",
-      "rUSDC-ETH-P-THETA-v2",
+      "ryvUSDC-ETH-P-THETA",
       "rstETH-THETA",
       "rBTC-THETA",
       "rAAVE-THETA",

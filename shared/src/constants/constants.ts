@@ -86,7 +86,7 @@ export const EVMVaultList = [
   "rsAVAX-THETA",
   "rUSDC-AVAX-P-THETA",
   "rETH-THETA",
-  "rUSDC-ETH-P-THETA-v2",
+  "ryvUSDC-ETH-P-THETA",
   "rstETH-THETA",
   "rrETH-THETA",
   "rBTC-THETA",
@@ -112,7 +112,7 @@ export type VaultOptions = typeof AllVaultOptions[number];
 const ProdExcludeVault: VaultOptions[] = [];
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
-  "rUSDC-ETH-P-THETA-v2",
+  "ryvUSDC-ETH-P-THETA",
   "rUSDC-AVAX-P-THETA",
 ];
 
@@ -179,7 +179,7 @@ export const GAS_LIMITS: {
       completeWithdraw: 300000,
     },
   },
-  "rUSDC-ETH-P-THETA-v2": {
+  "ryvUSDC-ETH-P-THETA": {
     v1: {
       deposit: 210000,
       withdraw: 210000,
@@ -295,7 +295,7 @@ export const VaultLiquidityMiningMap: {
         "rETH-THETA": v1deployment.mainnet.RibbonETHCoveredCallStakingReward,
       },
       lg5: {
-        "rUSDC-ETH-P-THETA-v2":
+        "ryvUSDC-ETH-P-THETA":
           v2deployment.mainnet.RibbonYearnETHPutLiquidityGauge,
         "rAAVE-THETA": v2deployment.mainnet.RibbonAAVECoveredCallLiquidityGauge,
         "rstETH-THETA": v2deployment.mainnet.RibbonSTETHCoveredLiquidityGauge,
@@ -346,7 +346,7 @@ export const VaultAddressMap: {
         v2: v2deployment.mainnet.RibbonThetaVaultWBTCCall,
         chainId: CHAINID.ETH_MAINNET,
       },
-  "rUSDC-ETH-P-THETA-v2": isDevelopment()
+  "ryvUSDC-ETH-P-THETA": isDevelopment()
     ? {
         v1: v1deployment.kovan.RibbonYearnETHPut,
         chainId: CHAINID.ETH_KOVAN,
@@ -453,7 +453,7 @@ export const VaultNamesList = [
   "T-USDC-P-ETH",
   "T-ETH-C",
   "T-WBTC-C",
-  "T-USDC-P-ETH-v2",
+  "T-yvUSDC-P-ETH",
   "T-stETH-C",
   "T-rETH-C",
   "T-AAVE-C",
@@ -469,7 +469,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-USDC-P-ETH": "rUSDC-ETH-P-THETA",
   "T-ETH-C": "rETH-THETA",
   "T-WBTC-C": "rBTC-THETA",
-  "T-USDC-P-ETH-v2": "rUSDC-ETH-P-THETA-v2",
+  "T-yvUSDC-P-ETH": "ryvUSDC-ETH-P-THETA",
   "T-stETH-C": "rstETH-THETA",
   "T-rETH-C": "rrETH-THETA",
   "T-AAVE-C": "rAAVE-THETA",
@@ -551,8 +551,8 @@ export const getSubgraphURIForVersion = (
 export const getAssets = (vault: VaultOptions): Assets => {
   switch (vault) {
     case "rUSDC-ETH-P-THETA":
-    case "rUSDC-ETH-P-THETA-v2":
-      return "USDC"
+    case "ryvUSDC-ETH-P-THETA":
+      return "USDC";
     case "rUSDC-AVAX-P-THETA":
       return "USDC.e";
     case "rETH-THETA":
@@ -584,7 +584,7 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
       return "WBTC";
     case "rETH-THETA":
     case "rUSDC-ETH-P-THETA":
-    case "rUSDC-ETH-P-THETA-v2":
+    case "ryvUSDC-ETH-P-THETA":
     case "rstETH-THETA":
     case "rrETH-THETA":
       return "WETH";
@@ -614,7 +614,7 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
       return "WETH";
     case "rBTC-THETA":
       return "WBTC";
-    case "rUSDC-ETH-P-THETA-v2":
+    case "ryvUSDC-ETH-P-THETA":
       return "USDC";
     case "rstETH-THETA":
       return "stETH";
@@ -646,7 +646,7 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "rUSDC-AVAX-P-THETA": ["USDC.e"],
     "rstETH-THETA": ["WETH", "stETH"],
     "rrETH-THETA": ["WETH", "rETH"],
-    "rUSDC-ETH-P-THETA-v2": ["USDC"],
+    "ryvUSDC-ETH-P-THETA": ["USDC"],
     "rPERP-TSRY": ["PERP"],
     "rSOL-THETA": ["SOL"],
     "rAPE-THETA": ["APE"],
@@ -662,8 +662,8 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "rBTC-THETA": BigNumber.from(2000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rBTC-THETA")))
   ),
-  "rUSDC-ETH-P-THETA-v2": BigNumber.from(100000000).mul(
-    BigNumber.from(10).pow(getAssetDecimals(getAssets("rUSDC-ETH-P-THETA-v2")))
+  "ryvUSDC-ETH-P-THETA": BigNumber.from(100000000).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("ryvUSDC-ETH-P-THETA")))
   ),
   "rUSDC-AVAX-P-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rUSDC-AVAX-P-THETA")))
@@ -727,7 +727,7 @@ export const VaultFees: {
       performanceFee: "10",
     },
   },
-  "rUSDC-ETH-P-THETA-v2": {
+  "ryvUSDC-ETH-P-THETA": {
     v1: {
       withdrawalFee: "1.0",
     },
@@ -809,8 +809,8 @@ export const RibbonVaultMigrationMap: Partial<{
   "rETH-THETA": {
     v2: ["rETH-THETA"],
   },
-  "rUSDC-ETH-P-THETA-v2": {
-    v2: ["rUSDC-ETH-P-THETA-v2", "rUSDC-ETH-P-THETA"],
+  "ryvUSDC-ETH-P-THETA": {
+    v2: ["ryvUSDC-ETH-P-THETA", "rUSDC-ETH-P-THETA"],
   },
 };
 
@@ -821,8 +821,8 @@ export const v1ToV2MigrationMap: Partial<{
   "rETH-THETA": "rETH-THETA",
   // TODO: Uncomment this
   // "rETH-THETA": "rstETH-THETA",
-  "rUSDC-ETH-P-THETA": "rUSDC-ETH-P-THETA-v2",
-  "rUSDC-ETH-P-THETA-v2": "rUSDC-ETH-P-THETA-v2",
+  "rUSDC-ETH-P-THETA": "ryvUSDC-ETH-P-THETA",
+  "ryvUSDC-ETH-P-THETA": "ryvUSDC-ETH-P-THETA",
 };
 
 export const RibbonTokenAddress = isDevelopment()
