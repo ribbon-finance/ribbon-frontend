@@ -65,7 +65,7 @@ export const getSubgraphqlURI = () =>
     : process.env.REACT_APP_SUBGRAPHQL_URL) ||
   "https://api.thegraph.com/subgraphs/name/kenchangh/ribbon-finance-kovan";
 
-  export const getSubgraphqlRearnURI = () =>
+export const getSubgraphqlRearnURI = () =>
   (isDevelopment()
     ? process.env.REACT_APP_SUBGRAPHQL_REARN_URL
     : process.env.REACT_APP_SUBGRAPHQL_REARN_URL) ||

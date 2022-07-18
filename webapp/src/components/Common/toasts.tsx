@@ -347,15 +347,14 @@ export const WithdrawReminderToast = () => {
         const vaultName = vaultOptionToName(option);
         const route = `/ribbon-earn/${vaultName}`;
         history.push(route);
-      }
-      else {
+      } else {
         const versionRoute = version === "v1" ? "" : `${version}/`;
         // Eg. If version is v1, then "/theta-vault/T-ETH-C"
         // If v2, then "/v2/theta-vault/T-ETH-C"
         const vaultName = vaultOptionToName(option);
         const fullRoute = `/${versionRoute}theta-vault/${vaultName}`;
         history.push(fullRoute);
-      } 
+      }
     },
     [onClose, history]
   );

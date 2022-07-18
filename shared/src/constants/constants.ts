@@ -466,7 +466,7 @@ export const VaultAddressMap: {
     v2: v2deployment.mainnet.RibbonThetaVaultAPECall,
     chainId: CHAINID.ETH_MAINNET,
   },
-  "rEARN": {
+  rEARN: {
     earn: v2deployment.mainnet.RibbonEarn,
     chainId: CHAINID.ETH_MAINNET,
   },
