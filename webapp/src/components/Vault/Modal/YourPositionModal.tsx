@@ -120,6 +120,7 @@ const YourPositionModal: React.FC = () => {
           undefined,
           vaultAccount.totalYieldEarned,
         ];
+      case "earn":
       case "v2":
         if (!vaultAccount) {
           return [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)];

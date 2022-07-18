@@ -83,6 +83,10 @@
     "rAPE-THETA": {
       "title": "T-APE-C",
       "subtitle": "APE Covered Call"
+    },
+    "rEARN": {
+      "title": "R-EARN",
+      "subtitle": "Ribbon Earn"
     }
   },
   "TooltipExplanations": {

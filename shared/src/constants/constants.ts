@@ -11,6 +11,7 @@ import {
   isTreasury,
   getSolanaAddresses,
   SOLANA_SUBGRAPH,
+  getSubgraphqlRearnURI,
 } from "../utils/env";
 import { PublicKey } from "@solana/web3.js";
 import v1deployment from "./v1Deployments.json";
@@ -78,7 +79,7 @@ export const NATIVE_TOKENS = ["WETH", "WAVAX", "SOL"];
 export const isNativeToken = (token: string): boolean =>
   NATIVE_TOKENS.includes(token);
 
-export const VaultVersionList = ["v2", "v1"] as const;
+export const VaultVersionList = ["earn", "v2", "v1"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">;
 
@@ -94,6 +95,7 @@ export const EVMVaultList = [
   "rUSDC-AVAX-P-THETA",
   "rAPE-THETA",
   "rUSDC-ETH-P-THETA",
+  "rEARN",
 ] as const;
 
 export const SolanaVaultList = ["rSOL-THETA"] as const;
@@ -140,6 +142,11 @@ export const GAS_LIMITS: {
   [vault in VaultOptions]: Partial<{
     v1: { deposit: number; withdraw: number };
     v2: {
+      deposit: number;
+      withdrawInstantly: number;
+      completeWithdraw: number;
+    };
+    earn: {
       deposit: number;
       withdrawInstantly: number;
       completeWithdraw: number;
@@ -260,6 +267,13 @@ export const GAS_LIMITS: {
       completeWithdraw: 300000,
     },
   },
+  rEARN: {
+    earn: {
+      deposit: 380000,
+      withdrawInstantly: 130000,
+      completeWithdraw: 300000,
+    },
+  },
 };
 
 /**
@@ -318,6 +332,7 @@ export const VaultAddressMap: {
   [vault in VaultOptions]: {
     v1?: string;
     v2?: string;
+    earn?: string;
     chainId: number;
   };
 } = {
@@ -451,6 +466,10 @@ export const VaultAddressMap: {
     v2: v2deployment.mainnet.RibbonThetaVaultAPECall,
     chainId: CHAINID.ETH_MAINNET,
   },
+  "rEARN": {
+    earn: v2deployment.mainnet.RibbonEarn,
+    chainId: CHAINID.ETH_MAINNET,
+  },
 };
 
 /**
@@ -480,6 +499,7 @@ export const VaultNamesList = [
   "T-BAL-C",
   "T-SOL-C",
   "T-APE-C",
+  "R-EARN",
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
@@ -497,6 +517,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-BAL-C": "rBAL-TSRY",
   "T-SOL-C": "rSOL-THETA",
   "T-APE-C": "rAPE-THETA",
+  "R-EARN": "rEARN",
 };
 
 // Reverse lookup for VaultNameOptionMap
@@ -563,6 +584,8 @@ export const getSubgraphURIForVersion = (
         default:
           throw new Error("No found subgraph");
       }
+    case "earn":
+      return getSubgraphqlRearnURI();
   }
 };
 
@@ -595,6 +618,8 @@ export const getAssets = (vault: VaultOptions): Assets => {
       return "SOL";
     case "rAPE-THETA":
       return "APE";
+    case "rEARN":
+      return "USDC";
   }
 };
 
@@ -623,6 +648,8 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
       return "SOL";
     case "rAPE-THETA":
       return "APE";
+    case "rEARN":
+      return "USDC";
   }
 };
 
@@ -656,6 +683,8 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
       return "SOL";
     case "rAPE-THETA":
       return "APE";
+    case "rEARN":
+      return "USDC";
   }
 };
 
@@ -675,6 +704,7 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "rBAL-TSRY": ["BAL"],
     "rSOL-THETA": ["SOL"],
     "rAPE-THETA": ["APE"],
+    rEARN: ["USDC"],
   };
 
 export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
@@ -724,6 +754,9 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "rAPE-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rAPE-THETA")))
   ),
+  rEARN: BigNumber.from(100000000).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rEARN")))
+  ),
 };
 
 export const VaultFees: {
@@ -731,6 +764,7 @@ export const VaultFees: {
     v1: { withdrawalFee: string };
     // managementFee and performanceFee in %, eg. 10 (10%)
     v2: { managementFee: string; performanceFee: string };
+    earn: { managementFee: string; performanceFee: string };
   }>;
 } = {
   "rUSDC-ETH-P-THETA": {
@@ -822,6 +856,12 @@ export const VaultFees: {
   },
   "rAPE-THETA": {
     v2: {
+      managementFee: "2",
+      performanceFee: "10",
+    },
+  },
+  rEARN: {
+    earn: {
       managementFee: "2",
       performanceFee: "10",
     },
@@ -961,6 +1001,7 @@ export const getSolanaVaultInstance = (vaultOption: VaultOptions) => {
 const WEBAPP_SUBGRAPHS: [VaultVersion, Chains][] = [
   ["v1", Chains.Ethereum],
   ["v2", Chains.Ethereum],
+  ["earn", Chains.Ethereum],
   ["v2", Chains.Avalanche],
   ["v2", Chains.Solana],
 ];

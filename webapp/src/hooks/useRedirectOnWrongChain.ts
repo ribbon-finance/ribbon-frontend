@@ -9,7 +9,8 @@ const useRedirectOnWrongChain = (
 ) => {
   const v1VaultPage = useRouteMatch({ path: "/theta-vault" });
   const v2VaultPage = useRouteMatch({ path: "/v2/theta-vault" });
-  const isVaultPage = Boolean(v1VaultPage || v2VaultPage);
+  const earnVaultPage = useRouteMatch({ path: "/ribbon-earn" });
+  const isVaultPage = Boolean(v1VaultPage || v2VaultPage || earnVaultPage);
   const history = useHistory();
 
   useEffect(() => {

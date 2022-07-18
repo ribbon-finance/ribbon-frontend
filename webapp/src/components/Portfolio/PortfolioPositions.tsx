@@ -249,6 +249,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 
   const vaultBadge = useMemo(() => {
     switch (vaultVersion) {
+      case "earn":
       case "v2":
         return (
           <VaultVersionBadge color={color} className="ml-2">
@@ -334,6 +335,7 @@ const PortfolioPositions = () => {
             switch (vaultVersion) {
               case "v1":
                 return [vaultVersion, v1VaultAccounts[vaultOption]];
+              case "earn":
               case "v2":
               default:
                 return [vaultVersion, v2VaultAccounts[vaultOption]];

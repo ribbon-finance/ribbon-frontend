@@ -103,6 +103,7 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
             formatSignificantDecimals(formatUnits(vaultLimit, decimals))
           ),
         ];
+      case "earn":
       case "v2":
         return [
           parseFloat(

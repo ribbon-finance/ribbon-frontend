@@ -385,7 +385,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const { prices } = useAssetsPrice();
 
   const loadingText = useLoadingText();
-
+  
   const baseAPY = useMemo(() => {
     if (!lg5Data) {
       return 0;
@@ -432,6 +432,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
             formatSignificantDecimals(formatUnits(vaultLimit, decimals))
           ),
         ];
+      case "earn":
       case "v2":
         return [
           parseFloat(

@@ -57,7 +57,8 @@
     "RibbonETHCoveredCallLiquidityGauge": "0x9038403C3F7C6B5Ca361C82448DAa48780D7C8Bd",
     "RibbonWBTCCoveredCallLiquidityGauge": "0x8913EAb16a302dE3E498BbA39940e7A55c0B9325",
     "RibbonThetaVaultAPECall": "0xc0cF10Dd710aefb209D9dc67bc746510ffd98A53",
-    "RibbonVaultPauser": "0xE04e8Ae290965AD4F7E40c68041c493d2e89cDC3"
+    "RibbonVaultPauser": "0xE04e8Ae290965AD4F7E40c68041c493d2e89cDC3",
+    "RibbonEarn": "0xaBfA87fA88DE21f7beb017B37418985F608529fc"
   },
   "fuji": {
     "ManualVolOracle": "0x8c58dDE5156DE3b3Fb93664DccBc1BeB1d5Ac923",

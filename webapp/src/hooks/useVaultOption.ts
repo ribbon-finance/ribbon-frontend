@@ -16,6 +16,10 @@ const useVaultOption = () => {
     "/v2/theta-vault/:vaultSymbol"
   );
 
+  const matchearn = useRouteMatch<{ vaultSymbol: string }>(
+    "/ribbon-earn/:vaultSymbol"
+  );
+
   const [vaultOption, vaultVersion] = useMemo((): [
     VaultOptions | undefined,
     VaultVersion
@@ -40,9 +44,19 @@ const useVaultOption = () => {
       ];
     }
 
+    if (
+      matchearn?.params.vaultSymbol &&
+      matchearn.params.vaultSymbol in VaultNameOptionMap
+    ) {
+      return [
+        VaultNameOptionMap[matchearn?.params.vaultSymbol as VaultName],
+        "earn",
+      ];
+    }
+
     /** Default value */
     return [undefined, "v1"];
-  }, [matchv1, matchv2]);
+  }, [matchv1, matchv2, matchearn]);
 
   return { vaultOption, vaultVersion };
 };

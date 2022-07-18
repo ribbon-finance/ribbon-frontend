@@ -146,6 +146,7 @@ const PreviewStep: React.FC<{
               ).toString()}%`,
             });
             break;
+          case "earn":
           case "v2":
             /**
              * Strategy are only shown in instant withdraw.
@@ -453,6 +454,7 @@ const PreviewStep: React.FC<{
           actionLogo = <DepositIcon color={color} width={32} />;
 
           switch (vaultVersion) {
+            case "earn":
             case "v2":
               warning = (
                 <WarningContainer

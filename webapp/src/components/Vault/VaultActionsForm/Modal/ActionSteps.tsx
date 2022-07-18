@@ -134,6 +134,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     switch (vaultVersion) {
       case "v1":
         return v1VaultBalanceInAsset;
+      case "earn":
       case "v2":
         const priceHistory = priceHistories.v2[
           vaultOption as VaultOptions
@@ -304,6 +305,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
               /**
                * V2 withdraw
                */
+              case "earn":
               case "v2":
                 const v2Vault = vault as RibbonV2ThetaVault;
                 switch (vaultActionForm.withdrawOption) {
