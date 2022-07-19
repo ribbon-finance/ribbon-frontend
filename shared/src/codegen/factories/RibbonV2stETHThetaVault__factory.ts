@@ -52,11 +52,6 @@ const _abi = [
         name: "_gnosisEasyAuction",
         type: "address",
       },
-      {
-        internalType: "address",
-        name: "_crvPool",
-        type: "address",
-      },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
@@ -587,19 +582,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "STETH_ETH_CRV_POOL",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "USDC",
     outputs: [
       {
@@ -798,6 +780,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "currentQueuedWithdrawShares",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "decimals",
     outputs: [
       {
@@ -891,6 +886,24 @@ const _abi = [
       },
     ],
     name: "depositYieldToken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "creditor",
+        type: "address",
+      },
+    ],
+    name: "depositYieldTokenFor",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -1246,6 +1259,13 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "pausePosition",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "performanceFee",
     outputs: [
       {
@@ -1404,6 +1424,19 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "uint256",
+        name: "minPrice",
+        type: "uint256",
+      },
+    ],
+    name: "setMinPrice",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "newKeeper",
         type: "address",
@@ -1467,6 +1500,19 @@ const _abi = [
       },
     ],
     name: "setStrikeSelectionOrPricer",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newVaultPauser",
+        type: "address",
+      },
+    ],
+    name: "setVaultPauser",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -1698,6 +1744,19 @@ const _abi = [
         internalType: "uint104",
         name: "cap",
         type: "uint104",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "vaultPauser",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
     stateMutability: "view",
