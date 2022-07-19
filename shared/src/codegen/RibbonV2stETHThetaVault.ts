@@ -56,7 +56,6 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
     "OTOKEN_FACTORY()": FunctionFragment;
     "PERIOD()": FunctionFragment;
     "STETH()": FunctionFragment;
-    "STETH_ETH_CRV_POOL()": FunctionFragment;
     "USDC()": FunctionFragment;
     "WETH()": FunctionFragment;
     "accountVaultBalance(address)": FunctionFragment;
@@ -71,12 +70,14 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
     "completeWithdraw()": FunctionFragment;
     "currentOption()": FunctionFragment;
     "currentOtokenPremium()": FunctionFragment;
+    "currentQueuedWithdrawShares()": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
     "depositETH()": FunctionFragment;
     "depositFor(address)": FunctionFragment;
     "depositReceipts(address)": FunctionFragment;
     "depositYieldToken(uint256)": FunctionFragment;
+    "depositYieldTokenFor(uint256,address)": FunctionFragment;
     "feeRecipient()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "initRounds(uint256)": FunctionFragment;
@@ -96,6 +97,7 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
     "optionsPremiumPricer()": FunctionFragment;
     "overriddenStrikePrice()": FunctionFragment;
     "owner()": FunctionFragment;
+    "pausePosition()": FunctionFragment;
     "performanceFee()": FunctionFragment;
     "premiumDiscount()": FunctionFragment;
     "pricePerShare()": FunctionFragment;
@@ -109,11 +111,13 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
     "setFeeRecipient(address)": FunctionFragment;
     "setLiquidityGauge(address)": FunctionFragment;
     "setManagementFee(uint256)": FunctionFragment;
+    "setMinPrice(uint256)": FunctionFragment;
     "setNewKeeper(address)": FunctionFragment;
     "setPerformanceFee(uint256)": FunctionFragment;
     "setPremiumDiscount(uint256)": FunctionFragment;
     "setStrikePrice(uint128)": FunctionFragment;
     "setStrikeSelectionOrPricer(address,bool)": FunctionFragment;
+    "setVaultPauser(address)": FunctionFragment;
     "shareBalances(address)": FunctionFragment;
     "shares(address)": FunctionFragment;
     "stake(uint256)": FunctionFragment;
@@ -127,6 +131,7 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "vaultParams()": FunctionFragment;
+    "vaultPauser()": FunctionFragment;
     "vaultState()": FunctionFragment;
     "withdrawInstantly(uint256,uint256)": FunctionFragment;
     "withdrawals(address)": FunctionFragment;
@@ -152,10 +157,6 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "PERIOD", values?: undefined): string;
   encodeFunctionData(functionFragment: "STETH", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "STETH_ETH_CRV_POOL",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "USDC", values?: undefined): string;
   encodeFunctionData(functionFragment: "WETH", values?: undefined): string;
   encodeFunctionData(
@@ -200,6 +201,10 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
     functionFragment: "currentOtokenPremium",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "currentQueuedWithdrawShares",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "decreaseAllowance",
@@ -217,6 +222,10 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "depositYieldToken",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "depositYieldTokenFor",
+    values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "feeRecipient",
@@ -296,6 +305,10 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "pausePosition",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "performanceFee",
     values?: undefined
   ): string;
@@ -348,6 +361,10 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "setMinPrice",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setNewKeeper",
     values: [string]
   ): string;
@@ -366,6 +383,10 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "setStrikeSelectionOrPricer",
     values: [string, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setVaultPauser",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "shareBalances",
@@ -411,6 +432,10 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "vaultPauser",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "vaultState",
     values?: undefined
   ): string;
@@ -440,10 +465,6 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "PERIOD", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "STETH", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "STETH_ETH_CRV_POOL",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "USDC", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "WETH", data: BytesLike): Result;
   decodeFunctionResult(
@@ -482,6 +503,10 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
     functionFragment: "currentOtokenPremium",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "currentQueuedWithdrawShares",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "decreaseAllowance",
@@ -495,6 +520,10 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "depositYieldToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "depositYieldTokenFor",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -553,6 +582,10 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "pausePosition",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "performanceFee",
     data: BytesLike
   ): Result;
@@ -599,6 +632,10 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setMinPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setNewKeeper",
     data: BytesLike
   ): Result;
@@ -616,6 +653,10 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setStrikeSelectionOrPricer",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setVaultPauser",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -656,6 +697,10 @@ export interface RibbonV2stETHThetaVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "vaultParams",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "vaultPauser",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "vaultState", data: BytesLike): Result;
@@ -898,8 +943,6 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
 
     STETH(overrides?: CallOverrides): Promise<[string]>;
 
-    STETH_ETH_CRV_POOL(overrides?: CallOverrides): Promise<[string]>;
-
     USDC(overrides?: CallOverrides): Promise<[string]>;
 
     WETH(overrides?: CallOverrides): Promise<[string]>;
@@ -945,6 +988,10 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
 
     currentOtokenPremium(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    currentQueuedWithdrawShares(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
     decreaseAllowance(
@@ -975,6 +1022,12 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
 
     depositYieldToken(
       amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    depositYieldTokenFor(
+      amount: BigNumberish,
+      creditor: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -1048,6 +1101,10 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
+    pausePosition(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     performanceFee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     premiumDiscount(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -1101,6 +1158,11 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setMinPrice(
+      minPrice: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setNewKeeper(
       newKeeper: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1124,6 +1186,11 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
     setStrikeSelectionOrPricer(
       newContract: string,
       isStrikeSelection: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setVaultPauser(
+      newVaultPauser: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -1187,6 +1254,8 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
       }
     >;
 
+    vaultPauser(overrides?: CallOverrides): Promise<[string]>;
+
     vaultState(overrides?: CallOverrides): Promise<
       [number, BigNumber, BigNumber, BigNumber, BigNumber] & {
         round: number;
@@ -1224,8 +1293,6 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
   PERIOD(overrides?: CallOverrides): Promise<BigNumber>;
 
   STETH(overrides?: CallOverrides): Promise<string>;
-
-  STETH_ETH_CRV_POOL(overrides?: CallOverrides): Promise<string>;
 
   USDC(overrides?: CallOverrides): Promise<string>;
 
@@ -1272,6 +1339,8 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
 
   currentOtokenPremium(overrides?: CallOverrides): Promise<BigNumber>;
 
+  currentQueuedWithdrawShares(overrides?: CallOverrides): Promise<BigNumber>;
+
   decimals(overrides?: CallOverrides): Promise<number>;
 
   decreaseAllowance(
@@ -1302,6 +1371,12 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
 
   depositYieldToken(
     amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  depositYieldTokenFor(
+    amount: BigNumberish,
+    creditor: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1375,6 +1450,10 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
 
   owner(overrides?: CallOverrides): Promise<string>;
 
+  pausePosition(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   performanceFee(overrides?: CallOverrides): Promise<BigNumber>;
 
   premiumDiscount(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1428,6 +1507,11 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setMinPrice(
+    minPrice: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   setNewKeeper(
     newKeeper: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -1451,6 +1535,11 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
   setStrikeSelectionOrPricer(
     newContract: string,
     isStrikeSelection: boolean,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setVaultPauser(
+    newVaultPauser: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1514,6 +1603,8 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
     }
   >;
 
+  vaultPauser(overrides?: CallOverrides): Promise<string>;
+
   vaultState(overrides?: CallOverrides): Promise<
     [number, BigNumber, BigNumber, BigNumber, BigNumber] & {
       round: number;
@@ -1551,8 +1642,6 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
     PERIOD(overrides?: CallOverrides): Promise<BigNumber>;
 
     STETH(overrides?: CallOverrides): Promise<string>;
-
-    STETH_ETH_CRV_POOL(overrides?: CallOverrides): Promise<string>;
 
     USDC(overrides?: CallOverrides): Promise<string>;
 
@@ -1593,6 +1682,8 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
 
     currentOtokenPremium(overrides?: CallOverrides): Promise<BigNumber>;
 
+    currentQueuedWithdrawShares(overrides?: CallOverrides): Promise<BigNumber>;
+
     decimals(overrides?: CallOverrides): Promise<number>;
 
     decreaseAllowance(
@@ -1618,6 +1709,12 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
 
     depositYieldToken(
       amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    depositYieldTokenFor(
+      amount: BigNumberish,
+      creditor: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1689,6 +1786,8 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<string>;
 
+    pausePosition(overrides?: CallOverrides): Promise<void>;
+
     performanceFee(overrides?: CallOverrides): Promise<BigNumber>;
 
     premiumDiscount(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1730,6 +1829,11 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setMinPrice(
+      minPrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setNewKeeper(newKeeper: string, overrides?: CallOverrides): Promise<void>;
 
     setPerformanceFee(
@@ -1750,6 +1854,11 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
     setStrikeSelectionOrPricer(
       newContract: string,
       isStrikeSelection: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setVaultPauser(
+      newVaultPauser: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1807,6 +1916,8 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
         cap: BigNumber;
       }
     >;
+
+    vaultPauser(overrides?: CallOverrides): Promise<string>;
 
     vaultState(overrides?: CallOverrides): Promise<
       [number, BigNumber, BigNumber, BigNumber, BigNumber] & {
@@ -2031,8 +2142,6 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
 
     STETH(overrides?: CallOverrides): Promise<BigNumber>;
 
-    STETH_ETH_CRV_POOL(overrides?: CallOverrides): Promise<BigNumber>;
-
     USDC(overrides?: CallOverrides): Promise<BigNumber>;
 
     WETH(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2078,6 +2187,8 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
 
     currentOtokenPremium(overrides?: CallOverrides): Promise<BigNumber>;
 
+    currentQueuedWithdrawShares(overrides?: CallOverrides): Promise<BigNumber>;
+
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
     decreaseAllowance(
@@ -2102,6 +2213,12 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
 
     depositYieldToken(
       amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    depositYieldTokenFor(
+      amount: BigNumberish,
+      creditor: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -2169,6 +2286,10 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
+    pausePosition(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     performanceFee(overrides?: CallOverrides): Promise<BigNumber>;
 
     premiumDiscount(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2222,6 +2343,11 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setMinPrice(
+      minPrice: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     setNewKeeper(
       newKeeper: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -2245,6 +2371,11 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
     setStrikeSelectionOrPricer(
       newContract: string,
       isStrikeSelection: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setVaultPauser(
+      newVaultPauser: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -2294,6 +2425,8 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
 
     vaultParams(overrides?: CallOverrides): Promise<BigNumber>;
 
+    vaultPauser(overrides?: CallOverrides): Promise<BigNumber>;
+
     vaultState(overrides?: CallOverrides): Promise<BigNumber>;
 
     withdrawInstantly(
@@ -2323,10 +2456,6 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
     PERIOD(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     STETH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    STETH_ETH_CRV_POOL(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     USDC(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -2378,6 +2507,10 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    currentQueuedWithdrawShares(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     decreaseAllowance(
@@ -2402,6 +2535,12 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
 
     depositYieldToken(
       amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    depositYieldTokenFor(
+      amount: BigNumberish,
+      creditor: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2477,6 +2616,10 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    pausePosition(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     performanceFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     premiumDiscount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -2530,6 +2673,11 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setMinPrice(
+      minPrice: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     setNewKeeper(
       newKeeper: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -2553,6 +2701,11 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
     setStrikeSelectionOrPricer(
       newContract: string,
       isStrikeSelection: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setVaultPauser(
+      newVaultPauser: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2604,6 +2757,8 @@ export interface RibbonV2stETHThetaVault extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     vaultParams(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    vaultPauser(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     vaultState(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
