@@ -1,6 +1,10 @@
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
-import { RibbonV2stETHThetaVault, RibbonV2stETHThetaVault__factory, RibbonV2ThetaVault } from "../codegen";
+import {
+  RibbonV2stETHThetaVault,
+  RibbonV2stETHThetaVault__factory,
+  RibbonV2ThetaVault,
+} from "../codegen";
 import { RibbonV2ThetaVault__factory } from "../codegen/factories/RibbonV2ThetaVault__factory";
 import {
   isSolanaVault,
