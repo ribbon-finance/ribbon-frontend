@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { isAddress } from "ethers/lib/utils";
 import axios from "axios";
-import { Provider } from "ethers/node_modules/@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
-
+import { BaseProvider } from "@ethersproject/providers";
 import { CHAINID, getENSSubgraphURI, isDevelopment } from "../utils/env";
 import { useWeb3Context } from "./web3Context";
 
@@ -26,7 +25,7 @@ const useENSSearch = (searchString: string) => {
   const [, setCounter] = useState(0);
 
   const searchResult = useCallback(
-    async (_provider: Provider, _searchString: string) => {
+    async (_provider: BaseProvider, _searchString: string) => {
       /**
        * Kovan does not support ENS
        * When wallet are not connect, it uses mainnet therefore we can perform search.
