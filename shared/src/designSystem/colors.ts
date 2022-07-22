@@ -33,6 +33,10 @@ const colors = {
   vaultActivity: {
     sales: "#16ceb9",
     minting: "#729ded",
+    openLoan: "#729ded",
+    closeLoan: "#729ded",
+    optionSold: "#729ded",
+    optionYield: "#729ded",
   },
   brands: {
     opyn: "#6FC0A2",

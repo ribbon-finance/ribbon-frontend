@@ -169,6 +169,7 @@ const DepositPage = () => {
   const { status, deposits, vaultLimit } = useVaultData(
     vaultOption || VaultList[0]
   );
+
   const {
     data: { asset, cap, decimals, totalBalance },
     loading,

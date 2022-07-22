@@ -69,7 +69,7 @@ export const getSubgraphqlRearnURI = () =>
   (isDevelopment()
     ? process.env.REACT_APP_SUBGRAPHQL_REARN_URL
     : process.env.REACT_APP_SUBGRAPHQL_REARN_URL) ||
-  "https://api.studio.thegraph.com/query/30834/ribbonearnvault2/fhohfoqfhf";
+  "https://api.studio.thegraph.com/query/30834/ribbonearnvault2/carn";
 
 export const supportedChainIds = isDevelopment()
   ? [CHAINID.ETH_KOVAN, CHAINID.AVAX_FUJI]

@@ -17,7 +17,13 @@ import { isEVMChain, isSolanaChain } from "../utils/chains";
 
 const getVaultActivityKey = (
   vault: VaultOptions,
-  type: "shortPositions" | "optionTrades"
+  type:
+    | "shortPositions"
+    | "optionTrades"
+    | "vaultOpenLoans"
+    | "vaultCloseLoans"
+    | "vaultOptionSolds"
+    | "vaultOptionYields"
 ) => `vaultActivity_${type}_${vault.replace(/-/g, "")}`;
 
 export const vaultActivitiesGraphql = (version: VaultVersion, chain: Chains) =>
@@ -35,6 +41,54 @@ export const vaultActivitiesGraphql = (version: VaultVersion, chain: Chains) =>
       vaultAddress = vaultAddress?.toLowerCase();
     }
 
+    if (version === "earn") {
+      return (
+        acc +
+        `
+            ${getVaultActivityKey(vault, "vaultOpenLoans")}:
+            vaultOpenLoans
+            {
+              id
+              loanAmount
+              borrower
+              loanTermLength
+              openedAt
+              openTxhash
+              expiry
+            }
+            ${getVaultActivityKey(vault, "vaultCloseLoans")}:
+            vaultCloseLoans
+            {
+              id
+              paidAmount
+              borrower
+              _yield
+              closedAt
+              closeTxhash
+            }
+            ${getVaultActivityKey(vault, "vaultOptionSolds")}:
+            vaultOptionSolds
+            {
+              id
+              premium
+              optionAllocation
+              optionSeller
+              soldAt
+              txhash
+            }
+            ${getVaultActivityKey(vault, "vaultOptionYields")}:
+            vaultOptionYields
+            {
+              id
+              _yield
+              optionAllocation
+              optionSeller
+              paidAt
+              txhash
+            }
+          `
+      );
+    }
     return (
       acc +
       `
@@ -93,7 +147,26 @@ export const resolveVaultActivitiesSubgraphResponse = (responses: {
             ? responses[version][getVaultActivityKey(vault, "optionTrades")] ||
               []
             : [];
-
+          const openLoansData = responses[version]
+            ? responses[version][
+                getVaultActivityKey(vault, "vaultOpenLoans")
+              ] || []
+            : [];
+          const closeLoansData = responses[version]
+            ? responses[version][
+                getVaultActivityKey(vault, "vaultCloseLoans")
+              ] || []
+            : [];
+          const soldOptionsData = responses[version]
+            ? responses[version][
+                getVaultActivityKey(vault, "vaultOptionSolds")
+              ] || []
+            : [];
+          const paidOptionsData = responses[version]
+            ? responses[version][
+                getVaultActivityKey(vault, "vaultOptionYields")
+              ] || []
+            : [];
           return [
             vault,
             [
@@ -117,6 +190,30 @@ export const resolveVaultActivitiesSubgraphResponse = (responses: {
                 premium: BigNumber.from(item.premium),
                 date: new Date(item.timestamp * 1000),
                 type: "sales",
+              })),
+              ...openLoansData.map((item: any) => ({
+                ...item,
+                loanAmount: BigNumber.from(item.loanAmount),
+                date: new Date(item.openedAt * 1000),
+                type: "openLoan",
+              })),
+              ...closeLoansData.map((item: any) => ({
+                ...item,
+                paidAmount: BigNumber.from(item.paidAmount),
+                date: new Date(item.closedAt * 1000),
+                type: "closeLoan",
+              })),
+              ...soldOptionsData.map((item: any) => ({
+                ...item,
+                premium: BigNumber.from(item.premium),
+                date: new Date(item.soldAt * 1000),
+                type: "optionSold",
+              })),
+              ...paidOptionsData.map((item: any) => ({
+                ...item,
+                yield: BigNumber.from(item._yield),
+                date: new Date(item.paidAt * 1000),
+                type: "optionYield",
               })),
             ],
           ];

@@ -18,13 +18,17 @@ export const getV2VaultContract = (
   if (!VaultAddressMap[vaultOption].v2) {
     return null;
   }
-
   const provider = useSigner ? library.getSigner() : library;
 
   switch (vaultOption) {
     case "rstETH-THETA":
       return RibbonV2stETHThetaVaultFactory.connect(
         VaultAddressMap[vaultOption].v2!,
+        provider
+      );
+    case "rEARN":
+      return RibbonV2ThetaVault__factory.connect(
+        VaultAddressMap[vaultOption].earn!,
         provider
       );
     default:

@@ -66,6 +66,7 @@ const useFetchV2VaultData = (): V2VaultData => {
           vault,
           active
         );
+
         if (!contract) {
           return { vault };
         }

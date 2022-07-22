@@ -85,6 +85,41 @@ export interface VaultOptionTrade {
   txhash: string;
 }
 
+export interface VaultOpenLoan {
+  id: string;
+  loanAmount: BigNumber;
+  borrower: string;
+  timestamp: number;
+  openedAt: number;
+  openTxhash: string;
+}
+
+export interface VaultCloseLoan {
+  id: string;
+  paidAmount: BigNumber;
+  _yield: BigNumber;
+  timestamp: number;
+  closedAt: number;
+  closeTxhash: string;
+}
+
+export interface VaultOptionSold {
+  id: string;
+  premium: BigNumber;
+  optionSeller: string;
+  timestamp: number;
+  soldAt: number;
+  txhash: string;
+}
+
+export interface VaultOptionYield {
+  id: string;
+  _yield: BigNumber;
+  timestamp: number;
+  paidAt: number;
+  txhash: string;
+}
+
 export type VaultTransactionType =
   | "deposit"
   | "withdraw"
@@ -122,7 +157,13 @@ export interface BalanceUpdate {
   vaultVersion: VaultVersion;
 }
 
-export type VaultActivityType = "minting" | "sales";
+export type VaultActivityType =
+  | "minting"
+  | "sales"
+  | "openLoan"
+  | "closeLoan"
+  | "optionSold"
+  | "optionYield";
 
 export interface VaultActivityMeta {
   date: Date;
@@ -130,7 +171,11 @@ export interface VaultActivityMeta {
 
 export type VaultActivity =
   | (VaultShortPosition & VaultActivityMeta & { type: "minting" })
-  | (VaultOptionTrade & VaultActivityMeta & { type: "sales" });
+  | (VaultOptionTrade & VaultActivityMeta & { type: "sales" })
+  | (VaultOpenLoan & VaultActivityMeta & { type: "openLoan" })
+  | (VaultCloseLoan & VaultActivityMeta & { type: "closeLoan" })
+  | (VaultOptionSold & VaultActivityMeta & { type: "optionSold" })
+  | (VaultOptionYield & VaultActivityMeta & { type: "optionYield" });
 
 export type VaultActivitiesData = {
   [version in VaultVersion]: {

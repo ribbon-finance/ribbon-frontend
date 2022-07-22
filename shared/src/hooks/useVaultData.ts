@@ -57,10 +57,9 @@ export const vaultGraphql = (version: VaultVersion, chain: Chains) =>
             totalPremiumEarned
             totalFeeCollected
             totalNotionalVolume
-            underlyingAsset
-            underlyingSymbol
+            ${version !== "earn" ? `underlyingAsset` : ``}
+            ${version !== "earn" ? `underlyingSymbol` : ``}
           }
-
         `)
     );
   }, "");

@@ -165,7 +165,6 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
         );
         break;
     }
-
     return filteredList;
   }, [
     chain,

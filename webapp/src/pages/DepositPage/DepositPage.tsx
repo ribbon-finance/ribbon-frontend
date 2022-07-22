@@ -42,7 +42,7 @@ import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import useRedirectOnSwitchChain from "../../hooks/useRedirectOnSwitchChain";
 import useRedirectOnWrongChain from "../../hooks/useRedirectOnWrongChain";
 import Banner from "shared/lib/components/Banner/Banner";
-
+import { ActionButton } from "shared/lib/components/Common/buttons";
 const { formatUnits } = ethers.utils;
 
 const DepositPageContainer = styled(Container)`
@@ -288,7 +288,6 @@ const DepositPage = () => {
   } = useV2VaultData(vaultOption || VaultList[0]);
   useRedirectOnSwitchChain(getChainByVaultOption(vaultOption as VaultOptions));
   const isLoading = status === "loading" || loading;
-
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {
       case "v1":
