@@ -518,6 +518,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
     }
     return <></>;
   }, [
+    pausedAmount,
     positionState,
     widgetState,
     setWidgetStateHandler,

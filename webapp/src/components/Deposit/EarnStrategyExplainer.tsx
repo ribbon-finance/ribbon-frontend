@@ -1,40 +1,10 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { useTranslation } from "react-i18next";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  getAssets,
-  getDisplayAssets,
-  getOptionAssets,
-  isPutVault,
-  isSolanaVault,
-  VaultOptions,
-  VaultVersion,
-} from "shared/lib/constants/constants";
-import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
-import useElementSize from "shared/lib/hooks/useElementSize";
-import { getVaultColor } from "shared/lib/utils/vault";
-import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
-import { getAssetDisplay } from "shared/lib/utils/asset";
-import StrikeSelection from "./ExplainerGraphic/StrikeSelection";
-import ExpiryChart from "./ExplainerGraphic/ExpiryChart";
-import TradeOffer from "./ExplainerGraphic/TradeOffer";
-import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import useScreenSize from "shared/lib/hooks/useScreenSize";
-import sizes from "shared/lib/designSystem/sizes";
-import VaultDeposit from "./ExplainerGraphic/VaultDeposit";
-import AlgoStrikeSelection from "./ExplainerGraphic/AlgoStrikeSelection";
-import GnosisAuction from "./ExplainerGraphic/GnosisAuction";
+import { SecondaryText, Title } from "shared/lib/designSystem";
 import SegmentPagination from "shared/lib/components/Common/SegmentPagination";
-import { render } from "@testing-library/react";
-import { vaultAccountsGraphql } from "shared/lib/hooks/useVaultAccounts";
+
 import { useGlobalState } from "shared/lib/store/store";
 
 const ExplainerContainer = styled.div`
@@ -100,16 +70,16 @@ const ExplanationStepList = ["step1", "step2", "step3"] as const;
 type ExplanationStep = typeof ExplanationStepList[number];
 
 const EarnStrategyExplainer: React.FC = () => {
-  const { t } = useTranslation();
   const containerRef = useRef(null);
-  const { width: sectionWidth } = useElementSize(containerRef);
   const [, setShowEarnVault] = useGlobalState("showEarnVault");
-  const [showOnboarding, setShowOnboarding] = useState(true);
   const [step, setStep] = useState<ExplanationStep>(ExplanationStepList[0]);
 
-  const setShowOnboardingCallback = useCallback((e) => {
-    setShowEarnVault((prev) => ({ ...prev, show: true }));
-  }, []);
+  const setShowOnboardingCallback = useCallback(
+    (e) => {
+      setShowEarnVault((prev) => ({ ...prev, show: true }));
+    },
+    [setShowEarnVault]
+  );
 
   const renderTitle = useCallback((s: ExplanationStep) => {
     switch (s) {
@@ -120,59 +90,55 @@ const EarnStrategyExplainer: React.FC = () => {
     }
   }, []);
 
-  const renderDescription = useCallback(
-    (s: ExplanationStep) => {
-      switch (s) {
-        case "step1":
-          return <>Earn 6.75% yield with full principal protection</>;
-        case "step2":
-          return (
-            <>Capitalise on intra-week ETH movements in either direction</>
-          );
-        case "step3":
-          return (
-            <>
-              Set it and forget it - deposit and start earning a base APY of 4%
-              with full principal protection
-            </>
-          );
-      }
-    },
-    [t]
-  );
-
-  const renderButton = useCallback((s: ExplanationStep) => {
+  const renderDescription = useCallback((s: ExplanationStep) => {
     switch (s) {
       case "step1":
+        return <>Earn 6.75% yield with full principal protection</>;
       case "step2":
-        return (
-          <SkipButton
-            role="button"
-            onClick={(e) => {
-              setShowOnboardingCallback(e);
-            }}
-          >
-            Skip
-          </SkipButton>
-        );
+        return <>Capitalise on intra-week ETH movements in either direction</>;
       case "step3":
         return (
-          <SkipButton
-            isLast={true}
-            role="button"
-            onClick={(e) => {
-              setShowOnboardingCallback(e);
-            }}
-          >
-            Open Vault
-          </SkipButton>
+          <>
+            Set it and forget it - deposit and start earning a base APY of 4%
+            with full principal protection
+          </>
         );
     }
   }, []);
 
-  const infoSection = useMemo(() => {
-    let titleColor = "FFFFFF";
+  const renderButton = useCallback(
+    (s: ExplanationStep) => {
+      switch (s) {
+        case "step1":
+        case "step2":
+          return (
+            <SkipButton
+              role="button"
+              onClick={(e) => {
+                setShowOnboardingCallback(e);
+              }}
+            >
+              Skip
+            </SkipButton>
+          );
+        case "step3":
+          return (
+            <SkipButton
+              isLast={true}
+              role="button"
+              onClick={(e) => {
+                setShowOnboardingCallback(e);
+              }}
+            >
+              Open Vault
+            </SkipButton>
+          );
+      }
+    },
+    [setShowOnboardingCallback]
+  );
 
+  const infoSection = useMemo(() => {
     return (
       <ExplainerSection height={360}>
         <HeroText>{renderTitle(step)}</HeroText>
@@ -212,7 +178,7 @@ const EarnStrategyExplainer: React.FC = () => {
         {renderButton(step)}
       </ExplainerSection>
     );
-  }, [ExplanationStepList, step, renderTitle, renderDescription]);
+  }, [step, renderTitle, renderButton, renderDescription]);
 
   return (
     <ExplainerContainer ref={containerRef}>

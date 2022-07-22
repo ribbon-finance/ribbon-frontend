@@ -70,7 +70,6 @@ interface SegmentPaginationProps {
   config?: {
     showNavigationButton?: boolean;
   };
-  width?: number;
 }
 
 const SegmentPagination: React.FC<SegmentPaginationProps> = ({

@@ -45,6 +45,9 @@ export const getPremiumsAfterFeesFromVaultActivities = (
     .reduce((totalYield, roundlyYield) => totalYield + roundlyYield, 0);
 
   return parseFloat(
-    formatSignificantDecimals(formatUnits(yields, premiumDecimals), 2)
+    formatSignificantDecimals(
+      formatUnits(Math.round(yields), premiumDecimals),
+      2
+    )
   );
 };
