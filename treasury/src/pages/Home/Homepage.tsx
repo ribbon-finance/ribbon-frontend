@@ -318,7 +318,7 @@ const Homepage = () => {
     {
       title: "03",
       content:
-        "Leverage Ribbon's network of market makers to boostrap a market",
+        "Leverage Ribbon's network of market makers to bootstrap a market",
     },
   ];
 
