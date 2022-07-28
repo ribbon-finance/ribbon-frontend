@@ -110,8 +110,8 @@ const NavItem = styled.div.attrs({
 
 const NavLinkText = styled(Title)`
   letter-spacing: 1.5px;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 12px;
+  line-height: 16px;
 
   @media (max-width: ${sizes.xl}px) {
     font-size: 24px;

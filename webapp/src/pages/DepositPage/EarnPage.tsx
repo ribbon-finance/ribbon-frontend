@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled from "styled-components";
@@ -7,7 +7,7 @@ import { Redirect } from "react-router-dom";
 import { Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { AnimatePresence, motion } from "framer-motion";
-import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import { useV2VaultData, useVaultData } from "shared/lib/hooks/web3DataContext";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 // import sizes from "shared/lib/designSystem/sizes";
 import usePullUp from "../../hooks/usePullUp";
@@ -24,6 +24,9 @@ import EarnStrategyExplainer from "../../components/Deposit/EarnStrategyExplaine
 import { useGlobalState } from "shared/lib/store/store";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { ActionButton } from "shared/lib/components/Common/buttons";
+import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
+import EarnDetailsModal from "../../components/Earn/Modal/EarnDetailsModal";
+
 const { formatUnits } = ethers.utils;
 
 const ProductAssetLogoContainer = styled.div<{ color: string }>`
@@ -49,6 +52,18 @@ const ProductAssetLogoContainer = styled.div<{ color: string }>`
   }
 `;
 
+const CirclesContainer = styled.div`
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const BalanceTitle = styled.div`
   font-size: 14px;
   font-family: VCR;
@@ -63,7 +78,6 @@ const Circle = styled.div<{
   color: string;
   circleIndex: number;
 }>`
-  z-index: 0;
   overflow: show;
   display: flex;
   position: absolute;
@@ -74,15 +88,13 @@ const Circle = styled.div<{
   border-radius: ${(props) => props.size / 2}px;
   border: 1px dashed #3e73c4;
   opacity: 0.24;
-  max-height: 100vh;
 `;
 
 const BigCircle = styled.div<{
   size: number;
   color: string;
 }>`
-  z-index: 0;
-  overflow: hidden;
+  overflow: show;
   display: flex;
   position: absolute;
   align-items: center;
@@ -93,7 +105,6 @@ const BigCircle = styled.div<{
   border: 4px dashed #3e73c4;
   box-shadow: 1px 2px 40px 8px rgba(62, 115, 196, 0.25);
   opacity: 0.24;
-  max-height: 100vh;
 `;
 
 const VaultContainer = styled.div`
@@ -101,9 +112,9 @@ const VaultContainer = styled.div`
   text-align: center;
   justify-content: center;
   align-items: center;
-  height: 80vh;
   flex-direction: column;
-  opacity: 1;
+  height: 80vh;
+  min-width: 240px;
   z-index: 1;
 `;
 
@@ -139,15 +150,17 @@ const ViewDetailsButton = styled.div`
 
 const EarnPage = () => {
   const { vaultOption, vaultVersion } = useVaultOption();
-  const { chainId } = useWeb3Wallet();
+  const { active, account, chainId } = useWeb3Wallet();
+
   useRedirectOnWrongChain(vaultOption, chainId);
   usePullUp();
-  console.log(vaultOption);
   let color;
   if (vaultOption) {
     color = getVaultColor(vaultOption);
   }
   const [showVault] = useGlobalState("showEarnVault");
+  const [, setShowConnectModal] = useConnectWalletModal();
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   // const { status, deposits, vaultLimit } = useVaultData(
   //   vaultOption || VaultList[0]
   // );
@@ -156,10 +169,13 @@ const EarnPage = () => {
   //   data: { asset, cap, decimals, totalBalance },
   //   loading,
   // } = useV2VaultData(vaultOption || VaultList[0]);
+  const { status } = useVaultData(vaultOption || VaultList[0]);
 
   const {
     data: { decimals },
+    loading,
   } = useV2VaultData(vaultOption || VaultList[0]);
+  const isLoading = status === "loading" || loading;
   useRedirectOnSwitchChain(getChainByVaultOption(vaultOption as VaultOptions));
   // const isLoading = status === "loading" || loading;
   // const [totalDepositStr, depositLimitStr] = useMemo(() => {
@@ -246,6 +262,24 @@ const EarnPage = () => {
 
   return (
     <>
+      {/* <div
+        style={{
+          position: "absolute",
+          overflow: "hidden",
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      > */}
+      <CirclesContainer>
+        <BigCircle size={976} color={"blue"}></BigCircle>
+        <Circle size={800} color={"blue"} circleIndex={1}></Circle>
+        <Circle size={640} color={"blue"} circleIndex={0}></Circle>
+      </CirclesContainer>
       <VaultContainer>
         {showVault.show ? (
           <AnimatePresence exitBeforeEnter initial={true}>
@@ -272,19 +306,42 @@ const EarnPage = () => {
                 </ProductAssetLogoContainer>
                 <BalanceTitle className={`py-3`}>Your Balance</BalanceTitle>
                 <HeroText>
-                  {formatBigNumber(investedInStrategy, decimals)}
+                  {!vaultAccount && isLoading
+                    ? "---"
+                    : formatBigNumber(investedInStrategy, decimals)}
                 </HeroText>
                 <Subtitle color={yieldColor}>+{roi}%</Subtitle>
-                <ViewDetailsButton className={`mt-4 py-3 mb-4`}>
+                <ViewDetailsButton
+                  className={`mt-4 py-3 mb-4`}
+                  role="button"
+                  onClick={() => {
+                    setShowDetailsModal(true);
+                  }}
+                >
                   View Details
                 </ViewDetailsButton>
-
-                <ActionButton className={`mt-4 py-3 mb-0`} color={color}>
-                  Deposit
-                </ActionButton>
-                <ActionButton className={`py-3 mb-1`} color={"none"}>
-                  <div color={colors.background.one}>Withdraw</div>
-                </ActionButton>
+                {active && account ? (
+                  <>
+                    <ActionButton className={`mt-4 py-3 mb-0`} color={color}>
+                      Deposit
+                    </ActionButton>
+                    <ActionButton
+                      className={`py-3 mb-1`}
+                      variant={"secondary"}
+                      color={"none"}
+                    >
+                      Withdraw
+                    </ActionButton>
+                  </>
+                ) : (
+                  <ActionButton
+                    className={`mt-4 py-3 mb-0 `}
+                    color={color}
+                    onClick={() => setShowConnectModal(true)}
+                  >
+                    Connect Wallet
+                  </ActionButton>
+                )}
               </VaultContainer>
             </motion.div>
           </AnimatePresence>
@@ -311,10 +368,12 @@ const EarnPage = () => {
             </motion.div>
           </AnimatePresence>
         )}
-        <BigCircle size={976} color={"blue"}></BigCircle>
-        <Circle size={800} color={"blue"} circleIndex={1}></Circle>
-        <Circle size={640} color={"blue"} circleIndex={0}></Circle>
       </VaultContainer>
+      <EarnDetailsModal
+        show={showDetailsModal}
+        onClose={() => setShowDetailsModal(false)}
+        vaultOption={vaultOption}
+      />
     </>
   );
 };
