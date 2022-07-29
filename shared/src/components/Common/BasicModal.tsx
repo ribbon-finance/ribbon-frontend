@@ -89,7 +89,6 @@ interface BasicModalProps {
   onClose: () => void;
   closeButton?: boolean;
   theme?: string;
-  overflow?: string;
   backButton?: {
     onClick: () => void;
   };
@@ -97,6 +96,7 @@ interface BasicModalProps {
   animationProps?: HTMLMotionProps<"div"> & RefAttributes<HTMLDivElement>;
   headerBackground?: boolean;
   backgroundColor?: string;
+  overflow?: string;
 }
 
 const BasicModal: React.FC<BasicModalProps> = ({

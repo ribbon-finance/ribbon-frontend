@@ -341,9 +341,9 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
 
   return (
     <TableWithFixedHeader
-      weights={[0.25, 0.35, 0.15, 0.25]}
-      orientations={["left", "left", "right", "right"]}
-      labels={["Action", "Contract", "Quantity", "Yield"]}
+      weights={[0.25, 0.5, 0.25]}
+      orientations={["left", "right", "right"]}
+      labels={["Action", "Quantity", "Yield"]}
       data={activities.map((activity) => getVaultActivityTableData(activity))}
       externalLinks={activities.map((activity) =>
         getVaultActivityExternalURL(activity)

@@ -97,7 +97,6 @@ const BigCircle = styled.div<{
   overflow: show;
   display: flex;
   position: absolute;
-  align-items: center;
   justify-content: center;
   width: ${(props) => props.size}px;
   height: ${(props) => props.size}px;
@@ -105,6 +104,7 @@ const BigCircle = styled.div<{
   border: 4px dashed #3e73c4;
   box-shadow: 1px 2px 40px 8px rgba(62, 115, 196, 0.25);
   opacity: 0.24;
+  box-sizing: border-box;
 `;
 
 const VaultContainer = styled.div`
@@ -214,7 +214,7 @@ const EarnPage = () => {
       case "v2":
       case "earn":
         if (!vaultAccount) {
-          return [BigNumber.from(0)];
+          return [BigNumber.from(0.0)];
         }
         return [
           vaultAccount.totalBalance.sub(vaultAccount.totalPendingDeposit),
@@ -227,7 +227,7 @@ const EarnPage = () => {
       !vaultAccount ||
       isPracticallyZero(vaultAccount.totalDeposits, decimals)
     ) {
-      return [0, colors.green];
+      return [0.0, colors.green];
     }
 
     const roiTemp =

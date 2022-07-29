@@ -5,7 +5,8 @@ import { BaseModalContentColumn, Title } from "shared/lib/designSystem";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import Scroller from "../Scroller";
 import { Strategy, Risk } from "../Details";
-
+import EarnPerformanceSection from "../../../pages/DepositPage/EarnPerformanceSection";
+import EarnVaultActivity from "../../Vault/EarnVaultActivity";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -55,18 +56,37 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
     onClose();
   }, [onClose]);
 
-  const modalContent = useMemo(() => {
-    switch (step) {
-      case "strategy":
-        return <Strategy />;
-      case "payoff":
-        return <>payoff</>;
-      case "risk":
-        return <Risk />;
-      case "performance":
-        return <>performance</>;
-    }
-  }, [step]);
+  const modalContent = useMemo(
+    (margin?: number) => {
+      switch (step) {
+        case "strategy":
+          return <Strategy />;
+        case "payoff":
+          return <>payoff</>;
+        case "risk":
+          return <Risk />;
+        case "performance":
+          return (
+            <EarnPerformanceSection
+              vault={{
+                vaultOption: "rEARN",
+                vaultVersion: "earn",
+              }}
+            />
+          );
+        case "activity":
+          return (
+            <EarnVaultActivity
+              vault={{
+                vaultOption: "rEARN",
+                vaultVersion: "earn",
+              }}
+            />
+          );
+      }
+    },
+    [step]
+  );
 
   return (
     <>
@@ -91,7 +111,7 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
             <Title>{step}</Title>
           </BaseModalContentColumn>
 
-          <ModalColumnScroll marginTop={40} className="justify-content-start">
+          <ModalColumnScroll marginTop={40} className="justify-content-center">
             <Container>{modalContent}</Container>
           </ModalColumnScroll>
         </>
