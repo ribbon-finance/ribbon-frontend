@@ -466,6 +466,152 @@ export const BellIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
   </svg>
 );
 
+export const EarnCircle: React.FC<SVGPropsWithColor> = () => (
+  <svg
+    width="1056"
+    height="1056"
+    viewBox="0 0 1056 1056"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g filter="url(#filter0_d_623_1436)">
+      <circle
+        cx="527"
+        cy="527"
+        r="478"
+        stroke="#3E73C4"
+        stroke-width="4"
+        stroke-dasharray="2 2"
+        shape-rendering="crispEdges"
+      />
+    </g>
+    <defs>
+      <filter
+        id="filter0_d_623_1436"
+        x="0"
+        y="0"
+        width="1056"
+        height="1056"
+        filterUnits="userSpaceOnUse"
+        color-interpolation-filters="sRGB"
+      >
+        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feMorphology
+          radius="8"
+          operator="dilate"
+          in="SourceAlpha"
+          result="effect1_dropShadow_623_1436"
+        />
+        <feOffset dx="1" dy="2" />
+        <feGaussianBlur stdDeviation="20" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.243137 0 0 0 0 0.45098 0 0 0 0 0.768627 0 0 0 0.25 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_623_1436"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_623_1436"
+          result="shape"
+        />
+      </filter>
+    </defs>
+  </svg>
+);
+
+export const EarnCardMiddleCircle: React.FC<SVGPropsWithColor> = (props) => (
+  <svg
+    width="160"
+    height="160"
+    viewBox="0 0 160 160"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <circle
+      opacity="0.24"
+      cx="80"
+      cy="80"
+      r="79.5"
+      stroke="#3E73C4"
+      stroke-dasharray="4 4"
+    />
+  </svg>
+);
+
+export const EarnCardOuterCircle: React.FC<SVGPropsWithColor> = (props) => (
+  <svg
+    width="240"
+    height="240"
+    viewBox="0 0 240 240"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g filter="url(#filter0_d_1082_3282)">
+      <circle
+        cx="120"
+        cy="120"
+        r="118"
+        stroke="#3E73C4"
+        stroke-width="4"
+        stroke-dasharray="2 2"
+        shape-rendering="crispEdges"
+      />
+    </g>
+    <defs>
+      <filter
+        id="filter0_d_1082_3282"
+        x="0"
+        y="0"
+        width="240"
+        height="240"
+        filterUnits="userSpaceOnUse"
+        color-interpolation-filters="sRGB"
+      >
+        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feMorphology
+          radius="8"
+          operator="dilate"
+          in="SourceAlpha"
+          result="effect1_dropShadow_1082_3282"
+        />
+        <feOffset dx="1" dy="2" />
+        <feGaussianBlur stdDeviation="20" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_1082_3282"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_1082_3282"
+          result="shape"
+        />
+      </filter>
+    </defs>
+  </svg>
+);
+
 const StakeCircle = styled.div<{
   type: "solid" | "hollow";
   size: string;

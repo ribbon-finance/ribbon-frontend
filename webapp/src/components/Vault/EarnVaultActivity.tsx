@@ -9,13 +9,13 @@ import styled from "styled-components";
 
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
 import { ActivityFilter, activityFilters, SortBy, sortByList } from "./types";
-import DesktopVaultActivityList from "./DesktopVaultActivityList";
+import EarnVaultActivityList from "./EarnVaultActivityList";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
 import { Title } from "shared/lib/designSystem";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
-import Pagination from "shared/lib/components/Common/Pagination";
+import EarnPagination from "shared/lib/components/Common/EarnPagination";
 import { useLocation } from "react-router-dom";
 
 const PaginationContainer = styled.div`
@@ -132,7 +132,7 @@ const EarnVaultActivity: React.FC<VaultActivityProps> = ({
   const renderPagination = useCallback(() => {
     if (loading) {
       return (
-        <Title fontSize={12} lineHeight={16} className="mx-4">
+        <Title fontSize={12} lineHeight={16}>
           {loadingText}
         </Title>
       );
@@ -151,9 +151,9 @@ const EarnVaultActivity: React.FC<VaultActivityProps> = ({
     }
 
     return (
-      <Pagination
-        page={page}
-        total={Math.ceil(filteredActivities.length / perPage)}
+      <EarnPagination
+        page={page} //2
+        total={Math.ceil(filteredActivities.length / perPage)} //1
         setPage={setPage}
       />
     );
@@ -161,7 +161,7 @@ const EarnVaultActivity: React.FC<VaultActivityProps> = ({
 
   return (
     <>
-      <DesktopVaultActivityList
+      <EarnVaultActivityList
         activities={filteredActivities}
         vaultOption={vaultOption}
         page={page}

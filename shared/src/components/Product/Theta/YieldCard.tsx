@@ -31,7 +31,11 @@ import {
   isDisabledVault,
   VaultAddressMap,
 } from "../../../constants/constants";
-import { BoostIcon } from "../../../assets/icons/icons";
+import {
+  BoostIcon,
+  EarnCardMiddleCircle,
+  EarnCardOuterCircle,
+} from "../../../assets/icons/icons";
 import { getAssetDisplay, getAssetLogo } from "../../../utils/asset";
 import { getVaultColor } from "../../../utils/vault";
 import ModalContentExtra from "../../Common/ModalContentExtra";
@@ -83,6 +87,12 @@ const ProductAssetLogoContainer = styled.div<{ color: string }>`
     background: ${(props) => props.color}29;
     border-radius: 50%;
   }
+`;
+
+const StyledProductAssetLogoContainer = styled(ProductAssetLogoContainer)`
+  margin-top: 0;
+  z-index: 1000;
+  position: absolute;
 `;
 
 const TopContainer = styled.div<{ color: string }>`
@@ -182,6 +192,19 @@ const ProductInfo = styled.div`
   flex-wrap: wrap;
   flex-direction: column;
   flex: 1;
+`;
+
+const ProductInfoEarn = styled.div<{ connected: boolean }>`
+  display: flex;
+  flex-direction: column;
+  height: ${(props) => `${props.connected ? `504px` : `447px`}`};
+  border-radius: ${theme.border.radius};
+  justify-content: center;
+  align-items: center;
+  padding: -16px;
+  margin: -16px;
+  background: #030309;
+  box-shadow: inset 0px 0px 24px rgba(255, 255, 255, 0.12);
 `;
 
 const StrikeContainer = styled.div`
@@ -298,6 +321,21 @@ const StrikeBar = styled.div`
   height: 4px;
 `;
 
+const AbsoluteContainer = styled.div``;
+
+const StyledEarnOuterCircle = styled(EarnCardOuterCircle)`
+  position: absolute;
+  background: red;
+`;
+
+const StyledEarnMiddleCircle = styled(EarnCardMiddleCircle)`
+  overflow: show;
+  display: flex;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+`;
+
 const StrikeBarBG = styled.div<{
   width: string;
   // Color in hex
@@ -339,6 +377,44 @@ const StrikeDot = styled.div<{
         `}
 `;
 
+const CirclesContainer = styled.div`
+  position: absolute;
+  display: flex;
+  height: 240px;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+`;
+
+const OuterContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 240px;
+`;
+
+const ParagraphText = styled(SecondaryText)`
+  color: rgba(255, 255, 255, 0.64);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  margin-top: 24px;
+  margin-left: 16px;
+  margin-right: 16px;
+  text-align: center;
+`;
+
+const HighlightedText = styled.span`
+  color: ${colors.primaryText};
+  cursor: help;
+
+  poin &:hover {
+    color: ${colors.primaryText}CC;
+  }
+`;
 interface YieldCardProps {
   vault: VaultOptions;
   vaultVersion: VaultVersion;
@@ -572,6 +648,50 @@ const YieldCard: React.FC<YieldCardProps> = ({
     vault,
   ]);
 
+  const EarnContent = useCallback(() => {
+    const Logo = getAssetLogo(displayAsset);
+
+    let logo = <Logo height="100%" />;
+
+    return (
+      <>
+        <Title fontSize={28} lineHeight={40}>
+          {t(`shared:ProductCopies:${vault}:title`)}
+        </Title>
+        <OuterContainer>
+          <CirclesContainer>
+            <StyledProductAssetLogoContainer color={color}>
+              {logo}
+            </StyledProductAssetLogoContainer>
+            <StyledEarnOuterCircle />
+            <StyledEarnMiddleCircle />
+          </CirclesContainer>
+        </OuterContainer>
+        <ParagraphText>
+          Earn up to <HighlightedText>15% APY</HighlightedText> with a{" "}
+          <HighlightedText>fully principal protected</HighlightedText> vault
+          strategy
+        </ParagraphText>
+      </>
+    );
+  }, [
+    displayAsset,
+    color,
+    t,
+    vault,
+    totalProjectedYield,
+    vaultYield,
+    baseStakingYield,
+    baseAPY,
+    vaultVersion,
+    StrikeWidget,
+    isLoading,
+    v2DataLoading,
+    totalDepositStr,
+    depositLimitStr,
+    asset,
+  ]);
+
   const ProductInfoContent = useCallback(() => {
     const Logo = getAssetLogo(displayAsset);
 
@@ -803,40 +923,54 @@ const YieldCard: React.FC<YieldCardProps> = ({
           color={color}
           vault={vault}
         >
-          <TopContainer color={color}>
-            {/* Tags */}
-            <TagContainer>
-              {/* Product tags */}
-              <ProductTag color={color}>
-                <Subtitle>
-                  {isPutVault(vault) ? "PUT-SELLING" : "COVERED CALL"}
-                </Subtitle>
-              </ProductTag>
-              {vaultLogo}
-              <div className="d-flex">
-                {/* Version tags */}
-                {VaultVersionList.map((version) =>
-                  hasVaultVersion(vault, version) ? (
-                    <ProductVersionTag
-                      key={version}
-                      color={color}
-                      active={vaultVersion === version}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onVaultVersionChange(version);
-                      }}
-                    >
-                      <Subtitle>{version}</Subtitle>
-                    </ProductVersionTag>
-                  ) : null
-                )}
-              </div>
-            </TagContainer>
-          </TopContainer>
-          <ProductInfo>
-            <ProductInfoContent />
-          </ProductInfo>
-          {modalContentExtra}
+          {vault === "rEARN" ? (
+            <>
+              <ProductInfoEarn
+                connected={
+                  account == null || account == undefined ? false : true
+                }
+              >
+                <EarnContent />
+              </ProductInfoEarn>
+            </>
+          ) : (
+            <>
+              <TopContainer color={color}>
+                {/* Tags */}
+                <TagContainer>
+                  {/* Product tags */}
+                  <ProductTag color={color}>
+                    <Subtitle>
+                      {isPutVault(vault) ? "PUT-SELLING" : "COVERED CALL"}
+                    </Subtitle>
+                  </ProductTag>
+                  {vaultLogo}
+                  <div className="d-flex">
+                    {/* Version tags */}
+                    {VaultVersionList.map((version) =>
+                      hasVaultVersion(vault, version) ? (
+                        <ProductVersionTag
+                          key={version}
+                          color={color}
+                          active={vaultVersion === version}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onVaultVersionChange(version);
+                          }}
+                        >
+                          <Subtitle>{version}</Subtitle>
+                        </ProductVersionTag>
+                      ) : null
+                    )}
+                  </div>
+                </TagContainer>
+              </TopContainer>
+              <ProductInfo>
+                <ProductInfoContent />
+              </ProductInfo>
+              {modalContentExtra}
+            </>
+          )}
         </ProductCard>
       </AnimatePresence>
     </CardContainer>

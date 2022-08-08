@@ -25,7 +25,7 @@ import sizes from "shared/lib/designSystem/sizes";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
-import TableWithFixedHeader from "shared/lib/components/Common/TableWithFixedHeader";
+import EarnTableWithFixedHeader from "shared/lib/components/Common/EarnTableWithFixedHeader";
 
 const VaultActivityIcon = styled.div<{ type: VaultActivityType }>`
   display: flex;
@@ -76,7 +76,7 @@ interface DesktopVaultActivityListProps {
   perPage: number;
 }
 
-const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
+const EarnVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
   activities,
   vaultOption,
   page,
@@ -146,16 +146,16 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 {moment(activity.openedAt * 1000).fromNow()}
               </VaultSecondaryText>
             </>,
-            <>
-              <VaultPrimaryText>R-EARN</VaultPrimaryText>
-            </>,
-            <VaultPrimaryText>
-              {formatBigNumber(activity.loanAmount, decimals)}
-            </VaultPrimaryText>,
-            <>
-              <VaultPrimaryText>-</VaultPrimaryText>
-              <VaultSecondaryText>-</VaultSecondaryText>
-            </>,
+            // <>
+            //   <VaultPrimaryText>R-EARN</VaultPrimaryText>
+            // </>,
+            // <VaultPrimaryText>
+            //   {formatBigNumber(activity.loanAmount, decimals)}
+            // </VaultPrimaryText>,
+            // <>
+            //   <VaultPrimaryText>-</VaultPrimaryText>
+            //   <VaultSecondaryText>-</VaultSecondaryText>
+            // </>,
           ];
         case "closeLoan":
           return [
@@ -165,20 +165,20 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 {moment(activity.closedAt * 1000).fromNow()}
               </VaultSecondaryText>
             </>,
-            <>
-              <VaultPrimaryText>R-EARN</VaultPrimaryText>
-            </>,
-            <VaultPrimaryText>
-              {formatBigNumber(activity.paidAmount, decimals)}
-            </VaultPrimaryText>,
-            <>
-              <VaultPrimaryText>
-                {formatBigNumber(activity._yield, decimals)}
-              </VaultPrimaryText>
-              <VaultSecondaryText>
-                {formatBigNumber(activity._yield, decimals)}
-              </VaultSecondaryText>
-            </>,
+            // <>
+            //   <VaultPrimaryText>R-EARN</VaultPrimaryText>
+            // </>,
+            // <VaultPrimaryText>
+            //   {formatBigNumber(activity.paidAmount, decimals)}
+            // </VaultPrimaryText>,
+            // <>
+            //   <VaultPrimaryText>
+            //     {formatBigNumber(activity._yield, decimals)}
+            //   </VaultPrimaryText>
+            //   <VaultSecondaryText>
+            //     {formatBigNumber(activity._yield, decimals)}
+            //   </VaultSecondaryText>
+            // </>,
           ];
         case "optionSold":
           return [
@@ -188,16 +188,16 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 {moment(activity.soldAt * 1000).fromNow()}
               </VaultSecondaryText>
             </>,
-            <>
-              <VaultPrimaryText>R-EARN</VaultPrimaryText>
-            </>,
-            <VaultPrimaryText>
-              {formatBigNumber(activity.premium, decimals)}
-            </VaultPrimaryText>,
-            <>
-              <VaultPrimaryText>-</VaultPrimaryText>
-              <VaultSecondaryText>-</VaultSecondaryText>
-            </>,
+            // <>
+            //   <VaultPrimaryText>R-EARN</VaultPrimaryText>
+            // </>,
+            // <VaultPrimaryText>
+            //   {formatBigNumber(activity.premium, decimals)}
+            // </VaultPrimaryText>,
+            // <>
+            //   <VaultPrimaryText>-</VaultPrimaryText>
+            //   <VaultSecondaryText>-</VaultSecondaryText>
+            // </>,
           ];
         case "optionYield":
           return [
@@ -207,20 +207,20 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 {moment(activity.paidAt * 1000).fromNow()}
               </VaultSecondaryText>
             </>,
-            <>
-              <VaultPrimaryText>R-EARN</VaultPrimaryText>
-            </>,
-            <VaultPrimaryText>
-              {formatBigNumber(activity._yield, decimals)}
-            </VaultPrimaryText>,
-            <>
-              <VaultPrimaryText>
-                {formatBigNumber(activity._yield, decimals)}
-              </VaultPrimaryText>
-              <VaultSecondaryText>
-                {formatBigNumber(activity._yield, decimals)}
-              </VaultSecondaryText>
-            </>,
+            // <>
+            //   <VaultPrimaryText>R-EARN</VaultPrimaryText>
+            // </>,
+            // <VaultPrimaryText>
+            //   {formatBigNumber(activity._yield, decimals)}
+            // </VaultPrimaryText>,
+            // <>
+            //   <VaultPrimaryText>
+            //     {formatBigNumber(activity._yield, decimals)}
+            //   </VaultPrimaryText>
+            //   <VaultSecondaryText>
+            //     {formatBigNumber(activity._yield, decimals)}
+            //   </VaultSecondaryText>
+            // </>,
           ];
         case "minting":
           return [
@@ -332,18 +332,37 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
           </VaultActivityIcon>
         );
       case "openLoan":
+        return (
+          <VaultActivityIcon type={activity.type}>
+            <i className="fas fa-dollar-sign" />
+          </VaultActivityIcon>
+        );
       case "closeLoan":
+        return (
+          <VaultActivityIcon type={activity.type}>
+            <i className="fas fa-dollar-sign" />
+          </VaultActivityIcon>
+        );
       case "optionYield":
+        return (
+          <VaultActivityIcon type={activity.type}>
+            <i className="fas fa-dollar-sign" />
+          </VaultActivityIcon>
+        );
       case "optionSold":
-        return <></>;
+        return (
+          <VaultActivityIcon type={activity.type}>
+            <i className="fas fa-dollar-sign" />
+          </VaultActivityIcon>
+        );
     }
   }, []);
 
   return (
-    <TableWithFixedHeader
-      weights={[0.25, 0.35, 0.15, 0.25]}
-      orientations={["left", "left", "right", "right"]}
-      labels={["Action", "Contract", "Quantity", "Yield"]}
+    <EarnTableWithFixedHeader
+      weights={[1]}
+      orientations={[]}
+      labels={[]}
       data={activities.map((activity) => getVaultActivityTableData(activity))}
       externalLinks={activities.map((activity) =>
         getVaultActivityExternalURL(activity)
@@ -358,4 +377,4 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
   );
 };
 
-export default DesktopVaultActivityList;
+export default EarnVaultActivityList;

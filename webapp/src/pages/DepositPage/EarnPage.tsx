@@ -20,13 +20,13 @@ import { getAssetLogo, getChainByVaultOption } from "shared/lib/utils/asset";
 // import theme from "shared/lib/designSystem/theme";
 import useRedirectOnSwitchChain from "../../hooks/useRedirectOnSwitchChain";
 import useRedirectOnWrongChain from "../../hooks/useRedirectOnWrongChain";
-import EarnStrategyExplainer from "../../components/Deposit/EarnStrategyExplainer";
+import EarnStrategyExplainer from "../../components/Earn/EarnStrategyExplainer";
 import { useGlobalState } from "shared/lib/store/store";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import EarnDetailsModal from "../../components/Earn/Modal/EarnDetailsModal";
-
+import { EarnCircle } from "shared/lib/assets/icons/icons";
 const { formatUnits } = ethers.utils;
 
 const ProductAssetLogoContainer = styled.div<{ color: string }>`
@@ -35,21 +35,10 @@ const ProductAssetLogoContainer = styled.div<{ color: string }>`
   justify-content: center;
   height: 56px;
   width: 56px;
-  margin-top: calc(-56px / 2);
   background-color: ${colors.background.one};
   border-radius: 50%;
   position: relative;
   box-shadow: 0px 0px 0px 2px ${colors.background.two};
-
-  &:before {
-    display: block;
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    content: " ";
-    background: ${(props) => props.color}29;
-    border-radius: 50%;
-  }
 `;
 
 const CirclesContainer = styled.div`
@@ -90,32 +79,22 @@ const Circle = styled.div<{
   opacity: 0.24;
 `;
 
-const BigCircle = styled.div<{
-  size: number;
-  color: string;
-}>`
-  overflow: show;
-  display: flex;
-  position: absolute;
-  justify-content: center;
-  width: ${(props) => props.size}px;
-  height: ${(props) => props.size}px;
-  border-radius: ${(props) => props.size / 2}px;
-  border: 4px dashed #3e73c4;
-  box-shadow: 1px 2px 40px 8px rgba(62, 115, 196, 0.25);
-  opacity: 0.24;
-  box-sizing: border-box;
-`;
-
 const VaultContainer = styled.div`
   display: flex;
   text-align: center;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: 80vh;
+  height: 85vh;
+  overflow: hidden;
+`;
+
+const MainContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   min-width: 240px;
-  z-index: 1;
 `;
 
 const HeroText = styled(Title)`
@@ -145,9 +124,14 @@ const ViewDetailsButton = styled.div`
   gap: 8px;
   line-height: 20px;
   font-size: 12px;
-  z-index: 1000;
+  z-index: 1;
 `;
 
+const StyledActionButton = styled(ActionButton)`
+  font-size: 14px;
+  z-index: 1;
+  letter-spacing: 1px;
+`;
 const EarnPage = () => {
   const { vaultOption, vaultVersion } = useVaultOption();
   const { active, account, chainId } = useWeb3Wallet();
@@ -276,8 +260,8 @@ const EarnPage = () => {
         }}
       > */}
       <CirclesContainer>
-        <BigCircle size={976} color={"blue"}></BigCircle>
         <Circle size={800} color={"blue"} circleIndex={1}></Circle>
+        <EarnCircle />
         <Circle size={640} color={"blue"} circleIndex={0}></Circle>
       </CirclesContainer>
       <VaultContainer>
@@ -300,8 +284,8 @@ const EarnPage = () => {
                 ease: "easeInOut",
               }}
             >
-              <VaultContainer>
-                <ProductAssetLogoContainer className={`mb-3`} color={"blue"}>
+              <MainContainer>
+                <ProductAssetLogoContainer className={`mb-2`} color={"blue"}>
                   {logo}
                 </ProductAssetLogoContainer>
                 <BalanceTitle className={`py-3`}>Your Balance</BalanceTitle>
@@ -312,7 +296,6 @@ const EarnPage = () => {
                 </HeroText>
                 <Subtitle color={yieldColor}>+{roi}%</Subtitle>
                 <ViewDetailsButton
-                  className={`mt-4 py-3 mb-4`}
                   role="button"
                   onClick={() => {
                     setShowDetailsModal(true);
@@ -322,27 +305,30 @@ const EarnPage = () => {
                 </ViewDetailsButton>
                 {active && account ? (
                   <>
-                    <ActionButton className={`mt-4 py-3 mb-0`} color={color}>
+                    <StyledActionButton
+                      className={`mt-5 py-3 mb-0 w-100`}
+                      color={color}
+                    >
                       Deposit
-                    </ActionButton>
-                    <ActionButton
-                      className={`py-3 mb-1`}
+                    </StyledActionButton>
+                    <StyledActionButton
+                      className={`py-3 mb-1 w-100`}
                       variant={"secondary"}
                       color={"none"}
                     >
                       Withdraw
-                    </ActionButton>
+                    </StyledActionButton>
                   </>
                 ) : (
-                  <ActionButton
-                    className={`mt-4 py-3 mb-0 `}
+                  <StyledActionButton
+                    className={`mt-5 py-3 w-100`}
                     color={color}
                     onClick={() => setShowConnectModal(true)}
                   >
                     Connect Wallet
-                  </ActionButton>
+                  </StyledActionButton>
                 )}
-              </VaultContainer>
+              </MainContainer>
             </motion.div>
           </AnimatePresence>
         ) : (

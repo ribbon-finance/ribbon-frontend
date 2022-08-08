@@ -80,6 +80,8 @@ const ModalHeaderBackground = styled.div`
   top: 0;
   left: 0;
   width: 100%;
+  border-top-left-radius: ${theme.border.radius};
+  border-top-right-radius: ${theme.border.radius};
 `;
 
 interface BasicModalProps {

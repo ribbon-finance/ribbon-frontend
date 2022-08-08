@@ -7,6 +7,8 @@ import Scroller from "../Scroller";
 import { Strategy, Risk } from "../Details";
 import EarnPerformanceSection from "../../../pages/DepositPage/EarnPerformanceSection";
 import EarnVaultActivity from "../../Vault/EarnVaultActivity";
+import Payoff from "../Payoff";
+import Counterparties from "../Counterparties";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -31,7 +33,7 @@ type Step =
   | "payoff"
   | "performance"
   | "risk"
-  | "counterparty options"
+  | "counterparties"
   | "activity"
   | "fees"; //| "transaction";
 const StepList = [
@@ -39,7 +41,7 @@ const StepList = [
   "payoff",
   "performance",
   "risk",
-  "counterparty options",
+  "counterparties",
   "activity",
   "fees",
 ] as const;
@@ -62,7 +64,7 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
         case "strategy":
           return <Strategy />;
         case "payoff":
-          return <>payoff</>;
+          return <Payoff />;
         case "risk":
           return <Risk />;
         case "performance":
@@ -83,6 +85,8 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
               }}
             />
           );
+        case "counterparties":
+          return <Counterparties />;
       }
     },
     [step]
@@ -110,7 +114,6 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
           <BaseModalContentColumn marginTop={8}>
             <Title>{step}</Title>
           </BaseModalContentColumn>
-
           <ModalColumnScroll marginTop={40} className="justify-content-center">
             <Container>{modalContent}</Container>
           </ModalColumnScroll>
