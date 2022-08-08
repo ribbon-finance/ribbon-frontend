@@ -321,8 +321,6 @@ const StrikeBar = styled.div`
   height: 4px;
 `;
 
-const AbsoluteContainer = styled.div``;
-
 const StyledEarnOuterCircle = styled(EarnCardOuterCircle)`
   position: absolute;
   background: red;
@@ -674,23 +672,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
         </ParagraphText>
       </>
     );
-  }, [
-    displayAsset,
-    color,
-    t,
-    vault,
-    totalProjectedYield,
-    vaultYield,
-    baseStakingYield,
-    baseAPY,
-    vaultVersion,
-    StrikeWidget,
-    isLoading,
-    v2DataLoading,
-    totalDepositStr,
-    depositLimitStr,
-    asset,
-  ]);
+  }, [displayAsset, color, t, vault]);
 
   const ProductInfoContent = useCallback(() => {
     const Logo = getAssetLogo(displayAsset);
@@ -927,7 +909,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
             <>
               <ProductInfoEarn
                 connected={
-                  account == null || account == undefined ? false : true
+                  account === null || account === undefined ? false : true
                 }
               >
                 <EarnContent />

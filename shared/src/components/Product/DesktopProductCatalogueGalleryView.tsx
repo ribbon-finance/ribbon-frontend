@@ -148,8 +148,6 @@ const DesktopProductCatalogueGalleryView: React.FC<
       setPage(currPage);
     }
     setCurrentVault(filteredProducts[currPage - 1]);
-
-    console.log(filteredProducts);
   }, [page, filteredProducts]);
 
   const vaultInfo = useMemo(() => {
