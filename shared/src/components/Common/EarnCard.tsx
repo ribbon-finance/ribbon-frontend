@@ -72,12 +72,12 @@ const rotateAnticlockwise = keyframes`
 `;
 
 const StyledEarnOuterCircle = styled(EarnCardOuterCircle)`
-  animation: ${rotateClockwise} 10s linear infinite;
+  animation: ${rotateClockwise} 20s linear infinite;
   position: absolute;
 `;
 
 const StyledEarnMiddleCircle = styled(EarnCardMiddleCircle)`
-  animation: ${rotateAnticlockwise} 10s linear infinite;
+  animation: ${rotateAnticlockwise} 20s linear infinite;
   overflow: show;
   display: flex;
   position: absolute;

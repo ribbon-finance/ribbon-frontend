@@ -595,16 +595,16 @@ export const EarnCardMiddleCircle: React.FC<SVGPropsWithColor> = (props) => (
 export const EarnCardOuterCircle: React.FC<SVGPropsWithColor> = (props) => (
   <svg
     width="290"
-    height="336"
-    viewBox="0 0 290 336"
+    height="304"
+    viewBox="0 0 290 304"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
-    <g filter="url(#filter0_d_1222_4230)">
+    <g filter="url(#filter0_d_1082_3282)">
       <circle
         cx="145"
-        cy="166"
+        cy="150"
         r="118"
         stroke="#3E73C4"
         stroke-width="4"
@@ -614,11 +614,11 @@ export const EarnCardOuterCircle: React.FC<SVGPropsWithColor> = (props) => (
     </g>
     <defs>
       <filter
-        id="filter0_d_1222_4230"
-        x="0"
+        id="filter0_d_1082_3282"
+        x="-6"
         y="0"
-        width="336"
-        height="336"
+        width="304"
+        height="304"
         filterUnits="userSpaceOnUse"
         color-interpolation-filters="sRGB"
       >
@@ -633,10 +633,10 @@ export const EarnCardOuterCircle: React.FC<SVGPropsWithColor> = (props) => (
           radius="8"
           operator="dilate"
           in="SourceAlpha"
-          result="effect1_dropShadow_1222_4230"
+          result="effect1_dropShadow_1082_3282"
         />
         <feOffset dx="1" dy="2" />
-        <feGaussianBlur stdDeviation="20" />
+        <feGaussianBlur stdDeviation="12" />
         <feComposite in2="hardAlpha" operator="out" />
         <feColorMatrix
           type="matrix"
@@ -645,12 +645,12 @@ export const EarnCardOuterCircle: React.FC<SVGPropsWithColor> = (props) => (
         <feBlend
           mode="normal"
           in2="BackgroundImageFix"
-          result="effect1_dropShadow_1222_4230"
+          result="effect1_dropShadow_1082_3282"
         />
         <feBlend
           mode="normal"
           in="SourceGraphic"
-          in2="effect1_dropShadow_1222_4230"
+          in2="effect1_dropShadow_1082_3282"
           result="shape"
         />
       </filter>
