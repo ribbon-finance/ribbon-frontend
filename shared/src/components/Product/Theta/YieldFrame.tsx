@@ -22,6 +22,8 @@ import { getAssetLogo } from "../../../utils/asset";
 import { formatSignificantDecimals } from "../../../utils/math";
 import { getVaultColor } from "../../../utils/vault";
 import CapBar from "../../Deposit/CapBar";
+import EarnCard from "../../Common/EarnCard";
+import colors from "../../../designSystem/colors";
 
 const FrameContainer = styled.div`
   perspective: 2000px;
@@ -50,6 +52,24 @@ const Frame = styled(motion.div)<{ color: string }>`
   }
 `;
 
+const ProductCard = styled(motion.div)<{ color: string; vault: VaultOptions }>`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  border-radius: 10px;
+  border: 2px ${theme.border.style} ${colors.background.two};
+  transition: 0.25s box-shadow ease-out, 0.25s border ease-out;
+  width: 290px;
+  position: relative;
+  height: 100%;
+  padding: 16px;
+
+  &:hover {
+    box-shadow: ${(props) => props.color}66 0px 0px 70px;
+    border: 2px ${theme.border.style} ${(props) => props.color};
+  }
+`;
+
 const TagContainer = styled.div`
   z-index: 1;
   margin-right: auto;
@@ -59,6 +79,20 @@ const ProductTag = styled(BaseButton)<{ color: string }>`
   background: ${(props) => props.color}29;
   padding: 8px;
   margin-right: 4px;
+`;
+
+const ProductInfoEarn = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 429px;
+  border-radius: ${theme.border.radius};
+  justify-content: center;
+  align-items: center;
+  padding: -16px;
+  margin: -16px;
+  background: #030309;
+  box-shadow: inset 0px 0px 24px rgba(255, 255, 255, 0.12);
+  overflow: hidden;
 `;
 
 interface YieldFrameProps {
@@ -181,37 +215,46 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
       role="button"
       onClick={() => onVaultPress(vault, vaultVersion)}
     >
-      <AnimatePresence exitBeforeEnter initial={false}>
-        <Frame
-          transition={{
-            duration: 0.1,
-            type: "keyframes",
-            ease: "linear",
-          }}
-          initial={{
-            transform: "rotateY(90deg)",
-          }}
-          animate={{
-            transform: "rotateY(0deg)",
-          }}
-          exit={{
-            transform: "rotateY(-90deg)",
-          }}
-          color={color}
-        >
-          <div className="d-flex w-100">
-            {/* Tags */}
-            <TagContainer>
-              <ProductTag color={color}>
-                <Subtitle>
-                  {isPutVault(vault) ? "PUT-SELLING" : "COVERED CALL"}
-                </Subtitle>
-              </ProductTag>
-            </TagContainer>
-          </div>
-          {body}
-        </Frame>
-      </AnimatePresence>
+      {vault === "rEARN" ? (
+        <ProductCard color={color} vault={vault}>
+          <ProductInfoEarn>
+            <EarnCard color={color} height={429} />
+          </ProductInfoEarn>
+        </ProductCard>
+      ) : (
+        <AnimatePresence exitBeforeEnter initial={false}>
+          <Frame
+            transition={{
+              duration: 0.1,
+              type: "keyframes",
+              ease: "linear",
+            }}
+            initial={{
+              transform: "rotateY(90deg)",
+            }}
+            animate={{
+              transform: "rotateY(0deg)",
+            }}
+            exit={{
+              transform: "rotateY(-90deg)",
+            }}
+            color={color}
+          >
+            <div className="d-flex w-100">
+              {/* Tags */}
+
+              <TagContainer>
+                <ProductTag color={color}>
+                  <Subtitle>
+                    {isPutVault(vault) ? "PUT-SELLING" : "COVERED CALL"}
+                  </Subtitle>
+                </ProductTag>
+              </TagContainer>
+            </div>
+            {body}
+          </Frame>
+        </AnimatePresence>
+      )}
     </FrameContainer>
   );
 };

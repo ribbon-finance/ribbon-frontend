@@ -30,12 +30,12 @@ const Link = styled.a`
   }
 `;
 
-const ParagraphText = styled(SecondaryText)`
-  color: rgba(255, 255, 255, 0.64);
+const ParagraphText = styled(SecondaryText)<{ marginTop?: number }>`
+  color: ${colors.secondaryText};
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
-  margin-top: 8px;
+  margin-top: ${(props) => (props.marginTop ? `${props.marginTop}px` : `0px`)};
 `;
 
 const StyledTitle = styled(Title)<{ marginTop: number }>`
@@ -73,7 +73,7 @@ export const Strategy = () => {
         .
       </ParagraphText>
       <StyledTitle marginTop={24}>Key Conditions</StyledTitle>
-      <ParagraphText>
+      <ParagraphText marginTop={8}>
         The weekly barrier options enable the vault to participate in any ETH
         upside up to 108% of the ETH's spot level at the start of the week
         (upside barrier) and any ETH downside down to 92% of ETH's spot level at
@@ -130,7 +130,7 @@ export const Risk = () => {
   return (
     <>
       <Title>Credit Risk</Title>
-      <ParagraphText>
+      <ParagraphText marginTop={8}>
         Market makers taking the other side of Ribbon Earn trades carry credit
         risk and could potentially default in the case of extreme events. This
         means that both the principal and yield invested could be lost in the
@@ -139,7 +139,7 @@ export const Risk = () => {
         risk of default for retail investors.
       </ParagraphText>
       <StyledTitle marginTop={24}>Counterparty Risk</StyledTitle>
-      <ParagraphText>
+      <ParagraphText marginTop={8}>
         In the situation that the knock-out options expire{" "}
         <TooltipExplanation
           title="IN-THE-MONEY"
@@ -156,7 +156,7 @@ export const Risk = () => {
         of their obligations to the vault.
       </ParagraphText>
       <StyledTitle marginTop={24}>Equity Upside Risk</StyledTitle>
-      <ParagraphText>
+      <ParagraphText marginTop={8}>
         During periods of high market volatility, where ETH gains or loses 8%
         during the week, the vault's knock-out options will expire{" "}
         <TooltipExplanation
@@ -173,13 +173,13 @@ export const Risk = () => {
         .
       </ParagraphText>
       <StyledTitle marginTop={24}>Equity Downside Risk</StyledTitle>
-      <ParagraphText>
+      <ParagraphText marginTop={8}>
         Prices of the underlyer may drop throughout the life of the product and
         depositors may not fully capture the downside performance due to the
         lower knock-out barrier.
       </ParagraphText>
       <StyledTitle marginTop={24}>Smart Contract Risk</StyledTitle>
-      <ParagraphText>
+      <ParagraphText marginTop={8}>
         The Ribbon Earn smart contracts have been{" "}
         <TooltipExplanation
           title="Veridise"

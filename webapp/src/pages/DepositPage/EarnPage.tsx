@@ -26,7 +26,11 @@ import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
 import EarnDetailsModal from "../../components/Earn/Modal/EarnDetailsModal";
-import { EarnCircle } from "shared/lib/assets/icons/icons";
+import {
+  EarnInnerRing,
+  EarnMiddleRing,
+  EarnOuterRing,
+} from "shared/lib/assets/icons/icons";
 const { formatUnits } = ethers.utils;
 
 const ProductAssetLogoContainer = styled.div<{ color: string }>`
@@ -53,6 +57,18 @@ const CirclesContainer = styled.div`
   justify-content: center;
 `;
 
+const StyledEarnInnerRing = styled(EarnInnerRing)`
+  position: absolute;
+`;
+
+const StyledEarnMiddleRing = styled(EarnMiddleRing)`
+  position: absolute;
+`;
+
+const StyledEarnOuterRing = styled(EarnOuterRing)`
+  position: absolute;
+`;
+
 const BalanceTitle = styled.div`
   font-size: 14px;
   font-family: VCR;
@@ -60,23 +76,6 @@ const BalanceTitle = styled.div`
   text-align: center;
   letter-spacing: 1px;
   color: ${colors.primaryText}7A;
-`;
-
-const Circle = styled.div<{
-  size: number;
-  color: string;
-  circleIndex: number;
-}>`
-  overflow: show;
-  display: flex;
-  position: absolute;
-  align-items: center;
-  justify-content: center;
-  width: ${(props) => props.size}px;
-  height: ${(props) => props.size}px;
-  border-radius: ${(props) => props.size / 2}px;
-  border: 1px dashed #3e73c4;
-  opacity: 0.24;
 `;
 
 const VaultContainer = styled.div`
@@ -246,23 +245,10 @@ const EarnPage = () => {
 
   return (
     <>
-      {/* <div
-        style={{
-          position: "absolute",
-          overflow: "hidden",
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      > */}
       <CirclesContainer>
-        <Circle size={800} color={"blue"} circleIndex={1}></Circle>
-        <EarnCircle />
-        <Circle size={640} color={"blue"} circleIndex={0}></Circle>
+        <StyledEarnOuterRing />
+        <StyledEarnMiddleRing />
+        <StyledEarnInnerRing />
       </CirclesContainer>
       <VaultContainer>
         {showVault.show ? (

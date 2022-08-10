@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
 import Marquee from "react-fast-marquee/dist";
@@ -150,6 +150,18 @@ const DesktopProductCatalogueGalleryView: React.FC<
     setCurrentVault(filteredProducts[currPage - 1]);
   }, [page, filteredProducts]);
 
+  const renderDescription = useCallback(() => {
+    if (currentVault === "rEARN") {
+      return "Earn up to 15% APY with a fully principal protected vault strategy";
+    } else {
+      const asset = getAssets(currentVault!);
+      if (isPutVault(currentVault!)) {
+        return t("shared:ProductCopies:Put:description", { asset });
+      } else {
+        return t("shared:ProductCopies:Call:description", { asset });
+      }
+    }
+  }, [t, currentVault]);
   const vaultInfo = useMemo(() => {
     if (!currentVault) {
       return (
@@ -162,8 +174,6 @@ const DesktopProductCatalogueGalleryView: React.FC<
       );
     }
 
-    const asset = getAssets(currentVault);
-
     return (
       <VaultInfo>
         {/* Title */}
@@ -173,11 +183,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
 
         <VaultSecondaryInfo>
           {/* Description */}
-          <SecondaryText className="mt-3">
-            {isPutVault(currentVault)
-              ? t("shared:ProductCopies:Put:description", { asset })
-              : t("shared:ProductCopies:Call:description", { asset })}
-          </SecondaryText>
+          <SecondaryText className="mt-3">{renderDescription()}</SecondaryText>
 
           {active && (
             <div className="mt-4">
@@ -201,6 +207,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
     setFilterAssets,
     setFilterStrategies,
     vaultsDisplayVersion,
+    renderDescription
   ]);
 
   return (

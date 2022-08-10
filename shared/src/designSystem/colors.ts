@@ -11,6 +11,7 @@ const colors = {
   borderLight: "#2E2C2B",
   text: "#ACACAB",
   primaryText: "#FFFFFF",
+  secondaryText: "#A1A1A9",
   tertiaryText: "#787883",
   quaternaryText: "#3F3F44",
   green: "#16CEB9",

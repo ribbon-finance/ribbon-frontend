@@ -31,11 +31,7 @@ import {
   isDisabledVault,
   VaultAddressMap,
 } from "../../../constants/constants";
-import {
-  BoostIcon,
-  EarnCardMiddleCircle,
-  EarnCardOuterCircle,
-} from "../../../assets/icons/icons";
+import { BoostIcon } from "../../../assets/icons/icons";
 import { getAssetDisplay, getAssetLogo } from "../../../utils/asset";
 import { getVaultColor } from "../../../utils/vault";
 import ModalContentExtra from "../../Common/ModalContentExtra";
@@ -59,6 +55,7 @@ import { useAssetsPrice } from "../../../hooks/useAssetPrice";
 import { RibbonVaultPauser } from "../../../codegen";
 import useVaultPauser from "../../../hooks/useV2VaultPauserContract";
 import { BigNumber } from "ethers";
+import EarnCard from "../../Common/EarnCard";
 
 const { formatUnits } = ethers.utils;
 
@@ -87,12 +84,6 @@ const ProductAssetLogoContainer = styled.div<{ color: string }>`
     background: ${(props) => props.color}29;
     border-radius: 50%;
   }
-`;
-
-const StyledProductAssetLogoContainer = styled(ProductAssetLogoContainer)`
-  margin-top: 0;
-  z-index: 1000;
-  position: absolute;
 `;
 
 const TopContainer = styled.div<{ color: string }>`
@@ -205,6 +196,7 @@ const ProductInfoEarn = styled.div<{ connected: boolean }>`
   margin: -16px;
   background: #030309;
   box-shadow: inset 0px 0px 24px rgba(255, 255, 255, 0.12);
+  overflow: hidden;
 `;
 
 const StrikeContainer = styled.div`
@@ -321,19 +313,6 @@ const StrikeBar = styled.div`
   height: 4px;
 `;
 
-const StyledEarnOuterCircle = styled(EarnCardOuterCircle)`
-  position: absolute;
-  background: red;
-`;
-
-const StyledEarnMiddleCircle = styled(EarnCardMiddleCircle)`
-  overflow: show;
-  display: flex;
-  position: absolute;
-  align-items: center;
-  justify-content: center;
-`;
-
 const StrikeBarBG = styled.div<{
   width: string;
   // Color in hex
@@ -375,27 +354,8 @@ const StrikeDot = styled.div<{
         `}
 `;
 
-const CirclesContainer = styled.div`
-  position: absolute;
-  display: flex;
-  height: 240px;
-  overflow: hidden;
-  align-items: center;
-  justify-content: center;
-  margin-top: 24px;
-`;
-
-const OuterContainer = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 240px;
-`;
-
 const ParagraphText = styled(SecondaryText)`
-  color: rgba(255, 255, 255, 0.64);
+  color: ${colors.secondaryText};
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
@@ -413,6 +373,7 @@ const HighlightedText = styled.span`
     color: ${colors.primaryText}CC;
   }
 `;
+
 interface YieldCardProps {
   vault: VaultOptions;
   vaultVersion: VaultVersion;
@@ -457,7 +418,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     data: { pricePerShare },
   } = useV2VaultData(vault);
   const { prices } = useAssetsPrice();
-
+  const { account } = useWeb3Wallet();
   const loadingText = useLoadingText();
 
   const baseAPY = useMemo(() => {
@@ -647,24 +608,16 @@ const YieldCard: React.FC<YieldCardProps> = ({
   ]);
 
   const EarnContent = useCallback(() => {
-    const Logo = getAssetLogo(displayAsset);
-
-    let logo = <Logo height="100%" />;
-
     return (
       <>
         <Title fontSize={28} lineHeight={40}>
           {t(`shared:ProductCopies:${vault}:title`)}
         </Title>
-        <OuterContainer>
-          <CirclesContainer>
-            <StyledProductAssetLogoContainer color={color}>
-              {logo}
-            </StyledProductAssetLogoContainer>
-            <StyledEarnOuterCircle />
-            <StyledEarnMiddleCircle />
-          </CirclesContainer>
-        </OuterContainer>
+
+        <EarnCard
+          color={color}
+          height={account === null || account === undefined ? 447 : 504}
+        />
         <ParagraphText>
           Earn up to <HighlightedText>15% APY</HighlightedText> with a{" "}
           <HighlightedText>fully principal protected</HighlightedText> vault
@@ -672,7 +625,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
         </ParagraphText>
       </>
     );
-  }, [displayAsset, color, t, vault]);
+  }, [color, t, vault, account]);
 
   const ProductInfoContent = useCallback(() => {
     const Logo = getAssetLogo(displayAsset);
@@ -768,7 +721,6 @@ const YieldCard: React.FC<YieldCardProps> = ({
     asset,
   ]);
 
-  const { account } = useWeb3Wallet();
   const contract = useVaultPauser(chainId || 1) as RibbonVaultPauser;
   const vaultAddress = VaultAddressMap[vault][vaultVersion];
   const [pausedAmount, setPausedAmount] = useState(BigNumber.from(0));
