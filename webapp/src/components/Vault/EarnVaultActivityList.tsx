@@ -26,26 +26,26 @@ import useScreenSize from "shared/lib/hooks/useScreenSize";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import EarnTableWithFixedHeader from "shared/lib/components/Common/EarnTableWithFixedHeader";
+import {
+  OpenLoanIcon,
+  CloseLoanIcon,
+  OptionsBoughtIcon,
+  OptionsRepaidIcon,
+} from "shared/lib/assets/icons/icons";
 
 const VaultActivityIcon = styled.div<{ type: VaultActivityType }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  width: 100%;
+  height: 40px;
+  width: 40px;
   border-radius: 100px;
-  background-color: ${(props) => colors.vaultActivity[props.type]}14;
-
-  i {
-    color: ${(props) => colors.vaultActivity[props.type]};
-  }
 `;
 
 const VaultPrimaryText = styled(Title)<{
   variant?: "green";
 }>`
-  margin-bottom: 4px;
-
+  font-size: 16px;
   ${(props) => {
     switch (props.variant) {
       case "green":
@@ -63,9 +63,25 @@ const VaultPrimaryText = styled(Title)<{
 const VaultSecondaryText = styled(SecondaryText)<{
   fontFamily?: string;
 }>`
+  color: ${colors.tertiaryText};
   font-size: 12px;
   ${(props) =>
     props.fontFamily ? `font-family: ${props.fontFamily}, sans-serif;` : ""}
+`;
+
+const VaultSecondaryTextContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const Separator = styled.div`
+  display: flex;
+  /* Separator */
+  width: 4px;
+  height: 4px;
+  margin-left: 4px;
+  margin-right: 4px;
+  background: ${colors.quaternaryText};
+  border-radius: 1000px;
 `;
 
 interface DesktopVaultActivityListProps {
@@ -141,86 +157,73 @@ const EarnVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
         case "openLoan":
           return [
             <>
-              <VaultPrimaryText>LOAN OPENED</VaultPrimaryText>
-              <VaultSecondaryText>
-                {moment(activity.openedAt * 1000).fromNow()}
-              </VaultSecondaryText>
+              <VaultPrimaryText>USDC LENT</VaultPrimaryText>
+              <VaultSecondaryTextContainer>
+                {" "}
+                <VaultSecondaryText>
+                  ${formatBigNumber(activity.loanAmount, decimals)}
+                </VaultSecondaryText>
+                <Separator />
+                <VaultSecondaryText>
+                  {moment(activity.openedAt * 1000).fromNow()}
+                </VaultSecondaryText>
+              </VaultSecondaryTextContainer>
             </>,
-            // <>
-            //   <VaultPrimaryText>R-EARN</VaultPrimaryText>
-            // </>,
-            // <VaultPrimaryText>
-            //   {formatBigNumber(activity.loanAmount, decimals)}
-            // </VaultPrimaryText>,
-            // <>
-            //   <VaultPrimaryText>-</VaultPrimaryText>
-            //   <VaultSecondaryText>-</VaultSecondaryText>
-            // </>,
           ];
         case "closeLoan":
+          const loanAmount = formatBigNumber(activity.loanAmount, decimals);
+          const _yield = formatBigNumber(activity._yield, decimals);
+          const interest = (
+            (parseInt(_yield) / parseInt(loanAmount)) *
+            100
+          ).toFixed(2);
           return [
             <>
-              <VaultPrimaryText>LOAN CLOSED</VaultPrimaryText>
-              <VaultSecondaryText>
-                {moment(activity.closedAt * 1000).fromNow()}
-              </VaultSecondaryText>
+              <VaultPrimaryText>USDC LOAN REPAID</VaultPrimaryText>
+              <VaultSecondaryTextContainer>
+                {" "}
+                <VaultSecondaryText>
+                  ${formatBigNumber(activity.paidAmount, decimals)} at{" "}
+                  {interest}%
+                </VaultSecondaryText>
+                <Separator />
+                <VaultSecondaryText>
+                  {moment(activity.closedAt * 1000).fromNow()}
+                </VaultSecondaryText>
+              </VaultSecondaryTextContainer>
             </>,
-            // <>
-            //   <VaultPrimaryText>R-EARN</VaultPrimaryText>
-            // </>,
-            // <VaultPrimaryText>
-            //   {formatBigNumber(activity.paidAmount, decimals)}
-            // </VaultPrimaryText>,
-            // <>
-            //   <VaultPrimaryText>
-            //     {formatBigNumber(activity._yield, decimals)}
-            //   </VaultPrimaryText>
-            //   <VaultSecondaryText>
-            //     {formatBigNumber(activity._yield, decimals)}
-            //   </VaultSecondaryText>
-            // </>,
           ];
         case "optionSold":
           return [
             <>
-              <VaultPrimaryText>OPTION SOLD</VaultPrimaryText>
-              <VaultSecondaryText>
-                {moment(activity.soldAt * 1000).fromNow()}
-              </VaultSecondaryText>
+              <VaultPrimaryText>OPTIONS PURCHASED</VaultPrimaryText>
+              <VaultSecondaryTextContainer>
+                {" "}
+                <VaultSecondaryText>
+                  ${formatBigNumber(activity.premium, decimals)} Premium
+                </VaultSecondaryText>
+                <Separator />
+                <VaultSecondaryText>
+                  {moment(activity.soldAt * 1000).fromNow()}
+                </VaultSecondaryText>
+              </VaultSecondaryTextContainer>
             </>,
-            // <>
-            //   <VaultPrimaryText>R-EARN</VaultPrimaryText>
-            // </>,
-            // <VaultPrimaryText>
-            //   {formatBigNumber(activity.premium, decimals)}
-            // </VaultPrimaryText>,
-            // <>
-            //   <VaultPrimaryText>-</VaultPrimaryText>
-            //   <VaultSecondaryText>-</VaultSecondaryText>
-            // </>,
           ];
         case "optionYield":
           return [
             <>
-              <VaultPrimaryText>OPTION PAID</VaultPrimaryText>
-              <VaultSecondaryText>
-                {moment(activity.paidAt * 1000).fromNow()}
-              </VaultSecondaryText>
+              <VaultPrimaryText>OPTIONS YIELD EARNED</VaultPrimaryText>
+              <VaultSecondaryTextContainer>
+                {" "}
+                <VaultSecondaryText>
+                  ${formatBigNumber(activity._yield, decimals)}
+                </VaultSecondaryText>
+                <Separator />
+                <VaultSecondaryText>
+                  {moment(activity.paidAt * 1000).fromNow()}
+                </VaultSecondaryText>
+              </VaultSecondaryTextContainer>
             </>,
-            // <>
-            //   <VaultPrimaryText>R-EARN</VaultPrimaryText>
-            // </>,
-            // <VaultPrimaryText>
-            //   {formatBigNumber(activity._yield, decimals)}
-            // </VaultPrimaryText>,
-            // <>
-            //   <VaultPrimaryText>
-            //     {formatBigNumber(activity._yield, decimals)}
-            //   </VaultPrimaryText>
-            //   <VaultSecondaryText>
-            //     {formatBigNumber(activity._yield, decimals)}
-            //   </VaultSecondaryText>
-            // </>,
           ];
         case "minting":
           return [
@@ -334,25 +337,25 @@ const EarnVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
       case "openLoan":
         return (
           <VaultActivityIcon type={activity.type}>
-            <i className="fas fa-dollar-sign" />
+            <OpenLoanIcon />
           </VaultActivityIcon>
         );
       case "closeLoan":
         return (
           <VaultActivityIcon type={activity.type}>
-            <i className="fas fa-dollar-sign" />
+            <CloseLoanIcon />
           </VaultActivityIcon>
         );
       case "optionYield":
         return (
           <VaultActivityIcon type={activity.type}>
-            <i className="fas fa-dollar-sign" />
+            <OptionsRepaidIcon />
           </VaultActivityIcon>
         );
       case "optionSold":
         return (
           <VaultActivityIcon type={activity.type}>
-            <i className="fas fa-dollar-sign" />
+            <OptionsBoughtIcon />
           </VaultActivityIcon>
         );
     }

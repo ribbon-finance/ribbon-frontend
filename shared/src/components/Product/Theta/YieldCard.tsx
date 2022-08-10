@@ -357,7 +357,7 @@ const StrikeDot = styled.div<{
 const ParagraphText = styled(SecondaryText)`
   color: ${colors.secondaryText};
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 24px;
   margin-top: 24px;
   margin-left: 16px;

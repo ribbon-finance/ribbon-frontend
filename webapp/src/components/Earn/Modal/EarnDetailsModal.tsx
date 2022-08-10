@@ -9,6 +9,7 @@ import EarnPerformanceSection from "../../../pages/DepositPage/EarnPerformanceSe
 import EarnVaultActivity from "../../Vault/EarnVaultActivity";
 import Payoff from "../Payoff";
 import Counterparties from "../Counterparties";
+import Fees from "../Fees";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -87,6 +88,8 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
           );
         case "counterparties":
           return <Counterparties />;
+        case "fees":
+          return <Fees />;
       }
     },
     [step]

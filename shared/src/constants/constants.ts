@@ -118,6 +118,11 @@ const PutThetaVault: VaultOptions[] = [
   "rUSDC-AVAX-P-THETA",
 ];
 
+export const EarnVaultMap = [
+  "RibbonDiversifiedWeek1",
+  "RibbonDiversifiedWeek2",
+] as const;
+export type EarnVault = typeof EarnVaultMap[number];
 export const SolanaAssets = ["SOL"];
 
 export const isSolanaVault = (vaultOption: string) => {
@@ -328,6 +333,11 @@ export const VaultLiquidityMiningMap: {
 export const isPutVault = (vault: VaultOptions): boolean =>
   PutThetaVault.includes(vault);
 
+export const EarnAddresses: { [key: string]: string } = {
+  RibbonDiversifiedWeek1: v2deployment.mainnet.RibbonEarnRibbonDiversifiedWeek1,
+  RibbonDiversifiedWeek2: v2deployment.mainnet.RibbonEarnRibbonDiversifiedWeek2,
+};
+
 export const VaultAddressMap: {
   [vault in VaultOptions]: {
     v1?: string;
@@ -467,7 +477,7 @@ export const VaultAddressMap: {
     chainId: CHAINID.ETH_MAINNET,
   },
   rEARN: {
-    earn: v2deployment.mainnet.RibbonEarn,
+    earn: v2deployment.mainnet.RibbonEarnRibbonDiversifiedWeek1, //default earn address
     chainId: CHAINID.ETH_MAINNET,
   },
 };

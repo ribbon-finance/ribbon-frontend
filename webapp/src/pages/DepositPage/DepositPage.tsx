@@ -391,7 +391,7 @@ const DepositPage = () => {
               <ContractButton color={getVaultColor(vaultOption)}>
                 <ContractButtonTitle
                   fontSize={14}
-                  lineHeight={20}
+                   lineHeight={20}
                   color={getVaultColor(vaultOption)}
                   className="mr-2"
                 >

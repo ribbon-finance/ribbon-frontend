@@ -11,9 +11,9 @@ import useElementSize from "../../hooks/useElementSize";
 import EarnPagination from "./EarnPagination";
 
 const logoContainerWidth = 40;
-const logoContainerMargin = 16;
-const linkContainerWidth = 16;
-const linkContainerMargin = 32;
+const logoContainerMargin = 8;
+const linkContainerWidth = 12;
+const linkContainerMargin = 0;
 
 const TableHeader = styled.div`
   display: flex;

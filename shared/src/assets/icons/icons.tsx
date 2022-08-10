@@ -489,8 +489,8 @@ export const EarnInnerRing: React.FC<SVGPropsWithColor> = (props) => (
 export const EarnMiddleRing: React.FC<SVGPropsWithColor> = (props) => (
   <svg
     width="800"
-    height="720"
-    viewBox="0 0 800 720"
+    height="800"
+    viewBox="0 0 800 800"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
@@ -498,7 +498,7 @@ export const EarnMiddleRing: React.FC<SVGPropsWithColor> = (props) => (
     <circle
       opacity="0.24"
       cx="400"
-      cy="360"
+      cy="400"
       r="399.5"
       stroke="#3E73C4"
       stroke-dasharray="4 4"
@@ -599,6 +599,7 @@ export const EarnCardOuterCircle: React.FC<SVGPropsWithColor> = (props) => (
     viewBox="0 0 290 336"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    {...props}
   >
     <g filter="url(#filter0_d_1222_4230)">
       <circle
@@ -654,6 +655,97 @@ export const EarnCardOuterCircle: React.FC<SVGPropsWithColor> = (props) => (
         />
       </filter>
     </defs>
+  </svg>
+);
+
+export const OpenLoanIcon: React.FC<SVGPropsWithColor> = (props) => (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="40" height="40" rx="20" fill="#3E73C4" fill-opacity="0.12" />
+    <path
+      d="M20 27V13"
+      stroke="#3E73C4"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M12.9996 20L19.9996 13L26.9996 20"
+      stroke="#3E73C4"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+
+export const CloseLoanIcon: React.FC<SVGPropsWithColor> = (props) => (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="40" height="40" rx="20" fill="#3E73C4" fill-opacity="0.08" />
+    <path
+      d="M20 10.8333V29.1667"
+      stroke="#3E73C4"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M24.1667 14.1667H17.9167C17.1431 14.1667 16.4013 14.474 15.8543 15.021C15.3073 15.5679 15 16.3098 15 17.0834C15 17.8569 15.3073 18.5988 15.8543 19.1457C16.4013 19.6927 17.1431 20 17.9167 20H22.0833C22.8569 20 23.5987 20.3073 24.1457 20.8543C24.6927 21.4013 25 22.1431 25 22.9167C25 23.6902 24.6927 24.4321 24.1457 24.9791C23.5987 25.5261 22.8569 25.8334 22.0833 25.8334H15"
+      stroke="#3E73C4"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+
+export const OptionsBoughtIcon: React.FC<SVGPropsWithColor> = (props) => (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="40" height="40" rx="20" fill="#3E73C4" fill-opacity="0.08" />
+    <circle cx="20" cy="20" r="11" stroke="#3E73C4" stroke-width="2" />
+  </svg>
+);
+
+export const OptionsRepaidIcon: React.FC<SVGPropsWithColor> = (props) => (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="40" height="40" rx="20" fill="#16CEB9" fill-opacity="0.08" />
+    <path
+      d="M20 10.8333V29.1667"
+      stroke="#16CEB9"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M24.1667 14.1667H17.9167C17.1431 14.1667 16.4013 14.4739 15.8543 15.0209C15.3073 15.5679 15 16.3098 15 17.0833C15 17.8569 15.3073 18.5987 15.8543 19.1457C16.4013 19.6927 17.1431 20 17.9167 20H22.0833C22.8569 20 23.5987 20.3073 24.1457 20.8543C24.6927 21.4012 25 22.1431 25 22.9167C25 23.6902 24.6927 24.4321 24.1457 24.9791C23.5987 25.526 22.8569 25.8333 22.0833 25.8333H15"
+      stroke="#16CEB9"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
   </svg>
 );
 

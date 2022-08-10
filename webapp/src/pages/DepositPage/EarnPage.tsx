@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
 // import { useTranslation } from "react-i18next";
 import { Title } from "shared/lib/designSystem";
@@ -33,6 +33,24 @@ import {
 } from "shared/lib/assets/icons/icons";
 const { formatUnits } = ethers.utils;
 
+const rotateClockwise = keyframes`
+  from{
+      transform: rotate(0deg);
+  }
+  to{
+      transform: rotate(360deg);
+  }
+`;
+
+const rotateAnticlockwise = keyframes`
+  from{
+      transform: rotate(360deg);
+  }
+  to{
+      transform: rotate(0deg);
+  }
+`;
+
 const ProductAssetLogoContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
@@ -58,14 +76,17 @@ const CirclesContainer = styled.div`
 `;
 
 const StyledEarnInnerRing = styled(EarnInnerRing)`
+  animation: ${rotateClockwise} 60s linear infinite;
   position: absolute;
 `;
 
 const StyledEarnMiddleRing = styled(EarnMiddleRing)`
+  animation: ${rotateAnticlockwise} 60s linear infinite;
   position: absolute;
 `;
 
 const StyledEarnOuterRing = styled(EarnOuterRing)`
+  animation: ${rotateClockwise} 60s linear infinite;
   position: absolute;
 `;
 

@@ -36,7 +36,7 @@ const colors = {
     minting: "#729ded",
     openLoan: "#729ded",
     closeLoan: "#729ded",
-    optionSold: "#729ded",
+    optionSold: "#16ceb9",
     optionYield: "#729ded",
   },
   brands: {

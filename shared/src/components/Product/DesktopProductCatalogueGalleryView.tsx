@@ -207,7 +207,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
     setFilterAssets,
     setFilterStrategies,
     vaultsDisplayVersion,
-    renderDescription
+    renderDescription,
   ]);
 
   return (

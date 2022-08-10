@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import colors from "../../designSystem/colors";
 
 import {
@@ -53,11 +53,31 @@ const Marker = styled.div<{
     props.marginLeft ? `${props.marginLeft}px` : `0px`};
 `;
 
+const rotateClockwise = keyframes`
+  from{
+      transform: rotate(0deg);
+  }
+  to{
+      transform: rotate(360deg);
+  }
+`;
+
+const rotateAnticlockwise = keyframes`
+  from{
+      transform: rotate(360deg);
+  }
+  to{
+      transform: rotate(0deg);
+  }
+`;
+
 const StyledEarnOuterCircle = styled(EarnCardOuterCircle)`
+  animation: ${rotateClockwise} 10s linear infinite;
   position: absolute;
 `;
 
 const StyledEarnMiddleCircle = styled(EarnCardMiddleCircle)`
+  animation: ${rotateAnticlockwise} 10s linear infinite;
   overflow: show;
   display: flex;
   position: absolute;

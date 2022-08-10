@@ -361,7 +361,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
     var leftArray = [];
     var array = [];
     var rightArray = [];
-    for (let i = -28; i < -8; i += 1) {
+    for (let i = -28; i <= -8; i += 1) {
       leftArray.push(i);
     }
 
@@ -369,12 +369,12 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       array.push(i);
     }
 
-    for (let i = 9; i <= 28; i += 1) {
+    for (let i = 8; i <= 28; i += 1) {
       rightArray.push(i);
     }
 
-    console.log([...leftArray, -8.1, ...array, 8.1, ...rightArray]);
-    return [...leftArray, -8.1, ...array, 8.1, ...rightArray];
+    console.log([...leftArray, ...array, ...rightArray]);
+    return [...leftArray, ...array, ...rightArray];
   }, []);
 
   const otherRange = useMemo(() => {
@@ -382,7 +382,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
     var array = [];
     var rightArray = [];
 
-    for (let i = -28; i < -8; i += 1) {
+    for (let i = -28; i <= -8; i += 1) {
       leftArray.push(4);
     }
 
@@ -390,12 +390,12 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       array.push(4 + Math.abs(i / 8) * 25);
     }
 
-    for (let i = 9; i <= 28; i += 1) {
+    for (let i = 8; i <= 28; i += 1) {
       rightArray.push(4);
     }
 
-    console.log([...leftArray, 4, ...array, 4, ...rightArray]);
-    return [...leftArray, 4, ...array, 4, ...rightArray];
+    console.log([...leftArray, ...array, ...rightArray]);
+    return [...leftArray, ...array, ...rightArray];
   }, []);
 
   // const drawPricePoint = useCallback(
