@@ -80,6 +80,10 @@
       "title": "T-BAL-C",
       "subtitle": "BAL Covered Call"
     },
+    "rBADGER-TSRY": {
+      "title": "T-BADGER-C",
+      "subtitle": "BADGER Covered Call"
+    },
     "rAPE-THETA": {
       "title": "T-APE-C",
       "subtitle": "APE Covered Call"
