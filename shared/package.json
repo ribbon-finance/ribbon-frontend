@@ -48,10 +48,11 @@
     "web3-ledgerhq-frame-connector": "^1.0.1"
   },
   "scripts": {
+    "copyPng": "copyfiles -f src/assets/png/* lib/assets/png",
     "start": "tsc -w",
     "clean": "rm -rf ./lib",
     "prebuild": "yarn clean",
-    "build": "tsc --build \"./tsconfig.json\"",
+    "build": "tsc --build \"./tsconfig.json\" && yarn copyPng",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint --fix --ext .tsx,.ts .",
@@ -73,6 +74,7 @@
     "@typechain/ethers-v5": "^9.0.0",
     "@types/react-router-dom": "^5.1.7",
     "@types/styled-components": "^5.1.9",
+    "copyfiles": "^2.4.1",
     "typechain": "^7.0.0"
   }
 }
