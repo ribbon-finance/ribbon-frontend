@@ -17,12 +17,15 @@ export const hashCode: {
     "0x7c63a217c290a6c8fe3107c122460c39fce1cd883d513582bd6e1a7b3ad5e021",
   "rBADGER-TSRY":
     "0x0b2f29370321c3c56be651f077eaa3af49528b67d6a84e11657b7e60d2fd7c07",
+  "rSPELL-TSRY":
+    "0x43d708aa36cb2ad46d13ce5f1b32eca3d34215b0b96aca2e341c6d325d0b8a48",
 };
 
 export const minDeposit: { [vault in TreasuryVaultOptions]: BigNumber } = {
   "rPERP-TSRY": ethers.utils.parseEther("500"),
   "rBAL-TSRY": ethers.utils.parseEther("100"),
   "rBADGER-TSRY": ethers.utils.parseEther("100"),
+  "rSPELL-TSRY": ethers.utils.parseEther("3000"),
 };
 
 export const getVaultURI = (
