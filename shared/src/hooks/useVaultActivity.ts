@@ -82,6 +82,7 @@ export const vaultActivitiesGraphql = (version: VaultVersion, chain: Chains) =>
             {
               id
               _yield
+              netYield
               optionAllocation
               optionSeller
               paidAt
@@ -214,6 +215,7 @@ export const resolveVaultActivitiesSubgraphResponse = (responses: {
               ...paidOptionsData.map((item: any) => ({
                 ...item,
                 yield: BigNumber.from(item._yield),
+                netYield: BigNumber.from(item.netYield),
                 date: new Date(item.paidAt * 1000),
                 type: "optionYield",
               })),

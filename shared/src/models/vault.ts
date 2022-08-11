@@ -1,5 +1,7 @@
 import { BigNumber } from "ethers";
 import {
+  EarnVaultMap,
+  EarnVault as EarnVault2,
   SolanaVaultList,
   VaultList,
   VaultOptions,
@@ -21,9 +23,23 @@ export interface Vault {
   depositors: string[];
 }
 
+export interface EarnVault {
+  id: string;
+  name: string;
+  symbol: EarnVault;
+  numDepositors: number;
+  totalBalance: BigNumber;
+  totalNotionalVolume: BigNumber;
+  totalWithdrawalFee?: BigNumber; // v1
+  totalFeeCollected?: BigNumber; // v2
+  underlyingAsset: string;
+  underlyingSymbol: string;
+  depositors: string[];
+}
+
 export type VaultsSubgraphData = {
   [version in VaultVersion]: {
-    [option in VaultOptions]: Vault | undefined;
+    [option in VaultOptions]: Vault | EarnVault | undefined;
   };
 };
 
@@ -47,10 +63,27 @@ export interface VaultAccount {
   totalPendingDeposit: BigNumber;
 }
 
+export interface EarnVaultAccount {
+  id: string;
+  vault: EarnVault;
+  account: string;
+  updateCounter: number;
+  totalYieldEarned: BigNumber;
+  totalDeposits: BigNumber;
+  totalBalance: BigNumber;
+  totalStakedShares: BigNumber;
+  totalStakedBalance: BigNumber;
+  totalPendingDeposit: BigNumber;
+}
+
 export type VaultAccountsData = {
   [version in VaultVersion]: {
     [option in VaultOptions]: VaultAccount | undefined;
   };
+};
+
+export type EarnVaultAccountsData = {
+  [option in EarnVault2]: EarnVaultAccount | undefined;
 };
 
 export const defaultVaultAccountsData: VaultAccountsData = Object.fromEntries(
@@ -59,6 +92,11 @@ export const defaultVaultAccountsData: VaultAccountsData = Object.fromEntries(
     Object.fromEntries(VaultList.map((option) => [option, undefined])),
   ])
 ) as VaultAccountsData;
+
+export const defaultEarnVaultAccountsData: EarnVaultAccountsData =
+  Object.fromEntries(
+    EarnVaultMap.map((option) => [option, undefined])
+  ) as EarnVaultAccountsData;
 
 export interface VaultShortPosition {
   id: string;
@@ -116,6 +154,7 @@ export interface VaultOptionSold {
 export interface VaultOptionYield {
   id: string;
   _yield: BigNumber;
+  netYield: BigNumber;
   timestamp: number;
   paidAt: number;
   txhash: string;
@@ -193,6 +232,11 @@ export const defaultVaultActivitiesData: VaultActivitiesData =
       ),
     ])
   ) as VaultActivitiesData;
+
+export const defaultEarnVaultActivitiesData: VaultActivitiesData =
+  Object.fromEntries(
+    EarnVaultMap.map((option) => [option, [] as VaultActivity[]])
+  ) as unknown as VaultActivitiesData;
 
 export interface UnconnectedVaultData {
   deposits: BigNumber;

@@ -104,6 +104,11 @@ export const RetailVaultList = [...EVMVaultList, ...SolanaVaultList];
 
 export const TreasuryVaultList = ["rPERP-TSRY", "rBAL-TSRY"] as const;
 
+export const EarnVaultMap = [
+  "RibbonDiversifiedWeek1",
+  "RibbonDiversifiedWeek2",
+] as const;
+
 const AllVaultOptions = [
   ...EVMVaultList,
   ...TreasuryVaultList,
@@ -118,10 +123,6 @@ const PutThetaVault: VaultOptions[] = [
   "rUSDC-AVAX-P-THETA",
 ];
 
-export const EarnVaultMap = [
-  "RibbonDiversifiedWeek1",
-  "RibbonDiversifiedWeek2",
-] as const;
 export type EarnVault = typeof EarnVaultMap[number];
 export const SolanaAssets = ["SOL"];
 

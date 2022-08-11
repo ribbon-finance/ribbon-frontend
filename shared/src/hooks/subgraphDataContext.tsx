@@ -23,6 +23,8 @@ import {
   VaultTransaction,
   VaultsSubgraphData,
   defaultVaultsData,
+  EarnVaultAccountsData,
+  defaultEarnVaultAccountsData,
 } from "../models/vault";
 import useFetchGovernanceSubgraphData from "./useFetchGovernanceSubgraphData";
 import useFetchVaultSubgraphData from "./useFetchVaultSubgraphData";
@@ -30,6 +32,7 @@ import useFetchVaultSubgraphData from "./useFetchVaultSubgraphData";
 export type VaultSubgraphDataContextType = {
   vaults: VaultsSubgraphData;
   vaultAccounts: VaultAccountsData;
+  earnVaultAccounts: EarnVaultAccountsData;
   vaultActivities: VaultActivitiesData;
   balances: BalanceUpdate[];
   transactions: VaultTransaction[];
@@ -57,6 +60,7 @@ export const defaultVaultSubgraphData: VaultSubgraphDataContextType = {
   vaults: defaultVaultsData,
   vaultAccounts: defaultVaultAccountsData,
   vaultActivities: defaultVaultActivitiesData,
+  earnVaultAccounts: defaultEarnVaultAccountsData,
   balances: [],
   transactions: [],
   vaultPriceHistory: defaultV2VaultPriceHistoriesData,

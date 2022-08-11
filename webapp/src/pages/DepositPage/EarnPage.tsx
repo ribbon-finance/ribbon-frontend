@@ -227,6 +227,7 @@ const EarnPage = () => {
   }, [vaultAccount, vaultVersion]);
   const [roi, yieldColor] = useMemo(() => {
     const vaultAccount = vaultAccounts["rEARN"];
+    console.log(vaultAccount);
     if (
       !vaultAccount ||
       isPracticallyZero(vaultAccount.totalDeposits, decimals)

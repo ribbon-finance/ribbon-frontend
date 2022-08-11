@@ -216,7 +216,7 @@ const EarnVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
               <VaultSecondaryTextContainer>
                 {" "}
                 <VaultSecondaryText>
-                  ${formatBigNumber(activity._yield, decimals)}
+                  ${formatBigNumber(activity.netYield, decimals)}
                 </VaultSecondaryText>
                 <Separator />
                 <VaultSecondaryText>

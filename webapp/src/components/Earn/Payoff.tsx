@@ -6,7 +6,10 @@ import EarnChart from "./EarnChart";
 
 const ChartContainer = styled.div`
   height: 264px;
-  width: calc(100% + 30px);
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
 `;
 
 const STRIKEPRICE = 1000;
@@ -94,6 +97,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
       <BaseModalContentColumn marginTop={8}>
         <Title>PROFIT CALCULATOR</Title>
       </BaseModalContentColumn>
+
       <BaseModalContentColumn>
         <ChartContainer
           onClick={() => {
