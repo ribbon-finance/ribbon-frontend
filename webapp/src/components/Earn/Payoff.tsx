@@ -137,7 +137,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
         <SecondaryText
           fontSize={12}
           lineHeight={16}
-          color={colors.primaryText + "FA"}
+          color={colors.primaryText + "7A"}
         >
           ETH Spot Weekly % Change
         </SecondaryText>
@@ -145,7 +145,13 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
       <EarnModalContentExtra style={{ flex: 1 }}>
         <CalculationContainer>
           <CalculationColumn>
-            <SecondaryText fontSize={14}>Options Moneyness</SecondaryText>
+            <SecondaryText
+              color={colors.primaryText + "7A"}
+              fontWeight={500}
+              fontSize={14}
+            >
+              Options Moneyness
+            </SecondaryText>
             <div className="mr-auto">
               <TooltipExplanation
                 title="OPTIONS MONEYNESS"
@@ -163,7 +169,13 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
             </CalculationData>
           </CalculationColumn>
           <CalculationColumn>
-            <SecondaryText fontSize={14}>Max Yield (APY)</SecondaryText>
+            <SecondaryText
+              fontWeight={500}
+              fontSize={14}
+              color={"rgba(255, 255, 255, 0.48)"}
+            >
+              Max Yield (APY)
+            </SecondaryText>
             <div className="mr-auto">
               <TooltipExplanation
                 title="MAX YIELD"
