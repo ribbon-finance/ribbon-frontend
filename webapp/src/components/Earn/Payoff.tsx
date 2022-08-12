@@ -8,10 +8,12 @@ import {
 import { assetToFiat } from "shared/lib/utils/math";
 import EarnChart from "./EarnChart";
 import colors from "shared/lib/designSystem/colors";
-import ModalContentExtra from "shared/lib/components/Common/ModalContentExtra";
+import EarnModalContentExtra from "shared/lib/components/Common/EarnModalContentExtra";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
 const ChartContainer = styled.div`
   height: 264px;
-  margin: 0 -15px;
+  margin: 0;
   width: calc(100% + 30px);
 `;
 
@@ -67,16 +69,6 @@ const CalculationData = styled(Title)<{ variant?: "red" | "green" }>`
   }};
 `;
 
-const STRIKEPRICE = 1000;
-const PARTICIPATIONRATE = 0.03;
-const SPOTPRICE = 900;
-const ABSOLUTEPERFORMANCE =
-  ((Math.abs(SPOTPRICE - STRIKEPRICE) / STRIKEPRICE) * PARTICIPATIONRATE * 4 +
-    1) **
-    (365 / 28) -
-  1;
-
-console.log(ABSOLUTEPERFORMANCE);
 interface ProfitCalculatorProps {}
 
 const Payoff: React.FC<ProfitCalculatorProps> = () => {
@@ -91,6 +83,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
   const [, setChartHovering] = useState(false);
 
   const optionMoneyness = useMemo(() => {
+    console.log(hoverPercentage);
     return hoverPercentage
       ? Math.abs(hoverPercentage) > barrierPercentage
         ? 0
@@ -140,7 +133,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
           </ChartContainer>
         </RelativeContainer>
       </BaseModalContentColumn>
-      <BaseModalContentColumn marginTop={-32}>
+      <BaseModalContentColumn marginTop={-24}>
         <SecondaryText
           fontSize={12}
           lineHeight={16}
@@ -149,54 +142,43 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
           ETH Spot Weekly % Change
         </SecondaryText>
       </BaseModalContentColumn>
-      <ModalContentExtra style={{ flex: 1 }}>
+      <EarnModalContentExtra style={{ flex: 1 }}>
         <CalculationContainer>
           <CalculationColumn>
-            <SecondaryText fontSize={14} className="mr-auto">
-              Options Moneyness
-            </SecondaryText>
+            <SecondaryText fontSize={14}>Options Moneyness</SecondaryText>
+            <div className="mr-auto">
+              <TooltipExplanation
+                title="OPTIONS MONEYNESS"
+                explanation="I love money."
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HelpInfo containerRef={ref} {...triggerHandler}>
+                    i
+                  </HelpInfo>
+                )}
+              />
+            </div>
             <CalculationData variant={optionMoneyness === 0 ? "red" : "green"}>
               {optionMoneyness === 0 ? "" : "+"}
               {Math.round(optionMoneyness).toFixed(2)}%
             </CalculationData>
           </CalculationColumn>
           <CalculationColumn>
-            <SecondaryText fontSize={14} className="mr-auto">
-              Max Yield (APY)
-            </SecondaryText>
+            <SecondaryText fontSize={14}>Max Yield (APY)</SecondaryText>
+            <div className="mr-auto">
+              <TooltipExplanation
+                title="MAX YIELD"
+                explanation="I love yield."
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HelpInfo containerRef={ref} {...triggerHandler}>
+                    i
+                  </HelpInfo>
+                )}
+              />
+            </div>
             <CalculationData variant={"green"}>+29.12%</CalculationData>
           </CalculationColumn>
         </CalculationContainer>
-      </ModalContentExtra>
-      {/* <BaseModalContentColumn marginTop={8}>
-        {chartHovering ? (
-          <SecondaryText
-            fontSize={12}
-            lineHeight={16}
-            color={colors.primaryText}
-          >
-            Tap to update price field above
-          </SecondaryText>
-        ) : (
-          <StrikeLabel>STRIKE PRICE: {currency(1000).format()}</StrikeLabel>
-        )}
-      </BaseModalContentColumn> */}
-      {/* <ModalContentExtra style={{ flex: 1 }}>
-        <CalculationContainer>
-          <CalculationColumn>
-            <SecondaryText fontSize={14} className="mr-auto">
-              Options Moneyness
-            </SecondaryText>
-            <CalculationData></CalculationData>
-          </CalculationColumn>
-          <CalculationColumn>
-            <SecondaryText fontSize={14} className="mr-auto">
-              Max Yield (APY)
-            </SecondaryText>
-            <CalculationData> {MAXAPR}%</CalculationData>
-          </CalculationColumn>
-        </CalculationContainer>
-      </ModalContentExtra> */}
+      </EarnModalContentExtra>
     </>
   );
 };

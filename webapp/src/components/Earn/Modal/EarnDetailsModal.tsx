@@ -117,9 +117,24 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
           <BaseModalContentColumn marginTop={8}>
             <Title>{step}</Title>
           </BaseModalContentColumn>
-          <ModalColumnScroll marginTop={40} className="justify-content-center">
-            <Container>{modalContent}</Container>
-          </ModalColumnScroll>
+
+          {step === "payoff" ? (
+            <div style={{ marginLeft: -16, marginRight: -16 }}>
+              <ModalColumnScroll
+                marginTop={40}
+                className="justify-content-center"
+              >
+                <Container>{modalContent}</Container>
+              </ModalColumnScroll>
+            </div>
+          ) : (
+            <ModalColumnScroll
+              marginTop={40}
+              className="justify-content-center"
+            >
+              <Container>{modalContent}</Container>
+            </ModalColumnScroll>
+          )}
         </>
       </BasicModal>
     </>

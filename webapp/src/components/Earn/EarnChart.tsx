@@ -226,7 +226,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       ctx.globalCompositeOperation = "destination-over";
       const leftX = chart.chart.scales["x-axis-0"].left;
       const rightX = chart.chart.scales["x-axis-0"].right;
-      const topY = chart.chart.scales["y-axis-0"].top;
+      //const topY = chart.chart.scales["y-axis-0"].top;
       const bottomY = chart.chart.scales["y-axis-0"].bottom - 1;
       /**
        * Draw price point
