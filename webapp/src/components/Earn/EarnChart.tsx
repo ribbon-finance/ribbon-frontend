@@ -233,8 +233,6 @@ const EarnChart: React.FC<ProfitChartProps> = ({
        */
       const priceElement = meta.data[drawIndex];
       const priceX = priceElement._view.x;
-      console.log(priceElement._view.x);
-      console.log(priceElement);
       /**
        * Draw price text
        */
@@ -260,16 +258,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
         xPosition = rightX - padding - textLength / 2;
       }
 
-      let negativeXPosition = -priceX;
-
-      console.log("negativeXPosition" + negativeXPosition);
-      if (negativeXPosition + textLength / 2 > rightX) {
-        negativeXPosition = rightX - padding - textLength / 2;
-      }
-
-      console.log("xposition" + xPosition);
       ctx.fillText(text, xPosition, bottomY + 24);
-      ctx.fillText("-" + text, negativeXPosition, bottomY + 24);
 
       ctx.globalCompositeOperation = "source-over";
     },
