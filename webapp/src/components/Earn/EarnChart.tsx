@@ -19,7 +19,13 @@ interface ProfitChartProps {
   price: number;
   premium: number;
   isPut: boolean;
-  onHover: (price: number | undefined) => void;
+  onHoverPrice: (price: number | undefined) => void;
+  onHoverPercentage: (percentage: number | undefined) => void;
+  spotPrice: number;
+  strikePrice: number;
+  defaultPercentageDiff: string;
+  defaultMoneyness: (moneyness: number) => void;
+  barrierPercentage: number;
 }
 
 const EarnChart: React.FC<ProfitChartProps> = ({
@@ -27,7 +33,12 @@ const EarnChart: React.FC<ProfitChartProps> = ({
   price,
   premium,
   isPut,
-  onHover,
+  onHoverPrice,
+  onHoverPercentage,
+  spotPrice,
+  strikePrice,
+  defaultPercentageDiff,
+  defaultMoneyness,
 }) => {
   const [hoveredIndex, setIndex] = useState<number | undefined>(undefined);
 
@@ -36,7 +47,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
     var leftArray = [];
     var array = [];
     var rightArray = [];
-    for (let i = -28; i <= -8; i += 1) {
+    for (let i = -28; i < -8; i += 1) {
       leftArray.push(i);
     }
 
@@ -44,12 +55,11 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       array.push(i);
     }
 
-    for (let i = 8; i <= 28; i += 1) {
+    for (let i = 9; i <= 28; i += 1) {
       rightArray.push(i);
     }
 
-    // console.log([...leftArray, ...array, ...rightArray]);
-    return [...leftArray, ...array, ...rightArray];
+    return [...leftArray, -8.01, ...array, 8.01, ...rightArray];
   }, []);
 
   const otherRange = useMemo(() => {
@@ -62,18 +72,85 @@ const EarnChart: React.FC<ProfitChartProps> = ({
     }
 
     for (let i = -8; i <= 8; i += 1) {
-      array.push(4 + Math.abs(i / 8) * 10);
+      array.push(4 + Math.abs(i / 8) * 25.12);
     }
 
     for (let i = 8; i <= 28; i += 1) {
       rightArray.push(4);
     }
-
     // console.log([...leftArray, ...array, ...rightArray]);
     return [...leftArray, ...array, ...rightArray];
   }, []);
 
+  const getDefaultMoneyness = useMemo(() => {
+    defaultMoneyness(
+      otherRange[priceRange.indexOf(parseInt(defaultPercentageDiff))]
+    );
+  }, [defaultMoneyness, defaultPercentageDiff, priceRange, otherRange]);
   const drawPricePoint = useCallback(
+    (chart: any, price: number, drawIndex: number) => {
+      const ctx: CanvasRenderingContext2D = chart.chart.ctx;
+      // Get breakeven datasaet because of stability over every point
+      const datasetIndex = chart.chart.data.datasets.findIndex(
+        (dataset: any) => dataset.label === "green"
+      );
+      const meta = chart.chart.getDatasetMeta(datasetIndex);
+      // draw line behind dot
+      ctx.globalCompositeOperation = "destination-over";
+      const leftX = chart.chart.scales["x-axis-0"].left;
+      const rightX = chart.chart.scales["x-axis-0"].right;
+      const topY = chart.chart.scales["y-axis-0"].top;
+      const bottomY = chart.chart.scales["y-axis-0"].bottom - 1;
+      /**
+       * Draw price point
+       */
+      const priceElement = meta.data[drawIndex];
+      const priceX = priceElement._view.x;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(priceX, topY - 25);
+      ctx.lineTo(priceX, bottomY + 50);
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = colors.primaryText;
+      ctx.stroke();
+      ctx.restore();
+
+      /**
+       * Draw price text
+       */
+      ctx.fillStyle = Math.abs(price) > 8 ? `${colors.red}` : `${colors.green}`;
+      const fontSize = 12;
+      const fontStyle = "normal";
+      const fontFamily = "VCR, sans-serif";
+      ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      const padding = 8;
+
+      const text = `${drawIndex === 0 ? "<<< " : ""}${price.toFixed(2)}%${
+        drawIndex === meta.data.length - 1 ? " >>>" : ""
+      }`;
+      const textLength = ctx.measureText(text).width;
+
+      let xPosition = priceX;
+
+      if (xPosition - textLength / 2 < leftX) {
+        xPosition = leftX + padding + textLength / 2;
+      }
+
+      if (xPosition + textLength / 2 > rightX) {
+        xPosition = rightX - padding - textLength / 2;
+      }
+
+      ctx.fillText(text, xPosition, bottomY + 62);
+
+      ctx.globalCompositeOperation = "source-over";
+    },
+    []
+  );
+
+  const drawDefaultPricePoint = useCallback(
     (chart: any, price: number, drawIndex: number) => {
       const ctx: CanvasRenderingContext2D = chart.chart.ctx;
       // Get breakeven datasaet because of stability over every point
@@ -106,7 +183,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       /**
        * Draw price text
        */
-      ctx.fillStyle = "white";
+      ctx.fillStyle = Math.abs(price) > 8 ? `${colors.red}` : `${colors.green}`;
       const fontSize = 12;
       const fontStyle = "normal";
       const fontFamily = "VCR, sans-serif";
@@ -130,7 +207,69 @@ const EarnChart: React.FC<ProfitChartProps> = ({
         xPosition = rightX - padding - textLength / 2;
       }
 
-      ctx.fillText(text, xPosition, bottomY + 66);
+      ctx.fillText(text, xPosition, bottomY + 62);
+
+      ctx.globalCompositeOperation = "source-over";
+    },
+    []
+  );
+
+  const drawDefaultBarriers = useCallback(
+    (chart: any, price: number, drawIndex: number) => {
+      const ctx: CanvasRenderingContext2D = chart.chart.ctx;
+      // Get breakeven datasaet because of stability over every point
+      const datasetIndex = chart.chart.data.datasets.findIndex(
+        (dataset: any) => dataset.label === "green"
+      );
+      const meta = chart.chart.getDatasetMeta(datasetIndex);
+      // draw line behind dot
+      ctx.globalCompositeOperation = "destination-over";
+      const leftX = chart.chart.scales["x-axis-0"].left;
+      const rightX = chart.chart.scales["x-axis-0"].right;
+      const topY = chart.chart.scales["y-axis-0"].top;
+      const bottomY = chart.chart.scales["y-axis-0"].bottom - 1;
+      /**
+       * Draw price point
+       */
+      const priceElement = meta.data[drawIndex];
+      const priceX = priceElement._view.x;
+      console.log(priceElement._view.x);
+      console.log(priceElement);
+      /**
+       * Draw price text
+       */
+      ctx.fillStyle = "white";
+      const fontSize = 12;
+      const fontStyle = "normal";
+      const fontFamily = "VCR, sans-serif";
+      ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      const padding = 8;
+
+      const text = `${price.toFixed(2)}%`;
+      const textLength = ctx.measureText(text).width;
+
+      let xPosition = priceX;
+
+      if (xPosition - textLength / 2 < leftX) {
+        xPosition = leftX + padding + textLength / 2;
+      }
+
+      if (xPosition + textLength / 2 > rightX) {
+        xPosition = rightX - padding - textLength / 2;
+      }
+
+      let negativeXPosition = -priceX;
+
+      console.log("negativeXPosition" + negativeXPosition);
+      if (negativeXPosition + textLength / 2 > rightX) {
+        negativeXPosition = rightX - padding - textLength / 2;
+      }
+
+      console.log("xposition" + xPosition);
+      ctx.fillText(text, xPosition, bottomY + 24);
+      ctx.fillText("-" + text, negativeXPosition, bottomY + 24);
 
       ctx.globalCompositeOperation = "source-over";
     },
@@ -159,15 +298,17 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       },
       onHover: (_: any, elements: any) => {
         if (elements && elements.length) {
-          onHover(priceRange[elements[0]._index]);
+          onHoverPrice(otherRange[elements[0]._index]);
+          onHoverPercentage(priceRange[elements[0]._index]);
           setIndex(elements[0]._index);
           return;
         }
-        onHover(undefined);
+        onHoverPrice(undefined);
+        onHoverPercentage(undefined);
         setIndex(undefined);
       },
     };
-  }, [priceRange, onHover]);
+  }, [priceRange, otherRange, onHoverPrice, onHoverPercentage]);
 
   const getData = useCallback(
     (canvas: any): ChartData => {
@@ -181,70 +322,12 @@ const EarnChart: React.FC<ProfitChartProps> = ({
         datasets: [
           {
             label: "breakevenPoint",
-            data: [
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              14,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              14,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-            ],
+            data: priceRange.map((p) =>
+              !hoveredIndex && (p === 8 || p === -8) ? 29 : null
+            ),
             type: "line",
-            pointRadius: 8,
-            pointHoverRadius: 8,
+            pointRadius: 4,
+            pointHoverRadius: 4,
             backgroundColor: colors.primaryText,
           },
           {
@@ -270,8 +353,9 @@ const EarnChart: React.FC<ProfitChartProps> = ({
               }
             }),
             type: "line",
-            pointRadius: 0,
-            pointHoverRadius: 0,
+            pointRadius: 4,
+            pointHoverRadius: 4,
+            backgroundColor: colors.primaryText,
             borderColor: "#FFFFFF66",
             borderWidth: 1,
             lineTension: 0,
@@ -329,18 +413,40 @@ const EarnChart: React.FC<ProfitChartProps> = ({
 
               ctx.restore();
 
+              if (hoveredIndex === undefined) {
+                drawDefaultPricePoint(
+                  chart,
+                  priceRange[
+                    priceRange.indexOf(parseInt(defaultPercentageDiff))
+                  ],
+                  priceRange.indexOf(parseInt(defaultPercentageDiff))
+                );
+              }
+
               /**
                * Draw price point
                */
               if (hoveredIndex !== undefined) {
-                drawPricePoint(chart, otherRange[hoveredIndex], hoveredIndex);
+                drawPricePoint(chart, priceRange[hoveredIndex], hoveredIndex);
               }
+
+              drawDefaultBarriers(chart, 8, priceRange.indexOf(8));
+              drawDefaultBarriers(chart, -8, priceRange.indexOf(-8));
             },
           },
         ]}
       />
     );
-  }, [getData, options, hoveredIndex, otherRange, drawPricePoint]);
+  }, [
+    getData,
+    options,
+    hoveredIndex,
+    drawPricePoint,
+    drawDefaultPricePoint,
+    defaultPercentageDiff,
+    drawDefaultBarriers,
+    priceRange,
+  ]);
 
   return chart;
 };

@@ -77,17 +77,14 @@ const CirclesContainer = styled.div`
 
 const StyledEarnInnerRing = styled(EarnInnerRing)`
   animation: ${rotateClockwise} 60s linear infinite;
-  position: absolute;
 `;
 
 const StyledEarnMiddleRing = styled(EarnMiddleRing)`
   animation: ${rotateAnticlockwise} 60s linear infinite;
-  position: absolute;
 `;
 
 const StyledEarnOuterRing = styled(EarnOuterRing)`
   animation: ${rotateClockwise} 60s linear infinite;
-  position: absolute;
 `;
 
 const BalanceTitle = styled.div`
@@ -227,7 +224,6 @@ const EarnPage = () => {
   }, [vaultAccount, vaultVersion]);
   const [roi, yieldColor] = useMemo(() => {
     const vaultAccount = vaultAccounts["rEARN"];
-    console.log(vaultAccount);
     if (
       !vaultAccount ||
       isPracticallyZero(vaultAccount.totalDeposits, decimals)
@@ -268,9 +264,72 @@ const EarnPage = () => {
   return (
     <>
       <CirclesContainer>
-        <StyledEarnOuterRing />
-        <StyledEarnMiddleRing />
-        <StyledEarnInnerRing />
+        <motion.div
+          style={{ position: "absolute" }}
+          key={"outerCircle"}
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+          transition={{
+            type: "spring",
+            damping: 160,
+            mass: 160,
+            stiffness: 240,
+            delay: 0.45,
+          }}
+        >
+          <StyledEarnOuterRing />
+        </motion.div>
+        <motion.div
+          style={{ position: "absolute" }}
+          key={"middleCircle"}
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+          transition={{
+            type: "spring",
+            damping: 160,
+            mass: 160,
+            stiffness: 240,
+            delay: 0.3,
+          }}
+        >
+          <StyledEarnMiddleRing />
+        </motion.div>
+        <motion.div
+          style={{ position: "absolute" }}
+          key={"innerCircle"}
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+          transition={{
+            type: "spring",
+            damping: 160,
+            mass: 160,
+            stiffness: 240,
+            delay: 0.15,
+          }}
+        >
+          <StyledEarnInnerRing />
+        </motion.div>
       </CirclesContainer>
       <VaultContainer>
         {showVault.show ? (
