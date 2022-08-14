@@ -90,7 +90,7 @@ const links = {
     },
     {
       title: "DISCORD",
-      to: "http://discord.ribbon.finance",
+      to: "https://discord.com/invite/ribbon-finance",
       external: true,
     },
     {
