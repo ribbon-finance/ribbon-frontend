@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { getRange } from "shared/lib/utils/math";
 import { Title } from "shared/lib/designSystem";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
 const NavigationButton = styled.div<{
   disabled?: boolean;
   marginLeft?: string;
@@ -107,20 +108,25 @@ const Scroller: React.FC<ScrollerProps> = ({
   onPageClick,
   config: { showNavigationButton = true } = {},
 }) => {
+  const { width } = useScreenSize();
+
+  const showDesktopNavigator = useMemo(() => width > 700, [width]);
   return (
     <Container>
-      <NavigationButton
-        role="button"
-        disabled={page <= 1}
-        onClick={() => {
-          if (page <= 1) {
-            return;
-          }
-          onPageClick(page - 1);
-        }}
-      >
-        <i className="fas fa-arrow-left" />
-      </NavigationButton>
+      {showDesktopNavigator && (
+        <NavigationButton
+          role="button"
+          disabled={page <= 1}
+          onClick={() => {
+            if (page <= 1) {
+              return;
+            }
+            onPageClick(page - 1);
+          }}
+        >
+          <i className="fas fa-arrow-left" />
+        </NavigationButton>
+      )}
       <Words>
         {getRange(1, total, 1).map((item) => (
           <PaginationItem
@@ -140,19 +146,21 @@ const Scroller: React.FC<ScrollerProps> = ({
           </PaginationItem>
         ))}
       </Words>
-      <NavigationButton
-        role="button"
-        disabled={page >= total}
-        marginLeft="auto"
-        onClick={() => {
-          if (page >= total) {
-            return;
-          }
-          onPageClick(page + 1);
-        }}
-      >
-        <i className="fas fa-arrow-right" />
-      </NavigationButton>
+      {showDesktopNavigator && (
+        <NavigationButton
+          role="button"
+          disabled={page >= total}
+          marginLeft="auto"
+          onClick={() => {
+            if (page >= total) {
+              return;
+            }
+            onPageClick(page + 1);
+          }}
+        >
+          <i className="fas fa-arrow-right" />
+        </NavigationButton>
+      )}
     </Container>
   );
 };
