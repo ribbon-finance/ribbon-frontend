@@ -60,6 +60,8 @@ const colors = {
     rETH: "#EF4444",
     PERP: "#00BC9A",
     BAL: "#FFFFFF",
+    BADGER: "#F1A23F",
+    SPELL: "#5552FD",
     RBN: "#fc0a54",
     veRBN: "#fc0a54",
     LDO: "#00A3FF",

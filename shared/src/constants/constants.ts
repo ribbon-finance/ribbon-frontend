@@ -102,7 +102,12 @@ export const SolanaVaultList = ["rSOL-THETA"] as const;
 
 export const RetailVaultList = [...EVMVaultList, ...SolanaVaultList];
 
-export const TreasuryVaultList = ["rPERP-TSRY", "rBAL-TSRY"] as const;
+export const TreasuryVaultList = [
+  "rPERP-TSRY",
+  "rBAL-TSRY",
+  "rBADGER-TSRY",
+  "rSPELL-TSRY",
+] as const;
 
 const AllVaultOptions = [
   ...EVMVaultList,
@@ -258,6 +263,20 @@ export const GAS_LIMITS: {
       completeWithdraw: 300000,
     },
   },
+  "rBADGER-TSRY": {
+    v2: {
+      deposit: 380000,
+      withdrawInstantly: 130000,
+      completeWithdraw: 300000,
+    },
+  },
+  "rSPELL-TSRY": {
+    v2: {
+      deposit: 380000,
+      withdrawInstantly: 130000,
+      completeWithdraw: 300000,
+    },
+  },
   "rSOL-THETA": {
     v2: {
       deposit: 380000,
@@ -327,6 +346,7 @@ export const VaultLiquidityMiningMap: {
         "rstETH-THETA": v2deployment.mainnet.RibbonSTETHCoveredLiquidityGauge,
         "rETH-THETA": v2deployment.mainnet.RibbonETHCoveredCallLiquidityGauge,
         "rBTC-THETA": v2deployment.mainnet.RibbonWBTCCoveredCallLiquidityGauge,
+        "rrETH-THETA": v2deployment.mainnet.RibbonRETHCoveredCallLiquidityGauge,
       },
     };
 
@@ -467,6 +487,24 @@ export const VaultAddressMap: {
         v2: v2deployment.mainnet.RibbonTreasuryVaultBAL,
         chainId: CHAINID.ETH_MAINNET,
       },
+  "rBADGER-TSRY": isDevelopment()
+    ? {
+        v2: v2deployment.kovan.RibbonTreasuryVaultBADGER,
+        chainId: CHAINID.ETH_KOVAN,
+      }
+    : {
+        v2: v2deployment.mainnet.RibbonTreasuryVaultBADGER,
+        chainId: CHAINID.ETH_MAINNET,
+      },
+  "rSPELL-TSRY": isDevelopment()
+    ? {
+        v2: v2deployment.kovan.RibbonTreasuryVaultSPELL,
+        chainId: CHAINID.ETH_KOVAN,
+      }
+    : {
+        v2: v2deployment.mainnet.RibbonTreasuryVaultSPELL,
+        chainId: CHAINID.ETH_MAINNET,
+      },
   // FIXME: change with real addresses
   "rSOL-THETA": {
     v2: getSolanaAddresses().vaults["rSOL-THETA"],
@@ -507,6 +545,8 @@ export const VaultNamesList = [
   "T-USDC-P-AVAX",
   "T-PERP-C",
   "T-BAL-C",
+  "T-BADGER-C",
+  "T-SPELL-C",
   "T-SOL-C",
   "T-APE-C",
   "R-EARN",
@@ -525,6 +565,8 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-USDC-P-AVAX": "rUSDC-AVAX-P-THETA",
   "T-PERP-C": "rPERP-TSRY",
   "T-BAL-C": "rBAL-TSRY",
+  "T-BADGER-C": "rBADGER-TSRY",
+  "T-SPELL-C": "rSPELL-TSRY",
   "T-SOL-C": "rSOL-THETA",
   "T-APE-C": "rAPE-THETA",
   "R-EARN": "rEARN",
@@ -624,6 +666,10 @@ export const getAssets = (vault: VaultOptions): Assets => {
       return "PERP";
     case "rBAL-TSRY":
       return "BAL";
+    case "rBADGER-TSRY":
+      return "BADGER";
+    case "rSPELL-TSRY":
+      return "SPELL";
     case "rSOL-THETA":
       return "SOL";
     case "rAPE-THETA":
@@ -654,6 +700,10 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
       return "PERP";
     case "rBAL-TSRY":
       return "BAL";
+    case "rBADGER-TSRY":
+      return "BADGER";
+    case "rSPELL-TSRY":
+      return "SPELL";
     case "rSOL-THETA":
       return "SOL";
     case "rAPE-THETA":
@@ -689,6 +739,10 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
       return "PERP";
     case "rBAL-TSRY":
       return "BAL";
+    case "rBADGER-TSRY":
+      return "BADGER";
+    case "rSPELL-TSRY":
+      return "SPELL";
     case "rSOL-THETA":
       return "SOL";
     case "rAPE-THETA":
@@ -712,6 +766,8 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "ryvUSDC-ETH-P-THETA": ["USDC"],
     "rPERP-TSRY": ["PERP"],
     "rBAL-TSRY": ["BAL"],
+    "rBADGER-TSRY": ["BADGER"],
+    "rSPELL-TSRY": ["SPELL"],
     "rSOL-THETA": ["SOL"],
     "rAPE-THETA": ["APE"],
     rEARN: ["USDC"],
@@ -750,12 +806,16 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rsAVAX-THETA")))
   ),
   "rPERP-TSRY": BigNumber.from(100000000).mul(
-    // Cap still not decided
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rPERP-TSRY")))
   ),
   "rBAL-TSRY": BigNumber.from(100000000).mul(
-    // Cap still not decided
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rBAL-TSRY")))
+  ),
+  "rBADGER-TSRY": BigNumber.from(100000000).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rBADGER-TSRY")))
+  ),
+  "rSPELL-TSRY": BigNumber.from(1000000000).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rSPELL-TSRY")))
   ),
   // FIXME: change with real numbers
   "rSOL-THETA": BigNumber.from(100000000).mul(
@@ -852,6 +912,18 @@ export const VaultFees: {
     },
   },
   "rBAL-TSRY": {
+    v2: {
+      managementFee: "2",
+      performanceFee: "10",
+    },
+  },
+  "rBADGER-TSRY": {
+    v2: {
+      managementFee: "2",
+      performanceFee: "10",
+    },
+  },
+  "rSPELL-TSRY": {
     v2: {
       managementFee: "2",
       performanceFee: "10",
@@ -1038,6 +1110,8 @@ export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   sAVAX: "benqi-liquid-staked-avax",
   PERP: "perpetual-protocol",
   BAL: "balancer",
+  BADGER: "badger-dao",
+  SPELL: "spell-token",
   RBN: "ribbon-finance",
   veRBN: undefined,
   SOL: "solana",

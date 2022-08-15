@@ -23,6 +23,8 @@ export const AssetsList = [
   // Treasury
   "PERP",
   "BAL",
+  "BADGER",
+  "SPELL",
 ] as const;
 export type Assets = typeof AssetsList[number];
 
