@@ -261,13 +261,16 @@ const EarnPage = () => {
         )
       ) /
         parseFloat(formatUnits(vaultAccount.totalDeposits, decimals))) *
-      100,
+        100,
       roiColor,
     ];
   }, [vaultAccounts, decimals]);
 
   const pageOffset = useMemo(() => {
-    return (componentRefs.header?.offsetHeight || 0) + (componentRefs.footer?.offsetHeight || 0)
+    return (
+      (componentRefs.header?.offsetHeight || 0) +
+      (componentRefs.footer?.offsetHeight || 0)
+    );
   }, [componentRefs.header, componentRefs.footer]);
 
   /**
@@ -276,7 +279,6 @@ const EarnPage = () => {
   if (!vaultOption) {
     return <Redirect to="/" />;
   }
-
 
   return (
     <>

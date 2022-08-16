@@ -95,7 +95,7 @@ const LinksContainer = styled.div`
 
 const NavItem = styled.div.attrs({
   className: "d-flex align-items-center justify-content-center",
-}) <NavItemProps>`
+})<NavItemProps>`
   padding: 0px 16px;
   height: 100%;
   opacity: ${(props) => (props.isSelected ? "1" : "0.48")};
@@ -151,9 +151,12 @@ const Header = () => {
 
   useEffect(() => {
     if (headerRef.current) {
-      setComponentRefs((prev) => ({ ...prev, header: headerRef.current as HTMLDivElement }));
+      setComponentRefs((prev) => ({
+        ...prev,
+        header: headerRef.current as HTMLDivElement,
+      }));
     }
-  }, [headerRef, setComponentRefs])
+  }, [headerRef, setComponentRefs]);
 
   const renderLinkItem = (
     title: string,
