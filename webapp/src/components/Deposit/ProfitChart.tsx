@@ -197,7 +197,7 @@ const ProfitChart: React.FC<ProfitChartProps> = ({
   const getData = useCallback(
     (canvas: any): ChartData => {
       const ctx = canvas.getContext("2d");
-      const green = ctx.createLinearGradient(0, 130, 0, 148);
+      const green = ctx.createLinearGradient(0, 100, 0, 200);
       green.addColorStop(1, `${colors.green}05`);
       green.addColorStop(0, `${colors.green}14`);
       const red = ctx.createLinearGradient(0, 250, 0, 148);
@@ -257,12 +257,12 @@ const ProfitChart: React.FC<ProfitChartProps> = ({
                 : null
             ),
             type: "line",
-            pointRadius: 0,
-            pointHoverRadius: 0,
+            pointRadius: 3,
+            pointHoverRadius: 3,
             borderDash: undefined,
             borderWidth: 2,
             borderColor: `${colors.green}`,
-            fill: "-1",
+            // fill: "-1",
             backgroundColor: green,
             lineTension: 0,
           },

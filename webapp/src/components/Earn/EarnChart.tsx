@@ -1,11 +1,8 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { ChartOptions, ChartData } from "chart.js";
-// import Chart from "chart.js";
+import Chart, { ChartOptions, ChartData } from "chart.js";
 import { Line } from "react-chartjs-2";
-// import currency from "currency.js";
 
 import colors from "shared/lib/designSystem/colors";
-import Chart from "chart.js";
 
 /**
  * Strike: Strike price of the option
@@ -15,10 +12,6 @@ import Chart from "chart.js";
  * Expiry: Expiry of the option
  */
 interface ProfitChartProps {
-  strike: number;
-  price: number;
-  premium: number;
-  isPut: boolean;
   onHoverPrice: (price: number | undefined) => void;
   onHoverPercentage: (percentage: number | undefined) => void;
   spotPrice: number;
@@ -29,18 +22,12 @@ interface ProfitChartProps {
 }
 
 const EarnChart: React.FC<ProfitChartProps> = ({
-  strike,
-  price,
-  premium,
-  isPut,
   onHoverPrice,
   onHoverPercentage,
-  spotPrice,
-  strikePrice,
   defaultPercentageDiff,
   defaultMoneyness,
 }) => {
-  const [hoveredIndex, setIndex] = useState<number | undefined>(undefined);
+  const [hoveredIndex, setIndex] = useState<number>();
 
   // x axis
   const priceRange = useMemo(() => {
@@ -87,6 +74,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       otherRange[priceRange.indexOf(parseInt(defaultPercentageDiff))]
     );
   }, [defaultMoneyness, defaultPercentageDiff, priceRange, otherRange]);
+  
   const drawPricePoint = useCallback(
     (chart: any, price: number, drawIndex: number) => {
       const ctx: CanvasRenderingContext2D = chart.chart.ctx;
@@ -96,7 +84,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       );
       const meta = chart.chart.getDatasetMeta(datasetIndex);
       // draw line behind dot
-      ctx.globalCompositeOperation = "destination-over";
+      // ctx.globalCompositeOperation = "destination-over";
       const leftX = chart.chart.scales["x-axis-0"].left;
       const rightX = chart.chart.scales["x-axis-0"].right;
       const topY = chart.chart.scales["y-axis-0"].top;
@@ -208,8 +196,6 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       }
 
       ctx.fillText(text, xPosition, bottomY + 62);
-
-      ctx.globalCompositeOperation = "source-over";
     },
     []
   );
@@ -259,8 +245,6 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       }
 
       ctx.fillText(text, xPosition, bottomY + 24);
-
-      ctx.globalCompositeOperation = "source-over";
     },
     []
   );
@@ -302,8 +286,9 @@ const EarnChart: React.FC<ProfitChartProps> = ({
   const getData = useCallback(
     (canvas: any): ChartData => {
       const ctx = canvas.getContext("2d");
-      const green = ctx.createLinearGradient(0, 130, 0, 148);
-      green.addColorStop(1, `${colors.green}05`);
+      const green = ctx.createLinearGradient(0, 100, 0, 170);
+      green.addColorStop(1, `transparent`);
+      green.addColorStop(0.77, `${colors.green}05`);
       green.addColorStop(0, `${colors.green}14`);
 
       return {
@@ -329,9 +314,10 @@ const EarnChart: React.FC<ProfitChartProps> = ({
             borderDash: undefined,
             borderWidth: 2,
             borderColor: `${colors.green}`,
-            fill: "-1",
+            backgroundColor: green,
             lineTension: 0,
           },
+
           {
             label: "hoveredPoint",
             data: priceRange.map((_, index) => {
@@ -368,7 +354,6 @@ const EarnChart: React.FC<ProfitChartProps> = ({
               const ctx = chart.chart.ctx;
 
               // draw line behind dot
-              ctx.globalCompositeOperation = "destination-over";
               const leftX = chart.chart.scales["x-axis-0"].left;
               const rightX = chart.chart.scales["x-axis-0"].right;
               const topY = chart.chart.scales["y-axis-0"].top;
@@ -378,6 +363,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
                * Draw borders
                */
               ctx.save();
+              ctx.globalCompositeOperation = "destination-over";
               ctx.beginPath();
               ctx.moveTo(leftX, topY - 25);
               ctx.lineTo(rightX, topY - 25);

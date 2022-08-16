@@ -116,10 +116,6 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
             onMouseLeave={() => setChartHovering(false)}
           >
             <EarnChart
-              strike={1000}
-              price={hoverPrice ? hoverPrice : input ? parseFloat(input) : 100!}
-              premium={parseFloat(assetToFiat(1000, 100!, 9)) / 1000}
-              isPut={true}
               onHoverPrice={setHoverPrice}
               onHoverPercentage={setHoverPercentage}
               defaultMoneyness={setDefaultMoneyness}
