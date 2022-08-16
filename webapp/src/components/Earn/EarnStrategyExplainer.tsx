@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
 import colors from "shared/lib/designSystem/colors";
@@ -74,12 +80,15 @@ const EarnStrategyExplainer: React.FC = () => {
   const [, setShowEarnVault] = useGlobalState("showEarnVault");
   const [step, setStep] = useState<ExplanationStep>(ExplanationStepList[0]);
 
-  const setShowOnboardingCallback = useCallback(
-    (e) => {
-      setShowEarnVault((prev) => ({ ...prev, show: true }));
-    },
-    [setShowEarnVault]
-  );
+  const setShowOnboardingCallback = useCallback(() => {
+    setShowEarnVault((prev) => ({ ...prev, show: true }));
+    localStorage.setItem("skipEARNExplanation", "true");
+  }, [setShowEarnVault]);
+
+  useEffect(() => {
+    const skip = Boolean(localStorage.getItem("skipEARNExplanation"));
+    if (skip) setShowOnboardingCallback();
+  }, [setShowOnboardingCallback]);
 
   const renderTitle = useCallback((s: ExplanationStep) => {
     switch (s) {
@@ -114,9 +123,7 @@ const EarnStrategyExplainer: React.FC = () => {
           return (
             <SkipButton
               role="button"
-              onClick={(e) => {
-                setShowOnboardingCallback(e);
-              }}
+              onClick={() => setShowOnboardingCallback()}
             >
               Skip
             </SkipButton>
@@ -126,9 +133,7 @@ const EarnStrategyExplainer: React.FC = () => {
             <SkipButton
               isLast={true}
               role="button"
-              onClick={(e) => {
-                setShowOnboardingCallback(e);
-              }}
+              onClick={() => setShowOnboardingCallback()}
             >
               Open Vault
             </SkipButton>
@@ -148,9 +153,11 @@ const EarnStrategyExplainer: React.FC = () => {
             key={step}
             initial={{
               opacity: 0,
+              translateY: -20,
             }}
             animate={{
               opacity: 1,
+              translateY: 0,
             }}
             exit={{
               opacity: 0,
