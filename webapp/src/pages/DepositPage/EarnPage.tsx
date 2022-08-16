@@ -31,6 +31,7 @@ import {
   EarnMiddleRing,
   EarnOuterRing,
 } from "shared/lib/assets/icons/icons";
+import sizes from "shared/lib/designSystem/sizes";
 const { formatUnits } = ethers.utils;
 
 const rotateClockwise = keyframes`
@@ -63,14 +64,12 @@ const ProductAssetLogoContainer = styled.div<{ color: string }>`
   box-shadow: 0px 0px 0px 2px ${colors.background.two};
 `;
 
-const CirclesContainer = styled.div`
+const CirclesContainer = styled.div<{ offset: number }>`
   position: absolute;
-  overflow: hidden;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  width: 100%;
+  height: calc(100% - ${({ offset }) => offset}px);
   display: flex;
+  overflow: hidden;
   align-items: center;
   justify-content: center;
 `;
@@ -78,16 +77,22 @@ const CirclesContainer = styled.div`
 const StyledEarnInnerRing = styled(EarnInnerRing)`
   animation: ${rotateClockwise} 60s linear infinite;
   position: absolute;
+  height: 100%;
 `;
 
 const StyledEarnMiddleRing = styled(EarnMiddleRing)`
   animation: ${rotateAnticlockwise} 60s linear infinite;
   position: absolute;
+  height: 100%;
 `;
 
 const StyledEarnOuterRing = styled(EarnOuterRing)`
   animation: ${rotateClockwise} 60s linear infinite;
   position: absolute;
+
+  @media (max-width: ${sizes.md}px) {
+    height: 100%;
+  }
 `;
 
 const BalanceTitle = styled.div`
@@ -99,14 +104,15 @@ const BalanceTitle = styled.div`
   color: ${colors.primaryText}7A;
 `;
 
-const VaultContainer = styled.div`
+const VaultContainer = styled.div<{ offset: number }>`
   display: flex;
   text-align: center;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: 85vh;
+  margin: auto;
   overflow: hidden;
+  height: calc(100vh - ${({ offset }) => offset}px);
 `;
 
 const MainContainer = styled.div`
@@ -165,6 +171,8 @@ const EarnPage = () => {
   const [showVault] = useGlobalState("showEarnVault");
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [componentRefs] = useGlobalState("componentRefs");
+
   // const { status, deposits, vaultLimit } = useVaultData(
   //   vaultOption || VaultList[0]
   // );
@@ -253,10 +261,15 @@ const EarnPage = () => {
         )
       ) /
         parseFloat(formatUnits(vaultAccount.totalDeposits, decimals))) *
-        100,
+      100,
       roiColor,
     ];
   }, [vaultAccounts, decimals]);
+
+  const pageOffset = useMemo(() => {
+    return (componentRefs.header?.offsetHeight || 0) + (componentRefs.footer?.offsetHeight || 0)
+  }, [componentRefs.header, componentRefs.footer]);
+
   /**
    * Redirect to homepage if no clear vault is chosen
    */
@@ -264,14 +277,15 @@ const EarnPage = () => {
     return <Redirect to="/" />;
   }
 
+
   return (
     <>
-      <CirclesContainer>
+      <CirclesContainer offset={pageOffset}>
         <StyledEarnOuterRing />
         <StyledEarnMiddleRing />
         <StyledEarnInnerRing />
       </CirclesContainer>
-      <VaultContainer>
+      <VaultContainer offset={pageOffset}>
         {showVault.show ? (
           <AnimatePresence exitBeforeEnter initial={true}>
             <motion.div

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 
 import sizes from "shared/lib/designSystem/sizes";
@@ -8,6 +8,7 @@ import useVaultOption from "../../hooks/useVaultOption";
 import AccountStatus from "../Wallet/AccountStatus";
 import DesktopFooter from "./DesktopFooter";
 import { useState } from "react";
+import { useGlobalState } from "shared/lib/store/store";
 
 const FooterContainer = styled.div<{
   screenHeight: number;
@@ -29,9 +30,8 @@ const FooterContainer = styled.div<{
 
   ${(props) => `
     position: sticky;
-    top: calc(${props.screenHeight ? `${props.screenHeight}px` : `100%`} - ${
-    theme.footer.desktop.height
-  }px);
+    top: calc(${props.screenHeight ? `${props.screenHeight}px` : `100%`} - ${theme.footer.desktop.height
+    }px);
   `}
 
   @media (max-width: ${sizes.md}px) {
@@ -39,9 +39,9 @@ const FooterContainer = styled.div<{
     top: unset;
     bottom: 0px;
     height: ${(props) =>
-      props.showVaultPosition
-        ? theme.footer.mobile.heightWithPosition
-        : theme.footer.mobile.height}px;
+    props.showVaultPosition
+      ? theme.footer.mobile.heightWithPosition
+      : theme.footer.mobile.height}px;
     z-index: 5;
   }
 `;
@@ -49,9 +49,9 @@ const FooterContainer = styled.div<{
 const MobileFooterOffsetContainer = styled.div<{ showVaultPosition: boolean }>`
   @media (max-width: ${sizes.md}px) {
     height: ${(props) =>
-      props.showVaultPosition
-        ? theme.footer.mobile.heightWithPosition
-        : theme.footer.mobile.height}px;
+    props.showVaultPosition
+      ? theme.footer.mobile.heightWithPosition
+      : theme.footer.mobile.height}px;
   }
 `;
 
@@ -59,10 +59,19 @@ const Footer = () => {
   const { height: screenHeight } = useScreenSize();
   const { vaultOption, vaultVersion } = useVaultOption();
   const [showVaultPosition, setShowVaultPosition] = useState(false);
+  const footerRef = useRef<HTMLDivElement>(null);
+  const [, setComponentRefs] = useGlobalState("componentRefs");
+
+  useEffect(() => {
+    if (footerRef.current) {
+      setComponentRefs((prev) => ({ ...prev, footer: footerRef.current as HTMLDivElement }));
+    }
+  }, [footerRef, setComponentRefs])
 
   return (
     <>
       <FooterContainer
+        ref={footerRef}
         screenHeight={screenHeight}
         showVaultPosition={showVaultPosition}
       >

@@ -29,6 +29,10 @@ interface GlobalStore {
     show: boolean;
   };
   notificationLastReadTimestamp?: number;
+  componentRefs: {
+    header: HTMLDivElement | undefined;
+    footer: HTMLDivElement | undefined;
+  };
 }
 
 export const initialState: GlobalStore = {
@@ -53,6 +57,10 @@ export const initialState: GlobalStore = {
     show: false,
   },
   notificationLastReadTimestamp: undefined,
+  componentRefs: {
+    header: undefined,
+    footer: undefined,
+  },
 };
 
 export const { useGlobalState } = createGlobalState(initialState);
