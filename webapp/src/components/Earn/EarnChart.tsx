@@ -74,7 +74,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       otherRange[priceRange.indexOf(parseInt(defaultPercentageDiff))]
     );
   }, [defaultMoneyness, defaultPercentageDiff, priceRange, otherRange]);
-  
+
   const drawPricePoint = useCallback(
     (chart: any, price: number, drawIndex: number) => {
       const ctx: CanvasRenderingContext2D = chart.chart.ctx;

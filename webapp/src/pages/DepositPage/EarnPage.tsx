@@ -161,6 +161,7 @@ const EarnPage = () => {
   const { price: ETHPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: "WETH",
   });
+
   const airtableValues = useCallback(async () => {
     await getAuctionSchedule().then((val) => {
       const values = val[0];
