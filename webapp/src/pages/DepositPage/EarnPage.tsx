@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled, { keyframes } from "styled-components";
@@ -31,6 +31,11 @@ import {
   EarnMiddleRing,
   EarnOuterRing,
 } from "shared/lib/assets/icons/icons";
+
+import { getAuctionSchedule } from "shared/lib/hooks/useAirtable";
+import { couldStartTrivia, isConstructorDeclaration } from "typescript";
+import useAssetPrice from "shared/lib/hooks/useAssetPrice";
+import { calculateEarlyUnlockPenaltyPercentage } from "shared/lib/utils/governanceMath";
 const { formatUnits } = ethers.utils;
 
 const rotateClockwise = keyframes`
@@ -152,7 +157,37 @@ const StyledActionButton = styled(ActionButton)`
 const EarnPage = () => {
   const { vaultOption, vaultVersion } = useVaultOption();
   const { active, account, chainId } = useWeb3Wallet();
+  const [expectedYield, setExpectedYield] = useState<number>(0);
+  const { price: ETHPrice, loading: assetPriceLoading } = useAssetPrice({
+    asset: "WETH",
+  });
+  const airtableValues = useCallback(async () => {
+    await getAuctionSchedule().then((val) => {
+      const values = val[0];
+      setExpectedYield(
+        calculateExpectedYield(
+          values.strikePrice,
+          values.baseYield,
+          values.maxYield
+        )
+      );
+    });
+  }, [ETHPrice]);
 
+  useEffect(() => {
+    airtableValues();
+  }, [airtableValues]);
+
+  const calculateExpectedYield = (
+    strikePrice: number,
+    baseYield: number,
+    maxYield: number
+  ) => {
+    const percentage = (Math.abs(ETHPrice - strikePrice) / strikePrice) * 100;
+    return percentage > 8
+      ? baseYield
+      : baseYield + (maxYield - baseYield) * (percentage / 8);
+  };
   useRedirectOnWrongChain(vaultOption, chainId);
   usePullUp();
   let color;
@@ -178,28 +213,6 @@ const EarnPage = () => {
   } = useV2VaultData(vaultOption || VaultList[0]);
   const isLoading = status === "loading" || loading;
   useRedirectOnSwitchChain(getChainByVaultOption(vaultOption as VaultOptions));
-  // const isLoading = status === "loading" || loading;
-  // const [totalDepositStr, depositLimitStr] = useMemo(() => {
-  //   switch (vaultVersion) {
-  //     case "v1":
-  //       return [
-  //         parseFloat(
-  //           formatSignificantDecimals(formatUnits(deposits, decimals), 2)
-  //         ),
-  //         parseFloat(
-  //           formatSignificantDecimals(formatUnits(vaultLimit, decimals))
-  //         ),
-  //       ];
-  //     case "earn":
-  //     case "v2":
-  //       return [
-  //         parseFloat(
-  //           formatSignificantDecimals(formatUnits(totalBalance, decimals), 2)
-  //         ),
-  //         parseFloat(formatSignificantDecimals(formatUnits(cap, decimals))),
-  //       ];
-  //   }
-  // }, [cap, decimals, deposits, totalBalance, vaultLimit, vaultVersion]);
 
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
 
@@ -254,6 +267,55 @@ const EarnPage = () => {
       roiColor,
     ];
   }, [vaultAccounts, decimals]);
+
+  // const [investedInStrategy] = useMemo(() => {
+  //   let totalBalance = BigNumber.from(0);
+  //   let totalPendingDeposit = BigNumber.from(0);
+  //   for (const earnVault of EarnVaultList) {
+  //     const vaultAccount = vaultAccounts[earnVault];
+  //     console.log(vaultAccount);
+  //     if (!vaultAccount) {
+  //     } else {
+  //       totalBalance = totalBalance.add(vaultAccount.totalBalance);
+  //       totalPendingDeposit = totalPendingDeposit.add(
+  //         vaultAccounts[earnVault]!.totalPendingDeposit
+  //       );
+  //     }
+  //   }
+
+  //   return [totalBalance.sub(totalPendingDeposit)];
+  // }, [vaultAccounts]);
+
+  // const [roi, yieldColor] = useMemo(() => {
+  //   let totalBalance = BigNumber.from(0);
+  //   let totalDeposits = BigNumber.from(0);
+  //   if (isPracticallyZero(totalDeposits, decimals)) {
+  //     return [0, colors.green];
+  //   }
+  //   for (const earnVault of EarnVaultList) {
+  //     const vaultAccount = vaultAccounts[earnVault];
+  //     if (!vaultAccount) {
+  //     } else {
+  //       totalBalance = totalBalance.add(vaultAccount.totalBalance);
+  //       totalDeposits = totalDeposits.add(
+  //         vaultAccounts[earnVault]!.totalDeposits
+  //       );
+  //     }
+  //   }
+
+  //   const roiTemp =
+  //     (parseFloat(formatUnits(totalBalance.sub(totalDeposits), decimals)) /
+  //       parseFloat(formatUnits(totalDeposits, decimals))) *
+  //     100;
+
+  //   const roiColor = roiTemp >= 0 ? colors.green : colors.red;
+  //   return [
+  //     (parseFloat(formatUnits(totalBalance.sub(totalDeposits), decimals)) /
+  //       parseFloat(formatUnits(totalDeposits, decimals))) *
+  //       100,
+  //     roiColor,
+  //   ];
+  // }, [vaultAccounts, decimals]);
   /**
    * Redirect to homepage if no clear vault is chosen
    */
@@ -417,7 +479,7 @@ const EarnPage = () => {
                 ease: "easeInOut",
               }}
             >
-              <EarnStrategyExplainer />
+              <EarnStrategyExplainer expectedYield={expectedYield} />
             </motion.div>
           </AnimatePresence>
         )}

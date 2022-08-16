@@ -107,7 +107,6 @@ export const resolveVaultAccountsSubgraphResponse = (responses: {
 
 export const useAllVaultAccounts = () => {
   const contextData = useContext(SubgraphDataContext);
-
   return {
     data: contextData.vaultSubgraphData.vaultAccounts,
     loading: contextData.vaultSubgraphData.loading,
@@ -118,120 +117,6 @@ const useVaultAccounts = (variant: VaultVersion | "all") => {
   const contextData = useContext(SubgraphDataContext);
 
   switch (variant) {
-    // case "earn":
-    //   // console.log(
-    //   //   Object.fromEntries(
-    //   //     EarnVaultMap.map((vault) => [
-    //   //       vault,
-    //   //       VaultVersionList.reduce((acc) => {
-    //   //         const currentVersionVaultAccount =
-    //   //           contextData.vaultSubgraphData.earnVaultAccounts[vault];
-
-    //   //         if (!acc) {
-    //   //           return currentVersionVaultAccount;
-    //   //         }
-
-    //   //         if (!currentVersionVaultAccount) {
-    //   //           return acc;
-    //   //         }
-
-    //   //         return {
-    //   //           ...acc,
-    //   //           totalDeposits: acc.totalDeposits.add(
-    //   //             currentVersionVaultAccount.totalDeposits
-    //   //           ),
-    //   //           totalYieldEarned: acc.totalYieldEarned.add(
-    //   //             currentVersionVaultAccount.totalYieldEarned
-    //   //           ),
-    //   //           totalBalance: acc.totalBalance.add(
-    //   //             currentVersionVaultAccount.totalBalance
-    //   //           ),
-    //   //           totalStakedShares: acc.totalStakedShares.add(
-    //   //             currentVersionVaultAccount.totalStakedShares
-    //   //           ),
-    //   //           totalStakedBalance: acc.totalStakedBalance.add(
-    //   //             currentVersionVaultAccount.totalStakedBalance
-    //   //           ),
-    //   //         };
-    //   //       }, undefined as EarnVaultAccount | undefined),
-    //   //     ])
-    //   //   )
-    //   // );
-    //   return {
-    //     // earnVaultAccounts: Object.fromEntries(
-    //     //   EarnVaultMap.map((vault) => [
-    //     //     vault,
-    //     //     VaultVersionList.reduce((acc, version) => {
-    //     //       const currentVersionVaultAccount =
-    //     //         contextData.vaultSubgraphData.earnVaultAccounts[vault];
-
-    //     //       if (!acc) {
-    //     //         return currentVersionVaultAccount;
-    //     //       }
-
-    //     //       if (!currentVersionVaultAccount) {
-    //     //         return acc;
-    //     //       }
-
-    //     //       return {
-    //     //         ...acc,
-    //     //         totalDeposits: acc.totalDeposits.add(
-    //     //           currentVersionVaultAccount.totalDeposits
-    //     //         ),
-    //     //         totalYieldEarned: acc.totalYieldEarned.add(
-    //     //           currentVersionVaultAccount.totalYieldEarned
-    //     //         ),
-    //     //         totalBalance: acc.totalBalance.add(
-    //     //           currentVersionVaultAccount.totalBalance
-    //     //         ),
-    //     //         totalStakedShares: acc.totalStakedShares.add(
-    //     //           currentVersionVaultAccount.totalStakedShares
-    //     //         ),
-    //     //         totalStakedBalance: acc.totalStakedBalance.add(
-    //     //           currentVersionVaultAccount.totalStakedBalance
-    //     //         ),
-    //     //       };
-    //     //     }, undefined as EarnVaultAccount | undefined),
-    //     //   ])
-    //     // ),
-    //     vaultAccounts: Object.fromEntries(
-    //       VaultList.map((vault) => [
-    //         vault,
-    //         VaultVersionList.reduce((acc, version) => {
-    //           const currentVersionVaultAccount =
-    //             contextData.vaultSubgraphData.vaultAccounts[version][vault];
-
-    //           if (!acc) {
-    //             return currentVersionVaultAccount;
-    //           }
-
-    //           if (!currentVersionVaultAccount) {
-    //             return acc;
-    //           }
-
-    //           return {
-    //             ...acc,
-    //             totalDeposits: acc.totalDeposits.add(
-    //               currentVersionVaultAccount.totalDeposits
-    //             ),
-    //             totalYieldEarned: acc.totalYieldEarned.add(
-    //               currentVersionVaultAccount.totalYieldEarned
-    //             ),
-    //             totalBalance: acc.totalBalance.add(
-    //               currentVersionVaultAccount.totalBalance
-    //             ),
-    //             totalStakedShares: acc.totalStakedShares.add(
-    //               currentVersionVaultAccount.totalStakedShares
-    //             ),
-    //             totalStakedBalance: acc.totalStakedBalance.add(
-    //               currentVersionVaultAccount.totalStakedBalance
-    //             ),
-    //           };
-    //         }, undefined as VaultAccount | undefined),
-    //       ])
-    //     ),
-    //     loading: false,
-    //   };
     case "all":
       return {
         vaultAccounts: Object.fromEntries(

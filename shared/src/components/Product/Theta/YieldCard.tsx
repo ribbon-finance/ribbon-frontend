@@ -420,7 +420,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const { prices } = useAssetsPrice();
   const { account } = useWeb3Wallet();
   const loadingText = useLoadingText();
-
+  
   const baseAPY = useMemo(() => {
     if (!lg5Data) {
       return 0;

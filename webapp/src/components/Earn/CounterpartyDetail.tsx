@@ -66,7 +66,7 @@ const WalletContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 311px;
+  width: 100%;
   background: ${colors.background.four};
   border-radius: 8px;
   margin-top: 16px;

@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import {
-  EarnVaultMap,
+  EarnVaultList,
   EarnVault as EarnVault2,
   SolanaVaultList,
   VaultList,
@@ -23,23 +23,9 @@ export interface Vault {
   depositors: string[];
 }
 
-export interface EarnVault {
-  id: string;
-  name: string;
-  symbol: EarnVault;
-  numDepositors: number;
-  totalBalance: BigNumber;
-  totalNotionalVolume: BigNumber;
-  totalWithdrawalFee?: BigNumber; // v1
-  totalFeeCollected?: BigNumber; // v2
-  underlyingAsset: string;
-  underlyingSymbol: string;
-  depositors: string[];
-}
-
 export type VaultsSubgraphData = {
   [version in VaultVersion]: {
-    [option in VaultOptions]: Vault | EarnVault | undefined;
+    [option in VaultOptions]: Vault | undefined;
   };
 };
 
@@ -63,27 +49,10 @@ export interface VaultAccount {
   totalPendingDeposit: BigNumber;
 }
 
-export interface EarnVaultAccount {
-  id: string;
-  vault: EarnVault;
-  account: string;
-  updateCounter: number;
-  totalYieldEarned: BigNumber;
-  totalDeposits: BigNumber;
-  totalBalance: BigNumber;
-  totalStakedShares: BigNumber;
-  totalStakedBalance: BigNumber;
-  totalPendingDeposit: BigNumber;
-}
-
 export type VaultAccountsData = {
   [version in VaultVersion]: {
     [option in VaultOptions]: VaultAccount | undefined;
   };
-};
-
-export type EarnVaultAccountsData = {
-  [option in EarnVault2]: EarnVaultAccount | undefined;
 };
 
 export const defaultVaultAccountsData: VaultAccountsData = Object.fromEntries(
@@ -92,11 +61,6 @@ export const defaultVaultAccountsData: VaultAccountsData = Object.fromEntries(
     Object.fromEntries(VaultList.map((option) => [option, undefined])),
   ])
 ) as VaultAccountsData;
-
-export const defaultEarnVaultAccountsData: EarnVaultAccountsData =
-  Object.fromEntries(
-    EarnVaultMap.map((option) => [option, undefined])
-  ) as EarnVaultAccountsData;
 
 export interface VaultShortPosition {
   id: string;
@@ -235,7 +199,7 @@ export const defaultVaultActivitiesData: VaultActivitiesData =
 
 export const defaultEarnVaultActivitiesData: VaultActivitiesData =
   Object.fromEntries(
-    EarnVaultMap.map((option) => [option, [] as VaultActivity[]])
+    EarnVaultList.map((option) => [option, [] as VaultActivity[]])
   ) as unknown as VaultActivitiesData;
 
 export interface UnconnectedVaultData {

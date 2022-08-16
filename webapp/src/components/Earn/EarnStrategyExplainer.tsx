@@ -69,7 +69,12 @@ const ExplanationStepList = ["step1", "step2", "step3"] as const;
 
 type ExplanationStep = typeof ExplanationStepList[number];
 
-const EarnStrategyExplainer: React.FC = () => {
+interface EarnStrategyExplainerProps {
+  expectedYield: number;
+}
+const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
+  expectedYield,
+}) => {
   const containerRef = useRef(null);
   const [, setShowEarnVault] = useGlobalState("showEarnVault");
   const [step, setStep] = useState<ExplanationStep>(ExplanationStepList[0]);
@@ -90,21 +95,31 @@ const EarnStrategyExplainer: React.FC = () => {
     }
   }, []);
 
-  const renderDescription = useCallback((s: ExplanationStep) => {
-    switch (s) {
-      case "step1":
-        return <>Earn 6.75% yield with full principal protection</>;
-      case "step2":
-        return <>Capitalise on intra-week ETH movements in either direction</>;
-      case "step3":
-        return (
-          <>
-            Set it and forget it - deposit and start earning a base APY of 4%
-            with full principal protection
-          </>
-        );
-    }
-  }, []);
+  const renderDescription = useCallback(
+    (s: ExplanationStep) => {
+      switch (s) {
+        case "step1":
+          return (
+            <>
+              Earn {expectedYield.toFixed(2)}% yield with full principal
+              protection
+            </>
+          );
+        case "step2":
+          return (
+            <>Capitalise on intra-week ETH movements in either direction</>
+          );
+        case "step3":
+          return (
+            <>
+              Set it and forget it - deposit and start earning a base APY of 4%
+              with full principal protection
+            </>
+          );
+      }
+    },
+    [expectedYield]
+  );
 
   const renderButton = useCallback(
     (s: ExplanationStep) => {
