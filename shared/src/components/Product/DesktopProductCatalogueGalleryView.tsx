@@ -37,6 +37,7 @@ import {
 import YourPosition from "../Vault/YourPosition";
 import { useWeb3React } from "@web3-react/core";
 import { useChain } from "../../hooks/chainContext";
+import { useAirtable } from "../../hooks/useAirtable";
 
 const FullscreenContainer = styled(Container)<{ height: number }>`
   padding-top: 24px;
@@ -134,7 +135,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
   const [currentVault, setCurrentVault] = useState<VaultOptions | undefined>(
     filteredProducts[page - 1]
   );
-
+  const { expectedYield } = useAirtable();
   // Prevent page overflow
   useEffect(() => {
     if (filteredProducts.length <= 0) {
@@ -152,7 +153,11 @@ const DesktopProductCatalogueGalleryView: React.FC<
 
   const renderDescription = useCallback(() => {
     if (currentVault === "rEARN") {
-      return "Earn up to 15% APY with a fully principal protected vault strategy";
+      return (
+        "Earn up to " +
+        (expectedYield * 100).toFixed(2) +
+        "% APY with a fully principal protected vault strategy"
+      );
     } else {
       const asset = getAssets(currentVault!);
       if (isPutVault(currentVault!)) {
@@ -161,7 +166,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
         return t("shared:ProductCopies:Call:description", { asset });
       }
     }
-  }, [t, currentVault]);
+  }, [t, expectedYield, currentVault]);
   const vaultInfo = useMemo(() => {
     if (!currentVault) {
       return (

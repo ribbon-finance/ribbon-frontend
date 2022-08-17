@@ -56,6 +56,7 @@ import { RibbonVaultPauser } from "../../../codegen";
 import useVaultPauser from "../../../hooks/useV2VaultPauserContract";
 import { BigNumber } from "ethers";
 import EarnCard from "../../Common/EarnCard";
+import { useAirtable } from "../../../hooks/useAirtable";
 
 const { formatUnits } = ethers.utils;
 
@@ -420,7 +421,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const { prices } = useAssetsPrice();
   const { account } = useWeb3Wallet();
   const loadingText = useLoadingText();
-
+  const { expectedYield } = useAirtable();
   const baseAPY = useMemo(() => {
     if (!lg5Data) {
       return 0;
@@ -619,13 +620,16 @@ const YieldCard: React.FC<YieldCardProps> = ({
           height={account === null || account === undefined ? 447 : 504}
         />
         <ParagraphText>
-          Earn up to <HighlightedText>15% APY</HighlightedText> with a{" "}
-          <HighlightedText>fully principal protected</HighlightedText> vault
-          strategy
+          Earn up to{" "}
+          <HighlightedText>
+            {(expectedYield * 100).toFixed(2)}% APY
+          </HighlightedText>{" "}
+          with a <HighlightedText>fully principal protected</HighlightedText>{" "}
+          vault strategy
         </ParagraphText>
       </>
     );
-  }, [color, t, vault, account]);
+  }, [color, t, vault, expectedYield, account]);
 
   const ProductInfoContent = useCallback(() => {
     const Logo = getAssetLogo(displayAsset);
