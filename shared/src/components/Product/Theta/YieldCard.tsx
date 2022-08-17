@@ -374,6 +374,10 @@ const HighlightedText = styled.span`
   }
 `;
 
+const EarnTitle = styled(Title)`
+  margin-bottom: 24px;
+`;
+
 interface YieldCardProps {
   vault: VaultOptions;
   vaultVersion: VaultVersion;
@@ -610,9 +614,9 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const EarnContent = useCallback(() => {
     return (
       <>
-        <Title fontSize={28} lineHeight={40}>
+        <EarnTitle fontSize={28} lineHeight={40}>
           {t(`shared:ProductCopies:${vault}:title`)}
-        </Title>
+        </EarnTitle>
 
         <EarnCard
           color={color}

@@ -114,7 +114,6 @@ const CirclesContainer = styled.div`
   width: 100%;
   align-items: center;
   justify-content: center;
-  margin-top: 24px;
 `;
 
 const OuterContainer = styled.div`
