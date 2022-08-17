@@ -271,7 +271,7 @@ const EarnPage = () => {
       (componentRefs.header?.offsetHeight || 0) +
       (componentRefs.footer?.offsetHeight || 0)
     );
-  }, [componentRefs.header, componentRefs.footer]);
+  }, [componentRefs.header?.offsetHeight, componentRefs.footer?.offsetHeight]);
 
   /**
    * Redirect to homepage if no clear vault is chosen
