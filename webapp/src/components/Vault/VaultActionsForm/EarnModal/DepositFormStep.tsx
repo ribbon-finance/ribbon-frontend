@@ -295,11 +295,10 @@ const DepositFormStep: React.FC<{
     []
   );
   const handleMaxClick = useCallback(() => {
-    console.log(userAssetBalance);
     changeInputAmount(
       parseFloat(formatBigNumber(userAssetBalance, decimals, 6))
     );
-  }, []);
+  }, [userAssetBalance]);
 
   /**
    * IMPORTANT
