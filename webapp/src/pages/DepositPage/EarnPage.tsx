@@ -3,21 +3,17 @@ import { BigNumber, ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
-// import { useTranslation } from "react-i18next";
 import { Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { AnimatePresence, motion } from "framer-motion";
 import { useV2VaultData, useVaultData } from "shared/lib/hooks/web3DataContext";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
-// import sizes from "shared/lib/designSystem/sizes";
 import usePullUp from "../../hooks/usePullUp";
 import { VaultList, VaultOptions } from "shared/lib/constants/constants";
 import { Subtitle } from "shared/lib/designSystem";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { getAssetLogo, getChainByVaultOption } from "shared/lib/utils/asset";
-// import { Container } from "react-bootstrap";
-// import theme from "shared/lib/designSystem/theme";
 import useRedirectOnSwitchChain from "../../hooks/useRedirectOnSwitchChain";
 import useRedirectOnWrongChain from "../../hooks/useRedirectOnWrongChain";
 import EarnStrategyExplainer from "../../components/Earn/EarnStrategyExplainer";
@@ -172,15 +168,6 @@ const EarnPage = () => {
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [componentRefs] = useGlobalState("componentRefs");
-
-  // const { status, deposits, vaultLimit } = useVaultData(
-  //   vaultOption || VaultList[0]
-  // );
-
-  // const {
-  //   data: { asset, cap, decimals, totalBalance },
-  //   loading,
-  // } = useV2VaultData(vaultOption || VaultList[0]);
   const { status } = useVaultData(vaultOption || VaultList[0]);
 
   const {
@@ -189,28 +176,6 @@ const EarnPage = () => {
   } = useV2VaultData(vaultOption || VaultList[0]);
   const isLoading = status === "loading" || loading;
   useRedirectOnSwitchChain(getChainByVaultOption(vaultOption as VaultOptions));
-  // const isLoading = status === "loading" || loading;
-  // const [totalDepositStr, depositLimitStr] = useMemo(() => {
-  //   switch (vaultVersion) {
-  //     case "v1":
-  //       return [
-  //         parseFloat(
-  //           formatSignificantDecimals(formatUnits(deposits, decimals), 2)
-  //         ),
-  //         parseFloat(
-  //           formatSignificantDecimals(formatUnits(vaultLimit, decimals))
-  //         ),
-  //       ];
-  //     case "earn":
-  //     case "v2":
-  //       return [
-  //         parseFloat(
-  //           formatSignificantDecimals(formatUnits(totalBalance, decimals), 2)
-  //         ),
-  //         parseFloat(formatSignificantDecimals(formatUnits(cap, decimals))),
-  //       ];
-  //   }
-  // }, [cap, decimals, deposits, totalBalance, vaultLimit, vaultVersion]);
 
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
 

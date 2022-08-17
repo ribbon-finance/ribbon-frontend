@@ -153,7 +153,7 @@ const EarnStrategyExplainer: React.FC = () => {
             key={step}
             initial={{
               opacity: 0,
-              translateY: -20,
+              translateY: 20,
             }}
             animate={{
               opacity: 1,
