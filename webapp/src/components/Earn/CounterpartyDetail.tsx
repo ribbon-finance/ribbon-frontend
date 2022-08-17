@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import styled from "styled-components";
 import { BaseButton, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -11,6 +11,11 @@ import Logo, {
   CitadelLogo,
 } from "shared/lib/assets/icons/logo";
 import { Counterparty } from "./Counterparties";
+import useVaultOption from "../../hooks/useVaultOption";
+import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
+import { BigNumber } from "ethers";
+import { formatUnits } from "ethers/lib/utils";
 
 const ParagraphText = styled(SecondaryText)`
   color: rgba(255, 255, 255, 0.64);
@@ -66,7 +71,7 @@ const WalletContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 311px;
+  width: 100%;
   background: ${colors.background.four};
   border-radius: 8px;
   margin-top: 16px;
@@ -93,7 +98,8 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
   counterparty,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const { vaultSubgraphData } = useContext(SubgraphDataContext);
+  const totalBorrowed = vaultSubgraphData.vaults.earn.rEARN?.totalBorrowed;
   const onToggleMenu = useCallback(() => {
     setIsMenuOpen((open) => !open);
   }, []);
@@ -192,7 +198,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
   const renderTotalBorrowed = useCallback((s: Counterparty) => {
     switch (s) {
       case "R-EARN DIVERSIFIED":
-        return <>$15.00M</>;
+        return <>${parseFloat(formatUnits(totalBorrowed!, "6")).toFixed(2)}</>;
       case "ORTHOGONAL":
         return <>$15.00M</>;
       case "ALAMEDA RESEARCH":

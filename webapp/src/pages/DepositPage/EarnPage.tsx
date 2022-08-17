@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled, { keyframes } from "styled-components";
@@ -27,7 +27,8 @@ import {
   EarnMiddleRing,
   EarnOuterRing,
 } from "shared/lib/assets/icons/icons";
-import sizes from "shared/lib/designSystem/sizes";
+
+import { useAirtable } from "shared/lib/hooks/useAirtable";
 const { formatUnits } = ethers.utils;
 
 const rotateClockwise = keyframes`
@@ -73,22 +74,16 @@ const CirclesContainer = styled.div<{ offset: number }>`
 const StyledEarnInnerRing = styled(EarnInnerRing)`
   animation: ${rotateClockwise} 60s linear infinite;
   position: absolute;
-  height: 100%;
 `;
 
 const StyledEarnMiddleRing = styled(EarnMiddleRing)`
   animation: ${rotateAnticlockwise} 60s linear infinite;
   position: absolute;
-  height: 100%;
 `;
 
 const StyledEarnOuterRing = styled(EarnOuterRing)`
   animation: ${rotateClockwise} 60s linear infinite;
   position: absolute;
-
-  @media (max-width: ${sizes.md}px) {
-    height: 100%;
-  }
 `;
 
 const BalanceTitle = styled.div`
@@ -158,6 +153,8 @@ const EarnPage = () => {
   const { vaultOption, vaultVersion } = useVaultOption();
   const { active, account, chainId } = useWeb3Wallet();
 
+  const { expectedYield } = useAirtable();
+
   useRedirectOnWrongChain(vaultOption, chainId);
   usePullUp();
   let color;
@@ -198,6 +195,7 @@ const EarnPage = () => {
         ];
     }
   }, [vaultAccount, vaultVersion]);
+
   const [roi, yieldColor] = useMemo(() => {
     const vaultAccount = vaultAccounts["rEARN"];
     if (
@@ -230,14 +228,6 @@ const EarnPage = () => {
       roiColor,
     ];
   }, [vaultAccounts, decimals]);
-
-  const pageOffset = useMemo(() => {
-    return (
-      (componentRefs.header?.offsetHeight || 0) +
-      (componentRefs.footer?.offsetHeight || 0)
-    );
-  }, [componentRefs.header?.offsetHeight, componentRefs.footer?.offsetHeight]);
-
   /**
    * Redirect to homepage if no clear vault is chosen
    */
@@ -247,7 +237,7 @@ const EarnPage = () => {
 
   return (
     <>
-      <CirclesContainer offset={pageOffset}>
+      <CirclesContainer>
         <StyledEarnOuterRing />
         <StyledEarnMiddleRing />
         <StyledEarnInnerRing />
@@ -338,7 +328,7 @@ const EarnPage = () => {
                 ease: "easeInOut",
               }}
             >
-              <EarnStrategyExplainer />
+              <EarnStrategyExplainer expectedYield={expectedYield} />
             </motion.div>
           </AnimatePresence>
         )}

@@ -360,8 +360,8 @@ const ParagraphText = styled(SecondaryText)`
   font-size: 14px;
   line-height: 24px;
   margin-top: 24px;
-  margin-left: 16px;
-  margin-right: 16px;
+  margin-left: 32px;
+  margin-right: 32px;
   text-align: center;
 `;
 

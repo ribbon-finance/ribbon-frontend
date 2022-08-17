@@ -119,27 +119,60 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
           <BaseModalContentColumn marginTop={8}>
             <Title>{step}</Title>
           </BaseModalContentColumn>
-          <ModalColumnScroll marginTop={40} className="justify-content-center">
-            <Container
-              key={step}
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.25,
-                type: "keyframes",
-                ease: "easeInOut",
-              }}
+
+          {step === "payoff" ? (
+            <div style={{ marginLeft: -16, marginRight: -16 }}>
+              <ModalColumnScroll
+                marginTop={40}
+                className="justify-content-center"
+              >
+                <Container
+                  key={step}
+                  initial={{
+                    opacity: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                  }}
+                  transition={{
+                    duration: 0.25,
+                    type: "keyframes",
+                    ease: "easeInOut",
+                  }}
+                >
+                  {modalContent}
+                </Container>
+              </ModalColumnScroll>
+            </div>
+          ) : (
+            <ModalColumnScroll
+              marginTop={40}
+              className="justify-content-center"
             >
-              {modalContent}
-            </Container>
-          </ModalColumnScroll>
+              <Container
+                key={step}
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                }}
+                transition={{
+                  duration: 0.25,
+                  type: "keyframes",
+                  ease: "easeInOut",
+                }}
+              >
+                {modalContent}
+              </Container>
+            </ModalColumnScroll>
+          )}
         </>
       </BasicModal>
     </>

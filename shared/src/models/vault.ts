@@ -1,5 +1,7 @@
 import { BigNumber } from "ethers";
 import {
+  EarnVaultList,
+  EarnVault as EarnVault2,
   SolanaVaultList,
   VaultList,
   VaultOptions,
@@ -16,6 +18,7 @@ export interface Vault {
   totalNotionalVolume: BigNumber;
   totalWithdrawalFee?: BigNumber; // v1
   totalFeeCollected?: BigNumber; // v2
+  totalBorrowed?: BigNumber;
   underlyingAsset: string;
   underlyingSymbol: string;
   depositors: string[];
@@ -116,6 +119,7 @@ export interface VaultOptionSold {
 export interface VaultOptionYield {
   id: string;
   _yield: BigNumber;
+  netYield: BigNumber;
   timestamp: number;
   paidAt: number;
   txhash: string;
@@ -193,6 +197,11 @@ export const defaultVaultActivitiesData: VaultActivitiesData =
       ),
     ])
   ) as VaultActivitiesData;
+
+export const defaultEarnVaultActivitiesData: VaultActivitiesData =
+  Object.fromEntries(
+    EarnVaultList.map((option) => [option, [] as VaultActivity[]])
+  ) as unknown as VaultActivitiesData;
 
 export interface UnconnectedVaultData {
   deposits: BigNumber;

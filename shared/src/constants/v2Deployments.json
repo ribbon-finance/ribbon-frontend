@@ -64,7 +64,7 @@
     "RibbonThetaVaultAPECall": "0xc0cF10Dd710aefb209D9dc67bc746510ffd98A53",
     "RibbonVaultPauser": "0xE04e8Ae290965AD4F7E40c68041c493d2e89cDC3",
     "RibbonEarnRibbonDiversifiedWeek1": "0x7946B1F34CDE7A7CD42178e9722cb15179c9050B",
-    "RibbonEarnRibbonDiversifiedWeek2": "0x7946B1F34CDE7A7CD42178e9722cb15179c9050B"
+    "RibbonEarnCitadelWeek1": "0xAb7C592AcbdD6bdF6e51C55D313D0CCD0F59B503"
   },
   "fuji": {
     "ManualVolOracle": "0x8c58dDE5156DE3b3Fb93664DccBc1BeB1d5Ac923",

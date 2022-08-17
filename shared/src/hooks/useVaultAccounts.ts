@@ -107,7 +107,6 @@ export const resolveVaultAccountsSubgraphResponse = (responses: {
 
 export const useAllVaultAccounts = () => {
   const contextData = useContext(SubgraphDataContext);
-
   return {
     data: contextData.vaultSubgraphData.vaultAccounts,
     loading: contextData.vaultSubgraphData.loading,

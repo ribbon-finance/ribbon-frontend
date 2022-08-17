@@ -109,6 +109,15 @@ export const TreasuryVaultList = [
   "rSPELL-TSRY",
 ] as const;
 
+export const RibbonDiversifiedVaultList = ["RibbonDiversifiedWeek1"];
+
+export const CitadelVaultList = ["CitadelWeek1"];
+
+export const EarnVaultList = [
+  ...RibbonDiversifiedVaultList,
+  ...CitadelVaultList,
+] as const;
+
 const AllVaultOptions = [
   ...EVMVaultList,
   ...TreasuryVaultList,
@@ -123,11 +132,7 @@ const PutThetaVault: VaultOptions[] = [
   "rUSDC-AVAX-P-THETA",
 ];
 
-export const EarnVaultMap = [
-  "RibbonDiversifiedWeek1",
-  "RibbonDiversifiedWeek2",
-] as const;
-export type EarnVault = typeof EarnVaultMap[number];
+export type EarnVault = typeof EarnVaultList[number];
 export const SolanaAssets = ["SOL"];
 
 export const isSolanaVault = (vaultOption: string) => {
@@ -355,7 +360,7 @@ export const isPutVault = (vault: VaultOptions): boolean =>
 
 export const EarnAddresses: { [key: string]: string } = {
   RibbonDiversifiedWeek1: v2deployment.mainnet.RibbonEarnRibbonDiversifiedWeek1,
-  RibbonDiversifiedWeek2: v2deployment.mainnet.RibbonEarnRibbonDiversifiedWeek2,
+  CitadelWeek1: v2deployment.mainnet.RibbonEarnCitadelWeek1,
 };
 
 export const VaultAddressMap: {
@@ -676,6 +681,8 @@ export const getAssets = (vault: VaultOptions): Assets => {
       return "APE";
     case "rEARN":
       return "USDC";
+    default:
+      return "USDC";
   }
 };
 
@@ -709,6 +716,8 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
     case "rAPE-THETA":
       return "APE";
     case "rEARN":
+      return "USDC";
+    default:
       return "USDC";
   }
 };
@@ -748,6 +757,8 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
     case "rAPE-THETA":
       return "APE";
     case "rEARN":
+      return "USDC";
+    default:
       return "USDC";
   }
 };

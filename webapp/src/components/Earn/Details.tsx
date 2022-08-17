@@ -3,7 +3,8 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import { Title, SecondaryText, PrimaryText } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
-
+import { useAirtable } from "shared/lib/hooks/useAirtable";
+import currency from "currency.js";
 const ExplainerTitle = styled.div<{ color: string }>`
   display: flex;
   font-size: 12px;
@@ -43,6 +44,7 @@ const StyledTitle = styled(Title)<{ marginTop: number }>`
 `;
 
 export const Strategy = () => {
+  const { strikePrice, barrierPercentage, baseYield, maxYield } = useAirtable();
   return (
     <>
       <ParagraphText>
@@ -93,15 +95,22 @@ export const Strategy = () => {
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Upside Barrier</span>
       </ExplainerTitle>
-      <StyledTitle marginTop={4}>108% (1,207.34)</StyledTitle>
+      <StyledTitle marginTop={4}>
+        108% ({currency(strikePrice * (1 + barrierPercentage)).format()})
+      </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Downside Barrier</span>
       </ExplainerTitle>
-      <StyledTitle marginTop={4}> 92% (1,113.66)</StyledTitle>
+      <StyledTitle marginTop={4}>
+        {" "}
+        92% ({currency(strikePrice * (1 - barrierPercentage)).format()})
+      </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Strike</span>
       </ExplainerTitle>
-      <StyledTitle marginTop={4}>100% (1,210.50)</StyledTitle>{" "}
+      <StyledTitle marginTop={4}>
+        100% ({currency(strikePrice).format()})
+      </StyledTitle>{" "}
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Capital Protection</span>
       </ExplainerTitle>
@@ -109,11 +118,11 @@ export const Strategy = () => {
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Base APY</span>
       </ExplainerTitle>
-      <StyledTitle marginTop={4}>4%</StyledTitle>
+      <StyledTitle marginTop={4}>{(baseYield * 100).toFixed(2)}%</StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Max APY</span>
       </ExplainerTitle>
-      <StyledTitle marginTop={4}>15%</StyledTitle>{" "}
+      <StyledTitle marginTop={4}>{(maxYield * 100).toFixed(2)}%</StyledTitle>{" "}
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Barrier Type</span>
       </ExplainerTitle>

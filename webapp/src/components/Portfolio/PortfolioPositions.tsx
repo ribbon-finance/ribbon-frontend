@@ -321,7 +321,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
 const PortfolioPositions = () => {
   const { active } = useWeb3Wallet();
   const {
-    data: { v1: v1VaultAccounts, v2: v2VaultAccounts },
+    data: { v1: v1VaultAccounts, v2: v2VaultAccounts, earn: earnVaultAccounts },
     loading,
   } = useAllVaultAccounts();
   const animatedLoadingText = useLoadingText();
@@ -336,6 +336,7 @@ const PortfolioPositions = () => {
               case "v1":
                 return [vaultVersion, v1VaultAccounts[vaultOption]];
               case "earn":
+                return [vaultVersion, earnVaultAccounts[vaultOption]];
               case "v2":
               default:
                 return [vaultVersion, v2VaultAccounts[vaultOption]];
@@ -358,7 +359,7 @@ const PortfolioPositions = () => {
         [version in VaultVersion]: VaultAccount;
       }>;
     }>;
-  }, [v1VaultAccounts, v2VaultAccounts]);
+  }, [v1VaultAccounts, v2VaultAccounts, earnVaultAccounts]);
 
   const positionContent = useMemo(() => {
     if (!active) {

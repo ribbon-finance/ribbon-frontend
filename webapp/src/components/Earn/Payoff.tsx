@@ -1,147 +1,224 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "styled-components";
-import { BaseModalContentColumn, Title } from "shared/lib/designSystem";
+import {
+  BaseModalContentColumn,
+  SecondaryText,
+  Title,
+} from "shared/lib/designSystem";
 import { assetToFiat } from "shared/lib/utils/math";
 import EarnChart from "./EarnChart";
-
+import colors from "shared/lib/designSystem/colors";
+import EarnModalContentExtra from "shared/lib/components/Common/EarnModalContentExtra";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import { useAirtable } from "shared/lib/hooks/useAirtable";
 const ChartContainer = styled.div`
   height: 264px;
+  margin: 0;
   width: calc(100% + 30px);
 `;
 
-const STRIKEPRICE = 1000;
-const PARTICIPATIONRATE = 0.03;
-const SPOTPRICE = 900;
-const ABSOLUTEPERFORMANCE =
-  ((Math.abs(SPOTPRICE - STRIKEPRICE) / STRIKEPRICE) * PARTICIPATIONRATE * 4 +
-    1) **
-    (365 / 28) -
-  1;
+const RelativeContainer = styled.div`
+  height: 208px;
+  width: 100%;
+  display: flex;
+`;
 
-console.log(ABSOLUTEPERFORMANCE);
+const CalculationContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+  align-items: center;
+  align-content: center;
+`;
+
+const CalculationContainer2 = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+`;
+
+const ParagraphText = styled(SecondaryText)`
+  color: #ffffff7a;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: center;
+`;
+
+const CalculationColumn = styled.div`
+  display: flex;
+  width: 100%;
+  margin-bottom: 8px;
+  align-items: center;
+
+  &:last-child {
+    margin-bottom: unset;
+  }
+`;
+
+const CalculationData = styled(Title)<{ variant?: "red" | "green" }>`
+  color: ${(props) => {
+    switch (props.variant) {
+      case "red":
+        return colors.red;
+      case "green":
+        return colors.green;
+      default:
+        return colors.primaryText;
+    }
+  }};
+`;
+
 interface ProfitCalculatorProps {}
 
 const Payoff: React.FC<ProfitCalculatorProps> = () => {
+  const {
+    strikePrice,
+    maxYield,
+    baseYield,
+    absolutePerformance,
+    barrierPercentage,
+  } = useAirtable();
   const [input, setInput] = useState<string>("");
   const [hoverPrice, setHoverPrice] = useState<number>();
+  const [hoverPercentage, setHoverPercentage] = useState<number>();
+  const [defaultMoneyness, setDefaultMoneyness] = useState<number>(0);
   const [, setChartHovering] = useState(false);
 
-  // const handleInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const parsedInput = parseFloat(e.target.value);
-  //   setInput(isNaN(parsedInput) || parsedInput < 0 ? "" : `${parsedInput}`);
-  // }, []);
-
-  // const handleCurrentPress = useCallback(() => {
-  //   setInput(`${prices[optionAsset]!}`);
-  // }, [prices, optionAsset]);
-
-  // const KPI = useMemo(() => {
-  //   let calculatePrice = input ? parseFloat(input) : prices[optionAsset]!;
-
-  //   if (hoverPrice) {
-  //     calculatePrice = hoverPrice;
-  //   }
-
-  //   const higherStrike =
-  //     formatOptionStrike(currentOption.strike, chain) > calculatePrice;
-  //   const isExercisedRange = currentOption.isPut ? higherStrike : !higherStrike;
-  //   const assetDecimals = getAssetDecimals(asset);
-  //   let profit: number;
-
-  //   if (!isExercisedRange) {
-  //     profit = parseFloat(formatUnits(currentOption.premium, assetDecimals));
-  //   } else if (currentOption.isPut) {
-  //     const exerciseCost =
-  //       formatOptionStrike(currentOption.strike, chain) - calculatePrice;
-
-  //     profit =
-  //       parseFloat(formatUnits(currentOption.premium, assetDecimals)) -
-  //       currentOption.amount * exerciseCost;
-  //   } else {
-  //     profit =
-  //       (currentOption.amount *
-  //         formatOptionStrike(currentOption.strike, chain)) /
-  //         calculatePrice -
-  //       currentOption.amount +
-  //       parseFloat(formatUnits(currentOption.premium, assetDecimals));
-  //   }
-
-  //   return {
-  //     isProfit: profit >= 0,
-  //     roi:
-  //       (profit /
-  //         parseFloat(formatUnits(currentOption.depositAmount, assetDecimals))) *
-  //       100 *
-  //       0.9,
-  //   };
-  // }, [chain, asset, currentOption, input, hoverPrice, optionAsset, prices]);
-
-  // const toExpiryText = useMemo(() => {
-  //   const toExpiryDuration = moment.duration(
-  //     currentOption.expiry.diff(moment()),
-  //     "milliseconds"
-  //   );
-
-  //   if (toExpiryDuration.asMilliseconds() <= 0) {
-  //     return "Expired";
-  //   }
-
-  //   return `${toExpiryDuration.days()}D ${toExpiryDuration.hours()}H ${toExpiryDuration.minutes()}M`;
-  // }, [currentOption]);
+  const optionMoneyness = useMemo(() => {
+    return hoverPercentage
+      ? Math.abs(hoverPercentage) > barrierPercentage * 100
+        ? 0
+        : Math.abs(hoverPercentage)
+      : absolutePerformance > barrierPercentage
+      ? 0
+      : absolutePerformance;
+  }, [absolutePerformance, hoverPercentage]);
 
   return (
     <>
-      <BaseModalContentColumn marginTop={8}>
-        <Title>PROFIT CALCULATOR</Title>
+      <BaseModalContentColumn marginTop={-4}>
+        <CalculationContainer2>
+          <ParagraphText fontWeight={500}>Max Yield (APY)</ParagraphText>
+          <CalculationData variant={"green"}>
+            +{(maxYield * 100).toFixed(2)}%
+          </CalculationData>
+        </CalculationContainer2>
       </BaseModalContentColumn>
-      <BaseModalContentColumn>
-        <ChartContainer
-          onClick={() => {
-            if (hoverPrice) {
-              setInput(hoverPrice.toFixed(2));
-            }
-          }}
-          onMouseEnter={() => setChartHovering(true)}
-          onMouseLeave={() => setChartHovering(false)}
-        >
-          <EarnChart
-            strike={1000}
-            price={hoverPrice ? hoverPrice : input ? parseFloat(input) : 100!}
-            premium={parseFloat(assetToFiat(1000, 100!, 9)) / 1000}
-            isPut={true}
-            onHover={setHoverPrice}
-          />
-        </ChartContainer>
-      </BaseModalContentColumn>
-      {/* <BaseModalContentColumn marginTop={8}>
-        {chartHovering ? (
-          <SecondaryText
-            fontSize={12}
-            lineHeight={16}
-            color={colors.primaryText}
+      <BaseModalContentColumn marginTop={-16}>
+        <RelativeContainer>
+          <ChartContainer
+            onClick={() => {
+              if (hoverPrice) {
+                setInput(hoverPrice.toFixed(2));
+              }
+            }}
+            onMouseEnter={() => setChartHovering(true)}
+            onMouseLeave={() => setChartHovering(false)}
           >
-            Tap to update price field above
-          </SecondaryText>
-        ) : (
-          <StrikeLabel>STRIKE PRICE: {currency(1000).format()}</StrikeLabel>
-        )}
-      </BaseModalContentColumn> */}
-      {/* <ModalContentExtra style={{ flex: 1 }}>
+            <EarnChart
+              onHoverPrice={setHoverPrice}
+              onHoverPercentage={setHoverPercentage}
+              defaultMoneyness={setDefaultMoneyness}
+              baseYield={baseYield}
+              maxYield={maxYield}
+              absolutePerformance={absolutePerformance}
+              strikePrice={strikePrice * 100}
+              defaultPercentageDiff={Math.round(6).toFixed(2)}
+              barrierPercentage={barrierPercentage}
+            />
+          </ChartContainer>
+        </RelativeContainer>
+      </BaseModalContentColumn>
+      <BaseModalContentColumn marginTop={16}>
+        <SecondaryText
+          fontSize={12}
+          lineHeight={16}
+          color={colors.primaryText + "7A"}
+        >
+          ETH Spot Weekly % Change
+        </SecondaryText>
+      </BaseModalContentColumn>
+      <EarnModalContentExtra style={{ flex: 1 }}>
         <CalculationContainer>
           <CalculationColumn>
-            <SecondaryText fontSize={14} className="mr-auto">
-              Options Moneyness
+            <SecondaryText
+              color={colors.primaryText + "7A"}
+              fontWeight={500}
+              fontSize={14}
+            >
+              Base Yield
             </SecondaryText>
-            <CalculationData></CalculationData>
+            <div className="mr-auto">
+              <TooltipExplanation
+                title="BASE YIELD"
+                explanation="Base Yield is good"
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HelpInfo containerRef={ref} {...triggerHandler}>
+                    i
+                  </HelpInfo>
+                )}
+              />
+            </div>
+            <CalculationData variant={"green"}>
+              {"+"}
+              {(baseYield * 100).toFixed(2)}%
+            </CalculationData>
           </CalculationColumn>
           <CalculationColumn>
-            <SecondaryText fontSize={14} className="mr-auto">
-              Max Yield (APY)
+            <SecondaryText
+              color={colors.primaryText + "7A"}
+              fontWeight={500}
+              fontSize={14}
+            >
+              Options Moneyness
             </SecondaryText>
-            <CalculationData> {MAXAPR}%</CalculationData>
+            <div className="mr-auto">
+              <TooltipExplanation
+                title="OPTIONS MONEYNESS"
+                explanation="I love money."
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HelpInfo containerRef={ref} {...triggerHandler}>
+                    i
+                  </HelpInfo>
+                )}
+              />
+            </div>
+            <CalculationData variant={optionMoneyness === 0 ? "red" : "green"}>
+              {optionMoneyness === 0 ? "" : "+"}
+              {Math.round(optionMoneyness).toFixed(2)}%
+            </CalculationData>
+          </CalculationColumn>
+          <CalculationColumn>
+            <SecondaryText
+              fontWeight={500}
+              fontSize={14}
+              color={"rgba(255, 255, 255, 0.48)"}
+            >
+              Expected Yield (APY)
+            </SecondaryText>
+            <div className="mr-auto">
+              <TooltipExplanation
+                title="MAX YIELD"
+                explanation="I love yield."
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HelpInfo containerRef={ref} {...triggerHandler}>
+                    i
+                  </HelpInfo>
+                )}
+              />
+            </div>
+            <CalculationData variant={"green"}>
+              +
+              {hoverPrice
+                ? hoverPrice.toFixed(2)
+                : defaultMoneyness?.toFixed(2)}
+              %
+            </CalculationData>
           </CalculationColumn>
         </CalculationContainer>
-      </ModalContentExtra> */}
+      </EarnModalContentExtra>
     </>
   );
 };
