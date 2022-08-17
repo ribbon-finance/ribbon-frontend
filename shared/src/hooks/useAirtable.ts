@@ -28,7 +28,6 @@ const base = Airtable.base("appkUHzxJ1lehQTIt");
 export const useAirtable = () => {
   const [schedules, setSchedule] = useState<ScheduleItem[]>();
   const [error, setError] = useState<string>();
-
   const { price: ETHPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: "WETH",
   });
@@ -54,6 +53,10 @@ export const useAirtable = () => {
         setError("ERROR FETCHING");
       });
   }, [assetPriceLoading]);
+
+  const loading = useMemo(() => {
+    return assetPriceLoading || !schedules
+  }, [assetPriceLoading, schedules]);
 
   //   Absolute perf = abs(spot - strike) / strike
   // (Absolute perf * participation rate * 4 + 1)^(365/28) -1
@@ -81,9 +84,9 @@ export const useAirtable = () => {
     return [absolutePerformance, calculateExpectedYield, calculateMaxYield];
   }, [schedules, ETHPrice]);
 
-  if (!schedules) {
+  if (loading || !schedules) {
     return {
-      loading: !schedules,
+      loading,
       strikePrice: 0,
       baseYield: 0,
       participationRate: 0,
@@ -94,7 +97,7 @@ export const useAirtable = () => {
     };
   }
   return {
-    loading: !schedules,
+    loading,
     strikePrice: schedules[0].strikePrice,
     baseYield: schedules[0].baseYield,
     participationRate: schedules[0].participationRate,

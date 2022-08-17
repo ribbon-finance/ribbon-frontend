@@ -33,6 +33,7 @@ import {
 } from "shared/lib/assets/icons/icons";
 
 import { useAirtable } from "shared/lib/hooks/useAirtable";
+import ActionModal from "../../components/Vault/VaultActionsForm/EarnModal/ActionModal";
 const { formatUnits } = ethers.utils;
 
 const rotateClockwise = keyframes`
@@ -166,6 +167,8 @@ const EarnPage = () => {
   const [showVault] = useGlobalState("showEarnVault");
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showDepositModal, setShowDepositModal] = useState(false);
+  const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
   // const { status, deposits, vaultLimit } = useVaultData(
   //   vaultOption || VaultList[0]
   // );
@@ -407,6 +410,9 @@ const EarnPage = () => {
                     <StyledActionButton
                       className={`mt-5 py-3 mb-0 w-100`}
                       color={color}
+                      onClick={() => {
+                        setShowDepositModal(true);
+                      }}
                     >
                       Deposit
                     </StyledActionButton>
@@ -458,6 +464,15 @@ const EarnPage = () => {
         show={showDetailsModal}
         onClose={() => setShowDetailsModal(false)}
         vaultOption={vaultOption}
+      />
+      <ActionModal
+        vault={{
+          vaultOption: "rEARN",
+          vaultVersion: "earn",
+        }}
+        variant={"desktop"}
+        show={showDepositModal}
+        onClose={() => setShowDepositModal(false)}
       />
     </>
   );
