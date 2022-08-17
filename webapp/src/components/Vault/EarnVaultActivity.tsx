@@ -24,6 +24,10 @@ const PaginationContainer = styled.div`
   align-items: center;
 `;
 
+const ActivityTitle = styled(Title)`
+  margin: auto;
+`;
+
 const perPage = 6;
 
 interface VaultActivityProps {
@@ -140,9 +144,9 @@ const EarnVaultActivity: React.FC<VaultActivityProps> = ({
 
     if (filteredActivities.length <= 0) {
       return (
-        <Title fontSize={12} lineHeight={16} className="mx-4">
+        <ActivityTitle fontSize={12} lineHeight={16}>
           There is currently no vault activity
-        </Title>
+        </ActivityTitle>
       );
     }
 

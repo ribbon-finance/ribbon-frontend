@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled, { keyframes } from "styled-components";
@@ -74,16 +74,28 @@ const CirclesContainer = styled.div<{ offset: number }>`
 const StyledEarnInnerRing = styled(EarnInnerRing)`
   animation: ${rotateClockwise} 60s linear infinite;
   position: absolute;
+
+  @media (max-width: 700px) {
+    display: none;
+  }
 `;
 
 const StyledEarnMiddleRing = styled(EarnMiddleRing)`
   animation: ${rotateAnticlockwise} 60s linear infinite;
   position: absolute;
+
+  @media (max-width: 700px) {
+    height: inherit;
+  }
 `;
 
 const StyledEarnOuterRing = styled(EarnOuterRing)`
   animation: ${rotateClockwise} 60s linear infinite;
   position: absolute;
+
+  @media (max-width: 700px) {
+    height: 100%;
+  }
 `;
 
 const BalanceTitle = styled.div`
@@ -228,6 +240,14 @@ const EarnPage = () => {
       roiColor,
     ];
   }, [vaultAccounts, decimals]);
+
+  const pageOffset = useMemo(() => {
+    return (
+      (componentRefs.header?.offsetHeight || 0) +
+      (componentRefs.footer?.offsetHeight || 0)
+    );
+  }, [componentRefs.header?.offsetHeight, componentRefs.footer?.offsetHeight]);
+
   /**
    * Redirect to homepage if no clear vault is chosen
    */
@@ -237,7 +257,7 @@ const EarnPage = () => {
 
   return (
     <>
-      <CirclesContainer>
+      <CirclesContainer offset={pageOffset}>
         <StyledEarnOuterRing />
         <StyledEarnMiddleRing />
         <StyledEarnInnerRing />

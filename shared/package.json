@@ -50,7 +50,7 @@
   },
   "scripts": {
     "copyPng": "copyfiles -f src/assets/png/* lib/assets/png",
-    "start": "tsc -w",
+    "start": "yarn copyPng && tsc -w",
     "clean": "rm -rf ./lib",
     "prebuild": "yarn clean",
     "build": "tsc --build \"./tsconfig.json\" && yarn copyPng",

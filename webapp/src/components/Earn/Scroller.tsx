@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
 
 import colors from "shared/lib/designSystem/colors";
@@ -6,6 +6,7 @@ import theme from "shared/lib/designSystem/theme";
 import { getRange } from "shared/lib/utils/math";
 import { Title } from "shared/lib/designSystem";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
+
 const NavigationButton = styled.div<{
   disabled?: boolean;
   marginLeft?: string;
@@ -49,7 +50,10 @@ const PaginationItem = styled.div<{ active: boolean }>`
   flex-direction: row;
   transition: background 0.2s ease-out, box-shadow 0.2s ease-out;
   overflow: show;
-  margin-right: 32px;
+
+  &:not(:last-child) {
+    margin-right: 32px;
+  }
 
   ${(props) => {
     if (props.active) {
@@ -71,12 +75,12 @@ const PaginationItem = styled.div<{ active: boolean }>`
 const Words = styled.div`
   display: flex;
   justify-content: center;
-  width: 700px;
   align-self: center;
   overflow: show;
   position: absolute;
   bottom: -40px;
   align-content: center;
+  height: 48px;
 `;
 
 const Container = styled.div`
@@ -87,6 +91,21 @@ const Container = styled.div`
   overflow: show;
   height: 100%;
   position: absolute;
+`;
+
+const ButtonTitle = styled(Title)`
+  margin: auto;
+`;
+
+const OverflowButton = styled.button<{ isLeft?: boolean }>`
+  background: none;
+  border: none;
+  backdrop-filter: blur(4px);
+  position: sticky;
+  color: white;
+  padding: 0 16px;
+
+  ${({ isLeft }) => (isLeft ? "left: 0" : "right: 0")};
 `;
 
 interface ScrollerProps {
@@ -109,8 +128,23 @@ const Scroller: React.FC<ScrollerProps> = ({
   config: { showNavigationButton = true } = {},
 }) => {
   const { width } = useScreenSize();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const showDesktopNavigator = useMemo(
+    () => width > (scrollRef.current?.offsetWidth || 0),
+    [width]
+  );
 
-  const showDesktopNavigator = useMemo(() => width > 700, [width]);
+  useEffect(() => {
+    console.log(scrollRef);
+  }, [scrollRef]);
+
+  const onScroll = (side: "left" | "right") => {
+    scrollRef.current?.scrollBy({
+      left: side === "left" ? -90 : 90,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <Container>
       {showDesktopNavigator && (
@@ -127,7 +161,12 @@ const Scroller: React.FC<ScrollerProps> = ({
           <i className="fas fa-arrow-left" />
         </NavigationButton>
       )}
-      <Words>
+      <Words ref={scrollRef}>
+        {!showDesktopNavigator && (
+          <OverflowButton isLeft onClick={() => onScroll("left")}>
+            <i className="fas fa-chevron-left" />
+          </OverflowButton>
+        )}
         {getRange(1, total, 1).map((item) => (
           <PaginationItem
             key={item}
@@ -137,14 +176,19 @@ const Scroller: React.FC<ScrollerProps> = ({
               onPageClick(item);
             }}
           >
-            <Title
+            <ButtonTitle
               color={item === page ? colors.primaryText : colors.tertiaryText}
               fontSize={12}
             >
               {stepList[item - 1]}
-            </Title>
+            </ButtonTitle>
           </PaginationItem>
         ))}
+        {!showDesktopNavigator && (
+          <OverflowButton onClick={() => onScroll("right")}>
+            <i className="fas fa-chevron-right" />
+          </OverflowButton>
+        )}
       </Words>
       {showDesktopNavigator && (
         <NavigationButton
