@@ -1,5 +1,5 @@
 import React from "react";
-import styled, { keyframes } from "styled-components";
+import styled, { keyframes, css } from "styled-components";
 import colors from "../../designSystem/colors";
 
 import {
@@ -40,10 +40,29 @@ const StyledProductAssetLogoContainer = styled(ProductAssetLogoContainer)`
   width: 80px;
 `;
 
+const markerBlink = keyframes`
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+`;
+
+const blink = css<any>`
+  ${markerBlink} ${(props) => props.delay}s infinite;
+`;
+
 const Marker = styled.div<{
   width: number;
   color: string;
   marginLeft?: number;
+  delay?: number;
 }>`
   width: ${(props) => props.width}px;
   height: 2px;
@@ -51,6 +70,9 @@ const Marker = styled.div<{
   border-radius: 1000px;
   margin-left: ${(props) =>
     props.marginLeft ? `${props.marginLeft}px` : `0px`};
+  animation: ${({ delay }) => (delay ? blink : null)};
+
+  ${({ delay }) => delay && `animation-delay: ${delay}s`}
 `;
 
 const rotateClockwise = keyframes`
@@ -88,7 +110,7 @@ const StyledEarnMiddleCircle = styled(EarnCardMiddleCircle)`
 const CirclesContainer = styled.div`
   position: absolute;
   display: flex;
-  height: 240px;
+  height: 248px;
   width: 100%;
   align-items: center;
   justify-content: center;
@@ -151,25 +173,25 @@ const EarnCard: React.FC<AssetCircleContainerProps> = ({ color, height }) => {
       <StyledGrid height={height} />
       <EarnAbsoluteTopContainer>
         <LeftMarkerContainer>
-          <Marker width={16} color={color} />
-          <Marker width={6} color={color} />
-          <Marker width={2} color={color} />
+          <Marker width={16} color={color} delay={3} />
+          <Marker width={8} color={color} delay={2} />
+          <Marker width={2} color={color} delay={1} />
         </LeftMarkerContainer>
         <RightMarkerContainer>
-          <Marker width={16} color={color} />
-          <Marker width={2} color={color} />
+          <Marker width={16} color={color} delay={3} />
+          <Marker width={2} color={color} delay={1} />
         </RightMarkerContainer>
       </EarnAbsoluteTopContainer>
       <EarnAbsoluteBottomContainer>
         <LeftMarkerContainer>
-          <Marker width={16} color={color} />
-          <Marker width={2} color={color} />
-          <Marker width={2} color={color} />
+          <Marker width={16} color={color} delay={3} />
+          <Marker width={2} color={color} delay={1} />
+          <Marker width={2} color={color} delay={4} />
         </LeftMarkerContainer>
         <RightMarkerContainer>
-          <Marker width={2} color={color} />
-          <Marker width={16} color={color} />
-          <Marker width={4} color={color} />
+          <Marker width={2} color={color} delay={1} />
+          <Marker width={16} color={color} delay={3} />
+          <Marker width={8} color={color} delay={2} />
         </RightMarkerContainer>
       </EarnAbsoluteBottomContainer>
       <OuterContainer>

@@ -359,7 +359,7 @@ const ParagraphText = styled(SecondaryText)`
   font-weight: 400;
   font-size: 14px;
   line-height: 24px;
-  margin-top: 24px;
+  margin-top: 32px;
   margin-left: 32px;
   margin-right: 32px;
   text-align: center;
