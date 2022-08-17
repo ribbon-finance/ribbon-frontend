@@ -32,7 +32,6 @@ import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { parseUnits } from "ethers/lib/utils";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import moment from "moment";
 
 const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -90,7 +89,7 @@ const DetailWithTooltipContainer = styled.div`
   align-items: center;
 `;
 
-const PreviewStep: React.FC<{
+const DepositFormStep: React.FC<{
   actionType: ActionType;
   withdrawOption?: V2WithdrawOption;
   amount: BigNumber;
@@ -125,48 +124,75 @@ const PreviewStep: React.FC<{
     key: string;
     value: string;
   }
-
-  const [toDepositTime, withdrawalDate] = useMemo(() => {
-    // if (optionLoading) return loadingText;
-
-    // if (!currentOption) return "---";
-
-    let firstOpenLoanTime = moment("2022-09-01 UTC 17:00:00");
-
-    let toDepositTime;
-
-    while (!toDepositTime) {
-      let toDepositTimeTemp = moment.duration(
-        firstOpenLoanTime.diff(moment()),
-        "milliseconds"
-      );
-      if (toDepositTimeTemp.asMilliseconds() <= 0) {
-        firstOpenLoanTime.add(28, "days");
-      } else {
-        toDepositTime = toDepositTimeTemp;
-      }
-    }
-
-    return [
-      `${toDepositTime.days()}D ${toDepositTime.hours()}H ${toDepositTime.minutes()}M`,
-      firstOpenLoanTime.add(28, "days").format("Do MMMM, YYYY"),
-    ];
-  }, []);
-
   const detailRows: ActionDetail[] = useMemo(() => {
     const actionDetails: ActionDetail[] = [];
 
-    actionDetails.push({
-      key: "Deposit Time",
-      value: `${toDepositTime}`,
-    });
+    switch (actionType) {
+      case ACTIONS.deposit:
+        actionDetails.push({
+          key: "Approx. APY",
+          value: `${
+            latestAPY.fetched ? latestAPY.res.toFixed(2) : "0.00"
+          }% APY`,
+        });
+        break;
+      case ACTIONS.withdraw:
+        switch (vaultVersion) {
+          case "v1":
+            actionDetails.push({
+              key: "Withdrawal Fee",
+              value: `${parseFloat(
+                VaultFees[vaultOption].v1?.withdrawalFee ?? "0"
+              ).toString()}%`,
+            });
+            break;
+          case "earn":
+          case "v2":
+            /**
+             * Strategy are only shown in instant withdraw.
+             */
+            switch (withdrawOption) {
+              case "instant":
+                switch (vaultOption) {
+                  case "rstETH-THETA":
+                    actionDetails.push({
+                      key: "Max Slippage",
+                      value: "0.3%",
+                    });
+                    break;
+                  default:
+                    actionDetails.push({
+                      key: "Strategy",
+                      value: isPutVault(vaultOption)
+                        ? "PUT SELLING"
+                        : "COVERED CALL",
+                    });
+                }
+            }
+        }
+        break;
+      case ACTIONS.transfer:
+        actionDetails.push(
+          {
+            key: "Transfer To",
+            value: t(`shared:ProductCopies:${receiveVaultOption!}:title`),
+          },
+          {
+            key: "Transfer From",
+            value: t(`shared:ProductCopies:${vaultOption}:title`),
+          },
+          {
+            key: "Transfer Fee",
+            value: "0.00%",
+          }
+        );
+    }
 
-    actionDetails.push({
-      key: "Counterparty",
-      value: "Ribbon Diverisified",
-    });
-
-    return actionDetails;
+    const details: ActionDetail[] = [
+      { key: "Product", value: t(`shared:ProductCopies:${vaultOption}:title`) },
+      ...actionDetails,
+    ];
+    return details;
   }, [
     actionType,
     latestAPY,
@@ -436,8 +462,8 @@ const PreviewStep: React.FC<{
                   color={color}
                 >
                   <PrimaryText fontSize={14} lineHeight={20} color={color}>
-                    IMPORTANT: Your funds will be available for withdrawal at
-                    5pm UTC on {withdrawalDate}
+                    Your funds will be deployed in the vault’s next weekly
+                    strategy at 11am UTC on Friday
                   </PrimaryText>
                 </WarningContainer>
               );
@@ -535,4 +561,4 @@ const PreviewStep: React.FC<{
   }
 };
 
-export default PreviewStep;
+export default DepositFormStep;

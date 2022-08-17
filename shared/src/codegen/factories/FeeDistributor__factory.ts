@@ -127,6 +127,7 @@ const _abi = [
     inputs: [],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 819695,
   },
   {
     name: "ve_for_at",
@@ -148,6 +149,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 249507,
   },
   {
     name: "checkpoint_total_supply",
@@ -155,6 +157,7 @@ const _abi = [
     inputs: [],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 10592495,
   },
   {
     name: "claim",
@@ -201,6 +204,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 27012626,
   },
   {
     name: "burn",
@@ -222,6 +226,7 @@ const _abi = [
     ],
     stateMutability: "payable",
     type: "function",
+    gas: 823671,
   },
   {
     name: "commit_admin",
@@ -234,6 +239,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 37988,
   },
   {
     name: "apply_admin",
@@ -241,6 +247,7 @@ const _abi = [
     inputs: [],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 39624,
   },
   {
     name: "toggle_allow_checkpoint_token",
@@ -248,6 +255,7 @@ const _abi = [
     inputs: [],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 38763,
   },
   {
     name: "kill_me",
@@ -255,6 +263,7 @@ const _abi = [
     inputs: [],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 72233,
   },
   {
     name: "recover_balance",
@@ -272,6 +281,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 7868,
   },
   {
     name: "recover_eth_balance",
@@ -284,6 +294,7 @@ const _abi = [
     inputs: [],
     stateMutability: "payable",
     type: "function",
+    gas: 37242,
   },
   {
     name: "start_time",
@@ -296,6 +307,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 1661,
   },
   {
     name: "time_cursor",
@@ -308,6 +320,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 1691,
   },
   {
     name: "time_cursor_of",
@@ -325,6 +338,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 1936,
   },
   {
     name: "user_epoch_of",
@@ -342,6 +356,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 1966,
   },
   {
     name: "last_token_time",
@@ -354,6 +369,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 1781,
   },
   {
     name: "tokens_per_week",
@@ -371,6 +387,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 1920,
   },
   {
     name: "voting_escrow",
@@ -383,6 +400,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 1841,
   },
   {
     name: "token",
@@ -395,6 +413,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 1871,
   },
   {
     name: "total_received",
@@ -407,6 +426,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 1901,
   },
   {
     name: "token_last_balance",
@@ -419,6 +439,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 1931,
   },
   {
     name: "ve_supply",
@@ -436,6 +457,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 2070,
   },
   {
     name: "admin",
@@ -448,6 +470,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 1991,
   },
   {
     name: "future_admin",
@@ -460,6 +483,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2021,
   },
   {
     name: "can_checkpoint_token",
@@ -472,6 +496,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2051,
   },
   {
     name: "emergency_return",
@@ -484,6 +509,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2081,
   },
   {
     name: "is_killed",
@@ -496,6 +522,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2111,
   },
 ];
 

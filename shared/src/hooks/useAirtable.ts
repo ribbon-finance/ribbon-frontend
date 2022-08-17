@@ -1,11 +1,7 @@
 import Airtable from "airtable";
-import { FieldSet } from "airtable/lib/field_set";
-import Record from "airtable/lib/record";
 import dotenv from "dotenv";
 import { useEffect, useMemo, useState } from "react";
-import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 import useAssetPrice from "shared/lib/hooks/useAssetPrice";
-// import { ScheduleItem } from "./types";
 
 export interface ScheduleItem {
   strikePrice: number;
@@ -55,7 +51,7 @@ export const useAirtable = () => {
   }, [assetPriceLoading]);
 
   const loading = useMemo(() => {
-    return assetPriceLoading || !schedules
+    return assetPriceLoading || !schedules;
   }, [assetPriceLoading, schedules]);
 
   //   Absolute perf = abs(spot - strike) / strike

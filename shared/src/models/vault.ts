@@ -1,7 +1,6 @@
 import { BigNumber } from "ethers";
 import {
   EarnVaultList,
-  EarnVault as EarnVault2,
   SolanaVaultList,
   VaultList,
   VaultOptions,

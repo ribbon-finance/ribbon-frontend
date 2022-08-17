@@ -7,7 +7,7 @@ import {
   TreasuryVaultList,
 } from "../constants/constants";
 import { isProduction, isTreasury } from "../utils/env";
-import { getV2VaultContract } from "./useV2VaultContract";
+import { getEarnVaultContract } from "./useEarnVaultContract";
 import { impersonateAddress } from "../utils/development";
 import {
   defaultV2VaultData,
@@ -18,7 +18,7 @@ import { usePendingTransactions } from "./pendingTransactionsContext";
 import { useEVMWeb3Context } from "./useEVMWeb3Context";
 import { isVaultSupportedOnChain } from "../utils/vault";
 
-const useFetchV2VaultData = (): V2VaultData => {
+const useFetchEarnVaultData = (): V2VaultData => {
   const {
     chainId,
     active: web3Active,
@@ -46,8 +46,10 @@ const useFetchV2VaultData = (): V2VaultData => {
       return currentCounter;
     });
 
-    const vaultList = isTreasury() ? TreasuryVaultList : EVMVaultList;
-
+    const vaultList = EVMVaultList.filter(checkEarn);
+    function checkEarn(vault: string) {
+      return vault === "rEARN";
+    }
     const responses = await Promise.all(
       vaultList.map(async (vault) => {
         const inferredProviderFromVault = getProviderForNetwork(
@@ -61,7 +63,7 @@ const useFetchV2VaultData = (): V2VaultData => {
             )
         );
 
-        const contract = getV2VaultContract(
+        const contract = getEarnVaultContract(
           library || inferredProviderFromVault,
           vault,
           active
@@ -193,4 +195,4 @@ const useFetchV2VaultData = (): V2VaultData => {
   return data;
 };
 
-export default useFetchV2VaultData;
+export default useFetchEarnVaultData;

@@ -33,11 +33,13 @@ import { getAssetColor, getAssetDecimals } from "shared/lib/utils/asset";
 import * as anchor from "@project-serum/anchor";
 import {
   RibbonCoveredCall,
+  RibbonEarnVault,
   RibbonV2stETHThetaVault,
   RibbonV2ThetaVault,
 } from "shared/lib/codegen";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
-
+import DepositFormStep from "./DepositFormStep";
+import useEarnVaultContract from "shared/lib/hooks/useEarnVaultContract";
 export interface ActionStepsProps {
   vault: {
     vaultOption: VaultOptions;
@@ -74,19 +76,13 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     withdrawMetadata.instantWithdrawBalance,
   ]);
 
-  console.log(firstStep);
   const [txhash, setTxhash] = useState("");
 
   // Keep track of the min stETH exchanged
   const loadingText = useLoadingText();
   const [minSTETHAmount, setMinSTETHAmount] = useState<BigNumber | undefined>();
 
-  const v1Vault = useVault(
-    vaultActionForm.actionType === ACTIONS.migrate
-      ? vaultActionForm.migrateSourceVault || vaultOption
-      : vaultOption
-  );
-  const v2Vault = useV2VaultContract(vaultOption);
+  const earnVault = useEarnVaultContract(vaultOption);
   const { contract, getMinSTETHAmount } = useLidoCurvePool();
   const stETHDepositHelper = useSTETHDepositHelper();
 
@@ -155,14 +151,15 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     vaultActionForm.migrateSourceVault,
   ]);
 
+  const [inputAmount, setInputAmount] = useState<number>(0);
   const [amount, amountStr] = useMemo(() => {
     try {
-      const amount = parseUnits(vaultActionForm.inputAmount || "0", decimals);
+      const amount = parseUnits(inputAmount.toString(), decimals);
       return [amount, amount.toString()];
     } catch (err) {
       return [BigNumber.from(0), "0"];
     }
-  }, [decimals, vaultActionForm.inputAmount]);
+  }, [decimals, inputAmount]);
 
   const cleanupEffects = useCallback(() => {
     setTxhash("");
@@ -231,194 +228,33 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     }
   }, [amount, contract, getMinSTETHAmount, stETHDepositHelper]);
 
-  const handleClickConfirmButton = async () => {
-    const vault = vaultActionForm.vaultVersion === "v1" ? v1Vault : v2Vault;
+  const handleClickNextButton = async () => {
+    onChangeStep(STEPS.previewStep);
+  };
 
-    if (vault !== null || (isSolanaVault(vaultOption) && client !== null)) {
+  const handleClickConfirmButton = async () => {
+    const vault = earnVault as RibbonEarnVault;
+
+    if (vault !== null) {
       // check illegal state transition
       if (step !== STEPS.confirmationStep - 1) return;
       onChangeStep(STEPS.confirmationStep);
       try {
         let res: any;
-        let shares: BigNumber;
-        switch (vaultActionForm.actionType) {
-          case ACTIONS.deposit:
-            switch (vaultOption) {
-              case "rstETH-THETA": {
-                if (isNativeToken(asset)) {
-                  res = await handleSwapCurveAndDepositSTETH();
-                } else {
-                  res = await (
-                    vault as RibbonV2stETHThetaVault
-                  ).depositYieldToken(amountStr);
-                }
-                break;
-              }
+        console.log(amountStr);
+        res = await vault.deposit(amountStr);
 
-              case "rSOL-THETA":
-                if (client) {
-                  const txhash = await client.depositVault(
-                    getSolanaVaultInstance(vaultOption),
-                    new anchor.BN(amountStr)
-                  );
-
-                  res = { hash: txhash };
-                }
-                break;
-
-              case "rsAVAX-THETA":
-                res =
-                  asset === "WAVAX"
-                    ? await depositSAVAX(ethereumProvider, amountStr)
-                    : await (vault as RibbonV2ThetaVault).deposit(amountStr);
-                break;
-
-              default:
-                res = await (isNativeToken(asset)
-                  ? (vault as RibbonV2ThetaVault).depositETH({
-                      value: amountStr,
-                    })
-                  : (vault as RibbonV2ThetaVault).deposit(amountStr));
-            }
-            break;
-          case ACTIONS.withdraw:
-            /** Handle different version of withdraw separately */
-            switch (vaultActionForm.vaultVersion) {
-              /**
-               * V1 withdraw
-               */
-              case "v1":
-                const v1Vault = vault as RibbonCoveredCall;
-                shares = await v1Vault.assetAmountToShares(amountStr);
-                res = await (isETHVault(vaultOption)
-                  ? v1Vault.withdrawETH(shares)
-                  : v1Vault.withdraw(shares));
-                break;
-
-              /**
-               * V2 withdraw
-               */
-              case "earn":
-              case "v2":
-                const v2Vault = vault as RibbonV2ThetaVault;
-                switch (vaultActionForm.withdrawOption) {
-                  /** Instant withdraw for V2 */
-                  case "instant":
-                    switch (vaultActionForm.vaultOption) {
-                      case "rSOL-THETA":
-                        return;
-                      case "rstETH-THETA":
-                        res = await (
-                          vault as RibbonV2stETHThetaVault
-                        ).withdrawInstantly(amountStr, 0, {
-                          gasLimit: 220000,
-                        });
-                        break;
-                      default:
-                        res = await v2Vault.withdrawInstantly(amountStr);
-                    }
-                    break;
-
-                  /** Initiate withdrawal for v2 */
-                  case "standard":
-                    switch (vaultActionForm.vaultOption) {
-                      case "rSOL-THETA":
-                        if (client) {
-                          const txhash = await client.withdrawVault(
-                            getSolanaVaultInstance(vaultOption),
-                            new anchor.BN(amountStr)
-                          );
-
-                          res = { hash: txhash };
-                        }
-                        break;
-                      default:
-                        shares = amount
-                          .mul(BigNumber.from(10).pow(decimals))
-                          .div(pricePerShare);
-                        res = await v2Vault.initiateWithdraw(shares);
-                    }
-                    break;
-                  case "complete":
-                    switch (vaultActionForm.vaultOption) {
-                      case "rstETH-THETA":
-                        // Special for RibbonV2stETH vault
-                        res = await (
-                          vault as RibbonV2stETHThetaVault
-                        ).completeWithdraw({
-                          gasLimit: 400000,
-                        });
-                        break;
-                      default:
-                        res = await v2Vault.completeWithdraw();
-                    }
-                    break;
-                }
-                break;
-            }
-            break;
-          case ACTIONS.transfer:
-            // Transfer action is not currently used at all
-            break;
-          case ACTIONS.migrate:
-            res = await (vault as RibbonCoveredCall).migrate();
-            break;
-        }
-
-        /**
-         * Append transaction into pending transaction list
-         */
-        switch (vaultActionForm.actionType) {
-          case ACTIONS.deposit:
-            addPendingTransaction({
-              txhash: res.hash,
-              type: "deposit",
-              amount: amountStr,
-              vault: vaultOption,
-              asset: asset,
-            });
-            break;
-          case ACTIONS.withdraw:
-            /**
-             * Standard withdrawal
-             */
-            if (vaultActionForm.withdrawOption === "standard") {
-              addPendingTransaction({
-                txhash: res.hash,
-                type: "withdrawInitiation",
-                amount: amountStr,
-                vault: vaultOption,
-              });
-              break;
-            }
-            /**
-             * Other type of withdrawals
-             */
-            addPendingTransaction({
-              txhash: res.hash,
-              type: "withdraw",
-              amount: amountStr,
-              vault: vaultOption,
-            });
-            break;
-          case ACTIONS.migrate:
-            addPendingTransaction({
-              txhash: res.hash,
-              type: "migrate",
-              amount: amountStr,
-              vault: vaultOption,
-            });
-            break;
-          case ACTIONS.transfer:
-            addPendingTransaction({
-              txhash: res.hash,
-              type: ACTIONS.transfer as "transfer",
-              amount: amountStr,
-              transferVault: vaultOption,
-              receiveVault: vaultActionForm.receiveVault!,
-            });
-            break;
-        }
+        console.log("res.hash: " + res.hash);
+        console.log({ asset });
+        console.log({ vaultOption });
+        console.log({ res });
+        addPendingTransaction({
+          txhash: res.hash,
+          type: "deposit",
+          amount: amountStr,
+          vault: vaultOption,
+          asset: asset,
+        });
 
         setTxhash(res.hash);
         onChangeStep(STEPS.submittedStep);
@@ -441,16 +277,24 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       />
     ),
     0: (
-      <FormStep
-        vaultVersion={vaultVersion}
+      <DepositFormStep
+        actionType={vaultActionForm.actionType}
+        onClickUpdateInput={setInputAmount}
+        onClickConfirmButton={handleClickNextButton}
+        asset={asset}
         vaultOption={vaultOption}
-        onFormSubmit={() => onChangeStep(STEPS.previewStep)}
+        vaultVersion={vaultVersion}
       />
+      // <FormStep
+      //   vaultVersion={vaultVersion}
+      //   vaultOption={vaultOption}
+      //   onFormSubmit={() => onChangeStep(STEPS.previewStep)}
+      // />
     ),
     1: (
       <PreviewStep
         actionType={vaultActionForm.actionType}
-        amount={amount}
+        amount={BigNumber.from(inputAmount * 10 ** 6)}
         positionAmount={vaultBalanceInAsset}
         onClickConfirmButton={handleClickConfirmButton}
         asset={asset}

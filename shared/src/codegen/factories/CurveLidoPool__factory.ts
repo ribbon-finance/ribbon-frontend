@@ -338,6 +338,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 5289,
   },
   {
     name: "A_precise",
@@ -350,6 +351,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 5251,
   },
   {
     name: "balances",
@@ -367,6 +369,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 5076,
   },
   {
     name: "get_virtual_price",
@@ -379,6 +382,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 1114301,
   },
   {
     name: "calc_token_amount",
@@ -400,6 +404,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 2218181,
   },
   {
     name: "add_liquidity",
@@ -421,6 +426,7 @@ const _abi = [
     ],
     stateMutability: "payable",
     type: "function",
+    gas: 3484118,
   },
   {
     name: "get_dy",
@@ -446,6 +452,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 2654541,
   },
   {
     name: "exchange",
@@ -475,6 +482,7 @@ const _abi = [
     ],
     stateMutability: "payable",
     type: "function",
+    gas: 2810134,
   },
   {
     name: "remove_liquidity",
@@ -496,6 +504,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 160545,
   },
   {
     name: "remove_liquidity_imbalance",
@@ -517,6 +526,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 3519382,
   },
   {
     name: "calc_withdraw_one_coin",
@@ -538,6 +548,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 1435,
   },
   {
     name: "remove_liquidity_one_coin",
@@ -563,6 +574,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 4113806,
   },
   {
     name: "ramp_A",
@@ -579,6 +591,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 151834,
   },
   {
     name: "stop_ramp_A",
@@ -586,6 +599,7 @@ const _abi = [
     inputs: [],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 148595,
   },
   {
     name: "commit_new_fee",
@@ -602,6 +616,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 110431,
   },
   {
     name: "apply_new_fee",
@@ -609,6 +624,7 @@ const _abi = [
     inputs: [],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 153115,
   },
   {
     name: "revert_new_parameters",
@@ -616,6 +632,7 @@ const _abi = [
     inputs: [],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 21865,
   },
   {
     name: "commit_transfer_ownership",
@@ -628,6 +645,7 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 74603,
   },
   {
     name: "apply_transfer_ownership",
@@ -635,6 +653,7 @@ const _abi = [
     inputs: [],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 116583,
   },
   {
     name: "revert_transfer_ownership",
@@ -642,6 +661,7 @@ const _abi = [
     inputs: [],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 21955,
   },
   {
     name: "withdraw_admin_fees",
@@ -649,6 +669,7 @@ const _abi = [
     inputs: [],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 137597,
   },
   {
     name: "donate_admin_fees",
@@ -656,6 +677,7 @@ const _abi = [
     inputs: [],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 42144,
   },
   {
     name: "kill_me",
@@ -663,6 +685,7 @@ const _abi = [
     inputs: [],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 37938,
   },
   {
     name: "unkill_me",
@@ -670,6 +693,7 @@ const _abi = [
     inputs: [],
     stateMutability: "nonpayable",
     type: "function",
+    gas: 22075,
   },
   {
     name: "coins",
@@ -687,6 +711,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 2160,
   },
   {
     name: "admin_balances",
@@ -704,6 +729,7 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+    gas: 2190,
   },
   {
     name: "fee",
@@ -716,6 +742,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2111,
   },
   {
     name: "admin_fee",
@@ -728,6 +755,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2141,
   },
   {
     name: "owner",
@@ -740,6 +768,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2171,
   },
   {
     name: "lp_token",
@@ -752,6 +781,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2201,
   },
   {
     name: "initial_A",
@@ -764,6 +794,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2231,
   },
   {
     name: "future_A",
@@ -776,6 +807,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2261,
   },
   {
     name: "initial_A_time",
@@ -788,6 +820,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2291,
   },
   {
     name: "future_A_time",
@@ -800,6 +833,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2321,
   },
   {
     name: "admin_actions_deadline",
@@ -812,6 +846,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2351,
   },
   {
     name: "transfer_ownership_deadline",
@@ -824,6 +859,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2381,
   },
   {
     name: "future_fee",
@@ -836,6 +872,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2411,
   },
   {
     name: "future_admin_fee",
@@ -848,6 +885,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2441,
   },
   {
     name: "future_owner",
@@ -860,6 +898,7 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
+    gas: 2471,
   },
 ];
 

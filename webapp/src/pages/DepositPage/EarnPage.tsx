@@ -195,17 +195,10 @@ const EarnPage = () => {
   let logo = <Logo height="100%" />;
 
   const [investedInStrategy] = useMemo(() => {
-    switch (vaultVersion) {
-      case "v1":
-      case "v2":
-      case "earn":
-        if (!vaultAccount) {
-          return [BigNumber.from(0.0)];
-        }
-        return [
-          vaultAccount.totalBalance.sub(vaultAccount.totalPendingDeposit),
-        ];
+    if (!vaultAccount) {
+      return [BigNumber.from(0.0)];
     }
+    return [vaultAccount.totalBalance.sub(vaultAccount.totalPendingDeposit)];
   }, [vaultAccount, vaultVersion]);
 
   const [roi, yieldColor] = useMemo(() => {
@@ -396,7 +389,7 @@ const EarnPage = () => {
                     ? "---"
                     : formatBigNumber(investedInStrategy, decimals)}
                 </HeroText>
-                <Subtitle color={yieldColor}>+{roi}%</Subtitle>
+                <Subtitle color={yieldColor}>+{roi.toFixed(2)}%</Subtitle>
                 <ViewDetailsButton
                   role="button"
                   onClick={() => {

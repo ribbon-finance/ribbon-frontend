@@ -6,7 +6,7 @@ import { Title } from "shared/lib/designSystem";
 import ActionSteps from "./ActionSteps";
 import { Steps, STEPS } from "./types";
 import sizes from "shared/lib/designSystem/sizes";
-import { CloseIcon } from "shared/lib/assets/icons/icons";
+import { BackIcon, CloseIcon } from "shared/lib/assets/icons/icons";
 import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
@@ -50,6 +50,8 @@ const ModalBody = styled.div<ModalBodyProps>`
       case STEPS.confirmationStep:
       case STEPS.submittedStep:
         return "unset";
+      case STEPS.formStep:
+        return "672px";
       default:
         return "396px";
     }
@@ -109,6 +111,20 @@ const ModalHeaderCloseButton = styled.i`
   z-index: 10;
 `;
 
+const ModalHeaderBackButton = styled.i`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: ${theme.border.width} ${theme.border.style} ${colors.border};
+  border-radius: 48px;
+  cursor: pointer;
+  position: absolute;
+  left: ${modalPadding}px;
+  z-index: 10;
+`;
+
 const StepsContainer = styled.div<ModalProps>`
   display: flex;
   flex-direction: column;
@@ -154,9 +170,11 @@ const ActionModal: React.FC<ActionModalProps> = ({
 
     if (step === STEPS.confirmationStep || step === STEPS.submittedStep) {
       return (
-        <ModalNavigationCloseButton onClick={onClose}>
-          <CloseIcon></CloseIcon>
-        </ModalNavigationCloseButton>
+        <>
+          <ModalNavigationCloseButton onClick={onClose}>
+            <CloseIcon></CloseIcon>
+          </ModalNavigationCloseButton>
+        </>
       );
     }
 
@@ -169,36 +187,51 @@ const ActionModal: React.FC<ActionModalProps> = ({
   }, [isDesktop, onClose, step]);
 
   const renderModalCloseButton = useCallback(() => {
-    if (!isDesktop && step !== STEPS.previewStep) {
+    if (!isDesktop) {
       return;
     }
 
     return (
       <ModalHeaderCloseButton onClick={onClose}>
-        <CloseIcon></CloseIcon>
+        <CloseIcon />
       </ModalHeaderCloseButton>
     );
   }, [isDesktop, step, onClose]);
 
+  const renderModalBackButton = useCallback(() => {
+    if (!isDesktop) {
+      return;
+    }
+
+    return (
+      <ModalHeaderBackButton onClick={() => setStep(STEPS.formStep)}>
+        <BackIcon />
+      </ModalHeaderBackButton>
+    );
+  }, [isDesktop, step, onClose]);
+
   const renderModalHeader = useCallback(() => {
-    if (step === STEPS.previewStep) {
+    if (step === STEPS.formStep) {
       return (
         <InvisibleModalHeader className="position-relative d-flex align-items-center justify-content-center">
           {renderModalCloseButton()}
         </InvisibleModalHeader>
       );
     }
-
-    if (step === STEPS.formStep) {
-      return <></>;
+    if (step === STEPS.previewStep) {
+      return (
+        <InvisibleModalHeader className="position-relative d-flex align-items-center justify-content-center">
+          {renderModalCloseButton()}
+          {renderModalBackButton()}
+        </InvisibleModalHeader>
+      );
     }
 
     const actionWord = capitalize(vaultActionForm.actionType);
     const titles = {
       [STEPS.warningStep]: "",
-      [STEPS.formStep]: "",
-      [STEPS.previewStep]:
-        vaultActionForm.actionType === "migrate" ? "" : `${actionWord} Preview`,
+      [STEPS.formStep]: "Deposit",
+      [STEPS.previewStep]: `Deposit Preview`,
       [STEPS.confirmationStep]: (() => {
         switch (vaultActionForm.actionType) {
           case "withdraw":
@@ -227,7 +260,10 @@ const ActionModal: React.FC<ActionModalProps> = ({
 
     return (
       <ModalHeaderWithBackground className="position-relative d-flex align-items-center justify-content-center">
-        <Title>{titles[step]}</Title>
+        <Title>
+          {titles[step]}
+          {console.log("reached")}
+        </Title>
         {renderModalCloseButton()}
       </ModalHeaderWithBackground>
     );

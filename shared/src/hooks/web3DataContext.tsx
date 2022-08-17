@@ -28,6 +28,7 @@ import useFetchAssetBalanceData, {
 } from "./useFetchAssetBalanceData";
 import useFetchLiquidityMiningData from "./useFetchLiquidityMiningData";
 import useFetchV2VaultData from "./useFetchV2VaultData";
+import useFetchEarnVaultData from "./useFetchEarnVaultData";
 import useFetchVaultData from "./useFetchVaultData";
 import {
   defaultLidoOracleData,
@@ -200,6 +201,7 @@ export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({
 }) => {
   const vaultData = useFetchVaultData();
   const v2VaultData = useFetchV2VaultData();
+  const earnVaultData = useFetchEarnVaultData();
   const solVaultData = useFetchSolVaultData();
   const assetBalance = useFetchAssetBalanceData();
   const liquidityGaugeV5Pool = useFetchLiquidityGaugeV5Data();
@@ -212,7 +214,7 @@ export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({
       value={{
         v1: vaultData,
         v2: v2VaultData,
-        earn: v2VaultData,
+        earn: earnVaultData,
         solana: solVaultData,
         assetBalance,
         liquidityGaugeV5Pool,

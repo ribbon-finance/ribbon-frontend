@@ -29,11 +29,6 @@ export const getV2VaultContract = (
         VaultAddressMap[vaultOption].v2!,
         provider
       );
-    case "rEARN":
-      return RibbonV2ThetaVault__factory.connect(
-        VaultAddressMap[vaultOption].earn!,
-        provider
-      );
     default:
       return RibbonV2ThetaVault__factory.connect(
         VaultAddressMap[vaultOption].v2!,

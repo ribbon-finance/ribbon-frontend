@@ -200,6 +200,7 @@ const _abi = [
       },
     ],
     outputs: [],
+    gas: 39445,
   },
   {
     stateMutability: "nonpayable",
@@ -207,6 +208,7 @@ const _abi = [
     name: "apply_transfer_ownership",
     inputs: [],
     outputs: [],
+    gas: 41536,
   },
   {
     stateMutability: "nonpayable",
@@ -219,6 +221,7 @@ const _abi = [
       },
     ],
     outputs: [],
+    gas: 39505,
   },
   {
     stateMutability: "view",
@@ -236,6 +239,7 @@ const _abi = [
         type: "int128",
       },
     ],
+    gas: 3105,
   },
   {
     stateMutability: "nonpayable",
@@ -252,6 +256,7 @@ const _abi = [
       },
     ],
     outputs: [],
+    gas: 9355936476,
   },
   {
     stateMutability: "nonpayable",
@@ -272,6 +277,7 @@ const _abi = [
       },
     ],
     outputs: [],
+    gas: 9355936476,
   },
   {
     stateMutability: "nonpayable",
@@ -279,6 +285,7 @@ const _abi = [
     name: "checkpoint",
     inputs: [],
     outputs: [],
+    gas: 9265868764,
   },
   {
     stateMutability: "nonpayable",
@@ -291,6 +298,7 @@ const _abi = [
       },
     ],
     outputs: [],
+    gas: 9320254139,
   },
   {
     stateMutability: "view",
@@ -308,6 +316,7 @@ const _abi = [
         type: "uint256",
       },
     ],
+    gas: 11293,
   },
   {
     stateMutability: "view",
@@ -329,6 +338,7 @@ const _abi = [
         type: "uint256",
       },
     ],
+    gas: 11293,
   },
   {
     stateMutability: "nonpayable",
@@ -346,6 +356,7 @@ const _abi = [
         type: "uint256",
       },
     ],
+    gas: 9320264858,
   },
   {
     stateMutability: "nonpayable",
@@ -367,6 +378,7 @@ const _abi = [
         type: "uint256",
       },
     ],
+    gas: 9320264858,
   },
   {
     stateMutability: "nonpayable",
@@ -379,6 +391,7 @@ const _abi = [
       },
     ],
     outputs: [],
+    gas: 9355872388,
   },
   {
     stateMutability: "nonpayable",
@@ -395,6 +408,7 @@ const _abi = [
       },
     ],
     outputs: [],
+    gas: 9355872388,
   },
   {
     stateMutability: "nonpayable",
@@ -411,6 +425,7 @@ const _abi = [
       },
     ],
     outputs: [],
+    gas: 9355717527,
   },
   {
     stateMutability: "nonpayable",
@@ -427,6 +442,7 @@ const _abi = [
       },
     ],
     outputs: [],
+    gas: 9410175915,
   },
   {
     stateMutability: "nonpayable",
@@ -443,6 +459,7 @@ const _abi = [
       },
     ],
     outputs: [],
+    gas: 9375128672,
   },
   {
     stateMutability: "view",
@@ -460,6 +477,7 @@ const _abi = [
         type: "uint256",
       },
     ],
+    gas: 5443,
   },
   {
     stateMutability: "view",
@@ -477,6 +495,7 @@ const _abi = [
         type: "uint256",
       },
     ],
+    gas: 5413,
   },
   {
     stateMutability: "view",
@@ -489,6 +508,7 @@ const _abi = [
         type: "uint256",
       },
     ],
+    gas: 5122,
   },
   {
     stateMutability: "view",
@@ -506,6 +526,7 @@ const _abi = [
         type: "uint256",
       },
     ],
+    gas: 5473,
   },
   {
     stateMutability: "view",
@@ -518,6 +539,7 @@ const _abi = [
         type: "address",
       },
     ],
+    gas: 2970,
   },
   {
     stateMutability: "view",
@@ -530,6 +552,7 @@ const _abi = [
         type: "address",
       },
     ],
+    gas: 3000,
   },
   {
     stateMutability: "view",
@@ -542,6 +565,7 @@ const _abi = [
         type: "address",
       },
     ],
+    gas: 3030,
   },
   {
     stateMutability: "view",
@@ -554,6 +578,7 @@ const _abi = [
         type: "address",
       },
     ],
+    gas: 3060,
   },
   {
     stateMutability: "view",
@@ -566,6 +591,7 @@ const _abi = [
         type: "address",
       },
     ],
+    gas: 3090,
   },
   {
     stateMutability: "view",
@@ -578,6 +604,7 @@ const _abi = [
         type: "int128",
       },
     ],
+    gas: 3120,
   },
   {
     stateMutability: "view",
@@ -590,6 +617,7 @@ const _abi = [
         type: "int128",
       },
     ],
+    gas: 3150,
   },
   {
     stateMutability: "view",
@@ -607,6 +635,7 @@ const _abi = [
         type: "string",
       },
     ],
+    gas: 13756,
   },
   {
     stateMutability: "view",
@@ -624,6 +653,7 @@ const _abi = [
         type: "address",
       },
     ],
+    gas: 3255,
   },
   {
     stateMutability: "view",
@@ -659,6 +689,7 @@ const _abi = [
         ],
       },
     ],
+    gas: 8045,
   },
   {
     stateMutability: "view",
@@ -676,6 +707,7 @@ const _abi = [
         type: "uint256",
       },
     ],
+    gas: 3536,
   },
   {
     stateMutability: "view",
@@ -697,6 +729,7 @@ const _abi = [
         type: "uint256",
       },
     ],
+    gas: 3832,
   },
   {
     stateMutability: "view",
@@ -728,6 +761,7 @@ const _abi = [
         ],
       },
     ],
+    gas: 5868,
   },
   {
     stateMutability: "view",
@@ -745,6 +779,7 @@ const _abi = [
         type: "uint256",
       },
     ],
+    gas: 3626,
   },
   {
     stateMutability: "view",
@@ -776,6 +811,7 @@ const _abi = [
         ],
       },
     ],
+    gas: 5938,
   },
   {
     stateMutability: "view",
@@ -793,6 +829,7 @@ const _abi = [
         type: "uint256",
       },
     ],
+    gas: 3465,
   },
   {
     stateMutability: "view",
@@ -810,6 +847,7 @@ const _abi = [
         type: "uint256",
       },
     ],
+    gas: 3565,
   },
   {
     stateMutability: "view",
@@ -822,6 +860,7 @@ const _abi = [
         type: "uint256",
       },
     ],
+    gas: 3480,
   },
   {
     stateMutability: "view",
@@ -843,6 +882,7 @@ const _abi = [
         type: "uint256",
       },
     ],
+    gas: 3901,
   },
   {
     stateMutability: "view",
@@ -860,6 +900,7 @@ const _abi = [
         type: "uint256",
       },
     ],
+    gas: 3585,
   },
 ];
 
