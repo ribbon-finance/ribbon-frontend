@@ -9,6 +9,8 @@ import {
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { isPracticallyZero } from "shared/lib/utils/math";
 import { getAssetDecimals } from "shared/lib/utils/asset";
+import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import useVaultOption from "../../hooks/useVaultOption";
 
 const ParagraphText = styled(SecondaryText)`
   color: rgba(255, 255, 255, 0.64);
@@ -33,7 +35,6 @@ const CounterpartyListSubset: Counterparty[] = ["R-EARN DIVERSIFIED"];
 
 const Counterparties: React.FC = () => {
   const { vaultAccounts } = useVaultAccounts("earn");
-
   const userCounterpartyList = useMemo(() => {
     let userCounterpartyList: Counterparty[] = [];
     for (const earnVault of EarnVaultList) {

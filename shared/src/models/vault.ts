@@ -18,6 +18,7 @@ export interface Vault {
   totalNotionalVolume: BigNumber;
   totalWithdrawalFee?: BigNumber; // v1
   totalFeeCollected?: BigNumber; // v2
+  totalBorrowed?: BigNumber;
   underlyingAsset: string;
   underlyingSymbol: string;
   depositors: string[];

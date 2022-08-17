@@ -101,7 +101,7 @@ const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
         case "step1":
           return (
             <>
-              Earn {expectedYield.toFixed(2)}% yield with full principal
+              Earn {(expectedYield * 100).toFixed(2)}% yield with full principal
               protection
             </>
           );

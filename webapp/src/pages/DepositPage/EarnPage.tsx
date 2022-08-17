@@ -32,10 +32,7 @@ import {
   EarnOuterRing,
 } from "shared/lib/assets/icons/icons";
 
-import { getAuctionSchedule } from "shared/lib/hooks/useAirtable";
-import { couldStartTrivia, isConstructorDeclaration } from "typescript";
-import useAssetPrice from "shared/lib/hooks/useAssetPrice";
-import { calculateEarlyUnlockPenaltyPercentage } from "shared/lib/utils/governanceMath";
+import { useAirtable } from "shared/lib/hooks/useAirtable";
 const { formatUnits } = ethers.utils;
 
 const rotateClockwise = keyframes`
@@ -157,38 +154,9 @@ const StyledActionButton = styled(ActionButton)`
 const EarnPage = () => {
   const { vaultOption, vaultVersion } = useVaultOption();
   const { active, account, chainId } = useWeb3Wallet();
-  const [expectedYield, setExpectedYield] = useState<number>(0);
-  const { price: ETHPrice, loading: assetPriceLoading } = useAssetPrice({
-    asset: "WETH",
-  });
 
-  const airtableValues = useCallback(async () => {
-    await getAuctionSchedule().then((val) => {
-      const values = val[0];
-      setExpectedYield(
-        calculateExpectedYield(
-          values.strikePrice,
-          values.baseYield,
-          values.maxYield
-        )
-      );
-    });
-  }, [ETHPrice]);
+  const { expectedYield } = useAirtable();
 
-  useEffect(() => {
-    airtableValues();
-  }, [airtableValues]);
-
-  const calculateExpectedYield = (
-    strikePrice: number,
-    baseYield: number,
-    maxYield: number
-  ) => {
-    const percentage = (Math.abs(ETHPrice - strikePrice) / strikePrice) * 100;
-    return percentage > 8
-      ? baseYield
-      : baseYield + (maxYield - baseYield) * (percentage / 8);
-  };
   useRedirectOnWrongChain(vaultOption, chainId);
   usePullUp();
   let color;
@@ -236,6 +204,7 @@ const EarnPage = () => {
         ];
     }
   }, [vaultAccount, vaultVersion]);
+
   const [roi, yieldColor] = useMemo(() => {
     const vaultAccount = vaultAccounts["rEARN"];
     if (

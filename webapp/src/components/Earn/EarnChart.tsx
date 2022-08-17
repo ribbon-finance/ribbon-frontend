@@ -3,6 +3,7 @@ import Chart, { ChartOptions, ChartData } from "chart.js";
 import { Line } from "react-chartjs-2";
 
 import colors from "shared/lib/designSystem/colors";
+import { useAirtable } from "shared/lib/hooks/useAirtable";
 
 /**
  * Strike: Strike price of the option
@@ -14,7 +15,9 @@ import colors from "shared/lib/designSystem/colors";
 interface ProfitChartProps {
   onHoverPrice: (price: number | undefined) => void;
   onHoverPercentage: (percentage: number | undefined) => void;
-  spotPrice: number;
+  absolutePerformance: number;
+  maxYield: number;
+  baseYield: number;
   strikePrice: number;
   defaultPercentageDiff: string;
   defaultMoneyness: (moneyness: number) => void;
@@ -26,49 +29,87 @@ const EarnChart: React.FC<ProfitChartProps> = ({
   onHoverPercentage,
   defaultPercentageDiff,
   defaultMoneyness,
+  absolutePerformance,
+  maxYield,
+  baseYield,
+  strikePrice,
+  barrierPercentage,
 }) => {
   const [hoveredIndex, setIndex] = useState<number>();
 
+  const { loading } = useAirtable();
   // x axis
   const priceRange = useMemo(() => {
-    var leftArray = [];
-    var array = [];
-    var rightArray = [];
-    for (let i = -28; i < -8; i += 1) {
-      leftArray.push(i);
+    let leftArray = [];
+    let array = [];
+    let rightArray = [];
+    if (loading) {
+      barrierPercentage = 0.08;
+    }
+    // for (let i = -28; i < -8; i += 1) {
+    //   leftArray.push(i);
+    // }
+    for (let i = 0; i < 20; i += 1) {
+      leftArray.push(-Math.round(barrierPercentage * 100) - (20 - i));
     }
 
-    for (let i = -8; i <= 8; i += 1) {
+    for (
+      let i = -(Math.round(barrierPercentage * 100) - 1);
+      i <= Math.round(barrierPercentage * 100) - 1;
+      i += 1
+    ) {
       array.push(i);
     }
 
-    for (let i = 9; i <= 28; i += 1) {
-      rightArray.push(i);
+    for (let i = 0; i < 20; i += 1) {
+      rightArray.push(Math.round(barrierPercentage * 100) + i + 1);
     }
 
-    return [...leftArray, -8.01, ...array, 8.01, ...rightArray];
-  }, []);
+    return [
+      ...leftArray,
+      -(barrierPercentage * 100) - 0.01,
+      -(barrierPercentage * 100),
+      ...array,
+      barrierPercentage * 100,
+      barrierPercentage * 100 + 0.01,
+      ...rightArray,
+    ];
+  }, [barrierPercentage]);
 
   const otherRange = useMemo(() => {
-    var leftArray = [];
-    var array = [];
-    var rightArray = [];
+    let leftArray = [];
+    let array = [];
+    let rightArray = [];
 
-    for (let i = -28; i <= -8; i += 1) {
+    if (loading) {
+      barrierPercentage = 0.08;
+      maxYield = 0.17;
+      baseYield = 0.04;
+    }
+    for (let i = 0; i <= 20; i += 1) {
       leftArray.push(4);
     }
 
-    for (let i = -8; i <= 8; i += 1) {
-      array.push(4 + Math.abs(i / 8) * 25.12);
+    for (
+      let i = -Math.round(barrierPercentage * 100);
+      i <= Math.round(barrierPercentage * 100);
+      i += 1
+    ) {
+      array.push(
+        4 +
+          Math.abs(i / (barrierPercentage * 100)) * (maxYield - baseYield) * 100
+      );
     }
 
-    for (let i = 8; i <= 28; i += 1) {
+    for (let i = 0; i <= 20; i += 1) {
       rightArray.push(4);
     }
     // console.log([...leftArray, ...array, ...rightArray]);
     return [...leftArray, ...array, ...rightArray];
-  }, []);
+  }, [barrierPercentage, loading]);
 
+  console.log({ priceRange });
+  console.log({ otherRange });
   const getDefaultMoneyness = useMemo(() => {
     defaultMoneyness(
       otherRange[priceRange.indexOf(parseInt(defaultPercentageDiff))]
@@ -98,7 +139,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       ctx.save();
       ctx.beginPath();
       ctx.moveTo(priceX, topY - 25);
-      ctx.lineTo(priceX, bottomY + 50);
+      ctx.lineTo(priceX, bottomY + 34);
       ctx.lineWidth = 1;
       ctx.strokeStyle = colors.primaryText;
       ctx.stroke();
@@ -107,8 +148,11 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       /**
        * Draw price text
        */
-      ctx.fillStyle = Math.abs(price) > 8 ? `${colors.red}` : `${colors.green}`;
-      const fontSize = 12;
+      ctx.fillStyle =
+        Math.abs(price) > barrierPercentage * 100
+          ? `${colors.red}`
+          : `${colors.green}`;
+      const fontSize = 14;
       const fontStyle = "normal";
       const fontFamily = "VCR, sans-serif";
       ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
@@ -131,7 +175,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
         xPosition = rightX - padding - textLength / 2;
       }
 
-      ctx.fillText(text, xPosition, bottomY + 62);
+      ctx.fillText(text, xPosition, bottomY + 46);
 
       ctx.globalCompositeOperation = "source-over";
     },
@@ -161,7 +205,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       ctx.save();
       ctx.beginPath();
       ctx.moveTo(priceX, topY - 25);
-      ctx.lineTo(priceX, bottomY + 50);
+      ctx.lineTo(priceX, bottomY + 34);
       ctx.lineWidth = 1;
       ctx.strokeStyle = colors.primaryText + "66";
       ctx.setLineDash([5, 5]);
@@ -171,8 +215,11 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       /**
        * Draw price text
        */
-      ctx.fillStyle = Math.abs(price) > 8 ? `${colors.red}` : `${colors.green}`;
-      const fontSize = 12;
+      ctx.fillStyle =
+        Math.abs(price) > barrierPercentage * 100
+          ? `${colors.red}`
+          : `${colors.green}`;
+      const fontSize = 14;
       const fontStyle = "normal";
       const fontFamily = "VCR, sans-serif";
       ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
@@ -195,7 +242,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
         xPosition = rightX - padding - textLength / 2;
       }
 
-      ctx.fillText(text, xPosition, bottomY + 62);
+      ctx.fillText(text, xPosition, bottomY + 46);
     },
     []
   );
@@ -244,7 +291,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
         xPosition = rightX - padding - textLength / 2;
       }
 
-      ctx.fillText(text, xPosition, bottomY + 24);
+      ctx.fillText(text, xPosition, bottomY + 12);
     },
     []
   );
@@ -297,7 +344,10 @@ const EarnChart: React.FC<ProfitChartProps> = ({
           {
             label: "breakevenPoint",
             data: priceRange.map((p) =>
-              !hoveredIndex && (p === 8 || p === -8) ? 29 : null
+              !hoveredIndex &&
+              (p === barrierPercentage * 100 || p === -barrierPercentage * 100)
+                ? maxYield * 100
+                : null
             ),
             type: "line",
             pointRadius: 4,
@@ -372,18 +422,18 @@ const EarnChart: React.FC<ProfitChartProps> = ({
               ctx.stroke();
 
               ctx.beginPath();
-              ctx.moveTo(leftX, bottomY + 10);
-              ctx.lineTo(rightX, bottomY + 10);
+              ctx.moveTo(leftX, bottomY + 2);
+              ctx.lineTo(rightX, bottomY + 2);
               ctx.stroke();
 
               ctx.beginPath();
-              ctx.moveTo(rightX / 2, bottomY + 50);
+              ctx.moveTo(rightX / 2, bottomY + 35);
               ctx.lineTo(rightX / 2, topY - 25);
               ctx.stroke();
 
               ctx.beginPath();
-              ctx.moveTo(leftX, bottomY + 50);
-              ctx.lineTo(rightX, bottomY + 50);
+              ctx.moveTo(leftX, bottomY + 35);
+              ctx.lineTo(rightX, bottomY + 35);
               ctx.stroke();
 
               ctx.restore();
@@ -392,9 +442,9 @@ const EarnChart: React.FC<ProfitChartProps> = ({
                 drawDefaultPricePoint(
                   chart,
                   priceRange[
-                    priceRange.indexOf(parseInt(defaultPercentageDiff))
+                    priceRange.indexOf(Math.round(absolutePerformance * 100))
                   ],
-                  priceRange.indexOf(parseInt(defaultPercentageDiff))
+                  priceRange.indexOf(Math.round(absolutePerformance * 100))
                 );
               }
 
@@ -405,8 +455,16 @@ const EarnChart: React.FC<ProfitChartProps> = ({
                 drawPricePoint(chart, priceRange[hoveredIndex], hoveredIndex);
               }
 
-              drawDefaultBarriers(chart, 8, priceRange.indexOf(8));
-              drawDefaultBarriers(chart, -8, priceRange.indexOf(-8));
+              drawDefaultBarriers(
+                chart,
+                barrierPercentage * 100,
+                priceRange.indexOf(barrierPercentage * 100)
+              );
+              drawDefaultBarriers(
+                chart,
+                -barrierPercentage * 100,
+                priceRange.indexOf(-barrierPercentage * 100)
+              );
             },
           },
         ]}

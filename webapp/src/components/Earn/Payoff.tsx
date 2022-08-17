@@ -11,6 +11,7 @@ import colors from "shared/lib/designSystem/colors";
 import EarnModalContentExtra from "shared/lib/components/Common/EarnModalContentExtra";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import { useAirtable } from "shared/lib/hooks/useAirtable";
 const ChartContainer = styled.div`
   height: 264px;
   margin: 0;
@@ -18,7 +19,7 @@ const ChartContainer = styled.div`
 `;
 
 const RelativeContainer = styled.div`
-  height: 264px;
+  height: 208px;
   width: 100%;
   display: flex;
 `;
@@ -72,10 +73,13 @@ const CalculationData = styled(Title)<{ variant?: "red" | "green" }>`
 interface ProfitCalculatorProps {}
 
 const Payoff: React.FC<ProfitCalculatorProps> = () => {
-  const spotPrice = 1049;
-  const strikePrice = 1000;
-  const defaultPercentageDiff = Math.abs((spotPrice / strikePrice - 1) * 100);
-  const barrierPercentage = 8; // 8% upper and lower barrier
+  const {
+    strikePrice,
+    maxYield,
+    baseYield,
+    absolutePerformance,
+    barrierPercentage,
+  } = useAirtable();
   const [input, setInput] = useState<string>("");
   const [hoverPrice, setHoverPrice] = useState<number>();
   const [hoverPercentage, setHoverPercentage] = useState<number>();
@@ -83,24 +87,22 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
   const [, setChartHovering] = useState(false);
 
   const optionMoneyness = useMemo(() => {
-    console.log(hoverPercentage);
     return hoverPercentage
-      ? Math.abs(hoverPercentage) > barrierPercentage
+      ? Math.abs(hoverPercentage) > barrierPercentage * 100
         ? 0
         : Math.abs(hoverPercentage)
-      : defaultPercentageDiff > barrierPercentage
+      : absolutePerformance > barrierPercentage
       ? 0
-      : defaultPercentageDiff;
-  }, [defaultPercentageDiff, hoverPercentage]);
+      : absolutePerformance;
+  }, [absolutePerformance, hoverPercentage]);
 
   return (
     <>
       <BaseModalContentColumn marginTop={-4}>
         <CalculationContainer2>
-          <ParagraphText fontWeight={500}>Expected Yield (APY)</ParagraphText>
+          <ParagraphText fontWeight={500}>Max Yield (APY)</ParagraphText>
           <CalculationData variant={"green"}>
-            +{hoverPrice ? hoverPrice.toFixed(2) : defaultMoneyness?.toFixed(2)}
-            %
+            +{(maxYield * 100).toFixed(2)}%
           </CalculationData>
         </CalculationContainer2>
       </BaseModalContentColumn>
@@ -119,17 +121,17 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
               onHoverPrice={setHoverPrice}
               onHoverPercentage={setHoverPercentage}
               defaultMoneyness={setDefaultMoneyness}
-              spotPrice={spotPrice}
-              strikePrice={strikePrice}
-              defaultPercentageDiff={Math.round(defaultPercentageDiff).toFixed(
-                2
-              )}
+              baseYield={baseYield}
+              maxYield={maxYield}
+              absolutePerformance={absolutePerformance}
+              strikePrice={strikePrice * 100}
+              defaultPercentageDiff={Math.round(6).toFixed(2)}
               barrierPercentage={barrierPercentage}
             />
           </ChartContainer>
         </RelativeContainer>
       </BaseModalContentColumn>
-      <BaseModalContentColumn marginTop={-24}>
+      <BaseModalContentColumn marginTop={16}>
         <SecondaryText
           fontSize={12}
           lineHeight={16}
@@ -140,6 +142,30 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
       </BaseModalContentColumn>
       <EarnModalContentExtra style={{ flex: 1 }}>
         <CalculationContainer>
+          <CalculationColumn>
+            <SecondaryText
+              color={colors.primaryText + "7A"}
+              fontWeight={500}
+              fontSize={14}
+            >
+              Base Yield
+            </SecondaryText>
+            <div className="mr-auto">
+              <TooltipExplanation
+                title="BASE YIELD"
+                explanation="Base Yield is good"
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HelpInfo containerRef={ref} {...triggerHandler}>
+                    i
+                  </HelpInfo>
+                )}
+              />
+            </div>
+            <CalculationData variant={"green"}>
+              {"+"}
+              {(baseYield * 100).toFixed(2)}%
+            </CalculationData>
+          </CalculationColumn>
           <CalculationColumn>
             <SecondaryText
               color={colors.primaryText + "7A"}
@@ -170,7 +196,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
               fontSize={14}
               color={"rgba(255, 255, 255, 0.48)"}
             >
-              Max Yield (APY)
+              Expected Yield (APY)
             </SecondaryText>
             <div className="mr-auto">
               <TooltipExplanation
@@ -183,7 +209,13 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
                 )}
               />
             </div>
-            <CalculationData variant={"green"}>+29.12%</CalculationData>
+            <CalculationData variant={"green"}>
+              +
+              {hoverPrice
+                ? hoverPrice.toFixed(2)
+                : defaultMoneyness?.toFixed(2)}
+              %
+            </CalculationData>
           </CalculationColumn>
         </CalculationContainer>
       </EarnModalContentExtra>

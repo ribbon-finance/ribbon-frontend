@@ -27,8 +27,7 @@ const ExtraContainer = styled.div<{
     props.backgroundColor ? props.backgroundColor : colors.background.three};
   border-radius: ${theme.border.radius};
   margin-top: -16px;
-  padding: 16px;
-  padding-top: 32px;
+  padding: 24px 16px 8px 16px;
 `;
 
 interface ModalContentExtraProps extends HTMLAttributes<HTMLDivElement> {
