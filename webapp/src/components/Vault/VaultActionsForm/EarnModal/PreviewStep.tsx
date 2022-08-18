@@ -131,7 +131,7 @@ const PreviewStep: React.FC<{
 
     // if (!currentOption) return "---";
 
-    let firstOpenLoanTime = moment("2022-09-01 UTC 17:00:00");
+    let firstOpenLoanTime = moment.utc("2022-09-02").set("hour", 17);
 
     let toDepositTime;
 

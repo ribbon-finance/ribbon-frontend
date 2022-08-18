@@ -93,13 +93,14 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
     return hoverPercentage
       ? Math.abs(hoverPercentage) > barrierPercentage * 100
         ? 0
-        : Math.abs(hoverPercentage)
+        : hoverPercentage / 100
       : absolutePerformance > barrierPercentage
       ? 0
-      : absolutePerformance;
+      : performance;
   }, [absolutePerformance, performance, barrierPercentage, hoverPercentage]);
 
   console.log({ optionMoneyness });
+  console.log(Math.round(optionMoneyness * 100));
   // x axis
   const moneynessRange = useMemo(() => {
     let leftArray = [];
@@ -159,7 +160,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
     return [...leftArray, ...array, ...rightArray];
   }, [barrierPercentage, baseYield, maxYield]);
 
-  const defaultMoneyness = useMemo(() => {
+  const defaultExpectedYield = useMemo(() => {
     return yieldRange[
       moneynessRange.indexOf(parseInt(Math.round(6).toFixed(2)))
     ];
@@ -240,7 +241,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
             <div className="mr-auto">
               <TooltipExplanation
                 title="OPTIONS MONEYNESS"
-                explanation="I love money."
+                explanation="The moneyness is defined as the current spot price over the strike price. It shows the relative position of the current price of the underlying asset with respect to the strike price."
                 renderContent={({ ref, ...triggerHandler }) => (
                   <HelpInfo containerRef={ref} {...triggerHandler}>
                     i
@@ -255,9 +256,11 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
             >
               {loading
                 ? loadingText
-                : `${optionMoneyness === 0 ? "" : "+"}${Math.round(
-                    optionMoneyness * 100
-                  ).toFixed(2)}%`}
+                : `${optionMoneyness <= 0 ? "" : "+"}${
+                    optionMoneyness <= 0
+                      ? Math.floor(optionMoneyness * 100).toFixed(2)
+                      : Math.round(optionMoneyness * 100).toFixed(2)
+                  }%`}
             </CalculationData>
           </CalculationColumn>
           <CalculationColumn>
@@ -271,7 +274,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
             <div className="mr-auto">
               <TooltipExplanation
                 title="MAX YIELD"
-                explanation="I love yield."
+                explanation="The max yield is defined as the max payout if the price of the underlying asset is at the barrier at expiry. The formula used to compute the max yield is as follows: BASE APY + (MAX PERF * 4 * PARTICIPATION RATE + 1)^(365 / 28) - 1"
                 renderContent={({ ref, ...triggerHandler }) => (
                   <HelpInfo containerRef={ref} {...triggerHandler}>
                     i
@@ -285,7 +288,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
                 : `+${
                     hoverPrice
                       ? hoverPrice.toFixed(2)
-                      : defaultMoneyness?.toFixed(2)
+                      : defaultExpectedYield?.toFixed(2)
                   }%`}
             </CalculationData>
           </CalculationColumn>

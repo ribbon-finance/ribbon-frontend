@@ -108,16 +108,13 @@ const DepositFormStep: React.FC<{
   const { t } = useTranslation();
   const color = getVaultColor(vaultOption);
   const latestAPY = useLatestAPY(vaultOption, vaultVersion);
-  const { priceHistory } = useVaultPriceHistory(vaultOption, vaultVersion);
   const {
     data: {
       cap,
       decimals,
       depositBalanceInAsset,
       lockedBalanceInAsset,
-      round,
       totalBalance,
-      withdrawals,
     },
     loading,
   } = useV2VaultData(vaultOption);
@@ -163,10 +160,9 @@ const DepositFormStep: React.FC<{
     active,
     cap,
     decimals,
-    depositBalanceInAsset,
+    inputAmount,
     isInputNonZero,
     loading,
-    lockedBalanceInAsset,
     totalBalance,
     userAssetBalance,
     vaultBalanceInAsset,
@@ -183,6 +179,7 @@ const DepositFormStep: React.FC<{
     }
     return vaultAccount.totalBalance.sub(vaultAccount.totalPendingDeposit);
   }, [vaultAccount, vaultVersion]);
+
   /**
    * Side hooks
    */
@@ -225,7 +222,7 @@ const DepositFormStep: React.FC<{
     }
   }, []);
 
-  const [toExpiryText, withdrawalDate] = useMemo(() => {
+  const [toDepositTime, withdrawalDate] = useMemo(() => {
     // if (optionLoading) return loadingText;
 
     // if (!currentOption) return "---";
@@ -278,7 +275,7 @@ const DepositFormStep: React.FC<{
 
     actionDetails.push({
       key: "Deposit Time",
-      value: `${toExpiryText}`,
+      value: `${toDepositTime}`,
     });
 
     return actionDetails;
@@ -321,11 +318,7 @@ const DepositFormStep: React.FC<{
     onClickUpdateInput(inputAmount);
   };
   return showTokenApproval ? (
-    <VaultApprovalForm
-      vaultOption={vaultOption}
-      version="earn"
-      showDepositAssetSwap={VaultAllowedDepositAssets[vaultOption].length > 1}
-    />
+    <VaultApprovalForm vaultOption={vaultOption} version="earn" />
   ) : (
     <div className="d-flex flex-column align-items-center">
       {/* Logo */}

@@ -40,6 +40,7 @@ import { ERC20Token } from "shared/lib/models/eth";
 import VaultApprovalForm from "../../components/Vault/VaultActionsForm/common/VaultApprovalForm";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { TransactionInstruction } from "@solana/web3.js";
+import moment from "moment";
 const { formatUnits } = ethers.utils;
 
 const rotateClockwise = keyframes`
@@ -69,16 +70,41 @@ const rotateAnticlockwise = keyframes`
   }
 `;
 
-const ProductAssetLogoContainer = styled.div<{ color: string }>`
+const PendingDepositsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  text-align: left;
+  font-size: 12px;
+  padding: 8px;
+  height: 64px;
+  width: 232px;
+  border-radius: 100px;
+  position: relative;
+  background: rgba(62, 115, 196, 0.08);
+  backdrop-filter: blur(16px);
+`;
+
+const TextContainer = styled.div`
+  height: 32px;
+  width: 164px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-self: center;
+  color: rgba(255, 255, 255, 0.64);
+  margin-left: 8px;
+`;
+
+const ProductAssetLogoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 56px;
-  width: 56px;
+  height: 48px;
+  width: 48px;
   background-color: ${colors.background.one};
   border-radius: 50%;
   position: relative;
-  box-shadow: 0px 0px 0px 2px ${colors.background.two};
 `;
 
 const CirclesContainer = styled.div`
@@ -169,6 +195,10 @@ const ViewDetailsButton = styled.div`
   z-index: 1;
 `;
 
+const ButtonContainer = styled.div`
+  z-index: 1;
+  width: 240px;
+`;
 const StyledActionButton = styled(ActionButton)`
   font-size: 14px;
   z-index: 1;
@@ -187,9 +217,7 @@ const EarnPage = () => {
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
-  const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
-  const { pendingTransactions, transactionsCounter } = usePendingTransactions();
-  console.log(pendingTransactions);
+  const { pendingTransactions } = usePendingTransactions();
 
   const isDepositSuccess = useMemo(() => {
     return pendingTransactions.some((transaction) => {
@@ -200,7 +228,6 @@ const EarnPage = () => {
       );
     });
   }, [pendingTransactions]);
-  console.log({ isDepositSuccess });
   // const { status, deposits, vaultLimit } = useVaultData(
   //   vaultOption || VaultList[0]
   // );
@@ -214,7 +241,7 @@ const EarnPage = () => {
   const {
     data: { decimals },
     loading,
-  } = useV2VaultData(vaultOption || VaultList[0]);
+  } = useV2VaultData("rEARN");
   const isLoading = status === "loading" || loading;
   useRedirectOnSwitchChain(getChainByVaultOption(vaultOption as VaultOptions));
 
@@ -225,6 +252,30 @@ const EarnPage = () => {
   const Logo = getAssetLogo("USDC");
 
   let logo = <Logo height="100%" />;
+
+  const toDepositTime = useMemo(() => {
+    // if (optionLoading) return loadingText;
+
+    // if (!currentOption) return "---";
+
+    let firstOpenLoanTime = moment.utc("2022-09-02").set("hour", 17);
+
+    let toDepositTime;
+
+    while (!toDepositTime) {
+      let toDepositTimeTemp = moment.duration(
+        firstOpenLoanTime.diff(moment()),
+        "milliseconds"
+      );
+      if (toDepositTimeTemp.asMilliseconds() <= 0) {
+        firstOpenLoanTime.add(28, "days");
+      } else {
+        toDepositTime = toDepositTimeTemp;
+      }
+    }
+
+    return `${toDepositTime.days()}D ${toDepositTime.hours()}H ${toDepositTime.minutes()}M`;
+  }, []);
 
   const color = useMemo(() => {
     if (vaultOption) {
@@ -237,8 +288,15 @@ const EarnPage = () => {
     if (!vaultAccount) {
       return [BigNumber.from(0.0)];
     }
-    return [vaultAccount.totalBalance.sub(vaultAccount.totalPendingDeposit)];
+    return [vaultAccount.totalBalance];
   }, [vaultAccount]);
+
+  const hasPendingDeposits = useMemo(() => {
+    if (!vaultAccount) {
+      return false;
+    }
+    return !isPracticallyZero(vaultAccount.totalPendingDeposit, decimals);
+  }, [vaultAccount, decimals]);
 
   const [roi, yieldColor] = useMemo(() => {
     const vaultAccount = vaultAccounts["rEARN"];
@@ -272,17 +330,7 @@ const EarnPage = () => {
       roiColor,
     ];
   }, [vaultAccounts, decimals]);
-  const tokenAllowance = useTokenAllowance(
-    "usdc" as ERC20Token,
-    VaultAddressMap["rEARN"].earn
-  );
 
-  /**
-   * Check if approval needed
-   */
-  const showTokenApproval = useMemo(() => {
-    return tokenAllowance && isPracticallyZero(tokenAllowance, decimals);
-  }, [decimals, tokenAllowance]);
   // const [investedInStrategy] = useMemo(() => {
   //   let totalBalance = BigNumber.from(0);
   //   let totalPendingDeposit = BigNumber.from(0);
@@ -373,10 +421,26 @@ const EarnPage = () => {
               }}
             >
               <MainContainer>
-                <ProductAssetLogoContainer className={`mb-2`} color={"blue"}>
-                  {logo}
-                </ProductAssetLogoContainer>
-                <BalanceTitle className={`py-3`}>Your Balance</BalanceTitle>
+                {hasPendingDeposits ? (
+                  <PendingDepositsContainer>
+                    <ProductAssetLogoContainer color={"blue"}>
+                      {logo}
+                    </ProductAssetLogoContainer>
+                    <TextContainer>
+                      <p>
+                        Your deposit will deployed in the vault in{" "}
+                        <span style={{ color: "white" }}>{toDepositTime}</span>
+                      </p>
+                    </TextContainer>
+                  </PendingDepositsContainer>
+                ) : (
+                  <ProductAssetLogoContainer color={"blue"}>
+                    {logo}
+                  </ProductAssetLogoContainer>
+                )}
+                <BalanceTitle className={`mt-1 py-3`}>
+                  Your Balance
+                </BalanceTitle>
                 <HeroText>
                   {!vaultAccount || isLoading
                     ? "---"
@@ -391,34 +455,36 @@ const EarnPage = () => {
                 >
                   View Details
                 </ViewDetailsButton>
-                {active && account ? (
-                  <>
+                <ButtonContainer>
+                  {active && account ? (
+                    <>
+                      <StyledActionButton
+                        className={`mt-5 py-3 mb-0 w-100`}
+                        color={color}
+                        onClick={() => {
+                          setShowDepositModal(true);
+                        }}
+                      >
+                        Deposit
+                      </StyledActionButton>
+                      <StyledActionButton
+                        disabled={true}
+                        className={`py-3 mb-1 w-100`}
+                        color={"white"}
+                      >
+                        Initiate Withdraw
+                      </StyledActionButton>
+                    </>
+                  ) : (
                     <StyledActionButton
-                      className={`mt-5 py-3 mb-0 w-100`}
+                      className={`mt-5 py-3 w-100`}
                       color={color}
-                      onClick={() => {
-                        setShowDepositModal(true);
-                      }}
+                      onClick={() => setShowConnectModal(true)}
                     >
-                      Deposit
+                      Connect Wallet
                     </StyledActionButton>
-                    <StyledActionButton
-                      className={`py-3 mb-1 w-100`}
-                      variant={"secondary"}
-                      color={"none"}
-                    >
-                      Withdraw
-                    </StyledActionButton>
-                  </>
-                ) : (
-                  <StyledActionButton
-                    className={`mt-5 py-3 w-100`}
-                    color={color}
-                    onClick={() => setShowConnectModal(true)}
-                  >
-                    Connect Wallet
-                  </StyledActionButton>
-                )}
+                  )}
+                </ButtonContainer>
               </MainContainer>
             </motion.div>
           ) : (

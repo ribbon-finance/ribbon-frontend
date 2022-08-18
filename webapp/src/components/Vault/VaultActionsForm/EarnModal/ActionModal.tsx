@@ -40,7 +40,7 @@ const ModalNavigationCloseButton = styled.span`
 
 interface ModalBodyProps extends ModalProps {
   isFormStep: boolean;
-  hasApproved: boolean;
+  showTokenApproval: boolean;
   steps: Steps;
 }
 
@@ -59,7 +59,7 @@ const ModalBody = styled.div<ModalBodyProps>`
       case STEPS.submittedStep:
         return "unset";
       case STEPS.formStep:
-        return props.hasApproved ? "672px" : "396px";
+        return props.showTokenApproval ? "350px" : "672px";
       default:
         return "396px";
     }
@@ -168,7 +168,6 @@ const ActionModal: React.FC<ActionModalProps> = ({
   variant,
 }) => {
   const [step, setStep] = useState<Steps>(0);
-  const [hasApproved, setHasApproved] = useState<boolean>(false);
   const isDesktop = variant === "desktop";
   const { vaultActionForm } = useVaultActionForm(vault.vaultOption);
 
@@ -181,9 +180,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
    * Check if approval needed
    */
   const showTokenApproval = useMemo(() => {
-    setHasApproved(
-      tokenAllowance ? !isPracticallyZero(tokenAllowance, 6) : false
-    );
+    return tokenAllowance ? isPracticallyZero(tokenAllowance, 6) : true;
   }, [tokenAllowance]);
 
   const renderModalNavigationItem = useCallback(() => {
@@ -287,7 +284,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
         {renderModalCloseButton()}
       </ModalHeaderWithBackground>
     );
-  }, [renderModalCloseButton, step, vaultActionForm]);
+  }, [renderModalBackButton, renderModalCloseButton, step, vaultActionForm]);
 
   return (
     <div>
@@ -310,7 +307,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
           isFormStep={step === STEPS.formStep}
           variant={variant}
           steps={step}
-          hasApproved={hasApproved}
+          showTokenApproval={showTokenApproval}
         >
           {renderModalHeader()}
 

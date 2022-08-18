@@ -249,15 +249,13 @@ const EarnChart: React.FC<ProfitChartProps> = ({
     };
   }, [moneynessRange, yieldRange, onHoverPrice, onHoverPercentage]);
 
-  console.log({ moneynessRange });
-  console.log({ yieldRange });
   const getData = useCallback(
     (canvas: any): ChartData => {
       const ctx = canvas.getContext("2d");
-      const green = ctx.createLinearGradient(0, 100, 0, 170);
+      const green = ctx.createLinearGradient(0, 150, 0, 170);
       green.addColorStop(1, `transparent`);
-      green.addColorStop(0.77, `${colors.green}05`);
-      green.addColorStop(0, `${colors.green}14`);
+      green.addColorStop(0.9, `${colors.green}01`);
+      green.addColorStop(0, `${colors.green}20`);
 
       return {
         labels: moneynessRange,
@@ -328,15 +326,6 @@ const EarnChart: React.FC<ProfitChartProps> = ({
     [moneynessRange, yieldRange, hoveredIndex, barrierPercentage, maxYield]
   );
 
-  console.log(
-    moneynessRange.map((price) => {
-      if (price === Math.round(-4) || price === 4) {
-        return price;
-      } else {
-        return null;
-      }
-    })
-  );
   const chart = useMemo(() => {
     return (
       <Line

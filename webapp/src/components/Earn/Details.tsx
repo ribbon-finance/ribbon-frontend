@@ -51,8 +51,8 @@ export const Strategy = () => {
         The R-Earn vault employs a fully funded{" "}
         <TooltipExplanation
           title="TWIN WIN"
-          explanation={`something something twin win`}
-          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
+          explanation={`A Twin Win is a structured product where the investor can win if the underlying asset goes in either direction up to a specific level. It is similar to a straddle (call + put option) with additional barriers which limit the exposure on both sides.`}
+          learnMoreURL="https://bookdown.org/maxime_debellefroid/MyBook/certificates.html#twin-win-certificates"
           renderContent={({ ref, ...triggerHandler }) => (
             <HighlightedText ref={ref} {...triggerHandler}>
               twin win
@@ -64,8 +64,8 @@ export const Strategy = () => {
         protected. The vault uses the funding to purchase{" "}
         <TooltipExplanation
           title="weekly at-the-money knock-out barrier options"
-          explanation={`something something twin win`}
-          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
+          explanation={`The options bought are expiring every Friday, with a one week maturity and the strike price is set to the current underlying asset price. The knock-out barriers are used to define when the payoff is inactive, i.e. if the price of the underlying asset at maturity is below the lower barrier or greater than the upper barrier, the option is worthless.`}
+          learnMoreURL="https://bookdown.org/maxime_debellefroid/MyBook/barrier-options.html#knock-out-options"
           renderContent={({ ref, ...triggerHandler }) => (
             <HighlightedText ref={ref} {...triggerHandler}>
               weekly at-the-money knock-out barrier options
