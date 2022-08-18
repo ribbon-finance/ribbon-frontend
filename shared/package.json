@@ -74,6 +74,7 @@
     "@typechain/ethers-v5": "^9.0.0",
     "@types/react-router-dom": "^5.1.7",
     "@types/styled-components": "^5.1.9",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "typechain": "^7.0.0"
   }
 }
