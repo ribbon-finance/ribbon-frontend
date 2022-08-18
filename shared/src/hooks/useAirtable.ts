@@ -40,9 +40,7 @@ export const useAirtable = () => {
           const item = fields as ScheduleItem;
           s.push(item);
         });
-        if (!assetPriceLoading) {
-          setSchedule(s);
-        }
+        setSchedule(s);
       })
       .catch((e) => {
         setSchedule([]);

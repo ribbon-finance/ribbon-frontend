@@ -86,15 +86,6 @@ const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
     [setShowEarnVault]
   );
 
-  const renderTitle = useCallback((s: ExplanationStep) => {
-    switch (s) {
-      case "step1":
-      case "step2":
-      case "step3":
-        return "R-EARN";
-    }
-  }, []);
-
   const renderDescription = useCallback(
     (s: ExplanationStep) => {
       switch (s) {
@@ -156,7 +147,7 @@ const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
   const infoSection = useMemo(() => {
     return (
       <ExplainerSection height={360}>
-        <HeroText>{renderTitle(step)}</HeroText>
+        <HeroText>R-EARN</HeroText>
         <AnimatePresence exitBeforeEnter initial={true}>
           <motion.div
             className="py-3"
@@ -193,7 +184,7 @@ const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
         {renderButton(step)}
       </ExplainerSection>
     );
-  }, [step, renderTitle, renderButton, renderDescription]);
+  }, [step, renderButton, renderDescription]);
 
   return (
     <ExplainerContainer ref={containerRef}>

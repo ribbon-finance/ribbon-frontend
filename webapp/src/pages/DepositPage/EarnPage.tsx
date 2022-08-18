@@ -1,23 +1,19 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
-// import { useTranslation } from "react-i18next";
 import { Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { AnimatePresence, motion } from "framer-motion";
 import { useV2VaultData, useVaultData } from "shared/lib/hooks/web3DataContext";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
-// import sizes from "shared/lib/designSystem/sizes";
 import usePullUp from "../../hooks/usePullUp";
 import { VaultList, VaultOptions } from "shared/lib/constants/constants";
 import { Subtitle } from "shared/lib/designSystem";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { getAssetLogo, getChainByVaultOption } from "shared/lib/utils/asset";
-// import { Container } from "react-bootstrap";
-// import theme from "shared/lib/designSystem/theme";
 import useRedirectOnSwitchChain from "../../hooks/useRedirectOnSwitchChain";
 import useRedirectOnWrongChain from "../../hooks/useRedirectOnWrongChain";
 import EarnStrategyExplainer from "../../components/Earn/EarnStrategyExplainer";
@@ -37,20 +33,29 @@ import ActionModal from "../../components/Vault/VaultActionsForm/EarnModal/Actio
 const { formatUnits } = ethers.utils;
 
 const rotateClockwise = keyframes`
-  from{
-      transform: rotate(0deg);
+  from {
+    transform: rotate(0deg);
   }
-  to{
-      transform: rotate(360deg);
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 `;
 
 const rotateAnticlockwise = keyframes`
-  from{
-      transform: rotate(360deg);
+  from {
+    transform: rotate(360deg);
   }
-  to{
-      transform: rotate(0deg);
+  to {
+    transform: rotate(0deg);
   }
 `;
 
@@ -76,6 +81,13 @@ const CirclesContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const FadeInDiv = styled.div<{ delaySeconds?: number }>`
+  position: absolute;
+  opacity: 0;
+  animation: ${fadeIn} 4s ease-in-out forwards;
+  animation-delay: ${(delaySeconds) => `${delaySeconds || 0}s`};
 `;
 
 const StyledEarnInnerRing = styled(EarnInnerRing)`
@@ -160,10 +172,7 @@ const EarnPage = () => {
 
   useRedirectOnWrongChain(vaultOption, chainId);
   usePullUp();
-  let color;
-  if (vaultOption) {
-    color = getVaultColor(vaultOption);
-  }
+
   const [showVault] = useGlobalState("showEarnVault");
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showDetailsModal, setShowDetailsModal] = useState(false);
@@ -194,12 +203,19 @@ const EarnPage = () => {
 
   let logo = <Logo height="100%" />;
 
+  const color = useMemo(() => {
+    if (vaultOption) {
+      return getVaultColor(vaultOption);
+    }
+    return undefined;
+  }, [vaultOption]);
+
   const [investedInStrategy] = useMemo(() => {
     if (!vaultAccount) {
       return [BigNumber.from(0.0)];
     }
     return [vaultAccount.totalBalance.sub(vaultAccount.totalPendingDeposit)];
-  }, [vaultAccount, vaultVersion]);
+  }, [vaultAccount]);
 
   const [roi, yieldColor] = useMemo(() => {
     const vaultAccount = vaultAccounts["rEARN"];
@@ -285,6 +301,7 @@ const EarnPage = () => {
   /**
    * Redirect to homepage if no clear vault is chosen
    */
+
   if (!vaultOption) {
     return <Redirect to="/" />;
   }
@@ -292,76 +309,19 @@ const EarnPage = () => {
   return (
     <>
       <CirclesContainer>
-        <motion.div
-          style={{ position: "absolute" }}
-          key={"outerCircle"}
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          exit={{
-            opacity: 0,
-          }}
-          transition={{
-            type: "spring",
-            damping: 160,
-            mass: 160,
-            stiffness: 240,
-            delay: 0.45,
-          }}
-        >
+        <FadeInDiv delaySeconds={0.45}>
           <StyledEarnOuterRing />
-        </motion.div>
-        <motion.div
-          style={{ position: "absolute" }}
-          key={"middleCircle"}
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          exit={{
-            opacity: 0,
-          }}
-          transition={{
-            type: "spring",
-            damping: 160,
-            mass: 160,
-            stiffness: 240,
-            delay: 0.3,
-          }}
-        >
+        </FadeInDiv>
+        <FadeInDiv delaySeconds={0.3}>
           <StyledEarnMiddleRing />
-        </motion.div>
-        <motion.div
-          style={{ position: "absolute" }}
-          key={"innerCircle"}
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          exit={{
-            opacity: 0,
-          }}
-          transition={{
-            type: "spring",
-            damping: 160,
-            mass: 160,
-            stiffness: 240,
-            delay: 0.15,
-          }}
-        >
+        </FadeInDiv>
+        <FadeInDiv delaySeconds={0.15}>
           <StyledEarnInnerRing />
-        </motion.div>
+        </FadeInDiv>
       </CirclesContainer>
       <VaultContainer>
-        {showVault.show ? (
-          <AnimatePresence exitBeforeEnter initial={true}>
+        <AnimatePresence exitBeforeEnter>
+          {showVault.show ? (
             <motion.div
               key={"showVault"}
               initial={{
@@ -428,9 +388,7 @@ const EarnPage = () => {
                 )}
               </MainContainer>
             </motion.div>
-          </AnimatePresence>
-        ) : (
-          <AnimatePresence exitBeforeEnter initial={true}>
+          ) : (
             <motion.div
               key={"showIntro"}
               initial={{
@@ -450,8 +408,8 @@ const EarnPage = () => {
             >
               <EarnStrategyExplainer expectedYield={expectedYield} />
             </motion.div>
-          </AnimatePresence>
-        )}
+          )}
+        </AnimatePresence>
       </VaultContainer>
       <EarnDetailsModal
         show={showDetailsModal}

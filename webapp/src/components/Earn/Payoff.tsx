@@ -5,7 +5,6 @@ import {
   SecondaryText,
   Title,
 } from "shared/lib/designSystem";
-import { assetToFiat } from "shared/lib/utils/math";
 import EarnChart from "./EarnChart";
 import colors from "shared/lib/designSystem/colors";
 import EarnModalContentExtra from "shared/lib/components/Common/EarnModalContentExtra";
@@ -94,7 +93,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
       : absolutePerformance > barrierPercentage
       ? 0
       : absolutePerformance;
-  }, [absolutePerformance, hoverPercentage]);
+  }, [absolutePerformance, barrierPercentage, hoverPercentage]);
 
   return (
     <>

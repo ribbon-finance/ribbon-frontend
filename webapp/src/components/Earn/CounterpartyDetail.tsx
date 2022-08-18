@@ -11,10 +11,7 @@ import Logo, {
   CitadelLogo,
 } from "shared/lib/assets/icons/logo";
 import { Counterparty } from "./Counterparties";
-import useVaultOption from "../../hooks/useVaultOption";
-import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
-import { BigNumber } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 
 const ParagraphText = styled(SecondaryText)`
@@ -195,18 +192,25 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
     }
   }, []);
 
-  const renderTotalBorrowed = useCallback((s: Counterparty) => {
-    switch (s) {
-      case "R-EARN DIVERSIFIED":
-        return <>${parseFloat(formatUnits(totalBorrowed!, "6")).toFixed(2)}</>;
-      case "ORTHOGONAL":
-        return <>$15.00M</>;
-      case "ALAMEDA RESEARCH":
-        return <>$15.00M</>;
-      case "CITADEL":
-        return <>$15.00M</>;
-    }
-  }, []);
+  const renderTotalBorrowed = useCallback(
+    (s: Counterparty) => {
+      switch (s) {
+        case "R-EARN DIVERSIFIED":
+          return totalBorrowed ? (
+            <>${parseFloat(formatUnits(totalBorrowed, "6")).toFixed(2)}</>
+          ) : (
+            <>-</>
+          );
+        case "ORTHOGONAL":
+          return <>$15.00M</>;
+        case "ALAMEDA RESEARCH":
+          return <>$15.00M</>;
+        case "CITADEL":
+          return <>$15.00M</>;
+      }
+    },
+    [totalBorrowed]
+  );
 
   const renderBorrowRate = useCallback((s: Counterparty) => {
     switch (s) {

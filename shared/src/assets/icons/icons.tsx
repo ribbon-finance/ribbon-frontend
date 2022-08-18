@@ -481,7 +481,7 @@ export const EarnInnerRing: React.FC<SVGPropsWithColor> = (props) => (
       cy="320"
       r="319.5"
       stroke="#3E73C4"
-      stroke-dasharray="4 4"
+      strokeDasharray="4 4"
     />
   </svg>
 );
@@ -501,7 +501,7 @@ export const EarnMiddleRing: React.FC<SVGPropsWithColor> = (props) => (
       cy="400"
       r="399.5"
       stroke="#3E73C4"
-      stroke-dasharray="4 4"
+      strokeDasharray="4 4"
     />
   </svg>
 );
@@ -521,9 +521,9 @@ export const EarnOuterRing: React.FC<SVGPropsWithColor> = (props) => (
         cy="527"
         r="478"
         stroke="#3E73C4"
-        stroke-width="4"
-        stroke-dasharray="2 2"
-        shape-rendering="crispEdges"
+        strokeWidth="4"
+        strokeDasharray="2 2"
+        shapeRendering="crispEdges"
       />
     </g>
     <defs>
@@ -534,9 +534,9 @@ export const EarnOuterRing: React.FC<SVGPropsWithColor> = (props) => (
         width="1056"
         height="1056"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feColorMatrix
           in="SourceAlpha"
           type="matrix"
@@ -587,7 +587,7 @@ export const EarnCardMiddleCircle: React.FC<SVGPropsWithColor> = (props) => (
       cy="80"
       r="79.5"
       stroke="#3E73C4"
-      stroke-dasharray="4 4"
+      strokeDasharray="4 4"
     />
   </svg>
 );
@@ -607,9 +607,9 @@ export const EarnCardOuterCircle: React.FC<SVGPropsWithColor> = (props) => (
         cy="150"
         r="118"
         stroke="#3E73C4"
-        stroke-width="4"
-        stroke-dasharray="2 2"
-        shape-rendering="crispEdges"
+        strokeWidth="4"
+        strokeDasharray="2 2"
+        shapeRendering="crispEdges"
       />
     </g>
     <defs>
@@ -620,9 +620,9 @@ export const EarnCardOuterCircle: React.FC<SVGPropsWithColor> = (props) => (
         width="304"
         height="304"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feColorMatrix
           in="SourceAlpha"
           type="matrix"
@@ -670,16 +670,16 @@ export const OpenLoanIcon: React.FC<SVGPropsWithColor> = (props) => (
     <path
       d="M20 27V13"
       stroke="#3E73C4"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M12.9996 20L19.9996 13L26.9996 20"
       stroke="#3E73C4"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -696,16 +696,16 @@ export const CloseLoanIcon: React.FC<SVGPropsWithColor> = (props) => (
     <path
       d="M20 10.8333V29.1667"
       stroke="#3E73C4"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M24.1667 14.1667H17.9167C17.1431 14.1667 16.4013 14.474 15.8543 15.021C15.3073 15.5679 15 16.3098 15 17.0834C15 17.8569 15.3073 18.5988 15.8543 19.1457C16.4013 19.6927 17.1431 20 17.9167 20H22.0833C22.8569 20 23.5987 20.3073 24.1457 20.8543C24.6927 21.4013 25 22.1431 25 22.9167C25 23.6902 24.6927 24.4321 24.1457 24.9791C23.5987 25.5261 22.8569 25.8334 22.0833 25.8334H15"
       stroke="#3E73C4"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -719,7 +719,7 @@ export const OptionsBoughtIcon: React.FC<SVGPropsWithColor> = (props) => (
     xmlns="http://www.w3.org/2000/svg"
   >
     <rect width="40" height="40" rx="20" fill="#3E73C4" fill-opacity="0.08" />
-    <circle cx="20" cy="20" r="11" stroke="#3E73C4" stroke-width="2" />
+    <circle cx="20" cy="20" r="11" stroke="#3E73C4" strokeWidth="2" />
   </svg>
 );
 
@@ -735,16 +735,16 @@ export const OptionsRepaidIcon: React.FC<SVGPropsWithColor> = (props) => (
     <path
       d="M20 10.8333V29.1667"
       stroke="#16CEB9"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M24.1667 14.1667H17.9167C17.1431 14.1667 16.4013 14.4739 15.8543 15.0209C15.3073 15.5679 15 16.3098 15 17.0833C15 17.8569 15.3073 18.5987 15.8543 19.1457C16.4013 19.6927 17.1431 20 17.9167 20H22.0833C22.8569 20 23.5987 20.3073 24.1457 20.8543C24.6927 21.4012 25 22.1431 25 22.9167C25 23.6902 24.6927 24.4321 24.1457 24.9791C23.5987 25.526 22.8569 25.8333 22.0833 25.8333H15"
       stroke="#16CEB9"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -1336,14 +1336,14 @@ export const WhitelistIcon: React.FC<SVGPropsWithColor> = ({
     <path
       d="M36 24H38C38.5304 24 39.0391 24.2107 39.4142 24.5858C39.7893 24.9609 40 25.4696 40 26V40C40 40.5304 39.7893 41.0391 39.4142 41.4142C39.0391 41.7893 38.5304 42 38 42H26C25.4696 42 24.9609 41.7893 24.5858 41.4142C24.2107 41.0391 24 40.5304 24 40V26C24 25.4696 24.2107 24.9609 24.5858 24.5858C24.9609 24.2107 25.4696 24 26 24H28"
       stroke={color || "white"}
-      stroke-width="2"
+      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path
       d="M35 22H29C28.4477 22 28 22.4477 28 23V25C28 25.5523 28.4477 26 29 26H35C35.5523 26 36 25.5523 36 25V23C36 22.4477 35.5523 22 35 22Z"
       stroke={color || "white"}
-      stroke-width="2"
+      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -1361,16 +1361,16 @@ export const BackIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
     <path
       d="M19 12H5"
       stroke={color || "white"}
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M12 19L5 12L12 5"
       stroke={color || "white"}
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -1404,7 +1404,7 @@ export const VeRBNIcon: React.FC<SVGPropsWithColor> = () => (
         height="72"
         rx="36"
         stroke="#FC0A54"
-        stroke-width="2"
+        strokeWidth="2"
       />
     </g>
     <g opacity="0.12" filter="url(#filter1_d_1293_32)">
@@ -1415,7 +1415,7 @@ export const VeRBNIcon: React.FC<SVGPropsWithColor> = () => (
         height="80"
         rx="40"
         stroke="#FC0A54"
-        stroke-width="2"
+        strokeWidth="2"
       />
     </g>
     <g filter="url(#filter2_d_1293_32)">
@@ -1426,7 +1426,7 @@ export const VeRBNIcon: React.FC<SVGPropsWithColor> = () => (
         height="64"
         rx="32"
         stroke="#FC0A54"
-        stroke-width="2"
+        strokeWidth="2"
       />
     </g>
     <defs>
@@ -1437,9 +1437,9 @@ export const VeRBNIcon: React.FC<SVGPropsWithColor> = () => (
         width="106"
         height="106"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feColorMatrix
           in="SourceAlpha"
           type="matrix"
@@ -1471,9 +1471,9 @@ export const VeRBNIcon: React.FC<SVGPropsWithColor> = () => (
         width="114"
         height="114"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feColorMatrix
           in="SourceAlpha"
           type="matrix"
@@ -1505,9 +1505,9 @@ export const VeRBNIcon: React.FC<SVGPropsWithColor> = () => (
         width="98"
         height="98"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feColorMatrix
           in="SourceAlpha"
           type="matrix"
