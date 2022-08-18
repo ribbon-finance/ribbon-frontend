@@ -15,11 +15,11 @@ interface ProfitChartProps {
   onHoverPrice: (price: number | undefined) => void;
   onHoverPercentage: (percentage: number | undefined) => void;
   absolutePerformance: number;
+  performance: number;
   maxYield: number;
   barrierPercentage: number;
-
-  priceRange: number[];
-  otherRange: number[];
+  moneynessRange: number[];
+  yieldRange: number[];
 }
 
 const EarnChart: React.FC<ProfitChartProps> = ({
@@ -27,10 +27,11 @@ const EarnChart: React.FC<ProfitChartProps> = ({
   onHoverPrice,
   onHoverPercentage,
   absolutePerformance,
+  performance,
   maxYield,
   barrierPercentage,
-  priceRange,
-  otherRange,
+  moneynessRange,
+  yieldRange,
 }) => {
   const [hoveredIndex, setIndex] = useState<number>();
 
@@ -236,8 +237,8 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       },
       onHover: (a: any, elements: any) => {
         if (elements && elements.length) {
-          onHoverPrice(otherRange[elements[0]._index]);
-          onHoverPercentage(priceRange[elements[0]._index]);
+          onHoverPrice(yieldRange[elements[0]._index]);
+          onHoverPercentage(moneynessRange[elements[0]._index]);
           setIndex(elements[0]._index);
         } else {
           onHoverPrice(undefined);
@@ -246,8 +247,10 @@ const EarnChart: React.FC<ProfitChartProps> = ({
         }
       },
     };
-  }, [priceRange, otherRange, onHoverPrice, onHoverPercentage]);
+  }, [moneynessRange, yieldRange, onHoverPrice, onHoverPercentage]);
 
+  console.log({ moneynessRange });
+  console.log({ yieldRange });
   const getData = useCallback(
     (canvas: any): ChartData => {
       const ctx = canvas.getContext("2d");
@@ -257,12 +260,12 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       green.addColorStop(0, `${colors.green}14`);
 
       return {
-        labels: priceRange,
+        labels: moneynessRange,
         datasets: [
           {
             label: "green",
             // @ts-ignore
-            data: otherRange,
+            data: yieldRange,
             type: "line",
             pointRadius: 0,
             pointHoverRadius: 0,
@@ -274,9 +277,9 @@ const EarnChart: React.FC<ProfitChartProps> = ({
           },
           {
             label: "hoveredPoint",
-            data: priceRange.map((_, index) => {
+            data: moneynessRange.map((_, index) => {
               if (index === hoveredIndex) {
-                return otherRange[index];
+                return yieldRange[index];
               } else {
                 return null;
               }
@@ -291,9 +294,9 @@ const EarnChart: React.FC<ProfitChartProps> = ({
           },
           {
             label: "defaultPoint",
-            data: priceRange.map((price) => {
-              if (price === Math.round(absolutePerformance * 100)) {
-                return price;
+            data: moneynessRange.map((price) => {
+              if (price === Math.round(-8)) {
+                return Math.abs(price);
               } else {
                 return null;
               }
@@ -308,7 +311,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
           },
           {
             label: "breakevenPoint",
-            data: priceRange.map((p) =>
+            data: moneynessRange.map((p) =>
               !hoveredIndex &&
               (p === barrierPercentage * 100 || p === -barrierPercentage * 100)
                 ? maxYield * 100
@@ -322,16 +325,18 @@ const EarnChart: React.FC<ProfitChartProps> = ({
         ],
       };
     },
-    [
-      priceRange,
-      otherRange,
-      hoveredIndex,
-      absolutePerformance,
-      barrierPercentage,
-      maxYield,
-    ]
+    [moneynessRange, yieldRange, hoveredIndex, barrierPercentage, maxYield]
   );
 
+  console.log(
+    moneynessRange.map((price) => {
+      if (price === Math.round(-4) || price === 4) {
+        return price;
+      } else {
+        return null;
+      }
+    })
+  );
   const chart = useMemo(() => {
     return (
       <Line
@@ -388,7 +393,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
               );
 
               if (dataIndex >= 0) {
-                drawPricePoint(chart, priceRange[dataIndex], dataIndex);
+                drawPricePoint(chart, moneynessRange[dataIndex], dataIndex);
               } else {
                 // Draw the default line
                 const defaultPointIndex = chart.chart.data.datasets.findIndex(
@@ -402,7 +407,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
 
                 drawDefaultPricePoint(
                   chart,
-                  priceRange[defaultDataIndex],
+                  moneynessRange[defaultDataIndex],
                   defaultDataIndex
                 );
               }
@@ -410,12 +415,12 @@ const EarnChart: React.FC<ProfitChartProps> = ({
               drawDefaultBarriers(
                 chart,
                 barrierPercentage * 100,
-                priceRange.indexOf(barrierPercentage * 100)
+                moneynessRange.indexOf(barrierPercentage * 100)
               );
               drawDefaultBarriers(
                 chart,
                 -barrierPercentage * 100,
-                priceRange.indexOf(-barrierPercentage * 100)
+                moneynessRange.indexOf(-barrierPercentage * 100)
               );
             },
           },
@@ -427,7 +432,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
     options,
     drawDefaultBarriers,
     barrierPercentage,
-    priceRange,
+    moneynessRange,
     drawDefaultPricePoint,
     drawPricePoint,
   ]);

@@ -38,6 +38,8 @@ import ActionModal from "../../components/Vault/VaultActionsForm/EarnModal/Actio
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import { ERC20Token } from "shared/lib/models/eth";
 import VaultApprovalForm from "../../components/Vault/VaultActionsForm/common/VaultApprovalForm";
+import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
+import { TransactionInstruction } from "@solana/web3.js";
 const { formatUnits } = ethers.utils;
 
 const rotateClockwise = keyframes`
@@ -186,6 +188,19 @@ const EarnPage = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
+  const { pendingTransactions, transactionsCounter } = usePendingTransactions();
+  console.log(pendingTransactions);
+
+  const isDepositSuccess = useMemo(() => {
+    return pendingTransactions.some((transaction) => {
+      return (
+        transaction.status === "success" &&
+        transaction.type === "deposit" &&
+        transaction.vault === "rEARN"
+      );
+    });
+  }, [pendingTransactions]);
+  console.log({ isDepositSuccess });
   // const { status, deposits, vaultLimit } = useVaultData(
   //   vaultOption || VaultList[0]
   // );
@@ -328,13 +343,13 @@ const EarnPage = () => {
     <>
       <CirclesContainer>
         <FadeInDiv delaySeconds={0.45}>
-          <StyledEarnOuterRing />
+          <StyledEarnOuterRing deposited={isDepositSuccess} />
         </FadeInDiv>
         <FadeInDiv delaySeconds={0.3}>
-          <StyledEarnMiddleRing />
+          <StyledEarnMiddleRing deposited={isDepositSuccess} />
         </FadeInDiv>
         <FadeInDiv delaySeconds={0.15}>
-          <StyledEarnInnerRing />
+          <StyledEarnInnerRing deposited={isDepositSuccess} />
         </FadeInDiv>
       </CirclesContainer>
       <VaultContainer>
@@ -363,7 +378,7 @@ const EarnPage = () => {
                 </ProductAssetLogoContainer>
                 <BalanceTitle className={`py-3`}>Your Balance</BalanceTitle>
                 <HeroText>
-                  {!vaultAccount && isLoading
+                  {!vaultAccount || isLoading
                     ? "---"
                     : formatBigNumber(investedInStrategy, decimals)}
                 </HeroText>

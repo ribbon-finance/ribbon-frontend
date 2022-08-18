@@ -12,6 +12,7 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { useAirtable } from "shared/lib/hooks/useAirtable";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
+
 const ChartContainer = styled.div`
   height: 264px;
   margin: 0;
@@ -74,7 +75,6 @@ interface ProfitCalculatorProps {}
 
 const Payoff: React.FC<ProfitCalculatorProps> = () => {
   const {
-    strikePrice,
     maxYield,
     baseYield,
     performance,
@@ -96,7 +96,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
         : Math.abs(hoverPercentage)
       : absolutePerformance > barrierPercentage
       ? 0
-      : performance;
+      : absolutePerformance;
   }, [absolutePerformance, performance, barrierPercentage, hoverPercentage]);
 
   console.log({ optionMoneyness });
@@ -164,9 +164,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
       moneynessRange.indexOf(parseInt(Math.round(6).toFixed(2)))
     ];
   }, [performance, yieldRange, moneynessRange]);
-  console.log({ defaultMoneyness });
-  console.log({ performance });
-  console.log(parseInt(Math.round(performance * 100).toFixed(2)));
+
   return (
     <>
       <BaseModalContentColumn marginTop={-4}>
@@ -180,11 +178,6 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
       <BaseModalContentColumn marginTop={-16}>
         <RelativeContainer>
           <ChartContainer
-            onClick={() => {
-              if (hoverPrice) {
-                setInput(hoverPrice.toFixed(2));
-              }
-            }}
             onMouseEnter={() => setChartHovering(true)}
             onMouseLeave={() => setChartHovering(false)}
           >
@@ -263,7 +256,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
               {loading
                 ? loadingText
                 : `${optionMoneyness === 0 ? "" : "+"}${Math.round(
-                    optionMoneyness
+                    optionMoneyness * 100
                   ).toFixed(2)}%`}
             </CalculationData>
           </CalculationColumn>

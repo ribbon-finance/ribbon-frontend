@@ -203,36 +203,34 @@ const DepositFormStep: React.FC<{
     value: string;
   }
 
-  const renderErrorText = useCallback(
-    (_error: string) => {
-      switch (_error) {
-        case "insufficientBalance":
-          return "Insufficient balance";
-        case "maxExceeded":
-        // const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
-        // return `Maximum ${formatBigNumber(
-        //   vaultMaxDepositAmount,
-        //   getAssetDecimals(asset)
-        // )} ${getAssetDisplay(asset)} Exceeded`;
-        case "capacityOverflow":
-          return "Insufficient vault capacity";
-        case "withdrawLimitExceeded":
-          return "Withdraw limit exceeded";
-        case "withdrawAmountStaked":
-          return "Withdrawal amount staked";
-        default:
-          return "";
-      }
-    },
-    [asset, vaultOption]
-  );
+  const renderErrorText = useCallback((_error: string) => {
+    switch (_error) {
+      case "insufficientBalance":
+        return "Insufficient balance";
+      case "maxExceeded":
+        break;
+      // const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
+      // return `Maximum ${formatBigNumber(
+      //   vaultMaxDepositAmount,
+      //   getAssetDecimals(asset)
+      // )} ${getAssetDisplay(asset)} Exceeded`;
+      case "capacityOverflow":
+        return "Insufficient vault capacity";
+      case "withdrawLimitExceeded":
+        return "Withdraw limit exceeded";
+      case "withdrawAmountStaked":
+        return "Withdrawal amount staked";
+      default:
+        return "";
+    }
+  }, []);
 
   const [toExpiryText, withdrawalDate] = useMemo(() => {
     // if (optionLoading) return loadingText;
 
     // if (!currentOption) return "---";
 
-    let firstOpenLoanTime = moment("2022-09-01 UTC 17:00:00");
+    let firstOpenLoanTime = moment.utc("2022-09-02").set("hour", 17);
 
     let toDepositTime;
 

@@ -8,6 +8,10 @@ export interface SVGPropsWithColor extends SVGProps {
   color?: string;
   backgroundColor?: string;
 }
+
+export interface EarnRingProps extends SVGPropsWithColor {
+  deposited?: boolean;
+}
 export interface IconProps extends SVGPropsWithColor {
   containerStyle?: React.CSSProperties;
 }
@@ -466,7 +470,10 @@ export const BellIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
   </svg>
 );
 
-export const EarnInnerRing: React.FC<SVGPropsWithColor> = (props) => (
+export const EarnInnerRing: React.FC<EarnRingProps> = ({
+  deposited,
+  ...props
+}) => (
   <svg
     width="640"
     height="640"
@@ -480,13 +487,16 @@ export const EarnInnerRing: React.FC<SVGPropsWithColor> = (props) => (
       cx="320"
       cy="320"
       r="319.5"
-      stroke="#3E73C4"
+      stroke={deposited ? "#16CEB9" : "#3E73C4"}
       strokeDasharray="4 4"
     />
   </svg>
 );
 
-export const EarnMiddleRing: React.FC<SVGPropsWithColor> = (props) => (
+export const EarnMiddleRing: React.FC<EarnRingProps> = ({
+  deposited,
+  ...props
+}) => (
   <svg
     width="800"
     height="800"
@@ -500,13 +510,16 @@ export const EarnMiddleRing: React.FC<SVGPropsWithColor> = (props) => (
       cx="400"
       cy="400"
       r="399.5"
-      stroke="#3E73C4"
+      stroke={deposited ? "#16CEB9" : "#3E73C4"}
       strokeDasharray="4 4"
     />
   </svg>
 );
 
-export const EarnOuterRing: React.FC<SVGPropsWithColor> = (props) => (
+export const EarnOuterRing: React.FC<EarnRingProps> = ({
+  deposited,
+  ...props
+}) => (
   <svg
     width="1056"
     height="1056"
@@ -520,7 +533,7 @@ export const EarnOuterRing: React.FC<SVGPropsWithColor> = (props) => (
         cx="527"
         cy="527"
         r="478"
-        stroke="#3E73C4"
+        stroke={deposited ? "#16CEB9" : "#3E73C4"}
         strokeWidth="4"
         strokeDasharray="2 2"
         shapeRendering="crispEdges"
@@ -554,7 +567,11 @@ export const EarnOuterRing: React.FC<SVGPropsWithColor> = (props) => (
         <feComposite in2="hardAlpha" operator="out" />
         <feColorMatrix
           type="matrix"
-          values="0 0 0 0 0.243137 0 0 0 0 0.45098 0 0 0 0 0.768627 0 0 0 0.25 0"
+          values={
+            deposited
+              ? "0 0 0 0 0.0862745 0 0 0 0 0.807843 0 0 0 0 0.72549 0 0 0 0.25 0"
+              : "0 0 0 0 0.243137 0 0 0 0 0.45098 0 0 0 0 0.768627 0 0 0 0.25 0"
+          }
         />
         <feBlend
           mode="normal"

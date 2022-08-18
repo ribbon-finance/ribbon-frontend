@@ -54,29 +54,39 @@ export const useAirtable = () => {
 
   //   Absolute perf = abs(spot - strike) / strike
   // (Absolute perf * participation rate * 4 + 1)^(365/28) -1
-  const [absolutePerformance, expectedYield, maxYield] = useMemo(() => {
-    if (!schedules) {
-      return [0, 0, 0];
-    }
-    const absolutePerformance =
-      Math.abs(ETHPrice - schedules[0].strikePrice) / schedules[0].strikePrice;
+  const [absolutePerformance, performance, expectedYield, maxYield] =
+    useMemo(() => {
+      if (!schedules) {
+        return [0, 0, 0, 0];
+      }
+      const absolutePerformance =
+        Math.abs(ETHPrice - schedules[0].strikePrice) /
+        schedules[0].strikePrice;
 
-    const calculateMaxYield =
-      schedules[0].baseYield +
-      (schedules[0].barrierPercentage * schedules[0].participationRate * 4 +
-        1) **
-        (365 / 28) -
-      1;
+      const performance =
+        (ETHPrice - schedules[0].strikePrice) / schedules[0].strikePrice;
 
-    const calculateExpectedYield =
-      absolutePerformance > schedules[0].barrierPercentage
-        ? schedules[0].baseYield
-        : schedules[0].baseYield +
-          (absolutePerformance * schedules[0].participationRate * 4 + 1) **
-            (365 / 28) -
-          1;
-    return [absolutePerformance, calculateExpectedYield, calculateMaxYield];
-  }, [schedules, ETHPrice]);
+      const calculateMaxYield =
+        schedules[0].baseYield +
+        (schedules[0].barrierPercentage * schedules[0].participationRate * 4 +
+          1) **
+          (365 / 28) -
+        1;
+
+      const calculateExpectedYield =
+        absolutePerformance > schedules[0].barrierPercentage
+          ? schedules[0].baseYield
+          : schedules[0].baseYield +
+            (absolutePerformance * schedules[0].participationRate * 4 + 1) **
+              (365 / 28) -
+            1;
+      return [
+        absolutePerformance,
+        performance,
+        calculateExpectedYield,
+        calculateMaxYield,
+      ];
+    }, [schedules, ETHPrice]);
 
   if (loading || !schedules) {
     return {
@@ -86,7 +96,8 @@ export const useAirtable = () => {
       participationRate: 0.03,
       barrierPercentage: 0.08,
       absolutePerformance: 0.06,
-      expectedYield: 0.14,
+      performance: 0.0,
+      expectedYield: 0.0,
       maxYield: 0.17,
     };
   }
@@ -97,6 +108,7 @@ export const useAirtable = () => {
     participationRate: schedules[0].participationRate,
     barrierPercentage: schedules[0].barrierPercentage,
     absolutePerformance: absolutePerformance,
+    performance: performance,
     expectedYield: expectedYield,
     maxYield: maxYield,
   };

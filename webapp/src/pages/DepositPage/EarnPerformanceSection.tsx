@@ -23,6 +23,7 @@ import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import PerformanceScroller from "../../components/Earn/PerformanceScroller";
 import { HistoricalPerformance } from "../../components/Earn/Details";
+import SegmentControl from "shared/lib/components/Common/SegmentControl";
 
 const VaultPerformanceChartContainer = styled.div`
   display: flex;
@@ -300,18 +301,28 @@ const EarnPerformanceSection: React.FC<EarnPerformanceSectionProps> = ({
           justifyContent: "center",
         }}
       >
-        <PerformanceScroller
-          page={StepList.indexOf(step) + 1}
-          stepList={StepList as unknown as string[]}
-          step={step}
-          total={StepList.length}
-          onPageClick={(page) => {
-            setStep(StepList[page - 1]);
-          }}
-        >
-          {" "}
-          {step}
-        </PerformanceScroller>
+        <div style={{ width: "100%", padding: 16 }} className="">
+          <SegmentControl
+            segments={StepList.map((item) => ({
+              value: item,
+              display: item,
+            }))}
+            value={step}
+            onSelect={(page) => setStep(page as Step)}
+            config={{
+              theme: "outline",
+              widthType: "fullWidth",
+              backgroundColor: "rgba(22, 206, 185, 0.08)",
+              color: "#16CEB9",
+              button: {
+                px: 16,
+                py: 12,
+                fontSize: 14,
+                lineHeight: 16,
+              },
+            }}
+          />
+        </div>
         {/* <EarnPerformanceControl
           page={StepList.indexOf(step) + 1}
           stepList={StepList as unknown as string[]}
