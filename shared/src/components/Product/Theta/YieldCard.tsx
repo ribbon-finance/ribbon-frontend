@@ -618,10 +618,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
           {t(`shared:ProductCopies:${vault}:title`)}
         </EarnTitle>
 
-        <EarnCard
-          color={color}
-          height={account === null || account === undefined ? 447 : 504}
-        />
+        <EarnCard color={color} height={!!account ? 447 : 504} />
         <ParagraphText>
           Earn up to <HighlightedText>15% APY</HighlightedText> with a{" "}
           <HighlightedText>fully principal protected</HighlightedText> vault
