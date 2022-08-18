@@ -78,8 +78,9 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       ctx.textBaseline = "middle";
       const padding = 8;
 
-      const text = `${drawIndex === 0 ? "<<< " : ""}${price.toFixed(2)}%${drawIndex === meta.data.length - 1 ? " >>>" : ""
-        }`;
+      const text = `${drawIndex === 0 ? "<<< " : ""}${price.toFixed(2)}%${
+        drawIndex === meta.data.length - 1 ? " >>>" : ""
+      }`;
       const textLength = ctx.measureText(text).width;
 
       let xPosition = priceX;
@@ -144,8 +145,9 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       ctx.textBaseline = "middle";
       const padding = 8;
 
-      const text = `${drawIndex === 0 ? "<<< " : ""}${price.toFixed(2)}%${drawIndex === meta.data.length - 1 ? " >>>" : ""
-        }`;
+      const text = `${drawIndex === 0 ? "<<< " : ""}${price.toFixed(2)}%${
+        drawIndex === meta.data.length - 1 ? " >>>" : ""
+      }`;
       const textLength = ctx.measureText(text).width;
 
       let xPosition = priceX;
@@ -261,8 +263,8 @@ const EarnChart: React.FC<ProfitChartProps> = ({
           } else {
             return null;
           }
-        })
-      })
+        }),
+      });
 
       return {
         labels: priceRange,
@@ -318,7 +320,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
             label: "breakevenPoint",
             data: priceRange.map((p) =>
               !hoveredIndex &&
-                (p === barrierPercentage * 100 || p === -barrierPercentage * 100)
+              (p === barrierPercentage * 100 || p === -barrierPercentage * 100)
                 ? maxYield * 100
                 : null
             ),
@@ -330,7 +332,14 @@ const EarnChart: React.FC<ProfitChartProps> = ({
         ],
       };
     },
-    [priceRange, otherRange, hoveredIndex, absolutePerformance, barrierPercentage, maxYield]
+    [
+      priceRange,
+      otherRange,
+      hoveredIndex,
+      absolutePerformance,
+      barrierPercentage,
+      maxYield,
+    ]
   );
 
   const chart = useMemo(() => {
@@ -382,22 +391,24 @@ const EarnChart: React.FC<ProfitChartProps> = ({
               const hoveredPointIndex = chart.chart.data.datasets.findIndex(
                 (dataset: any) => dataset.label === "hoveredPoint"
               );
-              const hoveredDataset = chart.chart.data.datasets[hoveredPointIndex];
-              const dataIndex = hoveredDataset?.data?.findIndex((data: any) => data !== null)
+              const hoveredDataset =
+                chart.chart.data.datasets[hoveredPointIndex];
+              const dataIndex = hoveredDataset?.data?.findIndex(
+                (data: any) => data !== null
+              );
 
               if (dataIndex >= 0) {
-                drawPricePoint(
-                  chart,
-                  priceRange[dataIndex],
-                  dataIndex
-                );
+                drawPricePoint(chart, priceRange[dataIndex], dataIndex);
               } else {
                 // Draw the default line
                 const defaultPointIndex = chart.chart.data.datasets.findIndex(
                   (dataset: any) => dataset.label === "defaultPoint"
                 );
-                const defaultPointDataset = chart.chart.data.datasets[defaultPointIndex];
-                const defaultDataIndex = defaultPointDataset?.data?.findIndex((data: any) => data !== null)
+                const defaultPointDataset =
+                  chart.chart.data.datasets[defaultPointIndex];
+                const defaultDataIndex = defaultPointDataset?.data?.findIndex(
+                  (data: any) => data !== null
+                );
 
                 drawDefaultPricePoint(
                   chart,
@@ -422,13 +433,13 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       />
     );
   }, [
-    getData, 
-    options, 
-    drawDefaultBarriers, 
-    barrierPercentage, 
-    priceRange, 
-    drawDefaultPricePoint, 
-    drawPricePoint
+    getData,
+    options,
+    drawDefaultBarriers,
+    barrierPercentage,
+    priceRange,
+    drawDefaultPricePoint,
+    drawPricePoint,
   ]);
 
   return chart;
