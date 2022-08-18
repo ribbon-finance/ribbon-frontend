@@ -241,13 +241,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       onChangeStep(STEPS.confirmationStep);
       try {
         let res: any;
-        console.log(amountStr);
         res = await vault.deposit(amountStr);
 
-        console.log("res.hash: " + res.hash);
-        console.log({ asset });
-        console.log({ vaultOption });
-        console.log({ res });
         addPendingTransaction({
           txhash: res.hash,
           type: "deposit",

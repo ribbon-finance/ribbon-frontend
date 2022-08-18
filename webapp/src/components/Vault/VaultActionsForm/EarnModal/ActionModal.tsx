@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import colors from "shared/lib/designSystem/colors";
@@ -7,11 +7,18 @@ import ActionSteps from "./ActionSteps";
 import { Steps, STEPS } from "./types";
 import sizes from "shared/lib/designSystem/sizes";
 import { BackIcon, CloseIcon } from "shared/lib/assets/icons/icons";
-import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
+import {
+  VaultAddressMap,
+  VaultOptions,
+  VaultVersion,
+} from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 
 import { capitalize } from "shared/lib/utils/text";
+import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
+import { ERC20Token } from "shared/lib/models/eth";
+import { isPracticallyZero } from "shared/lib/utils/math";
 
 const ModalNavigation = styled.div`
   position: absolute;
@@ -33,6 +40,7 @@ const ModalNavigationCloseButton = styled.span`
 
 interface ModalBodyProps extends ModalProps {
   isFormStep: boolean;
+  hasApproved: boolean;
   steps: Steps;
 }
 
@@ -51,7 +59,7 @@ const ModalBody = styled.div<ModalBodyProps>`
       case STEPS.submittedStep:
         return "unset";
       case STEPS.formStep:
-        return "672px";
+        return props.hasApproved ? "672px" : "396px";
       default:
         return "396px";
     }
@@ -160,8 +168,23 @@ const ActionModal: React.FC<ActionModalProps> = ({
   variant,
 }) => {
   const [step, setStep] = useState<Steps>(0);
+  const [hasApproved, setHasApproved] = useState<boolean>(false);
   const isDesktop = variant === "desktop";
   const { vaultActionForm } = useVaultActionForm(vault.vaultOption);
+
+  const tokenAllowance = useTokenAllowance(
+    "usdc" as ERC20Token,
+    VaultAddressMap[vault.vaultOption].earn
+  );
+
+  /**
+   * Check if approval needed
+   */
+  const showTokenApproval = useMemo(() => {
+    setHasApproved(
+      tokenAllowance ? !isPracticallyZero(tokenAllowance, 6) : false
+    );
+  }, [tokenAllowance]);
 
   const renderModalNavigationItem = useCallback(() => {
     if (isDesktop) {
@@ -260,10 +283,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
 
     return (
       <ModalHeaderWithBackground className="position-relative d-flex align-items-center justify-content-center">
-        <Title>
-          {titles[step]}
-          {console.log("reached")}
-        </Title>
+        <Title>{titles[step]}</Title>
         {renderModalCloseButton()}
       </ModalHeaderWithBackground>
     );
@@ -290,6 +310,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
           isFormStep={step === STEPS.formStep}
           variant={variant}
           steps={step}
+          hasApproved={hasApproved}
         >
           {renderModalHeader()}
 

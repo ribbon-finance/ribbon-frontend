@@ -9,7 +9,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useV2VaultData, useVaultData } from "shared/lib/hooks/web3DataContext";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import usePullUp from "../../hooks/usePullUp";
-import { VaultList, VaultOptions } from "shared/lib/constants/constants";
+import {
+  VaultAddressMap,
+  VaultAllowedDepositAssets,
+  VaultList,
+  VaultOptions,
+} from "shared/lib/constants/constants";
 import { Subtitle } from "shared/lib/designSystem";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -30,6 +35,9 @@ import {
 
 import { useAirtable } from "shared/lib/hooks/useAirtable";
 import ActionModal from "../../components/Vault/VaultActionsForm/EarnModal/ActionModal";
+import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
+import { ERC20Token } from "shared/lib/models/eth";
+import VaultApprovalForm from "../../components/Vault/VaultActionsForm/common/VaultApprovalForm";
 const { formatUnits } = ethers.utils;
 
 const rotateClockwise = keyframes`
@@ -249,7 +257,17 @@ const EarnPage = () => {
       roiColor,
     ];
   }, [vaultAccounts, decimals]);
+  const tokenAllowance = useTokenAllowance(
+    "usdc" as ERC20Token,
+    VaultAddressMap["rEARN"].earn
+  );
 
+  /**
+   * Check if approval needed
+   */
+  const showTokenApproval = useMemo(() => {
+    return tokenAllowance && isPracticallyZero(tokenAllowance, decimals);
+  }, [decimals, tokenAllowance]);
   // const [investedInStrategy] = useMemo(() => {
   //   let totalBalance = BigNumber.from(0);
   //   let totalPendingDeposit = BigNumber.from(0);

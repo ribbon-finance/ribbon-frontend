@@ -81,12 +81,12 @@ export const useAirtable = () => {
   if (loading || !schedules) {
     return {
       loading,
-      strikePrice: 0,
+      strikePrice: 2000,
       baseYield: 0.04,
-      participationRate: 0,
+      participationRate: 0.03,
       barrierPercentage: 0.08,
-      absolutePerformance: 0,
-      expectedYield: 0,
+      absolutePerformance: 0.06,
+      expectedYield: 0.14,
       maxYield: 0.17,
     };
   }

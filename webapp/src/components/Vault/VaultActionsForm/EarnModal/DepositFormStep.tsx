@@ -51,6 +51,7 @@ import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import currency from "currency.js";
 import moment from "moment";
 import { VaultInputValidationErrorList, VaultValidationErrors } from "../types";
+import VaultApprovalForm from "../common/VaultApprovalForm";
 
 const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -187,7 +188,7 @@ const DepositFormStep: React.FC<{
    */
   const tokenAllowance = useTokenAllowance(
     "usdc" as ERC20Token,
-    VaultAddressMap[vaultOption].v2
+    VaultAddressMap[vaultOption].earn
   );
 
   /**
@@ -195,8 +196,6 @@ const DepositFormStep: React.FC<{
    */
   const showTokenApproval = useMemo(() => {
     return tokenAllowance && isPracticallyZero(tokenAllowance, decimals);
-
-    return false;
   }, [decimals, tokenAllowance]);
 
   interface ActionDetail {
@@ -312,7 +311,7 @@ const DepositFormStep: React.FC<{
   actionLogo = <DepositIcon color={color} width={32} />;
 
   warning = (
-    <WarningContainer className="mt-2 mb-2 w-100 text-center" color={color}>
+    <WarningContainer className="mt-2 mb-3 w-100 text-center" color={color}>
       <PrimaryText fontSize={14} lineHeight={20} color={color}>
         IMPORTANT: Your funds will be available for withdrawal at 5pm UTC on{" "}
         {withdrawalDate}
@@ -323,7 +322,13 @@ const DepositFormStep: React.FC<{
     onClickConfirmButton();
     onClickUpdateInput(inputAmount);
   };
-  return (
+  return showTokenApproval ? (
+    <VaultApprovalForm
+      vaultOption={vaultOption}
+      version="earn"
+      showDepositAssetSwap={VaultAllowedDepositAssets[vaultOption].length > 1}
+    />
+  ) : (
     <div className="d-flex flex-column align-items-center">
       {/* Logo */}
       <ActionLogoContainer color={color}>{actionLogo}</ActionLogoContainer>
@@ -367,7 +372,7 @@ const DepositFormStep: React.FC<{
       <ActionButton
         onClick={wrapperFunction}
         disabled={isButtonDisabled}
-        className="btn py-3 mt-2 mb-3"
+        className="btn py-3 mt-2 mb-2"
         color={color}
       >
         Next

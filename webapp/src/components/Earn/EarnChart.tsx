@@ -256,16 +256,6 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       green.addColorStop(0.77, `${colors.green}05`);
       green.addColorStop(0, `${colors.green}14`);
 
-      console.log({
-        PP: priceRange.map((_, index) => {
-          if (index === hoveredIndex) {
-            return otherRange[index];
-          } else {
-            return null;
-          }
-        }),
-      });
-
       return {
         labels: priceRange,
         datasets: [
