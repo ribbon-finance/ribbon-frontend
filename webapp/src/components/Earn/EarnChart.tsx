@@ -1,9 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import Chart, { ChartOptions, ChartData } from "chart.js";
 import { Line } from "react-chartjs-2";
-
 import colors from "shared/lib/designSystem/colors";
-import { useAirtable } from "shared/lib/hooks/useAirtable";
 
 /**
  * Strike: Strike price of the option
@@ -13,108 +11,28 @@ import { useAirtable } from "shared/lib/hooks/useAirtable";
  * Expiry: Expiry of the option
  */
 interface ProfitChartProps {
+  loading?: boolean;
   onHoverPrice: (price: number | undefined) => void;
   onHoverPercentage: (percentage: number | undefined) => void;
   absolutePerformance: number;
   maxYield: number;
-  baseYield: number;
-  strikePrice: number;
-  defaultPercentageDiff: string;
-  defaultMoneyness: (moneyness: number) => void;
   barrierPercentage: number;
+
+  priceRange: number[];
+  otherRange: number[];
 }
 
 const EarnChart: React.FC<ProfitChartProps> = ({
+  loading,
   onHoverPrice,
   onHoverPercentage,
-  defaultPercentageDiff,
-  defaultMoneyness,
   absolutePerformance,
   maxYield,
-  baseYield,
-  strikePrice,
   barrierPercentage,
+  priceRange,
+  otherRange,
 }) => {
   const [hoveredIndex, setIndex] = useState<number>();
-
-  const { loading } = useAirtable();
-  // x axis
-  const priceRange = useMemo(() => {
-    let leftArray = [];
-    let array = [];
-    let rightArray = [];
-    if (loading) {
-      barrierPercentage = 0.08;
-    }
-    // for (let i = -28; i < -8; i += 1) {
-    //   leftArray.push(i);
-    // }
-    for (let i = 0; i < 20; i += 1) {
-      leftArray.push(-Math.round(barrierPercentage * 100) - (20 - i));
-    }
-
-    for (
-      let i = -(Math.round(barrierPercentage * 100) - 1);
-      i <= Math.round(barrierPercentage * 100) - 1;
-      i += 1
-    ) {
-      array.push(i);
-    }
-
-    for (let i = 0; i < 20; i += 1) {
-      rightArray.push(Math.round(barrierPercentage * 100) + i + 1);
-    }
-
-    return [
-      ...leftArray,
-      -(barrierPercentage * 100) - 0.01,
-      -(barrierPercentage * 100),
-      ...array,
-      barrierPercentage * 100,
-      barrierPercentage * 100 + 0.01,
-      ...rightArray,
-    ];
-  }, [barrierPercentage]);
-
-  const otherRange = useMemo(() => {
-    let leftArray = [];
-    let array = [];
-    let rightArray = [];
-
-    if (loading) {
-      barrierPercentage = 0.08;
-      maxYield = 0.17;
-      baseYield = 0.04;
-    }
-    for (let i = 0; i <= 20; i += 1) {
-      leftArray.push(4);
-    }
-
-    for (
-      let i = -Math.round(barrierPercentage * 100);
-      i <= Math.round(barrierPercentage * 100);
-      i += 1
-    ) {
-      array.push(
-        4 +
-          Math.abs(i / (barrierPercentage * 100)) * (maxYield - baseYield) * 100
-      );
-    }
-
-    for (let i = 0; i <= 20; i += 1) {
-      rightArray.push(4);
-    }
-    // console.log([...leftArray, ...array, ...rightArray]);
-    return [...leftArray, ...array, ...rightArray];
-  }, [barrierPercentage, loading]);
-
-  console.log({ priceRange });
-  console.log({ otherRange });
-  const getDefaultMoneyness = useMemo(() => {
-    defaultMoneyness(
-      otherRange[priceRange.indexOf(parseInt(defaultPercentageDiff))]
-    );
-  }, [defaultMoneyness, defaultPercentageDiff, priceRange, otherRange]);
 
   const drawPricePoint = useCallback(
     (chart: any, price: number, drawIndex: number) => {
@@ -160,9 +78,8 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       ctx.textBaseline = "middle";
       const padding = 8;
 
-      const text = `${drawIndex === 0 ? "<<< " : ""}${price.toFixed(2)}%${
-        drawIndex === meta.data.length - 1 ? " >>>" : ""
-      }`;
+      const text = `${drawIndex === 0 ? "<<< " : ""}${price.toFixed(2)}%${drawIndex === meta.data.length - 1 ? " >>>" : ""
+        }`;
       const textLength = ctx.measureText(text).width;
 
       let xPosition = priceX;
@@ -179,7 +96,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
 
       ctx.globalCompositeOperation = "source-over";
     },
-    []
+    [barrierPercentage]
   );
 
   const drawDefaultPricePoint = useCallback(
@@ -227,9 +144,8 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       ctx.textBaseline = "middle";
       const padding = 8;
 
-      const text = `${drawIndex === 0 ? "<<< " : ""}${price.toFixed(2)}%${
-        drawIndex === meta.data.length - 1 ? " >>>" : ""
-      }`;
+      const text = `${drawIndex === 0 ? "<<< " : ""}${price.toFixed(2)}%${drawIndex === meta.data.length - 1 ? " >>>" : ""
+        }`;
       const textLength = ctx.measureText(text).width;
 
       let xPosition = priceX;
@@ -244,7 +160,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
 
       ctx.fillText(text, xPosition, bottomY + 46);
     },
-    []
+    [barrierPercentage]
   );
 
   const drawDefaultBarriers = useCallback(
@@ -316,16 +232,16 @@ const EarnChart: React.FC<ProfitChartProps> = ({
         intersect: false,
         mode: "nearest",
       },
-      onHover: (_: any, elements: any) => {
+      onHover: (a: any, elements: any) => {
         if (elements && elements.length) {
           onHoverPrice(otherRange[elements[0]._index]);
           onHoverPercentage(priceRange[elements[0]._index]);
           setIndex(elements[0]._index);
-          return;
+        } else {
+          onHoverPrice(undefined);
+          onHoverPercentage(undefined);
+          setIndex(undefined);
         }
-        onHoverPrice(undefined);
-        onHoverPercentage(undefined);
-        setIndex(undefined);
       },
     };
   }, [priceRange, otherRange, onHoverPrice, onHoverPercentage]);
@@ -338,22 +254,19 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       green.addColorStop(0.77, `${colors.green}05`);
       green.addColorStop(0, `${colors.green}14`);
 
+      console.log({
+        PP: priceRange.map((_, index) => {
+          if (index === hoveredIndex) {
+            return otherRange[index];
+          } else {
+            return null;
+          }
+        })
+      })
+
       return {
         labels: priceRange,
         datasets: [
-          {
-            label: "breakevenPoint",
-            data: priceRange.map((p) =>
-              !hoveredIndex &&
-              (p === barrierPercentage * 100 || p === -barrierPercentage * 100)
-                ? maxYield * 100
-                : null
-            ),
-            type: "line",
-            pointRadius: 4,
-            pointHoverRadius: 4,
-            backgroundColor: colors.primaryText,
-          },
           {
             label: "green",
             // @ts-ignore
@@ -367,7 +280,6 @@ const EarnChart: React.FC<ProfitChartProps> = ({
             backgroundColor: green,
             lineTension: 0,
           },
-
           {
             label: "hoveredPoint",
             data: priceRange.map((_, index) => {
@@ -385,16 +297,45 @@ const EarnChart: React.FC<ProfitChartProps> = ({
             borderWidth: 1,
             lineTension: 0,
           },
+          {
+            label: "defaultPoint",
+            data: priceRange.map((price) => {
+              if (price === Math.round(absolutePerformance * 100)) {
+                return price;
+              } else {
+                return null;
+              }
+            }),
+            type: "line",
+            pointRadius: 0,
+            pointHoverRadius: 0,
+            backgroundColor: colors.primaryText,
+            borderColor: "#FFFFFF66",
+            borderWidth: 1,
+            lineTension: 0,
+          },
+          {
+            label: "breakevenPoint",
+            data: priceRange.map((p) =>
+              !hoveredIndex &&
+                (p === barrierPercentage * 100 || p === -barrierPercentage * 100)
+                ? maxYield * 100
+                : null
+            ),
+            type: "line",
+            pointRadius: 4,
+            pointHoverRadius: 4,
+            backgroundColor: colors.primaryText,
+          },
         ],
       };
     },
-    [otherRange, priceRange, hoveredIndex]
+    [priceRange, otherRange, hoveredIndex, absolutePerformance, barrierPercentage, maxYield]
   );
 
   const chart = useMemo(() => {
     return (
       <Line
-        key={hoveredIndex}
         type="line"
         data={getData}
         options={options}
@@ -438,21 +379,31 @@ const EarnChart: React.FC<ProfitChartProps> = ({
 
               ctx.restore();
 
-              if (hoveredIndex === undefined) {
+              const hoveredPointIndex = chart.chart.data.datasets.findIndex(
+                (dataset: any) => dataset.label === "hoveredPoint"
+              );
+              const hoveredDataset = chart.chart.data.datasets[hoveredPointIndex];
+              const dataIndex = hoveredDataset?.data?.findIndex((data: any) => data !== null)
+
+              if (dataIndex >= 0) {
+                drawPricePoint(
+                  chart,
+                  priceRange[dataIndex],
+                  dataIndex
+                );
+              } else {
+                // Draw the default line
+                const defaultPointIndex = chart.chart.data.datasets.findIndex(
+                  (dataset: any) => dataset.label === "defaultPoint"
+                );
+                const defaultPointDataset = chart.chart.data.datasets[defaultPointIndex];
+                const defaultDataIndex = defaultPointDataset?.data?.findIndex((data: any) => data !== null)
+
                 drawDefaultPricePoint(
                   chart,
-                  priceRange[
-                    priceRange.indexOf(Math.round(absolutePerformance * 100))
-                  ],
-                  priceRange.indexOf(Math.round(absolutePerformance * 100))
+                  priceRange[defaultDataIndex],
+                  defaultDataIndex
                 );
-              }
-
-              /**
-               * Draw price point
-               */
-              if (hoveredIndex !== undefined) {
-                drawPricePoint(chart, priceRange[hoveredIndex], hoveredIndex);
               }
 
               drawDefaultBarriers(
@@ -471,14 +422,13 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       />
     );
   }, [
-    getData,
-    options,
-    hoveredIndex,
-    drawPricePoint,
-    drawDefaultPricePoint,
-    defaultPercentageDiff,
-    drawDefaultBarriers,
-    priceRange,
+    getData, 
+    options, 
+    drawDefaultBarriers, 
+    barrierPercentage, 
+    priceRange, 
+    drawDefaultPricePoint, 
+    drawPricePoint
   ]);
 
   return chart;

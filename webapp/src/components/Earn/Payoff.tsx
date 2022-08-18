@@ -78,11 +78,11 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
     baseYield,
     absolutePerformance,
     barrierPercentage,
+    loading,
   } = useAirtable();
   const [input, setInput] = useState<string>("");
   const [hoverPrice, setHoverPrice] = useState<number>();
   const [hoverPercentage, setHoverPercentage] = useState<number>();
-  const [defaultMoneyness, setDefaultMoneyness] = useState<number>(0);
   const [, setChartHovering] = useState(false);
 
   const optionMoneyness = useMemo(() => {
@@ -94,6 +94,69 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
       ? 0
       : absolutePerformance;
   }, [absolutePerformance, barrierPercentage, hoverPercentage]);
+
+  // x axis
+  const priceRange = useMemo(() => {
+    let leftArray = [];
+    let array = [];
+    let rightArray = [];
+
+    for (let i = 0; i < 20; i += 1) {
+      leftArray.push(-Math.round(barrierPercentage * 100) - (20 - i));
+    }
+
+    for (
+      let i = -(Math.round(barrierPercentage * 100) - 1);
+      i <= Math.round(barrierPercentage * 100) - 1;
+      i += 1
+    ) {
+      array.push(i);
+    }
+
+    for (let i = 0; i < 20; i += 1) {
+      rightArray.push(Math.round(barrierPercentage * 100) + i + 1);
+    }
+
+    return [
+      ...leftArray,
+      -(barrierPercentage * 100) - 0.01,
+      -(barrierPercentage * 100),
+      ...array,
+      barrierPercentage * 100,
+      barrierPercentage * 100 + 0.01,
+      ...rightArray,
+    ];
+  }, [barrierPercentage]);
+
+  const otherRange = useMemo(() => {
+    let leftArray = [];
+    let array = [];
+    let rightArray = [];
+
+    for (let i = 0; i <= 20; i += 1) {
+      leftArray.push(4);
+    }
+
+    for (
+      let i = -Math.round(barrierPercentage * 100);
+      i <= Math.round(barrierPercentage * 100);
+      i += 1
+    ) {
+      array.push(
+        4 +
+          Math.abs(i / (barrierPercentage * 100)) * (maxYield - baseYield) * 100
+      );
+    }
+
+    for (let i = 0; i <= 20; i += 1) {
+      rightArray.push(4);
+    }
+    return [...leftArray, ...array, ...rightArray];
+  }, [barrierPercentage, baseYield, maxYield]);
+
+  const defaultMoneyness = useMemo(() => {
+    return otherRange[priceRange.indexOf(parseInt(Math.round(6).toFixed(2)))];
+  }, [otherRange, priceRange]);
 
   return (
     <>
@@ -117,15 +180,14 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
             onMouseLeave={() => setChartHovering(false)}
           >
             <EarnChart
+              loading={loading}
               onHoverPrice={setHoverPrice}
               onHoverPercentage={setHoverPercentage}
-              defaultMoneyness={setDefaultMoneyness}
-              baseYield={baseYield}
-              maxYield={maxYield}
               absolutePerformance={absolutePerformance}
-              strikePrice={strikePrice * 100}
-              defaultPercentageDiff={Math.round(6).toFixed(2)}
               barrierPercentage={barrierPercentage}
+              maxYield={maxYield}
+              priceRange={priceRange}
+              otherRange={otherRange}
             />
           </ChartContainer>
         </RelativeContainer>

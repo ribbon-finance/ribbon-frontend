@@ -82,12 +82,12 @@ export const useAirtable = () => {
     return {
       loading,
       strikePrice: 0,
-      baseYield: 0,
+      baseYield: 0.04,
       participationRate: 0,
-      barrierPercentage: 0,
+      barrierPercentage: 0.08,
       absolutePerformance: 0,
       expectedYield: 0,
-      maxYield: 0,
+      maxYield: 0.17,
     };
   }
   return {
