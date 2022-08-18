@@ -77,6 +77,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
     strikePrice,
     maxYield,
     baseYield,
+    performance,
     absolutePerformance,
     barrierPercentage,
     loading,
@@ -95,11 +96,12 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
         : Math.abs(hoverPercentage)
       : absolutePerformance > barrierPercentage
       ? 0
-      : absolutePerformance;
-  }, [absolutePerformance, barrierPercentage, hoverPercentage]);
+      : performance;
+  }, [absolutePerformance, performance, barrierPercentage, hoverPercentage]);
 
+  console.log({ optionMoneyness });
   // x axis
-  const priceRange = useMemo(() => {
+  const moneynessRange = useMemo(() => {
     let leftArray = [];
     let array = [];
     let rightArray = [];
@@ -131,7 +133,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
     ];
   }, [barrierPercentage]);
 
-  const otherRange = useMemo(() => {
+  const yieldRange = useMemo(() => {
     let leftArray = [];
     let array = [];
     let rightArray = [];
@@ -158,9 +160,13 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
   }, [barrierPercentage, baseYield, maxYield]);
 
   const defaultMoneyness = useMemo(() => {
-    return otherRange[priceRange.indexOf(parseInt(Math.round(6).toFixed(2)))];
-  }, [otherRange, priceRange]);
-
+    return yieldRange[
+      moneynessRange.indexOf(parseInt(Math.round(6).toFixed(2)))
+    ];
+  }, [performance, yieldRange, moneynessRange]);
+  console.log({ defaultMoneyness });
+  console.log({ performance });
+  console.log(parseInt(Math.round(performance * 100).toFixed(2)));
   return (
     <>
       <BaseModalContentColumn marginTop={-4}>
@@ -186,11 +192,12 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
               loading={loading}
               onHoverPrice={setHoverPrice}
               onHoverPercentage={setHoverPercentage}
+              performance={performance}
               absolutePerformance={absolutePerformance}
               barrierPercentage={barrierPercentage}
               maxYield={maxYield}
-              priceRange={priceRange}
-              otherRange={otherRange}
+              moneynessRange={moneynessRange}
+              yieldRange={yieldRange}
             />
           </ChartContainer>
         </RelativeContainer>
