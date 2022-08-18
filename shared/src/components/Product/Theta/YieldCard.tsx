@@ -522,7 +522,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     const strike = strikePrice(false);
     const current = currentPrice(false);
 
-    if (strike === current || priceLoading) {
+    if (strike === current || priceLoading || !isActiveVault) {
       return colors.primaryText;
     } else {
       if (isPutVault(vault)) {
@@ -531,7 +531,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
         return current < strike ? colors.green : colors.red;
       }
     }
-  }, [strikePrice, currentPrice, priceLoading, vault]);
+  }, [strikePrice, currentPrice, priceLoading, vault, isActiveVault]);
 
   const StrikeWidget = useCallback(() => {
     return (
@@ -555,7 +555,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
           </div>
         </StrikeContainer>
         <RangeContainer>
-          <Range vault={vault} />
+          {isActiveVault && <Range vault={vault} />}
           <RangeCenter />
         </RangeContainer>
       </>
