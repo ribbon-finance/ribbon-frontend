@@ -11,6 +11,7 @@ import EarnModalContentExtra from "shared/lib/components/Common/EarnModalContent
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { useAirtable } from "shared/lib/hooks/useAirtable";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 const ChartContainer = styled.div`
   height: 264px;
   margin: 0;
@@ -56,7 +57,7 @@ const CalculationColumn = styled.div`
   }
 `;
 
-const CalculationData = styled(Title)<{ variant?: "red" | "green" }>`
+const CalculationData = styled(Title) <{ variant?: "red" | "green" }>`
   color: ${(props) => {
     switch (props.variant) {
       case "red":
@@ -69,7 +70,7 @@ const CalculationData = styled(Title)<{ variant?: "red" | "green" }>`
   }};
 `;
 
-interface ProfitCalculatorProps {}
+interface ProfitCalculatorProps { }
 
 const Payoff: React.FC<ProfitCalculatorProps> = () => {
   const {
@@ -80,6 +81,8 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
     barrierPercentage,
     loading,
   } = useAirtable();
+  const loadingText = useLoadingText()
+
   const [input, setInput] = useState<string>("");
   const [hoverPrice, setHoverPrice] = useState<number>();
   const [hoverPercentage, setHoverPercentage] = useState<number>();
@@ -91,8 +94,8 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
         ? 0
         : Math.abs(hoverPercentage)
       : absolutePerformance > barrierPercentage
-      ? 0
-      : absolutePerformance;
+        ? 0
+        : absolutePerformance;
   }, [absolutePerformance, barrierPercentage, hoverPercentage]);
 
   // x axis
@@ -144,7 +147,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
     ) {
       array.push(
         4 +
-          Math.abs(i / (barrierPercentage * 100)) * (maxYield - baseYield) * 100
+        Math.abs(i / (barrierPercentage * 100)) * (maxYield - baseYield) * 100
       );
     }
 
@@ -164,7 +167,11 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
         <CalculationContainer2>
           <ParagraphText fontWeight={500}>Max Yield (APY)</ParagraphText>
           <CalculationData variant={"green"}>
-            +{(maxYield * 100).toFixed(2)}%
+            {
+              loading
+                ? "---"
+                : `+${(maxYield * 100).toFixed(2)}%`
+            }
           </CalculationData>
         </CalculationContainer2>
       </BaseModalContentColumn>
@@ -222,9 +229,12 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
                 )}
               />
             </div>
-            <CalculationData variant={"green"}>
-              {"+"}
-              {(baseYield * 100).toFixed(2)}%
+            <CalculationData variant={loading ? undefined : "green"}>
+              {
+                loading
+                  ? loadingText
+                  : `+${(baseYield * 100).toFixed(2)}%`
+              }
             </CalculationData>
           </CalculationColumn>
           <CalculationColumn>
@@ -246,9 +256,16 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
                 )}
               />
             </div>
-            <CalculationData variant={optionMoneyness === 0 ? "red" : "green"}>
-              {optionMoneyness === 0 ? "" : "+"}
-              {Math.round(optionMoneyness).toFixed(2)}%
+            <CalculationData variant={
+              loading
+                ? undefined
+                : optionMoneyness === 0 ? "red" : "green"
+            }>
+              {
+                loading
+                  ? loadingText
+                  : `${optionMoneyness === 0 ? "" : "+"}${Math.round(optionMoneyness).toFixed(2)}%`
+              }
             </CalculationData>
           </CalculationColumn>
           <CalculationColumn>
@@ -270,12 +287,14 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
                 )}
               />
             </div>
-            <CalculationData variant={"green"}>
-              +
-              {hoverPrice
-                ? hoverPrice.toFixed(2)
-                : defaultMoneyness?.toFixed(2)}
-              %
+            <CalculationData variant={loading ? undefined : "green"}>
+              {
+                loading
+                  ? loadingText
+                  : `+${hoverPrice
+                    ? hoverPrice.toFixed(2)
+                    : defaultMoneyness?.toFixed(2)}%`
+              }
             </CalculationData>
           </CalculationColumn>
         </CalculationContainer>
