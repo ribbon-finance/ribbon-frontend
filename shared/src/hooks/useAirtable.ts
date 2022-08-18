@@ -1,7 +1,7 @@
 import Airtable from "airtable";
 import dotenv from "dotenv";
 import { useEffect, useMemo, useState } from "react";
-import useAssetPrice from "shared/lib/hooks/useAssetPrice";
+import useAssetPrice from "./useAssetPrice";
 
 export interface ScheduleItem {
   strikePrice: number;

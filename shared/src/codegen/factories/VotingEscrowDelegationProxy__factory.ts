@@ -95,7 +95,6 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
-    gas: 2742,
   },
   {
     name: "kill_delegation",
@@ -103,7 +102,6 @@ const _abi = [
     inputs: [],
     stateMutability: "nonpayable",
     type: "function",
-    gas: 23710,
   },
   {
     name: "set_delegation",
@@ -116,7 +114,6 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
-    gas: 37935,
   },
   {
     name: "commit_set_admins",
@@ -133,7 +130,6 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "function",
-    gas: 73381,
   },
   {
     name: "apply_set_admins",
@@ -141,7 +137,6 @@ const _abi = [
     inputs: [],
     stateMutability: "nonpayable",
     type: "function",
-    gas: 74829,
   },
   {
     name: "delegation",
@@ -154,7 +149,6 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
-    gas: 1211,
   },
   {
     name: "voting_escrow",
@@ -167,7 +161,6 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
-    gas: 1241,
   },
   {
     name: "emergency_admin",
@@ -180,7 +173,6 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
-    gas: 1271,
   },
   {
     name: "ownership_admin",
@@ -193,7 +185,6 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
-    gas: 1301,
   },
   {
     name: "future_emergency_admin",
@@ -206,7 +197,6 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
-    gas: 1331,
   },
   {
     name: "future_ownership_admin",
@@ -219,7 +209,6 @@ const _abi = [
     inputs: [],
     stateMutability: "view",
     type: "function",
-    gas: 1361,
   },
 ];
 
