@@ -15,9 +15,10 @@ import useElementScroll from "../../hooks/useElementScroll";
 import useElementSize from "../../hooks/useElementSize";
 
 type WidthType = "fullWidth" | "maxContent";
+type SegmentControlTheme = "outline" | "plain";
 
 const SegmentControlContainer = styled.div<{
-  theme?: "outline";
+  theme?: SegmentControlTheme;
   color?: string;
   backgroundColor?: string;
   widthType: WidthType;
@@ -26,6 +27,10 @@ const SegmentControlContainer = styled.div<{
   border-radius: ${({ hideBorderRadius }) =>
     hideBorderRadius ? "0" : designTheme.border.radius};
   background-color: ${(props) => {
+    if (props.theme === "plain") {
+      return "transparent";
+    }
+
     if (props.backgroundColor) {
       return props.backgroundColor;
     }
@@ -114,7 +119,7 @@ const IndicatorIcon = styled.i`
 `;
 
 const ActiveBackground = styled(Frame)<{
-  theme?: "outline";
+  theme?: SegmentControlTheme;
   color?: string;
 }>`
   border-radius: ${designTheme.border.radius} !important;
@@ -125,6 +130,10 @@ const ActiveBackground = styled(Frame)<{
           transition: 0.25s border ease-out;
           border: ${designTheme.border.width} ${designTheme.border.style} 
             ${props.color ? props.color : colors.primaryText};
+          background-color: transparent !important;
+        `;
+      case "plain":
+        return `
           background-color: transparent !important;
         `;
       default:
@@ -168,9 +177,19 @@ const SegmentControlButton = styled.div.attrs({
   }}
 `;
 
-const SegmentControlButtonText = styled(Subtitle)`
+const SegmentControlButtonText = styled(Subtitle)<{
+  theme?: SegmentControlTheme;
+  active?: boolean;
+}>`
   letter-spacing: 1px;
   white-space: nowrap;
+
+  ${({ theme, active }) => {
+    if (theme === "plain") {
+      return `opacity: ${active ? 1 : 0.48};`;
+    }
+    return "";
+  }}
 `;
 
 interface SegmentControlProps {
@@ -182,7 +201,7 @@ interface SegmentControlProps {
   value: string;
   onSelect: (value: string) => void;
   config?: {
-    theme?: "outline";
+    theme?: SegmentControlTheme;
     color?: string;
     backgroundColor?: string;
     widthType?: WidthType;
@@ -295,6 +314,8 @@ const SegmentControl: React.FC<SegmentControlProps> = ({
             spacingBetweenButtons={theme !== "outline"}
           >
             <SegmentControlButtonText
+              theme={theme}
+              active={segment.value === value}
               color={segment.textColor ?? color}
               fontSize={button.fontSize}
               lineHeight={button.lineHeight}
