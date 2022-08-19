@@ -12,6 +12,9 @@ import Counterparties from "../Counterparties";
 import Fees from "../Fees";
 import { motion } from "framer-motion";
 import sizes from "shared/lib/designSystem/sizes";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
+import colors from "shared/lib/designSystem/colors";
+import theme from "shared/lib/designSystem/theme";
 
 const Container = styled(motion.div)`
   display: flex;
@@ -26,18 +29,66 @@ const ModalColumnScroll = styled(BaseModalContentColumn)`
   overflow: hidden;
 `;
 
+const DesktopNavigatorButtonContainer = styled.div`
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  width: 150%;
+  left: -25%;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const NavigationButton = styled.div<{
+  disabled?: boolean;
+  marginLeft?: string;
+}>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: ${colors.primaryText}0A;
+  border-radius: 100px;
+  overflow: show;
+  margin-left: ${(props) => props.marginLeft};
+  transition: opacity 100ms ease-in;
+  align-self: center;
+  margin-bottom: 8px;
+
+  ${(props) =>
+    props.disabled
+      ? `
+          opacity: 0.24;
+          cursor: default;
+        `
+      : `
+          &:hover {
+            opacity: ${theme.hover.opacity};
+          }
+        `}
+
+  i {
+    color: white;
+  }
+
+  &:last-child {
+    margin-right: 0px;
+  }
+`;
+
 const SegmentControlWrapper = styled.div`
   position: absolute;
-  bottom: -60px;
+  bottom: -72px;
   width: 300%;
   left: -100%;
   display: flex;
   align-items: center;
   justify-content: center;
 
-  @media (max-width: ${sizes.lg}px) {
-    width: 150%;
-    left: -25%;
+  @media (max-width: ${sizes.md}px) {
+    width: 120%;
+    left: -10%;
   }
 `
 
@@ -70,48 +121,53 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
   show,
   onClose,
 }) => {
+  const { width } = useScreenSize();
+
   const [step, setStep] = useState<Step>("strategy");
+  const showDesktopNavigator = useMemo(
+    () => width > sizes.md,
+    [width]
+  );
 
   const onCloseModal = useCallback(() => {
     setStep("strategy");
     onClose();
   }, [onClose]);
 
-  const modalContent = useMemo(
-    (margin?: number) => {
-      switch (step) {
-        case "strategy":
-          return <Strategy />;
-        case "payoff":
-          return <Payoff />;
-        case "risk":
-          return <Risk />;
-        case "performance":
-          return (
-            <EarnPerformanceSection
-              vault={{
-                vaultOption: "rEARN",
-                vaultVersion: "earn",
-              }}
-            />
-          );
-        case "activity":
-          return (
-            <EarnVaultActivity
-              vault={{
-                vaultOption: "rEARN",
-                vaultVersion: "earn",
-              }}
-            />
-          );
-        case "counterparties":
-          return <Counterparties />;
-        case "fees":
-          return <Fees />;
-      }
-    },
-    [step]
-  );
+  const modalContent = useMemo(() => {
+    switch (step) {
+      case "strategy":
+        return <Strategy />;
+      case "payoff":
+        return <Payoff />;
+      case "risk":
+        return <Risk />;
+      case "performance":
+        return (
+          <EarnPerformanceSection
+            vault={{
+              vaultOption: "rEARN",
+              vaultVersion: "earn",
+            }}
+          />
+        );
+      case "activity":
+        return (
+          <EarnVaultActivity
+            vault={{
+              vaultOption: "rEARN",
+              vaultVersion: "earn",
+            }}
+          />
+        );
+      case "counterparties":
+        return <Counterparties />;
+      case "fees":
+        return <Fees />;
+    }
+  }, [step]);
+
+  console.log({showDesktopNavigator})
 
   return (
     <>
@@ -123,6 +179,37 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
         headerBackground={true}
       >
         <>
+          {showDesktopNavigator && (
+            <DesktopNavigatorButtonContainer>
+              <NavigationButton
+                role="button"
+                disabled={step === StepList[0]}
+                onClick={() => {
+                  const newStep = StepList.indexOf(step)
+                  if (newStep > 0) {
+                    setStep(StepList[newStep - 1])
+                  }
+                }}
+              >
+                <i className="fas fa-arrow-left" />
+              </NavigationButton>
+              <NavigationButton
+                role="button"
+                disabled={step === StepList[StepList.length - 1]}
+                onClick={() => {
+                  if (step === StepList[StepList.length - 1]) {
+                    return;
+                  }
+                  const newStep = StepList.indexOf(step)
+                  if (newStep < StepList.length) {
+                    setStep(StepList[newStep + 1])
+                  }
+                }}
+              >
+                <i className="fas fa-arrow-right" />
+              </NavigationButton>
+            </DesktopNavigatorButtonContainer>
+          )}
           <SegmentControlWrapper>
             <SegmentControl
               config={{
