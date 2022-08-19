@@ -2,7 +2,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 import { ERC20Token } from "../models/eth";
 import { useWeb3Context } from "./web3Context";
-import { IERC20Factory } from "../codegen/IERC20Factory";
+import { IERC20__factory } from "../codegen/factories/IERC20__factory";
 import { IERC20 } from "../codegen";
 import { getERC20TokenAddress } from "../constants/constants";
 
@@ -15,7 +15,7 @@ export const getERC20Token = (
   const address = getERC20TokenAddress(token, chainId);
   if (library && address) {
     const provider = useSigner ? library.getSigner() : library;
-    return IERC20Factory.connect(address, provider);
+    return IERC20__factory.connect(address, provider);
   }
   return undefined;
 };

@@ -52,6 +52,7 @@ import currency from "currency.js";
 import moment from "moment";
 import { VaultInputValidationErrorList, VaultValidationErrors } from "../types";
 import VaultApprovalForm from "../common/VaultApprovalForm";
+import VaultSignatureForm from "../common/VaultSignatureForm";
 
 const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -317,9 +318,7 @@ const DepositFormStep: React.FC<{
     onClickConfirmButton();
     onClickUpdateInput(inputAmount);
   };
-  return showTokenApproval ? (
-    <VaultApprovalForm vaultOption={vaultOption} version="earn" />
-  ) : (
+  return (
     <div className="d-flex flex-column align-items-center">
       {/* Logo */}
       <ActionLogoContainer color={color}>{actionLogo}</ActionLogoContainer>

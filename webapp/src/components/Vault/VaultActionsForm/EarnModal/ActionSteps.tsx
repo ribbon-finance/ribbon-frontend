@@ -40,6 +40,8 @@ import {
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import DepositFormStep from "./DepositFormStep";
 import useEarnVaultContract from "shared/lib/hooks/useEarnVaultContract";
+import VaultSignatureForm from "../common/VaultSignatureForm";
+import { ISignature } from "../common/signing";
 export interface ActionStepsProps {
   vault: {
     vaultOption: VaultOptions;
@@ -67,7 +69,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const { data: priceHistories } = useVaultsPriceHistory();
 
   const firstStep = useMemo(() => {
-    return STEPS.formStep;
+    return STEPS.warningStep;
   }, [
     skipToPreview,
     vaultActionForm.actionType,
@@ -152,6 +154,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   ]);
 
   const [inputAmount, setInputAmount] = useState<number>(0);
+  const [signature, setSignature] = useState<ISignature | undefined>();
+  const [deadline, setDeadline] = useState<number>();
+  console.log(signature);
   const [amount, amountStr] = useMemo(() => {
     try {
       const amount = parseUnits(inputAmount.toString(), decimals);
@@ -194,20 +199,6 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   }, [show, firstStep, skipToPreview]);
 
   useEffect(() => {
-    // Fetch stETH rate
-    if (vaultOption === "rstETH-THETA" && isNativeToken(asset)) {
-      if (!amount.isZero()) {
-        setMinSTETHAmount(undefined);
-        getMinSTETHAmount(amount).then((amt) => {
-          setMinSTETHAmount(amt);
-        });
-        return;
-      }
-      setMinSTETHAmount(BigNumber.from(0));
-    }
-  }, [amount, asset, getMinSTETHAmount, vaultOption]);
-
-  useEffect(() => {
     // we check that the txhash and check if it had succeed
     // so we can dismiss the modal
     if (step === STEPS.submittedStep && txhash !== "") {
@@ -220,16 +211,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     }
   }, [pendingTransactions, txhash, handleClose, step]);
 
-  const handleSwapCurveAndDepositSTETH = useCallback(async () => {
-    // Subtract 0.5% slippage from exchange rate to get min steth
-    const minSTETHAmount = await getMinSTETHAmount(amount);
-    if (contract && minSTETHAmount) {
-      return stETHDepositHelper?.deposit(minSTETHAmount, { value: amount });
-    }
-  }, [amount, contract, getMinSTETHAmount, stETHDepositHelper]);
-
   const handleClickNextButton = async () => {
     onChangeStep(STEPS.previewStep);
+  };
+
+  const handleSignatureFound = async () => {
+    onChangeStep(STEPS.formStep);
   };
 
   const handleClickConfirmButton = async () => {
@@ -241,7 +228,23 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       onChangeStep(STEPS.confirmationStep);
       try {
         let res: any;
-        res = await vault.deposit(amountStr);
+        console.log("reached2");
+        if (!signature || !deadline) {
+          return;
+        }
+        console.log("reached");
+        console.log({ amountStr });
+        console.log({ deadline });
+        console.log(signature.v);
+        console.log(signature.r);
+        console.log(signature.s);
+        res = await vault.depositWithPermit(
+          amountStr,
+          deadline.toString(),
+          signature.v,
+          signature.r,
+          signature.s
+        );
 
         addPendingTransaction({
           txhash: res.hash,
@@ -262,13 +265,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const stepComponents = {
     [-1]: (
-      <WarningStep
-        actionType={vaultActionForm.actionType}
-        withdrawOption={vaultActionForm.withdrawOption}
+      <VaultSignatureForm
+        onSignatureMade={setSignature}
+        onSignComplete={handleSignatureFound}
+        onSetDeadline={setDeadline}
         vaultOption={vaultOption}
-        vaultVersion={vaultActionForm.vaultVersion}
-        withdrawMetadata={withdrawMetadata}
-        onFormSubmit={() => onChangeStep(STEPS.previewStep)}
+        version="earn"
       />
     ),
     0: (

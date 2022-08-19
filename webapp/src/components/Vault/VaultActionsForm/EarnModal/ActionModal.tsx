@@ -40,7 +40,6 @@ const ModalNavigationCloseButton = styled.span`
 
 interface ModalBodyProps extends ModalProps {
   isFormStep: boolean;
-  showTokenApproval: boolean;
   steps: Steps;
 }
 
@@ -55,11 +54,12 @@ const ModalBody = styled.div<ModalBodyProps>`
   min-height: ${(props) => {
     switch (props.steps) {
       case STEPS.warningStep:
+        return "350px";
       case STEPS.confirmationStep:
       case STEPS.submittedStep:
         return "unset";
       case STEPS.formStep:
-        return props.showTokenApproval ? "350px" : "672px";
+        return "672px";
       default:
         return "396px";
     }
@@ -180,7 +180,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
    * Check if approval needed
    */
   const showTokenApproval = useMemo(() => {
-    return tokenAllowance ? isPracticallyZero(tokenAllowance, 6) : true;
+    return tokenAllowance ? isPracticallyZero(tokenAllowance, 6) : false;
   }, [tokenAllowance]);
 
   const renderModalNavigationItem = useCallback(() => {
@@ -231,7 +231,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
   }, [isDesktop, step, onClose]);
 
   const renderModalHeader = useCallback(() => {
-    if (step === STEPS.formStep) {
+    if (step === STEPS.formStep || step === STEPS.warningStep) {
       return (
         <InvisibleModalHeader className="position-relative d-flex align-items-center justify-content-center">
           {renderModalCloseButton()}
@@ -307,7 +307,6 @@ const ActionModal: React.FC<ActionModalProps> = ({
           isFormStep={step === STEPS.formStep}
           variant={variant}
           steps={step}
-          showTokenApproval={showTokenApproval}
         >
           {renderModalHeader()}
 
