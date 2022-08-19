@@ -109,7 +109,6 @@ export const TreasuryVaultList = [
   "rSPELL-TSRY",
 ] as const;
 
-
 const AllVaultOptions = [
   ...EVMVaultList,
   ...TreasuryVaultList,

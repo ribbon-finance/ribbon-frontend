@@ -3,25 +3,27 @@
 import { ethers, providers } from "ethers";
 import { BytesLike } from "ethers";
 
-export type ISignatureLike = {
-    r: string;
-    s?: string;
-    _vs?: string;
-    recoveryParam?: number;
-    v?: number;
-} | BytesLike;
+export type ISignatureLike =
+  | {
+      r: string;
+      s?: string;
+      _vs?: string;
+      recoveryParam?: number;
+      v?: number;
+    }
+  | BytesLike;
 
 export interface ISignature {
-    r: string;
+  r: string;
 
-    s: string;
-    _vs: string;
+  s: string;
+  _vs: string;
 
-    recoveryParam: number;
-    v: number;
+  recoveryParam: number;
+  v: number;
 
-    yParityAndS: string;
-    compact: string;
+  yParityAndS: string;
+  compact: string;
 }
 export const domainType = [
   { name: "name", type: "string" },
@@ -57,16 +59,9 @@ type LocalStorageAuthInfo = {
   [address: string]: IAuthInfo;
 };
 
-
 export function splitSignature(signature: ISignatureLike): ISignature {
-  const {
-    isBytesLike,
-    arrayify,
-    hexlify,
-    zeroPad,
-    isHexString,
-    hexZeroPad,
-  } = ethers.utils;
+  const { isBytesLike, arrayify, hexlify, zeroPad, isHexString, hexZeroPad } =
+    ethers.utils;
 
   const result: any = {
     r: "0x",
@@ -158,8 +153,8 @@ export function splitSignature(signature: ISignatureLike): ISignature {
     } else if (result.v == null) {
       result.v = 27 + result.recoveryParam;
     } else {
-      const recId
-        = result.v === 0 || result.v === 1 ? result.v : 1 - (result.v % 2);
+      const recId =
+        result.v === 0 || result.v === 1 ? result.v : 1 - (result.v % 2);
       if (result.recoveryParam !== recId) {
         throw Error("signature recoveryParam mismatch v");
       }

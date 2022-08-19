@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { BigNumber } from "ethers";
 import { useTranslation } from "react-i18next";
@@ -15,6 +15,7 @@ import {
   VaultVersion,
   isPutVault,
   isNativeToken,
+  VaultAddressMap,
 } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { capitalize } from "shared/lib/utils/text";
@@ -33,7 +34,10 @@ import { parseUnits } from "ethers/lib/utils";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import moment from "moment";
-
+import useLoadingText from "shared/lib/hooks/useLoadingText";
+import USDCSign from "../common/USDCSIgn";
+import { AccountClient } from "@project-serum/anchor";
+import { ISignature } from "../common/signing";
 const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
@@ -101,6 +105,8 @@ const PreviewStep: React.FC<{
   vaultVersion: VaultVersion;
   receiveVaultOption?: VaultOptions;
   estimatedSTETHDepositAmount?: string | JSX.Element;
+  onSignatureMade: (signature: ISignature) => void;
+  onSetDeadline: (deadline: number) => void;
 }> = ({
   actionType,
   withdrawOption,
@@ -112,15 +118,18 @@ const PreviewStep: React.FC<{
   vaultVersion,
   receiveVaultOption,
   estimatedSTETHDepositAmount,
+  onSignatureMade,
+  onSetDeadline,
 }) => {
   const { t } = useTranslation();
   const color = getVaultColor(vaultOption);
   const latestAPY = useLatestAPY(vaultOption, vaultVersion);
+  const usdc = USDCSign();
   const {
     data: { withdrawals: v2Withdrawals },
   } = useV2VaultData(vaultOption);
   const { priceHistory } = useVaultPriceHistory(vaultOption, vaultVersion);
-
+  const [signature, setSignature] = useState<ISignature>();
   interface ActionDetail {
     key: string;
     value: string;
@@ -153,6 +162,9 @@ const PreviewStep: React.FC<{
     ];
   }, []);
 
+  const [waitingApproval, setWaitingApproval] = useState(false);
+
+  const loadingText = useLoadingText("approving");
   const detailRows: ActionDetail[] = useMemo(() => {
     const actionDetails: ActionDetail[] = [];
 
@@ -181,7 +193,31 @@ const PreviewStep: React.FC<{
     positionAmount,
     getAssetDecimals(asset)
   );
-
+  const handle = useCallback(async () => {
+    setWaitingApproval(true);
+    try {
+      const approveToAddress = VaultAddressMap[vaultOption]["earn"];
+      if (!approveToAddress) {
+        return;
+      }
+      const deadline = Math.round(Date.now() / 1000 + 60 * 60);
+      console.log(amount.toString());
+      const signature = await usdc.showApproveAssetSignature(
+        approveToAddress,
+        amount.toString(),
+        deadline
+      );
+      if (signature) {
+        setWaitingApproval(false);
+        setSignature(signature);
+        onSignatureMade(signature);
+        onSetDeadline(deadline);
+      }
+    } catch (error) {
+      setWaitingApproval(false);
+      console.log(error);
+    }
+  }, [amount, usdc, vaultOption]);
   const renderWithdrawalSteps = useCallback(
     (withdrawOption: V2WithdrawOption) => {
       if (withdrawOption === "instant") {
@@ -432,7 +468,7 @@ const PreviewStep: React.FC<{
             case "v2":
               warning = (
                 <WarningContainer
-                  className="mt-2 mb-4 w-100 text-center"
+                  className="mb-4 w-100 text-center"
                   color={color}
                 >
                   <PrimaryText fontSize={14} lineHeight={20} color={color}>
@@ -521,10 +557,23 @@ const PreviewStep: React.FC<{
               <Title className="text-right">{detail.value}</Title>
             </div>
           ))}
-
+          <ActionButton
+            onClick={handle}
+            disabled={!(signature === undefined)}
+            className="btn py-3 mt-4 mb-3"
+            color={color}
+          >
+            {waitingApproval
+              ? loadingText
+              : signature === undefined
+              ? `Approve USDC`
+              : `You can now deposit`}
+            {/* {actionWord} Now */}
+          </ActionButton>
           <ActionButton
             onClick={onClickConfirmButton}
-            className="btn py-3 mt-4 mb-3"
+            disabled={signature === undefined}
+            className="btn py-3 mb-3"
             color={color}
           >
             {actionWord} Now

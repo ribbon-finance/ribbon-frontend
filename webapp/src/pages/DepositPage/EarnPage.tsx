@@ -485,13 +485,13 @@ const EarnPage = () => {
                       >
                         Deposit
                       </StyledActionButton>
-                      <StyledActionButton
+                      {/* <StyledActionButton
                         disabled={true}
                         className={`py-3 mb-1 w-100`}
                         color={"white"}
                       >
                         Initiate Withdraw
-                      </StyledActionButton>
+                      </StyledActionButton> */}
                     </>
                   ) : (
                     <StyledActionButton

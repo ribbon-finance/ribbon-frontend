@@ -69,7 +69,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const { data: priceHistories } = useVaultsPriceHistory();
 
   const firstStep = useMemo(() => {
-    return STEPS.warningStep;
+    return STEPS.formStep;
   }, [
     skipToPreview,
     vaultActionForm.actionType,
@@ -215,10 +215,6 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     onChangeStep(STEPS.previewStep);
   };
 
-  const handleSignatureFound = async () => {
-    onChangeStep(STEPS.formStep);
-  };
-
   const handleClickConfirmButton = async () => {
     const vault = earnVault as RibbonEarnVault;
 
@@ -228,16 +224,10 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       onChangeStep(STEPS.confirmationStep);
       try {
         let res: any;
-        console.log("reached2");
         if (!signature || !deadline) {
           return;
         }
         console.log("reached");
-        console.log({ amountStr });
-        console.log({ deadline });
-        console.log(signature.v);
-        console.log(signature.r);
-        console.log(signature.s);
         res = await vault.depositWithPermit(
           amountStr,
           deadline.toString(),
@@ -264,15 +254,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   };
 
   const stepComponents = {
-    [-1]: (
-      <VaultSignatureForm
-        onSignatureMade={setSignature}
-        onSignComplete={handleSignatureFound}
-        onSetDeadline={setDeadline}
-        vaultOption={vaultOption}
-        version="earn"
-      />
-    ),
+    [-1]: <></>,
     0: (
       <DepositFormStep
         actionType={vaultActionForm.actionType}
@@ -304,6 +286,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
             ? `~${parseFloat(formatUnits(minSTETHAmount, 18)).toFixed(4)} stETH`
             : loadingText
         }
+        onSignatureMade={setSignature}
+        onSetDeadline={setDeadline}
       />
     ),
     2: <TransactionStep color={getAssetColor(asset)} />,

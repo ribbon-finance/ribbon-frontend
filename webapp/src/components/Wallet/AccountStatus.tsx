@@ -456,7 +456,9 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
       <WalletContainer variant={variant} ref={desktopMenuRef}>
         <WalletButton
           variant={variant}
-          showInvestButton={vault !== undefined && vault.vaultOption !== "rEARN"}
+          showInvestButton={
+            vault !== undefined && vault.vaultOption !== "rEARN"
+          }
           connected={active}
           role="button"
           onClick={handleButtonClick}
