@@ -52,7 +52,6 @@ const CalculationColumn = styled.div`
   width: 100%;
   margin-bottom: 8px;
   align-items: center;
-
   &:last-child {
     margin-bottom: unset;
   }

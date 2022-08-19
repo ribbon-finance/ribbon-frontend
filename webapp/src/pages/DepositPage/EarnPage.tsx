@@ -41,6 +41,7 @@ import VaultApprovalForm from "../../components/Vault/VaultActionsForm/common/Va
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { TransactionInstruction } from "@solana/web3.js";
 import moment from "moment";
+
 const { formatUnits } = ethers.utils;
 
 const rotateClockwise = keyframes`
@@ -107,14 +108,12 @@ const ProductAssetLogoContainer = styled.div`
   position: relative;
 `;
 
-const CirclesContainer = styled.div`
+const CirclesContainer = styled.div<{ offset: number }>`
   position: absolute;
-  overflow: hidden;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  width: 100%;
+  height: calc(100% - ${({ offset }) => offset}px);
   display: flex;
+  overflow: hidden;
   align-items: center;
   justify-content: center;
 `;
@@ -128,14 +127,23 @@ const FadeInDiv = styled.div<{ delaySeconds?: number }>`
 
 const StyledEarnInnerRing = styled(EarnInnerRing)`
   animation: ${rotateClockwise} 60s linear infinite;
+  @media (max-width: 700px) {
+    display: none;
+  }
 `;
 
 const StyledEarnMiddleRing = styled(EarnMiddleRing)`
   animation: ${rotateAnticlockwise} 60s linear infinite;
+  @media (max-width: 700px) {
+    height: 60vh;
+  }
 `;
 
 const StyledEarnOuterRing = styled(EarnOuterRing)`
   animation: ${rotateClockwise} 60s linear infinite;
+  @media (max-width: 700px) {
+    height: 78vh;
+  }
 `;
 
 const BalanceTitle = styled.div`
@@ -147,14 +155,15 @@ const BalanceTitle = styled.div`
   color: ${colors.primaryText}7A;
 `;
 
-const VaultContainer = styled.div`
+const VaultContainer = styled.div<{ offset: number }>`
   display: flex;
   text-align: center;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: 85vh;
+  margin: auto;
   overflow: hidden;
+  height: calc(100vh - ${({ offset }) => offset}px);
 `;
 
 const MainContainer = styled.div`
@@ -236,6 +245,7 @@ const EarnPage = () => {
   //   data: { asset, cap, decimals, totalBalance },
   //   loading,
   // } = useV2VaultData(vaultOption || VaultList[0]);
+  const [componentRefs] = useGlobalState("componentRefs");
   const { status } = useVaultData(vaultOption || VaultList[0]);
 
   const {
@@ -379,6 +389,14 @@ const EarnPage = () => {
   //     roiColor,
   //   ];
   // }, [vaultAccounts, decimals]);
+
+  const pageOffset = useMemo(() => {
+    return (
+      (componentRefs.header?.offsetHeight || 0) +
+      (componentRefs.footer?.offsetHeight || 0)
+    );
+  }, [componentRefs.header?.offsetHeight, componentRefs.footer?.offsetHeight]);
+
   /**
    * Redirect to homepage if no clear vault is chosen
    */
@@ -389,7 +407,7 @@ const EarnPage = () => {
 
   return (
     <>
-      <CirclesContainer>
+      <CirclesContainer offset={pageOffset}>
         <FadeInDiv delaySeconds={0.45}>
           <StyledEarnOuterRing deposited={isDepositSuccess} />
         </FadeInDiv>
@@ -400,7 +418,7 @@ const EarnPage = () => {
           <StyledEarnInnerRing deposited={isDepositSuccess} />
         </FadeInDiv>
       </CirclesContainer>
-      <VaultContainer>
+      <VaultContainer offset={pageOffset}>
         <AnimatePresence exitBeforeEnter>
           {showVault.show ? (
             <motion.div

@@ -165,7 +165,7 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
             <DataNumber variant={undefined}>
               {priceLoading
                 ? loadingText
-                : currency(prices[optionAsset]!).format()}
+                : currency(prices[optionAsset]!, { precision: 4 }).format()}
             </DataNumber>
           </DataCol>
           <DataCol xs="6">

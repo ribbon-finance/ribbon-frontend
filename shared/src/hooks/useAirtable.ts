@@ -24,6 +24,7 @@ const base = Airtable.base("appkUHzxJ1lehQTIt");
 export const useAirtable = () => {
   const [schedules, setSchedule] = useState<ScheduleItem[]>();
   const [error, setError] = useState<string>();
+
   const { price: ETHPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: "WETH",
   });
@@ -40,7 +41,9 @@ export const useAirtable = () => {
           const item = fields as ScheduleItem;
           s.push(item);
         });
-        setSchedule(s);
+        if (!assetPriceLoading) {
+          setSchedule(s);
+        }
       })
       .catch((e) => {
         setSchedule([]);

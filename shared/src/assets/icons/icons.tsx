@@ -1381,6 +1381,7 @@ export const BackIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      stroke-linejoin="round"
     />
     <path
       d="M12 19L5 12L12 5"

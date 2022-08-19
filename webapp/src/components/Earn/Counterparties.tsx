@@ -2,10 +2,6 @@ import React, { useMemo } from "react";
 import styled from "styled-components";
 import { SecondaryText } from "shared/lib/designSystem";
 import CounterpartyDetail from "./CounterpartyDetail";
-import {
-  EarnVaultList,
-  RibbonDiversifiedVaultList,
-} from "shared/lib/constants/constants";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { isPracticallyZero } from "shared/lib/utils/math";
 import { getAssetDecimals } from "shared/lib/utils/asset";
@@ -35,30 +31,30 @@ const CounterpartyListSubset: Counterparty[] = ["R-EARN DIVERSIFIED"];
 
 const Counterparties: React.FC = () => {
   const { vaultAccounts } = useVaultAccounts("earn");
-  const userCounterpartyList = useMemo(() => {
-    let userCounterpartyList: Counterparty[] = [];
-    for (const earnVault of EarnVaultList) {
-      const vaultAccount = vaultAccounts[earnVault];
-      if (!vaultAccount) {
-      } else {
-        if (
-          !isPracticallyZero(vaultAccount.totalBalance, 6) &&
-          RibbonDiversifiedVaultList.includes(earnVault) &&
-          !userCounterpartyList.includes("R-EARN DIVERSIFIED")
-        ) {
-          userCounterpartyList.push("R-EARN DIVERSIFIED");
-        }
-        if (
-          !isPracticallyZero(vaultAccount.totalBalance, 6) &&
-          RibbonDiversifiedVaultList.includes(earnVault) &&
-          !userCounterpartyList.includes("CITADEL")
-        ) {
-          userCounterpartyList.push("CITADEL");
-        }
-      }
-    }
-    return userCounterpartyList;
-  }, [vaultAccounts]);
+  // const userCounterpartyList = useMemo(() => {
+  //   let userCounterpartyList: Counterparty[] = [];
+  //   for (const earnVault of EarnVaultList) {
+  //     const vaultAccount = vaultAccounts[earnVault];
+  //     if (!vaultAccount) {
+  //     } else {
+  //       if (
+  //         !isPracticallyZero(vaultAccount.totalBalance, 6) &&
+  //         RibbonDiversifiedVaultList.includes(earnVault) &&
+  //         !userCounterpartyList.includes("R-EARN DIVERSIFIED")
+  //       ) {
+  //         userCounterpartyList.push("R-EARN DIVERSIFIED");
+  //       }
+  //       if (
+  //         !isPracticallyZero(vaultAccount.totalBalance, 6) &&
+  //         RibbonDiversifiedVaultList.includes(earnVault) &&
+  //         !userCounterpartyList.includes("CITADEL")
+  //       ) {
+  //         userCounterpartyList.push("CITADEL");
+  //       }
+  //     }
+  //   }
+  //   return userCounterpartyList;
+  // }, [vaultAccounts]);
   return (
     <Container>
       <ParagraphText>

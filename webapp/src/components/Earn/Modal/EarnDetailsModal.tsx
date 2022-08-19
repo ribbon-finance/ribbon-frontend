@@ -10,7 +10,9 @@ import EarnVaultActivity from "../../Vault/EarnVaultActivity";
 import Payoff from "../Payoff";
 import Counterparties from "../Counterparties";
 import Fees from "../Fees";
-const Container = styled.div`
+import { motion } from "framer-motion";
+
+const Container = styled(motion.div)`
   display: flex;
   flex-direction: column;
   z-index: 2;
@@ -124,7 +126,25 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
                 marginTop={40}
                 className="justify-content-center"
               >
-                <Container>{modalContent}</Container>
+                <Container
+                  key={step}
+                  initial={{
+                    opacity: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                  }}
+                  transition={{
+                    duration: 0.25,
+                    type: "keyframes",
+                    ease: "easeInOut",
+                  }}
+                >
+                  {modalContent}
+                </Container>
               </ModalColumnScroll>
             </div>
           ) : (
@@ -132,7 +152,25 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
               marginTop={40}
               className="justify-content-center"
             >
-              <Container>{modalContent}</Container>
+              <Container
+                key={step}
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                }}
+                transition={{
+                  duration: 0.25,
+                  type: "keyframes",
+                  ease: "easeInOut",
+                }}
+              >
+                {modalContent}
+              </Container>
             </ModalColumnScroll>
           )}
         </>

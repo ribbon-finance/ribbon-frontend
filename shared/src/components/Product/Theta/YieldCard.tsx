@@ -360,7 +360,7 @@ const ParagraphText = styled(SecondaryText)`
   font-weight: 400;
   font-size: 14px;
   line-height: 24px;
-  margin-top: 24px;
+  margin-top: 32px;
   margin-left: 32px;
   margin-right: 32px;
   text-align: center;
@@ -373,6 +373,10 @@ const HighlightedText = styled.span`
   poin &:hover {
     color: ${colors.primaryText}CC;
   }
+`;
+
+const EarnTitle = styled(Title)`
+  margin-bottom: 24px;
 `;
 
 interface YieldCardProps {
@@ -611,14 +615,11 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const EarnContent = useCallback(() => {
     return (
       <>
-        <Title fontSize={28} lineHeight={40}>
+        <EarnTitle fontSize={28} lineHeight={40}>
           {t(`shared:ProductCopies:${vault}:title`)}
-        </Title>
+        </EarnTitle>
 
-        <EarnCard
-          color={color}
-          height={account === null || account === undefined ? 447 : 504}
-        />
+        <EarnCard color={color} height={!!account ? 447 : 504} />
         <ParagraphText>
           Earn up to{" "}
           <HighlightedText>

@@ -1,6 +1,5 @@
 import { BigNumber } from "ethers";
 import {
-  EarnVaultList,
   SolanaVaultList,
   VaultList,
   VaultOptions,
@@ -196,11 +195,6 @@ export const defaultVaultActivitiesData: VaultActivitiesData =
       ),
     ])
   ) as VaultActivitiesData;
-
-export const defaultEarnVaultActivitiesData: VaultActivitiesData =
-  Object.fromEntries(
-    EarnVaultList.map((option) => [option, [] as VaultActivity[]])
-  ) as unknown as VaultActivitiesData;
 
 export interface UnconnectedVaultData {
   deposits: BigNumber;

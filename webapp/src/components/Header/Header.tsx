@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useRouteMatch } from "react-router-dom";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
@@ -16,6 +16,7 @@ import NetworkSwitcherButton from "../NetworkSwitcher/NetworkSwitcherButton";
 import NotificationButton from "../Notification/NotificationButton";
 import { isEthNetwork } from "shared/lib/constants/constants";
 import ExternalLinkIcon from "shared/lib/assets/icons/externalLink";
+import { useGlobalState } from "shared/lib/store/store";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
@@ -141,10 +142,21 @@ const Header = () => {
   const product = useRouteMatch({ path: "/", exact: true });
   const portfolio = useRouteMatch({ path: "/portfolio", exact: true });
   const staking = useRouteMatch({ path: "/staking", exact: true });
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [, setComponentRefs] = useGlobalState("componentRefs");
 
   const onToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  useEffect(() => {
+    if (headerRef.current) {
+      setComponentRefs((prev) => ({
+        ...prev,
+        header: headerRef.current as HTMLDivElement,
+      }));
+    }
+  }, [headerRef, setComponentRefs]);
 
   const renderLinkItem = (
     title: string,
@@ -186,6 +198,7 @@ const Header = () => {
 
   return (
     <HeaderContainer
+      ref={headerRef}
       isMenuOpen={isMenuOpen}
       className="d-flex align-items-center"
     >

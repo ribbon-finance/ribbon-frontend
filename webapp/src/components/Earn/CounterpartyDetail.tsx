@@ -12,6 +12,9 @@ import Logo, {
 } from "shared/lib/assets/icons/logo";
 import { Counterparty } from "./Counterparties";
 import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
+import useVaultOption from "../../hooks/useVaultOption";
+import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import { BigNumber } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 
 const ParagraphText = styled(SecondaryText)`

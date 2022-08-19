@@ -193,6 +193,13 @@ const VaultSignatureForm: React.FC<VaultSignatureFormProps> = ({
     { name: "deadline", type: "uint256" },
   ];
 
+  const EIP712_DOMAIN_TYPE = [
+    { name: "name", type: "string" },
+    { name: "version", type: "string" },
+    { name: "chainId", type: "uint256" },
+    { name: "verifyingContract", type: "address" },
+  ];
+
   const depositAsset = useMemo(() => {
     switch (version) {
       case "v1":
@@ -219,7 +226,7 @@ const VaultSignatureForm: React.FC<VaultSignatureFormProps> = ({
   }, [chainId, depositAsset, ethereumProvider]);
 
   const showApproveUSDCSignature = useCallback(
-    async (spender: string, deadline: number) => {
+    async (spender: string, deadline: string) => {
       if (!account || !tokenContract || !ethereumProvider) {
         return;
       }
@@ -239,9 +246,45 @@ const VaultSignatureForm: React.FC<VaultSignatureFormProps> = ({
         deadline,
       };
 
-      const approveUSDCSignature = await ethereumProvider
-        .getSigner()
-        ._signTypedData(domain, { Permit: EIP2612_TYPE }, approveMessage);
+      console.log(domain);
+      console.log(approveMessage);
+      console.log({
+        types: {
+          EIP712Domain: EIP712_DOMAIN_TYPE,
+          Permit: [
+            { name: "owner", type: "address" },
+            { name: "spender", type: "address" },
+            { name: "value", type: "uint256" },
+            { name: "nonce", type: "uint256" },
+            { name: "deadline", type: "uint256" },
+          ],
+        },
+        domain,
+        primaryType: "Permit",
+        approveMessage,
+      });
+
+      // const permitInfo = { type: PermitType.AMOUNT, name: 'USD Coin', version: '2' },
+      const data = JSON.stringify({
+        types: {
+          EIP712Domain: EIP712_DOMAIN_TYPE,
+          Permit: EIP2612_TYPE,
+        },
+        domain,
+        primaryType: "Permit",
+        message: approveMessage,
+      });
+
+      console.log("reached");
+      console.log({ data });
+      const approveUSDCSignature = await ethereumProvider.send(
+        "eth_signTypedData_v4",
+        [account, data]
+      );
+
+      // const approveUSDCSignature = await ethereumProvider
+      //   .getSigner()
+      //   ._signTypedData(domain, { Permit: EIP2612_TYPE }, approveMessage);
 
       if (approveUSDCSignature) {
         const splitted = splitSignature(approveUSDCSignature);
@@ -261,7 +304,7 @@ const VaultSignatureForm: React.FC<VaultSignatureFormProps> = ({
       setWaitingApproval(true);
 
       try {
-        const deadline = Math.round(Date.now() / 1000 + 60 * 60);
+        const deadline = Math.round(Date.now() / 1000 + 60 * 60).toString();
         const signature = await showApproveUSDCSignature(
           approveToAddress,
           deadline
@@ -269,7 +312,7 @@ const VaultSignatureForm: React.FC<VaultSignatureFormProps> = ({
         if (signature) {
           onSignatureMade(signature);
           onSignComplete();
-          onSetDeadline(deadline);
+          onSetDeadline(parseInt(deadline));
         }
         //   const tx = await tokenContract.approve(approveToAddress, amount);
 
