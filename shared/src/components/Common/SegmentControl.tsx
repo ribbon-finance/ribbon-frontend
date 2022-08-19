@@ -135,7 +135,7 @@ const ActiveBackground = styled(Frame)<{
       case "plain":
         return `
           background-color: transparent !important;
-        `
+        `;
       default:
         return `
           transition: 0.35s background-color ease-out;
@@ -188,7 +188,7 @@ const SegmentControlButtonText = styled(Subtitle)<{
     if (theme === "plain") {
       return `opacity: ${active ? 1 : 0.48};`;
     }
-    return ""
+    return "";
   }}
 `;
 

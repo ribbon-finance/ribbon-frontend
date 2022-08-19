@@ -90,7 +90,7 @@ const SegmentControlWrapper = styled.div`
     width: 120%;
     left: -10%;
   }
-`
+`;
 
 interface EarnDetailsModalProps {
   show: boolean;
@@ -124,10 +124,7 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
   const { width } = useScreenSize();
 
   const [step, setStep] = useState<Step>("strategy");
-  const showDesktopNavigator = useMemo(
-    () => width > sizes.md,
-    [width]
-  );
+  const showDesktopNavigator = useMemo(() => width > sizes.md, [width]);
 
   const onCloseModal = useCallback(() => {
     setStep("strategy");
@@ -167,7 +164,7 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
     }
   }, [step]);
 
-  console.log({showDesktopNavigator})
+  console.log({ showDesktopNavigator });
 
   return (
     <>
@@ -185,9 +182,9 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
                 role="button"
                 disabled={step === StepList[0]}
                 onClick={() => {
-                  const newStep = StepList.indexOf(step)
+                  const newStep = StepList.indexOf(step);
                   if (newStep > 0) {
-                    setStep(StepList[newStep - 1])
+                    setStep(StepList[newStep - 1]);
                   }
                 }}
               >
@@ -200,9 +197,9 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
                   if (step === StepList[StepList.length - 1]) {
                     return;
                   }
-                  const newStep = StepList.indexOf(step)
+                  const newStep = StepList.indexOf(step);
                   if (newStep < StepList.length) {
-                    setStep(StepList[newStep + 1])
+                    setStep(StepList[newStep + 1]);
                   }
                 }}
               >
@@ -218,20 +215,17 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
                   px: 8,
                   py: 16,
                   fontSize: 12,
-                  lineHeight: 12
-                }
+                  lineHeight: 12,
+                },
               }}
               segments={StepList.map((step) => {
                 return {
                   value: step,
-                  display: step
+                  display: step,
                 };
-              })
-              }
+              })}
               value={step}
-              onSelect={(step) =>
-                setStep(step as Step)
-              }
+              onSelect={(step) => setStep(step as Step)}
             />
           </SegmentControlWrapper>
           <BaseModalContentColumn marginTop={8}>
