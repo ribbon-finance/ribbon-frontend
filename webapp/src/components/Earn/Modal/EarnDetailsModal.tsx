@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { VaultOptions } from "shared/lib/constants/constants";
 import { BaseModalContentColumn, Title } from "shared/lib/designSystem";
 import BasicModal from "shared/lib/components/Common/BasicModal";
-import Scroller from "../Scroller";
+import SegmentControl from "shared/lib/components/Common/SegmentControl";
 import { Strategy, Risk } from "../Details";
 import EarnPerformanceSection from "../../../pages/DepositPage/EarnPerformanceSection";
 import EarnVaultActivity from "../../Vault/EarnVaultActivity";
@@ -11,6 +11,7 @@ import Payoff from "../Payoff";
 import Counterparties from "../Counterparties";
 import Fees from "../Fees";
 import { motion } from "framer-motion";
+import sizes from "shared/lib/designSystem/sizes";
 
 const Container = styled(motion.div)`
   display: flex;
@@ -24,6 +25,21 @@ const ModalColumnScroll = styled(BaseModalContentColumn)`
   flex: 1;
   overflow: hidden;
 `;
+
+const SegmentControlWrapper = styled.div`
+  position: absolute;
+  bottom: -60px;
+  width: 300%;
+  left: -100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: ${sizes.lg}px) {
+    width: 150%;
+    left: -25%;
+  }
+`
 
 interface EarnDetailsModalProps {
   show: boolean;
@@ -107,15 +123,30 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
         headerBackground={true}
       >
         <>
-          <Scroller
-            page={StepList.indexOf(step) + 1}
-            stepList={StepList as unknown as string[]}
-            step={step}
-            total={StepList.length}
-            onPageClick={(page) => {
-              setStep(StepList[page - 1]);
-            }}
-          />
+          <SegmentControlWrapper>
+            <SegmentControl
+              config={{
+                theme: "plain",
+                button: {
+                  px: 8,
+                  py: 16,
+                  fontSize: 12,
+                  lineHeight: 12
+                }
+              }}
+              segments={StepList.map((step) => {
+                return {
+                  value: step,
+                  display: step
+                };
+              })
+              }
+              value={step}
+              onSelect={(step) =>
+                setStep(step as Step)
+              }
+            />
+          </SegmentControlWrapper>
           <BaseModalContentColumn marginTop={8}>
             <Title>{step}</Title>
           </BaseModalContentColumn>
